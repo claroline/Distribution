@@ -1,0 +1,54 @@
+/*
+ * This file is part of the Inwicast plugin for Claroline Connect.
+ *
+ * (c) INWICAST <dev@inwicast.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+ .input-thumbnail
+{
+    display: block;
+    padding: 4px;
+    text-align: center;
+    line-height: 1.42857143;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 0px 4px 4px 0px;
+    -webkit-transition: all .2s ease-in-out;
+    transition: all .2s ease-in-out;
+}
+
+#inwicast-items .input-group:hover > *
+{
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+    color: #31708f;
+}
+
+.item-selected > *, .item-selected:hover > *
+{
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+    color: #3c763d;
+}
+
+
+.input-thumbnail img, .input-thumbnail img 
+{
+    max-height: 90px;
+    max-width: 120px;
+}
+
+.input-group label, .item-selected label
+{
+    margin: 0px;
+    font-weight: normal;
+}
+
+#inwicast-items
+{
+    max-height: 220px;
+    overflow: auto;
+}

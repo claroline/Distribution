@@ -1,0 +1,15 @@
+inwicast_claroline_plugin:
+    pattern:  /inwicast/plugin/{widget}
+    defaults: { _controller: InwicastClarolinePluginBundle:ClarolinePlugin:displayForm }
+
+inwicast_claroline_widget:
+    pattern:  /inwicast/widget
+    defaults: { _controller: InwicastClarolinePluginBundle:ClarolinePlugin:changeMediacenter }
+
+inwicast_claroline_image:
+    pattern:  /inwicast/image/{width}/{height}
+    defaults: { _controller: InwicastClarolinePluginBundle:ClarolinePlugin:image }
+
+inwicast_claroline_search_media:
+    pattern:  /inwicast/search/{value}
+    defaults: { _controller: InwicastClarolinePluginBundle:ClarolinePlugin:searchMedias, value: '' }

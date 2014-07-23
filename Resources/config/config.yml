@@ -1,0 +1,12 @@
+plugin:
+    has_options: true
+    icon: res_inwicast.png
+
+    # Widgets declared by your plugin.
+    widgets:
+    # Each widget requires a name.
+     - name: inwicast_claroline_plugin
+    # Set this to true if the widget is configurable
+       is_configurable: true
+    # You can set an icon for your widget. The icon must be in your public/images/icons folder.
+       icon: res_inwicast.png

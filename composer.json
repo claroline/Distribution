@@ -1,0 +1,22 @@
+{
+	"name": "inwicast/claroline-plugin-bundle",
+	"description": "Inwicast plugin for Claroline Connect",
+	"authors": [
+        {
+            "name": "Inwicast",
+            "email": "dev@inwicast.com",
+            "homepage": "http://www.inwicast.com"
+        }
+    ],
+	"autoload": {
+        "psr-0": { "Inwicast\\ClarolinePluginBundle": "" }
+    },
+    "target-dir": "Inwicast/ClarolinePluginBundle",
+    "require": {
+        "php": ">=5.4.1",
+        "claroline/core-bundle": "~3.0",
+        "ext-xmlrpc": "*",
+        "ext-gmp": "*",
+        "claroline/migration-bundle": "dev-master"
+    }
+}

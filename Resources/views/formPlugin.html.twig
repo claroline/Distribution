@@ -1,0 +1,160 @@
+{#
+ # This file is part of the Inwicast plugin for Claroline Connect.
+ #
+ # (c) INWICAST <dev@inwicast.com>
+ #
+ # For the full copyright and license information, please view the LICENSE
+ # file that was distributed with this source code.
+ #}
+
+<form action="{{ path('inwicast_claroline_plugin', {'widget': widget.getId()}) }}" method="post" id="inwicast_claroline_plugin_diplay">
+    <link href="{{ asset('bundles/inwicastclarolineplugin/css/design.css') }}" type="text/css" rel="stylesheet" />
+
+    {% if error != null %}
+    <div class="alert alert-{{ error.type }} alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong>{{ error.title|trans({}, 'widget') }}</strong> {{ error.content|trans({}, 'widget') }}
+    </div>
+    {% endif %}
+    <div class="row container">
+        {# Search bar #}
+        <div class="col-md-8">
+            <div class="input-group">
+                <input type="search" id="search" onChange="searchForMedia()" class="form-control" placeholder="{{ 'search' | trans({}, 'platform') }}&hellip;">
+                <span class="input-group-btn">
+                    <button class="btn btn-default btn-primary" onClick="searchForMedia()">
+                        <span class="fa fa-search"></span>
+                    </button>
+                </span>
+            </div>
+        </div>
+        {# Display tools #}
+        <div class="col-md-4">
+            {{ 'display' | trans({}, 'widget') }}:
+            <div class="btn-group">
+                <button id="setGrid" class="btn btn-default btn-primary active" onClick="setDisplay('grid')"><span class="fa fa-th"></span> {{ 'grid' | trans({}, 'widget') }}</button>
+                <button id="setList" class="btn btn-default btn-primary" onClick="setDisplay('list')"><span class="fa fa-th-list"></span> {{ 'list' | trans({}, 'widget') }}</button>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div id="inwicast-items" class="container">   
+        <div class="row">
+            {% for media in medialist %}
+                {% if loop.index0 != 0 and loop.index0 % 4 == 0 %}
+                    </div>
+                    <br />
+                    <div class="row">
+                {% endif %}
+                {# Resizing:
+                    - Default: 4 items a line
+                    - If less than 4 items: make them take 1 complete line (12 columns / nb of items)
+                #}
+                <div class="col-md-{% if medialist|length < 4 %}{{ 12 / medialist|length }}{% else %}3{% endif %} auto-new-line">
+                    <div class="input-group" onclick="select('{{ media.title | convert_encoding('UTF-8', 'ISO-8859-1') }}', '{{ loop.index0 }}')">
+                        <label for="{{ media.code }}" class="input-group-addon">
+                            <input type="radio" name="inwicast_widget_video" id="{{ media.code }}" value="{{ media.code }}" required>
+                        </label>
+                        <label for="{{ media.code }}" class="input-thumbnail">
+                            <div class="media">
+                                <div class="pull-left">
+                                    <img class="media-object" src="{{ media.image }}" alt="Aperçu de {{ media.title | convert_encoding('UTF-8', 'ISO-8859-1') }}" />
+                                </div>
+                                <div class="media-body">
+                                    <h4 class="media-heading">{{ media.title | convert_encoding('UTF-8', 'ISO-8859-1') }}</h4>
+                                    {{ media.description | convert_encoding('UTF-8', 'ISO-8859-1') }}
+                                </div>
+                            </div>
+                            <div class="list-media" style="display: none;">
+                                {{ media.title | convert_encoding('UTF-8', 'ISO-8859-1') }}
+                            </div>
+
+                        </label>
+                    </div>
+                </div>
+            {% else %}
+            <div class="col-md-12">
+                {{ 'empty_mediacenter'|trans({}, 'widget') }}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <br />
+    <div class="row container">
+        <div class="col-md-6">
+            <input class="form-control" type="text" id="inwicast_widget_name" name="inwicast_widget_link" disabled />
+        </div>
+        <div class="col-md-3">
+            <input class="btn btn-block btn-success" type="submit" id="inwicast_widget_submit" value="{{ 'validate'|trans({}, 'widget') }}" disabled />
+        </div>
+        <div class="col-md-3">
+            <input class="btn btn-block btn-danger claro-widget-form-cancel" type="button" value="{{ 'cancel'|trans({}, 'platform') }}"  />
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript">
+function select(mediaTitle, mediaNb)
+{
+    $('#inwicast_widget_name').val(mediaTitle);
+    $('#inwicast_widget_submit').prop( "disabled", false );
+    var items = $('#inwicast-items .input-group.item-selected');
+    $( items ).each( function( index, element )
+    {
+        $( element ).removeClass('item-selected');
+    });
+    $('#inwicast-items .input-group').eq(mediaNb).addClass('item-selected');
+}
+
+function setDisplay(type)
+{
+    if(type == 'grid')
+    {
+        $( ".list-media" ).css( "display", "none" );
+        $( ".media" ).css( "display", "block" );
+        $( "#setList" ).removeClass( "active" );
+        $( "#setGrid" ).addClass( "active" );
+        searchForMedia();
+    }
+    else if (type == 'list')
+    {
+
+        $( ".media" ).css( "display", "none" );
+        $( ".list-media" ).css( "display", "block" );
+        $( "#setList" ).addClass( "active" );
+        $( "#setGrid" ).removeClass( "active" );
+        searchForMedia();
+    }
+}
+
+function searchForMedia()
+{
+    // Get value from input
+    var value = $( "#search" ).val();
+
+    // Don't search if input is empty...
+    if(value != '')
+    {
+        // AJAX request
+        $.ajax({
+            url: "{{ path('inwicast_claroline_search_media') }}/" + value,
+            cache: false
+        })
+        .done(function( json ) {
+            // Hide all items
+            $( "#inwicast-items > div > div" ).css( "display", "none" );
+            $( json ).each( function( index, element ) 
+            {
+                // Display element matching with search
+                $( "label[for='" + element + "']" ).parent().parent().css( "display", "block" );
+            });
+        });
+    }
+    // But display all items!
+    else
+    {
+      $( "#inwicast-items > div > div" ).css( "display", "block" );  
+    }
+
+}
+</script>

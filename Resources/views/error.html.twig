@@ -1,0 +1,5 @@
+{% if error != null %}
+<div class="alert alert-{{ error.type }}">
+    <strong>{{ error.title|trans({}, 'widget') }}</strong> {{ error.content|trans({}, 'widget') }}
+</div>
+{% endif %}
