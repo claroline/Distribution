@@ -17,6 +17,6 @@
         "claroline/core-bundle": "~3.0",
         "ext-xmlrpc": "*",
         "ext-gmp": "*",
-        "claroline/migration-bundle": "dev-master"
+        "claroline/migration-bundle": "~1.0"
     }
 }
