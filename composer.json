@@ -1,6 +1,9 @@
 {
 	"name": "inwicast/claroline-plugin-bundle",
 	"description": "Inwicast plugin for Claroline Connect",
+    "keywords": ["Claroline", "Plugin", "Website", "ICAP"],
+    "homepage": "http://www.claroline.net",
+    "type": "claroline-plugin",
 	"authors": [
         {
             "name": "Inwicast",
