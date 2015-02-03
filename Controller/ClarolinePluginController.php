@@ -178,7 +178,7 @@ class ClarolinePluginController extends Controller
 				$previousMedia = $this->getDoctrine()
                         			  ->getManager()
 				                      ->getRepository('InwicastClarolinePluginBundle:Media')
-				                      ->findOneByWidgetInstance($widget);
+				                      ->findByWidget($widget);
 
 		        if(!empty($previousMedia))
 		        {        
@@ -190,7 +190,7 @@ class ClarolinePluginController extends Controller
 				// Get chosen media
 				$media = $medialist[$array[0]];
 				// Set widget to entity
-				$media->setWidgetInstance($widget);
+				$media->addWidgetInstance($widget);
 
 				// Persist in database
 				$em = $this->getDoctrine()->getManager();

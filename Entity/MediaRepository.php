@@ -3,6 +3,7 @@
 namespace Inwicast\ClarolinePluginBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use Inwicast\ClarolinePluginBundle\Entity\Media;
 
 /**
  * MediaRepository
@@ -12,4 +13,23 @@ use Doctrine\ORM\EntityRepository;
  */
 class MediaRepository extends EntityRepository
 {
+	public function findByWidget($widgetInstance)
+	{
+		$qb = $this->_em->createQueryBuilder();
+		$qb->select('medias, widgetinstances')
+		   ->from('Inwicast\ClarolinePluginBundle\Entity\Media', 'medias')
+		   ->join('medias.widgetInstance', 'widgetinstances')
+		   ->where('widgetinstances.id = '. $widgetInstance->getId());
+
+		$result = $qb->getQuery()->getResult();
+		
+		if(sizeof($result) > 0)
+		{
+			return $result[0];
+		}
+		else
+		{
+			return $result;
+		}
+	}
 }

@@ -73,10 +73,19 @@ class Media extends AbstractResource
     protected $height;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Widget\WidgetInstance")
-     * @ORM\JoinColumn(onDelete="CASCADE")
-     */
+     * @ORM\ManyToMany(targetEntity="Claroline\CoreBundle\Entity\Widget\WidgetInstance")
+     * @ORM\JoinTable(name="inwicast_plugin_media_widgetinstance",
+     *      joinColumns={@ORM\JoinColumn(name="media_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="widgetinstance_id", referencedColumnName="id", unique=true, onDelete="CASCADE")}
+     *      )
+     **/
     protected $widgetInstance;
+
+     /**
+     * @var \Claroline\CoreBundle\Entity\Resource\ResourceNode
+     */
+    protected $resourceNode;
+
 
 
     public function __construct($code = null, $title = null, $description = null, $date = null, $image = null, $width = null, $height = null)
@@ -124,7 +133,6 @@ class Media extends AbstractResource
     }
 
     /**
-     * Set title
      *
      * @param string $title
      * @return Media
@@ -261,17 +269,6 @@ class Media extends AbstractResource
         return $this->height;
     }
 
-    /**
-     * Set widgetInstance
-     *
-     * @param WidgetInstance $ds
-     * @return Media
-     */
-    public function setWidgetInstance(WidgetInstance $ds)
-    {
-        $this->widgetInstance = $ds;
-    }
-
      /**
      * Get widgetInstance
      *
@@ -281,4 +278,53 @@ class Media extends AbstractResource
     {
         return $this->widgetInstance;
     }
+
+    /**
+     * Add widgetInstance
+     *
+     * @param \Claroline\CoreBundle\Entity\Widget\WidgetInstance $widgetInstance
+     * @return Media
+     */
+    public function addWidgetInstance(\Claroline\CoreBundle\Entity\Widget\WidgetInstance $widgetInstance)
+    {
+        $this->widgetInstance[] = $widgetInstance;
+
+        return $this;
+    }
+
+
+    /**
+     * Remove widgetInstance
+     *
+     * @param \Claroline\CoreBundle\Entity\Widget\WidgetInstance $widgetInstance
+     */
+    public function removeWidgetInstance(\Claroline\CoreBundle\Entity\Widget\WidgetInstance $widgetInstance)
+    {
+        $this->widgetInstance->removeElement($widgetInstance);
+    }
+
+
+    /**
+     * Set resourceNode
+     *
+     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $resourceNode
+     * @return Media
+     */
+    public function setResourceNode(\Claroline\CoreBundle\Entity\Resource\ResourceNode $resourceNode = null)
+    {
+        $this->resourceNode = $resourceNode;
+
+        return $this;
+    }
+
+    /**
+     * Get resourceNode
+     *
+     * @return \Claroline\CoreBundle\Entity\Resource\ResourceNode
+     */
+    public function getResourceNode()
+    {
+        return $this->resourceNode;
+    }
+
 }
