@@ -16,8 +16,10 @@ use Claroline\KernelBundle\Bundle\ConfigurationBuilder;
 
 class InwicastClarolinePluginBundle extends PluginBundle
 {
-	public function hasMigrations()
+    public function getConfiguration($environment)
     {
-        return false;
+        $config = new ConfigurationBuilder();
+
+        return $config->addRoutingResource(__DIR__ . '/Resources/config/routing.yml');
     }
 }
