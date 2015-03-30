@@ -1,0 +1,28 @@
+{% extends 'ClarolineCoreBundle::base.html.twig' %}
+
+{% block stylesheets %}
+    {% include 'ClarolineCoreBundle:Layout:stylesheets.html.twig' %}
+    <link href="{{ asset('bundles/inwicastclarolineplugin/css/design.css') }}" type="text/css" rel="stylesheet"/>
+{% endblock %}
+
+{% block javascripts_header %}
+    {{ parent() }}
+    {% include 'ClarolineCoreBundle:Layout:javascripts_headers.html.twig' %}
+{% endblock %}
+
+{% block layout %}
+    {% if medialist|length == 0 %}
+        <div class="alert alert-warning">
+            <strong>{{ "warning"|trans({}, 'widget') }}</strong> {{ "error_empty_mediacenter"|trans({}, 'widget') }}
+        </div>
+    {% else %}
+        <div class="tinymce_title_choose">
+            {{ "choose_video_tinymce"|trans({}, "widget") }}
+        </div>
+        {% include 'InwicastClarolinePluginBundle:Media:videosListTpl.html.twig' with {'medialist' : medialist}  %}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript" src='{{ asset('bundles/clarolinecore/js/iframe/iframe.js') }}'></script>
+{% endblock %}

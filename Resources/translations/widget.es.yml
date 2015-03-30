@@ -24,3 +24,4 @@ error_not_logged_in: 'No se le permite hacer esto, ya que no ha entrado en el Me
 display: 'Visualización'
 grid: 'Cuadrícula'
 list: 'Lista'
+date_format: 'd/m/Y H:i'

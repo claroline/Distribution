@@ -3,15 +3,14 @@
 namespace Inwicast\ClarolinePluginBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 
 /**
  * Mediacenter
  *
  * @ORM\Table(name="inwicast_plugin_mediacenter")
- * @ORM\Entity(repositoryClass="Inwicast\ClarolinePluginBundle\Entity\MediacenterRepository")
+ * @ORM\Entity(repositoryClass="Inwicast\ClarolinePluginBundle\Repository\MediacenterRepository")
  */
-class Mediacenter extends AbstractResource
+class Mediacenter
 {
     /**
      * @var integer
@@ -27,18 +26,53 @@ class Mediacenter extends AbstractResource
      *
      * @ORM\Column(name="url", type="string", length=255)
      */
-    protected $url;
+    protected $url = null;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="driver", type="string", length=255)
+     */
+    protected $driver;
 
-    public function __construct()
-    {
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="host", type="string", length=255)
+     */
+    protected $host;
 
-    }
+    /**
+     * @var string
+     * @ORM\Column(name="port", type="string", length=255)
+     */
+    protected $port;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="dbname", type="string", length=255)
+     */
+    protected $dbname;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="user", type="string", length=255)
+     */
+    protected $user;
+
+    /**
+     * @var password
+     *
+     * @ORM\Column(name="password", type="string", length=255)
+     */
+    protected $password;
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -54,17 +88,128 @@ class Mediacenter extends AbstractResource
     public function setUrl($url)
     {
         $this->url = $url;
-    
+
         return $this;
     }
 
     /**
      * Get url
      *
-     * @return string 
+     * @return string
      */
     public function getUrl()
     {
+        if ($this->url !== null) {
+            return preg_replace("~^https?://[^/]+$~", "$0/", $this->url);
+        }
         return $this->url;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDriver()
+    {
+        return $this->driver;
+    }
+
+    /**
+     * @param string $driver
+     */
+    public function setDriver($driver)
+    {
+        $this->driver = $driver;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHost()
+    {
+        return $this->host;
+    }
+
+    /**
+     * @param mixed $host
+     */
+    public function setHost($host)
+    {
+        $this->host = $host;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPort()
+    {
+        return $this->port;
+    }
+
+    /**
+     * @param string $port
+     */
+    public function setPort($port)
+    {
+        $this->port = $port;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDbname()
+    {
+        return $this->dbname;
+    }
+
+    /**
+     * @param mixed $dbname
+     */
+    public function setDbname($dbname)
+    {
+        $this->dbname = $dbname;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param string $user
+     */
+    public function setUser($user)
+    {
+        $this->user = $user;
+    }
+
+    /**
+     * @return \Inwicast\ClarolinePluginBundle\Entity\password
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    /**
+     * @param \Inwicast\ClarolinePluginBundle\Entity\password $password
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    }
+
+    public function getDatabaseParameters()
+    {
+        return array(
+            'driver'    => $this->driver,
+            'host'      => $this->host,
+            'port'      => $this->port,
+            'dbname'    => $this->dbname,
+            'user'      => $this->user,
+            'password'  => $this->password
+        );
     }
 }

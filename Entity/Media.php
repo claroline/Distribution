@@ -3,16 +3,17 @@
 namespace Inwicast\ClarolinePluginBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Media
  *
  * @ORM\Table(name="inwicast_plugin_media")
- * @ORM\Entity(repositoryClass="Inwicast\ClarolinePluginBundle\Entity\MediaRepository")
+ * @ORM\Entity(repositoryClass="Inwicast\ClarolinePluginBundle\Repository\MediaRepository")
+ * @JMS\ExclusionPolicy("none")
  */
-class Media extends AbstractResource
+class Media
 {
     /**
      * @var integer
@@ -20,81 +21,78 @@ class Media extends AbstractResource
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @JMS\Exclude
      */
     protected $id;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="code", type="string", length=255)
+     * @ORM\Column(name="mediaRef", type="string", length=255)
+     * @JMS\SerializedName("mediaRef")
      */
-    protected $code;
+    protected $mediaRef;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="title", type="string", length=255)
      */
-    protected $title;
+    protected $title = "";
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="description", type="text")
      */
-    protected $description;
+    protected $description = "";
 
     /**
      * @var \DateTime
-     *
-     * @ORM\Column(name="date", type="date")
      */
-    protected $date;
+    protected $date = null;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="image", type="string", length=255)
+     * @ORM\Column(name="preview_url", type="string", nullable=true)
+     * @JMS\SerializedName("previewUrl")
      */
-    protected $image;
+    protected $previewUrl = null;
 
     /**
-     * @var integer
-     *
+     * @var int
+     */
+    protected $views = 0;
+
+    /**
      * @ORM\Column(name="width", type="integer")
      */
-    protected $width;
+    protected $width = 640;
 
     /**
-     * @var integer
-     *
      * @ORM\Column(name="height", type="integer")
      */
-    protected $height;
+    protected $height = 480;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Claroline\CoreBundle\Entity\Widget\WidgetInstance")
-     * @ORM\JoinTable(name="inwicast_plugin_media_widgetinstance",
-     *      joinColumns={@ORM\JoinColumn(name="media_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="widgetinstance_id", referencedColumnName="id", unique=true, onDelete="CASCADE")}
-     *      )
+     * @ORM\OneToOne(targetEntity="Claroline\CoreBundle\Entity\Widget\WidgetInstance")
+     * @ORM\JoinColumn(name="widgetinstance_id", referencedColumnName="id", unique=true, onDelete="CASCADE")
+     * @JMS\Exclude
      **/
     protected $widgetInstance;
 
-     /**
-     * @var \Claroline\CoreBundle\Entity\Resource\ResourceNode
-     */
-    protected $resourceNode;
 
-
-
-    public function __construct($code = null, $title = null, $description = null, $date = null, $image = null, $width = null, $height = null)
-    {
-        $this->code = $code;
+    public function __construct(
+        $mediaRef = null,
+        $title = null,
+        $description = null,
+        $date = null,
+        $previewUrl = null,
+        $views = null,
+        $width = 640,
+        $height = 480
+    ) {
+        $this->mediaRef = $mediaRef;
         $this->title = $title;
         $this->description = $description;
         $this->date = $date;
-        $this->image = $image;
+        $this->previewUrl = $previewUrl;
+        $this->views = $views;
         $this->width = $width;
         $this->height = $height;
     }
@@ -102,7 +100,7 @@ class Media extends AbstractResource
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -112,24 +110,24 @@ class Media extends AbstractResource
     /**
      * Set code
      *
-     * @param string $code
+     * @param string $mediaRef
      * @return Media
      */
-    public function setCode($code)
+    public function setMediaRef($mediaRef)
     {
-        $this->code = $code;
-    
+        $this->mediaRef = $mediaRef;
+
         return $this;
     }
 
     /**
-     * Get code
+     * Get mediaRef
      *
-     * @return string 
+     * @return string
      */
-    public function getCode()
+    public function getMediaRef()
     {
-        return $this->code;
+        return $this->mediaRef;
     }
 
     /**
@@ -140,14 +138,14 @@ class Media extends AbstractResource
     public function setTitle($title)
     {
         $this->title = $title;
-    
+
         return $this;
     }
 
     /**
      * Get title
      *
-     * @return string 
+     * @return string
      */
     public function getTitle()
     {
@@ -163,14 +161,14 @@ class Media extends AbstractResource
     public function setDescription($description)
     {
         $this->description = $description;
-    
+
         return $this;
     }
 
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -186,14 +184,14 @@ class Media extends AbstractResource
     public function setDate($date)
     {
         $this->date = $date;
-    
+
         return $this;
     }
 
     /**
      * Get date
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getDate()
     {
@@ -201,45 +199,47 @@ class Media extends AbstractResource
     }
 
     /**
-     * Set image
-     *
-     * @param string $image
-     * @return Media
-     */
-    public function setImage($image)
-    {
-        $this->image = $image;
-    
-        return $this;
-    }
-
-    /**
      * Get image
      *
-     * @return string 
+     * @return string
      */
-    public function getImage()
+    public function getPreviewUrl()
     {
-        return $this->image;
+        return $this->previewUrl;
     }
 
     /**
-     * Set width
-     *
-     * @param integer $width
-     * @return Media
+     * @param string $previewUrl
+     * @return $this
      */
-    public function setWidth($width)
+    public function setPreviewUrl($previewUrl)
     {
-        $this->width = $width;
-    
+        $this->previewUrl = $previewUrl;
+
         return $this;
     }
 
     /**
-     * Get width
-     *
-     * @return integer 
+     * @return int
+     */
+    public function getViews()
+    {
+        return $this->views;
+    }
+
+    /**
+     * @param int $views
+     * @return $this
+     */
+    public function setViews($views)
+    {
+        $this->views = $views;
+
+        return $this;
+    }
+
+    /**
+     * @return int
      */
     public function getWidth()
     {
@@ -247,33 +247,40 @@ class Media extends AbstractResource
     }
 
     /**
-     * Set height
-     *
-     * @param integer $height
-     * @return Media
+     * @param int $width
+     * @return $this
      */
-    public function setHeight($height)
+    public function setWidth($width)
     {
-        $this->height = $height;
-    
+        $this->width = $width;
+
         return $this;
     }
 
     /**
-     * Get height
-     *
-     * @return integer 
+     * @return int
      */
     public function getHeight()
     {
         return $this->height;
     }
 
-     /**
+    /**
+     * @param int $height
+     * @return $this
+     */
+    public function setHeight($height)
+    {
+        $this->height = $height;
+
+        return $this;
+    }
+
+    /**
      * Get widgetInstance
      *
-     * @return WidgetInstance 
-     */    
+     * @return WidgetInstance
+     */
     public function getWidgetInstance()
     {
         return $this->widgetInstance;
@@ -285,46 +292,10 @@ class Media extends AbstractResource
      * @param \Claroline\CoreBundle\Entity\Widget\WidgetInstance $widgetInstance
      * @return Media
      */
-    public function addWidgetInstance(\Claroline\CoreBundle\Entity\Widget\WidgetInstance $widgetInstance)
+    public function setWidgetInstance(WidgetInstance $widgetInstance)
     {
-        $this->widgetInstance[] = $widgetInstance;
+        $this->widgetInstance = $widgetInstance;
 
         return $this;
     }
-
-
-    /**
-     * Remove widgetInstance
-     *
-     * @param \Claroline\CoreBundle\Entity\Widget\WidgetInstance $widgetInstance
-     */
-    public function removeWidgetInstance(\Claroline\CoreBundle\Entity\Widget\WidgetInstance $widgetInstance)
-    {
-        $this->widgetInstance->removeElement($widgetInstance);
-    }
-
-
-    /**
-     * Set resourceNode
-     *
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $resourceNode
-     * @return Media
-     */
-    public function setResourceNode(\Claroline\CoreBundle\Entity\Resource\ResourceNode $resourceNode = null)
-    {
-        $this->resourceNode = $resourceNode;
-
-        return $this;
-    }
-
-    /**
-     * Get resourceNode
-     *
-     * @return \Claroline\CoreBundle\Entity\Resource\ResourceNode
-     */
-    public function getResourceNode()
-    {
-        return $this->resourceNode;
-    }
-
 }

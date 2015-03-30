@@ -1,16 +1,10 @@
 inwicast_claroline_plugin: 'Inwicast Video'
 inwicast_mediacenter_url: 'Mediacenter URL'
-login: 'Login'
-login_mediacenter: 'Login in mediacenter'
-forgot_password: 'Forgot your password?'
-password: 'Password'
-username: 'Username'
-empty_mediacenter: 'Your mediacenter contains no video.'
+empty_mediacenter: 'No videos found in your mediacenter.'
 validate: 'Validate'
 success: 'Operation done!'
 warning: 'Warning!'
 error: 'Error!'
-not_linked_mediacenter: 'Your mediacenter account is not linked with your Claroline account. You can fix it by filling the form below.'
 error_get_medialist: 'An error as occurded while consulting mediacenter.'
 error_empty_mediacenter: 'No video available in mediacenter.'
 error_loading_media: 'Failed to load the selected video.'
@@ -24,3 +18,12 @@ error_not_logged_in: 'You are not allowed to do this because you are not logged 
 display: 'Display'
 grid: 'Grid'
 list: 'List'
+date_format: 'm-d-Y h:M'
+no_media_defined: "You have yet to specify a video for this widget"
+choose_video_tinymce: "Choose the video you want to add (embed) to your content"
+inwicast_mediacenter_driver: Driver
+inwicast_mediacenter_host: Host
+inwicast_mediacenter_port: Port
+inwicast_mediacenter_dbname: Database name
+inwicast_mediacenter_user: User
+inwicast_mediacenter_password: Password

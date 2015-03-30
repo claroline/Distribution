@@ -10,20 +10,3 @@ plugin:
        is_configurable: true
     # You can set an icon for your widget. The icon must be in your public/images/icons folder.
        icon: res_inwicast.png
-
-    # Properties of resources managed by your plugin
-    # You can define as many resource types as you want in this file.
-    resources:
-        # "class" is the entity of your resource. This may be the entity of a existing
-        # resource of the platform. This entity defines how the resource is stocked.
-        # It may be usefull is your resource is a zip file with a particular structure.
-        # In this case you can extend *Claroline\CoreBundle\Entity\Resource\File*.
-      - class: Inwicast\ClarolinePluginBundle\Entity\Media
-        # Your resource type name
-        name: inwicast_media
-        # Do you want your resource to be exported as a part of a workspace model ?
-        # Note: the default value of this parameter is "false"
-        is_exportable: false
-        # Icon for your resource.
-        # They must be stored in the Resource/public/images/icon
-        icon: res_inwicast.png

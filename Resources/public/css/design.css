@@ -7,48 +7,73 @@
  * file that was distributed with this source code.
  */
 
- .input-thumbnail
-{
+.input-thumbnail {
     display: block;
     padding: 4px;
-    text-align: center;
+    text-align: left;
     line-height: 1.42857143;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 0px 4px 4px 0px;
     -webkit-transition: all .2s ease-in-out;
     transition: all .2s ease-in-out;
 }
 
-#inwicast-items .input-group:hover > *
-{
+.input-thumbnail:hover{
+    cursor: pointer;
+}
+
+.input-thumbnail img, .input-thumbnail img {
+    padding: 0 20px;
+    margin: 0 auto;
+    max-height: 90px;
+    max-width: 150px;
+}
+
+div.list-media{
+    padding: 0 15px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+#inwicast-items .thumbnail:hover {
     background-color: #d9edf7;
     border-color: #bce8f1;
     color: #31708f;
 }
 
-.item-selected > *, .item-selected:hover > *
-{
+#inwicast-items .thumbnail.item-selected, #inwicast-items .thumbnail.item-selected:hover{
     background-color: #dff0d8;
     border-color: #d6e9c6;
     color: #3c763d;
 }
 
-
-.input-thumbnail img, .input-thumbnail img 
-{
-    max-height: 90px;
-    max-width: 120px;
-}
-
-.input-group label, .item-selected label
-{
+.thumbnail label {
     margin: 0px;
     font-weight: normal;
 }
 
-#inwicast-items
-{
-    max-height: 220px;
-    overflow: auto;
+div.thumbnail{
+    position: relative;
+    margin-bottom: 20px;
+}
+
+label.thumbnail-radio {
+    position: absolute;
+    width: 95%;
+}
+
+div.caption > div{
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+div.caption .caption-info, div.caption .caption-description{
+    color: #555;
+    font-size: 0.9em;
+}
+
+div.tinymce_title_choose {
+    margin: 10px;
+    font-size: 1.2em;
+    color: #444;
 }
