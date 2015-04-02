@@ -20,7 +20,6 @@
     "require": {
         "php": ">=5.4.1",
         "claroline/core-bundle": "~4.0",
-        "jms/serializer-bundle": ">=0.13",
-        "claroline/migration-bundle": "~1.0"
+        "jms/serializer-bundle": ">=0.13"
     }
 }
