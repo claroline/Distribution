@@ -22,8 +22,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @Route("/inwicast/mediacenter/media")
@@ -32,6 +32,22 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class MediaController extends Controller
 {
+    /**
+     * @Route("/{mediaRef}", name="inwicast_mediacenter_media_view")
+     * @Method({"GET"})
+     */
+    public function viewAction(Request $request, $mediaRef)
+    {
+        try{
+            $mediacenter = $this->getMediacenterManager()->getMediacenter();
+            $loggedUser = $this->getSecurityContext()->getToken()->getUser();
+            $content = $this->getMediaManager()->getMediaUrl($mediaRef, $mediacenter, $loggedUser);
+
+            return new RedirectResponse($content);
+        } catch(NoMediacenterException $nme) {
+            return $this->render("InwicastClarolinePluginBundle:Mediacenter:error.html.twig");
+        }
+    }
     /**
      * @Route("/post/{widgetId}", requirements={"widgetId" = "\d+"}, name="inwicast_mediacenter_media_post")
      * @Method({"POST"})

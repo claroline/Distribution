@@ -133,7 +133,9 @@
     {
         var selectedMedia = $("input:radio[name='media_ref']:checked");
         if (selectedMedia.length > 0) {
-            return "<iframe src='{{ mediacenter.url ~ "videos/?video=" }}"+selectedMedia.val()+"' width='"+selectedMedia.data('width')+"' height='"+selectedMedia.data('height')+"' frameborder='0' scrolling='no' marginwidth='0' marginheight='0'></iframe>";
+            var path = '{{ path('inwicast_mediacenter_media_view',{"mediaRef":"_mediaRef_"}) }}';
+            path = path.replace("_mediaRef_", selectedMedia.val());
+            return "<iframe src='"+path+"' width='"+selectedMedia.data('width')+"' height='"+selectedMedia.data('height')+"' frameborder='0' scrolling='no' marginwidth='0' marginheight='0'></iframe>";
         } else return "";
 
     }

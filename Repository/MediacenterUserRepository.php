@@ -35,10 +35,10 @@ class MediacenterUserRepository
         $connection = $this->connectionFactory->createConnection($mediacenter->getDatabaseParameters());
         $qb = $connection->createQueryBuilder();
         $qb
-            ->select('username, token')
-            ->from('mdcr_inwicast_user_tokens')
-            ->where('username = :username')
-            ->andWhere('tokenapp = :platform')
+            ->select('usr.username, usr.token')
+            ->from('mdcr_inwicast_user_tokens', 'usr')
+            ->where('usr.username = :username')
+            ->andWhere('usr.tokenapp = :platform')
             ->setParameter("username", $user->getUsername())
             ->setParameter("platform", $this->platformName);
 

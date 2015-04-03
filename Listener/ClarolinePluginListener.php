@@ -11,6 +11,7 @@
 
 namespace Inwicast\ClarolinePluginBundle\Listener;
 
+use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Claroline\CoreBundle\Event\DisplayWidgetEvent;
 use Claroline\CoreBundle\Event\ConfigureWidgetEvent;
 use Claroline\CoreBundle\Listener\NoHttpRequestException;
@@ -20,6 +21,7 @@ use Inwicast\ClarolinePluginBundle\Exception\NoMediacenterException;
 use Inwicast\ClarolinePluginBundle\Exception\NoMediacenterUserException;
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -143,13 +145,50 @@ class ClarolinePluginListener extends ContainerAware
 
         // Return view to event (Claroline specification)
         $event->setContent($content);
+        $event->stopPropagation();
     }
 
+    /**
+     * @DI\Observe("open_tool_desktop_inwicast_portal")
+     */
+    public function onToolOpen(DisplayToolEvent $event)
+    {
+        // Get mediacenter user from database
+        $loggedUser = $this->container->get("security.context")->getToken()->getUser();
+        try {
+            $mediacenter = $this->getMediacenterManager()->getMediacenter();
+            $mediacenterUserManager = $this->getMediacenterUserManager();
+            $token = $mediacenterUserManager->getMediacenterUserToken($loggedUser, $mediacenter);
+            $mediacener_portal = $mediacenter->getUrl()."?userName=".$loggedUser->getUsername()."&token=".$token;
+            $content = new RedirectResponse($mediacener_portal);
+        } catch (NoMediacenterException $nme) {
+            $content = $this->templating->render('InwicastClarolinePluginBundle:Mediacenter:error.html.twig');
+        }
+
+        // Return view to event (Claroline specification)
+        $event->setContent($content);
+        $event->stopPropagation();
+    }
+
+    /**
+     * @return \Inwicast\ClarolinePluginBundle\Manager\MediacenterManager
+     */
     private function getMediacenterManager()
     {
         return $this->container->get("inwicast.plugin.manager.mediacenter");
     }
 
+    /**
+     * @return \Inwicast\ClarolinePluginBundle\Manager\MediacenterUserManager
+     */
+    private function getMediacenterUserManager()
+    {
+        return $this->container->get("inwicast.plugin.manager.mediacenteruser");
+    }
+
+    /**
+     * @return \Inwicast\ClarolinePluginBundle\Manager\MediaManager
+     */
     private function getMediaManager()
     {
         return $this->container->get("inwicast.plugin.manager.media");

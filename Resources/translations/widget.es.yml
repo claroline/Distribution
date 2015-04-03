@@ -25,3 +25,11 @@ display: 'Visualización'
 grid: 'Cuadrícula'
 list: 'Lista'
 date_format: 'd/m/Y H:i'
+no_media_defined: "You have yet to specify a video for this widget"
+choose_video_tinymce: "Choose the video you want to add (embed) to your content"
+inwicast_mediacenter_driver: Driver
+inwicast_mediacenter_host: Host
+inwicast_mediacenter_port: Port
+inwicast_mediacenter_dbname: Database name
+inwicast_mediacenter_user: User
+inwicast_mediacenter_password: Password

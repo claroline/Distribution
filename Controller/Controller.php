@@ -45,14 +45,28 @@ class Controller extends BaseController
         return $this->get("security.context");
     }
 
+    /**
+     * @return \Inwicast\ClarolinePluginBundle\Manager\MediacenterManager
+     */
     protected function getMediacenterManager()
     {
         return $this->get("inwicast.plugin.manager.mediacenter");
     }
 
+    /**
+     * @return \Inwicast\ClarolinePluginBundle\Manager\MediaManager
+     */
     protected function getMediaManager()
     {
         return $this->get("inwicast.plugin.manager.media");
+    }
+
+    /**
+     * @return \Inwicast\ClarolinePluginBundle\Manager\MediacenterUserManager
+     */
+    protected function getMediacenterUserManager()
+    {
+        return $this->get("inwicast.plugin.manager.mediacenteruser");
     }
 
     protected function serializeObject($object)

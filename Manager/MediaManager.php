@@ -158,4 +158,14 @@ class MediaManager
         return $medialist;
     }
 
+    public function getMediaUrl($mediaRef, Mediacenter $mediacenter, User $user = null)
+    {
+        $token = $this->mediacenterUserManager->getMediacenterUserToken($user, $mediacenter);
+        $mediacenterUrl = $mediacenter->getUrl();
+        $parameters = "video=".$mediaRef."&userName=".$user->getUsername()."&token=".$token;
+        $mediaUrl = $mediacenterUrl."videos/?".$parameters;
+
+        return $mediaUrl;
+    }
+
 } 

@@ -13,7 +13,7 @@
     <div class="inwicast-video-frame" style="position: relative">
         <div style="display: block; width: 100%; padding-top: {{ (media.height/media.width)*100 }}%"></div>
         <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%"
-                src="{{ mediacenter.url ~ "videos/?video=" ~ media.mediaRef }}"
+                src="{{ path('inwicast_mediacenter_media_view', {'mediaRef':media.mediaRef}) }}"
                 frameborder='0' scrolling='no' marginwidth='0' marginheight='0' allowfullscreen='true' webkitallowfullscreen='true'
                 mozallowfullscreen='true'>
             <p>Votre navigateur ne supporte pas les iframes.</p>
