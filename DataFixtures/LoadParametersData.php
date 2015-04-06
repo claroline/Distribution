@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace FormaLibre\InvoiceBundle\DataFixtures;
+namespace Claroline\PdfGeneratorBundle\DataFixtures;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -33,8 +33,8 @@ class LoadParametersData extends AbstractFixture implements ContainerAwareInterf
      */
     public function load(ObjectManager $manager)
     {
-        mkdir($this->container->getParameter('claroline.param.pdf_directory'));
+        @mkdir($this->container->getParameter('claroline.param.pdf_directory'));
         $configHandler = $this->container->get('claroline.config.platform_config_handler');
-        $configHandler->setParameter('knp_binary_path', '/usr/bin/wkhtmltopdf.sh');
+        $configHandler->setParameter('knp_pdf_binary_path', '/usr/bin/wkhtmltopdf.sh');
     }
 }

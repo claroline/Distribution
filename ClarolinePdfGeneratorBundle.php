@@ -22,9 +22,15 @@ class ClarolinePdfGeneratorBundle extends PluginBundle implements ConfigurationP
     public function suggestConfigurationFor(Bundle $bundle, $environment)
     {
         $config = new ConfigurationBuilder();
-        $config->addContainerResource($this->buildPath('knp_snappy'));
+        $bundleClass = get_class($bundle);
         
-        return $config;
+        $simpleConfigs = array(
+            'Knp\Bundle\SnappyBundle\KnpSnappyBundle' => 'knp_snappy'
+        );
+
+        if (isset($simpleConfigs[$bundleClass])) {
+            return $config->addContainerResource($this->buildPath($simpleConfigs[$bundleClass]));
+        }
     }
     
     private function buildPath($file, $folder = 'suggested')
@@ -32,6 +38,12 @@ class ClarolinePdfGeneratorBundle extends PluginBundle implements ConfigurationP
         return __DIR__ . "/Resources/config/{$folder}/{$file}.yml";
     }
 
+    /*
+    public function getAdditionalInstaller()
+    {
+        return new AdditionalInstaller();
+    }
+    */
 
     public function hasMigrations()
     {
