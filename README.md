@@ -7,6 +7,6 @@ whereis wkhtmltopdf then set the output of this command in you platform_options 
 
 Please store your pdf in the directory speficied in the claroline.param.pdf_directory parameter ($container->getParameter('...');)
 
-
+usage: https://github.com/KnpLabs/KnpSnappyBundle
 
  
