@@ -29,7 +29,7 @@ class DynamicConfigPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        //paypal auth
+        //pdf
         $pdf = new Definition();
         $pdf->setFactoryService('claroline.pdf_generator_factory');
         $pdf->setFactoryMethod('getPdfCreator');

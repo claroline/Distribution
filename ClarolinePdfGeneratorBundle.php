@@ -7,14 +7,23 @@ use Claroline\KernelBundle\Bundle\ConfigurationBuilder;
 use Claroline\BundleBundle\Installation\AdditionalInstaller;
 use Claroline\KernelBundle\Bundle\ConfigurationProviderInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Claroline\PdfGeneratorBundle\DependencyInjection\Compiler\DynamicConfigPass;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * Bundle class.
  * Uncomment if necessary.
  */
 class ClarolinePdfGeneratorBundle extends PluginBundle implements ConfigurationProviderInterface
-{        
-    public function getRequiredFixturesDirectory($env) 
+{
+    public function build(ContainerBuilder $container)
+    {
+        parent::build($container);
+
+        $container->addCompilerPass(new DynamicConfigPass());
+    }
+
+    public function getRequiredFixturesDirectory($env)
     {
         return 'DataFixtures';
     }
@@ -23,7 +32,7 @@ class ClarolinePdfGeneratorBundle extends PluginBundle implements ConfigurationP
     {
         $config = new ConfigurationBuilder();
         $bundleClass = get_class($bundle);
-        
+
         $simpleConfigs = array(
             'Knp\Bundle\SnappyBundle\KnpSnappyBundle' => 'knp_snappy'
         );
@@ -32,7 +41,7 @@ class ClarolinePdfGeneratorBundle extends PluginBundle implements ConfigurationP
             return $config->addContainerResource($this->buildPath($simpleConfigs[$bundleClass]));
         }
     }
-    
+
     private function buildPath($file, $folder = 'suggested')
     {
         return __DIR__ . "/Resources/config/{$folder}/{$file}.yml";

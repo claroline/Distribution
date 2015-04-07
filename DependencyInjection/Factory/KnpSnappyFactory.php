@@ -18,7 +18,7 @@ use Knp\Snappy\Pdf;
 /**
  * @DI\Service("claroline.pdf_generator_factory")
  */
-class PaypalPaymentFactory
+class KnpSnappyFactory
 {
     private $configHandler;
     /**
@@ -35,8 +35,7 @@ class PaypalPaymentFactory
     {
         return new Pdf(
             $this->configHandler->getParameter('knp_pdf_binary_path'),
-            array(),
-            'dev'
+            array('encoding' => 'utf-8')
         );
     }
 }
