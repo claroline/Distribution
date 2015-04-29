@@ -31,8 +31,10 @@ class DynamicConfigPass implements CompilerPassInterface
     {
         //pdf
         $pdf = new Definition();
-        $pdf->setFactoryService('claroline.pdf_generator_factory');
-        $pdf->setFactoryMethod('getPdfCreator');
+        $pdf->setFactory(array(
+            new Reference('claroline.pdf_generator_factory'),
+            'getPdfCreator'
+        ));
         $pdf->setClass('Knp\Snappy\Pdf');
         $container->removeDefinition('knp_snappy.pdf.internal_generator');
         $container->setDefinition('knp_snappy.pdf.internal_generator', $pdf);
