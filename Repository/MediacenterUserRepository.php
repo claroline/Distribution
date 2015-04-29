@@ -44,28 +44,21 @@ class MediacenterUserRepository
 
         $result = $qb->execute()->fetch();
         if (!$result) {
-            $qb_insert = $connection->createQueryBuilder();
-            $qb_insert
-                ->insert('mdcr_inwicast_user_tokens')
-                ->values(array(
-                        'username'      => '?',
-                        'firstname'     => '?',
-                        'lastname'      => '?',
-                        'email'         => '?',
-                        'userrole'      => '?',
-                        'token'         => '?',
-                        'tokendate'     => '?',
-                        'tokenapp'      => '?'
-                    ))
-                ->setParameter(0, $user->getUsername())
-                ->setParameter(1, $user->getFirstName())
-                ->setParameter(2, $user->getLastName())
-                ->setParameter(3, $user->getMail())
-                ->setParameter(4, $user->getPlatformRole()->getName())
-                ->setParameter(5, $token)
-                ->setParameter(6, date('Y-m-d H:i:s'))
-                ->setParameter(7, $this->platformName);
-            $qb_insert->execute();
+            //$qb_insert = $connection->createQueryBuilder();
+            $sql = "INSERT INTO mdcr_inwicast_user_tokens".
+                " (`username`, `firstname`, `lastname`, `email`, `userrole`, `token`, `tokendate`, `tokenapp`)".
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            $query = $connection->prepare($sql);
+            $query
+                ->bindParam(0, $user->getUsername())
+                ->bindParam(1, $user->getFirstName())
+                ->bindParam(2, $user->getLastName())
+                ->bindParam(3, $user->getMail())
+                ->bindParam(4, $user->getPlatformRole()->getName())
+                ->bindParam(5, $token)
+                ->bindParam(6, date('Y-m-d H:i:s'))
+                ->bindParam(7, $this->platformName);
+            $query->execute();
         } else {
             $qb_update =  $connection->createQueryBuilder();
             $qb_update
