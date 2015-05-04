@@ -19,7 +19,6 @@
     "target-dir": "Inwicast/ClarolinePluginBundle",
     "require": {
         "php": ">=5.4.1",
-        "claroline/core-bundle": "~4.0",
-        "jms/serializer-bundle": ">=0.13"
+        "claroline/core-bundle": "~5.0"
     }
 }
