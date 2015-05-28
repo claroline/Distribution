@@ -49,15 +49,14 @@ class MediacenterUserRepository
                 " (`username`, `firstname`, `lastname`, `email`, `userrole`, `token`, `tokendate`, `tokenapp`)".
                 " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             $query = $connection->prepare($sql);
-            $query
-                ->bindParam(0, $user->getUsername())
-                ->bindParam(1, $user->getFirstName())
-                ->bindParam(2, $user->getLastName())
-                ->bindParam(3, $user->getMail())
-                ->bindParam(4, $user->getPlatformRole()->getName())
-                ->bindParam(5, $token)
-                ->bindParam(6, date('Y-m-d H:i:s'))
-                ->bindParam(7, $this->platformName);
+            $query->bindValue(1, $user->getUsername());
+            $query->bindValue(2, $user->getFirstName());
+            $query->bindValue(3, $user->getLastName());
+            $query->bindValue(4, $user->getMail());
+            $query->bindValue(5, $user->getPlatformRole()->getName());
+            $query->bindValue(6, $token);
+            $query->bindValue(7, date('Y-m-d H:i:s'));
+            $query->bindValue(8, $this->platformName);
             $query->execute();
         } else {
             $qb_update =  $connection->createQueryBuilder();
