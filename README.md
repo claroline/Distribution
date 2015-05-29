@@ -33,7 +33,7 @@ In the "Create" menu, select Inwicast videos, login to the Mediacenter (if not d
 You can now manage it as any resource, and import it with the rich text editor.
 
 ## Version
-0.9.0
+5.0.0
 
 ## Licence
 (c) Inwicast, All Rights Reserved
