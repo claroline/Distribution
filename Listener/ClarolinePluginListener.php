@@ -17,7 +17,6 @@ use Claroline\CoreBundle\Event\ConfigureWidgetEvent;
 use Claroline\CoreBundle\Event\InjectJavascriptEvent;
 use Claroline\CoreBundle\Listener\NoHttpRequestException;
 use Claroline\CoreBundle\Event\PluginOptionsEvent;
-use Claroline\CoreBundle\Event\InjectJavascriptEvent;
 use Doctrine\ORM\NoResultException;
 use Inwicast\ClarolinePluginBundle\Exception\NoMediacenterException;
 use Inwicast\ClarolinePluginBundle\Exception\NoMediacenterUserException;
@@ -188,19 +187,6 @@ class ClarolinePluginListener extends ContainerAware
         // Return view to event (Claroline specification)
         $event->setContent($content);
         $event->stopPropagation();
-    }
-
-    /**
-     * @DI\Observe("inject_javascript_layout")
-     * @param InjectJavascriptEvent $event
-     * @return string
-     */
-    public function onInjectJs(InjectJavascriptEvent $event)
-    {
-        $content = $this->templating->render('InwicastClarolinePluginBundle:InjectPlugin:inject.html.twig');
-        $event->addContent($content);
-
-        return $content;
     }
 
     /**
