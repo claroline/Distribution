@@ -14,6 +14,7 @@ namespace Inwicast\ClarolinePluginBundle\Listener;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Claroline\CoreBundle\Event\DisplayWidgetEvent;
 use Claroline\CoreBundle\Event\ConfigureWidgetEvent;
+use Claroline\CoreBundle\Event\InjectJavascriptEvent;
 use Claroline\CoreBundle\Listener\NoHttpRequestException;
 use Claroline\CoreBundle\Event\PluginOptionsEvent;
 use Doctrine\ORM\NoResultException;
@@ -21,6 +22,7 @@ use Inwicast\ClarolinePluginBundle\Exception\NoMediacenterException;
 use Inwicast\ClarolinePluginBundle\Exception\NoMediacenterUserException;
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Form\Extension\Templating\TemplatingExtension;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\TwigBundle\TwigEngine;
@@ -37,6 +39,7 @@ use Symfony\Component\Security\Core\SecurityContext;
 class ClarolinePluginListener extends ContainerAware
 {
     private $templating;
+
     //-------------------------------
     // PLUGIN GENERAL SETTINGS
     //-------------------------------
@@ -54,7 +57,7 @@ class ClarolinePluginListener extends ContainerAware
     }
 
     /**
-     * @DI\Observe("plugin_options_inwicastclarolineplugin")
+     * @DI\Observe("plugin_options_clarolinepluginbundle")
      */
     public function onPluginConfigure(PluginOptionsEvent $event)
     {
@@ -168,6 +171,19 @@ class ClarolinePluginListener extends ContainerAware
         // Return view to event (Claroline specification)
         $event->setContent($content);
         $event->stopPropagation();
+    }
+
+    /**
+     * @DI\Observe("inject_javascript_layout")
+     * @param InjectJavascriptEvent $event
+     * @return string
+     */
+    public function onInjectJs(InjectJavascriptEvent $event)
+    {
+        $content = $this->templating->render('InwicastClarolinePluginBundle:InjectPlugin:inject.html.twig');
+        $event->addContent($content);
+
+        return $content;
     }
 
     /**
