@@ -1,0 +1,3 @@
+{% if config.getParameter('o365_active') %}
+    <a class="btn btn-primary o365" href="{{ path('claro_o365_get_token') }}">O365 Login</a>
+{% endif %}
