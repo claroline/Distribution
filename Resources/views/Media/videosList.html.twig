@@ -1,0 +1,35 @@
+{#
+ # This file is part of the Inwicast plugin for Claroline Connect.
+ #
+ # (c) INWICAST <dev@inwicast.com>
+ #
+ # For the full copyright and license information, please view the LICENSE
+ # file that was distributed with this source code.
+ #}
+{% if medialist|length == 0 %}
+    <div class="alert alert-warning">
+        <strong>{{ "warning"|trans({}, 'widget') }}</strong> {{ "error_empty_mediacenter"|trans({}, 'widget') }}
+    </div>
+{% else %}
+
+<form action="{{ path('inwicast_mediacenter_media_post', {'widgetId': widget.getId()}) }}" method="post"
+      id="inwicast_claroline_plugin_diplay">
+    <link href="{{ asset('bundles/inwicastclarolineplugin/css/design.css') }}" type="text/css" rel="stylesheet"/>
+    {% include 'InwicastClarolinePluginBundle:Media:videosListTpl.html.twig' with {'medialist' : medialist}  %}
+    <br/>
+
+    <div class="row container">
+        <div class="col-md-6">
+            <input class="form-control" type="text" id="inwicast_widget_name" name="inwicast_widget_link" disabled/>
+        </div>
+        <div class="col-md-3">
+            <input class="btn btn-block btn-success" type="submit" id="inwicast_widget_submit"
+                   value="{{ 'validate'|trans({}, 'widget') }}" disabled/>
+        </div>
+        <div class="col-md-3">
+            <input class="btn btn-block btn-danger claro-widget-form-cancel" type="button"
+                   value="{{ 'cancel'|trans({}, 'platform') }}"/>
+        </div>
+    </div>
+</form>
+{% endif %}
