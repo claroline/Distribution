@@ -21,7 +21,7 @@ Creates a virtual filesystem (useful for mocking the real one in unit tests).
 
 ## Commands
 
-### claroline:tool \<tool\> \<bundle\>
+### claroline:tool [tool [bundle]]
 
 Launches one of the available tool scripts (located in 
 *./Resources/scripts/tools*) for a given bundle.
