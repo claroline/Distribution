@@ -30,3 +30,8 @@ This command can be used interactively (e.g. to see the
 list of available tools) :
 
 `php app/console claroline:tool`
+
+**Available tools:**
+
+- *cs*: applies PHP-CS-fixer to the bundle
+- *cs-dry*: applies PHP-CS-fixer diff (no changes, just preview) to the bundle
