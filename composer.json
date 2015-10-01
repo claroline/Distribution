@@ -1,0 +1,16 @@
+{
+    "name": "claroline/dev-bundle",
+    "keywords": ["Claroline", "Development"],
+    "homepage": "http://www.claroline.net",
+    "license": "GPL-3.0+",
+    "require": {
+        "php": ">=5.4.1",
+        "phpunit/phpunit": "~4.6",
+        "fabpot/php-cs-fixer":"^1.10",
+        "mikey179/vfsStream": "~1.5"
+    },
+    "autoload": {
+        "psr-0": { "Claroline\\DevBundle": "" }
+    },
+    "target-dir": "Claroline/DevBundle"
+}
