@@ -1,7 +1,7 @@
 #!/usr/bin/php
 <?php
 
-require_once __DIR__.'/../toolHeader.php';
+require_once __DIR__.'/../tool-header.php';
 
 $cmd = "{$binDir}/php-cs-fixer fix {$argv[1]} --config-file {$configDir}/cs.php";
 system($cmd, $returnCode);
