@@ -6,6 +6,13 @@
 parameters:
 
 # database
+    database_driver: pdo_mysql
+    database_host: localhost
+    database_port: ~
+    database_name: claroline_prod
+    database_user: travis
+    database_password: ~
+
     test_database_driver: pdo_mysql
     test_database_host: localhost
     test_database_port: ~
