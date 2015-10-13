@@ -10,6 +10,11 @@ require __DIR__ . '/autoload.php';
 
 use Claroline\BundleRecorder\Detector\Detector;
 
+// convert errors to exceptions
+set_error_handler(function ($severity, $message, $file, $line) {
+    throw new ErrorException($message, 0, $severity, $file, $line);
+});
+
 if (count($argv) < 2) {
     echo "The bundle directory must be passed as argument\n";
     exit(1);
@@ -18,7 +23,7 @@ if (count($argv) < 2) {
 $detector = new Detector();
 $bundle = $detector->detectBundle($argv[1]);
 
-$bundleFile = __DIR__ . '/app/config/bundle.ini';
+$bundleFile = __DIR__ . '/config/bundle.ini';
 $bundles = file_get_contents($bundleFile);
 $bundles .= "\n{$bundle} = true";
 file_put_contents($bundleFile, $bundles);
