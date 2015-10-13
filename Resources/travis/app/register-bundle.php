@@ -23,7 +23,7 @@ if (count($argv) < 2) {
 $detector = new Detector();
 $bundle = $detector->detectBundle($argv[1]);
 
-$bundleFile = __DIR__ . '/config/bundle.ini';
+$bundleFile = __DIR__ . '/config/bundles.ini';
 $bundles = file_get_contents($bundleFile);
 $bundles .= "\n{$bundle} = true";
 file_put_contents($bundleFile, $bundles);
