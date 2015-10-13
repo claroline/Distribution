@@ -2,8 +2,9 @@
 
 /***************************************************************
  * This script appends the bundle to be tested to bundles.ini
- * (this step is necessary because the bundle was used as the
- * root package during the execution of composer).
+ * and registers its namespace in the autoloader (these steps
+ * are necessary because the bundle was used as the root package
+ * during the execution of composer).
  **************************************************************/
 
 require __DIR__ . '/autoload.php';
@@ -29,3 +30,24 @@ $bundles .= "\n{$bundle} = true";
 file_put_contents($bundleFile, $bundles);
 
 echo "Updated bundles.ini with target bundle:\n{$bundle}";
+
+$bundleParts = explode('\\', $bundle);
+array_pop($bundleParts);
+$bundleNamespace = implode('\\', $bundleParts);
+
+$loaderMask = <<<SRC
+<?php
+
+use Doctrine\Common\Annotations\AnnotationRegistry;
+
+\$loader = require __DIR__ . '/../vendor/autoload.php';
+\$loader->add('%s', '%s');
+AnnotationRegistry::registerLoader(array(\$loader, 'loadClass'));
+
+SRC;
+
+$loaderFile = __DIR__ . '/autoload.php';
+$loaderContent = sprintf($loaderMask, $bundleNamespace, $argv[1]);
+file_put_contents($loaderFile, $loaderContent);
+
+echo "Rewritten autoloader to:\n{$loaderContent}\n";
