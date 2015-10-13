@@ -1,6 +1,6 @@
 ################################################################
- Default container parameters in test environment (DB settings
- adapted to travis).
+# Default container parameters in test environment (DB settings
+# adapted to travis).
 ################################################################
 
 parameters:
