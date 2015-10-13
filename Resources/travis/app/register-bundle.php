@@ -2,11 +2,12 @@
 
 /***************************************************************
  * This script appends the bundle to be tested to bundles.ini
- * (it is not there because it was the root package during the
- * execution of composer).
+ * and registers it in the app autoloader (these steps are
+ * necessary because the bundle was used as the root package
+ * during the execution of composer).
  **************************************************************/
 
-require __DIR__ . '/autoload.php';
+$loader = require __DIR__ . '/autoload.php';
 
 use Claroline\BundleRecorder\Detector\Detector;
 
@@ -29,3 +30,10 @@ $bundles .= "\n{$bundle} = true";
 file_put_contents($bundleFile, $bundles);
 
 echo "Updated bundles.ini with target bundle:\n{$bundle}";
+
+$bundleParts = explode('\\', $bundle);
+array_pop($bundleParts);
+$bundleNamespace = implode('\\', $bundleParts);
+$loader->add($bundleNamespace, $argv[1]);
+
+echo "Registered bundle in autoloader:\n-{$bundleNamespace}\n-{$argv[1]}";
