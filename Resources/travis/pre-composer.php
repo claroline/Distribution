@@ -35,7 +35,7 @@ $originalComposer = "{$srcDir}/composer.json";
 // ---------------------------------------------------
 
 if (!file_exists($originalComposer)) {
-    echo "No composer.json found in {$bundleSlug}\n";
+    echo "No composer.json found in {$srcDir}\n";
     exit(1);
 }
 
@@ -44,15 +44,15 @@ $packageName = $composerData->name;
 $packageTargetDir = isset($composerData->{'target-dir'}) ?
     $composerData->{'target-dir'} :
     '';
-$packageDir = "{$packageName}/{$packageTargetDir}";
-$newSrcDir = "{$rootDir}/vendor/{$packageDir}";
+$packageDir = "{$rootDir}/vendor/{$packageName}";
+$newSrcDir = "{$packageDir}/{$packageTargetDir}";
 
 
 // 2) create a basic app structure, moving sources to usual "vendor" dir
 // ---------------------------------------------------------------------
 
 mkdir("{$rootDir}/app/config", 0777, true);
-mkdir("{$rootDir}/vendor/{$packageDir}", 0777, true);
+mkdir("{$newSrcDir}", 0777, true);
 rename($srcDir, $newSrcDir);
 
 
@@ -143,5 +143,7 @@ echo "Created {$newPhpUnit} with content:\n{$content}\n";
 // 5) Save a reference to the bundle new location
 // ----------------------------------------------
 
-// setting environment variables from scripts doesn't seem to work...
+// setting environment variables from scripts doesn't seem to work,
+// so we save references in files instead
+file_put_contents("{$rootDir}/package_dir.txt", $packageDir);
 file_put_contents("{$rootDir}/bundle_dir.txt", $newSrcDir);
