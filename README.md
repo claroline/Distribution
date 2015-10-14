@@ -21,16 +21,6 @@ Creates a virtual filesystem (useful for mocking the real one in unit tests).
 
 ## Commands
 
-### claroline:tool [tool [bundle]]
-
-Launches one of the available tool scripts (located in 
-*./Resources/scripts/tools*) for a given bundle.
-
-This command can be used interactively (e.g. to see the 
-list of available tools) :
-
-`php app/console claroline:tool`
- 
 ### claroline:debug:service OWNER SERVICE_NAME METHOD_NAME PARAMETERS [-a]
 This command fires a method of a service. It's allows you to see your logs in real time and is especially convenient for debugging doctrine with the -a parameter (doctrine flushes are shown).
 
@@ -41,7 +31,7 @@ This command fires a method of a service. It's allows you to see your logs in re
 - [-a]: Show the doctrine logs.
 
 `php app/console claroline:debug:service root claroline.manager.workspace_manager createWorkspaceFromModel 2 1 lh lh -a -vvv`
-    
+
 ### claroline:debug:translation LANGUAGE [--domain=] [--main_lang=] [--fqcn=] [-f]
 This command will allow you to reorder translations and adding the missing keys of foreign languages files. It will show you missing translations in the console (those where the translation keys are equals to the translations).
 
@@ -52,6 +42,16 @@ This command will allow you to reorder translations and adding the missing keys 
 - [-f]: Update the translation file (reorder and inject the missing keys).
 
 `php app/console claroline:debug:translation en --domain=forum --main_lang=fr --fqcn=ClarolineForumBundle -f`
+
+### claroline:tool [tool [bundle]]
+
+Launches one of the available tool scripts (located in 
+*./Resources/scripts/tools*) for a given bundle.
+
+This command can be used interactively (e.g. to see the 
+list of available tools) :
+
+`php app/console claroline:tool`
 
 **Available tools:**
 
