@@ -22,13 +22,12 @@ use Claroline\CoreBundle\Listener\DoctrineDebug;
 /**
  * Debug a manager
  */
-class DebugManagerCommand extends ContainerAwareCommand
+class DebugServiceCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
         $this->setName('claroline:debug:service')
-            ->setDescription('Create a workspace from a model')
-            ->setAliases(array('claroline:service:debug'));
+            ->setDescription('Get the logs of a service (mainly for debugging doctrine)');
         $this->setDefinition(
             array(
                 new InputArgument('owner', InputArgument::REQUIRED, 'The user doing the action'),

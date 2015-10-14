@@ -18,7 +18,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Yaml\Yaml;
 
-class TranslationFillerCommand extends ContainerAwareCommand
+class TranslationDebugCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
@@ -93,12 +93,10 @@ class TranslationFillerCommand extends ContainerAwareCommand
         $domain = $input->getOption('domain') ? $input->getOption('domain'): 'platform';
         $locale = $input->getArgument('locale');
         $mainLang = $input->getOption('main_lang') ? $input->getOption('main_lang'): 'fr';
-
         $filledShortPath = '@' . $fqcn . '/Resources/translations/' . $domain . '.' . $locale . '.yml';
         $mainShortPath = '@' . $fqcn . '/Resources/translations/' . $domain . '.' . $mainLang . '.yml';
         $mainFile = $this->getContainer()->get('kernel')->locateResource($mainShortPath);
         $filledFile = $this->getContainer()->get('kernel')->locateResource($filledShortPath);
-
         if ($input->getOption('fill')) $this->fill($mainFile, $filledFile, $output);
         $this->showUntranslated($filledFile, $output, $locale);
     }
