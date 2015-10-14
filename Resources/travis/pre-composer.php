@@ -79,8 +79,14 @@ if (!isset($composerData->scripts->{'post-install-cmd'})) {
     $composerData->scripts->{'post-install-cmd'} = [];
 }
 
+if (!isset($composerData->scripts->{'post-update-cmd'})) {
+    $composerData->scripts->{'post-update-cmd'} = [];
+}
+
 // bundles.ini must be built as usual at the end of composer install
 $composerData->scripts->{'post-install-cmd'}[] =
+    'Claroline\\BundleRecorder\\ScriptHandler::buildBundleFile';
+$composerData->scripts->{'post-update-cmd'}[] =
     'Claroline\\BundleRecorder\\ScriptHandler::buildBundleFile';
 
 $content = json_encode($composerData, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
