@@ -9,14 +9,14 @@ parameters:
     database_driver: pdo_mysql
     database_host: localhost
     database_port: ~
-    database_name: claroline_prod
+    database_name: claroline_prod_travis
     database_user: travis
     database_password: ~
 
     test_database_driver: pdo_mysql
     test_database_host: localhost
     test_database_port: ~
-    test_database_name: claroline_test
+    test_database_name: claroline_test_travis
     test_database_user: travis
     test_database_password: ~
 
