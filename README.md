@@ -40,11 +40,11 @@ Here are the steps to getting started:
    (https://github.com/claroline/DevBundle/tree/master/Resources/travis/phpunit.xml)
    provided by this bundle.
 3. Include this bundle in the dev dependencies of your bundle:
-        ```json
-           "require-dev": {
-               "claroline/dev-bundle": "dev-master"
-           }
-        ```
+    ```json
+    "require-dev": {
+        "claroline/dev-bundle": "dev-master"
+    }
+    ```
 4. Place this [.travis.yml](https://github.com/claroline/DevBundle/tree/master/Resources/travis/.travis.yml)
    in the root directory of your bundle.
 5. Commit and push/PR, and you should see a travis build starting.
