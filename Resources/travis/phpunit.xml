@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Basic config file for testing a Claroline bundle with PHPUnit.
+
+It must be located in the root directory of the bundle.
+
+"phpunit[bootstrap]" and "server[value]" assume the bundle uses
+PSR-0 autoloading and is located in the *vendor* directory of a
+traditional Symfony app structure.
+-->
+
+<phpunit
+    backupGlobals               = "false"
+    backupStaticAttributes      = "false"
+    colors                      = "true"
+    convertErrorsToExceptions   = "true"
+    convertNoticesToExceptions  = "true"
+    convertWarningsToExceptions = "true"
+    processIsolation            = "false"
+    stopOnFailure               = "false"
+    syntaxCheck                 = "false"
+    bootstrap                   = "../../../../../app/bootstrap.php.cache" >
+
+    <php>
+        <server name="KERNEL_DIR" value="../../../../../app/" />
+    </php>
+
+    <testsuites>
+        <testsuite name="Bundle test suite">
+            <directory>Tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist>
+            <directory>.</directory>
+            <exclude>
+                <directory>Migrations</directory>
+                <directory>Resources</directory>
+                <directory>Tests</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+
+</phpunit>

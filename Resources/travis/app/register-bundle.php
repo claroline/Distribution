@@ -29,7 +29,7 @@ $bundles = file_get_contents($bundleFile);
 $bundles .= "\n{$bundle} = true";
 file_put_contents($bundleFile, $bundles);
 
-echo "Updated bundles.ini with target bundle:\n{$bundle}";
+echo "Updated bundles.ini with target bundle:\n{$bundle}\n\n";
 
 $bundleParts = explode('\\', $bundle);
 array_pop($bundleParts);

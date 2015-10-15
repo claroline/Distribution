@@ -1,8 +1,9 @@
 # DevBundle
 
-Bundle gathering tools and libraries useful for Claroline development.
+Bundle gathering tools, libraries and commands useful for Claroline
+development.
 
-## Tools
+## Tools and libraries
 
 ### [PHPUnit](https://phpunit.de/)
 
@@ -18,6 +19,35 @@ in this bundle relies on PSR-* and Symfony coding standards (see
 ### [vfsStream](http://vfs.bovigo.org/)
 
 Creates a virtual filesystem (useful for mocking the real one in unit tests). 
+
+### [Travis CI](http://travis-ci.org)
+
+Offers a continuous integration service for building and testing
+projects hosted at github.
+
+This bundle provides a few scripts and resources for setting up a
+working environment for Claroline bundles on travis. Basically,
+the procedure described below will reproduce a minimal app structure,
+with a test database and all the dependencies required by your
+bundle.
+
+Here are the steps to getting started:
+
+1) Activate travis for your bundle's github repository (just follow the
+   instructions at [http://travis-ci.org](http://travis-ci.org)).
+2) Make sure you have a *phpunit.xml* file located in the root directory
+   of your bundle. If you don't, you can copy the [default config file]
+   (https://github.com/claroline/DevBundle/tree/master/Resources/travis/phpunit.xml)
+   provided by this bundle.
+3) Include this bundle in the dev dependencies of your bundle:
+```json
+   "require-dev": {
+       "claroline/dev-bundle": "dev-master"
+   }
+```
+4) Place this [.travis.yml](https://github.com/claroline/DevBundle/tree/master/Resources/travis/.travis.yml)
+   in the root directory of your bundle.
+5) Commit and push/PR, and you should see a travis build starting.
 
 ## Commands
 
