@@ -17,6 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Yaml\Yaml;
+use Claroline\CoreBundle\Library\Logger\ConsoleLogger;
 
 class TranslationDebugCommand extends ContainerAwareCommand
 {
@@ -97,7 +98,12 @@ class TranslationDebugCommand extends ContainerAwareCommand
         $mainShortPath = '@' . $fqcn . '/Resources/translations/' . $domain . '.' . $mainLang . '.yml';
         $mainFile = $this->getContainer()->get('kernel')->locateResource($mainShortPath);
         $filledFile = $this->getContainer()->get('kernel')->locateResource($filledShortPath);
-        if ($input->getOption('fill')) $this->fill($mainFile, $filledFile, $output);
+        if ($input->getOption('fill')) {
+            $translationManager = $this->getContainer()->get('claroline.dev_manager.translation_manager');
+            $consoleLogger = ConsoleLogger::get($output);
+            $translationManager->setLogger($consoleLogger);
+            $translationManager->fill($mainFile, $filledFile);
+        }
         $this->showUntranslated($filledFile, $output, $locale);
     }
 
@@ -121,30 +127,6 @@ class TranslationDebugCommand extends ContainerAwareCommand
 
             $line++;
         }
-    }
-
-    private function fill($mainFile, $filledFile, $output)
-    {
-        $output->writeln("<comment> Filling the translation file {$filledFile} </comment>");
-        $mainTranslations = Yaml::parse($mainFile);
-        $translations = Yaml::parse($filledFile);
-        if (!$translations) $translations = array();
-
-        //add missing keys
-        foreach (array_keys($mainTranslations) as $requiredKey) {
-            if (!array_key_exists($requiredKey, $translations)) {
-                $translations[$requiredKey] = $requiredKey;
-            }
-        }
-
-        //removing superfluous keys
-        foreach ($translations as $key => $value) {
-            if (!array_key_exists($key, $mainTranslations)) unset($translations[$key]);
-        }
-
-        ksort($translations);
-        $yaml = Yaml::dump($translations);
-        file_put_contents($filledFile, $yaml);
     }
 
     private function getSafeDubious()
