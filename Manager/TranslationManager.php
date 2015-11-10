@@ -25,12 +25,13 @@ class TranslationManager
 
     public function fill($mainFile, $filledFile)
     {
+        if (!$filledFile) touch($filledFile);
         $this->log("Filling the translation file {$filledFile}");
         $mainTranslations = Yaml::parse($mainFile);
         $translations = Yaml::parse($filledFile);
-        if (!$translations) $translations = array();
+        if (!is_array($translations)) $translations = array();
 
-        //add missing keys
+        //this should be recursive
         foreach (array_keys($mainTranslations) as $requiredKey) {
             if (!array_key_exists($requiredKey, $translations)) {
                 $translations[$requiredKey] = $requiredKey;
