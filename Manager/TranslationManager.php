@@ -29,23 +29,40 @@ class TranslationManager
         $this->log("Filling the translation file {$filledFile}");
         $mainTranslations = Yaml::parse($mainFile);
         $translations = Yaml::parse($filledFile);
+
+        $translations = $this->recursiveFill($mainTranslations, $translations);
+        $translations = $this->recursiveRemove($mainTranslations, $translations);
+
+        ksort($translations);
+        $yaml = Yaml::dump($translations);
+        file_put_contents($filledFile, $yaml);
+    }
+
+    private function recursiveFill($mainTranslations, $translations)
+    {
         if (!is_array($translations)) $translations = array();
 
         //this should be recursive
         foreach (array_keys($mainTranslations) as $requiredKey) {
             if (!array_key_exists($requiredKey, $translations)) {
-                $translations[$requiredKey] = $requiredKey;
+                $translations[$requiredKey] = is_array($mainTranslations[$requiredKey]) ?
+                    $this->recursiveFill($mainTranslations[$requiredKey], $translations[$requiredKey]):
+                    $requiredKey;
             }
         }
 
-        //removing superfluous keys
+        return $translations;
+    }
+
+    private function recursiveRemove($mainTranslations, $translations) 
+    {
         foreach ($translations as $key => $value) {
             if (!array_key_exists($key, $mainTranslations)) unset($translations[$key]);
+            //this won't work but it's not really important.
+            //if (is_array($mainTranslation[$key])) $this->recursiveRemove($mainTranslations[$key], $translations[$key]);
         }
 
-        ksort($translations);
-        $yaml = Yaml::dump($translations);
-        file_put_contents($filledFile, $yaml);
+        return $translations;
     }
 
     public function setLogger(LoggerInterface $logger)
