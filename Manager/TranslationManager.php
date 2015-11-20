@@ -45,6 +45,7 @@ class TranslationManager
         //this should be recursive
         foreach (array_keys($mainTranslations) as $requiredKey) {
             if (!array_key_exists($requiredKey, $translations)) {
+                $translations[$requiredKey] = array();
                 $translations[$requiredKey] = is_array($mainTranslations[$requiredKey]) ?
                     $this->recursiveFill($mainTranslations[$requiredKey], $translations[$requiredKey]):
                     $requiredKey;
