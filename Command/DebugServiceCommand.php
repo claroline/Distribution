@@ -88,7 +88,9 @@ class DebugServiceCommand extends ContainerAwareCommand
         $om = $this->getContainer()->get('claroline.persistence.object_manager');
 
         if ($input->getOption('debug_doctrine_all')) {
-            $om->setLogger($consoleLogger)->activateLog();
+            $om->setLogger($consoleLogger);
+            $om->activateLog();
+            $om->showFlushLevel();
             $this->getContainer()->get('claroline.doctrine.debug')->setLogger($consoleLogger)->activateLog()->setDebugLevel(DoctrineDebug::DEBUG_ALL)->setVendor('Claroline');
         }
 
