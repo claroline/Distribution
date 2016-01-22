@@ -62,6 +62,7 @@ rename($srcDir, $newSrcDir);
 // project uses a lot of dev-master packages; composer will
 // failed if dev packages aren't allowed
 $composerData->{'minimum-stability'} = 'dev';
+$composerData->{'prefer-stable'} = true;
 
 if (!isset($composerData->config)) {
     $composerData->config = new stdClass();
