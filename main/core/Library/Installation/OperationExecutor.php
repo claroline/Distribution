@@ -61,6 +61,7 @@ class OperationExecutor
         $this->previousRepoFile = $this->kernel->getRootDir() . '/config/previous-installed.json';
         $this->installedRepoFile = $this->kernel->getRootDir() . '/../vendor/composer/installed.json';
         $this->bundleFile = $this->kernel->getRootDir() . '/config/bundles.ini';
+        $this->bupBundleFile = $this->kernel->getRootDir() . '/config/bundles.bup.ini';
         $this->detector = new Detector();
     }
 
@@ -110,7 +111,7 @@ class OperationExecutor
         $current = $this->openRepository($this->installedRepoFile);
         $operations = [];
 
-        $previousBundles = array_keys(parse_ini_file($this->bundleFile));
+        $previousBundles = array_keys(parse_ini_file($this->bupBundleFile));
 
         /** @var PackageInterface $currentPackage */
         foreach ($current->getCanonicalPackages() as $currentPackage) {
@@ -208,7 +209,6 @@ class OperationExecutor
             $installer = $operation->getPackage()->getType() === 'claroline-core' ?
                 $this->baseInstaller :
                 $this->pluginInstaller;
-            $this->log('Doing stuff for ' . $operation->getBundleFqcn());
 
             if ($operation->getType() === Operation::INSTALL) {
                 $installer->install($bundles[$operation->getBundleFqcn()]);
