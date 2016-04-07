@@ -14,6 +14,8 @@ namespace Claroline\CoreBundle\Manager;
 use Composer\Json\JsonFile;
 use Composer\Repository\InstalledFilesystemRepository;
 use JMS\DiExtraBundle\Annotation as DI;
+use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Entity\Plugin;
 
 /**
  * @DI\Service("claroline.manager.bundle_manager")
@@ -22,17 +24,22 @@ class BundleManager
 {
     private $iniFileManager;
     private $kernelRootDir;
+    private $om;
+    private $pluginRepo;
 
     /**
      * @DI\InjectParams({
      *      "iniFileManager" = @DI\Inject("claroline.manager.ini_file_manager"),
-     *      "kernelRootDir"  = @DI\Inject("%kernel.root_dir%")
+     *      "kernelRootDir"  = @DI\Inject("%kernel.root_dir%"),
+     *      "om"             = @DI\Inject("claroline.persistence.object_manager")
      * })
      */
-    public function __construct(IniFileManager $iniFileManager, $kernelRootDir)
+    public function __construct(IniFileManager $iniFileManager, $kernelRootDir, ObjectManager $om)
     {
-        $this->iniFileManager   = $iniFileManager;
-        $this->kernelRootDir    = $kernelRootDir;
+        $this->iniFileManager = $iniFileManager;
+        $this->kernelRootDir  = $kernelRootDir;
+        $this->om             = $om;
+        $this->pluginRepo     = $om->getRepository('ClarolineCoreBundle:Plugin');
     }
 
     public function getDistributionVersion()
@@ -74,5 +81,40 @@ class BundleManager
 
             file_put_contents($namespaces, $content);
         }
+    }
+
+    public function getPlugins()
+    {
+        return $this->pluginRepo->findAll();
+    }
+
+    public function enableAll()
+    {
+        $this->om->startFlushSuite();
+
+        foreach ($this->getPlugins() as $plugin) {
+            $plugin->enable();
+            $this->om->persist($plugin);
+        }
+
+        $this->om->endFlushSuite();
+    }
+
+    public function enable(Plugin $plugin)
+    {
+        $plugin->enable();
+        $this->om->persist($plugin);
+        $this->om->flush();
+
+        return $plugin;
+    }
+
+    public function disable(Plugin $plugin)
+    {
+        $plugin->disable();
+        $this->om->persist($plugin);
+        $this->om->flush();
+
+        return $plugin;
     }
 }

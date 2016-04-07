@@ -13,6 +13,8 @@ namespace Claroline\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation\SerializedName;
 
 /**
  * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\PluginRepository")
@@ -29,6 +31,7 @@ class Plugin
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Groups({"api_plugin"})
      */
     protected $id;
 
@@ -36,6 +39,7 @@ class Plugin
      * @ORM\Column(name="vendor_name", length=50)
      * @Assert\NotBlank()
      * @Assert\Length(max=50)
+     * @Groups({"api_plugin"})
      */
     protected $vendorName;
 
@@ -43,13 +47,21 @@ class Plugin
      * @ORM\Column(name="short_name", length=50)
      * @Assert\NotBlank()
      * @Assert\Length(max=50)
+     * @Groups({"api_plugin"})
      */
     protected $bundleName;
 
     /**
      * @ORM\Column(name="has_options", type="boolean")
+     * @Groups({"api_plugin"})
      */
     protected $hasOptions = false;
+
+    /**
+     * @ORM\Column(name="is_enabled", type="boolean")
+     * @Groups({"api_plugin"})
+     */
+    protected $isEnabled = true;
 
     public function getId()
     {
@@ -107,5 +119,15 @@ class Plugin
     public function hasOptions()
     {
         return $this->hasOptions;
+    }
+
+    public function enable()
+    {
+        $this->isEnabled = true;
+    }
+
+    public function disable()
+    {
+        $this->isEnabled = false;
     }
 }
