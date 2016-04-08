@@ -38,7 +38,7 @@ class SerializerExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
-            'api_serialize' => new \Twig_Filter_Method($this, 'apiSerialize'),
+            'serialize' => new \Twig_Filter_Method($this, 'serialize'),
         );
     }
 
@@ -47,12 +47,12 @@ class SerializerExtension extends \Twig_Extension
         return 'serializer_extension';
     }
 
-    public function apiSerialize($data, $group = 'api')
+    public function serialize($data, $group)
     {
-        return $this->serialize($data, $group);
+        return $this->doSerialize($data, $group);
     }
 
-    public function serialize($data, $group = 'api')
+    public function doSerialize($data, $group)
     {
         $context = new SerializationContext();
         $context->setGroups($group);
