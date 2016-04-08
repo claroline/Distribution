@@ -47,9 +47,9 @@ class SerializerExtension extends \Twig_Extension
         return 'serializer_extension';
     }
 
-    public function apiSerialize($data)
+    public function apiSerialize($data, $group = 'api')
     {
-        return $this->serialize($data);
+        return $this->serialize($data, $group);
     }
 
     public function serialize($data, $group = 'api')
