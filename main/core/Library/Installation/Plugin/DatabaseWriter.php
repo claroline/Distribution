@@ -100,6 +100,9 @@ class DatabaseWriter
         $pluginEntity->setVendorName($pluginBundle->getVendorName());
         $pluginEntity->setBundleName($pluginBundle->getBundleName());
         $pluginEntity->setHasOptions($pluginConfiguration['has_options']);
+        $pluginEntity->setVersion($pluginBundle->getVersion());
+        $pluginEntity->setDescription($pluginBundle->getDescription());
+        $pluginEntity->setOrigin($pluginBundle->getOrigin());
 
         $this->em->persist($pluginEntity);
         $this->persistConfiguration($pluginConfiguration, $pluginEntity, $pluginBundle);
@@ -122,12 +125,14 @@ class DatabaseWriter
             )
         );
 
+        $plugin->setVersion($pluginBundle->getVersion());
+        $plugin->setDescription($pluginBundle->getDescription());
+
         if (null === $plugin) {
             throw new \Exception('Unable to retrieve plugin for updating its configuration.');
         }
 
         $plugin->setHasOptions($pluginConfiguration['has_options']);
-
         $this->em->persist($plugin);
         $this->updateConfiguration($pluginConfiguration, $plugin, $pluginBundle);
         $this->em->flush();

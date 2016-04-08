@@ -70,6 +70,11 @@ class Recorder
         $this->bundleHandler->removeBupIniFile();
     }
 
+    public function prepareInstall()
+    {
+        $this->bundleHandler->prepareInstall();
+    }
+
     /**
      * @return InstallOperation[]
      */

@@ -159,6 +159,7 @@ class OperationExecutor
                 if (!($previousPackage = $previous->findPackage($currentPackage->getName(), '*'))) {
                     $this->log("Installation of {$currentPackage->getName()} required");
                     $operation = $this->buildOperation(Operation::INSTALL, $currentPackage);
+                    $operation->setToVersion($currentPackage->getVersion());
                     $operations[$operation->getBundleFqcn()] = $operation;
                 } elseif ($currentPackage->getVersion() !== $previousPackage->getVersion()
                     || $currentPackage->isDev()) {
@@ -315,6 +316,7 @@ class OperationExecutor
             $package->getPrettyName() :
             "{$package->getName()}/{$targetDir}";
         $fqcn = $this->detector->detectBundle("{$vendorDir}/{$packageDir}");
+
         return new Operation($type, $package, $fqcn);
     }
 }

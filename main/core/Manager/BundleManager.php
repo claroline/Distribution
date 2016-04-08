@@ -117,4 +117,9 @@ class BundleManager
 
         return $plugin;
     }
+
+    public function getVersion(Plugin $plugin)
+    {
+        
+    }
 }

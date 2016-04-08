@@ -63,6 +63,24 @@ class Plugin
      */
     protected $isEnabled = true;
 
+    /**
+     * @ORM\Column(name="version")
+     * @Groups({"api_plugin"})
+     */
+    protected $version;
+
+    /**
+     * @ORM\Column(name="description", nullable=true)
+     * @Groups({"api_plugin"})
+     */
+    protected $description;
+
+    /**
+     * @ORM\Column(name="origin", nullable=true)
+     * @Groups({"api_plugin"})
+     */
+    protected $origin;
+
     public function getId()
     {
         return $this->id;
@@ -129,5 +147,35 @@ class Plugin
     public function disable()
     {
         $this->isEnabled = false;
+    }
+
+    public function setVersion($version)
+    {
+        $this->version = $version;
+    }
+
+    public function getVersion()
+    {
+        return $this->version;
+    }
+
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    public function setDescription($description)
+    {
+        return $this->description;
+    }
+
+    public function setOrigin($origin)
+    {
+        $this->origin = $origin;
+    }
+
+    public function getOrigin()
+    {
+        return $this->origin;
     }
 }

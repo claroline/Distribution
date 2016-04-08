@@ -17,6 +17,8 @@ class BundleHandler extends BaseHandler
 {
     private $registeredBundles;
     private $configDir;
+    private $prevInstalled;
+    private $bupIniFile;
 
     public function __construct($configDir, LoggerInterface $logger = null)
     {
@@ -25,6 +27,7 @@ class BundleHandler extends BaseHandler
         parent::__construct($bundleFile, $logger);
         $this->registeredBundles = parse_ini_file($this->targetFile);
         $this->bupIniFile = $configDir . '/bundles.bup.ini';
+        $this->prevInstalled = $configDir . '/previous-installed.json'
     }
 
     public function writeBundleFile(array $bundleFqcns)
@@ -48,6 +51,13 @@ class BundleHandler extends BaseHandler
     public function removeBupIniFile()
     {
         @unlink($this->bupIniFile);
+    }
+
+    public function prepareInstall()
+    {
+        $this->removeBupIniFile();
+        @unlink($this->prevInstalled);
+        file_put_contents($this->prevInstalled, '[]');
     }
 
     private function doWriteBundleFile()

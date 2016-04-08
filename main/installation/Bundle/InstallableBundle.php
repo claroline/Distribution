@@ -34,53 +34,6 @@ abstract class InstallableBundle extends Bundle implements InstallableInterface
     {
         return null;
     }
-
-    public function getVersion()
-    {
-        $ds = DIRECTORY_SEPARATOR;
-        $path = realpath($this->getPath() . $ds . 'VERSION.txt');
-        if ($path) return trim(file_get_contents($path));
-
-        return "0.0.0.0";
-    }
-
-    public function getClarolineName()
-    {
-        $parts = explode('\\', get_class($this));
-
-        return isset($parts[1]) ? $parts[1] : end($parts);
-    }
-
-    public function getType()
-    {
-        return $this->getComposerParameter('type', 'symfony-bundle');
-    }
-
-    public function getAuthors()
-    {
-        return $this->getComposerParameter('authors', []);
-    }
-
-    public function getDescription()
-    {
-        return $this->getComposerParameter('description');
-    }
-
-    public function getLicense()
-    {
-        return $this->getComposerParameter('license', '');
-    }
-
-    public function getTargetDir()
-    {
-        return $this->getComposerParameter('target-dir', '');
-    }
-
-    public function getBasePath()
-    {
-        return $this->getComposerParameter('name', $this->getName());
-    }
-
     public function getComposer()
     {
         static $data;
@@ -88,10 +41,38 @@ abstract class InstallableBundle extends Bundle implements InstallableInterface
         if (!$data) {
             $ds = DIRECTORY_SEPARATOR;
             $path = realpath($this->getPath() . $ds . 'composer.json');
+            //metapackage are 2 directories above
+            if (!$path) $path = realpath($this->getPath() . "{$ds}..{$ds}..{$ds}composer.json");
             $data = json_decode(file_get_contents($path));
         }
 
         return $data;
+    }
+
+    public function getVersion()
+    {
+        foreach ($this->getInstalled() as $bundle) {
+            if ($bundle['name'] === $this->getOrigin()) {
+                return $bundle['version'];
+            }
+        }
+
+        return '0.0.0.0';
+    }
+
+    public function getOrigin()
+    {
+        return $this->getComposerParameter('name');
+    }
+
+    public function getDescription()
+    {
+        return file_exists($this->getPath() . '/DESCRIPTION.md') ? file_get_contents($this->getPath() . '/DESCRIPTION.md'): '';
+    }
+
+    private function getInstalled()
+    {
+        return json_decode(file_get_contents(__DIR__ . '/../../../../../composer/installed.json'), true);
     }
 
     private function getComposerParameter($parameter, $default = null)
