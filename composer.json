@@ -147,7 +147,7 @@
         "Claroline\\PdfPlayerBundle\\ClarolinePdfPlayerBundle",
         "Claroline\\CursusBundle\\ClarolineCursusBundle",
         "Claroline\\TeamBundle\\ClarolineTeamBundle",
-        "Claroline\\PdfGenerator\\Claroline\\PdfGeneratorBundle",
+        "Claroline\\PdfGeneratorBundle\\ClarolinePdfGeneratorBundle",
         "FormaLibre\\PresenceBundle\\FormaLibrePresenceBundle",
         "Claroline\\VideoPlayerBundle\\ClarolineVideoPlayerBundle",
         "Claroline\\ActivityToolBundle\\ClarolineActivityToolBundle",

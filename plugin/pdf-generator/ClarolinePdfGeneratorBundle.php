@@ -14,7 +14,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  * Bundle class.
  * Uncomment if necessary.
  */
-class ClarolinePdfGeneratorBundle extends Bundle implements ConfigurationProviderInterface
+class ClarolinePdfGeneratorBundle extends PluginBundle implements ConfigurationProviderInterface
 {
     public function build(ContainerBuilder $container)
     {
