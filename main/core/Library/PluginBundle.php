@@ -20,15 +20,6 @@ use Claroline\KernelBundle\Bundle\ConfigurationBuilder;
  */
 abstract class PluginBundle extends InstallableBundle implements PluginBundleInterface
 {
-    private $version;
-    private $description;
-
-    public function __construct()
-    {
-        $this->version = 'The version has not been set yet.  This property should only by accessed during installation/update. Use the Claroline/CoreBundle/Entity/Plugin instead.';
-        $this->description = "The description has not been set." ;
-    }
-
     final public function getVendorName()
     {
         $namespaceParts = explode('\\', $this->getNamespace());
