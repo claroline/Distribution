@@ -15,12 +15,12 @@ $prefix = $argv[3];
 // all of its commits with the name of the bundle
 
 cmd("git remote add {$bundle} http://github.com/{$account}/{$bundle}");
-cmd("git fetch --no-tags {$bundle} monolith");
-cmd("git branch -f {$bundle} {$bundle}/monolith");
+cmd("git fetch --no-tags {$bundle} master");
+cmd("git branch -f {$bundle} {$bundle}/master");
 cmd("git checkout {$bundle}");
-cmd("git pull --no-tags {$bundle} monolith");
+cmd("git pull --no-tags {$bundle} master");
 cmd("git filter-branch -f --msg-filter 'sed \"1 s/^/[{$bundle}] /\"' HEAD");
-cmd("git checkout import-dev-tools");
+cmd("git checkout import-test");
 cmd("git read-tree --prefix={$prefix}/ -u {$bundle}");
 cmd("git commit -m 'Import {$bundle}'");
 cmd("git merge -s subtree {$bundle}");
