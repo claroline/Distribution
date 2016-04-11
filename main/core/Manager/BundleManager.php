@@ -107,6 +107,9 @@ class BundleManager
 
     public function enable(Plugin $plugin)
     {
+        $plugin->enable();
+        $this->om->persist($plugin);
+        $this->om->flush();
         //update ini file
         $this->iniFileManager
             ->updateKey(
@@ -115,13 +118,14 @@ class BundleManager
                 $this->kernelRootDir . '/config/bundles.ini'
             );
 
-        $this->refreshCache();
-
         return $plugin;
     }
 
     public function disable(Plugin $plugin)
     {
+        $plugin->disable();
+        $this->om->persist($plugin);
+        $this->om->flush();
         //update ini file
         $this->iniFileManager
             ->updateKey(
@@ -130,14 +134,6 @@ class BundleManager
                 $this->kernelRootDir . '/config/bundles.ini'
             );
 
-        $this->refreshCache();
-
         return $plugin;
-    }
-
-    private function refreshCache()
-    {
-        $fs = new FileSystem();
-        $fs->rmDirContent($this->kernelRootDir . '/cache', true);
     }
 }

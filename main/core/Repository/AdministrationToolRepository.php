@@ -15,6 +15,18 @@ use Doctrine\ORM\EntityRepository;
 
 class AdministrationToolRepository extends EntityRepository
 {
+    public function findAll()
+    {
+        $dql = "SELECT tool FROM Claroline\CoreBundle\Entity\Tool\AdminTool tool
+            LEFT JOIN tool.plugin p
+            WHERE p.isEnabled = true
+            OR tool.plugin is NULL";
+
+        $query = $this->_em->createQuery($dql);
+
+        return $query->getResult();
+    }
+
     public function findByRoles(array $roles)
     {
         $rolesNames = [];
@@ -29,12 +41,15 @@ class AdministrationToolRepository extends EntityRepository
         }
 
         if ($isAdmin) {
-            $dql = "SELECT tool FROM Claroline\CoreBundle\Entity\Tool\AdminTool tool";
+            return $this->findAll();
         } else {
             $dql = "
                 SELECT tool FROM Claroline\CoreBundle\Entity\Tool\AdminTool tool
                 JOIN tool.roles role
+                LEFT JOIN tool.plugin p
                 WHERE role.name IN (:roleNames)
+                AND p.isEnabled = true
+                OR tool.plugin IS NULL
             ";
         }
 
@@ -47,4 +62,4 @@ class AdministrationToolRepository extends EntityRepository
 
         return $query->getResult();
     }
-} 
+}

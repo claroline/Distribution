@@ -55,6 +55,9 @@ class WidgetInstanceType extends AbstractType
                                 ->join('w.roles', 'r')
                                 ->where('w.isDisplayableInDesktop = true')
                                 ->andWhere("r IN (:roles)")
+                                ->leftJoin('w.plugin', 'p')
+                                ->andWhere('p.isEnabled = true')
+                                ->orWhere('w.plugin is null')
                                 ->setParameter('roles', $datas['roles']);
 
                         } else {

@@ -24,7 +24,9 @@ class ResourceTypeRepository extends EntityRepository
     {
         $dql = '
             SELECT rt FROM Claroline\CoreBundle\Entity\Resource\ResourceType rt
-            WHERE rt.plugin IS NOT NULL
+            JOIN rt.plugin p
+            WHERE p.isEnabled = true
+            OR rt.plugin is NULL
         ';
         $query = $this->_em->createQuery($dql);
 
@@ -66,7 +68,10 @@ class ResourceTypeRepository extends EntityRepository
     {
         $dql = '
           SELECT rt, ma FROM Claroline\CoreBundle\Entity\Resource\ResourceType rt
-          LEFT JOIN rt.actions ma';
+          LEFT JOIN rt.actions ma
+          LEFT JOIN rt.plugin p
+          WHERE p.isEnabled = true
+          OR rt.plugin is NULL';
 
         $query = $this->_em->createQuery($dql);
 
