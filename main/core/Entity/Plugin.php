@@ -78,9 +78,18 @@ class Plugin
 
     /**
      * @Groups({"api_plugin"})
+     * @ORM\Column(type="boolean")
      * @Accessor(getter="isEnabled")
      */
-    protected $isEnabled;
+    protected $isEnabled = true;
+
+    /**
+    * Check if the plugin is loaded in the bundles.ini file.
+    *
+     * @Groups({"api_plugin"})
+     * @Accessor(getter="isLoaded")
+     */
+    protected $isLoaded;
 
     public function getId()
     {
@@ -171,6 +180,21 @@ class Plugin
     }
 
     public function isEnabled()
+    {
+        return $this->isEnabled;
+    }
+
+    public function enable()
+    {
+        $this->isEnabled = true;
+    }
+
+    public function disable()
+    {
+        $this->isEnabled = false;
+    }
+
+    public function isLoaded()
     {
         $bundles = parse_ini_file($this->getIniFile());
 
