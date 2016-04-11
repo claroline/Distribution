@@ -8,13 +8,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Claroline\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation\SerializedName;
+use JMS\Serializer\Annotation\Accessor;
 
 /**
  * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\PluginRepository")
@@ -24,6 +24,7 @@ use JMS\Serializer\Annotation\SerializedName;
  *          @ORM\UniqueConstraint(name="plugin_unique_name", columns={"vendor_name", "short_name"})
  *      }
  * )
+ * This entity will also do some of the work for the bundles.ini file (wich is not great but w/e)
  */
 class Plugin
 {
@@ -58,12 +59,6 @@ class Plugin
     protected $hasOptions = false;
 
     /**
-     * @ORM\Column(name="is_enabled", type="boolean")
-     * @Groups({"api_plugin"})
-     */
-    protected $isEnabled = true;
-
-    /**
      * @ORM\Column(name="version")
      * @Groups({"api_plugin"})
      */
@@ -80,6 +75,12 @@ class Plugin
      * @Groups({"api_plugin"})
      */
     protected $origin;
+
+    /**
+     * @Groups({"api_plugin"})
+     * @Accessor(getter="isEnabled")
+     */
+    protected $isEnabled;
 
     public function getId()
     {
@@ -139,16 +140,6 @@ class Plugin
         return $this->hasOptions;
     }
 
-    public function enable()
-    {
-        $this->isEnabled = true;
-    }
-
-    public function disable()
-    {
-        $this->isEnabled = false;
-    }
-
     public function setVersion($version)
     {
         $this->version = $version;
@@ -177,5 +168,21 @@ class Plugin
     public function getOrigin()
     {
         return $this->origin;
+    }
+
+    public function isEnabled()
+    {
+        $bundles = parse_ini_file($this->getIniFile());
+
+        foreach ($bundles as $bundle => $isEnabled) {
+            if ($bundle === $this->getBundleFQCN() && $isEnabled) return true;
+        }
+
+        return false;
+    }
+
+    public function getIniFile()
+    {
+        return realpath( __DIR__ . '/../../../../../../app/config/bundles.ini');
     }
 }

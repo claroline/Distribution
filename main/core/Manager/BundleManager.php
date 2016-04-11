@@ -16,6 +16,7 @@ use Composer\Repository\InstalledFilesystemRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Plugin;
+use Claroline\CoreBundle\Library\Utilities\FileSystem;
 
 /**
  * @DI\Service("claroline.manager.bundle_manager")
@@ -34,7 +35,11 @@ class BundleManager
      *      "om"             = @DI\Inject("claroline.persistence.object_manager")
      * })
      */
-    public function __construct(IniFileManager $iniFileManager, $kernelRootDir, ObjectManager $om)
+    public function __construct(
+        IniFileManager $iniFileManager,
+        $kernelRootDir,
+        ObjectManager $om
+    )
     {
         $this->iniFileManager = $iniFileManager;
         $this->kernelRootDir  = $kernelRootDir;
@@ -102,24 +107,37 @@ class BundleManager
 
     public function enable(Plugin $plugin)
     {
-        $plugin->enable();
-        $this->om->persist($plugin);
-        $this->om->flush();
+        //update ini file
+        $this->iniFileManager
+            ->updateKey(
+                $plugin->getBundleFQCN(),
+                true,
+                $this->kernelRootDir . '/config/bundles.ini'
+            );
+
+        $this->refreshCache();
 
         return $plugin;
     }
 
     public function disable(Plugin $plugin)
     {
-        $plugin->disable();
-        $this->om->persist($plugin);
-        $this->om->flush();
+        //update ini file
+        $this->iniFileManager
+            ->updateKey(
+                $plugin->getBundleFQCN(),
+                false,
+                $this->kernelRootDir . '/config/bundles.ini'
+            );
+
+        $this->refreshCache();
 
         return $plugin;
     }
 
-    public function getVersion(Plugin $plugin)
+    private function refreshCache()
     {
-        
+        $fs = new FileSystem();
+        $fs->rmDirContent($this->kernelRootDir . '/cache', true);
     }
 }
