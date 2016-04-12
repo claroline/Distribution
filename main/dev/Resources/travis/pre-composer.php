@@ -10,7 +10,7 @@
  * file immediately before the execution of composer.
  *
  * Note that in order to work properly, this script MUST be
- * located in the root directory of the platform.
+ * executed from the root directory of the platform.
  ******************************************************************/
 
 // convert errors to exceptions
@@ -25,7 +25,7 @@ if ($argc < 3) {
 
 $packageName = $argv[1];
 $packagePath = $argv[2];
-$composerFile = __DIR__ . '/composer.json';
+$composerFile = getcwd().'/composer.json';
 
 if (!file_exists($composerFile)) {
   echo "No composer.json found (looked for {$composerFile})\n";
