@@ -45,7 +45,10 @@ class ResourceQueryBuilder
         $this->joinRelativesClause = "JOIN node.creator creator{$eol}" .
             "JOIN node.resourceType resourceType{$eol}" .
             "LEFT JOIN node.parent parent{$eol}" .
-            "LEFT JOIN node.icon icon{$eol}";
+            "LEFT JOIN node.icon icon{$eol}" .
+            "LEFT JOIN resourceType.plugin p{$eol}"
+
+        $this->addWhereClause("(p.isEnabled = true OR resourceType.plugin is NULL");
     }
 
     /**
