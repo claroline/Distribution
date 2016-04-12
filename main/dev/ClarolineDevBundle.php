@@ -10,7 +10,7 @@ class ClarolineDevBundle extends Bundle implements AutoConfigurableInterface
 {
     public function supports($environment)
     {
-        return true;
+        return $environment !== 'prod';
     }
 
     public function getConfiguration($environment)
