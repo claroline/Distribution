@@ -16,21 +16,43 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class WidgetHomeTabConfigRepository extends EntityRepository
+class WidgetHomeTabConfigRepository extends EntityRepository implements ContainerAwareInterface
 {
+    const LEFT_JOIN_PLUGIN = '
+        LEFT JOIN whtc.widgetInstance instance
+        JOIN instance.widget widget
+        JOIN widget.plugin plugin
+    ';
+
+    const WHERE_PLUGIN_ENABLED = '
+        (CONCAT(plugin.vendorName, plugin.bundleName) IN (:bundles)
+        OR widget.plugin is NULL)
+    ';
+
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+        $this->bundles = $this->container->get('claroline.manager.bundle_manager')->getEnabled(true);
+    }
+
     public function findAdminWidgetConfigs(HomeTab $homeTab)
     {
         $dql = "
             SELECT whtc
-            FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc
+            FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
+            . self::LEFT_JOIN_PLUGIN . "
             WHERE whtc.homeTab = :homeTab
             AND whtc.user IS NULL
-            AND whtc.workspace IS NULL
+            AND whtc.workspace IS NULL"
+            . " AND " . self::WHERE_PLUGIN_ENABLED . "
             ORDER BY whtc.widgetOrder ASC
         ";
         $query = $this->_em->createQuery($dql);
         $query->setParameter('homeTab', $homeTab);
+        $query->setParameter('bundles', $this->bundles);
 
         return $query->getResult();
     }
@@ -39,15 +61,18 @@ class WidgetHomeTabConfigRepository extends EntityRepository
     {
         $dql = "
             SELECT whtc
-            FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc
+            FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
+            . self::LEFT_JOIN_PLUGIN . "
             WHERE whtc.homeTab = :homeTab
             AND whtc.user IS NULL
-            AND whtc.workspace IS NULL
+            AND whtc.workspace IS NULL"
+            . " AND " . self::WHERE_PLUGIN_ENABLED . "
             AND whtc.visible = true
             ORDER BY whtc.widgetOrder ASC
         ";
         $query = $this->_em->createQuery($dql);
         $query->setParameter('homeTab', $homeTab);
+        $query->setParameter('bundles', $this->bundles);
 
         return $query->getResult();
     }
@@ -56,16 +81,19 @@ class WidgetHomeTabConfigRepository extends EntityRepository
     {
         $dql = "
             SELECT whtc
-            FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc
+            FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
+            . self::LEFT_JOIN_PLUGIN . "
             WHERE whtc.homeTab = :homeTab
             AND whtc.user = :user
-            AND whtc.workspace IS NULL
+            AND whtc.workspace IS NULL"
+            . " AND " . self::WHERE_PLUGIN_ENABLED . "
             AND whtc.type = 'desktop'
             ORDER BY whtc.widgetOrder ASC
         ";
         $query = $this->_em->createQuery($dql);
         $query->setParameter('homeTab', $homeTab);
         $query->setParameter('user', $user);
+        $query->setParameter('bundles', $this->bundles);
 
         return $query->getResult();
     }
@@ -74,17 +102,20 @@ class WidgetHomeTabConfigRepository extends EntityRepository
     {
         $dql = "
             SELECT whtc
-            FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc
+            FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
+            . self::LEFT_JOIN_PLUGIN . "
             WHERE whtc.homeTab = :homeTab
             AND whtc.user = :user
             AND whtc.workspace IS NULL
             AND whtc.type = 'desktop'
-            AND whtc.visible = true
+            AND whtc.visible = true"
+            . " AND " . self::WHERE_PLUGIN_ENABLED . "
             ORDER BY whtc.widgetOrder ASC
         ";
         $query = $this->_em->createQuery($dql);
         $query->setParameter('homeTab', $homeTab);
         $query->setParameter('user', $user);
+        $query->setParameter('bundles', $this->bundles);
 
         return $query->getResult();
     }
@@ -96,16 +127,19 @@ class WidgetHomeTabConfigRepository extends EntityRepository
     {
         $dql = "
             SELECT whtc
-            FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc
+            FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
+            . self::LEFT_JOIN_PLUGIN . "
             WHERE whtc.homeTab = :homeTab
             AND whtc.workspace = :workspace
             AND whtc.user IS NULL
-            AND whtc.type = 'workspace'
+            AND whtc.type = 'workspace'"
+            . " AND " . self::WHERE_PLUGIN_ENABLED . "
             ORDER BY whtc.widgetOrder ASC
         ";
         $query = $this->_em->createQuery($dql);
         $query->setParameter('homeTab', $homeTab);
         $query->setParameter('workspace', $workspace);
+        $query->setParameter('bundles', $this->bundles);
 
         return $query->getResult();
     }
@@ -117,17 +151,20 @@ class WidgetHomeTabConfigRepository extends EntityRepository
     {
         $dql = "
             SELECT whtc
-            FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc
+            FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
+            . self::LEFT_JOIN_PLUGIN . "
             WHERE whtc.homeTab = :homeTab
             AND whtc.workspace = :workspace
             AND whtc.user IS NULL
             AND whtc.type = 'workspace'
-            AND whtc.visible = true
+            AND whtc.visible = true"
+            . " AND " . self::WHERE_PLUGIN_ENABLED . "
             ORDER BY whtc.widgetOrder ASC
         ";
         $query = $this->_em->createQuery($dql);
         $query->setParameter('homeTab', $homeTab);
         $query->setParameter('workspace', $workspace);
+        $query->setParameter('bundles', $this->bundles);
 
         return $query->getResult();
     }
@@ -139,7 +176,8 @@ class WidgetHomeTabConfigRepository extends EntityRepository
     {
         $dql = "
             SELECT whtc
-            FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc
+            FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
+            . self::LEFT_JOIN_PLUGIN . "
             JOIN Claroline\CoreBundle\Entity\Home\HomeTabConfig htc
             WITH htc.homeTab = :homeTabId
             WHERE whtc.homeTab = :homeTabId
@@ -147,12 +185,14 @@ class WidgetHomeTabConfigRepository extends EntityRepository
             AND whtc.workspace = :workspace
             AND whtc.user IS NULL
             AND whtc.type = 'workspace'
-            AND whtc.visible = true
+            AND whtc.visible = true"
+            . " AND " . self::WHERE_PLUGIN_ENABLED . "
             ORDER BY whtc.widgetOrder ASC
         ";
         $query = $this->_em->createQuery($dql);
         $query->setParameter('homeTabId', $homeTabId);
         $query->setParameter('workspace', $workspace);
+        $query->setParameter('bundles', $this->bundles);
 
         return $query->getResult();
     }
@@ -165,10 +205,12 @@ class WidgetHomeTabConfigRepository extends EntityRepository
     {
         $dql = "
             SELECT whtc
-            FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc
+            FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
+            . self::LEFT_JOIN_PLUGIN . "
             JOIN Claroline\CoreBundle\Entity\Home\HomeTabConfig htc
             WITH htc.homeTab = :homeTabId
-            WHERE whtc.homeTab = :homeTabId
+            WHERE whtc.homeTab = :homeTabId"
+            . " AND " . self::WHERE_PLUGIN_ENABLED . "
             AND htc.visible = true
             AND whtc.workspace = :workspace
             AND whtc.user IS NULL
@@ -180,6 +222,7 @@ class WidgetHomeTabConfigRepository extends EntityRepository
         $query->setParameter('widgetId', $widgetId);
         $query->setParameter('homeTabId', $homeTabId);
         $query->setParameter('workspace', $workspace);
+        $query->setParameter('bundles', $this->bundles);
 
         return $query->getOneOrNullResult();
     }
@@ -187,9 +230,11 @@ class WidgetHomeTabConfigRepository extends EntityRepository
     public function updateAdminWidgetHomeTabConfig(HomeTab $homeTab, $widgetOrder)
     {
         $dql = "
-            UPDATE Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc
+            UPDATE Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
+            . self::LEFT_JOIN_PLUGIN . "
             SET whtc.widgetOrder = whtc.widgetOrder - 1
-            WHERE whtc.homeTab = :homeTab
+            WHERE whtc.homeTab = :homeTab"
+            . " AND " . self::WHERE_PLUGIN_ENABLED . "
             AND whtc.user IS NULL
             AND whtc.workspace IS NULL
             AND whtc.widgetOrder > :widgetOrder
@@ -197,6 +242,7 @@ class WidgetHomeTabConfigRepository extends EntityRepository
         $query = $this->_em->createQuery($dql);
         $query->setParameter('homeTab', $homeTab);
         $query->setParameter('widgetOrder', $widgetOrder);
+        $query->setParameter('bundles', $this->bundles);
 
         return $query->execute();
     }
@@ -208,9 +254,11 @@ class WidgetHomeTabConfigRepository extends EntityRepository
     )
     {
         $dql = "
-            UPDATE Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc
+            UPDATE Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
+            . self::LEFT_JOIN_PLUGIN . "
             SET whtc.widgetOrder = whtc.widgetOrder - 1
-            WHERE whtc.homeTab = :homeTab
+            WHERE whtc.homeTab = :homeTab"
+            . " AND " . self::WHERE_PLUGIN_ENABLED . "
             AND whtc.user = :user
             AND whtc.workspace IS NULL
             AND whtc.widgetOrder > :widgetOrder
@@ -219,6 +267,7 @@ class WidgetHomeTabConfigRepository extends EntityRepository
         $query->setParameter('homeTab', $homeTab);
         $query->setParameter('user', $user);
         $query->setParameter('widgetOrder', $widgetOrder);
+        $query->setParameter('bundles', $this->bundles);
 
         return $query->execute();
     }
@@ -230,9 +279,11 @@ class WidgetHomeTabConfigRepository extends EntityRepository
     )
     {
         $dql = "
-            UPDATE Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc
+            UPDATE Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
+            . self::LEFT_JOIN_PLUGIN . "
             SET whtc.widgetOrder = whtc.widgetOrder - 1
-            WHERE whtc.homeTab = :homeTab
+            WHERE whtc.homeTab = :homeTab"
+            . " AND " . self::WHERE_PLUGIN_ENABLED . "
             AND whtc.workspace = :workspace
             AND whtc.user IS NULL
             AND whtc.widgetOrder > :widgetOrder
@@ -241,6 +292,7 @@ class WidgetHomeTabConfigRepository extends EntityRepository
         $query->setParameter('homeTab', $homeTab);
         $query->setParameter('workspace', $workspace);
         $query->setParameter('widgetOrder', $widgetOrder);
+        $query->setParameter('bundles', $this->bundles);
 
         return $query->execute();
     }
@@ -252,9 +304,11 @@ class WidgetHomeTabConfigRepository extends EntityRepository
     )
     {
         $dql = "
-            UPDATE Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc
+            UPDATE Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
+            . self::LEFT_JOIN_PLUGIN . "
             SET whtc.widgetOrder = :newWidgetOrder
-            WHERE whtc.homeTab = :homeTab
+            WHERE whtc.homeTab = :homeTab"
+            . " AND " . self::WHERE_PLUGIN_ENABLED . "
             AND whtc.user IS NULL
             AND whtc.workspace IS NULL
             AND whtc.widgetOrder = :widgetOrder
@@ -263,6 +317,7 @@ class WidgetHomeTabConfigRepository extends EntityRepository
         $query->setParameter('homeTab', $homeTab);
         $query->setParameter('widgetOrder', $widgetOrder);
         $query->setParameter('newWidgetOrder', $newWidgetOrder);
+        $query->setParameter('bundles', $this->bundles);
 
         return $query->execute();
     }
@@ -275,9 +330,11 @@ class WidgetHomeTabConfigRepository extends EntityRepository
     )
     {
         $dql = "
-            UPDATE Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc
+            UPDATE Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
+            . self::LEFT_JOIN_PLUGIN . "
             SET whtc.widgetOrder = :newWidgetOrder
-            WHERE whtc.homeTab = :homeTab
+            WHERE whtc.homeTab = :homeTab"
+            . " AND " . self::WHERE_PLUGIN_ENABLED . "
             AND whtc.user = :user
             AND whtc.workspace IS NULL
             AND whtc.widgetOrder = :widgetOrder
@@ -287,6 +344,7 @@ class WidgetHomeTabConfigRepository extends EntityRepository
         $query->setParameter('widgetOrder', $widgetOrder);
         $query->setParameter('newWidgetOrder', $newWidgetOrder);
         $query->setParameter('user', $user);
+        $query->setParameter('bundles', $this->bundles);
 
         return $query->execute();
     }
@@ -299,9 +357,11 @@ class WidgetHomeTabConfigRepository extends EntityRepository
     )
     {
         $dql = "
-            UPDATE Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc
+            UPDATE Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
+            . self::LEFT_JOIN_PLUGIN . "
             SET whtc.widgetOrder = :newWidgetOrder
-            WHERE whtc.homeTab = :homeTab
+            WHERE whtc.homeTab = :homeTab"
+            . " AND " . self::WHERE_PLUGIN_ENABLED . "
             AND whtc.workspace = :workspace
             AND whtc.user IS NULL
             AND whtc.widgetOrder = :widgetOrder
@@ -311,6 +371,7 @@ class WidgetHomeTabConfigRepository extends EntityRepository
         $query->setParameter('widgetOrder', $widgetOrder);
         $query->setParameter('newWidgetOrder', $newWidgetOrder);
         $query->setParameter('workspace', $workspace);
+        $query->setParameter('bundles', $this->bundles);
 
         return $query->execute();
     }
@@ -323,8 +384,10 @@ class WidgetHomeTabConfigRepository extends EntityRepository
     {
         $dql = "
             SELECT whtc
-            FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc
-            WHERE whtc.homeTab = :homeTab
+            FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
+            . self::LEFT_JOIN_PLUGIN . "
+            WHERE whtc.homeTab = :homeTab"
+            . " AND " . self::WHERE_PLUGIN_ENABLED . "
             AND whtc.widgetInstance = :widgetInstance
             AND whtc.user = :user
             AND whtc.workspace IS NULL
@@ -334,6 +397,7 @@ class WidgetHomeTabConfigRepository extends EntityRepository
         $query->setParameter('homeTab', $homeTab);
         $query->setParameter('widgetInstance', $widgetInstance);
         $query->setParameter('user', $user);
+        $query->setParameter('bundles', $this->bundles);
 
         return $query->getResult();
     }
@@ -342,16 +406,18 @@ class WidgetHomeTabConfigRepository extends EntityRepository
     {
         $dql = "
             SELECT whtc
-            FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc
-            WHERE whtc.homeTab = :homeTab
+            FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
+            . self::LEFT_JOIN_PLUGIN . "
+            WHERE whtc.homeTab = :homeTab"
+            . " AND " . self::WHERE_PLUGIN_ENABLED . "
             AND whtc.type = :type
             ORDER BY whtc.widgetOrder ASC
         ";
         $query = $this->_em->createQuery($dql);
         $query->setParameter('homeTab', $homeTab);
         $query->setParameter('type', $type);
+        $query->setParameter('bundles', $this->bundles);
 
         return $query->getResult();
     }
-
 }

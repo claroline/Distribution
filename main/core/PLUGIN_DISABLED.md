@@ -7,6 +7,8 @@ OVERRIDEN REPOSITORY METHODS
 - ResourceTypeRepository::findPluginResourceTypes()
 - ResourceTypeRepository::findAll()
 
+- ResourceNodeRepository (for resourceQueryBuilder)
+
 FORM OVERRIDEN
 ==============
 

@@ -1,7 +1,6 @@
 <div>
 	<table class="table">
 		<tr>
-			<td> {{ 'enabled'|trans:{}: 'platform' }} </td>
 			<td> {{ 'loaded'|trans:{}: 'platform' }} </td>
 			<td> {{ 'name'|trans:{}:'platform '}} </td>
 			<td> {{ 'version'|trans:{}:'platform'}} </td>
@@ -9,8 +8,7 @@
 			<td> {{ 'actions'|trans:{}:'platform' }} </td>
 		</tr>
 		<tr ng-repeat="(key, plugin) in cpc.plugins">
-			<td> <input type="checkbox" ng-model="plugin.is_enabled" ng-checked="plugin.is_enabled" ng-change="cpc.onCheckboxChange(plugin)"></input></td>
-			<td> <input type="checkbox" ng-checked="plugin.is_loaded" ng-disabled="true"></input></td>
+			<td> <input type="checkbox" ng-model="plugin.is_loaded" ng-checked="plugin.is_loaded" ng-change="cpc.onCheckboxChange(plugin)"></input></td>
 			<td> {{ plugin.bundle_name }} </td>
 			<td> {{ plugin.version }} </td>
 			<td> {{ plugin.origin }} </td>

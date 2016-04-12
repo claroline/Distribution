@@ -25,6 +25,7 @@ use Claroline\CoreBundle\Form\WidgetHomeTabConfigType;
 use Claroline\CoreBundle\Form\WidgetInstanceType;
 use Claroline\CoreBundle\Manager\HomeTabManager;
 use Claroline\CoreBundle\Manager\WidgetManager;
+use Claroline\CoreBundle\Manager\BundleManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -46,6 +47,7 @@ class HomeTabController extends Controller
     private $homeTabManager;
     private $request;
     private $widgetManager;
+    private $bundleManager;
 
     /**
      * @DI\InjectParams({
@@ -53,7 +55,8 @@ class HomeTabController extends Controller
      *     "formFactory"     = @DI\Inject("form.factory"),
      *     "homeTabManager"  = @DI\Inject("claroline.manager.home_tab_manager"),
      *     "request"         = @DI\Inject("request"),
-     *     "widgetManager"   = @DI\Inject("claroline.manager.widget_manager")
+     *     "widgetManager"   = @DI\Inject("claroline.manager.widget_manager"),
+     *     "bundleManager"   = @DI\Inject("claroline.manager.bundle_manager")
      * })
      */
     public function __construct(
@@ -61,7 +64,8 @@ class HomeTabController extends Controller
         FormFactory $formFactory,
         HomeTabManager $homeTabManager,
         Request $request,
-        WidgetManager $widgetManager
+        WidgetManager $widgetManager,
+        BundleManager $bundleManager
     )
     {
         $this->eventDispatcher  = $eventDispatcher;
@@ -69,6 +73,8 @@ class HomeTabController extends Controller
         $this->homeTabManager   = $homeTabManager;
         $this->request          = $request;
         $this->widgetManager    = $widgetManager;
+        $this->bundleManager    = $bundleManager;
+        $this->bundles          = $bundleManager->getEnabled(true);
     }
 
     /**
@@ -499,7 +505,7 @@ class HomeTabController extends Controller
     {
         $isDesktop = ($homeTabType === 'desktop');
         $instanceForm = $this->formFactory->create(
-            new WidgetInstanceType($isDesktop),
+            new WidgetInstanceType($this->bundles, $isDesktop),
             new WidgetInstance()
         );
         $widgetHomeTabConfigForm = $this->formFactory->create(
@@ -544,7 +550,7 @@ class HomeTabController extends Controller
         $widgetDisplayConfig = new WidgetDisplayConfig();
 
         $instanceForm = $this->formFactory->create(
-            new WidgetInstanceType($isDesktop),
+            new WidgetInstanceType($this->bundles, $isDesktop),
             $widgetInstance
         );
         $widgetHomeTabConfigForm = $this->formFactory->create(

@@ -12,9 +12,17 @@
 namespace Claroline\CoreBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class ResourceTypeRepository extends EntityRepository
+class ResourceTypeRepository extends EntityRepository implements ContainerAwareInterface
 {
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+        $this->bundles = $this->container->get('claroline.manager.bundle_manager')->getEnabled(true);
+    }
+
     /**
      * Returns all the resource types introduced by plugins.
      *
@@ -25,10 +33,10 @@ class ResourceTypeRepository extends EntityRepository
         $dql = '
             SELECT rt FROM Claroline\CoreBundle\Entity\Resource\ResourceType rt
             JOIN rt.plugin p
-            WHERE p.isEnabled = true
-            OR rt.plugin is NULL
+            WHERE CONCAT(p.vendorName, p.bundleName) IN (:bundles)
         ';
         $query = $this->_em->createQuery($dql);
+        $query->setParameter('bundles', $this->bundles);
 
         return $query->getResult();
     }
@@ -70,10 +78,11 @@ class ResourceTypeRepository extends EntityRepository
           SELECT rt, ma FROM Claroline\CoreBundle\Entity\Resource\ResourceType rt
           LEFT JOIN rt.actions ma
           LEFT JOIN rt.plugin p
-          WHERE p.isEnabled = true
+          WHERE CONCAT(p.vendorName, p.bundleName) IN (:bundles)
           OR rt.plugin is NULL';
 
         $query = $this->_em->createQuery($dql);
+        $query->setParameter('bundles', $this->bundles);
 
         return $query->getResult();
     }

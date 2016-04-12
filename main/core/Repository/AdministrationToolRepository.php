@@ -12,17 +12,27 @@
 namespace Claroline\CoreBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class AdministrationToolRepository extends EntityRepository
+class AdministrationToolRepository extends EntityRepository implements ContainerAwareInterface
 {
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+        $this->bundles = $this->container->get('claroline.manager.bundle_manager')->getEnabled(true);
+    }
+
     public function findAll()
     {
         $dql = "SELECT tool FROM Claroline\CoreBundle\Entity\Tool\AdminTool tool
             LEFT JOIN tool.plugin p
-            WHERE p.isEnabled = true
+            WHERE CONCAT(p.vendorName, p.bundleName) IN (:bundles)
             OR tool.plugin is NULL";
 
         $query = $this->_em->createQuery($dql);
+        $query->setParameter('bundles', $this->bundles);
 
         return $query->getResult();
     }
@@ -48,12 +58,13 @@ class AdministrationToolRepository extends EntityRepository
                 JOIN tool.roles role
                 LEFT JOIN tool.plugin p
                 WHERE role.name IN (:roleNames)
-                AND p.isEnabled = true
+                AND CONCAT(p.vendorName, p.bundleName) IN (:bundles)
                 OR tool.plugin IS NULL
             ";
         }
 
         $query = $this->_em->createQuery($dql);
+        $query->setParameter('bundles', $this->bundles);
 
         if (!$isAdmin) {
             $query->setParameter('roleNames', $rolesNames);

@@ -45,6 +45,7 @@ class BundleManager
         $this->kernelRootDir  = $kernelRootDir;
         $this->om             = $om;
         $this->pluginRepo     = $om->getRepository('ClarolineCoreBundle:Plugin');
+        $this->iniFile        = $this->kernelRootDir . '/config/bundles.ini';
     }
 
     public function getDistributionVersion()
@@ -98,8 +99,7 @@ class BundleManager
         $this->om->startFlushSuite();
 
         foreach ($this->getPlugins() as $plugin) {
-            $plugin->enable();
-            $this->om->persist($plugin);
+            $this->enable($plugin);
         }
 
         $this->om->endFlushSuite();
@@ -135,5 +135,24 @@ class BundleManager
             );
 
         return $plugin;
+    }
+
+    public function getEnabled($shortName = false)
+    {
+        $bundles = parse_ini_file($this->iniFile);
+        $enabledBundles = [];
+
+        foreach ($bundles as $bundle => $enabled) {
+            if ($enabled) {
+                if ($shortName) {
+                    $parts = explode('\\', $bundle);
+                    $enabledBundles[] = $parts[2];
+                } else {
+                    $enabledBundles[] = $bundles;
+                }
+            }
+        }
+
+        return $enabledBundles;
     }
 }

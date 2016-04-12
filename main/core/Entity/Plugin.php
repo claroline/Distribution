@@ -77,6 +77,9 @@ class Plugin
     protected $origin;
 
     /**
+     * This is not used anymore, but I'm still developping it and I've been removing/adding it so many times that I think
+     * it's better to keep it here.
+     *
      * @Groups({"api_plugin"})
      * @ORM\Column(type="boolean")
      * @Accessor(getter="isEnabled")

@@ -8,7 +8,7 @@ export default class PluginController {
 	}
 
 	onCheckboxChange(plugin) {
-		plugin.is_enabled ? this.enable(plugin): this.disable(plugin)
+		plugin.is_loaded ? this.enable(plugin): this.disable(plugin)
 	}
 
 	enable(plugin) {

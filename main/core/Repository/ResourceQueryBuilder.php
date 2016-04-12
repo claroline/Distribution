@@ -36,6 +36,7 @@ class ResourceQueryBuilder
     private $fromClause;
     private $joinRelativesClause;
     private $leftJoinRoles = false;
+    private $bundles;
 
     public function __construct()
     {
@@ -46,9 +47,15 @@ class ResourceQueryBuilder
             "JOIN node.resourceType resourceType{$eol}" .
             "LEFT JOIN node.parent parent{$eol}" .
             "LEFT JOIN node.icon icon{$eol}" .
-            "LEFT JOIN resourceType.plugin p{$eol}"
+            "LEFT JOIN resourceType.plugin p{$eol}";
+        $this->bundles = [];
+    }
 
-        $this->addWhereClause("(p.isEnabled = true OR resourceType.plugin is NULL");
+    public function setBundles(array $bundles)
+    {
+        $this->bundles = $bundles;
+        $this->addWhereClause("(CONCAT(p.vendorName, p.bundleName) IN (:bundles) OR resourceType.plugin is NULL)");
+        $this->parameters[':bundles'] = $bundles;
     }
 
     /**
