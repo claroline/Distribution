@@ -424,7 +424,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
     public function countUsers()
     {
         $qb = $this->createQueryBuilder('user')
-            ->select('COUNT(DISTINCT user.id)')
+            ->select('COUNT(user.id)')
             ->where('user.isEnabled = true');
 
         return $qb->getQuery()->getSingleScalarResult();
