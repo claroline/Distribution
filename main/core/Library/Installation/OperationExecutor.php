@@ -38,7 +38,7 @@ class OperationExecutor
      * When doing an upgrade from the old core-bundle packages to the distribution one, it will trigger every updater
      * starting from the VERSION_UPGRADE_DISTRIBUTION constant.
      */
-    const VERSION_UPGRADE_DISTRIBUTION = '6.0.0'
+    const VERSION_UPGRADE_DISTRIBUTION = '6.0.0';
 
     use LoggableTrait;
 
@@ -155,7 +155,7 @@ class OperationExecutor
                         $operations[$bundle] = new Operation(Operation::UPDATE, $currentPackage, $bundle);
                         $previousPackage = $this->findPreviousPackage($currentPackage);
 
-                        if ($previousPackage === null && $currentPackage === 'claroline/distribution') {
+                        if ($previousPackage === null && $currentPackage->getPrettyName() === 'claroline/distribution') {
                             /*
                              * Allows easy upgrade from the 6.x core-bundle branch
                              * Note that it will upgrade every plugin that's included in the distribution aswell
@@ -164,7 +164,7 @@ class OperationExecutor
                              * An upgrade from the 5.x branch should first go until the last 5.x version,
                              * then go to the distribution package (it's a bit annoying but it should work).
                              */
-                            $operation[$bundle]->setFromVersion(self::VERSION_UPGRADE_DISTRIBUTION);
+                            $operations[$bundle]->setFromVersion(self::VERSION_UPGRADE_DISTRIBUTION);
                         } else {
                             $operations[$bundle]->setFromVersion($previousPackage->getVersion());
                         }
