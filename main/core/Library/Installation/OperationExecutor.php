@@ -34,6 +34,12 @@ use Symfony\Component\HttpKernel\KernelInterface;
  */
 class OperationExecutor
 {
+    /*
+     * When doing an upgrade from the old core-bundle packages to the distribution one, it will trigger every updater
+     * starting from the VERSION_UPGRADE_DISTRIBUTION constant.
+     */
+    const VERSION_UPGRADE_DISTRIBUTION = '6.0.0'
+
     use LoggableTrait;
 
     private $kernel;
@@ -148,14 +154,28 @@ class OperationExecutor
                     if (in_array($bundle, $previousBundles) === true) {
                         $operations[$bundle] = new Operation(Operation::UPDATE, $currentPackage, $bundle);
                         $previousPackage = $this->findPreviousPackage($currentPackage);
-                        $operations[$bundle]->setFromVersion($previousPackage->getVersion());
+
+                        if ($previousPackage === null && $currentPackage === 'claroline/distribution') {
+                            /*
+                             * Allows easy upgrade from the 6.x core-bundle branch
+                             * Note that it will upgrade every plugin that's included in the distribution aswell
+                             * If every custom updater is done properly, it should work.
+                             *
+                             * An upgrade from the 5.x branch should first go until the last 5.x version,
+                             * then go to the distribution package (it's a bit annoying but it should work).
+                             */
+                            $operation[$bundle]->setFromVersion(self::VERSION_UPGRADE_DISTRIBUTION);
+                        } else {
+                            $operations[$bundle]->setFromVersion($previousPackage->getVersion());
+                        }
+
                         $operations[$bundle]->setToVersion($currentPackage->getVersion());
                     } else {
                         $operations[$bundle] = new Operation(Operation::INSTALL, $currentPackage, $bundle);
                     }
                 }
             } else {
-                //old <= v6 package detection
+                //v6 single package detection
                 if (!($previousPackage = $previous->findPackage($currentPackage->getName(), '*'))) {
                     $this->log("Installation of {$currentPackage->getName()} required");
                     $operation = $this->buildOperation(Operation::INSTALL, $currentPackage);
