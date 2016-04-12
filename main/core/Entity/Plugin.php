@@ -77,16 +77,6 @@ class Plugin
     protected $origin;
 
     /**
-     * This is not used anymore, but I'm still developping it and I've been removing/adding it so many times that I think
-     * it's better to keep it here.
-     *
-     * @Groups({"api_plugin"})
-     * @ORM\Column(type="boolean")
-     * @Accessor(getter="isEnabled")
-     */
-    protected $isEnabled = true;
-
-    /**
     * Check if the plugin is loaded in the bundles.ini file.
     *
      * @Groups({"api_plugin"})
@@ -180,21 +170,6 @@ class Plugin
     public function getOrigin()
     {
         return $this->origin;
-    }
-
-    public function isEnabled()
-    {
-        return $this->isEnabled;
-    }
-
-    public function enable()
-    {
-        $this->isEnabled = true;
-    }
-
-    public function disable()
-    {
-        $this->isEnabled = false;
     }
 
     public function isLoaded()

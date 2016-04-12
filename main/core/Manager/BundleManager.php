@@ -94,23 +94,8 @@ class BundleManager
         return $this->pluginRepo->findAll();
     }
 
-    public function enableAll()
-    {
-        $this->om->startFlushSuite();
-
-        foreach ($this->getPlugins() as $plugin) {
-            $this->enable($plugin);
-        }
-
-        $this->om->endFlushSuite();
-    }
-
     public function enable(Plugin $plugin)
     {
-        $plugin->enable();
-        $this->om->persist($plugin);
-        $this->om->flush();
-        //update ini file
         $this->iniFileManager
             ->updateKey(
                 $plugin->getBundleFQCN(),
@@ -123,10 +108,6 @@ class BundleManager
 
     public function disable(Plugin $plugin)
     {
-        $plugin->disable();
-        $this->om->persist($plugin);
-        $this->om->flush();
-        //update ini file
         $this->iniFileManager
             ->updateKey(
                 $plugin->getBundleFQCN(),

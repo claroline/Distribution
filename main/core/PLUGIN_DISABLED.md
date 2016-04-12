@@ -9,6 +9,8 @@ OVERRIDEN REPOSITORY METHODS
 
 - ResourceNodeRepository (for resourceQueryBuilder)
 
+- WidgetHomeTabConfigRepository (for widget: every methods)
+
 FORM OVERRIDEN
 ==============
 
