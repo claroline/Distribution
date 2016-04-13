@@ -9,13 +9,12 @@ namespace Icap\DropzoneBundle\Tests\Entity;
 
 use Icap\DropzoneBundle\Entity\Correction;
 use Icap\DropzoneBundle\Entity\Drop;
-use DateTime;
+use \DateTime;
 
 class DropTest extends \PHPUnit_Framework_TestCase
 {
     public function testgetCalculatedGrade()
     {
-        echo "testing DROP->getCalculatedGrade\n";
         $correction1 = $this->createCorrection(10);
         $correction2 = $this->createCorrection(20);
         $correction3 = $this->createCorrection(5);
@@ -47,7 +46,6 @@ class DropTest extends \PHPUnit_Framework_TestCase
 
     public function testCountFinishedCorrections()
     {
-        echo "testing DROP->CountFinishedCorrections\n";
         // WARN, countFinished correction care about the valid property
         // a finished correction but invalis should not be in the count.
 
@@ -77,8 +75,6 @@ class DropTest extends \PHPUnit_Framework_TestCase
 
     public function testGetHasDeniedCorrection()
     {
-        echo "testing DROP->GetHasDeniedCorrection\n";
-
         $correction1 = $this->createCorrection(10, true);
         $correction1->setCorrectionDenied(true);
         $correction2 = $this->createCorrection(20, false, true);
@@ -108,8 +104,7 @@ class DropTest extends \PHPUnit_Framework_TestCase
 
     public function testGetLastCorrectionDate()
     {
-        echo "testing DROP->GetLastCorrection\n";
-        $date1 = \DateTime::createFromFormat('d-m-Y', '15-02-2009');
+        $date1 = DateTime::createFromFormat('d-m-Y', '15-02-2009');
         $correction1 = $this->createCorrection(10, true);
         $correction1->setEndDate($date1);
 
