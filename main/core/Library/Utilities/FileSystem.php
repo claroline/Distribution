@@ -45,19 +45,23 @@ class FileSystem extends Fs
     public function copyDir($path, $target, $originalPath = '', $originalTarget = '')
     {
         $iterator = new \DirectoryIterator($path);
-        if ($originalPath === '') $originalPath = $path;
-        if ($originalTarget === '') $originalTarget = $target;
+        if ($originalPath === '') {
+            $originalPath = $path;
+        }
+        if ($originalTarget === '') {
+            $originalTarget = $target;
+        }
 
         foreach ($iterator as $el) {
             if (!$el->isDot()) {
                 $parts = explode($originalPath, $el->getRealPath());
                 $basePath = $parts[1];
-                $newPath = $originalTarget . $basePath;
+                $newPath = $originalTarget.$basePath;
 
                 if ($el->isDir()) {
                     $this->mkdir($newPath);
                     $this->copyDir($el->getRealPath(), $newPath, $originalPath, $originalTarget);
-                } else if ($el->isFile()){
+                } elseif ($el->isFile()) {
                     $this->copy($el->getRealPath(), $newPath);
                 }
             }
@@ -86,13 +90,17 @@ class FileSystem extends Fs
 
     public function isWritable($path, $recursive = false)
     {
-        if (!$recursive) return is_writable($path);
+        if (!$recursive) {
+            return is_writable($path);
+        }
 
         $it = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS);
         $files = new \RecursiveIteratorIterator($it, \RecursiveIteratorIterator::CHILD_FIRST);
 
         foreach ($files as $file) {
-            if (!is_writable($file)) return false;
+            if (!is_writable($file)) {
+                return false;
+            }
         }
 
         return true;

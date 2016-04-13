@@ -30,7 +30,7 @@ class ToolRepository extends EntityRepository implements ContainerAwareInterface
     /**
      * Returns the workspace tools visible by a set of roles.
      *
-     * @param string[]          $roles
+     * @param string[]  $roles
      * @param Workspace $workspace
      *
      * @return Tool[]
@@ -41,16 +41,14 @@ class ToolRepository extends EntityRepository implements ContainerAwareInterface
         array $roles,
         Workspace $workspace,
         $orderedToolType = 0
-    )
-    {
+    ) {
         if (count($roles) === 0) {
-
             return array();
         } else {
             $isAdmin = false;
 
             foreach ($roles as $role) {
-                if ($role === 'ROLE_ADMIN' || $role === 'ROLE_WS_MANAGER_' . $workspace->getGuid()) {
+                if ($role === 'ROLE_ADMIN' || $role === 'ROLE_WS_MANAGER_'.$workspace->getGuid()) {
                     $isAdmin = true;
                 }
             }
@@ -145,8 +143,7 @@ class ToolRepository extends EntityRepository implements ContainerAwareInterface
         User $user,
         array $excludedTools,
         $orderedToolType = 0
-    )
-    {
+    ) {
         $dql = "
             SELECT tool
             FROM Claroline\CoreBundle\Entity\Tool\Tool tool
@@ -248,8 +245,7 @@ class ToolRepository extends EntityRepository implements ContainerAwareInterface
     public function findUndisplayedToolsByWorkspace(
         Workspace $workspace,
         $orderedToolType = 0
-    )
-    {
+    ) {
         $dql = "
             SELECT tool
             FROM Claroline\CoreBundle\Entity\Tool\Tool tool
@@ -285,8 +281,7 @@ class ToolRepository extends EntityRepository implements ContainerAwareInterface
     public function findDisplayedToolsByWorkspace(
         Workspace $workspace,
         $orderedToolType = 0
-    )
-    {
+    ) {
         $dql = '
             SELECT tool
             FROM Claroline\CoreBundle\Entity\Tool\Tool tool
@@ -313,13 +308,12 @@ class ToolRepository extends EntityRepository implements ContainerAwareInterface
      *
      * @param Workspace $workspace
      *
-     * @return integer
+     * @return int
      */
     public function countDisplayedToolsByWorkspace(
         Workspace $workspace,
         $orderedToolType = 0
-    )
-    {
+    ) {
         $dql = "
             SELECT count(tool)
             FROM Claroline\CoreBundle\Entity\Tool\Tool tool

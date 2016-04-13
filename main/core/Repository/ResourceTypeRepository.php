@@ -45,6 +45,7 @@ class ResourceTypeRepository extends EntityRepository implements ContainerAwareI
      * Returns the number of existing resources for each resource type.
      *
      * @param null $workspace
+     *
      * @return array
      */
     public function countResourcesByType($workspace = null)
@@ -89,6 +90,7 @@ class ResourceTypeRepository extends EntityRepository implements ContainerAwareI
 
     /**
      * @param array $excludedTypeNames
+     *
      * @return array
      */
     public function findTypeNamesNotIn(array $excludedTypeNames)

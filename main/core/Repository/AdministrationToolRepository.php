@@ -72,7 +72,6 @@ class AdministrationToolRepository extends EntityRepository implements Container
             $query->setParameter('roleNames', $rolesNames);
         }
 
-
         return $query->getResult();
     }
 }

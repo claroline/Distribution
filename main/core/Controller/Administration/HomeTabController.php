@@ -104,7 +104,7 @@ class HomeTabController extends Controller
      *
      * Displays the admin homeTabs configuration page.
      *
-     * @param integer $homeTabId
+     * @param int $homeTabId
      *
      * @return array
      */
@@ -141,7 +141,6 @@ class HomeTabController extends Controller
         $wdcs = $this->widgetManager->generateWidgetDisplayConfigsForAdmin($widgetHomeTabConfigs);
 
         foreach ($wdcs as $wdc) {
-
             if ($wdc->getRow() === -1 || $wdc->getColumn() === -1) {
                 $initWidgetsPosition = true;
                 break;
@@ -169,7 +168,7 @@ class HomeTabController extends Controller
             'homeTabType' => $homeTabType,
             'homeTabConfigs' => $homeTabConfigs,
             'widgetsDatas' => $widgets,
-            'initWidgetsPosition' => $initWidgetsPosition
+            'initWidgetsPosition' => $initWidgetsPosition,
         );
     }
 
@@ -199,7 +198,7 @@ class HomeTabController extends Controller
         return array(
             'homeTabType' => $homeTabType,
             'homeTabForm' => $homeTabForm->createView(),
-            'homeTabConfigForm' => $homeTabConfigForm->createView()
+            'homeTabConfigForm' => $homeTabConfigForm->createView(),
         );
     }
 
@@ -256,11 +255,10 @@ class HomeTabController extends Controller
 
             return new JsonResponse($homeTab->getId(), 200);
         } else {
-
             return array(
                 'homeTabType' => $homeTabType,
                 'homeTabForm' => $homeTabForm->createView(),
-                'homeTabConfigForm' => $homeTabConfigForm->createView()
+                'homeTabConfigForm' => $homeTabConfigForm->createView(),
             );
         }
     }
@@ -275,9 +273,9 @@ class HomeTabController extends Controller
      *
      * Displays the admin homeTab name edition form.
      *
-     * @param HomeTab $homeTab
+     * @param HomeTab       $homeTab
      * @param HomeTabConfig $homeTabConfig
-     * @param string $homeTabType
+     * @param string        $homeTabType
      *
      * @throws AccessDeniedException
      *
@@ -287,8 +285,7 @@ class HomeTabController extends Controller
         HomeTab $homeTab,
         HomeTabConfig $homeTabConfig,
         $homeTabType
-    )
-    {
+    ) {
         $this->checkAdminHomeTab($homeTab, $homeTabType);
         $this->checkAdminHomeTabConfig($homeTabConfig, $homeTabType);
 
@@ -306,7 +303,7 @@ class HomeTabController extends Controller
             'homeTabConfig' => $homeTabConfig,
             'homeTabType' => $homeTabType,
             'homeTabForm' => $homeTabForm->createView(),
-            'homeTabConfigForm' => $homeTabConfigForm->createView()
+            'homeTabConfigForm' => $homeTabConfigForm->createView(),
         );
     }
 
@@ -321,9 +318,9 @@ class HomeTabController extends Controller
      *
      * Edit the admin homeTab name.
      *
-     * @param HomeTab $homeTab
+     * @param HomeTab       $homeTab
      * @param HomeTabConfig $homeTabConfig
-     * @param string $homeTabType
+     * @param string        $homeTabType
      *
      * @throws AccessDeniedException
      *
@@ -333,8 +330,7 @@ class HomeTabController extends Controller
         HomeTab $homeTab,
         HomeTabConfig $homeTabConfig,
         $homeTabType
-    )
-    {
+    ) {
         $this->checkAdminHomeTab($homeTab, $homeTabType);
         $this->checkAdminHomeTabConfig($homeTabConfig, $homeTabType);
 
@@ -359,18 +355,17 @@ class HomeTabController extends Controller
                     'id' => $homeTab->getId(),
                     'name' => $homeTab->getName(),
                     'visibility' => $visibility,
-                    'lock' => $lock
+                    'lock' => $lock,
                 ),
                 200
             );
         } else {
-
             return array(
                 'homeTab' => $homeTab,
                 'homeTabConfig' => $homeTabConfig,
                 'homeTabType' => $homeTabType,
                 'homeTabForm' => $homeTabForm->createView(),
-                'homeTabConfigForm' => $homeTabConfigForm->createView()
+                'homeTabConfigForm' => $homeTabConfigForm->createView(),
             );
         }
     }
@@ -385,7 +380,7 @@ class HomeTabController extends Controller
      * Delete the given homeTab.
      *
      * @param HomeTab $homeTab
-     * @param string $homeTabType
+     * @param string  $homeTabType
      *
      * @throws AccessDeniedException
      *
@@ -394,8 +389,7 @@ class HomeTabController extends Controller
     public function adminHomeTabDeleteAction(
         HomeTab $homeTab,
         $homeTabType
-    )
-    {
+    ) {
         $this->checkAdminHomeTab($homeTab, $homeTabType);
         $this->homeTabManager->deleteHomeTab($homeTab);
 
@@ -418,8 +412,7 @@ class HomeTabController extends Controller
         $homeTabType,
         HomeTabConfig $homeTabConfig,
         $nextHomeTabConfigId
-    )
-    {
+    ) {
         $this->checkAdminHomeTabConfig($homeTabConfig, $homeTabType);
         $homeTab = $homeTabConfig->getHomeTab();
         $this->checkAdminHomeTab($homeTab, $homeTabType);
@@ -450,8 +443,7 @@ class HomeTabController extends Controller
      */
     public function adminWidgetHomeTabConfigDeleteAction(
         WidgetHomeTabConfig $widgetHomeTabConfig
-    )
-    {
+    ) {
         $this->checkAdminAccessForWidgetHomeTabConfig($widgetHomeTabConfig);
         $widgetInstance = $widgetHomeTabConfig->getWidgetInstance();
         $this->homeTabManager->deleteWidgetHomeTabConfig($widgetHomeTabConfig);
@@ -476,8 +468,7 @@ class HomeTabController extends Controller
         WidgetDisplayConfig $widgetDisplayConfig,
         $row,
         $column
-    )
-    {
+    ) {
         $this->checkAdminAccessForWidgetDisplayConfig($widgetDisplayConfig);
         $widgetDisplayConfig->setRow($row);
         $widgetDisplayConfig->setColumn($column);
@@ -497,7 +488,7 @@ class HomeTabController extends Controller
      * Displays the widget instance form.
      *
      * @param HomeTab $homeTab
-     * @param string $homeTabType
+     * @param string  $homeTabType
      *
      * @return array
      */
@@ -522,7 +513,7 @@ class HomeTabController extends Controller
             'homeTab' => $homeTab,
             'instanceForm' => $instanceForm->createView(),
             'widgetHomeTabConfigForm' => $widgetHomeTabConfigForm->createView(),
-            'displayConfigForm' => $displayConfigForm->createView()
+            'displayConfigForm' => $displayConfigForm->createView(),
         );
     }
 
@@ -538,7 +529,7 @@ class HomeTabController extends Controller
      * Creates a widget instance.
      *
      * @param HomeTab $homeTab
-     * @param string $homeTabType
+     * @param string  $homeTabType
      *
      * @return Response
      */
@@ -568,7 +559,6 @@ class HomeTabController extends Controller
         if ($instanceForm->isValid() &&
             $widgetHomeTabConfigForm->isValid() &&
             $displayConfigForm->isValid()) {
-
             $widgetInstance->setIsAdmin(true);
             $widgetInstance->setIsDesktop($isDesktop);
             $widgetHomeTabConfig->setHomeTab($homeTab);
@@ -597,18 +587,17 @@ class HomeTabController extends Controller
                     'visibility' => $widgetHomeTabConfig->isVisible() ? 1 : 0,
                     'lock' => $widgetHomeTabConfig->isLocked() ? 1 : 0,
                     'width' => $widget->getDefaultWidth(),
-                    'height' => $widget->getDefaultHeight()
+                    'height' => $widget->getDefaultHeight(),
                 ),
                 200
             );
         } else {
-
             return array(
                 'homeTabType' => $homeTabType,
                 'homeTab' => $homeTab,
                 'instanceForm' => $instanceForm->createView(),
                 'widgetHomeTabConfigForm' => $widgetHomeTabConfigForm->createView(),
-                'displayConfigForm' => $displayConfigForm->createView()
+                'displayConfigForm' => $displayConfigForm->createView(),
             );
         }
     }
@@ -621,10 +610,10 @@ class HomeTabController extends Controller
      * )
      * @EXT\Template("ClarolineCoreBundle:Administration\HomeTab:adminWidgetConfigEditModalForm.html.twig")
      *
-     * @param WidgetInstance $widgetInstance
+     * @param WidgetInstance      $widgetInstance
      * @param WidgetHomeTabConfig $widgetHomeTabConfig
      * @param WidgetDisplayConfig $widgetDisplayConfig
-     * @param string $homeTabType
+     * @param string              $homeTabType
      *
      * @throws AccessDeniedException
      *
@@ -635,8 +624,7 @@ class HomeTabController extends Controller
         WidgetHomeTabConfig $widgetHomeTabConfig,
         WidgetDisplayConfig $widgetDisplayConfig,
         $homeTabType
-    )
-    {
+    ) {
         $this->checkAdminAccessForWidgetInstance($widgetInstance);
         $this->checkAdminAccessForWidgetHomeTabConfig($widgetHomeTabConfig);
         $this->checkAdminAccessForWidgetDisplayConfig($widgetDisplayConfig);
@@ -661,7 +649,7 @@ class HomeTabController extends Controller
             'displayConfigForm' => $displayConfigForm->createView(),
             'widgetInstance' => $widgetInstance,
             'widgetHomeTabConfig' => $widgetHomeTabConfig,
-            'widgetDisplayConfig' => $widgetDisplayConfig
+            'widgetDisplayConfig' => $widgetDisplayConfig,
         );
     }
 
@@ -673,12 +661,13 @@ class HomeTabController extends Controller
      * )
      * @EXT\Template("ClarolineCoreBundle:Administration\HomeTab:adminWidgetConfigEditModalForm.html.twig")
      *
-     * @param WidgetInstance $widgetInstance
+     * @param WidgetInstance      $widgetInstance
      * @param WidgetHomeTabConfig $widgetHomeTabConfig
      * @param WidgetDisplayConfig $widgetDisplayConfig
-     * @param string $homeTabType
+     * @param string              $homeTabType
      *
      * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
+     *
      * @return array
      */
     public function adminWidgetConfigEditAction(
@@ -686,8 +675,7 @@ class HomeTabController extends Controller
         WidgetHomeTabConfig $widgetHomeTabConfig,
         WidgetDisplayConfig $widgetDisplayConfig,
         $homeTabType
-    )
-    {
+    ) {
         $this->checkAdminAccessForWidgetInstance($widgetInstance);
         $this->checkAdminAccessForWidgetHomeTabConfig($widgetHomeTabConfig);
         $this->checkAdminAccessForWidgetDisplayConfig($widgetDisplayConfig);
@@ -711,7 +699,6 @@ class HomeTabController extends Controller
         if ($instanceForm->isValid() &&
             $widgetHomeTabConfigForm->isValid() &&
             $displayConfigForm->isValid()) {
-
             $this->widgetManager->persistWidgetConfigs(
                 $widgetInstance,
                 $widgetHomeTabConfig,
@@ -730,12 +717,11 @@ class HomeTabController extends Controller
                     'color' => $widgetDisplayConfig->getColor(),
                     'title' => $widgetInstance->getName(),
                     'visibility' => $visibility,
-                    'lock' => $lock
+                    'lock' => $lock,
                 ),
                 200
             );
         } else {
-
             return array(
                 'homeTabType' => $homeTabType,
                 'instanceForm' => $instanceForm->createView(),
@@ -743,12 +729,12 @@ class HomeTabController extends Controller
                 'displayConfigForm' => $displayConfigForm->createView(),
                 'widgetInstance' => $widgetInstance,
                 'widgetHomeTabConfig' => $widgetHomeTabConfig,
-                'widgetDisplayConfig' => $widgetDisplayConfig
+                'widgetDisplayConfig' => $widgetDisplayConfig,
             );
         }
     }
 
-     /**
+    /**
      * @EXT\Route(
      *     "/widget/{widgetInstance}/form",
      *     name="claro_admin_widget_configuration",
@@ -794,7 +780,6 @@ class HomeTabController extends Controller
         $toPersist = array();
 
         foreach ($widgetDisplayConfigs as $config) {
-
             $this->checkAdminAccessForWidgetDisplayConfig($config);
         }
         $datas = $this->request->request->all();
@@ -822,8 +807,7 @@ class HomeTabController extends Controller
     {
         if (!is_null($homeTab->getUser()) ||
             !is_null($homeTab->getWorkspace()) ||
-            $homeTab->getType() !== 'admin_' . $homeTabType) {
-
+            $homeTab->getType() !== 'admin_'.$homeTabType) {
             throw new AccessDeniedException();
         }
     }
@@ -831,12 +815,10 @@ class HomeTabController extends Controller
     private function checkAdminHomeTabConfig(
         HomeTabConfig $homeTabConfig,
         $homeTabType
-    )
-    {
+    ) {
         if (!is_null($homeTabConfig->getUser()) ||
             !is_null($homeTabConfig->getWorkspace()) ||
-            $homeTabConfig->getType() !== 'admin_' . $homeTabType) {
-
+            $homeTabConfig->getType() !== 'admin_'.$homeTabType) {
             throw new AccessDeniedException();
         }
     }
@@ -845,7 +827,6 @@ class HomeTabController extends Controller
     {
         if (!is_null($widgetInstance->getUser()) ||
             !is_null($widgetInstance->getWorkspace())) {
-
             throw new AccessDeniedException();
         }
     }
@@ -855,7 +836,6 @@ class HomeTabController extends Controller
         if ($whtc->getType() !== 'admin' ||
             !is_null($whtc->getUser()) ||
             !is_null($whtc->getWorkspace())) {
-
             throw new AccessDeniedException();
         }
     }
@@ -863,7 +843,6 @@ class HomeTabController extends Controller
     private function checkAdminAccessForWidgetDisplayConfig(WidgetDisplayConfig $wdc)
     {
         if (!is_null($wdc->getUser()) || !is_null($wdc->getWorkspace())) {
-
             throw new AccessDeniedException();
         }
     }

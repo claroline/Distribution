@@ -53,9 +53,7 @@ class WidgetInstanceType extends AbstractType
                 'constraints' => new NotBlank(),
                 'query_builder' => function (WidgetRepository $widgetRepo) use ($datas, $bundles) {
                     if ($datas['is_desktop']) {
-
                         if ($datas['with_role']) {
-
                             return $widgetRepo->createQueryBuilder('w')
                                 ->join('w.roles', 'r')
                                 ->where('w.isDisplayableInDesktop = true')
@@ -66,7 +64,6 @@ class WidgetInstanceType extends AbstractType
                                 ->setParameter('roles', $datas['roles'])
                                 ->setParameter('bundles', $bundles);
                         } else {
-
                             return $widgetRepo->createQueryBuilder('w')
                                 ->where('w.isDisplayableInDesktop = true');
                         }
@@ -74,7 +71,7 @@ class WidgetInstanceType extends AbstractType
                         return $widgetRepo->createQueryBuilder('w')
                             ->where('w.isDisplayableInWorkspace = true');
                     }
-                }
+                },
             )
         );
     }

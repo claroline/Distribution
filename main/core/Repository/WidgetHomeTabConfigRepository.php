@@ -125,8 +125,7 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
     public function findWidgetConfigsByWorkspace(
         HomeTab $homeTab,
         Workspace $workspace
-    )
-    {
+    ) {
         $dql = "
             SELECT whtc
             FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
@@ -149,8 +148,7 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
     public function findVisibleWidgetConfigsByWorkspace(
         HomeTab $homeTab,
         Workspace $workspace
-    )
-    {
+    ) {
         $dql = "
             SELECT whtc
             FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
@@ -174,8 +172,7 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
     public function findVisibleWidgetConfigsByTabIdAndWorkspace(
         $homeTabId,
         Workspace $workspace
-    )
-    {
+    ) {
         $dql = "
             SELECT whtc
             FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
@@ -203,8 +200,7 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
         $widgetId,
         $homeTabId,
         Workspace $workspace
-    )
-    {
+    ) {
         $dql = "
             SELECT whtc
             FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
@@ -253,8 +249,7 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
         HomeTab $homeTab,
         $widgetOrder,
         User $user
-    )
-    {
+    ) {
         $dql = "
             UPDATE Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
             . self::LEFT_JOIN_PLUGIN . "
@@ -278,8 +273,7 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
         HomeTab $homeTab,
         $widgetOrder,
         Workspace $workspace
-    )
-    {
+    ) {
         $dql = "
             UPDATE Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
             . self::LEFT_JOIN_PLUGIN . "
@@ -303,8 +297,7 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
         HomeTab $homeTab,
         $widgetOrder,
         $newWidgetOrder
-    )
-    {
+    ) {
         $dql = "
             UPDATE Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
             . self::LEFT_JOIN_PLUGIN . "
@@ -329,8 +322,7 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
         $widgetOrder,
         $newWidgetOrder,
         User $user
-    )
-    {
+    ) {
         $dql = "
             UPDATE Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
             . self::LEFT_JOIN_PLUGIN . "
@@ -356,8 +348,7 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
         $widgetOrder,
         $newWidgetOrder,
         Workspace $workspace
-    )
-    {
+    ) {
         $dql = "
             UPDATE Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
             . self::LEFT_JOIN_PLUGIN . "
@@ -382,8 +373,7 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
         HomeTab $homeTab,
         WidgetInstance $widgetInstance,
         User $user
-    )
-    {
+    ) {
         $dql = "
             SELECT whtc
             FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"

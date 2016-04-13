@@ -16,7 +16,6 @@ use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\CoreBundle\Library\Installation\Plugin\Installer;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\InstallationBundle\Manager\InstallationManager;
-use Claroline\InstallationBundle\Bundle\InstallableInterface;
 use Composer\Json\JsonFile;
 use Composer\Package\PackageInterface;
 use Composer\Repository\InstalledFilesystemRepository;
@@ -57,8 +56,7 @@ class OperationExecutor
         InstallationManager $baseInstaller,
         Installer $pluginInstaller,
         ObjectManager $om
-    )
-    {
+    ) {
         $this->kernel = $kernel;
         $this->baseInstaller = $baseInstaller;
         $this->pluginInstaller = $pluginInstaller;
@@ -169,7 +167,7 @@ class OperationExecutor
 
         foreach ($bundles as $bundle) {
             $bundleClass = $bundle->getNamespace() ?
-                $bundle->getNamespace() . '\\' . $bundle->getName() :
+                $bundle->getNamespace().'\\'.$bundle->getName() :
                 $bundle->getName();
 
             if (isset($operations[$bundleClass])) {
@@ -189,6 +187,7 @@ class OperationExecutor
      * is deleted.
      *
      * @param Operation[] $operations
+     *
      * @throws \RuntimeException if the the previous repository file is not writable
      */
     public function execute(array $operations)
@@ -235,8 +234,9 @@ class OperationExecutor
     }
 
     /**
-     * @param string    $repoFile
-     * @param bool      $filter
+     * @param string $repoFile
+     * @param bool   $filter
+     *
      * @return InstalledFilesystemRepository
      */
     private function openRepository($repoFile, $filter = true)
@@ -270,7 +270,7 @@ class OperationExecutor
 
         foreach ($this->kernel->getBundles() as $bundle) {
             $fqcn = $bundle->getNamespace() ?
-                $bundle->getNamespace() . '\\' . $bundle->getName() :
+                $bundle->getNamespace().'\\'.$bundle->getName() :
                 $bundle->getName();
             $byFqcn[$fqcn] = $bundle;
         }
@@ -307,7 +307,7 @@ class OperationExecutor
 
     private function buildOperation($type, PackageInterface $package)
     {
-        $vendorDir = $this->kernel->getRootDir() . '/../vendor';
+        $vendorDir = $this->kernel->getRootDir().'/../vendor';
         $targetDir = $package->getTargetDir() ?: '';
         $packageDir = empty($targetDir) ?
             $package->getPrettyName() :

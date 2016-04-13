@@ -92,7 +92,7 @@ class Recorder
      *
      * @param \Claroline\CoreBundle\Library\PluginBundle $plugin
      *
-     * @return boolean
+     * @return bool
      */
     public function isRegistered(PluginBundle $plugin)
     {

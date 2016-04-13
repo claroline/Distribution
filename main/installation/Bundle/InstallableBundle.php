@@ -22,19 +22,19 @@ abstract class InstallableBundle extends Bundle implements InstallableInterface
 
     public function getRequiredFixturesDirectory($environment)
     {
-        return null;
+        return;
     }
 
     public function getOptionalFixturesDirectory($environment)
     {
-        return null;
+        return;
     }
 
     public function getAdditionalInstaller()
     {
-        return null;
+        return;
     }
-
+    
     public function getComposer()
     {
         static $data;
@@ -78,7 +78,15 @@ abstract class InstallableBundle extends Bundle implements InstallableInterface
 
     private function getInstalled()
     {
-        return json_decode(file_get_contents(__DIR__ . '/../../../../../composer/installed.json'), true);
+        static $data;
+
+        if (!$data) {
+            $ds = DIRECTORY_SEPARATOR;
+            $path = realpath($this->getPath().$ds.'composer.json');
+            $data = json_decode(file_get_contents($path));
+        }
+
+        return $data;
     }
 
     private function getComposerParameter($parameter, $default = null)

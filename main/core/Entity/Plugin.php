@@ -78,7 +78,7 @@ class Plugin
 
     public function getShortName()
     {
-        return strtolower($this->getVendorName() . str_replace('Bundle', '', $this->getBundleName()));
+        return strtolower($this->getVendorName().str_replace('Bundle', '', $this->getBundleName()));
     }
 
     public function getVendorName()
@@ -103,7 +103,7 @@ class Plugin
 
     public function getSfName()
     {
-        return $this->vendorName . $this->bundleName;
+        return $this->vendorName.$this->bundleName;
     }
 
     public function setHasOptions($hasOptions)

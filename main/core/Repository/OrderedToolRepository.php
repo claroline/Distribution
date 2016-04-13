@@ -32,7 +32,7 @@ class OrderedToolRepository extends EntityRepository implements ContainerAwareIn
      * Returns the workspace ordered tools accessible to some given roles.
      *
      * @param Workspace $workspace
-     * @param array             $roles
+     * @param array     $roles
      *
      * @return array[OrderedTool]
      */
@@ -40,8 +40,7 @@ class OrderedToolRepository extends EntityRepository implements ContainerAwareIn
         Workspace $workspace,
         array $roles,
         $type = 0
-    )
-    {
+    ) {
         if (count($roles) === 0) {
             return array();
         } else {
@@ -78,8 +77,7 @@ class OrderedToolRepository extends EntityRepository implements ContainerAwareIn
         $toOrder,
         $type = 0,
         $executeQuery = true
-    )
-    {
+    ) {
         $dql = '
             UPDATE Claroline\CoreBundle\Entity\Tool\OrderedTool ot
             SET ot.order = ot.order + 1
@@ -103,8 +101,7 @@ class OrderedToolRepository extends EntityRepository implements ContainerAwareIn
         $toOrder,
         $type = 0,
         $executeQuery = true
-    )
-    {
+    ) {
         $dql = '
             UPDATE Claroline\CoreBundle\Entity\Tool\OrderedTool ot
             SET ot.order = ot.order - 1
@@ -126,8 +123,7 @@ class OrderedToolRepository extends EntityRepository implements ContainerAwareIn
         Workspace $workspace,
         array $roles,
         $type = 0
-    )
-    {
+    ) {
         $dql = 'SELECT ot
             FROM Claroline\CoreBundle\Entity\Tool\OrderedTool ot
             JOIN ot.tool t
@@ -186,8 +182,7 @@ class OrderedToolRepository extends EntityRepository implements ContainerAwareIn
         User $user,
         $type = 0,
         $executeQuery = true
-    )
-    {
+    ) {
         $dql = '
             SELECT ot
             FROM Claroline\CoreBundle\Entity\Tool\OrderedTool ot
@@ -217,8 +212,7 @@ class OrderedToolRepository extends EntityRepository implements ContainerAwareIn
         array $excludedToolNames,
         $type = 0,
         $executeQuery = true
-    )
-    {
+    ) {
         $dql = '
             SELECT ot
             FROM Claroline\CoreBundle\Entity\Tool\OrderedTool ot
@@ -248,8 +242,7 @@ class OrderedToolRepository extends EntityRepository implements ContainerAwareIn
     public function findDisplayableDesktopOrderedToolsByTypeForAdmin(
         $type = 0,
         $executeQuery = true
-    )
-    {
+    ) {
         $dql = '
             SELECT ot
             FROM Claroline\CoreBundle\Entity\Tool\OrderedTool ot
@@ -277,8 +270,7 @@ class OrderedToolRepository extends EntityRepository implements ContainerAwareIn
         array $excludedToolNames,
         $type = 0,
         $executeQuery = true
-    )
-    {
+    ) {
         $dql = '
             SELECT ot
             FROM Claroline\CoreBundle\Entity\Tool\OrderedTool ot
@@ -308,8 +300,7 @@ class OrderedToolRepository extends EntityRepository implements ContainerAwareIn
         array $excludedToolNames,
         $type = 0,
         $executeQuery = true
-    )
-    {
+    ) {
         $dql = '
             SELECT ot
             FROM Claroline\CoreBundle\Entity\Tool\OrderedTool ot
@@ -341,8 +332,7 @@ class OrderedToolRepository extends EntityRepository implements ContainerAwareIn
         User $user,
         $type = 0,
         $executeQuery = true
-    )
-    {
+    ) {
         $dql = '
             SELECT ot
             FROM Claroline\CoreBundle\Entity\Tool\OrderedTool ot
