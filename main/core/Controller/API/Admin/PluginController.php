@@ -35,13 +35,13 @@ class PluginController extends FOSRestController
     /**
      * @DI\InjectParams({
      *     "request"       = @DI\Inject("request"),
-	 *	   "bundleManager" = @DI\Inject("claroline.manager.bundle_manager")
+     *	   "bundleManager" = @DI\Inject("claroline.manager.bundle_manager")
      * })
      */
     public function __construct(Request $request, BundleManager $bundleManager)
     {
         $this->request       = $request;
-		$this->bundleManager = $bundleManager;
+        $this->bundleManager = $bundleManager;
     }
 
     /**
@@ -53,7 +53,7 @@ class PluginController extends FOSRestController
 	 */
     public function getPluginsAction()
     {
-		return $this->bundleManager->getPlugins();
+        return $this->bundleManager->getPlugins();
     }
 
 	/**
@@ -66,7 +66,7 @@ class PluginController extends FOSRestController
 	 */
 	public function enablePluginAction(Plugin $plugin)
 	{
-		return $this->bundleManager->enable($plugin);
+        return $this->bundleManager->enable($plugin);
 	}
 
 	/**
@@ -79,6 +79,6 @@ class PluginController extends FOSRestController
 	 */
 	public function disablePluginAction(Plugin $plugin)
 	{
-		return $this->bundleManager->disable($plugin);
+        return $this->bundleManager->disable($plugin);
 	}
 }

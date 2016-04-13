@@ -117,14 +117,16 @@ class Installer
         $installer->setLogger($logger);
         $output->writeln('Installing the platform from composer...');
 
-        //		$kernel = $this->getContainer()->get('kernel');
-                $rootDir = $kernel->getRootDir();
-        		$iniBupFile = $rootDir . '/config/bundles.bup.ini';
-        		@unlink($iniBupFile);
-                $previous = $rootDir . '/config/previous-installed.json';
-                @unlink($previous);
-                file_put_contents($previous, '[]');
-                
+        //$kernel = $this->getContainer()->get('kernel');
+        /*
+        $rootDir = $kernel->getRootDir();
+        $iniBupFile = $rootDir . '/config/bundles.bup.ini';
+        @unlink($iniBupFile);
+        $previous = $rootDir . '/config/previous-installed.json';
+        @unlink($previous);
+        file_put_contents($previous, '[]');
+        */
+
         $installer->installFromKernel(false);
     }
 

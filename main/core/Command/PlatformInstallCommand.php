@@ -39,15 +39,15 @@ class PlatformInstallCommand extends ContainerAwareCommand
          * - No bundles.bup.ini
          * - Empty previous-installed.json
          */
-		$kernel = $this->getContainer()->get('kernel');
+        $kernel = $this->getContainer()->get('kernel');
         $rootDir = $kernel->getRootDir();
-		$iniBupFile = $rootDir . '/config/bundles.bup.ini';
-		@unlink($iniBupFile);
+        $iniBupFile = $rootDir . '/config/bundles.bup.ini';
+        @unlink($iniBupFile);
         $previous = $rootDir . '/config/previous-installed.json';
         @unlink($previous);
         file_put_contents($previous, '[]');
 
-		$command = $this->getApplication()->find('claroline:update');
+        $command = $this->getApplication()->find('claroline:update');
         $returnCode = $command->run(new ArrayInput(array()), $output);
     }
 }
