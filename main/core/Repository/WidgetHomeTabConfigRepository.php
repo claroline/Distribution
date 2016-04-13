@@ -21,10 +21,12 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class WidgetHomeTabConfigRepository extends EntityRepository implements ContainerAwareInterface
 {
+    private $bundles = [];
+
     const LEFT_JOIN_PLUGIN = '
         LEFT JOIN whtc.widgetInstance instance
         JOIN instance.widget widget
-        JOIN widget.plugin plugin
+        LEFT JOIN widget.plugin plugin
     ';
 
     const WHERE_PLUGIN_ENABLED = '

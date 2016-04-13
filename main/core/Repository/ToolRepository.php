@@ -19,6 +19,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ToolRepository extends EntityRepository implements ContainerAwareInterface
 {
+    private $bundles = [];
+    
     public function setContainer(ContainerInterface $container = null)
     {
         $this->container = $container;
