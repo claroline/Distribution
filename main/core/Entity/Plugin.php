@@ -57,24 +57,11 @@ class Plugin
      * @Groups({"api_plugin"})
      */
     protected $hasOptions = false;
-
-    /**
-     * @ORM\Column(name="version")
-     * @Groups({"api_plugin"})
-     */
-    protected $version;
-
     /**
      * @ORM\Column(name="description", nullable=true)
      * @Groups({"api_plugin"})
      */
     protected $description;
-
-    /**
-     * @ORM\Column(name="origin", nullable=true)
-     * @Groups({"api_plugin"})
-     */
-    protected $origin;
 
     /**
     * Check if the plugin is loaded in the bundles.ini file.
@@ -142,16 +129,6 @@ class Plugin
         return $this->hasOptions;
     }
 
-    public function setVersion($version)
-    {
-        $this->version = $version;
-    }
-
-    public function getVersion()
-    {
-        return $this->version;
-    }
-
     public function getDescription()
     {
         return $this->description;
@@ -160,16 +137,6 @@ class Plugin
     public function setDescription($description)
     {
         return $this->description;
-    }
-
-    public function setOrigin($origin)
-    {
-        $this->origin = $origin;
-    }
-
-    public function getOrigin()
-    {
-        return $this->origin;
     }
 
     public function isLoaded()

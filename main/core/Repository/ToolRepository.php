@@ -365,7 +365,7 @@ class ToolRepository extends EntityRepository implements ContainerAwareInterface
         return $this->createQueryBuilder('tool')
             ->leftJoin('tool.plugin', 'p')
             ->where('CONCAT(p.vendorName, p.bundleName) IN (:bundles)')
-            ->orWhere('w.plugin is null')
+            ->orWhere('tool.plugin is null')
             ->getQuery()
             ->setParameter('bundles', $this->bundles)
             ->getResult();
