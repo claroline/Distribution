@@ -15,6 +15,7 @@ use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\CoreBundle\Library\PluginBundleInterface;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\InstallationBundle\Manager\InstallationManager;
+use Claroline\CoreBundle\Manager\PluginManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
@@ -42,23 +43,26 @@ class Installer
      * @param InstallationManager $installer
      *
      * @DI\InjectParams({
-     *     "validator" = @DI\Inject("claroline.plugin.validator"),
-     *     "recorder"  = @DI\Inject("claroline.plugin.recorder"),
-     *     "installer" = @DI\Inject("claroline.installation.manager"),
-     *     "om"        = @DI\Inject("claroline.persistence.object_manager")
+     *     "validator"     = @DI\Inject("claroline.plugin.validator"),
+     *     "recorder"      = @DI\Inject("claroline.plugin.recorder"),
+     *     "installer"     = @DI\Inject("claroline.installation.manager"),
+     *     "om"            = @DI\Inject("claroline.persistence.object_manager"),
+     *     "pluginManager" = @DI\Inject("claroline.manager.plugin_manager")
      * })
      */
     public function __construct(
         Validator $validator,
         Recorder $recorder,
         InstallationManager $installer,
-        ObjectManager $om
+        ObjectManager $om,
+        PluginManager $pluginManager
     )
     {
         $this->validator = $validator;
         $this->recorder = $recorder;
         $this->baseInstaller = $installer;
         $this->om = $om;
+        $this->pluginManager = $pluginManager;
     }
 
     /**
@@ -84,8 +88,18 @@ class Installer
         $this->checkInstallationStatus($plugin, false);
         $this->validatePlugin($plugin);
         $this->log('Saving plugin configuration...');
-        $this->recorder->register($plugin, $this->validator->getPluginConfiguration());
+        $pluginEntity = $this->recorder->register($plugin, $this->validator->getPluginConfiguration());
         $this->baseInstaller->install($plugin);
+
+        if (!$this->pluginManager->isReady($pluginEntity)) {
+            $errors = $this->pluginManager->getMissingRequirements($pluginEntity);
+
+            foreach ($errors['extension'] as $extension) {
+                $this->log(sprintf('<fg=red>Extension %s missing for %s: plugin disabled...</fg=red>', $extension, $plugin->getName()));
+            }
+
+            $this->pluginManager->disable($pluginEntity);
+        }
     }
 
     /**

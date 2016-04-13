@@ -100,11 +100,12 @@ class DatabaseWriter
         $pluginEntity->setVendorName($pluginBundle->getVendorName());
         $pluginEntity->setBundleName($pluginBundle->getBundleName());
         $pluginEntity->setHasOptions($pluginConfiguration['has_options']);
-        $pluginEntity->setDescription($pluginBundle->getDescription());
 
         $this->em->persist($pluginEntity);
         $this->persistConfiguration($pluginConfiguration, $pluginEntity, $pluginBundle);
         $this->em->flush();
+
+        return $pluginEntity;
     }
 
     /**
@@ -133,6 +134,8 @@ class DatabaseWriter
         $this->em->persist($plugin);
         $this->updateConfiguration($pluginConfiguration, $plugin, $pluginBundle);
         $this->em->flush();
+
+        return $plugin;
     }
 
     /**

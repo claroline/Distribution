@@ -109,10 +109,11 @@ class PluginManager
                 'id'          => $plugin->getId(),
                 'name'        => $plugin->getVendorName() . $plugin->getBundleName(),
                 'has_options' => $plugin->hasOptions(),
-                'description' => $plugin->getDescription(),
+                'description' => $this->getBundle($plugin)->getDescription(),
                 'is_loaded'   => $this->isLoaded($plugin),
                 'version'     => $this->getVersion($plugin),
-                'origin'      => $this->getOrigin($plugin)
+                'origin'      => $this->getOrigin($plugin),
+                'is_ready'    => $this->isReady($plugin)
             );
         }
 
@@ -194,5 +195,36 @@ class PluginManager
     public function getBundle(Plugin $plugin)
     {
         return $this->kernel->getBundle($plugin->getVendorName() . $plugin->getBundleName());
+    }
+
+    public function getMissingRequirements(Plugin $plugin)
+    {
+        $bundle = $this->getBundle($plugin);
+        $requirements = $bundle->getRequirements();
+        $errors = [];
+
+        if ($requirements) {
+            $errors['extension'] = $this->checkExtension($requirements['extension']);
+        }
+
+        return $errors;
+    }
+
+    public function isReady($plugin)
+    {
+        $errors = $this->getMissingRequirements($plugin);
+
+        return count($errors['extension']) > 0 ? false: true;
+    }
+
+    private function checkExtension($extensions)
+    {
+        $errors = [];
+
+        foreach ($extensions as $extension) {
+            if (!extension_loaded($exension)) $errors[] = $extension;
+        }
+
+        return $errors;
     }
 }

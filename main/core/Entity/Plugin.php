@@ -57,11 +57,6 @@ class Plugin
      * @Groups({"api_plugin"})
      */
     protected $hasOptions = false;
-    /**
-     * @ORM\Column(name="description", nullable=true)
-     * @Groups({"api_plugin"})
-     */
-    protected $description;
 
     public function getId()
     {
@@ -119,15 +114,5 @@ class Plugin
     public function hasOptions()
     {
         return $this->hasOptions;
-    }
-
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    public function setDescription($description)
-    {
-        return $this->description;
     }
 }

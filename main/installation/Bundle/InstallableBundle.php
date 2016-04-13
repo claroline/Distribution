@@ -34,6 +34,7 @@ abstract class InstallableBundle extends Bundle implements InstallableInterface
     {
         return null;
     }
+
     public function getComposer()
     {
         static $data;
@@ -68,6 +69,11 @@ abstract class InstallableBundle extends Bundle implements InstallableInterface
     public function getDescription()
     {
         return file_exists($this->getPath() . '/DESCRIPTION.md') ? file_get_contents($this->getPath() . '/DESCRIPTION.md'): '';
+    }
+
+    public function getRequirements()
+    {
+        return json_decode(file_get_contents($this->getPath() . '/require.json'), true);
     }
 
     private function getInstalled()
