@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\Bundlerecorder\Log;
+namespace Claroline\BundleRecorder\Log;
 
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LogLevel;

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\Bundlerecorder\Handler;
+namespace Claroline\BundleRecorder\Handler;
 
 use Psr\Log\LoggerInterface;
 

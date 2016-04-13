@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\Bundlerecorder\Detector;
+namespace Claroline\BundleRecorder\Detector;
 
 class Detector
 {

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\Bundlerecorder\Logger;
+namespace Claroline\BundleRecorder\Logger;
 
 use Composer\IO\IOInterface;
 use Psr\Log\AbstractLogger;
