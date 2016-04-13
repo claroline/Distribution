@@ -222,7 +222,7 @@ class PluginManager
         $errors = [];
 
         foreach ($extensions as $extension) {
-            if (!extension_loaded($exension)) $errors[] = $extension;
+            if (!extension_loaded($extension)) $errors[] = $extension;
         }
 
         return $errors;

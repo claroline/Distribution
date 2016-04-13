@@ -1,4 +1,3 @@
 {
-	"extension": ["ldap"],
-	"bin": []
+	"extension": ["ldap"]
 }
