@@ -34,7 +34,7 @@ abstract class InstallableBundle extends Bundle implements InstallableInterface
     {
         return;
     }
-    
+
     public function getComposer()
     {
         static $data;
@@ -52,13 +52,7 @@ abstract class InstallableBundle extends Bundle implements InstallableInterface
 
     public function getVersion()
     {
-        foreach ($this->getInstalled() as $bundle) {
-            if ($bundle['name'] === $this->getOrigin()) {
-                return $bundle['version'];
-            }
-        }
-
-        return '0.0.0.0';
+        return 'No implementation yet';
     }
 
     public function getOrigin()
@@ -74,19 +68,6 @@ abstract class InstallableBundle extends Bundle implements InstallableInterface
     public function getRequirements()
     {
         return json_decode(file_get_contents($this->getPath() . '/require.json'), true);
-    }
-
-    private function getInstalled()
-    {
-        static $data;
-
-        if (!$data) {
-            $ds = DIRECTORY_SEPARATOR;
-            $path = realpath($this->getPath().$ds.'composer.json');
-            $data = json_decode(file_get_contents($path));
-        }
-
-        return $data;
     }
 
     private function getComposerParameter($parameter, $default = null)
