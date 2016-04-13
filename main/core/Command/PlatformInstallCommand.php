@@ -41,8 +41,6 @@ class PlatformInstallCommand extends ContainerAwareCommand
          */
         $kernel = $this->getContainer()->get('kernel');
         $rootDir = $kernel->getRootDir();
-        $iniBupFile = $rootDir . '/config/bundles.bup.ini';
-        @unlink($iniBupFile);
         $previous = $rootDir . '/config/previous-installed.json';
         @unlink($previous);
         file_put_contents($previous, '[]');
