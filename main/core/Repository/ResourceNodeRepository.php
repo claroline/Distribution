@@ -31,7 +31,7 @@ class ResourceNodeRepository extends MaterializedPathRepository implements Conta
     public function setContainer(ContainerInterface $container = null)
     {
         $this->container = $container;
-        $bundles = $this->container->get('claroline.manager.bundle_manager')->getEnabled(true);
+        $bundles = $this->container->get('claroline.manager.plugin_manager')->getEnabled(true);
         $this->builder = new ResourceQueryBuilder();
         $this->builder->setBundles($bundles);
     }

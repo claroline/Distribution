@@ -17,28 +17,32 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Plugin;
 use Claroline\CoreBundle\Library\Utilities\FileSystem;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
- * @DI\Service("claroline.manager.bundle_manager")
+ * @DI\Service("claroline.manager.plugin_manager")
  */
-class BundleManager
+class PluginManager
 {
     private $iniFileManager;
     private $kernelRootDir;
     private $om;
     private $pluginRepo;
+    private $kernel;
 
     /**
      * @DI\InjectParams({
      *      "iniFileManager" = @DI\Inject("claroline.manager.ini_file_manager"),
      *      "kernelRootDir"  = @DI\Inject("%kernel.root_dir%"),
-     *      "om"             = @DI\Inject("claroline.persistence.object_manager")
+     *      "om"             = @DI\Inject("claroline.persistence.object_manager"),
+     *      "kernel"         = @DI\Inject("kernel")
      * })
      */
     public function __construct(
         IniFileManager $iniFileManager,
         $kernelRootDir,
-        ObjectManager $om
+        ObjectManager $om,
+        KernelInterface $kernel
     )
     {
         $this->iniFileManager = $iniFileManager;
@@ -46,6 +50,7 @@ class BundleManager
         $this->om             = $om;
         $this->pluginRepo     = $om->getRepository('ClarolineCoreBundle:Plugin');
         $this->iniFile        = $this->kernelRootDir . '/config/bundles.ini';
+        $this->kernel         = $kernel;
     }
 
     public function getDistributionVersion()
@@ -94,6 +99,26 @@ class BundleManager
         return $this->pluginRepo->findAll();
     }
 
+    public function getPluginsData()
+    {
+        $plugins = $this->pluginRepo->findAll();
+        $datas = [];
+
+        foreach ($plugins as $plugin) {
+            $datas[] = array(
+                'id'          => $plugin->getId(),
+                'name'        => $plugin->getVendorName() . $plugin->getBundleName(),
+                'has_options' => $plugin->hasOptions(),
+                'description' => $plugin->getDescription(),
+                'is_loaded'   => $this->isLoaded($plugin),
+                'version'     => $this->getVersion($plugin),
+                'origin'      => $this->getOrigin($plugin)
+            );
+        }
+
+        return $datas;
+    }
+
     public function enable(Plugin $plugin)
     {
         $this->iniFileManager
@@ -134,6 +159,40 @@ class BundleManager
             }
         }
 
+        //maybe only keep plugins that are in the database ? but it's one more request
+        //we could also parse composer.json and so on...
+
         return $enabledBundles;
+    }
+
+    public function isLoaded(Plugin $plugin)
+    {
+        $bundles = parse_ini_file($this->getIniFile());
+
+        foreach ($bundles as $bundle => $isEnabled) {
+            if ($bundle === $plugin->getBundleFQCN() && $isEnabled) return true;
+        }
+
+        return false;
+    }
+
+    public function getIniFile()
+    {
+        return $this->iniFile;
+    }
+
+    public function getOrigin(Plugin $plugin)
+    {
+        return $this->getBundle($plugin)->getOrigin();
+    }
+
+    public function getVersion(Plugin $plugin)
+    {
+        return $this->getBundle($plugin)->getVersion();
+    }
+
+    public function getBundle(Plugin $plugin)
+    {
+        return $this->kernel->getBundle($plugin->getVendorName() . $plugin->getBundleName());
     }
 }

@@ -9,7 +9,7 @@
 		</tr>
 		<tr ng-repeat="(key, plugin) in cpc.plugins">
 			<td> <input type="checkbox" ng-model="plugin.is_loaded" ng-checked="plugin.is_loaded" ng-change="cpc.onCheckboxChange(plugin)"></input></td>
-			<td> {{ plugin.bundle_name }} </td>
+			<td> {{ plugin.name }} </td>
 			<td> {{ plugin.version }} </td>
 			<td> {{ plugin.origin }} </td>
 			<td>

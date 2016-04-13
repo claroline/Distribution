@@ -63,14 +63,6 @@ class Plugin
      */
     protected $description;
 
-    /**
-    * Check if the plugin is loaded in the bundles.ini file.
-    *
-     * @Groups({"api_plugin"})
-     * @Accessor(getter="isLoaded")
-     */
-    protected $isLoaded;
-
     public function getId()
     {
         return $this->id;
@@ -137,21 +129,5 @@ class Plugin
     public function setDescription($description)
     {
         return $this->description;
-    }
-
-    public function isLoaded()
-    {
-        $bundles = parse_ini_file($this->getIniFile());
-
-        foreach ($bundles as $bundle => $isEnabled) {
-            if ($bundle === $this->getBundleFQCN() && $isEnabled) return true;
-        }
-
-        return false;
-    }
-
-    public function getIniFile()
-    {
-        return realpath( __DIR__ . '/../../../../../../app/config/bundles.ini');
     }
 }

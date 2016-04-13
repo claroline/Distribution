@@ -31,7 +31,7 @@ use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Manager\ToolManager;
 use Claroline\CoreBundle\Manager\UserManager;
 use Claroline\CoreBundle\Manager\WidgetManager;
-use Claroline\CoreBundle\Manager\BundleManager;
+use Claroline\CoreBundle\Manager\PluginManager;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormFactory;
@@ -79,7 +79,7 @@ class HomeController extends Controller
      *     "tokenStorage"       = @DI\Inject("security.token_storage"),
      *     "toolManager"        = @DI\Inject("claroline.manager.tool_manager"),
      *     "userManager"        = @DI\Inject("claroline.manager.user_manager"),
-     *     "bundleManager"      = @DI\Inject("claroline.manager.bundle_manager"),
+     *     "bundleManager"      = @DI\Inject("claroline.manager.plugin_manager"),
      *     "utils"              = @DI\Inject("claroline.security.utilities"),
      *     "widgetManager"      = @DI\Inject("claroline.manager.widget_manager")
      * })
@@ -98,7 +98,7 @@ class HomeController extends Controller
         UserManager $userManager,
         Utilities $utils,
         WidgetManager $widgetManager,
-        BundleManager $bundleManager
+        PluginManager $bundleManager
     )
     {
         $this->em              = $em;

@@ -25,7 +25,7 @@ class OrderedToolRepository extends EntityRepository implements ContainerAwareIn
     public function setContainer(ContainerInterface $container = null)
     {
         $this->container = $container;
-        $this->bundles = $this->container->get('claroline.manager.bundle_manager')->getEnabled(true);
+        $this->bundles = $this->container->get('claroline.manager.plugin_manager')->getEnabled(true);
     }
 
     /**

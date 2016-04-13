@@ -25,7 +25,7 @@ use Claroline\CoreBundle\Form\WidgetHomeTabConfigType;
 use Claroline\CoreBundle\Form\WidgetInstanceType;
 use Claroline\CoreBundle\Manager\HomeTabManager;
 use Claroline\CoreBundle\Manager\WidgetManager;
-use Claroline\CoreBundle\Manager\BundleManager;
+use Claroline\CoreBundle\Manager\PluginManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -56,7 +56,7 @@ class HomeTabController extends Controller
      *     "homeTabManager"  = @DI\Inject("claroline.manager.home_tab_manager"),
      *     "request"         = @DI\Inject("request"),
      *     "widgetManager"   = @DI\Inject("claroline.manager.widget_manager"),
-     *     "bundleManager"   = @DI\Inject("claroline.manager.bundle_manager")
+     *     "bundleManager"   = @DI\Inject("claroline.manager.plugin_manager")
      * })
      */
     public function __construct(
@@ -65,7 +65,7 @@ class HomeTabController extends Controller
         HomeTabManager $homeTabManager,
         Request $request,
         WidgetManager $widgetManager,
-        BundleManager $bundleManager
+        PluginManager $bundleManager
     )
     {
         $this->eventDispatcher  = $eventDispatcher;

@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations\View;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
-use Claroline\CoreBundle\Manager\BundleManager;
+use Claroline\CoreBundle\Manager\PluginManager;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use FOS\RestBundle\Controller\Annotations\NamePrefix;
 use FOS\RestBundle\Controller\Annotations\Post;
@@ -35,17 +35,16 @@ class PluginController extends FOSRestController
     /**
      * @DI\InjectParams({
      *     "request"       = @DI\Inject("request"),
-     *	   "bundleManager" = @DI\Inject("claroline.manager.bundle_manager")
+     *	   "bundleManager" = @DI\Inject("claroline.manager.plugin_manager")
      * })
      */
-    public function __construct(Request $request, BundleManager $bundleManager)
+    public function __construct(Request $request, PluginManager $bundleManager)
     {
         $this->request       = $request;
         $this->bundleManager = $bundleManager;
     }
 
     /**
-	 * @View(serializerGroups={"api_plugin"})
 	 * @ApiDoc(
 	 *     description="Returns the plugin list",
 	 *     views = {"plugin"}
@@ -53,7 +52,7 @@ class PluginController extends FOSRestController
 	 */
     public function getPluginsAction()
     {
-        return $this->bundleManager->getPlugins();
+        return $this->bundleManager->getPluginsData();
     }
 
 	/**
