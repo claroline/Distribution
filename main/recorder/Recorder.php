@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\BundleRecorder;
+namespace Claroline\Bundlerecorder;
 
 use Claroline\BundleRecorder\Detector\Detector;
 use Claroline\BundleRecorder\Handler\BundleHandler;
@@ -38,8 +38,7 @@ class Recorder
         BundleHandler $bundleHandler,
         array $aliases,
         $vendorDir
-    )
-    {
+    ) {
         $this->localRepo = $localRepo;
         $this->detector = $detector;
         $this->bundleHandler = $bundleHandler;

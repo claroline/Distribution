@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\BundleRecorder;
+namespace Claroline\Bundlerecorder;
 
 use Claroline\BundleRecorder\Logger\ConsoleIoLogger;
 use Composer\Script\Event;
@@ -49,7 +49,7 @@ class ScriptHandler
     {
         if (!isset(static::$recorder)) {
             $vendorDir = realpath(rtrim($event->getComposer()->getConfig()->get('vendor-dir'), '/'));
-            $configDir = realpath($vendorDir . '/../app/config');
+            $configDir = realpath($vendorDir.'/../app/config');
             $logger = new ConsoleIoLogger($event->getIO());
             $manager = $event->getComposer()->getRepositoryManager();
             $rootPackage = $event->getComposer()->getPackage();

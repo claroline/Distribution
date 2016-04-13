@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\BundleRecorder\Logger;
+namespace Claroline\Bundlerecorder\Logger;
 
 use Composer\IO\IOInterface;
 use Psr\Log\AbstractLogger;
@@ -35,8 +35,6 @@ class ConsoleIoLogger extends AbstractLogger
      * @param mixed  $level
      * @param string $message
      * @param array  $context
-     *
-     * @return null
      */
     public function log($level, $message, array $context = array())
     {

@@ -3,19 +3,15 @@
  * Created by PhpStorm.
  * User: Aurelien
  * Date: 29/09/14
- * Time: 11:24
+ * Time: 11:24.
  */
-
 namespace Icap\DropzoneBundle\Tests\Entity;
-
 
 use Icap\DropzoneBundle\Entity\Dropzone;
 use DateTime;
 
-
 class DropzoneTest extends \PHPUnit_Framework_TestCase
 {
-
     private function createFixturesDropzones()
     {
         $dz0 = new Dropzone();
@@ -71,7 +67,6 @@ class DropzoneTest extends \PHPUnit_Framework_TestCase
 
     public function testisNotStarted()
     {
-
         echo "testing DROPZONE->isNotStarted\n";
         $dzs = $this->createFixturesDropzones();
         $this->assertEquals(true, $dzs[0]->isNotStarted());
@@ -111,7 +106,6 @@ class DropzoneTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(false, $dzs[6]->isPeerReview());
         $this->assertEquals(false, $dzs[7]->isPeerReview());
 
-
         $dz2 = new Dropzone();
         $dz2->setManualState(Dropzone::MANUAL_STATE_ALLOW_DROP_AND_PEER_REVIEW);
         $dz2->setManualPlanning(true);
@@ -134,5 +128,4 @@ class DropzoneTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(true, $dzs[6]->isFinished());
         $this->assertEquals(false, $dzs[7]->isFinished());
     }
-
-} 
+}

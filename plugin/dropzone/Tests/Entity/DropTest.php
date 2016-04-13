@@ -3,11 +3,9 @@
  * Created by PhpStorm.
  * User: Aurelien
  * Date: 25/09/14
- * Time: 10:19
+ * Time: 10:19.
  */
-
 namespace Icap\DropzoneBundle\Tests\Entity;
-
 
 use Icap\DropzoneBundle\Entity\Correction;
 use Icap\DropzoneBundle\Entity\Drop;
@@ -15,7 +13,6 @@ use DateTime;
 
 class DropTest extends \PHPUnit_Framework_TestCase
 {
-
     public function testgetCalculatedGrade()
     {
         echo "testing DROP->getCalculatedGrade\n";
@@ -25,11 +22,9 @@ class DropTest extends \PHPUnit_Framework_TestCase
         $correction4 = $this->createCorrection(3, false);
         $correction5 = $this->createCorrection(12, false, false);
 
-
         $drop1 = new Drop();
         $drop1->setCorrections(array($correction1, $correction2));
         $this->assertEquals(15, $drop1->getCalculatedGrade());
-
 
         $drop2 = new Drop();
         $drop2->setCorrections(array($correction2, $correction3, $correction4, $correction5));
@@ -40,15 +35,14 @@ class DropTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(-1, $drop3->getCalculatedGrade());
     }
 
-
     private function createCorrection($grade = null, $valid = true, $finished = true)
     {
         $correction = new Correction();
         $correction->setFinished($finished);
         $correction->setValid($valid);
         $correction->setTotalGrade($grade);
-        return $correction;
 
+        return $correction;
     }
 
     public function testCountFinishedCorrections()
@@ -63,7 +57,6 @@ class DropTest extends \PHPUnit_Framework_TestCase
         $correction4 = $this->createCorrection(3, false);
         $correction5 = $this->createCorrection(12, false, false);
         $correction6 = $this->createCorrection(12, true, true);
-
 
         $drop1 = new Drop();
         $drop1->setCorrections(array($correction1, $correction2));
@@ -95,7 +88,6 @@ class DropTest extends \PHPUnit_Framework_TestCase
         $correction4 = $this->createCorrection(3, false);
         $correction5 = $this->createCorrection(12, false, false);
         $correction6 = $this->createCorrection(12, true, true);
-
 
         $drop1 = new Drop();
         $drop1->setCorrections(array($correction1, $correction2));
@@ -145,4 +137,4 @@ class DropTest extends \PHPUnit_Framework_TestCase
         $drop3->setCorrections(array($correction4, $correction3));
         $this->assertEquals($date4, $drop3->getLastCorrectionDate());
     }
-} 
+}

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\BundleRecorder\Handler;
+namespace Claroline\Bundlerecorder\Handler;
 
 use Claroline\BundleRecorder\Log\LoggableTrait;
 use Psr\Log\LoggerInterface;
@@ -35,7 +35,9 @@ class BaseHandler
         }
 
         $this->targetFile = $targetFile;
-        if ($logger) $this->setLogger($logger);
+        if ($logger) {
+            $this->setLogger($logger);
+        }
     }
 
     /**
@@ -44,7 +46,9 @@ class BaseHandler
      */
     public function log($message, $indent = '    ')
     {
-        if ($this->logger) $this->logger->log(LogLevel::INFO, $indent . $message);
+        if ($this->logger) {
+            $this->logger->log(LogLevel::INFO, $indent.$message);
+        }
     }
 
     /**

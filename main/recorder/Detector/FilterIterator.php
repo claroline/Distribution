@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\BundleRecorder\Detector;
+namespace Claroline\Bundlerecorder\Detector;
 
 class FilterIterator extends \RecursiveFilterIterator
 {
