@@ -65,7 +65,6 @@ class OperationExecutor
         $this->previousRepoFile = $this->kernel->getRootDir() . '/config/previous-installed.json';
         $this->installedRepoFile = $this->kernel->getRootDir() . '/../vendor/composer/installed.json';
         $this->bundleFile = $this->kernel->getRootDir() . '/config/bundles.ini';
-        $this->bupBundleFile = $this->kernel->getRootDir() . '/config/bundles.bup.ini';
         $this->detector = new Detector();
         $this->om = $om;
     }
@@ -114,6 +113,11 @@ class OperationExecutor
 
         $previous = $this->openRepository($this->previousRepoFile);
         $current = $this->openRepository($this->installedRepoFile);
+
+        foreach ($previous->getPackages() as $package) {
+            $extra = $package->getExtra();
+        }
+
         $operations = [];
         $previousBundles = array_keys(parse_ini_file($this->bupBundleFile));
 
@@ -138,12 +142,13 @@ class OperationExecutor
         foreach ($current->getCanonicalPackages() as $currentPackage) {
             $jsonpath = $this->kernel->getRootDir() . '/../vendor/' . $currentPackage->getName() . '/composer.json';
             $json = json_decode(file_get_contents($jsonpath), true);
-            //this is a meta package
-            if (array_key_exists('bundles', $json)) {
+            //this is a meta package if the bundles key exists
+            if (array_key_exists('extra', $json) && array_key_exists('bundles', $json['extra']['bundles'])) {
                 //this is only valid for installable bundles
-                $bundles = array_filter($json['bundles'], function($var) {
+                $bundles = array_filter($json['extra']['bundles'], function($var) {
                     return in_array('Claroline\InstallationBundle\Bundle\InstallableInterface', class_implements($var)) ?  true: false;
                 });
+
                 foreach ($bundles as $bundle) {
                     if (in_array($bundle, $previousBundles) === true) {
                         $operations[$bundle] = new Operation(Operation::UPDATE, $currentPackage, $bundle);
@@ -229,7 +234,7 @@ class OperationExecutor
 
         foreach ($operations as $operation) {
             $installer = $operation->getBundleFqcn() === 'Claroline\CoreBundle\ClarolineCoreBundle' ?
-                $this->baseInstaller :
+                $this->baseInstaller:
                 $this->pluginInstaller;
 
             if ($operation->getType() === Operation::INSTALL) {
