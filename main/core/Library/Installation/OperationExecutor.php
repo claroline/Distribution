@@ -293,10 +293,9 @@ class OperationExecutor
                 }
             } else {
                 $bundleParts = explode('\\', $bundle);
-                $basecmp = strtolower($bundleParts[2]);
 
                 //magic !
-                if (preg_replace('/[^A-Za-z0-9\-]/', '', $package->getPrettyName()) === strtolower($bundleParts[2])) {
+                if (preg_replace('/[^A-Za-z0-9]/', '', $package->getPrettyName()) === strtolower($bundleParts[2])) {
                     return $package;
                 }
             }
