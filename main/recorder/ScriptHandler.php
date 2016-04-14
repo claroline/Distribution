@@ -40,11 +40,6 @@ class ScriptHandler
         static::getRecorder($event)->removeBupIniFile();
     }
 
-    public static function prepareInstall(Event $event)
-    {
-        static::getRecorder($event)->prepareInstall($event);
-    }
-
     /**
      * @param Event $event
      *

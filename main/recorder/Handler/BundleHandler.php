@@ -47,13 +47,6 @@ class BundleHandler extends BaseHandler
         $this->doWriteBundleFile();
     }
 
-    public function prepareInstall()
-    {
-        $this->removeBupIniFile();
-        @unlink($this->prevInstalled);
-        file_put_contents($this->prevInstalled, '[]');
-    }
-
     private function doWriteBundleFile()
     {
         $this->log('Writing bundle file...', '');
