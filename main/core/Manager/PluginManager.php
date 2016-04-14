@@ -59,11 +59,7 @@ class PluginManager
 
     public function getDistributionVersion()
     {
-        $installedFile = $this->kernelRootDir . '/../vendor/composer/installed.json';
-        $repo = new InstalledFilesystemRepository(new JsonFile($installedFile));
-        $corePackage = $repo->findPackage('claroline/distribution', '*');
-
-        return $corePackage->getPrettyVersion();
+        return $this->getVersion('ClarolineCoreBundle');
     }
 
     public function updateIniFile($vendor, $bundle)
@@ -192,27 +188,30 @@ class PluginManager
         return $this->iniFile;
     }
 
-    public function getDescription(Plugin $plugin)
+    public function getDescription($plugin)
     {
         return $this->getBundle($plugin)->getOrigin();
     }
 
-    public function getOrigin(Plugin $plugin)
+    public function getOrigin($plugin)
     {
         return $this->getBundle($plugin)->getOrigin();
     }
 
-    public function getVersion(Plugin $plugin)
+    public function getVersion($plugin)
     {
         return $this->getBundle($plugin)->getVersion();
     }
 
-    public function getBundle(Plugin $plugin)
+    public function getBundle($plugin)
     {
         $bundles = $this->bundleManager->getActiveBundles(true);
+        $shortName = $plugin instanceof Plugin ?
+            $plugin->getVendorName() . $plugin->getBundleName():
+            $plugin;
 
         foreach ($bundles as $bundle) {
-            if ($bundle['instance']->getName() === $plugin->getVendorName() . $plugin->getBundleName()) return $bundle['instance'];
+            if ($bundle['instance']->getName() === $shortName) return $bundle['instance'];
         }
     }
 

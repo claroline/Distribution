@@ -32,6 +32,7 @@ use Claroline\CoreBundle\Manager\TermsOfServiceManager;
 use Claroline\CoreBundle\Manager\ThemeManager;
 use Claroline\CoreBundle\Manager\ToolManager;
 use Claroline\CoreBundle\Manager\UserManager;
+use Claroline\CoreBundle\Manager\PluginManager;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\SecurityExtraBundle\Annotation as SEC;
@@ -69,6 +70,7 @@ class ParametersController extends Controller
     private $workspaceManager;
     private $eventDispatcher;
     private $themeManager;
+    private $pluginManager;
 
     /**
      * @DI\InjectParams({
@@ -91,7 +93,8 @@ class ParametersController extends Controller
      *     "userManager"        = @DI\Inject("claroline.manager.user_manager"),
      *     "workspaceManager"   = @DI\Inject("claroline.manager.workspace_manager"),
      *     "eventDispatcher"    = @DI\Inject("claroline.event.event_dispatcher"),
-     *     "themeManager"       = @DI\Inject("claroline.manager.theme_manager")
+     *     "themeManager"       = @DI\Inject("claroline.manager.theme_manager"),
+     *     "pluginManager"      = @DI\Inject("claroline.manager.plugin_manager")
      * })
      */
     public function __construct(
@@ -114,7 +117,8 @@ class ParametersController extends Controller
         UserManager $userManager,
         WorkspaceManager $workspaceManager,
         StrictDispatcher $eventDispatcher,
-        ThemeManager $themeManager
+        ThemeManager $themeManager,
+        PluginManager $pluginManager
     ) {
         $this->configHandler = $configHandler;
         $this->roleManager = $roleManager;
@@ -137,6 +141,7 @@ class ParametersController extends Controller
         $this->workspaceManager = $workspaceManager;
         $this->eventDispatcher = $eventDispatcher;
         $this->themeManager = $themeManager;
+        $this->pluginManager = $pluginManager;
     }
 
     /**
@@ -1078,7 +1083,7 @@ class ParametersController extends Controller
         /**
          * @todo refactor this
          */
-        $version = $this->getCoreBundleVersion();
+        $version = $this->pluginManager->getDistributionVersion();
         $nbNonPersonalWorkspaces = $this->workspaceManager->getNbNonPersonalWorkspaces();
         $nbPersonalWorkspaces = $this->workspaceManager->getNbPersonalWorkspaces();
         $nbUsers = $this->userManager->getCountAllEnabledUsers();
@@ -1133,27 +1138,5 @@ class ParametersController extends Controller
         }
 
         return $token;
-    }
-
-    /**
-     * @todo refactor this
-     */
-    private function getCoreBundleVersion()
-    {
-        $ds = DIRECTORY_SEPARATOR;
-        $version = '-';
-        $installedFile = $this->container->getParameter('kernel.root_dir').
-            $ds.'..'.$ds.'vendor'.$ds.'composer'.$ds.'installed.json';
-        $jsonString = file_get_contents($installedFile);
-        $bundles = json_decode($jsonString, true);
-
-        foreach ($bundles as $bundle) {
-            if (isset($bundle['name']) && $bundle['name'] === 'claroline/core-bundle') {
-                $version = $bundle['version'];
-                break;
-            }
-        }
-
-        return $version;
     }
 }
