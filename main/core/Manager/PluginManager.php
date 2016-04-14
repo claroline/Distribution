@@ -114,7 +114,8 @@ class PluginManager
                 'is_loaded'   => $this->isLoaded($plugin),
                 'version'     => $this->getVersion($plugin),
                 'origin'      => $this->getOrigin($plugin),
-                'is_ready'    => $this->isReady($plugin)
+                'is_ready'    => $this->isReady($plugin),
+                'require'     => $this->getRequirements($plugin)
             );
         }
 
@@ -167,6 +168,11 @@ class PluginManager
         return $enabledBundles;
     }
 
+    public function getPluginByShortName($name)
+    {
+        return $this->pluginRepo->findPluginByShortName($name);
+    }
+
     public function isLoaded(Plugin $plugin)
     {
         $bundles = parse_ini_file($this->getIniFile());
@@ -203,14 +209,25 @@ class PluginManager
         return $this->kernel->getBundle($plugin->getVendorName() . $plugin->getBundleName());
     }
 
+    public function getRequirements(Plugin $plugin)
+    {
+        $requirements = [];
+        $bundle = $this->getBundle($plugin);
+
+        if (count($extensions = $bundle->getRequiredPhpExtensions()) > 0) $requirements['extension'] = $extensions;
+        if (count($extensions = $bundle->getRequiredPlugins()) > 0)       $requirements['plugin'] = $extensions;
+
+        return $requirements;
+    }
+
     public function getMissingRequirements(Plugin $plugin)
     {
-        $bundle = $this->getBundle($plugin);
-        $requirements = $bundle->getRequirements();
+        $requirements = $this->getRequirements($plugin);
         $errors = [];
 
         if ($requirements) {
-            if (array_key_exists('extension', $errors)) $errors['extension'] = $this->checkExtension($requirements['extension']);
+            if (array_key_exists('extension', $requirements)) $errors['extension'] = $this->checkExtension($requirements['extension']);
+            if (array_key_exists('plugin', $requirements))    $errors['plugin']    = $this->checkPlugins($requirements['plugin']);
         }
 
         return $errors;
@@ -229,6 +246,22 @@ class PluginManager
 
         foreach ($extensions as $extension) {
             if (!extension_loaded($extension)) $errors[] = $extension;
+        }
+
+        return $errors;
+    }
+
+    private function checkPlugins($plugins)
+    {
+        $errors = [];
+
+        foreach ($plugins as $fqcn) {
+            try {
+                $this->getBundle($fqcn);
+            } catch (\Exception $e) {
+                $plugin = $this->getPluginByShortName($fqcn);
+                $errors[] = $plugin->getVendorName() . $plugin->getBundleName();
+            }
         }
 
         return $errors;

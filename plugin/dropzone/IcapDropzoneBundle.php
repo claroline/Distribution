@@ -14,4 +14,9 @@ class IcapDropzoneBundle extends PluginBundle
     {
         return 'dropzone';
     }
+
+    public function getRequiredPlugins()
+    {
+        return ['ClarolineAgendaBundle', 'IcapNotificationBundle'];
+    }
 }
