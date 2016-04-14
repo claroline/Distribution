@@ -65,7 +65,7 @@ abstract class SwitchKernel extends Kernel
         $fileSystem->remove($this->getCacheDir());
     }
 
-    public function reboot($clearCache)
+    public function reboot()
     {
         $this->shutdown();
         $this->boot();

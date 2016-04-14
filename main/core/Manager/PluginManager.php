@@ -101,7 +101,7 @@ class PluginManager
 
     public function getPluginsData()
     {
-        $this->kernel->rebootForPluginManagement();
+        $this->kernel->switchToMaintenanceEnvironment();
         $plugins = $this->pluginRepo->findAll();
         $datas = [];
 
