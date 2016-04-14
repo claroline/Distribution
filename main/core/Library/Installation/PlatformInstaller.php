@@ -15,6 +15,7 @@ use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\CoreBundle\Library\Installation\Plugin\Installer;
 use Claroline\InstallationBundle\Manager\InstallationManager;
 use Doctrine\Bundle\DoctrineBundle\Command\CreateDatabaseDoctrineCommand;
+use Symfony\Bundle\FrameworkBundle\Command\CacheWarmupCommand;
 use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -64,6 +65,7 @@ class PlatformInstaller
         $this->refresher = $refresher;
         $this->kernel = $kernel;
         $this->container = $container;
+        $this->bundles = parse_ini_file($this->container->getParameter('kernel.root_dir') . '/config/bundles.ini');
     }
 
     /**
@@ -128,6 +130,11 @@ class PlatformInstaller
 
     private function launchPreInstallActions()
     {
+        if ($this->kernel->getEnvironment() !== 'maintenance') {
+            //could be temporary
+            throw new \Exception('This action must be done in the maintenance environment ! Please add --env=maintenance at the end of your command line');
+        }
+
         $this->createDatabaseIfNotExists();
         $this->createPublicSubDirectories();
     }

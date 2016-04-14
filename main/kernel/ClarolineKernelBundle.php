@@ -16,13 +16,17 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Claroline\KernelBundle\Manager\BundleManager;
 use Claroline\KernelBundle\Bundle\ConfigurationBuilder;
+use Claroline\KernelBundle\Kernel\SwitchKernel;
 
 class ClarolineKernelBundle extends Bundle
 {
     private $bundleManager;
+    private $kernel;
 
-    public function __construct(KernelInterface $kernel, $bundlesFile = null)
+    public function __construct(SwitchKernel $kernel, $bundlesFile = null)
     {
+        $this->kernel = $kernel;
+
         if (!$bundlesFile) {
             $bundlesFile = $kernel->getRootDir().'/config/bundles.ini';
         }

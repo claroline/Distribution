@@ -67,7 +67,7 @@ abstract class InstallableBundle extends Bundle implements InstallableInterface
 
     public function getRequirements()
     {
-        return json_decode(file_get_contents($this->getPath() . '/require.json'), true);
+        return file_exists($this->getPath() . '/require.json') ? json_decode(file_get_contents($this->getPath() . '/require.json'), true): array();
     }
 
     private function getComposerParameter($parameter, $default = null)

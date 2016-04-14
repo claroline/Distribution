@@ -50,7 +50,8 @@ class BundleManager
         $environment = $this->getEnvironment();
 
         foreach ($entries as $bundleClass => $isActive) {
-            if ($isActive && $bundleClass !== 'Claroline\KernelBundle\ClarolineKernelBundle') {
+            //maintenance environement will load everything regardless of the bundle active status to perform maintenance operations.
+            if (($isActive || $environment === 'maintenance') && $bundleClass !== 'Claroline\KernelBundle\ClarolineKernelBundle') {
                 $bundle = new $bundleClass($this->kernel);
 
                 if ($bundle instanceof ConfigurationProviderInterface) {

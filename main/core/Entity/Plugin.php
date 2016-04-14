@@ -75,7 +75,7 @@ class Plugin
 
         return "{$vendor}\\{$bundle}\\{$vendor}{$bundle}";
     }
-
+    
     public function getShortName()
     {
         return strtolower($this->getVendorName().str_replace('Bundle', '', $this->getBundleName()));

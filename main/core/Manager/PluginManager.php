@@ -101,6 +101,7 @@ class PluginManager
 
     public function getPluginsData()
     {
+        $this->kernel->rebootForPluginManagement();
         $plugins = $this->pluginRepo->findAll();
         $datas = [];
 
@@ -109,7 +110,7 @@ class PluginManager
                 'id'          => $plugin->getId(),
                 'name'        => $plugin->getVendorName() . $plugin->getBundleName(),
                 'has_options' => $plugin->hasOptions(),
-                'description' => $this->getBundle($plugin)->getDescription(),
+                'description' => $this->getDescription($plugin),
                 'is_loaded'   => $this->isLoaded($plugin),
                 'version'     => $this->getVersion($plugin),
                 'origin'      => $this->getOrigin($plugin),
@@ -182,6 +183,11 @@ class PluginManager
         return $this->iniFile;
     }
 
+    public function getDescription(Plugin $plugin)
+    {
+        return $this->getBundle($plugin)->getOrigin();
+    }
+
     public function getOrigin(Plugin $plugin)
     {
         return $this->getBundle($plugin)->getOrigin();
@@ -204,7 +210,7 @@ class PluginManager
         $errors = [];
 
         if ($requirements) {
-            $errors['extension'] = $this->checkExtension($requirements['extension']);
+            if (array_key_exists('extension', $errors)) $errors['extension'] = $this->checkExtension($requirements['extension']);
         }
 
         return $errors;
@@ -214,7 +220,7 @@ class PluginManager
     {
         $errors = $this->getMissingRequirements($plugin);
 
-        return count($errors['extension']) > 0 ? false: true;
+        return count($errors) > 0 ? false: true;
     }
 
     private function checkExtension($extensions)
