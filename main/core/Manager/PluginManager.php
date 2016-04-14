@@ -31,6 +31,7 @@ class PluginManager
     private $pluginRepo;
     private $kernel;
     private $bundleManager;
+    private $loadedBundles;
 
     /**
      * @DI\InjectParams({
@@ -53,6 +54,7 @@ class PluginManager
         $this->pluginRepo     = $om->getRepository('ClarolineCoreBundle:Plugin');
         $this->iniFile        = $this->kernelRootDir . '/config/bundles.ini';
         $this->kernel         = $kernel;
+        $this->loadedBundles  = parse_ini_file($this->iniFile);
         BundleManager::initialize($kernel, $this->iniFile);
         $this->bundleManager = BundleManager::getInstance();
     }
@@ -242,8 +244,12 @@ class PluginManager
     public function isReady($plugin)
     {
         $errors = $this->getMissingRequirements($plugin);
+        $errorCount = 0;
 
-        return count($errors) > 0 ? false: true;
+        if (array_key_exists('extension', $errors)) $errorCount += count($errors['extension']);
+        if (array_key_exists('plugin', $errors)) $errorCount += count($errors['plugin']);
+
+        return $errorCount > 0 ? false: true;
     }
 
     private function checkExtension($extensions)
@@ -262,12 +268,7 @@ class PluginManager
         $errors = [];
 
         foreach ($plugins as $fqcn) {
-            try {
-                $this->getBundle($fqcn);
-            } catch (\Exception $e) {
-                $plugin = $this->getPluginByShortName($fqcn);
-                $errors[] = $plugin->getVendorName() . $plugin->getBundleName();
-            }
+            if (!(array_key_exists($fqcn, $this->loadedBundles) && $this->loadedBundles[$fqcn])) $errors[] = $fqcn;
         }
 
         return $errors;
