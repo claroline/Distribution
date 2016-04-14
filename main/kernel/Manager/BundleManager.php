@@ -48,10 +48,12 @@ class BundleManager
         $configProviderBundles = array();
         $nonAutoConfigurableBundles = array();
         $environment = $this->getEnvironment();
+        $updateMode = file_exists($this->kernel->getRootDir() . '/config/.update');
+        var_dump($updateMode);
 
         foreach ($entries as $bundleClass => $isActive) {
             //maintenance environement will load everything regardless of the bundle active status to perform maintenance operations.
-            if (($isActive || $environment === 'maintenance') && $bundleClass !== 'Claroline\KernelBundle\ClarolineKernelBundle') {
+            if (($isActive || $environment === 'maintenance' || $updateMode) && $bundleClass !== 'Claroline\KernelBundle\ClarolineKernelBundle') {
                 $bundle = new $bundleClass($this->kernel);
 
                 if ($bundle instanceof ConfigurationProviderInterface) {

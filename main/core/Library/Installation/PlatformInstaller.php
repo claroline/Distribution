@@ -130,11 +130,6 @@ class PlatformInstaller
 
     private function launchPreInstallActions()
     {
-        if ($this->kernel->getEnvironment() !== 'maintenance') {
-            //could be temporary
-            throw new \Exception('This action must be done in the maintenance environment ! Please add --env=maintenance at the end of your command line');
-        }
-
         $this->createDatabaseIfNotExists();
         $this->createPublicSubDirectories();
     }
