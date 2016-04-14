@@ -1075,6 +1075,9 @@ class ParametersController extends Controller
         $lang = $this->configHandler->getParameter('locale_language');
         $country = $this->configHandler->getParameter('country');
         $supportEmail = $this->configHandler->getParameter('support_email');
+        /**
+         * @todo refactor this
+         */
         $version = $this->getCoreBundleVersion();
         $nbNonPersonalWorkspaces = $this->workspaceManager->getNbNonPersonalWorkspaces();
         $nbPersonalWorkspaces = $this->workspaceManager->getNbPersonalWorkspaces();
@@ -1132,6 +1135,9 @@ class ParametersController extends Controller
         return $token;
     }
 
+    /**
+     * @todo refactor this
+     */
     private function getCoreBundleVersion()
     {
         $ds = DIRECTORY_SEPARATOR;

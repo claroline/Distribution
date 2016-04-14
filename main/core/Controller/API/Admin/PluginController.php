@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Controller\API\Admin;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use JMS\SecurityExtraBundle\Annotation as SEC;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations\View;
@@ -26,11 +27,13 @@ use Claroline\CoreBundle\Entity\Plugin;
 
 /**
  * @NamePrefix("api_")
+ * @DI\Tag("security.secure_service")
+ * @SEC\PreAuthorize("canOpenAdminTool('platform_parameters')")
  */
 class PluginController extends FOSRestController
 {
     private $request;
-	private $bundleManager;
+    private $bundleManager;
 
     /**
      * @DI\InjectParams({
