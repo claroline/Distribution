@@ -18,6 +18,7 @@ use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Plugin;
 use Claroline\CoreBundle\Library\Utilities\FileSystem;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Claroline\KernelBundle\Manager\BundleManager;
 
 /**
  * @DI\Service("claroline.manager.plugin_manager")
@@ -29,6 +30,7 @@ class PluginManager
     private $om;
     private $pluginRepo;
     private $kernel;
+    private $bundleManager;
 
     /**
      * @DI\InjectParams({
@@ -51,6 +53,8 @@ class PluginManager
         $this->pluginRepo     = $om->getRepository('ClarolineCoreBundle:Plugin');
         $this->iniFile        = $this->kernelRootDir . '/config/bundles.ini';
         $this->kernel         = $kernel;
+        BundleManager::initialize($kernel, $this->iniFile);
+        $this->bundleManager = BundleManager::getInstance();
     }
 
     public function getDistributionVersion()
@@ -101,7 +105,6 @@ class PluginManager
 
     public function getPluginsData()
     {
-        $this->kernel->switchToMaintenanceEnvironment();
         $plugins = $this->pluginRepo->findAll();
         $datas = [];
 
@@ -206,7 +209,11 @@ class PluginManager
 
     public function getBundle(Plugin $plugin)
     {
-        return $this->kernel->getBundle($plugin->getVendorName() . $plugin->getBundleName());
+        $bundles = $this->bundleManager->getActiveBundles(true);
+
+        foreach ($bundles as $bundle) {
+            if ($bundle['instance']->getName() === $plugin->getVendorName() . $plugin->getBundleName()) return $bundle['instance'];
+        }
     }
 
     public function getRequirements(Plugin $plugin)
