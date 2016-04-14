@@ -32,15 +32,6 @@ abstract class SwitchKernel extends Kernel
         $this->reboot();
     }
 
-    //It's used by the PluginManager to fetch datas from the disabled bundles.
-    public function switchToMaintenanceEnvironment()
-    {
-        $this->originalEnvironement = $this->environment;
-        $this->environment = 'maintenance';
-        $this->hasSwitched = true;
-        $this->reboot();
-    }
-
     public function switchBack()
     {
         if (!$this->hasSwitched) {
