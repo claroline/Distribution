@@ -18,8 +18,8 @@ use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use JMS\SecurityExtraBundle\Annotation as SEC;
 use Claroline\VideoPlayerBundle\Form\PlayersType;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
-//todo use sf2.2 BinaryFileResponse
 class VideoPlayerController extends Controller
 {
     /**
