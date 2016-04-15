@@ -106,7 +106,7 @@ class PluginManager
 
     public function getPluginsData()
     {
-        $plugins = $this->pluginRepo->findAll();
+        $plugins = $this->pluginRepo->findBy(array(), array('vendorName' => 'ASC', 'bundleName' => 'ASC'));
         $datas = [];
 
         foreach ($plugins as $plugin) {
