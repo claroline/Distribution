@@ -26,7 +26,7 @@ class BundleHandler extends BaseHandler
         $bundleFile = $configDir.'/bundles.ini';
         parent::__construct($bundleFile, $logger);
         $this->registeredBundles = parse_ini_file($this->targetFile);
-        $this->prevInstalled = $configDir . '/previous-installed.json';
+        $this->prevInstalled = $configDir.'/previous-installed.json';
     }
 
     public function writeBundleFile(array $bundleFqcns)
