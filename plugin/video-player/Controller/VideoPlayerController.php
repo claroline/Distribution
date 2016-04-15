@@ -18,7 +18,6 @@ use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use JMS\SecurityExtraBundle\Annotation as SEC;
 use Claroline\VideoPlayerBundle\Form\PlayersType;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class VideoPlayerController extends Controller
 {
