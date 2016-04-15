@@ -20,10 +20,10 @@
 			<td> {{ plugin.version }} </td>
 			<td> {{ plugin.origin }} </td>
 			<td>
-				<button ng-disabled="true" ><i class="fa fa-download"></i></button>
-				<button ng-disabled="plugin.description !== null"><i class="fa fa-info-circle"></i></button>
-				<button ng-disabled="!plugin.has_options" ng-click="cpc.openPluginConfiguration(plugin)"><i class="fa fa-cog"></i></button>
-                <button ng-if="!plugin.is_ready || plugin.is_locked" ng-click="cpc.onWarningClick(plugin)"><i class="fa fa-warning"></i></button>
+				<button class="btn btn-default" ng-disabled="true" ><i class="fa fa-download"></i></button>
+				<button class="btn btn-default" ng-disabled="plugin.description !== null"><i class="fa fa-info-circle"></i></button>
+				<button class="btn btn-default" ng-disabled="!plugin.has_options" ng-click="cpc.openPluginConfiguration(plugin)"><i class="fa fa-cog"></i></button>
+                <button class="btn btn-default" ng-if="!plugin.is_ready || plugin.is_locked" ng-click="cpc.onWarningClick(plugin)"><i class="fa fa-warning"></i></button>
 			</td>
 		</tr>
 	</table>
