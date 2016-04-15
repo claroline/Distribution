@@ -1232,3 +1232,5 @@ edit_organization: Edit organization
 coordinates: Coordinates
 address: Address
 csv_delete: Csv suppression
+plugins: Plugins
+activate: Activate

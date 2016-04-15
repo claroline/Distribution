@@ -68,7 +68,9 @@ class PluginController extends FOSRestController
 	 */
 	public function enablePluginAction(Plugin $plugin)
 	{
-        return $this->bundleManager->enable($plugin);
+        $this->bundleManager->enable($plugin);
+
+        return $this->bundleManager->getPluginsData();
 	}
 
 	/**
@@ -81,6 +83,8 @@ class PluginController extends FOSRestController
 	 */
 	public function disablePluginAction(Plugin $plugin)
 	{
-        return $this->bundleManager->disable($plugin);
+        $this->bundleManager->disable($plugin);
+
+        return $this->bundleManager->getPluginsData();
 	}
 }

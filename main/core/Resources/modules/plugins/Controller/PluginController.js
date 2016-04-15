@@ -12,11 +12,11 @@ export default class PluginController {
 	}
 
 	enable(plugin) {
-		this.$http.patch(Routing.generate('api_enable_plugin', {plugin: plugin.id})).then(d => window.location.reload)
+		this.$http.patch(Routing.generate('api_enable_plugin', {plugin: plugin.id})).then(d => this.plugins = d.data)
 	}
 
 	disable(plugin) {
-		this.$http.patch(Routing.generate('api_disable_plugin', {plugin: plugin.id})).then(d => window.location.reload)
+		this.$http.patch(Routing.generate('api_disable_plugin', {plugin: plugin.id})).then(d => this.plugins = d.data)
 	}
 
 	openPluginConfiguration(plugin) {
@@ -24,4 +24,15 @@ export default class PluginController {
 		//no angular support yet so we do a simple redirect.
 		window.location = route
 	}
+
+    onWarningClick(plugin) {
+        const modal = this.$uibModal.open({
+            template: require('../Partial/warning.html'),
+            controller: 'WarningController',
+            controllerAs: 'cwpc',
+            resolve: {
+                plugin: () => { return plugin }
+            }
+        })
+    }
 }

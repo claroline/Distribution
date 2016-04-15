@@ -1,14 +1,21 @@
 <div>
 	<table class="table">
 		<tr>
-			<td> {{ 'loaded'|trans:{}: 'platform' }} </td>
+			<td> {{ 'activate'|trans:{}: 'platform' }} </td>
 			<td> {{ 'name'|trans:{}:'platform '}} </td>
 			<td> {{ 'version'|trans:{}:'platform'}} </td>
 			<td> {{ 'origin'|trans:{}:'platform '}} </td>
 			<td> {{ 'actions'|trans:{}:'platform' }} </td>
 		</tr>
-		<tr ng-repeat="(key, plugin) in cpc.plugins">
-			<td> <input type="checkbox" ng-model="plugin.is_loaded" ng-checked="plugin.is_loaded" ng-change="cpc.onCheckboxChange(plugin)"></input></td>
+		<tr ng-repeat="(key, plugin) in cpc.plugins" ng-class="{'danger': !plugin.is_ready, 'warning': plugin.is_locked}">
+			<td>
+                <input type="checkbox"
+                    ng-model="plugin.is_loaded"
+                    ng-checked="plugin.is_loaded"
+                    ng-disabled="!plugin.is_ready || plugin.is_locked"
+                    ng-change="cpc.onCheckboxChange(plugin)">
+                </input>
+            </td>
 			<td> {{ plugin.name }} </td>
 			<td> {{ plugin.version }} </td>
 			<td> {{ plugin.origin }} </td>
@@ -16,6 +23,7 @@
 				<button ng-disabled="true" ><i class="fa fa-download"></i></button>
 				<button ng-disabled="plugin.description !== null"><i class="fa fa-info-circle"></i></button>
 				<button ng-disabled="!plugin.has_options" ng-click="cpc.openPluginConfiguration(plugin)"><i class="fa fa-cog"></i></button>
+                <button ng-if="!plugin.is_ready || plugin.is_locked" ng-click="cpc.onWarningClick(plugin)"><i class="fa fa-warning"></i></button>
 			</td>
 		</tr>
 	</table>
