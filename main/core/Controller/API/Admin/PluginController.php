@@ -16,12 +16,9 @@ use JMS\SecurityExtraBundle\Annotation as SEC;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations\View;
-use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Manager\PluginManager;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use FOS\RestBundle\Controller\Annotations\NamePrefix;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Patch;
 use Claroline\CoreBundle\Entity\Plugin;
 
@@ -43,48 +40,48 @@ class PluginController extends FOSRestController
      */
     public function __construct(Request $request, PluginManager $bundleManager)
     {
-        $this->request       = $request;
+        $this->request = $request;
         $this->bundleManager = $bundleManager;
     }
 
     /**
-	 * @ApiDoc(
-	 *     description="Returns the plugin list",
-	 *     views = {"plugin"}
-	 * )
-	 */
+     * @ApiDoc(
+     *     description="Returns the plugin list",
+     *     views = {"plugin"}
+     * )
+     */
     public function getPluginsAction()
     {
         return $this->bundleManager->getPluginsData();
     }
 
-	/**
-	 * @View(serializerGroups={"api_plugin"})
-	 * @ApiDoc(
-	 *     description="Returns the plugin list",
-	 *     views = {"plugin"}
-	 * )
-	 * @Patch("/plugin/{plugin}/enable")
-	 */
-	public function enablePluginAction(Plugin $plugin)
-	{
+    /**
+     * @View(serializerGroups={"api_plugin"})
+     * @ApiDoc(
+     *     description="Returns the plugin list",
+     *     views = {"plugin"}
+     * )
+     * @Patch("/plugin/{plugin}/enable")
+     */
+    public function enablePluginAction(Plugin $plugin)
+    {
         $this->bundleManager->enable($plugin);
 
         return $this->bundleManager->getPluginsData();
-	}
+    }
 
-	/**
-	 * @View(serializerGroups={"api_plugin"})
-	 * @ApiDoc(
-	 *     description="Returns the plugin list",
-	 *     views = {"plugin"}
-	 * )
- 	 * @Patch("/plugin/{plugin}/disable")
-	 */
-	public function disablePluginAction(Plugin $plugin)
-	{
+    /**
+     * @View(serializerGroups={"api_plugin"})
+     * @ApiDoc(
+     *     description="Returns the plugin list",
+     *     views = {"plugin"}
+     * )
+     * @Patch("/plugin/{plugin}/disable")
+     */
+    public function disablePluginAction(Plugin $plugin)
+    {
         $this->bundleManager->disable($plugin);
 
         return $this->bundleManager->getPluginsData();
-	}
+    }
 }

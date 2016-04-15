@@ -99,23 +99,22 @@ class HomeController extends Controller
         Utilities $utils,
         WidgetManager $widgetManager,
         PluginManager $bundleManager
-    )
-    {
-        $this->em              = $em;
+    ) {
+        $this->em = $em;
         $this->eventDispatcher = $eventDispatcher;
-        $this->formFactory     = $formFactory;
-        $this->homeTabManager  = $homeTabManager;
-        $this->request         = $request;
-        $this->roleManager     = $roleManager;
-        $this->router          = $router;
-        $this->tokenStorage    = $tokenStorage;
-        $this->authorization   = $authorization;
-        $this->toolManager     = $toolManager;
-        $this->userManager     = $userManager;
-        $this->utils           = $utils;
-        $this->widgetManager   = $widgetManager;
-        $this->bundleManager   = $bundleManager;
-        $this->bundles         = $bundleManager->getEnabled(true);
+        $this->formFactory = $formFactory;
+        $this->homeTabManager = $homeTabManager;
+        $this->request = $request;
+        $this->roleManager = $roleManager;
+        $this->router = $router;
+        $this->tokenStorage = $tokenStorage;
+        $this->authorization = $authorization;
+        $this->toolManager = $toolManager;
+        $this->userManager = $userManager;
+        $this->utils = $utils;
+        $this->widgetManager = $widgetManager;
+        $this->bundleManager = $bundleManager;
+        $this->bundles = $bundleManager->getEnabled(true);
     }
 
     /**

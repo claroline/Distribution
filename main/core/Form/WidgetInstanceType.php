@@ -16,8 +16,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class WidgetInstanceType extends AbstractType
 {
@@ -32,7 +30,6 @@ class WidgetInstanceType extends AbstractType
         $this->roles = $roles;
         $this->bundles = $bundles;
     }
-
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -57,7 +54,7 @@ class WidgetInstanceType extends AbstractType
                             return $widgetRepo->createQueryBuilder('w')
                                 ->join('w.roles', 'r')
                                 ->where('w.isDisplayableInDesktop = true')
-                                ->andWhere("r IN (:roles)")
+                                ->andWhere('r IN (:roles)')
                                 ->leftJoin('w.plugin', 'p')
                                 ->andWhere('CONCAT(p.vendorName, p.bundleName) IN (:bundles)')
                                 ->orWhere('w.plugin is null')

@@ -11,7 +11,6 @@
 
 namespace Claroline\KernelBundle;
 
-use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Claroline\KernelBundle\Manager\BundleManager;

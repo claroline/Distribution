@@ -45,13 +45,13 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
         $dql = "
             SELECT whtc
             FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
-            . self::LEFT_JOIN_PLUGIN . "
+            .self::LEFT_JOIN_PLUGIN.'
             WHERE whtc.homeTab = :homeTab
             AND whtc.user IS NULL
-            AND whtc.workspace IS NULL"
-            . " AND " . self::WHERE_PLUGIN_ENABLED . "
+            AND whtc.workspace IS NULL'
+            .' AND '.self::WHERE_PLUGIN_ENABLED.'
             ORDER BY whtc.widgetOrder ASC
-        ";
+        ';
         $query = $this->_em->createQuery($dql);
         $query->setParameter('homeTab', $homeTab);
         $query->setParameter('bundles', $this->bundles);
@@ -64,14 +64,14 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
         $dql = "
             SELECT whtc
             FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
-            . self::LEFT_JOIN_PLUGIN . "
+            .self::LEFT_JOIN_PLUGIN.'
             WHERE whtc.homeTab = :homeTab
             AND whtc.user IS NULL
-            AND whtc.workspace IS NULL"
-            . " AND " . self::WHERE_PLUGIN_ENABLED . "
+            AND whtc.workspace IS NULL'
+            .' AND '.self::WHERE_PLUGIN_ENABLED.'
             AND whtc.visible = true
             ORDER BY whtc.widgetOrder ASC
-        ";
+        ';
         $query = $this->_em->createQuery($dql);
         $query->setParameter('homeTab', $homeTab);
         $query->setParameter('bundles', $this->bundles);
@@ -84,11 +84,11 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
         $dql = "
             SELECT whtc
             FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
-            . self::LEFT_JOIN_PLUGIN . "
+            .self::LEFT_JOIN_PLUGIN.'
             WHERE whtc.homeTab = :homeTab
             AND whtc.user = :user
-            AND whtc.workspace IS NULL"
-            . " AND " . self::WHERE_PLUGIN_ENABLED . "
+            AND whtc.workspace IS NULL'
+            .' AND '.self::WHERE_PLUGIN_ENABLED."
             AND whtc.type = 'desktop'
             ORDER BY whtc.widgetOrder ASC
         ";
@@ -105,15 +105,15 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
         $dql = "
             SELECT whtc
             FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
-            . self::LEFT_JOIN_PLUGIN . "
+            .self::LEFT_JOIN_PLUGIN."
             WHERE whtc.homeTab = :homeTab
             AND whtc.user = :user
             AND whtc.workspace IS NULL
             AND whtc.type = 'desktop'
             AND whtc.visible = true"
-            . " AND " . self::WHERE_PLUGIN_ENABLED . "
+            .' AND '.self::WHERE_PLUGIN_ENABLED.'
             ORDER BY whtc.widgetOrder ASC
-        ";
+        ';
         $query = $this->_em->createQuery($dql);
         $query->setParameter('homeTab', $homeTab);
         $query->setParameter('user', $user);
@@ -129,14 +129,14 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
         $dql = "
             SELECT whtc
             FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
-            . self::LEFT_JOIN_PLUGIN . "
+            .self::LEFT_JOIN_PLUGIN."
             WHERE whtc.homeTab = :homeTab
             AND whtc.workspace = :workspace
             AND whtc.user IS NULL
             AND whtc.type = 'workspace'"
-            . " AND " . self::WHERE_PLUGIN_ENABLED . "
+            .' AND '.self::WHERE_PLUGIN_ENABLED.'
             ORDER BY whtc.widgetOrder ASC
-        ";
+        ';
         $query = $this->_em->createQuery($dql);
         $query->setParameter('homeTab', $homeTab);
         $query->setParameter('workspace', $workspace);
@@ -152,15 +152,15 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
         $dql = "
             SELECT whtc
             FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
-            . self::LEFT_JOIN_PLUGIN . "
+            .self::LEFT_JOIN_PLUGIN."
             WHERE whtc.homeTab = :homeTab
             AND whtc.workspace = :workspace
             AND whtc.user IS NULL
             AND whtc.type = 'workspace'
             AND whtc.visible = true"
-            . " AND " . self::WHERE_PLUGIN_ENABLED . "
+            .' AND '.self::WHERE_PLUGIN_ENABLED.'
             ORDER BY whtc.widgetOrder ASC
-        ";
+        ';
         $query = $this->_em->createQuery($dql);
         $query->setParameter('homeTab', $homeTab);
         $query->setParameter('workspace', $workspace);
@@ -176,7 +176,7 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
         $dql = "
             SELECT whtc
             FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
-            . self::LEFT_JOIN_PLUGIN . "
+            .self::LEFT_JOIN_PLUGIN."
             JOIN Claroline\CoreBundle\Entity\Home\HomeTabConfig htc
             WITH htc.homeTab = :homeTabId
             WHERE whtc.homeTab = :homeTabId
@@ -185,9 +185,9 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
             AND whtc.user IS NULL
             AND whtc.type = 'workspace'
             AND whtc.visible = true"
-            . " AND " . self::WHERE_PLUGIN_ENABLED . "
+            .' AND '.self::WHERE_PLUGIN_ENABLED.'
             ORDER BY whtc.widgetOrder ASC
-        ";
+        ';
         $query = $this->_em->createQuery($dql);
         $query->setParameter('homeTabId', $homeTabId);
         $query->setParameter('workspace', $workspace);
@@ -204,11 +204,11 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
         $dql = "
             SELECT whtc
             FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
-            . self::LEFT_JOIN_PLUGIN . "
+            .self::LEFT_JOIN_PLUGIN."
             JOIN Claroline\CoreBundle\Entity\Home\HomeTabConfig htc
             WITH htc.homeTab = :homeTabId
             WHERE whtc.homeTab = :homeTabId"
-            . " AND " . self::WHERE_PLUGIN_ENABLED . "
+            .' AND '.self::WHERE_PLUGIN_ENABLED."
             AND htc.visible = true
             AND whtc.workspace = :workspace
             AND whtc.user IS NULL
@@ -229,14 +229,14 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
     {
         $dql = "
             UPDATE Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
-            . self::LEFT_JOIN_PLUGIN . "
+            .self::LEFT_JOIN_PLUGIN.'
             SET whtc.widgetOrder = whtc.widgetOrder - 1
-            WHERE whtc.homeTab = :homeTab"
-            . " AND " . self::WHERE_PLUGIN_ENABLED . "
+            WHERE whtc.homeTab = :homeTab'
+            .' AND '.self::WHERE_PLUGIN_ENABLED.'
             AND whtc.user IS NULL
             AND whtc.workspace IS NULL
             AND whtc.widgetOrder > :widgetOrder
-        ";
+        ';
         $query = $this->_em->createQuery($dql);
         $query->setParameter('homeTab', $homeTab);
         $query->setParameter('widgetOrder', $widgetOrder);
@@ -252,14 +252,14 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
     ) {
         $dql = "
             UPDATE Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
-            . self::LEFT_JOIN_PLUGIN . "
+            .self::LEFT_JOIN_PLUGIN.'
             SET whtc.widgetOrder = whtc.widgetOrder - 1
-            WHERE whtc.homeTab = :homeTab"
-            . " AND " . self::WHERE_PLUGIN_ENABLED . "
+            WHERE whtc.homeTab = :homeTab'
+            .' AND '.self::WHERE_PLUGIN_ENABLED.'
             AND whtc.user = :user
             AND whtc.workspace IS NULL
             AND whtc.widgetOrder > :widgetOrder
-        ";
+        ';
         $query = $this->_em->createQuery($dql);
         $query->setParameter('homeTab', $homeTab);
         $query->setParameter('user', $user);
@@ -276,14 +276,14 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
     ) {
         $dql = "
             UPDATE Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
-            . self::LEFT_JOIN_PLUGIN . "
+            .self::LEFT_JOIN_PLUGIN.'
             SET whtc.widgetOrder = whtc.widgetOrder - 1
-            WHERE whtc.homeTab = :homeTab"
-            . " AND " . self::WHERE_PLUGIN_ENABLED . "
+            WHERE whtc.homeTab = :homeTab'
+            .' AND '.self::WHERE_PLUGIN_ENABLED.'
             AND whtc.workspace = :workspace
             AND whtc.user IS NULL
             AND whtc.widgetOrder > :widgetOrder
-        ";
+        ';
         $query = $this->_em->createQuery($dql);
         $query->setParameter('homeTab', $homeTab);
         $query->setParameter('workspace', $workspace);
@@ -300,14 +300,14 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
     ) {
         $dql = "
             UPDATE Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
-            . self::LEFT_JOIN_PLUGIN . "
+            .self::LEFT_JOIN_PLUGIN.'
             SET whtc.widgetOrder = :newWidgetOrder
-            WHERE whtc.homeTab = :homeTab"
-            . " AND " . self::WHERE_PLUGIN_ENABLED . "
+            WHERE whtc.homeTab = :homeTab'
+            .' AND '.self::WHERE_PLUGIN_ENABLED.'
             AND whtc.user IS NULL
             AND whtc.workspace IS NULL
             AND whtc.widgetOrder = :widgetOrder
-        ";
+        ';
         $query = $this->_em->createQuery($dql);
         $query->setParameter('homeTab', $homeTab);
         $query->setParameter('widgetOrder', $widgetOrder);
@@ -325,14 +325,14 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
     ) {
         $dql = "
             UPDATE Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
-            . self::LEFT_JOIN_PLUGIN . "
+            .self::LEFT_JOIN_PLUGIN.'
             SET whtc.widgetOrder = :newWidgetOrder
-            WHERE whtc.homeTab = :homeTab"
-            . " AND " . self::WHERE_PLUGIN_ENABLED . "
+            WHERE whtc.homeTab = :homeTab'
+            .' AND '.self::WHERE_PLUGIN_ENABLED.'
             AND whtc.user = :user
             AND whtc.workspace IS NULL
             AND whtc.widgetOrder = :widgetOrder
-        ";
+        ';
         $query = $this->_em->createQuery($dql);
         $query->setParameter('homeTab', $homeTab);
         $query->setParameter('widgetOrder', $widgetOrder);
@@ -351,14 +351,14 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
     ) {
         $dql = "
             UPDATE Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
-            . self::LEFT_JOIN_PLUGIN . "
+            .self::LEFT_JOIN_PLUGIN.'
             SET whtc.widgetOrder = :newWidgetOrder
-            WHERE whtc.homeTab = :homeTab"
-            . " AND " . self::WHERE_PLUGIN_ENABLED . "
+            WHERE whtc.homeTab = :homeTab'
+            .' AND '.self::WHERE_PLUGIN_ENABLED.'
             AND whtc.workspace = :workspace
             AND whtc.user IS NULL
             AND whtc.widgetOrder = :widgetOrder
-        ";
+        ';
         $query = $this->_em->createQuery($dql);
         $query->setParameter('homeTab', $homeTab);
         $query->setParameter('widgetOrder', $widgetOrder);
@@ -377,9 +377,9 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
         $dql = "
             SELECT whtc
             FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
-            . self::LEFT_JOIN_PLUGIN . "
-            WHERE whtc.homeTab = :homeTab"
-            . " AND " . self::WHERE_PLUGIN_ENABLED . "
+            .self::LEFT_JOIN_PLUGIN.'
+            WHERE whtc.homeTab = :homeTab'
+            .' AND '.self::WHERE_PLUGIN_ENABLED."
             AND whtc.widgetInstance = :widgetInstance
             AND whtc.user = :user
             AND whtc.workspace IS NULL
@@ -399,12 +399,12 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
         $dql = "
             SELECT whtc
             FROM Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig whtc"
-            . self::LEFT_JOIN_PLUGIN . "
-            WHERE whtc.homeTab = :homeTab"
-            . " AND " . self::WHERE_PLUGIN_ENABLED . "
+            .self::LEFT_JOIN_PLUGIN.'
+            WHERE whtc.homeTab = :homeTab'
+            .' AND '.self::WHERE_PLUGIN_ENABLED.'
             AND whtc.type = :type
             ORDER BY whtc.widgetOrder ASC
-        ";
+        ';
         $query = $this->_em->createQuery($dql);
         $query->setParameter('homeTab', $homeTab);
         $query->setParameter('type', $type);

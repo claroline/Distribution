@@ -79,8 +79,7 @@ class ResourceNodeRepository extends MaterializedPathRepository implements Conta
         ResourceNode $resource,
         $includeStartNode = false,
         $filterResourceType = null
-    )
-    {
+    ) {
         $this->builder->selectAsEntity(true)
             ->wherePathLike($resource->getPath(), $includeStartNode);
 

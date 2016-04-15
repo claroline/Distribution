@@ -8,13 +8,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Claroline\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
-use JMS\Serializer\Annotation\SerializedName;
-use JMS\Serializer\Annotation\Accessor;
 
 /**
  * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\PluginRepository")
@@ -75,7 +74,7 @@ class Plugin
 
         return "{$vendor}\\{$bundle}\\{$vendor}{$bundle}";
     }
-    
+
     public function getShortName()
     {
         return strtolower($this->getVendorName().str_replace('Bundle', '', $this->getBundleName()));

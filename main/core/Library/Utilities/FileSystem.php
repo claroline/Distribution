@@ -32,8 +32,12 @@ class FileSystem extends Fs
 
         foreach ($iterator as $el) {
             if (!$el->isDot()) {
-                if ($el->isDir()) $this->rmdir($el->getRealPath(), $recursive);
-                if ($el->isFile()) $this->remove($el->getRealPath());
+                if ($el->isDir()) {
+                    $this->rmdir($el->getRealPath(), $recursive);
+                }
+                if ($el->isFile()) {
+                    $this->remove($el->getRealPath());
+                }
             }
         }
     }

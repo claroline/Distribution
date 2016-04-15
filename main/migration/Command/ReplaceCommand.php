@@ -23,14 +23,14 @@ class ReplaceCommand extends AbstractMigrateCommand
         $this->setName('claroline:migration:replace')
             ->setDescription('Replace the last migration of a bundle (this is equivalent to downgrade => discard => generate => upgrade)');
         $this->addOption(
-        	'output',
-        	null,
-        	InputOption::VALUE_REQUIRED,
-        	'The bundle output if you want migrations to be generated somewhere else'
+            'output',
+            null,
+            InputOption::VALUE_REQUIRED,
+            'The bundle output if you want migrations to be generated somewhere else'
         );
     }
 
-	protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $manager = $this->getManager($output);
         try {
@@ -43,8 +43,8 @@ class ReplaceCommand extends AbstractMigrateCommand
         }
     }
 
-	protected function getAction()
-	{
-		return 'replace';
-	}
+    protected function getAction()
+    {
+        return 'replace';
+    }
 }

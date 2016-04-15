@@ -1080,7 +1080,7 @@ class ParametersController extends Controller
         $lang = $this->configHandler->getParameter('locale_language');
         $country = $this->configHandler->getParameter('country');
         $supportEmail = $this->configHandler->getParameter('support_email');
-        /**
+        /*
          * @todo refactor this
          */
         $version = $this->pluginManager->getDistributionVersion();

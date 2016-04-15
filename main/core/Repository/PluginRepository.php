@@ -33,7 +33,7 @@ class PluginRepository extends EntityRepository
         $query = $this->_em->createQuery($dql);
         $query->setParameter('vendor', $split[0]);
         $query->setParameter('bundle', $split[1]);
-        
+
         return $query->getOneOrNullResult();
     }
 

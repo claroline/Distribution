@@ -11,14 +11,10 @@
 
 namespace Claroline\CoreBundle\Command;
 
-use Psr\Log\LogLevel;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
-use Doctrine\Bundle\DoctrineBundle\Command\CreateDatabaseDoctrineCommand;
 
 /**
  * Performs a fresh installation of the platform.
@@ -41,7 +37,7 @@ class PlatformInstallCommand extends ContainerAwareCommand
          */
         $kernel = $this->getContainer()->get('kernel');
         $rootDir = $kernel->getRootDir();
-        $previous = $rootDir . '/config/previous-installed.json';
+        $previous = $rootDir.'/config/previous-installed.json';
         @unlink($previous);
         file_put_contents($previous, '[]');
 

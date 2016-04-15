@@ -31,8 +31,7 @@ class PluginController extends Controller
      */
     public function __construct(
         StrictDispatcher $eventDispatcher
-    )
-    {
+    ) {
         $this->eventDispatcher = $eventDispatcher;
     }
 
@@ -41,6 +40,7 @@ class PluginController extends Controller
      * @EXT\Template
      *
      * @param Request $request
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function indexAction()
@@ -59,6 +59,7 @@ class PluginController extends Controller
     {
         $eventName = strtolower("plugin_options_{$pluginShortName}");
         $event = $this->eventDispatcher->dispatch($eventName, 'PluginOptions', array());
+
         return $event->getResponse();
     }
 }

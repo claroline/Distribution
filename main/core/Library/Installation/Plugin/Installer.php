@@ -54,8 +54,7 @@ class Installer
         InstallationManager $installer,
         ObjectManager $om,
         PluginManager $pluginManager
-    )
-    {
+    ) {
         $this->validator = $validator;
         $this->recorder = $recorder;
         $this->baseInstaller = $installer;

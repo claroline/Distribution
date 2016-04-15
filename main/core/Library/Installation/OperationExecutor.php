@@ -60,9 +60,9 @@ class OperationExecutor
         $this->kernel = $kernel;
         $this->baseInstaller = $baseInstaller;
         $this->pluginInstaller = $pluginInstaller;
-        $this->previousRepoFile = $this->kernel->getRootDir() . '/config/previous-installed.json';
-        $this->installedRepoFile = $this->kernel->getRootDir() . '/../vendor/composer/installed.json';
-        $this->bundleFile = $this->kernel->getRootDir() . '/config/bundles.ini';
+        $this->previousRepoFile = $this->kernel->getRootDir().'/config/previous-installed.json';
+        $this->installedRepoFile = $this->kernel->getRootDir().'/../vendor/composer/installed.json';
+        $this->bundleFile = $this->kernel->getRootDir().'/config/bundles.ini';
         $this->detector = new Detector();
         $this->om = $om;
     }
@@ -118,8 +118,8 @@ class OperationExecutor
             //this is a meta package if the bundles key exists
             if (array_key_exists('bundles', $extra)) {
                 //this is only valid for installable bundles
-                $bundles = array_filter($extra['bundles'], function($var) {
-                    return in_array('Claroline\InstallationBundle\Bundle\InstallableInterface', class_implements($var)) ?  true: false;
+                $bundles = array_filter($extra['bundles'], function ($var) {
+                    return in_array('Claroline\InstallationBundle\Bundle\InstallableInterface', class_implements($var)) ?  true : false;
                 });
 
                 foreach ($bundles as $bundle) {
@@ -207,7 +207,7 @@ class OperationExecutor
 
         foreach ($operations as $operation) {
             $installer = $operation->getBundleFqcn() === 'Claroline\CoreBundle\ClarolineCoreBundle' ?
-                $this->baseInstaller:
+                $this->baseInstaller :
                 $this->pluginInstaller;
 
             if ($operation->getType() === Operation::INSTALL) {
@@ -289,7 +289,9 @@ class OperationExecutor
                 //Otherwise convert the name in a dirty little way
                 //If it's a metapackage, check in the bundle list
                 foreach ($extra['bundles'] as $installedBundle) {
-                    if ($installedBundle === $bundle) return $package;
+                    if ($installedBundle === $bundle) {
+                        return $package;
+                    }
                 }
             } else {
                 $bundleParts = explode('\\', $bundle);
@@ -302,7 +304,7 @@ class OperationExecutor
         }
 
         //Not found. We return null and we'll try to install it later on.
-        return null;
+        return;
     }
 
     private function buildOperation($type, PackageInterface $package)

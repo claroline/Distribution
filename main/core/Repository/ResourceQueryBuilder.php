@@ -53,7 +53,7 @@ class ResourceQueryBuilder
     {
         $this->bundles = $bundles;
         //look at the getDql() method to see where it come from
-        $this->addWhereClause("(CONCAT(p.vendorName, p.bundleName) IN (:bundles) OR rtp.plugin is NULL)");
+        $this->addWhereClause('(CONCAT(p.vendorName, p.bundleName) IN (:bundles) OR rtp.plugin is NULL)');
         $this->parameters[':bundles'] = $bundles;
     }
 
@@ -507,7 +507,7 @@ class ResourceQueryBuilder
         }
 
         $eol = PHP_EOL;
-        $joinRelatives = $this->joinSingleRelatives ? $this->joinRelativesClause: '';
+        $joinRelatives = $this->joinSingleRelatives ? $this->joinRelativesClause : '';
         $joinRelatives .= " LEFT JOIN node.resourceType rtp{$eol}
             LEFT JOIN rtp.plugin p{$eol}";
         $joinRoles = $this->leftJoinRoles ?

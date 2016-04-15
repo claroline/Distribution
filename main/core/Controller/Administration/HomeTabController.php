@@ -66,15 +66,14 @@ class HomeTabController extends Controller
         Request $request,
         WidgetManager $widgetManager,
         PluginManager $bundleManager
-    )
-    {
-        $this->eventDispatcher  = $eventDispatcher;
-        $this->formFactory      = $formFactory;
-        $this->homeTabManager   = $homeTabManager;
-        $this->request          = $request;
-        $this->widgetManager    = $widgetManager;
-        $this->bundleManager    = $bundleManager;
-        $this->bundles          = $bundleManager->getEnabled(true);
+    ) {
+        $this->eventDispatcher = $eventDispatcher;
+        $this->formFactory = $formFactory;
+        $this->homeTabManager = $homeTabManager;
+        $this->request = $request;
+        $this->widgetManager = $widgetManager;
+        $this->bundleManager = $bundleManager;
+        $this->bundles = $bundleManager->getEnabled(true);
     }
 
     /**

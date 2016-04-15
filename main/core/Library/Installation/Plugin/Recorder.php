@@ -60,7 +60,7 @@ class Recorder
     public function register(PluginBundle $plugin, array $pluginConfiguration)
     {
         $pluginFqcn = get_class($plugin);
-        
+
         return $this->dbWriter->insert($plugin, $pluginConfiguration);
     }
 

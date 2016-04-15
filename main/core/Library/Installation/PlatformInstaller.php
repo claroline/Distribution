@@ -15,7 +15,6 @@ use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\CoreBundle\Library\Installation\Plugin\Installer;
 use Claroline\InstallationBundle\Manager\InstallationManager;
 use Doctrine\Bundle\DoctrineBundle\Command\CreateDatabaseDoctrineCommand;
-use Symfony\Bundle\FrameworkBundle\Command\CacheWarmupCommand;
 use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -65,7 +64,7 @@ class PlatformInstaller
         $this->refresher = $refresher;
         $this->kernel = $kernel;
         $this->container = $container;
-        $this->bundles = parse_ini_file($this->container->getParameter('kernel.root_dir') . '/config/bundles.ini');
+        $this->bundles = parse_ini_file($this->container->getParameter('kernel.root_dir').'/config/bundles.ini');
     }
 
     /**
@@ -105,6 +104,7 @@ class PlatformInstaller
      * Either command line or from the web installer.
      *
      * @param bool $withOptionalFixtures
+     *
      * @deprecated
      *
      * This is still used in the webinstaller. Should it stay ?

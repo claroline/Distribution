@@ -42,11 +42,11 @@ class WidgetInstanceRepository extends EntityRepository implements ContainerAwar
         $dql = "
             SELECT wdc
             FROM Claroline\CoreBundle\Entity\Widget\WidgetInstance wdc"
-            . self::LEFT_JOIN_PLUGIN . "
+            .self::LEFT_JOIN_PLUGIN.'
             WHERE wdc.isAdmin = true
             AND wdc.isDesktop = true
-            AND wdc NOT IN (:excludedWidgetInstances)"
-            . " AND " . self::WHERE_PLUGIN_ENABLED;
+            AND wdc NOT IN (:excludedWidgetInstances)'
+            .' AND '.self::WHERE_PLUGIN_ENABLED;
 
         $query = $this->_em->createQuery($dql);
         $query->setParameter('excludedWidgetInstances', $excludedWidgetInstances);
@@ -60,11 +60,11 @@ class WidgetInstanceRepository extends EntityRepository implements ContainerAwar
         $dql = "
             SELECT wdc
             FROM Claroline\CoreBundle\Entity\Widget\WidgetInstance wdc"
-            . self::LEFT_JOIN_PLUGIN . "
+            .self::LEFT_JOIN_PLUGIN.'
             WHERE wdc.isAdmin = true
             AND wdc.isDesktop = false
-            AND wdc NOT IN (:excludedWidgetInstances)"
-            . " AND " . self::WHERE_PLUGIN_ENABLED;
+            AND wdc NOT IN (:excludedWidgetInstances)'
+            .' AND '.self::WHERE_PLUGIN_ENABLED;
 
         $query = $this->_em->createQuery($dql);
         $query->setParameter('excludedWidgetInstances', $excludedWidgetInstances);
@@ -80,12 +80,12 @@ class WidgetInstanceRepository extends EntityRepository implements ContainerAwar
         $dql = "
             SELECT wdc
             FROM Claroline\CoreBundle\Entity\Widget\WidgetInstance wdc"
-            . self::LEFT_JOIN_PLUGIN . "
+            .self::LEFT_JOIN_PLUGIN.'
             WHERE wdc.user = :user
             AND wdc.isAdmin = false
             AND wdc.isDesktop = true
-            AND wdc NOT IN (:excludedWidgetInstances)"
-            . " AND " . self::WHERE_PLUGIN_ENABLED;
+            AND wdc NOT IN (:excludedWidgetInstances)'
+            .' AND '.self::WHERE_PLUGIN_ENABLED;
         $query = $this->_em->createQuery($dql);
         $query->setParameter('user', $user);
         $query->setParameter('excludedWidgetInstances', $excludedWidgetInstances);
@@ -101,12 +101,12 @@ class WidgetInstanceRepository extends EntityRepository implements ContainerAwar
         $dql = "
             SELECT wdc
             FROM Claroline\CoreBundle\Entity\Widget\WidgetInstance wdc"
-            . self::LEFT_JOIN_PLUGIN . "
+            .self::LEFT_JOIN_PLUGIN.'
             WHERE wdc.workspace = :workspace
             AND wdc.isAdmin = false
             AND wdc.isDesktop = false
-            AND wdc NOT IN (:excludedWidgetInstances)"
-            . " AND " . self::WHERE_PLUGIN_ENABLED;
+            AND wdc NOT IN (:excludedWidgetInstances)'
+            .' AND '.self::WHERE_PLUGIN_ENABLED;
         $query = $this->_em->createQuery($dql);
         $query->setParameter('workspace', $workspace);
         $query->setParameter('excludedWidgetInstances', $excludedWidgetInstances);

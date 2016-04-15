@@ -41,9 +41,11 @@ abstract class InstallableBundle extends Bundle implements InstallableInterface
 
         if (!$data) {
             $ds = DIRECTORY_SEPARATOR;
-            $path = realpath($this->getPath() . $ds . 'composer.json');
+            $path = realpath($this->getPath().$ds.'composer.json');
             //metapackage are 2 directories above
-            if (!$path) $path = realpath($this->getPath() . "{$ds}..{$ds}..{$ds}composer.json");
+            if (!$path) {
+                $path = realpath($this->getPath()."{$ds}..{$ds}..{$ds}composer.json");
+            }
             $data = json_decode(file_get_contents($path));
         }
 
@@ -68,12 +70,12 @@ abstract class InstallableBundle extends Bundle implements InstallableInterface
 
     public function getDescription()
     {
-        return file_exists($this->getPath() . '/DESCRIPTION.md') ? file_get_contents($this->getPath() . '/DESCRIPTION.md'): '';
+        return file_exists($this->getPath().'/DESCRIPTION.md') ? file_get_contents($this->getPath().'/DESCRIPTION.md') : '';
     }
 
     public function getRequirements()
     {
-        return file_exists($this->getPath() . '/require.json') ? json_decode(file_get_contents($this->getPath() . '/require.json'), true): array();
+        return file_exists($this->getPath().'/require.json') ? json_decode(file_get_contents($this->getPath().'/require.json'), true) : array();
     }
 
     private function getComposerParameter($parameter, $default = null)
@@ -92,11 +94,13 @@ abstract class InstallableBundle extends Bundle implements InstallableInterface
         static $installed;
 
         if (!$installed) {
-            $up = DIRECTORY_SEPARATOR . '..';
+            $up = DIRECTORY_SEPARATOR.'..';
             //usual package
-            $path = realpath($this->getPath() .  $up . $up . $up . $up . '/vendor/composer/installed.json');
+            $path = realpath($this->getPath().$up.$up.$up.$up.'/vendor/composer/installed.json');
             //meta package
-            if (!$path) $path = realpath($this->getPath() .  $up . $up . $up . $up . $up .'/vendor/composer/installed.json');
+            if (!$path) {
+                $path = realpath($this->getPath().$up.$up.$up.$up.$up.'/vendor/composer/installed.json');
+            }
             $data = json_decode(file_get_contents($path), true);
 
             return $data;

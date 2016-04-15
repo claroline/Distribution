@@ -12,7 +12,6 @@
 namespace Claroline\CoreBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
