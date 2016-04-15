@@ -315,9 +315,10 @@ class PluginManager
     private function checkPlugins($plugins)
     {
         $errors = [];
+        $loadedBundles = parse_ini_file($this->iniFile);
 
         foreach ($plugins as $fqcn) {
-            if (!(array_key_exists($fqcn, $this->loadedBundles) && $this->loadedBundles[$fqcn])) $errors[] = $fqcn;
+            if (!(array_key_exists($fqcn, $loadedBundles) && $loadedBundles[$fqcn])) $errors[] = $fqcn;
         }
 
         return $errors;
