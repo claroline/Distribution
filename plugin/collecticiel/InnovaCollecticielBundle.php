@@ -5,7 +5,7 @@
  * Date: 21/08/13
  * Time: 15:00.
  */
- 
+
 namespace Innova\CollecticielBundle;
 
 use Claroline\CoreBundle\Library\PluginBundle;
