@@ -23,7 +23,6 @@ use JMS\Serializer\Annotation\Groups;
  *          @ORM\UniqueConstraint(name="plugin_unique_name", columns={"vendor_name", "short_name"})
  *      }
  * )
- * This entity will also do some of the work for the bundles.ini file (wich is not great but w/e)
  */
 class Plugin
 {
