@@ -227,7 +227,6 @@ class ProfileController extends Controller
         }
 
         $completion = $totalVisibleFields === 0 ? null: round($totalFilledVisibleFields / $totalVisibleFields * 100);
-        //$completion = round($totalFilledVisibleFields / $totalVisibleFields * 100);
         $links = $profileLinksEvent->getLinks();
 
         return array(
