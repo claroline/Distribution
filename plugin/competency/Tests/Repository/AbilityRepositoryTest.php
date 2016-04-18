@@ -5,7 +5,6 @@ namespace HeVinci\CompetencyBundle\Tests\Repository;
 use Claroline\CoreBundle\Entity\Activity\AbstractEvaluation;
 use Claroline\CoreBundle\Entity\Resource\Activity;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
-use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use HeVinci\CompetencyBundle\Util\RepositoryTestCase;
 
