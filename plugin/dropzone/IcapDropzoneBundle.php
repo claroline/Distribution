@@ -5,6 +5,7 @@
  * Date: 21/08/13
  * Time: 15:00.
  */
+
 namespace Icap\DropzoneBundle;
 
 use Claroline\CoreBundle\Library\PluginBundle;
