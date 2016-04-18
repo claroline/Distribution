@@ -47,7 +47,6 @@ before_script:
   - npm install
   - npm run bower
   - composer build
-  - php app/console doctrine:database:create --env=test
   - php app/console claroline:install --env=test
 
 script:
