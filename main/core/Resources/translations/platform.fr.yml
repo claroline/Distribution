@@ -1255,3 +1255,10 @@ organization_name: Nom de l'organisation
 csv_delete: Suppression par csv
 plugins: Plugins
 activate: Activer
+version: Version
+origin: Origine
+cache_management: Gestion du cache
+cache_management_explanation: Votre dossier app/cache doit être vidé manuellement pour finaliser les changements.
+required_by: Requis par:
+require: Requiert:
+requirement_warning: Attention au prérequis

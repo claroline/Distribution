@@ -14,4 +14,9 @@ class InnovaCollecticielBundle extends PluginBundle
     {
         return 'collecticiel';
     }
+
+    public function getRequiredPlugins()
+    {
+        return ['Claroline\\AgendaBundle\\ClarolineAgendaBundle'];
+    }
 }

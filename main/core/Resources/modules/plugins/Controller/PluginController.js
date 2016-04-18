@@ -25,6 +25,12 @@ export default class PluginController {
 		window.location = route
 	}
 
+    onCacheWarningClick() {
+        const modal = this.$uibModal.open({
+            template: require('../Partial/cache.html')
+        })
+    }
+
     onWarningClick(plugin) {
         const modal = this.$uibModal.open({
             template: require('../Partial/warning.html'),

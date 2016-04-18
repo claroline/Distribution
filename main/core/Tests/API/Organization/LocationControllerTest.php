@@ -13,7 +13,7 @@ use Claroline\CoreBundle\Library\Testing\Persister;
  * - create database
  * - php app/console claroline:init_test_schema --env=test
  * - php app/console doctrine:schema:update --force --env=test
- * - bin/phpunit vendor/claroline/core-bundle/Tests/API/Organization/Location/ControllerTest.php -c app/phpunit.xml
+ * - bin/phpunit vendor/claroline/core-bundle/Tests/API/Organization/Location/ControllerTest.php -c app/phpunit.xml.
  */
 class LocationControllerTest extends TransactionalTestCase
 {
@@ -24,7 +24,7 @@ class LocationControllerTest extends TransactionalTestCase
     /** @var User */
     private $admin;
     /** @var Location */
-    private $where; 
+    private $where;
     /** @var Location */
     private $nowhere;
 
@@ -47,7 +47,7 @@ class LocationControllerTest extends TransactionalTestCase
     public function testGetLocationsAction()
     {
         $this->logIn($this->admin);
-        $this->client->request('GET', "/api/locations.json");
+        $this->client->request('GET', '/api/locations.json');
         $data = $this->client->getResponse()->getContent();
         $data = json_decode($data, true);
         $this->assertEquals(2, count($data));
@@ -58,10 +58,9 @@ class LocationControllerTest extends TransactionalTestCase
     public function testGetLocationsActionIsProtected()
     {
         $this->logIn($this->john);
-        $this->client->request('GET', "/api/locations.json");
+        $this->client->request('GET', '/api/locations.json');
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
     }
-
 
     //@route: api_get_create_location_form
     //@url: /api/create/location/form.{_format}
@@ -113,13 +112,13 @@ class LocationControllerTest extends TransactionalTestCase
             'pc' => 'potterStreet',
             'town' => 'potterStreet',
             'country' => 'potterStreet',
-            'phone' => 'potterStreet'
+            'phone' => 'potterStreet',
         );
         $form = array('location_form' => $fields);
         $this->client->request('POST', 'api/locations.json', $form);
 
         //let's check now
-        $this->client->request('GET', "/api/locations.json");
+        $this->client->request('GET', '/api/locations.json');
         $data = $this->client->getResponse()->getContent();
         $data = json_decode($data, true);
         $this->assertEquals(3, count($data));
@@ -139,7 +138,7 @@ class LocationControllerTest extends TransactionalTestCase
             'pc' => 'potterStreet',
             'town' => 'potterStreet',
             'country' => 'potterStreet',
-            'phone' => 'potterStreet'
+            'phone' => 'potterStreet',
         );
         $form = array('location_form' => $fields);
         $this->client->request('POST', 'api/locations.json', $form);
@@ -160,14 +159,13 @@ class LocationControllerTest extends TransactionalTestCase
             'pc' => 'potterStreet',
             'town' => 'potterStreet',
             'country' => 'potterStreet',
-            'phone' => 'potterStreet'
+            'phone' => 'potterStreet',
         );
         $form = array('location_form' => $fields);
         $this->client->request('PUT', "api/locations/{$this->here->getId()}.json", $form);
         $data = $this->client->getResponse()->getContent();
         $data = json_decode($data, true);
         $this->assertEquals('potterStreet', $data['name']);
-
     }
 
     //@route: api_put_location
@@ -184,7 +182,7 @@ class LocationControllerTest extends TransactionalTestCase
             'pc' => 'potterStreet',
             'town' => 'potterStreet',
             'country' => 'potterStreet',
-            'phone' => 'potterStreet'
+            'phone' => 'potterStreet',
         );
         $form = array('location_form' => $fields);
         $this->client->request('PUT', "api/locations/{$this->here->getId()}.json", $form);
@@ -200,7 +198,7 @@ class LocationControllerTest extends TransactionalTestCase
         $this->client->request('DELETE', "/api/locations/{$this->here->getId()}.json");
 
         //let's check now
-        $this->client->request('GET', "/api/locations.json");
+        $this->client->request('GET', '/api/locations.json');
         $data = $this->client->getResponse()->getContent();
         $data = json_decode($data, true);
         $this->assertEquals(1, count($data));

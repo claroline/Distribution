@@ -1,11 +1,14 @@
 <div>
+    <div class="panel">
+        <button class="btn btn-warning" ng-click="cpc.onCacheWarningClick()"> <i class="fa fa-warning"> {{ 'cache_management'|trans:{}:'platform' }} </i></button>
+    </div>
 	<table class="table">
 		<tr>
 			<td> {{ 'activate'|trans:{}: 'platform' }} </td>
-			<td> {{ 'name'|trans:{}:'platform '}} </td>
-			<td> {{ 'version'|trans:{}:'platform'}} </td>
-			<td> {{ 'origin'|trans:{}:'platform '}} </td>
-			<td> {{ 'actions'|trans:{}:'platform' }} </td>
+			<td> {{ 'name'|trans:{}: 'platform'}} </td>
+			<td> {{ 'version'|trans:{}: 'platform'}} </td>
+			<td> {{ 'origin'|trans:{}: 'platform' }} </td>
+			<td> {{ 'actions'|trans:{}: 'platform' }} </td>
 		</tr>
 		<tr ng-repeat="(key, plugin) in cpc.plugins" ng-class="{'danger': !plugin.is_ready, 'warning': plugin.is_locked}">
 			<td>

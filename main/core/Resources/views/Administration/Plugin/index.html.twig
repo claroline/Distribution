@@ -16,20 +16,18 @@
             'href': path('claro_admin_parameters_index')
         },
 		{
-			'name': 'plugins'|trans({}, 'platform') ~ ' [EXPERIMENTAL]',
+			'name': 'plugins'|trans({}, 'platform'),
 			'href': ''
 		}
     ])
 }}
 {% endblock %}
-
 {% block section_content %}
     <div id="plugin-panel" class="panel panel-default" ng-app="PluginManager">
         <div class="panel panel-body">
             <plugin-manager></plugin-manager>
         </div>
     </div>
-
 {% endblock %}
 {% block stylesheets %}
     {{ parent() }}
