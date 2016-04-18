@@ -267,8 +267,8 @@ class AbilityRepositoryTest extends RepositoryTestCase
         $workspace->setGuid('abc123');
         $workspace->setCreator($user);
 
-        $type = new ResourceType();
-        $type->setName('activity');
+        $type = $this->om->getRepository('ClarolineCoreBundle:Resource\ResourceType')
+            ->findOneByName('activity');
 
         $node = new ResourceNode();
         $node->setName($name);
