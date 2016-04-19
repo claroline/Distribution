@@ -47,7 +47,7 @@ class ClarolineCoreBundle extends InstallableBundle implements AutoConfigurableI
 
     public function supports($environment)
     {
-        return in_array($environment, array('prod', 'dev', 'test', 'maintenance'));
+        return in_array($environment, array('prod', 'dev', 'test'));
     }
 
     public function getConfiguration($environment)
