@@ -139,6 +139,9 @@ class PluginManager
                 $this->kernelRootDir.'/config/bundles.ini'
             );
 
+        //cache the results
+        $this->loadedBundles = parse_ini_file($this->iniFile);
+
         return $plugin;
     }
 
@@ -151,15 +154,17 @@ class PluginManager
                 $this->kernelRootDir.'/config/bundles.ini'
             );
 
+        //cache the results
+        $this->loadedBundles = parse_ini_file($this->iniFile);
+
         return $plugin;
     }
 
     public function getEnabled($shortName = false)
     {
-        $bundles = parse_ini_file($this->iniFile);
         $enabledBundles = [];
 
-        foreach ($bundles as $bundle => $enabled) {
+        foreach ($this->loadedBundles as $bundle => $enabled) {
             if ($enabled) {
                 if ($shortName) {
                     $parts = explode('\\', $bundle);
@@ -183,10 +188,9 @@ class PluginManager
 
     public function isLoaded($plugin)
     {
-        $bundles = parse_ini_file($this->getIniFile());
         $pluginClass = get_class($this->getBundle($plugin));
 
-        foreach ($bundles as $bundle => $isEnabled) {
+        foreach ($this->loadedBundles as $bundle => $isEnabled) {
             if ($bundle === $pluginClass && $isEnabled) {
                 return true;
             }
@@ -259,7 +263,7 @@ class PluginManager
             $errorCount += count($errors['plugin']);
         }
 
-        return $errorCount > 0 ? false : true;
+        return $errorCount === 0;
     }
 
     public function getRequiredBy($plugin)
@@ -335,10 +339,9 @@ class PluginManager
     private function checkPlugins($plugins)
     {
         $errors = [];
-        $loadedBundles = parse_ini_file($this->iniFile);
 
         foreach ($plugins as $fqcn) {
-            if (!(array_key_exists($fqcn, $loadedBundles) && $loadedBundles[$fqcn])) {
+            if (!(array_key_exists($fqcn, $this->loadedBundles) && $this->loadedBundles[$fqcn])) {
                 $errors[] = $fqcn;
             }
         }
