@@ -1261,4 +1261,4 @@ cache_management: Gestion du cache
 cache_management_explanation: Votre dossier app/cache doit être vidé manuellement pour finaliser les changements.
 required_by: Requis par:
 require: Requiert:
-requirement_warning: Attention au prérequis
+requirement_warning: Attention aux prérequis
