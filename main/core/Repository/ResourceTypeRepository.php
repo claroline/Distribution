@@ -19,7 +19,7 @@ class ResourceTypeRepository extends EntityRepository implements ContainerAwareI
 {
     private $container;
     private $bundles = [];
-    
+
     public function setContainer(ContainerInterface $container = null)
     {
         $this->container = $container;
