@@ -11,7 +11,7 @@ import Interceptors from '../interceptorsDefault'
 
 angular.module('PluginManager', [
     'ui.fos-js-router',
-	'ui.bootstrap',
+    'ui.bootstrap',
     'ui.bootstrap.tpls',
     'ui.translation',
 ])
