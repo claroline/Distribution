@@ -36,7 +36,7 @@ class LocationControllerTest extends TransactionalTestCase
         $this->persister->flush();
 
         $this->logIn($admin);
-        $this->client->request('GET', "/api/locations.json");
+        $this->client->request('GET', '/api/locations.json');
         $data = $this->client->getResponse()->getContent();
         $data = json_decode($data, true);
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -51,10 +51,9 @@ class LocationControllerTest extends TransactionalTestCase
         $this->persister->flush();
 
         $this->logIn($john);
-        $this->client->request('GET', "/api/locations.json");
+        $this->client->request('GET', '/api/locations.json');
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
     }
-
 
     //@route: api_get_location_create_form
     //@url: /api/location/create/form.{_format}
@@ -123,13 +122,13 @@ class LocationControllerTest extends TransactionalTestCase
             'pc' => 'potterStreet',
             'town' => 'potterStreet',
             'country' => 'potterStreet',
-            'phone' => 'potterStreet'
+            'phone' => 'potterStreet',
         );
         $form = array('location_form' => $fields);
         $this->client->request('POST', 'api/locations.json', $form);
 
         //let's check now
-        $this->client->request('GET', "/api/locations.json");
+        $this->client->request('GET', '/api/locations.json');
         $data = $this->client->getResponse()->getContent();
         $data = json_decode($data, true);
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -153,7 +152,7 @@ class LocationControllerTest extends TransactionalTestCase
             'pc' => 'potterStreet',
             'town' => 'potterStreet',
             'country' => 'potterStreet',
-            'phone' => 'potterStreet'
+            'phone' => 'potterStreet',
         );
         $form = array('location_form' => $fields);
         $this->client->request('POST', 'api/locations.json', $form);
@@ -178,14 +177,13 @@ class LocationControllerTest extends TransactionalTestCase
             'pc' => 'potterStreet',
             'town' => 'potterStreet',
             'country' => 'potterStreet',
-            'phone' => 'potterStreet'
+            'phone' => 'potterStreet',
         );
         $form = array('location_form' => $fields);
         $this->client->request('PUT', "api/locations/{$here->getId()}.json", $form);
         $data = $this->client->getResponse()->getContent();
         $data = json_decode($data, true);
         $this->assertEquals('potterStreet', $data['name']);
-
     }
 
     //@route: api_put_location
@@ -206,7 +204,7 @@ class LocationControllerTest extends TransactionalTestCase
             'pc' => 'potterStreet',
             'town' => 'potterStreet',
             'country' => 'potterStreet',
-            'phone' => 'potterStreet'
+            'phone' => 'potterStreet',
         );
         $form = array('location_form' => $fields);
         $this->client->request('PUT', "api/locations/{$here->getId()}.json", $form);
@@ -226,7 +224,7 @@ class LocationControllerTest extends TransactionalTestCase
         $this->client->request('DELETE', "/api/locations/{$here->getId()}.json");
 
         //let's check now
-        $this->client->request('GET', "/api/locations.json");
+        $this->client->request('GET', '/api/locations.json');
         $data = $this->client->getResponse()->getContent();
         $data = json_decode($data, true);
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
