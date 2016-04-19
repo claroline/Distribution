@@ -28,6 +28,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class ResourceNodeRepository extends MaterializedPathRepository implements ContainerAwareInterface
 {
+    private $container;
+    private $builder;
+    private $bundles = [];
+
     public function setContainer(ContainerInterface $container = null)
     {
         $this->container = $container;

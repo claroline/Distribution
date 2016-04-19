@@ -17,6 +17,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ResourceTypeRepository extends EntityRepository implements ContainerAwareInterface
 {
+    private $container;
+    private $bundles = [];
+    
     public function setContainer(ContainerInterface $container = null)
     {
         $this->container = $container;

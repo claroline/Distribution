@@ -21,6 +21,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class OrderedToolRepository extends EntityRepository implements ContainerAwareInterface
 {
     private $bundles = [];
+    private $container;
 
     public function setContainer(ContainerInterface $container = null)
     {
