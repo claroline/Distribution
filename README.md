@@ -10,6 +10,10 @@ provides:
 1. the core bundles and components needed to get a working platform;
 2. the plugin bundles officially supported by the Claroline Consortium.
 
+# Chat
+
+[![Join the chat at https://gitter.im/claroline/Claroline](https://img.shields.io/badge/GITTER-join%20chat-green.svg)](https://gitter.im/claroline/Claroline)
+
 ## WARNING
 
 This repository is still a work in progress.
