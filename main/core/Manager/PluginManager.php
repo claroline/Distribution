@@ -14,10 +14,10 @@ namespace Claroline\CoreBundle\Manager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Plugin;
-use FormaLibre\SupportBundle\Entity\Status;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Claroline\KernelBundle\Manager\BundleManager;
 use Claroline\CoreBundle\Library\PluginBundle;
+use Claroline\CoreBundle\Event\StrictDispatcher;
 
 /**
  * @DI\Service("claroline.manager.plugin_manager")
@@ -32,23 +32,27 @@ class PluginManager
     private $bundleManager;
     private $loadedBundles;
     private $installedBundles;
+    private $dispatcher;
 
     /**
      * @DI\InjectParams({
      *      "iniFileManager" = @DI\Inject("claroline.manager.ini_file_manager"),
      *      "kernelRootDir"  = @DI\Inject("%kernel.root_dir%"),
      *      "om"             = @DI\Inject("claroline.persistence.object_manager"),
-     *      "kernel"         = @DI\Inject("kernel")
+     *      "kernel"         = @DI\Inject("kernel"),
+     *      "dispatcher"     = @DI\Inject("claroline.event.event_dispatcher")
      * })
      */
     public function __construct(
         IniFileManager $iniFileManager,
         $kernelRootDir,
         ObjectManager $om,
-        KernelInterface $kernel
+        KernelInterface $kernel,
+        StrictDispatcher $dispatcher
     ) {
         $this->iniFileManager = $iniFileManager;
         $this->kernelRootDir = $kernelRootDir;
+        $this->dispatcher = $dispatcher;
         $this->om = $om;
         $this->pluginRepo = $om->getRepository('ClarolineCoreBundle:Plugin');
         $this->iniFile = $this->kernelRootDir.'/config/bundles.ini';
@@ -186,6 +190,9 @@ class PluginManager
         return $this->pluginRepo->findPluginByShortName($name);
     }
 
+    /**
+     * @param mixed $plugin Plugin Entity, ShortName (ClarolineCoreBundle) Fqcn (Claroline\CoreBundle\ClarolineCoreBundle)
+     */
     public function isLoaded($plugin)
     {
         $pluginClass = get_class($this->getBundle($plugin));
@@ -204,21 +211,33 @@ class PluginManager
         return $this->iniFile;
     }
 
+    /**
+     * @param mixed $plugin Plugin Entity, ShortName (ClarolineCoreBundle) Fqcn (Claroline\CoreBundle\ClarolineCoreBundle)
+     */
     public function getDescription($plugin)
     {
         return $this->getBundle($plugin)->getOrigin();
     }
 
+    /**
+     * @param mixed $plugin Plugin Entity, ShortName (ClarolineCoreBundle) Fqcn (Claroline\CoreBundle\ClarolineCoreBundle)
+     */
     public function getOrigin($plugin)
     {
         return $this->getBundle($plugin)->getOrigin();
     }
 
+    /**
+     * @param mixed $plugin Plugin Entity, ShortName (ClarolineCoreBundle) Fqcn (Claroline\CoreBundle\ClarolineCoreBundle)
+     */
     public function getVersion($plugin)
     {
         return $this->getBundle($plugin)->getVersion();
     }
 
+    /**
+     * @param mixed $plugin Plugin Entity, ShortName (ClarolineCoreBundle) Fqcn (Claroline\CoreBundle\ClarolineCoreBundle)
+     */
     public function getRequirements($plugin)
     {
         $requirements = [];
@@ -227,16 +246,27 @@ class PluginManager
         if (count($extensions = $bundle->getRequiredPhpExtensions()) > 0) {
             $requirements['extension'] = $extensions;
         }
+
         if (count($extensions = $bundle->getRequiredPlugins()) > 0) {
             $requirements['plugin'] = $extensions;
+        }
+
+        if (count($extra = $bundle->getRequiredExtra()) > 0) {
+            foreach ($extra as $require) {
+                $requirements['extra'][] = $require['warning'];
+            }
         }
 
         return $requirements;
     }
 
+    /**
+     * @param mixed $plugin Plugin Entity, ShortName (ClarolineCoreBundle) Fqcn (Claroline\CoreBundle\ClarolineCoreBundle)
+     */
     public function getMissingRequirements($plugin)
     {
         $requirements = $this->getRequirements($plugin);
+        $bundle = $this->getBundle($plugin);
         $errors = [];
 
         if ($requirements) {
@@ -246,11 +276,17 @@ class PluginManager
             if (array_key_exists('plugin', $requirements)) {
                 $errors['plugin'] = $this->checkPlugins($requirements['plugin']);
             }
+            if (array_key_exists('extra', $requirements)) {
+                $errors['extra'] = $this->checkExtraRequirements($bundle->getRequiredExtra());
+            }
         }
 
         return $errors;
     }
 
+    /**
+     * @param mixed $plugin Plugin Entity, ShortName (ClarolineCoreBundle) Fqcn (Claroline\CoreBundle\ClarolineCoreBundle)
+     */
     public function isReady($plugin)
     {
         $errors = $this->getMissingRequirements($plugin);
@@ -263,9 +299,16 @@ class PluginManager
             $errorCount += count($errors['plugin']);
         }
 
+        if (array_key_exists('extra', $errors)) {
+            $errorCount += count($errors['extra']);
+        }
+
         return $errorCount === 0;
     }
 
+    /**
+     * @param mixed $plugin Plugin Entity, ShortName (ClarolineCoreBundle) Fqcn (Claroline\CoreBundle\ClarolineCoreBundle)
+     */
     public function getRequiredBy($plugin)
     {
         $requiredBy = [];
@@ -281,6 +324,9 @@ class PluginManager
         return $requiredBy;
     }
 
+    /**
+     * @param mixed $plugin Plugin Entity, ShortName (ClarolineCoreBundle) Fqcn (Claroline\CoreBundle\ClarolineCoreBundle)
+     */
     public function isLocked($plugin)
     {
         $requiredBy = $this->getRequiredBy($plugin);
@@ -295,19 +341,11 @@ class PluginManager
     }
 
     /**
-     * Status
-     * Plugin Entity
-     * ShortName (ie: ClarolineCoreBundle)
-     * Fqcn (ie: Claroline\CoreBundle\ClarolineCoreBundle).
+     * @param mixed $plugin Plugin Entity, ShortName (ClarolineCoreBundle) Fqcn (Claroline\CoreBundle\ClarolineCoreBundle)
      */
     public function getBundle($plugin)
     {
-        $name = $plugin instanceof Plugin ?
-            $plugin->getVendorName().$plugin->getBundleName() :
-            $plugin;
-
-        $parts = explode('\\', $name);
-        $shortName = count($parts) === 3 ? $parts[2] : $name;
+        $shortName = $this->getPluginShortName($plugin);
 
         foreach ($this->getInstalledBundles() as $bundle) {
             if ($bundle['instance']->getName() === $shortName) {
@@ -323,7 +361,7 @@ class PluginManager
         });
     }
 
-    private function checkExtension($extensions)
+    private function checkExtension(array $extensions)
     {
         $errors = [];
 
@@ -336,7 +374,21 @@ class PluginManager
         return $errors;
     }
 
-    private function checkPlugins($plugins)
+    public function checkExtraRequirements(array $extra)
+    {
+        $errors = [];
+
+        foreach ($extra as $requirement) {
+            //anonymous function
+            if ($requirement['function']()) {
+                $errors[] = $requirement['warning'];
+            }
+        }
+
+        return $errors;
+    }
+
+    private function checkPlugins(array $plugins)
     {
         $errors = [];
 
@@ -347,5 +399,16 @@ class PluginManager
         }
 
         return $errors;
+    }
+
+    private function getPluginShortName($plugin)
+    {
+        $name = $plugin instanceof Plugin ?
+            $plugin->getVendorName().$plugin->getBundleName() :
+            $plugin;
+
+        $parts = explode('\\', $name);
+
+        return count($parts) === 3 ? $parts[2] : $name;
     }
 }

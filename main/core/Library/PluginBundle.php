@@ -120,4 +120,9 @@ abstract class PluginBundle extends InstallableBundle implements PluginBundleInt
     {
         return array();
     }
+
+    public function getRequiredExtra()
+    {
+        return array();
+    }
 }
