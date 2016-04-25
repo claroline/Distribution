@@ -17,7 +17,6 @@ use Claroline\CoreBundle\Entity\Plugin;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Claroline\KernelBundle\Manager\BundleManager;
 use Claroline\CoreBundle\Library\PluginBundle;
-use Claroline\CoreBundle\Event\StrictDispatcher;
 
 /**
  * @DI\Service("claroline.manager.plugin_manager")
@@ -32,27 +31,23 @@ class PluginManager
     private $bundleManager;
     private $loadedBundles;
     private $installedBundles;
-    private $dispatcher;
 
     /**
      * @DI\InjectParams({
      *      "iniFileManager" = @DI\Inject("claroline.manager.ini_file_manager"),
      *      "kernelRootDir"  = @DI\Inject("%kernel.root_dir%"),
      *      "om"             = @DI\Inject("claroline.persistence.object_manager"),
-     *      "kernel"         = @DI\Inject("kernel"),
-     *      "dispatcher"     = @DI\Inject("claroline.event.event_dispatcher")
+     *      "kernel"         = @DI\Inject("kernel")
      * })
      */
     public function __construct(
         IniFileManager $iniFileManager,
         $kernelRootDir,
         ObjectManager $om,
-        KernelInterface $kernel,
-        StrictDispatcher $dispatcher
+        KernelInterface $kernel
     ) {
         $this->iniFileManager = $iniFileManager;
         $this->kernelRootDir = $kernelRootDir;
-        $this->dispatcher = $dispatcher;
         $this->om = $om;
         $this->pluginRepo = $om->getRepository('ClarolineCoreBundle:Plugin');
         $this->iniFile = $this->kernelRootDir.'/config/bundles.ini';
