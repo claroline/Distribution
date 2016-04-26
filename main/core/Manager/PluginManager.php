@@ -238,17 +238,17 @@ class PluginManager
         $requirements = [];
         $bundle = $this->getBundle($plugin);
 
-        if (count($extensions = $bundle->getRequiredPhpExtensions()) > 0) {
+        if (count($extensions = $bundle->getPhpExtensionRequirements()) > 0) {
             $requirements['extension'] = $extensions;
         }
 
-        if (count($extensions = $bundle->getRequiredPlugins()) > 0) {
+        if (count($extensions = $bundle->getPluginsRequirements()) > 0) {
             $requirements['plugin'] = $extensions;
         }
 
-        if (count($extra = $bundle->getRequiredExtra()) > 0) {
+        if (count($extra = $bundle->getExtraRequirements()) > 0) {
             foreach ($extra as $require) {
-                $requirements['extra'][] = $require['warning'];
+                $requirements['extra'][] = $require['failure_msg'];
             }
         }
 
@@ -266,13 +266,13 @@ class PluginManager
 
         if ($requirements) {
             if (array_key_exists('extension', $requirements)) {
-                $errors['extension'] = $this->checkExtension($requirements['extension']);
+                $errors['extension'] = $this->checkExtensionRequirements($requirements['extension']);
             }
             if (array_key_exists('plugin', $requirements)) {
-                $errors['plugin'] = $this->checkPlugins($requirements['plugin']);
+                $errors['plugin'] = $this->checkPluginsRequirements($requirements['plugin']);
             }
             if (array_key_exists('extra', $requirements)) {
-                $errors['extra'] = $this->checkExtraRequirements($bundle->getRequiredExtra());
+                $errors['extra'] = $this->checkExtraRequirements($bundle->getExtraRequirements());
             }
         }
 
@@ -310,7 +310,7 @@ class PluginManager
         $plugin = $this->getBundle($plugin);
 
         foreach ($this->getInstalledBundles() as $bundle) {
-            $requirements = $bundle['instance']->getRequiredPlugins();
+            $requirements = $bundle['instance']->getPluginsRequirements();
             if (in_array(get_class($plugin), $requirements)) {
                 $requiredBy[] = get_class($bundle['instance']);
             }
@@ -356,7 +356,7 @@ class PluginManager
         });
     }
 
-    private function checkExtension(array $extensions)
+    private function checkExtensionRequirements(array $extensions)
     {
         $errors = [];
 
@@ -375,15 +375,17 @@ class PluginManager
 
         foreach ($extra as $requirement) {
             //anonymous function
-            if ($requirement['function']()) {
-                $errors[] = $requirement['warning'];
+            $return = $requirement['test']();
+
+            if (!$return) {
+                $errors[] = $requirement['failure_msg'];
             }
         }
 
         return $errors;
     }
 
-    private function checkPlugins(array $plugins)
+    private function checkPluginsRequirements(array $plugins)
     {
         $errors = [];
 
