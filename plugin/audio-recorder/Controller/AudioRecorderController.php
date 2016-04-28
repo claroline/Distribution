@@ -32,18 +32,16 @@ class AudioRecorderController extends Controller
      */
     public function updateConfigurationAction(AudioRecorderConfiguration $config, Request $request)
     {
-        if ($request->isMethod('POST')) {
-            $postData = $request->request->get('audio_recorder_configuration');
-            if (isset($postData['max_try']) && isset($postData['max_recording_time'])) {
-                $this->manager->updateConfiguration($config, $postData);
-                $msg = $this->get('translator')->trans('config_update_success', array(), 'tools');
-                $this->get('session')->getFlashBag()->set('success', $msg);
-            } else {
-                $msg = $this->get('translator')->trans('config_update_error', array(), 'tools');
-                $this->get('session')->getFlashBag()->set('error', $msg);
-            }
-
-            return $this->redirectToRoute('claro_desktop_open_tool', array('toolName' => 'home'));
+        $postData = $request->request->get('audio_recorder_configuration');
+        if (isset($postData['max_try']) && isset($postData['max_recording_time'])) {
+            $this->manager->updateConfiguration($config, $postData);
+            $msg = $this->get('translator')->trans('config_update_success', array(), 'tools');
+            $this->get('session')->getFlashBag()->set('success', $msg);
+        } else {
+            $msg = $this->get('translator')->trans('config_update_error', array(), 'tools');
+            $this->get('session')->getFlashBag()->set('error', $msg);
         }
+
+        return $this->redirectToRoute('claro_desktop_open_tool', array('toolName' => 'home'));
     }
 }

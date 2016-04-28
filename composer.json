@@ -1,8 +1,5 @@
 {
     "name": "claroline/distribution",
-    "replace": {
-        "claroline/distribution-bundle": "self.version"
-    },
     "description": "Claroline distribution",
     "keywords": ["Claroline", "Distribution"],
     "homepage": "http://www.claroline.net",
@@ -88,6 +85,7 @@
         "mockery/mockery": "^0.9.4"
     },
     "replace": {
+        "claroline/distribution-bundle": "*",
         "claroline/core-bundle": "*",
         "claroline/bundle-recorder": "*",
         "claroline/installation-bundle": "*",
@@ -130,7 +128,9 @@
         "claroline/result-bundle": "*",
         "innova/path-bundle": "*",
         "claroline/pdf-generator-bundle": "*",
-        "claroline/dev-bundle": "*"
+        "claroline/dev-bundle": "*",
+        "innova/video-recorder-bundle": "*",
+        "innova/audio-recorder-bundle": "*"
     },
     "autoload": {
         "psr-4": {
