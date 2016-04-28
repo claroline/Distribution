@@ -13,27 +13,26 @@ use Doctrine\ORM\Mapping as ORM;
 class AudioRecorderConfiguration
 {
     /**
-   * @var int
-   *
-   * @ORM\Column(name="id", type="integer")
-   * @ORM\Id
-   * @ORM\GeneratedValue(strategy="AUTO")
-   */
-  protected $id;
+     * @var int
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $id;
 
-  /**
-   * @var float
-   * Define the maximum time allowed per recording
-   * @ORM\Column(name="max_recording_time", type="integer", options={"default" = 0})
-   */
-  protected $maxRecordingTime;
+    /**
+     * @var float
+     *            Define the maximum time allowed per recording
+     * @ORM\Column(name="max_recording_time", type="integer", options={"default" = 0})
+     */
+    protected $maxRecordingTime;
 
-  /**
-   * @var int
-   * Define maximum number of try
-   * @ORM\Column(name="max_try", type="integer", options={"default" = 0})
-   */
-  protected $maxTry;
+    /**
+     * @var int
+     *          Define maximum number of try
+     * @ORM\Column(name="max_try", type="integer", options={"default" = 0})
+     */
+    protected $maxTry;
 
     public function getId()
     {
