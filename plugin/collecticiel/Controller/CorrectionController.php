@@ -4,6 +4,7 @@
  * Date: 22/08/13
  * Time: 09:30.
  */
+
 namespace Innova\CollecticielBundle\Controller;
 
 use Claroline\CoreBundle\Entity\User;
@@ -2401,7 +2402,7 @@ class CorrectionController extends DropzoneBaseController
                         }
 
                         // Ici, on récupère celui qui vient de déposer le nouveau document
-                        //$userAddDocument = $this->get('security.context')->getToken()->getUser()->getId(); 
+                        //$userAddDocument = $this->get('security.context')->getToken()->getUser()->getId();
                         $userDropDocument = $document->getDrop()->getUser()->getId();
                         $userSenderDocument = $document->getSender()->getId();
 
