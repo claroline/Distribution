@@ -1529,7 +1529,7 @@ class SurveyController extends Controller
             'question' => $question,
             'choice' => $choice,
             'otherMax' => $max,
-            'answers' => $answers,
+            'answers' => $answers
         );
     }
 
@@ -2040,7 +2040,7 @@ class SurveyController extends Controller
                 array(
                     'question' => $question,
                     'answers' => $answersDatas,
-                    'canEdit' => $canEdit,
+                    'canEdit' => $canEdit
                 )
             )
         );
