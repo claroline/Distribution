@@ -139,7 +139,7 @@ class SurveyController extends Controller
             'status' => $status,
             'currentDate' => $currentDate,
             'hasAnswered' => $hasAnswered,
-            'isAnon' => $isAnon
+            'isAnon' => $isAnon,
         );
     }
 
@@ -162,7 +162,7 @@ class SurveyController extends Controller
 
         return array(
             'survey' => $survey,
-            'status' => $status
+            'status' => $status,
         );
     }
 
@@ -185,7 +185,7 @@ class SurveyController extends Controller
 
         return array(
             'form' => $form->createView(),
-            'survey' => $survey
+            'survey' => $survey,
         );
     }
 
@@ -220,7 +220,7 @@ class SurveyController extends Controller
 
         return array(
             'form' => $form->createView(),
-            'survey' => $survey
+            'survey' => $survey,
         );
     }
 
@@ -254,7 +254,7 @@ class SurveyController extends Controller
             'survey' => $survey,
             'questionRelations' => $questionRelations,
             'status' => $status,
-            'questionResult' => $questionResult
+            'questionResult' => $questionResult,
         );
     }
 
@@ -292,7 +292,7 @@ class SurveyController extends Controller
         return array(
             'survey' => $survey,
             'questionRelations' => $questionRelations,
-            'questionViews' => $questionViews
+            'questionViews' => $questionViews,
         );
     }
 
@@ -378,7 +378,7 @@ class SurveyController extends Controller
             'questions' => $questions,
             'orderedBy' => $orderedBy,
             'order' => $order,
-            'max' => $max
+            'max' => $max,
         );
     }
 
@@ -405,7 +405,7 @@ class SurveyController extends Controller
             'survey' => $survey,
             'models' => $models,
             'orderedBy' => $orderedBy,
-            'order' => $order
+            'order' => $order,
         );
     }
 
@@ -440,7 +440,7 @@ class SurveyController extends Controller
                     'survey' => $survey->getId(),
                     'models' => $models,
                     'orderedBy' => 'title',
-                    'order' => 'ASC'
+                    'order' => 'ASC',
                 )
             )
         );
@@ -486,7 +486,7 @@ class SurveyController extends Controller
             'questions' => $questions,
             'orderedBy' => $orderedBy,
             'order' => $order,
-            'max' => $max
+            'max' => $max,
         );
     }
 
@@ -515,7 +515,7 @@ class SurveyController extends Controller
             'form' => $form->createView(),
             'survey' => $survey,
             'source' => $source,
-            'models' => $models
+            'models' => $models,
         );
     }
 
@@ -592,7 +592,7 @@ class SurveyController extends Controller
             'form' => $form->createView(),
             'survey' => $survey,
             'source' => $source,
-            'models' => $models
+            'models' => $models,
         );
     }
 
@@ -625,7 +625,7 @@ class SurveyController extends Controller
             'question' => $question,
             'survey' => $survey,
             'source' => $source,
-            'models' => $models
+            'models' => $models,
         );
     }
 
@@ -701,7 +701,7 @@ class SurveyController extends Controller
             'question' => $question,
             'survey' => $survey,
             'source' => $source,
-            'models' => $models
+            'models' => $models,
         );
     }
 
@@ -726,7 +726,7 @@ class SurveyController extends Controller
                 array(
                     'survey' => $survey->getId(),
                     'orderedBy' => 'title',
-                    'order' => 'ASC'
+                    'order' => 'ASC',
                 )
             )
         );
@@ -751,7 +751,7 @@ class SurveyController extends Controller
 
         return array(
             'form' => $form->createView(),
-            'survey' => $survey
+            'survey' => $survey,
         );
     }
 
@@ -793,7 +793,7 @@ class SurveyController extends Controller
 
         return array(
             'form' => $form->createView(),
-            'survey' => $survey
+            'survey' => $survey,
         );
     }
 
@@ -817,7 +817,7 @@ class SurveyController extends Controller
         return array(
             'form' => $form->createView(),
             'question' => $question,
-            'survey' => $survey
+            'survey' => $survey,
         );
     }
 
@@ -853,7 +853,7 @@ class SurveyController extends Controller
         return array(
             'form' => $form->createView(),
             'question' => $question,
-            'survey' => $survey
+            'survey' => $survey,
         );
     }
 
@@ -1135,7 +1135,7 @@ class SurveyController extends Controller
             'questionViews' => $questionViews,
             'canEdit' => $canEdit,
             'errors' => $errors,
-            'isAnon' => $isAnon
+            'isAnon' => $isAnon,
         );
     }
 
@@ -1224,7 +1224,7 @@ class SurveyController extends Controller
                     'questionViews' => $questionViews,
                     'canEdit' => $canEdit,
                     'errors' => $errors,
-                    'isAnon' => $isAnon
+                    'isAnon' => $isAnon,
                 );
             }
 
@@ -1454,7 +1454,7 @@ class SurveyController extends Controller
             'currentQuestion' => $question,
             'results' => $results,
             'nbComments' => count($comments),
-            'max' => $max
+            'max' => $max,
         );
     }
 
@@ -1491,7 +1491,7 @@ class SurveyController extends Controller
             'survey' => $survey,
             'question' => $question,
             'max' => $max,
-            'comments' => $comments
+            'comments' => $comments,
         );
     }
 
@@ -1529,7 +1529,7 @@ class SurveyController extends Controller
             'question' => $question,
             'choice' => $choice,
             'otherMax' => $max,
-            'answers' => $answers
+            'answers' => $answers,
         );
     }
 
@@ -1635,7 +1635,7 @@ class SurveyController extends Controller
                     'survey' => $survey,
                     'questions' => $questions,
                     'results' => $results,
-                    'comments' => $comments
+                    'comments' => $comments,
                 )
             )
         );
@@ -1676,7 +1676,7 @@ class SurveyController extends Controller
                     'survey' => $survey,
                     'questions' => array($question),
                     'results' => $results,
-                    'comments' => $comments
+                    'comments' => $comments,
                 )
             )
         );
@@ -1899,7 +1899,7 @@ class SurveyController extends Controller
                     'otherChoice' => $otherChoice,
                     'otherMax' => $otherMax,
                     'forExport' => $forExport,
-                    'answers' => $answers
+                    'answers' => $answers,
                 )
             )
         );
@@ -1932,7 +1932,7 @@ class SurveyController extends Controller
                     'question' => $question,
                     'answers' => $answers,
                     'max' => $max,
-                    'forExport' => $forExport
+                    'forExport' => $forExport,
                 )
             )
         );
@@ -1992,7 +1992,7 @@ class SurveyController extends Controller
                 array(
                     'survey' => $survey,
                     'horizontal' => $horizontal,
-                    'choices' => $choices
+                    'choices' => $choices,
                 )
             )
         );
@@ -2021,7 +2021,7 @@ class SurveyController extends Controller
                     'choices' => $choices,
                     'answers' => $answersDatas,
                     'canEdit' => $canEdit,
-                    'horizontal' => $multipleChoiceQuestion->getHorizontal()
+                    'horizontal' => $multipleChoiceQuestion->getHorizontal(),
                 )
             )
         );
@@ -2040,7 +2040,7 @@ class SurveyController extends Controller
                 array(
                     'question' => $question,
                     'answers' => $answersDatas,
-                    'canEdit' => $canEdit
+                    'canEdit' => $canEdit,
                 )
             )
         );
