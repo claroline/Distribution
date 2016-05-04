@@ -12,7 +12,7 @@ mysql:
   username: root
   encoding: utf8
 
-before_script:
+before_install:
   # keep a list of files impacted by the PR
   - git diff-tree --no-commit-id --diff-filter=ACM --name-only -r ${TRAVIS_COMMIT_RANGE/.../ } > git_diff_files.txt
 
@@ -31,6 +31,10 @@ before_script:
   - nvm install 5
   - nvm use --delete-prefix 5
 
+  # get parallel (moreutils version)
+  - sudo apt-get install moreutils
+
+install:
   # get and configure claroline platform
   - curl -L https://github.com/claroline/Claroline/archive/monolithic-build.tar.gz | tar xzv
   - cd Claroline-monolithic-build
