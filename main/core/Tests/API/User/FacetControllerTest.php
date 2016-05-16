@@ -251,18 +251,82 @@ class FacetControllerTest extends TransactionalTestCase
 
     public function testGetProfilePreferencesAction()
     {
+        $manager = $this->createManager();
+        $this->login($manager);
+        $this->client->request('GET', '/api/facet/profile/preferences');
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     public function testPutProfilePreferencesAction()
     {
+        $manager = $this->createManager();
+        $this->login($manager);
+        $roleId = $this->persister->role('ROLE_USER')->getId();
+        $params = array('base_data' => 'true', 'mail' => 'false', 'send_message' => 'true', 'phone' => 'false', 'role' => array('id' => $roleId));
+        $data['preferences'] = array($params);
+        $this->client->request('PUT', '/api/facet/profile/preferences', $data);
+        $data = $this->client->getResponse()->getContent();
+        $data = json_decode($data, true);
+        $this->assertEquals($data[0]['mail'], false);
+        $this->assertEquals($data[0]['send_message'], true);
     }
 
     public function testOrderPanelsAction()
     {
+        $manager = $this->createManager();
+        $this->login($manager);
+        $facet = $this->persister->facet('facet', true, true);
+        $first = $this->persister->panelFacet($facet, 'panel1', false);
+        $second = $this->persister->panelFacet($facet, 'panel2', false);
+        $qs = "?ids[]={$second->getId()}&ids[]={$first->getId()}";
+        $this->client->request('PUT', "/api/facet/{$facet->getId()}/panels/order{$qs}");
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->client->request('GET', '/api/facets.json');
+        $data = $this->client->getResponse()->getContent();
+        $data = json_decode($data, true);
+        $first = $this->getPanelByName($data, 'panel1');
+        $this->assertEquals('2',  $first['position']);
+        $second = $this->getPanelByName($data, 'panel2');
+        $this->assertEquals('1',  $second['position']);
     }
 
     public function testOrderFieldsAction()
     {
+        $manager = $this->createManager();
+        $this->login($manager);
+        $facet = $this->persister->facet('facet', true, true);
+        $panel = $this->persister->panelFacet($facet, 'panel', false);
+        $first = $this->persister->fieldFacet($panel, 'field1', 'text');
+        $second = $this->persister->fieldFacet($panel, 'field2', 'text');
+        $qs = "?ids[]={$second->getId()}&ids[]={$first->getId()}";
+        $this->client->request('PUT', "/api/facet/panel/{$panel->getId()}/fields/order{$qs}");
+        $data = $this->client->getResponse()->getContent();
+        $data = json_decode($data, true);
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $first = $this->getFieldByName($data, 'field1');
+        $this->assertEquals('2',  $first['position']);
+        $second = $this->getFieldByName($data, 'field2');
+        $this->assertEquals('1',  $second['position']);
+    }
+
+    private function getPanelByName($facets, $name)
+    {
+        foreach ($facets as $facet) {
+            foreach ($facet['panels'] as $panel) {
+                if ($panel['name'] === $name) {
+                    return $panel;
+                }
+            }
+        }
+    }
+
+    private function getFieldByName($panel, $name)
+    {
+        foreach ($panel['fields'] as $field) {
+            if ($field['name'] === $name) {
+                return $field;
+            }
+        }
     }
 
     private function createManager()
