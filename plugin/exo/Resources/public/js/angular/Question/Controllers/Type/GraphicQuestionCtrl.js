@@ -67,6 +67,11 @@ GraphicQuestionCtrl.prototype.coords = []; // student answers
 GraphicQuestionCtrl.prototype.notFoundZones = [];
 
 /**
+ * @type {boolean}
+ */
+GraphicQuestionCtrl.prototype.notFoundZonesAreSet = false;
+
+/**
  * Get the full URL of the Image
  * @returns {string}
  */
@@ -219,6 +224,16 @@ GraphicQuestionCtrl.prototype.showRightAnswerZones = function showRightAnswerZon
             }
         }
     }
+    
+    if (this.notFoundZones.length === 0) {
+        this.feedback.state = 0;
+    }
+    else if (this.notFoundZones.length === 1) {
+        this.feedback.state = 1;
+    }
+    else {
+        this.feedback.state = 2;
+    }
 };
 
 /**
@@ -282,10 +297,13 @@ GraphicQuestionCtrl.prototype.enableDraggable = function enableDraggable() {
  *
  */
 GraphicQuestionCtrl.prototype.onFeedbackShow = function onFeedbackShow() {
-    for (var i=0; i < this.question.solutions.length; i++) {
-        this.notFoundZones.push(this.question.solutions[i]);
+    if (!this.notFoundZonesAreSet) {
+        for (var i=0; i < this.question.solutions.length; i++) {
+            this.notFoundZones.push(this.question.solutions[i]);
+        }
+        this.notFoundZonesAreSet = true;
     }
-
+    
     this.disableDraggable();
     this.showRightAnswerZones();
     this.setWrongFeedback();

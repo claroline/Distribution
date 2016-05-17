@@ -133,6 +133,36 @@ ChoiceQuestionCtrl.prototype.onFeedbackShow = function onFeedbackShow() {
             this.choices[i].valid = this.isChoiceValid(this.choices[i]);
         }
     }
+    
+    this.answersAllFound();
+};
+
+ChoiceQuestionCtrl.prototype.answersAllFound = function answersAllFound() {
+    var numAnswersFound = 0;
+    var numSolutions = 0;
+    for (var i=0; i<this.question.solutions.length; i++) {
+        if (this.question.solutions[i].score > 0) {
+            numSolutions++;
+        }
+        for (var j=0; j<this.answer.length; j++) {
+            if (this.question.solutions[i].id === this.answer[j] && this.question.solutions[i].score > 0) {
+                numAnswersFound++;
+            }
+        }
+    }
+    
+    if (numAnswersFound === numSolutions) {
+        // all answers have been found
+        this.feedback.state = 0;
+    }
+    else if (numAnswersFound === numSolutions -1 && this.question.multiple) {
+        // one answer remains to be found
+        this.feedback.state = 1;
+    }
+    else {
+        // more answers remain to be found
+        this.feedback.state = 2;
+    }
 };
 
 // Register controller into AngularJS

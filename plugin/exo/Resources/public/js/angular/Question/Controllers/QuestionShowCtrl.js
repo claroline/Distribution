@@ -61,6 +61,19 @@ QuestionShowCtrl.prototype.mark = function mark() {
 };
 
 /**
+ * Get the generic feedback
+ * @returns {string}
+ */
+QuestionShowCtrl.prototype.getGenericFeedback = function getGenericFeedback() {
+    if (this.feedback.state === 1) {
+        return "one_answer_to_find";
+    }
+    else if (this.feedback.state === 2) {
+        return "answers_not_found";
+    }
+};
+
+/**
  * Check if a Hint has already been used (in paper)
  * @param   {Object} hint
  * @returns {Boolean}

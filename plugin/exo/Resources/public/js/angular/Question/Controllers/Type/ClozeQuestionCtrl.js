@@ -86,6 +86,40 @@ ClozeQuestionCtrl.prototype.onFeedbackShow = function onFeedbackShow() {
             }
         }
     }
+    
+    this.answersAllFound();
+};
+
+ClozeQuestionCtrl.prototype.answersAllFound = function answersAllFound() {
+    var numAnswersFound = 0;
+    
+    for (var i=0; i<this.question.solutions.length; i++) {
+        var holeId = parseInt(this.question.solutions[i].holeId);
+        var answer = this.ClozeQuestionService.getHoleAnswer(this.answer, this.holes[holeId]);
+        for (var j=0; j<this.question.solutions[i].answers.length; j++) {
+            for (var k=0; k<this.question.holes.length; k++) {
+                if (this.question.holes[k].id === this.question.solutions[i].holeId && this.question.solutions[i].answers[j].text === answer.answerText && this.question.solutions[i].answers[j].score > 0 && !this.question.holes[k].selector) {
+                    numAnswersFound++;
+                }
+                else if (this.question.holes[k].id === this.question.solutions[i].holeId && this.question.solutions[i].answers[j].id === answer.answerText && this.question.solutions[i].answers[j].score > 0 && this.question.holes[k].selector) {
+                    numAnswersFound++;
+                }
+            }
+        }
+    }
+    
+    if (numAnswersFound === this.question.solutions.length) {
+        // all answers have been found
+        this.feedback.state = 0;
+    }
+    else if (numAnswersFound === this.question.solutions.length -1) {
+        // one answer remains to be found
+        this.feedback.state = 1;
+    }
+    else {
+        // more answers remain to be found
+        this.feedback.state = 2;
+    }
 };
 
 // Register controller into AngularJS

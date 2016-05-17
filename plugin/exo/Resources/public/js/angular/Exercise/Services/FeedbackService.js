@@ -25,7 +25,14 @@ FeedbackService.prototype.config = {
      * Is feedback currently displayed ?
      * @type {boolean}
      */
-    visible: false
+    visible: false,
+    
+    /**
+     * The state of the feedback
+     * (0 : all found, 1 : partially found, 2 : error)
+     * @type {integer}
+     */
+    state: -1
 };
 
 /**

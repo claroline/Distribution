@@ -23,6 +23,7 @@ OpenQuestionCtrl.prototype.answerWithKeywords = '';
  * Callback executed when Feedback for the Question is shown
  */
 OpenQuestionCtrl.prototype.onFeedbackShow = function onFeedbackShow() {
+    var numAnswersFound = 0;
     this.answerWithKeywords = this.answer ? this.answer : '';
 
     // Get EOL
@@ -38,6 +39,7 @@ OpenQuestionCtrl.prototype.onFeedbackShow = function onFeedbackShow() {
             var searchFlags      = 'g' + (solution.caseSensitive ? 'i' : '');
             var searchExpression = new RegExp(solution.word, searchFlags);
             if (-1 !== this.answer.search(searchExpression)) {
+                numAnswersFound++;
                 // Keyword has been found in answer => Update formatted answer
                 var keyword = '';
                 keyword += '<b class="text-success feedback-info" data-toggle="tooltip" title="' + solution.feedback + '">';
@@ -48,6 +50,18 @@ OpenQuestionCtrl.prototype.onFeedbackShow = function onFeedbackShow() {
                 this.answerWithKeywords = this.answerWithKeywords.replace(searchExpression, keyword, searchFlags);
             }
         }
+    }
+    console.log(this.question.solutions.length);
+    console.log(numAnswersFound);
+    
+    if (this.question.solutions.length === numAnswersFound) {
+        this.feedback.state = 0;
+    }
+    else if (this.question.solutions.length -1 === numAnswersFound) {
+        this.feedback.state = 1;
+    }
+    else {
+        this.feedback.state = 2;
     }
 };
 

@@ -1,5 +1,6 @@
 # a
 answer_zone: Zone de réponse
+answers_not_found: XXXXX Toutes les bonnes réponses n'ont pas été trouvées
 
 # b
 btn_end_sequence_label: Terminer l'exercice
@@ -19,6 +20,7 @@ comment: Commentaire
 dropdown_step_navigate_choice_label: Etape n°%1% / %2%
 
 # g
+good_solution_found: XXXXX Solution trouvée
 graphic_setpoint_first: Positionner le(s) pointeur(s) ci-dessous (croix rouge) sur l'image. La position du centre du pointeur définit votre réponse.
 graphic_setpoint_second: Pour répondre, utiliser la technique du glisser/déposer.
 graphic_setpoint_third: Les bonnes réponses ne sont comptabilisées qu'une seule fois.
@@ -43,6 +45,9 @@ label_manual_correction_needed: Correction manuelle nécessaire!
 # n
 need_correction: Cette réponse nécessite une correction manuelle
 note_question: Noter cette question
+
+# o
+one_answer_to_find: XXXXX Il manque une bonne réponse
 
 # p
 paper_list: Liste des copies

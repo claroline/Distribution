@@ -1,5 +1,6 @@
 # a
 answer_zone: Answer zone
+answers_not_found: XXXXX All answers were not found
 
 # b
 btn_end_sequence_label: End exercise
@@ -20,6 +21,7 @@ dropdown_step_navigate_choice_label: Step N°%1% / %2%
 
 
 # g
+good_solution_found: XXXXX Solution found
 graphic_setpoint_first: Drag the "sights" on the picture. The sight center defines your answer.
 graphic_setpoint_second: Use drag and drop to answer.
 graphic_setpoint_third: Correct answers are only counted once.
@@ -44,6 +46,9 @@ label_manual_correction_needed: Manual correction needed!
 # n
 need_correction: This answer needs a manual correction
 note_question: Note this question
+
+# o
+one_answer_to_find: XXXXX There is one answer left to find
 
 # p
 paper_list: Paper list

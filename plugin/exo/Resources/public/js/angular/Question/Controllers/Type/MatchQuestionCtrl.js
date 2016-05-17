@@ -477,6 +477,43 @@ MatchQuestionCtrl.prototype.onFeedbackShow = function onFeedbackShow() {
     else if (this.question.toBind) {
         this.colorBindings();
     }
+    
+    this.answersAllFound();
+};
+
+/**
+ * 
+ * @returns {answersAllFound}
+ */
+MatchQuestionCtrl.prototype.answersAllFound = function answersAllFound() {
+    var answers_to_check;
+    if (this.question.toBind) {
+        answers_to_check = this.connections;
+    }
+    else {
+        answers_to_check = this.dropped;
+    }
+    var numAnswersFound = 0;
+    for (var j=0; j<this.question.solutions.length; j++) {
+        for (var i=0; i<answers_to_check.length; i++) {
+            if (this.question.solutions[j].firstId === answers_to_check[i].source && this.question.solutions[j].secondId === answers_to_check[i].target) {
+                numAnswersFound++;
+            }
+        }
+    }
+    
+    if (numAnswersFound === this.question.solutions.length) {
+        // all answers have been found
+        this.feedback.state = 0;
+    }
+    else if (numAnswersFound === this.question.solutions.length -1) {
+        // one answer remains to be found
+        this.feedback.state = 1;
+    }
+    else {
+        // more answers remain to be found
+        this.feedback.state = 2;
+    }
 };
 
 /**
