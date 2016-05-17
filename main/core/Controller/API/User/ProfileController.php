@@ -20,6 +20,7 @@ use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Put;
 use Claroline\CoreBundle\Event\Profile\ProfileLinksEvent;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Claroline\CoreBundle\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -53,20 +54,23 @@ class ProfileController extends FOSRestController
     {
         $facets = $this->facetManager->getFacetsByUser($user);
         $ffvs = $this->facetManager->getFieldValuesByUser($user);
-        $userRoles = $this->tokenStorage->getToken()->getRoles();
 
         foreach ($facets as $facet) {
             foreach ($facet->getPanelFacets() as $panelFacet) {
-                foreach ($panelFacet->getFieldsFacet() as $field) {
-                    foreach ($ffvs as $ffv) {
-                        if ($ffv->getFieldFacet()->getId() === $field->getId()) {
-                            //for serialization
+                if (!$this->isGranted('VIEW', $panelFacet)) {
+                    //remove the panel because it's not supposed to be shown
+                    $facet->removePanelFacet($panelFacet);
+                } else {
+                    foreach ($panelFacet->getFieldsFacet() as $field) {
+                        foreach ($ffvs as $ffv) {
+                            if ($ffv->getFieldFacet()->getId() === $field->getId()) {
+                                //for serialization
                             $field->setUserFieldValue($ffv);
+                            }
                         }
-                    }
 
-                    //for serialization
-                    $field->setIsEditable(true);
+                        $field->setIsEditable($this->isGranted('EDIT', $field));
+                    }
                 }
             }
         }
@@ -97,12 +101,15 @@ class ProfileController extends FOSRestController
      */
     public function putFieldsAction(User $user)
     {
-        //add check access
-
         $fields = $this->request->request->get('fields');
 
         foreach ($fields as $field) {
             $fieldEntity = $this->facetManager->getFieldFacet($field['id']);
+
+            if (!$this->isGranted('EDIT', $fieldEntity)) {
+                throw new AccessDeniedException('You do not have the permission to edit this facet.');
+            }
+
             $value = isset($field['user_field_value']) ? $field['user_field_value'] : null;
             $this->facetManager->setFieldValue($user, $fieldEntity, $value);
         }

@@ -74,7 +74,8 @@ class PanelFacet
     /**
      * @ORM\OneToMany(
      *     targetEntity="Claroline\CoreBundle\Entity\Facet\PanelFacetRole",
-     *     mappedBy="panelFacet"
+     *     mappedBy="panelFacet",
+     *     fetch="EAGER",
      * )
      * @Groups({"api_facet_admin"})
      */
@@ -120,6 +121,11 @@ class PanelFacet
     public function addFieldFacet(FieldFacet $fieldFacet)
     {
         $this->fieldsFacet->add($fieldFacet);
+    }
+
+    public function addPanelFacetRole(PanelFacetRole $pfr)
+    {
+        $this->panelFacetsRole->add($pfr);
     }
 
     public function setPosition($position)

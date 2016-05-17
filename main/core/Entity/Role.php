@@ -16,6 +16,7 @@ use Symfony\Component\Security\Core\Role\RoleInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
 use Doctrine\ORM\Mapping as ORM;
+use Claroline\CoreBundle\Entity\Facet\PanelFacetRole;
 use Doctrine\Common\Collections\ArrayCollection;
 use Claroline\CoreBundle\Library\Security\PlatformRoles;
 use Claroline\CoreBundle\Entity\Resource\ResourceRights;
@@ -378,5 +379,10 @@ class Role implements RoleInterface
         return is_null($this->workspace) ?
             $this->translationKey :
             '['.$this->workspace->getName().'] '.$this->translationKey;
+    }
+
+    public function addPanelFacetRole(PanelFacetRole $pfr)
+    {
+        $this->panelFacetsRole->add($pfr);
     }
 }

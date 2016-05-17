@@ -63,6 +63,7 @@ class Persister
         $user->setMail($username.'@mail.com');
         $user->setGuid(uniqid());
         $user->addRole($roleUser);
+        $user->setPublicUrl($username);
         $this->container->get('claroline.manager.role_manager')->createUserRole($user);
         $this->om->persist($user);
 

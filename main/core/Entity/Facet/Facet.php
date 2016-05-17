@@ -109,6 +109,11 @@ class Facet
         $this->panelFacets->add($panelFacet);
     }
 
+    public function removePanelFacet(PanelFacet $panelFacet)
+    {
+        $this->panelFacets->removeElement($panelFacet);
+    }
+
     public function getPanelFacets()
     {
         return $this->panelFacets;

@@ -78,6 +78,7 @@ class PanelFacetRole
     public function setPanelFacet(PanelFacet $panelFacet)
     {
         $this->panelFacet = $panelFacet;
+        $panelFacet->addPanelFacetRole($this);
     }
 
     public function getPanelFacet()

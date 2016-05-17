@@ -451,8 +451,6 @@ class FacetManager
 
     public function getFieldFacetByName($name)
     {
-        var_dump($name);
-
         return $this->om->getRepository('ClarolineCoreBundle:Facet\FieldFacet')->findOneByName($name);
     }
 
