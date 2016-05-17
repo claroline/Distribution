@@ -21,7 +21,7 @@ class Path extends AbstractResource implements PathInterface, \JsonSerializable
      * Name of the path (only for forms).
      *
      * @var string
-     * 
+     *
      * @Assert\NotBlank
      */
     protected $name;
@@ -57,7 +57,7 @@ class Path extends AbstractResource implements PathInterface, \JsonSerializable
      * Steps linked to the path.
      *
      * @var \Doctrine\Common\Collections\ArrayCollection
-     * 
+     *
      * @ORM\OneToMany(targetEntity="Innova\PathBundle\Entity\Step", mappedBy="path", indexBy="id", cascade={"persist", "remove"})
      * @ORM\OrderBy({"lvl" = "ASC", "order" = "ASC"})
      */
@@ -80,12 +80,22 @@ class Path extends AbstractResource implements PathInterface, \JsonSerializable
     protected $description;
 
     /**
+     * Does the path manage conditions that block all the further steps or just the next one
+     *
+     * @var boolean
+     *
+     * @ORM\Column(name="is_complete_blocking_condition", type="boolean")
+     */
+    protected $isCompleteBlockingCondition;
+
+    /**
      * Class constructor.
      */
     public function __construct()
     {
         $this->steps = new ArrayCollection();
         $this->modified = false;
+        $this->isCompleteBlockingCondition = true;
     }
 
     /**
@@ -282,6 +292,30 @@ class Path extends AbstractResource implements PathInterface, \JsonSerializable
     }
 
     /**
+     * Get isCompleteBlockingCondition
+     *
+     * @return boolean
+     */
+    public function getIsCompleteBlockingCondition()
+    {
+        return $this->isCompleteBlockingCondition;
+    }
+
+    /**
+     * Set isCompleteBlockingCondition
+     *
+     * @param boolean $isCompleteBlockingCondition
+     *
+     * @return \Innova\PathBundle\Entity\Path\Path
+     */
+    public function setIsCompleteBlockingCondition($isCompleteBlockingCondition)
+    {
+        $this->isCompleteBlockingCondition = $isCompleteBlockingCondition;
+
+        return $this;
+    }
+
+    /**
      * Get root step of the path.
      *
      * @throws \Exception
@@ -317,6 +351,7 @@ class Path extends AbstractResource implements PathInterface, \JsonSerializable
             'description' => $this->getDescription(),
             'breadcrumbs' => $this->breadcrumbs,
             'summaryDisplayed' => $this->summaryDisplayed,
+            'isCompleteBlockingCondition' => $this->isCompleteBlockingCondition,
             'steps' => array(),
         );
 
@@ -369,6 +404,7 @@ class Path extends AbstractResource implements PathInterface, \JsonSerializable
             'description' => $this->description,
             'breadcrumbs' => $this->breadcrumbs,
             'summaryDisplayed' => $this->summaryDisplayed,
+            'isCompleteBlockingCondition' => $this->isCompleteBlockingCondition,
             'steps' => $steps,
         );
     }

@@ -90,6 +90,16 @@
                     </div>
                 </div>
 
+                <!-- Is a condition blocking all the following steps or just the next ? -->
+                <div class="row form-group">
+                    <label class="control-label col-md-3" for="innova_path_isCompleteBlockingCondition">{{ 'path_is_complete_blocking_condition'|trans:{}:'path_wizards' }}</label>
+                    <div class="col-md-9">
+                        <div class="checkbox">
+                            <input type="checkbox" id="innova_path_isCompleteBlockingCondition" name="innova_path[isCompleteBlockingCondition]" data-ng-model="pathEditCtrl.path.isCompleteBlockingCondition" />
+                        </div>
+                    </div>
+                </div>
+
                 <div class="row form-group form-last">
                     <label class="control-label col-md-3">{{ 'path_status'|trans:{}:'path_wizards' }}</label>
                     <div class="col-md-9">
