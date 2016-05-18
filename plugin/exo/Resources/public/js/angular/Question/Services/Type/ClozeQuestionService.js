@@ -19,6 +19,47 @@ ClozeQuestionService.prototype.initAnswer = function initAnswer() {
     return [];
 };
 
+ClozeQuestionService.prototype.answersAllFound = function answersAllFound(question, answers) {
+    var numAnswersFound = 0;
+    
+    for (var i=0; i<question.solutions.length; i++) {
+        for (var j=0; j<question.solutions[i].answers.length; j++) {
+            for (var k=0; k<question.holes.length; k++) {
+                for (var l=0; l<answers.length; l++) {
+                    if (answers[l].holeId === question.solutions[i].holeId) {
+                        var answer = answers[l];
+                    }
+                }
+                if (question.holes[k].id === question.solutions[i].holeId && question.solutions[i].answers[j].text === answer.answerText && question.solutions[i].answers[j].score > 0 && !question.holes[k].selector) {
+                    numAnswersFound++;
+                }
+                else if (question.holes[k].id === question.solutions[i].holeId && question.solutions[i].answers[j].id === answer.answerText && question.solutions[i].answers[j].score > 0 && question.holes[k].selector) {
+                    numAnswersFound++;
+                }
+            }
+        }
+    }
+    
+    console.log(numAnswersFound);
+    console.log(question.solutions.length);
+    
+    var feedbackState = -1;
+    if (numAnswersFound === question.solutions.length) {
+        // all answers have been found
+        feedbackState = 0;
+    }
+    else if (numAnswersFound === question.solutions.length -1) {
+        // one answer remains to be found
+        feedbackState = 1;
+    }
+    else {
+        // more answers remain to be found
+        feedbackState = 2;
+    }
+    
+    return feedbackState;
+};
+
 /**
  * Get the correct answer from the solutions of a Question
  * @param   {Object} question

@@ -20,6 +20,39 @@ ChoiceQuestionService.prototype.initAnswer = function initAnswer() {
 };
 
 /**
+ * Check if all, all but one, or not all answers are found
+ */
+ChoiceQuestionService.prototype.answersAllFound = function answersAllFound(question, answer) {
+    var numAnswersFound = 0;
+    var numSolutions = 0;
+    for (var i=0; i<question.solutions.length; i++) {
+        if (question.solutions[i].score > 0) {
+            numSolutions++;
+        }
+        for (var j=0; j<answer.length; j++) {
+            if (question.solutions[i].id === answer[j] && question.solutions[i].score > 0) {
+                numAnswersFound++;
+            }
+        }
+    }
+    var feedbackState = -1;
+    if (numAnswersFound === numSolutions) {
+        // all answers have been found
+        feedbackState = 0;
+    }
+    else if (numAnswersFound === numSolutions -1 && question.multiple) {
+        // one answer remains to be found
+        feedbackState = 1;
+    }
+    else {
+        // more answers remain to be found
+        feedbackState = 2;
+    }
+    
+    return feedbackState;
+};
+
+/**
  * Get the correct answer from the solutions of a Question
  * @param   {Object} question
  * @returns {Array}
@@ -119,6 +152,13 @@ ChoiceQuestionService.prototype.getChoiceFeedback = function getChoiceFeedback(q
     }
 
     return feedback;
+};
+
+/**
+ * 
+ */
+ChoiceQuestionService.prototype.getFeedbackState = function getFeedbackState() {
+    return this.feedbackState;
 };
 
 // Register service into AngularJS

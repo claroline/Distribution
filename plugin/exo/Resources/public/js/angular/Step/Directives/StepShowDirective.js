@@ -14,7 +14,8 @@ var StepShowDirective = function StepShowDirective() {
             step          : '=',
             stepIndex     : '@',
             currentTry    : '=',
-            solutionShown : '='
+            solutionShown : '=',
+            feedback      : '='
         }
     };
 };

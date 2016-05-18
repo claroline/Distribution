@@ -31,6 +31,12 @@ MatchQuestionCtrl.prototype.orphanAnswersAreChecked = false;
 MatchQuestionCtrl.prototype.savedAnswers = [];
 
 /**
+ * Tells wether the answers are all found, not found, or if only one misses
+ * @type {Integer}
+ */
+ChoiceQuestionCtrl.prototype.feedbackState = -1;
+
+/**
  *
  * @param item
  * @returns {boolean}
@@ -504,15 +510,15 @@ MatchQuestionCtrl.prototype.answersAllFound = function answersAllFound() {
     
     if (numAnswersFound === this.question.solutions.length) {
         // all answers have been found
-        this.feedback.state = 0;
+        this.feedbackState = 0;
     }
     else if (numAnswersFound === this.question.solutions.length -1) {
         // one answer remains to be found
-        this.feedback.state = 1;
+        this.feedbackState = 1;
     }
     else {
         // more answers remain to be found
-        this.feedback.state = 2;
+        this.feedbackState = 2;
     }
 };
 

@@ -46,6 +46,12 @@ GraphicQuestionCtrl.$inject = AbstractQuestionCtrl.$inject.concat([ 'GraphicQues
 GraphicQuestionCtrl.prototype.$image = null;
 
 /**
+ * Tells wether the answers are all found, not found, or if only one misses
+ * @type {Integer}
+ */
+GraphicQuestionCtrl.prototype.feedbackState = -1;
+
+/**
  * Definition of the crosshair
  * @type {{img: string, size: number}}
  */
@@ -201,10 +207,6 @@ GraphicQuestionCtrl.prototype.showRightAnswerZones = function showRightAnswerZon
             
             var offsetFromPanelX = $("#" + firstElementId).prop("x") - pointX;
             var offsetFromPanelY = $("#" + firstElementId).prop("y") - pointY;
-            
-            /*
-             * Il reste un souci, à partir du moment où on essaie de valider deux bonnes réponses pas en même temps
-             */
 
             var distance = Math.sqrt((centerX-pointX)*(centerX-pointX) + (centerY-pointY)*(centerY-pointY));
             distance = Math.round(distance);
@@ -226,13 +228,13 @@ GraphicQuestionCtrl.prototype.showRightAnswerZones = function showRightAnswerZon
     }
     
     if (this.notFoundZones.length === 0) {
-        this.feedback.state = 0;
+        this.feedbackState = 0;
     }
     else if (this.notFoundZones.length === 1) {
-        this.feedback.state = 1;
+        this.feedbackState = 1;
     }
     else {
-        this.feedback.state = 2;
+        this.feedbackState = 2;
     }
 };
 

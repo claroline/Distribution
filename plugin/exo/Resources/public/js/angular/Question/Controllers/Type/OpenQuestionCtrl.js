@@ -20,6 +20,12 @@ OpenQuestionCtrl.$inject = AbstractQuestionCtrl.$inject;
 OpenQuestionCtrl.prototype.answerWithKeywords = '';
 
 /**
+ * Tells wether the answers are all found, not found, or if only one misses
+ * @type {Integer}
+ */
+ChoiceQuestionCtrl.prototype.feedbackState = -1;
+
+/**
  * Callback executed when Feedback for the Question is shown
  */
 OpenQuestionCtrl.prototype.onFeedbackShow = function onFeedbackShow() {
@@ -51,17 +57,15 @@ OpenQuestionCtrl.prototype.onFeedbackShow = function onFeedbackShow() {
             }
         }
     }
-    console.log(this.question.solutions.length);
-    console.log(numAnswersFound);
     
     if (this.question.solutions.length === numAnswersFound) {
-        this.feedback.state = 0;
+        this.feedbackState = this.FeedbackService.SOLUTION_FOUND;
     }
     else if (this.question.solutions.length -1 === numAnswersFound) {
-        this.feedback.state = 1;
+        this.feedbackState = this.FeedbackService.ONE_ANSWER_MISSING;
     }
     else {
-        this.feedback.state = 2;
+        this.feedbackState = this.FeedbackService.MULTIPLE_ANSWERS_MISSING;
     }
 };
 
