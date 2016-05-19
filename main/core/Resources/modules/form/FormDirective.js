@@ -6,7 +6,7 @@ export default class FormDirective {
     this.restrict = 'E'
     this.template = require('./form.html')
     this.replace = true,
-    this.controller = FormController,
+    this.controller = () => {},
     this.controllerAs = 'fc'
     this.bindToController = {
       form: '=',
