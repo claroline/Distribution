@@ -462,7 +462,7 @@ class FileListener implements ContainerAwareInterface
                 $form, filesize($form->get('file')->getData()), $workspace
             );
         } else {
-            //check if there is enough space liedt
+            //check if there is enough space left
             //$file is the entity
             //$tmpFile is the other file
             $file = $form->getData();

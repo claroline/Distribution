@@ -1022,6 +1022,7 @@ class ResourceController
                 "ClarolineCoreBundle:Resource:embed/{$view}.html.twig",
                 array(
                     'node' => $node,
+                    'resource' => $this->resourceManager->getResourceFromNode($node),
                     'type' => $type,
                     'extension' => $extension,
                     'openInNewTab' => $openInNewTab !== '0',

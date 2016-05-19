@@ -6,6 +6,7 @@ use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Entity\Organization\Location;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\Resource\MaskDecoder;
+use Claroline\CoreBundle\Entity\Resource\File;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Group;
@@ -93,6 +94,18 @@ class Persister
         }
 
         return $role;
+    }
+
+    public function file($fileName, $mimeType)
+    {
+        $file = new File();
+        $file->setSize(123);
+        $file->setName($fileName);
+        $file->setHashName(uniqid());
+        $file->setMimeType($mimeType);
+        $this->om->persist($file);
+
+        return $file;
     }
 
     public function maskDecoder(ResourceType $type, $permission, $value)
