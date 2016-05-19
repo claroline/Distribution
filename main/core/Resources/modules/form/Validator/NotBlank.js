@@ -1,8 +1,4 @@
 export default class NotBlank {
-  constructor() {
-
-  }
-
   validate(el) {
     return !(el === undefined || el === '' || el === null)
   }

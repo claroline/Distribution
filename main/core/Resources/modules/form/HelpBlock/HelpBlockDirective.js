@@ -1,5 +1,3 @@
-import HelpBlockController from './HelpBlockController'
-
 export default class HelpBlockDirective {
   constructor ($parse, $compile) {
     this.scope = {}
@@ -8,7 +6,7 @@ export default class HelpBlockDirective {
     this.restrict = 'E'
     this.replace = true
     this.require = '^ngModel'
-    this.controller = HelpBlockController
+    this.controller = () => {}
     this.controllerAs = 'hc'
     this.bindToController = {
       field: '=',
