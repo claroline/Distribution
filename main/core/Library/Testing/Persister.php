@@ -15,7 +15,6 @@ use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
-use Symfony\Component\HttpFoundation\File\File;
 
 /**
  * @service("claroline.library.testing.persister")

@@ -31,9 +31,8 @@ class VideoController extends FOSRestController
      *     "videoManager" = @DI\Inject("claroline.manager.video_manager"),
      * })
      */
-    public function __construct(
-        VideoManager $videoManager
-    ) {
+    public function __construct(VideoManager $videoManager)
+    {
         $this->videoManager = $videoManager;
     }
 
