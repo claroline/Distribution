@@ -19,7 +19,6 @@ function configure(rootDir, packages, isWatchMode) {
   const webpackPackages = packages.filter(def => def.assets && def.assets.webpack)
   const bundles = webpackPackages.map(def => def.name)
   const normalizedPackages = normalizeNames(webpackPackages)
-  const normalizedBundles = normalizedPackages.map(def => def.name)
   const entries = extractEntries(normalizedPackages)
   const commons = extractCommons(normalizedPackages)
 
@@ -37,7 +36,7 @@ function configure(rootDir, packages, isWatchMode) {
   // in every environment, plugins are needed for things like bower
   // modules support, bundle resolution, common chunks extraction, etc.
   const plugins = [
-    makeBundleResolverPlugin(normalizedBundles),
+    makeBundleResolverPlugin(),
     makeBowerPlugin(),
     makeAssetsPlugin(),
     //makeBaseCommonsPlugin(),
@@ -148,7 +147,7 @@ function makeBowerPlugin() {
  *
  * @param availableBundles A list of available bundles
  */
-function makeBundleResolverPlugin(availableBundles) {
+function makeBundleResolverPlugin() {
   return new webpack.NormalModuleReplacementPlugin(/^#\//, request => {
     const target = request.request.substr(2)
     const parts = target.split('/')
