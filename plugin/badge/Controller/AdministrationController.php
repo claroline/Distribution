@@ -454,14 +454,14 @@ class AdministrationController extends Controller
         $response = new StreamedResponse(function () use ($users, $badges, $locale, $translator, $userBadgeRepo) {
             $handle = fopen('php://output', 'w+');
 
-            $user_trans = count($users) > 1 ?
+            $userTrans = count($users) > 1 ?
                 $translator->trans('users', array(), 'platform') :
                 $translator->trans('user', array(), 'platform');
-            $badge_trans = count($badges) > 1 ?
+            $badgeTrans = count($badges) > 1 ?
                 $translator->trans('badges', array(), 'icap_badge') :
                 $translator->trans('badge', array(), 'icap_badge');
 
-            fputcsv($handle, array(count($users).' '.strtolower($user_trans).', '.count($badges).' '.strtolower($badge_trans)));
+            fputcsv($handle, array(count($users).' '.strtolower($userTrans).', '.count($badges).' '.strtolower($badgeTrans)));
 
             // Headers
             $headers = array(

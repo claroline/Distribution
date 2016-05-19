@@ -568,7 +568,15 @@ class WorkspaceController extends Controller
 
         $response = new StreamedResponse(function () use ($users, $badges, $locale, $translator, $userBadgeRepo) {
             $handle = fopen('php://output', 'w+');
-            fputcsv($handle, array(count($users).' users, '.count($badges).' badges'));
+
+            $userTrans = count($users) > 1 ?
+                $translator->trans('users', array(), 'platform') :
+                $translator->trans('user', array(), 'platform');
+            $badgeTrans = count($badges) > 1 ?
+                $translator->trans('badges', array(), 'icap_badge') :
+                $translator->trans('badge', array(), 'icap_badge');
+
+            fputcsv($handle, array(count($users).' '.strtolower($userTrans).', '.count($badges).' '.strtolower($badgeTrans)));
 
             // Headers
             $headers = array(
