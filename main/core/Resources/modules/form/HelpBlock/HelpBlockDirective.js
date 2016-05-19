@@ -1,3 +1,5 @@
+import HelpBlockController from './HelpBlockController'
+
 export default class HelpBlockDirective {
   constructor ($parse, $compile) {
     this.scope = {}
@@ -6,7 +8,7 @@ export default class HelpBlockDirective {
     this.restrict = 'E'
     this.replace = true
     this.require = '^ngModel'
-    this.controller = () => {}
+    this.controller = HelpBlockController
     this.controllerAs = 'hc'
     this.bindToController = {
       field: '=',
@@ -35,7 +37,7 @@ export default class HelpBlockDirective {
     }, newValue => {
       elm.html('')
       Object.keys(ngModel.$error).forEach(validator => {
-          elm.append(this.buildHelpBlock(ngModel.formValidators[validator].getErrorMessage()))
+        elm.append(this.buildHelpBlock(ngModel.formValidators[validator].getErrorMessage()))
       })
     })
   }

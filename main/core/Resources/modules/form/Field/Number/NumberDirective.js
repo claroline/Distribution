@@ -9,8 +9,8 @@ export default class NumberDirective {
     this.controller = NumberController
     this.controllerAs = 'nc'
     this.bindToController = {
-        field: '=',
-        ngModel: '='
+      field: '=',
+      ngModel: '='
     }
   }
 }

@@ -9,6 +9,7 @@ import './Field/Radio/module'
 import './Field/Number/module'
 import './Field/Country/module'
 import './Field/Date/module'
+import './Field/File/module'
 
 import FormDirective from './FormDirective'
 import FormBuilderService from './FormBuilderService'
@@ -23,7 +24,8 @@ angular.module('FormBuilder', [
   'FieldRadio',
   'FieldNumber',
   'FieldCountry',
-  'FieldDate'
+  'FieldDate',
+  'FieldFile'
 ])
   .directive('formbuilder', () => new FormDirective)
   .directive('formField', () => new FieldDirective)

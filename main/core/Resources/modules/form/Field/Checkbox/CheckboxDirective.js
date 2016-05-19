@@ -9,8 +9,8 @@ export default class CheckboxDirective {
     this.controller = CheckboxController
     this.controllerAs = 'cc'
     this.bindToController = {
-        field: '=',
-        ngModel: '='
+      field: '=',
+      ngModel: '='
     }
   }
 }

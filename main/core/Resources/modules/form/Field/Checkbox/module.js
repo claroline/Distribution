@@ -1,4 +1,4 @@
-//that field should be removed sooner or later
+// that field should be removed sooner or later
 
 import 'angular/angular.min'
 

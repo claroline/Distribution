@@ -5,7 +5,7 @@ import translation from 'angular-ui-translation/angular-translation'
 import DateDirective from './DateDirective'
 
 angular.module('FieldDate', [
-    'ui.translation',
-    'ui.bootstrap'
+  'ui.translation',
+  'ui.bootstrap'
 ])
- .directive('formDate', () => new DateDirective)
+  .directive('formDate', () => new DateDirective)

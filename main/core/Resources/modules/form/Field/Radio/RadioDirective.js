@@ -9,8 +9,8 @@ export default class RadioDirective {
     this.controller = RadioController
     this.controllerAs = 'rc'
     this.bindToController = {
-        field: '=',
-        ngModel: '='
+      field: '=',
+      ngModel: '='
     }
   }
 }

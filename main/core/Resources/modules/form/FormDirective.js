@@ -1,10 +1,12 @@
+import FormController from './FormController'
+
 export default class FormDirective {
   constructor () {
     this.scope = {}
     this.restrict = 'E'
     this.template = require('./form.html')
     this.replace = true,
-    this.controller = () => {},
+    this.controller = FormController,
     this.controllerAs = 'fc'
     this.bindToController = {
       form: '=',

@@ -9,8 +9,8 @@ export default class SelectDirective {
     this.controller = SelectController
     this.controllerAs = 'sc'
     this.bindToController = {
-        field: '=',
-        ngModel: '='
+      field: '=',
+      ngModel: '='
     }
   }
 }

@@ -9,8 +9,8 @@ export default class CheckboxesDirectivz {
     this.controller = CheckboxesController
     this.controllerAs = 'chc'
     this.bindToController = {
-        field: '=',
-        ngModel: '='
+      field: '=',
+      ngModel: '='
     }
   }
 }

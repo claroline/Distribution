@@ -9,8 +9,8 @@ export default class CountryDirective {
     this.controller = CountryController
     this.controllerAs = 'coc'
     this.bindToController = {
-        field: '=',
-        ngModel: '='
+      field: '=',
+      ngModel: '='
     }
   }
 }
