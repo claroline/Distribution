@@ -1,5 +1,3 @@
-import FormController from './FormController'
-
 export default class FormDirective {
   constructor () {
     this.scope = {}
