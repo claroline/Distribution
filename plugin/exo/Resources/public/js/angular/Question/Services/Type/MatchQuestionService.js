@@ -30,6 +30,39 @@ MatchQuestionService.prototype.getCorrectAnswer = function getCorrectAnswer(ques
     return answer;
 };
 
+/**
+ * 
+ * @returns {answersAllFound}
+ */
+MatchQuestionService.prototype.answersAllFound = function answersAllFound(question, answers) {
+    var numAnswersFound = 0;
+    for (var j=0; j<question.solutions.length; j++) {
+        for (var i=0; i<answers.length; i++) {
+            var answer = answers[i].split(",");
+            
+            if (question.solutions[j].firstId === answer[0] && question.solutions[j].secondId === answer[1]) {
+                numAnswersFound++;
+            }
+        }
+    }
+    
+    var feedbackState = -1;
+    if (numAnswersFound === question.solutions.length) {
+        // all answers have been found
+        feedbackState = 0;
+    }
+    else if (numAnswersFound === question.solutions.length -1) {
+        // one answer remains to be found
+        feedbackState = 1;
+    }
+    else {
+        // more answers remain to be found
+        feedbackState = 2;
+    }
+    
+    return feedbackState;
+};
+
 MatchQuestionService.prototype.initBindMatchQuestion = function initBindMatchQuestion() {
     jsPlumb.setContainer($("body"));
 

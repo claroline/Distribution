@@ -20,6 +20,57 @@ OpenQuestionService.prototype.initAnswer = function initAnswer() {
 };
 
 /**
+ * 
+ * @returns {answersAllFound}
+ */
+OpenQuestionService.prototype.answersAllFound = function answersAllFound(question, answer) {
+    var numAnswersFound = 0;
+    var answerWithKeywords = answer ? answer : '';
+
+    // Get EOL
+    answerWithKeywords = answerWithKeywords.replace(/(\r\n|\n|\r)/gm, '<br/>');
+
+    if ('long' !== question.typeOpen) {
+        // Initialize answer with keywords
+        // Search used keywords in student answer
+        for (var i = 0; i < question.solutions.length; i++) {
+            var solution = question.solutions[i];
+
+            // Check in answer if the keyword as been used
+            var searchFlags      = 'g' + (solution.caseSensitive ? 'i' : '');
+            var searchExpression = new RegExp(solution.word, searchFlags);
+            if (-1 !== answer.search(searchExpression)) {
+                numAnswersFound++;
+                // Keyword has been found in answer => Update formatted answer
+                var keyword = '';
+                keyword += '<b class="text-success feedback-info" data-toggle="tooltip" title="' + solution.feedback + '">';
+                keyword += solution.word;
+                keyword += '<span class="fa fa-fw fa-check"></span>';
+                keyword += '</b>';
+
+                answerWithKeywords = answerWithKeywords.replace(searchExpression, keyword, searchFlags);
+            }
+        }
+    }
+    else {
+        feedbackState = 0;
+    }
+    
+    var feedbackState = -1;
+    if (question.solutions.length === numAnswersFound) {
+        feedbackState = 0;
+    }
+    else if (question.solutions.length -1 === numAnswersFound) {
+        feedbackState = 1;
+    }
+    else {
+        feedbackState = 2;
+    }
+    
+    return feedbackState;
+};
+
+/**
  * Get the correct answer from the solutions of a Question
  * For type = long we can not generate a correct answer at it requires a manual correction
  * @param   {Object} question

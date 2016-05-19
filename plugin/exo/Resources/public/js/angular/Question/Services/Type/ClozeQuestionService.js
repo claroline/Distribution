@@ -40,9 +40,6 @@ ClozeQuestionService.prototype.answersAllFound = function answersAllFound(questi
         }
     }
     
-    console.log(numAnswersFound);
-    console.log(question.solutions.length);
-    
     var feedbackState = -1;
     if (numAnswersFound === question.solutions.length) {
         // all answers have been found
