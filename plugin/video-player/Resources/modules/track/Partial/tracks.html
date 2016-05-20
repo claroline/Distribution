@@ -5,8 +5,8 @@
     </div>
     <div class="modal-body">
         <div>
-            <ul>
-                <li ng-repeat="(key, track) in tmc.tracks"> {{ track }}</li>
+            <ul class="list-group">
+                <li class="list-group-item" ng-repeat="(key, track) in tmc.tracks"></li>
             </ul>
         </div>
         <button ng-click="tmc.onNewTrack()"> {{ 'new'|trans:{}:'platform' }}</button>

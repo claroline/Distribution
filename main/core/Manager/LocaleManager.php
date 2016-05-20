@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
- * @Service("claroline.common.locale_manager")
+ * @Service("claroline.manager.locale_manager")
  */
 class LocaleManager
 {
@@ -144,6 +144,16 @@ class LocaleManager
         }
 
         return $locale;
+    }
+
+    public function getLocalesLabels()
+    {
+        return [
+            'fr' => 'Français',
+            'en' => 'English',
+            'nl' => 'Nederlands',
+            'es' => 'Español',
+        ];
     }
 
     /**
