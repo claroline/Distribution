@@ -284,7 +284,7 @@ class PathManager
         $pathData['modified'] = $path->isModified();
         $pathData['published'] = $path->isPublished();
         $pathData['summaryDisplayed'] = $path->isSummaryDisplayed();
-        $pathData['isCompleteBlockingCondition'] = $path->getIsCompleteBlockingCondition();
+        $pathData['completeBlockingCondition'] = $path->isCompleteBlockingCondition();
 
         // Get path structure into a file (to replace resources ID with placeholders)
         $uid = uniqid().'.txt';
@@ -332,8 +332,8 @@ class PathManager
         $path->setDescription($pathData['description']);
         $path->setModified($pathData['modified']);
         $path->setSummaryDisplayed($pathData['summaryDisplayed']);
-        $path->setIsCompleteBlockingCondition($pathData['isCompleteBlockingCondition']);
-        
+        $path->setCompleteBlockingCondition($pathData['completeBlockingCondition']);
+
         // Create steps
         $stepData = $data['data']['steps'];
         if (!empty($stepData)) {

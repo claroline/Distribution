@@ -42,7 +42,7 @@
              * is condition blocking all children of a step
              * @type {boolean}
              */
-            var isCompleteBlockingCondition = true;
+            var completeBlockingCondition = true;
 
             /**
              * list af all steps following the current step
@@ -210,11 +210,11 @@
                     summary.opened = value;
                 },
 
-                setIsCompleteBlockingCondition: function getIsCompleteBlockingCondition(value) {
-                    isCompleteBlockingCondition = value;
+                setCompleteBlockingCondition: function setCompleteBlockingCondition(value) {
+                    completeBlockingCondition = value;
                 },
-                getIsCompleteBlockingCondition: function getIsCompleteBlockingCondition() {
-                    return isCompleteBlockingCondition;
+                isCompleteBlockingCondition: function isCompleteBlockingCondition() {
+                    return completeBlockingCondition;
                 },
 
                 /**
@@ -252,7 +252,7 @@
                             description:      path.description,
                             breadcrumbs:      path.breadcrumbs,
                             summaryDisplayed: path.summaryDisplayed,
-                            isCompleteBlockingCondition: path.isCompleteBlockingCondition,
+                            completeBlockingCondition: path.completeBlockingCondition,
                             structure:        angular.toJson(path)
                         }
                     };

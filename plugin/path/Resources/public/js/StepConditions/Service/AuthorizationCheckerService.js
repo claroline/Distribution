@@ -34,7 +34,7 @@
                     //loop through steps to authorize if needed
                     for(var i=0;i<maybeAuthorizedStep.length;i++){
                         var progression=UserProgressionService.getForStep(maybeAuthorizedStep[i]);
-                        var status=(typeof progression=='undefined'||null==progression)?"seen":progression.status;
+                        var status=(typeof progression=='undefined'||null===progression)?"seen":progression.status;
                         UserProgressionService.update(maybeAuthorizedStep[i],status,1);
                     }
                     //go to step
@@ -47,7 +47,7 @@
 
                 checkStepConditions: function checkStepConditions(step, previous, authorization, that) {
                      var progression = UserProgressionService.getForStep(step);
-                     var status = (typeof progression == 'undefined' || null == progression) ? "seen" : progression.status;
+                     var status = (typeof progression == 'undefined' || null === progression) ? "seen" : progression.status;
                          // There is a condition on the previous step => check if it is OK
                          // Process evaluation of the Activity
                          StepConditionsService.getActivityEvaluation(previous.activityId).then(function onSuccess(result) {
@@ -74,7 +74,7 @@
                  * @returns {object}
                  */
                 isAuthorized: function isAuthorized(step, authorization, arr) {
-                    if (PathService.getIsCompleteBlockingCondition()) {
+                    if (PathService.isCompleteBlockingCondition()) {
                         return this.isAuthorizedAllSteps(step, authorization, arr);
                     } else {
                         return this.isAuthorizedNextStep(step, authorization, arr);
@@ -126,7 +126,7 @@
                             } else {
                                 // retrieve user progression
                                 var progression = UserProgressionService.getForStep(step);
-                                var status = (typeof progression == 'undefined' || null == progression) ? "seen" : progression.status;
+                                var status = (typeof progression == 'undefined' || null === progression) ? "seen" : progression.status;
 
                                 //activity has been set for the step : YES
                                 if (this.isProgressionAuthorized(previous)) {
@@ -190,7 +190,7 @@
                                 // Previous step is authorized, so check the condition to know if User can access current step
                                 // retrieve user progression
                                 var progression = UserProgressionService.getForStep(step);
-                                var status = (typeof progression == 'undefined' || null == progression) ? "seen" : progression.status;
+                                var status = (typeof progression == 'undefined' || null === progression) ? "seen" : progression.status;
 
                                 if (angular.isDefined(previous.condition) && angular.isObject(previous.condition)) {
                                     // There is a condition on the previous step => check if it is OK
