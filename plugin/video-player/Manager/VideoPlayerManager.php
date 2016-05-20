@@ -9,12 +9,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Manager;
+namespace Claroline\VideoPlayerBundle\Manager;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use Claroline\CoreBundle\Manager\FileManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\File;
 use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Claroline\VideoPlayerBundle\Entity\Track;
 
 /**
  * @DI\Service("claroline.manager.video_player_manager")
@@ -24,35 +27,51 @@ class VideoPlayerManager
     private $om;
     private $fileDir;
     private $utils;
+    private $fileManager;
 
     /**
      * @DI\InjectParams({
-     *      "om"         = @DI\Inject("claroline.persistence.object_manager"),
-     *      "fileDir"    = @DI\Inject("%claroline.param.files_directory%"),
-     *      "utils"      = @DI\Inject("claroline.utilities.misc")
+     *      "om"          = @DI\Inject("claroline.persistence.object_manager"),
+     *      "fileDir"     = @DI\Inject("%claroline.param.files_directory%"),
+     *      "utils"       = @DI\Inject("claroline.utilities.misc"),
+     *      "fileManager" = @DI\Inject("claroline.manager.file_manager")
      * })
      */
     public function __construct(
         ObjectManager $om,
         $fileDir,
-        ClaroUtilities $utils
+        ClaroUtilities $utils,
+        FileManager $fileManager
     ) {
         $this->om = $om;
         $this->fileDir = $fileDir;
         $this->utils = $utils;
+        $this->fileManager = $fileManager;
     }
 
-    public function createSubtitles(File $video, File $subtitles, $lang, $isDefault)
+    public function createTrack(File $video, UploadedFile $trackData, $lang, $isDefault = false, $kind = 'subtitles')
     {
+        $this->om->startFlushSuite();
+
+        $trackFile = $this->fileManager->create(
+            new File(),
+            $trackData,
+            $trackData->getClientOriginalName(),
+            $trackData->getMimeType(),
+            $video->getResourceNode()->getWorkspace()
+        );
+        $this->om->persist($trackFile);
+
         $track = new Track();
         $track->setVideo($video);
         $track->setLang($lang);
         $track->setKind('subtitles');
-        $track->setDefault($isDefault);
-        $hashName = $this->utils->generateGuid();
-        $track->setHashName($hashName);
+        $track->setIsDefault($isDefault);
+        $track->setTrackFile($trackFile);
         $this->om->persist($track);
-        $this->om->flush();
+        $this->om->endFlushSuite();
+
+        return $track;
     }
 
     public function removeTrack(Track $track)
@@ -63,6 +82,6 @@ class VideoPlayerManager
 
     public function getTracksByVideo(File $video)
     {
-        $this->om->getRepository('Claroline\VideoPlayerBundle\Entity\Track')->findByVideo($video);
+        return $this->om->getRepository('Claroline\VideoPlayerBundle\Entity\Track')->findByVideo($video);
     }
 }

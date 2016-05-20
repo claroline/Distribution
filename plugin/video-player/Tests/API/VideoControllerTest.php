@@ -1,9 +1,11 @@
 <?php
 
-namespace Claroline\CoreBundle\Tests\API\User;
+namespace Claroline\VideoPlayerBundle\Tests\API;
 
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Claroline\CoreBundle\Library\Testing\Persister;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Claroline\CoreBundle\Entity\Resource\File;
 
 class VideoControllerTest extends TransactionalTestCase
 {
@@ -13,71 +15,102 @@ class VideoControllerTest extends TransactionalTestCase
         $this->persister = $this->client->getContainer()->get('claroline.library.testing.persister');
     }
 
-    /**
-     * @Post("/video/{video}/track", name="post_video_track", options={ "method_prefix" = false })
-     * @View(serializerGroups={"api_video"})
-     */
-    public function testPostTrackAction(File $video)
+    public function testPostTrackAction()
     {
-        $file = $this->persister->file('video', 'video/mp4');
         $manager = $this->createManager();
+        $file = $this->persister->file('video', 'video/mp4', true, $manager);
+        $this->persister->flush();
+        //we log before because we need the securty context for the resource creation
         $this->login($manager);
-
-        $track = array(
-            'default' => true,
-            'lang' => 'en',
-        );
-
-        $form = array('track' => $track);
-        $this->client->request('POST', "/api/video/{$file->getId()}/track", $form);
+        $subtitles = new UploadedFile(tempnam(sys_get_temp_dir(), 'tmp'), 'subtitles.vtt');
+        $form = ['track' => ['default' => true, 'lang' => 'en']];
+        $files = ['track' => ['track' => $subtitles]];
+        $this->client->request('POST', "/video-player/api/video/{$file->getId()}/track", $form, $files);
         $data = $this->client->getResponse()->getContent();
         $data = json_decode($data, true);
-        var_dump($data);
+        $this->assertEquals('subtitles', $data['kind']);
+    }
+
+    public function testGetTracksAction()
+    {
+        $manager = $this->createManager();
+        //we log before because we need the securty context for the resource creation
+        $this->login($manager);
+        $file = $this->persister->file('video', 'video/mp4', true, $manager);
+        $this->createTrack($file, 'en');
+        $this->createTrack($file, 'fr');
+        $this->createTrack($file, 'es');
+        $this->client->request('GET', "/video-player/api/video/{$file->getId()}/tracks");
+        $data = $this->client->getResponse()->getContent();
+        $data = json_decode($data, true);
+        $this->assertEquals(3, count($data));
+    }
+
+    public function testDeleteTrackAction()
+    {
+        $manager = $this->createManager();
+        //we log before because we need the securty context for the resource creation
+        $this->login($manager);
+        $file = $this->persister->file('video', 'video/mp4', true, $manager);
+        $toRemove = $this->createTrack($file, 'en');
+        $this->createTrack($file, 'fr');
+        $this->createTrack($file, 'es');
+        $this->client->request('DELETE', "/video-player/api/video/track/{$toRemove->getId()}");
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->client->request('GET', "/video-player/api/video/{$file->getId()}/tracks");
+        $data = $this->client->getResponse()->getContent();
+        $data = json_decode($data, true);
+        $this->assertEquals(2, count($data));
     }
 
     /**
-     * @Get("/video/{video}/tracks", name="get_video_tracks", options={ "method_prefix" = false })
+     * @Get("/video/track/{track}/stream", name="get_video_track_stream", options={ "method_prefix" = false })
      * @View(serializerGroups={"api_video"})
      */
-    public function testGetTracksAction(File $video)
+    public function testStreamTrackAction()
     {
-    }
-
-    /**
-     * @Delete("/video/track/{track}", name="delete_video_track", options={ "method_prefix" = false })
-     * @View(serializerGroups={"api_video"})
-     */
-    public function testDeleteTrackAction(Track $track)
-    {
-    }
-
-    /**
-     * @Get("/video/track/{track}", name="get_video_track", options={ "method_prefix" = false })
-     * @View(serializerGroups={"api_video"})
-     */
-    public function testGetTrackAction(Track $track)
-    {
-    }
-
-    /**
-     * @Get("/video//track/{track}/stream", name="get_video_track_stream", options={ "method_prefix" = false })
-     * @View(serializerGroups={"api_video"})
-     */
-    public function testStreamTrackAction(Track $track)
-    {
+        $manager = $this->createManager();
+        //we log before because we need the securty context for the resource creation
+        $this->login($manager);
+        $file = $this->persister->file('video', 'video/mp4', true, $manager);
+        $track = $this->createTrack($file, 'en');
+        $this->client->request('GET', "/video-player/api/video/track/{$track->getId()}/stream");
+        //this is a bad check but it's better than nothing
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     /**
      * @Get("/video/{video}/stream", name="get_video_stream", options={ "method_prefix" = false })
      * @View(serializerGroups={"api_video"})
      */
-    public function testStreamVideoAction(File $video)
+    public function testStreamVideoAction()
     {
+        $this->markTestSkipped('We must simulate a file upload to do this');
+        $manager = $this->createManager();
+        //we log before because we need the securty context for the resource creation
+        $this->login($manager);
+        $file = $this->persister->file('video', 'video/mp4', true, $manager);
+        $this->client->request('GET', "/video-player/api/video/{$file->getId()}/stream");
+        //this is a bad check but it's better than nothing
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
-    private function createTrack()
+    private function createTrack(File $video, $lang)
     {
-        $om = $this->client->getContainer()->get('claroline.persistence.object_manager');
+        $trackData = new UploadedFile(
+            tempnam(sys_get_temp_dir(), 'tmp'),
+            'subtitles.vtt',
+            null,
+            null,
+            null,
+            true //test mode
+        );
+
+        return $this->client->getContainer()->get('claroline.manager.video_player_manager')->createTrack(
+            $video,
+            $trackData,
+            $lang
+        );
     }
 
     private function createManager()
@@ -85,8 +118,7 @@ class VideoControllerTest extends TransactionalTestCase
         $manager = $this->persister->user('manager');
         $role = $this->persister->role('ROLE_ADMIN');
         $manager->addRole($role);
-        $persister->persist($manager);
-        $persister->flush();
+        $this->persister->persist($manager);
 
         return $manager;
     }

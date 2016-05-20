@@ -411,6 +411,9 @@ class FileListener implements ContainerAwareInterface
         );
     }
 
+    /**
+     * @deprecated
+     */
     public function createFile(
         File $file,
         SfFile $tmpFile,
@@ -418,34 +421,7 @@ class FileListener implements ContainerAwareInterface
         $mimeType,
         Workspace $workspace = null
     ) {
-        $extension = pathinfo($fileName, PATHINFO_EXTENSION);
-        $size = filesize($tmpFile);
-
-        if (!is_null($workspace)) {
-            $hashName = 'WORKSPACE_'.$workspace->getId().
-                DIRECTORY_SEPARATOR.
-                $this->container->get('claroline.utilities.misc')->generateGuid().
-                '.'.
-                $extension;
-            $tmpFile->move(
-                $this->workspaceManager->getStorageDirectory($workspace).'/',
-                $hashName
-            );
-        } else {
-            $hashName =
-                $this->tokenStorage->getToken()->getUsername().DIRECTORY_SEPARATOR.$this->container->get('claroline.utilities.misc')->generateGuid().
-                '.'.$extension;
-            $tmpFile->move(
-                $this->container->getParameter('claroline.param.files_directory').DIRECTORY_SEPARATOR.$this->tokenStorage->getToken()->getUsername(),
-                $hashName
-            );
-        }
-        $file->setSize($size);
-        $file->setName($fileName);
-        $file->setHashName($hashName);
-        $file->setMimeType($mimeType);
-
-        return $file;
+        $this->container->get('claroline.manager.file_manager')->create($file, $tmpFile, $fileName, $mimeType, $workspace);
     }
 
     private function handleFileCreation($form, CreateResourceEvent $event)
@@ -491,7 +467,7 @@ class FileListener implements ContainerAwareInterface
                 $event->setProcess(false);
                 $event->stopPropagation();
             } else {
-                $file = $this->createFile(
+                $file = $this->container->get('claroline.manager.file_manager')->create(
                     $file,
                     $tmpFile,
                     $fileName,

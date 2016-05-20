@@ -25,5 +25,15 @@
         <a class="btn btn-primary" href="{{ path('claro_resource_download') }}?ids[]={{ video.getResourceNode().getId() }}">
             <i class="fa fa-download"></i> {{ 'download'|trans({}, 'platform') }}
         </a>
+        <span><video-tracks ng-app="TrackButton"></video-tracks></span>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        window.videoId = {{ video.getId() }}
+        window.nodeId = {{ video.getResourceNode().getId() }}
+    </script>
+    <script src="{{ hotAsset('dist/claroline-distribution-plugin-video-player-track-management.js') | raw }}"></script>
 {% endblock %}

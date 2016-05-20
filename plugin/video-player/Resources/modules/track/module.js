@@ -1,14 +1,19 @@
 import 'angular/angular.min'
 
-import bootstrap from 'angular-bootstrap'
-import translation from 'angular-ui-translation/angular-translation'
+import 'angular-bootstrap'
+import 'angular-ui-translation/angular-translation'
+
+import '#/main/core/Resources/modules/form/module'
 
 import Interceptors from '#/main/core/Resources/modules/interceptorsDefault'
 import TracksButtonDirective from './Directive/TracksButtonDirective'
+import TracksModalController from './Controller/TracksModalController'
 
 angular.module('TrackButton', [
   'ui.bootstrap',
-  'ui.translation'
+  'ui.translation',
+  'FormBuilder'
 ])
-  .directive('videoTracksButton', () => new TracksButtonDirective())
+  .directive('videoTracks', () => new TracksButtonDirective)
+  .controller('TracksModalController', TracksModalController)
   .config(Interceptors)

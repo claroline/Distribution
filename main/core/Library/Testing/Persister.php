@@ -123,7 +123,7 @@ class Persister
         return $role;
     }
 
-    public function file($fileName, $mimeType)
+    public function file($fileName, $mimeType, $withNode = false, User $creator = null)
     {
         $file = new File();
         $file->setSize(123);
@@ -131,6 +131,20 @@ class Persister
         $file->setHashName(uniqid());
         $file->setMimeType($mimeType);
         $this->om->persist($file);
+
+        if ($withNode && !$creator) {
+            throw new \Exception('File requires a creator if you want to set a Resource Node.');
+        }
+
+        if ($withNode) {
+            $fileType = $this->om->getRepository('ClarolineCoreBundle:Resource\ResourceType')->findOneByName('file');
+
+            $this->container->get('claroline.manager.resource_manager')->create(
+                $file,
+                $fileType,
+                $creator
+            );
+        }
 
         return $file;
     }

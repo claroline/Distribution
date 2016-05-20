@@ -23,12 +23,6 @@ use JMS\Serializer\Annotation\Groups;
 class Track extends AbstractResource
 {
     /**
-     * @ORM\Column(name="hash_name", unique=true)
-     * @Groups({"api_video"})
-     */
-    protected $hashName;
-
-    /**
      * @ORM\ManyToOne(
      *     targetEntity="Claroline\CoreBundle\Entity\Resource\File"
      * )
@@ -41,36 +35,27 @@ class Track extends AbstractResource
      *     targetEntity="Claroline\CoreBundle\Entity\Resource\File"
      * )
      * @ORM\JoinColumn(onDelete="CASCADE")
+     * @Groups({"api_resource"})
      */
     protected $trackFile;
 
     /**
      * @ORM\Column(name="lang", nullable=true)
-     * @Groups({"api_video"})
+     * @Groups({"api_resource"})
      */
     protected $lang = 'en';
 
     /**
      * @ORM\Column(name="kind", nullable=false)
-     * @Groups({"api_video"})
+     * @Groups({"api_resource"})
      */
     protected $kind = 'subtitles';
 
     /**
-     * @ORM\Column(name="is_default", nullable=false)
-     * @Groups({"api_video"})
+     * @ORM\Column(name="is_default", nullable=false, type="boolean")
+     * @Groups({"api_resource"})
      */
     protected $isDefault = false;
-
-    public function getHashName()
-    {
-        return $this->hashName;
-    }
-
-    public function setHashName($hashName)
-    {
-        $this->hashName = $hashName;
-    }
 
     public function setVideo(File $file)
     {
@@ -84,7 +69,7 @@ class Track extends AbstractResource
 
     public function setLang($lang)
     {
-        $this->lang = $lang;
+        $this->lang = strtolower($lang);
     }
 
     public function getLang()

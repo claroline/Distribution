@@ -1,0 +1,20 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="$close()">&times;</button>
+        <h4> {{ 'track_list'|trans:{}:'platform' }} </h4>
+    </div>
+    <div class="modal-body">
+        <div>
+            <ul>
+                <li ng-repeat="(key, track) in tmc.tracks"> {{ track }}</li>
+            </ul>
+        </div>
+        <button ng-click="tmc.onNewTrack()"> {{ 'new'|trans:{}:'platform' }}</button>
+        <div>
+            <form class="form-horizontal" name="trackForm" ng-submit="tmc.onNewTrack(trackForm)">
+                <formbuilder form="tmc.trackForm" ng-model="tmc.newTrack"></formbuilder>
+                <input type="submit" class="btn btn-primary"></input>
+            </form>
+        </div>
+    </div>
+</div>

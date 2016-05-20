@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\VideoPlayerBundle\Controller\API\User;
+namespace Claroline\VideoPlayerBundle\Controller\API;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -20,6 +20,9 @@ use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use Claroline\CoreBundle\Entity\Resource\File;
 use Claroline\VideoPlayerBundle\Entity\Track;
+use Claroline\VideoPlayerBundle\Manager\VideoPlayerManager;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @NamePrefix("api_")
@@ -28,29 +31,34 @@ class VideoController extends FOSRestController
 {
     /**
      * @DI\InjectParams({
-     *     "videoManager" = @DI\Inject("claroline.manager.video_manager"),
+     *     "videoManager" = @DI\Inject("claroline.manager.video_player_manager"),
+     *     "request"      = @DI\Inject("request"),
+     *     "fileDir"      = @DI\Inject("%claroline.param.files_directory%")
      * })
      */
-    public function __construct(VideoManager $videoManager)
+    public function __construct(VideoPlayerManager $videoManager, Request $request, $fileDir)
     {
         $this->videoManager = $videoManager;
+        $this->request = $request;
+        $this->fileDir = $fileDir;
     }
 
     /**
      * @Post("/video/{video}/track", name="post_video_track", options={ "method_prefix" = false })
-     * @View(serializerGroups={"api_video"})
+     * @View(serializerGroups={"api_resource"})
      */
     public function postTrackAction(File $video)
     {
         $track = $this->request->request->get('track');
         $isDefault = isset($track['is_default']) ? $track['is_default'] : false;
+        $fileBag = $this->request->files->get('track');
 
-        return $this->videoManager->createSubtitles($video, $track['lang'], $isDefault);
+        return $this->videoManager->createTrack($video, $fileBag['track'], $track['lang'], $isDefault);
     }
 
     /**
      * @Get("/video/{video}/tracks", name="get_video_tracks", options={ "method_prefix" = false })
-     * @View(serializerGroups={"api_video"})
+     * @View(serializerGroups={"api_resource"})
      */
     public function getTracksAction(File $video)
     {
@@ -69,21 +77,14 @@ class VideoController extends FOSRestController
     }
 
     /**
-     * @Get("/video/track/{track}", name="get_video_track", options={ "method_prefix" = false })
-     * @View(serializerGroups={"api_video"})
-     */
-    public function getTrackAction(Track $track)
-    {
-        return $track;
-    }
-
-    /**
-     * @Get("/video//track/{track}/stream", name="get_video_track_stream", options={ "method_prefix" = false })
+     * @Get("/video/track/{track}/stream", name="get_video_track_stream", options={ "method_prefix" = false })
      * @View(serializerGroups={"api_video"})
      */
     public function streamTrackAction(Track $track)
     {
-        //todo
+        $file = $track->getTrackFile();
+
+        return $this->returnFile($file);
     }
 
     /**
@@ -92,6 +93,16 @@ class VideoController extends FOSRestController
      */
     public function streamVideoAction(File $video)
     {
-        //todo
+        return $this->returnFile($video);
+    }
+
+    private function returnFile(File $file)
+    {
+        // see https://github.com/claroline/CoreBundle/commit/7cee6de85bbc9448f86eb98af2abb1cb072c7b6b
+        $this->get('session')->save();
+        $path = $this->fileDir.DIRECTORY_SEPARATOR.$file->getHashName();
+        $response = new BinaryFileResponse($path);
+
+        return $response;
     }
 }
