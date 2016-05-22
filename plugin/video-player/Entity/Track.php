@@ -46,6 +46,12 @@ class Track extends AbstractResource
     protected $lang = 'en';
 
     /**
+     * @ORM\Column(name="label", nullable=true)
+     * @Groups({"api_resource"})
+     */
+    protected $label;
+
+    /**
      * @ORM\Column(name="kind", nullable=false)
      * @Groups({"api_resource"})
      */
@@ -105,5 +111,15 @@ class Track extends AbstractResource
     public function getTrackFile()
     {
         return $this->trackFile;
+    }
+
+    public function getLabel()
+    {
+        return $this->label;
+    }
+
+    public function setLabel($label)
+    {
+        $this->label = $label;
     }
 }

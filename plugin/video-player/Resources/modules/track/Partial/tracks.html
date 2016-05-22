@@ -6,14 +6,16 @@
     <div class="modal-body">
         <div>
             <ul class="list-group">
-                <li class="list-group-item" ng-repeat="(key, track) in tmc.tracks"></li>
+                <li class="list-group-item" ng-repeat="(key, track) in tmc.tracks">
+                    {{ track.lang }}
+                    <a href='#' class="pull-right remove-facet-panel pointer" ng-click="tmc.onDelete(track)">x</a>
+                </li>
             </ul>
         </div>
-        <button ng-click="tmc.onNewTrack()"> {{ 'new'|trans:{}:'platform' }}</button>
         <div>
-            <form class="form-horizontal" name="trackForm" ng-submit="tmc.onNewTrack(trackForm)">
+            <form class="form-horizontal" name="trackForm" ng-submit="tmc.onCreate(trackForm)">
                 <formbuilder form="tmc.trackForm" ng-model="tmc.newTrack"></formbuilder>
-                <input type="submit" class="btn btn-primary"></input>
+                <input type="submit" value="{{ 'new'|trans:{}:'platform' }}" class="btn btn-primary"></input>
             </form>
         </div>
     </div>

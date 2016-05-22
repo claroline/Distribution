@@ -8,9 +8,9 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution
  *
- * Generation date: 2016/05/20 05:20:40
+ * Generation date: 2016/05/22 09:35:37
  */
-class Version20160520172039 extends AbstractMigration
+class Version20160522213536 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -19,6 +19,7 @@ class Version20160520172039 extends AbstractMigration
                 id INT AUTO_INCREMENT NOT NULL, 
                 video_id INT DEFAULT NULL, 
                 lang VARCHAR(255) DEFAULT NULL, 
+                `label` VARCHAR(255) DEFAULT NULL, 
                 kind VARCHAR(255) NOT NULL, 
                 is_default TINYINT(1) NOT NULL, 
                 trackFile_id INT DEFAULT NULL, 

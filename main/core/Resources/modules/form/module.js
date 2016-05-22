@@ -11,7 +11,7 @@ import './Field/Number/module'
 import './Field/Country/module'
 import './Field/Date/module'
 import './Field/File/module'
-import './Field/Resource/module'
+import './Field/Lang/module'
 
 import FormDirective from './FormDirective'
 import FormBuilderService from './FormBuilderService'
@@ -28,7 +28,8 @@ angular.module('FormBuilder', [
   'FieldNumber',
   'FieldCountry',
   'FieldDate',
-  'FieldFile'
+  'FieldFile',
+  'FieldLang'
 ])
   .directive('formbuilder', () => new FormDirective)
   .directive('formField', () => new FieldDirective)
