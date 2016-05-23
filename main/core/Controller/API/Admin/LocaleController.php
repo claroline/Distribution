@@ -39,17 +39,6 @@ class LocaleController extends FOSRestController
      */
     public function getAvailableLocalesAction()
     {
-        $locales = $this->localeManager->retrieveAvailableLocales();
-        $labels = $this->localeManager->getLocalesLabels();
-        $keys = array_keys($labels);
-        $data = [];
-
-        foreach ($locales as $locale) {
-            if (in_array($locale, $keys)) {
-                $data[] = ['value' => $locale, 'label' => $labels[$locale]];
-            }
-        }
-
-        return $data;
+        return $this->localeManager->getLocaleListForSelect();
     }
 }

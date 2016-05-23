@@ -7,7 +7,7 @@
         <div>
             <ul class="list-group">
                 <li class="list-group-item" ng-repeat="(key, track) in tmc.tracks">
-                    {{ track.lang }}
+                    {{ track.lang }} ({{ track.label }}) <span class ng-if="track.is_default"> - {{ 'default'|trans:{}:'platform '}} </span>
                     <a href='#' class="pull-right remove-facet-panel pointer" ng-click="tmc.onDelete(track)">x</a>
                 </li>
             </ul>

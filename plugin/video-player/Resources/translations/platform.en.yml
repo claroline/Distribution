@@ -1,2 +1,7 @@
 claroline_video_player: Video player
 player: Player
+track: Track
+tracks: Tracks
+track_list: Track list
+lang: Lang
+new: New

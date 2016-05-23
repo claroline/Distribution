@@ -49,7 +49,7 @@ class VideoPlayerManager
         $this->fileManager = $fileManager;
     }
 
-    public function createTrack(File $video, UploadedFile $trackData, $lang, $isDefault = false, $kind = 'subtitles')
+    public function createTrack(File $video, UploadedFile $trackData, $lang, $label, $isDefault = false, $kind = 'subtitles')
     {
         $this->om->startFlushSuite();
 
@@ -68,6 +68,7 @@ class VideoPlayerManager
         $track->setKind('subtitles');
         $track->setIsDefault($isDefault);
         $track->setTrackFile($trackFile);
+        $track->setLabel($label);
         $this->om->persist($track);
         $this->om->endFlushSuite();
 

@@ -146,6 +146,22 @@ class LocaleManager
         return $locale;
     }
 
+    public function getLocaleListForSelect()
+    {
+        $locales = $this->retrieveAvailableLocales();
+        $labels = $this->getLocalesLabels();
+        $keys = array_keys($labels);
+        $data = [];
+
+        foreach ($locales as $locale) {
+            if (in_array($locale, $keys)) {
+                $data[] = ['value' => $locale, 'label' => $labels[$locale]];
+            }
+        }
+
+        return $data;
+    }
+
     public function getLocalesLabels()
     {
         return [

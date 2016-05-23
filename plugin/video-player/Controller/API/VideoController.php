@@ -23,24 +23,34 @@ use Claroline\VideoPlayerBundle\Entity\Track;
 use Claroline\VideoPlayerBundle\Manager\VideoPlayerManager;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * @NamePrefix("api_")
  */
 class VideoController extends FOSRestController
 {
+    private $authorization;
+    private $videoManager;
+    private $request;
+    private $fileDir;
+
     /**
      * @DI\InjectParams({
-     *     "videoManager" = @DI\Inject("claroline.manager.video_player_manager"),
-     *     "request"      = @DI\Inject("request"),
-     *     "fileDir"      = @DI\Inject("%claroline.param.files_directory%")
+     *     "videoManager"  = @DI\Inject("claroline.manager.video_player_manager"),
+     *     "request"       = @DI\Inject("request"),
+     *     "fileDir"       = @DI\Inject("%claroline.param.files_directory%"),
+     *     "authorization" = @DI\Inject("security.authorization_checker")
      * })
      */
-    public function __construct(VideoPlayerManager $videoManager, Request $request, $fileDir)
+    public function __construct(VideoPlayerManager $videoManager, Request $request, $fileDir, AuthorizationCheckerInterface $authorization)
     {
         $this->videoManager = $videoManager;
         $this->request = $request;
         $this->fileDir = $fileDir;
+        $this->authorization = $authorization;
     }
 
     /**
@@ -49,11 +59,13 @@ class VideoController extends FOSRestController
      */
     public function postTrackAction(File $video)
     {
+        $this->throwExceptionIfNotGranted($video, 'EDIT');
+
         $track = $this->request->request->get('track');
         $isDefault = isset($track['is_default']) ? $track['is_default'] : false;
         $fileBag = $this->request->files->get('track');
 
-        return $this->videoManager->createTrack($video, $fileBag['track'], $track['lang'], $isDefault);
+        return $this->videoManager->createTrack($video, $fileBag['track'], $track['lang'], $track['label'], $isDefault);
     }
 
     /**
@@ -62,6 +74,8 @@ class VideoController extends FOSRestController
      */
     public function getTracksAction(File $video)
     {
+        $this->throwExceptionIfNotGranted($video, 'OPEN');
+
         return $this->videoManager->getTracksByVideo($video);
     }
 
@@ -71,6 +85,8 @@ class VideoController extends FOSRestController
      */
     public function deleteTrackAction(Track $track)
     {
+        $this->throwExceptionIfNotGranted($track->getVideo(), 'EDIT');
+
         $this->videoManager->removeTrack($track);
 
         return [];
@@ -82,6 +98,7 @@ class VideoController extends FOSRestController
      */
     public function streamTrackAction(Track $track)
     {
+        $this->throwExceptionIfNotGranted($track->getVideo(), 'OPEN');
         $file = $track->getTrackFile();
 
         return $this->returnFile($file);
@@ -93,6 +110,8 @@ class VideoController extends FOSRestController
      */
     public function streamVideoAction(File $video)
     {
+        $this->throwExceptionIfNotGranted($video, 'OPEN');
+
         return $this->returnFile($video);
     }
 
@@ -104,5 +123,14 @@ class VideoController extends FOSRestController
         $response = new BinaryFileResponse($path);
 
         return $response;
+    }
+
+    private function throwExceptionIfNotGranted(File $video, $permission)
+    {
+        $collection = new ResourceCollection(array($video->getResourceNode()));
+
+        if (!$this->authorization->isGranted($permission, $collection)) {
+            throw new AccessDeniedException($collection->getErrorsForDisplay());
+        }
     }
 }

@@ -9,13 +9,11 @@ export default class LangController {
   }
 
   getOptions () {
-      console.log(langs)
     const values = []
+
     Object.keys(langs).forEach(key => {
       values.push({'label': langs[key].nativeName, 'value': key})
     })
-
-    console.log(values)
 
     return values
   }

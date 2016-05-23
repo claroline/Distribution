@@ -23,7 +23,7 @@ class VideoControllerTest extends TransactionalTestCase
         //we log before because we need the securty context for the resource creation
         $this->login($manager);
         $subtitles = new UploadedFile(tempnam(sys_get_temp_dir(), 'tmp'), 'subtitles.vtt');
-        $form = ['track' => ['default' => true, 'lang' => 'en']];
+        $form = ['track' => ['default' => true, 'lang' => 'en', 'label' => 'English']];
         $files = ['track' => ['track' => $subtitles]];
         $this->client->request('POST', "/video-player/api/video/{$file->getId()}/track", $form, $files);
         $data = $this->client->getResponse()->getContent();
@@ -109,7 +109,8 @@ class VideoControllerTest extends TransactionalTestCase
         return $this->client->getContainer()->get('claroline.manager.video_player_manager')->createTrack(
             $video,
             $trackData,
-            $lang
+            $lang,
+            'langlabel'
         );
     }
 

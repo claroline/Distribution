@@ -57,6 +57,7 @@ class VideoPlayerListener extends ContainerAware
                 'path' => $path,
                 'video' => $event->getResource(),
                 '_resource' => $event->getResource(),
+                'tracks' => $this->container->get('claroline.manager.video_player_manager')->getTracksByVideo($event->getResource()),
             )
         );
         $response = new Response($content);

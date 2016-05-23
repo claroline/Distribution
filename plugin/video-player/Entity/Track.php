@@ -68,7 +68,7 @@ class Track extends AbstractResource
         $this->video = $file;
     }
 
-    public function getVideo(File $file)
+    public function getVideo()
     {
         return $this->video;
     }
@@ -95,6 +95,10 @@ class Track extends AbstractResource
 
     public function setIsDefault($isDefault)
     {
+        if (is_string($isDefault)) {
+            $isDefault = $isDefault === 'true' ? true : false;
+        }
+
         $this->isDefault = $isDefault;
     }
 

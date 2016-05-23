@@ -33,6 +33,7 @@
     <script>
         window.videoId = {{ video.getId() }}
         window.nodeId = {{ video.getResourceNode().getId() }}
+        window.tracks = {{ tracks|json_serialize('api_resource')|raw }}
     </script>
     <script src="{{ hotAsset('dist/claroline-distribution-plugin-video-player-track-management.js') | raw }}"></script>
 {% endblock %}

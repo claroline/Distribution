@@ -1,3 +1,5 @@
+import langs from '#/main/core/Resources/modules/form/Field/Lang/iso.js'
+
 export default class TracksModalController {
   constructor (tracks, langs, FormBuilderService, ClarolineAPIService) {
     this.tracks = tracks
@@ -14,6 +16,8 @@ export default class TracksModalController {
   }
 
   onCreate () {
+    this.newTrack['label'] = langs[this.newTrack.lang]['nativeName']
+
     this.FormBuilderService.submit(
       Routing.generate('api_post_video_track', {video: window['videoId']}),
       {track: this.newTrack}
