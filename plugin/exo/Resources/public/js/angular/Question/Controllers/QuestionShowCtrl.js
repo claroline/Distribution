@@ -16,10 +16,8 @@ var QuestionShowCtrl = function QuestionShowCtrl(QuestionService, FeedbackServic
 
     // Force the feedback when correction is shown
     if (this.includeCorrection && !this.FeedbackService.isEnabled()) {
-        $timeout(function () {
-            this.FeedbackService.enable();
-            this.FeedbackService.show();
-        }.bind(this));
+        this.FeedbackService.enable();
+        this.FeedbackService.show();
     }
 };
 
@@ -50,6 +48,8 @@ QuestionShowCtrl.prototype.questionPaper = null;
  */
 QuestionShowCtrl.prototype.feedback = {};
 
+QuestionShowCtrl.prototype.feedbackState = -1;
+
 /**
  * Are the correction for the Question displayed ?
  * @type {boolean}
@@ -58,6 +58,18 @@ QuestionShowCtrl.prototype.includeCorrection = false;
 
 QuestionShowCtrl.prototype.mark = function mark() {
 
+};
+
+/**
+ * Get the generic feedback
+ * @returns {string}
+ */
+QuestionShowCtrl.prototype.getGenericFeedback = function getGenericFeedback() {
+    if (this.feedbackState === 1) {
+        return "one_answer_to_find";
+    } else if (this.feedbackState === 2) {
+        return "answers_not_found";
+    }
 };
 
 /**
