@@ -63,6 +63,21 @@ class VideoControllerTest extends TransactionalTestCase
         $this->assertEquals(2, count($data));
     }
 
+    public function testPutTrackAction()
+    {
+        $manager = $this->createManager();
+        //we log before because we need the securty context for the resource creation
+        $this->login($manager);
+        $file = $this->persister->file('video', 'video/mp4', true, $manager);
+        $toEdit = $this->createTrack($file, 'en');
+        $form = ['track' => ['default' => true, 'lang' => 'fr', 'label' => 'Français']];
+        //this is a post because you can't get the file from a put request easily
+        $this->client->request('PUT', "/video-player/api/video/track/{$toEdit->getId()}", $form);
+        $data = $this->client->getResponse()->getContent();
+        $data = json_decode($data, true);
+        $this->assertEquals('fr', $data['lang']);
+    }
+
     /**
      * @Get("/video/track/{track}/stream", name="get_video_track_stream", options={ "method_prefix" = false })
      * @View(serializerGroups={"api_video"})

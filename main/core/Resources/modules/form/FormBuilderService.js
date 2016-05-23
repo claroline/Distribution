@@ -4,10 +4,12 @@ export default class FormBuilderService {
     this.Upload = Upload
   }
 
-  submit(url, parameters) {
+  submit(url, parameters, method = 'POST') {
       return this.Upload.upload({
           url: url,
-          data: parameters
+          data: parameters,
+          method: method
+          //headers: {'Content-type': 'application/x-www-form-urlencoded' }
       })
   }
 

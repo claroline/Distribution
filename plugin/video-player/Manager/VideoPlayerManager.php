@@ -75,8 +75,21 @@ class VideoPlayerManager
         return $track;
     }
 
+    public function editTrack(Track $track, $lang, $label, $isDefault = false, $kind = 'subtitles')
+    {
+        $track->setLang($lang);
+        $track->setKind('subtitles');
+        $track->setIsDefault($isDefault);
+        $track->setLabel($label);
+        $this->om->persist($track);
+        $this->om->flush();
+
+        return $track;
+    }
+
     public function removeTrack(Track $track)
     {
+        $this->removeTrackFile($track);
         $this->om->remove($track);
         $this->om->flush();
     }
@@ -84,5 +97,15 @@ class VideoPlayerManager
     public function getTracksByVideo(File $video)
     {
         return $this->om->getRepository('Claroline\VideoPlayerBundle\Entity\Track')->findByVideo($video);
+    }
+
+    private function removeTrackFile(Track $track)
+    {
+        $path = $this->fileDir.DIRECTORY_SEPARATOR.$track->getTrackFile()->getHashName();
+        if (file_exists($path)) {
+            unlink($path);
+        }
+
+        $this->om->remove($track->getTrackFile());
     }
 }

@@ -69,6 +69,20 @@ class VideoController extends FOSRestController
     }
 
     /**
+     * This is currently a post because the PUT doesn't work. I don't know why.
+     *
+     * @Post("/video/track/{track}", name="put_video_track", options={ "method_prefix" = false })
+     * @View(serializerGroups={"api_resource"})
+     */
+    public function putTrackAction(Track $track)
+    {
+        $data = $this->request->request->get('track');
+        $isDefault = isset($data['is_default']) ? $data['is_default'] : false;
+
+        return $this->videoManager->editTrack($track,  $data['lang'], $data['label'], $isDefault);
+    }
+
+    /**
      * @Get("/video/{video}/tracks", name="get_video_tracks", options={ "method_prefix" = false })
      * @View(serializerGroups={"api_resource"})
      */
