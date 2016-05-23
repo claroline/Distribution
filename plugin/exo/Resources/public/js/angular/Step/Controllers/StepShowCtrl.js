@@ -74,7 +74,7 @@ StepShowCtrl.prototype.getQuestionPaper = function getQuestionPaper(question) {
 StepShowCtrl.prototype.onFeedbackShow = function onFeedbackShow() {
     this.allAnswersFound = this.FeedbackService.SOLUTION_FOUND;
     for (var i=0; i<this.items.length; i++) {
-        var question = this.items[0];
+        var question = this.items[i];
         var answer = this.getQuestionPaper(question).answer;
         var state = this.QuestionService.getTypeService(question.type).answersAllFound(question, answer);
         if (state !== 0) {
