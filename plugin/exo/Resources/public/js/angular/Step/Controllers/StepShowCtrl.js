@@ -13,6 +13,9 @@ var StepShowCtrl = function StepShowCtrl(UserPaperService, FeedbackService, Ques
     // Get the order of items from the Paper of the User (in case they are shuffled)
     this.items = this.UserPaperService.orderQuestions(this.step);
     
+    // Get feedback info
+    this.feedback = this.FeedbackService.get();
+    
     this.FeedbackService
         .on('show', this.onFeedbackShow.bind(this));
 };
@@ -50,9 +53,6 @@ StepShowCtrl.prototype.stepIndex = 0;
  */
 StepShowCtrl.prototype.solutionShown = false;
 
-StepShowCtrl.prototype.ALL_ANSWERS_FOUND = 0;
-StepShowCtrl.prototype.NOT_ALL_ANSWERS_FOUND = 1;
-
 /**
  * 
  * @type {Integer}
@@ -72,13 +72,13 @@ StepShowCtrl.prototype.getQuestionPaper = function getQuestionPaper(question) {
  * On Feedback Show
  */
 StepShowCtrl.prototype.onFeedbackShow = function onFeedbackShow() {
-    this.allAnswersFound = this.ALL_ANSWERS_FOUND;
+    this.allAnswersFound = this.FeedbackService.SOLUTION_FOUND;
     for (var i=0; i<this.items.length; i++) {
         var question = this.items[0];
         var answer = this.getQuestionPaper(question).answer;
         var state = this.QuestionService.getTypeService(question.type).answersAllFound(question, answer);
         if (state !== 0) {
-            this.allAnswersFound = this.NOT_ALL_ANSWERS_FOUND;
+            this.allAnswersFound = this.FeedbackService.MULTIPLE_ANSWERS_MISSING;
         }
     }
 };
@@ -89,7 +89,7 @@ StepShowCtrl.prototype.onFeedbackShow = function onFeedbackShow() {
  */
 StepShowCtrl.prototype.getSuiteFeedback = function getSuiteFeedback() {
     var sentence = "";
-    if (this.allAnswersFound === this.ALL_ANSWERS_FOUND) {
+    if (this.allAnswersFound === this.FeedbackService.SOLUTION_FOUND) {
         // Toutes les réponses ont été trouvées
         if (this.items.length === 1) {
             // L'étape comporte une seule question
@@ -112,7 +112,7 @@ StepShowCtrl.prototype.getSuiteFeedback = function getSuiteFeedback() {
             }
         }
     }
-    else if (this.allAnswersFound === this.NOT_ALL_ANSWERS_FOUND) {
+    else if (this.allAnswersFound === this.FeedbackService.MULTIPLE_ANSWERS_MISSING) {
         // toutes les réponses n'ont pas été trouvées
         if (this.currentTry < this.step.maxAttempts) {
             sentence = "some_answers_miss_try_again";

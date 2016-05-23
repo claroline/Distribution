@@ -15,7 +15,6 @@ var StepShowDirective = function StepShowDirective() {
             stepIndex       : '@',
             currentTry      : '=',
             solutionShown   : '=',
-            feedback        : '=',
             allAnswersFound : '='
         }
     };

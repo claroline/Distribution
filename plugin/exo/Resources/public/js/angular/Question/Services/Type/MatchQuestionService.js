@@ -1,16 +1,19 @@
 /**
  * Match Question Service
+ * @param {FeedbackService} FeedbackService
  * @constructor
  */
-var MatchQuestionService = function MatchQuestionService() {
+var MatchQuestionService = function MatchQuestionService(FeedbackService) {
     AbstractQuestionService.apply(this, arguments);
+    
+    this.FeedbackService = FeedbackService;
 };
 
 // Extends AbstractQuestionCtrl
 MatchQuestionService.prototype = Object.create(AbstractQuestionService.prototype);
 
 // Set up dependency injection (get DI from parent too)
-MatchQuestionService.$inject = AbstractQuestionService.$inject;
+MatchQuestionService.$inject = AbstractQuestionService.$inject.concat(['FeedbackService']);
 
 /**
  * Initialize the answer object for the Question
@@ -49,15 +52,15 @@ MatchQuestionService.prototype.answersAllFound = function answersAllFound(questi
     var feedbackState = -1;
     if (numAnswersFound === question.solutions.length) {
         // all answers have been found
-        feedbackState = 0;
+        feedbackState = this.FeedbackService.SOLUTION_FOUND;
     }
     else if (numAnswersFound === question.solutions.length -1) {
         // one answer remains to be found
-        feedbackState = 1;
+        feedbackState = this.FeedbackService.ONE_ANSWER_MISSING;
     }
     else {
         // more answers remain to be found
-        feedbackState = 2;
+        feedbackState = this.FeedbackService.MULTIPLE_ANSWERS_MISSING;
     }
     
     return feedbackState;

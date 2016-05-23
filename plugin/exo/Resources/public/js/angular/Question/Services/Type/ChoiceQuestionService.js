@@ -1,16 +1,19 @@
 /**
  * Choice Question Service
+ * @param {FeedbackService} FeedbackService
  * @constructor
  */
-var ChoiceQuestionService = function ChoiceQuestionService() {
+var ChoiceQuestionService = function ChoiceQuestionService(FeedbackService) {
     AbstractQuestionService.apply(this, arguments);
+    
+    this.FeedbackService = FeedbackService;
 };
 
 // Extends AbstractQuestionCtrl
 ChoiceQuestionService.prototype = Object.create(AbstractQuestionService.prototype);
 
 // Set up dependency injection (get DI from parent too)
-ChoiceQuestionService.$inject = AbstractQuestionService.$inject;
+ChoiceQuestionService.$inject = AbstractQuestionService.$inject.concat(['FeedbackService']);
 
 /**
  * Initialize the answer object for the Question
@@ -38,15 +41,15 @@ ChoiceQuestionService.prototype.answersAllFound = function answersAllFound(quest
     var feedbackState = -1;
     if (numAnswersFound === numSolutions) {
         // all answers have been found
-        feedbackState = 0;
+        feedbackState = this.FeedbackService.SOLUTION_FOUND;
     }
     else if (numAnswersFound === numSolutions -1 && question.multiple) {
         // one answer remains to be found
-        feedbackState = 1;
+        feedbackState = this.FeedbackService.ONE_ANSWER_MISSING;
     }
     else {
         // more answers remain to be found
-        feedbackState = 2;
+        feedbackState = this.FeedbackService.MULTIPLE_ANSWERS_MISSING;
     }
     
     return feedbackState;

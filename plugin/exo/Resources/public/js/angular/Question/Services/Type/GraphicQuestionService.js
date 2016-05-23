@@ -1,16 +1,19 @@
 /**
  * Graphic Question Service
+ * @param {FeedbackService} FeedbackService
  * @constructor
  */
-var GraphicQuestionService = function GraphicQuestionService() {
+var GraphicQuestionService = function GraphicQuestionService(FeedbackService) {
     AbstractQuestionService.apply(this, arguments);
+    
+    this.FeedbackService = FeedbackService;
 };
 
 // Extends AbstractQuestionCtrl
 GraphicQuestionService.prototype = Object.create(AbstractQuestionService.prototype);
 
 // Set up dependency injection (get DI from parent too)
-GraphicQuestionService.$inject = AbstractQuestionService.$inject;
+GraphicQuestionService.$inject = AbstractQuestionService.$inject.concat(['FeedbackService']);
 
 /**
  * Initialize the answer object for the Question
@@ -77,13 +80,13 @@ GraphicQuestionService.prototype.answersAllFound = function answersAllFound(ques
     
     var feedbackState = -1;
     if (notFoundZones.length === 0) {
-        feedbackState = 0;
+        feedbackState = this.FeedbackService.SOLUTION_FOUND;
     }
     else if (notFoundZones.length === 1) {
-        feedbackState = 1;
+        feedbackState = this.FeedbackService.ONE_ANSWER_MISSING;
     }
     else {
-        feedbackState = 2;
+        feedbackState = this.FeedbackService.MULTIPLE_ANSWERS_MISSING;
     }
     
     return feedbackState;

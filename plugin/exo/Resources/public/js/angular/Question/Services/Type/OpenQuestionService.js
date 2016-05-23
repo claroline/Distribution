@@ -1,16 +1,19 @@
 /**
  * Open Question Service
+ * @param {FeedbackService}  FeedbackService
  * @constructor
  */
-var OpenQuestionService = function OpenQuestionService() {
+var OpenQuestionService = function OpenQuestionService(FeedbackService) {
     AbstractQuestionService.apply(this, arguments);
+    
+    this.FeedbackService = FeedbackService;
 };
 
 // Extends AbstractQuestionCtrl
 OpenQuestionService.prototype = Object.create(AbstractQuestionService.prototype);
 
 // Set up dependency injection (get DI from parent too)
-OpenQuestionService.$inject = AbstractQuestionService.$inject;
+OpenQuestionService.$inject = AbstractQuestionService.$inject.concat(['FeedbackService']);
 
 /**
  * Initialize the answer object for the Question
@@ -41,30 +44,22 @@ OpenQuestionService.prototype.answersAllFound = function answersAllFound(questio
             var searchExpression = new RegExp(solution.word, searchFlags);
             if (-1 !== answer.search(searchExpression)) {
                 numAnswersFound++;
-                // Keyword has been found in answer => Update formatted answer
-                var keyword = '';
-                keyword += '<b class="text-success feedback-info" data-toggle="tooltip" title="' + solution.feedback + '">';
-                keyword += solution.word;
-                keyword += '<span class="fa fa-fw fa-check"></span>';
-                keyword += '</b>';
-
-                answerWithKeywords = answerWithKeywords.replace(searchExpression, keyword, searchFlags);
             }
         }
     }
     else {
-        feedbackState = 0;
+        feedbackState = this.FeedbackService.SOLUTION_FOUND;
     }
     
     var feedbackState = -1;
     if (question.solutions.length === numAnswersFound) {
-        feedbackState = 0;
+        feedbackState = this.FeedbackService.SOLUTION_FOUND;
     }
     else if (question.solutions.length -1 === numAnswersFound) {
-        feedbackState = 1;
+        feedbackState = this.FeedbackService.ONE_ANSWER_MISSING;
     }
     else {
-        feedbackState = 2;
+        feedbackState = this.FeedbackService.MULTIPLE_ANSWERS_MISSING;
     }
     
     return feedbackState;
