@@ -6,7 +6,9 @@
               src="{{ path('api_get_video_track_stream', {'track': track.getId() }) }}"
               srclang="{{ track.getLang() }}"
               label="{{ track.getLabel }}"
-              {% if (track.isDefault()) %} default {% endif %}
+              {# default for every track because it doesn't work properly otherwise #}
+              default
+              {# }{% if (track.isDefault()) %} default {% endif %} #}
           >
      {% endfor %}
 </video>
