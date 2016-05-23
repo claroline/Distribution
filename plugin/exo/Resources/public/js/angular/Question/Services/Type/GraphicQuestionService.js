@@ -81,11 +81,9 @@ GraphicQuestionService.prototype.answersAllFound = function answersAllFound(ques
     var feedbackState = -1;
     if (notFoundZones.length === 0) {
         feedbackState = this.FeedbackService.SOLUTION_FOUND;
-    }
-    else if (notFoundZones.length === 1) {
+    } else if (notFoundZones.length === 1) {
         feedbackState = this.FeedbackService.ONE_ANSWER_MISSING;
-    }
-    else {
+    } else {
         feedbackState = this.FeedbackService.MULTIPLE_ANSWERS_MISSING;
     }
     

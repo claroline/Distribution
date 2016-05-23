@@ -67,8 +67,7 @@ QuestionShowCtrl.prototype.mark = function mark() {
 QuestionShowCtrl.prototype.getGenericFeedback = function getGenericFeedback() {
     if (this.feedbackState === 1) {
         return "one_answer_to_find";
-    }
-    else if (this.feedbackState === 2) {
+    } else if (this.feedbackState === 2) {
         return "answers_not_found";
     }
 };

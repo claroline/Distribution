@@ -35,8 +35,7 @@ ClozeQuestionService.prototype.answersAllFound = function answersAllFound(questi
                 }
                 if (question.holes[k].id === question.solutions[i].holeId && question.solutions[i].answers[j].text === answer.answerText && question.solutions[i].answers[j].score > 0 && !question.holes[k].selector) {
                     numAnswersFound++;
-                }
-                else if (question.holes[k].id === question.solutions[i].holeId && question.solutions[i].answers[j].id === answer.answerText && question.solutions[i].answers[j].score > 0 && question.holes[k].selector) {
+                } else if (question.holes[k].id === question.solutions[i].holeId && question.solutions[i].answers[j].id === answer.answerText && question.solutions[i].answers[j].score > 0 && question.holes[k].selector) {
                     numAnswersFound++;
                 }
             }
@@ -47,12 +46,10 @@ ClozeQuestionService.prototype.answersAllFound = function answersAllFound(questi
     if (numAnswersFound === question.solutions.length) {
         // all answers have been found
         feedbackState = this.FeedbackService.SOLUTION_FOUND;
-    }
-    else if (numAnswersFound === question.solutions.length -1) {
+    } else if (numAnswersFound === question.solutions.length -1) {
         // one answer remains to be found
         feedbackState = this.FeedbackService.ONE_ANSWER_MISSING;
-    }
-    else {
+    } else {
         // more answers remain to be found
         feedbackState = this.FeedbackService.MULTIPLE_ANSWERS_MISSING;
     }

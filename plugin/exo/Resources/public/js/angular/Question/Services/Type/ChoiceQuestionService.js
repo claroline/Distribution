@@ -42,12 +42,10 @@ ChoiceQuestionService.prototype.answersAllFound = function answersAllFound(quest
     if (numAnswersFound === numSolutions) {
         // all answers have been found
         feedbackState = this.FeedbackService.SOLUTION_FOUND;
-    }
-    else if (numAnswersFound === numSolutions -1 && question.multiple) {
+    } else if (numAnswersFound === numSolutions -1 && question.multiple) {
         // one answer remains to be found
         feedbackState = this.FeedbackService.ONE_ANSWER_MISSING;
-    }
-    else {
+    } else {
         // more answers remain to be found
         feedbackState = this.FeedbackService.MULTIPLE_ANSWERS_MISSING;
     }

@@ -229,11 +229,9 @@ GraphicQuestionCtrl.prototype.showRightAnswerZones = function showRightAnswerZon
     
     if (this.notFoundZones.length === 0) {
         this.feedbackState = 0;
-    }
-    else if (this.notFoundZones.length === 1) {
+    } else if (this.notFoundZones.length === 1) {
         this.feedbackState = 1;
-    }
-    else {
+    } else {
         this.feedbackState = 2;
     }
 };

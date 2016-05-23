@@ -169,14 +169,11 @@ ExercisePlayerCtrl.prototype.isButtonEnabled = function isButtonEnabled(button) 
     var buttonEnabled;
     if (button === 'retry') {
         buttonEnabled = this.feedback.enabled && this.feedback.visible && this.currentStepTry !== this.step.maxAttempts && this.allAnswersFound !== 0;
-    }
-    else if (button === 'next') {
+    } else if (button === 'next') {
         buttonEnabled = !this.next || (this.feedback.enabled && !this.feedback.visible) || (this.feedback.enabled && this.feedback.visible && !this.solutionShown && !(this.allAnswersFound === 0));
-    }
-    else if (button === 'navigation') {
+    } else if (button === 'navigation') {
         buttonEnabled = (this.feedback.enabled && !this.feedback.visible) || (this.feedback.enabled && this.feedback.visible && !this.solutionShown && !(this.allAnswersFound === 0));
-    }
-    else if (button === 'end') {
+    } else if (button === 'end') {
         buttonEnabled = (this.feedback.enabled && !this.feedback.visible) || (this.feedback.enabled && this.feedback.visible && !this.solutionShown && !(this.allAnswersFound === 0));
     }
     

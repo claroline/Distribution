@@ -64,11 +64,9 @@ OpenQuestionCtrl.prototype.onFeedbackShow = function onFeedbackShow() {
     
     if (this.question.solutions.length === numAnswersFound) {
         this.feedbackState = this.FeedbackService.SOLUTION_FOUND;
-    }
-    else if (this.question.solutions.length -1 === numAnswersFound) {
+    } else if (this.question.solutions.length -1 === numAnswersFound) {
         this.feedbackState = this.FeedbackService.ONE_ANSWER_MISSING;
-    }
-    else {
+    } else {
         this.feedbackState = this.FeedbackService.MULTIPLE_ANSWERS_MISSING;
     }
 };

@@ -96,28 +96,23 @@ StepShowCtrl.prototype.getSuiteFeedback = function getSuiteFeedback() {
             if (this.currentTry === 1) {
                 // On en est à l'essai 1
                 sentence = "perfectly_correct";
-            }
-            else {
+            } else {
                 // L'étape a été jouée plusieurs fois
                 sentence = "answers_correct";
             }
-        }
-        else {
+        } else {
             // L'étape comporte plusieurs questions
             if (this.currentTry === 1) {
                 sentence = "all_answers_found";
-            }
-            else {
+            } else {
                 sentence = "answers_now_correct";
             }
         }
-    }
-    else if (this.allAnswersFound === this.FeedbackService.MULTIPLE_ANSWERS_MISSING) {
+    } else if (this.allAnswersFound === this.FeedbackService.MULTIPLE_ANSWERS_MISSING) {
         // toutes les réponses n'ont pas été trouvées
         if (this.currentTry < this.step.maxAttempts) {
             sentence = "some_answers_miss_try_again";
-        }
-        else {
+        } else {
             sentence = "max_attempts_reached_see_solution";
         }
     }

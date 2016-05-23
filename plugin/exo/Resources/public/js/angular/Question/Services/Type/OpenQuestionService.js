@@ -46,19 +46,16 @@ OpenQuestionService.prototype.answersAllFound = function answersAllFound(questio
                 numAnswersFound++;
             }
         }
-    }
-    else {
+    } else {
         feedbackState = this.FeedbackService.SOLUTION_FOUND;
     }
     
     var feedbackState = -1;
     if (question.solutions.length === numAnswersFound) {
         feedbackState = this.FeedbackService.SOLUTION_FOUND;
-    }
-    else if (question.solutions.length -1 === numAnswersFound) {
+    } else if (question.solutions.length -1 === numAnswersFound) {
         feedbackState = this.FeedbackService.ONE_ANSWER_MISSING;
-    }
-    else {
+    } else {
         feedbackState = this.FeedbackService.MULTIPLE_ANSWERS_MISSING;
     }
     
