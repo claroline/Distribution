@@ -33,7 +33,7 @@ export default class TracksModalController {
     this.ClarolineAPIService.confirm(
       {url, method: 'DELETE'},
       function () {
-        this.ClarolineAPIService.removeElements(track, this.tracks)
+        this.ClarolineAPIService.removeElements([track], this.tracks)
       }.bind(this),
       Translator.trans('delete_track', {}, 'platform'),
       Translator.trans('delete_track_confirm', 'platform')
