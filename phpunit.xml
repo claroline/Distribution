@@ -39,10 +39,12 @@
             <directory>plugin/favourite/Tests/</directory>
             <directory>plugin/forum/Tests/</directory>
             <directory>plugin/website/Tests/</directory>
+            <directory>plugin/video-player/Tests/</directory>
             <!-- <directory>plugin/portfolio/Tests/</directory> -->
             <directory>plugin/result/Tests/</directory>
             <directory>plugin/rss-reader/Tests/</directory>
             <directory>plugin/url/Tests/</directory>
+            <directory>plugin/exo/Tests/</directory>
 
         </testsuite>
     </testsuites>

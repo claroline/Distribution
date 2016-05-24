@@ -1,6 +1,6 @@
 import CheckboxesController from './CheckboxesController'
 
-export default class CheckboxesDirectivz {
+export default class CheckboxesDirective {
   constructor () {
     this.scope = {}
     this.restrict = 'E'
@@ -9,8 +9,8 @@ export default class CheckboxesDirectivz {
     this.controller = CheckboxesController
     this.controllerAs = 'chc'
     this.bindToController = {
-        field: '=',
-        ngModel: '='
+      field: '=',
+      ngModel: '='
     }
   }
 }

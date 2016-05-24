@@ -1,13 +1,9 @@
 export default class NotBlank {
-  constructor() {
-
-  }
-
-  validate(el) {
+  validate (el) {
     return !(el === undefined || el === '' || el === null)
   }
 
-  getErrorMessage(el) {
-      return 'value_not_blank'
+  getErrorMessage (el) {
+    return Translator.trans('value_not_blank', {}, 'validators')
   }
 }
