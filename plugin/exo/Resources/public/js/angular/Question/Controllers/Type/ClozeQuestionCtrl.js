@@ -5,9 +5,9 @@
  * @constructor
  */
 var ClozeQuestionCtrl = function ClozeQuestionCtrl(FeedbackService, ClozeQuestionService) {
-    AbstractQuestionCtrl.apply(this, arguments);
-
     this.ClozeQuestionService = ClozeQuestionService;
+
+    AbstractQuestionCtrl.apply(this, arguments);
 };
 
 // Extends AbstractQuestionCtrl
@@ -22,6 +22,12 @@ ClozeQuestionCtrl.$inject = AbstractQuestionCtrl.$inject.concat([ 'ClozeQuestion
  * @type {Object}
  */
 ClozeQuestionCtrl.prototype.holes = {};
+
+/**
+ * Tells wether the answers are all found, not found, or if only one misses
+ * @type {Integer}
+ */
+ClozeQuestionCtrl.prototype.feedbackState = -1;
 
 /**
  * Check whether a Hole is valid or not
@@ -86,6 +92,8 @@ ClozeQuestionCtrl.prototype.onFeedbackShow = function onFeedbackShow() {
             }
         }
     }
+    
+    this.feedbackState = this.ClozeQuestionService.answersAllFound(this.question, this.answer);
 };
 
 // Register controller into AngularJS
