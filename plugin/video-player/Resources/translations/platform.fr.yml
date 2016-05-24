@@ -7,3 +7,4 @@ lang: Langue
 new: Nouveau
 delete_track: Supprimer une piste
 delete_track_confirm: Êtes-vous sûr de vouloir supprimer cette piste ?
+is_default: Par défaut

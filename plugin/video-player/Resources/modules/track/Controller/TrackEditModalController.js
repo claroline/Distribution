@@ -6,7 +6,7 @@ export default class TrackEditModalController {
       this.track = track
       this.trackForm = {
         fields: [
-          ['lang', 'lang'],
+          ['lang', 'lang',  {label: Translator.trans('lang', {}, 'platform')}],
           ['is_default', 'checkbox', {label: Translator.trans('is_default', {}, 'platform')}]
       ]}
       this.$uibModalInstance = $uibModalInstance

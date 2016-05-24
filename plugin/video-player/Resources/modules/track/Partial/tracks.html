@@ -15,7 +15,7 @@
         <div>
             <form class="form-horizontal" name="trackForm" ng-submit="tmc.onCreate(trackForm)">
                 <formbuilder form="tmc.trackForm" ng-model="tmc.newTrack"></formbuilder>
-                <input type="submit" value="{{ 'new'|trans:{}:'platform' }}" class="btn btn-primary"></input>
+                <input data-ng-disabled="!trackForm.$valid" type="submit" value="{{ 'new'|trans:{}:'platform' }}" class="btn btn-primary"></input>
             </form>
         </div>
     </div>

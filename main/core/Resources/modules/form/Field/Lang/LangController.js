@@ -4,7 +4,7 @@ export default class LangController {
   constructor () {
     this.langField = angular.copy(this.field)
     this.langField[1] = 'select'
-    this.langField[2] = {}
+    this.langField[2] = this.langField[2] || {}
     this.langField[2].values = this.getOptions()
   }
 

@@ -6,7 +6,7 @@ use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
 /**
- * Auto-generated migration based on mapping information: modify it with caution
+ * Auto-generated migration based on mapping information: modify it with caution.
  *
  * Generation date: 2016/05/22 09:35:37
  */
@@ -14,7 +14,7 @@ class Version20160522213536 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
-        $this->addSql("
+        $this->addSql('
             CREATE TABLE claro_video_track (
                 id INT AUTO_INCREMENT NOT NULL, 
                 video_id INT DEFAULT NULL, 
@@ -29,31 +29,31 @@ class Version20160522213536 extends AbstractMigration
                 UNIQUE INDEX UNIQ_D25DC065B87FAB32 (resourceNode_id), 
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE claro_video_track 
             ADD CONSTRAINT FK_D25DC06529C1004E FOREIGN KEY (video_id) 
             REFERENCES claro_file (id) 
             ON DELETE CASCADE
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE claro_video_track 
             ADD CONSTRAINT FK_D25DC065ED87669A FOREIGN KEY (trackFile_id) 
             REFERENCES claro_file (id) 
             ON DELETE CASCADE
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE claro_video_track 
             ADD CONSTRAINT FK_D25DC065B87FAB32 FOREIGN KEY (resourceNode_id) 
             REFERENCES claro_resource_node (id) 
             ON DELETE CASCADE
-        ");
+        ');
     }
 
     public function down(Schema $schema)
     {
-        $this->addSql("
+        $this->addSql('
             DROP TABLE claro_video_track
-        ");
+        ');
     }
 }

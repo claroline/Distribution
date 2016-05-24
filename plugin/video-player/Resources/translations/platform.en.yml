@@ -7,3 +7,4 @@ lang: Lang
 new: New
 delete_track: Delete track
 delete_track_confirm: Do you really want to remove this track ?
+is_default: Is default

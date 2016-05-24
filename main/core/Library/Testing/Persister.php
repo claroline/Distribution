@@ -79,7 +79,7 @@ class Persister
         $workspace->setName($name);
         $workspace->setCode($name);
         $workspace->setCreator($creator);
-        $template = new File($this->container->getParameter('claroline.param.default_template'));
+        $template = new \Symfony\Component\HttpFoundation\File\File($this->container->getParameter('claroline.param.default_template'));
 
         //optimize this later
         $this->container->get('claroline.manager.workspace_manager')->create($workspace, $template);

@@ -2,8 +2,6 @@ export default class TracksButtonController {
   constructor ($uibModal, $http) {
     this.$uibModal = $uibModal
     this.tracks = window['tracks']
-    this.langs = []
-    $http.get(Routing.generate('api_get_available_locales')).then(d => this.langs = d.data)
   }
 
   openTracks () {
@@ -13,9 +11,7 @@ export default class TracksButtonController {
       controllerAs: 'tmc',
       resolve: {
         tracks: () => {
-          return this.tracks},
-        langs: () => {
-          return this.langs}
+          return this.tracks}
       }
     })
   }

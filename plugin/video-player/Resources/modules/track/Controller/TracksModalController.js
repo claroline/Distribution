@@ -1,18 +1,18 @@
 import langs from '#/main/core/Resources/modules/form/Field/Lang/iso.js'
+import NotBlank from '#/main/core/Resources/modules/form/Validator/NotBlank'
 
 export default class TracksModalController {
-  constructor (tracks, langs, FormBuilderService, ClarolineAPIService, $uibModal) {
+  constructor (tracks, FormBuilderService, ClarolineAPIService, $uibModal) {
     this.tracks = tracks
-    this.langs = langs
     this.newTrack = {}
     this.FormBuilderService = FormBuilderService
     this.ClarolineAPIService = ClarolineAPIService
     this.$uibModal = $uibModal
     this.trackForm = {
       fields: [
-        ['lang', 'lang'],
+        ['lang', 'lang', {label: Translator.trans('lang', {}, 'platform'), validators: [new NotBlank()]}],
         ['is_default', 'checkbox', {label: Translator.trans('is_default', {}, 'platform')}],
-        ['track', 'file']
+        ['track', 'file', {label: Translator.trans('track', {}, 'platform'), validators: [new NotBlank()]}]
     ]}
   }
 
@@ -23,7 +23,6 @@ export default class TracksModalController {
       Routing.generate('api_post_video_track', {video: window['videoId']}),
       {track: this.newTrack}
     ).then(d => {
-      this.newTrack = {}
       this.tracks.push(d.data)
     })
   }
