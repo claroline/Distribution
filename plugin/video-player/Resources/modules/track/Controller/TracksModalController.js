@@ -1,5 +1,6 @@
-import langs from '#/main/core/Resources/modules/form/Field/Lang/iso.js'
+import langs from '#/main/core/Resources/modules/form/Field/Lang/iso'
 import NotBlank from '#/main/core/Resources/modules/form/Validator/NotBlank'
+import editTemplate from '../Partial/edit.html'
 
 export default class TracksModalController {
   constructor (tracks, FormBuilderService, ClarolineAPIService, $uibModal) {
@@ -41,7 +42,7 @@ export default class TracksModalController {
 
   onEdit (track) {
     const modalInstance = this.$uibModal.open({
-      template: require('../Partial/edit.html'),
+      template: editTemplate,
       controller: 'TrackEditModalController',
       controllerAs: 'temc',
       resolve: {
@@ -53,8 +54,6 @@ export default class TracksModalController {
     })
 
     modalInstance.result.then(track => {
-      //const data = this.FormBuilderService.formSerialize('roles', panel.panel_facets_role)
-
       this.FormBuilderService.submit(
         Routing.generate('api_put_video_track', {track: track.id}),
         {track: track},

@@ -8,9 +8,9 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution.
  *
- * Generation date: 2016/05/22 09:35:37
+ * Generation date: 2016/05/24 12:13:50
  */
-class Version20160522213536 extends AbstractMigration
+class Version20160524121348 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -23,10 +23,8 @@ class Version20160522213536 extends AbstractMigration
                 kind VARCHAR(255) NOT NULL, 
                 is_default TINYINT(1) NOT NULL, 
                 trackFile_id INT DEFAULT NULL, 
-                resourceNode_id INT DEFAULT NULL, 
                 INDEX IDX_D25DC06529C1004E (video_id), 
                 INDEX IDX_D25DC065ED87669A (trackFile_id), 
-                UNIQUE INDEX UNIQ_D25DC065B87FAB32 (resourceNode_id), 
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
         ');
@@ -40,12 +38,6 @@ class Version20160522213536 extends AbstractMigration
             ALTER TABLE claro_video_track 
             ADD CONSTRAINT FK_D25DC065ED87669A FOREIGN KEY (trackFile_id) 
             REFERENCES claro_file (id) 
-            ON DELETE CASCADE
-        ');
-        $this->addSql('
-            ALTER TABLE claro_video_track 
-            ADD CONSTRAINT FK_D25DC065B87FAB32 FOREIGN KEY (resourceNode_id) 
-            REFERENCES claro_resource_node (id) 
             ON DELETE CASCADE
         ');
     }

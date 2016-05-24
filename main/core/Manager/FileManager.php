@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Symfony\Component\HttpFoundation\File\File as SfFile;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @DI\Service("claroline.manager.file_manager")
@@ -52,7 +53,7 @@ class FileManager
         ResourceManager $rm,
         StrictDispatcher $dispatcher,
         $uploadDir,
-        $tokenStorage,
+        TokenStorageInterface $tokenStorage,
         WorkspaceManager $workspaceManager
     ) {
         $this->om = $om;

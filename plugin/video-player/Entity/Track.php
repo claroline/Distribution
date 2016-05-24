@@ -13,15 +13,22 @@ namespace Claroline\VideoPlayerBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Claroline\CoreBundle\Entity\Resource\File;
-use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use JMS\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="Claroline\VideoPlayerBundle\Repository\TrackRepository")
  * @ORM\Table(name="claro_video_track")
  */
-class Track extends AbstractResource
+class Track
 {
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @Groups({"api_resource"})
+     */
+    protected $id;
+
     /**
      * @ORM\ManyToOne(
      *     targetEntity="Claroline\CoreBundle\Entity\Resource\File"

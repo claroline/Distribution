@@ -1,3 +1,5 @@
+import tracksTemplate from '../Partial/tracks.html'
+
 export default class TracksButtonController {
   constructor ($uibModal, $http) {
     this.$uibModal = $uibModal
@@ -6,7 +8,7 @@ export default class TracksButtonController {
 
   openTracks () {
     this.$uibModal.open({
-      template: require('../Partial/tracks.html'),
+      template: tracksTemplate,
       controller: 'TracksModalController',
       controllerAs: 'tmc',
       resolve: {

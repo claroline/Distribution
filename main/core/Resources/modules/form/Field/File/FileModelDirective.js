@@ -1,5 +1,3 @@
-import FileController from './FileController'
-
 //https://github.com/ghostbar/angular-file-model/blob/master/angular-file-model.js
 
 export default class FileModelDirective {

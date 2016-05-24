@@ -1,4 +1,4 @@
-import FileController from './FileController'
+import FieldController from '../FieldController'
 
 export default class FileDirective {
   constructor () {
@@ -6,7 +6,7 @@ export default class FileDirective {
     this.restrict = 'E'
     this.template = require('./file.html')
     this.replace = true,
-    this.controller = FileController
+    this.controller = FieldController
     this.controllerAs = 'fc'
     this.bindToController = {
       field: '=',
