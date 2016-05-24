@@ -133,4 +133,9 @@ class Track
     {
         $this->label = $label;
     }
+
+    public function getId()
+    {
+        return $this->id;
+    }
 }
