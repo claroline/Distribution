@@ -22,6 +22,7 @@ use Symfony\Component\Security\Core\SecurityContextInterface;
 use Symfony\Component\Security\Http\Firewall\ListenerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Security\User\EntityUserProvider;
+use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -71,6 +72,14 @@ class ClarolineApiListener implements ListenerInterface
 
     /**
      * @param \Symfony\Component\HttpKernel\Event\GetResponseEvent $event The event.
+     *
+     * This is the current authentication process:
+     *
+     * - look for the oauth token
+     * ----- if not oauth token -> Cookie authentication
+     * ------------ if user session exists -> authenticate user
+     * ------------ if not -> authenticate anonymous
+     * - try oauth authentication
      */
     public function handle(GetResponseEvent $event)
     {
@@ -122,8 +131,10 @@ class ClarolineApiListener implements ListenerInterface
 
         if ($token instanceof TokenInterface) {
             $token = $this->refreshUser($token);
-        } elseif (null !== $token) {
-            $token = null;
+
+            if (!$token) {
+                $token = new AnonymousToken($this->key, 'anon.', array('ROLE_ANONYMOUS'));
+            }
         }
 
         return $token;
