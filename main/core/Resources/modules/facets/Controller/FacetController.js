@@ -294,13 +294,7 @@ export default class FacetController {
 
     modalInstance.result.then(result => {
       if (!result) return
-      const data = this.FormBuilderService.formSerialize('panel', result)
-
-      this.$http.post(
-        Routing.generate('api_post_panel_facet', {facet: facet.id}),
-        data,
-        {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
-      ).then(
+      this.FormBuilderService.submit(Routing.generate('api_post_panel_facet', {facet: facet.id}), {'panel': result}).then(
         d => {
           if (!facet.panels) facet.panels = []
           facet.panels.push(d.data)
@@ -334,13 +328,7 @@ export default class FacetController {
 
     modalInstance.result.then(result => {
       if (!result) return
-      const data = this.FormBuilderService.formSerialize('panel', result)
-
-      this.$http.put(
-        Routing.generate('api_put_panel_facet', {panel: panel.id}),
-        data,
-        {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
-      ).then(
+      this.FormBuilderService.submit(Routing.generate('api_put_panel_facet', {panel: panel.id}), {'panel': result}, 'PUT').then(
         d => {
         },
         d => alert(Translator.trans('an_error_happened', {}, 'platform'))
@@ -382,13 +370,7 @@ export default class FacetController {
 
     modalInstance.result.then(result => {
       if (!result) return
-      const data = this.FormBuilderService.formSerialize('field', result)
-
-      this.$http.post(
-        Routing.generate('api_post_field_facet', {panel: panel.id}),
-        data,
-        {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
-      ).then(
+      this.FormBuilderService.submit(Routing.generate('api_post_field_facet', {panel: panel.id}), {'field': result}).then(
         d => {
           if (!panel.fields) panel.fields = []
           panel.fields.push(d.data)
@@ -422,13 +404,7 @@ export default class FacetController {
 
     modalInstance.result.then(result => {
       if (!result) return
-      const data = this.FormBuilderService.formSerialize('field', result)
-
-      this.$http.put(
-        Routing.generate('api_put_field_facet', {field: field.id}),
-        data,
-        {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
-      ).then(
+      this.FormBuilderService.submit(Routing.generate('api_put_field_facet', {field: field.id}), {'field': result}, 'PUT').then(
         d => {
         },
         d => alert('an error occured')
@@ -465,13 +441,7 @@ export default class FacetController {
     })
 
     modalInstance.result.then(panel => {
-      const data = this.FormBuilderService.formSerialize('roles', panel.panel_facets_role)
-
-      this.$http.put(
-        Routing.generate('api_put_panel_roles', {panel: panel.id}),
-        data,
-        {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
-      ).then(
+      this.FormBuilderService.submit(Routing.generate('api_put_panel_roles', {panel: panel.id}), {'roles': panel.panel_facets_role}, 'PUT').then(
         d => {
         },
         d => alert(Translator.trans('an_error_happened', {}, 'platform'))
@@ -480,13 +450,7 @@ export default class FacetController {
   }
 
   onSubmitProfilePreferences (form) {
-    const data = this.FormBuilderService.formSerialize('preferences', this.profilePreferences)
-
-    this.$http.put(
-      Routing.generate('api_put_profile_preferences'),
-      data,
-      {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
-    ).then(
+    this.FormBuilderService.submit(Routing.generate('api_put_profile_preferences'), {'preferences': this.profilePreferences}, 'PUT').then(
       d => {
       },
       d => alert(Translator.trans('an_error_happened', {}, 'platform'))

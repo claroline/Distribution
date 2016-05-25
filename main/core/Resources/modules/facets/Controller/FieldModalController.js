@@ -18,12 +18,7 @@ export default class ModalController {
   addChoice () {
       //if the fiels already exists
       if (this.model.id) {
-          var data = this.FormBuilderService.formSerialize('choice', this.newChoice)
-          this.$http.post(
-            Routing.generate('api_post_facet_field_choice', {field: this.field.id}),
-            data,
-            {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
-          ).then(
+          this.FormBuilderService.submit(Routing.generate('api_post_facet_field_choice', {field: this.field.id}), {'choice': this.newChoice}).then(
             d => {
              this.model.field_facet_choices.push(d.data)
             },
