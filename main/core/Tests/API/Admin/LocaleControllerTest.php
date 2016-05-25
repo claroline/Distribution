@@ -22,6 +22,7 @@ class LocaleControllerTest extends TransactionalTestCase
         $this->client->request('GET', '/api/locales/available');
         $data = $this->client->getResponse()->getContent();
         $data = json_decode($data, true);
-        $this->assertGreaterThan(2, count($data));
+        $expected = ['value' => 'fr', 'label' => 'Français'];
+        $this->assertEquals($data[0], $expected);
     }
 }
