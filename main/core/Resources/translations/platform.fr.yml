@@ -212,7 +212,6 @@ creation_date: 'Date de création'
 creator: Créateur
 csv_export: 'Export csv'
 csv_select: 'Sélectionnez un fichier csv:'
-csv_delete: Suppression par csv
 csv_format_info: 'Informations sur le format du fichier CSV'
 csv_format_user_list: 'Format: liste de nom d''utilisateurs séparés par un retour à la ligne.'
 csv_users_import_infos: 'Informations sur le format du fichier CSV'
@@ -1257,7 +1256,6 @@ group_name: Nom du groupe
 profile_edition: Modification du profil
 claro_admin_personal_workspace_resource_rights: Gestion des ressources de l'espace personnel
 organization_name: Nom de l'organisation
-csv_delete: Suppression par csv
 plugins: Plugins
 activate: Activer
 version: Version
@@ -1268,3 +1266,8 @@ required_by: Requis par:
 require: Requiert:
 requirement_warning: Attention aux prérequis
 csv_delete: Suppression par csv
+import_facets: Importer des facettes
+csv: Csv
+csv_format_facets: Format du csv:
+csv_format_facets_line_1: Première ligne: liste des facettes par nom séparée par des point-virgules (facette1;facette2;facette3;...)
+csv_format_facets_line_end: Lignes suivantes: username;valeur facette 1; valeur facette2; valeur facette3;...

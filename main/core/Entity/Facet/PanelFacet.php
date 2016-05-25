@@ -74,8 +74,7 @@ class PanelFacet
     /**
      * @ORM\OneToMany(
      *     targetEntity="Claroline\CoreBundle\Entity\Facet\PanelFacetRole",
-     *     mappedBy="panelFacet",
-     *     fetch="EAGER",
+     *     mappedBy="panelFacet"
      * )
      * @Groups({"api_facet_admin"})
      */

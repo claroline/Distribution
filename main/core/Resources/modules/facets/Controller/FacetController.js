@@ -187,13 +187,7 @@ export default class FacetController {
 
     modalInstance.result.then(result => {
       if (!result) return
-      const data = this.FormBuilderService.formSerialize('facet', result)
-
-      this.$http.post(
-        Routing.generate('api_post_facet'),
-        data,
-        {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
-      ).then(
+      this.FormBuilderService.submit(Routing.generate('api_post_facet'), {'facet': result}).then(
         d => {
           this.facets.push(d.data)
         },
@@ -224,12 +218,10 @@ export default class FacetController {
 
     modalInstance.result.then(result => {
       if (!result) return
-      var data = this.FormBuilderService.formSerialize('facet', result)
-
-      this.$http.put(
-        Routing.generate('api_put_facet', {facet: result.id}),
-        data,
-        {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
+      var data = this.FormBuilderService.submit(
+          Routing.generate('api_put_facet', {facet: result.id}),
+          {'facet': result},
+          'PUT'
       ).then(
         d => {
         },

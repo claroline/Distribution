@@ -69,9 +69,7 @@ class VideoController extends FOSRestController
     }
 
     /**
-     * This is currently a post because the PUT doesn't work. I don't know why.
-     *
-     * @Post("/video/track/{track}", name="put_video_track", options={ "method_prefix" = false })
+     * @Put("/video/track/{track}", name="put_video_track", options={ "method_prefix" = false })
      * @View(serializerGroups={"api_resource"})
      */
     public function putTrackAction(Track $track)
