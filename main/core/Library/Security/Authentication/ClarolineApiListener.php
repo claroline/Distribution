@@ -23,9 +23,9 @@ use Symfony\Component\Security\Http\Firewall\ListenerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Security\User\EntityUserProvider;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
-use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 
 /**
  * This is the API Authentication class. It supports Cookies, HTTP, Anonymous & OAUTH authentication.
@@ -50,14 +50,14 @@ class ClarolineApiListener implements ListenerInterface
     protected $serverService;
 
     /**
-     * @var EncoderFactoryInterface
-     */
-    protected $encodeFactory;
-
-    /**
      * @var EntityUserProvider
      */
     protected $userProvider;
+
+     /**
+      * @var EncoderFactoryInterface
+      */
+     protected $encodeFactory;
 
     /**
      * @DI\InjectParams({
@@ -66,6 +66,7 @@ class ClarolineApiListener implements ListenerInterface
      *     "serverService"         = @DI\Inject("fos_oauth_server.server"),
      *     "userProvider"          = @DI\Inject("security.user.provider.concrete.user_db"),
      *     "encodeFactory"         = @DI\Inject("security.encoder_factory")
+     *
      * })
      */
     public function __construct(
@@ -142,17 +143,23 @@ class ClarolineApiListener implements ListenerInterface
 
         $token = new UsernamePasswordToken($user, $password, $providerKey, $user->getRoles());
 
-        try {
-            $returnValue = $this->authenticationManager->authenticate($token);
+        $encoder = $this->encodeFactory->getEncoder($user);
+        $encodedPass = $encoder->encodePassword($password, $user->getSalt());
 
-            if ($returnValue instanceof TokenInterface) {
-                $this->securityContext->setToken($returnValue);
+        //the authenticationManager always never throw an Exception with the UsernamePasswordToken so we validate it manually
+        if ($user->getPassword() === $encodedPass) {
+            $this->securityContext->setToken($token);
 
-                return true;
-            }
-        } catch (AuthenticationException $e) {
-            return false;
+            return true;
         }
+
+        $error = [
+                'error' => 'authentication_error',
+                'error_description' => 'Invalid username and password combination',
+            ];
+        $event->setResponse(new Response(json_encode($error)));
+
+        return false;
     }
 
     private function authenticateAnonymous()

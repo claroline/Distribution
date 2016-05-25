@@ -42,6 +42,17 @@ class APISecurityTest extends TransactionalTestCase
         //it currently returns a stack trace. Maybe we should hide it
     }
 
+    public function testUserPasswordOauthFailureAuthentication()
+    {
+        $grantTypes = ['password', 'refresh_token'];
+        $client = $this->newClient('user', $grantTypes);
+        $user = $this->persister->user('user');
+        $request = "/oauth/v2/token?client_id={$client->getConcatRandomId()}&client_secret={$client->getSecret()}&grant_type=password&username={$user->getUsername()}&password=THISISNOTMYPW";
+        $this->client->request('GET', $request);
+        $data = json_decode($this->client->getResponse()->getContent(), true);
+        $this->assertEquals($data['error'], 'invalid_grant');
+    }
+
     public function testAdminPasswordOauthAuthentication()
     {
         $grantTypes = ['password', 'refresh_token'];
@@ -110,6 +121,22 @@ class APISecurityTest extends TransactionalTestCase
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $data = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertEquals($data['username'], 'user');
+    }
+
+    public function testHttpAuthenticationFailure()
+    {
+        $user = $this->persister->user('user');
+
+        $this->client->request(
+            'GET',
+            '/api/connected_user',
+            [],
+            [],
+            ['PHP_AUTH_USER' => $user->getUsername(), 'PHP_AUTH_PW' => 'THIS IS NOT MY PW']
+        );
+
+        $data = json_decode($this->client->getResponse()->getContent(), true);
+        $this->assertEquals($data['error'], 'authentication_error');
     }
 
     public function testAnonymousAuthentication()
