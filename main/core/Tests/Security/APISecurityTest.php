@@ -88,7 +88,7 @@ class APISecurityTest extends TransactionalTestCase
     {
         $user = $this->persister->user('user');
         //this method is defined in the super class and uses a Cookie
-        $this->login($user);
+        $this->logIn($user);
         $this->client->request('GET', '/api/connected_user');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $data = json_decode($this->client->getResponse()->getContent(), true);
