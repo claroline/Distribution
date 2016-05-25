@@ -19,20 +19,9 @@ class LocaleControllerTest extends TransactionalTestCase
      */
     public function testGetAvailableLanguagesAction()
     {
-        $admin = $this->createAdmin();
-        $this->login($admin);
         $this->client->request('GET', '/api/locales/available');
         $data = $this->client->getResponse()->getContent();
         $data = json_decode($data, true);
         $this->assertGreaterThan(2, count($data));
-    }
-
-    private function createAdmin()
-    {
-        $admin = $this->persister->user('admin');
-        $this->persister->grantAdminRole($admin);
-        $this->persister->flush();
-
-        return $admin;
     }
 }

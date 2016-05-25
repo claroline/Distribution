@@ -114,6 +114,11 @@ class APISecurityTest extends TransactionalTestCase
 
     public function testAnonymousAuthentication()
     {
+        $this->client->request('GET', '/api/locales/available');
+        $data = $this->client->getResponse()->getContent();
+        $data = json_decode($data, true);
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertGreaterThan(2, count($data));
     }
 
     /**
