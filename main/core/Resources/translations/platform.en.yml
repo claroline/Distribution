@@ -1246,3 +1246,4 @@ cache_management_explanation: Your must empty your app/cache directory to finali
 required_by: Required by:
 require: Require:
 requirement_warning: Requierment warning
+csv_delete: Csv delete
