@@ -143,7 +143,7 @@ class ResourceController extends FOSRestController
      */
     public function getResourceNodeAction(ResourceNode $resourceNode)
     {
-        $collection = new ResourceCollection(array($node));
+        $collection = new ResourceCollection(array($resourceNode));
         $this->checkAccess('OPEN', $collection);
 
         return $resourceNode;
