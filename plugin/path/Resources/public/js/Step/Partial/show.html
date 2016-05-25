@@ -36,8 +36,16 @@
                     </div>
 
                     <!-- Step title -->
-                    <div class="col-md-10 col-sm-8 col-xs-8 text-center">
+                    <div class="col-md-9 col-sm-6 col-xs-6 text-center">
                         <h4 class="panel-step-title">{{ stepShowCtrl.step.name }}</h4>
+                    </div>
+                    
+                    <!-- Call for unlock -->
+                    <div class="col-md-1 col-sm-2 col-xs-2 text-right">
+                        <button type="button" data-ng-click="stepShowCtrl.unlock(stepShowCtrl.next)" class="btn btn-block btn-default" data-ng-disabled="null == stepShowCtrl.next" data-placement="bottom" data-toggle="tooltip" data-original-title="Call for unlock">
+                            <span class="sr-only">{{ 'unlock_this'|trans:{}:'path_wizards' }}</span>
+                            <span class="fa fa-life-saver"></span>
+                        </button>
                     </div>
 
                     <!-- Next step button -->

@@ -101,4 +101,24 @@ class UserProgressionManager
 
         return $progression;
     }
+
+    /**
+     * Set state of the lock for User Progression for a step.
+     *
+     * @param Step $step
+     * @param $lock
+     */
+    public function setLock(Step $step, $lock)
+    {
+        // Load current logged User
+        $user = $this->securityToken->getToken()->getUser();
+        // Retrieve the current progression for this step
+        $progression = $this->om->getRepository('InnovaPathBundle:UserProgression')->findOneBy(array (
+            'step' => $step,
+            'user' => $user
+        ));
+        $progression->setLocked($lock);
+        $this->om->persist($progression);
+        $this->om->flush();
+    }
 }

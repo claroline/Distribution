@@ -1,4 +1,4 @@
-services: 
+services:
     # Path controller
     innova_path.controller.path:
         class: Innova\PathBundle\Controller\PathController
@@ -35,7 +35,7 @@ services:
             objectManager: @doctrine.orm.entity_manager
             pathManager:   @innova_path.manager.path
         scope: request
-          
+
     # Editor controller
     innova_path.controller.path_editor:
         class: Innova\PathBundle\Controller\Wizard\EditorController
@@ -62,4 +62,5 @@ services:
             groupManager:   @claroline.manager.group_manager
             securityToken:  @security.token_storage
             teamManager:    @claroline.manager.team_manager
+            dispatcher:     @event_dispatcher
         scope: request

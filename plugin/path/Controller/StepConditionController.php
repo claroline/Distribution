@@ -11,6 +11,7 @@ use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Manager\GroupManager;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Claroline\CoreBundle\Entity\Activity\AbstractEvaluation;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class StepConditionController.
@@ -32,6 +33,7 @@ class StepConditionController extends Controller
     private $groupManager;
     private $evaluationRepo;
     private $teamManager;
+    private $eventDispatcher;
 
     /**
      * Security Token.
@@ -43,21 +45,24 @@ class StepConditionController extends Controller
     /**
      * Constructor.
      *
-     * @param ObjectManager         $objectManager
-     * @param GroupManager          $groupManager
-     * @param TokenStorageInterface $securityToken
-     * @param TeamManager           $teamManager
+     * @param ObjectManager             $objectManager
+     * @param GroupManager              $groupManager
+     * @param TokenStorageInterface     $securityToken
+     * @param TeamManager               $teamManager
+     * @param EventDispatcherInterface  $eventDispatcher
      */
     public function __construct(
         ObjectManager $objectManager,
         GroupManager $groupManager,
         TokenStorageInterface $securityToken,
-        TeamManager $teamManager
+        TeamManager $teamManager,
+        EventDispatcherInterface $eventDispatcher
     ) {
         $this->groupManager = $groupManager;
         $this->om = $objectManager;
         $this->securityToken = $securityToken;
         $this->teamManager = $teamManager;
+        $this->eventDispatcher = $eventDispatcher;
     }
     /**
      * Get user group for criterion.
@@ -313,5 +318,26 @@ class StepConditionController extends Controller
         }
 
         return new JsonResponse($data);
+    }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @Route(
+     *     "/stepunlock/{path}/{step}",
+     *     name         = "innova_path_step_unlock",
+     *     options      = { "expose" = true }
+     * )
+     * @Method("GET")
+     */
+    public function callForUnlock(Path $path, Step $step)
+    {
+        //Begin send notification (custom)
+        //array of user id : Here, user who will receive the call : the path creator
+        //$user = $this->securityToken->getToken()->getUser();
+        //create an event, and pass parameters
+        $event = new \Innova\PathBundle\Event\Log\LogStepUnlockEvent($path, $step, $userIds);
+        //send the event to the event dispatcher
+        $this->eventDispatcher->dispatch('log', $event); //don't change it.
+        //End send notification
     }
 }

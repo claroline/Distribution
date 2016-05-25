@@ -111,6 +111,42 @@
                         });
 
                     return deferred.promise;
+                },
+
+                /**
+                 * Set lock for Progression of the User for a Step (calls Controller)
+                 * @param step
+                 * @param lock
+                 */
+                setlock: function setlock(step, lock) {
+                    var deferred = $q.defer();
+                    $http
+                        .put(Routing.generate('innova_path_progression_setlock', { id: step.resourceId, lock: lock }))
+                        .success(function (response) {
+                            deferred.resolve(response.status);
+                        })
+                        .error(function (response) {
+                            AlertService.addAlert('error', Translator.trans('progression_setlock_error', {}, 'path_wizards'));
+                            deferred.reject(response);
+                        });
+                    return deferred.promise;
+                },
+
+                /**
+                 * unlock step : call Controller method that triggers log listener and notification
+                 */
+                unlock: function unlock(step, path) {
+                    var deferred = $q.defer();
+                    var params = {path:path, step:step};
+                    $http
+                        .get(Routing.generate('innova_path_step_unlock', params))
+                        .success(function (response) {
+                            deferred.resolve(response);
+                        }.bind(this)) //to access this object method and attributes
+                        .error(function (response) {
+                            deferred.reject(response);
+                        });
+                    return deferred.promise;
                 }
             }
         }

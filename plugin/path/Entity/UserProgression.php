@@ -82,6 +82,21 @@ class UserProgression implements \JsonSerializable
      * @ORM\Column(name="authorized_access", type="boolean")
      */
     protected $authorized;
+    /**
+     * State of the access to the step.
+     * @var boolean
+     *
+     * @ORM\Column(name="locked_access", type="boolean")
+     */
+    protected $locked;
+
+    /**
+     * Has the lock been called upon removal ?
+     * @var boolean
+     *
+     * @ORM\Column(name="lockedcall_access", type="boolean")
+     */
+    protected $lockedcall;
 
     /**
      * CLass constructor.
@@ -202,6 +217,8 @@ class UserProgression implements \JsonSerializable
             'stepId' => $this->step->getId(),
             'status' => $this->status,
             'authorized' => $this->authorized,
+            'locked' => $this->locked,
+            'lockedcall' => $this->lockedcall,
         );
     }
 
@@ -227,5 +244,51 @@ class UserProgression implements \JsonSerializable
     public function getAuthorized()
     {
         return $this->authorized;
+    }
+
+    /**
+     * Set locked.
+     *
+     * @param bool $locked
+     *
+     * @return UserProgression
+     */
+    public function setLocked($locked)
+    {
+        $this->locked = $locked;
+        return $this;
+    }
+
+    /**
+     * Get locked.
+     *
+     * @return boolean
+     */
+    public function getLocked()
+    {
+        return $this->locked;
+    }
+
+    /**
+     * Set lockedcall.
+     *
+     * @param bool $lockedcall
+     *
+     * @return UserProgression
+     */
+    public function setLockedcall($lockedcall)
+    {
+        $this->lockedcall = $lockedcall;
+        return $this;
+    }
+
+    /**
+     * Get lockedcall.
+     *
+     * @return bool
+     */
+    public function getLockedcall()
+    {
+        return $this->lockedcall;
     }
 }
