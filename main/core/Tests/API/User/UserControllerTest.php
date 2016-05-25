@@ -23,7 +23,7 @@ class UserControllerTest extends TransactionalTestCase
         parent::setUp();
         $this->persister = $this->client->getContainer()->get('claroline.library.testing.persister');
     }
-
+/*
     //@url: /api/users.{_format}
     //@route: api_get_users
     public function testGetUsersAction()
@@ -375,7 +375,7 @@ class UserControllerTest extends TransactionalTestCase
         $this->client->request('PATCH', "/api/users/{$userOrga->getId()}/roles/{$teacherRole->getId()}/add.json");
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
     }
-
+*/
     //@route: api_remove_user_role
     //@url: /api/users/{user}/roles/{role}/remove.{_format}
     //MAYBE CHANGE THIS TO DELETE BECAUSE THIS SHOULD NOT BE A GET
@@ -390,7 +390,6 @@ class UserControllerTest extends TransactionalTestCase
         $this->persister->flush();
 
         //test
-        $this->client->request('GET', "/api/users/{$userOrga->getId()}/roles/{$baseRole->getId()}/remove.json");
         $preCount = count($userOrga->getRoles());
         $this->logIn($adminOrga);
         $this->client->request('GET', "/api/users/{$userOrga->getId()}/roles/{$baseRole->getId()}/remove.json");
