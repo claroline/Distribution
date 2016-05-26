@@ -78,11 +78,10 @@ class Hole extends Interaction
                     }
                 }
             }
-            
+
             if ($response) {
                 $score += $this->getScoreHole($hole, $response);
-            }
-            else {
+            } else {
                 $score = 0;
             }
         }
