@@ -699,7 +699,7 @@ class Manager
 
     /**
      * @param array $roles
-     * @param int $max
+     * @param int   $max
      * @param array $subjects
      *
      * @return \Claroline\ForumBundle\Entity\Message[]
@@ -714,7 +714,7 @@ class Manager
     /**
      * @param array $workspaces
      * @param array $roles
-     * @param int $max
+     * @param int   $max
      * @param array $subjects
      *
      * @return \Claroline\ForumBundle\Entity\Message[]
@@ -729,7 +729,7 @@ class Manager
     /**
      * @param Forum $forum
      * @param array $roles
-     * @param int $max
+     * @param int   $max
      * @param array $subjects
      *
      * @return \Claroline\ForumBundle\Entity\Message[]

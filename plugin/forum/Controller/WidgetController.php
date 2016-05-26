@@ -51,7 +51,6 @@ class WidgetController extends Controller
     public function updateLastMessagesForumWidgetConfig(WidgetInstance $widgetInstance)
     {
         if (!$this->authorization->isGranted('edit', $widgetInstance)) {
-
             throw new AccessDeniedException();
         }
         $lastMessageWidgetConfig = $this->forumManager->getConfig($widgetInstance);
