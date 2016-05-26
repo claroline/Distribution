@@ -1,11 +1,10 @@
 <div>
+    <label class="control-label col-sm-2" for="{{ this.name }}"> {{ cc.label }} </label>
     <input
         ng-model="cc.ngModel"
         ng-disabled="cc.field[2].disabled"
         type="checkbox"
-        class="control-standalone control-standalone"
         name="{{ cc.name }}"
         value="{{ cc.name }}">
     </input>
-    <label class="control-label" for="{{ this.name }}"> {{ cc.label }} </label>
 </div>

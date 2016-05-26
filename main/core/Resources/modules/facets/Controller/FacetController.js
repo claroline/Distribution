@@ -38,22 +38,22 @@ export default class FacetController {
     // form definitions
     this.formFacet = {
       fields: [
-        ['name', 'text', {validators: [new NotBlank()]}],
-        ['force_creation_form', 'checkbox', {label: 'display_at_registration' }],
-        ['is_main', 'checkbox', {label: 'is_main' }]
+        ['name', 'text', {validators: [new NotBlank()], label: Translator.trans('name', {}, 'platform')}],
+        ['force_creation_form', 'checkbox', {label: Translator.trans('display_at_registration', {}, 'platform' )}],
+        ['is_main', 'checkbox', {label: Translator.trans('is_main_facet_label', {}, 'platform')}]
       ]
     }
 
     this.formPanel = {
       fields: [
-        ['name', 'text', {validators: [new NotBlank()]}],
-        ['is_default_collapsed', 'checkbox', {label: 'collapse'}]
+        ['name', 'text', {validators: [new NotBlank()],  label: Translator.trans('name', {}, 'platform')}],
+        ['is_default_collapsed', 'checkbox', {label: Translator.trans('collapse', {}, 'platform')}]
       ]
     }
 
     this.formField = {
       fields: [
-        ['name', 'text', {validators: [new NotBlank()]}],
+        ['name', 'text', {validators: [new NotBlank()], label: Translator.trans('name', {}, 'platform')}],
         [
           'type',
           'select',
@@ -68,7 +68,8 @@ export default class FacetController {
               { value: 6, label: 'checkboxes'},
               { value: 7, label: 'country'}
             ],
-            default: 1
+            default: 1,
+            label: ''
           }
         ]
       ]
@@ -99,7 +100,7 @@ export default class FacetController {
     })
 
     $scope.$on('facet-bag.drop', (e, el) => {
-      console.log(e, el)
+
     })
 
     $scope.$on('panel-bag.drop', (el, target, source, siblings) => {
@@ -123,7 +124,7 @@ export default class FacetController {
           d => {
           },
           d => {
-            alert('error handling')
+            ClarolineAPIService.errorModal()
           }
         )
       }
@@ -159,9 +160,8 @@ export default class FacetController {
         this.$http.put(Routing.generate('api_put_fields_order', {panel: panelId}) + '?' + qs).then(
           d => {
           },
-          d => {
-            alert(Translator.trans('an_error_happened', {}, 'platform'))
-          }
+          d => ClarolineAPIService.errorModal()
+
         )
       }
     })
@@ -188,10 +188,8 @@ export default class FacetController {
     modalInstance.result.then(result => {
       if (!result) return
       this.FormBuilderService.submit(Routing.generate('api_post_facet'), {'facet': result}).then(
-        d => {
-          this.facets.push(d.data)
-        },
-        d => alert(Translator.trans('an_error_happened', {}, 'platform'))
+        d => this.facets.push(d.data),
+        d => ClarolineAPIService.errorModal()
       )
     })
   }
@@ -223,9 +221,8 @@ export default class FacetController {
           {'facet': result},
           'PUT'
       ).then(
-        d => {
-        },
-        d => alert(Translator.trans('an_error_happened', {}, 'platform'))
+        d => {},
+        d => ClarolineAPIService.errorModal()
       )
     })
   }
@@ -236,8 +233,7 @@ export default class FacetController {
     this.ClarolineAPIService.confirm(
       {url, method: 'DELETE'},
       function () {
-        alert('meh')
-        this.ClarolineAPIService.removeElements(facet, this.facets)
+        this.ClarolineAPIService.removeElements([facet], this.facets)
       }.bind(this),
       Translator.trans('delete_facet', {}, 'platform'),
       Translator.trans('delete_facet_confirm', 'platform')
@@ -267,9 +263,8 @@ export default class FacetController {
       const route = Routing.generate('api_put_facet_roles', {'facet': facet.id}) + '?' + qs
 
       this.$http.put(route).then(
-        d => {
-        },
-        d => alert(Translator.trans('an_error_happened', {}, 'platform'))
+        d => {},
+        d => ClarolineAPIService.errorModal()
       )
     })
   }
@@ -299,7 +294,7 @@ export default class FacetController {
           if (!facet.panels) facet.panels = []
           facet.panels.push(d.data)
         },
-        d => alert(Translator.trans('an_error_happened', {}, 'platform'))
+        d => ClarolineAPIService.errorModal()
       )
     })
   }
@@ -329,9 +324,8 @@ export default class FacetController {
     modalInstance.result.then(result => {
       if (!result) return
       this.FormBuilderService.submit(Routing.generate('api_put_panel_facet', {panel: panel.id}), {'panel': result}, 'PUT').then(
-        d => {
-        },
-        d => alert(Translator.trans('an_error_happened', {}, 'platform'))
+        d => {},
+        d => ClarolineAPIService.errorModal()
       )
     })
   }
@@ -342,7 +336,12 @@ export default class FacetController {
     this.ClarolineAPIService.confirm(
       {url, method: 'DELETE'},
       function () {
-        alert('meh')
+        this.facets.forEach(facet => {
+            facet.panels.forEach(el => {
+                let idx = facet.panels.indexOf(panel)
+                if (idx > -1) facet.panels.splice(idx, 1);
+            })
+        })
       // this.ClarolineAPIService.removeElements(facet, this.facets)
       }.bind(this),
       Translator.trans('delete_panel', {}, 'platform'),
@@ -375,7 +374,7 @@ export default class FacetController {
           if (!panel.fields) panel.fields = []
           panel.fields.push(d.data)
         },
-        d => alert(Translator.trans('an_error_happened', {}, 'platform'))
+        d => ClarolineAPIService.errorModal()
       )
     })
   }
@@ -405,9 +404,8 @@ export default class FacetController {
     modalInstance.result.then(result => {
       if (!result) return
       this.FormBuilderService.submit(Routing.generate('api_put_field_facet', {field: field.id}), {'field': result}, 'PUT').then(
-        d => {
-        },
-        d => alert('an error occured')
+        d => {},
+        d => ClarolineAPIService.errorModal()
       )
     })
   }
@@ -418,7 +416,14 @@ export default class FacetController {
     this.ClarolineAPIService.confirm(
       {url, method: 'DELETE'},
       function () {
-        field = {}
+          this.facets.forEach(facet => {
+              facet.panels.forEach(panel => {
+                  panel.fields.forEach(el => {
+                      let idx = panel.fields.indexOf(field)
+                      if (idx > -1) panel.fields.splice(idx, 1);
+                  })
+              })
+          })
       }.bind(this),
       Translator.trans('delete_field', {}, 'platform'),
       Translator.trans('delete_field_confirm', 'platform')
@@ -442,18 +447,16 @@ export default class FacetController {
 
     modalInstance.result.then(panel => {
       this.FormBuilderService.submit(Routing.generate('api_put_panel_roles', {panel: panel.id}), {'roles': panel.panel_facets_role}, 'PUT').then(
-        d => {
-        },
-        d => alert(Translator.trans('an_error_happened', {}, 'platform'))
+        d => {},
+        d => ClarolineAPIService.errorModal()
       )
     })
   }
 
   onSubmitProfilePreferences (form) {
     this.FormBuilderService.submit(Routing.generate('api_put_profile_preferences'), {'preferences': this.profilePreferences}, 'PUT').then(
-      d => {
-      },
-      d => alert(Translator.trans('an_error_happened', {}, 'platform'))
+      d => {},
+      d => ClarolineAPIService.errorModal()
     )
   }
 }

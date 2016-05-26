@@ -4,9 +4,6 @@
         <h4> {{ mc.title|trans:{}:'platform' }} </h4>
     </div>
     <div class="modal-body">
-        <div class="well">
-            {{ 'visible_facet_form_explanation'|trans:{}:'platform' }}
-        </div>
         <div>
             <form class="form-horizontal" name="facetForm" ng-submit="mc.onSubmit(facetForm)">
                 <formbuilder form="mc.form" ng-model="mc.model" form-ctrl="facetForm"></formbuilder>

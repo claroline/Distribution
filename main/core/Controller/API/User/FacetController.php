@@ -67,7 +67,6 @@ class FacetController extends FOSRestController
     public function createFacetAction()
     {
         $facet = $this->request->request->get('facet');
-        var_dump($facet);
         $forceCreationForm = isset($facet['force_creation_form']) ? $facet['force_creation_form'] : false;
         $isMain = isset($facet['is_main']) ? $facet['is_main'] : false;
 

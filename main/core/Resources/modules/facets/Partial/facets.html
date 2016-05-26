@@ -3,7 +3,7 @@
         <div class="panel-group" role="tablelist" aria-multiselectable="true">
             <ul dragula='"panel-bag"' dragula-scope="$parent" dragula-model="facet.panels" data-facet-id="{{ facet.id }}">
                 <li ng-repeat="(key, panel) in facet.panels" id="panel-{{ panel.id }}" style="list-style-type: none;">
-                    <div class="panel panel-default" id="panel-facet-main-{{ panel.id }}">
+                    <div class="panel panel-default" id="panel-facet-main-{{ panel.id }}"  style="margin-bottom: 10px;">
                         <div class="panel-heading" role="tab" id="facet-panel-{{ panel.id }}">
                             <h4 class="panel-title">
                                 <div class="dropdown pull-left">
@@ -33,9 +33,11 @@
             </ul>
         </div>
     </div>
-    <div class="panel-footer pointer-hand text-center add-panel-to-facet" ng-click="fc.onAddPanelFormRequest(facet)">
-        <i class="fa fa-plus-circle" data-facet-id="{{ facet.id }}"></i>
-        {{ 'add_panel_to_facet'|trans:{}: 'platform' }}
+    <div align="center">
+        <button class="btn btn-primary" ng-click="fc.onAddPanelFormRequest(facet)">
+            <i class="fa fa-plus-circle" data-facet-id="{{ facet.id }}"></i>
+            {{ 'add_panel_to_facet'|trans:{}: 'platform' }}
+        </button>
     </div>
 </script>
 
@@ -99,8 +101,19 @@
                             </table>
                             <input type="submit" class="btn btn-primary" value="{{ 'edit'|trans:{}:'platform' }}"></input>
                         </form>
-                        <div ng-repeat="(key, facet) in fc.facets" class="panel panel-body" ng-if="facet.is_main">
-                            <div> <h3> {{ facet.name }} </h3><div ng-include="'facet_options.html'"></div> </div>
+                        </br>
+                        <div class="container table-bordered" style="padding: 10px;" ng-repeat="(key, facet) in fc.facets" ng-if="facet.is_main">
+                            <h4 align="center">
+                                <span>  {{ facet.name }}  </span>
+                                <span class="dropdown">
+                                    <i class="fa fa-chevron-down pointer-hand" data-toggle="dropdown"></i>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li role="presentation"><a class="pointer" ng-click="fc.onEditFacetFormRequest(facet)"><i role="menuitem" class="fa fa-pencil"> {{ "edit"|trans:{}:'platform' }}</i></a></li>
+                                        <li role="presentation"><a class="pointer" ng-click="fc.onDeleteFacet(facet)" ><i role="menuitem" class="fa fa-trash-o"> {{ "delete"|trans:{}:'platform' }}</i></a></li>
+                                        <li role="presentation"><a class="pointer" ng-click="fc.onSetFacetRoles(facet)" ><i role="menuitem" class="fa fa-user"> {{ "roles"|trans:{}:'platform' }}</i></a></li>
+                                    </ul>
+                                </span>
+                            </h4>
                             <div ng-include="'facet_renderer.html'"></div>
                         </div>
                     </div>

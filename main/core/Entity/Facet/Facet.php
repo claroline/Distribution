@@ -154,18 +154,14 @@ class Facet
         $this->roles = $roles;
     }
 
-    public function setIsVisibleByOwner($boolean)
-    {
-        $this->isVisibleByOwner = $boolean;
-    }
-
-    public function getIsVisibleByOwner()
-    {
-        return $this->isVisibleByOwner;
-    }
-
     public function setForceCreationForm($boolean)
     {
+        if ($boolean === 'true') {
+            $boolean = true;
+        } elseif ($boolean === 'false') {
+            $boolean = false;
+        }
+
         $this->forceCreationForm = $boolean;
     }
 
@@ -176,6 +172,12 @@ class Facet
 
     public function setIsMain($boolean)
     {
+        if ($boolean === 'true') {
+            $boolean = true;
+        } elseif ($boolean === 'false') {
+            $boolean = false;
+        }
+
         $this->isMain = $boolean;
     }
 

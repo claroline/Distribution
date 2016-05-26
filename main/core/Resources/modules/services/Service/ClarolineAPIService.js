@@ -1,5 +1,7 @@
 import ConfirmModalController from '../Controller/ConfirmModalController'
 
+import errorModal from '../Partial/error_modal.html'
+
 export default class ClarolineAPIService {
     constructor($http, $httpParamSerializerJQLike, $uibModal) {
         this.$http = $http
@@ -79,9 +81,6 @@ export default class ClarolineAPIService {
     }
 
     confirm(urlObject, callback, title, content) {
-        //the order is important
-        //ConfirmModalController.$inject = ['callback', 'urlObject', 'title', 'content', '$http', '$uibModalInstance']
-
         this.$uibModal.open({
             template: require('../Partial/confirm_modal.html'),
             controller: 'ConfirmModalController',
@@ -92,6 +91,13 @@ export default class ClarolineAPIService {
                 title: function() {return title},
                 content: function() {return content}
             }
+        });
+    }
+
+    errorModal() {
+        this.$uibModal.open({
+            template: errorModal ,
+            controller: () => {},
         });
     }
 
