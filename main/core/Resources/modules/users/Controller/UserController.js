@@ -161,6 +161,20 @@ export default class UserController {
         })
     }
 
+    importFacetsForm() {
+        const modalInstance = this.$uibModal.open({
+            template: require('../Partial/csv_facet.html'),
+            controller: 'ImportCsvFacetsController',
+            controllerAs: 'icfc'
+        })
+
+        modalInstance.result.then(result => {
+            alert('done')
+        })
+
+
+    }
+
     _onSearch(searches) {
         this.savedSearch = searches;
         this.ClarolineSearchService.find('api_get_search_users', searches, 0, this.dataTableOptions.paging.size)

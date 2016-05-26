@@ -16,6 +16,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Claroline\CoreBundle\Entity\Role;
+use JMS\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation\SerializedName;
 
 /**
  * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\FacetRepository")
@@ -28,17 +30,20 @@ class Facet
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Groups({"api_facet_admin", "api_profile"})
      */
     protected $id;
 
     /**
      * @ORM\Column(unique=true)
      * @Assert\NotBlank()
+     * @Groups({"api_facet_admin", "api_profile"})
      */
     protected $name;
 
     /**
      * @ORM\Column(type="integer", name="position")
+     * @Groups({"api_facet_admin", "api_profile"})
      */
     protected $position;
 
@@ -49,6 +54,8 @@ class Facet
      *     cascade={"persist"}
      * )
      * @ORM\OrderBy({"position" = "ASC"})
+     * @Groups({"api_facet_admin", "api_profile"})
+     * @SerializedName("panels")
      */
     protected $panelFacets;
 
@@ -60,22 +67,26 @@ class Facet
      *     inversedBy="facets"
      * )
      * @ORM\JoinTable(name="claro_facet_role")
+     * @Groups({"api_facet_admin"})
      */
     protected $roles;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"api_facet_admin", "api_profile"})
      */
-    protected $isVisibleByOwner = true;
+    protected $forceCreationForm = false;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"api_facet_admin", "api_profile"})
      */
-    protected $forceCreationForm = false;
+    protected $isMain = false;
 
     public function __construct()
     {
         $this->roles = new ArrayCollection();
+        $this->panelFacets = new ArrayCollection();
     }
 
     public function getId()
@@ -98,9 +109,19 @@ class Facet
         $this->panelFacets->add($panelFacet);
     }
 
+    public function removePanelFacet(PanelFacet $panelFacet)
+    {
+        $this->panelFacets->removeElement($panelFacet);
+    }
+
     public function getPanelFacets()
     {
         return $this->panelFacets;
+    }
+
+    public function resetPanelFacets()
+    {
+        $this->panelFacets = new ArrayCollection();
     }
 
     public function setPosition($position)
@@ -151,5 +172,15 @@ class Facet
     public function getForceCreationForm()
     {
         return $this->forceCreationForm;
+    }
+
+    public function setIsMain($boolean)
+    {
+        $this->isMain = $boolean;
+    }
+
+    public function isMain()
+    {
+        return $this->isMain;
     }
 }

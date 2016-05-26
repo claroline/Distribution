@@ -1267,3 +1267,4 @@ cache_management_explanation: Votre dossier app/cache doit être vidé manuellem
 required_by: Requis par:
 require: Requiert:
 requirement_warning: Attention aux prérequis
+csv_delete: Suppression par csv
