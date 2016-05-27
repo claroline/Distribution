@@ -48,6 +48,14 @@ class LoadContentData implements RequiredFixture
         $repository->translate($layout, 'content', 'fr', $frLayout);
         $manager->persist($layout);
 
+        //maintenance
+        $maintenanceMsg = '<p>Le site est temporairement en maintenance</p>';
+        $maintenanceMsg .= '<p>The site is temporarily down for maintenance</p>';
+        $maintenanceContent = new Content();
+        $maintenanceContent->setContent($maintenanceMsg);
+        $maintenanceContent->setType('claro_maintenance_message');
+        $manager->persist($maintenanceContent);
+
         $manager->flush();
     }
 

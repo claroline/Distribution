@@ -18,7 +18,7 @@ use Gedmo\Translatable\Translatable;
 /**
  * Content.
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\ContentRepository")
  * @ORM\Table(name="claro_content")
  * @Gedmo\TranslationEntity(class="Claroline\CoreBundle\Entity\ContentTranslation")
  */

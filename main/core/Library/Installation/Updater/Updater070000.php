@@ -10,6 +10,7 @@
 
 namespace Claroline\CoreBundle\Library\Installation\Updater;
 
+use Claroline\CoreBundle\Entity\Content;
 use Claroline\InstallationBundle\Updater\Updater;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -33,6 +34,24 @@ class Updater070000 extends Updater
         if ($plugin) {
             $this->log('Removing VideoJsBundle plugin from database...');
             $this->om->remove($plugin);
+            $this->om->flush();
+        }
+        $this->createMaintenanceMessage();
+    }
+
+    private function createMaintenanceMessage()
+    {
+        $this->log('Creating maintenance message...');
+        $contentRepo = $this->om->getRepository('ClarolineCoreBundle:Content');
+        $maintenanceContent = $contentRepo->findOneByType('claro_maintenance_message');
+
+        if (is_null($maintenanceContent)) {
+            $maintenanceMsg = '<p>Le site est temporairement en maintenance</p>';
+            $maintenanceMsg .= '<p>The site is temporarily down for maintenance</p>';
+            $maintenanceContent = new Content();
+            $maintenanceContent->setContent($maintenanceMsg);
+            $maintenanceContent->setType('claro_maintenance_message');
+            $this->om->persist($maintenanceContent);
             $this->om->flush();
         }
     }

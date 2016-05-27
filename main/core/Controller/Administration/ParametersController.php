@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Controller\Administration;
 
+use Claroline\CoreBundle\Entity\Content;
 use Claroline\CoreBundle\Entity\SecurityToken;
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Form\Administration as AdminForm;
@@ -44,6 +45,7 @@ use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
@@ -71,6 +73,7 @@ class ParametersController extends Controller
     private $eventDispatcher;
     private $themeManager;
     private $pluginManager;
+    private $session;
 
     /**
      * @DI\InjectParams({
@@ -94,7 +97,8 @@ class ParametersController extends Controller
      *     "workspaceManager"   = @DI\Inject("claroline.manager.workspace_manager"),
      *     "eventDispatcher"    = @DI\Inject("claroline.event.event_dispatcher"),
      *     "themeManager"       = @DI\Inject("claroline.manager.theme_manager"),
-     *     "pluginManager"      = @DI\Inject("claroline.manager.plugin_manager")
+     *     "pluginManager"      = @DI\Inject("claroline.manager.plugin_manager"),
+     *     "session"            = @DI\Inject("session")
      * })
      */
     public function __construct(
@@ -118,7 +122,8 @@ class ParametersController extends Controller
         WorkspaceManager $workspaceManager,
         StrictDispatcher $eventDispatcher,
         ThemeManager $themeManager,
-        PluginManager $pluginManager
+        PluginManager $pluginManager,
+        SessionInterface $session
     ) {
         $this->configHandler = $configHandler;
         $this->roleManager = $roleManager;
@@ -142,6 +147,7 @@ class ParametersController extends Controller
         $this->eventDispatcher = $eventDispatcher;
         $this->themeManager = $themeManager;
         $this->pluginManager = $pluginManager;
+        $this->session = $session;
     }
 
     /**
@@ -803,6 +809,65 @@ class ParametersController extends Controller
         $this->ipwlm->removeIP($_SERVER['REMOTE_ADDR']);
 
         return new RedirectResponse($this->router->generate('claro_admin_parameters_index'));
+    }
+
+    /**
+     * @EXT\Route("/maintenance/message/edit/form", name="claro_admin_parameters_maintenance_message_edit_form")
+     * @EXT\Template("ClarolineCoreBundle:Administration\Parameters:maintenanceMessageEditForm.html.twig")
+     * @SEC\PreAuthorize("canOpenAdminTool('platform_parameters')")
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function maintenanceMessageEditFormAction()
+    {
+        $maintenanceContent = $this->getMaintenanceContent();
+        $form = $this->formFactory->create(
+            new AdminForm\MaintenanceMessageType($maintenanceContent->getContent())
+        );
+
+        return array('form' => $form->createView());
+    }
+
+    /**
+     * @EXT\Route("/maintenance/message/edit", name="claro_admin_parameters_maintenance_message_edit")
+     * @EXT\Template("ClarolineCoreBundle:Administration\Parameters:maintenanceMessageEditForm.html.twig")
+     * @SEC\PreAuthorize("canOpenAdminTool('platform_parameters')")
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function maintenanceMessageEditAction()
+    {
+        $maintenanceContent = $this->getMaintenanceContent();
+        $form = $this->formFactory->create(
+            new AdminForm\MaintenanceMessageType($maintenanceContent->getContent())
+        );
+        $form->handleRequest($this->request);
+
+        if ($form->isValid()) {
+            $content = $form->get('content')->getData();
+            $this->contentManager->updateMaintenanceMessage($content);
+            $successMsg = $this->translator->trans('maintenance_message_edit_success', [], 'platform');
+            $flashBag = $this->session->getFlashBag();
+            $flashBag->add('success', $successMsg);
+
+            return new RedirectResponse($this->router->generate('claro_admin_parameters_maintenance'));
+        }
+
+        return array('form' => $form->createView());
+    }
+
+    public function getMaintenanceContent()
+    {
+        $maintenanceContent = $this->contentManager->getContent(['type' => 'claro_maintenance_message']);
+
+        if (is_null($maintenanceContent)) {
+            $maintenanceContent = new Content();
+            $maintenanceContent->setContent('');
+            $maintenanceContent->setType('claro_maintenance_message');
+            $this->contentManager->persistContent($maintenanceContent);
+        }
+
+        return $maintenanceContent;
     }
 
     /**

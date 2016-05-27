@@ -222,4 +222,15 @@ class ContentManager
 
         return $translatedContent;
     }
+
+    public function persistContent(Content $content)
+    {
+        $this->manager->persist($content);
+        $this->manager->flush();
+    }
+
+    public function updateMaintenanceMessage($content)
+    {
+        $this->content->updateContentByType($content, 'claro_maintenance_message');
+    }
 }
