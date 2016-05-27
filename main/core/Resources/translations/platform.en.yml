@@ -1262,3 +1262,4 @@ display_mode: Display mode
 roles_panels_form_explanation: Edit the panel accessibility by role.
 delete_field: Removing a field
 delete_field_confirm: Do you really want to remove this field ?
+facet_imported: Facets imported

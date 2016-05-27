@@ -169,7 +169,10 @@ export default class UserController {
         })
 
         modalInstance.result.then(result => {
-            alert('done')
+            this.alerts.push({
+                type: 'success',
+                msg: this.translate('facet_imported')
+            })
         })
 
 

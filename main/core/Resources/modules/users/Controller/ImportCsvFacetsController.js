@@ -1,8 +1,9 @@
 export default class ImportCsvFacetsController {
-    constructor($uibModalInstance, $uibModal, UserAPIService) {
+    constructor($uibModalInstance, $uibModal, UserAPIService, ClarolineAPIService) {
         this.$uibModalInstance = $uibModalInstance
         this.$uibModal = $uibModal
         this.UserAPIService = UserAPIService
+        this.ClarolineAPIService = ClarolineAPIService
     }
 
     submit() {
@@ -11,7 +12,7 @@ export default class ImportCsvFacetsController {
             d => this.$uibModalInstance.close(d.data),
             d => {
                 if (d.status === 400) {
-                    alert("It didn't work")
+                    ClarolineAPIService.errorModal()
                 }
             }
         )

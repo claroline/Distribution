@@ -109,7 +109,6 @@ export default class FacetController {
       let container = null
 
       this.facets.forEach(facet => {
-        console.log(facet, facetId)
         if (facet.id === facetId) container = facet
       })
 

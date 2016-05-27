@@ -1280,3 +1280,4 @@ display_mode: Mode affichage
 roles_panels_form_explanation: Définissez l'accessibilité au panel par rôle.
 delete_field: Supprimer un champ
 delete_field_confirm: Êtes-vous vraiment sûr de vouloir supprimer ce champ ?
+facet_imported: Facettes importées
