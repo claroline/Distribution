@@ -1,5 +1,6 @@
 <div>
-    <label class="control-label col-sm-2" for="{{ this.name }}"> {{ cc.label }} </label>
+    <div class="col-sm-2"></div>
+    <!-- col-sm-offset-2 doesn't work properly -->
     <input
         ng-model="cc.ngModel"
         ng-disabled="cc.field[2].disabled"
@@ -7,4 +8,6 @@
         name="{{ cc.name }}"
         value="{{ cc.name }}">
     </input>
+
+        <label class="control-label" for="{{ this.name }}"> {{ cc.label }} </label>
 </div>

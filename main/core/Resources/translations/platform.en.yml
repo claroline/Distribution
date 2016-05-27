@@ -1247,3 +1247,18 @@ required_by: Required by:
 require: Require:
 requirement_warning: Requierment warning
 csv_delete: Csv delete
+import_facets: Import facets
+csv: Csv
+csv_format_facets: Csv format:
+csv_format_facets_line_1: First line: facet list separated by semicolons (facet1;facet2;facet;...)
+csv_format_facets_line_end: Following lines: username;facet value1; facet value2;facet value2;...
+create_panel: New panel
+edit_panel: Edit panel
+is_main_facet_label: Put in general tab
+delete_panel: Remove panel
+delete_panel_confirm: Do you really want to remove this panel ?
+edit_mode: Edit mode
+display_mode: Display mode
+roles_panels_form_explanation: Edit the panel accessibility by role.
+delete_field: Removing a field
+delete_field_confirm: Do you really want to remove this field ?

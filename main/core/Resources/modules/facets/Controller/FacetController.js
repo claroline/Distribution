@@ -69,7 +69,7 @@ export default class FacetController {
               { value: 7, label: 'country'}
             ],
             default: 1,
-            label: ''
+            label: Translator.trans('type', {}, 'platform')
           }
         ]
       ]

@@ -1,6 +1,6 @@
 
 <script type="text/ng-template" id="facet_renderer.html">
-    <form id="form-facet-{{ facet.id }}" role="form" class="form-horizontal" ng-submit="pc.onSubmit(facet)">
+    <form role="form" class="form-horizontal">
         <div class="panel-body">
             <div class="panel-group" id="panel-facet-{{ facet.id }}" role="tablist">
                 <div class="panel panel-default" ng-repeat="(key, panel) in facet.panels">
@@ -13,22 +13,20 @@
                     </div>
                     <div id="panel-{{ panel.id }}" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="panel-{{ panel.id }}">
                         <div class="panel-body">
-                            <div class="form-group row" ng-repeat="(key, field) in panel.fields">
-                               <form-field field="[field.name, pc.fieldTypes[field.type - 1], { values: field.field_facet_choices, disabled: (pc.disabled && field.is_editable) }]" ng-model="field.user_field_value"></form-field>
+                            <div ng-repeat="(key, field) in panel.fields">
+                               <form-field field="[field.name, pc.fieldTypes[field.type - 1], { values: field.field_facet_choices, disabled: !(!pc.disabled && field.is_editable) }]" ng-model="field.user_field_value"></form-field>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div ng-if="!pc.disabled" class="panel-footer">
-            <input type="submit" class="btn btn-primary submit-facet-edit-form" aria-hidden="true" value="{{ 'edit'|trans:{}:'platform' }}"></input>
+            <input ng-if="!pc.disabled" type="submit" ng-click="pc.onSubmit(facet)" class="btn btn-primary" aria-hidden="true" value="{{ 'edit'|trans:{}:'platform' }}"></input>
         </div>
     </form>
 </script>
 
 <div class="panel-body">
-  <button ng-click="pc.switchProfileMode()"> {{ pc.profileModeLabel }} </button>
+  <button ng-click="pc.switchProfileMode()" class="btn btn-primary" style="margin-bottom: 10px;"> {{ pc.profileModeLabel }} </button>
   <ul class="nav nav-tabs">
       <li class="active"><a href="#general-profile" data-toggle="tab">{{ 'general'|trans:{}:'platform' }}</a> </li>
       <li ng-if="!facet.is_main" ng-repeat="(key, facet) in pc.facets"> <a href="#facet-{{ facet.id}}" data-toggle="tab"> {{ facet.name }}</a> </i>
@@ -68,7 +66,7 @@
                   </div>
               </div>
               <div ng-if="facet.is_main" ng-repeat="(key, facet) in pc.facets">
-                  <form ng-include="'facet_renderer.html'"></form>
+                  <form class="facet-main" ng-include="'facet_renderer.html'"></form>
               </div>
           </div>
       </div>

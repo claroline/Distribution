@@ -2,16 +2,16 @@
     <div class="panel-body">
         <div class="panel-group" role="tablelist" aria-multiselectable="true">
             <ul dragula='"panel-bag"' dragula-scope="$parent" dragula-model="facet.panels" data-facet-id="{{ facet.id }}">
-                <li ng-repeat="(key, panel) in facet.panels" id="panel-{{ panel.id }}" style="list-style-type: none;">
-                    <div class="panel panel-default" id="panel-facet-main-{{ panel.id }}"  style="margin-bottom: 10px;">
-                        <div class="panel-heading" role="tab" id="facet-panel-{{ panel.id }}">
+                <li ng-repeat="(key, panel) in facet.panels" style="list-style-type: none;">
+                    <div class="panel panel-default" style="margin-bottom: 10px;">
+                        <div class="panel-heading" role="tab">
                             <h4 class="panel-title">
                                 <div class="dropdown pull-left">
                                     <i class="fa fa-cog pointer-hand" data-toggle="dropdown"></i>
                                     <ul class="dropdown-menu" role="menu">
                                         <li role="presentation"><a href="#" ng-click="fc.onEditPanelFormRequest(panel)">{{ "edit"|trans:{}:'platform' }}</a></li>
                                         <li role="presentation"><a href="#" ng-click="fc.onSetPanelRoles(panel)"> {{ "roles"|trans:{}:'platform' }} </a>
-                                        <li role="presentation"><a ng-click="fc.onAddFieldFormRequest(panel)" class="add-field-to-panel">{{ 'add_field_to_panel'|trans:{}:'platform' }}</a></li>
+                                        <li role="presentation"><a class="pointer" ng-click="fc.onAddFieldFormRequest(panel)" class="add-field-to-panel">{{ 'add_field_to_panel'|trans:{}:'platform' }}</a></li>
                                     </ul>
                                 </div>
                                 <a data-toggle="collapse" href="#panel-{{ panel.id }}" aria-expanded="true" aria-controls="panel-{{ panel.id}}" id="name-panel-{{ panel.id }}">
@@ -102,7 +102,7 @@
                             <input type="submit" class="btn btn-primary" value="{{ 'edit'|trans:{}:'platform' }}"></input>
                         </form>
                         </br>
-                        <div class="container table-bordered" style="padding: 10px;" ng-repeat="(key, facet) in fc.facets" ng-if="facet.is_main">
+                        <div class="facet-main" ng-repeat="(key, facet) in fc.facets" ng-if="facet.is_main">
                             <h4 align="center">
                                 <span>  {{ facet.name }}  </span>
                                 <span class="dropdown">
