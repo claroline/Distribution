@@ -460,14 +460,6 @@ class FacetManager
     }
 
     /**
-     * Unused.
-     */
-    public function getFieldFacetValuesByUser(User $user)
-    {
-        $ffvs = $this->fieldValueRepo->findByUser(array('user' => $user));
-    }
-
-    /**
      * Used by public profile application.
      *
      * @deprecated ?

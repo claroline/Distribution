@@ -240,8 +240,8 @@ class FacetController extends FOSRestController
 
         foreach ($params['roles'] as $param) {
             $role = $this->om->getRepository('ClarolineCoreBundle:Role')->find($param['role']['id']);
-            $canOpen = $param['can_open'] === 'true' ? true : false;
-            $canEdit = $param['can_edit'] === 'true' ? true : false;
+            $canOpen = $param['can_open'] === 'true';
+            $canEdit = $param['can_edit'] === 'true';
             $this->facetManager->setPanelFacetRole($panel, $role, $canOpen, $canEdit);
         }
 
@@ -270,12 +270,12 @@ class FacetController extends FOSRestController
 
         foreach ($params['preferences'] as $param) {
             $role = $this->om->getRepository('ClarolineCoreBundle:Role')->find($param['role']['id']);
-            $baseData = $param['base_data'] === 'true' ? true : false;
-            $mail = $param['mail'] === 'true' ? true : false;
-            $phone = $param['phone'] === 'true' ? true : false;
+            $baseData = $param['base_data'] === 'true';
+            $mail = $param['mail'] === 'true';
+            $phone = $param['phone'] === 'true';
             //old param. Not used anymore but it could be used again "soon"
             $sendMail = false;
-            $sendMessage = $param['send_message'] === 'true' ? true : false;
+            $sendMessage = $param['send_message'] === 'true';
             $this->facetManager->setProfilePreference($baseData, $mail, $phone, $sendMail, $sendMessage, $role);
         }
 

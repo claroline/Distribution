@@ -16,7 +16,7 @@ use Claroline\CoreBundle\Entity\Role;
 use JMS\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\PanelFacetRoleRepository")
+ * @ORM\Entity
  * @ORM\Table(name="claro_panel_facet_role")
  */
 class PanelFacetRole

@@ -8,5 +8,5 @@
         name="{{ cc.name }}"
         value="{{ cc.name }}">
     </input>
-    <label class="control-label" for="{{ this.name }}"> {{ cc.label }} </label>
+    <label class="control-label" > {{ cc.label|trans:{}:cc.translationDomain }} </label>
 </div>

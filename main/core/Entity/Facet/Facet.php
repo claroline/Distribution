@@ -156,13 +156,7 @@ class Facet
 
     public function setForceCreationForm($boolean)
     {
-        if ($boolean === 'true') {
-            $boolean = true;
-        } elseif ($boolean === 'false') {
-            $boolean = false;
-        }
-
-        $this->forceCreationForm = $boolean;
+        $this->forceCreationForm = !is_bool($boolean) ? $boolean === 'true' : $boolean;
     }
 
     public function getForceCreationForm()
@@ -172,13 +166,7 @@ class Facet
 
     public function setIsMain($boolean)
     {
-        if ($boolean === 'true') {
-            $boolean = true;
-        } elseif ($boolean === 'false') {
-            $boolean = false;
-        }
-
-        $this->isMain = $boolean;
+        $this->isMain = !is_bool($boolean) ? $boolean === 'true' : $boolean;
     }
 
     public function isMain()
