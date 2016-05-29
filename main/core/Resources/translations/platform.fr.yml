@@ -1281,3 +1281,18 @@ roles_panels_form_explanation: Définissez l'accessibilité au panel par rôle.
 delete_field: Supprimer un champ
 delete_field_confirm: Êtes-vous vraiment sûr de vouloir supprimer ce champ ?
 facet_imported: Facettes importées
+radio: Bouton radio
+select: Liste déroulante
+checkboxes: Checkboxes
+facet_edited: Facet édité avec succès
+facet_created: Facet créé avec succès
+facet_removed: Facet supprimé avec succès
+facet_roles_edited: Édition des rôles du facet avec succès
+panel_created: Panel créé avec succès
+panel_edited: Panel édité avec succès
+panel_removed: Panel supprimé avec succès
+field_created: Champ créé avec succès
+field_edited: Champ édité avec succès
+field_removed: Champ supprimé avec succès
+panel_roles_edited: Rôles du panel édité avec succès
+profile_preference_edited: Préférences du profil éditées avec succès

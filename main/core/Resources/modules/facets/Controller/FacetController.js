@@ -14,6 +14,7 @@ export default class FacetController {
     this.facets = []
     this.platformRoles = []
     this.profilePreferences = []
+    this.alerts = []
     this.$scope = $scope
     $http.get(Routing.generate('api_get_facets')).then(d => this.facets = d.data)
     $http.get(Routing.generate('api_get_platform_roles')).then(d => this.platformRoles = d.data)
@@ -60,6 +61,10 @@ export default class FacetController {
 
     $scope.$on('panel-bag.drop', this.onPanelBagDrop.bind(this))
     $scope.$on('field-bag.drop', this.onFieldBagDrop.bind(this))
+  }
+
+  closeAlert(index) {
+      this.alerts.splice(index, 1);
   }
 
   onPanelBagDrop (el, target, source, siblings) {
@@ -138,7 +143,13 @@ export default class FacetController {
     modalInstance.result.then(result => {
       if (!result) return
       this.FormBuilderService.submit(Routing.generate('api_post_facet'), {'facet': result}).then(
-        d => this.facets.push(d.data),
+        d => {
+            this.facets.push(d.data)
+            this.alerts.push({
+                type: 'success',
+                msg: this.translate('facet_created')
+            })
+        },
         d => ClarolineAPIService.errorModal()
       )
     })
@@ -172,6 +183,10 @@ export default class FacetController {
         'PUT'
       ).then(
         d => {
+            this.alerts.push({
+                type: 'success',
+                msg: this.translate('facet_edited')
+            })
         },
         d => ClarolineAPIService.errorModal()
       )
@@ -185,15 +200,15 @@ export default class FacetController {
       {url, method: 'DELETE'},
       function () {
         this.ClarolineAPIService.removeElements([facet], this.facets)
+        this.alerts.push({
+            type: 'success',
+            msg: this.translate('facet_removed')
+        })
       }.bind(this),
       Translator.trans('delete_facet', {}, 'platform'),
       Translator.trans('delete_facet_confirm', 'platform')
     )
   }
-
-  onMoveFacetLeft (facet) {}
-
-  onMoveFacetRight (facet) {}
 
   onSetFacetRoles (facet) {
     const modalInstance = this.$uibModal.open({
@@ -215,6 +230,10 @@ export default class FacetController {
 
       this.$http.put(route).then(
         d => {
+            this.alerts.push({
+                type: 'success',
+                msg: this.translate('facet_roles_edited')
+            })
         },
         d => ClarolineAPIService.errorModal()
       )
@@ -245,6 +264,10 @@ export default class FacetController {
         d => {
           if (!facet.panels) facet.panels = []
           facet.panels.push(d.data)
+          this.alerts.push({
+              type: 'success',
+              msg: this.translate('panel_created')
+          })
         },
         d => ClarolineAPIService.errorModal()
       )
@@ -277,6 +300,10 @@ export default class FacetController {
       if (!result) return
       this.FormBuilderService.submit(Routing.generate('api_put_panel_facet', {panel: panel.id}), {'panel': result}, 'PUT').then(
         d => {
+            this.alerts.push({
+                type: 'success',
+                msg: this.translate('panel_edited')
+            })
         },
         d => ClarolineAPIService.errorModal()
       )
@@ -300,6 +327,10 @@ export default class FacetController {
       Translator.trans('delete_panel', {}, 'platform'),
       Translator.trans('delete_panel_confirm', 'platform')
     )
+    this.alerts.push({
+        type: 'success',
+        msg: this.translate('panel_removed')
+    })
   }
 
   onAddFieldFormRequest (panel) {
@@ -326,6 +357,10 @@ export default class FacetController {
         d => {
           if (!panel.fields) panel.fields = []
           panel.fields.push(d.data)
+          this.alerts.push({
+              type: 'success',
+              msg: this.translate('field_created')
+          })
         },
         d => ClarolineAPIService.errorModal()
       )
@@ -358,6 +393,10 @@ export default class FacetController {
       if (!result) return
       this.FormBuilderService.submit(Routing.generate('api_put_field_facet', {field: field.id}), {'field': result}, 'PUT').then(
         d => {
+            this.alerts.push({
+                type: 'success',
+                msg: this.translate('field_edited')
+            })
         },
         d => ClarolineAPIService.errorModal()
       )
@@ -382,6 +421,10 @@ export default class FacetController {
       Translator.trans('delete_field', {}, 'platform'),
       Translator.trans('delete_field_confirm', 'platform')
     )
+    this.alerts.push({
+        type: 'success',
+        msg: this.translate('field_removed')
+    })
   }
 
   onSetPanelRoles (panel) {
@@ -402,6 +445,10 @@ export default class FacetController {
     modalInstance.result.then(panel => {
       this.FormBuilderService.submit(Routing.generate('api_put_panel_roles', {panel: panel.id}), {'roles': panel.panel_facets_role}, 'PUT').then(
         d => {
+            this.alerts.push({
+                type: 'success',
+                msg: this.translate('panel_roles_edited')
+            })
         },
         d => ClarolineAPIService.errorModal()
       )
@@ -411,8 +458,16 @@ export default class FacetController {
   onSubmitProfilePreferences (form) {
     this.FormBuilderService.submit(Routing.generate('api_put_profile_preferences'), {'preferences': this.profilePreferences}, 'PUT').then(
       d => {
+          this.alerts.push({
+              type: 'success',
+              msg: this.translate('profile_preference_edited')
+          })
       },
       d => ClarolineAPIService.errorModal()
     )
+  }
+
+  translate(msg) {
+      return Translator.trans(msg, {}, 'platform')
   }
 }

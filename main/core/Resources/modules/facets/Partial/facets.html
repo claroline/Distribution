@@ -53,6 +53,7 @@
 </script>
 
 <div>
+    <uib-alert ng-repeat="alert in fc.alerts" type="{{ alert.type }}" close="fc.closeAlert($index)">{{ alert.msg }}</uib-alert>
     <ul class="nav nav-tabs">
         <li id="general-tab-btn" class="active">
             <a href="#general-tab" data-toggle="tab">
