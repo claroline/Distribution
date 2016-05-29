@@ -38,7 +38,7 @@
                   <aside class="col-md-2 profile_aside" role="complementary">
                       <div class="avatar">
                           <img ng-if="pc.user.picture"
-                               src="{{ 'uploads/pictures/' +  pc.user.picture|asset }}"
+                               ng-src="{{ pc.picturePath | asset }}"
                                class="profile_picture img-circle"
                                alt="{{ pc.user.lastName + ' ' + pc.user.firstName }}"
                                width="150px"

@@ -178,8 +178,8 @@ class ResourceNodeRepository extends MaterializedPathRepository implements Conta
         if ($withLastOpenDate && $user !== 'anon.') {
             $this->builder->selectAsArray(false, true)
                 ->whereParentIs($parent)
-                ->addLastOpenDate($user);
-                //->groupById();
+                ->addLastOpenDate($user)
+                ->groupById();
 
             if (!$isWorkspaceManager) {
                 $this->builder->whereHasRoleIn($roles)->whereIsAccessible($user);

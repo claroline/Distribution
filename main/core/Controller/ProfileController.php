@@ -270,7 +270,7 @@ class ProfileController extends Controller
             if ($editYourself) {
                 $successMessage = $translator->trans('edit_your_profile_success', array(), 'platform');
                 $errorMessage = $translator->trans('edit_your_profile_error', array(), 'platform');
-                $redirectUrl = $this->generateUrl('claro_profile_view');
+                $redirectUrl = $this->generateUrl('claro_public_profile_view', ['publicUrl' => $user->getPublicUrl()]);
             }
 
             $entityManager = $this->getDoctrine()->getManager();

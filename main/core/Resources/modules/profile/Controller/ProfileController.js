@@ -10,8 +10,10 @@ export default class ProfileController {
     this.disabled = true
     this.profileModeLabel = Translator.trans('edit_mode', {}, 'platform');
     this.forms = []
-
-    $http.get(Routing.generate('api_get_connected_user')).then(d => this.user = d.data)
+    $http.get(Routing.generate('api_get_connected_user')).then(d => {
+        this.user = d.data
+        this.picturePath = 'uploads/pictures/' +  d.data.picture
+    })
     $http.get(Routing.generate('api_get_profile_links', {user: this.userId})).then(d => this.arLinks = d.data)
     $http.get(Routing.generate('api_get_profile_facets', {user: this.userId})).then(d => this.facets = d.data)
     this.fieldTypes = ['text', 'number', 'date', 'radio', 'select', 'checkboxes', 'country']
