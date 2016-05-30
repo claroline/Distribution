@@ -1,5 +1,5 @@
 <?php
-namespace Innova\PathBundle\EventListener;
+namespace Innova\PathBundle\EventListener\Notifications;
 use Claroline\CoreBundle\Event\Log\CreateFormResourceEvent;
 use Icap\NotificationBundle\Event\Notification\NotificationCreateDelegateViewEvent;
 use Symfony\Component\DependencyInjection\ContainerAware;
@@ -16,6 +16,26 @@ class NotificationListener extends ContainerAware
                 'notification' => $notification,
                 'status' => $notificationView->getStatus(),
                 'systemName' => $event->getSystemName()
+            )
+        );
+        $event->setResponseContent($content);
+        $event->stopPropagation();
+    }
+
+    /**
+     * Notification from Manager to Collaborator
+     * @param NotificationCreateDelegateViewEvent $event
+     */
+    public function onCreateNotificationUnlockDone(NotificationCreateDelegateViewEvent $event)
+    {
+        $notificationView = $event->getNotificationView();
+        $notification = $notificationView->getNotification();
+        $content = $this->container->get('templating')->render(
+            'InnovaPathBundle:Notification:unlockdone.html.twig',
+            array(
+                'notification'  => $notification,
+                'status'        => $notificationView->getStatus(),
+                'systemName'    => $event->getSystemName()
             )
         );
         $event->setResponseContent($content);

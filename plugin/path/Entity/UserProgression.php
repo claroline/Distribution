@@ -84,7 +84,7 @@ class UserProgression implements \JsonSerializable
     protected $authorized;
     /**
      * State of the access to the step.
-     * @var boolean
+     * @var bool
      *
      * @ORM\Column(name="locked_access", type="boolean")
      */
@@ -92,7 +92,7 @@ class UserProgression implements \JsonSerializable
 
     /**
      * Has the lock been called upon removal ?
-     * @var boolean
+     * @var bool
      *
      * @ORM\Column(name="lockedcall_access", type="boolean")
      */
@@ -105,6 +105,8 @@ class UserProgression implements \JsonSerializable
     {
         // Set the default status
         $this->status = static::$statusDefault;
+        $this->lockedcall = false;
+        $this->locked = false;
     }
 
     /**
@@ -262,7 +264,7 @@ class UserProgression implements \JsonSerializable
     /**
      * Get locked.
      *
-     * @return boolean
+     * @return bool
      */
     public function getLocked()
     {

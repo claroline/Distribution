@@ -1,4 +1,1 @@
-{#
-<a href="{{ path('icap_wiki_view', {'wikiId' : notification.details.resource.id}) ~ '#section-' ~ notification.details.section.id }}"></a>
-#}
-<a href="#">{{ notification.actionKey|trans({'%path%' : notification.details.resource.name, '%step%' : notification.details.unlock.stepname}, 'notification') }}</a>
+<a href="{{path('innova_path_manage_results', {'id' : notification.details.resource.id})}}">{{ notification.actionKey|trans({'%path%' : notification.details.resource.name, '%step%' : notification.details.unlock.stepname}, 'notification') }}</a>

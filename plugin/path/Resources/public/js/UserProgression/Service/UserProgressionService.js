@@ -114,7 +114,7 @@
                 },
 
                 /**
-                 * Set lock for Progression of the User for a Step (calls Controller)
+                 * Set lock for Progression of the User for a Step (calls Controller).
                  * @param step
                  * @param lock
                  */
@@ -126,21 +126,52 @@
                             deferred.resolve(response.status);
                         })
                         .error(function (response) {
-                            AlertService.addAlert('error', Translator.trans('progression_setlock_error', {}, 'path_wizards'));
+                            AlertService.addAlert('error', Translator.trans('user_progression_setlock_error', {}, 'path_wizards'));
                             deferred.reject(response);
                         });
                     return deferred.promise;
                 },
 
                 /**
-                 * unlock step : call Controller method that triggers log listener and notification
+                 * call for unlock step : call Controller method that triggers log listener and notification
                  */
-                unlock: function unlock(step, path) {
+                callForUnlock: function callForUnlock(step, nextstep) {
                     var deferred = $q.defer();
-                    var params = {path:path, step:step};
+                    var params = {step:step.resourceId, nextstep:nextstep.resourceId};
+                    $http
+                        .get(Routing.generate('innova_path_step_callforunlock', params))
+                        //returns a propression object
+                        .success(function (response) {
+                            //update progression
+                            if (!angular.isObject(progression[step.stepId])) {
+                                progression[response.stepId] = response;
+                            } else {
+                                progression[response.stepId].lockedcall = response.lockedcall;
+                            }
+                            //display message to user that indicates the call has been sent
+                            //AlertService.addAlert('success', Translator.trans('user_progression_lockedcall_sent', {}, 'path_wizards'));
+                            deferred.resolve(response);
+                        }.bind(this)) //to access this object method and attributes
+                        .error(function (response) {
+                            deferred.reject(response);
+                        });
+                    return deferred.promise;
+                },
+
+                setUnlock: function setUnlock(step) {
+                    var deferred = $q.defer();
+                    var params = {step:step.resourceId};
                     $http
                         .get(Routing.generate('innova_path_step_unlock', params))
                         .success(function (response) {
+                            //update progression
+                            if (!angular.isObject(progression[step.stepId])) {
+                                progression[response.stepId] = response;
+                            } else {
+                                progression[response.stepId].lockedcall = response.lockedcall;
+                            }
+                            //display message to user that indicates the lock has been removed
+                            AlertService.addAlert('success', Translator.trans('user_progression_unlock_sent', {}, 'path_wizards'));
                             deferred.resolve(response);
                         }.bind(this)) //to access this object method and attributes
                         .error(function (response) {

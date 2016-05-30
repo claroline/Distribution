@@ -1,25 +1,26 @@
 <?php
 namespace Innova\PathBundle\Event\Log;
+
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Event\Log\AbstractLogResourceEvent;
 use Claroline\CoreBundle\Event\Log\NotifiableInterface;
 use Innova\PathBundle\Entity\Step;
 
-class LogStepUnlockEvent
+class LogStepUnlockDoneEvent
     extends AbstractLogResourceEvent    //log associated to a resource
     implements NotifiableInterface      //mandatory for a log to be used as a notification
 {
+    const       ACTION = 'resource-innova_path-step_unlockdone';
 
-    const ACTION = 'resource-innova_path-step_unlock';
-    protected $step;
-    protected $details;
-    private $userIds = array();
+    protected   $step;
+    protected   $details;
+    private     $userIds = array();
 
     public function __construct(Step $step, $userIds=array())
     {
-        $this->step = $step;
-        $this->userIds = $userIds;
-        $this->details = array(
+        $this->step     = $step;
+        $this->userIds  = $userIds;
+        $this->details  = array(
             'unlock' => array(
                 'path'      => $step->getPath()->getId(),
                 'step'      => $step->getId(),
@@ -28,6 +29,7 @@ class LogStepUnlockEvent
         );
         parent::__construct($step->getPath()->getResourceNode(), $this->details);
     }
+
     /**
      * @return array
      */
@@ -38,7 +40,7 @@ class LogStepUnlockEvent
     /**
      * Get sendToFollowers boolean.
      *
-     * @return bool
+     * @return boolean
      */
     public function getSendToFollowers()
     {
@@ -98,7 +100,7 @@ class LogStepUnlockEvent
     /**
      * Get if event is allowed to create notification or not
      *
-     * @return bool
+     * @return boolean
      */
     public function isAllowedToNotify()
     {
