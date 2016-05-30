@@ -425,9 +425,7 @@ class RoleManager
         $this->om->startFlushSuite();
 
         foreach ($subjects as $subject) {
-            foreach ($roles as $role) {
-                $this->associateRole($subject, $role, $sendMail);
-            }
+            $this->associateRoles($subject, $roles);
         }
 
         $this->om->endFlushSuite();

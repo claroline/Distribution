@@ -1257,7 +1257,6 @@ group_name: Nom du groupe
 profile_edition: Modification du profil
 claro_admin_personal_workspace_resource_rights: Gestion des ressources de l'espace personnel
 organization_name: Nom de l'organisation
-csv_delete: Suppression par csv
 plugins: Plugins
 activate: Activer
 version: Version
@@ -1267,3 +1266,7 @@ cache_management_explanation: Votre dossier app/cache doit être vidé manuellem
 required_by: Requis par:
 require: Requiert:
 requirement_warning: Attention aux prérequis
+roles_updated: Roles mis à jour
+role_update: Mise à jour des rôles
+role_update_confirm:  Êtes-vous sûr de vouloir rajouter les rôles suivants [ %role_list ] aux utilisateurs [ %user_list% ] ?
+add_roles: Add roles

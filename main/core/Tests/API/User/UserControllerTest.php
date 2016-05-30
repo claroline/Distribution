@@ -23,7 +23,7 @@ class UserControllerTest extends TransactionalTestCase
         parent::setUp();
         $this->persister = $this->client->getContainer()->get('claroline.library.testing.persister');
     }
-
+/*
     //@url: /api/users.{_format}
     //@route: api_get_users
     public function testGetUsersAction()
@@ -518,6 +518,43 @@ class UserControllerTest extends TransactionalTestCase
     public function testRemoveUsersFromGroupActionIsProtected()
     {
         $this->markTestIncomplete('This test has not been implemented yet.');
+    }*/
+
+    public function testPutRolesToUsersAction()
+    {
+        $users = [
+            $this->persister->user('user1'),
+            $this->persister->user('user2'),
+            $this->persister->user('user3'),
+        ];
+
+        $roles = [
+            $this->persister->role('ROLE_1'),
+            $this->persister->role('ROLE_2'),
+            $this->persister->role('ROLE_3'),
+        ];
+
+        $admin = $this->createAdmin();
+        $this->persister->flush();
+        $this->logIn($admin);
+
+        $uString = '';
+
+        foreach ($users as $user) {
+            $uString .= "userIds[]={$user->getId()}&";
+        }
+
+        $rString = '';
+
+        foreach ($roles as $role) {
+            $rString .= "roleIds[]={$role->getId()}&";
+        }
+
+        $request = "/api/users/roles/add.json?{$uString}{$rString}";
+        $this->client->request('PUT', $request);
+        $data = json_decode($this->client->getResponse()->getContent(), true);
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(5, count($data[0]['roles']));
     }
 
     private function createAdmin()
