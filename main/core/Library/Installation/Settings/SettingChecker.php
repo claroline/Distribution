@@ -239,8 +239,6 @@ class SettingChecker
             'web/js' => 'directory',
         );
 
-        var_dump(realpath($rootDir));
-
         foreach ($writableElements as $element => $type) {
             $category->addRequirement(
                 "The {$type} %{$type}% must be writable",
