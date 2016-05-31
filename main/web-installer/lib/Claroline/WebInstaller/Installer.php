@@ -60,10 +60,9 @@ class Installer
             $container = $kernel->getContainer();
             $sqlFile = $this->appDir.'/../claroline.sql';
 
-            if (realpath($sqlFile)) {
+            if (file_exists($sqlFile)) {
                 $output->writeln('Importing database from prebuilt sql file...');
                 $container->get('doctrine.orm.entity_manager')->getConnection()->exec(file_get_contents($sqlFile));
-                $container->get('doctrine.orm.entity_manager')->flush();
             } else {
                 $this->launchInstaller($container, $output);
             }
