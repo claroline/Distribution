@@ -65,7 +65,7 @@ class Graphic extends Interaction
      * To process the user's response for a paper(or a test).
      *
      * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param int $paperID id Paper or 0 if it's just a question test and not a paper
+     * @param int                                       $paperID id Paper or 0 if it's just a question test and not a paper
      *
      * @return mixed[]
      */
@@ -105,6 +105,7 @@ class Graphic extends Interaction
             'score' => $score, // Score of the student (right answer - penalty)
             'response' => $answers, // The student's answer (with all the informations of the coordonates)
         );
+
         return $res;
     }
 
@@ -167,17 +168,17 @@ class Graphic extends Interaction
      * To calculate the score.
      *
      *
-     * @param String $answers
-     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param string                                             $answers
+     * @param \Symfony\Component\HttpFoundation\Request          $request
      * @param doctrineCollection of \UJM\ExoBundle\Entity\Coords $rightCoords
-     * @param array [string] $coords
+     * @param array [string]                                     $coords
      *
      * @return float
      */
     public function markPhp($answers = null, $request = null, $rightCoords = null, $coords = null)
     {
         // differenciate the exercise of the bank of questions
-        if(is_int($request) ) {
+        if (is_int($request)) {
             $max = $request;
             $coords = preg_split('[,]', $answers); // Divide the answer zones into cells
         } else {
@@ -208,6 +209,7 @@ class Graphic extends Interaction
                 }
             }
         }
+
         return $point;
     }
 
@@ -269,9 +271,9 @@ class Graphic extends Interaction
      * Temporary method (to delete with the full angular)
      * Graphic question : Check if the suggested answer zone isn't already right in order not to have points twice.
      *
-     * @param String $coor coords of one right answer
-     * @param array $verif list of the student's placed answers zone
-     * @param int $z number of rights placed answers by the user
+     * @param string $coor  coords of one right answer
+     * @param array  $verif list of the student's placed answers zone
+     * @param int    $z     number of rights placed answers by the user
      *
      * @return bool
      */
@@ -287,6 +289,7 @@ class Graphic extends Interaction
                 $resu = true;
             }
         }
+
         return $resu;
     }
 }

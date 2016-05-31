@@ -90,9 +90,9 @@ class Hole extends Interaction
      * Temporary method (to delete with the full angular)
      * To calculate the score.
      *
-     * @param \UJM\ExoBundle\Entity\InteractionHole $interHole
+     * @param \UJM\ExoBundle\Entity\InteractionHole     $interHole
      * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param float $penalty penalty if the user showed hints
+     * @param float                                     $penalty   penalty if the user showed hints
      *
      * @return string userScore/scoreMax
      */
@@ -100,17 +100,16 @@ class Hole extends Interaction
         \UJM\ExoBundle\Entity\InteractionHole $interHole = null,
         $request = null,
         $penalty = null
-    )
-    {
+    ) {
         $score = 0;
         $scoreMax = $this->maxScore($interHole);
-        $i=1;
+        $i = 1;
         foreach ($interHole->getHoles() as $hole) {
-            if(is_array($request) ) {
+            if (is_array($request)) {
                 $response = $request[$i];
-                $i++;
+                ++$i;
             } else {
-                $response = $request->get('blank_' . $hole->getPosition());
+                $response = $request->get('blank_'.$hole->getPosition());
             }
             $response = trim($response);
             $response = preg_replace('/\s+/', ' ', $response);
@@ -120,7 +119,8 @@ class Hole extends Interaction
         if ($score < 0) {
             $score = 0;
         }
-        $score .= '/' . $scoreMax;
+        $score .= '/'.$scoreMax;
+
         return $score;
     }
 
