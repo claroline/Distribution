@@ -143,11 +143,6 @@ claro_admin_home_tab:
     prefix: admin
     type: annotation
 
-claro_admin_tool_config:
-    resource: "@ClarolineCoreBundle/Controller/Administration/ToolsController.php"
-    prefix: admin/tools
-    type: annotation
-
 claro_resource:
     resource: "@ClarolineCoreBundle/Controller/ResourceController.php"
     prefix: resource
@@ -313,6 +308,14 @@ claro_workspace_api:
 
 claro_group_api:
     resource: "@ClarolineCoreBundle/Controller/API/User/GroupController.php"
+    type: rest
+    prefix: api
+    defaults: {_format: json}
+    options:
+        expose: true
+
+claro_role_api:
+    resource: "@ClarolineCoreBundle/Controller/API/User/RoleController.php"
     type: rest
     prefix: api
     defaults: {_format: json}
