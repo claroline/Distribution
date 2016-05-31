@@ -1150,18 +1150,13 @@ class ResourceController
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function resourceManagerDisplayModeRegisterAction(User $user, $index, $displayMode)
+    public function resourceManagerDisplayModeRegisterAction($index, $displayMode, User $user = null)
     {
-        if ($user !== 'anon.') {
+        if (!is_null($user)) {
             $this->userManager->registerResourceManagerDisplayModeByUser($user, $index, $displayMode);
         }
 
         return new Response(200);
-    }
-
-    public function deleteNodeConfirmAction(ResourceNode $node)
-    {
-        throw new \Exception('hey');
     }
 
     private function isUsurpatingWorkspaceRole(TokenInterface $token)

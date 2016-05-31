@@ -337,7 +337,7 @@
                 && this.isReadyToPaste
                 && (!this.isCutMode || this.checkedNodes.directoryId !== event.id);
 
-            var listViewActivated = this.displayMode === 'list' ? true: false;
+            var listViewActivated = this.displayMode === 'list';
 
             $(this.el).html(Twig.render(ResourceManagerActions, {
                 resourceTypes: this.parameters.resourceTypes,
