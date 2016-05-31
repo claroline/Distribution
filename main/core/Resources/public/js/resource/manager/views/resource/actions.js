@@ -393,7 +393,7 @@
             var mode = chk.is(':checked') ? 'list': 'default';
             this.displayMode = mode;
             this.dispatcher.trigger('list-mode', {'viewName': this.parameters.viewName, 'mode': mode});
-            this.registerDisplayMode()
+            this.registerDisplayMode();
         },
         import: function () {
             this.dispatcher.trigger(
