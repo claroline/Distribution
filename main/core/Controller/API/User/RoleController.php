@@ -18,6 +18,7 @@ use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Controller\Annotations\NamePrefix;
 use FOS\RestBundle\Controller\Annotations\Get;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use JMS\SecurityExtraBundle\Annotation as SEC;
 
 /**
  * @NamePrefix("api_")
@@ -41,23 +42,10 @@ class RoleController extends FOSRestController
     /**
      * @View(serializerGroups={"api_role"})
      * @Get("/roles/platform", name="get_platform_roles", options={ "method_prefix" = false })
+     * @SEC\PreAuthorize("hasRole('ROLE_ADMIN')")
      */
     public function getPlatformRolesAction()
     {
-        $this->throwsExceptionIfNotAdmin();
-
-        return $this->roleManager->getAllPlatformRoles();
-    }
-
-    private function isAdmin()
-    {
-        return $this->authorization->isGranted('ROLE_ADMIN');
-    }
-
-    private function throwsExceptionIfNotAdmin()
-    {
-        if (!$this->isAdmin()) {
-            throw new AccessDeniedException('This action can only be done by the administrator');
-        }
+        return $this->roleManager->getAllPlatformRoles(false);
     }
 }

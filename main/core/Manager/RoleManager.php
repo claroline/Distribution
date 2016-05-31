@@ -648,9 +648,9 @@ class RoleManager
     /**
      * @return \Claroline\CoreBundle\Entity\Role[]
      */
-    public function getAllPlatformRoles()
+    public function getAllPlatformRoles($includeRoleUser = true)
     {
-        return $this->roleRepo->findAllPlatformRoles();
+        return $this->roleRepo->findAllPlatformRoles($includeRoleUser);
     }
 
     /**

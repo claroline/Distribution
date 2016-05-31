@@ -200,19 +200,8 @@ export default class UserController {
     addRolesToSelection() {
         const url = Routing.generate('api_put_users_roles') + '?'  + this.generateQsForSelectedRoles() + this.generateQsForSelectedUsers()
 
-        let users = ''
-
-        for (let i = 0; i < this.selected.length; i++) {
-            users +=  this.selected[i].username
-            if (i < this.selected.length - 1) users += ', '
-        }
-
-        let roles = ''
-
-        for (let i = 0; i < this.roles.length; i++) {
-            roles +=  this.translate(this.roles[i].translation_key)
-            if (i < this.roles.length - 1) roles += ', '
-        }
+        const users = this.selected.map(s => s.username).join(', ')
+        const roles = this.roles.map(r => this.translate(r.translation_key)).join(', ')
 
         this.ClarolineAPIService.confirm(
             {url, method: 'PUT'},
