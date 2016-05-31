@@ -35,7 +35,7 @@ MatchQuestionService.prototype.getCorrectAnswer = function getCorrectAnswer(ques
 
 /**
  * 
- * @returns {answersAllFound}
+ * @returns {number}
  */
 MatchQuestionService.prototype.answersAllFound = function answersAllFound(question, answers) {
     var numAnswersFound = 0;
@@ -97,8 +97,6 @@ MatchQuestionService.prototype.initBindMatchQuestion = function initBindMatchQue
         LogEnabled: true,
         PaintStyle: {strokeStyle: "#777", lineWidth: 4}
     });
-
-    jsPlumb.detachEveryConnection();
 };
 
 MatchQuestionService.prototype.initDragMatchQuestion = function initDragMatchQuestion() {

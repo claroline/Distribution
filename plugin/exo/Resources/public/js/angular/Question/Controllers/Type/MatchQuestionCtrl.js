@@ -1,13 +1,15 @@
 /**
  * Choice Question Controller
- * @param {FeedbackService} FeedbackService
- * @param {Object}          $scope
+ * @param {FeedbackService}      FeedbackService
+ * @param {Object}               $scope
+ * @param {MatchQuestionService} MatchQuestionService
  * @constructor
  */
-var MatchQuestionCtrl = function MatchQuestionCtrl(FeedbackService, $scope) {
+var MatchQuestionCtrl = function MatchQuestionCtrl(FeedbackService, $scope, MatchQuestionService) {
     AbstractQuestionCtrl.apply(this, arguments);
     
     this.$scope = $scope;
+    this.MatchQuestionService = MatchQuestionService;
 
     this.savedAnswers = [];
     for (var i=0; i<this.dropped.length; i++) {
@@ -19,7 +21,7 @@ var MatchQuestionCtrl = function MatchQuestionCtrl(FeedbackService, $scope) {
 MatchQuestionCtrl.prototype = Object.create(AbstractQuestionCtrl.prototype);
 
 // Set up dependency injection (get DI from parent too)
-MatchQuestionCtrl.$inject = AbstractQuestionCtrl.$inject.concat([ '$scope' ]);
+MatchQuestionCtrl.$inject = AbstractQuestionCtrl.$inject.concat([ '$scope', 'MatchQuestionService' ]);
 
 MatchQuestionCtrl.prototype.connections = []; // for toBind questions
 
@@ -30,12 +32,6 @@ MatchQuestionCtrl.prototype.orphanAnswers = [];
 MatchQuestionCtrl.prototype.orphanAnswersAreChecked = false;
 
 MatchQuestionCtrl.prototype.savedAnswers = [];
-
-/**
- * Tells wether the answers are all found, not found, or if only one misses
- * @type {Integer}
- */
-ChoiceQuestionCtrl.prototype.feedbackState = -1;
 
 /**
  *
@@ -142,24 +138,30 @@ MatchQuestionCtrl.prototype.colorBindings = function colorBindings() {
     for (var i=0; i<this.connections.length; i++) {
         var rightAnswer = false;
         var c = jsPlumb.select({source: "draggable_" + this.connections[i].source, target: "droppable_" + this.connections[i].target});
-        for (var j=0; j<this.question.solutions.length; j++) {
-            if (this.connections[i].source === this.question.solutions[j].firstId && this.connections[i].target === this.question.solutions[j].secondId) {
-                rightAnswer = true;
-                c.setType("right");
-                /*
-                 * The following line adds the specific feedback on right bingings
-                 * We decided not to show it, as it can easily take too much space on the bindings
-                 * The best way would be to show it on hover
-                 * 
-                 * c.setLabel({label: this.question.solutions[j].feedback, cssClass: "label label-success"});
-                 */
-            }
-        }
-        if (!rightAnswer) {
-            if (this.feedback.visible) {
-                c.setType("wrong");
-            } else {
-                c.setType("default");
+        for (var k=0; k<this.question.firstSet.length; k++) {
+            for (var l=0; l<this.question.secondSet.length; l++) {
+                if (this.question.firstSet[k].id === this.connections[i].source && this.question.secondSet[l].id === this.connections[i].target) {
+                    for (var j=0; j<this.question.solutions.length; j++) {
+                        if (this.connections[i].source === this.question.solutions[j].firstId && this.connections[i].target === this.question.solutions[j].secondId) {
+                            rightAnswer = true;
+                            c.setType("right");
+                            /*
+                             * The following line adds the specific feedback on right bingings
+                             * We decided not to show it, as it can easily take too much space on the bindings
+                             * The best way would be to show it on hover
+                             * 
+                             * c.setLabel({label: this.question.solutions[j].feedback, cssClass: "label label-success"});
+                             */
+                        }
+                    }
+                    if (!rightAnswer) {
+                        if (this.feedback.visible) {
+                            c.setType("wrong");
+                        } else {
+                            c.setType("default");
+                        }
+                    }
+                }
             }
         }
     }
@@ -472,40 +474,6 @@ MatchQuestionCtrl.prototype.onFeedbackShow = function onFeedbackShow() {
     } else if (this.question.toBind) {
         this.colorBindings();
     }
-    
-    this.answersAllFound();
-};
-
-/**
- * 
- * @returns {answersAllFound}
- */
-MatchQuestionCtrl.prototype.answersAllFound = function answersAllFound() {
-    var answers_to_check;
-    if (this.question.toBind) {
-        answers_to_check = this.connections;
-    } else {
-        answers_to_check = this.dropped;
-    }
-    var numAnswersFound = 0;
-    for (var j=0; j<this.question.solutions.length; j++) {
-        for (var i=0; i<answers_to_check.length; i++) {
-            if (this.question.solutions[j].firstId === answers_to_check[i].source && this.question.solutions[j].secondId === answers_to_check[i].target) {
-                numAnswersFound++;
-            }
-        }
-    }
-    
-    if (numAnswersFound === this.question.solutions.length) {
-        // all answers have been found
-        this.feedbackState = 0;
-    } else if (numAnswersFound === this.question.solutions.length -1) {
-        // one answer remains to be found
-        this.feedbackState = 1;
-    } else {
-        // more answers remain to be found
-        this.feedbackState = 2;
-    }
 };
 
 /**
@@ -542,9 +510,13 @@ MatchQuestionCtrl.prototype.updateStudentData = function () {
     }
 
     for (var i = 0; i < answers_to_check.length; i++) {
-        if (answers_to_check[i] !== '' && answers_to_check[i].source && answers_to_check[i].target) {
-            var answer = answers_to_check[i].source + ',' + answers_to_check[i].target;
-            this.answer.push(answer);
+        for (var j=0; j<this.question.firstSet.length; j++) {
+            for (var k=0; k<this.question.secondSet.length; k++) {
+                if (answers_to_check[i].source === this.question.firstSet[j].id && answers_to_check[i].target === this.question.secondSet[k].id) {
+                    var answer = answers_to_check[i].source + ',' + answers_to_check[i].target;
+                    this.answer.push(answer);
+                }
+            }
         }
     }
 };
@@ -599,11 +571,12 @@ MatchQuestionCtrl.prototype.addPreviousConnections = function addPreviousConnect
                 var items = sets[i].split(',');
                 if (this.feedback.enabled || this.solutions) {
                     var created = false;
-                    for (var j=0; j<this.question.solutions.length; j++) {
-                        if (items[0] === this.question.solutions[j].firstId && items[1] === this.question.solutions[j].secondId) {
-                            var c = jsPlumb.connect({source: "draggable_" + items[0], target: "droppable_" + items[1], type: "right"});
-                            created = true;
-                            //c.setLabel({label: this.question.solutions[j].feedback, cssClass: "label label-success"});
+                    if (this.solutions) {
+                        for (var j=0; j<this.question.solutions.length; j++) {
+                            if (items[0] === this.question.solutions[j].firstId && items[1] === this.question.solutions[j].secondId) {
+                                var c = jsPlumb.connect({source: "draggable_" + items[0], target: "droppable_" + items[1], type: "right"});
+                                created = true;
+                            }
                         }
                     }
                     if (!created) {
@@ -680,11 +653,19 @@ MatchQuestionCtrl.prototype.handleBeforeDrop = function handleBeforeDrop(data) {
     } else {
         var sourceId = data.sourceId.replace('draggable_', '');
         var targetId = data.targetId.replace('droppable_', '');
-        var connection = {
-            source: sourceId,
-            target: targetId
-        };
-        this.connections.push(connection);
+        for (var i=0; i<this.question.firstSet.length; i++) {
+            if (this.question.firstSet[i].id === sourceId) {
+                for (var j=0; j<this.question.secondSet.length; j++) {
+                    if (this.question.secondSet[j].id === targetId) {
+                        var connection = {
+                            source: sourceId,
+                            target: targetId
+                        };
+                        this.connections.push(connection);
+                    }
+                }
+            }
+        }
     }
 
     this.updateStudentData();
