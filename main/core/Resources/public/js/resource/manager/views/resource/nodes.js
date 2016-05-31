@@ -41,7 +41,7 @@
             this.dispatcher = dispatcher;
             this.directoryId = '0';
             this.nodes = [];
-            this.listMode = 'default';
+            this.listMode = parameters.displayMode;
             this.zoomValue = this.parameters.zoom;
             this.dispatcher.on('change-zoom', this.zoom, this);
             _.each(this.outerEvents, function (method, event) {
@@ -222,9 +222,9 @@
                 return;
             }
 
-            var view = (this.listMode === 'default') ?
-                new views.Thumbnail(this.parameters, this.dispatcher, this.zoomValue):
-                new views.ListViewElement(this.parameters, this.dispatcher, this.zoomValue);
+            var view = (this.listMode === 'list') ?
+                new views.ListViewElement(this.parameters, this.dispatcher, this.zoomValue):
+                new views.Thumbnail(this.parameters, this.dispatcher, this.zoomValue);
 
             view.render(node, true && this.directoryId !== '0');
             this.$el.append(view.$el);
