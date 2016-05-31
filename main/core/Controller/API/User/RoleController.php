@@ -27,16 +27,13 @@ class RoleController extends FOSRestController
 {
     /**
      * @DI\InjectParams({
-     *     "roleManager"   = @DI\Inject("claroline.manager.role_manager"),
-     *     "authorization" = @DI\Inject("security.authorization_checker")
+     *     "roleManager"   = @DI\Inject("claroline.manager.role_manager")
      * })
      */
     public function __construct(
-        RoleManager $roleManager,
-        AuthorizationCheckerInterface $authorization
+        RoleManager $roleManager
     ) {
-        $this->roleManager = $roleManager;
-        $this->authorization = $authorization;
+        $this->roleManager = $roleManager
     }
 
     /**
@@ -47,5 +44,14 @@ class RoleController extends FOSRestController
     public function getPlatformRolesAction()
     {
         return $this->roleManager->getAllPlatformRoles(false);
+    }
+
+    /**
+     * @View(serializerGroups={"api_facet_admin"})
+     * @Get("roles/platform/exclude/admin", name="get_platform_roles_admin_excluded", options={ "method_prefix" = false })
+     */
+    public function getPlatformRolesAction()
+    {
+        return $this->roleManager->getPlatformNonAdminRoles(true);
     }
 }

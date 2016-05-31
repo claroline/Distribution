@@ -491,6 +491,11 @@ class UserControllerTest extends TransactionalTestCase
         $this->assertEquals(5, count($data[0]['roles']));
     }
 
+    public function testCsvImportFacetsAction()
+    {
+        $this->markTestIncomplete('This test has not been implemented yet.');
+    }
+
     private function createAdmin()
     {
         $admin = $this->persister->user('admin');
