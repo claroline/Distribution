@@ -106,8 +106,8 @@ class SettingChecker
 
         $category->addRecommendation(
             'Parameter %parameter% should be equal or greater than %value% in your php.ini',
-            array('parameter' => 'memory_limit', 'value' => '256M'),
-            $this->isGreaterOrEqual(ini_get('memory_limit'), '256M')
+            array('parameter' => 'memory_limit', 'value' => '512M'),
+            $this->isGreaterOrEqual(ini_get('memory_limit'), '512M')
         );
 
         $recommendedSettings = array(
@@ -221,7 +221,7 @@ class SettingChecker
     private function checkFilePermissions()
     {
         $category = new SettingCategory('File permissions');
-        $rootDir = __DIR__.'/../../../../../..';
+        $rootDir = __DIR__.'/../../../../../../../../';
         $writableElements = array(
             'app/cache' => 'directory',
             'app/sessions' => 'directory',

@@ -38,6 +38,7 @@ use FOS\RestBundle\Controller\Annotations\NamePrefix;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\Put;
 
 /**
  * @NamePrefix("api_")
@@ -310,6 +311,22 @@ class UserController extends FOSRestController
 
     /**
      * @View(serializerGroups={"api_user"})
+     * @Put("/users/roles/add", name="put_users_roles", options={ "method_prefix" = false })
+     */
+    public function putRolesToUsersAction()
+    {
+        $users = $this->apiManager->getParameters('userIds', 'Claroline\CoreBundle\Entity\User');
+        $roles = $this->apiManager->getParameters('roleIds', 'Claroline\CoreBundle\Entity\Role');
+
+        //later make a voter on a user list
+        $this->throwsExceptionIfNotAdmin();
+        $this->roleManager->associateRolesToSubjects($users, $roles);
+
+        return $users;
+    }
+
+    /**
+     * @View(serializerGroups={"api_user"})
      * @ApiDoc(
      *     description="remove a role from a user",
      *     views = {"user"}
@@ -434,6 +451,17 @@ class UserController extends FOSRestController
 
         $this->userManager->csvRemove($this->request->files->get('csv'));
     }
+
+     /**
+      * @View(serializerGroups={"api_user"})
+      * @Post("/users/csv/facets")
+      */
+     public function csvImportFacetsAction()
+     {
+         $this->throwsExceptionIfNotAdmin();
+
+         $this->userManager->csvFacets($this->request->files->get('csv'));
+     }
 
     private function isAdmin()
     {
