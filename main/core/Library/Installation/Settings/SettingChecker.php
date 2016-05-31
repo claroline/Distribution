@@ -221,7 +221,7 @@ class SettingChecker
     private function checkFilePermissions()
     {
         $category = new SettingCategory('File permissions');
-        $rootDir = __DIR__.'/../../../../../..';
+        $rootDir = __DIR__.'/../../../../../../../../';
         $writableElements = array(
             'app/cache' => 'directory',
             'app/sessions' => 'directory',
@@ -238,6 +238,8 @@ class SettingChecker
             'web/uploads' => 'directory',
             'web/js' => 'directory',
         );
+
+        var_dump(realpath($rootDir));
 
         foreach ($writableElements as $element => $type) {
             $category->addRequirement(
