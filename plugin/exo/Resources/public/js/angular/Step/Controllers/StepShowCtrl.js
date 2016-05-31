@@ -76,8 +76,8 @@ StepShowCtrl.prototype.onFeedbackShow = function onFeedbackShow() {
     for (var i=0; i<this.items.length; i++) {
         var question = this.items[i];
         var answer = this.getQuestionPaper(question).answer;
-        var state = this.QuestionService.getTypeService(question.type).answersAllFound(question, answer);
-        if (state !== 0) {
+        this.feedback.state[question.id] = this.QuestionService.getTypeService(question.type).answersAllFound(question, answer);
+        if (this.feedback.state[question.id] !== 0) {
             this.allAnswersFound = this.FeedbackService.MULTIPLE_ANSWERS_MISSING;
         }
     }
@@ -110,7 +110,7 @@ StepShowCtrl.prototype.getSuiteFeedback = function getSuiteFeedback() {
         }
     } else if (this.allAnswersFound === this.FeedbackService.MULTIPLE_ANSWERS_MISSING) {
         // toutes les réponses n'ont pas été trouvées
-        if (this.currentTry < this.step.maxAttempts) {
+        if (this.currentTry < this.step.meta.maxAttempts) {
             sentence = "some_answers_miss_try_again";
         } else {
             sentence = "max_attempts_reached_see_solution";

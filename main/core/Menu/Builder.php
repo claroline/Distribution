@@ -332,6 +332,7 @@ class Builder extends ContainerAware
         $line = $options['line'];
         $url = $options['url'];
         $referer = $options['referer'];
+        $httpCode = isset($options['httpCode']) ? $options['httpCode'] : null;
         $menu = $factory->createItem('exception-actions')
             ->setChildrenAttribute('class', 'btn-group menu exception-actions-menu');
 
@@ -346,7 +347,8 @@ class Builder extends ContainerAware
                 $file,
                 $line,
                 $url,
-                $referer
+                $referer,
+                $httpCode
             )
         );
 
