@@ -1,4 +1,4 @@
-<video id="{{ random() }}" class="video-js vjs-default-skin">
+<video id="{{ random() }}" class="video-js vjs-big-play-centered vjs-default-skin vjs-16-9">
      <source src="{{ path('api_get_video_stream', {'video': video.getId() }) }}" type="{{ video.getResourceNode().getMimeType() }}" />
      {% for track in get_video_tracks(video) %}
           <track

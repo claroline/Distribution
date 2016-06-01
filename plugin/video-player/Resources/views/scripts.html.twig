@@ -2,8 +2,7 @@
 <script>
     videojs.options.flash.swf = "{{ asset('packages/video.js/dist/video-js.swf') | raw }}"
 </script>
-<script>
-    //search videos
+<script>/*
     var vids = document.getElementsByTagName('video');
 
     // vids is an HTMLCollection
@@ -12,10 +11,23 @@
             techOrder: ['flash', 'html5'],
             autoplay: false,
             controls: true,
-            preload: "metadata"
+            preload: "metadata",
+            fluid: true
         }, function() {
             //nothing
         });
-    }
+    }*/
+
+    var insertedNodes = [];
+
+    var observer = new MutationObserver(function(mutations) {
+     mutations.forEach(function(mutation) {
+       console.log(mutation)
+     })
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
+
 </script>
 <link href="{{ asset('packages/video.js/dist/video-js.min.css') | raw }}" rel="stylesheet">
