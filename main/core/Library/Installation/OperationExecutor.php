@@ -123,15 +123,14 @@ class OperationExecutor
                 });
 
                 foreach ($bundles as $bundle) {
-                    //do the bundle already exists ?
 
-                    try {
+                    //if the corebundle is already installed, we can do database checks to be sure a plugin is already installed
+                    //and not simply set to false in bundles.ini in previous versions.
+                    if ($this->findPreviousPackage('Claroline\CoreBundle\ClarolineCoreBundle')) {
+                        //do the bundle already exists ?
                         $foundBundle = $bundle === 'Claroline\CoreBundle\ClarolineCoreBundle' ?
                             true :
                             $this->om->getRepository('ClarolineCoreBundle:Plugin')->findOneByBundleFQCN($bundle);
-                    } catch (Doctrine\DBAL\Exception\TableNotFoundException $e) {
-                        //the database is not set yet. So it's a first insall and we catch the exception.
-                        $foundBundle = false;
                     }
 
                     if (($previousPackage = $this->findPreviousPackage($bundle)) && $foundBundle) {
