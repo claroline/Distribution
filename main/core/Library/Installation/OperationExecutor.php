@@ -126,6 +126,8 @@ class OperationExecutor
 
                     //if the corebundle is already installed, we can do database checks to be sure a plugin is already installed
                     //and not simply set to false in bundles.ini in previous versions.
+                    $foundBundle = false;
+                    
                     if ($this->findPreviousPackage('Claroline\CoreBundle\ClarolineCoreBundle')) {
                         //do the bundle already exists ?
                         $foundBundle = $bundle === 'Claroline\CoreBundle\ClarolineCoreBundle' ?
