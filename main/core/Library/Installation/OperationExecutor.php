@@ -124,9 +124,15 @@ class OperationExecutor
 
                 foreach ($bundles as $bundle) {
                     //do the bundle already exists ?
-                    $foundBundle = $bundle === 'Claroline\CoreBundle\ClarolineCoreBundle' ?
-                        true :
-                        $this->om->getRepository('ClarolineCoreBundle:Plugin')->findOneByBundleFQCN($bundle);
+
+                    try {
+                        $foundBundle = $bundle === 'Claroline\CoreBundle\ClarolineCoreBundle' ?
+                            true :
+                            $this->om->getRepository('ClarolineCoreBundle:Plugin')->findOneByBundleFQCN($bundle);
+                    } catch (Doctrine\DBAL\Exception\TableNotFoundException $e) {
+                        //the database is not set yet. So it's a first insall and we catch the exception.
+                        $foundBundle = false;
+                    }
 
                     if (($previousPackage = $this->findPreviousPackage($bundle)) && $foundBundle) {
                         $operations[$bundle] = new Operation(Operation::UPDATE, $currentPackage, $bundle);
