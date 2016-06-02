@@ -2,7 +2,7 @@
 <script>
     videojs.options.flash.swf = "{{ asset('packages/video.js/dist/video-js.swf') | raw }}"
 </script>
-<script>/*
+<script>
     var vids = document.getElementsByTagName('video');
 
     // vids is an HTMLCollection
@@ -16,8 +16,8 @@
         }, function() {
             //nothing
         });
-    }*/
-
+    }
+/*
     var insertedNodes = [];
 
     var observer = new MutationObserver(function(mutations) {
@@ -28,6 +28,6 @@
 
     observer.observe(document.body, { childList: true, subtree: true });
 
-
+*/
 </script>
 <link href="{{ asset('packages/video.js/dist/video-js.min.css') | raw }}" rel="stylesheet">
