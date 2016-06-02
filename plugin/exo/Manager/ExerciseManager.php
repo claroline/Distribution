@@ -221,31 +221,17 @@ class ExerciseManager
         $finalQuestions = [];
 
         foreach ($steps as $step) {
-            $originalQuestions = $questions = $questionRepo->findByStep($step);
-            $questionCount = count($questions);
-
-            if ($exercise->getShuffle() && $questionCount > 1) {
-                while ($questions === $originalQuestions) {
-                    shuffle($questions); // shuffle until we have a new order
-                }
-            }
+            $questions = $questionRepo->findByStep($step);
             $finalQuestions = array_merge($finalQuestions, $questions);
-        }
-
-        if (($questionToPick = $exercise->getNbQuestion()) > 0) {
-            while ($questionToPick > 0) {
-                $index = rand(0, count($finalQuestions) - 1);
-                unset($finalQuestions[$index]);
-                $finalQuestions = array_values($finalQuestions); // "re-index" the array
-                --$questionToPick;
-            }
-        }
+        }//var_dump($finalQuestions);die();
 
         return $finalQuestions;
     }
 
     /**
-     * Returns the step list of an exercise.
+     * Returns a step list according to the *shuffle* and
+     * nbStep* parameters of an exercise, i.e. filtered
+     * and/or randomized if needed.
      *
      * @param Exercise $exercise
      *
@@ -253,7 +239,15 @@ class ExerciseManager
      */
     public function pickSteps(Exercise $exercise)
     {
-        return $this->om->getRepository('UJMExoBundle:Step')->findByExercise($exercise);
+        $steps = $this->om->getRepository('UJMExoBundle:Step')->findByExercise($exercise);
+        if ($exercise->getShuffle() === true ) {
+            shuffle($steps);
+        }
+        if (($stepToPick = $exercise->getNbQuestion()) > 0) {
+            $steps = $this->pickItem($stepToPick, $steps);
+        }
+
+        return $steps;
     }
 
     /**
@@ -456,5 +450,28 @@ class ExerciseManager
         }
 
         return $data;
+    }
+
+    /**
+     * Returns item (step or question) list according to the *shuffle* and
+     * *nbItem* parameters of an exercise or a step, i.e. filtered
+     * and/or randomized if needed.
+     *
+     * @param integer $itemToPick
+     * @param item[]  $listItem array of steps or array of question
+     *
+     * @return array
+     */
+    private function pickItem($itemToPick, $listItem) {
+        $newListItem = array();
+        while ($itemToPick > 0) {
+            $index = rand(0, count($listItem) - 1);
+            $newListItem[] = $listItem[$index];
+            unset($listItem[$index]);
+            $listItem = array_values($listItem); // "re-index" the array
+            --$itemToPick;
+        }
+
+        return $newListItem;
     }
 }
