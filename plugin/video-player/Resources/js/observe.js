@@ -3,10 +3,10 @@ export default function observe (selector, callback, containers = [document.body
 
   const initialized = []
   // create an observer instance
-  var observer = new MutationObserver(function (mutations) {
+  const observer = new MutationObserver(mutations => {
     mutations.forEach(mutation => {
       if (mutation.type == 'attributes') {
-          var toInit = $(mutation.target).find(selector)
+          const toInit = $(mutation.target).find(selector)
           toInit.each((i, el) => {
               let keepGoing = true
               initialized.forEach(id => {
