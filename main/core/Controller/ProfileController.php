@@ -142,12 +142,12 @@ class ProfileController extends Controller
       *      name="claro_profile_view"
       * )
       * @SEC\Secure(roles="ROLE_USER")
-      * @EXT\Template()
+      * @EXT\Template("ClarolineCoreBundle:Profile:publicProfile.html.twig")
       * @EXT\ParamConverter("loggedUser", options={"authenticatedUser" = true})
       */
      public function viewAction(Request $request, User $loggedUser)
      {
-         return $this->publicProfileAction($request, $loggerUser->getPublicUrl());
+         return $this->publicProfileAction($request, $loggedUser->getPublicUrl());
      }
 
     /**
