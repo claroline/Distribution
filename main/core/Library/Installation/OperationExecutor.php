@@ -123,7 +123,12 @@ class OperationExecutor
                 });
 
                 foreach ($bundles as $bundle) {
-                    if ($previousPackage = $this->findPreviousPackage($bundle)) {
+                    //do the bundle already exists ?
+                    $foundBundle = $bundle === 'Claroline\CoreBundle\ClarolineCoreBundle' ?
+                        true :
+                        $this->om->getRepository('ClarolineCoreBundle:Plugin')->findOneByBundleFQCN($bundle);
+
+                    if (($previousPackage = $this->findPreviousPackage($bundle)) && $foundBundle) {
                         $operations[$bundle] = new Operation(Operation::UPDATE, $currentPackage, $bundle);
                         $operations[$bundle]->setFromVersion($previousPackage->getVersion());
                         $operations[$bundle]->setToVersion($currentPackage->getVersion());
