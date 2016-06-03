@@ -77,6 +77,15 @@ StepShowCtrl.prototype.updateProgression = function (newStatus) {
     this.userProgressionService.update(this.step, newStatus);
 };
 
+/*call for unlock*/
+StepShowCtrl.prototype.callForUnlock = function callForUnlock(nextstep) {
+    this.userProgressionService.callForUnlock(this.step,nextstep);
+};
+
+StepShowCtrl.prototype.unlockStep = function unlockStep(step, user) {
+    this.userProgressionService.setUnlock(step, user);
+};
+
 // Register controller into Angular
 angular
     .module('StepModule')
