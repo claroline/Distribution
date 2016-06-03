@@ -223,7 +223,7 @@ class ExerciseManager
         foreach ($steps as $step) {
             $questions = $questionRepo->findByStep($step);
             $finalQuestions = array_merge($finalQuestions, $questions);
-        }//var_dump($finalQuestions);die();
+        }
 
         return $finalQuestions;
     }
