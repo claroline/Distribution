@@ -8,9 +8,12 @@ var ChoiceQuestionCtrl = function ChoiceQuestionCtrl(FeedbackService, ChoiceQues
     AbstractQuestionCtrl.apply(this, arguments);
     
     this.ChoiceQuestionService = ChoiceQuestionService;
-
+    
     if (this.question.choices) {
         this.choices = this.question.choices;
+        for (var i = 0; i < this.choices.length; i++) {
+            this.choices[i].valid = 0;
+        }
     }
 };
 
@@ -96,7 +99,7 @@ ChoiceQuestionCtrl.prototype.isUniqueChoiceValid = function isUniqueChoiceValid(
     if (!this.question.multiple) {
         // Loop over all choice to see if the correct one has been selected
         for (var i = 0; i < this.choices.length; i++) {
-            if (1 === this.isChoiceValid(this.choices[i])) {
+            if (1 === this.choices[i].valid) {
                 valid = true;
                 break;
             }
