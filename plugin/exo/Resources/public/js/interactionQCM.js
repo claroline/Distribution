@@ -136,6 +136,7 @@ function creationQCMEdit(expectedAnswer, response, point, comment, positionForce
     whichChange();
 
     $(document).on('click', ':radio', function () {
+
         if ($(this).is(':checked')) {
            radioJustChecked = $(this).attr("id");
            $('#newTable').find(('tr:not(:first)')).each(function () {
@@ -183,7 +184,6 @@ function addChoice(container, deleteChoice, comment, edition) {
             uniqChoiceID = true;
         }
     }
-
     // change the "name" by the index and delete the symfony delete form button
     var contain = $(container.attr('data-prototype').replace(/__name__label__/g, 'Choice n°' + (index))
         .replace(/__name__/g, index)
@@ -214,7 +214,7 @@ function addChoice(container, deleteChoice, comment, edition) {
 }
 
 // Check if form is valid
-function check_form(nbrChoices, answerCoched, labelEmpty, pointAnswers, pointAnswer, inviteQuestion) {
+function check_form_qcm(answerCoched) {
         // If no expected answer is selected
     var nbr_rep_coched = 0;
     $('#newTable').find('tr:not(:first)').each(function () {
