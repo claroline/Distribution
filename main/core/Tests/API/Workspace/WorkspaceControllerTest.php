@@ -38,6 +38,47 @@ class WorkspaceControllerTest extends TransactionalTestCase
         $this->assertEquals('ws2', $data[1]['name']);
     }
 
+    public function testPostWorkspaceUserAction()
+    {
+        $admin = $this->createAdmin();
+        $this->logIn($admin);
+
+        $values = array(
+            'name' => 'workspace',
+            'code' => 'workspace',
+            'maxStorageSize' => '10MB',
+            'maxUploadResources' => '50',
+            'maxUsers' => '50',
+        );
+
+        $data['workspace_form'] = $values;
+        $this->client->request('POST', "/api/workspace/user/{$admin->getId()}", $data);
+        $data = $this->client->getResponse()->getContent();
+        $data = json_decode($data, true);
+        $this->assertEquals($data['name'], 'workspace');
+    }
+
+    public function testPutWorkspaceUserAction()
+    {
+        $admin = $this->createAdmin();
+        $workspace = $this->persister->workspace('workspace', $admin);
+        $this->logIn($admin);
+
+        $values = array(
+            'name' => 'new',
+            'code' => 'workspace',
+            'maxStorageSize' => '10MB',
+            'maxUploadResources' => '50',
+            'maxUsers' => '50',
+        );
+
+        $data['workspace_form'] = $values;
+        $this->client->request('PUT', "/api/workspace/{$workspace->getId()}}", $data);
+        $data = $this->client->getResponse()->getContent();
+        $data = json_decode($data, true);
+        $this->assertEquals($data['name'], 'new');
+    }
+
     private function createAdmin()
     {
         $admin = $this->persister->user('admin');
