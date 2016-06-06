@@ -150,7 +150,7 @@ step_has_duration: step has a duration
 step_no_resource: There is no resource linked to this step.
 step_paste: Paste
 step_to_template: Save as template
-step_unlocked: Step unlocked for %user%
+step_unlocked: Step %step% unlocked for %user%
 step_where: Learning place
 step_who: Working mode
 summary: Summary

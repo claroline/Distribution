@@ -1,15 +1,14 @@
 <?php
 namespace Innova\PathBundle\Event\Log;
+
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Event\Log\AbstractLogResourceEvent;
 use Claroline\CoreBundle\Event\Log\NotifiableInterface;
 use Innova\PathBundle\Entity\Step;
 
-class LogStepUnlockEvent
-    extends AbstractLogResourceEvent    //log associated to a resource
-    implements NotifiableInterface      //mandatory for a log to be used as a notification
+class LogStepUnlockEvent extends AbstractLogResourceEvent //log associated to a resource
+    implements NotifiableInterface //mandatory for a log to be used as a notification
 {
-
     const ACTION = 'resource-innova_path-step_unlock';
     protected $step;
     protected $details;

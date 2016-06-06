@@ -78,8 +78,8 @@ StepShowCtrl.prototype.updateProgression = function (newStatus) {
 };
 
 /*call for unlock*/
-StepShowCtrl.prototype.callForUnlock = function callForUnlock(nextstep) {
-    this.userProgressionService.callForUnlock(this.step,nextstep);
+StepShowCtrl.prototype.callForUnlock = function callForUnlock(step) {
+    this.userProgressionService.callForUnlock(step);
 };
 
 StepShowCtrl.prototype.unlockStep = function unlockStep(step, user) {

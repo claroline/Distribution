@@ -91,7 +91,7 @@ class UserProgression implements \JsonSerializable
     protected $locked;
 
     /**
-     * Has the lock been called upon removal ?
+     * Has the lock been called for removal ?
      * @var bool
      *
      * @ORM\Column(name="lockedcall_access", type="boolean")

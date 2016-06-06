@@ -1,24 +1,31 @@
-$(document).ready(function() {
+(function () {
     'use strict';
 
-    var translation= window.Translator;
+    $('.lockmsg').css('display', 'none');
     $(".unlock").on("click", function(){
          var that = $(this);
         $.ajax({
             url: Routing.generate(
-                'innova_path_stepauth',
+                'innova_path_unlock_step',
                 { step: $(this).attr("data-step"), user: $(this).attr("data-user")}
             ),
             type: 'GET',
             success: function (data) {
                 var user = $(that).closest(".userstepunlock").find(".username").html();
-                var step = that.parent().parent().find('.stepname').html();
-                $('#unlocked').html(translation.trans('step_unlocked', {'user':user, 'step':step}, 'messages'));
+                var steprow = that.parent().parent();
+                var step = steprow.find('.stepname').html();
+                //update the column data
+                steprow.find('.stepstatus').html(window.Translator.trans('unseen', {}, 'path_wizards'));
+                //set msg
+                $('#unlocked').html(window.Translator.trans('step_unlocked', {'user':user, 'step':step}, 'path_wizards'));
+                //display msg
+                $('.lockmsg').css('display', 'block');
+                //remove button
                 $(that).remove();
             },
             error: function( jqXHR, textStatus, errorThrown){
-                $('#unlocked').html("error. textStatus="+ textStatus + " errorThrown="+ errorThrown);
+                $('#unlocked').html("unable to unlock");
             }
         });
     });
-});
+}());

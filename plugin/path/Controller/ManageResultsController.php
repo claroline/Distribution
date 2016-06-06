@@ -65,7 +65,7 @@ class ManageResultsController
      */
     public function displayStepUnlockAction(Path $path)
     {
-        //TODO : prevent direct access
+        //prevent direct access
         $this->pathManager->checkAccess('EDIT', $path);
 
         $data = array();
@@ -76,23 +76,20 @@ class ManageResultsController
         //retrieve users having access to the WS
         //TODO Optimize
         $users = $this->om->getRepository('ClarolineCoreBundle:User')->findUsersByWorkspace($workspace);
-        //foreach ($paths as $path) {
-            $userdata = array();
-            //for all users in the WS
-            foreach ($users as $user) {
-                //get their progression
-                $userdata[] = array(
-                    'user'          => $user,
-                    'progression'   => $this->pathManager->getUserProgression($path, $user),
-                    'locked'        => $this->pathManager->getPathLockedProgression($path),
-                    //'user' => $user
-                );
-            }
-            $data = array(
-                'path'      => $path,
-                'userdata'  => $userdata
+        $userdata = array();
+        //for all users in the WS
+        foreach ($users as $user) {
+            //get their progression
+            $userdata[] = array(
+                'user'          => $user,
+                'progression'   => $this->pathManager->getUserProgression($path, $user),
+                'locked'        => $this->pathManager->getPathLockedProgression($path)
             );
-       // }
+        }
+        $data = array(
+            'path'      => $path,
+            'userdata'  => $userdata
+        );
         return array(
             '_resource' => $path,
             'workspace' => $workspace,

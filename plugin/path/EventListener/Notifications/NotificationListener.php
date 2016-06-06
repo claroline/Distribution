@@ -1,5 +1,6 @@
 <?php
 namespace Innova\PathBundle\EventListener\Notifications;
+
 use Claroline\CoreBundle\Event\Log\CreateFormResourceEvent;
 use Icap\NotificationBundle\Event\Notification\NotificationCreateDelegateViewEvent;
 use Symfony\Component\DependencyInjection\ContainerAware;

@@ -1,7 +1,7 @@
 {% extends "ClarolineCoreBundle:Workspace:layout.html.twig" %}
 
 {% block content %}
-    <div class="navbar navbar-default">
+    <div class="alert alert-success navbar navbar-default lockmsg">
         <div class="container-fluid">
             <p class="navbar-text text-success" id="unlocked"></p>
         </div>
@@ -20,7 +20,7 @@
                     <tr class="userstepunlock">
                         <td class="username">{{ userprogressions.user.firstName ~ ' ' ~ userprogressions.user.lastName }}</td>
                         <td>
-                            <table class="table">
+                            <table class="table userliststeps">
                                 <thead>
                                 <tr>
                                     <th>{{ 'step'|trans({}, 'innova_tools') }}</th>
@@ -33,10 +33,10 @@
                                 {% if (userprogression.step.activity.title is defined) %}
                                         <tr>
                                             <td class="stepname">{{ userprogression.step.activity.title }}</td>
-                                            <td>{{ userprogression.status | trans({}, 'path_wizards') }}</td>
+                                            <td class="stepstatus">{{ userprogression.status | trans({}, 'path_wizards') }}</td>
                                             <td>
                                             {% if userprogression.lockedcall %}
-                                                <button class="btn btn-default btn-xs unlock"
+                                                <button class="btn btn-primary btn-xs unlock"
                                                     data-ng-click="stepShowCtrl.unlockStep(step, userprogressions.user)"
                                                     data-step="{{ userprogression.step.id }}"
                                                     data-user="{{ userprogression.user.id }}">
@@ -63,5 +63,21 @@
 
 {% block javascripts %}
     {{ parent() }}
+    {# translations #}
+    <script type='text/javascript' src="{{ url('bazinga_jstranslation_js', {'domain':'path_wizards'}) }}"></script>
+
     <script type='text/javascript' src="{{ asset('bundles/innovapath/js/manageLock.js') }}"></script>
+{% endblock %}
+
+{% block stylesheets %}
+    {# Claroline CSS #}
+    {{ parent() }}
+
+    {# Path Editor styles #}
+    {% stylesheets debug=false filter='less, cssmin' output='vendor/innovapath/wizards.css'
+        '@FrontEndBundle/Resources/public/angular-ui-tree/dist/angular-ui-tree.min.css'
+        '@InnovaPathBundle/Resources/public/less/wizards.less'
+    %}
+    <link rel="stylesheet" media="screen" href="{{ asset_url }}" />
+    {% endstylesheets %}
 {% endblock %}

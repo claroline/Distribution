@@ -66,14 +66,6 @@ services:
             userProgressionManager: @innova_path.manager.user_progression
         scope: request
 
-    # Step Conditions controller
-    innova_path.controller.unlock:
-        class: Innova\PathBundle\Controller\UnlockController
-        arguments:
-            objectManager:  @claroline.persistence.object_manager
-            pathManager:    @innova_path.manager.path
-        scope: request
-
     # Results manager controller
     innova_path.controller.manageresults:
         class: Innova\PathBundle\Controller\ManageResultsController

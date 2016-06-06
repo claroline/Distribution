@@ -148,7 +148,7 @@ step_no_resource: Il n'y a aucune ressource rattachée à cette étape.
 step_not_accessible: Cette étape n'est pas accessible pour le moment.
 step_paste: Coller
 step_to_template: Sauvegarder comme modèle
-step_unlocked: Etape débloquée pour %user%
+step_unlocked: Etape %step% débloquée pour %user%
 step_who: Modalité de travail
 step_where: Lieu d'apprentissage
 summary: Sommaire

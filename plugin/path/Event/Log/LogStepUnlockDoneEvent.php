@@ -6,15 +6,14 @@ use Claroline\CoreBundle\Event\Log\AbstractLogResourceEvent;
 use Claroline\CoreBundle\Event\Log\NotifiableInterface;
 use Innova\PathBundle\Entity\Step;
 
-class LogStepUnlockDoneEvent
-    extends AbstractLogResourceEvent    //log associated to a resource
-    implements NotifiableInterface      //mandatory for a log to be used as a notification
+class LogStepUnlockDoneEvent extends AbstractLogResourceEvent //log associated to a resource
+    implements NotifiableInterface //mandatory for a log to be used as a notification
 {
     const       ACTION = 'resource-innova_path-step_unlockdone';
 
-    protected   $step;
-    protected   $details;
-    private     $userIds = array();
+    protected $step;
+    protected $details;
+    private $userIds = array();
 
     public function __construct(Step $step, $userIds=array())
     {

@@ -135,9 +135,9 @@
                 /**
                  * call for unlock step : call Controller method that triggers log listener and notification
                  */
-                callForUnlock: function callForUnlock(step, nextstep) {
+                callForUnlock: function callForUnlock(step) {
                     var deferred = $q.defer();
-                    var params = {step:step.resourceId, nextstep:nextstep.resourceId};
+                    var params = {step:step.resourceId};
                     $http
                         .get(Routing.generate('innova_path_step_callforunlock', params))
                         //returns a propression object

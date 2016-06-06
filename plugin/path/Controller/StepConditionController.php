@@ -337,26 +337,26 @@ class StepConditionController extends Controller
      * @param Step $nextstep
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      * @Route(
-     *     "/stepunlock/{step}/next/{nextstep}",
+     *     "/stepunlock/{step}",
      *     name         = "innova_path_step_callforunlock",
      *     options      = { "expose" = true }
      * )
      * @Method("GET")
      */
-    public function callForUnlock(Step $step, Step $nextstep)
+    public function callForUnlock(Step $step)
     {
         //array of user id to send the notification to = users who will receive the call : the path creator
-        $creator = $nextstep->getPath()->getCreator()->getId();
+        $creator = $step->getPath()->getCreator()->getId();
         $userIds = array($creator);
         //create an event, and pass parameters
-        $event = new \Innova\PathBundle\Event\Log\LogStepUnlockEvent($nextstep, $userIds);
+        $event = new \Innova\PathBundle\Event\Log\LogStepUnlockEvent($step, $userIds);
         //send the event to the event dispatcher
-        $this->eventDispatcher->dispatch('log', $event); //don't change it.
+        $this->eventDispatcher->dispatch('log', $event);
 
         //update lockedcall value : set to true = called
         $user = $this->securityToken->getToken()->getUser();
         $progression = $this->userProgressionManager
-            ->updateLockedState($user, $step, true);
+            ->updateLockedState($user, $step, true, null, null, '');
         //return response
         return new JsonResponse($progression);
     }
@@ -364,23 +364,23 @@ class StepConditionController extends Controller
     /**
      * Ajax call for unlocking step.
      * @Route(
-     *     "stepauth/{step}/user/{user}",
-     *     name="innova_path_stepauth",
+     *     "unlockstep/{step}/user/{user}",
+     *     name="innova_path_unlock_step",
      *     options={"expose"=true}
      * )
      * @Method("GET")
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function authorizeStep(Step $step, User $user)
+    public function unlockStep(Step $step, User $user)
     {
         $userIds = array($user->getId());
         //create an event, and pass parameters
         $event = new \Innova\PathBundle\Event\Log\LogStepUnlockDoneEvent($step, $userIds);
         //send the event to the event dispatcher
-        $this->eventDispatcher->dispatch('log', $event); //don't change it.
+        $this->eventDispatcher->dispatch('log', $event);
         //update lockedcall value : set to true = called
         $progression = $this->userProgressionManager
-            ->updateLockedState($user, $step, false, false, true);
+            ->updateLockedState($user, $step, false, false, true, 'unseen');
         //return response
         return new JsonResponse($progression);
     }
