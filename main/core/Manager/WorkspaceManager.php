@@ -1116,7 +1116,7 @@ class WorkspaceManager
         return $this->logger;
     }
 
-    public function getTemplateData(File $file, $refresh = false)
+    public function getTemplateData($file, $refresh = false)
     {
         //from cache
         if (!$refresh) {
@@ -1124,11 +1124,12 @@ class WorkspaceManager
         }
 
         $archive = new \ZipArchive();
-        $fileName = $file->getBaseName();
-        $extractPath = sys_get_temp_dir().DIRECTORY_SEPARATOR.'templates'.DIRECTORY_SEPARATOR.$fileName;
+        $fileName = 'tmp'.$file->getBasename();
+        $extractPath = sys_get_temp_dir().DIRECTORY_SEPARATOR.$fileName;
 
         if ($archive->open($file->getPathname())) {
             $fs = new FileSystem();
+
             $fs->mkdir($extractPath);
             if (!$archive->extractTo($extractPath)) {
                 throw new \Exception("The workspace archive couldn't be extracted");
@@ -1144,10 +1145,10 @@ class WorkspaceManager
         throw new \Exception("The workspace archive couldn't be opened");
     }
 
-    public function removeTemplate(File $file)
+    public function removeTemplate($file)
     {
-        $fileName = $file->getBaseName();
-        $extractPath = sys_get_temp_dir().DIRECTORY_SEPARATOR.'templates'.DIRECTORY_SEPARATOR.$fileName;
+        $fileName = $file->getBasename();
+        $extractPath = sys_get_temp_dir().'tmp'.DIRECTORY_SEPARATOR.$fileName;
         $fs = new FileSystem();
         $fs->remove($extractPath);
     }
