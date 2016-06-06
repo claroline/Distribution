@@ -1116,7 +1116,7 @@ class WorkspaceManager
         return $this->logger;
     }
 
-    public function getTemplateData($file, $refresh = false)
+    public function getTemplateData(File $file, $refresh = false)
     {
         //from cache
         if (!$refresh) {
@@ -1145,7 +1145,7 @@ class WorkspaceManager
         throw new \Exception("The workspace archive couldn't be opened");
     }
 
-    public function removeTemplate($file)
+    public function removeTemplate(File $file)
     {
         $fileName = $file->getBasename();
         $extractPath = sys_get_temp_dir().'tmp'.DIRECTORY_SEPARATOR.$fileName;
