@@ -31,14 +31,14 @@ class Exercise extends AbstractResource
     private $shuffle = false;
 
     /**
-     * Number of Questions to use when we play the Exercise
-     * If 0, all the questions are used in the Player.
+     * Number of Steps to use when we play the Exercise
+     * If 0, all the steps are used in the Player.
      *
      * @var int
      *
      * @ORM\Column(name="nb_question", type="integer")
      */
-    private $nbQuestion = 0;
+    private $pickSteps = 0;
 
     /**
      * @ORM\Column(name="keepSameQuestion", type="boolean", nullable=true)
@@ -159,7 +159,7 @@ class Exercise extends AbstractResource
 
     /**
      * @var ArrayCollection
-     * 
+     *
      * @ORM\OneToMany(targetEntity="Step", mappedBy="exercise", cascade={"all"})
      * @ORM\OrderBy({"order" = "ASC"})
      */
@@ -220,23 +220,23 @@ class Exercise extends AbstractResource
     }
 
     /**
-     * Set nbQuestion.
+     * Set pickSteps.
      *
-     * @param int $nbQuestion
+     * @param int $pickSteps
      */
-    public function setNbQuestion($nbQuestion)
+    public function setPickSteps($pickSteps)
     {
-        $this->nbQuestion = $nbQuestion;
+        $this->pickSteps = $pickSteps;
     }
 
     /**
-     * Get nbQuestion.
+     * Get pickSteps.
      *
      * @return int
      */
-    public function getNbQuestion()
+    public function getPickSteps()
     {
-        return $this->nbQuestion;
+        return $this->pickSteps;
     }
 
     /**

@@ -240,10 +240,10 @@ class ExerciseManager
     public function pickSteps(Exercise $exercise)
     {
         $steps = $this->om->getRepository('UJMExoBundle:Step')->findByExercise($exercise);
-        if ($exercise->getShuffle() === true ) {
+        if ($exercise->getShuffle() === true) {
             shuffle($steps);
         }
-        if (($stepToPick = $exercise->getNbQuestion()) > 0) {
+        if (($stepToPick = $exercise->getPickSteps()) > 0) {
             $steps = $this->pickItem($stepToPick, $steps);
         }
 
@@ -265,7 +265,7 @@ class ExerciseManager
         $newExercise->setName($exercise->getName());
         $newExercise->setDescription($exercise->getDescription());
         $newExercise->setShuffle($exercise->getShuffle());
-        $newExercise->setNbQuestion($exercise->getNbQuestion());
+        $newExercise->setPickSteps($exercise->getPickSteps());
         $newExercise->setDuration($exercise->getDuration());
         $newExercise->setDoprint($exercise->getDoprint());
         $newExercise->setMaxAttempts($exercise->getMaxAttempts());
@@ -361,7 +361,7 @@ class ExerciseManager
         // Update Exercise
         $exercise->setDescription($metadata->description);
         $exercise->setType($metadata->type);
-        $exercise->setNbQuestion($metadata->pick ? $metadata->pick : 0);
+        $exercise->setPickSteps($metadata->pick ? $metadata->pick : 0);
         $exercise->setShuffle($metadata->random);
         $exercise->setKeepSameQuestion($metadata->keepSameQuestions);
         $exercise->setMaxAttempts($metadata->maxAttempts);
@@ -388,7 +388,7 @@ class ExerciseManager
 
     /**
      * Export metadata of the Exercise in a JSON-encodable format.
-     * 
+     *
      * @param Exercise $exercise
      *
      * @return array
@@ -412,7 +412,7 @@ class ExerciseManager
             'title' => $node->getName(),
             'description' => $exercise->getDescription(),
             'type' => $exercise->getType(),
-            'pick' => $exercise->getNbQuestion(),
+            'pick' => $exercise->getPickSteps(),
             'random' => $exercise->getShuffle(),
             'keepSameQuestions' => $exercise->getKeepSameQuestion(),
             'maxAttempts' => $exercise->getMaxAttempts(),
@@ -462,7 +462,8 @@ class ExerciseManager
      *
      * @return array
      */
-    private function pickItem($itemToPick, $listItem) {
+    private function pickItem($itemToPick, $listItem)
+    {
         $newListItem = array();
         while ($itemToPick > 0) {
             $index = rand(0, count($listItem) - 1);

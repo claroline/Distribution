@@ -181,7 +181,7 @@ class ExoImporter extends Importer implements ConfigurationInterface
             'version' => $version,
             'description' => $object->getDescription(),
             'shuffle' => $object->getShuffle(),
-            'nbQuestion' => $object->getNbQuestion(),
+            'nbQuestion' => $object->getPickSteps(),
             'keepSameQuestion' => $object->getKeepSameQuestion(),
             'duration' => $object->getDuration(),
             'doPrint' => $object->getDoprint(),
@@ -213,7 +213,7 @@ class ExoImporter extends Importer implements ConfigurationInterface
         $newExercise = new Exercise();
         $newExercise->setDescription($exercise['description']);
         $newExercise->setShuffle($exercise['shuffle']);
-        $newExercise->setNbQuestion($exercise['nbQuestion']);
+        $newExercise->setPickSteps($exercise['nbQuestion']);
         $newExercise->setKeepSameQuestion($exercise['keepSameQuestion']);
         $newExercise->setDuration($exercise['duration']);
         $newExercise->setDoprint($exercise['doPrint']);

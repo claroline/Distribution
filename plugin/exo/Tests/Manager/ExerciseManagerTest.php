@@ -123,7 +123,7 @@ class ExerciseManagerTest extends \PHPUnit_Framework_TestCase
     public function testPickQuestionsDiscardsSomeIfNeeded()
     {
         $exercise = new Exercise();
-        $exercise->setNbQuestion(2);
+        $exercise->setPickSteps(2);
 
         $stepRepo = $this->mock('UJM\ExoBundle\Repository\StepRepository');
         $questionRepo = $this->mock('UJM\ExoBundle\Repository\QuestionRepository');
