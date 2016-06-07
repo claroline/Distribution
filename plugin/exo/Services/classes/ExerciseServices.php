@@ -168,23 +168,21 @@ class ExerciseServices
      * @param Exercise $exercise
      * @param Step     $step
      */
-    public function addQuestionInExercise($question, $exercise, $step)
+    public function addQuestionInExercise(Question $question, Exercise $exercise, Step $step = null)
     {
-        if (null != $exercise) {
-            if (null == $step) {
-                // Create a new Step to add the Question
-                $this->createStepForOneQuestion($exercise, $question, 1);
-            } else {
-                // Add the question to the existing Step
-                $em = $this->doctrine->getManager();
+        if (null === $step) {
+            // Create a new Step to add the Question
+            $this->createStepForOneQuestion($exercise, $question, 1);
+        } else {
+            // Add the question to the existing Step
+            $em = $this->doctrine->getManager();
 
-                $sq = new StepQuestion();
-                $sq->setStep($step);
-                $sq->setQuestion($question);
-                $sq->setOrdre($step->getNbQuestion() + 1);
-                $em->persist($sq);
-                $em->flush();
-            }
+            $sq = new StepQuestion();
+            $sq->setStep($step);
+            $sq->setQuestion($question);
+            $sq->setOrdre($step->getNbQuestion() + 1);
+            $em->persist($sq);
+            $em->flush();
         }
     }
 
