@@ -135,12 +135,20 @@ class OperationExecutor
                             $this->om->getRepository('ClarolineCoreBundle:Plugin')->findOneByBundleFQCN($bundle);
                     }
 
-                    if (($previousPackage = $this->findPreviousPackage($bundle)) && $foundBundle) {
+                    if ($previousPackage = $this->findPreviousPackage($bundle)) {
                         $operations[$bundle] = new Operation(Operation::UPDATE, $currentPackage, $bundle);
                         $operations[$bundle]->setFromVersion($previousPackage->getVersion());
                         $operations[$bundle]->setToVersion($currentPackage->getVersion());
                     } else {
-                        $operations[$bundle] = new Operation(Operation::INSTALL, $currentPackage, $bundle);
+                        //if we found something in the database, it means it was removed from composer.json and not properly uninstalled
+                        if ($foundBundle) {
+                            $operations[$bundle] = new Operation(Operation::UPDATE, $currentPackage, $bundle);
+                            //we don't know wich version it came from so we trigger everything, we only know it's already here
+                            $operations[$bundle]->setFromVersion('0.0.0');
+                            $operations[$bundle]->setToVersion($currentPackage->getVersion());
+                        } else {
+                            $operations[$bundle] = new Operation(Operation::INSTALL, $currentPackage, $bundle);
+                        }
                     }
                 }
             } else {
