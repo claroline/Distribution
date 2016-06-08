@@ -2,21 +2,27 @@ import angular from 'angular/index'
 import {} from 'angular-route'
 import {} from 'angular-animate'
 import {} from 'angular-loading-bar'
-import {} from '../common/claro-filters'
+import {} from '../fos-js-router/module'
+import {} from '../asset/module'
+import {} from '../html-truster/module'
 import {} from 'angular-bootstrap'
+import {} from 'angular-ui-translation/angular-translation'
 import portalSearch from './portal-search/portal-search.directive'
 import portalService from './portal.service'
-import register from '../common/register'
+import register from '../register/register'
 import router from './routing'
 
 let portalApp = new register(
   'portalApp',
   [
-    'claroFilters',
+    'angular-loading-bar',
     'ngRoute',
     'ngAnimate',
+    'ui.asset',
     'ui.bootstrap',
-    'angular-loading-bar'
+    'ui.fos-js-router',
+    'ui.html-truster',
+    'ui.translation'
   ]);
 
 portalApp
