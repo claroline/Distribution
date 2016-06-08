@@ -11,9 +11,11 @@
 
 namespace Claroline\CoreBundle\Controller\Administration;
 
+use Claroline\CoreBundle\Library\Configuration\UnwritableException;
 use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 
 class PortalConfigurationController extends Controller
@@ -41,7 +43,7 @@ class PortalConfigurationController extends Controller
                 } catch (UnwritableException $e) {
                     $form->addError(
                         new FormError(
-                            $this->translator->trans(
+                            $this->get('translator')->trans(
                                 'unwritable_file_exception',
                                 array('%path%' => $e->getPath()),
                                 'platform'
