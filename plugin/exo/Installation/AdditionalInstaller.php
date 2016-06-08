@@ -21,7 +21,6 @@ class AdditionalInstaller extends BaseInstaller
         }
 
         if (version_compare($currentVersion, '6.2.0.0', '<')) {
-            return;
             $updater = new Updater600200($this->container);
             $updater->setLogger($this->logger);
             $updater->preUpdate();
@@ -43,7 +42,6 @@ class AdditionalInstaller extends BaseInstaller
         }
 
         if (version_compare($currentVersion, '6.2.0.0', '<')) {
-            return;
             $updater = new Updater600200($this->container);
             $updater->setLogger($this->logger);
             $updater->postUpdate();

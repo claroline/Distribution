@@ -138,20 +138,17 @@ class OperationExecutor
                     $previousPackage = $this->findPreviousPackage($bundle);
 
                     if ($previousPackage && $foundBundle) {
-                    var_dump('proper update ' . $bundle);
                         $operations[$bundle] = new Operation(Operation::UPDATE, $currentPackage, $bundle);
                         $operations[$bundle]->setFromVersion($previousPackage->getVersion());
                         $operations[$bundle]->setToVersion($currentPackage->getVersion());
                     } else {
                         //if we found something in the database, it means it was removed from composer.json and not properly uninstalled
                         if ($foundBundle) {
-                           var_dump('silly update ' . $bundle);
                             $operations[$bundle] = new Operation(Operation::UPDATE, $currentPackage, $bundle);
                             //we don't know wich version it came from so we trigger everything, we only know it's already here
                             $operations[$bundle]->setFromVersion('0.0.0');
                             $operations[$bundle]->setToVersion($currentPackage->getVersion());
                         } else {
-                            var_dump('must install' . $bundle);
                             $operations[$bundle] = new Operation(Operation::INSTALL, $currentPackage, $bundle);
                         }
                     }
