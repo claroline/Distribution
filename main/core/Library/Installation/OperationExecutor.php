@@ -154,7 +154,6 @@ class OperationExecutor
                     }
                 }
             } else {
-                var_dump($bundle);
                 $foundBundle = $this->om->getRepository('ClarolineCoreBundle:Plugin')->findOneByBundleFQCN($bundle);
                 $previousPackage = $previous->findPackage($currentPackage->getName(), '*');
                 //old <= v6 package detection
