@@ -104,7 +104,11 @@ class Migrator
         $migration = new Migration($config);
 
         if ($version === self::VERSION_FARTHEST) {
+           try {
             return $migration->migrate($direction === self::DIRECTION_UP ? null : '0');
+            } catch (\Exception $e) {
+               var_dump('something went wrong');
+            }
         } elseif ($version === self::VERSION_NEAREST) {
             $availableVersions = $config->getAvailableVersions($bundle);
             array_unshift($availableVersions, '0');
