@@ -120,7 +120,6 @@ class AudioRecorderManager
 
         $file = new File();
         $file->setSize($size);
-        // does not change anything
         $file->setName($fileBaseName.'.'.$encodingExt);
         $file->setHashName($hashName);
         $file->setMimeType($mimeType);
