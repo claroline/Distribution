@@ -5,7 +5,8 @@
       "facet-management": "facets/module",
       "private-profile": "profile/module",
       "organization-management": "organization/module",
-      "plugin-management": "plugins/module"
+      "plugin-management": "plugins/module",
+      "portal": "portal/module"
     }
   }
 }
