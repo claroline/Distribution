@@ -39,15 +39,18 @@ function configure(rootDir, packages, isWatchMode) {
     makeBundleResolverPlugin(),
     makeBowerPlugin(),
     makeAssetsPlugin(),
-    //makeBaseCommonsPlugin(),
+    makeBaseCommonsPlugin(),
     ...makeBundleCommonsPlugins(commons)
   ]
 
   // prod build has additional constraints
-  // TODO: use tree-shaking when webpack 2.0 is stable!
+  //
+  // TODO: use tree-shaking when webpack 2.0 is stable
+  // NOTE: uglify plugin isn't included due to problems with already minified
+  //       files (see https://github.com/webpack/webpack/issues/537).
+  //       Minification is handled as a separate step in the main package.json.
   if (isProd) {
     plugins.push(
-      //makeUglifyJsPlugin(),
       makeDedupePlugin(),
       makeDefinePlugin(),
       makeNoErrorsPlugin(),
@@ -167,7 +170,7 @@ function makeBundleResolverPlugin() {
 function makeBaseCommonsPlugin() {
   return new webpack.optimize.CommonsChunkPlugin({
     name: 'commons',
-    minChunks: 10
+    minChunks: 3
   })
 }
 
@@ -190,17 +193,6 @@ function makeAssetsPlugin() {
 function makeBundleCommonsPlugins(commons) {
   return commons.map(config => {
     return new webpack.optimize.CommonsChunkPlugin(config)
-  })
-}
-
-/**
- * This plugin minifies bundle files using UglifyJS.
- */
-function makeUglifyJsPlugin() {
-  return new webpack.optimize.UglifyJsPlugin({
-    compress: {
-      warnings: false
-    }
   })
 }
 
