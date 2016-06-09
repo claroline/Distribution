@@ -184,6 +184,13 @@ class TagManager
             ) :
             array();
     }
+    
+    public function removeTaggedObjectsByResourceAndTag($resourceNode, $tag){
+        $taggedObject = $this->getOneTaggedObjectByTagAndObject(
+                $tag, $resourceNode->getId(), 
+                str_replace('Proxies\\__CG__\\', '', get_class($resourceNode)));
+        $this->deleteTaggedObject($taggedObject);
+    }
 
     public function removeTaggedObjectsByClassAndIds($class, array $ids)
     {

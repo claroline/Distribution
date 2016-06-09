@@ -19,6 +19,7 @@ use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\TagBundle\Entity\ResourcesTagsWidgetConfig;
 use Claroline\TagBundle\Form\ResourcesTagsWidgetConfigurationType;
 use Claroline\TagBundle\Form\TagType;
+use Claroline\TagBundle\Entity\Tag;
 use Claroline\TagBundle\Manager\TagManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\SecurityExtraBundle\Annotation as SEC;
@@ -30,6 +31,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class TagController extends Controller
 {
@@ -76,7 +78,7 @@ class TagController extends Controller
         $form = $this->formFactory->create(new TagType());
         $tags = $this->tagManager->getPlatformTags();
         $resourceTags = $this->tagManager->getTagsByObject($resourceNode);
-
+        
         return array(
             'form' => $form->createView(),
             'resourceNode' => $resourceNode,
@@ -96,6 +98,10 @@ class TagController extends Controller
      */
     public function resourceTagAction(ResourceNode $resourceNode)
     {
+        if (!$this->container->get('security.authorization_checker')->isGranted('EDIT', $resourceNode)) {
+            throw new AccessDeniedException();
+        }
+        
         $form = $this->formFactory->create(new TagType());
         $form->handleRequest($this->request);
 
@@ -451,5 +457,22 @@ class TagController extends Controller
 
             return new RedirectResponse($route);
         }
+    }
+    
+    /**
+     * @EXT\Route(
+     *     "/resource/{resourceNode}/tag/{tag}/delete",
+     *     name="claro_tag_resource_tag_delete",
+     *     options={"expose"=true}
+     * )
+     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     */
+    public function tagDeleteFromResourceAction(ResourceNode $resourceNode, Tag $tag){
+        if (!$this->container->get('security.authorization_checker')->isGranted('EDIT', $resourceNode)) {
+              throw new AccessDeniedException();
+        }
+        $this->tagManager->removeTaggedObjectsByResourceAndTag($resourceNode, $tag);
+        
+        return new JsonResponse('success', 200);
     }
 }
