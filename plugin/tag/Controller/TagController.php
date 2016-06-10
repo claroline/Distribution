@@ -78,7 +78,7 @@ class TagController extends Controller
         $form = $this->formFactory->create(new TagType());
         $tags = $this->tagManager->getPlatformTags();
         $resourceTags = $this->tagManager->getTagsByObject($resourceNode);
-        
+
         return array(
             'form' => $form->createView(),
             'resourceNode' => $resourceNode,
@@ -101,7 +101,7 @@ class TagController extends Controller
         if (!$this->container->get('security.authorization_checker')->isGranted('EDIT', $resourceNode)) {
             throw new AccessDeniedException();
         }
-        
+
         $form = $this->formFactory->create(new TagType());
         $form->handleRequest($this->request);
 
@@ -458,7 +458,7 @@ class TagController extends Controller
             return new RedirectResponse($route);
         }
     }
-    
+
     /**
      * @EXT\Route(
      *     "/resource/{resourceNode}/tag/{tag}/delete",
@@ -467,12 +467,13 @@ class TagController extends Controller
      * )
      * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
      */
-    public function tagDeleteFromResourceAction(ResourceNode $resourceNode, Tag $tag){
+    public function tagDeleteFromResourceAction(ResourceNode $resourceNode, Tag $tag)
+    {
         if (!$this->container->get('security.authorization_checker')->isGranted('EDIT', $resourceNode)) {
-              throw new AccessDeniedException();
+            throw new AccessDeniedException();
         }
         $this->tagManager->removeTaggedObjectsByResourceAndTag($resourceNode, $tag);
-        
+
         return new JsonResponse('success', 200);
     }
 }
