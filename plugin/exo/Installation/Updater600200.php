@@ -37,7 +37,7 @@ class Updater600200
     private function createTemporaryPicture()
     {
         $schema = $this->connection->getSchemaManager();
-        if(!$schema->tablesExist('ujm_picture_temp')) {
+        if (!$schema->tablesExist('ujm_picture_temp')) {
             $this->log('Create ujm_picture_temp ...');
             $this->connection->exec('
                 CREATE TABLE ujm_picture_temp (
@@ -63,7 +63,7 @@ class Updater600200
     private function createTemporaryInterGraph()
     {
         $schema = $this->connection->getSchemaManager();
-        if(!$schema->tablesExist('ujm_interaction_graphic_temp')) {
+        if (!$schema->tablesExist('ujm_interaction_graphic_temp')) {
             $this->log('Create ujm_interaction_graphic_temp ...');
             $this->connection->exec('
                 CREATE TABLE ujm_interaction_graphic_temp (
