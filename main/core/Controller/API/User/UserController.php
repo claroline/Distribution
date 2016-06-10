@@ -255,6 +255,19 @@ class UserController extends FOSRestController
     }
 
     /**
+     * @View(serializerGroups={"api_user"})
+     * @ApiDoc(
+     *     description="Returns a user",
+     *     views = {"user"}
+     * )
+     * @Get("/user/{user}/public", name="get_public_user", options={ "method_prefix" = false })
+     */
+    public function getPublicUserAction(User $user)
+    {
+        return $user;
+    }
+
+    /**
      * @View()
      * @ApiDoc(
      *     description="Removes a user",
