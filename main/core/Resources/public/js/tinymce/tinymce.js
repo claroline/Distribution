@@ -1,3 +1,8 @@
+import 'claroline-tinymce-mention/plugin.min'
+import 'claroline-tinymce-accordion/plugin.min'
+import 'tinymce-codemirror/plugins/codemirror/plugin.min'
+import './plugins/codemirror'
+
 var tinymce = window.tinymce;
 var common = window.Claroline.Common;
 var home = window.Claroline.Home;
@@ -6,12 +11,7 @@ var resourceManager = window.Claroline.ResourceManager;
 var translator = window.Translator;
 var routing =  window.Routing;
 
-//Load external plugins
-tinymce.PluginManager.load('mention', home.asset + 'packages/claroline-tinymce-mention/plugin.min.js');
-tinymce.PluginManager.load('accordion', home.asset + 'packages/claroline-tinymce-accordion/plugin.min.js');
-tinymce.PluginManager.load('codemirror', home.asset + 'packages/tinymce-codemirror/plugins/codemirror/plugin.min.js');
 tinymce.DOM.loadCSS(home.asset + 'packages/claroline-tinymce-mention/css/autocomplete.css');
-
 var codemirrorPath = home.asset + 'packages/tinymce-codemirror/plugins/codemirror/codemirror-4.8';
 
 /**
