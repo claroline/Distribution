@@ -236,7 +236,7 @@ class Updater600100
     private function dropInteractionTables()
     {
         $schema = $this->connection->getSchemaManager();
-        if ($schema>tablesExist(['ujm_interaction'])) {
+        if ($schema->tablesExist(['ujm_interaction'])) {
             $this->dropTables([
                 'ujm_document_interaction',
                 'ujm_interaction',
