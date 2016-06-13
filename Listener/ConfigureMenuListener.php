@@ -27,6 +27,7 @@ class ConfigureMenuListener
      * @DI\Observe("claroline_external_authentication_menu_configure")
      *
      * @param \Claroline\CoreBundle\Menu\ConfigureMenuEvent $event
+     *
      * @return \Knp\Menu\ItemInterface $menu
      */
     public function onTopBarLeftMenuConfigure(ConfigureMenuEvent $event)
@@ -44,6 +45,7 @@ class ConfigureMenuListener
      * @DI\Observe("render_external_authentication_button")
      *
      * @param RenderAuthenticationButtonEvent $event
+     *
      * @return string
      */
     public function onRenderButton(RenderAuthenticationButtonEvent $event)

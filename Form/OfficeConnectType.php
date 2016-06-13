@@ -9,13 +9,11 @@
  * file that was distributed with this source code.
  */
 
-
 namespace FormaLibre\OfficeConnectBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class OfficeConnectType extends AbstractType
@@ -29,7 +27,7 @@ class OfficeConnectType extends AbstractType
                 array(
                     'constraints' => new NotBlank(),
                     'attr' => array('min' => 0),
-                    'label' => 'office_client_id'
+                    'label' => 'office_client_id',
                 )
             )
             ->add(
@@ -37,7 +35,7 @@ class OfficeConnectType extends AbstractType
                 'text',
                 array(
                     'constraints' => new NotBlank(),
-                    'label' => 'password'
+                    'label' => 'password',
                 )
             )
             ->add(
@@ -45,7 +43,7 @@ class OfficeConnectType extends AbstractType
                 'text',
                 array(
                     'constraints' => new NotBlank(),
-                    'label' => 'app_tenant_domain_name'
+                    'label' => 'app_tenant_domain_name',
                 )
             )
             ->add('office_client_active', 'checkbox', array('label' => 'active', 'required' => false));

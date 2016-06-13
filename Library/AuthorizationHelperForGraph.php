@@ -17,29 +17,32 @@ class AuthorizationHelperForGraph
      *     "settings" = @DI\Inject("formalibre.office_connect.library.settings"),
      * })
      */
-    public function __construct (Settings $settings)
+    public function __construct(Settings $settings)
     {
         $this->settings = $settings;
     }
 
     // Get Authorization URL
-    public function getAuthorizatonURL(){
-        $authUrl = "https://login.windows.net/common/oauth2/authorize". "?" .
-                   "response_type=code" . "&" .
-                   "client_id=" . $this->settings->getClientId() . "&" .
-                   "resource=" . $this->settings->getResourceUri() . "&" .
-                   "redirect_uri=" . $this->settings->getRedirectUri();
+    public function getAuthorizatonURL()
+    {
+        $authUrl = 'https://login.windows.net/common/oauth2/authorize'.'?'.
+                   'response_type=code'.'&'.
+                   'client_id='.$this->settings->getClientId().'&'.
+                   'resource='.$this->settings->getResourceUri().'&'.
+                   'redirect_uri='.$this->settings->getRedirectUri();
+
         return $authUrl;
     }
 
     // Use the code retrieved from authorization URL to get the authentication token that will be used to talk to Graph
-    public function getAuthenticationHeaderFor3LeggedFlow($code){
-       // Construct the body for the STS request
-        $authenticationRequestBody = "grant_type=authorization_code" . "&".
-                                     "client_id=".urlencode($this->settings->getClientId()) . "&".
-                                     "redirect_uri=". $this->settings->getRedirectUri() . "&".
-                                     "client_secret=" . urlencode($this->settings->getPassword()) . "&".
-                                     "code=" . $code;
+    public function getAuthenticationHeaderFor3LeggedFlow($code)
+    {
+        // Construct the body for the STS request
+        $authenticationRequestBody = 'grant_type=authorization_code'.'&'.
+                                     'client_id='.urlencode($this->settings->getClientId()).'&'.
+                                     'redirect_uri='.$this->settings->getRedirectUri().'&'.
+                                     'client_secret='.urlencode($this->settings->getPassword()).'&'.
+                                     'code='.$code;
 
         //Using curl to post the information to STS and get back the authentication response
         $ch = curl_init();
@@ -69,7 +72,7 @@ class AuthorizationHelperForGraph
         $accessToken = $tokenOutput->{'access_token'};
         $tokenScope = $tokenOutput->{'scope'};
 
-        print("\t Token Type: " . $tokenType . "\n AccessToken: " . $accessToken);
+        echo "\t Token Type: ".$tokenType."\n AccessToken: ".$accessToken;
         // Add the token information to the session header so that we can use it to access Graph
         $_SESSION['token_type'] = $tokenType;
         $_SESSION['access_token'] = $accessToken;
@@ -85,6 +88,5 @@ class AuthorizationHelperForGraph
        // $subString = strstr($subString, ',',TRUE);
        // $upn = rtrim(ltrim($subString,'"upn":"'), '"');
        // $_SESSION['upn']=$upn;
-
     }
 }

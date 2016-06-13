@@ -3,7 +3,6 @@
 namespace FormaLibre\OfficeConnectBundle\Controller;
 
 use JMS\DiExtraBundle\Annotation as DI;
-
 //require("C:/wamp/www/claroline/vendor/symfony/symfony/src/Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand.php");
 //use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 //$filepath = realpath (dirname(__FILE__));
@@ -16,10 +15,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use FormaLibre\OfficeConnectBundle\Library\AuthorizationHelperForGraph;
-use FormaLibre\OfficeConnectBundle\Library\Settings;
 use FormaLibre\OfficeConnectBundle\Library\O365ResponseUser;
-use FormaLibre\OfficeConnectBundle\Library\GraphServiceAccessHelper;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Security\PlatformRoles;
@@ -67,7 +63,7 @@ class OfficeConnectController extends Controller
         $userManager = $this->get('claroline.manager.user_manager');
         $email = $userResponse->getEmail();
         $user = $userManager->getUserByEmail($email);
-        if ($user === null){
+        if ($user === null) {
             $user = new User();
             $user->setFirstName($userResponse->getNickname());
             $user->setLastName($userResponse->getRealName());

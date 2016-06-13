@@ -1,3 +1,13 @@
+<style>
+    .icap-oauth-btn.o365-connect {
+        background-color: #0072C6;
+    }
+    .icap-oauth-btn.o365-connect::before {
+        content: "\f17a";
+        border-right-color: #0085e5;
+    }
+</style>
+
 {% if config.getParameter('o365_active') %}
-    <a class="btn btn-primary o365" href="{{ path('claro_o365_get_token') }}">O365 Login</a>
+    <a class='btn icap-oauth-btn btn-block o365-connect' style="" href="{{ path('claro_o365_get_token') }}">O365 Login</a>
 {% endif %}

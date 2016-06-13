@@ -55,7 +55,7 @@ class Settings
 
     public function getRedirectUri()
     {
-        return $this->router->generate('claro_o365_login', array(), false);
+        return $this->router->generate('claro_o365_login', array(), true);
     }
 
     public function getResourceUri()

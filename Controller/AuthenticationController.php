@@ -5,7 +5,6 @@ namespace FormaLibre\OfficeConnectBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\Form\FormError;
 use JMS\SecurityExtraBundle\Annotation as SEC;
 use FormaLibre\OfficeConnectBundle\Form\OfficeConnectType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -61,7 +60,7 @@ class AuthenticationController extends Controller
                 'o365_client_id' => $form['office_client_id']->getData(),
                 'o365_pw' => $form['office_password']->getData(),
                 'o365_domain' => $form['office_app_tenant_domain_name']->getData(),
-                'o365_active' => $form['office_client_active']->getData()
+                'o365_active' => $form['office_client_active']->getData(),
             );
 
             $this->configHandler->setParameters($data);

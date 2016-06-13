@@ -16,7 +16,7 @@ class GraphServiceAccessHelper
      *     "settings" = @DI\Inject("formalibre.office_connect.library.settings"),
      * })
      */
-    public function __construct (Settings $settings)
+    public function __construct(Settings $settings)
     {
         $this->settings = $settings;
     }
@@ -32,9 +32,9 @@ class GraphServiceAccessHelper
         $this->addRequiredHeadersAndSettings($ch);
 
         // Create url for the entry based on the feedname and the key value
-        $feedURL = "https://graph.windows.net/" . $this->settings->getAppTenantDomainName() . "/me/";
+        $feedURL = 'https://graph.windows.net/'.$this->settings->getAppTenantDomainName().'/me/';
     //  $feedURL = "https://graph.windows.net/me";
-        $feedURL = $feedURL."?". $this->settings->getApiVersion();
+        $feedURL = $feedURL.'?'.$this->settings->getApiVersion();
         curl_setopt($ch, CURLOPT_URL, $feedURL);
 
         //Enable fiddler to capture request
@@ -56,7 +56,7 @@ class GraphServiceAccessHelper
         $ch = curl_init();
         $this->addRequiredHeadersAndSettings($ch);
         // set url
-        $feedURL = "https://graph.windows.net/me" . "?" . $this->settings->getApiVersion();
+        $feedURL = 'https://graph.windows.net/me'.'?'.$this->settings->getApiVersion();
         curl_setopt($ch, CURLOPT_URL, $feedURL);
         // Mark as Patch request
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');
@@ -77,9 +77,9 @@ class GraphServiceAccessHelper
     public function addRequiredHeadersAndSettings($ch)
     {
         //Generate the authentication header
-        $authHeader = 'Authorization:' . $_SESSION['token_type'] . ' '.$_SESSION['access_token'];
+        $authHeader = 'Authorization:'.$_SESSION['token_type'].' '.$_SESSION['access_token'];
         curl_setopt($ch, CURLOPT_HTTPHEADER, array($authHeader, 'Accept:application/json;odata=minimalmetadata',
-                                                   'Content-Type:application/json'));
+                                                   'Content-Type:application/json', ));
         // Set the option to recieve the response back as string.
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         // By default https does not work for CURL.

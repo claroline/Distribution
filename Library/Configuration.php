@@ -32,7 +32,7 @@ class Configuration
         $this->officeAppTenantDomainName = $officeAppTenantDomainName;
     }
 
-    public  function setOfficeClientActive($officeClientActive)
+    public function setOfficeClientActive($officeClientActive)
     {
         $this->officeClientActive = $officeClientActive;
     }
