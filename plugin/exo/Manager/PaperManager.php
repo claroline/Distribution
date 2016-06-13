@@ -79,9 +79,7 @@ class PaperManager
      */
     public function openPaper(Exercise $exercise, User $user)
     {
-        $repo = $this->om->getRepository('UJMExoBundle:Paper');
-        $papers = $repo->findUnfinishedPapers($user, $exercise);
-
+        $papers = $this->om->getRepository('UJMExoBundle:Paper')->findUnfinishedPapers($user, $exercise);
         if (count($papers) === 0) {
             $paper = $this->createPaper($user, $exercise);
         } else {
@@ -556,25 +554,20 @@ class PaperManager
                 // Question linked to a Step
                 $step = $stepQuestion->getStep();
                 if (!isset($stepsQuestions[$step->getId()])) {
-                    $stepsQuestions[$step->getId()] = [];
+                    $stepsQuestions[$step->getId()] = [
+                        'id' => $step->getId(),
+                        'items' => []
+                    ];
                 }
 
-                $stepsQuestions[$step->getId()][] = $question->getId();
+                $stepsQuestions[$step->getId()]['items'][] = $question->getId();
             } else {
                 $deleted[] = $question->getId();
             }
         }
 
-        $steps = [];
-        foreach ($exercise->getSteps() as $step) {
-            if (!empty($stepsQuestions[$step->getId()])) {
-                // Step has questions
-                $steps[] = [
-                    'id' => $step->getId(),
-                    'items' => $stepsQuestions[$step->getId()],
-                ];
-            }
-        }
+        // Remove step ids indexes to avoid receiving an array with undefined values in JS
+        $steps = array_values($stepsQuestions);
 
         // Append deleted questions at the end of the Exercise
         if (!empty($deleted)) {
