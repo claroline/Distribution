@@ -16,6 +16,7 @@ use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Library\Resource\ResourceCollection;
 use Claroline\TagBundle\Entity\ResourcesTagsWidgetConfig;
 use Claroline\TagBundle\Form\ResourcesTagsWidgetConfigurationType;
 use Claroline\TagBundle\Form\TagType;
@@ -98,7 +99,7 @@ class TagController extends Controller
      */
     public function resourceTagAction(ResourceNode $resourceNode)
     {
-        if (!$this->container->get('security.authorization_checker')->isGranted('EDIT', $resourceNode)) {
+        if (!$this->container->get('security.authorization_checker')->isGranted('EDIT', new ResourceCollection(array($resourceNode)))) {
             throw new AccessDeniedException();
         }
 
@@ -469,7 +470,7 @@ class TagController extends Controller
      */
     public function tagDeleteFromResourceAction(ResourceNode $resourceNode, Tag $tag)
     {
-        if (!$this->container->get('security.authorization_checker')->isGranted('EDIT', $resourceNode)) {
+        if (!$this->container->get('security.authorization_checker')->isGranted('EDIT', new ResourceCollection(array($resourceNode)))) {
             throw new AccessDeniedException();
         }
         $this->tagManager->removeTaggedObjectsByResourceAndTag($resourceNode, $tag);
