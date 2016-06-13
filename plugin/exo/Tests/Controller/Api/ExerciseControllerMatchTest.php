@@ -96,7 +96,7 @@ class ExerciseControllerMatchTest extends TransactionalTestCase
             'PUT',
             "/exercise/api/papers/{$pa1->getId()}/questions/{$this->qu1->getId()}",
             $this->john,
-            ['data' => [$propId1.','.$labelId, $propId2.','.$labelId]]
+            ['data' => [$propId1.'-'.$labelId, $propId2.'-'.$labelId]]
         );
         $this->assertEquals(204, $this->client->getResponse()->getStatusCode());
     }
