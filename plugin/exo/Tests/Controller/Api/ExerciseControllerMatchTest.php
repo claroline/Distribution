@@ -99,6 +99,9 @@ class ExerciseControllerMatchTest extends TransactionalTestCase
             ['data' => [$propId1.','.$labelId, $propId2.','.$labelId]]
         );
 
+        var_dump($this->client->getResponse());
+        die();
+
         $this->assertEquals(204, $this->client->getResponse()->getStatusCode());
     }
 }
