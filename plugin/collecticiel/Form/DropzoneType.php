@@ -15,7 +15,7 @@ class DropzoneType extends AbstractType
         array(
             'constraints' => new NotBlank(),
             'required' => true,
-            'attr' => array('autofocus' => true)
+            'attr' => array('autofocus' => true),
              )
         );
     }

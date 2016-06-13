@@ -12,7 +12,7 @@ abstract class AbstractPathType extends AbstractType
     {
         $builder->add('name',                       'text',     array(
             'required' => true,
-            'attr' => array('autofocus' => true)
+            'attr' => array('autofocus' => true),
         ));
         $builder->add('description',                'tinymce',  array('required' => false));
         $builder->add('breadcrumbs',                'checkbox', array('required' => false));
