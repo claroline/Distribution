@@ -25,18 +25,41 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class PaperManager
 {
+    /**
+     * @var ObjectManager
+     */
     private $om;
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    /**
+     * @var QuestionHandlerCollector
+     */
     private $handlerCollector;
-    private $exerciseManager;
+
+    /**
+     * @var QuestionManager
+     */
     private $questionManager;
+
+    /**
+     * @var TranslatorInterface
+     */
     private $translator;
+
+    /**
+     * @var PaperService
+     */
+    private $paperService;
 
     /**
      * @DI\InjectParams({
      *     "om"                 = @DI\Inject("claroline.persistence.object_manager"),
      *     "eventDispatcher"    = @DI\Inject("event_dispatcher"),
      *     "collector"          = @DI\Inject("ujm.exo.question_handler_collector"),
-     *     "exerciseManager"    = @DI\Inject("ujm.exo.exercise_manager"),
      *     "questionManager"    = @DI\Inject("ujm.exo.question_manager"),
      *     "translator"         = @DI\Inject("translator"),
      *     "paperService"       = @DI\Inject("ujm.exo_paper")
@@ -45,7 +68,6 @@ class PaperManager
      * @param ObjectManager            $om
      * @param EventDispatcherInterface $eventDispatcher
      * @param QuestionHandlerCollector $collector
-     * @param ExerciseManager          $exerciseManager
      * @param QuestionManager          $questionManager
      * @param TranslatorInterface      $translator
      * @param PaperService             $paperService
@@ -54,7 +76,6 @@ class PaperManager
         ObjectManager $om,
         EventDispatcherInterface $eventDispatcher,
         QuestionHandlerCollector $collector,
-        ExerciseManager $exerciseManager,
         QuestionManager $questionManager,
         TranslatorInterface $translator,
         PaperService $paperService
@@ -62,7 +83,6 @@ class PaperManager
         $this->om = $om;
         $this->eventDispatcher = $eventDispatcher;
         $this->handlerCollector = $collector;
-        $this->exerciseManager = $exerciseManager;
         $this->questionManager = $questionManager;
         $this->translator = $translator;
         $this->paperService = $paperService;
@@ -112,7 +132,7 @@ class PaperManager
         );
 
         $paperNum = $lastPaper ? $lastPaper->getNumPaper() + 1 : 1;
-        $questions = $this->exerciseManager->pickQuestions($exercise);
+        $questions = $this->pickQuestions($exercise);
         $order = '';
 
         foreach ($questions as $question) {
@@ -637,5 +657,76 @@ class PaperManager
         }
 
         return $available;
+    }
+
+    /**
+     * Returns a question list according to the *shuffle* and
+     * *nbQuestions* parameters of an exercise, i.e. filtered
+     * and/or randomized if needed.
+     *
+     * @param Exercise $exercise
+     *
+     * @return array
+     */
+    public function pickQuestions(Exercise $exercise)
+    {
+        $steps = $this->pickSteps($exercise);
+        $questionRepo = $this->om->getRepository('UJMExoBundle:Question');
+        $finalQuestions = [];
+
+        foreach ($steps as $step) {
+            $questions = $questionRepo->findByStep($step);
+            $finalQuestions = array_merge($finalQuestions, $questions);
+        }
+
+        return $finalQuestions;
+    }
+
+    /**
+     * Returns a step list according to the *shuffle* and
+     * nbStep* parameters of an exercise, i.e. filtered
+     * and/or randomized if needed.
+     *
+     * @param Exercise $exercise
+     *
+     * @return array
+     */
+    public function pickSteps(Exercise $exercise)
+    {
+        $steps = $exercise->getSteps()->toArray();
+
+        if ($exercise->getShuffle() === true) {
+            shuffle($steps);
+        }
+
+        if (($stepToPick = $exercise->getPickSteps()) > 0) {
+            $steps = $this->pickItem($stepToPick, $steps);
+        }
+
+        return $steps;
+    }
+
+    /**
+     * Returns item (step or question) list according to the *shuffle* and
+     * *nbItem* parameters of an exercise or a step, i.e. filtered
+     * and/or randomized if needed.
+     *
+     * @param integer $itemToPick
+     * @param array  $listItem array of steps or array of question
+     *
+     * @return array
+     */
+    private function pickItem($itemToPick, array $listItem)
+    {
+        $newListItem = array();
+        while ($itemToPick > 0) {
+            $index = rand(0, count($listItem) - 1);
+            $newListItem[] = $listItem[$index];
+            unset($listItem[$index]);
+            $listItem = array_values($listItem); // "re-index" the array
+            --$itemToPick;
+        }
+
+        return $newListItem;
     }
 }

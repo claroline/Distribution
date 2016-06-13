@@ -206,51 +206,6 @@ class ExerciseManager
     }
 
     /**
-     * Returns a question list according to the *shuffle* and
-     * *nbQuestions* parameters of an exercise, i.e. filtered
-     * and/or randomized if needed.
-     *
-     * @param Exercise $exercise
-     *
-     * @return array
-     */
-    public function pickQuestions(Exercise $exercise)
-    {
-        $steps = $this->pickSteps($exercise);
-        $questionRepo = $this->om->getRepository('UJMExoBundle:Question');
-        $finalQuestions = [];
-
-        foreach ($steps as $step) {
-            $questions = $questionRepo->findByStep($step);
-            $finalQuestions = array_merge($finalQuestions, $questions);
-        }
-
-        return $finalQuestions;
-    }
-
-    /**
-     * Returns a step list according to the *shuffle* and
-     * nbStep* parameters of an exercise, i.e. filtered
-     * and/or randomized if needed.
-     *
-     * @param Exercise $exercise
-     *
-     * @return array
-     */
-    public function pickSteps(Exercise $exercise)
-    {
-        $steps = $this->om->getRepository('UJMExoBundle:Step')->findByExercise($exercise);
-        if ($exercise->getShuffle() === true) {
-            shuffle($steps);
-        }
-        if (($stepToPick = $exercise->getPickSteps()) > 0) {
-            $steps = $this->pickItem($stepToPick, $steps);
-        }
-
-        return $steps;
-    }
-
-    /**
      * Create a copy of an Exercise.
      *
      * @param Exercise $exercise
@@ -450,29 +405,5 @@ class ExerciseManager
         }
 
         return $data;
-    }
-
-    /**
-     * Returns item (step or question) list according to the *shuffle* and
-     * *nbItem* parameters of an exercise or a step, i.e. filtered
-     * and/or randomized if needed.
-     *
-     * @param integer $itemToPick
-     * @param item[]  $listItem array of steps or array of question
-     *
-     * @return array
-     */
-    private function pickItem($itemToPick, $listItem)
-    {
-        $newListItem = array();
-        while ($itemToPick > 0) {
-            $index = rand(0, count($listItem) - 1);
-            $newListItem[] = $listItem[$index];
-            unset($listItem[$index]);
-            $listItem = array_values($listItem); // "re-index" the array
-            --$itemToPick;
-        }
-
-        return $newListItem;
     }
 }
