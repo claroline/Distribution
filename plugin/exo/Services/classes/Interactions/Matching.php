@@ -76,8 +76,8 @@ class Matching extends Interaction
         $score = 0;
 
         foreach ($tabRightResponse as $labelId => $value) {
-            $rightResponseArray = split("-", $tabRightResponse[$labelId]);
-            $responseArray = split("-", $tabResponseIndex[$labelId]);
+            $rightResponseArray = split('-', $tabRightResponse[$labelId]);
+            $responseArray = split('-', $tabResponseIndex[$labelId]);
             foreach ($responseArray as $responseGiven) {
                 if (in_array($responseGiven, $rightResponseArray)) {
                     $label = $em->getRepository('UJMExoBundle:Label')
