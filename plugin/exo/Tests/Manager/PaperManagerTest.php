@@ -5,6 +5,7 @@ namespace UJM\ExoBundle\Manager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Doctrine\Common\Collections\ArrayCollection;
 use UJM\ExoBundle\Entity\Exercise;
+use UJM\ExoBundle\Entity\Paper;
 use UJM\ExoBundle\Entity\Step;
 
 class PaperManagerTest extends \PHPUnit_Framework_TestCase
@@ -33,7 +34,40 @@ class PaperManagerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testPickStepsShufflesThemIfNeeded()
+    public function testKeepSteps()
+    {
+        $exercise = $this->mock('UJM\ExoBundle\Entity\Exercise');
+        $user = $this->mock('Claroline\CoreBundle\Entity\User');
+
+        $exercise->expects($this->once())
+            ->method('getKeepSteps')
+            ->willReturn(true);
+
+        // Create the first Paper which will be used to generate order for the next ones
+        $paper1 = new Paper();
+        $paper1->setUser($user);
+        $paper1->setNumPaper(1);
+        $paper1->setStart(new \DateTime());
+        $paper1->setOrdreQuestion('1;2;3;4');
+
+        // Second time, the repo needs to return us the previous created paper (`paper1`)
+        $paperRepo = $this->mock('UJM\ExoBundle\Repository\PaperRepository');
+
+        $this->om->expects($this->once())
+            ->method('getRepository')
+            ->with('UJMExoBundle:Paper')
+            ->willReturn($paperRepo);
+
+        $paperRepo->expects($this->once())
+            ->method('findOneBy')
+            ->willReturn($paper1);
+
+        $paper2 = $this->manager->createPaper($user, $exercise);
+
+        $this->assertEquals($paper1->getOrdreQuestion(), $paper2->getOrdreQuestion());
+    }
+
+    public function testShuffleSteps()
     {
         $exercise = $this->mock('UJM\ExoBundle\Entity\Exercise');
 
@@ -51,14 +85,17 @@ class PaperManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEquals([1, 2, 3, 4], $steps);
     }
 
-    public function testPickStepsDiscardsSomeIfNeeded()
+    public function testPickSubsetOfSteps()
     {
-        $exercise = new Exercise();
-        $exercise->setPickSteps(2);
+        $exercise = $this->mock('UJM\ExoBundle\Entity\Exercise');
 
-        $exercise->addStep(new Step());
-        $exercise->addStep(new Step());
-        $exercise->addStep(new Step());
+        $exercise->expects($this->once())
+            ->method('getPickSteps')
+            ->willReturn(2);
+
+        $exercise->expects($this->once())
+            ->method('getSteps')
+            ->willReturn(new ArrayCollection([1, 2, 3, 4]));
 
         $steps = $this->manager->pickSteps($exercise);
 

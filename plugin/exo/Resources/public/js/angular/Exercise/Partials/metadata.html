@@ -92,11 +92,11 @@
                     </div>
 
                     <!-- Keep same questions ? -->
-                    <div class="form-group" data-ng-if="0 < exerciseMetadataCtrl.meta.pick">
+                    <div class="form-group" data-ng-if="0 < exerciseMetadataCtrl.meta.pick || exerciseMetadataCtrl.meta.random">
                         <label for="exercise-keep" class="control-label col-md-4">{{ 'keep_same_question' | trans:{}:'ujm_exo' }}</label>
                         <div class="col-md-8">
                             <div class="checkbox">
-                                <input type="checkbox" id="exercise-keep" data-ng-model="exerciseMetadataCtrl.meta.keepSameQuestion" />
+                                <input type="checkbox" id="exercise-keep" data-ng-model="exerciseMetadataCtrl.meta.keepSteps" />
                             </div>
                         </div>
                     </div>

@@ -318,7 +318,7 @@ class ExerciseManager
         $exercise->setType($metadata->type);
         $exercise->setPickSteps($metadata->pick ? $metadata->pick : 0);
         $exercise->setShuffle($metadata->random);
-        $exercise->setKeepSameQuestion($metadata->keepSameQuestions);
+        $exercise->setKeepSteps($metadata->keepSteps);
         $exercise->setMaxAttempts($metadata->maxAttempts);
         $exercise->setLockAttempt($metadata->lockAttempt);
         $exercise->setDispButtonInterrupt($metadata->dispButtonInterrupt);
@@ -369,7 +369,7 @@ class ExerciseManager
             'type' => $exercise->getType(),
             'pick' => $exercise->getPickSteps(),
             'random' => $exercise->getShuffle(),
-            'keepSameQuestions' => $exercise->getKeepSameQuestion(),
+            'keepSteps' => $exercise->getKeepSteps(),
             'maxAttempts' => $exercise->getMaxAttempts(),
             'lockAttempt' => $exercise->getLockAttempt(),
             'dispButtonInterrupt' => $exercise->getDispButtonInterrupt(),

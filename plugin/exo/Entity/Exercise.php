@@ -24,7 +24,7 @@ class Exercise extends AbstractResource
     private $description = '';
 
     /**
-     * Are the Questions shuffled in the Steps ?
+     * Are the Steps shuffled ?
      *
      * @ORM\Column(name="shuffle", type="boolean", nullable=true)
      */
@@ -41,9 +41,14 @@ class Exercise extends AbstractResource
     private $pickSteps = 0;
 
     /**
+     * Do we need to always give a same User the same Steps in the same order ?
+     * Works with `shuffle` and `pickSteps`
+     *
+     * @var boolean
+     *
      * @ORM\Column(name="keepSameQuestion", type="boolean", nullable=true)
      */
-    private $keepSameQuestion;
+    private $keepSteps = false;
 
     /**
      * Maximum time allowed to do the Exercise.
@@ -240,21 +245,23 @@ class Exercise extends AbstractResource
     }
 
     /**
-     * Set keepSameQuestion.
+     * Set keepSteps.
      *
-     * @param bool $keepSameQuestion
+     * @param bool $keepSteps
      */
-    public function setKeepSameQuestion($keepSameQuestion)
+    public function setKeepSteps($keepSteps)
     {
-        $this->keepSameQuestion = $keepSameQuestion;
+        $this->keepSteps = $keepSteps;
     }
 
     /**
-     * Get keepSameQuestion.
+     * Get keepSteps.
+     *
+     * @return boolean
      */
-    public function getKeepSameQuestion()
+    public function getKeepSteps()
     {
-        return $this->keepSameQuestion;
+        return $this->keepSteps;
     }
 
     /**

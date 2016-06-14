@@ -132,11 +132,17 @@ class PaperManager
         );
 
         $paperNum = $lastPaper ? $lastPaper->getNumPaper() + 1 : 1;
-        $questions = $this->pickQuestions($exercise);
-        $order = '';
 
-        foreach ($questions as $question) {
-            $order .= $question->getId().';';
+        $order = '';
+        if ($exercise->getKeepSteps() && $lastPaper) {
+            // Get steps order from the last user Paper
+            $order = $lastPaper->getOrdreQuestion();
+        } else {
+            // Generate paper step order
+            $questions = $this->pickQuestions($exercise);
+            foreach ($questions as $question) {
+                $order .= $question->getId().';';
+            }
         }
 
         $paper = new Paper();
