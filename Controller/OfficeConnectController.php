@@ -67,7 +67,7 @@ class OfficeConnectController extends Controller
             $user = new User();
             $user->setFirstName($userResponse->getNickname());
             $user->setLastName($userResponse->getRealName());
-            $user->setUsername($userResponse->getEmail());
+            $user->setUsername($userResponse->getUsername());
             $user->setPlainPassword($userResponse->getEmail());
             $user->setMail($userResponse->getEmail());
             $roleName = PlatformRoles::USER;

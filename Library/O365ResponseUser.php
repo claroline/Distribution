@@ -19,7 +19,7 @@ class O365ResponseUser
 
     public function getUsername()
     {
-        return $this->responseObj->{'mail'};
+        return $this->responseObj->{'userPrincipalName'};
     }
 
     public function getResponse()
@@ -39,6 +39,6 @@ class O365ResponseUser
 
     public function getRealName()
     {
-        return $this->responseObj->{'sn'};
+        return $this->responseObj->{'surname'};
     }
 }
