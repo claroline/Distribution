@@ -582,7 +582,7 @@ class PaperManager
                 if (!isset($stepsQuestions[$step->getId()])) {
                     $stepsQuestions[$step->getId()] = [
                         'id' => $step->getId(),
-                        'items' => []
+                        'items' => [],
                     ];
                 }
 
@@ -717,8 +717,8 @@ class PaperManager
      * *nbItem* parameters of an exercise or a step, i.e. filtered
      * and/or randomized if needed.
      *
-     * @param integer $itemToPick
-     * @param array  $listItem array of steps or array of question
+     * @param int   $itemToPick
+     * @param array $listItem   array of steps or array of question
      *
      * @return array
      */

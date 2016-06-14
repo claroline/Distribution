@@ -4,9 +4,7 @@ namespace UJM\ExoBundle\Manager;
 
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Doctrine\Common\Collections\ArrayCollection;
-use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Paper;
-use UJM\ExoBundle\Entity\Step;
 
 class PaperManagerTest extends \PHPUnit_Framework_TestCase
 {

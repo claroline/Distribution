@@ -34,7 +34,7 @@ class ResourceNode
     const PATH_SEPARATOR = '`';
 
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -185,7 +185,7 @@ class ResourceNode
     protected $rights;
 
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="value", nullable=true, type="integer")
      */
@@ -224,7 +224,7 @@ class ResourceNode
     private $pathForCreationLog = '';
 
     /**
-     * @var boolean
+     * @var bool
      *
      * @ORM\Column(name="published", type="boolean", options={"default": 1})
      */
@@ -249,7 +249,7 @@ class ResourceNode
     protected $author;
 
     /**
-     * @var boolean
+     * @var bool
      *
      * @ORM\Column(type="boolean", options={"default": 1})
      */
@@ -467,7 +467,7 @@ class ResourceNode
     /**
      * Return the lvl value of the resource in the tree.
      *
-     * @return integer
+     * @return int
      */
     public function getLvl()
     {
@@ -690,7 +690,7 @@ class ResourceNode
     /**
      * Returns whether the resource is published.
      *
-     * @return boolean
+     * @return bool
      */
     public function isPublished()
     {
@@ -708,9 +708,9 @@ class ResourceNode
     }
 
     /**
-     * Sets the resource index
+     * Sets the resource index.
      *
-     * @param integer $index
+     * @param int $index
      */
     public function setIndex($index)
     {
@@ -720,7 +720,7 @@ class ResourceNode
     /**
      * Returns the resource index.
      *
-     * @return integer
+     * @return int
      */
     public function getIndex()
     {
@@ -748,9 +748,9 @@ class ResourceNode
     }
 
     /**
-     * Returns whether the resource is active
+     * Returns whether the resource is active.
      *
-     * @return boolean
+     * @return bool
      */
     public function isActive()
     {
@@ -758,7 +758,7 @@ class ResourceNode
     }
 
     /**
-     * Sets the resource active state
+     * Sets the resource active state.
      *
      * @param $active
      */

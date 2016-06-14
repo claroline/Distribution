@@ -42,9 +42,9 @@ class Exercise extends AbstractResource
 
     /**
      * Do we need to always give a same User the same Steps in the same order ?
-     * Works with `shuffle` and `pickSteps`
+     * Works with `shuffle` and `pickSteps`.
      *
-     * @var boolean
+     * @var bool
      *
      * @ORM\Column(name="keepSameQuestion", type="boolean", nullable=true)
      */
@@ -257,7 +257,7 @@ class Exercise extends AbstractResource
     /**
      * Get keepSteps.
      *
-     * @return boolean
+     * @return bool
      */
     public function getKeepSteps()
     {
