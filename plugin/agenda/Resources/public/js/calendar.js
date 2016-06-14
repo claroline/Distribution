@@ -334,8 +334,8 @@
 
         $element
             .popover({
-                trigger: 'click',
-                title: event.title,
+                trigger: 'focus',
+                title: event.title + '<button>X</button>',
                 content: Twig.render(EventContent, {event: event}),
                 html: true,
                 container: 'body',
