@@ -695,7 +695,7 @@ class PaperManager
     {
         $steps = $exercise->getSteps()->toArray();
 
-        if ($exercise->getShuffle() === true) {
+        if ($exercise->getShuffle()) {
             shuffle($steps);
         }
 

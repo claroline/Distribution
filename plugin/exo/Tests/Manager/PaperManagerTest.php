@@ -3,16 +3,20 @@
 namespace UJM\ExoBundle\Manager;
 
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use Doctrine\Common\Collections\ArrayCollection;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Step;
-use UJM\ExoBundle\Manager\PaperManager;
 
 class PaperManagerTest extends \PHPUnit_Framework_TestCase
 {
-    /** @var ObjectManager */
+    /**
+     * @var ObjectManager
+     */
     private $om;
 
-    /** @var PaperManager */
+    /**
+     * @var PaperManager
+     */
     private $manager;
 
     protected function setUp()
@@ -29,66 +33,36 @@ class PaperManagerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testPickQuestionsShufflesThemIfNeeded()
+    public function testPickStepsShufflesThemIfNeeded()
     {
-        $exercise = new Exercise();
-        $exercise->setShuffle(true);
+        $exercise = $this->mock('UJM\ExoBundle\Entity\Exercise');
 
-        $exercise->addStep(new Step());
-        $exercise->addStep(new Step());
+        $exercise->expects($this->once())
+            ->method('getShuffle')
+            ->willReturn(true);
 
-        $this->om->persist($exercise);
+        $exercise->expects($this->once())
+            ->method('getSteps')
+            ->willReturn(new ArrayCollection([1, 2, 3, 4]));
 
-        $questionRepo = $this->mock('UJM\ExoBundle\Repository\QuestionRepository');
+        $steps = $this->manager->pickSteps($exercise);
 
-        $this->om->expects($this->once())
-            ->method('getRepository')
-            ->with('UJMExoBundle:Question')
-            ->willReturn($questionRepo);
-
-        $questionRepo->expects($this->exactly(2))
-            ->method('findByStep')
-            ->willReturnOnConsecutiveCalls([1, 2, 3], [4, 5]);
-
-        $questions = $this->manager->pickQuestions($exercise);
-        $this->assertEquals(5, count($questions));
-        $this->assertNotEquals([1, 2, 3, 4, 5], $questions);
-        $this->assertContains(1, $questions);
-        $this->assertContains(2, $questions);
-        $this->assertContains(3, $questions);
-        $this->assertContains(4, $questions);
-        $this->assertContains(5, $questions);
+        $this->assertEquals(4, count($steps));
+        $this->assertNotEquals([1, 2, 3, 4], $steps);
     }
 
-    public function testPickQuestionsDiscardsSomeIfNeeded()
+    public function testPickStepsDiscardsSomeIfNeeded()
     {
         $exercise = new Exercise();
         $exercise->setPickSteps(2);
 
-        $stepRepo = $this->mock('UJM\ExoBundle\Repository\StepRepository');
-        $questionRepo = $this->mock('UJM\ExoBundle\Repository\QuestionRepository');
+        $exercise->addStep(new Step());
+        $exercise->addStep(new Step());
+        $exercise->addStep(new Step());
 
-        $this->om->expects($this->at(0))
-            ->method('getRepository')
-            ->with('UJMExoBundle:Step')
-            ->willReturn($stepRepo);
-        $this->om->expects($this->at(1))
-            ->method('getRepository')
-            ->with('UJMExoBundle:Question')
-            ->willReturn($questionRepo);
+        $steps = $this->manager->pickSteps($exercise);
 
-        $stepRepo->expects($this->once())
-            ->method('findByExercise')
-            ->with($exercise)
-            ->willReturn([new Step(), new Step()]);
-        $questionRepo->expects($this->exactly(2))
-            ->method('findByStep')
-            ->willReturnOnConsecutiveCalls([1, 2], [3, 4]);
-
-        $questions = $this->manager->pickQuestions($exercise);
-        $this->assertEquals(2, count($questions));
-        $this->assertContains($questions[0], [1, 2, 3, 4]);
-        $this->assertContains($questions[1], [1, 2, 3, 4]);
+        $this->assertEquals(2, count($steps));
     }
 
     private function mock($class)
