@@ -235,6 +235,18 @@
 
             showEditFormForGuest($(this).data('event-id'));
         })
+        .on('click', function (e) {
+            $('[data-original-title]').each(function () {
+                if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+                    $(this).popover('hide');
+                }
+            });
+        })
+        .on('click', '.popover button.close', function(e) {
+            $('[data-original-title]').each(function () {
+                $(this).popover('hide');
+            });
+        })
     ;
 
     function addEventAndTaskToCalendar(event)
@@ -334,8 +346,8 @@
 
         $element
             .popover({
-                trigger: 'focus',
-                title: event.title + '<button>X</button>',
+                trigger: 'click',
+                title: event.title + '<button class="close">X</button>',
                 content: Twig.render(EventContent, {event: event}),
                 html: true,
                 container: 'body',
