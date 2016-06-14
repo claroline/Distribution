@@ -13,6 +13,10 @@
                 {{ pathSummaryShowCtrl.title }}
             </h2>
 
+            <div>
+                <uib-progressbar max="pathSummaryShowCtrl.totalSteps" value="pathSummaryShowCtrl.getTotalProgression()"><span style="color:white; white-space:nowrap;"> {{pathSummaryShowCtrl.getTotalProgression()}} / {{pathSummaryShowCtrl.totalSteps}}</span></uib-progressbar>
+            </div>
+
             <!-- Block to display where there is no structure -->
             <div data-ng-if="pathSummaryShowCtrl.structure.length === 0" class="text-center">
                 <em>There is no structure for this path.</em>

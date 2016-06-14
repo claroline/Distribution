@@ -39,6 +39,12 @@
             };
 
             /**
+             * Total steps in path
+             * @type {number}
+             */
+            var totalSteps = 0;
+
+            /**
              * is condition blocking all children of a step
              * @type {boolean}
              */
@@ -215,6 +221,21 @@
                 },
                 isCompleteBlockingCondition: function isCompleteBlockingCondition() {
                     return completeBlockingCondition;
+                },
+
+                /**
+                 * Set path total steps
+                 * @param {Number} value
+                 */
+                setTotalSteps: function setTotalSteps(value) {
+                    totalSteps = value;
+                },
+                /**
+                 * Get path total steps
+                 * @returns {number}
+                 */
+                getTotalSteps: function getTotalSteps() {
+                    return totalSteps;
                 },
 
                 /**
