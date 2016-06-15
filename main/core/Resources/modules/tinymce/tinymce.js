@@ -1,5 +1,4 @@
 import 'claroline-tinymce-mention/plugin.min'
-import 'claroline-tinymce-accordion/plugin.min'
 import 'tinymce-codemirror/plugins/codemirror/plugin.min'
 import './plugins/codemirror'
 
