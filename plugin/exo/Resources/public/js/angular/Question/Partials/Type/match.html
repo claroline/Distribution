@@ -12,10 +12,8 @@
         <div data-ng-if="matchQuestionCtrl.question.typeMatch === 1" class="row center-text">
             <!-- PROPOSALS -->
             <div class="col-md-5">
-                <div data-ng-repeat="proposal in matchQuestionCtrl.question.firstSet" class="origin draggable" id="draggable_{{proposal.id}}">
-                    <div class="setLabel">
-                        <div data-ng-bind-html="proposal.data | unsafe"></div>
-                    </div>
+                <div data-ng-repeat="proposal in matchQuestionCtrl.question.firstSet" class="source" id="draggable_{{proposal.id}}">
+                    <div data-ng-bind-html="proposal.data | unsafe"></div>
                 </div>
             </div>
 
@@ -26,10 +24,8 @@
 
             <!-- LABELS -->
             <div class="col-md-5">
-                <div data-ng-repeat="proposal in matchQuestionCtrl.question.secondSet" class="droppable" id="droppable_{{proposal.id}}">
-                    <div class="setLabel">
-                         <div data-ng-bind-html="proposal.data | unsafe"></div>
-                    </div>
+                <div data-ng-repeat="proposal in matchQuestionCtrl.question.secondSet" class="target" id="droppable_{{proposal.id}}">
+                     <div data-ng-bind-html="proposal.data | unsafe"></div>
                 </div>
             </div>
         </div>
@@ -101,6 +97,7 @@
                             </div>
                         </div>
                     </div>
+
                     <!-- When the div is dropped -->
                     <div data-ng-if="matchQuestionCtrl.proposalDropped(proposal)" data-ng-click="matchQuestionCtrl.removeDropped(proposal.id, -1)" class="col-md-12 fa fa-undo drag-zoom drag-button drop-textbox-height"></div>
                 </div>

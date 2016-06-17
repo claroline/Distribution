@@ -34,6 +34,26 @@ MatchQuestionService.prototype.getCorrectAnswer = function getCorrectAnswer(ques
 };
 
 /**
+ * Check if association is valid or not
+ * @param   {Object} question
+ * @param   {Array}  association
+ * @returns {boolean}
+ */
+MatchQuestionService.prototype.isAssociationValid = function isAssociationValid(question, association) {
+    var valid = false;
+
+    if (question.solutions) {
+        for (var i = 0; i < question.solutions.length; i++) {
+            if (association[0] === question.solutions[i].firstId && association[1] === question.solutions[i].secondId) {
+                valid = true;
+            }
+        }
+    }
+
+    return valid;
+};
+
+/**
  * 
  * @returns {number}
  */
@@ -67,29 +87,7 @@ MatchQuestionService.prototype.answersAllFound = function answersAllFound(questi
     return feedbackState;
 };
 
-MatchQuestionService.prototype.initBindMatchQuestion = function initBindMatchQuestion() {
-    jsPlumb.setContainer($("body"));
-
-    // source elements
-    $(".origin").each(function () {
-        jsPlumb.addEndpoint(this, {
-            anchor: 'RightMiddle',
-            cssClass: "endPoints",
-            isSource: true,
-            maxConnections: -1
-        });
-    });
-
-    // target elements
-    $(".droppable").each(function () {
-        jsPlumb.addEndpoint(this, {
-            anchor: 'LeftMiddle',
-            cssClass: "endPoints",
-            isTarget: true,
-            maxConnections: -1
-        });
-    });
-
+MatchQuestionService.prototype.initBindMatchQuestion = function initBindMatchQuestion(element) {
     // defaults parameters for all connections
     jsPlumb.importDefaults({
         Anchors: ["RightMiddle", "LeftMiddle"],
@@ -99,6 +97,37 @@ MatchQuestionService.prototype.initBindMatchQuestion = function initBindMatchQue
         HoverPaintStyle: {strokeStyle: "#FC0000"},
         LogEnabled: true,
         PaintStyle: {strokeStyle: "#777", lineWidth: 4}
+    });
+
+    jsPlumb.registerConnectionTypes({
+        right: {
+            paintStyle     : { strokeStyle: '#5CB85C', lineWidth: 5 },
+            hoverPaintStyle: { strokeStyle: 'green',   lineWidth: 6 }
+        },
+        wrong: {
+            paintStyle:      { strokeStyle: '#D9534F', lineWidth: 5 },
+            hoverPaintStyle: { strokeStyle: 'red',     lineWidth: 6 }
+        },
+        default: {
+            paintStyle     : { strokeStyle: 'grey',    lineWidth: 5 },
+            hoverPaintStyle: { strokeStyle: '#FC0000', lineWidth: 6 }
+        }
+    });
+
+    jsPlumb.setContainer(element);
+
+    jsPlumb.addEndpoint(jsPlumb.getSelector('.source'), {
+        anchor: 'RightMiddle',
+        cssClass: "endPoints",
+        isSource: true,
+        maxConnections: -1
+    });
+
+    jsPlumb.addEndpoint(jsPlumb.getSelector('.target'), {
+        anchor: 'LeftMiddle',
+        cssClass: "endPoints",
+        isTarget: true,
+        maxConnections: -1
     });
 };
 
@@ -118,7 +147,7 @@ MatchQuestionService.prototype.initDragMatchQuestion = function initDragMatchQue
     });
 
     $(".droppable").each(function () {
-        // in exercice, if go on previous question, just visual aspect
+        // in exercise, if go on previous question, just visual aspect
         if ($(this).children().length > 2) {
             var children = $(this).children().length;
             var i = 2;

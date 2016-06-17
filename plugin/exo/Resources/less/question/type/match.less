@@ -1,15 +1,16 @@
 .match-question-container {
-    p > audio {
-        margin-top: 40px;
-        max-width: 90%;
-    }
-    
-    div > p > video {
-        max-height: 110px;
-    }
-    
-    div > p > img {
-        max-height: 110px;
+    position: relative;
+
+    div > p {
+        > audio {
+            margin-top: 40px;
+            max-width: 90%;
+        }
+
+        > img,
+        > video {
+            max-height: 110px;
+        }
     }
     
     ._jsPlumb_hover {
@@ -18,17 +19,22 @@
 
     .endPoints {
         z-index: 1;
+        cursor: default;
     }
 
-    ._jsPlumb_endpoint {
-        cursor: default;
+    .source,
+    .target {
+        background-color: @gray-lighter;
+        margin: floor(@grid-gutter-width / 2) 0;
+        padding: @panel-body-padding;
+        position: relative;
+        border-radius: @border-radius-base;
     }
 
     .origin {
         background-color: #f9f9f9;
         margin: 10px;
         min-height: 50px;
-        /*max-width: 400px;*/
         min-width: 200px;
     }
     
@@ -54,7 +60,7 @@
         list-style-type:none;
     }
 
-    .dropped-item-row{
+    .dropped-item-row {
         padding: 5px;
     }
 
@@ -185,7 +191,6 @@
         margin: 10px;
         overflow: hidden;
     }
-
 
     .dragDropped li {
         list-style-type:none;

@@ -525,7 +525,7 @@ MatchQuestionCtrl.prototype.updateStudentData = function () {
  * Only for toBind type
  * @returns {undefined}
  */
-MatchQuestionCtrl.prototype.reset = function () {
+MatchQuestionCtrl.prototype.reset = function reset() {
     if (this.question.toBind) {
         jsPlumb.detachEveryConnection();
         this.connections.splice(0, this.connections.length);
@@ -558,35 +558,25 @@ MatchQuestionCtrl.prototype.reset = function () {
 };
 
 /**
- * init previous answers given for a toBind Match question
- * DOM has to be ready before calling this method...
- * problem when updating a previously given answer
+ * Connect answer associations.
  */
 MatchQuestionCtrl.prototype.addPreviousConnections = function addPreviousConnections() {
     if (this.answer && this.answer.length > 0) {
-        // init previously given answer
-        var sets = this.answer;
-        for (var i = 0; i < sets.length; i++) {
-            if (sets[i] && sets[i] !== '') {
-                var items = sets[i].split(',');
-                if (this.feedback.enabled || this.solutions) {
-                    var created = false;
-                    if (this.solutions) {
-                        for (var j=0; j<this.question.solutions.length; j++) {
-                            if (items[0] === this.question.solutions[j].firstId && items[1] === this.question.solutions[j].secondId) {
-                                var c = jsPlumb.connect({source: "draggable_" + items[0], target: "droppable_" + items[1], type: "right"});
-                                created = true;
-                            }
-                        }
-                    }
-                    if (!created) {
-                        var co = jsPlumb.connect({source: "draggable_" + items[0], target: "droppable_" + items[1], type: "default"});
-                    }
-                }
+        for (var i = 0; i < this.answer.length; i++) {
+            if (this.answer[i] && this.answer[i] !== '') {
+                var association = this.answer[i].split(',');
+
+                jsPlumb.connect({
+                    source: 'draggable_' + association[0],
+                    target: 'droppable_' + association[1],
+                    type: this.feedback.enabled
+                            && this.question.solutions
+                            && this.MatchQuestionService.isAssociationValid(this.question, association) ? 'right' : 'default'
+                });
 
                 var connection = {
-                    source: items[0],
-                    target: items[1]
+                    source: association[0],
+                    target: association[1]
                 };
 
                 this.connections.push(connection);
