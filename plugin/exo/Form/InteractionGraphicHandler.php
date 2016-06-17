@@ -125,7 +125,7 @@ class InteractionGraphicHandler extends QuestionHandler
         $interGraphic->getPicture()->setHeight($height);
         $interGraphic->getPicture()->setWidth($width);
 
-        $coordsToDel = $this->em->getRepository('UJMExoBundle:Coords')->findBy(array('interactionGraphic' => $interGraphic->getId()));
+        $coordsToDel = $interGraphic->getCoords();
 
         $coords = $this->request->get('coordsZone'); // Get the answer zones
 
@@ -146,7 +146,6 @@ class InteractionGraphicHandler extends QuestionHandler
         }
 
         $this->em->persist($interGraphic);
-        $this->em->persist($picture);
         $this->em->flush();
     }
 
