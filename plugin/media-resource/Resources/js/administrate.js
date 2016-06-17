@@ -1,138 +1,120 @@
-// JAVASCRIPT HELPERS / OBJECTS
-var strUtils;
-var javascriptUtils;
-var domUtils;
+'use strict';
 
-// VARS
-var transitionType = 'fast';
-var audioData;
-var wId; // Workspace ID
-var mrId; // MediaResource ID
-var wavesurfer;
-var playing = false;
 var isInRegionNoteRow = false; // for keyboard event listener, if we are editing a region note row, we don't want the enter keyboard to add a region marker
 
 // current help options
-var helpPlaybackBackward = false;
-var helpIsPlaying = false;
-var helpPlaybackLoop = false;
-var helpPlaybackRate = 1;
 var helpCurrentRegion; // the region where we are when asking help
 var helpPreviousRegion; // the previous region relatively to helpCurrentRegion
 var currentHelpRelatedRegion; // the related help region;
-var helpRegion; // the region we are listening to
-var currentHelpTextLevel = 0;
-var hModal;
-var htmlAudioPlayer;
-
-// markers
-var markers = [];
-var regions = [];
-var currentRegion = null;
-
-var wavesurferOptions = {
-    container: '#waveform',
-    waveColor: '#172B32',
-    progressColor: '#888',
-    height: 256,
-    scrollParent: true,
-    normalize: true,
-    minimap: true
-};
-
-
+var helpRegion; // the region we are listening to while in help modal first pane
+var hModal; // help (bootsrap) modal instance
 
 // ======================================================================================================== //
 // ACTIONS BOUND WHEN DOM READY (PLAY / PAUSE, MOVE BACKWARD / FORWARD, ADD MARKER, CALL HELP, ANNOTATE)
 // ======================================================================================================== //
 var actions = {
     play: function() {
-        if (!playing) {
-            wavesurfer.play();
-            playing = true;
+        if (!commonVars.playing) {
+            commonVars.wavesurfer.play();
+            commonVars.playing = true;
         } else {
-            wavesurfer.pause();
-            playing = false;
+            commonVars.wavesurfer.pause();
+            commonVars.playing = false;
         }
     },
     backward: function() {
-        if (regions.length > 1) {
-            var to = currentRegion ? Number(currentRegion.start) - 0.01 > 0 ? Number(currentRegion.start) - 0.01 : 0 : 0;
+        if (commonVars.regions.length > 1) {
+            var to = commonVars.currentRegion ? Number(commonVars.currentRegion.start) - 0.01 > 0 ? Number(commonVars.currentRegion.start) - 0.01 : 0 : 0;
             goTo(to);
         } else {
-            wavesurfer.seekAndCenter(0);
+            commonVars.wavesurfer.seekAndCenter(0);
         }
     },
     forward: function() {
-        if (regions.length > 1) {
-            goTo(currentRegion ? Number(currentRegion.end) + 0.01 : 1);
+        if (commonVars.regions.length > 1) {
+            goTo(commonVars.currentRegion ? Number(commonVars.currentRegion.end) + 0.01 : 1);
         } else {
-            wavesurfer.seekAndCenter(1);
+            commonVars.wavesurfer.seekAndCenter(1);
         }
     },
     mark: function() {
-        var time = wavesurfer.getCurrentTime();
+        var time = commonVars.wavesurfer.getCurrentTime();
         if (time > 0) {
             var mark = addMarker(time);
             createRegion(mark.time);
         }
     },
     help: function() {
-        helpCurrentRegion = currentRegion;
+        helpCurrentRegion = commonVars.currentRegion;
         // search for prev region only if we are not in the first one
-        if (currentRegion.start > 0) {
-            for (var i = 0; i < regions.length; i++) {
-                if (regions[i].end === currentRegion.start) {
-                    helpPreviousRegion = regions[i];
+        if (commonVars.currentRegion.start > 0) {
+            for (var i = 0; i < commonVars.regions.length; i++) {
+                if (commonVars.regions[i].end === commonVars.currentRegion.start) {
+                    helpPreviousRegion = commonVars.regions[i];
                 }
             }
         }
 
-        // open modal
-        hModal = domUtils.openRegionHelpModal(helpCurrentRegion, helpPreviousRegion);
-        hModal.on('shown.bs.modal', function() {
-
+        var modalHtml = commonVars.domUtils.getHelpModalContent(helpCurrentRegion, helpPreviousRegion);
+        // catch show modal event
+        $('#helpModal').on('show.bs.modal', function() {
+            hModal = $(this);
+            // clear previous content
+            hModal.find('.tab-content').empty();
+            // append basic modal content
+            hModal.find('.tab-content').append(modalHtml);
             // by default the current region is selected so we append to modal help tab the current region help options
-            var currentDomRow = domUtils.getRegionRow(currentRegion.start + 0.1, currentRegion.end - 0.1);
-            domUtils.appendHelpModal(hModal, helpCurrentRegion);
+            var currentDomRow = commonVars.domUtils.getRegionRow(commonVars.currentRegion.start + 0.1, commonVars.currentRegion.end - 0.1);
+
+            //  append to tab pane #region-help-available
+            commonVars.domUtils.appendHelpModal(hModal, helpCurrentRegion);
 
             helpRegion = {
-                start: currentRegion.start + 0.1,
-                end: currentRegion.end - 0.1
+                start: commonVars.currentRegion.start + 0.1,
+                end: commonVars.currentRegion.end - 0.1
             };
 
             // listen to tab click event
-            $('#help-tab-panel a[role=tab]').click(function(e) {
+            hModal.find('#help-tab-panel a[role=tab]').click(function(e) {
                 e.preventDefault();
-                if (playing) {
-                    htmlAudioPlayer.pause();
-                    playing = false;
+                if (commonVars.playing) {
+                    commonVars.htmlAudioPlayer.pause();
+                    commonVars.playing = false;
                 }
                 $(this).tab('show');
             });
         });
 
-        hModal.on('hidden.bs.modal', function() {
-            if (playing) {
-                htmlAudioPlayer.pause();
-                playing = false;
+        // catch hidden modal event
+        $('#helpModal').on('hidden.bs.modal', function() {
+            if (commonVars.playing) {
+                commonVars.htmlAudioPlayer.pause();
+                commonVars.playing = false;
             }
+            // (re)set the first tab active in the modal
+            $(this).find('.nav-tabs > li').each(function($index) {
+                if ($index === 0) {
+                    $(this).removeClass('active').addClass('active');
+                } else {
+                    $(this).removeClass('active');
+                }
+            });
         });
-
-        hModal.modal("show");
+        // open modal
+        $('#helpModal').modal('show');
     },
     annotate: function(elem) {
         var color = elem.data('color');
-        var text = javascriptUtils.getSelectedText();
+        var text = commonVars.javascriptUtils.getSelectedText();
         if (text !== '') {
             manualTextAnnotation(text, 'accent-' + color);
         }
     },
     zip: function() {
         var url = Routing.generate('mediaresource_zip_export', {
-            workspaceId: wId,
-            id: mrId,
-            data: regions
+            workspaceId: commonVars.wId,
+            id: commonVars.mrId,
+            data: commonVars.regions
         });
         location.href = url;
     },
@@ -145,7 +127,7 @@ var actions = {
         $('.btn-annotation-toggle').hasClass('fa-chevron-down') ? $('.btn-annotation-toggle').removeClass('fa-chevron-down').addClass('fa-chevron-up') : $('.btn-annotation-toggle').removeClass('fa-chevron-up').addClass('fa-chevron-down');
     },
     previewCurrentRegion: function() {
-        playRegionFrom(currentRegion.start);
+        playRegionFrom(commonVars.currentRegion.start);
     }
 };
 
@@ -157,10 +139,6 @@ var actions = {
 // DOCUMENT READY
 // ======================================================================================================== //
 $(document).ready(function() {
-    // get some hidden inputs usefull values
-    wId = $('input[name="wId"]').val();
-    mrId = $('input[name="mrId"]').val();
-
     // toggle color on config region buttons if needed (if there are some help available on a region the button must be colored)
     updateConfigButtonColor();
 
@@ -172,33 +150,28 @@ $(document).ready(function() {
         }
     });
 
-
-    /* SWITCHES INPUTS */
-    /*  var toggleAnnotationCheck = $("[name='toggle-annotation-checkbox']").bootstrapSwitch('state', true);
-      $(toggleAnnotationCheck).on('switchChange.bootstrapSwitch', function(event, state) {
-          $('.annotation-buttons-container').toggle(transitionType);
-          $(this).trigger('blur'); // remove focus to avoid spacebar interraction
-      });*/
-
-
     // CONTENT EDITABLE CHANGE EVENT MAPPING
     $('body').on('focus', '[contenteditable]', function() {
-        var $this = $(this);
-        $this.data('before', $this.html());
-        // when focused skip to the start of the region
+        var $input = $(this);
+        $input.data('before', $input.html());
+        // when focused skip to the start of the region on the waveform
         var start = $(this).closest(".region").find('input.hidden-start').val();
         goTo(start);
         isInRegionNoteRow = true;
-        return $this;
+        return $input;
     }).on('blur keyup paste input', '[contenteditable]', function(e) {
-        var $this = $(this);
-        if ($this.data('before') !== $this.html()) {
-            $this.data('before', $this.html());
-            $this.trigger('change');
-            domUtils.updateHiddenNoteOrTitleInput($this);
-            // @TODO update region note in array
+        var $input = $(this);
+        if ($input.data('before') !== $input.html()) {
+            $input.data('before', $input.html());
+            $input.trigger('change');
+            commonVars.domUtils.updateHiddenNoteInput($input);
+            // update region object note data
+            var uuid = $input.closest(".region").data('uuid');
+            var note = $input.html() ? $input.html() : $input.text();
+            var region = getRegionByUuid(uuid);
+            region.note = note;
         }
-        return $this;
+        return $input;
     }).on('blur', '[contenteditable]', function(e) {
         isInRegionNoteRow = false;
     });
@@ -206,23 +179,23 @@ $(document).ready(function() {
     // HELP MODAL SELECT REGION (CURRENT / PREVIOUS) EVENT
     $('body').on('change', 'input[name=segment]:radio', function(e) {
 
-        if (playing) {
-            htmlAudioPlayer.pause();
-            playing = false;
+        if (commonVars.playing) {
+            commonVars.htmlAudioPlayer.pause();
+            commonVars.playing = false;
         }
 
         var selectedValue = e.target.value;
         if (selectedValue === 'previous') {
-            domUtils.appendHelpModal(hModal, helpPreviousRegion);
+            commonVars.domUtils.appendHelpModal(hModal, helpPreviousRegion);
             helpRegion = {
                 start: helpPreviousRegion.start + 0.1,
                 end: helpPreviousRegion.end - 0.1
             };
         } else if (selectedValue === 'current') {
-            domUtils.appendHelpModal(hModal, currentRegion);
+            commonVars.domUtils.appendHelpModal(hModal, commonVars.currentRegion);
             helpRegion = {
-                start: currentRegion.start + 0.1,
-                end: currentRegion.end - 0.1
+                start: commonVars.currentRegion.start + 0.1,
+                end: commonVars.currentRegion.end - 0.1
             };
         }
 
@@ -232,16 +205,7 @@ $(document).ready(function() {
         });
     });
 
-    /* JS HELPERS */
-    strUtils = Object.create(StringUtils);
-    javascriptUtils = Object.create(JavascriptUtils);
-    domUtils = Object.create(DomUtils);
-    /* /JS HELPERS */
-
-    /* WAVESURFER */
-    wavesurfer = Object.create(WaveSurfer);
-
-    // wavesurfer progress bar
+    // commonVars.wavesurfer progress bar
     (function() {
         var progressDiv = document.querySelector('#progress-bar');
         var progressBar = progressDiv.querySelector('.progress-bar');
@@ -252,16 +216,16 @@ $(document).ready(function() {
         var hideProgress = function() {
             progressDiv.style.display = 'none';
         };
-        wavesurfer.on('loading', showProgress);
-        wavesurfer.on('ready', hideProgress);
-        wavesurfer.on('destroy', hideProgress);
-        wavesurfer.on('error', hideProgress);
+        commonVars.wavesurfer.on('loading', showProgress);
+        commonVars.wavesurfer.on('ready', hideProgress);
+        commonVars.wavesurfer.on('destroy', hideProgress);
+        commonVars.wavesurfer.on('error', hideProgress);
     }());
 
-    wavesurfer.init(wavesurferOptions);
+    commonVars.wavesurfer.init(commonVars.wavesurferOptions);
 
     /* Minimap plugin */
-    wavesurfer.initMinimap({
+    commonVars.wavesurfer.initMinimap({
         height: 30,
         waveColor: '#ddd',
         progressColor: '#999',
@@ -269,27 +233,27 @@ $(document).ready(function() {
     });
 
     var data = {
-        workspaceId: wId,
-        id: mrId
+        workspaceId: commonVars.wId,
+        id: commonVars.mrId
     };
+
     loadAudio(data);
 
-    htmlAudioPlayer = document.getElementById('html-audio-player');
-    htmlAudioPlayer.src = audioData;
+    commonVars.htmlAudioPlayer.src = commonVars.audioData;
 
-    wavesurfer.on('ready', function() {
+    commonVars.wavesurfer.on('ready', function() {
         var timeline = Object.create(WaveSurfer.Timeline);
         timeline.init({
-            wavesurfer: wavesurfer,
+            wavesurfer: commonVars.wavesurfer,
             container: '#wave-timeline'
         });
         initRegionsAndMarkers();
-        if (regions.length > 0) {
-            currentRegion = regions[0];
-            domUtils.highlightRegionRow(currentRegion);
-            var wRegion = wavesurfer.addRegion({
-                start: currentRegion.start,
-                end: currentRegion.end,
+        if (commonVars.regions.length > 0) {
+            commonVars.currentRegion = commonVars.regions[0];
+            commonVars.domUtils.highlightRegionRow(commonVars.currentRegion);
+            var wRegion = commonVars.wavesurfer.addRegion({
+                start: commonVars.currentRegion.start,
+                end: commonVars.currentRegion.end,
                 color: 'rgba(255,0,0,0.5)',
                 drag: false,
                 resize: false
@@ -297,17 +261,17 @@ $(document).ready(function() {
         }
     });
 
-    wavesurfer.on('seek', function() {
+    commonVars.wavesurfer.on('seek', function() {
         var current = getRegionFromTime();
-        if (current && currentRegion && current.uuid != currentRegion.uuid) {
+        if (current && commonVars.currentRegion && current.uuid != commonVars.currentRegion.uuid) {
             // update current region
-            currentRegion = current;
+            commonVars.currentRegion = current;
             // highlight region dom row
-            domUtils.highlightRegionRow(currentRegion);
-            wavesurfer.clearRegions();
-            var wRegion = wavesurfer.addRegion({
-                start: currentRegion.start,
-                end: currentRegion.end,
+            commonVars.domUtils.highlightRegionRow(commonVars.currentRegion);
+            commonVars.wavesurfer.clearRegions();
+            var wRegion = commonVars.wavesurfer.addRegion({
+                start: commonVars.currentRegion.start,
+                end: commonVars.currentRegion.end,
                 color: 'rgba(255,0,0,0.5)',
                 drag: false,
                 resize: false
@@ -315,18 +279,18 @@ $(document).ready(function() {
         }
     });
 
-    wavesurfer.on('audioprocess', function() {
-        // check regions and display text
+    commonVars.wavesurfer.on('audioprocess', function() {
+        // check commonVars.regions and display text
         var current = getRegionFromTime();
-        if (current && currentRegion && current.uuid != currentRegion.uuid) {
+        if (current && commonVars.currentRegion && current.uuid != commonVars.currentRegion.uuid) {
             // update current region
-            currentRegion = current;
+            commonVars.currentRegion = current;
             // show help text
-            domUtils.highlightRegionRow(currentRegion);
-            wavesurfer.clearRegions();
-            var wRegion = wavesurfer.addRegion({
-                start: currentRegion.start,
-                end: currentRegion.end,
+            commonVars.domUtils.highlightRegionRow(commonVars.currentRegion);
+            commonVars.wavesurfer.clearRegions();
+            var wRegion = commonVars.wavesurfer.addRegion({
+                start: commonVars.currentRegion.start,
+                end: commonVars.currentRegion.end,
                 color: 'rgba(255,0,0,0.5)',
                 drag: false,
                 resize: false
@@ -353,11 +317,11 @@ $('body').on('change', '#media_resource_options_mode', function(e) {
 });
 
 function getRegionFromTime(time) {
-    var currentTime = time ? time : wavesurfer.getCurrentTime();
+    var currentTime = time ? time : commonVars.wavesurfer.getCurrentTime();
     var region;
-    for (var i = 0; i < regions.length; i++) {
-        if (regions[i].start <= currentTime && regions[i].end > currentTime) {
-            region = regions[i];
+    for (var i = 0; i < commonVars.regions.length; i++) {
+        if (commonVars.regions[i].start <= currentTime && commonVars.regions[i].end > currentTime) {
+            region = commonVars.regions[i];
             break;
         }
     }
@@ -373,7 +337,7 @@ function createRegion(time) {
     var region = {
         start: Number(time),
         end: Number(toSplit.end),
-        uuid: strUtils.createGuid(),
+        uuid: commonVars.strUtils.createGuid(),
         note: '',
         hasHelp: false,
         helpUuid: '',
@@ -383,21 +347,21 @@ function createRegion(time) {
         texts: false
     };
     // find corresponding dom row and update the end infos (in visible and hidden fields and )
-    var $regionRow = domUtils.getRegionRow(toSplit.start, toSplit.end);
+    var $regionRow = commonVars.domUtils.getRegionRow(toSplit.start, toSplit.end);
     // update "left" region in array
     toSplit.end = time;
     // update "left" region in DOM
     $regionRow.find('input.hidden-end').val(time);
-    var hms = javascriptUtils.secondsToHms(toSplit.end);
+    var hms = commonVars.javascriptUtils.secondsToHms(toSplit.end);
     $regionRow.find('.end').text(hms);
 
     // add the "right" region row in the dom
-    domUtils.addRegionToDom(region, javascriptUtils, $regionRow);
-    regions.push(region);
+    commonVars.domUtils.addRegionToDom(region, commonVars.javascriptUtils, $regionRow);
+    commonVars.regions.push(region);
     updateRegionRowIndexes();
 }
 
-// build markers, regions from existing ones
+// build commonVars.markers, commonVars.regions from existing ones
 function initRegionsAndMarkers() {
     $(".region").each(function() {
         var start = $(this).find('input.hidden-start').val();
@@ -437,22 +401,22 @@ function initRegionsAndMarkers() {
             texts: texts,
             links: links
         };
-        regions.push(region);
+        commonVars.regions.push(region);
         // create marker for each existing region
         if (Number(start) > 0) {
             addMarker(start, uuid);
         }
 
-        var regionRow = domUtils.getRegionRow(start, end);
+        var regionRow = commonVars.domUtils.getRegionRow(start, end);
         var btn = $(regionRow).find('button.fa-trash-o');
         $(btn).attr('data-uuid', region.uuid);
 
     });
-    if (regions.length === 0) {
+    if (commonVars.regions.length === 0) {
         var region = {
-            uuid: strUtils.createGuid(),
+            uuid: commonVars.strUtils.createGuid(),
             start: 0,
-            end: Number(wavesurfer.getDuration()),
+            end: Number(commonVars.wavesurfer.getDuration()),
             note: '',
             hasHelp: false,
             helpUuid: '',
@@ -462,11 +426,11 @@ function initRegionsAndMarkers() {
             texts: false,
             links: false
         };
-        regions.push(region);
-        // no region row yet so happend the new row to regions container
+        commonVars.regions.push(region);
+        // no region row yet so happend the new row to commonVars.regions container
         var $appendTo = $('.regions-container');
         // add region row
-        var regionRow = domUtils.addRegionToDom(region, javascriptUtils, $appendTo);
+        var regionRow = commonVars.domUtils.addRegionToDom(region, commonVars.javascriptUtils, $appendTo);
         var btn = $(regionRow).find('button.fa-trash-o');
         $(btn).attr('data-uuid', region.uuid);
     }
@@ -484,11 +448,11 @@ function updateRegionRowIndexes() {
 }
 
 function loadAudio(data) {
-    audioData = Routing.generate('innova_get_mediaresource_resource_file', {
+    commonVars.audioData = Routing.generate('innova_get_mediaresource_resource_file', {
         workspaceId: data.workspaceId,
         id: data.id
     });
-    wavesurfer.load(audioData);
+    commonVars.wavesurfer.load(commonVars.audioData);
     return true;
 }
 // ======================================================================================================== //
@@ -502,34 +466,33 @@ function loadAudio(data) {
  * @param {float} end
  */
 function playHelp(start, end, loop, rate) {
-    htmlAudioPlayer.loop = loop;
+    commonVars.htmlAudioPlayer.loop = loop;
     if (rate) {
-        htmlAudioPlayer.playbackRate = 0.8;
+        commonVars.htmlAudioPlayer.playbackRate = 0.8;
     } else {
-        htmlAudioPlayer.playbackRate = 1;
+        commonVars.htmlAudioPlayer.playbackRate = 1;
     }
 
-    if (playing) {
-        htmlAudioPlayer.pause();
-        playing = false;
+    if (commonVars.playing) {
+        commonVars.htmlAudioPlayer.pause();
+        commonVars.playing = false;
     } else {
-        htmlAudioPlayer.currentTime = start;
-        htmlAudioPlayer.play();
-        playing = true;
-
+        commonVars.htmlAudioPlayer.currentTime = start;
+        commonVars.htmlAudioPlayer.play();
+        commonVars.playing = true;
     }
 
     var self = this;
     self.regionEnd = end;
     self.regionStart = start;
-    htmlAudioPlayer.addEventListener('timeupdate', function() {
-        if (htmlAudioPlayer.currentTime >= self.regionEnd) {
-            htmlAudioPlayer.pause();
-            htmlAudioPlayer.currentTime = self.regionStart;
-            if (htmlAudioPlayer.loop) {
-                htmlAudioPlayer.play();
+    commonVars.htmlAudioPlayer.addEventListener('timeupdate', function() {
+        if (commonVars.htmlAudioPlayer.currentTime >= self.regionEnd) {
+            commonVars.htmlAudioPlayer.pause();
+            commonVars.htmlAudioPlayer.currentTime = self.regionStart;
+            if (commonVars.htmlAudioPlayer.loop) {
+                commonVars.htmlAudioPlayer.play();
             } else {
-                playing = false;
+                commonVars.playing = false;
             }
         }
     });
@@ -547,19 +510,19 @@ function playHelpRelatedRegion(start) {
  * Called by HelpModal play backward button
  */
 function playBackward() {
-    // is playing for real audio (ie not for TTS)
-    if (playing && htmlAudioPlayer) {
-        // stop audio playback before playing TTS
-        htmlAudioPlayer.pause();
-        playing = false;
+    // is commonVars.playing for real audio (ie not for TTS)
+    if (commonVars.playing && commonVars.htmlAudioPlayer) {
+        // stop audio playback before commonVars.playing TTS
+        commonVars.htmlAudioPlayer.pause();
+        commonVars.playing = false;
     }
     if (window.SpeechSynthesisUtterance === undefined) {
         console.log('not supported!');
     } else {
-        var text = strUtils.removeHtml(currentRegion.note);
+        var text = commonVars.strUtils.removeHtml(commonVars.currentRegion.note);
         var array = text.split(' ');
         var start = array.length - 1;
-        // check if utterance is already speaking before playing (pultiple click on backward button)
+        // check if utterance is already speaking before commonVars.playing (pultiple click on backward button)
         if (!window.speechSynthesis.speaking) {
             handleUtterancePlayback(start, array);
         }
@@ -623,61 +586,110 @@ function handleUtterancePlayback(index, textArray) {
  * @param the source of the event (button)
  */
 function configRegion(elem) {
-    var configModal = domUtils.openConfigRegionModal(elem);
-    var $row = $(elem).closest('.region');
 
+    var $row = $(elem).closest('.region');
+    var content = commonVars.domUtils.setRegionConfigModalContent($row);
     var region = getRegionByUuid($row.data('uuid'));
-    if (playing) {
-        wavesurfer.pause();
-        playing = false;
+
+    if (commonVars.playing) {
+        commonVars.wavesurfer.pause();
+        commonVars.playing = false;
     }
 
-    configModal.on('shown.bs.modal', function() {
+    var configModal;
+
+    $('#regionConfigModal').on('show.bs.modal', function() {
+        configModal = $(this);
+        // clear modal previous content
+        configModal.find('.modal-body').empty();
+        configModal.find('.modal-body').append(content);
+
         var uuid = $('#select-help-related-region :selected').val();
         currentHelpRelatedRegion = getRegionByUuid(uuid);
     });
 
-    configModal.on('hidden.bs.modal', function() {
+    $('#regionConfigModal').on('hidden.bs.modal', function() {
 
         currentHelpRelatedRegion = null;
-        if (playing) {
-            htmlAudioPlayer.pause();
-            playing = false;
+        if (commonVars.playing) {
+            commonVars.htmlAudioPlayer.pause();
+            commonVars.playing = false;
         }
-        // color the config button if any value in config parameters
+        // get region help config values in modal
+        var hasLoop = configModal.find('input[name=loop]').is(':checked');
+        var hasBackward = configModal.find('input[name=backward]').is(':checked');
+        var hasRate = configModal.find('input[name=rate]').is(':checked');
+        var helpId = configModal.find("#select-help-related-region").val();
+        var helpTexts = [];
+        configModal.find('.modal-help-texts').each(function() {
+            var text = $(this).val() ? $(this).val() : '';
+            helpTexts.push(text);
+        });
+        var helpLinks = [];
+        $('.modal-help-links').each(function() {
+            var link = $(this).val() ? $(this).val() : '';
+            helpLinks.push(link);
+        });
+
+        // set proper hidden inputs values
+        //help-region-uuid
+        var helpRegionUuid = $row.find('.hidden-config-help-region-uuid');
+        //loop elem
+        var loop = $row.find('.hidden-config-loop');
+        //backward
+        var backward = $row.find('.hidden-config-backward');
+        //rate
+        var rate = $row.find('.hidden-config-rate');
+        rate.val(hasRate ? '1' : '0');
+        backward.val(hasBackward ? '1' : '0');
+        loop.val(hasLoop ? '1' : '0');
+        if (helpId != -1)
+            helpRegionUuid.val(helpId);
+        else {
+            helpRegionUuid.val('');
+        }
+        $row.find('.hidden-help-links').each(function($index) {
+            $(this).val(helpLinks[$index]);
+        });
+        $row.find('.hidden-help-texts').each(function($index) {
+            $(this).val(helpTexts[$index]);
+        });
+
+        // add color to the config button if any value in config parameters
         updateConfigButtonColor();
         updateRegionObjectHelp(region, $row);
     });
 
-    configModal.modal("show");
+    $('#regionConfigModal').modal("show");
 }
 
-function updateRegionObjectHelp(region, $row){
-  region.texts = [];
-  region.links = [];
-  $row.find('.hidden-help-texts').each(function() {
-      if ($(this).val() !== '') {
-          region.texts.push($(this).val());
-      }
-  });
-  $row.find('.hidden-help-links').each(function() {
-      if ($(this).val() !== '') {
-          region.links.push($(this).val());
-      }
-  });
+function updateRegionObjectHelp(region, $row) {
+    region.texts = [];
+    region.links = [];
+    $row.find('.hidden-help-texts').each(function() {
+        if ($(this).val() !== '') {
+            region.texts.push($(this).val());
+        }
+    });
+    $row.find('.hidden-help-links').each(function() {
+        if ($(this).val() !== '') {
+            region.links.push($(this).val());
+        }
+    });
 
-  region.helpUuid = $row.find('.hidden-config-help-region-uuid').val() !== '' ? true : false;
-  region.loop = $row.find('.hidden-config-loop').val() === '1' ? true : false;
-  region.backward = $row.find('.hidden-config-backward').val() === '1' ? true : false;
-  region.rate = $row.find('.hidden-config-rate').val() === '1' ? true : false;
-  region.hasHelp = region.rate || region.backward || region.texts.length > 0 || region.links.length > 0 || region.loop || region.helpUuid !== '';
+    var note = $row.find('.note').html() ? $row.find('.note').html() : $row.find('.note').text();
+    region.note = note;
+    region.helpUuid = $row.find('.hidden-config-help-region-uuid').val() !== '' ? true : false;
+    region.loop = $row.find('.hidden-config-loop').val() === '1' ? true : false;
+    region.backward = $row.find('.hidden-config-backward').val() === '1' ? true : false;
+    region.rate = $row.find('.hidden-config-rate').val() === '1' ? true : false;
+    region.hasHelp = region.rate || region.backward || region.texts.length > 0 || region.links.length > 0 || region.loop || region.helpUuid !== '';
 }
-
 
 /**
  * Region options Modal
  * Allow the user to listen to the selected help related region while configuring help
- * Uses html audio player to avoid wavesurfer animations behind the modal while playing
+ * Uses html audio player to avoid commonVars.wavesurfer animations behind the modal while commonVars.playing
  **/
 $('body').on('click', '#btn-help-related-region-play', function() {
     if (currentHelpRelatedRegion) {
@@ -693,31 +705,31 @@ $('body').on('change', '#select-help-related-region', function() {
     // get region uuid
     var uuid = $(this).find(":selected").val();
     currentHelpRelatedRegion = getRegionByUuid(uuid);
-    if (playing) {
-        wavesurfer.pause();
-        playing = false;
+    if (commonVars.playing) {
+        commonVars.wavesurfer.pause();
+        commonVars.playing = false;
     }
 });
 
 // color config region buttons if
 function checkIfRowHasConfigValue(row) {
-    var helpRegion = $(row).find('.hidden-config-help-region-uuid').val() !== '' ? true : false;
+    var helpRelatedRegion = $(row).find('.hidden-config-help-region-uuid').val() !== '' ? true : false;
     var loop = $(row).find('.hidden-config-loop').val() === '1' ? true : false;
     var backward = $(row).find('.hidden-config-backward').val() === '1' ? true : false;
     var rate = $(row).find('.hidden-config-rate').val() === '1' ? true : false;
     var texts = [];
-    $(row).find('.hidden-help-texts').each(function(){
-      if($(this).val() !== ''){
-        texts.push($(this).val());
-      }
+    $(row).find('.hidden-help-texts').each(function() {
+        if ($(this).val() !== '') {
+            texts.push($(this).val());
+        }
     });
     var links = [];
-    $(row).find('.hidden-help-links').each(function(){
-      if($(this).val() !== ''){
-        links.push($(this).val());
-      }
+    $(row).find('.hidden-help-links').each(function() {
+        if ($(this).val() !== '') {
+            links.push($(this).val());
+        }
     });
-    return helpRegion || loop || backward || rate || texts.length > 0 || links.length > 0;
+    return helpRelatedRegion || loop || backward || rate || texts.length > 0 || links.length > 0;
 }
 
 // ======================================================================================================== //
@@ -762,7 +774,7 @@ function addMarker(time, uuid) {
     dragHandler.style.left = dragHandlerLeft + 'px';
     dragHandler.title = Translator.trans('marker_drag_title', {}, 'media_resource');
     dragHandler.dataset.position = dragHandlerLeft;
-    var guid = uuid || strUtils.createGuid();
+    var guid = uuid || commonVars.strUtils.createGuid();
     dragHandler.dataset.uuid = guid;
 
     marker.appendChild(dragHandler);
@@ -806,7 +818,7 @@ function addMarker(time, uuid) {
         time: Number(time),
         uuid: guid
     };
-    markers.push(mark);
+    commonVars.markers.push(mark);
     return mark;
 }
 
@@ -839,13 +851,13 @@ function setDragData(time, marker) {
     var prevRegion = getPrevRegion(time + 0.01);
     var nextRegion = getNextRegion(time - 0.01);
     var min = prevRegion && prevRegion.start ? prevRegion.start : 0;
-    var max = nextRegion && nextRegion.end ? nextRegion.end : wavesurfer.getDuration();
+    var max = nextRegion && nextRegion.end ? nextRegion.end : commonVars.wavesurfer.getDuration();
 
     // search for marker object
     var markerObject;
-    for (var i = 0; i < markers.length; i++) {
-        if (markers[i].time.toFixed(2) === time.toFixed(2)) {
-            markerObject = markers[i];
+    for (var i = 0; i < commonVars.markers.length; i++) {
+        if (commonVars.markers[i].time.toFixed(2) === time.toFixed(2)) {
+            markerObject = commonVars.markers[i];
         }
     }
 
@@ -865,7 +877,7 @@ function setDragData(time, marker) {
 }
 
 function getMarkerLeftPostionFromTime(time) {
-    var duration = wavesurfer.getDuration();
+    var duration = commonVars.wavesurfer.getDuration();
     var $canvas = $('#waveform').find('wave').first().find('canvas').first();
     var cWidth = $canvas.width();
     return time * cWidth / duration;
@@ -876,7 +888,7 @@ function getMarkerLeftPostionFromTime(time) {
  * should also update marker data-time value
  */
 function updateTimeData(time, dragData) {
-    $(dragData.startToUpdate).text(javascriptUtils.secondsToHms(time));
+    $(dragData.startToUpdate).text(commonVars.javascriptUtils.secondsToHms(time));
     $(dragData.hiddenStartToUpdate).val(time);
 
     // update region object data
@@ -889,7 +901,7 @@ function updateTimeData(time, dragData) {
 
     if (dragData.hiddenEndToUpdate && dragData.endToUpdate) {
         $(dragData.hiddenEndToUpdate).val(time);
-        $(dragData.endToUpdate).text(javascriptUtils.secondsToHms(time));
+        $(dragData.endToUpdate).text(commonVars.javascriptUtils.secondsToHms(time));
     }
 
     // udpate dom marker data-time attribute
@@ -918,9 +930,9 @@ function changeMarkerPosition(time, dragData) {
 
 function getRegionById(id) {
     var searched;
-    for (var i = 0; i < regions.length; i++) {
-        if (regions[i].id === id) {
-            searched = regions[i];
+    for (var i = 0; i < commonVars.regions.length; i++) {
+        if (commonVars.regions[i].id === id) {
+            searched = commonVars.regions[i];
         }
     }
     return searched;
@@ -929,18 +941,18 @@ function getRegionById(id) {
 
 function getRegionByUuid(uuid) {
     var searched;
-    for (var i = 0; i < regions.length; i++) {
-        if (regions[i].uuid === uuid) {
-            searched = regions[i];
+    for (var i = 0; i < commonVars.regions.length; i++) {
+        if (commonVars.regions[i].uuid === uuid) {
+            searched = commonVars.regions[i];
         }
     }
     return searched;
 }
 
 function removeRegionFromCollection(uuid) {
-    for (var i = 0; i < regions.length; i++) {
-        if (regions[i].uuid === uuid) {
-            regions.splice(i, 1);
+    for (var i = 0; i < commonVars.regions.length; i++) {
+        if (commonVars.regions[i].uuid === uuid) {
+            commonVars.regions.splice(i, 1);
         }
     }
 }
@@ -951,12 +963,12 @@ function getNextRegion(time) {
     if (time) {
         region = getRegionFromTime(time);
     } else {
-        region = currentRegion;
+        region = commonVars.currentRegion;
     }
     // find next region relatively to current
-    for (var i = 0; i < regions.length; i++) {
-        if (regions[i].start == region.end) {
-            next = regions[i];
+    for (var i = 0; i < commonVars.regions.length; i++) {
+        if (commonVars.regions[i].start == region.end) {
+            next = commonVars.regions[i];
         }
     }
     return next;
@@ -968,13 +980,13 @@ function getPrevRegion(time) {
     if (time) {
         region = getRegionFromTime(time);
     } else {
-        region = currentRegion;
+        region = commonVars.currentRegion;
     }
     if (region) {
         // find next region relatively to current
-        for (var i = 0; i < regions.length; i++) {
-            if (regions[i].end == region.start) {
-                prev = regions[i];
+        for (var i = 0; i < commonVars.regions.length; i++) {
+            if (commonVars.regions[i].end == region.start) {
+                prev = commonVars.regions[i];
             }
         }
     }
@@ -982,89 +994,82 @@ function getPrevRegion(time) {
 }
 
 /**
- * Delete a region from the collection remove it from DOM and update times (start or end) of contiguous regions
+ * Delete a region from the collection remove it from DOM and update times (start or end) of contiguous commonVars.regions
  * Also handle corresponding marker deletion
  * @param elem the source of the event
  */
 function deleteRegion(elem) {
     // can not delete region if just one ( = the default one) -> or not...
-    if (regions.length === 1) {
-        bootbox.alert(Translator.trans('alert_only_one_region_left', {}, 'media_resource'));
+    if (commonVars.regions.length === 1) {
+        $('#alertModal').modal('show');
     } else {
-
         // get region to delete uuid
         var uuid = $(elem).data('uuid');
         if (uuid) {
             var toRemove = getRegionByUuid(uuid);
             var regionDomRow = $(elem).closest(".region");
             var regionUuid = $(regionDomRow).attr("data-uuid");
-            var usedInHelp = domUtils.getRegionsUsedInHelp(regionUuid);
-            var message = "<strong>" + Translator.trans('region_delete_confirm_base', {}, 'media_resource') + "</strong>";
-            if (usedInHelp.length > 0) {
-                message += '<hr/><div class="text-center"> ' + Translator.trans('region_delete_confirm_sub', {}, 'media_resource') + '</div>';
-            }
-
-            bootbox.confirm(message, function(result) {
-                if (result) {
-                    // remove help reference(s) if needed
-                    if (usedInHelp.length > 0) {
-                        for (var index = 0; index < usedInHelp.length; index++) {
-                            var elem = usedInHelp[index];
-                            // reset element value
-                            $(elem).val('');
-                        }
+            var usedInHelp = commonVars.domUtils.getRegionsUsedInHelp(regionUuid);
+            // if confirm
+            $('#confirmModal').modal('show').one('click', '#confirm', function() {
+                // remove help reference(s) if needed
+                if (usedInHelp.length > 0) {
+                    for (var index = 0; index < usedInHelp.length; index++) {
+                        var elem = usedInHelp[index];
+                        // reset element value
+                        $(elem).val('');
                     }
-
-                    var start = Number(toRemove.start);
-                    var end = Number(toRemove.end);
-                    // if we are deleting the first region
-                    if (start === 0) {
-                        var next = getNextRegion(end - 0.1);
-                        if (next) {
-                            next.start = 0;
-                            // update time (DOM)
-                            var hiddenInputToUpdate = regionDomRow.next().find("input.hidden-start");
-                            hiddenInputToUpdate.val(start);
-                            var divToUpdate = regionDomRow.next().find(".time-text.start");
-                            divToUpdate.text(javascriptUtils.secondsToHms(start));
-
-                        } else {
-                            console.log('not found');
-                        }
-                    } else { // all other cases
-                        // get previous region and update it's end
-                        var previous = getPrevRegion(start + 0.1);
-                        if (previous) {
-                            previous.end = end;
-                            // update time (DOM)
-                            var hiddenInputToUpdate = regionDomRow.prev().find("input.hidden-end");
-                            hiddenInputToUpdate.val(end);
-                            var divToUpdate = regionDomRow.prev().find(".time-text.end");
-                            divToUpdate.text(javascriptUtils.secondsToHms(end));
-                        } else {
-                            console.log('not found');
-                        }
-                    }
-                    // update region array
-                    removeRegionFromCollection(uuid);
-                    // remove region DOM row
-                    $(regionDomRow).remove();
-                    // remove marker from DOM
-                    $('.marker-drag-handler').each(function() {
-                        var $marker = $(this).closest('.divide-marker');
-                        var time = Number($marker.attr('data-time'));
-                        if (time === start) {
-                            $marker.remove();
-                        }
-                    });
-                    // remove marker from array
-                    for (var i = 0; i < markers.length; i++) {
-                        if (markers[i].time === start) {
-                            markers.splice(i, 1);
-                        }
-                    }
-                    updateRegionRowIndexes();
                 }
+
+                var start = Number(toRemove.start);
+                var end = Number(toRemove.end);
+                // if we are deleting the first region
+                if (start === 0) {
+                    var next = getNextRegion(end - 0.1);
+                    if (next) {
+                        next.start = 0;
+                        // update time (DOM)
+                        var hiddenInputToUpdate = regionDomRow.next().find("input.hidden-start");
+                        hiddenInputToUpdate.val(start);
+                        var divToUpdate = regionDomRow.next().find(".time-text.start");
+                        divToUpdate.text(commonVars.javascriptUtils.secondsToHms(start));
+
+                    } else {
+                        console.log('not found');
+                    }
+                } else { // all other cases
+                    // get previous region and update it's end
+                    var previous = getPrevRegion(start + 0.1);
+                    if (previous) {
+                        previous.end = end;
+                        // update time (DOM)
+                        var hiddenInputToUpdate = regionDomRow.prev().find("input.hidden-end");
+                        hiddenInputToUpdate.val(end);
+                        var divToUpdate = regionDomRow.prev().find(".time-text.end");
+                        divToUpdate.text(commonVars.javascriptUtils.secondsToHms(end));
+                    } else {
+                        console.log('not found');
+                    }
+                }
+                // update region array
+                removeRegionFromCollection(uuid);
+                // remove region DOM row
+                $(regionDomRow).remove();
+                // remove marker from DOM
+                $('.marker-drag-handler').each(function() {
+                    var $marker = $(this).closest('.divide-marker');
+                    var time = Number($marker.attr('data-time'));
+                    if (time === start) {
+                        $marker.remove();
+                    }
+                });
+                // remove marker from array
+                for (var i = 0; i < commonVars.markers.length; i++) {
+                    if (commonVars.markers[i].time === start) {
+                        commonVars.markers.splice(i, 1);
+                    }
+                }
+                updateRegionRowIndexes();
             });
         }
     }
@@ -1081,24 +1086,22 @@ function playRegion(elem) {
 
 function playRegionFrom(start) {
     var region = getRegionFromTime(start);
-    var wRegion = wavesurfer.addRegion({
+    var wRegion = commonVars.wavesurfer.addRegion({
         start: region.start,
         end: region.end,
         color: 'rgba(0,0,0,0)',
         drag: false,
         resize: false
     });
-    if (!playing) {
+    if (!commonVars.playing) {
         wRegion.play();
-        playing = true;
-        wavesurfer.once('pause', function() {
-            playing = false;
-            // remove all wavesurfer regions as we do not use them elsewhere
-            //wavesurfer.clearRegions();
+        commonVars.playing = true;
+        commonVars.wavesurfer.once('pause', function() {
+            commonVars.playing = false;
         });
     } else {
-        wavesurfer.pause();
-        playing = false;
+        commonVars.wavesurfer.pause();
+        commonVars.playing = false;
     }
 }
 
@@ -1111,20 +1114,20 @@ function playRegionFrom(start) {
 // ======================================================================================================== //
 
 /**
- * put the wavesurfer play cursor at the given time and pause playback
+ * put the commonVars.wavesurfer play cursor at the given time and pause playback
  * @param time in seconds
  */
 function goTo(time) {
-    var percent = (time) / wavesurfer.getDuration();
-    wavesurfer.seekAndCenter(percent);
-    if (playing) {
-        wavesurfer.pause();
-        playing = false;
+    var percent = (time) / commonVars.wavesurfer.getDuration();
+    commonVars.wavesurfer.seekAndCenter(percent);
+    if (commonVars.playing) {
+        commonVars.wavesurfer.pause();
+        commonVars.playing = false;
     }
 }
 
 function getTimeFromPosition(position) {
-    var duration = wavesurfer.getDuration();
+    var duration = commonVars.wavesurfer.getDuration();
     var $canvas = $('#waveform').find('wave').first().find('canvas').first();
     var cWidth = $canvas.width();
     return position * duration / cWidth;

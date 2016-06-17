@@ -43,10 +43,10 @@ class MediaResourceListener extends ContainerAware
         $mediaResource = $event->getResource();
         $route = $this->container
                 ->get('router')
-                ->generate('innova_media_resource_administrate', array(
+                ->generate('innova_media_resource_administrate', [
             'id' => $mediaResource->getId(),
             'workspaceId' => $mediaResource->getWorkspace()->getId(),
-                )
+          ]
         );
         $event->setResponse(new RedirectResponse($route));
         $event->stopPropagation();
@@ -60,10 +60,10 @@ class MediaResourceListener extends ContainerAware
         $mediaResource = $event->getResource();
         $route = $this->container
                 ->get('router')
-                ->generate('innova_media_resource_open', array(
+                ->generate('innova_media_resource_open', [
             'id' => $mediaResource->getId(),
             'workspaceId' => $mediaResource->getWorkspace()->getId(),
-                )
+          ]
         );
         $event->setResponse(new RedirectResponse($route));
         $event->stopPropagation();
@@ -90,13 +90,14 @@ class MediaResourceListener extends ContainerAware
             $this->container->get('innova_media_resource.manager.media_resource')->createMediaResourceDefaultOptions($mediaResource);
             $this->container->get('innova_media_resource.manager.media_resource')->handleMediaResourceMedia($file, $mediaResource, $workspace);
             // Send new MediaResource to dispatcher through event object
-            $event->setResources(array($mediaResource));
+            $event->setResources([$mediaResource]);
         } else {
             $content = $this->container->get('templating')->render(
-                    'ClarolineCoreBundle:Resource:createForm.html.twig', array(
-                'form' => $form->createView(),
-                'resourceType' => 'innova_media_resource',
-            ));
+                    'ClarolineCoreBundle:Resource:createForm.html.twig', [
+                      'form' => $form->createView(),
+                      'resourceType' => 'innova_media_resource',
+                    ]
+            );
             $event->setErrorFormContent($content);
         }
         $event->stopPropagation();
@@ -112,10 +113,11 @@ class MediaResourceListener extends ContainerAware
         // Create form
         $form = $this->container->get('form.factory')->create(new MediaResourceType(), new MediaResource());
         $content = $this->container->get('templating')->render(
-                'ClarolineCoreBundle:Resource:createForm.html.twig', array(
-            'form' => $form->createView(),
-            'resourceType' => 'innova_media_resource',
-        ));
+                'ClarolineCoreBundle:Resource:createForm.html.twig', [
+                    'form' => $form->createView(),
+                    'resourceType' => 'innova_media_resource',
+                ]
+        );
         $event->setResponseContent($content);
         $event->stopPropagation();
     }

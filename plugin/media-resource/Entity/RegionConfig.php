@@ -23,25 +23,30 @@ class RegionConfig
     private $id;
 
     /**
-     * @var hasLoop
+     * enable / disable play in loop option.
+     *
+     * @var loop
      *
      * @ORM\Column(name="has_loop", type="boolean")
      */
-    private $hasLoop;
+    private $loop;
 
     /**
-     * @var hasBackward
+     * enable / disable backward building option.
+     *
+     * @var backward
      *
      * @ORM\Column(name="has_backward", type="boolean")
      */
-    private $hasBackward;
+    private $backward;
 
     /**
-     * @var hasRate
+     * enable / disable play slower option.
      *
+     * @var rate
      * @ORM\Column(name="has_rate", type="boolean")
      */
-    private $hasRate;
+    private $rate;
 
     /**
      * @var region
@@ -78,40 +83,40 @@ class RegionConfig
         return $this->id;
     }
 
-    public function setHasLoop($hasLoop)
+    public function setLoop($loop)
     {
-        $this->hasLoop = $hasLoop;
+        $this->loop = $loop;
 
         return $this;
     }
 
-    public function getHasLoop()
+    public function isLoop()
     {
-        return $this->hasLoop;
+        return $this->loop;
     }
 
-    public function setHasBackward($hasBackward)
+    public function setBackward($backward)
     {
-        $this->hasBackward = $hasBackward;
+        $this->backward = $backward;
 
         return $this;
     }
 
-    public function getHasBackward()
+    public function isBackward()
     {
-        return $this->hasBackward;
+        return $this->backward;
     }
 
-    public function setHasRate($hasRate)
+    public function setRate($rate)
     {
-        $this->hasRate = $hasRate;
+        $this->rate = $rate;
 
         return $this;
     }
 
-    public function getHasRate()
+    public function isRate()
     {
-        return $this->hasRate;
+        return $this->rate;
     }
 
     public function addHelpText(HelpText $helpText)

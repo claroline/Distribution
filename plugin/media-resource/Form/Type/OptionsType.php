@@ -5,6 +5,7 @@ namespace Innova\MediaResourceBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Innova\MediaResourceBundle\Entity\Options;
 
 /**
  * Description of OptionsType.
@@ -13,47 +14,47 @@ class OptionsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('mode', 'choice', array(
+        $builder->add('mode', 'choice', [
                             'label' => 'options_form_view_mode',
                             'required' => true,
                             'choices' => [
-                              'live' => 'options_form_view_mode_choices_live',
-                              'pause' => 'options_form_view_mode_choices_pause',
-                              'free' => 'options_form_view_mode_choices_free',
-                              'active' => 'options_form_view_mode_choices_active',
+                              Options::CONTINUOUS_LIVE => 'options_form_view_mode_choices_live',
+                              Options::CONTINUOUS_PAUSE => 'options_form_view_mode_choices_pause',
+                              Options::FREE => 'options_form_view_mode_choices_free',
+                              Options::CONTINUOUS_ACTIVE => 'options_form_view_mode_choices_active',
                               ],
                               'expanded' => false,
                               'multiple' => false,
-                    )
+                    ]
                 )
-                ->add('showTextTranscription', 'checkbox', array(
+                ->add('showTextTranscription', 'checkbox', [
                             'label' => 'options_form_enable_text_transcription',
                             'required' => false,
-                    )
+                    ]
                 )
-                ->add('ttsLanguage', 'choice', array(
+                ->add('ttsLanguage', 'choice', [
                             'choices' => [
-                              'en-US' => 'options_form_tts_choices_en_US',
-                              'en-GB' => 'options_form_tts_choices_en_GB',
-                              'de-DE' => 'options_form_tts_choices_de_DE',
-                              'es-ES' => 'options_form_tts_choices_es_ES',
-                              'fr-FR' => 'options_form_tts_choices_fr_FR',
-                              'it-IT' => 'options_form_tts_choices_it_IT',
+                              Options::EN_US => 'options_form_tts_choices_en_US',
+                              Options::EN_GB => 'options_form_tts_choices_en_GB',
+                              Options::DE_DE => 'options_form_tts_choices_de_DE',
+                              Options::ES_ES => 'options_form_tts_choices_es_ES',
+                              Options::FR_FR => 'options_form_tts_choices_fr_FR',
+                              Options::IT_IT => 'options_form_tts_choices_it_IT',
                               ],
                               'expanded' => false,
                               'multiple' => false,
                               'label' => 'options_form_tts_language',
                               'required' => true,
-                    )
+                    ]
                 );
     }
 
     public function getDefaultOptions()
     {
-        return array(
+        return [
             'data_class' => 'Innova\MediaResourceBundle\Entity\Options',
             'translation_domain' => 'resource_form',
-        );
+        ];
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

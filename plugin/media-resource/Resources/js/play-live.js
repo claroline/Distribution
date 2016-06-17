@@ -1,175 +1,149 @@
-// VARS
-var transitionType = 'fast';
-var currentExerciseType = '';
-var audioUrl = '';
-var wId;
-var mrId;
-var wavesurfer;
-var playing = false;
+'use strict';
+
 var loop = false;
 var rate = 1;
-var helpAudioPlayer;
-var currentRegion = null;
 var helpButton;
-var domUtils;
 var helpIsPlaying = false;
-
-var wavesurferOptions = {
-    container: '#waveform',
-    waveColor: '#172B32',
-    progressColor: '#00A1E5',
-    height: 256,
-    interact: true,
-    scrollParent: true,
-    normalize: true,
-    minimap: true
-};
-
 
 // ======================================================================================================== //
 // DOCUMENT READY
 // ======================================================================================================== //
-$(document).ready(function () {
-    // get some hidden inputs usefull values
-    currentExerciseType = 'audio';
-
-    domUtils = Object.create(DomUtils);
-    wId = $('input[name="wId"]').val();
-    mrId = $('input[name="mrId"]').val();
+$(document).ready(function() {
 
     helpButton = document.getElementById('help-btn');
-    /* WAVESURFER */
-    wavesurfer = Object.create(WaveSurfer);
 
     // wavesurfer progress bar
-    (function () {
+    (function() {
         var progressDiv = document.querySelector('#progress-bar');
         var progressBar = progressDiv.querySelector('.progress-bar');
-        var showProgress = function (percent) {
+        var showProgress = function(percent) {
             progressDiv.style.display = 'block';
             progressBar.style.width = percent + '%';
         };
-        var hideProgress = function () {
+        var hideProgress = function() {
             progressDiv.style.display = 'none';
         };
-        wavesurfer.on('loading', showProgress);
-        wavesurfer.on('ready', hideProgress);
-        wavesurfer.on('destroy', hideProgress);
-        wavesurfer.on('error', hideProgress);
+        commonVars.wavesurfer.on('loading', showProgress);
+        commonVars.wavesurfer.on('ready', hideProgress);
+        commonVars.wavesurfer.on('destroy', hideProgress);
+        commonVars.wavesurfer.on('error', hideProgress);
     }());
 
-    wavesurfer.init(wavesurferOptions);
+    commonVars.wavesurfer.init(commonVars.wavesurferOptions);
 
     /* Minimap plugin */
-    wavesurfer.initMinimap({
+    commonVars.wavesurfer.initMinimap({
         height: 30,
         waveColor: '#ddd',
         progressColor: '#999',
         cursorColor: '#999'
     });
 
-    wavesurfer.enableDragSelection({
+    commonVars.wavesurfer.enableDragSelection({
         color: 'rgba(200, 55, 99, 0.1)'
     });
 
-    //wavesurfer.load(audioUrl);
     var data = {
-        workspaceId: wId,
-        id: mrId
+        workspaceId: commonVars.wId,
+        id: commonVars.mrId
     };
 
-    audioUrl = Routing.generate('innova_get_mediaresource_resource_file', {workspaceId: data.workspaceId ,id: data.id});
-    wavesurfer.load(audioUrl);
+    commonVars.audioData = Routing.generate('innova_get_mediaresource_resource_file', {
+        workspaceId: data.workspaceId,
+        id: data.id
+    });
+    commonVars.wavesurfer.load(commonVars.audioData);
 
 
-    wavesurfer.on('ready', function () {
+    commonVars.wavesurfer.on('ready', function() {
         var timeline = Object.create(WaveSurfer.Timeline);
         timeline.init({
-            wavesurfer: wavesurfer,
+            wavesurfer: commonVars.wavesurfer,
             container: '#wave-timeline'
         });
     });
 
-    wavesurfer.on('region-created', function (current) {
-        currentRegion = current;
+    commonVars.wavesurfer.on('region-created', function(current) {
+        commonVars.currentRegion = current;
         helpButton.disabled = false;
         // delete all other existing regions
-        for (var index in wavesurfer.regions.list) {
-            var region = wavesurfer.regions.list[index];
+        for (var index in commonVars.wavesurfer.regions.list) {
+            var region = commonVars.wavesurfer.regions.list[index];
             if (region.start !== current.start && region.end !== current.start) {
-                wavesurfer.regions.list[index].remove();
+                commonVars.wavesurfer.regions.list[index].remove();
             }
         }
         //
     });
     /* /WAVESURFER */
-
-
-
 });
 
 function play() {
-    if (!playing) {
-        if (currentRegion) {
-            currentRegion.loop = loop;
-            wavesurfer.play(currentRegion.start);
+    if (!commonVars.playing) {
+        if (commonVars.currentRegion) {
+            commonVars.currentRegion.loop = loop;
+            commonVars.wavesurfer.play(commonVars.currentRegion.start);
             if (!loop) {
-                currentRegion.once('out', function () {
-                    wavesurfer.pause();
-                    playing = false;
+                commonVars.currentRegion.once('out', function() {
+                    commonVars.wavesurfer.pause();
+                    commonVars.playing = false;
                 });
             }
+        } else {
+            commonVars.wavesurfer.play();
         }
-        else {
-            wavesurfer.play();
-        }
-        playing = true;
-    }
-    else {
-        wavesurfer.pause();
-        playing = false;
+        commonVars.playing = true;
+    } else {
+        commonVars.wavesurfer.pause();
+        commonVars.playing = false;
     }
 }
 
 function deleteRegions() {
-    for (var index in wavesurfer.regions.list) {
-        wavesurfer.regions.list[index].remove();
+    for (var index in commonVars.wavesurfer.regions.list) {
+        commonVars.wavesurfer.regions.list[index].remove();
     }
-    currentRegion = null;
+    commonVars.currentRegion = null;
     helpButton.disabled = true;
 }
 
-function toggleHelp(){
-    domUtils.openSimpleHelpModal(currentRegion, audioUrl);
-
+function toggleHelp() {
+    var content = commonVars.domUtils.getSimpleHelpModalContent(commonVars.currentRegion, commonVars.audioData);
+    $('#simpleHelpModal').on('show.bs.modal', function() {
+        // remove any previous content (does not work on the hidden.bs.modal event)
+        $(this).find('.modal-body').empty();
+        $(this).find('.modal-body').append(content);
+    });
+    $('#simpleHelpModal').on('hidden.bs.modal', function() {
+        document.getElementById('help-audio-player').pause();
+    });
+    $('#simpleHelpModal').modal('show');
 }
 
 function toggleRate(elem) {
-    if (playing) {
-        wavesurfer.pause();
+    if (commonVars.playing) {
+        commonVars.wavesurfer.pause();
     }
 
     if ($(elem).hasClass('active')) {
         $(elem).removeClass('active');
-        wavesurfer.setPlaybackRate(1);
-    }
-    else {
+        commonVars.wavesurfer.setPlaybackRate(1);
+    } else {
         $(elem).addClass('active');
-        wavesurfer.setPlaybackRate(0.8);
+        commonVars.wavesurfer.setPlaybackRate(0.8);
     }
 }
 
 function toggleLoop(elem) {
 
-    if (playing) {
-        wavesurfer.pause();
+    if (commonVars.playing) {
+        commonVars.wavesurfer.pause();
     }
 
     if ($(elem).hasClass('active')) {
         $(elem).removeClass('active');
         loop = false;
-    }
-    else {
+    } else {
         $(elem).addClass('active');
         loop = true;
     }
@@ -190,22 +164,20 @@ function toggleLoop(elem) {
  * @param {float} end
  */
 function playHelp(start, end, loop, rate) {
-    helpAudioPlayer = document.getElementsByTagName("audio")[0];
-    helpAudioPlayer.loop = loop;
+    commonVars.htmlAudioPlayer = document.getElementsByTagName("audio")[0];
+    commonVars.htmlAudioPlayer.loop = loop;
     if (rate) {
-        helpAudioPlayer.playbackRate = 0.8;
+        commonVars.htmlAudioPlayer.playbackRate = 0.8;
+    } else {
+        commonVars.htmlAudioPlayer.playbackRate = 1;
     }
-    else {
-        helpAudioPlayer.playbackRate = 1;
-    }
-    helpAudioPlayer.addEventListener('timeupdate', function () {
-        if (helpAudioPlayer.currentTime >= end) {
-            helpAudioPlayer.pause();
-            helpAudioPlayer.currentTime = start;
-            if (helpAudioPlayer.loop) {
-                helpAudioPlayer.play();
-            }
-            else {
+    commonVars.htmlAudioPlayer.addEventListener('timeupdate', function() {
+        if (commonVars.htmlAudioPlayer.currentTime >= end) {
+            commonVars.htmlAudioPlayer.pause();
+            commonVars.htmlAudioPlayer.currentTime = start;
+            if (commonVars.htmlAudioPlayer.loop) {
+                commonVars.htmlAudioPlayer.play();
+            } else {
                 helpIsPlaying = false;
             }
         }
@@ -214,14 +186,16 @@ function playHelp(start, end, loop, rate) {
 
 
     if (helpIsPlaying) {
-        helpAudioPlayer.pause();
+        commonVars.htmlAudioPlayer.pause();
         helpIsPlaying = false;
-    }
-    else {
-        helpAudioPlayer.currentTime = start;
-        helpAudioPlayer.play();
+    } /*else {
+        commonVars.htmlAudioPlayer.currentTime = start;
+        commonVars.htmlAudioPlayer.play();
         helpIsPlaying = true;
-    }
+    }*/
+    commonVars.htmlAudioPlayer.currentTime = start;
+    commonVars.htmlAudioPlayer.play();
+    helpIsPlaying = true;
 }
 
 // ======================================================================================================== //

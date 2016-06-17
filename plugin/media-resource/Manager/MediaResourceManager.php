@@ -106,9 +106,6 @@ class MediaResourceManager
      */
     public function handleMediaResourceMedia(UploadedFile $file, MediaResource $mr, Workspace $workspace)
     {
-
-        // final file upload dir
-        $targetDir = '';
         if (!is_null($workspace)) {
             $targetDir = $this->workspaceManager->getStorageDirectory($workspace);
         } else {

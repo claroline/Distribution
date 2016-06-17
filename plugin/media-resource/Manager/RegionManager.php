@@ -37,17 +37,9 @@ class RegionManager
         return $region;
     }
 
-    public function delete(Region $region)
-    {
-        $this->em->remove($region);
-        $this->em->flush();
-
-        return $this;
-    }
-
     public function findByAndOrder(MediaResource $mr)
     {
-        return $this->getRepository()->findBy(array('mediaResource' => $mr), array('start' => 'ASC'));
+        return $this->getRepository()->findBy(['mediaResource' => $mr], ['start' => 'ASC']);
     }
 
     public function getRepository()
@@ -77,9 +69,9 @@ class RegionManager
         foreach ($helpLinks as $helpLink) {
             $regionConfig->addHelpLink($helpLink);
         }
-        $regionConfig->setHasLoop($oldRegionConfig->getHasLoop());
-        $regionConfig->setHasRate($oldRegionConfig->getHasRate());
-        $regionConfig->setHasBackward($oldRegionConfig->getHasBackward());
+        $regionConfig->setLoop($oldRegionConfig->hasLoop());
+        $regionConfig->setRate($oldRegionConfig->hasRate());
+        $regionConfig->setBackward($oldRegionConfig->hasBackward());
         $regionConfig->setHelpRegionUuid($oldRegionConfig->getHelpRegionUuid());
         $this->save($entity);
     }
@@ -120,9 +112,9 @@ class RegionManager
             $entity->setUuid($region['uuid']);
 
             $config = $entity->getRegionConfig();
-            $config->setHasLoop($region['loop']);
-            $config->setHasRate($region['rate']);
-            $config->setHasBackward($region['backward']);
+            $config->setLoop($region['loop']);
+            $config->setRate($region['rate']);
+            $config->setBackward($region['backward']);
             $config->setHelpRegionUuid($region['help-region-uuid']);
             $helpTexts = $config->getHelpTexts();
             if (count($helpTexts) > 0) {
@@ -173,9 +165,9 @@ class RegionManager
      */
     private function getRegionsFromData($data)
     {
-        $regions = array();
+        $regions = [];
         $starts = $data['start'];
-        $ends = $data['end']; // array
+        $ends = $data['end'];
         $notes = $data['note'];
         $ids = $data['region-id'];
         $uuids = $data['region-uuid'];
@@ -202,7 +194,7 @@ class RegionManager
         }
 
         for ($i = 0; $i < $nbData; ++$i) {
-            $regions[] = array(
+            $regions[] = [
                 'id' => $ids[$i],
                 'uuid' => $uuids[$i],
                 'start' => $starts[$i],
@@ -214,7 +206,7 @@ class RegionManager
                 'rate' => $rates[$i],
                 'helpTexts' => $helpTexts[$i],
                 'helpLinks' => $helpLinks[$i],
-            );
+            ];
         }
 
         return $regions;
@@ -229,14 +221,15 @@ class RegionManager
     private function deleteUnusedRegions(MediaResource $mr, $toCheck)
     {
         // get existing regions in database
-        $existing = $this->getRepository()->findBy(array('mediaResource' => $mr));
+        $existing = $this->getRepository()->findBy(['mediaResource' => $mr]);
         // delete regions if they are no more here
         if (count($existing) > 0) {
             $toDelete = $this->checkIfRegionExists($existing, $toCheck);
 
             foreach ($toDelete as $unused) {
-                $this->delete($unused);
+                $this->em->remove($region);
             }
+            $this->em->flush();
         }
     }
 

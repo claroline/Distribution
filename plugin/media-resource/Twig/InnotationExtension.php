@@ -11,9 +11,9 @@ class InnotationExtension extends \Twig_Extension
 
     public function getFilters()
     {
-        return array(
-            new \Twig_SimpleFilter('hmsTime', array($this, 'secondToHmsFilter')),
-        );
+        return [
+            new \Twig_SimpleFilter('hmsTime', [$this, 'secondToHmsFilter']),
+        ];
     }
 
     public function secondToHmsFilter($seconds)

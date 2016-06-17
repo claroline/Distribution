@@ -164,11 +164,8 @@ class MediaResource extends AbstractResource
      */
     public function getWorkspace()
     {
-        $workspace = null;
-        if (!empty($this->resourceNode)) {
-            $workspace = $this->resourceNode->getWorkspace();
+        if ($this->resourceNode) {
+            return $this->resourceNode->getWorkspace();
         }
-
-        return $workspace;
     }
 }

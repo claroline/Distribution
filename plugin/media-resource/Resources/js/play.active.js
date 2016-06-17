@@ -1,103 +1,82 @@
-// JAVASCRIPT HELPERS /OBJECTS
-var strUtils;
-var javascriptUtils;
-var domUtils;
+'use strict';
 
-// VARS
-var transitionType = 'fast';
-var audioData;
-var wId; // Workspace ID
-var mrId; // MediaResource ID
-var wavesurfer;
-var playing = false;
-var isInRegionNoteRow = false; // for keyboard event listener, if we are editing a region note row, we don't want the enter keyboard to add a region marker
-
-// current help options
-var helpPlaybackBackward = false;
-var helpIsPlaying = false;
-var helpPlaybackLoop = false;
-var helpPlaybackRate = 1;
 var helpCurrentRegion; // the region where we are when asking help
 var helpPreviousRegion; // the previous region relatively to helpCurrentRegion
 var currentHelpRelatedRegion; // the related help region;
-var helpRegion; // the region we are listening to
-var currentHelpTextLevel = 0;
+var helpRegion; // the region we are listening to while in help modal first pane
 var hModal;
-var htmlAudioPlayer;
-
-// markers
-var markers = [];
-var regions = [];
-var currentRegion = null;
-
-var wavesurferOptions = {
-    container: '#waveform',
-    waveColor: '#172B32',
-    progressColor: '#888',
-    height: 256,
-    scrollParent: true,
-    normalize: true,
-    minimap: true
-};
-
-
 
 // ======================================================================================================== //
 // ACTIONS BOUND WHEN DOM READY (PLAY / PAUSE, MOVE BACKWARD / FORWARD, ADD MARKER, CALL HELP, ANNOTATE)
 // ======================================================================================================== //
 var actions = {
     play: function() {
-        if (!playing) {
-            wavesurfer.play();
-            playing = true;
+        if (!commonVars.playing) {
+            commonVars.wavesurfer.play();
+            commonVars.playing = true;
         } else {
-            wavesurfer.pause();
-            playing = false;
+            commonVars.wavesurfer.pause();
+            commonVars.playing = false;
         }
     },
     help: function() {
-        helpCurrentRegion = currentRegion;
+        helpCurrentRegion = commonVars.currentRegion;
         // search for prev region only if we are not in the first one
-        if(currentRegion.start > 0){
-          for(var i = 0; i < regions.length; i++){
-            if(regions[i].end === currentRegion.start){
-              helpPreviousRegion = regions[i];
-            }
-          }
-        }
-
-        // open modal
-        hModal = domUtils.openRegionHelpModal(helpCurrentRegion, helpPreviousRegion);
-        hModal.on('shown.bs.modal', function() {
-
-            // by default the current region is selected so we append to modal help tab the current region help options
-            var currentDomRow = domUtils.getRegionRow(currentRegion.start + 0.1, currentRegion.end - 0.1);
-            domUtils.appendHelpModal(hModal, helpCurrentRegion);
-
-            helpRegion = {
-                start: currentRegion.start + 0.1,
-                end: currentRegion.end - 0.1
-            };
-
-            // listen to tab click event
-            $('#help-tab-panel a').click(function(e) {
-                e.preventDefault();
-                if (playing) {
-                    htmlAudioPlayer.pause();
-                    playing = false;
+        if (commonVars.currentRegion.start > 0) {
+            for (var i = 0; i < commonVars.regions.length; i++) {
+                if (commonVars.regions[i].end === commonVars.currentRegion.start) {
+                    helpPreviousRegion = commonVars.regions[i];
                 }
-                $(this).tab('show');
+            }
+        }
+        var modalHtml = commonVars.domUtils.getHelpModalContent(helpCurrentRegion, helpPreviousRegion);
+
+        // catch show modal event
+        $('#helpModal').on('show.bs.modal', function() {
+          hModal = $(this);
+          // clear previous content
+          hModal.find('.tab-content').empty();
+          // append basic modal content
+          hModal.find('.tab-content').append(modalHtml);
+          // by default the current region is selected so we append to modal help tab the current region help options
+          var currentDomRow = commonVars.domUtils.getRegionRow(commonVars.currentRegion.start + 0.1, commonVars.currentRegion.end - 0.1);
+
+          //  append to tab pane #region-help-available
+          commonVars.domUtils.appendHelpModal(hModal, helpCurrentRegion);
+
+          helpRegion = {
+              start: commonVars.currentRegion.start + 0.1,
+              end: commonVars.currentRegion.end - 0.1
+          };
+
+          // listen to tab click event
+          hModal.find('#help-tab-panel a[role=tab]').click(function(e) {
+              e.preventDefault();
+              if (commonVars.playing) {
+                  commonVars.htmlAudioPlayer.pause();
+                  commonVars.playing = false;
+              }
+              $(this).tab('show');
+          });
+        });
+
+        // catch hidden modal event
+        $('#helpModal').on('hidden.bs.modal', function() {
+            if (commonVars.playing) {
+                commonVars.htmlAudioPlayer.pause();
+                commonVars.playing = false;
+            }
+            // (re)set the first tab active
+            $(this).find('.nav-tabs > li').each(function($index) {
+                if ($index === 0) {
+                    $(this).removeClass('active').addClass('active');
+                } else {
+                    $(this).removeClass('active');
+                }
             });
         });
-
-        hModal.on('hidden.bs.modal', function() {
-            if (playing) {
-                htmlAudioPlayer.pause();
-                playing = false;
-            }
-        });
-
-        hModal.modal("show");
+        // open modal
+        $('#helpModal').modal("show");
     }
 };
 
@@ -109,9 +88,7 @@ var actions = {
 // DOCUMENT READY
 // ======================================================================================================== //
 $(document).ready(function() {
-    // get some hidden inputs usefull values
-    wId = $('input[name="wId"]').val();
-    mrId = $('input[name="mrId"]').val();
+
 
     // bind data-action events
     $("button[data-action]").click(function() {
@@ -124,23 +101,23 @@ $(document).ready(function() {
     // HELP MODAL SELECT REGION (CURRENT / PREVIOUS) EVENT
     $('body').on('change', 'input[name=segment]:radio', function(e) {
 
-        if (playing) {
-            htmlAudioPlayer.pause();
-            playing = false;
+        if (commonVars.playing) {
+            commonVars.htmlAudioPlayer.pause();
+            commonVars.playing = false;
         }
 
         var selectedValue = e.target.value;
         if (selectedValue === 'previous') {
-            domUtils.appendHelpModal(hModal, helpPreviousRegion);
+            commonVars.domUtils.appendHelpModal(hModal, helpPreviousRegion);
             helpRegion = {
                 start: helpPreviousRegion.start + 0.1,
                 end: helpPreviousRegion.end - 0.1
             };
         } else if (selectedValue === 'current') {
-            domUtils.appendHelpModal(hModal, currentRegion);
+            commonVars.domUtils.appendHelpModal(hModal, commonVars.currentRegion);
             helpRegion = {
-                start: currentRegion.start + 0.1,
-                end: currentRegion.end - 0.1
+                start: commonVars.currentRegion.start + 0.1,
+                end: commonVars.currentRegion.end - 0.1
             };
         }
 
@@ -149,15 +126,6 @@ $(document).ready(function() {
             $(this).find('button').prop('disabled', $(this).find('input[name=segment]').val() !== selectedValue);
         });
     });
-
-    /* JS HELPERS */
-    strUtils = Object.create(StringUtils);
-    javascriptUtils = Object.create(JavascriptUtils);
-    domUtils = Object.create(DomUtils);
-    /* /JS HELPERS */
-
-    /* WAVESURFER */
-    wavesurfer = Object.create(WaveSurfer);
 
     // wavesurfer progress bar
     (function() {
@@ -170,16 +138,16 @@ $(document).ready(function() {
         var hideProgress = function() {
             progressDiv.style.display = 'none';
         };
-        wavesurfer.on('loading', showProgress);
-        wavesurfer.on('ready', hideProgress);
-        wavesurfer.on('destroy', hideProgress);
-        wavesurfer.on('error', hideProgress);
+        commonVars.wavesurfer.on('loading', showProgress);
+        commonVars.wavesurfer.on('ready', hideProgress);
+        commonVars.wavesurfer.on('destroy', hideProgress);
+        commonVars.wavesurfer.on('error', hideProgress);
     }());
 
-    wavesurfer.init(wavesurferOptions);
+    commonVars.wavesurfer.init(commonVars.wavesurferOptions);
 
     /* Minimap plugin */
-    wavesurfer.initMinimap({
+    commonVars.wavesurfer.initMinimap({
         height: 30,
         waveColor: '#ddd',
         progressColor: '#999',
@@ -187,40 +155,40 @@ $(document).ready(function() {
     });
 
     var data = {
-        workspaceId: wId,
-        id: mrId
+        workspaceId: commonVars.wId,
+        id: commonVars.mrId
     };
     loadAudio(data);
 
-    htmlAudioPlayer = document.getElementById('html-audio-player');
-    htmlAudioPlayer.src = audioData;
+    commonVars.htmlAudioPlayer = document.getElementById('html-audio-player');
+    commonVars.htmlAudioPlayer.src = commonVars.audioData;
 
-    wavesurfer.on('ready', function() {
+    commonVars.wavesurfer.on('ready', function() {
         var timeline = Object.create(WaveSurfer.Timeline);
         timeline.init({
-            wavesurfer: wavesurfer,
+            wavesurfer: commonVars.wavesurfer,
             container: '#wave-timeline'
         });
         initRegions();
-        if (regions.length > 0) {
-            currentRegion = regions[0];
+        if (commonVars.regions.length > 0) {
+            commonVars.currentRegion = commonVars.regions[0];
         }
     });
 
-    wavesurfer.on('seek', function() {
+    commonVars.wavesurfer.on('seek', function() {
         var current = getRegionFromTime();
-        if (current && currentRegion && current.uuid != currentRegion.uuid) {
+        if (current && commonVars.currentRegion && current.uuid != commonVars.currentRegion.uuid) {
             // update current region
-            currentRegion = current;
+            commonVars.currentRegion = current;
         }
     });
 
-    wavesurfer.on('audioprocess', function() {
-        // check regions and display text
+    commonVars.wavesurfer.on('audioprocess', function() {
+        // check commonVars.regions and display text
         var current = getRegionFromTime();
-        if (current && currentRegion && current.uuid != currentRegion.uuid) {
+        if (current && commonVars.currentRegion && current.uuid != commonVars.currentRegion.uuid) {
             // update current region
-            currentRegion = current;
+            commonVars.currentRegion = current;
         }
     });
     /* /WAVESURFER */
@@ -233,11 +201,11 @@ $(document).ready(function() {
 
 
 function getRegionFromTime(time) {
-    var currentTime = time ? time : wavesurfer.getCurrentTime();
+    var currentTime = time ? time : commonVars.wavesurfer.getCurrentTime();
     var region;
-    for (var i = 0; i < regions.length; i++) {
-        if (regions[i].start <= currentTime && regions[i].end > currentTime) {
-            region = regions[i];
+    for (var i = 0; i < commonVars.regions.length; i++) {
+        if (commonVars.regions[i].start <= currentTime && commonVars.regions[i].end > currentTime) {
+            region = commonVars.regions[i];
             break;
         }
     }
@@ -245,7 +213,7 @@ function getRegionFromTime(time) {
 }
 
 
-// build markers, regions from existing ones
+// build commonVars.markers, commonVars.regions from existing ones
 function initRegions() {
     $(".region").each(function() {
         var start = $(this).find('input.hidden-start').val();
@@ -285,7 +253,7 @@ function initRegions() {
             texts: texts,
             links: links
         };
-        regions.push(region);
+        commonVars.regions.push(region);
 
 
     });
@@ -294,11 +262,11 @@ function initRegions() {
 }
 
 function loadAudio(data) {
-    audioData = Routing.generate('innova_get_mediaresource_resource_file', {
+    commonVars.audioData = Routing.generate('innova_get_mediaresource_resource_file', {
         workspaceId: data.workspaceId,
         id: data.id
     });
-    wavesurfer.load(audioData);
+    commonVars.wavesurfer.load(commonVars.audioData);
     return true;
 }
 // ======================================================================================================== //
@@ -312,34 +280,34 @@ function loadAudio(data) {
  * @param {float} end
  */
 function playHelp(start, end, loop, rate) {
-    htmlAudioPlayer.loop = loop;
+    commonVars.htmlAudioPlayer.loop = loop;
     if (rate) {
-        htmlAudioPlayer.playbackRate = 0.8;
+        commonVars.htmlAudioPlayer.playbackRate = 0.8;
     } else {
-        htmlAudioPlayer.playbackRate = 1;
+        commonVars.htmlAudioPlayer.playbackRate = 1;
     }
 
-    if (playing) {
-        htmlAudioPlayer.pause();
-        playing = false;
+    if (commonVars.playing) {
+        commonVars.htmlAudioPlayer.pause();
+        commonVars.playing = false;
     } else {
-        htmlAudioPlayer.currentTime = start;
-        htmlAudioPlayer.play();
-        playing = true;
+        commonVars.htmlAudioPlayer.currentTime = start;
+        commonVars.htmlAudioPlayer.play();
+        commonVars.playing = true;
 
     }
 
     var self = this;
     self.regionEnd = end;
     self.regionStart = start;
-    htmlAudioPlayer.addEventListener('timeupdate', function() {
-        if (htmlAudioPlayer.currentTime >= self.regionEnd) {
-            htmlAudioPlayer.pause();
-            htmlAudioPlayer.currentTime = self.regionStart;
-            if (htmlAudioPlayer.loop) {
-                htmlAudioPlayer.play();
+    commonVars.htmlAudioPlayer.addEventListener('timeupdate', function() {
+        if (commonVars.htmlAudioPlayer.currentTime >= self.regionEnd) {
+            commonVars.htmlAudioPlayer.pause();
+            commonVars.htmlAudioPlayer.currentTime = self.regionStart;
+            if (commonVars.htmlAudioPlayer.loop) {
+                commonVars.htmlAudioPlayer.play();
             } else {
-                playing = false;
+                commonVars.playing = false;
             }
         }
     });
@@ -357,19 +325,19 @@ function playHelpRelatedRegion(start) {
  * Called by HelpModal play backward button
  */
 function playBackward() {
-    // is playing for real audio (ie not for TTS)
-    if (playing && htmlAudioPlayer) {
-        // stop audio playback before playing TTS
-        htmlAudioPlayer.pause();
-        playing = false;
+    // is commonVars.playing for real audio (ie not for TTS)
+    if (commonVars.playing && commonVars.htmlAudioPlayer) {
+        // stop audio playback before commonVars.playing TTS
+        commonVars.htmlAudioPlayer.pause();
+        commonVars.playing = false;
     }
     if (window.SpeechSynthesisUtterance === undefined) {
         console.log('not supported!');
     } else {
-        var text = strUtils.removeHtml(currentRegion.note);
+        var text = commonVars.strUtils.removeHtml(commonVars.currentRegion.note);
         var array = text.split(' ');
         var start = array.length - 1;
-        // check if utterance is already speaking before playing (pultiple click on backward button)
+        // check if utterance is already speaking before commonVars.playing (pultiple click on backward button)
         if (!window.speechSynthesis.speaking) {
             handleUtterancePlayback(start, array);
         }
@@ -403,7 +371,6 @@ function continueToSay(utterance, voices, lang, callback) {
     }
     window.speechSynthesis.speak(utterance);
     utterance.onend = function(event) {
-        console.log('speech end');
         return callback();
     };
 }
@@ -430,12 +397,12 @@ function handleUtterancePlayback(index, textArray) {
 /**
  * Region options Modal
  * Allow the user to listen to the selected help related region while configuring help
- * Uses html audio player to avoid wavesurfer animations behind the modal while playing
+ * Uses html audio player to avoid commonVars.wavesurfer animations behind the modal while commonVars.playing
  **/
-$('body').on('click', '#btn-help-related-region-play', function(){
-  if(currentHelpRelatedRegion){
-      playHelp(currentHelpRelatedRegion.start, currentHelpRelatedRegion.end, false, false);
-  }
+$('body').on('click', '#btn-help-related-region-play', function() {
+    if (currentHelpRelatedRegion) {
+        playHelp(currentHelpRelatedRegion.start, currentHelpRelatedRegion.end, false, false);
+    }
 });
 
 // color config region buttons if
@@ -457,7 +424,7 @@ function checkIfRowHasConfigValue(row) {
 
 
 function getMarkerLeftPostionFromTime(time) {
-    var duration = wavesurfer.getDuration();
+    var duration = commonVars.wavesurfer.getDuration();
     var $canvas = $('#waveform').find('wave').first().find('canvas').first();
     var cWidth = $canvas.width();
     return time * cWidth / duration;
@@ -475,63 +442,63 @@ function getMarkerLeftPostionFromTime(time) {
 // REGIONS (Objects)
 // ======================================================================================================== //
 
-function getRegionById(id){
-  var searched;
-    for(var i = 0 ; i < regions.length; i++){
-      if(regions[i].id === id){
-        searched = regions[i];
-      }
+function getRegionById(id) {
+    var searched;
+    for (var i = 0; i < commonVars.regions.length; i++) {
+        if (commonVars.regions[i].id === id) {
+            searched = commonVars.regions[i];
+        }
     }
     return searched;
 }
 
 
-function getRegionByUuid(uuid){
-  var searched;
-    for(var i = 0 ; i < regions.length; i++){
-      if(regions[i].uuid === uuid){
-        searched = regions[i];
-      }
+function getRegionByUuid(uuid) {
+    var searched;
+    for (var i = 0; i < commonVars.regions.length; i++) {
+        if (commonVars.regions[i].uuid === uuid) {
+            searched = commonVars.regions[i];
+        }
     }
     return searched;
 }
 
 
 
-function getNextRegion(time){
-  var next;
-  var region;
-  if(time){
-    region = getRegionFromTime(time);
-  } else {
-    region = currentRegion;
-  }
-  // find next region relatively to current
-  for(var i = 0; i < regions.length; i++){
-    if(regions[i].start == region.end){
-      next = regions[i];
+function getNextRegion(time) {
+    var next;
+    var region;
+    if (time) {
+        region = getRegionFromTime(time);
+    } else {
+        region = commonVars.currentRegion;
     }
-  }
-  return next;
-}
-
-function getPrevRegion(time){
-  var prev;
-  var region;
-  if(time){
-    region = getRegionFromTime(time);
-  } else {
-    region = currentRegion;
-  }
-  if(region){
     // find next region relatively to current
-    for(var i = 0; i < regions.length; i++){
-      if(regions[i].end == region.start){
-        prev = regions[i];
-      }
+    for (var i = 0; i < commonVars.regions.length; i++) {
+        if (commonVars.regions[i].start == region.end) {
+            next = commonVars.regions[i];
+        }
     }
-  }
-  return prev;
+    return next;
+}
+
+function getPrevRegion(time) {
+    var prev;
+    var region;
+    if (time) {
+        region = getRegionFromTime(time);
+    } else {
+        region = commonVars.currentRegion;
+    }
+    if (region) {
+        // find next region relatively to current
+        for (var i = 0; i < commonVars.regions.length; i++) {
+            if (commonVars.regions[i].end == region.start) {
+                prev = commonVars.regions[i];
+            }
+        }
+    }
+    return prev;
 }
 
 /**
@@ -546,24 +513,24 @@ function playRegion(elem) {
 
 function playRegionFrom(start) {
     var region = getRegionFromTime(start);
-    var wRegion = wavesurfer.addRegion({
-      start:region.start,
-      end:region.end,
-      color: 'rgba(0,0,0,0)',
-      drag: false,
-      resize:false
+    var wRegion = commonVars.wavesurfer.addRegion({
+        start: region.start,
+        end: region.end,
+        color: 'rgba(0,0,0,0)',
+        drag: false,
+        resize: false
     });
-    if (!playing) {
+    if (!commonVars.playing) {
         wRegion.play();
-        playing = true;
-        wavesurfer.once('pause', function() {
-            playing = false;
-            // remove all wavesurfer regions as we do not use them elsewhere
-            wavesurfer.clearRegions();
+        commonVars.playing = true;
+        commonVars.wavesurfer.once('pause', function() {
+            commonVars.playing = false;
+            // remove all commonVars.wavesurfer commonVars.regions as we do not use them elsewhere
+            commonVars.wavesurfer.clearRegions();
         });
     } else {
-        wavesurfer.pause();
-        playing = false;
+        commonVars.wavesurfer.pause();
+        commonVars.playing = false;
     }
 }
 
@@ -576,20 +543,20 @@ function playRegionFrom(start) {
 // ======================================================================================================== //
 
 /**
- * put the wavesurfer play cursor at the given time and pause playback
+ * put the commonVars.wavesurfer play cursor at the given time and pause playback
  * @param time in seconds
  */
 function goTo(time) {
-    var percent = (time) / wavesurfer.getDuration();
-    wavesurfer.seekAndCenter(percent);
-    if (playing) {
-        wavesurfer.pause();
-        playing = false;
+    var percent = (time) / commonVars.wavesurfer.getDuration();
+    commonVars.wavesurfer.seekAndCenter(percent);
+    if (commonVars.playing) {
+        commonVars.wavesurfer.pause();
+        commonVars.playing = false;
     }
 }
 
 function getTimeFromPosition(position) {
-    var duration = wavesurfer.getDuration();
+    var duration = commonVars.wavesurfer.getDuration();
     var $canvas = $('#waveform').find('wave').first().find('canvas').first();
     var cWidth = $canvas.width();
     return position * duration / cWidth;

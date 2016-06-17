@@ -22,10 +22,12 @@ current_segment: Current region
 confirm: Confirm
 config_update_success: Options for the resource successfully updated.
 config_update_error: An error occured while updating resource options.
+confirm_modal_title: Please confirm
 
 # d
 delete_media_resource: Delete Resource
 dialog_region_configure: Configure region
+delete_region_confirm: Are you sure you want to delete this region?
 
 # e
 error_while_uploading: Error while uploading file.

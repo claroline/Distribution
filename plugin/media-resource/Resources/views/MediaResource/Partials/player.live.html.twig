@@ -20,16 +20,18 @@
             /
             <i class="fa fa-pause"></i>
         </button>
-        <button type="button" id="help-btn" disabled class="btn btn-primary" onclick="toggleHelp()">
+        <button type="button" id="help-btn" disabled class="btn btn-primary" title="{{'region_help_view' | trans({}, 'media_resource')}}" onclick="toggleHelp()">
             <i class="fa fa-question"></i>
         </button>
-        <button type="button" class="btn btn-default btn-warning" onclick="deleteRegions()">
+        <button type="button" class="btn btn-default btn-warning" title="{{'region_delete' | trans({}, 'media_resource')}}" onclick="deleteRegions()">
             <i class="fa fa-trash-o"></i>
         </button>
       </div>
-
     </div>
 </div>
+
+<!-- include region config modal skeleton -->
+{% include "InnovaMediaResourceBundle:MediaResource/Partials/modals:simple.help.modal.html.twig" %}
 
 {% block javascripts %}
 {% javascripts output='vendor/claroline/plugin/innovamediaresource/js/player-live.js'

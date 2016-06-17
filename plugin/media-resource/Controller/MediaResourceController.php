@@ -39,12 +39,12 @@ class MediaResourceController extends Controller
         // get options
         $options = $mr->getOptions();
 
-        return $this->render('InnovaMediaResourceBundle:MediaResource:player.wrapper.html.twig', array(
+        return $this->render('InnovaMediaResourceBundle:MediaResource:player.wrapper.html.twig', [
                   '_resource' => $mr,
                   'regions' => $regions,
                   'workspace' => $workspace,
                   'mode' => $options->getMode(),
-              )
+              ]
       );
     }
 
@@ -67,12 +67,12 @@ class MediaResourceController extends Controller
         // MediaResource Options form
         $form = $this->container->get('form.factory')->create(new OptionsType(), $options);
 
-        return $this->render('InnovaMediaResourceBundle:MediaResource:administrate.html.twig', array(
+        return $this->render('InnovaMediaResourceBundle:MediaResource:administrate.html.twig', [
                     '_resource' => $mr,
                     'regions' => $regions,
                     'workspace' => $workspace,
                     'form' => $form->createView(),
-          )
+          ]
         );
     }
 
@@ -80,13 +80,13 @@ class MediaResourceController extends Controller
      * All in one save action, save regions and ressource options
      * !Only regions use a FormType.
      *
-     * @Route("/save/all/{id}", requirements={"id" = "\d+"}, name="media_resource_save_all")
+     * @Route("/save/{id}", requirements={"id" = "\d+"}, name="media_resource_save")
      * @Method({"POST"})
      */
     public function save(Workspace $workspace, MediaResource $resource)
     {
         $flashMessageType = 'success';
-        $msg = $this->get('translator')->trans('resource_update_success', array(), 'media_resource');
+        $msg = $this->get('translator')->trans('resource_update_success', [], 'media_resource');
         // handle options for the resource
         $form = $this->container->get('form.factory')->create(new OptionsType(), $resource->getOptions());
         // Try to process form
@@ -111,13 +111,13 @@ class MediaResourceController extends Controller
         }
 
         if ($error) {
-            $msg = $this->get('translator')->trans('resource_update_error', array(), 'media_resource');
+            $msg = $this->get('translator')->trans('resource_update_error', [], 'media_resource');
             $flashMessageType = 'error';
         }
 
         $this->get('session')->getFlashBag()->add($flashMessageType, $msg);
         // redirect instead of render to avoid form (re)submition on F5
-        return $this->redirectToRoute('innova_media_resource_administrate', array('workspaceId' => $workspace->getId(), 'id' => $resource->getId()));
+        return $this->redirectToRoute('innova_media_resource_administrate', ['workspaceId' => $workspace->getId(), 'id' => $resource->getId()]);
     }
 
     /**
@@ -162,8 +162,6 @@ class MediaResourceController extends Controller
     public function exportToZip(MediaResource $resource)
     {
         $data = $this->container->get('request')->query->get('data');
-
-        //return ['zip' => $pathToArchive, 'name' => $zipName, 'tempFolder' => $tempDir];
         $zipData = $this->get('innova_media_resource.manager.media_resource')->exportToZip($resource, $data);
 
         $response = new Response();

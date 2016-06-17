@@ -10,70 +10,44 @@
         </div>
     </div>
 </div>
-<hr/>
+<hr>
 <!-- media controls -->
 <div class="row">
     <div class="col-md-12 text-center">
         <div class="btn-group">
-          <button type="button" class="btn btn-default" data-action="play" title="{{'play_pause' | trans({}, 'media_resource')}}">
-              <i class="fa fa-play"></i>
-              /
-              <i class="fa fa-pause"></i>
-          </button>
-          <button type="button" class="btn btn-primary" data-action="help" title="{{'region_help_view' | trans({}, 'media_resource')}}">
-            <i class="fa fa-question"></i>
-          </button>
+            <button type="button" class="btn btn-default" data-action="play" title="{{'play_pause' | trans({}, 'media_resource')}}">
+                <i class="fa fa-play"></i>
+                /
+                <i class="fa fa-pause"></i>
+            </button>
+            <button type="button" class="btn btn-primary" data-action="help" title="{{'region_help_view' | trans({}, 'media_resource')}}">
+                <i class="fa fa-question"></i>
+            </button>
         </div>
-
 
     </div>
 </div>
-<hr/>
-
+<hr>
 <!-- segments -->
 <div class="row" style="display:none;">
     <div class="col-md-12 text-center regions-container">
         {% if regions | length > 0 %}
             {% for region in regions %}
-                <div class="row region" id="{{region.uuid}}" data-uuid="{{region.uuid}}">
-                    <div class="col-xs-1">
-                        <div class="time-text start">{{ region.start | hmsTime }}</div>
-                    </div>
-                    <div class="col-xs-1">
-                        <div class="time-text end">{{ region.end | hmsTime }}</div>
-                    </div>
-                    <div class="col-xs-10">
-                        <div class="text-left note">{{ region.note | raw }}</div>
-                    </div>
-                    <input type="hidden" class="hidden-start" name="start[]" value="{{ region.start }}" required="required">
-                    <input type="hidden" class="hidden-end" name="end[]" value="{{ region.end }}" required="required">
-                    <input type="hidden" class="hidden-note" name="note[]" value="{{ region.note }}">
-                    <input type="hidden" class="hidden-region-id" name="region-id[]" value="{{ region.id }}">
-                    <input type="hidden" class="hidden-region-uuid" name="region-uuid[]" value="{{ region.uuid }}">
-                    <!-- Region Help config  -->
-                    <input type="hidden" class="hidden-config-help-region-uuid" name="help-region-uuid[]" value="{{ region.regionConfig.helpRegionUuid ? region.regionConfig.helpRegionUuid : '' }}">
-                    <input type="hidden" class="hidden-config-loop" name="loop[]" value="{{ region.regionConfig.hasLoop ? '1' : '0' }}">
-                    <input type="hidden" class="hidden-config-backward" name="backward[]" value="{{ region.regionConfig.hasBackward ? '1' : '0' }}">
-                    <input type="hidden" class="hidden-config-rate" name="rate[]" value="{{ region.regionConfig.hasRate ? '1' : '0' }}">
-
-                    {% for helpText in region.regionConfig.helpTexts %}
-                      <input type="hidden" class="hidden-help-texts" name="help-texts[]" value="{{ helpText.text }}">
-                    {% endfor %}
-                    {% for helpLink in region.regionConfig.helpLinks %}
-                      <input type="hidden" class="hidden-help-links" name="help-links[]" value="{{helpLink.url}}">
-                    {% endfor %}
-                </div>
+              {% include "InnovaMediaResourceBundle:MediaResource/Partials:region.html.twig" with {'region': region, 'hidden': true, 'config':true, 'admin': false} %}                
             {% endfor %}
         {% endif %}
     </div>
 </div>
 
+<!-- include help modal skeleton -->
+{% include "InnovaMediaResourceBundle:MediaResource/Partials/modals:help.modal.html.twig" %}
+
 {% block javascripts %}
 
-{% javascripts output='vendor/claroline/plugin/innovamediaresource/js/player-active.js'
-'@InnovaMediaResourceBundle/Resources/js/play.active.js'
+    {% javascripts output = 'vendor/claroline/plugin/innovamediaresource/js/player-active.js'
+    '@InnovaMediaResourceBundle/Resources/js/play.active.js'
  %}
 
-<script src="{{ asset_url }}"></script>
-{% endjavascripts %}
+    <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
 {% endblock %}

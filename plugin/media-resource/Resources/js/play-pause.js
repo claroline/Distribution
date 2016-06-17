@@ -1,73 +1,56 @@
-var domUtils;
-var jUtils;
 var baseAudioUrl = '';
 var pauseTime = 2000;
 var ended = false;
-var regions = [];
-var audioPlayer;
 var playButton;
-
-var wId;
-var mrId;
 
 // ======================================================================================================== //
 // DOCUMENT READY
 // ======================================================================================================== //
 $(document).ready(function () {
-    audioPlayer = document.getElementById('html-audio-player');
+    //commonVars.htmlAudioPlayer = document.getElementById('html-audio-player');
     var progress = document.getElementById('seekbar');
     playButton = document.getElementById('play');
-    audioPlayer.loop = false;
+    commonVars.htmlAudioPlayer.loop = false;
 
-
-    wId = $('input[name="wId"]').val();
-    mrId = $('input[name="mrId"]').val();
-
-    /* JS HELPERS */
-    domUtils = Object.create(DomUtils);
-    jUtils = Object.create(JavascriptUtils);
-    /* /JS HELPERS */
-
-    // create regions JS objects
+    // create commonVars.regions JS objects
     createRegions();
 
     var data = {
-        workspaceId: wId,
-        id: mrId
+        workspaceId: commonVars.wId,
+        id: commonVars.mrId
     };
 
-    audioData = Routing.generate('innova_get_mediaresource_resource_file', {
+    commonVars.audioData = Routing.generate('innova_get_mediaresource_resource_file', {
         workspaceId: data.workspaceId,
         id: data.id
     });
 
-    //baseAudioUrl = Routing.generate('innova_get_mediaresource_resource_file', {workspaceId: data.workspaceId ,id: data.id});
-    audioPlayer.src = audioData;
-    baseAudioUrl = audioData;
+    commonVars.htmlAudioPlayer.src = commonVars.audioData;
+    baseAudioUrl = commonVars.audioData;
 
     // draw progress bar while playing
-    audioPlayer.addEventListener('timeupdate', function (e) {
-        var percent = audioPlayer.currentTime * 100 / audioPlayer.duration;
+    commonVars.htmlAudioPlayer.addEventListener('timeupdate', function (e) {
+        var percent = commonVars.htmlAudioPlayer.currentTime * 100 / commonVars.htmlAudioPlayer.duration;
         progress.style.width = percent + '%';
     });
 
-    audioPlayer.addEventListener('pause', function (e) {
-        nextRegion = getNextRegion(audioPlayer.currentTime);
+    commonVars.htmlAudioPlayer.addEventListener('pause', function (e) {
+        nextRegion = getNextRegion(commonVars.htmlAudioPlayer.currentTime);
         if (!ended && nextRegion) {
 
             offset = nextRegion.start;
             paramString = '#t=' + offset + ',' + nextRegion.end;
-            audioPlayer.src = baseAudioUrl + paramString;
+            commonVars.htmlAudioPlayer.src = baseAudioUrl + paramString;
 
             window.setTimeout(function () {
-                audioPlayer.play();
+                commonVars.htmlAudioPlayer.play();
                 if (nextRegion.last) {
                     ended = true;
                 }
             }, pauseTime);
         }
         else { // pause event is sent when ended
-            audioPlayer.currentTime = 0;
+            commonVars.htmlAudioPlayer.currentTime = 0;
             playButton.disabled = false;
             ended = false;
         }
@@ -78,15 +61,15 @@ $(document).ready(function () {
 function play() {
     playButton.disabled = true;
     ended = false;
-    audioPlayer.currentTime = 0;
+    commonVars.htmlAudioPlayer.currentTime = 0;
     var paramString = '';
-    var nextRegion = getNextRegion(audioPlayer.currentTime);
+    var nextRegion = getNextRegion(commonVars.htmlAudioPlayer.currentTime);
     if (nextRegion) {
         var offset = nextRegion.end;
         paramString = '#t=0,' + offset;
     }
-    audioPlayer.src = baseAudioUrl + paramString;
-    audioPlayer.play();
+    commonVars.htmlAudioPlayer.src = baseAudioUrl + paramString;
+    commonVars.htmlAudioPlayer.play();
 }
 
 
@@ -103,20 +86,20 @@ function createRegions() {
                 start: start,
                 end: end
             };
-            regions.push(region);
+            commonVars.regions.push(region);
         }
     });
 }
 
 function getNextRegion(time) {
-    var length = Object.keys(regions).length;
+    var length = Object.keys(commonVars.regions).length;
     length = length - 2;
-    for (var index in regions) {
-        if (regions[index].start <= time && regions[index].end > time) {
+    for (var index in commonVars.regions) {
+        if (commonVars.regions[index].start <= time && commonVars.regions[index].end > time) {
             var isLast = index > length ? true : false;
             return {
-                start: regions[index].start,
-                end: regions[index].end,
+                start: commonVars.regions[index].start,
+                end: commonVars.regions[index].end,
                 last: isLast
             };
         }

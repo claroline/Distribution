@@ -3,7 +3,7 @@
 {% block media_resource_content %}
     <div class="media-resource-administrate-container">
         <!-- form type used is OptionsType only -->
-        <form role="form" class="form-horizontal" novalidate="novalidate" action="{{ path('media_resource_save_all', {'workspaceId': workspace.id ,'id':_resource.id})}}" method="post">
+        <form role="form" class="form-horizontal" novalidate="novalidate" action="{{ path('media_resource_save', {'workspaceId': workspace.id ,'id':_resource.id})}}" method="post">
 
             <div class="panel panel-default">
                 <!-- PANEL HEADER -->
@@ -51,142 +51,100 @@
                     </div>
                     <!-- resource edition -->
                     <div class="panel panel-primary">
-                      <div class="panel-heading">
-                      </div>
-                      <div class="panel-body">
-                        <!-- timeline + waveform + minimap -->
-                        <div class="row media-container">
-                            <div class="col-md-12">
-                                <div id="audio-player">
-                                    <div id="wave-timeline"></div>
-                                    <div id="waveform">
-                                        <div class="progress progress-striped active" id="progress-bar">
-                                            <div class="progress-bar progress-bar-info"></div>
+                        <div class="panel-heading"></div>
+                        <div class="panel-body">
+                            <!-- timeline + waveform + minimap -->
+                            <div class="row media-container">
+                                <div class="col-md-12">
+                                    <div id="audio-player">
+                                        <div id="wave-timeline"></div>
+                                        <div id="waveform">
+                                            <div class="progress progress-striped active" id="progress-bar">
+                                                <div class="progress-bar progress-bar-info"></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <hr/>
-                        <!-- media controls -->
-                        <div class="row">
-                            <div class="col-md-12 text-center">
-                                <div class="btn-group">
-                                    <button type="button" role="button" class="btn btn-default" data-action="backward" title="{{'move_backward' | trans({}, 'media_resource')}}">
-                                        <i class="fa fa-step-backward"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-default" data-action="play" title="{{'play_pause' | trans({}, 'media_resource')}}">
-                                        <i class="fa fa-play"></i>
-                                        /
-                                        <i class="fa fa-pause"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-default" data-action="previewCurrentRegion" title="{{'play_current_region' | trans({}, 'media_resource')}}">
-                                        &nbsp;|-&nbsp;<i class="fa fa-play"></i>&nbsp;-|&nbsp;
-                                    </button>
-                                    <button type="button" class="btn btn-default" data-action="forward" title="{{'move_forward' | trans({}, 'media_resource')}}">
-                                        <i class="fa fa-step-forward"></i>
-                                    </button>
+                            <hr/>
+                            <!-- media controls -->
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <div class="btn-group">
+                                        <button type="button" role="button" class="btn btn-default" data-action="backward" title="{{'move_backward' | trans({}, 'media_resource')}}">
+                                            <i class="fa fa-step-backward"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-default" data-action="play" title="{{'play_pause' | trans({}, 'media_resource')}}">
+                                            <i class="fa fa-play"></i>
+                                            /
+                                            <i class="fa fa-pause"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-default" data-action="previewCurrentRegion" title="{{'play_current_region' | trans({}, 'media_resource')}}">
+                                            &nbsp;|-&nbsp;<i class="fa fa-play"></i>&nbsp;-|&nbsp;
+                                        </button>
+                                        <button type="button" class="btn btn-default" data-action="forward" title="{{'move_forward' | trans({}, 'media_resource')}}">
+                                            <i class="fa fa-step-forward"></i>
+                                        </button>
+                                    </div>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-warning" title="{{'add_marker' | trans({}, 'media_resource')}}" data-action="mark">
+                                            <i class="fa fa-flag"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-default" data-action="help" title="{{'region_help_preview' | trans({}, 'media_resource')}}">
+                                            <i class="fa fa-question"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-default" data-action="zip" title="{{'resource_zip_export' | trans({}, 'media_resource')}}">
+                                            <i class="fa fa-download"></i>
+                                        </button>
+                                        <button type="submit" role="submit" class="btn btn-primary" title="{{ 'media_resource_save'|trans({}, 'media_resource') }}">
+                                            <i class="fa fa-save"></i>
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-warning" title="{{'add_marker' | trans({}, 'media_resource')}}" data-action="mark">
-                                        <i class="fa fa-flag"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-default" data-action="help" title="{{'region_help_preview' | trans({}, 'media_resource')}}">
-                                        <i class="fa fa-question"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-default" data-action="zip" title="{{'resource_zip_export' | trans({}, 'media_resource')}}">
-                                        <i class="fa fa-download"></i>
-                                    </button>
-                                    <button type="submit" role="submit" class="btn btn-primary" title="{{ 'media_resource_save'|trans({}, 'media_resource') }}">
-                                        <i class="fa fa-save"></i>
-                                    </button>
+                            </div>
+                            <hr/>
+                            <!-- segments -->
+                            <div class="row">
+                                <div class="col-md-12 text-center regions-container">
+                                    {% if regions | length > 0 %}
+                                        {% for region in regions %}
+                                            {% include "InnovaMediaResourceBundle:MediaResource/Partials:region.html.twig" with {'region': region, 'hidden': true, 'config':true, 'admin': true} %}
+                                        {% endfor %}
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
-                        <hr/>
-                        <!-- segments -->
-                        <div class="row">
-                            <div class="col-md-12 text-center regions-container">
-                                {% if regions | length > 0 %}
-                                    {% for region in regions %}
-                                    <!--
-                                        <div class="row region {% if loop.index is odd %} region-odd {% else %} region-even {% endif %}" id="{{region.uuid}}" data-uuid="{{region.uuid}}">
--->                                     <!-- Visible Region data  -->
-                                        <div class="row region" id="{{region.uuid}}" data-uuid="{{region.uuid}}">
-                                            <div class="col-xs-1 text-center">
-                                                <div class="time-text start">{{ region.start | hmsTime }}</div>
-                                            </div>
-                                            <div class="col-xs-1 text-center">
-                                                <div class="time-text end">{{ region.end | hmsTime }}</div>
-                                            </div>
-                                            <div class="col-xs-7">
-                                                <div contenteditable="true" class="text-left note">{{ region.note | raw }}</div>
-                                            </div>
-                                            <div class="col-xs-1 text-right">
-                                                <span class="badge row-index">{{ loop.index }}</span>
-                                            </div>
-                                            <div class="col-xs-2 text-right">
-                                                <div class="btn-group" role="group">
-                                                    <button type="button" class="btn btn-default" title="{{'play_pause_region' | trans({}, 'media_resource')}}" onclick="playRegion(this);">
-                                                      |-&nbsp;<i class="fa fa-play"></i>&nbsp;-|
-                                                    </button>
-                                                    <button role="button" type="button" class="btn btn-default" title="{{'region_config' | trans({}, 'media_resource')}}" onclick="configRegion(this);">
-                                                      <i class="fa fa-cog"></i>
-                                                    </button>
-                                                    <button role="button" type="button" class="btn btn-danger" data-uuid="{{ region.uuid }}" title="{{'region_delete' | trans({}, 'media_resource')}}" onclick="deleteRegion(this);">
-                                                      <i class="fa fa-trash-o"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <!-- Hidden Region data  -->
-                                            <input type="hidden" class="hidden-start" name="start[]" value="{{ region.start }}" required="required">
-                                            <input type="hidden" class="hidden-end" name="end[]" value="{{ region.end }}" required="required">
-                                            <input type="hidden" class="hidden-note" name="note[]" value="{{ region.note }}">
-                                            <input type="hidden" class="hidden-region-id" name="region-id[]" value="{{ region.id }}">
-                                            <input type="hidden" class="hidden-region-uuid" name="region-uuid[]" value="{{ region.uuid }}">
-                                            <!-- Hidden Region Config data  -->
-                                            <input type="hidden" class="hidden-config-help-region-uuid" name="help-region-uuid[]" value="{{ region.regionConfig.helpRegionUuid ? region.regionConfig.helpRegionUuid : '' }}">
-                                            <input type="hidden" class="hidden-config-loop" name="loop[]" value="{{ region.regionConfig.hasLoop ? '1' : '0' }}">
-                                            <input type="hidden" class="hidden-config-backward" name="backward[]" value="{{ region.regionConfig.hasBackward ? '1' : '0' }}">
-                                            <input type="hidden" class="hidden-config-rate" name="rate[]" value="{{ region.regionConfig.hasRate ? '1' : '0' }}">
-
-                                            {% for i in 0..2 %}
-                                              <input type="hidden" class="hidden-help-texts" name="help-texts[]" value="{{ region.regionConfig.helpTexts[i] is defined ? region.regionConfig.helpTexts[i].text : '' }}">
-                                            {% endfor %}
-                                            {% for i in 0..2 %}
-                                              <input type="hidden" class="hidden-help-links" name="help-links[]" value="{{region.regionConfig.helpLinks[i] is defined ? region.regionConfig.helpLinks[i].url : '' }}">
-                                            {% endfor %}
-                                        </div>
-                                    {% endfor %}
-                                {% endif %}
-
-                            </div>
-                        </div>
-                      </div>
                     </div>
                     <!-- Toggleable annotation buttons panel -->
                     <div class="panel panel-primary annotation-panel">
-                      <div class="panel-heading clearfix">
-                          <h3 class="panel-title pull-left">{{'annotation_panel_title' | trans({}, 'media_resource')}}</h3>
-                          <button type="button" role="button" title="{{'show_hide_annotation_panel' | trans({}, 'media_resource')}}" class="btn btn-default fa fa-chevron-up pull-right btn-annotation-toggle" data-action="toggleAnnotationPanel"></button>
-                      </div>
-                      <div class="panel-body">
-                        <div class="row annotation-container">
-                            <div class="col-md-12">
-
-                                <div class="annotation-buttons-container text-center">
-                                    <button type="button" class="btn annotation-button blue" title="{{'accent_primary' | trans({}, 'media_resource')}}" data-color="blue" data-action="annotate">&nbsp;</button>
-                                    <button type="button" class="btn annotation-button red" title="{{'accent_secondary' | trans({}, 'media_resource')}}" data-color="red" data-action="annotate">&nbsp;</button>
-                                    <button type="button" class="btn annotation-button orange" title="{{'accent_weak_vowel' | trans({}, 'media_resource')}}" data-color="orange" data-action="annotate">&nbsp;</button>
-                                    <button type="button" class="btn annotation-button black" title="{{'accent_no_accent' | trans({}, 'media_resource')}}" data-color="black" data-action="annotate">&nbsp;</button>
+                        <div class="panel-heading clearfix">
+                            <h3 class="panel-title pull-left">{{'annotation_panel_title' | trans({}, 'media_resource')}}</h3>
+                            <button type="button" role="button" title="{{'show_hide_annotation_panel' | trans({}, 'media_resource')}}" class="btn btn-default fa fa-chevron-up pull-right btn-annotation-toggle" data-action="toggleAnnotationPanel"></button>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row annotation-container">
+                                <div class="col-md-12">
+                                    <div class="annotation-buttons-container text-center">
+                                        <button type="button" class="btn annotation-button blue" title="{{'accent_primary' | trans({}, 'media_resource')}}" data-color="blue" data-action="annotate">&nbsp;</button>
+                                        <button type="button" class="btn annotation-button red" title="{{'accent_secondary' | trans({}, 'media_resource')}}" data-color="red" data-action="annotate">&nbsp;</button>
+                                        <button type="button" class="btn annotation-button orange" title="{{'accent_weak_vowel' | trans({}, 'media_resource')}}" data-color="orange" data-action="annotate">&nbsp;</button>
+                                        <button type="button" class="btn annotation-button black" title="{{'accent_no_accent' | trans({}, 'media_resource')}}" data-color="black" data-action="annotate">&nbsp;</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                      </div>
                     </div>
                 </div>
             </div>
         </form>
+        <!-- include help modal skeleton -->
+        {% include "InnovaMediaResourceBundle:MediaResource/Partials/modals:help.modal.html.twig" %}
+        <!-- include region config modal skeleton -->
+        {% include "InnovaMediaResourceBundle:MediaResource/Partials/modals:region.config.modal.html.twig" %}
+        <!-- include region delete modal -->
+        {% include "InnovaMediaResourceBundle:MediaResource/Partials/modals:confirm.modal.html.twig" %}
+        <!-- include last region delete alert modal -->
+        {% include "InnovaMediaResourceBundle:MediaResource/Partials/modals:alert.modal.html.twig" %}
         <!-- HTML5 AUdio player used for specific playback (help and configuration) -->
         <audio id="html-audio-player" controls style="display:none;" src=""></audio>
         <!-- hidden fields -->
@@ -200,8 +158,8 @@
 {% block javascripts %}
     {{parent()}}
     {% javascripts output = 'vendor/claroline/plugin/innovamediaresource/js/administrate.js'
-      '@InnovaMediaResourceBundle/Resources/js/administrate.js'
-    %}
+    '@InnovaMediaResourceBundle/Resources/js/administrate.js'
+ %}
 
     <script src="{{ asset_url }}"></script>
     {% endjavascripts %}

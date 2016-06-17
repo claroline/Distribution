@@ -15,11 +15,7 @@
     <div class="col-md-12 text-center regions-container">
         {% if regions | length > 0 %}
             {% for region in regions %}
-                <div class="row region" id="{{region.uuid}}" data-uuid="{{region.uuid}}">
-                    <input type="hidden" class="hidden-start" name="start[]" value="{{ region.start }}" required="required">
-                    <input type="hidden" class="hidden-end" name="end[]" value="{{ region.end }}" required="required">
-                    <input type="hidden" class="hidden-note" name="note[]" value="{{ region.note }}">                    
-                </div>
+                {% include "InnovaMediaResourceBundle:MediaResource/Partials:region.html.twig" with {'region': region, 'hidden': true, 'config':false, 'admin': false} %}                
             {% endfor %}
         {% endif %}
     </div>

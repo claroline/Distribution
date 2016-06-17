@@ -44,11 +44,25 @@ class Options
      */
     protected $ttsLanguage;
 
+    // play mode possible values
+    const FREE = 'free';
+    const CONTINUOUS_PAUSE = 'pause';
+    const CONTINUOUS_LIVE = 'live';
+    const CONTINUOUS_ACTIVE = 'active';
+
+    // TTS lang possible values
+    const EN_US = 'en-US';
+    const EN_GB = 'en-GB';
+    const DE_DE = 'de-DE';
+    const ES_ES = 'es-ES';
+    const FR_FR = 'fr-FR';
+    const IT_IT = 'it-IT';
+
     public function __construct()
     {
-        $this->setMode('free');
+        $this->setMode(Self::FREE);
         $this->setShowTextTranscription(false);
-        $this->setTtsLanguage('en-US');
+        $this->setTtsLanguage(Self::EN_US);
     }
 
     public function setId($id)

@@ -33,11 +33,8 @@ class MediaManager
 
     public function getAudioMediaUrlForAjax(MediaResource $mr)
     {
-        $audio = $this->getRepository()->findOneBy(array('mediaResource' => $mr, 'type' => 'audio'));
-        if ($audio) {
-            return $audio->getUrl();
-        }
+        $audio = $this->getRepository()->findOneBy(['mediaResource' => $mr, 'type' => 'audio']);
 
-        return;
+        return $audio->getUrl();
     }
 }

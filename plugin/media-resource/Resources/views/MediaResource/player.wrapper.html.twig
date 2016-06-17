@@ -8,13 +8,13 @@
                 {% include "InnovaMediaResourceBundle:MediaResource/Partials:players-panel-header.html.twig" with {'name':_resource.name, 'mode': mode} %}
             </div>
             <div class="panel-body">
-                {% if mode == "active" %}
+                {% if mode is constant('Innova\\MediaResourceBundle\\Entity\\Options::CONTINUOUS_ACTIVE') %}
                     {% include "InnovaMediaResourceBundle:MediaResource/Partials:player.active.html.twig" with {'_resource': _resource, 'workspace': workspace, 'regions': regions} %}
-                {% elseif mode == "live" %}
+                {% elseif mode is constant('Innova\\MediaResourceBundle\\Entity\\Options::CONTINUOUS_LIVE') %}
                     {% include "InnovaMediaResourceBundle:MediaResource/Partials:player.live.html.twig" with {'_resource': _resource, 'workspace': workspace, 'regions': regions} %}
-                {% elseif mode == "free" %}
+                {% elseif mode is constant('Innova\\MediaResourceBundle\\Entity\\Options::FREE') %}
                     {% include "InnovaMediaResourceBundle:MediaResource/Partials:player.free.html.twig" with {'_resource': _resource, 'workspace': workspace, 'regions': regions} %}
-                {% else %}
+                {% elseif mode is constant('Innova\\MediaResourceBundle\\Entity\\Options::CONTINUOUS_PAUSE') %}
                     {% include "InnovaMediaResourceBundle:MediaResource/Partials:player.pause.html.twig" with {'_resource': _resource, 'workspace': workspace, 'regions': regions} %}
                 {% endif %}
                 <!-- HTML5 AUdio player used for specific playback (help and configuration) -->

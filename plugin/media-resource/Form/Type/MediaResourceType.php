@@ -15,28 +15,27 @@ class MediaResourceType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text', array('required' => true))
-                ->add('file', 'file', array('required' => true, 'mapped' => false, 'constraints' => array(
+        $builder->add('name', 'text', ['required' => true])
+                ->add('file', 'file', ['required' => true, 'mapped' => false, 'constraints' => [
                     new NotBlank(),
-                    new File(array(
-                                    'mimeTypes' => array(
+                    new File([
+                                    'mimeTypes' => [
                                         'audio/mpeg',
                                         'audio/wav',
                                         'audio/x-wav',
-                                        ),
-                                        'mimeTypesMessage' => 'The type of the file is invalid ({{ type }}). Allowed types are {{ types }}. Please check that your file is well encoded.',
-                                    )
-
-                            ),
-                )));
+                                    ],
+                                    'mimeTypesMessage' => 'The type of the file is invalid ({{ type }}). Allowed types are {{ types }}. Please check that your file is well encoded.',
+                              ]),
+                  ],
+                ]);
     }
 
     public function getDefaultOptions()
     {
-        return array(
+        return [
             'data_class' => 'Innova\MediaResourceBundle\Entity\MediaResource',
             'translation_domain' => 'resource',
-        );
+        ];
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
