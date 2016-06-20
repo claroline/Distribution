@@ -3,15 +3,6 @@
 namespace FormaLibre\OfficeConnectBundle\Controller;
 
 use JMS\DiExtraBundle\Annotation as DI;
-//require("C:/wamp/www/claroline/vendor/symfony/symfony/src/Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand.php");
-//use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-//$filepath = realpath (dirname(__FILE__));
-//require_once("C:/wamp/www/claroline/vendor/symfony/symfony/src/Symfony/Component/Security/Core/User/UserProviderInterface.php");
-//require_once("C:/wamp/www/claroline/vendor/claroline/core-bundle/Claroline/CoreBundle/Repository/UserRepository.php");
-//use Symfony\Component\Security\Core\User\UserInterface;
-//use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
-
-//use Claroline\CoreBundle\Manager\UserManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
@@ -42,7 +33,6 @@ class OfficeConnectController extends Controller
     public function getTokenAction()
     {
         $url = $this->authHelper->getAuthorizatonURL();
-        //header( );
 
         return new RedirectResponse($url);
     }

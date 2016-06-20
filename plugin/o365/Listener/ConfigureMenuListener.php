@@ -34,7 +34,7 @@ class ConfigureMenuListener
     {
         $menu = $event->getMenu();
         $menu->addChild(
-            'office',
+            'Office',
             array('route' => 'formalibre_office_form')
         )->setExtra('name', 'office');
 
