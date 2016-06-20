@@ -83,6 +83,7 @@ class PlatformConfiguration
     private $googleGeocodingClientId;
     private $googleGeocodingSignature;
     private $googleGeocodingKey;
+    private $formHoneypot;
 
     /**
      * @param mixed $sessionDbDataCol
@@ -744,5 +745,15 @@ class PlatformConfiguration
     public function getGoogleGeocodingKey()
     {
         return $this->googleGeocodingKey;
+    }
+
+    public function setFormHoneypot($bool)
+    {
+        $this->formHoneypot = $bool;
+    }
+
+    public function getFormHoneypot()
+    {
+        return $this->formHoneypot;
     }
 }

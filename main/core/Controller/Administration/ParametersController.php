@@ -202,6 +202,7 @@ class ParametersController extends Controller
                             'redirect_after_login_option' => $form['redirect_after_login_option']->getData(),
                             'redirect_after_login_url' => $form['redirect_after_login_url']->getData(),
                             'form_captcha' => $form['formCaptcha']->getData(),
+                            'form_honeypot' => $form['formHoneypot']->getData(),
                             'platform_init_date' => $form['platform_init_date']->getData(),
                             'platform_limit_date' => $form['platform_limit_date']->getData(),
                             'account_duration' => $form['account_duration']->getData(),

@@ -147,6 +147,15 @@ class GeneralType extends AbstractType
                 )
             )
             ->add(
+                'formHoneypot',
+                'checkbox',
+                array(
+                    'label' => 'use_honeypot',
+                    'required' => false,
+                    'disabled' => isset($this->lockedParams['form_honeypot']),
+                )
+            )
+            ->add(
                 'redirect_after_login_option',
                 'choice',
                 array(

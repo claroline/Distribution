@@ -57,6 +57,7 @@ class PlatformConfigurationHandler
         'session_db_user' => null,
         'session_db_password' => null,
         'form_captcha' => true,
+        'form_honeypot' => false,
         'platform_limit_date' => 1559350861, //1 june 2019
         'platform_init_date' => 1388534461, //1 june 2014
         'account_duration' => null,
@@ -217,6 +218,7 @@ class PlatformConfigurationHandler
         $config->setGoogleGeocodingClientId($this->parameters['google_geocoding_client_id']);
         $config->setGoogleGeocodingSignature($this->parameters['google_geocoding_signature']);
         $config->setGoogleGeocodingKey($this->parameters['google_geocoding_key']);
+        $config->setFormHoneypot($this->parameters['form_honeypot']);
 
         return $config;
     }
