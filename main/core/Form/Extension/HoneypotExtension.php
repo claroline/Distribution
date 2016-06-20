@@ -28,7 +28,6 @@ class HoneypotExtension extends AbstractTypeExtension
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        //if the captcha option is activated
         $ch = $this->container->get('claroline.config.platform_config_handler');
 
         if ($ch->getParameter('form_honeypot')) {
