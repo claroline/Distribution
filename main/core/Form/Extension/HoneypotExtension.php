@@ -39,7 +39,7 @@ class HoneypotExtension extends AbstractTypeExtension
                     $data = $event->getData();
 
                     if ($form->isRoot() && $form->getConfig()->getOption('compound')) {
-                        $form->add('fakefield', 'honeypot', array('label' => ' '));
+                        $form->add('fakefield', 'honeypot');
                     }
 
                     $event->setData($data);
