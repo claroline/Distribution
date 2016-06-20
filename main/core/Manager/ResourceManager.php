@@ -1277,9 +1277,7 @@ class ResourceManager
      */
     public function getWorkspaceRoot(Workspace $workspace)
     {
-        $root = $this->resourceNodeRepo->findWorkspaceRoot($workspace);
-
-        return $root;
+        return $this->resourceNodeRepo->findWorkspaceRoot($workspace);
     }
 
     /**
