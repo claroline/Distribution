@@ -28,7 +28,7 @@ class OfficeConnectController extends Controller
      *     name="claro_o365_get_token"
      * )
      *
-     * @return Response
+     * @return RedirectResponse
      */
     public function getTokenAction()
     {
