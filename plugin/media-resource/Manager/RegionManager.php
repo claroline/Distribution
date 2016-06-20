@@ -227,7 +227,7 @@ class RegionManager
             $toDelete = $this->checkIfRegionExists($existing, $toCheck);
 
             foreach ($toDelete as $unused) {
-                $this->em->remove($region);
+                $this->em->remove($unused);
             }
             $this->em->flush();
         }
