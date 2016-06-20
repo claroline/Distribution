@@ -18,29 +18,36 @@ export default class UserController {
     this.fields = []
     this.managedOrganizations = []
     this.$uibModal = $uibModal
-    this.userTotal = 0
 
     const columns = [
-      {name: this.translate('username'), prop: 'username', isCheckboxColumn: true, headerCheckbox: true},
+      {
+        name: this.translate('username'),
+        isCheckboxColumn: true,
+        headerCheckbox: true,
+        cellRenderer: scope => {
+          let content = `<a href="${Routing.generate('claro_profile_view', {user: scope.$row.id})}">${scope.$row.username}</a>`
+
+          return `<span>${content}</span>`
+        }
+      },
       {name: this.translate('first_name'), prop: 'firstName'},
       {name: this.translate('last_name'), prop: 'lastName'},
       {name: this.translate('email'), prop: 'mail'},
       {
         name: this.translate('actions'),
         cellRenderer: scope => {
-          if (!scope.$row) return
           let tr = this.translate('show_as')
 
           let content =
-              `<a class='btn btn-default'
-                    href='${Routing.generate('claro_desktop_open', {'_switch': scope.$row.username})}'
-                    data-toggle='tooltip'
-                    data-placement='bottom'
-                    title=''
-                    data-original-title='${tr}'
-                    role='button'>
-                    <i class='fa fa-eye'></i>
-                </a>`
+          `<a class='btn btn-default'
+            href='${Routing.generate('claro_desktop_open', {'_switch': scope.$row.username})}'
+            data-toggle='tooltip'
+            data-placement='bottom'
+            title=''
+            data-original-title='${tr}'
+            role='button'>
+            <i class='fa fa-eye'></i>
+          </a>`
 
           content = this.userActions.reduce((content, action) => {
             const route = Routing.generate('admin_user_action', {
@@ -51,8 +58,8 @@ export default class UserController {
           }, content)
 
           content += `
-                        <button class='btn btn-default' ng-click='uc.userInfo($row)'><i class='fa fa-info'></i></button>
-                    `
+            <button class='btn btn-default' ng-click='uc.userInfo($row)'><i class='fa fa-info'></i></button>
+          `
 
           return `<div>${content}</div>`
         }
