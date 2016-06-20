@@ -131,12 +131,8 @@ MatchQuestionService.prototype.initBindMatchQuestion = function initBindMatchQue
     });
 };
 
-MatchQuestionService.prototype.initDragMatchQuestion = function initDragMatchQuestion() {
-    jsPlumb.detachEveryConnection();
-    jsPlumb.deleteEveryEndpoint();
-
-    // activate drag on each proposal
-    $(".draggable").each(function () {
+MatchQuestionService.prototype.initDragMatchQuestion = function initDragMatchQuestion(element) {
+    element.find('.draggable').each(function () {
         $(this).draggable({
             cursor: 'move',
             revert: 'invalid',
@@ -146,7 +142,7 @@ MatchQuestionService.prototype.initDragMatchQuestion = function initDragMatchQue
         });
     });
 
-    $(".droppable").each(function () {
+    element.find('.droppable').each(function () {
         // in exercise, if go on previous question, just visual aspect
         if ($(this).children().length > 2) {
             var children = $(this).children().length;
@@ -171,24 +167,24 @@ MatchQuestionService.prototype.initDragMatchQuestion = function initDragMatchQue
             activeClass: "state-hover",
             hoverClass: "state-active"
         });
+    });
 
-        $(".origin").each(function () {
-            // for exercise, if go on previous question
-            if ($(this).children().children().length === 0) {
-                var id = $(this).attr('id');
-                // make the right appearance for column of label and proposal
-                $(this).children().children().children("a").remove();
-                $(this).children().children().removeClass();
-                $(this).children().children().addClass("draggable ui-draggable ui-draggable-disabled ui-state-disabled");
-                var idDrag = id.replace('div', 'draggable');
-                idDrag = "#" + idDrag;
-                // discolor the text
-                $(idDrag).fadeTo(100, 0.3);
-            }
+    element.find('.origin').each(function () {
+        // for exercise, if go on previous question
+        if ($(this).children().children().length === 0) {
+            var id = $(this).attr('id');
+            // make the right appearance for column of label and proposal
+            $(this).children().children().children("a").remove();
+            $(this).children().children().removeClass();
+            $(this).children().children().addClass("draggable ui-draggable ui-draggable-disabled ui-state-disabled");
+            var idDrag = id.replace('div', 'draggable');
+            idDrag = "#" + idDrag;
+            // discolor the text
+            $(idDrag).fadeTo(100, 0.3);
+        }
 
-            $(this).droppable({
-                tolerance: "pointer"
-            });
+        $(this).droppable({
+            tolerance: "pointer"
         });
     });
 };

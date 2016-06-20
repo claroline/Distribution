@@ -27,24 +27,20 @@ var MatchQuestionDirective = function MatchQuestionDirective(FeedbackService, $t
                         });
 
                         // remove one connection
-                        jsPlumb.bind("click", function (connection) {
-                            if (connection._jsPlumb.hoverPaintStyle.strokeStyle === "#FC0000") {
-                                controller.removeConnection(connection);
-                            }
+                        jsPlumb.bind('click', function (connection) {
+                            controller.removeConnection(connection);
                         });
 
                         controller.addPreviousConnections();
                     } else {
-                        MatchQuestionService.initDragMatchQuestion();
+                        MatchQuestionService.initDragMatchQuestion(element);
 
-                        $(".droppable").each(function () {
-                            $(this).on("drop", function (event, ui) {
-                                controller.handleDragMatchQuestionDrop(event, ui);
-                            });
+                        element.on('drop', '.droppable', function (event, ui) {
+                            controller.handleDragMatchQuestionDrop(event, ui);
                         });
 
                         if (controller.question.typeMatch === 3) {
-                            $(".draggable").each(function () {
+                            element.find('.draggable').each(function () {
                                 var id = $(this)[0].id.replace("div", "drag_handle");
                                 $(this).draggable({
                                     handle: "#" + id

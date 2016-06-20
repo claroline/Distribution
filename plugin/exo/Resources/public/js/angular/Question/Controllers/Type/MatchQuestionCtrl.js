@@ -10,11 +10,6 @@ var MatchQuestionCtrl = function MatchQuestionCtrl(FeedbackService, $scope, Matc
     
     this.$scope = $scope;
     this.MatchQuestionService = MatchQuestionService;
-
-    this.savedAnswers = [];
-    for (var i=0; i<this.dropped.length; i++) {
-        this.savedAnswers.push(this.dropped[i]);
-    }
 };
 
 // Extends AbstractQuestionCtrl
@@ -261,16 +256,19 @@ MatchQuestionCtrl.prototype.getDropClass = function getDropClass(typeDiv, propos
  */
 MatchQuestionCtrl.prototype.getDropColor = function getDropColor(subject, proposal) {
     var found = false;
-    for (var i = 0; i < this.savedAnswers.length; i++) {
-        if (this.savedAnswers[i].target === proposal.id) {
-            for (var j = 0; j < this.question.solutions.length; j++) {
-                if (this.savedAnswers[i].source === this.question.solutions[j].firstId && this.savedAnswers[i].target === this.question.solutions[j].secondId && (this.feedback.enabled || this.solutions)) {
-                    if (subject === 'div') {
-                        return "drop-success";
-                    } else if (subject === 'button') {
-                        return "drop-button-success";
+
+    if (this.feedback.enabled && this.question.solutions) {
+        for (var i = 0; i < this.savedAnswers.length; i++) {
+            if (this.savedAnswers[i].target === proposal.id) {
+                for (var j = 0; j < this.question.solutions.length; j++) {
+                    if (this.savedAnswers[i].source === this.question.solutions[j].firstId && this.savedAnswers[i].target === this.question.solutions[j].secondId) {
+                        if (subject === 'div') {
+                            return "drop-success";
+                        } else if (subject === 'button') {
+                            return "drop-button-success";
+                        }
+                        found = true;
                     }
-                    found = true;
                 }
             }
         }
@@ -536,8 +534,6 @@ MatchQuestionCtrl.prototype.reset = function reset() {
                 $(this).find('.draggable').removeAttr('style');
                 $(this).find('.draggable').removeAttr('aria-disabled');
                 $(this).find('.draggable').draggable("enable");
-                var idProposal = $(this).attr("id");
-                idProposal = idProposal.replace('div_', '');
             }
         });
 
@@ -645,7 +641,7 @@ MatchQuestionCtrl.prototype.handleBeforeDrop = function handleBeforeDrop(data) {
         var targetId = data.targetId.replace('droppable_', '');
         for (var i=0; i<this.question.firstSet.length; i++) {
             if (this.question.firstSet[i].id === sourceId) {
-                for (var j=0; j<this.question.secondSet.length; j++) {
+                for (var j = 0; j < this.question.secondSet.length; j++) {
                     if (this.question.secondSet[j].id === targetId) {
                         var connection = {
                             source: sourceId,
@@ -670,20 +666,21 @@ MatchQuestionCtrl.prototype.handleBeforeDrop = function handleBeforeDrop(data) {
  * @param {type} data
  * @returns {undefined}
  */
-MatchQuestionCtrl.prototype.removeConnection = function removeConnection(data) {
-    var sourceId = data.sourceId.replace('draggable_', '');
-    var targetId = data.targetId.replace('droppable_', '');
-    // connection is removed from dom even with this commented...
-    // If not commented, code stops at this methods...
-    jsPlumb.detach(data);
+MatchQuestionCtrl.prototype.removeConnection = function removeConnection(connection) {
+    if (connection._jsPlumb.hoverPaintStyle.strokeStyle === "#FC0000") {
+        var sourceId = connection.sourceId.replace('draggable_', '');
+        var targetId = connection.targetId.replace('droppable_', '');
 
-    for (var i = 0; i < this.connections.length; i++) {
-        if (this.connections[i].source === sourceId && this.connections[i].target === targetId) {
-            this.connections.splice(i, 1);
+        jsPlumb.detach(connection);
+
+        for (var i = 0; i < this.connections.length; i++) {
+            if (this.connections[i].source === sourceId && this.connections[i].target === targetId) {
+                this.connections.splice(i, 1);
+            }
         }
-    }
 
-    this.updateStudentData();
+        this.updateStudentData();
+    }
 };
 
 /**
