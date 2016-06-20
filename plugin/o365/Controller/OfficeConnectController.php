@@ -43,7 +43,7 @@ class OfficeConnectController extends Controller
      *     name="claro_o365_login"
      * )
      *
-     * @return Response
+     * @return RedirectResponse
      */
     public function loginAction()
     {
