@@ -1307,3 +1307,4 @@ organization: Organisation
 workspace_not_exists: L'espace d'activité %code% n'existe pas à la ligne %line%.
 tab_not_exists: L'onglet %tab% n'existe pas à la ligne %line%.
 file_not_exists: Le fichier %file% n'existe pas à la ligne %line%.
+mandatory: Obligatoire

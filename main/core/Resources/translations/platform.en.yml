@@ -1289,3 +1289,4 @@ organization: Organization
 workspace_not_exists: The workspace %code% doesn't exist at line %line%.
 tab_not_exists: The tab %tab% doesn't exist at line %line%.
 file_not_exists: The file %file% doens't exist at line %line%.
+mandatory: Mandatory
