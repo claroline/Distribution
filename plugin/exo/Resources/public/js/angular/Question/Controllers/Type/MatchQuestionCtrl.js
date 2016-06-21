@@ -2,13 +2,15 @@
  * Choice Question Controller
  * @param {FeedbackService}      FeedbackService
  * @param {Object}               $scope
+ * @param {Object}               $uibModal
  * @param {MatchQuestionService} MatchQuestionService
  * @constructor
  */
-var MatchQuestionCtrl = function MatchQuestionCtrl(FeedbackService, $scope, MatchQuestionService) {
+var MatchQuestionCtrl = function MatchQuestionCtrl(FeedbackService, $scope, $uibModal, MatchQuestionService) {
     AbstractQuestionCtrl.apply(this, arguments);
     
     this.$scope = $scope;
+    this.$uibModal = $uibModal;
     this.MatchQuestionService = MatchQuestionService;
 };
 
@@ -16,7 +18,7 @@ var MatchQuestionCtrl = function MatchQuestionCtrl(FeedbackService, $scope, Matc
 MatchQuestionCtrl.prototype = Object.create(AbstractQuestionCtrl.prototype);
 
 // Set up dependency injection (get DI from parent too)
-MatchQuestionCtrl.$inject = AbstractQuestionCtrl.$inject.concat([ '$scope', 'MatchQuestionService' ]);
+MatchQuestionCtrl.$inject = AbstractQuestionCtrl.$inject.concat([ '$scope', '$uibModal', 'MatchQuestionService' ]);
 
 MatchQuestionCtrl.prototype.connections = []; // for toBind questions
 
@@ -27,6 +29,25 @@ MatchQuestionCtrl.prototype.orphanAnswers = [];
 MatchQuestionCtrl.prototype.orphanAnswersAreChecked = false;
 
 MatchQuestionCtrl.prototype.savedAnswers = [];
+
+/**
+ * Zoom on an item content (display it in a modal)
+ * @param {mixed} itemData
+ */
+MatchQuestionCtrl.prototype.zoom = function zoom(itemData) {
+    this.$uibModal.open({
+        template: '<div class="modal-body" data-ng-bind-html="zoomCtrl.data | unsafe"></div>',
+        controllerAs: 'zoomCtrl',
+        controller: function ZoomCtrl(data) {
+            this.data = data;
+        },
+        resolve: {
+            data: function () {
+                return itemData;
+            }
+        }
+    });
+};
 
 /**
  *
@@ -228,76 +249,6 @@ MatchQuestionCtrl.prototype.getCurrentItemFeedBackIfOk = function getCurrentItem
     }
 };
 
-MatchQuestionCtrl.prototype.getDropClass = function getDropClass(typeDiv, proposal) {
-    var droppable = true;
-    for (var i = 0; i < this.dropped.length; i++) {
-        if (this.dropped[i].target === proposal.id) {
-            droppable = false;
-        }
-    }
-
-    var classname = "";
-    if (typeDiv === "dropzone") {
-        if (droppable) {
-            classname += "droppable ";
-        } else {
-            classname += "state-highlight-pair";
-        }
-    }
-
-    return classname;
-};
-
-/**
- *
- * @param subject
- * @param proposal
- * @returns {*}
- */
-MatchQuestionCtrl.prototype.getDropColor = function getDropColor(subject, proposal) {
-    var found = false;
-
-    if (this.feedback.enabled && this.question.solutions) {
-        for (var i = 0; i < this.savedAnswers.length; i++) {
-            if (this.savedAnswers[i].target === proposal.id) {
-                for (var j = 0; j < this.question.solutions.length; j++) {
-                    if (this.savedAnswers[i].source === this.question.solutions[j].firstId && this.savedAnswers[i].target === this.question.solutions[j].secondId) {
-                        if (subject === 'div') {
-                            return "drop-success";
-                        } else if (subject === 'button') {
-                            return "drop-button-success";
-                        }
-                        found = true;
-                    }
-                }
-            }
-        }
-    }
-
-    if (this.feedback.visible && !found) {
-        if (subject === 'div') {
-            return "drop-warning";
-        } else {
-            return "drop-button-warning";
-        }
-    } else {
-        for (var i = 0; i < this.dropped.length; i++) {
-            if (this.dropped[i].target === proposal.id) {
-                if (subject === 'div') {
-                    return "drop-alert";
-                } else if (subject === 'button') {
-                    return "drop-button-alert";
-                }
-            }
-        }
-        if (subject === 'div') {
-            return "";
-        } else {
-            return "drop-button-default";
-        }
-    }
-};
-
 /**
  *
  * @param item
@@ -327,7 +278,7 @@ MatchQuestionCtrl.prototype.getStudentAnswers = function getStudentAnswers(label
     }
 
     var answers = [];
-    for (var i=0; i<answers_to_check.length; i++) {
+    for (var i = 0; i < answers_to_check.length; i++) {
         if (answers_to_check[i].target === label.id) {
             for (var j = 0; j < this.question.firstSet.length; j++) {
                 if (this.question.firstSet[j].id === answers_to_check[i].source) {
@@ -409,11 +360,13 @@ MatchQuestionCtrl.prototype.isRemovableItem = function isRemovableItem(proposalI
         return true;
     }
 
-    for (var i = 0; i < this.savedAnswers.length; i++) {
-        if ((this.savedAnswers[i].target === proposalId && valueType === "target") || (this.savedAnswers[i].source === proposalId && valueType === "source")) {
-            for (var j = 0; j < this.question.solutions.length; j++) {
-                if (this.savedAnswers[i].source === this.question.solutions[j].firstId && this.savedAnswers[i].target === this.question.solutions[j].secondId) {
-                    return false;
+    if (this.question.solutions) {
+        for (var i = 0; i < this.savedAnswers.length; i++) {
+            if ((this.savedAnswers[i].target === proposalId && valueType === "target") || (this.savedAnswers[i].source === proposalId && valueType === "source")) {
+                for (var j = 0; j < this.question.solutions.length; j++) {
+                    if (this.savedAnswers[i].source === this.question.solutions[j].firstId && this.savedAnswers[i].target === this.question.solutions[j].secondId) {
+                        return false;
+                    }
                 }
             }
         }
@@ -444,7 +397,7 @@ MatchQuestionCtrl.prototype.setOrphanAnswers = function setOrphanAnswers() {
     var hasSolution;
     for (var i = 0; i < this.question.secondSet.length; i++) {
         hasSolution = false;
-        for (var j=0; j<this.solutions.length; j++) {
+        for (var j=0; j < this.question.length; j++) {
             if (this.question.secondSet[i].id === this.solutions[j].secondId) {
                 hasSolution = true;
             }
@@ -465,11 +418,11 @@ MatchQuestionCtrl.prototype.onFeedbackShow = function onFeedbackShow() {
     }
 
     if (!this.question.toBind) {
-        $('.draggable').draggable("disable");
+        $('.draggable').draggable('disable');
         if (this.question.typeMatch !== 3) {
             $('.draggable').fadeTo(100, 0.3);
         }
-    } else if (this.question.toBind) {
+    } else {
         this.colorBindings();
     }
 };
@@ -486,7 +439,7 @@ MatchQuestionCtrl.prototype.onFeedbackHide = function onFeedbackHide() {
             $('#draggable_' + this.dropped[i].source).draggable("disable");
             $('#draggable_' + this.dropped[i].source).fadeTo(100, 0.3);
         }
-    } else if (this.question.toBind) {
+    } else {
         this.colorBindings();
     }
 };
@@ -508,8 +461,8 @@ MatchQuestionCtrl.prototype.updateStudentData = function () {
     }
 
     for (var i = 0; i < answers_to_check.length; i++) {
-        for (var j=0; j<this.question.firstSet.length; j++) {
-            for (var k=0; k<this.question.secondSet.length; k++) {
+        for (var j = 0; j < this.question.firstSet.length; j++) {
+            for (var k = 0; k < this.question.secondSet.length; k++) {
                 if (answers_to_check[i].source === this.question.firstSet[j].id && answers_to_check[i].target === this.question.secondSet[k].id) {
                     var answer = answers_to_check[i].source + ',' + answers_to_check[i].target;
                     this.answer.push(answer);
@@ -541,7 +494,7 @@ MatchQuestionCtrl.prototype.reset = function reset() {
         $(".droppable").each(function () {
             if ($(this).find(".dragDropped").children()) {
                 $(this).removeClass('state-highlight');
-                $(this).droppable( "option", "disabled", false );
+                $(this).droppable( "option", "disabled", false);
                 $(this).find(".dragDropped").children().remove();
             }
         });

@@ -39,14 +39,11 @@ var MatchQuestionDirective = function MatchQuestionDirective(FeedbackService, $t
                             controller.handleDragMatchQuestionDrop(event, ui);
                         });
 
-                        if (controller.question.typeMatch === 3) {
-                            element.find('.draggable').each(function () {
-                                var id = $(this)[0].id.replace("div", "drag_handle");
-                                $(this).draggable({
-                                    handle: "#" + id
-                                });
+                        /*if (controller.question.typeMatch === 3) {
+                            element.find('.draggable').draggable({
+                                handle: '.drag-handle'
                             });
-                        }
+                        }*/
 
                         controller.addPreviousDroppedItems();
                     }
@@ -64,7 +61,6 @@ var MatchQuestionDirective = function MatchQuestionDirective(FeedbackService, $t
 
                 // On directive destroy, remove events
                 scope.$on('$destroy', function handleDestroyEvent() {
-                    // TODO : remove drag'n'drop events
                     jsPlumb.detachEveryConnection();
                     jsPlumb.deleteEveryEndpoint();
                 });
