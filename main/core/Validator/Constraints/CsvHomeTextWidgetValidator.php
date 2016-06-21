@@ -62,7 +62,7 @@ class CsvHomeTextWidgetValidator extends ConstraintValidator
             $line = trim($line);
             $widget = explode(';', $line);
             $code = $widget[0];
-            $tab = $widget[1];
+            $tabName = $widget[1];
             $title = $widget[2];
             $file = $widget[3];
 
@@ -77,18 +77,18 @@ class CsvHomeTextWidgetValidator extends ConstraintValidator
                 $this->context->addViolation($msg);
             }
 
-            $tab = $this->om->getRepository('ClarolineCoreBundle:Home\HomeTab')->findBy(['workspace' => $workspace, 'name' => $tab]);
+            $tab = $this->om->getRepository('ClarolineCoreBundle:Home\HomeTab')->findBy(['workspace' => $workspace, 'name' => $tabName]);
 
             if (!$tab) {
                 $msg = $this->translator->trans(
                     'tab_not_exists',
-                    array('%tab%' => $tab->getName(), '%line%' => $i + 1),
+                    array('%tab%' => $tabName, '%line%' => $i + 1),
                     'platform'
                 ).' ';
                 $this->context->addViolation($msg);
             }
 
-            if (file_exists($file)) {
+            if (!file_exists($file)) {
                 $msg = $this->translator->trans(
                     'file_not_exists',
                     array('%file%' => $file, '%line%' => $i + 1),

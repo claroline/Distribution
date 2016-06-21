@@ -373,12 +373,19 @@ class WidgetManager
             $workspace = $this->om->getRepository('ClarolineCoreBundle:Workspace\Workspace')->findOneByCode($code);
             $name = $values[1];
             $title = $values[2];
+            $width = isset($values[3]) ? $values[3] : 4;
+            $height = isset($values[4]) ? $values[4] : 3;
             $tab = $this->om->getRepository('ClarolineCoreBundle:Home\HomeTab')->findOneBy(['workspace' => $workspace, 'name' => $name]);
             $widgetInstance = $this->om->getRepository('ClarolineCoreBundle:Widget\WidgetInstance')
                 ->findOneBy(['workspace' => $workspace, 'name' => $title]);
 
             if (!$widgetInstance) {
-                $widgetInstance = $this->createWidgetInstance($title, $textWidget, $tab, $workspace);
+                $widgetInstance = $this->createWidgetInstance(
+                    $title,
+                    $textWidget,
+                    $tab,
+                    $workspace
+                );
             } else {
                 $this->log("Widget {$title} already exists in workspace {$code}: Updating...");
             }
@@ -390,6 +397,11 @@ class WidgetManager
                 $simpleTextConfig->setWidgetInstance($widgetInstance);
             }
 
+            $widgetDisplayConfigs = $widgetInstance->getWidgetDisplayConfigs();
+            $widgetDisplayConfig = $widgetDisplayConfigs[0];
+            $widgetDisplayConfig->setHeight($height);
+            $widgetDisplayConfig->setWidth($width);
+            $this->om->persist($widgetDisplayConfig);
             $content = file_get_contents($values[3]);
             $simpleTextConfig->setContent($content);
             $this->om->persist($simpleTextConfig);
