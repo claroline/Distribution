@@ -1881,6 +1881,7 @@ class ResourceManager
             if ($i % 100 === 0) {
                 $this->om->forceFlush();
                 $this->om->clear();
+                $resourceType = $this->om->getRepository('ClarolineCoreBundle:Resource\ResourceType')->findOneByName('directory');
                 $this->om->merge($resourceType);
             }
         }

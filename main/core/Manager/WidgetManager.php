@@ -399,6 +399,7 @@ class WidgetManager
             if ($i % 100 === 0) {
                 $this->om->forceFlush();
                 $this->om->clear();
+                $textWidget = $this->om->getRepository('ClarolineCoreBundle:Widget\Widget')->findOneByName('simple_text');
                 $this->om->merge($textWidget);
             }
         }
