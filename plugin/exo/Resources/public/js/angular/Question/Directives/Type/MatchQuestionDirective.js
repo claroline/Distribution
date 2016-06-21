@@ -39,12 +39,6 @@ var MatchQuestionDirective = function MatchQuestionDirective(FeedbackService, $t
                             controller.handleDragMatchQuestionDrop(event, ui);
                         });
 
-                        /*if (controller.question.typeMatch === 3) {
-                            element.find('.draggable').draggable({
-                                handle: '.drag-handle'
-                            });
-                        }*/
-
                         controller.addPreviousDroppedItems();
                     }
 
