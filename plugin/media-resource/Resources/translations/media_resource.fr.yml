@@ -77,7 +77,8 @@ region_config_allow_loop: Autoriser la lecture en boucle
 region_config_help_texts: Textes d'aide
 region_config_help_texts_placeholder: Ajoutez un texte d'aide ou laissez vide
 region_config_help_links: Liens d'aide
-region_config_help_links_placeholder: Ajoutez un lien d'aide ou laissez vide
+region_config_help_links_small: (url absolue : http://www.monurl.qqchose)
+region_config_help_links_placeholder: Ajoutez un lien d'aide (http://www.mylink.com) ou laissez vide
 region_config_help_add_link: Ajouter un lien http (jusqu'à 3 liens autorisés)
 region_config_help_region_title: Région connexe
 region_delete_confirm_base: Etes vous sur de vouloir supprimer la région?

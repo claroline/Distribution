@@ -206,42 +206,45 @@ class MediaResourceManager
         $copiedFilePath = $tempDir.DIRECTORY_SEPARATOR.$fullFileName;
 
         // create srt file
-        $srtFile = $tempDir.DIRECTORY_SEPARATOR.$cleanName.'_SRT.vtt';
-        $fs->touch($srtFile);
-        $srt = '';
+        $vttFile = $tempDir.DIRECTORY_SEPARATOR.$cleanName.'_SRT.vtt';
+        $fs->touch($vttFile);
+        $vtt = '';
         // make a copy of the file
         if (copy($originalFileFullPath, $copiedFilePath)) {
             // create chuncked audio files in temp dir
             $index = 1;
             array_push($files, $copiedFilePath);
 
-            $srt .= 'WEBVTT'.PHP_EOL;
+            $vtt .= 'WEBVTT'.PHP_EOL;
 
             foreach ($data as $region) {
                 $start = $region['start'];
                 $end = $region['end'];
                 $duration = $end - $start;
 
-                // create srt string
-                $srt .= $index.PHP_EOL;
-                $srt .= $this->secondsToSrtTime($start).' --> '.$this->secondsToSrtTime($end).PHP_EOL;
-                $srt .= $region['note'].PHP_EOL;
+                // create .vtt line if needed
+                if ($region['note'] !== '') {
+                    $vtt .= PHP_EOL;
+                    $vtt .= $index.PHP_EOL;
+                    $vtt .= $this->secondsToSrtTime($start).' --> '.$this->secondsToSrtTime($end).PHP_EOL;
+                    $vtt .= strip_tags($region['note']).PHP_EOL;
+
+                    ++$index;
+                }
+
                 $partFilePath = $tempDir.DIRECTORY_SEPARATOR.$cleanName.'_part_'.$index.'.'.$ext;
                 $cmd = 'ffmpeg -i '.$copiedFilePath.' -ss '.$start.' -t '.$duration.' '.$partFilePath;
                 exec($cmd, $output, $returnVar);
 
-                // cmd error
+                // cmd success
                 if ($returnVar === 0) {
                     array_push($files, $partFilePath);
                 } else {
                     // @TODO do something in case of cmd error
                 }
-
-                ++$index;
             }
-
-            file_put_contents($srtFile, $srt);
-            array_push($files, $srtFile);
+            file_put_contents($vttFile, $vtt);
+            array_push($files, $vttFile);
         }
 
         $zipName = $cleanName.'.zip';

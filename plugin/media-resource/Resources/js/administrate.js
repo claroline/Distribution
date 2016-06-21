@@ -159,8 +159,13 @@ $(document).ready(function() {
         goTo(start);
         isInRegionNoteRow = true;
         return $input;
-    }).on('blur keyup paste input', '[contenteditable]', function(e) {
+    }).on('blur keypress keyup paste input', '[contenteditable]', function(e) {
         var $input = $(this);
+        // do not allow user to add a line when pressing enter key
+        if (e.type === 'keypress' && e.which === 13){
+            return false;
+        }
+
         if ($input.data('before') !== $input.html()) {
             $input.data('before', $input.html());
             $input.trigger('change');
@@ -169,7 +174,8 @@ $(document).ready(function() {
             var uuid = $input.closest(".region").data('uuid');
             var note = $input.html() ? $input.html() : $input.text();
             var region = getRegionByUuid(uuid);
-            region.note = note;
+            region.note = note.replace('<br>', '');
+            console.log(region.note);
         }
         return $input;
     }).on('blur', '[contenteditable]', function(e) {
@@ -251,13 +257,7 @@ $(document).ready(function() {
         if (commonVars.regions.length > 0) {
             commonVars.currentRegion = commonVars.regions[0];
             commonVars.domUtils.highlightRegionRow(commonVars.currentRegion);
-            var wRegion = commonVars.wavesurfer.addRegion({
-                start: commonVars.currentRegion.start,
-                end: commonVars.currentRegion.end,
-                color: 'rgba(255,0,0,0.5)',
-                drag: false,
-                resize: false
-            });
+            highlightWaveform();
         }
     });
 
@@ -268,14 +268,8 @@ $(document).ready(function() {
             commonVars.currentRegion = current;
             // highlight region dom row
             commonVars.domUtils.highlightRegionRow(commonVars.currentRegion);
-            commonVars.wavesurfer.clearRegions();
-            var wRegion = commonVars.wavesurfer.addRegion({
-                start: commonVars.currentRegion.start,
-                end: commonVars.currentRegion.end,
-                color: 'rgba(255,0,0,0.5)',
-                drag: false,
-                resize: false
-            });
+            // highlight region in waveform
+            highlightWaveform();
         }
     });
 
@@ -287,14 +281,7 @@ $(document).ready(function() {
             commonVars.currentRegion = current;
             // show help text
             commonVars.domUtils.highlightRegionRow(commonVars.currentRegion);
-            commonVars.wavesurfer.clearRegions();
-            var wRegion = commonVars.wavesurfer.addRegion({
-                start: commonVars.currentRegion.start,
-                end: commonVars.currentRegion.end,
-                color: 'rgba(255,0,0,0.5)',
-                drag: false,
-                resize: false
-            });
+            highlightWaveform();
         }
     });
     /* /WAVESURFER */
@@ -359,6 +346,8 @@ function createRegion(time) {
     commonVars.domUtils.addRegionToDom(region, commonVars.javascriptUtils, $regionRow);
     commonVars.regions.push(region);
     updateRegionRowIndexes();
+    commonVars.currentRegion = region;
+    highlightWaveform();
 }
 
 // build commonVars.markers, commonVars.regions from existing ones
@@ -446,6 +435,18 @@ function updateRegionRowIndexes() {
         index++;
     });
 }
+
+function highlightWaveform(){
+    commonVars.wavesurfer.clearRegions();
+    var wRegion = commonVars.wavesurfer.addRegion({
+        start: commonVars.currentRegion.start,
+        end: commonVars.currentRegion.end,
+        color: 'rgba(255,0,0,0.5)',
+        drag: false,
+        resize: false
+    });
+}
+
 
 function loadAudio(data) {
     commonVars.audioData = Routing.generate('innova_get_mediaresource_resource_file', {
@@ -606,6 +607,19 @@ function configRegion(elem) {
 
         var uuid = $('#select-help-related-region :selected').val();
         currentHelpRelatedRegion = getRegionByUuid(uuid);
+
+        // check links inputs
+        var expression = "https?://[a-z0-9\-_]+(\.[a-z0-9\-_]+)+([a-z0-9\-\.,@\?^=%&;:/~\+#]*[a-z0-9\-@\?^=%&;/~\+#])?";
+        var regex = new RegExp(expression);
+        $('.modal-help-links').on('keyup paste input', function(){
+          var val = $(this).val();
+          if(val !== '' && !regex.test(val)){
+            $('#close-btn').prop('disabled', true);
+          } else {
+            $('#close-btn').prop('disabled', false);
+          }
+
+        });
     });
 
     $('#regionConfigModal').on('hidden.bs.modal', function() {
@@ -780,6 +794,9 @@ function addMarker(time, uuid) {
     marker.appendChild(dragHandler);
     $('#waveform').find('wave').first().append(marker);
 
+
+
+
     var dragData;
     // set the drag data when handler is clicked
     dragHandler.addEventListener('mousedown', function(event) {
@@ -908,6 +925,8 @@ function updateTimeData(time, dragData) {
     dragData.marker.dataset.time = time;
     // udpate marker object time value
     dragData.markerO.time = time;
+    // change waveform highlight
+    highlightWaveform();
 }
 
 function changeMarkerPosition(time, dragData) {
@@ -1033,6 +1052,7 @@ function deleteRegion(elem) {
                         hiddenInputToUpdate.val(start);
                         var divToUpdate = regionDomRow.next().find(".time-text.start");
                         divToUpdate.text(commonVars.javascriptUtils.secondsToHms(start));
+                        commonVars.currentRegion = next;
 
                     } else {
                         console.log('not found');
@@ -1047,6 +1067,7 @@ function deleteRegion(elem) {
                         hiddenInputToUpdate.val(end);
                         var divToUpdate = regionDomRow.prev().find(".time-text.end");
                         divToUpdate.text(commonVars.javascriptUtils.secondsToHms(end));
+                        commonVars.currentRegion = previous;
                     } else {
                         console.log('not found');
                     }
@@ -1070,6 +1091,8 @@ function deleteRegion(elem) {
                     }
                 }
                 updateRegionRowIndexes();
+                // highlight region on waveform
+                highlightWaveform();
             });
         }
     }
@@ -1120,7 +1143,7 @@ function playRegionFrom(start) {
 function goTo(time) {
     var percent = (time) / commonVars.wavesurfer.getDuration();
     commonVars.wavesurfer.seekAndCenter(percent);
-    if (commonVars.playing) {
+    if (commonVars.playing || commonVars.wavesurfer.isPlaying()) {
         commonVars.wavesurfer.pause();
         commonVars.playing = false;
     }

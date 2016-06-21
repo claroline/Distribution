@@ -176,7 +176,7 @@ var DomUtils = {
         //loop elem
         var loop = $regionRow.find('.hidden-config-loop');
         //backward
-        var backward = $regionRow.find('.hidden-config-backward'); //$('input[name=backward]').is(':checked');
+        var backward = $regionRow.find('.hidden-config-backward');
         //rate
         var rate = $regionRow.find('.hidden-config-rate');
 
@@ -196,7 +196,7 @@ var DomUtils = {
         var html = '';
         html += '<div class="row">';
         html += '   <div class="col-md-12">';
-        html += '       <div class="form">';
+        html += '       <div class="form-horizontal">';
         html += '           <div class="checkbox">';
         html += '               <label>';
         if (loop.val() === '1')
@@ -230,13 +230,14 @@ var DomUtils = {
         html += '             <div class="col-md-12">';
         html += '               <h4>' + Translator.trans('region_config_help_texts', {}, 'media_resource') + '</h4>';
         for (var i = 0; i < 3; i++) {
+
             if (texts[i] !== '') {
                 html += '                 <input type="text" name="modal-help-texts[]" class="form-control modal-help-texts" value="' + texts[i] + '">';
             } else {
                 html += '                 <input type="text" name="modal-help-texts[]" placeholder="' + Translator.trans('region_config_help_texts_placeholder', {}, 'media_resource') + '" class="form-control modal-help-texts" value="">';
             }
             if (i < 2) {
-                html += '                 <hr>';
+                html += '           <hr>';
             }
         }
         html += '             </div>';
@@ -245,20 +246,19 @@ var DomUtils = {
         // help links
         html += '           <div class="row">';
         html += '             <div class="col-md-12">';
-        html += '               <h4>' + Translator.trans('region_config_help_links', {}, 'media_resource') + '</h4>';
+        html += '               <h4>' + Translator.trans('region_config_help_links', {}, 'media_resource') + '&nbsp;<small>' + Translator.trans('region_config_help_links_small', {}, 'media_resource') + '</small></h4>';
         for (var i = 0; i < 3; i++) {
             if (links[i] !== '') {
-                html += '                 <input type="text" name="modal-help-links[]" class="form-control modal-help-links" value="' + links[i] + '">';
+                html += '       <input type="url" pattern="https?://[a-z0-9\-_]+(\.[a-z0-9\-_]+)+([a-z0-9\-\.,@\?^=%&;:/~\+#]*[a-z0-9\-@\?^=%&;/~\+#])?" name="modal-help-links[]" class="form-control modal-help-links" value="' + links[i] + '">';
             } else {
-                html += '                 <input type="text" name="modal-help-links[]" placeholder="' + Translator.trans('region_config_help_links_placeholder', {}, 'media_resource') + '" class="form-control modal-help-links" value="">';
+                html += '       <input type="url" pattern="https?://[a-z0-9\-_]+(\.[a-z0-9\-_]+)+([a-z0-9\-\.,@\?^=%&;:/~\+#]*[a-z0-9\-@\?^=%&;/~\+#])?" value="" name="modal-help-links[]" placeholder="' + Translator.trans('region_config_help_links_placeholder', {}, 'media_resource') + '" class="form-control modal-help-links">';
             }
             if (i < 2) {
-                html += '                 <hr/>';
+                html += '      <hr>';
             }
         }
-        html += '             </div>';
-        html += '           </div>'; // help links end
-
+        html += '             </div>'; // col-md-12 end
+        html += '           </div>'; // row help links end
         html += '           <hr>';
         // related region dropdown
         html += '           <h4>' + Translator.trans('region_config_help_region_title', {}, 'media_resource') + '</h4>';
@@ -281,7 +281,7 @@ var DomUtils = {
         html += '               </select>';
         html += '             </div>';
         html += '             <div class="col-md-2">';
-        html += '               <button class="btn btn-default" id="btn-help-related-region-play">';
+        html += '               <button class="btn btn-default" role="button" type="button" id="btn-help-related-region-play">';
         html += '               <i class="fa fa-play"></i> ';
         html += '                / ';
         html += '               <i class="fa fa-pause"></i>';
@@ -429,6 +429,7 @@ var DomUtils = {
         // find associated input[name="note"] input and set val
         var hiddenNoteInput = $(elem).closest(".region").find('input.hidden-note');
         var content = $(elem).html() ? $(elem).html() : $(elem).text();
+        content.replace('<br>', '');
         $(hiddenNoteInput).val(content);
     },
     getSimpleHelpModalContent: function(current, audioData) {

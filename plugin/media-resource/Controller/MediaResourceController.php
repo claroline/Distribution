@@ -27,7 +27,6 @@ class MediaResourceController extends Controller
      *
      * @Route("/view/{id}", requirements={"id" = "\d+"}, name="innova_media_resource_open")
      * @Method("GET")
-     * @ParamConverter("MediaResource", class="InnovaMediaResourceBundle:MediaResource")
      */
     public function openAction(Workspace $workspace, MediaResource $mr)
     {
@@ -51,9 +50,8 @@ class MediaResourceController extends Controller
     /**
      * administrate a media resource.
      *
-     * @Route("/mr/edit/{id}", requirements={"id" = "\d+"}, name="innova_media_resource_administrate")
+     * @Route("/edit/{id}", requirements={"id" = "\d+"}, name="innova_media_resource_administrate")
      * @Method("GET")
-     * @ParamConverter("MediaResource", class="InnovaMediaResourceBundle:MediaResource")
      */
     public function administrateAction(Workspace $workspace, MediaResource $mr)
     {
@@ -128,7 +126,6 @@ class MediaResourceController extends Controller
      *     name="innova_get_mediaresource_resource_file",
      *     options={"expose"=true}
      * )
-     * @ParamConverter("MediaResource", class="InnovaMediaResourceBundle:MediaResource")
      * @Method({"GET", "POST"})
      */
     public function serveMediaResourceFile(MediaResource $mr)
@@ -156,7 +153,6 @@ class MediaResourceController extends Controller
      *     name="mediaresource_zip_export",
      *     options={"expose"=true}
      * )
-     * @ParamConverter("MediaResource", class="InnovaMediaResourceBundle:MediaResource")
      * @Method({"GET"})
      */
     public function exportToZip(MediaResource $resource)
