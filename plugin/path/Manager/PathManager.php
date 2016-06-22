@@ -193,9 +193,10 @@ class PathManager
     }
 
     /**
-     * Counts total published steps in a path
+     * Counts total published steps in a path.
      *
      * @param Path $path
+     *
      * @return int
      */
     public function countAllPublishedSteps(Path $path)

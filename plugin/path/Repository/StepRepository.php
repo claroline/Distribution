@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the Claroline Connect package
+ * This file is part of the Claroline Connect package.
  *
  * (c) Claroline Consortium <consortium@claroline.net>
  *
@@ -11,16 +11,16 @@
 
 namespace Innova\PathBundle\Repository;
 
-
 use Doctrine\ORM\EntityRepository;
 use Innova\PathBundle\Entity\Path\Path;
 
 class StepRepository extends EntityRepository
 {
     /**
-     * Counts total published steps for path
+     * Counts total published steps for path.
      *
      * @param Path $path
+     *
      * @return int
      */
     public function countForPath(Path $path)

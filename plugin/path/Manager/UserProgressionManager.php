@@ -42,9 +42,9 @@ class UserProgressionManager
 
     /**
      * Calculates how many steps are seen or done in a path for a user,
-     * a measure to estimate total user progression over the path
+     * a measure to estimate total user progression over the path.
      *
-     * @param Path $path
+     * @param Path      $path
      * @param User|null $user
      *
      * @return int $totalProgression
@@ -65,11 +65,11 @@ class UserProgressionManager
     /**
      * Create a new progression for a User and a Step (by default, the first action is 'seen').
      *
-     * @param Step $step
-     * @param User $user
+     * @param Step   $step
+     * @param User   $user
      * @param string $status
-     * @param bool $authorized
-     * @param bool $checkDuplicate
+     * @param bool   $authorized
+     * @param bool   $checkDuplicate
      *
      * @return UserProgression
      */

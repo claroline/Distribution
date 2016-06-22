@@ -44,7 +44,7 @@ class UserProgressionRepository extends EntityRepository
     }
 
     /**
-     * Get total user progression in path
+     * Get total user progression in path.
      *
      * @param Path $path
      * @param User $user
@@ -59,9 +59,9 @@ class UserProgressionRepository extends EntityRepository
             ->andWhere('userProgression.user = :user')
             ->andWhere('step.path = :path')
             ->andWhere('userProgression.status IN(:statuses)')
-            ->setParameter("user", $user)
-            ->setParameter("path", $path)
-            ->setParameter("statuses", array('seen', 'done'));
+            ->setParameter('user', $user)
+            ->setParameter('path', $path)
+            ->setParameter('statuses', array('seen', 'done'));
 
         return intval($qb->getQuery()->getSingleScalarResult());
     }

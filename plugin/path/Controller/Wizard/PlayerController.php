@@ -45,8 +45,8 @@ class PlayerController
      * Class constructor.
      *
      * @param \Doctrine\Common\Persistence\ObjectManager $objectManager
-     * @param \Innova\PathBundle\Manager\PathManager $pathManager
-     * @param UserProgressionManager $userProgressionManager
+     * @param \Innova\PathBundle\Manager\PathManager     $pathManager
+     * @param UserProgressionManager                     $userProgressionManager
      */
     public function __construct(
         ObjectManager $objectManager,
