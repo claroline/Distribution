@@ -51,3 +51,8 @@ PathSummaryShowCtrl.prototype.updateProgression = function (step, newStatus) {
 PathSummaryShowCtrl.prototype.getTotalProgression = function () {
     return this.userProgressionService.getTotalProgression();
 };
+
+PathSummaryShowCtrl.prototype.getTotalProgressionPercentage = function () {
+    return Math.round(this.getTotalProgression()*100/this.totalSteps) + "%";
+};
+

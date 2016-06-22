@@ -35,7 +35,8 @@
              * @type {object}
              */
             var summary = {
-                opened: true
+                opened: true,
+                pinned: true
             };
 
             /**
@@ -214,6 +215,21 @@
                  */
                 setSummaryState: function setSummaryState(value) {
                     summary.opened = value;
+                },
+
+                /**
+                 * Toggle summary pin
+                 */
+                toggleSummaryPin: function toggleSummaryPin() {
+                    summary.pinned = !summary.pinned;
+                },
+
+                /**
+                 * Set summary pin
+                 * @param {Boolean} value
+                 */
+                setSummaryPin: function setSummaryPin(value) {
+                    summary.pinned = value;
                 },
 
                 setCompleteBlockingCondition: function setCompleteBlockingCondition(value) {
