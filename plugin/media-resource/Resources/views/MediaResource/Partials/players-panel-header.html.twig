@@ -1,12 +1,14 @@
 <h3 class="panel-title">
-    {{name}} - 
-    {% if mode == 'pause' %}
+    {{name}} -
+    {% if mode is constant('Innova\\MediaResourceBundle\\Entity\\Options::CONTINUOUS_PAUSE')  %}
         {{'label_play_mode_pause' | trans({}, 'media_resource')}}
-    {% elseif mode == 'live' %}
+    {% elseif mode is constant('Innova\\MediaResourceBundle\\Entity\\Options::CONTINUOUS_LIVE') %}
         {{'label_play_mode_live' | trans({}, 'media_resource')}}
-    {% elseif mode == 'active' %}
+    {% elseif mode is constant('Innova\\MediaResourceBundle\\Entity\\Options::CONTINUOUS_ACTIVE') %}
         {{'label_play_mode_active' | trans({}, 'media_resource')}}
-    {% elseif mode == 'free' %}
+    {% elseif mode is constant('Innova\\MediaResourceBundle\\Entity\\Options::SCRIPTED_ACTIVE') %}
+        {{'label_play_mode_scripted_active' | trans({}, 'media_resource')}}
+    {% elseif mode is constant('Innova\\MediaResourceBundle\\Entity\\Options::FREE') %}
         {{'label_play_mode_free' | trans({}, 'media_resource')}}
     {% endif %}
 </h3>

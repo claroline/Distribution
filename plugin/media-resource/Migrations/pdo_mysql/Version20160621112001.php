@@ -8,9 +8,9 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution.
  *
- * Generation date: 2016/06/17 01:48:14
+ * Generation date: 2016/06/21 11:20:02
  */
-class Version20160617134813 extends AbstractMigration
+class Version20160621112001 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -37,7 +37,7 @@ class Version20160617134813 extends AbstractMigration
             CREATE TABLE media_resource_options (
                 id INT AUTO_INCREMENT NOT NULL,
                 mode VARCHAR(255) NOT NULL,
-                showTextTranscription TINYINT(1) DEFAULT 0 NOT NULL,
+                showTextTranscription TINYINT(1) DEFAULT 0 NOT NULL, 
                 ttsLanguage VARCHAR(5) NOT NULL,
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB

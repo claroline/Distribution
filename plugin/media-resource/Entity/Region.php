@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Region.
  *
  * @ORM\Table(name="media_resource_region")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Innova\MediaResourceBundle\Repository\RegionRepository")
  */
 class Region
 {

@@ -22,6 +22,7 @@ class OptionsType extends AbstractType
                               Options::CONTINUOUS_PAUSE => 'options_form_view_mode_choices_pause',
                               Options::FREE => 'options_form_view_mode_choices_free',
                               Options::CONTINUOUS_ACTIVE => 'options_form_view_mode_choices_active',
+                              Options::SCRIPTED_ACTIVE => 'options_form_view_mode_choices_scripted_active',
                               ],
                               'expanded' => false,
                               'multiple' => false,

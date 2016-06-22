@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Innova\MediaResourceBundle\Entity\MediaResource;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Innova\MediaResourceBundle\Form\Type\OptionsType;
 use Innova\MediaResourceBundle\Entity\Options;
@@ -140,6 +141,25 @@ class MediaResourceController extends Controller
         $response->headers->set('Content-Type', $type);
 
         return $response;
+    }
+
+    /**
+     * Get help relative to student identified problems.
+     *
+     * @Route(
+     *     "/{id}/helps",
+     *     name="mediaresource_get_regions_helps",
+     *     options={"expose"=true}
+     * )
+     * @Method({"GET"})
+     */
+    public function getRegionsHelps(MediaResource $resource)
+    {
+        $data = $this->container->get('request')->query->get('data');
+        $manager = $this->get('innova_media_resource.manager.media_resource_region');
+        $helps = $manager->getRegionsHelpsFromTimes($resource, $data);
+
+        return new JsonResponse($helps);
     }
 
     /**

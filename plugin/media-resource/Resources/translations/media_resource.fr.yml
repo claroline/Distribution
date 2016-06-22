@@ -45,7 +45,8 @@ innova_media_resource: Ressource média
 label_play_mode_live: Continu live
 label_play_mode_pause: Continu pause
 label_play_mode_free: Libre
-label_play_mode_active: Continu active
+label_play_mode_active: Continu actif
+label_play_mode_scripted_active: Scénarisé actif
 
 #m
 move_backward: Aller au marqueur précédent
@@ -99,3 +100,9 @@ resource_zip_export: Exporter comme fichier zip
 #s
 save: Sauvegarder
 show_hide_annotation_panel: Montrer / Cacher le panel d'annotation
+scripted_active_explaination_first: Écoutez le document dans son ensemble.
+scripted_active_explaination_second: Si vous rencontrez un problème de compréhension appuyez sur la touche [espace] ou cliquez sur le bouton drapeau.
+scripted_active_flag_title: J'ai un problème !
+scripted_active_identified_problems_label: %number% problème(s) identifé(s)
+scripted_active_explaination_step2_first: Vous pouvez réécouter le document librement.
+scripted_active_explaination_step2_second: Des aides à la compréhension vous sont proposées pour chaque problème que vous avez indentifié.

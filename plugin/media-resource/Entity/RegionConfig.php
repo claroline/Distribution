@@ -169,18 +169,6 @@ class RegionConfig
         return $this->region;
     }
 
-    public function setHelpRegion(Region $helpRegion)
-    {
-        $this->helpRegion = $helpRegion;
-
-        return $this;
-    }
-
-    public function getHelpRegion()
-    {
-        return $this->helpRegion;
-    }
-
     public function getHelpRegionUuid()
     {
         return $this->helpRegionUuid;

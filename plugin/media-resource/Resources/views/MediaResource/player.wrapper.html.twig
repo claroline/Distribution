@@ -16,6 +16,8 @@
                     {% include "InnovaMediaResourceBundle:MediaResource/Partials:player.free.html.twig" with {'_resource': _resource, 'workspace': workspace, 'regions': regions} %}
                 {% elseif mode is constant('Innova\\MediaResourceBundle\\Entity\\Options::CONTINUOUS_PAUSE') %}
                     {% include "InnovaMediaResourceBundle:MediaResource/Partials:player.pause.html.twig" with {'_resource': _resource, 'workspace': workspace, 'regions': regions} %}
+                {% elseif mode is constant('Innova\\MediaResourceBundle\\Entity\\Options::SCRIPTED_ACTIVE') %}
+                    {% include "InnovaMediaResourceBundle:MediaResource/Partials:player.scripted.html.twig" with {'_resource': _resource, 'workspace': workspace, 'regions': regions} %}
                 {% endif %}
                 <!-- HTML5 AUdio player used for specific playback (help and configuration) -->
                 <audio id="html-audio-player" controls style="display:none;" src=""/>

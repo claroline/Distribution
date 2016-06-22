@@ -14,6 +14,7 @@ options_form_view_mode_choices_live: Continuous live
 options_form_view_mode_choices_pause: Continuous pause
 options_form_view_mode_choices_free: Free
 options_form_view_mode_choices_active: Continuous active
+options_form_view_mode_choices_scripted_active: Scripted active
 
 # s
 show_hide_options_panel: Show / Hide options panel

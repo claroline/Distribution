@@ -13,7 +13,8 @@ options_form_tts_choices_it_IT: Italien
 options_form_view_mode_choices_live: Continu libre
 options_form_view_mode_choices_pause: Continu avec pause
 options_form_view_mode_choices_free: Libre
-options_form_view_mode_choices_active: Continu active
+options_form_view_mode_choices_active: Continu actif
+options_form_view_mode_choices_scripted_active: Scénarisé actif
 
 # s
 show_hide_options_panel: Montrer / Cacher le panel des options

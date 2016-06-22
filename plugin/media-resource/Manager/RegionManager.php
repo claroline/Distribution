@@ -16,17 +16,20 @@ use JMS\DiExtraBundle\Annotation as DI;
 class RegionManager
 {
     protected $em;
+    protected $regionConfigManager;
 
     /**
      * @DI\InjectParams({
-     *      "em"            = @DI\Inject("doctrine.orm.entity_manager")
+     *      "em"                    = @DI\Inject("doctrine.orm.entity_manager"),
+     *      "regionConfigManager"   = @DI\Inject("innova_media_resource.manager.media_resource_region_config")
      * })
      *
      * @param EntityManager $em
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, RegionConfigManager $regionConfigManager)
     {
         $this->em = $em;
+        $this->regionConfigManager = $regionConfigManager;
     }
 
     public function save(Region $region)
@@ -74,6 +77,24 @@ class RegionManager
         $regionConfig->setBackward($oldRegionConfig->hasBackward());
         $regionConfig->setHelpRegionUuid($oldRegionConfig->getHelpRegionUuid());
         $this->save($entity);
+    }
+
+    /**
+     * Get regions helps from given times.
+     * If some given times refers to the same region, the region will be added just once.
+     */
+    public function getRegionsHelpsFromTimes(MediaResource $mr, $data)
+    {
+        $result = [];
+        //$regionConfigManager = $this->em->(innova_media_resource.manager.media_resource_region_config)
+        foreach ($data as $time) {
+            $region = $this->em->getRepository('InnovaMediaResourceBundle:Region')->findRegionByTime($mr, $time);
+            if ($region && !array_key_exists($region->getId(), $result)) {
+                $result[$region->getId()] = $this->regionConfigManager->getRegionHelps($region);
+            }
+        }
+
+        return $result;
     }
 
     /**

@@ -46,6 +46,7 @@ label_play_mode_live: Continuous live
 label_play_mode_pause: Continuous pause
 label_play_mode_free: Free
 label_play_mode_active: Continuous active
+label_play_mode_scripted_active: Scripted active
 
 #m
 move_backward: Go to previous marker
@@ -98,3 +99,9 @@ resource_zip_export: Export as zip file
 #s
 save: Save
 show_hide_annotation_panel: Show / Hide annotation panel
+scripted_active_explaination_first: Listen to the whole document.
+scripted_active_explaination_second: If you encounter a comprehension problem press [spacebar] or click the flag button.
+scirpted_active_flag_title: I've got a problem !
+scripted_active_identified_problems_label: %number% problem(s) identified
+scripted_active_explaination_step2_first: You can listen freely to the document.
+scripted_active_explaination_step2_second: Comprehension help are proposed for each identified problem.

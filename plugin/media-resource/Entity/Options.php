@@ -49,6 +49,7 @@ class Options
     const CONTINUOUS_PAUSE = 'pause';
     const CONTINUOUS_LIVE = 'live';
     const CONTINUOUS_ACTIVE = 'active';
+    const SCRIPTED_ACTIVE = 'scripted_active';
 
     // TTS lang possible values
     const EN_US = 'en-US';
