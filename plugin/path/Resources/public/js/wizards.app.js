@@ -108,9 +108,6 @@
             }
         ],
         /**
-         * get return values of promises made in PathService to be available elsewhere
-         */
-        /**
          * list of all user group in Claro
          */
         allgroups: [
