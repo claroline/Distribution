@@ -245,7 +245,7 @@
                  * Get the last Step seen by a User
                  * @returns {Object|null}
                  */
-                getLastSeenStep: function getLasttSeenStep() {
+                getLastSeenStep: function getLastSeenStep() {
                     var lastSeen = null;
                     this.browseSteps(path.steps, function (step) {
                         var progression = UserProgressionService.getForStep(step);
