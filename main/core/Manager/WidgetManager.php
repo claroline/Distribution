@@ -373,8 +373,8 @@ class WidgetManager
             $workspace = $this->om->getRepository('ClarolineCoreBundle:Workspace\Workspace')->findOneByCode($code);
             $name = $values[1];
             $title = $values[2];
-            $width = isset($values[3]) ? $values[3] : 4;
-            $height = isset($values[4]) ? $values[4] : 3;
+            $width = isset($values[4]) ? $values[4] : 4;
+            $height = isset($values[5]) ? $values[5] : 3;
             $tab = $this->om->getRepository('ClarolineCoreBundle:Home\HomeTab')->findOneBy(['workspace' => $workspace, 'name' => $name]);
             $widgetInstance = $this->om->getRepository('ClarolineCoreBundle:Widget\WidgetInstance')
                 ->findOneBy(['workspace' => $workspace, 'name' => $title]);
@@ -399,6 +399,16 @@ class WidgetManager
 
             $widgetDisplayConfigs = $widgetInstance->getWidgetDisplayConfigs();
             $widgetDisplayConfig = $widgetDisplayConfigs[0];
+
+            if (!$widgetDisplayConfig) {
+                $widgetDisplayConfig = new WidgetDisplayConfig();
+                $widgetDisplayConfig->setWidgetInstance($widgetInstance);
+                $widgetDisplayConfig->setWorkspace($workspace);
+                $widgetDisplayConfig->setWidth($width);
+                $widgetDisplayConfig->setHeight($height);
+                $this->om->persist($widgetDisplayConfig);
+            }
+
             $widgetDisplayConfig->setHeight($height);
             $widgetDisplayConfig->setWidth($width);
             $this->om->persist($widgetDisplayConfig);
@@ -430,7 +440,6 @@ class WidgetManager
         $this->log("Create widget {$name} in {$workspace->getCode()}");
         $widgetInstance = new WidgetInstance();
         $widgetHomeTabConfig = new WidgetHomeTabConfig();
-        $widgetDisplayConfig = new WidgetDisplayConfig();
 
         if ($workspace) {
             $type = 'workspace';
@@ -451,13 +460,8 @@ class WidgetManager
         $widgetHomeTabConfig->setLocked($isLocked);
         $widgetHomeTabConfig->setWidgetOrder(1);
         $widgetHomeTabConfig->setType($type);
-        $widgetDisplayConfig->setWidgetInstance($widgetInstance);
-        $widgetDisplayConfig->setWorkspace($workspace);
-        $widgetDisplayConfig->setWidth($widget->getDefaultWidth());
-        $widgetDisplayConfig->setHeight($widget->getDefaultHeight());
         $this->om->persist($widgetInstance);
         $this->om->persist($widgetHomeTabConfig);
-        $this->om->persist($widgetDisplayConfig);
 
         return $widgetInstance;
     }
