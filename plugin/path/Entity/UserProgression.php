@@ -198,7 +198,7 @@ class UserProgression implements \JsonSerializable
     {
         return array(
             'id' => $this->id,
-            'userId' => $this->user->getId(),
+            'userId' => ($this->user instanceof User) ? $this->user->getId() : 0,
             'stepId' => $this->step->getId(),
             'status' => $this->status,
             'authorized' => $this->authorized,
