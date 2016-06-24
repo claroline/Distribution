@@ -175,7 +175,6 @@ $(document).ready(function() {
             var note = $input.html() ? $input.html() : $input.text();
             var region = getRegionByUuid(uuid);
             region.note = note.replace('<br>', '');
-            console.log(region.note);
         }
         return $input;
     }).on('blur', '[contenteditable]', function(e) {

@@ -50,6 +50,28 @@ class RegionManager
         return $this->em->getRepository('InnovaMediaResourceBundle:Region');
     }
 
+    /**
+     * Get regions from given times (array).
+     * return a sorted (by start ASC) array of unique regions.
+     */
+    public function getRegionsFromTimes(MediaResource $mr, $data)
+    {
+        $result = [];
+        foreach ($data as $time) {
+            $region = $this->em->getRepository('InnovaMediaResourceBundle:Region')->findRegionByTime($mr, $time);
+            if ($region !== null) {
+                $result[] = $region;
+            }
+        }
+        // remove duplicates
+        $result = array_unique($result, SORT_REGULAR);
+        usort($result, function ($a, $b) {
+          return $a->getStart() - $b->getStart();
+        });
+
+        return $result;
+    }
+
     public function copyRegion(MediaResource $mr, Region $region)
     {
         $entity = new Region();
@@ -77,24 +99,6 @@ class RegionManager
         $regionConfig->setBackward($oldRegionConfig->hasBackward());
         $regionConfig->setHelpRegionUuid($oldRegionConfig->getHelpRegionUuid());
         $this->save($entity);
-    }
-
-    /**
-     * Get regions helps from given times.
-     * If some given times refers to the same region, the region will be added just once.
-     */
-    public function getRegionsHelpsFromTimes(MediaResource $mr, $data)
-    {
-        $result = [];
-        //$regionConfigManager = $this->em->(innova_media_resource.manager.media_resource_region_config)
-        foreach ($data as $time) {
-            $region = $this->em->getRepository('InnovaMediaResourceBundle:Region')->findRegionByTime($mr, $time);
-            if ($region && !array_key_exists($region->getId(), $result)) {
-                $result[$region->getId()] = $this->regionConfigManager->getRegionHelps($region);
-            }
-        }
-
-        return $result;
     }
 
     /**

@@ -19,6 +19,7 @@ btn_exercise_view: Vue Exercice
 close: Fermer
 creation_error_wrong_file_format: Le format du fichier fournit n'est pas autorisé (mp3 / wav)
 current_segment: Région courante
+current_segment_help: Aide pour la région courante
 confirm: Confirmer
 config_update_success: Les options pour la ressource ont bien été mises à jour.
 config_update_error: Une erreur s'est produite lors de la mise à jour des options pour la ressource.
@@ -40,6 +41,7 @@ help_modal_help_tab_label: Aide disponible pour la région
 
 # i
 innova_media_resource: Ressource média
+i_missed_the_region: J'ai raté la bonne région.Montrez moi l'aide de la région précédente!
 
 # l
 label_play_mode_live: Continu live
@@ -59,10 +61,13 @@ media_resource_save: Sauvegarder
 #n
 none: Aucune
 no_media_resource: Aucune resource trouvée.
+no_problems_detected_message_first: Félicitations ! Vous n'avez rencontré aucun problème !
+no_problems_detected_message_second: Si vous voulez recommencer utilisez le bouton ci-dessous.
 
 #p
 play_pause: Play / Pause
 previous_segment: Région précédente
+previous_region_help: Aide pour la région précédente
 play_current_region: Play / Pause pour la région courante
 play_pause_region: Play / Pause pour la région
 
@@ -88,6 +93,7 @@ resource_update_success: La ressource a bien été mise à jour.
 resource_update_error: Une erreur est survenue lors de la mise à jour de la ressource.
 region_help_help_text_label: Montrer les aides textuelles
 region_help_help_links_label: Liens
+region_help_help_link_label: Lien
 region_help_segment_playback_label: Lecture de la région
 region_help_segment_playback: Jouer la région
 region_help_segment_playback_backward: Lire la région en backward building

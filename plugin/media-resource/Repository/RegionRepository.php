@@ -19,11 +19,12 @@ class RegionRepository extends EntityRepository
           SELECT r FROM  Innova\MediaResourceBundle\Entity\Region r
           WHERE r.mediaResource = :mr
           AND r.start <= :time
-          AND r.end >= :time
+          AND r.end > :time
       ';
         $query = $this->_em->createQuery($dql);
         $query->setParameter('time', $time);
         $query->setParameter('mr', $mr);
+        $result = $query->getOneOrNullResult();
 
         return $query->getOneOrNullResult();
     }

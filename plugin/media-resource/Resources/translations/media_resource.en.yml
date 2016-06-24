@@ -19,6 +19,7 @@ btn_exercise_view: Exercise view
 close: Close
 creation_error_wrong_file_format: The given file format is not allowed (mp3 / wav)
 current_segment: Current region
+current_segment_help: Current region help
 confirm: Confirm
 config_update_success: Options for the resource successfully updated.
 config_update_error: An error occured while updating resource options.
@@ -40,6 +41,7 @@ help_modal_help_tab_label: Help available for the selected region
 
 # i
 innova_media_resource: Media Resource
+i_missed_the_region: I have missed the right region. Please show me previous region help!
 
 # l
 label_play_mode_live: Continuous live
@@ -59,10 +61,13 @@ media_resource_save: Save
 #n
 none: None
 no_media_resource: None found.
+no_problems_detected_message_first: Congratulation ! You did not point any problem !
+no_problems_detected_message_second: If you want to restart please use the button below.
 
 #p
 play_pause: Play / Pause
 previous_segment: Previous region
+previous_region_help: Previous region help
 play_current_region: Play / Pause current region
 play_pause_region: Play / Pause region
 
@@ -87,6 +92,7 @@ resource_update_success: Resource update successfull.
 resource_update_error: An error occured while updating resource.
 region_help_help_text_label: Show textual(s) help
 region_help_help_links_label: Links
+region_help_help_link_label: Link
 region_help_segment_playback_label: Region playback
 region_help_segment_playback: Play the region
 region_help_segment_playback_backward: Play the region with backward building

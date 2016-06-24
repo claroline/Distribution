@@ -2,36 +2,43 @@
 <div class="step-1-container">
     <div class="row scripted-player-introduction-text">
         <div class="col-md-12 text-center">
-            <div class="alert alert-warning">
+            <div class="alert alert-info introduction-message">
                 <h4>{{'scripted_active_explaination_first' | trans({}, 'media_resource')}}</h4>
                 <h4>{{'scripted_active_explaination_second' | trans({}, 'media_resource')}}</h4>
-                <button onclick="testAjax()">TEST</button>
             </div>
+            <div class="alert alert-warning no-problems-detected-message" style="display:none;">
+                <h4>{{'no_problems_detected_message_first' | trans({}, 'media_resource')}}</h4>
+                <h4>{{'no_problems_detected_message_second' | trans({}, 'media_resource')}}</h4>
+                <button class="btn btn-default fa fa-refresh" onclick="window.location.reload();"></button>
+            </div>
+            <hr>
         </div>
     </div>
-    <hr>
-    <div class="row">
+    <div class="row scripted-player-step1-buttons">
         <div class="col-md-12 text-center">
             <div class="btn-group">
                 <button type="button" class="btn btn-default" id="btn-play" data-action="playFirstStep" title="{{'play_pause' | trans({}, 'media_resource')}}">
                     <i class="fa fa-play"></i>
                 </button>
-                <button type="button" class="btn btn-primary" id="btn-flag" data-action="flag" title="{{'scripted_active_flag_title' | trans({}, 'media_resource')}}">
+                <button type="button" class="btn btn-primary" disabled id="btn-flag" data-action="flag" title="{{'scripted_active_flag_title' | trans({}, 'media_resource')}}">
                     <i class="fa fa-flag"></i>
                 </button>
             </div>
+            <hr>
         </div>
     </div>
-    <hr>
+
     <!-- info label -->
-    <div class="row">
+    <div class="row scripted-player-step1-label">
         <div class="col-md-12 text-center">
-            <h4><span class="label label-info nb-problems-label"></span></h4>
+            <h3>
+                <span class="label label-info nb-problems-label"></span>
+            </h3>
         </div>
     </div>
 </div>
 
-<div class="step-2-container" style="">
+<div class="step-2-container" style="display:none;">
     <div class="row scripted-player-introduction-text">
         <div class="col-md-12 text-center">
             <div class="alert alert-warning">
@@ -48,11 +55,10 @@
     </div>
     <hr>
     <div class="row">
-        <div class="col-md-12 text-center">
-            <h4>aides</h4>
-            <div class="regions-row-container">
-
-            </div>
+        <div class="col-md-12">
+            <h4>{{'region_help' | trans({}, 'media_resource')}}</h4>
+            <hr/>
+            <div class="helps-row-container"></div>
         </div>
     </div>
 </div>

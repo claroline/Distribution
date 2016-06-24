@@ -25,6 +25,23 @@ class RegionConfigManager
         $this->em = $em;
     }
 
+    /**
+     * retrieve helps for an array of region.
+     */
+    public function getHelpsFromRegions($regions)
+    {
+        $helps = [];
+        foreach ($regions as $region) {
+            $help = $this->getRegionHelps($region);
+            $helps[] = $help;
+        }
+
+        return $helps;
+    }
+
+    /**
+     * retrieve helps for one region.
+     */
     public function getRegionHelps(Region $region)
     {
         $regionHelp = $region->getRegionConfig();
@@ -50,22 +67,76 @@ class RegionConfigManager
         }
         $connex = [];
         if ($helpRegionUuid) {
-            $region = $this->em->getRepository('InnovaMediaResourceBundle:Region')->findOneBy(['uuid' => $helpRegionUuid]);
+            $helpR = $this->em->getRepository('InnovaMediaResourceBundle:Region')->findOneBy(['uuid' => $helpRegionUuid]);
             $connex = [
-              'start' => $region->getStart(),
-              'end' => $region->getEnd(),
+              'start' => $helpR->getStart(),
+              'end' => $helpR->getEnd(),
             ];
         }
 
+        $hasHelp = $regionHelp->isLoop() === 1 || $regionHelp->isBackward() === 1 || $regionHelp->isRate() === 1 || count($texts) > 0 || count($links) > 0 || count($connex) > 0;
+
+        $previousRegion = $this->em->getRepository('InnovaMediaResourceBundle:Region')->findOneBy(['end' => $region->getStart()]);
+        $previous = [];
+        if ($previousRegion) {
+            $prevRegionHelp = $previousRegion->getRegionConfig();
+            $prevHelpTexts = $prevRegionHelp->getHelpTexts();
+            $prevHelpLinks = $prevRegionHelp->getHelpLinks();
+            $prevHelpRegionUuid = $prevRegionHelp->getHelpRegionUuid();
+            $prevTexts = [];
+            if (count($prevHelpTexts) > 0) {
+                foreach ($prevHelpTexts as $helptext) {
+                    if ($helptext->getText() !== '') {
+                        $prevTexts[] = $helptext->getText();
+                    }
+                }
+            }
+
+            $prevLinks = [];
+            if (count($prevHelpLinks) > 0) {
+                foreach ($prevHelpLinks as $helpLink) {
+                    if ($helpLink->getUrl() !== '') {
+                        $prevLinks[] = $helpLink->getUrl();
+                    }
+                }
+            }
+            $prevConnex = [];
+            if ($prevHelpRegionUuid) {
+                $prevHelpR = $this->em->getRepository('InnovaMediaResourceBundle:Region')->findOneBy(['uuid' => $prevHelpRegionUuid]);
+                $prevConnex = [
+                  'start' => $prevHelpR->getStart(),
+                  'end' => $prevHelpR->getEnd(),
+                ];
+            }
+
+            $prevHasHelp = $prevRegionHelp->isLoop() === 1 || $prevRegionHelp->isBackward() === 1 || $prevRegionHelp->isRate() === 1 || count($prevTexts) > 0 || count($prevLinks) > 0 || count($prevConnex) > 0;
+            $previous = [
+              'id' => $previousRegion->getId(),
+              'start' => $previousRegion->getStart(),
+              'end' => $previousRegion->getEnd(),
+              'note' => $previousRegion->getNote(),
+              'loop' => $prevRegionHelp->isLoop(),
+              'backward' => $prevRegionHelp->isBackward(),
+              'rate' => $prevRegionHelp->isRate(),
+              'texts' => $prevTexts,
+              'links' => $prevLinks,
+              'connex' => $prevConnex,
+              'hasHelp' => $prevHasHelp,
+            ];
+        }
         $result = [
+          'id' => $region->getId(),
           'start' => $region->getStart(),
           'end' => $region->getEnd(),
+          'note' => $region->getNote(),
           'loop' => $regionHelp->isLoop(),
           'backward' => $regionHelp->isBackward(),
           'rate' => $regionHelp->isRate(),
           'texts' => $texts,
           'links' => $links,
           'connex' => $connex,
+          'hasHelp' => $hasHelp,
+          'previous' => $previous,
         ];
 
         return $result;

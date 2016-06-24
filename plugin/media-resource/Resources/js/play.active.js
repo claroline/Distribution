@@ -5,6 +5,8 @@ var helpPreviousRegion; // the previous region relatively to helpCurrentRegion
 var currentHelpRelatedRegion; // the related help region;
 var helpRegion; // the region we are listening to while in help modal first pane
 var hModal;
+var helpRegionEnd;
+var helpRegionStart;
 
 // ======================================================================================================== //
 // ACTIONS BOUND WHEN DOM READY (PLAY / PAUSE, MOVE BACKWARD / FORWARD, ADD MARKER, CALL HELP, ANNOTATE)
@@ -88,7 +90,6 @@ var actions = {
 // DOCUMENT READY
 // ======================================================================================================== //
 $(document).ready(function() {
-
 
     // bind data-action events
     $("button[data-action]").click(function() {
@@ -193,7 +194,17 @@ $(document).ready(function() {
     });
     /* /WAVESURFER */
 
-
+    commonVars.htmlAudioPlayer.addEventListener('timeupdate', function() {
+        if (commonVars.htmlAudioPlayer.currentTime >= helpRegionEnd) {
+            commonVars.htmlAudioPlayer.pause();
+            commonVars.htmlAudioPlayer.currentTime = helpRegionStart;
+            if (commonVars.htmlAudioPlayer.loop) {
+                commonVars.htmlAudioPlayer.play();
+            } else {
+                commonVars.playing = false;
+            }
+        }
+    });
 });
 // ======================================================================================================== //
 // DOCUMENT READY END
@@ -211,7 +222,6 @@ function getRegionFromTime(time) {
     }
     return region;
 }
-
 
 // build commonVars.markers, commonVars.regions from existing ones
 function initRegions() {
@@ -254,8 +264,6 @@ function initRegions() {
             links: links
         };
         commonVars.regions.push(region);
-
-
     });
 
     return true;
@@ -294,23 +302,9 @@ function playHelp(start, end, loop, rate) {
         commonVars.htmlAudioPlayer.currentTime = start;
         commonVars.htmlAudioPlayer.play();
         commonVars.playing = true;
-
     }
-
-    var self = this;
-    self.regionEnd = end;
-    self.regionStart = start;
-    commonVars.htmlAudioPlayer.addEventListener('timeupdate', function() {
-        if (commonVars.htmlAudioPlayer.currentTime >= self.regionEnd) {
-            commonVars.htmlAudioPlayer.pause();
-            commonVars.htmlAudioPlayer.currentTime = self.regionStart;
-            if (commonVars.htmlAudioPlayer.loop) {
-                commonVars.htmlAudioPlayer.play();
-            } else {
-                commonVars.playing = false;
-            }
-        }
-    });
+    helpRegionEnd = end;
+    helpRegionStart = start;
 }
 /**
  * Allow the user to play the help related region

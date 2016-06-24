@@ -156,8 +156,10 @@ class MediaResourceController extends Controller
     public function getRegionsHelps(MediaResource $resource)
     {
         $data = $this->container->get('request')->query->get('data');
-        $manager = $this->get('innova_media_resource.manager.media_resource_region');
-        $helps = $manager->getRegionsHelpsFromTimes($resource, $data);
+        $regionManager = $this->get('innova_media_resource.manager.media_resource_region');
+        $regions = $regionManager->getRegionsFromTimes($resource, $data);
+        $regionHelpManager = $this->get('innova_media_resource.manager.media_resource_region_config');
+        $helps = $regionHelpManager->getHelpsFromRegions($regions);
 
         return new JsonResponse($helps);
     }

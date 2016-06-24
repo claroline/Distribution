@@ -188,11 +188,7 @@ function playHelp(start, end, loop, rate) {
     if (helpIsPlaying) {
         commonVars.htmlAudioPlayer.pause();
         helpIsPlaying = false;
-    } /*else {
-        commonVars.htmlAudioPlayer.currentTime = start;
-        commonVars.htmlAudioPlayer.play();
-        helpIsPlaying = true;
-    }*/
+    } 
     commonVars.htmlAudioPlayer.currentTime = start;
     commonVars.htmlAudioPlayer.play();
     helpIsPlaying = true;
