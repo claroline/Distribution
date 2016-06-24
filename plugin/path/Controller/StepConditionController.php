@@ -2,16 +2,16 @@
 
 namespace Innova\PathBundle\Controller;
 
-use Claroline\CoreBundle\Entity\User;
-use Claroline\TeamBundle\Manager\TeamManager;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Claroline\CoreBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\Manager\GroupManager;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Claroline\CoreBundle\Entity\Activity\AbstractEvaluation;
+use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Manager\GroupManager;
+use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\TeamBundle\Manager\TeamManager;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Class StepConditionController.
@@ -74,7 +74,7 @@ class StepConditionController extends Controller
      */
     public function getUserGroups()
     {
-        $data = array();
+        $data = [];
 
         $usergroup = $this->groupManager->getAll();
         if ($usergroup != null) {
@@ -111,7 +111,7 @@ class StepConditionController extends Controller
         }
 
         // data needs to be explicitly set because Group does not extends Serializable
-        $data = array();
+        $data = [];
         foreach ($groups as $group) {
             $data[$group->getId()] = $group->getName();
         }
@@ -133,23 +133,23 @@ class StepConditionController extends Controller
      */
     public function getActivityEvaluation($activityId)
     {
-        $data = array(
+        $data = [
             'status' => 'NA',
             'attempts' => 0,
-        );
+        ];
         //retrieve activity
         $this->activityRepo = $this->om->getRepository('ClarolineCoreBundle:Resource\Activity');
-        $activity = $this->activityRepo->findOneBy(array('id' => $activityId));
+        $activity = $this->activityRepo->findOneBy(['id' => $activityId]);
         if ($activity !== null) {
             //retrieve evaluation data for this activity
             $this->evaluationRepo = $this->om->getRepository('ClarolineCoreBundle:Activity\Evaluation');
-            $evaluation = $this->evaluationRepo->findOneBy(array('activityParameters' => $activity->getParameters()));
+            $evaluation = $this->evaluationRepo->findOneBy(['activityParameters' => $activity->getParameters()]);
             //return relevant data
             if ($evaluation !== null) {
-                $data = array(
+                $data = [
                     'status' => $evaluation->getStatus(),
                     'attempts' => $evaluation->getAttemptsCount(),
-                );
+                ];
             }
         }
 
@@ -185,7 +185,7 @@ class StepConditionController extends Controller
         $r = new \ReflectionClass('Claroline\CoreBundle\Entity\Activity\AbstractEvaluation');
         //Get class constants
         $const = $r->getConstants();
-        $statuses = array();
+        $statuses = [];
         foreach ($const as $k => $v) {
             //Only get constants beginning with STATUS
             if (strpos($k, 'STATUS') !== false) {
@@ -209,7 +209,7 @@ class StepConditionController extends Controller
      */
     public function getActivityList(Path $path)
     {
-        $activitylist = array();
+        $activitylist = [];
         $steps = $this->om->getRepository('InnovaPathBundle:Path')->findById($path);
 
         foreach ($steps as $step) {
@@ -236,10 +236,10 @@ class StepConditionController extends Controller
         $user = $this->securityToken->getToken()->getUser();
         $results = $this->om->getRepository('InnovaPathBundle:StepCondition')->findAllEvaluationsByUserAndByPath((int) $path, $user->getId());
 
-        $jsonresults = array();
+        $jsonresults = [];
         foreach ($results as $r) {
-            $jsonresults[] = array(
-                'eval' => array(
+            $jsonresults[] = [
+                'eval' => [
                     'id' => $r->getId(),
                     'attempts' => $r->getAttemptsCount(),
                     'status' => $r->getStatus(),
@@ -248,11 +248,11 @@ class StepConditionController extends Controller
                     'scooremin' => $r->getScoreMin(),
                     'scoremax' => $r->getScoreMax(),
                     'type' => $r->getType(),
-                ),
+                ],
                 'evaltype' => $r->getActivityParameters()->getEvaluationType(),
                 'idactivity' => $r->getActivityParameters()->getActivity()->getId(),
                 'activitytitle' => $r->getActivityParameters()->getActivity()->getTitle(),
-            );
+            ];
         }
 
         return new JsonResponse($jsonresults);
@@ -277,7 +277,7 @@ class StepConditionController extends Controller
         //retrieve current workspace
         $workspace = $this->om->getRepository("InnovaPathBundle:Path\Path")->findOneById($id)->getWorkspace();
         //$workspace = $this->om->getRepository("ClarolineCoreBundle:Resource\ResourceNode")->findOneById($id)->getWorkspace();
-        $data = array();
+        $data = [];
         //retrieve list of groups object for this user
         $teamsforws = $this->teamManager->getTeamsByWorkspace($workspace);
         if ($teamsforws != null) {
@@ -306,7 +306,7 @@ class StepConditionController extends Controller
     {
         //retrieve current user
         $user = $this->securityToken->getToken()->getUser();
-        $data = array();
+        $data = [];
         if ($user instanceof User) {
             $userId = $user->getId();
             //retrieve list of team object for this user

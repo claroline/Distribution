@@ -2,12 +2,12 @@
 
 namespace Innova\PathBundle\Manager;
 
-use Innova\PathBundle\Entity\Path\Path;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\Common\Persistence\ObjectManager;
+use Innova\PathBundle\Entity\Path\Path;
 use Innova\PathBundle\Entity\Step;
 use Innova\PathBundle\Entity\UserProgression;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Class UserProgressionManager.
@@ -86,10 +86,10 @@ class UserProgressionManager
 
         // Check if progression already exists, if so return retrieved progression
         if ($checkDuplicate && $user instanceof User) {
-            $progression = $this->om->getRepository('InnovaPathBundle:UserProgression')->findOneBy(array(
+            $progression = $this->om->getRepository('InnovaPathBundle:UserProgression')->findOneBy([
                 'step' => $step,
                 'user' => $user,
-            ));
+            ]);
 
             if (!empty($progression)) {
                 return $progression;
@@ -124,10 +124,10 @@ class UserProgressionManager
         }
 
         // Retrieve the current progression for this step
-        $progression = $this->om->getRepository('InnovaPathBundle:UserProgression')->findOneBy(array(
+        $progression = $this->om->getRepository('InnovaPathBundle:UserProgression')->findOneBy([
             'step' => $step,
             'user' => $user,
-        ));
+        ]);
 
         if (empty($progression)) {
             // No progression for User => initialize a new one
