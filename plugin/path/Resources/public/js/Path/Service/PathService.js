@@ -247,16 +247,18 @@
                  */
                 getLastSeenStep: function getLastSeenStep() {
                     var lastSeen = null;
-                    this.browseSteps(path.steps, function (step) {
+                    this.browseSteps(path.steps, function (parent, step) {
                         var progression = UserProgressionService.getForStep(step);
                         if (progression) {
                             lastSeen = step;
                         }
                     });
 
-                    if (!lastSeen && path.steps && 0 !== path.steps.length) {
+                    if (null === lastSeen && path.steps && 0 !== path.steps.length) {
                         lastSeen = path.steps[0];
                     }
+
+                    console.log(lastSeen);
 
                     return lastSeen;
                 },
