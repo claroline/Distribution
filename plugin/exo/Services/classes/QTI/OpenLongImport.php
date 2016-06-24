@@ -12,15 +12,15 @@ class OpenLongImport extends OpenImport
      * overload the export method.
      *
      * @param qtiRepository $qtiRepos
-     * @param DOMElement    $assessmentItem  assessmentItem of the question to imported
-     * @param string        $parentDirectory parent directory of the files
+     * @param DOMElement    $assessmentItem assessmentItem of the question to imported
+     * @param string        $path           parent directory of the files
      *
      * @return UJM\ExoBundle\Entity\InteractionOpen
      */
-    public function import(qtiRepository $qtiRepos, $assessmentItem, $parentDirectory)
+    public function import(qtiRepository $qtiRepos, $assessmentItem, $path)
     {
         $this->codeType = 2;
-        parent::import($qtiRepos, $assessmentItem, $parentDirectory);
+        parent::import($qtiRepos, $assessmentItem, $path);
 
         return $this->interactionOpen;
     }

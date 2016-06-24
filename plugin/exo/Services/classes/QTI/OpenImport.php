@@ -17,13 +17,13 @@ class OpenImport extends QtiImport
      * Implements the abstract method.
      *
      * @param qtiRepository $qtiRepos
-     * @param DOMElement    $assessmentItem  assessmentItem of the question to imported
-     * @param string        $parentDirectory parent directory of the files
+     * @param DOMElement    $assessmentItem assessmentItem of the question to imported
+     * @param string        $path           parent directory of the files
      */
-    public function import(qtiRepository $qtiRepos, $assessmentItem, $parentDirectory)
+    public function import(qtiRepository $qtiRepos, $assessmentItem, $path)
     {
         $this->qtiRepos = $qtiRepos;
-        $this->parentDirectory = $parentDirectory;
+        $this->path = $path;
         $this->getQTICategory();
         $this->initAssessmentItem($assessmentItem);
 

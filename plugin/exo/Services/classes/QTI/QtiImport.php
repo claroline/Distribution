@@ -24,7 +24,7 @@ abstract class QtiImport
     protected $question;
     protected $assessmentItem;
     protected $dirQTI;
-    protected $parentDirectory;
+    protected $path;
 
     /**
      * Constructor.
@@ -177,7 +177,7 @@ abstract class QtiImport
         $this->getDirQTIImport($ws);
         foreach ($objects as $ob) {
             $fileName = $this->getFileName($ob);
-            $tmpFile = $this->qtiRepos->getUserDir().$this->parentDirectory.'/'.$fileName;
+            $tmpFile = $this->path.'/'.$fileName;
             $extension = pathinfo($fileName, PATHINFO_EXTENSION);
             $hashName = $this->container->get('claroline.utilities.misc')->generateGuid().'.'.$extension;
             $mimeType = $ob->getAttribute('type');
@@ -218,7 +218,7 @@ abstract class QtiImport
             $fileURLExplode = explode('/', $fileURL);
             $fileName = $fileURLExplode[count($fileURLExplode) - 1];
             $ob->setAttribute('data', $fileName);
-            copy($fileURL, $this->qtiRepos->getUserDir().'/'.$fileName);
+            copy($fileURL, $this->path.'/'.$fileName);
         }
 
         return $fileName;
@@ -345,12 +345,12 @@ abstract class QtiImport
      * abstract method to import a question.
      *
      * @param qtiRepository $qtiRepos
-     * @param DOMElement    $assessmentItem  assessmentItem of the question to imported
-     * @param string        $parentDirectory parent directory of the files
+     * @param DOMElement    $assessmentItem assessmentItem of the question to imported
+     * @param string        $path           parent directory of the files
      *
      * @return UJM\ExoBundle\Entity\InteractionQCM or InteractionGraphic or ....
      */
-    abstract public function import(qtiRepository $qtiRepos, $assessmentItem, $parentDirectory);
+    abstract public function import(qtiRepository $qtiRepos, $assessmentItem, $path);
 
     /**
      * abstract method to get the prompt.
