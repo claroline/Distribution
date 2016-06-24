@@ -55,9 +55,8 @@ class UserProgressionController
     public function createAction(Step $step, $status = null, $authorized = 0)
     {
         $progression = $this->userProgressionManager->create($step, null, $status, $authorized);
-        $totalProgression = $this->userProgressionManager->calculateUserProgressionInPath($step->getPath());
 
-        return new JsonResponse(array('progression' => $progression, 'totalProgression' => $totalProgression));
+        return new JsonResponse(array('progression' => $progression));
     }
 
     /**
@@ -79,8 +78,7 @@ class UserProgressionController
     public function updateAction(Step $step, $status, $authorized)
     {
         $progression = $this->userProgressionManager->update($step, null, $status, $authorized);
-        $totalProgression = $this->userProgressionManager->calculateUserProgressionInPath($step->getPath());
 
-        return new JsonResponse(array('progression' => $progression, 'totalProgression' => $totalProgression));
+        return new JsonResponse(array('progression' => $progression));
     }
 }

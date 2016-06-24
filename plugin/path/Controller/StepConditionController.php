@@ -2,6 +2,7 @@
 
 namespace Innova\PathBundle\Controller;
 
+use Claroline\CoreBundle\Entity\User;
 use Claroline\TeamBundle\Manager\TeamManager;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -103,7 +104,11 @@ class StepConditionController extends Controller
         // Retrieve the current User
         $user = $this->securityToken->getToken()->getUser();
         // Retrieve Groups of the User
-        $groups = $user->getGroups();
+        if ($user instanceof User) {
+            $groups = $user->getGroups();
+        } else {
+            $groups = [];
+        }
 
         // data needs to be explicitly set because Group does not extends Serializable
         $data = array();
@@ -301,14 +306,16 @@ class StepConditionController extends Controller
     {
         //retrieve current user
         $user = $this->securityToken->getToken()->getUser();
-        $userId = $user->getId();
         $data = array();
-        //retrieve list of team object for this user
-        $teamforuser = $this->teamManager->getTeamsByUser($user, 'name', 'ASC', true);
-        if ($teamforuser != null) {
-            //data needs to be explicitly set because Team does not extends Serializable
-            foreach ($teamforuser as $tu) {
-                $data[$tu->getId()] = $tu->getName();
+        if ($user instanceof User) {
+            $userId = $user->getId();
+            //retrieve list of team object for this user
+            $teamforuser = $this->teamManager->getTeamsByUser($user, 'name', 'ASC', true);
+            if ($teamforuser != null) {
+                //data needs to be explicitly set because Team does not extends Serializable
+                foreach ($teamforuser as $tu) {
+                    $data[$tu->getId()] = $tu->getName();
+                }
             }
         }
 
