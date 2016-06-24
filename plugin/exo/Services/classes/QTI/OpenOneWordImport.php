@@ -15,14 +15,15 @@ class OpenOneWordImport extends OpenImport
      * overload the export method.
      *
      * @param qtiRepository $qtiRepos
-     * @param DOMElement    $assessmentItem assessmentItem of the question to imported
+     * @param DOMElement    $assessmentItem  assessmentItem of the question to imported
+     * @param string        $parentDirectory parent directory of the files
      *
      * @return UJM\ExoBundle\Entity\InteractionOpen
      */
-    public function import(qtiRepository $qtiRepos, $assessmentItem)
+    public function import(qtiRepository $qtiRepos, $assessmentItem, $parentDirectory)
     {
         $this->codeType = 4;
-        parent::import($qtiRepos, $assessmentItem);
+        parent::import($qtiRepos, $assessmentItem, $parentDirectory);
         $this->createWordResponse();
 
         return $this->interactionOpen;
