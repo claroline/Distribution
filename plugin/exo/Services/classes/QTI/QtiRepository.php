@@ -152,7 +152,7 @@ class QtiRepository
 
                     if ($this->step != null) {
                         $this->exerciseQuestions[] = $file;
-                        $this->importedQuestions[$file->getFileName()] = $interX;
+                        $this->importedQuestions[dirname($file).'/'.$file->getFileName()] = $interX;
                     }
                 }
             }
@@ -312,8 +312,8 @@ class QtiRepository
                 $order = -1;
             }
 
-            if (isset($this->importedQuestions[$xmlName->getFileName()])) {
-                $this->container->get('ujm.exo_exercise')->addQuestionInStep($this->importedQuestions[$xmlName->getFileName()]->getQuestion(), $this->step, $order);
+            if (isset($this->importedQuestions[dirname($xmlName).'/'.$xmlName->getFileName()])) {
+                $this->container->get('ujm.exo_exercise')->addQuestionInStep($this->importedQuestions[dirname($xmlName).'/'.$xmlName->getFileName()]->getQuestion(), $this->step, $order);
             }
 
             ++$order;
