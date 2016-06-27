@@ -2,6 +2,7 @@
 
 namespace UJM\ExoBundle\Manager;
 
+use Claroline\CoreBundle\Manager\ResourceManager;
 use Doctrine\Common\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Exercise;
@@ -21,26 +22,31 @@ class QuestionManager
     private $om;
     private $validator;
     private $handlerCollector;
+    private $rm;
 
     /**
      * @DI\InjectParams({
      *     "om"         = @DI\Inject("claroline.persistence.object_manager"),
      *     "validator"  = @DI\Inject("ujm.exo.json_validator"),
-     *     "collector"  = @DI\Inject("ujm.exo.question_handler_collector")
+     *     "collector"  = @DI\Inject("ujm.exo.question_handler_collector"),
+     *     "rm"         = @DI\Inject("claroline.manager.resource_manager")
      * })
      *
      * @param ObjectManager            $om
      * @param Validator                $validator
      * @param QuestionHandlerCollector $collector
+     * @param ResourceManager          $rm
      */
     public function __construct(
         ObjectManager $om,
         Validator $validator,
-        QuestionHandlerCollector $collector
+        QuestionHandlerCollector $collector,
+        ResourceManager $rm
     ) {
         $this->om = $om;
         $this->validator = $validator;
         $this->handlerCollector = $collector;
+        $this->rm = $rm;
     }
 
     /**
@@ -96,6 +102,7 @@ class QuestionManager
     public function exportQuestion(Question $question, $withSolution = true, $forPaperList = false)
     {
         $handler = $this->handlerCollector->getHandlerForInteractionType($question->getType());
+        $rm = $this->rm;
 
         $data = new \stdClass();
         $data->id = $question->getId();
@@ -103,6 +110,22 @@ class QuestionManager
         $data->title = $question->getTitle();
         $data->description = $question->getDescription();
         $data->invite = $question->getInvite();
+        $data->objects = array_map(function ($object) use ($rm) {
+            $resourceObjectData = new \stdClass();
+            $resourceObjectData->id = (string) $object->getResourceNode()->getId();
+            $resourceObjectData->type = $object->getResourceNode()->getMimeType();
+            $resourceObjectData->name = $object->getResourceNode()->getName();
+            $resourceObjectData->path = $object->getResourceNode()->getPathForDisplay();
+            switch ($object->getResourceNode()->getMimeType()) {
+                case "custom/hevinci_url":
+                    $resourceObjectData->resourceUrl = $rm->getResourceFromNode($object->getResourceNode())->getUrl();
+                    break;
+                default:
+                    $resourceObjectData->resourceUrl = $rm->getResourceFromNode($object->getResourceNode())->getHashName();
+            }
+            
+            return $resourceObjectData;
+        }, $question->getObjects()->toArray());
 
         if (count($question->getHints()) > 0) {
             $data->hints = array_map(function ($hint) use ($withSolution) {
