@@ -222,16 +222,15 @@ class MediaResourceManager
                 $end = $region['end'];
                 $duration = $end - $start;
 
-                // create .vtt line if needed
+                // create .vtt line
+                $vtt .= PHP_EOL;
+                $vtt .= $index.PHP_EOL;
+                $vtt .= $this->secondsToSrtTime($start).' --> '.$this->secondsToSrtTime($end).PHP_EOL;
                 if ($region['note'] !== '') {
-                    $vtt .= PHP_EOL;
-                    $vtt .= $index.PHP_EOL;
-                    $vtt .= $this->secondsToSrtTime($start).' --> '.$this->secondsToSrtTime($end).PHP_EOL;
-                    $vtt .= strip_tags($region['note']).PHP_EOL;
-
-                    ++$index;
+                    $vtt .= strip_tags($region['note']);
                 }
-
+                $vtt .= PHP_EOL;
+                ++$index;
                 $partFilePath = $tempDir.DIRECTORY_SEPARATOR.$cleanName.'_part_'.$index.'.'.$ext;
                 $cmd = 'ffmpeg -i '.$copiedFilePath.' -ss '.$start.' -t '.$duration.' '.$partFilePath;
                 exec($cmd, $output, $returnVar);
