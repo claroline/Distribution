@@ -94,8 +94,6 @@
     <script>
         var postHeight = function postHeight(height) {
             if (parent) {
-                console.log('child = ' + document.body.scrollHeight);
-
 
                 var newHeight = height || document.body.scrollHeight;
                 var message = 'documentHeight:' + newHeight;
@@ -103,16 +101,6 @@
                 parent.postMessage(message, "*");
             }
         };
-
-        /* Commented out: creates an infinite loop, page height grows indefinitely
-
-        postHeight();
-        window.onresize = function(event) {
-            console.log('child resize');
-            postHeight();
-        }
-
-        */
 
         $(document).ready(function () {
             postHeight();
