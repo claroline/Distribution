@@ -8,6 +8,7 @@ namespace UJM\ExoBundle\Services\classes;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class CategoryService
 {
@@ -20,13 +21,16 @@ class CategoryService
      *
      * @param \Doctrine\Bundle\DoctrineBundle\Registry                                            $doctrine     Dependency Injection;
      * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage Dependency Injection
+     * @param \Symfony\Component\Translation\TranslatorInterface
      */
     public function __construct(
             Registry $doctrine,
-            TokenStorageInterface $tokenStorage
+            TokenStorageInterface $tokenStorage,
+            TranslatorInterface $translator
     ) {
         $this->doctrine = $doctrine;
         $this->tokenStorage = $tokenStorage;
+        $this->translator = $translator;
     }
 
     /**
