@@ -3,10 +3,10 @@
 namespace Innova\MediaResourceBundle\Manager;
 
 use Doctrine\ORM\EntityManager;
-use Innova\MediaResourceBundle\Entity\MediaResource;
-use Innova\MediaResourceBundle\Entity\Region;
 use Innova\MediaResourceBundle\Entity\HelpLink;
 use Innova\MediaResourceBundle\Entity\HelpText;
+use Innova\MediaResourceBundle\Entity\MediaResource;
+use Innova\MediaResourceBundle\Entity\Region;
 use Innova\MediaResourceBundle\Entity\RegionConfig;
 use JMS\DiExtraBundle\Annotation as DI;
 

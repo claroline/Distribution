@@ -2,10 +2,10 @@
 
 namespace Innova\MediaResourceBundle\Form\Type;
 
+use Innova\MediaResourceBundle\Entity\Options;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Innova\MediaResourceBundle\Entity\Options;
 
 /**
  * Description of OptionsType.

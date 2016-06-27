@@ -2,18 +2,18 @@
 
 namespace Innova\MediaResourceBundle\Controller;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Innova\MediaResourceBundle\Entity\MediaResource;
+use Innova\MediaResourceBundle\Entity\Options;
+use Innova\MediaResourceBundle\Form\Type\OptionsType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Innova\MediaResourceBundle\Entity\MediaResource;
-use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Innova\MediaResourceBundle\Form\Type\OptionsType;
-use Innova\MediaResourceBundle\Entity\Options;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Class MediaResourceController.

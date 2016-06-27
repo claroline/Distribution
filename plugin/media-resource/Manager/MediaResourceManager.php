@@ -2,17 +2,17 @@
 
 namespace Innova\MediaResourceBundle\Manager;
 
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\Translation\TranslatorInterface;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Innova\MediaResourceBundle\Entity\MediaResource;
 use Innova\MediaResourceBundle\Entity\Media;
+use Innova\MediaResourceBundle\Entity\MediaResource;
 use Innova\MediaResourceBundle\Entity\Options;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\File\File;
-use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @DI\Service("innova_media_resource.manager.media_resource")
@@ -132,7 +132,7 @@ class MediaResourceManager
             $media->setMediaResource($mr);
             unset($file);
         } else {
-            $message = $this->translator->trans('error_while_uploading', array(), 'media_resource');
+            $message = $this->translator->trans('error_while_uploading', [], 'media_resource');
             throw new \Exception($message);
         }
 

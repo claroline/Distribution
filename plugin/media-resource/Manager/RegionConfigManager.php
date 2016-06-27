@@ -2,9 +2,9 @@
 
 namespace Innova\MediaResourceBundle\Manager;
 
-use JMS\DiExtraBundle\Annotation as DI;
 use Doctrine\ORM\EntityManager;
 use Innova\MediaResourceBundle\Entity\Region;
+use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("innova_media_resource.manager.media_resource_region_config")
@@ -15,7 +15,7 @@ class RegionConfigManager
 
     /**
      * @DI\InjectParams({
-     *      "em"                    = @DI\Inject("doctrine.orm.entity_manager")
+     *      "em" = @DI\Inject("doctrine.orm.entity_manager")
      * })
      *
      * @param EntityManager $em

@@ -3,8 +3,8 @@
 namespace Innova\MediaResourceBundle;
 
 use Claroline\CoreBundle\Library\PluginBundle;
-use Claroline\KernelBundle\Bundle\ConfigurationBuilder;
 use Claroline\KernelBundle\Bundle\AutoConfigurableInterface;
+use Claroline\KernelBundle\Bundle\ConfigurationBuilder;
 
 /**
  * Bundle class.
@@ -26,8 +26,8 @@ class InnovaMediaResourceBundle extends PluginBundle implements AutoConfigurable
 
     public function getExtraRequirements()
     {
-        return array(
-        'libav-tools' => array(
+        return [
+        'libav-tools' => [
             'test' => function () {
                 $cmd = 'avconv -h';
                 exec($cmd, $output, $return);
@@ -35,7 +35,7 @@ class InnovaMediaResourceBundle extends PluginBundle implements AutoConfigurable
                 return count($output) > 0 && $return === 0;
             },
             'failure_msg' => 'libavtools_not_installed',
-        ),
-    );
+        ],
+    ];
     }
 }
