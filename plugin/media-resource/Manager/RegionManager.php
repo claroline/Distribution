@@ -94,9 +94,9 @@ class RegionManager
         foreach ($helpLinks as $helpLink) {
             $regionConfig->addHelpLink($helpLink);
         }
-        $regionConfig->setLoop($oldRegionConfig->hasLoop());
-        $regionConfig->setRate($oldRegionConfig->hasRate());
-        $regionConfig->setBackward($oldRegionConfig->hasBackward());
+        $regionConfig->setLoop($oldRegionConfig->isLoop());
+        $regionConfig->setRate($oldRegionConfig->isRate());
+        $regionConfig->setBackward($oldRegionConfig->isBackward());
         $regionConfig->setHelpRegionUuid($oldRegionConfig->getHelpRegionUuid());
         $this->save($entity);
     }
