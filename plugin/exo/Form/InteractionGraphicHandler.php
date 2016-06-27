@@ -15,7 +15,7 @@ class InteractionGraphicHandler extends QuestionHandler
             $this->form->handleRequest($this->request);
             $data = $this->form->getData();
             //Uses the default category if no category selected
-            $this->checkCategory($data);
+            $this->checkCategory();
             //If title null, uses the first 50 characters of "invite" (enuncicate)
             $this->checkTitle();
             if ($this->validateNbClone() === false) {
