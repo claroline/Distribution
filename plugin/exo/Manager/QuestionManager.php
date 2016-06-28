@@ -2,10 +2,10 @@
 
 namespace UJM\ExoBundle\Manager;
 
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Doctrine\Common\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Hint;
 use UJM\ExoBundle\Entity\Paper;
@@ -130,7 +130,7 @@ class QuestionManager
                 default:
                     $resourceObjectData->url = $this->router->generate(
                         'claro_resource_open',
-                        array('resourceType' => $object->getResourceNode()->getResourceType()->getName(), 'node' => $object->getResourceNode()->getId())
+                        ['resourceType' => $object->getResourceNode()->getResourceType()->getName(), 'node' => $object->getResourceNode()->getId()]
                     );
             }
 
