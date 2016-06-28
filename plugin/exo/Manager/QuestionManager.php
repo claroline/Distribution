@@ -110,6 +110,8 @@ class QuestionManager
         $data->title = $question->getTitle();
         $data->description = $question->getDescription();
         $data->invite = $question->getInvite();
+        $data->supplementary = $question->getSupplementary();
+        $data->specification = $question->getSpecification();
         $data->objects = array_map(function ($object) use ($rm) {
             $resourceObjectData = new \stdClass();
             $resourceObjectData->id = (string) $object->getResourceNode()->getId();
