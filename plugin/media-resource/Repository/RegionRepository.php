@@ -20,11 +20,10 @@ class RegionRepository extends EntityRepository
           WHERE r.mediaResource = :mr
           AND r.start <= :time
           AND r.end > :time
-      ';
+        ';
         $query = $this->_em->createQuery($dql);
         $query->setParameter('time', $time);
         $query->setParameter('mr', $mr);
-        $result = $query->getOneOrNullResult();
 
         return $query->getOneOrNullResult();
     }

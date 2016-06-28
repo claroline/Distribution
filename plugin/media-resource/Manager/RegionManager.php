@@ -88,7 +88,7 @@ class RegionManager
         $entity->setEnd($region->getEnd());
         $entity->setNote($region->getNote());
         //create a new guid for the region (this will break the related region help)
-        $entity->setUuid($ut->generateGuid());
+        $entity->setUuid($this->ut->generateGuid());
 
         $oldRegionConfig = $region->getRegionConfig();
         $helpTexts = $oldRegionConfig->getHelpTexts();
@@ -123,10 +123,6 @@ class RegionManager
         $regions = $this->getRegionsFromData($data);
 
         $this->deleteUnusedRegions($mr, $regions);
-
-        // 3 help texts and 3 help links per region ()
-        $helpTextsOrLinksIndex = 0;
-
         // update or create région
         foreach ($regions as $region) {
             // update
@@ -275,7 +271,7 @@ class RegionManager
         foreach ($existing as $region) {
             $found = false;
             foreach ($toCheck as $current) {
-                if ($current['id'] == $region->getId()) {
+                if ($current['id'] === $region->getId()) {
                     $found = true;
                     break;
                 }

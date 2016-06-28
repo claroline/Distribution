@@ -118,7 +118,6 @@ class MediaResourceManager
             $fs->mkdir($targetDir);
         }
         // set new filename
-        $originalName = $file->getClientOriginalName();
         $ext = $file->getClientOriginalExtension();
         $uniqueBaseName = $this->claroUtils->generateGuid();
 
@@ -141,7 +140,6 @@ class MediaResourceManager
 
     public function copyMedia(MediaResource $mr, Media $origin)
     {
-        $originalName = $origin->getUrl();
         $ext = pathinfo($origin->getUrl(), PATHINFO_EXTENSION);
         $newName = $this->claroUtils->generateGuid().'.'.$ext;
         $baseUrl = $this->container->getParameter('claroline.param.files_directory').DIRECTORY_SEPARATOR;
@@ -236,7 +234,7 @@ class MediaResourceManager
                 exec($cmd, $output, $returnVar);
 
                 // cmd success
-                if ($returnVar === 0) {
+                if (count($output) > 0 && $returnVar === 0) {
                     array_push($files, $partFilePath);
                 } else {
                     // @TODO do something in case of cmd error
