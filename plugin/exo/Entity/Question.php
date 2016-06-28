@@ -99,9 +99,9 @@ class Question
      * @ORM\OneToMany(targetEntity="ObjectQuestion", mappedBy="question", orphanRemoval=true)
      */
     private $objects;
-    
+
     /**
-     * Note: used for joins only., orphanRemoval=true
+     * Note: used for joins only., orphanRemoval=true.
      *
      * @ORM\OneToMany(targetEntity="StepQuestion", mappedBy="question")
      */
