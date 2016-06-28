@@ -193,7 +193,7 @@ class Question
     {
         return $this->objects;
     }
-    
+
     public function addObject(ObjectQuestion $object)
     {
         if (!$this->objects->contains($object)) {
@@ -201,7 +201,7 @@ class Question
             $object->setQuestion($this);
         }
     }
-    
+
     public function removeObject(ObjectQuestion $object)
     {
         if ($this->objects->contains($object)) {
@@ -209,7 +209,7 @@ class Question
             $object->setQuestion(null);
         }
     }
-    
+
     /**
      * @param string $feedback
      */

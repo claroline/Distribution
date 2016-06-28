@@ -119,13 +119,13 @@ class QuestionManager
             $resourceObjectData->name = $object->getResourceNode()->getName();
             $resourceObjectData->path = $object->getResourceNode()->getPathForDisplay();
             switch ($object->getResourceNode()->getMimeType()) {
-                case "custom/hevinci_url":
+                case 'custom/hevinci_url':
                     $resourceObjectData->resourceUrl = $rm->getResourceFromNode($object->getResourceNode())->getUrl();
                     break;
                 default:
                     $resourceObjectData->resourceUrl = $rm->getResourceFromNode($object->getResourceNode())->getHashName();
             }
-            
+
             return $resourceObjectData;
         }, $question->getObjects()->toArray());
 
