@@ -8,9 +8,9 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution
  *
- * Generation date: 2016/06/09 04:54:48
+ * Generation date: 2016/06/24 09:15:06
  */
-class Version20160609165447 extends AbstractMigration
+class Version20160624091505 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -18,12 +18,16 @@ class Version20160609165447 extends AbstractMigration
             CREATE TABLE claro_cursusbundle_session_event (
                 id INT AUTO_INCREMENT NOT NULL, 
                 session_id INT NOT NULL, 
+                location_resource_id INT DEFAULT NULL, 
+                reservation_id INT DEFAULT NULL, 
                 event_name VARCHAR(255) NOT NULL, 
-                start_date DATETIME DEFAULT NULL, 
-                end_date DATETIME DEFAULT NULL, 
+                start_date DATETIME NOT NULL, 
+                end_date DATETIME NOT NULL, 
                 description LONGTEXT DEFAULT NULL, 
                 location LONGTEXT DEFAULT NULL, 
                 INDEX IDX_257C3061613FECDF (session_id), 
+                INDEX IDX_257C30619FE77A61 (location_resource_id), 
+                INDEX IDX_257C3061B83297E7 (reservation_id), 
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
         ");
@@ -47,6 +51,18 @@ class Version20160609165447 extends AbstractMigration
             ON DELETE CASCADE
         ");
         $this->addSql("
+            ALTER TABLE claro_cursusbundle_session_event 
+            ADD CONSTRAINT FK_257C30619FE77A61 FOREIGN KEY (location_resource_id) 
+            REFERENCES formalibre_reservation_resource (id) 
+            ON DELETE SET NULL
+        ");
+        $this->addSql("
+            ALTER TABLE claro_cursusbundle_session_event 
+            ADD CONSTRAINT FK_257C3061B83297E7 FOREIGN KEY (reservation_id) 
+            REFERENCES formalibre_reservation (id) 
+            ON DELETE SET NULL
+        ");
+        $this->addSql("
             ALTER TABLE claro_cursusbundle_session_event_comment 
             ADD CONSTRAINT FK_21DFDBA8A76ED395 FOREIGN KEY (user_id) 
             REFERENCES claro_user (id) 
@@ -60,11 +76,12 @@ class Version20160609165447 extends AbstractMigration
         ");
         $this->addSql("
             ALTER TABLE claro_cursusbundle_course 
-            ADD session_duration INT DEFAULT 1 NOT NULL
+            ADD session_duration INT DEFAULT 1 NOT NULL, 
+            ADD with_session_event TINYINT(1) DEFAULT '1' NOT NULL
         ");
         $this->addSql("
             ALTER TABLE claro_cursusbundle_course_session 
-            ADD default_event TINYINT(1) DEFAULT '1' NOT NULL
+            ADD description LONGTEXT DEFAULT NULL
         ");
     }
 
@@ -82,11 +99,12 @@ class Version20160609165447 extends AbstractMigration
         ");
         $this->addSql("
             ALTER TABLE claro_cursusbundle_course 
-            DROP session_duration
+            DROP session_duration, 
+            DROP with_session_event
         ");
         $this->addSql("
             ALTER TABLE claro_cursusbundle_course_session 
-            DROP default_event
+            DROP description
         ");
     }
 }

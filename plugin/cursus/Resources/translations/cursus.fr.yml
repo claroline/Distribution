@@ -2,13 +2,18 @@ accept_registration: Accepter l'inscription
 accept_registration_confirm_message: Êtes-vous sûr de vouloir accepter l'inscription de cet utilisateur ?
 add_course: Ajouter la formation
 add_course_to_cursus: Ajouter une formation
+add_session: Ajouter une session
 application_date: Date de soumission
 blocking: Bloquant
 click_on_link_below_to_confirm_request: Veuillez cliquer sur le lien ci-dessous pour confirmer la demande
+closed_session_events: Séances terminées
+closed_sessions: Sessions terminées
 collaborator: Collaborateur
 course: Formation
+course_code: Code formation
 course_creation: Création d'une formation
 course_deletion: Suppression de la formation
+course_description: Description de la formation
 course_edition: Modification de la formation
 course_registration_request_confirmation: Confirmation de demande d'inscription à une formation
 course_request_confirm_msg: Vous avez demandé d'être inscrit à la formation "%courseTitle% [%courseCode%]"
@@ -23,15 +28,18 @@ course_session_form_publicUnregistration: Désinscription publique
 course_session_form_registrationValidation: Validation de l'inscription
 course_session_form_sessionStatus: Statut
 course_session_form_start_date: Date de début
-course_session_form_tutorRole: Rôle des tuteurs
+course_session_form_tutorRole: Rôle des formateurs
 courses: Formations
+courses_image: Image de formations
 courses_import: Importation de formations
+courses_import_error_from_file: L'importation de formations à partir de ce fichier a échoué
 courses_management: Gestion des formations
 create_cursus: Créer un cursus
 create_course: Créer une formation
 create_cursus_child: Créer un enfant
 create_new_session: Créer une nouvelle session de formation
 create_session: Créer une session de formation
+create_session_event: Créer une séance
 cursus: Cursus
 cursus_child_create: Création d'un sous-cursus
 cursus_creation: Création d'un cursus
@@ -49,7 +57,7 @@ decline_failed: Le refus a échoué
 decline_registration: Refuser l'inscription
 decline_registration_confirm_message: Êtes-vous sûr de vouloir refuser l'inscription de cet utilisateur ?
 default: Défaut
-default_session: Session de formation par défaut
+default_session: Session par défaut
 default_session_duration_label: Durée par défaut d'une session de formation (jour)
 default_session_end_date: Date de fin de session de formation par défaut
 default_session_start_date: Date de début de session de formation par défaut
@@ -59,25 +67,47 @@ delete_course_session_confirm_msg: Êtes-vous sûr de vouloir supprimer cette se
 delete_course_session_workspace_confirm_msg: Supprimer également l'espace d'activités associé
 delete_cursus: Supprimmer le cursus
 delete_cursus_confirm_message: Êtes-vous sûr de vouloir supprimer ce cursus ?
-delete_session: Supprimer la session de formation
+delete_selected_courses: Supprimer les formations séléctionnées
+delete_selected_sessions: Supprimer les sessions séléctionnées
+delete_session: Supprimer la session
+delete_session_event: Supprimer la séance
+delete_session_event_confirm_message: Êtes-vous sûr de vouloir supprimer cette séance ?
+display_course_details: Voir les détails de la formation
+display_session_events: Voir les séances
+display_sessions: Voir les sessions
+display_sessions_from: Afficher les sessions du
+display_sessions_to: au
 displayed_word: Mot affiché
 edit_course: Modifier la formation
-edit_session: Modifier la session de formation
+edit_session: Modifier la session
+edit_session_event: Modifier la séance
+export_all_courses: Exporter toutes les formations
 full_session_msg: La limite d'utilisateurs pour la session de formation est atteinte
+generate_certificates: Générer les certificats
 icon: Icône
+import_courses: Importer des formations
 invalid_file: Fichier non valide
+invite_learners_to_session: Inviter des apprenants à la session
 learner: Apprenant
 learner_role_name: Rôle des apprenants
 learners: Apprenants
 manager: Gestionnaire
 max_users: Nombre maximum d'utilisateurs
 no: Non
+no_closed_session: Aucune session terminée
+no_closed_session_event: Aucune séance terminée
 no_course: Aucune formation
 no_cursus: Aucun cursus
+no_description: Aucune description
+no_open_session: Aucune session ouverte
+no_open_session_event: Aucune séance ouverte
 no_result: Aucun résultat
 no_session: Aucune session de formation
+no_session_event: Aucune séance
 not_authorized: Non autorisé
 nothing_to_configure: Rien à configurer
+open_session_events: Séances ouvertes
+open_sessions: Sessions ouvertes
 organization_validation: Validation par l'organisation
 public_registration: Inscription publique
 public_unregistration: Désinscription publique
@@ -90,16 +120,19 @@ register: Inscrire
 register_groups_to_cursus: Inscrire des groupes au cursus
 register_groups_to_session: Inscrire des groupes à la session de formation
 register_learners_to_session: Inscrire des apprenants à la session de formation
-register_tutors_to_session: Inscrire des tuteurs à la session de formation
+register_tutors_to_session: Inscrire des formateurs à la session de formation
 register_users_to_cursus: Inscrire des utilisateurs au cursus
 registration_failed: L'inscription a échouée
 remove_course: Retirer la formation
 remove_course_confirm_message: Êtes-vous sûr de vouloir retirer cette formation ?
+repeat_session_event: Répéter la séance
 send_confirmation_mail: Envoyer un mail de confirmation
 send_confirmation_mail_to_session: Envoyer un mail de confirmation à tous les apprenants de la session de formation
 send_confirmation_mail_to_session_message: Êtes-vous sûr de vouloir envoyer un mail de confirmation à tous les apprenants de la session de formation ?
 send_confirmation_mail_to_user: Envoyer un mail de confirmation à cet utilisateur
 send_confirmation_mail_to_user_message: Êtes-vous sûr de vouloir envoyer un mail de confirmation à cet utilisateur ?
+send_mail_to_session_participants: Envoyer un courriel aux participants de la session
+send_session_infos: Envoyer un courriel de confirmation à tous les apprenants de la session
 select_session: Sélectionnez une session de formation
 selected_sessions: Sessions de formation sélectionnées
 self_register: S'inscrire
@@ -107,7 +140,13 @@ session: Session de formation
 session_closed: Terminé
 session_creation: Création d'une session de formation
 session_deletion: Suppression de la session de formation
+session_description: Description de la session de formation
 session_edition: Modification de la session de formation
+session_event_creation: Création d'une séance
+session_event_deletion: Suppression de la séance
+session_event_edition: Modification de la séance
+session_event_location: Lieu
+session_events_details: Détails des séances
 session_not_enough_place_msg: Seulement %remainingPlaces% place(s) restante(s) dans la session "%sessionName%" de la formation "%courseTitle% [%courseCode%]"
 session_not_started: Non commencé
 session_open: En cours
@@ -117,17 +156,19 @@ session_request_confirm_msg: Vous avez demandé d'être inscrit à la session "%
 session_request_confirmation_success: Demande d'inscription à la session "%sessionName%" de la formation "%courseTitle%" confirmée.
 session_self_registration_message: Êtes-vous sûr de vouloir vous inscrire à cette session de formation ?
 sessions: Sessions de formation
+sessions_details: Détails des sessions
 sessions_for_registration_selection: Sélection des sessions de formation
+sessions_image: Image de sessions de formation
 sessions_management: Gestion des sessions de formation
 sessions_registration: Inscription à des sessions de formation
 sessions_registration_as_learner: Inscription à des sessions de formation en tant qu'apprenant
-sessions_registration_as_tutor: Inscription à des sessions de formation en tant que tuteur
+sessions_registration_as_tutor: Inscription à des sessions de formation en tant que formateur
 show_hide_closed_sessions: Afficher/Cacher les sessions de formation cloturées
 the_displayed_word_for: Le mot affiché pour
 to_define: A définir
-tutor: Tuteur
-tutor_role_name: Rôle des tuteurs
-tutors: Tuteurs
+tutor: Formateur
+tutor_role_name: Rôle des formateurs
+tutors: Formateurs
 unregister: Désinscrire
 unregister_group_from_cursus_confirm_message: Êtes-vous sûr de vouloir désinscrire ce groupe de ce cursus ?
 unregister_group_from_session: Désinscrire le groupe de la session de formation
@@ -137,7 +178,7 @@ unregister_selected_groups: Désinscrire les groupes sélectionnés
 unregister_selected_groups_message: Êtes-vous sûr de vouloir désinscrire les groupes sélectionnés ?
 unregister_selected_users: Désinscrire les utilisateurs sélectionnés
 unregister_selected_users_message: Êtes-vous sûr de vouloir désinscrire les utilisateurs sélectionnés ?
-unregister_tutor_from_session: Désinscrire le tuteur de la session de formation
+unregister_tutor_from_session: Désinscrire le formateur de la session de formation
 unregister_user_from_cursus_confirm_message: Êtes-vous sûr de vouloir désinscrire cet utilisateur de ce cursus ?
 unregister_user_from_session: Désinscrire l'utilisateur de la session de formation
 unregister_user_from_session_message: Êtes-vous sûr de vouloir désinscrire cet utilisateur de cette session de formation ?

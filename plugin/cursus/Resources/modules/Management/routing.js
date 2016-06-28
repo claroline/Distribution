@@ -33,18 +33,42 @@ export default function($stateProvider, $urlRouterProvider) {
     })
     .state ('courses_management', {
       url: '/courses',
-      template: require('./Partial/index.html'),
+      template: require('./Partial/courses_management.html'),
+      controller: 'CoursesManagementCtrl',
+      controllerAs: 'cmc',
       ncyBreadcrumb: {
-        label: translate('courses'),
+        label: translate('courses_management'),
         parent: 'index'
       }
     })
     .state ('sessions_management', {
       url: '/sessions',
-      template: require('./Partial/index.html'),
+      template: require('./Partial/sessions_management.html'),
+      controller: 'SessionsManagementCtrl',
+      controllerAs: 'cmc',
       ncyBreadcrumb: {
-        label: translate('sessions'),
+        label: translate('sessions_management'),
         parent: 'index'
+      }
+    })
+    .state ('course', {
+      url: '/courses/{courseId}',
+      template: require('./Partial/course_management.html'),
+      controller: 'CourseManagementCtrl',
+      controllerAs: 'cmc',
+      ncyBreadcrumb: {
+        label: '{{ cmc.breadCrumbLabel }}',
+        parent: 'courses_management'
+      }
+    })
+    .state ('session', {
+      url: '/sessions/{sessionId}',
+      template: require('./Partial/session_management.html'),
+      controller: 'SessionManagementCtrl',
+      controllerAs: 'cmc',
+      ncyBreadcrumb: {
+        label: '{{ cmc.breadCrumbLabel }}',
+        parent: 'sessions_management'
       }
     })
 //        .state ('registration_cursus_list', {

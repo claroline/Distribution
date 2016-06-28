@@ -462,7 +462,7 @@ class CourseController extends Controller
      * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
      * @EXT\Template("ClarolineCursusBundle:Course:courseSessionCreateModalForm.html.twig")
      */
-    public function courseSessionCreateAction(Course $course, User $authenticatedUser)
+    public function courseSessionCreateAction(Course $course)
     {
         $session = new CourseSession();
         $form = $this->formFactory->create(
@@ -474,10 +474,23 @@ class CourseController extends Controller
         if ($form->isValid()) {
             $creationDate = new \DateTime();
             $session->setCreationDate($creationDate);
-            $this->cursusManager->createCourseSessionFromSession(
-                $session,
+            $this->cursusManager->createCourseSession(
                 $course,
-                $authenticatedUser
+                $session->getName(),
+                $session->getDescription(),
+                $session->getCursus(),
+                null,
+                $session->getStartDate(),
+                $session->getEndDate(),
+                $session->isDefaultSession(),
+                $session->getPublicRegistration(),
+                $session->getPublicUnregistration(),
+                $session->getRegistrationValidation(),
+                $session->getUserValidation(),
+                $session->getOrganizationValidation(),
+                $session->getMaxUsers(),
+                $session->getType(),
+                $session->getValidators()
             );
 
             return new JsonResponse('success', 200);

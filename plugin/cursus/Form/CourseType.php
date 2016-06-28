@@ -19,6 +19,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraints\Image;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Range;
 
 class CourseType extends AngularType
@@ -63,7 +64,7 @@ class CourseType extends AngularType
         );
         $builder->add(
             'description',
-            'tinymce',
+            'textarea',
             [
                 'required' => false,
                 'label' => 'description',
@@ -102,12 +103,22 @@ class CourseType extends AngularType
         );
         $builder->add(
             'defaultSessionDuration',
-            'integer',
+            'text',
             [
                 'required' => true,
-                'constraints' => [new Range(['min' => 0])],
+                'constraints' => [new Range(['min' => 0]), new NotBlank()],
                 'attr' => ['min' => 0],
                 'label' => 'default_session_duration_label',
+            ]
+        );
+        $builder->add(
+            'withSessionEvent',
+            'choice',
+            [
+                'choices' => ['yes' => true, 'no' => false],
+                'choices_as_values' => true,
+                'required' => true,
+                'label' => 'with_session_event',
             ]
         );
         $builder->add(

@@ -1,0 +1,76 @@
+{% extends "ClarolineCoreBundle:API:modal.html.twig" %}
+
+{% block header %}
+    {{ 'session_edition'|trans({}, 'cursus') }}
+{% endblock %}
+
+{% block form %}
+    {% form_theme form 'ClarolineCoreBundle::form_theme_angular.html.twig' %}
+    <form role="form"
+          class="form-horizontal"
+          ng-submit="cmc.submit($scope)"
+          method="post"
+          {{ form_enctype(form) }}
+          novalidate
+          autocomplete="off"
+    >
+        <div class="modal-body">
+            {{ form_widget(form) }}
+        </div>
+        <div class="modal-footer">
+            <a href="" class="btn btn-default" data-dismiss="modal" ng-click="$close()">
+                {{ 'cancel'|trans({}, 'platform') }}
+            </a>
+            <button type="submit" class="btn btn-primary">
+                {{ 'ok'|trans({}, 'platform') }}
+            </button>
+        </div>
+    </form>
+    <link  rel='stylesheet'  type='text/css'  href="{{ asset('packages/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css') }}"/>
+    <script type="text/javascript" src="{{ url('bazinga_jstranslation_js', { 'domain': 'agenda' }) }}"></script>
+    <script type="text/javascript" src="{{ asset('packages/moment/min/moment-with-locales.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('packages/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js') }}"></script>
+    <script type="text/javascript">
+        function trans(key) {
+            return Translator.trans(key, {}, 'agenda');
+        }
+
+        var dateTimePickerOptions = {
+            useCurrent: false,
+            locale: trans('picker.locale'),
+            icons: {
+                time: 'fa fa-clock-o',
+                date: 'fa fa-calendar',
+                up: 'fa fa-chevron-up',
+                down: 'fa fa-chevron-down',
+                previous: 'fa fa-chevron-left',
+                next: 'fa fa-chevron-right',
+                today: 'fa fa-dot-circle-o',
+                clear: 'fa fa-trash',
+                close: 'fa fa-times'
+            },
+            stepping: 5,
+            showTodayButton: true,
+            showClose: true,
+            tooltips: {
+                today: trans('picker.go_to_today'),
+                close: trans('picker.close'),
+                selectMonth: trans('picker.select_month'),
+                prevMonth: trans('picker.prev_month'),
+                nextMonth: trans('picker.next_month'),
+                selectYear: trans('picker.select_year'),
+                prevYear: trans('picker.prev_year'),
+                nextYear: trans('picker.next_year'),
+                selectDecade: trans('picker.select_decade'),
+                prevDecade: trans('picker.prev_decade'),
+                nextDecade: trans('picker.next_decade'),
+                prevCentury: trans('picker.prev_century'),
+                nextCentury: trans('picker.next_century'),
+                selectTime: trans('picker.switch_mode')
+            }
+        };
+
+        $('#course_session_form_startDate, #course_session_form_endDate').datetimepicker(dateTimePickerOptions);
+    </script>
+{% endblock %}
+

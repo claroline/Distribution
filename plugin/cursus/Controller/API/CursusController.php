@@ -310,11 +310,8 @@ class CursusController extends FOSRestController
      *     views = {"cursus"}
      * )
      */
-    public function postGroupRegisterToMultipleCursusAction(
-        Group $group,
-        $cursusIdsTxt,
-        $sessionsIdsTxt
-    ) {
+    public function postGroupRegisterToMultipleCursusAction(Group $group, $cursusIdsTxt, $sessionsIdsTxt)
+    {
         $multipleCursus = $this->cursusManager->getCursusFromCursusIdsTxt($cursusIdsTxt);
         $sessions = $this->cursusManager->getSessionsFromSessionsIdsTxt($sessionsIdsTxt);
         $results = $this->cursusManager->registerGroupToCursusAndSessions($group, $multipleCursus, $sessions);
@@ -329,11 +326,8 @@ class CursusController extends FOSRestController
      *     views = {"cursus"}
      * )
      */
-    public function postUsersRegisterToMultipleCursusAction(
-        $usersIdsTxt,
-        $cursusIdsTxt,
-        $sessionsIdsTxt
-    ) {
+    public function postUsersRegisterToMultipleCursusAction($usersIdsTxt, $cursusIdsTxt, $sessionsIdsTxt)
+    {
         $users = $this->cursusManager->getUsersFromUsersIdsTxt($usersIdsTxt);
         $multipleCursus = $this->cursusManager->getCursusFromCursusIdsTxt($cursusIdsTxt);
         $sessions = $this->cursusManager->getSessionsFromSessionsIdsTxt($sessionsIdsTxt);
@@ -465,10 +459,8 @@ class CursusController extends FOSRestController
      *     views = {"cursus"}
      * )
      */
-    public function postCourseQueuedUserTransferAction(
-        CourseRegistrationQueue $queue,
-        CourseSession $session
-    ) {
+    public function postCourseQueuedUserTransferAction(CourseRegistrationQueue $queue, CourseSession $session)
+    {
         $results = $this->cursusManager->transferQueuedUserToSession($queue, $session);
 
         return $results;
@@ -480,40 +472,11 @@ class CursusController extends FOSRestController
      *     description="Returns the courses list",
      *     views = {"cursus"}
      * )
-     * @Get("/all/courses/ordered/by/{orderedBy}/order/{order}/page/{page}/max/{max}")
+     * @Get("/all/courses")
      */
-    public function getAllCoursesAction($orderedBy = 'title', $order = 'ASC', $page = 1, $max = 20)
+    public function getAllCoursesAction()
     {
-        $courses = $this->cursusManager->getAllCourses('', $orderedBy, $order, true, $page, $max);
-
-        return [
-            'search' => '',
-            'currentPage' => $courses->getCurrentPage(),
-            'maxPerPage' => $courses->getMaxPerPage(),
-            'nbPages' => $courses->getNbPages(),
-            'courses' => $courses->getCurrentPageResults()
-        ];
-    }
-
-    /**
-     * @View(serializerGroups={"api_cursus"})
-     * @ApiDoc(
-     *     description="Returns the searched courses list",
-     *     views = {"cursus"}
-     * )
-     * @Get("/searched/courses/ordered/by/{orderedBy}/order/{order}/page/{page}/max/{max}/search/{search}")
-     */
-    public function getSearchedCoursesAction($search, $orderedBy = 'title', $order = 'ASC', $page = 1, $max = 20)
-    {
-        $courses = $this->cursusManager->getAllCourses($search, $orderedBy, $order, true, $page, $max);
-
-        return [
-            'search' => $search,
-            'currentPage' => $courses->getCurrentPage(),
-            'maxPerPage' => $courses->getMaxPerPage(),
-            'nbPages' => $courses->getNbPages(),
-            'courses' => $courses->getCurrentPageResults()
-        ];
+        return $this->cursusManager->getAllCourses('', 'title', 'ASC', false);
     }
 
     /**
@@ -522,40 +485,65 @@ class CursusController extends FOSRestController
      *     description="Returns the unmapped courses list",
      *     views = {"cursus"}
      * )
-     * @Get("/cursus/{cursus}/all/unmapped/courses/ordered/by/{orderedBy}/order/{order}/page/{page}/max/{max}")
+     * @Get("/cursus/{cursus}/all/unmapped/courses")
      */
-    public function getAllUnmappedCoursesAction(Cursus $cursus, $orderedBy = 'title', $order = 'ASC', $page = 1, $max = 20)
+    public function getAllUnmappedCoursesAction(Cursus $cursus)
     {
-        $courses = $this->cursusManager->getUnmappedCoursesByCursus($cursus, '', $orderedBy, $order, true, $page, $max);
-
-        return [
-            'search' => '',
-            'currentPage' => $courses->getCurrentPage(),
-            'maxPerPage' => $courses->getMaxPerPage(),
-            'nbPages' => $courses->getNbPages(),
-            'courses' => $courses->getCurrentPageResults()
-        ];
+        return $this->cursusManager->getUnmappedCoursesByCursus($cursus, '', 'title', 'ASC', false);
     }
 
     /**
      * @View(serializerGroups={"api_cursus"})
      * @ApiDoc(
-     *     description="Returns the searched unmapped courses list",
+     *     description="Returns the sessions list",
      *     views = {"cursus"}
      * )
-     * @Get("/cursus/{cursus}/searched/unmapped/courses/ordered/by/{orderedBy}/order/{order}/page/{page}/max/{max}/search/{search}")
+     * @Get("/sessions/all")
      */
-    public function getSearchedUnmappedCoursesAction(Cursus $cursus, $search, $orderedBy = 'title', $order = 'ASC', $page = 1, $max = 20)
+    public function getSessionsAction()
     {
-        $courses = $this->cursusManager->getUnmappedCoursesByCursus($cursus, $search, $orderedBy, $order, true, $page, $max);
+        return $this->cursusManager->getAllSessions();
+    }
 
-        return [
-            'search' => $search,
-            'currentPage' => $courses->getCurrentPage(),
-            'maxPerPage' => $courses->getMaxPerPage(),
-            'nbPages' => $courses->getNbPages(),
-            'courses' => $courses->getCurrentPageResults()
-        ];
+    /**
+     * @View(serializerGroups={"api_cursus"})
+     * @ApiDoc(
+     *     description="Returns the sessions list by course",
+     *     views = {"cursus"}
+     * )
+     * @Get("/course/{course}/sessions")
+     */
+    public function getSessionsByCourseAction(Course $course)
+    {
+        return $this->cursusManager->getSessionsByCourse($course, 'startDate', 'ASC');
+    }
+
+    /**
+     * @View(serializerGroups={"api_cursus"})
+     * @ApiDoc(
+     *     description="Returns workspace id of session",
+     *     views = {"cursus"}
+     * )
+     * @Get("/session/{session}/workspace/id")
+     */
+    public function getWorkspaceIdFromSessionAction(CourseSession $session)
+    {
+        $workspace = $session->getWorkspace();
+
+        return is_null($workspace) ? null : $workspace->getId();
+    }
+
+    /**
+     * @View(serializerGroups={"api_cursus"})
+     * @ApiDoc(
+     *     description="Returns the events list by session",
+     *     views = {"cursus"}
+     * )
+     * @Get("/session/{session}/events")
+     */
+    public function getSessionEventsBySessionAction(CourseSession $session)
+    {
+        return $this->cursusManager->getEventsBySession($session, 'startDate', 'ASC');
     }
 
     /***********************************

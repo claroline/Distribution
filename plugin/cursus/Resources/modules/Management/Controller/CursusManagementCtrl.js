@@ -8,13 +8,10 @@
  */
 
 export default class CursusManagementCtrl {
-  constructor($stateParams, $http, CursusService, CourseService) {
-    this.$http = $http
+  constructor($stateParams, CursusService) {
     this.CursusService = CursusService
-    this.CourseService = CourseService
     this.cursus = CursusService.getCursus()
     this.hierarchy = CursusService.getHierarchy()
-    //this.courses = CourseService.getCourses()
     this.cursusId = $stateParams.cursusId
     this.breadCrumbLabel = ''
     this.initialize()

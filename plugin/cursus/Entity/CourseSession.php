@@ -52,9 +52,16 @@ class CourseSession
      *     inversedBy="sessions"
      * )
      * @ORM\JoinColumn(name="course_id", nullable=false, onDelete="CASCADE")
-     * @Groups({"api_bulletin"})
+     * @Groups({"api_cursus", "api_bulletin"})
      */
     protected $course;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     * @Groups({"api_cursus"})
+     * @SerializedName("description")
+     */
+    protected $description;
 
     /**
      * @ORM\ManyToOne(
@@ -201,11 +208,6 @@ class CourseSession
      */
     protected $events;
 
-    /**
-     * @ORM\Column(name="default_event", type="boolean", options={"default" = 1})
-     */
-    private $defaultEvent = true;
-
     public function __construct()
     {
         $this->cursus = new ArrayCollection();
@@ -245,12 +247,22 @@ class CourseSession
         $this->course = $course;
     }
 
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
     public function getWorkspace()
     {
         return $this->workspace;
     }
 
-    public function setWorkspace(Workspace $workspace)
+    public function setWorkspace(Workspace $workspace = null)
     {
         $this->workspace = $workspace;
     }
@@ -303,7 +315,7 @@ class CourseSession
         return $this->learnerRole;
     }
 
-    public function setLearnerRole(Role $learnerRole)
+    public function setLearnerRole(Role $learnerRole = null)
     {
         $this->learnerRole = $learnerRole;
     }
@@ -313,7 +325,7 @@ class CourseSession
         return $this->tutorRole;
     }
 
-    public function setTutorRole(Role $tutorRole)
+    public function setTutorRole(Role $tutorRole = null)
     {
         $this->tutorRole = $tutorRole;
     }
@@ -505,16 +517,6 @@ class CourseSession
     public function getEvents()
     {
         return $this->events->toArray();
-    }
-
-    public function getDefaultEvent()
-    {
-        return $this->defaultEvent;
-    }
-
-    public function setDefaultEvent($defaultEvent)
-    {
-        $this->defaultEvent = $defaultEvent;
     }
 
     public function __toString()

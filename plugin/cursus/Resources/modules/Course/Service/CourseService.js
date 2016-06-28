@@ -12,80 +12,74 @@ export default class CourseService {
     this.$http = $http
     this.$sce = $sce
     this.$uibModal = $uibModal
+    this.ClarolineAPIService = ClarolineAPIService
+    this.course = {}
     this.courses = []
     this.initialized = false
-    this.search = ''
-    this.orderedBy = null
-    this.order = null
-    this.page = null
-    this.max = null
-    this.nbPages = 0
     this.currentCursusId = null,
     this.hasChanged = false
+    this._addCourseCallback = this._addCourseCallback.bind(this)
+    this._updateCourseCallback = this._updateCourseCallback.bind(this)
+    this._removeCourseCallback = this._removeCourseCallback.bind(this)
+  }
+
+  _addCourseCallback(data) {
+    const coursesJson = JSON.parse(data)
+
+    if (Array.isArray(coursesJson)) {
+      coursesJson.forEach(c => {
+        this.courses.push(c)
+      })
+    } else {
+      this.courses.push(coursesJson)
+    }
+  }
+
+  _updateCourseCallback(data) {
+    const courseJson = JSON.parse(data)
+    const index = this.courses.findIndex(c => c['id'] === courseJson['id'])
+
+    if (index > -1) {
+      this.courses[index] = courseJson
+    }
+  }
+
+  _removeCourseCallback(data) {
+    const courseJson = JSON.parse(data)
+    const index = this.courses.findIndex(c => c['id'] === courseJson['id'])
+
+    if (index > -1) {
+      this.courses.splice(index, 1)
+    }
+  }
+
+  getCourse () {
+    return this.course
   }
 
   getCourses () {
     return this.courses
   }
 
-  getNbPages () {
-    return this.nbPages
-  }
-
-  getCurrentPage () {
-    return this.page
-  }
-
-  getSearch () {
-    return this.search
-  }
-
-  getMax () {
-    return this.max
-  }
-
   isInitialized () {
     return this.initialized
   }
 
-  getNbPagesArray () {
-    let pages = []
+  loadCourses (cursusId = null) {
+    if (this.initialized && !this.hasChanged && this.currentCursusId === cursusId) {
+      console.log('Nothing to load')
 
-    for (let i = 1; i - 1 < this.nbPages; i++) {
-      pages.push(i)
-    }
-
-    return pages
-  }
-
-  loadCourses (cursusId = null, search = '', orderedBy = 'title', order = 'ASC', page = 1, max = 20) {
-    if (!this.hasChanged && this.currentCursusId === cursusId && this.search === search && this.orderedBy === orderedBy && this.order === order && this.page === page && this.max === max) {
       return null
     } else {
       this.initialized = false
       this.courses.splice(0, this.courses.length)
-      let route
-
-      if (cursusId) {
-        route = search === '' ?
-          Routing.generate('api_get_all_unmapped_courses', {cursus: cursusId, orderedBy: orderedBy, order: order, page: page, max: max}) :
-          Routing.generate('api_get_searched_unmapped_courses', {cursus: cursusId, search: search, orderedBy: orderedBy, order: order, page: page, max: max})
-      } else {
-        route = search === '' ?
-          Routing.generate('api_get_all_courses', {orderedBy: orderedBy, order: order, page: page, max: max}) :
-          Routing.generate('api_get_searched_courses', {search: search, orderedBy: orderedBy, order: order, page: page, max: max})
-      }
+      const route = cursusId ? Routing.generate('api_get_all_unmapped_courses', {cursus: cursusId}) : Routing.generate('api_get_all_courses')
 
       return this.$http.get(route).then(d => {
         if (d['status'] === 200) {
-          angular.merge(this.courses, d['data']['courses'])
-          this.orderedBy = orderedBy
-          this.order = order
-          this.search = d['data']['search']
-          this.page = d['data']['currentPage']
-          this.max = d['data']['maxPerPage']
-          this.nbPages = d['data']['nbPages']
+          angular.merge(this.courses, d['data'])
           this.currentCursusId = cursusId
+          this.hasChanged = false
           this.initialized = true
 
           return 'initialized'
@@ -94,16 +88,118 @@ export default class CourseService {
     }
   }
 
-  loadPage(i) {
-    this.loadCourses(this.currentCursusId, this.search, this.orderedBy, this.order, i, this.max)
-  }
-
   removeCourse (courseId) {
     const index = this.courses.findIndex(c => c['id'] === courseId)
 
     if (index > -1) {
       this.courses.splice(index, 1)
       this.hasChanged = true
+    }
+  }
+
+  createCourse (callback = null) {
+    const addCallback = callback !== null ? callback : this._addCourseCallback
+    const modal = this.$uibModal.open({
+      templateUrl: Routing.generate('api_get_course_creation_form'),
+      controller: 'CourseCreationModalCtrl',
+      controllerAs: 'cmc',
+      resolve: {
+        callback: () => { return addCallback }
+      }
+    })
+
+    modal.result.then(result => {
+      if (!result) {
+        return
+      } else {
+        addCallback(result)
+      }
+    })
+  }
+
+  editCourse (courseId, callback = null) {
+    const updateCallback = callback !== null ? callback : this._updateCourseCallback
+    const modal = this.$uibModal.open({
+      templateUrl: Routing.generate('api_get_course_edition_form', {course: courseId}) + '?bust=' + Math.random().toString(36).slice(2),
+      controller: 'CourseEditionModalCtrl',
+      controllerAs: 'cmc',
+      resolve: {
+        courseId: () => { return courseId },
+        callback: () => { return updateCallback }
+      }
+    })
+
+    modal.result.then(result => {
+      if (!result) {
+        return
+      } else {
+        updateCallback(result)
+      }
+    })
+  }
+
+  deleteCourse (courseId, callback = null) {
+    const url = Routing.generate('api_delete_course', {course: courseId})
+    const deleteCallback = callback !== null ? callback : this._removeCourseCallback
+
+    this.ClarolineAPIService.confirm(
+      {url, method: 'DELETE'},
+      deleteCallback,
+      Translator.trans('delete_course', {}, 'cursus'),
+      Translator.trans('delete_course_confirm_message', {}, 'cursus')
+    )
+  }
+
+  viewCourse (courseId) {
+    const index = this.courses.findIndex(c => c['id'] === courseId)
+
+    if (index > -1) {
+      const modal = this.$uibModal.open({
+        template: require('../Partial/course_view_modal.html'),
+        controller: 'CourseViewModalCtrl',
+        controllerAs: 'cmc',
+        resolve: {
+          course: () => { return this.courses[index] }
+        }
+      })
+    }
+  }
+
+  importCourses (callback = null) {
+    const addCallback = callback !== null ? callback : this._addCourseCallback
+    const modal = this.$uibModal.open({
+      template: require('../Partial/courses_import_form.html'),
+      controller: 'CoursesImportModalCtrl',
+      controllerAs: 'cmc',
+      resolve: {
+        callback: () => { return addCallback }
+      }
+    })
+  }
+
+  getCourseById (courseId) {
+    const index = this.courses.findIndex(c => c['id'] === courseId)
+
+    if (index > -1) {
+      this.course = this.courses[index]
+
+      return 'initialized'
+    } else {
+      for (const key in this.course) {
+        delete this.course[key]
+      }
+      const route = Routing.generate('api_get_course_by_id', {course: courseId})
+      return this.$http.get(route).then(d => {
+        if (d['status'] === 200) {
+          const datas = JSON.parse(d['data'])
+
+          for (const key in datas) {
+            this.course[key] = datas[key]
+          }
+
+          return 'initialized'
+        }
+      })
     }
   }
 }

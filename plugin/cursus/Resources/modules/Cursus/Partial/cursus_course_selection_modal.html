@@ -6,34 +6,16 @@
         </h3>
     </div>
     <div class="modal-body">
-        <div class="alert alert-info" ng-if="cmc.isInitialized() && cmc.getSearch()">
-            {{ 'results_for_search_on'|trans:{}:'platform' }} : "{{ cmc.getSearch() }}"
-        </div>
-        <div ng-if="cmc.isInitialized()">
-            <div class="input-group col-md-6 pull-right">
-                <input class="form-control search-user"
-                       placeholder="{{ 'search'|trans:{}:'platform' }}"
-                       ng-model="cmc.searchInput"
-                >
-                <span class="input-group-btn">
-                    <button class="filter btn btn-default" ng-click="cmc.loadSearchedCourses()">
-                        <i class="fa fa-search"></i>
-                    </button>
-                </span>
-            </div>
-            <br>
-            <br>
-            <br>
-        </div>
         <div ng-if="cmc.isInitialized() && cmc.courses.length > 0">
             <div class="table-responsive">
-                <table class="table table-striped table-bordered table-condensed">
-                    <th>{{ 'title'|trans:{}:'platform' }}</th>
-                    <th>{{ 'code'|trans:{}:'platform' }}</th>
-                    <th></th>
-                    <tr ng-repeat="course in cmc.courses">
-                        <td>{{ course['title'] }}</td>
-                        <td>{{ course['code'] }}</td>
+                <table ng-table="cmc.tableParams" class="table table-striped table-bordered table-condensed" show-filter="true">
+                    <tr ng-repeat="course in $data">
+                        <td title="'title'|trans:{}:'platform'" filter="{title: 'text'}" sortable="'title'">
+                            {{ course['title'] }}
+                        </td>
+                        <td class="text-center" title="'code'|trans:{}:'platform'" filter="{code: 'text'}" sortable="'code'">
+                            {{ course['code'] }}
+                        </td>
                         <td class="text-center">
                             <button class="btn btn-primary btn-sm" ng-click="cmc.addCourseToCursus(course['id'])">
                                 {{ 'add_course'|trans:{}:'cursus' }}
@@ -41,25 +23,6 @@
                         </td>
                     </tr>
                 </table>
-            </div>
-            <div class="pagination" ng-if="cmc.getNbPages() > 1">
-                <ul>
-                    <li class="prev" ng-class="cmc.getCurrentPage() === 1 ? 'disabled' : ''">
-                        <a class="pointer-hand" ng-click="cmc.loadPage(cmc.getCurrentPage() - 1)">
-                            <i class="fa fa-long-arrow-left"></i>
-                            {{ 'previous'|trans:{}:'platform' }}
-                        </a>
-                    </li>
-                    <li ng-repeat="i in cmc.getNbPagesArray()" ng-class="cmc.getCurrentPage() === i ? 'disabled' : ''">
-                        <a class="pointer-hand" ng-click="cmc.loadPage(i)">{{ i }}</a>
-                    </li>
-                    <li class="next" ng-class="cmc.getCurrentPage() === cmc.getNbPages() ? 'disabled' : ''">
-                        <a class="pointer-hand" ng-click="cmc.loadPage(cmc.getCurrentPage() + 1)">
-                            {{ 'next'|trans:{}:'platform' }}
-                            <i class="fa fa-long-arrow-right"></i>
-                        </a>
-                    </li>
-                </ul>
             </div>
         </div>
         <div class="alert alert-warning" ng-if="cmc.isInitialized() && cmc.courses.length === 0">

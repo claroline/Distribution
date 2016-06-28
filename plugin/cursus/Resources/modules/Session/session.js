@@ -14,6 +14,9 @@ import colorpicker from 'angular-bootstrap-colorpicker'
 import translation from 'angular-ui-translation/angular-translation'
 
 import SessionService from './Service/SessionService'
+import SessionCreationModalCtrl from './Controller/SessionCreationModalCtrl'
+import SessionEditionModalCtrl from './Controller/SessionEditionModalCtrl'
+import SessionDeletionModalCtrl from './Controller/SessionDeletionModalCtrl'
 
 angular.module('SessionModule', [
   'ui.bootstrap',
@@ -22,3 +25,6 @@ angular.module('SessionModule', [
   'ui.translation'
 ])
 .service('SessionService', SessionService)
+.controller('SessionCreationModalCtrl', SessionCreationModalCtrl)
+.controller('SessionEditionModalCtrl', SessionEditionModalCtrl)
+.controller('SessionDeletionModalCtrl', SessionDeletionModalCtrl)

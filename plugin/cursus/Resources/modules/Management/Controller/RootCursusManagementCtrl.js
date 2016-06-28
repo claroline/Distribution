@@ -8,8 +8,7 @@
  */
 
 export default class RootCursusManagementCtrl {
-  constructor ($http, CursusService) {
-    this.$http = $http
+  constructor (CursusService) {
     this.CursusService = CursusService
     this.cursus = CursusService.getCursus()
     this.initialize()

@@ -9,21 +9,28 @@
 
 import 'angular/angular.min'
 
+//import '#/main/core/form/module'
 import UIRouter from 'angular-ui-router'
 import dataTable from 'angular-data-table/release/dataTable.helpers.min'
 import bootstrap from 'angular-bootstrap'
+import animate from 'angular-animate'
 import translation from 'angular-ui-translation/angular-translation'
 import breadcrumbs from 'angular-breadcrumb'
 import loading from 'angular-loading-bar'
 
-import '../../../../../main/core/Resources/modules/fos-js-router/module'
+import '#/main/core/fos-js-router/module'
 import CursusModule from '../Cursus/cursus'
 import CourseModule from '../Course/course'
 import SessionModule from '../Session/session'
+import SessionEventModule from '../SessionEvent/sessionEvent'
 
 import Routing from './routing.js'
 import RootCursusManagementCtrl from './Controller/RootCursusManagementCtrl'
 import CursusManagementCtrl from './Controller/CursusManagementCtrl'
+import CoursesManagementCtrl from './Controller/CoursesManagementCtrl'
+import CourseManagementCtrl from './Controller/CourseManagementCtrl'
+import SessionsManagementCtrl from './Controller/SessionsManagementCtrl'
+import SessionManagementCtrl from './Controller/SessionManagementCtrl'
 
 angular.module('CursusManagementModule', [
   'ui.router',
@@ -31,15 +38,22 @@ angular.module('CursusManagementModule', [
   'data-table',
   'ui.bootstrap',
   'ui.bootstrap.tpls',
+  'ngAnimate',
   'ncy-angular-breadcrumb',
   'angular-loading-bar',
+  'ngTable',
   'ui.fos-js-router',
   'CursusModule',
   'CourseModule',
-  'SessionModule'
+  'SessionModule',
+  'SessionEventModule'
 ])
-.controller('RootCursusManagementCtrl', ['$http', 'CursusService', 'CourseService', RootCursusManagementCtrl])
-.controller('CursusManagementCtrl', ['$stateParams', '$http', 'CursusService', 'CourseService', CursusManagementCtrl])
+.controller('RootCursusManagementCtrl', ['CursusService', RootCursusManagementCtrl])
+.controller('CursusManagementCtrl', ['$stateParams', 'CursusService', CursusManagementCtrl])
+.controller('CoursesManagementCtrl', ['NgTableParams', 'CourseService', 'SessionService', CoursesManagementCtrl])
+.controller('CourseManagementCtrl', ['$stateParams', 'NgTableParams', 'CourseService', 'SessionService', CourseManagementCtrl])
+.controller('SessionsManagementCtrl', ['NgTableParams', 'SessionService', 'SessionEventService', SessionsManagementCtrl])
+.controller('SessionManagementCtrl', ['$stateParams', 'NgTableParams', 'SessionService', 'SessionEventService', SessionManagementCtrl])
 .config(Routing)
 .config([
   'cfpLoadingBarProvider',

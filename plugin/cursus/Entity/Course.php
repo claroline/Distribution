@@ -90,11 +90,15 @@ class Course
 
     /**
      * @ORM\Column(name="tutor_role_name", nullable=true)
+     * @Groups({"api_cursus"})
+     * @SerializedName("tutorRoleName")
      */
     protected $tutorRoleName;
 
     /**
      * @ORM\Column(name="learner_role_name", nullable=true)
+     * @Groups({"api_cursus"})
+     * @SerializedName("learnerRoleName")
      */
     protected $learnerRoleName;
 
@@ -157,6 +161,11 @@ class Course
      * @SerializedName("defaultSessionDuration")
      */
     protected $defaultSessionDuration = 1;
+
+    /**
+     * @ORM\Column(name="with_session_event", type="boolean", options={"default" = 1})
+     */
+    private $withSessionEvent = true;
 
     public function __construct()
     {
@@ -355,6 +364,16 @@ class Course
     public function setDefaultSessionDuration($defaultSessionDuration)
     {
         $this->defaultSessionDuration = $defaultSessionDuration;
+    }
+
+    public function getWithSessionEvent()
+    {
+        return $this->withSessionEvent;
+    }
+
+    public function setWithSessionEvent($withSessionEvent)
+    {
+        $this->withSessionEvent = $withSessionEvent;
     }
 
     public function __toString()

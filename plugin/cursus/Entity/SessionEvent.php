@@ -13,6 +13,8 @@ namespace Claroline\CursusBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use FormaLibre\ReservationBundle\Entity\Reservation;
+use FormaLibre\ReservationBundle\Entity\Resource;
 use JMS\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -43,17 +45,18 @@ class SessionEvent
      *     inversedBy="events"
      * )
      * @ORM\JoinColumn(name="session_id", nullable=false, onDelete="CASCADE")
+     * @Groups({"api_cursus"})
      */
     protected $session;
 
     /**
-     * @ORM\Column(name="start_date", type="datetime", nullable=true)
+     * @ORM\Column(name="start_date", type="datetime", nullable=false)
      * @Groups({"api_cursus"})
      */
     protected $startDate;
 
     /**
-     * @ORM\Column(name="end_date", type="datetime", nullable=true)
+     * @ORM\Column(name="end_date", type="datetime", nullable=false)
      * @Groups({"api_cursus"})
      */
     protected $endDate;
@@ -77,6 +80,18 @@ class SessionEvent
      * )
      */
     protected $comments;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="FormaLibre\ReservationBundle\Entity\Resource")
+     * @ORM\JoinColumn(name="location_resource_id", nullable=true, onDelete="SET NULL")
+     */
+    protected $locationResource;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="FormaLibre\ReservationBundle\Entity\Reservation")
+     * @ORM\JoinColumn(name="reservation_id", nullable=true, onDelete="SET NULL")
+     */
+    protected $reservation;
 
     public function __construct()
     {
@@ -156,5 +171,25 @@ class SessionEvent
     public function getComments()
     {
         return $this->comments->toArray();
+    }
+
+    public function getLocationResource()
+    {
+        return $this->locationResource;
+    }
+
+    public function setLocationResource(Resource $locationResource = null)
+    {
+        $this->locationResource = $locationResource;
+    }
+
+    public function getReservation()
+    {
+        return $this->reservation;
+    }
+
+    public function setReservation(Reservation $reservation = null)
+    {
+        $this->reservation = $reservation;
     }
 }

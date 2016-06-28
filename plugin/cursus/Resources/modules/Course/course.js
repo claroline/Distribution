@@ -13,14 +13,24 @@ import bootstrap from 'angular-bootstrap'
 import colorpicker from 'angular-bootstrap-colorpicker'
 import translation from 'angular-ui-translation/angular-translation'
 
-import clarolineAPI from '../../../../../main/core/Resources/modules/services/module'
+import clarolineAPI from '#/main/core/services/module'
+import '#/main/core/asset/module'
 import CourseService from './Service/CourseService'
+import CourseCreationModalCtrl from './Controller/CourseCreationModalCtrl'
+import CourseEditionModalCtrl from './Controller/CourseEditionModalCtrl'
+import CoursesImportModalCtrl from './Controller/CoursesImportModalCtrl'
+import CourseViewModalCtrl from './Controller/CourseViewModalCtrl'
 
 angular.module('CourseModule', [
   'ui.bootstrap',
   'ui.bootstrap.tpls',
   'colorpicker.module',
   'ui.translation',
-  'ClarolineAPI'
+  'ClarolineAPI',
+  'ui.asset'
 ])
 .service('CourseService', CourseService)
+.controller('CourseCreationModalCtrl', CourseCreationModalCtrl)
+.controller('CourseEditionModalCtrl', CourseEditionModalCtrl)
+.controller('CoursesImportModalCtrl', CoursesImportModalCtrl)
+.controller('CourseViewModalCtrl', CourseViewModalCtrl)

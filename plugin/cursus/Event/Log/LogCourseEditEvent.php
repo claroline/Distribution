@@ -34,6 +34,7 @@ class LogCourseEditEvent extends LogGenericEvent
         $details['organizationValidation'] = $course->getOrganizationValidation();
         $details['maxUsers'] = $course->getMaxUsers();
         $details['defaultSessionDuration'] = $course->getDefaultSessionDuration();
+        $details['withSessionEvent'] = $course->getWithSessionEvent();
         $workspace = $course->getWorkspace();
         $workspaceModel = $course->getWorkspaceModel();
 

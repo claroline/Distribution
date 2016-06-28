@@ -242,7 +242,7 @@ export default class CursusService {
     })
   }
 
-  addCourseToCursus (cursusId, courseId) {
+  addCourseToCursus (cursusId, courseId, callback = null) {
     const route = Routing.generate('api_post_cursus_course_add', {cursus: cursusId, course: courseId})
     this.$http.post(route).then(d => {
       if (d['status'] === 200) {
@@ -250,7 +250,11 @@ export default class CursusService {
         const cursusJson = JSON.parse(d['data'])
         cursusJson.forEach(c => {
           if (c['course']) {
-            this.CourseService.removeCourse(c['course']['id'])
+            if (callback === null) {
+              this.CourseService.removeCourse(c['course']['id'])
+            } else {
+              callback(c['course']['id'])
+            }
           }
         })
       }
