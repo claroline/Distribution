@@ -4,8 +4,8 @@
     <div class="media-resource-players-container">
         <div class="panel panel-default">
             <!-- PANEL HEADER -->
-            <div class="panel-heading">
-                {% include "InnovaMediaResourceBundle:MediaResource/Partials:players-panel-header.html.twig" with {'name':_resource.name, 'mode': mode} %}
+            <div class="panel-heading clearfix">
+                {% include "InnovaMediaResourceBundle:MediaResource/Partials:players-panel-header.html.twig" with {'workspace': workspace, 'resource': _resource, 'name':_resource.name, 'mode': mode} %}
             </div>
             <div class="panel-body">
                 {% if mode is constant('Innova\\MediaResourceBundle\\Entity\\Options::CONTINUOUS_ACTIVE') %}

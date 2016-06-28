@@ -7,10 +7,11 @@
 
             <div class="panel panel-default">
                 <!-- PANEL HEADER -->
-                <div class="panel-heading">
-                    <h3 class="panel-title">
+                <div class="panel-heading clearfix">
+                    <h3 class="panel-title pull-left">
                         {{_resource.resourceNode.name}}
                     </h3>
+                    <a target="_blank" href="{{ path('innova_media_resource_open', {'workspaceId': workspace.id ,'id':_resource.id })}}" title="{{'media_resource_open' | trans({}, 'resource')}}" class="btn btn-default fa fa-eye pull-right"></a>
                 </div>
                 <div class="panel-body">
                     <!-- options for the resource -->
