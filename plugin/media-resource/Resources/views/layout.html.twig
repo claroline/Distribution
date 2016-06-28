@@ -1,9 +1,4 @@
-{% set layout = "ClarolineCoreBundle:Workspace:layout.html.twig" %}
-
-{% if isDesktop() %}
-    {% set layout = "ClarolineCoreBundle:Desktop:layout.html.twig" %}
-{% endif %}
-{% extends layout %}
+{% extends "ClarolineCoreBundle:Workspace:layout.html.twig" %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -15,7 +10,7 @@
     {% endstylesheets %}
 {% endblock %}
 
-{% block content %}
+{% block section_content %}
     <div class="media-resource-content-container">
         <div class="alert-messages">
             {% for successMessage in app.session.flashbag.get('success') %}

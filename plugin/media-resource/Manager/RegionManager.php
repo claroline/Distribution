@@ -271,7 +271,7 @@ class RegionManager
         foreach ($existing as $region) {
             $found = false;
             foreach ($toCheck as $current) {
-                if ($current['id'] === $region->getId()) {
+                if (intval($current['id']) === $region->getId()) {
                     $found = true;
                     break;
                 }
