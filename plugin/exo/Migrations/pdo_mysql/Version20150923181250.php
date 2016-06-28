@@ -13,7 +13,7 @@ use Doctrine\DBAL\Schema\Schema;
 class Version20150923181250 extends AbstractMigration
 {
     public function up(Schema $schema)
-    {
+    { return;
         $this->addSql('
             CREATE TABLE ujm_type_open_question (
                 id INT AUTO_INCREMENT NOT NULL,

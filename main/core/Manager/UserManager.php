@@ -1633,14 +1633,14 @@ class UserManager
                         $this->objectManager->forceFlush();
 
                         foreach ($detach as $el) {
-                            $this->objectManager->detach($el);
+                     //       $this->objectManager->detach($el);
                         }
 
                         $detach = [];
                     }
                 } else {
                     $this->log("Organization for user {$user->getUsername()} already exists");
-                    $this->objectManager->detach($user);
+                   // $this->objectManager->detach($user);
                 }
             }
 
