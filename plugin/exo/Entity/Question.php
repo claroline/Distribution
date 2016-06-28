@@ -125,7 +125,7 @@ class Question
         $this->type = $type;
     }
 
-    /**, orphanRemoval=true
+    /**
      * @return string
      */
     public function getType()

@@ -2,6 +2,7 @@
 
 namespace UJM\ExoBundle\Manager;
 
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Doctrine\Common\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -19,6 +20,7 @@ use UJM\ExoBundle\Transfer\Json\Validator;
  */
 class QuestionManager
 {
+    private $router;
     private $om;
     private $validator;
     private $handlerCollector;
@@ -26,23 +28,27 @@ class QuestionManager
 
     /**
      * @DI\InjectParams({
+     *     "router"     = @DI\Inject("router"),
      *     "om"         = @DI\Inject("claroline.persistence.object_manager"),
      *     "validator"  = @DI\Inject("ujm.exo.json_validator"),
      *     "collector"  = @DI\Inject("ujm.exo.question_handler_collector"),
      *     "rm"         = @DI\Inject("claroline.manager.resource_manager")
      * })
      *
+     * @param UrlGeneratorInterface    $router
      * @param ObjectManager            $om
      * @param Validator                $validator
      * @param QuestionHandlerCollector $collector
      * @param ResourceManager          $rm
      */
     public function __construct(
+        UrlGeneratorInterface $router,
         ObjectManager $om,
         Validator $validator,
         QuestionHandlerCollector $collector,
         ResourceManager $rm
     ) {
+        $this->router = $router;
         $this->om = $om;
         $this->validator = $validator;
         $this->handlerCollector = $collector;
@@ -115,15 +121,17 @@ class QuestionManager
         $data->objects = array_map(function ($object) use ($rm) {
             $resourceObjectData = new \stdClass();
             $resourceObjectData->id = (string) $object->getResourceNode()->getId();
-            $resourceObjectData->type = $object->getResourceNode()->getMimeType();
-            $resourceObjectData->name = $object->getResourceNode()->getName();
-            $resourceObjectData->path = $object->getResourceNode()->getPathForDisplay();
-            switch ($object->getResourceNode()->getMimeType()) {
-                case 'custom/hevinci_url':
-                    $resourceObjectData->resourceUrl = $rm->getResourceFromNode($object->getResourceNode())->getUrl();
-                    break;
+            $resourceObjectData->type = $object->getResourceNode()->getResourceType()->getName();
+            switch ($object->getResourceNode()->getResourceType()->getName()) {
+                case 'text':
+                    if ($rm->getResourceFromNode($object->getResourceNode())->getRevisions()[0]) {
+                        $resourceObjectData->data = $rm->getResourceFromNode($object->getResourceNode())->getRevisions()[0]->getContent();
+                    }
                 default:
-                    $resourceObjectData->resourceUrl = $rm->getResourceFromNode($object->getResourceNode())->getHashName();
+                    $resourceObjectData->url = $this->router->generate(
+                        'claro_resource_open',
+                        array('resourceType' => $object->getResourceNode()->getResourceType()->getName(), 'node' => $object->getResourceNode()->getId())
+                    );
             }
 
             return $resourceObjectData;
