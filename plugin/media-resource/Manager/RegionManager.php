@@ -2,6 +2,7 @@
 
 namespace Innova\MediaResourceBundle\Manager;
 
+use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 use Doctrine\ORM\EntityManager;
 use Innova\MediaResourceBundle\Entity\HelpLink;
 use Innova\MediaResourceBundle\Entity\HelpText;
@@ -16,19 +17,22 @@ use JMS\DiExtraBundle\Annotation as DI;
 class RegionManager
 {
     protected $em;
+    protected $ut;
     protected $regionConfigManager;
 
     /**
      * @DI\InjectParams({
      *      "em"                    = @DI\Inject("doctrine.orm.entity_manager"),
+     *      "ut"                    = @DI\Inject("claroline.utilities.misc"),
      *      "regionConfigManager"   = @DI\Inject("innova_media_resource.manager.media_resource_region_config")
      * })
      *
      * @param EntityManager $em
      */
-    public function __construct(EntityManager $em, RegionConfigManager $regionConfigManager)
+    public function __construct(EntityManager $em, ClaroUtilities $ut, RegionConfigManager $regionConfigManager)
     {
         $this->em = $em;
+        $this->ut = $ut;
         $this->regionConfigManager = $regionConfigManager;
     }
 
@@ -83,21 +87,28 @@ class RegionManager
         $entity->setStart($region->getStart());
         $entity->setEnd($region->getEnd());
         $entity->setNote($region->getNote());
-        $entity->setUuid($region->getUuid());
+        //create a new guid for the region (this will break the related region help)
+        $entity->setUuid($ut->generateGuid());
 
         $oldRegionConfig = $region->getRegionConfig();
         $helpTexts = $oldRegionConfig->getHelpTexts();
         foreach ($helpTexts as $helpText) {
-            $regionConfig->addHelpText($helpText);
+            $ht = new HelpText();
+            $ht->setText($helpText->getText());
+            $ht->setRegionConfig($regionConfig);
+            $regionConfig->addHelpText($ht);
         }
         $helpLinks = $oldRegionConfig->getHelpLinks();
         foreach ($helpLinks as $helpLink) {
-            $regionConfig->addHelpLink($helpLink);
+            $hl = new HelpLink();
+            $hl->setUrl($helpLink->getUrl());
+            $hl->setRegionConfig($regionConfig);
+            $regionConfig->addHelpLink($hl);
         }
         $regionConfig->setLoop($oldRegionConfig->isLoop());
         $regionConfig->setRate($oldRegionConfig->isRate());
         $regionConfig->setBackward($oldRegionConfig->isBackward());
-        $regionConfig->setHelpRegionUuid($oldRegionConfig->getHelpRegionUuid());
+        $regionConfig->setHelpRegionUuid('');
         $this->save($entity);
     }
 

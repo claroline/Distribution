@@ -103,9 +103,9 @@ class Region
         return $this->note;
     }
 
-    public function setMediaResource(MediaResource $ms)
+    public function setMediaResource(MediaResource $mr)
     {
-        $this->mediaResource = $ms;
+        $this->mediaResource = $mr;
 
         return $this;
     }

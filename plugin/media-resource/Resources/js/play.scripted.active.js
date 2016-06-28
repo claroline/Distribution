@@ -22,7 +22,7 @@ var actions = {
         audioPlayer.addEventListener('ended', function() {
             if (problems.length > 0) {
                 showFullView();
-            } else {                
+            } else {
                 showRetryMessage();
             }
         });
@@ -108,9 +108,9 @@ function showFullView() {
     // get infos that will allow the construction of help rows according to problem detected
     $.ajax(url)
         .done(function(result) {
+            helpsObjects = result;
             // add rows to the domUtils
             appendHelpRows(result);
-            helpsObjects = result;
             // hide step 1 container
             $('.step-1-container').hide();
             // show step 2 container
@@ -137,10 +137,8 @@ function showHelp(id) {
       $('#' + id).show(200);
     }
     $('.help-details-row').each(function(){
-      console.log($(this).attr('id'));
       var compare = Number($(this).attr('id'));
       if(compare !== id){
-        console.log('hide');
         $(this).hide();
       }
     });
@@ -213,7 +211,7 @@ function buildHelpDetails(help) {
             if (help.rate) {
                 details += '       <button class="btn btn-default btn-help-play" data-id="rate-'+help.id+'" title="' + Translator.trans('region_help_segment_playback_rate', {}, 'media_resource') + '" data-start="' + help.start + '"  data-end="' + help.end + '" data-mode="' + PLAY_SLOW + '">x0.8</button>';
             }
-            if (help.connex) {
+            if (help.connex && help.connex.start && help.connex.end) {
                 details += '       <button class="btn btn-default btn-help-play" data-id="connex-'+help.id+'" title="' + Translator.trans('region_help_related_segment_playback', {}, 'media_resource') + '" data-start="' + help.connex.start + '"  data-end="' + help.connex.end + '" data-mode="' + PLAY_NORMAL + '">';
                 details += '           <i class="fa fa-play"></i> ';
                 details += '           / ';

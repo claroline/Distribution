@@ -26,7 +26,7 @@ class RegionConfigManager
     }
 
     /**
-     * retrieve helps for an array of region.
+     * Retrieve helps for an array of region.
      */
     public function getHelpsFromRegions($regions)
     {
@@ -40,7 +40,7 @@ class RegionConfigManager
     }
 
     /**
-     * retrieve helps for one region.
+     * Retrieve helps for a given region and it's previous one if exists.
      */
     public function getRegionHelps(Region $region)
     {
@@ -48,6 +48,7 @@ class RegionConfigManager
         $helpTexts = $regionHelp->getHelpTexts();
         $helpLinks = $regionHelp->getHelpLinks();
         $helpRegionUuid = $regionHelp->getHelpRegionUuid();
+        $mr = $region->getMediaResource();
         $texts = [];
         if (count($helpTexts) > 0) {
             foreach ($helpTexts as $helptext) {
@@ -67,16 +68,18 @@ class RegionConfigManager
         }
         $connex = [];
         if ($helpRegionUuid) {
-            $helpR = $this->em->getRepository('InnovaMediaResourceBundle:Region')->findOneBy(['uuid' => $helpRegionUuid]);
-            $connex = [
-              'start' => $helpR->getStart(),
-              'end' => $helpR->getEnd(),
-            ];
+            $helpR = $this->em->getRepository('InnovaMediaResourceBundle:Region')->findOneBy(['uuid' => $helpRegionUuid, 'mediaResource' => $mr]);
+            if ($helpR) {
+                $connex = [
+                'start' => $helpR->getStart(),
+                'end' => $helpR->getEnd(),
+              ];
+            }
         }
 
-        $hasHelp = $regionHelp->isLoop() === 1 || $regionHelp->isBackward() === 1 || $regionHelp->isRate() === 1 || count($texts) > 0 || count($links) > 0 || count($connex) > 0;
+        $hasHelp = $regionHelp->isLoop() || $regionHelp->isBackward() || $regionHelp->isRate() || count($texts) > 0 || count($links) > 0 || count($connex) > 0;
 
-        $previousRegion = $this->em->getRepository('InnovaMediaResourceBundle:Region')->findOneBy(['end' => $region->getStart()]);
+        $previousRegion = $this->em->getRepository('InnovaMediaResourceBundle:Region')->findOneBy(['end' => $region->getStart(), 'mediaResource' => $mr]);
         $previous = [];
         if ($previousRegion) {
             $prevRegionHelp = $previousRegion->getRegionConfig();
@@ -102,14 +105,15 @@ class RegionConfigManager
             }
             $prevConnex = [];
             if ($prevHelpRegionUuid) {
-                $prevHelpR = $this->em->getRepository('InnovaMediaResourceBundle:Region')->findOneBy(['uuid' => $prevHelpRegionUuid]);
-                $prevConnex = [
-                  'start' => $prevHelpR->getStart(),
-                  'end' => $prevHelpR->getEnd(),
-                ];
+                $prevHelpR = $this->em->getRepository('InnovaMediaResourceBundle:Region')->findOneBy(['uuid' => $prevHelpRegionUuid, 'mediaResource' => $mr]);
+                if ($prevHelpR) {
+                    $prevConnex = [
+                    'start' => $prevHelpR->getStart(),
+                    'end' => $prevHelpR->getEnd(),
+                  ];
+                }
             }
-
-            $prevHasHelp = $prevRegionHelp->isLoop() === 1 || $prevRegionHelp->isBackward() === 1 || $prevRegionHelp->isRate() === 1 || count($prevTexts) > 0 || count($prevLinks) > 0 || count($prevConnex) > 0;
+            $prevHasHelp = $prevRegionHelp->isLoop() || $prevRegionHelp->isBackward() || $prevRegionHelp->isRate() || count($prevTexts) > 0 || count($prevLinks) > 0 || count($prevConnex) > 0;
             $previous = [
               'id' => $previousRegion->getId(),
               'start' => $previousRegion->getStart(),
