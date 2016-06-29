@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Controller\Tool;
 
 use Claroline\CoreBundle\Entity\Tool\Tool;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Symfony\Component\Form\FormFactory;
@@ -326,7 +327,7 @@ class WorkspaceParametersController extends Controller
         }
 
         $baseProfileType = new BaseProfileType($this->localeManager, $this->tosManager, $this->get('translator'));
-        $form = $this->formFactory->create($baseProfileType);
+        $form = $this->formFactory->create($baseProfileType, new User());
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
