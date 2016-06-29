@@ -101,13 +101,13 @@ class PaperManager
     {
         $papers = $this->om->getRepository('UJMExoBundle:Paper')->findUnfinishedPapers($user, $exercise);
         if (count($papers) === 0) {
-            $paper = $this->createPaper($user, $exercise);
+            $paper = $this->createPaper($exercise, $user);
         } else {
             if (!$exercise->getDispButtonInterrupt()) {
                 // User is not allowed to continue is previous paper => open a new one and close the previous
                 $this->closePaper($papers[0]);
 
-                $paper = $this->createPaper($user, $exercise);
+                $paper = $this->createPaper($exercise, $user);
             } else {
                 $paper = $papers[0];
             }
@@ -119,12 +119,12 @@ class PaperManager
     /**
      * Creates a new exercise paper for a given user.
      *
-     * @param User     $user
      * @param Exercise $exercise
+     * @param User     $user
      *
      * @return Paper
      */
-    public function createPaper(User $user, Exercise $exercise)
+    public function createPaper(Exercise $exercise, User $user)
     {
         $lastPaper = $this->om->getRepository('UJMExoBundle:Paper')->findOneBy(
             ['user' => $user, 'exercise' => $exercise],
