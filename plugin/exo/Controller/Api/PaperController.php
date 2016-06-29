@@ -89,7 +89,7 @@ class PaperController
      * been consulted within the context of a given paper.
      *
      * @EXT\Route("/papers/{paperId}/hints/{hintId}", name="exercise_hint")
-     * @EXT\ParamConverter("user", converter="current_user")
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
      * @EXT\ParamConverter("paper", class="UJMExoBundle:Paper", options={"mapping": {"paperId": "id"}})
      * @EXT\ParamConverter("hint", class="UJMExoBundle:Hint", options={"mapping": {"hintId": "id"}})
      *
@@ -158,7 +158,7 @@ class PaperController
      * @EXT\Route("/papers/{paperId}/steps/{stepId}", name="exercise_submit_step")
      * @EXT\Method("PUT")
      *
-     * @EXT\ParamConverter("user",  converter="current_user")
+     * @EXT\ParamConverter("user",  converter="current_user", options={"allowAnonymous"=true})
      * @EXT\ParamConverter("paper", class="UJMExoBundle:Paper", options={"mapping": {"paperId": "id"}})
      * @EXT\ParamConverter("step",  class="UJMExoBundle:Step",  options={"mapping": {"stepId": "id"}})
      *
