@@ -121,11 +121,6 @@ class RegionManager
     public function handleMediaResourceRegions(MediaResource $mr, $data)
     {
         $regions = $this->getRegionsFromData($data);
-
-        /*echo '<pre>';
-        print_r($regions);
-        die;*/
-
         $this->deleteUnusedRegions($mr, $regions);
         // update or create région
         foreach ($regions as $region) {

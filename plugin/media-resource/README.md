@@ -27,19 +27,12 @@ User can also define a view among 4 views / play mode available :
     - Shows (highlight on the waveform) the region when in pause
     - Shows some of the available helps (all except links and related region)
     - Can also show the textual transcription (if set so).
+- **Scripted active** force the student to listent to the entire document. While listening the student can "mark" comprehension problems.
+After this first step for each problem identified we show the corresponding regions available helps
 
 ## Requirements
 - This bundle uses ffmpeg to export the project as mulitple audio files. So you'll need it on your server.
 - WebSpeech API is also used for backward building help. This functionality will work out of the box on Chrome but need to be activated with Firefox.
 
-## Authors
-
-* Donovan Tengblad (purplefish32)
-* Axel Penin (Elorfin)
-* Arnaud Bey (arnaudbey)
-* Eric Vincent (ericvincenterv)
-* Nicolas Dufour (eldoniel)
-* Patrick Guillou (pitrackster)
-
 ## Javascript librairies
-Intensive use of the wonderful library [wavesurfer.js] (http://www.wavesurfer.fm/)
+Intensive use of [wavesurfer.js] (http://www.wavesurfer.fm/)
