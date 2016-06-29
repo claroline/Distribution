@@ -590,7 +590,6 @@ function configRegion(elem) {
     var $row = $(elem).closest('.region');
     var content = commonVars.domUtils.setRegionConfigModalContent($row);
     var region = getRegionByUuid($row.data('uuid'));
-
     if (commonVars.playing) {
         commonVars.wavesurfer.pause();
         commonVars.playing = false;
@@ -621,7 +620,9 @@ function configRegion(elem) {
         });
     });
 
-    $('#regionConfigModal').on('hidden.bs.modal', function() {
+    $('#regionConfigModal').on('hidden.bs.modal', function(e) {
+        // unbind modal events
+        $(e.currentTarget).unbind();
 
         currentHelpRelatedRegion = null;
         if (commonVars.playing) {
@@ -643,7 +644,6 @@ function configRegion(elem) {
             var link = $(this).val() ? $(this).val() : '';
             helpLinks.push(link);
         });
-
         // set proper hidden inputs values
         //help-region-uuid
         var helpRegionUuid = $row.find('.hidden-config-help-region-uuid');
