@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+/*global Routing*/
+
 export default class WorkspaceHomeTabCreationModalCtrl {
   constructor($http, $uibModal, $uibModalInstance, ClarolineAPIService, workspaceId, callback) {
     this.$http = $http

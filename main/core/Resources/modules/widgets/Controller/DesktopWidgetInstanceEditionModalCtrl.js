@@ -7,6 +7,9 @@
  * file that was distributed with this source code.
  */
 
+/*global Routing*/
+import angular from 'angular/index'
+
 export default class DesktopWidgetInstanceEditionModalCtrl {
   constructor($http, $sce, $uibModal, $uibModalInstance, $httpParamSerializer, ClarolineAPIService, WidgetService, widgetInstanceId, widgetDisplayId, configurable, contentConfig) {
     this.$http = $http
@@ -76,7 +79,7 @@ export default class DesktopWidgetInstanceEditionModalCtrl {
       d => {
         if (d.status === 400) {
           this.$uibModalInstance.close()
-          const instance = this.$uibModal.open({
+          this.$uibModal.open({
             template: d.data,
             controller: 'DesktopWidgetInstanceEditionModalCtrl',
             controllerAs: 'wfmc',
@@ -94,7 +97,7 @@ export default class DesktopWidgetInstanceEditionModalCtrl {
     )
   }
 
-  submitContentConfiguration (mode = 0) {
+  submitContentConfiguration () {
     const forms = angular.element('.widget-content-config-form')
 
     if (forms.length > 0) {

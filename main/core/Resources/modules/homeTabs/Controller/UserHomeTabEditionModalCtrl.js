@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+/*global Routing*/
+
 export default class UserHomeTabEditionModalCtrl {
   constructor($http, $uibModal, $uibModalInstance, ClarolineAPIService, homeTabId, callback) {
     this.$http = $http
@@ -32,7 +34,7 @@ export default class UserHomeTabEditionModalCtrl {
       },
       d => {
         if (d.status === 400) {
-          this.$uibModalInstance.close();
+          this.$uibModalInstance.close()
           const instance = this.$uibModal.open({
             template: d.data,
             controller: 'UserHomeTabEditionModalCtrl',

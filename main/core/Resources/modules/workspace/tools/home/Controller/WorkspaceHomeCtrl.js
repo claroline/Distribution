@@ -7,6 +7,10 @@
  * file that was distributed with this source code.
  */
 
+/*global Routing*/
+import angular from 'angular/index'
+import $ from 'jquery/dist/jquery'
+
 export default class WorkspaceHomeCtrl {
 
   constructor($http, HomeTabService, WidgetService) {

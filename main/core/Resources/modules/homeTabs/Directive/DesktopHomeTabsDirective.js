@@ -7,11 +7,13 @@
  * file that was distributed with this source code.
  */
 
+import template from '../Partial/desktop_home_tabs.html'
+
 export default class DesktopHomeTabsDirective {
 
-    constructor() {
-        this.restrict = 'E'
-        this.replace = true
-        this.template = require('../Partial/desktop_home_tabs.html')
-    }
+  constructor() {
+    this.restrict = 'E'
+    this.replace = true
+    this.template = template
+  }
 }

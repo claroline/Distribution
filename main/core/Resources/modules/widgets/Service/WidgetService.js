@@ -7,6 +7,10 @@
  * file that was distributed with this source code.
  */
 
+/*global Routing*/
+/*global Translator*/
+import angular from 'angular/index'
+
 export default class WidgetService {
   constructor ($http, $sce, $uibModal, ClarolineAPIService) {
     this.$http = $http
@@ -17,7 +21,7 @@ export default class WidgetService {
     this.options = {
       canEdit: false
     }
-    this.type = 'desktop';
+    this.type = 'desktop'
     this.widgetsDisplayOptions = {}
     this.widgetHasChanged = false
     this.gridsterOptions = {
@@ -26,11 +30,11 @@ export default class WidgetService {
       resizable: {
         enabled: false,
         handles: ['ne', 'se', 'sw', 'nw'],
-        start: (event, $element, widget) => {},
-        resize: (event, $element, widget) => {
+        start: () => {},
+        resize: () => {
           this.widgetHasChanged = true
         },
-        stop: (event, $element, widget) => {
+        stop: () => {
           if (this.widgetHasChanged) {
             this.widgetHasChanged = false
             this._updateWidgetsDisplay()
@@ -40,11 +44,11 @@ export default class WidgetService {
       draggable: {
         enabled: false,
         handle: '.widget-header',
-        start: (event, $element, widget) => {},
-        drag: (event, $element, widget) => {
+        start: () => {},
+        drag: () => {
           this.widgetHasChanged = true
         },
-        stop: (event, $element, widget) => {
+        stop: () => {
           if (this.widgetHasChanged) {
             this.widgetHasChanged = false
             this._updateWidgetsDisplay()
@@ -110,7 +114,7 @@ export default class WidgetService {
   }
 
   setType (type) {
-    this.type = type;
+    this.type = type
   }
 
   parseWidgetDatas (datas) {
@@ -332,9 +336,6 @@ export default class WidgetService {
               this.widgetsDisplayOptions[id]['sizeY'] = d['sizeY']
             })
           }
-        },
-        () => {
-          console.log('error')
         }
       )
     }
@@ -378,9 +379,6 @@ export default class WidgetService {
               this.widgetsDisplayOptions[id]['sizeY'] = d['sizeY']
             })
           }
-        },
-        () => {
-          console.log('error')
         }
       )
     }
@@ -424,9 +422,6 @@ export default class WidgetService {
               this.widgetsDisplayOptions[id]['sizeY'] = d['sizeY']
             })
           }
-        },
-        () => {
-          console.log('error')
         }
       )
     }
@@ -470,7 +465,7 @@ export default class WidgetService {
 
   editUserWidget (widgetInstanceId, widgetDisplayId, configurable) {
     if (!this.isHomeTabLocked) {
-      const modal = this.$uibModal.open({
+      this.$uibModal.open({
         templateUrl: Routing.generate(
           'api_get_widget_instance_edition_form',
           {wdc: widgetDisplayId}
@@ -540,7 +535,7 @@ export default class WidgetService {
   }
 
   editAdminWidget (widgetInstanceId, widgetHomeTabConfigId, widgetDisplayId, configurable) {
-    const modal = this.$uibModal.open({
+    this.$uibModal.open({
       templateUrl: Routing.generate(
         'api_get_admin_widget_instance_edition_form',
         {whtc: widgetHomeTabConfigId, wdc: widgetDisplayId}
@@ -592,7 +587,7 @@ export default class WidgetService {
   }
 
   editWorkspaceWidget (widgetInstanceId, widgetHomeTabConfigId, widgetDisplayId, configurable) {
-    const modal = this.$uibModal.open({
+    this.$uibModal.open({
       templateUrl: Routing.generate(
         'api_get_workspace_widget_instance_edition_form',
         {whtc: widgetHomeTabConfigId, wdc: widgetDisplayId}

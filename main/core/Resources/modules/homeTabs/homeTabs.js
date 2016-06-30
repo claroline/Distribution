@@ -7,14 +7,14 @@
  * file that was distributed with this source code.
  */
 
-import 'angular/index'
+import angular from 'angular/index'
 
-import bootstrap from 'angular-bootstrap'
-import colorpicker from 'angular-bootstrap-colorpicker'
-import translation from 'angular-ui-translation/angular-translation'
+import 'angular-bootstrap'
+import 'angular-bootstrap-colorpicker'
+import 'angular-ui-translation/angular-translation'
 
-import clarolineAPI from '../services/module'
-import WidgetsModule from '../widgets/widgets'
+import '../services/module'
+import '../widgets/widgets'
 import UserHomeTabCreationModalCtrl from './Controller/UserHomeTabCreationModalCtrl'
 import UserHomeTabEditionModalCtrl from './Controller/UserHomeTabEditionModalCtrl'
 import AdminHomeTabCreationModalCtrl from './Controller/AdminHomeTabCreationModalCtrl'

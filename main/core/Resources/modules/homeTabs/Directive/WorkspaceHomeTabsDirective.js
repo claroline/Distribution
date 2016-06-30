@@ -7,11 +7,13 @@
  * file that was distributed with this source code.
  */
 
+import template from '../Partial/workspace_home_tabs.html'
+
 export default class WorkspaceHomeTabsDirective {
 
-    constructor() {
-        this.restrict = 'E'
-        this.replace = true
-        this.template = require('../Partial/workspace_home_tabs.html')
-    }
+  constructor() {
+    this.restrict = 'E'
+    this.replace = true
+    this.template = template
+  }
 }

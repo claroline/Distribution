@@ -7,11 +7,13 @@
  * file that was distributed with this source code.
  */
 
+import template from '../Partial/admin_widgets.html'
+
 export default class AdminWidgetsDirective {
 
-    constructor() {
-        this.restrict = 'E'
-        this.replace = true
-        this.template = require('../Partial/admin_widgets.html')
-    }
+  constructor() {
+    this.restrict = 'E'
+    this.replace = true
+    this.template = template
+  }
 }

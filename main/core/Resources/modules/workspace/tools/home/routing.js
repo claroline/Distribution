@@ -7,11 +7,13 @@
  * file that was distributed with this source code.
  */
 
+import homeTemplate from './Partial/home.html'
+
 export default function($stateProvider, $urlRouterProvider) {
   $stateProvider
     .state ('home', {
       url: '/home',
-      template: require('./Partial/home.html'),
+      template: homeTemplate,
       controller: 'WorkspaceHomeCtrl',
       controllerAs: 'whc'
     })

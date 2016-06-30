@@ -7,11 +7,13 @@
  * file that was distributed with this source code.
  */
 
+import template from '../Partial/workspace_widgets.html'
+
 export default class WorkspaceWidgetsDirective {
 
-    constructor() {
-        this.restrict = 'E'
-        this.replace = true
-        this.template = require('../Partial/workspace_widgets.html')
-    }
+  constructor() {
+    this.restrict = 'E'
+    this.replace = true
+    this.template = template
+  }
 }

@@ -6,7 +6,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-    
+
+/*global Routing*/
+import angular from 'angular/index'
+import $ from 'jquery/dist/jquery'
+
 export default class DesktopHomeMainCtrl {
         
   constructor($http, HomeTabService, WidgetService) {

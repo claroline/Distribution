@@ -7,6 +7,10 @@
  * file that was distributed with this source code.
  */
 
+/*global Routing*/
+/*global Translator*/
+import angular from 'angular/index'
+
 export default class HomeTabService {
   constructor($http, $uibModal, ClarolineAPIService, WidgetService) {
     this.$http = $http
