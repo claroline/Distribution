@@ -204,6 +204,7 @@ class PaperController
      */
     public function exportPaperAction(Paper $paper, User $user = null)
     {
+        // ATTENTION : As is, anonymous have access to all the other anonymous Papers !!!
         if (!$this->isAdmin($paper->getExercise()) && $paper->getUser() !== $user) {
             // Only administrator or the User attached can see a Paper
             throw new AccessDeniedHttpException();
