@@ -2,6 +2,8 @@ export default function observe (selector, callback, containers = [document.body
   window.MutationObserver = window.MutationObserver || window.WebKitMutationObserver
 
   const initialized = []
+  // css class to add to your video tag that do not has to be "videojsized"
+  const excludeClass = 'not-video-js'
   // create an observer instance
 
   const observer = new MutationObserver(mutations => {
@@ -17,8 +19,10 @@ export default function observe (selector, callback, containers = [document.body
               keepGoing = false
             }
           })
+          // check if the element has the exclude class
+          let exclude = el.className.indexOf(excludeClass) > -1
 
-          if (keepGoing) {
+          if (keepGoing && !exclude) {
             callback(el)
             initialized.push(el.id)
           }
