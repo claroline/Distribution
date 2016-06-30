@@ -97,10 +97,16 @@ class PaperManager
      *
      * @return array
      */
-    public function openPaper(Exercise $exercise, User $user)
+    public function openPaper(Exercise $exercise, User $user = null)
     {
-        $papers = $this->om->getRepository('UJMExoBundle:Paper')->findUnfinishedPapers($user, $exercise);
+        $papers = [];
+        if ($user) {
+            // If it's not an anonymous, load the previous unfinished papers
+            $papers = $this->om->getRepository('UJMExoBundle:Paper')->findUnfinishedPapers($user, $exercise);
+        }
+
         if (count($papers) === 0) {
+            // Create a new paper for anonymous or if no unfinished
             $paper = $this->createPaper($exercise, $user);
         } else {
             if (!$exercise->getDispButtonInterrupt()) {
@@ -124,27 +130,35 @@ class PaperManager
      *
      * @return Paper
      */
-    public function createPaper(Exercise $exercise, User $user)
+    public function createPaper(Exercise $exercise, User $user = null)
     {
-        $lastPaper = $this->om->getRepository('UJMExoBundle:Paper')->findOneBy(
-            ['user' => $user, 'exercise' => $exercise],
-            ['start' => 'DESC']
-        );
+        // Get the number of the new Paper
+        $paperNum = 1;
+        if ($user) {
+            $lastPaper = $this->om->getRepository('UJMExoBundle:Paper')->findOneBy(
+                ['user' => $user, 'exercise' => $exercise],
+                ['start' => 'DESC']
+            );
 
-        $paperNum = $lastPaper ? $lastPaper->getNumPaper() + 1 : 1;
+            if ($lastPaper) {
+                $paperNum = $lastPaper->getNumPaper() + 1;
+            }
+        }
 
+        // Generate the list of Steps and Questions for the Paper
         $order = '';
-        if ($exercise->getKeepSteps() && $lastPaper) {
+        if (!empty($lastPaper) && $exercise->getKeepSteps()) {
             // Get steps order from the last user Paper
             $order = $lastPaper->getOrdreQuestion();
         } else {
             // Generate paper step order
             $questions = $this->pickQuestions($exercise);
             foreach ($questions as $question) {
-                $order .= $question->getId().';';
+                $order .= $question->getId() . ';';
             }
         }
 
+        // Create the new Paper entity
         $paper = new Paper();
         $paper->setExercise($exercise);
         $paper->setUser($user);
@@ -199,6 +213,7 @@ class PaperManager
      */
     public function recordScore(Question $question, Paper $paper, $score)
     {
+        /** @var Response $response */
         $response = $this->om->getRepository('UJMExoBundle:Response')
             ->findOneBy(['paper' => $paper, 'question' => $question]);
 
@@ -400,12 +415,10 @@ class PaperManager
      */
     private function showUserPaper(Paper $paper)
     {
-        $user = $paper->getUser();
-
-        $showUser = $user->getFirstName().' '.$user->getLastName();
-
-        if ($paper->getAnonymous()) {
-            $showUser = $this->translator->trans('anonymous', array(), 'ujm_exo');
+        if (!$paper->getUser() || $paper->getAnonymous()) {
+            $showUser = $this->translator->trans('anonymous', [], 'ujm_exo');
+        } else {
+            $showUser = $paper->getUser()->getFirstName() . ' ' . $paper->getUser()->getLastName();
         }
 
         return $showUser;

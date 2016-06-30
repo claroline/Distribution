@@ -111,17 +111,17 @@ class ExerciseController
      * @EXT\Method("POST")
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
      *
-     * @param User     $user
      * @param Exercise $exercise
+     * @param User     $user
      *
      * @return JsonResponse
      */
-    public function attemptAction(User $user, Exercise $exercise)
+    public function attemptAction(Exercise $exercise, User $user = null)
     {
         $this->assertHasPermission('OPEN', $exercise);
 
         // if not admin of the resource check if exercise max attempts is reached
-        if (!$this->isAdmin($exercise)) {
+        if (!$this->isAdmin($exercise) && $user) {
             $max = $exercise->getMaxAttempts();
             $nbFinishedPapers = $this->paperManager->countUserFinishedPapers($exercise, $user);
 
