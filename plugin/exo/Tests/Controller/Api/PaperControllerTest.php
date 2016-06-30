@@ -88,36 +88,6 @@ class PaperControllerTest extends TransactionalTestCase
         $this->assertEquals(1, count($content->paper));
     }
 
-    public function testAnonymousSubmit()
-    {
-        $pa1 = $this->persist->paper($this->john, $this->ex1);
-        $this->om->flush();
-
-        $this->request('PUT', "/exercise/api/papers/{$pa1->getId()}/questions/{$this->qu1->getId()}");
-        $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
-    }
-
-    public function testSubmitAnswerAfterPaperEnd()
-    {
-        $pa1 = $this->persist->paper($this->john, $this->ex1);
-        $date = new \DateTime();
-        $date->add(\DateInterval::createFromDateString('yesterday'));
-        $pa1->setEnd($date);
-        $this->om->flush();
-
-        $this->request('PUT', "/exercise/api/papers/{$pa1->getId()}/questions/{$this->qu1->getId()}", $this->john);
-        $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
-    }
-
-    public function testSubmitAnswerByNotPaperUser()
-    {
-        $pa1 = $this->persist->paper($this->john, $this->ex1);
-        $this->om->flush();
-
-        $this->request('PUT', "/exercise/api/papers/{$pa1->getId()}/questions/{$this->qu1->getId()}", $this->bob);
-        $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
-    }
-
     public function testAnonymousHint()
     {
         $pa1 = $this->persist->paper($this->john, $this->ex1);
