@@ -7,11 +7,13 @@
  * file that was distributed with this source code.
  */
 
+import configTemplate from './Partial/config.html'
+
 export default function($stateProvider, $urlRouterProvider) {
   $stateProvider
     .state ('config', {
       url: '/config',
-      template: require('./Partial/config.html'),
+      template: configTemplate,
       controller: 'AdminHomeTabsConfigCtrl',
       controllerAs: 'ahtcc'
     })

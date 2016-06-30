@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+import angular from 'angular/index'
+
 export default class AdminHomeTabsConfigCtrl {
 
   constructor($http, HomeTabService, WidgetService) {
