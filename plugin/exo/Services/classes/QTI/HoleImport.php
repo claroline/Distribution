@@ -21,8 +21,8 @@ class HoleImport extends QtiImport
      * Implements the abstract method.
      *
      * @param qtiRepository $qtiRepos
-     * @param DOMElement    $assessmentItem  assessmentItem of the question to imported
-     * @param string        $path parent directory of the files
+     * @param DOMElement    $assessmentItem assessmentItem of the question to imported
+     * @param string        $path           parent directory of the files
      *
      * @return UJM\ExoBundle\Entity\InteractionHole
      */
