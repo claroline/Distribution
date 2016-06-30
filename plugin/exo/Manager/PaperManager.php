@@ -154,7 +154,7 @@ class PaperManager
             // Generate paper step order
             $questions = $this->pickQuestions($exercise);
             foreach ($questions as $question) {
-                $order .= $question->getId() . ';';
+                $order .= $question->getId().';';
             }
         }
 
@@ -418,7 +418,7 @@ class PaperManager
         if (!$paper->getUser() || $paper->getAnonymous()) {
             $showUser = $this->translator->trans('anonymous', [], 'ujm_exo');
         } else {
-            $showUser = $paper->getUser()->getFirstName() . ' ' . $paper->getUser()->getLastName();
+            $showUser = $paper->getUser()->getFirstName().' '.$paper->getUser()->getLastName();
         }
 
         return $showUser;

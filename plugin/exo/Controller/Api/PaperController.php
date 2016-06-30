@@ -182,7 +182,7 @@ class PaperController
      */
     public function finishPaperAction(Paper $paper, User $user = null)
     {
-        $this->assertHasPaperAccess($paper , $user);
+        $this->assertHasPaperAccess($paper, $user);
 
         $this->paperManager->finishPaper($paper);
 
@@ -242,7 +242,7 @@ class PaperController
      * Checks whether a User has access to a Paper
      * ATTENTION : As is, anonymous have access to all the other anonymous Papers !!!
      *
-     * @param Paper $paper
+     * @param Paper     $paper
      * @param User|null $user
      */
     private function assertHasPaperAccess(Paper $paper, User $user = null)
@@ -253,7 +253,7 @@ class PaperController
     }
 
     /**
-     * Checks whether the current User has the administration rights on the Exercise
+     * Checks whether the current User has the administration rights on the Exercise.
      *
      * @param Exercise $exercise
      *
