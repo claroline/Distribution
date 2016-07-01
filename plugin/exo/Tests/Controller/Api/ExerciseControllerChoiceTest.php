@@ -90,7 +90,7 @@ class ExerciseControllerChoiceTest extends TransactionalTestCase
             "/exercise/api/papers/{$pa1->getId()}/steps/{$step->getId()}",
             $this->john,
             [
-                'data' => [$this->qu1->getId() => [$id]]
+                'data' => [$this->qu1->getId() => [$id]],
             ]
         );
 
