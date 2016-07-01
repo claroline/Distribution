@@ -24,7 +24,7 @@ class LogHomeTabWorkspaceCreateEvent extends LogGenericEvent
     {
         $workspace = $htc->getWorkspace();
         $homeTab = $htc->getHomeTab();
-        $details = array();
+        $details = [];
         $details['tabId'] = $homeTab->getId();
         $details['tabName'] = $homeTab->getName();
         $details['tabType'] = $homeTab->getType();
@@ -56,6 +56,6 @@ class LogHomeTabWorkspaceCreateEvent extends LogGenericEvent
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_WORKSPACE);
+        return [self::DISPLAYED_WORKSPACE];
     }
 }

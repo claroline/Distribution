@@ -23,6 +23,8 @@ use Claroline\CoreBundle\Event\Log\LogWorkspaceDeleteEvent;
 use Claroline\CoreBundle\Event\Log\LogWorkspaceEnterEvent;
 use Claroline\CoreBundle\Event\Log\LogWorkspaceToolReadEvent;
 use Claroline\CoreBundle\Form\ImportWorkspaceType;
+use Claroline\CoreBundle\Form\WorkspaceType;
+use Claroline\CoreBundle\Library\Logger\FileLogger;
 use Claroline\CoreBundle\Library\Security\TokenUpdater;
 use Claroline\CoreBundle\Library\Security\Utilities;
 use Claroline\CoreBundle\Manager\Exception\LastManagerDeleteException;
@@ -36,12 +38,11 @@ use Claroline\CoreBundle\Manager\WorkspaceManager;
 use Claroline\CoreBundle\Manager\WorkspaceModelManager;
 use Claroline\CoreBundle\Manager\WorkspaceTagManager;
 use Claroline\CoreBundle\Manager\WorkspaceUserQueueManager;
-use Claroline\CoreBundle\Library\Logger\FileLogger;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormInterface;
@@ -58,7 +59,6 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Translation\TranslatorInterface;
-use Claroline\CoreBundle\Form\WorkspaceType;
 
 /**
  * This controller is able to:
@@ -208,7 +208,7 @@ class WorkspaceController extends Controller
         $data = $this->tagManager->getDatasForWorkspaceListByUser($user, $roles);
         $favouriteWorkspaces = $this->workspaceManager
             ->getFavouriteWorkspacesByUser($user);
-        $favourites = array();
+        $favourites = [];
 
         foreach ($data['workspaces'] as $workspace) {
             if (isset($favouriteWorkspaces[$workspace->getId()])) {
@@ -244,11 +244,11 @@ class WorkspaceController extends Controller
             $workspaces = $this->workspaceManager
                 ->getWorkspacesByUser($user);
 
-            $workspacesData = array();
+            $workspacesData = [];
             foreach ($workspaces as $workspace) {
                 array_push($workspacesData, $workspace->serializeForWidgetPicker());
             }
-            $data = array('items' => $workspacesData);
+            $data = ['items' => $workspacesData];
             $response->setData($data)->setStatusCode(200);
         }
 
@@ -306,10 +306,10 @@ class WorkspaceController extends Controller
         $workspacesPager = $this->workspaceManager
             ->getWorkspacesWithSelfUnregistrationByRoles($roles, $page);
 
-        return array(
+        return [
             'user' => $currentUser,
             'workspaces' => $workspacesPager,
-        );
+        ];
     }
 
     /**
@@ -376,7 +376,7 @@ class WorkspaceController extends Controller
 
             $msg = $this->get('translator')->trans(
                 'successfull_workspace_creation',
-                array('%name%' => $form->get('name')->getData()),
+                ['%name%' => $form->get('name')->getData()],
                 'platform'
             );
             $this->get('request')->getSession()->getFlashBag()->add('success', $msg);
@@ -417,7 +417,7 @@ class WorkspaceController extends Controller
         $sessionFlashBag->add(
             'success', $this->translator->trans(
                 'workspace_delete_success_message',
-                array('%workspaceName%' => $workspace->getName()),
+                ['%workspaceName%' => $workspace->getName()],
                 'platform'
             )
         );
@@ -478,7 +478,7 @@ class WorkspaceController extends Controller
             $orderedTools = $this->toolManager->getOrderedToolsByWorkspaceAndRoles($workspace, $currentRoles);
             $hideToolsMenu = $this->workspaceManager->isToolsMenuHidden($workspace);
         }
-        $roleHasAccess = array();
+        $roleHasAccess = [];
         $workspaceRolesWithAccess = $this->roleManager
             ->getWorkspaceRoleWithToolAccess($workspace);
 
@@ -486,13 +486,13 @@ class WorkspaceController extends Controller
             $roleHasAccess[$workspaceRole->getId()] = $workspaceRole;
         }
 
-        return array(
+        return [
             'hasManagerAccess' => $hasManagerAccess,
             'orderedTools' => $orderedTools,
             'workspace' => $workspace,
             'roleHasAccess' => $roleHasAccess,
             'hideToolsMenu' => $hideToolsMenu,
-        );
+        ];
     }
 
     /**
@@ -556,15 +556,15 @@ class WorkspaceController extends Controller
         $isGranted = $this->authorization->isGranted('OPEN', $workspace);
 
         if ($isGranted === true) {
-            $widgetData = array();
+            $widgetData = [];
             $widgetHomeTabConfigs = $this->homeTabManager
                 ->getVisibleWidgetConfigsByTabIdAndWorkspace($homeTabId, $workspace);
             foreach ($widgetHomeTabConfigs as $widgetHomeTabConfig) {
                 array_push($widgetData, $widgetHomeTabConfig->getWidgetInstance()->serializeForWidgetPicker());
             }
-            $data = array(
+            $data = [
                 'items' => $widgetData,
-            );
+            ];
 
             $response->setData($data)->setStatusCode(200);
         }
@@ -595,11 +595,11 @@ class WorkspaceController extends Controller
         return new Response(
             $this->templating->render(
                 'ClarolineCoreBundle:Widget:embed/iframe.html.twig',
-                array(
+                [
                     'widgetId' => $widgetId,
                     'workspaceId' => $workspaceId,
                     'homeTabId' => $homeTabId,
-                )
+                ]
             )
         );
     }
@@ -640,18 +640,18 @@ class WorkspaceController extends Controller
         if (!empty($widgetConfig)) {
             $widgetInstance = $widgetConfig->getWidgetInstance();
             $event = $this->eventDispatcher->dispatch("widget_{$widgetInstance->getWidget()->getName()}", new DisplayWidgetEvent($widgetInstance));
-            $widget = array(
+            $widget = [
                 'title' => $widgetInstance->getName(),
                 'content' => $event->getContent(),
-            );
+            ];
         }
 
         return new Response(
             $this->templating->render(
                 'ClarolineCoreBundle:Widget:embed/widget.html.twig',
-                array(
+                [
                     'widget' => $widget,
-                )
+                ]
             )
         );
     }
@@ -694,10 +694,10 @@ class WorkspaceController extends Controller
                     $this->session->set('isDesktop', false);
                     $route = $this->router->generate(
                         'claro_resource_open',
-                        array(
+                        [
                             'node' => $resourceNode->getId(),
                             'resourceType' => $resourceNode->getResourceType()->getName(),
-                        )
+                        ]
                     );
 
                     return new RedirectResponse($route);
@@ -710,10 +710,10 @@ class WorkspaceController extends Controller
         if ($tool) {
             $route = $this->router->generate(
                 'claro_workspace_open_tool',
-                array(
+                [
                     'workspaceId' => $workspace->getId(),
                     'toolName' => $tool->getName(),
-                )
+                ]
             );
 
             return new RedirectResponse($route);
@@ -732,15 +732,15 @@ class WorkspaceController extends Controller
     public function findRoleByWorkspaceCodeAction($code)
     {
         $roles = $this->roleManager->getRolesBySearchOnWorkspaceAndTag($code);
-        $arWorkspace = array();
+        $arWorkspace = [];
 
         foreach ($roles as $role) {
-            $arWorkspace[$role->getWorkspace()->getCode()][$role->getName()] = array(
+            $arWorkspace[$role->getWorkspace()->getCode()][$role->getName()] = [
                 'name' => $role->getName(),
                 'translation_key' => $role->getTranslationKey(),
                 'id' => $role->getId(),
                 'workspace' => $role->getWorkspace()->getName(),
-            );
+            ];
         }
 
         return new JsonResponse($arWorkspace);
@@ -766,7 +766,7 @@ class WorkspaceController extends Controller
     {
         $this->workspaceManager->addUserAction($workspace, $user);
 
-        return new JsonResponse($this->userManager->convertUsersToArray(array($user)));
+        return new JsonResponse($this->userManager->convertUsersToArray([$user]));
     }
 
     /**
@@ -789,7 +789,7 @@ class WorkspaceController extends Controller
     {
         $this->workspaceManager->addUserQueue($workspace, $user);
 
-        return new JsonResponse(array('true'));
+        return new JsonResponse(['true']);
     }
 
     /**
@@ -840,10 +840,10 @@ class WorkspaceController extends Controller
     {
         $relations = $this->tagManager->getPagerRelationByTag($workspaceTag, $page);
 
-        return array(
+        return [
             'workspaceTagId' => $workspaceTag->getId(),
             'relations' => $relations,
-        );
+        ];
     }
 
     /** @EXT\Route(
@@ -874,10 +874,10 @@ class WorkspaceController extends Controller
         $relations = $this->tagManager
             ->getPagerRelationByTagForSelfReg($workspaceTag, $page);
 
-        return array(
+        return [
             'workspaceTagId' => $workspaceTag->getId(),
             'relations' => $relations,
-        );
+        ];
     }
 
     /**
@@ -897,7 +897,7 @@ class WorkspaceController extends Controller
     {
         $workspaces = $this->tagManager->getPagerAllWorkspaces($page);
 
-        return array('workspaces' => $workspaces);
+        return ['workspaces' => $workspaces];
     }
 
     /**
@@ -921,11 +921,11 @@ class WorkspaceController extends Controller
         $nonPersonalWs = $this->workspaceManager
             ->getDisplayableNonPersonalWorkspaces($page, $max, $search);
 
-        return array(
+        return [
             'nonPersonalWs' => $nonPersonalWs,
             'max' => $max,
             'search' => $search,
-        );
+        ];
     }
 
     /**
@@ -949,11 +949,11 @@ class WorkspaceController extends Controller
         $personalWs = $this->workspaceManager
             ->getDisplayablePersonalWorkspaces($page, $max, $search);
 
-        return array(
+        return [
             'personalWs' => $personalWs,
             'max' => $max,
             'search' => $search,
-        );
+        ];
     }
 
     /**
@@ -980,7 +980,7 @@ class WorkspaceController extends Controller
             $page
         );
 
-        return array('workspaces' => $workspaces);
+        return ['workspaces' => $workspaces];
     }
 
     /**
@@ -1014,7 +1014,7 @@ class WorkspaceController extends Controller
     {
         try {
             $roles = $this->roleManager->getRolesByWorkspace($workspace);
-            $this->roleManager->checkWorkspaceRoleEditionIsValid(array($user), $workspace, $roles);
+            $this->roleManager->checkWorkspaceRoleEditionIsValid([$user], $workspace, $roles);
 
             foreach ($roles as $role) {
                 if ($user->hasRole($role->getName())) {
@@ -1032,7 +1032,7 @@ class WorkspaceController extends Controller
             return new Response(
                 'cannot_delete_unique_manager',
                 200,
-                array('XXX-Claroline-delete-last-manager')
+                ['XXX-Claroline-delete-last-manager']
             );
         }
     }
@@ -1063,10 +1063,10 @@ class WorkspaceController extends Controller
     {
         $relations = $this->tagManager->getPagerRelationByTag($workspaceTag, $page);
 
-        return array(
+        return [
             'workspaceTagId' => $workspaceTag->getId(),
             'relations' => $relations,
-        );
+        ];
     }
 
     /**
@@ -1089,7 +1089,7 @@ class WorkspaceController extends Controller
     {
         $workspaces = $this->tagManager->getPagerAllWorkspaces($page);
 
-        return array('workspaces' => $workspaces);
+        return ['workspaces' => $workspaces];
     }
 
     /**
@@ -1113,11 +1113,11 @@ class WorkspaceController extends Controller
         $nonPersonalWs = $this->workspaceManager
             ->getDisplayableNonPersonalWorkspaces($page, $max, $search);
 
-        return array(
+        return [
             'nonPersonalWs' => $nonPersonalWs,
             'max' => $max,
             'search' => $search,
-        );
+        ];
     }
 
     /**
@@ -1141,11 +1141,11 @@ class WorkspaceController extends Controller
         $personalWs = $this->workspaceManager
             ->getDisplayablePersonalWorkspaces($page, $max, $search);
 
-        return array(
+        return [
             'personalWs' => $personalWs,
             'max' => $max,
             'search' => $search,
-        );
+        ];
     }
 
     /**
@@ -1169,7 +1169,7 @@ class WorkspaceController extends Controller
     {
         $pager = $this->workspaceManager->getDisplayableWorkspacesBySearchPager($search, $page);
 
-        return array('workspaces' => $pager, 'search' => $search);
+        return ['workspaces' => $pager, 'search' => $search];
     }
 
     /**
@@ -1199,11 +1199,11 @@ class WorkspaceController extends Controller
             $workspaceHomeTabConfigs = $this->homeTabManager
                 ->getVisibleWorkspaceHomeTabConfigsByWorkspace($workspace);
 
-            $tabsData = array();
+            $tabsData = [];
             foreach ($workspaceHomeTabConfigs as $workspaceHomeTabConfig) {
                 array_push($tabsData, $workspaceHomeTabConfig->getHomeTab()->serializeForWidgetPicker());
             }
-            $data = array('items' => $tabsData);
+            $data = ['items' => $tabsData];
             $response->setData($data)->setStatusCode(200);
         }
 
@@ -1313,7 +1313,7 @@ class WorkspaceController extends Controller
         $importType = new ImportWorkspaceType();
         $form = $this->container->get('form.factory')->create($importType);
 
-        return array('form' => $form->createView());
+        return ['form' => $form->createView()];
     }
 
     /**
@@ -1343,7 +1343,7 @@ class WorkspaceController extends Controller
             return new Response(
                 $this->templating->render(
                     'ClarolineCoreBundle:Workspace:importForm.html.twig',
-                    array('form' => $form->createView())
+                    ['form' => $form->createView()]
                 )
             );
         }
@@ -1382,7 +1382,7 @@ class WorkspaceController extends Controller
             $workspaces = $this->workspaceManager
                 ->getDisplayableWorkspacesBySearchPager($wsSearch, $page, $wsMax);
         }
-        $workspaceRoles = array();
+        $workspaceRoles = [];
         $roles = $this->roleManager->getAllWhereWorkspaceIsDisplayableAndInList(
             $workspaces->getCurrentPageResults()
         );
@@ -1394,20 +1394,20 @@ class WorkspaceController extends Controller
                 $code = $wsRole->getCode();
 
                 if (!isset($workspaceRoles[$code])) {
-                    $workspaceRoles[$code] = array();
+                    $workspaceRoles[$code] = [];
                 }
 
                 $workspaceRoles[$code][] = $role;
             }
         }
 
-        return array(
+        return [
             'workspaces' => $workspaces,
             'wsMax' => $wsMax,
             'wsSearch' => $wsSearch,
             'workspaceRoles' => $workspaceRoles,
             'resource' => $resource,
-        );
+        ];
     }
 
     private function createWorkspaceFromModel(WorkspaceModel $model, FormInterface $form)
@@ -1430,11 +1430,11 @@ class WorkspaceController extends Controller
             $widgetName = $widgetConfigError['widgetName'];
             $widgetInstanceName = $widgetConfigError['widgetInstanceName'];
             $msg = '['.
-                $this->translator->trans($widgetName, array(), 'widget').
+                $this->translator->trans($widgetName, [], 'widget').
                 '] '.
                 $this->translator->trans(
                     'widget_configuration_copy_warning',
-                    array('%widgetInstanceName%' => $widgetInstanceName),
+                    ['%widgetInstanceName%' => $widgetInstanceName],
                     'widget'
                 );
             $flashBag->add('error', $msg);
@@ -1446,13 +1446,13 @@ class WorkspaceController extends Controller
             $isCopy = $resourceError['type'] === 'copy';
 
             $msg = '['.
-                $this->translator->trans($resourceType, array(), 'resource').
+                $this->translator->trans($resourceType, [], 'resource').
                 '] ';
 
             if ($isCopy) {
                 $msg .= $this->translator->trans(
                     'resource_copy_warning',
-                    array('%resourceName%' => $resourceName),
+                    ['%resourceName%' => $resourceName],
                     'resource'
                 );
             }

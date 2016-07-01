@@ -14,8 +14,8 @@ namespace Claroline\CoreBundle\Manager;
 use Claroline\CoreBundle\Entity\Home\HomeTab;
 use Claroline\CoreBundle\Entity\Home\HomeTabConfig;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig;
+use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -309,9 +309,9 @@ class HomeTabManager
         return $newHomeTabConfig;
     }
 
-    public function generateAdminHomeTabConfigsByUser(User $user, array $roleNames = array())
+    public function generateAdminHomeTabConfigsByUser(User $user, array $roleNames = [])
     {
-        $adminHTC = array();
+        $adminHTC = [];
         $adminHomeTabConfigs = $this->homeTabConfigRepo
             ->findAdminDesktopHomeTabConfigsByRoles($roleNames);
 
@@ -322,10 +322,10 @@ class HomeTabManager
                 }
             } else {
                 $existingCustomHTC = $this->homeTabConfigRepo->findOneBy(
-                    array(
+                    [
                         'homeTab' => $adminHomeTabConfig->getHomeTab(),
                         'user' => $user,
-                    )
+                    ]
                 );
 
                 if (is_null($existingCustomHTC)) {
@@ -345,7 +345,7 @@ class HomeTabManager
 
     public function filterVisibleHomeTabConfigs(array $homeTabConfigs)
     {
-        $visibleHomeTabConfigs = array();
+        $visibleHomeTabConfigs = [];
 
         foreach ($homeTabConfigs as $homeTabConfig) {
             if ($homeTabConfig->isVisible()) {
@@ -359,12 +359,12 @@ class HomeTabManager
     public function checkHomeTabLock(HomeTab $homeTab)
     {
         $adminHomeTabConfig = $this->homeTabConfigRepo->findOneBy(
-            array(
+            [
                 'homeTab' => $homeTab,
                 'type' => 'admin_desktop',
                 'user' => null,
                 'workspace' => null,
-            )
+            ]
         );
 
         return !is_null($adminHomeTabConfig) ?
@@ -376,18 +376,18 @@ class HomeTabManager
     {
         $visible = false;
         $adminHomeTabConfig = $this->homeTabConfigRepo->findOneBy(
-            array(
+            [
                 'homeTab' => $homeTab,
                 'type' => 'admin_desktop',
                 'user' => null,
                 'workspace' => null,
-            )
+            ]
         );
         $userHomeTabConfig = $this->homeTabConfigRepo->findOneBy(
-            array(
+            [
                 'homeTab' => $homeTab,
                 'user' => $user,
-            )
+            ]
         );
 
         if (is_null($adminHomeTabConfig) && is_null($userHomeTabConfig)) {
@@ -408,18 +408,18 @@ class HomeTabManager
     public function checkHomeTabVisibilityByUser(HomeTab $homeTab, User $user)
     {
         $adminHomeTabConfig = $this->homeTabConfigRepo->findOneBy(
-            array(
+            [
                 'homeTab' => $homeTab,
                 'type' => 'admin_desktop',
                 'user' => null,
                 'workspace' => null,
-            )
+            ]
         );
         $userHomeTabConfig = $this->homeTabConfigRepo->findOneBy(
-            array(
+            [
                 'homeTab' => $homeTab,
                 'user' => $user,
-            )
+            ]
         );
 
         if (is_null($adminHomeTabConfig) && is_null($userHomeTabConfig)) {
@@ -440,10 +440,10 @@ class HomeTabManager
     public function checkHomeTabVisibilityByWorkspace(HomeTab $homeTab, Workspace $workspace)
     {
         $homeTabConfig = $this->homeTabConfigRepo->findOneBy(
-            array(
+            [
                 'homeTab' => $homeTab,
                 'workspace' => $workspace,
-            )
+            ]
         );
 
         if (is_null($homeTabConfig)) {
@@ -561,12 +561,12 @@ class HomeTabManager
 
     public function getAdminHomeTabByIdAndType($homeTabId, $homeTabType)
     {
-        $criterias = array(
+        $criterias = [
             'id' => $homeTabId,
             'user' => null,
             'workspace' => null,
             'type' => 'admin_'.$homeTabType,
-        );
+        ];
 
         return $this->homeTabRepo->findOneBy($criterias);
     }
@@ -574,13 +574,13 @@ class HomeTabManager
     public function getHomeTabByIdAndWorkspace($homeTabId, Workspace $workspace)
     {
         return $this->homeTabRepo->findOneBy(
-            array('id' => $homeTabId, 'workspace' => $workspace)
+            ['id' => $homeTabId, 'workspace' => $workspace]
         );
     }
 
     public function getHomeTabByIdAndType($homeTabId, $type)
     {
-        return $this->homeTabRepo->findOneBy(array('id' => $homeTabId, 'type' => $type));
+        return $this->homeTabRepo->findOneBy(['id' => $homeTabId, 'type' => $type]);
     }
 
     /**
@@ -676,21 +676,21 @@ class HomeTabManager
         Workspace $workspace
     ) {
         return $this->homeTabConfigRepo->findOneBy(
-            array('homeTab' => $homeTab, 'workspace' => $workspace)
+            ['homeTab' => $homeTab, 'workspace' => $workspace]
         );
     }
 
     public function getHomeTabConfigByHomeTabAndUser(HomeTab $homeTab, User $user)
     {
         return $this->homeTabConfigRepo->findOneBy(
-            array('homeTab' => $homeTab, 'user' => $user)
+            ['homeTab' => $homeTab, 'user' => $user]
         );
     }
 
     public function getHomeTabConfigsByWorkspaceAndHomeTabs(Workspace $workspace, array $homeTabs)
     {
         if (count($homeTabs) === 0) {
-            $homeTabConfigs = array();
+            $homeTabConfigs = [];
         } else {
             $homeTabConfigs = $this->homeTabConfigRepo
                 ->findHomeTabConfigsByWorkspaceAndHomeTabs(

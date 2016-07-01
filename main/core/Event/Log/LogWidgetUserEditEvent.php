@@ -26,7 +26,7 @@ class LogWidgetUserEditEvent extends LogGenericEvent
     {
         $widget = $widgetInstance->getWidget();
         $homeTab = !is_null($whtc) ? $whtc->getHomeTab() : null;
-        $details = array();
+        $details = [];
 
         if (!is_null($homeTab)) {
             $details['tabId'] = $homeTab->getId();
@@ -74,6 +74,6 @@ class LogWidgetUserEditEvent extends LogGenericEvent
      */
     public static function getRestriction()
     {
-        return array(self::PLATFORM_EVENT_TYPE);
+        return [self::PLATFORM_EVENT_TYPE];
     }
 }

@@ -11,13 +11,13 @@
 
 namespace Claroline\CoreBundle\Manager;
 
-use Mockery as m;
 use Claroline\CoreBundle\Entity\Home\HomeTab;
 use Claroline\CoreBundle\Entity\Home\HomeTabConfig;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig;
+use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Claroline\CoreBundle\Library\Testing\MockeryTestCase;
+use Mockery as m;
 
 class HomeTabManagerTest extends MockeryTestCase
 {
@@ -230,10 +230,10 @@ class HomeTabManagerTest extends MockeryTestCase
             $this->mock('Claroline\CoreBundle\Entity\Home\HomeTabConfig');
         $adminHomeTabConfigB =
             $this->mock('Claroline\CoreBundle\Entity\Home\HomeTabConfig');
-        $adminHomeTabConfigs = array($adminHomeTabConfigA, $adminHomeTabConfigB);
+        $adminHomeTabConfigs = [$adminHomeTabConfigA, $adminHomeTabConfigB];
         $homeTab = new HomeTab();
         $newHomeTabConfig = new HomeTabConfig();
-        $manager = $this->getManager(array('createUserVersion'));
+        $manager = $this->getManager(['createUserVersion']);
 
         $this->homeTabConfigRepo
             ->shouldReceive('findAdminDesktopHomeTabConfigs')
@@ -258,10 +258,10 @@ class HomeTabManagerTest extends MockeryTestCase
         $this->homeTabConfigRepo
             ->shouldReceive('findOneBy')
             ->with(
-                array(
+                [
                     'homeTab' => $homeTab,
                     'user' => $user,
-                )
+                ]
             )
             ->once()
             ->andReturn(null);
@@ -271,7 +271,7 @@ class HomeTabManagerTest extends MockeryTestCase
             ->andReturn($newHomeTabConfig);
 
         $this->assertEquals(
-            array($adminHomeTabConfigA, $newHomeTabConfig),
+            [$adminHomeTabConfigA, $newHomeTabConfig],
             $manager->generateAdminHomeTabConfigsByUser($user)
         );
     }
@@ -282,7 +282,7 @@ class HomeTabManagerTest extends MockeryTestCase
             $this->mock('Claroline\CoreBundle\Entity\Home\HomeTabConfig');
         $homeTabConfigB =
             $this->mock('Claroline\CoreBundle\Entity\Home\HomeTabConfig');
-        $homeTabConfigs = array($homeTabConfigA, $homeTabConfigB);
+        $homeTabConfigs = [$homeTabConfigA, $homeTabConfigB];
 
         $homeTabConfigA
             ->shouldReceive('isVisible')
@@ -294,7 +294,7 @@ class HomeTabManagerTest extends MockeryTestCase
             ->andReturn(false);
 
         $this->assertEquals(
-            array($homeTabConfigA),
+            [$homeTabConfigA],
             $this->getManager()->filterVisibleHomeTabConfigs($homeTabConfigs)
         );
     }
@@ -307,22 +307,22 @@ class HomeTabManagerTest extends MockeryTestCase
         $this->homeTabConfigRepo
             ->shouldReceive('findOneBy')
             ->with(
-                array(
+                [
                     'homeTab' => $homeTab,
                     'type' => 'admin_desktop',
                     'user' => null,
                     'workspace' => null,
-                )
+                ]
             )
             ->once()
             ->andReturn(null);
         $this->homeTabConfigRepo
             ->shouldReceive('findOneBy')
             ->with(
-                array(
+                [
                     'homeTab' => $homeTab,
                     'user' => $user,
-                )
+                ]
             )
             ->once()
             ->andReturn(null);
@@ -343,22 +343,22 @@ class HomeTabManagerTest extends MockeryTestCase
         $this->homeTabConfigRepo
             ->shouldReceive('findOneBy')
             ->with(
-                array(
+                [
                     'homeTab' => $homeTab,
                     'type' => 'admin_desktop',
                     'user' => null,
                     'workspace' => null,
-                )
+                ]
             )
             ->once()
             ->andReturn($adminHomeTabConfig);
         $this->homeTabConfigRepo
             ->shouldReceive('findOneBy')
             ->with(
-                array(
+                [
                     'homeTab' => $homeTab,
                     'user' => $user,
-                )
+                ]
             )
             ->once()
             ->andReturn(null);
@@ -380,22 +380,22 @@ class HomeTabManagerTest extends MockeryTestCase
         $this->homeTabConfigRepo
             ->shouldReceive('findOneBy')
             ->with(
-                array(
+                [
                     'homeTab' => $homeTab,
                     'type' => 'admin_desktop',
                     'user' => null,
                     'workspace' => null,
-                )
+                ]
             )
             ->once()
             ->andReturn(null);
         $this->homeTabConfigRepo
             ->shouldReceive('findOneBy')
             ->with(
-                array(
+                [
                     'homeTab' => $homeTab,
                     'user' => $user,
-                )
+                ]
             )
             ->once()
             ->andReturn($userHomeTabConfig);
@@ -419,22 +419,22 @@ class HomeTabManagerTest extends MockeryTestCase
         $this->homeTabConfigRepo
             ->shouldReceive('findOneBy')
             ->with(
-                array(
+                [
                     'homeTab' => $homeTab,
                     'type' => 'admin_desktop',
                     'user' => null,
                     'workspace' => null,
-                )
+                ]
             )
             ->once()
             ->andReturn($adminHomeTabConfig);
         $this->homeTabConfigRepo
             ->shouldReceive('findOneBy')
             ->with(
-                array(
+                [
                     'homeTab' => $homeTab,
                     'user' => $user,
-                )
+                ]
             )
             ->once()
             ->andReturn($userHomeTabConfig);
@@ -456,22 +456,22 @@ class HomeTabManagerTest extends MockeryTestCase
         $this->homeTabConfigRepo
             ->shouldReceive('findOneBy')
             ->with(
-                array(
+                [
                     'homeTab' => $homeTab,
                     'type' => 'admin_workspace',
                     'user' => null,
                     'workspace' => null,
-                )
+                ]
             )
             ->once()
             ->andReturn(null);
         $this->homeTabConfigRepo
             ->shouldReceive('findOneBy')
             ->with(
-                array(
+                [
                     'homeTab' => $homeTab,
                     'workspace' => $workspace,
-                )
+                ]
             )
             ->once()
             ->andReturn(null);
@@ -495,22 +495,22 @@ class HomeTabManagerTest extends MockeryTestCase
         $this->homeTabConfigRepo
             ->shouldReceive('findOneBy')
             ->with(
-                array(
+                [
                     'homeTab' => $homeTab,
                     'type' => 'admin_workspace',
                     'user' => null,
                     'workspace' => null,
-                )
+                ]
             )
             ->once()
             ->andReturn($adminHomeTabConfig);
         $this->homeTabConfigRepo
             ->shouldReceive('findOneBy')
             ->with(
-                array(
+                [
                     'homeTab' => $homeTab,
                     'workspace' => $workspace,
-                )
+                ]
             )
             ->once()
             ->andReturn(null);
@@ -534,22 +534,22 @@ class HomeTabManagerTest extends MockeryTestCase
         $this->homeTabConfigRepo
             ->shouldReceive('findOneBy')
             ->with(
-                array(
+                [
                     'homeTab' => $homeTab,
                     'type' => 'admin_workspace',
                     'user' => null,
                     'workspace' => null,
-                )
+                ]
             )
             ->once()
             ->andReturn(null);
         $this->homeTabConfigRepo
             ->shouldReceive('findOneBy')
             ->with(
-                array(
+                [
                     'homeTab' => $homeTab,
                     'workspace' => $workspace,
-                )
+                ]
             )
             ->once()
             ->andReturn($workspaceHomeTabConfig);
@@ -575,22 +575,22 @@ class HomeTabManagerTest extends MockeryTestCase
         $this->homeTabConfigRepo
             ->shouldReceive('findOneBy')
             ->with(
-                array(
+                [
                     'homeTab' => $homeTab,
                     'type' => 'admin_workspace',
                     'user' => null,
                     'workspace' => null,
-                )
+                ]
             )
             ->once()
             ->andReturn($adminHomeTabConfig);
         $this->homeTabConfigRepo
             ->shouldReceive('findOneBy')
             ->with(
-                array(
+                [
                     'homeTab' => $homeTab,
                     'workspace' => $workspace,
-                )
+                ]
             )
             ->once()
             ->andReturn($workspaceHomeTabConfig);
@@ -667,7 +667,7 @@ class HomeTabManagerTest extends MockeryTestCase
 
     public function testGetAdminDesktopHomeTabConfigs()
     {
-        $homeTabs = array('home_tab_A', 'home_tab_B');
+        $homeTabs = ['home_tab_A', 'home_tab_B'];
 
         $this->homeTabConfigRepo
             ->shouldReceive('findAdminDesktopHomeTabConfigs')
@@ -682,7 +682,7 @@ class HomeTabManagerTest extends MockeryTestCase
 
     public function testGetAdminWorkspaceHomeTabConfigs()
     {
-        $homeTabConfigs = array('home_tab_config_A', 'home_tab_config_B');
+        $homeTabConfigs = ['home_tab_config_A', 'home_tab_config_B'];
 
         $this->homeTabConfigRepo
             ->shouldReceive('findAdminWorkspaceHomeTabConfigs')
@@ -714,7 +714,7 @@ class HomeTabManagerTest extends MockeryTestCase
     public function testGetDesktopHomeTabConfigsByUser()
     {
         $user = new User();
-        $homeTabConfigs = array('home_tab_config_A', 'home_tab_config_B');
+        $homeTabConfigs = ['home_tab_config_A', 'home_tab_config_B'];
 
         $this->homeTabConfigRepo
             ->shouldReceive('findDesktopHomeTabConfigsByUser')
@@ -732,7 +732,7 @@ class HomeTabManagerTest extends MockeryTestCase
     {
         $workspace =
             $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
-        $homeTabConfigs = array('home_tab_config_A', 'home_tab_config_B');
+        $homeTabConfigs = ['home_tab_config_A', 'home_tab_config_B'];
 
         $this->homeTabConfigRepo
             ->shouldReceive('findWorkspaceHomeTabConfigsByWorkspace')
@@ -748,7 +748,7 @@ class HomeTabManagerTest extends MockeryTestCase
 
     public function testGetVisibleAdminDesktopHomeTabConfigs()
     {
-        $homeTabConfigs = array('home_tab_config_A', 'home_tab_config_B');
+        $homeTabConfigs = ['home_tab_config_A', 'home_tab_config_B'];
 
         $this->homeTabConfigRepo
             ->shouldReceive('findVisibleAdminDesktopHomeTabConfigs')
@@ -763,7 +763,7 @@ class HomeTabManagerTest extends MockeryTestCase
 
     public function testGetVisibleAdminWorkspaceHomeTabConfigs()
     {
-        $homeTabConfigs = array('home_tab_config_A', 'home_tab_config_B');
+        $homeTabConfigs = ['home_tab_config_A', 'home_tab_config_B'];
 
         $this->homeTabConfigRepo
             ->shouldReceive('findVisibleAdminWorkspaceHomeTabConfigs')
@@ -779,7 +779,7 @@ class HomeTabManagerTest extends MockeryTestCase
     public function testGetVisibleDesktopHomeTabConfigsByUser()
     {
         $user = new User();
-        $homeTabConfigs = array('home_tab_config_A', 'home_tab_config_B');
+        $homeTabConfigs = ['home_tab_config_A', 'home_tab_config_B'];
 
         $this->homeTabConfigRepo
             ->shouldReceive('findVisibleDesktopHomeTabConfigsByUser')
@@ -797,7 +797,7 @@ class HomeTabManagerTest extends MockeryTestCase
     {
         $workspace =
             $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
-        $homeTabConfigs = array('home_tab_config_A', 'home_tab_config_B');
+        $homeTabConfigs = ['home_tab_config_A', 'home_tab_config_B'];
 
         $this->homeTabConfigRepo
             ->shouldReceive('findVisibleWorkspaceHomeTabConfigsByWorkspace')
@@ -880,7 +880,7 @@ class HomeTabManagerTest extends MockeryTestCase
 
         $this->homeTabConfigRepo
             ->shouldReceive('findOneBy')
-            ->with(array('homeTab' => $homeTab, 'workspace' => $workspace))
+            ->with(['homeTab' => $homeTab, 'workspace' => $workspace])
             ->once()
             ->andReturn($homeTabConfig);
 
@@ -899,7 +899,7 @@ class HomeTabManagerTest extends MockeryTestCase
 
         $this->homeTabConfigRepo
             ->shouldReceive('findOneBy')
-            ->with(array('homeTab' => $homeTab, 'user' => $user))
+            ->with(['homeTab' => $homeTab, 'user' => $user])
             ->once()
             ->andReturn($homeTabConfig);
 
@@ -913,7 +913,7 @@ class HomeTabManagerTest extends MockeryTestCase
     public function testGetAdminWidgetConfigs()
     {
         $homeTab = new HomeTab();
-        $adminWidgetConfigs = array('whtc_a', 'whtc_b');
+        $adminWidgetConfigs = ['whtc_a', 'whtc_b'];
 
         $this->widgetHomeTabConfigRepo
             ->shouldReceive('findAdminWidgetConfigs')
@@ -930,7 +930,7 @@ class HomeTabManagerTest extends MockeryTestCase
     public function testGetVisibleAdminWidgetConfigs()
     {
         $homeTab = new HomeTab();
-        $adminWidgetConfigs = array('whtc_a', 'whtc_b');
+        $adminWidgetConfigs = ['whtc_a', 'whtc_b'];
 
         $this->widgetHomeTabConfigRepo
             ->shouldReceive('findVisibleAdminWidgetConfigs')
@@ -948,7 +948,7 @@ class HomeTabManagerTest extends MockeryTestCase
     {
         $homeTab = new HomeTab();
         $user = new User();
-        $adminWidgetConfigs = array('whtc_a', 'whtc_b');
+        $adminWidgetConfigs = ['whtc_a', 'whtc_b'];
 
         $this->widgetHomeTabConfigRepo
             ->shouldReceive('findWidgetConfigsByUser')
@@ -966,7 +966,7 @@ class HomeTabManagerTest extends MockeryTestCase
     {
         $homeTab = new HomeTab();
         $user = new User();
-        $adminWidgetConfigs = array('whtc_a', 'whtc_b');
+        $adminWidgetConfigs = ['whtc_a', 'whtc_b'];
 
         $this->widgetHomeTabConfigRepo
             ->shouldReceive('findVisibleWidgetConfigsByUser')
@@ -985,7 +985,7 @@ class HomeTabManagerTest extends MockeryTestCase
         $homeTab = new HomeTab();
         $workspace =
             $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
-        $adminWidgetConfigs = array('whtc_a', 'whtc_b');
+        $adminWidgetConfigs = ['whtc_a', 'whtc_b'];
 
         $this->widgetHomeTabConfigRepo
             ->shouldReceive('findWidgetConfigsByWorkspace')
@@ -1004,7 +1004,7 @@ class HomeTabManagerTest extends MockeryTestCase
         $homeTab = new HomeTab();
         $workspace =
             $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
-        $adminWidgetConfigs = array('whtc_a', 'whtc_b');
+        $adminWidgetConfigs = ['whtc_a', 'whtc_b'];
 
         $this->widgetHomeTabConfigRepo
             ->shouldReceive('findVisibleWidgetConfigsByWorkspace')
@@ -1092,7 +1092,7 @@ class HomeTabManagerTest extends MockeryTestCase
         );
     }
 
-    private function getManager(array $mockedMethods = array())
+    private function getManager(array $mockedMethods = [])
     {
         $this->om->shouldReceive('getRepository')
             ->with('ClarolineCoreBundle:Home\HomeTab')
@@ -1126,7 +1126,7 @@ class HomeTabManagerTest extends MockeryTestCase
 
         return $this->mock(
             'Claroline\CoreBundle\Manager\HomeTabManager'.$stringMocked,
-            array($this->om)
+            [$this->om]
         );
     }
 }

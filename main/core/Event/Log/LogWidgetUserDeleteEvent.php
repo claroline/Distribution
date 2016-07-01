@@ -18,7 +18,7 @@ class LogWidgetUserDeleteEvent extends LogGenericEvent
     /**
      * Constructor.
      */
-    public function __construct($details = array())
+    public function __construct($details = [])
     {
         parent::__construct(
             self::ACTION,
@@ -31,6 +31,6 @@ class LogWidgetUserDeleteEvent extends LogGenericEvent
      */
     public static function getRestriction()
     {
-        return array(self::PLATFORM_EVENT_TYPE);
+        return [self::PLATFORM_EVENT_TYPE];
     }
 }

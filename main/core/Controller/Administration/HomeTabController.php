@@ -27,18 +27,18 @@ use Claroline\CoreBundle\Form\HomeTabType;
 use Claroline\CoreBundle\Form\WidgetInstanceConfigType;
 use Claroline\CoreBundle\Manager\ApiManager;
 use Claroline\CoreBundle\Manager\HomeTabManager;
-use Claroline\CoreBundle\Manager\WidgetManager;
 use Claroline\CoreBundle\Manager\PluginManager;
+use Claroline\CoreBundle\Manager\WidgetManager;
+use JMS\DiExtraBundle\Annotation as DI;
+use JMS\SecurityExtraBundle\Annotation as SEC;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use JMS\DiExtraBundle\Annotation as DI;
-use JMS\SecurityExtraBundle\Annotation as SEC;
 
 /**
  * @DI\Tag("security.secure_service")

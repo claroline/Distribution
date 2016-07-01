@@ -15,11 +15,11 @@ use Claroline\CoreBundle\Event\DisplayWidgetEvent;
 use Claroline\CoreBundle\Library\Security\Utilities;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
 use Claroline\CoreBundle\Manager\WorkspaceTagManager;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service()
@@ -88,7 +88,7 @@ class WorkspaceWidgetListener
         }
         $content = $this->templating->render(
             $template,
-            array('workspaces' => $workspaces, 'mode' => $mode, 'widgetInstance' => $widgetInstance)
+            ['workspaces' => $workspaces, 'mode' => $mode, 'widgetInstance' => $widgetInstance]
         );
         $event->setContent($content);
         $event->stopPropagation();

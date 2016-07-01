@@ -23,7 +23,7 @@ class LogHomeTabUserEditEvent extends LogGenericEvent
     public function __construct(HomeTabConfig $htc)
     {
         $homeTab = $htc->getHomeTab();
-        $details = array();
+        $details = [];
         $details['tabId'] = $homeTab->getId();
         $details['tabName'] = $homeTab->getName();
         $details['tabType'] = $homeTab->getType();
@@ -46,6 +46,6 @@ class LogHomeTabUserEditEvent extends LogGenericEvent
      */
     public static function getRestriction()
     {
-        return array(self::PLATFORM_EVENT_TYPE);
+        return [self::PLATFORM_EVENT_TYPE];
     }
 }

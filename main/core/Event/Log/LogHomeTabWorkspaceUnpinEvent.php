@@ -21,7 +21,7 @@ class LogHomeTabWorkspaceUnpinEvent extends LogGenericEvent
     /**
      * Constructor.
      */
-    public function __construct(User $user, Workspace $workspace, $details = array())
+    public function __construct(User $user, Workspace $workspace, $details = [])
     {
         parent::__construct(
             self::ACTION,
@@ -39,6 +39,6 @@ class LogHomeTabWorkspaceUnpinEvent extends LogGenericEvent
      */
     public static function getRestriction()
     {
-        return array(self::PLATFORM_EVENT_TYPE);
+        return [self::PLATFORM_EVENT_TYPE];
     }
 }

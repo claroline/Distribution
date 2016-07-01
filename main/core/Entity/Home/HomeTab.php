@@ -149,10 +149,10 @@ class HomeTab
 
     public function serializeForWidgetPicker()
     {
-        $return = array(
+        $return = [
             'id' => $this->id,
             'name' => $this->name,
-        );
+        ];
 
         return $return;
     }

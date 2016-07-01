@@ -20,7 +20,7 @@ class LogWidgetWorkspaceDeleteEvent extends LogGenericEvent
     /**
      * Constructor.
      */
-    public function __construct(Workspace $workspace, $details = array())
+    public function __construct(Workspace $workspace, $details = [])
     {
         parent::__construct(
             self::ACTION,
@@ -38,6 +38,6 @@ class LogWidgetWorkspaceDeleteEvent extends LogGenericEvent
      */
     public static function getRestriction()
     {
-        return array(self::PLATFORM_EVENT_TYPE);
+        return [self::PLATFORM_EVENT_TYPE];
     }
 }

@@ -23,7 +23,7 @@ class LogHomeTabAdminCreateEvent extends LogGenericEvent
     public function __construct(HomeTabConfig $htc)
     {
         $homeTab = $htc->getHomeTab();
-        $details = array();
+        $details = [];
         $details['tabId'] = $homeTab->getId();
         $details['tabName'] = $homeTab->getName();
         $details['tabType'] = $homeTab->getType();
@@ -46,6 +46,6 @@ class LogHomeTabAdminCreateEvent extends LogGenericEvent
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_ADMIN);
+        return [self::DISPLAYED_ADMIN];
     }
 }

@@ -65,7 +65,7 @@ class DesktopController extends Controller
      */
     public function renderToolListAction(User $user)
     {
-        return array('tools' => $this->toolManager->getDisplayedDesktopOrderedTools($user));
+        return ['tools' => $this->toolManager->getDisplayedDesktopOrderedTools($user)];
     }
 
     /**
@@ -112,7 +112,7 @@ class DesktopController extends Controller
     {
         $route = $this->router->generate(
             'claro_desktop_open_tool',
-            array('toolName' => 'home')
+            ['toolName' => 'home']
         );
 
         return new RedirectResponse($route);

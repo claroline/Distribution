@@ -12,9 +12,9 @@
 namespace  Claroline\CoreBundle\Listener;
 
 use Claroline\CoreBundle\Entity\Widget\SimpleTextConfig;
-use Claroline\CoreBundle\Event\DisplayWidgetEvent;
 use Claroline\CoreBundle\Event\ConfigureWidgetEvent;
 use Claroline\CoreBundle\Event\CopyWidgetConfigurationEvent;
+use Claroline\CoreBundle\Event\DisplayWidgetEvent;
 use Claroline\CoreBundle\Form\SimpleTextType;
 use Claroline\CoreBundle\Manager\SimpleTextManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
