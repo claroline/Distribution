@@ -21,7 +21,7 @@ export default function observe (selector, callback, containers = [document.body
             }
           })
           // check if the element has the exclude class
-          let exclude = el.className.indexOf(excludeClass) > -1
+          const exclude = el.className.indexOf(excludeClass) > -1
 
           if (keepGoing && !exclude) {
             callback(el)
