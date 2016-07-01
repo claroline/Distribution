@@ -9,7 +9,7 @@
 
 /*global Routing*/
 import angular from 'angular/index'
-import $ from 'jquery/dist/jquery'
+import $ from 'jquery'
 
 export default class AdminHomeTabsConfigCtrl {
 
