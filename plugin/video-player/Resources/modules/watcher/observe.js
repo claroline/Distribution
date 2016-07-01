@@ -1,3 +1,4 @@
+import $ from 'jquery'
 export default function observe (selector, callback, containers = [document.body]) {
   window.MutationObserver = window.MutationObserver || window.WebKitMutationObserver
 
