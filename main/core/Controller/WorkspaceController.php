@@ -354,7 +354,6 @@ class WorkspaceController extends Controller
         $workspaceType = new WorkspaceType($user);
         $form = $this->formFactory->create($workspaceType, new Workspace());
         $form->handleRequest($this->request);
-        $ds = DIRECTORY_SEPARATOR;
         $modelLog = $this->container->getParameter('kernel.root_dir').'/logs/models.log';
         $logger = FileLogger::get($modelLog);
         $this->workspaceManager->setLogger($logger);
@@ -444,9 +443,9 @@ class WorkspaceController extends Controller
         $workspace = $this->workspaceManager->getWorkspaceByCode($workspace->getCode());
         $this->toolManager->addMissingWorkspaceTools($workspace);
 
-        if ($_breadcrumbs != null) {
+        if (!empty($_breadcrumbs)) {
             //for manager.js, id = 0 => "no root".
-            if ($_breadcrumbs[0] != 0) {
+            if ($_breadcrumbs[0] !== 0) {
                 $rootId = $_breadcrumbs[0];
             } else {
                 $rootId = $_breadcrumbs[1];
@@ -704,7 +703,6 @@ class WorkspaceController extends Controller
                 }
             }
         }
-        $roles = $this->utils->getRoles($this->tokenStorage->getToken());
         $tool = $this->workspaceManager->getFirstOpenableTool($workspace);
 
         if ($tool) {
@@ -1412,7 +1410,7 @@ class WorkspaceController extends Controller
 
     private function createWorkspaceFromModel(WorkspaceModel $model, FormInterface $form)
     {
-        $workspace = $this->workspaceManager->createWorkspaceFromModel(
+        $this->workspaceManager->createWorkspaceFromModel(
             $model,
             $this->tokenStorage->getToken()->getUser(),
             $form->get('name')->getData(),

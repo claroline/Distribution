@@ -538,8 +538,7 @@ class UserManager
                 '',
                 false,
                 false,
-                false,
-                $errors
+                false
             );
         }
 
@@ -1284,7 +1283,7 @@ class UserManager
                 $existingUser->setFirstName($firstName);
                 $existingUser->setLastName($lastName);
                 $existingUser->setUsername($username);
-                if ($pwd != '') {
+                if ($pwd !== '') {
                     $existingUser->setPlainPassword($pwd);
                 }
                 $existingUser->setMail($email);
@@ -1567,7 +1566,7 @@ class UserManager
             }
         }
 
-        $event = $this->strictEventDispatcher->dispatch(
+        $this->strictEventDispatcher->dispatch(
             'user_edit_search_event',
             'UserEditSearch',
             [$qb]
@@ -1630,7 +1629,7 @@ class UserManager
                     $this->objectManager->persist($user);
                     $detach[] = $user;
 
-                    if ($i % 250 == 0) {
+                    if ($i % 250 === 0) {
                         $this->log("Flushing... [UOW = {$this->objectManager->getUnitOfWork()->size()}]");
                         $this->objectManager->forceFlush();
 

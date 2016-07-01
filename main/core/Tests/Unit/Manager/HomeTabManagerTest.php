@@ -171,7 +171,7 @@ class HomeTabManagerTest extends MockeryTestCase
         $this->om->shouldReceive('persist')->once()->with(
             m::on(
                 function (HomeTabConfig $newHomeTabConfig) {
-                    return $newHomeTabConfig->getType() == 'admin_workspace'
+                    return $newHomeTabConfig->getType() === 'admin_workspace'
                         && $newHomeTabConfig->isVisible()
                         && !$newHomeTabConfig->isLocked()
                         && $newHomeTabConfig->getTabOrder() === 1;
@@ -208,7 +208,7 @@ class HomeTabManagerTest extends MockeryTestCase
         $this->om->shouldReceive('persist')->once()->with(
             m::on(
                 function (HomeTabConfig $newHomeTabConfig) {
-                    return $newHomeTabConfig->getType() == 'admin_desktop'
+                    return $newHomeTabConfig->getType() === 'admin_desktop'
                         && $newHomeTabConfig->isVisible()
                         && !$newHomeTabConfig->isLocked()
                         && $newHomeTabConfig->getTabOrder() === 1;

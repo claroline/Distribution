@@ -459,7 +459,7 @@ class HomeTabManager
             ->homeTabConfigRepo
             ->checkHomeTabVisibilityByIdAndWorkspace($homeTabId, $workspace);
 
-        if (is_null($homeTabConfig) || count($homeTabConfig) != 1) {
+        if (is_null($homeTabConfig) || count($homeTabConfig) !== 1) {
             return false;
         }
 

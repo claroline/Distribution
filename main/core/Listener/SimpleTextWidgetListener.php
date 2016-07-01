@@ -31,29 +31,25 @@ class SimpleTextWidgetListener
     private $formFactory;
     private $templating;
     private $om;
-    private $router;
 
     /**
      * @DI\InjectParams({
      *      "simpleTextManager" = @DI\Inject("claroline.manager.simple_text_manager"),
      *      "formFactory"       = @DI\Inject("form.factory"),
      *      "templating"        = @DI\Inject("templating"),
-     *      "om"                = @DI\Inject("claroline.persistence.object_manager"),
-     *      "router"            = @DI\Inject("router")
+     *      "om"                = @DI\Inject("claroline.persistence.object_manager")
      * })
      */
     public function __construct(
         SimpleTextManager $simpleTextManager,
         FormFactory $formFactory,
         TwigEngine $templating,
-        ObjectManager $om,
-        $router
+        ObjectManager $om
     ) {
         $this->simpleTextManager = $simpleTextManager;
         $this->formFactory = $formFactory;
         $this->templating = $templating;
         $this->om = $om;
-        $this->router = $router;
     }
 
     /**
@@ -119,8 +115,6 @@ class SimpleTextWidgetListener
 
     private function replaceResourceLinks($content, $resourceInfos)
     {
-        $baseUrl = $this->router->getContext()->getBaseUrl();
-
         foreach ($resourceInfos['copies'] as $resource) {
             $type = $resource['original']->getResourceType()->getName();
 
