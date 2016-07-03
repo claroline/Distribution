@@ -25,6 +25,13 @@ var StepShowCtrl = function StepShowCtrl(step, inheritedResources, PathService, 
             var authorized = (this.pathService.getRoot().id == step.id) ? 1 : 0;
             // Create progression for User
             this.progression = this.userProgressionService.create(step, null, authorized);
+        } else {
+            //Case of unlocked step
+            var status = this.progression.status
+            if (this.progression.status == 'unseen' && this.progression.authorized) {
+                //we must change the status when the user access the step
+                this.userProgressionService.update(step, 'seen', 1);
+            }
         }
     }
 
