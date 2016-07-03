@@ -7,7 +7,7 @@
         </div>
     </div>
     <div class="list-group-item">
-        <a class="btn btn-default" href="{{path('innova_path_editor_wizard', {'id':data.path.id}) }}">Retourner au parcours</a>
+        <a class="btn btn-default" href="{{path('innova_path_editor_wizard', {'id':data.path.id}) }}">{{'path_back'|trans({}, 'innova_tools')}}</a>
         <h1>{{ 'path_dashboard'|trans({}, 'innova_tools') }} : {{ data.path.resourceNode.name }}</h1>
 
         {% if data.userdata is iterable %}

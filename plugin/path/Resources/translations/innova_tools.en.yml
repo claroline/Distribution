@@ -58,6 +58,7 @@ others_paths : Other paths
 # P
 paths: Paths
 path: Path
+path_back: Back to path
 path_not_found: Path not found
 path_delete_success: Path has been deleted
 path_delete_error: Le parcours has not been deleted due to technical problem. Please try again

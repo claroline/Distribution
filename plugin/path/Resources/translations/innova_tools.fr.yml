@@ -54,6 +54,7 @@ others_paths : Autres parcours
 # P
 paths: Parcours
 path: Parcours
+path_back: Retour au parcours
 progression: Avancement
 path_dashboard: Tableau de bord du parcours
 paths_list: Liste des parcours
