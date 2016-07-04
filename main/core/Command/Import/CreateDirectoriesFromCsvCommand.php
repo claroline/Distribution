@@ -9,32 +9,33 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Command;
+namespace Claroline\CoreBundle\Command\Import;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Claroline\CoreBundle\Validator\Constraints\CsvWorkspace;
+use Claroline\CoreBundle\Library\Logger\ConsoleLogger;
+use Claroline\CoreBundle\Validator\Constraints\CsvDirectory;
 
 /**
  * Creates an user, optionaly with a specific role (default to simple user).
  */
-class CreateWorkspaceFromCsvCommand extends ContainerAwareCommand
+class CreateDirectoriesFromCsvCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
-        $this->setName('claroline:workspaces:load')
-            ->setDescription('Create workspaces from a csv file');
+        $this->setName('claroline:csv:directories')
+            ->setDescription('Create directories from a csv file');
         $this->setDefinition(
-            array(new InputArgument('csv_workspace_path', InputArgument::REQUIRED, 'The absolute path to the csv file.'))
+            array(new InputArgument('csv_directories_path', InputArgument::REQUIRED, 'The absolute path to the csv file.'))
         );
     }
 
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         //@todo ask authentication source
-        $params = array('csv_workspace_path' => 'Absolute path to the workspace file: ');
+        $params = array('csv_directories_path' => 'Absolute path to the workspace file: ');
 
         foreach ($params as $argument => $argumentName) {
             if (!$input->getArgument($argument)) {
@@ -66,9 +67,9 @@ class CreateWorkspaceFromCsvCommand extends ContainerAwareCommand
     {
         //validate the csv file...
         $validator = $this->getContainer()->get('validator');
-        $file = $input->getArgument('csv_workspace_path');
-        $lines = str_getcsv(file_get_contents($file), PHP_EOL);
-        $errors = $validator->validateValue($file, new CsvWorkspace());
+        $file = $input->getArgument('csv_directories_path');
+
+        $errors = $validator->validateValue($file, new CsvDirectory());
 
         if (count($errors)) {
             foreach ($errors as $error) {
@@ -77,15 +78,10 @@ class CreateWorkspaceFromCsvCommand extends ContainerAwareCommand
             throw new \Exception('The csv file is incorrect');
         }
 
-        foreach ($lines as $line) {
-            if (trim($line) !== '') {
-                $workspaces[] = str_getcsv($line, ';');
-            }
-        }
+        $consoleLogger = ConsoleLogger::get($output);
 
-        $workspaceManager = $this->getContainer()->get('claroline.manager.workspace_manager');
-        $workspaceManager->importWorkspaces($workspaces, function ($message) use ($output) {
-            $output->writeln($message);
-        });
+        $widgetManager = $this->getContainer()->get('claroline.manager.resource_manager');
+        $widgetManager->setLogger($consoleLogger);
+        $widgetManager->importDirectoriesFromCsv($file);
     }
 }

@@ -308,68 +308,6 @@ class AdministrationHomeTabControllerTest extends MockeryTestCase
         );
     }
 
-    public function testListDesktopAddableWidgetsAction()
-    {
-        $homeTab = $this->mock('Claroline\CoreBundle\Entity\Home\HomeTab');
-        $widgetDisplayConfigs = array('widget_display_a', 'widget_display_b');
-        $widgetConfig =
-            $this->mock('Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig');
-        $widget = $this->mock('Claroline\CoreBundle\Entity\Widget\Widget');
-
-        $this->homeTabManager
-            ->shouldReceive('getAdminWidgetConfigs')
-            ->with($homeTab)
-            ->once()
-            ->andReturn(array($widgetConfig));
-        $widgetConfig->shouldReceive('getWidget')->once()->andReturn($widget);
-        $widget->shouldReceive('getId')->once()->andReturn(1);
-        $homeTab->shouldReceive('getType')->once()->andReturn('admin_desktop');
-        $this->homeTabManager
-            ->shouldReceive('getAdminDesktopWidgetInstance')
-            ->with(array(1))
-            ->once()
-            ->andReturn($widgetDisplayConfigs);
-
-        $this->assertEquals(
-            array(
-                'homeTab' => $homeTab,
-                'widgetDisplayConfigs' => $widgetDisplayConfigs,
-            ),
-            $this->getController()->listAddableWidgetsAction($homeTab)
-        );
-    }
-
-    public function testListWorkspaceAddableWidgetsAction()
-    {
-        $homeTab = $this->mock('Claroline\CoreBundle\Entity\Home\HomeTab');
-        $widgetDisplayConfigs = array('widget_display_a', 'widget_display_b');
-        $widgetConfig =
-            $this->mock('Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig');
-        $widget = $this->mock('Claroline\CoreBundle\Entity\Widget\Widget');
-
-        $this->homeTabManager
-            ->shouldReceive('getAdminWidgetConfigs')
-            ->with($homeTab)
-            ->once()
-            ->andReturn(array($widgetConfig));
-        $widgetConfig->shouldReceive('getWidget')->once()->andReturn($widget);
-        $widget->shouldReceive('getId')->once()->andReturn(1);
-        $homeTab->shouldReceive('getType')->once()->andReturn('admin_workspace');
-        $this->homeTabManager
-            ->shouldReceive('getAdminWorkspaceWidgetInstance')
-            ->with(array(1))
-            ->once()
-            ->andReturn($widgetDisplayConfigs);
-
-        $this->assertEquals(
-            array(
-                'homeTab' => $homeTab,
-                'widgetDisplayConfigs' => $widgetDisplayConfigs,
-            ),
-            $this->getController()->listAddableWidgetsAction($homeTab)
-        );
-    }
-
     public function testAssociateWidgetToHomeTabAction()
     {
         $homeTab = new HomeTab();

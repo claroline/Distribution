@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Command;
+namespace Claroline\CoreBundle\Command\Import;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -21,7 +21,8 @@ class RegisterUserToWorkspaceFromCsvCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this->setName('claroline:workspace:register')
-            ->setDescription('Registers users to workspaces from a csv file');
+            ->setDescription('Registers users to workspaces from a csv file')
+            ->setAliases(['claroline:csv:workspace_register']);
         $this->setDefinition(
             array(
                 new InputArgument(

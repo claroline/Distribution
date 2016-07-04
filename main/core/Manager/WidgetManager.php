@@ -21,18 +21,26 @@ use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Claroline\BundleRecorder\Log\LoggableTrait;
+use Psr\Log\LoggerInterface;
+use Claroline\CoreBundle\Entity\Home\HomeTab;
+use Claroline\CoreBundle\Entity\Widget\SimpleTextConfig;
 
 /**
  * @DI\Service("claroline.manager.widget_manager")
  */
 class WidgetManager
 {
+    use LoggableTrait;
+
     private $om;
     private $widgetDisplayConfigRepo;
     private $widgetInstanceRepo;
     private $widgetRepo;
     private $router;
     private $translator;
+    private $container;
 
     /**
      * Constructor.
@@ -40,62 +48,23 @@ class WidgetManager
      * @DI\InjectParams({
      *     "om"         = @DI\Inject("claroline.persistence.object_manager"),
      *     "router"     = @DI\Inject("router"),
-     *     "translator" = @DI\Inject("translator")
+     *     "translator" = @DI\Inject("translator"),
+     *     "container"  = @DI\Inject("service_container")
      * })
      */
-    public function __construct(ObjectManager $om, RouterInterface $router, TranslatorInterface $translator)
-    {
+    public function __construct(
+        ObjectManager $om,
+        RouterInterface $router,
+        TranslatorInterface $translator,
+        ContainerInterface $container
+    ) {
         $this->om = $om;
         $this->widgetDisplayConfigRepo = $om->getRepository('ClarolineCoreBundle:Widget\WidgetDisplayConfig');
         $this->widgetInstanceRepo = $om->getRepository('ClarolineCoreBundle:Widget\WidgetInstance');
         $this->widgetRepo = $om->getRepository('ClarolineCoreBundle:Widget\Widget');
         $this->router = $router;
         $this->translator = $translator;
-    }
-
-    /**
-     * Creates a widget instance.
-     *
-     * @param \Claroline\CoreBundle\Entity\Widget\Widget       $widget
-     * @param bool                                             $isAdmin
-     * @param bool                                             $isDesktop
-     * @param \Claroline\CoreBundle\Entity\User                $user
-     * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $ws
-     *
-     * @return \Claroline\CoreBundle\Entity\Widget\WidgetInstance
-     *
-     * @throws \Exception
-     */
-    public function createInstance(
-        Widget $widget,
-        $isAdmin,
-        $isDesktop,
-        User $user = null,
-        Workspace $ws = null
-    ) {
-        if (!$widget->isDisplayableInDesktop()) {
-            if ($isDesktop || $user) {
-                throw new \Exception("This widget doesn't support the desktop");
-            }
-        }
-
-        if (!$widget->isDisplayableInWorkspace()) {
-            if (!$isDesktop || $ws) {
-                throw new \Exception("This widget doesn't support the workspace");
-            }
-        }
-
-        $instance = new WidgetInstance($widget);
-        $instance->setName($this->translator->trans($widget->getName(), array(), 'widget'));
-        $instance->setIsAdmin($isAdmin);
-        $instance->setIsDesktop($isDesktop);
-        $instance->setWidget($widget);
-        $instance->setUser($user);
-        $instance->setWorkspace($ws);
-        $this->om->persist($instance);
-        $this->om->flush();
-
-        return $instance;
+        $this->container = $container;
     }
 
     /**
@@ -104,15 +73,6 @@ class WidgetManager
     public function removeInstance(WidgetInstance $widgetInstance)
     {
         $this->om->remove($widgetInstance);
-        $this->om->flush();
-    }
-
-    /**
-     * @param \Claroline\CoreBundle\Entity\Widget\WidgetInstance $widgetInstance
-     */
-    public function insertWidgetInstance(WidgetInstance $widgetInstance)
-    {
-        $this->om->persist($widgetInstance);
         $this->om->flush();
     }
 
@@ -130,142 +90,6 @@ class WidgetManager
     public function getAll()
     {
         return  $this->widgetRepo->findAll();
-    }
-
-    /**
-     * Finds all widgets displayable in the desktop.
-     *
-     * @return \Claroline\CoreBundle\Entity\Widget\Widget
-     */
-    public function getDesktopWidgets()
-    {
-        return $this->widgetRepo->findBy(array('isDisplayableInDesktop' => true));
-    }
-
-    /**
-     * Finds all widgets displayable in a workspace.
-     *
-     * @return \Claroline\CoreBundle\Entity\Widget\Widget
-     */
-    public function getWorkspaceWidgets()
-    {
-        return $this->widgetRepo->findBy(array('isDisplayableInWorkspace' => true));
-    }
-
-    /**
-     * @param \Claroline\CoreBundle\Entity\User $user
-     *
-     * @return \Claroline\CoreBundle\Entity\Widget\WidgetInstance[]
-     */
-    public function getDesktopInstances(User $user)
-    {
-        return  $this->widgetInstanceRepo->findBy(array('user' => $user));
-    }
-
-    /**
-     * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $workspace
-     *
-     * @return \Claroline\CoreBundle\Entity\Widget\WidgetInstance[]
-     */
-    public function getWorkspaceInstances(Workspace $workspace)
-    {
-        return  $this->widgetInstanceRepo->findBy(array('workspace' => $workspace));
-    }
-
-    /**
-     * @todo define what I do
-     *
-     * @param array $excludedWidgetInstances
-     *
-     * @return \Claroline\CoreBundle\Entity\Widget\WidgetInstance[]
-     */
-    public function getAdminDesktopWidgetInstance(array $excludedWidgetInstances)
-    {
-        if (count($excludedWidgetInstances) === 0) {
-            return $this->widgetInstanceRepo->findBy(
-                array(
-                    'isAdmin' => true,
-                    'isDesktop' => true,
-                )
-            );
-        }
-
-        return $this->widgetInstanceRepo
-            ->findAdminDesktopWidgetInstance($excludedWidgetInstances);
-    }
-
-    /**
-     * @todo define what I do
-     *
-     * @param array $excludedWidgetInstances
-     *
-     * @return \Claroline\CoreBundle\Entity\Widget\WidgetInstance[]
-     */
-    public function getAdminWorkspaceWidgetInstance(array $excludedWidgetInstances)
-    {
-        if (count($excludedWidgetInstances) === 0) {
-            return $this->widgetInstanceRepo->findBy(
-                array(
-                    'isAdmin' => true,
-                    'isDesktop' => false,
-                )
-            );
-        }
-
-        return $this->widgetInstanceRepo
-            ->findAdminWorkspaceWidgetInstance($excludedWidgetInstances);
-    }
-
-    /**
-     * @todo define what I do
-     *
-     * @param \Claroline\CoreBundle\Entity\User $user
-     * @param array                             $excludedWidgetInstances
-     *
-     * @return \Claroline\CoreBundle\Entity\Widget\WidgetInstance[]
-     */
-    public function getDesktopWidgetInstance(
-        User $user,
-        array $excludedWidgetInstances
-    ) {
-        if (count($excludedWidgetInstances) === 0) {
-            return $this->widgetInstanceRepo->findBy(
-                array(
-                    'user' => $user,
-                    'isAdmin' => false,
-                    'isDesktop' => true,
-                )
-            );
-        }
-
-        return $this->widgetInstanceRepo
-            ->findDesktopWidgetInstance($user, $excludedWidgetInstances);
-    }
-
-    /**
-     * @todo define what I do
-     *
-     * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $workspace
-     * @param array                                            $excludedWidgetInstances
-     *
-     * @return \Claroline\CoreBundle\Entity\Widget\WidgetInstance[]
-     */
-    public function getWorkspaceWidgetInstance(
-        Workspace $workspace,
-        array $excludedWidgetInstances
-    ) {
-        if (count($excludedWidgetInstances) === 0) {
-            return $this->widgetInstanceRepo->findBy(
-                array(
-                    'workspace' => $workspace,
-                    'isAdmin' => false,
-                    'isDesktop' => false,
-                )
-            );
-        }
-
-        return $this->widgetInstanceRepo
-            ->findWorkspaceWidgetInstance($workspace, $excludedWidgetInstances);
     }
 
     public function generateWidgetDisplayConfigsForUser(User $user, array $widgetHTCs)
@@ -450,15 +274,15 @@ class WidgetManager
         WidgetHomeTabConfig $widgetHomeTabConfig = null,
         WidgetDisplayConfig $widgetDisplayConfig = null
     ) {
-        if (!is_null($widgetInstance)) {
+        if ($widgetInstance) {
             $this->om->persist($widgetInstance);
         }
 
-        if (!is_null($widgetHomeTabConfig)) {
+        if ($widgetHomeTabConfig) {
             $this->om->persist($widgetHomeTabConfig);
         }
 
-        if (!is_null($widgetDisplayConfig)) {
+        if ($widgetDisplayConfig) {
             $this->om->persist($widgetDisplayConfig);
         }
         $this->om->flush();
@@ -532,5 +356,123 @@ class WidgetManager
                 $executeQuery
             ) :
             array();
+    }
+
+    public function importTextFromCsv($file)
+    {
+        $data = file_get_contents($file);
+        $data = $this->container->get('claroline.utilities.misc')->formatCsvOutput($data);
+        $lines = str_getcsv($data, PHP_EOL);
+        $textWidget = $this->om->getRepository('ClarolineCoreBundle:Widget\Widget')->findOneByName('simple_text');
+        $this->om->startFlushSuite();
+        $i = 0;
+
+        foreach ($lines as $line) {
+            $values = str_getcsv($line, ';');
+            $code = $values[0];
+            $workspace = $this->om->getRepository('ClarolineCoreBundle:Workspace\Workspace')->findOneByCode($code);
+            $name = $values[1];
+            $title = $values[2];
+            $width = isset($values[4]) ? $values[4] : 4;
+            $height = isset($values[5]) ? $values[5] : 3;
+            $tab = $this->om->getRepository('ClarolineCoreBundle:Home\HomeTab')->findOneBy(['workspace' => $workspace, 'name' => $name]);
+            $widgetInstance = $this->om->getRepository('ClarolineCoreBundle:Widget\WidgetInstance')
+                ->findOneBy(['workspace' => $workspace, 'name' => $title]);
+
+            if (!$widgetInstance) {
+                $widgetInstance = $this->createWidgetInstance(
+                    $title,
+                    $textWidget,
+                    $tab,
+                    $workspace
+                );
+            } else {
+                $this->log("Widget {$title} already exists in workspace {$code}: Updating...");
+            }
+
+            $simpleTextConfig = $this->container->get('claroline.manager.simple_text_manager')->getTextConfig($widgetInstance);
+
+            if (!$simpleTextConfig) {
+                $simpleTextConfig = new SimpleTextConfig();
+                $simpleTextConfig->setWidgetInstance($widgetInstance);
+            }
+
+            $widgetDisplayConfigs = $widgetInstance->getWidgetDisplayConfigs();
+            $widgetDisplayConfig = $widgetDisplayConfigs[0];
+
+            if (!$widgetDisplayConfig) {
+                $widgetDisplayConfig = new WidgetDisplayConfig();
+                $widgetDisplayConfig->setWidgetInstance($widgetInstance);
+                $widgetDisplayConfig->setWorkspace($workspace);
+                $widgetDisplayConfig->setWidth($width);
+                $widgetDisplayConfig->setHeight($height);
+                $this->om->persist($widgetDisplayConfig);
+            }
+
+            $widgetDisplayConfig->setHeight($height);
+            $widgetDisplayConfig->setWidth($width);
+            $this->om->persist($widgetDisplayConfig);
+            $content = file_get_contents($values[3]);
+            $simpleTextConfig->setContent($content);
+            $this->om->persist($simpleTextConfig);
+
+            ++$i;
+
+            if ($i % 100 === 0) {
+                $this->om->forceFlush();
+                $this->om->clear();
+                $textWidget = $this->om->getRepository('ClarolineCoreBundle:Widget\Widget')->findOneByName('simple_text');
+                $this->om->merge($textWidget);
+            }
+        }
+
+        $this->om->endFlushSuite();
+    }
+
+    public function createWidgetInstance(
+        $name,
+        Widget $widget,
+        HomeTab $homeTab,
+        Workspace $workspace = null,
+        $isAdmin = false,
+        $isLocked = false
+    ) {
+        $this->log("Create widget {$name} in {$workspace->getCode()}");
+        $widgetInstance = new WidgetInstance();
+        $widgetHomeTabConfig = new WidgetHomeTabConfig();
+
+        if ($workspace) {
+            $type = 'workspace';
+            $isDesktop = false;
+        } else {
+            $type = 'user';
+            $isDesktop = true;
+        }
+
+        $widgetInstance->setWorkspace($workspace);
+        $widgetInstance->setName($name);
+        $widgetInstance->setIsAdmin($isAdmin);
+        $widgetInstance->setIsDesktop($isDesktop);
+        $widgetInstance->setWidget($widget);
+        $widgetHomeTabConfig->setHomeTab($homeTab);
+        $widgetHomeTabConfig->setWidgetInstance($widgetInstance);
+        $widgetHomeTabConfig->setWorkspace($workspace);
+        $widgetHomeTabConfig->setLocked($isLocked);
+        $widgetHomeTabConfig->setWidgetOrder(1);
+        $widgetHomeTabConfig->setType($type);
+        $this->om->persist($widgetInstance);
+        $this->om->persist($widgetHomeTabConfig);
+
+        return $widgetInstance;
+    }
+
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    public function getLogger()
+    {
+        return $this->logger;
     }
 }

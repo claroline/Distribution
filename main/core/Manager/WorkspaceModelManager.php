@@ -763,7 +763,7 @@ class WorkspaceModelManager
         $modelWorkspace = $model->getWorkspace();
         $resourcesModels = $model->getResourcesModel();
         $homeTabs = $model->getHomeTabs();
-        $resourcesInfos = array();
+        $resourcesInfos = ['copies' => []];
 
         $this->duplicateWorkspaceRoles($modelWorkspace, $workspace, $user);
         $this->duplicateOrderedTools($modelWorkspace, $workspace);

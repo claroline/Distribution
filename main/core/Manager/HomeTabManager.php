@@ -19,12 +19,17 @@ use Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use Claroline\BundleRecorder\Log\LoggableTrait;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * @DI\Service("claroline.manager.home_tab_manager")
  */
 class HomeTabManager
 {
+    use LoggableTrait;
+
     /** @var HomeTabRepository */
     private $homeTabRepo;
     /** @var HomeTabConfigRepository */
@@ -32,16 +37,20 @@ class HomeTabManager
     /** @var WidgetHomeTabConfigRepository */
     private $widgetHomeTabConfigRepo;
     private $om;
+    private $container;
 
     /**
      * Constructor.
      *
      * @DI\InjectParams({
-     *     "om" = @DI\Inject("claroline.persistence.object_manager")
+     *     "om"        = @DI\Inject("claroline.persistence.object_manager"),
+     *     "container" =  @DI\Inject("service_container")
      * })
      */
-    public function __construct(ObjectManager $om)
-    {
+    public function __construct(
+        ContainerInterface $container,
+        ObjectManager $om
+    ) {
         $this->homeTabRepo = $om->getRepository(
             'ClarolineCoreBundle:Home\HomeTab'
         );
@@ -51,6 +60,7 @@ class HomeTabManager
         $this->widgetHomeTabConfigRepo = $om->getRepository(
             'ClarolineCoreBundle:Widget\WidgetHomeTabConfig'
         );
+        $this->container = $container;
         $this->om = $om;
     }
 
@@ -102,6 +112,78 @@ class HomeTabManager
     {
         $homeTabConfig->setLocked($locked);
         $this->om->flush();
+    }
+
+    public function importFromCsv($file)
+    {
+        $data = file_get_contents($file);
+        $data = $this->container->get('claroline.utilities.misc')->formatCsvOutput($data);
+        $lines = str_getcsv($data, PHP_EOL);
+        $this->om->startFlushSuite();
+        $i = 0;
+
+        foreach ($lines as $line) {
+            $values = str_getcsv($line, ';');
+            $code = $values[0];
+            $workspace = $this->om->getRepository('ClarolineCoreBundle:Workspace\Workspace')->findOneByCode($code);
+
+            $name = $values[1];
+            $tab = $this->om->getRepository('ClarolineCoreBundle:Home\HomeTab')->findBy(['workspace' => $workspace, 'name' => $name]);
+            if (!$tab) {
+                $this->createHomeTab($name, $workspace);
+                ++$i;
+            } else {
+                $this->log("Tab {$name} already exists for workspace {$code}");
+            }
+
+            if ($i % 100 === 0) {
+                $this->om->forceFlush();
+                $this->om->clear();
+            }
+        }
+
+        $this->om->endFlushSuite();
+    }
+
+    public function createHomeTab($name, Workspace $workspace = null, User $user = null)
+    {
+        $type = $workspace ? 'workspace' : 'user';
+        $homeTab = new HomeTab();
+        $homeTab->setName($name);
+        $homeTab->setWorkspace($workspace);
+        $homeTab->setType($type);
+
+        $homeTabConfig = new HomeTabConfig();
+        $homeTabConfig->setHomeTab($homeTab);
+        $homeTabConfig->setType('workspace');
+        $homeTabConfig->setWorkspace($workspace);
+
+        $tabsInserted = $this->homeTabRepo->findByWorkspace($workspace);
+        $tabsToInsert = $this->getTabsScheduledForInsert($workspace);
+        $index = count($tabsInserted) + count($tabsToInsert);
+        $homeTabConfig->setTabOrder($index);
+
+        $this->om->persist($homeTabConfig);
+        $this->om->persist($homeTab);
+        $this->om->flush();
+
+        $this->log("Creating HomeTab {$name} for workspace {$workspace->getCode()}.");
+    }
+
+    public function getTabsScheduledForInsert(Workspace $workspace)
+    {
+        $scheduledForInsert = $this->om->getUnitOfWork()->getScheduledEntityInsertions();
+        $res = [];
+
+        foreach ($scheduledForInsert as $entity) {
+            if (get_class($entity) === 'Claroline\CoreBundle\Entity\Home\HomeTab') {
+                if ($entity->getWorkspace()->getCode() === $workspace->getCode()) {
+                    $res[] = $entity;
+                }
+            }
+        }
+
+        return $res;
     }
 
     public function reorderDesktopHomeTabConfigs(
@@ -867,5 +949,15 @@ class HomeTabManager
             $homeTab,
             $type
         );
+    }
+
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    public function getLogger()
+    {
+        return $this->logger;
     }
 }

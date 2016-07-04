@@ -137,6 +137,12 @@ class CsvUserValidator extends ConstraintValidator
                     $groupName = null;
                 }
 
+                if (isset($user[10])) {
+                    $organizationName = trim($user[10]) === '' ? null : $user[10];
+                } else {
+                    $organizationName = null;
+                }
+
                 (!array_key_exists($email, $mails)) ?
                     $mails[$email] = array($i + 1) :
                     $mails[$email][] = $i + 1;
@@ -259,6 +265,19 @@ class CsvUserValidator extends ConstraintValidator
                 $msg = $this->translator->trans(
                     'group_invalid',
                     array('%group%' => $groupName, '%line%' => $i + 1),
+                    'platform'
+                ).' ';
+                $this->context->addViolation($msg);
+            }
+        }
+
+        if ($organizationName) {
+            $organization = $this->om->getRepository('ClarolineCoreBundle:Organization\Organization')->findOneByName($organizationName);
+
+            if (!$organization) {
+                $msg = $this->translator->trans(
+                    'organization_invalid',
+                    array('%organization%' => $organizationName, '%line%' => $i + 1),
                     'platform'
                 ).' ';
                 $this->context->addViolation($msg);
