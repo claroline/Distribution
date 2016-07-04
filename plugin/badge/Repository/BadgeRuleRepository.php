@@ -2,9 +2,9 @@
 
 namespace Icap\BadgeBundle\Repository;
 
-use Icap\BadgeBundle\Entity\Badge;
 use Claroline\CoreBundle\Entity\Log\Log;
 use Doctrine\ORM\EntityRepository;
+use Icap\BadgeBundle\Entity\Badge;
 
 class BadgeRuleRepository extends EntityRepository
 {

@@ -13,14 +13,14 @@ namespace Claroline\CursusBundle\Controller\API;
 
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CursusBundle\Entity\Cursus;
-use Claroline\CursusBundle\Entity\CursusGroup;
-use Claroline\CursusBundle\Entity\CursusUser;
 use Claroline\CursusBundle\Entity\Course;
 use Claroline\CursusBundle\Entity\CourseRegistrationQueue;
 use Claroline\CursusBundle\Entity\CourseSession;
 use Claroline\CursusBundle\Entity\CourseSessionRegistrationQueue;
 use Claroline\CursusBundle\Entity\CourseSessionUser;
+use Claroline\CursusBundle\Entity\Cursus;
+use Claroline\CursusBundle\Entity\CursusGroup;
+use Claroline\CursusBundle\Entity\CursusUser;
 use Claroline\CursusBundle\Manager\CursusManager;
 use FOS\RestBundle\Controller\Annotations\NamePrefix;
 use FOS\RestBundle\Controller\Annotations\View;
@@ -478,7 +478,7 @@ class CursusController extends FOSRestController
      */
     public function getAllCursusHierarchyAction()
     {
-        $hierarchy = array();
+        $hierarchy = [];
         $allCursus = $this->cursusManager->getAllCursus();
 
         foreach ($allCursus as $cursus) {
@@ -486,14 +486,14 @@ class CursusController extends FOSRestController
 
             if (is_null($parent)) {
                 if (!isset($hierarchy['root'])) {
-                    $hierarchy['root'] = array();
+                    $hierarchy['root'] = [];
                 }
                 $hierarchy['root'][] = $cursus;
             } else {
                 $parentId = $parent->getId();
 
                 if (!isset($hierarchy[$parentId])) {
-                    $hierarchy[$parentId] = array();
+                    $hierarchy[$parentId] = [];
                 }
                 $hierarchy[$parentId][] = $cursus;
             }
@@ -538,7 +538,7 @@ class CursusController extends FOSRestController
     {
         $this->cursusManager->registerUserToCursus($cursus, $user);
 
-        return array('success');
+        return ['success'];
     }
 
     /**
@@ -553,7 +553,7 @@ class CursusController extends FOSRestController
     {
         $this->cursusManager->unregisterUserFromCursus($cursus, $user);
 
-        return array('success');
+        return ['success'];
     }
 
     /**
@@ -566,9 +566,9 @@ class CursusController extends FOSRestController
      */
     public function addUserToSessionAction(User $user, CourseSession $session, $type = 0)
     {
-        $this->cursusManager->registerUsersToSession($session, array($user), $type);
+        $this->cursusManager->registerUsersToSession($session, [$user], $type);
 
-        return array('success');
+        return ['success'];
     }
 
     /**
@@ -580,9 +580,9 @@ class CursusController extends FOSRestController
      */
     public function removeUserFromSessionAction(CourseSessionUser $sessionUser)
     {
-        $this->cursusManager->unregisterUsersFromSession(array($sessionUser));
+        $this->cursusManager->unregisterUsersFromSession([$sessionUser]);
 
-        return array('success');
+        return ['success'];
     }
 
     /**
@@ -595,9 +595,9 @@ class CursusController extends FOSRestController
      */
     public function addUserToCursusHierarchyAction(User $user, Cursus $cursus)
     {
-        $hierarchy = array();
-        $lockedHierarchy = array();
-        $unlockedCursus = array();
+        $hierarchy = [];
+        $lockedHierarchy = [];
+        $unlockedCursus = [];
         $allRelatedCursus = $this->cursusManager->getRelatedHierarchyByCursus($cursus);
         foreach ($allRelatedCursus as $oneCursus) {
             $parent = $oneCursus->getParent();
@@ -605,14 +605,14 @@ class CursusController extends FOSRestController
 
             if (is_null($parent)) {
                 if (!isset($hierarchy['root'])) {
-                    $hierarchy['root'] = array();
+                    $hierarchy['root'] = [];
                 }
                 $hierarchy['root'][] = $oneCursus;
             } else {
                 $parentId = $parent->getId();
 
                 if (!isset($hierarchy[$parentId])) {
-                    $hierarchy[$parentId] = array();
+                    $hierarchy[$parentId] = [];
                 }
                 $hierarchy[$parentId][] = $oneCursus;
             }
@@ -625,6 +625,6 @@ class CursusController extends FOSRestController
         );
         $this->cursusManager->registerUserToMultipleCursus($unlockedCursus, $user, true, true);
 
-        return array('success');
+        return ['success'];
     }
 }

@@ -11,16 +11,16 @@
 
 namespace Claroline\CoreBundle\Manager;
 
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\Log\LogResourceExportEvent;
 use Claroline\CoreBundle\Event\Log\LogResourceReadEvent;
 use Claroline\CoreBundle\Event\Log\LogUserLoginEvent;
 use Claroline\CoreBundle\Event\Log\LogWorkspaceToolReadEvent;
+use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Repository\AbstractResourceRepository;
+use Claroline\CoreBundle\Repository\Log\LogRepository;
 use Claroline\CoreBundle\Repository\UserRepository;
 use Claroline\CoreBundle\Repository\WorkspaceRepository;
-use Claroline\CoreBundle\Repository\Log\LogRepository;
-use Claroline\CoreBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -64,7 +64,7 @@ class AnalyticsManager
         $endDate = new \DateTime('now');
         $endDate->setTime(23, 59, 59);
 
-        return array($startDate->getTimestamp(), $endDate->getTimestamp());
+        return [$startDate->getTimestamp(), $endDate->getTimestamp()];
     }
 
     public function getYesterdayRange()
@@ -78,7 +78,7 @@ class AnalyticsManager
         $endDate->setTime(23, 59, 59);
         $endDate->sub(new \DateInterval('P1D')); // P1D means a period of 1 days
 
-        return array($startDate->getTimestamp(), $endDate->getTimestamp());
+        return [$startDate->getTimestamp(), $endDate->getTimestamp()];
     }
 
     public function getDailyActionNumberForDateRange(
@@ -114,7 +114,7 @@ class AnalyticsManager
         if ($topType == null) {
             $topType = 'top_users_connections';
         }
-        $listData = array();
+        $listData = [];
 
         switch ($topType) {
             case 'top_extension':
@@ -233,13 +233,13 @@ class AnalyticsManager
     {
         $range = $this->getDefaultRange();
         $action = 'workspace-enter';
-        $workspaceIds = array($workspace->getId());
+        $workspaceIds = [$workspace->getId()];
         $chartData = $this->getDailyActionNumberForDateRange($range, $action, false, $workspaceIds);
         $resourcesByType = $this->resourceTypeRepo->countResourcesByType($workspace);
 
-        return array('chartData' => $chartData,
+        return ['chartData' => $chartData,
             'resourceCount' => $resourcesByType,
             'workspace' => $workspace,
-        );
+        ];
     }
 }

@@ -12,10 +12,10 @@
 namespace Claroline\CoreBundle\Entity\Oauth;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use FOS\OAuthServerBundle\Entity\Client as BaseClient;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation\Groups;
+use FOS\OAuthServerBundle\Entity\Client as BaseClient;
 use JMS\Serializer\Annotation\Accessor;
+use JMS\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Table(name="claro_api_client")

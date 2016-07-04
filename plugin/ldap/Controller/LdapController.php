@@ -13,19 +13,19 @@ namespace Claroline\LdapBundle\Controller;
 
 use Claroline\LdapBundle\Form\LdapType;
 use Claroline\LdapBundle\Manager\LdapManager;
+use JMS\DiExtraBundle\Annotation as DI;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
+use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Templating\EngineInterface;
-use JMS\DiExtraBundle\Annotation as DI;
-use JMS\SecurityExtraBundle\Annotation as SEC;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @DI\Tag("security.secure_service")
@@ -69,7 +69,7 @@ class LdapController extends Controller
      */
     public function menuAction()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -84,7 +84,7 @@ class LdapController extends Controller
         $servers = isset($config['servers']) ? $config['servers'] : null;
         $userCreation = isset($config['userCreation']) ? $config['userCreation'] : null;
 
-        return array('servers' => $servers, 'userCreation' => $userCreation);
+        return ['servers' => $servers, 'userCreation' => $userCreation];
     }
 
     /**
@@ -101,13 +101,13 @@ class LdapController extends Controller
             $data = $form->getData();
 
             if ($this->ldap->exists($name, $data)) {
-                $form->addError(new FormError($this->translator->trans('ldap_already_exists', array(), 'ldap')));
+                $form->addError(new FormError($this->translator->trans('ldap_already_exists', [], 'ldap')));
             } else {
                 $user = isset($data['user']) ? $data['user'] : null;
                 $password = isset($data['password']) ? $data['password'] : null;
 
                 if (!$this->ldap->connect($data, $user, $password)) {
-                    $form->addError(new FormError($this->translator->trans('ldap_cant_connect', array(), 'ldap')));
+                    $form->addError(new FormError($this->translator->trans('ldap_cant_connect', [], 'ldap')));
                 } else {
                     $this->ldap->saveConfig($data);
                     $this->ldap->deleteIfReplace($name, $data);
@@ -117,7 +117,7 @@ class LdapController extends Controller
             }
         }
 
-        return array('form' => $form->createView(), 'name' => $name);
+        return ['form' => $form->createView(), 'name' => $name];
     }
 
     /**
@@ -142,7 +142,7 @@ class LdapController extends Controller
      */
     public function serversAction()
     {
-        return array('servers' => $this->ldap->getConfig()['servers']);
+        return ['servers' => $this->ldap->getConfig()['servers']];
     }
 
     /**
@@ -153,7 +153,7 @@ class LdapController extends Controller
      */
     public function usersAction($name)
     {
-        $users = array();
+        $users = [];
         $server = $this->ldap->get($name);
         $user = isset($server['user']) ? $server['user'] : null;
         $password = isset($server['password']) ? $server['password'] : null;
@@ -163,15 +163,15 @@ class LdapController extends Controller
             $users = $this->ldap->getUsers($server);
             $this->ldap->close();
 
-            return array(
+            return [
                 'server' => $server,
                 'users' => $users,
                 'usersJSON' => json_encode($users),
                 'classes' => $classes,
-            );
+            ];
         }
 
-        return array('error' => true);
+        return ['error' => true];
     }
 
     /**
@@ -191,15 +191,15 @@ class LdapController extends Controller
             $groups = $this->ldap->getGroups($server);
             $this->ldap->close();
 
-            return array(
+            return [
                 'server' => $server,
                 'groups' => $groups,
                 'groupsJSON' => json_encode($groups),
                 'classes' => $classes,
-            );
+            ];
         }
 
-        return array('error' => true);
+        return ['error' => true];
     }
 
     /**
@@ -210,7 +210,7 @@ class LdapController extends Controller
      */
     public function exportAction()
     {
-        return array('servers' => $this->ldap->getConfig()['servers']);
+        return ['servers' => $this->ldap->getConfig()['servers']];
     }
 
     /**
@@ -221,7 +221,7 @@ class LdapController extends Controller
      */
     public function previewAction($type, $name)
     {
-        $users = array();
+        $users = [];
         $server = $this->ldap->get($name);
         $user = isset($server['user']) ? $server['user'] : null;
         $password = isset($server['password']) ? $server['password'] : null;
@@ -230,15 +230,15 @@ class LdapController extends Controller
             $users = $this->ldap->getUsers($server);
             $this->ldap->close();
 
-            return array(
+            return [
                 'mapping' => $this->ldap->userMapping($server),
                 'type' => $type,
                 'users' => $users,
                 'server' => $server,
-            );
+            ];
         }
 
-        return array('error' => true);
+        return ['error' => true];
     }
 
     /**
@@ -249,7 +249,7 @@ class LdapController extends Controller
      */
     public function exportFileAction($type, $name)
     {
-        $users = array();
+        $users = [];
         $server = $this->ldap->get($name);
         $user = isset($server['user']) ? $server['user'] : null;
         $password = isset($server['password']) ? $server['password'] : null;
@@ -261,7 +261,7 @@ class LdapController extends Controller
             $response = new response(
                 $this->templating->render(
                     'ClarolineLdapBundle:export:'.$type.'.html.twig',
-                    array('users' => $users, 'server' => $server)
+                    ['users' => $users, 'server' => $server]
                 )
             );
         } else {
@@ -298,7 +298,7 @@ class LdapController extends Controller
      */
     public function getEntriesAction($objectClass, $name)
     {
-        $entries = array();
+        $entries = [];
         $server = $this->ldap->get($name);
         $user = isset($server['user']) ? $server['user'] : null;
         $password = isset($server['password']) ? $server['password'] : null;

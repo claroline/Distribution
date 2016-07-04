@@ -11,9 +11,9 @@
 
 namespace Claroline\AgendaBundle\Validator\Constraints;
 
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Validator("claroline_daterange_validator")

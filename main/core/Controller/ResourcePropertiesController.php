@@ -86,11 +86,11 @@ class ResourcePropertiesController extends Controller
      */
     public function renameFormAction(ResourceNode $node)
     {
-        $collection = new ResourceCollection(array($node));
+        $collection = new ResourceCollection([$node]);
         $this->checkAccess('EDIT', $collection);
         $form = $this->formFactory->create(new ResourceNameType(), $node);
 
-        return array('form' => $form->createView(), 'nodeId' => $node->getId());
+        return ['form' => $form->createView(), 'nodeId' => $node->getId()];
     }
 
     /**
@@ -109,7 +109,7 @@ class ResourcePropertiesController extends Controller
      */
     public function renameAction(ResourceNode $node)
     {
-        $collection = new ResourceCollection(array($node));
+        $collection = new ResourceCollection([$node]);
         $this->checkAccess('EDIT', $collection);
         $form = $this->formFactory->create(new ResourceNameType(), $node);
         $form->handleRequest($this->request);
@@ -118,14 +118,14 @@ class ResourcePropertiesController extends Controller
             $this->resourceManager->rename($node, $form->get('name')->getData());
 
             return new JsonResponse(
-                array(
+                [
                     'id' => $node->getId(),
                     'name' => $node->getName(),
-                )
+                ]
             );
         }
 
-        return array('form' => $form->createView(), 'nodeId' => $node->getId());
+        return ['form' => $form->createView(), 'nodeId' => $node->getId()];
     }
 
     /**
@@ -144,7 +144,7 @@ class ResourcePropertiesController extends Controller
      */
     public function propertiesFormAction(ResourceNode $node)
     {
-        $collection = new ResourceCollection(array($node));
+        $collection = new ResourceCollection([$node]);
         $this->checkAccess('EDIT', $collection);
         $username = $node->getCreator()->getUsername();
         $isDir = $node->getResourceType()->getName() === 'directory';
@@ -154,11 +154,11 @@ class ResourcePropertiesController extends Controller
             $node
         );
 
-        return array(
+        return [
             'form' => $form->createView(),
             'nodeId' => $node->getId(),
             'isDir' => $isDir,
-        );
+        ];
     }
 
     /**
@@ -181,7 +181,7 @@ class ResourcePropertiesController extends Controller
      */
     public function changePropertiesAction(ResourceNode $node, User $user)
     {
-        $collection = new ResourceCollection(array($node));
+        $collection = new ResourceCollection([$node]);
         $this->checkAccess('EDIT', $collection);
         $creatorUsername = $node->getCreator()->getUsername();
         $wasPublished = $node->isPublished();
@@ -232,11 +232,11 @@ class ResourcePropertiesController extends Controller
 
         $isDir = $node->getResourceType()->getName() === 'directory';
 
-        return array(
+        return [
             'form' => $form->createView(),
             'nodeId' => $node->getId(),
             'isDir' => $isDir,
-        );
+        ];
     }
 
     /**
@@ -255,7 +255,7 @@ class ResourcePropertiesController extends Controller
      */
     public function iconEditFormAction(ResourceNode $node)
     {
-        $collection = new ResourceCollection(array($node));
+        $collection = new ResourceCollection([$node]);
         $this->checkAccess('EDIT', $collection);
         $username = $node->getCreator()->getUsername();
         $isDir = $node->getResourceType()->getName() === 'directory';
@@ -265,11 +265,11 @@ class ResourcePropertiesController extends Controller
             $node
         );
 
-        return array(
+        return [
             'form' => $form->createView(),
             'nodeId' => $node->getId(),
             'isDir' => $isDir,
-        );
+        ];
     }
 
     /**
@@ -292,7 +292,7 @@ class ResourcePropertiesController extends Controller
      */
     public function iconEditAction(ResourceNode $node, User $user)
     {
-        $collection = new ResourceCollection(array($node));
+        $collection = new ResourceCollection([$node]);
         $this->checkAccess('EDIT', $collection);
         $creatorUsername = $node->getCreator()->getUsername();
         $form = $this->formFactory->create(
@@ -313,11 +313,11 @@ class ResourcePropertiesController extends Controller
         }
         $isDir = $node->getResourceType()->getName() === 'directory';
 
-        return array(
+        return [
             'form' => $form->createView(),
             'nodeId' => $node->getId(),
             'isDir' => $isDir,
-        );
+        ];
     }
 
     /**

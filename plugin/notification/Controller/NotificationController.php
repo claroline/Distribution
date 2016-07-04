@@ -3,10 +3,10 @@
 namespace Icap\NotificationBundle\Controller;
 
 use Doctrine\ORM\NoResultException;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -75,9 +75,9 @@ class NotificationController extends Controller
             $result = $notificationManager->getUserNotificationsListRss($rssId);
             $result['systemName'] = $notificationManager->getPlatformName();
         } catch (NoResultException $nre) {
-            $result = array('error' => 'no_rss_defined');
+            $result = ['error' => 'no_rss_defined'];
         } catch (NotFoundHttpException $nfe) {
-            $result = array('error' => 'zero_notifications');
+            $result = ['error' => 'zero_notifications'];
         }
 
         return $this->render('IcapNotificationBundle:Notification:rss.xml.twig', $result);

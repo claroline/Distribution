@@ -13,15 +13,15 @@ namespace Claroline\CoreBundle\Command;
 
 use Claroline\CoreBundle\Library\Maintenance\MaintenanceHandler;
 use Doctrine\Bundle\DoctrineBundle\Command\CreateDatabaseDoctrineCommand;
+use JMS\DiExtraBundle\Annotation\Inject;
+use JMS\DiExtraBundle\Annotation\InjectParams;
+use JMS\DiExtraBundle\Annotation\Service;
 use Psr\Log\LogLevel;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use JMS\DiExtraBundle\Annotation\Service;
-use JMS\DiExtraBundle\Annotation\Inject;
-use JMS\DiExtraBundle\Annotation\InjectParams;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -49,13 +49,13 @@ class PlatformUpdateCommand extends ContainerAwareCommand
 
         $databaseCreator = new CreateDatabaseDoctrineCommand();
         $databaseCreator->setContainer($this->getContainer());
-        $databaseCreator->run(new ArrayInput(array()), $output);
+        $databaseCreator->run(new ArrayInput([]), $output);
 
-        $verbosityLevelMap = array(
+        $verbosityLevelMap = [
             LogLevel::NOTICE => OutputInterface::VERBOSITY_NORMAL,
             LogLevel::INFO => OutputInterface::VERBOSITY_NORMAL,
             LogLevel::DEBUG => OutputInterface::VERBOSITY_NORMAL,
-        );
+        ];
         $consoleLogger = new ConsoleLogger($output, $verbosityLevelMap);
 
         /** @var \Claroline\CoreBundle\Library\Installation\PlatformInstaller $installer */

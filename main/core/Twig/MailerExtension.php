@@ -37,9 +37,9 @@ class MailerExtension extends \Twig_Extension
      */
     public function getFunctions()
     {
-        return array(
+        return [
             'is_mailer_available' => new \Twig_Function_Method($this, 'isMailerAvailable'),
-        );
+        ];
     }
 
     public function isMailerAvailable()

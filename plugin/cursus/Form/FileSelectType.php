@@ -22,12 +22,12 @@ class FileSelectType extends AbstractType
         $builder->add(
             'archive',
             'file',
-            array(
+            [
                 'required' => true,
                 'mapped' => false,
                 'label' => 'file',
                 'translation_domain' => 'platform',
-            )
+            ]
         );
     }
 
@@ -38,6 +38,6 @@ class FileSelectType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'cursus'));
+        $resolver->setDefaults(['translation_domain' => 'cursus']);
     }
 }

@@ -11,10 +11,10 @@
 
 namespace Claroline\CoreBundle\Form\Administration;
 
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class RequestFriendType extends AbstractType
 {
@@ -23,12 +23,12 @@ class RequestFriendType extends AbstractType
         $builder->add(
             'name',
             'text',
-            array('constraints' => new NotBlank(), 'label' => 'name')
+            ['constraints' => new NotBlank(), 'label' => 'name']
         );
         $builder->add(
             'host',
             'text',
-            array('constraints' => new NotBlank(), 'label' => 'host')
+            ['constraints' => new NotBlank(), 'label' => 'host']
         );
     }
 
@@ -39,6 +39,6 @@ class RequestFriendType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform']);
     }
 }

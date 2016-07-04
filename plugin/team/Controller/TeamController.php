@@ -24,10 +24,10 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormFactory;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -81,7 +81,7 @@ class TeamController extends Controller
     public function indexAction(Workspace $workspace, User $user)
     {
         $isWorkspaceManager = $this->isWorkspaceManager($workspace, $user);
-        $params = array();
+        $params = [];
 
         if ($isWorkspaceManager) {
             $params['_controller'] = 'ClarolineTeamBundle:Team:managerMenu';
@@ -90,7 +90,7 @@ class TeamController extends Controller
             $params['_controller'] = 'ClarolineTeamBundle:Team:userMenu';
             $params['workspace'] = $workspace->getId();
         }
-        $subRequest = $this->request->duplicate(array(), null, $params);
+        $subRequest = $this->request->duplicate([], null, $params);
         $response = $this->httpKernel
             ->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
 
@@ -126,13 +126,13 @@ class TeamController extends Controller
             ->getTeamsByWorkspace($workspace, $orderedBy, $order);
         $teamsWithUsers = $this->teamManager
             ->getTeamsWithUsersByWorkspace($workspace);
-        $nbUsers = array();
+        $nbUsers = [];
 
         foreach ($teamsWithUsers as $teamWithUsers) {
             $nbUsers[$teamWithUsers['team']->getId()] = $teamWithUsers['nb_users'];
         }
 
-        return array(
+        return [
             'workspace' => $workspace,
             'user' => $user,
             'teams' => $teams,
@@ -140,7 +140,7 @@ class TeamController extends Controller
             'order' => $order,
             'nbUsers' => $nbUsers,
             'params' => $params,
-        );
+        ];
     }
 
     /**
@@ -178,13 +178,13 @@ class TeamController extends Controller
         );
         $teamsWithUsers = $this->teamManager
             ->getTeamsWithUsersByWorkspace($workspace);
-        $nbUsers = array();
+        $nbUsers = [];
 
         foreach ($teamsWithUsers as $teamWithUsers) {
             $nbUsers[$teamWithUsers['team']->getId()] = $teamWithUsers['nb_users'];
         }
 
-        return array(
+        return [
             'workspace' => $workspace,
             'user' => $user,
             'userTeams' => $userTeams,
@@ -194,7 +194,7 @@ class TeamController extends Controller
             'nbUsers' => $nbUsers,
             'params' => $params,
             'nbTeams' => count($userTeams),
-        );
+        ];
     }
 
     /**
@@ -218,10 +218,10 @@ class TeamController extends Controller
 
         $form = $this->formFactory->create(new TeamType(), $team);
 
-        return array(
+        return [
             'form' => $form->createView(),
             'workspace' => $workspace,
-        );
+        ];
     }
 
     /**
@@ -256,14 +256,14 @@ class TeamController extends Controller
             return new RedirectResponse(
                 $this->router->generate(
                     'claro_team_manager_menu',
-                    array('workspace' => $workspace->getId())
+                    ['workspace' => $workspace->getId()]
                 )
             );
         } else {
-            return array(
+            return [
                 'form' => $form->createView(),
                 'workspace' => $workspace,
-            );
+            ];
         }
     }
 
@@ -289,11 +289,11 @@ class TeamController extends Controller
         }
         $form = $this->formFactory->create(new TeamEditType(), $team);
 
-        return array(
+        return [
             'form' => $form->createView(),
             'team' => $team,
             'workspace' => $workspace,
-        );
+        ];
     }
 
     /**
@@ -330,11 +330,11 @@ class TeamController extends Controller
 
             return new JsonResponse('success', 200);
         } else {
-            return array(
+            return [
                 'form' => $form->createView(),
                 'team' => $team,
                 'workspace' => $workspace,
-            );
+            ];
         }
     }
 
@@ -375,10 +375,10 @@ class TeamController extends Controller
         $params = $this->teamManager->getParametersByWorkspace($workspace);
         $form = $this->formFactory->create(new MultipleTeamsType($params));
 
-        return array(
+        return [
             'form' => $form->createView(),
             'workspace' => $workspace,
-        );
+        ];
     }
 
     /**
@@ -417,14 +417,14 @@ class TeamController extends Controller
             return new RedirectResponse(
                 $this->router->generate(
                     'claro_team_manager_menu',
-                    array('workspace' => $workspace->getId())
+                    ['workspace' => $workspace->getId()]
                 )
             );
         } else {
-            return array(
+            return [
                 'form' => $form->createView(),
                 'workspace' => $workspace,
-            );
+            ];
         }
     }
 
@@ -690,11 +690,11 @@ class TeamController extends Controller
         $this->checkWorkspaceManager($workspace, $user);
         $form = $this->formFactory->create(new TeamParamsType(), $params);
 
-        return array(
+        return [
             'form' => $form->createView(),
             'params' => $params,
             'workspace' => $workspace,
-        );
+        ];
     }
 
     /**
@@ -722,15 +722,15 @@ class TeamController extends Controller
             return new RedirectResponse(
                 $this->router->generate(
                     'claro_team_manager_menu',
-                    array('workspace' => $workspace->getId())
+                    ['workspace' => $workspace->getId()]
                 )
             );
         } else {
-            return array(
+            return [
                 'form' => $form->createView(),
                 'params' => $params,
                 'workspace' => $workspace,
-            );
+            ];
         }
     }
 
@@ -783,8 +783,8 @@ class TeamController extends Controller
                 $max
             );
         $params = $this->teamManager->getParametersByWorkspace($workspace);
-        $usersArray = array();
-        $nbTeams = array();
+        $usersArray = [];
+        $nbTeams = [];
 
         foreach ($users as $u) {
             $usersArray[] = $u;
@@ -794,13 +794,13 @@ class TeamController extends Controller
         foreach ($usersNbTeams as $userNbTeams) {
             $nbTeams[$userNbTeams['user_id']] = $userNbTeams['nb_teams'];
         }
-        $registered = array();
+        $registered = [];
 
         foreach ($team->getUsers() as $user) {
             $registered[$user->getId()] = $user;
         }
 
-        return array(
+        return [
             'workspace' => $workspace,
             'team' => $team,
             'users' => $users,
@@ -811,7 +811,7 @@ class TeamController extends Controller
             'registered' => $registered,
             'nbTeams' => $nbTeams,
             'params' => $params,
-        );
+        ];
     }
 
     /**
@@ -863,8 +863,8 @@ class TeamController extends Controller
                 $max
             );
         $params = $this->teamManager->getParametersByWorkspace($workspace);
-        $usersArray = array();
-        $nbTeams = array();
+        $usersArray = [];
+        $nbTeams = [];
 
         foreach ($users as $u) {
             $usersArray[] = $u;
@@ -875,7 +875,7 @@ class TeamController extends Controller
             $nbTeams[$userNbTeams['user_id']] = $userNbTeams['nb_teams'];
         }
 
-        return array(
+        return [
             'workspace' => $workspace,
             'team' => $team,
             'users' => $users,
@@ -885,7 +885,7 @@ class TeamController extends Controller
             'order' => $order,
             'params' => $params,
             'nbTeams' => $nbTeams,
-        );
+        ];
     }
 
     /**
@@ -908,7 +908,7 @@ class TeamController extends Controller
 
         $users = $team->getUsers();
 
-        return array('team' => $team, 'users' => $users);
+        return ['team' => $team, 'users' => $users];
     }
 
     /**
@@ -929,7 +929,7 @@ class TeamController extends Controller
     {
         $this->checkToolAccess($team->getWorkspace());
 
-        return array('description' => $team->getDescription());
+        return ['description' => $team->getDescription()];
     }
 
     /**
@@ -950,12 +950,12 @@ class TeamController extends Controller
         $users = $team->getUsers();
         $params = $this->teamManager->getParametersByWorkspace($workspace);
 
-        return array(
+        return [
             'workspace' => $workspace,
             'users' => $users,
             'team' => $team,
             'params' => $params,
-        );
+        ];
     }
 
     /**
@@ -982,7 +982,7 @@ class TeamController extends Controller
         $users = $team->getUsers();
         $params = $this->teamManager->getParametersByWorkspace($workspace);
 
-        return array(
+        return [
             'workspace' => $workspace,
             'currentUser' => $currentUser,
             'users' => $users,
@@ -990,7 +990,7 @@ class TeamController extends Controller
             'params' => $params,
             'isTeamMember' => $isTeamMember,
             'isTeamManager' => $isTeamManager,
-        );
+        ];
     }
 
     /**

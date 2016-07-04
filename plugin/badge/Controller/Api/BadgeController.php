@@ -2,15 +2,15 @@
 
 namespace Icap\BadgeBundle\Controller\Api;
 
+use FOS\RestBundle\View\View;
+use FOS\RestBundle\View\ViewHandler;
 use Icap\BadgeBundle\Entity\Badge;
 use Icap\BadgeBundle\Repository\BadgeRepository;
-use FOS\RestBundle\View\ViewHandler;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use FOS\RestBundle\View\View;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @Route("/api/badges", service="icap_badge.api.badge")

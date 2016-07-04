@@ -11,9 +11,9 @@
 
 namespace Claroline\CoreBundle\Listener\Tool;
 
+use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Claroline\CoreBundle\Listener\NoHttpRequestException;
 use JMS\DiExtraBundle\Annotation as DI;
-use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
@@ -48,16 +48,16 @@ class UserListener
         }
 
         $subRequest = $this->request->duplicate(
-            array(),
+            [],
             null,
-            array(
+            [
                 '_controller' => 'ClarolineCoreBundle:Tool\Roles:usersList',
                 'workspace' => $event->getWorkspace(),
                 'page' => 1,
                 'search' => '',
                 'max' => 50,
                 'order' => 'id',
-            )
+            ]
         );
         $response = $this->httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
         $event->setContent($response->getContent());

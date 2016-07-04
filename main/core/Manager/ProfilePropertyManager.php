@@ -11,12 +11,12 @@
 
 namespace Claroline\CoreBundle\Manager;
 
-use JMS\DiExtraBundle\Annotation as DI;
-use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\ProfileProperty;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Entity\Role;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Security\Utilities;
+use Claroline\CoreBundle\Persistence\ObjectManager;
+use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("claroline.manager.profile_property_manager")
@@ -77,7 +77,7 @@ class ProfilePropertyManager
 
         foreach ($platformRoles as $role) {
             $prop = $this->profilePropertyRepo
-                ->findBy(array('property' => $property, 'role' => $role));
+                ->findBy(['property' => $property, 'role' => $role]);
 
             if (count($prop) === 0) {
                 $this->addProperty($property, $editable, $role);

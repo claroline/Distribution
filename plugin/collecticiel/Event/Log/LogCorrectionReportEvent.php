@@ -4,9 +4,9 @@ namespace Innova\CollecticielBundle\Event\Log;
 
 use Claroline\CoreBundle\Event\Log\AbstractLogResourceEvent;
 use Claroline\CoreBundle\Event\Log\NotifiableInterface;
+use Innova\CollecticielBundle\Entity\Correction;
 use Innova\CollecticielBundle\Entity\Drop;
 use Innova\CollecticielBundle\Entity\Dropzone;
-use Innova\CollecticielBundle\Entity\Correction;
 
 class LogCorrectionReportEvent extends AbstractLogResourceEvent implements NotifiableInterface
 {
@@ -24,16 +24,16 @@ class LogCorrectionReportEvent extends AbstractLogResourceEvent implements Notif
     {
         $this->dropzone = $dropzone;
         $this->role_manager = $roleManager;
-        $this->details = array(
-            'report' => array(
+        $this->details = [
+            'report' => [
                 'drop' => $drop,
                 'correction' => $correction,
                 'report_comment' => $correction->getReportComment(),
                 'dropzoneId' => $dropzone->getId(),
                 'dropId' => $drop->getId(),
                 'correctionId' => $correction->getId(),
-            ),
-        );
+            ],
+        ];
 
         parent::__construct($dropzone->getResourceNode(), $this->details);
     }
@@ -43,7 +43,7 @@ class LogCorrectionReportEvent extends AbstractLogResourceEvent implements Notif
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_WORKSPACE);
+        return [self::DISPLAYED_WORKSPACE];
     }
 
     /**
@@ -75,7 +75,7 @@ class LogCorrectionReportEvent extends AbstractLogResourceEvent implements Notif
 
         // to finaly have the users.
         $users = $role->getUsers();
-        $ids = array();
+        $ids = [];
         foreach ($users as $user) {
             array_push($ids, $user->getId());
         }
@@ -90,7 +90,7 @@ class LogCorrectionReportEvent extends AbstractLogResourceEvent implements Notif
      */
     public function getExcludeUserIds()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -120,12 +120,12 @@ class LogCorrectionReportEvent extends AbstractLogResourceEvent implements Notif
      */
     public function getNotificationDetails()
     {
-        $notificationDetails = array_merge($this->details, array());
-        $notificationDetails['resource'] = array(
+        $notificationDetails = array_merge($this->details, []);
+        $notificationDetails['resource'] = [
             'id' => $this->dropzone->getId(),
             'name' => $this->resource->getName(),
             'type' => $this->resource->getResourceType()->getName(),
-        );
+        ];
 
         return $notificationDetails;
     }

@@ -30,24 +30,24 @@ class QuestionType extends AbstractType
         $builder->add(
             'type',
             'choice',
-            array(
-                'choices' => array(
+            [
+                'choices' => [
                     'open_ended' => 'open_ended',
                     'multiple_choice_single' => 'multiple_choice_single_answer',
                     'multiple_choice_multiple' => 'multiple_choice_multiple_answers',
-                ),
+                ],
                 'required' => true,
-            )
+            ]
         );
         $builder->add(
             'commentAllowed',
             'checkbox',
-            array('required' => true)
+            ['required' => true]
         );
         $builder->add(
             'commentLabel',
             'text',
-            array('required' => false)
+            ['required' => false]
         );
     }
 
@@ -58,6 +58,6 @@ class QuestionType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'survey'));
+        $resolver->setDefaults(['translation_domain' => 'survey']);
     }
 }

@@ -20,7 +20,7 @@ class CategoryType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text', array('constraints' => new NotBlank()));
+        $builder->add('name', 'text', ['constraints' => new NotBlank()]);
     }
 
     public function getName()
@@ -31,9 +31,9 @@ class CategoryType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'translation_domain' => 'forum',
-            )
+            ]
         );
     }
 }

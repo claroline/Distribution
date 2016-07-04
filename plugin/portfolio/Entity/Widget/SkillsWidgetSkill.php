@@ -85,8 +85,8 @@ class SkillsWidgetSkill implements SubWidgetInterface
      */
     public function getData()
     {
-        return array(
+        return [
             'name' => $this->getName(),
-        );
+        ];
     }
 }

@@ -23,11 +23,11 @@ class SubscribeForumEvent extends AbstractLogResourceEvent
      */
     public function __construct(Forum $forum)
     {
-        $details = array(
-            'forum' => array(
+        $details = [
+            'forum' => [
                 'id' => $forum->getId(),
-            ),
-        );
+            ],
+        ];
 
         parent::__construct($forum->getResourceNode(), $details);
     }
@@ -37,6 +37,6 @@ class SubscribeForumEvent extends AbstractLogResourceEvent
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_WORKSPACE, self::DISPLAYED_ADMIN);
+        return [self::DISPLAYED_WORKSPACE, self::DISPLAYED_ADMIN];
     }
 }

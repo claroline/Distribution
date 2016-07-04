@@ -2,15 +2,15 @@
 
 namespace Icap\BlogBundle\Form;
 
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints as Assert;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @DI\Service("icap_blog.form.post")
@@ -33,22 +33,22 @@ class PostType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', 'text', array(
-                    'theme_options' => array('control_width' => 'col-md-12'),
-                    'constraints' => new Assert\NotBlank(array(
+            ->add('title', 'text', [
+                    'theme_options' => ['control_width' => 'col-md-12'],
+                    'constraints' => new Assert\NotBlank([
                         'message' => 'blog_post_need_title',
-                    )),
-                )
+                    ]),
+                ]
             )
-            ->add('content', 'tinymce', array(
-                    'attr' => array(
+            ->add('content', 'tinymce', [
+                    'attr' => [
                         'style' => 'height: 300px;',
-                    ),
-                    'theme_options' => array('control_width' => 'col-md-12'),
-                    'constraints' => new Assert\NotBlank(array(
+                    ],
+                    'theme_options' => ['control_width' => 'col-md-12'],
+                    'constraints' => new Assert\NotBlank([
                         'message' => 'blog_post_need_content',
-                    )),
-                )
+                    ]),
+                ]
             )
             ->add('tags', 'tags')
         ;
@@ -63,14 +63,14 @@ class PostType extends AbstractType
                 $blog = $data->getBlog();
 
                 if ($authorizationChecker->isGranted('EDIT', $blog) || $authorizationChecker->isGranted('POST', $blog)) {
-                    $form->add('publicationDate', 'datepicker', array(
+                    $form->add('publicationDate', 'datepicker', [
                             'required' => false,
                             'read_only' => true,
                             'component' => true,
                             'autoclose' => true,
                             'language' => $options['language'],
                             'format' => $options['date_format'],
-                       )
+                       ]
                     );
                 }
             }
@@ -84,13 +84,13 @@ class PostType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'translation_domain' => 'icap_blog',
             'data_class' => 'Icap\BlogBundle\Entity\Post',
             'csrf_protection' => true,
             'intention' => 'create_post',
             'language' => 'en',
             'date_format' => DateType::HTML5_FORMAT,
-        ));
+        ]);
     }
 }

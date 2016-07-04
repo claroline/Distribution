@@ -11,14 +11,14 @@
 
 namespace Claroline\CoreBundle\Validator\Constraints;
 
+use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Manager\UserManager;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\ValidatorInterface;
-use JMS\DiExtraBundle\Annotation as DI;
-use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 
 /**
  * @DI\Validator("csv_workspace_user_import_validator")
@@ -56,10 +56,10 @@ class CsvWorkspaceUserImportValidator extends ConstraintValidator
 
     public function validate($value, Constraint $constraint)
     {
-        $usernameErrors = array();
-        $roleNameErrors = array();
+        $usernameErrors = [];
+        $roleNameErrors = [];
         $workspace = $constraint->getDefaultOption();
-        $wsRoleNames = array();
+        $wsRoleNames = [];
         $workspaceRoles = $this->roleManager->getRolesByWorkspace($workspace);
 
         foreach ($workspaceRoles as $workspaceRole) {
@@ -90,7 +90,7 @@ class CsvWorkspaceUserImportValidator extends ConstraintValidator
                 if (is_null($user)) {
                     $msg = $this->translator->trans(
                         'workspace_user_invalid',
-                        array('%username%' => $username, '%line%' => $i + 1),
+                        ['%username%' => $username, '%line%' => $i + 1],
                         'platform'
                     ).' ';
                     $usernameErrors[] = $msg;
@@ -99,12 +99,12 @@ class CsvWorkspaceUserImportValidator extends ConstraintValidator
                 if (!in_array($roleName, $wsRoleNames)) {
                     $msg = $this->translator->trans(
                         'line_number',
-                        array('%line%' => $i + 1),
+                        ['%line%' => $i + 1],
                         'platform'
                     ).' ';
                     $msg .= $this->translator->trans(
                         'unavailable_role',
-                        array('%translationKey%' => $roleName),
+                        ['%translationKey%' => $roleName],
                         'platform'
                     );
                     $roleNameErrors[] = $msg;

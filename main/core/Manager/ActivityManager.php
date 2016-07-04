@@ -581,7 +581,7 @@ class ActivityManager
             );
         }
 
-        return array();
+        return [];
     }
 
     /*********************************************
@@ -668,7 +668,7 @@ class ActivityManager
             );
         }
 
-        return array();
+        return [];
     }
 
     public function getEvaluationsByUsersAndActivityParams(
@@ -684,7 +684,7 @@ class ActivityManager
             );
         }
 
-        return array();
+        return [];
     }
 
     /**********************************************

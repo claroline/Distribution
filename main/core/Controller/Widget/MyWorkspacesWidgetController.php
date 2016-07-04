@@ -15,10 +15,10 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Security\Utilities;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
 use Claroline\CoreBundle\Manager\WorkspaceTagManager;
+use JMS\DiExtraBundle\Annotation as DI;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use JMS\DiExtraBundle\Annotation as DI;
 
 class MyWorkspacesWidgetController extends Controller
 {
@@ -63,7 +63,7 @@ class MyWorkspacesWidgetController extends Controller
      */
     public function displayMyWorkspacesWidgetAction($mode, User $user)
     {
-        $workspaces = array();
+        $workspaces = [];
         $retrieveWorkspaces = true;
 
         if ($mode === 0) {
@@ -92,6 +92,6 @@ class MyWorkspacesWidgetController extends Controller
                 $workspaces = $datas['workspaces'];
         }
 
-        return array('workspaces' => $workspaces, 'mode' => $mode);
+        return ['workspaces' => $workspaces, 'mode' => $mode];
     }
 }

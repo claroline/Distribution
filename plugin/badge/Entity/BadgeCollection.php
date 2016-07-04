@@ -5,8 +5,8 @@ namespace Icap\BadgeBundle\Entity;
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Table(name="claro_badge_collection", uniqueConstraints={@ORM\UniqueConstraint(name="slug_idx", columns={"slug"})})

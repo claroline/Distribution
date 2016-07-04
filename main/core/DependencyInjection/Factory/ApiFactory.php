@@ -24,7 +24,7 @@ class ApiFactory implements SecurityFactoryInterface
         $listenerId = 'security.authentication.listener.fos_oauth_server.'.$id;
         $container->setDefinition($listenerId, new DefinitionDecorator('claroline.core_bundle.library.security.authentication.claroline_api_listener'));
 
-        return array($providerId, $listenerId, 'fos_oauth_server.security.entry_point');
+        return [$providerId, $listenerId, 'fos_oauth_server.security.entry_point'];
     }
 
     /**

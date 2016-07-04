@@ -73,7 +73,7 @@ class WebsitePageRepository extends NestedTreeRepository
                 ->setParameter('visible', true);
         }
 
-        $options = array('decorate' => false);
+        $options = ['decorate' => false];
         $nodes = $queryBuilder->getQuery()->getArrayResult();
         $tree = $this->buildTreeArray($nodes, $options);
 

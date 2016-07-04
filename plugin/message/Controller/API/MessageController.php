@@ -11,13 +11,13 @@
 
 namespace Claroline\MessageBundle\Controller\API;
 
-use FOS\RestBundle\Controller\FOSRestController;
-use FOS\RestBundle\Controller\Annotations\View;
-use JMS\DiExtraBundle\Annotation as DI;
-use Claroline\MessageBundle\Manager\MessageManager;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\MessageBundle\Manager\MessageManager;
+use FOS\RestBundle\Controller\Annotations\View;
+use FOS\RestBundle\Controller\FOSRestController;
+use JMS\DiExtraBundle\Annotation as DI;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 /**
  * This class still needs to be able to handle pagination.

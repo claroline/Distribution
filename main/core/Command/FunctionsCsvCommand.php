@@ -23,21 +23,21 @@ class FunctionsCsvCommand extends ContainerAwareCommand
         $this->setName('claroline:csv:functions')
             ->setDescription('Executes multiple functions from a csv file');
         $this->setDefinition(
-            array(
+            [
                 new InputArgument(
                     'functions_csv_path',
                     InputArgument::REQUIRED,
                     'The absolute path to the csv file.'
                 ),
-            )
+            ]
         );
     }
 
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $params = array(
+        $params = [
             'functions_csv_path' => 'Absolute path to the csv file: ',
-        );
+        ];
 
         foreach ($params as $argument => $argumentName) {
             if (!$input->getArgument($argument)) {

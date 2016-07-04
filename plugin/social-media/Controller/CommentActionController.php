@@ -15,9 +15,9 @@ use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
 use Icap\SocialmediaBundle\Entity\CommentAction;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -60,11 +60,11 @@ class CommentActionController extends Controller
     public function formAction($resourceId, User $user)
     {
         $commentManager = $this->getCommentActionManager();
-        $criteria = array('resource' => $resourceId);
+        $criteria = ['resource' => $resourceId];
         $commentsQB = $commentManager->getCommentsForPagination($resourceId);
         $pager = $this->paginateQuery($commentsQB, 1);
 
-        return array('resourceId' => $resourceId, 'pager' => $pager);
+        return ['resourceId' => $resourceId, 'pager' => $pager];
     }
 
     /**
@@ -93,7 +93,7 @@ class CommentActionController extends Controller
         if ($request->isXmlHttpRequest()) {
             $response = new JsonResponse(true);
         } else {
-            $response = $this->redirectToRoute('icap_socialmedia_comments_view', array('resourceId' => $resourceId));
+            $response = $this->redirectToRoute('icap_socialmedia_comments_view', ['resourceId' => $resourceId]);
         }
 
         return $response;
@@ -113,7 +113,7 @@ class CommentActionController extends Controller
         $commentsQB = $this->getCommentActionManager()->getCommentsForPagination($resourceId);
         $pager = $this->paginateQuery($commentsQB, $page);
 
-        return array('pager' => $pager, 'resourceId' => $resourceId);
+        return ['pager' => $pager, 'resourceId' => $resourceId];
     }
 
     /**

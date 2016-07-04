@@ -17,10 +17,10 @@ class TypeMatchingType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'UJM\ExoBundle\Entity\TypeMatching',
                 'translation_domain' => 'ujm_exo',
-            )
+            ]
         );
     }
 

@@ -11,10 +11,10 @@
 
 namespace Claroline\CoreBundle\DataFixtures\BatchInsert;
 
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Claroline\CoreBundle\Library\Fixtures\LoggableFixture;
 use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Loads a large amount of users.
@@ -49,13 +49,13 @@ class LoadUsersData extends LoggableFixture implements ContainerAwareInterface
         for ($i = 0; $i < $this->numberUsers; ++$i) {
             $totalUsers = $countUser + $i;
             $mandatoryFieldValue = "user_{$totalUsers}";
-            $users[] = array(
+            $users[] = [
                 $mandatoryFieldValue,
                 $mandatoryFieldValue,
                 $mandatoryFieldValue,
                 $mandatoryFieldValue,
                 $mandatoryFieldValue,
-            );
+            ];
         }
 
         $this->container->get('claroline.manager.user_manager')->importUsers($users, false);

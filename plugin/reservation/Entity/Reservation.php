@@ -4,8 +4,8 @@ namespace FormaLibre\ReservationBundle\Entity;
 
 use Claroline\AgendaBundle\Entity\Event;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 use FormaLibre\ReservationBundle\Validator\Constraints as Validator;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Table(name="formalibre_reservation")

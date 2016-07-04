@@ -45,7 +45,7 @@ class Updater020900 extends Updater
         $schema = $this->conn->getSchemaManager();
 
         if (!$schema->listTableDetails('claro_badge_rule')->hasColumn('badge_id')
-            && !$schema->tablesExist(array('claro_badge_rule_temp'))) {
+            && !$schema->tablesExist(['claro_badge_rule_temp'])) {
             $this->log('Backing up the badges...');
             $this->conn->exec(
                 'CREATE TABLE claro_badge_rule_temp
@@ -58,7 +58,7 @@ class Updater020900 extends Updater
 
     private function restoreBadges()
     {
-        if ($this->conn->getSchemaManager()->tablesExist(array('claro_badge_rule_temp'))) {
+        if ($this->conn->getSchemaManager()->tablesExist(['claro_badge_rule_temp'])) {
             $this->log('Restoring badges...');
             $rowBadgeRules = $this->conn->query('SELECT * FROM claro_badge_rule_temp');
 

@@ -11,11 +11,11 @@
 
 namespace Claroline\CoreBundle\Library\Installation\Plugin;
 
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
-use Symfony\Component\Yaml\Parser;
-use Symfony\Component\Yaml\Exception\ParseException;
 use Claroline\CoreBundle\Library\PluginBundle;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Component\Yaml\Exception\ParseException;
+use Symfony\Component\Yaml\Parser;
 
 /**
  * Checker used to validate the routing of a plugin.
@@ -65,7 +65,7 @@ class RoutingChecker implements CheckerInterface
     {
         $this->plugin = $plugin;
         $this->pluginFqcn = get_class($plugin);
-        $this->errors = array();
+        $this->errors = [];
         $this->checkRoutingPrefixIsValid();
         count($this->errors) === 0 && $this->checkRoutingPrefixIsNotAlreadyRegistered();
         $this->checkRoutingResourcesAreLoadable();

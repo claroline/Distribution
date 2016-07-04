@@ -8,15 +8,15 @@
 
 namespace Icap\WebsiteBundle\Listener;
 
-use Icap\WebsiteBundle\Entity\Website;
-use Icap\WebsiteBundle\Form\WebsiteType;
-use Symfony\Component\DependencyInjection\ContainerAware;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Claroline\CoreBundle\Event\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\OpenResourceEvent;
-use Claroline\CoreBundle\Event\CopyResourceEvent;
+use Icap\WebsiteBundle\Entity\Website;
+use Icap\WebsiteBundle\Form\WebsiteType;
+use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class WebsiteListener extends ContainerAware
 {
@@ -25,10 +25,10 @@ class WebsiteListener extends ContainerAware
         $form = $this->container->get('form.factory')->create(new WebsiteType(), new Website());
         $content = $this->container->get('templating')->render(
             'ClarolineCoreBundle:Resource:createForm.html.twig',
-            array(
+            [
                 'form' => $form->createView(),
                 'resourceType' => 'icap_website',
-            )
+            ]
         );
         $event->setResponseContent($content);
         $event->stopPropagation();
@@ -40,14 +40,14 @@ class WebsiteListener extends ContainerAware
         $form->handleRequest($request);
         if ($form->isValid()) {
             $website = $form->getData();
-            $event->setResources(array($website));
+            $event->setResources([$website]);
         } else {
             $content = $this->container->get('templating')->render(
                 'ClarolineCoreBundle:Resource:createForm.html.twig',
-                array(
+                [
                     'form' => $form->createView(),
                     'resourceType' => 'icap_website',
-                )
+                ]
             );
             $event->setErrorFormContent($content);
         }
@@ -59,7 +59,7 @@ class WebsiteListener extends ContainerAware
             ->get('router')
             ->generate(
                 'icap_website_view',
-                array('websiteId' => $event->getResource()->getId())
+                ['websiteId' => $event->getResource()->getId()]
             );
         $event->setResponse(new RedirectResponse($route));
         $event->stopPropagation();

@@ -10,12 +10,12 @@ class CorrectionDenyType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('correctionDeniedComment', 'tinymce', array(
-            'label_attr' => array(
+        $builder->add('correctionDeniedComment', 'tinymce', [
+            'label_attr' => [
                 'style' => 'display: none;',
-            ),
+            ],
             'required' => true,
-        ));
+        ]);
     }
 
     public function getName()
@@ -25,8 +25,8 @@ class CorrectionDenyType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'translation_domain' => 'icap_dropzone',
-        ));
+        ]);
     }
 }

@@ -11,12 +11,12 @@
 
 namespace Claroline\CoreBundle\Persistence;
 
-use Doctrine\ORM\UnitOfWork;
-use Doctrine\Common\Persistence\ObjectManagerDecorator;
-use Doctrine\Common\Persistence\ObjectManager as ObjectManagerInterface;
-use Doctrine\ORM\EntityManagerInterface;
-use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\BundleRecorder\Log\LoggableTrait;
+use Doctrine\Common\Persistence\ObjectManager as ObjectManagerInterface;
+use Doctrine\Common\Persistence\ObjectManagerDecorator;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\UnitOfWork;
+use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
@@ -246,7 +246,7 @@ class ObjectManager extends ObjectManagerDecorator
     public function findByIds($class, array $ids)
     {
         if (count($ids) === 0) {
-            return array();
+            return [];
         }
 
         $dql = "SELECT object FROM {$class} object WHERE object.id IN (:ids)";

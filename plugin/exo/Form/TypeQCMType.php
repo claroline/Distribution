@@ -17,10 +17,10 @@ class TypeQCMType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'UJM\ExoBundle\Entity\TypeQCM',
                 'translation_domain' => 'ujm_exo',
-            )
+            ]
         );
     }
 

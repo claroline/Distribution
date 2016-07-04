@@ -11,10 +11,10 @@ class CriterionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('instruction', 'tinymce', array())
-            ->add('totalCriteriaColumn', 'hidden', array())
-            ->add('allowCommentInCorrection', 'hidden', array())
-            ->add('correctionsGlobalInstructions', 'hidden', array('mapped' => false));
+            ->add('instruction', 'tinymce', [])
+            ->add('totalCriteriaColumn', 'hidden', [])
+            ->add('allowCommentInCorrection', 'hidden', [])
+            ->add('correctionsGlobalInstructions', 'hidden', ['mapped' => false]);
     }
 
     public function getName()
@@ -24,8 +24,8 @@ class CriterionType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'translation_domain' => 'icap_dropzone',
-        ));
+        ]);
     }
 }

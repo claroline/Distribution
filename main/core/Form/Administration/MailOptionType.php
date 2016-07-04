@@ -30,11 +30,11 @@ class MailOptionType extends AbstractType
             ->add(
                 'mailerFrom',
                 'email',
-                array(
+                [
                     'required' => false,
                     'label' => 'mailer_from',
                     'data' => $this->from,
-                )
+                ]
             );
     }
 
@@ -45,6 +45,6 @@ class MailOptionType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform']);
     }
 }

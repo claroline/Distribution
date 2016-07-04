@@ -37,7 +37,7 @@ class BadgeExoService
     public function badgesInfoUser($userId, $resourceId, $locale)
     {
         $em = $this->doctrine->getManager();
-        $badgesInfoUser = array();
+        $badgesInfoUser = [];
         $i = 0;
 
         $exoBadges = $this->getBadgeLinked($resourceId);
@@ -71,14 +71,14 @@ class BadgeExoService
      */
     private function getBadgeLinked($resourceId)
     {
-        $badges = array();
+        $badges = [];
         $em = $this->doctrine->getManager();
         $badgesRules = $em->getRepository('IcapBadgeBundle:BadgeRule')
-                          ->findBy(array('resource' => $resourceId));
+                          ->findBy(['resource' => $resourceId]);
 
         foreach ($badgesRules as $br) {
             $badge = $em->getRepository('IcapBadgeBundle:Badge')
-                          ->findBy(array('id' => $br->getAssociatedBadge(), 'deletedAt' => null));
+                          ->findBy(['id' => $br->getAssociatedBadge(), 'deletedAt' => null]);
             if ($badge) {
                 $badges[] = $br->getAssociatedBadge();
             }
@@ -99,9 +99,9 @@ class BadgeExoService
     {
         $em = $this->doctrine->getManager();
         $badgeRules = $em->getRepository('IcapBadgeBundle:BadgeRule')
-                         ->findBy(array(
+                         ->findBy([
                               'associatedBadge' => $badge->getId(),
-                           ));
+                           ]);
 
         return $badgeRules;
     }
@@ -119,10 +119,10 @@ class BadgeExoService
     {
         $em = $this->doctrine->getManager();
         $badgeTranslation = $em->getRepository('IcapBadgeBundle:BadgeTranslation')
-                               ->findOneBy(array(
+                               ->findOneBy([
                                     'badge' => $badge->getId(),
                                     'locale' => $locale,
-                                 ));
+                                 ]);
 
         return $badgeTranslation;
     }
@@ -140,10 +140,10 @@ class BadgeExoService
     {
         $em = $this->doctrine->getManager();
         $userBadge = $em->getRepository('IcapBadgeBundle:UserBadge')
-                        ->findOneBy(array(
+                        ->findOneBy([
                                     'user' => $userId,
                                     'badge' => $badge->getId(),
-                                   ));
+                                   ]);
 
         return $userBadge;
     }

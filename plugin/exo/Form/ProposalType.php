@@ -15,30 +15,30 @@ class ProposalType extends AbstractType
                 'ordre', 'text'
             )
             ->add(
-                'value', 'textarea', array(
+                'value', 'textarea', [
                     'required' => true,
                     'label' => ' ',
-                    'attr' => array(
+                    'attr' => [
                         'class' => 'form-control',
                         'style' => 'height:34px;',
                         'placeholder' => 'choice',
-                    ),
-                )
+                    ],
+                ]
             )
             ->add(
-                'positionForce', 'checkbox', array(
+                'positionForce', 'checkbox', [
                     'required' => false, 'label' => ' ',
-                )
+                ]
             );
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'UJM\ExoBundle\Entity\Proposal',
                 'translation_domain' => 'ujm_exo',
-            ));
+            ]);
     }
 
     public function getName()

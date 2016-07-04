@@ -26,17 +26,17 @@ class ActivityEvaluationType extends AbstractType
             'manual' :
             $activityParams->getEvaluationType();
 
-        $statusOptions = array(
-            'choices' => array(
+        $statusOptions = [
+            'choices' => [
                 'not_attempted' => 'not_attempted',
                 'completed' => 'completed',
                 'incomplete' => 'incomplete',
                 'passed' => 'passed',
                 'failed' => 'failed',
-            ),
+            ],
             'required' => false,
             'label' => 'status',
-        );
+        ];
 
         if ($evaluationType === 'automatic') {
             $statusOptions['read_only'] = true;
@@ -51,48 +51,48 @@ class ActivityEvaluationType extends AbstractType
         $builder->add(
             'numScore',
             'integer',
-            array(
+            [
                 'read_only' => true,
                 'required' => false,
                 'label' => 'best_score',
-            )
+            ]
         );
         $builder->add(
             'date',
             'datetime',
-            array(
+            [
                 'read_only' => true,
                 'required' => false,
                 'widget' => 'single_text',
                 'format' => 'yyyy-MM-dd H:m:s',
                 'label' => 'last_attempt_date',
-            )
+            ]
         );
         $builder->add(
             'attemptsCount',
             'integer',
-            array(
+            [
                 'read_only' => true,
                 'required' => false,
                 'label' => 'max_attempts',
-            )
+            ]
         );
         $builder->add(
             'score',
             'text',
-            array(
+            [
                 'required' => false,
                 'label' => 'evaluation',
-            )
+            ]
         );
         $builder->add(
             'comment',
             'textarea',
-            array(
-                'attr' => array('rows' => 5),
+            [
+                'attr' => ['rows' => 5],
                 'required' => false,
                 'label' => 'comment',
-            )
+            ]
         );
     }
 
@@ -104,7 +104,7 @@ class ActivityEvaluationType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(
-            array('translation_domain' => 'platform')
+            ['translation_domain' => 'platform']
         );
     }
 }

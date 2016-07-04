@@ -22,31 +22,31 @@ class TeamParamsType extends AbstractType
         $builder->add(
             'maxTeams',
             'integer',
-            array(
-                'attr' => array('min' => 0),
+            [
+                'attr' => ['min' => 0],
                 'required' => false,
-            )
+            ]
         );
         $builder->add(
             'isPublic',
             'choice',
-            array(
-                'choices' => array(
+            [
+                'choices' => [
                     true => 'public',
                     false => 'private',
-                ),
+                ],
                 'required' => true,
-            )
+            ]
         );
         $builder->add(
             'selfRegistration',
             'checkbox',
-            array('required' => true)
+            ['required' => true]
         );
         $builder->add(
             'selfUnregistration',
             'checkbox',
-            array('required' => true)
+            ['required' => true]
         );
     }
 
@@ -57,6 +57,6 @@ class TeamParamsType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'team'));
+        $resolver->setDefaults(['translation_domain' => 'team']);
     }
 }

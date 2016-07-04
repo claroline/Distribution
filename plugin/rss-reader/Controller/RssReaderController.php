@@ -11,12 +11,12 @@
 
 namespace Claroline\RssReaderBundle\Controller;
 
+use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
+use Claroline\RssReaderBundle\Entity\Config;
+use Claroline\RssReaderBundle\Form\ConfigType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use Claroline\RssReaderBundle\Form\ConfigType;
-use Claroline\RssReaderBundle\Entity\Config;
-use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 
 class RssReaderController extends Controller
 {
@@ -43,11 +43,11 @@ class RssReaderController extends Controller
             } else {
                 return $this->render(
                   'ClarolineRssReaderBundle::formRss.html.twig',
-                  array(
+                  [
                       'form' => $form->createView(),
                       'isAdmin' => $widget->isAdmin(),
                       'config' => $widget,
-                )
+                ]
              );
             }
         } else {
@@ -58,11 +58,11 @@ class RssReaderController extends Controller
             } else {
                 return $this->render(
                   'ClarolineRssReaderBundle::formRss.html.twig',
-                  array(
+                  [
                       'form' => $form->createView(),
                       'isAdmin' => $widget->isAdmin(),
                       'config' => $widget,
-                  )
+                  ]
                );
             }
         }

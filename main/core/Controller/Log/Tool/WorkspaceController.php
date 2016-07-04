@@ -12,8 +12,8 @@
 namespace Claroline\CoreBundle\Controller\Log\Tool;
 
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -138,7 +138,7 @@ class WorkspaceController extends Controller
             while (false !== ($row = $results->next())) {
                 // add a line in the csv file. You need to implement a toArray() method
                 // to transform your object into an array
-                fputcsv($handle, array($row[$results->key()]['name'], $row[$results->key()]['actions']));
+                fputcsv($handle, [$row[$results->key()]['name'], $row[$results->key()]['actions']]);
             }
 
             fclose($handle);

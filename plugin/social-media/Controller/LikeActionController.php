@@ -14,9 +14,9 @@ namespace Icap\SocialmediaBundle\Controller;
 use Claroline\CoreBundle\Entity\User;
 use Icap\SocialmediaBundle\Entity\LikeAction;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -35,12 +35,12 @@ class LikeActionController extends Controller
     public function formAction($resourceId, User $user)
     {
         $likeManager = $this->getLikeActionManager();
-        $criteria = array('resource' => $resourceId);
+        $criteria = ['resource' => $resourceId];
         $userLike = $likeManager->getLikeBy($user, null, $criteria);
         $likesQB = $likeManager->getLikesForPagination(null, $criteria);
         $pager = $this->paginateQuery($likesQB, 1);
 
-        return array('resourceId' => $resourceId, 'pager' => $pager, 'userLike' => $userLike);
+        return ['resourceId' => $resourceId, 'pager' => $pager, 'userLike' => $userLike];
     }
 
     /**
@@ -103,6 +103,6 @@ class LikeActionController extends Controller
         $parameters = $request->query->all();
         $parameters['page'] = ($pager->hasNextPage()) ? $pager->getNextPage() : 0;
 
-        return array('pager' => $pager, 'parameters' => $parameters);
+        return ['pager' => $pager, 'parameters' => $parameters];
     }
 }

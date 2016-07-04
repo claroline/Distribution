@@ -2,10 +2,10 @@
 
 namespace Icap\BlogBundle\Form;
 
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -36,23 +36,23 @@ class WidgetListType extends AbstractType
         $displayInlineLabel = $this->translator->trans('display_inline', [], 'widget');
 
         $builder
-            ->add('widgetListBlogs', 'collection', array(
+            ->add('widgetListBlogs', 'collection', [
                 'type' => 'blog_widget_list_blog_form',
                 'by_reference' => false,
                 'prototype' => true,
                 'allow_add' => true,
                 'allow_delete' => true,
-            ))
-            ->add('widgetDisplayListBlogs', 'choice', array(
-                'choices' => array(
+            ])
+            ->add('widgetDisplayListBlogs', 'choice', [
+                'choices' => [
                     'b' => $displayBlockLabel,
                     'l' => $displayInlineLabel,
-                ),
+                ],
                 'required' => true,
                 'expanded' => true,
                 'multiple' => false,
                 'empty_value' => false,
-            ));
+            ]);
     }
 
     public function getName()
@@ -63,10 +63,10 @@ class WidgetListType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'Icap\BlogBundle\Entity\WidgetBlogList',
                 'translation_domain' => 'icap_blog',
-            )
+            ]
         );
     }
 }

@@ -14,9 +14,9 @@ namespace Claroline\TagBundle\Listener;
 use Claroline\CoreBundle\Event\ConfigureWidgetEvent;
 use Claroline\CoreBundle\Event\DisplayWidgetEvent;
 use Claroline\CoreBundle\Listener\NoHttpRequestException;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service()
@@ -53,11 +53,11 @@ class TagWidgetListener
             throw new NoHttpRequestException();
         }
         $widgetInstance = $event->getInstance();
-        $params = array();
+        $params = [];
         $params['_controller'] = 'ClarolineTagBundle:Tag:resourcesTagsWidget';
         $params['widgetInstance'] = $widgetInstance->getId();
         $subRequest = $this->request->duplicate(
-            array(),
+            [],
             null,
             $params
         );
@@ -79,11 +79,11 @@ class TagWidgetListener
             throw new NoHttpRequestException();
         }
         $widgetInstance = $event->getInstance();
-        $params = array();
+        $params = [];
         $params['_controller'] = 'ClarolineTagBundle:Tag:resourcesTagsWidgetConfigureForm';
         $params['widgetInstance'] = $widgetInstance->getId();
         $subRequest = $this->request->duplicate(
-            array(),
+            [],
             null,
             $params
         );

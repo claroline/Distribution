@@ -2,12 +2,12 @@
 
 namespace Innova\AudioRecorderBundle\EventListener\Tool;
 
-use JMS\DiExtraBundle\Annotation as DI;
-use Innova\AudioRecorderBundle\Manager\AudioRecorderManager;
-use Symfony\Bridge\Twig\TwigEngine;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Innova\AudioRecorderBundle\Form\Type\AudioRecorderConfigurationType;
+use Innova\AudioRecorderBundle\Manager\AudioRecorderManager;
+use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Bridge\Twig\TwigEngine;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  *  @DI\Service()
@@ -43,7 +43,7 @@ class AudioRecorderToolListener
       $form = $this->container->get('form.factory')->create(new AudioRecorderConfigurationType(), $config);
       $content = $this->templating->render(
           'InnovaAudioRecorderBundle::desktopTool.html.twig',
-          array('form' => $form->createView(), 'id' => $config->getId())
+          ['form' => $form->createView(), 'id' => $config->getId()]
       );
       $event->setContent($content);
       $event->stopPropagation();

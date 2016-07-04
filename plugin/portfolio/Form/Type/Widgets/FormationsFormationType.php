@@ -15,27 +15,27 @@ class FormationsFormationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('id', 'integer', array(
+            ->add('id', 'integer', [
                 'required' => false,
                 'mapped' => false,
-            ))
-            ->add('name', 'text', array(
+            ])
+            ->add('name', 'text', [
                 'required' => false,
                 'mapped' => false,
-            ))
-            ->add('resource', 'entity', array(
+            ])
+            ->add('resource', 'entity', [
                 'class' => 'ClarolineCoreBundle:Resource\ResourceNode',
                 'property' => 'name',
                 'required' => false,
-            ))
-            ->add('uri', 'text', array(
+            ])
+            ->add('uri', 'text', [
                 'required' => false,
                 'mapped' => false,
-            ))
-            ->add('uriLabel', 'text', array(
+            ])
+            ->add('uriLabel', 'text', [
                 'required' => false,
                 'mapped' => false,
-            ));
+            ]);
     }
 
     public function getName()
@@ -46,11 +46,11 @@ class FormationsFormationType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'Icap\PortfolioBundle\Entity\Widget\FormationsWidgetResource',
                 'translation_domain' => 'icap_portfolio',
                 'csrf_protection' => false,
-            )
+            ]
         );
     }
 }

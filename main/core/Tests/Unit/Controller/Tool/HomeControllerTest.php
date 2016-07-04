@@ -46,9 +46,9 @@ class HomeControllerTest extends MockeryTestCase
 
     public function testWorkspaceWidgetsPropertiesAction()
     {
-        $controller = $this->getController(array('getHomeTool'));
+        $controller = $this->getController(['getHomeTool']);
         $workspace = $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
-        $configs = array('config_a', 'config_b');
+        $configs = ['config_a', 'config_b'];
 
         $this->securityContext
             ->shouldReceive('isGranted')
@@ -68,11 +68,11 @@ class HomeControllerTest extends MockeryTestCase
             ->andReturn('tool');
 
         $this->assertEquals(
-            array(
+            [
                 'workspace' => $workspace,
                 'configs' => $configs,
                 'tool' => 'tool',
-            ),
+            ],
             $controller->workspaceWidgetsPropertiesAction($workspace)
         );
     }
@@ -96,7 +96,7 @@ class HomeControllerTest extends MockeryTestCase
             ->andReturn($displayConfigRepo);
         $displayConfigRepo
             ->shouldReceive('findOneBy')
-            ->with(array('workspace' => $workspace, 'widget' => $widget))
+            ->with(['workspace' => $workspace, 'widget' => $widget])
             ->once()
             ->andReturn(null);
         $adminConfig->shouldReceive('isVisible')->once()->andReturn(true);
@@ -125,7 +125,7 @@ class HomeControllerTest extends MockeryTestCase
 
     public function testWorkspaceConfigureWidgetActionXml()
     {
-        $controller = $this->getController(array('getHomeTool', 'render'));
+        $controller = $this->getController(['getHomeTool', 'render']);
         $workspace = $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
         $widget = $this->mock('Claroline\CoreBundle\Entity\Widget\Widget');
         $event = $this->mock('Claroline\CoreBundle\Event\ConfigureWidgetWorkspaceEvent');
@@ -141,7 +141,7 @@ class HomeControllerTest extends MockeryTestCase
             ->with(
                 'widget_widget_name_configuration_workspace',
                 'ConfigureWidgetWorkspace',
-                array($workspace)
+                [$workspace]
             )
             ->once()
             ->andReturn($event);
@@ -156,11 +156,11 @@ class HomeControllerTest extends MockeryTestCase
             ->shouldReceive('render')
             ->with(
                 'ClarolineCoreBundle:Tool\workspace\home:widgetConfigurationForm.html.twig',
-                array(
+                [
                     'content' => 'content',
                     'workspace' => $workspace,
                     'tool' => 'tool',
-                )
+                ]
             )
             ->once()
             ->andReturn('rendering');
@@ -173,7 +173,7 @@ class HomeControllerTest extends MockeryTestCase
 
     public function testWorkspaceConfigureWidgetActionNotXml()
     {
-        $controller = $this->getController(array('getHomeTool', 'render'));
+        $controller = $this->getController(['getHomeTool', 'render']);
         $workspace = $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
         $widget = $this->mock('Claroline\CoreBundle\Entity\Widget\Widget');
         $event = $this->mock('Claroline\CoreBundle\Event\ConfigureWidgetWorkspaceEvent');
@@ -189,7 +189,7 @@ class HomeControllerTest extends MockeryTestCase
             ->with(
                 'widget_widget_name_configuration_workspace',
                 'ConfigureWidgetWorkspace',
-                array($workspace)
+                [$workspace]
             )
             ->once()
             ->andReturn($event);
@@ -204,11 +204,11 @@ class HomeControllerTest extends MockeryTestCase
             ->shouldReceive('render')
             ->with(
                 'ClarolineCoreBundle:Tool\workspace\home:widgetConfiguration.html.twig',
-                array(
+                [
                     'content' => 'content',
                     'workspace' => $workspace,
                     'tool' => 'tool',
-                )
+                ]
             )
             ->once()
             ->andReturn('rendering');
@@ -221,10 +221,10 @@ class HomeControllerTest extends MockeryTestCase
 
     public function testDesktopWidgetPropertiesAction()
     {
-        $controller = $this->getController(array('getHomeTool'));
+        $controller = $this->getController(['getHomeTool']);
         $token = $this->mock('Symfony\Component\Security\Core\Authentication\Token\TokenInterface');
         $user = $this->mock('Claroline\CoreBundle\Entity\User');
-        $configs = array('config_a', 'config_b');
+        $configs = ['config_a', 'config_b'];
 
         $this->securityContext
             ->shouldReceive('getToken')
@@ -244,11 +244,11 @@ class HomeControllerTest extends MockeryTestCase
             ->andReturn('tool');
 
         $this->assertEquals(
-            array(
+            [
                 'configs' => $configs,
                 'user' => $user,
                 'tool' => 'tool',
-            ),
+            ],
             $controller->desktopWidgetPropertiesAction()
         );
     }
@@ -273,7 +273,7 @@ class HomeControllerTest extends MockeryTestCase
             ->andReturn($displayConfigRepo);
         $displayConfigRepo
             ->shouldReceive('findOneBy')
-            ->with(array('user' => $user, 'widget' => $widget))
+            ->with(['user' => $user, 'widget' => $widget])
             ->once()
             ->andReturn(null);
         $adminConfig->shouldReceive('isVisible')->once()->andReturn(true);
@@ -301,7 +301,7 @@ class HomeControllerTest extends MockeryTestCase
 
     public function testDesktopConfigureWidgetActionXml()
     {
-        $controller = $this->getController(array('getHomeTool', 'render'));
+        $controller = $this->getController(['getHomeTool', 'render']);
         $widget = $this->mock('Claroline\CoreBundle\Entity\Widget\Widget');
         $token = $this->mock('Symfony\Component\Security\Core\Authentication\Token\TokenInterface');
         $user = new User();
@@ -318,7 +318,7 @@ class HomeControllerTest extends MockeryTestCase
             ->with(
                 'widget_widget_name_configuration_desktop',
                 'ConfigureWidgetDesktop',
-                array($user)
+                [$user]
             )
             ->once()
             ->andReturn($event);
@@ -333,10 +333,10 @@ class HomeControllerTest extends MockeryTestCase
             ->shouldReceive('render')
             ->with(
                 'ClarolineCoreBundle:Tool\desktop\home:widgetConfigurationForm.html.twig',
-                array(
+                [
                     'content' => 'content',
                     'tool' => 'tool',
-                )
+                ]
             )
             ->once()
             ->andReturn('rendering');
@@ -349,7 +349,7 @@ class HomeControllerTest extends MockeryTestCase
 
     public function testDesktopConfigureWidgetActionNotXml()
     {
-        $controller = $this->getController(array('getHomeTool', 'render'));
+        $controller = $this->getController(['getHomeTool', 'render']);
         $widget = $this->mock('Claroline\CoreBundle\Entity\Widget\Widget');
         $token = $this->mock('Symfony\Component\Security\Core\Authentication\Token\TokenInterface');
         $user = new User();
@@ -366,7 +366,7 @@ class HomeControllerTest extends MockeryTestCase
             ->with(
                 'widget_widget_name_configuration_desktop',
                 'ConfigureWidgetDesktop',
-                array($user)
+                [$user]
             )
             ->once()
             ->andReturn($event);
@@ -381,10 +381,10 @@ class HomeControllerTest extends MockeryTestCase
             ->shouldReceive('render')
             ->with(
                 'ClarolineCoreBundle:Tool\desktop\home:widgetConfiguration.html.twig',
-                array(
+                [
                     'content' => 'content',
                     'tool' => 'tool',
-                )
+                ]
             )
             ->once()
             ->andReturn('rendering');
@@ -397,7 +397,7 @@ class HomeControllerTest extends MockeryTestCase
 
     public function testDesktopHomeTabPropertiesAction()
     {
-        $controller = $this->getController(array('checkUserAccess', 'getHomeTool'));
+        $controller = $this->getController(['checkUserAccess', 'getHomeTool']);
         $token = $this->mock('Symfony\Component\Security\Core\Authentication\Token\TokenInterface');
         $user = new User();
         $homeTabA = new HomeTab();
@@ -408,20 +408,20 @@ class HomeControllerTest extends MockeryTestCase
         $homeTabConfigB = $this->mock('Claroline\CoreBundle\Entity\Home\HomeTabConfig');
         $homeTabConfigC = $this->mock('Claroline\CoreBundle\Entity\Home\HomeTabConfig');
         $homeTabConfigD = $this->mock('Claroline\CoreBundle\Entity\Home\HomeTabConfig');
-        $adminHomeTabConfigs = array($homeTabConfigA, $homeTabConfigB);
-        $homeTabConfigs = array($homeTabConfigC, $homeTabConfigD);
-        $adminWidgetConfigsA = array('awc_1', 'awc_2', 'awc_3');
-        $userWidgetConfigsA = array('uwc_1', 'uwc_2');
-        $adminWidgetConfigsB = array('awc_4', 'awc_5');
-        $userWidgetConfigsB = array('uwc_3', 'uwc_4');
-        $userWidgetConfigsC = array('uwc_5', 'uwc_6');
-        $userWidgetConfigsD = array();
-        $nbWidgets = array(
+        $adminHomeTabConfigs = [$homeTabConfigA, $homeTabConfigB];
+        $homeTabConfigs = [$homeTabConfigC, $homeTabConfigD];
+        $adminWidgetConfigsA = ['awc_1', 'awc_2', 'awc_3'];
+        $userWidgetConfigsA = ['uwc_1', 'uwc_2'];
+        $adminWidgetConfigsB = ['awc_4', 'awc_5'];
+        $userWidgetConfigsB = ['uwc_3', 'uwc_4'];
+        $userWidgetConfigsC = ['uwc_5', 'uwc_6'];
+        $userWidgetConfigsD = [];
+        $nbWidgets = [
             1 => 5,
             2 => 4,
             3 => 2,
             4 => 0,
-        );
+        ];
 
         $this->securityContext
             ->shouldReceive('isGranted')
@@ -500,12 +500,12 @@ class HomeControllerTest extends MockeryTestCase
             ->andReturn('tool');
 
         $this->assertEquals(
-            array(
+            [
                 'adminHomeTabConfigs' => $adminHomeTabConfigs,
                 'homeTabConfigs' => $homeTabConfigs,
                 'tool' => 'tool',
                 'nbWidgets' => $nbWidgets,
-            ),
+            ],
             $controller->desktopHomeTabPropertiesAction()
         );
     }
@@ -513,7 +513,7 @@ class HomeControllerTest extends MockeryTestCase
     public function testUserDesktopHomeTabDeleteAction()
     {
         $controller = $this->getController(
-            array('checkUserAccess', 'checkUserAccessForHomeTab')
+            ['checkUserAccess', 'checkUserAccessForHomeTab']
         );
         $homeTab = $this->mock('Claroline\CoreBundle\Entity\Home\HomeTab');
         $token = $this->mock('Symfony\Component\Security\Core\Authentication\Token\TokenInterface');
@@ -559,25 +559,25 @@ class HomeControllerTest extends MockeryTestCase
     public function testWorkspaceHomeTabPropertiesAction()
     {
         $controller = $this->getController(
-            array('checkWorkspaceAccess', 'getHomeTool')
+            ['checkWorkspaceAccess', 'getHomeTool']
         );
         $workspace = $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
         $adminConfigA = $this->mock('Claroline\CoreBundle\Entity\Home\HomeTabConfig');
         $adminConfigB = $this->mock('Claroline\CoreBundle\Entity\Home\HomeTabConfig');
         $configC = $this->mock('Claroline\CoreBundle\Entity\Home\HomeTabConfig');
         $configD = $this->mock('Claroline\CoreBundle\Entity\Home\HomeTabConfig');
-        $adminHomeTabConfigs = array($adminConfigA, $adminConfigB);
-        $homeTabConfigs = array($configC, $configD);
+        $adminHomeTabConfigs = [$adminConfigA, $adminConfigB];
+        $homeTabConfigs = [$configC, $configD];
         $homeTabA = $this->mock('Claroline\CoreBundle\Entity\Home\HomeTab');
         $homeTabB = $this->mock('Claroline\CoreBundle\Entity\Home\HomeTab');
         $homeTabC = $this->mock('Claroline\CoreBundle\Entity\Home\HomeTab');
         $homeTabD = $this->mock('Claroline\CoreBundle\Entity\Home\HomeTab');
-        $nbWidgets = array(
+        $nbWidgets = [
             1 => 3,
             2 => 2,
             3 => 2,
             4 => 0,
-        );
+        ];
         $roleManager = $this->mock('Claroline\CoreBundle\Entity\Role');
 
         $this->roleManager
@@ -609,7 +609,7 @@ class HomeControllerTest extends MockeryTestCase
             ->shouldReceive('getVisibleWidgetConfigsByWorkspace')
             ->with($homeTabA, $workspace)
             ->once()
-            ->andReturn(array('w1', 'w2', 'w3'));
+            ->andReturn(['w1', 'w2', 'w3']);
         $adminConfigA->shouldReceive('getId')->once()->andReturn(1);
         $adminConfigB
             ->shouldReceive('getHomeTab')
@@ -619,7 +619,7 @@ class HomeControllerTest extends MockeryTestCase
             ->shouldReceive('getVisibleWidgetConfigsByWorkspace')
             ->with($homeTabB, $workspace)
             ->once()
-            ->andReturn(array('w4', 'w5'));
+            ->andReturn(['w4', 'w5']);
         $adminConfigB->shouldReceive('getId')->once()->andReturn(2);
         $configC->shouldReceive('getHomeTab')
             ->once()
@@ -628,7 +628,7 @@ class HomeControllerTest extends MockeryTestCase
             ->shouldReceive('getVisibleWidgetConfigsByWorkspace')
             ->with($homeTabC, $workspace)
             ->once()
-            ->andReturn(array('w6', 'w7'));
+            ->andReturn(['w6', 'w7']);
         $configC->shouldReceive('getId')->once()->andReturn(3);
         $configD->shouldReceive('getHomeTab')
             ->once()
@@ -637,7 +637,7 @@ class HomeControllerTest extends MockeryTestCase
             ->shouldReceive('getVisibleWidgetConfigsByWorkspace')
             ->with($homeTabD, $workspace)
             ->once()
-            ->andReturn(array());
+            ->andReturn([]);
         $configD->shouldReceive('getId')->once()->andReturn(4);
         $this->toolManager
             ->shouldReceive('getOneToolByName')
@@ -646,18 +646,18 @@ class HomeControllerTest extends MockeryTestCase
             ->andReturn('tool');
 
         $this->assertEquals(
-            array(
+            [
                 'workspace' => $workspace,
                 'adminHomeTabConfigs' => $adminHomeTabConfigs,
                 'homeTabConfigs' => $homeTabConfigs,
                 'tool' => 'tool',
                 'nbWidgets' => $nbWidgets,
-            ),
+            ],
             $controller->workspaceHomeTabPropertiesAction($workspace)
         );
     }
 
-    private function getController(array $mockedMethods = array())
+    private function getController(array $mockedMethods = [])
     {
         if (count($mockedMethods) === 0) {
             return new HomeController(
@@ -684,7 +684,7 @@ class HomeControllerTest extends MockeryTestCase
 
         return $this->mock(
             'Claroline\CoreBundle\Controller\Tool\HomeController'.$stringMocked,
-            array(
+            [
                 $this->em,
                 $this->eventDispatcher,
                 $this->formFactory,
@@ -694,7 +694,7 @@ class HomeControllerTest extends MockeryTestCase
                 $this->securityContext,
                 $this->toolManager,
                 $this->widgetManager,
-            )
+            ]
         );
     }
 }

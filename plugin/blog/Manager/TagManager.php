@@ -53,7 +53,7 @@ class TagManager
     {
         $tagNames = (is_array($tagNames)) ? $tagNames : $this->parseTagString($tagNames);
 
-        $tags = array();
+        $tags = [];
         foreach ($tagNames as $name) {
             if ($name) {
                 $tags[] = $this->loadOrCreateTag($name);
@@ -103,7 +103,7 @@ class TagManager
     public function loadByBlog(Blog $blog, $max = null)
     {
         $results = $this->getTagRepository()->findByBlog($blog, true, $max);
-        $tags = array();
+        $tags = [];
 
         if (0 < count($results)) {
             $maxWeight = intval($results[0]['frequency']);

@@ -24,7 +24,7 @@ class InternationalizationType extends AbstractType
     public function __construct($activated, $availables)
     {
         $this->activated = $activated;
-        $this->available = array();
+        $this->available = [];
 
         foreach ($availables as $available) {
             $this->available[$available] = $available;
@@ -35,13 +35,13 @@ class InternationalizationType extends AbstractType
     {
         $builder->add(
             'locales',
-            'choice', array(
+            'choice', [
                 'choices' => $this->available,
                 'label' => 'languages',
                 'expanded' => true,
                 'multiple' => true,
                 'data' => $this->activated,
-            )
+            ]
         );
     }
 
@@ -52,6 +52,6 @@ class InternationalizationType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform']);
     }
 }

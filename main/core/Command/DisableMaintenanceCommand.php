@@ -11,10 +11,10 @@
 
 namespace Claroline\CoreBundle\Command;
 
+use Claroline\CoreBundle\Library\Maintenance\MaintenanceHandler;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Claroline\CoreBundle\Library\Maintenance\MaintenanceHandler;
 
 class DisableMaintenanceCommand extends ContainerAwareCommand
 {

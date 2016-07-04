@@ -91,11 +91,11 @@ class RssReaderListener
 
         $content = $this->templating->render(
                 'ClarolineRssReaderBundle::formRss.html.twig',
-                array(
+                [
                     'form' => $form->createView(),
                     'isAdmin' => $instance->isAdmin(),
                     'config' => $instance,
-                )
+                ]
            );
         $event->setContent($content);
     }
@@ -123,7 +123,7 @@ class RssReaderListener
 
         return $this->templating->render(
             'ClarolineRssReaderBundle::rss.html.twig',
-            array('rss' => $items, 'widgetId' => $widgetId)
+            ['rss' => $items, 'widgetId' => $widgetId]
         );
     }
 

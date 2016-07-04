@@ -14,15 +14,15 @@ namespace Claroline\CoreBundle\Library\Installation\Settings;
 class MailingSettings extends AbstractValidator
 {
     private $transport = 'smtp';
-    private $transportOptions = array();
-    private $blankOptions = array(
+    private $transportOptions = [];
+    private $blankOptions = [
         'host' => null,
         'username' => null,
         'password' => null,
         'auth_mode' => null,
         'encryption' => null,
         'port' => null,
-    );
+    ];
 
     public function setTransport($transport)
     {
@@ -42,7 +42,7 @@ class MailingSettings extends AbstractValidator
 
     public function setTransportOptions(array $options)
     {
-        $trimmedOptions = array();
+        $trimmedOptions = [];
 
         foreach ($options as $option => $value) {
             if (array_key_exists($option, $this->blankOptions)) {

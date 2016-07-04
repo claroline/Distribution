@@ -37,7 +37,7 @@ class Twitter implements NetworkInterface
      *
      * @return string
      */
-    public function getShareLink($url, array $options = array())
+    public function getShareLink($url, array $options = [])
     {
         $options['url'] = $url;
 

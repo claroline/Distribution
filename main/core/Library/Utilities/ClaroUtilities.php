@@ -59,7 +59,7 @@ class ClaroUtilities
     {
         ksort($fillable);
         $saveKey = 1;
-        $filledArray = array();
+        $filledArray = [];
 
         foreach ($fillable as $key => $value) {
             if ($key - $saveKey != 0) {
@@ -96,14 +96,14 @@ class ClaroUtilities
             return '0s';
         }
 
-        $bit = array(
+        $bit = [
             'y' => $secs / 31556926 % 12,
             'w' => $secs / 604800 % 52,
             'd' => $secs / 86400 % 7,
             'h' => $secs / 3600 % 24,
             'm' => $secs / 60 % 60,
             's' => $secs % 60,
-            );
+            ];
 
         foreach ($bit as $k => $v) {
             if ($v > 0) {
@@ -193,7 +193,7 @@ class ClaroUtilities
     public function formatFileSize($fileSize)
     {
         //don't format if it's already formatted.
-        $validUnits = array('KB', 'MB', 'GB', 'TB');
+        $validUnits = ['KB', 'MB', 'GB', 'TB'];
 
         foreach ($validUnits as $unit) {
             if (strpos($unit, $fileSize)) {
@@ -220,12 +220,12 @@ class ClaroUtilities
     public function getRealFileSize($fileSize)
     {
         //B goes at the end because it's always matched otherwise
-        $validUnits = array('KB', 'MB', 'GB', 'TB');
+        $validUnits = ['KB', 'MB', 'GB', 'TB'];
         $value = str_replace(' ', '', $fileSize);
 
-        $replacements = array('');
+        $replacements = [''];
         $pattern = '/(\d+)/';
-        $data = preg_grep($pattern, array($value));
+        $data = preg_grep($pattern, [$value]);
 
         foreach ($validUnits as $unit) {
             if (strpos($fileSize, $unit)) {

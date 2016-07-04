@@ -25,11 +25,11 @@ class SkillsSkillType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'Icap\PortfolioBundle\Entity\Widget\SkillsWidgetSkill',
                 'translation_domain' => 'icap_portfolio',
                 'csrf_protection' => false,
-            )
+            ]
         );
     }
 }

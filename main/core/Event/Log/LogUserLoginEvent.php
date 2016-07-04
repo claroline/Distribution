@@ -20,7 +20,7 @@ class LogUserLoginEvent extends LogGenericEvent
      */
     public function __construct()
     {
-        parent::__construct(self::ACTION, array());
+        parent::__construct(self::ACTION, []);
     }
 
     /**
@@ -28,6 +28,6 @@ class LogUserLoginEvent extends LogGenericEvent
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_ADMIN);
+        return [self::DISPLAYED_ADMIN];
     }
 }

@@ -3,8 +3,8 @@
 namespace FormaLibre\OfficeConnectBundle\Library;
 
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
-use Symfony\Component\Routing\RouterInterface;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * @DI\Service("formalibre.office_connect.library.settings")
@@ -55,7 +55,7 @@ class Settings
 
     public function getRedirectUri()
     {
-        return $this->router->generate('claro_o365_login', array(), true);
+        return $this->router->generate('claro_o365_login', [], true);
     }
 
     public function getResourceUri()

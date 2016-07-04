@@ -24,14 +24,14 @@ class MailType extends AbstractType
             ->add(
                 'receiver',
                 'text',
-                array(
+                [
                     'required' => true,
                     'constraints' => new Email(),
                     'label' => 'receiver',
-                )
+                ]
             )
-            ->add('object', 'text', array('label' => 'object'))
-            ->add('content', 'tinymce', array('label' => 'content'));
+            ->add('object', 'text', ['label' => 'object'])
+            ->add('content', 'tinymce', ['label' => 'content']);
     }
 
     public function getName()
@@ -41,6 +41,6 @@ class MailType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform']);
     }
 }

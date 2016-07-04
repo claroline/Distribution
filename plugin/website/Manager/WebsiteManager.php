@@ -80,7 +80,7 @@ class WebsiteManager
         $orgOptions = $orgWebsite->getOptions();
         $websitePages = $this->websitePageRepository->children($orgRoot);
         array_unshift($websitePages, $orgRoot);
-        $newWebsitePagesMap = array();
+        $newWebsitePagesMap = [];
 
         $newWebsite = new Website($orgWebsite->isTest());
         foreach ($websitePages as $websitePage) {
@@ -131,7 +131,7 @@ class WebsiteManager
             $websiteOptions->setWebsite($website);
             $website->setOptions($websiteOptions);
 
-            $websitePagesMap = array();
+            $websitePagesMap = [];
             foreach ($websiteData['pages'] as $websitePage) {
                 $entityWebsitePage = new WebsitePage();
                 $entityWebsitePage->setWebsite($website);
@@ -168,15 +168,15 @@ class WebsiteManager
         $rootWebsitePage = $object->getRoot();
         $websitePages = $this->websitePageRepository->children($rootWebsitePage);
         array_unshift($websitePages, $rootWebsitePage);
-        $websitePagesArray = array();
+        $websitePagesArray = [];
         foreach ($websitePages as $websitePage) {
             $websitePagesArray[] = $websitePage->exportToArray($this->router, $files);
         }
         $websiteOptionsArray = $object->getOptions()->exportToArray($this->webDir, $files);
-        $data = array(
+        $data = [
             'options' => $websiteOptionsArray,
             'pages' => $websitePagesArray,
-        );
+        ];
 
         return $data;
     }

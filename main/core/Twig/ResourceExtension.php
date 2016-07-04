@@ -11,12 +11,12 @@
 
 namespace Claroline\CoreBundle\Twig;
 
+use Claroline\CoreBundle\Entity\Resource\ResourceType;
+use Claroline\CoreBundle\Manager\ResourceManager;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
-use Claroline\CoreBundle\Manager\ResourceManager;
-use Claroline\CoreBundle\Entity\Resource\ResourceType;
 
 /**
  * @Service
@@ -38,10 +38,10 @@ class ResourceExtension extends \Twig_Extension
 
     public function getFunctions()
     {
-        return array(
+        return [
             'isMenuActionImplemented' => new \Twig_Function_Method($this, 'isMenuActionImplemented'),
             'getCurrentUrl' => new \Twig_Function_Method($this, 'getCurrentUrl'),
-        );
+        ];
     }
 
     public function getName()

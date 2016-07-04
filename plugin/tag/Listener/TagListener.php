@@ -81,7 +81,7 @@ class TagListener
      */
     public function onRetrieveObjectsByTag(GenericDatasEvent $event)
     {
-        $taggedObjects = array();
+        $taggedObjects = [];
         $datas = $event->getDatas();
 
         if (is_array($datas) && isset($datas['tag']) && !empty($datas['tag'])) {
@@ -103,7 +103,7 @@ class TagListener
             );
 
             if (!is_null($class) && $objectResponse) {
-                $ids = array();
+                $ids = [];
 
                 foreach ($objects as $object) {
                     $ids[] = $object->getObjectId();
@@ -116,7 +116,7 @@ class TagListener
                 );
             } else {
                 foreach ($objects as $object) {
-                    $datas = array();
+                    $datas = [];
                     $datas['class'] = $object->getObjectClass();
                     $datas['id'] = $object->getObjectId();
                     $datas['name'] = $object->getObjectName();
@@ -134,8 +134,8 @@ class TagListener
      */
     public function onRetrieveTags(GenericDatasEvent $event)
     {
-        $tags = array();
-        $tagsName = array();
+        $tags = [];
+        $tagsName = [];
         $datas = $event->getDatas();
 
         if (is_array($datas)) {
@@ -175,10 +175,10 @@ class TagListener
      */
     public function onResourceTagAction(CustomActionResourceEvent $event)
     {
-        $params = array();
+        $params = [];
         $params['_controller'] = 'ClarolineTagBundle:Tag:resourceTagForm';
         $params['resourceNode'] = $event->getResource()->getResourceNode()->getId();
-        $subRequest = $this->request->duplicate(array(), null, $params);
+        $subRequest = $this->request->duplicate([], null, $params);
         $response = $this->httpKernel
             ->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
         $event->setResponse($response);
@@ -195,13 +195,13 @@ class TagListener
         $group = $event->getGroup();
         $url = $this->router->generate(
             'claro_tag_group_tag_form',
-            array('group' => $group->getId())
+            ['group' => $group->getId()]
         );
 
         $menu = $event->getMenu();
         $menu->addChild(
-            $this->translator->trans('tag_action', array(), 'tag'),
-            array('uri' => $url)
+            $this->translator->trans('tag_action', [], 'tag'),
+            ['uri' => $url]
         )->setExtra('icon', 'fa fa-tags')
         ->setExtra('display', 'modal_form');
 
@@ -218,13 +218,13 @@ class TagListener
         $user = $event->getUser();
         $url = $this->router->generate(
             'claro_tag_user_tag_form',
-            array('user' => $user->getId())
+            ['user' => $user->getId()]
         );
 
         $menu = $event->getMenu();
         $menu->addChild(
-            $this->translator->trans('tag_action', array(), 'tag'),
-            array('uri' => $url)
+            $this->translator->trans('tag_action', [], 'tag'),
+            ['uri' => $url]
         )->setExtra('icon', 'fa fa-tags')
         ->setExtra('display', 'modal_form');
 
@@ -241,13 +241,13 @@ class TagListener
         $workspace = $event->getWorkspace();
         $url = $this->router->generate(
             'claro_tag_workspace_tag_form',
-            array('workspace' => $workspace->getId())
+            ['workspace' => $workspace->getId()]
         );
 
         $menu = $event->getMenu();
         $menu->addChild(
-            $this->translator->trans('tag_action', array(), 'tag'),
-            array('uri' => $url)
+            $this->translator->trans('tag_action', [], 'tag'),
+            ['uri' => $url]
         )->setExtra('icon', 'fa fa-tags')
         ->setExtra('display', 'modal_form');
 
@@ -261,7 +261,7 @@ class TagListener
      */
     public function onRetrieveUserWorkspacesByTag(GenericDatasEvent $event)
     {
-        $workspaces = array();
+        $workspaces = [];
         $datas = $event->getDatas();
 
         if (is_array($datas) && isset($datas['user']) && isset($datas['tag'])) {
@@ -287,7 +287,7 @@ class TagListener
     public function onUsersDelete(GenericDatasEvent $event)
     {
         $users = $event->getDatas();
-        $ids = array();
+        $ids = [];
 
         foreach ($users as $user) {
             $ids[] = $user->getId();
@@ -306,7 +306,7 @@ class TagListener
     public function onGroupsDelete(GenericDatasEvent $event)
     {
         $groups = $event->getDatas();
-        $ids = array();
+        $ids = [];
 
         foreach ($groups as $group) {
             $ids[] = $group->getId();
@@ -325,7 +325,7 @@ class TagListener
     public function onWorkspacesDelete(GenericDatasEvent $event)
     {
         $workspaces = $event->getDatas();
-        $ids = array();
+        $ids = [];
 
         foreach ($workspaces as $workspace) {
             $ids[] = $workspace->getId();
@@ -344,7 +344,7 @@ class TagListener
     public function onResourcesDelete(GenericDatasEvent $event)
     {
         $resources = $event->getDatas();
-        $ids = array();
+        $ids = [];
 
         foreach ($resources as $resource) {
             $ids[] = $resource->getId();

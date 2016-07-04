@@ -25,16 +25,16 @@ class EditCategoryEvent extends AbstractLogResourceEvent
      */
     public function __construct(Category $category, $oldName, $newName)
     {
-        $details = array(
-            'category' => array(
+        $details = [
+            'category' => [
                 'id' => $category->getId(),
-            ),
-            'forum' => array(
+            ],
+            'forum' => [
                 'id' => $category->getForum()->getId(),
-            ),
+            ],
             'oldName' => $oldName,
             'newName' => $newName,
-        );
+        ];
 
         parent::__construct($category->getForum()->getResourceNode(), $details);
     }
@@ -44,6 +44,6 @@ class EditCategoryEvent extends AbstractLogResourceEvent
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_WORKSPACE, self::DISPLAYED_ADMIN);
+        return [self::DISPLAYED_WORKSPACE, self::DISPLAYED_ADMIN];
     }
 }

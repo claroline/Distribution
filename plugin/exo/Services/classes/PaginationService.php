@@ -2,9 +2,9 @@
 
 namespace UJM\ExoBundle\Services\classes;
 
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Pagerfanta;
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 

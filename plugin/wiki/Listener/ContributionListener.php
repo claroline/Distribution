@@ -12,9 +12,9 @@
 namespace Icap\WikiBundle\Listener;
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Icap\NotificationBundle\Manager\NotificationManager as NotificationManager;
 use Icap\WikiBundle\Entity\Contribution;
 use JMS\DiExtraBundle\Annotation as DI;
-use Icap\NotificationBundle\Manager\NotificationManager as NotificationManager;
 
 /**
  * @DI\Service("icap.wiki_bundle.entity_listener.contribution")
@@ -45,8 +45,8 @@ class ContributionListener
             count($userPicker->getUserIds()) > 0 &&
             $wiki->getResourceNode() !== null
         ) {
-            $details = array(
-                'contribution' => array(
+            $details = [
+                'contribution' => [
                     'wiki' => $wiki->getId(),
                     'section' => $section->getId(),
                     'id' => $contribution->getId(),
@@ -55,13 +55,13 @@ class ContributionListener
                     'contributor' => $contribution->getContributor()->getFirstName().
                         ' '.
                         $contribution->getContributor()->getLastName(),
-                ),
-                'resource' => array(
+                ],
+                'resource' => [
                     'id' => $wiki->getId(),
                     'name' => $wiki->getResourceNode()->getName(),
                     'type' => $wiki->getResourceNode()->getResourceType()->getName(),
-                ),
-            );
+                ],
+            ];
             $notification = $this->notificationManager->createNotification(
                 'resource-icap_wiki-user_tagged',
                 'wiki',

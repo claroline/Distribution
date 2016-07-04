@@ -43,56 +43,56 @@ class OptionsType extends AbstractType
         $builder->add(
             'showAllMyContacts',
             'checkbox',
-            array(
+            [
                 'mapped' => false,
                 'label' => 'show_all_my_contacts',
                 'data' => $showAllMyContacts,
-            )
+            ]
         );
         $builder->add(
             'showAllVisibleUsers',
             'checkbox',
-            array(
+            [
                 'mapped' => false,
                 'label' => 'show_all_visible_users',
                 'data' => $showAllVisibleUsers,
-            )
+            ]
         );
         $builder->add(
             'showPicture',
             'checkbox',
-            array(
+            [
                 'mapped' => false,
                 'label' => 'show_picture',
                 'data' => $showPicture,
-            )
+            ]
         );
         $builder->add(
             'showUsername',
             'checkbox',
-            array(
+            [
                 'mapped' => false,
                 'label' => 'show_username',
                 'data' => $showUsername,
-            )
+            ]
         );
         $builder->add(
             'showMail',
             'checkbox',
-            array(
+            [
                 'mapped' => false,
                 'label' => 'show_mail',
                 'data' => $showMail,
-            )
+            ]
         );
         $builder->add(
             'showPhone',
             'checkbox',
-            array(
+            [
                 'mapped' => false,
                 'label' => 'show_phone',
                 'data' => $showPhone,
-            )
+            ]
         );
     }
 
@@ -103,6 +103,6 @@ class OptionsType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform']);
     }
 }

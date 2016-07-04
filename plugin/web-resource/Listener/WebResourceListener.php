@@ -12,6 +12,7 @@
 namespace Claroline\WebResourceBundle\Listener;
 
 use Claroline\CoreBundle\Entity\Resource\File;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
@@ -25,7 +26,6 @@ use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Response;
-use Claroline\CoreBundle\Entity\Workspace\Workspace;
 
 /**
  * @DI\Service("claroline.listener.web_resource_listener")
@@ -58,14 +58,14 @@ class WebResourceListener
      */
     private $filesPath;
 
-    private $defaultIndexFiles = array(
+    private $defaultIndexFiles = [
         'web/SCO_0001/default.html',
         'web/SCO_0001/default.htm',
         'web/index.html',
         'web/index.htm',
         'index.html',
         'index.htm',
-    );
+    ];
 
     /**
      * Class constructor.
@@ -95,10 +95,10 @@ class WebResourceListener
         $form = $this->container->get('form.factory')->create(new FileType(), new File());
         $content = $this->container->get('templating')->render(
             'ClarolineCoreBundle:Resource:createForm.html.twig',
-            array(
+            [
                 'form' => $form->createView(),
                 'resourceType' => 'claroline_web_resource',
-            )
+            ]
         );
 
         $event->setResponseContent($content);
@@ -119,10 +119,10 @@ class WebResourceListener
 
         if ($form->isValid()) {
             if (!$this->isZip($form->get('file')->getData())) {
-                $error = $this->container->get('translator')->trans('not_a_zip', array(), 'resource');
+                $error = $this->container->get('translator')->trans('not_a_zip', [], 'resource');
                 $form->addError(new FormError($error));
             } else {
-                $event->setResources(array($this->create($form->get('file')->getData(), $workspace)));
+                $event->setResources([$this->create($form->get('file')->getData(), $workspace)]);
                 $event->stopPropagation();
 
                 return;
@@ -131,10 +131,10 @@ class WebResourceListener
 
         $content = $this->container->get('templating')->render(
             'ClarolineCoreBundle:Resource:createForm.html.twig',
-            array(
+            [
                 'form' => $form->createView(),
                 'resourceType' => $event->getResourceType(),
-            )
+            ]
         );
         $event->setErrorFormContent($content);
         $event->stopPropagation();
@@ -153,12 +153,12 @@ class WebResourceListener
 
         $content = $this->container->get('templating')->render(
             'ClarolineWebResourceBundle::webResource.html.twig',
-            array(
+            [
                 'workspace' => $event->getResource()->getResourceNode()->getWorkspace(),
                 'path' => $hash.'/'.$this->guessRootFileFromUnzipped($this->zipPath.$hash),
                 'resource' => $event->getResource(),
                 '_resource' => $event->getResource(),
-            )
+            ]
         );
 
         $event->setResponse(new Response($content));
@@ -176,7 +176,7 @@ class WebResourceListener
         $unzipFile = $this->zipPath.$event->getResource()->getHashName();
 
         if (file_exists($file)) {
-            $event->setFiles(array($file));
+            $event->setFiles([$file]);
         }
 
         if (file_exists($unzipFile)) {
@@ -221,9 +221,9 @@ class WebResourceListener
         $dir = new RecursiveDirectoryIterator($directory, RecursiveDirectoryIterator::SKIP_DOTS | RecursiveDirectoryIterator::NEW_CURRENT_AND_KEY);
         $files = new \RecursiveIteratorIterator($dir);
 
-        $allowedExtensions = array('htm', 'html');
+        $allowedExtensions = ['htm', 'html'];
 
-        $list = array();
+        $list = [];
         foreach ($files as $file) {
             if (in_array($file->getExtension(), $allowedExtensions)) {
                 // HTML File found

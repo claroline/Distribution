@@ -31,7 +31,7 @@ class Updater050108 extends Updater
     {
         $this->log('Updating locales...');
         $ch = $this->container->get('claroline.config.platform_config_handler');
-        $locales = array('en', 'es', 'fr');
+        $locales = ['en', 'es', 'fr'];
         $ch->setParameter('locales', $locales);
     }
 }

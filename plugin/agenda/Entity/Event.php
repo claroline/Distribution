@@ -11,12 +11,12 @@
 
 namespace Claroline\AgendaBundle\Entity;
 
-use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\AgendaBundle\Validator\Constraints\DateRange;
 use Claroline\CoreBundle\Entity\User;
-use Symfony\Component\Validator\Constraints as Assert;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Claroline\AgendaBundle\Validator\Constraints\DateRange;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="Claroline\AgendaBundle\Repository\EventRepository")

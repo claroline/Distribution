@@ -11,11 +11,11 @@
 
 namespace Claroline\CoreBundle\Listener;
 
-use Symfony\Component\HttpKernel\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
-use Symfony\Component\Security\Http\Firewall\ListenerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Http\Firewall\ListenerInterface;
 
 /*
  * Populates the anonymous token with a dedicated role.
@@ -42,7 +42,7 @@ class AnonymousAuthenticationListener implements ListenerInterface
             return;
         }
 
-        $this->context->setToken(new AnonymousToken($this->key, 'anon.', array('ROLE_ANONYMOUS')));
+        $this->context->setToken(new AnonymousToken($this->key, 'anon.', ['ROLE_ANONYMOUS']));
 
         if (null !== $this->logger) {
             $this->logger->info(sprintf('Populated SecurityContext with an anonymous Token'));

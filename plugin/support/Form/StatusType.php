@@ -13,32 +13,32 @@ class StatusType extends AbstractType
         $builder->add(
             'name',
             'text',
-            array(
+            [
                 'required' => true,
                 'label' => 'name',
                 'translation_domain' => 'platform',
-            )
+            ]
         );
         $builder->add(
             'code',
             'text',
-            array(
+            [
                 'required' => true,
                 'label' => 'code',
                 'translation_domain' => 'platform',
-            )
+            ]
         );
         $builder->add(
             'type',
             'choice',
-            array(
+            [
                 'label' => 'type',
-                'choices' => array(0, 1, 2, 3, 4),
+                'choices' => [0, 1, 2, 3, 4],
                 'expanded' => false,
                 'multiple' => false,
                 'required' => true,
                 'translation_domain' => 'platform',
-            )
+            ]
         );
     }
 
@@ -49,6 +49,6 @@ class StatusType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'support'));
+        $resolver->setDefaults(['translation_domain' => 'support']);
     }
 }

@@ -19,7 +19,7 @@ use Icap\SocialmediaBundle\Library\SocialShare\Networks\Twitter;
 
 class SocialShare
 {
-    protected $networks = array();
+    protected $networks = [];
 
     public function __construct()
     {

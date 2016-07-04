@@ -15,40 +15,40 @@ class HoleType extends AbstractType
                 'position', 'text'
             )
             ->add(
-                'size', 'text', array(
-                'attr' => array('size' => '4'),
-                )
+                'size', 'text', [
+                'attr' => ['size' => '4'],
+                ]
 
             )
             //->add('position', 'text')
             ->add(
-                'orthography', 'checkbox', array(
+                'orthography', 'checkbox', [
                     'required' => false, 'label' => 'orthography',
-                )
+                ]
             )
             ->add(
-                'selector', 'checkbox', array(
+                'selector', 'checkbox', [
                     'required' => false, 'label' => 'hole_selector',
-                )
+                ]
             )
             ->add(
-                'wordResponses', 'collection', array(
+                'wordResponses', 'collection', [
                     'type' => new WordResponseType(),
                     'prototype' => true,
                     //'by_reference' => false,
                     'allow_add' => true,
                     'allow_delete' => true,
-                )
+                ]
             );
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-                array('data_class' => 'UJM\ExoBundle\Entity\Hole',
+                ['data_class' => 'UJM\ExoBundle\Entity\Hole',
                       'cascade_validation' => true,
                       'translation_domain' => 'ujm_exo',
-                )
+                ]
         );
     }
 

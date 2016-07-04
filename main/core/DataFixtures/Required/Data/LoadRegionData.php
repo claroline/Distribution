@@ -11,15 +11,15 @@
 
 namespace Claroline\CoreBundle\DataFixtures\Required\Data;
 
-use Claroline\CoreBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\Entity\Home\Region;
 use Claroline\CoreBundle\DataFixtures\Required\RequiredFixture;
+use Claroline\CoreBundle\Entity\Home\Region;
+use Claroline\CoreBundle\Persistence\ObjectManager;
 
 class LoadRegionData implements RequiredFixture
 {
     public function load(ObjectManager $manager)
     {
-        $names = array('header', 'left', 'content', 'right', 'footer');
+        $names = ['header', 'left', 'content', 'right', 'footer'];
 
         foreach ($names as $name) {
             $region = new Region();

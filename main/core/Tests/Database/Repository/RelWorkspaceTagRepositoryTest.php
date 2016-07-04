@@ -29,8 +29,8 @@ class RelWorkspaceTagRepositoryTest extends RepositoryTestCase
         self::createRole('ROLE_wsb', self::get('wsb'));
         self::createRole('ROLE_wsc', self::get('wsc'));
         self::createRole('ROLE_wsd', self::get('wsd'));
-        self::createUser('user', array(self::get('ROLE_wsa'), self::get('ROLE_wsb'), self::get('ROLE_wsc')));
-        self::createUser('admin', array(self::get('ROLE_wsd')));
+        self::createUser('user', [self::get('ROLE_wsa'), self::get('ROLE_wsb'), self::get('ROLE_wsc')]);
+        self::createUser('admin', [self::get('ROLE_wsd')]);
         self::createWorkspaceTag('tag_1');
         self::createWorkspaceTag('tag_2');
         self::createWorkspaceTag('tag_3');
@@ -229,7 +229,7 @@ class RelWorkspaceTagRepositoryTest extends RepositoryTestCase
 
     public function testFindByAdminAndWorkspaces()
     {
-        $workspaces = array(self::get('wsa'), self::get('wsd'));
+        $workspaces = [self::get('wsa'), self::get('wsd')];
         $tagRelations = self::$repo->findByAdminAndWorkspaces($workspaces);
         $this->assertEquals(4, count($tagRelations));
     }

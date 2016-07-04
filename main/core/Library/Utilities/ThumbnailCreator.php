@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Library\Utilities;
 
-use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("claroline.utilities.thumbnail_creator")

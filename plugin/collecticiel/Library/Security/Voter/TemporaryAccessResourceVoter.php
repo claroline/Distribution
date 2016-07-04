@@ -3,11 +3,11 @@
 namespace Innova\CollecticielBundle\Library\Security\Voter;
 
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Library\Resource\ResourceCollection;
 use Innova\CollecticielBundle\Manager\TemporaryAccessResourceManager;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
-use Claroline\CoreBundle\Library\Resource\ResourceCollection;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * This voter is involved in access decisions for AbstractResource instances based one temporary access.

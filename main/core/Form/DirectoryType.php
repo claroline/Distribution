@@ -11,10 +11,10 @@
 
 namespace Claroline\CoreBundle\Form;
 
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class DirectoryType extends AbstractType
 {
@@ -23,21 +23,21 @@ class DirectoryType extends AbstractType
         $builder->add(
             'name',
             'text',
-            array(
+            [
                 'constraints' => new NotBlank(),
                 'label' => 'name',
-                'attr' => array('autofocus' => true),
-            )
+                'attr' => ['autofocus' => true],
+            ]
         );
         $builder->add(
             'published',
             'checkbox',
-            array(
+            [
                 'required' => true,
                 'mapped' => false,
-                'attr' => array('checked' => 'checked'),
+                'attr' => ['checked' => 'checked'],
                 'label' => 'publish_resource',
-            )
+            ]
         );
     }
 
@@ -48,6 +48,6 @@ class DirectoryType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform']);
     }
 }

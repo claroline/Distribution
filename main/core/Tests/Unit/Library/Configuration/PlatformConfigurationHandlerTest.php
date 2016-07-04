@@ -23,7 +23,7 @@ class PlatformConfigurationHandlerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        vfsStream::setup('configDir', null, array('platform_options.yml' => ''));
+        vfsStream::setup('configDir', null, ['platform_options.yml' => '']);
         $this->configFile = vfsStream::url('configDir/platform_options.yml');
         $this->handler = new PlatformConfigurationHandler($this->configFile);
     }
@@ -45,9 +45,9 @@ class PlatformConfigurationHandlerTest extends \PHPUnit_Framework_TestCase
 
     public function parameterAccessorProvider()
     {
-        return array(
-            array('getParameter'),
-            array('setParameter'),
-        );
+        return [
+            ['getParameter'],
+            ['setParameter'],
+        ];
     }
 }

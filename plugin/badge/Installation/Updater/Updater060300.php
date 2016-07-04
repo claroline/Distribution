@@ -47,7 +47,7 @@ class Updater060300 extends Updater
     protected function migrateBadgeTables(Connection $connection, AppKernel $kernel)
     {
         $portfolioBundle = $this->container->get('claroline.persistence.object_manager')->getRepository('ClarolineCoreBundle:Plugin')->findBy(
-            array('vendorName' => 'Icap', 'bundleName' => 'PortfolioBundle')
+            ['vendorName' => 'Icap', 'bundleName' => 'PortfolioBundle']
         );
         $portfolioBundle = count($portfolioBundle) === 1 ? true : false;
 

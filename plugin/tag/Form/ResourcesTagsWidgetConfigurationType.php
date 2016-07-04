@@ -35,17 +35,17 @@ class ResourcesTagsWidgetConfigurationType extends AbstractType
         $builder->add(
             'nbTags',
             'integer',
-            array(
+            [
                 'required' => true,
                 'mapped' => false,
                 'label' => 'number_of_tags',
                 'data' => $nbTags,
-                'constraints' => array(
+                'constraints' => [
                     new NotBlank(),
-                    new Range(array('min' => 0)),
-                ),
-                'attr' => array('min' => 0),
-            )
+                    new Range(['min' => 0]),
+                ],
+                'attr' => ['min' => 0],
+            ]
         );
     }
 
@@ -56,6 +56,6 @@ class ResourcesTagsWidgetConfigurationType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'tag'));
+        $resolver->setDefaults(['translation_domain' => 'tag']);
     }
 }

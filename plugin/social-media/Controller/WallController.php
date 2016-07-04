@@ -13,9 +13,9 @@ namespace Icap\SocialmediaBundle\Controller;
 
 use Claroline\CoreBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class WallController extends Controller
@@ -65,10 +65,10 @@ class WallController extends Controller
         $likesQB = $this->getWallItemManager()->getWallItemsForPagination($userId, $isOwner);
         $pager = $this->paginateQuery($likesQB, $page);
 
-        return array(
+        return [
             'pager' => $pager,
             'userId' => $userId,
-            'isOwner' => $isOwner, );
+            'isOwner' => $isOwner, ];
     }
 
     /**

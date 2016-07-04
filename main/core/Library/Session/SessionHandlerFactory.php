@@ -11,10 +11,10 @@
 
 namespace Claroline\CoreBundle\Library\Session;
 
+use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeFileSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler;
-use JMS\DiExtraBundle\Annotation as DI;
-use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 
 /**
  * @DI\Service("claroline.session.handler_factory")

@@ -212,7 +212,7 @@ class UserInformationWidget extends AbstractWidget
     {
         $birthDate = $this->getBirthDate();
 
-        return array(
+        return [
             'city' => $this->getCity(),
             'birthDate' => $birthDate ? $birthDate->format('Y/m/d') : $birthDate,
             'show_avatar' => $this->isShowAvatar(),
@@ -220,7 +220,7 @@ class UserInformationWidget extends AbstractWidget
             'show_phone' => $this->isShowPhone(),
             'show_description' => $this->isShowDescription(),
             'text' => $this->getText(),
-        );
+        ];
     }
 
     /**
@@ -228,7 +228,7 @@ class UserInformationWidget extends AbstractWidget
      */
     public function getEmpty()
     {
-        return array(
+        return [
             'city' => null,
             'birthDate' => null,
             'show_avatar' => false,
@@ -236,6 +236,6 @@ class UserInformationWidget extends AbstractWidget
             'show_phone' => false,
             'show_description' => false,
             'text' => null,
-        );
+        ];
     }
 }

@@ -288,7 +288,7 @@ class OperationExecutor
 
     private function getBundlesByFqcn()
     {
-        $byFqcn = array();
+        $byFqcn = [];
 
         foreach ($this->kernel->getBundles() as $bundle) {
             $fqcn = $bundle->getNamespace() ?

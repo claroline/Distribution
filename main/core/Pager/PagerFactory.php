@@ -12,12 +12,12 @@
 namespace Claroline\CoreBundle\Pager;
 
 use Doctrine\ORM\Query;
+use JMS\DiExtraBundle\Annotation as DI;
 use Pagerfanta\Adapter\AdapterInterface;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("claroline.pager.pager_factory")

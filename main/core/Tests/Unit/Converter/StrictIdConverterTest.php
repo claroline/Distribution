@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Converter;
 
-use Symfony\Component\HttpFoundation\ParameterBag;
 use Claroline\CoreBundle\Library\Testing\MockeryTestCase;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 class StrictIdConverterTest extends MockeryTestCase
 {
@@ -39,9 +39,9 @@ class StrictIdConverterTest extends MockeryTestCase
     {
         $configuration = $this->mock('Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter');
         $configuration->shouldReceive('getOptions')->times(3)->andReturn(
-            array('some_other_option'),
-            array('strictId' => false),
-            array('strictId' => true)
+            ['some_other_option'],
+            ['strictId' => false],
+            ['strictId' => true]
         );
         $this->assertFalse($this->converter->supports($configuration));
         $this->assertFalse($this->converter->supports($configuration));
@@ -77,7 +77,7 @@ class StrictIdConverterTest extends MockeryTestCase
     {
         $this->configuration->shouldReceive('getName')->once()->andReturn('parameter');
         $this->configuration->shouldReceive('getClass')->once()->andReturn('Foo\Entity');
-        $this->configuration->shouldReceive('getOptions')->once()->andReturn(array());
+        $this->configuration->shouldReceive('getOptions')->once()->andReturn([]);
         $this->converter->apply($this->request, $this->configuration);
     }
 
@@ -85,7 +85,7 @@ class StrictIdConverterTest extends MockeryTestCase
     {
         $this->configuration->shouldReceive('getName')->once()->andReturn('parameter');
         $this->configuration->shouldReceive('getClass')->once()->andReturn('Foo\Entity');
-        $this->configuration->shouldReceive('getOptions')->once()->andReturn(array('id' => 'someId'));
+        $this->configuration->shouldReceive('getOptions')->once()->andReturn(['id' => 'someId']);
         $this->request->attributes = new ParameterBag();
         $this->assertFalse($this->converter->apply($this->request, $this->configuration));
     }
@@ -94,7 +94,7 @@ class StrictIdConverterTest extends MockeryTestCase
     {
         $this->configuration->shouldReceive('getName')->once()->andReturn('parameter');
         $this->configuration->shouldReceive('getClass')->once()->andReturn('Foo\Entity');
-        $this->configuration->shouldReceive('getOptions')->once()->andReturn(array('id' => 'someId'));
+        $this->configuration->shouldReceive('getOptions')->once()->andReturn(['id' => 'someId']);
         $this->configuration->shouldReceive('isOptional')->once()->andReturn(true);
         $this->request->attributes = new ParameterBag();
         $this->request->attributes->set('someId', null);
@@ -108,7 +108,7 @@ class StrictIdConverterTest extends MockeryTestCase
     {
         $this->configuration->shouldReceive('getName')->once()->andReturn('parameter');
         $this->configuration->shouldReceive('getClass')->once()->andReturn('Foo\Entity');
-        $this->configuration->shouldReceive('getOptions')->once()->andReturn(array('id' => 'someId'));
+        $this->configuration->shouldReceive('getOptions')->once()->andReturn(['id' => 'someId']);
         $this->configuration->shouldReceive('isOptional')->once()->andReturn(false);
         $this->request->attributes = new ParameterBag();
         $this->request->attributes->set('someId', null);
@@ -122,7 +122,7 @@ class StrictIdConverterTest extends MockeryTestCase
     {
         $this->configuration->shouldReceive('getName')->once()->andReturn('parameter');
         $this->configuration->shouldReceive('getClass')->once()->andReturn('Foo\Entity');
-        $this->configuration->shouldReceive('getOptions')->once()->andReturn(array('id' => 'someId'));
+        $this->configuration->shouldReceive('getOptions')->once()->andReturn(['id' => 'someId']);
         $this->configuration->shouldReceive('isOptional')->once()->andReturn(false);
         $this->request->attributes = new ParameterBag();
         $this->request->attributes->set('someId', 1);
@@ -137,7 +137,7 @@ class StrictIdConverterTest extends MockeryTestCase
         $entity = 'entity_1';
         $this->configuration->shouldReceive('getName')->once()->andReturn('parameter');
         $this->configuration->shouldReceive('getClass')->once()->andReturn('Foo\Entity');
-        $this->configuration->shouldReceive('getOptions')->once()->andReturn(array('id' => 'someId'));
+        $this->configuration->shouldReceive('getOptions')->once()->andReturn(['id' => 'someId']);
         $this->request->attributes = new ParameterBag();
         $this->request->attributes->set('someId', 1);
         $repo = $this->mock('Doctrine\ORM\EntityRepository');

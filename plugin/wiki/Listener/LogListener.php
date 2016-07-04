@@ -11,7 +11,7 @@ class LogListener extends ContainerAware
     {
         $content = $this->container->get('templating')->render(
             'IcapWikiBundle:Log:log_list_item.html.twig',
-            array('log' => $event->getLog())
+            ['log' => $event->getLog()]
         );
 
         $event->setResponseContent($content);
@@ -22,13 +22,13 @@ class LogListener extends ContainerAware
     {
         $content = $this->container->get('templating')->render(
             'IcapWikiBundle:Log:log_details.html.twig',
-            array(
+            [
                 'log' => $event->getLog(),
                 'listItemView' => $this->container->get('templating')->render(
                     'IcapWikiBundle:Log:log_list_item.html.twig',
-                    array('log' => $event->getLog())
+                    ['log' => $event->getLog()]
                 ),
-            )
+            ]
         );
 
         $event->setResponseContent($content);

@@ -51,13 +51,13 @@ class DatabaseWriterTest extends MockeryTestCase
     {
         $this->markTestSkipped('Database writer should be refactored and properly tested');
         $resourceType = new \Claroline\CoreBundle\Entity\Resource\ResourceType();
-        $actions = array(array('name' => 'open', 'menu_name' => 'open'));
+        $actions = [['name' => 'open', 'menu_name' => 'open']];
         $decoder = new \Claroline\CoreBundle\Entity\Resource\MaskDecoder();
         $decoderRepo = $this->mock('Doctrine\ORM\EntityRepository');
-        $decoderRepo->shouldReceive('findBy')->with(array('resourceType' => $resourceType))
-            ->andReturn(array($decoder));
+        $decoderRepo->shouldReceive('findBy')->with(['resourceType' => $resourceType])
+            ->andReturn([$decoder]);
         $decoderRepo->shouldReceive('findOneBy')
-            ->with(array('name' => 'open', 'resourceType' => $resourceType))
+            ->with(['name' => 'open', 'resourceType' => $resourceType])
             ->andReturn($decoder);
         $this->em->shouldReceive('persist')->once();
     }

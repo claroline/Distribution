@@ -2,15 +2,15 @@
 
 namespace Icap\OAuthBundle\Security;
 
-use HWI\Bundle\OAuthBundle\Security\Core\User\OAuthAwareUserProviderInterface;
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
-use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
-use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
-use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Claroline\CoreBundle\Entity\User;
+use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
+use HWI\Bundle\OAuthBundle\Security\Core\User\OAuthAwareUserProviderInterface;
+use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
+use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 /**
  * @DI\Service("icap.oauth.user_provider")
@@ -56,7 +56,7 @@ class OauthUserProvider implements OAuthAwareUserProviderInterface, UserProvider
     public function loadUserByServiceAndId($service, $id)
     {
         $oauthUser = $this->em->getRepository('IcapOAuthBundle:OauthUser')->findOneBy(
-            array('service' => $service, 'oauthId' => $id)
+            ['service' => $service, 'oauthId' => $id]
         );
 
         if ($oauthUser === null) {
@@ -90,17 +90,17 @@ class OauthUserProvider implements OAuthAwareUserProviderInterface, UserProvider
                     $lastName = ucfirst(strtolower($nameArray[1]));
                 }
             }
-            $user = array();
+            $user = [];
             $user['firstName'] = $firstName;
             $user['lastName'] = $lastName;
             $user['username'] = $this->createUsername($response->getNickname());
             $user['mail'] = $response->getEmail();
 
             $this->session->set('icap.oauth.user', $user);
-            $resourceOwnerArray = array(
+            $resourceOwnerArray = [
                 'name' => $resourceOwner->getName(),
                 'id' => $content['id'],
-            );
+            ];
             $this->session->set('icap.oauth.resource_owner', $resourceOwnerArray);
 
             throw $e;

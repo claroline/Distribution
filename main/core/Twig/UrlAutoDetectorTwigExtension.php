@@ -34,16 +34,16 @@ class UrlAutoDetectorTwigExtension extends \Twig_Extension
      */
     public function getFilters()
     {
-        return array(
+        return [
             'url_detect' => new \Twig_Filter_Method(
                 $this,
                 'autoDetectUrls',
-                array(
+                [
                     'pre_escape' => 'html',
-                    'is_safe' => array('html'),
-                )
+                    'is_safe' => ['html'],
+                ]
             ),
-        );
+        ];
     }
 
     /**
@@ -56,7 +56,7 @@ class UrlAutoDetectorTwigExtension extends \Twig_Extension
     public function autoDetectUrls($string)
     {
         $pattern = '/(<a\b[^>]*>\s*|href="|src=")?([-a-zA-Zа-яёА-ЯЁ0-9@:%_\+.~#?&\/\/=]{2,256}\.[a-zа-яё]{2,4}\b(\/?([-\p{L}0-9@:%_\+~#&\/\/=\(\)]|[.?,](?!\s|$))*)?)/u';
-        $stringFiltered = preg_replace_callback($pattern, array($this, 'callbackReplace'), $string);
+        $stringFiltered = preg_replace_callback($pattern, [$this, 'callbackReplace'], $string);
 
         return $stringFiltered;
     }

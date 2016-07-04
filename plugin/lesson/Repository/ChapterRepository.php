@@ -17,12 +17,12 @@ class ChapterRepository extends NestedTreeRepository
 {
     public function getFirstChapter(Lesson $lesson)
     {
-        return $this->findOneBy(array('lesson' => $lesson, 'root' => $lesson->getRoot()->getId(), 'left' => 2));
+        return $this->findOneBy(['lesson' => $lesson, 'root' => $lesson->getRoot()->getId(), 'left' => 2]);
     }
 
     public function getChapterTree(Chapter $chapter)
     {
-        return $this->childrenHierarchy($chapter, false, array(), true);
+        return $this->childrenHierarchy($chapter, false, [], true);
     }
 
     /**
@@ -37,7 +37,7 @@ class ChapterRepository extends NestedTreeRepository
             ->andWhere('chapter.root = :rootId')
             ->orderBy('chapter.root, chapter.left', 'ASC')
             ->setParameter('rootId', $chapter->getId());
-        $options = array('decorate' => false);
+        $options = ['decorate' => false];
         $tree = $this->buildTree($queryBuilder->getQuery()->getArrayResult(), $options);
 
         return $tree;

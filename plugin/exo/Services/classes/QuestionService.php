@@ -7,13 +7,13 @@
 
 namespace UJM\ExoBundle\Services\classes;
 
+use Claroline\CoreBundle\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Yaml\Parser;
-use UJM\ExoBundle\Entity\Question;
 use UJM\ExoBundle\Entity\Exercise;
-use Claroline\CoreBundle\Entity\User;
+use UJM\ExoBundle\Entity\Question;
 
 class QuestionService
 {
@@ -67,12 +67,12 @@ class QuestionService
     {
         $em = $this->doctrine->getEntityManager();
 
-        $allActions = array();
-        $actionQ = array();
-        $questionWithResponse = array();
-        $alreadyShared = array();
-        $sharedWithMe = array();
-        $shareRight = array();
+        $allActions = [];
+        $actionQ = [];
+        $questionWithResponse = [];
+        $alreadyShared = [];
+        $sharedWithMe = [];
+        $shareRight = [];
 
         foreach ($listQuestions as $question) {
             if ($question->getUser()->getId() == $userID) {
@@ -83,7 +83,7 @@ class QuestionService
                 $alreadyShared += $actions[1];
             } else {
                 $sharedQ = $em->getRepository('UJMExoBundle:Share')
-                        ->findOneBy(array('user' => $userID, 'question' => $question->getId()));
+                        ->findOneBy(['user' => $userID, 'question' => $question->getId()]);
 
                 if ($sharedQ) {
                     $actionQ[$question->getId()] = 2; // shared question
@@ -242,7 +242,7 @@ class QuestionService
      */
     public function getQuestionShare($shared)
     {
-        $sharedWithMe = array();
+        $sharedWithMe = [];
 
         $end = count($shared);
 

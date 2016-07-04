@@ -29,10 +29,10 @@ class InteractionGraphic extends \Twig_Extension
      */
     public function getFunctions()
     {
-        return array(
+        return [
               'getCoordsGraphTwig' => new \Twig_Function_Method($this, 'getCoordsGraphTwig'),
               'goodGraphCoords' => new \Twig_Function_Method($this, 'goodGraphCoords'),
-           );
+           ];
     }
 
     /**
@@ -48,7 +48,7 @@ class InteractionGraphic extends \Twig_Extension
         $coords = $this->doctrine
                        ->getManager()
                        ->getRepository('UJMExoBundle:Coords')
-                       ->findBy(array('interactionGraphic' => $interGraphId));
+                       ->findBy(['interactionGraphic' => $interGraphId]);
 
         return $coords;
     }
@@ -58,7 +58,7 @@ class InteractionGraphic extends \Twig_Extension
         $coords = $this->doctrine
                         ->getManager()
                         ->getRepository('UJMExoBundle:Coords')
-                        ->findBy(array('interactionGraphic' => $interGraph->getId()));
+                        ->findBy(['interactionGraphic' => $interGraph->getId()]);
 
         return $coords;
     }

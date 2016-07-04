@@ -3,8 +3,8 @@
 namespace Icap\BlogBundle\Entity;
 
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
-use Doctrine\ORM\Mapping as ORM;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table(name="icap__blog_widget_list_blog")

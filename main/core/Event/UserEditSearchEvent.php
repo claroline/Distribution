@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Event;
 
-use Symfony\Component\EventDispatcher\Event;
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\EventDispatcher\Event;
 
 class UserEditSearchEvent extends Event
 {

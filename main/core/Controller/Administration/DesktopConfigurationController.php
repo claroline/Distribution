@@ -16,8 +16,8 @@ use Claroline\CoreBundle\Entity\Tool\OrderedTool;
 use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Manager\ToolManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use JMS\SecurityExtraBundle\Annotation as SEC;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -59,7 +59,7 @@ class DesktopConfigurationController extends Controller
      */
     public function adminDesktopConfigMenuAction()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -85,11 +85,11 @@ class DesktopConfigurationController extends Controller
         $orderedTools = $this->toolManager
             ->getConfigurableDesktopOrderedToolsByTypeForAdmin($menuType);
 
-        return array(
+        return [
             'tools' => $tools,
             'orderedTools' => $orderedTools,
             'type' => $menuType,
-        );
+        ];
     }
 
     /**
@@ -172,8 +172,8 @@ class DesktopConfigurationController extends Controller
      */
     public function adminDesktopHomeLockManagementAction()
     {
-        $roles = array();
-        $options = array();
+        $roles = [];
+        $options = [];
         $platformRoles = $this->roleManager->getAllPlatformRoles();
 
         foreach ($platformRoles as $role) {
@@ -184,7 +184,7 @@ class DesktopConfigurationController extends Controller
             }
         }
 
-        return array('roles' => $roles, 'options' => $options);
+        return ['roles' => $roles, 'options' => $options];
     }
 
     /**

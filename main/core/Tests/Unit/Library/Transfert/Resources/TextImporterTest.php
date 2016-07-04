@@ -43,13 +43,13 @@ class TextImporterTest extends MockeryTestCase
     /* @todo add validations */
     public function validateProvider()
     {
-        return array(
+        return [
             //valid (the file path is correct)
-            array(
+            [
                 'basePath' => __DIR__.'/../../../../Stub/transfert/valid/full',
                 'path' => 'tools/resources/text01.yml',
                 'isExceptionExpected' => false,
-            ),
-        );
+            ],
+        ];
     }
 }

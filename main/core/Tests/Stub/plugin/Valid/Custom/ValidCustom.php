@@ -25,7 +25,7 @@ class ValidCustom extends PluginBundle
         $firstPath = $commonPath.$ds.'routing'.$ds.'routing.yml';
         $secondPath = $commonPath.$ds.'special_routing'.$ds.'routing.yml';
 
-        return array($firstPath, $secondPath);
+        return [$firstPath, $secondPath];
     }
 
     public function getRoutingPrefix()

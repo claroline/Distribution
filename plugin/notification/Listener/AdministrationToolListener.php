@@ -12,8 +12,8 @@
 namespace Icap\NotificationBundle\Listener;
 
 use Claroline\CoreBundle\Event\OpenAdministrationToolEvent;
-use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\Listener\AdministrationToolListener as BaseAdministrationToolListener;
+use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * Class AdminToolListener.

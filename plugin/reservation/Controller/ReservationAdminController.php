@@ -10,14 +10,14 @@ use FormaLibre\ReservationBundle\Entity\Resource;
 use FormaLibre\ReservationBundle\Entity\ResourceType;
 use FormaLibre\ReservationBundle\Form\ImportResourcesViaCsvFileType;
 use FormaLibre\ReservationBundle\Manager\ReservationManager;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use JMS\DiExtraBundle\Annotation as DI;
+use JMS\SecurityExtraBundle\Annotation as SEC;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
-use JMS\SecurityExtraBundle\Annotation as SEC;
 
 /**
  * @DI\Tag("security.secure_service")
@@ -93,15 +93,15 @@ class ReservationAdminController extends Controller
     public function addNewResourceTypeAction($name = '')
     {
         if (empty($name)) {
-            return new jsonResponse(array(
+            return new jsonResponse([
                 'error' => 'empty_string',
-            ));
+            ]);
         }
 
-        if ($this->resourceTypeRepo->findOneBy(array('name' => $name))) {
-            return new jsonResponse(array(
+        if ($this->resourceTypeRepo->findOneBy(['name' => $name])) {
+            return new jsonResponse([
                 'error' => 'resource_type_exists',
-            ));
+            ]);
         }
 
         $resourceType = new ResourceType();
@@ -109,10 +109,10 @@ class ReservationAdminController extends Controller
         $this->em->persist($resourceType);
         $this->em->flush();
 
-        return new JsonResponse(array(
+        return new JsonResponse([
             'id' => $resourceType->getId(),
             'name' => $resourceType->getName(),
-        ));
+        ]);
     }
 
     /**
@@ -191,12 +191,12 @@ class ReservationAdminController extends Controller
             ]);
         }
 
-        return $this->render('FormaLibreReservationBundle:Admin:resourceForm.html.twig', array(
+        return $this->render('FormaLibreReservationBundle:Admin:resourceForm.html.twig', [
             'form' => $form->createView(),
-            'action' => $this->router->generate('formalibre_add_new_resource', array('id' => $resourceType->getId())),
+            'action' => $this->router->generate('formalibre_add_new_resource', ['id' => $resourceType->getId()]),
             'editMode' => false,
             'roles' => $this->roleRepo->findBy(['type' => 1]),
-        ));
+        ]);
     }
 
 /**
@@ -231,14 +231,14 @@ class ReservationAdminController extends Controller
             $resourcesRightsArray[$resourceRights->getRole()->getId()] = $resourceRights->getMask();
         }
 
-        return $this->render('FormaLibreReservationBundle:Admin:resourceForm.html.twig', array(
+        return $this->render('FormaLibreReservationBundle:Admin:resourceForm.html.twig', [
             'resource' => $resource,
             'form' => $form->createView(),
             'action' => $this->router->generate('formalibre_modification_resource', ['id' => $resource->getId()]),
             'editMode' => true,
             'roles' => $roles,
             'resourcesRights' => $resourcesRightsArray,
-        ));
+        ]);
     }
 
     /**
@@ -271,7 +271,7 @@ class ReservationAdminController extends Controller
     {
         $tempMaskByRole = explode(',', $rolesList);
 
-        $maskByRole = array();
+        $maskByRole = [];
 
         foreach ($tempMaskByRole as $oneMaskByRole) {
             $insideOneMaskByRole = explode(':', $oneMaskByRole);

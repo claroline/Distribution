@@ -75,7 +75,7 @@ class AdditionalInstaller extends BaseInstaller
                 $this->log('Creating acl tables if not present...');
                 $command = new InitAclCommand();
                 $command->setContainer($this->container);
-                $command->run(new ArrayInput(array()), new NullOutput());
+                $command->run(new ArrayInput([]), new NullOutput());
             case version_compare($currentVersion, '2.2.0', '<'):
                 $updater = new Updater\Updater020200($this->container);
                 $updater->setLogger($this->logger);

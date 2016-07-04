@@ -13,9 +13,9 @@ namespace Claroline\ForumBundle\Repository;
 
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\ForumBundle\Entity\Category;
 use Claroline\ForumBundle\Entity\Forum;
 use Claroline\ForumBundle\Entity\Subject;
-use Claroline\ForumBundle\Entity\Category;
 use Doctrine\ORM\EntityRepository;
 
 class ForumRepository extends EntityRepository
@@ -228,7 +228,7 @@ class ForumRepository extends EntityRepository
         $executeQuery = true
     ) {
         if (count($users) === 0) {
-            return array();
+            return [];
         } else {
             $dql = '
                 SELECT DISTINCT u

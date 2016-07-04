@@ -203,14 +203,14 @@ class FormationsWidget extends AbstractWidget
      */
     public function getData()
     {
-        $data = array(
+        $data = [
             'name' => $this->getName(),
             'startDate' => $this->getStartDate() ? $this->getStartDate()->format('Y/m/d') : null,
             'endDate' => $this->getEndDate() ? $this->getEndDate()->format('Y/m/d') : null,
             'establishmentName' => $this->getEstablishmentName(),
             'diploma' => $this->getDiploma(),
-            'children' => array(),
-        );
+            'children' => [],
+        ];
 
         foreach ($this->getResources() as $formation) {
             $data['children'][] = $formation->getData();
@@ -224,13 +224,13 @@ class FormationsWidget extends AbstractWidget
      */
     public function getEmpty()
     {
-        return array(
+        return [
             'name' => null,
             'startDate' => null,
             'endDate' => null,
             'establishmentName' => null,
             'diploma' => null,
-            'children' => array(),
-        );
+            'children' => [],
+        ];
     }
 }

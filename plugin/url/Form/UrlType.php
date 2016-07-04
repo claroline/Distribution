@@ -14,24 +14,24 @@ class UrlType extends AbstractType
         $builder->add(
             'name',
             'text',
-            array(
+            [
                 'required' => true,
                 'label' => 'name',
                 'constraints' => new Assert\NotBlank(),
-            )
+            ]
         );
 
         $builder->add(
             'url',
             'url',
-            array(
+            [
                 'required' => true,
                 'label' => 'Url',
                 'constraints' => new Assert\NotBlank(),
                 'attr' => [
                     'placeholder' => 'http://example.com',
                 ],
-            )
+            ]
         );
     }
 
@@ -42,6 +42,6 @@ class UrlType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform']);
     }
 }

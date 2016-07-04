@@ -38,9 +38,9 @@ class SectionManager
     public function getArchivedSectionsForPosition(Section $section)
     {
         $sections = $this->getSectionRepository()->findSectionsForPosition($section);
-        $archivedSections = array();
-        $prefixesArray = array();
-        $childrens = array();
+        $archivedSections = [];
+        $prefixesArray = [];
+        $childrens = [];
         foreach ($sections as $simpleSection) {
             if (isset($childrens[$simpleSection['parentId']])) {
                 $childrens[$simpleSection['parentId']] += 1;

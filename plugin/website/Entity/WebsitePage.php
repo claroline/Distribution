@@ -494,7 +494,7 @@ class WebsitePage
     {
         $tmpFilePath = sys_get_temp_dir().DIRECTORY_SEPARATOR;
 
-        $pageArray = array(
+        $pageArray = [
             'id' => $this->id,
             'parent_id' => ($this->parent !== null) ? $this->parent->getId() : null,
             'is_root' => $this->level == 0,
@@ -506,14 +506,14 @@ class WebsitePage
             'type' => $this->type,
             'is_homepage' => $this->getIsHomepage(),
             'url' => $this->url,
-        );
+        ];
         if (isset($files) && $files !== null) {
             if ($this->type == WebsitePageTypeEnum::RESOURCE_PAGE) {
                 $pageArray['type'] = WebsitePageTypeEnum::URL_PAGE;
-                $pageArray['url'] = $router->generate('claro_resource_open', array(
+                $pageArray['url'] = $router->generate('claro_resource_open', [
                     'resourceType' => $this->resourceNodeType,
                     'node' => $this->resourceNode->getId(),
-                ), true);
+                ], true);
             } elseif ($this->type == WebsitePageTypeEnum::BLANK_PAGE) {
                 $richTextUid = uniqid('ws_page_content_').'.txt';
                 file_put_contents($tmpFilePath.$richTextUid, $this->richText);

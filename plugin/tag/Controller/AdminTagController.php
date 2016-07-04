@@ -49,7 +49,7 @@ class AdminTagController extends Controller
      */
     public function adminTagsManagementAction()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -69,8 +69,8 @@ class AdminTagController extends Controller
         $page = 1,
         $max = 50
     ) {
-        $datas = array();
-        $datas['#'] = array();
+        $datas = [];
+        $datas['#'] = [];
         $tags = $this->tagManager->getPlatformTags(
             $search,
             $orderedBy,
@@ -79,7 +79,7 @@ class AdminTagController extends Controller
             $page,
             $max
         );
-        $tagsList = array();
+        $tagsList = [];
 
         foreach ($tags as $tag) {
             $tagsList[] = $tag;
@@ -102,26 +102,26 @@ class AdminTagController extends Controller
             }
 
             if (!isset($datas[$firstChar])) {
-                $datas[$firstChar] = array();
+                $datas[$firstChar] = [];
             }
 
             if (!isset($datas[$firstChar][$tagName])) {
-                $datas[$firstChar][$tagName] = array();
+                $datas[$firstChar][$tagName] = [];
                 $datas[$firstChar][$tagName]['tag_id'] = $tagId;
-                $datas[$firstChar][$tagName]['objects'] = array();
+                $datas[$firstChar][$tagName]['objects'] = [];
             }
 
             if (!isset($datas[$firstChar][$tagName]['objects'][$objectClass])) {
-                $datas[$firstChar][$tagName]['objects'][$objectClass] = array();
+                $datas[$firstChar][$tagName]['objects'][$objectClass] = [];
             }
-            $datas[$firstChar][$tagName]['objects'][$objectClass][] = array(
+            $datas[$firstChar][$tagName]['objects'][$objectClass][] = [
                 'id' => $objectId,
                 'name' => $objectName,
                 'tagged_object_id' => $taggedObject->getId(),
-            );
+            ];
         }
 
-        return array(
+        return [
             'pager' => $tags,
             'search' => $search,
             'datas' => $datas,
@@ -129,7 +129,7 @@ class AdminTagController extends Controller
             'order' => $order,
             'page' => $page,
             'max' => $max,
-        );
+        ];
     }
 
     /**

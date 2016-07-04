@@ -2,10 +2,10 @@
 
 namespace UJM\ExoBundle\Form;
 
+use Claroline\CoreBundle\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Claroline\CoreBundle\Entity\User;
 use UJM\ExoBundle\Repository\CategoryRepository;
 
 class QuestionType extends AbstractType
@@ -25,14 +25,14 @@ class QuestionType extends AbstractType
 
         $builder
             ->add(
-                'title', 'text', array(
+                'title', 'text', [
                     'label' => 'title',
                     'required' => false,
-                    'attr' => array('placeholder' => 'question_title'),
-                )
+                    'attr' => ['placeholder' => 'question_title'],
+                ]
             )
             ->add(
-                'category', 'entity', array(
+                'category', 'entity', [
                     'class' => 'UJM\\ExoBundle\\Entity\\Category',
                     'label' => 'Category.value',
                     'required' => false,
@@ -46,65 +46,65 @@ class QuestionType extends AbstractType
                                 ->setParameter(1, $this->catID);
                         }
                     },
-                )
+                ]
             )
             ->add(
-                'stepID', 'hidden', array(
+                'stepID', 'hidden', [
                     'mapped' => false,
-                )
+                ]
             )
-            ->add('description', 'textarea', array(
+            ->add('description', 'textarea', [
                     'label' => 'question_description',
                     'required' => false,
-                    'attr' => array(
+                    'attr' => [
                         'placeholder' => 'question_description',
                         'class' => 'form-control',
                         'data-new-tab' => 'yes',
-                    ),
-                )
+                    ],
+                ]
             )
-            ->add('invite', 'tinymce', array(
+            ->add('invite', 'tinymce', [
                     'label' => 'question',
-                    'attr' => array(
+                    'attr' => [
                         'placeholder' => 'question',
                         'data-new-tab' => 'yes',
-                    ),
-                )
+                    ],
+                ]
             )
             ->add(
-                'model', 'checkbox', array(
+                'model', 'checkbox', [
                     'required' => false,
                     'label' => 'question_model',
                     'translation_domain' => 'ujm_exo',
-                )
+                ]
             )
-            ->add('feedBack', 'tinymce', array(
+            ->add('feedBack', 'tinymce', [
                     //for automatically open documents in a new tab for all tinymce field
-                    'attr' => array(
+                    'attr' => [
                         'data-new-tab' => 'yes',
                         'placeholder' => 'interaction_feedback',
-                    ),
+                    ],
                     'label' => 'interaction_feedback',
                     'required' => false,
-                )
+                ]
             )
             ->add(
-                'hints', 'collection', array(
+                'hints', 'collection', [
                     'type' => new HintType(),
                     'prototype' => true,
                     'allow_add' => true,
                     'allow_delete' => true,
-                )
+                ]
             );
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'UJM\ExoBundle\Entity\Question',
                 'translation_domain' => 'ujm_exo',
-            )
+            ]
         );
     }
 

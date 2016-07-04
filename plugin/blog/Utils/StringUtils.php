@@ -66,7 +66,7 @@ class StringUtils
 
                 $text = substr($text, 0, $position);
                 preg_match_all($htmlMatchMask, $text, $return, PREG_OFFSET_CAPTURE);
-                $tagPieces = array();
+                $tagPieces = [];
 
                 foreach ($return[0] as $index => $tag) {
                     if (isset($return[3][$index][0])) {

@@ -32,8 +32,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * @DI\Tag("security.secure_service")
@@ -108,7 +108,7 @@ class MessageController
      */
     public function formForGroupAction(Group $group)
     {
-        $url = $this->router->generate('claro_message_show', array('message' => 0))
+        $url = $this->router->generate('claro_message_show', ['message' => 0])
             .'?grpsIds[]='.$group->getId();
 
         return new RedirectResponse($url);
@@ -128,7 +128,7 @@ class MessageController
      */
     public function formForWorkspaceAction(Workspace $workspace)
     {
-        $url = $this->router->generate('claro_message_show', array('message' => 0))
+        $url = $this->router->generate('claro_message_show', ['message' => 0])
             .'?wsIds[]='.$workspace->getId();
 
         return new RedirectResponse($url);
@@ -166,14 +166,14 @@ class MessageController
             $message->setSender($sender);
             $message->setParent($parent);
             $message = $this->messageManager->send($message);
-            $url = $this->router->generate('claro_message_show', array('message' => $message->getId()));
+            $url = $this->router->generate('claro_message_show', ['message' => $message->getId()]);
 
             return new RedirectResponse($url);
         }
 
-        $ancestors = $parent ? $this->messageManager->getConversation($parent, $sender) : array();
+        $ancestors = $parent ? $this->messageManager->getConversation($parent, $sender) : [];
 
-        return array('form' => $form->createView(), 'message' => $parent, 'ancestors' => $ancestors);
+        return ['form' => $form->createView(), 'message' => $parent, 'ancestors' => $ancestors];
     }
 
     /**
@@ -205,11 +205,11 @@ class MessageController
     {
         $pager = $this->messageManager->getReceivedMessagesPager($receiver, $search, $page);
 
-        return array(
+        return [
             'pager' => $pager,
             'search' => $search,
             'isMailerAvailable' => $this->mailManager->isMailerAvailable(),
-        );
+        ];
     }
 
     /**
@@ -241,7 +241,7 @@ class MessageController
     {
         $pager = $this->messageManager->getSentMessagesPager($sender, $search, $page);
 
-        return array('pager' => $pager, 'search' => $search);
+        return ['pager' => $pager, 'search' => $search];
     }
 
     /**
@@ -270,7 +270,7 @@ class MessageController
     {
         $pager = $this->messageManager->getRemovedMessagesPager($user, $search, $page);
 
-        return array('pager' => $pager, 'search' => $search);
+        return ['pager' => $pager, 'search' => $search];
     }
 
     /**
@@ -321,7 +321,7 @@ class MessageController
         Message $message = null
     ) {
         if ($message) {
-            $this->messageManager->markAsRead($user, array($message));
+            $this->messageManager->markAsRead($user, [$message]);
             $ancestors = $this->messageManager->getConversation($message, $user);
             $sendString = $message->getSenderUsername();
             $object = 'Re: '.$message->getObject();
@@ -330,18 +330,18 @@ class MessageController
             //datas from the post request
             $sendString = $this->messageManager->generateStringTo($receivers, $groups, $workspaces);
             $object = '';
-            $ancestors = array();
+            $ancestors = [];
         }
         $form = $this->formFactory->create(
             new MessageType($sendString, $object),
             new Message()
         );
 
-        return array(
+        return [
             'ancestors' => $ancestors,
             'message' => $message,
             'form' => $form->createView(),
-        );
+        ];
     }
 
     /**
@@ -440,7 +440,7 @@ class MessageController
      */
     public function markAsReadAction(User $user, Message $message)
     {
-        $this->messageManager->markAsRead($user, array($message));
+        $this->messageManager->markAsRead($user, [$message]);
 
         return new Response('Success', 204);
     }
@@ -479,7 +479,7 @@ class MessageController
                     ->getAllUsersBySearch($page, $trimmedSearch);
             }
         } else {
-            $users = array();
+            $users = [];
             $token = $this->tokenStorage->getToken();
             $roles = $this->utils->getRoles($token);
             $workspaces = $this->workspaceManager->getOpenableWorkspacesByRoles($roles);
@@ -498,7 +498,7 @@ class MessageController
             }
         }
 
-        return array('users' => $users, 'search' => $search);
+        return ['users' => $users, 'search' => $search];
     }
 
     /**
@@ -520,7 +520,7 @@ class MessageController
     {
         $this->userManager->setIsMailNotified($user, $isNotified);
 
-        return new JsonResponse(array('success' => 'success'));
+        return new JsonResponse(['success' => 'success']);
     }
 
     /**
@@ -557,9 +557,9 @@ class MessageController
                     ->getAllGroupsBySearch($page, $trimmedSearch);
             }
         } else {
-            $groups = array();
+            $groups = [];
             $workspaces = $this->workspaceManager
-                ->getWorkspacesByUserAndRoleNames($user, array('ROLE_WS_MANAGER'));
+                ->getWorkspacesByUserAndRoleNames($user, ['ROLE_WS_MANAGER']);
             // retrieve all groups of workspace that user is manager
             if (count($workspaces) > 0) {
                 if ($trimmedSearch === '') {
@@ -575,7 +575,7 @@ class MessageController
 
             // get groups in which user is subscribed
             $userGroups = $user->getGroups();
-            $userGroupsFinal = array();
+            $userGroupsFinal = [];
 
             if ($trimmedSearch === '') {
                 $userGroupsFinal = $userGroups;
@@ -601,7 +601,7 @@ class MessageController
             $groups = $this->pagerFactory->createPagerFromArray($groups, $page);
         }
 
-        return array('groups' => $groups, 'search' => $search);
+        return ['groups' => $groups, 'search' => $search];
     }
 
     /**
@@ -631,7 +631,7 @@ class MessageController
         $workspaces = $this->workspaceManager->getWorkspacesByManager($user);
         $pager = $this->pagerFactory->createPagerFromArray($workspaces, $page);
 
-        return array('workspaces' => $pager, 'search' => $search);
+        return ['workspaces' => $pager, 'search' => $search];
     }
 
     public function checkAccess(Message $message, User $user)
@@ -648,9 +648,9 @@ class MessageController
 
         $receiverString = $message->getTo();
         $names = explode(';', $receiverString);
-        $usernames = array();
-        $groupNames = array();
-        $workspaceCodes = array();
+        $usernames = [];
+        $groupNames = [];
+        $workspaceCodes = [];
 
         foreach ($names as $name) {
             if (substr($name, 0, 1) === '{') {

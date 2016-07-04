@@ -12,27 +12,27 @@ class HintType extends AbstractType
     {
         $builder
             ->add(
-                'value', 'textarea', array(
+                'value', 'textarea', [
                     'label' => 'hint',
-                    'attr' => array('style' => 'height:57px',
-                                      'class' => 'form-control', ),
-                )
+                    'attr' => ['style' => 'height:57px',
+                                      'class' => 'form-control', ],
+                ]
             )
             ->add(
-                'penalty', 'text', array(
+                'penalty', 'text', [
                     'label' => 'penalty',
-                    'attr' => array('style' => 'width:50px; text-align: end;'),
-                )
+                    'attr' => ['style' => 'width:50px; text-align: end;'],
+                ]
             );
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'UJM\ExoBundle\Entity\Hint',
                 'translation_domain' => 'ujm_exo',
-            )
+            ]
         );
     }
 

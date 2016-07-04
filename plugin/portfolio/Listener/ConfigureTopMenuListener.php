@@ -65,7 +65,7 @@ class ConfigureTopMenuListener
 
         $menu
             ->addChild(
-                $this->translator->trans('my_portfolios', array(), 'icap_portfolio'),
+                $this->translator->trans('my_portfolios', [], 'icap_portfolio'),
                 $menuItemConfig
             )
             ->setAttribute('class', 'dropdown')

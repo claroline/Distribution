@@ -148,9 +148,9 @@ class ContentManager
     public function deleteTranslation($locale, $id)
     {
         if ($locale === 'en') {
-            $content = $this->content->findOneBy(array('id' => $id));
+            $content = $this->content->findOneBy(['id' => $id]);
         } else {
-            $content = $this->translations->findOneBy(array('foreignKey' => $id, 'locale' => $locale));
+            $content = $this->translations->findOneBy(['foreignKey' => $id, 'locale' => $locale]);
         }
 
         if ($content instanceof ContentTranslation || $content instanceof Content) {

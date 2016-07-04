@@ -6,8 +6,8 @@
 
 namespace UJM\ExoBundle\Services\classes\Interactions;
 
-use Symfony\Component\HttpFoundation\Request;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use UJM\ExoBundle\Entity\InteractionHole;
 
@@ -41,12 +41,12 @@ class Hole extends Interaction
 
         $response = $this->getJsonResponse($interHole, $request);
 
-        $res = array(
+        $res = [
             'penalty' => $penalty,
             'interHole' => $interHole,
             'response' => $response,
             'score' => $score,
-        );
+        ];
 
         return $res;
     }
@@ -76,12 +76,12 @@ class Hole extends Interaction
 
         $response = $this->getJsonResponse($interHole, $request);
 
-        $res = array(
+        $res = [
             'penalty' => $penalty,
             'interHole' => $interHole,
             'response' => $response,
             'score' => $score,
-        );
+        ];
 
         return $res;
     }
@@ -245,8 +245,8 @@ class Hole extends Interaction
                 $wr = $em->getRepository('UJMExoBundle:WordResponse')->find($response);
                 $tabResp[$hole->getPosition()] = $wr->getResponse();
             } else {
-                $from = array("'", '"');
-                $to = array("\u0027", "\u0022");
+                $from = ["'", '"'];
+                $to = ["\u0027", "\u0022"];
                 $tabResp[$hole->getPosition()] = str_replace($from, $to, $response);
             }
         }

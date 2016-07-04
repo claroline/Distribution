@@ -51,7 +51,7 @@ class LocaleController
      */
     public function selectLangAction()
     {
-        return array('locales' => $this->localeManager->getAvailableLocales());
+        return ['locales' => $this->localeManager->getAvailableLocales()];
     }
 
     /**

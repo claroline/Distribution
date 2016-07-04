@@ -7,10 +7,10 @@
 
 namespace Innova\CollecticielBundle\Repository;
 
-use Doctrine\ORM\EntityRepository;
 use Claroline\CoreBundle\Entity\User;
-use Innova\CollecticielBundle\Entity\Dropzone;
+use Doctrine\ORM\EntityRepository;
 use Innova\CollecticielBundle\Entity\Drop;
+use Innova\CollecticielBundle\Entity\Dropzone;
 
 class DocumentRepository extends EntityRepository
 {

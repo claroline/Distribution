@@ -12,17 +12,17 @@ class DropzoneCriteriaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('goBack', 'hidden', array(
+            ->add('goBack', 'hidden', [
                 'mapped' => false,
-            ))
+            ])
 
 // Ajout du nom du critère
-            ->add('name', 'text', array(
+            ->add('name', 'text', [
                 'constraints' => new NotBlank(),
                 'required' => true,
-            ))
+            ])
 
-            ->add('recalculateGrades', 'hidden', array('mapped' => false));
+            ->add('recalculateGrades', 'hidden', ['mapped' => false]);
     }
 
     public function getName()
@@ -32,8 +32,8 @@ class DropzoneCriteriaType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'translation_domain' => 'innova_collecticiel',
-        ));
+        ]);
     }
 }

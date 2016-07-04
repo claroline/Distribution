@@ -3,8 +3,8 @@
 namespace Icap\BlogBundle\Twig;
 
 use Icap\BlogBundle\Entity\Blog;
-use Icap\BlogBundle\Repository\PostRepository;
 use Icap\BlogBundle\Manager\TagManager;
+use Icap\BlogBundle\Repository\PostRepository;
 
 class IcapBlogExtension extends \Twig_Extension
 {
@@ -48,21 +48,21 @@ class IcapBlogExtension extends \Twig_Extension
 
     public function getFunctions()
     {
-        return array(
+        return [
             'blog_tags' => new \Twig_Function_Method($this, 'getTagsByBlog'),
             'blog_authors' => new \Twig_Function_Method($this, 'getAuthorsByBlog'),
             'get_blog_banner' => new \Twig_Function_Method($this, 'getBlogBanner'),
             'get_blog_upload_dir' => new \Twig_Function_Method($this, 'getBlogUploadDir'),
             'get_blog_banner_web_path' => new \Twig_Function_Method($this, 'getBlogBannerWebPath'),
-        );
+        ];
     }
 
     public function getFilters()
     {
-        return array(
+        return [
             'highlight' => new \Twig_Filter_Method($this, 'highlight'),
             'tagnames' => new \Twig_Filter_Method($this, 'getTagNames'),
-        );
+        ];
     }
 
     public function getTagsByBlog(Blog $blog)

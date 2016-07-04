@@ -11,17 +11,17 @@
 
 namespace Claroline\MessageBundle\Listener;
 
+use Claroline\CoreBundle\Event\DisplayToolEvent;
+use Claroline\CoreBundle\Event\SendMessageEvent;
 use Claroline\CoreBundle\Menu\ConfigureMenuEvent;
 use Claroline\CoreBundle\Menu\ContactAdditionalActionEvent;
-use Claroline\CoreBundle\Event\SendMessageEvent;
 use Claroline\MessageBundle\Manager\MessageManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Translation\TranslatorInterface;
-use Claroline\CoreBundle\Event\DisplayToolEvent;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
  * @DI\Service()
@@ -75,13 +75,13 @@ class MessageListener
             $countUnreadMessages = $this->messageManager->getNbUnreadMessages($user);
             $messageTitle = $this->translator->trans(
                 'new_message_alert',
-                array('%count%' => $countUnreadMessages),
+                ['%count%' => $countUnreadMessages],
                 'platform'
             );
             $menu = $event->getMenu();
             $messageMenuLink = $menu->addChild(
-                $this->translator->trans('messages', array(), 'platform'),
-                array('route' => 'claro_message_list_received')
+                $this->translator->trans('messages', [], 'platform'),
+                ['route' => 'claro_message_list_received']
             )->setExtra('icon', 'fa fa-'.$tool->getClass())
             ->setExtra('title', $messageTitle);
 
@@ -104,12 +104,12 @@ class MessageListener
 
         $menu = $event->getMenu();
         $messageMenuLink = $menu->addChild(
-                $this->translator->trans('messages', array(), 'platform'),
-                array('route' => 'claro_message_show')
+                $this->translator->trans('messages', [], 'platform'),
+                ['route' => 'claro_message_show']
             )
             ->setExtra('icon', 'fa fa-envelope')
             ->setExtra('qstring', 'userIds[]='.$user->getId())
-            ->setExtra('title', $this->translator->trans('message', array(), 'platform'));
+            ->setExtra('title', $this->translator->trans('message', [], 'platform'));
     }
 
     /**
@@ -161,13 +161,13 @@ class MessageListener
     public function onContactActionMenuRender(ContactAdditionalActionEvent $event)
     {
         $user = $event->getUser();
-        $url = $this->router->generate('claro_message_show', array('message' => 0))
+        $url = $this->router->generate('claro_message_show', ['message' => 0])
             .'?userIds[]='.$user->getId();
 
         $menu = $event->getMenu();
         $menu->addChild(
-            $this->translator->trans('send_message', array(), 'platform'),
-            array('uri' => $url)
+            $this->translator->trans('send_message', [], 'platform'),
+            ['uri' => $url]
         )->setExtra('icon', 'fa fa-envelope-o');
 
         return $menu;
@@ -180,11 +180,11 @@ class MessageListener
      */
     public function onOpenDesktopTool(DisplayToolEvent $event)
     {
-        $params = array();
+        $params = [];
         $params['_controller'] = 'ClarolineMessageBundle:Message:listReceived';
         $params['page'] = 1;
         $params['search'] = '';
-        $subRequest = $this->request->duplicate(array(), null, $params);
+        $subRequest = $this->request->duplicate([], null, $params);
         $response = $this->httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
         $event->setContent($response->getContent());
         $event->stopPropagation();

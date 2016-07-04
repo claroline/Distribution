@@ -32,10 +32,10 @@ class InteractionMatching extends \Twig_Extension
      */
     public function getFunctions()
     {
-        return array(
+        return [
               'getProposal' => new \Twig_Function_Method($this, 'getProposal'),
               'initTabResponseMatching' => new \Twig_Function_Method($this, 'initTabResponseMatching'),
-           );
+           ];
     }
 
     /**

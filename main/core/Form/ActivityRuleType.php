@@ -33,12 +33,12 @@ class ActivityRuleType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $ruleActions = $this->activityManager->getAllDistinctActivityRuleActions();
-        $actions = array('none' => 'none');
+        $actions = ['none' => 'none'];
 
         foreach ($ruleActions as $ruleAction) {
             $actions[$ruleAction['action']] = $this->translator->trans(
                 'log_'.$ruleAction['action'].'_filter',
-                array(),
+                [],
                 'log'
             );
         }
@@ -46,63 +46,63 @@ class ActivityRuleType extends AbstractType
         $builder->add(
             'action',
             'choice',
-            array(
+            [
                 'choices' => $actions,
                 'required' => true,
                 'label' => 'action',
-            )
+            ]
         );
         $builder->add(
             'occurrence',
             'integer',
-            array(
-                'attr' => array('min' => 1),
+            [
+                'attr' => ['min' => 1],
                 'required' => true,
                 'label' => 'occurence',
-            )
+            ]
         );
         $builder->add(
             'result',
             'integer',
-            array(
-                'attr' => array('min' => 0),
+            [
+                'attr' => ['min' => 0],
                 'required' => false,
                 'label' => 'result',
-            )
+            ]
         );
         $builder->add(
             'resultMax',
             'integer',
-            array(
+            [
                 'label' => '/',
-                'attr' => array('min' => 1),
+                'attr' => ['min' => 1],
                 'required' => false,
-            )
+            ]
         );
         $builder->add(
             'isResultVisible',
             'checkbox',
-            array('required' => false)
+            ['required' => false]
         );
         $builder->add(
             'activeFrom',
             'date',
-            array(
-                'attr' => array('class' => 'activity-rule-option-date'),
+            [
+                'attr' => ['class' => 'activity-rule-option-date'],
                 'required' => false,
                 'widget' => 'single_text',
                 'format' => 'yyyy-MM-dd',
-            )
+            ]
         );
         $builder->add(
             'activeUntil',
             'date',
-            array(
-                'attr' => array('class' => 'activity-rule-option-date'),
+            [
+                'attr' => ['class' => 'activity-rule-option-date'],
                 'required' => false,
                 'widget' => 'single_text',
                 'format' => 'yyyy-MM-dd',
-            )
+            ]
         );
     }
 
@@ -114,7 +114,7 @@ class ActivityRuleType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(
-            array('translation_domain' => 'platform')
+            ['translation_domain' => 'platform']
         );
     }
 }

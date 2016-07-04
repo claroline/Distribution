@@ -2,10 +2,10 @@
 
 namespace Icap\BlogBundle\Form;
 
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("icap_blog.form.comment")
@@ -25,11 +25,11 @@ class CommentType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'translation_domain' => 'icap_blog',
             'data_class' => 'Icap\BlogBundle\Entity\Comment',
             'csrf_protection' => true,
             'intention' => 'create_post_comment',
-        ));
+        ]);
     }
 }

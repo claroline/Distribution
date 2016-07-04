@@ -2,9 +2,9 @@
 
 namespace Innova\CollecticielBundle\Manager;
 
-use JMS\DiExtraBundle\Annotation as DI;
-use Innova\CollecticielBundle\Entity\GradingScale;
 use Innova\CollecticielBundle\Entity\Dropzone;
+use Innova\CollecticielBundle\Entity\GradingScale;
+use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("innova.manager.gradingscale_manager")
@@ -79,9 +79,9 @@ class GradingScaleManager
                 // Mise à jour de l'appréciation à zéro car le SCALE a été supprimé
                 $notationsArray = $this->notationRepo
                     ->findBy(
-                            array(
+                            [
                                 'appreciation' => $scale->getId(),
-                                 )
+                                 ]
                             );
 
                 foreach ($notationsArray as $notation) {

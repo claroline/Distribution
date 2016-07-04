@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Controller\Tool;
 
-use Claroline\CoreBundle\Library\Testing\MockeryTestCase;
 use Claroline\CoreBundle\Form\Factory\FormFactory;
+use Claroline\CoreBundle\Library\Testing\MockeryTestCase;
 
 class RolesControllerTest extends MockeryTestCase
 {
@@ -55,11 +55,11 @@ class RolesControllerTest extends MockeryTestCase
     {
         $workspace = new \Claroline\CoreBundle\Entity\Workspace\Workspace();
         $role = new \Claroline\CoreBundle\Entity\Role();
-        $roles = array($role);
+        $roles = [$role];
         $this->checkAccess($workspace);
         $this->roleManager->shouldReceive('getRolesByWorkspace')->once()->with($workspace)->andReturn($roles);
 
-        $expectedResult = array('workspace' => $workspace, 'roles' => $roles);
+        $expectedResult = ['workspace' => $workspace, 'roles' => $roles];
         $this->assertEquals($expectedResult, $this->controller->configureRolePageAction($workspace));
     }
 
@@ -88,9 +88,9 @@ class RolesControllerTest extends MockeryTestCase
         $user = new \Claroline\CoreBundle\Entity\User();
         $role = new \Claroline\CoreBundle\Entity\Role();
         $workspace = new \Claroline\CoreBundle\Entity\Workspace\Workspace();
-        $this->roleManager->shouldReceive('associateRolesToSubjects')->with(array($user), array($role))->once();
+        $this->roleManager->shouldReceive('associateRolesToSubjects')->with([$user], [$role])->once();
         $this->checkAccess($workspace);
-        $this->controller->addUsersToRolesAction(array($user), array($role), $workspace);
+        $this->controller->addUsersToRolesAction([$user], [$role], $workspace);
     }
 
     public function testRemoveGroupFromRoleAction()
@@ -109,9 +109,9 @@ class RolesControllerTest extends MockeryTestCase
         $group = new \Claroline\CoreBundle\Entity\Group();
         $role = new \Claroline\CoreBundle\Entity\Role();
         $workspace = new \Claroline\CoreBundle\Entity\Workspace\Workspace();
-        $this->roleManager->shouldReceive('associateRolesToSubjects')->with(array($group), array($role))->once();
+        $this->roleManager->shouldReceive('associateRolesToSubjects')->with([$group], [$role])->once();
         $this->checkAccess($workspace);
-        $this->controller->addGroupsToRolesAction(array($group), array($role), $workspace);
+        $this->controller->addGroupsToRolesAction([$group], [$role], $workspace);
     }
 
     /**
@@ -130,18 +130,18 @@ class RolesControllerTest extends MockeryTestCase
             ->once()
             ->andReturn(true);
 
-        $wsRoles = array($wsRole);
+        $wsRoles = [$wsRole];
         $page = 1;
         $this->roleManager->shouldReceive('getRolesByWorkspace')->once()->with($workspace)->andReturn($wsRoles);
         $this->userManager->shouldReceive($call)->once()->andReturn('pager');
-        $expected = array(
+        $expected = [
             'workspace' => $workspace,
             'pager' => 'pager',
             'search' => $search,
             'wsRoles' => $wsRoles,
             'max' => 50,
             'order' => 'id',
-        );
+        ];
         $this->assertEquals(
             $expected,
             $this->controller->usersListAction($workspace, $page, $search, 50, 'id')
@@ -158,8 +158,8 @@ class RolesControllerTest extends MockeryTestCase
         $wsRole = new \Claroline\CoreBundle\Entity\Role();
         $role = new \Claroline\CoreBundle\Entity\Role();
         $workspace = new \Claroline\CoreBundle\Entity\Workspace\Workspace();
-        $wsRoles = array($wsRole);
-        $roles = array($role);
+        $wsRoles = [$wsRole];
+        $roles = [$role];
         $page = 1;
 
         $this->security
@@ -170,14 +170,14 @@ class RolesControllerTest extends MockeryTestCase
 
         $this->roleManager->shouldReceive('getRolesByWorkspace')->once()->with($workspace)->andReturn($wsRoles);
         $this->groupManager->shouldReceive($call)->once()->andReturn('pager');
-        $expected = array(
+        $expected = [
             'workspace' => $workspace,
             'pager' => 'pager',
             'search' => $search,
             'wsRoles' => $wsRoles,
             'max' => 50,
             'order' => 'id',
-        );
+        ];
         $this->assertEquals(
             $expected,
             $this->controller->groupsListAction($workspace, $page, $search, 50, 'id')
@@ -191,17 +191,17 @@ class RolesControllerTest extends MockeryTestCase
 
     public function userListProvider()
     {
-        return array(
-            array('search' => '', 'call' => 'getByRolesIncludingGroups'),
-            array('search' => 'zorglub', 'call' => 'getByRolesAndNameIncludingGroups'),
-        );
+        return [
+            ['search' => '', 'call' => 'getByRolesIncludingGroups'],
+            ['search' => 'zorglub', 'call' => 'getByRolesAndNameIncludingGroups'],
+        ];
     }
 
     public function groupListProvider()
     {
-        return array(
-            array('search' => '', 'call' => 'getGroupsByRoles'),
-            array('search' => 'zorglub', 'call' => 'getGroupsByRolesAndName'),
-        );
+        return [
+            ['search' => '', 'call' => 'getGroupsByRoles'],
+            ['search' => 'zorglub', 'call' => 'getGroupsByRolesAndName'],
+        ];
     }
 }

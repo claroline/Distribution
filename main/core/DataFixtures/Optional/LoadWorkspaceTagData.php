@@ -11,10 +11,10 @@
 
 namespace Claroline\CoreBundle\DataFixtures\Optional;
 
+use Claroline\CoreBundle\Library\Fixtures\LoggableFixture;
+use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Doctrine\Common\Persistence\ObjectManager;
-use Claroline\CoreBundle\Library\Fixtures\LoggableFixture;
 
 class LoadWorkspaceTagData extends LoggableFixture implements ContainerAwareInterface
 {

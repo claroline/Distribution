@@ -11,12 +11,12 @@
 
 namespace Claroline\CoreBundle\Controller\API\User;
 
-use JMS\DiExtraBundle\Annotation as DI;
-use FOS\RestBundle\Controller\FOSRestController;
 use Claroline\CoreBundle\Manager\RoleManager;
-use FOS\RestBundle\Controller\Annotations\View;
-use FOS\RestBundle\Controller\Annotations\NamePrefix;
 use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\NamePrefix;
+use FOS\RestBundle\Controller\Annotations\View;
+use FOS\RestBundle\Controller\FOSRestController;
+use JMS\DiExtraBundle\Annotation as DI;
 use JMS\SecurityExtraBundle\Annotation as SEC;
 
 /**

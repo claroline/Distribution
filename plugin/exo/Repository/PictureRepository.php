@@ -43,7 +43,7 @@ class PictureRepository extends EntityRepository
 
         if ($searchLabel != '') {
             $dql .= ' AND UPPER(p.label) LIKE :search';
-            $query = $this->_em->createQuery($dql)->setParameters(array(1 => $userID, 2 => $searchLabel));
+            $query = $this->_em->createQuery($dql)->setParameters([1 => $userID, 2 => $searchLabel]);
         } else {
             $query = $this->_em->createQuery($dql);
         }
@@ -69,10 +69,10 @@ class PictureRepository extends EntityRepository
 
         if ($strict == 0) {
             $query = $this->_em->createQuery($dql)
-                ->setParameters(array(1 => $userId, 2 => $labelToFind));
+                ->setParameters([1 => $userId, 2 => $labelToFind]);
         } else {
             $query = $this->_em->createQuery($dql)
-                ->setParameters(array(1 => $userId, 2 => "%$labelToFind%"));
+                ->setParameters([1 => $userId, 2 => "%$labelToFind%"]);
         }
 
         return $query->getResult();

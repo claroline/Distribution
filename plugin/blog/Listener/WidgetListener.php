@@ -83,10 +83,10 @@ class WidgetListener
 
         $content = $this->templatingEngine->render(
             'IcapBlogBundle:widget:list.html.twig',
-            array(
+            [
                 'blogs' => $blogs,
                 'diplayStyle' => $widgetOptions->getDisplayStyle(),
-            )
+            ]
         );
 
         $event->setContent($content);
@@ -107,10 +107,10 @@ class WidgetListener
 
         $content = $this->templatingEngine->render(
             'IcapBlogBundle:widget:listConfigure.html.twig',
-            array(
+            [
                 'form' => $form->createView(),
                 'widgetInstance' => $event->getInstance(),
-            )
+            ]
         );
 
         $event->setContent($content);
@@ -160,10 +160,10 @@ class WidgetListener
 
         $content = $this->templatingEngine->render(
             'IcapBlogBundle:widget:blogConfigure.html.twig',
-            array(
+            [
                 'form' => $form->createView(),
                 'widgetInstance' => $event->getInstance(),
-            )
+            ]
         );
 
         $event->setContent($content);
@@ -217,10 +217,10 @@ class WidgetListener
 
         $content = $this->templatingEngine->render(
             'IcapBlogBundle:widget:tagListBlogConfigure.html.twig',
-            array(
+            [
                 'form' => $form->createView(),
                 'widgetInstance' => $event->getInstance(),
-            )
+            ]
         );
 
         $event->setContent($content);

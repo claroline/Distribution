@@ -14,26 +14,26 @@ class DocumentType extends AbstractType
     {
         if ($options['documentType'] == 'text') {
             $this->setName('icap_dropzone_document_file_form_text');
-            $builder->add('document', 'tinymce', array(
+            $builder->add('document', 'tinymce', [
                 'required' => true,
-            ));
+            ]);
         } elseif ($options['documentType'] == 'file') {
             $this->setName('icap_dropzone_document_file_form_file');
-            $builder->add('document', 'file', array('required' => true, 'label' => 'file document'));
+            $builder->add('document', 'file', ['required' => true, 'label' => 'file document']);
         } elseif ($options['documentType'] == 'resource') {
             $this->setName('icap_dropzone_document_file_form_resource');
             $builder->add(
                 'document',
                 'hidden',
-                array(
+                [
                     'required' => true,
                     'label' => '',
-                    'label_attr' => array('style' => 'display: none;'),
-                )
+                    'label_attr' => ['style' => 'display: none;'],
+                ]
             );
         } else {
             $this->setName('icap_dropzone_document_file_form_url');
-            $builder->add('document', 'url', array('required' => true, 'label' => 'url document'));
+            $builder->add('document', 'url', ['required' => true, 'label' => 'url document']);
         }
     }
 
@@ -49,9 +49,9 @@ class DocumentType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'documentType' => 'url',
             'translation_domain' => 'icap_dropzone',
-        ));
+        ]);
     }
 }

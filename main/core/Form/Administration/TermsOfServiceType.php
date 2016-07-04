@@ -11,17 +11,17 @@
 
 namespace Claroline\CoreBundle\Form\Administration;
 
+use Claroline\CoreBundle\Entity\Content;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Claroline\CoreBundle\Entity\Content;
 
 class TermsOfServiceType extends AbstractType
 {
     private $active;
     private $lockedParams;
 
-    public function __construct($active = false, array $lockedParams = array())
+    public function __construct($active = false, array $lockedParams = [])
     {
         $this->active = $active;
         $this->lockedParams = $lockedParams;
@@ -32,23 +32,23 @@ class TermsOfServiceType extends AbstractType
         $builder->add(
             'termsOfService',
             'content',
-            array(
+            [
                 'required' => false,
                 'data' => $builder->getData(),
-                'theme_options' => array('contentTitle' => false),
+                'theme_options' => ['contentTitle' => false],
                 'label' => 'term_of_service',
-            )
+            ]
         )
         ->add(
             'active',
             'checkbox',
-            array(
+            [
                 'required' => false,
                 'mapped' => false,
                 'data' => $this->active,
                 'label' => 'term_of_service_activation_message',
                 'disabled' => isset($this->lockedParams['terms_of_service']),
-            )
+            ]
         );
     }
 
@@ -59,6 +59,6 @@ class TermsOfServiceType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform']);
     }
 }

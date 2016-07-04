@@ -87,7 +87,7 @@ class NotificationUserParametersManager
     {
         //$typesParams = array();
 
-        $allTypes = array();
+        $allTypes = [];
 
         $this->ed->dispatch(
             'icap_notification_user_parameters_event',
@@ -109,8 +109,8 @@ class NotificationUserParametersManager
         $userParameters = $this->getParametersByUserId($userId);
         $allParameterTypes = $this->allTypesList($userParameters);
 
-        $visibleTypes = array();
-        $rssVisibleTypes = array();
+        $visibleTypes = [];
+        $rssVisibleTypes = [];
         foreach ($allParameterTypes as $type) {
             if (isset($newParameters[$type['name']])) {
                 $options = $newParameters[$type['name']];

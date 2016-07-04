@@ -21,7 +21,7 @@ class Updater000103
     public function UpdateWidgetType()
     {
         /** @var \Icap\PortfolioBundle\Entity\Widget\WidgetType|null $widgetType */
-        $widgetType = $this->entityManager->getRepository('IcapPortfolioBundle:Widget\\WidgetType')->findOneBy(array('name' => 'presentation'));
+        $widgetType = $this->entityManager->getRepository('IcapPortfolioBundle:Widget\\WidgetType')->findOneBy(['name' => 'presentation']);
 
         if (null !== $widgetType) {
             $widgetType

@@ -37,10 +37,10 @@ class SerializerExtension extends \Twig_Extension
 
     public function getFilters()
     {
-        return array(
+        return [
             'api_serialize' => new \Twig_Filter_Method($this, 'apiSerialize'),
             'json_serialize' => new \Twig_Filter_Method($this, 'serialize'),
-        );
+        ];
     }
 
     public function getName()

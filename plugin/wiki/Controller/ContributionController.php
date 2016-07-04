@@ -10,19 +10,19 @@
 namespace Icap\WikiBundle\Controller;
 
 use Claroline\CoreBundle\Entity\User;
-use Icap\WikiBundle\Entity\Wiki;
 use Claroline\CoreBundle\Library\Resource\ResourceCollection;
-use Icap\WikiBundle\Entity\Section;
 use Icap\WikiBundle\Entity\Contribution;
+use Icap\WikiBundle\Entity\Section;
+use Icap\WikiBundle\Entity\Wiki;
 use Icap\WikiBundle\Manager\ContributionManager;
+use JMS\DiExtraBundle\Annotation as DI;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Validator\Exception\MissingOptionsException;
-use JMS\DiExtraBundle\Annotation as DI;
 
 class ContributionController extends Controller
 {
@@ -57,17 +57,17 @@ class ContributionController extends Controller
         $this->checkAccess('OPEN', $wiki);
 
         $section = $this->getSection($wiki, $sectionId);
-        $collection = $collection = new ResourceCollection(array($wiki->getResourceNode()));
+        $collection = $collection = new ResourceCollection([$wiki->getResourceNode()]);
 
         if ($section->getVisible() === true || $this->isUserGranted('EDIT', $wiki, $collection)) {
             $contribution = $this->getContribution($section, $contributionId);
 
-            return array(
+            return [
                 '_resource' => $wiki,
                 'contribution' => $contribution,
                 'section' => $section,
                 'workspace' => $wiki->getResourceNode()->getWorkspace(),
-            );
+            ];
         } else {
             throw new AccessDeniedException($collection->getErrorsForDisplay());
         }
@@ -91,7 +91,7 @@ class ContributionController extends Controller
     {
         $this->checkAccess('EDIT', $wiki);
         $section = $this->getSection($wiki, $sectionId);
-        $collection = $collection = new ResourceCollection(array($wiki->getResourceNode()));
+        $collection = $collection = new ResourceCollection([$wiki->getResourceNode()]);
 
         $contribution = $this->getContribution($section, $contributionId);
         $section->setActiveContribution($contribution);
@@ -102,10 +102,10 @@ class ContributionController extends Controller
         return $this->redirect(
                 $this->generateUrl(
                     'icap_wiki_section_history',
-                    array(
+                    [
                         'wikiId' => $wiki->getId(),
                         'sectionId' => $section->getId(),
-                    )
+                    ]
                 )
             );
     }
@@ -127,24 +127,24 @@ class ContributionController extends Controller
     {
         $this->checkAccess('OPEN', $wiki);
         $section = $this->getSection($wiki, $sectionId);
-        $collection = $collection = new ResourceCollection(array($wiki->getResourceNode()));
+        $collection = $collection = new ResourceCollection([$wiki->getResourceNode()]);
         if ($section->getVisible() === true || $this->isUserGranted('EDIT', $wiki, $collection)) {
             $oldid = $request->query->get('oldid');
             $diff = $request->query->get('diff');
             if ($oldid !== null && $diff !== null) {
-                $contributions = $this->contributionManager->compareContributions($section, array($oldid, $diff));
+                $contributions = $this->contributionManager->compareContributions($section, [$oldid, $diff]);
                 if (count($contributions) == 2) {
-                    return array(
+                    return [
                         '_resource' => $wiki,
                         'contributions' => $contributions,
                         'section' => $section,
                         'workspace' => $wiki->getResourceNode()->getWorkspace(),
-                    );
+                    ];
                 } else {
                     throw new NotFoundHttpException();
                 }
             } else {
-                throw new MissingOptionsException('Missing parameters', array());
+                throw new MissingOptionsException('Missing parameters', []);
             }
         } else {
             throw new AccessDeniedException($collection->getErrorsForDisplay());

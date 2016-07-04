@@ -50,8 +50,8 @@ class LoadRequiredFixturesData extends AbstractFixture implements ContainerAware
         }
 
         $declared = get_declared_classes();
-        $orderedClassNames = array();
-        $unorderedClassNames = array();
+        $orderedClassNames = [];
+        $unorderedClassNames = [];
 
         foreach ($declared as $className) {
             $reflClass = new \ReflectionClass($className);

@@ -20,9 +20,9 @@ class IcapWebsiteBundle extends PluginBundle implements ConfigurationProviderInt
     {
         $bundleClass = get_class($bundle);
         $config = new ConfigurationBuilder();
-        $emptyConfigs = array(
+        $emptyConfigs = [
             'Innova\AngularJSBundle\InnovaAngularJSBundle',
-        );
+        ];
         if (in_array($bundleClass, $emptyConfigs)) {
             return $config;
         }

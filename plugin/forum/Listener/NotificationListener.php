@@ -3,8 +3,8 @@
 namespace Claroline\ForumBundle\Listener;
 
 use Icap\NotificationBundle\Event\Notification\NotificationCreateDelegateViewEvent;
-use Symfony\Component\DependencyInjection\ContainerAware;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\DependencyInjection\ContainerAware;
 
 /**
  * @DI\Service()
@@ -35,11 +35,11 @@ class NotificationListener extends ContainerAware
         $notification = $notificationView->getNotification();
         $content = $this->templating->render(
             'ClarolineForumBundle:Notification:notification.html.twig',
-            array(
+            [
                 'notification' => $notification,
                 'status' => $notificationView->getStatus(),
                 'systemName' => $event->getSystemName(),
-            )
+            ]
         );
         $event->setResponseContent($content);
         $event->stopPropagation();

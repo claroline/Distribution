@@ -37,7 +37,7 @@ class LinkedIn implements NetworkInterface
      *
      * @return string
      */
-    public function getShareLink($url, array $options = array())
+    public function getShareLink($url, array $options = [])
     {
         $options['mini'] = 'true';
         $options['url'] = $url;

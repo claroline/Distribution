@@ -34,12 +34,12 @@ class NotificationUserParameters
     /**
      * @ORM\Column(type="array", name="display_enabled_types")
      */
-    protected $displayEnabledTypes = array();
+    protected $displayEnabledTypes = [];
 
     /**
      * @ORM\Column(type="array", name="rss_enabled_types")
      */
-    protected $rssEnabledTypes = array();
+    protected $rssEnabledTypes = [];
 
     /**
      * @ORM\Column(type="string", name="rss_id", unique=true)

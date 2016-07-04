@@ -11,12 +11,12 @@
 
 namespace Claroline\CoreBundle\Manager;
 
-use JMS\DiExtraBundle\Annotation as DI;
-use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Plugin;
-use Symfony\Component\HttpKernel\KernelInterface;
-use Claroline\KernelBundle\Manager\BundleManager;
 use Claroline\CoreBundle\Library\PluginBundle;
+use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\KernelBundle\Manager\BundleManager;
+use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * @DI\Service("claroline.manager.plugin_manager")
@@ -105,11 +105,11 @@ class PluginManager
 
     public function getPluginsData()
     {
-        $plugins = $this->pluginRepo->findBy(array(), array('vendorName' => 'ASC', 'bundleName' => 'ASC'));
+        $plugins = $this->pluginRepo->findBy([], ['vendorName' => 'ASC', 'bundleName' => 'ASC']);
         $datas = [];
 
         foreach ($plugins as $plugin) {
-            $datas[] = array(
+            $datas[] = [
                 'id' => $plugin->getId(),
                 'name' => $plugin->getVendorName().$plugin->getBundleName(),
                 'vendor' => $plugin->getVendorName(),
@@ -123,7 +123,7 @@ class PluginManager
                 'require' => $this->getRequirements($plugin),
                 'required_by' => $this->getRequiredBy($plugin),
                 'is_locked' => $this->isLocked($plugin),
-            );
+            ];
         }
 
         return $datas;

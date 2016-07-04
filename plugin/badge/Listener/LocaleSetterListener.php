@@ -2,9 +2,9 @@
 
 namespace Icap\BadgeBundle\Listener;
 
-use Icap\BadgeBundle\Entity\Badge;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Icap\BadgeBundle\Entity\Badge;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 

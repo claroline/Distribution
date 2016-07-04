@@ -11,16 +11,16 @@
 
 namespace Claroline\CoreBundle\Listener;
 
+use Claroline\CoreBundle\Library\Security\Token\ViewAsToken;
+use Claroline\CoreBundle\Library\Security\TokenUpdater;
+use Claroline\CoreBundle\Manager\RoleManager;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
-use JMS\DiExtraBundle\Annotation as DI;
-use Claroline\CoreBundle\Library\Security\Token\ViewAsToken;
-use Claroline\CoreBundle\Manager\RoleManager;
-use Claroline\CoreBundle\Library\Security\TokenUpdater;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * @DI\Service
@@ -93,7 +93,7 @@ class ViewAsListener
                             throw new \Exception("The role {$viewAs} does not exists");
                         }
 
-                        $token = new ViewAsToken(array('ROLE_USER', $viewAs, 'ROLE_USURPATE_WORKSPACE_ROLE'));
+                        $token = new ViewAsToken(['ROLE_USER', $viewAs, 'ROLE_USURPATE_WORKSPACE_ROLE']);
                         $token->setUser($user);
                         $this->tokenStorage->setToken($token);
                     }

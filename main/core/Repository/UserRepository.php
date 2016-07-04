@@ -11,19 +11,19 @@
 
 namespace Claroline\CoreBundle\Repository;
 
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
-use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\NoResultException;
-use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Model\WorkspaceModel;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\Role;
+use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
+use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
+use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class UserRepository extends EntityRepository implements UserProviderInterface
 {
@@ -391,7 +391,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
             $query->setParameter('usernames', $usernames);
             $result = $query->getResult();
         } else {
-            $result = array();
+            $result = [];
         }
 
         return $result;
@@ -684,15 +684,15 @@ class UserRepository extends EntityRepository implements UserProviderInterface
      */
     public function findByNameForAjax($search)
     {
-        $resultArray = array();
+        $resultArray = [];
 
         $users = $this->findByName($search);
 
         foreach ($users as $user) {
-            $resultArray[] = array(
+            $resultArray[] = [
                 'id' => $user->getId(),
                 'text' => $user->getFirstName().' '.$user->getLastName(),
-            );
+            ];
         }
 
         return $resultArray;
@@ -715,7 +715,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
                 ->getResult();
         }
 
-        return array();
+        return [];
     }
 
     public function findUsernames()
@@ -1209,14 +1209,14 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         $withCode = false,
         $orderedBy = 'id',
         $order = 'ASC',
-        array $roleRestrictions = array(),
-        array $groupRestrictions = array(),
-        array $workspaceRestrictions = array(),
-        array $excludedUsers = array(),
-        array $forcedUsers = array(),
-        array $forcedGroups = array(),
-        array $forcedRoles = array(),
-        array $forcedWorkspaces = array(),
+        array $roleRestrictions = [],
+        array $groupRestrictions = [],
+        array $workspaceRestrictions = [],
+        array $excludedUsers = [],
+        array $forcedUsers = [],
+        array $forcedGroups = [],
+        array $forcedRoles = [],
+        array $forcedWorkspaces = [],
         $executeQuery = true
     ) {
         $withSearch = !empty($search);

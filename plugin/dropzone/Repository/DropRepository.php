@@ -25,7 +25,7 @@ class DropRepository extends EntityRepository
 
         $result = $query->getResult();
 
-        $dropIds = array();
+        $dropIds = [];
         foreach ($result as $line) {
             if ($line['valid'] === null) {
                 $dropIds[$line['did']] = 'has no correction';
@@ -49,7 +49,7 @@ class DropRepository extends EntityRepository
             }
         }
 
-        $arrayResult = array();
+        $arrayResult = [];
 
         foreach ($dropIds as $key => $value) {
             $arrayResult[] = $key;
@@ -73,7 +73,7 @@ class DropRepository extends EntityRepository
 
         $result = $query->getResult();
 
-        $dropIds = array();
+        $dropIds = [];
         foreach ($result as $line) {
             $dropIds[] = $line['did'];
         }
@@ -109,7 +109,7 @@ class DropRepository extends EntityRepository
         $dropIdNotCorrected = $this->getDropIdNotCorrected($dropzone);
 
         if (count($dropIdNotCorrected) <= 0) {
-            return array();
+            return [];
         }
         // Remove copies that the logged user has already corrected
         $alreadyCorrectedDropIds = $this->getEntityManager()->getRepository('IcapDropzoneBundle:Correction')->getAlreadyCorrectedDropIds($dropzone, $user);
@@ -192,7 +192,7 @@ class DropRepository extends EntityRepository
     {
         $lines = $this->getDropIdsFullyCorrectedQuery($dropzone)->getResult();
 
-        $dropIds = array();
+        $dropIds = [];
         foreach ($lines as $line) {
             $dropIds[] = $line['did'];
         }
@@ -215,7 +215,7 @@ class DropRepository extends EntityRepository
     {
         $lines = $this->getDropIdsFullyCorrectedQuery($dropzone)->getResult();
 
-        $dropIds = array();
+        $dropIds = [];
         foreach ($lines as $line) {
             $dropIds[] = $line['did'];
         }
@@ -238,7 +238,7 @@ class DropRepository extends EntityRepository
     {
         $lines = $this->getDropIdsFullyCorrectedQuery($dropzone)->getResult();
 
-        $dropIds = array();
+        $dropIds = [];
         foreach ($lines as $line) {
             $dropIds[] = $line['did'];
         }
@@ -261,7 +261,7 @@ class DropRepository extends EntityRepository
     {
         $lines = $this->getDropIdsFullyCorrectedQuery($dropzone)->getResult();
 
-        $dropIds = array();
+        $dropIds = [];
         foreach ($lines as $line) {
             $dropIds[] = $line['did'];
         }
@@ -285,7 +285,7 @@ class DropRepository extends EntityRepository
     {
         $lines = $this->getDropIdsFullyCorrectedQuery($dropzone)->getResult();
 
-        $dropIds = array();
+        $dropIds = [];
         foreach ($lines as $line) {
             $dropIds[] = $line['did'];
         }

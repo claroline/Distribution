@@ -43,14 +43,14 @@ class ProfileWidgetListener
      */
     public function onDisplay(DisplayWidgetEvent $event)
     {
-        $params = array();
+        $params = [];
         $params['_controller'] = 'ClarolineCoreBundle:Profile:myProfileWidget';
         $this->redirect($params, $event);
     }
 
     protected function redirect($params, $event)
     {
-        $subRequest = $this->request->duplicate(array(), null, $params);
+        $subRequest = $this->request->duplicate([], null, $params);
         $response = $this->httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
         $event->setContent($response->getContent());
         $event->stopPropagation();

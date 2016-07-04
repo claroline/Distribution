@@ -33,15 +33,15 @@ class WorkspaceUsersImportType extends AbstractType
         $builder->add(
             'file',
             'file',
-            array(
+            [
                 'required' => true,
                 'mapped' => false,
-                'constraints' => array(
+                'constraints' => [
                     new NotBlank(),
                     new File(),
                     new CsvWorkspaceUserImport($this->workspace),
-                ),
-            )
+                ],
+            ]
         );
     }
 
@@ -52,6 +52,6 @@ class WorkspaceUsersImportType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform']);
     }
 }

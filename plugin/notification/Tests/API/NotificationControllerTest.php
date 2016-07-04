@@ -2,8 +2,8 @@
 
 namespace Icap\NotificationBundle\Tests\API;
 
-use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Claroline\CoreBundle\Library\Testing\Persister;
+use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 
 class NotificationControllerTest extends TransactionalTestCase
 {

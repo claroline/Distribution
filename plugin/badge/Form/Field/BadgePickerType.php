@@ -57,12 +57,12 @@ class BadgePickerType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'multiple' => false,
                 'mode' => BadgeManager::BADGE_PICKER_DEFAULT_MODE,
                 'workspace' => null,
-                'blacklist' => array(),
-            )
+                'blacklist' => [],
+            ]
         );
     }
 

@@ -3,8 +3,8 @@
 namespace Icap\WikiBundle\Event\Log;
 
 use Claroline\CoreBundle\Event\Log\AbstractLogResourceEvent;
-use Icap\WikiBundle\Entity\Wiki;
 use Icap\WikiBundle\Entity\Section;
+use Icap\WikiBundle\Entity\Wiki;
 
 class LogSectionRemoveEvent extends AbstractLogResourceEvent
 {
@@ -16,15 +16,15 @@ class LogSectionRemoveEvent extends AbstractLogResourceEvent
      */
     public function __construct(Wiki $wiki, Section $section)
     {
-        $details = array(
-            'section' => array(
+        $details = [
+            'section' => [
                 'wiki' => $wiki->getId(),
                 'id' => $section->getId(),
                 'title' => $section->getActiveContribution()->getTitle(),
                 'text' => $section->getActiveContribution()->getText(),
                 'author' => $section->getAuthor()->getFirstName().' '.$section->getAuthor()->getLastName(),
-            ),
-        );
+            ],
+        ];
 
         parent::__construct($wiki->getResourceNode(), $details);
     }
@@ -34,6 +34,6 @@ class LogSectionRemoveEvent extends AbstractLogResourceEvent
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_WORKSPACE);
+        return [self::DISPLAYED_WORKSPACE];
     }
 }

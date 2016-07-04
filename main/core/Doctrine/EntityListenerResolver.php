@@ -12,8 +12,8 @@
 namespace Claroline\CoreBundle\Doctrine;
 
 use Doctrine\ORM\Mapping\DefaultEntityListenerResolver;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * @DI\Service("claroline.doctrine.entity_listener_resolver")
@@ -34,7 +34,7 @@ class EntityListenerResolver extends DefaultEntityListenerResolver
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->mapping = array();
+        $this->mapping = [];
     }
 
     public function addMapping($className, $service)

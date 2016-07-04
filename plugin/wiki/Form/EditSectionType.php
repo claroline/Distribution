@@ -2,13 +2,13 @@
 
 namespace Icap\WikiBundle\Form;
 
+use Icap\WikiBundle\Manager\SectionManager;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Icap\WikiBundle\Manager\SectionManager;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @DI\Service("icap.wiki.section_edit_type")
@@ -30,9 +30,9 @@ class EditSectionType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('activeContribution', new ContributionType(), array(
+        $builder->add('activeContribution', new ContributionType(), [
             'label' => false,
-            )
+            ]
         );
 
         $sectionManager = $this->sectionManager;
@@ -45,20 +45,20 @@ class EditSectionType extends AbstractType
                 $isRoot = $data->isRoot();
                 if ($isRoot === false && $data->getIsWikiAdmin()) {
                     $form
-                        ->add('visible', 'checkbox', array(
+                        ->add('visible', 'checkbox', [
                                 'required' => false,
-                                'theme_options' => array('label_width' => 'col-md-12', 'control_width' => 'hidden'),
-                            )
+                                'theme_options' => ['label_width' => 'col-md-12', 'control_width' => 'hidden'],
+                            ]
                         )
-                        ->add('position', 'choice', array(
+                        ->add('position', 'choice', [
                                 'choices' => $sectionManager->getArchivedSectionsForPosition($data),
-                                'theme_options' => array('label_width' => 'col-md-12', 'control_width' => 'col-md-12'),
-                            )
+                                'theme_options' => ['label_width' => 'col-md-12', 'control_width' => 'col-md-12'],
+                            ]
                         )
-                        ->add('brother', 'checkbox', array(
+                        ->add('brother', 'checkbox', [
                                 'required' => false,
-                                'theme_options' => array('label_width' => 'col-md-12', 'control_width' => 'hidden'),
-                            )
+                                'theme_options' => ['label_width' => 'col-md-12', 'control_width' => 'hidden'],
+                            ]
                         );
                 }
             }
@@ -72,11 +72,11 @@ class EditSectionType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'translation_domain' => 'icap_wiki',
             'data_class' => 'Icap\WikiBundle\Entity\Section',
-            'sections' => array(),
+            'sections' => [],
             'isRootSection' => false,
-        ));
+        ]);
     }
 }

@@ -11,24 +11,24 @@
 
 namespace Claroline\CoreBundle\Manager;
 
-use JMS\DiExtraBundle\Annotation as DI;
-use Claroline\CoreBundle\Event\StrictDispatcher;
-use Claroline\CoreBundle\Entity\Role;
-use Claroline\CoreBundle\Entity\Resource\ResourceNode;
-use Claroline\CoreBundle\Entity\Resource\ResourceType;
-use Claroline\CoreBundle\Entity\Resource\ResourceRights;
-use Claroline\CoreBundle\Entity\Resource\PwsRightsManagementAccess;
-use Claroline\CoreBundle\Repository\ResourceNodeRepository;
-use Claroline\CoreBundle\Repository\RoleRepository;
-use Claroline\CoreBundle\Repository\ResourceTypeRepository;
-use Claroline\CoreBundle\Repository\ResourceRightsRepository;
-use Claroline\CoreBundle\Persistence\ObjectManager;
-use Symfony\Component\Translation\TranslatorInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Claroline\BundleRecorder\Log\LoggableTrait;
+use Claroline\CoreBundle\Entity\Resource\PwsRightsManagementAccess;
+use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\Resource\ResourceRights;
+use Claroline\CoreBundle\Entity\Resource\ResourceType;
+use Claroline\CoreBundle\Entity\Role;
+use Claroline\CoreBundle\Event\StrictDispatcher;
+use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Repository\ResourceNodeRepository;
+use Claroline\CoreBundle\Repository\ResourceRightsRepository;
+use Claroline\CoreBundle\Repository\ResourceTypeRepository;
+use Claroline\CoreBundle\Repository\RoleRepository;
+use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @DI\Service("claroline.manager.rights_manager")
@@ -106,9 +106,9 @@ class RightsManager
         Role $role,
         ResourceNode $node,
         $isRecursive,
-        array $creations = array()
+        array $creations = []
     ) {
-        $rights = $this->rightsRepo->findBy(array('role' => $role, 'resourceNode' => $node));
+        $rights = $this->rightsRepo->findBy(['role' => $role, 'resourceNode' => $node]);
 
         if (count($rights) === 0) {
             $isRecursive ?
@@ -134,7 +134,7 @@ class RightsManager
         Role $role,
         ResourceNode $node,
         $isRecursive = false,
-        $creations = array(),
+        $creations = [],
         $mergePerms = false
     ) {
         $this->log('Editing permissions...');
@@ -142,7 +142,7 @@ class RightsManager
 
         $arRights = $isRecursive ?
             $this->updateRightsTree($role, $node) :
-            array($this->getOneByRoleAndResource($role, $node));
+            [$this->getOneByRoleAndResource($role, $node)];
 
         $this->log('Encoding masks for '.count($arRights).' elements...');
 
@@ -173,7 +173,7 @@ class RightsManager
             //well, nowadays I think we can do this.
             //if (!$isRecursive) {
                 $this->logChangeSet($toUpdate);
-            $this->dispatcher->dispatch('resource_change_permissions', 'UpdateResourceRights', array($node, $toUpdate));
+            $this->dispatcher->dispatch('resource_change_permissions', 'UpdateResourceRights', [$node, $toUpdate]);
             //}
         }
 
@@ -212,7 +212,7 @@ class RightsManager
 
         $arRights = ($isRecursive) ?
             $this->updateRightsTree($role, $node) :
-            array($this->getOneByRoleAndResource($role, $node));
+            [$this->getOneByRoleAndResource($role, $node)];
 
         foreach ($arRights as $toUpdate) {
             $toUpdate->setCreatableResourceTypes($resourceTypes);
@@ -232,7 +232,7 @@ class RightsManager
      */
     public function copy(ResourceNode $original, ResourceNode $node)
     {
-        $originalRights = $this->rightsRepo->findBy(array('resourceNode' => $original));
+        $originalRights = $this->rightsRepo->findBy(['resourceNode' => $original]);
         $this->om->startFlushSuite();
 
         foreach ($originalRights as $originalRight) {
@@ -264,7 +264,7 @@ class RightsManager
         $this->log('Updating the right tree');
         $alreadyExistings = $this->rightsRepo->findRecursiveByResourceAndRole($node, $role);
         $descendants = $this->resourceRepo->findDescendants($node, true);
-        $finalRights = array();
+        $finalRights = [];
 
         foreach ($descendants as $descendant) {
             $found = false;
@@ -322,7 +322,7 @@ class RightsManager
      */
     public function addRolesToPermsArray(array $baseRoles, array $perms)
     {
-        $initializedArray = array();
+        $initializedArray = [];
 
         foreach ($perms as $roleBaseName => $data) {
             foreach ($baseRoles as $baseRole) {
@@ -345,7 +345,7 @@ class RightsManager
      */
     public function getOneByRoleAndResource(Role $role, ResourceNode $node)
     {
-        $resourceRights = $this->rightsRepo->findOneBy(array('resourceNode' => $node, 'role' => $role));
+        $resourceRights = $this->rightsRepo->findOneBy(['resourceNode' => $node, 'role' => $role]);
 
         if ($resourceRights) {
             return $resourceRights;
@@ -366,12 +366,12 @@ class RightsManager
      */
     public function getCreatableTypes(array $roles, ResourceNode $node)
     {
-        $creatableTypes = array();
+        $creatableTypes = [];
         $creationRights = $this->rightsRepo->findCreationRights($roles, $node);
 
         if (count($creationRights) !== 0) {
             foreach ($creationRights as $type) {
-                $creatableTypes[$type['name']] = $this->translator->trans($type['name'], array(), 'resource');
+                $creatableTypes[$type['name']] = $this->translator->trans($type['name'], [], 'resource');
             }
         }
 
@@ -388,7 +388,7 @@ class RightsManager
         $permissions,
         Role $role,
         ResourceNode $node,
-        array $creations = array()
+        array $creations = []
     ) {
         $this->om->startFlushSuite();
         //will create every rights with the role and the resource already set.
@@ -413,7 +413,7 @@ class RightsManager
         $permissions,
         Role $role,
         ResourceNode $node,
-        array $creations = array()
+        array $creations = []
     ) {
         $rights = $this->om->factory('Claroline\CoreBundle\Entity\Resource\ResourceRights');
         $rights->setRole($role);
@@ -438,7 +438,7 @@ class RightsManager
             $this->dispatcher->dispatch(
                 'log',
                 'Log\LogWorkspaceRoleChangeRight',
-                array($rights->getRole(), $rights->getResourceNode(), $changeSet)
+                [$rights->getRole(), $rights->getResourceNode(), $changeSet]
             );
         }
     }
@@ -497,7 +497,7 @@ class RightsManager
      */
     private function mergeTypePermissions($dirMask, $resourceMask, ResourceType $resourceType)
     {
-        $baseArray = array();
+        $baseArray = [];
         $defaultActions = $this->maskManager->getDefaultActions();
 
         foreach ($defaultActions as $action) {
@@ -523,7 +523,7 @@ class RightsManager
      */
     public function getCustomRoleRights(ResourceNode $node)
     {
-        $perms = array();
+        $perms = [];
 
         foreach ($node->getRights() as $right) {
             //if not ROLE_ANONYMOUS nor ROLE_USER because they're added automatically in ResourceManager::createRights
@@ -532,7 +532,7 @@ class RightsManager
                 $perms[$right->getRole()->getName()] = $rolePerms;
                 $perms[$right->getRole()->getName()]['role'] = $right->getRole();
                 //no implementation for rights creations yet
-                $perms[$right->getRole()->getName()]['create'] = array();
+                $perms[$right->getRole()->getName()]['create'] = [];
             }
         }
 
@@ -622,7 +622,7 @@ class RightsManager
         return count($keys) > 0 ?
             $this->rightsRepo
                 ->findUserRolesResourceRights($resource, $keys, $executeQuery) :
-            array();
+            [];
     }
 
     public function getAllPersonalWorkspaceRightsConfig()
@@ -711,7 +711,7 @@ class RightsManager
                 if (!$collaboratorFound) {
                     $this->log('Adding missing right on root for '.$workspace->getCode().'.', LogLevel::DEBUG);
                     $collaboratorRole = $this->roleManager->getCollaboratorRole($workspace);
-                    $this->editPerms(5, $collaboratorRole, $root, true, array(), true);
+                    $this->editPerms(5, $collaboratorRole, $root, true, [], true);
                     ++$i;
 
                     if ($i % 3 === 0) {

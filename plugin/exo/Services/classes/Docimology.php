@@ -41,12 +41,12 @@ class Docimology
     public function histoSuccess($exerciseId, $sqs, $papers)
     {
         $em = $this->doctrine->getManager();
-        $seriesResponsesTab = array();
+        $seriesResponsesTab = [];
         $seriesResponsesTab[0] = '';
         $seriesResponsesTab[1] = '';
         $seriesResponsesTab[2] = '';
         $seriesResponsesTab[3] = '';
-        $histoSuccess = array();
+        $histoSuccess = [];
         $maxY = 4;
 
         $questionList = $this->getQuestionsTitle($sqs);
@@ -60,10 +60,10 @@ class Docimology
             $interQuestionsTab = explode(';', $interQuestions);
             foreach ($interQuestionsTab as $interQuestion) {
                 $flag = $em->getRepository('UJMExoBundle:Response')->findOneBy(
-                    array(
+                    [
                         'question' => $interQuestion,
                         'paper' => $paper->getId(),
-                    )
+                    ]
                 );
 
                 if (!$flag || $flag->getResponse() == '') {
@@ -108,7 +108,7 @@ class Docimology
      */
     public function histoDiscrimination($exerciseId, $sqs, $papers)
     {
-        $histoDiscrimination = array();
+        $histoDiscrimination = [];
 
         $tabScoreExo = $this->getScoreByExercise($exerciseId);
         $scoreAverageExo = $this->getExerciseScoreAverage($tabScoreExo);
@@ -138,7 +138,7 @@ class Docimology
         $exercise = $em->getRepository('UJMExoBundle:Exercise')->find($exerciseId);
         $maxY = 4;
         $tabMarks = $this->getArrayMarks($exercise);
-        $histoMark = array();
+        $histoMark = [];
 
         $scoreList = implode(',', array_keys($tabMarks));
 
@@ -168,9 +168,9 @@ class Docimology
     public function histoMeasureOfDifficulty($exerciseId, $sqs)
     {
         $paperSer = $this->container->get('ujm.exo_paper');
-        $up = array();
-        $down = array();
-        $measureTab = array();
+        $up = [];
+        $down = [];
+        $measureTab = [];
 
         foreach ($sqs as $sq) {
             $responsesTab = $this->getCorrectAnswer($exerciseId, $sq);
@@ -202,7 +202,7 @@ class Docimology
      */
     private function responseStatus($responses, $scoreMax)
     {
-        $responsesTab = array();
+        $responsesTab = [];
         $responsesTab['correct'] = 0;
         $responsesTab['partiallyRight'] = 0;
         $responsesTab['wrong'] = 0;
@@ -309,7 +309,7 @@ class Docimology
     private function getScoreByQuestion($exerciseId, $sqs, $papers)
     {
         $em = $this->doctrine->getManager();
-        $tabScoreQ = array();
+        $tabScoreQ = [];
         foreach ($sqs as $sq) {
             $responses = $em->getRepository('UJMExoBundle:Response')
                             ->getExerciseInterResponses($exerciseId, $sq->getQuestion()->getId());
@@ -334,7 +334,7 @@ class Docimology
     {
         $em = $this->doctrine->getManager();
         $marks = $em->getRepository('UJMExoBundle:Response')->getExerciseMarks($exerciseId, 'paper');
-        $tabScoreExo = array();
+        $tabScoreExo = [];
 
         foreach ($marks as $mark) {
             $tabScoreExo[] = $mark['noteExo'];
@@ -370,7 +370,7 @@ class Docimology
      */
     private function getQuestionsScoreAverage($sqs, $tabScoreQ, $nbPapers)
     {
-        $tabScoreAverageQ = array();
+        $tabScoreAverageQ = [];
         foreach ($sqs as $sq) {
             $allScoreQ = $tabScoreQ[$sq->getQuestion()->getId()];
             $sm = 0;
@@ -395,7 +395,7 @@ class Docimology
      */
     private function getProductsMarginMark($sqs, $tabScoreQ, $tabScoreAverageQ, $tabScoreExo, $scoreAverageExo)
     {
-        $productMarginMark = array();
+        $productMarginMark = [];
         foreach ($sqs as $sq) {
             $i = 0;
             $allScoreQ = $tabScoreQ[$sq->getQuestion()->getId()];
@@ -418,7 +418,7 @@ class Docimology
      */
     private function getCoeffOfDiscrimination($sqs, $productMarginMark, $tabScoreExo, $tabScoreQ)
     {
-        $tabCoeffQ = array();
+        $tabCoeffQ = [];
         foreach ($sqs as $sq) {
             $productMarginMarkQ = $productMarginMark[$sq->getQuestion()->getId()];
             $sumPenq = 0;
@@ -448,7 +448,7 @@ class Docimology
      */
     private function getQuestionsTitle($sqs)
     {
-        $questionList = array();
+        $questionList = [];
         foreach ($sqs as $sq) {
             $questionList[] = $sq->getQuestion()->getTitle();
         }
@@ -464,7 +464,7 @@ class Docimology
      */
     private function getQuestionsCorrectAnswer($sqs, $exerciseId)
     {
-        $questionsResponsesTab = array();
+        $questionsResponsesTab = [];
         foreach ($sqs as $sq) {
             $responsesTab = $this->getCorrectAnswer($exerciseId, $sq);
             $questionsResponsesTab[$sq->getQuestion()->getId()] = $responsesTab;

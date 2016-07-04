@@ -23,7 +23,7 @@ class WorkspaceTagType extends AbstractType
         $builder->add(
             'name',
             'text',
-            array('constraints' => new NotBlank())
+            ['constraints' => new NotBlank()]
         );
     }
 
@@ -35,7 +35,7 @@ class WorkspaceTagType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(
-            array('translation_domain' => 'platform')
+            ['translation_domain' => 'platform']
         );
     }
 }

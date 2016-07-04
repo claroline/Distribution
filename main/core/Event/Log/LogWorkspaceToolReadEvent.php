@@ -22,11 +22,11 @@ class LogWorkspaceToolReadEvent extends LogGenericEvent implements LogNotRepeata
     {
         parent::__construct(
             self::ACTION,
-            array(
-                'workspace' => array(
+            [
+                'workspace' => [
                     'name' => $workspace->getName(),
-                ),
-            ),
+                ],
+            ],
             null,
             null,
             null,

@@ -11,18 +11,18 @@
 
 namespace Claroline\CoreBundle\Controller;
 
-use FOS\OAuthServerBundle\Event\OAuthEvent;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use Symfony\Component\HttpFoundation\Request;
-use FOS\OAuthServerBundle\Controller\AuthorizeController as BaseAuthorizeController;
-use FOS\OAuthServerBundle\Form\Handler\AuthorizeFormHandler;
-use Symfony\Component\Security\Core\SecurityContext;
 use Claroline\CoreBundle\Entity\User;
+use FOS\OAuthServerBundle\Controller\AuthorizeController as BaseAuthorizeController;
+use FOS\OAuthServerBundle\Event\OAuthEvent;
+use FOS\OAuthServerBundle\Form\Handler\AuthorizeFormHandler;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Controller handling basic authorization.
@@ -49,11 +49,11 @@ class OauthController extends BaseAuthorizeController
         }
 
         if ($user && !$user->isAccountNonExpired()) {
-            return array(
+            return [
                 'last_username' => $lastUsername,
                 'error' => false,
                 'is_expired' => true,
-            );
+            ];
         }
 
         if ($request->attributes->has(SecurityContext::AUTHENTICATION_ERROR)) {
@@ -62,11 +62,11 @@ class OauthController extends BaseAuthorizeController
             $error = $request->getSession()->get(SecurityContext::AUTHENTICATION_ERROR);
         }
 
-        return array(
+        return [
             'last_username' => $lastUsername,
             'error' => $error,
             'is_expired' => false,
-        );
+        ];
     }
 
     /**
@@ -104,10 +104,10 @@ class OauthController extends BaseAuthorizeController
 
         return $this->container->get('templating')->renderResponse(
             'ClarolineCoreBundle:Authentication:oauth_authorize.html.twig',
-            array(
+            [
                 'form' => $form->createView(),
                 'client' => $this->getClient(),
-            )
+            ]
         );
     }
 

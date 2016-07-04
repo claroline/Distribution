@@ -10,8 +10,8 @@ use Icap\PortfolioBundle\Event\WidgetFormEvent;
 use Icap\PortfolioBundle\Event\WidgetFormViewEvent;
 use Icap\PortfolioBundle\Event\WidgetTypeCreateEvent;
 use Icap\PortfolioBundle\Event\WidgetViewEvent;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\Form\FormFactory;
 
 /**
@@ -83,7 +83,7 @@ class WidgetListener
      */
     public function onWidgetView(WidgetViewEvent $widgetViewEvent)
     {
-        $widgetViewEvent->setView($this->templatingEngine->render('IcapBadgeBundle:Portfolio:'.$widgetViewEvent->getWidgetType().'.html.twig', array('widget' => $widgetViewEvent->getWidget())));
+        $widgetViewEvent->setView($this->templatingEngine->render('IcapBadgeBundle:Portfolio:'.$widgetViewEvent->getWidgetType().'.html.twig', ['widget' => $widgetViewEvent->getWidget()]));
     }
 
     /**

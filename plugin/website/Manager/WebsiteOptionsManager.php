@@ -9,14 +9,14 @@
 namespace Icap\WebsiteBundle\Manager;
 
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use Icap\WebsiteBundle\Entity\WebsiteOptions;
 use Icap\WebsiteBundle\Form\WebsiteOptionsType;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
-use Icap\WebsiteBundle\Entity\WebsiteOptions;
+use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\Form\Form;
 
 /**
  * Class WebsiteOptionsManager.
@@ -67,7 +67,7 @@ class WebsiteOptionsManager
 
     public function processForm(WebsiteOptions $options, array $parameters, $method = 'PUT')
     {
-        $form = $this->formFactory->create(new WebsiteOptionsType(), $options, array('method' => $method));
+        $form = $this->formFactory->create(new WebsiteOptionsType(), $options, ['method' => $method]);
         $form->submit($parameters, 'PATCH' !== $method);
         if ($form->isValid()) {
             $options = $form->getData();
@@ -128,7 +128,7 @@ class WebsiteOptionsManager
                 }
             }
 
-            return array($imageStr => $options->getWebPath($imageStr));
+            return [$imageStr => $options->getWebPath($imageStr)];
         } else {
             throw new \InvalidArgumentException();
         }
@@ -155,12 +155,12 @@ class WebsiteOptionsManager
             unlink($this->webDir.DIRECTORY_SEPARATOR.$options->getUploadDir().DIRECTORY_SEPARATOR.$oldPath);
         }
 
-        return array($imageStr => $options->getWebPath($imageStr));
+        return [$imageStr => $options->getWebPath($imageStr)];
     }
 
     private function getErrorMessages(Form $form)
     {
-        $errors = array();
+        $errors = [];
         foreach ($form->getErrors() as $key => $error) {
             $template = $error->getMessageTemplate();
             $parameters = $error->getMessageParameters();

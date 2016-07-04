@@ -20,8 +20,8 @@ class SendMailType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('object', 'text', array('label' => 'object'))
-            ->add('content', 'tinymce', array('label' => 'message'));
+            ->add('object', 'text', ['label' => 'object'])
+            ->add('content', 'tinymce', ['label' => 'message']);
     }
 
     public function getName()
@@ -31,6 +31,6 @@ class SendMailType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform']);
     }
 }

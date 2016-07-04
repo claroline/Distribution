@@ -2,9 +2,9 @@
 
 namespace Icap\BadgeBundle\Form\DataTransformer;
 
+use Doctrine\Common\Collections\Collection;
 use Icap\BadgeBundle\Entity\Badge;
 use Icap\BadgeBundle\Manager\BadgeManager;
-use Doctrine\Common\Collections\Collection;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
@@ -37,27 +37,27 @@ class BadgePickerTransformer implements DataTransformerInterface
     public function transform($value)
     {
         if (is_array($value) || $value instanceof Collection) {
-            $transformedData = array();
+            $transformedData = [];
 
             foreach ($value as $entity) {
-                $transformedData[] = array(
+                $transformedData[] = [
                     'id' => $entity->getId(),
                     'text' => $entity->getName(),
                     'icon' => $entity->getWebPath(),
                     'description' => $entity->getDescription(),
-                );
+                ];
             }
 
             return $transformedData;
         }
 
         if ($value instanceof Badge) {
-            return array(
+            return [
                 'id' => $value->getId(),
                 'text' => $value->getName(),
                 'icon' => $value->getWebPath(),
                 'description' => $value->getDescription(),
-            );
+            ];
         }
 
         return;

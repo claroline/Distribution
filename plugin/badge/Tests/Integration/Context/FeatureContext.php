@@ -7,8 +7,8 @@ use Behat\Behat\Event\ScenarioEvent;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Exception\ElementNotFoundException;
 use Behat\Mink\Exception\ExpectationException;
-use Behat\Symfony2Extension\Context\KernelDictionary;
 use Behat\MinkExtension\Context\MinkContext;
+use Behat\Symfony2Extension\Context\KernelDictionary;
 use Goutte\Client;
 
 /**
@@ -66,7 +66,7 @@ class FeatureContext extends MinkContext
     {
         $this->loadFixture(
             'Claroline\CoreBundle\DataFixtures\Test\LoadUserData',
-            array(array('username' => $username, 'role' => 'ROLE_ADMIN'))
+            [['username' => $username, 'role' => 'ROLE_ADMIN']]
         );
     }
 
@@ -75,10 +75,10 @@ class FeatureContext extends MinkContext
      */
     public function theFollowingAccountsAreCreated(TableNode $table)
     {
-        $users = array();
+        $users = [];
 
         foreach ($table->getRows() as $row) {
-            $users[] = array('username' => $row[0], 'role' => $row[1]);
+            $users[] = ['username' => $row[0], 'role' => $row[1]];
         }
 
         $this->loadFixture('Claroline\CoreBundle\DataFixtures\Test\LoadUserData', $users);
@@ -89,10 +89,10 @@ class FeatureContext extends MinkContext
      */
     public function theFollowingGroupsAreCreated(TableNode $table)
     {
-        $groups = array();
+        $groups = [];
 
         foreach ($table->getRows() as $row) {
-            $groups[] = array('name' => $row[0], 'role' => $row[1]);
+            $groups[] = ['name' => $row[0], 'role' => $row[1]];
         }
 
         $this->loadFixture('Claroline\CoreBundle\DataFixtures\Test\LoadGroupData', $groups);
@@ -105,13 +105,13 @@ class FeatureContext extends MinkContext
      */
     public function iLogInWith($login, $password)
     {
-        return array(
+        return [
             new Step\When('I am on "/login"'),
             new Step\When('I fill in "Username or email" with "'.$login.'"'),
             new Step\When('I fill in "Password" with "'.$password.'"'),
             new Step\When('I press "Login"'),
             new Step\When('I should be on "/desktop/tool/open/home"'),
-        );
+        ];
     }
 
     /**
@@ -341,7 +341,7 @@ EOL;
     public function selfRegistrationIsAllowed()
     {
         $configHandler = $this->getContainer()->get('claroline.config.platform_config_handler');
-        $configHandler->setParameters(array('allow_self_registration' => true));
+        $configHandler->setParameters(['allow_self_registration' => true]);
     }
 
     /**
@@ -350,7 +350,7 @@ EOL;
     public function selfRegistrationIsDisabled()
     {
         $configHandler = $this->getContainer()->get('claroline.config.platform_config_handler');
-        $configHandler->setParameters(array('allow_self_registration' => false));
+        $configHandler->setParameters(['allow_self_registration' => false]);
     }
 
     /**
@@ -358,7 +358,7 @@ EOL;
      */
     public function testResponseStatusCodeForThisUrl(TableNode $table)
     {
-        $steps = array();
+        $steps = [];
         $hash = $table->getHash();
 
         foreach ($hash as $row) {
@@ -370,13 +370,13 @@ EOL;
         return $steps;
     }
 
-    protected function loadFixture($fixtureFqcn, array $args = array())
+    protected function loadFixture($fixtureFqcn, array $args = [])
     {
         $client = new Client();
         $client->request(
             'POST',
             $this->getUrl('test/fixture/load'),
-            array('fqcn' => $fixtureFqcn, 'args' => $args)
+            ['fqcn' => $fixtureFqcn, 'args' => $args]
         );
         $this->checkForResponseError(
             $client->getResponse()->getStatus(),

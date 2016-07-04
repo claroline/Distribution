@@ -11,9 +11,9 @@
 
 namespace Claroline\CoreBundle\Listener;
 
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service

@@ -17,6 +17,6 @@ class InvalidUnexpectedRoutingPrefix1 extends PluginBundle
 {
     public function getRoutingPrefix()
     {
-        return array();
+        return [];
     }
 }

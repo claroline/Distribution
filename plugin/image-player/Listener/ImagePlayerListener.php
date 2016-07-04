@@ -30,12 +30,12 @@ class ImagePlayerListener extends ContainerAware
             .$event->getResource()->getHashName();
         $content = $this->container->get('templating')->render(
             'ClarolineImagePlayerBundle::image.html.twig',
-            array(
+            [
                 'path' => $path,
                 'image' => $event->getResource(),
                 '_resource' => $event->getResource(),
                 'images' => $images,
-            )
+            ]
         );
 
         $response = new Response($content);

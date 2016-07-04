@@ -13,11 +13,11 @@ namespace Claroline\CoreBundle\Command\Dev;
 
 use Claroline\CoreBundle\Library\PluginBundle;
 use Psr\Log\LogLevel;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
 
 class TestUpdateCommand extends ContainerAwareCommand
 {
@@ -25,24 +25,24 @@ class TestUpdateCommand extends ContainerAwareCommand
     {
         parent::configure();
         $this->setName('claroline:test_update')
-            ->setAliases(array('claroline:debug:update'))
+            ->setAliases(['claroline:debug:update'])
             ->setDescription('Tests the local update of a bundle.');
         $this->setDefinition(
-            array(
+            [
                 new InputArgument('bundle', InputArgument::REQUIRED, 'bundle'),
                 new InputArgument('from_version', InputArgument::REQUIRED, 'from version'),
                 new InputArgument('to_version', InputArgument::REQUIRED, 'to version'),
-            )
+            ]
         );
     }
 
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $params = array(
+        $params = [
             'from_version' => 'from version: ',
             'to_version' => 'to version: ',
             'bundle' => 'bundle: ',
-        );
+        ];
 
         foreach ($params as $argument => $argumentName) {
             if (!$input->getArgument($argument)) {
@@ -78,11 +78,11 @@ class TestUpdateCommand extends ContainerAwareCommand
             'claroline.plugin.installer' :
             'claroline.installation.manager';
 
-        $verbosityLevelMap = array(
+        $verbosityLevelMap = [
             LogLevel::NOTICE => OutputInterface::VERBOSITY_NORMAL,
             LogLevel::INFO => OutputInterface::VERBOSITY_NORMAL,
             LogLevel::DEBUG => OutputInterface::VERBOSITY_NORMAL,
-        );
+        ];
         $consoleLogger = new ConsoleLogger($output, $verbosityLevelMap);
 
         /** @var \Claroline\InstallationBundle\Manager\InstallationManager|\Claroline\CoreBundle\Library\Installation\Plugin\Installer $installer */

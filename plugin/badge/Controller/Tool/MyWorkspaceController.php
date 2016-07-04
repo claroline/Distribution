@@ -2,15 +2,15 @@
 
 namespace Icap\BadgeBundle\Controller\Tool;
 
-use Icap\BadgeBundle\Entity\Badge;
-use Icap\BadgeBundle\Entity\BadgeClaim;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Icap\BadgeBundle\Entity\Badge;
+use Icap\BadgeBundle\Entity\BadgeClaim;
 use Icap\BadgeBundle\Event\BadgeCreateValidationLinkEvent;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
@@ -37,11 +37,11 @@ class MyWorkspaceController extends Controller
     {
         $this->checkUserIsAllowed($workspace);
 
-        return array(
+        return [
             'workspace' => $workspace,
             'user' => $loggedUser,
             'badgePage' => $badgePage,
-        );
+        ];
     }
 
     /**
@@ -68,12 +68,12 @@ class MyWorkspaceController extends Controller
             $badgeManager = $this->get('icap_badge.manager.badge');
             $badgeManager->makeClaim($badge, $user);
 
-            $flashBag->add('success', $translator->trans('badge_claim_success_message', array(), 'icap_badge'));
+            $flashBag->add('success', $translator->trans('badge_claim_success_message', [], 'icap_badge'));
         } catch (\Exception $exception) {
-            $flashBag->add('error', $translator->trans($exception->getMessage(), array(), 'icap_badge'));
+            $flashBag->add('error', $translator->trans($exception->getMessage(), [], 'icap_badge'));
         }
 
-        return $this->redirect($this->generateUrl('icap_badge_workspace_tool_my_badges', array('workspaceId' => $workspace->getId())));
+        return $this->redirect($this->generateUrl('icap_badge_workspace_tool_my_badges', ['workspaceId' => $workspace->getId()]));
     }
 
     /**
@@ -94,15 +94,15 @@ class MyWorkspaceController extends Controller
         /** @var \Claroline\CoreBundle\Rule\Validator $badgeRuleValidator */
         $badgeRuleValidator = $this->get('claroline.rule.validator');
         $validatedRules = $badgeRuleValidator->validate($badge, $user);
-        $validateLogsLink = array();
+        $validateLogsLink = [];
 
         if (0 < $validatedRules['validRules']) {
             foreach ($validatedRules['rules'] as $ruleIndex => $validatedRule) {
                 foreach ($validatedRule['logs'] as $logIndex => $validateLog) {
-                    $validatedRules['rules'][$ruleIndex]['logs'][$logIndex] = array(
+                    $validatedRules['rules'][$ruleIndex]['logs'][$logIndex] = [
                         'log' => $validateLog,
                         'url' => null,
-                    );
+                    ];
 
                     $validationLink = null;
                     $eventLogName = sprintf('badge-%s-generate_validation_link', $validateLog->getAction());
@@ -124,18 +124,18 @@ class MyWorkspaceController extends Controller
             }
         }
 
-        $userBadge = $this->getDoctrine()->getRepository('IcapBadgeBundle:UserBadge')->findOneBy(array('badge' => $badge, 'user' => $user));
+        $userBadge = $this->getDoctrine()->getRepository('IcapBadgeBundle:UserBadge')->findOneBy(['badge' => $badge, 'user' => $user]);
 
         /*if (null === $userBadge) {
             throw $this->createNotFoundException("User don't have this badge.");
         }*/
 
-        return array(
+        return [
             'workspace' => $workspace,
             'userBadge' => $userBadge,
             'badge' => $badge,
             'validatedRules' => $validatedRules,
-        );
+        ];
     }
 
     private function checkUserIsAllowed(Workspace $workspace)

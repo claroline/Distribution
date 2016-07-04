@@ -69,7 +69,7 @@ class ShareActionManager
 
     public function createShare(Request $request, ShareAction $share)
     {
-        $return = array();
+        $return = [];
         $resourceId = $request->get('resourceId');
         if ($resourceId === null) {
             $url = $request->get('url');
@@ -87,7 +87,7 @@ class ShareActionManager
             $resourceNode = $this->resourceNodeRepository->find($resourceId);
             $share->setResource($resourceNode);
             $return['title'] = $resourceNode->getName();
-            $return['url'] = $this->router->generate('claro_resource_open_short', array('node' => $resourceNode->getId()), true);
+            $return['url'] = $this->router->generate('claro_resource_open_short', ['node' => $resourceNode->getId()], true);
         }
         $network = $request->get('network');
         $share->setNetwork($network);
@@ -99,7 +99,7 @@ class ShareActionManager
         return $return;
     }
 
-    public function countShares(Request $request = null, $criteria = array())
+    public function countShares(Request $request = null, $criteria = [])
     {
         if ($request !== null) {
             $criteria = $this->getCriteriaFromRequest($request, null, $criteria);
@@ -108,7 +108,7 @@ class ShareActionManager
         return $this->shareActionRepository->countShares($criteria);
     }
 
-    private function getCriteriaFromRequest(Request $request = null, User $user = null, $criteria = array())
+    private function getCriteriaFromRequest(Request $request = null, User $user = null, $criteria = [])
     {
         if ($user !== null) {
             $criteria['user'] = $user;

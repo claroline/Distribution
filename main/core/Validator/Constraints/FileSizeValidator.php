@@ -11,9 +11,9 @@
 
 namespace Claroline\CoreBundle\Validator\Constraints;
 
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Validator("filesize_validator")
@@ -22,11 +22,11 @@ class FileSizeValidator extends ConstraintValidator
 {
     public function validate($value, Constraint $constraint)
     {
-        $validUnits = array('B', 'KB', 'MB', 'GB', 'TB');
+        $validUnits = ['B', 'KB', 'MB', 'GB', 'TB'];
         $value = str_replace(' ', '', $value);
 
-        $replacements = array('');
-        $patterns = array('/(\d+)/');
+        $replacements = [''];
+        $patterns = ['/(\d+)/'];
         $unit = preg_replace($patterns, $replacements, $value);
         $found = false;
 

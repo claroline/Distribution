@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Event;
 
-use Symfony\Component\EventDispatcher\Event;
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
+use Symfony\Component\EventDispatcher\Event;
 
 /**
  * Event dispatched by the resource controller when a resource deletion is asked.
@@ -20,7 +20,7 @@ use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 class DeleteResourceEvent extends Event implements MandatoryEventInterface
 {
     private $resource;
-    private $files = array();
+    private $files = [];
     private $softDelete;
 
     /**

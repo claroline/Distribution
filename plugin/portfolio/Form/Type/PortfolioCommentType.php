@@ -38,8 +38,8 @@ class PortfolioCommentType extends AbstractType
 
         $builder
             ->add('message', 'text')
-            ->add('sender', 'text', array('mapped' => false))
-            ->add('date', 'text', array('mapped' => false));
+            ->add('sender', 'text', ['mapped' => false])
+            ->add('date', 'text', ['mapped' => false]);
 
         $builder->addEventListener(
             FormEvents::POST_SUBMIT,
@@ -60,11 +60,11 @@ class PortfolioCommentType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'Icap\PortfolioBundle\Entity\PortfolioComment',
                 'translation_domain' => 'icap_portfolio_comment',
                 'csrf_protection' => false,
-            )
+            ]
         );
     }
 }

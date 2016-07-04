@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Controller;
 
-use Claroline\CoreBundle\Library\Testing\MockeryTestCase;
 use Claroline\CoreBundle\Form\Factory\FormFactory;
+use Claroline\CoreBundle\Library\Testing\MockeryTestCase;
 
 class AuthenticationControllerTest extends MockeryTestCase
 {
@@ -78,9 +78,9 @@ class AuthenticationControllerTest extends MockeryTestCase
         $this->request->request = $parameterBag;
         $this->authenticator->shouldReceive('authenticate')->once()->with('username', 'password')
             ->andReturn(false);
-        $this->translator->shouldReceive('trans')->once()->with('login_failure', array(), 'platform')
+        $this->translator->shouldReceive('trans')->once()->with('login_failure', [], 'platform')
             ->andReturn('message');
-        $response = new $responseClass(array('message' => 'message'), 403);
+        $response = new $responseClass(['message' => 'message'], 403);
         $this->assertEquals(
             $response->getContent(),
             $this->controller->postAuthenticationAction($format)->getContent()
@@ -95,17 +95,17 @@ class AuthenticationControllerTest extends MockeryTestCase
 
     public function postAuthenticationProvider()
     {
-        return array(
-            array(
+        return [
+            [
                 'responseClass' => '\Claroline\CoreBundle\Library\HttpFoundation\XmlResponse',
                 'format' => 'xml',
                 'header' => 'text/xml',
-            ),
-            array(
+            ],
+            [
                 'responseClass' => '\Symfony\Component\HttpFoundation\JsonResponse',
                 'format' => 'json',
                 'header' => 'application/json',
-           ),
-        );
+           ],
+        ];
     }
 }

@@ -27,28 +27,28 @@ class CursusType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $details = is_null($this->cursus) ? array() : $this->cursus->getDetails();
+        $details = is_null($this->cursus) ? [] : $this->cursus->getDetails();
         $color = isset($details['color']) ? $details['color'] : null;
 
         $builder->add(
             'title',
             'text',
-            array('required' => true)
+            ['required' => true]
         );
         $builder->add(
             'code',
             'text',
-            array('required' => false)
+            ['required' => false]
         );
         $builder->add(
             'description',
             'tinymce',
-            array('required' => false)
+            ['required' => false]
         );
         $builder->add(
             'workspace',
             'entity',
-            array(
+            [
                 'class' => 'Claroline\CoreBundle\Entity\Workspace\Workspace',
                 'choice_translation_domain' => true,
                 'required' => false,
@@ -62,23 +62,23 @@ class CursusType extends AbstractType
                 },
                 'label' => 'workspace',
                 'translation_domain' => 'platform',
-            )
+            ]
         );
         $builder->add(
             'blocking',
             'checkbox',
-            array('required' => true)
+            ['required' => true]
         );
         $builder->add(
             'color',
             'text',
-            array(
+            [
                 'required' => false,
                 'mapped' => false,
                 'data' => $color,
                 'label' => 'color',
                 'translation_domain' => 'platform',
-            )
+            ]
         );
     }
 
@@ -89,6 +89,6 @@ class CursusType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'cursus'));
+        $resolver->setDefaults(['translation_domain' => 'cursus']);
     }
 }

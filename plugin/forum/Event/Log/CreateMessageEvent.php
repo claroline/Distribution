@@ -12,8 +12,8 @@
 namespace Claroline\ForumBundle\Event\Log;
 
 use Claroline\CoreBundle\Event\Log\AbstractLogResourceEvent;
-use Claroline\ForumBundle\Entity\Message;
 use Claroline\CoreBundle\Event\Log\NotifiableInterface;
+use Claroline\ForumBundle\Entity\Message;
 
 class CreateMessageEvent extends AbstractLogResourceEvent implements NotifiableInterface
 {
@@ -26,20 +26,20 @@ class CreateMessageEvent extends AbstractLogResourceEvent implements NotifiableI
     {
         $this->message = $message;
 
-        $details = array(
-            'message' => array(
+        $details = [
+            'message' => [
                 'id' => $message->getId(),
-            ),
-            'subject' => array(
+            ],
+            'subject' => [
                 'id' => $message->getSubject()->getId(),
-            ),
-            'category' => array(
+            ],
+            'category' => [
                 'id' => $message->getSubject()->getCategory()->getId(),
-            ),
-            'forum' => array(
+            ],
+            'forum' => [
                 'id' => $message->getSubject()->getCategory()->getForum()->getId(),
-            ),
-        );
+            ],
+        ];
 
         parent::__construct($message->getSubject()->getCategory()->getForum()->getResourceNode(), $details);
     }
@@ -49,7 +49,7 @@ class CreateMessageEvent extends AbstractLogResourceEvent implements NotifiableI
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_WORKSPACE, self::DISPLAYED_ADMIN);
+        return [self::DISPLAYED_WORKSPACE, self::DISPLAYED_ADMIN];
     }
 
     /**
@@ -74,7 +74,7 @@ class CreateMessageEvent extends AbstractLogResourceEvent implements NotifiableI
      */
     public function getIncludeUserIds()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -84,7 +84,7 @@ class CreateMessageEvent extends AbstractLogResourceEvent implements NotifiableI
      */
     public function getExcludeUserIds()
     {
-        return array();
+        return [];
     }
 
     /**

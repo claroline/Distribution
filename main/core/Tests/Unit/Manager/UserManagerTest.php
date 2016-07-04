@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Manager;
 
-use Claroline\CoreBundle\Library\Testing\MockeryTestCase;
 use Claroline\CoreBundle\Library\Security\PlatformRoles;
+use Claroline\CoreBundle\Library\Testing\MockeryTestCase;
 use Doctrine\Common\Collections\ArrayCollection;
 
 class UserManagerTest extends MockeryTestCase
@@ -51,7 +51,7 @@ class UserManagerTest extends MockeryTestCase
 
     public function testCreateUser()
     {
-        $manager = $this->getManager(array('setPersonalWorkspace'));
+        $manager = $this->getManager(['setPersonalWorkspace']);
         $user = $this->mock('Claroline\CoreBundle\Entity\User');
         $workspace = $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
 
@@ -72,7 +72,7 @@ class UserManagerTest extends MockeryTestCase
         $this->om->shouldReceive('endFlushSuite')->once();
         $this->om->shouldReceive('persist')->with($user)->once();
         $this->strictDispatcher->shouldReceive('dispatch')
-            ->with('log', 'Log\LogUserCreate', array($user))
+            ->with('log', 'Log\LogUserCreate', [$user])
             ->once();
 
         $this->mailManager->shouldReceive('isMailerAvailable')->andReturn(false);
@@ -90,7 +90,7 @@ class UserManagerTest extends MockeryTestCase
         $user->shouldReceive('setUsername')->once();
         $user->shouldReceive('setIsEnabled')->once()->with(false);
         $user->shouldReceive('getId')->andReturn('1');
-        $this->strictDispatcher->shouldReceive('dispatch')->with('delete_user', 'DeleteUser', array($user))->once();
+        $this->strictDispatcher->shouldReceive('dispatch')->with('delete_user', 'DeleteUser', [$user])->once();
         $this->om->shouldReceive('persist')->once()->with($user);
         $this->om->shouldReceive('flush');
 
@@ -99,12 +99,12 @@ class UserManagerTest extends MockeryTestCase
 
     public function testInsertUserWithRoles()
     {
-        $manager = $this->getManager(array('setPersonalWorkspace'));
+        $manager = $this->getManager(['setPersonalWorkspace']);
         $user = $this->mock('Claroline\CoreBundle\Entity\User');
         $workspace = $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
         $roleOne = $this->mock('Claroline\CoreBundle\Entity\Role');
         $roleTwo = $this->mock('Claroline\CoreBundle\Entity\Role');
-        $roles = new ArrayCollection(array($roleOne, $roleTwo));
+        $roles = new ArrayCollection([$roleOne, $roleTwo]);
 
         $this->om->shouldReceive('startFlushSuite')->once();
         $this->om->shouldReceive('endFlushSuite')->once();
@@ -129,7 +129,7 @@ class UserManagerTest extends MockeryTestCase
             ->with($user)
             ->once();
         $this->strictDispatcher->shouldReceive('dispatch')
-            ->with('log', 'Log\LogUserCreate', array($user))
+            ->with('log', 'Log\LogUserCreate', [$user])
             ->once();
 
         $this->mailManager->shouldReceive('isMailerAvailable')->andReturn(false);
@@ -139,20 +139,20 @@ class UserManagerTest extends MockeryTestCase
 
     public function testImportUsers()
     {
-        $manager = $this->getManager(array('createUser'));
+        $manager = $this->getManager(['createUser']);
 
         $user = $this->mock('Claroline\CoreBundle\Entity\User');
 
-        $users = array(
-            array(
+        $users = [
+            [
                 'first_name_2',
                 'last_name_2',
                 'username_2',
                 'pwd_2',
                 'email_2',
                 'code_2',
-            ),
-        );
+            ],
+        ];
 
         $this->om->shouldReceive('startFlushSuite')->once();
         $this->om->shouldReceive('endFlushSuite')->once();
@@ -184,7 +184,7 @@ class UserManagerTest extends MockeryTestCase
             ->once();
         $manager->shouldReceive('createUser')->once()->with($user);
         $this->strictDispatcher->shouldReceive('dispatch')
-            ->with('log', 'Log\LogUserCreate', array($user))
+            ->with('log', 'Log\LogUserCreate', [$user])
             ->once();
 
         $manager->importUsers($users);
@@ -204,15 +204,15 @@ class UserManagerTest extends MockeryTestCase
         $userA->shouldReceive('getLastName')->once()->andReturn('lastname_1');
         $userA->shouldReceive('getFirstName')->once()->andReturn('firstname_1');
         $userA->shouldReceive('getAdministrativeCode')->once()->andReturn('code_1');
-        $userA->shouldReceive('getEntityRoles')->once()->andReturn(array($roleAA, $roleAB));
+        $userA->shouldReceive('getEntityRoles')->once()->andReturn([$roleAA, $roleAB]);
         $roleAA->shouldReceive('getTranslationKey')->once()->andReturn('ROLE_AA');
         $this->translator->shouldReceive('trans')
-            ->with('ROLE_AA', array(), 'platform')
+            ->with('ROLE_AA', [], 'platform')
             ->once()
             ->andReturn('ROLE_AA_TRAD');
         $roleAB->shouldReceive('getTranslationKey')->once()->andReturn('ROLE_AB');
         $this->translator->shouldReceive('trans')
-            ->with('ROLE_AB', array(), 'platform')
+            ->with('ROLE_AB', [], 'platform')
             ->once()
             ->andReturn('ROLE_AB_TRAD');
         $userB->shouldReceive('getId')->once()->andReturn(2);
@@ -220,19 +220,19 @@ class UserManagerTest extends MockeryTestCase
         $userB->shouldReceive('getLastName')->once()->andReturn('lastname_2');
         $userB->shouldReceive('getFirstName')->once()->andReturn('firstname_2');
         $userB->shouldReceive('getAdministrativeCode')->once()->andReturn('code_2');
-        $userB->shouldReceive('getEntityRoles')->once()->andReturn(array($roleBA, $roleBB));
+        $userB->shouldReceive('getEntityRoles')->once()->andReturn([$roleBA, $roleBB]);
         $roleBA->shouldReceive('getTranslationKey')->once()->andReturn('ROLE_BA');
         $this->translator->shouldReceive('trans')
-            ->with('ROLE_BA', array(), 'platform')
+            ->with('ROLE_BA', [], 'platform')
             ->once()
             ->andReturn('ROLE_BA_TRAD');
         $roleBB->shouldReceive('getTranslationKey')->once()->andReturn('ROLE_BB');
         $this->translator->shouldReceive('trans')
-            ->with('ROLE_BB', array(), 'platform')
+            ->with('ROLE_BB', [], 'platform')
             ->once()
             ->andReturn('ROLE_BB_TRAD');
 
-        $this->getManager()->convertUsersToArray(array($userA, $userB));
+        $this->getManager()->convertUsersToArray([$userA, $userB]);
     }
 
     public function testGetUserByUserName()
@@ -319,8 +319,8 @@ class UserManagerTest extends MockeryTestCase
 
     public function testGetUsersByIds()
     {
-        $ids = array(1, 3, 4);
-        $users = array('userA', 'userC', 'userD');
+        $ids = [1, 3, 4];
+        $users = ['userA', 'userC', 'userD'];
 
         $this->om->shouldReceive('findByIds')
             ->with('Claroline\CoreBundle\Entity\User', $ids)
@@ -333,7 +333,7 @@ class UserManagerTest extends MockeryTestCase
     public function testGetUsersEnrolledInMostWorkspaces()
     {
         $max = 3;
-        $users = array('userA', 'userB', 'userC');
+        $users = ['userA', 'userB', 'userC'];
 
         $this->userRepo->shouldReceive('findUsersEnrolledInMostWorkspaces')
             ->with($max)
@@ -346,7 +346,7 @@ class UserManagerTest extends MockeryTestCase
     public function testGetUsersOwnersOfMostWorkspaces()
     {
         $max = 3;
-        $users = array('userA', 'userB', 'userC');
+        $users = ['userA', 'userB', 'userC'];
 
         $this->userRepo->shouldReceive('findUsersOwnersOfMostWorkspaces')
             ->with($max)
@@ -379,7 +379,7 @@ class UserManagerTest extends MockeryTestCase
         $em = $this->mock('Doctrine\ORM\EntityManager');
         $query = new \Doctrine\ORM\Query($em);
         $role = new \Claroline\CoreBundle\Entity\Role();
-        $roles = array($role);
+        $roles = [$role];
 
         $this->userRepo->shouldReceive('findByRoles')
             ->with($roles, true)
@@ -399,7 +399,7 @@ class UserManagerTest extends MockeryTestCase
         $em = $this->mock('Doctrine\ORM\EntityManager');
         $query = new \Doctrine\ORM\Query($em);
         $role = new \Claroline\CoreBundle\Entity\Role();
-        $roles = array($role);
+        $roles = [$role];
         $workspace = new \Claroline\CoreBundle\Entity\Workspace\Workspace();
 
         $this->userRepo->shouldReceive('findOutsidersByWorkspaceRoles')
@@ -420,7 +420,7 @@ class UserManagerTest extends MockeryTestCase
         $em = $this->mock('Doctrine\ORM\EntityManager');
         $query = new \Doctrine\ORM\Query($em);
         $role = new \Claroline\CoreBundle\Entity\Role();
-        $roles = array($role);
+        $roles = [$role];
         $workspace = new \Claroline\CoreBundle\Entity\Workspace\Workspace();
 
         $this->userRepo->shouldReceive('findOutsidersByWorkspaceRolesAndName')
@@ -439,7 +439,7 @@ class UserManagerTest extends MockeryTestCase
         );
     }
 
-    private function getManager(array $mockedMethods = array())
+    private function getManager(array $mockedMethods = [])
     {
         $this->om->shouldReceive('getRepository')->once()
             ->with('ClarolineCoreBundle:User')->andReturn($this->userRepo);
@@ -472,7 +472,7 @@ class UserManagerTest extends MockeryTestCase
 
         return $this->mock(
             'Claroline\CoreBundle\Manager\UserManager'.$stringMocked,
-            array(
+            [
                 $this->personalWsTemplateFile,
                 $this->mailManager,
                 $this->om,
@@ -485,7 +485,7 @@ class UserManagerTest extends MockeryTestCase
                 $this->translator,
                 $this->validator,
                 $this->workspaceManager,
-            )
+            ]
         );
     }
 }

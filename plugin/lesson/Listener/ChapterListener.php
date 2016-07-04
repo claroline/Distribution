@@ -14,8 +14,8 @@ namespace Icap\LessonBundle\Listener;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Icap\LessonBundle\Entity\Chapter;
 use Icap\NotificationBundle\Entity\UserPickerContent;
-use JMS\DiExtraBundle\Annotation as DI;
 use Icap\NotificationBundle\Manager\NotificationManager as NotificationManager;
+use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("icap.lesson_bundle.entity_listener.chapter")
@@ -45,18 +45,18 @@ class ChapterListener
             count($userPicker->getUserIds()) > 0 &&
             $lesson->getResourceNode() !== null
         ) {
-            $details = array(
-                'chapter' => array(
+            $details = [
+                'chapter' => [
                     'lesson' => $lesson->getId(),
                     'chapter' => $chapter->getId(),
                     'title' => $chapter->getTitle(),
-                ),
-                'resource' => array(
+                ],
+                'resource' => [
                     'id' => $lesson->getId(),
                     'name' => $lesson->getResourceNode()->getName(),
                     'type' => $lesson->getResourceNode()->getResourceType()->getName(),
-                ),
-            );
+                ],
+            ];
             $notification = $this->notificationManager->createNotification(
                 'resource-icap_lesson-user_tagged',
                 'lesson',

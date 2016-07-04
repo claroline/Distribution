@@ -2,9 +2,9 @@
 
 namespace Icap\SocialmediaBundle;
 
+use Claroline\CoreBundle\Library\Installation\AdditionalInstaller;
 use Claroline\CoreBundle\Library\PluginBundle;
 use Claroline\KernelBundle\Bundle\ConfigurationBuilder;
-use Claroline\CoreBundle\Library\Installation\AdditionalInstaller;
 
 /**
  * Bundle class.

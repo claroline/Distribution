@@ -3,10 +3,10 @@
 namespace Icap\BadgeBundle\Form\Type;
 
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -46,15 +46,15 @@ class ClaimBadgeType extends AbstractType
         $locale = (null === $user->getLocale()) ? $this->platformConfigHandler->getParameter('locale_language') : $user->getLocale();
 
         $builder
-            ->add('badge', 'zenstruck_ajax_entity', array(
-                'attr' => array('class' => 'fullwidth'),
-                'theme_options' => array('control_width' => 'col-md-3'),
-                'placeholder' => $this->translator->trans('badge_form_badge_selection', array(), 'icap_badge'),
+            ->add('badge', 'zenstruck_ajax_entity', [
+                'attr' => ['class' => 'fullwidth'],
+                'theme_options' => ['control_width' => 'col-md-3'],
+                'placeholder' => $this->translator->trans('badge_form_badge_selection', [], 'icap_badge'),
                 'class' => 'IcapBadgeBundle:Badge',
                 'use_controller' => true,
                 'repo_method' => sprintf('findByNameForAjax'),
-                'extra_data' => array('userId' => $user->getId(), 'locale' => $locale),
-            ));
+                'extra_data' => ['userId' => $user->getId(), 'locale' => $locale],
+            ]);
     }
 
     public function getName()
@@ -65,10 +65,10 @@ class ClaimBadgeType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'Icap\BadgeBundle\Entity\BadgeClaim',
                 'translation_domain' => 'icap_badge',
-            )
+            ]
         );
     }
 }

@@ -22,12 +22,12 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class MaskManager
 {
-    private static $defaultActions = array('open', 'copy', 'export', 'delete', 'edit', 'administrate');
-    private static $defaultMenus = array(
-        'export' => array('download' => false),
-        'delete' => array('delete' => false),
-        'administrate' => array('edit-rights' => true, 'open-tracking' => false, 'rename' => true, 'edit-properties' => true),
-    );
+    private static $defaultActions = ['open', 'copy', 'export', 'delete', 'edit', 'administrate'];
+    private static $defaultMenus = [
+        'export' => ['download' => false],
+        'delete' => ['delete' => false],
+        'administrate' => ['edit-rights' => true, 'open-tracking' => false, 'rename' => true, 'edit-properties' => true],
+    ];
 
     private $om;
     private $maskRepo;
@@ -55,8 +55,8 @@ class MaskManager
      */
     public function decodeMask($mask, ResourceType $type)
     {
-        $decoders = $this->maskRepo->findBy(array('resourceType' => $type));
-        $perms = array();
+        $decoders = $this->maskRepo->findBy(['resourceType' => $type]);
+        $perms = [];
 
         foreach ($decoders as $decoder) {
             $perms[$decoder->getName()] = ($mask & $decoder->getValue()) ? true : false;
@@ -78,7 +78,7 @@ class MaskManager
      */
     public function encodeMask($perms, ResourceType $type)
     {
-        $decoders = $this->maskRepo->findBy(array('resourceType' => $type));
+        $decoders = $this->maskRepo->findBy(['resourceType' => $type]);
         $mask = 0;
 
         foreach ($decoders as $decoder) {
@@ -99,8 +99,8 @@ class MaskManager
      */
     public function getPermissionMap(ResourceType $type)
     {
-        $decoders = $this->maskRepo->findBy(array('resourceType' => $type));
-        $permsMap = array();
+        $decoders = $this->maskRepo->findBy(['resourceType' => $type]);
+        $permsMap = [];
 
         foreach ($decoders as $decoder) {
             $permsMap[$decoder->getValue()] = $decoder->getName();
@@ -117,7 +117,7 @@ class MaskManager
      */
     public function getDecoder(ResourceType $type, $action)
     {
-        return $this->maskRepo->findOneBy(array('resourceType' => $type, 'name' => $action));
+        return $this->maskRepo->findOneBy(['resourceType' => $type, 'name' => $action]);
     }
 
     /**
@@ -128,7 +128,7 @@ class MaskManager
      */
     public function getByValue(ResourceType $type, $value)
     {
-        return $this->maskRepo->findOneBy(array('resourceType' => $type, 'value' => $value));
+        return $this->maskRepo->findOneBy(['resourceType' => $type, 'value' => $value]);
     }
 
     /**
@@ -139,11 +139,11 @@ class MaskManager
      */
     public function getMenuFromNameAndResourceType($name, ResourceType $type)
     {
-        if ($this->menuRepo->findOneBy(array('name' => $name, 'resourceType' => $type))) {
-            return $this->menuRepo->findOneBy(array('name' => $name, 'resourceType' => $type));
+        if ($this->menuRepo->findOneBy(['name' => $name, 'resourceType' => $type])) {
+            return $this->menuRepo->findOneBy(['name' => $name, 'resourceType' => $type]);
         }
 
-        return $this->menuRepo->findOneBy(array('name' => $name));
+        return $this->menuRepo->findOneBy(['name' => $name]);
     }
 
     /**
@@ -153,7 +153,7 @@ class MaskManager
      */
     public function addDefaultPerms(ResourceType $type)
     {
-        $createdPerms = array();
+        $createdPerms = [];
 
         for ($i = 0, $size = count(self::$defaultActions); $i < $size; ++$i) {
             $maskDecoder = new MaskDecoder();
@@ -188,7 +188,7 @@ class MaskManager
     public function hasMenuAction(ResourceType $type)
     {
         $menuActions = $this->menuRepo->findBy(
-            array('resourceType' => $type)
+            ['resourceType' => $type]
         );
 
         return count($menuActions) > 0;

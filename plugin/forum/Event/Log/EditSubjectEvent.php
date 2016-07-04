@@ -25,19 +25,19 @@ class EditSubjectEvent extends AbstractLogResourceEvent
      */
     public function __construct(Subject $subject, $oldTitle, $newTitle)
     {
-        $details = array(
-            'subject' => array(
+        $details = [
+            'subject' => [
                 'id' => $subject->getId(),
                 'old_title' => $oldTitle,
                 'new_title' => $newTitle,
-            ),
-            'category' => array(
+            ],
+            'category' => [
                 'id' => $subject->getCategory()->getId(),
-            ),
-            'forum' => array(
+            ],
+            'forum' => [
                 'id' => $subject->getCategory()->getForum()->getId(),
-            ),
-        );
+            ],
+        ];
 
         parent::__construct($subject->getCategory()->getForum()->getResourceNode(), $details);
     }
@@ -47,6 +47,6 @@ class EditSubjectEvent extends AbstractLogResourceEvent
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_WORKSPACE, self::DISPLAYED_ADMIN);
+        return [self::DISPLAYED_WORKSPACE, self::DISPLAYED_ADMIN];
     }
 }

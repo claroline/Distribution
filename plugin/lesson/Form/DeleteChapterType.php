@@ -18,10 +18,10 @@ class DeleteChapterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if ($options['hasChildren'] == true) {
-            $builder->add('deletechildren', 'checkbox', array(
+            $builder->add('deletechildren', 'checkbox', [
                 'required' => false,
                 'mapped' => false,
-            ));
+            ]);
         } else {
             /*            $builder ->add('children', 'hidden', array(
                 'required' => false,
@@ -32,11 +32,11 @@ class DeleteChapterType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => 'Icap\LessonBundle\Entity\Chapter',
             'hasChildren' => true,
             'no_captcha' => true,
-        ));
+        ]);
     }
 
     public function getName()

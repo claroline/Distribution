@@ -11,8 +11,8 @@
 
 namespace Claroline\ActivityToolBundle\Listener;
 
-use Mockery as m;
 use Claroline\CoreBundle\Library\Testing\MockeryTestCase;
+use Mockery as m;
 
 class ToolListenerTest extends MockeryTestCase
 {
@@ -62,14 +62,14 @@ class ToolListenerTest extends MockeryTestCase
             ->shouldReceive('getRoles')
             ->with($token)
             ->once()
-            ->andReturn(array());
+            ->andReturn([]);
         $this->resourceManager
             ->shouldReceive('getByCriteria')
-            ->with(array('roots' => array(), 'types' => array('activity')), array(), true)
+            ->with(['roots' => [], 'types' => ['activity']], [], true)
             ->once()
             ->andReturn(
-                array(
-                    array(
+                [
+                    [
                         'id' => 1,
                         'name' => 'my_resource',
                         'path' => 'my_path',
@@ -79,35 +79,35 @@ class ToolListenerTest extends MockeryTestCase
                         'previous_id' => 3,
                         'next_id' => 4,
                         'large_icon' => 'no_icon',
-                    ),
-                )
+                    ],
+                ]
             );
         $this->resourceManager
             ->shouldReceive('getWorkspaceInfoByIds')
-            ->with(array(1))
+            ->with([1])
             ->once()
             ->andReturn(
-                array(
-                    array(
+                [
+                    [
                         'id' => 1,
                         'code' => 'workspace_code',
                         'name' => 'workspace_name',
-                    ),
-                )
+                    ],
+                ]
             );
         $this->activityRepo
             ->shouldReceive('findActivitiesByNodeIds')
-            ->with(array(1))
+            ->with([1])
             ->once()
             ->andReturn(
-                array(
-                    array(
+                [
+                    [
                         'nodeId' => 1,
                         'instructions' => 'my_instructions',
                         'startDate' => $startDate,
                         'endDate' => null,
-                    ),
-                )
+                    ],
+                ]
             );
         $startDate->shouldReceive('format')
             ->with('Y-m-d H:i:s')
@@ -115,9 +115,9 @@ class ToolListenerTest extends MockeryTestCase
             ->andReturn('2013-06-18 10:49:00');
 
         $this->assertEquals(
-            array(
-                'resourceInfos' => array(
-                    1 => array(
+            [
+                'resourceInfos' => [
+                    1 => [
                         'id' => 1,
                         'name' => 'my_resource',
                         'path' => 'my_path',
@@ -127,23 +127,23 @@ class ToolListenerTest extends MockeryTestCase
                         'previous_id' => 3,
                         'next_id' => 4,
                         'large_icon' => 'no_icon',
-                    ),
-                ),
-                'activityInfos' => array(
-                    1 => array(
+                    ],
+                ],
+                'activityInfos' => [
+                    1 => [
                         'instructions' => 'my_instructions',
                         'startDate' => '2013-06-18 10:49:00',
                         'endDate' => '-',
-                    ),
-                ),
-                'workspaceInfos' => array(
-                    'workspace_code' => array(
+                    ],
+                ],
+                'workspaceInfos' => [
+                    'workspace_code' => [
                         'code' => 'workspace_code',
                         'name' => 'workspace_name',
-                        'nodes' => array(1),
-                    ),
-                ),
-            ),
+                        'nodes' => [1],
+                    ],
+                ],
+            ],
             $this->toolListener->fetchActivitiesDatas(true, null)
         );
     }
@@ -163,7 +163,7 @@ class ToolListenerTest extends MockeryTestCase
             ->shouldReceive('getRoles')
             ->with($token)
             ->once()
-            ->andReturn(array());
+            ->andReturn([]);
         $this->resourceManager
             ->shouldReceive('getWorkspaceRoot')
             ->with($workspace)
@@ -174,11 +174,11 @@ class ToolListenerTest extends MockeryTestCase
             ->andReturn('my_path');
         $this->resourceManager
             ->shouldReceive('getByCriteria')
-            ->with(array('roots' => array('my_path'), 'types' => array('activity')), array(), true)
+            ->with(['roots' => ['my_path'], 'types' => ['activity']], [], true)
             ->once()
             ->andReturn(
-                array(
-                    array(
+                [
+                    [
                         'id' => 1,
                         'name' => 'my_resource',
                         'path' => 'my_path',
@@ -188,22 +188,22 @@ class ToolListenerTest extends MockeryTestCase
                         'previous_id' => 3,
                         'next_id' => 4,
                         'large_icon' => 'no_icon',
-                    ),
-                )
+                    ],
+                ]
             );
         $this->activityRepo
             ->shouldReceive('findActivitiesByNodeIds')
-            ->with(array(1))
+            ->with([1])
             ->once()
             ->andReturn(
-                array(
-                    array(
+                [
+                    [
                         'nodeId' => 1,
                         'instructions' => 'my_instructions',
                         'startDate' => $startDate,
                         'endDate' => null,
-                    ),
-                )
+                    ],
+                ]
             );
         $startDate->shouldReceive('format')
             ->with('Y-m-d H:i:s')
@@ -211,9 +211,9 @@ class ToolListenerTest extends MockeryTestCase
             ->andReturn('2013-06-18 10:49:00');
 
         $this->assertEquals(
-            array(
-                'resourceInfos' => array(
-                    1 => array(
+            [
+                'resourceInfos' => [
+                    1 => [
                         'id' => 1,
                         'name' => 'my_resource',
                         'path' => 'my_path',
@@ -223,16 +223,16 @@ class ToolListenerTest extends MockeryTestCase
                         'previous_id' => 3,
                         'next_id' => 4,
                         'large_icon' => 'no_icon',
-                    ),
-                ),
-                'activityInfos' => array(
-                    1 => array(
+                    ],
+                ],
+                'activityInfos' => [
+                    1 => [
                         'instructions' => 'my_instructions',
                         'startDate' => '2013-06-18 10:49:00',
                         'endDate' => '-',
-                    ),
-                ),
-            ),
+                    ],
+                ],
+            ],
             $this->toolListener->fetchActivitiesDatas(false, $workspace)
         );
     }

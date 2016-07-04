@@ -37,7 +37,7 @@ class Facebook implements NetworkInterface
      *
      * @return string
      */
-    public function getShareLink($url, array $options = array())
+    public function getShareLink($url, array $options = [])
     {
         return sprintf(self::SHARE_URL, urlencode($url));
     }

@@ -13,10 +13,10 @@ namespace Icap\WikiBundle\Manager;
 
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Persistence\ObjectManager;
-use JMS\DiExtraBundle\Annotation as DI;
-use Icap\WikiBundle\Entity\Wiki;
-use Icap\WikiBundle\Entity\Section;
 use Icap\WikiBundle\Entity\Contribution;
+use Icap\WikiBundle\Entity\Section;
+use Icap\WikiBundle\Entity\Wiki;
+use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("icap.wiki.manager")
@@ -62,7 +62,7 @@ class WikiManager
 
         $sections = $this->sectionRepository->children($orgRoot);
         array_unshift($sections, $orgRoot);
-        $newSectionsMap = array();
+        $newSectionsMap = [];
 
         $newWiki = new Wiki();
         $newWiki->setWikiCreator($loggedUser);
@@ -114,7 +114,7 @@ class WikiManager
             $wikiData = $data['data'];
 
             $wiki->setMode($wikiData['options']['mode']);
-            $sectionsMap = array();
+            $sectionsMap = [];
             foreach ($wikiData['sections'] as $section) {
                 $entitySection = new Section();
                 $entitySection->setWiki($wiki);
@@ -190,13 +190,13 @@ class WikiManager
         $rootSection = $object->getRoot();
         $sections = $this->sectionRepository->children($rootSection);
         array_unshift($sections, $rootSection);
-        $sectionsArray = array();
+        $sectionsArray = [];
         foreach ($sections as $section) {
 
             //Getting all contributions and building contributions array
             $activeContribution = $section->getActiveContribution();
             $contributions = $this->contributionRepository->findAllButActiveForSection($section);
-            $contributionsArray = array();
+            $contributionsArray = [];
             array_unshift($contributions, $activeContribution);
             foreach ($contributions as $contribution) {
                 $uid = uniqid().'.txt';
@@ -204,17 +204,17 @@ class WikiManager
                 file_put_contents($tmpPath, $contribution->getText());
                 $files[$uid] = $tmpPath;
 
-                $contributionArray = array(
+                $contributionArray = [
                     'is_active' => $contribution->getId() == $activeContribution->getId(),
                     'title' => $contribution->getTitle(),
                     'contributor' => $contribution->getContributor()->getUsername(),
                     'creation_date' => $contribution->getCreationDate(),
                     'path' => $uid,
-                );
+                ];
 
-                $contributionsArray[] = array('contribution' => $contributionArray);
+                $contributionsArray[] = ['contribution' => $contributionArray];
             }
-            $sectionArray = array(
+            $sectionArray = [
                 'id' => $section->getId(),
                 'parent_id' => ($section->getParent() !== null) ? $section->getParent()->getId() : null,
                 'is_root' => $section->isRoot(),
@@ -224,17 +224,17 @@ class WikiManager
                 'deleted' => $section->getDeleted(),
                 'deletion_date' => $section->getDeletionDate(),
                 'contributions' => $contributionsArray,
-            );
+            ];
 
             $sectionsArray[] = $sectionArray;
         }
 
-        $data = array(
-            'options' => array(
+        $data = [
+            'options' => [
                 'mode' => $object->getMode(),
-            ),
+            ],
             'sections' => $sectionsArray,
-        );
+        ];
 
         return $data;
     }

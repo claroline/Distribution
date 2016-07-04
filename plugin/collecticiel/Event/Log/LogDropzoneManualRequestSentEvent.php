@@ -12,7 +12,7 @@ class LogDropzoneManualRequestSentEvent extends AbstractLogResourceEvent impleme
     protected $document;
     protected $newState;
     protected $details;
-    private $userIds = array();
+    private $userIds = [];
 
     /**
      * @param Wiki         $wiki
@@ -24,9 +24,9 @@ class LogDropzoneManualRequestSentEvent extends AbstractLogResourceEvent impleme
         $this->document = $document;
         $this->newState = $newstate;
         $this->userIds = $userIds;
-        $this->details = array(
+        $this->details = [
                 'newState' => $newstate,
-        );
+        ];
 
 /*        parent::__construct($dropzone->getResourceNode(), $this->details); */
     }
@@ -36,7 +36,7 @@ class LogDropzoneManualRequestSentEvent extends AbstractLogResourceEvent impleme
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_WORKSPACE);
+        return [self::DISPLAYED_WORKSPACE];
     }
     public function getDocument()
     {
@@ -71,7 +71,7 @@ class LogDropzoneManualRequestSentEvent extends AbstractLogResourceEvent impleme
      */
     public function getExcludeUserIds()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -101,12 +101,12 @@ class LogDropzoneManualRequestSentEvent extends AbstractLogResourceEvent impleme
      */
     public function getNotificationDetails()
     {
-        $notificationDetails = array_merge($this->details, array());
-        $notificationDetails['resource'] = array(
+        $notificationDetails = array_merge($this->details, []);
+        $notificationDetails['resource'] = [
             'id' => $this->document->getId(),
             'name' => $this->resource->getName(),
             'type' => $this->resource->getResourceType()->getName(),
-        );
+        ];
 
         return $notificationDetails;
     }

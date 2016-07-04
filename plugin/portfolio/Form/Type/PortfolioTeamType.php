@@ -16,11 +16,11 @@ class PortfolioTeamType extends AbstractType
     {
         $builder
             ->add('team', 'zenstruck_ajax_entity',
-                array(
+                [
                     'class' => 'ClarolineTeamBundle:Team',
                     'use_controller' => true,
                     'property' => 'name',
-                )
+                ]
             );
     }
 
@@ -32,10 +32,10 @@ class PortfolioTeamType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'Icap\PortfolioBundle\Entity\PortfolioTeam',
                 'translation_domain' => 'icap_portfolio',
-            )
+            ]
         );
     }
 }

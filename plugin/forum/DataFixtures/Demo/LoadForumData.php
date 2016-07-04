@@ -11,14 +11,14 @@
 
 namespace Claroline\ForumBundle\DataFixtures\Demo;
 
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Doctrine\Common\Persistence\ObjectManager;
+use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Library\Fixtures\LoggableFixture;
 use Claroline\ForumBundle\Entity\Forum;
-use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\ForumBundle\Entity\Message;
 use Claroline\ForumBundle\Entity\Subject;
+use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class LoadForumData extends LoggableFixture implements ContainerAwareInterface
 {
@@ -54,10 +54,10 @@ class LoadForumData extends LoggableFixture implements ContainerAwareInterface
     {
         $creator = $this->getContainer()->get('claroline.manager.resource_manager');
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
-        $user = $em->getRepository('ClarolineCoreBundle:User')->findOneBy(array('username' => $this->username));
+        $user = $em->getRepository('ClarolineCoreBundle:User')->findOneBy(['username' => $this->username]);
         if ($this->parent == null) {
             $root = $em->getRepository('ClarolineCoreBundle:Resource\ResourceNode')
-                ->findOneBy(array('parent' => null, 'workspace' => $user->getPersonalWorkspace()->getId()));
+                ->findOneBy(['parent' => null, 'workspace' => $user->getPersonalWorkspace()->getId()]);
         } else {
             $root = $this->parent;
         }

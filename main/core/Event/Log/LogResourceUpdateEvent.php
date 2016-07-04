@@ -38,20 +38,20 @@ class LogResourceUpdateEvent extends LogGenericEvent
 
         parent::__construct(
             $action,
-            array(
-                'resource' => array(
+            [
+                'resource' => [
                     'name' => $node->getName(),
                     'path' => $node->getPathForDisplay(),
                     'changeSet' => $changeSet,
-                ),
-                'workspace' => array(
+                ],
+                'workspace' => [
                     'name' => $node->getWorkspace()->getName(),
-                ),
-                'owner' => array(
+                ],
+                'owner' => [
                     'lastName' => $node->getCreator()->getLastName(),
                     'firstName' => $node->getCreator()->getFirstName(),
-                ),
-            ),
+                ],
+            ],
             null,
             null,
             $node,

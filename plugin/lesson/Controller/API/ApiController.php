@@ -2,31 +2,31 @@
 
 namespace Icap\LessonBundle\Controller\API;
 
-use FOS\RestBundle\Controller\FOSRestController;
-use FOS\RestBundle\Controller\Annotations\NamePrefix;
-use FOS\RestBundle\Controller\Annotations\View;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Patch;
-use FOS\RestBundle\Controller\Annotations\Put;
+use Claroline\CoreBundle\Event\Log\LogResourceReadEvent;
+use Claroline\CoreBundle\Library\Resource\ResourceCollection;
+use Claroline\CoreBundle\Manager\LocaleManager;
 use FOS\RestBundle\Controller\Annotations\Delete;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\NamePrefix;
+use FOS\RestBundle\Controller\Annotations\Patch;
+use FOS\RestBundle\Controller\Annotations\Post;
+use FOS\RestBundle\Controller\Annotations\Put;
+use FOS\RestBundle\Controller\Annotations\View;
+use FOS\RestBundle\Controller\FOSRestController;
 use Icap\LessonBundle\Entity\Chapter;
 use Icap\LessonBundle\Entity\Lesson;
-use Icap\LessonBundle\Form\ChapterType;
-use Claroline\CoreBundle\Manager\LocaleManager;
-use JMS\DiExtraBundle\Annotation as DI;
-use Claroline\CoreBundle\Library\Resource\ResourceCollection;
-use Claroline\CoreBundle\Event\Log\LogResourceReadEvent;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Form\FormFactory;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use Icap\LessonBundle\Event\Log\LogChapterReadEvent;
-use Icap\LessonBundle\Event\Log\LogChapterUpdateEvent;
 use Icap\LessonBundle\Event\Log\LogChapterCreateEvent;
 use Icap\LessonBundle\Event\Log\LogChapterDeleteEvent;
 use Icap\LessonBundle\Event\Log\LogChapterMoveEvent;
+use Icap\LessonBundle\Event\Log\LogChapterReadEvent;
+use Icap\LessonBundle\Event\Log\LogChapterUpdateEvent;
+use Icap\LessonBundle\Form\ChapterType;
+use JMS\DiExtraBundle\Annotation as DI;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\Form\FormFactory;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * @NamePrefix("icap_lesson_api_")
@@ -64,9 +64,9 @@ class ApiController extends FOSRestController
             ? $defaultChapter->getSlug()
             : null;
 
-        return array(
+        return [
             'defaultChapter' => $slug,
-        );
+        ];
     }
 
     /**
@@ -137,10 +137,10 @@ class ApiController extends FOSRestController
         $translator = $this->get('translator');
 
         $chapterType = new ChapterType($this->localeManager);
-        $defaults = array(
+        $defaults = [
             'csrf_protection' => false,
             'allow_extra_fields' => true,
-        );
+        ];
         $form = $this->formFactory->create($chapterType, new Chapter(), $defaults);
         $payload = $this->request->request->get('chapter');
 
@@ -155,10 +155,10 @@ class ApiController extends FOSRestController
             $em = $this->getDoctrine()->getManager();
             $repo = $em->getRepository('IcapLessonBundle:Chapter');
 
-            $chapterParent = $repo->findOneBy(array(
+            $chapterParent = $repo->findOneBy([
                 'lesson' => $lesson,
                 'slug' => $payload['parent'],
-            ));
+            ]);
 
             $chapter = $form->getData();
             $chapter->setLesson($lesson);
@@ -168,17 +168,17 @@ class ApiController extends FOSRestController
 
             $this->dispatchChapterCreateEvent($lesson, $chapter);
 
-            return array(
-                'message' => $translator->trans('Your chapter has been added', array(), 'icap_lesson'),
+            return [
+                'message' => $translator->trans('Your chapter has been added', [], 'icap_lesson'),
                 'chapter' => $this->formatChapterData($chapter),
-            );
+            ];
         }
 
         // Form is not valid. What should we return?
-        return array(
-            'message' => $translator->trans('Your chapter has not been added', array(), 'icap_lesson'),
+        return [
+            'message' => $translator->trans('Your chapter has not been added', [], 'icap_lesson'),
             'errors' => $form,
-        );
+        ];
     }
 
     /**
@@ -197,19 +197,19 @@ class ApiController extends FOSRestController
         $em = $this->getDoctrine()->getManager();
         $repo = $em->getRepository('IcapLessonBundle:Chapter');
 
-        $defaults = array(
+        $defaults = [
             'csrf_protection' => false,
             'allow_extra_fields' => true,
-        );
+        ];
         $form = $this->createForm($this->get('icap.lesson.duplicatechaptertype'), $chapter, $defaults);
 
         $payload = $this->request->request->get('chapter');
 
         // The form expects the id of the parent, not its slug
-        $parent = $repo->findOneBy(array(
+        $parent = $repo->findOneBy([
             'lesson' => $lesson,
             'slug' => $payload['parent'],
-        ));
+        ]);
         $payload['parent'] = $parent->getId();
 
         $form->submit($payload);
@@ -223,16 +223,16 @@ class ApiController extends FOSRestController
 
             $this->dispatchChapterCreateEvent($lesson, $chapter_copy);
 
-            return array(
-                'message' => $translator->trans('Your chapter has been added', array(), 'icap_lesson'),
+            return [
+                'message' => $translator->trans('Your chapter has been added', [], 'icap_lesson'),
                 'chapter' => $this->formatChapterData($chapter_copy),
-            );
+            ];
         }
         // Form is not valid. What should we return?
-        return array(
-            'message' => $translator->trans('Your chapter has not been added', array(), 'icap_lesson'),
+        return [
+            'message' => $translator->trans('Your chapter has not been added', [], 'icap_lesson'),
             'errors' => $form,
-        );
+        ];
     }
 
     /**
@@ -249,10 +249,10 @@ class ApiController extends FOSRestController
         $translator = $this->get('translator');
 
         $chapterType = new ChapterType($this->localeManager);
-        $defaults = array(
+        $defaults = [
             'csrf_protection' => false,
             'allow_extra_fields' => true,
-        );
+        ];
         $form = $this->formFactory->create($chapterType, new Chapter(), $defaults);
         $payload = $this->request->request->get('chapter');
         $form->submit($payload);
@@ -276,17 +276,17 @@ class ApiController extends FOSRestController
 
             $this->dispatchChapterUpdateEvent($lesson, $chapter, $changeSet);
 
-            return array(
-                'message' => $translator->trans('Your chapter has been modified', array(), 'icap_lesson'),
+            return [
+                'message' => $translator->trans('Your chapter has been modified', [], 'icap_lesson'),
                 'chapter' => $this->formatChapterData($chapter),
-            );
+            ];
         }
 
         // Form is not valid. What should we return?
-        return array(
-            'message' => $translator->trans('Your chapter has not been modified', array(), 'icap_lesson'),
+        return [
+            'message' => $translator->trans('Your chapter has not been modified', [], 'icap_lesson'),
             'errors' => $form,
-        );
+        ];
     }
 
     /**
@@ -322,10 +322,10 @@ class ApiController extends FOSRestController
 
         $this->dispatchChapterMoveEvent($lesson, $chapter, $oldParent, $chapter->getParent());
 
-        return array(
-            'message' => $translator->trans('Your chapter has been modified', array(), 'icap_lesson'),
+        return [
+            'message' => $translator->trans('Your chapter has been modified', [], 'icap_lesson'),
             'chapter' => $this->formatChapterData($chapter),
-        );
+        ];
     }
 
     /**
@@ -352,19 +352,19 @@ class ApiController extends FOSRestController
 
         if ($deleteChildren == 'true') {
             $em->remove($chapter);
-            $message = $translator->trans('Your chapter has been deleted', array(), 'icap_lesson');
+            $message = $translator->trans('Your chapter has been deleted', [], 'icap_lesson');
         } else {
             $repo->removeFromTree($chapter);
-            $message = $translator->trans('Your chapter has been deleted but no subchapter', array(), 'icap_lesson');
+            $message = $translator->trans('Your chapter has been deleted but no subchapter', [], 'icap_lesson');
         }
 
         $em->flush();
 
         $this->dispatchChapterDeleteEvent($lesson, $chapterTitle);
 
-        return array(
+        return [
             'message' => $message,
-        );
+        ];
     }
 
     /**
@@ -377,9 +377,9 @@ class ApiController extends FOSRestController
     {
         $translator = $this->get('translator');
 
-        $collection = new ResourceCollection(array($lesson->getResourceNode()));
+        $collection = new ResourceCollection([$lesson->getResourceNode()]);
         if (!$this->get('security.authorization_checker')->isGranted($permission, $collection)) {
-            throw new HttpException(401, $translator->trans('error_401', array(), 'icap_lesson'));
+            throw new HttpException(401, $translator->trans('error_401', [], 'icap_lesson'));
         }
 
         $logEvent = new LogResourceReadEvent($lesson->getResourceNode());
@@ -464,7 +464,7 @@ class ApiController extends FOSRestController
 
         $children = count($repo->getChildren($chapter));
 
-        return array(
+        return [
             'id' => $chapter->getId(),
             'slug' => $chapter->getSlug(),
             'title' => $chapter->getTitle(),
@@ -474,6 +474,6 @@ class ApiController extends FOSRestController
             'next' => $nextSlug,
             'parent' => $chapter->getParent()->getSlug(),
             'hasChildren' => $children > 0 ? true : false,
-        );
+        ];
     }
 }

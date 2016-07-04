@@ -11,26 +11,26 @@
 
 namespace Claroline\ForumBundle\Controller;
 
+use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
+use Claroline\ForumBundle\Entity\Category;
+use Claroline\ForumBundle\Entity\Forum;
 use Claroline\ForumBundle\Entity\Message;
 use Claroline\ForumBundle\Entity\Subject;
-use Claroline\ForumBundle\Entity\Forum;
-use Claroline\ForumBundle\Entity\Category;
-use Claroline\ForumBundle\Form\MessageType;
-use Claroline\ForumBundle\Form\SubjectType;
+use Claroline\ForumBundle\Event\Log\ReadSubjectEvent;
 use Claroline\ForumBundle\Form\CategoryType;
 use Claroline\ForumBundle\Form\EditTitleType;
-use Claroline\ForumBundle\Event\Log\ReadSubjectEvent;
-use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
-use Claroline\CoreBundle\Entity\User;
+use Claroline\ForumBundle\Form\MessageType;
+use Claroline\ForumBundle\Form\SubjectType;
 use Claroline\ForumBundle\Manager\Manager;
+use JMS\DiExtraBundle\Annotation as DI;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * ForumController.
@@ -81,17 +81,17 @@ class ForumController extends Controller
             $this->forumManager->hasSubscribed($user, $forum);
         $isModerator = $this->authorization->isGranted(
             'moderate',
-            new ResourceCollection(array($forum->getResourceNode()))
+            new ResourceCollection([$forum->getResourceNode()])
         ) && $user !== 'anon.';
 
-        return array(
+        return [
             'search' => null,
             '_resource' => $forum,
             'isModerator' => $isModerator,
             'categories' => $categories,
             'hasSubscribed' => $hasSubscribed,
             'workspace' => $forum->getResourceNode()->getWorkspace(),
-        );
+        ];
     }
 
     /**
@@ -113,8 +113,8 @@ class ForumController extends Controller
         $this->checkAccess($forum);
         $pager = $this->forumManager->getSubjectsPager($category, $page, $max);
 
-        $subjectsIds = array();
-        $lastMessages = array();
+        $subjectsIds = [];
+        $lastMessages = [];
 
         foreach ($pager as $subject) {
             $subjectsIds[] = $subject['id'];
@@ -124,13 +124,13 @@ class ForumController extends Controller
         foreach ($messages as $message) {
             $lastMessages[$message->getSubject()->getId()] = $message;
         }
-        $collection = new ResourceCollection(array($forum->getResourceNode()));
+        $collection = new ResourceCollection([$forum->getResourceNode()]);
         $isAnon = $this->isAnon();
         $canCreateSubject = $this->authorization->isGranted('post', $collection);
         $isModerator = $this->authorization->isGranted('moderate', $collection) &&
             !$isAnon;
 
-        $logs = array();
+        $logs = [];
 
         if (!$isAnon) {
             $securityToken = $this->tokenStorage->getToken();
@@ -140,7 +140,7 @@ class ForumController extends Controller
                 $logs = $this->forumManager->getSubjectsReadingLogs($user, $forum->getResourceNode());
             }
         }
-        $lastAccessDates = array();
+        $lastAccessDates = [];
 
         foreach ($logs as $log) {
             $details = $log->getDetails();
@@ -151,7 +151,7 @@ class ForumController extends Controller
             }
         }
 
-        return array(
+        return [
             'pager' => $pager,
             '_resource' => $forum,
             'canCreateSubject' => $canCreateSubject,
@@ -162,7 +162,7 @@ class ForumController extends Controller
             'workspace' => $forum->getResourceNode()->getWorkspace(),
             'lastAccessDates' => $lastAccessDates,
             'isAnon' => $isAnon,
-        );
+        ];
     }
 
     /**
@@ -178,7 +178,7 @@ class ForumController extends Controller
     public function subjectFormAction(Category $category)
     {
         $forum = $category->getForum();
-        $collection = new ResourceCollection(array($forum->getResourceNode()));
+        $collection = new ResourceCollection([$forum->getResourceNode()]);
 
         if (!$this->authorization->isGranted('post', $collection)) {
             throw new AccessDeniedException($collection->getErrorsForDisplay());
@@ -186,12 +186,12 @@ class ForumController extends Controller
 
         $formSubject = $this->get('form.factory')->create(new SubjectType());
 
-        return array(
+        return [
             '_resource' => $forum,
             'form' => $formSubject->createView(),
             'category' => $category,
             'workspace' => $forum->getResourceNode()->getWorkspace(),
-        );
+        ];
     }
 
     /**
@@ -206,7 +206,7 @@ class ForumController extends Controller
      */
     public function categoryFormAction(Forum $forum)
     {
-        $collection = new ResourceCollection(array($forum->getResourceNode()));
+        $collection = new ResourceCollection([$forum->getResourceNode()]);
 
         if (!$this->authorization->isGranted('post', $collection)) {
             throw new AccessDeniedException($collection->getErrorsForDisplay());
@@ -214,11 +214,11 @@ class ForumController extends Controller
 
         $formCategory = $this->get('form.factory')->create(new CategoryType());
 
-        return array(
+        return [
             '_resource' => $forum,
             'form' => $formCategory->createView(),
             'workspace' => $forum->getResourceNode()->getWorkspace(),
-        );
+        ];
     }
 
     /**
@@ -233,7 +233,7 @@ class ForumController extends Controller
      */
     public function createCategoryAction(Forum $forum)
     {
-        $collection = new ResourceCollection(array($forum->getResourceNode()));
+        $collection = new ResourceCollection([$forum->getResourceNode()]);
 
         if (!$this->authorization->isGranted('post', $collection)) {
             throw new AccessDeniedException($collection->getErrorsForDisplay());
@@ -248,7 +248,7 @@ class ForumController extends Controller
         }
 
         return new RedirectResponse(
-            $this->generateUrl('claro_forum_categories', array('forum' => $forum->getId()))
+            $this->generateUrl('claro_forum_categories', ['forum' => $forum->getId()])
         );
     }
 
@@ -272,7 +272,7 @@ class ForumController extends Controller
     public function createSubjectAction(Category $category)
     {
         $forum = $category->getForum();
-        $collection = new ResourceCollection(array($forum->getResourceNode()));
+        $collection = new ResourceCollection([$forum->getResourceNode()]);
 
         if (!$this->authorization->isGranted('post', $collection)) {
             throw new AccessDeniedException($collection->getErrorsForDisplay());
@@ -300,20 +300,20 @@ class ForumController extends Controller
                 $this->forumManager->createMessage($message, $subject);
 
                 return new RedirectResponse(
-                    $this->generateUrl('claro_forum_subjects', array('category' => $category->getId()))
+                    $this->generateUrl('claro_forum_subjects', ['category' => $category->getId()])
                 );
             }
         }
 
         $form->get('message')->addError(
-            new FormError($this->get('translator')->trans('field_content_required', array(), 'forum'))
+            new FormError($this->get('translator')->trans('field_content_required', [], 'forum'))
         );
 
-        return array(
+        return [
             'form' => $form->createView(),
             '_resource' => $forum,
             'workspace' => $forum->getResourceNode()->getWorkspace(),
-        );
+        ];
     }
 
     /**
@@ -336,10 +336,10 @@ class ForumController extends Controller
         $isAnon = $this->isAnon();
         $isModerator = $this->authorization->isGranted(
             'moderate',
-            new ResourceCollection(array($forum->getResourceNode()))
+            new ResourceCollection([$forum->getResourceNode()])
         ) && !$isAnon;
         $pager = $this->forumManager->getMessagesPager($subject, $page, $max);
-        $collection = new ResourceCollection(array($forum->getResourceNode()));
+        $collection = new ResourceCollection([$forum->getResourceNode()]);
         $canPost = $this->authorization->isGranted('post', $collection);
         $form = $this->get('form.factory')->create(new MessageType());
 
@@ -354,7 +354,7 @@ class ForumController extends Controller
             }
         }
 
-        return array(
+        return [
             'subject' => $subject,
             'pager' => $pager,
             '_resource' => $forum,
@@ -364,7 +364,7 @@ class ForumController extends Controller
             'max' => $max,
             'canPost' => $canPost,
             'workspace' => $forum->getResourceNode()->getWorkspace(),
-        );
+        ];
     }
 
     /**
@@ -387,7 +387,7 @@ class ForumController extends Controller
         }
 
         return new RedirectResponse(
-            $this->generateUrl('claro_forum_messages', array('subject' => $subject->getId()))
+            $this->generateUrl('claro_forum_messages', ['subject' => $subject->getId()])
         );
     }
 
@@ -404,7 +404,7 @@ class ForumController extends Controller
     {
         $subject = $message->getSubject();
         $forum = $subject->getCategory()->getForum();
-        $isModerator = $this->authorization->isGranted('moderate', new ResourceCollection(array($forum->getResourceNode())));
+        $isModerator = $this->authorization->isGranted('moderate', new ResourceCollection([$forum->getResourceNode()]));
 
         if (!$isModerator && $this->tokenStorage->getToken()->getUser() !== $message->getCreator()) {
             throw new AccessDeniedException();
@@ -412,13 +412,13 @@ class ForumController extends Controller
 
         $form = $this->get('form.factory')->create(new MessageType(), $message);
 
-        return array(
+        return [
             'subject' => $subject,
             'form' => $form->createView(),
             'message' => $message,
             '_resource' => $forum,
             'workspace' => $forum->getResourceNode()->getWorkspace(),
-        );
+        ];
     }
 
     /**
@@ -435,7 +435,7 @@ class ForumController extends Controller
     {
         $subject = $message->getSubject();
         $forum = $subject->getCategory()->getForum();
-        $isModerator = $this->authorization->isGranted('moderate', new ResourceCollection(array($forum->getResourceNode())));
+        $isModerator = $this->authorization->isGranted('moderate', new ResourceCollection([$forum->getResourceNode()]));
 
         if (!$isModerator && $this->tokenStorage->getToken()->getUser() !== $message->getCreator()) {
             throw new AccessDeniedException();
@@ -450,17 +450,17 @@ class ForumController extends Controller
             $this->forumManager->editMessage($message, $oldContent, $newContent);
 
             return new RedirectResponse(
-                $this->generateUrl('claro_forum_messages', array('subject' => $subject->getId()))
+                $this->generateUrl('claro_forum_messages', ['subject' => $subject->getId()])
             );
         }
 
-        return array(
+        return [
             'subject' => $subject,
             'form' => $form->createView(),
             'message' => $message,
             '_resource' => $forum,
             'workspace' => $forum->getResourceNode()->getWorkspace(),
-        );
+        ];
     }
 
     /**
@@ -475,7 +475,7 @@ class ForumController extends Controller
     public function editCategoryFormAction(Category $category)
     {
         $forum = $category->getForum();
-        $isModerator = $this->authorization->isGranted('moderate', new ResourceCollection(array($forum->getResourceNode())));
+        $isModerator = $this->authorization->isGranted('moderate', new ResourceCollection([$forum->getResourceNode()]));
 
         if (!$isModerator && $this->tokenStorage->getToken()->getUser()) {
             throw new AccessDeniedException();
@@ -484,12 +484,12 @@ class ForumController extends Controller
         $form = $this->container->get('form.factory')->create(new CategoryType(), $category);
         $form->handleRequest($this->get('request'));
 
-        return array(
+        return [
             'category' => $category,
             'form' => $form->createView(),
             '_resource' => $forum,
             'workspace' => $forum->getResourceNode()->getWorkspace(),
-        );
+        ];
     }
 
     /**
@@ -503,7 +503,7 @@ class ForumController extends Controller
     public function editCategoryAction(Category $category)
     {
         $forum = $category->getForum();
-        $isModerator = $this->authorization->isGranted('moderate', new ResourceCollection(array($forum->getResourceNode())));
+        $isModerator = $this->authorization->isGranted('moderate', new ResourceCollection([$forum->getResourceNode()]));
 
         if (!$isModerator && $this->tokenStorage->getToken()->getUser()) {
             throw new AccessDeniedException();
@@ -518,7 +518,7 @@ class ForumController extends Controller
             $this->forumManager->editCategory($category, $oldName, $newName);
 
             return new RedirectResponse(
-                $this->generateUrl('claro_forum_categories', array('forum' => $forum->getId()))
+                $this->generateUrl('claro_forum_categories', ['forum' => $forum->getId()])
             );
         }
     }
@@ -535,11 +535,11 @@ class ForumController extends Controller
     {
         $forum = $category->getForum();
 
-        if ($this->authorization->isGranted('moderate', new ResourceCollection(array($category->getForum()->getResourceNode())))) {
+        if ($this->authorization->isGranted('moderate', new ResourceCollection([$category->getForum()->getResourceNode()]))) {
             $this->forumManager->deleteCategory($category);
 
             return new RedirectResponse(
-                $this->generateUrl('claro_forum_categories', array('forum' => $forum->getId()))
+                $this->generateUrl('claro_forum_categories', ['forum' => $forum->getId()])
             );
         }
 
@@ -563,13 +563,13 @@ class ForumController extends Controller
     {
         $pager = $this->forumManager->searchPager($forum, $search, $page);
 
-        return array(
+        return [
             'pager' => $pager,
             '_resource' => $forum,
             'search' => $search,
             'page' => $page,
             'workspace' => $forum->getResourceNode()->getWorkspace(),
-        );
+        ];
     }
 
     /**
@@ -589,7 +589,7 @@ class ForumController extends Controller
     public function editSubjectFormAction(Subject $subject)
     {
         $forum = $subject->getCategory()->getForum();
-        $isModerator = $this->authorization->isGranted('moderate', new ResourceCollection(array($forum->getResourceNode())));
+        $isModerator = $this->authorization->isGranted('moderate', new ResourceCollection([$forum->getResourceNode()]));
 
         if (!$isModerator && $this->tokenStorage->getToken()->getUser() !== $subject->getCreator()) {
             throw new AccessDeniedException();
@@ -597,13 +597,13 @@ class ForumController extends Controller
 
         $form = $this->container->get('form.factory')->create(new EditTitleType(), $subject);
 
-        return array(
+        return [
             'form' => $form->createView(),
             'subject' => $subject,
             'forumId' => $forum->getId(),
             '_resource' => $forum,
             'workspace' => $forum->getResourceNode()->getWorkspace(),
-        );
+        ];
     }
 
     /**
@@ -624,7 +624,7 @@ class ForumController extends Controller
     {
         $forum = $subject->getCategory()->getForum();
         $isModerator = $this->authorization->isGranted(
-            'moderate', new ResourceCollection(array($forum->getResourceNode()))
+            'moderate', new ResourceCollection([$forum->getResourceNode()])
         );
 
         if (!$isModerator && $this->tokenStorage->getToken()->getUser() !== $subject->getCreator()) {
@@ -640,17 +640,17 @@ class ForumController extends Controller
             $this->forumManager->editSubject($subject, $oldTitle, $newTitle);
 
             return new RedirectResponse(
-                $this->generateUrl('claro_forum_subjects', array('category' => $subject->getCategory()->getId()))
+                $this->generateUrl('claro_forum_subjects', ['category' => $subject->getCategory()->getId()])
             );
         }
 
-        return array(
+        return [
             'form' => $form->createView(),
             'subjectId' => $subject->getId(),
             'forumId' => $forum->getId(),
             '_resource' => $forum,
             'workspace' => $forum->getResourceNode()->getWorkspace(),
-        );
+        ];
     }
 
     /**
@@ -663,11 +663,11 @@ class ForumController extends Controller
      */
     public function deleteMessageAction(Message $message)
     {
-        if ($this->authorization->isGranted('moderate', new ResourceCollection(array($message->getSubject()->getCategory()->getForum()->getResourceNode())))) {
+        if ($this->authorization->isGranted('moderate', new ResourceCollection([$message->getSubject()->getCategory()->getForum()->getResourceNode()]))) {
             $this->forumManager->deleteMessage($message);
 
             return new RedirectResponse(
-                $this->generateUrl('claro_forum_messages', array('subject' => $message->getSubject()->getId()))
+                $this->generateUrl('claro_forum_messages', ['subject' => $message->getSubject()->getId()])
             );
         }
 
@@ -689,7 +689,7 @@ class ForumController extends Controller
         $this->forumManager->subscribe($forum, $user);
 
         return new RedirectResponse(
-            $this->generateUrl('claro_forum_categories', array('forum' => $forum->getId()))
+            $this->generateUrl('claro_forum_categories', ['forum' => $forum->getId()])
         );
     }
 
@@ -708,7 +708,7 @@ class ForumController extends Controller
         $this->forumManager->unsubscribe($forum, $user);
 
         return new RedirectResponse(
-            $this->generateUrl('claro_forum_categories', array('forum' => $forum->getId()))
+            $this->generateUrl('claro_forum_categories', ['forum' => $forum->getId()])
         );
     }
 
@@ -722,11 +722,11 @@ class ForumController extends Controller
      */
     public function deleteSubjectAction(Subject $subject)
     {
-        if ($this->authorization->isGranted('moderate', new ResourceCollection(array($subject->getCategory()->getForum()->getResourceNode())))) {
+        if ($this->authorization->isGranted('moderate', new ResourceCollection([$subject->getCategory()->getForum()->getResourceNode()]))) {
             $this->forumManager->deleteSubject($subject);
 
             return new RedirectResponse(
-                $this->generateUrl('claro_forum_subjects', array('category' => $subject->getCategory()->getId()))
+                $this->generateUrl('claro_forum_subjects', ['category' => $subject->getCategory()->getId()])
             );
         }
 
@@ -740,7 +740,7 @@ class ForumController extends Controller
      */
     private function checkAccess(Forum $forum)
     {
-        $collection = new ResourceCollection(array($forum->getResourceNode()));
+        $collection = new ResourceCollection([$forum->getResourceNode()]);
 
         if (!$this->authorization->isGranted('OPEN', $collection)) {
             throw new AccessDeniedException($collection->getErrorsForDisplay());
@@ -772,13 +772,13 @@ class ForumController extends Controller
         $this->checkAccess($forum);
         $categories = $forum->getCategories();
 
-        return array(
+        return [
             '_resource' => $forum,
             'categories' => $categories,
             'category' => $category,
             'subject' => $subject,
             'workspace' => $forum->getResourceNode()->getWorkspace(),
-        );
+        ];
     }
 
     /**
@@ -802,14 +802,14 @@ class ForumController extends Controller
         $this->checkAccess($forum);
         $pager = $this->forumManager->getSubjectsPager($category, $page);
 
-        return array(
+        return [
             '_resource' => $forum,
             'category' => $category,
             'subject' => $subject,
             'pager' => $pager,
             'message' => $message,
             'workspace' => $forum->getResourceNode()->getWorkspace(),
-        );
+        ];
     }
 
     /**
@@ -830,7 +830,7 @@ class ForumController extends Controller
         $this->forumManager->moveMessage($message, $newSubject);
 
         return new RedirectResponse(
-            $this->generateUrl('claro_forum_subjects', array('category' => $newSubject->getCategory()->getId()))
+            $this->generateUrl('claro_forum_subjects', ['category' => $newSubject->getCategory()->getId()])
         );
     }
 
@@ -852,7 +852,7 @@ class ForumController extends Controller
         $this->forumManager->moveSubject($subject, $newCategory);
 
         return new RedirectResponse(
-            $this->generateUrl('claro_forum_categories', array('forum' => $forum->getId()))
+            $this->generateUrl('claro_forum_categories', ['forum' => $forum->getId()])
         );
     }
 
@@ -873,7 +873,7 @@ class ForumController extends Controller
         $this->forumManager->stickSubject($subject);
 
         return new RedirectResponse(
-            $this->generateUrl('claro_forum_subjects', array('category' => $subject->getCategory()->getId()))
+            $this->generateUrl('claro_forum_subjects', ['category' => $subject->getCategory()->getId()])
         );
     }
 
@@ -894,7 +894,7 @@ class ForumController extends Controller
         $this->forumManager->unstickSubject($subject);
 
         return new RedirectResponse(
-            $this->generateUrl('claro_forum_subjects', array('category' => $subject->getCategory()->getId()))
+            $this->generateUrl('claro_forum_subjects', ['category' => $subject->getCategory()->getId()])
         );
     }
 
@@ -915,7 +915,7 @@ class ForumController extends Controller
         $this->forumManager->closeSubject($subject);
 
         return new RedirectResponse(
-            $this->generateUrl('claro_forum_subjects', array('category' => $subject->getCategory()->getId()))
+            $this->generateUrl('claro_forum_subjects', ['category' => $subject->getCategory()->getId()])
         );
     }
 
@@ -936,7 +936,7 @@ class ForumController extends Controller
         $this->forumManager->openSubject($subject);
 
         return new RedirectResponse(
-            $this->generateUrl('claro_forum_subjects', array('category' => $subject->getCategory()->getId()))
+            $this->generateUrl('claro_forum_subjects', ['category' => $subject->getCategory()->getId()])
         );
     }
 
@@ -964,17 +964,17 @@ class ForumController extends Controller
              $this->forumManager->createMessage($newMsg, $subject);
 
              return new RedirectResponse(
-                $this->generateUrl('claro_forum_messages', array('subject' => $subject->getId()))
+                $this->generateUrl('claro_forum_messages', ['subject' => $subject->getId()])
             );
          }
 
-         return array(
+         return [
             'subject' => $subject,
             'form' => $form->createView(),
             'message' => $message,
             '_resource' => $forum,
             'workspace' => $forum->getResourceNode()->getWorkspace(),
-        );
+        ];
      }
 
     /**
@@ -1002,17 +1002,17 @@ class ForumController extends Controller
             $this->forumManager->createMessage($newMsg, $subject);
 
             return new RedirectResponse(
-                $this->generateUrl('claro_forum_messages', array('subject' => $subject->getId()))
+                $this->generateUrl('claro_forum_messages', ['subject' => $subject->getId()])
             );
         }
 
-        return array(
+        return [
             'subject' => $subject,
             'form' => $form->createView(),
             'message' => $message,
             '_resource' => $forum,
             'workspace' => $forum->getResourceNode()->getWorkspace(),
-        );
+        ];
     }
 
     /**
@@ -1025,7 +1025,7 @@ class ForumController extends Controller
      */
     public function activateGlobalNotificationsAction(Forum $forum)
     {
-        $collection = new ResourceCollection(array($forum->getResourceNode()));
+        $collection = new ResourceCollection([$forum->getResourceNode()]);
 
         if (!$this->authorization->isGranted('MODERATE', $collection)) {
             throw new AccessDeniedException($collection->getErrorsForDisplay());
@@ -1034,7 +1034,7 @@ class ForumController extends Controller
         $this->forumManager->activateGlobalNotifications($forum);
 
         return new RedirectResponse(
-            $this->generateUrl('claro_forum_categories', array('forum' => $forum->getId()))
+            $this->generateUrl('claro_forum_categories', ['forum' => $forum->getId()])
         );
     }
 
@@ -1048,7 +1048,7 @@ class ForumController extends Controller
      */
     public function disableGlobalNotificationsAction(Forum $forum)
     {
-        $collection = new ResourceCollection(array($forum->getResourceNode()));
+        $collection = new ResourceCollection([$forum->getResourceNode()]);
 
         if (!$this->authorization->isGranted('MODERATE', $collection)) {
             throw new AccessDeniedException($collection->getErrorsForDisplay());
@@ -1057,7 +1057,7 @@ class ForumController extends Controller
         $this->forumManager->disableGlobalNotifications($forum);
 
         return new RedirectResponse(
-            $this->generateUrl('claro_forum_categories', array('forum' => $forum->getId()))
+            $this->generateUrl('claro_forum_categories', ['forum' => $forum->getId()])
         );
     }
 

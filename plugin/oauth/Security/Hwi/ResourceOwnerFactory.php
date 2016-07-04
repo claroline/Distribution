@@ -11,15 +11,15 @@
 
 namespace Icap\OAuthBundle\Security\Hwi;
 
+use Buzz\Client\Curl;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
+use HWI\Bundle\OAuthBundle\OAuth\RequestDataStorage\SessionStorage;
+use HWI\Bundle\OAuthBundle\OAuth\ResourceOwner\FacebookResourceOwner;
 use HWI\Bundle\OAuthBundle\OAuth\ResourceOwner\GoogleResourceOwner;
 use HWI\Bundle\OAuthBundle\OAuth\ResourceOwner\LinkedinResourceOwner;
 use HWI\Bundle\OAuthBundle\OAuth\ResourceOwner\TwitterResourceOwner;
 use HWI\Bundle\OAuthBundle\OAuth\ResourceOwner\WindowsLiveResourceOwner;
 use JMS\DiExtraBundle\Annotation as DI;
-use HWI\Bundle\OAuthBundle\OAuth\ResourceOwner\FacebookResourceOwner;
-use Buzz\Client\Curl;
-use HWI\Bundle\OAuthBundle\OAuth\RequestDataStorage\SessionStorage;
 
 /**
  * @DI\Service("icap.oauth.hwi.resource_owner_factory")
@@ -49,19 +49,19 @@ class ResourceOwnerFactory
         $owner = new FacebookResourceOwner(
             $this->createClientHttp(),
             $this->httpUtils,
-            array(
+            [
                 'client_id' => $this->configHandler->getParameter('facebook_client_id'),
                 'client_secret' => $this->configHandler->getParameter('facebook_client_secret'),
                 'infos_url' => 'https://graph.facebook.com/me?fields=id,name,first_name,last_name,email',
                 'scope' => 'email',
-                'paths' => array(
+                'paths' => [
                     'email' => 'email',
                     'firstname' => 'first_name',
                     'lastname' => 'last_name',
                     'nickname' => 'name',
-                ),
-                'options' => array(),
-            ),
+                ],
+                'options' => [],
+            ],
             'facebook',
             new SessionStorage($this->session)
         );
@@ -74,13 +74,13 @@ class ResourceOwnerFactory
         $owner = new TwitterResourceOwner(
             $this->createClientHttp(),
             $this->httpUtils,
-            array(
+            [
                 'client_id' => $this->configHandler->getParameter('twitter_client_id'),
                 'client_secret' => $this->configHandler->getParameter('twitter_client_secret'),
                 'scope' => 'emailaddress',
-                'paths' => array(),
-                'options' => array(),
-            ),
+                'paths' => [],
+                'options' => [],
+            ],
             'twitter',
             new SessionStorage($this->session)
         );
@@ -93,16 +93,16 @@ class ResourceOwnerFactory
         $owner = new GoogleResourceOwner(
             $this->createClientHttp(),
             $this->httpUtils,
-            array(
+            [
                 'client_id' => $this->configHandler->getParameter('google_client_id'),
                 'client_secret' => $this->configHandler->getParameter('google_client_secret'),
                 'scope' => 'email profile',
-                'paths' => array(
+                'paths' => [
                     'firstname' => 'given_name',
                     'lastname' => 'family_name',
-                ),
-                'options' => array(),
-            ),
+                ],
+                'options' => [],
+            ],
             'google',
             new SessionStorage($this->session)
         );
@@ -115,18 +115,18 @@ class ResourceOwnerFactory
         $owner = new LinkedinResourceOwner(
             $this->createClientHttp(),
             $this->httpUtils,
-            array(
+            [
                 'client_id' => $this->configHandler->getParameter('linkedin_client_id'),
                 'client_secret' => $this->configHandler->getParameter('linkedin_client_secret'),
                 'scope' => 'r_emailaddress r_basicprofile',
-                'paths' => array(
+                'paths' => [
                     'firstname' => 'firstName',
                     'lastname' => 'lastName',
-                ),
-                'options' => array(
+                ],
+                'options' => [
                     'infos_url' => 'https://api.linkedin.com/v1/people/~:(id,first-name,last-name,formatted-name,email-address,picture-url)?format=json',
-                ),
-            ),
+                ],
+            ],
             'linkedin',
             new SessionStorage($this->session)
         );
@@ -139,16 +139,16 @@ class ResourceOwnerFactory
         $owner = new WindowsLiveResourceOwner(
             $this->createClientHttp(),
             $this->httpUtils,
-            array(
+            [
                 'client_id' => $this->configHandler->getParameter('windows_live_client_id'),
                 'client_secret' => $this->configHandler->getParameter('windows_live_client_secret'),
                 'scope' => 'wl.basic wl.emails',
-                'paths' => array(
+                'paths' => [
                     'firstname' => 'first_name',
                     'lastname' => 'last_name',
-                ),
-                'options' => array(),
-            ),
+                ],
+                'options' => [],
+            ],
             'windows_live',
             new SessionStorage($this->session)
         );

@@ -3,11 +3,11 @@
 namespace Icap\BadgeBundle\Controller;
 
 use Icap\BadgeBundle\Entity\Badge;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use JMS\SecurityExtraBundle\Annotation as SEC;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use JMS\SecurityExtraBundle\Annotation as SEC;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 /**
  * Controller of the badges.
@@ -26,8 +26,8 @@ class FrontController extends Controller
      */
     public function viewAction(Badge $badge)
     {
-        return array(
+        return [
             'badge' => $badge,
-        );
+        ];
     }
 }

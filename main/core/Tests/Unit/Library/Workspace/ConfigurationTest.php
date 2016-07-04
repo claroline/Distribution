@@ -28,28 +28,28 @@ class ConfigurationTest extends MockeryTestCase
 
     public function rolesProvider()
     {
-        $validMininal = array(
+        $validMininal = [
             'ROLE_WS_VISITOR' => 'visitor',
             'ROLE_WS_COLLABORATOR' => 'collaborator',
             'ROLE_WS_MANAGER' => 'manager',
-        );
+        ];
 
-        $validOptional = array(
+        $validOptional = [
             'ROLE_WS_VISITOR' => 'visitor',
             'ROLE_WS_COLLABORATOR' => 'collaborator',
             'ROLE_WS_MANAGER' => 'manager',
             'ROLE_WS_ADDITIONAL' => 'new',
-        );
+        ];
 
-        $missingMandatory = array(
+        $missingMandatory = [
             'ROLE_WS_VISITOR' => 'visitor',
             'ROLE_WS_ADDITIONAL' => 'new',
-        );
+        ];
 
-        return array(
-            array('roles' => $validMininal, 'isExceptionExpected' => false),
-            array('roles' => $validOptional, 'isExceptionExpected' => false),
-            array('roles' => $missingMandatory, 'isExceptionExpected' => true),
-        );
+        return [
+            ['roles' => $validMininal, 'isExceptionExpected' => false],
+            ['roles' => $validOptional, 'isExceptionExpected' => false],
+            ['roles' => $missingMandatory, 'isExceptionExpected' => true],
+        ];
     }
 }

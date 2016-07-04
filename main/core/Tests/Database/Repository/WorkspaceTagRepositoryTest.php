@@ -29,8 +29,8 @@ class WorkspaceTagRepositoryTest extends RepositoryTestCase
         self::createRole('ROLE_wsb', self::get('wsb'));
         self::createRole('ROLE_wsc', self::get('wsc'));
         self::createRole('ROLE_wsd', self::get('wsd'));
-        self::createUser('user', array(self::get('ROLE_wsa'), self::get('ROLE_wsb'), self::get('ROLE_wsc')));
-        self::createUser('admin', array(self::get('ROLE_wsd')));
+        self::createUser('user', [self::get('ROLE_wsa'), self::get('ROLE_wsb'), self::get('ROLE_wsc')]);
+        self::createUser('admin', [self::get('ROLE_wsd')]);
         self::createWorkspaceTag('tag_1');
         self::createWorkspaceTag('tag_2');
         self::createWorkspaceTag('tag_3');
@@ -169,7 +169,7 @@ class WorkspaceTagRepositoryTest extends RepositoryTestCase
 
     public function testFindNonEmptyAdminTagsByWorspaces()
     {
-        $workspaces = array(self::get('wsa'), self::get('wsb'));
+        $workspaces = [self::get('wsa'), self::get('wsb')];
         $tags = self::$repo->findNonEmptyAdminTagsByWorspaces($workspaces);
         $this->assertEquals(3, count($tags));
         $this->assertEquals(self::get('tag_1'), $tags[0]);
@@ -232,7 +232,7 @@ class WorkspaceTagRepositoryTest extends RepositoryTestCase
 
     public function testFindAdminChildrenFromTags()
     {
-        $tagsArray = array(self::get('tag_2')->getId(), self::get('tag_4')->getId());
+        $tagsArray = [self::get('tag_2')->getId(), self::get('tag_4')->getId()];
         $tags = self::$repo->findAdminChildrenFromTags($tagsArray);
         $this->assertEquals(3, count($tags));
         $this->assertEquals(self::get('tag_2'), $tags[0]);
@@ -242,8 +242,8 @@ class WorkspaceTagRepositoryTest extends RepositoryTestCase
 
     public function testFindChildrenFromTags()
     {
-        $userTagsArray = array(self::get('user_tag_2')->getId(), self::get('user_tag_4')->getId());
-        $adminTagsArray = array(self::get('admin_tag')->getId());
+        $userTagsArray = [self::get('user_tag_2')->getId(), self::get('user_tag_4')->getId()];
+        $adminTagsArray = [self::get('admin_tag')->getId()];
         $userTags = self::$repo->findChildrenFromTags(self::get('user'), $userTagsArray);
         $admninTags = self::$repo->findChildrenFromTags(self::get('admin'), $adminTagsArray);
         $this->assertEquals(3, count($userTags));
@@ -278,10 +278,10 @@ class WorkspaceTagRepositoryTest extends RepositoryTestCase
     public function testFindWorkspaceTagFromIds()
     {
         $tags = self::$repo->findWorkspaceTagFromIds(
-            array(
+            [
                 self::get('user_tag_1')->getId(),
                 self::get('user_tag_2')->getId(),
-            )
+            ]
         );
         $this->assertEquals(2, count($tags));
         $this->assertEquals(self::get('user_tag_1'), $tags[0]);

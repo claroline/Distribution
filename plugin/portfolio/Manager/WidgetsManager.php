@@ -156,7 +156,7 @@ class WidgetsManager
             $originalChildren->add($child);
         }
 
-        $data = array();
+        $data = [];
 
         $form = $this->getForm($widgetType, $widget);
         $form->submit($parameters);
@@ -190,7 +190,7 @@ class WidgetsManager
      */
     public function handlePortfolioWidget(PortfolioWidget $porfolioWidget, array $parameters, $env = 'prod')
     {
-        $data = array();
+        $data = [];
 
         $form = $this->getPortfolioWidgetForm($porfolioWidget);
         $form->submit($parameters);
@@ -262,9 +262,9 @@ class WidgetsManager
     {
         $widget = $portfolioWidget->getWidget();
 
-        $widgetViews = array(
-            'views' => $withView ? array('view' => $this->getView($widget, $widget->getWidgetType())) : array(),
-        );
+        $widgetViews = [
+            'views' => $withView ? ['view' => $this->getView($widget, $widget->getWidgetType())] : [],
+        ];
 
         $widgetData = [
             'widget' => $widget->getCommonData() + $widgetViews + ($withView ? $widget->getData() : $widget->getEmpty()),
@@ -280,9 +280,9 @@ class WidgetsManager
      */
     public function getWidgetData(AbstractWidget $widget)
     {
-        $widgetViews = array(
-            'views' => array('view' => $this->getView($widget, $widget->getWidgetType())),
-        );
+        $widgetViews = [
+            'views' => ['view' => $this->getView($widget, $widget->getWidgetType())],
+        ];
 
         return $widget->getCommonData() + $widgetViews + $widget->getData();
     }

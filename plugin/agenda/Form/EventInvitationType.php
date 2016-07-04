@@ -56,10 +56,10 @@ class EventInvitationType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'class' => 'Claroline\AgendaBundle\Entity\Event',
                 'translation_domain' => 'agenda',
-            )
+            ]
         );
     }
 }

@@ -18,13 +18,13 @@ class LogPostReadEvent extends AbstractLogResourceEvent implements LogNotRepeata
     {
         $blog = $post->getBlog();
 
-        $details = array(
-            'post' => array(
+        $details = [
+            'post' => [
                 'blog' => $blog->getId(),
                 'title' => $post->getTitle(),
                 'slug' => $post->getSlug(),
-            ),
-        );
+            ],
+        ];
 
         parent::__construct($blog->getResourceNode(), $details);
     }
@@ -39,6 +39,6 @@ class LogPostReadEvent extends AbstractLogResourceEvent implements LogNotRepeata
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_WORKSPACE);
+        return [self::DISPLAYED_WORKSPACE];
     }
 }

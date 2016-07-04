@@ -4,9 +4,9 @@ namespace Icap\BadgeBundle\Installation\Updater;
 
 use AppKernel;
 use Claroline\InstallationBundle\Updater\Updater;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Migrations\Configuration\Configuration;
 use Doctrine\DBAL\Migrations\Version;
-use Doctrine\DBAL\Connection;
 
 class Updater060200 extends Updater
 {

@@ -11,12 +11,12 @@
 
 namespace Claroline\CoreBundle\Form\Field;
 
+use Claroline\CoreBundle\Manager\LocaleManager;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use JMS\DiExtraBundle\Annotation as DI;
-use Claroline\CoreBundle\Manager\LocaleManager;
 
 /**
  * @DI\Service("claroline.form.datepicker")
@@ -39,23 +39,23 @@ class DatePickerType extends AbstractType
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         $view->vars['component'] = $options['component'];
-        $view->vars['options'] = array(
+        $view->vars['options'] = [
             'autoclose' => $options['autoclose'],
             'language' => $options['language'],
-        );
+        ];
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $lang = (php_sapi_name() === 'cli') ? 'en' : $this->localeManager->getUserLocale($this->container->get('request'));
         $resolver->setDefaults(
-            array(
+            [
                 'input' => 'datetime',
                 'widget' => 'single_text',
                 'component' => false,
                 'autoclose' => false,
                 'language' => $lang,
-            )
+            ]
         );
     }
 

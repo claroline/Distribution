@@ -71,10 +71,10 @@ class UrlListener
             new UrlType(), new Url()
         );
         $content = $this->templating->render(
-            'ClarolineCoreBundle:Resource:createForm.html.twig', array(
+            'ClarolineCoreBundle:Resource:createForm.html.twig', [
                 'form' => $form->createView(),
                 'resourceType' => 'hevinci_url',
-            )
+            ]
         );
         $event->setResponseContent($content);
         $event->stopPropagation();
@@ -96,17 +96,17 @@ class UrlListener
             $url = $form->getData();
             $this->urlManager->setUrl($url);
 
-            $event->setResources(array($url));
+            $event->setResources([$url]);
             $event->stopPropagation();
 
             return;
         }
 
         $content = $this->templating->render(
-            'ClarolineCoreBundle:Resource:createForm.html.twig', array(
+            'ClarolineCoreBundle:Resource:createForm.html.twig', [
                 'form' => $form->createView(),
                 'resourceType' => $event->getResourceType(),
-            )
+            ]
         );
         $event->setErrorFormContent($content);
         $event->stopPropagation();
@@ -170,10 +170,10 @@ class UrlListener
         $form = $this->formFactory->create(new UrlChangeType(), $event->getResource());
         $form->handleRequest($this->request);
 
-        $content = $this->templating->render('HeVinciUrlBundle:Url:form.html.twig', array(
+        $content = $this->templating->render('HeVinciUrlBundle:Url:form.html.twig', [
             'form' => $form->createView(),
             'node' => $event->getResource()->getResourceNode()->getId(),
-        ));
+        ]);
 
         $event->setResponse(new Response($content));
         $event->stopPropagation();

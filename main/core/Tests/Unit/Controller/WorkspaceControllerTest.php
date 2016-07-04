@@ -11,11 +11,11 @@
 
 namespace Claroline\CoreBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Form\Factory\FormFactory;
 use Claroline\CoreBundle\Library\Testing\MockeryTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 class WorkspaceControllerTest extends MockeryTestCase
 {
@@ -61,7 +61,7 @@ class WorkspaceControllerTest extends MockeryTestCase
     {
         $user = new User();
 
-        $datas = array(
+        $datas = [
             'workspaces' => 'workspaces',
             'tags' => 'tags',
             'tagWorkspaces' => 'tagWorkspaces',
@@ -69,7 +69,7 @@ class WorkspaceControllerTest extends MockeryTestCase
             'rootTags' => 'rootTags',
             'displayable' => 'displayable',
             'workspaceRoles' => 'workspaceRoles',
-        );
+        ];
 
         $this->tagManager
             ->shouldReceive('getDatasForWorkspaceList')
@@ -78,7 +78,7 @@ class WorkspaceControllerTest extends MockeryTestCase
             ->andReturn($datas);
 
         $this->assertEquals(
-            array(
+            [
                 'workspaces' => $datas['workspaces'],
                 'tags' => $datas['tags'],
                 'tagWorkspaces' => $datas['tagWorkspaces'],
@@ -86,28 +86,28 @@ class WorkspaceControllerTest extends MockeryTestCase
                 'rootTags' => $datas['rootTags'],
                 'displayable' => $datas['displayable'],
                 'workspaceRoles' => $datas['workspaceRoles'],
-            ),
+            ],
             $this->getController()->listAction($user)
         );
     }
 
     public function testListWorkspacesByUserAction()
     {
-        $controller = $this->getController(array('assertIsGranted'));
+        $controller = $this->getController(['assertIsGranted']);
         $workspace = new \Claroline\CoreBundle\Entity\Workspace\Workspace();
 
-        $datas = array(
-            'workspaces' => array($workspace),
+        $datas = [
+            'workspaces' => [$workspace],
             'tags' => 'tags',
             'tagWorkspaces' => 'tagWorkspaces',
             'hierarchy' => 'hierarchy',
             'rootTags' => 'rootTags',
             'displayable' => 'displayable',
-        );
+        ];
         $token = $this->mock('Symfony\Component\Security\Core\Authentication\Token\TokenInterface');
         $user = new User();
-        $roles = array('ROLE_A', 'ROLE_B');
-        $favourites = array();
+        $roles = ['ROLE_A', 'ROLE_B'];
+        $favourites = [];
 
         $this->security
             ->shouldReceive('isGranted')
@@ -126,33 +126,33 @@ class WorkspaceControllerTest extends MockeryTestCase
             ->andReturn($favourites);
 
         $this->assertEquals(
-            array(
+            [
                 'user' => $user,
-                'workspaces' => array($workspace),
+                'workspaces' => [$workspace],
                 'tags' => 'tags',
                 'tagWorkspaces' => 'tagWorkspaces',
                 'hierarchy' => 'hierarchy',
                 'rootTags' => 'rootTags',
                 'displayable' => 'displayable',
-                'favourites' => array(),
-            ),
+                'favourites' => [],
+            ],
             $controller->listWorkspacesByUserAction()
         );
     }
 
     public function testListWorkspacesWithSelfRegistrationAction()
     {
-        $controller = $this->getController(array('assertIsGranted'));
+        $controller = $this->getController(['assertIsGranted']);
         $token = $this->mock('Symfony\Component\Security\Core\Authentication\Token\TokenInterface');
         $user = new User();
-        $datas = array(
+        $datas = [
             'workspaces' => 'workspaces',
             'tags' => 'tags',
             'tagWorkspaces' => 'tagWorkspaces',
             'hierarchy' => 'hierarchy',
             'rootTags' => 'rootTags',
             'displayable' => 'displayable',
-        );
+        ];
 
         $this->security->shouldReceive('isGranted')->with('ROLE_USER', null)->once()->andReturn(true);
         $this->security->shouldReceive('getToken')->once()->andReturn($token);
@@ -163,21 +163,21 @@ class WorkspaceControllerTest extends MockeryTestCase
             ->andReturn($datas);
 
         $this->assertEquals(
-            array(
+            [
                 'workspaces' => $datas['workspaces'],
                 'tags' => $datas['tags'],
                 'tagWorkspaces' => $datas['tagWorkspaces'],
                 'hierarchy' => $datas['hierarchy'],
                 'rootTags' => $datas['rootTags'],
                 'displayable' => $datas['displayable'],
-            ),
+            ],
             $controller->listWorkspacesWithSelfRegistrationAction()
         );
     }
 
     public function testDeleteAction()
     {
-        $controller = $this->getController(array('assertIsGranted'));
+        $controller = $this->getController(['assertIsGranted']);
         $workspace = $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
         $token = $this->mock('Symfony\Component\Security\Core\Authentication\Token\TokenInterface');
 
@@ -192,7 +192,7 @@ class WorkspaceControllerTest extends MockeryTestCase
             ->andReturn($token);
         $this->eventDispatcher
             ->shouldReceive('dispatch')
-            ->with('log', 'Log\LogWorkspaceDelete', array($workspace))
+            ->with('log', 'Log\LogWorkspaceDelete', [$workspace])
             ->once();
         $this->workspaceManager
             ->shouldReceive('deleteWorkspace')
@@ -211,10 +211,10 @@ class WorkspaceControllerTest extends MockeryTestCase
         $workspace = $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
         $workspaceA = $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
         $resource = $this->mock('Claroline\CoreBundle\Entity\Resource\ResourceNode');
-        $breadcrumbs = array(0, 0);
+        $breadcrumbs = [0, 0];
         $token = $this->mock('Symfony\Component\Security\Core\Authentication\Token\TokenInterface');
-        $roles = array('ROLE_1', 'ROLE_2');
-        $orderedTools = array('ordered_tool_1', 'ordered_tool_2');
+        $roles = ['ROLE_1', 'ROLE_2'];
+        $orderedTools = ['ordered_tool_1', 'ordered_tool_2'];
 
         $this->resourceManager
             ->shouldReceive('getNode')
@@ -238,7 +238,7 @@ class WorkspaceControllerTest extends MockeryTestCase
             ->andReturn($orderedTools);
 
         $this->assertEquals(
-            array('orderedTools' => $orderedTools, 'workspace' => $workspaceA),
+            ['orderedTools' => $orderedTools, 'workspace' => $workspaceA],
             $this->getController()->renderToolListAction($workspace, $breadcrumbs)
         );
     }
@@ -247,8 +247,8 @@ class WorkspaceControllerTest extends MockeryTestCase
     {
         $workspace = $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
         $token = $this->mock('Symfony\Component\Security\Core\Authentication\Token\TokenInterface');
-        $roles = array('ROLE_1', 'ROLE_2');
-        $orderedTools = array('ordered_tool_1', 'ordered_tool_2');
+        $roles = ['ROLE_1', 'ROLE_2'];
+        $orderedTools = ['ordered_tool_1', 'ordered_tool_2'];
 
         $this->security
             ->shouldReceive('isGranted')
@@ -264,14 +264,14 @@ class WorkspaceControllerTest extends MockeryTestCase
             ->andReturn($orderedTools);
 
         $this->assertEquals(
-            array('orderedTools' => $orderedTools, 'workspace' => $workspace),
+            ['orderedTools' => $orderedTools, 'workspace' => $workspace],
             $this->getController()->renderToolListAction($workspace, null)
         );
     }
 
     public function testOpenToolAction()
     {
-        $controller = $this->getController(array('assertIsGranted'));
+        $controller = $this->getController(['assertIsGranted']);
         $toolName = 'tool_name';
         $workspace = $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
         $event = $this->mock('Claroline\CoreBundle\Event\DisplayToolEvent');
@@ -286,7 +286,7 @@ class WorkspaceControllerTest extends MockeryTestCase
             ->with(
                 'open_tool_workspace_'.$toolName,
                 'DisplayTool',
-                array($workspace)
+                [$workspace]
             )
             ->once()
             ->andReturn($event);
@@ -295,7 +295,7 @@ class WorkspaceControllerTest extends MockeryTestCase
             ->with(
                 'log',
                 'Log\LogWorkspaceToolRead',
-                array($workspace, $toolName)
+                [$workspace, $toolName]
             )
             ->once();
         $this->eventDispatcher
@@ -303,7 +303,7 @@ class WorkspaceControllerTest extends MockeryTestCase
             ->with(
                 'log',
                 'Log\LogWorkspaceEnter',
-                array($workspace)
+                [$workspace]
             )
             ->once();
         $event->shouldReceive('getContent')->once()->andReturn('content');
@@ -318,8 +318,8 @@ class WorkspaceControllerTest extends MockeryTestCase
         $token = $this->mock('Symfony\Component\Security\Core\Authentication\Token\TokenInterface');
         $roleA = $this->mock('Claroline\CoreBundle\Entity\Role');
         $roleB = $this->mock('Claroline\CoreBundle\Entity\Role');
-        $roles = array($roleA, $roleB);
-        $userRoles = array('ROLE_A', 'ROLE_C');
+        $roles = [$roleA, $roleB];
+        $userRoles = ['ROLE_A', 'ROLE_C'];
         $openedTool = $this->mock('Claroline\CoreBundle\Entity\Tool\Tool');
 
         $this->security->shouldReceive('getToken')->times(4)->andReturn($token);
@@ -345,7 +345,7 @@ class WorkspaceControllerTest extends MockeryTestCase
             ->shouldReceive('generate')
             ->with(
                 'claro_workspace_open_tool',
-                array('workspaceId' => 1, 'toolName' => 'tool_name')
+                ['workspaceId' => 1, 'toolName' => 'tool_name']
             )
             ->once()
             ->andReturn('route');
@@ -361,8 +361,8 @@ class WorkspaceControllerTest extends MockeryTestCase
         $token = $this->mock('Symfony\Component\Security\Core\Authentication\Token\TokenInterface');
         $roleA = $this->mock('Claroline\CoreBundle\Entity\Role');
         $roleB = $this->mock('Claroline\CoreBundle\Entity\Role');
-        $roles = array($roleA, $roleB);
-        $userRoles = array('ROLE_A', 'ROLE_C');
+        $roles = [$roleA, $roleB];
+        $userRoles = ['ROLE_A', 'ROLE_C'];
         $openedTool = $this->mock('Claroline\CoreBundle\Entity\Tool\Tool');
 
         $this->security->shouldReceive('getToken')->times(4)->andReturn($token);
@@ -379,16 +379,16 @@ class WorkspaceControllerTest extends MockeryTestCase
         $user->shouldReceive('hasRole')->with('ROLE_ADMIN')->once()->andReturn(false);
         $this->toolManager
             ->shouldReceive('getDisplayedByRolesAndWorkspace')
-            ->with(array('ROLE_A'), $workspace)
+            ->with(['ROLE_A'], $workspace)
             ->once()
-            ->andReturn(array($openedTool));
+            ->andReturn([$openedTool]);
         $workspace->shouldReceive('getId')->once()->andReturn(1);
         $openedTool->shouldReceive('getName')->once()->andReturn('tool_name');
         $this->router
             ->shouldReceive('generate')
             ->with(
                 'claro_workspace_open_tool',
-                array('workspaceId' => 1, 'toolName' => 'tool_name')
+                ['workspaceId' => 1, 'toolName' => 'tool_name']
             )
             ->once()
             ->andReturn('route');
@@ -407,16 +407,16 @@ class WorkspaceControllerTest extends MockeryTestCase
         $token->shouldReceive('getUser')->once()->andReturn('anon.');
         $this->toolManager
             ->shouldReceive('getDisplayedByRolesAndWorkspace')
-            ->with(array('ROLE_ANONYMOUS'), $workspace)
+            ->with(['ROLE_ANONYMOUS'], $workspace)
             ->once()
-            ->andReturn(array($openedTool));
+            ->andReturn([$openedTool]);
         $workspace->shouldReceive('getId')->once()->andReturn(1);
         $openedTool->shouldReceive('getName')->once()->andReturn('tool_name');
         $this->router
             ->shouldReceive('generate')
             ->with(
                 'claro_workspace_open_tool',
-                array('workspaceId' => 1, 'toolName' => 'tool_name')
+                ['workspaceId' => 1, 'toolName' => 'tool_name']
             )
             ->once()
             ->andReturn('route');
@@ -429,27 +429,27 @@ class WorkspaceControllerTest extends MockeryTestCase
     {
         $roleA = $this->mock('Claroline\CoreBundle\Entity\Role');
         $roleB = $this->mock('Claroline\CoreBundle\Entity\Role');
-        $roles = array($roleA, $roleB);
+        $roles = [$roleA, $roleB];
         $workspaceA = $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
         $workspaceB = $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
-        $arWorkspace = array(
-            'code_A' => array(
-                'ROLE_A' => array(
+        $arWorkspace = [
+            'code_A' => [
+                'ROLE_A' => [
                     'name' => 'ROLE_A',
                     'translation_key' => 'key_A',
                     'id' => 1,
                     'workspace' => 'ws_A',
-                ),
-            ),
-            'code_B' => array(
-                'ROLE_B' => array(
+                ],
+            ],
+            'code_B' => [
+                'ROLE_B' => [
                     'name' => 'ROLE_B',
                     'translation_key' => 'key_B',
                     'id' => 2,
                     'workspace' => 'ws_B',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
 
         $this->roleManager
             ->shouldReceive('getRolesBySearchOnWorkspaceAndTag')
@@ -489,10 +489,10 @@ class WorkspaceControllerTest extends MockeryTestCase
             ->andReturn(1);
 
         $this->assertEquals(
-            array(
+            [
                 'workspaceTagId' => 1,
                 'relations' => 'relations',
-            ),
+            ],
             $this->getController()->workspaceListByTagPagerAction($tag, 1)
         );
     }
@@ -505,7 +505,7 @@ class WorkspaceControllerTest extends MockeryTestCase
             ->andReturn('workspaces');
 
         $this->assertEquals(
-            array('workspaces' => 'workspaces'),
+            ['workspaces' => 'workspaces'],
             $this->getController()->workspaceCompleteListPagerAction(1)
         );
     }
@@ -524,10 +524,10 @@ class WorkspaceControllerTest extends MockeryTestCase
             ->andReturn(1);
 
         $this->assertEquals(
-            array(
+            [
                 'workspaceTagId' => 1,
                 'relations' => 'relations',
-            ),
+            ],
             $this->getController()->workspaceListByTagRegistrationPagerAction($tag, 1)
         );
     }
@@ -540,7 +540,7 @@ class WorkspaceControllerTest extends MockeryTestCase
             ->andReturn('workspaces');
 
         $this->assertEquals(
-            array('workspaces' => 'workspaces'),
+            ['workspaces' => 'workspaces'],
             $this->getController()->workspaceCompleteListRegistrationPagerAction(1)
         );
     }
@@ -553,7 +553,7 @@ class WorkspaceControllerTest extends MockeryTestCase
             ->andReturn('pager');
 
         $this->assertEquals(
-            array('workspaces' => 'pager', 'search' => 'search'),
+            ['workspaces' => 'pager', 'search' => 'search'],
             $this->getController()->workspaceSearchedListRegistrationPagerAction('search', 1)
         );
     }
@@ -566,7 +566,7 @@ class WorkspaceControllerTest extends MockeryTestCase
         $roleB = $this->mock('Claroline\CoreBundle\Entity\Role');
         $roleC = $this->mock('Claroline\CoreBundle\Entity\Role');
         $roleD = new Role();
-        $roles = array($roleA, $roleB, $roleC);
+        $roles = [$roleA, $roleB, $roleC];
 
         $this->roleManager
             ->shouldReceive('getRolesByWorkspace')
@@ -575,7 +575,7 @@ class WorkspaceControllerTest extends MockeryTestCase
             ->andReturn($roles);
         $this->roleManager
             ->shouldReceive('checkWorkspaceRoleEditionIsValid')
-            ->with(array($user), $workspace, $roles)
+            ->with([$user], $workspace, $roles)
             ->once();
         $roleA->shouldReceive('getName')
             ->once()
@@ -607,7 +607,7 @@ class WorkspaceControllerTest extends MockeryTestCase
             ->with(
                 'log',
                 'Log\LogRoleUnsubscribe',
-                array($roleA, $user, $workspace)
+                [$roleA, $user, $workspace]
             )
             ->once();
         $this->tagManager
@@ -616,7 +616,7 @@ class WorkspaceControllerTest extends MockeryTestCase
             ->once();
         $user->shouldReceive('getRoles')
             ->once()
-            ->andReturn(array($roleD));
+            ->andReturn([$roleD]);
         $this->security->shouldReceive('setToken')
             ->with(anInstanceOf('Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken'))
             ->once();
@@ -625,7 +625,7 @@ class WorkspaceControllerTest extends MockeryTestCase
         $this->assertEquals(204, $response->getStatusCode());
     }
 
-    private function getController(array $mockedMethods = array())
+    private function getController(array $mockedMethods = [])
     {
         if (count($mockedMethods) === 0) {
             return new WorkspaceController(
@@ -659,7 +659,7 @@ class WorkspaceControllerTest extends MockeryTestCase
 
         return $this->mock(
             'Claroline\CoreBundle\Controller\WorkspaceController'.$stringMocked,
-            array(
+            [
                 $this->homeTabManager,
                 $this->workspaceManager,
                 $this->resourceManager,
@@ -676,7 +676,7 @@ class WorkspaceControllerTest extends MockeryTestCase
                 $this->widgetManager,
                 $this->request,
                 $this->templateDir,
-            )
+            ]
         );
     }
 }

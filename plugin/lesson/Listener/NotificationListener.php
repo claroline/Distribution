@@ -36,11 +36,11 @@ class NotificationListener
         $notification = $notificationView->getNotification();
         $content = $this->templating->render(
             'IcapLessonBundle:Notification:notification_item.html.twig',
-            array(
+            [
                 'notification' => $notification,
                 'status' => $notificationView->getStatus(),
                 'systemName' => $event->getSystemName(),
-            )
+            ]
         );
 
         $event->setResponseContent($content);

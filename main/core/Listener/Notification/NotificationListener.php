@@ -22,11 +22,11 @@ class NotificationListener extends ContainerAware
         $notification = $notificationView->getNotification();
         $content = $this->container->get('templating')->render(
             'ClarolineCoreBundle:Notification:notification_item.html.twig',
-            array(
+            [
                 'notification' => $notification,
                 'status' => $notificationView->getStatus(),
                 'systemName' => $event->getSystemName(),
-            )
+            ]
         );
 
         $event->setResponseContent($content);

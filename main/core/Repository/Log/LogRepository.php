@@ -13,9 +13,9 @@ namespace Claroline\CoreBundle\Repository\Log;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\Log\LogUserLoginEvent;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\EntityRepository;
 
 class LogRepository extends EntityRepository
 {
@@ -610,7 +610,7 @@ class LogRepository extends EntityRepository
 
     public function extractChartData($result, $range)
     {
-        $chartData = array();
+        $chartData = [];
         if (count($result) > 0) {
             //We send an array indexed by date dans contains count
             $lastDay = null;
@@ -626,7 +626,7 @@ class LogRepository extends EntityRepository
             foreach ($result as $line) {
                 if ($lastDay !== null) {
                     while ($lastDay->getTimestamp() < $line['shortDate']->getTimestamp()) {
-                        $chartData[] = array($lastDay->getTimestamp() * 1000, 0);
+                        $chartData[] = [$lastDay->getTimestamp() * 1000, 0];
                         $lastDay->add(new \DateInterval('P1D')); // P1D means a period of 1 day
                     }
                 } else {
@@ -634,11 +634,11 @@ class LogRepository extends EntityRepository
                 }
                 $lastDay->add(new \DateInterval('P1D')); // P1D means a period of 1 day
 
-                $chartData[] = array($line['shortDate']->getTimestamp() * 1000, intval($line['total']));
+                $chartData[] = [$line['shortDate']->getTimestamp() * 1000, intval($line['total'])];
             }
 
             while ($lastDay->getTimestamp() <= $endDay->getTimestamp()) {
-                $chartData[] = array($lastDay->getTimestamp() * 1000, 0);
+                $chartData[] = [$lastDay->getTimestamp() * 1000, 0];
 
                 $lastDay->add(new \DateInterval('P1D')); // P1D means a period of 1 day
             }

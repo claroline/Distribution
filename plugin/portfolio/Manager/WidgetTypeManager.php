@@ -29,7 +29,7 @@ class WidgetTypeManager
     public function getWidgetsTypes()
     {
         $widgetTypes = $this->widgetTypeRepository->findAllInArray();
-        $sortedWidgetTypes = array();
+        $sortedWidgetTypes = [];
 
         foreach ($widgetTypes as $widgetType) {
             $sortedWidgetTypes[$widgetType['name']] = $widgetType;
@@ -58,7 +58,7 @@ class WidgetTypeManager
     public function getWidgetsTypesForDisplay()
     {
         $widgetTypes = $this->getWidgetsTypes();
-        $sortedWidgetTypes = array();
+        $sortedWidgetTypes = [];
         $widgetTabOrder = $this->getWidgetTabOrder();
 
         foreach ($widgetTypes as $widgetType) {

@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Library\Installation\Settings;
 
-use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\DriverManager;
 
 class DatabaseChecker
 {
@@ -79,14 +79,14 @@ class DatabaseChecker
             throw new \Exception('Connection settings must be validated first');
         }
 
-        $parameters = array(
+        $parameters = [
             'driver' => $this->settings->getDriver(),
             'host' => $this->settings->getHost(),
             'user' => $this->settings->getUser(),
             'password' => $this->settings->getPassword(),
             'port' => $this->settings->getPort(),
             'charset' => $this->settings->getCharset(),
-        );
+        ];
 
         if ($useDatabase) {
             $parameters['dbname'] = $this->settings->getName();

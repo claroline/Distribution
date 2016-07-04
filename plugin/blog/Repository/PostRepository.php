@@ -49,12 +49,12 @@ class PostRepository extends EntityRepository
             ->orderBy('post.publicationDate', 'ASC')
         ;
 
-        $forbiddenWords = array('le', 'la', 'là', 'les', 'des', 'de', 'du', 'en', 'et', 'à', 'dans', 'me', 'mes', 'mon', 'ma',
+        $forbiddenWords = ['le', 'la', 'là', 'les', 'des', 'de', 'du', 'en', 'et', 'à', 'dans', 'me', 'mes', 'mon', 'ma',
             'te', 'tes', 'ton', 'ta', 'se', 'ses', 'son', 'sa', 'ça', 'un', 'une', 'ou', 'donc', 'il', 'elle',
             'on', 'nous', 'vous', 'ils', 'elles', 'eux', 'mien', 'sien', 'pour', 'que', 'qui', 'quand', 'quoi', 'quel',
             'quels', 'quelle', 'quelles', 'par', 'tout', 'tous', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
             'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-        );
+        ];
 
         $searchParameters = explode(' ', trim($search));
         $titleCondition = '';
@@ -117,7 +117,7 @@ class PostRepository extends EntityRepository
         }
 
         $query = $this->createQueryBuilder('post')
-            ->select(array('post'))
+            ->select(['post'])
             ->andWhere('post.blog = :blogId')
             ->andWhere('post.status = :postStatus')
             ->andWhere('post.publicationDate IS NOT NULL')
@@ -141,7 +141,7 @@ class PostRepository extends EntityRepository
     public function findRssDatas(Blog $blog, $executeQuery = true)
     {
         $query = $this->createQueryBuilder('post')
-            ->select(array('post'))
+            ->select(['post'])
             ->andWhere('post.blog = :blogId')
             ->andWhere('post.status = :postStatus')
             ->andWhere('post.publicationDate IS NOT NULL')

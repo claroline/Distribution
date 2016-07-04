@@ -3,8 +3,8 @@
 namespace FormaLibre\ReservationBundle\Form;
 
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\Form\AbstractType;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -31,32 +31,32 @@ class ResourceType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text', array(
+        $builder->add('name', 'text', [
                 'label' => 'form.name',
-            )
+            ]
         );
 
-        $builder->add('description', 'textarea', array(
+        $builder->add('description', 'textarea', [
             'label' => 'form.description',
-        ));
+        ]);
 
-        $builder->add('localisation', 'text', array(
+        $builder->add('localisation', 'text', [
             'label' => 'form.localisation',
-        ));
+        ]);
 
-        $builder->add('maxTimeReservation', 'time', array(
+        $builder->add('maxTimeReservation', 'time', [
             'input' => 'string',
             'widget' => 'single_text',
             'label' => 'form.maxTime',
-        ));
+        ]);
 
-        $builder->add('quantity', 'integer', array(
+        $builder->add('quantity', 'integer', [
             'label' => 'form.quantity',
             'empty_data' => 1,
             'attr' => [
                 'min' => 1,
             ],
-        ));
+        ]);
 
         $builder->add('color', 'text', [
             'label' => 'form.color',
@@ -73,10 +73,10 @@ class ResourceType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'class' => 'FormaLibre\ReservationBundle\Entity\Resource',
                 'translation_domain' => 'reservation',
-            )
+            ]
         );
     }
 }

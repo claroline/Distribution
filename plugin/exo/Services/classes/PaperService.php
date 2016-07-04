@@ -9,8 +9,8 @@ namespace UJM\ExoBundle\Services\classes;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
-use UJM\ExoBundle\Entity\Paper;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use UJM\ExoBundle\Entity\Paper;
 
 class PaperService
 {
@@ -94,7 +94,7 @@ class PaperService
      */
     public function getInfosPaper($paper)
     {
-        $infosPaper = array();
+        $infosPaper = [];
         $scorePaper = 0;
         $scoreTemp = false;
 
@@ -133,7 +133,7 @@ class PaperService
      */
     private function sortInteractions($interactions, $order)
     {
-        $inter = array();
+        $inter = [];
         $order = substr($order, 0, strlen($order) - 1);
         $order = explode(';', $order);
 
@@ -161,7 +161,7 @@ class PaperService
      */
     private function sortResponses($responses, $order)
     {
-        $resp = array();
+        $resp = [];
         $order = $this->formatQuestionOrder($order);
         foreach ($order as $interId) {
             $tem = 0;

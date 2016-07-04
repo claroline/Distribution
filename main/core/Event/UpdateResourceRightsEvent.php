@@ -11,9 +11,9 @@
 
 namespace Claroline\CoreBundle\Event;
 
-use Symfony\Component\EventDispatcher\Event;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceRights;
+use Symfony\Component\EventDispatcher\Event;
 
 class UpdateResourceRightsEvent extends Event
 {

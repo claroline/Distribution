@@ -28,7 +28,7 @@ class RuleConstraintsConfigPass implements CompilerPassInterface
         $ruleValidator = $container->getDefinition($ruleValidatorServiceKey);
 
         foreach ($container->findTaggedServiceIds('claroline.rule.constraint') as $id => $attributes) {
-            $ruleValidator->addMethodCall('addConstraint', array(new Reference($id)));
+            $ruleValidator->addMethodCall('addConstraint', [new Reference($id)]);
         }
     }
 }

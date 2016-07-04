@@ -26,6 +26,6 @@ abstract class Rulable implements RulableInterface
      */
     public function getRestriction()
     {
-        return array();
+        return [];
     }
 }

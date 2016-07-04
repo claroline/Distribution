@@ -44,7 +44,7 @@ class CurlManager
      */
     public function formEncode($entity, AbstractType $formType)
     {
-        $data = array();
+        $data = [];
     }
 
     private function setPostCurl($ch, $payload)

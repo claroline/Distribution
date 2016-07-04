@@ -14,8 +14,8 @@ namespace Claroline\CoreBundle\Library;
 use Claroline\CoreBundle\Library\Testing\MockeryTestCase;
 use Claroline\CoreBundle\Library\Transfert\ConfigurationBuilders\ToolsImporter;
 use Claroline\CoreBundle\Library\Transfert\Resolver;
-use Symfony\Component\Yaml\Yaml;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Yaml\Yaml;
 
 class ToolImporterTest extends MockeryTestCase
 {
@@ -55,28 +55,28 @@ class ToolImporterTest extends MockeryTestCase
 
     public function validateProvider()
     {
-        return array(
+        return [
             //correct
-            array(
+            [
                 'basePath' => __DIR__.'/../../../Stub/transfert/valid/full',
                 'configPath' => 'tools.yml',
                 'isExceptionExpected' => false,
                 'rolefile' => __DIR__.'/../../../Stub/transfert/valid/full/roles01.yml',
-            ),
+            ],
             //unkown role
-            array(
+            [
                 'basePath' => __DIR__.'/../../../Stub/transfert/valid/full',
                 'configPath' => 'tools.yml',
                 'isExceptionExpected' => true,
                 'rolefile' => __DIR__.'/../../../Stub/transfert/valid/full/roles02.yml',
-            ),
+            ],
             //unknown tool
-            array(
+            [
                 'basePath' => __DIR__.'/../../../Stub/transfert/invalid/tools',
                 'configPath' => 'unknown_tool.yml',
                 'isExceptionExpected' => true,
                 'rolefile' => __DIR__.'/../../../Stub/transfert/valid/full/roles01.yml',
-            ),
-        );
+            ],
+        ];
     }
 }

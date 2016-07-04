@@ -29,7 +29,7 @@ class Updater020304 extends Updater
         $coreWebDir = "{$this->container->getParameter('kernel.root_dir')}{$ds}..{$ds}web{$ds}";
         $coreIconWebDirRelativePath = 'bundles/clarolinecore/images/resources/icons/';
         $coreIconWebDir = "{$coreWebDir}bundles{$ds}clarolinecore{$ds}images{$ds}resources{$ds}icons{$ds}";
-        $resourceImage = array('res_audio.png', 'audio');
+        $resourceImage = ['res_audio.png', 'audio'];
         $em = $this->container->get('doctrine.orm.entity_manager');
         $this->log('Update images...');
         $rimg = new ResourceIcon();

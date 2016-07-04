@@ -20,7 +20,7 @@ class SubjectType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('title', 'text');
-        $builder->add('message', new MessageType(), array('mapped' => false));
+        $builder->add('message', new MessageType(), ['mapped' => false]);
     }
 
     public function getName()
@@ -31,9 +31,9 @@ class SubjectType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'translation_domain' => 'forum',
-            )
+            ]
         );
     }
 }

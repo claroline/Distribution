@@ -25,19 +25,19 @@ class OrganizationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', 'text', array(
+            ->add('name', 'text', [
                     'required' => true,
-                )
+                ]
             );
 
         $builder
-            ->add('parent', 'entity', array(
+            ->add('parent', 'entity', [
                     'class' => 'ClarolineCoreBundle:Organization\Organization',
                     'property' => 'name',
                     'multiple' => false,
                     'expanded' => false,
                     'required' => false,
-                )
+                ]
             );
     }
 
@@ -53,7 +53,7 @@ class OrganizationType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $default = array('translation_domain' => 'platform');
+        $default = ['translation_domain' => 'platform'];
         if ($this->forApi) {
             $default['csrf_protection'] = false;
         }

@@ -77,10 +77,10 @@ class ForumWidgetListener
         $messages = $this->forumManager->getLastMessages($widgetInstance);
         $event->setContent($this->templatingEngine->render(
             $templatePath,
-            array(
+            [
                 'widgetType' => $widgetType,
                 'messages' => $messages,
-            )
+            ]
         ));
         $event->stopPropagation();
     }
@@ -100,10 +100,10 @@ class ForumWidgetListener
         $form = $this->formFactory->create(new LastMessageWidgetConfigType(), $lastMessageWidgetConfig);
         $content = $this->templatingEngine->render(
             'ClarolineForumBundle:Widget:lastMessageWidgetConfig.html.twig',
-            array(
+            [
                 'form' => $form->createView(),
                 'widgetInstance' => $widgetInstance,
-            )
+            ]
         );
         $event->setContent($content);
     }

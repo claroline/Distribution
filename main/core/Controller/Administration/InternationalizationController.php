@@ -11,11 +11,11 @@
 
 namespace Claroline\CoreBundle\Controller\Administration;
 
+use Claroline\CoreBundle\Form\Administration\InternationalizationType;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Claroline\CoreBundle\Form\Administration\InternationalizationType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
@@ -39,7 +39,7 @@ class InternationalizationController extends Controller
         $activatedLocales = $localeManager->retrieveAvailableLocales();
         $form = $this->createForm(new InternationalizationType($activatedLocales, $availableLocales));
 
-        return array('form' => $form->createView());
+        return ['form' => $form->createView()];
     }
 
     /**
@@ -66,7 +66,7 @@ class InternationalizationController extends Controller
 
         return $this->render(
            'ClarolineCoreBundle:Administration:Internationalization\form.html.twig',
-           array('form' => $form->createView(), 'product' => $product)
+           ['form' => $form->createView(), 'product' => $product]
        );
     }
 }

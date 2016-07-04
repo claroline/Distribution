@@ -59,7 +59,7 @@ class LocaleManager
      */
     public function retrieveAvailableLocales($path = '/../Resources/translations/')
     {
-        $locales = array();
+        $locales = [];
         $data = $this->configHandler->getParameter('locales');
 
         foreach ($data as $locale) {
@@ -78,11 +78,11 @@ class LocaleManager
      */
     public function getImplementedLocales($path = '/../Resources/translations/')
     {
-        $locales = array();
+        $locales = [];
         $finder = $this->finder->files()->in(__DIR__.$path)->name('/platform\.[^.]*\.yml/');
 
         foreach ($finder as $file) {
-            $locale = str_replace(array('platform.', '.yml'), '', $file->getRelativePathname());
+            $locale = str_replace(['platform.', '.yml'], '', $file->getRelativePathname());
             $locales[$locale] = $locale;
         }
 

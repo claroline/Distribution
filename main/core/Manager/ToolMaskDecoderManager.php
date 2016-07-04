@@ -96,7 +96,7 @@ class ToolMaskDecoderManager
     public function decodeMask($mask, Tool $tool)
     {
         $decoders = $this->maskRepo->findMaskDecodersByTool($tool);
-        $perms = array();
+        $perms = [];
 
         foreach ($decoders as $decoder) {
             $perms[$decoder->getName()] = ($mask & $decoder->getValue()) ?
@@ -109,7 +109,7 @@ class ToolMaskDecoderManager
 
     public function decodeMaskWithDecoders($mask, array $decoders)
     {
-        $perms = array();
+        $perms = [];
 
         foreach ($decoders as $decoder) {
             $perms[$decoder->getName()] = ($mask & $decoder->getValue()) ?

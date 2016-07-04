@@ -7,9 +7,9 @@ use Claroline\CoreBundle\Event\DisplayWidgetEvent;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Icap\BadgeBundle\Manager\BadgeManager;
 use Icap\BadgeBundle\Manager\BadgeWidgetManager;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\Form\FormInterface;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service()
@@ -80,13 +80,13 @@ class BadgeUsageWidgetListener
 
         $content = $this->templating->render(
             'IcapBadgeBundle:Widget:badge_usage.html.twig',
-            array(
+            [
                 'lastAwardedBadges' => $lastAwardedBadges,
                 'mostAwardedBadges' => $mostAwardedBadges,
                 'availableBadges' => $availableBadges,
                 'simple_view_widget' => $simple_view_widget,
                 'systemName' => $this->platformName,
-            )
+            ]
         );
         $event->setContent($content);
         $event->stopPropagation();
@@ -104,10 +104,10 @@ class BadgeUsageWidgetListener
 
         $content = $this->templating->render(
             'IcapBadgeBundle:Widget:badge_usage_config.html.twig',
-            array(
+            [
                 'form' => $this->badgeUsageForm->createView(),
                 'instance' => $event->getInstance(),
-            )
+            ]
         );
         $event->setContent($content);
     }

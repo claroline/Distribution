@@ -2,26 +2,26 @@
 
 namespace FormaLibre\PresenceBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use JMS\DiExtraBundle\Annotation as DI;
-use Claroline\CoreBundle\Persistence\ObjectManager;
-use Doctrine\ORM\EntityManager;
-use Symfony\Component\HttpFoundation\Request;
 use Claroline\CoreBundle\Entity\Group;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Routing\RouterInterface;
+use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\CursusBundle\Entity\CourseSession;
+use Claroline\CursusBundle\Manager\CursusManager;
+use Doctrine\ORM\EntityManager;
 use FormaLibre\PresenceBundle\Entity\Period;
 use FormaLibre\PresenceBundle\Entity\Presence;
-use FormaLibre\PresenceBundle\Entity\Status;
+use FormaLibre\PresenceBundle\Entity\PresenceRights;
 use FormaLibre\PresenceBundle\Entity\Releves;
 use FormaLibre\PresenceBundle\Entity\SchoolYear;
-use Claroline\CursusBundle\Entity\CourseSession;
-use Claroline\CoreBundle\Entity\User;
-use FormaLibre\PresenceBundle\Manager\PresenceManager;
-use Claroline\CursusBundle\Manager\CursusManager;
-use FormaLibre\PresenceBundle\Entity\PresenceRights;
+use FormaLibre\PresenceBundle\Entity\Status;
 use FormaLibre\PresenceBundle\Form\Type\CollReleveType;
+use FormaLibre\PresenceBundle\Manager\PresenceManager;
+use JMS\DiExtraBundle\Annotation as DI;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\RouterInterface;
 
 class PresenceController extends Controller
 {
@@ -95,14 +95,14 @@ class PresenceController extends Controller
             $SchoolYearEndHour = '18:00:00';
         }
 
-        return array('user' => $user,
+        return ['user' => $user,
                      'presences' => $Presences,
                      'periods' => $Periods,
                      'canViewPersonalArchives' => $canViewPersonalArchives,
                      'canCheckPresences' => $canCkeckPresences,
                      'canViewArchives' => $canViewArchives,
                      'schoolYearBeginHour' => $SchoolYearBeginHour,
-                     'schoolYearEndHour' => $SchoolYearEndHour, );
+                     'schoolYearEndHour' => $SchoolYearEndHour, ];
     }
     /**
      * @EXT\Route(
@@ -122,14 +122,14 @@ class PresenceController extends Controller
         //throw new \Exception(count($test));
         $form = $this->createFormBuilder()
 
-            ->add('selection', 'entity', array(
+            ->add('selection', 'entity', [
                 'label' => 'Classe:',
                 'class' => 'Claroline\CursusBundle\Entity\CourseSession',
                 'choices' => $sessionsByUser,
                 'property' => 'getShortNameWithCourse',
-                'empty_value' => 'Choisissez un groupe', ))
-            ->add('valider', 'submit', array(
-                'label' => 'Relever les présences', ))
+                'empty_value' => 'Choisissez un groupe', ])
+            ->add('valider', 'submit', [
+                'label' => 'Relever les présences', ])
             ->getForm();
 
         $request = $this->getRequest();
@@ -137,15 +137,15 @@ class PresenceController extends Controller
             $form->handleRequest($request);
             $session = $form->get('selection')->getData();
 
-            return $this->redirect($this->generateUrl('formalibre_presence_releve', array('period' => $period->getId(),
+            return $this->redirect($this->generateUrl('formalibre_presence_releve', ['period' => $period->getId(),
                                                                                               'date' => $date,
-                                                                                              'session' => $session->getId(), )));
+                                                                                              'session' => $session->getId(), ]));
         }
 
-        return array('form' => $form->createView(),
+        return ['form' => $form->createView(),
                          'user' => $user,
                          'period' => $period,
-                         'date' => $date, );
+                         'date' => $date, ];
     }
 
     /**
@@ -178,7 +178,7 @@ class PresenceController extends Controller
         $liststatus = $this->statuRepo->findByStatusByDefault(false);
 
         if (!$Presences) {
-            $Presences = array();
+            $Presences = [];
             foreach ($Users as $student) {
                 $actualPresence = new Presence();
                 $actualPresence->setStatus($Null);
@@ -195,12 +195,12 @@ class PresenceController extends Controller
 
         $SameStatus = $this->createFormBuilder()
 
-            ->add('singleStatus', 'entity', array(
+            ->add('singleStatus', 'entity', [
                 'class' => 'FormaLibrePresenceBundle:Status',
                 'property' => 'statusName',
-                'empty_value' => ' Indiquer toute la classe comme:', ))
-            ->add('valider', 'submit', array(
-                'label' => 'Comfirmer ?', ))
+                'empty_value' => ' Indiquer toute la classe comme:', ])
+            ->add('valider', 'submit', [
+                'label' => 'Comfirmer ?', ])
             ->getForm();
 
         $formCollection = new Releves();
@@ -221,12 +221,12 @@ class PresenceController extends Controller
             $this->em->flush();
 
             return $this->redirect($this->generateUrl('formalibre_presence_releve',
-                    array('period' => $period->getId(),
+                    ['period' => $period->getId(),
                           'date' => $date,
-                          'session' => $session->getId(), )));
+                          'session' => $session->getId(), ]));
         }
 
-        return array('presForm' => $presForm->createView(),
+        return ['presForm' => $presForm->createView(),
                      'sameStatus' => $SameStatus->createView(),
                      'status' => $liststatus,
                      'user' => $user,
@@ -237,7 +237,7 @@ class PresenceController extends Controller
                      'groups' => $Groups,
                      'users' => $Users,
                      'daypresences' => $dayPresences,
-                     'canCheckPresences' => $canCkeckPresences, );
+                     'canCheckPresences' => $canCkeckPresences, ];
     }
 
     /**
@@ -262,12 +262,12 @@ class PresenceController extends Controller
             $Presences = $this->presenceRepo->findBySchoolYear($SchoolYear);
             $SchoolYearSelection = $this->createFormBuilder()
 
-                ->add('selection', 'entity', array(
+                ->add('selection', 'entity', [
                     'class' => 'FormaLibrePresenceBundle:SchoolYear',
                     'property' => 'schoolYearName',
-                    'empty_value' => ' Changer de période', ))
-                ->add('valider', 'submit', array(
-                    'label' => 'Comfirmer ?', ))
+                    'empty_value' => ' Changer de période', ])
+                ->add('valider', 'submit', [
+                    'label' => 'Comfirmer ?', ])
                 ->getForm();
 
             $Presences = $this->presenceRepo->findBySchoolYear($SchoolYear);
@@ -287,21 +287,21 @@ class PresenceController extends Controller
 
             $SchoolYearSelection = $this->createFormBuilder()
 
-                ->add('selection', 'entity', array(
+                ->add('selection', 'entity', [
                     'class' => 'FormaLibrePresenceBundle:SchoolYear',
                     'property' => 'schoolYearName',
-                    'empty_value' => ' Aucune période existante', ))
-                ->add('valider', 'submit', array(
-                    'label' => 'Comfirmer', ))
+                    'empty_value' => ' Aucune période existante', ])
+                ->add('valider', 'submit', [
+                    'label' => 'Comfirmer', ])
                 ->getForm();
         }
 
-        return array('presences' => $Presences,
+        return ['presences' => $Presences,
                         'canViewArchives' => $canViewArchives,
                         'canEditArchives' => $canEditArchives,
                         'schoolYear' => $SchoolYear,
                         'schoolYearName' => $SchoolYearName,
-                        'schoolYearSelection' => $SchoolYearSelection->createView(), );
+                        'schoolYearSelection' => $SchoolYearSelection->createView(), ];
     }
 
     /**
@@ -325,7 +325,7 @@ class PresenceController extends Controller
         ->add(
                  'Status',
                  'entity',
-                 array(
+                 [
                      'multiple' => false,
                      'expanded' => false,
                      'label' => 'Status:',
@@ -334,7 +334,7 @@ class PresenceController extends Controller
                      'empty_value' => 'Nouveau status',
                      'property' => 'statusName',
 
-                 ))
+                 ])
         ->add('Comment', 'textarea')
         ->add('Save', 'submit')
         ->getForm();
@@ -361,9 +361,9 @@ class PresenceController extends Controller
             }
         }
 
-        return array('ModifPresenceForm' => $ModifPresenceForm->createView(),
+        return ['ModifPresenceForm' => $ModifPresenceForm->createView(),
                     'presence' => $Presence,
-                    'canEditArchives' => $canEditArchives, );
+                    'canEditArchives' => $canEditArchives, ];
     }
     /**
      * @EXT\Route(
@@ -381,7 +381,7 @@ class PresenceController extends Controller
     {
         $Presence = $this->presenceRepo->findOneById($id);
 
-        return array('presence' => $Presence);
+        return ['presence' => $Presence];
     }
     /**
      * @EXT\Route(
@@ -418,9 +418,9 @@ class PresenceController extends Controller
     public function ListingStatusAction()
     {
         $liststatus = $this->statuRepo->findAll();
-        $datas = array();
+        $datas = [];
         foreach ($liststatus as $status) {
-            $datas[$status->getId()] = array();
+            $datas[$status->getId()] = [];
             $datas[$status->getId()]['color'] = $status->getStatusColor();
         }
 
@@ -441,9 +441,9 @@ class PresenceController extends Controller
     public function ListingStatusByDefaultnoAdminAction()
     {
         $liststatus = $this->statuRepo->findByStatusByDefault(0);
-        $datas = array();
+        $datas = [];
         foreach ($liststatus as $status) {
-            $datas[$status->getId()] = array();
+            $datas[$status->getId()] = [];
             $datas[$status->getId()] = $status->getId();
         }
 

@@ -12,11 +12,11 @@ class GradingScaleType extends AbstractType
     {
         $builder
             ->add('scaleName', 'text',
-                array(
+                [
                     'required' => true,
                     'label' => false,
-                    'attr' => array('class' => 'form-control-scale'),
-                   )
+                    'attr' => ['class' => 'form-control-scale'],
+                   ]
                 )
             ->add('id', 'hidden')
             ;
@@ -30,12 +30,12 @@ class GradingScaleType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-                array(
+                [
                     'language' => 'fr',
                     'data_class' => 'Innova\CollecticielBundle\Entity\GradingScale',
                     'cascade_validation' => true,
                     'translation_domain' => 'innova_collecticiel',
-                    )
+                    ]
         );
     }
 }

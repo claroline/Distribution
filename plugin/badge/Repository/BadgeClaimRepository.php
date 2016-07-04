@@ -38,7 +38,7 @@ class BadgeClaimRepository extends EntityRepository
      */
     public function findOneByBadgeAndUser(Badge $badge, User $user)
     {
-        return $this->findOneBy(array('badge' => $badge, 'user' => $user));
+        return $this->findOneBy(['badge' => $badge, 'user' => $user]);
     }
 
     /**

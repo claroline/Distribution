@@ -82,9 +82,9 @@ class Updater040800 extends Updater
     private function deleteDuplicatedOrderedTools()
     {
         $this->log('Deleting duplicated ordered tools...');
-        $idsToRemove = array();
-        $exitingUsers = array();
-        $exitingWorkspaces = array();
+        $idsToRemove = [];
+        $exitingUsers = [];
+        $exitingWorkspaces = [];
         $desktopSelect = '
             SELECT ot1.*
             FROM claro_ordered_tool ot1
@@ -110,7 +110,7 @@ class Updater040800 extends Updater
                     $exitingUsers[$toolId][$userId] = true;
                 }
             } else {
-                $exitingUsers[$toolId] = array();
+                $exitingUsers[$toolId] = [];
                 $exitingUsers[$toolId][$userId] = true;
             }
         }
@@ -140,7 +140,7 @@ class Updater040800 extends Updater
                     $exitingWorkspaces[$toolId][$workspaceId] = true;
                 }
             } else {
-                $exitingWorkspaces[$toolId] = array();
+                $exitingWorkspaces[$toolId] = [];
                 $exitingWorkspaces[$toolId][$workspaceId] = true;
             }
         }

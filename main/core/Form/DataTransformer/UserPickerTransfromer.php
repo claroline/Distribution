@@ -13,10 +13,10 @@ namespace Claroline\CoreBundle\Form\DataTransformer;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\UserManager;
+use Doctrine\Common\Collections\Collection;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
-use Doctrine\Common\Collections\Collection;
 
 /**
  * @DI\Service("claroline.transformer.user_picker")
@@ -34,29 +34,29 @@ class UserPickerTransfromer implements DataTransformerInterface
     public function __construct(UserManager $userManager)
     {
         $this->userManager = $userManager;
-        $this->options = array();
+        $this->options = [];
     }
 
     public function transform($value)
     {
         if (is_array($value) || $value instanceof Collection) {
-            $transformedData = array();
+            $transformedData = [];
 
             foreach ($value as $user) {
-                $transformedData[] = array(
+                $transformedData[] = [
                     'id' => $user->getId(),
                     'name' => $user->getFirstName().' '.$user->getLastName(),
-                );
+                ];
             }
 
             return $transformedData;
         }
 
         if ($value instanceof User) {
-            return array(
+            return [
                 'id' => $value->getId(),
                 'name' => $value->getFirstName().' '.$value->getLastName(),
-            );
+            ];
         }
 
         return;
@@ -65,13 +65,13 @@ class UserPickerTransfromer implements DataTransformerInterface
     public function reverseTransform($userId)
     {
         if (empty($userId)) {
-            return ($this->options['multiple']) ? array() : null;
+            return ($this->options['multiple']) ? [] : null;
         } elseif (strpos($userId, ',')) {
             $ids = explode(',', $userId);
             $users = $this->getByIds($ids);
 
             if (count($users) === 0) {
-                return ($this->options['multiple']) ? array() : null;
+                return ($this->options['multiple']) ? [] : null;
             } else {
                 return $users;
             }
@@ -80,14 +80,14 @@ class UserPickerTransfromer implements DataTransformerInterface
             if (is_null($user)) {
                 throw new TransformationFailedException();
             } else {
-                return ($this->options['multiple']) ? array($user) : $user;
+                return ($this->options['multiple']) ? [$user] : $user;
             }
         }
     }
 
     private function getByIds($ids)
     {
-        $users = array();
+        $users = [];
 
         foreach ($ids as $id) {
             $user = $this->userManager->getUserById(intval($id));

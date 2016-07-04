@@ -20,9 +20,9 @@ use Claroline\SurveyBundle\Entity\Answer\OpenEndedQuestionAnswer;
 use Claroline\SurveyBundle\Entity\Answer\QuestionAnswer;
 use Claroline\SurveyBundle\Entity\Answer\SurveyAnswer;
 use Claroline\SurveyBundle\Entity\Choice;
+use Claroline\SurveyBundle\Entity\MultipleChoiceQuestion;
 use Claroline\SurveyBundle\Entity\Question;
 use Claroline\SurveyBundle\Entity\QuestionModel;
-use Claroline\SurveyBundle\Entity\MultipleChoiceQuestion;
 use Claroline\SurveyBundle\Entity\Survey;
 use Claroline\SurveyBundle\Entity\SurveyQuestionRelation;
 use Claroline\SurveyBundle\Event\Log\LogSurveyAnswerDelete;
@@ -288,7 +288,7 @@ class SurveyManager
         $model->setTitle($question->getTitle());
         $model->setQuestionType($questionType);
         $model->setWorkspace($question->getWorkspace());
-        $details = array();
+        $details = [];
 
         switch ($questionType) {
 
@@ -310,13 +310,13 @@ class SurveyManager
                 $details['choiceDisplay'] = $horizontal ?
                     'horizontal' :
                     'vertical';
-                $details['choices'] = array();
+                $details['choices'] = [];
 
                 if (!is_null($choiceQuestion)) {
                     $choices = $this->getChoicesByQuestion($question);
 
                     foreach ($choices as $choice) {
-                        $choiceDetails = array();
+                        $choiceDetails = [];
                         $choiceDetails['other'] = $choice->isOther() ?
                             'other' :
                             'not-other';
@@ -587,7 +587,7 @@ class SurveyManager
     {
         return count($questions) > 0 ?
             $this->questionAnswerRepo->findQuestionAnswersByQuestions($questions, $executeQuery) :
-            array();
+            [];
     }
 
     /*******************************************************

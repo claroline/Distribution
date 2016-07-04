@@ -10,14 +10,14 @@
 
 namespace Claroline\CoreBundle\Library\Transfert\ConfigurationBuilders\Tools\Resources;
 
-use Claroline\CoreBundle\Library\Transfert\Importer;
-use Symfony\Component\Config\Definition\ConfigurationInterface;
-use Symfony\Component\Config\Definition\Builder\TreeBuilder;
-use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\Config\Definition\Processor;
-use Symfony\Component\HttpFoundation\File\File as SfFile;
 use Claroline\CoreBundle\Entity\Resource\File;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Library\Transfert\Importer;
+use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\Config\Definition\Processor;
+use Symfony\Component\HttpFoundation\File\File as SfFile;
 
 /**
  * @DI\Service("claroline.tool.resources.file_importer")
@@ -61,7 +61,7 @@ class FileImporter extends Importer implements ConfigurationInterface
                                         function ($v) use ($rootPath) {
                                             return call_user_func_array(
                                                 __CLASS__.'::fileNotExists',
-                                                array($v, $rootPath)
+                                                [$v, $rootPath]
                                             );
                                         }
                                     )
@@ -111,13 +111,13 @@ class FileImporter extends Importer implements ConfigurationInterface
         $uid = uniqid().'.'.pathinfo($hash, PATHINFO_EXTENSION);
         $_files[$uid] = $this->container
             ->getParameter('claroline.param.files_directory').DIRECTORY_SEPARATOR.$hash;
-        $data = array();
+        $data = [];
 
         if (file_exists($_files[$uid])) {
-            $data = array(array('file' => array(
+            $data = [['file' => [
                 'path' => $uid,
                 'mime_type' => $object->getResourceNode()->getMimeType(),
-            )));
+            ]]];
         }
 
         return $data;

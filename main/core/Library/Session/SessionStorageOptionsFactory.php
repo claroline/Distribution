@@ -38,7 +38,7 @@ class SessionStorageOptionsFactory
     {
         return array_merge(
             $this->defaultOptions,
-            array('cookie_lifetime' => $this->configHandler->getParameter('cookie_lifetime'))
+            ['cookie_lifetime' => $this->configHandler->getParameter('cookie_lifetime')]
         );
     }
 }

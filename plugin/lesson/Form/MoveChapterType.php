@@ -7,9 +7,9 @@ use Icap\LessonBundle\Entity\Chapter;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @DI\Service("icap.lesson.movechaptertype")
@@ -54,11 +54,11 @@ class MoveChapterType extends AbstractType
                         array_push($nonLegitTargets, $data->getParent());
                     }
 
-                    $chapters_list = array();
+                    $chapters_list = [];
                     foreach ($chapters as $child) {
                         //add and rename lesson root, if legit destination
                         if ($child->getId() == $child->getRoot() && ($filter == 0 || $this->isLegitTarget($child, $nonLegitTargets))) {
-                            $chapters_list[$child->getId()] = $this->translator->trans('Root', array(), 'icap_lesson');
+                            $chapters_list[$child->getId()] = $this->translator->trans('Root', [], 'icap_lesson');
                         //add chapters as legit destination for move, after checking if legit
                         } elseif ($filter == 0 || $this->isLegitTarget($child, $nonLegitTargets)) {
                             $chapters_list[$child->getId()] = $child->getTitle();
@@ -66,22 +66,22 @@ class MoveChapterType extends AbstractType
                     }
 
                     $form
-                        ->add('choiceChapter', 'choice', array(
+                        ->add('choiceChapter', 'choice', [
                             'mapped' => false,
                             'choices' => $chapters_list,
-                        ));
+                        ]);
                 }
 
                 $form
-                    ->add('brother', 'checkbox', array(
+                    ->add('brother', 'checkbox', [
                         'required' => false,
                         'mapped' => false,
-                    ))
-                    ->add('firstposition', 'hidden', array(
+                    ])
+                    ->add('firstposition', 'hidden', [
                         'required' => false,
                         'mapped' => false,
                         'data' => 'false',
-                    ));
+                    ]);
         });
     }
 
@@ -98,9 +98,9 @@ class MoveChapterType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => 'Icap\LessonBundle\Entity\Chapter',
-        ));
+        ]);
     }
 
     public function getName()

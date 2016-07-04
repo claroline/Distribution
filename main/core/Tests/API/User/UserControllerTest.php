@@ -2,11 +2,11 @@
 
 namespace Claroline\CoreBundle\Tests\API\User;
 
-use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Organization\Organization;
-use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
+use Claroline\CoreBundle\Entity\Role;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Testing\Persister;
+use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 
 class UserControllerTest extends TransactionalTestCase
 {
@@ -113,18 +113,18 @@ class UserControllerTest extends TransactionalTestCase
 
         //tests
         $this->logIn($admin);
-        $fields = array(
+        $fields = [
             'firstName' => 'toto',
             'lastName' => 'toto',
             'username' => 'toto',
-            'plainPassword' => array(
+            'plainPassword' => [
                     'first' => 'toto',
                     'second' => 'toto',
-                ),
+                ],
             'administrativeCode' => 'toto',
             'mail' => 'toto@claroline.net',
-        );
-        $form = array('profile_form_creation' => $fields);
+        ];
+        $form = ['profile_form_creation' => $fields];
         $this->client->request('POST', '/api/users.json', $form);
         $data = $this->client->getResponse()->getContent();
         $data = json_decode($data, true);
@@ -147,14 +147,14 @@ class UserControllerTest extends TransactionalTestCase
 
         //tests
         $this->logIn($adminOrga);
-        $fields = array(
+        $fields = [
             'firstName' => 'toto',
             'lastName' => 'toto',
             'username' => 'toto',
             'administrativeCode' => 'toto',
             'mail' => 'toto@claroline.net',
-        );
-        $form = array('profile_form' => $fields);
+        ];
+        $form = ['profile_form' => $fields];
         $this->client->request('PUT', "/api/users/{$userOrga->getId()}.json", $form);
         $data = $this->client->getResponse()->getContent();
         $data = json_decode($data, true);
@@ -172,27 +172,27 @@ class UserControllerTest extends TransactionalTestCase
         $this->logIn($adminOrga);
 
         //tests
-        $fields = array(
+        $fields = [
             'firstName' => 'toto',
             'lastName' => 'toto',
             'username' => 'toto',
             'administrativeCode' => 'toto',
             'mail' => 'toto@claroline.net',
-        );
-        $form = array('profile_form' => $fields);
+        ];
+        $form = ['profile_form' => $fields];
         $this->client->request('PUT', "/api/users/{$userOrga->getId()}.json", $form);
         $data = $this->client->getResponse()->getContent();
         $data = json_decode($data, true);
 
         $this->logIn($john);
-        $fields = array(
+        $fields = [
             'firstName' => 'toto',
             'lastName' => 'toto',
             'username' => 'toto',
             'administrativeCode' => 'toto',
             'mail' => 'toto@claroline.net',
-        );
-        $form = array('profile_form' => $fields);
+        ];
+        $form = ['profile_form' => $fields];
         $this->client->request('PUT', "/api/users/{$userOrga->getId()}.json", $form);
         $data = $this->client->getResponse()->getContent();
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());

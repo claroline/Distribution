@@ -21,7 +21,7 @@ class UpdaterMaster extends Updater
 
     public function UpdateMissingSlug()
     {
-        $tags = $this->entityManager->getRepository('IcapBlogBundle:Tag')->findBy(array('slug' => null));
+        $tags = $this->entityManager->getRepository('IcapBlogBundle:Tag')->findBy(['slug' => null]);
 
         foreach ($tags as $tag) {
             $tag->setSlug(uniqid());

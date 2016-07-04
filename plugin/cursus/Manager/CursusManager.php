@@ -35,9 +35,9 @@ use Claroline\CursusBundle\Entity\CourseSessionRegistrationQueue;
 use Claroline\CursusBundle\Entity\CourseSessionUser;
 use Claroline\CursusBundle\Entity\CoursesWidgetConfig;
 use Claroline\CursusBundle\Entity\Cursus;
+use Claroline\CursusBundle\Entity\CursusDisplayedWord;
 use Claroline\CursusBundle\Entity\CursusGroup;
 use Claroline\CursusBundle\Entity\CursusUser;
-use Claroline\CursusBundle\Entity\CursusDisplayedWord;
 use Claroline\CursusBundle\Event\Log\LogCourseQueueCreateEvent;
 use Claroline\CursusBundle\Event\Log\LogCourseQueueDeclineEvent;
 use Claroline\CursusBundle\Event\Log\LogCourseQueueOrganizationValidateEvent;
@@ -54,18 +54,18 @@ use Claroline\CursusBundle\Event\Log\LogSessionQueueOrganizationValidateEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionQueueUserValidateEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionQueueValidatorValidateEvent;
 use JMS\DiExtraBundle\Annotation as DI;
-use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Serializer;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Translation\TranslatorInterface;
-use Symfony\Component\HttpFoundation\File\File;
 
 /**
  * @DI\Service("claroline.manager.cursus_manager")
@@ -216,11 +216,11 @@ class CursusManager
         $cursusDisplayedWord = $this->cursusWordRepo->findOneByWord($word);
 
         if (is_null($cursusDisplayedWord)) {
-            $result = $this->translator->trans($word, array(), 'cursus');
+            $result = $this->translator->trans($word, [], 'cursus');
         } else {
             $displayedWord = $cursusDisplayedWord->getDisplayedWord();
             $result = empty($displayedWord) ?
-                $this->translator->trans($word, array(), 'cursus') :
+                $this->translator->trans($word, [], 'cursus') :
                 $displayedWord;
         }
 
@@ -296,7 +296,7 @@ class CursusManager
     public function addCoursesToCursus(Cursus $parent, array $courses)
     {
         $this->om->startFlushSuite();
-        $createdCursus = array();
+        $createdCursus = [];
         $lastOrder = $this->cursusRepo->findLastCursusOrderByParent($parent);
 
         foreach ($courses as $course) {
@@ -431,7 +431,7 @@ class CursusManager
 
     public function unregisterUserFromCursus(Cursus $cursus, User $user)
     {
-        $this->unregisterUsersFromCursus($cursus, array($user));
+        $this->unregisterUsersFromCursus($cursus, [$user]);
     }
 
     public function registerUsersToCursus(Cursus $cursus, array $users, $withWorkspace = true)
@@ -447,14 +447,14 @@ class CursusManager
     public function unregisterUsersFromCursus(Cursus $cursus, array $users)
     {
         $this->checkCursusToolRegistrationAccess();
-        $toDelete = array();
-        $coursesToUnregister = array();
+        $toDelete = [];
+        $coursesToUnregister = [];
         $root = $cursus->getRoot();
         $cursusRoot = $this->getOneCursusById($root);
 
         if ($cursus->isBlocking()) {
             $toDelete = $this->getCursusUsersFromCursusAndUsers(
-                array($cursus),
+                [$cursus],
                 $users
             );
             $course = $cursus->getCourse();
@@ -496,7 +496,7 @@ class CursusManager
             }
         }
         $sessionsToUnregister = is_null($cursusRoot) ?
-            array() :
+            [] :
             $this->getSessionsByCursusAndCourses(
                 $cursusRoot,
                 $coursesToUnregister
@@ -551,9 +551,9 @@ class CursusManager
     {
         $this->checkCursusToolRegistrationAccess();
         $users = $group->getUsers()->toArray();
-        $cursusGroupsToDelete = array();
-        $cursusUsersToDelete = array();
-        $coursesToUnregister = array();
+        $cursusGroupsToDelete = [];
+        $cursusUsersToDelete = [];
+        $coursesToUnregister = [];
         $root = $cursus->getRoot();
         $cursusRoot = $this->getOneCursusById($root);
 
@@ -564,12 +564,12 @@ class CursusManager
                 $coursesToUnregister[] = $course;
             }
             $cursusUsersToDelete = $this->getCursusUsersFromCursusAndUsers(
-                array($cursus),
+                [$cursus],
                 $users
             );
             $cursusGroupsToDelete = $this->getCursusGroupsFromCursusAndGroups(
-                array($cursus),
-                array($group)
+                [$cursus],
+                [$group]
             );
         } else {
             // Determines from which cursus descendants user has to be removed.
@@ -582,7 +582,7 @@ class CursusManager
             );
             $removableGroupDescendants = $this->getCursusGroupsFromCursusAndGroups(
                 $unlockedDescendants,
-                array($group)
+                [$group]
             );
 
             foreach ($users as $user) {
@@ -620,7 +620,7 @@ class CursusManager
             }
         }
         $sessionsToUnregister = is_null($cursusRoot) ?
-            array() :
+            [] :
             $this->getSessionsByCursusAndCourses(
                 $cursusRoot,
                 $coursesToUnregister
@@ -730,8 +730,8 @@ class CursusManager
     private function getUnlockedDescendants(Cursus $cursus)
     {
         $descendantsCursus = $this->cursusRepo->findDescendantHierarchyByCursus($cursus);
-        $hierarchy = array();
-        $unlockedDescendants = array();
+        $hierarchy = [];
+        $unlockedDescendants = [];
 
         foreach ($descendantsCursus as $descendant) {
             $parent = $descendant->getParent();
@@ -740,7 +740,7 @@ class CursusManager
                 $parentId = $parent->getId();
 
                 if (!isset($hierarchy[$parentId])) {
-                    $hierarchy[$parentId] = array();
+                    $hierarchy[$parentId] = [];
                 }
                 $hierarchy[$parentId][] = $descendant;
             }
@@ -777,7 +777,7 @@ class CursusManager
 
     private function searchRemovableCursusUsersFromAncestors(Cursus $cursus, User $user)
     {
-        $removableCursusUsers = array();
+        $removableCursusUsers = [];
         $parent = $cursus->getParent();
 
         while (!is_null($parent) && !$parent->isBlocking()) {
@@ -808,7 +808,7 @@ class CursusManager
 
     private function searchRemovableCursusGroupsFromAncestors(Cursus $cursus, Group $group)
     {
-        $removableCursusGroups = array();
+        $removableCursusGroups = [];
         $parent = $cursus->getParent();
 
         while (!is_null($parent) && !$parent->isBlocking()) {
@@ -862,7 +862,7 @@ class CursusManager
         array $users,
         $type
     ) {
-        $results = array('status' => 'success', 'datas' => array());
+        $results = ['status' => 'success', 'datas' => []];
         $registrationDate = new \DateTime();
         $course = $session->getCourse();
         $remainingPlaces = (intval($type) === CourseSessionUser::LEARNER) ?
@@ -879,7 +879,7 @@ class CursusManager
             $results['datas']['courseTitle'] = $course->getTitle();
             $results['datas']['courseCode'] = $course->getCode();
         } else {
-            $sessionUsers = array();
+            $sessionUsers = [];
             $this->om->startFlushSuite();
 
             foreach ($users as $user) {
@@ -916,7 +916,7 @@ class CursusManager
 
             foreach ($sessionUsers as $su) {
                 $user = $su->getUser();
-                $results['datas'][] = array(
+                $results['datas'][] = [
                     'id' => $su->getId(),
                     'user_type' => $su->getUserType(),
                     'user_id' => $user->getId(),
@@ -928,7 +928,7 @@ class CursusManager
                     'courseId' => $course->getId(),
                     'courseTitle' => $course->getTitle(),
                     'courseCode' => $course->getCode(),
-                );
+                ];
             }
         }
 
@@ -940,7 +940,7 @@ class CursusManager
         array $users,
         $type = 0
     ) {
-        $results = array('status' => 'success', 'datas' => array());
+        $results = ['status' => 'success', 'datas' => []];
 
         if (intval($type) === CourseSessionUser::LEARNER) {
             foreach ($sessions as $session) {
@@ -949,14 +949,14 @@ class CursusManager
 
                 if (!is_null($remainingPlaces) && ($remainingPlaces < count($users))) {
                     $results['status'] = 'failed';
-                    $results['datas'][] = array(
+                    $results['datas'][] = [
                         'sessionId' => $session->getId(),
                         'sessionName' => $session->getName(),
                         'courseId' => $course->getId(),
                         'courseTitle' => $course->getTitle(),
                         'courseCode' => $course->getCode(),
                         'remainingPlaces' => $remainingPlaces,
-                    );
+                    ];
                 }
             }
         }
@@ -1034,7 +1034,7 @@ class CursusManager
         $type = 0
     ) {
         $users = $group->getUsers()->toArray();
-        $results = array('status' => 'success', 'datas' => array());
+        $results = ['status' => 'success', 'datas' => []];
 
         if (intval($type) === CourseSessionUser::LEARNER) {
             foreach ($sessions as $session) {
@@ -1043,14 +1043,14 @@ class CursusManager
 
                 if (!is_null($remainingPlaces) && ($remainingPlaces < count($users))) {
                     $results['status'] = 'failed';
-                    $results['datas'][] = array(
+                    $results['datas'][] = [
                         'sessionId' => $session->getId(),
                         'sessionName' => $session->getName(),
                         'courseId' => $course->getId(),
                         'courseTitle' => $course->getTitle(),
                         'courseCode' => $course->getCode(),
                         'remainingPlaces' => $remainingPlaces,
-                    );
+                    ];
                 }
             }
         }
@@ -1212,7 +1212,7 @@ class CursusManager
         $this->persistCourseSession($session);
 
         //the event will be listened by FormaLibreBulletinBundle (it adds some MatiereOptions)
-        $this->clarolineDispatcher->dispatch('create_course_session', 'Claroline\CursusBundle\Event\CreateCourseSessionEvent', array($session));
+        $this->clarolineDispatcher->dispatch('create_course_session', 'Claroline\CursusBundle\Event\CreateCourseSessionEvent', [$session]);
     }
 
     public function deleteCourseSessionUsers(array $sessionUsers)
@@ -1330,7 +1330,7 @@ class CursusManager
     public function getConfirmationEmail()
     {
         return $this->contentManager->getContent(
-            array('type' => 'claro_cursusbundle_mail_confirmation')
+            ['type' => 'claro_cursusbundle_mail_confirmation']
         );
     }
 
@@ -1345,7 +1345,7 @@ class CursusManager
     private function generateWorkspaceCode($code)
     {
         $workspaceCodes = $this->workspaceManager->getWorkspaceCodesWithPrefix($code);
-        $existingCodes = array();
+        $existingCodes = [];
 
         foreach ($workspaceCodes as $wsCode) {
             $existingCodes[] = $wsCode['code'];
@@ -1443,7 +1443,7 @@ class CursusManager
         $session = $queue->getSession();
         $course = $session->getCourse();
         $user = $queue->getUser();
-        $queueDatas = array(
+        $queueDatas = [
             'id' => $queue->getId(),
             'courseId' => $course->getId(),
             'sessionId' => $session->getId(),
@@ -1451,7 +1451,7 @@ class CursusManager
             'username' => $user->getUsername(),
             'firstName' => $user->getFirstName(),
             'lastName' => $user->getLastName(),
-        );
+        ];
         $this->om->remove($queue);
         $this->om->flush();
 
@@ -1513,35 +1513,35 @@ class CursusManager
     public function sendCourseQueueRequestConfirmationMail(CourseRegistrationQueue $queue)
     {
         $user = $queue->getUser();
-        $title = $this->translator->trans('course_registration_request_confirmation', array(), 'cursus');
+        $title = $this->translator->trans('course_registration_request_confirmation', [], 'cursus');
         $link = $this->router->generate(
             'claro_cursus_course_registration_queue_user_validate',
-            array('queue' => $queue->getId()),
+            ['queue' => $queue->getId()],
             true
         );
         $content = $this->templating->render(
             'ClarolineCursusBundle:CursusRegistration:courseRequestConfirmationMail.html.twig',
-            array('queue' => $queue, 'link' => $link)
+            ['queue' => $queue, 'link' => $link]
         );
 
-        $this->mailManager->send($title, $content, array($user));
+        $this->mailManager->send($title, $content, [$user]);
     }
 
     public function sendSessionQueueRequestConfirmationMail(CourseSessionRegistrationQueue $queue)
     {
         $user = $queue->getUser();
-        $title = $this->translator->trans('session_registration_request_confirmation', array(), 'cursus');
+        $title = $this->translator->trans('session_registration_request_confirmation', [], 'cursus');
         $link = $this->router->generate(
             'claro_cursus_session_registration_queue_user_validate',
-            array('queue' => $queue->getId()),
+            ['queue' => $queue->getId()],
             true
         );
         $content = $this->templating->render(
             'ClarolineCursusBundle:CursusRegistration:sessionRequestConfirmationMail.html.twig',
-            array('queue' => $queue, 'link' => $link)
+            ['queue' => $queue, 'link' => $link]
         );
 
-        $this->mailManager->send($title, $content, array($user));
+        $this->mailManager->send($title, $content, [$user]);
     }
 
     public function removeUserFromCourseQueue(User $user, Course $course)
@@ -1560,14 +1560,14 @@ class CursusManager
     {
         $course = $queue->getCourse();
         $user = $queue->getUser();
-        $queueDatas = array(
+        $queueDatas = [
             'id' => $queue->getId(),
             'courseId' => $course->getId(),
             'userId' => $user->getId(),
             'username' => $user->getUsername(),
             'firstName' => $user->getFirstName(),
             'lastName' => $user->getLastName(),
-        );
+        ];
         $this->om->remove($queue);
         $this->om->flush();
 
@@ -1591,7 +1591,7 @@ class CursusManager
         $this->checkCursusToolRegistrationAccess();
         $user = $queue->getUser();
         $this->om->startFlushSuite();
-        $results = $this->registerUsersToSession($session, array($user), 0);
+        $results = $this->registerUsersToSession($session, [$user], 0);
 
         if ($results['status'] === 'success') {
             $event = new LogCourseQueueTransferEvent($queue, $session);
@@ -1606,7 +1606,7 @@ class CursusManager
     public function getCoursesWidgetConfiguration(WidgetInstance $widgetInstance)
     {
         $config = $this->coursesWidgetConfigRepo->findOneBy(
-            array('widgetInstance' => $widgetInstance->getId())
+            ['widgetInstance' => $widgetInstance->getId()]
         );
 
         if (is_null($config)) {
@@ -1636,7 +1636,7 @@ class CursusManager
 
     public function registerUserToCourse(User $user, Course $course)
     {
-        $results = array('status' => 'success', 'datas' => array());
+        $results = ['status' => 'success', 'datas' => []];
         $sessions = $this->getDefaultPublicSessionsByCourse($course);
 
         if (count($sessions) > 0) {
@@ -1645,7 +1645,7 @@ class CursusManager
             if ($session->hasValidation()) {
                 $this->addUserToSessionQueue($user, $session);
             } else {
-                $results = $this->registerUsersToSession($session, array($user), 0);
+                $results = $this->registerUsersToSession($session, [$user], 0);
             }
         } elseif ($course->getPublicRegistration()) {
             $this->addUserToCourseQueue($user, $course);
@@ -1728,7 +1728,7 @@ class CursusManager
         $json = $this->serializer->serialize(
             $courses,
             'json',
-            SerializationContext::create()->setGroups(array('api_cursus'))
+            SerializationContext::create()->setGroups(['api_cursus'])
         );
         $archive->addFromString('courses.json', $json);
 
@@ -1750,11 +1750,11 @@ class CursusManager
         $cursusJson = $this->serializer->serialize(
             $cursusList,
             'json',
-            SerializationContext::create()->setGroups(array('api_cursus'))
+            SerializationContext::create()->setGroups(['api_cursus'])
         );
         $archive->addFromString('cursus.json', $cursusJson);
 
-        $courses = array();
+        $courses = [];
 
         foreach ($cursusList as $cursus) {
             $course = $cursus->getCourse();
@@ -1768,7 +1768,7 @@ class CursusManager
 
     public function importCourses(array $datas)
     {
-        $courses = array();
+        $courses = [];
         $i = 0;
         $usedCodes = $this->getAllCoursesCodes();
         $this->om->startFlushSuite();
@@ -1799,10 +1799,10 @@ class CursusManager
         return $courses;
     }
 
-    public function importCursus(array $datas, array $courses = array())
+    public function importCursus(array $datas, array $courses = [])
     {
-        $roots = array();
-        $cursusChildren = array();
+        $roots = [];
+        $cursusChildren = [];
 
         foreach ($datas as $cursus) {
             $root = $cursus['root'];
@@ -1810,7 +1810,7 @@ class CursusManager
             $id = $cursus['id'];
 
             if ($lvl === 0) {
-                $roots[$id] = array(
+                $roots[$id] = [
                     'id' => $id,
                     'code' => isset($cursus['code']) ? $cursus['code'] : null,
                     'description' => isset($cursus['description']) ?
@@ -1827,14 +1827,14 @@ class CursusManager
                     'course' => isset($cursus['course']) && isset($cursus['course']['id']) ?
                         $cursus['course']['id'] :
                         null,
-                );
+                ];
             } else {
                 $parentId = $cursus['parentId'];
 
                 if (!isset($cursusChildren[$parentId])) {
-                    $cursusChildren[$parentId] = array();
+                    $cursusChildren[$parentId] = [];
                 }
-                $cursusChildren[$parentId][$id] = array(
+                $cursusChildren[$parentId][$id] = [
                     'id' => $id,
                     'code' => isset($cursus['code']) ? $cursus['code'] : null,
                     'description' => isset($cursus['description']) ?
@@ -1851,7 +1851,7 @@ class CursusManager
                     'course' => isset($cursus['course']) && isset($cursus['course']['id']) ?
                         $cursus['course']['id'] :
                         null,
-                );
+                ];
             }
         }
         $this->importRootCursus($roots, $cursusChildren, $courses);
@@ -1859,7 +1859,7 @@ class CursusManager
 
     private function getAllCoursesCodes()
     {
-        $codes = array();
+        $codes = [];
         $courses = $this->getAllCourses('', 'id', 'ASC', false);
 
         foreach ($courses as $course) {
@@ -1871,7 +1871,7 @@ class CursusManager
 
     private function getAllCursusCodes()
     {
-        $codes = array();
+        $codes = [];
         $allCursus = $this->getAllCursus();
 
         foreach ($allCursus as $cursus) {
@@ -1905,7 +1905,7 @@ class CursusManager
     {
         $this->om->startFlushSuite();
         $codes = $this->getAllCursusCodes();
-        $createdCursus = array();
+        $createdCursus = [];
 
         $index = 0;
 
@@ -2000,7 +2000,7 @@ class CursusManager
 
     public function getSessionsDatas($search = '', $withPager = true, $page = 1, $max = 50)
     {
-        $sessionsDatas = array();
+        $sessionsDatas = [];
         $sessions = empty($search) ?
             $this->courseSessionRepo->findAllUnclosedSessions() :
             $this->courseSessionRepo->findSearchedlUnclosedSessions($search);
@@ -2010,9 +2010,9 @@ class CursusManager
             $courseCode = $course->getCode();
 
             if (!isset($sessionsDatas[$courseCode])) {
-                $sessionsDatas[$courseCode] = array();
+                $sessionsDatas[$courseCode] = [];
                 $sessionsDatas[$courseCode]['course'] = $course;
-                $sessionsDatas[$courseCode]['sessions'] = array();
+                $sessionsDatas[$courseCode]['sessions'] = [];
             }
             $sessionsDatas[$courseCode]['sessions'][] = $session;
         }
@@ -2024,11 +2024,11 @@ class CursusManager
 
     public function getCursusDatasForCursusRegistration(Cursus $cursus)
     {
-        $hierarchy = array();
-        $lockedHierarchy = array();
-        $unlockedCursus = array();
-        $hierarchyArray = array();
-        $unlockedArray = array();
+        $hierarchy = [];
+        $lockedHierarchy = [];
+        $unlockedCursus = [];
+        $hierarchyArray = [];
+        $unlockedArray = [];
         $allRelatedCursus = $this->getRelatedHierarchyByCursus($cursus);
 
         foreach ($allRelatedCursus as $oneCursus) {
@@ -2037,14 +2037,14 @@ class CursusManager
 
             if (is_null($parent)) {
                 if (!isset($hierarchy['root'])) {
-                    $hierarchy['root'] = array();
+                    $hierarchy['root'] = [];
                 }
                 $hierarchy['root'][] = $oneCursus;
             } else {
                 $parentId = $parent->getId();
 
                 if (!isset($hierarchy[$parentId])) {
-                    $hierarchy[$parentId] = array();
+                    $hierarchy[$parentId] = [];
                 }
                 $hierarchy[$parentId][] = $oneCursus;
             }
@@ -2057,11 +2057,11 @@ class CursusManager
         );
 
         foreach ($hierarchy as $key => $values) {
-            $hierarchyArray[$key] = array();
+            $hierarchyArray[$key] = [];
 
             foreach ($values as $value) {
                 $course = $value->getCourse();
-                $valueEntry = array(
+                $valueEntry = [
                     'id' => $value->getId(),
                     'code' => $value->getCode(),
                     'title' => $value->getTitle(),
@@ -2074,7 +2074,7 @@ class CursusManager
                     'lvl' => $value->getLvl(),
                     'root' => $value->getRoot(),
                     'course' => is_null($course) ? null : $course->getId(),
-                );
+                ];
                 $hierarchyArray[$key][] = $valueEntry;
             }
         }
@@ -2083,22 +2083,22 @@ class CursusManager
             $unlockedArray[] = $unlocked->getId();
         }
 
-        return array(
+        return [
             'hierarchy' => $hierarchyArray,
             'lockedHierarchy' => $lockedHierarchy,
             'unlockedCursus' => $unlockedArray,
-        );
+        ];
     }
 
     public function getCursusUsersForCursusRegistration(Cursus $cursus)
     {
         $this->checkCursusToolRegistrationAccess();
-        $usersArray = array();
+        $usersArray = [];
         $cursusUsers = $this->getCursusUsersByCursus($cursus);
 
         foreach ($cursusUsers as $cursusUser) {
             $user = $cursusUser->getUser();
-            $userEntry = array(
+            $userEntry = [
                 'id' => $cursusUser->getId(),
                 'userType' => $cursusUser->getUserType(),
                 'registrationDate' => $cursusUser->getRegistrationDate(),
@@ -2106,7 +2106,7 @@ class CursusManager
                 'username' => $user->getUsername(),
                 'firstName' => $user->getFirstName(),
                 'lastName' => $user->getLastName(),
-            );
+            ];
             $usersArray[] = $userEntry;
         }
 
@@ -2116,18 +2116,18 @@ class CursusManager
     public function getCursusGroupsForCursusRegistration(Cursus $cursus)
     {
         $this->checkCursusToolRegistrationAccess();
-        $groupsArray = array();
+        $groupsArray = [];
         $cursusGroups = $this->getCursusGroupsByCursus($cursus);
 
         foreach ($cursusGroups as $cursusGroup) {
             $group = $cursusGroup->getGroup();
-            $groupEntry = array(
+            $groupEntry = [
                 'id' => $cursusGroup->getId(),
                 'groupType' => $cursusGroup->getGroupType(),
                 'registrationDate' => $cursusGroup->getRegistrationDate(),
                 'groupId' => $group->getId(),
                 'groupName' => $group->getName(),
-            );
+            ];
             $groupsArray[] = $groupEntry;
         }
 
@@ -2136,19 +2136,19 @@ class CursusManager
 
     public function getDatasForSearchedCursusRegistration($search)
     {
-        $searchedCursusList = array();
+        $searchedCursusList = [];
         $searchedCursus = $this->getAllCursus(
             $search,
             'title',
             'ASC'
         );
-        $rootIds = array();
+        $rootIds = [];
 
         foreach ($searchedCursus as $cursus) {
             $course = $cursus->getCourse();
             $root = $cursus->getRoot();
 
-            $searchedCursusList[] = array(
+            $searchedCursusList[] = [
                 'id' => $cursus->getId(),
                 'code' => $cursus->getCode(),
                 'title' => $cursus->getTitle(),
@@ -2164,32 +2164,32 @@ class CursusManager
                 'courseTitle' => is_null($course) ? null : $course->getTitle(),
                 'courseCode' => is_null($course) ? null : $course->getCode(),
                 'courseDescription' => is_null($course) ? null : $course->getDescription(),
-            );
+            ];
 
             if (!in_array($root, $rootIds)) {
                 $rootIds[] = $root;
             }
         }
         $cursusRoots = $this->getCursusByIds($rootIds);
-        $roots = array();
+        $roots = [];
 
         foreach ($cursusRoots as $cursusRoot) {
-            $roots[$cursusRoot->getId()] = array(
+            $roots[$cursusRoot->getId()] = [
                 'id' => $cursusRoot->getId(),
                 'code' => $cursusRoot->getCode(),
                 'title' => $cursusRoot->getTitle(),
-            );
+            ];
         }
 
-        return array(
+        return [
             'searchedCursus' => $searchedCursusList,
             'roots' => $roots,
-        );
+        ];
     }
 
     public function getDatasForCursusHierarchy(Cursus $cursus)
     {
-        $hierarchy = array();
+        $hierarchy = [];
         $allCursus = $this->getRelatedHierarchyByCursus($cursus);
 
         foreach ($allCursus as $oneCursus) {
@@ -2198,9 +2198,9 @@ class CursusManager
 
             if (is_null($parent)) {
                 if (!isset($hierarchy['root'])) {
-                    $hierarchy['root'] = array();
+                    $hierarchy['root'] = [];
                 }
-                $hierarchy['root'][] = array(
+                $hierarchy['root'][] = [
                     'id' => $oneCursus->getId(),
                     'code' => $oneCursus->getCode(),
                     'title' => $oneCursus->getTitle(),
@@ -2213,14 +2213,14 @@ class CursusManager
                     'lvl' => $oneCursus->getLvl(),
                     'root' => $oneCursus->getRoot(),
                     'course' => is_null($course) ? null : $course->getId(),
-                );
+                ];
             } else {
                 $parentId = $parent->getId();
 
                 if (!isset($hierarchy[$parentId])) {
-                    $hierarchy[$parentId] = array();
+                    $hierarchy[$parentId] = [];
                 }
-                $hierarchy[$parentId][] = array(
+                $hierarchy[$parentId][] = [
                     'id' => $oneCursus->getId(),
                     'code' => $oneCursus->getCode(),
                     'title' => $oneCursus->getTitle(),
@@ -2233,7 +2233,7 @@ class CursusManager
                     'lvl' => $oneCursus->getLvl(),
                     'root' => $oneCursus->getRoot(),
                     'course' => is_null($course) ? null : $course->getId(),
-                );
+                ];
             }
         }
 
@@ -2242,7 +2242,7 @@ class CursusManager
 
     public function getCursusFromCursusIdsTxt($cursusIdsTxt)
     {
-        $cursusIds = array();
+        $cursusIds = [];
         $cursusIdsArray = explode(',', $cursusIdsTxt);
 
         foreach ($cursusIdsArray as $cursusId) {
@@ -2257,7 +2257,7 @@ class CursusManager
 
     public function getSessionsFromSessionsIdsTxt($sessionsIdsTxt)
     {
-        $sessionIds = array();
+        $sessionIds = [];
         $sessionsIdsArray = explode(',', $sessionsIdsTxt);
 
         foreach ($sessionsIdsArray as $sessionId) {
@@ -2274,7 +2274,7 @@ class CursusManager
 
     public function getUsersFromUsersIdsTxt($usersIdsTxt)
     {
-        $userIds = array();
+        $userIds = [];
         $usersIdsArray = explode(',', $usersIdsTxt);
 
         foreach ($usersIdsArray as $userId) {
@@ -2289,7 +2289,7 @@ class CursusManager
 
     public function getCursusGroupsFromCursusGroupsIdsTxt($cursusGroupsIdsTxt)
     {
-        $cursusGroupsIds = array();
+        $cursusGroupsIds = [];
         $cursusGroupsIdsArray = explode(',', $cursusGroupsIdsTxt);
 
         foreach ($cursusGroupsIdsArray as $cursusGroupId) {
@@ -2304,8 +2304,8 @@ class CursusManager
 
     public function getSessionsInfosFromCursusList($cursusList)
     {
-        $sessionsInfos = array();
-        $courses = array();
+        $sessionsInfos = [];
+        $courses = [];
 
         foreach ($cursusList as $cursus) {
             $course = $cursus->getCourse();
@@ -2320,11 +2320,11 @@ class CursusManager
             $courseId = $course->getId();
 
             if (!isset($sessionsInfos[$courseId])) {
-                $sessionsInfos[$courseId] = array();
+                $sessionsInfos[$courseId] = [];
                 $sessionsInfos[$courseId]['courseId'] = $course->getId();
                 $sessionsInfos[$courseId]['courseTitle'] = $course->getTitle();
                 $sessionsInfos[$courseId]['courseCode'] = $course->getCode();
-                $sessionsInfos[$courseId]['sessions'] = array();
+                $sessionsInfos[$courseId]['sessions'] = [];
             }
         }
 
@@ -2332,11 +2332,11 @@ class CursusManager
             if ($session->getSessionStatus() !== 2) {
                 $courseId = $session->getCourse()->getId();
 
-                $sessionsInfos[$courseId]['sessions'][] = array(
+                $sessionsInfos[$courseId]['sessions'][] = [
                     'sessionId' => $session->getId(),
                     'sessionName' => $session->getName(),
                     'sessionStatus' => $session->getSessionStatus(),
-                );
+                ];
             }
         }
 
@@ -2350,8 +2350,8 @@ class CursusManager
     ) {
         $this->checkCursusToolRegistrationAccess();
         $authenticatedUser = $this->tokenStorage->getToken()->getUser();
-        $coursesWithSession = array();
-        $sessionsToCreate = array();
+        $coursesWithSession = [];
+        $sessionsToCreate = [];
         $root = 0;
         $cursusRoot = null;
         $registrationDate = new \DateTime();
@@ -2416,8 +2416,8 @@ class CursusManager
     ) {
         $this->checkCursusToolRegistrationAccess();
         $authenticatedUser = $this->tokenStorage->getToken()->getUser();
-        $coursesWithSession = array();
-        $sessionsToCreate = array();
+        $coursesWithSession = [];
+        $sessionsToCreate = [];
         $root = 0;
         $cursusRoot = null;
         $registrationDate = new \DateTime();
@@ -2482,7 +2482,7 @@ class CursusManager
 
     public function getValidatorsRoles()
     {
-        $roles = array();
+        $roles = [];
         $registrationTool = $this->toolManager
             ->getAdminToolByName('claroline_cursus_tool_registration');
 
@@ -2498,7 +2498,7 @@ class CursusManager
     public function getRegistrationQueuesDatasByValidator($search = '')
     {
         $this->checkCursusToolRegistrationAccess();
-        $datas = array();
+        $datas = [];
         $authenticatedUser = $this->tokenStorage->getToken()->getUser();
         $isAdmin = $this->authorization->isGranted('ROLE_ADMIN');
 
@@ -2561,8 +2561,8 @@ class CursusManager
 
     public function getCoursesDatasFromQueues(array $coursesQueues, array $sessionsQueues)
     {
-        $datas = array();
-        $courseIds = array();
+        $datas = [];
+        $courseIds = [];
 
         foreach ($coursesQueues as $queue) {
             $course = $queue->getCourse();
@@ -2579,7 +2579,7 @@ class CursusManager
         $courses = $this->getCoursesByIds($courseIds);
 
         foreach ($courses as $course) {
-            $courseDatas = array(
+            $courseDatas = [
                 'id' => $course->getId(),
                 'code' => $course->getCode(),
                 'title' => $course->getTitle(),
@@ -2589,17 +2589,17 @@ class CursusManager
                 'registrationValidation' => $course->getRegistrationValidation(),
                 'userValidation' => $course->getUserValidation(),
                 'maxUsers' => $course->getMaxUsers(),
-                'validators' => array(),
-            );
+                'validators' => [],
+            ];
             $validators = $course->getValidators();
 
             foreach ($validators as $validator) {
-                $validatorsDatas = array(
+                $validatorsDatas = [
                     'id' => $validator->getId(),
                     'username' => $validator->getUsername(),
                     'firstName' => $validator->getFirstName(),
                     'lastName' => $validator->getLastName(),
-                );
+                ];
                 $courseDatas['validators'][] = $validatorsDatas;
             }
             $datas[] = $courseDatas;
@@ -2610,7 +2610,7 @@ class CursusManager
 
     public function getCoursesQueuesDatasFromQueues(array $queues)
     {
-        $datas = array();
+        $datas = [];
 
         foreach ($queues as $queue) {
             $user = $queue->getUser();
@@ -2618,10 +2618,10 @@ class CursusManager
             $courseId = $course->getId();
 
             if (!isset($datas[$courseId])) {
-                $datas[$courseId] = array();
+                $datas[$courseId] = [];
             }
 
-            $datas[$courseId][] = array(
+            $datas[$courseId][] = [
                 'id' => $queue->getId(),
                 'courseId' => $courseId,
                 'courseTitle' => $course->getTitle(),
@@ -2632,7 +2632,7 @@ class CursusManager
                 'firstName' => $user->getFirstName(),
                 'lastName' => $user->getLastName(),
                 'rights' => 0,
-            );
+            ];
         }
 
         return $datas;
@@ -2640,7 +2640,7 @@ class CursusManager
 
     public function getSessionsQueuesDatasFromQueues(array $queues)
     {
-        $datas = array();
+        $datas = [];
 
         foreach ($queues as $queue) {
             $user = $queue->getUser();
@@ -2649,10 +2649,10 @@ class CursusManager
             $courseId = $course->getId();
 
             if (!isset($datas[$courseId])) {
-                $datas[$courseId] = array();
+                $datas[$courseId] = [];
             }
 
-            $datas[$courseId][] = array(
+            $datas[$courseId][] = [
                 'id' => $queue->getId(),
                 'courseId' => $courseId,
                 'sessionId' => $session->getId(),
@@ -2668,7 +2668,7 @@ class CursusManager
                 'firstName' => $user->getFirstName(),
                 'lastName' => $user->getLastName(),
                 'rights' => 0,
-            );
+            ];
         }
 
         return $datas;
@@ -2676,7 +2676,7 @@ class CursusManager
 
     public function mergeCourseQueues($validatorQueues, $orgaQueues, $simpleQueues)
     {
-        $courseQueues = array();
+        $courseQueues = [];
 
         foreach ($validatorQueues as $queue) {
             $queueId = $queue->getId();
@@ -2704,7 +2704,7 @@ class CursusManager
 
     public function mergeSessionQueues($validatorQueues, $orgaQueues, $simpleQueues)
     {
-        $sessionQueues = array();
+        $sessionQueues = [];
 
         foreach ($validatorQueues as $queue) {
             $queueId = $queue->getId();
@@ -2732,15 +2732,15 @@ class CursusManager
 
     public function computeCoursesQueuesDatas($validatorQueues, $orgaQueues, $simpleQueues)
     {
-        $datas = array();
-        $queuesDatas = array();
+        $datas = [];
+        $queuesDatas = [];
 
         foreach ($validatorQueues as $queue) {
             $queueId = $queue->getId();
             $user = $queue->getUser();
             $course = $queue->getCourse();
 
-            $queuesDatas[$queueId] = array(
+            $queuesDatas[$queueId] = [
                 'id' => $queue->getId(),
                 'courseId' => $course->getId(),
                 'courseTitle' => $course->getTitle(),
@@ -2751,7 +2751,7 @@ class CursusManager
                 'firstName' => $user->getFirstName(),
                 'lastName' => $user->getLastName(),
                 'rights' => CourseRegistrationQueue::WAITING_VALIDATOR,
-            );
+            ];
         }
 
         foreach ($orgaQueues as $queue) {
@@ -2763,7 +2763,7 @@ class CursusManager
                 $user = $queue->getUser();
                 $course = $queue->getCourse();
 
-                $queuesDatas[$queueId] = array(
+                $queuesDatas[$queueId] = [
                     'id' => $queue->getId(),
                     'courseId' => $course->getId(),
                     'courseTitle' => $course->getTitle(),
@@ -2774,7 +2774,7 @@ class CursusManager
                     'firstName' => $user->getFirstName(),
                     'lastName' => $user->getLastName(),
                     'rights' => CourseRegistrationQueue::WAITING_ORGANIZATION,
-                );
+                ];
             }
         }
 
@@ -2787,7 +2787,7 @@ class CursusManager
                 $user = $queue->getUser();
                 $course = $queue->getCourse();
 
-                $queuesDatas[$queueId] = array(
+                $queuesDatas[$queueId] = [
                     'id' => $queue->getId(),
                     'courseId' => $course->getId(),
                     'courseTitle' => $course->getTitle(),
@@ -2798,7 +2798,7 @@ class CursusManager
                     'firstName' => $user->getFirstName(),
                     'lastName' => $user->getLastName(),
                     'rights' => CourseRegistrationQueue::WAITING,
-                );
+                ];
             }
         }
 
@@ -2806,7 +2806,7 @@ class CursusManager
             $courseId = $queueData['courseId'];
 
             if (!isset($datas[$courseId])) {
-                $datas[$courseId] = array();
+                $datas[$courseId] = [];
             }
             $datas[$courseId][] = $queueData;
         }
@@ -2816,8 +2816,8 @@ class CursusManager
 
     public function computeSessionsQueuesDatas($validatorQueues, $orgaQueues, $simpleQueues)
     {
-        $datas = array();
-        $queuesDatas = array();
+        $datas = [];
+        $queuesDatas = [];
 
         foreach ($validatorQueues as $queue) {
             $queueId = $queue->getId();
@@ -2825,7 +2825,7 @@ class CursusManager
             $session = $queue->getSession();
             $course = $session->getCourse();
 
-            $queuesDatas[$queueId] = array(
+            $queuesDatas[$queueId] = [
                 'id' => $queue->getId(),
                 'courseId' => $course->getId(),
                 'sessionId' => $session->getId(),
@@ -2841,7 +2841,7 @@ class CursusManager
                 'firstName' => $user->getFirstName(),
                 'lastName' => $user->getLastName(),
                 'rights' => CourseRegistrationQueue::WAITING_VALIDATOR,
-            );
+            ];
         }
 
         foreach ($orgaQueues as $queue) {
@@ -2854,7 +2854,7 @@ class CursusManager
                 $session = $queue->getSession();
                 $course = $session->getCourse();
 
-                $queuesDatas[$queueId] = array(
+                $queuesDatas[$queueId] = [
                     'id' => $queue->getId(),
                     'courseId' => $course->getId(),
                     'sessionId' => $session->getId(),
@@ -2870,7 +2870,7 @@ class CursusManager
                     'firstName' => $user->getFirstName(),
                     'lastName' => $user->getLastName(),
                     'rights' => CourseRegistrationQueue::WAITING_ORGANIZATION,
-                );
+                ];
             }
         }
 
@@ -2884,7 +2884,7 @@ class CursusManager
                 $session = $queue->getSession();
                 $course = $session->getCourse();
 
-                $queuesDatas[$queueId] = array(
+                $queuesDatas[$queueId] = [
                     'id' => $queue->getId(),
                     'courseId' => $course->getId(),
                     'sessionId' => $session->getId(),
@@ -2900,7 +2900,7 @@ class CursusManager
                     'firstName' => $user->getFirstName(),
                     'lastName' => $user->getLastName(),
                     'rights' => CourseRegistrationQueue::WAITING,
-                );
+                ];
             }
         }
 
@@ -2908,7 +2908,7 @@ class CursusManager
             $courseId = $queueData['courseId'];
 
             if (!isset($datas[$courseId])) {
-                $datas[$courseId] = array();
+                $datas[$courseId] = [];
             }
             $datas[$courseId][] = $queueData;
         }
@@ -3052,7 +3052,7 @@ class CursusManager
 
     public function validateUserSessionRegistrationQueue(CourseSessionRegistrationQueue $queue)
     {
-        $results = array('status' => 'success', 'datas' => array());
+        $results = ['status' => 'success', 'datas' => []];
         $status = $queue->getStatus();
         $user = $queue->getUser();
         $session = $queue->getSession();
@@ -3068,7 +3068,7 @@ class CursusManager
         }
 
         if ($queue->getStatus() === 0) {
-            $results = $this->registerUsersToSession($session, array($user), 0);
+            $results = $this->registerUsersToSession($session, [$user], 0);
 
             if ($results['status'] === 'success') {
                 $this->deleteSessionQueue($queue);
@@ -3085,7 +3085,7 @@ class CursusManager
     {
         $user = $queue->getUser();
         $course = $queue->getCourse();
-        $queueDatas = array(
+        $queueDatas = [
             'type' => 'none',
             'id' => $queue->getId(),
             'courseId' => $course->getId(),
@@ -3095,7 +3095,7 @@ class CursusManager
             'firstName' => $user->getFirstName(),
             'lastName' => $user->getLastName(),
             'queueStatus' => $queue->getStatus(),
-        );
+        ];
         $canValidate = $this->canValidateCourseQueue($queue);
 
         if ($canValidate) {
@@ -3181,7 +3181,7 @@ class CursusManager
         $user = $queue->getUser();
         $session = $queue->getSession();
         $course = $session->getCourse();
-        $queueDatas = array(
+        $queueDatas = [
             'status' => 'success',
             'type' => 'none',
             'id' => $queue->getId(),
@@ -3193,7 +3193,7 @@ class CursusManager
             'firstName' => $user->getFirstName(),
             'lastName' => $user->getLastName(),
             'queueStatus' => $queue->getStatus(),
-        );
+        ];
         $canValidate = $this->canValidateSessionQueue($queue);
 
         if ($canValidate) {
@@ -3245,7 +3245,7 @@ class CursusManager
             }
 
             if ($queue->getStatus() === 0) {
-                $results = $this->registerUsersToSession($session, array($user), 0);
+                $results = $this->registerUsersToSession($session, [$user], 0);
 
                 if ($results['status'] === 'success') {
                     $this->deleteSessionQueue($queue);
@@ -3401,7 +3401,7 @@ class CursusManager
     {
         return count($ids) > 0 ?
             $this->cursusRepo->findCursusByIds($ids, $executeQuery)
-            : array();
+            : [];
     }
 
     public function getOneCursusById($cursusId, $executeQuery = true)
@@ -3545,7 +3545,7 @@ class CursusManager
     {
         return count($ids) > 0 ?
             $this->courseRepo->findCoursesByIds($ids, $orderedBy, $order) :
-            array();
+            [];
     }
 
     /******************************************
@@ -3584,7 +3584,7 @@ class CursusManager
                 $users
             );
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -3687,7 +3687,7 @@ class CursusManager
                 $groups
             );
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -3762,7 +3762,7 @@ class CursusManager
     {
         return count($ids) > 0 ?
             $this->cursusGroupRepo->findCursusGroupsByIds($ids, $executeQuery)
-            : array();
+            : [];
     }
 
     /*********************************************
@@ -3827,7 +3827,7 @@ class CursusManager
                 $executeQuery
             );
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -3847,7 +3847,7 @@ class CursusManager
                 $executeQuery
             );
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -3869,7 +3869,7 @@ class CursusManager
     {
         return count($ids) > 0 ?
             $this->courseSessionRepo->findSessionsByIds($ids, $executeQuery)
-            : array();
+            : [];
     }
 
     /*************************************************
@@ -3924,7 +3924,7 @@ class CursusManager
                 $executeQuery
             );
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -3942,7 +3942,7 @@ class CursusManager
                 $executeQuery
             );
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -4100,7 +4100,7 @@ class CursusManager
     {
         return count($courses) > 0 ?
             $this->sessionQueueRepo->findSessionQueuesByCourses($courses) :
-            array();
+            [];
     }
 
     public function getAllUnvalidatedSessionQueues()
@@ -4221,7 +4221,7 @@ class CursusManager
 
     public function getSessionsByUserAndType(User $user, $userType = 0)
     {
-        $sessions = array();
+        $sessions = [];
         $sessionUsers = $this->getSessionUsersByUser($user);
 
         foreach ($sessionUsers as $sessionUser) {
@@ -4237,7 +4237,7 @@ class CursusManager
 
     public function getUsersBySessionAndType(CourseSession $session, $userType = 0)
     {
-        $users = array();
+        $users = [];
         $sessionUsers = $this->getSessionUsersBySession($session);
 
         foreach ($sessionUsers as $sessionUser) {
@@ -4253,7 +4253,7 @@ class CursusManager
 
     public function getSessionsByGroupAndType(Group $group, $groupType = 0)
     {
-        $sessions = array();
+        $sessions = [];
         $sessionGroups = $this->getSessionGroupsByGroup($group);
 
         foreach ($sessionGroups as $sessionGroup) {

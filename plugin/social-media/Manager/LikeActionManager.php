@@ -65,7 +65,7 @@ class LikeActionManager
      *
      * @return null|object
      */
-    public function getLikeBy(User $user, Request $request = null, $criteria = array())
+    public function getLikeBy(User $user, Request $request = null, $criteria = [])
     {
         $criteria = $this->getCriteriaFromRequest($request, $user, $criteria);
 
@@ -78,7 +78,7 @@ class LikeActionManager
      *
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function getLikesForPagination(Request $request = null, $criteria = array())
+    public function getLikesForPagination(Request $request = null, $criteria = [])
     {
         $criteria = $this->getCriteriaFromRequest($request, null, $criteria);
 
@@ -118,7 +118,7 @@ class LikeActionManager
         $this->em->flush();
     }
 
-    private function getCriteriaFromRequest(Request $request = null, User $user = null, $criteria = array())
+    private function getCriteriaFromRequest(Request $request = null, User $user = null, $criteria = [])
     {
         if ($user !== null) {
             $criteria['user'] = $user;

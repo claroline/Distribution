@@ -58,9 +58,9 @@ class SkillsWidget extends AbstractWidget
      */
     public function getData()
     {
-        $data = array(
-            'children' => array(),
-        );
+        $data = [
+            'children' => [],
+        ];
 
         foreach ($this->getSkills() as $skill) {
             $data['children'][] = $skill->getData();
@@ -74,9 +74,9 @@ class SkillsWidget extends AbstractWidget
      */
     public function getEmpty()
     {
-        return array(
-            'children' => array(),
-        );
+        return [
+            'children' => [],
+        ];
     }
 
     /**

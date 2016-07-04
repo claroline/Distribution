@@ -2,9 +2,9 @@
 
 namespace Icap\BadgeBundle\Form\Handler;
 
+use Doctrine\ORM\EntityManager;
 use Icap\BadgeBundle\Entity\Badge;
 use Icap\BadgeBundle\Manager\BadgeManager;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;

@@ -6,9 +6,9 @@
 
 namespace UJM\ExoBundle\Services\classes\Interactions;
 
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("ujm.exo.qcm_service")
@@ -42,12 +42,12 @@ class Qcm extends Interaction
 
         $score = $this->mark($interQCM, $response, $allChoices, $penalty);
 
-        $res = array(
+        $res = [
             'score' => $score,
             'penalty' => $penalty,
             'interQCM' => $interQCM,
             'response' => $responseID,
-        );
+        ];
 
         return $res;
     }
@@ -155,7 +155,7 @@ class Qcm extends Interaction
     {
         $em = $this->doctrine->getManager();
 
-        $typeQCM = array();
+        $typeQCM = [];
         $types = $em->getRepository('UJMExoBundle:TypeQCM')
             ->findAll();
 
@@ -177,7 +177,7 @@ class Qcm extends Interaction
      */
     private function convertResponseInArray($resp, $qcmCode)
     {
-        $response = array();
+        $response = [];
 
         if ($qcmCode == 2) {
             $response[] = $resp;
@@ -224,7 +224,7 @@ class Qcm extends Interaction
     private function markWeightResponse($allChoices, $response, $penalty, $scoreMax)
     {
         $score = 0;
-        $markByChoice = array();
+        $markByChoice = [];
         foreach ($allChoices as $choice) {
             $markByChoice[(string) $choice->getId()] = $choice->getWeight();
         }
@@ -261,7 +261,7 @@ class Qcm extends Interaction
     private function markGlobal($allChoices, $response, $interQCM, $penalty)
     {
         $score = 0;
-        $rightChoices = array();
+        $rightChoices = [];
         foreach ($allChoices as $choice) {
             if ($choice->getRightResponse()) {
                 $rightChoices[] = (string) $choice->getId();

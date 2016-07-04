@@ -15,12 +15,12 @@ use Symfony\Component\Form\DataTransformerInterface;
 
 class JavascriptSafeTransformer implements  DataTransformerInterface
 {
-    private $blacklistedAttributes = array(
+    private $blacklistedAttributes = [
         'onload', 'onunload', 'onclick', 'ondblclick', 'onmousedown',
         'onmouseup', 'onmouseover', 'onmousemove', 'onmouseout',
         'onfocus', 'onblur', 'onkeypress', 'onkeydown', 'onkeyup',
         'onsubmit', 'onreset', 'onselect', 'onchange',
-    );
+    ];
 
     public function transform($value)
     {

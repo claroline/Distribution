@@ -11,32 +11,32 @@ class BlogBannerType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('banner_activate', 'checkbox', array(
+            ->add('banner_activate', 'checkbox', [
                 'required' => false,
-            ))
-            ->add('banner_background_color', 'text', array(
-                'theme_options' => array('label_width' => ''),
-            ))
-            ->add('banner_height', 'text', array(
-                'theme_options' => array('label_width' => ''),
-                'attr' => array(
+            ])
+            ->add('banner_background_color', 'text', [
+                'theme_options' => ['label_width' => ''],
+            ])
+            ->add('banner_height', 'text', [
+                'theme_options' => ['label_width' => ''],
+                'attr' => [
                     'class' => 'input-sm',
                     'data-min' => 100,
-                ),
-            ))
-            ->add('file', 'file', array(
+                ],
+            ])
+            ->add('file', 'file', [
                 'label' => 'icap_blog_banner_form_banner_background_image',
-                'theme_options' => array('label_width' => ''),
+                'theme_options' => ['label_width' => ''],
                 'required' => false,
-            ))
-            ->add('banner_background_image_position', 'text', array(
-                'theme_options' => array('label_width' => ''),
+            ])
+            ->add('banner_background_image_position', 'text', [
+                'theme_options' => ['label_width' => ''],
                 'required' => false,
-            ))
-            ->add('banner_background_image_repeat', 'text', array(
-                'theme_options' => array('label_width' => ''),
+            ])
+            ->add('banner_background_image_repeat', 'text', [
+                'theme_options' => ['label_width' => ''],
                 'required' => false,
-            ))
+            ])
         ;
     }
 
@@ -47,12 +47,12 @@ class BlogBannerType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
            'translation_domain' => 'icap_blog',
             'data_class' => 'Icap\BlogBundle\Entity\BlogOptions',
             'csrf_protection' => true,
             'intention' => 'configure_banner_blog',
             'no_captcha' => true,
-        ));
+        ]);
     }
 }

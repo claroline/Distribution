@@ -75,14 +75,14 @@ class TemporaryAccessResourceManager
 
     public function addTemporaryAccess(ResourceNode $node, User $user = null)
     {
-        $collection = new ResourceCollection(array($node));
+        $collection = new ResourceCollection([$node]);
         $temporaryAccessArray = $this->container->get('request')->getSession()->get(self::RESOURCE_TEMPORARY_ACCESS_KEY);
 
         if ($temporaryAccessArray === null) {
-            $temporaryAccessArray = array();
+            $temporaryAccessArray = [];
         }
 
-        $temporaryAccessIds = array();
+        $temporaryAccessIds = [];
         if (isset($temporaryAccessArray[$this->getUserKey($user)])) {
             $temporaryAccessIds = $temporaryAccessArray[$this->getUserKey($user)];
         }

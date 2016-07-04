@@ -12,27 +12,27 @@ class WordResponseType extends AbstractType
     {
         $builder
             ->add('response', 'text')
-            ->add('score', 'text', array(
-                'attr' => array('placeholder' => 'points'),
-                'translation_domain' => 'ujm_exo', ))
+            ->add('score', 'text', [
+                'attr' => ['placeholder' => 'points'],
+                'translation_domain' => 'ujm_exo', ])
             ->add(
-                'caseSensitive', 'checkbox', array(
+                'caseSensitive', 'checkbox', [
                     'required' => false,
-                    'attr' => array('title' => 'case_sensitive'),
+                    'attr' => ['title' => 'case_sensitive'],
                     'translation_domain' => 'ujm_exo',
-                )
+                ]
             )
             ->add(
-                   'feedback', 'textarea', array(
+                   'feedback', 'textarea', [
                    'required' => false, 'label' => ' ',
-                   'attr' => array('class' => 'form-control',
+                   'attr' => ['class' => 'form-control',
                                    'data-new-tab' => 'yes',
                                    'placeholder' => 'feedback_answer_check',
                                    'style' => 'height:34px;',
                                    'translation_domain' => 'ujm_exo',
-                       ),
+                       ],
 
-                  )
+                  ]
             )
             //->add('interactionopen')
             //->add('hole')
@@ -41,10 +41,10 @@ class WordResponseType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => 'UJM\ExoBundle\Entity\WordResponse',
             'translation_domain' => 'ujm_exo',
-        ));
+        ]);
     }
 
     public function getName()

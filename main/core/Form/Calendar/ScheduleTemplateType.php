@@ -11,9 +11,9 @@
 
 namespace Claroline\CoreBundle\Form\Calendar;
 
+use Claroline\CoreBundle\Form\Angular\AngularType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Claroline\CoreBundle\Form\Angular\AngularType;
 
 class ScheduleTemplateType extends AngularType
 {
@@ -25,11 +25,11 @@ class ScheduleTemplateType extends AngularType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('day', 'integer', array('label' => 'start', 'required' => true))
-            ->add('name', 'string', array('label' => 'name', 'required' => true))
-            ->add('description', 'text', array('label' => 'description', 'required' => false))
-            ->add('startHour', 'integer', array('label' => 'openHour', 'required' => true))
-            ->add('endHour', 'integer', array('label' => 'endHour', 'required' => true));
+            ->add('day', 'integer', ['label' => 'start', 'required' => true])
+            ->add('name', 'string', ['label' => 'name', 'required' => true])
+            ->add('description', 'text', ['label' => 'description', 'required' => false])
+            ->add('startHour', 'integer', ['label' => 'openHour', 'required' => true])
+            ->add('endHour', 'integer', ['label' => 'endHour', 'required' => true]);
     }
 
     public function getName()
@@ -44,7 +44,7 @@ class ScheduleTemplateType extends AngularType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $default = array('translation_domain' => 'platform');
+        $default = ['translation_domain' => 'platform'];
         if ($this->forApi) {
             $default['csrf_protection'] = false;
         }

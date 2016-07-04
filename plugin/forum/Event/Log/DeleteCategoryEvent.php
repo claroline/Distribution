@@ -23,14 +23,14 @@ class DeleteCategoryEvent extends AbstractLogResourceEvent
      */
     public function __construct(Category $category)
     {
-        $details = array(
-            'category' => array(
+        $details = [
+            'category' => [
                 'id' => $category->getId(),
-            ),
-            'forum' => array(
+            ],
+            'forum' => [
                 'id' => $category->getForum()->getId(),
-            ),
-        );
+            ],
+        ];
 
         parent::__construct($category->getForum()->getResourceNode(), $details);
     }
@@ -40,6 +40,6 @@ class DeleteCategoryEvent extends AbstractLogResourceEvent
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_WORKSPACE, self::DISPLAYED_ADMIN);
+        return [self::DISPLAYED_WORKSPACE, self::DISPLAYED_ADMIN];
     }
 }

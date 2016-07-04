@@ -3,13 +3,13 @@
 namespace Icap\BlogBundle\Controller;
 
 use Claroline\CoreBundle\Entity\User;
+use Icap\BlogBundle\Entity\Blog;
 use Icap\BlogBundle\Entity\Comment;
 use Icap\BlogBundle\Entity\Post;
-use Icap\BlogBundle\Entity\Blog;
 use Icap\BlogBundle\Form\CommentType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
 
 class PostController extends BaseController
@@ -78,25 +78,25 @@ class PostController extends BaseController
                         $entityManager->flush();
                         $this->dispatchCommentCreateEvent($post, $comment);
 
-                        $flashBag->add('success', $translator->trans('icap_blog_comment_add_success', array(), 'icap_blog'));
+                        $flashBag->add('success', $translator->trans('icap_blog_comment_add_success', [], 'icap_blog'));
                     } catch (\Exception $exception) {
-                        $flashBag->add('error', $translator->trans('icap_blog_comment_add_error', array(), 'icap_blog'));
+                        $flashBag->add('error', $translator->trans('icap_blog_comment_add_error', [], 'icap_blog'));
                     }
 
-                    return $this->redirect($this->generateUrl('icap_blog_post_view', array('blogId' => $blog->getId(), 'postSlug' => $post->getSlug())).'#comments');
+                    return $this->redirect($this->generateUrl('icap_blog_post_view', ['blogId' => $blog->getId(), 'postSlug' => $post->getSlug()]).'#comments');
                 }
             }
 
             $form = $form->createView();
         }
 
-        return array(
+        return [
             '_resource' => $blog,
             'bannerForm' => $this->getBannerForm($blog->getOptions()),
             'user' => $user,
             'post' => $post,
             'form' => $form,
-        );
+        ];
     }
     /**
      * @Route("/{blogId}/post/new", name="icap_blog_post_new", requirements={"blogId" = "\d+"})
@@ -106,7 +106,7 @@ class PostController extends BaseController
      */
     public function newAction(Request $request, Blog $blog)
     {
-        $this->checkAccess(array('EDIT', 'POST'), $blog, 'OR');
+        $this->checkAccess(['EDIT', 'POST'], $blog, 'OR');
 
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
@@ -124,10 +124,10 @@ class PostController extends BaseController
 
         $translator = $this->get('translator');
 
-        $messages = array(
-            'success' => $translator->trans('icap_blog_post_add_success', array(), 'icap_blog'),
-            'error' => $translator->trans('icap_blog_post_add_error', array(), 'icap_blog'),
-        );
+        $messages = [
+            'success' => $translator->trans('icap_blog_post_add_success', [], 'icap_blog'),
+            'error' => $translator->trans('icap_blog_post_add_error', [], 'icap_blog'),
+        ];
 
         return $this->persistPost($request, $blog, $post, $user, 'create', $messages);
     }
@@ -141,16 +141,16 @@ class PostController extends BaseController
      */
     public function editAction(Request $request, Blog $blog, Post $post)
     {
-        $this->checkAccess(array('EDIT', 'POST'), $blog, 'OR');
+        $this->checkAccess(['EDIT', 'POST'], $blog, 'OR');
 
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $translator = $this->get('translator');
 
-        $messages = array(
-            'success' => $translator->trans('icap_blog_post_edit_success', array(), 'icap_blog'),
-            'error' => $translator->trans('icap_blog_post_edit_error', array(), 'icap_blog'),
-        );
+        $messages = [
+            'success' => $translator->trans('icap_blog_post_edit_success', [], 'icap_blog'),
+            'error' => $translator->trans('icap_blog_post_edit_error', [], 'icap_blog'),
+        ];
 
         return $this->persistPost($request, $blog, $post, $user, 'update', $messages);
     }
@@ -160,7 +160,7 @@ class PostController extends BaseController
         /** @var \Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler $platformConfigHandler */
         $platformConfigHandler = $this->get('claroline.config.platform_config_handler');
 
-        $form = $this->createForm($this->get('icap_blog.form.post'), $post, array('language' => $platformConfigHandler->getParameter('locale_language'), 'date_format' => $this->get('translator')->trans('date_form_format', array(), 'platform')));
+        $form = $this->createForm($this->get('icap_blog.form.post'), $post, ['language' => $platformConfigHandler->getParameter('locale_language'), 'date_format' => $this->get('translator')->trans('date_form_format', [], 'platform')]);
 
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
@@ -193,17 +193,17 @@ class PostController extends BaseController
                     $flashBag->add('error', $messages['error']);
                 }
 
-                return $this->redirect($this->generateUrl('icap_blog_view', array('blogId' => $blog->getId())));
+                return $this->redirect($this->generateUrl('icap_blog_view', ['blogId' => $blog->getId()]));
             }
         }
 
-        return array(
+        return [
             '_resource' => $blog,
             'bannerForm' => $this->getBannerForm($blog->getOptions()),
             'user' => $user,
             'post' => $post,
             'form' => $form->createView(),
-        );
+        ];
     }
 
     /**
@@ -215,7 +215,7 @@ class PostController extends BaseController
      */
     public function deleteAction(Blog $blog, Post $post)
     {
-        $this->checkAccess(array('EDIT', 'POST'), $blog, 'OR');
+        $this->checkAccess(['EDIT', 'POST'], $blog, 'OR');
 
         $entityManager = $this->getDoctrine()->getManager();
         $translator = $this->get('translator');
@@ -227,12 +227,12 @@ class PostController extends BaseController
 
             $this->dispatchPostDeleteEvent($post);
 
-            $flashBag->add('success', $translator->trans('icap_blog_post_delete_success', array(), 'icap_blog'));
+            $flashBag->add('success', $translator->trans('icap_blog_post_delete_success', [], 'icap_blog'));
         } catch (\Exception $exception) {
-            $flashBag->add('error', $translator->trans('icap_blog_post_delete_error', array(), 'icap_blog'));
+            $flashBag->add('error', $translator->trans('icap_blog_post_delete_error', [], 'icap_blog'));
         }
 
-        return $this->redirect($this->generateUrl('icap_blog_view', array('blogId' => $blog->getId())));
+        return $this->redirect($this->generateUrl('icap_blog_view', ['blogId' => $blog->getId()]));
     }
 
     /**
@@ -248,10 +248,10 @@ class PostController extends BaseController
 
         $translator = $this->get('translator');
 
-        $messages = array(
-            'success' => $translator->trans('icap_blog_post_publish_success', array(), 'icap_blog'),
-            'error' => $translator->trans('icap_blog_post_publish_error', array(), 'icap_blog'),
-        );
+        $messages = [
+            'success' => $translator->trans('icap_blog_post_publish_success', [], 'icap_blog'),
+            'error' => $translator->trans('icap_blog_post_publish_error', [], 'icap_blog'),
+        ];
 
         return $this->changePublishStatus($blog, $post, $messages);
     }
@@ -269,10 +269,10 @@ class PostController extends BaseController
 
         $translator = $this->get('translator');
 
-        $messages = array(
-            'success' => $translator->trans('icap_blog_post_unpublish_success', array(), 'icap_blog'),
-            'error' => $translator->trans('icap_blog_post_unpublish_error', array(), 'icap_blog'),
-        );
+        $messages = [
+            'success' => $translator->trans('icap_blog_post_unpublish_success', [], 'icap_blog'),
+            'error' => $translator->trans('icap_blog_post_unpublish_error', [], 'icap_blog'),
+        ];
 
         return $this->changePublishStatus($blog, $post, $messages);
     }
@@ -301,6 +301,6 @@ class PostController extends BaseController
             $flashBag->add('error', $messages['error']);
         }
 
-        return $this->redirect($this->generateUrl('icap_blog_view', array('blogId' => $blog->getId())));
+        return $this->redirect($this->generateUrl('icap_blog_view', ['blogId' => $blog->getId()]));
     }
 }

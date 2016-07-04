@@ -14,9 +14,9 @@ namespace Icap\SocialmediaBundle\Controller;
 use Claroline\CoreBundle\Entity\User;
 use Icap\SocialmediaBundle\Entity\NoteAction;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -38,7 +38,7 @@ class NoteActionController extends Controller
         $notesQB = $noteManager->getNotesForPagination($resourceId, $user);
         $pager = $this->paginateQuery($notesQB, 1);
 
-        return array('resourceId' => $resourceId, 'pager' => $pager);
+        return ['resourceId' => $resourceId, 'pager' => $pager];
     }
 
     /**
@@ -83,7 +83,7 @@ class NoteActionController extends Controller
         $notesQB = $this->getNoteActionManager()->getNotesForPagination($resourceId, $user);
         $pager = $this->paginateQuery($notesQB, $page);
 
-        return array('pager' => $pager, 'resourceId' => $resourceId);
+        return ['pager' => $pager, 'resourceId' => $resourceId];
     }
 
     /**

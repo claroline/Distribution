@@ -15,14 +15,14 @@ class DefaultData extends AbstractFixture
          * array format:
          *   - name
          */
-        $returnreceipttypesArray = array(
-                array('NO RETURN RECEIPT'),
-                array('DOUBLOON'),
-                array('DOCUMENT RECEIVED'),
-                array('DOCUMENT UNREADABLE'),
-                array('INCOMPLETE DOCUMENT'),
-                array('ERROR DOCUMENT'),
-        );
+        $returnreceipttypesArray = [
+                ['NO RETURN RECEIPT'],
+                ['DOUBLOON'],
+                ['DOCUMENT RECEIVED'],
+                ['DOCUMENT UNREADABLE'],
+                ['INCOMPLETE DOCUMENT'],
+                ['ERROR DOCUMENT'],
+        ];
 
         /* TRAITEMENT */
         foreach ($returnreceipttypesArray as $returnreceipttype) {

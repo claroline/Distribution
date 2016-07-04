@@ -23,7 +23,7 @@ class CoursesWidgetConfigurationType extends AbstractType
         $builder->add(
             'cursus',
             'entity',
-            array(
+            [
                 'class' => 'ClarolineCursusBundle:Cursus',
                 'query_builder' => function (EntityRepository $er) {
 
@@ -34,7 +34,7 @@ class CoursesWidgetConfigurationType extends AbstractType
                 'property' => 'titleAndCode',
                 'required' => false,
                 'label' => 'cursus',
-            )
+            ]
         );
     }
 
@@ -45,6 +45,6 @@ class CoursesWidgetConfigurationType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'cursus'));
+        $resolver->setDefaults(['translation_domain' => 'cursus']);
     }
 }

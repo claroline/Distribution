@@ -24,15 +24,15 @@ class ImportResourcesType extends AbstractType
         $builder->add(
             'file',
             'file',
-            array(
+            [
                 'label' => 'file',
                 'required' => true,
                 'mapped' => false,
-                'constraints' => array(
+                'constraints' => [
                     new NotBlank(),
                     new File(),
-                ),
-           )
+                ],
+           ]
         );
     }
 
@@ -43,6 +43,6 @@ class ImportResourcesType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform']);
     }
 }

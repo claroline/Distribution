@@ -24,7 +24,7 @@ class ProfileLinksEvent extends Event
     {
         $this->user = $user;
         $this->locale = $locale;
-        $this->links = array();
+        $this->links = [];
     }
 
     public function addTab(ProfileLink $tab)

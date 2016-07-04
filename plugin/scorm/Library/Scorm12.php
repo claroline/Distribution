@@ -94,7 +94,7 @@ class Scorm12
         Scorm12Sco $parentSco = null
     ) {
         $item = $source->firstChild;
-        $scos = array();
+        $scos = [];
 
         while (!is_null($item)) {
             if ($item->nodeName === 'item') {

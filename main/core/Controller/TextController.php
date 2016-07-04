@@ -11,14 +11,14 @@
 
 namespace Claroline\CoreBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Response;
 use Claroline\CoreBundle\Entity\Resource\Revision;
 use Claroline\CoreBundle\Entity\Resource\Text;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
@@ -44,16 +44,16 @@ class TextController extends Controller
      */
     public function editFormAction(Text $text)
     {
-        $collection = new ResourceCollection(array($text->getResourceNode()));
+        $collection = new ResourceCollection([$text->getResourceNode()]);
         $this->checkAccess('EDIT', $collection);
 
         $em = $this->container->get('doctrine.orm.entity_manager');
         $revisionRepo = $em->getRepository('ClarolineCoreBundle:Resource\Revision');
 
-        return array(
+        return [
             'text' => $revisionRepo->getLastRevision($text)->getContent(),
             '_resource' => $text,
-        );
+        ];
     }
 
     /**
@@ -70,7 +70,7 @@ class TextController extends Controller
      */
     public function editAction(Text $old)
     {
-        $collection = new ResourceCollection(array($old->getResourceNode()));
+        $collection = new ResourceCollection([$old->getResourceNode()]);
         $this->checkAccess('EDIT', $collection);
 
         $request = $this->get('request');
@@ -89,19 +89,19 @@ class TextController extends Controller
         $workspace = $old->getResourceNode()->getWorkspace();
         $usersToNotify = $workspace ?
             $this->container->get('claroline.manager.user_manager')
-                ->getUsersByWorkspaces(array($workspace), null, null, false) :
-            array();
+                ->getUsersByWorkspaces([$workspace], null, null, false) :
+            [];
 
         $this->get('claroline.event.event_dispatcher')
             ->dispatch(
                 'log',
                 'Log\LogEditResourceText',
-                array('node' => $old->getResourceNode(), 'usersToNotify' => $usersToNotify)
+                ['node' => $old->getResourceNode(), 'usersToNotify' => $usersToNotify]
             );
 
         $route = $this->get('router')->generate(
             'claro_resource_open',
-            array('resourceType' => 'text', 'node' => $old->getResourceNode()->getId())
+            ['resourceType' => 'text', 'node' => $old->getResourceNode()->getId()]
         );
 
         return new RedirectResponse($route);
@@ -123,16 +123,16 @@ class TextController extends Controller
     {
         $revisionRepo = $this->getDoctrine()->getManager()
             ->getRepository('ClarolineCoreBundle:Resource\Revision');
-        $collection = new ResourceCollection(array($text->getResourceNode()));
+        $collection = new ResourceCollection([$text->getResourceNode()]);
         $isGranted = $this->container->get('security.authorization_checker')->isGranted('EDIT', $collection);
 
         return $this->render(
             'ClarolineCoreBundle:Text:index.html.twig',
-            array(
+            [
                 'text' => $revisionRepo->getLastRevision($text)->getContent(),
                 '_resource' => $text,
                 'isEditGranted' => $isGranted,
-            )
+            ]
         );
     }
 

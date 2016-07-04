@@ -32,13 +32,13 @@ class LogUserUpdateEvent extends LogGenericEvent implements MandatoryEventInterf
     {
         parent::__construct(
             self::ACTION,
-            array(
-                'receiverUser' => array(
+            [
+                'receiverUser' => [
                     'firstName' => $receiver->getFirstName(),
                     'lastName' => $receiver->getLastName(),
                     'changeSet' => $changeSet,
-                ),
-            ),
+                ],
+            ],
             $receiver
         );
     }
@@ -48,6 +48,6 @@ class LogUserUpdateEvent extends LogGenericEvent implements MandatoryEventInterf
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_ADMIN);
+        return [self::DISPLAYED_ADMIN];
     }
 }

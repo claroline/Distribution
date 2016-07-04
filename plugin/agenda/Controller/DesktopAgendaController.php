@@ -97,10 +97,10 @@ class DesktopAgendaController extends Controller
         $formType->setIsDesktop();
         $form = $this->createForm($formType, new Event());
 
-        return array(
+        return [
             'form' => $form->createView(),
             'action' => $this->router->generate('claro_desktop_agenda_add'),
-        );
+        ];
     }
 
     /**
@@ -119,13 +119,13 @@ class DesktopAgendaController extends Controller
             $users = $form->get('users')->getData();
             $data = $this->agendaManager->addEvent($event,  $event->getWorkspace(), $users);
 
-            return new JsonResponse(array($data), 200);
+            return new JsonResponse([$data], 200);
         }
 
-        return array(
+        return [
             'form' => $form->createView(),
-            'action' => $this->router->generate('claro_desktop_agenda_add', array()),
-        );
+            'action' => $this->router->generate('claro_desktop_agenda_add', []),
+        ];
     }
 
     /**
@@ -144,13 +144,13 @@ class DesktopAgendaController extends Controller
         $formType->setIsDesktop();
         $form = $this->createForm($formType, $event);
 
-        return array(
+        return [
             'form' => $form->createView(),
             'action' => $this->router->generate(
-                'claro_desktop_agenda_update', array('event' => $event->getId())
+                'claro_desktop_agenda_update', ['event' => $event->getId()]
             ),
             'event' => $event,
-        );
+        ];
     }
 
     /**
@@ -180,13 +180,13 @@ class DesktopAgendaController extends Controller
             return new JsonResponse($event, 200);
         }
 
-        return array(
+        return [
             'form' => $form->createView(),
             'action' => $this->router->generate(
-                'claro_desktop_agenda_update', array('event' => $event->getId())
+                'claro_desktop_agenda_update', ['event' => $event->getId()]
             ),
             'event' => $event,
-        );
+        ];
     }
 
     /**
@@ -210,14 +210,14 @@ class DesktopAgendaController extends Controller
             return new JsonResponse($event->jsonSerialize($this->tokenStorage->getToken()->getUser()));
         }
 
-        return array(
+        return [
             'form' => $form->createView(),
             'action' => $this->router->generate(
-                'claro_desktop_agenda_guest_update', array('event' => $event->getId())
+                'claro_desktop_agenda_guest_update', ['event' => $event->getId()]
             ),
             'event' => $event,
             'isGuest' => true,
-        );
+        ];
     }
 
     /**
@@ -252,7 +252,7 @@ class DesktopAgendaController extends Controller
         $listEventsDesktop = $em->getRepository('ClarolineAgendaBundle:Event')->findDesktop($usr, false);
         $listEvents = $em->getRepository('ClarolineAgendaBundle:Event')->findByUserWithoutAllDay($usr, 5, $order);
 
-        return array('listEvents' => array_merge($listEvents, $listEventsDesktop));
+        return ['listEvents' => array_merge($listEvents, $listEventsDesktop)];
     }
 
     /**
@@ -269,7 +269,7 @@ class DesktopAgendaController extends Controller
     {
         $form = $this->createForm(new ImportAgendaType());
 
-        return array('form' => $form->createView());
+        return ['form' => $form->createView()];
     }
 
     /**
@@ -289,7 +289,7 @@ class DesktopAgendaController extends Controller
             return new JsonResponse($events, 200);
         }
 
-        return array('form' => $form->createView());
+        return ['form' => $form->createView()];
     }
 
     public function checkGuestAccess(Event $event)

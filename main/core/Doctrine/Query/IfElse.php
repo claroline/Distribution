@@ -9,7 +9,7 @@ use Doctrine\ORM\Query\SqlWalker;
 
 class IfElse extends FunctionNode
 {
-    private $expr = array();
+    private $expr = [];
 
     public function parse(Parser $parser)
     {

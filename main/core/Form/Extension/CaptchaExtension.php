@@ -11,11 +11,11 @@
 
 namespace Claroline\CoreBundle\Form\Extension;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormEvent;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Form\FormEvents;
 
 class CaptchaExtension extends AbstractTypeExtension
 {
@@ -44,7 +44,7 @@ class CaptchaExtension extends AbstractTypeExtension
                     $data = $event->getData();
 
                     if ($form->isRoot() && $form->getConfig()->getOption('compound')) {
-                        $form->add('captcha', 'captcha', array('label' => 'Captcha'));
+                        $form->add('captcha', 'captcha', ['label' => 'Captcha']);
                     }
 
                     $event->setData($data);

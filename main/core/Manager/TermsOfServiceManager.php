@@ -65,10 +65,10 @@ class TermsOfServiceManager
     public function getTermsOfService($translations = true)
     {
         if ($translations) {
-            return $this->contentManager->getTranslatedContent(array('type' => 'termsOfService'));
+            return $this->contentManager->getTranslatedContent(['type' => 'termsOfService']);
         }
 
-        return $this->contentManager->getContent(array('type' => 'termsOfService'));
+        return $this->contentManager->getContent(['type' => 'termsOfService']);
     }
 
     /**
@@ -98,7 +98,7 @@ class TermsOfServiceManager
      */
     public function setTermsOfService(array $translatedTerms)
     {
-        $terms = $this->contentManager->getContent(array('type' => 'termsOfService'));
+        $terms = $this->contentManager->getContent(['type' => 'termsOfService']);
 
         if ($terms instanceof Content) {
             $this->contentManager->updateContent($terms, $translatedTerms);
@@ -109,7 +109,7 @@ class TermsOfServiceManager
 
     public function deleteTermsOfService($locale)
     {
-        $termsOfService = $this->contentManager->getContent(array('type' => 'termsOfService'));
+        $termsOfService = $this->contentManager->getContent(['type' => 'termsOfService']);
 
         if ($termsOfService instanceof Content) {
             $this->contentManager->deleteTranslation($locale, $termsOfService->getId());

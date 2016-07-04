@@ -10,7 +10,7 @@ class BlogType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text', array('attr' => array('autofocus' => true)));
+        $builder->add('name', 'text', ['attr' => ['autofocus' => true]]);
     }
 
     public function getName()
@@ -20,11 +20,11 @@ class BlogType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
            'translation_domain' => 'icap_blog',
             'data_class' => 'Icap\BlogBundle\Entity\Blog',
             'csrf_protection' => true,
             'intention' => 'create_blog',
-        ));
+        ]);
     }
 }

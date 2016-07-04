@@ -4,7 +4,7 @@ namespace Icap\NotificationBundle\Library;
 
 class ColorChooser
 {
-    protected $colorArray = array(
+    protected $colorArray = [
         '#1ABC9C',
         '#16A085',
         '#2ECC71',
@@ -57,8 +57,8 @@ class ColorChooser
         '#C9112F',
         '#FF65B3',
         '#5BC4BE',
-    );
-    protected $alphabet = array(
+    ];
+    protected $alphabet = [
         'a',
         'b',
         'c',
@@ -85,9 +85,9 @@ class ColorChooser
         'x',
         'y',
         'z',
-    );
-    protected $needleArray = array();
-    protected $colorOjectArray = array();
+    ];
+    protected $needleArray = [];
+    protected $colorOjectArray = [];
 
     public function getColorForName($name)
     {
@@ -107,7 +107,7 @@ class ColorChooser
             //Stock needle in needle array
             array_push($this->needleArray, $needle);
             $colorForNeedle = $this->getColorForNeedle($needle);
-            $this->colorOjectArray[$name] = (object) array('color' => $colorForNeedle, 'key' => $needle, 'name' => $name);
+            $this->colorOjectArray[$name] = (object) ['color' => $colorForNeedle, 'key' => $needle, 'name' => $name];
 
             return $colorForNeedle;
         }

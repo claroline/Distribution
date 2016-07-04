@@ -11,10 +11,10 @@
 
 namespace Claroline\CoreBundle\Controller;
 
-use Mockery as m;
-use Claroline\CoreBundle\Library\Testing\MockeryTestCase;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Library\Testing\MockeryTestCase;
+use Mockery as m;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Controller for user self-registration. Access to this functionality requires
@@ -53,7 +53,7 @@ class RegistrationControllerTest extends MockeryTestCase
         $this->configHandler->shouldReceive('getParameter')
             ->with('allow_self_registration')->once()->andReturn(false);
 
-        $response = new JsonResponse(array(), 403);
+        $response = new JsonResponse([], 403);
         $this->assertEquals(
             $response->getStatusCode(),
             $this->controller->postUserRegistrationAction('json')->getStatusCode()
@@ -84,7 +84,7 @@ class RegistrationControllerTest extends MockeryTestCase
                         && $user->getMail() === 'mail@mail.com';
                 }
             )
-        )->andReturn(array());
+        )->andReturn([]);
         $this->userManager->shouldReceive('createUser')->once()->with(
             m::on(
                 function (User $user) {
@@ -97,7 +97,7 @@ class RegistrationControllerTest extends MockeryTestCase
             )
         );
 
-        $response = new $responseClass(array(), 200);
+        $response = new $responseClass([], 200);
         $this->assertEquals(
             $response->getContent(),
             $this->controller->postUserRegistrationAction($format)->getContent()
@@ -115,7 +115,7 @@ class RegistrationControllerTest extends MockeryTestCase
         $error = $this->mock('Symfony\Component\Validator\ConstraintViolation');
         $error->shouldReceive('getPropertyPath')->once()->andReturn('username');
         $error->shouldReceive('getMessage')->once()->andReturn('message');
-        $errorList = array($error);
+        $errorList = [$error];
 
         $this->validator->shouldReceive('validate')->once()->with(
             m::on(
@@ -129,7 +129,7 @@ class RegistrationControllerTest extends MockeryTestCase
             )
         )->andReturn($errorList);
 
-        $response = new JsonResponse(array(array('property' => 'username', 'message' => 'message')), 422);
+        $response = new JsonResponse([['property' => 'username', 'message' => 'message']], 422);
         $this->assertEquals(
             $response->getContent(),
             $this->controller->postUserRegistrationAction('json')->getContent()
@@ -159,17 +159,17 @@ class RegistrationControllerTest extends MockeryTestCase
 
     public function postUserProvider()
     {
-        return array(
-            array(
+        return [
+            [
                 'responseClass' => '\Claroline\CoreBundle\Library\HttpFoundation\XmlResponse',
                 'format' => 'xml',
                 'header' => 'text/xml',
-            ),
-            array(
+            ],
+            [
                 'responseClass' => '\Symfony\Component\HttpFoundation\JsonResponse',
                 'format' => 'json',
                 'header' => 'application/json',
-           ),
-        );
+           ],
+        ];
     }
 }

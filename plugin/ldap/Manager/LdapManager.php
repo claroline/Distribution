@@ -11,9 +11,9 @@
 
 namespace Claroline\LdapBundle\Manager;
 
-use JMS\DiExtraBundle\Annotation\Service;
-use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Inject;
+use JMS\DiExtraBundle\Annotation\InjectParams;
+use JMS\DiExtraBundle\Annotation\Service;
 use Symfony\Component\Yaml\Dumper;
 use Symfony\Component\Yaml\Parser;
 
@@ -82,17 +82,17 @@ class LdapManager
             $this->connect,
             $this->prepareUsername($server, $user),
             $filter,
-            array(
+            [
                 $server['userName'],
                 $server['firstName'],
                 $server['lastName'],
                 $server['email'],
                 'userpassword',
-            )
+            ]
         );
 
         $entries = $this->getEntries($search);
-        $user = array();
+        $user = [];
 
         foreach ($entries as $entry) {
             if ($entry) {
@@ -116,7 +116,7 @@ class LdapManager
      *
      * @return Returns a search result identifier or FALSE on error.
      */
-    public function search($server, $filter, $attributes = array())
+    public function search($server, $filter, $attributes = [])
     {
         return ldap_search($this->connect, $server['dn'], $filter, $attributes);
     }
@@ -232,9 +232,9 @@ class LdapManager
      */
     public function getClasses($server)
     {
-        $classes = array();
+        $classes = [];
 
-        if ($search = $this->search($server, '(&(objectClass=*))', array('objectclass'))) {
+        if ($search = $this->search($server, '(&(objectClass=*))', ['objectclass'])) {
             $entries = $this->getEntries($search);
             foreach ($entries as $objectClass) {
                 if (isset($objectClass['objectclass'])) {
@@ -254,7 +254,7 @@ class LdapManager
      */
     public function getUsers($server)
     {
-        $users = array();
+        $users = [];
 
         if (isset($server['objectClass']) &&
             $search = $this->search($server, '(&(objectClass='.$server['objectClass'].'))')
@@ -272,7 +272,7 @@ class LdapManager
      */
     public function getGroups($server)
     {
-        $groups = array();
+        $groups = [];
 
         if (isset($server['group']) &&
             $search = $this->search($server, '(&(objectClass='.$server['group'].'))')
@@ -298,7 +298,7 @@ class LdapManager
      */
     public function getServers()
     {
-        $servers = array();
+        $servers = [];
 
         if (isset($this->config['servers']) && is_array($this->config['servers'])) {
             foreach ($this->config['servers'] as $server) {

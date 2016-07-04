@@ -2,12 +2,12 @@
 
 namespace Innova\CollecticielBundle\Manager;
 
-use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\Entity\User;
 use Innova\CollecticielBundle\Entity\Drop;
 use Innova\CollecticielBundle\Entity\Dropzone;
 use Innova\CollecticielBundle\Event\Log\LogDropEndEvent;
 use Innova\CollecticielBundle\Event\Log\LogDropStartEvent;
+use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("innova.manager.drop_manager")
@@ -96,7 +96,7 @@ class DropManager
      */
     public function isDropFinished(Dropzone $dropzone, User $user)
     {
-        return $isFinished = $this->dropRepo->findOneBy(array('dropzone' => $dropzone, 'user' => $user, 'finished' => true)) !== null
+        return $isFinished = $this->dropRepo->findOneBy(['dropzone' => $dropzone, 'user' => $user, 'finished' => true]) !== null
             ? true
             : false;
     }
@@ -112,7 +112,7 @@ class DropManager
     public function getDrop(Dropzone $dropzone, User $user)
     {
         // on récupère le drop existant ou on le créé s'il n'existe pas.
-        $drop = $this->dropRepo->findOneBy(array('dropzone' => $dropzone, 'user' => $user, 'finished' => false));
+        $drop = $this->dropRepo->findOneBy(['dropzone' => $dropzone, 'user' => $user, 'finished' => false]);
         if ($drop === null) {
             $drop = $this->create($dropzone, $user);
             $this->eventDispatcher->dispatch('log', new LogDropStartEvent($dropzone, $drop));
@@ -123,7 +123,7 @@ class DropManager
 
     public function getDropTeacherComments(Drop $drop)
     {
-        $teacherComments = array();
+        $teacherComments = [];
         $dropzone = $drop->getDropzone();
         foreach ($drop->getDocuments() as $document) {
             $documentId = $document->getId();
@@ -148,7 +148,7 @@ class DropManager
 
     public function getReturnReceipts(Drop $drop)
     {
-        $returnReceipts = array();
+        $returnReceipts = [];
         foreach ($drop->getDocuments() as $document) {
             $returnReceiptType = $this->receiptRepo->doneReturnReceiptForOneDocument($document);
             if (!empty($returnReceiptType)) {
@@ -163,7 +163,7 @@ class DropManager
 
     public function getDroppedDocsByUserCount(Dropzone $dropzone)
     {
-        $userDocDroppedCount = array();
+        $userDocDroppedCount = [];
 
         foreach ($dropzone->getDrops() as $drop) {
             $user = $drop->getUser();
@@ -176,7 +176,7 @@ class DropManager
 
     public function getRequestByUserCount(Dropzone $dropzone)
     {
-        $userRequestCount = array();
+        $userRequestCount = [];
 
         foreach ($dropzone->getDrops() as $drop) {
             $user = $drop->getUser();
@@ -214,7 +214,7 @@ class DropManager
 
     public function getTeacherComments($drops, $workspace)
     {
-        $teacherDocComments = array();
+        $teacherDocComments = [];
 
         foreach ($drops as $drop) {
             foreach ($drop->getDocuments() as $document) {
@@ -246,7 +246,7 @@ class DropManager
      */
     public function getNotationForDocuments(Drop $drop)
     {
-        $notationDocuments = array();
+        $notationDocuments = [];
 
         $dropzone = $drop->getDropzone();
 
@@ -257,10 +257,10 @@ class DropManager
             $notations = $this
                 ->em->getRepository('InnovaCollecticielBundle:Notation')
                 ->findBy(
-                    array(
+                    [
                         'document' => $documentId,
                         'dropzone' => $dropzone->getId(),
-                    )
+                    ]
                 );
 
             // Nombre de notation pour le document et pour le dropzone
@@ -288,7 +288,7 @@ class DropManager
      */
     public function getNotationCommentForDocuments(Drop $drop)
     {
-        $notationCommentTextDocuments = array();
+        $notationCommentTextDocuments = [];
 
         $dropzone = $drop->getDropzone();
 
@@ -299,10 +299,10 @@ class DropManager
             $notations = $this
                 ->em->getRepository('InnovaCollecticielBundle:Notation')
                 ->findBy(
-                    array(
+                    [
                         'document' => $documentId,
                         'dropzone' => $dropzone->getId(),
-                    )
+                    ]
                 );
 
             // Nombre de notation pour le document et pour le dropzone
@@ -335,7 +335,7 @@ class DropManager
      */
     public function getNotationQualityForDocuments(Drop $drop)
     {
-        $notationQualityDocuments = array();
+        $notationQualityDocuments = [];
 
         $dropzone = $drop->getDropzone();
 
@@ -346,10 +346,10 @@ class DropManager
             $notations = $this
                 ->em->getRepository('InnovaCollecticielBundle:Notation')
                 ->findBy(
-                    array(
+                    [
                         'document' => $documentId,
                         'dropzone' => $dropzone->getId(),
-                    )
+                    ]
                 );
 
             // Nombre de notation pour le document et pour le dropzone
@@ -382,7 +382,7 @@ class DropManager
      */
     public function getAppreciationForDocuments(Drop $drop)
     {
-        $notationAppreciation = array();
+        $notationAppreciation = [];
 
         $dropzone = $drop->getDropzone();
         $this->gradingScaleRepo = $this->em->getRepository('InnovaCollecticielBundle:GradingScale');
@@ -394,10 +394,10 @@ class DropManager
             $notations = $this
                 ->em->getRepository('InnovaCollecticielBundle:Notation')
                 ->findBy(
-                    array(
+                    [
                         'document' => $documentId,
                         'dropzone' => $dropzone->getId(),
-                    )
+                    ]
                 );
 
             // Nombre de notation pour le document et pour le dropzone
@@ -430,7 +430,7 @@ class DropManager
      */
     public function getNotationAssessorForDocuments(Drop $drop)
     {
-        $notationAssessorDocuments = array();
+        $notationAssessorDocuments = [];
 
         $dropzone = $drop->getDropzone();
 
@@ -441,10 +441,10 @@ class DropManager
             $notations = $this
                 ->em->getRepository('InnovaCollecticielBundle:Notation')
                 ->findBy(
-                    array(
+                    [
                         'document' => $documentId,
                         'dropzone' => $dropzone->getId(),
-                    )
+                    ]
                 );
 
             // Nombre de notation pour le document et pour le dropzone
@@ -472,7 +472,7 @@ class DropManager
      */
     public function getRecordOrTransmitNotation(Drop $drop)
     {
-        $recordOrTransmitNotationArray = array();
+        $recordOrTransmitNotationArray = [];
 
         $dropzone = $drop->getDropzone();
 
@@ -483,10 +483,10 @@ class DropManager
             $recordOrTransmitNotations = $this
                 ->em->getRepository('InnovaCollecticielBundle:Notation')
                 ->findBy(
-                    array(
+                    [
                         'document' => $documentId,
                         'dropzone' => $dropzone->getId(),
-                    )
+                    ]
                 );
 
             $countRecordOrTransmitNotation = count($recordOrTransmitNotations);
@@ -517,7 +517,7 @@ class DropManager
      */
     public function getChoiceTextForDocuments(Drop $drop)
     {
-        $notationChoiceTextDocuments = array();
+        $notationChoiceTextDocuments = [];
 
         $dropzone = $drop->getDropzone();
 
@@ -528,10 +528,10 @@ class DropManager
             $notations = $this
                 ->em->getRepository('InnovaCollecticielBundle:Notation')
                 ->findBy(
-                    array(
+                    [
                         'document' => $documentId,
                         'dropzone' => $dropzone->getId(),
-                    )
+                    ]
                 );
 
             // Nombre de notation pour le document et pour le dropzone

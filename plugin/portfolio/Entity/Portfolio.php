@@ -200,12 +200,12 @@ class Portfolio
      */
     public static function getVisibilityLabels()
     {
-        return array(
+        return [
             self::VISIBILITY_NOBODY => self::VISIBILITY_NOBODY_LABEL,
             self::VISIBILITY_USER => self::VISIBILITY_USER_LABEL,
             self::VISIBILITY_PLATFORM_USER => self::VISIBILITY_PLATFORM_USER_LABEL,
             self::VISIBILITY_EVERYBODY => self::VISIBILITY_EVERYBODY_LABEL,
-        );
+        ];
     }
 
     /**
@@ -365,7 +365,7 @@ class Portfolio
      */
     public function getWidgets($widgetType = null)
     {
-        $widgets = array();
+        $widgets = [];
 
         foreach ($this->getPortfolioWidgets() as $portfolioWidget) {
             $widget = $portfolioWidget->getWidget();

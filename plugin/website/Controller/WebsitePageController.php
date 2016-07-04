@@ -9,14 +9,14 @@
 namespace Icap\WebsiteBundle\Controller;
 
 use Icap\WebsiteBundle\Entity\Website;
+use Icap\WebsiteBundle\Entity\WebsitePageTypeEnum;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Icap\WebsiteBundle\Entity\WebsitePageTypeEnum;
 
 /**
  * @Route(
@@ -47,17 +47,17 @@ class WebsitePageController extends Controller
         $currentPage = $pageManager->getPages($website, $pageId, $isAdmin, false);
         $website->setPages($pages);
 
-        return array(
+        return [
             '_resource' => $website,
             'workspace' => $website->getResourceNode()->getWorkspace(),
             'currentPage' => $currentPage[0],
             'user' => $user,
-            'pageTypes' => array(
+            'pageTypes' => [
                 'blank' => WebsitePageTypeEnum::BLANK_PAGE,
                 'resource' => WebsitePageTypeEnum::RESOURCE_PAGE,
                 'url' => WebsitePageTypeEnum::URL_PAGE,
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -80,7 +80,7 @@ class WebsitePageController extends Controller
             $pageManager = $this->getWebsitePageManager();
             $page = $pageManager->getPages($website, $pageId, $isAdmin, true);
             if ($page === null) {
-                $page = array();
+                $page = [];
             }
             $response->setData($page);
         } catch (\Exception $exception) {
@@ -203,11 +203,11 @@ class WebsitePageController extends Controller
             $this->checkAccess('ADMINISTRATE', $website);
             $pageManager = $this->getWebsitePageManager();
             try {
-                $pageManager->handleMovePage($website, array(
+                $pageManager->handleMovePage($website, [
                         'pageId' => $pageId,
                         'newParentId' => $newParentId,
                         'previousSiblingId' => $previousSiblingId,
-                    )
+                    ]
                 );
             } catch (\Exception $exception) {
                 $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);

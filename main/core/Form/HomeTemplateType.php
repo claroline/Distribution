@@ -17,11 +17,11 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class HomeTemplateType extends AbstractType
 {
-    private $templates = array();
+    private $templates = [];
 
     public function __construct($templatesDir)
     {
-        $contents = is_dir($templatesDir) ? scandir($templatesDir) : array();
+        $contents = is_dir($templatesDir) ? scandir($templatesDir) : [];
 
         foreach ($contents as $content) {
             if (!is_dir($content)) {
@@ -35,11 +35,11 @@ class HomeTemplateType extends AbstractType
         $builder->add(
             'template',
             'choice',
-            array(
+            [
                 'required' => false,
                 'choices' => $this->templates,
                 'label' => 'template',
-            )
+            ]
         );
     }
 
@@ -50,6 +50,6 @@ class HomeTemplateType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform']);
     }
 }

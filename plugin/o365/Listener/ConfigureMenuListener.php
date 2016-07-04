@@ -35,7 +35,7 @@ class ConfigureMenuListener
         $menu = $event->getMenu();
         $menu->addChild(
             'Office',
-            array('route' => 'formalibre_office_form')
+            ['route' => 'formalibre_office_form']
         )->setExtra('name', 'office');
 
         return $menu;
@@ -52,7 +52,7 @@ class ConfigureMenuListener
     {
         $content = $this->templating->render(
             'FormaLibreOfficeConnectBundle::button.html.twig',
-            array()
+            []
         );
 
         $event->addContent($content);

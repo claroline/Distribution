@@ -3,8 +3,8 @@
 namespace Claroline\CoreBubdle\Tests\API\User;
 
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Claroline\CoreBundle\Library\Testing\Persister;
+use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 
 class RoleControllerTest extends TransactionalTestCase
 {

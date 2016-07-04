@@ -11,11 +11,11 @@
 
 namespace Claroline\CoreBundle\Controller\API\Admin;
 
-use JMS\DiExtraBundle\Annotation as DI;
-use FOS\RestBundle\Controller\FOSRestController;
-use FOS\RestBundle\Controller\Annotations\NamePrefix;
 use Claroline\CoreBundle\Manager\LocaleManager;
 use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\NamePrefix;
+use FOS\RestBundle\Controller\FOSRestController;
+use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @NamePrefix("api_")

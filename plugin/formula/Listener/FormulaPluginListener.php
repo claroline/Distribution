@@ -34,7 +34,7 @@ class FormulaPluginListener extends ContainerAware
     {
         $content = $this->templating->render(
             'IcapFormulaPluginBundle:Formula:plugin.js.html.twig',
-            array()
+            []
         );
         $event->addContent($content);
     }

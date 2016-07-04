@@ -4,8 +4,8 @@ namespace Innova\CollecticielBundle\Event\Log;
 
 use Claroline\CoreBundle\Event\Log\AbstractLogResourceEvent;
 use Claroline\CoreBundle\Event\Log\NotifiableInterface;
-use Innova\CollecticielBundle\Entity\Dropzone;
 use Innova\CollecticielBundle\Entity\Comment;
+use Innova\CollecticielBundle\Entity\Dropzone;
 
 class LogDropzoneAddCommentEvent extends AbstractLogResourceEvent implements NotifiableInterface
 {
@@ -14,7 +14,7 @@ class LogDropzoneAddCommentEvent extends AbstractLogResourceEvent implements Not
     protected $dropzone;
     protected $newState;
     protected $details;
-    private $userIds = array();
+    private $userIds = [];
 
     /**
      * @param Wiki         $wiki
@@ -28,9 +28,9 @@ class LogDropzoneAddCommentEvent extends AbstractLogResourceEvent implements Not
         $this->newState = $dropzone->getResourceNode()->getName();
         $this->userIds = $userIds;
 
-        $this->details = array(
+        $this->details = [
 //            'newState'=> $this->newState
-        );
+        ];
 
         $this->userId = $dropzone->getDrops()[0]->getUser()->getId();
 
@@ -46,7 +46,7 @@ class LogDropzoneAddCommentEvent extends AbstractLogResourceEvent implements Not
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_WORKSPACE);
+        return [self::DISPLAYED_WORKSPACE];
     }
 
     public function getDropzone()
@@ -82,7 +82,7 @@ class LogDropzoneAddCommentEvent extends AbstractLogResourceEvent implements Not
      */
     public function getExcludeUserIds()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -112,14 +112,14 @@ class LogDropzoneAddCommentEvent extends AbstractLogResourceEvent implements Not
      */
     public function getNotificationDetails()
     {
-        $notificationDetails = array_merge($this->details, array());
+        $notificationDetails = array_merge($this->details, []);
 
-        $notificationDetails['resource'] = array(
+        $notificationDetails['resource'] = [
             'id' => $this->dropzone->getId(),
             'name' => $this->firstName.' '.$this->lastName, // $this->resource->getName(),
             'type' => $this->dropzone->getResourceNode()->getName().
             ' : '.substr(strip_tags($this->comment->getCommentText()), 0, 10),
-        );
+        ];
 
         return $notificationDetails;
     }

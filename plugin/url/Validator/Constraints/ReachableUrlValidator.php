@@ -2,13 +2,13 @@
 
 namespace HeVinci\UrlBundle\Validator\Constraints;
 
+use Guzzle\Http\Client;
 use Guzzle\Http\Exception\ClientErrorResponseException;
 use Guzzle\Http\Exception\CurlException;
 use Guzzle\Http\Exception\ServerErrorResponseException;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\UrlValidator;
-use Guzzle\Http\Client;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Validator("url_validator")
@@ -34,14 +34,14 @@ class ReachableUrlValidator extends UrlValidator
             $response = $request->send();
 
             if (!$response->isSuccessful()) {
-                $this->context->addViolation($constraint->clientError, array(
+                $this->context->addViolation($constraint->clientError, [
                     '%errorCode%' => $response->getStatusCode(),
-                ));
+                ]);
             }
         } catch (CurlException $e) {
-            $this->context->addViolation($constraint->websiteDoesntExist, array(
+            $this->context->addViolation($constraint->websiteDoesntExist, [
                 '%url' => $value,
-            ));
+            ]);
         } catch (ClientErrorResponseException $e) {
             $errorCode = $e->getResponse()->getStatusCode();
 
@@ -55,14 +55,14 @@ class ReachableUrlValidator extends UrlValidator
                     $this->context->addViolation($constraint->methodNotAllowed);
                 }
             } else {
-                $this->context->addViolation($constraint->clientError, array(
+                $this->context->addViolation($constraint->clientError, [
                     '%errorCode%' => $errorCode,
-                ));
+                ]);
             }
         } catch (ServerErrorResponseException $e) {
-            $this->context->addViolation($constraint->serverError, array(
+            $this->context->addViolation($constraint->serverError, [
                 '%errorCode%' => $e->getResponse()->getStatusCode(),
-            ));
+            ]);
         }
     }
 }

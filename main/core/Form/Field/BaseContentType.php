@@ -11,11 +11,11 @@
 
 namespace Claroline\CoreBundle\Form\Field;
 
+use JMS\DiExtraBundle\Annotation\FormType;
+use JMS\DiExtraBundle\Annotation\Service;
 use Symfony\Component\Form\Extension\Core\Type\BaseType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use JMS\DiExtraBundle\Annotation\Service;
-use JMS\DiExtraBundle\Annotation\FormType;
 
 /**
  * @Service("claroline.form.base_content")
@@ -42,24 +42,24 @@ class BaseContentType extends BaseType
             }
         }
 
-        $builder->add('title', 'text', array('data' => $title));
+        $builder->add('title', 'text', ['data' => $title]);
         if (isset($options['theme_options']['tinymce']) && !$options['theme_options']['tinymce']) {
             $builder->add(
                 'content',
                 'textarea',
-                array(
-                    'attr' => array('class' => 'form-control', 'rows' => '3'),
+                [
+                    'attr' => ['class' => 'form-control', 'rows' => '3'],
                     'mapped' => false,
                     'data' => $content,
-                )
+                ]
             );
         } else {
-            $builder->add('content', 'tinymce', array('data' => $content));
+            $builder->add('content', 'tinymce', ['data' => $content]);
         }
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('required' => false, 'mapped' => false));
+        $resolver->setDefaults(['required' => false, 'mapped' => false]);
     }
 }

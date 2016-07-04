@@ -3,11 +3,11 @@
 namespace Innova\CollecticielBundle\Controller;
 
 use Innova\CollecticielBundle\Entity\Document;
-use Innova\CollecticielBundle\Entity\GradingCriteria;
 use Innova\CollecticielBundle\Entity\Dropzone;
+use Innova\CollecticielBundle\Entity\GradingCriteria;
 use Innova\CollecticielBundle\Entity\Notation;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 class ChoiceCriteriaController extends DropzoneBaseController
 {
@@ -27,10 +27,10 @@ class ChoiceCriteriaController extends DropzoneBaseController
         // Ajout pour avoir si la notation a été transmise ou pas.
         $notationArray = $em->getRepository('InnovaCollecticielBundle:Notation')
                     ->findBy(
-                            array(
+                            [
                                 'document' => $document->getId(),
                                 'dropzone' => $dropzone->getId(),
-                                 )
+                                 ]
                             );
 
         // Nombre de notation pour le document et pour le dropzone
@@ -46,6 +46,6 @@ class ChoiceCriteriaController extends DropzoneBaseController
             }
         }
 
-        return array('value' => $choiceText);
+        return ['value' => $choiceText];
     }
 }

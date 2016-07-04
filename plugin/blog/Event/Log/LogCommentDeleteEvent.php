@@ -26,18 +26,18 @@ class LogCommentDeleteEvent extends AbstractLogResourceEvent
             $author = $comment->getAuthor()->getFirstName().' '.$comment->getAuthor()->getLastName();
         }
 
-        $details = array(
-            'post' => array(
+        $details = [
+            'post' => [
                 'blog' => $blog->getId(),
                 'title' => $post->getTitle(),
                 'slug' => $post->getSlug(),
-            ),
-            'comment' => array(
+            ],
+            'comment' => [
                 'id' => $comment->getId(),
                 'author' => $author,
                 'content' => $comment->getMessage(),
-            ),
-        );
+            ],
+        ];
 
         parent::__construct($blog->getResourceNode(), $details);
     }
@@ -47,6 +47,6 @@ class LogCommentDeleteEvent extends AbstractLogResourceEvent
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_WORKSPACE);
+        return [self::DISPLAYED_WORKSPACE];
     }
 }

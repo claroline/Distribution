@@ -10,7 +10,7 @@ class CorrectionStandardType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('totalGrade', 'number', array('required' => true));
+        $builder->add('totalGrade', 'number', ['required' => true]);
     }
 
     public function getName()
@@ -20,8 +20,8 @@ class CorrectionStandardType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'translation_domain' => 'icap_dropzone',
-        ));
+        ]);
     }
 }

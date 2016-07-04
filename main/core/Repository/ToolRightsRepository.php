@@ -54,7 +54,7 @@ class ToolRightsRepository extends EntityRepository
         $executeQuery = true
     ) {
         if (count($orderedTools) === 0) {
-            return array();
+            return [];
         } else {
             $dql = '
                 SELECT tr

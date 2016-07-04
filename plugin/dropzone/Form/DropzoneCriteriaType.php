@@ -11,14 +11,14 @@ class DropzoneCriteriaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('goBack', 'hidden', array(
+            ->add('goBack', 'hidden', [
                 'mapped' => false,
-            ))
-            ->add('correctionInstruction', 'tinymce', array('required' => false))
-            ->add('totalCriteriaColumn', 'number', array('required' => true))
-            ->add('allowCommentInCorrection', 'checkbox', array('required' => false))
-            ->add('forceCommentInCorrection', 'checkbox', array('required' => false))
-            ->add('recalculateGrades', 'hidden', array('mapped' => false));
+            ])
+            ->add('correctionInstruction', 'tinymce', ['required' => false])
+            ->add('totalCriteriaColumn', 'number', ['required' => true])
+            ->add('allowCommentInCorrection', 'checkbox', ['required' => false])
+            ->add('forceCommentInCorrection', 'checkbox', ['required' => false])
+            ->add('recalculateGrades', 'hidden', ['mapped' => false]);
     }
 
     public function getName()
@@ -28,8 +28,8 @@ class DropzoneCriteriaType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'translation_domain' => 'icap_dropzone',
-        ));
+        ]);
     }
 }

@@ -4,9 +4,9 @@ namespace Icap\WikiBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ContributionType extends AbstractType
 {
@@ -18,17 +18,17 @@ class ContributionType extends AbstractType
                 $form = $event->getForm();
                 $data = $event->getData();
                 if ($data === null || $data->getSection() === null || $data->getSection()->isRoot() === false) {
-                    $form->add('title', 'text', array(
-                            'theme_options' => array('label_width' => 'col-md-1', 'control_width' => 'col-md-11'),
-                        )
+                    $form->add('title', 'text', [
+                            'theme_options' => ['label_width' => 'col-md-1', 'control_width' => 'col-md-11'],
+                        ]
                     );
                 }
-                $form->add('text', 'tinymce', array(
-                    'theme_options' => array('label_width' => 'col-md-1', 'control_width' => 'col-md-11'),
-                    'attr' => array(
+                $form->add('text', 'tinymce', [
+                    'theme_options' => ['label_width' => 'col-md-1', 'control_width' => 'col-md-11'],
+                    'attr' => [
                           'id' => 'icap_wiki_section_text',
-                        ),
-                    )
+                        ],
+                    ]
                 );
             }
         );
@@ -41,9 +41,9 @@ class ContributionType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'translation_domain' => 'icap_wiki',
             'data_class' => 'Icap\WikiBundle\Entity\Contribution',
-        ));
+        ]);
     }
 }

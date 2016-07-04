@@ -57,12 +57,12 @@ class WebsiteOptionsType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => 'Icap\WebsiteBundle\Entity\WebsiteOptions',
             'translation_domain' => 'icap_website',
             'csrf_protection' => false,
             'intention' => 'update_website_options',
-        ));
+        ]);
     }
 
     /**

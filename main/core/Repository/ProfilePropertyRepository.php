@@ -45,7 +45,7 @@ class ProfilePropertyRepository extends EntityRepository
         $query->setParameter('roleNames', $roles);
 
         $results = $query->getResult();
-        $properties = array();
+        $properties = [];
 
         foreach ($results as $result) {
             $properties[$result['property']] = (boolean) $result['isEditable'];

@@ -2,11 +2,11 @@
 
 namespace Icap\PortfolioBundle\Exporter;
 
-use Icap\BadgeBundle\Entity\Badge;
-use Icap\BadgeBundle\Entity\BadgeTranslation;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Testing\MockeryTestCase;
+use Icap\BadgeBundle\Entity\Badge;
+use Icap\BadgeBundle\Entity\BadgeTranslation;
 use Icap\PortfolioBundle\Entity\Portfolio;
 use Icap\PortfolioBundle\Entity\Widget\BadgesWidgetBadge;
 use Symfony\Bridge\Twig\TwigEngine;
@@ -33,7 +33,7 @@ class ExporterTest extends MockeryTestCase
     {
         parent::setUp();
 
-        $templateLoader = new Twig_Loader_Array(array(
+        $templateLoader = new Twig_Loader_Array([
             'IcapPortfolioBundle:export:export.leap2a.twig' => file_get_contents(__DIR__.'/../../../Resources/views/export/export.leap2a.twig'),
             'IcapPortfolioBundle:export\leap2a:badges.leap2a.twig' => file_get_contents(__DIR__.'/../../../Resources/views/export/leap2a/badges.leap2a.twig'),
             'IcapPortfolioBundle:export\leap2a:skills.leap2a.twig' => file_get_contents(__DIR__.'/../../../Resources/views/export/leap2a/skills.leap2a.twig'),
@@ -41,7 +41,7 @@ class ExporterTest extends MockeryTestCase
             'IcapPortfolioBundle:export\leap2a:userInformation.leap2a.twig' => file_get_contents(__DIR__.'/../../../Resources/views/export/leap2a/userInformation.leap2a.twig'),
             'IcapPortfolioBundle:export\leap2a:formations.leap2a.twig' => file_get_contents(__DIR__.'/../../../Resources/views/export/leap2a/formations.leap2a.twig'),
             'IcapPortfolioBundle:export\leap2a:experience.leap2a.twig' => file_get_contents(__DIR__.'/../../../Resources/views/export/leap2a/experience.leap2a.twig'),
-        ));
+        ]);
 
         $this->twigEnvironment = new Twig_Environment($templateLoader);
 
@@ -59,7 +59,7 @@ class ExporterTest extends MockeryTestCase
         $requestContext = new RequestContext();
         $urlGenerator = new UrlGenerator($routeCollection, $requestContext);
 
-        $routingTwigExtension = $this->mock('Symfony\Bridge\Twig\Extension\RoutingExtension[getUrl]', array($urlGenerator));
+        $routingTwigExtension = $this->mock('Symfony\Bridge\Twig\Extension\RoutingExtension[getUrl]', [$urlGenerator]);
         $routingTwigExtension->shouldReceive('getUrl')->andReturn($urlToReturn);
 
         return $routingTwigExtension;
@@ -161,7 +161,7 @@ EXPORT;
             ->setId($badgesWidgetBadgeId = rand(0, PHP_INT_MAX));
 
         $badgesWidget
-            ->setBadges(array($badgesWidgetBadge))
+            ->setBadges([$badgesWidgetBadge])
             ->setLabel($badgesWidgetLabel = uniqid());
 
         $portfolio = new Portfolio();
@@ -169,7 +169,7 @@ EXPORT;
             ->setTitle($portfolioTitle = uniqid())
             ->setSlug($portfolioSlug = uniqid())
             ->setUser($this->createUser($firstname = uniqid(), $lastname = uniqid()))
-            ->setWidgets(array($badgesWidget));
+            ->setWidgets([$badgesWidget]);
 
         $actual = $exporter->export($portfolio, 'leap2a');
         $portfolioLastUpdateDate = $badgesWidgetUpdatedAt->format(\DateTime::ATOM);
@@ -244,7 +244,7 @@ EXPORT;
             ->setId($badgesWidgetBadge2Id = rand(0, PHP_INT_MAX));
 
         $badgesWidget
-            ->setBadges(array($badgesWidgetBadge, $badgesWidgetBadge2))
+            ->setBadges([$badgesWidgetBadge, $badgesWidgetBadge2])
             ->setLabel($badgesWidgetLabel = uniqid());
 
         $portfolio = new Portfolio();
@@ -252,7 +252,7 @@ EXPORT;
             ->setTitle($portfolioTitle = uniqid())
             ->setSlug($portfolioSlug = uniqid())
             ->setUser($this->createUser($firstname = uniqid(), $lastname = uniqid()))
-            ->setWidgets(array($badgesWidget));
+            ->setWidgets([$badgesWidget]);
 
         $actual = $exporter->export($portfolio, 'leap2a');
         $portfolioLastUpdateDate = $badgesWidgetUpdatedAt->format(\DateTime::ATOM);
@@ -321,7 +321,7 @@ EXPORT;
         $skillsWidget->shouldReceive('getId')->andReturn($skillsWidgetId = rand(0, PHP_INT_MAX));
         $skillsWidget->shouldReceive('getUpdatedAt')->andReturn($skillsWidgetUpdatedAt = (new \DateTime())->add(new \DateInterval('P2D')));
         $skillsWidget
-            ->setSkills(array($skillsWidgetSkill, $skillsWidgetSkill2))
+            ->setSkills([$skillsWidgetSkill, $skillsWidgetSkill2])
             ->setLabel($skillsWidgetLabel = uniqid());
 
         $portfolio = new Portfolio();
@@ -329,7 +329,7 @@ EXPORT;
             ->setTitle($portfolioTitle = uniqid())
             ->setSlug($portfolioSlug = uniqid())
             ->setUser($this->createUser($firstname = uniqid(), $lastname = uniqid()))
-            ->setWidgets(array($skillsWidget));
+            ->setWidgets([$skillsWidget]);
 
         $actual = $exporter->export($portfolio, 'leap2a');
         $portfolioLastUpdateDate = $skillsWidgetUpdatedAt->format(\DateTime::ATOM);
@@ -397,14 +397,14 @@ EXPORT;
         $skillsWidget->shouldReceive('getId')->andReturn($skillsWidgetId = rand(0, PHP_INT_MAX));
         $skillsWidget->shouldReceive('getUpdatedAt')->andReturn($skillsWidgetUpdatedAt = (new \DateTime())->add(new \DateInterval('P2D')));
         $skillsWidget
-            ->setSkills(array($skillsWidgetSkill))
+            ->setSkills([$skillsWidgetSkill])
             ->setLabel($skillsWidgetLabel = uniqid());
 
         $skillsWidget2 = $this->mock('Icap\PortfolioBundle\Entity\Widget\SkillsWidget[getId, getUpdatedAt]');
         $skillsWidget2->shouldReceive('getId')->andReturn($skillsWidgetId2 = rand(0, PHP_INT_MAX));
         $skillsWidget2->shouldReceive('getUpdatedAt')->andReturn($skillsWidgetUpdatedAt2 = (new \DateTime())->add(new \DateInterval('P2D')));
         $skillsWidget2
-            ->setSkills(array($skillsWidgetSkill2))
+            ->setSkills([$skillsWidgetSkill2])
             ->setLabel($skillsWidgetLabel2 = uniqid());
 
         $portfolio = new Portfolio();
@@ -412,7 +412,7 @@ EXPORT;
             ->setTitle($portfolioTitle = uniqid())
             ->setSlug($portfolioSlug = uniqid())
             ->setUser($this->createUser($firstname = uniqid(), $lastname = uniqid()))
-            ->setWidgets(array($skillsWidget, $skillsWidget2));
+            ->setWidgets([$skillsWidget, $skillsWidget2]);
 
         $actual = $exporter->export($portfolio, 'leap2a');
         $portfolioLastUpdateDate = $skillsWidgetUpdatedAt->format(\DateTime::ATOM);
@@ -488,7 +488,7 @@ EXPORT;
             ->setTitle($portfolioTitle = uniqid())
             ->setSlug($portfolioSlug = uniqid())
             ->setUser($this->createUser($firstname = uniqid(), $lastname = uniqid()))
-            ->setWidgets(array($textWidget));
+            ->setWidgets([$textWidget]);
 
         $actual = $exporter->export($portfolio, 'leap2a');
         $textWidgetUpdatedAt = $textWidgetUpdatedAt->format(\DateTime::ATOM);
@@ -536,7 +536,7 @@ EXPORT;
             ->setTitle($portfolioTitle = uniqid())
             ->setSlug($portfolioSlug = uniqid())
             ->setUser($this->createUser($firstname = uniqid(), $lastname = uniqid()))
-            ->setWidgets(array($textWidget));
+            ->setWidgets([$textWidget]);
 
         $actual = $exporter->export($portfolio, 'leap2a');
         $textWidgetUpdatedAt = $textWidgetUpdatedAt->format(\DateTime::ATOM);
@@ -585,7 +585,7 @@ EXPORT;
             ->setTitle($portfolioTitle = uniqid())
             ->setSlug($portfolioSlug = uniqid())
             ->setUser($this->createUser($firstname = uniqid(), $lastname = uniqid()))
-            ->setWidgets(array($userInformationsWidget));
+            ->setWidgets([$userInformationsWidget]);
 
         $actual = $exporter->export($portfolio, 'leap2a');
         $userInformationsWidgetUpdatedAt = $userInformationsWidgetUpdatedAt->format(\DateTime::ATOM);
@@ -648,7 +648,7 @@ EXPORT;
             ->setName($formationWidgetName = uniqid())
             ->setStartDate($formationWidgetStartDate = new \DateTime())
             ->setEndDate($formationWidgetEndDate = (new \DateTime())->add(new \DateInterval('P1Y')))
-            ->setResources(array($formationWidgetResource))
+            ->setResources([$formationWidgetResource])
             ->setLabel($userInformationsWidgetLabel = uniqid());
 
         $portfolio = new Portfolio();
@@ -656,7 +656,7 @@ EXPORT;
             ->setTitle($portfolioTitle = uniqid())
             ->setSlug($portfolioSlug = uniqid())
             ->setUser($this->createUser($firstname = uniqid(), $lastname = uniqid()))
-            ->setWidgets(array($formationWidget));
+            ->setWidgets([$formationWidget]);
 
         $actual = $exporter->export($portfolio, 'leap2a');
         $formationWidgetUpdatedAt = $formationWidgetUpdatedAt->format(\DateTime::ATOM);
@@ -729,7 +729,7 @@ EXPORT;
             ->setName($formationWidgetName = uniqid())
             ->setStartDate($formationWidgetStartDate = new \DateTime())
             ->setEndDate($formationWidgetEndDate = (new \DateTime())->add(new \DateInterval('P1Y')))
-            ->setResources(array($formationWidgetResource))
+            ->setResources([$formationWidgetResource])
             ->setLabel($formationsWidgetLabel = uniqid());
 
         $portfolio = new Portfolio();
@@ -737,7 +737,7 @@ EXPORT;
             ->setTitle($portfolioTitle = uniqid())
             ->setSlug($portfolioSlug = uniqid())
             ->setUser($this->createUser($firstname = uniqid(), $lastname = uniqid()))
-            ->setWidgets(array($formationWidget));
+            ->setWidgets([$formationWidget]);
 
         $actual = $exporter->export($portfolio, 'leap2a');
         $formationWidgetUpdatedAt = $formationWidgetUpdatedAt->format(\DateTime::ATOM);
@@ -806,7 +806,7 @@ EXPORT;
             ->setTitle($portfolioTitle = uniqid())
             ->setSlug($portfolioSlug = uniqid())
             ->setUser($this->createUser($firstname = uniqid(), $lastname = uniqid()))
-            ->setWidgets(array($experienceWidget));
+            ->setWidgets([$experienceWidget]);
 
         $actual = $exporter->export($portfolio, 'leap2a');
         $experienceWidgetUpdatedAt = $experienceWidgetUpdatedAt->format(\DateTime::ATOM);

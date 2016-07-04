@@ -8,7 +8,7 @@ use Symfony\Component\Templating\EngineInterface;
 class Exporter
 {
     const EXPORT_FORMAT_LEAP2A = 'leap2a';
-    protected $availableFormats = array(self::EXPORT_FORMAT_LEAP2A);
+    protected $availableFormats = [self::EXPORT_FORMAT_LEAP2A];
 
     /**
      * @var EngineInterface
@@ -26,6 +26,6 @@ class Exporter
             throw new \InvalidArgumentException('Unknown format.');
         }
 
-        return $this->templatingEngine->render(sprintf('IcapPortfolioBundle:export:export.%s.twig', $format), array('portfolio' => $portfolio));
+        return $this->templatingEngine->render(sprintf('IcapPortfolioBundle:export:export.%s.twig', $format), ['portfolio' => $portfolio]);
     }
 }

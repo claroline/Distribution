@@ -11,15 +11,15 @@
 
 namespace Claroline\CoreBundle\Manager;
 
-use JMS\DiExtraBundle\Annotation as DI;
-use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\File;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
-use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Claroline\CoreBundle\Event\StrictDispatcher;
-use Symfony\Component\HttpFoundation\File\File as SfFile;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Event\StrictDispatcher;
+use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
+use Claroline\CoreBundle\Persistence\ObjectManager;
+use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\HttpFoundation\File\File as SfFile;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
@@ -115,7 +115,7 @@ class FileManager
         $this->dispatcher->dispatch(
             'log',
             'Log\LogResourceCustom',
-            array($file->getResourceNode(), 'update_file')
+            [$file->getResourceNode(), 'update_file']
         );
     }
 

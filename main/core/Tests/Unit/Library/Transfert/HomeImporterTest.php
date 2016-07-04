@@ -56,13 +56,13 @@ class HomeImporterTest extends MockeryTestCase
 
     public function validateProvider()
     {
-        return array(
+        return [
             //correct
-            array(
+            [
                 'basePath' => __DIR__.'/../../../Stub/transfert/valid/full',
                 'configPath' => 'tools/home.yml',
                 'isExceptionExpected' => false,
-            ),
-        );
+            ],
+        ];
     }
 }

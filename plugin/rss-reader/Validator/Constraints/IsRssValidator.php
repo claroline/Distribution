@@ -21,7 +21,7 @@ class IsRssValidator extends ConstraintValidator
         $content = @file_get_contents($value);
 
         if (!$content) {
-            $this->context->addViolation($constraint->message, array('{{ username }}' => $value));
+            $this->context->addViolation($constraint->message, ['{{ username }}' => $value]);
         }
     }
 }

@@ -10,9 +10,9 @@ class AudioRecorderConfigurationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('max_try', 'integer', array('required' => true, 'attr' => array('min' => 1, 'max' => 5)))
-            ->add('max_recording_time', 'integer', array('required' => true, 'attr' => array('min' => 0)))
-            ->add('', 'submit', array('label' => 'submit_config_label', 'translation_domain' => 'tools', 'attr' => array('class' => 'btn btn-primary pull-right')));
+        $builder->add('max_try', 'integer', ['required' => true, 'attr' => ['min' => 1, 'max' => 5]])
+            ->add('max_recording_time', 'integer', ['required' => true, 'attr' => ['min' => 0]])
+            ->add('', 'submit', ['label' => 'submit_config_label', 'translation_domain' => 'tools', 'attr' => ['class' => 'btn btn-primary pull-right']]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -24,10 +24,10 @@ class AudioRecorderConfigurationType extends AbstractType
 
     public function getDefaultOptions()
     {
-        return array(
+        return [
           'data_class' => 'Innova\AudioRecorderBundle\Entity\AudioRecorderConfiguration',
           'translation_domain' => 'tools',
-      );
+      ];
     }
 
     public function getName()

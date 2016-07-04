@@ -11,14 +11,14 @@
 
 namespace Claroline\ActivityToolBundle\Listener;
 
-use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Claroline\CoreBundle\Library\Security\Utilities;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Doctrine\ORM\EntityManager;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service
@@ -71,11 +71,11 @@ class ToolListener
 
         $content = $this->templating->render(
             'ClarolineActivityToolBundle::desktopActivityList.html.twig',
-            array(
+            [
                 'resourceInfos' => $data['resourceInfos'],
                 'activityInfos' => $data['activityInfos'],
                 'workspaceInfos' => $data['workspaceInfos'],
-            )
+            ]
         );
         $event->setContent($content);
         $event->stopPropagation();
@@ -92,11 +92,11 @@ class ToolListener
         $data = $this->fetchActivitiesData(false, $workspace);
         $content = $this->templating->render(
             'ClarolineActivityToolBundle::workspaceActivityList.html.twig',
-            array(
+            [
                 'workspace' => $workspace,
                 'resourceInfos' => $data['resourceInfos'],
                 'activityInfos' => $data['activityInfos'],
-            )
+            ]
         );
         $event->setContent($content);
         $event->stopPropagation();
@@ -107,24 +107,24 @@ class ToolListener
         $token = $this->tokenStorage->getToken();
         $userRoles = $this->utils->getRoles($token);
 
-        $criteria = array();
-        $criteria['roots'] = array();
+        $criteria = [];
+        $criteria['roots'] = [];
 
         if (!$isDesktopTool) {
             $root = $this->resourceManager->getWorkspaceRoot($workspace);
             $criteria['roots'][] = $root->getPath();
         }
 
-        $criteria['types'] = array('activity');
+        $criteria['types'] = ['activity'];
         $nodes = $this->resourceManager->getByCriteria($criteria, $userRoles);
 
-        $activitiesData = array();
-        $nodeInfo = array();
-        $activityNodesId = array();
-        $activityInfo = array();
+        $activitiesData = [];
+        $nodeInfo = [];
+        $activityNodesId = [];
+        $activityInfo = [];
 
         if ($isDesktopTool) {
-            $workspaceInfo = array();
+            $workspaceInfo = [];
         }
 
         foreach ($nodes as $node) {
@@ -142,10 +142,10 @@ class ToolListener
                     $code = $nodeWs['code'];
 
                     if (!isset($workspaceInfo[$code])) {
-                        $workspaceInfo[$code] = array();
+                        $workspaceInfo[$code] = [];
                         $workspaceInfo[$code]['code'] = $code;
                         $workspaceInfo[$code]['name'] = $nodeWs['name'];
-                        $workspaceInfo[$code]['nodes'] = array();
+                        $workspaceInfo[$code]['nodes'] = [];
                     }
                     $workspaceInfo[$code]['nodes'][] = $nodeWs['id'];
                 }
@@ -157,7 +157,7 @@ class ToolListener
             foreach ($activities as $activity) {
                 $node = $activity->getResourceNode();
                 $actNodeId = $node->getId();
-                $activityInfo[$actNodeId] = array();
+                $activityInfo[$actNodeId] = [];
                 $activityInfo[$actNodeId]['startDate'] = $node->getAccessibleFrom() instanceof \DateTime ?
                     $node->getAccessibleFrom()->format('Y-m-d H:i:s') :
                     '-';

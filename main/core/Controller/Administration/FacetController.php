@@ -11,19 +11,19 @@
 
 namespace Claroline\CoreBundle\Controller\Administration;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use JMS\DiExtraBundle\Annotation as DI;
-use JMS\SecurityExtraBundle\Annotation as SEC;
-use Symfony\Component\Routing\RouterInterface;
-use Claroline\CoreBundle\Manager\RoleManager;
+use Claroline\CoreBundle\Entity\Facet\Facet;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\FacetManager;
 use Claroline\CoreBundle\Manager\ProfilePropertyManager;
+use Claroline\CoreBundle\Manager\RoleManager;
+use JMS\DiExtraBundle\Annotation as DI;
+use JMS\SecurityExtraBundle\Annotation as SEC;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormFactoryInterface;
-use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Entity\Facet\Facet;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * @DI\Tag("security.secure_service")
@@ -72,7 +72,7 @@ class FacetController extends Controller
      */
     public function indexAction()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -89,11 +89,11 @@ class FacetController extends Controller
         $platformRoles = $this->roleManager->getPlatformNonAdminRoles(true);
         $profilePreferences = $this->facetManager->getProfilePreferences();
 
-        return array(
+        return [
             'facets' => $facets,
             'platformRoles' => $platformRoles,
             'profilePreferences' => $profilePreferences,
-        );
+        ];
     }
 
     /**
@@ -110,10 +110,10 @@ class FacetController extends Controller
         $labels = User::getEditableProperties();
         $properties = $this->profilePropertyManager->getAllProperties();
 
-        return array(
+        return [
             'platformRoles' => $platformRoles,
             'labels' => $labels,
             'properties' => $properties,
-        );
+        ];
     }
 }

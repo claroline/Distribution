@@ -87,11 +87,11 @@ class AdminSupportController extends Controller
     public function adminSupportIndexAction()
     {
         $types = $this->supportManager->getAllTypes();
-        $counters = array();
+        $counters = [];
 
         foreach ($types as $type) {
             $typeId = $type->getId();
-            $counters[$typeId] = array();
+            $counters[$typeId] = [];
             $newTickets = $this->supportManager->getTicketsByLevel($type, 0, '', 'id', 'ASC', false);
             $counters[$typeId]['new'] = count($newTickets);
             $closedTickets = $this->supportManager->getTicketsByLevel($type, -1, '', 'id', 'ASC', false);
@@ -102,7 +102,7 @@ class AdminSupportController extends Controller
             $counters[$typeId]['l2'] = count($l2Tickets);
         }
 
-        return array('types' => $types, 'counters' => $counters);
+        return ['types' => $types, 'counters' => $counters];
     }
 
     /**
@@ -116,7 +116,7 @@ class AdminSupportController extends Controller
      */
     public function adminSupportConfigurationMenuAction()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -132,7 +132,7 @@ class AdminSupportController extends Controller
     {
         $types = $this->supportManager->getAllTypes();
 
-        return array('types' => $types);
+        return ['types' => $types];
     }
 
     /**
@@ -148,7 +148,7 @@ class AdminSupportController extends Controller
     {
         $allStatus = $this->supportManager->getAllStatus();
 
-        return array('allStatus' => $allStatus);
+        return ['allStatus' => $allStatus];
     }
 
     /**
@@ -165,7 +165,7 @@ class AdminSupportController extends Controller
         $contactIds = $this->supportManager->getConfigurationContactsOption();
         $contacts = $this->userManager->getUsersByIds($contactIds);
 
-        return array('contacts' => $contacts);
+        return ['contacts' => $contacts];
     }
 
     /**
@@ -180,7 +180,7 @@ class AdminSupportController extends Controller
     {
         $config = $this->supportManager->getConfiguration();
         $details = $config->getDetails();
-        $contacts = isset($details['contacts']) ? $details['contacts'] : array();
+        $contacts = isset($details['contacts']) ? $details['contacts'] : [];
         $toAdd = explode(',', $contactIds);
 
         foreach ($toAdd as $userId) {
@@ -275,7 +275,7 @@ class AdminSupportController extends Controller
             }
         }
 
-        return array(
+        return [
             'type' => $type,
             'supportName' => $supportName,
             'nbNewTickets' => $nbNewTickets,
@@ -283,7 +283,7 @@ class AdminSupportController extends Controller
             'nbL2Tickets' => $nbL2Tickets,
             'nbClosedTickets' => $nbClosedTickets,
             'nbMyTickets' => $nbMyTickets,
-        );
+        ];
     }
 
     /**
@@ -315,7 +315,7 @@ class AdminSupportController extends Controller
             $max
         );
 
-        return array(
+        return [
             'tickets' => $tickets,
             'type' => $type,
             'supportName' => 'new',
@@ -324,7 +324,7 @@ class AdminSupportController extends Controller
             'max' => $max,
             'orderedBy' => $orderedBy,
             'order' => $order,
-        );
+        ];
     }
 
     /**
@@ -357,7 +357,7 @@ class AdminSupportController extends Controller
             $max
         );
 
-        return array(
+        return [
             'tickets' => $tickets,
             'type' => $type,
             'level' => $level,
@@ -367,7 +367,7 @@ class AdminSupportController extends Controller
             'max' => $max,
             'orderedBy' => $orderedBy,
             'order' => $order,
-        );
+        ];
     }
 
     /**
@@ -400,7 +400,7 @@ class AdminSupportController extends Controller
             $max
         );
 
-        return array(
+        return [
             'tickets' => $tickets,
             'type' => $type,
             'supportName' => 'my_tickets',
@@ -409,7 +409,7 @@ class AdminSupportController extends Controller
             'max' => $max,
             'orderedBy' => $orderedBy,
             'order' => $order,
-        );
+        ];
     }
 
     /**
@@ -441,7 +441,7 @@ class AdminSupportController extends Controller
             $max
         );
 
-        return array(
+        return [
             'tickets' => $tickets,
             'type' => $type,
             'supportName' => 'archives',
@@ -450,7 +450,7 @@ class AdminSupportController extends Controller
             'max' => $max,
             'orderedBy' => $orderedBy,
             'order' => $order,
-        );
+        ];
     }
 
     /**
@@ -464,7 +464,7 @@ class AdminSupportController extends Controller
      */
     public function adminTicketCommentsViewAction(Ticket $ticket)
     {
-        return array('ticket' => $ticket);
+        return ['ticket' => $ticket];
     }
 
     /**
@@ -478,7 +478,7 @@ class AdminSupportController extends Controller
      */
     public function adminTicketInterventionsViewAction(Ticket $ticket)
     {
-        return array('ticket' => $ticket);
+        return ['ticket' => $ticket];
     }
 
     /**
@@ -511,7 +511,7 @@ class AdminSupportController extends Controller
         }
 
         return new RedirectResponse(
-            $this->router->generate('formalibre_admin_ticket_open', array('ticket' => $ticket->getId()))
+            $this->router->generate('formalibre_admin_ticket_open', ['ticket' => $ticket->getId()])
         );
     }
 
@@ -526,7 +526,7 @@ class AdminSupportController extends Controller
      */
     public function adminTicketOpenAction(Ticket $ticket)
     {
-        return array('ticket' => $ticket);
+        return ['ticket' => $ticket];
     }
 
     /**
@@ -540,7 +540,7 @@ class AdminSupportController extends Controller
      */
     public function adminTicketOpenCommentsAction(Ticket $ticket)
     {
-        return array('ticket' => $ticket);
+        return ['ticket' => $ticket];
     }
 
     /**
@@ -565,7 +565,7 @@ class AdminSupportController extends Controller
             }
         }
 
-        return array('ticket' => $ticket, 'totalTime' => $totalTime);
+        return ['ticket' => $ticket, 'totalTime' => $totalTime];
     }
 
     /**
@@ -601,7 +601,7 @@ class AdminSupportController extends Controller
         $unfinishedInterventions = $this->supportManager->getUnfinishedInterventionByTicket($ticket);
         $hasOngoingIntervention = false;
         $ongoingIntervention = null;
-        $otherUnfinishedInterventions = array();
+        $otherUnfinishedInterventions = [];
 
         foreach ($unfinishedInterventions as $unfinishedIntervention) {
             if ($unfinishedIntervention->getUser() === $authenticatedUser) {
@@ -626,7 +626,7 @@ class AdminSupportController extends Controller
         $nbMinutes = ($nbHours === 0) ? $totalTime : $totalTime % ($nbHours * 60);
         $totalCredits = (5 * $nbHours) + ceil($nbMinutes / 15);
 
-        return array(
+        return [
             'ticket' => $ticket,
             'currentUser' => $authenticatedUser,
             'unfinishedInterventions' => $otherUnfinishedInterventions,
@@ -638,7 +638,7 @@ class AdminSupportController extends Controller
             'availableCredits' => $nbCredits,
             'totalTime' => $totalTime,
             'withCredits' => $withCredits,
-        );
+        ];
     }
 
     /**
@@ -659,7 +659,7 @@ class AdminSupportController extends Controller
         $intervention->setStartDate(new \DateTime());
         $this->supportManager->persistIntervention($intervention);
 
-        return new JsonResponse(array('id' => $intervention->getId()), 200);
+        return new JsonResponse(['id' => $intervention->getId()], 200);
     }
 
     /**
@@ -693,7 +693,7 @@ class AdminSupportController extends Controller
             $this->supportManager->persistTicket($ticket);
         }
 
-        return new JsonResponse(array('id' => $intervention->getId()), 200);
+        return new JsonResponse(['id' => $intervention->getId()], 200);
     }
 
     /**
@@ -709,7 +709,7 @@ class AdminSupportController extends Controller
     {
         $form = $this->formFactory->create(new TicketTypeChangeType($ticket), $ticket);
 
-        return array('form' => $form->createView(), 'ticket' => $ticket);
+        return ['form' => $form->createView(), 'ticket' => $ticket];
     }
 
     /**
@@ -731,7 +731,7 @@ class AdminSupportController extends Controller
 
             return new JsonResponse($ticket->getId(), 200);
         } else {
-            return array('form' => $form->createView(), 'ticket' => $ticket);
+            return ['form' => $form->createView(), 'ticket' => $ticket];
         }
     }
 
@@ -748,7 +748,7 @@ class AdminSupportController extends Controller
     {
         $form = $this->formFactory->create(new CommentType(), new Comment());
 
-        return array('form' => $form->createView(), 'ticket' => $ticket);
+        return ['form' => $form->createView(), 'ticket' => $ticket];
     }
 
     /**
@@ -781,7 +781,7 @@ class AdminSupportController extends Controller
 
             return new JsonResponse('success', 201);
         } else {
-            return array('form' => $form->createView(), 'ticket' => $ticket);
+            return ['form' => $form->createView(), 'ticket' => $ticket];
         }
     }
 
@@ -798,7 +798,7 @@ class AdminSupportController extends Controller
     {
         $form = $this->formFactory->create(new CommentEditType(), $comment);
 
-        return array('form' => $form->createView(), 'comment' => $comment);
+        return ['form' => $form->createView(), 'comment' => $comment];
     }
 
     /**
@@ -827,7 +827,7 @@ class AdminSupportController extends Controller
 
             return new JsonResponse('success', 200);
         } else {
-            return array('form' => $form->createView(), 'comment' => $comment);
+            return ['form' => $form->createView(), 'comment' => $comment];
         }
     }
 
@@ -869,7 +869,7 @@ class AdminSupportController extends Controller
             $intervention
         );
 
-        return array('form' => $form->createView(), 'ticket' => $ticket);
+        return ['form' => $form->createView(), 'ticket' => $ticket];
     }
 
     /**
@@ -911,7 +911,7 @@ class AdminSupportController extends Controller
                 } else {
                     $form->addError(
                         new FormError(
-                            $this->translator->trans('end_date_is_required', array(), 'support')
+                            $this->translator->trans('end_date_is_required', [], 'support')
                         )
                     );
                 }
@@ -926,7 +926,7 @@ class AdminSupportController extends Controller
                 } else {
                     $form->addError(
                         new FormError(
-                            $this->translator->trans('duration_is_required', array(), 'support')
+                            $this->translator->trans('duration_is_required', [], 'support')
                         )
                     );
                 }
@@ -946,11 +946,11 @@ class AdminSupportController extends Controller
             return new RedirectResponse(
                 $this->router->generate(
                     'formalibre_admin_ticket_open_interventions',
-                    array('ticket' => $ticket->getId())
+                    ['ticket' => $ticket->getId()]
                 )
             );
         } else {
-            return array('form' => $form->createView(), 'ticket' => $ticket);
+            return ['form' => $form->createView(), 'ticket' => $ticket];
         }
     }
 
@@ -970,11 +970,11 @@ class AdminSupportController extends Controller
             $intervention
         );
 
-        return array(
+        return [
             'form' => $form->createView(),
             'intervention' => $intervention,
             'ticket' => $intervention->getTicket(),
-        );
+        ];
     }
 
     /**
@@ -1010,7 +1010,7 @@ class AdminSupportController extends Controller
                 } else {
                     $form->addError(
                         new FormError(
-                            $this->translator->trans('end_date_is_required', array(), 'support')
+                            $this->translator->trans('end_date_is_required', [], 'support')
                         )
                     );
                 }
@@ -1025,7 +1025,7 @@ class AdminSupportController extends Controller
                 } else {
                     $form->addError(
                         new FormError(
-                            $this->translator->trans('duration_is_required', array(), 'support')
+                            $this->translator->trans('duration_is_required', [], 'support')
                         )
                     );
                 }
@@ -1038,15 +1038,15 @@ class AdminSupportController extends Controller
             return new RedirectResponse(
                 $this->router->generate(
                     'formalibre_admin_ticket_open_interventions',
-                    array('ticket' => $ticket->getId())
+                    ['ticket' => $ticket->getId()]
                 )
             );
         } else {
-            return array(
+            return [
                 'form' => $form->createView(),
                 'intervention' => $intervention,
                 'ticket' => $ticket,
-            );
+            ];
         }
     }
 
@@ -1081,7 +1081,7 @@ class AdminSupportController extends Controller
             $intervention
         );
 
-        return array('form' => $form->createView(), 'intervention' => $intervention);
+        return ['form' => $form->createView(), 'intervention' => $intervention];
     }
 
     /**
@@ -1106,7 +1106,7 @@ class AdminSupportController extends Controller
 
             return new JsonResponse($intervention->getId(), 200);
         } else {
-            return array('form' => $form->createView(), 'intervention' => $intervention);
+            return ['form' => $form->createView(), 'intervention' => $intervention];
         }
     }
 
@@ -1123,7 +1123,7 @@ class AdminSupportController extends Controller
     {
         $form = $this->formFactory->create(new TypeType(), new Type());
 
-        return array('form' => $form->createView());
+        return ['form' => $form->createView()];
     }
 
     /**
@@ -1146,7 +1146,7 @@ class AdminSupportController extends Controller
 
             return new JsonResponse('success', 200);
         } else {
-            return array('form' => $form->createView());
+            return ['form' => $form->createView()];
         }
     }
 
@@ -1163,7 +1163,7 @@ class AdminSupportController extends Controller
     {
         $form = $this->formFactory->create(new TypeType(), $type);
 
-        return array('form' => $form->createView(), 'type' => $type);
+        return ['form' => $form->createView(), 'type' => $type];
     }
 
     /**
@@ -1185,7 +1185,7 @@ class AdminSupportController extends Controller
 
             return new JsonResponse('success', 200);
         } else {
-            return array('form' => $form->createView(), 'type' => $type);
+            return ['form' => $form->createView(), 'type' => $type];
         }
     }
 
@@ -1217,7 +1217,7 @@ class AdminSupportController extends Controller
     {
         $form = $this->formFactory->create(new StatusType(), new Status());
 
-        return array('form' => $form->createView());
+        return ['form' => $form->createView()];
     }
 
     /**
@@ -1247,7 +1247,7 @@ class AdminSupportController extends Controller
 
             return new JsonResponse('success', 200);
         } else {
-            return array('form' => $form->createView());
+            return ['form' => $form->createView()];
         }
     }
 
@@ -1264,7 +1264,7 @@ class AdminSupportController extends Controller
     {
         $form = $this->formFactory->create(new StatusType(), $status);
 
-        return array('form' => $form->createView(), 'status' => $status);
+        return ['form' => $form->createView(), 'status' => $status];
     }
 
     /**
@@ -1286,7 +1286,7 @@ class AdminSupportController extends Controller
 
             return new JsonResponse('success', 200);
         } else {
-            return array('form' => $form->createView(), 'status' => $status);
+            return ['form' => $form->createView(), 'status' => $status];
         }
     }
 
@@ -1340,7 +1340,7 @@ class AdminSupportController extends Controller
 
         $form = $this->formFactory->create(new PluginConfigurationType($details));
 
-        return array('form' => $form->createView());
+        return ['form' => $form->createView()];
     }
 
     /**
@@ -1368,7 +1368,7 @@ class AdminSupportController extends Controller
                 $this->router->generate('claro_admin_plugins')
             );
         } else {
-            return array('form' => $form->createView());
+            return ['form' => $form->createView()];
         }
     }
 }

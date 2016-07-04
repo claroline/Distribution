@@ -2,8 +2,8 @@
 
 namespace Icap\BlogBundle\Installation;
 
-use Icap\BlogBundle\Installation\Updater\UpdaterMaster;
 use Claroline\InstallationBundle\Additional\AdditionalInstaller as BaseInstaller;
+use Icap\BlogBundle\Installation\Updater\UpdaterMaster;
 
 class AdditionalInstaller extends BaseInstaller
 {

@@ -11,8 +11,8 @@
 
 namespace Claroline\MessageBundle\DataFixtures;
 
-use Claroline\CoreBundle\Entity\Tool\Tool;
 use Claroline\CoreBundle\Entity\Tool\OrderedTool;
+use Claroline\CoreBundle\Entity\Tool\Tool;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -41,7 +41,7 @@ class LoadRequiredData extends AbstractFixture implements ContainerAwareInterfac
 
         if (!is_null($messagePlugin)) {
             $toolRepo = $om->getRepository('ClarolineCoreBundle:Tool\Tool');
-            $messageTool = $toolRepo->findOneBy(array('name' => 'message'));
+            $messageTool = $toolRepo->findOneBy(['name' => 'message']);
 
             if (is_null($messageTool)) {
                 $messageTool = new Tool();

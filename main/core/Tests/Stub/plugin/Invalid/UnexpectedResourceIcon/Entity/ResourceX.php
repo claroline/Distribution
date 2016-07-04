@@ -11,8 +11,8 @@
 
 namespace Invalid\UnexpectedResourceIcon\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity

@@ -24,9 +24,9 @@ class EscaperExtension extends \Twig_Extension
 
     public function getFilters()
     {
-        return array(
+        return [
             'ng_escape' => new \Twig_Filter_Method($this, 'ngEscape'),
-        );
+        ];
     }
 
     public function getName()

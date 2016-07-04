@@ -2,8 +2,8 @@
 
 namespace FormaLibre\PresenceBundle\Listener;
 
-use Claroline\CoreBundle\Event\OpenAdministrationToolEvent;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
+use Claroline\CoreBundle\Event\OpenAdministrationToolEvent;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -33,9 +33,9 @@ class PresenceListener
      */
     public function onAdministrationToolOpen(OpenAdministrationToolEvent $event)
     {
-        $params = array();
+        $params = [];
         $params['_controller'] = 'FormaLibrePresenceBundle:AdminPresence:adminToolIndex';
-        $subRequest = $this->request->duplicate(array(), null, $params);
+        $subRequest = $this->request->duplicate([], null, $params);
         $response = $this->httpKernel
             ->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
         $event->setResponse($response);
@@ -49,9 +49,9 @@ class PresenceListener
      */
     public function onToolOpen(DisplayToolEvent $event)
     {
-        $params = array();
+        $params = [];
         $params['_controller'] = 'FormaLibrePresenceBundle:Presence:ToolIndex';
-        $subRequest = $this->request->duplicate(array(), null, $params);
+        $subRequest = $this->request->duplicate([], null, $params);
         $response = $this->httpKernel
             ->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
         $event->setContent($response->getContent());

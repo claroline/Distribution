@@ -11,19 +11,19 @@
 
 namespace Claroline\CoreBundle\Listener\Log;
 
+use Claroline\CoreBundle\Entity\Log\Log;
 use Claroline\CoreBundle\Event\Log\LogGenericEvent;
 use Claroline\CoreBundle\Event\Log\LogGroupDeleteEvent;
+use Claroline\CoreBundle\Event\Log\LogNotRepeatableInterface;
 use Claroline\CoreBundle\Event\Log\LogResourceDeleteEvent;
 use Claroline\CoreBundle\Event\Log\LogUserDeleteEvent;
 use Claroline\CoreBundle\Event\Log\LogWorkspaceRoleDeleteEvent;
-use Claroline\CoreBundle\Event\Log\LogNotRepeatableInterface;
-use Claroline\CoreBundle\Entity\Log\Log;
 use Claroline\CoreBundle\Event\LogCreateEvent;
-use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @DI\Service
@@ -172,25 +172,25 @@ class LogListener
         $details = $event->getDetails();
 
         if ($details === null) {
-            $details = array();
+            $details = [];
         }
 
         if ($doer !== null) {
-            $details['doer'] = array(
+            $details['doer'] = [
                 'firstName' => $doer->getFirstName(),
                 'lastName' => $doer->getLastName(),
                 'publicUrl' => $doer->getPublicUrl(),
-            );
+            ];
 
             if (count($log->getDoerPlatformRoles()) > 0) {
-                $doerPlatformRolesDetails = array();
+                $doerPlatformRolesDetails = [];
                 foreach ($log->getDoerPlatformRoles() as $platformRole) {
                     $doerPlatformRolesDetails[] = $platformRole->getTranslationKey();
                 }
                 $details['doer']['platformRoles'] = $doerPlatformRolesDetails;
             }
             if (count($log->getDoerWorkspaceRoles()) > 0) {
-                $doerWorkspaceRolesDetails = array();
+                $doerWorkspaceRolesDetails = [];
                 foreach ($log->getDoerWorkspaceRoles() as $workspaceRole) {
                     $doerWorkspaceRolesDetails[] = $workspaceRole->getTranslationKey();
                 }
@@ -252,7 +252,7 @@ class LogListener
 
             if ($pushInSession) {
                 //Update last logSignature for this event category
-                $array = array('logSignature' => $event->getLogSignature(), 'time' => $now);
+                $array = ['logSignature' => $event->getLogSignature(), 'time' => $now];
                 //$session->set($event->getAction(), json_encode($array));
                 $session->set($event->getLogSignature(), json_encode($array));
             }

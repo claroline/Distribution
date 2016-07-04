@@ -2,12 +2,12 @@
 
 namespace Icap\OAuthBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use JMS\DiExtraBundle\Annotation as DI;
 use Icap\OAuthBundle\Form\ConfigurationType;
-use Symfony\Component\Form\FormError;
+use JMS\DiExtraBundle\Annotation as DI;
 use JMS\SecurityExtraBundle\Annotation as SEC;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -42,7 +42,7 @@ class OauthController extends Controller
         $config = $this->oauthManager->getConfiguration($service);
         $form = $this->formFactory->create(new ConfigurationType(), $config);
 
-        return array('form' => $form->createView(), 'service' => $service);
+        return ['form' => $form->createView(), 'service' => $service];
     }
 
     /**
@@ -64,11 +64,11 @@ class OauthController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $data = array(
+            $data = [
                 $service.'_client_id' => $form['client_id']->getData(),
                 $service.'_client_secret' => $form['client_secret']->getData(),
                 $service.'_client_active' => $form['client_active']->getData(),
-            );
+            ];
 
             $errors = $this->oauthManager->validateService(
                 $service,
@@ -83,12 +83,12 @@ class OauthController extends Controller
                 return $this->redirectToRoute('claro_admin_parameters_oauth_index');
             } else {
                 foreach ($errors as $error) {
-                    $trans = $this->translator->trans($error, array(), 'platform');
+                    $trans = $this->translator->trans($error, [], 'platform');
                     $form->addError(new FormError($trans));
                 }
             }
         }
 
-        return array('form' => $form->createView(), 'service' => $service);
+        return ['form' => $form->createView(), 'service' => $service];
     }
 }

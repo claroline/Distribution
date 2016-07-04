@@ -59,9 +59,9 @@ class BadgesWidget extends AbstractWidget
      */
     public function getData()
     {
-        $data = array(
-            'children' => array(),
-        );
+        $data = [
+            'children' => [],
+        ];
 
         foreach ($this->getBadges() as $userBadge) {
             $data['children'][] = $userBadge->getData();
@@ -75,9 +75,9 @@ class BadgesWidget extends AbstractWidget
      */
     public function getEmpty()
     {
-        return array(
-            'children' => array(),
-        );
+        return [
+            'children' => [],
+        ];
     }
 
     /**

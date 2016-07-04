@@ -11,29 +11,29 @@
 
 namespace Claroline\CoreBundle\Controller\Tool;
 
-use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\Entity\Group;
-use Claroline\CoreBundle\Entity\Model\WorkspaceModel;
+use Claroline\CoreBundle\Entity\Home\HomeTab;
 use Claroline\CoreBundle\Entity\Model\ResourceModel;
+use Claroline\CoreBundle\Entity\Model\WorkspaceModel;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Claroline\CoreBundle\Entity\Home\HomeTab;
 use Claroline\CoreBundle\Form\ModelType;
 use Claroline\CoreBundle\Manager\GroupManager;
 use Claroline\CoreBundle\Manager\HomeTabManager;
-use Claroline\CoreBundle\Manager\WorkspaceModelManager;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Manager\UserManager;
+use Claroline\CoreBundle\Manager\WorkspaceModelManager;
+use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class ModelController extends Controller
 {
@@ -101,7 +101,7 @@ class ModelController extends Controller
         $this->checkAccess($workspace);
         $models = $this->modelManager->getByWorkspace($workspace);
 
-        return array('workspace' => $workspace, 'models' => $models);
+        return ['workspace' => $workspace, 'models' => $models];
     }
 
     /**
@@ -118,13 +118,13 @@ class ModelController extends Controller
     {
         $this->checkAccess($workspace);
         $form = $this->formFactory->create(new ModelType(), new WorkspaceModel());
-        $action = $this->router->generate('claro_workspace_model_create', array('workspace' => $workspace->getId()));
+        $action = $this->router->generate('claro_workspace_model_create', ['workspace' => $workspace->getId()]);
 
-        return array(
+        return [
             'form' => $form->createView(),
             'action' => $action,
             'title' => 'create_model',
-        );
+        ];
     }
 
     /**
@@ -147,22 +147,22 @@ class ModelController extends Controller
             $model = $this->modelManager->create($model->getName(), $workspace);
 
             return new JsonResponse(
-                array(
+                [
                     'name' => $model->getName(),
                     'id' => $model->getId(),
-                )
+                ]
             );
         }
 
-        $action = $this->router->generate('claro_workspace_model_create', array('workspace' => $workspace->getId()));
+        $action = $this->router->generate('claro_workspace_model_create', ['workspace' => $workspace->getId()]);
 
         return $this->render(
             'ClarolineCoreBundle:Tool\workspace\parameters\model:modelModalForm.html.twig',
-            array(
+            [
                 'form' => $form->createView(),
                 'action' => $action,
                 'title' => 'create_model',
-            )
+            ]
         );
     }
 
@@ -181,7 +181,7 @@ class ModelController extends Controller
         $id = $model->getId();
         $this->modelManager->delete($model);
 
-        return new JsonResponse(array('id' => $id));
+        return new JsonResponse(['id' => $id]);
     }
 
     /**
@@ -199,9 +199,9 @@ class ModelController extends Controller
     {
         $this->checkAccess($model->getWorkspace());
         $form = $this->formFactory->create(new ModelType(), $model);
-        $action = $this->router->generate('claro_workspace_model_rename', array('model' => $model->getId()));
+        $action = $this->router->generate('claro_workspace_model_rename', ['model' => $model->getId()]);
 
-        return array('form' => $form->createView(), 'action' => $action, 'title' => 'rename');
+        return ['form' => $form->createView(), 'action' => $action, 'title' => 'rename'];
     }
 
     /**
@@ -224,18 +224,18 @@ class ModelController extends Controller
             $model = $this->modelManager->edit($model, $form->get('name')->getData());
 
             return new JsonResponse(
-                array(
+                [
                     'id' => $model->getId(),
                     'name' => $model->getName(),
-                )
+                ]
             );
         }
 
-        $action = $this->router->generate('claro_workspace_model_rename', array('model' => $model->getId()));
+        $action = $this->router->generate('claro_workspace_model_rename', ['model' => $model->getId()]);
 
         return $this->render(
             'ClarolineCoreBundle:Tool\workspace\parameters\model:modelModalForm.html.twig',
-            array('form' => $form->createView(), 'action' => $action, 'title' => 'rename')
+            ['form' => $form->createView(), 'action' => $action, 'title' => 'rename']
         );
     }
 
@@ -262,13 +262,13 @@ class ModelController extends Controller
 
         $root = $this->resourceManager->getWorkspaceRoot($model->getWorkspace());
 
-        return array(
+        return [
             'model' => $model,
             'copied' => $copied,
             'links' => $links,
             'rootId' => $root->getId(),
             'workspace' => $model->getWorkspace(),
-        );
+        ];
     }
 
     /**
@@ -285,10 +285,10 @@ class ModelController extends Controller
     {
         $this->checkAccess($model->getWorkspace());
 
-        return array(
+        return [
             'model' => $model,
             'workspace' => $model->getWorkspace(),
-        );
+        ];
     }
 
     /**
@@ -325,7 +325,7 @@ class ModelController extends Controller
             $users = $this->userManager->getUsersNotSharingModelBySearch($model, $trimmedSearch, $page, 10);
         }
 
-        return array('users' => $users, 'search' => $search, 'model' => $model);
+        return ['users' => $users, 'search' => $search, 'model' => $model];
     }
 
     /**
@@ -359,11 +359,11 @@ class ModelController extends Controller
             $groups = $this->groupManager->getUsersNotSharingModelBySearch($model, $page, $trimmedSearch, 10);
         }
 
-        return array(
+        return [
             'groups' => $groups,
             'search' => $search,
             'model' => $model,
-        );
+        ];
     }
 
     /**
@@ -386,7 +386,7 @@ class ModelController extends Controller
         $data = [];
 
         foreach ($users as $user) {
-            $data['users'][] = array('id' => $user->getId(), 'username' => $user->getUsername());
+            $data['users'][] = ['id' => $user->getId(), 'username' => $user->getUsername()];
         }
 
         $data['model']['id'] = $model->getId();
@@ -413,7 +413,7 @@ class ModelController extends Controller
         $this->modelManager->addGroups($model, $groups);
 
         foreach ($groups as $group) {
-            $data['groups'][] = array('id' => $group->getId(), 'name' => $group->getName());
+            $data['groups'][] = ['id' => $group->getId(), 'name' => $group->getName()];
         }
 
         $data['model']['id'] = $model->getId();
@@ -433,7 +433,7 @@ class ModelController extends Controller
         $this->checkAccess($model->getWorkspace());
         $this->modelManager->removeGroup($model, $group);
 
-        return new JsonResponse(array('id' => $group->getId()));
+        return new JsonResponse(['id' => $group->getId()]);
     }
 
     /**
@@ -448,7 +448,7 @@ class ModelController extends Controller
         $this->checkAccess($model->getWorkspace());
         $this->modelManager->removeUser($model, $user);
 
-        return new JsonResponse(array('id' => $user->getId()));
+        return new JsonResponse(['id' => $user->getId()]);
     }
 
     /**
@@ -471,10 +471,10 @@ class ModelController extends Controller
         $data = [];
 
         foreach ($resourceModels as $resourceModel) {
-            $data[] = array(
+            $data[] = [
                 'resourceModelId' => $resourceModel->getId(),
                 'name' => $resourceModel->getResourceNode()->getName(),
-            );
+            ];
         }
 
         return new JsonResponse($data);
@@ -500,10 +500,10 @@ class ModelController extends Controller
         $data = [];
 
         foreach ($resourceModels as $resourceModel) {
-            $data[] = array(
+            $data[] = [
                 'resourceModelId' => $resourceModel->getId(),
                 'name' => $resourceModel->getResourceNode()->getName(),
-            );
+            ];
         }
 
         return new JsonResponse($data);
@@ -541,7 +541,7 @@ class ModelController extends Controller
     public function listHomeTabsAction(WorkspaceModel $model)
     {
         $this->checkAccess($model->getWorkspace());
-        $homeTabIds = array();
+        $homeTabIds = [];
         $homeTabs = $model->getHomeTabs();
 
         foreach ($homeTabs as $homeTab) {
@@ -550,10 +550,10 @@ class ModelController extends Controller
         $homeTabsConfig = $this->homeTabManager
             ->getWorkspaceHomeTabConfigsByWorkspace($model->getWorkspace());
 
-        return array(
+        return [
             'homeTabsConfig' => $homeTabsConfig,
             'homeTabIds' => $homeTabIds,
-        );
+        ];
     }
 
     /**
@@ -578,7 +578,7 @@ class ModelController extends Controller
         $data = [];
 
         foreach ($homeTabs as $homeTab) {
-            $data[] = array('name' => $homeTab->getName(), 'id' => $homeTab->getId());
+            $data[] = ['name' => $homeTab->getName(), 'id' => $homeTab->getId()];
         }
 
         return new JsonResponse($data);
@@ -619,7 +619,7 @@ class ModelController extends Controller
         if (!in_array($user, $users)) {
             throw new AccessDeniedException();
         }
-        $results = array();
+        $results = [];
         $workspace = $model->getWorkspace();
         $roles = $this->roleManager->getRolesByWorkspace($workspace);
 

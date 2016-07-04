@@ -28,7 +28,7 @@ class Updater030100 extends Updater
         $this->log('Setting desktop tools visibility...');
 
         $desktopTools = $this->em->getRepository('ClarolineCoreBundle:Tool\OrderedTool')
-            ->findBy(array('workspace' => null));
+            ->findBy(['workspace' => null]);
 
         for ($i = 0, $count = count($desktopTools); $i < $count; ++$i) {
             $desktopTools[$i]->setVisibleInDesktop(true);

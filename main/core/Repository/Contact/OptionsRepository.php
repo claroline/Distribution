@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Repository\Contact;
 
-use Doctrine\ORM\EntityRepository;
 use Claroline\CoreBundle\Entity\User;
+use Doctrine\ORM\EntityRepository;
 
 class OptionsRepository extends EntityRepository
 {

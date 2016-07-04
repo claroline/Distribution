@@ -11,12 +11,12 @@
 
 namespace Claroline\CoreBundle\Manager;
 
-use JMS\DiExtraBundle\Annotation as DI;
-use FOS\OAuthServerBundle\Entity\ClientManager;
-use Claroline\CoreBundle\Entity\Oauth\Client;
 use Claroline\CoreBundle\Entity\Oauth\ClarolineAccess;
+use Claroline\CoreBundle\Entity\Oauth\Client;
 use Claroline\CoreBundle\Entity\Oauth\FriendRequest;
 use Claroline\CoreBundle\Entity\Oauth\PendingFriend;
+use FOS\OAuthServerBundle\Entity\ClientManager;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -38,7 +38,7 @@ class OauthManager extends ClientManager
 
     public function findVisibleClients()
     {
-        return $this->repository->findBy(array('isHidden' => false));
+        return $this->repository->findBy(['isHidden' => false]);
     }
 
     public function findAllFriendRequests()
@@ -48,12 +48,12 @@ class OauthManager extends ClientManager
 
     public function findAllUnactivatedFriendRequests()
     {
-        return $this->om->getRepository('ClarolineCoreBundle:Oauth\FriendRequest')->findBy(array('isActivated' => false));
+        return $this->om->getRepository('ClarolineCoreBundle:Oauth\FriendRequest')->findBy(['isActivated' => false]);
     }
 
     public function findAllActivatedFriendRequests()
     {
-        return $this->om->getRepository('ClarolineCoreBundle:Oauth\FriendRequest')->findBy(array('isActivated' => true));
+        return $this->om->getRepository('ClarolineCoreBundle:Oauth\FriendRequest')->findBy(['isActivated' => true]);
     }
 
     public function findAllPendingFriends()
@@ -63,13 +63,13 @@ class OauthManager extends ClientManager
 
     public function findFriendRequestByName($name)
     {
-        return $this->om->getRepository('ClarolineCoreBundle:Oauth\FriendRequest')->findOneBy(array('name' => $name));
+        return $this->om->getRepository('ClarolineCoreBundle:Oauth\FriendRequest')->findOneBy(['name' => $name]);
     }
 
     public function findActivatedExternalAuthentications()
     {
         return $this->om->getRepository('ClarolineCoreBundle:Oauth\FriendRequest')->findBy(
-            array('isActivated' => true, 'allowAuthentication' => true)
+            ['isActivated' => true, 'allowAuthentication' => true]
         );
     }
 
@@ -176,18 +176,18 @@ class OauthManager extends ClientManager
 
     public function acceptFriendAction(PendingFriend $friend, $hide = false)
     {
-        $grantTypes = array(
+        $grantTypes = [
             'authorization_code',
             'password',
             'refresh_token',
             'token',
             'client_credentials',
-        );
+        ];
 
         $client = $this->createClient();
         $client->setAllowedGrantTypes($grantTypes);
         $client->setName($friend->getName());
-        $client->setRedirectUris(array($friend->getHost().'/oauth/v2/log/'.$friend->getName()));
+        $client->setRedirectUris([$friend->getHost().'/oauth/v2/log/'.$friend->getName()]);
         $this->updateClient($client);
         $url = $friend->getHost().'/admin/oauth/id/'.$client->getId().'_'.$client->getRandomId().
             '/secret/'.$client->getSecret().'/name/'.$friend->getName();

@@ -11,16 +11,16 @@
 
 namespace Claroline\CoreBundle\Form;
 
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class PartialWorkspaceImportType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('workspace', 'file', array('label' => 'file', 'constraints' => array(new NotBlank())));
+        $builder->add('workspace', 'file', ['label' => 'file', 'constraints' => [new NotBlank()]]);
     }
 
     public function getName()
@@ -30,6 +30,6 @@ class PartialWorkspaceImportType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform']);
     }
 }

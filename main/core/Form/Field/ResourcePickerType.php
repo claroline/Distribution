@@ -17,11 +17,11 @@ use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\FormBuilderInterface;
 
 /**
  * @Service()
@@ -31,7 +31,7 @@ class ResourcePickerType extends TextType
 {
     private $resourceManager;
     private $transformer;
-    private $defaultAttributes = array('class' => 'hide resource-picker');
+    private $defaultAttributes = ['class' => 'hide resource-picker'];
 
     /**
      * @InjectParams({
@@ -70,13 +70,13 @@ class ResourcePickerType extends TextType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'label' => 'resource',
                 'attr' => $this->defaultAttributes,
                 'display_view_button' => true,
                 'display_browse_button' => true,
                 'display_download_button' => true,
-            )
+            ]
         );
 
         $resolver

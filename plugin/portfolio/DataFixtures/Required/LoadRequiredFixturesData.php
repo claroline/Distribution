@@ -18,13 +18,13 @@ class LoadRequiredFixturesData extends AbstractFixture
          *   - name
          *   - icon class
          */
-        $widgetTypes = array(
-            array('userInformation', 'info'),
-            array('text', 'align-left'),
-            array('skills', 'bookmark'),
-            array('formations', 'graduation-cap'),
-            array('experience', 'briefcase'),
-        );
+        $widgetTypes = [
+            ['userInformation', 'info'],
+            ['text', 'align-left'],
+            ['skills', 'bookmark'],
+            ['formations', 'graduation-cap'],
+            ['experience', 'briefcase'],
+        ];
 
         foreach ($widgetTypes as $widgetType) {
             $entity = new WidgetType();

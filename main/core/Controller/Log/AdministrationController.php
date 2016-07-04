@@ -11,9 +11,9 @@
 
 namespace Claroline\CoreBundle\Controller\Log;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 
 class AdministrationController extends Controller
 {

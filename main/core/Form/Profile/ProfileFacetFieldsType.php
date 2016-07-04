@@ -11,9 +11,9 @@
 
 namespace Claroline\CoreBundle\Form\Profile;
 
+use Claroline\CoreBundle\Entity\Facet\Facet;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Claroline\CoreBundle\Entity\Facet\Facet;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -44,10 +44,10 @@ class ProfileFacetFieldsType extends AbstractType
     {
         $resolver
         ->setDefaults(
-            array(
+            [
                 'translation_domain' => 'platform',
-                'validation_groups' => array('registration', 'Default'),
-            )
+                'validation_groups' => ['registration', 'Default'],
+            ]
         );
     }
 }

@@ -11,10 +11,10 @@
 
 namespace Claroline\CoreBundle\Validator\Constraints;
 
-use Symfony\Component\Validator\Constraint;
-use Symfony\Component\Validator\ConstraintValidator;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\ConstraintValidator;
 
 /**
  * @DI\Validator("admin_workspace_tag_unique_name_validator")
@@ -38,10 +38,10 @@ class AdminWorkspaceTagUniqueNameValidator extends ConstraintValidator
         $name = trim($value);
         $workspaceTag = $this->em
             ->getRepository('ClarolineCoreBundle:Workspace\WorkspaceTag')
-            ->findOneBy(array('user' => null, 'name' => $name));
+            ->findOneBy(['user' => null, 'name' => $name]);
 
         if ($workspaceTag) {
-            $this->context->addViolation($constraint->message, array('{{ name }}' => $name));
+            $this->context->addViolation($constraint->message, ['{{ name }}' => $name]);
         }
     }
 }

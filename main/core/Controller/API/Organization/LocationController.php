@@ -11,21 +11,21 @@
 
 namespace Claroline\CoreBundle\Controller\API\Organization;
 
-use JMS\DiExtraBundle\Annotation as DI;
-use FOS\RestBundle\Controller\FOSRestController;
-use Claroline\CoreBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\Manager\Organization\LocationManager;
-use Claroline\CoreBundle\Manager\ApiManager;
 use Claroline\CoreBundle\Entity\Organization\Location;
+use Claroline\CoreBundle\Form\Organization\LocationType;
+use Claroline\CoreBundle\Manager\ApiManager;
+use Claroline\CoreBundle\Manager\Organization\LocationManager;
+use Claroline\CoreBundle\Persistence\ObjectManager;
+use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\NamePrefix;
+use FOS\RestBundle\Controller\Annotations\View;
+use FOS\RestBundle\Controller\FOSRestController;
+use JMS\DiExtraBundle\Annotation as DI;
+use JMS\SecurityExtraBundle\Annotation as SEC;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\Request;
-use FOS\RestBundle\Controller\Annotations\View;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use FOS\RestBundle\Controller\Annotations\NamePrefix;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use Claroline\CoreBundle\Form\Organization\LocationType;
-use JMS\SecurityExtraBundle\Annotation as SEC;
-use FOS\RestBundle\Controller\Annotations\Get;
 
 /**
  * @NamePrefix("api_")
@@ -125,11 +125,11 @@ class LocationController extends FOSRestController
             $httpCode = 400;
         }
 
-        $options = array(
+        $options = [
             'http_code' => $httpCode,
             'extra_parameters' => $location,
             'serializer_group' => 'api_location',
-        );
+        ];
 
         return $this->apiManager->handleFormView('ClarolineCoreBundle:API:Organization\createLocationForm.html.twig', $form, $options);
     }
@@ -156,11 +156,11 @@ class LocationController extends FOSRestController
             $httpCode = 200;
         }
 
-        $options = array(
+        $options = [
             'http_code' => $httpCode,
             'extra_parameters' => $location,
             'serializer_group' => 'api_location',
-        );
+        ];
 
         return $this->apiManager->handleFormView('ClarolineCoreBundle:API:Organization\editLocationForm.html.twig', $form, $options);
     }
@@ -178,6 +178,6 @@ class LocationController extends FOSRestController
     {
         $this->locationManager->delete($location);
 
-        return array('success');
+        return ['success'];
     }
 }

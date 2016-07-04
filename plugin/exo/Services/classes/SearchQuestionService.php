@@ -67,7 +67,7 @@ class SearchQuestionService
      */
     public function listQuestion($sharedQuestion)
     {
-        $listQuestions = array();
+        $listQuestions = [];
         $end = count($sharedQuestion);
         for ($i = 0; $i < $end; ++$i) {
             $listQuestions[] = $sharedQuestion[$i]->getQuestion();
@@ -86,7 +86,7 @@ class SearchQuestionService
     public function searchEntityResponse($listQuestions, $nameEntity)
     {
         $em = $this->doctrine->getManager();
-        $resultEnity = array();
+        $resultEnity = [];
         foreach ($listQuestions as $question) {
             $entity = $em->getRepository('UJMExoBundle:'.$nameEntity)
                     ->findOneByQuestion($question);

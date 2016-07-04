@@ -117,11 +117,11 @@ class ResourceQueryBuilderTest extends MockeryTestCase
             ->whereInWorkspace($mockedWorkspace)
             ->whereParentIs($mockedParent)
             ->wherePathLike('foo', false)
-            ->whereRoleIn(array('ROLE_FOO', 'ROLE_BAR'))
+            ->whereRoleIn(['ROLE_FOO', 'ROLE_BAR'])
             ->whereCanOpen()
             ->whereInUserWorkspace($mockedUser)
-            ->whereTypeIn(array('baz', 'bat'))
-            ->whereRootIn(array('foo-root', 'bar-root'))
+            ->whereTypeIn(['baz', 'bat'])
+            ->whereRootIn(['foo-root', 'bar-root'])
             ->whereDateFrom('2013-03-01')
             ->whereDateTo('2013-04-01')
             ->whereNameLike('foobar')
@@ -181,7 +181,7 @@ class ResourceQueryBuilderTest extends MockeryTestCase
 
         $this->assertEquals($expectedDql, $dql);
         $this->assertEquals(
-            array(
+            [
                 ':workspace_id' => 123,
                 ':ar_parentId' => 456,
                 ':pathlike' => 'foo%',
@@ -197,7 +197,7 @@ class ResourceQueryBuilderTest extends MockeryTestCase
                 ':dateTo' => '2013-04-01',
                 ':name' => '%foobar%',
                 ':isExportable' => true,
-            ),
+            ],
             $qb->getParameters()
         );
     }

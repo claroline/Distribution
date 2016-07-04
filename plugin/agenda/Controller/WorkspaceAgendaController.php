@@ -11,18 +11,18 @@
 
 namespace Claroline\AgendaBundle\Controller;
 
+use Claroline\AgendaBundle\Entity\Event;
+use Claroline\AgendaBundle\Form\ImportAgendaType;
+use Claroline\AgendaBundle\Manager\AgendaManager;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Persistence\ObjectManager;
+use JMS\DiExtraBundle\Annotation as DI;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Claroline\AgendaBundle\Entity\Event;
-use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Claroline\AgendaBundle\Manager\AgendaManager;
-use Claroline\AgendaBundle\Form\ImportAgendaType;
-use Claroline\CoreBundle\Persistence\ObjectManager;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * Controller of the agenda.
@@ -94,7 +94,7 @@ class WorkspaceAgendaController extends Controller
         $this->agendaManager->checkEditAccess($workspace);
         $form = $this->createForm(new ImportAgendaType());
 
-        return array('form' => $form->createView(), 'workspace' => $workspace);
+        return ['form' => $form->createView(), 'workspace' => $workspace];
     }
 
     /**
@@ -117,7 +117,7 @@ class WorkspaceAgendaController extends Controller
             return new JsonResponse($events, 200);
         }
 
-        return array('form' => $form->createView(), 'workspace' => $workspace);
+        return ['form' => $form->createView(), 'workspace' => $workspace];
     }
 
     /**
@@ -138,13 +138,13 @@ class WorkspaceAgendaController extends Controller
         $formType = $this->get('claroline.form.agenda');
         $form = $this->createForm($formType, new Event());
 
-        return array(
+        return [
             'form' => $form->createView(),
             'workspace' => $workspace,
             'action' => $this->router->generate(
-                'claro_workspace_agenda_add_event', array('workspace' => $workspace->getId())
+                'claro_workspace_agenda_add_event', ['workspace' => $workspace->getId()]
             ),
-        );
+        ];
     }
 
     /**
@@ -170,16 +170,16 @@ class WorkspaceAgendaController extends Controller
 
             $data = $this->agendaManager->addEvent($event, $workspace, $users);
 
-            return new JsonResponse(array($data), 200);
+            return new JsonResponse([$data], 200);
         }
 
-        return array(
+        return [
             'form' => $form->createView(),
             'workspace' => $workspace,
             'action' => $this->router->generate(
-                'claro_workspace_agenda_add_event', array('workspace' => $workspace->getId())
+                'claro_workspace_agenda_add_event', ['workspace' => $workspace->getId()]
             ),
-        );
+        ];
     }
 
     /**
@@ -198,13 +198,13 @@ class WorkspaceAgendaController extends Controller
         $formType = $this->get('claroline.form.agenda');
         $form = $this->createForm($formType, $event);
 
-        return array(
+        return [
             'form' => $form->createView(),
             'action' => $this->router->generate(
-                'claro_workspace_agenda_update', array('event' => $event->getId())
+                'claro_workspace_agenda_update', ['event' => $event->getId()]
             ),
             'event' => $event,
-        );
+        ];
     }
 
     /**
@@ -232,12 +232,12 @@ class WorkspaceAgendaController extends Controller
             return new JsonResponse($event, 200);
         }
 
-        return array(
+        return [
             'form' => $form->createView(),
             'action' => $this->router->generate(
-                'claro_workspace_agenda_update', array('event' => $event->getId())
+                'claro_workspace_agenda_update', ['event' => $event->getId()]
             ),
             'event' => $event,
-        );
+        ];
     }
 }

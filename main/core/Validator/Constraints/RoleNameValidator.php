@@ -11,11 +11,11 @@
 
 namespace Claroline\CoreBundle\Validator\Constraints;
 
+use Doctrine\ORM\EntityManager;
+use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
-use Symfony\Component\Translation\TranslatorInterface;
-use JMS\DiExtraBundle\Annotation as DI;
-use Doctrine\ORM\EntityManager;
 
 /**
  * @DI\Validator("role_name_validator")
@@ -48,7 +48,7 @@ class RoleNameValidator extends ConstraintValidator
         }
 
         if (trim($value) === '') {
-            $this->context->addViolation($this->trans->trans('name_required', array(), 'validators'));
+            $this->context->addViolation($this->trans->trans('name_required', [], 'validators'));
         }
 
         if (count($roles) >= 1) {

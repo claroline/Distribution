@@ -18,8 +18,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
-use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @DI\Service("claroline.form.user_picker")
@@ -60,7 +60,7 @@ class UserPickerType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $this->userPickerTransformer->setOptions(array('multiple' => $options['multiple']));
+        $this->userPickerTransformer->setOptions(['multiple' => $options['multiple']]);
         $builder->addModelTransformer($this->userPickerTransformer);
     }
 
@@ -91,12 +91,12 @@ class UserPickerType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'translation_domain' => 'platform',
                 'picker_name' => 'picker-name',
                 'picker_title' => $this->translator->trans(
                     'user_selector',
-                    array(),
+                    [],
                     'platform'
                 ),
                 'multiple' => false,
@@ -110,14 +110,14 @@ class UserPickerType extends AbstractType
                 'show_groups' => false,
                 'show_platform_roles' => false,
                 'attach_name' => true,
-                'blacklist' => array(),
-                'whitelist' => array(),
-                'selected_users' => array(),
-                'forced_groups' => array(),
-                'forced_roles' => array(),
-                'forced_workspaces' => array(),
-                'shown_workspaces' => array(),
-            )
+                'blacklist' => [],
+                'whitelist' => [],
+                'selected_users' => [],
+                'forced_groups' => [],
+                'forced_roles' => [],
+                'forced_workspaces' => [],
+                'shown_workspaces' => [],
+            ]
         );
     }
 }

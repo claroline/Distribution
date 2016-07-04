@@ -14,8 +14,8 @@ namespace Claroline\CoreBundle\Library\Installation\Updater;
 use Claroline\CoreBundle\Entity\Home\HomeTab;
 use Claroline\CoreBundle\Entity\Home\HomeTabConfig;
 use Claroline\CoreBundle\Entity\Widget\Widget;
-use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig;
+use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Claroline\InstallationBundle\Updater\Updater;
 use Doctrine\Common\Persistence\Mapping\MappingException;
 use Symfony\Component\Filesystem\Filesystem;
@@ -138,7 +138,7 @@ class Updater020000 extends Updater
         foreach ($rows as $row) {
             $wsId = $row['workspace_id'] ? $row['workspace_id'] : 'null';
             $userId = $row['user_id'] ? $row['user_id'] : 'null';
-            $name = $this->conn->quote($this->translator->trans($row['widget_name'], array(), 'widget'));
+            $name = $this->conn->quote($this->translator->trans($row['widget_name'], [], 'widget'));
             $query = "
                 INSERT INTO claro_widget_instance (workspace_id, user_id, widget_id, is_admin, is_desktop, name)
                 VALUES ({$wsId}, {$userId}, {$row['widget_id']}, false, false, {$name})
@@ -157,7 +157,7 @@ class Updater020000 extends Updater
 
         foreach ($configs as $config) {
             if (!$config['is_default']) {
-                $name = $this->conn->quote($this->translator->trans('simple_text', array(), 'widget'));
+                $name = $this->conn->quote($this->translator->trans('simple_text', [], 'widget'));
                 $query = "
                     INSERT INTO claro_widget_instance (workspace_id, user_id, widget_id, is_admin, is_desktop, name)
                     VALUES ({$config['workspace_id']}, null, {$widgetId}, false, false, {$name})
@@ -294,7 +294,7 @@ class Updater020000 extends Updater
         $em = $this->container->get('doctrine.orm.entity_manager');
         $em->clear(); // weird but needed...
         $widgetRepo = $em->getRepository('ClarolineCoreBundle:Widget\Widget');
-        $widgets = array('claroline_announcement_widget', 'my_workspaces');
+        $widgets = ['claroline_announcement_widget', 'my_workspaces'];
         $users = $em->getRepository('ClarolineCoreBundle:User')->findAll();
 
         foreach ($users as $user) {
@@ -314,7 +314,7 @@ class Updater020000 extends Updater
             for ($i = 0, $count = count($widgets); $i < $count; ++$i) {
                 $widget = $widgetRepo->findOneByName($widgets[$i]);
                 $instance = new WidgetInstance($widget);
-                $instance->setName($this->translator->trans($widget->getName(), array(), 'widget'));
+                $instance->setName($this->translator->trans($widget->getName(), [], 'widget'));
                 $instance->setIsAdmin(false);
                 $instance->setIsDesktop(true);
                 $instance->setWidget($widget);

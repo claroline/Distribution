@@ -156,15 +156,15 @@ class PortfolioComment
     {
         $sender = $this->getSender();
 
-        return array(
+        return [
             'id' => $this->getId(),
-            'sender' => array(
+            'sender' => [
                 'lastName' => $sender->getLastName(),
                 'firstName' => $sender->getFirstName(),
                 'avatar' => (null === $sender->getPicture()) ? null : 'uploads/pictures/'.$sender->getPicture(),
-            ),
+            ],
             'message' => $this->getMessage(),
             'date' => $this->getSendingDate()->format(DATE_W3C),
-        );
+        ];
     }
 }

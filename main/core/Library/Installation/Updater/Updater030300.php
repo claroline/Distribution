@@ -11,10 +11,10 @@
 
 namespace Claroline\CoreBundle\Library\Installation\Updater;
 
-use Claroline\InstallationBundle\Updater\Updater;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Claroline\CoreBundle\Entity\Tool\Tool;
 use Claroline\CoreBundle\Entity\Widget\Widget;
+use Claroline\InstallationBundle\Updater\Updater;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class Updater030300 extends Updater
 {
@@ -90,7 +90,7 @@ class Updater030300 extends Updater
     {
         $this->log('Creating workspace learning outcomes tool...');
         $learningOutcomesTool = $this->em->getRepository('ClarolineCoreBundle:Tool\Tool')
-            ->findOneBy(array('name' => 'learning_outcomes'));
+            ->findOneBy(['name' => 'learning_outcomes']);
 
         if (!$learningOutcomesTool) {
             $wsTool = new Tool();

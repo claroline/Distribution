@@ -11,11 +11,11 @@
 
 namespace Claroline\CoreBundle\Rule;
 
+use Claroline\CoreBundle\Entity\Log\Log;
+use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Repository\Log\LogRepository;
 use Claroline\CoreBundle\Rule\Constraints\AbstractConstraint;
 use Claroline\CoreBundle\Rule\Entity\Rule;
-use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Entity\Log\Log;
-use Claroline\CoreBundle\Repository\Log\LogRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -95,7 +95,7 @@ class Validator
      */
     protected function validateRules($rules, User $user, array $restriction)
     {
-        $return = array('validRules' => 0, 'rules' => array());
+        $return = ['validRules' => 0, 'rules' => []];
 
         if (0 < count($rules)) {
             foreach ($rules as $rule) {
@@ -104,9 +104,9 @@ class Validator
 
                 if (false !== $checkedLogs) {
                     ++$return['validRules'];
-                    $return['rules'][] = array(
+                    $return['rules'][] = [
                         'rule' => $rule, 'logs' => $checkedLogs,
-                    );
+                    ];
                 }
             }
         }
@@ -120,10 +120,10 @@ class Validator
      *
      * @return bool|Log[]
      */
-    public function validateRule(Rule $rule, array $restrictions = array())
+    public function validateRule(Rule $rule, array $restrictions = [])
     {
         /** @var \Claroline\CoreBundle\Rule\Constraints\AbstractConstraint[] $usedConstraints */
-        $usedConstraints = array();
+        $usedConstraints = [];
         $existedConstraints = $this->getConstraints();
 
         foreach ($existedConstraints as $existedConstraint) {

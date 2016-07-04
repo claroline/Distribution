@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Command\Dev;
 
 use Claroline\MigrationBundle\Migrator\Migrator;
+use Doctrine\Bundle\DoctrineBundle\Command\CreateDatabaseDoctrineCommand;
 use Psr\Log\LogLevel;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -20,7 +21,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
-use Doctrine\Bundle\DoctrineBundle\Command\CreateDatabaseDoctrineCommand;
 
 class InitTestSchemaCommand extends ContainerAwareCommand
 {
@@ -55,7 +55,7 @@ class InitTestSchemaCommand extends ContainerAwareCommand
     {
         $command = new CreateDatabaseDoctrineCommand();
         $command->setContainer($this->getContainer());
-        $code = $command->run(new ArrayInput(array()), new NullOutput());
+        $code = $command->run(new ArrayInput([]), new NullOutput());
 
         if ($code !== 0) {
             throw new \Exception(
@@ -68,11 +68,11 @@ class InitTestSchemaCommand extends ContainerAwareCommand
     {
         /** @var \Claroline\MigrationBundle\Manager\Manager $migrator */
         $migrator = $this->getContainer()->get('claroline.migration.manager');
-        $verbosityLevelMap = array(
+        $verbosityLevelMap = [
             LogLevel::NOTICE => OutputInterface::VERBOSITY_NORMAL,
             LogLevel::INFO => OutputInterface::VERBOSITY_NORMAL,
             LogLevel::DEBUG => OutputInterface::VERBOSITY_NORMAL,
-        );
+        ];
         $consoleLogger = new ConsoleLogger($output, $verbosityLevelMap);
         $migrator->setLogger($consoleLogger);
 

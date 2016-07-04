@@ -12,15 +12,15 @@ namespace Icap\WikiBundle\Controller;
 use Claroline\CoreBundle\Entity\User;
 use Icap\WikiBundle\Entity\Wiki;
 use Icap\WikiBundle\Form\WikiOptionsType;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Exception\NotValidCurrentPageException;
 use Pagerfanta\Pagerfanta;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class WikiController extends Controller
 {
@@ -42,30 +42,30 @@ class WikiController extends Controller
         $tree = $sectionRepository->buildSectionTree($wiki, $isAdmin);
         $format = $request->get('_format');
         $response = new Response();
-        $this->render(sprintf('IcapWikiBundle:Wiki:view.%s.twig', $format), array(
+        $this->render(sprintf('IcapWikiBundle:Wiki:view.%s.twig', $format), [
             '_resource' => $wiki,
             'tree' => $tree,
             'workspace' => $wiki->getResourceNode()->getWorkspace(),
             'isAdmin' => $isAdmin,
             'user' => $user,
-        ), $response);
+        ], $response);
         if ($format == 'pdf') {
             return new Response(
                 $this->get('knp_snappy.pdf')->getOutputFromHtml(
                     $response->getContent(),
-                    array(
+                    [
                         'outline' => true,
                         'footer-right' => '[page]/[toPage]',
                         'footer-spacing' => 3,
                         'footer-font-size' => 8,
-                    ),
+                    ],
                     true
                 ),
                 200,
-                array(
+                [
                     'Content-Type' => 'application/pdf',
                     'Content-Disposition' => 'inline; filename="'.$wiki->getResourceNode()->getName(),
-                )
+                ]
             );
         }
 
@@ -124,27 +124,27 @@ class WikiController extends Controller
 
                     $this->dispatchWikiConfigureEvent($wiki, $changeSet);
 
-                    $flashBag->add('success', $translator->trans('icap_wiki_options_save_success', array(), 'icap_wiki'));
+                    $flashBag->add('success', $translator->trans('icap_wiki_options_save_success', [], 'icap_wiki'));
                 } catch (\Exception $exception) {
-                    $flashBag->add('error', $translator->trans('icap_wiki_options_save_error', array(), 'icap_wiki'));
+                    $flashBag->add('error', $translator->trans('icap_wiki_options_save_error', [], 'icap_wiki'));
                 }
 
                 return $this->redirect(
                     $this->generateUrl(
                         'icap_wiki_view',
-                        array(
+                        [
                             'wikiId' => $wiki->getId(),
-                        )
+                        ]
                     )
                 );
             }
         }
 
-        return array(
+        return [
             '_resource' => $wiki,
             'workspace' => $wiki->getResourceNode()->getWorkspace(),
             'pager' => $pager,
             'form' => $form->createView(),
-        );
+        ];
     }
 }

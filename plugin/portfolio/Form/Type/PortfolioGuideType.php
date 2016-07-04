@@ -16,12 +16,12 @@ class PortfolioGuideType extends AbstractType
     {
         $builder
             ->add('user', 'zenstruck_ajax_entity',
-                array(
+                [
                     'class' => 'ClarolineCoreBundle:User',
                     'use_controller' => true,
                     'property' => 'username',
                     'repo_method' => 'findByNameForAjax',
-                )
+                ]
             );
     }
 
@@ -33,10 +33,10 @@ class PortfolioGuideType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'Icap\PortfolioBundle\Entity\PortfolioGuide',
                 'translation_domain' => 'icap_portfolio',
-            )
+            ]
         );
     }
 }

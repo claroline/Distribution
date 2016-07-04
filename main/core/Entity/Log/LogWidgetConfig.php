@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Entity\Log;
 
-use Doctrine\ORM\Mapping as ORM;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\Log\LogWidgetConfigRepository")
@@ -37,7 +37,7 @@ class LogWidgetConfig
      *
      * @ORM\Column(type="simple_array", nullable=true)
      */
-    protected $restrictions = array();
+    protected $restrictions = [];
 
     /**
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Widget\WidgetInstance")
@@ -89,7 +89,7 @@ class LogWidgetConfig
      */
     public function getRestrictions()
     {
-        $restrictions = array();
+        $restrictions = [];
 
         foreach ($this->restrictions as $restriction) {
             $restrictions[$restriction] = $restriction;

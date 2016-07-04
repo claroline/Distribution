@@ -11,11 +11,11 @@
 
 namespace Claroline\CoreBundle\Validator\Constraints;
 
+use Claroline\CoreBundle\Manager\UserManager;
+use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
-use JMS\DiExtraBundle\Annotation as DI;
-use Claroline\CoreBundle\Manager\UserManager;
-use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @DI\Validator("profile_pics_file_validator")
@@ -49,7 +49,7 @@ class ProfilePicsFileValidator extends ConstraintValidator
                     if (!$user) {
                         $msg = $this->translator->trans(
                             'username_doesnt_exist',
-                            array('%username%' => $username),
+                            ['%username%' => $username],
                             'validators'
                         ).' ';
                         $this->context->addViolation($msg);
@@ -58,7 +58,7 @@ class ProfilePicsFileValidator extends ConstraintValidator
                 }
                 //set the default properties of the workspace here if we can find them.
             } else {
-                $msg = $this->translator->trans('corrupted_archive', array(), 'platform');
+                $msg = $this->translator->trans('corrupted_archive', [], 'platform');
                 $this->context->addViolation($msg);
             }
         }

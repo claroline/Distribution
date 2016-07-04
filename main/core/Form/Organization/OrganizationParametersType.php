@@ -11,9 +11,9 @@
 
 namespace Claroline\CoreBundle\Form\Organization;
 
+use Claroline\CoreBundle\Form\Angular\AngularType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Claroline\CoreBundle\Form\Angular\AngularType;
 
 class OrganizationParametersType extends AngularType
 {
@@ -26,26 +26,26 @@ class OrganizationParametersType extends AngularType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', 'text', array('required' => true, 'label' => 'name'))
-            ->add('email', 'email', array('required' => false, 'label' => 'email'))
+            ->add('name', 'text', ['required' => true, 'label' => 'name'])
+            ->add('email', 'email', ['required' => false, 'label' => 'email'])
             ->add(
                 'locations',
                 'entity',
-                array(
+                [
                     'label' => 'locations',
                     'class' => 'Claroline\CoreBundle\Entity\Organization\Location',
                     'expanded' => true,
                     'multiple' => true,
                     'property' => 'name',
-                )
+                ]
             )
             ->add(
                 'administrators',
                 'userpicker',
-                array(
+                [
                     'multiple' => true,
                     'label' => 'administrators',
-                )
+                ]
             );
     }
 
@@ -61,7 +61,7 @@ class OrganizationParametersType extends AngularType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $default = array('translation_domain' => 'platform');
+        $default = ['translation_domain' => 'platform'];
         if ($this->forApi) {
             $default['csrf_protection'] = false;
         }

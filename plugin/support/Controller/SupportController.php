@@ -103,7 +103,7 @@ class SupportController extends Controller
             $nbCredits = 666;
         }
 
-        return array(
+        return [
             'tickets' => $tickets,
             'search' => $search,
             'page' => $page,
@@ -112,7 +112,7 @@ class SupportController extends Controller
             'order' => $order,
             'withCredits' => $withCredits,
             'nbCredits' => $nbCredits,
-        );
+        ];
     }
 
     /**
@@ -136,7 +136,7 @@ class SupportController extends Controller
         }
         $form = $this->formFactory->create(new TicketType(), $ticket);
 
-        return array('form' => $form->createView());
+        return ['form' => $form->createView()];
     }
 
     /**
@@ -167,7 +167,7 @@ class SupportController extends Controller
                 $this->router->generate('formalibre_support_index')
             );
         } else {
-            return array('form' => $form->createView());
+            return ['form' => $form->createView()];
         }
     }
 
@@ -185,10 +185,10 @@ class SupportController extends Controller
         $this->checkTicketEditionAccess($authenticatedUser, $ticket);
         $form = $this->formFactory->create(new TicketType(), $ticket);
 
-        return array(
+        return [
             'form' => $form->createView(),
             'ticket' => $ticket,
-        );
+        ];
     }
 
     /**
@@ -214,10 +214,10 @@ class SupportController extends Controller
                 $this->router->generate('formalibre_support_index')
             );
         } else {
-            return array(
+            return [
                 'form' => $form->createView(),
                 'ticket' => $ticket,
-            );
+            ];
         }
     }
 
@@ -235,10 +235,10 @@ class SupportController extends Controller
         $this->checkTicketEditionAccess($authenticatedUser, $ticket);
         $form = $this->formFactory->create(new TicketType(), $ticket);
 
-        return array(
+        return [
             'form' => $form->createView(),
             'ticket' => $ticket,
-        );
+        ];
     }
 
     /**
@@ -262,10 +262,10 @@ class SupportController extends Controller
 
             return new JsonResponse('success', 200);
         } else {
-            return array(
+            return [
                 'form' => $form->createView(),
                 'ticket' => $ticket,
-            );
+            ];
         }
     }
 
@@ -311,11 +311,11 @@ class SupportController extends Controller
             }
         }
 
-        return array(
+        return [
             'ticket' => $ticket,
             'currentUser' => $authenticatedUser,
             'currentStatus' => $currentStatus,
-        );
+        ];
     }
 
     /**
@@ -332,7 +332,7 @@ class SupportController extends Controller
         $this->checkTicketAccess($authenticatedUser, $ticket);
         $form = $this->formFactory->create(new CommentType(), new Comment());
 
-        return array('form' => $form->createView(), 'ticket' => $ticket);
+        return ['form' => $form->createView(), 'ticket' => $ticket];
     }
 
     /**
@@ -366,7 +366,7 @@ class SupportController extends Controller
 
             return new JsonResponse('success', 201);
         } else {
-            return array('form' => $form->createView(), 'ticket' => $ticket);
+            return ['form' => $form->createView(), 'ticket' => $ticket];
         }
     }
 
@@ -383,7 +383,7 @@ class SupportController extends Controller
     {
         $this->checkTicketAccess($authenticatedUser, $ticket);
 
-        return array('ticket' => $ticket);
+        return ['ticket' => $ticket];
     }
 
     /**
@@ -419,7 +419,7 @@ class SupportController extends Controller
         $ticket->setTitle($message);
         $form = $this->formFactory->create(new TicketType(1), $ticket);
 
-        return array(
+        return [
             'form' => $form->createView(),
             'user' => $user,
             'exceptionClass' => $exceptionClass,
@@ -428,7 +428,7 @@ class SupportController extends Controller
             'line' => $line,
             'url' => $url,
             'referer' => $referer,
-        );
+        ];
     }
 
     /**
@@ -488,7 +488,7 @@ class SupportController extends Controller
 
             return new JsonResponse('success', 200);
         } else {
-            return array(
+            return [
                 'form' => $form->createView(),
                 'user' => $user,
                 'exceptionClass' => $exceptionClass,
@@ -497,7 +497,7 @@ class SupportController extends Controller
                 'line' => $line,
                 'url' => $url,
                 'referer' => $referer,
-            );
+            ];
         }
     }
 

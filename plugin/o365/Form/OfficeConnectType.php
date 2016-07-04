@@ -24,29 +24,29 @@ class OfficeConnectType extends AbstractType
             ->add(
                 'office_client_id',
                 'text',
-                array(
+                [
                     'constraints' => new NotBlank(),
-                    'attr' => array('min' => 0),
+                    'attr' => ['min' => 0],
                     'label' => 'office_client_id',
-                )
+                ]
             )
             ->add(
                 'office_password',
                 'text',
-                array(
+                [
                     'constraints' => new NotBlank(),
                     'label' => 'password',
-                )
+                ]
             )
             ->add(
                 'office_app_tenant_domain_name',
                 'text',
-                array(
+                [
                     'constraints' => new NotBlank(),
                     'label' => 'app_tenant_domain_name',
-                )
+                ]
             )
-            ->add('office_client_active', 'checkbox', array('label' => 'active', 'required' => false));
+            ->add('office_client_active', 'checkbox', ['label' => 'active', 'required' => false]);
     }
 
     public function getName()
@@ -56,6 +56,6 @@ class OfficeConnectType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'office'));
+        $resolver->setDefaults(['translation_domain' => 'office']);
     }
 }

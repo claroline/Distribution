@@ -43,7 +43,7 @@ class DropzoneVoter
      */
     protected function isAllow(Dropzone $dropzone, $actionName)
     {
-        $collection = new ResourceCollection(array($dropzone->getResourceNode()));
+        $collection = new ResourceCollection([$dropzone->getResourceNode()]);
 
         if (false === $this->container->get('security.authorization_checker')->isGranted($actionName, $collection)) {
             throw new AccessDeniedException();
@@ -74,7 +74,7 @@ class DropzoneVoter
      */
     public function checkEditRight(Dropzone $dropzone)
     {
-        $collection = new ResourceCollection(array($dropzone->getResourceNode()));
+        $collection = new ResourceCollection([$dropzone->getResourceNode()]);
 
         if (false === $this->container->get('security.authorization_checker')->isGranted('EDIT', $collection)) {
             return false;

@@ -2,8 +2,8 @@
 
 namespace Icap\BlogBundle\Form\DataTransformer;
 
-use Symfony\Component\Form\DataTransformerInterface;
 use Icap\BlogBundle\Manager\TagManager;
+use Symfony\Component\Form\DataTransformerInterface;
 
 class TagsToTextTransformer implements DataTransformerInterface
 {
@@ -30,10 +30,10 @@ class TagsToTextTransformer implements DataTransformerInterface
     public function transform($tags)
     {
         if (!$tags) {
-            $tags = array();
+            $tags = [];
         }
 
-        $tagNames = array();
+        $tagNames = [];
         foreach ($tags as $tag) {
             array_push($tagNames, $tag->getName());
         }

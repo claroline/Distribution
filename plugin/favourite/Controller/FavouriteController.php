@@ -5,9 +5,9 @@ namespace HeVinci\FavouriteBundle\Controller;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use HeVinci\FavouriteBundle\Entity\Favourite;
+use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -43,12 +43,12 @@ class FavouriteController extends Controller
 
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $isFavourite = $this->get('claroline.persistence.object_manager')->getRepository('HeVinciFavouriteBundle:Favourite')
-            ->findOneBy(array('user' => $user, 'resourceNode' => $node));
+            ->findOneBy(['user' => $user, 'resourceNode' => $node]);
 
-        return array(
+        return [
             'isFavourite' => $isFavourite ? true : false,
             '_resource' => $resource,
-        );
+        ];
     }
 
     /**
@@ -66,13 +66,13 @@ class FavouriteController extends Controller
         $em = $this->getDoctrine()->getManager();
         $user = $this->getUser();
         $favourite = $em->getRepository('HeVinciFavouriteBundle:Favourite')
-            ->findOneBy(array('user' => $user, 'resourceNode' => $node->getId()));
+            ->findOneBy(['user' => $user, 'resourceNode' => $node->getId()]);
 
         if ($favourite) {
-            return array(
+            return [
                 'nodeId' => $node->getId(),
                 'error' => 'resource_already_in_favourites',
-            );
+            ];
         }
 
         $favourite = new Favourite();
@@ -100,13 +100,13 @@ class FavouriteController extends Controller
         $em = $this->getDoctrine()->getManager();
         $user = $this->getUser();
         $favourite = $em->getRepository('HeVinciFavouriteBundle:Favourite')
-            ->findOneBy(array('user' => $user, 'resourceNode' => $node->getId()));
+            ->findOneBy(['user' => $user, 'resourceNode' => $node->getId()]);
 
         if (!$favourite) {
-            return array(
+            return [
                 'nodeId' => $node->getId(),
                 'error' => 'resource_not_in_favourites.',
-            );
+            ];
         }
 
         $em->remove($favourite);
@@ -131,7 +131,7 @@ class FavouriteController extends Controller
 
         $user = $this->getUser();
         $favourite = $em->getRepository('HeVinciFavouriteBundle:Favourite')
-            ->findOneBy(array('user' => $user, 'resourceNode' => $node->getId()));
+            ->findOneBy(['user' => $user, 'resourceNode' => $node->getId()]);
 
         if (!$favourite) {
             throw new \Exception("This favourite doesn't exist !");

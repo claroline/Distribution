@@ -2,10 +2,10 @@
 
 namespace Innova\CollecticielBundle\Command;
 
+use Innova\CollecticielBundle\Entity\ReturnReceiptType;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Innova\CollecticielBundle\Entity\ReturnReceiptType;
 
 class ReturnReceiptTypeCommand extends ContainerAwareCommand
 {
@@ -24,14 +24,14 @@ class ReturnReceiptTypeCommand extends ContainerAwareCommand
             $em = $this->getContainer()->get('claroline.persistence.object_manager');
 
             /* RETURN RECEIPT TYPE ARRAY */
-            $returnreceipttypesArray = array(
-                array('0', 'NO RETURN RECEIPT'),
-                array('1', 'DOUBLOON'),
-                array('2', 'DOCUMENT RECEIVED'),
-                array('3', 'DOCUMENT UNREADABLE'),
-                array('4', 'INCOMPLETE DOCUMENT'),
-                array('5', 'ERROR DOCUMENT'),
-                )
+            $returnreceipttypesArray = [
+                ['0', 'NO RETURN RECEIPT'],
+                ['1', 'DOUBLOON'],
+                ['2', 'DOCUMENT RECEIVED'],
+                ['3', 'DOCUMENT UNREADABLE'],
+                ['4', 'INCOMPLETE DOCUMENT'],
+                ['5', 'ERROR DOCUMENT'],
+                ]
             ;
 
             /* TRAITEMENT */

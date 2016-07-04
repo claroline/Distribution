@@ -12,7 +12,7 @@ class AdditionalInstaller extends BaseInstaller
             $em = $this->container->get('doctrine.orm.entity_manager');
             $menuAction = $em
                 ->getRepository('ClarolineCoreBundle:Resource\MenuAction')
-                ->findOneBy(array('name' => 'hevinci_favourite'));
+                ->findOneBy(['name' => 'hevinci_favourite']);
 
             $menuAction->setIsForm(true);
             $em->flush();
@@ -24,7 +24,7 @@ class AdditionalInstaller extends BaseInstaller
         $em = $this->container->get('doctrine.orm.entity_manager');
         $menuAction = $em
             ->getRepository('ClarolineCoreBundle:Resource\MenuAction')
-            ->findOneBy(array('name' => 'hevinci_favourite'));
+            ->findOneBy(['name' => 'hevinci_favourite']);
 
         $em->remove($menuAction);
         $em->flush();

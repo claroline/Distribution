@@ -21,8 +21,8 @@ abstract class AngularType extends AbstractType
     {
         $model = isset($options['ng-model']) ? $options['ng-model'] : 'data';
         $alias = isset($options['ng-controllerAs']) ? $options['ng-controllerAs'] : 'modal';
-        $this->setParam($view,  array('model' => $model));
-        $this->setParam($view,  array('alias' => $alias));
+        $this->setParam($view,  ['model' => $model]);
+        $this->setParam($view,  ['alias' => $alias]);
     }
 
     private function setParam(FormView $view, array $params)

@@ -38,10 +38,10 @@ class ThemeExtension extends \Twig_Extension
      */
     public function getFilters()
     {
-        return array(
+        return [
             'getThemePath' => new \Twig_Filter_Method($this, 'getThemePath'),
             'asset_exists' => new \Twig_Function_Method($this, 'assetExists'),
-        );
+        ];
     }
 
     /**
@@ -55,7 +55,7 @@ class ThemeExtension extends \Twig_Extension
      */
     public function getThemePath($name)
     {
-        $theme = $this->manager->getRepository("ClarolineCoreBundle:Theme\Theme")->findOneBy(array('name' => $name));
+        $theme = $this->manager->getRepository("ClarolineCoreBundle:Theme\Theme")->findOneBy(['name' => $name]);
 
         if ($theme) {
             return $theme->getPath();

@@ -15,7 +15,7 @@ class BlogRepository extends EntityRepository
     public function findByResourceNodeIds(array $resourceNodeIds, $executeQuery = true)
     {
         $query = $this->createQueryBuilder('blog')
-            ->select(array('blog', 'bo', 'post'))
+            ->select(['blog', 'bo', 'post'])
             ->join('blog.options', 'bo')
             ->leftJoin('blog.posts', 'post')
             ->where('blog.resourceNode IN (:resourceNodeIds)')

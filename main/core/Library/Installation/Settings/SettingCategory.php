@@ -14,7 +14,7 @@ namespace Claroline\CoreBundle\Library\Installation\Settings;
 class SettingCategory
 {
     private $name;
-    private $settings = array();
+    private $settings = [];
     private $hasFailedRequirement = false;
     private $hasFailedRecommendation = false;
 
@@ -60,7 +60,7 @@ class SettingCategory
 
     public function getIncorrectSettings()
     {
-        $settings = array();
+        $settings = [];
 
         foreach ($this->settings as $setting) {
             if (!$setting->isCorrect()) {

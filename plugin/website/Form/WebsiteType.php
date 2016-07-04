@@ -16,7 +16,7 @@ class WebsiteType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text', array('attr' => array('autofocus' => true)));
+        $builder->add('name', 'text', ['attr' => ['autofocus' => true]]);
     }
 
     public function getName()
@@ -26,11 +26,11 @@ class WebsiteType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'translation_domain' => 'icap_website',
             'data_class' => 'Icap\WebsiteBundle\Entity\Website',
             'csrf_protection' => true,
             'intention' => 'create_website',
-        ));
+        ]);
     }
 }

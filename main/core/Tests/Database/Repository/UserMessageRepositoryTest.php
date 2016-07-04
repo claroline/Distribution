@@ -30,7 +30,7 @@ class UserMessageRepositoryTest extends RepositoryTestCase
         self::createMessage(
             'message_1',
             self::get('sender'),
-            array(self::get('receiver_1')),
+            [self::get('receiver_1')],
             'message_1 object',
             'message_1 content'
         );
@@ -38,7 +38,7 @@ class UserMessageRepositoryTest extends RepositoryTestCase
         self::createMessage(
             'message_2',
             self::get('sender'),
-            array(self::get('receiver_1'), self::get('receiver_2')),
+            [self::get('receiver_1'), self::get('receiver_2')],
             'message_2 object',
             'message_2 content',
             self::get('message_1')
@@ -47,7 +47,7 @@ class UserMessageRepositoryTest extends RepositoryTestCase
         self::createMessage(
             'message_3',
             self::get('receiver_2'),
-            array(self::get('receiver_1')),
+            [self::get('receiver_1')],
             'message_3 object',
             'message_3 content',
             null,
@@ -155,7 +155,7 @@ class UserMessageRepositoryTest extends RepositoryTestCase
     {
         $userMessages = self::$repo->findByMessages(
             self::get('receiver_1'),
-            array(self::get('message_1'), self::get('message_2'))
+            [self::get('message_1'), self::get('message_2')]
         );
         $this->assertEquals(2, count($userMessages));
         $this->assertEquals(self::get('message_2/receiver_1Username'), $userMessages[0]);

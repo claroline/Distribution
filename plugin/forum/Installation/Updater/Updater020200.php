@@ -2,8 +2,8 @@
 
 namespace Claroline\ForumBundle\Installation\Updater;
 
-use Claroline\ForumBundle\Entity\Category;
 use Claroline\CoreBundle\Entity\Widget\Widget;
+use Claroline\ForumBundle\Entity\Category;
 use Claroline\InstallationBundle\Updater\Updater;
 use Doctrine\DBAL\Connection;
 
@@ -94,13 +94,13 @@ class Updater020200 extends Updater
             $this->log('categories already added');
         }
 
-        $widget = $em->getRepository('ClarolineCoreBundle:Widget\Widget')->findBy(array('name' => 'claroline_forum_widget'));
+        $widget = $em->getRepository('ClarolineCoreBundle:Widget\Widget')->findBy(['name' => 'claroline_forum_widget']);
 
         if (!$widget) {
             $this->log('adding the forum widget...');
 
             $plugin = $em->getRepository('ClarolineCoreBundle:Plugin')
-                ->findOneBy(array('vendorName' => 'Claroline', 'bundleName' => 'ForumBundle'));
+                ->findOneBy(['vendorName' => 'Claroline', 'bundleName' => 'ForumBundle']);
 
             $widget = new Widget();
             $widget->setName('claroline_forum_widget');

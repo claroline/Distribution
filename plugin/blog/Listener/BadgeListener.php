@@ -8,9 +8,9 @@ use Icap\BlogBundle\Event\Log\LogPostCreateEvent;
 use Icap\BlogBundle\Event\Log\LogPostDeleteEvent;
 use Icap\BlogBundle\Event\Log\LogPostReadEvent;
 use Icap\BlogBundle\Event\Log\LogPostUpdateEvent;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("icap.listener.blog.badge_listener")
@@ -49,10 +49,10 @@ class BadgeListener
             case LogPostReadEvent::ACTION:
             case LogPostUpdateEvent::ACTION:
                 $logDetails = $event->getLog()->getDetails();
-                $parameters = array(
+                $parameters = [
                     'blogId' => $logDetails['post']['blog'],
                     'postSlug' => $logDetails['post']['slug'],
-                );
+                ];
 
                 $url = $this->router->generate('icap_blog_post_view', $parameters, UrlGeneratorInterface::ABSOLUTE_PATH);
                 $title = $logDetails['post']['title'];
@@ -61,10 +61,10 @@ class BadgeListener
             case LogCommentCreateEvent::ACTION:
             case LogCommentDeleteEvent::ACTION:
                 $logDetails = $event->getLog()->getDetails();
-                $parameters = array(
+                $parameters = [
                     'blogId' => $logDetails['post']['blog'],
                     'postSlug' => $logDetails['post']['slug'],
-                );
+                ];
 
                 $url = $this->router->generate('icap_blog_post_view', $parameters, UrlGeneratorInterface::ABSOLUTE_PATH);
                 $title = $logDetails['post']['title'];

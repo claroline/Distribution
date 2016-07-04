@@ -11,16 +11,16 @@
 
 namespace  Claroline\CoreBundle\Listener;
 
-use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\Entity\Widget\SimpleTextConfig;
-use Symfony\Component\Form\FormFactory;
-use Claroline\CoreBundle\Event\DisplayWidgetEvent;
-use Claroline\CoreBundle\Event\CopyWidgetConfigurationEvent;
 use Claroline\CoreBundle\Event\ConfigureWidgetEvent;
+use Claroline\CoreBundle\Event\CopyWidgetConfigurationEvent;
+use Claroline\CoreBundle\Event\DisplayWidgetEvent;
+use Claroline\CoreBundle\Form\SimpleTextType;
 use Claroline\CoreBundle\Manager\SimpleTextManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\TwigBundle\TwigEngine;
-use Claroline\CoreBundle\Form\SimpleTextType;
+use Symfony\Component\Form\FormFactory;
 
 /**
  * @DI\Service

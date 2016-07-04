@@ -29,14 +29,14 @@ class MessageRepositoryTest extends RepositoryTestCase
         self::createMessage(
             'message_1',
             self::get('sender'),
-            array(self::get('receiver')),
+            [self::get('receiver')],
             'message_1 content',
             'message_1 object'
         );
         self::createMessage(
             'message_2',
             self::get('sender'),
-            array(self::get('receiver')),
+            [self::get('receiver')],
             'message_2 content',
             'message_2 object',
             self::get('message_1')

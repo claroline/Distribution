@@ -7,11 +7,11 @@
 
 namespace Innova\CollecticielBundle\Repository;
 
-use Doctrine\ORM\EntityRepository;
 use Claroline\CoreBundle\Entity\User;
+use Doctrine\ORM\EntityRepository;
+use Innova\CollecticielBundle\Entity\Document;
 use Innova\CollecticielBundle\Entity\Dropzone;
 use Innova\CollecticielBundle\Entity\ReturnReceipt;
-use Innova\CollecticielBundle\Entity\Document;
 
 class ReturnReceiptRepository extends EntityRepository
 {

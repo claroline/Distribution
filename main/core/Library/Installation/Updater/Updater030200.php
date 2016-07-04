@@ -11,10 +11,10 @@
 
 namespace Claroline\CoreBundle\Library\Installation\Updater;
 
-use Claroline\InstallationBundle\Updater\Updater;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Claroline\CoreBundle\Entity\Tool\AdminTool;
 use Claroline\CoreBundle\Entity\Tool\Tool;
+use Claroline\InstallationBundle\Updater\Updater;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class Updater030200 extends Updater
 {
@@ -53,7 +53,7 @@ class Updater030200 extends Updater
         }
 
         $existingTool = $this->om->getRepository('ClarolineCoreBundle:Tool\Tool')
-            ->findOneBy(array('name' => 'learning_profil'));
+            ->findOneBy(['name' => 'learning_profil']);
 
         if (!$existingTool) {
             $wsTool = new Tool();

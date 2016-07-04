@@ -29,9 +29,9 @@ class InteractionOpen extends \Twig_Extension
      */
     public function getFunctions()
     {
-        return array(
+        return [
               'goodResponseOpenOneWord' => new \Twig_Function_Method($this, 'goodResponseOpenOneWord'),
-          );
+          ];
     }
 
     /**

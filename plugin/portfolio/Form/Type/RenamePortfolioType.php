@@ -15,10 +15,10 @@ class RenamePortfolioType extends PortfolioTitleType
         parent::buildForm($builder, $options);
         $builder
             ->add('refreshUrl', 'checkbox',
-                array(
+                [
                     'required' => false,
                     'mapped' => false,
-                )
+                ]
             );
     }
 

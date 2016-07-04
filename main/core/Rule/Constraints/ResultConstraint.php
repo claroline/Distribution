@@ -87,7 +87,7 @@ class ResultConstraint extends AbstractConstraint
         $score,
         $scoreMax
     ) {
-        $realResults = array('rule' => null, 'log' => null);
+        $realResults = ['rule' => null, 'log' => null];
 
         if (!is_null($ruleScore) && !is_null($score)) {
             if (empty($ruleScoreMax) || empty($scoreMax)) {

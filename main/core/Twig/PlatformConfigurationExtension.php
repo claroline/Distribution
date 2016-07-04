@@ -11,9 +11,9 @@
 
 namespace Claroline\CoreBundle\Twig;
 
-use Twig_Extension;
-use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
+use JMS\DiExtraBundle\Annotation as DI;
+use Twig_Extension;
 
 /**
  * Adds the PlatformConfigurationHandler to the Twig Globals.
@@ -37,9 +37,9 @@ class PlatformConfigurationExtension extends Twig_Extension
 
     public function getGlobals()
     {
-        return array(
+        return [
             'config' => $this->configHandler,
-        );
+        ];
     }
 
     public function getName()

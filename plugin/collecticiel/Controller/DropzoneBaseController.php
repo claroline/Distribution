@@ -26,11 +26,11 @@ use Innova\CollecticielBundle\Event\Log\LogDocumentDeleteEvent;
 use Innova\CollecticielBundle\Event\Log\LogDocumentOpenEvent;
 use Innova\CollecticielBundle\Event\Log\LogDropEndEvent;
 use Innova\CollecticielBundle\Event\Log\LogDropEvaluateEvent;
-use Innova\CollecticielBundle\Event\Log\LogDropStartEvent;
 use Innova\CollecticielBundle\Event\Log\LogDropReportEvent;
+use Innova\CollecticielBundle\Event\Log\LogDropStartEvent;
 use Innova\CollecticielBundle\Event\Log\LogDropzoneConfigureEvent;
-use Innova\CollecticielBundle\Event\Log\LogDropzoneManualStateChangedEvent;
 use Innova\CollecticielBundle\Event\Log\LogDropzoneManualRequestSentEvent;
+use Innova\CollecticielBundle\Event\Log\LogDropzoneManualStateChangedEvent;
 use Innova\CollecticielBundle\Event\Log\LogDropzoneReturnReceiptEvent;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 

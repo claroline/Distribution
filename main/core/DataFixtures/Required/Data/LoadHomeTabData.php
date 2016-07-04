@@ -29,7 +29,7 @@ class LoadHomeTabData implements RequiredFixture
     public function load(ObjectManager $manager)
     {
         $translator = $this->container->get('translator');
-        $infoName = $translator->trans('informations', array(), 'platform');
+        $infoName = $translator->trans('informations', [], 'platform');
 
         $desktopHomeTab = new HomeTab();
         $desktopHomeTab->setType('admin_desktop');

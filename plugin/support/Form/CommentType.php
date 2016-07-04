@@ -13,11 +13,11 @@ class CommentType extends AbstractType
         $builder->add(
             'content',
             'tinymce',
-            array(
+            [
                 'required' => true,
                 'label' => 'content',
                 'translation_domain' => 'platform',
-            )
+            ]
         );
     }
 
@@ -28,6 +28,6 @@ class CommentType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'support'));
+        $resolver->setDefaults(['translation_domain' => 'support']);
     }
 }

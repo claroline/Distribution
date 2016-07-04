@@ -19,12 +19,12 @@ class RefreshCacheEvent extends Event
 
     public function __construct()
     {
-        $this->parameters = array();
+        $this->parameters = [];
     }
 
     public function addCacheParameter($key, $value)
     {
-        $this->parameters = array_merge($this->parameters, array($key => $value));
+        $this->parameters = array_merge($this->parameters, [$key => $value]);
     }
 
     public function getParameters()

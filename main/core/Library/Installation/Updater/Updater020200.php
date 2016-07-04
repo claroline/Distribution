@@ -31,7 +31,7 @@ class Updater020200 extends Updater
 
         foreach ($resourceTypes as $resourceType) {
             $decoder = $em->getRepository('ClarolineCoreBundle:Resource\MenuAction')
-                ->findOneBy(array('resourceType' => $resourceType, 'name' => 'open-tracking'));
+                ->findOneBy(['resourceType' => $resourceType, 'name' => 'open-tracking']);
 
             if (!$decoder) {
                 $trackingMenuAction = new MenuAction();

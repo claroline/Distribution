@@ -22,15 +22,15 @@ class FriendAuthenticationType extends AbstractType
         $builder->add(
             'allowAuthentication',
             'checkbox',
-            array(
+            [
                 'label' => 'allow_authentication',
                 'required' => false,
-            )
+            ]
         );
         $builder->add(
             'createUserIfMissing',
             'hidden',
-            array('data' => true)
+            ['data' => true]
         );
     }
 
@@ -41,9 +41,9 @@ class FriendAuthenticationType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
                 'translation_domain' => 'platform',
-            )
+            ]
         );
     }
 }

@@ -11,9 +11,9 @@
 
 namespace Claroline\CoreBundle\Repository\Contact;
 
-use Doctrine\ORM\EntityRepository;
 use Claroline\CoreBundle\Entity\Contact\Category;
 use Claroline\CoreBundle\Entity\User;
+use Doctrine\ORM\EntityRepository;
 
 class ContactRepository extends EntityRepository
 {

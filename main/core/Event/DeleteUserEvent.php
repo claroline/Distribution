@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Event;
 
-use Symfony\Component\EventDispatcher\Event;
 use Claroline\CoreBundle\Entity\User;
+use Symfony\Component\EventDispatcher\Event;
 
 /**
  * Event dispatched when a user is deleted.

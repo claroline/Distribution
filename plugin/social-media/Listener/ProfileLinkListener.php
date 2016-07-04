@@ -60,7 +60,7 @@ class ProfileLinkListener
         if ($loggedUser !== null && $loggedUser !== 'anon') {
             $profileUser = $event->getUser();
             $profileUrl = $this->router->generate('icap_socialmedia_wall_view',
-                array('publicUrl' => $profileUser->getPublicUrl())
+                ['publicUrl' => $profileUser->getPublicUrl()]
             );
             $profileLink = new ProfileLink('socialmedia_wall', $profileUrl);
 

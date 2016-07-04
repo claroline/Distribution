@@ -12,10 +12,10 @@ class Statusable
     /**
      * @var array
      */
-    protected $statusList = array(
+    protected $statusList = [
         self::STATUS_PUBLISHED,
         self::STATUS_UNPUBLISHED,
-    );
+    ];
 
     /**
      * @var int

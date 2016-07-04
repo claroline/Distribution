@@ -12,11 +12,11 @@ class GradingCriteriaType extends AbstractType
     {
         $builder
             ->add('criteriaName', 'text',
-                array(
+                [
                     'required' => true,
                     'label' => false,
-                    'attr' => array('class' => 'form-control-criteria'),
-                   )
+                    'attr' => ['class' => 'form-control-criteria'],
+                   ]
                 )
             ->add('id', 'hidden')
             ;
@@ -30,12 +30,12 @@ class GradingCriteriaType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-                array(
+                [
                     'language' => 'fr',
                     'data_class' => 'Innova\CollecticielBundle\Entity\GradingCriteria',
                     'cascade_validation' => true,
                     'translation_domain' => 'innova_collecticiel',
-                    )
+                    ]
         );
     }
 }

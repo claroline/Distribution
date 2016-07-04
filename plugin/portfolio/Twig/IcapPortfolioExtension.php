@@ -19,10 +19,10 @@ class IcapPortfolioExtension extends \Twig_Extension
 
     public function getFilters()
     {
-        return array(
+        return [
             'visibilityLabel' => new \Twig_Filter_Method($this, 'getVisibilityLabel'),
             'orderByRow' => new \Twig_Filter_Method($this, 'getOrder'),
-        );
+        ];
     }
 
     public function getVisibilityLabel($visibility)
@@ -37,7 +37,7 @@ class IcapPortfolioExtension extends \Twig_Extension
      */
     public function getOrder($widgets)
     {
-        $orderedWidgets = array();
+        $orderedWidgets = [];
 
         foreach ($widgets as $widget) {
             $orderedWidgets[$widget->getCol().$widget->getRow()] = $widget;

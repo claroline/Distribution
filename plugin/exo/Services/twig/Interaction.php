@@ -33,13 +33,13 @@ class Interaction extends \Twig_Extension
      */
     public function getFunctions()
     {
-        return array(
+        return [
             'regexTwig' => new \Twig_Function_Method($this, 'regexTwig'),
             'getInterTwig' => new \Twig_Function_Method($this, 'getInterTwig'),
             'roundUpOrDown' => new \Twig_Function_Method($this, 'roundUpOrDown'),
             'getQuestionRights' => new \Twig_Function_Method($this, 'getQuestionRights'),
             'explodeString' => new \Twig_Function_Method($this, 'explodeString'),
-        );
+        ];
     }
 
     /**
@@ -117,7 +117,7 @@ class Interaction extends \Twig_Extension
      */
     public function getQuestionRights($questionsList, $shareRight, $actionQ, $qexoEdit)
     {
-        $questionRights = array();
+        $questionRights = [];
         $questionRights['dispSharedBy'] = false;
         $questionRights['allowShareQuestion'] = false;
         $questionRights['allowDuplicateQuestion'] = false;

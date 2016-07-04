@@ -19,7 +19,7 @@ class UserOptionsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('desktopBackgroundColor', 'text', array('required' => false));
+        $builder->add('desktopBackgroundColor', 'text', ['required' => false]);
     }
 
     public function getName()
@@ -29,6 +29,6 @@ class UserOptionsType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform']);
     }
 }

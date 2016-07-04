@@ -40,7 +40,7 @@ class ExternalAuthenticationListener
         if (count($services) > 0) {
             $content = $this->templating->render(
                 'IcapOAuthBundle::buttons.html.twig',
-                array('services' => $services)
+                ['services' => $services]
             );
 
             $event->addContent($content);

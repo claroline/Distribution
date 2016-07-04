@@ -28,12 +28,12 @@ class FormFactoryTest extends MockeryTestCase
         $rTypes->setAccessible(true);
         $rTypes->setValue(
             null,
-            array(
-                'fooType' => array(
+            [
+                'fooType' => [
                     'formType' => 'DOMDocument',
                     'entity' => 'stdClass',
-                ),
-            )
+                ],
+            ]
         );
     }
 
@@ -61,7 +61,7 @@ class FormFactoryTest extends MockeryTestCase
             ->andReturn('someFormInstance');
         $this->assertEquals(
             'someFormInstance',
-            $this->factory->create('fooType', array(), $entity)
+            $this->factory->create('fooType', [], $entity)
         );
     }
 }

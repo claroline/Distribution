@@ -49,7 +49,7 @@ class ResourceControllerTest extends MockeryTestCase
 
     public function testCustomAction()
     {
-        $controller = $this->getController(array('checkAccess'));
+        $controller = $this->getController(['checkAccess']);
         $action = 'action';
         $node = $this->mock('Claroline\CoreBundle\Entity\Resource\ResourceNode');
         $res = $this->mock('Claroline\CoreBundle\Entity\Resource\AbstractResource');
@@ -68,7 +68,7 @@ class ResourceControllerTest extends MockeryTestCase
         $controller->shouldReceive('checkAccess')
             ->with('decoderaction', anInstanceOf('Claroline\CoreBundle\Library\Resource\ResourceCollection'));
         $this->dispatcher->shouldReceive('dispatch')->once()
-            ->with('action_type', 'CustomActionResource', array($res))
+            ->with('action_type', 'CustomActionResource', [$res])
             ->andReturn($customActionEvent);
         $response = new \Symfony\Component\HttpFoundation\Response();
         $customActionEvent->shouldReceive('getResponse')->andReturn($response);
@@ -79,7 +79,7 @@ class ResourceControllerTest extends MockeryTestCase
         );
     }
 
-    private function getController(array $mockedMethods = array())
+    private function getController(array $mockedMethods = [])
     {
         if (count($mockedMethods) === 0) {
             return new ResourceController(
@@ -107,7 +107,7 @@ class ResourceControllerTest extends MockeryTestCase
 
         return $this->mock(
             'Claroline\CoreBundle\Controller\ResourceController'.$stringMocked,
-            array(
+            [
                 $this->sc,
                 $this->resourceManager,
                 $this->rightsManager,
@@ -118,7 +118,7 @@ class ResourceControllerTest extends MockeryTestCase
                 $this->maskManager,
                 $this->twigEngine,
                 $this->logManager,
-            )
+            ]
         );
     }
 }

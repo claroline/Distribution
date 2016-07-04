@@ -2,12 +2,12 @@
 
 namespace Icap\LessonBundle\Form;
 
+use Icap\LessonBundle\Entity\Chapter;
+use Icap\LessonBundle\Entity\Lesson;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Icap\LessonBundle\Entity\Lesson;
-use Icap\LessonBundle\Entity\Chapter;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("icap.lesson.chaptertype")
@@ -32,12 +32,12 @@ class ChapterType extends AbstractType
     {
         $builder
             ->add('title', 'text')
-            ->add('text', 'tinymce', array(
-                    'attr' => array(
+            ->add('text', 'tinymce', [
+                    'attr' => [
                         'data-theme' => 'advanced',
                         'height' => '600',
-                    ),
-                )
+                    ],
+                ]
             )
         ;
         if ($options['chapters'] != null) {
@@ -45,7 +45,7 @@ class ChapterType extends AbstractType
             $parentId = null;
             foreach ($options['chapters'] as $child) {
                 if ($root) {
-                    $choices[$child->getId()] = $this->translator->trans('Root', array(), 'icap_lesson');
+                    $choices[$child->getId()] = $this->translator->trans('Root', [], 'icap_lesson');
                     $root = false;
                 } else {
                     $choices[$child->getId()] = $child->getTitle();
@@ -55,22 +55,22 @@ class ChapterType extends AbstractType
                     $parentId = $child->getId();
                 }
             }
-            $builder->add('parentChapter', 'choice', array(
+            $builder->add('parentChapter', 'choice', [
                 'mapped' => false,
                 'choices' => $choices,
                 'data' => $parentId,
-            ));
+            ]);
         }
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => 'Icap\LessonBundle\Entity\Chapter',
-            'chapters' => array(),
+            'chapters' => [],
             'parentId' => null,
             'no_captcha' => true,
-        ));
+        ]);
     }
 
     public function getName()

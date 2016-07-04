@@ -11,9 +11,9 @@
 
 namespace Claroline\CoreBundle\Form\Calendar;
 
+use Claroline\CoreBundle\Form\Angular\AngularType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Claroline\CoreBundle\Form\Angular\AngularType;
 
 class TimeSlotType extends AngularType
 {
@@ -25,9 +25,9 @@ class TimeSlotType extends AngularType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('start', 'datetime', array('label' => 'start', 'required' => true))
-            ->add('end', 'datetime', array('label' => 'end', 'required' => true))
-            ->add('description', 'text', array('label' => 'description', 'required' => false));
+            ->add('start', 'datetime', ['label' => 'start', 'required' => true])
+            ->add('end', 'datetime', ['label' => 'end', 'required' => true])
+            ->add('description', 'text', ['label' => 'description', 'required' => false]);
     }
 
     public function getName()
@@ -42,7 +42,7 @@ class TimeSlotType extends AngularType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $default = array('translation_domain' => 'platform');
+        $default = ['translation_domain' => 'platform'];
         if ($this->forApi) {
             $default['csrf_protection'] = false;
         }

@@ -11,22 +11,22 @@
 
 namespace Claroline\CoreBundle\Controller\API\Organization;
 
+use Claroline\CoreBundle\Entity\Organization\Organization;
+use Claroline\CoreBundle\Form\Organization\OrganizationParametersType;
+use Claroline\CoreBundle\Form\Organization\OrganizationType;
 use Claroline\CoreBundle\Manager\ApiManager;
-use JMS\DiExtraBundle\Annotation as DI;
-use FOS\RestBundle\Controller\FOSRestController;
-use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Manager\Organization\OrganizationManager;
+use Claroline\CoreBundle\Persistence\ObjectManager;
+use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\NamePrefix;
+use FOS\RestBundle\Controller\Annotations\View;
+use FOS\RestBundle\Controller\FOSRestController;
+use JMS\DiExtraBundle\Annotation as DI;
+use JMS\SecurityExtraBundle\Annotation as SEC;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\Request;
-use FOS\RestBundle\Controller\Annotations\View;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use FOS\RestBundle\Controller\Annotations\NamePrefix;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use Claroline\CoreBundle\Entity\Organization\Organization;
-use Claroline\CoreBundle\Form\Organization\OrganizationType;
-use Claroline\CoreBundle\Form\Organization\OrganizationParametersType;
-use JMS\SecurityExtraBundle\Annotation as SEC;
-use FOS\RestBundle\Controller\Annotations\Get;
 
 /**
  * @NamePrefix("api_")
@@ -96,7 +96,7 @@ class OrganizationController extends FOSRestController
     {
         $this->organizationManager->delete($organization);
 
-        return array('success');
+        return ['success'];
     }
 
     /**
@@ -136,9 +136,9 @@ class OrganizationController extends FOSRestController
         $formType = new OrganizationParametersType('eofm');
         $formType->enableApi();
         $form = $this->createForm($formType, $organization);
-        $options = array(
+        $options = [
             'serializer_group' => 'api_organization_list',
-        );
+        ];
 
         return $this->apiManager->handleFormView('ClarolineCoreBundle:API:Organization\editOrganizationForm.html.twig', $form, $options);
     }
@@ -165,11 +165,11 @@ class OrganizationController extends FOSRestController
             $httpCode = 200;
         }
 
-        $options = array(
+        $options = [
             'http_code' => $httpCode,
             'extra_parameters' => $organization,
             'serializer_group' => 'api_organization_list',
-        );
+        ];
 
         return $this->apiManager->handleFormView('ClarolineCoreBundle:API:Organization\editLocationForm.html.twig', $form, $options);
     }

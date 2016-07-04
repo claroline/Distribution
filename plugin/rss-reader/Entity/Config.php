@@ -11,10 +11,10 @@
 
 namespace Claroline\RssReaderBundle\Entity;
 
+use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
+use Claroline\RssReaderBundle\Validator\Constraints as CustomAssert;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use Claroline\RssReaderBundle\Validator\Constraints as CustomAssert;
-use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 
 /**
  * @ORM\Entity

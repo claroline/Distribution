@@ -57,7 +57,7 @@ class CollecticielManager
      */
     public function export(Workspace $workspace, array &$files, Dropzone $dropzone)
     {
-        $data = array();
+        $data = [];
 
         $uid = uniqid().'.txt';
         $tmpPath = sys_get_temp_dir().DIRECTORY_SEPARATOR.$uid;

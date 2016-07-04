@@ -2,8 +2,8 @@
 
 namespace UJM\ExoBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
@@ -139,8 +139,8 @@ class InteractionMatching extends AbstractInteraction
     {
         $this->sortProposals();
         $i = 0;
-        $tabShuffle = array();
-        $tabFixed = array();
+        $tabShuffle = [];
+        $tabFixed = [];
         $proposals = new \Doctrine\Common\Collections\ArrayCollection();
         $proposalCount = count($this->proposals);
 

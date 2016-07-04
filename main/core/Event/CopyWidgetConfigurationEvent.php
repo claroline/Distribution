@@ -24,8 +24,8 @@ class CopyWidgetConfigurationEvent extends Event implements DataConveyorEventInt
     public function __construct(
         WidgetInstance $widgetInstance,
         WidgetInstance $widgetInstanceCopy,
-        $resourceInfos = array(),
-        $tabsInfos = array()
+        $resourceInfos = [],
+        $tabsInfos = []
     ) {
         $this->widgetInstanceCopy = $widgetInstanceCopy;
         $this->widgetInstance = $widgetInstance;

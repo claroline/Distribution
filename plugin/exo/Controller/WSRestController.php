@@ -2,11 +2,11 @@
 
 namespace UJM\ExoBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use UJM\ExoBundle\Entity\Picture;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Pagerfanta;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
+use UJM\ExoBundle\Entity\Picture;
 
 /**
  * WSRest controller.
@@ -46,7 +46,7 @@ class WSRestController extends Controller
             }
 
             if (!is_dir($userDir)) {
-                $dirs = array('audio', 'images', 'media', 'video');
+                $dirs = ['audio', 'images', 'media', 'video'];
                 mkdir($userDir);
 
                 foreach ($dirs as $dir) {
@@ -94,7 +94,7 @@ class WSRestController extends Controller
                     ->getManager()
                     ->getRepository('UJMExoBundle:Picture');
 
-                $listPic = $repository->findBy(array('user' => $user->getId()));
+                $listPic = $repository->findBy(['user' => $user->getId()]);
 
                 // Pagination of pictures
                 $adapterPic = new ArrayAdapter($listPic);
@@ -120,10 +120,10 @@ class WSRestController extends Controller
 
                 return $this->render(
                     'UJMExoBundle:Picture:managePic.html.twig',
-                    array(
+                    [
                         'listPic' => $listPicPager,
                         'pagerPic' => $pagerPic,
-                    )
+                    ]
                 );
             }
         } else {
@@ -151,7 +151,7 @@ class WSRestController extends Controller
                     ->getManager()
                     ->getRepository('UJMExoBundle:Picture');
 
-                $list = $repository->findBy(array('user' => $user->getId()));
+                $list = $repository->findBy(['user' => $user->getId()]);
 
                 $end = count($list);
 

@@ -16,18 +16,18 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\ScormBundle\Entity\Scorm12Resource;
-use Claroline\ScormBundle\Entity\ScormResource;
 use Claroline\ScormBundle\Entity\Scorm12Sco;
 use Claroline\ScormBundle\Entity\Scorm12ScoTracking;
 use Claroline\ScormBundle\Entity\Scorm2004Resource;
 use Claroline\ScormBundle\Entity\Scorm2004Sco;
 use Claroline\ScormBundle\Entity\Scorm2004ScoTracking;
-use Claroline\ScormBundle\Listener\Exception\InvalidScormArchiveException;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Claroline\ScormBundle\Entity\ScormResource;
 use Claroline\ScormBundle\Library\Scorm12;
 use Claroline\ScormBundle\Library\Scorm2004;
+use Claroline\ScormBundle\Listener\Exception\InvalidScormArchiveException;
+use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * @DI\Service("claroline.manager.scorm_manager")
@@ -217,7 +217,7 @@ class ScormManager
         Scorm12Sco $sco
     ) {
         return $this->scorm12ScoTrackingRepo->findOneBy(
-            array('user' => $user->getId(), 'sco' => $sco->getId())
+            ['user' => $user->getId(), 'sco' => $sco->getId()]
         );
     }
 
@@ -247,7 +247,7 @@ class ScormManager
         Scorm2004Sco $sco
     ) {
         return $this->scorm2004ScoTrackingRepo->findOneBy(
-            array('user' => $user->getId(), 'sco' => $sco->getId())
+            ['user' => $user->getId(), 'sco' => $sco->getId()]
         );
     }
 

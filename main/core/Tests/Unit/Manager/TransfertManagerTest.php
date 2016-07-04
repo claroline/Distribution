@@ -13,8 +13,8 @@ namespace Claroline\CoreBundle\Manager;
 
 use Claroline\CoreBundle\Library\Testing\MockeryTestCase;
 use Claroline\CoreBundle\Library\Transfert\ConfigurationBuilders\Tools\HomeImporter;
-use Claroline\CoreBundle\Library\Transfert\ConfigurationBuilders\Tools\Widgets\TextImporter;
 use Claroline\CoreBundle\Library\Transfert\ConfigurationBuilders\Tools\ResourceManagerImporter;
+use Claroline\CoreBundle\Library\Transfert\ConfigurationBuilders\Tools\Widgets\TextImporter;
 use Claroline\CoreBundle\Library\Transfert\Resolver;
 use Symfony\Component\Yaml\Yaml;
 
@@ -33,42 +33,42 @@ class TransfertManagerTest extends MockeryTestCase
         $this->workspacePropertiesImporter = $this
             ->mock(
                 'Claroline\CoreBundle\Library\Transfert\ConfigurationBuilders\WorkspacePropertiesImporter',
-                array($this->om)
+                [$this->om]
             );
 
         //users importer
         $this->usersImporter = $this
             ->mock(
                 'Claroline\CoreBundle\Library\Transfert\ConfigurationBuilders\UsersImporter',
-                array($this->om)
+                [$this->om]
             );
 
         //groups importer
         $this->groupsImporter = $this
             ->mock(
                 'Claroline\CoreBundle\Library\Transfert\ConfigurationBuilders\GroupsImporter',
-                array($this->om)
+                [$this->om]
             );
 
         //roles importer
         $this->rolesImporter = $this
             ->mock(
                 'Claroline\CoreBundle\Library\Transfert\ConfigurationBuilders\RolesImporter',
-                array($this->om)
+                [$this->om]
             );
 
         //roles importer
         $this->toolsImporter = $this
             ->mock(
                 'Claroline\CoreBundle\Library\Transfert\ConfigurationBuilders\ToolsImporter',
-                array($this->om)
+                [$this->om]
             );
 
         //roles importer
         $this->ownerImporter = $this
             ->mock(
                 'Claroline\CoreBundle\Library\Transfert\ConfigurationBuilders\OwnerImporter',
-                array($this->om)
+                [$this->om]
             );
 
         $this->manager = new TransferManager();

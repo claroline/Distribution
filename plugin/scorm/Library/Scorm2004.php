@@ -12,9 +12,9 @@
 
 namespace Claroline\ScormBundle\Library;
 
+use Claroline\ScormBundle\Entity\Scorm2004Sco;
 use Claroline\ScormBundle\Listener\Exception\InvalidScormArchiveException;
 use JMS\DiExtraBundle\Annotation as DI;
-use Claroline\ScormBundle\Entity\Scorm2004Sco;
 
 /**
  * @DI\Service("claroline.library.scorm_2004")
@@ -92,7 +92,7 @@ class Scorm2004
         Scorm2004Sco $parentSco = null
     ) {
         $item = $source->firstChild;
-        $scos = array();
+        $scos = [];
 
         while (!is_null($item)) {
             if ($item->nodeName === 'item') {
@@ -114,7 +114,7 @@ class Scorm2004
 
     private function parseResourceNodes(\DOMNodeList $resources)
     {
-        $scos = array();
+        $scos = [];
 
         foreach ($resources as $resource) {
             if (!is_null($resource->attributes)) {

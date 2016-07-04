@@ -17,7 +17,7 @@ class WidgetListBlogRepository extends EntityRepository
     public function findByWidgetInstance(WidgetInstance $widgetInstance, $executeQuery = true)
     {
         $query = $this->createQueryBuilder('wl')
-            ->select(array('wl', 'resourceNode'))
+            ->select(['wl', 'resourceNode'])
             ->join('wl.resourceNode', 'resourceNode')
             ->where('wl.widgetInstance = :widgetInstance')
             ->setParameter('widgetInstance', $widgetInstance)

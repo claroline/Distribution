@@ -22,7 +22,7 @@ class DoctrineEntityListenerPass implements CompilerPassInterface
         $config = $container->getDefinition('doctrine.orm.default_configuration');
         $config->addMethodCall(
             'setEntityListenerResolver',
-            array(new Reference('claroline.doctrine.entity_listener_resolver'))
+            [new Reference('claroline.doctrine.entity_listener_resolver')]
         );
 
         $definition = $container->getDefinition('claroline.doctrine.entity_listener_resolver');
@@ -31,7 +31,7 @@ class DoctrineEntityListenerPass implements CompilerPassInterface
         foreach ($services as $service => $attributes) {
             $definition->addMethodCall(
                 'addMapping',
-                array($container->getDefinition($service)->getClass(), $service)
+                [$container->getDefinition($service)->getClass(), $service]
             );
         }
     }

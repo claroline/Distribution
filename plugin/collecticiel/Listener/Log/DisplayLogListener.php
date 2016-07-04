@@ -11,13 +11,13 @@ class DisplayLogListener extends ContainerAware
     {
         $content = $this->container->get('templating')->render(
             'InnovaCollecticielBundle:Log:log_details.html.twig',
-            array(
+            [
                 'log' => $event->getLog(),
                 'listItemView' => $this->container->get('templating')->render(
                     'InnovaCollecticielBundle:Log:log_list_item.html.twig',
-                    array('log' => $event->getLog())
+                    ['log' => $event->getLog()]
                 ),
-            )
+            ]
         );
 
         $event->setResponseContent($content);

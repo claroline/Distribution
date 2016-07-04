@@ -11,9 +11,9 @@
 
 namespace Claroline\MessageBundle\Repository;
 
-use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\MessageBundle\Entity\Message;
+use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
 class MessageRepository extends NestedTreeRepository
 {

@@ -20,16 +20,16 @@ class ForumType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text', array('constraints' => new NotBlank(), 'attr' => array('autofocus' => true)));
+        $builder->add('name', 'text', ['constraints' => new NotBlank(), 'attr' => ['autofocus' => true]]);
         $builder->add(
             'activateNotifications',
             'choice',
-            array(
-                'choices' => array(true => 'yes', false => 'no'),
+            [
+                'choices' => [true => 'yes', false => 'no'],
                 'expanded' => false,
                 'multiple' => false,
                 'label' => 'notifications',
-            )
+            ]
         );
     }
 
@@ -41,9 +41,9 @@ class ForumType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'translation_domain' => 'forum',
-            )
+            ]
         );
     }
 }

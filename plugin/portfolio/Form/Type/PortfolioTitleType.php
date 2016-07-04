@@ -16,10 +16,10 @@ class PortfolioTitleType extends AbstractType
     {
         $builder
             ->add('title', 'text',
-                array(
+                [
                     'label' => 'title',
-                    'theme_options' => array('label_width' => 'col-md-2'),
-                )
+                    'theme_options' => ['label_width' => 'col-md-2'],
+                ]
             );
     }
 
@@ -31,10 +31,10 @@ class PortfolioTitleType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'Icap\PortfolioBundle\Entity\Portfolio',
                 'translation_domain' => 'icap_portfolio',
-            )
+            ]
         );
     }
 }

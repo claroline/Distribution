@@ -13,9 +13,9 @@ namespace Icap\LessonBundle\Manager;
 
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Persistence\ObjectManager;
-use JMS\DiExtraBundle\Annotation as DI;
-use Icap\LessonBundle\Entity\Lesson;
 use Icap\LessonBundle\Entity\Chapter;
+use Icap\LessonBundle\Entity\Lesson;
+use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("icap.lesson.manager")
@@ -55,7 +55,7 @@ class LessonManager
         if (isset($data['data'])) {
             $lessonData = $data['data'];
 
-            $chaptersMap = array();
+            $chaptersMap = [];
             foreach ($lessonData['chapters'] as $chapter) {
                 $entityChapter = new Chapter();
                 $entityChapter->setLesson($lesson);
@@ -94,7 +94,7 @@ class LessonManager
      */
     public function exportLesson(Workspace $workspace, array &$files, Lesson $object)
     {
-        $data = array('chapters' => array());
+        $data = ['chapters' => []];
 
         // Getting all sections and building array
         $rootChapter = $object->getRoot();
@@ -106,13 +106,13 @@ class LessonManager
             file_put_contents($tmpPath, $chapter->getText());
             $files[$uid] = $tmpPath;
 
-            $chapterArray = array(
+            $chapterArray = [
                 'id' => $chapter->getId(),
                 'parent_id' => ($chapter->getParent() !== null) ? $chapter->getParent()->getId() : null,
                 'is_root' => $chapter->getId() == $rootChapter->getId(),
                 'title' => $chapter->getTitle(),
                 'path' => $uid,
-            );
+            ];
 
             $data['chapters'][] = $chapterArray;
         }

@@ -11,9 +11,9 @@ class DisplayLogListener extends ContainerAware
     {
         $content = $this->container->get('templating')->render(
             'UJMExoBundle:Log:log_details.html.twig',
-            array(
+            [
                 'log' => $event->getLog(),
-            )
+            ]
         );
 
         $event->setResponseContent($content);

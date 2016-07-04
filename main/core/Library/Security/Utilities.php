@@ -12,8 +12,8 @@
 namespace Claroline\CoreBundle\Library\Security;
 
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 /**
  * @DI\Service("claroline.security.utilities")
@@ -37,16 +37,16 @@ class Utilities
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
-        $this->expectedTypeOfRight = array('workspace', 'resource');
-        $this->expectedKeysForResource = array(
+        $this->expectedTypeOfRight = ['workspace', 'resource'];
+        $this->expectedKeysForResource = [
             'open',
             'delete',
             'edit',
             'copy',
             'create',
             'export',
-        );
-        $this->expectedKeysForWorkspace = array('canView', 'canDelete', 'canEdit');
+        ];
+        $this->expectedKeysForWorkspace = ['canView', 'canDelete', 'canEdit'];
     }
 
     /**
@@ -66,7 +66,7 @@ class Utilities
             );
         }
 
-        $configs = array();
+        $configs = [];
 
         foreach (array_keys($checks) as $key) {
             $arr = explode('-', $key);
@@ -91,7 +91,7 @@ class Utilities
      */
     public function getRoles(TokenInterface $token)
     {
-        $roles = array();
+        $roles = [];
 
         foreach ($token->getRoles() as $role) {
             $roles[] = $role->getRole();

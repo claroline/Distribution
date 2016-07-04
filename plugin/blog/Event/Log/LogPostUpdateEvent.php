@@ -23,8 +23,8 @@ class LogPostUpdateEvent extends AbstractLogResourceEvent implements NotifiableI
         $this->blog = $post->getBlog();
         $this->post = $post;
 
-        $this->details = array(
-            'post' => array(
+        $this->details = [
+            'post' => [
                 'blog' => $this->blog->getId(),
                 'title' => $post->getTitle(),
                 'slug' => $post->getSlug(),
@@ -32,8 +32,8 @@ class LogPostUpdateEvent extends AbstractLogResourceEvent implements NotifiableI
                 'published' => $post->isPublished(),
                 'author' => $post->getAuthor()->getFirstName().' '.$post->getAuthor()->getLastName(),
                 'authorId' => $post->getAuthor()->getId(),
-            ),
-        );
+            ],
+        ];
 
         parent::__construct($this->blog->getResourceNode(), $this->details);
     }
@@ -43,7 +43,7 @@ class LogPostUpdateEvent extends AbstractLogResourceEvent implements NotifiableI
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_WORKSPACE);
+        return [self::DISPLAYED_WORKSPACE];
     }
 
     /**
@@ -65,7 +65,7 @@ class LogPostUpdateEvent extends AbstractLogResourceEvent implements NotifiableI
      */
     public function getIncludeUserIds()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -75,7 +75,7 @@ class LogPostUpdateEvent extends AbstractLogResourceEvent implements NotifiableI
      */
     public function getExcludeUserIds()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -105,12 +105,12 @@ class LogPostUpdateEvent extends AbstractLogResourceEvent implements NotifiableI
      */
     public function getNotificationDetails()
     {
-        $notificationDetails = array_merge($this->details, array());
-        $notificationDetails['resource'] = array(
+        $notificationDetails = array_merge($this->details, []);
+        $notificationDetails['resource'] = [
             'id' => $this->blog->getId(),
             'name' => $this->resource->getName(),
             'type' => $this->resource->getResourceType()->getName(),
-        );
+        ];
 
         return $notificationDetails;
     }

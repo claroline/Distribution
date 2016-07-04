@@ -31,7 +31,7 @@ class PortalController extends Controller
     {
         $types = $this->get('claroline.manager.portal_manager')->getPortalEnabledResourceTypesForSearch();
 
-        return array('types' => $types);
+        return ['types' => $types];
     }
 
     /**

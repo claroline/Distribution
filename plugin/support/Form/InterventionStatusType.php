@@ -14,7 +14,7 @@ class InterventionStatusType extends AbstractType
         $builder->add(
             'status',
             'entity',
-            array(
+            [
                 'label' => 'status',
                 'class' => 'FormaLibreSupportBundle:Status',
                 'translation_domain' => 'support',
@@ -28,23 +28,23 @@ class InterventionStatusType extends AbstractType
                 'expanded' => false,
                 'multiple' => false,
                 'required' => true,
-            )
+            ]
         );
         $builder->add(
             'externalComment',
             'tinymce',
-            array(
+            [
                 'required' => true,
                 'label' => 'client_message',
-            )
+            ]
         );
         $builder->add(
             'internalComment',
             'tinymce',
-            array(
+            [
                 'required' => true,
                 'label' => 'internal_message',
-            )
+            ]
         );
     }
 
@@ -55,6 +55,6 @@ class InterventionStatusType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'support'));
+        $resolver->setDefaults(['translation_domain' => 'support']);
     }
 }

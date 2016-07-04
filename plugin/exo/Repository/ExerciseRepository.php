@@ -22,7 +22,7 @@ class ExerciseRepository extends EntityRepository
      */
     public function getExerciseAdmin($userID)
     {
-        $exercises = array();
+        $exercises = [];
 
         $dql = 'SELECT w.id, w.name
             FROM Claroline\CoreBundle\Entity\User u

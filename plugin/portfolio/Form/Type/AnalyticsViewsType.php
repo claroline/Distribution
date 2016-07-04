@@ -44,12 +44,12 @@ class AnalyticsViewsType extends AbstractType
     {
         $builder
             ->add(
-                'range', 'daterange', array(
+                'range', 'daterange', [
                     'label' => $this->translator->trans('period', [], 'icap_portfolio').' :',
                     'required' => true,
-                    'attr' => array('class' => 'input-sm'),
-                    'theme_options' => array('label_width' => 'col-md-2', 'control_width' => 'col-md-3'),
-                )
+                    'attr' => ['class' => 'input-sm'],
+                    'theme_options' => ['label_width' => 'col-md-2', 'control_width' => 'col-md-3'],
+                ]
             );
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
@@ -59,7 +59,7 @@ class AnalyticsViewsType extends AbstractType
 
                 $form
                     ->add(
-                        'portfolio', 'entity', array(
+                        'portfolio', 'entity', [
                             'class' => 'IcapPortfolioBundle:Portfolio',
                             'property' => 'title',
                             'query_builder' => function (EntityRepository $entityRepository) use ($user) {
@@ -68,9 +68,9 @@ class AnalyticsViewsType extends AbstractType
                                     ->setParameter('user', $user);
                             },
                             'label' => 'show',
-                            'attr' => array('class' => 'input-sm'),
-                            'theme_options' => array('label_width' => 'col-md-2', 'control_width' => 'col-md-3'),
-                        )
+                            'attr' => ['class' => 'input-sm'],
+                            'theme_options' => ['label_width' => 'col-md-2', 'control_width' => 'col-md-3'],
+                        ]
                     );
             }
         });
@@ -84,10 +84,10 @@ class AnalyticsViewsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'translation_domain' => 'icap_portfolio',
                 'csrf_protection' => false,
-            )
+            ]
         );
     }
 }

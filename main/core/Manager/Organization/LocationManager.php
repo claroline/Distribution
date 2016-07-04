@@ -11,11 +11,11 @@
 
 namespace Claroline\CoreBundle\Manager\Organization;
 
-use JMS\DiExtraBundle\Annotation as DI;
-use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Organization\Location;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Manager\CurlManager;
+use Claroline\CoreBundle\Persistence\ObjectManager;
+use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("claroline.manager.organization.location_manager")
@@ -71,7 +71,7 @@ class LocationManager
 
     public function getByType($type)
     {
-        return $this->repo->findBy(array('type' => $type));
+        return $this->repo->findBy(['type' => $type]);
     }
 
     public function setCoordinates(Location $location)

@@ -12,18 +12,18 @@
 namespace Claroline\CoreBundle\Controller;
 
 use Claroline\CoreBundle\Entity\User;
-use Symfony\Component\Form\FormFactory;
-use Claroline\CoreBundle\Manager\MailManager;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use JMS\SecurityExtraBundle\Annotation as SEC;
-use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
-use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\Form\SendMailType;
+use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
+use Claroline\CoreBundle\Manager\MailManager;
+use JMS\DiExtraBundle\Annotation as DI;
+use JMS\SecurityExtraBundle\Annotation as SEC;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormFactory;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @DI\Tag("security.secure_service")
@@ -123,7 +123,7 @@ class MailController extends Controller
             $this->mailManager->send(
                 $data['object'],
                 $body,
-                array($user),
+                [$user],
                 $sender
             );
         }
@@ -131,7 +131,7 @@ class MailController extends Controller
         return new RedirectResponse(
             $this->router->generate(
                 'claro_public_profile_view',
-                array('publicUrl' => $user->getPublicUrl())
+                ['publicUrl' => $user->getPublicUrl()]
            )
         );
     }

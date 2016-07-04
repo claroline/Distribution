@@ -2,10 +2,10 @@
 
 namespace Icap\BlogBundle\Entity;
 
+use Claroline\CoreBundle\Entity\Resource\AbstractResource;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 
 /**
  * @ORM\Table(name="icap__blog")
@@ -166,7 +166,7 @@ class Blog extends AbstractResource
      */
     public function getAuthors()
     {
-        $authors = array();
+        $authors = [];
 
         foreach ($this->getPosts() as $post) {
             $postAuthor = $post->getAuthor();

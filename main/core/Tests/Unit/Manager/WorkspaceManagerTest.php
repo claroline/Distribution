@@ -11,11 +11,11 @@
 
 namespace Claroline\CoreBundle\Manager;
 
-use Mockery as m;
+use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Library\Testing\MockeryTestCase;
+use Mockery as m;
 use org\bovigo\vfs\vfsStream;
 
 class WorkspaceManagerTest extends MockeryTestCase
@@ -89,13 +89,13 @@ class WorkspaceManagerTest extends MockeryTestCase
     public function testExport()
     {
         $manager = $this->getManager(
-            array(
+            [
                 'createArchive',
                 'exportRolesSection',
                 'exportRootPermsSection',
                 'exportToolsInfosSection',
                 'exportToolsSection',
-            )
+            ]
         );
 
         $workspace = new \Claroline\CoreBundle\Entity\Workspace\Workspace();
@@ -104,10 +104,10 @@ class WorkspaceManagerTest extends MockeryTestCase
 
         $this->om->shouldReceive('startFlushSuite')->once();
         $manager->shouldReceive('createArchive')->once()->andReturn($archive);
-        $manager->shouldReceive('exportRolesSection')->once()->andReturn(array());
-        $manager->shouldReceive('exportRootPermsSection')->once()->andReturn(array());
-        $manager->shouldReceive('exportToolsInfosSection')->once()->andReturn(array());
-        $manager->shouldReceive('exportToolsSection')->once()->andReturn(array());
+        $manager->shouldReceive('exportRolesSection')->once()->andReturn([]);
+        $manager->shouldReceive('exportRootPermsSection')->once()->andReturn([]);
+        $manager->shouldReceive('exportToolsInfosSection')->once()->andReturn([]);
+        $manager->shouldReceive('exportToolsSection')->once()->andReturn([]);
         $archive->shouldReceive('addFromString')->once();
         $archive->shouldReceive('close')->once();
         $this->om->shouldReceive('endFlushSuite')->once();
@@ -133,7 +133,7 @@ class WorkspaceManagerTest extends MockeryTestCase
 
     public function testExportRoleSection()
     {
-        $expectedResult = array();
+        $expectedResult = [];
         $expectedResult['roles']['ROLE_WS_TEST1'] = 'translationrole1';
         $expectedResult['roles']['ROLE_WS_TEST2'] = 'translationrole2';
 
@@ -149,45 +149,45 @@ class WorkspaceManagerTest extends MockeryTestCase
         $this->roleManager->shouldReceive('getRoleBaseName')->once()
             ->with('ROLE_WS_TEST2_AAA')->andReturn('ROLE_WS_TEST2');
         $this->roleRepo->shouldReceive('findByWorkspace')->once()
-            ->with($workspace)->andReturn(array($roleA, $roleB));
+            ->with($workspace)->andReturn([$roleA, $roleB]);
 
         $this->assertEquals($expectedResult, $this->getManager()->exportRolesSection($workspace));
     }
 
     public function testExportRootPermsSection()
     {
-        $perms = array(
+        $perms = [
             'copy' => true,
             'open' => true,
             'delete' => false,
             'export' => false,
             'edit' => false,
-        );
+        ];
 
-        $creations = array(
+        $creations = [
             'name' => 'directory',
-        );
+        ];
 
-        $expectedResult = array(
-            'root_perms' => array(
-                    'ROLE_WS_TEST1' => array(
+        $expectedResult = [
+            'root_perms' => [
+                    'ROLE_WS_TEST1' => [
                         'copy' => true,
                         'open' => true,
                         'delete' => false,
                         'export' => false,
                         'edit' => false,
                         'create' => $creations,
-                    ),
-                    'ROLE_WS_TEST2' => array(
+                    ],
+                    'ROLE_WS_TEST2' => [
                         'copy' => true,
                         'open' => true,
                         'delete' => false,
                         'export' => false,
                         'edit' => false,
-                        'create' => array(),
-                    ),
-                ),
-        );
+                        'create' => [],
+                    ],
+                ],
+        ];
 
         $workspace = new \Claroline\CoreBundle\Entity\Workspace\Workspace();
         $resourceType = new \Claroline\CoreBundle\Entity\Resource\ResourceType();
@@ -198,20 +198,20 @@ class WorkspaceManagerTest extends MockeryTestCase
         $roleB = $this->mock('Claroline\CoreBundle\Entity\Role');
         $roleB->shouldReceive('getName')->andReturn('ROLE_WS_TEST2_AAA');
         $this->roleRepo->shouldReceive('findByWorkspace')->once()
-            ->with($workspace)->andReturn(array($roleA, $roleB));
+            ->with($workspace)->andReturn([$roleA, $roleB]);
         $this->resourceNodeRepo->shouldReceive('findWorkspaceRoot')->once()->with($workspace)->andReturn($root);
         $this->roleManager->shouldReceive('getRoleBaseName')->once()
             ->with('ROLE_WS_TEST1_AAA')->andReturn('ROLE_WS_TEST1');
         $this->roleManager->shouldReceive('getRoleBaseName')->once()
             ->with('ROLE_WS_TEST2_AAA')->andReturn('ROLE_WS_TEST2');
         $this->resourceRightsRepo->shouldReceive('findMaximumRights')->andReturn('123')
-            ->once()->with(array('ROLE_WS_TEST1_AAA'), $root)->andReturn('123');
+            ->once()->with(['ROLE_WS_TEST1_AAA'], $root)->andReturn('123');
         $this->resourceRightsRepo->shouldReceive('findMaximumRights')
-            ->once()->with(array('ROLE_WS_TEST2_AAA'), $root)->andReturn('123');
+            ->once()->with(['ROLE_WS_TEST2_AAA'], $root)->andReturn('123');
         $this->resourceRightsRepo->shouldReceive('findCreationRights')
-            ->once()->with(array('ROLE_WS_TEST1_AAA'), $root)->andReturn($creations);
+            ->once()->with(['ROLE_WS_TEST1_AAA'], $root)->andReturn($creations);
         $this->resourceRightsRepo->shouldReceive('findCreationRights')
-            ->once()->with(array('ROLE_WS_TEST2_AAA'), $root)->andReturn(array());
+            ->once()->with(['ROLE_WS_TEST2_AAA'], $root)->andReturn([]);
         $this->maskManager->shouldReceive('decodeMask')->with(m::any(), $resourceType)->andReturn($perms);
 
         $result = $this->getManager()->exportRootPermsSection($workspace);
@@ -220,18 +220,18 @@ class WorkspaceManagerTest extends MockeryTestCase
 
     public function testExportToolsInfosSection()
     {
-        $expected = array(
-            'tools_infos' => array(
-                    'toolName1' => array(
-                        'perms' => array('ROLE_WS_TEST1', 'ROLE_WS_TEST2'),
+        $expected = [
+            'tools_infos' => [
+                    'toolName1' => [
+                        'perms' => ['ROLE_WS_TEST1', 'ROLE_WS_TEST2'],
                         'name' => 'orderedToolName1',
-                    ),
-                    'toolName2' => array(
-                        'perms' => array('ROLE_WS_TEST1', 'ROLE_WS_TEST2'),
+                    ],
+                    'toolName2' => [
+                        'perms' => ['ROLE_WS_TEST1', 'ROLE_WS_TEST2'],
                         'name' => 'orderedToolName2',
-                    ),
-                ),
-        );
+                    ],
+                ],
+        ];
 
         $workspace = new \Claroline\CoreBundle\Entity\Workspace\Workspace();
         $wotA = $this->mock('Claroline\CoreBundle\Entity\Tool\OrderedTool');
@@ -244,8 +244,8 @@ class WorkspaceManagerTest extends MockeryTestCase
         $roleB = $this->mock('Claroline\CoreBundle\Entity\Role');
         $roleB->shouldReceive('getName')->andReturn('ROLE_WS_TEST2_AAA');
 
-        $roles = array($roleA, $roleB);
-        $wots = array($wotA, $wotB);
+        $roles = [$roleA, $roleB];
+        $wots = [$wotA, $wotB];
 
         $wotA->shouldReceive('getTool')->once()->andReturn($toolA);
         $wotB->shouldReceive('getTool')->once()->andReturn($toolB);
@@ -255,7 +255,7 @@ class WorkspaceManagerTest extends MockeryTestCase
         $toolB->shouldReceive('getName')->once()->andReturn('toolName2');
 
         $this->orderedToolRepo->shouldReceive('findBy')->once()
-            ->with(array('workspace' => $workspace), array('order' => 'ASC'))->andReturn($wots);
+            ->with(['workspace' => $workspace], ['order' => 'ASC'])->andReturn($wots);
         $this->roleRepo->shouldReceive('findByWorkspaceAndTool')->andReturn($roles)->times(2);
 
         $this->roleManager->shouldReceive('getRoleBaseName')->with('ROLE_WS_TEST1_AAA')->andReturn('ROLE_WS_TEST1');
@@ -266,21 +266,21 @@ class WorkspaceManagerTest extends MockeryTestCase
 
     public function testExportToolsSection()
     {
-        $expected = array(
-            'tools' => array(
-                'toolName1' => array(
+        $expected = [
+            'tools' => [
+                'toolName1' => [
                     'config' => 'config',
-                    'files' => array('file1'),
-                ),
-            ),
-        );
+                    'files' => ['file1'],
+                ],
+            ],
+        ];
 
         $workspace = new \Claroline\CoreBundle\Entity\Workspace\Workspace();
         $archive = $this->mock('ZipArchive');
 
         $wotA = $this->mock('Claroline\CoreBundle\Entity\Tool\OrderedTool');
         $wotB = $this->mock('Claroline\CoreBundle\Entity\Tool\OrderedTool');
-        $wots = array($wotA, $wotB);
+        $wots = [$wotA, $wotB];
         $toolA = $this->mock('Claroline\CoreBundle\Entity\Tool\Tool');
         $toolB = $this->mock('Claroline\CoreBundle\Entity\Tool\Tool');
         $wotA->shouldReceive('getTool')->andReturn($toolA);
@@ -292,22 +292,22 @@ class WorkspaceManagerTest extends MockeryTestCase
         $event = $this->mock('Claroline\CoreBundle\Event\ExportToolEvent');
 
         $this->orderedToolRepo->shouldReceive('findBy')->once()
-            ->with(array('workspace' => $workspace), array('order' => 'ASC'))->andReturn($wots);
+            ->with(['workspace' => $workspace], ['order' => 'ASC'])->andReturn($wots);
 
         $this->strictDispatcher->shouldReceive('dispatch')->once()
-            ->with('tool_toolName1_to_template', 'ExportTool', array($workspace))->andReturn($event);
+            ->with('tool_toolName1_to_template', 'ExportTool', [$workspace])->andReturn($event);
 
-        $event->shouldReceive('getConfig')->andReturn(array('config' => 'config'));
-        $event->shouldReceive('getFilenamesFromArchive')->andReturn(array('file1'));
+        $event->shouldReceive('getConfig')->andReturn(['config' => 'config']);
+        $event->shouldReceive('getFilenamesFromArchive')->andReturn(['file1']);
         $event->shouldReceive('getFiles')
-            ->andReturn(array(array('original_path' => 'path/original', 'archive_path' => 'file1')));
+            ->andReturn([['original_path' => 'path/original', 'archive_path' => 'file1']]);
         $archive->shouldReceive('addFile')->with('path/original', 'file1');
         $this->assertEquals($expected, $this->getManager()->exportToolsSection($workspace, $archive));
     }
 
     public function testGetWorkspacesByUser()
     {
-        $workspaces = array('workspaceA', 'workspaceB');
+        $workspaces = ['workspaceA', 'workspaceB'];
         $user = new User();
 
         m::getConfiguration()->allowMockingNonExistentMethods(true);
@@ -322,7 +322,7 @@ class WorkspaceManagerTest extends MockeryTestCase
 
     public function testGetNonPersonalWorkspaces()
     {
-        $workspaces = array('workspaceA', 'workspaceB');
+        $workspaces = ['workspaceA', 'workspaceB'];
 
         m::getConfiguration()->allowMockingNonExistentMethods(true);
         $this->workspaceRepo->shouldReceive('findNonPersonal')
@@ -335,7 +335,7 @@ class WorkspaceManagerTest extends MockeryTestCase
 
     public function testGetWorkspacesByAnonymous()
     {
-        $workspaces = array('workspaceA', 'workspaceB');
+        $workspaces = ['workspaceA', 'workspaceB'];
 
         m::getConfiguration()->allowMockingNonExistentMethods(true);
         $this->workspaceRepo->shouldReceive('findByAnonymous')
@@ -361,8 +361,8 @@ class WorkspaceManagerTest extends MockeryTestCase
     {
         $roleA = new Role();
         $roleB = new Role();
-        $roles = array($roleA, $roleB);
-        $workspaces = array('workspaceA', 'workspaceB');
+        $roles = [$roleA, $roleB];
+        $workspaces = ['workspaceA', 'workspaceB'];
 
         m::getConfiguration()->allowMockingNonExistentMethods(true);
         $this->workspaceRepo->shouldReceive('findByRoles')
@@ -376,9 +376,9 @@ class WorkspaceManagerTest extends MockeryTestCase
 
     public function testGetWorkspaceIdsByUserAndRoleNames()
     {
-        $roleNames = array('ROLE_A', 'ROLE_B');
+        $roleNames = ['ROLE_A', 'ROLE_B'];
         $user = new User();
-        $workspaceIds = array(1, 2, 3);
+        $workspaceIds = [1, 2, 3];
 
         m::getConfiguration()->allowMockingNonExistentMethods(true);
         $this->workspaceRepo->shouldReceive('findIdsByUserAndRoleNames')
@@ -395,9 +395,9 @@ class WorkspaceManagerTest extends MockeryTestCase
 
     public function testGetWorkspacesByUserAndRoleNames()
     {
-        $roleNames = array('ROLE_A', 'ROLE_B');
+        $roleNames = ['ROLE_A', 'ROLE_B'];
         $user = new User();
-        $workspaces = array('workspaceA', 'workspaceB');
+        $workspaces = ['workspaceA', 'workspaceB'];
 
         m::getConfiguration()->allowMockingNonExistentMethods(true);
         $this->workspaceRepo->shouldReceive('findByUserAndRoleNames')
@@ -414,9 +414,9 @@ class WorkspaceManagerTest extends MockeryTestCase
 
     public function testGetWorkspacesByUserAndRoleNamesNotIn()
     {
-        $roleNames = array('ROLE_A', 'ROLE_B');
+        $roleNames = ['ROLE_A', 'ROLE_B'];
         $user = new User();
-        $workspaces = array('workspaceA', 'workspaceB');
+        $workspaces = ['workspaceA', 'workspaceB'];
 
         m::getConfiguration()->allowMockingNonExistentMethods(true);
         $this->workspaceRepo->shouldReceive('findByUserAndRoleNamesNotIn')
@@ -436,8 +436,8 @@ class WorkspaceManagerTest extends MockeryTestCase
         $user = new User();
         $roleA = new Role();
         $roleB = new Role();
-        $roles = array($roleA, $roleB);
-        $workspaces = array('workspaceA', 'workspaceB');
+        $roles = [$roleA, $roleB];
+        $workspaces = ['workspaceA', 'workspaceB'];
 
         m::getConfiguration()->allowMockingNonExistentMethods(true);
         $this->workspaceRepo->shouldReceive('findLatestWorkspacesByUser')
@@ -454,7 +454,7 @@ class WorkspaceManagerTest extends MockeryTestCase
 
     public function testGetWorkspacesWithMostResources()
     {
-        $workspaces = array('workspaceA', 'workspaceB');
+        $workspaces = ['workspaceA', 'workspaceB'];
 
         m::getConfiguration()->allowMockingNonExistentMethods(true);
         $this->workspaceRepo->shouldReceive('findWorkspacesWithMostResources')
@@ -501,7 +501,7 @@ class WorkspaceManagerTest extends MockeryTestCase
 
     public function testGetDisplayableWorkspaces()
     {
-        $workspaces = array('workspaceA', 'workspaceB');
+        $workspaces = ['workspaceA', 'workspaceB'];
 
         m::getConfiguration()->allowMockingNonExistentMethods(true);
         $this->workspaceRepo->shouldReceive('findDisplayableWorkspaces')
@@ -517,7 +517,7 @@ class WorkspaceManagerTest extends MockeryTestCase
 
     public function testGetDisplayableWorkspacesBySearch()
     {
-        $workspaces = array('workspaceA', 'workspaceB');
+        $workspaces = ['workspaceA', 'workspaceB'];
 
         m::getConfiguration()->allowMockingNonExistentMethods(true);
         $this->workspaceRepo->shouldReceive('findDisplayableWorkspacesBySearch')
@@ -536,7 +536,7 @@ class WorkspaceManagerTest extends MockeryTestCase
     {
         $workspaceA = $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
         $workspaceB = $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
-        $workspaces = array($workspaceA, $workspaceB);
+        $workspaces = [$workspaceA, $workspaceB];
 
         m::getConfiguration()->allowMockingNonExistentMethods(true);
         $this->workspaceRepo
@@ -573,7 +573,7 @@ class WorkspaceManagerTest extends MockeryTestCase
             ->shouldReceive('getWorkspaceRolesForUser')
             ->with($user, $workspace)
             ->once()
-            ->andReturn(array());
+            ->andReturn([]);
         $this->roleManager
             ->shouldReceive('associateRole')
             ->with($user, $role)
@@ -583,7 +583,7 @@ class WorkspaceManagerTest extends MockeryTestCase
             ->with(
                 'log',
                 'Log\LogRoleSubscribe',
-                array($role, $user)
+                [$role, $user]
             )
             ->once();
         $this->security->shouldReceive('setToken')
@@ -591,9 +591,9 @@ class WorkspaceManagerTest extends MockeryTestCase
             ->once();
         $userManager
             ->shouldReceive('convertUsersToArray')
-            ->with(array($user))
+            ->with([$user])
             ->once()
-            ->andReturn(array('user' => 'user'));
+            ->andReturn(['user' => 'user']);
 
         $this->assertEquals(
             $user,
@@ -601,7 +601,7 @@ class WorkspaceManagerTest extends MockeryTestCase
         );
     }
 
-    private function getManager(array $mockedMethods = array())
+    private function getManager(array $mockedMethods = [])
     {
         $this->om->shouldReceive('getRepository')->with('ClarolineCoreBundle:Resource\ResourceType')
             ->andReturn($this->resourceTypeRepo);
@@ -646,7 +646,7 @@ class WorkspaceManagerTest extends MockeryTestCase
 
             return $this->mock(
                 'Claroline\CoreBundle\Manager\WorkspaceManager'.$stringMocked,
-                array(
+                [
                     $this->homeTabManager,
                     $this->roleManager,
                     $this->maskManager,
@@ -658,7 +658,7 @@ class WorkspaceManagerTest extends MockeryTestCase
                     $this->templateDir,
                     $this->pagerFactory,
                     $this->security,
-                )
+                ]
             );
         }
     }

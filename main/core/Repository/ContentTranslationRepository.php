@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Repository;
 
-use Gedmo\Translatable\Entity\Repository\TranslationRepository;
 use Doctrine\ORM\Query;
+use Gedmo\Translatable\Entity\Repository\TranslationRepository;
 
 class ContentTranslationRepository extends TranslationRepository
 {

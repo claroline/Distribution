@@ -11,11 +11,11 @@
 
 namespace Claroline\CoreBundle\Library\Installation\Plugin;
 
+use Claroline\CoreBundle\Entity\Resource\AbstractResource;
+use Claroline\CoreBundle\Library\PluginBundle;
 use Symfony\Component\Config\Definition\Builder\NodeBuilder;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
-use Claroline\CoreBundle\Library\PluginBundle;
-use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 
 class Configuration implements ConfigurationInterface
 {
@@ -70,7 +70,7 @@ class Configuration implements ConfigurationInterface
                         function ($v) use ($plugin) {
                             return !call_user_func_array(
                                 __CLASS__.'::isIconValid',
-                                array($v, $plugin)
+                                [$v, $plugin]
                             );
                         }
                     )
@@ -100,7 +100,7 @@ class Configuration implements ConfigurationInterface
                                         function ($v) use ($listNames, $updateMode) {
                                             return !$updateMode && !call_user_func_array(
                                                 __CLASS__.'::isNameAlreadyExist',
-                                                array($v, $listNames)
+                                                [$v, $listNames]
                                             );
                                         }
                                     )
@@ -114,7 +114,7 @@ class Configuration implements ConfigurationInterface
                                         function ($v) use ($plugin) {
                                             return !call_user_func_array(
                                                 __CLASS__.'::isResourceClassLoadable',
-                                                array($v, $plugin)
+                                                [$v, $plugin]
                                             );
                                         }
                                     )
@@ -125,7 +125,7 @@ class Configuration implements ConfigurationInterface
                                         function ($v) {
                                             return !call_user_func_array(
                                                 __CLASS__.'::isAbstractResourceExtended',
-                                                array($v)
+                                                [$v]
                                             );
                                         }
                                     )
@@ -144,7 +144,7 @@ class Configuration implements ConfigurationInterface
                                     function ($v) use ($plugin) {
                                         return !call_user_func_array(
                                             __CLASS__.'::isResourceIconValid',
-                                            array($v, $plugin)
+                                            [$v, $plugin]
                                         );
                                     }
                                 )
@@ -231,7 +231,7 @@ class Configuration implements ConfigurationInterface
                                     function ($v) use ($pluginFqcn, $widgets, $updateMode) {
                                         return !$updateMode && !call_user_func_array(
                                             __CLASS__.'::isNameAlreadyExist',
-                                            array($pluginFqcn.'-'.$v, $widgets)
+                                            [$pluginFqcn.'-'.$v, $widgets]
                                         );
                                     }
                                 )
@@ -250,7 +250,7 @@ class Configuration implements ConfigurationInterface
                                 function ($v) use ($plugin) {
                                     return !call_user_func_array(
                                         __CLASS__.'::isIconValid',
-                                        array($v, $plugin)
+                                        [$v, $plugin]
                                     );
                                 }
                             )
@@ -280,7 +280,7 @@ class Configuration implements ConfigurationInterface
                                     function ($v) use ($pluginFqcn, $tools, $updateMode) {
                                         return !$updateMode && !call_user_func_array(
                                             __CLASS__.'::isNameAlreadyExist',
-                                            array($pluginFqcn.'-'.$v, $tools)
+                                            [$pluginFqcn.'-'.$v, $tools]
                                         );
                                     }
                                 )

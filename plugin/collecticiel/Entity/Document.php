@@ -11,9 +11,9 @@ namespace Innova\CollecticielBundle\Entity;
 
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity(repositoryClass="Innova\CollecticielBundle\Repository\DocumentRepository")
@@ -200,16 +200,16 @@ class Document
      */
     public function toArray()
     {
-        $json = array(
+        $json = [
             'id' => $this->getId(),
             'type' => $this->getType(),
             'url' => $this->getUrl(),
-        );
+        ];
         if ($this->getResourceNode() !== null) {
-            $json['resourceNode'] = array(
+            $json['resourceNode'] = [
                 'id' => $this->getResourceNode()->getId(),
                 'name' => $this->getResourceNode()->getName(),
-            );
+            ];
         }
 
         return $json;

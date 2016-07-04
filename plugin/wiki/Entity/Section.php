@@ -3,8 +3,8 @@
 namespace Icap\WikiBundle\Entity;
 
 use Claroline\CoreBundle\Entity\User;
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
@@ -524,12 +524,12 @@ class Section
          * Otherwise return old and new left to mark move up or down in the same parent
          */
         $newLeft = $this->getLeft();
-        $changeSet = array(
-            'parentId' => array($oldParent->getId(), $newParent->getId()),
-            'parentName' => array($oldParent->getActiveContribution()->getTitle(), $newParent->getActiveContribution()->getTitle()),
-            'isParentRoot' => array($oldParent->isRoot(), $newParent->isRoot()),
-            'left' => array($oldLeft, $newLeft),
-        );
+        $changeSet = [
+            'parentId' => [$oldParent->getId(), $newParent->getId()],
+            'parentName' => [$oldParent->getActiveContribution()->getTitle(), $newParent->getActiveContribution()->getTitle()],
+            'isParentRoot' => [$oldParent->isRoot(), $newParent->isRoot()],
+            'left' => [$oldLeft, $newLeft],
+        ];
 
         return $changeSet;
     }

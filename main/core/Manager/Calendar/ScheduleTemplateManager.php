@@ -11,9 +11,9 @@
 
 namespace Claroline\CoreBundle\Manager\Calendar;
 
-use JMS\DiExtraBundle\Annotation as DI;
-use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Calendar\ScheduleTemplate;
+use Claroline\CoreBundle\Persistence\ObjectManager;
+use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("claroline.manager.calendar.schedule_template_manager")

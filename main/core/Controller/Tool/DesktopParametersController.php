@@ -24,8 +24,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -83,7 +83,7 @@ class DesktopParametersController extends Controller
      */
     public function desktopParametersMenuAction()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -109,7 +109,7 @@ class DesktopParametersController extends Controller
         $adminOrderedTools = $this->toolManager
             ->getLockedConfigurableDesktopOrderedToolsByTypeForAdmin($menuType);
 
-        $toolNames = array();
+        $toolNames = [];
 
         foreach ($adminOrderedTools as $adminOrderedTool) {
             $toolNames[] = $adminOrderedTool->getTool()->getName();
@@ -117,12 +117,12 @@ class DesktopParametersController extends Controller
         $orderedTools = $this->toolManager
             ->getConfigurableDesktopOrderedToolsByUser($user, $toolNames, $menuType);
 
-        return array(
+        return [
             'tools' => $tools,
             'adminOrderedTools' => $adminOrderedTools,
             'orderedTools' => $orderedTools,
             'type' => $menuType,
-        );
+        ];
     }
 
     /**
@@ -159,7 +159,7 @@ class DesktopParametersController extends Controller
         foreach ($parameters as $parameter => $value) {
             if (strpos($parameter, 'chk-') === 0) {
                 //regex are evil
-                $matches = array();
+                $matches = [];
                 preg_match('/tool-(.*)/', $parameter, $matches);
                 $tool = $this->toolManager->getToolById((int) $matches[1]);
                 $this->toolManager->setDesktopToolVisible($tool, $user, $type);
@@ -186,7 +186,7 @@ class DesktopParametersController extends Controller
         $event = $this->ed->dispatch(
             strtolower('configure_desktop_tool_'.$tool->getName()),
             'ConfigureDesktopTool',
-            array($tool)
+            [$tool]
         );
 
         return new Response($event->getContent());
@@ -261,7 +261,7 @@ class DesktopParametersController extends Controller
             $options
         );
 
-        return array('form' => $form->createView(), 'options' => $options);
+        return ['form' => $form->createView(), 'options' => $options];
     }
 
     /**
@@ -295,7 +295,7 @@ class DesktopParametersController extends Controller
                 $this->router->generate('claro_desktop_parameters_menu')
             );
         } else {
-            return array('form' => $form->createView(), 'options' => $options);
+            return ['form' => $form->createView(), 'options' => $options];
         }
     }
 }

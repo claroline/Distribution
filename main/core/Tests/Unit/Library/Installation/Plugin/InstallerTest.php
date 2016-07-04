@@ -44,14 +44,14 @@ class InstallerTest extends MockeryTestCase
         $this->validator->shouldReceive('validate')
             ->once()
             ->with($this->plugin)
-            ->andReturn(array());
+            ->andReturn([]);
         $this->validator->shouldReceive('getPluginConfiguration')
-            ->andReturn(array('foo' => 'bar'));
+            ->andReturn(['foo' => 'bar']);
         $this->baseInstaller->shouldReceive('install')
             ->once()
             ->with($this->plugin);
         $this->recorder->shouldReceive('register')
-            ->with($this->plugin, array('foo' => 'bar'));
+            ->with($this->plugin, ['foo' => 'bar']);
 
         $this->installer->install($this->plugin);
     }
@@ -105,15 +105,15 @@ class InstallerTest extends MockeryTestCase
         $this->validator->shouldReceive('validate')
             ->once()
             ->with($this->plugin)
-            ->andReturn(array());
+            ->andReturn([]);
         $this->validator->shouldReceive('deactivateUpdateMode')->once();
         $this->validator->shouldReceive('getPluginConfiguration')
-            ->andReturn(array('foo' => 'bar'));
+            ->andReturn(['foo' => 'bar']);
         $this->baseInstaller->shouldReceive('update')
             ->once()
             ->with($this->plugin, '1.0', '2.0');
         $this->recorder->shouldReceive('update')
-            ->with($this->plugin, array('foo' => 'bar'));
+            ->with($this->plugin, ['foo' => 'bar']);
 
         $this->installer->update($this->plugin, '1.0', '2.0');
     }

@@ -31,7 +31,7 @@ class HintController extends Controller
             }
 
             if (!$session->get('penalties')) {
-                $penalties = array();
+                $penalties = [];
                 $session->set('penalties', $penalties);
             }
             $penalties = $session->get('penalties');
@@ -49,9 +49,9 @@ class HintController extends Controller
             $session->set('penalties', $penalties);
 
             return $this->container->get('templating')->renderResponse(
-                'UJMExoBundle:Hint:show.html.twig', array(
+                'UJMExoBundle:Hint:show.html.twig', [
                 'entity' => $entity,
-                )
+                ]
             );
         } else {
             return 0;

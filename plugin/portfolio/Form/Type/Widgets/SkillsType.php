@@ -17,13 +17,13 @@ class SkillsType extends AbstractWidgetType
 
         $builder
             ->add('children', 'collection',
-                array(
+                [
                     'type' => 'icap_portfolio_widget_form_skills_skill',
                     'by_reference' => false,
                     'allow_add' => true,
                     'allow_delete' => true,
                     'property_path' => 'skills',
-                )
+                ]
             );
     }
 
@@ -35,11 +35,11 @@ class SkillsType extends AbstractWidgetType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'Icap\PortfolioBundle\Entity\Widget\SkillsWidget',
                 'translation_domain' => 'icap_portfolio',
                 'csrf_protection' => false,
-            )
+            ]
         );
     }
 }

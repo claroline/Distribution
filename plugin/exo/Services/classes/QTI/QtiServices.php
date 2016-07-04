@@ -2,8 +2,8 @@
 
 namespace UJM\ExoBundle\Services\classes\QTI;
 
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class QtiServices
 {
@@ -55,7 +55,7 @@ class QtiServices
         }
         $questions = new \DirectoryIterator($pathQtiDir);
         //create array with sort file
-        $dirs = array();
+        $dirs = [];
         foreach ($questions as $question) {
             if ($question != '.' && $question != '..' && $question->getExtension() == '') {
                 $dirs[] = $pathQtiDir.'/'.$question->getFilename();

@@ -16,12 +16,12 @@ class PortfolioGroupType extends AbstractType
     {
         $builder
             ->add('group', 'zenstruck_ajax_entity',
-                array(
+                [
                     'class' => 'ClarolineCoreBundle:Group',
                     'use_controller' => true,
                     'property' => 'name',
                     'repo_method' => 'findByNameForAjax',
-                )
+                ]
             );
     }
 
@@ -33,10 +33,10 @@ class PortfolioGroupType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'Icap\PortfolioBundle\Entity\PortfolioGroup',
                 'translation_domain' => 'icap_portfolio',
-            )
+            ]
         );
     }
 }

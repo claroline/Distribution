@@ -17,7 +17,7 @@ class XmlResponse extends Response
 {
     protected $data;
 
-    public function __construct($data = null, $status = 200, $headers = array())
+    public function __construct($data = null, $status = 200, $headers = [])
     {
         parent::__construct('', $status, $headers);
 
@@ -31,12 +31,12 @@ class XmlResponse extends Response
     /**
      * {@inheritdoc}
      */
-    public static function create($data = null, $status = 200, $headers = array())
+    public static function create($data = null, $status = 200, $headers = [])
     {
         return new static($data, $status, $headers);
     }
 
-    protected function setData($data = array())
+    protected function setData($data = [])
     {
         $doc = new \DOMDocument();
         $doc->encoding = 'UTF-8';

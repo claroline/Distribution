@@ -13,27 +13,27 @@ namespace Claroline\CoreBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class UpdateFileType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'hidden', array('data' => 'tmpname'));
+        $builder->add('name', 'hidden', ['data' => 'tmpname']);
         $builder->add(
             'file',
             'file',
-            array(
+            [
                 'required' => true,
                 'mapped' => false,
                 'label' => 'file',
-                'constraints' => array(
+                'constraints' => [
                     new NotBlank(),
                     new File(),
-                ),
-            )
+                ],
+            ]
         );
     }
 
@@ -46,9 +46,9 @@ class UpdateFileType extends AbstractType
     {
         $resolver
             ->setDefaults(
-                array(
+                [
                     'translation_domain' => 'platform',
-                )
+                ]
             );
     }
 }

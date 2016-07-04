@@ -2,8 +2,8 @@
 
 namespace FormaLibre\PresenceBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use Claroline\CoreBundle\Entity\User;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
   * @ORM\Entity(repositoryClass="FormaLibre\PresenceBundle\Repository\PresenceRepository")

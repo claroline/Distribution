@@ -2,8 +2,8 @@
 
 namespace Icap\BadgeBundle\Entity\Portfolio;
 
-use Icap\BadgeBundle\Entity\Badge;
 use Doctrine\ORM\Mapping as ORM;
+use Icap\BadgeBundle\Entity\Badge;
 use Icap\PortfolioBundle\Entity\Widget\SubWidgetInterface;
 
 /**
@@ -102,10 +102,10 @@ class BadgesWidgetBadge implements SubWidgetInterface
      */
     public function getData()
     {
-        return array(
+        return [
             'badge' => $this->badge->getId(),
             'name' => $this->badge->getName(),
             'img' => $this->badge->getWebPath(),
-        );
+        ];
     }
 }

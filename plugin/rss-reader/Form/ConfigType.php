@@ -30,9 +30,9 @@ class ConfigType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'translation_domain' => 'rss_reader',
-            )
+            ]
         );
     }
 }

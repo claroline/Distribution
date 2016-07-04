@@ -11,16 +11,16 @@
 
 namespace Claroline\CoreBundle\Command\Dev;
 
+use Claroline\CoreBundle\DataFixtures\BatchInsert\LoadResourcesData;
+use Claroline\CoreBundle\DataFixtures\BatchInsert\LoadUsersData;
+use Claroline\CoreBundle\DataFixtures\BatchInsert\LoadWorkspacesData;
+use Doctrine\Common\DataFixtures\ReferenceRepository;
 use Psr\Log\LogLevel;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
-use Claroline\CoreBundle\DataFixtures\BatchInsert\LoadUsersData;
-use Claroline\CoreBundle\DataFixtures\BatchInsert\LoadWorkspacesData;
-use Claroline\CoreBundle\DataFixtures\BatchInsert\LoadResourcesData;
-use Doctrine\Common\DataFixtures\ReferenceRepository;
 
 /**
  * Creates an user, optionaly with a specific role (default to simple user).
@@ -32,7 +32,7 @@ class CreateLargeTestFixtureCommand extends ContainerAwareCommand
         $this->setName('claroline:fixture:load')
             ->setDescription('Fills the database with a large amount of data.');
         $this->setDefinition(
-            array(
+            [
                 new InputArgument(
                     'number_user',
                     InputArgument::OPTIONAL,
@@ -63,20 +63,20 @@ class CreateLargeTestFixtureCommand extends ContainerAwareCommand
                     InputArgument::OPTIONAL,
                     'The number of roots.'
                 ),
-            )
+            ]
         );
     }
 
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $params = array(
+        $params = [
             'number_user' => 'users',
             'number_workspace' => 'workspaces',
             'number_directory' => 'number directory per level  (recommanded: 10).',
             'number_file' => 'number file per level (recommanded: 5).',
             'depth' => 'depth (recommanded: 2).',
             'number_roots' => 'numberRoots',
-        );
+        ];
 
         foreach ($params as $argument => $argumentName) {
             if (!$input->getArgument($argument)) {
@@ -106,11 +106,11 @@ class CreateLargeTestFixtureCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $verbosityLevelMap = array(
+        $verbosityLevelMap = [
             LogLevel::NOTICE => OutputInterface::VERBOSITY_NORMAL,
             LogLevel::INFO => OutputInterface::VERBOSITY_NORMAL,
             LogLevel::DEBUG => OutputInterface::VERBOSITY_NORMAL,
-        );
+        ];
         $consoleLogger = new ConsoleLogger($output, $verbosityLevelMap);
 
         $numberUser = $input->getArgument('number_user');

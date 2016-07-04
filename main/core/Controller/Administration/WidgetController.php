@@ -76,15 +76,15 @@ class WidgetController extends Controller
     public function widgetsManagementAction()
     {
         $widgets = $this->widgetManager->getAll();
-        $toOrder = array();
+        $toOrder = [];
 
         foreach ($widgets as $widget) {
-            $widgetName = $this->translator->trans($widget->getName(), array(), 'widget');
+            $widgetName = $this->translator->trans($widget->getName(), [], 'widget');
             $toOrder[$widgetName] = $widget;
         }
         ksort($toOrder);
 
-        return array('widgets' => $toOrder);
+        return ['widgets' => $toOrder];
     }
 
     /**
@@ -105,7 +105,7 @@ class WidgetController extends Controller
             $widget
         );
 
-        return array('form' => $form->createView(), 'widget' => $widget);
+        return ['form' => $form->createView(), 'widget' => $widget];
     }
 
     /**
@@ -132,7 +132,7 @@ class WidgetController extends Controller
 
             return new JsonResponse('success', 200);
         } else {
-            return array('form' => $form->createView(), 'widget' => $widget);
+            return ['form' => $form->createView(), 'widget' => $widget];
         }
     }
 }

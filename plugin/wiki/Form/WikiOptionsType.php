@@ -11,15 +11,15 @@ class WikiOptionsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('mode', 'choice', array(
-                'choices' => array(
+            ->add('mode', 'choice', [
+                'choices' => [
                     '0' => 'normal',
                     '1' => 'moderate',
                     '2' => 'read_only',
-                ),
+                ],
                 'multiple' => false,
                 'expanded' => true,
-            ));
+            ]);
     }
 
     public function getName()
@@ -29,9 +29,9 @@ class WikiOptionsType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'translation_domain' => 'icap_wiki',
             'data_class' => 'Icap\WikiBundle\Entity\Wiki',
-        ));
+        ]);
     }
 }

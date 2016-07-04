@@ -2,11 +2,11 @@
 
 namespace Innova\CollecticielBundle\Manager;
 
-use Claroline\CoreBundle\Manager\MaskManager;
-use Claroline\CoreBundle\Entity\User;
 use Claroline\AgendaBundle\Entity\Event;
-use Innova\CollecticielBundle\Entity\Dropzone;
+use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Manager\MaskManager;
 use Innova\CollecticielBundle\Entity\Drop;
+use Innova\CollecticielBundle\Entity\Dropzone;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -53,8 +53,8 @@ class DropzoneManager
         $rights = $ressourceNode->getRights();
 
         // will contain the 'authorized to open' user's ids.
-        $userIds = array();
-        $test = array();
+        $userIds = [];
+        $test = [];
         // searching for roles with the 'open' right
         foreach ($rights as $ressourceRight) {
             $role = $ressourceRight->getRole(); //  current role
@@ -116,7 +116,7 @@ class DropzoneManager
     {
         $drop = $this->em
             ->getRepository('InnovaCollecticielBundle:Drop')
-            ->findOneBy(array('dropzone' => $dropzone, 'user' => $user));
+            ->findOneBy(['dropzone' => $dropzone, 'user' => $user]);
         $nbCorrections = $this->em
             ->getRepository('InnovaCollecticielBundle:Correction')
             ->countFinished($dropzone, $user);
@@ -154,9 +154,9 @@ class DropzoneManager
      */
     public function getDrozponeProgress(Dropzone $dropzone, Drop $drop = null, $nbCorrection = 0)
     {
-        $begin_states = array('Evaluation not started', 'awaiting for drop', 'drop provided');
-        $end_states = array('waiting for correction', 'corrected copy');
-        $states = array();
+        $begin_states = ['Evaluation not started', 'awaiting for drop', 'drop provided'];
+        $end_states = ['waiting for correction', 'corrected copy'];
+        $states = [];
 
         $states = array_merge($states, $begin_states);
         $expectedCorrections = $dropzone->getExpectedTotalCorrection();
@@ -241,7 +241,7 @@ class DropzoneManager
 
         $percent = round(($currentState * 100) / (count($states) - 1));
 
-        return array('states' => $states, 'currentState' => $currentState, 'percent' => $percent, 'nbCorrection' => $nbCorrection);
+        return ['states' => $states, 'currentState' => $currentState, 'percent' => $percent, 'nbCorrection' => $nbCorrection];
     }
 
     /**
@@ -395,7 +395,7 @@ class DropzoneManager
      */
     public function getAllowedTypes(Dropzone $dropzone)
     {
-        $allowedTypes = array();
+        $allowedTypes = [];
         if ($dropzone->getAllowWorkspaceResource()) {
             $allowedTypes[] = 'resource';
         }
@@ -423,8 +423,8 @@ class DropzoneManager
         $event->setUser($user);
 
         $dropzoneName = $dropzone->getResourceNode()->getName();
-        $title = $translator->trans('Deposit phase of the %dropzonename% evaluation', array('%dropzonename%' => $dropzoneName), 'innova_collecticiel');
-        $desc = $translator->trans('Evaluation %dropzonename% opening', array('%dropzonename%' => $dropzoneName), 'innova_collecticiel');
+        $title = $translator->trans('Deposit phase of the %dropzonename% evaluation', ['%dropzonename%' => $dropzoneName], 'innova_collecticiel');
+        $desc = $translator->trans('Evaluation %dropzonename% opening', ['%dropzonename%' => $dropzoneName], 'innova_collecticiel');
 
         $event->setTitle($title);
         $event->setDescription($desc);
@@ -445,7 +445,7 @@ class DropzoneManager
      */
     public function updatePublished($resourceId, $published)
     {
-        $resourceNodes = $this->resourceNodeRepo->findBy(array('id' => $resourceId));
+        $resourceNodes = $this->resourceNodeRepo->findBy(['id' => $resourceId]);
 
         foreach ($resourceNodes as $resourceNode) {
             $resourceNode->setPublished($published);

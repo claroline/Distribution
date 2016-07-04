@@ -31,9 +31,9 @@ class RoleRepositoryTest extends RepositoryTestCase
         self::createRole('ROLE_WS_CUSTOM_1', self::get('ws_1'));
         self::createRole('ROLE_WS_CUSTOM_2', self::get('ws_1'));
         self::createRole('ROLE_PLATFORM_CUSTOM');
-        self::createWorkspaceTool(self::get('tool_1'), self::get('ws_1'), array(self::get('ROLE_WS_CUSTOM_1')), 1);
-        self::createUser('john', array(self::get('ROLE_WS_CUSTOM_1'), self::get('ROLE_PLATFORM_CUSTOM')));
-        self::createGroup('group_1', array(), array(self::get('ROLE_WS_CUSTOM_2')));
+        self::createWorkspaceTool(self::get('tool_1'), self::get('ws_1'), [self::get('ROLE_WS_CUSTOM_1')], 1);
+        self::createUser('john', [self::get('ROLE_WS_CUSTOM_1'), self::get('ROLE_PLATFORM_CUSTOM')]);
+        self::createGroup('group_1', [], [self::get('ROLE_WS_CUSTOM_2')]);
     }
 
     public function testFindByWorkspace()

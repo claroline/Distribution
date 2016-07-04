@@ -2,12 +2,12 @@
 
 namespace Innova\CollecticielBundle\Manager;
 
-use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\Entity\User;
+use Innova\CollecticielBundle\Entity\Document;
+use Innova\CollecticielBundle\Entity\Dropzone;
 use Innova\CollecticielBundle\Entity\ReturnReceipt;
 use Innova\CollecticielBundle\Entity\ReturnReceiptType;
-use Innova\CollecticielBundle\Entity\Dropzone;
-use Innova\CollecticielBundle\Entity\Document;
+use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("innova.manager.returnreceipt_manager")

@@ -11,9 +11,9 @@
 
 namespace Claroline\CoreBundle\Form\Calendar;
 
+use Claroline\CoreBundle\Form\Angular\AngularType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Claroline\CoreBundle\Form\Angular\AngularType;
 
 class EventType extends AngularType
 {
@@ -25,8 +25,8 @@ class EventType extends AngularType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', 'text', array('label' => 'name', 'required' => true))
-            ->add('description', 'text', array('label' => 'description', 'required' => true));
+            ->add('name', 'text', ['label' => 'name', 'required' => true])
+            ->add('description', 'text', ['label' => 'description', 'required' => true]);
     }
 
     public function getName()
@@ -41,7 +41,7 @@ class EventType extends AngularType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $default = array('translation_domain' => 'platform');
+        $default = ['translation_domain' => 'platform'];
         if ($this->forApi) {
             $default['csrf_protection'] = false;
         }

@@ -5,10 +5,10 @@ namespace Icap\BadgeBundle\Form\Type;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Doctrine\ORM\EntityRepository;
 use Icap\BadgeBundle\Repository\BadgeRepository;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
@@ -47,7 +47,7 @@ class BadgeCollectionType extends AbstractType
         $builder
             ->add('name', 'text')
             ->add('userBadges', 'entity',
-                array(
+                [
                      'class' => 'IcapBadgeBundle:UserBadge',
                      'query_builder' => function (EntityRepository $entityRepository) use ($user) {
                         return $entityRepository->createQueryBuilder('u')
@@ -58,7 +58,7 @@ class BadgeCollectionType extends AbstractType
                      'property' => 'badge.name',
                      'multiple' => true,
                      'expanded' => true,
-                )
+                ]
             )
             ->add('is_shared', 'checkbox');
     }
@@ -71,11 +71,11 @@ class BadgeCollectionType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'Icap\BadgeBundle\Entity\BadgeCollection',
                 'translation_domain' => 'icap_badge',
                 'csrf_protection' => false,
-            )
+            ]
         );
     }
 }

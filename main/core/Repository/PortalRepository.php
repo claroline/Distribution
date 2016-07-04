@@ -45,13 +45,13 @@ class PortalRepository
     public function findLastResourcesForTypes($resourceTypes, $limit = 5)
     {
         // if 'file' in resource types get images, videos and documents
-        $files = array();
+        $files = [];
         if (($idx = array_search('file', $resourceTypes)) !== false) {
             unset($resourceTypes[$idx]);
             $files = $this->findLastFileResources($limit);
         }
         // if 'workspace' in resource types get last public workspaces
-        $workspaces = array();
+        $workspaces = [];
         if (($idx = array_search('workspace', $resourceTypes)) !== false) {
             unset($resourceTypes[$idx]);
             $workspaces = $this->findLastWorkspaces($limit);
@@ -80,7 +80,7 @@ class PortalRepository
             ->setParameter('published', true)
             ->setParameter('limit', $limit);
 
-        return array_merge($workspaces, $files, array('resources' => $qb->getQuery()->getResult()));
+        return array_merge($workspaces, $files, ['resources' => $qb->getQuery()->getResult()]);
     }
 
     public function searchResourcesByResourceTypes(
@@ -149,11 +149,11 @@ class PortalRepository
         $videos = $this->findLastFileResourcesByType('video', $limit);
         $documents = $this->findLastFileResourcesByType('document', $limit);
 
-        return array(
+        return [
             'image' => $images,
             'video' => $videos,
             'document' => $documents,
-        );
+        ];
     }
 
     private function findLastFileResourcesByType($fileType, $limit = 5)
@@ -204,7 +204,7 @@ class PortalRepository
             ->andWhere($qb->expr()->orX('ws.displayable = ?2', 'ws.selfRegistration = ?2'))
             ->setParameter(2, true);
 
-        return array('workspace' => $qb->getQuery()->getResult());
+        return ['workspace' => $qb->getQuery()->getResult()];
     }
 
     private function addQueryTermsToSearchQueryBuilder($query, QueryBuilder $qb, $isTagEnabled = false)

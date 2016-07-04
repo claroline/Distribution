@@ -7,10 +7,10 @@
 
 namespace Icap\NotificationBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 class FollowerResourceController extends Controller
@@ -32,12 +32,12 @@ class FollowerResourceController extends Controller
             $hasActiveNotifications = true;
         }
 
-        return array(
+        return [
             'hasActiveNotifications' => $hasActiveNotifications,
             'resourceId' => $resourceId,
             'resourceClass' => base64_encode($resourceClass),
             'userId' => $user->getId(),
-        );
+        ];
     }
 
     /**

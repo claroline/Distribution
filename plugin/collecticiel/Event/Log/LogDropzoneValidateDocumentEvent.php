@@ -14,7 +14,7 @@ class LogDropzoneValidateDocumentEvent extends AbstractLogResourceEvent implemen
     protected $document;
     protected $dropzone;
     protected $details;
-    private $userIds = array();
+    private $userIds = [];
 
     /**
      * @param Wiki         $wiki
@@ -28,8 +28,8 @@ class LogDropzoneValidateDocumentEvent extends AbstractLogResourceEvent implemen
         $this->type = $dropzone->getResourceNode()->getName();
         $this->userIds = $userIds;
 
-        $this->details = array(
-        );
+        $this->details = [
+        ];
 
         // Récupération du nom et du prénom
         $this->firstName = $document->getSender()->getFirstName();
@@ -43,7 +43,7 @@ class LogDropzoneValidateDocumentEvent extends AbstractLogResourceEvent implemen
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_WORKSPACE);
+        return [self::DISPLAYED_WORKSPACE];
     }
 
     public function getDropzone()
@@ -79,7 +79,7 @@ class LogDropzoneValidateDocumentEvent extends AbstractLogResourceEvent implemen
      */
     public function getExcludeUserIds()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -109,13 +109,13 @@ class LogDropzoneValidateDocumentEvent extends AbstractLogResourceEvent implemen
      */
     public function getNotificationDetails()
     {
-        $notificationDetails = array_merge($this->details, array());
+        $notificationDetails = array_merge($this->details, []);
 
-        $notificationDetails['resource'] = array(
+        $notificationDetails['resource'] = [
             'id' => $this->dropzone->getId(),
             'name' => $this->firstName.' '.$this->lastName, // $this->resource->getName(),
             'type' => $this->type,
-        );
+        ];
 
         return $notificationDetails;
     }

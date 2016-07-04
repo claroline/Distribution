@@ -4,8 +4,8 @@ namespace Innova\CollecticielBundle\Event\Log;
 
 use Claroline\CoreBundle\Event\Log\AbstractLogResourceEvent;
 use Claroline\CoreBundle\Event\Log\LogGenericEvent;
-use Innova\CollecticielBundle\Entity\Dropzone;
 use Innova\CollecticielBundle\Entity\Comment;
+use Innova\CollecticielBundle\Entity\Dropzone;
 
 class LogCommentCreateEvent extends AbstractLogResourceEvent
 {
@@ -18,17 +18,17 @@ class LogCommentCreateEvent extends AbstractLogResourceEvent
      */
     public function __construct(Dropzone $dropzone, $dropzoneChangeSet, Comment $comment)
     {
-        $details = array(
-            'dropzone' => array(
+        $details = [
+            'dropzone' => [
                 'id' => $dropzone->getId(),
                 'changeSet' => $dropzoneChangeSet,
-            ),
-            'comment' => array(
+            ],
+            'comment' => [
                 'id' => $comment->getId(),
                 'document' => $comment->getDocument()->getId(),
                 'user' => $comment->getUser(),
-            ),
-        );
+            ],
+        ];
 
         parent::__construct($dropzone->getResourceNode(), $details);
     }
@@ -38,6 +38,6 @@ class LogCommentCreateEvent extends AbstractLogResourceEvent
      */
     public static function getRestriction()
     {
-        return array(LogGenericEvent::DISPLAYED_WORKSPACE);
+        return [LogGenericEvent::DISPLAYED_WORKSPACE];
     }
 }

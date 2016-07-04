@@ -2,8 +2,8 @@
 
 namespace FormaLibre\ReservationBundle\Form;
 
-use Symfony\Component\Form\AbstractType;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -27,9 +27,9 @@ class ResourceTypeType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text', array(
+        $builder->add('name', 'text', [
                 'label' => 'form.name',
-            )
+            ]
         );
     }
 
@@ -41,10 +41,10 @@ class ResourceTypeType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'class' => 'FormaLibre\ReservationBundle\Entity\ResourceType',
                 'translation_domain' => 'reservation',
-            )
+            ]
         );
     }
 }

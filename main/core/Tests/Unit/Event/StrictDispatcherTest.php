@@ -12,8 +12,8 @@
 namespace Claroline\CoreBundle\Event;
 
 use Claroline\CoreBundle\Library\Testing\MockeryTestCase;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class StrictDispatcherTest extends MockeryTestCase
 {
@@ -24,7 +24,7 @@ class StrictDispatcherTest extends MockeryTestCase
     {
         $dispatcher = $this->mock('Symfony\Component\EventDispatcher\EventDispatcher');
         $claroDispatcher = new StrictDispatcher($dispatcher);
-        $claroDispatcher->dispatch('noClass', 'FakeClass', array());
+        $claroDispatcher->dispatch('noClass', 'FakeClass', []);
     }
 
     /**
@@ -35,7 +35,7 @@ class StrictDispatcherTest extends MockeryTestCase
         $dispatcher = $this->mock('Symfony\Component\EventDispatcher\EventDispatcher');
         $claroDispatcher = new StrictDispatcher($dispatcher);
         $dispatcher->shouldReceive('hasListeners')->once()->andReturn(false);
-        $claroDispatcher->dispatch('notObserved', 'CreateFormResource', array());
+        $claroDispatcher->dispatch('notObserved', 'CreateFormResource', []);
     }
 
     /**
@@ -47,7 +47,7 @@ class StrictDispatcherTest extends MockeryTestCase
         $claroDispatcher = new StrictDispatcher($dispatcher);
         $dispatcher->shouldReceive('hasListeners')->once()->andReturn(true);
         $dispatcher->shouldReceive('dispatch')->once();
-        $claroDispatcher->dispatch('notPopulated', 'CreateFormResource', array());
+        $claroDispatcher->dispatch('notPopulated', 'CreateFormResource', []);
     }
 
     public function testDispatch()
@@ -60,7 +60,7 @@ class StrictDispatcherTest extends MockeryTestCase
             }
         );
         $claroDispatcher = new StrictDispatcher($dispatcher);
-        $event = $claroDispatcher->dispatch('test_populated', 'CreateFormResource', array());
+        $event = $claroDispatcher->dispatch('test_populated', 'CreateFormResource', []);
         $this->assertEquals('content', $event->getResponseContent());
     }
 }

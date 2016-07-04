@@ -41,7 +41,7 @@ class Updater020500 extends Updater
         $workspaceManager = $this->container->get('claroline.manager.workspace_manager');
         $translator = $this->container->get('translator');
         $workspaces = $this->om->getRepository('ClarolineCoreBundle:Workspace\Workspace')->findAll();
-        $trans = $translator->trans('personal_workspace', array(), 'platform');
+        $trans = $translator->trans('personal_workspace', [], 'platform');
         $this->om->startFlushSuite();
 
         for ($i = 0, $count = count($workspaces); $i < $count; ++$i) {
@@ -85,7 +85,7 @@ class Updater020500 extends Updater
         $guesser = $this->container->get('claroline.utilities.mime_type_guesser');
         $fileType = $this->om->getRepository('ClarolineCoreBundle:Resource\ResourceType')->findOneByName('file');
         $fileNodes = $this->om->getRepository('ClarolineCoreBundle:Resource\ResourceNode')->findBy(
-            array('resourceType' => $fileType)
+            ['resourceType' => $fileType]
         );
 
         for ($i = 0, $count = count($fileNodes); $i < $count; ++$i) {
@@ -129,7 +129,7 @@ class Updater020500 extends Updater
     private function addAnalyticsWorkspaceTool()
     {
         $decoder = $this->om->getRepository('ClarolineCoreBundle:Tool\Tool')
-            ->findOneBy(array('name' => 'analytics'));
+            ->findOneBy(['name' => 'analytics']);
 
         if (!$decoder) {
             $wsTool = new Tool();

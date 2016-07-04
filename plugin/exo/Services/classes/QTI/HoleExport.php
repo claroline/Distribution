@@ -12,7 +12,7 @@ use UJM\ExoBundle\Entity\Question;
 class HoleExport extends QtiExport
 {
     private $interactionhole;
-    private $correctResponse = array();
+    private $correctResponse = [];
 
     /**
      * Implements the abstract method.

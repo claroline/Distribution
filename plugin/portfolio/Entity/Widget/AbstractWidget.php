@@ -166,7 +166,7 @@ abstract class AbstractWidget
      */
     public function getChildren()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -174,11 +174,11 @@ abstract class AbstractWidget
      */
     public function getCommonData()
     {
-        return array(
+        return [
             'id' => $this->getId(),
             'type' => $this->getWidgetType(),
             'label' => $this->getLabel(),
-        );
+        ];
     }
 
     /**

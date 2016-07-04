@@ -4,10 +4,10 @@ namespace Icap\PortfolioBundle\Form\Handler;
 
 use Icap\PortfolioBundle\Entity\Portfolio;
 use Icap\PortfolioBundle\Manager\PortfolioManager;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("icap_portfolio.form_handler.portfolio")

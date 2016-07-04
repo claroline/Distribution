@@ -51,7 +51,7 @@ class ContactManager
         $orderedBy = 'lastName',
         $order = 'ASC'
     ) {
-        $users = array();
+        $users = [];
 
         if (empty($search)) {
             $contacts = $this->getContactsByUser($user, $orderedBy, $order);
@@ -96,7 +96,7 @@ class ContactManager
         $orderedBy = 'lastName',
         $order = 'ASC'
     ) {
-        $users = array();
+        $users = [];
         $contacts = $this->getContactsByUserAndCategory(
             $user,
             $category,
@@ -138,14 +138,14 @@ class ContactManager
         if (is_null($options)) {
             $options = new Options();
             $options->setUser($user);
-            $defaultValues = array(
+            $defaultValues = [
                 'show_all_my_contacts' => true,
                 'show_all_visible_users' => true,
                 'show_username' => true,
                 'show_mail' => false,
                 'show_phone' => false,
                 'show_picture' => true,
-            );
+            ];
             $options->setOptions($defaultValues);
             $this->om->persist($options);
             $this->om->flush();
@@ -230,11 +230,11 @@ class ContactManager
         $page = 1,
         $max = 50
     ) {
-        $contacts = array();
-        $contacts['all_my_contacts'] = array();
+        $contacts = [];
+        $contacts['all_my_contacts'] = [];
 
         foreach ($categories as $category) {
-            $contacts[$category->getId()] = array();
+            $contacts[$category->getId()] = [];
         }
 
         $contacts['all_my_contacts'] = $this->getUserContactsWithPager(

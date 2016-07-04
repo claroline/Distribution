@@ -2,12 +2,12 @@
 
 namespace Icap\BadgeBundle\Controller;
 
-use Icap\BadgeBundle\Entity\BadgeCollection;
 use Claroline\CoreBundle\Entity\User;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Icap\BadgeBundle\Entity\BadgeCollection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @Route("/badge/collection")
@@ -32,10 +32,10 @@ class CollectionController extends Controller
             $showBanner = ($this->getUser() === $collection->getUser());
         }
 
-        return array(
+        return [
             'collection' => $collection,
             'user' => $collection->getUser(),
             'showBanner' => $showBanner,
-        );
+        ];
     }
 }

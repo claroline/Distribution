@@ -11,14 +11,14 @@ class UserPublicProfileUrlType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('public_url', 'text', array(
+            ->add('public_url', 'text', [
                 'required' => true,
-                'attr' => array(
+                'attr' => [
                     'maxlength' => 30,
                     'class' => 'check-ok',
                     'pattern' => '[^/]+',
-                ),
-            ));
+                ],
+            ]);
     }
 
     public function getName()
@@ -28,11 +28,11 @@ class UserPublicProfileUrlType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'translation_domain' => 'platform',
             'data_class' => 'Claroline\CoreBundle\Entity\User',
             'csrf_protection' => true,
             'intention' => 'configure_public_profile_url',
-        ));
+        ]);
     }
 }

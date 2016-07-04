@@ -29,22 +29,22 @@ class GuidesPortfolioType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('portfolio_guides', 'collection', array(
+            ->add('portfolio_guides', 'collection', [
                 'type' => 'icap_portfolio_guide_form',
                 'by_reference' => false,
-                'theme_options' => array('label_width' => 'col-md-12'),
+                'theme_options' => ['label_width' => 'col-md-12'],
                 'prototype' => true,
                 'allow_add' => true,
                 'allow_delete' => true,
-            ))
-            ->add('search_guide', 'zenstruck_ajax_entity', array(
+            ])
+            ->add('search_guide', 'zenstruck_ajax_entity', [
                 'class' => 'ClarolineCoreBundle:User',
                 'use_controller' => true,
                 'property' => 'username',
                 'repo_method' => 'findByNameForAjax',
-                'placeholder' => $this->translator->trans('select_user', array(), 'icap_portfolio'),
+                'placeholder' => $this->translator->trans('select_user', [], 'icap_portfolio'),
                 'mapped' => false,
-            ));
+            ]);
     }
 
     public function getName()
@@ -55,10 +55,10 @@ class GuidesPortfolioType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'Icap\PortfolioBundle\Entity\Portfolio',
                 'translation_domain' => 'icap_portfolio',
-            )
+            ]
         );
     }
 }

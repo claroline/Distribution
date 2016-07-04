@@ -39,7 +39,7 @@ class LogoService
 
     public function listLogos()
     {
-        $logos = array();
+        $logos = [];
         $files = $this->finder->files()->in($this->path)->name($this->fileTypes);
 
         foreach ($files as $file) {

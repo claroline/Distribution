@@ -11,18 +11,18 @@
 
 namespace Claroline\CoreBundle\Controller\API\User;
 
-use FOS\RestBundle\Controller\FOSRestController;
-use FOS\RestBundle\Controller\Annotations\View;
-use JMS\DiExtraBundle\Annotation as DI;
-use FOS\RestBundle\Controller\Annotations\NamePrefix;
+use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Event\Profile\ProfileLinksEvent;
+use Claroline\CoreBundle\Library\Security\Collection\FieldFacetCollection;
 use Claroline\CoreBundle\Manager\FacetManager;
 use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\NamePrefix;
 use FOS\RestBundle\Controller\Annotations\Put;
-use Claroline\CoreBundle\Event\Profile\ProfileLinksEvent;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Claroline\CoreBundle\Entity\User;
+use FOS\RestBundle\Controller\Annotations\View;
+use FOS\RestBundle\Controller\FOSRestController;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\Request;
-use Claroline\CoreBundle\Library\Security\Collection\FieldFacetCollection;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**

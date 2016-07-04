@@ -60,7 +60,7 @@ class CategoryService
     public function getLinkedCategories()
     {
         $em = $this->doctrine->getEntityManager();
-        $linkedCategory = array();
+        $linkedCategory = [];
         $repositoryCategory = $em->getRepository('UJMExoBundle:Category');
 
         $repositoryQuestion = $em->getRepository('UJMExoBundle:Question');
@@ -68,7 +68,7 @@ class CategoryService
         $categoryList = $repositoryCategory->findAll();
 
         foreach ($categoryList as $category) {
-            $questionLink = $repositoryQuestion->findOneBy(array('category' => $category->getId()));
+            $questionLink = $repositoryQuestion->findOneBy(['category' => $category->getId()]);
             if (!$questionLink) {
                 $linkedCategory[$category->getId()] = 0;
             } else {
@@ -94,9 +94,9 @@ class CategoryService
 
         if ($ownerCategory != $user) {
             $userDefaultCategory = $em->getRepository('UJMExoBundle:Category')
-                    ->findOneBy(array('user' => $user, 'locker' => true));
+                    ->findOneBy(['user' => $user, 'locker' => true]);
             if (!$userDefaultCategory) {
-                $default = $this->translator->trans('default', array(), 'ujm_exo');
+                $default = $this->translator->trans('default', [], 'ujm_exo');
                 $userDefaultCategory = $this->createCategoryDefault($default);
             }
             $question->setCategory($userDefaultCategory);

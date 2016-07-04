@@ -42,9 +42,9 @@ class SendToNamesValidator extends ConstraintValidator
         }
 
         $names = explode(';', $to);
-        $usernames = array();
-        $groupNames = array();
-        $workspaceCodes = array();
+        $usernames = [];
+        $groupNames = [];
+        $workspaceCodes = [];
 
         //split the string of target into different array.
         foreach ($names as $name) {
@@ -60,27 +60,27 @@ class SendToNamesValidator extends ConstraintValidator
         }
 
         foreach ($usernames as $username) {
-            $user = $this->em->getRepository('ClarolineCoreBundle:User')->findOneBy(array('username' => $username));
+            $user = $this->em->getRepository('ClarolineCoreBundle:User')->findOneBy(['username' => $username]);
 
             if ($user === null) {
-                $this->context->addViolation($constraint->message, array('{{ name }}' => $username));
+                $this->context->addViolation($constraint->message, ['{{ name }}' => $username]);
             }
         }
 
         foreach ($groupNames as $groupName) {
-            $group = $this->em->getRepository('ClarolineCoreBundle:Group')->findOneBy(array('name' => $groupName));
+            $group = $this->em->getRepository('ClarolineCoreBundle:Group')->findOneBy(['name' => $groupName]);
 
             if ($group === null) {
-                $this->context->addViolation($constraint->message, array('{{ name }}' => $groupName));
+                $this->context->addViolation($constraint->message, ['{{ name }}' => $groupName]);
             }
         }
 
         foreach ($workspaceCodes as $workspaceCode) {
             $ws = $this->em->getRepository('ClarolineCoreBundle:Workspace\Workspace')
-                ->findOneBy(array('code' => $workspaceCode));
+                ->findOneBy(['code' => $workspaceCode]);
 
             if ($ws === null) {
-                $this->context->addViolation($constraint->message, array('{{ name }}' => $workspaceCode));
+                $this->context->addViolation($constraint->message, ['{{ name }}' => $workspaceCode]);
             }
         }
     }

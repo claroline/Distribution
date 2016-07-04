@@ -30,24 +30,24 @@ class XmlToArray implements TransformerInterface
      *
      * @return array
      */
-    public function xmlToArray(\SimpleXMLElement $xml, $options = array())
+    public function xmlToArray(\SimpleXMLElement $xml, $options = [])
     {
-        $defaults = array(
+        $defaults = [
             'namespaceSeparator' => ':', //you may want this to be something other than a colon
             'attributePrefix' => '@',   //to distinguish between attributes and nodes with the same name
-            'alwaysArray' => array('entry'),   //array of xml tag names which should always become arrays
+            'alwaysArray' => ['entry'],   //array of xml tag names which should always become arrays
             'autoArray' => true,        //only create arrays for tags which appear more than once
             'textContent' => '$',       //key used for the text content of elements
             'autoText' => false,         //skip textContent key if node has no attributes or child nodes
             'keySearch' => false,       //optional search and replace on tag and attribute names
             'keyReplace' => false,       //replace values for above search values (as passed to str_replace())
-        );
+        ];
         $options = array_merge($defaults, $options);
         $namespaces = $xml->getDocNamespaces();
         $namespaces[''] = null; //add base (empty) namespace
 
         //get attributes from all namespaces
-        $attributesArray = array();
+        $attributesArray = [];
         foreach ($namespaces as $prefix => $namespace) {
             foreach ($xml->attributes($namespace) as $attributeName => $attribute) {
                 //replace characters in attribute name
@@ -62,7 +62,7 @@ class XmlToArray implements TransformerInterface
         }
 
         //get child nodes from all namespaces
-        $tagsArray = array();
+        $tagsArray = [];
         foreach ($namespaces as $prefix => $namespace) {
             foreach ($xml->children($namespace) as $childXml) {
                 //recurse into child nodes
@@ -83,7 +83,7 @@ class XmlToArray implements TransformerInterface
                     //test if tags of this type should always be arrays, no matter the element count
                     $tagsArray[$childTagName] =
                             in_array($childTagName, $options['alwaysArray']) || !$options['autoArray']
-                            ? array($childProperties) : $childProperties;
+                            ? [$childProperties] : $childProperties;
                 } elseif (
                     is_array($tagsArray[$childTagName]) && array_keys($tagsArray[$childTagName])
                     === range(0, count($tagsArray[$childTagName]) - 1)
@@ -92,13 +92,13 @@ class XmlToArray implements TransformerInterface
                     $tagsArray[$childTagName][] = $childProperties;
                 } else {
                     //key exists so convert to integer indexed array with previous value in position 0
-                    $tagsArray[$childTagName] = array($tagsArray[$childTagName], $childProperties);
+                    $tagsArray[$childTagName] = [$tagsArray[$childTagName], $childProperties];
                 }
             }
         }
 
         //get text content of node
-        $textContentArray = array();
+        $textContentArray = [];
         $plainText = trim((string) $xml);
         if ($plainText !== '') {
             $textContentArray[$options['textContent']] = $plainText;
@@ -109,8 +109,8 @@ class XmlToArray implements TransformerInterface
                 ? array_merge($attributesArray, $tagsArray, $textContentArray) : $plainText;
 
         //return node as array
-        return array(
+        return [
             $xml->getName() => $propertiesArray,
-        );
+        ];
     }
 }

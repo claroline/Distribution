@@ -2,8 +2,8 @@
 
 namespace UJM\ExoBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use Claroline\CoreBundle\Entity\User;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * UJM\ExoBundle\Entity\Subscription.

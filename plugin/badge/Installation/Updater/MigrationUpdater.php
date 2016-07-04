@@ -3,10 +3,10 @@
 namespace Icap\BadgeBundle\Installation\Updater;
 
 use Claroline\InstallationBundle\Updater\Updater;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Migrations\Configuration\Configuration;
 use Doctrine\DBAL\Migrations\Version;
 use Doctrine\ORM\EntityManager;
-use Doctrine\DBAL\Connection;
 use Icap\BadgeBundle\Factory\Portfolio\WidgetFactory;
 
 class MigrationUpdater extends Updater

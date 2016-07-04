@@ -11,10 +11,10 @@
 
 namespace Claroline\CoreBundle\Rule\Constraints;
 
-use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Library\Testing\MockeryTestCase;
 use Claroline\CoreBundle\Entity\Badge\BadgeRule;
 use Claroline\CoreBundle\Entity\Log\Log;
+use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Library\Testing\MockeryTestCase;
 
 class DoerConstraintTest extends MockeryTestCase
 {
@@ -56,7 +56,7 @@ class DoerConstraintTest extends MockeryTestCase
     public function testValidateNoLog()
     {
         $doerConstraint = new DoerConstraint();
-        $doerConstraint->setAssociatedLogs(array());
+        $doerConstraint->setAssociatedLogs([]);
 
         $this->assertFalse($doerConstraint->validate());
     }
@@ -64,7 +64,7 @@ class DoerConstraintTest extends MockeryTestCase
     public function testValidateOneLog()
     {
         $doerConstraint = new DoerConstraint();
-        $doerConstraint->setAssociatedLogs(array(new Log()));
+        $doerConstraint->setAssociatedLogs([new Log()]);
 
         $this->assertTrue($doerConstraint->validate());
     }

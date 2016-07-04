@@ -13,9 +13,9 @@ namespace Claroline\CoreBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class FileType extends AbstractType
 {
@@ -30,40 +30,40 @@ class FileType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'hidden', array('data' => 'tmpname'));
+        $builder->add('name', 'hidden', ['data' => 'tmpname']);
         $builder->add(
             'file',
             'file',
-            array(
+            [
                 'required' => true,
                 'mapped' => false,
-                'constraints' => array(
+                'constraints' => [
                     new NotBlank(),
                     new File(),
-                ),
+                ],
                 'label' => 'file',
-           )
+           ]
         );
         if ($this->uncompress) {
             $builder->add(
                 'uncompress',
                 'checkbox',
-                array(
+                [
                     'label' => 'uncompress_file',
                     'mapped' => false,
                     'required' => false,
-                )
+                ]
             );
         }
         $builder->add(
             'published',
             'checkbox',
-            array(
+            [
                 'required' => true,
                 'mapped' => false,
-                'attr' => array('checked' => 'checked'),
+                'attr' => ['checked' => 'checked'],
                 'label' => 'publish_resource',
-           )
+           ]
         );
     }
 
@@ -79,7 +79,7 @@ class FileType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $default = array('translation_domain' => 'platform');
+        $default = ['translation_domain' => 'platform'];
         if ($this->forApi) {
             $default['csrf_protection'] = false;
         }

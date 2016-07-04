@@ -18,7 +18,7 @@ class Leap2aImporterTest extends MockeryTestCase
     {
         $importer = new Leap2aImporter();
         $user = new User();
-        $array = array();
+        $array = [];
 
         $this->setExpectedException('Exception');
 

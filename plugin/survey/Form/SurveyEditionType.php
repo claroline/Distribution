@@ -26,30 +26,30 @@ class SurveyEditionType extends AbstractType
         $builder->add(
             'startDate',
             'date',
-            array(
+            [
                 'required' => false,
                 'widget' => 'single_text',
                 'format' => 'yyyy-MM-dd',
-            )
+            ]
         );
         $builder->add(
             'endDate',
             'date',
-            array(
+            [
                 'required' => false,
                 'widget' => 'single_text',
                 'format' => 'yyyy-MM-dd',
-            )
+            ]
         );
         $builder->add(
             'hasPublicResult',
             'checkbox',
-            array('required' => true)
+            ['required' => true]
         );
         $builder->add(
             'allowAnswerEdition',
             'checkbox',
-            array('required' => true)
+            ['required' => true]
         );
     }
 
@@ -60,6 +60,6 @@ class SurveyEditionType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'survey'));
+        $resolver->setDefaults(['translation_domain' => 'survey']);
     }
 }

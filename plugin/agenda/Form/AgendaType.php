@@ -12,14 +12,14 @@
 namespace Claroline\AgendaBundle\Form;
 
 use Claroline\CoreBundle\Entity\User;
-use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\Form\AbstractType;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Doctrine\Common\Persistence\ObjectManager;
+use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Translation\TranslatorInterface;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("claroline.form.agenda")
@@ -139,12 +139,12 @@ class AgendaType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'workspace' => new Workspace(),
                 'user' => new User(),
                 'class' => 'Claroline\AgendaBundle\Entity\Event',
                 'translation_domain' => 'agenda',
-            )
+            ]
         );
     }
 }

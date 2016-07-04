@@ -100,7 +100,7 @@ class CommentsManager
      */
     public function getCommentsByPortfolio(Portfolio $portfolio)
     {
-        $comments = array();
+        $comments = [];
 
         /** @var \Icap\PortfolioBundle\Entity\PortfolioComment[] $commentObjects */
         $commentObjects = $this->entityManager->getRepository('IcapPortfolioBundle:PortfolioComment')->findByPortfolio($portfolio);

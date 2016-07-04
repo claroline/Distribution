@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Entity\Oauth;
 
-use FOS\OAuthServerBundle\Entity\AccessToken as BaseAccessToken;
 use Doctrine\ORM\Mapping as ORM;
+use FOS\OAuthServerBundle\Entity\AccessToken as BaseAccessToken;
 
 /**
  * @ORM\Table(name="claro_api_access_token")

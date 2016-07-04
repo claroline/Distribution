@@ -11,7 +11,7 @@ class SectionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('activeContribution', new ContributionType(), array('label' => false));
+            ->add('activeContribution', new ContributionType(), ['label' => false]);
     }
 
     public function getName()
@@ -21,9 +21,9 @@ class SectionType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'translation_domain' => 'icap_wiki',
             'data_class' => 'Icap\WikiBundle\Entity\Section',
-        ));
+        ]);
     }
 }

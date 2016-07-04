@@ -34,20 +34,20 @@ class LogCommentPublishEvent extends AbstractLogResourceEvent implements Notifia
         $this->comment = $comment;
         $this->post = $post;
 
-        $this->details = array(
-            'post' => array(
+        $this->details = [
+            'post' => [
                 'blog' => $this->blog->getId(),
                 'title' => $post->getTitle(),
                 'slug' => $post->getSlug(),
-            ),
-            'comment' => array(
+            ],
+            'comment' => [
                 'id' => $comment->getId(),
                 'content' => $comment->getMessage(),
                 'published' => $comment->isPublished(),
                 'author' => $comment->getAuthor()->getFirstName().' '.$post->getAuthor()->getLastName(),
                 'authorId' => $comment->getAuthor()->getId(),
-            ),
-        );
+            ],
+        ];
 
         parent::__construct($this->blog->getResourceNode(), $this->details);
     }
@@ -57,7 +57,7 @@ class LogCommentPublishEvent extends AbstractLogResourceEvent implements Notifia
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_WORKSPACE);
+        return [self::DISPLAYED_WORKSPACE];
     }
 
     /**
@@ -79,7 +79,7 @@ class LogCommentPublishEvent extends AbstractLogResourceEvent implements Notifia
      */
     public function getIncludeUserIds()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -89,7 +89,7 @@ class LogCommentPublishEvent extends AbstractLogResourceEvent implements Notifia
      */
     public function getExcludeUserIds()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -119,12 +119,12 @@ class LogCommentPublishEvent extends AbstractLogResourceEvent implements Notifia
      */
     public function getNotificationDetails()
     {
-        $notificationDetails = array_merge($this->details, array());
-        $notificationDetails['resource'] = array(
+        $notificationDetails = array_merge($this->details, []);
+        $notificationDetails['resource'] = [
             'id' => $this->blog->getId(),
             'name' => $this->resource->getName(),
             'type' => $this->resource->getResourceType()->getName(),
-        );
+        ];
 
         return $notificationDetails;
     }

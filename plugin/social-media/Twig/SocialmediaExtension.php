@@ -23,14 +23,14 @@ class SocialmediaExtension extends \Twig_Extension
 {
     public function getFilters()
     {
-        return array(
-            new \Twig_SimpleFilter('smartCounter', array($this, 'getSmartCounter')),
-        );
+        return [
+            new \Twig_SimpleFilter('smartCounter', [$this, 'getSmartCounter']),
+        ];
     }
 
     public function getSmartCounter($number, $precision = 1)
     {
-        static $suffixes = array('', 'k', 'M', 'B', 'T');
+        static $suffixes = ['', 'k', 'M', 'B', 'T'];
         $number = intval($number);
         if ($number == 0) {
             return '&nbsp;';

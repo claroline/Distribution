@@ -24,7 +24,7 @@ class ExportToolEvent extends Event
     {
         $this->workspace = $workspace;
         $this->config = null;
-        $this->files = array();
+        $this->files = [];
     }
 
     public function getWorkspace()
@@ -67,7 +67,7 @@ class ExportToolEvent extends Event
 
     public function getFilenamesFromArchive()
     {
-        $files = array();
+        $files = [];
 
         foreach ($this->files as $file) {
             $files[] = $file['archive_path'];

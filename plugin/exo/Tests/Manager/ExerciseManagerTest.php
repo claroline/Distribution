@@ -4,8 +4,8 @@ namespace UJM\ExoBundle\Manager;
 
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Persistence\ObjectManager;
-use UJM\ExoBundle\Transfer\Json\Validator;
 use UJM\ExoBundle\Entity\Exercise;
+use UJM\ExoBundle\Transfer\Json\Validator;
 
 class ExerciseManagerTest extends \PHPUnit_Framework_TestCase
 {

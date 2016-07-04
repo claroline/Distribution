@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Controller\Exception;
 
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class WorkspaceAccessDeniedException extends AccessDeniedException
 {

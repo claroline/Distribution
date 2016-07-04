@@ -12,8 +12,8 @@
 namespace Claroline\ForumBundle\Event\Log;
 
 use Claroline\CoreBundle\Event\Log\AbstractLogResourceEvent;
-use Claroline\ForumBundle\Entity\Subject;
 use Claroline\ForumBundle\Entity\Message;
+use Claroline\ForumBundle\Entity\Subject;
 
 class MoveMessageEvent extends AbstractLogResourceEvent
 {
@@ -26,21 +26,21 @@ class MoveMessageEvent extends AbstractLogResourceEvent
      */
     public function __construct(Message $message, Subject $oldSubject, Subject $newSubject)
     {
-        $details = array(
-            'message' => array(
+        $details = [
+            'message' => [
                 'id' => $message->getId(),
-            ),
-            'subject' => array(
+            ],
+            'subject' => [
                 'oldSubjectId' => $oldSubject->getId(),
                 'newSubjectId' => $newSubject->getId(),
-            ),
-            'category' => array(
+            ],
+            'category' => [
                 'id' => $message->getSubject()->getCategory()->getId(),
-            ),
-            'forum' => array(
+            ],
+            'forum' => [
                 'id' => $message->getSubject()->getCategory()->getForum()->getId(),
-            ),
-        );
+            ],
+        ];
 
         parent::__construct($message->getSubject()->getCategory()->getForum()->getResourceNode(), $details);
     }
@@ -50,6 +50,6 @@ class MoveMessageEvent extends AbstractLogResourceEvent
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_WORKSPACE, self::DISPLAYED_ADMIN);
+        return [self::DISPLAYED_WORKSPACE, self::DISPLAYED_ADMIN];
     }
 }

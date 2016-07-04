@@ -23,18 +23,18 @@ class UnstickSubjectEvent extends AbstractLogResourceEvent
      */
     public function __construct(Subject $subject)
     {
-        $details = array(
-            'subject' => array(
+        $details = [
+            'subject' => [
                 'id' => $subject->getId(),
                 'title' => $subject->getTitle(),
-            ),
-            'category' => array(
+            ],
+            'category' => [
                 'id' => $subject->getCategory()->getId(),
-            ),
-            'forum' => array(
+            ],
+            'forum' => [
                 'id' => $subject->getCategory()->getForum()->getId(),
-            ),
-        );
+            ],
+        ];
 
         parent::__construct($subject->getCategory()->getForum()->getResourceNode(), $details);
     }
@@ -44,6 +44,6 @@ class UnstickSubjectEvent extends AbstractLogResourceEvent
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_WORKSPACE, self::DISPLAYED_ADMIN);
+        return [self::DISPLAYED_WORKSPACE, self::DISPLAYED_ADMIN];
     }
 }

@@ -3,8 +3,8 @@
 namespace Icap\LessonBundle\Tests\Controller;
 
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
-use Icap\LessonBundle\Testing\Persister;
 use Icap\LessonBundle\Entity\Lesson;
+use Icap\LessonBundle\Testing\Persister;
 
 class ApiControllerTest extends TransactionalTestCase
 {

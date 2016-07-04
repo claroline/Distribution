@@ -30,7 +30,7 @@ class RoleTranslationType extends AbstractType
         $builder->add(
             'translationKey',
             'text',
-            array('required' => true, 'constraints' => new RoleName(array('wsGuid' => $this->wsGuid)))
+            ['required' => true, 'constraints' => new RoleName(['wsGuid' => $this->wsGuid])]
         );
     }
 
@@ -41,6 +41,6 @@ class RoleTranslationType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform']);
     }
 }

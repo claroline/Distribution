@@ -17,12 +17,12 @@ class BadgeController extends Controller
         /** @var \Icap\BadgeBundle\Entity\Badge[] $workspaceBadges */
         $workspaceBadges = $this->getDoctrine()->getManager()->getRepository('IcapBadgeBundle:Badge')->findByWorkspace($workspace);
 
-        $ownedBadges = array();
+        $ownedBadges = [];
         /** @var \Icap\BadgeBundle\Entity\Badge[] $finishedBadges */
-        $finishedBadges = array();
-        $inProgressBadges = array();
-        $availableBadges = array();
-        $displayedBadges = array();
+        $finishedBadges = [];
+        $inProgressBadges = [];
+        $availableBadges = [];
+        $displayedBadges = [];
 
         foreach ($workspaceBadges as $workspaceBadge) {
             $isOwned = false;
@@ -50,12 +50,12 @@ class BadgeController extends Controller
         }
 
         // Create badge list to display (owned badges first, in progress badges and then other badges)
-        $displayedBadges = array();
+        $displayedBadges = [];
         foreach ($ownedBadges as $ownedBadge) {
-            $displayedBadges[] = array(
+            $displayedBadges[] = [
                 'type' => 'owned',
                 'badge' => $ownedBadge,
-            );
+            ];
         }
 
         $claimedBadges = [];
@@ -74,24 +74,24 @@ class BadgeController extends Controller
                 $badgeType = 'claimed';
             }
 
-            $displayedBadges[] = array(
+            $displayedBadges[] = [
                 'type' => $badgeType,
                 'badge' => $finishedBadge,
-            );
+            ];
         }
 
         foreach ($inProgressBadges as $inProgressBadge) {
-            $displayedBadges[] = array(
+            $displayedBadges[] = [
                 'type' => 'inprogress',
                 'badge' => $inProgressBadge,
-            );
+            ];
         }
 
         foreach ($availableBadges as $availableBadge) {
-            $displayedBadges[] = array(
+            $displayedBadges[] = [
                 'type' => 'available',
                 'badge' => $availableBadge,
-            );
+            ];
         }
 
         /** @var \Claroline\CoreBundle\Pager\PagerFactory $pagerFactory */
@@ -100,11 +100,11 @@ class BadgeController extends Controller
 
         return $this->render(
             'IcapBadgeBundle:Template:Tool/list.html.twig',
-            array(
+            [
                 'badgePager' => $badgePager,
                 'workspace' => $workspace,
                 'badgePage' => $badgePage,
-            )
+            ]
         );
     }
 }

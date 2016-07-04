@@ -22,11 +22,11 @@ class MailLayoutType extends AbstractType
         $builder->add(
             'content',
             'content',
-            array(
+            [
                 'data' => $builder->getData(),
-                'theme_options' => array('contentTitle' => false),
+                'theme_options' => ['contentTitle' => false],
                 'label' => 'content',
-            )
+            ]
         );
     }
 
@@ -37,6 +37,6 @@ class MailLayoutType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform']);
     }
 }

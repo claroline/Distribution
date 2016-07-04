@@ -49,11 +49,11 @@ class ContentType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $translatedContent = array();
+        $translatedContent = [];
 
         if ($builder->getData() instanceof Content) {
             $translatedContent = $this->contentManager->getTranslatedContent(
-                array('id' => $builder->getData()->getId())
+                ['id' => $builder->getData()->getId()]
             );
         } elseif (is_array($builder->getData())) {
             $translatedContent = $builder->getData();
@@ -69,13 +69,13 @@ class ContentType extends AbstractType
                     $builder->add(
                         $lang,
                         'base_content',
-                        array(
-                            'theme_options' => array('tinymce' => $this->tinymce),
+                        [
+                            'theme_options' => ['tinymce' => $this->tinymce],
                             'data' => $translatedContent[$lang],
-                        )
+                        ]
                     );
                 } else {
-                    $builder->add($lang, 'base_content', array('theme_options' => array('tinymce' => $this->tinymce)));
+                    $builder->add($lang, 'base_content', ['theme_options' => ['tinymce' => $this->tinymce]]);
                 }
             }
         }
@@ -89,10 +89,10 @@ class ContentType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'mapped' => false,
-                'attr' => array('class' => 'content-element content-translatable relative'),
-            )
+                'attr' => ['class' => 'content-element content-translatable relative'],
+            ]
         );
     }
 
@@ -100,12 +100,12 @@ class ContentType extends AbstractType
     {
         parent::finishView($view, $form, $options);
 
-        $themeOptions = array(
+        $themeOptions = [
             'contentTitle' => true,
             'contentText' => true,
             'titlePlaceHolder' => 'optional_title',
             'textPlaceHolder' => 'create_content',
-        );
+        ];
 
         foreach ($themeOptions as $option => $defaultValue) {
             if (isset($options['theme_options']) && isset($options['theme_options'][$option])) {

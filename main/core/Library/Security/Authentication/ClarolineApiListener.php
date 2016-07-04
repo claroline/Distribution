@@ -12,20 +12,20 @@
 namespace Claroline\CoreBundle\Library\Security\Authentication;
 
 use FOS\OAuthServerBundle\Security\Authentication\Token\OAuthToken;
+use JMS\DiExtraBundle\Annotation as DI;
 use OAuth2\OAuth2;
+use Symfony\Bridge\Doctrine\Security\User\EntityUserProvider;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\SecurityContextInterface;
-use Symfony\Component\Security\Http\Firewall\ListenerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Bridge\Doctrine\Security\User\EntityUserProvider;
-use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
-use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
+use Symfony\Component\Security\Http\Firewall\ListenerInterface;
 
 /**
  * This is the API Authentication class. It supports Cookies, HTTP, Anonymous & OAUTH authentication.
@@ -164,7 +164,7 @@ class ClarolineApiListener implements ListenerInterface
 
     private function authenticateAnonymous()
     {
-        $token = new AnonymousToken('main', 'anon.', array('ROLE_ANONYMOUS'));
+        $token = new AnonymousToken('main', 'anon.', ['ROLE_ANONYMOUS']);
         $this->securityContext->setToken($token);
 
        /*

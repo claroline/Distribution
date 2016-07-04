@@ -2,8 +2,8 @@
 
 namespace Claroline\CoreBundle\Tests\API\Admin;
 
-use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Claroline\CoreBundle\Library\Testing\Persister;
+use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 
 /**
  * Specific tests for organizations

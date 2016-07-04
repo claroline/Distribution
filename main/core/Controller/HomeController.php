@@ -118,11 +118,11 @@ class HomeController
                 'ClarolineCoreBundle:Home\templates\custom:'.$typeTemplate;
             $response = $this->render(
                 $template,
-                array(
+                [
                     'type' => $type,
                     'region' => $this->renderRegions($this->manager->getRegionContents()),
                     'content' => $this->typeAction($type)->getContent(),
-                )
+                ]
             );
             $response->headers->addCacheControlDirective('no-cache', true);
             $response->headers->addCacheControlDirective('max-age', 0);
@@ -147,7 +147,7 @@ class HomeController
             return $this->render('ClarolineCoreBundle:Home:layout.html.twig', $this->renderContent($layout));
         }
 
-        return $this->render('ClarolineCoreBundle:Home:error.html.twig', array('path' => $type));
+        return $this->render('ClarolineCoreBundle:Home:error.html.twig', ['path' => $type]);
     }
 
     /**
@@ -165,14 +165,14 @@ class HomeController
 
         $response = $this->render(
             'ClarolineCoreBundle:Home:home.html.twig',
-            array(
+            [
                 'type' => '_pages',
                 'region' => $this->renderRegions($this->manager->getRegionContents()),
                 'content' => $this->render(
                     'ClarolineCoreBundle:Home:types.html.twig',
-                    array('types' => $types, 'hasCustomTemplates' => $hasCustomTemplates)
+                    ['types' => $types, 'hasCustomTemplates' => $hasCustomTemplates]
                 )->getContent(),
-            )
+            ]
         );
         $response->headers->addCacheControlDirective('no-cache', true);
         $response->headers->addCacheControlDirective('max-age', 0);
@@ -210,7 +210,7 @@ class HomeController
      */
     public function renameContentFormAction($type)
     {
-        return array('type' => $type);
+        return ['type' => $type];
     }
 
     /**
@@ -255,7 +255,7 @@ class HomeController
             $type
         );
 
-        return array('form' => $form->createView(), 'type' => $type);
+        return ['form' => $form->createView(), 'type' => $type];
     }
 
     /**
@@ -285,7 +285,7 @@ class HomeController
 
             return new JsonResponse('success', 200);
         } else {
-            return array('form' => $form->createView(), 'type' => $type);
+            return ['form' => $form->createView(), 'type' => $type];
         }
     }
 
@@ -301,7 +301,7 @@ class HomeController
      */
     public function moveContentFormAction($currentType)
     {
-        return array('currentType' => $currentType, 'pages' => $this->manager->getTypes());
+        return ['currentType' => $currentType, 'pages' => $this->manager->getTypes()];
     }
 
     /**
@@ -384,7 +384,7 @@ class HomeController
      */
     public function sizeAction($id, $size, $type)
     {
-        return array('id' => $id, 'size' => $size, 'type' => $type);
+        return ['id' => $id, 'size' => $size, 'type' => $type];
     }
 
     /**
@@ -401,7 +401,7 @@ class HomeController
         if (isset($graph['type'])) {
             return $this->render(
                 'ClarolineCoreBundle:Home/graph:'.$graph['type'].'.html.twig',
-                array('content' => $graph),
+                ['content' => $graph],
                 true
             );
         }
@@ -424,7 +424,7 @@ class HomeController
      */
     public function regionAction(Content $content)
     {
-        return array('id' => $content->getId(), 'region' => $this->manager->getRegion($content));
+        return ['id' => $content->getId(), 'region' => $this->manager->getRegion($content)];
     }
 
     /**
@@ -560,7 +560,7 @@ class HomeController
     public function createTypeAction($name)
     {
         try {
-            return array('type' => $this->manager->createType($name));
+            return ['type' => $this->manager->createType($name)];
         } catch (\Exeption $e) {
             return new Response('false'); //useful in ajax
         }
@@ -653,7 +653,7 @@ class HomeController
             if (isset($graph['type'])) {
                 return $this->render(
                     'ClarolineCoreBundle:Home/graph:'.$graph['type'].'.html.twig',
-                    array('content' => $graph),
+                    ['content' => $graph],
                     true
                 );
             }
@@ -676,11 +676,11 @@ class HomeController
      */
     public function menuSettingsAction($content)
     {
-        return array(
+        return [
             'content' => $content,
             'menu' => $this->manager->getContentByType('menu', $content->getId()),
             'parameters' => $this->manager->getHomeParameters(),
-        );
+        ];
     }
 
     /**
@@ -741,7 +741,7 @@ class HomeController
      */
     public function renderRegions($regions)
     {
-        $tmp = array();
+        $tmp = [];
 
         foreach ($regions as $name => $region) {
             $tmp[$name] = '';

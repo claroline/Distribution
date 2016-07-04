@@ -11,8 +11,8 @@
 
 namespace Icap\OAuthBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 class ConnexionController extends Controller
@@ -33,7 +33,7 @@ class ConnexionController extends Controller
         if ($service !== null && $user !== null) {
             $this->get('translator')->setLocale($request->getLocale());
 
-            return array('service' => $service['name']);
+            return ['service' => $service['name']];
         } else {
             $session->remove('icap.oauth.resource_owner');
             $session->remove('icap.oauth.user');
@@ -61,7 +61,7 @@ class ConnexionController extends Controller
             $form = $this->get('icap.oauth.manager')->getRegistrationForm($user, $translator);
             //$session->remove('icap.oauth.user');
 
-            return array('form' => $form->createView());
+            return ['form' => $form->createView()];
         } else {
             return $this->redirectToRoute('claro_security_login');
         }
@@ -103,7 +103,7 @@ class ConnexionController extends Controller
             $this->get('translator')->setLocale($request->getLocale());
             //$session->remove('icap.oauth.user');
 
-            return array();
+            return [];
         } else {
             return $this->redirectToRoute('claro_security_login');
         }

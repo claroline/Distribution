@@ -2,10 +2,10 @@
 
 namespace Claroline\VideoPlayerBundle\Tests\API;
 
-use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
-use Claroline\CoreBundle\Library\Testing\Persister;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Claroline\CoreBundle\Entity\Resource\File;
+use Claroline\CoreBundle\Library\Testing\Persister;
+use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class VideoControllerTest extends TransactionalTestCase
 {

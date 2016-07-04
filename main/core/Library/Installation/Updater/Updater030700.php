@@ -47,11 +47,11 @@ class Updater030700 extends Updater
         $this->log('Removing old web files...');
         $webDir = $this->container->getParameter('claroline.param.web_dir');
 
-        $toRemove = array(
+        $toRemove = [
             '/maintenance.html.php',
             '/upgrade/download_log.php',
             '/upgrade/upgrade.html.php',
-        );
+        ];
 
         foreach ($toRemove as $file) {
             $this->log('Removing '.$webDir.$file.'...');

@@ -6,9 +6,9 @@ use Icap\LessonBundle\Event\Log\LogChapterCreateEvent;
 use Icap\LessonBundle\Event\Log\LogChapterMoveEvent;
 use Icap\LessonBundle\Event\Log\LogChapterReadEvent;
 use Icap\LessonBundle\Event\Log\LogChapterUpdateEvent;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("icap.listener.lesson.badge_listener")
@@ -46,10 +46,10 @@ class BadgeListener
             case LogChapterReadEvent::ACTION:
             case LogChapterUpdateEvent::ACTION:
                 $logDetails = $event->getLog()->getDetails();
-                $parameters = array(
+                $parameters = [
                     'resourceId' => $logDetails['chapter']['lesson'],
                     'chapterId' => $logDetails['chapter']['chapter'],
-                );
+                ];
 
                 $url = $this->router->generate('icap_lesson_chapter', $parameters, UrlGeneratorInterface::ABSOLUTE_PATH);
                 $title = $logDetails['chapter']['title'];

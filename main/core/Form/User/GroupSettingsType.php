@@ -11,10 +11,10 @@
 
 namespace Claroline\CoreBundle\Form\User;
 
-use Symfony\Component\Form\FormBuilderInterface;
 use Claroline\CoreBundle\Entity\Role;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class GroupSettingsType extends GroupType
 {
@@ -33,7 +33,7 @@ class GroupSettingsType extends GroupType
         $builder->add(
             'platformRoles',
             'entity',
-            array(
+            [
                 'label' => 'roles',
                 'class' => 'Claroline\CoreBundle\Entity\Role',
                 'choice_translation_domain' => true,
@@ -55,19 +55,19 @@ class GroupSettingsType extends GroupType
 
                     return $query;
                 },
-            )
+            ]
         );
 
         $builder->add(
             'organizations',
             'entity',
-            array(
+            [
                 'label' => 'organizations',
                 'class' => 'Claroline\CoreBundle\Entity\Organization\Organization',
                 'expanded' => true,
                 'multiple' => true,
                 'property' => 'name',
-            )
+            ]
         );
     }
 
@@ -78,7 +78,7 @@ class GroupSettingsType extends GroupType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $default = array('translation_domain' => 'platform');
+        $default = ['translation_domain' => 'platform'];
         if ($this->forApi) {
             $default['csrf_protection'] = false;
         }

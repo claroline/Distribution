@@ -46,21 +46,21 @@ class WebsitePageType extends AbstractType
             ->add(
                 'target',
                 'choice',
-                array(
-                    'choices' => array(
+                [
+                    'choices' => [
                         'embed' => 0,
                         'new_window' => 1,
-                    ),
+                    ],
                     'choices_as_values' => true,
-                )
+                ]
             )
             ->add(
                 'resourceNode',
                 'entity',
-                array(
+                [
                     'class' => 'ClarolineCoreBundle:Resource\ResourceNode',
                     'choice_label' => 'id',
-                )
+                ]
             )
             ->add(
                 'resourceNodeType',
@@ -82,11 +82,11 @@ class WebsitePageType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => 'Icap\WebsiteBundle\Entity\WebsitePage',
             'translation_domain' => 'icap_website',
             'csrf_protection' => false,
             'intention' => 'create_website_page',
-        ));
+        ]);
     }
 }

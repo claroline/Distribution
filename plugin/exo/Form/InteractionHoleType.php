@@ -2,10 +2,10 @@
 
 namespace UJM\ExoBundle\Form;
 
+use Claroline\CoreBundle\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Claroline\CoreBundle\Entity\User;
 
 class InteractionHoleType extends AbstractType
 {
@@ -22,18 +22,18 @@ class InteractionHoleType extends AbstractType
     {
         $builder
             ->add('question', new QuestionType($this->user, $this->catID))
-            ->add('html', 'tinymce', array(
-                    'attr' => array('data-new-tab' => 'yes'),
+            ->add('html', 'tinymce', [
+                    'attr' => ['data-new-tab' => 'yes'],
                     'label' => 'hole',
-                    'attr' => array('data-before-unload' => 'off'),
+                    'attr' => ['data-before-unload' => 'off'],
                     'required' => false,
-                )
+                ]
             )
-            ->add('holes', 'collection', array('type' => new HoleType(),
+            ->add('holes', 'collection', ['type' => new HoleType(),
                                                'prototype' => true,
                                                //'by_reference' => false,
                                                'allow_add' => true,
-                                               'allow_delete' => true, ));
+                                               'allow_delete' => true, ]);
             //->add('interaction')
         ;
     }
@@ -41,11 +41,11 @@ class InteractionHoleType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'UJM\ExoBundle\Entity\InteractionHole',
                 'cascade_validation' => true,
                 'translation_domain' => 'ujm_exo',
-            )
+            ]
         );
     }
 

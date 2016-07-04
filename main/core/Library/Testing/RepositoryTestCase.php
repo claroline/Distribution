@@ -11,33 +11,33 @@
 
 namespace Claroline\CoreBundle\Library\Testing;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Gedmo\Timestampable\TimestampableListener;
-use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Home\HomeTab;
 use Claroline\CoreBundle\Entity\Home\HomeTabConfig;
-use Claroline\CoreBundle\Entity\Role;
-use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
-use Claroline\CoreBundle\Entity\Widget\Widget;
-use Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig;
-use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Claroline\CoreBundle\Entity\Workspace\WorkspaceTag;
-use Claroline\CoreBundle\Entity\Workspace\RelWorkspaceTag;
-use Claroline\CoreBundle\Entity\Workspace\WorkspaceTagHierarchy;
-use Claroline\CoreBundle\Entity\Resource\ResourceType;
+use Claroline\CoreBundle\Entity\Log\Log;
+use Claroline\CoreBundle\Entity\Plugin;
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
-use Claroline\CoreBundle\Entity\Resource\ResourceRights;
 use Claroline\CoreBundle\Entity\Resource\Directory;
 use Claroline\CoreBundle\Entity\Resource\File;
-use Claroline\CoreBundle\Entity\Resource\ResourceShortcut;
-use Claroline\CoreBundle\Entity\Resource\Text;
-use Claroline\CoreBundle\Entity\Resource\Revision;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
-use Claroline\CoreBundle\Entity\Tool\Tool;
+use Claroline\CoreBundle\Entity\Resource\ResourceRights;
+use Claroline\CoreBundle\Entity\Resource\ResourceShortcut;
+use Claroline\CoreBundle\Entity\Resource\ResourceType;
+use Claroline\CoreBundle\Entity\Resource\Revision;
+use Claroline\CoreBundle\Entity\Resource\Text;
+use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Tool\OrderedTool;
-use Claroline\CoreBundle\Entity\Plugin;
-use Claroline\CoreBundle\Entity\Log\Log;
+use Claroline\CoreBundle\Entity\Tool\Tool;
+use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Entity\Widget\Widget;
+use Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig;
+use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
+use Claroline\CoreBundle\Entity\Workspace\RelWorkspaceTag;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Entity\Workspace\WorkspaceTag;
+use Claroline\CoreBundle\Entity\Workspace\WorkspaceTagHierarchy;
+use Gedmo\Timestampable\TimestampableListener;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * Base test case for repository testing. Provides fixture methods intended to be
@@ -56,7 +56,7 @@ abstract class RepositoryTestCase extends WebTestCase
     {
         self::$client = static::createClient();
         self::$om = self::$client->getContainer()->get('claroline.persistence.object_manager');
-        self::$references = array();
+        self::$references = [];
         self::$time = new \DateTime();
         self::$client->beginTransaction();
         self::disableTimestampableListener();
@@ -125,7 +125,7 @@ abstract class RepositoryTestCase extends WebTestCase
         self::$time->add(new \DateInterval("PT{$seconds}S"));
     }
 
-    protected static function createUser($name, array $roles = array(), Workspace $personalWorkspace = null)
+    protected static function createUser($name, array $roles = [], Workspace $personalWorkspace = null)
     {
         $user = new User();
         $user->setFirstName($name.'FirstName');
@@ -146,7 +146,7 @@ abstract class RepositoryTestCase extends WebTestCase
         self::create($name, $user);
     }
 
-    protected static function createGroup($name, array $users = array(), array $roles = array())
+    protected static function createGroup($name, array $users = [], array $roles = [])
     {
         $group = new Group();
         $group->setName($name);
@@ -297,7 +297,7 @@ abstract class RepositoryTestCase extends WebTestCase
         Role $role,
         AbstractResource $resource,
         $mask,
-        array $creatableResourceTypes = array()
+        array $creatableResourceTypes = []
     ) {
         $rights = new ResourceRights();
         $rights->setRole($role);

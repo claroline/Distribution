@@ -25,22 +25,22 @@ class EditMessageEvent extends AbstractLogResourceEvent
      */
     public function __construct(Message $message, $oldContent, $newContent)
     {
-        $details = array(
-            'message' => array(
+        $details = [
+            'message' => [
                 'id' => $message->getId(),
                 'old_content' => $oldContent,
                 'new_content' => $newContent,
-            ),
-            'subject' => array(
+            ],
+            'subject' => [
                 'id' => $message->getSubject()->getId(),
-            ),
-            'category' => array(
+            ],
+            'category' => [
                 'id' => $message->getSubject()->getCategory()->getId(),
-            ),
-            'forum' => array(
+            ],
+            'forum' => [
                 'id' => $message->getSubject()->getCategory()->getForum()->getId(),
-            ),
-        );
+            ],
+        ];
 
         parent::__construct($message->getSubject()->getCategory()->getForum()->getResourceNode(), $details);
     }
@@ -50,6 +50,6 @@ class EditMessageEvent extends AbstractLogResourceEvent
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_WORKSPACE, self::DISPLAYED_ADMIN);
+        return [self::DISPLAYED_WORKSPACE, self::DISPLAYED_ADMIN];
     }
 }

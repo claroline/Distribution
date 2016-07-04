@@ -42,7 +42,7 @@ interface NetworkInterface
      *
      * @return string
      */
-    public function getShareLink($url, array $options = array());
+    public function getShareLink($url, array $options = []);
 
     /**
      * Gets the number of shares of the URL.

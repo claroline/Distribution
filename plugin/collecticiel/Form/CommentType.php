@@ -11,17 +11,17 @@ class CommentType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         // Saisie du commentaire
-        $builder->add('commentText', 'tinymce', array(
+        $builder->add('commentText', 'tinymce', [
             'label' => 'Comments add',
-            'label_attr' => array(
+            'label_attr' => [
                 'style' => 'display: none;',
-            ), ));
+            ], ]);
 
         // Ajout de la déclaration du bouton "Envoyer"
-        $builder->add('save', 'submit', array(
+        $builder->add('save', 'submit', [
         'label' => 'Comment validation',
-        'attr' => array('class' => 'btn btn-primary pull-left'),
-        ));
+        'attr' => ['class' => 'btn btn-primary pull-left'],
+        ]);
     }
 
     public function getName()
@@ -31,8 +31,8 @@ class CommentType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'translation_domain' => 'innova_collecticiel',
-        ));
+        ]);
     }
 }

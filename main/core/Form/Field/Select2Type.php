@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Form\Field;
 
-use Symfony\Component\Form\AbstractType;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -40,9 +40,9 @@ class Select2Type extends AbstractType
     {
         $resolver
             ->setDefaults(
-                array(
+                [
                     'translation_domain' => 'platform',
-                )
+                ]
             );
     }
 }

@@ -15,51 +15,51 @@ class ChoiceType extends AbstractType
                 'ordre', 'text'
             )
             ->add(
-                'rightResponse', 'checkbox', array(
+                'rightResponse', 'checkbox', [
                     'required' => false, 'label' => ' ',
-                )
+                ]
             )
             ->add(
-                'label', 'textarea', array(
+                'label', 'textarea', [
                     'label' => ' ',
                     'required' => true,
-                    'attr' => array('style' => 'height:34px; ',
+                    'attr' => ['style' => 'height:34px; ',
                     'class' => 'form-control',
                     'placeholder' => 'choice',
-                    ),
-                )
+                    ],
+                ]
             )
             ->add(
-                'weight', 'text', array(
+                'weight', 'text', [
                     'required' => false,
                     'label' => ' ',
-                    'attr' => array('placeholder' => 'points', 'size' => '10'),
-                )
+                    'attr' => ['placeholder' => 'points', 'size' => '10'],
+                ]
             )
             ->add(
-                   'feedback', 'textarea', array(
+                   'feedback', 'textarea', [
                    'required' => false, 'label' => ' ',
-                   'attr' => array('class' => 'form-control',
+                   'attr' => ['class' => 'form-control',
                                    'data-new-tab' => 'yes',
                                    'placeholder' => 'feedback_answer_check',
                                    'style' => 'height:34px;',
-                       ),
-                  )
+                       ],
+                  ]
             )
             ->add(
-                'positionForce', 'checkbox', array(
+                'positionForce', 'checkbox', [
                     'required' => false, 'label' => ' ',
-                )
+                ]
             );
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'UJM\ExoBundle\Entity\Choice',
                 'translation_domain' => 'ujm_exo',
-            )
+            ]
         );
     }
 

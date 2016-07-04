@@ -50,17 +50,17 @@ class FavouriteListener extends ContainerAware
     {
         $nodeId = $event->getResource()->getResourceNode()->getId();
         $favourite = $this->om->getRepository('HeVinciFavouriteBundle:Favourite')
-            ->findBy(array(
+            ->findBy([
                 'resourceNode' => $nodeId,
                 'user' => $this->tokenStorage->getToken()->getUser(),
-            ));
+            ]);
 
         $content = $this->templatingEngine->render(
             'HeVinciFavouriteBundle:Favourite:form.html.twig',
-            array(
+            [
                 'isFavourite' => (bool) $favourite,
                 'nodeId' => $nodeId,
-            )
+            ]
         );
 
         $event->setResponse(new Response($content));
@@ -75,13 +75,13 @@ class FavouriteListener extends ContainerAware
     public function onDisplay(DisplayWidgetEvent $event)
     {
         $favourites = $this->om->getRepository('HeVinciFavouriteBundle:Favourite')
-            ->findBy(array('user' => $this->tokenStorage->getToken()->getUser()));
+            ->findBy(['user' => $this->tokenStorage->getToken()->getUser()]);
 
         $content = $this->templatingEngine->render(
             'HeVinciFavouriteBundle:widget:favourite.html.twig',
-            array(
+            [
                 'favourites' => $favourites,
-            )
+            ]
         );
 
         $event->setContent($content);

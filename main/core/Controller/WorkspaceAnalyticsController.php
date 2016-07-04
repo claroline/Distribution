@@ -27,9 +27,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class WorkspaceAnalyticsController extends Controller
 {
@@ -108,14 +108,14 @@ class WorkspaceAnalyticsController extends Controller
             $this->analyticsManager->getDefaultRange(),
             'workspace-enter',
             false,
-            array($workspace->getId())
+            [$workspace->getId()]
         );
 
-        return array(
+        return [
             'analyticsTab' => 'traffic',
             'workspace' => $workspace,
             'chartData' => $chartData,
-        );
+        ];
     }
 
     /**
@@ -140,11 +140,11 @@ class WorkspaceAnalyticsController extends Controller
     {
         $typeCount = $this->analyticsManager->getWorkspaceResourceTypesCount($workspace);
 
-        return array(
+        return [
             'analyticsTab' => 'resources',
             'workspace' => $workspace,
             'resourceCount' => $typeCount,
-        );
+        ];
     }
 
     /**
@@ -192,27 +192,27 @@ class WorkspaceAnalyticsController extends Controller
             return new Response(
                 $this->templating->render(
                     'ClarolineCoreBundle:Tool/workspace/analytics:workspaceManagerActivitiesEvaluations.html.twig',
-                    array(
+                    [
                         'analyticsTab' => 'activities',
                         'workspace' => $workspace,
                         'activities' => $activities,
-                    )
+                    ]
                 )
             );
         } else {
             $token = $this->tokenStorage->getToken();
             $userRoles = $this->utils->getRoles($token);
 
-            $criteria = array();
-            $criteria['roots'] = array();
+            $criteria = [];
+            $criteria['roots'] = [];
 
             $root = $this->resourceManager->getWorkspaceRoot($workspace);
             $criteria['roots'][] = $root->getPath();
 
-            $criteria['types'] = array('activity');
+            $criteria['types'] = ['activity'];
             $nodes = $this->resourceManager
                 ->getByCriteria($criteria, $userRoles);
-            $resourceNodeIds = array();
+            $resourceNodeIds = [];
 
             foreach ($nodes as $node) {
                 $resourceNodeIds[] = $node['id'];
@@ -220,7 +220,7 @@ class WorkspaceAnalyticsController extends Controller
             $activities = $this->activityManager
                 ->getActivitiesByResourceNodeIds($resourceNodeIds);
 
-            $params = array();
+            $params = [];
 
             foreach ($activities as $activity) {
                 $params[] = $activity->getParameters();
@@ -232,14 +232,14 @@ class WorkspaceAnalyticsController extends Controller
                     $params
                 );
 
-            $evaluationsAssoc = array();
+            $evaluationsAssoc = [];
 
             foreach ($evaluations as $evaluation) {
                 $activityId = $evaluation->getActivityParameters()->getActivity()->getId();
                 $evaluationsAssoc[$activityId] = $evaluation;
             }
 
-            $rulesScores = array();
+            $rulesScores = [];
             $nbSuccess = 0;
 
             foreach ($activities as $activity) {
@@ -287,14 +287,14 @@ class WorkspaceAnalyticsController extends Controller
             return new Response(
                 $this->templating->render(
                     'ClarolineCoreBundle:Tool/workspace/analytics:workspaceActivitiesEvaluations.html.twig',
-                    array(
+                    [
                         'analyticsTab' => 'activities',
                         'workspace' => $workspace,
                         'activities' => $activities,
                         'evaluations' => $evaluationsAssoc,
                         'rulesScores' => $rulesScores,
                         'progress' => $progress,
-                    )
+                    ]
                 )
             );
         }
@@ -374,7 +374,7 @@ class WorkspaceAnalyticsController extends Controller
                 $activityParameters
             );
 
-        return array(
+        return [
             'user' => $user,
             'activity' => $activity,
             'pastEvals' => $pastEvals,
@@ -382,7 +382,7 @@ class WorkspaceAnalyticsController extends Controller
             'isWorkspaceManager' => $isWorkspaceManager,
             'ruleScore' => $ruleScore,
             'isResultVisible' => $isResultVisible,
-        );
+        ];
     }
 
     /**
@@ -424,7 +424,7 @@ class WorkspaceAnalyticsController extends Controller
             ->getRolesWithRightsByResourceNode($resourceNode);
         $usersPager = $this->userManager
             ->getUsersByRolesIncludingGroups($roles, $page);
-        $users = array();
+        $users = [];
 
         foreach ($usersPager as $user) {
             $users[] = $user;
@@ -432,7 +432,7 @@ class WorkspaceAnalyticsController extends Controller
 
         $allEvaluations = $this->activityManager
             ->getEvaluationsByUsersAndActivityParams($users, $activityParams);
-        $evaluations = array();
+        $evaluations = [];
 
         foreach ($allEvaluations as $evaluation) {
             $user = $evaluation->getUser();
@@ -475,7 +475,7 @@ class WorkspaceAnalyticsController extends Controller
             }
         }
 
-        return array(
+        return [
             'analyticsTab' => 'activities',
             'activity' => $activity,
             'activityParams' => $activityParams,
@@ -485,7 +485,7 @@ class WorkspaceAnalyticsController extends Controller
             'evaluations' => $evaluations,
             'ruleScore' => $ruleScore,
             'progress' => $progress,
-        );
+        ];
     }
 
     private function isWorkspaceManager(Workspace $workspace, array $roleNames)

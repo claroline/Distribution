@@ -37,7 +37,7 @@ class GooglePlus implements NetworkInterface
      *
      * @return string
      */
-    public function getShareLink($url, array $options = array())
+    public function getShareLink($url, array $options = [])
     {
         return sprintf(self::SHARE_URL, urlencode($url));
     }
@@ -60,7 +60,7 @@ class GooglePlus implements NetworkInterface
                 "jsonrpc":"2.0","key":"p","apiVersion":"v1"}]'
         );
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
+        curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-type: application/json']);
         $curl_results = curl_exec($curl);
         curl_close($curl);
         $data = json_decode($curl_results, true);

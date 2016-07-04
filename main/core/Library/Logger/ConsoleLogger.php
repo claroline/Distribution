@@ -11,24 +11,24 @@
 
 namespace Claroline\CoreBundle\Library\Logger;
 
-use Symfony\Component\Console\Logger\ConsoleLogger as SfLogger;
 use Psr\Log\LogLevel;
+use Symfony\Component\Console\Logger\ConsoleLogger as SfLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ConsoleLogger
 {
     public static function get(OutputInterface $output)
     {
-        $verbosityLevelMap = array(
+        $verbosityLevelMap = [
             LogLevel::NOTICE => OutputInterface::VERBOSITY_NORMAL,
             LogLevel::INFO => OutputInterface::VERBOSITY_NORMAL,
             LogLevel::DEBUG => OutputInterface::VERBOSITY_NORMAL,
-        );
+        ];
 
-        $formatLevelMap = array(
+        $formatLevelMap = [
             LogLevel::DEBUG => SfLogger::ERROR,
             LogLevel::NOTICE => SfLogger::INFO,
-        );
+        ];
 
         $consoleLogger = new SfLogger($output, $verbosityLevelMap, $formatLevelMap);
 

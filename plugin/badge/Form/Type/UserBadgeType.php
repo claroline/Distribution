@@ -2,10 +2,10 @@
 
 namespace Icap\BadgeBundle\Form\Type;
 
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("icap_badge.form.user_badge")
@@ -26,11 +26,11 @@ class UserBadgeType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'Icap\BadgeBundle\Entity\UserBadge',
                 'translation_domain' => 'icap_badge',
                 'csrf_protection' => false,
-            )
+            ]
         );
     }
 }

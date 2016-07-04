@@ -17,14 +17,14 @@ class LogPostDeleteEvent extends AbstractLogResourceEvent
     {
         $blog = $post->getBlog();
 
-        $details = array(
-            'post' => array(
+        $details = [
+            'post' => [
                 'blog' => $blog->getId(),
                 'title' => $post->getTitle(),
                 'slug' => $post->getSlug(),
                 'author' => $post->getAuthor()->getFirstName().' '.$post->getAuthor()->getLastName(),
-            ),
-        );
+            ],
+        ];
 
         parent::__construct($blog->getResourceNode(), $details);
     }
@@ -34,6 +34,6 @@ class LogPostDeleteEvent extends AbstractLogResourceEvent
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_WORKSPACE);
+        return [self::DISPLAYED_WORKSPACE];
     }
 }

@@ -23,11 +23,11 @@ class UnsubscribeForumEvent extends AbstractLogResourceEvent
      */
     public function __construct(Forum $forum)
     {
-        $details = array(
-            'forum' => array(
+        $details = [
+            'forum' => [
                 'forum' => $forum->getId(),
-            ),
-        );
+            ],
+        ];
 
         parent::__construct($forum->getResourceNode(), $details);
     }
@@ -37,6 +37,6 @@ class UnsubscribeForumEvent extends AbstractLogResourceEvent
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_WORKSPACE, self::DISPLAYED_ADMIN);
+        return [self::DISPLAYED_WORKSPACE, self::DISPLAYED_ADMIN];
     }
 }

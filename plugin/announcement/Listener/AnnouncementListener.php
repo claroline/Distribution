@@ -13,21 +13,21 @@ namespace Claroline\AnnouncementBundle\Listener;
 
 use Claroline\AnnouncementBundle\Entity\Announcement;
 use Claroline\AnnouncementBundle\Entity\AnnouncementAggregate;
-use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CopyResourceEvent;
+use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\OpenResourceEvent;
-use Symfony\Component\Form\FormFactory;
+use Claroline\CoreBundle\Form\ResourceNameType;
 use Claroline\CoreBundle\Listener\NoHttpRequestException;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\TwigBundle\TwigEngine;
+use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use JMS\DiExtraBundle\Annotation as DI;
-use Claroline\CoreBundle\Form\ResourceNameType;
 
 /**
  * @DI\Service()
@@ -81,10 +81,10 @@ class AnnouncementListener
         $form = $this->formFactory->create(new ResourceNameType(), new AnnouncementAggregate());
         $content = $this->templating->render(
             'ClarolineCoreBundle:Resource:createForm.html.twig',
-            array(
+            [
                 'form' => $form->createView(),
                 'resourceType' => 'claroline_announcement_aggregate',
-            )
+            ]
         );
         $event->setResponseContent($content);
         $event->stopPropagation();
@@ -108,7 +108,7 @@ class AnnouncementListener
 
         if ($form->isValid()) {
             $announcementAggregate = $form->getData();
-            $event->setResources(array($announcementAggregate));
+            $event->setResources([$announcementAggregate]);
             $event->stopPropagation();
 
             return;
@@ -116,10 +116,10 @@ class AnnouncementListener
 
         $content = $this->templating->render(
             'ClarolineCoreBundle:Resource:createForm.html.twig',
-            array(
+            [
                 'form' => $form->createView(),
                 'resourceType' => 'claroline_announcement_aggregate',
-            )
+            ]
         );
         $event->setErrorFormContent($content);
         $event->stopPropagation();
@@ -143,10 +143,10 @@ class AnnouncementListener
      */
     public function onOpen(OpenResourceEvent $event)
     {
-        $params = array();
+        $params = [];
         $params['_controller'] = 'ClarolineAnnouncementBundle:Announcement:announcementsList';
         $params['aggregateId'] = $event->getResource()->getId();
-        $subRequest = $this->request->duplicate(array(), null, $params);
+        $subRequest = $this->request->duplicate([], null, $params);
         $response = $this->httpKernel
             ->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
         $event->setResponse($response);

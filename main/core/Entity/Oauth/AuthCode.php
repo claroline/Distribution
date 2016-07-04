@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Entity\Oauth;
 
-use FOS\OAuthServerBundle\Entity\AuthCode as BaseAuthCode;
 use Doctrine\ORM\Mapping as ORM;
+use FOS\OAuthServerBundle\Entity\AuthCode as BaseAuthCode;
 
 /**
  * @ORM\Table(name="claro_api_auth_code")

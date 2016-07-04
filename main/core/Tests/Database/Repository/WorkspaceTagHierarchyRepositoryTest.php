@@ -29,8 +29,8 @@ class WorkspaceTagHierarchyRepositoryTest extends RepositoryTestCase
         self::createRole('ROLE_wsb', self::get('wsb'));
         self::createRole('ROLE_wsc', self::get('wsc'));
         self::createRole('ROLE_wsd', self::get('wsd'));
-        self::createUser('user', array(self::get('ROLE_wsa'), self::get('ROLE_wsb'), self::get('ROLE_wsc')));
-        self::createUser('admin', array(self::get('ROLE_wsd')));
+        self::createUser('user', [self::get('ROLE_wsa'), self::get('ROLE_wsb'), self::get('ROLE_wsc')]);
+        self::createUser('admin', [self::get('ROLE_wsd')]);
         self::createWorkspaceTag('tag_1');
         self::createWorkspaceTag('tag_2');
         self::createWorkspaceTag('tag_3');
@@ -124,12 +124,12 @@ class WorkspaceTagHierarchyRepositoryTest extends RepositoryTestCase
 
     public function testFindAdminHierarchiesByParents()
     {
-        $parents = array(self::get('tag_4')->getId(), self::get('tag_5')->getId());
+        $parents = [self::get('tag_4')->getId(), self::get('tag_5')->getId()];
         $tagHierarchies = self::$repo->findAdminHierarchiesByParents($parents);
         $this->assertEquals(4, count($tagHierarchies));
 
         $tag = self::get('tag_1');
-        $parentsA = array($tag->getId());
+        $parentsA = [$tag->getId()];
         $tagHierarchiesA = self::$repo->findAdminHierarchiesByParents($parentsA);
         $this->assertEquals(6, count($tagHierarchiesA));
         $this->assertEquals($tag, $tagHierarchiesA[0]->getParent());
@@ -143,15 +143,15 @@ class WorkspaceTagHierarchyRepositoryTest extends RepositoryTestCase
     public function testFindHierarchiesByParents()
     {
         $user = self::get('user');
-        $parents = array(self::get('user_tag_1')->getId(), self::get('user_tag_4')->getId());
+        $parents = [self::get('user_tag_1')->getId(), self::get('user_tag_4')->getId()];
         $tagHierarchies = self::$repo->findHierarchiesByParents($user, $parents);
         $this->assertEquals(9, count($tagHierarchies));
     }
 
     public function testFindAdminHierarchiesByParentsAndChildren()
     {
-        $parents = array(self::get('tag_1')->getId(), self::get('tag_4')->getId());
-        $children = array(self::get('tag_2')->getId(), self::get('tag_3')->getId());
+        $parents = [self::get('tag_1')->getId(), self::get('tag_4')->getId()];
+        $children = [self::get('tag_2')->getId(), self::get('tag_3')->getId()];
         $tagHierarchies = self::$repo->findAdminHierarchiesByParentsAndChildren(
             $parents,
             $children
@@ -162,8 +162,8 @@ class WorkspaceTagHierarchyRepositoryTest extends RepositoryTestCase
     public function testFindHierarchiesByParentsAndChildren()
     {
         $user = self::get('user');
-        $parents = array(self::get('user_tag_1')->getId(), self::get('user_tag_4')->getId());
-        $children = array(self::get('user_tag_2')->getId(), self::get('user_tag_3')->getId());
+        $parents = [self::get('user_tag_1')->getId(), self::get('user_tag_4')->getId()];
+        $children = [self::get('user_tag_2')->getId(), self::get('user_tag_3')->getId()];
         $tagHierarchies = self::$repo->findHierarchiesByParentsAndChildren(
             $user,
             $parents,
@@ -173,8 +173,8 @@ class WorkspaceTagHierarchyRepositoryTest extends RepositoryTestCase
 
         $admin = self::get('admin');
         $adminTag = self::get('admin_tag');
-        $adminParents = array($adminTag->getId());
-        $adminChildren = array($adminTag->getId());
+        $adminParents = [$adminTag->getId()];
+        $adminChildren = [$adminTag->getId()];
         $adminTagHierarchies = self::$repo->findHierarchiesByParentsAndChildren(
             $admin,
             $adminParents,

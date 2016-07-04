@@ -31,7 +31,7 @@ class Updater040100 extends Updater
 
     private function restoreBadgeCollections()
     {
-        if ($this->connection->getSchemaManager()->tablesExist(array('claro_badge_collection_badges'))) {
+        if ($this->connection->getSchemaManager()->tablesExist(['claro_badge_collection_badges'])) {
             $this->log('Restoring badge collections...');
             $rowBadgeCollections = $this->connection->query('SELECT * FROM claro_badge_collection_badges');
 

@@ -29,9 +29,9 @@ class VarTypeExtension extends \Twig_Extension
 
     public function getFunctions()
     {
-        return array(
+        return [
             'is_int' => new \Twig_Function_Method($this, 'isInt'),
-        );
+        ];
     }
 
     public function isInt($var)

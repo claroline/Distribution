@@ -23,18 +23,18 @@ class InterventionType extends AbstractType
         $builder->add(
             'intervenant',
             'text',
-            array(
+            [
                 'required' => false,
                 'disabled' => true,
                 'mapped' => false,
                 'label' => 'intervenant',
                 'data' => $this->user->getFirstName().' '.$this->user->getLastName(),
-            )
+            ]
         );
         $builder->add(
             'startDate',
             'datetimepicker',
-            array(
+            [
                 'required' => true,
                 'read_only' => false,
                 'component' => true,
@@ -45,12 +45,12 @@ class InterventionType extends AbstractType
                 'date_format' => DateType::HTML5_FORMAT,
                 'translation_domain' => 'platform',
                 'label' => 'start_date',
-            )
+            ]
         );
         $builder->add(
             'endDate',
             'datetimepicker',
-            array(
+            [
                 'required' => false,
                 'read_only' => false,
                 'component' => true,
@@ -61,33 +61,33 @@ class InterventionType extends AbstractType
                 'date_format' => DateType::HTML5_FORMAT,
                 'translation_domain' => 'platform',
                 'label' => 'end_date',
-            )
+            ]
         );
         $builder->add(
             'duration',
             'integer',
-            array(
+            [
                 'label' => 'duration_in_minute',
                 'required' => false,
-            )
+            ]
         );
         $builder->add(
             'computeTimeMode',
             'choice',
-            array(
+            [
                 'required' => false,
                 'mapped' => false,
                 'label' => 'compute_time_mode',
-                'choices' => array(
+                'choices' => [
                     0 => 'compute_time_from_end_date',
                     1 => 'compute_time_from_duration',
-                ),
-            )
+                ],
+            ]
         );
         $builder->add(
             'status',
             'entity',
-            array(
+            [
                 'label' => 'status',
                 'class' => 'FormaLibreSupportBundle:Status',
                 'translation_domain' => 'support',
@@ -100,23 +100,23 @@ class InterventionType extends AbstractType
                 'expanded' => false,
                 'multiple' => false,
                 'required' => true,
-            )
+            ]
         );
         $builder->add(
             'externalComment',
             'tinymce',
-            array(
+            [
                 'required' => true,
                 'label' => 'client_message',
-            )
+            ]
         );
         $builder->add(
             'internalComment',
             'tinymce',
-            array(
+            [
                 'required' => true,
                 'label' => 'internal_message',
-            )
+            ]
         );
     }
 
@@ -127,6 +127,6 @@ class InterventionType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'support'));
+        $resolver->setDefaults(['translation_domain' => 'support']);
     }
 }

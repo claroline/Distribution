@@ -3,14 +3,14 @@
 namespace Icap\BlogBundle\Controller;
 
 use Claroline\CoreBundle\Entity\User;
+use Icap\BlogBundle\Entity\Blog;
 use Icap\BlogBundle\Entity\Comment;
 use Icap\BlogBundle\Entity\Post;
-use Icap\BlogBundle\Entity\Blog;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class CommentController extends BaseController
 {
@@ -36,12 +36,12 @@ class CommentController extends BaseController
 
             $this->dispatchCommentDeleteEvent($post, $comment);
 
-            $flashBag->add('success', $translator->trans('icap_blog_comment_delete_success', array(), 'icap_blog'));
+            $flashBag->add('success', $translator->trans('icap_blog_comment_delete_success', [], 'icap_blog'));
         } catch (\Exception $exception) {
-            $flashBag->add('error', $translator->trans('icap_blog_comment_delete_error', array(), 'icap_blog'));
+            $flashBag->add('error', $translator->trans('icap_blog_comment_delete_error', [], 'icap_blog'));
         }
 
-        return $this->redirect($this->generateUrl('icap_blog_post_view', array('blogId' => $blog->getId(), 'postSlug' => $post->getSlug())));
+        return $this->redirect($this->generateUrl('icap_blog_post_view', ['blogId' => $blog->getId(), 'postSlug' => $post->getSlug()]));
     }
 
     /**
@@ -58,10 +58,10 @@ class CommentController extends BaseController
 
         $translator = $this->get('translator');
 
-        $messages = array(
-            'success' => $translator->trans('icap_blog_comment_publish_success', array(), 'icap_blog'),
-            'error' => $translator->trans('icap_blog_comment_publish_error', array(), 'icap_blog'),
-        );
+        $messages = [
+            'success' => $translator->trans('icap_blog_comment_publish_success', [], 'icap_blog'),
+            'error' => $translator->trans('icap_blog_comment_publish_error', [], 'icap_blog'),
+        ];
 
         return $this->changePublishStatus($blog, $post, $comment, $messages);
     }
@@ -80,10 +80,10 @@ class CommentController extends BaseController
 
         $translator = $this->get('translator');
 
-        $messages = array(
-            'success' => $translator->trans('icap_blog_comment_unpublish_success', array(), 'icap_blog'),
-            'error' => $translator->trans('icap_blog_comment_unpublish_error', array(), 'icap_blog'),
-        );
+        $messages = [
+            'success' => $translator->trans('icap_blog_comment_unpublish_success', [], 'icap_blog'),
+            'error' => $translator->trans('icap_blog_comment_unpublish_error', [], 'icap_blog'),
+        ];
 
         return $this->changePublishStatus($blog, $post, $comment, $messages);
     }
@@ -113,7 +113,7 @@ class CommentController extends BaseController
             $flashBag->add('error', $messages['error']);
         }
 
-        return $this->redirect($this->generateUrl('icap_blog_post_view', array('blogId' => $blog->getId(), 'postSlug' => $post->getSlug())));
+        return $this->redirect($this->generateUrl('icap_blog_post_view', ['blogId' => $blog->getId(), 'postSlug' => $post->getSlug()]));
     }
 
     /**
@@ -129,14 +129,14 @@ class CommentController extends BaseController
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $translator = $this->get('translator');
         if ($user != null && $user->getId() == $comment->getAuthor()->getId()) {
-            $messages = array(
-                'success' => $translator->trans('icap_blog_comment_edit_success', array(), 'icap_blog'),
-                'error' => $translator->trans('icap_blog_comment_edit_error', array(), 'icap_blog'),
-            );
+            $messages = [
+                'success' => $translator->trans('icap_blog_comment_edit_success', [], 'icap_blog'),
+                'error' => $translator->trans('icap_blog_comment_edit_error', [], 'icap_blog'),
+            ];
 
             return $this->persistCommentUpdate($request, $blog, $post, $comment, $user, $messages);
         } else {
-            throw new AccessDeniedException($translator->trans('icap_blog_comment_access_denied', array(), 'icap_blog'));
+            throw new AccessDeniedException($translator->trans('icap_blog_comment_access_denied', [], 'icap_blog'));
         }
     }
 
@@ -146,13 +146,13 @@ class CommentController extends BaseController
         if ($request->isXMLHttpRequest()) {
             return $this->render(
                 'IcapBlogBundle:Comment:inlineEdit.html.twig',
-                array(
+                [
                     '_resource' => $blog,
                     'post' => $post,
                     'comment' => $comment,
                     'workspace' => $blog->getResourceNode()->getWorkspace(),
                     'form' => $form->createView(),
-                )
+                ]
             );
         } elseif ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
@@ -174,20 +174,20 @@ class CommentController extends BaseController
                     $flashBag->add('error', $messages['error']);
                 }
 
-                return $this->redirect($this->generateUrl('icap_blog_post_view', array(
+                return $this->redirect($this->generateUrl('icap_blog_post_view', [
                     'blogId' => $blog->getId(),
                     'postSlug' => $post->getSlug(),
-                )));
+                ]));
             }
         }
 
-        return array(
+        return [
             '_resource' => $blog,
             'bannerForm' => $this->getBannerForm($blog->getOptions()),
             'user' => $user,
             'post' => $post,
             'comment' => $comment,
             'form' => $form->createView(),
-        );
+        ];
     }
 }

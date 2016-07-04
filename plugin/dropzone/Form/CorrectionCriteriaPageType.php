@@ -13,27 +13,27 @@ class CorrectionCriteriaPageType extends AbstractType
         $criteria = $options['criteria'];
         $totalChoice = $options['totalChoice'];
 
-        $choices = array();
+        $choices = [];
         for ($i = 0; $i < $totalChoice; ++$i) {
             $choices[$i] = $i;
         }
 
         foreach ($criteria as $criterion) {
-            $params = array(
+            $params = [
                 'choices' => $choices,
                 'expanded' => true,
                 'multiple' => false,
                 'required' => true,
                 'label' => $criterion->getInstruction(),
-                'label_attr' => array('style' => 'font-weight: normal;'),
-            );
+                'label_attr' => ['style' => 'font-weight: normal;'],
+            ];
 
             if ($options['edit'] === false) {
                 $params['disabled'] = 'disabled';
             }
 
             $builder
-                ->add('goBack', 'hidden', array('mapped' => false))
+                ->add('goBack', 'hidden', ['mapped' => false])
                 ->add($criterion->getId(), 'choice', $params);
         }
     }
@@ -45,11 +45,11 @@ class CorrectionCriteriaPageType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'totalChoice' => 5,
-            'criteria' => array(),
+            'criteria' => [],
             'edit' => true,
             'translation_domain' => 'icap_dropzone',
-        ));
+        ]);
     }
 }

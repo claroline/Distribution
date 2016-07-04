@@ -11,9 +11,9 @@
 
 namespace Claroline\CoreBundle\DataFixtures\Optional;
 
+use Claroline\CoreBundle\Entity\Resource\Directory;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\Persistence\ObjectManager;
-use Claroline\CoreBundle\Entity\Resource\Directory;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 

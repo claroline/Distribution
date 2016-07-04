@@ -8,8 +8,8 @@ use Claroline\CoreBundle\Persistence\ObjectManager;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use UJM\ExoBundle\Entity\Question;
 use UJM\ExoBundle\Entity\Exercise;
+use UJM\ExoBundle\Entity\Question;
 use UJM\ExoBundle\Entity\Step;
 use UJM\ExoBundle\Entity\StepQuestion;
 
@@ -119,7 +119,7 @@ class ExerciseServices
      */
     public function getScoresUser($userId, $exoId)
     {
-        $tabScoresUser = array();
+        $tabScoresUser = [];
         $i = 0;
 
         $papers = $this->om

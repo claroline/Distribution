@@ -25,21 +25,21 @@ class ResourceModeExtensionTest extends MockeryTestCase
         $accessor = $this->mock('Claroline\CoreBundle\Library\Resource\ModeAccessor');
         $this->generator = $this->mock('Symfony\Component\Routing\Generator\UrlGeneratorInterface');
 
-        $writer->shouldReceive('getQueryString')->andReturnValues(array('', 'a=1&b=2'));
+        $writer->shouldReceive('getQueryString')->andReturnValues(['', 'a=1&b=2']);
 
         $this->extension = new ResourceModeExtension($this->generator, $writer, $accessor);
     }
 
     public function testPathFunction()
     {
-        $this->generator->shouldReceive('generate')->with('foo', array(), false)->andReturn('foo/path');
+        $this->generator->shouldReceive('generate')->with('foo', [], false)->andReturn('foo/path');
         $this->assertEquals('foo/path', $this->extension->getPath('foo'));
         $this->assertEquals('foo/path?a=1&b=2', $this->extension->getPath('foo'));
     }
 
     public function testUrlFunction()
     {
-        $this->generator->shouldReceive('generate')->with('foo', array(), true)->andReturn('http://foo/path');
+        $this->generator->shouldReceive('generate')->with('foo', [], true)->andReturn('http://foo/path');
         $this->assertEquals('http://foo/path', $this->extension->getUrl('foo'));
         $this->assertEquals('http://foo/path?a=1&b=2', $this->extension->getUrl('foo'));
     }

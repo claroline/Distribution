@@ -4,9 +4,9 @@ namespace UJM\ExoBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use UJM\ExoBundle\Entity\Exercise;
+use UJM\ExoBundle\Entity\Paper;
 use UJM\ExoBundle\Entity\Question;
 use UJM\ExoBundle\Entity\Response;
-use UJM\ExoBundle\Entity\Paper;
 
 /**
  * ResponseRepository.
@@ -54,7 +54,7 @@ class ResponseRepository extends EntityRepository
            ->andWhere('p.interupt =  ?2')
            ->groupBy('p.id')
            ->orderBy($order, 'ASC')
-           ->setParameters(array(1 => $exoId, 2 => 0));
+           ->setParameters([1 => $exoId, 2 => 0]);
 
         return $qb->getQuery()->getResult();
     }
@@ -99,7 +99,7 @@ class ResponseRepository extends EntityRepository
         ';
 
         $query = $this->_em->createQuery($dql)
-                      ->setParameters(array(1 => $exoId, 2 => $questionId));
+                      ->setParameters([1 => $exoId, 2 => $questionId]);
 
         return $query->getResult();
     }
@@ -125,7 +125,7 @@ class ResponseRepository extends EntityRepository
         ';
 
         $query = $this->_em->createQuery($dql)
-                      ->setParameters(array(1 => $exoId, 2 => $questionId));
+                      ->setParameters([1 => $exoId, 2 => $questionId]);
 
         return $query->getResult();
     }
@@ -170,7 +170,7 @@ class ResponseRepository extends EntityRepository
         ';
 
         $query = $this->_em->createQuery($dql)
-                      ->setParameters(array(1 => $paperId));
+                      ->setParameters([1 => $paperId]);
 
         $res = $query->getOneOrNullResult();
 

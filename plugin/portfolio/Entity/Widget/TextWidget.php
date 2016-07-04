@@ -48,9 +48,9 @@ class TextWidget extends AbstractWidget
      */
     public function getData()
     {
-        return array(
+        return [
             'text' => $this->getText(),
-        );
+        ];
     }
 
     /**
@@ -58,8 +58,8 @@ class TextWidget extends AbstractWidget
      */
     public function getEmpty()
     {
-        return array(
+        return [
             'text' => null,
-        );
+        ];
     }
 }

@@ -12,10 +12,10 @@
 namespace Claroline\CoreBundle\Entity\Facet;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation\Accessor;
 use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation\SerializedName;
-use JMS\Serializer\Annotation\Accessor;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity()

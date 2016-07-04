@@ -40,25 +40,25 @@ class MessageType extends AbstractType
             ->add(
                 'to',
                 'text',
-                array(
+                [
                     'data' => $this->username,
                     'required' => true,
                     'mapped' => true,
-                    'constraints' => array(
+                    'constraints' => [
                         new NotBlank(),
                         new SendToNames(),
-                    ),
-                )
+                    ],
+                ]
             )
             ->add(
                 'object',
                 'text',
-                array('data' => $this->object, 'required' => true)
+                ['data' => $this->object, 'required' => true]
             )
             ->add(
                 'content',
                 'tinymce',
-                array('required' => true)
+                ['required' => true]
             );
     }
 
@@ -69,6 +69,6 @@ class MessageType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform']);
     }
 }

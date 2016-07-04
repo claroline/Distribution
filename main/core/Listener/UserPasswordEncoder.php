@@ -11,13 +11,13 @@
 
 namespace Claroline\CoreBundle\Listener;
 
+use Claroline\CoreBundle\Entity\User;
 use Doctrine\Common\EventSubscriber;
-use Doctrine\ORM\Events;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
-use Symfony\Component\Security\Core\Encoder\EncoderFactory;
+use Doctrine\ORM\Events;
 use JMS\DiExtraBundle\Annotation as DI;
-use Claroline\CoreBundle\Entity\User;
+use Symfony\Component\Security\Core\Encoder\EncoderFactory;
 
 /**
  * @DI\DoctrineListener(
@@ -41,7 +41,7 @@ class UserPasswordEncoder implements EventSubscriber
 
     public function getSubscribedEvents()
     {
-        return array(Events::prePersist, Events::preUpdate);
+        return [Events::prePersist, Events::preUpdate];
     }
 
     public function prePersist(LifecycleEventArgs $eventArgs)

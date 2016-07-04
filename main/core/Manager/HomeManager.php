@@ -11,15 +11,15 @@
 
 namespace Claroline\CoreBundle\Manager;
 
-use JMS\DiExtraBundle\Annotation\InjectParams;
-use JMS\DiExtraBundle\Annotation\Inject;
-use JMS\DiExtraBundle\Annotation\Service;
-use Claroline\CoreBundle\Entity\Home\Type;
 use Claroline\CoreBundle\Entity\Content;
-use Claroline\CoreBundle\Entity\Home\SubContent;
-use Claroline\CoreBundle\Entity\Home\Content2Type;
 use Claroline\CoreBundle\Entity\Home\Content2Region;
+use Claroline\CoreBundle\Entity\Home\Content2Type;
+use Claroline\CoreBundle\Entity\Home\SubContent;
+use Claroline\CoreBundle\Entity\Home\Type;
 use Claroline\CoreBundle\Form\HomeContentType;
+use JMS\DiExtraBundle\Annotation\Inject;
+use JMS\DiExtraBundle\Annotation\InjectParams;
+use JMS\DiExtraBundle\Annotation\Service;
 
 /**
  * @Service("claroline.manager.home_manager")
@@ -79,14 +79,14 @@ class HomeManager
      */
     public function getContent($content, $type, $father = null)
     {
-        $array = array('type' => $type->getName(), 'size' => 'content-12');
+        $array = ['type' => $type->getName(), 'size' => 'content-12'];
 
         if ($father) {
             $array['father'] = $father->getId();
-            $subContent = $this->subContent->findOneBy(array('child' => $content, 'father' => $father));
+            $subContent = $this->subContent->findOneBy(['child' => $content, 'father' => $father]);
             $array['size'] = $subContent->getSize();
         } else {
-            $contentType = $this->contentType->findOneBy(array('content' => $content, 'type' => $type));
+            $contentType = $this->contentType->findOneBy(['content' => $content, 'type' => $type]);
             $array['size'] = $contentType->getSize();
             $array['collapse'] = $contentType->isCollapse();
         }
@@ -108,7 +108,7 @@ class HomeManager
         $array = null;
 
         if ($content && ($type->isPublish() || $admin)) {
-            $array = array();
+            $array = [];
             $array['content'] = $content;
             $array['type'] = $type->getName();
             $array['publish'] = $type->isPublish();
@@ -126,7 +126,7 @@ class HomeManager
      */
     public function getType($type)
     {
-        return $this->type->findOneBy(array('name' => $type));
+        return $this->type->findOneBy(['name' => $type]);
     }
 
     /**
@@ -137,24 +137,24 @@ class HomeManager
      */
     public function getContentByType($type, $father = null, $region = null)
     {
-        $array = array();
-        $type = $this->type->findOneBy(array('name' => $type));
+        $array = [];
+        $type = $this->type->findOneBy(['name' => $type]);
 
         if ($type) {
             if ($father) {
                 $father = $this->content->find($father);
                 $first = $this->subContent->findOneBy(
-                    array('back' => null, 'father' => $father)
+                    ['back' => null, 'father' => $father]
                 );
             } else {
                 $first = $this->contentType->findOneBy(
-                    array('back' => null, 'type' => $type)
+                    ['back' => null, 'type' => $type]
                 );
             }
 
             if ($first) {
                 for ($i = 0; $i < $type->getMaxContentPage() && $first != null; ++$i) {
-                    $variables = array();
+                    $variables = [];
                     $variables['content'] = $first->getContent();
                     $variables['size'] = $first->getSize();
                     $variables['type'] = $type->getName();
@@ -167,7 +167,7 @@ class HomeManager
                     $first = $first->getNext();
                 }
             } else {
-                $array[] = array('content' => '', 'type' => $type->getName()); // in case of not yet content
+                $array[] = ['content' => '', 'type' => $type->getName()]; // in case of not yet content
             }
         }
 
@@ -181,14 +181,14 @@ class HomeManager
      */
     public function getRegionContents()
     {
-        $array = array();
+        $array = [];
         $regions = $this->region->findAll();
 
         foreach ($regions as $region) {
-            $first = $this->contentRegion->findOneBy(array('back' => null, 'region' => $region));
+            $first = $this->contentRegion->findOneBy(['back' => null, 'region' => $region]);
 
             while ($first != null) {
-                $contentType = $this->contentType->findOneBy(array('content' => $first->getContent()));
+                $contentType = $this->contentType->findOneBy(['content' => $first->getContent()]);
 
                 if ($contentType) {
                     $type = $contentType->getType()->getName();
@@ -196,13 +196,13 @@ class HomeManager
                     $type = 'default';
                 }
 
-                $array[$region->getName()][] = array(
+                $array[$region->getName()][] = [
                     'content' => $first->getContent(),
                     'size' => $first->getSize(),
                     'menu' => '',
                     'type' => $type,
                     'region' => $region->getName(),
-                );
+                ];
 
                 $first = $first->getNext();
             }
@@ -216,7 +216,7 @@ class HomeManager
      */
     public function getRegion($content)
     {
-        $region = $this->contentRegion->findOneBy(array('content' => $content));
+        $region = $this->contentRegion->findOneBy(['content' => $content]);
 
         if ($region) {
             return $region->getRegion()->getName();
@@ -260,14 +260,14 @@ class HomeManager
         if (!is_null($content)) {
             if ($father) {
                 $father = $this->content->find($father);
-                $first = $this->subContent->findOneBy(array('back' => null, 'father' => $father));
+                $first = $this->subContent->findOneBy(['back' => null, 'father' => $father]);
                 $subContent = new SubContent($first);
                 $subContent->setFather($father);
                 $subContent->SetChild($content);
                 $this->manager->persist($subContent);
             } else {
-                $type = $this->type->findOneBy(array('name' => $type));
-                $first = $this->contentType->findOneBy(array('back' => null, 'type' => $type));
+                $type = $this->type->findOneBy(['name' => $type]);
+                $first = $this->contentType->findOneBy(['back' => null, 'type' => $type]);
                 $contentType = new Content2Type($first);
                 $contentType->setContent($content);
                 $contentType->setType($type);
@@ -292,8 +292,8 @@ class HomeManager
         }
 
         if ($size && $type) {
-            $type = $this->type->findOneBy(array('name' => $type));
-            $contentType = $this->contentType->findOneBy(array('content' => $content, 'type' => $type));
+            $type = $this->type->findOneBy(['name' => $type]);
+            $contentType = $this->contentType->findOneBy(['content' => $content, 'type' => $type]);
             $contentType->setSize($size);
             $this->manager->persist($contentType);
             $this->manager->flush();
@@ -337,17 +337,17 @@ class HomeManager
     {
         if (!$content) {
             if ($father) {
-                return $this->subContent->findOneBy(array('father' => $father, 'next' => null));
+                return $this->subContent->findOneBy(['father' => $father, 'next' => null]);
             }
 
-            return $this->contentType->findOneBy(array('type' => $type, 'next' => null));
+            return $this->contentType->findOneBy(['type' => $type, 'next' => null]);
         }
 
         if ($father) {
-            return $this->subContent->findOneBy(array('father' => $father, 'child' => $content));
+            return $this->subContent->findOneBy(['father' => $father, 'child' => $content]);
         }
 
-        return $this->contentType->findOneBy(array('type' => $type, 'content' => $content));
+        return $this->contentType->findOneBy(['type' => $type, 'content' => $content]);
     }
 
     /**
@@ -359,11 +359,11 @@ class HomeManager
      */
     public function moveContent($content, $type, $page)
     {
-        $contentType = $this->contentType->findOneBy(array('type' => $type, 'content' => $content));
+        $contentType = $this->contentType->findOneBy(['type' => $type, 'content' => $content]);
 
         $contentType->detach();
         $contentType->setType($page);
-        $contentType->setFirst($this->contentType->findOneBy(array('type' => $page, 'back' => null)));
+        $contentType->setFirst($this->contentType->findOneBy(['type' => $page, 'back' => null]));
 
         $this->manager->persist($contentType);
         $this->manager->flush();
@@ -376,15 +376,15 @@ class HomeManager
      */
     public function deleteContent($content)
     {
-        $this->deleNodeEntity($this->contentType, array('content' => $content));
+        $this->deleNodeEntity($this->contentType, ['content' => $content]);
         $this->deleNodeEntity(
-            $this->subContent, array('father' => $content),
+            $this->subContent, ['father' => $content],
             function ($entity) {
                 $this->deleteContent($entity->getChild());
             }
         );
-        $this->deleNodeEntity($this->subContent, array('child' => $content));
-        $this->deleNodeEntity($this->contentRegion, array('content' => $content));
+        $this->deleNodeEntity($this->subContent, ['child' => $content]);
+        $this->deleNodeEntity($this->contentRegion, ['content' => $content]);
         $this->manager->remove($content);
         $this->manager->flush();
     }
@@ -440,7 +440,7 @@ class HomeManager
      */
     public function typeExist($name)
     {
-        $type = $this->type->findOneBy(array('name' => $name));
+        $type = $this->type->findOneBy(['name' => $name]);
 
         if (is_object($type)) {
             return true;
@@ -456,7 +456,7 @@ class HomeManager
      */
     public function deleteType($type)
     {
-        $contents = $this->contentType->findBy(array('type' => $type));
+        $contents = $this->contentType->findBy(['type' => $type]);
 
         foreach ($contents as $content) {
             $this->deleteContent($content->getContent());
@@ -518,14 +518,14 @@ class HomeManager
      */
     public function contentToRegion($region, $content)
     {
-        $regions = $this->contentRegion->findBy(array('content' => $content));
+        $regions = $this->contentRegion->findBy(['content' => $content]);
 
         if (count($regions) === 1 && $regions[0]->getRegion()->getName() === $region->getName()) {
             $this->deleteRegions($content, $regions);
         } else {
             $this->deleteRegions($content, $regions);
 
-            $first = $this->contentRegion->findOneBy(array('back' => null, 'region' => $region));
+            $first = $this->contentRegion->findOneBy(['back' => null, 'region' => $region]);
             $contentRegion = new Content2Region($first);
             $contentRegion->setRegion($region);
             $contentRegion->setContent($content);
@@ -553,7 +553,7 @@ class HomeManager
      */
     public function getCreator($type, $id = null, $content = null, $father = null)
     {
-        $variables = array('type' => $type);
+        $variables = ['type' => $type];
 
         if ($id && !$content) {
             $content = $this->content->find($id);
@@ -578,7 +578,7 @@ class HomeManager
      */
     public function getMenu($id, $size, $type, $father = null, $region = null, $collapse = false)
     {
-        $variables = array('id' => $id, 'size' => $size, 'type' => $type, 'region' => $region, 'collapse' => $collapse);
+        $variables = ['id' => $id, 'size' => $size, 'type' => $type, 'region' => $region, 'collapse' => $collapse];
 
         return $this->homeService->isDefinedPush($variables, 'father', $father);
     }
@@ -600,12 +600,12 @@ class HomeManager
      */
     public function getHomeParameters()
     {
-        return array(
+        return [
             'homeMenu' => $this->configHandler->getParameter('home_menu'),
             'footerLogin' => $this->configHandler->getParameter('footer_login'),
             'footerWorkspaces' => $this->configHandler->getParameter('footer_workspaces'),
             'headerLocale' => $this->configHandler->getParameter('header_locale'),
-        );
+        ];
     }
 
     /**
@@ -614,12 +614,12 @@ class HomeManager
     public function saveHomeParameters($homeMenu, $footerLogin, $footerWorkspaces, $headerLocale)
     {
         $this->configHandler->setParameters(
-            array(
+            [
                 'home_menu' => is_numeric($homeMenu) ? intval($homeMenu) : null,
                 'footer_login' => ($footerLogin === 'true'),
                 'footer_workspaces' => ($footerWorkspaces === 'true'),
                 'header_locale' => ($headerLocale === 'true'),
-            )
+            ]
         );
     }
 
@@ -628,7 +628,7 @@ class HomeManager
      */
     public function collapse($content, $type)
     {
-        $contentType = $this->contentType->findOneBy(array('content' => $content, 'type' => $type));
+        $contentType = $this->contentType->findOneBy(['content' => $content, 'type' => $type]);
 
         $contentType->setCollapse(!$contentType->isCollapse());
         $this->manager->persist($contentType);

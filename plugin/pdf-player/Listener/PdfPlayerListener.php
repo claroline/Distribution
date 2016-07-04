@@ -24,11 +24,11 @@ class PdfPlayerListener extends ContainerAware
             .$event->getResource()->getHashName();
         $content = $this->container->get('templating')->render(
             'ClarolinePdfPlayerBundle::pdf.html.twig',
-            array(
+            [
                 'path' => $path,
                 'pdf' => $event->getResource(),
                 '_resource' => $event->getResource(),
-            )
+            ]
         );
         $response = new Response($content);
         $event->setResponse($response);

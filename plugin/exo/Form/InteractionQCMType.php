@@ -2,11 +2,11 @@
 
 namespace UJM\ExoBundle\Form;
 
+use Claroline\CoreBundle\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Claroline\CoreBundle\Entity\User;
 
 class InteractionQCMType extends AbstractType
 {
@@ -29,41 +29,41 @@ class InteractionQCMType extends AbstractType
             );
         $builder
             ->add(
-                'shuffle', 'checkbox', array(
+                'shuffle', 'checkbox', [
                     'label' => 'qcm_shuffle',
                     'required' => false,
                     'translation_domain' => 'ujm_exo',
-                )
+                ]
             );
         $builder
             ->add(
-                'scoreRightResponse', 'text', array(
+                'scoreRightResponse', 'text', [
                     'required' => false,
                     'label' => 'score_right_label',
-                    'attr' => array('placeholder' => 'right_response'),
+                    'attr' => ['placeholder' => 'right_response'],
                     'translation_domain' => 'ujm_exo',
-                )
+                ]
             );
         $builder
             ->add(
-                'scoreFalseResponse', 'text', array(
+                'scoreFalseResponse', 'text', [
                     'required' => false,
                     'label' => 'score_false_label',
-                    'attr' => array('placeholder' => 'false_response', 'class' => 'col-md-2'),
+                    'attr' => ['placeholder' => 'false_response', 'class' => 'col-md-2'],
                     'translation_domain' => 'ujm_exo',
-                )
+                ]
             );
         $builder
             ->add(
-                'weightResponse', 'checkbox', array(
+                'weightResponse', 'checkbox', [
                     'required' => false,
                     'label' => 'weight_choice',
                     'translation_domain' => 'ujm_exo',
-                )
+                ]
             );
         $builder
             ->add(
-                'typeQCM', 'entity', array(
+                'typeQCM', 'entity', [
                     'class' => 'UJMExoBundle:TypeQCM',
                     'data_class' => 'UJM\ExoBundle\Entity\TypeQCM',
                     'label' => 'type_qcm',
@@ -74,27 +74,27 @@ class InteractionQCMType extends AbstractType
                         ->orderBy('TypeQCM.value', 'DESC');
                     },
                     'translation_domain' => 'ujm_exo',
-                )
+                ]
             );
         $builder
             ->add(
-                'choices', 'collection', array(
+                'choices', 'collection', [
                     'type' => new ChoiceType(),
                     'prototype' => true,
                     'allow_add' => true,
                     'allow_delete' => true,
-                )
+                ]
             );
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'UJM\ExoBundle\Entity\InteractionQCM',
                 'cascade_validation' => true,
                 'translation_domain' => 'ujm_exo',
-            )
+            ]
         );
     }
 

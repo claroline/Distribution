@@ -33,7 +33,7 @@ class LipsumGenerator
     {
         $words = $this->getArrayLipsum();
         $content = '';
-        $endPhrase = array('?', '!', '.', '...');
+        $endPhrase = ['?', '!', '.', '...'];
         $loopBeforeEnd = 0;
 
         if ($nbWords == 0) {
@@ -71,7 +71,7 @@ class LipsumGenerator
 
     private function getArrayLipsum()
     {
-        $lipsum = array('lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscing', 'elit',
+        $lipsum = ['lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscing', 'elit',
             'curabitur', 'vel', 'hendrerit', 'libero', 'eleifend', 'blandit', 'nunc', 'ornare', 'odio',
             'ut', 'orci', 'gravida', 'imperdiet', 'nullam', 'purus', 'lacinia', 'a', 'pretium', 'quis',
             'congue', 'praesent', 'sagittis', 'laoreet', 'auctor', 'mauris', 'non', 'velit', 'eros',
@@ -89,7 +89,7 @@ class LipsumGenerator
             'felis', 'tristique', 'ullamcorper', 'placerat', 'aenean', 'convallis', 'sollicitudin', 'integer',
             'rutrum', 'duis', 'est', 'etiam', 'bibendum', 'donec', 'pharetra', 'vulputate', 'maecenas', 'mi',
             'fermentum', 'consequat', 'suscipit', 'aliquam', 'habitant', 'senectus', 'netus', 'fames',
-            'quisque', 'euismod', 'curabitur', 'lectus', 'elementum', 'tempor', 'risus', 'cras', );
+            'quisque', 'euismod', 'curabitur', 'lectus', 'elementum', 'tempor', 'risus', 'cras', ];
 
         return $lipsum;
     }

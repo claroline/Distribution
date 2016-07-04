@@ -11,9 +11,9 @@
 
 namespace Claroline\CoreBundle\Validator\Constraints;
 
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Validator("ics_file_validator")

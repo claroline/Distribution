@@ -73,7 +73,7 @@ class WidgetFactory
         /** @var \Icap\PortfolioBundle\Entity\Widget\AbstractWidget $widget */
         $widget = new $widgetNamespace();
         $widget
-            ->setLabel($this->translator->trans($widgetType.'_title', array(), 'icap_portfolio'));
+            ->setLabel($this->translator->trans($widgetType.'_title', [], 'icap_portfolio'));
 
         return $widget;
     }

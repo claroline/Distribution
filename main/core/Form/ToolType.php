@@ -19,7 +19,7 @@ class ToolType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('displayName', 'text', array('label' => 'name'));
+        $builder->add('displayName', 'text', ['label' => 'name']);
     }
 
     public function getName()
@@ -31,10 +31,10 @@ class ToolType extends AbstractType
     {
         $resolver
         ->setDefaults(
-            array(
+            [
                 'classe' => 'Claroline\CoreBundle\Entity\Tool\Tool.php',
                 'translation_domain' => 'platform',
-                )
+                ]
         );
     }
 }

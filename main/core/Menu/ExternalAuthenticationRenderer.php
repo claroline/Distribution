@@ -12,8 +12,8 @@
 namespace Claroline\CoreBundle\Menu;
 
 use JMS\DiExtraBundle\Annotation as DI;
-use Knp\Menu\Renderer\ListRenderer;
 use Knp\Menu\ItemInterface;
+use Knp\Menu\Renderer\ListRenderer;
 
 /**
  * @DI\Service("claroline.menu.external_authentication_renderer")

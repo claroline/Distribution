@@ -12,19 +12,19 @@
 namespace Icap\OAuthBundle\Manager;
 
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Event\RefreshCacheEvent;
 use Claroline\CoreBundle\Form\BaseProfileType;
+use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Library\Security\Authenticator;
+use Claroline\CoreBundle\Manager\CacheManager;
 use Claroline\CoreBundle\Manager\FacetManager;
 use Claroline\CoreBundle\Manager\LocaleManager;
 use Claroline\CoreBundle\Manager\TermsOfServiceManager;
 use Claroline\CoreBundle\Manager\UserManager;
 use Doctrine\ORM\EntityManager;
 use Icap\OAuthBundle\Entity\OauthUser;
-use JMS\DiExtraBundle\Annotation as DI;
-use Claroline\CoreBundle\Event\RefreshCacheEvent;
-use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
-use Claroline\CoreBundle\Manager\CacheManager;
 use Icap\OAuthBundle\Model\Configuration;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
@@ -166,7 +166,7 @@ class OauthManager
     public function validateService($service, $appId, $secret)
     {
         if (!$appId || !$secret) {
-            return array('error' => $service.'_application_validation_error');
+            return ['error' => $service.'_application_validation_error'];
         }
 
         switch ($service) {
@@ -197,7 +197,7 @@ class OauthManager
 
     public function getActiveServices()
     {
-        $services = array();
+        $services = [];
         foreach (Configuration::resourceOwners() as $resourceOwner) {
             $service = str_replace(' ', '_', strtolower($resourceOwner));
             if ($this->isActive($service)) {
@@ -248,18 +248,18 @@ class OauthManager
                 }
             }
 
-            $msg = $translator->trans('account_created', array(), 'platform');
+            $msg = $translator->trans('account_created', [], 'platform');
             $session->getFlashBag()->add('success', $msg);
 
             if ($this->platformConfigHandler->getParameter('registration_mail_validation')) {
-                $msg = $translator->trans('please_validate_your_account', array(), 'platform');
+                $msg = $translator->trans('please_validate_your_account', [], 'platform');
                 $session->getFlashBag()->add('success', $msg);
             }
 
             return $this->loginUser($user, $request);
         }
 
-        return array('form' => $form->createView());
+        return ['form' => $form->createView()];
     }
 
     public function linkAccount(Request $request, $service)
@@ -276,7 +276,7 @@ class OauthManager
 
             return $this->loginUser($user, $request);
         } else {
-            return array('error' => 'login_error');
+            return ['error' => 'login_error'];
         }
     }
 
@@ -298,7 +298,7 @@ class OauthManager
     private function validateFacebook($appId, $secret)
     {
         if (!function_exists('curl_version')) {
-            return array('error' => 'curl_facebook_application_validation_error');
+            return ['error' => 'curl_facebook_application_validation_error'];
         }
 
         $secretUrl = "https://graph.facebook.com/{$appId}?fields=roles&access_token={$appId}|{$secret}";
@@ -312,16 +312,16 @@ class OauthManager
         $data = json_decode($json);
 
         if (!$json || array_key_exists('error', $data)) {
-            return array('error' => 'facebook_application_validation_error');
+            return ['error' => 'facebook_application_validation_error'];
         }
 
-        return array();
+        return [];
     }
 
     private function validateTwitter($appId, $secret)
     {
         if (!function_exists('curl_version')) {
-            return array('error' => 'curl_twitter_application_validation_error');
+            return ['error' => 'curl_twitter_application_validation_error'];
         }
 
         $encoded_consumer_key = urlencode($appId);
@@ -332,13 +332,13 @@ class OauthManager
         $base64_encoded_bearer_token = base64_encode($bearer_token);
         // step 2
         $secretUrl = 'https://api.twitter.com/oauth2/token'; // url to send data to for authentication
-        $headers = array(
+        $headers = [
             'POST /oauth2/token HTTP/1.1',
             'Host: api.twitter.com',
             'User-Agent: ClarolineConnect Twitter Application-only OAuth App v.1',
             'Authorization: Basic '.$base64_encoded_bearer_token,
             'Content-Type: application/x-www-form-urlencoded;charset=UTF-8',
-        );
+        ];
         $curlHandle = curl_init();
         curl_setopt($curlHandle, CURLOPT_URL, $secretUrl);
         curl_setopt($curlHandle, CURLOPT_HTTPHEADER, $headers); // set custom headers
@@ -350,9 +350,9 @@ class OauthManager
         $respInfo = curl_getinfo($curlHandle);
         curl_close($curlHandle);
         if ($respInfo['http_code'] !== 200) {
-            return array('error' => 'twitter_application_validation_error');
+            return ['error' => 'twitter_application_validation_error'];
         }
 
-        return array();
+        return [];
     }
 }

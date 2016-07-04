@@ -17,6 +17,6 @@ class InvalidUnexpectedTranslationKey1 extends PluginBundle
 {
     public function getNameTranslationKey()
     {
-        return array();
+        return [];
     }
 }

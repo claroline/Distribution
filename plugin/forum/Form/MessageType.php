@@ -29,6 +29,6 @@ class MessageType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'forum'));
+        $resolver->setDefaults(['translation_domain' => 'forum']);
     }
 }

@@ -11,11 +11,11 @@
 
 namespace Claroline\CoreBundle\Library\Testing;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Claroline\CoreBundle\Entity\User;
+use Symfony\Bundle\FrameworkBundle\Client;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
-use Symfony\Bundle\FrameworkBundle\Client;
 
 abstract class TransactionalTestCase extends WebTestCase
 {

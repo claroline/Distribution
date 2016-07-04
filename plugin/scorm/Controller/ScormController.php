@@ -21,17 +21,17 @@ use Claroline\ScormBundle\Entity\Scorm2004Sco;
 use Claroline\ScormBundle\Event\Log\LogScorm12ResultEvent;
 use Claroline\ScormBundle\Event\Log\LogScorm2004ResultEvent;
 use Claroline\ScormBundle\Manager\ScormManager;
+use JMS\DiExtraBundle\Annotation as DI;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class ScormController extends Controller
 {
@@ -94,8 +94,8 @@ class ScormController extends Controller
         $this->checkAccess('OPEN', $scorm);
         $user = $this->tokenStorage->getToken()->getUser();
         $isAnon = ($user === 'anon.');
-        $rootScos = array();
-        $trackings = array();
+        $rootScos = [];
+        $trackings = [];
         $scos = $scorm->getScos();
         $nbActiveScos = 0;
         $lastActiveSco = null;
@@ -132,18 +132,18 @@ class ScormController extends Controller
             return new RedirectResponse(
                 $this->router->generate(
                     'claro_render_scorm_12_sco',
-                    array('scoId' => $lastActiveSco->getId())
+                    ['scoId' => $lastActiveSco->getId()]
                 )
             );
         } else {
-            return array(
+            return [
                 'resource' => $scorm,
                 '_resource' => $scorm,
                 'scos' => $rootScos,
                 'workspace' => $scorm->getResourceNode()->getWorkspace(),
                 'trackings' => $trackings,
                 'isAnon' => $isAnon,
-            );
+            ];
         }
     }
 
@@ -182,7 +182,7 @@ class ScormController extends Controller
                 .$scorm12Sco->getEntryUrl()
                 .$scorm12Sco->getParameters();
         }
-        $rootScos = array();
+        $rootScos = [];
 
         foreach ($scos as $sco) {
             if (is_null($sco->getScoParent())) {
@@ -202,7 +202,7 @@ class ScormController extends Controller
             }
         }
 
-        return array(
+        return [
             'resource' => $scorm,
             '_resource' => $scorm,
             'currentSco' => $scorm12Sco,
@@ -211,7 +211,7 @@ class ScormController extends Controller
             'scormUrl' => $scormPath,
             'workspace' => $scorm->getResourceNode()->getWorkspace(),
             'isAnon' => $isAnon,
-        );
+        ];
     }
 
     /**
@@ -358,7 +358,7 @@ class ScormController extends Controller
         $bestStatus
     ) {
         $scormResource = $sco->getScormResource();
-        $details = array();
+        $details = [];
         $details['scoId'] = $sco->getId();
         $details['credit'] = $credit;
         $details['exitMode'] = $exitMode;
@@ -409,8 +409,8 @@ class ScormController extends Controller
         $this->checkScorm2004ResourceAccess('OPEN', $scorm);
         $user = $this->tokenStorage->getToken()->getUser();
         $isAnon = ($user === 'anon.');
-        $rootScos = array();
-        $trackings = array();
+        $rootScos = [];
+        $trackings = [];
         $scos = $scorm->getScos();
         $nbActiveScos = 0;
         $lastActiveSco = null;
@@ -447,18 +447,18 @@ class ScormController extends Controller
             return new RedirectResponse(
                 $this->router->generate(
                     'claro_render_scorm_2004_sco',
-                    array('scoId' => $lastActiveSco->getId())
+                    ['scoId' => $lastActiveSco->getId()]
                 )
             );
         } else {
-            return array(
+            return [
                 'resource' => $scorm,
                 '_resource' => $scorm,
                 'scos' => $rootScos,
                 'workspace' => $scorm->getResourceNode()->getWorkspace(),
                 'trackings' => $trackings,
                 'isAnon' => $isAnon,
-            );
+            ];
         }
     }
 
@@ -497,7 +497,7 @@ class ScormController extends Controller
                 .$scorm2004Sco->getEntryUrl()
                 .$scorm2004Sco->getParameters();
         }
-        $rootScos = array();
+        $rootScos = [];
 
         foreach ($scos as $sco) {
             if (is_null($sco->getScoParent())) {
@@ -508,7 +508,7 @@ class ScormController extends Controller
         if ($isAnon) {
             $scoTracking = $this->scormManager
                 ->createEmptyScorm2004ScoTracking($scorm2004Sco);
-            $details = array();
+            $details = [];
             $details['cmi.learner_id'] = -1;
             $details['cmi.learner_name'] = 'anon., anon.';
         } else {
@@ -522,7 +522,7 @@ class ScormController extends Controller
 
             $details = !is_null($scoTracking->getDetails()) ?
                 $scoTracking->getDetails() :
-                array();
+                [];
             $details['cmi.learner_id'] = $user->getId();
             $details['cmi.learner_name'] = $user->getFirstName().
                 ', '.
@@ -551,7 +551,7 @@ class ScormController extends Controller
             $scaledPassingScore :
             '';
 
-        return array(
+        return [
             'resource' => $scorm,
             '_resource' => $scorm,
             'currentSco' => $scorm2004Sco,
@@ -561,7 +561,7 @@ class ScormController extends Controller
             'scormUrl' => $scormPath,
             'workspace' => $scorm->getResourceNode()->getWorkspace(),
             'isAnon' => $isAnon,
-        );
+        ];
     }
 
     /**
@@ -789,7 +789,7 @@ class ScormController extends Controller
             if (preg_match($generalPattern, $sessionTime)) {
                 $formattedValue = $sessionTime;
             } elseif (preg_match($decimalPattern, $sessionTime)) {
-                $formattedValue = preg_replace(array('/\.[0-9]+S$/'), array('S'), $sessionTime);
+                $formattedValue = preg_replace(['/\.[0-9]+S$/'], ['S'], $sessionTime);
             }
         }
 
@@ -806,7 +806,7 @@ class ScormController extends Controller
      */
     private function checkAccess($permission, Scorm12Resource $resource)
     {
-        $collection = new ResourceCollection(array($resource->getResourceNode()));
+        $collection = new ResourceCollection([$resource->getResourceNode()]);
 
         if (!$this->authorization->isGranted($permission, $collection)) {
             throw new AccessDeniedException($collection->getErrorsForDisplay());
@@ -823,7 +823,7 @@ class ScormController extends Controller
      */
     private function checkScorm2004ResourceAccess($permission, Scorm2004Resource $resource)
     {
-        $collection = new ResourceCollection(array($resource->getResourceNode()));
+        $collection = new ResourceCollection([$resource->getResourceNode()]);
 
         if (!$this->authorization->isGranted($permission, $collection)) {
             throw new AccessDeniedException($collection->getErrorsForDisplay());

@@ -3,9 +3,9 @@
 namespace Icap\LessonBundle\Manager;
 
 use Doctrine\ORM\EntityManager;
-use JMS\DiExtraBundle\Annotation as DI;
-use Icap\LessonBundle\Entity\Lesson;
 use Icap\LessonBundle\Entity\Chapter;
+use Icap\LessonBundle\Entity\Lesson;
+use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("icap.lesson.manager.chapter")

@@ -5,10 +5,10 @@ namespace Icap\PortfolioBundle\Controller\Internal;
 use Claroline\CoreBundle\Entity\User;
 use Icap\PortfolioBundle\Controller\Controller as BaseController;
 use Icap\PortfolioBundle\Entity\Portfolio;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -55,7 +55,7 @@ class PortfolioWidgetController extends BaseController
         $response = new JsonResponse();
         $widgetManager = $this->getWidgetsManager();
         $widgetsConfig = $widgetManager->getWidgetsConfig();
-        $data = array();
+        $data = [];
         $statusCode = Response::HTTP_BAD_REQUEST;
 
         if (isset($widgetsConfig[$type])) {

@@ -22,13 +22,13 @@ class LogDropGradeAvailableEvent extends AbstractLogResourceEvent implements Not
     {
         $this->dropzone = $dropzone;
         $this->drop = $drop;
-        $this->details = array(
+        $this->details = [
                 'drop' => $drop,
             'dropGrade' => $drop->getCalculatedGrade(),
             'resultMax' => 20,
             'dropzoneId' => $dropzone->getId(),
                 'dropId' => $drop->getId(),
-        );
+        ];
 
         parent::__construct($dropzone->getResourceNode(), $this->details);
     }
@@ -38,7 +38,7 @@ class LogDropGradeAvailableEvent extends AbstractLogResourceEvent implements Not
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_WORKSPACE);
+        return [self::DISPLAYED_WORKSPACE];
     }
 
     /**
@@ -61,7 +61,7 @@ class LogDropGradeAvailableEvent extends AbstractLogResourceEvent implements Not
     public function getIncludeUserIds()
     {
         // notify only the drop's owner.
-        $ids = array();
+        $ids = [];
         $id = $this->drop->getUser()->getId();
         array_push($ids, $id);
 
@@ -75,7 +75,7 @@ class LogDropGradeAvailableEvent extends AbstractLogResourceEvent implements Not
      */
     public function getExcludeUserIds()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -105,12 +105,12 @@ class LogDropGradeAvailableEvent extends AbstractLogResourceEvent implements Not
      */
     public function getNotificationDetails()
     {
-        $notificationDetails = array_merge($this->details, array());
-        $notificationDetails['resource'] = array(
+        $notificationDetails = array_merge($this->details, []);
+        $notificationDetails['resource'] = [
             'id' => $this->dropzone->getId(),
             'name' => $this->resource->getName(),
             'type' => $this->resource->getResourceType()->getName(),
-        );
+        ];
 
         return $notificationDetails;
     }

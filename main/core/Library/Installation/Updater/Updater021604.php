@@ -11,9 +11,9 @@
 
 namespace Claroline\CoreBundle\Library\Installation\Updater;
 
+use Claroline\CoreBundle\Entity\Resource\MenuAction;
 use Claroline\InstallationBundle\Updater\Updater;
 use Doctrine\ORM\EntityManager;
-use Claroline\CoreBundle\Entity\Resource\MenuAction;
 
 class Updater021604 extends Updater
 {
@@ -36,7 +36,7 @@ class Updater021604 extends Updater
             ->findOneByName('file');
         $maskDecoder = $this->em
             ->getRepository('Claroline\CoreBundle\Entity\Resource\MaskDecoder')
-            ->findOneBy(array('resourceType' => $fileType, 'name' => 'edit'));
+            ->findOneBy(['resourceType' => $fileType, 'name' => 'edit']);
 
         $action = new MenuAction();
         $action->setName('update_file');

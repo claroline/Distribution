@@ -4,8 +4,8 @@ namespace UJM\ExoBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use UJM\ExoBundle\Entity\Exercise;
-use UJM\ExoBundle\Entity\StepQuestion;
 use UJM\ExoBundle\Entity\Question;
+use UJM\ExoBundle\Entity\StepQuestion;
 
 /**
  * StepQuestionRepository.

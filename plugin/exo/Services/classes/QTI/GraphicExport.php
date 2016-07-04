@@ -36,7 +36,7 @@ class GraphicExport extends QtiExport
         $this->picture = $this->doctrine
                         ->getManager()
                         ->getRepository('UJMExoBundle:Picture')
-                        ->findOneBy(array('id' => $this->interactiongraph->getPicture()));
+                        ->findOneBy(['id' => $this->interactiongraph->getPicture()]);
 
         if (count($this->interactiongraph->getCoords()) > 1) {
             $cardinality = 'multiple';
@@ -82,7 +82,7 @@ class GraphicExport extends QtiExport
         $x_center_circle = $x + ($radius);
         $y_center_circle = $y + ($radius);
 
-        return array($x_center_circle, $y_center_circle, $radius);
+        return [$x_center_circle, $y_center_circle, $radius];
     }
 
     /**
@@ -187,7 +187,7 @@ class GraphicExport extends QtiExport
         $pictureName = end($taburl);
         $dest = $this->qtiRepos->getUserDir().$pictureName;
         copy($src, $dest);
-        $ressource = array('name' => $pictureName, 'url' => $dest);
+        $ressource = ['name' => $pictureName, 'url' => $dest];
         $this->resourcesLinked[] = $ressource;
     }
 }

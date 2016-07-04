@@ -11,9 +11,9 @@
 
 namespace Claroline\CoreBundle\Form\Calendar;
 
+use Claroline\CoreBundle\Form\Angular\AngularType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Claroline\CoreBundle\Form\Angular\AngularType;
 
 class PeriodType extends AngularType
 {
@@ -25,17 +25,17 @@ class PeriodType extends AngularType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('start', 'datetime', array('label' => 'start', 'required' => true))
-            ->add('end', 'datetime', array('label' => 'end', 'required' => true))
-            ->add('name', 'text', array('label' => 'name', 'required' => false))
-            ->add('description', 'text', array('label' => 'description', 'required' => false))
-            ->add('year', 'entity', array(
+            ->add('start', 'datetime', ['label' => 'start', 'required' => true])
+            ->add('end', 'datetime', ['label' => 'end', 'required' => true])
+            ->add('name', 'text', ['label' => 'name', 'required' => false])
+            ->add('description', 'text', ['label' => 'description', 'required' => false])
+            ->add('year', 'entity', [
                     'class' => 'ClarolineCoreBundle:Calendar\Year',
                     'property' => 'name',
                     'multiple' => false,
                     'expanded' => false,
                     'required' => true,
-                )
+                ]
             );
     }
 
@@ -51,7 +51,7 @@ class PeriodType extends AngularType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $default = array('translation_domain' => 'platform');
+        $default = ['translation_domain' => 'platform'];
         if ($this->forApi) {
             $default['csrf_protection'] = false;
         }

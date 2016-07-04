@@ -43,19 +43,19 @@ class FileImporterTest extends MockeryTestCase
     /* @todo add validations */
     public function validateProvider()
     {
-        return array(
+        return [
             //valid (the file path is correct)
-            array(
+            [
                 'basePath' => __DIR__.'/../../../../Stub/transfert/valid/full',
                 'path' => 'tools/resources/files01.yml',
                 'isExceptionExpected' => false,
-            ),
+            ],
             //invalid (the file path is wrong)
-            array(
+            [
                 'basePath' => __DIR__.'/../../../../Stub/transfert/invalid/files',
                 'path' => 'nopath.yml',
                 'isExceptionExpected' => true,
-            ),
-        );
+            ],
+        ];
     }
 }

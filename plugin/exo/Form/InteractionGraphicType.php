@@ -2,10 +2,10 @@
 
 namespace UJM\ExoBundle\Form;
 
+use Claroline\CoreBundle\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Claroline\CoreBundle\Entity\User;
 
 class InteractionGraphicType extends AbstractType
 {
@@ -29,7 +29,7 @@ class InteractionGraphicType extends AbstractType
                 'question', new QuestionType($this->user, $this->catID)
             )
             ->add(
-                'picture', 'entity', array(
+                'picture', 'entity', [
                     'class' => 'UJMExoBundle:Picture',
                     'property' => 'label',
                   // Request to get the pictures matching to the user_id
@@ -46,18 +46,18 @@ class InteractionGraphicType extends AbstractType
                                 ->setParameter(1, $this->docID);
                         }
                     },
-                )
+                ]
             );
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'UJM\ExoBundle\Entity\InteractionGraphic',
                 'cascade_validation' => true,
                 'translation_domain' => 'ujm_exo',
-            )
+            ]
         );
     }
 

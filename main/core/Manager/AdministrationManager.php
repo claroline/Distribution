@@ -11,10 +11,10 @@
 
 namespace Claroline\CoreBundle\Manager;
 
-use JMS\DiExtraBundle\Annotation as DI;
-use Claroline\CoreBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\Entity\Action\AdditionalAction;
 use Claroline\BundleRecorder\Log\LoggableTrait;
+use Claroline\CoreBundle\Entity\Action\AdditionalAction;
+use Claroline\CoreBundle\Persistence\ObjectManager;
+use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -41,13 +41,13 @@ class AdministrationManager
 
     public function addDefaultAdditionalActions()
     {
-        $actions = array(
-            array('edit', 'fa-pencil', 'edit', 'admin_user_action'),
-            array('show_workspaces', 'fa-book', 'show_workspaces', 'admin_user_action'),
-        );
+        $actions = [
+            ['edit', 'fa-pencil', 'edit', 'admin_user_action'],
+            ['show_workspaces', 'fa-book', 'show_workspaces', 'admin_user_action'],
+        ];
 
         foreach ($actions as $action) {
-            if (count($this->repo->findBy(array('action' => $action[0], 'type' => $action[3]))) === 0) {
+            if (count($this->repo->findBy(['action' => $action[0], 'type' => $action[3]])) === 0) {
                 $this->log("Adding action {$action[0]} {$action[3]}...");
                 $aa = new AdditionalAction();
                 $aa->setAction($action[0]);

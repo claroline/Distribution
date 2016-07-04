@@ -6,9 +6,9 @@
 
 namespace UJM\ExoBundle\Services\classes\Interactions;
 
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("ujm.exo.matching_service")
@@ -43,14 +43,14 @@ class Matching extends Interaction
 
         $score = $this->mark($interMatching, $penalty, $tabRightResponse, $tabResponseIndex);
 
-        $res = array(
+        $res = [
             'score' => $score,
             'penalty' => $penalty,
             'interMatching' => $interMatching,
             'tabRightResponse' => $tabRightResponse,
             'tabResponseIndex' => $tabResponseIndex,
             'response' => $response,
-        );
+        ];
 
         return $res;
     }
@@ -168,7 +168,7 @@ class Matching extends Interaction
     {
         $em = $this->doctrine->getManager();
 
-        $typeMatching = array();
+        $typeMatching = [];
         $types = $em->getRepository('UJMExoBundle:TypeMatching')
             ->findAll();
 
@@ -192,7 +192,7 @@ class Matching extends Interaction
      */
     public function initTabResponseMatching($response, $interMatching)
     {
-        $tabsResponses = array();
+        $tabsResponses = [];
 
         $tabResponseIndex = $this->getTabResponseIndex($response);
         $tabRightResponse = $this->initTabRightResponse($interMatching);
@@ -220,7 +220,7 @@ class Matching extends Interaction
      */
     public function initTabRightResponse($interMatching)
     {
-        $tabRightResponse = array();
+        $tabRightResponse = [];
 
         //array of rights responses indexed by labelId
         foreach ($interMatching->getProposals() as $proposal) {
@@ -263,7 +263,7 @@ class Matching extends Interaction
         } else {
             $tabResponse = explode(';', substr($response, 0, -1));
         }
-        $tabResponseIndex = array();
+        $tabResponseIndex = [];
 
         //array of responses of user indexed by labelId
         foreach ($tabResponse as $rep) {

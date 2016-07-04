@@ -35,13 +35,13 @@ class BadgesType extends AbstractType
         $builder
             ->add('label', 'text')
             ->add('children', 'collection',
-                array(
+                [
                     'type' => 'icap_badge_portfolio_widget_form_badges_badge',
                     'by_reference' => false,
                     'allow_add' => true,
                     'allow_delete' => true,
                     'property_path' => 'badges',
-                )
+                ]
             );
     }
 
@@ -53,11 +53,11 @@ class BadgesType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'Icap\BadgeBundle\Entity\Portfolio\BadgesWidget',
                 'translation_domain' => 'icap_badge',
                 'csrf_protection' => false,
-            )
+            ]
         );
     }
 }

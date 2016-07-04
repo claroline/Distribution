@@ -23,10 +23,10 @@ class CategoryType extends AbstractType
         $builder->add(
             'name',
             'text',
-            array(
+            [
                 'constraints' => new NotBlank(),
                 'label' => 'name',
-            )
+            ]
         );
     }
 
@@ -37,6 +37,6 @@ class CategoryType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform']);
     }
 }

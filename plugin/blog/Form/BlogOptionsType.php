@@ -11,43 +11,43 @@ class BlogOptionsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('authorize_comment', 'checkbox', array(
+            ->add('authorize_comment', 'checkbox', [
                 'required' => false,
-            ))
-            ->add('authorize_anonymous_comment', 'checkbox', array(
+            ])
+            ->add('authorize_anonymous_comment', 'checkbox', [
                 'required' => false,
-            ))
-            ->add('auto_publish_post', 'checkbox', array(
+            ])
+            ->add('auto_publish_post', 'checkbox', [
                 'required' => false,
-            ))
-            ->add('auto_publish_comment', 'checkbox', array(
+            ])
+            ->add('auto_publish_comment', 'checkbox', [
                 'required' => false,
-            ))
-            ->add('display_title', 'checkbox', array(
+            ])
+            ->add('display_title', 'checkbox', [
                 'required' => false,
-            ))
-            ->add('display_post_view_counter', 'checkbox', array(
+            ])
+            ->add('display_post_view_counter', 'checkbox', [
                 'required' => false,
-            ))
-            ->add('post_per_page', 'choice', array(
-                'choices' => array('5' => 5, '10' => 10, '20' => 20),
+            ])
+            ->add('post_per_page', 'choice', [
+                'choices' => ['5' => 5, '10' => 10, '20' => 20],
                 'required' => false,
-                'theme_options' => array('control_width' => 'col-md-2'),
-            ))
-            ->add('tag_cloud', 'choice', array(
-                'choices' => array('0' => 'classic', '1' => '3D', '2' => 'advanced'),
+                'theme_options' => ['control_width' => 'col-md-2'],
+            ])
+            ->add('tag_cloud', 'choice', [
+                'choices' => ['0' => 'classic', '1' => '3D', '2' => 'advanced'],
                 'required' => false,
                 'expanded' => true,
                 'multiple' => false,
                 'empty_value' => false,
-            ))
-            ->add('tag_top_mode', 'checkbox', array(
+            ])
+            ->add('tag_top_mode', 'checkbox', [
                 'required' => false,
-            ))
+            ])
             ->add('max_tag', 'integer')
-            ->add('listWidgetBlog', 'listWidgetBlog', array(
+            ->add('listWidgetBlog', 'listWidgetBlog', [
                 'label' => 'Trier les rubriques',
-            ))
+            ])
         ;
     }
 
@@ -58,11 +58,11 @@ class BlogOptionsType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
            'translation_domain' => 'icap_blog',
             'data_class' => 'Icap\BlogBundle\Entity\BlogOptions',
             'csrf_protection' => true,
             'intention' => 'configure_blog',
-        ));
+        ]);
     }
 }

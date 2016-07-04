@@ -22,11 +22,11 @@ class ResourceCollection
     private $errors;
     private $attributes;
 
-    public function __construct(array $resources = array(), $attributes = array())
+    public function __construct(array $resources = [], $attributes = [])
     {
         $this->resources = $resources;
         $this->attributes = $attributes;
-        $this->errors = array();
+        $this->errors = [];
     }
 
     public function addResource(ResourceNode $resource)

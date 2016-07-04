@@ -17,8 +17,8 @@ use Mockery\Mock;
 abstract class MockeryTestCase extends \PHPUnit_Framework_TestCase
 {
     private static $isMockeryInitialized = false;
-    private static $nonCloneableClasses = array();
-    private static $mocks = array();
+    private static $nonCloneableClasses = [];
+    private static $mocks = [];
 
     /**
      * {@inheritdoc}

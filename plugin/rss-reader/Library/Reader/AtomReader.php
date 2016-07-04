@@ -11,10 +11,10 @@
 
 namespace Claroline\RssReaderBundle\Library\Reader;
 
-use SimpleXMLElement;
-use Claroline\RssReaderBundle\Library\FeedReaderInterface;
 use Claroline\RssReaderBundle\Library\FeedInfo;
 use Claroline\RssReaderBundle\Library\FeedItem;
+use Claroline\RssReaderBundle\Library\FeedReaderInterface;
+use SimpleXMLElement;
 
 /**
  * Reader for atom feeds.
@@ -68,7 +68,7 @@ class AtomReader implements FeedReaderInterface
     {
         $itemCount = count($this->feed->entry);
         $max = is_integer($max) && $max < $itemCount ? $max : $itemCount;
-        $items = array();
+        $items = [];
 
         for ($i = 0; $i < $max; ++$i) {
             $item = new FeedItem();

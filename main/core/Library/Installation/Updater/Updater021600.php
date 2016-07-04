@@ -37,7 +37,7 @@ class Updater021600 extends Updater
     {
         $this->log('Updating tools for anonymous...');
 
-        foreach (array('home', 'resource_manager', 'agenda') as $toolName) {
+        foreach (['home', 'resource_manager', 'agenda'] as $toolName) {
             $tool = $this->em->getRepository('ClarolineCoreBundle:Tool\Tool')->findOneByName($toolName);
             $tool->setIsAnonymousExcluded(false);
         }

@@ -17,7 +17,7 @@ class DropsDownloadBetweenDatesType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $defaultDateTimeOptions = array(
+        $defaultDateTimeOptions = [
             'required' => false,
             'read_only' => false,
             'component' => true,
@@ -25,7 +25,7 @@ class DropsDownloadBetweenDatesType extends AbstractType
             'language' => $options['language'],
             'format' => $options['date_format'],
             'mapped' => false,
-        );
+        ];
 
         $builder
             ->add('drop_period_begin_date', 'datepicker', $defaultDateTimeOptions)
@@ -40,11 +40,11 @@ class DropsDownloadBetweenDatesType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'language' => 'en',
                 'translation_domain' => 'icap_dropzone',
                 'date_format' => DateType::HTML5_FORMAT,
-            )
+            ]
         );
     }
 }

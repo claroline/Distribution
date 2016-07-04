@@ -3,9 +3,9 @@
 namespace UJM\ExoBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Response;
 use UJM\ExoBundle\Entity\Category;
 use UJM\ExoBundle\Form\CategoryType;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Category controller.
@@ -24,10 +24,10 @@ class CategoryController extends Controller
         $form = $this->createForm(new CategoryType(), $entity);
 
         return $this->render(
-            'UJMExoBundle:Category:new.html.twig', array(
+            'UJMExoBundle:Category:new.html.twig', [
             'entity' => $entity,
             'form' => $form->createView(),
-            )
+            ]
         );
     }
 
@@ -45,11 +45,11 @@ class CategoryController extends Controller
         $form = $this->createForm(new CategoryType(), $entity);
 
         return $this->render(
-            'UJMExoBundle:Category:new_pop.html.twig', array(
+            'UJMExoBundle:Category:new_pop.html.twig', [
             'entity' => $entity,
             'form' => $form->createView(),
             'edit' => $edit,
-            )
+            ]
         );
     }
 

@@ -15,19 +15,19 @@ class BadgesBadgeType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', 'text', array(
+            ->add('name', 'text', [
                 'required' => false,
                 'mapped' => false,
-            ))
-            ->add('img', 'text', array(
+            ])
+            ->add('img', 'text', [
                 'required' => false,
                 'mapped' => false,
-            ))
-            ->add('badge', 'entity', array(
+            ])
+            ->add('badge', 'entity', [
                 'class' => 'IcapBadgeBundle:Badge',
                 'property' => 'name',
                 'required' => false,
-            ));
+            ]);
     }
 
     public function getName()
@@ -38,11 +38,11 @@ class BadgesBadgeType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'Icap\BadgeBundle\Entity\Portfolio\BadgesWidgetBadge',
                 'translation_domain' => 'icap_badge',
                 'csrf_protection' => false,
-            )
+            ]
         );
     }
 }

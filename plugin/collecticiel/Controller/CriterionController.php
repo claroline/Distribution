@@ -14,9 +14,9 @@ use Innova\CollecticielBundle\Event\Log\LogCriterionDeleteEvent;
 use Innova\CollecticielBundle\Event\Log\LogCriterionUpdateEvent;
 use Innova\CollecticielBundle\Form\CriterionDeleteType;
 use Innova\CollecticielBundle\Form\CriterionType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class CriterionController extends DropzoneBaseController
 {
@@ -51,18 +51,18 @@ class CriterionController extends DropzoneBaseController
         if ($this->getRequest()->isXMLHttpRequest()) {
             return $this->render(
                 'InnovaCollecticielBundle:Criterion:editAddCriterionModal.html.twig',
-                array(
+                [
                     'workspace' => $dropzone->getResourceNode()->getWorkspace(),
                     '_resource' => $dropzone,
                     'dropzone' => $dropzone,
                     'form' => $form->createView(),
                     'criterion' => $criterion,
                     'page' => $page,
-                )
+                ]
             );
         }
 
-        return array(
+        return [
             'workspace' => $dropzone->getResourceNode()->getWorkspace(),
             '_resource' => $dropzone,
             'dropzone' => $dropzone,
@@ -70,7 +70,7 @@ class CriterionController extends DropzoneBaseController
             'criterion' => $criterion,
             'page' => $page,
             'adminInnova' => $adminInnova,
-        );
+        ];
     }
 
     /**
@@ -133,22 +133,22 @@ class CriterionController extends DropzoneBaseController
             return $this->redirect(
                 $this->generateUrl(
                     'innova_collecticiel_edit_criteria_paginated',
-                    array(
+                    [
                         'resourceId' => $dropzone->getId(),
                         'page' => $page,
-                    )
+                    ]
                 )
             );
         }
 
-        return array(
+        return [
             'workspace' => $dropzone->getResourceNode()->getWorkspace(),
             '_resource' => $dropzone,
             'dropzone' => $dropzone,
             'form' => $form->createView(),
             'criterion' => $criterion,
             'page' => $page,
-        );
+        ];
     }
 
     /**
@@ -177,7 +177,7 @@ class CriterionController extends DropzoneBaseController
         if ($this->getRequest()->isXMLHttpRequest()) {
             return $this->render(
                 'InnovaCollecticielBundle:Criterion:editDeleteCriterionModal.html.twig',
-                array(
+                [
                     'workspace' => $dropzone->getResourceNode()->getWorkspace(),
                     '_resource' => $dropzone,
                     'dropzone' => $dropzone,
@@ -186,11 +186,11 @@ class CriterionController extends DropzoneBaseController
                     'page' => $page,
                     'number' => $number,
                     'nbCorrection' => $nbCorrection,
-                )
+                ]
             );
         }
 
-        return array(
+        return [
             'workspace' => $dropzone->getResourceNode()->getWorkspace(),
             '_resource' => $dropzone,
             'dropzone' => $dropzone,
@@ -199,7 +199,7 @@ class CriterionController extends DropzoneBaseController
             'page' => $page,
             'number' => $number,
             'nbCorrection' => $nbCorrection,
-        );
+        ];
     }
 
     /**
@@ -234,28 +234,28 @@ class CriterionController extends DropzoneBaseController
             if ($dropzone->hasCriteria() === false) {
                 $this->getRequest()->getSession()->getFlashBag()->add(
                     'warning',
-                    $this->get('translator')->trans('Warning your peer review offers no criteria on which to base correct copies', array(), 'innova_collecticiel')
+                    $this->get('translator')->trans('Warning your peer review offers no criteria on which to base correct copies', [], 'innova_collecticiel')
                 );
             }
 
             return $this->redirect(
                 $this->generateUrl(
                     'innova_collecticiel_edit_criteria_paginated',
-                    array(
+                    [
                         'resourceId' => $dropzone->getId(),
                         'page' => $page,
-                    )
+                    ]
                 )
             );
         }
 
-        return array(
+        return [
             'workspace' => $dropzone->getResourceNode()->getWorkspace(),
             '_resource' => $dropzone,
             'dropzone' => $dropzone,
             'criterion' => $criterion,
             'form' => $form->createView(),
             'page' => $page,
-        );
+        ];
     }
 }

@@ -12,15 +12,15 @@
 namespace Claroline\CoreBundle\Library\Security\Provider;
 
 use FOS\OAuthServerBundle\Security\Authentication\Token\OAuthToken;
+use OAuth2\OAuth2;
+use OAuth2\OAuth2AuthenticateException;
+use OAuth2\OAuth2ServerException;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\AccountStatusException;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
-use OAuth2\OAuth2;
-use OAuth2\OAuth2ServerException;
-use OAuth2\OAuth2AuthenticateException;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 /**
  * OAuthProvider class.
@@ -87,7 +87,7 @@ class OAuthProvider implements AuthenticationProviderInterface
                     $token->setUser($user);
                 }
 
-                $roles = (null !== $user) ? $user->getRoles() : array();
+                $roles = (null !== $user) ? $user->getRoles() : [];
 
                 /*
                  * This is the only modification from the base class.

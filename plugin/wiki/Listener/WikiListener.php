@@ -2,15 +2,15 @@
 
 namespace Icap\WikiBundle\Listener;
 
+use Claroline\CoreBundle\Event\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\OpenResourceEvent;
-use Claroline\CoreBundle\Event\CopyResourceEvent;
-use Symfony\Component\DependencyInjection\ContainerAware;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Icap\WikiBundle\Entity\Wiki;
 use Icap\WikiBundle\Form\WikiType;
+use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class WikiListener extends ContainerAware
 {
@@ -19,10 +19,10 @@ class WikiListener extends ContainerAware
         $form = $this->container->get('form.factory')->create(new WikiType(), new Wiki());
         $content = $this->container->get('templating')->render(
             'ClarolineCoreBundle:Resource:createForm.html.twig',
-            array(
+            [
                 'form' => $form->createView(),
                 'resourceType' => 'icap_wiki',
-            )
+            ]
         );
 
         $event->setResponseContent($content);
@@ -37,14 +37,14 @@ class WikiListener extends ContainerAware
 
         if ($form->isValid()) {
             $wiki = $form->getData();
-            $event->setResources(array($wiki));
+            $event->setResources([$wiki]);
         } else {
             $content = $this->container->get('templating')->render(
                 'ClarolineCoreBundle:Resource:createForm.html.twig',
-                array(
+                [
                     'form' => $form->createView(),
                     'resourceType' => 'icap_wiki',
-                )
+                ]
             );
             $event->setErrorFormContent($content);
         }
@@ -57,7 +57,7 @@ class WikiListener extends ContainerAware
             ->get('router')
             ->generate(
                 'icap_wiki_view',
-                array('wikiId' => $event->getResource()->getId())
+                ['wikiId' => $event->getResource()->getId()]
             );
         $event->setResponse(new RedirectResponse($route));
         $event->stopPropagation();

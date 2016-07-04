@@ -3,9 +3,9 @@
 namespace Icap\BadgeBundle\Form\Type\Tool\Workspace;
 
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
-use Icap\BadgeBundle\Manager\BadgeManager;
 use Claroline\CoreBundle\Manager\EventManager;
 use Icap\BadgeBundle\Entity\BadgeRule;
+use Icap\BadgeBundle\Manager\BadgeManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -68,27 +68,27 @@ class BadgeRuleType extends AbstractType
             ->add(
                 'action',
                 'twolevelselect',
-                array(
+                [
                     'translation_domain' => 'log',
-                    'attr' => array('class' => 'input-sm'),
+                    'attr' => ['class' => 'input-sm'],
                     'choices' => $actionChoices,
                     'choices_as_values' => true,
-                )
+                ]
             )
             ->add('isUserReceiver', 'checkbox')
-            ->add('occurrence', 'integer', array('attr' => array('class' => 'input-sm')))
+            ->add('occurrence', 'integer', ['attr' => ['class' => 'input-sm']])
             ->add('result', 'text')
-            ->add('resource', 'resourcePicker', array(
+            ->add('resource', 'resourcePicker', [
                     'required' => false,
-                )
+                ]
             )
             ->add(
                 'resultComparison',
                 'choice',
-                array('choices' => BadgeRule::getResultComparisonTypes())
+                ['choices' => BadgeRule::getResultComparisonTypes()]
             );
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'onPreSetData'));
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreSetData']);
     }
 
     public function onPreSetData(FormEvent $event)
@@ -97,18 +97,18 @@ class BadgeRuleType extends AbstractType
         $badge = $event->getData();
         $form = $event->getForm();
 
-        $blacklist = array();
+        $blacklist = [];
 
         if (null !== $this->badgeId) {
             array_push($blacklist, $this->badgeId);
         }
 
         $form
-            ->add('badge', 'badgepicker', array(
+            ->add('badge', 'badgepicker', [
                 'mode' => BadgeManager::BADGE_PICKER_MODE_WORKSPACE,
                 'workspace' => $this->workspaceId,
                 'blacklist' => $blacklist,
-            )
+            ]
         );
     }
 
@@ -144,11 +144,11 @@ class BadgeRuleType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'Icap\BadgeBundle\Entity\BadgeRule',
                 'translation_domain' => 'icap_badge',
                 'language' => 'en',
-            )
+            ]
         );
     }
 }

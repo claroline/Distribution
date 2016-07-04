@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Rule\Entity;
 
-use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Annotation\Expose;
@@ -243,11 +243,11 @@ abstract class Rule
      */
     public static function getResultComparisonTypes()
     {
-        return array(self::RESULT_EQUAL,
+        return [self::RESULT_EQUAL,
                      self::RESULT_INFERIOR,
                      self::RESULT_INFERIOR_EQUAL,
                      self::RESULT_SUPERIOR,
-                     self::RESULT_SUPERIOR_EQUAL, );
+                     self::RESULT_SUPERIOR_EQUAL, ];
     }
 
     /**
@@ -339,8 +339,8 @@ abstract class Rule
      */
     public static function getUserTypes()
     {
-        return array(self::DOER_USER,
-                     self::RECEIVER_USER, );
+        return [self::DOER_USER,
+                     self::RECEIVER_USER, ];
     }
 
     /**

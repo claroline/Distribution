@@ -25,12 +25,12 @@ class UserRepositoryTest extends RepositoryTestCase
         self::createWorkspace('ws_2');
         self::createRole('ROLE_1', self::get('ws_1'));
         self::createRole('ROLE_2', self::get('ws_2'));
-        self::createUser('john', array(self::get('ROLE_1')));
+        self::createUser('john', [self::get('ROLE_1')]);
         self::createUser('jane');
         self::createUser('bill');
-        self::createUser('bob', array(self::get('ROLE_1'), self::get('ROLE_2')));
-        self::createGroup('group_1', array(self::get('jane')), array(self::get('ROLE_1')));
-        self::createGroup('group_2', array(self::get('jane'), self::get('bill'), self::get('bob')));
+        self::createUser('bob', [self::get('ROLE_1'), self::get('ROLE_2')]);
+        self::createGroup('group_1', [self::get('jane')], [self::get('ROLE_1')]);
+        self::createGroup('group_2', [self::get('jane'), self::get('bill'), self::get('bob')]);
     }
 
     /**
@@ -108,12 +108,12 @@ class UserRepositoryTest extends RepositoryTestCase
      */
     public function testFindByUsernamesThrowsAnExceptionIfAUserIsMissing()
     {
-        $users = self::$repo->findByUsernames(array('johnUsername', 'unknown'));
+        $users = self::$repo->findByUsernames(['johnUsername', 'unknown']);
     }
 
     public function testFindByUsernames()
     {
-        $users = self::$repo->findByUsernames(array('johnUsername', 'janeUsername'));
+        $users = self::$repo->findByUsernames(['johnUsername', 'janeUsername']);
         $this->assertEquals(2, count($users));
     }
 
@@ -127,7 +127,7 @@ class UserRepositoryTest extends RepositoryTestCase
         $users = self::$repo->findUsersEnrolledInMostWorkspaces(10);
         $this->assertEquals(3, count($users));
         $this->assertEquals('bobUsername', $users[0]['username']);
-        $lastUsers = array($users[1]['username'], $users[2]['username']);
+        $lastUsers = [$users[1]['username'], $users[2]['username']];
         $this->assertContains('janeUsername', $lastUsers);
         $this->assertContains('johnUsername', $lastUsers);
         $this->assertEquals(1, $users[1]['total']);
@@ -141,9 +141,9 @@ class UserRepositoryTest extends RepositoryTestCase
 
     public function testFindByRoles()
     {
-        $users = self::$repo->findByRoles(array(self::get('ROLE_1')));
+        $users = self::$repo->findByRoles([self::get('ROLE_1')]);
         $this->assertEquals(2, count($users));
-        $users = self::$repo->findByRoles(array(self::get('ROLE_2')));
+        $users = self::$repo->findByRoles([self::get('ROLE_2')]);
         $this->assertEquals(1, count($users));
     }
 

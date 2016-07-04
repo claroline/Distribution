@@ -15,25 +15,25 @@ class BadgeUsageConfigType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('number_last_awarded_badge', 'integer', array(
-                'theme_options' => array(
+            ->add('number_last_awarded_badge', 'integer', [
+                'theme_options' => [
                     'label_width' => 'col-md-7',
                     'control_width' => 'col-md-2',
-                ),
-            ))
-            ->add('number_most_awarded_badge', 'integer', array(
-                'theme_options' => array(
+                ],
+            ])
+            ->add('number_most_awarded_badge', 'integer', [
+                'theme_options' => [
                     'label_width' => 'col-md-7',
                     'control_width' => 'col-md-2',
-                ),
-            ))
-            ->add('simple_view', 'checkbox', array(
+                ],
+            ])
+            ->add('simple_view', 'checkbox', [
                 'required' => false,
-                'theme_options' => array(
+                'theme_options' => [
                     'label_width' => 'col-md-7',
                     'control_width' => 'col-md-2',
-                ),
-            ));
+                ],
+            ]);
     }
 
     public function getName()
@@ -44,11 +44,11 @@ class BadgeUsageConfigType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'Icap\BadgeBundle\Entity\Widget\BadgeUsageConfig',
                 'translation_domain' => 'icap_badge',
                 'language' => 'en',
-            )
+            ]
         );
     }
 }

@@ -18,13 +18,13 @@ class LogBlogConfigureEvent extends AbstractLogResourceEvent
     {
         $blog = $blogOptions->getBlog();
 
-        $details = array(
-            'blog' => array(
+        $details = [
+            'blog' => [
                 'blog' => $blog->getId(),
                 'options' => json_encode($blogOptions),
                 'changeSet' => $changeSet,
-            ),
-        );
+            ],
+        ];
 
         parent::__construct($blog->getResourceNode(), $details);
     }
@@ -34,6 +34,6 @@ class LogBlogConfigureEvent extends AbstractLogResourceEvent
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_WORKSPACE);
+        return [self::DISPLAYED_WORKSPACE];
     }
 }

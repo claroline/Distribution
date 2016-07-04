@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Listener;
 
-use Gedmo\Translatable\TranslatableListener;
 use Doctrine\Common\EventArgs;
+use Gedmo\Translatable\TranslatableListener;
 
 class LocaleListener extends TranslatableListener
 {

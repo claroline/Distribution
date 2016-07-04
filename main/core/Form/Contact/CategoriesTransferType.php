@@ -33,7 +33,7 @@ class CategoriesTransferType extends AbstractType
         $builder->add(
             'categories',
             'entity',
-            array(
+            [
                 'label' => 'categories',
                 'class' => 'ClarolineCoreBundle:Contact\Category',
                 'choice_translation_domain' => true,
@@ -48,7 +48,7 @@ class CategoriesTransferType extends AbstractType
                 'expanded' => true,
                 'multiple' => true,
                 'required' => false,
-            )
+            ]
         );
     }
 
@@ -59,6 +59,6 @@ class CategoriesTransferType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform']);
     }
 }

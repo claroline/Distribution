@@ -2,9 +2,9 @@
 
 namespace Claroline\MessageBundle\Tests\API;
 
-use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
-use Claroline\CoreBundle\Library\Testing\Persister;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Library\Testing\Persister;
+use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 
 class MessageControllerTest extends TransactionalTestCase
 {

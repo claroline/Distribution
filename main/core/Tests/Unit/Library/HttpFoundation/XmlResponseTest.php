@@ -26,7 +26,7 @@ class XmlResponseTest extends MockeryTestCase
 
     public function testConstruct()
     {
-        $response = new XmlResponse(array('key' => 'value'));
+        $response = new XmlResponse(['key' => 'value']);
         $this->assertEquals('text/xml', $response->headers->get('content-type'));
         $this->assertContains('<response><key>value</key></response>', $response->getContent());
     }

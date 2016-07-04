@@ -20,9 +20,9 @@ use Innova\CollecticielBundle\Event\Log\LogDropEndEvent;
 use Innova\CollecticielBundle\Event\Log\LogDropEvaluateEvent;
 use Innova\CollecticielBundle\Event\Log\LogDropStartEvent;
 use Innova\CollecticielBundle\Event\Log\LogDropzoneConfigureEvent;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("icap.listener.dropzone.badge_listener")
@@ -86,7 +86,7 @@ class BadgeListener
             case LogDropStartEvent::ACTION:
             case LogDropzoneConfigureEvent::ACTION:
                 $logDetails = $event->getLog()->getDetails();
-                $parameters = array('resourceId' => $logDetails['dropzone']['id']);
+                $parameters = ['resourceId' => $logDetails['dropzone']['id']];
                 $url = $this->router->generate('innova_collecticiel_open', $parameters, UrlGeneratorInterface::ABSOLUTE_PATH);
 
                 /** @var Dropzone $dropzone */

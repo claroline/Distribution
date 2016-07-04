@@ -2,13 +2,13 @@
 
 namespace Innova\CollecticielBundle\Listener;
 
-use Claroline\CoreBundle\Event\CustomActionResourceEvent;
-use Claroline\CoreBundle\Event\PluginOptionsEvent;
+use Claroline\CoreBundle\Event\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
+use Claroline\CoreBundle\Event\CustomActionResourceEvent;
 use Claroline\CoreBundle\Event\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\OpenResourceEvent;
-use Claroline\CoreBundle\Event\CopyResourceEvent;
+use Claroline\CoreBundle\Event\PluginOptionsEvent;
 use Claroline\CoreBundle\Library\Resource\ResourceCollection;
 use Innova\CollecticielBundle\Entity\Criterion;
 use Innova\CollecticielBundle\Entity\Dropzone;
@@ -24,10 +24,10 @@ class DropzoneListener extends ContainerAware
 
         $content = $this->container->get('templating')->render(
             'ClarolineCoreBundle:Resource:createForm.html.twig',
-            array(
+            [
                 'form' => $form->createView(),
                 'resourceType' => 'innova_collecticiel',
-            )
+            ]
         );
 
         $event->setResponseContent($content);
@@ -42,14 +42,14 @@ class DropzoneListener extends ContainerAware
 
         if ($form->isValid()) {
             $dropzone = $form->getData();
-            $event->setResources(array($dropzone));
+            $event->setResources([$dropzone]);
         } else {
             $content = $this->container->get('templating')->render(
                 'ClarolineCoreBundle:Resource:createForm.html.twig',
-                array(
+                [
                     'form' => $form->createView(),
                     'resourceType' => 'innova_collecticiel',
-                )
+                ]
             );
             $event->setErrorFormContent($content);
         }
@@ -63,13 +63,13 @@ class DropzoneListener extends ContainerAware
         // suite demande JJQ, voir son document de référence d'août 2015
         // il faut venir sur l'onglet "Mon espace collecticiel" et non plus sur "Drop"
         // Point 5 du document
-        $collection = new ResourceCollection(array($event->getResource()->getResourceNode()));
+        $collection = new ResourceCollection([$event->getResource()->getResourceNode()]);
         if (false === $this->container->get('security.authorization_checker')->isGranted('EDIT', $collection)) {
             $route = $this->container
                 ->get('router')
                 ->generate(
                     'innova_collecticiel_drop',
-                    array('resourceId' => $event->getResource()->getId())
+                    ['resourceId' => $event->getResource()->getId()]
                 );
         } else {
             // Modification ERV (août 2015) InnovaERV
@@ -90,14 +90,14 @@ class DropzoneListener extends ContainerAware
                     ->get('router')
                     ->generate(
                         'innova_collecticiel_drops_awaiting',
-                        array('resourceId' => $event->getResource()->getId())
+                        ['resourceId' => $event->getResource()->getId()]
                 );
             } else {
                 $route = $this->container
                     ->get('router')
                     ->generate(
                         'innova_collecticiel_edit_common',
-                        array('resourceId' => $event->getResource()->getId())
+                        ['resourceId' => $event->getResource()->getId()]
                 );
             }
         }
@@ -122,14 +122,14 @@ class DropzoneListener extends ContainerAware
                 ->get('router')
                 ->generate(
                     'innova_collecticiel_drop',
-                    array('resourceId' => $event->getResource()->getId())
+                    ['resourceId' => $event->getResource()->getId()]
                 );
         } else {
             $route = $this->container
                 ->get('router')
                 ->generate(
                     'innova_collecticiel_shared_spaces',
-                    array('resourceId' => $event->getResource()->getId())
+                    ['resourceId' => $event->getResource()->getId()]
                 );
         }
 
@@ -143,7 +143,7 @@ class DropzoneListener extends ContainerAware
             ->get('router')
             ->generate(
                 'innova_collecticiel_edit',
-                array('resourceId' => $event->getResource()->getId())
+                ['resourceId' => $event->getResource()->getId()]
             );
         $event->setResponse(new RedirectResponse($route));
         $event->stopPropagation();
@@ -155,7 +155,7 @@ class DropzoneListener extends ContainerAware
             ->get('router')
             ->generate(
                 'innova_collecticiel_drops_awaiting',
-                array('resourceId' => $event->getResource()->getId())
+                ['resourceId' => $event->getResource()->getId()]
         );
 
         $event->setResponse(new RedirectResponse($route));

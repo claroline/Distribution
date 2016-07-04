@@ -22,66 +22,66 @@ class ActivityParametersType extends AbstractType
         $builder->add(
             'withTutor',
             'choice',
-            array(
-                'choices' => array(0 => 'no', 1 => 'yes'),
+            [
+                'choices' => [0 => 'no', 1 => 'yes'],
                 'required' => false,
                 'label' => 'with_tutor',
-            )
+            ]
         );
         $builder->add(
             'max_duration',
             'integer',
-            array(
-                'attr' => array('min' => 1),
+            [
+                'attr' => ['min' => 1],
                 'required' => false,
                 'label' => 'max_second_duration',
-            )
+            ]
         );
         $builder->add(
             'who',
             'choice',
-            array(
-                'choices' => array(
+            [
+                'choices' => [
                     'individual' => 'individual',
                     'collaborative' => 'collaborative',
                     'mixed' => 'mixed',
-                ),
+                ],
                 'required' => false,
                 'label' => 'method_of_work',
-            )
+            ]
         );
         $builder->add(
             'where',
             'choice',
-            array(
-                'choices' => array(
+            [
+                'choices' => [
                     'anywhere' => 'anywhere',
                     'classroom' => 'classroom',
-                ),
+                ],
                 'required' => false,
                 'label' => 'learning_place',
-            )
+            ]
         );
         $builder->add(
             'max_attempts',
             'integer',
-            array(
-                'attr' => array('min' => 1),
+            [
+                'attr' => ['min' => 1],
                 'required' => false,
                 'label' => 'max_attempts',
-            )
+            ]
         );
         $builder->add(
             'evaluation_type',
             'choice',
-            array(
-                'choices' => array(
+            [
+                'choices' => [
                     'manual' => 'evaluation-manual',
                     'automatic' => 'evaluation-automatic',
-                ),
+                ],
                 'required' => true,
                 'label' => 'evaluation_type',
-            )
+            ]
         );
     }
 
@@ -93,7 +93,7 @@ class ActivityParametersType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(
-            array('translation_domain' => 'platform')
+            ['translation_domain' => 'platform']
         );
     }
 }

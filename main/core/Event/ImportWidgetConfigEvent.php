@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Event;
 
-use Symfony\Component\EventDispatcher\Event;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Symfony\Component\EventDispatcher\Event;
 
 class ImportWidgetConfigEvent extends Event
 {

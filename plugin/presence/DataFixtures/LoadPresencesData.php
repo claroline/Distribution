@@ -11,12 +11,12 @@
 
 namespace Claroline\PresenceBundle\DataFixtures;
 
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Doctrine\Common\Persistence\ObjectManager;
 use Claroline\CoreBundle\Library\Fixtures\LoggableFixture;
+use Doctrine\Common\Persistence\ObjectManager;
 use FormaLibre\PresenceBundle\Entity\SchoolYear;
 use FormaLibre\PresenceBundle\Entity\Status;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class LoadPresencesData extends LoggableFixture implements ContainerAwareInterface
 {

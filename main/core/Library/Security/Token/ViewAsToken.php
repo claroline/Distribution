@@ -15,7 +15,7 @@ use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
 class ViewAsToken extends AbstractToken
 {
-    public function __construct(array $roles = array())
+    public function __construct(array $roles = [])
     {
         parent::__construct($roles);
 

@@ -11,15 +11,15 @@
 
 namespace Claroline\CoreBundle\Repository;
 
+use Claroline\CoreBundle\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Claroline\CoreBundle\Entity\User;
 
 class FacetRepository extends EntityRepository
 {
     public function findVisibleFacets(TokenInterface $token, $max = null)
     {
-        $roleNames = array();
+        $roleNames = [];
 
         foreach ($token->getRoles() as $role) {
             $roleNames[] = $role->getRole();

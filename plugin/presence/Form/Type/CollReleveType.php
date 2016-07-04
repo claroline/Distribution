@@ -10,19 +10,19 @@ class CollReleveType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('releves', 'collection', array('type' => new PresenceType(),
+        $builder->add('releves', 'collection', ['type' => new PresenceType(),
                                                          'allow_add' => true,
-                                                         'allow_delete' => true, ))
-                    ->add('Valider', 'submit', array(
+                                                         'allow_delete' => true, ])
+                    ->add('Valider', 'submit', [
                         'label' => 'Valider les présences',
-                    ));
+                    ]);
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => 'FormaLibre\PresenceBundle\Entity\Releves',
-            ));
+            ]);
     }
 
     public function getName()

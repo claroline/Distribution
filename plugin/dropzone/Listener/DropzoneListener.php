@@ -2,13 +2,13 @@
 
 namespace Icap\DropzoneBundle\Listener;
 
-use Claroline\CoreBundle\Event\CustomActionResourceEvent;
-use Claroline\CoreBundle\Event\PluginOptionsEvent;
+use Claroline\CoreBundle\Event\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
+use Claroline\CoreBundle\Event\CustomActionResourceEvent;
 use Claroline\CoreBundle\Event\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\OpenResourceEvent;
-use Claroline\CoreBundle\Event\CopyResourceEvent;
+use Claroline\CoreBundle\Event\PluginOptionsEvent;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Icap\DropzoneBundle\Entity\Criterion;
 use Icap\DropzoneBundle\Entity\Dropzone;
@@ -24,10 +24,10 @@ class DropzoneListener extends ContainerAware
         $form = $this->container->get('form.factory')->create(new DropzoneType(), new Dropzone());
         $content = $this->container->get('templating')->render(
             'ClarolineCoreBundle:Resource:createForm.html.twig',
-            array(
+            [
                 'form' => $form->createView(),
                 'resourceType' => 'icap_dropzone',
-            )
+            ]
         );
 
         $event->setResponseContent($content);
@@ -42,14 +42,14 @@ class DropzoneListener extends ContainerAware
 
         if ($form->isValid()) {
             $dropzone = $form->getData();
-            $event->setResources(array($dropzone));
+            $event->setResources([$dropzone]);
         } else {
             $content = $this->container->get('templating')->render(
                 'ClarolineCoreBundle:Resource:createForm.html.twig',
-                array(
+                [
                     'form' => $form->createView(),
                     'resourceType' => 'icap_dropzone',
-                )
+                ]
             );
             $event->setErrorFormContent($content);
         }
@@ -58,20 +58,20 @@ class DropzoneListener extends ContainerAware
 
     public function onOpen(OpenResourceEvent $event)
     {
-        $collection = new ResourceCollection(array($event->getResource()->getResourceNode()));
+        $collection = new ResourceCollection([$event->getResource()->getResourceNode()]);
         if (false === $this->container->get('security.authorization_checker')->isGranted('EDIT', $collection)) {
             $route = $this->container
                 ->get('router')
                 ->generate(
                     'icap_dropzone_open',
-                    array('resourceId' => $event->getResource()->getId())
+                    ['resourceId' => $event->getResource()->getId()]
                 );
         } else {
             $route = $this->container
                 ->get('router')
                 ->generate(
                     'icap_dropzone_edit',
-                    array('resourceId' => $event->getResource()->getId())
+                    ['resourceId' => $event->getResource()->getId()]
                 );
         }
 
@@ -85,7 +85,7 @@ class DropzoneListener extends ContainerAware
             ->get('router')
             ->generate(
                 'icap_dropzone_open',
-                array('resourceId' => $event->getResource()->getId())
+                ['resourceId' => $event->getResource()->getId()]
             );
         $event->setResponse(new RedirectResponse($route));
         $event->stopPropagation();
@@ -97,7 +97,7 @@ class DropzoneListener extends ContainerAware
             ->get('router')
             ->generate(
                 'icap_dropzone_edit',
-                array('resourceId' => $event->getResource()->getId())
+                ['resourceId' => $event->getResource()->getId()]
             );
         $event->setResponse(new RedirectResponse($route));
         $event->stopPropagation();
@@ -109,7 +109,7 @@ class DropzoneListener extends ContainerAware
             ->get('router')
             ->generate(
                 'icap_dropzone_drops',
-                array('resourceId' => $event->getResource()->getId())
+                ['resourceId' => $event->getResource()->getId()]
             );
         $event->setResponse(new RedirectResponse($route));
         $event->stopPropagation();

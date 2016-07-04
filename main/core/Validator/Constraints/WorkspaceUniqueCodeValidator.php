@@ -11,10 +11,10 @@
 
 namespace Claroline\CoreBundle\Validator\Constraints;
 
-use Symfony\Component\Validator\Constraint;
-use Symfony\Component\Validator\ConstraintValidator;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\ConstraintValidator;
 
 /**
  * @DI\Validator("workspace_unique_code_validator")
@@ -38,10 +38,10 @@ class WorkspaceUniqueCodeValidator extends ConstraintValidator
         $code = trim($value);
         $workspace = $this->em
                         ->getRepository('ClarolineCoreBundle:Workspace\Workspace')
-                        ->findOneBy(array('code' => $code));
+                        ->findOneBy(['code' => $code]);
 
         if ($workspace) {
-            $this->context->addViolation($constraint->message, array('{{ code }}' => $code));
+            $this->context->addViolation($constraint->message, ['{{ code }}' => $code]);
         }
     }
 }

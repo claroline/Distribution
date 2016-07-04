@@ -20,12 +20,12 @@
 
 namespace Claroline\CoreBundle\Twig;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\PropertyAccess\PropertyPath;
-use Symfony\Component\PropertyAccess\PropertyAccess;
-use Pagerfanta\PagerfantaInterface;
-use WhiteOctober\PagerfantaBundle\Twig\PagerfantaExtension as P;
 use JMS\DiExtraBundle\Annotation as DI;
+use Pagerfanta\PagerfantaInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\PropertyAccess\PropertyPath;
+use WhiteOctober\PagerfantaBundle\Twig\PagerfantaExtension as P;
 
 /**
  * @DI\Service(parent="twig.extension.pagerfanta")
@@ -52,15 +52,15 @@ class PagerfantaExtension extends P
      *
      * @return string The pagerfanta rendered.
      */
-    public function renderPagerfanta(PagerfantaInterface $pagerfanta, $viewName = null, array $options = array())
+    public function renderPagerfanta(PagerfantaInterface $pagerfanta, $viewName = null, array $options = [])
     {
         $options = array_replace(
-            array(
+            [
                 'routeName' => null,
-                'routeParams' => array(),
+                'routeParams' => [],
                 'pageParameter' => '[page]',
                 'queryString' => null,
-            ),
+            ],
             $options
         );
 

@@ -11,9 +11,9 @@
 
 namespace Claroline\CoreBundle\Entity\Activity;
 
+use Claroline\CoreBundle\Entity\Resource\Activity;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Rule\Rulable;
-use Claroline\CoreBundle\Entity\Resource\Activity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 

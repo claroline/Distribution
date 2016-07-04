@@ -13,9 +13,9 @@ namespace Claroline\AnnouncementBundle\Listener;
 
 use Claroline\CoreBundle\Event\DisplayWidgetEvent;
 use Claroline\CoreBundle\Listener\NoHttpRequestException;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service()
@@ -54,7 +54,7 @@ class AnnouncementWidgetListener
 
         $widgetInstance = $event->getInstance();
         $workspace = $widgetInstance->getWorkspace();
-        $params = array();
+        $params = [];
         $params['page'] = 1;
 
         if (is_null($workspace)) {
@@ -65,7 +65,7 @@ class AnnouncementWidgetListener
         }
 
         $subRequest = $this->request->duplicate(
-            array(),
+            [],
             null,
             $params
         );

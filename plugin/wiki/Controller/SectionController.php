@@ -10,23 +10,23 @@
 namespace Icap\WikiBundle\Controller;
 
 use Claroline\CoreBundle\Entity\User;
-use Icap\WikiBundle\Entity\Wiki;
 use Claroline\CoreBundle\Library\Resource\ResourceCollection;
-use Icap\WikiBundle\Entity\Section;
 use Icap\WikiBundle\Entity\Contribution;
-use Icap\WikiBundle\Form\SectionType;
+use Icap\WikiBundle\Entity\Section;
+use Icap\WikiBundle\Entity\Wiki;
 use Icap\WikiBundle\Form\DeleteSectionType;
+use Icap\WikiBundle\Form\SectionType;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Exception\NotValidCurrentPageException;
+use Pagerfanta\Pagerfanta;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
-use Pagerfanta\Exception\NotValidCurrentPageException;
-use Pagerfanta\Pagerfanta;
 
 class SectionController extends Controller
 {
@@ -55,7 +55,7 @@ class SectionController extends Controller
 
         $contributionRepository = $this->get('icap.wiki.contribution_repository');
         $section = $this->getSection($wiki, $sectionId);
-        $collection = $collection = new ResourceCollection(array($wiki->getResourceNode()));
+        $collection = $collection = new ResourceCollection([$wiki->getResourceNode()]);
         $isAdmin = $this->isUserGranted('EDIT', $wiki, $collection);
 
         if ($section->getVisible() === true || $isAdmin) {
@@ -70,16 +70,16 @@ class SectionController extends Controller
                 throw new NotFoundHttpException();
             }
 
-            $maxPerPageArray = array(10, 25, 50, 100, 250, 500);
+            $maxPerPageArray = [10, 25, 50, 100, 250, 500];
 
-            return array(
+            return [
                 '_resource' => $wiki,
                 'pager' => $pager,
                 'section' => $section,
                 'workspace' => $wiki->getResourceNode()->getWorkspace(),
                 'maxPerPageArray' => $maxPerPageArray,
                 'isAdmin' => $isAdmin,
-            );
+            ];
         } else {
             throw new AccessDeniedException($collection->getErrorsForDisplay());
         }
@@ -106,7 +106,7 @@ class SectionController extends Controller
     public function newAction(Request $request, $wiki, $user, $parentSectionId)
     {
         $this->checkAccess('OPEN', $wiki);
-        $collection = $collection = new ResourceCollection(array($wiki->getResourceNode()));
+        $collection = $collection = new ResourceCollection([$wiki->getResourceNode()]);
         $isAdmin = $this->isUserGranted('EDIT', $wiki, $collection);
         if ($isAdmin || $wiki->getMode() !== 2) {
             $section = new Section();
@@ -143,7 +143,7 @@ class SectionController extends Controller
     public function editAction(Request $request, $wiki, $user, $sectionId)
     {
         $this->checkAccess('OPEN', $wiki);
-        $collection = $collection = new ResourceCollection(array($wiki->getResourceNode()));
+        $collection = $collection = new ResourceCollection([$wiki->getResourceNode()]);
         $isAdmin = $this->isUserGranted('EDIT', $wiki, $collection);
         if ($isAdmin || $wiki->getMode() !== 2) {
             $section = $this->getSection($wiki, $sectionId);
@@ -205,16 +205,16 @@ class SectionController extends Controller
             $changeSet = $section->getMoveEventChangeSet($oldParent, $oldLeft, $newParent);
             $this->dispatchSectionMoveEvent($wiki, $section, $changeSet);
 
-            $flashBag->add('success', $translator->trans('icap_wiki_section_move_success', array(), 'icap_wiki'));
+            $flashBag->add('success', $translator->trans('icap_wiki_section_move_success', [], 'icap_wiki'));
         } catch (\Exception $exception) {
-            $flashBag->add('error', $translator->trans('icap_wiki_section_move_error', array(), 'icap_wiki'));
+            $flashBag->add('error', $translator->trans('icap_wiki_section_move_error', [], 'icap_wiki'));
         }
 
         return new Response($this->generateUrl(
                     'icap_wiki_view',
-                    array(
+                    [
                         'wikiId' => $wiki->getId(),
-                    )
+                    ]
                 ));
     }
 
@@ -273,17 +273,17 @@ class SectionController extends Controller
             $sectionRepository->restoreSection($section, $wiki->getRoot());
 
             $this->dispatchSectionRestoreEvent($wiki, $section);
-            $flashBag->add('success', $translator->trans('icap_wiki_section_restore_success', array(), 'icap_wiki'));
+            $flashBag->add('success', $translator->trans('icap_wiki_section_restore_success', [], 'icap_wiki'));
         } catch (\Exception $exception) {
-            $flashBag->add('error', $translator->trans('icap_wiki_section_restore_error', array(), 'icap_wiki'));
+            $flashBag->add('error', $translator->trans('icap_wiki_section_restore_error', [], 'icap_wiki'));
         }
 
         return $this->redirect(
             $this->generateUrl(
                 'icap_wiki_view',
-                array(
+                [
                     'wikiId' => $wiki->getId(),
-                )
+                ]
             )
         );
     }
@@ -294,12 +294,12 @@ class SectionController extends Controller
         if ($request->isXMLHttpRequest()) {
             return $this->render(
                 'IcapWikiBundle:Section:newModal.html.twig',
-                array(
+                [
                     '_resource' => $wiki,
                     'parentSectionId' => $parentSectionId,
                     'workspace' => $wiki->getResourceNode()->getWorkspace(),
                     'form' => $form->createView(),
-                )
+                ]
             );
         } elseif ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
@@ -321,28 +321,28 @@ class SectionController extends Controller
 
                     $this->dispatchSectionCreateEvent($wiki, $section);
 
-                    $flashBag->add('success', $translator->trans('icap_wiki_section_add_success', array(), 'icap_wiki'));
+                    $flashBag->add('success', $translator->trans('icap_wiki_section_add_success', [], 'icap_wiki'));
                 } catch (\Exception $exception) {
-                    $flashBag->add('error', $translator->trans('icap_wiki_section_add_error', array(), 'icap_wiki'));
+                    $flashBag->add('error', $translator->trans('icap_wiki_section_add_error', [], 'icap_wiki'));
                 }
 
                 return $this->redirect(
                     $this->generateUrl(
                         'icap_wiki_view',
-                        array(
+                        [
                             'wikiId' => $wiki->getId(),
-                        )
+                        ]
                     )
                 );
             }
         }
 
-        return array(
+        return [
             '_resource' => $wiki,
             'parentSectionId' => $parentSectionId,
             'workspace' => $wiki->getResourceNode()->getWorkspace(),
             'form' => $form->createView(),
-        );
+        ];
     }
 
     private function persistUpdateSection(Request $request, Wiki $wiki, Section $section, Contribution $oldActiveContribution, User $user)
@@ -351,12 +351,12 @@ class SectionController extends Controller
         if ($request->isXMLHttpRequest()) {
             return $this->render(
                 'IcapWikiBundle:Section:editModal.html.twig',
-                array(
+                [
                     '_resource' => $wiki,
                     'section' => $section,
                     'workspace' => $wiki->getResourceNode()->getWorkspace(),
                     'form' => $form->createView(),
-                )
+                ]
             );
         } elseif ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
@@ -407,27 +407,27 @@ class SectionController extends Controller
                     if (!empty($changeSet)) {
                         $this->dispatchSectionUpdateEvent($wiki, $section, $changeSet);
                     }
-                    $flashBag->add('success', $translator->trans('icap_wiki_section_update_success', array(), 'icap_wiki'));
+                    $flashBag->add('success', $translator->trans('icap_wiki_section_update_success', [], 'icap_wiki'));
                 } catch (\Exception $exception) {
-                    $flashBag->add('error', $translator->trans('icap_wiki_section_update_error', array(), 'icap_wiki'));
+                    $flashBag->add('error', $translator->trans('icap_wiki_section_update_error', [], 'icap_wiki'));
                 }
 
                 return $this->redirect(
                     $this->generateUrl(
                         'icap_wiki_view',
-                        array(
+                        [
                             'wikiId' => $wiki->getId(),
-                        )
+                        ]
                     )
                 );
             }
         }
 
-        return array(
+        return [
             '_resource' => $wiki,
             'section' => $section,
             'form' => $form->createView(),
-        );
+        ];
     }
 
     private function persistDeleteSection(Request $request, Wiki $wiki, Section $section, User $user)
@@ -437,12 +437,12 @@ class SectionController extends Controller
         if ($request->isXMLHttpRequest()) {
             return $this->render(
                 'IcapWikiBundle:Section:deleteModal.html.twig',
-                array(
+                [
                     '_resource' => $wiki,
                     'section' => $section,
                     'workspace' => $wiki->getResourceNode()->getWorkspace(),
                     'form' => $form->createView(),
-                )
+                ]
             );
         } elseif ('POST' === $request->getMethod()) {
             $flashBag = $this->get('session')->getFlashBag();
@@ -455,17 +455,17 @@ class SectionController extends Controller
                     $em->flush();
 
                     $this->dispatchSectionRemoveEvent($wiki, $section);
-                    $flashBag->add('success', $translator->trans('icap_wiki_section_remove_success', array(), 'icap_wiki'));
+                    $flashBag->add('success', $translator->trans('icap_wiki_section_remove_success', [], 'icap_wiki'));
                 } catch (\Exception $exception) {
-                    $flashBag->add('error', $translator->trans('icap_wiki_section_remove_error', array(), 'icap_wiki'));
+                    $flashBag->add('error', $translator->trans('icap_wiki_section_remove_error', [], 'icap_wiki'));
                 }
 
                 return $this->redirect(
                     $this->generateUrl(
                         'icap_wiki_configure',
-                        array(
+                        [
                             'wikiId' => $wiki->getId(),
-                        )
+                        ]
                     )
                 );
             } else {
@@ -481,28 +481,28 @@ class SectionController extends Controller
                         }
 
                         $this->dispatchSectionDeleteEvent($wiki, $section);
-                        $flashBag->add('success', $translator->trans('icap_wiki_section_delete_success', array(), 'icap_wiki'));
+                        $flashBag->add('success', $translator->trans('icap_wiki_section_delete_success', [], 'icap_wiki'));
                     } catch (\Exception $exception) {
-                        $flashBag->add('error', $translator->trans('icap_wiki_section_delete_error', array(), 'icap_wiki'));
+                        $flashBag->add('error', $translator->trans('icap_wiki_section_delete_error', [], 'icap_wiki'));
                     }
 
                     return $this->redirect(
                         $this->generateUrl(
                             'icap_wiki_view',
-                            array(
+                            [
                                 'wikiId' => $wiki->getId(),
-                            )
+                            ]
                         )
                     );
                 }
             }
         }
 
-        return array(
+        return [
             '_resource' => $wiki,
             'section' => $section,
             'workspace' => $wiki->getResourceNode()->getWorkspace(),
             'form' => $form->createView(),
-        );
+        ];
     }
 }

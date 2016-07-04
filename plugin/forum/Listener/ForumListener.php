@@ -11,12 +11,12 @@
 
 namespace Claroline\ForumBundle\Listener;
 
+use Claroline\CoreBundle\Event\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\DeleteResourceEvent;
-use Claroline\CoreBundle\Event\CopyResourceEvent;
-use Claroline\CoreBundle\Event\OpenResourceEvent;
 use Claroline\CoreBundle\Event\DeleteUserEvent;
+use Claroline\CoreBundle\Event\OpenResourceEvent;
 use Claroline\CoreBundle\Event\ResourceCreatedEvent;
 use Claroline\ForumBundle\Entity\Forum;
 use Claroline\ForumBundle\Form\ForumType;
@@ -30,10 +30,10 @@ class ForumListener extends ContainerAware
         $form = $this->container->get('form.factory')->create(new ForumType(), new Forum());
         $content = $this->container->get('templating')->render(
             'ClarolineCoreBundle:Resource:createForm.html.twig',
-            array(
+            [
                 'form' => $form->createView(),
                 'resourceType' => 'claroline_forum',
-            )
+            ]
         );
         $event->setResponseContent($content);
         $event->stopPropagation();
@@ -48,7 +48,7 @@ class ForumListener extends ContainerAware
         if ($form->isValid()) {
             $forum = $form->getData();
             $this->container->get('claroline.manager.forum_manager')->createCategory($forum, $forum->getName(), false);
-            $event->setResources(array($forum));
+            $event->setResources([$forum]);
             $event->stopPropagation();
 
             return;
@@ -56,10 +56,10 @@ class ForumListener extends ContainerAware
 
         $content = $this->container->get('templating')->render(
             'ClarolineCoreBundle:Resource:createForm.html.twig',
-            array(
+            [
                 'form' => $form->createView(),
                 'resourceType' => 'claroline_forum',
-            )
+            ]
         );
         $event->setErrorFormContent($content);
         $event->stopPropagation();
@@ -70,10 +70,10 @@ class ForumListener extends ContainerAware
         $requestStack = $this->container->get('request_stack');
         $httpKernel = $this->container->get('http_kernel');
         $request = $requestStack->getCurrentRequest();
-        $params = array();
+        $params = [];
         $params['_controller'] = 'ClarolineForumBundle:Forum:open';
         $params['forum'] = $event->getResource()->getId();
-        $subRequest = $request->duplicate(array(), null, $params);
+        $subRequest = $request->duplicate([], null, $params);
         $response = $httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
         $event->setResponse($response);
         $event->stopPropagation();
@@ -100,7 +100,7 @@ class ForumListener extends ContainerAware
         $em = $this->container->get('doctrine.orm.entity_manager');
         $notificationRepo = $em->getRepository('ClarolineForumBundle:Notification');
 
-        $notifications = $notificationRepo->findOneBy(array('user' => $event->getUser()));
+        $notifications = $notificationRepo->findOneBy(['user' => $event->getUser()]);
         if (count($notifications) > 0) {
             foreach ($notifications as $notification) {
                 $em->remove($notification);

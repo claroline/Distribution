@@ -11,13 +11,13 @@
 
 namespace Claroline\CoreBundle\Command;
 
+use Claroline\CoreBundle\Library\Logger\ConsoleLogger;
+use Claroline\CoreBundle\Listener\DoctrineDebug;
+use Claroline\CoreBundle\Validator\Constraints\CsvUser;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Claroline\CoreBundle\Validator\Constraints\CsvUser;
-use Claroline\CoreBundle\Library\Logger\ConsoleLogger;
-use Claroline\CoreBundle\Listener\DoctrineDebug;
 
 /**
  * Creates an user, optionaly with a specific role (default to simple user).
@@ -29,14 +29,14 @@ class CreateUserFromCsvCommand extends ContainerAwareCommand
         $this->setName('claroline:users:load')
             ->setDescription('Create users from a csv file');
         $this->setDefinition(
-            array(new InputArgument('csv_user_path', InputArgument::REQUIRED, 'The absolute path to the csv file.'))
+            [new InputArgument('csv_user_path', InputArgument::REQUIRED, 'The absolute path to the csv file.')]
         );
     }
 
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         //@todo ask authentication source
-        $params = array('csv_user_path' => 'Absolute path to the csv file: ');
+        $params = ['csv_user_path' => 'Absolute path to the csv file: '];
 
         foreach ($params as $argument => $argumentName) {
             if (!$input->getArgument($argument)) {

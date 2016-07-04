@@ -22,9 +22,9 @@ class VersionCompareExtension extends \Twig_Extension
 {
     public function getFunctions()
     {
-        return array(
+        return [
             'version_compare' => new \Twig_Function_Method($this, 'versionCompare'),
-        );
+        ];
     }
 
     public function getName()

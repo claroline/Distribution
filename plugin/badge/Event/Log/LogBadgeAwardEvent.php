@@ -2,10 +2,10 @@
 
 namespace Icap\BadgeBundle\Event\Log;
 
-use Claroline\CoreBundle\Event\Log\LogGenericEvent;
-use Icap\BadgeBundle\Entity\Badge;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Event\Log\LogGenericEvent;
 use Claroline\CoreBundle\Event\Log\NotifiableInterface;
+use Icap\BadgeBundle\Entity\Badge;
 
 class LogBadgeAwardEvent extends LogGenericEvent implements NotifiableInterface
 {
@@ -30,15 +30,15 @@ class LogBadgeAwardEvent extends LogGenericEvent implements NotifiableInterface
 
         parent::__construct(
             self::ACTION,
-            array(
-                'badge' => array(
+            [
+                'badge' => [
                     'id' => $badge->getId(),
-                ),
-                'receiverUser' => array(
+                ],
+                'receiverUser' => [
                     'lastName' => $receiver->getLastName(),
                     'firstName' => $receiver->getFirstName(),
-                ),
-            ),
+                ],
+            ],
             $receiver,
             null,
             null,
@@ -52,7 +52,7 @@ class LogBadgeAwardEvent extends LogGenericEvent implements NotifiableInterface
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_WORKSPACE, self::DISPLAYED_ADMIN);
+        return [self::DISPLAYED_WORKSPACE, self::DISPLAYED_ADMIN];
     }
 
     /**
@@ -72,7 +72,7 @@ class LogBadgeAwardEvent extends LogGenericEvent implements NotifiableInterface
      */
     public function getIncludeUserIds()
     {
-        return array($this->getReceiver()->getId());
+        return [$this->getReceiver()->getId()];
     }
 
     /**
@@ -82,7 +82,7 @@ class LogBadgeAwardEvent extends LogGenericEvent implements NotifiableInterface
      */
     public function getExcludeUserIds()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -115,20 +115,20 @@ class LogBadgeAwardEvent extends LogGenericEvent implements NotifiableInterface
         $receiver = $this->getReceiver();
         $workspace = $this->badge->getWorkspace() ? $this->badge->getWorkspace()->getId() : null;
 
-        $notificationDetails = array(
+        $notificationDetails = [
             'workspace' => $workspace,
-            'badge' => array(
+            'badge' => [
                 'id' => $this->badge->getId(),
                 'name' => $this->badge->getName(),
                 'slug' => $this->badge->getSlug(),
-            ),
-            'receiver' => array(
+            ],
+            'receiver' => [
                 'id' => $receiver->getId(),
                 'publicUrl' => $receiver->getPublicUrl(),
                 'lastName' => $receiver->getLastName(),
                 'firstName' => $receiver->getFirstName(),
-            ),
-        );
+            ],
+        ];
 
         return $notificationDetails;
     }

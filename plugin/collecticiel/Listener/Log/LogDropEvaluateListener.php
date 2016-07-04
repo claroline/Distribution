@@ -7,8 +7,8 @@ use Doctrine\ORM\EntityManager;
 use Innova\CollecticielBundle\Entity\Drop;
 use Innova\CollecticielBundle\Event\Log\LogDropEvaluateEvent;
 use Innova\CollecticielBundle\Event\Log\PotentialEvaluationEndInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @DI\Service()
@@ -41,7 +41,7 @@ class LogDropEvaluateListener
             $correction = $event->getCorrection();
             $this->sendFinishedLog($correction->getDrop());
             if ($correction->getDrop()->getUser()->getId() != $correction->getUser()->getId()) {
-                $drop = $this->entityManager->getRepository('InnovaCollecticielBundle:Drop')->findOneBy(array('user' => $correction->getUser()));
+                $drop = $this->entityManager->getRepository('InnovaCollecticielBundle:Drop')->findOneBy(['user' => $correction->getUser()]);
                 if ($drop !== null) {
                     $this->sendFinishedLog($drop);
                 }

@@ -11,12 +11,12 @@
 
 namespace Claroline\CoreBundle\Form\Administration;
 
+use Claroline\CoreBundle\Validator\Constraints\ProfilePicsFile;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Claroline\CoreBundle\Validator\Constraints\ProfilePicsFile;
 
 class ProfilePicsImportType extends AbstractType
 {
@@ -25,16 +25,16 @@ class ProfilePicsImportType extends AbstractType
         $builder->add(
             'file',
             'file',
-            array(
+            [
                 'required' => true,
                 'mapped' => false,
                 'label' => 'file',
-                'constraints' => array(
+                'constraints' => [
                     new NotBlank(),
                     new File(),
                     new ProfilePicsFile(),
-                ),
-           )
+                ],
+           ]
         );
     }
 
@@ -47,9 +47,9 @@ class ProfilePicsImportType extends AbstractType
     {
         $resolver
         ->setDefaults(
-            array(
+            [
                 'translation_domain' => 'platform',
-                )
+                ]
         );
     }
 }

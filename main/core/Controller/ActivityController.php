@@ -21,8 +21,8 @@ use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Form\ActivityEvaluationType;
 use Claroline\CoreBundle\Form\ActivityParametersType;
 use Claroline\CoreBundle\Form\ActivityPastEvaluationType;
-use Claroline\CoreBundle\Form\ActivityType;
 use Claroline\CoreBundle\Form\ActivityRuleType;
+use Claroline\CoreBundle\Form\ActivityType;
 use Claroline\CoreBundle\Manager\ActivityManager;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use JMS\DiExtraBundle\Annotation\Inject;
@@ -34,8 +34,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class ActivityController
@@ -174,14 +174,14 @@ class ActivityController
             //set the permissions for each resources
             $this->activityManager->initializePermissions($resource);
 
-        return array(
+        return [
             '_resource' => $resource,
             'form' => $form->createView(),
             'formParams' => $formParams->createView(),
             'params' => $params,
             'formRule' => $formRule->createView(),
             'defaultRuleStartingDate' => $resource->getResourceNode()->getCreationDate()->format('Y-m-d'),
-        );
+        ];
     }
 
     /**
@@ -196,12 +196,12 @@ class ActivityController
         if ($this->activityManager->addResource($activity, $resource)) {
             return new Response(
                 json_encode(
-                    array(
+                    [
                         'id' => $resource->getId(),
                         'name' => $resource->getName(),
                         'type' => $resource->getResourceType()->getName(),
                         'mimeType' => $resource->getMimeType(),
-                    )
+                    ]
                 )
             );
         }
@@ -314,7 +314,7 @@ class ActivityController
         }
 
         if (count($ruleActions) > 0) {
-            $actions = array();
+            $actions = [];
 
             foreach ($ruleActions as $ruleAction) {
                 $actions[] = $ruleAction->getAction();
@@ -377,13 +377,13 @@ class ActivityController
             }
         }
 
-        return array(
+        return [
             'activityParameters' => $params,
             'evaluation' => $evaluation,
             'pastEvals' => $pastEvals,
             'ruleScore' => $ruleScore,
             'isResultVisible' => $isResultVisible,
-        );
+        ];
     }
 
     /**
@@ -428,10 +428,10 @@ class ActivityController
             return new Response('success', 204);
         }
 
-        return array(
+        return [
             'form' => $form->createView(),
             'evaluation' => $evaluation,
-        );
+        ];
     }
 
     /**
@@ -476,10 +476,10 @@ class ActivityController
             return new Response('success', 204);
         }
 
-        return array(
+        return [
             'form' => $form->createView(),
             'pastEvaluation' => $pastEvaluation,
-        );
+        ];
     }
 
     private function checkAccess($permission, $resource)

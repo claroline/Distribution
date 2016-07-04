@@ -12,8 +12,8 @@
 namespace Claroline\CoreBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -42,6 +42,6 @@ class PlatformInstallCommand extends ContainerAwareCommand
         file_put_contents($previous, '[]');
 
         $command = $this->getApplication()->find('claroline:update');
-        $returnCode = $command->run(new ArrayInput(array()), $output);
+        $returnCode = $command->run(new ArrayInput([]), $output);
     }
 }

@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Entity\Resource;
 
-use Doctrine\ORM\Mapping as ORM;
 use Claroline\CoreBundle\Entity\Role;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\PwsRightsManagementAccessRepository")

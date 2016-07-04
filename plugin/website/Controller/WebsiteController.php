@@ -10,8 +10,8 @@ namespace Icap\WebsiteBundle\Controller;
 
 use Icap\WebsiteBundle\Entity\Website;
 use Icap\WebsiteBundle\Entity\WebsitePageTypeEnum;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class WebsiteController extends Controller
 {
@@ -43,17 +43,17 @@ class WebsiteController extends Controller
         $user = $this->getLoggedUser();
         $pageManager = $this->getWebsitePageManager();
 
-        $viewArray = array(
+        $viewArray = [
             '_resource' => $website,
             'workspace' => $website->getResourceNode()->getWorkspace(),
             'isAdmin' => $isAdmin,
             'user' => $user,
-            'pageTypes' => array(
+            'pageTypes' => [
                 'blank' => WebsitePageTypeEnum::BLANK_PAGE,
                 'resource' => WebsitePageTypeEnum::RESOURCE_PAGE,
                 'url' => WebsitePageTypeEnum::URL_PAGE,
-            ),
-        );
+            ],
+        ];
         if ($isAdmin) {
             $pages = $pageManager->getPageTree($website, $isAdmin, false);
             $website->setPages($pages);

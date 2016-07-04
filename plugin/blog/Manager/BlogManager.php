@@ -312,7 +312,7 @@ class BlogManager
 
     public function getPanelInfos()
     {
-        return array(
+        return [
             'search',
             'infobar',
             'rss',
@@ -320,6 +320,6 @@ class BlogManager
             'redactor',
             'calendar',
             'archives',
-        );
+        ];
     }
 }

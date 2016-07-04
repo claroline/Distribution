@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Entity\Oauth;
 
-use FOS\OAuthServerBundle\Entity\RefreshToken as BaseRefreshToken;
 use Doctrine\ORM\Mapping as ORM;
+use FOS\OAuthServerBundle\Entity\RefreshToken as BaseRefreshToken;
 
 /**
  * @ORM\Table(name="claro_api_refresh_token")

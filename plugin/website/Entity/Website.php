@@ -9,8 +9,8 @@
 namespace Icap\WebsiteBundle\Entity;
 
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity

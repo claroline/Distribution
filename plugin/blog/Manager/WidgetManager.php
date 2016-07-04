@@ -5,8 +5,8 @@ namespace Icap\BlogBundle\Manager;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Doctrine\ORM\EntityManager;
 use Icap\BlogBundle\Entity\WidgetListBlog;
-use JMS\DiExtraBundle\Annotation as DI;
 use Icap\BlogBundle\Entity\WidgetListOptions;
+use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("icap_blog.manager.widget")
@@ -62,7 +62,7 @@ class WidgetManager
         /** @var \Icap\BlogBundle\Entity\WidgetListBlog[] $widgetListBlogs */
         $widgetListBlogs = $this->getWidgetListBlogs($widgetInstance);
 
-        $resourceNodeIds = array();
+        $resourceNodeIds = [];
 
         foreach ($widgetListBlogs as $widgetListBlog) {
             $resourceNodeIds[] = $widgetListBlog->getResourceNode()->getId();

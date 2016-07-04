@@ -2,15 +2,15 @@
 
 namespace Innova\AudioRecorderBundle\Manager;
 
-use Claroline\CoreBundle\Manager\ResourceManager;
-use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Claroline\CoreBundle\Entity\Resource\File;
-use Symfony\Component\HttpFoundation\File\File as sFile;
-use Symfony\Component\Filesystem\Filesystem;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Manager\ResourceManager;
 use Innova\AudioRecorderBundle\Entity\AudioRecorderConfiguration;
+use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\File as sFile;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * @DI\Service("innova.audio_recorder.manager")
@@ -59,7 +59,7 @@ class AudioRecorderManager
      */
     public function uploadFileAndCreateResource($postData, UploadedFile $blob, Workspace $workspace = null)
     {
-        $errors = array();
+        $errors = [];
         // final file upload dir
         $targetDir = '';
         if (!is_null($workspace)) {
@@ -81,7 +81,7 @@ class AudioRecorderManager
         if (!$this->validateParams($postData, $blob)) {
             array_push($errors, 'one or more request parameters are missing.');
 
-            return array('file' => null, 'errors' => $errors);
+            return ['file' => null, 'errors' => $errors];
         }
 
         $fileBaseName = $postData['fileName'];
@@ -105,7 +105,7 @@ class AudioRecorderManager
         if ($returnVar !== 0) {
             array_push($errors, 'File conversion failed with command '.$cmd.' and returned '.$returnVar);
 
-            return array('file' => null, 'errors' => $errors);
+            return ['file' => null, 'errors' => $errors];
         }
 
         // copy the encoded file to user workspace directory
@@ -124,7 +124,7 @@ class AudioRecorderManager
         $file->setHashName($hashName);
         $file->setMimeType($mimeType);
 
-        return array('file' => $file, 'errors' => []);
+        return ['file' => $file, 'errors' => []];
     }
 
     private function getBaseFileHashName($uniqueBaseName, Workspace $workspace = null)

@@ -14,9 +14,9 @@ namespace Claroline\ScormBundle\Listener;
 use Claroline\CoreBundle\Event\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
-use Claroline\CoreBundle\Event\OpenResourceEvent;
 use Claroline\CoreBundle\Event\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\DownloadResourceEvent;
+use Claroline\CoreBundle\Event\OpenResourceEvent;
 use Claroline\CoreBundle\Listener\NoHttpRequestException;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\ScormBundle\Entity\Scorm2004Resource;
@@ -105,10 +105,10 @@ class Scorm2004Listener
         );
         $content = $this->templating->render(
             'ClarolineCoreBundle:Resource:createForm.html.twig',
-            array(
+            [
                 'form' => $form->createView(),
                 'resourceType' => 'claroline_scorm_2004',
-            )
+            ]
         );
         $event->setResponseContent($content);
         $event->stopPropagation();
@@ -137,7 +137,7 @@ class Scorm2004Listener
                     $scormResource = $this->container
                         ->get('claroline.manager.scorm_manager')
                         ->createScorm($tmpFile, $form->get('name')->getData(), '2004');
-                    $event->setResources(array($scormResource));
+                    $event->setResources([$scormResource]);
                     $event->stopPropagation();
 
                     return;
@@ -147,17 +147,17 @@ class Scorm2004Listener
             $msg = $e->getMessage();
             $errorMsg = $this->translator->trans(
                 $msg,
-                array(),
+                [],
                 'resource'
             );
             $form->addError(new FormError($errorMsg));
         }
         $content = $this->templating->render(
             'ClarolineCoreBundle:Resource:createForm.html.twig',
-            array(
+            [
                 'form' => $form->createView(),
                 'resourceType' => $event->getResourceType(),
-            )
+            ]
         );
         $event->setErrorFormContent($content);
         $event->stopPropagation();
@@ -178,7 +178,7 @@ class Scorm2004Listener
         $params['scormId'] = $scorm->getId();
 
         $subRequest = $this->request->duplicate(
-            array(),
+            [],
             null,
             $params
         );
@@ -203,7 +203,7 @@ class Scorm2004Listener
 
         if ($nbScorm === 1) {
             if (file_exists($scormArchiveFile)) {
-                $event->setFiles(array($scormArchiveFile));
+                $event->setFiles([$scormArchiveFile]);
             }
             if (file_exists($scormResourcesPath)) {
                 $this->deleteFiles($scormResourcesPath);
@@ -328,7 +328,7 @@ class Scorm2004Listener
         Scorm2004Sco $parentSco = null
     ) {
         $item = $source->firstChild;
-        $scos = array();
+        $scos = [];
 
         while (!is_null($item)) {
             if ($item->nodeName === 'item') {

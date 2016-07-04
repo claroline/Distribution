@@ -11,9 +11,9 @@
 
 namespace Claroline\CoreBundle\Form\Calendar;
 
+use Claroline\CoreBundle\Form\Angular\AngularType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Claroline\CoreBundle\Form\Angular\AngularType;
 
 class LeaveType extends AngularType
 {
@@ -25,14 +25,14 @@ class LeaveType extends AngularType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('date', 'datetime', array('label' => 'start', 'required' => true))
-            ->add('year', 'entity', array(
+            ->add('date', 'datetime', ['label' => 'start', 'required' => true])
+            ->add('year', 'entity', [
                     'class' => 'ClarolineCoreBundle:Calendar\Year',
                     'property' => 'name',
                     'multiple' => false,
                     'expanded' => false,
                     'required' => true,
-                )
+                ]
             );
     }
 
@@ -48,7 +48,7 @@ class LeaveType extends AngularType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $default = array('translation_domain' => 'platform');
+        $default = ['translation_domain' => 'platform'];
         if ($this->forApi) {
             $default['csrf_protection'] = false;
         }

@@ -33,7 +33,7 @@ class SectionRepository extends NestedTreeRepository
                 ->andWhere('section.visible = :visible')
                 ->setParameter('visible', true);
         }
-        $options = array('decorate' => false);
+        $options = ['decorate' => false];
         $tree = $this->buildTree($queryBuilder->getQuery()->getArrayResult(), $options);
 
         return $tree;

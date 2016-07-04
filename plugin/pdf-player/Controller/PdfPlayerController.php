@@ -11,10 +11,10 @@
 
 namespace Claroline\PdfPlayerBundle\Controller;
 
+use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 
 class PdfPlayerController extends Controller
 {

@@ -10,8 +10,8 @@ namespace Innova\CollecticielBundle\Entity;
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="Innova\CollecticielBundle\Repository\CorrectionRepository")
@@ -428,10 +428,10 @@ class Correction
      */
     public function toArray($hydrateUser)
     {
-        $json = array(
+        $json = [
             'id' => $this->getId(),
             'editable' => $this->getEditable(),
-        );
+        ];
 
         if ($this->getFinished() === true) {
             $json['valid'] = $this->getValid();
@@ -442,12 +442,12 @@ class Correction
         }
 
         if ($hydrateUser === true) {
-            $json['user'] = array(
+            $json['user'] = [
                 'id' => $this->getUser()->getId(),
                 'lastName' => $this->getUser()->getLastName(),
                 'firstName' => $this->getUser()->getFirstName(),
                 'username' => $this->getUser()->getUsername(),
-            );
+            ];
         }
 
         return $json;

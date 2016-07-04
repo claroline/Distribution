@@ -35,7 +35,7 @@ class Updater050002 extends Updater
         $totalPortfolioProcessed = 0;
         $nbPortfolioProcessed = 0;
 
-        if ($this->connection->getSchemaManager()->tablesExist(array('icap__portfolio_widget_title'))) {
+        if ($this->connection->getSchemaManager()->tablesExist(['icap__portfolio_widget_title'])) {
             $this->log('Restoring portfolio titles...');
             $rowPortfolioTitles = $this->connection->query('SELECT * FROM icap__portfolio_widget_title');
             $sql = 'SELECT aw.id, aw.user_id FROM icap__portfolio_abstract_widget aw WHERE id = :id';

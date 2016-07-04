@@ -2,11 +2,11 @@
 
 namespace Icap\BadgeBundle\Form\Type;
 
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\RouterInterface;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -35,23 +35,23 @@ class BadgeAwardType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('group', 'zenstruck_ajax_entity', array(
-                'placeholder' => $this->translator->trans('badge_award_form_group_choose', array(), 'icap_badge'),
+            ->add('group', 'zenstruck_ajax_entity', [
+                'placeholder' => $this->translator->trans('badge_award_form_group_choose', [], 'icap_badge'),
                 'class' => 'ClarolineCoreBundle:Group',
                 'use_controller' => true,
                 'property' => 'name',
                 'repo_method' => 'findByNameForAjax',
-            ))
-            ->add('user', 'zenstruck_ajax_entity', array(
-                'placeholder' => $this->translator->trans('badge_award_form_user_choose', array(), 'icap_badge'),
+            ])
+            ->add('user', 'zenstruck_ajax_entity', [
+                'placeholder' => $this->translator->trans('badge_award_form_user_choose', [], 'icap_badge'),
                 'class' => 'ClarolineCoreBundle:User',
                 'use_controller' => true,
                 'property' => 'username',
                 'repo_method' => 'findByNameForAjax',
-            ))
-            ->add('comment', 'tinymce', array(
+            ])
+            ->add('comment', 'tinymce', [
                 'required' => false,
-            ));
+            ]);
     }
 
     public function getName()
@@ -61,6 +61,6 @@ class BadgeAwardType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'icap_badge'));
+        $resolver->setDefaults(['translation_domain' => 'icap_badge']);
     }
 }

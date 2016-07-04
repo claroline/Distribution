@@ -2,26 +2,26 @@
 
 namespace FormaLibre\PresenceBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use JMS\DiExtraBundle\Annotation as DI;
-use JMS\SecurityExtraBundle\Annotation as SEC;
+use Claroline\CoreBundle\Entity\Group;
+use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\HttpFoundation\Request;
-use Claroline\CoreBundle\Entity\Group;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Routing\RouterInterface;
-use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
-use FormaLibre\PresenceBundle\Entity\PresenceRights;
 use FormaLibre\PresenceBundle\Entity\Period;
 use FormaLibre\PresenceBundle\Entity\Presence;
-use FormaLibre\PresenceBundle\Entity\Status;
+use FormaLibre\PresenceBundle\Entity\PresenceRights;
 use FormaLibre\PresenceBundle\Entity\SchoolYear;
-use Claroline\CoreBundle\Entity\User;
+use FormaLibre\PresenceBundle\Entity\Status;
 use FormaLibre\PresenceBundle\Manager\PresenceManager;
+use JMS\DiExtraBundle\Annotation as DI;
+use JMS\SecurityExtraBundle\Annotation as SEC;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * @DI\Tag("security.secure_service")
@@ -82,13 +82,13 @@ class AdminPresenceController extends Controller
      */
     public function adminToolIndexAction()
     {
-        $rightsValue = array();
+        $rightsValue = [];
 
         $rightsForArray = $this->presenceManager->getAllPresenceRights();
 
         foreach ($rightsForArray as $oneRightForArray) {
             $mask = $oneRightForArray->getMask();
-            $oneValue = array();
+            $oneValue = [];
             $oneValue['right'] = $oneRightForArray;
             $oneValue[PresenceRights::PERSONAL_ARCHIVES] = (PresenceRights::PERSONAL_ARCHIVES & $mask) === PresenceRights::PERSONAL_ARCHIVES;
             $oneValue[PresenceRights::CHECK_PRESENCES] = (PresenceRights::CHECK_PRESENCES & $mask) === PresenceRights::CHECK_PRESENCES;
@@ -97,13 +97,13 @@ class AdminPresenceController extends Controller
             $rightsValue[] = $oneValue;
         }
 
-        $rightNameId = array();
+        $rightNameId = [];
         $rightNameId[] = PresenceRights::PERSONAL_ARCHIVES;
         $rightNameId[] = PresenceRights::CHECK_PRESENCES;
         $rightNameId[] = PresenceRights::READING_ARCHIVES;
         $rightNameId[] = PresenceRights::EDIT_ARCHIVES;
 
-        $rightName = array();
+        $rightName = [];
         $rightName[PresenceRights::PERSONAL_ARCHIVES] = 'Voir ses archives';
         $rightName[PresenceRights::CHECK_PRESENCES] = 'Relever les présences';
         $rightName[PresenceRights::READING_ARCHIVES] = 'Consulter les archives';
@@ -114,11 +114,11 @@ class AdminPresenceController extends Controller
 
             ->add('name', 'text')
             ->add('color', 'text')
-            ->add('principalStatus', 'checkbox', array(
-                  'required' => false, )
+            ->add('principalStatus', 'checkbox', [
+                  'required' => false, ]
             )
-            ->add('valider', 'submit', array(
-                'label' => 'Ajouter', ))
+            ->add('valider', 'submit', [
+                'label' => 'Ajouter', ])
 
             ->getForm();
 
@@ -149,15 +149,15 @@ class AdminPresenceController extends Controller
             ->add('endDate', 'text')
             ->add('beginHour', 'text')
             ->add('endHour', 'text')
-            ->add('actual', 'checkbox', array(
-                  'required' => false, )
+            ->add('actual', 'checkbox', [
+                  'required' => false, ]
             )
-            ->add('valider2', 'submit', array(
-                'label' => 'Ajouter', ))
+            ->add('valider2', 'submit', [
+                'label' => 'Ajouter', ])
 
             ->getForm();
 
-        return array('rightsForArray' => $rightsForArray,
+        return ['rightsForArray' => $rightsForArray,
                      'rightsValue' => $rightsValue,
                      'rightNameId' => $rightNameId,
                      'rightName' => $rightName,
@@ -165,7 +165,7 @@ class AdminPresenceController extends Controller
                      'NewSchoolYearForm' => $NewSchoolYearForm->createView(),
                      'listStatus' => $listStatus,
                      'allSchoolYear' => $AllSchoolYear,
-                     'actualSchoolYear' => $ActualSchoolYear, );
+                     'actualSchoolYear' => $ActualSchoolYear, ];
     }
 
     /**
@@ -187,11 +187,11 @@ class AdminPresenceController extends Controller
             ->add('endDate', 'text')
             ->add('beginHour', 'text')
             ->add('endHour', 'text')
-            ->add('actual', 'checkbox', array(
-                  'required' => false, )
+            ->add('actual', 'checkbox', [
+                  'required' => false, ]
             )
-            ->add('valider2', 'submit', array(
-                'label' => 'Ajouter', ))
+            ->add('valider2', 'submit', [
+                'label' => 'Ajouter', ])
 
             ->getForm();
 
@@ -253,11 +253,11 @@ class AdminPresenceController extends Controller
             ->add('endDateModifSchoolYear', 'text')
             ->add('beginHourModifSchoolYear', 'text')
             ->add('endHourModifSchoolYear', 'text')
-            ->add('actualModifSchoolYear', 'checkbox', array(
-                  'required' => false, )
+            ->add('actualModifSchoolYear', 'checkbox', [
+                  'required' => false, ]
             )
-            ->add('validerModifSchoolYear', 'submit', array(
-                'label' => 'Ajouter', ))
+            ->add('validerModifSchoolYear', 'submit', [
+                'label' => 'Ajouter', ])
 
             ->getForm();
 
@@ -297,8 +297,8 @@ class AdminPresenceController extends Controller
             return new JsonResponse('success', 200);
         }
 
-        return array('ModifSchoolYearForm' => $ModifSchoolYearForm->createView(),
-                    'theSchoolYear' => $theSchoolYear, );
+        return ['ModifSchoolYearForm' => $ModifSchoolYearForm->createView(),
+                    'theSchoolYear' => $theSchoolYear, ];
     }
     /**
      * @EXT\Route(
@@ -367,24 +367,24 @@ class AdminPresenceController extends Controller
 
         $NewPeriodForm = $this->createFormBuilder()
 
-            ->add('day', 'choice', array(
-                    'choices' => array(
+            ->add('day', 'choice', [
+                    'choices' => [
                     'monday' => 'lundi',
                     'tuesday' => 'mardi',
                     'wednesday' => 'mercredi',
                     'thursday' => 'jeudi',
                     'friday' => 'vendredi',
                     'saturday' => 'samedi',
-                    ),
+                    ],
                 'multiple' => true,
                 'expanded' => true,
-                ))
+                ])
             ->add('number', 'text')
             ->add('name', 'text')
             ->add('start', 'text')
             ->add('end', 'text')
-            ->add('valider', 'submit', array(
-                'label' => 'Ajouter', ))
+            ->add('valider', 'submit', [
+                'label' => 'Ajouter', ])
 
             ->getForm();
 
@@ -436,11 +436,11 @@ class AdminPresenceController extends Controller
             return $this->redirect($this->generateUrl('formalibre_presence_horaire'));
         }
 
-        return array('NewPeriodForm' => $NewPeriodForm->createView(),
+        return ['NewPeriodForm' => $NewPeriodForm->createView(),
                     'periods' => $Periods,
                     'schoolYear' => $SchoolYear,
                     'schoolYearBeginHour' => $SchoolYearBeginHour,
-                    'schoolYearEndHour' => $SchoolYearEndHour, );
+                    'schoolYearEndHour' => $SchoolYearEndHour, ];
     }
 
     /**
@@ -481,9 +481,9 @@ class AdminPresenceController extends Controller
             $startHourFormat = \DateTime::createFromFormat('H:i', $startHour);
             $endHourFormat = \DateTime::createFromFormat('H:i', $endHour);
 
-            $PeriodToModif = $this->periodRepo->findBy(array('beginHour' => $startHourFormat,
+            $PeriodToModif = $this->periodRepo->findBy(['beginHour' => $startHourFormat,
                                                                  'endHour' => $endHourFormat,
-                                                                 'dayName' => $dayName, ));
+                                                                 'dayName' => $dayName, ]);
 
             foreach ($PeriodToModif as $OnePeriodToModif) {
                 $OnePeriodToModif->setBeginHour($startHourFormat);
@@ -496,7 +496,7 @@ class AdminPresenceController extends Controller
             return new JsonResponse('success', 200);
         }
 
-        return array('ModifPeriodForm' => $ModifPeriodForm->createView(), 'period' => $period);
+        return ['ModifPeriodForm' => $ModifPeriodForm->createView(), 'period' => $period];
     }
 
     /**
@@ -516,9 +516,9 @@ class AdminPresenceController extends Controller
         $endHour = $period->getEndHour();
         $dayName = $period->getDayName();
 
-        $PeriodToModif = $this->periodRepo->findBy(array('beginHour' => $startHour,
+        $PeriodToModif = $this->periodRepo->findBy(['beginHour' => $startHour,
                                                          'endHour' => $endHour,
-                                                         'dayName' => $dayName, ));
+                                                         'dayName' => $dayName, ]);
 
         foreach ($PeriodToModif as $OnePeriodToModif) {
             $this->em->remove($OnePeriodToModif);
@@ -540,7 +540,7 @@ class AdminPresenceController extends Controller
      */
     public function adminListingRolesAction()
     {
-        return array();
+        return [];
     }
     /**
      * @EXT\Route(
@@ -560,11 +560,11 @@ class AdminPresenceController extends Controller
 
             ->add('name2', 'text')
             ->add('color2', 'text')
-            ->add('principalStatus2', 'checkbox', array(
-                  'required' => false, )
+            ->add('principalStatus2', 'checkbox', [
+                  'required' => false, ]
             )
-            ->add('valider2', 'submit', array(
-                'label' => 'Modifier', ))
+            ->add('valider2', 'submit', [
+                'label' => 'Modifier', ])
 
             ->getForm();
 
@@ -586,8 +586,8 @@ class AdminPresenceController extends Controller
             return new JsonResponse('success', 200);
         }
 
-        return array('ModifStatusForm' => $ModifStatusForm->createView(),
-                    'theStatus' => $theStatus, );
+        return ['ModifStatusForm' => $ModifStatusForm->createView(),
+                    'theStatus' => $theStatus, ];
     }
     /**
      * @EXT\Route(
@@ -622,9 +622,9 @@ class AdminPresenceController extends Controller
     public function ListingStatusByDefaultAction()
     {
         $liststatus = $this->statuRepo->findByStatusByDefault(0);
-        $datas = array();
+        $datas = [];
         foreach ($liststatus as $status) {
-            $datas[$status->getId()] = array();
+            $datas[$status->getId()] = [];
             $datas[$status->getId()] = $status->getId();
         }
 

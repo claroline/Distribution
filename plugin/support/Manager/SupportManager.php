@@ -201,10 +201,10 @@ class SupportManager
             $config = $configs[0];
         } else {
             $config = new Configuration();
-            $details = array(
+            $details = [
                 'with_credits' => false,
-                'contacts' => array(),
-            );
+                'contacts' => [],
+            ];
             $config->setDetails($details);
             $this->persistConfiguration($config);
         }
@@ -231,7 +231,7 @@ class SupportManager
         $config = $this->getConfiguration();
         $details = $config->getDetails();
 
-        return isset($details['contacts']) ? $details['contacts'] : array();
+        return isset($details['contacts']) ? $details['contacts'] : [];
     }
 
     public function sendTicketMail(
@@ -240,8 +240,8 @@ class SupportManager
         $type = '',
         Comment $comment = null
     ) {
-        $receivers = array();
-        $extra = array();
+        $receivers = [];
+        $extra = [];
 
         switch ($type) {
 
@@ -251,7 +251,7 @@ class SupportManager
                 if (count($contactIds) > 0) {
                     $receivers = $this->userManager->getUsersByIds($contactIds);
                     $subject = '['.
-                        $this->translator->trans('new_ticket', array(), 'support').
+                        $this->translator->trans('new_ticket', [], 'support').
                         ']['.
                         $user->getFirstName().
                         ' '.
@@ -260,11 +260,11 @@ class SupportManager
                         $ticket->getTitle();
                     $content = $ticket->getDescription().
                         '<br><br>'.
-                        $this->translator->trans('mail', array(), 'platform').
+                        $this->translator->trans('mail', [], 'platform').
                         ' : '.
                         $ticket->getContactMail().
                         '<br>'.
-                        $this->translator->trans('phone', array(), 'platform').
+                        $this->translator->trans('phone', [], 'platform').
                         ' : '.
                         $ticket->getContactPhone().
                         '<br><br>';
@@ -277,7 +277,7 @@ class SupportManager
                 if (count($contactIds) > 0) {
                     $receivers = $this->userManager->getUsersByIds($contactIds);
                     $subject = '['.
-                        $this->translator->trans('ticket_edition', array(), 'support').
+                        $this->translator->trans('ticket_edition', [], 'support').
                         ']['.
                         $user->getFirstName().
                         ' '.
@@ -286,11 +286,11 @@ class SupportManager
                         $ticket->getTitle();
                     $content = $ticket->getDescription().
                         '<br><br>'.
-                        $this->translator->trans('mail', array(), 'platform').
+                        $this->translator->trans('mail', [], 'platform').
                         ' : '.
                         $ticket->getContactMail().
                         '<br>'.
-                        $this->translator->trans('phone', array(), 'platform').
+                        $this->translator->trans('phone', [], 'platform').
                         ' : '.
                         $ticket->getContactPhone().
                         '<br><br>';
@@ -303,26 +303,26 @@ class SupportManager
                 if (count($contactIds) > 0) {
                     $receivers = $this->userManager->getUsersByIds($contactIds);
                     $subject = '['.
-                        $this->translator->trans('ticket_deletion', array(), 'support').
+                        $this->translator->trans('ticket_deletion', [], 'support').
                         ']['.
                         $user->getFirstName().
                         ' '.
                         $user->getLastName().
                         '] '.
                         $ticket->getTitle();
-                    $content = $this->translator->trans('ticket_deletion', array(), 'support').
+                    $content = $this->translator->trans('ticket_deletion', [], 'support').
                         '<br><br>';
                 }
                 break;
 
             case 'new_admin_comment' :
-                $extra['to'] = array($ticket->getContactMail());
+                $extra['to'] = [$ticket->getContactMail()];
 
                 if (!is_null($comment)) {
                     $subject = '['.
-                        $this->translator->trans('new_comment', array(), 'support').
+                        $this->translator->trans('new_comment', [], 'support').
                         ']['.
-                        $this->translator->trans('ticket', array(), 'support').
+                        $this->translator->trans('ticket', [], 'support').
                         ' #'.
                         $ticket->getNum().
                         '] '.
@@ -337,7 +337,7 @@ class SupportManager
                 if (count($contactIds) > 0 && !is_null($comment)) {
                     $receivers = $this->userManager->getUsersByIds($contactIds);
                     $subject = '['.
-                        $this->translator->trans('new_comment', array(), 'support').
+                        $this->translator->trans('new_comment', [], 'support').
                         ']['.
                         $user->getFirstName().
                         ' '.
@@ -346,11 +346,11 @@ class SupportManager
                         $ticket->getTitle();
                     $content = $comment->getContent().
                         '<br><br>'.
-                        $this->translator->trans('mail', array(), 'platform').
+                        $this->translator->trans('mail', [], 'platform').
                         ' : '.
                         $ticket->getContactMail().
                         '<br>'.
-                        $this->translator->trans('phone', array(), 'platform').
+                        $this->translator->trans('phone', [], 'platform').
                         ' : '.
                         $ticket->getContactPhone().
                         '<br><br>';

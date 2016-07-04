@@ -100,7 +100,7 @@ class Updater050003 extends Updater
         $resourceImages = $this->container->get('claroline.manager.icon_manager')->getDefaultIconMap();
 
         foreach ($resourceImages as $resourceImage) {
-            $imgs = $repo->findBy(array('mimeType' => $resourceImage[1]));
+            $imgs = $repo->findBy(['mimeType' => $resourceImage[1]]);
 
             if (count($imgs) === 0) {
                 $this->log('Adding icon for mime type '.$resourceImage[1].'...');

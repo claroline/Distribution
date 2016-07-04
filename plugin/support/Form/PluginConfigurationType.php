@@ -20,12 +20,12 @@ class PluginConfigurationType extends AbstractType
         $builder->add(
             'withCredits',
             'checkbox',
-            array(
+            [
                 'required' => false,
                 'mapped' => false,
                 'label' => 'with_credits',
                 'data' => isset($this->config['with_credits']) ? $this->config['with_credits'] : false,
-            )
+            ]
         );
     }
 
@@ -36,6 +36,6 @@ class PluginConfigurationType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'support'));
+        $resolver->setDefaults(['translation_domain' => 'support']);
     }
 }

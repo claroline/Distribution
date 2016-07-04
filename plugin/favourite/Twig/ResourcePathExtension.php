@@ -2,11 +2,11 @@
 
 namespace HeVinci\FavouriteBundle\Twig;
 
+use JMS\DiExtraBundle\Annotation as DI;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @Service
@@ -34,7 +34,7 @@ class ResourcePathExtension extends \Twig_Extension
         $segments = explode('`', $fullPath);
         unset($segments[count($segments) - 1]);
 
-        $fullResourcePath = array();
+        $fullResourcePath = [];
 
         foreach ($segments as $segment) {
             $segmentsOfNode = explode('-', $segment);
@@ -45,21 +45,21 @@ class ResourcePathExtension extends \Twig_Extension
             $resourceTypeName = $node->getResourceType()->getName();
 
             if ($resourceTypeName === 'directory') {
-                $routing = $this->generator->generate('claro_desktop_open_tool', array(
+                $routing = $this->generator->generate('claro_desktop_open_tool', [
                     'toolName' => 'resource_manager',
-                ));
+                ]);
                 $routing .= '#resources/'.$nodeId;
             } else {
-                $routing = $this->generator->generate('claro_resource_open', array(
+                $routing = $this->generator->generate('claro_resource_open', [
                     'resourceType' => $resourceTypeName,
                     'node' => $nodeId,
-                ));
+                ]);
             }
 
-            $fullResourcePath[] = array(
+            $fullResourcePath[] = [
                 'nodeName' => substr($segment, 0, -(strlen($nodeId) + 1)),
                 'nodeOpenUrl' => $routing,
-            );
+            ];
         }
 
         return $fullResourcePath;
@@ -67,9 +67,9 @@ class ResourcePathExtension extends \Twig_Extension
 
     public function getFunctions()
     {
-        return array(
+        return [
             'getFullResourcePath' => new \Twig_Function_Method($this, 'getFullResourcePath'),
-        );
+        ];
     }
 
     public function getName()

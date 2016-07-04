@@ -26,17 +26,17 @@ class PortfolioViewEvent extends LogGenericEvent implements LogNotRepeatableInte
 
         parent::__construct(
             self::ACTION,
-            array(
-                'owner' => array(
+            [
+                'owner' => [
                     'lastName' => $user->getLastName(),
                     'firstName' => $user->getFirstName(),
-                ),
-                'portfolio' => array(
+                ],
+                'portfolio' => [
                     'id' => $this->portfolio->getId(),
                     'title' => $this->portfolio->getTitle(),
                     'slug' => $this->portfolio->getSlug(),
-                ),
-            ),
+                ],
+            ],
             null,
             null,
             null,
@@ -59,6 +59,6 @@ class PortfolioViewEvent extends LogGenericEvent implements LogNotRepeatableInte
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_ADMIN);
+        return [self::DISPLAYED_ADMIN];
     }
 }

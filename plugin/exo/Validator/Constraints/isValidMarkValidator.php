@@ -10,7 +10,7 @@ class isValidMarkValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!preg_match('/^-?\d+(?:[.,]\d+)?$/', $value, $matches)) {
-            $this->context->addViolation($constraint->message, array('%string%' => $value));
+            $this->context->addViolation($constraint->message, ['%string%' => $value]);
         }
     }
 }

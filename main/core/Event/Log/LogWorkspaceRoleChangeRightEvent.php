@@ -35,21 +35,21 @@ class LogWorkspaceRoleChangeRightEvent extends LogGenericEvent implements Mandat
     {
         $this->role = $role;
         $this->changeSet = $changeSet;
-        $this->details = array(
-            'role' => array(
+        $this->details = [
+            'role' => [
                 'name' => $role->getTranslationKey(),
                 'changeSet' => $changeSet,
-            ),
-            'workspace' => array(
+            ],
+            'workspace' => [
                 'name' => $resource->getWorkspace() ? $resource->getWorkspace()->getName() : ' - ',
-            ),
-            'resource' => array(
+            ],
+            'resource' => [
                 'name' => $resource->getName(),
                 'path' => $resource->getPathForDisplay(),
                 'id' => $resource->getId(),
                 'resourceType' => $resource->getResourceType()->getName(),
-            ),
-        );
+            ],
+        ];
 
         parent::__construct(
             self::ACTION,
@@ -87,7 +87,7 @@ class LogWorkspaceRoleChangeRightEvent extends LogGenericEvent implements Mandat
      */
     public function getIncludeUserIds()
     {
-        $userIds = array();
+        $userIds = [];
         $roleUsers = $this->role->getUsers();
         foreach ($roleUsers as $user) {
             array_push($userIds, $user->getId());
@@ -108,7 +108,7 @@ class LogWorkspaceRoleChangeRightEvent extends LogGenericEvent implements Mandat
      */
     public function getExcludeUserIds()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -158,7 +158,7 @@ class LogWorkspaceRoleChangeRightEvent extends LogGenericEvent implements Mandat
      */
     public function getNotificationDetails()
     {
-        $notificationDetails = array_merge($this->details, array());
+        $notificationDetails = array_merge($this->details, []);
 
         return $notificationDetails;
     }

@@ -29,13 +29,13 @@ class NotificationUserParametersListener
     public function onGetTypesForParameters(NotificationUserParametersEvent $event)
     {
         $event->addTypes(
-            array(
+            [
                 'resource-create',
                 'role-change_right',
                 'role-subscribe',
                 'badge-award',
                 'resource-text',
-            )
+            ]
         );
     }
 }

@@ -11,76 +11,76 @@ class DropzoneCommonType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $defaultDateTimeOptions = array(
+        $defaultDateTimeOptions = [
             'required' => false,
             'read_only' => false,
             'component' => true,
             'autoclose' => true,
             'language' => $options['language'],
             'date_format' => $options['date_format'],
-        );
+        ];
 
         $builder
-            ->add('stayHere', 'hidden', array(
+            ->add('stayHere', 'hidden', [
                 'mapped' => false,
-            ))
-            ->add('autoCloseForManualStates', 'hidden', array(
+            ])
+            ->add('autoCloseForManualStates', 'hidden', [
                 'mapped' => false,
-            ))
-            ->add('instruction', 'tinymce', array(
+            ])
+            ->add('instruction', 'tinymce', [
                 'required' => false,
-            ))
+            ])
 
-            ->add('allowWorkspaceResource', 'checkbox', array('required' => false))
-            ->add('allowUpload', 'checkbox', array('required' => false))
-            ->add('allowUrl', 'checkbox', array('required' => false))
-            ->add('allowRichText', 'checkbox', array('required' => false))
+            ->add('allowWorkspaceResource', 'checkbox', ['required' => false])
+            ->add('allowUpload', 'checkbox', ['required' => false])
+            ->add('allowUrl', 'checkbox', ['required' => false])
+            ->add('allowRichText', 'checkbox', ['required' => false])
 
-            ->add('peerReview', 'choice', array(
+            ->add('peerReview', 'choice', [
                 'required' => true,
-                'choices' => array(
+                'choices' => [
                     'Standard evaluation' => false,
                     'Peer review evaluation' => true,
-                ),
+                ],
                 'choices_as_values' => true,
                 'expanded' => true,
                 'multiple' => false,
-            ))
-            ->add('expectedTotalCorrection', 'integer', array('required' => true))
+            ])
+            ->add('expectedTotalCorrection', 'integer', ['required' => true])
 
-            ->add('displayNotationToLearners', 'checkbox', array('required' => false))
-            ->add('diplayCorrectionsToLearners', 'checkbox', array('required' => false))
-            ->add('allowCorrectionDeny', 'checkbox', array('required' => false))
-            ->add('displayNotationMessageToLearners', 'checkbox', array('required' => false))
-            ->add('successMessage', 'tinymce', array('required' => false))
-            ->add('failMessage', 'tinymce', array('required' => false))
-            ->add('minimumScoreToPass', 'integer', array('required' => true))
+            ->add('displayNotationToLearners', 'checkbox', ['required' => false])
+            ->add('diplayCorrectionsToLearners', 'checkbox', ['required' => false])
+            ->add('allowCorrectionDeny', 'checkbox', ['required' => false])
+            ->add('displayNotationMessageToLearners', 'checkbox', ['required' => false])
+            ->add('successMessage', 'tinymce', ['required' => false])
+            ->add('failMessage', 'tinymce', ['required' => false])
+            ->add('minimumScoreToPass', 'integer', ['required' => true])
 
-            ->add('manualPlanning', 'choice', array(
+            ->add('manualPlanning', 'choice', [
                 'required' => true,
-                'choices' => array(
+                'choices' => [
                     'manualPlanning' => true,
                     'sheduleByDate' => false,
-                ),
+                ],
                 'choices_as_values' => true,
                 'expanded' => true,
                 'multiple' => false,
-            ))
+            ])
 
-            ->add('manualState', 'choice', array(
-                'choices' => array(
+            ->add('manualState', 'choice', [
+                'choices' => [
                     'notStartedManualState' => 'notStarted',
                     'allowDropManualState' => 'allowDrop',
                     'peerReviewManualState' => 'peerReview',
                     'allowDropAndPeerReviewManualState' => 'allowDropAndPeerReview',
                     'finishedManualState' => 'finished',
-                ),
+                ],
                 'choices_as_values' => true,
                 'expanded' => true,
                 'multiple' => false,
-            ))
-            ->add('autoCloseOpenedDropsWhenTimeIsUp', 'checkbox', array('required' => false))
-            ->add('notifyOnDrop', 'checkbox', array('required' => false))
+            ])
+            ->add('autoCloseOpenedDropsWhenTimeIsUp', 'checkbox', ['required' => false])
+            ->add('notifyOnDrop', 'checkbox', ['required' => false])
             /*
              *
              ->add('startAllowDrop', 'datetime', array('date_widget' => 'single_text', 'time_widget' => 'single_text', 'with_seconds' => false, 'required' => false))
@@ -102,12 +102,12 @@ class DropzoneCommonType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'Icap\DropzoneBundle\Entity\Dropzone',
                 'language' => 'en',
                 'translation_domain' => 'icap_dropzone',
                 'date_format' => DateType::HTML5_FORMAT,
-            )
+            ]
         );
     }
 }

@@ -34,31 +34,31 @@ class LogRoleSubscribeEvent extends LogGenericEvent implements NotifiableInterfa
     public function __construct(Role $role, AbstractRoleSubject $subject)
     {
         $this->role = $role;
-        $this->workspaceOwners = array();
+        $this->workspaceOwners = [];
 
-        $details = array('role' => array('name' => $role->getTranslationKey()));
+        $details = ['role' => ['name' => $role->getTranslationKey()]];
 
         if ($role->getWorkspace()) {
-            $details['workspace'] = array(
+            $details['workspace'] = [
                 'name' => $role->getWorkspace()->getName(),
                 'id' => $role->getWorkspace()->getId(),
-            );
+            ];
 
             $managerRole = $role->getWorkspace()->getManagerRole();
             $this->workspaceOwners = $managerRole->getUsers();
         }
 
         if ($subject instanceof User) {
-            $details['receiverUser'] = array(
+            $details['receiverUser'] = [
                 'firstName' => $subject->getFirstName(),
                 'lastName' => $subject->getLastName(),
                 'username' => $subject->getUsername(),
-            );
+            ];
             $this->receiver = $subject;
         } else {
-            $details['receiverGroup'] = array(
+            $details['receiverGroup'] = [
                 'name' => $subject->getName(),
-            );
+            ];
 
             $this->receiverGroup = $subject;
         }
@@ -101,7 +101,7 @@ class LogRoleSubscribeEvent extends LogGenericEvent implements NotifiableInterfa
     public function getIncludeUserIds()
     {
         if ($this->receiver !== null) {
-            $ids = array($this->receiver->getId());
+            $ids = [$this->receiver->getId()];
         } else {
             $ids = $this->receiverGroup->getUserIds();
         }
@@ -122,7 +122,7 @@ class LogRoleSubscribeEvent extends LogGenericEvent implements NotifiableInterfa
      */
     public function getExcludeUserIds()
     {
-        $userIds = array();
+        $userIds = [];
         $currentGroupId = -1;
         //First of all we need to test if subject is group or user
         //In case of group we need to exclude all these users that already exist in role
@@ -189,7 +189,7 @@ class LogRoleSubscribeEvent extends LogGenericEvent implements NotifiableInterfa
      */
     public function getNotificationDetails()
     {
-        $notificationDetails = array_merge($this->details, array());
+        $notificationDetails = array_merge($this->details, []);
 
         return $notificationDetails;
     }

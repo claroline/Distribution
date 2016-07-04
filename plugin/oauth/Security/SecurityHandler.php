@@ -19,8 +19,8 @@ use Symfony\Component\Routing\Router;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
-use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerInterface;
+use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
 
 /**
  * @DI\Service("icap.oauth.security_handler")
@@ -78,7 +78,7 @@ class SecurityHandler  implements AuthenticationSuccessHandlerInterface, Authent
     {
         $referer = $request->headers->get('referer');
         if (empty($referer)) {
-            return new RedirectResponse($this->router->generate('claro_desktop_open_tool', array('toolName' => 'home')));
+            return new RedirectResponse($this->router->generate('claro_desktop_open_tool', ['toolName' => 'home']));
         } else {
             return new RedirectResponse($referer);
         }

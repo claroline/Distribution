@@ -202,7 +202,7 @@ class UserMessageRepository extends EntityRepository
      */
     public function findByMessages(User $user, array $messages)
     {
-        $messageIds = array();
+        $messageIds = [];
 
         foreach ($messages as $message) {
             $messageIds[] = $message->getId();

@@ -11,10 +11,10 @@
 
 namespace Claroline\CoreBundle\Library\Transfert;
 
-use Doctrine\Common\Collections\ArrayCollection;
+use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Claroline\BundleRecorder\Log\LoggableTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 
 abstract class Importer
 {
@@ -26,7 +26,7 @@ abstract class Importer
     private $owner;
     private $workspace;
     private static $isStrict;
-    private $roles = array();
+    private $roles = [];
     private $_data;
     private $_files;
 
@@ -107,13 +107,13 @@ abstract class Importer
      */
     public static function getDefaultRoles()
     {
-        return array(
+        return [
             'ROLE_USER',
             'ROLE_WS_MANAGER',
             'ROLE_WS_CREATOR',
             'ROLE_ADMIN',
             'ROLE_ANONYMOUS',
-        );
+        ];
     }
 
     public function setRolesEntity(array $roles)

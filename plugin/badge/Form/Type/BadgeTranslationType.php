@@ -11,9 +11,9 @@ class BadgeTranslationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', 'text', array('label' => 'badge_form_name', 'attr' => array('maxlength' => 128)))
-            ->add('description', 'text', array('label' => 'badge_form_description', 'attr' => array('maxlength' => 128)))
-            ->add('criteria', 'tinymce', array('label' => 'badge_form_criteria'))
+            ->add('name', 'text', ['label' => 'badge_form_name', 'attr' => ['maxlength' => 128]])
+            ->add('description', 'text', ['label' => 'badge_form_description', 'attr' => ['maxlength' => 128]])
+            ->add('criteria', 'tinymce', ['label' => 'badge_form_criteria'])
             ->add('locale', 'hidden');
     }
 
@@ -25,10 +25,10 @@ class BadgeTranslationType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'Icap\BadgeBundle\Entity\BadgeTranslation',
                 'translation_domain' => 'icap_badge',
-            )
+            ]
         );
     }
 }

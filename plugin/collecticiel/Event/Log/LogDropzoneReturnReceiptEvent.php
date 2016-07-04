@@ -4,8 +4,8 @@ namespace Innova\CollecticielBundle\Event\Log;
 
 use Claroline\CoreBundle\Event\Log\AbstractLogResourceEvent;
 use Claroline\CoreBundle\Event\Log\NotifiableInterface;
-use Innova\CollecticielBundle\Entity\Dropzone;
 use Innova\CollecticielBundle\Entity\Document;
+use Innova\CollecticielBundle\Entity\Dropzone;
 
 class LogDropzoneReturnReceiptEvent extends AbstractLogResourceEvent implements NotifiableInterface
 {
@@ -14,7 +14,7 @@ class LogDropzoneReturnReceiptEvent extends AbstractLogResourceEvent implements 
     protected $dropzone;
     protected $newState;
     protected $details;
-    private $userIds = array();
+    private $userIds = [];
 
     /**
      * @param Wiki         $wiki
@@ -35,9 +35,9 @@ class LogDropzoneReturnReceiptEvent extends AbstractLogResourceEvent implements 
         }
         $this->userIds = $userIds;
 
-        $this->details = array(
+        $this->details = [
 //            'newState'=> $this->newState
-        );
+        ];
 
         // Récupération du nom et du prénom
         $this->firstName = $document->getSender()->getFirstName();
@@ -51,7 +51,7 @@ class LogDropzoneReturnReceiptEvent extends AbstractLogResourceEvent implements 
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_WORKSPACE);
+        return [self::DISPLAYED_WORKSPACE];
     }
 
     public function getDropzone()
@@ -87,7 +87,7 @@ class LogDropzoneReturnReceiptEvent extends AbstractLogResourceEvent implements 
      */
     public function getExcludeUserIds()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -117,13 +117,13 @@ class LogDropzoneReturnReceiptEvent extends AbstractLogResourceEvent implements 
      */
     public function getNotificationDetails()
     {
-        $notificationDetails = array_merge($this->details, array());
+        $notificationDetails = array_merge($this->details, []);
 
-        $notificationDetails['resource'] = array(
+        $notificationDetails['resource'] = [
             'id' => $this->document->getId(),
             'name' => $this->firstName.' '.$this->lastName, // $this->resource->getName(),
             'type' => $this->type,
-        );
+        ];
 
         return $notificationDetails;
     }

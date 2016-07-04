@@ -12,9 +12,9 @@
 namespace Claroline\CoreBundle\Command\Dev;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputArgument;
 
 class ApiTestCommand extends ContainerAwareCommand
 {
@@ -22,19 +22,19 @@ class ApiTestCommand extends ContainerAwareCommand
     {
         $this->setName('claroline:api:test')->setDescription('Tests the api');
         $this->setDefinition(
-            array(
+            [
                 new InputArgument('platform_name', InputArgument::REQUIRED, 'the friend request name'),
                 new InputArgument('url', InputArgument::REQUIRED, 'the url'),
-            )
+            ]
         );
     }
 
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $params = array(
+        $params = [
             'platform_name' => 'the friend request name',
             'url' => 'the url',
-        );
+        ];
 
         foreach ($params as $argument => $argumentName) {
             if (!$input->getArgument($argument)) {

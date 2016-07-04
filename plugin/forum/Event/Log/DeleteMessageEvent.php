@@ -23,21 +23,21 @@ class DeleteMessageEvent extends AbstractLogResourceEvent
      */
     public function __construct(Message $message)
     {
-        $details = array(
-            'message' => array(
+        $details = [
+            'message' => [
                 'id' => $message->getId(),
                 'content' => $message->getContent(),
-            ),
-            'subject' => array(
+            ],
+            'subject' => [
                 'id' => $message->getSubject()->getId(),
-            ),
-            'category' => array(
+            ],
+            'category' => [
                 'id' => $message->getSubject()->getCategory()->getId(),
-            ),
-            'forum' => array(
+            ],
+            'forum' => [
                 'id' => $message->getSubject()->getCategory()->getForum()->getId(),
-            ),
-        );
+            ],
+        ];
 
         parent::__construct($message->getSubject()->getCategory()->getForum()->getResourceNode(), $details);
     }
@@ -47,6 +47,6 @@ class DeleteMessageEvent extends AbstractLogResourceEvent
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_WORKSPACE, self::DISPLAYED_ADMIN);
+        return [self::DISPLAYED_WORKSPACE, self::DISPLAYED_ADMIN];
     }
 }

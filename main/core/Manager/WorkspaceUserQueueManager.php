@@ -12,8 +12,8 @@
 namespace Claroline\CoreBundle\Manager;
 
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Entity\Workspace\WorkspaceRegistrationQueue;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Entity\Workspace\WorkspaceRegistrationQueue;
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Pager\PagerFactory;
 use Claroline\CoreBundle\Persistence\ObjectManager;
@@ -71,8 +71,8 @@ class WorkspaceUserQueueManager
     public function validateRegistration(WorkspaceRegistrationQueue $wksqrq)
     {
         $this->roleManager->associateRolesToSubjects(
-            array($wksqrq->getUser()),
-            array($wksqrq->getRole()),
+            [$wksqrq->getUser()],
+            [$wksqrq->getRole()],
             true
         );
         $this->objectManager->remove($wksqrq);
@@ -84,7 +84,7 @@ class WorkspaceUserQueueManager
         $this->dispatcher->dispatch(
             'log',
             'Log\LogWorkspaceRegistrationDecline',
-            array($wksqrq)
+            [$wksqrq]
         );
 
         $this->objectManager->remove($wksqrq);

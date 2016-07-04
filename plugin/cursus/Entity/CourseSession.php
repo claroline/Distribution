@@ -156,7 +156,7 @@ class CourseSession
      * @Groups({"api_bulletin"})
      * @SerializedName("extra")
      */
-    protected $extra = array();
+    protected $extra = [];
 
     /**
      * @ORM\Column(name="user_validation", type="boolean")

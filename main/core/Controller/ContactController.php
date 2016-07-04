@@ -93,7 +93,7 @@ class ContactController extends Controller
                 $page,
                 $max
             );
-            $params = array(
+            $params = [
                 'options' => $options,
                 'categories' => $categories,
                 'allContacts' => $allContacts,
@@ -102,7 +102,7 @@ class ContactController extends Controller
                 'max' => $max,
                 'orderedBy' => $orderedBy,
                 'order' => $order,
-            );
+            ];
         } else {
             $contacts = $this->contactManager->getUserContactsWithPager(
                 $authenticatedUser,
@@ -112,7 +112,7 @@ class ContactController extends Controller
                 $orderedBy,
                 $order
             );
-            $params = array(
+            $params = [
                 'options' => $options,
                 'allContacts' => $allContacts,
                 'contacts' => $contacts,
@@ -120,7 +120,7 @@ class ContactController extends Controller
                 'max' => $max,
                 'orderedBy' => $orderedBy,
                 'order' => $order,
-            );
+            ];
         }
         $users = $this->userManager->getUsersForUserPicker($authenticatedUser);
         $params['users'] = $users;
@@ -155,13 +155,13 @@ class ContactController extends Controller
             $order
         );
 
-        return array(
+        return [
             'options' => $options,
             'contacts' => $contacts,
             'max' => $max,
             'orderedBy' => $orderedBy,
             'order' => $order,
-        );
+        ];
     }
 
     /**
@@ -192,14 +192,14 @@ class ContactController extends Controller
             $order
         );
 
-        return array(
+        return [
             'category' => $category,
             'options' => $options,
             'contacts' => $contacts,
             'max' => $max,
             'orderedBy' => $orderedBy,
             'order' => $order,
-        );
+        ];
     }
 
     /**
@@ -233,13 +233,13 @@ class ContactController extends Controller
             $order
         );
 
-        return array(
+        return [
             'options' => $options,
             'users' => $users,
             'max' => $max,
             'orderedBy' => $orderedBy,
             'order' => $order,
-        );
+        ];
     }
 
     /**
@@ -325,7 +325,7 @@ class ContactController extends Controller
         $options = $this->contactManager->getUserOptions($authenticatedUser);
         $form = $this->formFactory->create(new OptionsType($options));
 
-        return array('form' => $form->createView());
+        return ['form' => $form->createView()];
     }
 
     /**
@@ -345,20 +345,20 @@ class ContactController extends Controller
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
-            $values = array(
+            $values = [
                 'show_all_my_contacts' => $form['showAllMyContacts']->getData(),
                 'show_all_visible_users' => $form['showAllVisibleUsers']->getData(),
                 'show_username' => $form['showUsername']->getData(),
                 'show_mail' => $form['showMail']->getData(),
                 'show_phone' => $form['showPhone']->getData(),
                 'show_picture' => $form['showPicture']->getData(),
-            );
+            ];
             $options->setOptions($values);
             $this->contactManager->persistOptions($options);
 
             return new JsonResponse('success', 200);
         } else {
-            return array('form' => $form->createView());
+            return ['form' => $form->createView()];
         }
     }
 
@@ -375,7 +375,7 @@ class ContactController extends Controller
     {
         $form = $this->formFactory->create(new CategoryType(), new Category());
 
-        return array('form' => $form->createView());
+        return ['form' => $form->createView()];
     }
 
     /**
@@ -407,11 +407,11 @@ class ContactController extends Controller
             $this->contactManager->persistCategory($category);
 
             return new JsonResponse(
-                array('id' => $category->getId(), 'name' => $category->getName()),
+                ['id' => $category->getId(), 'name' => $category->getName()],
                 200
             );
         } else {
-            return array('form' => $form->createView());
+            return ['form' => $form->createView()];
         }
     }
 
@@ -429,7 +429,7 @@ class ContactController extends Controller
         $this->checkUserAccessForCategory($category, $authenticatedUser);
         $form = $this->formFactory->create(new CategoryType(), $category);
 
-        return array('form' => $form->createView(), 'category' => $category);
+        return ['form' => $form->createView(), 'category' => $category];
     }
 
     /**
@@ -452,11 +452,11 @@ class ContactController extends Controller
             $this->contactManager->persistCategory($category);
 
             return new JsonResponse(
-                array('id' => $category->getId(), 'name' => $category->getName()),
+                ['id' => $category->getId(), 'name' => $category->getName()],
                 200
             );
         } else {
-            return array('form' => $form->createView(), 'category' => $category);
+            return ['form' => $form->createView(), 'category' => $category];
         }
     }
 
@@ -490,7 +490,7 @@ class ContactController extends Controller
         $contact = $this->contactManager->getContactByUserAndContact($authenticatedUser, $user);
         $form = $this->formFactory->create(new CategoriesTransferType($authenticatedUser), $contact);
 
-        return array('form' => $form->createView(), 'contact' => $user);
+        return ['form' => $form->createView(), 'contact' => $user];
     }
 
     /**
@@ -515,7 +515,7 @@ class ContactController extends Controller
 
             return new JsonResponse('success', 200);
         } else {
-            return array('form' => $form->createView(), 'contact' => $user);
+            return ['form' => $form->createView(), 'contact' => $user];
         }
     }
 

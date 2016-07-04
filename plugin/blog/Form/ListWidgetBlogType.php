@@ -3,8 +3,8 @@
 namespace Icap\BlogBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 
 class ListWidgetBlogType extends AbstractType
 {

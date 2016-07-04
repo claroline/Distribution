@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Event;
 
-use Symfony\Component\EventDispatcher\Event;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
+use Symfony\Component\EventDispatcher\Event;
 
 class DisplayWidgetEvent extends Event implements DataConveyorEventInterface
 {

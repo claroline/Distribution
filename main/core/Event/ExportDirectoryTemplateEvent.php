@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Event;
 
-use Symfony\Component\EventDispatcher\Event;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Symfony\Component\EventDispatcher\Event;
 
 class ExportDirectoryTemplateEvent extends Event implements DataConveyorEventInterface
 {
@@ -23,7 +23,7 @@ class ExportDirectoryTemplateEvent extends Event implements DataConveyorEventInt
     public function __construct(ResourceNode $node)
     {
         $this->node = $node;
-        $this->files = array();
+        $this->files = [];
     }
 
     public function getNode()

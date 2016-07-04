@@ -11,12 +11,12 @@
 
 namespace Claroline\CoreBundle\Listener;
 
+use Bazinga\Bundle\JsTranslationBundle\Command\DumpCommand;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
-use Bazinga\Bundle\JsTranslationBundle\Command\DumpCommand;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * @DI\Service()
@@ -46,7 +46,7 @@ class AsseticDumpListener
         if ($command->getName() === 'assetic:dump') {
             $command = new DumpCommand();
             $command->setContainer($this->container);
-            $input = new ArrayInput(array());
+            $input = new ArrayInput([]);
             $output = new ConsoleOutput();
             $resultCode = $command->run($input, $output);
         }

@@ -13,17 +13,17 @@ namespace Claroline\CoreBundle\Library\Transfert\ConfigurationBuilders\Tools;
 
 use Claroline\CoreBundle\Entity\Home\HomeTab;
 use Claroline\CoreBundle\Entity\Home\HomeTabConfig;
+use Claroline\CoreBundle\Entity\Widget\WidgetDisplayConfig;
 use Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Claroline\CoreBundle\Entity\Widget\WidgetDisplayConfig;
-use Claroline\CoreBundle\Persistence\ObjectManager;
-use Symfony\Component\Config\Definition\ConfigurationInterface;
-use Symfony\Component\Config\Definition\Builder\TreeBuilder;
-use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\Config\Definition\Processor;
 use Claroline\CoreBundle\Library\Transfert\Importer;
 use Claroline\CoreBundle\Library\Transfert\RichTextInterface;
+use Claroline\CoreBundle\Persistence\ObjectManager;
+use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\Config\Definition\Processor;
 
 /**
  * @DI\Service("claroline.tool.home_importer")
@@ -227,13 +227,13 @@ class HomeImporter extends Importer implements ConfigurationInterface, RichTextI
 
                 $widgetDisplayConfigs = $this->container->get('claroline.manager.widget_manager')->getWidgetDisplayConfigsByWorkspaceAndWidgets(
                     $workspace,
-                    array($widgetConfig->getWidgetInstance())
+                    [$widgetConfig->getWidgetInstance()]
                 );
 
                 $widgetDisplayConfig = isset($widgetDisplayConfigs[0]) ? $widgetDisplayConfigs[0] : null;
 
                 //export the widget content here
-                $widgetData = array('widget' => array(
+                $widgetData = ['widget' => [
                     'name' => $widgetConfig->getWidgetInstance()->getName(),
                     'type' => $widgetConfig->getWidgetInstance()->getWidget()->getName(),
                     'data' => $data,
@@ -242,15 +242,15 @@ class HomeImporter extends Importer implements ConfigurationInterface, RichTextI
                     'width' => $widgetDisplayConfig ? $widgetDisplayConfig->getWidth() : null,
                     'height' => $widgetDisplayConfig ? $widgetDisplayConfig->getHeight() : null,
                     'color' => $widgetDisplayConfig ? $widgetDisplayConfig->getColor() : null,
-                ));
+                ]];
 
                 $widgets[] = $widgetData;
             }
 
-            $tabs[] = array('tab' => array(
+            $tabs[] = ['tab' => [
                 'name' => $homeTab->getHomeTab()->getName(),
                 'widgets' => $widgets,
-            ));
+            ]];
         }
 
         return $tabs;

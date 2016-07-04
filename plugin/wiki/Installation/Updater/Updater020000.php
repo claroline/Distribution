@@ -3,9 +3,9 @@
 namespace Icap\WikiBundle\Installation\Updater;
 
 use Claroline\InstallationBundle\Updater\Updater;
-use Icap\WikiBundle\Entity\Wiki;
-use Icap\WikiBundle\Entity\Section;
 use Icap\WikiBundle\Entity\Contribution;
+use Icap\WikiBundle\Entity\Section;
+use Icap\WikiBundle\Entity\Wiki;
 
 class Updater020000 extends Updater
 {
@@ -49,7 +49,7 @@ class Updater020000 extends Updater
         $em = $this->container->get('doctrine.orm.entity_manager');
         $sectionRepository = $this->container->get('icap.wiki.section_repository');
         foreach ($tempSections as $tempSection) {
-            $section = $sectionRepository->findOneBy(array('id' => $tempSection['id']));
+            $section = $sectionRepository->findOneBy(['id' => $tempSection['id']]);
             $user = $em->getReference('ClarolineCoreBundle:User', $tempSection['user_id']);
             $activeContribution = new Contribution();
             $activeContribution->setTitle($tempSection['title']);

@@ -11,12 +11,12 @@
 
 namespace Claroline\CoreBundle\Form\Field;
 
+use Claroline\CoreBundle\Form\DataTransformer\JavascriptSafeTransformer;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Claroline\CoreBundle\Form\DataTransformer\JavascriptSafeTransformer;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("claroline.form.tinymce")
@@ -24,7 +24,7 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class TinymceType extends TextareaType
 {
-    private $defaultAttributes = array('class' => 'claroline-tiny-mce hide');
+    private $defaultAttributes = ['class' => 'claroline-tiny-mce hide'];
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -43,13 +43,13 @@ class TinymceType extends TextareaType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('attr' => $this->defaultAttributes));
+        $resolver->setDefaults(['attr' => $this->defaultAttributes]);
         $resolver->setNormalizers(
-            array(
+            [
                 'attr' => function (Options $options, $value) {
                     return array_merge($this->defaultAttributes, $value);
                 },
-            )
+            ]
         );
     }
 }

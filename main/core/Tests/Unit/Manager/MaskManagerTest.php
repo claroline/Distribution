@@ -58,22 +58,22 @@ class MaskManagerTest extends MockeryTestCase
         $exportDecoder->setValue(16);
         $exportDecoder->setName('export');
 
-        $decoders = array($openDecoder, $editDecoder, $deleteDecoder, $copyDecoder, $exportDecoder);
+        $decoders = [$openDecoder, $editDecoder, $deleteDecoder, $copyDecoder, $exportDecoder];
 
         foreach ($decoders as $decoder) {
             $decoder->setResourceType($resourceType);
         }
 
         $this->maskRepo->shouldReceive('findBy')->once()
-            ->with(array('resourceType' => $resourceType))->andReturn($decoders);
+            ->with(['resourceType' => $resourceType])->andReturn($decoders);
 
-        $perms = array(
+        $perms = [
             'open' => true,
             'edit' => false,
             'delete' => true,
             'copy' => true,
             'export' => true,
-        );
+        ];
 
         $expectedMask = 1 + 8 + 4 + 16;
 
@@ -104,22 +104,22 @@ class MaskManagerTest extends MockeryTestCase
         $exportDecoder->setValue(16);
         $exportDecoder->setName('export');
 
-        $decoders = array($openDecoder, $editDecoder, $deleteDecoder, $copyDecoder, $exportDecoder);
+        $decoders = [$openDecoder, $editDecoder, $deleteDecoder, $copyDecoder, $exportDecoder];
 
         foreach ($decoders as $decoder) {
             $decoder->setResourceType($resourceType);
         }
 
         $this->maskRepo->shouldReceive('findBy')->once()
-            ->with(array('resourceType' => $resourceType))->andReturn($decoders);
+            ->with(['resourceType' => $resourceType])->andReturn($decoders);
 
-        $perms = array(
+        $perms = [
             'open' => true,
             'edit' => false,
             'delete' => true,
             'copy' => true,
             'export' => true,
-        );
+        ];
 
         $mask = $this->manager->encodeMask($perms, $resourceType);
         $this->assertEquals($perms, $this->manager->decodeMask($mask, $resourceType));
@@ -129,13 +129,13 @@ class MaskManagerTest extends MockeryTestCase
     {
         $openDecoder = $this->mock('Claroline\CoreBundle\Entity\Resource\MaskDecoder');
         $editDecoder = $this->mock('Claroline\CoreBundle\Entity\Resource\MaskDecoder');
-        $decoders = array($openDecoder, $editDecoder);
+        $decoders = [$openDecoder, $editDecoder];
         $openDecoder->shouldReceive('getName')->andReturn('open');
         $editDecoder->shouldReceive('getName')->andReturn('edit');
         $type = new \Claroline\CoreBundle\Entity\Resource\ResourceType();
-        $this->maskRepo->shouldReceive('findBy')->once()->with(array('resourceType' => $type))->andReturn($decoders);
+        $this->maskRepo->shouldReceive('findBy')->once()->with(['resourceType' => $type])->andReturn($decoders);
 
-        $this->assertEquals(array('open', 'edit'), $this->manager->getPermissionMap($type));
+        $this->assertEquals(['open', 'edit'], $this->manager->getPermissionMap($type));
     }
 
     public function testGetDecoder()
@@ -143,7 +143,7 @@ class MaskManagerTest extends MockeryTestCase
         $type = new \Claroline\CoreBundle\Entity\Resource\ResourceType();
         $action = 'action';
         $decoder = new \Claroline\CoreBundle\Entity\Resource\MaskDecoder();
-        $this->maskRepo->shouldReceive('findOneBy')->with(array('resourceType' => $type, 'name' => $action))
+        $this->maskRepo->shouldReceive('findOneBy')->with(['resourceType' => $type, 'name' => $action])
             ->andReturn($decoder);
         $this->assertEquals($decoder, $this->manager->getDecoder($type, $action));
     }
@@ -153,7 +153,7 @@ class MaskManagerTest extends MockeryTestCase
         $type = new \Claroline\CoreBundle\Entity\Resource\ResourceType();
         $value = 42;
         $decoder = new \Claroline\CoreBundle\Entity\Resource\MaskDecoder();
-        $this->maskRepo->shouldReceive('findOneBy')->with(array('resourceType' => $type, 'value' => $value))
+        $this->maskRepo->shouldReceive('findOneBy')->with(['resourceType' => $type, 'value' => $value])
             ->andReturn($decoder);
         $this->assertEquals($decoder, $this->manager->getByValue($type, $value));
     }
@@ -163,7 +163,7 @@ class MaskManagerTest extends MockeryTestCase
         $type = new \Claroline\CoreBundle\Entity\Resource\ResourceType();
         $name = 'menu';
         $menu = new \Claroline\CoreBundle\Entity\Resource\MenuAction();
-        $this->menuRepo->shouldReceive('findOneBy')->with(array('resourceType' => $type, 'name' => $name))
+        $this->menuRepo->shouldReceive('findOneBy')->with(['resourceType' => $type, 'name' => $name])
             ->andReturn($menu);
         $this->assertEquals($menu, $this->manager->getMenuFromNameAndResourceType($name, $type));
     }

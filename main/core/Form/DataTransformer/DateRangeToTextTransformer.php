@@ -41,8 +41,8 @@ class DateRangeToTextTransformer implements DataTransformerInterface
                 $endDate = $dateArray[1];
             }
 
-            $format = $this->translator->trans('date_range.format', array(), 'platform');
-            $separator = $this->translator->trans('date_range.separator', array(), 'platform');
+            $format = $this->translator->trans('date_range.format', [], 'platform');
+            $separator = $this->translator->trans('date_range.separator', [], 'platform');
             $outputValue = date($format, $startDate).' '.$separator.' '.date($format, $endDate);
             if ($startDate == $endDate) {
                 $outputValue = date($format, $startDate);
@@ -63,13 +63,13 @@ class DateRangeToTextTransformer implements DataTransformerInterface
     {
         $startDate = time();
         $endDate = time();
-        $separator = $this->translator->trans('date_range.separator', array(), 'platform');
+        $separator = $this->translator->trans('date_range.separator', [], 'platform');
 
         if ($string != null) {
             $array = explode(' '.$separator.' ', $string);
 
             if (array_key_exists(0, $array)) {
-                $dateFormat = $this->translator->trans('date_range.format', array(), 'platform');
+                $dateFormat = $this->translator->trans('date_range.format', [], 'platform');
                 $startDate = $endDate = \DateTime::createFromFormat($dateFormat, $array[0])->getTimestamp();
 
                 if (array_key_exists(1, $array)) {
@@ -77,7 +77,7 @@ class DateRangeToTextTransformer implements DataTransformerInterface
                 }
             }
 
-            return array($startDate, $endDate);
+            return [$startDate, $endDate];
         }
     }
 }

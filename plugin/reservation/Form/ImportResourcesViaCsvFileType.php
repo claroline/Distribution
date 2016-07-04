@@ -3,8 +3,8 @@
 namespace FormaLibre\ReservationBundle\Form;
 
 use FormaLibre\ReservationBundle\Validator\Constraints\CsvResource;
-use Symfony\Component\Form\AbstractType;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\File;
@@ -19,11 +19,11 @@ class ImportResourcesViaCsvFileType extends AbstractType
     {
         $builder->add('file', 'file', [
             'label' => 'import.file',
-            'constraints' => array(
+            'constraints' => [
                 new NotBlank(),
                 new File(),
                 new CsvResource(),
-            ),
+            ],
             'mapped' => false,
         ]);
     }

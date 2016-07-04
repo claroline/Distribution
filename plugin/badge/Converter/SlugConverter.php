@@ -2,15 +2,15 @@
 
 namespace Icap\BadgeBundle\Converter;
 
-use Icap\BadgeBundle\Repository\BadgeRepository;
+use Claroline\CoreBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Icap\BadgeBundle\Repository\BadgeRepository;
+use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
-use JMS\DiExtraBundle\Annotation as DI;
-use Claroline\CoreBundle\Entity\User;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @DI\Service()

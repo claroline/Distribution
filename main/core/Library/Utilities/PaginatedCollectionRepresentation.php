@@ -22,9 +22,9 @@ class PaginatedCollectionRepresentation
     {
         $this->pager = empty($pager) ? $this->pager : $pager;
         if (empty($this->pager)) {
-            return array();
+            return [];
         }
-        $representation = array(
+        $representation = [
             'hasToPaginate' => $this->pager->haveToPaginate(),
             'hasNextPage' => $this->pager->hasNextPage(),
             'hasPreviousPage' => $this->pager->hasPreviousPage(),
@@ -32,14 +32,14 @@ class PaginatedCollectionRepresentation
             'itemsPerPage' => $this->pager->getMaxPerPage(),
             'currentPage' => $this->pager->getCurrentPage(),
             'data' => $this->pager->getCurrentPageResults(),
-        );
+        ];
 
         return $representation;
     }
 
     public function createRepresentationFromValues($data, $totalItems, $itemsPerPage, $currentPage)
     {
-        $representation = array(
+        $representation = [
             'hasToPaginate' => $totalItems > $itemsPerPage,
             'hasNextPage' => $currentPage < (int) ceil($totalItems / $itemsPerPage),
             'hasPreviousPage' => $currentPage > 1,
@@ -47,7 +47,7 @@ class PaginatedCollectionRepresentation
             'itemsPerPage' => $itemsPerPage,
             'currentPage' => $currentPage,
             'data' => $data,
-        );
+        ];
 
         return $representation;
     }

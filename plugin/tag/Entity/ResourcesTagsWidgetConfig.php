@@ -11,8 +11,8 @@
 
 namespace Claroline\TagBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity()

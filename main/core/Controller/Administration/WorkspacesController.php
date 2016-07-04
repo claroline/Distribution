@@ -12,15 +12,15 @@
 namespace Claroline\CoreBundle\Controller\Administration;
 
 use Claroline\CoreBundle\Event\StrictDispatcher;
+use Claroline\CoreBundle\Form\WorkspaceImportType;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\Form\WorkspaceImportType;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 /**
  * @DI\Tag("security.secure_service")
@@ -102,14 +102,14 @@ class WorkspacesController extends Controller
             );
         }
 
-        return array(
+        return [
             'pager' => $pager,
             'search' => $search,
             'max' => $max,
             'order' => $order,
             'direction' => $direction,
             'type' => $type,
-        );
+        ];
     }
 
     /**
@@ -181,7 +181,7 @@ class WorkspacesController extends Controller
             $this->om->startFlushSuite();
 
             foreach ($workspaces as $workspace) {
-                $this->eventDispatcher->dispatch('log', 'Log\LogWorkspaceDelete', array($workspace));
+                $this->eventDispatcher->dispatch('log', 'Log\LogWorkspaceDelete', [$workspace]);
                 $this->workspaceManager->deleteWorkspace($workspace);
             }
 
@@ -199,7 +199,7 @@ class WorkspacesController extends Controller
     {
         $form = $this->createForm(new WorkspaceImportType());
 
-        return array('form' => $form->createView());
+        return ['form' => $form->createView()];
     }
 
     /**
@@ -228,6 +228,6 @@ class WorkspacesController extends Controller
             return $this->redirect($this->generateUrl('claro_admin_workspaces_management'));
         }
 
-        return array('form' => $form->createView());
+        return ['form' => $form->createView()];
     }
 }

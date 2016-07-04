@@ -23,20 +23,20 @@ class ExportWorkspaceModelCommand extends ContainerAwareCommand
         $this->setName('claroline:workspace:export_model')
             ->setDescription('export a workspace');
         $this->setDefinition(
-            array(
+            [
                 new InputArgument('archive_path', InputArgument::REQUIRED, 'The absolute path to the zip file.'),
                 new InputArgument('code', InputArgument::REQUIRED, 'The owner username'),
-            )
+            ]
         );
     }
 
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         //@todo ask authentication source
-        $params = array(
+        $params = [
             'archive_path' => 'Absolute path to the zip file: ',
             'code' => 'The workspace code: ',
-        );
+        ];
 
         foreach ($params as $argument => $argumentName) {
             if (!$input->getArgument($argument)) {

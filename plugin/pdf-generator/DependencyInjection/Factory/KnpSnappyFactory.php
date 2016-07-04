@@ -35,7 +35,7 @@ class KnpSnappyFactory
     {
         return new Pdf(
             $this->configHandler->getParameter('knp_pdf_binary_path'),
-            array('encoding' => 'utf-8')
+            ['encoding' => 'utf-8']
         );
     }
 }

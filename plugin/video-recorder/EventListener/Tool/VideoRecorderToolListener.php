@@ -2,12 +2,12 @@
 
 namespace Innova\VideoRecorderBundle\EventListener\Tool;
 
-use JMS\DiExtraBundle\Annotation as DI;
-use Innova\VideoRecorderBundle\Manager\VideoRecorderManager;
-use Symfony\Bridge\Twig\TwigEngine;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Innova\VideoRecorderBundle\Form\Type\VideoRecorderConfigurationType;
+use Innova\VideoRecorderBundle\Manager\VideoRecorderManager;
+use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Bridge\Twig\TwigEngine;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  *  @DI\Service()
@@ -43,7 +43,7 @@ class VideoRecorderToolListener
       $form = $this->container->get('form.factory')->create(new VideoRecorderConfigurationType(), $config);
       $content = $this->templating->render(
           'InnovaVideoRecorderBundle::desktopTool.html.twig',
-          array('form' => $form->createView(), 'id' => $config->getId())
+          ['form' => $form->createView(), 'id' => $config->getId()]
       );
       $event->setContent($content);
       $event->stopPropagation();

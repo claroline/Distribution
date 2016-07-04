@@ -37,9 +37,9 @@ class SendDatasConfirmExtension extends \Twig_Extension
      */
     public function getFunctions()
     {
-        return array(
+        return [
             'is_send_datas_confirmed' => new \Twig_Function_Method($this, 'isSendDatasConfirmed'),
-        );
+        ];
     }
 
     public function isSendDatasConfirmed()

@@ -11,20 +11,20 @@
 
 namespace Claroline\CoreBundle\Controller\Administration;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Claroline\CoreBundle\Entity\Role;
+use Claroline\CoreBundle\Entity\Tool\AdminTool;
+use Claroline\CoreBundle\Form\RoleTranslationType;
+use Claroline\CoreBundle\Manager\RoleManager;
+use Claroline\CoreBundle\Manager\ToolManager;
+use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use Claroline\CoreBundle\Manager\RoleManager;
-use Claroline\CoreBundle\Manager\ToolManager;
-use Claroline\CoreBundle\Entity\Tool\AdminTool;
-use Claroline\CoreBundle\Entity\Role;
-use Claroline\CoreBundle\Persistence\ObjectManager;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormFactory;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Claroline\CoreBundle\Form\RoleTranslationType;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @DI\Tag("security.secure_service")
@@ -68,7 +68,7 @@ class RolesController extends Controller
      */
     public function indexAction()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -82,7 +82,7 @@ class RolesController extends Controller
         $tools = $this->toolManager->getAdminTools();
         $roles = $this->roleManager->getPlatformNonAdminRoles();
 
-        return array('tools' => $tools, 'roles' => $roles);
+        return ['tools' => $tools, 'roles' => $roles];
     }
 
     /**
@@ -137,7 +137,7 @@ class RolesController extends Controller
     {
         $form = $form = $this->formFactory->create(new RoleTranslationType());
 
-        return array('form' => $form->createView());
+        return ['form' => $form->createView()];
     }
 
     /**
@@ -161,16 +161,16 @@ class RolesController extends Controller
             $role = $this->roleManager->createPlatformRoleAction($translationKey);
 
             return new JsonResponse(
-                array(
+                [
                     'id' => $role->getId(),
                     'maxUsers' => $role->getMaxUsers(),
                     'translationKey' => $role->getTranslationKey(),
                     'count' => 0,
-                )
+                ]
             );
         }
 
-        return array('form' => $form->createView());
+        return ['form' => $form->createView()];
     }
 
     /**
@@ -188,7 +188,7 @@ class RolesController extends Controller
             $counts[$role->getName()] = $this->roleManager->countUsersByRoleIncludingGroup($role);
         }
 
-        return array('roles' => $roles, 'counts' => $counts);
+        return ['roles' => $roles, 'counts' => $counts];
     }
 
     /**
@@ -205,11 +205,11 @@ class RolesController extends Controller
         $this->roleManager->remove($role);
 
         return new JsonResponse(
-            array(
+            [
                 'name' => $role->getName(),
                 'limit' => $role->getMaxUsers(),
                 'translationKey' => $role->getTranslationKey(),
-            )
+            ]
         );
     }
 
@@ -230,11 +230,11 @@ class RolesController extends Controller
         $this->roleManager->initializeLimit($role);
 
         return new JsonResponse(
-            array(
+            [
                 'name' => $role->getName(),
                 'limit' => $role->getMaxUsers(),
                 'translationKey' => $role->getTranslationKey(),
-            )
+            ]
         );
     }
 
@@ -254,23 +254,23 @@ class RolesController extends Controller
     {
         if ($amount < 0) {
             return new JsonResponse(
-                array(
+                [
                     'name' => $role->getName(),
                     'limit' => $role->getMaxUsers(),
                     'translationKey' => $role->getTranslationKey(),
                     'error' => 'negative_amount_increased',
-                ),
+                ],
                 500
             );
         }
         $this->roleManager->increaseRoleMaxUsers($role, $amount);
 
         return new JsonResponse(
-            array(
+            [
                 'name' => $role->getName(),
                 'limit' => $role->getMaxUsers(),
                 'translationKey' => $role->getTranslationKey(),
-            )
+            ]
         );
     }
 
@@ -290,11 +290,11 @@ class RolesController extends Controller
     {
         if (ctype_space($name)) {
             return new JsonResponse(
-                array(
+                [
                     'name' => $role->getName(),
                     'limit' => $role->getMaxUsers(),
                     'translationKey' => $role->getTranslationKey(),
-                ),
+                ],
                 500
             );
         }
@@ -303,11 +303,11 @@ class RolesController extends Controller
         $this->roleManager->edit($role);
 
         return new JsonResponse(
-            array(
+            [
                 'name' => $role->getName(),
                 'limit' => $role->getMaxUsers(),
                 'translationKey' => $role->getTranslationKey(),
-            )
+            ]
         );
     }
 
@@ -327,6 +327,6 @@ class RolesController extends Controller
     {
         $this->roleManager->invertWorkspaceCreation($role);
 
-        return new JsonResponse(array(), 200);
+        return new JsonResponse([], 200);
     }
 }

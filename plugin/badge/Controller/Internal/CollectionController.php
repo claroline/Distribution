@@ -2,14 +2,14 @@
 
 namespace Icap\BadgeBundle\Controller\Internal;
 
-use Icap\BadgeBundle\Entity\BadgeCollection;
 use Claroline\CoreBundle\Entity\User;
 use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Icap\BadgeBundle\Entity\BadgeCollection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
@@ -67,7 +67,7 @@ class CollectionController extends Controller
 
     private function processForm(Request $request, BadgeCollection $collection, $method = 'PUT')
     {
-        $form = $this->createForm($this->get('icap_badge.form.badge.collection'), $collection, array('method' => $method));
+        $form = $this->createForm($this->get('icap_badge.form.badge.collection'), $collection, ['method' => $method]);
 
         $formParameters = $request->request->get($form->getName());
 
@@ -92,14 +92,14 @@ class CollectionController extends Controller
             $view = View::create();
             $view->setStatusCode(201);
 
-            $data = array(
-                'collection' => array(
+            $data = [
+                'collection' => [
                     'id' => $collection->getId(),
                     'name' => $collection->getName(),
                     'is_shared' => $collection->isIsShared(),
-                    'slug' => $this->generateUrl('icap_badge_badge_collection_share_view', array('slug' => $collection->getSlug())),
-                ),
-            );
+                    'slug' => $this->generateUrl('icap_badge_badge_collection_share_view', ['slug' => $collection->getSlug()]),
+                ],
+            ];
 
             $view->setData($data);
 

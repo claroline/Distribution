@@ -20,7 +20,7 @@ class AppearanceType extends AbstractType
     private $themes;
     private $lockedParams;
 
-    public function __construct(array $themes, array $lockedParams = array())
+    public function __construct(array $themes, array $lockedParams = [])
     {
         $this->themes = $themes;
         $this->lockedParams = $lockedParams;
@@ -32,29 +32,29 @@ class AppearanceType extends AbstractType
             ->add(
                 'name_active',
                 'checkbox',
-                array(
+                [
                     'required' => false,
                     'label' => 'show_name_in_top_bar',
                     'disabled' => isset($this->lockedParams['nameActive']),
-                )
+                ]
             )
             ->add(
                 'footer',
                 'text',
-                array(
+                [
                     'required' => false,
                     'disabled' => isset($this->lockedParams['footer']),
                     'label' => 'footer',
-                )
+                ]
             )
             ->add(
                 'theme',
                 'choice',
-                array(
+                [
                     'choices' => $this->themes,
                     'disabled' => isset($this->lockedParams['theme']),
                     'label' => 'theme',
-                )
+                ]
             );
     }
 
@@ -65,6 +65,6 @@ class AppearanceType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform']);
     }
 }

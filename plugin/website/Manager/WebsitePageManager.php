@@ -9,13 +9,13 @@
 namespace Icap\WebsiteBundle\Manager;
 
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use Icap\WebsiteBundle\Entity\Website;
+use Icap\WebsiteBundle\Entity\WebsitePage;
 use Icap\WebsiteBundle\Form\WebsitePageType;
+use Icap\WebsiteBundle\Repository\WebsitePageRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
-use Icap\WebsiteBundle\Entity\Website;
-use Icap\WebsiteBundle\Entity\WebsitePage;
-use Icap\WebsiteBundle\Repository\WebsitePageRepository;
 use Symfony\Component\Form\FormFactory;
 
 /**
@@ -79,7 +79,7 @@ class WebsitePageManager
     public function getPages(Website $website, $pageIds, $isAdmin, $isAPI)
     {
         if (!is_array($pageIds)) {
-            $pageIds = array($pageIds);
+            $pageIds = [$pageIds];
         }
         $pages = $this->pageRepository->findPages($website, $pageIds, $isAdmin, $isAPI);
 
@@ -100,7 +100,7 @@ class WebsitePageManager
 
     public function processForm(Website $website, WebsitePage $page, array $parameters, $method = 'PUT')
     {
-        $form = $this->formFactory->create(new WebsitePageType(), $page, array('method' => $method));
+        $form = $this->formFactory->create(new WebsitePageType(), $page, ['method' => $method]);
         $form->submit($parameters, 'PATCH' !== $method);
         if ($form->isValid()) {
             $page = $form->getData();

@@ -14,8 +14,8 @@ namespace Icap\BlogBundle\Listener;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Icap\BlogBundle\Entity\Post;
 use Icap\NotificationBundle\Entity\UserPickerContent;
-use JMS\DiExtraBundle\Annotation as DI;
 use Icap\NotificationBundle\Manager\NotificationManager as NotificationManager;
+use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("icap.blog_bundle.entity_listener.post")
@@ -46,21 +46,21 @@ class PostListener
             count($userPicker->getUserIds()) > 0 &&
             $blog->getResourceNode() !== null
         ) {
-            $details = array(
-                'post' => array(
+            $details = [
+                'post' => [
                     'blog' => $blog->getId(),
                     'title' => $post->getTitle(),
                     'slug' => $post->getSlug(),
                     'published' => $post->isPublished(),
                     'author' => $post->getAuthor()->getFirstName().' '.$post->getAuthor()->getLastName(),
                     'authorId' => $post->getAuthor()->getId(),
-                ),
-                'resource' => array(
+                ],
+                'resource' => [
                     'id' => $blog->getId(),
                     'name' => $blog->getResourceNode()->getName(),
                     'type' => $blog->getResourceNode()->getResourceType()->getName(),
-                ),
-            );
+                ],
+            ];
             $notification = $this->notificationManager->createNotification(
                 'resource-icap_blog-post-user_tagged',
                 'blog',

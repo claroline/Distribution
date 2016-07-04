@@ -11,13 +11,13 @@
 
 namespace Claroline\ScormBundle\Transfert;
 
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Transfert\Importer;
-use Symfony\Component\Config\Definition\ConfigurationInterface;
-use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Claroline\CoreBundle\Entity\Workspace\Workspace;
 
 class ScormImporter extends Importer implements ConfigurationInterface
 {
@@ -57,7 +57,7 @@ class ScormImporter extends Importer implements ConfigurationInterface
                                         function ($v) use ($rootPath) {
                                             return call_user_func_array(
                                                 __CLASS__.'::fileNotExists',
-                                                array($v, $rootPath)
+                                                [$v, $rootPath]
                                             );
                                         }
                                     )
@@ -89,14 +89,14 @@ class ScormImporter extends Importer implements ConfigurationInterface
         $uid = uniqid().'.'.pathinfo($hash, PATHINFO_EXTENSION);
         $_files[$uid] = $this->container
             ->getParameter('claroline.param.files_directory').DIRECTORY_SEPARATOR.$hash;
-        $data = array();
+        $data = [];
         $version = $object instanceof \Claroline\ScormBundle\Entity\Scorm12Resource ? '1.2' : '2004';
 
         if (file_exists($_files[$uid])) {
-            $data = array(array('scorm' => array(
+            $data = [['scorm' => [
                 'path' => $uid,
                 'version' => $version,
-            )));
+            ]]];
         }
 
         return $data;

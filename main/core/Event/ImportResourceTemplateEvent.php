@@ -11,11 +11,11 @@
 
 namespace Claroline\CoreBundle\Event;
 
-use Symfony\Component\EventDispatcher\Event;
-use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
+use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Symfony\Component\EventDispatcher\Event;
 
 class ImportResourceTemplateEvent extends Event
 {
@@ -34,14 +34,14 @@ class ImportResourceTemplateEvent extends Event
         User $user,
         Workspace $workspace,
         array $roles,
-        array $createdResources = array(),
-        array $files = array()
+        array $createdResources = [],
+        array $files = []
     ) {
         $this->parent = $parent;
         $this->config = $config;
         $this->user = $user;
         $this->createdResources = $createdResources;
-        $this->files = array();
+        $this->files = [];
         $this->workspace = $workspace;
         $this->roles = $roles;
         $this->files = $files;

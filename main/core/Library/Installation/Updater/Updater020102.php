@@ -30,7 +30,7 @@ class Updater020102 extends Updater
             ->findOneByName('text');
 
         $decoder = $em->getRepository('ClarolineCoreBundle:Resource\MaskDecoder')
-            ->findOneBy(array('resourceType' => $typeText, 'name' => 'write'));
+            ->findOneBy(['resourceType' => $typeText, 'name' => 'write']);
 
         if (!$decoder) {
             $updateTextDecoder = new MaskDecoder();

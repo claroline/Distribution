@@ -2,8 +2,8 @@
 
 namespace FormaLibre\SupportBundle\Form;
 
-use FormaLibre\SupportBundle\Entity\Ticket;
 use Doctrine\ORM\EntityRepository;
+use FormaLibre\SupportBundle\Entity\Ticket;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -24,7 +24,7 @@ class TicketTypeChangeType extends AbstractType
         $builder->add(
             'type',
             'entity',
-            array(
+            [
                 'label' => 'type',
                 'class' => 'FormaLibreSupportBundle:Type',
                 'translation_domain' => 'support',
@@ -39,7 +39,7 @@ class TicketTypeChangeType extends AbstractType
                 'expanded' => false,
                 'multiple' => false,
                 'required' => true,
-            )
+            ]
         );
     }
 
@@ -50,6 +50,6 @@ class TicketTypeChangeType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'support'));
+        $resolver->setDefaults(['translation_domain' => 'support']);
     }
 }

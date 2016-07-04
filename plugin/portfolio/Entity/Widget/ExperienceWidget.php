@@ -183,14 +183,14 @@ class ExperienceWidget extends AbstractWidget
      */
     public function getData()
     {
-        $data = array(
+        $data = [
             'post' => $this->getPost(),
             'companyName' => $this->getCompanyName(),
             'startDate' => $this->getStartDate() ? $this->getStartDate()->format('Y/m/d') : null,
             'endDate' => $this->getEndDate() ? $this->getEndDate()->format('Y/m/d') : null,
             'description' => $this->getDescription(),
             'website' => $this->getWebsite(),
-        );
+        ];
 
         return $data;
     }
@@ -200,13 +200,13 @@ class ExperienceWidget extends AbstractWidget
      */
     public function getEmpty()
     {
-        return array(
+        return [
             'post' => null,
             'companyName' => null,
             'startDate' => null,
             'endDate' => null,
             'description' => null,
             'website' => null,
-        );
+        ];
     }
 }

@@ -51,7 +51,7 @@ class BadgeTransformer extends TwigTransformer
 
         return $this->getTemplate()->render(
             $template,
-            array('entity' => $entity)
+            ['entity' => $entity]
         );
     }
 }

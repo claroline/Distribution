@@ -4,9 +4,9 @@ namespace Icap\WikiBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DeleteSectionType extends AbstractType
 {
@@ -19,15 +19,15 @@ class DeleteSectionType extends AbstractType
                 $data = $event->getData();
 
                 if ($data->hasChildren()) {
-                    $form->add('children', 'checkbox', array(
+                    $form->add('children', 'checkbox', [
                         'required' => false,
                         'mapped' => false,
-                    ));
+                    ]);
                 } else {
-                    $form->add('children', 'hidden', array(
+                    $form->add('children', 'hidden', [
                         'required' => false,
                         'mapped' => false,
-                    ));
+                    ]);
                 }
             }
         );
@@ -40,9 +40,9 @@ class DeleteSectionType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'translation_domain' => 'icap_wiki',
             'data_class' => 'Icap\WikiBundle\Entity\Section',
-        ));
+        ]);
     }
 }

@@ -33,35 +33,35 @@ class WidgetEditType extends AbstractType
         $builder->add(
             'defaultWidth',
             'integer',
-            array(
+            [
                 'label' => 'width',
                 'required' => true,
-                'constraints' => array(
+                'constraints' => [
                     new NotBlank(),
-                    new Range(array('min' => 1, 'max' => 12)),
-                ),
-                'attr' => array('min' => 1, 'max' => 12),
-            )
+                    new Range(['min' => 1, 'max' => 12]),
+                ],
+                'attr' => ['min' => 1, 'max' => 12],
+            ]
         );
         $builder->add(
             'defaultHeight',
             'integer',
-            array(
+            [
                 'label' => 'height',
                 'required' => true,
-                'constraints' => array(
+                'constraints' => [
                     new NotBlank(),
-                    new Range(array('min' => 1)),
-                ),
-                'attr' => array('min' => 1),
-            )
+                    new Range(['min' => 1]),
+                ],
+                'attr' => ['min' => 1],
+            ]
         );
 
         if ($this->isDisplayableInDesktop) {
             $builder->add(
                 'roles',
                 'entity',
-                array(
+                [
                     'label' => 'roles',
                     'class' => 'ClarolineCoreBundle:Role',
                     'choice_translation_domain' => true,
@@ -78,7 +78,7 @@ class WidgetEditType extends AbstractType
                     'expanded' => true,
                     'multiple' => true,
                     'required' => false,
-                )
+                ]
             );
         }
     }
@@ -90,6 +90,6 @@ class WidgetEditType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform']);
     }
 }

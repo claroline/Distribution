@@ -11,12 +11,12 @@
 
 namespace Claroline\CoreBundle\Validator\Constraints;
 
+use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
+use Claroline\CoreBundle\Manager\UserManager;
+use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
-use JMS\DiExtraBundle\Annotation as DI;
-use Claroline\CoreBundle\Manager\UserManager;
-use Symfony\Component\Translation\TranslatorInterface;
-use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 
 /**
  * @DI\Validator("import_user_in_group_validator")
@@ -53,7 +53,7 @@ class ImportUsersInGroupValidator extends ConstraintValidator
             if ($this->userManager->getUserByUsername(trim($username)) === null) {
                 $msg = $this->translator->trans(
                     'username_doesnt_exist',
-                    array('%username%' => $username),
+                    ['%username%' => $username],
                     'validators'
                 ).' ';
 

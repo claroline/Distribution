@@ -28,17 +28,17 @@ class PortfolioRemoveGuideEvent extends LogGenericEvent implements NotifiableInt
 
         parent::__construct(
             self::ACTION,
-            array(
-                'owner' => array(
+            [
+                'owner' => [
                     'lastName' => $user->getLastName(),
                     'firstName' => $user->getFirstName(),
-                ),
-                'portfolio' => array(
+                ],
+                'portfolio' => [
                     'id' => $this->portfolio->getId(),
                     'title' => $this->portfolio->getTitle(),
                     'slug' => $this->portfolio->getSlug(),
-                ),
-            ),
+                ],
+            ],
             $portfolioGuide->getUser(),
             null,
             null,
@@ -53,7 +53,7 @@ class PortfolioRemoveGuideEvent extends LogGenericEvent implements NotifiableInt
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_ADMIN);
+        return [self::DISPLAYED_ADMIN];
     }
 
     /**
@@ -73,7 +73,7 @@ class PortfolioRemoveGuideEvent extends LogGenericEvent implements NotifiableInt
      */
     public function getIncludeUserIds()
     {
-        return array($this->getReceiver()->getId());
+        return [$this->getReceiver()->getId()];
     }
 
     /**
@@ -83,7 +83,7 @@ class PortfolioRemoveGuideEvent extends LogGenericEvent implements NotifiableInt
      */
     public function getExcludeUserIds()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -115,19 +115,19 @@ class PortfolioRemoveGuideEvent extends LogGenericEvent implements NotifiableInt
     {
         $receiver = $this->getReceiver();
 
-        $notificationDetails = array(
-            'portfolio' => array(
+        $notificationDetails = [
+            'portfolio' => [
                 'id' => $this->portfolio->getId(),
                 'title' => $this->portfolio->getTitle(),
                 'slug' => $this->portfolio->getSlug(),
-            ),
-            'guide' => array(
+            ],
+            'guide' => [
                 'id' => $receiver->getId(),
                 'publicUrl' => $receiver->getPublicUrl(),
                 'lastName' => $receiver->getLastName(),
                 'firstName' => $receiver->getFirstName(),
-            ),
-        );
+            ],
+        ];
 
         return $notificationDetails;
     }

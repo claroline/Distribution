@@ -11,12 +11,12 @@
 
 namespace Claroline\CoreBundle\Form;
 
+use Claroline\CoreBundle\Validator\Constraints\ImportUsersInGroup;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Claroline\CoreBundle\Validator\Constraints\ImportUsersInGroup;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class ImportUsersInGroupType extends AbstractType
 {
@@ -25,15 +25,15 @@ class ImportUsersInGroupType extends AbstractType
         $builder->add(
             'file',
             'file',
-            array(
+            [
                 'required' => true,
                 'mapped' => false,
-                'constraints' => array(
+                'constraints' => [
                     new NotBlank(),
                     new File(),
                     new ImportUsersInGroup(),
-                ),
-            )
+                ],
+            ]
         );
     }
 
@@ -46,9 +46,9 @@ class ImportUsersInGroupType extends AbstractType
     {
         $resolver
             ->setDefaults(
-                array(
+                [
                     'translation_domain' => 'platform',
-                )
+                ]
             );
     }
 }

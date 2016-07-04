@@ -42,7 +42,7 @@ class Updater040200 extends Updater
 
     private function createDefaultConfiguration()
     {
-        if ($this->connection->getSchemaManager()->tablesExist(array('icap__notification_plugin_configuration'))) {
+        if ($this->connection->getSchemaManager()->tablesExist(['icap__notification_plugin_configuration'])) {
             $this->log('Creating default configuration for notifications...');
             $configuration = $this->em->
                 getRepository('IcapNotificationBundle:NotificationPluginConfiguration')->findAll();
