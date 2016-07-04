@@ -96,7 +96,7 @@ class Updater600200
         $results = $this->connection->query($checkQuery)->fetchAll();
         foreach ($results as $res) {
             try {
-            $this->connection->exec("
+                $this->connection->exec("
                 INSERT INTO ujm_picture_temp
                 VALUES ({$res['id']}, {$res['user_id']}, '"
                 .addslashes($res['label'])."', '"
@@ -105,9 +105,9 @@ class Updater600200
                 0, 0
                 )
             ");
-            } catch (\Exception $e) { 
+            } catch (\Exception $e) {
                 $this->log("Picture {$res['id']} already inserted");
-            } 
+            }
         }
 
         $this->checkInteractionGraphic();

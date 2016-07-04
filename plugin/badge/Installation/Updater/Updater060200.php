@@ -4,9 +4,9 @@ namespace Icap\BadgeBundle\Installation\Updater;
 
 use AppKernel;
 use Claroline\InstallationBundle\Updater\Updater;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Migrations\Configuration\Configuration;
 use Doctrine\DBAL\Migrations\Version;
-use Doctrine\DBAL\Connection;
 
 class Updater060200 extends Updater
 {
@@ -33,8 +33,8 @@ class Updater060200 extends Updater
                 $config->setMigrationsNamespace('claro_badge'); // required but useless
                 $config->setMigrationsDirectory('claro_badge'); // idem
                 try {
-                $version = new Version($config, '20150929141509', 'stdClass');
-                $version->markMigrated();
+                    $version = new Version($config, '20150929141509', 'stdClass');
+                    $version->markMigrated();
                 } catch (\Exception $e) {
                     $this->log('Already migrated');
                 }
