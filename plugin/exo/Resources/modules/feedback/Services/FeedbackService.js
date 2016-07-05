@@ -3,125 +3,125 @@
  * Manages feedback for Exercises
  * @constructor
  */
-function FeedbackService() {
-
+function FeedbackService($log) {
+  this.$log = $log;
 }
 
-FeedbackService.prototype.SOLUTION_FOUND = 0;
-FeedbackService.prototype.ONE_ANSWER_MISSING = 1;
-FeedbackService.prototype.MULTIPLE_ANSWERS_MISSING = 2;
+FeedbackService.prototype.SOLUTION_FOUND = 0
+FeedbackService.prototype.ONE_ANSWER_MISSING = 1
+FeedbackService.prototype.MULTIPLE_ANSWERS_MISSING = 2
 
 /**
  * Feedback configuration
  * @type {Object}
  */
 FeedbackService.prototype.config = {
-    /**
-     * Is feedback available for the current Exercise ?
-     * @type {boolean}
-     */
-    enabled: false,
+  /**
+   * Is feedback available for the current Exercise ?
+   * @type {boolean}
+   */
+  enabled: false,
 
-    /**
-     * Is feedback currently displayed ?
-     * @type {boolean}
-     */
-    visible: false,
+  /**
+   * Is feedback currently displayed ?
+   * @type {boolean}
+   */
+  visible: false,
 
-    /**
-     * The state of the feedback for each question
-     * @type {Object}
-     */
-    state: {}
-};
+  /**
+   * The state of the feedback for each question
+   * @type {Object}
+   */
+  state: {}
+}
 
 /**
  * Callbacks to execute when the visibility state of Feedback changes
  * @type {Array}
  */
 FeedbackService.prototype.callbacks = {
-    /**
-     * Callbacks to execute when the Feedback are shown
-     * @type {Array}
-     */
-    show: [],
+  /**
+   * Callbacks to execute when the Feedback are shown
+   * @type {Array}
+   */
+  show: [],
 
-    /**
-     * Callbacks to execute when the Feedback are hidden
-     * @type {Array}
-     */
-    hide: []
-};
+  /**
+   * Callbacks to execute when the Feedback are hidden
+   * @type {Array}
+   */
+  hide: []
+}
 
 /**
  * Get feedback information
  * @return {Object}
  */
 FeedbackService.prototype.get = function get() {
-    return this.config;
-};
+  return this.config
+}
 
 /**
  * Is feedback enabled ?
  * @returns {boolean}
  */
 FeedbackService.prototype.isEnabled = function isEnabled() {
-    return this.config.enabled;
-};
+  return this.config.enabled
+}
 
 /**
  * Enable feedback for the current Exercise
  * @returns {FeedbackService}
  */
 FeedbackService.prototype.enable = function enableFeedback() {
-    this.config.enabled = true;
+  this.config.enabled = true
 
-    return this;
-};
+  return this
+}
 
 /**
  * Disable feedback for the current Exercise
  * @returns {FeedbackService}
  */
 FeedbackService.prototype.disable = function disableFeedback() {
-    this.config.enabled = false;
+  this.config.enabled = false
 
-    return this;
-};
+  return this
+}
 
 /**
  * Is feedback displayed ?
  * @returns {boolean}
  */
 FeedbackService.prototype.isVisible = function isVisible() {
-    return this.config.visible;
-};
+  return this.config.visible
+}
 
 /**
  * Display feedback
  * @returns {FeedbackService}
  */
 FeedbackService.prototype.show = function showFeedback() {
-    this.config.visible = true;
+  this.config.visible = true
 
-    // Execute callbacks
-    this.executeCallbacks('show');
+  // Execute callbacks
+  this.executeCallbacks('show')
 
-    return this;
-};
+  return this
+}
 
 /**
  * Hide feedback
  * @returns {FeedbackService}
  */
 FeedbackService.prototype.hide = function hideFeedback() {
-    this.config.visible = false;
+  this.config.visible = false
 
-    // Execute callbacks
-    this.executeCallbacks('hide');
+  // Execute callbacks
+  this.executeCallbacks('hide')
 
-    return this;
-};
+  return this
+}
 
 /**
  * Execute all callbacks for a given event
@@ -129,17 +129,17 @@ FeedbackService.prototype.hide = function hideFeedback() {
  * @returns {FeedbackService}
  */
 FeedbackService.prototype.executeCallbacks = function executeCallbacks(event) {
-    if (this.callbacks[event]) {
-        for (var i = 0; i < this.callbacks[event].length; i++) {
-            var callback = this.callbacks[event][i];
+  if (this.callbacks[event]) {
+    for (var i = 0; i < this.callbacks[event].length; i++) {
+      var callback = this.callbacks[event][i]
 
-            // Execute callback
-            callback();
-        }
+      // Execute callback
+      callback()
     }
+  }
 
-    return this;
-};
+  return this
+}
 
 /**
  * Register to a Feedback event
@@ -148,39 +148,39 @@ FeedbackService.prototype.executeCallbacks = function executeCallbacks(event) {
  * @returns {FeedbackService}
  */
 FeedbackService.prototype.on = function on(event, callback) {
-    if (!this.callbacks[event]) {
-        // Event is not managed
-        console.error('FeedbackService.on(event, callback) : Try to register to an undefined event (events = ' + Object.keys(this.callbacks) + ').');
-    }
+  if (!this.callbacks[event]) {
+    // Event is not managed
+    $log.error('FeedbackService.on(event, callback) : Try to register to an undefined event (events = ' + Object.keys(this.callbacks) + ').')
+  }
 
-    if (typeof callback !== 'function') {
-        // Callback is not a function
-        console.error('FeedbackService.on(event, callback) : Parameter `callback` must be a Function.');
-    }
+  if (typeof callback !== 'function') {
+    // Callback is not a function
+    $log.error('FeedbackService.on(event, callback) : Parameter `callback` must be a Function.')
+  }
 
-    // Register callback
-    this.callbacks[event].push(callback);
+  // Register callback
+  this.callbacks[event].push(callback)
 
-    return this;
-};
+  return this
+}
 
 /**
  * Reset feedback (hide and remove registered callbacks)
  * @returns {FeedbackService}
  */
 FeedbackService.prototype.reset = function reset() {
-    if (this.isVisible()) {
-        this.hide();
-    }
+  if (this.isVisible()) {
+    this.hide()
+  }
 
-    // Remove events
-    for (var event in this.callbacks) {
-        if (this.callbacks.hasOwnProperty(event)) {
-            this.callbacks[event].splice(0, this.callbacks[event].length);
-        }
+  // Remove events
+  for (var event in this.callbacks) {
+    if (this.callbacks.hasOwnProperty(event)) {
+      this.callbacks[event].splice(0, this.callbacks[event].length)
     }
+  }
 
-    return this;
-};
+  return this
+}
 
 export default FeedbackService

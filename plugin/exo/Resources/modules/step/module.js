@@ -2,8 +2,8 @@
  * Step module
  */
 
-import angular from "angular/index"
-import registerDragula from "angular-dragula/dist/angular-dragula"
+import angular from 'angular/index'
+import registerDragula from 'angular-dragula/dist/angular-dragula'
 
 import 'angular-bootstrap'
 import 'angular-ui-translation/angular-translation'
@@ -61,4 +61,6 @@ angular
     'QuestionService',
     StepShowCtrl
   ])
-  .directive('stepShow', StepShowDirective)
+  .directive('stepShow', [
+    StepShowDirective
+  ])
