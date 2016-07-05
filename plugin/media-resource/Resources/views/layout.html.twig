@@ -10,7 +10,7 @@
     {% endstylesheets %}
 {% endblock %}
 
-{% block section_content %}
+{% block content %}
     <div class="media-resource-content-container">
         <div class="alert-messages">
             {% for successMessage in app.session.flashbag.get('success') %}
@@ -34,27 +34,6 @@
 {% endblock %}
 
 {% block javascripts %}
-    {{parent()}}
-    <script type="text/javascript" src="{{ url('bazinga_jstranslation_js', { 'domain':'media_resource' }) }}"></script>
-    <script type="text/javascript" src="{{ asset('packages/jquery-ui/ui/minified/draggable.min.js') }}"></script>
-    <!-- wavesurfer.js -->
-    <script type="text/javascript" src="{{ asset('packages/wavesurfer.js/dist/wavesurfer.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('packages/wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('packages/wavesurfer.js/dist/plugin/wavesurfer.regions.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('packages/wavesurfer.js/dist/plugin/wavesurfer.minimap.min.js') }}"></script>
-
-
-    <!-- helpers for the plugin -->
-    {% javascripts output = 'vendor/claroline/plugin/innovamediaresource/js/common.js'
-    '@InnovaMediaResourceBundle/Resources/js/helpers/JavascriptUtils.js'
-    '@InnovaMediaResourceBundle/Resources/js/helpers/StringUtils.js'
-    '@InnovaMediaResourceBundle/Resources/js/helpers/WavesurferUtils.js'
-    '@InnovaMediaResourceBundle/Resources/js/helpers/DomUtils.js'
-    '@InnovaMediaResourceBundle/Resources/js/common-vars.js'
-    %}
-
-    <script src="{{ asset_url }}"></script>
-
-    {% endjavascripts %}
-
+  {{parent()}}
+  <script type="text/javascript" src="{{ url('bazinga_jstranslation_js', { 'domain':'media_resource' }) }}"></script>
 {% endblock %}

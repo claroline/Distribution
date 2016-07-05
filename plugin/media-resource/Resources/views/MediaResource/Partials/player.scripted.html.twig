@@ -63,12 +63,11 @@
     </div>
 </div>
 
+
+<!-- include help modal skeleton -->
+{% include "InnovaMediaResourceBundle:MediaResource/Partials/modals:help.modal.html.twig" %}
+
 {% block javascripts %}
-
-    {% javascripts output = 'vendor/claroline/plugin/innovamediaresource/js/player-scripted-active.js'
-    '@InnovaMediaResourceBundle/Resources/js/play.scripted.active.js'
- %}
-
-    <script src="{{ asset_url }}"></script>
-    {% endjavascripts %}
+    <script src="{{ hotAsset('dist/commons.js') }}"></script>
+    <script src="{{ hotAsset('dist/claroline-distribution-plugin-media-resource-scripted.js') }}"></script>
 {% endblock %}

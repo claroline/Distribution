@@ -158,10 +158,5 @@
 
 {% block javascripts %}
     {{parent()}}
-    {% javascripts output = 'vendor/claroline/plugin/innovamediaresource/js/administrate.js'
-    '@InnovaMediaResourceBundle/Resources/js/administrate.js'
- %}
-
-    <script src="{{ asset_url }}"></script>
-    {% endjavascripts %}
+    <script src="{{ hotAsset('dist/claroline-distribution-plugin-media-resource-admin.js') }}"></script>
 {% endblock %}

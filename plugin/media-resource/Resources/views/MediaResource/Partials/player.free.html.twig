@@ -3,7 +3,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="my-flex-row">
-                <div class="text-center player-col" style="width:10%;" onclick="toggleTextTranscription()">
+                <div class="text-center player-col" id="btn-toggle-transcription" style="width:10%;">
                     <i style="cursor:pointer;" class="fa fa-font big bordered-top bordered-left bordered-right" title="Transcription textuelle"></i>
                 </div>
                 <div class="player-col" style="width:90%;">
@@ -18,12 +18,8 @@
     <div class="col-md-12">
         <div class="my-flex-row">
             <div class="text-center player-col" style="width:10%;">
-                <!-- Play with sort of "auto pause" mode -->
-                <!--
-                <i style="height:20%;cursor:pointer;" id="btn-auto-pause" class="fa fa-step-forward big bordered-top bordered-left bordered-right" onclick="autoPause()"></i>
-              -->
                 <!-- Play / Pause -->
-                <i style="height:100%;cursor:pointer;" id="btn-play" title="{{'play_pause' | trans({}, 'media_resource')}}" onclick="play()" class="fa fa-play big bordered-top bordered-left bordered-right bordered-bottom"></i>
+                <i style="height:100%;cursor:pointer;" id="btn-play" title="{{'play_pause' | trans({}, 'media_resource')}}" class="fa fa-play big bordered-top bordered-left bordered-right bordered-bottom"></i>
             </div>
             <div class="player-col" style="width:90%;">
                 <div id="wave-timeline"></div>
@@ -40,10 +36,10 @@
 <div class="row">
     <div class="col-md-12">
         <div class="help-container" style="display:none;">
-          <button class="btn btn-default fa fa-retweet help-item" id="btn-loop" title="{{'region_help_segment_playback_loop' | trans({}, 'media_resource')}}"  onclick="playInLoop()"></button>
-          <button class="btn btn-default fa fa-exchange help-item" id="btn-backward" title="{{'region_help_segment_playback_backward' | trans({}, 'media_resource')}}" onclick="playBackward()"></button>
-          <button class="btn btn-default help-item" id="btn-slow" title="{{'region_help_segment_playback_rate' | trans({}, 'media_resource')}}" onclick="playSlowly()">x0.8</button>
-          <button class="btn btn-default fa fa-file-text-o help-item" id="btn-text" title="{{'region_help_help_text_label' | trans({}, 'media_resource')}}" onclick="showHelpText()">
+          <button class="btn btn-default fa fa-retweet help-item" id="btn-loop" title="{{'region_help_segment_playback_loop' | trans({}, 'media_resource')}}"></button>
+          <button class="btn btn-default fa fa-exchange help-item" id="btn-backward" title="{{'region_help_segment_playback_backward' | trans({}, 'media_resource')}}"></button>
+          <button class="btn btn-default help-item" id="btn-slow" title="{{'region_help_segment_playback_rate' | trans({}, 'media_resource')}}">x0.8</button>
+          <button class="btn btn-default fa fa-file-text-o help-item" id="btn-text" title="{{'region_help_help_text_label' | trans({}, 'media_resource')}}">
             <span class="label label-info my-label">1</span>
           </button>
         </div>
@@ -67,21 +63,16 @@
 <div style="display:none;">
     {% if regions | length > 0 %}
         {% for region in regions %}
-            {% include "InnovaMediaResourceBundle:MediaResource/Partials:region.html.twig" with {'region': region, 'hidden': true, 'config':true, 'admin': false} %}          
+            {% include "InnovaMediaResourceBundle:MediaResource/Partials:region.html.twig" with {'region': region, 'hidden': true, 'config':true, 'admin': false} %}
         {% endfor %}
     {% endif %}
 </div>
 
 <!-- regions hidden -->
 <input type="hidden" name="type" value="audio"/>
-<input type="hidden" name="wId" value="{{workspace.id}}"/>
-<input type="hidden" name="mrId" value="{{_resource.id}}"/>
-<input type="hidden" name="tts" value="{{_resource.options.getTtsLanguage}}"/>
 <input type="hidden" name="textTranscription" value="{{_resource.options.getShowTextTranscription}}"/>
 
 {% block javascripts %}
-    {% javascripts output = 'vendor/claroline/plugin/innovamediaresource/js/player-free.js'
-    '@InnovaMediaResourceBundle/Resources/js/play-free.js' %}
-    <script src="{{ asset_url }}"></script>
-    {% endjavascripts %}
+  <script src="{{ hotAsset('dist/commons.js') }}"></script>
+  <script src="{{ hotAsset('dist/claroline-distribution-plugin-media-resource-free.js') }}"></script>
 {% endblock %}

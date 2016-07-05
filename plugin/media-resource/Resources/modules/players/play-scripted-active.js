@@ -1,16 +1,12 @@
-'use strict';
+import SharedData from '../shared/SharedData';
 
 var problems = [];
 var audioPlayer;
-var step = 1;
 var currentTime = 0;
-var PLAY_NORMAL = 1;
-var PLAY_LOOP = 2;
-var PLAY_SLOW = 3;
-var PLAY_TTS = 4;
 var helpsObjects;
 var currentStart;
 var currentEnd;
+let shared
 // ======================================================================================================== //
 // ACTIONS BOUND WHEN DOM READY (PLAY / PAUSE, MOVE BACKWARD / FORWARD, ADD MARKER, CALL HELP, ANNOTATE)
 // ======================================================================================================== //
@@ -42,6 +38,8 @@ var actions = {
 // DOCUMENT READY
 // ======================================================================================================== //
 $(document).ready(function() {
+    const sharedData = new SharedData();
+    shared = sharedData.getSharedData();
 
     // bind data-action events
     $("button[data-action]").click(function() {
@@ -51,27 +49,29 @@ $(document).ready(function() {
         }
     });
     audioPlayer = document.getElementById('active-scripted-audio-player');
-    commonVars.audioData = Routing.generate('innova_get_mediaresource_resource_file', {
-        workspaceId: commonVars.wId,
-        id: commonVars.mrId
+    shared.audioData = Routing.generate('innova_get_mediaresource_resource_file', {
+        workspaceId: shared.wId,
+        id: shared.mrId
     });
 
-    audioPlayer.src = commonVars.audioData;
+    audioPlayer.src = shared.audioData;
     var label = Translator.trans('scripted_active_identified_problems_label', {
         'number': problems.length
     }, 'media_resource');
     $('.nb-problems-label').text(label);
+    $('.nb-problems-label').show();
+
 
     // listen to time update for the region/help audio player
-    commonVars.htmlAudioPlayer.addEventListener('timeupdate', function() {
+    shared.htmlAudioPlayer.addEventListener('timeupdate', function() {
 
-        if (commonVars.htmlAudioPlayer.currentTime >= currentEnd) {
-            if (commonVars.htmlAudioPlayer.loop) {
-                commonVars.htmlAudioPlayer.currentTime = currentStart;
-                commonVars.htmlAudioPlayer.play();
-                commonVars.playing = true;
+        if (shared.htmlAudioPlayer.currentTime >= currentEnd) {
+            if (shared.htmlAudioPlayer.loop) {
+                shared.htmlAudioPlayer.currentTime = currentStart;
+                shared.htmlAudioPlayer.play();
+                shared.playing = true;
             } else {
-                commonVars.playing = false;
+                shared.playing = false;
                 $('.btn-help-play').prop('disabled', false);
             }
         }
@@ -101,8 +101,8 @@ function showRetryMessage(){
 function showFullView() {
     audioPlayer.currentTime = 0;
     var url = Routing.generate('mediaresource_get_regions_helps', {
-        workspaceId: commonVars.wId,
-        id: commonVars.mrId,
+        workspaceId: shared.wId,
+        id: shared.mrId,
         data: problems
     });
     // get infos that will allow the construction of help rows according to problem detected
@@ -129,6 +129,10 @@ function showFullView() {
 // ======================================================================================================== //
 // HELP
 // ======================================================================================================== //
+$('body').on('click', '.btn-show-help', function(){
+  const id = $(this).data('id')
+  showHelp(id)
+})
 
 function showHelp(id) {
     var elem = document.getElementById(id);
@@ -144,11 +148,22 @@ function showHelp(id) {
     });
 }
 
+
+function findHelpById(id){
+  let searched
+  for(let help of helpsObjects){
+    if(help.id === id){
+      searched = help
+    }
+  }
+  return searched
+}
+
 function appendHelpRows(data) {
     var $root = $('.helps-row-container');
-    $.each(data, function(index, entry) {
+    for(let entry of data){
         buildHelpRow(entry, $root);
-    });
+    }
 }
 
 function buildHelpRow(help, $elem) {
@@ -160,8 +175,8 @@ function buildHelpRow(help, $elem) {
     row += '    <div class="row">'; // region preview and show help button and prev current region choice row
     row += '      <div class="col-md-2">';
     row += '        <div class="btn-group">';
-    row += '          <button class="btn btn-default btn-help-play" data-id="main-'+help.id+'" data-start="' + help.start + '"  data-end="' + help.end + '" data-mode="' + PLAY_NORMAL + '"><i class="fa fa-play"></i>&nbsp;/&nbsp;<i class="fa fa-pause"></i></button>';
-    row += '          <button class="btn btn-default" onclick="showHelp(' + help.id + ')"><i class="fa fa-question"></i></button>';
+    row += '          <button class="btn btn-default btn-help-play" data-id="main-'+help.id+'" data-start="' + help.start + '"  data-end="' + help.end + '" data-mode="' + shared.playMode.PLAY_NORMAL + '"><i class="fa fa-play"></i>&nbsp;/&nbsp;<i class="fa fa-pause"></i></button>';
+    row += '          <button class="btn btn-default btn-show-help" data-id="' + help.id + '"><i class="fa fa-question"></i></button>';
     row += '        </div>';
     row += '      </div>';
     row += '      <div class="col-md-10">';
@@ -190,6 +205,7 @@ function buildHelpRow(help, $elem) {
     $elem.append(row);
 }
 
+
 function buildHelpDetails(help) {
     var details = '';
     if (help.hasHelp) {
@@ -199,20 +215,20 @@ function buildHelpDetails(help) {
             details += '        <div class="col-md-12">';
             details += '          <div class="btn-group">';
             if (help.loop) {
-                details += '       <button class="btn btn-default btn-help-play" data-id="loop-'+help.id+'" title="' + Translator.trans('region_help_segment_playback_loop', {}, 'media_resource') + '" data-start="' + help.start + '"  data-end="' + help.end + '" data-mode="' + PLAY_LOOP + '">';
+                details += '       <button class="btn btn-default btn-help-play" data-id="loop-'+help.id+'" title="' + Translator.trans('region_help_segment_playback_loop', {}, 'media_resource') + '" data-start="' + help.start + '"  data-end="' + help.end + '" data-mode="' + shared.playMode.PLAY_LOOP + '">';
                 details += '           <i class="fa fa-retweet"></i> ';
                 details += '       </button>';
             }
             if (help.backward) {
-                details += '       <button class="btn btn-default btn-help-play" data-id="backward-'+help.id+'" title="' + Translator.trans('region_help_segment_playback_backward', {}, 'media_resource') + '" data-note="' + help.note + '"  data-mode="' + PLAY_TTS + '">';
+                details += '       <button class="btn btn-default btn-help-play" data-id="backward-'+help.id+'" title="' + Translator.trans('region_help_segment_playback_backward', {}, 'media_resource') + '" data-note="' + help.note + '"  data-mode="' + shared.playMode.PLAY_TTS + '">';
                 details += '           <i class="fa fa-exchange"></i> ';
                 details += '       </button>';
             }
             if (help.rate) {
-                details += '       <button class="btn btn-default btn-help-play" data-id="rate-'+help.id+'" title="' + Translator.trans('region_help_segment_playback_rate', {}, 'media_resource') + '" data-start="' + help.start + '"  data-end="' + help.end + '" data-mode="' + PLAY_SLOW + '">x0.8</button>';
+                details += '       <button class="btn btn-default btn-help-play" data-id="rate-'+help.id+'" title="' + Translator.trans('region_help_segment_playback_rate', {}, 'media_resource') + '" data-start="' + help.start + '"  data-end="' + help.end + '" data-mode="' + shared.playMode.PLAY_SLOW + '">x0.8</button>';
             }
             if (help.connex && help.connex.start && help.connex.end) {
-                details += '       <button class="btn btn-default btn-help-play" data-id="connex-'+help.id+'" title="' + Translator.trans('region_help_related_segment_playback', {}, 'media_resource') + '" data-start="' + help.connex.start + '"  data-end="' + help.connex.end + '" data-mode="' + PLAY_NORMAL + '">';
+                details += '       <button class="btn btn-default btn-help-play" data-id="connex-'+help.id+'" title="' + Translator.trans('region_help_related_segment_playback', {}, 'media_resource') + '" data-start="' + help.connex.start + '"  data-end="' + help.connex.end + '" data-mode="' + shared.playMode.PLAY_NORMAL + '">';
                 details += '           <i class="fa fa-play"></i> ';
                 details += '           / ';
                 details += '           <i class="fa fa-pause"></i>';
@@ -316,7 +332,7 @@ $('body').on('click', '.btn-help-play', function() {
             $(this).prop('disabled', true);
         }
     });
-    if (mode === PLAY_TTS) {
+    if (mode === shared.playMode.PLAY_TTS) {
         var note = $(this).data('note');
         playBackward(note);
     } else {
@@ -334,27 +350,27 @@ $('body').on('click', '.btn-help-play', function() {
 // ======================================================================================================== //
 
 function playRegion(start, end, mode) {
-    if (!commonVars.playing) {
-        commonVars.htmlAudioPlayer.src = commonVars.audioData + '#t=' + start + ',' + end;
+    if (!shared.playing) {
+        shared.htmlAudioPlayer.src = shared.audioData + '#t=' + start + ',' + end;
         switch (mode) {
-            case PLAY_NORMAL:
-                commonVars.htmlAudioPlayer.playbackRate = 1;
-                commonVars.htmlAudioPlayer.loop = false;
+            case shared.playMode.PLAY_NORMAL:
+                shared.htmlAudioPlayer.playbackRate = 1;
+                shared.htmlAudioPlayer.loop = false;
                 break;
-            case PLAY_LOOP:
-                commonVars.htmlAudioPlayer.playbackRate = 1;
-                commonVars.htmlAudioPlayer.loop = true;
+            case shared.playMode.PLAY_LOOP:
+                shared.htmlAudioPlayer.playbackRate = 1;
+                shared.htmlAudioPlayer.loop = true;
                 break;
-            case PLAY_SLOW:
-                commonVars.htmlAudioPlayer.playbackRate = 0.8;
-                commonVars.htmlAudioPlayer.loop = false;
+            case shared.playMode.PLAY_SLOW:
+                shared.htmlAudioPlayer.playbackRate = 0.8;
+                shared.htmlAudioPlayer.loop = false;
                 break;
         }
-        commonVars.htmlAudioPlayer.play();
-        commonVars.playing = true;
+        shared.htmlAudioPlayer.play();
+        shared.playing = true;
     } else {
-        commonVars.htmlAudioPlayer.pause();
-        commonVars.playing = false;
+        shared.htmlAudioPlayer.pause();
+        shared.playing = false;
         $('.btn-help-play').prop('disabled', false);
     }
     currentStart = start;
@@ -365,19 +381,19 @@ function playRegion(start, end, mode) {
  * Will only work with chrome browser !!
  */
 function playBackward(note) {
-    // is commonVars.playing for real audio (ie not for TTS)
-    if (commonVars.playing && commonVars.htmlAudioPlayer) {
-        // stop audio playback before commonVars.playing TTS
-        commonVars.htmlAudioPlayer.pause();
-        commonVars.playing = false;
+    // is shared.playing for real audio (ie not for TTS)
+    if (shared.playing && shared.htmlAudioPlayer) {
+        // stop audio playback before shared.playing TTS
+        shared.htmlAudioPlayer.pause();
+        shared.playing = false;
     }
     if (window.SpeechSynthesisUtterance === undefined) {
         console.log('not supported!');
     } else {
-        var text = commonVars.strUtils.removeHtml(note);
+        var text = shared.strUtils.removeHtml(note);
         var array = text.split(' ');
         var start = array.length - 1;
-        // check if utterance is already speaking before commonVars.playing (pultiple click on backward button)
+        // check if utterance is already speaking before shared.playing (pultiple click on backward button)
         if (!window.speechSynthesis.speaking) {
             handleUtterancePlayback(start, array);
         }
@@ -396,7 +412,7 @@ function handleUtterancePlayback(index, textArray) {
             handleUtterancePlayback(index, textArray);
         });
     } else {
-      commonVars.playing = false;
+      shared.playing = false;
       $('.btn-help-play').prop('disabled', false);
     }
 }
@@ -435,18 +451,3 @@ function continueToSay(utterance, voices, lang, callback) {
 // ======================================================================================================== //
 // PLAY METHODS END
 // ======================================================================================================== //
-
-
-// ======================================================================================================== //
-// VARIOUS
-// ======================================================================================================== //
-
-function findHelpById(searched) {
-    var result;
-    $.each(helpsObjects, function(index, data) {
-        if (data.id === searched) {
-            result = data;
-        }
-    });
-    return result;
-}

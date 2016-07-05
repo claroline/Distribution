@@ -1,7 +1,7 @@
 <div class="row media-container">
     <!-- play button -->
     <div class="col-md-1">
-        <button type="button" class="btn btn-default fa fa-play" id="play" onclick="play()" title="{{'play_pause' | trans({}, 'media_resource')}}"></button>
+        <button type="button" class="btn btn-default fa fa-play" id="play" title="{{'play_pause' | trans({}, 'media_resource')}}"></button>
     </div>
     <!-- play progress -->
     <div class="col-md-11">
@@ -15,17 +15,13 @@
     <div class="col-md-12 text-center regions-container">
         {% if regions | length > 0 %}
             {% for region in regions %}
-                {% include "InnovaMediaResourceBundle:MediaResource/Partials:region.html.twig" with {'region': region, 'hidden': true, 'config':false, 'admin': false} %}                
+                {% include "InnovaMediaResourceBundle:MediaResource/Partials:region.html.twig" with {'region': region, 'hidden': true, 'config':false, 'admin': false} %}
             {% endfor %}
         {% endif %}
     </div>
 </div>
 
 {% block javascripts %}
-
-    {% javascripts output='vendor/claroline/plugin/innovamediaresource/js/player-pause.js'
-    '@InnovaMediaResourceBundle/Resources/js/play-pause.js'
- %}
-    <script src="{{ asset_url }}"></script>
-    {% endjavascripts %}
+<script src="{{ hotAsset('dist/commons.js') }}"></script>
+<script src="{{ hotAsset('dist/claroline-distribution-plugin-media-resource-pause.js') }}"></script>
 {% endblock %}

@@ -1,9 +1,13 @@
-'use strict';
+import SharedData from '../shared/SharedData'
+import 'wavesurfer.js/plugin/wavesurfer.minimap'
+import 'wavesurfer.js/plugin/wavesurfer.timeline'
+import 'wavesurfer.js/plugin/wavesurfer.regions'
 
 var helpRegion;
 var helpIsPlaying = false;
 var showTextTranscription;
 var currentHelpTextIndex = 0;
+let shared;
 
 // ======================================================================================================== //
 // ACTIONS BOUND WHEN DOM READY END
@@ -12,7 +16,9 @@ var currentHelpTextIndex = 0;
 $(document).ready(function() {
     // get some hidden inputs usefull values
     showTextTranscription = $('input[name="textTranscription"]').val() === '1' ? true : false;
-
+    const sharedData = new SharedData()
+    shared = sharedData.getSharedData()
+    console.log(shared);
     // wavesurfer progress bar
     (function() {
         var progressDiv = document.querySelector('#progress-bar');
@@ -24,61 +30,61 @@ $(document).ready(function() {
         var hideProgress = function() {
             progressDiv.style.display = 'none';
         };
-        commonVars.wavesurfer.on('loading', showProgress);
-        commonVars.wavesurfer.on('ready', hideProgress);
-        commonVars.wavesurfer.on('destroy', hideProgress);
-        commonVars.wavesurfer.on('error', hideProgress);
+        shared.wavesurfer.on('loading', showProgress);
+        shared.wavesurfer.on('ready', hideProgress);
+        shared.wavesurfer.on('destroy', hideProgress);
+        shared.wavesurfer.on('error', hideProgress);
     }());
 
-    commonVars.wavesurfer.init(commonVars.wavesurferOptions);
+    shared.wavesurfer.init(shared.wavesurferOptions);
 
-    commonVars.audioData = Routing.generate('innova_get_mediaresource_resource_file', {
-        workspaceId: commonVars.wId,
-        id: commonVars.mrId
+    shared.audioData = Routing.generate('innova_get_mediaresource_resource_file', {
+        workspaceId: shared.wId,
+        id: shared.mrId
     });
 
-    commonVars.htmlAudioPlayer.src = commonVars.audioData;
-    commonVars.wavesurfer.load(commonVars.audioData);
+    shared.htmlAudioPlayer.src = shared.audioData;
+    shared.wavesurfer.load(shared.audioData);
 
     createRegions();
-    if (commonVars.regions.length > 0) {
-        commonVars.currentRegion = commonVars.regions[0];
+    if (shared.regions.length > 0) {
+        shared.currentRegion = shared.regions[0];
         if (showTextTranscription) {
             // show help text
-            $('.help-text').html(commonVars.currentRegion.note);
+            $('.help-text').html(shared.currentRegion.note);
         }
     }
 
-    commonVars.wavesurfer.on('ready', function() {
+    shared.wavesurfer.on('ready', function() {
         var timeline = Object.create(WaveSurfer.Timeline);
         timeline.init({
-            wavesurfer: commonVars.wavesurfer,
+            wavesurfer: shared.wavesurfer,
             container: '#wave-timeline'
         });
     });
 
-    commonVars.wavesurfer.on('seek', function() {
-        if (commonVars.playing) {
-            if (commonVars.wavesurfer.isPlaying()) {
-                commonVars.wavesurfer.pause();
-                commonVars.wavesurfer.setVolume(1);
-                commonVars.wavesurfer.setPlaybackRate(1);
+    shared.wavesurfer.on('seek', function() {
+        if (shared.playing) {
+            if (shared.wavesurfer.isPlaying()) {
+                shared.wavesurfer.pause();
+                shared.wavesurfer.setVolume(1);
+                shared.wavesurfer.setPlaybackRate(1);
             }
             // pause help
-            commonVars.htmlAudioPlayer.pause();
-            commonVars.htmlAudioPlayer.currentTime = 0;
+            shared.htmlAudioPlayer.pause();
+            shared.htmlAudioPlayer.currentTime = 0;
         }
         var current = getRegionFromCurrentTime();
-        if (current && commonVars.currentRegion && current.id != commonVars.currentRegion.id) {
+        if (current && shared.currentRegion && current.id != shared.currentRegion.id) {
             // update current region
-            commonVars.currentRegion = current;
+            shared.currentRegion = current;
             if (showTextTranscription) {
                 // show help text
-                $('.help-text').html(commonVars.currentRegion.note);
+                $('.help-text').html(shared.currentRegion.note);
             }
         }
 
-        if (!commonVars.playing) {
+        if (!shared.playing) {
             helpRegion = current;
             // hide any previous help info
             $('.region-highlight').remove();
@@ -93,36 +99,62 @@ $(document).ready(function() {
                 hideHelp();
                 currentHelpTextIndex = 0;
             }
-            commonVars.wavesurfer.play();
+            shared.wavesurfer.play();
         }
     });
 
-    commonVars.wavesurfer.on('audioprocess', function() {
-        // check commonVars.regions and display text
+    shared.wavesurfer.on('audioprocess', function() {
+        // check shared.regions and display text
         var current = getRegionFromCurrentTime();
-        if (current && commonVars.currentRegion && current.id != commonVars.currentRegion.id) {
+        if (current && shared.currentRegion && current.id != shared.currentRegion.id) {
             // update current region
-            commonVars.currentRegion = current;
+            shared.currentRegion = current;
             if (showTextTranscription) {
                 // show help text
-                $('.help-text').html(commonVars.currentRegion.note);
+                $('.help-text').html(shared.currentRegion.note);
             }
 
         }
     });
 
-    commonVars.wavesurfer.on('finish', function() {
-        commonVars.wavesurfer.seekAndCenter(0);
-        commonVars.wavesurfer.pause();
-        commonVars.playing = false;
+    shared.wavesurfer.on('finish', function() {
+        shared.wavesurfer.seekAndCenter(0);
+        shared.wavesurfer.pause();
+        shared.playing = false;
     });
     /* /WAVESURFER */
 });
 
+
+$('body').on('click', '#btn-toggle-transcription', function(){
+  toggleTextTranscription()
+})
+
+$('body').on('click', '#btn-play', function(){
+  play()
+})
+
+$('body').on('click', '#btn-loop', function(){
+  playInLoop()
+})
+
+$('body').on('click', '#btn-backward', function(){
+  playBackward()
+})
+
+$('body').on('click', '#btn-slow', function(){
+  playSlowly()
+})
+
+$('body').on('click', '#btn-text', function(){
+  showHelpText()
+})
+
+
 function toggleTextTranscription() {
     showTextTranscription = !showTextTranscription;
     if (showTextTranscription) {
-        $('.help-text').html(commonVars.currentRegion.note);
+        $('.help-text').html(shared.currentRegion.note);
     } else {
         $('.help-text').html('');
     }
@@ -147,7 +179,7 @@ function highlight() {
 }
 
 function getPositionFromTime(time) {
-    var duration = commonVars.wavesurfer.getDuration();
+    var duration = shared.wavesurfer.getDuration();
     var $canvas = $('#waveform').find('wave').first().find('canvas').first();
     var cWidth = $canvas.width();
 
@@ -156,11 +188,11 @@ function getPositionFromTime(time) {
 
 // play
 function play() {
-    commonVars.htmlAudioPlayer.pause();
-    commonVars.htmlAudioPlayer.currentTime = 0;
-    commonVars.wavesurfer.playPause();
-    commonVars.playing = commonVars.playing ? false : true;
-    if (commonVars.playing) {
+    shared.htmlAudioPlayer.pause();
+    shared.htmlAudioPlayer.currentTime = 0;
+    shared.wavesurfer.playPause();
+    shared.playing = shared.playing ? false : true;
+    if (shared.playing) {
         $('#btn-play').removeClass('fa-play').addClass('fa-pause');
         $('.region-highlight').remove();
         hideHelp();
@@ -174,9 +206,9 @@ function play() {
 
 function getRegionFromTime(time) {
     var region;
-    for (var i = 0; i < commonVars.regions.length; i++) {
-        if (commonVars.regions[i].start <= time && commonVars.regions[i].end > time) {
-            region = commonVars.regions[i];
+    for (var i = 0; i < shared.regions.length; i++) {
+        if (shared.regions[i].start <= time && shared.regions[i].end > time) {
+            region = shared.regions[i];
             break;
         }
     }
@@ -186,9 +218,9 @@ function getRegionFromTime(time) {
 function getNextRegion(time) {
     var next;
     // find next region relatively to given time
-    for (var i = 0; i < commonVars.regions.length; i++) {
-        if (commonVars.regions[i].start == time) {
-            next = commonVars.regions[i];
+    for (var i = 0; i < shared.regions.length; i++) {
+        if (shared.regions[i].start == time) {
+            next = shared.regions[i];
         }
     }
     return next;
@@ -196,7 +228,7 @@ function getNextRegion(time) {
 
 function playInLoop() {
     hideHelpText();
-    commonVars.wavesurfer.setPlaybackRate(1);
+    shared.wavesurfer.setPlaybackRate(1);
     var options = {
         start: helpRegion.start,
         end: helpRegion.end,
@@ -205,20 +237,20 @@ function playInLoop() {
         resize: false,
         color: 'rgba(0,0,0,0)' //invisible
     };
-    var region = commonVars.wavesurfer.addRegion(options);
-    if (commonVars.playing) {
-        commonVars.playing = false;
-        commonVars.wavesurfer.un('pause');
-        commonVars.wavesurfer.pause();
-        commonVars.wavesurfer.clearRegions();
+    var region = shared.wavesurfer.addRegion(options);
+    if (shared.playing) {
+        shared.playing = false;
+        shared.wavesurfer.un('pause');
+        shared.wavesurfer.pause();
+        shared.wavesurfer.clearRegions();
     } else {
         region.play();
-        commonVars.wavesurfer.on('pause', function(){
+        shared.wavesurfer.on('pause', function(){
           if(options.loop){
             region.play();
-            commonVars.playing = true;
+            shared.playing = true;
           } else {
-            commonVars.playing = false;
+            shared.playing = false;
           }
         });
     }
@@ -234,53 +266,53 @@ function playSlowly() {
         resize: false,
         color: 'rgba(0,0,0,0)' //invisible
     }
-    var region = commonVars.wavesurfer.addRegion(options);
-    // stop commonVars.playing if commonVars.playing
-    if (commonVars.playing) {
-        commonVars.playing = false;
-        commonVars.wavesurfer.pause();
-        commonVars.wavesurfer.clearRegions();
-        commonVars.wavesurfer.setPlaybackRate(1);
-        commonVars.htmlAudioPlayer.pause();
-        commonVars.wavesurfer.setVolume(1);
+    var region = shared.wavesurfer.addRegion(options);
+    // stop shared.playing if shared.playing
+    if (shared.playing) {
+        shared.playing = false;
+        shared.wavesurfer.pause();
+        shared.wavesurfer.clearRegions();
+        shared.wavesurfer.setPlaybackRate(1);
+        shared.htmlAudioPlayer.pause();
+        shared.wavesurfer.setVolume(1);
     } else {
-        commonVars.wavesurfer.setPlaybackRate(0.8);
-        commonVars.wavesurfer.setVolume(0);
-        commonVars.htmlAudioPlayer.playbackRate = 0.8;
-        commonVars.htmlAudioPlayer.currentTime = helpRegion.start;
+        shared.wavesurfer.setPlaybackRate(0.8);
+        shared.wavesurfer.setVolume(0);
+        shared.htmlAudioPlayer.playbackRate = 0.8;
+        shared.htmlAudioPlayer.currentTime = helpRegion.start;
         region.play();
-        commonVars.htmlAudioPlayer.play();
-        commonVars.playing = true;
+        shared.htmlAudioPlayer.play();
+        shared.playing = true;
         // at the end of the region stop every audio readers
-        commonVars.wavesurfer.once('pause', function() {
-            commonVars.playing = false;
-            commonVars.htmlAudioPlayer.pause();
-            var progress = region.start / commonVars.wavesurfer.getDuration();
-            commonVars.wavesurfer.seekTo(progress);
-            commonVars.htmlAudioPlayer.currentTime = region.start;
-            commonVars.wavesurfer.clearRegions();
-            commonVars.wavesurfer.setPlaybackRate(1);
-            commonVars.wavesurfer.setVolume(1);
-            commonVars.htmlAudioPlayer.playbackRate = 1;
+        shared.wavesurfer.once('pause', function() {
+            shared.playing = false;
+            shared.htmlAudioPlayer.pause();
+            var progress = region.start / shared.wavesurfer.getDuration();
+            shared.wavesurfer.seekTo(progress);
+            shared.htmlAudioPlayer.currentTime = region.start;
+            shared.wavesurfer.clearRegions();
+            shared.wavesurfer.setPlaybackRate(1);
+            shared.wavesurfer.setVolume(1);
+            shared.htmlAudioPlayer.playbackRate = 1;
         });
     }
 }
 
 function playBackward() {
     hideHelpText();
-    // is commonVars.playing for real audio (ie not for TTS)
-    if (commonVars.playing) {
-        // stop audio playback before commonVars.playing TTS
-        commonVars.htmlAudioPlayer.pause();
-        commonVars.playing = false;
+    // is shared.playing for real audio (ie not for TTS)
+    if (shared.playing) {
+        // stop audio playback before shared.playing TTS
+        shared.htmlAudioPlayer.pause();
+        shared.playing = false;
     }
     if (window.SpeechSynthesisUtterance === undefined) {
         console.log('not supported!');
     } else {
-        var text = commonVars.strUtils.removeHtml(commonVars.currentRegion.note);
+        var text = shared.strUtils.removeHtml(shared.currentRegion.note);
         var array = text.split(' ');
         var start = array.length - 1;
-        // check if utterance is already speaking before commonVars.playing (multiple click on backward button)
+        // check if utterance is already speaking before shared.playing (multiple click on backward button)
         if (!window.speechSynthesis.speaking) {
             handleUtterancePlayback(start, array);
         }
@@ -322,13 +354,13 @@ function handleUtterancePlayback(index, textArray) {
         toSay += textArray[j] + ' ';
     }
     if (index >= 0) {
-        commonVars.playing = true;
+        shared.playing = true;
         sayIt(toSay, function() {
             index = index - 1;
             handleUtterancePlayback(index, textArray);
         });
     } else {
-        commonVars.playing = false;
+        shared.playing = false;
     }
 }
 
@@ -370,12 +402,12 @@ function hideHelp() {
 }
 
 function showHelpText() {
-    if (commonVars.playing) {
-        commonVars.playing = false;
-        if (commonVars.wavesurfer.isPlaying()) commonVars.wavesurfer.pause();
-        commonVars.htmlAudioPlayer.pause();
+    if (shared.playing) {
+        shared.playing = false;
+        if (shared.wavesurfer.isPlaying()) shared.wavesurfer.pause();
+        shared.htmlAudioPlayer.pause();
         if (window.speechSynthesis.speaking) {
-            // can not really stop commonVars.playing tts since the callback can not be canceled
+            // can not really stop shared.playing tts since the callback can not be canceled
             window.speechSynthesis.cancel();
         }
     }
@@ -401,11 +433,11 @@ function hideHelpText() {
 }
 
 function getRegionFromCurrentTime() {
-    var currentTime = commonVars.wavesurfer.getCurrentTime();
+    var currentTime = shared.wavesurfer.getCurrentTime();
     var region;
-    for (var i = 0; i < commonVars.regions.length; i++) {
-        if (commonVars.regions[i].start <= currentTime && commonVars.regions[i].end > currentTime) {
-            region = commonVars.regions[i];
+    for (var i = 0; i < shared.regions.length; i++) {
+        if (shared.regions[i].start <= currentTime && shared.regions[i].end > currentTime) {
+            region = shared.regions[i];
             break;
         }
     }
@@ -443,14 +475,14 @@ function createRegions() {
             rate: rate,
             texts: texts
         };
-        commonVars.regions.push(region);
+        shared.regions.push(region);
     });
-    if (commonVars.regions.length === 0) {
+    if (shared.regions.length === 0) {
         var region = {
             id: 0,
             uuid: '',
             start: 0,
-            end: commonVars.wavesurfer.getDuration(),
+            end: shared.wavesurfer.getDuration(),
             note: '',
             hasHelp: false,
             helpUuid: '',
@@ -459,7 +491,7 @@ function createRegions() {
             rate: false,
             texts: false
         };
-        commonVars.regions.push(region);
+        shared.regions.push(region);
     }
     return true;
 }

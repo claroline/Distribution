@@ -228,13 +228,13 @@ class MediaResourceManager
                     $vtt .= strip_tags($region['note']);
                 }
                 $vtt .= PHP_EOL;
-                ++$index;
                 $partFilePath = $tempDir.DIRECTORY_SEPARATOR.$cleanName.'_part_'.$index.'.'.$ext;
                 $cmd = 'ffmpeg -i '.$copiedFilePath.' -ss '.$start.' -t '.$duration.' '.$partFilePath;
                 exec($cmd, $output, $returnVar);
 
+                ++$index;
                 // cmd success
-                if (count($output) > 0 && $returnVar === 0) {
+                if (count($output) === 0 && $returnVar === 0) {
                     array_push($files, $partFilePath);
                 } else {
                     // @TODO do something in case of cmd error

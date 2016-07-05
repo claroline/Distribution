@@ -1,8 +1,6 @@
-'use strict';
-
-var JavascriptUtils = {
+export default class JsUtils {
     // get selected text in the current window
-    getSelectedText: function () {
+    getSelectedText () {
         var txt = '';
         if (window.getSelection) {
             txt = window.getSelection();
@@ -12,14 +10,14 @@ var JavascriptUtils = {
             txt = window.document.selection.createRange().text;
         }
         return txt;
-    },
-  
+    }
+
     /**
      * format decimal time into human readable time
      * @param d decimal
      * @returns formated time
      */
-    secondsToHms: function (d) {
+    secondsToHms (d) {
         d = Number(d);
         if (d > 0) {
 
@@ -49,9 +47,9 @@ var JavascriptUtils = {
 
             return "00:00:00";
         }
-    },
+    }
     // get selected text and parent element in the current window
-    getSelectionTextAndContainerElement: function () {
+    getSelectionTextAndContainerElement () {
         var text = "", containerElement = null;
         if (typeof window.getSelection !== "undefined") {
             var sel = window.getSelection();
@@ -70,8 +68,9 @@ var JavascriptUtils = {
             text: text,
             containerElement: containerElement
         };
-    },
-    toggleFullScreen: function (elem) {
+    }
+
+    toggleFullScreen (elem) {
         // https://developer.mozilla.org/fr/docs/Web/Guide/DOM/Using_full_screen_mode
         if (!document.fullscreenElement && // alternative standard method
                 !document.mozFullScreenElement && !document.webkitFullscreenElement) {  // current working methods
@@ -103,4 +102,4 @@ var JavascriptUtils = {
             elem.webkitRequestFullscreen();
         }
     }
-};
+}

@@ -20,7 +20,7 @@
                 /
                 <i class="fa fa-pause"></i>
             </button>
-            <button type="button" class="btn btn-primary" data-action="help" title="{{'region_help_view' | trans({}, 'media_resource')}}">
+            <button type="button" class="btn btn-primary btn-show-help" title="{{'region_help_view' | trans({}, 'media_resource')}}">
                 <i class="fa fa-question"></i>
             </button>
         </div>
@@ -33,7 +33,7 @@
     <div class="col-md-12 text-center regions-container">
         {% if regions | length > 0 %}
             {% for region in regions %}
-              {% include "InnovaMediaResourceBundle:MediaResource/Partials:region.html.twig" with {'region': region, 'hidden': true, 'config':true, 'admin': false} %}                
+              {% include "InnovaMediaResourceBundle:MediaResource/Partials:region.html.twig" with {'region': region, 'hidden': true, 'config':true, 'admin': false} %}
             {% endfor %}
         {% endif %}
     </div>
@@ -44,10 +44,7 @@
 
 {% block javascripts %}
 
-    {% javascripts output = 'vendor/claroline/plugin/innovamediaresource/js/player-active.js'
-    '@InnovaMediaResourceBundle/Resources/js/play.active.js'
- %}
+  <script src="{{ hotAsset('dist/commons.js') }}"></script>
+  <script src="{{ hotAsset('dist/claroline-distribution-plugin-media-resource-active.js') }}"></script>
 
-    <script src="{{ asset_url }}"></script>
-    {% endjavascripts %}
 {% endblock %}

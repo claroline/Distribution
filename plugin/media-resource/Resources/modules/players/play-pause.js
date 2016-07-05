@@ -1,75 +1,80 @@
+import SharedData from '../shared/SharedData';
+
 var baseAudioUrl = '';
 var pauseTime = 2000;
 var ended = false;
 var playButton;
+let shared;
 
 // ======================================================================================================== //
 // DOCUMENT READY
 // ======================================================================================================== //
 $(document).ready(function () {
-    //commonVars.htmlAudioPlayer = document.getElementById('html-audio-player');
+    //shared.htmlAudioPlayer = document.getElementById('html-audio-player');
     var progress = document.getElementById('seekbar');
     playButton = document.getElementById('play');
-    commonVars.htmlAudioPlayer.loop = false;
+    let sharedData = new SharedData();
+    shared = sharedData.getSharedData();
 
-    // create commonVars.regions JS objects
+    shared.htmlAudioPlayer.loop = false;
+
+    // create shared.regions JS objects
     createRegions();
 
-    var data = {
-        workspaceId: commonVars.wId,
-        id: commonVars.mrId
-    };
-
-    commonVars.audioData = Routing.generate('innova_get_mediaresource_resource_file', {
-        workspaceId: data.workspaceId,
-        id: data.id
+    shared.audioData = Routing.generate('innova_get_mediaresource_resource_file', {
+        workspaceId: shared.wId,
+        id: shared.mrId
     });
 
-    commonVars.htmlAudioPlayer.src = commonVars.audioData;
-    baseAudioUrl = commonVars.audioData;
+    shared.htmlAudioPlayer.src = shared.audioData;
+    baseAudioUrl = shared.audioData;
 
     // draw progress bar while playing
-    commonVars.htmlAudioPlayer.addEventListener('timeupdate', function (e) {
-        var percent = commonVars.htmlAudioPlayer.currentTime * 100 / commonVars.htmlAudioPlayer.duration;
+    shared.htmlAudioPlayer.addEventListener('timeupdate', function (e) {
+        var percent = shared.htmlAudioPlayer.currentTime * 100 / shared.htmlAudioPlayer.duration;
         progress.style.width = percent + '%';
     });
 
-    commonVars.htmlAudioPlayer.addEventListener('pause', function (e) {
-        nextRegion = getNextRegion(commonVars.htmlAudioPlayer.currentTime);
+    shared.htmlAudioPlayer.addEventListener('pause', function (e) {
+        let nextRegion = getNextRegion(shared.htmlAudioPlayer.currentTime);
         if (!ended && nextRegion) {
 
-            offset = nextRegion.start;
-            paramString = '#t=' + offset + ',' + nextRegion.end;
-            commonVars.htmlAudioPlayer.src = baseAudioUrl + paramString;
+            let offset = nextRegion.start;
+            let paramString = '#t=' + offset + ',' + nextRegion.end;
+            shared.htmlAudioPlayer.src = baseAudioUrl + paramString;
 
             window.setTimeout(function () {
-                commonVars.htmlAudioPlayer.play();
+                shared.htmlAudioPlayer.play();
                 if (nextRegion.last) {
                     ended = true;
                 }
             }, pauseTime);
         }
         else { // pause event is sent when ended
-            commonVars.htmlAudioPlayer.currentTime = 0;
+            shared.htmlAudioPlayer.currentTime = 0;
             playButton.disabled = false;
             ended = false;
         }
     });
 });
 
+$('body').on('click', '#play', function(){
+  play()
+})
+
 
 function play() {
     playButton.disabled = true;
     ended = false;
-    commonVars.htmlAudioPlayer.currentTime = 0;
+    shared.htmlAudioPlayer.currentTime = 0;
     var paramString = '';
-    var nextRegion = getNextRegion(commonVars.htmlAudioPlayer.currentTime);
+    var nextRegion = getNextRegion(shared.htmlAudioPlayer.currentTime);
     if (nextRegion) {
         var offset = nextRegion.end;
         paramString = '#t=0,' + offset;
     }
-    commonVars.htmlAudioPlayer.src = baseAudioUrl + paramString;
-    commonVars.htmlAudioPlayer.play();
+    shared.htmlAudioPlayer.src = baseAudioUrl + paramString;
+    shared.htmlAudioPlayer.play();
 }
 
 
@@ -86,22 +91,23 @@ function createRegions() {
                 start: start,
                 end: end
             };
-            commonVars.regions.push(region);
+            shared.regions.push(region);
         }
     });
 }
 
 function getNextRegion(time) {
-    var length = Object.keys(commonVars.regions).length;
-    length = length - 2;
-    for (var index in commonVars.regions) {
-        if (commonVars.regions[index].start <= time && commonVars.regions[index].end > time) {
+    const length = shared.regions.length - 2;
+    let index = 0
+    for (let region of shared.regions) {
+        if (region.start <= time && region.end > time) {
             var isLast = index > length ? true : false;
             return {
-                start: commonVars.regions[index].start,
-                end: commonVars.regions[index].end,
+                start: region.start,
+                end: region.end,
                 last: isLast
             };
         }
+        index++;
     }
 }

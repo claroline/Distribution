@@ -1,7 +1,8 @@
-'use strict';
 
-var DomUtils = {
-    getHelpModalContent: function(current, previous) {
+
+export default class DomUtils {
+
+    getHelpModalContent(current, previous, shared) {
         var html = '';
         //                  FIRST PANE
         html += '           <div role="tabpanel" class="tab-pane active" id="help-region-choice">';
@@ -19,7 +20,7 @@ var DomUtils = {
         html += '                         <div class="input-group-addon">';
         html += '                           <input type="radio" name="segment" value="current" checked>';
         html += '                         </div>';
-        html += '                         <button class="btn btn-default" style="margin:5px;" title="' + Translator.trans('region_help_segment_playback', {}, 'media_resource') + '"  onclick="playHelp(' + current.start + ', ' + current.end + ', ' + false + ',' + false + ')">';
+        html += '                         <button class="btn btn-default play-help" style="margin:5px;" title="' + Translator.trans('region_help_segment_playback', {}, 'media_resource') + '"   data-start="' + current.start + '" data-end="' + current.end + '" data-mode="' + shared.playMode.PLAY_NORMAL + '" >';
         html += '                           <i class="fa fa-play"></i> ';
         html += '                             / ';
         html += '                           <i class="fa fa-pause"></i>';
@@ -37,7 +38,7 @@ var DomUtils = {
             html += '                       <div class="input-group-addon">';
             html += '                           <input type="radio" name="segment" value="previous">';
             html += '                       </div>';
-            html += '                       <button disabled style="margin:5px;" class="btn btn-default" title="' + Translator.trans('region_help_segment_playback', {}, 'media_resource') + '" onclick="playHelp(' + previous.start + ', ' + previous.end + ', ' + false + ',' + false + ')">';
+            html += '                       <button disabled style="margin:5px;" class="btn btn-default play-help" title="' + Translator.trans('region_help_segment_playback', {}, 'media_resource') + '" data-start="' + previous.start + '" data-end="' + previous.end + '" data-mode="' + shared.playMode.PLAY_NORMAL + '">';
             html += '                           <i class="fa fa-play"></i> ';
             html += '                           / ';
             html += '                           <i class="fa fa-pause"></i>';
@@ -51,19 +52,22 @@ var DomUtils = {
         html += '           <div role="tabpanel" class="tab-pane" id="region-help-available">';
         html += '           </div>';
         return html;
-    },
+    }
+
     /**
      * append available help in the help modal specific tab
      */
-    appendHelpModal: function(modal, region) {
+    appendHelpModal(modal, region, shared) {
         var root = $(modal).find('#region-help-available');
         $(root).empty();
         var html = '';
         if (region.hasHelp) {
+            console.log('yep');
+            console.log(region);
             if (region.loop) {
                 html += '<div class="row">';
                 html += '   <div class="col-md-12">';
-                html += '       <button class="btn btn-default" title="' + Translator.trans('region_help_segment_playback_loop', {}, 'media_resource') + '"  onclick="playHelp(' + region.start + ', ' + region.end + ', ' + true + ',' + false + ')" style="margin:5px;">';
+                html += '       <button class="btn btn-default play-help" title="' + Translator.trans('region_help_segment_playback_loop', {}, 'media_resource') + '" data-start="' + region.start + '" data-end="' + region.end + '" data-mode="' + shared.playMode.PLAY_LOOP + '" style="margin:5px;">';
                 html += '           <i class="fa fa-retweet"></i> ';
                 html += '       </button>';
                 html += '       <label>' + Translator.trans('region_help_segment_playback_loop', {}, 'media_resource') + '</label>';
@@ -74,7 +78,7 @@ var DomUtils = {
                 html += '<hr/>';
                 html += '<div class="row">';
                 html += '   <div class="col-md-12">';
-                html += '       <button class="btn btn-default" title="' + Translator.trans('region_help_segment_playback_backward', {}, 'media_resource') + '" onclick="playBackward();" style="margin:5px;">';
+                html += '       <button class="btn btn-default play-backward" title="' + Translator.trans('region_help_segment_playback_backward', {}, 'media_resource') + '" data-note="' + region.note + '" style="margin:5px;">';
                 html += '           <i class="fa fa-exchange"></i> ';
                 html += '       </button>';
                 html += '       <label>' + Translator.trans('region_help_segment_playback_backward', {}, 'media_resource') + '</label>';
@@ -85,7 +89,7 @@ var DomUtils = {
                 html += '<hr/>';
                 html += '<div class="row">';
                 html += '   <div class="col-md-12">';
-                html += '       <button class="btn btn-default" title="' + Translator.trans('region_help_segment_playback_rate', {}, 'media_resource') + '"  onclick="playHelp(' + region.start + ', ' + region.end + ', ' + false + ',' + true + ')">x0.8</button>';
+                html += '       <button class="btn btn-default play-help" title="' + Translator.trans('region_help_segment_playback_rate', {}, 'media_resource') + '" data-start="' + region.start + '" data-end="' + region.end + '" data-mode="' + shared.playMode.PLAY_SLOW + '">x0.8</button>';
                 html += '       <label>' + Translator.trans('region_help_segment_playback_rate', {}, 'media_resource') + '</label>';
                 html += '   </div>';
                 html += '</div>';
@@ -118,12 +122,12 @@ var DomUtils = {
                 html += '   </div>';
                 html += '</div>';
             }
-            if (region.relatedRegionUuid) {
-                var helpRegionStart = this.getHelpRelatedRegionStart(region.relatedRegionUuid);
+            if (region.helpUuid) {
+                var helpRegionData = this.getHelpRelatedRegionData(region.helpUuid);
                 html += '<hr/>';
                 html += '<div class="row">';
                 html += '   <div class="col-md-12">';
-                html += '       <button class="btn btn-default" title="' + Translator.trans('region_help_related_segment_playback', {}, 'media_resource') + '" onclick="playHelpRelatedRegion( ' + helpRegionStart + ');" style="margin:5px;">';
+                html += '       <button class="btn btn-default play-help" title="' + Translator.trans('region_help_related_segment_playback', {}, 'media_resource') + '" data-start="' + helpRegionData.start + '" data-end="' + helpRegionData.end + '" data-mode="' + shared.playMode.PLAY_NORMAL + '" style="margin:5px;">';
                 html += '           <i class="fa fa-play"></i> ';
                 html += '           / ';
                 html += '           <i class="fa fa-pause"></i>';
@@ -149,11 +153,12 @@ var DomUtils = {
             currentLevel++;
             $('#help-modal-help-text').show();
         });
-    },
+    }
+
     /**
      * $regionRow the row that called the action
      */
-    setRegionConfigModalContent: function($regionRow) {
+    setRegionConfigModalContent($regionRow) {
         // get regions dom rows
         var rRows = [];
         $('.region').each(function() {
@@ -170,7 +175,7 @@ var DomUtils = {
         });
 
         // get current region row start text
-        var currentStart = $regionRow.find('.time-text.start').text();
+        var currentRegionStart = $regionRow.find('.time-text.start').text();
         // find region config hidden inputs
         var helpRegionUuid = $regionRow.find('.hidden-config-help-region-uuid');
         //loop elem
@@ -269,7 +274,7 @@ var DomUtils = {
         // loop
         for (var i = 0; i < rRows.length; i++) {
             // we do not want the current region to appear in this list
-            if (currentStart !== rRows[i].hstart) {
+            if (currentRegionStart !== rRows[i].hstart) {
                 var selected = '';
                 if (helpRegionUuid.val() === rRows[i].uid) {
                     selected = 'selected';
@@ -293,13 +298,14 @@ var DomUtils = {
         html += '</div>'; // end row
 
         return html;
-    },
+    }
+
     /**
      * region current region to create
      * utils
      * appendTo dom row jquery object the row after witch we need to add the new region row
      */
-    addRegionToDom: function(region, javascriptUtils, $appendTo) {
+    addRegionToDom(region, javascriptUtils, $appendTo) {
 
         // HTML to append
         var html = '';
@@ -323,13 +329,13 @@ var DomUtils = {
         // region config buttons
         html += '       <div class="col-xs-2 text-right">';
         html += '           <div class="btn-group" role="group">';
-        html += '               <button type="button" class="btn btn-default" title="' + Translator.trans('play_pause_region', {}, 'media_resource') + '" onclick="playRegion(this);">';
+        html += '               <button type="button" class="btn btn-default region-play" title="' + Translator.trans('play_pause_region', {}, 'media_resource') + '">';
         html += '                 |-&nbsp;<i class="fa fa-play"></i>&nbsp;-|';
         html += '               </button>';
-        html += '               <button role="button" type="button" class="btn btn-default" title="' + Translator.trans('region_config', {}, 'media_resource') + '" onclick="configRegion(this);">';
+        html += '               <button role="button" type="button" class="btn btn-default region-config" title="' + Translator.trans('region_config', {}, 'media_resource') + '">';
         html += '                 <i class="fa fa-cog"></i>';
         html += '               </button>';
-        html += '               <button type="button" name="del-region-btn" class="btn btn-danger" data-uuid="' + region.uuid + '" title="' + Translator.trans('region_delete', {}, 'media_resource') + '" onclick="deleteRegion(this)">';
+        html += '               <button type="button" name="del-region-btn" class="btn btn-danger region-delete" data-uuid="' + region.uuid + '" title="' + Translator.trans('region_delete', {}, 'media_resource') + '">';
         html += '                 <i class="fa fa-trash-o"></i>';
         html += '               </button>';
         html += '           </div>';
@@ -357,13 +363,14 @@ var DomUtils = {
 
         // append the row in the right place
         $(html).insertAfter($appendTo);
-    },
+    }
+
     /**
      * get regions that are using the given regionUuid as help region
      * @param {type} uuid the region uuid
      * @returns {Array of region uuid}
      */
-    getRegionsUsedInHelp: function(uuid) {
+    getRegionsUsedInHelp(uuid) {
         var results = [];
         // for each region row
         $('.region').each(function() {
@@ -375,22 +382,37 @@ var DomUtils = {
             }
         });
         return results;
-    },
+    }
+
     /**
      * For a given region uuid, find the dom row, find the region start info
      * @param string rowUuid
      * @returns region start value
      */
-    getHelpRelatedRegionStart: function(rowUuid) {
+    getHelpRelatedRegionStart(rowUuid) {
         return Number($('#' + rowUuid).find('.hidden-start').val());
-    },
+    }
+
+    getHelpRelatedRegionData(rowUuid){
+      let region = {}
+      $('.region').each(function(){
+        console.log($(this).attr('data-uuid'));
+        console.log('searched ' + rowUuid);
+        if($(this).attr('data-uuid') === rowUuid){
+          region.start = Number($(this).find('.hidden-start').val());
+          region.end = Number($(this).find('.hidden-end').val());
+        }
+      })
+      return region
+    }
+
     /**
      * Get the region associatied row (ie DOM object)
      * @param start
      * @param end
      * @returns the row
      */
-    getRegionRow: function(start, end) {
+    getRegionRow(start, end) {
         var row;
         $('.region').each(function() {
             var temp = $(this);
@@ -407,12 +429,13 @@ var DomUtils = {
             }
         });
         return row;
-    },
+    }
+
     /**
      * Highlight a row
      * @param region
      */
-    highlightRegionRow: function(region) {
+    highlightRegionRow(region) {
         var row = this.getRegionRow(region.start + 0.1, region.end - 0.1);
         if (row) {
             $('.active-row').each(function() {
@@ -420,34 +443,36 @@ var DomUtils = {
             });
             $(row).find('.note').addClass('active-row');
         }
-    },
+    }
+
     /**
-     * Upadte Hidden inputs values for contenteditable=true divs (ie region notes divs)
+     * Update Hidden inputs values for contenteditable=true divs (ie region notes divs)
      * @param {type} elem
      */
-    updateHiddenNoteInput: function(elem) {
+    updateHiddenNoteInput(elem) {
         // find associated input[name="note"] input and set val
         var hiddenNoteInput = $(elem).closest(".region").find('input.hidden-note');
         var content = $(elem).html() ? $(elem).html() : $(elem).text();
         content.replace('<br>', '');
         $(hiddenNoteInput).val(content);
-    },
-    getSimpleHelpModalContent: function(current, audioData) {
+    }
+
+    getSimpleHelpModalContent(current, audioData, shared) {
         var html = '<div class="row">';
         html += '       <div class="col-md-12 text-center">';
-        html += '           <audio id="help-audio-player" src="' + audioData + '"></audio>'; // will not show as no controls are defined
+        //html += '           <audio id="help-audio-player" src="' + audioData + '"></audio>'; // will not show as no controls are defined
         html += '           <div class="row">';
         html += '               <div class="col-md-12">';
         html += '                   <div class="btn-group">';
-        html += '                       <button class="btn btn-default" title="' + Translator.trans('region_help_segment_playback', {}, 'media_resource') + '" onclick="playHelp(' + current.start + ', ' + current.end + ', ' + false + ',' + false + ')">';
+        html += '                       <button class="btn btn-default play-help" title="' + Translator.trans('region_help_segment_playback', {}, 'media_resource') + '" data-start="' + current.start + '" data-end="' + current.end + '" data-mode="' + shared.playMode.PLAY_NORMAL + '">';
         html += '                           <i class="fa fa-play"></i> ';
         html += '                           / ';
         html += '                           <i class="fa fa-pause"></i>';
         html += '                       </button>';
-        html += '                       <button class="btn btn-default" title="' + Translator.trans('region_help_segment_playback_loop', {}, 'media_resource') + '"  onclick="playHelp(' + current.start + ', ' + current.end + ', ' + true + ', ' + false + ')">';
+        html += '                       <button class="btn btn-default play-help" title="' + Translator.trans('region_help_segment_playback_loop', {}, 'media_resource') + '"  data-start="' + current.start + '" data-end="' + current.end + '" data-mode="' + shared.playMode.PLAY_LOOP + '">';
         html += '                           <i class="fa fa-retweet"></i> ';
         html += '                       </button>';
-        html += '                       <button class="btn btn-default" title="' + Translator.trans('region_help_segment_playback_rate', {}, 'media_resource') + '"  onclick="playHelp(' + current.start + ', ' + current.end + ', ' + false + ',' + true + ')">x0.8</button>';
+        html += '                       <button class="btn btn-default play-help" title="' + Translator.trans('region_help_segment_playback_rate', {}, 'media_resource') + '"  data-start="' + current.start + '" data-end="' + current.end + '" data-mode="' + shared.playMode.PLAY_SLOW + '">x0.8</button>';
         html += '                   </div>';
         html += '               </div>';
         html += '           </div>';
@@ -455,4 +480,4 @@ var DomUtils = {
         html += '</div>';
         return html;
     }
-};
+}

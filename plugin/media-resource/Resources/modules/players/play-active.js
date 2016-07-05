@@ -1,84 +1,107 @@
-'use strict';
+import SharedData from '../shared/SharedData';
+import 'wavesurfer.js/plugin/wavesurfer.minimap'
+import 'wavesurfer.js/plugin/wavesurfer.timeline'
+import 'wavesurfer.js/plugin/wavesurfer.regions'
 
 var helpCurrentRegion; // the region where we are when asking help
 var helpPreviousRegion; // the previous region relatively to helpCurrentRegion
 var currentHelpRelatedRegion; // the related help region;
 var helpRegion; // the region we are listening to while in help modal first pane
 var hModal;
-var helpRegionEnd;
-var helpRegionStart;
+var currentEnd;
+var currentStart;
+let shared;
 
 // ======================================================================================================== //
 // ACTIONS BOUND WHEN DOM READY (PLAY / PAUSE, MOVE BACKWARD / FORWARD, ADD MARKER, CALL HELP, ANNOTATE)
 // ======================================================================================================== //
+
+$('body').on('click', '.btn-show-help', function(){
+
+    helpCurrentRegion = shared.currentRegion;
+    console.log('shared');
+    // search for prev region only if we are not in the first one
+    if (shared.currentRegion.start > 0) {
+        for (var i = 0; i < shared.regions.length; i++) {
+            if (shared.regions[i].end === shared.currentRegion.start) {
+                helpPreviousRegion = shared.regions[i];
+            }
+        }
+    }
+    var modalHtml = shared.domUtils.getHelpModalContent(helpCurrentRegion, helpPreviousRegion, shared);
+
+    // catch show modal event
+    $('#helpModal').on('show.bs.modal', function() {
+
+      hModal = $(this);
+      // clear previous content
+      hModal.find('.tab-content').empty();
+      // append basic modal content
+      hModal.find('.tab-content').append(modalHtml);
+
+      // by default the current region is selected so we append to modal help tab the current region help options
+      var currentDomRow = shared.domUtils.getRegionRow(shared.currentRegion.start + 0.1, shared.currentRegion.end - 0.1);
+
+      //  append to tab pane #region-help-available
+      shared.domUtils.appendHelpModal(hModal, helpCurrentRegion, shared);
+
+      helpRegion = {
+          start: shared.currentRegion.start + 0.1,
+          end: shared.currentRegion.end - 0.1
+      };
+
+      // listen to tab click event
+      hModal.find('#help-tab-panel a[role=tab]').click(function(e) {
+          e.preventDefault();
+          if (shared.playing) {
+              shared.htmlAudioPlayer.pause();
+              shared.playing = false;
+          }
+          $(this).tab('show');
+      });
+    });
+
+    // catch hidden modal event
+    $('#helpModal').on('hidden.bs.modal', function() {
+        if (shared.playing) {
+            shared.htmlAudioPlayer.pause();
+            shared.playing = false;
+        }
+        // (re)set the first tab active
+        $(this).find('.nav-tabs > li').each(function($index) {
+            if ($index === 0) {
+                $(this).removeClass('active').addClass('active');
+            } else {
+                $(this).removeClass('active');
+            }
+        });
+    });
+    // open modal
+    $('#helpModal').modal("show");
+})
+
+
+$('body').on('click', '.play-help', function() {
+    playHelp(this)
+})
+
+$('body').on('click', '.play-backward', function() {
+    playBackward()
+})
+
+$('body').on('click', '.play-help-related-region', function() {
+    playHelpRelatedRegion(this)
+})
+
 var actions = {
     play: function() {
-        if (!commonVars.playing) {
-            commonVars.wavesurfer.play();
-            commonVars.playing = true;
+        if (!shared.playing) {
+            shared.wavesurfer.play();
+            shared.playing = true;
         } else {
-            commonVars.wavesurfer.pause();
-            commonVars.playing = false;
+            shared.wavesurfer.pause();
+            shared.playing = false;
         }
-    },
-    help: function() {
-        helpCurrentRegion = commonVars.currentRegion;
-        // search for prev region only if we are not in the first one
-        if (commonVars.currentRegion.start > 0) {
-            for (var i = 0; i < commonVars.regions.length; i++) {
-                if (commonVars.regions[i].end === commonVars.currentRegion.start) {
-                    helpPreviousRegion = commonVars.regions[i];
-                }
-            }
-        }
-        var modalHtml = commonVars.domUtils.getHelpModalContent(helpCurrentRegion, helpPreviousRegion);
-
-        // catch show modal event
-        $('#helpModal').on('show.bs.modal', function() {
-          hModal = $(this);
-          // clear previous content
-          hModal.find('.tab-content').empty();
-          // append basic modal content
-          hModal.find('.tab-content').append(modalHtml);
-          // by default the current region is selected so we append to modal help tab the current region help options
-          var currentDomRow = commonVars.domUtils.getRegionRow(commonVars.currentRegion.start + 0.1, commonVars.currentRegion.end - 0.1);
-
-          //  append to tab pane #region-help-available
-          commonVars.domUtils.appendHelpModal(hModal, helpCurrentRegion);
-
-          helpRegion = {
-              start: commonVars.currentRegion.start + 0.1,
-              end: commonVars.currentRegion.end - 0.1
-          };
-
-          // listen to tab click event
-          hModal.find('#help-tab-panel a[role=tab]').click(function(e) {
-              e.preventDefault();
-              if (commonVars.playing) {
-                  commonVars.htmlAudioPlayer.pause();
-                  commonVars.playing = false;
-              }
-              $(this).tab('show');
-          });
-        });
-
-        // catch hidden modal event
-        $('#helpModal').on('hidden.bs.modal', function() {
-            if (commonVars.playing) {
-                commonVars.htmlAudioPlayer.pause();
-                commonVars.playing = false;
-            }
-            // (re)set the first tab active
-            $(this).find('.nav-tabs > li').each(function($index) {
-                if ($index === 0) {
-                    $(this).removeClass('active').addClass('active');
-                } else {
-                    $(this).removeClass('active');
-                }
-            });
-        });
-        // open modal
-        $('#helpModal').modal("show");
     }
 };
 
@@ -90,6 +113,8 @@ var actions = {
 // DOCUMENT READY
 // ======================================================================================================== //
 $(document).ready(function() {
+    let sharedData = new SharedData()
+    shared = sharedData.getSharedData()
 
     // bind data-action events
     $("button[data-action]").click(function() {
@@ -102,23 +127,23 @@ $(document).ready(function() {
     // HELP MODAL SELECT REGION (CURRENT / PREVIOUS) EVENT
     $('body').on('change', 'input[name=segment]:radio', function(e) {
 
-        if (commonVars.playing) {
-            commonVars.htmlAudioPlayer.pause();
-            commonVars.playing = false;
+        if (shared.playing) {
+            shared.htmlAudioPlayer.pause();
+            shared.playing = false;
         }
 
         var selectedValue = e.target.value;
         if (selectedValue === 'previous') {
-            commonVars.domUtils.appendHelpModal(hModal, helpPreviousRegion);
+            shared.domUtils.appendHelpModal(hModal, helpPreviousRegion, shared);
             helpRegion = {
                 start: helpPreviousRegion.start + 0.1,
                 end: helpPreviousRegion.end - 0.1
             };
         } else if (selectedValue === 'current') {
-            commonVars.domUtils.appendHelpModal(hModal, commonVars.currentRegion);
+            shared.domUtils.appendHelpModal(hModal, shared.currentRegion, shared);
             helpRegion = {
-                start: commonVars.currentRegion.start + 0.1,
-                end: commonVars.currentRegion.end - 0.1
+                start: shared.currentRegion.start + 0.1,
+                end: shared.currentRegion.end - 0.1
             };
         }
 
@@ -139,16 +164,16 @@ $(document).ready(function() {
         var hideProgress = function() {
             progressDiv.style.display = 'none';
         };
-        commonVars.wavesurfer.on('loading', showProgress);
-        commonVars.wavesurfer.on('ready', hideProgress);
-        commonVars.wavesurfer.on('destroy', hideProgress);
-        commonVars.wavesurfer.on('error', hideProgress);
+        shared.wavesurfer.on('loading', showProgress);
+        shared.wavesurfer.on('ready', hideProgress);
+        shared.wavesurfer.on('destroy', hideProgress);
+        shared.wavesurfer.on('error', hideProgress);
     }());
 
-    commonVars.wavesurfer.init(commonVars.wavesurferOptions);
+    shared.wavesurfer.init(shared.wavesurferOptions);
 
     /* Minimap plugin */
-    commonVars.wavesurfer.initMinimap({
+    shared.wavesurfer.initMinimap({
         height: 30,
         waveColor: '#ddd',
         progressColor: '#999',
@@ -156,52 +181,52 @@ $(document).ready(function() {
     });
 
     var data = {
-        workspaceId: commonVars.wId,
-        id: commonVars.mrId
+        workspaceId: shared.wId,
+        id: shared.mrId
     };
     loadAudio(data);
 
-    commonVars.htmlAudioPlayer = document.getElementById('html-audio-player');
-    commonVars.htmlAudioPlayer.src = commonVars.audioData;
 
-    commonVars.wavesurfer.on('ready', function() {
+    shared.htmlAudioPlayer.src = shared.audioData;
+
+    shared.wavesurfer.on('ready', function() {
         var timeline = Object.create(WaveSurfer.Timeline);
         timeline.init({
-            wavesurfer: commonVars.wavesurfer,
+            wavesurfer: shared.wavesurfer,
             container: '#wave-timeline'
         });
         initRegions();
-        if (commonVars.regions.length > 0) {
-            commonVars.currentRegion = commonVars.regions[0];
+        if (shared.regions.length > 0) {
+            shared.currentRegion = shared.regions[0];
         }
     });
 
-    commonVars.wavesurfer.on('seek', function() {
+    shared.wavesurfer.on('seek', function() {
         var current = getRegionFromTime();
-        if (current && commonVars.currentRegion && current.uuid != commonVars.currentRegion.uuid) {
+        if (current && shared.currentRegion && current.uuid != shared.currentRegion.uuid) {
             // update current region
-            commonVars.currentRegion = current;
+            shared.currentRegion = current;
         }
     });
 
-    commonVars.wavesurfer.on('audioprocess', function() {
-        // check commonVars.regions and display text
+    shared.wavesurfer.on('audioprocess', function() {
+        // check shared.regions and display text
         var current = getRegionFromTime();
-        if (current && commonVars.currentRegion && current.uuid != commonVars.currentRegion.uuid) {
+        if (current && shared.currentRegion && current.uuid != shared.currentRegion.uuid) {
             // update current region
-            commonVars.currentRegion = current;
+            shared.currentRegion = current;
         }
     });
     /* /WAVESURFER */
 
-    commonVars.htmlAudioPlayer.addEventListener('timeupdate', function() {
-        if (commonVars.htmlAudioPlayer.currentTime >= helpRegionEnd) {
-            commonVars.htmlAudioPlayer.pause();
-            commonVars.htmlAudioPlayer.currentTime = helpRegionStart;
-            if (commonVars.htmlAudioPlayer.loop) {
-                commonVars.htmlAudioPlayer.play();
+    shared.htmlAudioPlayer.addEventListener('timeupdate', function() {
+        if (shared.htmlAudioPlayer.currentTime >= currentEnd) {
+            shared.htmlAudioPlayer.pause();
+            shared.htmlAudioPlayer.currentTime = currentStart;
+            if (shared.htmlAudioPlayer.loop) {
+                shared.htmlAudioPlayer.play();
             } else {
-                commonVars.playing = false;
+                shared.playing = false;
             }
         }
     });
@@ -212,18 +237,18 @@ $(document).ready(function() {
 
 
 function getRegionFromTime(time) {
-    var currentTime = time ? time : commonVars.wavesurfer.getCurrentTime();
+    var currentTime = time ? time : shared.wavesurfer.getCurrentTime();
     var region;
-    for (var i = 0; i < commonVars.regions.length; i++) {
-        if (commonVars.regions[i].start <= currentTime && commonVars.regions[i].end > currentTime) {
-            region = commonVars.regions[i];
+    for (var i = 0; i < shared.regions.length; i++) {
+        if (shared.regions[i].start <= currentTime && shared.regions[i].end > currentTime) {
+            region = shared.regions[i];
             break;
         }
     }
     return region;
 }
 
-// build commonVars.markers, commonVars.regions from existing ones
+// build shared.markers, shared.regions from existing ones
 function initRegions() {
     $(".region").each(function() {
         var start = $(this).find('input.hidden-start').val();
@@ -263,18 +288,18 @@ function initRegions() {
             texts: texts,
             links: links
         };
-        commonVars.regions.push(region);
+        shared.regions.push(region);
     });
 
     return true;
 }
 
 function loadAudio(data) {
-    commonVars.audioData = Routing.generate('innova_get_mediaresource_resource_file', {
+    shared.audioData = Routing.generate('innova_get_mediaresource_resource_file', {
         workspaceId: data.workspaceId,
         id: data.id
     });
-    commonVars.wavesurfer.load(commonVars.audioData);
+    shared.wavesurfer.load(shared.audioData);
     return true;
 }
 // ======================================================================================================== //
@@ -284,34 +309,38 @@ function loadAudio(data) {
  * play the region (<audio> element) and loop if needed
  * Uses an <audio> element because we might need playback rate modification without changing the pitch of the sound
  * Wavesurfer can't do that for now
- * @param {float} start
- * @param {float} end
  */
-function playHelp(start, end, loop, rate) {
-    commonVars.htmlAudioPlayer.loop = loop;
-    if (rate) {
-        commonVars.htmlAudioPlayer.playbackRate = 0.8;
+function playHelp(elem) {
+    currentStart = $(elem).attr('data-start');
+    currentEnd = $(elem).attr('data-end');
+    const mode = $(elem).attr('data-mode'); // loop / rate
+
+    shared.htmlAudioPlayer.loop = mode === shared.playMode.PLAY_LOOP;
+    if (mode === shared.playMode.PLAY_SLOW) {
+        shared.htmlAudioPlayer.playbackRate = 0.8;
     } else {
-        commonVars.htmlAudioPlayer.playbackRate = 1;
+        shared.htmlAudioPlayer.playbackRate = 1;
     }
 
-    if (commonVars.playing) {
-        commonVars.htmlAudioPlayer.pause();
-        commonVars.playing = false;
+    if (shared.playing) {
+        shared.htmlAudioPlayer.pause();
+        shared.playing = false;
     } else {
-        commonVars.htmlAudioPlayer.currentTime = start;
-        commonVars.htmlAudioPlayer.play();
-        commonVars.playing = true;
+        shared.htmlAudioPlayer.currentTime = currentStart;
+        shared.htmlAudioPlayer.play();
+        shared.playing = true;
     }
-    helpRegionEnd = end;
-    helpRegionStart = start;
 }
+
+
+
 /**
  * Allow the user to play the help related region
  * @param {float} start
  */
-function playHelpRelatedRegion(start) {
-    playRegionFrom(start + 0.1);
+function playHelpRelatedRegion(elem) {
+  const start = Number($(elem).attr('data-region-uuid')) + 0.1;
+  playRegionFrom(start);
 }
 
 /**
@@ -319,19 +348,19 @@ function playHelpRelatedRegion(start) {
  * Called by HelpModal play backward button
  */
 function playBackward() {
-    // is commonVars.playing for real audio (ie not for TTS)
-    if (commonVars.playing && commonVars.htmlAudioPlayer) {
-        // stop audio playback before commonVars.playing TTS
-        commonVars.htmlAudioPlayer.pause();
-        commonVars.playing = false;
+    // is shared.playing for real audio (ie not for TTS)
+    if (shared.playing && shared.htmlAudioPlayer) {
+        // stop audio playback before shared.playing TTS
+        shared.htmlAudioPlayer.pause();
+        shared.playing = false;
     }
     if (window.SpeechSynthesisUtterance === undefined) {
         console.log('not supported!');
     } else {
-        var text = commonVars.strUtils.removeHtml(commonVars.currentRegion.note);
+        var text = shared.strUtils.removeHtml(shared.currentRegion.note);
         var array = text.split(' ');
         var start = array.length - 1;
-        // check if utterance is already speaking before commonVars.playing (pultiple click on backward button)
+        // check if utterance is already speaking before shared.playing (pultiple click on backward button)
         if (!window.speechSynthesis.speaking) {
             handleUtterancePlayback(start, array);
         }
@@ -391,13 +420,13 @@ function handleUtterancePlayback(index, textArray) {
 /**
  * Region options Modal
  * Allow the user to listen to the selected help related region while configuring help
- * Uses html audio player to avoid commonVars.wavesurfer animations behind the modal while commonVars.playing
+ * Uses html audio player to avoid shared.wavesurfer animations behind the modal while shared.playing
  **/
-$('body').on('click', '#btn-help-related-region-play', function() {
+/*$('body').on('click', '#btn-help-related-region-play', function() {
     if (currentHelpRelatedRegion) {
         playHelp(currentHelpRelatedRegion.start, currentHelpRelatedRegion.end, false, false);
     }
-});
+});*/
 
 // color config region buttons if
 function checkIfRowHasConfigValue(row) {
@@ -418,7 +447,7 @@ function checkIfRowHasConfigValue(row) {
 
 
 function getMarkerLeftPostionFromTime(time) {
-    var duration = commonVars.wavesurfer.getDuration();
+    var duration = shared.wavesurfer.getDuration();
     var $canvas = $('#waveform').find('wave').first().find('canvas').first();
     var cWidth = $canvas.width();
     return time * cWidth / duration;
@@ -438,9 +467,9 @@ function getMarkerLeftPostionFromTime(time) {
 
 function getRegionById(id) {
     var searched;
-    for (var i = 0; i < commonVars.regions.length; i++) {
-        if (commonVars.regions[i].id === id) {
-            searched = commonVars.regions[i];
+    for (var i = 0; i < shared.regions.length; i++) {
+        if (shared.regions[i].id === id) {
+            searched = shared.regions[i];
         }
     }
     return searched;
@@ -449,9 +478,9 @@ function getRegionById(id) {
 
 function getRegionByUuid(uuid) {
     var searched;
-    for (var i = 0; i < commonVars.regions.length; i++) {
-        if (commonVars.regions[i].uuid === uuid) {
-            searched = commonVars.regions[i];
+    for (var i = 0; i < shared.regions.length; i++) {
+        if (shared.regions[i].uuid === uuid) {
+            searched = shared.regions[i];
         }
     }
     return searched;
@@ -465,12 +494,12 @@ function getNextRegion(time) {
     if (time) {
         region = getRegionFromTime(time);
     } else {
-        region = commonVars.currentRegion;
+        region = shared.currentRegion;
     }
     // find next region relatively to current
-    for (var i = 0; i < commonVars.regions.length; i++) {
-        if (commonVars.regions[i].start == region.end) {
-            next = commonVars.regions[i];
+    for (var i = 0; i < shared.regions.length; i++) {
+        if (shared.regions[i].start == region.end) {
+            next = shared.regions[i];
         }
     }
     return next;
@@ -482,13 +511,13 @@ function getPrevRegion(time) {
     if (time) {
         region = getRegionFromTime(time);
     } else {
-        region = commonVars.currentRegion;
+        region = shared.currentRegion;
     }
     if (region) {
         // find next region relatively to current
-        for (var i = 0; i < commonVars.regions.length; i++) {
-            if (commonVars.regions[i].end == region.start) {
-                prev = commonVars.regions[i];
+        for (var i = 0; i < shared.regions.length; i++) {
+            if (shared.regions[i].end == region.start) {
+                prev = shared.regions[i];
             }
         }
     }
@@ -507,24 +536,24 @@ function playRegion(elem) {
 
 function playRegionFrom(start) {
     var region = getRegionFromTime(start);
-    var wRegion = commonVars.wavesurfer.addRegion({
+    var wRegion = shared.wavesurfer.addRegion({
         start: region.start,
         end: region.end,
         color: 'rgba(0,0,0,0)',
         drag: false,
         resize: false
     });
-    if (!commonVars.playing) {
+    if (!shared.playing) {
         wRegion.play();
-        commonVars.playing = true;
-        commonVars.wavesurfer.once('pause', function() {
-            commonVars.playing = false;
-            // remove all commonVars.wavesurfer commonVars.regions as we do not use them elsewhere
-            commonVars.wavesurfer.clearRegions();
+        shared.playing = true;
+        shared.wavesurfer.once('pause', function() {
+            shared.playing = false;
+            // remove all shared.wavesurfer shared.regions as we do not use them elsewhere
+            shared.wavesurfer.clearRegions();
         });
     } else {
-        commonVars.wavesurfer.pause();
-        commonVars.playing = false;
+        shared.wavesurfer.pause();
+        shared.playing = false;
     }
 }
 
@@ -537,20 +566,20 @@ function playRegionFrom(start) {
 // ======================================================================================================== //
 
 /**
- * put the commonVars.wavesurfer play cursor at the given time and pause playback
+ * put the shared.wavesurfer play cursor at the given time and pause playback
  * @param time in seconds
  */
 function goTo(time) {
-    var percent = (time) / commonVars.wavesurfer.getDuration();
-    commonVars.wavesurfer.seekAndCenter(percent);
-    if (commonVars.playing) {
-        commonVars.wavesurfer.pause();
-        commonVars.playing = false;
+    var percent = (time) / shared.wavesurfer.getDuration();
+    shared.wavesurfer.seekAndCenter(percent);
+    if (shared.playing) {
+        shared.wavesurfer.pause();
+        shared.playing = false;
     }
 }
 
 function getTimeFromPosition(position) {
-    var duration = commonVars.wavesurfer.getDuration();
+    var duration = shared.wavesurfer.getDuration();
     var $canvas = $('#waveform').find('wave').first().find('canvas').first();
     var cWidth = $canvas.width();
     return position * duration / cWidth;

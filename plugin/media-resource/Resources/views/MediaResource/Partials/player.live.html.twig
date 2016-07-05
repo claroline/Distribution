@@ -15,15 +15,15 @@
 <div class="row">
     <div class="col-md-12 text-center">
       <div class="btn-group">
-        <button type="button" class="btn btn-default" onclick="play()" title="{{'play_pause' | trans({}, 'media_resource')}}">
+        <button type="button" class="btn btn-default" id="btn-play" title="{{'play_pause' | trans({}, 'media_resource')}}">
             <i class="fa fa-play"></i>
             /
             <i class="fa fa-pause"></i>
         </button>
-        <button type="button" id="help-btn" disabled class="btn btn-primary" title="{{'region_help_view' | trans({}, 'media_resource')}}" onclick="toggleHelp()">
+        <button type="button" id="btn-help" disabled class="btn btn-primary" title="{{'region_help_view' | trans({}, 'media_resource')}}">
             <i class="fa fa-question"></i>
         </button>
-        <button type="button" class="btn btn-default btn-warning" title="{{'region_delete' | trans({}, 'media_resource')}}" onclick="deleteRegions()">
+        <button type="button" id="btn-delete" class="btn btn-default btn-warning" title="{{'region_delete' | trans({}, 'media_resource')}}">
             <i class="fa fa-trash-o"></i>
         </button>
       </div>
@@ -34,8 +34,6 @@
 {% include "InnovaMediaResourceBundle:MediaResource/Partials/modals:simple.help.modal.html.twig" %}
 
 {% block javascripts %}
-{% javascripts output='vendor/claroline/plugin/innovamediaresource/js/player-live.js'
-'@InnovaMediaResourceBundle/Resources/js/play-live.js' %}
-<script src="{{ asset_url }}"></script>
-{% endjavascripts %}
+  <script src="{{ hotAsset('dist/commons.js') }}"></script>
+  <script src="{{ hotAsset('dist/claroline-distribution-plugin-media-resource-live.js') }}"></script>
 {% endblock %}

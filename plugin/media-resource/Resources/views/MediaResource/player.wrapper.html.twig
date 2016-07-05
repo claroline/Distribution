@@ -19,15 +19,20 @@
                 {% elseif mode is constant('Innova\\MediaResourceBundle\\Entity\\Options::SCRIPTED_ACTIVE') %}
                     {% include "InnovaMediaResourceBundle:MediaResource/Partials:player.scripted.html.twig" with {'_resource': _resource, 'workspace': workspace, 'regions': regions} %}
                 {% endif %}
-                <!-- HTML5 AUdio player used for specific playback (help and configuration) -->
-                <audio id="html-audio-player" controls style="display:none;" src=""/>
+
             </div>
         </div>
     </div>
+    <!-- HTML5 AUdio player used for specific playback (help and configuration) -->
+    <audio id="html-audio-player" controls style="display:none;" src=""/>
     <!-- hidden fields -->
     <input type="hidden" name="type" value="audio">
     <input type="hidden" name="wId" value="{{workspace.id}}">
     <input type="hidden" name="mrId" value="{{_resource.id}}">
     <input type="hidden" name="tts" value="{{_resource.options.getTtsLanguage}}">
 
+{% endblock %}
+
+{% block javascripts %}
+  {{parent()}}
 {% endblock %}

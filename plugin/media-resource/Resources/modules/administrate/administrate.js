@@ -1,135 +1,154 @@
-'use strict';
+import SharedData from '../shared/SharedData'
+import 'wavesurfer.js/plugin/wavesurfer.minimap'
+import 'wavesurfer.js/plugin/wavesurfer.timeline'
+import 'wavesurfer.js/plugin/wavesurfer.regions'
+import jQuery from 'jquery'
+import 'jquery-ui/ui/draggable'
 
-var isInRegionNoteRow = false; // for keyboard event listener, if we are editing a region note row, we don't want the enter keyboard to add a region marker
+let isInRegionNoteRow = false // for keyboard event listener, if we are editing a region note row, we don't want the enter keyboard to add a region marker
 
 // current help options
-var helpCurrentRegion; // the region where we are when asking help
-var helpPreviousRegion; // the previous region relatively to helpCurrentRegion
-var currentHelpRelatedRegion; // the related help region;
-var helpRegion; // the region we are listening to while in help modal first pane
-var hModal; // help (bootsrap) modal instance
+let helpCurrentRegion // the region where we are when asking help
+let helpPreviousRegion // the previous region relatively to helpCurrentRegion
+let currentHelpRelatedRegion // the related help region;
+let hModal // help (bootsrap) modal instance
+let currentStart
+let currentEnd
+let shared
 
 // ======================================================================================================== //
 // ACTIONS BOUND WHEN DOM READY (PLAY / PAUSE, MOVE BACKWARD / FORWARD, ADD MARKER, CALL HELP, ANNOTATE)
 // ======================================================================================================== //
-var actions = {
-    play: function() {
-        if (!commonVars.playing) {
-            commonVars.wavesurfer.play();
-            commonVars.playing = true;
+let actions = {
+    play() {
+        if (!shared.playing) {
+            shared.wavesurfer.play()
+            shared.playing = true
         } else {
-            commonVars.wavesurfer.pause();
-            commonVars.playing = false;
+            shared.wavesurfer.pause();
+            shared.playing = false
         }
     },
-    backward: function() {
-        if (commonVars.regions.length > 1) {
-            var to = commonVars.currentRegion ? Number(commonVars.currentRegion.start) - 0.01 > 0 ? Number(commonVars.currentRegion.start) - 0.01 : 0 : 0;
-            goTo(to);
+
+    backward() {
+        if (shared.regions.length > 1) {
+            const to = shared.currentRegion ? Number(shared.currentRegion.start) - 0.01 > 0 ? Number(shared.currentRegion.start) - 0.01 : 0 : 0
+            goTo(to)
         } else {
-            commonVars.wavesurfer.seekAndCenter(0);
+            shared.wavesurfer.seekAndCenter(0)
         }
     },
-    forward: function() {
-        if (commonVars.regions.length > 1) {
-            goTo(commonVars.currentRegion ? Number(commonVars.currentRegion.end) + 0.01 : 1);
+
+    forward() {
+        if (shared.regions.length > 1) {
+            goTo(shared.currentRegion ? Number(shared.currentRegion.end) + 0.01 : 1)
         } else {
-            commonVars.wavesurfer.seekAndCenter(1);
+            shared.wavesurfer.seekAndCenter(1)
         }
     },
-    mark: function() {
-        var time = commonVars.wavesurfer.getCurrentTime();
+
+    mark() {
+        const time = shared.wavesurfer.getCurrentTime()
         if (time > 0) {
-            var mark = addMarker(time);
-            createRegion(mark.time);
+            const mark = addMarker(time)
+            createRegion(mark.time)
         }
     },
-    help: function() {
-        helpCurrentRegion = commonVars.currentRegion;
-        // search for prev region only if we are not in the first one
-        if (commonVars.currentRegion.start > 0) {
-            for (var i = 0; i < commonVars.regions.length; i++) {
-                if (commonVars.regions[i].end === commonVars.currentRegion.start) {
-                    helpPreviousRegion = commonVars.regions[i];
+
+    help() {
+        helpCurrentRegion = shared.currentRegion
+            // search for prev region only if we are not in the first one
+        if (shared.currentRegion.start > 0) {
+            for (var i = 0; i < shared.regions.length; i++) {
+                if (shared.regions[i].end === shared.currentRegion.start) {
+                    helpPreviousRegion = shared.regions[i]
                 }
             }
         }
 
-        var modalHtml = commonVars.domUtils.getHelpModalContent(helpCurrentRegion, helpPreviousRegion);
-        // catch show modal event
+        if (shared.playing) {
+            shared.htmlAudioPlayer.pause()
+            if (shared.wavesurfer.isPlaying()) {
+                shared.wavesurfer.pause()
+            }
+            shared.playing = false
+        }
+
+        var modalHtml = shared.domUtils.getHelpModalContent(helpCurrentRegion, helpPreviousRegion, shared)
+            // catch show modal event
         $('#helpModal').on('show.bs.modal', function() {
-            hModal = $(this);
-            // clear previous content
-            hModal.find('.tab-content').empty();
-            // append basic modal content
-            hModal.find('.tab-content').append(modalHtml);
-            // by default the current region is selected so we append to modal help tab the current region help options
-            var currentDomRow = commonVars.domUtils.getRegionRow(commonVars.currentRegion.start + 0.1, commonVars.currentRegion.end - 0.1);
+            hModal = $(this)
+                // clear previous content
+            hModal.find('.tab-content').empty()
+                // append basic modal content
+            hModal.find('.tab-content').append(modalHtml)
+                // by default the current region is selected so we append to modal help tab the current region help options
+            const currentDomRow = shared.domUtils.getRegionRow(shared.currentRegion.start + 0.1, shared.currentRegion.end - 0.1)
 
             //  append to tab pane #region-help-available
-            commonVars.domUtils.appendHelpModal(hModal, helpCurrentRegion);
-
-            helpRegion = {
-                start: commonVars.currentRegion.start + 0.1,
-                end: commonVars.currentRegion.end - 0.1
-            };
+            shared.domUtils.appendHelpModal(hModal, helpCurrentRegion, shared);
 
             // listen to tab click event
             hModal.find('#help-tab-panel a[role=tab]').click(function(e) {
-                e.preventDefault();
-                if (commonVars.playing) {
-                    commonVars.htmlAudioPlayer.pause();
-                    commonVars.playing = false;
+                e.preventDefault()
+                if (shared.playing) {
+                    shared.htmlAudioPlayer.pause()
+                    shared.playing = false
                 }
-                $(this).tab('show');
+                $(this).tab('show')
             });
         });
 
         // catch hidden modal event
         $('#helpModal').on('hidden.bs.modal', function() {
-            if (commonVars.playing) {
-                commonVars.htmlAudioPlayer.pause();
-                commonVars.playing = false;
+            if (shared.playing) {
+                shared.htmlAudioPlayer.pause()
+                shared.playing = false
             }
             // (re)set the first tab active in the modal
             $(this).find('.nav-tabs > li').each(function($index) {
                 if ($index === 0) {
-                    $(this).removeClass('active').addClass('active');
+                    $(this).removeClass('active').addClass('active')
                 } else {
-                    $(this).removeClass('active');
+                    $(this).removeClass('active')
                 }
             });
         });
         // open modal
-        $('#helpModal').modal('show');
+        $('#helpModal').modal('show')
     },
-    annotate: function(elem) {
-        var color = elem.data('color');
-        var text = commonVars.javascriptUtils.getSelectedText();
+
+    annotate(elem) {
+        const color = elem.data('color')
+        const text = shared.javascriptUtils.getSelectedText()
         if (text !== '') {
-            manualTextAnnotation(text, 'accent-' + color);
+            manualTextAnnotation(text, 'accent-' + color)
         }
     },
-    zip: function() {
-        var url = Routing.generate('mediaresource_zip_export', {
-            workspaceId: commonVars.wId,
-            id: commonVars.mrId,
-            data: commonVars.regions
+
+    zip() {
+        const url = Routing.generate('mediaresource_zip_export', {
+            workspaceId: shared.wId,
+            id: shared.mrId,
+            data: shared.regions
         });
-        location.href = url;
+        location.href = url
     },
-    toggleOptionsPanel: function() {
-        $('.options-panel').find('.panel-body').toggle();
-        $('.btn-options-toggle').hasClass('fa-chevron-down') ? $('.btn-options-toggle').removeClass('fa-chevron-down').addClass('fa-chevron-up') : $('.btn-options-toggle').removeClass('fa-chevron-up').addClass('fa-chevron-down');
+
+    toggleOptionsPanel() {
+        $('.options-panel').find('.panel-body').toggle()
+        $('.btn-options-toggle').hasClass('fa-chevron-down') ? $('.btn-options-toggle').removeClass('fa-chevron-down').addClass('fa-chevron-up') : $('.btn-options-toggle').removeClass('fa-chevron-up').addClass('fa-chevron-down')
     },
-    toggleAnnotationPanel: function() {
-        $('.annotation-panel').find('.panel-body').toggle();
-        $('.btn-annotation-toggle').hasClass('fa-chevron-down') ? $('.btn-annotation-toggle').removeClass('fa-chevron-down').addClass('fa-chevron-up') : $('.btn-annotation-toggle').removeClass('fa-chevron-up').addClass('fa-chevron-down');
+
+    toggleAnnotationPanel() {
+        $('.annotation-panel').find('.panel-body').toggle()
+        $('.btn-annotation-toggle').hasClass('fa-chevron-down') ? $('.btn-annotation-toggle').removeClass('fa-chevron-down').addClass('fa-chevron-up') : $('.btn-annotation-toggle').removeClass('fa-chevron-up').addClass('fa-chevron-down')
     },
-    previewCurrentRegion: function() {
-        playRegionFrom(commonVars.currentRegion.start);
-    }
-};
+
+    previewCurrentRegion() {
+        playRegionFrom(shared.currentRegion.start)
+    },
+}
 
 // ======================================================================================================== //
 // ACTIONS BOUND WHEN DOM READY END
@@ -140,150 +159,131 @@ var actions = {
 // ======================================================================================================== //
 $(document).ready(function() {
     // toggle color on config region buttons if needed (if there are some help available on a region the button must be colored)
-    updateConfigButtonColor();
-
+    updateConfigButtonColor()
+    let sharedData = new SharedData()
+    shared = sharedData.getSharedData();
     // bind data-action events
     $("button[data-action]").click(function() {
-        var action = $(this).data('action');
+        const action = $(this).data('action')
         if (actions.hasOwnProperty(action)) {
-            actions[action]($(this));
+            actions[action]($(this))
         }
-    });
+    })
+
+    //set some shared data values;
 
     // CONTENT EDITABLE CHANGE EVENT MAPPING
     $('body').on('focus', '[contenteditable]', function() {
-        var $input = $(this);
-        $input.data('before', $input.html());
-        // when focused skip to the start of the region on the waveform
-        var start = $(this).closest(".region").find('input.hidden-start').val();
-        goTo(start);
-        isInRegionNoteRow = true;
-        return $input;
+        const $input = $(this)
+        $input.data('before', $input.html())
+            // when focused skip to the start of the region on the waveform
+        const start = $(this).closest(".region").find('input.hidden-start').val()
+        goTo(start)
+        isInRegionNoteRow = true
+        return $input
     }).on('blur keypress keyup paste input', '[contenteditable]', function(e) {
-        var $input = $(this);
-        // do not allow user to add a line when pressing enter key
-        if (e.type === 'keypress' && e.which === 13){
-            return false;
+        var $input = $(this)
+            // do not allow user to add a line when pressing enter key
+        if (e.type === 'keypress' && e.which === 13) {
+            return false
         }
 
         if ($input.data('before') !== $input.html()) {
-            $input.data('before', $input.html());
-            $input.trigger('change');
-            commonVars.domUtils.updateHiddenNoteInput($input);
-            // update region object note data
-            var uuid = $input.closest(".region").data('uuid');
-            var note = $input.html() ? $input.html() : $input.text();
-            var region = getRegionByUuid(uuid);
-            region.note = note.replace('<br>', '');
+            $input.data('before', $input.html())
+            $input.trigger('change')
+            shared.domUtils.updateHiddenNoteInput($input)
+                // update region object note data
+            const uuid = $input.closest(".region").data('uuid')
+            let note = $input.html() ? $input.html() : $input.text()
+            const region = getRegionByUuid(uuid)
+            region.note = note.replace('<br>', '')
         }
-        return $input;
+        return $input
     }).on('blur', '[contenteditable]', function(e) {
-        isInRegionNoteRow = false;
+        isInRegionNoteRow = false
     });
 
-    // HELP MODAL SELECT REGION (CURRENT / PREVIOUS) EVENT
-    $('body').on('change', 'input[name=segment]:radio', function(e) {
-
-        if (commonVars.playing) {
-            commonVars.htmlAudioPlayer.pause();
-            commonVars.playing = false;
-        }
-
-        var selectedValue = e.target.value;
-        if (selectedValue === 'previous') {
-            commonVars.domUtils.appendHelpModal(hModal, helpPreviousRegion);
-            helpRegion = {
-                start: helpPreviousRegion.start + 0.1,
-                end: helpPreviousRegion.end - 0.1
-            };
-        } else if (selectedValue === 'current') {
-            commonVars.domUtils.appendHelpModal(hModal, commonVars.currentRegion);
-            helpRegion = {
-                start: commonVars.currentRegion.start + 0.1,
-                end: commonVars.currentRegion.end - 0.1
-            };
-        }
-
-        // enable selected region preview button only
-        $('#help-region-choice .input-group').each(function() {
-            $(this).find('button').prop('disabled', $(this).find('input[name=segment]').val() !== selectedValue);
-        });
-    });
-
-    // commonVars.wavesurfer progress bar
+    // shared.wavesurfer progress bar
     (function() {
-        var progressDiv = document.querySelector('#progress-bar');
-        var progressBar = progressDiv.querySelector('.progress-bar');
+        const progressDiv = document.querySelector('#progress-bar')
+        const progressBar = progressDiv.querySelector('.progress-bar')
         var showProgress = function(percent) {
-            progressDiv.style.display = 'block';
-            progressBar.style.width = percent + '%';
+            progressDiv.style.display = 'block'
+            progressBar.style.width = percent + '%'
         };
         var hideProgress = function() {
-            progressDiv.style.display = 'none';
+            progressDiv.style.display = 'none'
         };
-        commonVars.wavesurfer.on('loading', showProgress);
-        commonVars.wavesurfer.on('ready', hideProgress);
-        commonVars.wavesurfer.on('destroy', hideProgress);
-        commonVars.wavesurfer.on('error', hideProgress);
-    }());
-
-    commonVars.wavesurfer.init(commonVars.wavesurferOptions);
+        shared.wavesurfer.on('loading', showProgress)
+        shared.wavesurfer.on('ready', hideProgress)
+        shared.wavesurfer.on('destroy', hideProgress)
+        shared.wavesurfer.on('error', hideProgress)
+    }())
+    //  var wavesurfer = Object.create(WaveSurfer)
+    shared.wavesurfer.init(shared.wavesurferOptions)
 
     /* Minimap plugin */
-    commonVars.wavesurfer.initMinimap({
-        height: 30,
-        waveColor: '#ddd',
-        progressColor: '#999',
-        cursorColor: '#999'
+    shared.wavesurfer.initMinimap({
+            height: 30,
+            waveColor: '#ddd',
+            progressColor: '#999',
+            cursorColor: '#999'
+        })
+        // load wavesurfer audio
+    loadAudio()
+
+    shared.htmlAudioPlayer.src = shared.audioData
+
+    shared.htmlAudioPlayer.addEventListener('timeupdate', function() {
+        if (shared.htmlAudioPlayer.currentTime >= currentEnd) {
+            shared.htmlAudioPlayer.pause();
+            shared.htmlAudioPlayer.currentTime = currentStart;
+            if (shared.htmlAudioPlayer.loop) {
+                shared.htmlAudioPlayer.play();
+            } else {
+                shared.playing = false;
+            }
+        }
     });
 
-    var data = {
-        workspaceId: commonVars.wId,
-        id: commonVars.mrId
-    };
-
-    loadAudio(data);
-
-    commonVars.htmlAudioPlayer.src = commonVars.audioData;
-
-    commonVars.wavesurfer.on('ready', function() {
-        var timeline = Object.create(WaveSurfer.Timeline);
+    shared.wavesurfer.on('ready', function() {
+        const timeline = Object.create(WaveSurfer.Timeline)
         timeline.init({
-            wavesurfer: commonVars.wavesurfer,
+            wavesurfer: shared.wavesurfer,
             container: '#wave-timeline'
-        });
-        initRegionsAndMarkers();
-        if (commonVars.regions.length > 0) {
-            commonVars.currentRegion = commonVars.regions[0];
-            commonVars.domUtils.highlightRegionRow(commonVars.currentRegion);
-            highlightWaveform();
+        })
+        initRegionsAndMarkers()
+        if (shared.regions.length > 0) {
+            shared.currentRegion = shared.regions[0]
+            shared.domUtils.highlightRegionRow(shared.currentRegion)
+            highlightWaveform()
         }
-    });
+    })
 
-    commonVars.wavesurfer.on('seek', function() {
-        var current = getRegionFromTime();
-        if (current && commonVars.currentRegion && current.uuid != commonVars.currentRegion.uuid) {
+    shared.wavesurfer.on('seek', function() {
+        const current = getRegionFromTime()
+        if (current && shared.currentRegion && current.uuid != shared.currentRegion.uuid) {
             // update current region
-            commonVars.currentRegion = current;
-            // highlight region dom row
-            commonVars.domUtils.highlightRegionRow(commonVars.currentRegion);
-            // highlight region in waveform
-            highlightWaveform();
+            shared.currentRegion = current
+                // highlight region dom row
+            shared.domUtils.highlightRegionRow(shared.currentRegion)
+                // highlight region in waveform
+            highlightWaveform()
         }
-    });
+    })
 
-    commonVars.wavesurfer.on('audioprocess', function() {
-        // check commonVars.regions and display text
-        var current = getRegionFromTime();
-        if (current && commonVars.currentRegion && current.uuid != commonVars.currentRegion.uuid) {
-            // update current region
-            commonVars.currentRegion = current;
-            // show help text
-            commonVars.domUtils.highlightRegionRow(commonVars.currentRegion);
-            highlightWaveform();
-        }
-    });
-    /* /WAVESURFER */
+    shared.wavesurfer.on('audioprocess', function() {
+            // check shared.regions and display text
+            const current = getRegionFromTime();
+            if (current && shared.currentRegion && current.uuid != shared.currentRegion.uuid) {
+                // update current region
+                shared.currentRegion = current;
+                // show help text
+                shared.domUtils.highlightRegionRow(shared.currentRegion);
+                highlightWaveform();
+            }
+        })
+        /* /WAVESURFER */
 
 });
 // ======================================================================================================== //
@@ -292,22 +292,93 @@ $(document).ready(function() {
 
 // listen to resource play mode options change event
 $('body').on('change', '#media_resource_options_mode', function(e) {
-    var selected = e.target.options[e.target.selectedIndex];
-    // if the option free view is selected show annotation option
+    var selected = e.target.options[e.target.selectedIndex]
+        // if the option free view is selected show annotation option
     if (selected.value === 'free') {
-        $('#transcription-row').show();
+        $('#transcription-row').show()
     } else {
         $('#media_resource_options_showTextTranscription').prop('checked', false);
-        $('#transcription-row').hide();
+        $('#transcription-row').hide()
+    }
+})
+
+// HELP MODAL SELECT REGION (CURRENT / PREVIOUS) EVENT
+$('body').on('change', 'input[name=segment]:radio', function(e) {
+
+    if (shared.playing) {
+        shared.htmlAudioPlayer.pause()
+        shared.playing = false
+    }
+
+    const selectedValue = e.target.value
+    if (selectedValue === 'previous') {
+        shared.domUtils.appendHelpModal(hModal, helpPreviousRegion, shared)
+    } else if (selectedValue === 'current') {
+        shared.domUtils.appendHelpModal(hModal, shared.currentRegion, shared)
+    }
+
+    // enable selected region preview button only
+    $('#help-region-choice .input-group').each(function() {
+        $(this).find('button').prop('disabled', $(this).find('input[name=segment]').val() !== selectedValue)
+    });
+});
+
+/**
+ * Region options Modal
+ * Allow the user to listen to the selected help related region while configuring help
+ * Uses html audio player to avoid shared.wavesurfer animations behind the modal while shared.playing
+ **/
+$('body').on('click', '#btn-help-related-region-play', function() {
+    playHelp(this);
+});
+
+/**
+ * fired by ConfigRegion Modal <select> element (help related region)
+ * @param {type} elem the source of the event
+ **/
+$('body').on('change', '#select-help-related-region', function() {
+    // get region uuid
+    var uuid = $(this).find(":selected").val()
+    currentHelpRelatedRegion = getRegionByUuid(uuid)
+    $('#btn-help-related-region-play').attr('data-start', currentHelpRelatedRegion.start)
+    $('#btn-help-related-region-play').attr('data-end', currentHelpRelatedRegion.end)
+    if (shared.playing) {
+        if(shared.wavesurfer.isPlaying()) shared.wavesurfer.pause();
+        shared.playing = false;
     }
 });
 
+$('body').on('click', '.region-delete', function() {
+    deleteRegion(this)
+})
+
+$('body').on('click', '.region-config', function() {
+    configRegion(this)
+})
+
+$('body').on('click', '.region-play', function() {
+    playRegion(this)
+})
+
+$('body').on('click', '.play-help', function() {
+    playHelp(this)
+})
+
+$('body').on('click', '.play-backward', function() {
+    playBackward()
+})
+
+$('body').on('click', '.play-help-related-region', function() {
+    playHelpRelatedRegion(this)
+})
+
+
 function getRegionFromTime(time) {
-    var currentTime = time ? time : commonVars.wavesurfer.getCurrentTime();
-    var region;
-    for (var i = 0; i < commonVars.regions.length; i++) {
-        if (commonVars.regions[i].start <= currentTime && commonVars.regions[i].end > currentTime) {
-            region = commonVars.regions[i];
+    const currentTime = time ? time : shared.wavesurfer.getCurrentTime();
+    let region
+    for (var i = 0; i < shared.regions.length; i++) {
+        if (shared.regions[i].start <= currentTime && shared.regions[i].end > currentTime) {
+            region = shared.regions[i];
             break;
         }
     }
@@ -318,51 +389,52 @@ function getRegionFromTime(time) {
 function createRegion(time) {
     // each time we create a new region we have to split an existing one
     // find the region to split / update
-    var toSplit = getRegionFromTime(time);
-    // region to create after the given time
-    var region = {
-        start: Number(time),
-        end: Number(toSplit.end),
-        uuid: commonVars.strUtils.createGuid(),
-        note: '',
-        hasHelp: false,
-        helpUuid: '',
-        loop: false,
-        backward: false,
-        rate: false,
-        texts: false
-    };
-    // find corresponding dom row and update the end infos (in visible and hidden fields and )
-    var $regionRow = commonVars.domUtils.getRegionRow(toSplit.start, toSplit.end);
-    // update "left" region in array
-    toSplit.end = time;
-    // update "left" region in DOM
-    $regionRow.find('input.hidden-end').val(time);
-    var hms = commonVars.javascriptUtils.secondsToHms(toSplit.end);
-    $regionRow.find('.end').text(hms);
+    const toSplit = getRegionFromTime(time)
+        // region to create after the given time
+    const region = {
+            start: Number(time),
+            end: Number(toSplit.end),
+            uuid: shared.strUtils.createGuid(),
+            note: '',
+            hasHelp: false,
+            helpUuid: '',
+            loop: false,
+            backward: false,
+            rate: false,
+            texts: false
+        }
+        // find corresponding dom row and update the end infos (in visible and hidden fields and )
+    const $regionRow = shared.domUtils.getRegionRow(toSplit.start, toSplit.end)
+        // update "left" region in array
+    toSplit.end = time
+        // update "left" region in DOM
+    $regionRow.find('input.hidden-end').val(time)
+    const hms = shared.javascriptUtils.secondsToHms(toSplit.end)
+    $regionRow.find('.end').text(hms)
 
     // add the "right" region row in the dom
-    commonVars.domUtils.addRegionToDom(region, commonVars.javascriptUtils, $regionRow);
-    commonVars.regions.push(region);
-    updateRegionRowIndexes();
-    commonVars.currentRegion = region;
-    highlightWaveform();
+    shared.domUtils.addRegionToDom(region, shared.javascriptUtils, $regionRow)
+        // shared.regions.push(region)
+    shared.regions.push(region)
+    updateRegionRowIndexes()
+    shared.currentRegion = region
+    highlightWaveform()
 }
 
-// build commonVars.markers, commonVars.regions from existing ones
+// build shared.markers, shared.regions from existing ones
 function initRegionsAndMarkers() {
     $(".region").each(function() {
-        var start = $(this).find('input.hidden-start').val();
-        var end = $(this).find('input.hidden-end').val();
-        var note = $(this).find('input.hidden-note').val();
-        var id = $(this).find('input.hidden-region-id').val();
-        var uuid = $(this).find('input.hidden-region-uuid').val();
-        var helpUuid = $(this).find('input.hidden-config-help-region-uuid').val();
-        var loop = $(this).find('input.hidden-config-loop').val() === '1';
-        var backward = $(this).find('input.hidden-config-backward').val() === '1';
-        var rate = $(this).find('input.hidden-config-rate').val() === '1';
-        var texts = [];
-        var links = [];
+        const start = $(this).find('input.hidden-start').val();
+        const end = $(this).find('input.hidden-end').val();
+        const note = $(this).find('input.hidden-note').val();
+        const id = $(this).find('input.hidden-region-id').val();
+        const uuid = $(this).find('input.hidden-region-uuid').val();
+        const helpUuid = $(this).find('input.hidden-config-help-region-uuid').val();
+        const loop = $(this).find('input.hidden-config-loop').val() === '1';
+        const backward = $(this).find('input.hidden-config-backward').val() === '1';
+        const rate = $(this).find('input.hidden-config-rate').val() === '1';
+        const texts = [];
+        const links = [];
         $(this).find('.hidden-help-texts').each(function() {
             if ($(this).val() !== '') {
                 texts.push($(this).val());
@@ -389,22 +461,22 @@ function initRegionsAndMarkers() {
             texts: texts,
             links: links
         };
-        commonVars.regions.push(region);
+        shared.regions.push(region);
         // create marker for each existing region
         if (Number(start) > 0) {
             addMarker(start, uuid);
         }
 
-        var regionRow = commonVars.domUtils.getRegionRow(start, end);
+        var regionRow = shared.domUtils.getRegionRow(start, end);
         var btn = $(regionRow).find('button.fa-trash-o');
         $(btn).attr('data-uuid', region.uuid);
 
     });
-    if (commonVars.regions.length === 0) {
+    if (shared.regions.length === 0) {
         var region = {
-            uuid: commonVars.strUtils.createGuid(),
+            uuid: shared.strUtils.createGuid(),
             start: 0,
-            end: Number(commonVars.wavesurfer.getDuration()),
+            end: Number(shared.wavesurfer.getDuration()),
             note: '',
             hasHelp: false,
             helpUuid: '',
@@ -414,11 +486,11 @@ function initRegionsAndMarkers() {
             texts: false,
             links: false
         };
-        commonVars.regions.push(region);
-        // no region row yet so happend the new row to commonVars.regions container
+        shared.regions.push(region);
+        // no region row yet so happend the new row to shared.regions container
         var $appendTo = $('.regions-container');
         // add region row
-        var regionRow = commonVars.domUtils.addRegionToDom(region, commonVars.javascriptUtils, $appendTo);
+        var regionRow = shared.domUtils.addRegionToDom(region, shared.javascriptUtils, $appendTo);
         var btn = $(regionRow).find('button.fa-trash-o');
         $(btn).attr('data-uuid', region.uuid);
     }
@@ -435,11 +507,11 @@ function updateRegionRowIndexes() {
     });
 }
 
-function highlightWaveform(){
-    commonVars.wavesurfer.clearRegions();
-    var wRegion = commonVars.wavesurfer.addRegion({
-        start: commonVars.currentRegion.start,
-        end: commonVars.currentRegion.end,
+function highlightWaveform() {
+    shared.wavesurfer.clearRegions();
+    var wRegion = shared.wavesurfer.addRegion({
+        start: shared.currentRegion.start,
+        end: shared.currentRegion.end,
         color: 'rgba(255,0,0,0.5)',
         drag: false,
         resize: false
@@ -447,12 +519,12 @@ function highlightWaveform(){
 }
 
 
-function loadAudio(data) {
-    commonVars.audioData = Routing.generate('innova_get_mediaresource_resource_file', {
-        workspaceId: data.workspaceId,
-        id: data.id
+function loadAudio() {
+    shared.audioData = Routing.generate('innova_get_mediaresource_resource_file', {
+        workspaceId: shared.wId,
+        id: shared.mrId
     });
-    commonVars.wavesurfer.load(commonVars.audioData);
+    shared.wavesurfer.load(shared.audioData);
     return true;
 }
 // ======================================================================================================== //
@@ -462,67 +534,56 @@ function loadAudio(data) {
  * play the region (<audio> element) and loop if needed
  * Uses an <audio> element because we might need playback rate modification without changing the pitch of the sound
  * Wavesurfer can't do that for now
- * @param {float} start
- * @param {float} end
  */
-function playHelp(start, end, loop, rate) {
-    commonVars.htmlAudioPlayer.loop = loop;
-    if (rate) {
-        commonVars.htmlAudioPlayer.playbackRate = 0.8;
+function playHelp(elem) {
+    currentStart = $(elem).attr('data-start');
+    currentEnd = $(elem).attr('data-end');
+    const mode = Number($(elem).attr('data-mode'));
+    shared.htmlAudioPlayer.loop = mode === shared.playMode.PLAY_LOOP;
+    if (mode === shared.playMode.PLAY_SLOW) {
+        shared.htmlAudioPlayer.playbackRate = 0.8;
     } else {
-        commonVars.htmlAudioPlayer.playbackRate = 1;
+        shared.htmlAudioPlayer.playbackRate = 1;
     }
 
-    if (commonVars.playing) {
-        commonVars.htmlAudioPlayer.pause();
-        commonVars.playing = false;
+    if (shared.playing) {
+        shared.htmlAudioPlayer.pause();
+        shared.playing = false;
     } else {
-        commonVars.htmlAudioPlayer.currentTime = start;
-        commonVars.htmlAudioPlayer.play();
-        commonVars.playing = true;
+        shared.htmlAudioPlayer.currentTime = currentStart;
+        shared.htmlAudioPlayer.play();
+        shared.playing = true;
     }
 
-    var self = this;
-    self.regionEnd = end;
-    self.regionStart = start;
-    commonVars.htmlAudioPlayer.addEventListener('timeupdate', function() {
-        if (commonVars.htmlAudioPlayer.currentTime >= self.regionEnd) {
-            commonVars.htmlAudioPlayer.pause();
-            commonVars.htmlAudioPlayer.currentTime = self.regionStart;
-            if (commonVars.htmlAudioPlayer.loop) {
-                commonVars.htmlAudioPlayer.play();
-            } else {
-                commonVars.playing = false;
-            }
-        }
-    });
+
 }
 /**
  * Allow the user to play the help related region
  * @param {float} start
  */
-function playHelpRelatedRegion(start) {
-    playRegionFrom(start + 0.1);
-}
+/*function playHelpRelatedRegion(elem) {
+    const start = Number($(elem).attr('data-region-uuid')) + 0.1;
+    playRegionFrom(start);
+}*/
 
 /**
  * Will only work with chrome browser !!
  * Called by HelpModal play backward button
  */
 function playBackward() {
-    // is commonVars.playing for real audio (ie not for TTS)
-    if (commonVars.playing && commonVars.htmlAudioPlayer) {
-        // stop audio playback before commonVars.playing TTS
-        commonVars.htmlAudioPlayer.pause();
-        commonVars.playing = false;
+    // is shared.playing for real audio (ie not for TTS)
+    if (shared.playing && shared.htmlAudioPlayer) {
+        // stop audio playback before shared.playing TTS
+        shared.htmlAudioPlayer.pause();
+        shared.playing = false;
     }
     if (window.SpeechSynthesisUtterance === undefined) {
         console.log('not supported!');
     } else {
-        var text = commonVars.strUtils.removeHtml(commonVars.currentRegion.note);
+        var text = shared.strUtils.removeHtml(shared.currentRegion.note);
         var array = text.split(' ');
         var start = array.length - 1;
-        // check if utterance is already speaking before commonVars.playing (pultiple click on backward button)
+        // check if utterance is already speaking before shared.playing (pultiple click on backward button)
         if (!window.speechSynthesis.speaking) {
             handleUtterancePlayback(start, array);
         }
@@ -588,11 +649,11 @@ function handleUtterancePlayback(index, textArray) {
 function configRegion(elem) {
 
     var $row = $(elem).closest('.region');
-    var content = commonVars.domUtils.setRegionConfigModalContent($row);
-    var region = getRegionByUuid($row.data('uuid'));
-    if (commonVars.playing) {
-        commonVars.wavesurfer.pause();
-        commonVars.playing = false;
+    var content = shared.domUtils.setRegionConfigModalContent($row);
+    var region = getRegionByUuid($row.attr('data-uuid'));
+    if (shared.playing) {
+        shared.wavesurfer.pause();
+        shared.playing = false;
     }
 
     var configModal;
@@ -609,13 +670,13 @@ function configRegion(elem) {
         // check links inputs
         var expression = "https?://[a-z0-9\-_]+(\.[a-z0-9\-_]+)+([a-z0-9\-\.,@\?^=%&;:/~\+#]*[a-z0-9\-@\?^=%&;/~\+#])?";
         var regex = new RegExp(expression);
-        $('.modal-help-links').on('keyup paste input', function(){
-          var val = $(this).val();
-          if(val !== '' && !regex.test(val)){
-            $('#close-btn').prop('disabled', true);
-          } else {
-            $('#close-btn').prop('disabled', false);
-          }
+        $('.modal-help-links').on('keyup paste input', function() {
+            var val = $(this).val();
+            if (val !== '' && !regex.test(val)) {
+                $('#close-btn').prop('disabled', true);
+            } else {
+                $('#close-btn').prop('disabled', false);
+            }
 
         });
     });
@@ -625,9 +686,9 @@ function configRegion(elem) {
         $(e.currentTarget).unbind();
 
         currentHelpRelatedRegion = null;
-        if (commonVars.playing) {
-            commonVars.htmlAudioPlayer.pause();
-            commonVars.playing = false;
+        if (shared.playing) {
+            shared.htmlAudioPlayer.pause();
+            shared.playing = false;
         }
         // get region help config values in modal
         var hasLoop = configModal.find('input[name=loop]').is(':checked');
@@ -699,31 +760,6 @@ function updateRegionObjectHelp(region, $row) {
     region.hasHelp = region.rate || region.backward || region.texts.length > 0 || region.links.length > 0 || region.loop || region.helpUuid !== '';
 }
 
-/**
- * Region options Modal
- * Allow the user to listen to the selected help related region while configuring help
- * Uses html audio player to avoid commonVars.wavesurfer animations behind the modal while commonVars.playing
- **/
-$('body').on('click', '#btn-help-related-region-play', function() {
-    if (currentHelpRelatedRegion) {
-        playHelp(currentHelpRelatedRegion.start, currentHelpRelatedRegion.end, false, false);
-    }
-});
-
-/**
- * fired by ConfigRegion Modal <select> element (help related region)
- * @param {type} elem the source of the event
- **/
-$('body').on('change', '#select-help-related-region', function() {
-    // get region uuid
-    var uuid = $(this).find(":selected").val();
-    currentHelpRelatedRegion = getRegionByUuid(uuid);
-    if (commonVars.playing) {
-        commonVars.wavesurfer.pause();
-        commonVars.playing = false;
-    }
-});
-
 // color config region buttons if
 function checkIfRowHasConfigValue(row) {
     var helpRelatedRegion = $(row).find('.hidden-config-help-region-uuid').val() !== '' ? true : false;
@@ -787,14 +823,11 @@ function addMarker(time, uuid) {
     dragHandler.style.left = dragHandlerLeft + 'px';
     dragHandler.title = Translator.trans('marker_drag_title', {}, 'media_resource');
     dragHandler.dataset.position = dragHandlerLeft;
-    var guid = uuid || commonVars.strUtils.createGuid();
+    var guid = uuid || shared.strUtils.createGuid();
     dragHandler.dataset.uuid = guid;
 
     marker.appendChild(dragHandler);
     $('#waveform').find('wave').first().append(marker);
-
-
-
 
     var dragData;
     // set the drag data when handler is clicked
@@ -803,7 +836,7 @@ function addMarker(time, uuid) {
         dragData = setDragData(time, marker);
     });
 
-    $(marker).draggable({
+    jQuery(marker).draggable({
         handle: ".marker-drag-handler",
         axis: "x",
         containment: "#waveform",
@@ -834,7 +867,7 @@ function addMarker(time, uuid) {
         time: Number(time),
         uuid: guid
     };
-    commonVars.markers.push(mark);
+    shared.markers.push(mark);
     return mark;
 }
 
@@ -867,13 +900,13 @@ function setDragData(time, marker) {
     var prevRegion = getPrevRegion(time + 0.01);
     var nextRegion = getNextRegion(time - 0.01);
     var min = prevRegion && prevRegion.start ? prevRegion.start : 0;
-    var max = nextRegion && nextRegion.end ? nextRegion.end : commonVars.wavesurfer.getDuration();
+    var max = nextRegion && nextRegion.end ? nextRegion.end : shared.wavesurfer.getDuration();
 
     // search for marker object
     var markerObject;
-    for (var i = 0; i < commonVars.markers.length; i++) {
-        if (commonVars.markers[i].time.toFixed(2) === time.toFixed(2)) {
-            markerObject = commonVars.markers[i];
+    for (var i = 0; i < shared.markers.length; i++) {
+        if (shared.markers[i].time.toFixed(2) === time.toFixed(2)) {
+            markerObject = shared.markers[i];
         }
     }
 
@@ -893,7 +926,7 @@ function setDragData(time, marker) {
 }
 
 function getMarkerLeftPostionFromTime(time) {
-    var duration = commonVars.wavesurfer.getDuration();
+    var duration = shared.wavesurfer.getDuration();
     var $canvas = $('#waveform').find('wave').first().find('canvas').first();
     var cWidth = $canvas.width();
     return time * cWidth / duration;
@@ -904,7 +937,7 @@ function getMarkerLeftPostionFromTime(time) {
  * should also update marker data-time value
  */
 function updateTimeData(time, dragData) {
-    $(dragData.startToUpdate).text(commonVars.javascriptUtils.secondsToHms(time));
+    $(dragData.startToUpdate).text(shared.javascriptUtils.secondsToHms(time));
     $(dragData.hiddenStartToUpdate).val(time);
 
     // update region object data
@@ -917,7 +950,7 @@ function updateTimeData(time, dragData) {
 
     if (dragData.hiddenEndToUpdate && dragData.endToUpdate) {
         $(dragData.hiddenEndToUpdate).val(time);
-        $(dragData.endToUpdate).text(commonVars.javascriptUtils.secondsToHms(time));
+        $(dragData.endToUpdate).text(shared.javascriptUtils.secondsToHms(time));
     }
 
     // udpate dom marker data-time attribute
@@ -948,9 +981,9 @@ function changeMarkerPosition(time, dragData) {
 
 function getRegionById(id) {
     var searched;
-    for (var i = 0; i < commonVars.regions.length; i++) {
-        if (commonVars.regions[i].id === id) {
-            searched = commonVars.regions[i];
+    for (var i = 0; i < shared.regions.length; i++) {
+        if (shared.regions[i].id === id) {
+            searched = shared.regions[i];
         }
     }
     return searched;
@@ -959,18 +992,18 @@ function getRegionById(id) {
 
 function getRegionByUuid(uuid) {
     var searched;
-    for (var i = 0; i < commonVars.regions.length; i++) {
-        if (commonVars.regions[i].uuid === uuid) {
-            searched = commonVars.regions[i];
+    for (var i = 0; i < shared.regions.length; i++) {
+        if (shared.regions[i].uuid === uuid) {
+            searched = shared.regions[i];
         }
     }
     return searched;
 }
 
 function removeRegionFromCollection(uuid) {
-    for (var i = 0; i < commonVars.regions.length; i++) {
-        if (commonVars.regions[i].uuid === uuid) {
-            commonVars.regions.splice(i, 1);
+    for (var i = 0; i < shared.regions.length; i++) {
+        if (shared.regions[i].uuid === uuid) {
+            shared.regions.splice(i, 1);
         }
     }
 }
@@ -981,12 +1014,12 @@ function getNextRegion(time) {
     if (time) {
         region = getRegionFromTime(time);
     } else {
-        region = commonVars.currentRegion;
+        region = shared.currentRegion;
     }
     // find next region relatively to current
-    for (var i = 0; i < commonVars.regions.length; i++) {
-        if (commonVars.regions[i].start == region.end) {
-            next = commonVars.regions[i];
+    for (var i = 0; i < shared.regions.length; i++) {
+        if (shared.regions[i].start == region.end) {
+            next = shared.regions[i];
         }
     }
     return next;
@@ -998,13 +1031,13 @@ function getPrevRegion(time) {
     if (time) {
         region = getRegionFromTime(time);
     } else {
-        region = commonVars.currentRegion;
+        region = shared.currentRegion;
     }
     if (region) {
         // find next region relatively to current
-        for (var i = 0; i < commonVars.regions.length; i++) {
-            if (commonVars.regions[i].end == region.start) {
-                prev = commonVars.regions[i];
+        for (var i = 0; i < shared.regions.length; i++) {
+            if (shared.regions[i].end == region.start) {
+                prev = shared.regions[i];
             }
         }
     }
@@ -1012,22 +1045,22 @@ function getPrevRegion(time) {
 }
 
 /**
- * Delete a region from the collection remove it from DOM and update times (start or end) of contiguous commonVars.regions
+ * Delete a region from the collection remove it from DOM and update times (start or end) of contiguous shared.regions
  * Also handle corresponding marker deletion
  * @param elem the source of the event
  */
 function deleteRegion(elem) {
     // can not delete region if just one ( = the default one) -> or not...
-    if (commonVars.regions.length === 1) {
+    if (shared.regions.length === 1) {
         $('#alertModal').modal('show');
     } else {
         // get region to delete uuid
         var uuid = $(elem).data('uuid');
         if (uuid) {
             var toRemove = getRegionByUuid(uuid);
-            var regionDomRow = $(elem).closest(".region");
-            var regionUuid = $(regionDomRow).attr("data-uuid");
-            var usedInHelp = commonVars.domUtils.getRegionsUsedInHelp(regionUuid);
+            var $regionDomRow = $(elem).closest(".region");
+            var regionUuid = $regionDomRow.attr("data-uuid");
+            var usedInHelp = shared.domUtils.getRegionsUsedInHelp(regionUuid);
             // if confirm
             $('#confirmModal').modal('show').one('click', '#confirm', function() {
                 // remove help reference(s) if needed
@@ -1047,11 +1080,11 @@ function deleteRegion(elem) {
                     if (next) {
                         next.start = 0;
                         // update time (DOM)
-                        var hiddenInputToUpdate = regionDomRow.next().find("input.hidden-start");
+                        var hiddenInputToUpdate = $regionDomRow.next().find("input.hidden-start");
                         hiddenInputToUpdate.val(start);
-                        var divToUpdate = regionDomRow.next().find(".time-text.start");
-                        divToUpdate.text(commonVars.javascriptUtils.secondsToHms(start));
-                        commonVars.currentRegion = next;
+                        var divToUpdate = $regionDomRow.next().find(".time-text.start");
+                        divToUpdate.text(shared.javascriptUtils.secondsToHms(start));
+                        shared.currentRegion = next;
 
                     } else {
                         console.log('not found');
@@ -1062,11 +1095,11 @@ function deleteRegion(elem) {
                     if (previous) {
                         previous.end = end;
                         // update time (DOM)
-                        var hiddenInputToUpdate = regionDomRow.prev().find("input.hidden-end");
+                        var hiddenInputToUpdate = $regionDomRow.prev().find("input.hidden-end");
                         hiddenInputToUpdate.val(end);
-                        var divToUpdate = regionDomRow.prev().find(".time-text.end");
-                        divToUpdate.text(commonVars.javascriptUtils.secondsToHms(end));
-                        commonVars.currentRegion = previous;
+                        var divToUpdate = $regionDomRow.prev().find(".time-text.end");
+                        divToUpdate.text(shared.javascriptUtils.secondsToHms(end));
+                        shared.currentRegion = previous;
                     } else {
                         console.log('not found');
                     }
@@ -1074,19 +1107,21 @@ function deleteRegion(elem) {
                 // update region array
                 removeRegionFromCollection(uuid);
                 // remove region DOM row
-                $(regionDomRow).remove();
+                $regionDomRow.remove();
                 // remove marker from DOM
                 $('.marker-drag-handler').each(function() {
                     var $marker = $(this).closest('.divide-marker');
                     var time = Number($marker.attr('data-time'));
-                    if (time === start) {
+                    if (start > 0 && time === start) {
+                        $marker.remove();
+                    } else if (start === 0 && time === end) {
                         $marker.remove();
                     }
                 });
                 // remove marker from array
-                for (var i = 0; i < commonVars.markers.length; i++) {
-                    if (commonVars.markers[i].time === start) {
-                        commonVars.markers.splice(i, 1);
+                for (var i = 0; i < shared.markers.length; i++) {
+                    if (shared.markers[i].time === start) {
+                        shared.markers.splice(i, 1);
                     }
                 }
                 updateRegionRowIndexes();
@@ -1108,22 +1143,22 @@ function playRegion(elem) {
 
 function playRegionFrom(start) {
     var region = getRegionFromTime(start);
-    var wRegion = commonVars.wavesurfer.addRegion({
+    var wRegion = shared.wavesurfer.addRegion({
         start: region.start,
         end: region.end,
         color: 'rgba(0,0,0,0)',
         drag: false,
         resize: false
     });
-    if (!commonVars.playing) {
+    if (!shared.playing) {
         wRegion.play();
-        commonVars.playing = true;
-        commonVars.wavesurfer.once('pause', function() {
-            commonVars.playing = false;
+        shared.playing = true;
+        shared.wavesurfer.once('pause', function() {
+            shared.playing = false;
         });
     } else {
-        commonVars.wavesurfer.pause();
-        commonVars.playing = false;
+        shared.wavesurfer.pause();
+        shared.playing = false;
     }
 }
 
@@ -1136,20 +1171,20 @@ function playRegionFrom(start) {
 // ======================================================================================================== //
 
 /**
- * put the commonVars.wavesurfer play cursor at the given time and pause playback
+ * put the shared.wavesurfer play cursor at the given time and pause playback
  * @param time in seconds
  */
 function goTo(time) {
-    var percent = (time) / commonVars.wavesurfer.getDuration();
-    commonVars.wavesurfer.seekAndCenter(percent);
-    if (commonVars.playing || commonVars.wavesurfer.isPlaying()) {
-        commonVars.wavesurfer.pause();
-        commonVars.playing = false;
+    var percent = (time) / shared.wavesurfer.getDuration();
+    shared.wavesurfer.seekAndCenter(percent);
+    if (shared.playing || shared.wavesurfer.isPlaying()) {
+        shared.wavesurfer.pause();
+        shared.playing = false;
     }
 }
 
 function getTimeFromPosition(position) {
-    var duration = commonVars.wavesurfer.getDuration();
+    var duration = shared.wavesurfer.getDuration();
     var $canvas = $('#waveform').find('wave').first().find('canvas').first();
     var cWidth = $canvas.width();
     return position * duration / cWidth;
@@ -1176,6 +1211,8 @@ function manualTextAnnotation(text, css) {
         document.execCommand('insertHTML', false, '<span class="' + css + '">' + text + '</span>');
     }
 }
+
+
 
 // ======================================================================================================== //
 //  OTHER MIXED FUNCTIONS END
