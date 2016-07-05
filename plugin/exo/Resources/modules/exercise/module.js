@@ -9,6 +9,7 @@ import 'angular-ui-translation/angular-translation'
 import '#/main/core/modal/module'
 
 import './../common/module'
+import './../feedback/module'
 import './../step/module'
 import './../paper/module'
 import './../timer/module'
@@ -20,7 +21,6 @@ import ExercisePlayerCtrl from './Controllers/ExercisePlayerCtrl'
 import ExerciseDirective from './Directives/ExerciseDirective'
 import StartButtonDirective from './Directives/StartButtonDirective'
 import ExerciseService from './Services/ExerciseService'
-import FeedbackService from './Services/FeedbackService'
 
 angular
     .module('Exercise', [
@@ -30,6 +30,7 @@ angular
         'ui.modal',
         'mgcrea.ngStrap.datepicker',
         'Common',
+        'Feedback',
         'Step',
         'Paper',
         'Timer'
@@ -72,7 +73,4 @@ angular
         '$http',
         '$q',
         ExerciseService
-    ])
-    .service('FeedbackService', [
-        FeedbackService
     ])

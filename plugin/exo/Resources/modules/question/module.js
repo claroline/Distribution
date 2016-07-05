@@ -7,6 +7,7 @@ import 'angular-ui-translation/angular-translation'
 import '#/main/core/modal/module'
 
 import './../common/module'
+import './../feedback/module'
 import './../correction/module'
 import './../image/module'
 
@@ -37,6 +38,7 @@ angular
         'ui.bootstrap',
         'ui.modal',
         'Common',
+        'Feedback',
         'Image',
         'Correction'
     ])

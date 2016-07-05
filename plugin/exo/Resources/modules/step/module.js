@@ -11,6 +11,7 @@ import 'angular-ui-tinymce'
 import '#/main/core/modal/module'
 
 import './../common/module'
+import './../feedback/module'
 import './../question/module'
 
 import StepService from './Services/StepService'
@@ -29,6 +30,7 @@ angular
     'ui.modal',
     'dragula',
     'Common',
+    'Feedback',
     'Question'
   ])
   .service('StepService', [
