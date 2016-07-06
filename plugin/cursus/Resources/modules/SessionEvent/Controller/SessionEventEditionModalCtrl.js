@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+/*global Routing*/
+
 export default class SessionEventEditionModalCtrl {
   constructor($http, $uibModal, $uibModalInstance, ClarolineAPIService, sessionEventId, callback) {
     this.$http = $http

@@ -36,9 +36,9 @@ use Claroline\CursusBundle\Entity\CourseSessionRegistrationQueue;
 use Claroline\CursusBundle\Entity\CourseSessionUser;
 use Claroline\CursusBundle\Entity\CoursesWidgetConfig;
 use Claroline\CursusBundle\Entity\Cursus;
+use Claroline\CursusBundle\Entity\CursusDisplayedWord;
 use Claroline\CursusBundle\Entity\CursusGroup;
 use Claroline\CursusBundle\Entity\CursusUser;
-use Claroline\CursusBundle\Entity\CursusDisplayedWord;
 use Claroline\CursusBundle\Entity\SessionEvent;
 use Claroline\CursusBundle\Event\Log\LogCourseCreateEvent;
 use Claroline\CursusBundle\Event\Log\LogCourseDeleteEvent;
@@ -64,18 +64,18 @@ use Claroline\CursusBundle\Event\Log\LogSessionQueueOrganizationValidateEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionQueueUserValidateEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionQueueValidatorValidateEvent;
 use JMS\DiExtraBundle\Annotation as DI;
-use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Serializer;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Translation\TranslatorInterface;
-use Symfony\Component\HttpFoundation\File\File;
 
 /**
  * @DI\Service("claroline.manager.cursus_manager")
@@ -1052,6 +1052,11 @@ class CursusManager
                     'courseCode' => $course->getCode(),
                 ];
             }
+            $results['sessionUsers'] = $this->serializer->serialize(
+                $sessionUsers,
+                'json',
+                SerializationContext::create()->setGroups(['api_user_min'])
+            );
         }
 
         return $results;
@@ -1249,8 +1254,15 @@ class CursusManager
         $this->om->remove($sessionGroup);
 
         $sessionUsers = $this->getSessionUsersBySessionAndUsers($session, $users, $groupType);
+        $serializedSessionUsers = $this->serializer->serialize(
+            $sessionUsers,
+            'json',
+            SerializationContext::create()->setGroups(['api_cursus'])
+        );
         $this->unregisterUsersFromSession($sessionUsers);
         $this->om->endFlushSuite();
+
+        return $serializedSessionUsers;
     }
 
     public function deleteCourseSession(CourseSession $session, $withWorkspace = false)
@@ -3648,7 +3660,7 @@ class CursusManager
             $this->cursusRepo->findCursusByParent($parent, $orderedBy, $order) :
             $this->cursusRepo->findSearchedCursusByParent($parent, $search, $orderedBy, $order);
 
-        return $withPager ?$this->pagerFactory->createPagerFromArray($cursus, $page, $max) :  $cursus;
+        return $withPager ? $this->pagerFactory->createPagerFromArray($cursus, $page, $max) :  $cursus;
     }
 
     /**************************************
@@ -3773,7 +3785,7 @@ class CursusManager
     ) {
         $users = empty($search) ?
             $this->cursusUserRepo->findUsersByCursus($cursus, $orderedBy, $order) :
-            $this->cursusUserRepo->findSearchedUsersByCursus($cursus, $search, $orderedBy, $order );
+            $this->cursusUserRepo->findSearchedUsersByCursus($cursus, $search, $orderedBy, $order);
 
         return $withPager ? $this->pagerFactory->createPagerFromArray($users, $page, $max) : $users;
     }
@@ -3977,6 +3989,11 @@ class CursusManager
     /*************************************************
      * Access to CourseSessionUserRepository methods *
      *************************************************/
+
+    public function getSessionUsersBySessionAndType(CourseSession $session, $userType = 0, $executeQuery = true)
+    {
+        return $this->sessionUserRepo->findSessionUsersBySessionAndType($session, $userType, $executeQuery);
+    }
 
     public function getOneSessionUserBySessionAndUserAndType(
         CourseSession $session,

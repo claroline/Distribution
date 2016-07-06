@@ -7,6 +7,9 @@
  * file that was distributed with this source code.
  */
 
+/*global Routing*/
+/*global Translator*/
+
 export default class SessionEventService {
   constructor ($http, $sce, $uibModal, ClarolineAPIService) {
     this.$http = $http
@@ -25,7 +28,7 @@ export default class SessionEventService {
     const eventJson = JSON.parse(data)
 
     if (eventJson['session']['id']) {
-      const sessionId = eventJson['session']['id'];
+      const sessionId = eventJson['session']['id']
       this.sessionEvents[sessionId].push(eventJson)
       this.computeSessionEventsStatusBySession(sessionId)
     }
@@ -33,7 +36,7 @@ export default class SessionEventService {
 
   _updateSessionEventCallback(data) {
     const eventJson = JSON.parse(data)
-    const sessionId = eventJson['session']['id'];
+    const sessionId = eventJson['session']['id']
     const eventIndex = this.sessionEvents[sessionId].findIndex(e => e['id'] === eventJson['id'])
 
     if (eventIndex > -1) {
@@ -44,7 +47,7 @@ export default class SessionEventService {
 
   _removeSessionEventCallback(data) {
     const eventJson = JSON.parse(data)
-    const sessionId = eventJson['session']['id'];
+    const sessionId = eventJson['session']['id']
     const eventIndex = this.sessionEvents[sessionId].findIndex(e => e['id'] === eventJson['id'])
 
     if (eventIndex > -1) {
@@ -70,7 +73,7 @@ export default class SessionEventService {
   }
 
   getClosedSessionEvents () {
-    return this.closedSessionEvents[sessionId]
+    return this.closedSessionEvents
   }
 
   getClosedSessionEventsBySession (sessionId) {
@@ -79,27 +82,6 @@ export default class SessionEventService {
     }
 
     return this.closedSessionEvents[sessionId]
-  }
-
-  loadEvents (callback = null) {
-    //if (!this.initialized) {
-    //  this.sessions.splice(0, this.sessions.length)
-    //  const route = Routing.generate('api_get_sessions')
-    //
-    //  return this.$http.get(route).then(d => {
-    //    if (d['status'] === 200) {
-    //      angular.merge(this.sessions, d['data'])
-    //      this.computeSessionsStatus()
-    //      this.generateCourseInfos()
-    //      this.generateCourseSessions()
-    //      this.initialized = true
-    //
-    //      if (callback !== null) {
-    //        callback(d['data'])
-    //      }
-    //    }
-    //  })
-    //}
   }
 
   loadEventsBySession (sessionId, callback = null) {

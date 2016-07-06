@@ -15,6 +15,9 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\ApiManager;
 use Claroline\CursusBundle\Entity\Course;
 use Claroline\CursusBundle\Entity\CourseSession;
+use Claroline\CursusBundle\Entity\CourseSessionGroup;
+use Claroline\CursusBundle\Entity\CourseSessionRegistrationQueue;
+use Claroline\CursusBundle\Entity\CourseSessionUser;
 use Claroline\CursusBundle\Entity\Cursus;
 use Claroline\CursusBundle\Entity\SessionEvent;
 use Claroline\CursusBundle\Event\Log\LogCourseEditEvent;
@@ -424,7 +427,7 @@ class AdminManagementController extends Controller
         $form->submit($this->request);
 
         if ($form->isValid()) {
-//            $icon = $form->get('icon')->getData();
+            //            $icon = $form->get('icon')->getData();
 //
 //            if (!is_null($icon)) {
 //                $hashName = $this->cursusManager->saveIcon($icon);
@@ -489,7 +492,7 @@ class AdminManagementController extends Controller
         $form->submit($this->request);
 
         if ($form->isValid()) {
-//            $icon = $form->get('icon')->getData();
+            //            $icon = $form->get('icon')->getData();
 //
 //            if (!is_null($icon)) {
 //                $hashName = $this->cursusManager->saveIcon($icon);
@@ -600,7 +603,7 @@ class AdminManagementController extends Controller
         $form->submit($this->request);
 
         if ($form->isValid()) {
-//            $icon = $form->get('icon')->getData();
+            //            $icon = $form->get('icon')->getData();
 //
 //            if (!is_null($icon)) {
 //                $hashName = $this->cursusManager->changeIcon($course, $icon);
@@ -890,7 +893,7 @@ class AdminManagementController extends Controller
         $form->submit($this->request);
 
         if ($form->isValid()) {
-//            $icon = $form->get('icon')->getData();
+            //            $icon = $form->get('icon')->getData();
 //
 //            if (!is_null($icon)) {
 //                $hashName = $this->cursusManager->changeIcon($course, $icon);
@@ -1130,5 +1133,204 @@ class AdminManagementController extends Controller
         $this->cursusManager->deleteSessionEvent($sessionEvent);
 
         return new JsonResponse($serializedSessionEvent, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/session/{session}/user/type/{type}",
+     *     name="api_get_session_users_by_session_and_type",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     *
+     * Get the session learners list
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getSessionUsersBySessionAndTypeAction(CourseSession $session, $type)
+    {
+        $learners = $this->cursusManager->getSessionUsersBySessionAndType($session, $type);
+        $serializedLearners = $this->serializer->serialize(
+            $learners,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
+
+        return new JsonResponse($serializedLearners, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/session/{session}/users",
+     *     name="api_get_session_users_by_session",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     *
+     * Get the session users list
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getSessionUsersBySessionAction(CourseSession $session)
+    {
+        $sessionUsers = $this->cursusManager->getSessionUsersBySession($session);
+        $serializedSessionUsers = $this->serializer->serialize(
+            $sessionUsers,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
+
+        return new JsonResponse($serializedSessionUsers, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/session/{session}/groups",
+     *     name="api_get_session_groups_by_session",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     *
+     * Get the session groups list
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getSessionGroupsBySessionAction(CourseSession $session)
+    {
+        $sessionGroups = $this->cursusManager->getSessionGroupsBySession($session);
+        $serializedSessionGroups = $this->serializer->serialize(
+            $sessionGroups,
+            'json',
+            SerializationContext::create()->setGroups(['api_group_min'])
+        );
+
+        return new JsonResponse($serializedSessionGroups, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/session/{session}/pending/users",
+     *     name="api_get_session_pending_users_by_session",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     *
+     * Get the session pending users list
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getSessionPendingUsersBySessionAction(CourseSession $session)
+    {
+        $pendingUsers = $this->cursusManager->getSessionQueuesBySession($session);
+        $serializedPendingUsers = $this->serializer->serialize(
+            $pendingUsers,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
+
+        return new JsonResponse($serializedPendingUsers, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/session/user/{sessionUser}/delete",
+     *     name="api_delete_session_user",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     *
+     * Deletes a session user
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function deleteSessionUserAction(CourseSessionUser $sessionUser)
+    {
+        $serializedSessionUser = $this->serializer->serialize(
+            $sessionUser,
+            'json',
+            SerializationContext::create()->setGroups(['api_cursus'])
+        );
+        $this->cursusManager->unregisterUsersFromSession([$sessionUser]);
+
+        return new JsonResponse($serializedSessionUser, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/session/group/{sessionGroup}/delete",
+     *     name="api_delete_session_group",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     *
+     * Deletes a session group
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function deleteSessionGroupAction(CourseSessionGroup $sessionGroup)
+    {
+        $serializedSessionGroup = $this->serializer->serialize(
+            $sessionGroup,
+            'json',
+            SerializationContext::create()->setGroups(['api_cursus'])
+        );
+        $serializedSessionUsers = $this->cursusManager->unregisterGroupFromSession($sessionGroup);
+
+        return new JsonResponse(['group' =>$serializedSessionGroup, 'users' => $serializedSessionUsers], 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/session/registration/queue/{queue}/accept",
+     *     name="api_accept_session_registration_queue",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     *
+     * Accepts session registration queue
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function acceptSessionRegistrationQueueAction(CourseSessionRegistrationQueue $queue)
+    {
+        $user = $queue->getUser();
+        $session = $queue->getSession();
+        $results = $this->cursusManager->registerUsersToSession($session, [$user], 0);
+
+        if ($results['status'] === 'success') {
+            $serializedQueue = $this->serializer->serialize(
+                $queue,
+                'json',
+                SerializationContext::create()->setGroups(['api_cursus'])
+            );
+            $results['queue'] = $serializedQueue;
+            $this->cursusManager->deleteSessionQueue($queue);
+        }
+
+        return new JsonResponse($results, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/session/registration/queue/{queue}/delete",
+     *     name="api_delete_session_registration_queue",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     *
+     * Deletes session registration queue
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function deleteSessionRegistrationQueueAction(CourseSessionRegistrationQueue $queue)
+    {
+        $serializedQueue = $this->serializer->serialize(
+            $queue,
+            'json',
+            SerializationContext::create()->setGroups(['api_cursus'])
+        );
+        $this->cursusManager->declineSessionQueue($queue);
+
+        return new JsonResponse($serializedQueue, 200);
     }
 }

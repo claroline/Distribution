@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+/*global Routing*/
+
 export default class CourseEditionModalCtrl {
   constructor($http, $uibModal, $uibModalInstance, ClarolineAPIService, courseId, callback) {
     this.$http = $http

@@ -7,6 +7,13 @@
  * file that was distributed with this source code.
  */
 
+/*global Routing*/
+/*global Translator*/
+import angular from 'angular/index'
+import cursusCourseSelectionTemplate from '../Partial/cursus_course_selection_modal.html'
+import cursusHierarchyTemplate from '../Partial/cursus_hierarchy_modal.html'
+import cursusImportTemplate from '../Partial/cursus_import_form.html'
+
 export default class CursusService {
   constructor ($http, $sce, $uibModal, ClarolineAPIService, CourseService) {
     this.$http = $http
@@ -79,13 +86,10 @@ export default class CursusService {
 
   initialize (cursusId = null) {
     if (this.initialized && cursusId === this.rootCursusId) {
-      console.log('cursus already initialized')
-
       return null
     } else {
-      console.log('initializing cursus...')
       this.cursus.splice(0, this.cursus.length)
-      const route = cursusId === null ? Routing.generate('api_get_all_root_cursus') : Routing.generate('api_get_one_cursus', {cursus: cursusId});
+      const route = cursusId === null ? Routing.generate('api_get_all_root_cursus') : Routing.generate('api_get_one_cursus', {cursus: cursusId})
 
       return this.$http.get(route).then(d => {
         if (d['status'] === 200) {
@@ -174,8 +178,8 @@ export default class CursusService {
   }
 
   importCursus () {
-    const modal = this.$uibModal.open({
-      template: require('../Partial/cursus_import_form.html'),
+    this.$uibModal.open({
+      template: cursusImportTemplate,
       controller: 'CursusImportModalCtrl',
       controllerAs: 'cmc',
       resolve: {
@@ -189,7 +193,7 @@ export default class CursusService {
 
     if (index > -1) {
       this.$uibModal.open({
-        template: require('../Partial/cursus_hierarchy_modal.html'),
+        template: cursusHierarchyTemplate,
         controller: 'CursusHierarchyModalCtrl',
         controllerAs: 'cmc',
         resolve: {
@@ -231,8 +235,8 @@ export default class CursusService {
   }
 
   showCoursesListForCursus (cursusId, title) {
-    const modal = this.$uibModal.open({
-      template: require('../Partial/cursus_course_selection_modal.html'),
+    this.$uibModal.open({
+      template: cursusCourseSelectionTemplate,
       controller: 'CursusCourseSelectionModalCtrl',
       controllerAs: 'cmc',
       resolve: {

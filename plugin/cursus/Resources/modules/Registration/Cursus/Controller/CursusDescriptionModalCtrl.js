@@ -9,14 +9,14 @@
     
 export default class CursusDescriptionModalCtrl {
         
-    constructor($uibModalInstance, $sce, title, description) {
-        this.$uibModalInstance = $uibModalInstance
-        this.$sce = $sce
-        this.title = title
-        this.description = description
-    }
-    
-    closeModal() {
-        this.$uibModalInstance.close()
-    }
+  constructor($uibModalInstance, $sce, title, description) {
+    this.$uibModalInstance = $uibModalInstance
+    this.$sce = $sce
+    this.title = title
+    this.description = description
+  }
+
+  closeModal() {
+    this.$uibModalInstance.close()
+  }
 }

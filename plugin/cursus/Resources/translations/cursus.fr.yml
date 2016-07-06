@@ -101,9 +101,13 @@ no_cursus: Aucun cursus
 no_description: Aucune description
 no_open_session: Aucune session ouverte
 no_open_session_event: Aucune séance ouverte
+no_pending_learner: Aucun apprenant en attente
+no_registered_group: Aucun groupe inscrit
+no_registered_learner: Aucun apprenant inscrit
 no_result: Aucun résultat
 no_session: Aucune session de formation
 no_session_event: Aucune séance
+no_tutor: Aucun formateur
 not_authorized: Non autorisé
 nothing_to_configure: Rien à configurer
 open_session_events: Séances ouvertes
@@ -174,11 +178,13 @@ unregister_group_from_cursus_confirm_message: Êtes-vous sûr de vouloir désins
 unregister_group_from_session: Désinscrire le groupe de la session de formation
 unregister_group_from_session_message: Êtes-vous sûr de vouloir désinscrire ce groupe de cette session de formation ?
 unregister_learner_from_session: Désinscrire l'apprenant de la session de formation
+unregister_learner_from_session_confirm_message: Êtes-vous sûr de vouloir désinscrire cet apprenant de cette session de formation ?
 unregister_selected_groups: Désinscrire les groupes sélectionnés
 unregister_selected_groups_message: Êtes-vous sûr de vouloir désinscrire les groupes sélectionnés ?
 unregister_selected_users: Désinscrire les utilisateurs sélectionnés
 unregister_selected_users_message: Êtes-vous sûr de vouloir désinscrire les utilisateurs sélectionnés ?
 unregister_tutor_from_session: Désinscrire le formateur de la session de formation
+unregister_tutor_from_session_confirm_message: Êtes-vous sûr de vouloir désinscrire ce formateur de cette session de formation ?
 unregister_user_from_cursus_confirm_message: Êtes-vous sûr de vouloir désinscrire cet utilisateur de ce cursus ?
 unregister_user_from_session: Désinscrire l'utilisateur de la session de formation
 unregister_user_from_session_message: Êtes-vous sûr de vouloir désinscrire cet utilisateur de cette session de formation ?

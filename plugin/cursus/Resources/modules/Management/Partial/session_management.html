@@ -60,16 +60,137 @@
             <uib-accordion-heading>
                 <div class="text-center">
                     {{ 'learners'|trans:{}:'cursus' }}
+                    &nbsp;
+                    <span class="badge">{{ cmc.learners.length }}</span>
                 </div>
             </uib-accordion-heading>
+            <uib-tabset active="active">
+                <uib-tab index="0">
+                    <uib-tab-heading>
+                        {{ 'users'|trans:{}:'platform' }}
+                        <span class="badge">{{ cmc.learners.length }}</span>
+                    </uib-tab-heading>
+                    <br>
+                    <div class="table-responsive" ng-if="cmc.learners.length > 0">
+                        <table class="table cursus-table" ng-table="cmc.tableParams['learners']" show-filter="false">
+                            <thead></thead>
+                            <tr ng-repeat="learner in $data">
+                                <td>
+                                    {{ learner['firstName'] }}
+                                    {{ learner['lastName'] }}
+                                    &nbsp;
+                                    <button class="btn btn-default btn-sm"
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="{{ 'send_confirmation_mail_to_user'|trans:{}:'cursus' }}"
+                                            ng-click="cmc.sendConfirmationMail(learner['id'])"
+                                    >
+                                        <i class="fa fa-envelope-o"></i>
+                                    </button>
+                                    <button class="btn btn-danger btn-sm"
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="{{ 'unregister_learner_from_session'|trans:{}:'cursus' }}"
+                                            ng-click="cmc.deleteLearner(learner['id'])"
+                                    >
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="alert alert-warning" ng-if="cmc.learners.length === 0">
+                        {{ 'no_registered_learner'|trans:{}:'cursus' }}
+                    </div>
+                </uib-tab>
+                <uib-tab index="1">
+                    <uib-tab-heading>
+                        {{ 'groups'|trans:{}:'platform' }}
+                        <span class="badge">{{ cmc.groups.length }}</span>
+                    </uib-tab-heading>
+                    <br>
+                    <div class="table-responsive" ng-if="cmc.groups.length > 0">
+                        <table class="table cursus-table" ng-table="cmc.tableParams['groups']" show-filter="false">
+                            <thead></thead>
+                            <tr ng-repeat="group in $data">
+                                <td>
+                                    {{ group['groupName'] }}
+                                    &nbsp;
+                                    <button class="btn btn-danger btn-sm"
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="{{ 'unregister_group_from_session'|trans:{}:'cursus' }}"
+                                            ng-click="cmc.deleteGroup(group['id'])"
+                                    >
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="alert alert-warning" ng-if="cmc.groups.length === 0">
+                        {{ 'no_registered_group'|trans:{}:'cursus' }}
+                    </div>
+                </uib-tab>
+                <uib-tab index="2">
+                    <uib-tab-heading>
+                        {{ 'pending'|trans:{}:'platform' }}
+                        <span class="badge">{{ cmc.pendingLearners.length }}</span>
+                    </uib-tab-heading>
+                    <br>
+                    <div class="table-responsive" ng-if="cmc.pendingLearners.length > 0">
+                        <table class="table cursus-table" ng-table="cmc.tableParams['pendingLearners']" show-filter="false">
+                            <thead></thead>
+                            <tbody>
+                                <tr ng-repeat="pendingLearner in $data">
+                                    <td>
+                                        {{ pendingLearner['firstName'] }}
+                                        {{ pendingLearner['lastName'] }}
+                                        &nbsp;
+                                        <button class="btn btn-success btn-sm" ng-click="cmc.acceptQueue(pendingLearner['id'])">
+                                            <i class="fa fa-check"></i>
+                                        </button>
+                                        <button class="btn btn-danger btn-sm" ng-click="cmc.declineQueue(pendingLearner['id'])">
+                                            <i class="fa fa-times"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="alert alert-warning" ng-if="cmc.pendingLearners.length === 0">
+                        {{ 'no_pending_learner'|trans:{}:'cursus' }}
+                    </div>
+                </uib-tab>
+            </uib-tabset>
         </uib-accordion-group>
 
         <uib-accordion-group is-open="cmc.isCollapsed['tutors']">
             <uib-accordion-heading>
                 <div class="text-center">
                     {{ 'tutors'|trans:{}:'cursus' }}
+                    &nbsp;
+                    <span class="badge">{{ cmc.tutors.length }}</span>
                 </div>
             </uib-accordion-heading>
+            <div class="alert alert-warning" ng-if="cmc.tutors.length === 0">
+                {{ 'no_tutor'|trans:{}:'cursus' }}
+            </div>
+            <div class="table-responsive" ng-if="cmc.tutors.length > 0">
+                <table class="table cursus-table" ng-table="cmc.tableParams['tutors']" show-filter="false">
+                    <thead></thead>
+                    <tr ng-repeat="tutor in $data">
+                        <td>
+                            {{ tutor['firstName'] }}
+                            {{ tutor['lastName'] }}
+                            &nbsp;
+                            <button class="btn btn-danger btn-sm" ng-click="cmc.deleteTutor(tutor['id'])">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </uib-accordion-group>
 
         <uib-accordion-group is-open="cmc.isCollapsed['openEvents']">

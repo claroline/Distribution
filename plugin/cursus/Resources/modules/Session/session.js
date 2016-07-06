@@ -7,11 +7,11 @@
  * file that was distributed with this source code.
  */
 
-import 'angular/index'
+import angular from 'angular/index'
 
-import bootstrap from 'angular-bootstrap'
-import colorpicker from 'angular-bootstrap-colorpicker'
-import translation from 'angular-ui-translation/angular-translation'
+import 'angular-bootstrap'
+import 'angular-bootstrap-colorpicker'
+import 'angular-ui-translation/angular-translation'
 
 import SessionService from './Service/SessionService'
 import SessionCreationModalCtrl from './Controller/SessionCreationModalCtrl'

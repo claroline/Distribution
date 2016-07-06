@@ -1,19 +1,27 @@
+import indexTemplate from './Partial/index.html'
+import rootCursusManagementTemplate from './Partial/root_cursus_management.html'
+import cursusManagementTemplate from './Partial/cursus_management.html'
+import coursesManagementTemplate from './Partial/courses_management.html'
+import sessionsManagementTemplate from './Partial/sessions_management.html'
+import courseTemplate from './Partial/course_management.html'
+import sessionTemplate from './Partial/session_management.html'
+
 export default function($stateProvider, $urlRouterProvider) {
   const translate = function(key) {
-    return window.Translator.trans(key, {}, 'cursus');
+    return window.Translator.trans(key, {}, 'cursus')
   }
 
   $stateProvider
     .state ('index', {
       url: '/index',
-      template: require('./Partial/index.html'),
+      template: indexTemplate,
       ncyBreadcrumb: {
         label: translate('courses_management')
       }
     })
     .state ('root_cursus_management', {
       url: '/cursus',
-      template: require('./Partial/root_cursus_management.html'),
+      template: rootCursusManagementTemplate,
       controller: 'RootCursusManagementCtrl',
       controllerAs: 'cmc',
       ncyBreadcrumb: {
@@ -23,7 +31,7 @@ export default function($stateProvider, $urlRouterProvider) {
     })
     .state ('cursus', {
       url: '/cursus/{cursusId}',
-      template: require('./Partial/cursus_management.html'),
+      template: cursusManagementTemplate,
       controller: 'CursusManagementCtrl',
       controllerAs: 'cmc',
       ncyBreadcrumb: {
@@ -33,7 +41,7 @@ export default function($stateProvider, $urlRouterProvider) {
     })
     .state ('courses_management', {
       url: '/courses',
-      template: require('./Partial/courses_management.html'),
+      template: coursesManagementTemplate,
       controller: 'CoursesManagementCtrl',
       controllerAs: 'cmc',
       ncyBreadcrumb: {
@@ -43,7 +51,7 @@ export default function($stateProvider, $urlRouterProvider) {
     })
     .state ('sessions_management', {
       url: '/sessions',
-      template: require('./Partial/sessions_management.html'),
+      template: sessionsManagementTemplate,
       controller: 'SessionsManagementCtrl',
       controllerAs: 'cmc',
       ncyBreadcrumb: {
@@ -53,7 +61,7 @@ export default function($stateProvider, $urlRouterProvider) {
     })
     .state ('course', {
       url: '/courses/{courseId}',
-      template: require('./Partial/course_management.html'),
+      template: courseTemplate,
       controller: 'CourseManagementCtrl',
       controllerAs: 'cmc',
       ncyBreadcrumb: {
@@ -63,7 +71,7 @@ export default function($stateProvider, $urlRouterProvider) {
     })
     .state ('session', {
       url: '/sessions/{sessionId}',
-      template: require('./Partial/session_management.html'),
+      template: sessionTemplate,
       controller: 'SessionManagementCtrl',
       controllerAs: 'cmc',
       ncyBreadcrumb: {
@@ -71,30 +79,6 @@ export default function($stateProvider, $urlRouterProvider) {
         parent: 'sessions_management'
       }
     })
-//        .state ('registration_cursus_list', {
-//            url: '/registration/cursus/list',
-//            template: require('./Cursus/Partial/cursus_registration_cursus_list.html'),
-//            controller: 'CursusRegistrationCtrl',
-//            controllerAs: 'crc'
-//        })
-//        .state ('registration_searched_cursus_list', {
-//            url: '/registration/searched/cursus/{search}',
-//            template: require('./Cursus/Partial/cursus_registration_searched_cursus_list.html'),
-//            controller: 'CursusRegistrationSearchCtrl',
-//            controllerAs: 'crsc'
-//        })
-//        .state ('registration_cursus_management', {
-//            url: '/registration/cursus/{cursusId}/management',
-//            template: require('./Cursus/Partial/cursus_registration_cursus_management.html'),
-//            controller: 'CursusRegistrationManagementCtrl',
-//            controllerAs: 'crmc'
-//        })
-//        .state ('registration_queue_management', {
-//            url: '/registration/queue/management',
-//            template: require('./Queue/Partial/cursus_queue_management.html'),
-//            controller: 'CursusQueueManagementCtrl',
-//            controllerAs: 'cqmc'
-//        })
 
   $urlRouterProvider.otherwise('/index')
 }

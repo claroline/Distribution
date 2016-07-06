@@ -7,6 +7,9 @@
  * file that was distributed with this source code.
  */
 
+/*global Routing*/
+/*global Translator*/
+
 export default class CoursesImportModalCtrl {
   constructor($http, $uibModal, $uibModalInstance, callback, FormBuilderService) {
     this.$http = $http
@@ -25,7 +28,7 @@ export default class CoursesImportModalCtrl {
         this.callback(d['data'])
         this.$uibModalInstance.close()
       },
-      d => {
+      () => {
         this.errorMsg = Translator.trans('courses_import_error_from_file', {}, 'cursus')
       }
     )

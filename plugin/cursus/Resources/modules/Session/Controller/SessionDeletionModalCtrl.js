@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+/*global Routing*/
+
 export default class SessionDeletionModalCtrl {
   constructor($http, $uibModalInstance, sessionId, callback) {
     this.$http = $http

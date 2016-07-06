@@ -45,7 +45,7 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_user", "api_organization_tree", "api_organization_list", "api_message"})
+     * @Groups({"api_user", "api_organization_tree", "api_organization_list", "api_message", "api_user_min"})
      */
     protected $id;
 
@@ -54,7 +54,7 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
      *
      * @ORM\Column(name="first_name", length=50)
      * @Assert\NotBlank()
-     * @Groups({"api_user", "api_message"})
+     * @Groups({"api_user", "api_message", "api_user_min"})
      * @SerializedName("firstName")
      */
     protected $firstName;
@@ -64,7 +64,7 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
      *
      * @ORM\Column(name="last_name", length=50)
      * @Assert\NotBlank()
-     * @Groups({"api_user","api_message"})
+     * @Groups({"api_user","api_message", "api_user_min"})
      * @SerializedName("lastName")
      */
     protected $lastName;
@@ -76,7 +76,7 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
      * @Assert\NotBlank()
      * @Assert\Length(min="3")
      * @ClaroAssert\Username()
-     * @Groups({"api_user", "api_organization_tree", "api_organization_list"})
+     * @Groups({"api_user", "api_organization_tree", "api_organization_list", "api_user_min"})
      * @SerializedName("username")
      */
     protected $username;
@@ -92,7 +92,7 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
      * @var string
      *
      * @ORM\Column(nullable=true)
-     * @Groups({"api_user"})
+     * @Groups({"api_user", "api_user_min"})
      * @SerializedName("locale")
      */
     protected $locale;
@@ -116,7 +116,7 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
      * @var string
      *
      * @ORM\Column(nullable=true)
-     * @Groups({"api_user"})
+     * @Groups({"api_user", "api_user_min"})
      * @SerializedName("phone")
      */
     protected $phone;
@@ -127,14 +127,14 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
      * @ORM\Column(unique=true)
      * @Assert\NotBlank()
      * @Assert\Email(checkMX = false)
-     * @Groups({"api_user"})
+     * @Groups({"api_user", "api_user_min"})
      * @SerializedName("mail")
      */
     protected $mail;
 
     /**
      * @ORM\Column()
-     * @Groups({"api_user"})
+     * @Groups({"api_user", "api_user_min"})
      * @SerializedName("guid")
      */
     protected $guid;
@@ -143,7 +143,7 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
      * @var string
      *
      * @ORM\Column(name="administrative_code", nullable=true)
-     * @Groups({"api_user"})
+     * @Groups({"api_user", "api_user_min"})
      * @SerializedName("administrativeCode")
      */
     protected $administrativeCode;
@@ -235,7 +235,7 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
 
     /**
      * @ORM\Column(nullable=true)
-     * @Groups({"api_user"})
+     * @Groups({"api_user", "api_user_min"})
      * @SerializedName("picture")
      */
     protected $picture;
@@ -247,7 +247,7 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     * @Groups({"api_user"})
+     * @Groups({"api_user", "api_user_min"})
      * @SerializedName("description")
      */
     protected $description;
@@ -265,7 +265,7 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
      * @var bool
      *
      * @ORM\Column(name="is_enabled", type="boolean")
-     * @Groups({"api_user"})
+     * @Groups({"api_user", "api_user_min"})
      * @SerializedName("isEnabled")
      */
     protected $isEnabled = true;

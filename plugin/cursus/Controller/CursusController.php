@@ -13,6 +13,7 @@ namespace Claroline\CursusBundle\Controller;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
+use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Manager\ToolManager;
 use Claroline\CursusBundle\Entity\Course;
 use Claroline\CursusBundle\Entity\CourseSession;
@@ -24,12 +25,10 @@ use Claroline\CursusBundle\Form\CourseType;
 use Claroline\CursusBundle\Form\CursusType;
 use Claroline\CursusBundle\Form\FileSelectType;
 use Claroline\CursusBundle\Form\PluginConfigurationType;
-use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CursusBundle\Manager\CursusManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -37,8 +36,9 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class CursusController extends Controller
 {
@@ -98,16 +98,16 @@ class CursusController extends Controller
     public function cursusManagementToolMenuAction()
     {
         $this->checkToolAccess();
-        $displayedWords = array();
+        $displayedWords = [];
 
         foreach (CursusDisplayedWord::$defaultKey as $key) {
             $displayedWords[$key] = $this->cursusManager->getDisplayedWord($key);
         }
 
-        return array(
+        return [
             'defaultWords' => CursusDisplayedWord::$defaultKey,
             'displayedWords' => $displayedWords,
-        );
+        ];
     }
 
     /**
@@ -121,18 +121,18 @@ class CursusController extends Controller
     public function cursusToolIndexAction()
     {
         $this->checkToolAccess();
-        $displayedWords = array();
+        $displayedWords = [];
 
         foreach (CursusDisplayedWord::$defaultKey as $key) {
             $displayedWords[$key] = $this->cursusManager->getDisplayedWord($key);
         }
         $allRootCursus = $this->cursusManager->getAllRootCursus();
 
-        return array(
+        return [
             'defaultWords' => CursusDisplayedWord::$defaultKey,
             'displayedWords' => $displayedWords,
             'allRootCursus' => $allRootCursus,
-        );
+        ];
     }
 
     /**
@@ -149,7 +149,7 @@ class CursusController extends Controller
         $this->checkToolAccess();
         $form = $this->formFactory->create(new CursusType());
 
-        return array('form' => $form->createView());
+        return ['form' => $form->createView()];
     }
 
     /**
@@ -177,13 +177,13 @@ class CursusController extends Controller
                 $cursus->setCursusOrder(intval($orderMax) + 1);
             }
             $color = $form->get('color')->getData();
-            $details = array('color' => $color);
+            $details = ['color' => $color];
             $cursus->setDetails($details);
             $this->cursusManager->persistCursus($cursus);
 
             $message = $this->translator->trans(
                 'cursus_creation_confirm_msg',
-                array(),
+                [],
                 'cursus'
             );
             $session = $this->request->getSession();
@@ -191,7 +191,7 @@ class CursusController extends Controller
 
             return new JsonResponse('success', 200);
         } else {
-            return array('form' => $form->createView());
+            return ['form' => $form->createView()];
         }
     }
 
@@ -214,10 +214,10 @@ class CursusController extends Controller
             $cursus
         );
 
-        return array(
+        return [
             'form' => $form->createView(),
             'cursus' => $cursus,
-        );
+        ];
     }
 
     /**
@@ -245,7 +245,7 @@ class CursusController extends Controller
             $details = $cursus->getDetails();
 
             if (is_null($details)) {
-                $details = array('color' => $color);
+                $details = ['color' => $color];
             } else {
                 $details['color'] = $color;
             }
@@ -254,7 +254,7 @@ class CursusController extends Controller
 
             $message = $this->translator->trans(
                 'cursus_edition_confirm_msg',
-                array(),
+                [],
                 'cursus'
             );
             $session = $this->request->getSession();
@@ -262,10 +262,10 @@ class CursusController extends Controller
 
             return new JsonResponse('success', 200);
         } else {
-            return array(
+            return [
                 'form' => $form->createView(),
                 'cursus' => $cursus,
-            );
+            ];
         }
     }
 
@@ -284,7 +284,7 @@ class CursusController extends Controller
     {
         $this->checkToolAccess();
 
-        return array('cursus' => $cursus);
+        return ['cursus' => $cursus];
     }
 
     /**
@@ -301,7 +301,7 @@ class CursusController extends Controller
     public function cursusViewHierarchyAction(Cursus $cursus)
     {
         $this->checkToolAccess();
-        $hierarchy = array();
+        $hierarchy = [];
         $allCursus = $this->cursusManager->getHierarchyByCursus($cursus);
 
         foreach ($allCursus as $oneCursus) {
@@ -311,13 +311,13 @@ class CursusController extends Controller
                 $parentId = $parent->getId();
 
                 if (!isset($hierarchy[$parentId])) {
-                    $hierarchy[$parentId] = array();
+                    $hierarchy[$parentId] = [];
                 }
                 $hierarchy[$parentId][] = $oneCursus;
             }
         }
 
-        return array('cursus' => $cursus, 'hierarchy' => $hierarchy);
+        return ['cursus' => $cursus, 'hierarchy' => $hierarchy];
     }
 
     /**
@@ -337,7 +337,7 @@ class CursusController extends Controller
 
         $message = $this->translator->trans(
             'cursus_deletion_confirm_msg',
-            array(),
+            [],
             'cursus'
         );
         $session = $this->request->getSession();
@@ -361,7 +361,7 @@ class CursusController extends Controller
     {
         $this->checkToolAccess();
 
-        return array('description' => $cursus->getDescription());
+        return ['description' => $cursus->getDescription()];
     }
 
     /**
@@ -378,12 +378,12 @@ class CursusController extends Controller
     public function cursusManagementAction(Cursus $cursus)
     {
         $this->checkToolAccess();
-        $displayedWords = array();
+        $displayedWords = [];
 
         foreach (CursusDisplayedWord::$defaultKey as $key) {
             $displayedWords[$key] = $this->cursusManager->getDisplayedWord($key);
         }
-        $hierarchy = array();
+        $hierarchy = [];
         $allCursus = $this->cursusManager->getHierarchyByCursus($cursus);
 
         foreach ($allCursus as $oneCursus) {
@@ -393,18 +393,18 @@ class CursusController extends Controller
                 $parentId = $parent->getId();
 
                 if (!isset($hierarchy[$parentId])) {
-                    $hierarchy[$parentId] = array();
+                    $hierarchy[$parentId] = [];
                 }
                 $hierarchy[$parentId][] = $oneCursus;
             }
         }
 
-        return array(
+        return [
             'defaultWords' => CursusDisplayedWord::$defaultKey,
             'displayedWords' => $displayedWords,
             'cursus' => $cursus,
             'hierarchy' => $hierarchy,
-        );
+        ];
     }
 
     /**
@@ -421,10 +421,10 @@ class CursusController extends Controller
         $this->checkToolAccess();
         $form = $this->formFactory->create(new CursusType());
 
-        return array(
+        return [
             'form' => $form->createView(),
             'parent' => $parent,
-        );
+        ];
     }
 
     /**
@@ -453,23 +453,23 @@ class CursusController extends Controller
                 $cursus->setCursusOrder(intval($orderMax) + 1);
             }
             $color = $form->get('color')->getData();
-            $details = array('color' => $color);
+            $details = ['color' => $color];
             $cursus->setDetails($details);
             $this->cursusManager->persistCursus($cursus);
 
             return new JsonResponse(
-                array(
+                [
                     'parent_id' => $parent->getId(),
                     'id' => $cursus->getId(),
                     'title' => $cursus->getTitle(),
-                ),
+                ],
                 200
             );
         } else {
-            return array(
+            return [
                 'form' => $form->createView(),
                 'parent' => $parent,
-            );
+            ];
         }
     }
 
@@ -512,7 +512,7 @@ class CursusController extends Controller
             $max
         );
 
-        return array(
+        return [
             'cursus' => $cursus,
             'courses' => $courses,
             'search' => $search,
@@ -520,7 +520,7 @@ class CursusController extends Controller
             'max' => $max,
             'orderedBy' => $orderedBy,
             'order' => $order,
-        );
+        ];
     }
 
     /**
@@ -574,11 +574,11 @@ class CursusController extends Controller
     public function cursusCourseAddAction(Cursus $cursus, Course $course)
     {
         $this->checkToolAccess();
-        $createdCursus = $this->cursusManager->addCoursesToCursus($cursus, array($course));
-        $results = array();
+        $createdCursus = $this->cursusManager->addCoursesToCursus($cursus, [$course]);
+        $results = [];
 
         foreach ($createdCursus as $created) {
-            $results[] = array('id' => $created->getId(), 'title' => $created->getTitle());
+            $results[] = ['id' => $created->getId(), 'title' => $created->getTitle()];
         }
 
         return new JsonResponse($results, 200);
@@ -624,7 +624,7 @@ class CursusController extends Controller
     public function cursusCourseRemoveAction(Cursus $cursus, Course $course)
     {
         $this->checkToolAccess();
-        $this->cursusManager->removeCoursesFromCursus($cursus, array($course));
+        $this->cursusManager->removeCoursesFromCursus($cursus, [$course]);
 
         return new JsonResponse('success', 200);
     }
@@ -671,10 +671,10 @@ class CursusController extends Controller
             new Course()
         );
 
-        return array(
+        return [
             'form' => $form->createView(),
             'cursus' => $cursus,
-        );
+        ];
     }
 
     /**
@@ -704,25 +704,25 @@ class CursusController extends Controller
                 $course->setIcon($hashName);
             }
             $this->cursusManager->persistCourse($course);
-            $createdCursus = $this->cursusManager->addCoursesToCursus($cursus, array($course));
-            $results = array();
+            $createdCursus = $this->cursusManager->addCoursesToCursus($cursus, [$course]);
+            $results = [];
 
             foreach ($createdCursus as $created) {
-                $results[] = array(
+                $results[] = [
                     'id' => $created->getId(),
                     'title' => $created->getTitle(),
                     'course_id' => $course->getId(),
                     'code' => $course->getCode(),
                     'root' => $cursus->getRoot(),
-                );
+                ];
             }
 
             return new JsonResponse($results, 200);
         } else {
-            return array(
+            return [
                 'form' => $form->createView(),
                 'cursus' => $cursus,
-            );
+            ];
         }
     }
 
@@ -799,7 +799,7 @@ class CursusController extends Controller
     public function pluginConfigureFormAction()
     {
         $this->checkToolAccess();
-        $displayedWords = array();
+        $displayedWords = [];
 
         foreach (CursusDisplayedWord::$defaultKey as $key) {
             $displayedWords[$key] = $this->cursusManager->getDisplayedWord($key);
@@ -810,11 +810,11 @@ class CursusController extends Controller
             $this->cursusManager->getConfirmationEmail()
         );
 
-        return array(
+        return [
             'form' => $form->createView(),
             'defaultWords' => CursusDisplayedWord::$defaultKey,
             'displayedWords' => $displayedWords,
-        );
+        ];
     }
 
     /**
@@ -828,7 +828,7 @@ class CursusController extends Controller
     public function pluginConfigureAction()
     {
         $this->checkToolAccess();
-        $displayedWords = array();
+        $displayedWords = [];
 
         foreach (CursusDisplayedWord::$defaultKey as $key) {
             $displayedWords[$key] = $this->cursusManager->getDisplayedWord($key);
@@ -837,21 +837,21 @@ class CursusController extends Controller
         $formData = $this->request->get('cursus_plugin_configuration_form');
         $this->cursusManager->persistConfirmationEmail($formData['content']);
         $this->platformConfigHandler->setParameters(
-            array(
+            [
                 'cursusbundle_default_session_start_date' => $formData['startDate'],
                 'cursusbundle_default_session_end_date' => $formData['endDate'],
-            )
+            ]
         );
         $form = $this->formFactory->create(
             new PluginConfigurationType($this->platformConfigHandler),
             $this->cursusManager->getConfirmationEmail()
         );
 
-        return array(
+        return [
             'form' => $form->createView(),
             'defaultWords' => CursusDisplayedWord::$defaultKey,
             'displayedWords' => $displayedWords,
-        );
+        ];
     }
 
     /**
@@ -876,11 +876,11 @@ class CursusController extends Controller
         $this->cursusManager->persistCursusDisplayedWord($displayedWord);
 
         $sessionFlashBag = $this->get('session')->getFlashBag();
-        $msg = $this->translator->trans('the_displayed_word_for', array(), 'cursus').
+        $msg = $this->translator->trans('the_displayed_word_for', [], 'cursus').
             ' ['.
             $key.
             '] '.
-            $this->translator->trans('will_be', array(), 'cursus').
+            $this->translator->trans('will_be', [], 'cursus').
             ' ['
             .$value.
             ']';
@@ -904,7 +904,7 @@ class CursusController extends Controller
      */
     public function coursesRegistrationWidgetAction(WidgetInstance $widgetInstance)
     {
-        return array('widgetInstance' => $widgetInstance);
+        return ['widgetInstance' => $widgetInstance];
     }
 
     /**
@@ -949,12 +949,12 @@ class CursusController extends Controller
                 $max
             );
         }
-        $coursesArray = array();
+        $coursesArray = [];
 
         foreach ($courses as $course) {
             $coursesArray[] = $course;
         }
-        $sessions = array();
+        $sessions = [];
         $courseSessions = $this->cursusManager->getSessionsByCourses(
             $coursesArray,
             'creationDate',
@@ -967,16 +967,16 @@ class CursusController extends Controller
 
             if ($status === 0 || $status === 1) {
                 if (!isset($sessions[$courseId])) {
-                    $sessions[$courseId] = array();
+                    $sessions[$courseId] = [];
                 }
                 $sessions[$courseId][] = $courseSession;
             }
         }
-        $registeredSessions = array();
-        $pendingSessions = array();
+        $registeredSessions = [];
+        $pendingSessions = [];
         $userSessions = $this->cursusManager->getSessionUsersBySessionsAndUsers(
             $courseSessions,
-            array($authenticatedUser),
+            [$authenticatedUser],
             0
         );
         $pendingRegistrations =
@@ -989,14 +989,14 @@ class CursusController extends Controller
         foreach ($pendingRegistrations as $pendingRegistration) {
             $pendingSessions[$pendingRegistration->getSession()->getId()] = $pendingRegistration;
         }
-        $courseQueues = array();
+        $courseQueues = [];
         $courseQueueRequests = $this->cursusManager->getCourseQueuesByUser($authenticatedUser);
 
         foreach ($courseQueueRequests as $courseQueueRequest) {
             $courseQueues[$courseQueueRequest->getCourse()->getId()] = true;
         }
 
-        return array(
+        return [
             'widgetInstance' => $widgetInstance,
             'courses' => $courses,
             'search' => $search,
@@ -1008,7 +1008,7 @@ class CursusController extends Controller
             'registeredSessions' => $registeredSessions,
             'pendingSessions' => $pendingSessions,
             'courseQueues' => $courseQueues,
-        );
+        ];
     }
 
     /**
@@ -1032,7 +1032,7 @@ class CursusController extends Controller
             } else {
                 $results = $this->cursusManager->registerUsersToSession(
                     $session,
-                    array($authenticatedUser),
+                    [$authenticatedUser],
                     0
                 );
             }
@@ -1093,10 +1093,10 @@ class CursusController extends Controller
             $config
         );
 
-        return array(
+        return [
             'form' => $form->createView(),
             'config' => $config,
-        );
+        ];
     }
 
     /**
@@ -1121,10 +1121,10 @@ class CursusController extends Controller
 
             return new JsonResponse('success', 204);
         } else {
-            return array(
+            return [
                 'form' => $form->createView(),
                 'config' => $config,
-            );
+            ];
         }
     }
 
@@ -1139,7 +1139,7 @@ class CursusController extends Controller
      */
     public function myCoursesWidgetAction(WidgetInstance $widgetInstance)
     {
-        return array('widgetInstance' => $widgetInstance);
+        return ['widgetInstance' => $widgetInstance];
     }
 
     /**
@@ -1171,7 +1171,7 @@ class CursusController extends Controller
             $max
         );
         $sessionUsers = $this->cursusManager->getSessionUsersByUser($authenticatedUser);
-        $workspacesList = array();
+        $workspacesList = [];
 
         foreach ($sessionUsers as $sessionUser) {
             $session = $sessionUser->getSession();
@@ -1183,7 +1183,7 @@ class CursusController extends Controller
             }
         }
 
-        return array(
+        return [
             'widgetInstance' => $widgetInstance,
             'courses' => $courses,
             'search' => $search,
@@ -1192,7 +1192,7 @@ class CursusController extends Controller
             'orderedBy' => $orderedBy,
             'order' => $order,
             'workspacesList' => $workspacesList,
-        );
+        ];
     }
 
     /**
@@ -1241,7 +1241,7 @@ class CursusController extends Controller
         $this->checkToolAccess();
         $form = $this->formFactory->create(new FileSelectType());
 
-        return array('form' => $form->createView());
+        return ['form' => $form->createView()];
     }
 
     /**
@@ -1266,7 +1266,7 @@ class CursusController extends Controller
             !$zip->getStream('cursus.json') ||
             !$zip->getStream('courses.json')) {
             $form->get('archive')->addError(
-                new FormError($this->translator->trans('invalid_file', array(), 'cursus'))
+                new FormError($this->translator->trans('invalid_file', [], 'cursus'))
             );
         }
 
@@ -1313,7 +1313,7 @@ class CursusController extends Controller
 
             return new JsonResponse('success', 200);
         } else {
-            return array('form' => $form->createView());
+            return ['form' => $form->createView()];
         }
     }
 

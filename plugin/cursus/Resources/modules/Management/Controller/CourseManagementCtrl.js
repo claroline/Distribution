@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+/*global Routing*/
+
 export default class CourseManagementCtrl {
   constructor($stateParams, NgTableParams, CourseService, SessionService) {
     this.CourseService = CourseService
@@ -44,7 +46,7 @@ export default class CourseManagementCtrl {
     let result = this.CourseService.getCourseById(this.courseId)
 
     if (result === 'initialized') {
-        this.breadCrumbLabel = this.course['title']
+      this.breadCrumbLabel = this.course['title']
     } else {
       result.then(d => {
         if (d === 'initialized' && this.course) {

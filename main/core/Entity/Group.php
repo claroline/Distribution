@@ -35,14 +35,14 @@ class Group extends AbstractRoleSubject implements OrderableInterface
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_group"})
+     * @Groups({"api_group", "api_group_min"})
      */
     protected $id;
 
     /**
      * @ORM\Column()
      * @Assert\NotBlank()
-     * @Groups({"api_group"})
+     * @Groups({"api_group", "api_group_min"})
      */
     protected $name;
 
@@ -57,7 +57,7 @@ class Group extends AbstractRoleSubject implements OrderableInterface
 
     /**
      * @ORM\Column()
-     * @Groups({"api_group"})
+     * @Groups({"api_group", "api_group_min"})
      */
     protected $guid;
 

@@ -17,7 +17,6 @@ use Doctrine\ORM\EntityRepository;
 
 class CourseSessionRepository extends EntityRepository
 {
-
     public function findAllSessions($orderedBy = 'startDate', $order = 'ASC', $executeQuery = true)
     {
         $dql = "

@@ -101,9 +101,13 @@ no_cursus: No cursus
 no_description: No description
 no_open_session: No open session
 no_open_session_event: No open session event
+no_pending_learner: No pending learner
+no_registered_group: No registered group
+no_registered_learner: No registered learner
 no_result: No result
 no_session: No training session
 no_session_event: No session event
+no_tutor: No tutor
 not_authorized: Not authorized
 nothing_to_configure: Nothing to configure
 open_session_events: Open session events
@@ -174,11 +178,13 @@ unregister_group_from_cursus_confirm_message: Are you sure you want to unregiste
 unregister_group_from_session: Unregister group from training session
 unregister_group_from_session_message: Are you sure you want to unregister this group from this training session ?
 unregister_learner_from_session: Unregister learner from training session
+unregister_learner_from_session_confirm_message: Are you sure you want to unregister this learner from this training session ?
 unregister_selected_groups: Unregister selected groups
 unregister_selected_groups_message: Are you sure you want to unregister the selected groups ?
 unregister_selected_users: Unregister selected users
 unregister_selected_users_message: Are you sure you want to unregister the selected users ?
 unregister_tutor_from_session: Unregister tutor from training session
+unregister_tutor_from_session_confirm_message: Are you sure you want to unregister this tutor from this training session ?
 unregister_user_from_cursus_confirm_message: Are you sure you want to unregister this user from this cursus ?
 unregister_user_from_session: Unregister user from training session
 unregister_user_from_session_message: Are you sure you want to unregister this user from this training session ?

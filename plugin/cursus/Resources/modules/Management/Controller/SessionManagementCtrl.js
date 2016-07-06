@@ -9,14 +9,17 @@
 
 export default class SessionManagementCtrl {
   constructor($stateParams, NgTableParams, SessionService, SessionEventService) {
+    this.NgTableParams = NgTableParams
     this.SessionService = SessionService
     this.SessionEventService = SessionEventService
     this.sessionId = $stateParams.sessionId
     this.session = SessionService.getSession()
     this.openEvents = SessionEventService.getOpenSessionEventsBySession(this.sessionId)
     this.closedEvents = SessionEventService.getClosedSessionEventsBySession(this.sessionId)
-    this.learners = []
-    this.tutors = []
+    this.groups = []
+    this.learners = SessionService.getLearnersBySession(this.sessionId)
+    this.tutors = SessionService.getTutorsBySession(this.sessionId)
+    this.pendingLearners = SessionService.getPendingLearnersBySession(this.sessionId)
     this.breadCrumbLabel = ''
     this.isCollapsed = {
       description: true,
@@ -26,6 +29,10 @@ export default class SessionManagementCtrl {
       closedEvents: false
     }
     this.tableParams = {
+      groups: new NgTableParams(
+        {count: 20},
+        {counts: [10, 20, 50, 100], dataset: this.groups}
+      ),
       learners: new NgTableParams(
         {count: 20},
         {counts: [10, 20, 50, 100], dataset: this.learners}
@@ -33,6 +40,10 @@ export default class SessionManagementCtrl {
       tutors: new NgTableParams(
         {count: 20},
         {counts: [10, 20, 50, 100], dataset: this.tutors}
+      ),
+      pendingLearners: new NgTableParams(
+        {count: 20},
+        {counts: [10, 20, 50, 100], dataset: this.pendingLearners}
       ),
       openEvents: new NgTableParams(
         {count: 20},
@@ -43,40 +54,75 @@ export default class SessionManagementCtrl {
         {counts: [10, 20, 50, 100], dataset: this.closedEvents}
       )
     }
-    this.initialize()
     this._updateSessionCallback = this._updateSessionCallback.bind(this)
     this._addSessionEventCallback = this._addSessionEventCallback.bind(this)
     this._updateSessionEventCallback = this._updateSessionEventCallback.bind(this)
     this._removeSessionEventCallback = this._removeSessionEventCallback.bind(this)
+    this._removeLearnerCallback = this._removeLearnerCallback.bind(this)
+    this._removeTutorCallback = this._removeTutorCallback.bind(this)
+    this._removeGroupCallback = this._removeGroupCallback.bind(this)
+    this._removePendingLearnerCallback = this._removePendingLearnerCallback.bind(this)
+    this._initializeGroupsCallback = this._initializeGroupsCallback.bind(this)
+    this.initialize()
   }
 
-  _updateSessionCallback(data) {
+  _updateSessionCallback (data) {
     this.SessionService._updateSessionCallback(data)
     const sessionJson = JSON.parse(data)
     this.session = sessionJson
     this.breadCrumbLabel = sessionJson['name']
   }
 
-  _addSessionEventCallback(data) {
+  _addSessionEventCallback (data) {
     this.SessionEventService._addSessionEventCallback(data)
     this.refreshEventsTables()
   }
 
-  _updateSessionEventCallback(data) {
+  _updateSessionEventCallback (data) {
     this.SessionEventService._updateSessionEventCallback(data)
     this.refreshEventsTables()
   }
 
-  _removeSessionEventCallback(data) {
+  _removeSessionEventCallback (data) {
     this.SessionEventService._removeSessionEventCallback(data)
     this.refreshEventsTables()
+  }
+
+  _removeLearnerCallback (data) {
+    this.SessionService._removeLearnerCallback(data)
+    this.tableParams['learners'].reload()
+  }
+
+  _removeTutorCallback (data) {
+    this.SessionService._removeTutorCallback(data)
+    this.tableParams['tutors'].reload()
+  }
+
+  _removeGroupCallback (data) {
+    this.SessionService._removeGroupCallback(data)
+    this.tableParams['groups'].reload()
+    this.tableParams['learners'].reload()
+  }
+
+  _removePendingLearnerCallback (data) {
+    this.SessionService._removePendingLearnerCallback(data)
+    this.tableParams['pendingLearners'].reload()
+  }
+
+  _initializeGroupsCallback (data) {
+    this.groups = this.SessionService.getGroupsBySession(this.sessionId)
+
+    this.tableParams['groups'] = new this.NgTableParams(
+      {count: 20},
+      {counts: [10, 20, 50, 100], dataset: this.groups}
+    )
   }
 
   initialize() {
     let result = this.SessionService.getSessionById(this.sessionId)
 
     if (result === 'initialized') {
-        this.breadCrumbLabel = this.session['name']
+      this.breadCrumbLabel = this.session['name']
     } else {
       result.then(d => {
         if (d === 'initialized' && this.session) {
@@ -84,6 +130,9 @@ export default class SessionManagementCtrl {
         }
       })
     }
+    this.SessionService.loadUsersBySession(this.sessionId)
+    this.SessionService.loadGroupsBySession(this.sessionId, this._initializeGroupsCallback)
+    this.SessionService.loadPendingUsersBySession(this.sessionId)
     this.SessionEventService.loadEventsBySession(this.sessionId)
   }
 
@@ -99,8 +148,36 @@ export default class SessionManagementCtrl {
     this.SessionEventService.deleteSessionEvent(eventId, this._removeSessionEventCallback)
   }
 
+  repeatEvent (eventId) {
+    console.log(this.learners)
+  }
+
   refreshEventsTables () {
     this.tableParams['openEvents'].reload()
     this.tableParams['closedEvents'].reload()
+  }
+
+  deleteTutor (sessionUserId) {
+    this.SessionService.deleteTutor(sessionUserId, this._removeTutorCallback)
+  }
+
+  deleteLearner (sessionUserId) {
+    this.SessionService.deleteLearner(sessionUserId, this._removeLearnerCallback)
+  }
+
+  deleteGroup (sessionGroupId) {
+    this.SessionService.deleteGroup(sessionGroupId, this._removeGroupCallback)
+  }
+
+  sendConfirmationMail (userId) {
+    this.SessionService.sendConfirmationMail(this.sessionId, userId)
+  }
+
+  acceptQueue (queueId) {
+    this.SessionService.acceptQueue(queueId)
+  }
+
+  declineQueue (queueId) {
+    this.SessionService.declineQueue(queueId, this._removePendingLearnerCallback)
   }
 }

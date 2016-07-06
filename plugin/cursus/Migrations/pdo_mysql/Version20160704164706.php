@@ -8,12 +8,21 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution
  *
- * Generation date: 2016/06/24 09:15:06
+ * Generation date: 2016/07/04 04:47:08
  */
-class Version20160624091505 extends AbstractMigration
+class Version20160704164706 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
+        $this->addSql("
+            CREATE TABLE claro_cursusbundle_course_organizations (
+                course_id INT NOT NULL, 
+                organization_id INT NOT NULL, 
+                INDEX IDX_6B367C8591CC992 (course_id), 
+                INDEX IDX_6B367C832C8A3DE (organization_id), 
+                PRIMARY KEY(course_id, organization_id)
+            ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
+        ");
         $this->addSql("
             CREATE TABLE claro_cursusbundle_session_event (
                 id INT AUTO_INCREMENT NOT NULL, 
@@ -43,6 +52,18 @@ class Version20160624091505 extends AbstractMigration
                 INDEX IDX_21DFDBA8FA5B88E3 (session_event_id), 
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
+        ");
+        $this->addSql("
+            ALTER TABLE claro_cursusbundle_course_organizations 
+            ADD CONSTRAINT FK_6B367C8591CC992 FOREIGN KEY (course_id) 
+            REFERENCES claro_cursusbundle_course (id) 
+            ON DELETE CASCADE
+        ");
+        $this->addSql("
+            ALTER TABLE claro_cursusbundle_course_organizations 
+            ADD CONSTRAINT FK_6B367C832C8A3DE FOREIGN KEY (organization_id) 
+            REFERENCES claro__organization (id) 
+            ON DELETE CASCADE
         ");
         $this->addSql("
             ALTER TABLE claro_cursusbundle_session_event 
@@ -90,6 +111,9 @@ class Version20160624091505 extends AbstractMigration
         $this->addSql("
             ALTER TABLE claro_cursusbundle_session_event_comment 
             DROP FOREIGN KEY FK_21DFDBA8FA5B88E3
+        ");
+        $this->addSql("
+            DROP TABLE claro_cursusbundle_course_organizations
         ");
         $this->addSql("
             DROP TABLE claro_cursusbundle_session_event

@@ -7,22 +7,20 @@
  * file that was distributed with this source code.
  */
 
-import 'angular/angular.min'
+import angular from 'angular/index'
 
-//import '#/main/core/form/module'
-import UIRouter from 'angular-ui-router'
-import dataTable from 'angular-data-table/release/dataTable.helpers.min'
-import bootstrap from 'angular-bootstrap'
-import animate from 'angular-animate'
-import translation from 'angular-ui-translation/angular-translation'
-import breadcrumbs from 'angular-breadcrumb'
-import loading from 'angular-loading-bar'
+import 'angular-ui-router'
+import 'angular-bootstrap'
+import 'angular-animate'
+import 'angular-ui-translation/angular-translation'
+import 'angular-breadcrumb'
+import 'angular-loading-bar'
 
 import '#/main/core/fos-js-router/module'
-import CursusModule from '../Cursus/cursus'
-import CourseModule from '../Course/course'
-import SessionModule from '../Session/session'
-import SessionEventModule from '../SessionEvent/sessionEvent'
+import '../Cursus/cursus'
+import '../Course/course'
+import '../Session/session'
+import '../SessionEvent/sessionEvent'
 
 import Routing from './routing.js'
 import RootCursusManagementCtrl from './Controller/RootCursusManagementCtrl'
@@ -35,7 +33,6 @@ import SessionManagementCtrl from './Controller/SessionManagementCtrl'
 angular.module('CursusManagementModule', [
   'ui.router',
   'ui.translation',
-  'data-table',
   'ui.bootstrap',
   'ui.bootstrap.tpls',
   'ngAnimate',

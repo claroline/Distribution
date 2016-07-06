@@ -11,8 +11,8 @@
 
 namespace Claroline\CursusBubdle\Tests\API;
 
-use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Claroline\CoreBundle\Library\Testing\Persister;
+use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Claroline\CursusBundle\Entity\CourseSession;
 use Claroline\CursusBundle\Library\Testing\CursusPersister;
 
@@ -352,7 +352,7 @@ class CursusControllerTest extends TransactionalTestCase
         $courseAAAId = $this->courseAAA->getId();
         $courseAABId = $this->courseAAB->getId();
         $courseAACAId = $this->courseAACA->getId();
-        $ids = array();
+        $ids = [];
         $ids[] = $this->rootCursusA->getId();
         $ids[] = $this->cursusAA->getId();
         $ids[] = $this->cursusAAA->getId();

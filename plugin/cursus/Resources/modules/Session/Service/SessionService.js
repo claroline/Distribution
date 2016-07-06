@@ -7,14 +7,27 @@
  * file that was distributed with this source code.
  */
 
+/*global Routing*/
+/*global Translator*/
+import angular from 'angular/index'
+import sessionDeleteTemplate from '../Partial/session_delete_modal.html'
+
 export default class SessionService {
-  constructor ($http, $sce, $uibModal) {
+  constructor ($http, $sce, $uibModal, ClarolineAPIService) {
     this.$http = $http
     this.$sce = $sce
     this.$uibModal = $uibModal
+    this.ClarolineAPIService = ClarolineAPIService
     this.initialized = false
+    this.groupsInitialized = {}
+    this.pendingInitialized = {}
     this.session = {}
     this.sessions = []
+    this.users = {}
+    this.groups = {}
+    this.learners = {}
+    this.tutors = {}
+    this.pendingLearners = {}
     this.courseSessions = {}
     this.openCourseSessions = {}
     this.closedCourseSessions = {}
@@ -22,6 +35,11 @@ export default class SessionService {
     this._updateSessionCallback = this._updateSessionCallback.bind(this)
     this._removeSessionCallback = this._removeSessionCallback.bind(this)
     this._resetDefaultSessionCallback = this._resetDefaultSessionCallback.bind(this)
+    this._removeLearnerCallback = this._removeLearnerCallback.bind(this)
+    this._removeTutorCallback = this._removeTutorCallback.bind(this)
+    this._removeGroupCallback = this._removeGroupCallback.bind(this)
+    this._removePendingLearnerCallback = this._removePendingLearnerCallback.bind(this)
+    this._acceptQueueCallback = this._acceptQueueCallback.bind(this)
   }
 
   _addSessionCallback(data) {
@@ -90,16 +108,8 @@ export default class SessionService {
     if (this.initialized) {
       const sessionJson = JSON.parse(data)
       const courseId = sessionJson['course']['id']
-      const index = this.sessions.findIndex(s => s['id'] === sessionJson['id'])
-      const sessionIndex = this.courseSessions[courseId].findIndex(s => s['id'] === sessionJson['id'])
-
-      if (index > -1) {
-        this.sessions.splice(index, 1)
-      }
-
-      if (sessionIndex > -1) {
-        this.courseSessions[courseId].splice(sessionIndex, 1)
-      }
+      this.removeFromArray(this.sessions, sessionJson['id'])
+      this.removeFromArray(this.courseSessions[courseId], sessionJson['id'])
       this.computeSessionsStatusByCourse(courseId)
     }
   }
@@ -110,6 +120,76 @@ export default class SessionService {
         s['default_session'] = false
       }
     })
+  }
+
+  _removeLearnerCallback (data) {
+    const sessionUser = JSON.parse(data)
+    const id = sessionUser['id']
+    const sessionId = sessionUser['session']['id']
+    this.removeFromArray(this.users[sessionId], id)
+    this.removeFromArray(this.learners[sessionId], id)
+  }
+
+  _removeTutorCallback (data) {
+    const sessionUser = JSON.parse(data)
+    const id = sessionUser['id']
+    const sessionId = sessionUser['session']['id']
+    this.removeFromArray(this.users[sessionId], id)
+    this.removeFromArray(this.tutors[sessionId], id)
+  }
+
+  _removeGroupCallback (data) {
+    const sessionGroup = JSON.parse(data['group'])
+    const sessionUsers = JSON.parse(data['users'])
+    const sessionId = sessionGroup['session']['id']
+    this.removeFromArray(this.groups[sessionId], sessionGroup['id'])
+    sessionUsers.forEach(su => {
+      this.removeFromArray(this.users[sessionId], su['id'])
+      this.removeFromArray(this.learners[sessionId], su['id'])
+    })
+  }
+
+  _removePendingLearnerCallback (data) {
+    const pendingLearner = JSON.parse(data)
+    const sessionId = pendingLearner['session']['id']
+    this.removeFromArray(this.pendingLearners[sessionId], pendingLearner['id'])
+  }
+
+  _acceptQueueCallback (data) {
+    const queue = JSON.parse(data['queue'])
+    const sessionUsers = JSON.parse(data['sessionUsers'])
+    const sessionId = queue['session']['id']
+    this.removeFromArray(this.pendingLearners[sessionId], queue['id'])
+
+    sessionUsers.forEach(su => {
+      const generatedSU = this.generateUserDatas(su)
+      this.users[sessionId].push(generatedSU)
+      this.learners[sessionId].push(generatedSU)
+    })
+    //this.sortSessionUsersbyType(sessionId)
+    console.log(queue)
+    console.log(sessionUsers)
+    //const pendingLearner = JSON.parse(data)
+    //const id = pendingLearner['id']
+    //const sessionId = pendingLearner['session']['id']
+    //
+    //if (this.pendingLearners[sessionId]) {
+    //  const index = this.pendingLearners[sessionId].findIndex(pl => pl['id'] === id)
+    //
+    //  if (index > -1) {
+    //    this.pendingLearners[sessionId].splice(index, 1)
+    //  }
+    //}
+  }
+
+  removeFromArray (targetArray, id) {
+    if (Array.isArray(targetArray)) {
+      const index = targetArray.findIndex(t => t['id'] === id)
+
+      if (index > -1) {
+        targetArray.splice(index, 1)
+      }
+    }
   }
 
   isInitialized () {
@@ -150,6 +230,34 @@ export default class SessionService {
     }
 
     return this.closedCourseSessions[courseId]
+  }
+
+  getGroupsBySession (sessionId) {
+    return this.groups[sessionId] ? this.groups[sessionId] : []
+  }
+
+  getLearnersBySession (sessionId) {
+    if (!this.learners[sessionId]) {
+      this.learners[sessionId] = []
+    }
+
+    return this.learners[sessionId]
+  }
+
+  getTutorsBySession (sessionId) {
+    if (!this.tutors[sessionId]) {
+      this.tutors[sessionId] = []
+    }
+
+    return this.tutors[sessionId]
+  }
+
+  getPendingLearnersBySession (sessionId) {
+    if (!this.pendingLearners[sessionId]) {
+      this.pendingLearners[sessionId] = []
+    }
+
+    return this.pendingLearners[sessionId]
   }
 
   loadSessions (callback = null) {
@@ -235,8 +343,8 @@ export default class SessionService {
 
   deleteSession (sessionId, callback = null) {
     const deleteCallback = callback !== null ? callback : this._removeSessionCallback
-    const modal = this.$uibModal.open({
-      template: require('../Partial/session_delete_modal.html'),
+    this.$uibModal.open({
+      template: sessionDeleteTemplate,
       controller: 'SessionDeletionModalCtrl',
       controllerAs: 'cmc',
       resolve: {
@@ -369,5 +477,185 @@ export default class SessionService {
         }
       })
     }
+  }
+
+  generateUserDatas (datas) {
+    datas['userId'] = datas['user']['id']
+    datas['username'] = datas['user']['username']
+    datas['firstName'] = datas['user']['firstName']
+    datas['lastName'] = datas['user']['lastName']
+
+    return datas
+  }
+
+  generateGroupDatas (datas) {
+    datas['groupId'] = datas['group']['id']
+    datas['groupName'] = datas['group']['name']
+
+    return datas
+  }
+
+  loadGroupsBySession (sessionId, callback = null) {
+    if (this.groups[sessionId] === undefined) {
+      const route = Routing.generate('api_get_session_groups_by_session', {session: sessionId})
+      this.$http.get(route).then(d => {
+        if(d['status'] === 200) {
+          this.groups[sessionId] = []
+          const datas = JSON.parse(d['data'])
+          datas.forEach(sg => {
+            this.groups[sessionId].push(this.generateGroupDatas(sg))
+          })
+
+          if (callback !== null) {
+            callback(datas)
+          }
+        }
+      })
+    }
+  }
+
+  loadUsersBySession (sessionId, callback = null) {
+    if (this.users[sessionId] === undefined) {
+      const route = Routing.generate('api_get_session_users_by_session', {session: sessionId})
+      this.$http.get(route).then(d => {
+        if(d['status'] === 200) {
+          this.users[sessionId] = []
+          const datas = JSON.parse(d['data'])
+          datas.forEach(su => {
+            this.users[sessionId].push(this.generateUserDatas(su))
+          })
+          this.sortSessionUsersbyType(sessionId)
+
+          if (callback !== null) {
+            callback(datas)
+          }
+        }
+      })
+    }
+  }
+
+  loadPendingUsersBySession (sessionId, callback = null) {
+    if (!this.pendingInitialized[sessionId]) {
+      const route = Routing.generate('api_get_session_pending_users_by_session', {session: sessionId})
+      this.$http.get(route).then(d => {
+        if(d['status'] === 200) {
+          if (this.pendingLearners[sessionId] === undefined) {
+            this.pendingLearners[sessionId] = []
+          } else {
+            this.pendingLearners[sessionId].splice(0, this.pendingLearners[sessionId].length)
+          }
+          const datas = JSON.parse(d['data'])
+          datas.forEach(pu => {
+            this.pendingLearners[sessionId].push(this.generateUserDatas(pu))
+          })
+          this.pendingInitialized[sessionId] = true
+
+          if (callback !== null) {
+            callback(datas)
+          }
+        }
+      })
+    }
+  }
+
+  sortSessionUsersbyType (sessionId) {
+    if (this.learners[sessionId]) {
+      this.learners[sessionId].splice(0, this.learners[sessionId].length)
+    } else {
+      this.learners[sessionId] = []
+    }
+
+    if (this.tutors[sessionId]) {
+      this.tutors[sessionId].splice(0, this.tutors[sessionId].length)
+    } else {
+      this.tutors[sessionId] = []
+    }
+
+    //if (this.pendingLearners[sessionId]) {
+    //  this.pendingLearners[sessionId].splice(0, this.pendingLearners[sessionId].length)
+    //} else {
+    //  this.pendingLearners[sessionId] = []
+    //}
+    this.users[sessionId].forEach(u => {
+      if (u['userType'] === 0) {
+        this.learners[sessionId].push(u)
+      } else if (u['userType'] === 1) {
+        this.tutors[sessionId].push(u)
+      }
+      //else if (u['userType'] === 2) {
+      //  this.pendingLearners[sessionId].push(u)
+      //}
+    })
+  }
+
+  deleteTutor (sessionUserId, callback = null) {
+    const url = Routing.generate('api_delete_session_user', {sessionUser: sessionUserId})
+    const deleteCallback = (callback !== null) ? callback : this._removeTutorCallback
+
+    this.ClarolineAPIService.confirm(
+      {url, method: 'DELETE'},
+      deleteCallback,
+      Translator.trans('unregister_tutor_from_session', {}, 'cursus'),
+      Translator.trans('unregister_tutor_from_session_confirm_message', {}, 'cursus')
+    )
+  }
+
+  deleteLearner (sessionUserId, callback = null) {
+    const url = Routing.generate('api_delete_session_user', {sessionUser: sessionUserId})
+    const deleteCallback = (callback !== null) ? callback : this._removeLearnerCallback
+
+    this.ClarolineAPIService.confirm(
+      {url, method: 'DELETE'},
+      deleteCallback,
+      Translator.trans('unregister_learner_from_session', {}, 'cursus'),
+      Translator.trans('unregister_learner_from_session_confirm_message', {}, 'cursus')
+    )
+  }
+
+  deleteGroup (sessionGroupId, callback = null) {
+    const url = Routing.generate('api_delete_session_group', {sessionGroup: sessionGroupId})
+    const deleteCallback = (callback !== null) ? callback : this._removeGroupCallback
+
+    this.ClarolineAPIService.confirm(
+      {url, method: 'DELETE'},
+      deleteCallback,
+      Translator.trans('unregister_group_from_session', {}, 'cursus'),
+      Translator.trans('unregister_group_from_session_message', {}, 'cursus')
+    )
+  }
+
+  sendConfirmationMail (sessionId, userId) {
+    const url = Routing.generate('claro_cursus_course_session_user_confirmation_mail_send', {session: sessionId, user: userId})
+
+    this.ClarolineAPIService.confirm(
+      {url, method: 'POST'},
+      () => {},
+      Translator.trans('send_confirmation_mail', {}, 'cursus'),
+      Translator.trans('send_confirmation_mail_to_user_message', {}, 'cursus')
+    )
+  }
+
+  acceptQueue (queueId, callback = null) {
+    const url = Routing.generate('api_accept_session_registration_queue', {queue: queueId})
+    const acceptCallback = (callback !== null) ? callback : this._acceptQueueCallback
+
+    this.ClarolineAPIService.confirm(
+      {url, method: 'POST'},
+      acceptCallback,
+      Translator.trans('accept_registration', {}, 'cursus'),
+      Translator.trans('accept_registration_confirm_message', {}, 'cursus')
+    )
+  }
+
+  declineQueue (queueId, callback = null) {
+    const url = Routing.generate('api_delete_session_registration_queue', {queue: queueId})
+    const deleteCallback = (callback !== null) ? callback : this._removePendingLearnerCallback
+
+    this.ClarolineAPIService.confirm(
+      {url, method: 'DELETE'},
+      deleteCallback,
+      Translator.trans('decline_registration', {}, 'cursus'),
+      Translator.trans('decline_registration_confirm_message', {}, 'cursus')
+    )
   }
 }

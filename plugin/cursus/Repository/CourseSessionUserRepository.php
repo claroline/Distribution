@@ -17,12 +17,25 @@ use Doctrine\ORM\EntityRepository;
 
 class CourseSessionUserRepository extends EntityRepository
 {
-    public function findOneSessionUserBySessionAndUserAndType(
-        CourseSession $session,
-        User $user,
-        $userType,
-        $executeQuery = true
-    ) {
+    public function findSessionUsersBySessionAndType(CourseSession $session, $userType, $executeQuery = true)
+    {
+        $dql = '
+            SELECT csu
+            FROM Claroline\CursusBundle\Entity\CourseSessionUser csu
+            JOIN csu.user u
+            WHERE u.isEnabled = true
+            AND csu.session = :session
+            AND csu.userType = :userType
+        ';
+        $query = $this->_em->createQuery($dql);
+        $query->setParameter('session', $session);
+        $query->setParameter('userType', $userType);
+
+        return $executeQuery ? $query->getResult() : $query;
+    }
+
+    public function findOneSessionUserBySessionAndUserAndType(CourseSession $session, User $user, $userType, $executeQuery = true)
+    {
         $dql = '
             SELECT csu
             FROM Claroline\CursusBundle\Entity\CourseSessionUser csu
@@ -38,10 +51,8 @@ class CourseSessionUserRepository extends EntityRepository
         return $executeQuery ? $query->getOneOrNullResult() : $query;
     }
 
-    public function findSessionUsersByUser(
-        User $user,
-        $executeQuery = true
-    ) {
+    public function findSessionUsersByUser(User $user, $executeQuery = true)
+    {
         $dql = '
             SELECT csu
             FROM Claroline\CursusBundle\Entity\CourseSessionUser csu
@@ -56,10 +67,8 @@ class CourseSessionUserRepository extends EntityRepository
         return $executeQuery ? $query->getResult() : $query;
     }
 
-    public function findSessionUsersBySession(
-        CourseSession $session,
-        $executeQuery = true
-    ) {
+    public function findSessionUsersBySession(CourseSession $session, $executeQuery = true)
+    {
         $dql = '
             SELECT csu
             FROM Claroline\CursusBundle\Entity\CourseSessionUser csu
@@ -74,12 +83,8 @@ class CourseSessionUserRepository extends EntityRepository
         return $executeQuery ? $query->getResult() : $query;
     }
 
-    public function findSessionUsersBySessionAndUsers(
-        CourseSession $session,
-        array $users,
-        $userType,
-        $executeQuery = true
-    ) {
+    public function findSessionUsersBySessionAndUsers(CourseSession $session, array $users, $userType, $executeQuery = true)
+    {
         $dql = '
             SELECT csu
             FROM Claroline\CursusBundle\Entity\CourseSessionUser csu
@@ -96,12 +101,8 @@ class CourseSessionUserRepository extends EntityRepository
         return $executeQuery ? $query->getResult() : $query;
     }
 
-    public function findSessionUsersBySessionsAndUsers(
-        array $sessions,
-        array $users,
-        $userType,
-        $executeQuery = true
-    ) {
+    public function findSessionUsersBySessionsAndUsers(array $sessions, array $users, $userType, $executeQuery = true)
+    {
         $dql = '
             SELECT csu
             FROM Claroline\CursusBundle\Entity\CourseSessionUser csu

@@ -14,7 +14,6 @@ namespace Claroline\CursusBundle\Form;
 use Claroline\CoreBundle\Form\Angular\AngularType;
 use Claroline\CursusBundle\Manager\CursusManager;
 use Doctrine\ORM\EntityRepository;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Translation\TranslatorInterface;

@@ -7,6 +7,12 @@
  * file that was distributed with this source code.
  */
 
+/*global Routing*/
+/*global Translator*/
+import angular from 'angular/index'
+import courseViewTemplate from '../Partial/course_view_modal.html'
+import coursesImportFormTemplate from '../Partial/courses_import_form.html'
+
 export default class CourseService {
   constructor ($http, $sce, $uibModal, ClarolineAPIService) {
     this.$http = $http
@@ -67,8 +73,6 @@ export default class CourseService {
 
   loadCourses (cursusId = null) {
     if (this.initialized && !this.hasChanged && this.currentCursusId === cursusId) {
-      console.log('Nothing to load')
-
       return null
     } else {
       this.initialized = false
@@ -154,8 +158,8 @@ export default class CourseService {
     const index = this.courses.findIndex(c => c['id'] === courseId)
 
     if (index > -1) {
-      const modal = this.$uibModal.open({
-        template: require('../Partial/course_view_modal.html'),
+      this.$uibModal.open({
+        template: courseViewTemplate,
         controller: 'CourseViewModalCtrl',
         controllerAs: 'cmc',
         resolve: {
@@ -167,8 +171,8 @@ export default class CourseService {
 
   importCourses (callback = null) {
     const addCallback = callback !== null ? callback : this._addCourseCallback
-    const modal = this.$uibModal.open({
-      template: require('../Partial/courses_import_form.html'),
+    this.$uibModal.open({
+      template: coursesImportFormTemplate,
       controller: 'CoursesImportModalCtrl',
       controllerAs: 'cmc',
       resolve: {
