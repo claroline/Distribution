@@ -252,6 +252,7 @@ not_enought_papers: To display docimology, it must have at least 12 papers
 not_yet_mark: Not yet mark
 no_user_found: No user found
 n_question: Question n°
+number_max_attempts_help: Type 0 for unlimited attempts
 number_proposal: Number of the proposal
 number_of_papers: Number of papers
 number_questions_draw: Number of questions to draw (0 for all)

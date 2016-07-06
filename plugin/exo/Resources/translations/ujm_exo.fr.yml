@@ -253,6 +253,7 @@ not_enought_papers: Pour afficher la docimologie, il doit y avoir au moins 12 co
 not_yet_mark: Pas encore noté
 no_user_found: Pas d'utilisateur trouvé
 n_question: Question n°
+number_max_attempts_help: Tapez 0 pour un nombre d'essais illimité
 number_proposal: Numéro de la proposition
 number_of_papers: Nombre de copies
 number_questions_draw: Nombre de questions à tirer
