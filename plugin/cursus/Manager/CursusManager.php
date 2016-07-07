@@ -984,7 +984,7 @@ class CursusManager
 
     public function registerUsersToSession(CourseSession $session, array $users, $type)
     {
-        $results = ['status' => 'success', 'datas' => []];
+        $results = ['status' => 'success', 'datas' => [],'sessionUsers' => '[]'];
         $registrationDate = new \DateTime();
         $course = $session->getCourse();
         $remainingPlaces = (intval($type) === CourseSessionUser::LEARNER) ?
@@ -1152,11 +1152,92 @@ class CursusManager
         $this->om->endFlushSuite();
     }
 
-    public function registerGroupToSessions(
-        array $sessions,
-        Group $group,
-        $type = 0
-    ) {
+    public function registerGroupToSession(CourseSession $session, Group $group, $type = 0)
+    {
+        $users = $group->getUsers()->toArray();
+        $results = ['status' => 'success', 'datas' => [], 'sessionUsers' => '[]', 'sessionGroup' => null];
+
+        if (intval($type) === CourseSessionUser::LEARNER) {
+            $course = $session->getCourse();
+            $remainingPlaces = $this->getSessionRemainingPlace($session);
+
+            if (!is_null($remainingPlaces) && ($remainingPlaces < count($users))) {
+                $results['status'] = 'failed';
+                $results['datas']['remainingPlaces'] = $remainingPlaces;
+                $results['datas']['requiredPlaces'] = count($users);
+                $results['datas']['sessionId'] = $session->getId();
+                $results['datas']['sessionName'] = $session->getName();
+                $results['datas']['courseId'] = $course->getId();
+                $results['datas']['courseTitle'] = $course->getTitle();
+                $results['datas']['courseCode'] = $course->getCode();
+            }
+        }
+
+        if ($results['status'] === 'success') {
+            $this->om->startFlushSuite();
+            $sessionUsers = [];
+            $registrationDate = new \DateTime();
+            $sessionGroup = $this->sessionGroupRepo->findOneSessionGroupBySessionAndGroup(
+                $session,
+                $group,
+                $type
+            );
+
+            if (is_null($sessionGroup)) {
+                $sessionGroup = new CourseSessionGroup();
+                $sessionGroup->setSession($session);
+                $sessionGroup->setGroup($group);
+                $sessionGroup->setGroupType($type);
+                $sessionGroup->setRegistrationDate($registrationDate);
+                $this->om->persist($sessionGroup);
+            }
+
+            foreach ($users as $user) {
+                $sessionUser = $this->sessionUserRepo->findOneSessionUserBySessionAndUserAndType(
+                    $session,
+                    $user,
+                    $type
+                );
+
+                if (is_null($sessionUser)) {
+                    $sessionUser = new CourseSessionUser();
+                    $sessionUser->setSession($session);
+                    $sessionUser->setUser($user);
+                    $sessionUser->setUserType($type);
+                    $sessionUser->setRegistrationDate($registrationDate);
+                    $this->om->persist($sessionUser);
+                    $sessionUsers[] = $sessionUser;
+                }
+            }
+            $role = null;
+
+            if (intval($type) === 0) {
+                $role = $session->getLearnerRole();
+            } elseif (intval($type) === 1) {
+                $role = $session->getTutorRole();
+            }
+
+            if (!is_null($role)) {
+                $this->roleManager->associateRole($group, $role);
+            }
+            $this->om->endFlushSuite();
+            $results['sessionGroup'] = $this->serializer->serialize(
+                $sessionGroup,
+                'json',
+                SerializationContext::create()->setGroups(['api_group_min'])
+            );
+            $results['sessionUsers'] = $this->serializer->serialize(
+                $sessionUsers,
+                'json',
+                SerializationContext::create()->setGroups(['api_user_min'])
+            );
+        }
+
+        return $results;
+    }
+
+    public function registerGroupToSessions(array $sessions, Group $group, $type = 0)
+    {
         $users = $group->getUsers()->toArray();
         $results = ['status' => 'success', 'datas' => []];
 

@@ -62,6 +62,22 @@
                     {{ 'learners'|trans:{}:'cursus' }}
                     &nbsp;
                     <span class="badge">{{ cmc.learners.length }}</span>
+                    &nbsp;
+                    <i class="fa fa-user"
+                       data-toggle="tooltip"
+                       data-placement="top"
+                       title="{{ 'register_learners_to_session'|trans:{}:'cursus' }}"
+                       ng-click="cmc.registerLearners($event)"
+                    >
+                    </i>
+                    &nbsp;
+                    <i class="fa fa-users"
+                       data-toggle="tooltip"
+                       data-placement="top"
+                       title="{{ 'register_groups_to_session'|trans:{}:'cursus' }}"
+                       ng-click="cmc.registerLearnersGroups($event)"
+                    >
+                    </i>
                 </div>
             </uib-accordion-heading>
             <uib-tabset active="active">
@@ -171,6 +187,14 @@
                     {{ 'tutors'|trans:{}:'cursus' }}
                     &nbsp;
                     <span class="badge">{{ cmc.tutors.length }}</span>
+                    &nbsp;
+                    <i class="fa fa-user"
+                       data-toggle="tooltip"
+                       data-placement="top"
+                       title="{{ 'register_tutors_to_session'|trans:{}:'cursus' }}"
+                       ng-click="cmc.registerTutors($event)"
+                    >
+                    </i>
                 </div>
             </uib-accordion-heading>
             <div class="alert alert-warning" ng-if="cmc.tutors.length === 0">

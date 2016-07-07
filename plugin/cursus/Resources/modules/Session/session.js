@@ -17,6 +17,8 @@ import SessionService from './Service/SessionService'
 import SessionCreationModalCtrl from './Controller/SessionCreationModalCtrl'
 import SessionEditionModalCtrl from './Controller/SessionEditionModalCtrl'
 import SessionDeletionModalCtrl from './Controller/SessionDeletionModalCtrl'
+import UsersRegistrationModalCtrl from './Controller/UsersRegistrationModalCtrl'
+import GroupsRegistrationModalCtrl from './Controller/GroupsRegistrationModalCtrl'
 
 angular.module('SessionModule', [
   'ui.bootstrap',
@@ -28,3 +30,5 @@ angular.module('SessionModule', [
 .controller('SessionCreationModalCtrl', SessionCreationModalCtrl)
 .controller('SessionEditionModalCtrl', SessionEditionModalCtrl)
 .controller('SessionDeletionModalCtrl', SessionDeletionModalCtrl)
+.controller('UsersRegistrationModalCtrl', UsersRegistrationModalCtrl)
+.controller('GroupsRegistrationModalCtrl', GroupsRegistrationModalCtrl)

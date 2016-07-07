@@ -11,6 +11,9 @@
 /*global Translator*/
 import angular from 'angular/index'
 import sessionDeleteTemplate from '../Partial/session_delete_modal.html'
+import learnersRegistrationTemplate from '../Partial/learners_registration_modal.html'
+import learnersGroupsRegistrationTemplate from '../Partial/learners_groups_registration_modal.html'
+import tutorsRegistrationTemplate from '../Partial/tutors_registration_modal.html'
 
 export default class SessionService {
   constructor ($http, $sce, $uibModal, ClarolineAPIService) {
@@ -19,7 +22,6 @@ export default class SessionService {
     this.$uibModal = $uibModal
     this.ClarolineAPIService = ClarolineAPIService
     this.initialized = false
-    this.groupsInitialized = {}
     this.pendingInitialized = {}
     this.session = {}
     this.sessions = []
@@ -40,6 +42,9 @@ export default class SessionService {
     this._removeGroupCallback = this._removeGroupCallback.bind(this)
     this._removePendingLearnerCallback = this._removePendingLearnerCallback.bind(this)
     this._acceptQueueCallback = this._acceptQueueCallback.bind(this)
+    this._addLearnersCallback = this._addLearnersCallback.bind(this)
+    this._addLearnersGroupsCallback = this._addLearnersGroupsCallback.bind(this)
+    this._addTutorsCallback = this._addTutorsCallback.bind(this)
   }
 
   _addSessionCallback(data) {
@@ -166,20 +171,41 @@ export default class SessionService {
       this.users[sessionId].push(generatedSU)
       this.learners[sessionId].push(generatedSU)
     })
-    //this.sortSessionUsersbyType(sessionId)
-    console.log(queue)
-    console.log(sessionUsers)
-    //const pendingLearner = JSON.parse(data)
-    //const id = pendingLearner['id']
-    //const sessionId = pendingLearner['session']['id']
-    //
-    //if (this.pendingLearners[sessionId]) {
-    //  const index = this.pendingLearners[sessionId].findIndex(pl => pl['id'] === id)
-    //
-    //  if (index > -1) {
-    //    this.pendingLearners[sessionId].splice(index, 1)
-    //  }
-    //}
+  }
+
+  _addLearnersCallback (data) {
+    const sessionUsers = JSON.parse(data)
+    sessionUsers.forEach(su => {
+      const sessionId = su['session']['id']
+      const generatedSU = this.generateUserDatas(su)
+      this.users[sessionId].push(generatedSU)
+      this.learners[sessionId].push(generatedSU)
+    })
+  }
+
+  _addLearnersGroupsCallback (groupData, usersData) {
+    const sessionGroup = JSON.parse(groupData)
+    const sessionId = sessionGroup['session']['id']
+    const generatedSG = this.generateGroupDatas(sessionGroup)
+    this.groups[sessionId].push(generatedSG)
+    console.log(this.groups)
+
+    const sessionUsers = JSON.parse(usersData)
+    sessionUsers.forEach(su => {
+      const generatedSU = this.generateUserDatas(su)
+      this.users[sessionId].push(generatedSU)
+      this.learners[sessionId].push(generatedSU)
+    })
+  }
+
+  _addTutorsCallback (data) {
+    const sessionUsers = JSON.parse(data)
+    sessionUsers.forEach(su => {
+      const sessionId = su['session']['id']
+      const generatedSU = this.generateUserDatas(su)
+      this.users[sessionId].push(generatedSU)
+      this.tutors[sessionId].push(generatedSU)
+    })
   }
 
   removeFromArray (targetArray, id) {
@@ -570,21 +596,12 @@ export default class SessionService {
     } else {
       this.tutors[sessionId] = []
     }
-
-    //if (this.pendingLearners[sessionId]) {
-    //  this.pendingLearners[sessionId].splice(0, this.pendingLearners[sessionId].length)
-    //} else {
-    //  this.pendingLearners[sessionId] = []
-    //}
     this.users[sessionId].forEach(u => {
       if (u['userType'] === 0) {
         this.learners[sessionId].push(u)
       } else if (u['userType'] === 1) {
         this.tutors[sessionId].push(u)
       }
-      //else if (u['userType'] === 2) {
-      //  this.pendingLearners[sessionId].push(u)
-      //}
     })
   }
 
@@ -657,5 +674,47 @@ export default class SessionService {
       Translator.trans('decline_registration', {}, 'cursus'),
       Translator.trans('decline_registration_confirm_message', {}, 'cursus')
     )
+  }
+
+  registerLearners (sessionId, callback = null) {
+    const addCallback = (callback !== null) ? callback : this._addLearnersCallback
+    this.$uibModal.open({
+      template: learnersRegistrationTemplate,
+      controller: 'UsersRegistrationModalCtrl',
+      controllerAs: 'cmc',
+      resolve: {
+        sessionId: () => { return sessionId },
+        userType: () => { return 0 },
+        callback: () => { return addCallback }
+      }
+    })
+  }
+
+  registerLearnersGroups (sessionId, callback = null) {
+    const addCallback = (callback !== null) ? callback : this._addLearnersGroupsCallback
+    this.$uibModal.open({
+      template: learnersGroupsRegistrationTemplate,
+      controller: 'GroupsRegistrationModalCtrl',
+      controllerAs: 'cmc',
+      resolve: {
+        sessionId: () => { return sessionId },
+        groupType: () => { return 0 },
+        callback: () => { return addCallback }
+      }
+    })
+  }
+
+  registerTutors (sessionId, callback = null) {
+    const addCallback = (callback !== null) ? callback : this._addTutorsCallback
+    this.$uibModal.open({
+      template: tutorsRegistrationTemplate,
+      controller: 'UsersRegistrationModalCtrl',
+      controllerAs: 'cmc',
+      resolve: {
+        sessionId: () => { return sessionId },
+        userType: () => { return 1 },
+        callback: () => { return addCallback }
+      }
+    })
   }
 }

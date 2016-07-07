@@ -57,7 +57,7 @@ class CourseSessionUser
      *     inversedBy="sessionUsers"
      * )
      * @ORM\JoinColumn(name="session_id", nullable=false, onDelete="CASCADE")
-     * @Groups({"api_cursus"})
+     * @Groups({"api_cursus", "api_user_min"})
      */
     protected $session;
 

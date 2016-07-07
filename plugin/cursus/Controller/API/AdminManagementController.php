@@ -11,6 +11,7 @@
 
 namespace Claroline\CursusBundle\Controller\API;
 
+use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\ApiManager;
 use Claroline\CursusBundle\Entity\Course;
@@ -1332,5 +1333,91 @@ class AdminManagementController extends Controller
         $this->cursusManager->declineSessionQueue($queue);
 
         return new JsonResponse($serializedQueue, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/session/{session}/unregistered/users/type/{userType}",
+     *     name="api_get_session_unregistered_users",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     *
+     * Displays the list of users who are not registered to the session
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getSessionUnregisteredUsersAction(CourseSession $session, $userType = 0)
+    {
+        $users = $this->cursusManager->getUnregisteredUsersBySession($session, $userType, '', 'lastName', 'ASC', false);
+        $serializedUsers = $this->serializer->serialize(
+            $users,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
+
+        return new JsonResponse($serializedUsers, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/session/{session}/unregistered/groups/type/{groupType}",
+     *     name="api_get_session_unregistered_groups",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     *
+     * Displays the list of groups that are not registered to the session
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getSessionUnregisteredGroupsAction(CourseSession $session, $groupType = 0)
+    {
+        $groups = $this->cursusManager->getUnregisteredGroupsBySession($session, $groupType, '', 'name', 'ASC', false);
+        $serializedGroups = $this->serializer->serialize(
+            $groups,
+            'json',
+            SerializationContext::create()->setGroups(['api_group_min'])
+        );
+
+        return new JsonResponse($serializedGroups, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/session/{session}/user/{user}/type/{userType}/register",
+     *     name="api_post_session_user_registration",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     *
+     * Registers an user to a session
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function postSessionUserRegisterAction(CourseSession $session, User $user, $userType = 0)
+    {
+        $results = $this->cursusManager->registerUsersToSession($session, [$user], $userType);
+
+        return new JsonResponse($results, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/session/{session}/group/{group}/type/{groupType}/register",
+     *     name="api_post_session_group_registration",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     *
+     * Registers a group to a session
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function postSessionGroupRegisterAction(CourseSession $session, Group $group, $groupType = 0)
+    {
+        $results = $this->cursusManager->registerGroupToSession($session, $group, $groupType);
+
+        return new JsonResponse($results, 200);
     }
 }

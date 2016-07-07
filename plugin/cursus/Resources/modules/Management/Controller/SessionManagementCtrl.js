@@ -63,6 +63,10 @@ export default class SessionManagementCtrl {
     this._removeGroupCallback = this._removeGroupCallback.bind(this)
     this._removePendingLearnerCallback = this._removePendingLearnerCallback.bind(this)
     this._initializeGroupsCallback = this._initializeGroupsCallback.bind(this)
+    this._acceptQueueCallback = this._acceptQueueCallback.bind(this)
+    this._addLearnersCallback = this._addLearnersCallback.bind(this)
+    this._addLearnersGroupsCallback = this._addLearnersGroupsCallback.bind(this)
+    this._addTutorsCallback = this._addTutorsCallback.bind(this)
     this.initialize()
   }
 
@@ -116,6 +120,28 @@ export default class SessionManagementCtrl {
       {count: 20},
       {counts: [10, 20, 50, 100], dataset: this.groups}
     )
+  }
+
+  _acceptQueueCallback (data) {
+    this.SessionService._acceptQueueCallback(data)
+    this.tableParams['learners'].reload()
+    this.tableParams['pendingLearners'].reload()
+  }
+
+  _addLearnersCallback (data) {
+    this.SessionService._addLearnersCallback(data)
+    this.tableParams['learners'].reload()
+  }
+
+  _addLearnersGroupsCallback (groupData, usersData) {
+    this.SessionService._addLearnersGroupsCallback(groupData, usersData)
+    this.tableParams['groups'].reload()
+    this.tableParams['learners'].reload()
+  }
+
+  _addTutorsCallback (data) {
+    this.SessionService._addTutorsCallback(data)
+    this.tableParams['tutors'].reload()
   }
 
   initialize() {
@@ -174,10 +200,28 @@ export default class SessionManagementCtrl {
   }
 
   acceptQueue (queueId) {
-    this.SessionService.acceptQueue(queueId)
+    this.SessionService.acceptQueue(queueId, this._acceptQueueCallback)
   }
 
   declineQueue (queueId) {
     this.SessionService.declineQueue(queueId, this._removePendingLearnerCallback)
+  }
+
+  registerLearners ($event) {
+    $event.preventDefault()
+    $event.stopPropagation()
+    this.SessionService.registerLearners(this.sessionId, this._addLearnersCallback)
+  }
+
+  registerLearnersGroups ($event) {
+    $event.preventDefault()
+    $event.stopPropagation()
+    this.SessionService.registerLearnersGroups(this.sessionId, this._addLearnersGroupsCallback)
+  }
+
+  registerTutors ($event) {
+    $event.preventDefault()
+    $event.stopPropagation()
+    this.SessionService.registerTutors(this.sessionId, this._addTutorsCallback)
   }
 }
