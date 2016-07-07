@@ -1051,10 +1051,6 @@ class ParametersController extends Controller
      */
     public function sendDatasConfirmAction()
     {
-        $ds = DIRECTORY_SEPARATOR;
-        $platformOptionsFile = $this->container->getParameter('kernel.root_dir').
-            $ds.'config'.$ds.'platform_options.yml';
-
         if (is_null($this->configHandler->getParameter('token'))) {
             $token = $this->generateToken(20);
             $this->configHandler->setParameter('token', $token);

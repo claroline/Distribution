@@ -300,8 +300,6 @@ class GeneralType extends AbstractType
             );
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            /** @var \Claroline\CoreBundle\Library\Configuration\PlatformConfiguration $generalParameters */
-            $generalParameters = $event->getData();
             $form = $event->getForm();
 
             $form
