@@ -11,11 +11,11 @@
 
 namespace Claroline\CoreBundle\Form\Extension;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormEvent;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Form\FormEvents;
 
 class HoneypotExtension extends AbstractTypeExtension
 {

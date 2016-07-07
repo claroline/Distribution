@@ -27,8 +27,8 @@ export default class CreateNoteCtrl {
             choice_name: 'name',
             validators: [new NotBlank()]
         }
+
     ]
-    
     this.fieldValues = []
     this.newCards = []
     this.errorMessage = null
