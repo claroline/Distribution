@@ -1652,7 +1652,6 @@ class ResourceManager
     public function checkEnoughStorageSpaceLeft(Workspace $workspace, \SplFileInfo $file)
     {
         $workspaceManager = $this->container->get('claroline.manager.workspace_manager');
-        $workspaceDir = $workspaceManager->getStorageDirectory($workspace);
         $fileSize = filesize($file);
         $allowedMaxSize = $this->ut->getRealFileSize($workspace->getMaxStorageSize());
         $currentStorage = $this->ut->getRealFileSize($workspaceManager->getUsedStorage($workspace));
@@ -1667,7 +1666,6 @@ class ResourceManager
      */
     public function checkResourceLimitExceeded(Workspace $workspace)
     {
-        $ch = $this->container->get('claroline.config.platform_config_handler');
         $workspaceManager = $this->container->get('claroline.manager.workspace_manager');
         $maxFileStorage = $workspace->getMaxUploadResources();
 
@@ -1682,7 +1680,6 @@ class ResourceManager
      */
     public function addStorageExceededFormError(Form $form, $fileSize, Workspace $workspace)
     {
-        $filesize = $this->ut->getRealFileSize($fileSize);
         //we want how many bites and well...
         $maxSize = $this->ut->getRealFileSize($workspace->getMaxStorageSize());
         $usedSize = $this->ut->getRealFileSize(

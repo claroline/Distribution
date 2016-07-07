@@ -63,7 +63,6 @@ class CsvHomeTextWidgetValidator extends ConstraintValidator
             $widget = explode(';', $line);
             $code = $widget[0];
             $tabName = $widget[1];
-            $title = $widget[2];
             $file = $widget[3];
 
             $workspace = $this->om->getRepository('ClarolineCoreBundle:Workspace\Workspace')->findOneByCode($code);

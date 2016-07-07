@@ -552,8 +552,7 @@ class UserManager
                 '',
                 false,
                 false,
-                false,
-                $errors
+                false
             );
         }
 
@@ -1579,7 +1578,7 @@ class UserManager
             }
         }
 
-        $event = $this->strictEventDispatcher->dispatch(
+        $this->strictEventDispatcher->dispatch(
             'user_edit_search_event',
             'UserEditSearch',
             [$qb]
