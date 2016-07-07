@@ -15,7 +15,7 @@ class InteractionGraphicHandler extends QuestionHandler
             $this->form->handleRequest($this->request);
             $data = $this->form->getData();
             //Uses the default category if no category selected
-            $this->checkCategory($data);
+            $this->checkCategory();
             //If title null, uses the first 50 characters of "invite" (enuncicate)
             $this->checkTitle();
             if ($this->validateNbClone() === false) {
@@ -44,6 +44,12 @@ class InteractionGraphicHandler extends QuestionHandler
         $interGraph->getQuestion()->setUser($this->user); // add the user to the question
 
         if ($this->request != null) {
+            $width = $this->request->get('imagewidth'); // Get the width of the image
+            $height = $this->request->get('imageheight'); // Get the height of the image
+
+            $interGraph->getPicture()->setHeight($height);
+            $interGraph->getPicture()->setWidth($width);
+
             $coords = $this->request->get('coordsZone'); // Get the answer zones
 
             $coord = preg_split('[##]', $coords); // Split all informations of one answer zones into a cell
@@ -85,7 +91,7 @@ class InteractionGraphicHandler extends QuestionHandler
      */
     public function processUpdate($originalInterGraphic)
     {
-        $originalHints = array();
+        $originalHints = [];
 
         foreach ($originalInterGraphic->getQuestion()->getHints() as $hint) {
             $originalHints[] = $hint;
@@ -93,6 +99,9 @@ class InteractionGraphicHandler extends QuestionHandler
 
         if ($this->request->getMethod() == 'POST') {
             $this->form->handleRequest($this->request);
+
+            // Uses the default category if no category selected
+            $this->checkCategory();
 
             if ($this->form->isValid()) {
                 $this->onSuccessUpdate($this->form->getData(), $originalHints);
@@ -116,12 +125,10 @@ class InteractionGraphicHandler extends QuestionHandler
         $width = $this->request->get('imagewidth'); // Get the width of the image
         $height = $this->request->get('imageheight'); // Get the height of the image
 
-        $coordsToDel = $this->em->getRepository('UJMExoBundle:Coords')->findBy(array('interactionGraphic' => $interGraphic->getId()));
+        $interGraphic->getPicture()->setHeight($height);
+        $interGraphic->getPicture()->setWidth($width);
 
-        $picture = $this->em->getRepository('UJMExoBundle:Picture')->findOneBy(array('id' => $interGraphic->getPicture()));
-
-        $picture->setHeight($height);
-        $picture->setWidth($width);
+        $coordsToDel = $interGraphic->getCoords();
 
         $coords = $this->request->get('coordsZone'); // Get the answer zones
 
@@ -142,7 +149,6 @@ class InteractionGraphicHandler extends QuestionHandler
         }
 
         $this->em->persist($interGraphic);
-        $this->em->persist($picture);
         $this->em->flush();
     }
 
@@ -158,12 +164,12 @@ class InteractionGraphicHandler extends QuestionHandler
      */
     private function persitNewCoords($coord, $interGraph, $lengthCoord)
     {
-        $result = array();
+        $result = [];
         for ($i = 0; $i < $lengthCoord; ++$i) {
             $inter = preg_split('[§§]', $coord[$i]); // Divide the src of the answer zone and the other informations
 
-            $before = array('|-|', '~~', '^^');
-            $after = array('@@', '@@', '@@');
+            $before = ['|-|', '~~', '^^'];
+            $after = ['@@', '@@', '@@'];
 
             $data = str_replace($before, $after, $inter[1]); // replace separation punctuation of the informations ...
 

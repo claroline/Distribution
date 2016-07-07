@@ -12,14 +12,14 @@
 namespace UJM\ExoBundle\Transfer;
 
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Persistence\ObjectManager;
-use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
-use Symfony\Component\Config\Definition\ConfigurationInterface;
-use Symfony\Component\Config\Definition\Builder\TreeBuilder;
-use Claroline\CoreBundle\Library\Transfert\Importer;
-use Symfony\Component\Config\Definition\Processor;
-use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Library\Transfert\Importer;
+use Claroline\CoreBundle\Persistence\ObjectManager;
+use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
+use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\Config\Definition\Processor;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Step;
 use UJM\ExoBundle\Manager\SubscriptionManager;
@@ -181,8 +181,8 @@ class ExoImporter extends Importer implements ConfigurationInterface
             'version' => $version,
             'description' => $object->getDescription(),
             'shuffle' => $object->getShuffle(),
-            'nbQuestion' => $object->getNbQuestion(),
-            'keepSameQuestion' => $object->getKeepSameQuestion(),
+            'nbQuestion' => $object->getPickSteps(),
+            'keepSameQuestion' => $object->getKeepSteps(),
             'duration' => $object->getDuration(),
             'doPrint' => $object->getDoprint(),
             'maxAttempts' => $object->getMaxAttempts(),
@@ -213,8 +213,8 @@ class ExoImporter extends Importer implements ConfigurationInterface
         $newExercise = new Exercise();
         $newExercise->setDescription($exercise['description']);
         $newExercise->setShuffle($exercise['shuffle']);
-        $newExercise->setNbQuestion($exercise['nbQuestion']);
-        $newExercise->setKeepSameQuestion($exercise['keepSameQuestion']);
+        $newExercise->setPickSteps($exercise['nbQuestion']);
+        $newExercise->setKeepSteps($exercise['keepSameQuestion']);
         $newExercise->setDuration($exercise['duration']);
         $newExercise->setDoprint($exercise['doPrint']);
         $newExercise->setMaxAttempts($exercise['maxAttempts']);
@@ -274,7 +274,7 @@ class ExoImporter extends Importer implements ConfigurationInterface
             $this->qtiRepository->razValues();
             $newStep = $this->createStep($step, $exercise);
             $questions = opendir($exoPath.'/'.$step['order']);
-            $questionFiles = array();
+            $questionFiles = [];
             while (($question = readdir($questions)) !== false) {
                 if ($question != '.' && $question != '..') {
                     $questionFiles[] = $exoPath.'/'.$step['order'].'/'.$question;
@@ -286,7 +286,7 @@ class ExoImporter extends Importer implements ConfigurationInterface
                 $files = opendir($question);
                 while (($file = readdir($files)) !== false) {
                     if ($file != '.' && $file != '..') {
-                        copy($question.'/'.$file, $this->qtiRepository->getUserDir().$file);
+                        copy($question.'/'.$file, $this->qtiRepository->getUserDir().'ws/'.$file);
                     }
                 }
                 $this->qtiRepository->scanFilesToImport($newStep);
@@ -309,7 +309,7 @@ class ExoImporter extends Importer implements ConfigurationInterface
         /** @var \UJM\ExoBundle\Repository\QuestionRepository $questionRepo */
         $questionRepo = $this->om->getRepository('UJMExoBundle:Question');
 
-        $steps = array();
+        $steps = [];
         foreach ($object->getSteps() as $step) {
             $s = [
                 'text' => $step->getText(),

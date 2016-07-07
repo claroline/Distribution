@@ -18,12 +18,19 @@ class OpenImport extends QtiImport
      *
      * @param qtiRepository $qtiRepos
      * @param DOMElement    $assessmentItem assessmentItem of the question to imported
+     * @param string        $path           parent directory of the files
      */
-    public function import(qtiRepository $qtiRepos, $assessmentItem)
+    public function import(qtiRepository $qtiRepos, $assessmentItem, $path)
     {
         $this->qtiRepos = $qtiRepos;
+        $this->path = $path;
         $this->getQTICategory();
         $this->initAssessmentItem($assessmentItem);
+
+        if ($this->qtiValidate() === false) {
+            return false;
+        }
+
         $this->createQuestion(InteractionOpen::TYPE);
         $this->createInteractionOpen();
     }
@@ -69,5 +76,61 @@ class OpenImport extends QtiImport
     protected function getPrompt()
     {
         return $this->getPromptChild();
+    }
+
+    /**
+     * Implements the abstract method.
+     */
+    protected function qtiValidate()
+    {
+        $validated = false;
+        switch ($this->getCodeTypeOpen()) {
+            case 'numerical':
+                $validated = $this->numericalQtiValidate();
+                break;
+            case 'long':
+                $validated = $this->longQtiValidate();
+                break;
+            case 'short':
+                $validated = $this->shortQtiValidate();
+                break;
+            case 'oneWord':
+                $validated = $this->oneWordValidate();
+                break;
+        }
+
+        return $validated;
+    }
+
+    private function numericalQtiValidate()
+    {
+        return true;
+    }
+
+    private function longQtiValidate()
+    {
+        if ($this->assessmentItem->getElementsByTagName('responseDeclaration')->item(0) == null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function shortQtiValidate()
+    {
+        if ($this->assessmentItem->getElementsByTagName('responseDeclaration')->item(0) == null) {
+            return false;
+        }
+        $rd = $this->assessmentItem->getElementsByTagName('responseDeclaration')->item(0);
+        if ($rd->getElementsByTagName('mapping')->item(0) == null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function oneWordValidate()
+    {
+        return $this->shortQtiValidate();
     }
 }

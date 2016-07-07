@@ -6,9 +6,9 @@
 
 namespace UJM\ExoBundle\Services\classes\QTI;
 
-use UJM\ExoBundle\Entity\Proposal;
-use UJM\ExoBundle\Entity\Label;
 use UJM\ExoBundle\Entity\InteractionMatching;
+use UJM\ExoBundle\Entity\Label;
+use UJM\ExoBundle\Entity\Proposal;
 
 class MatchingImport extends QtiImport
 {
@@ -21,12 +21,19 @@ class MatchingImport extends QtiImport
      *
      * @param qtiRepository $qtiRepos
      * @param DOMElement    $assessmentItem assessmentItem of the question to imported
+     * @param string        $path           parent directory of the files
      */
-    public function import(qtiRepository $qtiRepos, $assessmentItem)
+    public function import(qtiRepository $qtiRepos, $assessmentItem, $path)
     {
         $this->qtiRepos = $qtiRepos;
+        $this->path = $path;
         $this->getQTICategory();
         $this->initAssessmentItem($assessmentItem);
+
+        if ($this->qtiValidate() === false) {
+            return false;
+        }
+
         $this->createQuestion(InteractionMatching::TYPE);
         $this->createInteractionMatching();
 
@@ -248,14 +255,30 @@ class MatchingImport extends QtiImport
             //type : to drag
             $type = $this->om
                          ->getRepository('UJMExoBundle:TypeMatching')
-                         ->findOneBy(array('code' => 2));
+                         ->findOneBy(['code' => 2]);
             $this->interactionMatching->setTypeMatching($type);
         } else {
             //type : to bind
             $type = $this->om
                          ->getRepository('UJMExoBundle:TypeMatching')
-                         ->findOneBy(array('code' => 1));
+                         ->findOneBy(['code' => 1]);
             $this->interactionMatching->setTypeMatching($type);
         }
+    }
+
+    /**
+     * Implements the abstract method.
+     */
+    protected function qtiValidate()
+    {
+        if ($this->assessmentItem->getElementsByTagName('itemBody')->item(0) == null) {
+            return false;
+        }
+        $ib = $this->assessmentItem->getElementsByTagName('itemBody')->item(0);
+        if ($ib->getElementsByTagName('matchInteraction')->item(0) == null) {
+            return false;
+        }
+
+        return true;
     }
 }

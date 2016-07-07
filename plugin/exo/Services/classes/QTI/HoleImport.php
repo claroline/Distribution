@@ -15,21 +15,28 @@ class HoleImport extends QtiImport
     protected $interactionHole;
     protected $qtiTextWithHoles;
     protected $textHtml;
-    protected $tabWrOpt = array();
+    protected $tabWrOpt = [];
 
     /**
      * Implements the abstract method.
      *
      * @param qtiRepository $qtiRepos
      * @param DOMElement    $assessmentItem assessmentItem of the question to imported
+     * @param string        $path           parent directory of the files
      *
      * @return UJM\ExoBundle\Entity\InteractionHole
      */
-    public function import(qtiRepository $qtiRepos, $assessmentItem)
+    public function import(qtiRepository $qtiRepos, $assessmentItem, $path)
     {
         $this->qtiRepos = $qtiRepos;
+        $this->path = $path;
         $this->getQTICategory();
         $this->initAssessmentItem($assessmentItem);
+
+        if ($this->qtiValidate() === false) {
+            return false;
+        }
+
         $this->createQuestion(InteractionHole::TYPE);
         $this->createInteractionHole();
 
@@ -330,5 +337,24 @@ class HoleImport extends QtiImport
         }
 
         return $text;
+    }
+
+    /**
+     * Implements the abstract method.
+     */
+    public function qtiValidate()
+    {
+        if ($this->assessmentItem->getElementsByTagName('responseDeclaration')->item(0) == null) {
+            return false;
+        }
+
+        $rps = $this->assessmentItem->getElementsByTagName('responseDeclaration');
+        foreach ($rps as $rp) {
+            if ($rp->getElementsByTagName('mapping')->item(0) == null) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

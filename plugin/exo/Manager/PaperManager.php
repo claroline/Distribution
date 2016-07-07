@@ -6,6 +6,7 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Hint;
 use UJM\ExoBundle\Entity\LinkHintPaper;
@@ -18,25 +19,47 @@ use UJM\ExoBundle\Library\Mode\CorrectionMode;
 use UJM\ExoBundle\Library\Mode\MarkMode;
 use UJM\ExoBundle\Services\classes\PaperService;
 use UJM\ExoBundle\Transfer\Json\QuestionHandlerCollector;
-use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @DI\Service("ujm.exo.paper_manager")
  */
 class PaperManager
 {
+    /**
+     * @var ObjectManager
+     */
     private $om;
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    /**
+     * @var QuestionHandlerCollector
+     */
     private $handlerCollector;
-    private $exerciseManager;
+
+    /**
+     * @var QuestionManager
+     */
     private $questionManager;
+
+    /**
+     * @var TranslatorInterface
+     */
     private $translator;
+
+    /**
+     * @var PaperService
+     */
+    private $paperService;
 
     /**
      * @DI\InjectParams({
      *     "om"                 = @DI\Inject("claroline.persistence.object_manager"),
      *     "eventDispatcher"    = @DI\Inject("event_dispatcher"),
      *     "collector"          = @DI\Inject("ujm.exo.question_handler_collector"),
-     *     "exerciseManager"    = @DI\Inject("ujm.exo.exercise_manager"),
      *     "questionManager"    = @DI\Inject("ujm.exo.question_manager"),
      *     "translator"         = @DI\Inject("translator"),
      *     "paperService"       = @DI\Inject("ujm.exo_paper")
@@ -45,7 +68,6 @@ class PaperManager
      * @param ObjectManager            $om
      * @param EventDispatcherInterface $eventDispatcher
      * @param QuestionHandlerCollector $collector
-     * @param ExerciseManager          $exerciseManager
      * @param QuestionManager          $questionManager
      * @param TranslatorInterface      $translator
      * @param PaperService             $paperService
@@ -54,7 +76,6 @@ class PaperManager
         ObjectManager $om,
         EventDispatcherInterface $eventDispatcher,
         QuestionHandlerCollector $collector,
-        ExerciseManager $exerciseManager,
         QuestionManager $questionManager,
         TranslatorInterface $translator,
         PaperService $paperService
@@ -62,7 +83,6 @@ class PaperManager
         $this->om = $om;
         $this->eventDispatcher = $eventDispatcher;
         $this->handlerCollector = $collector;
-        $this->exerciseManager = $exerciseManager;
         $this->questionManager = $questionManager;
         $this->translator = $translator;
         $this->paperService = $paperService;
@@ -77,19 +97,23 @@ class PaperManager
      *
      * @return array
      */
-    public function openPaper(Exercise $exercise, User $user)
+    public function openPaper(Exercise $exercise, User $user = null)
     {
-        $repo = $this->om->getRepository('UJMExoBundle:Paper');
-        $papers = $repo->findUnfinishedPapers($user, $exercise);
+        $papers = [];
+        if ($user) {
+            // If it's not an anonymous, load the previous unfinished papers
+            $papers = $this->om->getRepository('UJMExoBundle:Paper')->findUnfinishedPapers($user, $exercise);
+        }
 
         if (count($papers) === 0) {
-            $paper = $this->createPaper($user, $exercise);
+            // Create a new paper for anonymous or if no unfinished
+            $paper = $this->createPaper($exercise, $user);
         } else {
             if (!$exercise->getDispButtonInterrupt()) {
                 // User is not allowed to continue is previous paper => open a new one and close the previous
                 $this->closePaper($papers[0]);
 
-                $paper = $this->createPaper($user, $exercise);
+                $paper = $this->createPaper($exercise, $user);
             } else {
                 $paper = $papers[0];
             }
@@ -101,26 +125,40 @@ class PaperManager
     /**
      * Creates a new exercise paper for a given user.
      *
-     * @param User     $user
      * @param Exercise $exercise
+     * @param User     $user
      *
      * @return Paper
      */
-    public function createPaper(User $user, Exercise $exercise)
+    public function createPaper(Exercise $exercise, User $user = null)
     {
-        $lastPaper = $this->om->getRepository('UJMExoBundle:Paper')->findOneBy(
-            ['user' => $user, 'exercise' => $exercise],
-            ['start' => 'DESC']
-        );
+        // Get the number of the new Paper
+        $paperNum = 1;
+        if ($user) {
+            $lastPaper = $this->om->getRepository('UJMExoBundle:Paper')->findOneBy(
+                ['user' => $user, 'exercise' => $exercise],
+                ['start' => 'DESC']
+            );
 
-        $paperNum = $lastPaper ? $lastPaper->getNumPaper() + 1 : 1;
-        $questions = $this->exerciseManager->pickQuestions($exercise);
-        $order = '';
-
-        foreach ($questions as $question) {
-            $order .= $question->getId().';';
+            if ($lastPaper) {
+                $paperNum = $lastPaper->getNumPaper() + 1;
+            }
         }
 
+        // Generate the list of Steps and Questions for the Paper
+        $order = '';
+        if (!empty($lastPaper) && $exercise->getKeepSteps()) {
+            // Get steps order from the last user Paper
+            $order = $lastPaper->getOrdreQuestion();
+        } else {
+            // Generate paper step order
+            $questions = $this->pickQuestions($exercise);
+            foreach ($questions as $question) {
+                $order .= $question->getId().';';
+            }
+        }
+
+        // Create the new Paper entity
         $paper = new Paper();
         $paper->setExercise($exercise);
         $paper->setUser($user);
@@ -175,6 +213,7 @@ class PaperManager
      */
     public function recordScore(Question $question, Paper $paper, $score)
     {
+        /** @var Response $response */
         $response = $this->om->getRepository('UJMExoBundle:Response')
             ->findOneBy(['paper' => $paper, 'question' => $question]);
 
@@ -376,12 +415,10 @@ class PaperManager
      */
     private function showUserPaper(Paper $paper)
     {
-        $user = $paper->getUser();
-
-        $showUser = $user->getFirstName().' '.$user->getLastName();
-
-        if ($paper->getAnonymous()) {
-            $showUser = $this->translator->trans('anonymous', array(), 'ujm_exo');
+        if (!$paper->getUser() || $paper->getAnonymous()) {
+            $showUser = $this->translator->trans('anonymous', [], 'ujm_exo');
+        } else {
+            $showUser = $paper->getUser()->getFirstName().' '.$paper->getUser()->getLastName();
         }
 
         return $showUser;
@@ -556,25 +593,20 @@ class PaperManager
                 // Question linked to a Step
                 $step = $stepQuestion->getStep();
                 if (!isset($stepsQuestions[$step->getId()])) {
-                    $stepsQuestions[$step->getId()] = [];
+                    $stepsQuestions[$step->getId()] = [
+                        'id' => $step->getId(),
+                        'items' => [],
+                    ];
                 }
 
-                $stepsQuestions[$step->getId()][] = $question->getId();
+                $stepsQuestions[$step->getId()]['items'][] = $question->getId();
             } else {
                 $deleted[] = $question->getId();
             }
         }
 
-        $steps = [];
-        foreach ($exercise->getSteps() as $step) {
-            if (!empty($stepsQuestions[$step->getId()])) {
-                // Step has questions
-                $steps[] = [
-                    'id' => $step->getId(),
-                    'items' => $stepsQuestions[$step->getId()],
-                ];
-            }
-        }
+        // Remove step ids indexes to avoid receiving an array with undefined values in JS
+        $steps = array_values($stepsQuestions);
 
         // Append deleted questions at the end of the Exercise
         if (!empty($deleted)) {
@@ -644,5 +676,76 @@ class PaperManager
         }
 
         return $available;
+    }
+
+    /**
+     * Returns a question list according to the *shuffle* and
+     * *nbQuestions* parameters of an exercise, i.e. filtered
+     * and/or randomized if needed.
+     *
+     * @param Exercise $exercise
+     *
+     * @return array
+     */
+    public function pickQuestions(Exercise $exercise)
+    {
+        $steps = $this->pickSteps($exercise);
+        $questionRepo = $this->om->getRepository('UJMExoBundle:Question');
+        $finalQuestions = [];
+
+        foreach ($steps as $step) {
+            $questions = $questionRepo->findByStep($step);
+            $finalQuestions = array_merge($finalQuestions, $questions);
+        }
+
+        return $finalQuestions;
+    }
+
+    /**
+     * Returns a step list according to the *shuffle* and
+     * nbStep* parameters of an exercise, i.e. filtered
+     * and/or randomized if needed.
+     *
+     * @param Exercise $exercise
+     *
+     * @return array
+     */
+    public function pickSteps(Exercise $exercise)
+    {
+        $steps = $exercise->getSteps()->toArray();
+
+        if ($exercise->getShuffle()) {
+            shuffle($steps);
+        }
+
+        if (($stepToPick = $exercise->getPickSteps()) > 0) {
+            $steps = $this->pickItem($stepToPick, $steps);
+        }
+
+        return $steps;
+    }
+
+    /**
+     * Returns item (step or question) list according to the *shuffle* and
+     * *nbItem* parameters of an exercise or a step, i.e. filtered
+     * and/or randomized if needed.
+     *
+     * @param int   $itemToPick
+     * @param array $listItem   array of steps or array of question
+     *
+     * @return array
+     */
+    private function pickItem($itemToPick, array $listItem)
+    {
+        $newListItem = [];
+        while ($itemToPick > 0) {
+            $index = rand(0, count($listItem) - 1);
+            $newListItem[] = $listItem[$index];
+            unset($listItem[$index]);
+            $listItem = array_values($listItem); // "re-index" the array
+            --$itemToPick;
+        }
+
+        return $newListItem;
     }
 }
