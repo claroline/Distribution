@@ -413,7 +413,7 @@ class ParametersController extends Controller
         $checker = new MailingChecker($settings);
         $error = $checker->testTransport();
 
-        if ($error != 1) {
+        if ($error !== 1) {
             $session = $this->request->getSession();
             $session->getFlashBag()->add('error', $this->translator->trans($error, [], 'platform'));
 

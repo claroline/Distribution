@@ -14,6 +14,7 @@ namespace Claroline\CoreBundle\Form\Administration;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfiguration;
 use Claroline\CoreBundle\Validator\Constraints\FileSize;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -119,7 +120,7 @@ class GeneralType extends AbstractType
                     'expanded' => false,
                     'multiple' => false,
                     'property' => 'translationKey',
-                    'query_builder' => function (\Doctrine\ORM\EntityRepository $er) {
+                    'query_builder' => function (EntityRepository $er) {
                         return $er->createQueryBuilder('r')
                                 ->where('r.type = '.Role::PLATFORM_ROLE)
                                 ->andWhere("r.name != 'ROLE_ANONYMOUS'");

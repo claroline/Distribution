@@ -155,7 +155,7 @@ class PlatformConfigurationHandler
 
     public function isRedirectOption($option)
     {
-        return $this->parameters['redirect_after_login_option'] == $option;
+        return $this->parameters['redirect_after_login_option'] === $option;
     }
 
     public function getPlatformConfig()
