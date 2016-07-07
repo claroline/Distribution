@@ -1303,3 +1303,4 @@ delete_users_confirm: Do you really want to remove the users [ %user_list% ] ?
 group_created: Group %group% created.
 group_removed: Group %group% removed.
 mandatory: Mandatory
+leave_empty: Let this field empty to prove that you aren't a bot.
