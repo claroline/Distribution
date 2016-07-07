@@ -11,8 +11,13 @@
 import angular from 'angular/index'
 import {} from 'angular-bootstrap'
 import {} from 'angular-route'
+<<<<<<< HEAD
 import ClarolineAPI from '../../../../../main/core/Resources/modules/services/module'
 import FormBuilder from '#/main/core/Resources/modules/form/module'
+=======
+import ClarolineAPI from '#/main/core/services/module'
+import FormBuilder from '#/main/core/form/module'
+>>>>>>> 79fd28968a0bb1a12e648d667e65cc02feef5192
 import mainTemplate from './main.partial.html'
 import studyTemplate from './study.partial.html'
 import createNoteTemplate from './createNote.partial.html'
