@@ -75,7 +75,7 @@ ExerciseService.prototype.save = function save(metadata) {
 
   this.$http
         .put(
-            this.UrlService('ujm_exercise_update_meta', { id: this.exercise.id }),
+            this.UrlService('exercise_update_meta', { id: this.exercise.id }),
             metadata
         )
         .success(function onSuccess(response) {
@@ -303,7 +303,7 @@ ExerciseService.prototype.publish = function publish() {
 
   this.$http
         .post(
-            this.UrlService('ujm_exercise_publish', { id: this.exercise.id })
+            this.UrlService('exercise_publish', { id: this.exercise.id })
         )
         // Success callback
         .success(function (response) {
@@ -337,7 +337,7 @@ ExerciseService.prototype.unpublish = function unpublish() {
 
   this.$http
         .post(
-            this.UrlService('ujm_exercise_unpublish', { id: this.exercise.id })
+            this.UrlService('exercise_unpublish', { id: this.exercise.id })
         )
         // Success callback
         .success(function (response) {
