@@ -359,7 +359,7 @@ class LogManager
 
         //List item delegation
         $views = $this->renderLogs($pager->getCurrentPageResults());
-        //$views = array();
+
         return [
             'pager' => $pager,
             'listItemViews' => $views,
@@ -492,7 +492,6 @@ class LogManager
         $filterForm = $this->container->get('form.factory')->create($logFilterFormType, $data);
 
         $data['range'] = $dateRangeToTextTransformer->transform($range);
-        //$filter = urlencode(json_encode($data));
 
         //Find if action refers to an resource type
         $actionData = $this->getResourceTypeFromAction($data['action']);
