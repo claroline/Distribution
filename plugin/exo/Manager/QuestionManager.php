@@ -135,11 +135,15 @@ class QuestionManager
                     if ($rm->getResourceFromNode($object->getResourceNode())->getRevisions()[0]) {
                         $resourceObjectData->data = $rm->getResourceFromNode($object->getResourceNode())->getRevisions()[0]->getContent();
                     }
+
+                    break;
                 default:
                     $resourceObjectData->url = $this->router->generate(
                         'claro_resource_open',
                         ['resourceType' => $object->getResourceNode()->getResourceType()->getName(), 'node' => $object->getResourceNode()->getId()]
                     );
+
+                    break;
             }
 
             return $resourceObjectData;
