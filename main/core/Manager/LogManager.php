@@ -121,7 +121,7 @@ class LogManager
 
             for ($i = 0, $countConfigs = count($configs); $i < $countConfigs && $config === null; ++$i) {
                 $current = $configs[$i];
-                if ($current->getWidgetInstance()->getWorkspace()->getId() == $workspace->getId()) {
+                if ($current->getWidgetInstance()->getWorkspace()->getId() === $workspace->getId()) {
                     $config = $current;
                 }
             }
@@ -258,7 +258,7 @@ class LogManager
 
     public function getWorkspaceList($workspace, $page, $maxResult = -1)
     {
-        if ($workspace == null) {
+        if ($workspace === null) {
             $workspaceIds = $this->getAdminOrCollaboratorWorkspaceIds();
         } else {
             $workspaceIds = [$workspace->getId()];
@@ -375,9 +375,9 @@ class LogManager
         $workspace = null,
         $resource = null
     ) {
-        $workspaceIds = ($workspace == null) ? null : [$workspace->getId()];
-        $resourceNodeIds = ($resource == null) ? null : [$resource->getResourceNode()->getId()];
-        if ($workspaceIds == null && $resourceNodeIds == null) {
+        $workspaceIds = ($workspace === null) ? null : [$workspace->getId()];
+        $resourceNodeIds = ($resource === null) ? null : [$resource->getResourceNode()->getId()];
+        if ($workspaceIds === null && $resourceNodeIds === null) {
             $workspaceIds = $this->getAdminOrCollaboratorWorkspaceIds();
         }
         if ($workspaceIds !== null) {
@@ -426,7 +426,7 @@ class LogManager
 
     public function countByUserWorkspaceList($workspace, $page)
     {
-        if ($workspace == null) {
+        if ($workspace === null) {
             $workspaceIds = $this->getAdminOrCollaboratorWorkspaceIds();
         } else {
             $workspaceIds = [$workspace->getId()];
@@ -547,7 +547,7 @@ class LogManager
             $currentUserId = null;
             $userActionsArray = [];
             foreach ($userActionsByDay as $userAction) {
-                if ($userAction === null || ($currentUserId !== null && $currentUserId != $userAction['id'])) {
+                if ($userAction === null || ($currentUserId !== null && $currentUserId !== $userAction['id'])) {
                     $resultUserList[$currentUserId]['stats'] = $this
                         ->logRepository
                         ->extractChartData($userActionsArray, $range);
@@ -678,11 +678,11 @@ class LogManager
             }
         }
 
-        if ($range == null) {
+        if ($range === null) {
             $range = $this->getDefaultRange();
         }
 
-        if ($action == null && $actionsRestriction == 'workspace' && $workspaceIds !== null) {
+        if ($action === null && $actionsRestriction === 'workspace' && $workspaceIds !== null) {
             $action = LogWorkspaceEnterEvent::ACTION;
         }
 
@@ -776,7 +776,7 @@ class LogManager
 
     protected function formatTopUserDataArray($topUsers)
     {
-        if ($topUsers === null || count($topUsers) == 0) {
+        if ($topUsers === null || count($topUsers) === 0) {
             return [];
         }
 
