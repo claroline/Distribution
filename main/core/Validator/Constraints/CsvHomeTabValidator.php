@@ -53,7 +53,7 @@ class CsvHomeTabValidator extends ConstraintValidator
             $linesTab = explode(';', $line);
             $nbElements = count($linesTab);
 
-            if (trim($line) != '') {
+            if (trim($line) !== '') {
                 if ($nbElements < 2) {
                     $this->context->addViolation($constraint->message);
 

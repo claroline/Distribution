@@ -429,7 +429,6 @@ class WorkspaceModelManager
         Workspace $workspace,
         User $user
     ) {
-        //$this->log('Duplicating root directory...');
         $rootDirectory = new Directory();
         $rootDirectory->setName($workspace->getName());
         $directoryType = $this->resourceManager->getResourceTypeByName('directory');
@@ -731,7 +730,6 @@ class WorkspaceModelManager
         ResourceNode $copy,
         array $workspaceRoles
     ) {
-        //$this->log('Duplicating rights...');
         $rights = $resourceNode->getRights();
         $workspace = $resourceNode->getWorkspace();
 

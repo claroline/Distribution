@@ -49,7 +49,7 @@ class CsvHomeTextWidgetValidator extends ConstraintValidator
             $linesTab = explode(';', $line);
             $nbElements = count($linesTab);
 
-            if (trim($line) != '') {
+            if (trim($line) !== '') {
                 if ($nbElements < 4) {
                     $this->context->addViolation($constraint->message);
 

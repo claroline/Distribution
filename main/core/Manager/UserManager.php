@@ -1298,7 +1298,7 @@ class UserManager
                 $existingUser->setFirstName($firstName);
                 $existingUser->setLastName($lastName);
                 $existingUser->setUsername($username);
-                if ($pwd != '') {
+                if ($pwd !== '') {
                     $existingUser->setPlainPassword($pwd);
                 }
                 $existingUser->setMail($email);
@@ -1642,7 +1642,7 @@ class UserManager
                     $this->objectManager->persist($user);
                     $detach[] = $user;
 
-                    if ($i % 250 == 0) {
+                    if ($i % 250 === 0) {
                         $this->log("Flushing... [UOW = {$this->objectManager->getUnitOfWork()->size()}]");
                         $this->objectManager->forceFlush();
 

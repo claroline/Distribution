@@ -75,7 +75,7 @@ class CsvUserValidator extends ConstraintValidator
             $linesTab = explode(';', $line);
             $nbElements = count($linesTab);
 
-            if (trim($line) != '') {
+            if (trim($line) !== '') {
                 if ($nbElements < 5) {
                     $this->context->addViolation($constraint->message);
 
@@ -99,7 +99,7 @@ class CsvUserValidator extends ConstraintValidator
         }
 
         foreach ($lines as $i => $line) {
-            if (trim($line) != '') {
+            if (trim($line) !== '') {
                 $user = explode(';', $line);
                 $firstName = $user[0];
                 $lastName = $user[1];

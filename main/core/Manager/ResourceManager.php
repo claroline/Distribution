@@ -37,6 +37,8 @@ use Claroline\CoreBundle\Repository\ResourceRightsRepository;
 use Claroline\CoreBundle\Repository\ResourceShortcutRepository;
 use Claroline\CoreBundle\Repository\ResourceTypeRepository;
 use Claroline\CoreBundle\Repository\RoleRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -392,9 +394,6 @@ class ResourceManager
         if (count($rights) === 0 && $parent !== null) {
             $node = $this->rightsManager->copy($parent, $node);
         } else {
-            //            if (count($rights) === 0) {
-//                throw new RightsException('Rights must be specified if there is no parent');
-//            }
             $this->createRights($node, $rights);
         }
 
@@ -473,7 +472,7 @@ class ResourceManager
         $stringErrors = '';
 
         //null or '' shouldn't be valid
-        if ($resource->getName() == null) {
+        if ($resource->getName() === null) {
             $stringErrors .= 'The resource name is missing'.PHP_EOL;
         }
 
@@ -530,7 +529,6 @@ class ResourceManager
      */
     public function insertAtIndex(ResourceNode $node, $index)
     {
-        //throw new \Exception($index);
         $this->om->startFlushSuite();
 
         if ($index > $node->getIndex()) {
@@ -680,7 +678,7 @@ class ResourceManager
 
         foreach ($nodes as $node) {
             $shortcut = $this->getResourceFromNode($node);
-            if ($shortcut->getTarget() == $target) {
+            if ($shortcut->getTarget() === $target) {
                 return true;
             }
         }
@@ -817,7 +815,7 @@ class ResourceManager
 
             $copy->setResourceNode($newNode);
 
-            if ($node->getResourceType()->getName() == 'directory' &&
+            if ($node->getResourceType()->getName() === 'directory' &&
                 $withDirectoryContent) {
                 $i = 1;
 
@@ -854,7 +852,7 @@ class ResourceManager
         $resourceArray = [];
         $resourceArray['id'] = $node->getId();
         $resourceArray['name'] = $node->getName();
-        $resourceArray['parent_id'] = ($node->getParent() != null) ? $node->getParent()->getId() : null;
+        $resourceArray['parent_id'] = ($node->getParent() !== null) ? $node->getParent()->getId() : null;
         $resourceArray['creator_username'] = $node->getCreator()->getUsername();
         $resourceArray['creator_id'] = $node->getCreator()->getId();
         $resourceArray['type'] = $node->getResourceType()->getName();
@@ -1259,7 +1257,7 @@ class ResourceManager
     {
         $entity = $this->om->factory($class);
 
-        if ($entity instanceof \Claroline\CoreBundle\Entity\Resource\AbstractResource) {
+        if ($entity instanceof AbstractResource) {
             $entity->setName($name);
 
             return $entity;
@@ -1595,7 +1593,7 @@ class ResourceManager
         if ($resourceType) {
             $alwaysTrue = ['rename', 'edit-properties', 'edit-rights', 'open-tracking'];
             //first, directories can be downloaded even if there is no listener attached to it
-            if ($resourceType->getName() === 'directory' && $actionName == 'download') {
+            if ($resourceType->getName() === 'directory' && $actionName === 'download') {
                 return true;
             }
             if (in_array($actionName, $alwaysTrue)) {
@@ -1687,7 +1685,6 @@ class ResourceManager
         $filesize = $this->ut->getRealFileSize($fileSize);
         //we want how many bites and well...
         $maxSize = $this->ut->getRealFileSize($workspace->getMaxStorageSize());
-        //throw new \Exception($maxSize);
         $usedSize = $this->ut->getRealFileSize(
             $this->container->get('claroline.manager.workspace_manager')->getUsedStorage($workspace)
         );
@@ -1723,7 +1720,7 @@ class ResourceManager
             if (get_class($entity) === 'Claroline\CoreBundle\Entity\Resource\ResourceNode') {
                 if ($entity->getWorkspace()->getCode() === $workspace->getCode() &&
                     $entity->getName() === $name &&
-                    $entity->getParent() == $parent) {
+                    $entity->getParent() === $parent) {
                     return $entity;
                 }
             }
@@ -1771,7 +1768,7 @@ class ResourceManager
     public function getDefaultUploadDestinations()
     {
         $user = $this->container->get('security.token_storage')->getToken()->getUser();
-        if ($user == 'anon.') {
+        if ($user === 'anon.') {
             return [];
         }
 
@@ -1813,9 +1810,9 @@ class ResourceManager
     {
         try {
             $lastIndex = $this->resourceNodeRepo->findLastIndex($parent);
-        } catch (\Doctrine\ORM\NonUniqueResultException $e) {
+        } catch (NonUniqueResultException $e) {
             $lastIndex = 0;
-        } catch (\Doctrine\ORM\NoResultException $e) {
+        } catch (NoResultException $e) {
             $lastIndex = 0;
         }
 
