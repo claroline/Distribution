@@ -9,6 +9,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -22,6 +23,7 @@ use UJM\ExoBundle\Services\classes\PaperService;
  * Exercise Controller.
  *
  * @EXT\Route(
+ *     "/exercises",
  *     requirements={"id"="\d+"},
  *     options={"expose"=true},
  *     defaults={"_format": "json"}
@@ -79,7 +81,7 @@ class ExerciseController
      * Exports the full representation of an exercise (including solutions)
      * in a JSON format.
      *
-     * @EXT\Route("/exercises/{id}", name="exercise_get")
+     * @EXT\Route("/{id}", name="exercise_get")
      *
      * @param Exercise $exercise
      *
@@ -96,7 +98,7 @@ class ExerciseController
      * Exports the minimal representation of an exercise (id + meta)
      * in a JSON format.
      *
-     * @EXT\Route("/exercises/{id}/minimal", name="exercise_get_minimal")
+     * @EXT\Route("/{id}/minimal", name="exercise_get_minimal")
      *
      * @param Exercise $exercise
      *
@@ -110,10 +112,84 @@ class ExerciseController
     }
 
     /**
+     * Update the properties of an Exercise.
+     *
+     * @EXT\Route(
+     *     "/{id}/update",
+     *     name="exercise_update_meta",
+     *     options={"expose"=true}
+     * )
+     * @EXT\Method("PUT")
+     *
+     * @param Exercise $exercise
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function updateMetadataAction(Exercise $exercise, Request $request)
+    {
+        $this->assertHasPermission('ADMINISTRATE', $exercise);
+
+        // Get Exercise data from the Request
+        $dataRaw = $request->getContent();
+        if (!empty($dataRaw)) {
+            $this->exerciseManager->updateMetadata($exercise, json_decode($dataRaw));
+        }
+
+        return new JsonResponse($this->exerciseManager->exportExercise($exercise, false));
+    }
+
+    /**
+     * Publishes an exercise.
+     *
+     * @EXT\Route(
+     *     "/{id}/publish",
+     *     name="exercise_publish",
+     *     options={"expose"=true}
+     * )
+     * @EXT\Method("POST")
+     *
+     * @param Exercise $exercise
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function publishAction(Exercise $exercise)
+    {
+        $this->assertHasPermission('ADMINISTRATE', $exercise);
+
+        $this->exerciseManager->publish($exercise);
+
+        return new JsonResponse($this->exerciseManager->exportExercise($exercise, false));
+    }
+
+    /**
+     * Unpublishes an exercise.
+     *
+     * @EXT\Route(
+     *     "/{id}/unpublish",
+     *     name="exercise_unpublish",
+     *     options={"expose"=true}
+     * )
+     * @EXT\Method("POST")
+     *
+     * @param Exercise $exercise
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function unpublishAction(Exercise $exercise)
+    {
+        $this->assertHasPermission('ADMINISTRATE', $exercise);
+
+        $this->exerciseManager->unpublish($exercise);
+
+        return new JsonResponse($this->exerciseManager->exportExercise($exercise, false));
+    }
+
+    /**
      * Opens an exercise, creating a new paper or re-using an unfinished one.
      * Also check that max attempts are not reached if needed.
      *
-     * @EXT\Route("/exercises/{id}/attempts", name="exercise_new_attempt")
+     * @EXT\Route("/{id}/attempts", name="exercise_new_attempt")
      * @EXT\Method("POST")
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
      *
@@ -147,7 +223,7 @@ class ExerciseController
     /**
      * Returns all the papers associated with an exercise for the current user.
      *
-     * @EXT\Route("/exercises/{id}/papers", name="exercise_papers")
+     * @EXT\Route("/{id}/papers", name="exercise_papers")
      * @EXT\ParamConverter("user", converter="current_user")
      *
      * @param User     $user
@@ -169,7 +245,7 @@ class ExerciseController
     /**
      * Exports papers into a CSV format.
      *
-     * @EXT\Route("/exercises/{id}/papers/export", name="exercise_papers_export")
+     * @EXT\Route("/{id}/papers/export", name="exercise_papers_export")
      *
      * @param Exercise $exercise
      *
