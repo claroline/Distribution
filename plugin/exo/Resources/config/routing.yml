@@ -58,3 +58,8 @@ ujm_api_step:
     resource: "@UJMExoBundle/Controller/Api/StepController.php"
     type: annotation
     prefix: /api
+
+ujm_api_question:
+    resource: "@UJMExoBundle/Controller/Api/QuestionController.php"
+    type: annotation
+    prefix: /api
