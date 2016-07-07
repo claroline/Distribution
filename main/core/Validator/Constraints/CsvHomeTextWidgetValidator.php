@@ -11,12 +11,12 @@
 
 namespace Claroline\CoreBundle\Validator\Constraints;
 
-use Symfony\Component\Validator\Constraint;
-use Symfony\Component\Validator\ConstraintValidator;
-use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\Translation\TranslatorInterface;
 use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\ConstraintValidator;
 
 /**
  * @DI\Validator("csv_home_text_widget_import_validator")
@@ -71,7 +71,7 @@ class CsvHomeTextWidgetValidator extends ConstraintValidator
             if (!$workspace) {
                 $msg = $this->translator->trans(
                     'workspace_not_exists',
-                    array('%code%' => $code, '%line%' => $i + 1),
+                    ['%code%' => $code, '%line%' => $i + 1],
                     'platform'
                 ).' ';
                 $this->context->addViolation($msg);
@@ -82,7 +82,7 @@ class CsvHomeTextWidgetValidator extends ConstraintValidator
             if (!$tab) {
                 $msg = $this->translator->trans(
                     'tab_not_exists',
-                    array('%tab%' => $tabName, '%line%' => $i + 1),
+                    ['%tab%' => $tabName, '%line%' => $i + 1],
                     'platform'
                 ).' ';
                 $this->context->addViolation($msg);
@@ -91,7 +91,7 @@ class CsvHomeTextWidgetValidator extends ConstraintValidator
             if (!file_exists($file)) {
                 $msg = $this->translator->trans(
                     'file_not_exists',
-                    array('%file%' => $file, '%line%' => $i + 1),
+                    ['%file%' => $file, '%line%' => $i + 1],
                     'platform'
                 ).' ';
                 $this->context->addViolation($msg);
