@@ -11,11 +11,11 @@
 
 namespace Claroline\CoreBundle\Command\Import;
 
+use Claroline\CoreBundle\Validator\Constraints\CsvWorkspace;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Claroline\CoreBundle\Validator\Constraints\CsvWorkspace;
 
 /**
  * Creates an user, optionaly with a specific role (default to simple user).
@@ -28,14 +28,14 @@ class CreateWorkspaceFromCsvCommand extends ContainerAwareCommand
             ->setDescription('Create workspaces from a csv file')
             ->setAliases(['claroline:csv:workspace']);
         $this->setDefinition(
-            array(new InputArgument('csv_workspace_path', InputArgument::REQUIRED, 'The absolute path to the csv file.'))
+            [new InputArgument('csv_workspace_path', InputArgument::REQUIRED, 'The absolute path to the csv file.')]
         );
     }
 
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         //@todo ask authentication source
-        $params = array('csv_workspace_path' => 'Absolute path to the workspace file: ');
+        $params = ['csv_workspace_path' => 'Absolute path to the workspace file: '];
 
         foreach ($params as $argument => $argumentName) {
             if (!$input->getArgument($argument)) {

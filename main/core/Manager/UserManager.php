@@ -13,11 +13,11 @@ namespace Claroline\CoreBundle\Manager;
 
 use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\CoreBundle\Entity\Group;
+use Claroline\CoreBundle\Entity\Model\WorkspaceModel;
+use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\UserOptions;
-use Claroline\CoreBundle\Entity\Model\WorkspaceModel;
-use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfiguration;
@@ -143,10 +143,10 @@ class UserManager
     public function createUser(
         User $user,
         $sendMail = true,
-        $rolesToAdd = array(),
+        $rolesToAdd = [],
         $model = null,
         $publicUrl = null,
-        $organizations = array()
+        $organizations = []
     ) {
         $additionnalRoles = [];
 
@@ -155,7 +155,7 @@ class UserManager
         }
 
         if (count($organizations) === 0 && count($user->getOrganizations()) === 0) {
-            $organizations = array($this->organizationManager->getDefault());
+            $organizations = [$this->organizationManager->getDefault()];
         }
 
         $this->objectManager->startFlushSuite();
@@ -168,7 +168,7 @@ class UserManager
         $this->toolManager->addRequiredToolsToUser($user, 1);
         $this->roleManager->setRoleToRoleSubject($user, PlatformRoles::USER);
         $this->objectManager->persist($user);
-        $this->strictEventDispatcher->dispatch('log', 'Log\LogUserCreate', array($user));
+        $this->strictEventDispatcher->dispatch('log', 'Log\LogUserCreate', [$user]);
         $this->roleManager->createUserRole($user);
 
         foreach ($additionnalRoles as $role) {
@@ -193,7 +193,7 @@ class UserManager
             }
         }
 
-        $this->strictEventDispatcher->dispatch('user_created_event', 'UserCreated', array('user' => $user));
+        $this->strictEventDispatcher->dispatch('user_created_event', 'UserCreated', ['user' => $user]);
 
         if ($this->personalWorkspaceAllowed($additionnalRoles)) {
             $this->setPersonalWorkspace($user, $model);
@@ -288,7 +288,7 @@ class UserManager
             $this->roleManager->renameUserRole($userRole, $user->getUsername());
         }
         $user->setUsername($username);
-        $personalWorkspaceName = $this->translator->trans('personal_workspace', array(), 'platform').$user->getUsername();
+        $personalWorkspaceName = $this->translator->trans('personal_workspace', [], 'platform').$user->getUsername();
         $pws = $user->getPersonalWorkspace();
         if ($pws) {
             $this->workspaceManager->rename($pws, $personalWorkspaceName);
@@ -345,9 +345,9 @@ class UserManager
         $this->objectManager->persist($user);
         $this->objectManager->flush();
 
-        $this->strictEventDispatcher->dispatch('claroline_users_delete', 'GenericDatas', array(array($user)));
-        $this->strictEventDispatcher->dispatch('log', 'Log\LogUserDelete', array($user));
-        $this->strictEventDispatcher->dispatch('delete_user', 'DeleteUser', array($user));
+        $this->strictEventDispatcher->dispatch('claroline_users_delete', 'GenericDatas', [[$user]]);
+        $this->strictEventDispatcher->dispatch('log', 'Log\LogUserDelete', [$user]);
+        $this->strictEventDispatcher->dispatch('delete_user', 'DeleteUser', [$user]);
     }
 
     /**
@@ -369,9 +369,9 @@ class UserManager
      *
      * @return array
      */
-    public function importUsers(array $users, $sendMail = true, $logger = null, $additionalRoles = array(), $enableEmailNotifaction = false)
+    public function importUsers(array $users, $sendMail = true, $logger = null, $additionalRoles = [], $enableEmailNotifaction = false)
     {
-        $returnValues = array();
+        $returnValues = [];
         //keep these roles before the clear() will mess everything up. It's not what we want.
         $tmpRoles = $additionalRoles;
         $additionalRoles = [];
@@ -474,7 +474,7 @@ class UserManager
             $returnValues[] = $firstName.' '.$lastName;
 
             if ($group) {
-                $this->groupManager->addUsersToGroup($group, array($newUser));
+                $this->groupManager->addUsersToGroup($group, [$newUser]);
             }
 
             if ($logger) {
@@ -534,7 +534,7 @@ class UserManager
             $code = $user->getUsername();
         }
 
-        $personalWorkspaceName = $this->translator->trans('personal_workspace', array(), 'platform').' - '.$user->getUsername();
+        $personalWorkspaceName = $this->translator->trans('personal_workspace', [], 'platform').' - '.$user->getUsername();
 
         if (!$model) {
             $workspace = new Workspace();
@@ -589,7 +589,7 @@ class UserManager
      */
     public function convertUsersToArray(array $users)
     {
-        $content = array();
+        $content = [];
         $i = 0;
 
         foreach ($users as $user) {
@@ -605,7 +605,7 @@ class UserManager
             $j = 0;
 
             foreach ($roles as $role) {
-                $rolesString .= "{$this->translator->trans($role->getTranslationKey(), array(), 'platform')}";
+                $rolesString .= "{$this->translator->trans($role->getTranslationKey(), [], 'platform')}";
 
                 if ($j < $rolesCount - 1) {
                     $rolesString .= ' ,';
@@ -772,14 +772,14 @@ class UserManager
     public function countUsersForPlatformRoles()
     {
         $roles = $this->roleManager->getAllPlatformRoles();
-        $usersInRoles = array();
+        $usersInRoles = [];
         $usersInRoles['user_accounts'] = 0;
         foreach ($roles as $role) {
             $restrictionRoleNames = null;
             if ($role->getName() === 'ROLE_USER') {
-                $restrictionRoleNames = array('ROLE_WS_CREATOR', 'ROLE_ADMIN');
+                $restrictionRoleNames = ['ROLE_WS_CREATOR', 'ROLE_ADMIN'];
             } elseif ($role->getName() === 'ROLE_WS_CREATOR') {
-                $restrictionRoleNames = array('ROLE_ADMIN');
+                $restrictionRoleNames = ['ROLE_ADMIN'];
             }
             $usersInRoles[$role->getTranslationKey()] = intval(
                 $this->userRepo->countUsersByRole($role, $restrictionRoleNames)
@@ -1014,12 +1014,12 @@ class UserManager
 
     public function toArrayForPicker($users)
     {
-        $resultArray = array();
+        $resultArray = [];
 
-        $resultArray['users'] = array();
+        $resultArray['users'] = [];
         if (count($users) > 0) {
             foreach ($users as $user) {
-                $userArray = array();
+                $userArray = [];
                 $userArray['id'] = $user->getId();
                 $userArray['name'] = $user->getFirstName().' '.$user->getLastName();
                 $userArray['mail'] = $user->getMail();
@@ -1260,12 +1260,12 @@ class UserManager
      *
      * @return array
      */
-    public function updateImportedUsers(array $users, $additionalRoles = array(), $enableEmailNotification = null)
+    public function updateImportedUsers(array $users, $additionalRoles = [], $enableEmailNotification = null)
     {
-        $returnValues = array();
+        $returnValues = [];
         $lg = $this->platformConfigHandler->getParameter('locale_language');
         $this->objectManager->startFlushSuite();
-        $updatedUsers = array();
+        $updatedUsers = [];
         $i = 1;
 
         foreach ($users as $user) {
@@ -1346,7 +1346,7 @@ class UserManager
      */
     public function logUser(User $user)
     {
-        $this->strictEventDispatcher->dispatch('log', 'Log\LogUserLogin', array($user));
+        $this->strictEventDispatcher->dispatch('log', 'Log\LogUserLogin', [$user]);
         $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
         $this->tokenStorage->setToken($token);
     }
@@ -1397,14 +1397,14 @@ class UserManager
         $max = 50,
         $orderedBy = 'lastName',
         $order = 'ASC',
-        array $searchedWorkspaces = array(),
-        array $searchedRoles = array(),
-        array $searchedGroups = array(),
-        array $excludedUsers = array(),
-        array $forcedUsers = array(),
-        array $forcedGroups = array(),
-        array $forcedRoles = array(),
-        array $forcedWorkspaces = array()
+        array $searchedWorkspaces = [],
+        array $searchedRoles = [],
+        array $searchedGroups = [],
+        array $excludedUsers = [],
+        array $forcedUsers = [],
+        array $forcedGroups = [],
+        array $forcedRoles = [],
+        array $forcedWorkspaces = []
     ) {
         if (count($searchedRoles) > 0 ||
             count($searchedGroups) > 0 ||
@@ -1414,13 +1414,13 @@ class UserManager
             $workspaces = $searchedWorkspaces;
         } else {
             $roles = $withAllUsers ?
-                array() :
+                [] :
                 $this->generateRoleRestrictions($user);
             $groups = $withAllUsers ?
-                array() :
+                [] :
                 $this->generateGroupRestrictions($user);
             $workspaces = $withAllUsers ?
-                array() :
+                [] :
                 $this->generateWorkspaceRestrictions($user);
         }
         $users = $this->userRepo->findUsersForUserPicker(
@@ -1445,7 +1445,7 @@ class UserManager
 
     private function generateRoleRestrictions(User $user)
     {
-        $restrictions = array();
+        $restrictions = [];
         $adminRole = $this->roleManager->getRoleByUserAndRoleName($user, 'ROLE_ADMIN');
 
         if (is_null($adminRole)) {
@@ -1478,7 +1478,7 @@ class UserManager
 
     private function generateGroupRestrictions(User $user)
     {
-        $restrictions = array();
+        $restrictions = [];
         $adminRole = $this->roleManager->getRoleByUserAndRoleName($user, 'ROLE_ADMIN');
 
         if (is_null($adminRole)) {
@@ -1490,7 +1490,7 @@ class UserManager
 
     private function generateWorkspaceRestrictions(User $user)
     {
-        $restrictions = array();
+        $restrictions = [];
         $adminRole = $this->roleManager->getRoleByUserAndRoleName($user, 'ROLE_ADMIN');
 
         if (is_null($adminRole)) {
@@ -1523,7 +1523,7 @@ class UserManager
     {
         $baseFieldsName = User::getUserSearchableFields();
         $facetFields = $this->objectManager->getRepository('ClarolineCoreBundle:Facet\FieldFacet')->findAll();
-        $facetFieldsName = array();
+        $facetFieldsName = [];
 
         foreach ($facetFields as $facetField) {
             $facetFieldsName[] = $facetField->getName();
@@ -1582,7 +1582,7 @@ class UserManager
         $event = $this->strictEventDispatcher->dispatch(
             'user_edit_search_event',
             'UserEditSearch',
-            array($qb)
+            [$qb]
         );
 
         $query = $qb->getQuery();
@@ -1611,7 +1611,7 @@ class UserManager
         $event = $this->strictEventDispatcher->dispatch(
             'user_add_filter_event',
             'UserAddFilter',
-            array($baseFields)
+            [$baseFields]
         );
 
         return $event->getFilters();
@@ -1632,7 +1632,7 @@ class UserManager
         $detach = [];
 
         while ($offset < $countUsers) {
-            $users = $this->userRepo->findBy(array(), null, $limit, $offset);
+            $users = $this->userRepo->findBy([], null, $limit, $offset);
 
             foreach ($users as $user) {
                 if (count($user->getOrganizations()) === 0) {
@@ -1795,7 +1795,7 @@ class UserManager
         $details = $options->getDetails();
 
         if (is_null($details)) {
-            $details = array();
+            $details = [];
         }
 
         if (!isset($details['resourceManagerDisplayMode'])) {

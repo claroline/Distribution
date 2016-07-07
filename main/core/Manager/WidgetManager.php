@@ -11,21 +11,21 @@
 
 namespace Claroline\CoreBundle\Manager;
 
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\BundleRecorder\Log\LoggableTrait;
+use Claroline\CoreBundle\Entity\Home\HomeTab;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Entity\Widget\SimpleTextConfig;
 use Claroline\CoreBundle\Entity\Widget\Widget;
 use Claroline\CoreBundle\Entity\Widget\WidgetDisplayConfig;
 use Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Persistence\ObjectManager;
+use JMS\DiExtraBundle\Annotation as DI;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Translation\TranslatorInterface;
-use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Claroline\BundleRecorder\Log\LoggableTrait;
-use Psr\Log\LoggerInterface;
-use Claroline\CoreBundle\Entity\Home\HomeTab;
-use Claroline\CoreBundle\Entity\Widget\SimpleTextConfig;
 
 /**
  * @DI\Service("claroline.manager.widget_manager")
@@ -94,11 +94,11 @@ class WidgetManager
 
     public function generateWidgetDisplayConfigsForUser(User $user, array $widgetHTCs)
     {
-        $results = array();
-        $widgetInstances = array();
-        $mappedWHTCs = array();
-        $userTab = array();
-        $adminTab = array();
+        $results = [];
+        $widgetInstances = [];
+        $mappedWHTCs = [];
+        $userTab = [];
+        $adminTab = [];
 
         foreach ($widgetHTCs as $whtc) {
             $widgetInstance = $whtc->getWidgetInstance();
@@ -179,9 +179,9 @@ class WidgetManager
         Workspace $workspace,
         array $widgetHTCs
     ) {
-        $results = array();
-        $widgetInstances = array();
-        $workspaceTab = array();
+        $results = [];
+        $widgetInstances = [];
+        $workspaceTab = [];
 
         foreach ($widgetHTCs as $htc) {
             $widgetInstances[] = $htc->getWidgetInstance();
@@ -222,9 +222,9 @@ class WidgetManager
 
     public function generateWidgetDisplayConfigsForAdmin(array $widgetHTCs)
     {
-        $results = array();
-        $widgetInstances = array();
-        $adminTab = array();
+        $results = [];
+        $widgetInstances = [];
+        $adminTab = [];
 
         foreach ($widgetHTCs as $htc) {
             $widgetInstances[] = $htc->getWidgetInstance();
@@ -303,7 +303,7 @@ class WidgetManager
                 $widgetInstances,
                 $executeQuery
             ) :
-            array();
+            [];
     }
 
     public function getAdminWidgetDisplayConfigsByWidgets(
@@ -315,7 +315,7 @@ class WidgetManager
                 $widgetInstances,
                 $executeQuery
             ) :
-            array();
+            [];
     }
 
     public function getWidgetDisplayConfigsByWorkspaceAndWidgets(
@@ -329,7 +329,7 @@ class WidgetManager
                 $widgetInstances,
                 $executeQuery
             ) :
-            array();
+            [];
     }
 
     public function getWidgetDisplayConfigsByWidgetsForAdmin(
@@ -341,7 +341,7 @@ class WidgetManager
                 $widgetInstances,
                 $executeQuery
             ) :
-            array();
+            [];
     }
 
     public function getWidgetDisplayConfigsByWorkspaceAndWidgetHTCs(
@@ -355,7 +355,7 @@ class WidgetManager
                 $widgetHomeTabConfigs,
                 $executeQuery
             ) :
-            array();
+            [];
     }
 
     public function importTextFromCsv($file)

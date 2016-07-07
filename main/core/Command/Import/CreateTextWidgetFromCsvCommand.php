@@ -11,12 +11,12 @@
 
 namespace Claroline\CoreBundle\Command\Import;
 
+use Claroline\CoreBundle\Library\Logger\ConsoleLogger;
+use Claroline\CoreBundle\Validator\Constraints\CsvHomeTextWidget;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Claroline\CoreBundle\Library\Logger\ConsoleLogger;
-use Claroline\CoreBundle\Validator\Constraints\CsvHomeTextWidget;
 
 /**
  * Creates an user, optionaly with a specific role (default to simple user).
@@ -28,14 +28,14 @@ class CreateTextWidgetFromCsvCommand extends ContainerAwareCommand
         $this->setName('claroline:csv:home_text_widget')
             ->setDescription('Create widget from a csv file');
         $this->setDefinition(
-            array(new InputArgument('csv_widget_path', InputArgument::REQUIRED, 'The absolute path to the csv file.'))
+            [new InputArgument('csv_widget_path', InputArgument::REQUIRED, 'The absolute path to the csv file.')]
         );
     }
 
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         //@todo ask authentication source
-        $params = array('csv_widget_path' => 'Absolute path to the workspace file: ');
+        $params = ['csv_widget_path' => 'Absolute path to the workspace file: '];
 
         foreach ($params as $argument => $argumentName) {
             if (!$input->getArgument($argument)) {

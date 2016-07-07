@@ -11,12 +11,12 @@
 
 namespace Claroline\CoreBundle\Controller;
 
-use Mockery as m;
 use Claroline\CoreBundle\Entity\Home\HomeTab;
 use Claroline\CoreBundle\Entity\Widget\Widget;
 use Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig;
 use Claroline\CoreBundle\Form\Factory\FormFactory;
 use Claroline\CoreBundle\Library\Testing\MockeryTestCase;
+use Mockery as m;
 
 class AdministrationHomeTabControllerTest extends MockeryTestCase
 {
@@ -94,7 +94,7 @@ class AdministrationHomeTabControllerTest extends MockeryTestCase
             ->shouldReceive('getOrderOfLastWidgetInAdminHomeTab')
             ->with($homeTab)
             ->once()
-            ->andReturn(array('order_max' => 3));
+            ->andReturn(['order_max' => 3]);
         $this->homeTabManager
             ->shouldReceive('insertWidgetHomeTabConfig')
             ->with(
@@ -237,7 +237,7 @@ class AdministrationHomeTabControllerTest extends MockeryTestCase
         );
     }
 
-    private function getController(array $mockedMethods = array())
+    private function getController(array $mockedMethods = [])
     {
         if (count($mockedMethods) === 0) {
             return new AdministrationHomeTabController(
@@ -259,12 +259,12 @@ class AdministrationHomeTabControllerTest extends MockeryTestCase
 
         return $this->mock(
             'Claroline\CoreBundle\Controller\AdministrationHomeTabController'.$stringMocked,
-            array(
+            [
                 $this->formFactory,
                 $this->homeTabManager,
                 $this->request,
                 $this->widgetManager,
-            )
+            ]
         );
     }
 }

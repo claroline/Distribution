@@ -24,21 +24,21 @@ class RegisterUserToWorkspaceFromCsvCommand extends ContainerAwareCommand
             ->setDescription('Registers users to workspaces from a csv file')
             ->setAliases(['claroline:csv:workspace_register']);
         $this->setDefinition(
-            array(
+            [
                 new InputArgument(
                     'csv_workspace_registration_path',
                     InputArgument::REQUIRED,
                     'The absolute path to the csv file.'
                 ),
-            )
+            ]
         );
     }
 
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $params = array(
+        $params = [
             'csv_workspace_registration_path' => 'Absolute path to the csv file: ',
-        );
+        ];
 
         foreach ($params as $argument => $argumentName) {
             if (!$input->getArgument($argument)) {
@@ -91,8 +91,8 @@ class RegisterUserToWorkspaceFromCsvCommand extends ContainerAwareCommand
                 $roleKey = trim($datas[2]);
                 $action = trim($datas[3]);
 
-                $user = $userRepo->findOneBy(array('username' => $username));
-                $workspace = $workspaceRepo->findOneBy(array('code' => $workspaceCode));
+                $user = $userRepo->findOneBy(['username' => $username]);
+                $workspace = $workspaceRepo->findOneBy(['code' => $workspaceCode]);
 
                 if (!is_null($user) && !is_null($workspace)) {
                     $roles = $roleRepo->findRolesByWorkspaceCodeAndTranslationKey(

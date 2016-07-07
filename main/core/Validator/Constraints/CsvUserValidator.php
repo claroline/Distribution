@@ -12,11 +12,11 @@
 namespace Claroline\CoreBundle\Validator\Constraints;
 
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Manager\AuthenticationManager;
-use Claroline\CoreBundle\Manager\UserManager;
-use Claroline\CoreBundle\Manager\GroupManager;
-use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
+use Claroline\CoreBundle\Manager\AuthenticationManager;
+use Claroline\CoreBundle\Manager\GroupManager;
+use Claroline\CoreBundle\Manager\UserManager;
+use Claroline\CoreBundle\Persistence\ObjectManager;
 use Doctrine\ORM\NonUniqueResultException;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -84,8 +84,8 @@ class CsvUserValidator extends ConstraintValidator
             }
         }
 
-        $usernames = array();
-        $mails = array();
+        $usernames = [];
+        $mails = [];
 
         if ($mode === 1) {
             $currentDate = new \DateTime();
@@ -144,10 +144,10 @@ class CsvUserValidator extends ConstraintValidator
                 }
 
                 (!array_key_exists($email, $mails)) ?
-                    $mails[$email] = array($i + 1) :
+                    $mails[$email] = [$i + 1] :
                     $mails[$email][] = $i + 1;
                 (!array_key_exists($username, $usernames)) ?
-                    $usernames[$username] = array($i + 1) :
+                    $usernames[$username] = [$i + 1] :
                     $usernames[$username][] = $i + 1;
 
                 $existingUser = null;
@@ -161,15 +161,15 @@ class CsvUserValidator extends ConstraintValidator
                     } catch (NonUniqueResultException $e) {
                         $msg = $this->translator->trans(
                             'line_number',
-                            array('%line%' => $i + 1),
+                            ['%line%' => $i + 1],
                             'platform'
                         );
                         $msg .= ' '.$this->translator->trans(
                             'username_and_email_from_two_different_users',
-                            array(
+                            [
                                 '%username%' => $username,
                                 '%email%' => $email,
-                            ),
+                            ],
                             'platform'
                         );
                         $this->context->addViolation($msg);
@@ -203,7 +203,7 @@ class CsvUserValidator extends ConstraintValidator
                     $existingUser->setPhone($phone);
                     $errors = $this->validator->validate(
                         $existingUser,
-                        array('registration', 'Default')
+                        ['registration', 'Default']
                     );
                     $existingUser->setUsername($username);
                     $existingUser->setMail($email);
@@ -216,14 +216,14 @@ class CsvUserValidator extends ConstraintValidator
                     $newUser->setMail($email);
                     $newUser->setAdministrativeCode($code);
                     $newUser->setPhone($phone);
-                    $errors = $this->validator->validate($newUser, array('registration', 'Default'));
+                    $errors = $this->validator->validate($newUser, ['registration', 'Default']);
                 }
 
                 if ($authentication) {
                     if (!in_array($authentication, $authDrivers)) {
                         $msg = $this->translator->trans(
                             'authentication_invalid',
-                            array('%authentication%' => $authentication, '%line%' => $i + 1),
+                            ['%authentication%' => $authentication, '%line%' => $i + 1],
                             'platform'
                         ).' ';
 
@@ -233,7 +233,7 @@ class CsvUserValidator extends ConstraintValidator
 
                 foreach ($errors as $error) {
                     $this->context->addViolation(
-                        $this->translator->trans('line_number', array('%line%' => $i + 1), 'platform').' '.
+                        $this->translator->trans('line_number', ['%line%' => $i + 1], 'platform').' '.
                         $error->getInvalidValue().' : '.$error->getMessage()
                     );
                 }
@@ -246,7 +246,7 @@ class CsvUserValidator extends ConstraintValidator
             if (!$model) {
                 $msg = $this->translator->trans(
                     'model_invalid',
-                    array('%model%' => $modelName, '%line%' => $i + 1),
+                    ['%model%' => $modelName, '%line%' => $i + 1],
                     'platform'
                 ).' ';
                 $this->context->addViolation($msg);
@@ -258,13 +258,13 @@ class CsvUserValidator extends ConstraintValidator
             $isValid = false;
 
             if ($group) {
-                $isValid = $this->groupManager->validateAddUsersToGroup(array($user), $group);
+                $isValid = $this->groupManager->validateAddUsersToGroup([$user], $group);
             }
 
             if (!$isValid) {
                 $msg = $this->translator->trans(
                     'group_invalid',
-                    array('%group%' => $groupName, '%line%' => $i + 1),
+                    ['%group%' => $groupName, '%line%' => $i + 1],
                     'platform'
                 ).' ';
                 $this->context->addViolation($msg);
@@ -277,7 +277,7 @@ class CsvUserValidator extends ConstraintValidator
             if (!$organization) {
                 $msg = $this->translator->trans(
                     'organization_invalid',
-                    array('%organization%' => $organizationName, '%line%' => $i + 1),
+                    ['%organization%' => $organizationName, '%line%' => $i + 1],
                     'platform'
                 ).' ';
                 $this->context->addViolation($msg);
@@ -288,7 +288,7 @@ class CsvUserValidator extends ConstraintValidator
             if (count($lines) > 1) {
                 $msg = $this->translator->trans(
                     'username_found_at',
-                    array('%username%' => $username, '%lines%' => $this->getLines($lines)),
+                    ['%username%' => $username, '%lines%' => $this->getLines($lines)],
                     'platform'
                 ).' ';
                 $this->context->addViolation($msg);
@@ -299,7 +299,7 @@ class CsvUserValidator extends ConstraintValidator
             if (count($lines) > 1) {
                 $msg = $this->translator->trans(
                     'email_found_at',
-                    array('%email%' => $mail, '%lines%' => $this->getLines($lines)),
+                    ['%email%' => $mail, '%lines%' => $this->getLines($lines)],
                     'platform'
                 ).' ';
                 $this->context->addViolation($msg);

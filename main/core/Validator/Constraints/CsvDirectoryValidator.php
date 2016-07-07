@@ -11,13 +11,13 @@
 
 namespace Claroline\CoreBundle\Validator\Constraints;
 
+use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
+use Claroline\CoreBundle\Manager\WorkspaceManager;
+use Claroline\CoreBundle\Persistence\ObjectManager;
+use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
-use JMS\DiExtraBundle\Annotation as DI;
-use Claroline\CoreBundle\Manager\WorkspaceManager;
-use Symfony\Component\Translation\TranslatorInterface;
-use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
-use Claroline\CoreBundle\Persistence\ObjectManager;
 
 /**
  * @DI\Validator("csv_directory_import_validator")
@@ -71,7 +71,7 @@ class CsvDirectoryValidator extends ConstraintValidator
             if (!$workspace) {
                 $msg = $this->translator->trans(
                     'workspace_not_exists',
-                    array('%code%' => $code, '%line%' => $i + 1),
+                    ['%code%' => $code, '%line%' => $i + 1],
                     'platform'
                 ).' ';
                 $this->context->addViolation($msg);
