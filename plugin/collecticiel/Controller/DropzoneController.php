@@ -66,8 +66,9 @@ class DropzoneController extends DropzoneBaseController
         );
 
         $request = $this->getRequest();
-
+        var_dump('ici');
         if ($request->isMethod('POST')) {
+            var_dump('ici POST');
             // see if manual planification option has changed.
             $oldManualPlanning = $dropzone->getManualPlanning();
             $oldManualPlanningOption = $dropzone->getManualState();
@@ -518,5 +519,50 @@ class DropzoneController extends DropzoneBaseController
         }
 
         return $form;
+    }
+
+    /**
+     * @Route(
+     *      "/add/update/dropzone",
+     *      name="innova_collecticiel_update_dropzone",
+     *      options={"expose"=true}
+     * )
+     * @Template()
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function UpdateDropzoneAction()
+    {
+
+        // Récupération de l'ID du document
+        $dropzoneId = $this->get('request')->query->get('dropzoneId');
+
+        $em = $this->getDoctrine()->getManager();
+        $allowWorkspaceResource = $this->get('request')->query->get('allowWorkspaceResource');
+        $allowUpload = $this->get('request')->query->get('allowUpload');
+        $allowUrl = $this->get('request')->query->get('allowUrl');
+        $allowRichText = $this->get('request')->query->get('allowRichText');
+
+        $dropzone = $em->getRepository('InnovaCollecticielBundle:Dropzone')->find($dropzoneId);
+        $dropzone->setAllowWorkspaceResource($allowWorkspaceResource);
+        $dropzone->setAllowUpload($allowUpload);
+        $dropzone->setAllowUrl($allowUrl);
+        $dropzone->setAllowRichText($allowRichText);
+
+        $em->persist($dropzone);
+        $em->flush();
+
+        // Récupération de l'utilisateur
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $this->get('innova.manager.dropzone_voter')->isAllowToOpen($dropzone);
+
+        // Redirection
+        $url = $this->generateUrl('innova_collecticiel_edit_appreciation', array(
+                    'resourceId' => $dropzone->getId(),
+                )
+        );
+
+        return new JsonResponse(array('link' => $url));
     }
 }
