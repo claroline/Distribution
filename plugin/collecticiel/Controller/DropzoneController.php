@@ -66,9 +66,7 @@ class DropzoneController extends DropzoneBaseController
         );
 
         $request = $this->getRequest();
-        var_dump('ici');
         if ($request->isMethod('POST')) {
-            var_dump('ici POST');
             // see if manual planification option has changed.
             $oldManualPlanning = $dropzone->getManualPlanning();
             $oldManualPlanningOption = $dropzone->getManualState();
@@ -533,31 +531,70 @@ class DropzoneController extends DropzoneBaseController
      */
     public function UpdateDropzoneAction()
     {
-
-        // Récupération de l'ID du document
+        // Dropzone ID
         $dropzoneId = $this->get('request')->query->get('dropzoneId');
 
-        $em = $this->getDoctrine()->getManager();
+        // datas from JS
+        $instruction = $this->get('request')->query->get('instruction');
+
         $allowWorkspaceResource = $this->get('request')->query->get('allowWorkspaceResource');
         $allowUpload = $this->get('request')->query->get('allowUpload');
         $allowUrl = $this->get('request')->query->get('allowUrl');
         $allowRichText = $this->get('request')->query->get('allowRichText');
 
+        $manualPlanning = $this->get('request')->query->get('manualPlanning');
+        $manualState = $this->get('request')->query->get('manualState');
+
+        $startAllowDrop_date = $this->get('request')->query->get('startAllowDrop_date');
+        $startAllowDrop_time = $this->get('request')->query->get('startAllowDrop_time');
+        $endAllowDrop_date = $this->get('request')->query->get('endAllowDrop_date');
+        $endAllowDrop_time = $this->get('request')->query->get('endAllowDrop_time');
+
+        $published = $this->get('request')->query->get('published');
+        $returnReceipt = $this->get('request')->query->get('returnReceipt');
+        $picture = $this->get('request')->query->get('picture');
+        $username = $this->get('request')->query->get('username');
+
+        // Database dropzone
+        $em = $this->getDoctrine()->getManager();
         $dropzone = $em->getRepository('InnovaCollecticielBundle:Dropzone')->find($dropzoneId);
+
+        // Updating dropzone
+        $dropzone->setInstruction($instruction);
+
         $dropzone->setAllowWorkspaceResource($allowWorkspaceResource);
         $dropzone->setAllowUpload($allowUpload);
         $dropzone->setAllowUrl($allowUrl);
         $dropzone->setAllowRichText($allowRichText);
 
+        // Mise à jour de la publication dans la table "claro_resource_node"
+        $dropzoneManager = $this->get('innova.manager.dropzone_manager');
+        $resourceId = $dropzone->getResourceNode()->getId();
+        $resourceNodes = $dropzoneManager->updatePublished($resourceId, $published);
+
+        $dropzone->setReturnReceipt($returnReceipt);
+        $dropzone->setPicture($picture);
+        $dropzone->setUsername($username);
+
+        // Manage dropzone type and dates
+        if ($manualPlanning == 1) {
+            $dropzone->setManualPlanning($manualPlanning);
+            $dropzone->setManualState($manualState);
+        } else {
+            $dropzone->setManualPlanning($manualPlanning);
+            $formatDate = explode('/', $startAllowDrop_date);
+            $startAllowDrop = $formatDate[2].'-'.$formatDate[1].'-'.$formatDate[0].' '.$startAllowDrop_time.':00';
+            $formatDate = explode('/', $endAllowDrop_date);
+            $endAllowDrop = $formatDate[2].'-'.$formatDate[1].'-'.$formatDate[0].' '.$endAllowDrop_time.':00';
+            $dropzone->setStartAllowDrop(\DateTime::createFromFormat('Y-m-d H:i:s', $startAllowDrop));
+            $dropzone->setEndAllowDrop(\DateTime::createFromFormat('Y-m-d H:i:s', $endAllowDrop));
+        }
+
+        // Database updating dropzone
         $em->persist($dropzone);
         $em->flush();
 
-        // Récupération de l'utilisateur
-        $user = $this->get('security.token_storage')->getToken()->getUser();
-
-        $this->get('innova.manager.dropzone_voter')->isAllowToOpen($dropzone);
-
-        // Redirection
+        // Redirect
         $url = $this->generateUrl('innova_collecticiel_edit_appreciation', array(
                     'resourceId' => $dropzone->getId(),
                 )

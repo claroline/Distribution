@@ -697,10 +697,9 @@ $(document).ready(function() {
         var allowUrl = 0;
         var allowRichText = 0;
 
-        var manualPlanning0 = 0;
+        var manualPlanning = 0;
         var manualState = 0;
 
-        var manualPlanning1 = 0;
         var startAllowDrop_date = 0;
         var startAllowDrop_time = 0;
         var endAllowDrop_date = 0;
@@ -743,18 +742,17 @@ $(document).ready(function() {
 
 
         if (document.getElementById('innova_collecticiel_common_form_manualPlanning_0').checked) {
-            manualPlanning0 = document.getElementById('innova_collecticiel_common_form_manualPlanning_0').value;
-
+            manualPlanning = document.getElementById('innova_collecticiel_common_form_manualPlanning_0').value;
             if (document.getElementById('innova_collecticiel_common_form_manualState_0').checked) {
                 manualState = document.getElementById('innova_collecticiel_common_form_manualState_0').value;
-            }
-            else {
+            } else {
                 manualState = document.getElementById('innova_collecticiel_common_form_manualState_1').value;
             }
         }
 
         if (document.getElementById('innova_collecticiel_common_form_manualPlanning_1').checked) {
-            manualPlanning1 = document.getElementById('innova_collecticiel_common_form_manualPlanning_1').value;
+            manualPlanning = document.getElementById('innova_collecticiel_common_form_manualPlanning_1').value;
+            manualState = document.getElementById('innova_collecticiel_common_form_manualState_1').value;
 
             startAllowDrop_date = document.getElementById('innova_collecticiel_common_form_startAllowDrop_date').value;
             startAllowDrop_time = document.getElementById('innova_collecticiel_common_form_startAllowDrop_time').value;
@@ -765,6 +763,9 @@ $(document).ready(function() {
 
         $.ajax({
             url: Routing.generate('innova_collecticiel_update_dropzone', {
+            }),
+            method: "GET",
+            data: {
                 dropzoneId: dropzoneId,
                 instruction: instruction,
 
@@ -773,10 +774,9 @@ $(document).ready(function() {
                 allowUrl: allowUrl,
                 allowRichText: allowRichText,
 
-                manualPlanning0: manualPlanning0,
+                manualPlanning: manualPlanning,
                 manualState: manualState,
 
-                manualPlanning1: manualPlanning1,
                 startAllowDrop_date: startAllowDrop_date,
                 startAllowDrop_time: startAllowDrop_time,
                 endAllowDrop_date: endAllowDrop_date,
@@ -786,9 +786,6 @@ $(document).ready(function() {
                 returnReceipt: returnReceipt,
                 picture: picture,
                 username: username,
-            }),
-            method: "GET",
-            data: {
             },
             complete: function(data) {
                 var data_link = $.parseJSON(data.responseText)
