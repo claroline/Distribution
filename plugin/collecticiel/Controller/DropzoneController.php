@@ -54,7 +54,7 @@ class DropzoneController extends DropzoneBaseController
         $dropzoneVoter->isAllowToEdit($dropzone);
         $dropzoneManager = $this->get('innova.manager.dropzone_manager');
 
-        if ($dropzone->getManualState() == 'notStarted') {
+        if ($dropzone->getManualState() === 'notStarted') {
             $dropzone->setManualState('allowDrop');
             $em->persist($dropzone);
             $em->flush();
@@ -100,7 +100,7 @@ class DropzoneController extends DropzoneBaseController
             $manualStateChanged = false;
             $newManualState = null;
             if ($dropzone->getManualPlanning() === true) {
-                if ($oldManualPlanning === false || $oldManualPlanningOption != $dropzone->getManualState()) {
+                if ($oldManualPlanning === false || $oldManualPlanningOption !== $dropzone->getManualState()) {
                     $manualStateChanged = true;
                     $newManualState = $dropzone->getManualState();
                 }
@@ -116,7 +116,7 @@ class DropzoneController extends DropzoneBaseController
             // InnovaERV : j'ajoute une notification.
             // InnovaERV : #171 Bug : lors de la création d'un collecticiel et de la notification
             if (count($dropzone->getDrops()) > 0) {
-                if ($oldManualPlanningOption != $dropzone->getManualState()) {
+                if ($oldManualPlanningOption !== $dropzone->getManualState()) {
                     // send notification.
                     $usersIds = $dropzoneManager->getDropzoneUsersIds($dropzone);
                     $event = new LogDropzoneManualStateChangedEvent($dropzone, $dropzone->getManualState(), $usersIds);
@@ -143,7 +143,7 @@ class DropzoneController extends DropzoneBaseController
 
         $adminInnova = false;
         if ($dropzoneVoter->checkEditRight($dropzone)
-        && $this->get('security.token_storage')->getToken()->getUser()->getId() == $user->getId()) {
+        && $this->get('security.token_storage')->getToken()->getUser()->getId() === $user->getId()) {
             $adminInnova = true;
         }
 
@@ -195,7 +195,7 @@ class DropzoneController extends DropzoneBaseController
         $gradingScaleManager = $this->get('innova.manager.gradingscale_manager');
         $gradingCriteriaManager = $this->get('innova.manager.gradingcriteria_manager');
 
-        if ($dropzone->getManualState() == 'notStarted') {
+        if ($dropzone->getManualState() === 'notStarted') {
             $dropzone->setManualState('allowDrop');
             $em->persist($dropzone);
             $em->flush();
@@ -228,7 +228,7 @@ class DropzoneController extends DropzoneBaseController
             $manualStateChanged = false;
             $newManualState = null;
             if ($dropzone->getManualPlanning() === true) {
-                if ($oldManualPlanning === false || $oldManualPlanningOption != $dropzone->getManualState()) {
+                if ($oldManualPlanning === false || $oldManualPlanningOption !== $dropzone->getManualState()) {
                     $manualStateChanged = true;
                     $newManualState = $dropzone->getManualState();
                 }
@@ -244,7 +244,7 @@ class DropzoneController extends DropzoneBaseController
             // InnovaERV : j'ajoute une notification.
             // InnovaERV : #171 Bug : lors de la création d'un collecticiel et de la notification
             if (count($dropzone->getDrops()) > 0) {
-                if ($oldManualPlanningOption != $dropzone->getManualState()) {
+                if ($oldManualPlanningOption !== $dropzone->getManualState()) {
                     // send notification.
                     $usersIds = $dropzoneManager->getDropzoneUsersIds($dropzone);
                     $event = new LogDropzoneManualStateChangedEvent($dropzone, $dropzone->getManualState(), $usersIds);
@@ -269,7 +269,7 @@ class DropzoneController extends DropzoneBaseController
 
         $adminInnova = false;
         if ($dropzoneVoter->checkEditRight($dropzone)
-        && $this->get('security.token_storage')->getToken()->getUser()->getId() == $user->getId()) {
+        && $this->get('security.token_storage')->getToken()->getUser()->getId() === $user->getId()) {
             $adminInnova = true;
         }
 
@@ -369,7 +369,7 @@ class DropzoneController extends DropzoneBaseController
                 $em->persist($dropzone);
                 $em->flush();
 
-                if ($form->get('recalculateGrades')->getData() == 1) {
+                if ($form->get('recalculateGrades')->getData() === 1) {
                     $this->get('innova.manager.dropzone_manager')->recalculateScoreByDropzone($dropzone);
                     $this->getRequest()->getSession()->getFlashBag()->add(
                         'success',
@@ -391,7 +391,7 @@ class DropzoneController extends DropzoneBaseController
                 }
 
                 $goBack = $form->get('goBack')->getData();
-                if ($goBack == 0) {
+                if ($goBack === 0) {
                     $this->getRequest()->getSession()->getFlashBag()->add(
                         'success',
                         $this->get('translator')->trans('The collecticiel has been successfully saved', array(), 'innova_collecticiel')
@@ -454,7 +454,7 @@ class DropzoneController extends DropzoneBaseController
         $dropzoneManager = $this->get('innova.manager.dropzone_manager');
         // check if endAllowDrop is past and close all unvalidated
         // drops if autoclose options is activated.
-        if ($dropzone->getAutoCloseState() == Dropzone::AUTO_CLOSED_STATE_WAITING) {
+        if ($dropzone->getAutoCloseState() === Dropzone::AUTO_CLOSED_STATE_WAITING) {
             $dropzoneManager->closeDropzoneOpenedDrops($dropzone);
         }
 
@@ -466,7 +466,7 @@ class DropzoneController extends DropzoneBaseController
             ->hasCopyToCorrect($dropzone, $user);
 
         $hasUnfinishedCorrection =
-        $em->getRepository('InnovaCollecticielBundle:Correction')->getNotFinished($dropzone, $user) != null;
+        $em->getRepository('InnovaCollecticielBundle:Correction')->getNotFinished($dropzone, $user) !== null;
 
         // get progression of the evaluation ( current state, all states available and needed infos to the view).
         $dropzoneProgress = $dropzoneManager->getDrozponeProgress($dropzone, $drop, $nbCorrections);
@@ -501,14 +501,14 @@ class DropzoneController extends DropzoneBaseController
         }
 
         if (!$dropzone->getManualPlanning()) {
-            if ($dropzone->getStartAllowDrop() == null) {
+            if ($dropzone->getStartAllowDrop() === null) {
                 $form->get('startAllowDrop')->addError(new FormError('Choose a date'));
             }
-            if ($dropzone->getEndAllowDrop() == null) {
+            if ($dropzone->getEndAllowDrop() === null) {
                 $form->get('endAllowDrop')->addError(new FormError('Choose a date'));
             }
 
-            if ($dropzone->getStartAllowDrop() != null && $dropzone->getEndAllowDrop() != null) {
+            if ($dropzone->getStartAllowDrop() !== null && $dropzone->getEndAllowDrop() !== null) {
                 if ($dropzone->getStartAllowDrop()->getTimestamp() > $dropzone->getEndAllowDrop()->getTimestamp()) {
                     $form->get('startAllowDrop')->addError(new FormError('Must be before end allow drop'));
                     $form->get('endAllowDrop')->addError(new FormError('Must be after start allow drop'));
@@ -577,7 +577,7 @@ class DropzoneController extends DropzoneBaseController
         $dropzone->setUsername($username);
 
         // Manage dropzone type and dates
-        if ($manualPlanning == 1) {
+        if ($manualPlanning === 1) {
             $dropzone->setManualPlanning($manualPlanning);
             $dropzone->setManualState($manualState);
         } else {
