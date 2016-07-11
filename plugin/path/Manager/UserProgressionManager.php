@@ -156,10 +156,10 @@ class UserProgressionManager
         // Load current logged User
         $user = $this->securityToken->getToken()->getUser();
         // Retrieve the current progression for this step
-        $progression = $this->om->getRepository('InnovaPathBundle:UserProgression')->findOneBy(array(
+        $progression = $this->om->getRepository('InnovaPathBundle:UserProgression')->findOneBy([
             'step' => $step,
-            'user' => $user
-        ));
+            'user' => $user,
+        ]);
         $progression->setLocked($lock);
         $this->om->persist($progression);
         $this->om->flush();
@@ -168,21 +168,22 @@ class UserProgressionManager
     /**
      * Update state of the lock for User Progression for a step.
      *
-     * @param User $user
-     * @param Step $step
+     * @param User      $user
+     * @param Step      $step
      * @param bool|null $lockedcall
      * @param bool|null $lock
      * @param bool|null $authorized
+     *
      * @return object UserProgression
      */
-    public function updateLockedState(User $user, Step $step, $lockedcall=null, $lock=null, $authorized=null, $status='')
+    public function updateLockedState(User $user, Step $step, $lockedcall = null, $lock = null, $authorized = null, $status = '')
     {
         // Retrieve the current progression for this step
         $progression = $this->om->getRepository('InnovaPathBundle:UserProgression')
-            ->findOneBy(array(
+            ->findOneBy([
             'step' => $step,
-            'user' => $user
-        ));
+            'user' => $user,
+        ]);
         if ($progression === null) {
             $progression = new UserProgression();
             $progression->setUser($user);

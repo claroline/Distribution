@@ -84,8 +84,10 @@ class UserProgressionController
 
     /**
      * Set lock for progression of a User.
+     *
      * @param \Innova\PathBundle\Entity\Step $step
-     * @param boolean $lock
+     * @param bool                           $lock
+     *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      *
      * @Route(
@@ -99,6 +101,7 @@ class UserProgressionController
     public function setLockAction(Step $step, $locked)
     {
         $progression = $this->userProgressionManager->setLock($step, $locked);
+
         return new JsonResponse($progression);
     }
 }

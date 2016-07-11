@@ -1,7 +1,7 @@
 <?php
+
 namespace Innova\PathBundle\Event\Log;
 
-use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Event\Log\AbstractLogResourceEvent;
 use Claroline\CoreBundle\Event\Log\NotifiableInterface;
 use Innova\PathBundle\Entity\Step;
@@ -13,19 +13,19 @@ class LogStepUnlockDoneEvent extends AbstractLogResourceEvent //log associated t
 
     protected $step;
     protected $details;
-    private $userIds = array();
+    private $userIds = [];
 
-    public function __construct(Step $step, $userIds=array())
+    public function __construct(Step $step, $userIds = [])
     {
-        $this->step     = $step;
-        $this->userIds  = $userIds;
-        $this->details  = array(
-            'unlock' => array(
-                'path'      => $step->getPath()->getId(),
-                'step'      => $step->getId(),
-                'stepname'  => $step->getName()
-            )
-        );
+        $this->step = $step;
+        $this->userIds = $userIds;
+        $this->details = [
+            'unlock' => [
+                'path' => $step->getPath()->getId(),
+                'step' => $step->getId(),
+                'stepname' => $step->getName(),
+            ],
+        ];
         parent::__construct($step->getPath()->getResourceNode(), $this->details);
     }
 
@@ -34,12 +34,12 @@ class LogStepUnlockDoneEvent extends AbstractLogResourceEvent //log associated t
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_WORKSPACE);
+        return [self::DISPLAYED_WORKSPACE];
     }
     /**
      * Get sendToFollowers boolean.
      *
-     * @return boolean
+     * @return bool
      */
     public function getSendToFollowers()
     {
@@ -61,7 +61,7 @@ class LogStepUnlockDoneEvent extends AbstractLogResourceEvent //log associated t
      */
     public function getExcludeUserIds()
     {
-        return array();
+        return [];
     }
     /**
      * Get actionKey string.
@@ -79,27 +79,28 @@ class LogStepUnlockDoneEvent extends AbstractLogResourceEvent //log associated t
      */
     public function getIconKey()
     {
-        return "path";
+        return 'path';
     }
     /**
-     * Get details
+     * Get details.
      *
      * @return array
      */
     public function getNotificationDetails()
     {
-        $notificationDetails = array_merge($this->details, array());
-        $notificationDetails['resource'] = array(
-            'id'    => $this->step->getPath()->getId(),
-            'name'  => $this->resource->getName(),
-            'type'  => $this->resource->getResourceType()->getName()
-        );
+        $notificationDetails = array_merge($this->details, []);
+        $notificationDetails['resource'] = [
+            'id' => $this->step->getPath()->getId(),
+            'name' => $this->resource->getName(),
+            'type' => $this->resource->getResourceType()->getName(),
+        ];
+
         return $notificationDetails;
     }
     /**
-     * Get if event is allowed to create notification or not
+     * Get if event is allowed to create notification or not.
      *
-     * @return boolean
+     * @return bool
      */
     public function isAllowedToNotify()
     {

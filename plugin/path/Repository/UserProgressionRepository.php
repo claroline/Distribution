@@ -67,9 +67,10 @@ class UserProgressionRepository extends EntityRepository
     }
 
     /**
-     * Get all step called for unlock for a path
+     * Get all step called for unlock for a path.
      *
      * @param Path $path
+     *
      * @return array
      */
     public function findByPathAndLockedStep(Path $path)
@@ -84,6 +85,7 @@ class UserProgressionRepository extends EntityRepository
         ;
         // Get results of the query
         $results = $query->getResult();
+
         return $results;
     }
 }

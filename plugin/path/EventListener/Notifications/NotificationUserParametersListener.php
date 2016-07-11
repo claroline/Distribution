@@ -1,4 +1,5 @@
 <?php
+
 namespace Innova\PathBundle\EventListener\Notifications;
 
 use Claroline\CoreBundle\Event\Notification\NotificationUserParametersEvent;
@@ -6,7 +7,6 @@ use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * Class NotificationUserParametersListener.
- * @package Claroline\CoreBundle\Listener\Notification
  *
  * @DI\Service()
  */
@@ -19,6 +19,6 @@ class NotificationUserParametersListener
      */
     public function onGetTypesForParameters(NotificationUserParametersEvent $event)
     {
-        $event->addTypes("innova_path");
+        $event->addTypes('innova_path');
     }
 }

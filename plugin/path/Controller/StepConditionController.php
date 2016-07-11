@@ -7,15 +7,15 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\GroupManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\TeamBundle\Manager\TeamManager;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Innova\PathBundle\Entity\Path\Path;
 use Innova\PathBundle\Entity\Step;
 use Innova\PathBundle\Manager\UserProgressionManager;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Class StepConditionController.
@@ -54,12 +54,12 @@ class StepConditionController extends Controller
     /**
      * Constructor.
      *
-     * @param ObjectManager             $objectManager
-     * @param GroupManager              $groupManager
-     * @param TokenStorageInterface     $securityToken
-     * @param TeamManager               $teamManager
-     * @param EventDispatcherInterface  $eventDispatcher
-     * @param UserProgressionManager    $userProgressionManager
+     * @param ObjectManager            $objectManager
+     * @param GroupManager             $groupManager
+     * @param TokenStorageInterface    $securityToken
+     * @param TeamManager              $teamManager
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param UserProgressionManager   $userProgressionManager
      */
     public function __construct(
         ObjectManager $objectManager,
@@ -341,6 +341,7 @@ class StepConditionController extends Controller
     /**
      * @param Step $step
      * @param Step $nextstep
+     *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      * @Route(
      *     "/stepunlock/{step}",
@@ -353,7 +354,7 @@ class StepConditionController extends Controller
     {
         //array of user id to send the notification to = users who will receive the call : the path creator
         $creator = $step->getPath()->getCreator()->getId();
-        $userIds = array($creator);
+        $userIds = [$creator];
         //create an event, and pass parameters
         $event = new \Innova\PathBundle\Event\Log\LogStepUnlockEvent($step, $userIds);
         //send the event to the event dispatcher
@@ -369,17 +370,19 @@ class StepConditionController extends Controller
 
     /**
      * Ajax call for unlocking step.
+     *
      * @Route(
      *     "unlockstep/{step}/user/{user}",
      *     name="innova_path_unlock_step",
      *     options={"expose"=true}
      * )
      * @Method("GET")
+     *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function unlockStep(Step $step, User $user)
     {
-        $userIds = array($user->getId());
+        $userIds = [$user->getId()];
         //create an event, and pass parameters
         $event = new \Innova\PathBundle\Event\Log\LogStepUnlockDoneEvent($step, $userIds);
         //send the event to the event dispatcher
