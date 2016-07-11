@@ -138,7 +138,6 @@ class DropzoneController extends DropzoneBaseController
 
             $em = $this->getDoctrine()->getManager();
 
-            // #171 Bug :lors de la création d'1 collecticiel et de la notification
             if (count($dropzone->getDrops()) > 0) {
                 if ($oldManualPlanningOption !== $dropzone->getManualState()) {
                     // send notification.
@@ -297,7 +296,6 @@ class DropzoneController extends DropzoneBaseController
 
             $em = $this->getDoctrine()->getManager();
 
-            // #171 Bug : lors de la création d'1 collecticiel et de la notification
             if (count($dropzone->getDrops()) > 0) {
                 if ($oldManualPlanningOption !== $dropzone->getManualState()) {
                     // send notification.
