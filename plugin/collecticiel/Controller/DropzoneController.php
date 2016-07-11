@@ -28,7 +28,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @license   http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * @link      http://innovalangues.net
- * 
  */
 class DropzoneController extends DropzoneBaseController
 {
@@ -84,7 +83,7 @@ class DropzoneController extends DropzoneBaseController
             [
                 'language' => $platformConfigHandler
                     ->getParameter('locale_language'),
-                'date_format' => 'dd/MM/yyyy'
+                'date_format' => 'dd/MM/yyyy',
             ]
         );
 
@@ -731,6 +730,6 @@ class DropzoneController extends DropzoneBaseController
             ['resourceId' => $dropzone->getId()]
         );
 
-        return new JsonResponse([('link' => $url)];
+        return new JsonResponse(['link' => $url]);
     }
 }
