@@ -34,17 +34,24 @@ ClozeQuestionCtrl.prototype.holes = {};
 ClozeQuestionCtrl.prototype.isHoleValid = function isHoleValid(hole) {
     var answer = this.getHoleAnswer(hole);
     if (answer) {
-        var correct = this.ClozeQuestionService.getHoleCorrectAnswer(this.question, hole);
+        var correct = this.ClozeQuestionService.getHoleCorrectAnswers(this.question, hole);
         if (correct) {
+          var found = false;
+          for (var i = 0; i < correct.length; i++) {
             // The right response has been found, we can check the User answer
-            if (hole.selector) {
-                return answer.answerText === correct.id;
+            if (hole.selector && answer.answerText === correct[i].id) {
+                found = true;
             } else {
-                return !!((correct.caseSensitive && correct.text === answer.answerText)
-                || (!correct.caseSensitive && correct.text.toLowerCase() === answer.answerText.toLowerCase()));
+              if ((correct[i].caseSensitive && correct[i].text === answer.answerText)
+                      || (!correct[i].caseSensitive && correct[i].text.toLowerCase() === answer.answerText.toLowerCase())) {
+                found = true;
+              }
             }
+          }
         }
     }
+    
+    return found;
 };
 
 /**

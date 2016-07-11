@@ -72,12 +72,14 @@ ClozeQuestionService.prototype.getCorrectAnswer = function getCorrectAnswer(ques
             var hole = question.holes[i];
 
             // Get the correct answer
-            var correct = this.getHoleCorrectAnswer(question, hole);
+            var correct = this.getHoleCorrectAnswers(question, hole);
             if (correct) {
+              for (var j = 0; j < correct.length; j++) {
                 answer.push({
                     holeId    : hole.id,
-                    answerText: hole.selector ? correct.id : correct.text
+                    answerText: hole.selector ? correct[j].id : correct[j].text
                 });
+              }
             }
         }
     }
@@ -89,22 +91,22 @@ ClozeQuestionService.prototype.getCorrectAnswer = function getCorrectAnswer(ques
  * Get the correct answer for a Hole
  * @param   {Object} question
  * @param   {Object} hole
- * @returns {Object}
+ * @returns {Array}
  */
-ClozeQuestionService.prototype.getHoleCorrectAnswer = function getHoleCorrectAnswer(question, hole) {
-    var correct = null;
+ClozeQuestionService.prototype.getHoleCorrectAnswers = function getHoleCorrectAnswers(question, hole) {
+    var correctAnswers = [];
 
     var solution = this.getHoleSolution(question, hole);
     if (solution) {
         // Get the correct answer
         for (var j = 0; j < solution.answers.length; j++) {
-            if (null === correct || solution.answers[j].score > correct.score) {
-                correct = solution.answers[j];
+            if (solution.answers[j].score > 0) {
+                correctAnswers.push(solution.answers[j]);
             }
         }
     }
 
-    return correct;
+    return correctAnswers;
 };
 
 /**
@@ -173,9 +175,9 @@ ClozeQuestionService.prototype.getHoleStats = function (question, holeId) {
 ClozeQuestionService.prototype.getHoleFeedback = function getHoleFeedback(question, hole) {
     var feedback = '';
 
-    var correct = this.getHoleCorrectAnswer(question, hole);
-    if (correct && correct.feedback) {
-        feedback = correct.feedback;
+    var correct = this.getHoleCorrectAnswers(question, hole);
+    if (correct && correct[0].feedback) {
+        feedback = correct[0].feedback;
     }
 
     return feedback;
