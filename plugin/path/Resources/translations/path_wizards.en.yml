@@ -80,6 +80,7 @@ open_templates: Open templates
 
 # p
 path_breadcrumbs: Show breadcrumbs ?
+path_dashboard: Path dashboard
 path_description: Description
 path_empty_user_can_edit: This path is empty. Please edit and publish it to fill it.
 path_empty_user_read_only: This path is empty and has not been configured by its designer. Please come back later.

@@ -65,7 +65,6 @@ path_delete_error: Le parcours has not been deleted due to technical problem. Pl
 play: Execute
 paths_list: Paths list
 progression: Progression
-path_dashboard: Tableau de bord du parcours
 path_open_not_published_error: The path you wanted to open has not been published yet by its owner.
 paths_template_list: Template paths list
 publish: Publish
