@@ -5,18 +5,18 @@ namespace Innova\CollecticielBundle\Controller;
 use Innova\CollecticielBundle\Entity\Dropzone;
 use Innova\CollecticielBundle\Event\Log\LogDropzoneConfigureEvent;
 use Innova\CollecticielBundle\Event\Log\LogDropzoneManualStateChangedEvent;
+use Innova\CollecticielBundle\Form\DropzoneAppreciationType;
 use Innova\CollecticielBundle\Form\DropzoneCommonType;
 use Innova\CollecticielBundle\Form\DropzoneCriteriaType;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Exception\NotValidCurrentPageException;
 use Pagerfanta\Pagerfanta;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Innova\CollecticielBundle\Form\DropzoneAppreciationType;
 
 class DropzoneController extends DropzoneBaseController
 {
@@ -62,7 +62,7 @@ class DropzoneController extends DropzoneBaseController
 
         $form = $this->createForm(
             new DropzoneCommonType(), $dropzone,
-            array('language' => $platformConfigHandler->getParameter('locale_language'), 'date_format' => 'dd/MM/yyyy')
+            ['language' => $platformConfigHandler->getParameter('locale_language'), 'date_format' => 'dd/MM/yyyy']
         );
 
         $request = $this->getRequest();
@@ -131,14 +131,14 @@ class DropzoneController extends DropzoneBaseController
             if ($dropzone->hasCriteria() !== false) {
                 $request->getSession()->getFlashBag()->add(
                               'success',
-                              $this->get('translator')->trans('The evaluation has been successfully saved', array(), 'icap_dropzone')
+                              $this->get('translator')->trans('The evaluation has been successfully saved', [], 'icap_dropzone')
                           );
             }
 
             $event = new LogDropzoneConfigureEvent($dropzone, $changeSet);
             $this->dispatch($event);
 
-            $this->getRequest()->getSession()->getFlashBag()->add('success', $translator->trans('The collecticiel has been successfully saved', array(), 'innova_collecticiel'));
+            $this->getRequest()->getSession()->getFlashBag()->add('success', $translator->trans('The collecticiel has been successfully saved', [], 'innova_collecticiel'));
         }
 
         $adminInnova = false;
@@ -149,14 +149,14 @@ class DropzoneController extends DropzoneBaseController
 
         $collecticielOpenOrNot = $dropzoneManager->collecticielOpenOrNot($dropzone);
 
-        return array(
+        return [
             'workspace' => $dropzone->getResourceNode()->getWorkspace(),
             '_resource' => $dropzone,
             'dropzone' => $dropzone,
             'form' => $form->createView(),
             'adminInnova' => $adminInnova,
             'collecticielOpenOrNot' => $collecticielOpenOrNot,
-        );
+        ];
     }
 
     /**
@@ -255,14 +255,12 @@ class DropzoneController extends DropzoneBaseController
             $event = new LogDropzoneConfigureEvent($dropzone, $changeSet);
             $this->dispatch($event);
 
-            $this->getRequest()->getSession()->getFlashBag()->add('success', $translator->trans('The collecticiel has been successfully saved', array(), 'innova_collecticiel'));
+            $this->getRequest()->getSession()->getFlashBag()->add('success', $translator->trans('The collecticiel has been successfully saved', [], 'innova_collecticiel'));
             // redirect to main dropzone settings view
             return $this->redirect(
                 $this->generateUrl(
                     'innova_collecticiel_edit_common',
-                    array(
-                        'resourceId' => $dropzone->getId(),
-                    )
+                    ['resourceId' => $dropzone->getId()]
                 )
             );
         }
@@ -275,14 +273,14 @@ class DropzoneController extends DropzoneBaseController
 
         $collecticielOpenOrNot = $dropzoneManager->collecticielOpenOrNot($dropzone);
 
-        return array(
+        return [
             'workspace' => $dropzone->getResourceNode()->getWorkspace(),
             '_resource' => $dropzone,
             'dropzone' => $dropzone,
             'form' => $form->createView(),
             'adminInnova' => $adminInnova,
             'collecticielOpenOrNot' => $collecticielOpenOrNot,
-        );
+        ];
     }
 
     /**
@@ -331,10 +329,10 @@ class DropzoneController extends DropzoneBaseController
                 return $this->redirect(
                     $this->generateUrl(
                         'innova_collecticiel_edit_criteria_paginated',
-                        array(
+                        [
                             'resourceId' => $dropzone->getId(),
                             'page' => $pager->getNbPages(),
-                        )
+                        ]
                     )
                 );
             } else {
@@ -373,7 +371,7 @@ class DropzoneController extends DropzoneBaseController
                     $this->get('innova.manager.dropzone_manager')->recalculateScoreByDropzone($dropzone);
                     $this->getRequest()->getSession()->getFlashBag()->add(
                         'success',
-                        $this->get('translator')->trans('Grades were recalculated', array(), 'innova_collecticiel')
+                        $this->get('translator')->trans('Grades were recalculated', [], 'innova_collecticiel')
                     );
                 }
 
@@ -383,26 +381,26 @@ class DropzoneController extends DropzoneBaseController
                 if ($dropzone->hasCriteria() === false) {
                     $this->getRequest()->getSession()->getFlashBag()->add(
                         'warning',
-                        $this->get('translator')->trans('Warning your peer review offers no criteria on which to base correct copies', array(), 'innova_collecticiel')
+                        $this->get('translator')->trans('Warning your peer review offers no criteria on which to base correct copies', [], 'innova_collecticiel')
                     );
                 }
                 if ($add_criteria_after) {
-                    return new JsonResponse(array('success' => true));
+                    return new JsonResponse(['success' => true]);
                 }
 
                 $goBack = $form->get('goBack')->getData();
                 if ($goBack === 0) {
                     $this->getRequest()->getSession()->getFlashBag()->add(
                         'success',
-                        $this->get('translator')->trans('The collecticiel has been successfully saved', array(), 'innova_collecticiel')
+                        $this->get('translator')->trans('The collecticiel has been successfully saved', [], 'innova_collecticiel')
                     );
                 } else {
                     return $this->redirect(
                         $this->generateUrl(
                             'innova_collecticiel_edit_common',
-                            array(
+                            [
                                 'resourceId' => $dropzone->getId(),
-                            )
+                            ]
                         )
                     );
                 }
@@ -415,7 +413,7 @@ class DropzoneController extends DropzoneBaseController
         $collecticielOpenOrNot = $dropzoneManager->collecticielOpenOrNot($dropzone);
         $adminInnova = $dropzoneVoter->checkEditRight($dropzone);
 
-        return array(
+        return [
             'workspace' => $dropzone->getResourceNode()->getWorkspace(),
             '_resource' => $dropzone,
             'dropzone' => $dropzone,
@@ -425,7 +423,7 @@ class DropzoneController extends DropzoneBaseController
             'add_criteria_after' => $add_criteria_after,
             'adminInnova' => $adminInnova,
             'collecticielOpenOrNot' => $collecticielOpenOrNot,
-        );
+        ];
     }
 
     /**
@@ -450,7 +448,7 @@ class DropzoneController extends DropzoneBaseController
 
         $em = $this->getDoctrine()->getManager();
         $dropRepo = $em->getRepository('InnovaCollecticielBundle:Drop');
-        $drop = $dropRepo->findOneBy(array('dropzone' => $dropzone, 'user' => $user));
+        $drop = $dropRepo->findOneBy(['dropzone' => $dropzone, 'user' => $user]);
         $dropzoneManager = $this->get('innova.manager.dropzone_manager');
         // check if endAllowDrop is past and close all unvalidated
         // drops if autoclose options is activated.
@@ -473,7 +471,7 @@ class DropzoneController extends DropzoneBaseController
 
         $PeerReviewEndCase = $dropzoneManager->isPeerReviewEndedOrManualStateFinished($dropzone, $nbCorrections);
 
-        return array(
+        return [
             'workspace' => $dropzone->getResourceNode()->getWorkspace(),
             '_resource' => $dropzone,
             'dropzone' => $dropzone,
@@ -483,7 +481,7 @@ class DropzoneController extends DropzoneBaseController
             'hasUnfinishedCorrection' => $hasUnfinishedCorrection,
             'dropzoneProgress' => $dropzoneProgress,
             'PeerReviewEndCase' => $PeerReviewEndCase,
-        );
+        ];
     }
 
     private function handleFormErrors($form, Dropzone $dropzone)
@@ -595,11 +593,10 @@ class DropzoneController extends DropzoneBaseController
         $em->flush();
 
         // Redirect
-        $url = $this->generateUrl('innova_collecticiel_edit_appreciation', array(
-                    'resourceId' => $dropzone->getId(),
-                )
+        $url = $this->generateUrl('innova_collecticiel_edit_appreciation',
+            ['resourceId' => $dropzone->getId()]
         );
 
-        return new JsonResponse(array('link' => $url));
+        return new JsonResponse(['link' => $url]);
     }
 }
