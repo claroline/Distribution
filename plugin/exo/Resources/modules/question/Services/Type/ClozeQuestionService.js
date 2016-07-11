@@ -172,12 +172,25 @@ ClozeQuestionService.prototype.getHoleStats = function (question, holeId) {
  * @param   {Object} hole
  * @returns {string}
  */
-ClozeQuestionService.prototype.getHoleFeedback = function getHoleFeedback(question, hole) {
+ClozeQuestionService.prototype.getHoleFeedback = function getHoleFeedback(question, hole, answer) {
   var feedback = ''
 
   var correct = this.getHoleCorrectAnswers(question, hole)
   if (correct && correct[0].feedback) {
     feedback = correct[0].feedback
+  }
+
+  if (correct) {
+    for (var i = 0; i < correct.length; i++) {
+      if (hole.selector && answer.answerText === correct[i].id && correct[i].feedback) {
+        feedback = correct[i].feedback
+      } else {
+        if ((correct[i].caseSensitive && correct[i].text === answer.answerText)
+            || (!correct[i].caseSensitive && correct[i].text.toLowerCase() === answer.answerText.toLowerCase())) {
+          feedback = correct[i].feedback
+        }
+      }
+    }
   }
 
   return feedback

@@ -81,7 +81,9 @@ ClozeQuestionCtrl.prototype.getHoleAnswer = function getHoleAnswer(hole) {
  * @returns {string}
  */
 ClozeQuestionCtrl.prototype.getHoleFeedback = function getHoleFeedback(hole) {
-  return this.ClozeQuestionService.getHoleFeedback(this.question, hole)
+  var answer = this.getHoleAnswer(hole)
+
+  return this.ClozeQuestionService.getHoleFeedback(this.question, hole, answer)
 }
 
 /**
