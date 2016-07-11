@@ -97,7 +97,7 @@ class DropzoneController extends DropzoneBaseController
 
             // Mise à jour de la publication dans la table "claro_resource_node"
             $resourceId = $dropzone->getResourceNode()->getId();
-            $resourceNodes = $dropzoneManager->updatePublished(
+            $dropzoneManager->updatePublished(
                 $resourceId, $form->get('published')->getData()
             );
 
@@ -231,8 +231,6 @@ class DropzoneController extends DropzoneBaseController
         $dropzoneVoter = $this->get('innova.manager.dropzone_voter');
         $dropzoneManager = $this->get('innova.manager.dropzone_manager');
         $translator = $this->get('translator');
-        $platformConfigHandler
-            = $this->get('claroline.config.platform_config_handler');
 
         $dropzoneVoter->isAllowToOpen($dropzone);
         $dropzoneVoter->isAllowToEdit($dropzone);
@@ -253,7 +251,7 @@ class DropzoneController extends DropzoneBaseController
             $tab = $this->getRequest()
                 ->request->get('innova_collecticiel_appreciation_form');
 
-            $manageGradingScales = $gradingScaleManager
+            $gradingScaleManager
                 ->manageGradingScales(
                     $tab[
                     'gradingScales'
@@ -261,7 +259,7 @@ class DropzoneController extends DropzoneBaseController
                     $dropzone
                 );
 
-            $manageGradingCriterias = $gradingCriteriaManager
+            $gradingCriteriaManager
                 ->manageGradingCriterias($tab['gradingCriterias'], $dropzone);
 
             // see if manual planification option has changed.
@@ -692,7 +690,7 @@ class DropzoneController extends DropzoneBaseController
         // Mise à jour de la publication dans la table "claro_resource_node"
         $dropzoneManager = $this->get('innova.manager.dropzone_manager');
         $resourceId = $dropzone->getResourceNode()->getId();
-        $resourceNodes = $dropzoneManager->updatePublished($resourceId, $published);
+        $dropzoneManager->updatePublished($resourceId, $published);
 
         $dropzone->setReturnReceipt($returnReceipt);
         $dropzone->setPicture($picture);
