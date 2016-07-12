@@ -11,20 +11,19 @@ let _restService = new WeakMap()
 
 export default class ChapterController {
 
-  constructor($rootScope,
-              $scope,
-              lessonData,
-              modal,
-              $route,
-              $location,
-              $anchorScroll,
-              restService,
-              Chapter,
-              Tree,
-              Alerts,
-              tinyMceConfig
-              ) {
-
+  constructor ($rootScope,
+    $scope,
+    lessonData,
+    modal,
+    $route,
+    $location,
+    $anchorScroll,
+    restService,
+    Chapter,
+    Tree,
+    Alerts,
+    tinyMceConfig
+  ) {
     _$rootScope.set(this, $rootScope)
     _$scope.set(this, $scope)
     _$route.set(this, $route)
@@ -54,11 +53,9 @@ export default class ChapterController {
     this.init()
   }
 
-  init() {
-
+  init () {
     // Intialize the chapter only if there is one in the lesson
     if (this.lessonData.defaultChapter) {
-
       // If a LESSON is displayed, there's no chapter slug in the route (route: '/')
       // We need to rely on a default chapter slug
       let chapterToLoad = _$route.get(this).current.pathParams.slug
@@ -72,60 +69,58 @@ export default class ChapterController {
 
       // We have to provide all the tree in a flattened array
       this._getChapterList(this.lessonData.lessonId)
-      
+
       // If the chapter isn't loaded, we have to fetch the data
       if (chapterToLoad != this.chapter.current.slug) {
         _restService.get(this).getChapter(
           this.lessonData.lessonId,
-            chapterToLoad
-          )
+          chapterToLoad
+        )
           .then(
             response => {
               this.chapter.refresh(response)
             }
-          )
+        )
       }
     }
   }
-  
-  
-  newChapter(slug) {
+
+
+  newChapter (slug) {
     _$location.get(this).url('/' + slug + '/new')
   }
 
-  updateChapter(slug) {
+  updateChapter (slug) {
     _$location.get(this).url('/' + slug + '/edit')
   }
 
-  moveChapter(slug) {
+  moveChapter (slug) {
     _$location.get(this).url('/' + slug + '/move')
   }
 
-  duplicateChapter(slug) {
+  duplicateChapter (slug) {
     _$location.get(this).url('/' + slug + '/duplicate')
   }
 
-  getPreviousChapterUrl() {
+  getPreviousChapterUrl () {
     return this.chapter.current.previous
       ? '#/' + this.chapter.current.previous
       : null
   }
 
-  getNextChapterUrl() {
+  getNextChapterUrl () {
     return this.chapter.current.next
       ? '#/' + this.chapter.current.next
       : null
   }
 
-  createFirstChapter() {
+  createFirstChapter () {
     this.lessonData.createNew = true
     _$location.get(this).url('/new')
   }
 
-  createChapter(form) {
-
+  createChapter (form) {
     if (form.$valid) {
-
       // Disable submit button while XHR
       this.buttonSubmit.disabled = true
 
@@ -133,35 +128,33 @@ export default class ChapterController {
         this.lessonData.lessonId,
         this._createdChapter
       )
-      .then(
-        response => {
-          // First chapter of the lesson has already been created (this time or during a previous submission)
-          this.lessonData.createNew = false
-          this.chapter.refresh(response.chapter)
-          
-          this.tree.refresh(this.lessonData.lessonId)
-          this._getDefaultChapter(this.lessonData.lessonId)
+        .then(
+          response => {
+            // First chapter of the lesson has already been created (this time or during a previous submission)
+            this.lessonData.createNew = false
+            this.chapter.refresh(response.chapter)
 
-          this.alerts.push({"type": 'success', "msg": response.message})
+            this.tree.refresh(this.lessonData.lessonId)
+            this._getDefaultChapter(this.lessonData.lessonId)
 
-          form.$setPristine()
+            this.alerts.push({'type': 'success', 'msg': response.message})
 
-          _$location.get(this).url('/' + response.chapter.slug)
-        },
-        rejection => {
-          // Re-enable the submit button and display errors ?
-          this.buttonSubmit.disabled = false
-        }
+            form.$setPristine()
+
+            _$location.get(this).url('/' + response.chapter.slug)
+          },
+          rejection => {
+            // Re-enable the submit button and display errors ?
+            this.buttonSubmit.disabled = false
+          }
       )
-    }
-    else {
-      this.alerts.push({"type": 'danger', "msg": Translator.trans('form_error', 'icap_lesson')})
+    } else {
+      this.alerts.push({'type': 'danger', 'msg': Translator.trans('form_error', 'icap_lesson')})
     }
   }
 
-  editChapter(form) {
+  editChapter (form) {
     if (form.$valid) {
-
       // Disable submit button
       this.buttonSubmit.disabled = true
 
@@ -169,12 +162,12 @@ export default class ChapterController {
         this.lessonData.lessonId,
         this.chapter.current.slug,
         this.chapter.edited
-        )
+      )
         .then(
           response => {
             this.chapter.refresh(response.chapter)
             this.tree.refresh(this.lessonData.lessonId)
-            this.alerts.push({"type": 'success', "msg": response.message})
+            this.alerts.push({'type': 'success', 'msg': response.message})
             form.$setPristine()
             _$location.get(this).url('/' + response.chapter.slug)
           },
@@ -182,16 +175,14 @@ export default class ChapterController {
             // Re-enable the submit button and display errors ?
             this.buttonSubmit.disabled = false
           }
-        )
-    }
-    else {
-      this.alerts.push({"type": 'danger', "msg": Translator.trans('form_error', 'icap_lesson')})
+      )
+    } else {
+      this.alerts.push({'type': 'danger', 'msg': Translator.trans('form_error', 'icap_lesson')})
     }
   }
 
-  copyChapter(form) {
+  copyChapter (form) {
     if (form.$valid) {
-
       // Disable submit button
       this.buttonSubmit.disabled = true
 
@@ -203,33 +194,31 @@ export default class ChapterController {
         this.chapter.current.slug,
         this.chapter.current,
         copyChildren
-        )
+      )
         .then(
           response => {
             this.chapter.refresh(response.chapter)
             this.tree.refresh(this.lessonData.lessonId)
             this._getDefaultChapter(this.lessonData.lessonId)
-            this.alerts.push({"type": 'success', "msg": response.message})
+            this.alerts.push({'type': 'success', 'msg': response.message})
             _$location.get(this).url('/' + response.chapter.slug)
           },
           rejection => {
             // Re-enable the submit button and display errors ?
             this.buttonSubmit.disabled = false
           }
-        )
-    }
-    else {
-      this.alerts.push({"type": 'danger', "msg": Translator.trans('form_error', 'icap_lesson')})
+      )
+    } else {
+      this.alerts.push({'type': 'danger', 'msg': Translator.trans('form_error', 'icap_lesson')})
     }
   }
 
-  confirmDeleteChapter() {
-    //this._deletedChapter = this.chapter.current
+  confirmDeleteChapter () {
+    // this._deletedChapter = this.chapter.current
     this._modal(confirmDeletionTemplate)
   }
 
-  deleteChapter(form) {
-
+  deleteChapter (form) {
     // Disable submit button
     this.buttonSubmit.disabled = true
 
@@ -241,35 +230,33 @@ export default class ChapterController {
       this.chapter.current.slug,
       deleteChildren
     )
-    .then(
-      response => {
-        this.tree.refresh(this.lessonData.lessonId)
-        this.alerts.push({"type": 'success', "msg": response.message})
-        this.cancelModal()
-        this._getDefaultChapter(this.lessonData.lessonId).then(
-          response => _$location.get(this).url('/')
-        )
-
-      },
-      rejection => {
-        // Re-enable the submit button and display errors ?
-        this.buttonSubmit.disabled = false
-      }
+      .then(
+        response => {
+          this.tree.refresh(this.lessonData.lessonId)
+          this.alerts.push({'type': 'success', 'msg': response.message})
+          this.cancelModal()
+          this._getDefaultChapter(this.lessonData.lessonId).then(
+            response => _$location.get(this).url('/')
+          )
+        },
+        rejection => {
+          // Re-enable the submit button and display errors ?
+          this.buttonSubmit.disabled = false
+        }
     )
   }
 
-  goToAnchor(anchor) {
-    let $location = _$location.get(this);
-    let $anchorScroll = _$anchorScroll.get(this);
+  goToAnchor (anchor) {
+    let $location = _$location.get(this)
+    let $anchorScroll = _$anchorScroll.get(this)
     if ($location.hash() !== anchor) {
-      $location.hash(anchor);
+      $location.hash(anchor)
     } else {
-      $anchorScroll();
+      $anchorScroll()
     }
   }
 
-  _moveChapter(form) {
-
+  _moveChapter (form) {
     // Disable submit button
     this.buttonSubmit.disabled = true
 
@@ -290,21 +277,21 @@ export default class ChapterController {
       newParent,
       prevSibling
     )
-    .then(
-      response => {
-        this.tree.refresh(this.lessonData.lessonId)
+      .then(
+        response => {
+          this.tree.refresh(this.lessonData.lessonId)
 
-        this.alerts.push({"type": 'success', "msg": response.message})
-        _$location.get(this).url('/' + response.chapter.slug)
-      },
-      rejection => {
-        // Re-enable the submit button and display errors ?
-        this.buttonSubmit.disabled = false
-      }
+          this.alerts.push({'type': 'success', 'msg': response.message})
+          _$location.get(this).url('/' + response.chapter.slug)
+        },
+        rejection => {
+          // Re-enable the submit button and display errors ?
+          this.buttonSubmit.disabled = false
+        }
     )
   }
 
-  _getChapterList(lesson) {
+  _getChapterList (lesson) {
     return _restService.get(this).getChapterList(lesson).then(
       response => {
         // Find the root chapter and adjust its title
@@ -320,14 +307,13 @@ export default class ChapterController {
     )
   }
 
-  _getDefaultChapter(lesson) {
+  _getDefaultChapter (lesson) {
     return _restService.get(this).getDefaultChapter(lesson).then(
       response => {
         if ('defaultChapter' in response) {
           this.lessonData.defaultChapter = response.defaultChapter
           this.lessonData.isEmpty = false
-        }
-        else {
+        } else {
           this.lessonData.defaultChapter = null
           this.lessonData.isEmpty = true
         }
@@ -335,7 +321,7 @@ export default class ChapterController {
     )
   }
 
-  cancelForm(slug) {
+  cancelForm (slug) {
     let url = !angular.isDefined(slug)
       ? '/'
       : '/' + slug
@@ -344,7 +330,7 @@ export default class ChapterController {
     _$location.get(this).url(url)
   }
 
-  cancelModal(form) {
+  cancelModal (form) {
     if (form) {
       this._resetForm(form)
     }
@@ -352,7 +338,7 @@ export default class ChapterController {
     _modalInstance.get(this).dismiss()
   }
 
-  _modal(template) {
+  _modal (template) {
     _modalInstance.set(this, _modalFactory.get(this).open(template, _$scope.get(this)))
   }
 }
