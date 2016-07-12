@@ -6,6 +6,7 @@ let _modalInstance = new WeakMap()
 let _modalFactory = new WeakMap()
 let _$route = new WeakMap()
 let _$location = new WeakMap()
+let _$anchorScroll = new WeakMap()
 let _restService = new WeakMap()
 
 export default class ChapterController {
@@ -16,6 +17,7 @@ export default class ChapterController {
               modal,
               $route,
               $location,
+              $anchorScroll,
               restService,
               Chapter,
               Tree,
@@ -27,6 +29,7 @@ export default class ChapterController {
     _$scope.set(this, $scope)
     _$route.set(this, $route)
     _$location.set(this, $location)
+    _$anchorScroll.set(this, $anchorScroll)
     _modalInstance.set(this, null)
     _modalFactory.set(this, modal)
     _restService.set(this, restService)
@@ -255,6 +258,16 @@ export default class ChapterController {
     )
   }
 
+  goToAnchor(anchor) {
+    let $location = _$location.get(this);
+    let $anchorScroll = _$anchorScroll.get(this);
+    if ($location.hash() !== anchor) {
+      $location.hash(anchor);
+    } else {
+      $anchorScroll();
+    }
+  }
+
   _moveChapter(form) {
 
     // Disable submit button
@@ -351,6 +364,7 @@ ChapterController.$inject = [
   'lessonModal',
   '$route',
   '$location',
+  '$anchorScroll',
   'restService',
   'Chapter',
   'Tree',
