@@ -237,7 +237,7 @@ export default class ChapterController {
           this.alerts.push({'type': 'success', 'msg': response.message})
           this.cancelModal()
           this._getDefaultChapter(this.lessonData.lessonId).then(
-            response => _$location.get(this).url('/')
+            () => _$location.get(this).url('/')
           )
         },
         () => {
