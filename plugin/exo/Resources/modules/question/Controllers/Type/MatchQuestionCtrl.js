@@ -484,9 +484,9 @@ MatchQuestionCtrl.prototype.reset = function reset() {
         $(".origin").each(function () {
             if ($(this).find('.draggable').attr('style')) {
                 $(this).find('.draggable').removeAttr('style');
-                $(this).find('.draggable').removeAttr('aria-disabled');
-                $(this).find('.draggable').draggable("enable");
             }
+            $(this).removeAttr('aria-disabled');
+            $(this).draggable("enable");
         });
 
         // init all drop containers ui
