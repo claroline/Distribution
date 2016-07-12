@@ -1,4 +1,5 @@
 import confirmDeletionTemplate from './confirmDeletion.partial.html'
+import angular from 'angular/index'
 
 let _$rootScope = new WeakMap()
 let _$scope = new WeakMap()
@@ -143,13 +144,13 @@ export default class ChapterController {
 
             _$location.get(this).url('/' + response.chapter.slug)
           },
-          rejection => {
+          () => {
             // Re-enable the submit button and display errors ?
             this.buttonSubmit.disabled = false
           }
       )
     } else {
-      this.alerts.push({'type': 'danger', 'msg': Translator.trans('form_error', 'icap_lesson')})
+      this.alerts.push({'type': 'danger', 'msg': window.Translator.trans('form_error', 'icap_lesson')})
     }
   }
 
@@ -171,13 +172,13 @@ export default class ChapterController {
             form.$setPristine()
             _$location.get(this).url('/' + response.chapter.slug)
           },
-          rejection => {
+          () => {
             // Re-enable the submit button and display errors ?
             this.buttonSubmit.disabled = false
           }
       )
     } else {
-      this.alerts.push({'type': 'danger', 'msg': Translator.trans('form_error', 'icap_lesson')})
+      this.alerts.push({'type': 'danger', 'msg': window.Translator.trans('form_error', 'icap_lesson')})
     }
   }
 
@@ -203,13 +204,13 @@ export default class ChapterController {
             this.alerts.push({'type': 'success', 'msg': response.message})
             _$location.get(this).url('/' + response.chapter.slug)
           },
-          rejection => {
+          () => {
             // Re-enable the submit button and display errors ?
             this.buttonSubmit.disabled = false
           }
       )
     } else {
-      this.alerts.push({'type': 'danger', 'msg': Translator.trans('form_error', 'icap_lesson')})
+      this.alerts.push({'type': 'danger', 'msg': window.Translator.trans('form_error', 'icap_lesson')})
     }
   }
 
@@ -239,7 +240,7 @@ export default class ChapterController {
             response => _$location.get(this).url('/')
           )
         },
-        rejection => {
+        () => {
           // Re-enable the submit button and display errors ?
           this.buttonSubmit.disabled = false
         }
@@ -284,7 +285,7 @@ export default class ChapterController {
           this.alerts.push({'type': 'success', 'msg': response.message})
           _$location.get(this).url('/' + response.chapter.slug)
         },
-        rejection => {
+        () => {
           // Re-enable the submit button and display errors ?
           this.buttonSubmit.disabled = false
         }
@@ -295,9 +296,9 @@ export default class ChapterController {
     return _restService.get(this).getChapterList(lesson).then(
       response => {
         // Find the root chapter and adjust its title
-        angular.forEach(response, (value, key) => {
+        angular.forEach(response, (value) => {
           if (value.slug == this.lessonData.root) {
-            value.title = Translator.trans('Root', 'icap_lesson')
+            value.title = window.Translator.trans('Root', 'icap_lesson')
             this.break
           }
         })
