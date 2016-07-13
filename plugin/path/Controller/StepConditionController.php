@@ -2,13 +2,14 @@
 
 namespace Innova\PathBundle\Controller;
 
-use Claroline\CoreBundle\Entity\Activity\AbstractEvaluation;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\GroupManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\TeamBundle\Manager\TeamManager;
 use Innova\PathBundle\Entity\Path\Path;
 use Innova\PathBundle\Entity\Step;
+use Innova\PathBundle\Event\Log\LogStepUnlockDoneEvent;
+use Innova\PathBundle\Event\Log\LogStepUnlockEvent;
 use Innova\PathBundle\Manager\UserProgressionManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -93,7 +94,7 @@ class StepConditionController extends Controller
         $data = [];
 
         $usergroup = $this->groupManager->getAll();
-        if ($usergroup != null) {
+        if ($usergroup !== null) {
             //data needs to be explicitly set because Group does not extends Serializable
             foreach ($usergroup as $ug) {
                 $data[$ug->getId()] = $ug->getName();
@@ -187,17 +188,6 @@ class StepConditionController extends Controller
      */
     public function getEvaluationStatuses()
     {
-        /*
-        $statuses = array(
-            AbstractEvaluation::STATUS_COMPLETED,
-            AbstractEvaluation::STATUS_FAILED,
-            AbstractEvaluation::STATUS_INCOMPLETE,
-            AbstractEvaluation::STATUS_NOT_ATTEMPTED,
-            AbstractEvaluation::STATUS_PASSED,
-            AbstractEvaluation::STATUS_UNKNOWN
-        );
-*/
-
         $r = new \ReflectionClass('Claroline\CoreBundle\Entity\Activity\AbstractEvaluation');
         //Get class constants
         $const = $r->getConstants();
@@ -292,11 +282,11 @@ class StepConditionController extends Controller
     {
         //retrieve current workspace
         $workspace = $this->om->getRepository("InnovaPathBundle:Path\Path")->findOneById($id)->getWorkspace();
-        //$workspace = $this->om->getRepository("ClarolineCoreBundle:Resource\ResourceNode")->findOneById($id)->getWorkspace();
+
         $data = [];
         //retrieve list of groups object for this user
         $teamsforws = $this->teamManager->getTeamsByWorkspace($workspace);
-        if ($teamsforws != null) {
+        if ($teamsforws !== null) {
             //data needs to be explicitly set because Team does not extends Serializable
             foreach ($teamsforws as $tw) {
                 $data[$tw->getId()] = $tw->getName();
@@ -324,10 +314,9 @@ class StepConditionController extends Controller
         $user = $this->securityToken->getToken()->getUser();
         $data = [];
         if ($user instanceof User) {
-            $userId = $user->getId();
             //retrieve list of team object for this user
             $teamforuser = $this->teamManager->getTeamsByUser($user, 'name', 'ASC', true);
-            if ($teamforuser != null) {
+            if ($teamforuser !== null) {
                 //data needs to be explicitly set because Team does not extends Serializable
                 foreach ($teamforuser as $tu) {
                     $data[$tu->getId()] = $tu->getName();
@@ -356,7 +345,7 @@ class StepConditionController extends Controller
         $creator = $step->getPath()->getCreator()->getId();
         $userIds = [$creator];
         //create an event, and pass parameters
-        $event = new \Innova\PathBundle\Event\Log\LogStepUnlockEvent($step, $userIds);
+        $event = new LogStepUnlockEvent($step, $userIds);
         //send the event to the event dispatcher
         $this->eventDispatcher->dispatch('log', $event);
 
@@ -384,7 +373,7 @@ class StepConditionController extends Controller
     {
         $userIds = [$user->getId()];
         //create an event, and pass parameters
-        $event = new \Innova\PathBundle\Event\Log\LogStepUnlockDoneEvent($step, $userIds);
+        $event = new LogStepUnlockDoneEvent($step, $userIds);
         //send the event to the event dispatcher
         $this->eventDispatcher->dispatch('log', $event);
         //update lockedcall value : set to true = called

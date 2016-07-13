@@ -73,8 +73,6 @@ class ManageResultsController
 
         $data = [];
         $workspace = $path->getWorkspace();
-        //get list of paths for WS
-        $paths = $this->pathManager->getWorkspacePaths($workspace);
 
         //retrieve users having access to the WS
         //TODO Optimize
