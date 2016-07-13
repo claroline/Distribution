@@ -190,7 +190,6 @@ class DocumentController extends DropzoneBaseController
 
     private function createDocument(Dropzone $dropzone, Drop $drop, $form, $documentType)
     {
-        $dropzoneVoter = $this->get('innova.manager.dropzone_voter');
         $document = new Document();
         $document->setType($documentType);
 
