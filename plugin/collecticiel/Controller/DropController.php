@@ -7,27 +7,27 @@
 
 namespace Innova\CollecticielBundle\Controller;
 
+use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Library\Resource\ResourceCollection;
 use Innova\CollecticielBundle\Entity\Correction;
 use Innova\CollecticielBundle\Entity\Drop;
 use Innova\CollecticielBundle\Entity\Dropzone;
 use Innova\CollecticielBundle\Event\Log\LogCorrectionUpdateEvent;
 use Innova\CollecticielBundle\Event\Log\LogDropReportEvent;
+use Innova\CollecticielBundle\Event\Log\LogDropzoneReturnReceiptEvent;
 use Innova\CollecticielBundle\Form\CorrectionReportType;
-use Innova\CollecticielBundle\Form\DropType;
 use Innova\CollecticielBundle\Form\DocumentType;
+use Innova\CollecticielBundle\Form\DropType;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Exception\NotValidCurrentPageException;
 use Pagerfanta\Pagerfanta;
-use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Library\Resource\ResourceCollection;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Innova\CollecticielBundle\Event\Log\LogDropzoneReturnReceiptEvent;
 
 class DropController extends DropzoneBaseController
 {
@@ -71,7 +71,7 @@ class DropController extends DropzoneBaseController
 
         if ($this->getRequest()->isMethod('POST')) {
             $form->handleRequest($this->getRequest());
-            if (count($drop->getDocuments()) == 0) {
+            if (count($drop->getDocuments()) === 0) {
                 $form->addError(new FormError('Add at least one document'));
             }
             if ($form->isValid()) {
@@ -471,7 +471,7 @@ class DropController extends DropzoneBaseController
 
             // Boucle pour calcul si le document X a un commentaire déposé par l'enseignant
             foreach ($drop->getDocuments() as $document2) {
-                if ($document2->getValidate() == 1) {
+                if ($document2->getValidate() === 1) {
                     $documentId = $document2->getId();
                     // Ajout pour savoir si le document a un commentaire lu par l'enseignant
                     $commentReadForATeacherOrNot = $commentRepo->commentReadForATeacherOrNot($currentUser, $documentId);
@@ -515,7 +515,7 @@ class DropController extends DropzoneBaseController
             }
         }
 
-        if (count($pager) == 0) {
+        if (count($pager) === 0) {
             $this->getRequest()->getSession()->getFlashBag()->add('success', $translator->trans('No copy waiting for correction', [], 'innova_collecticiel'));
         }
 
@@ -571,9 +571,9 @@ class DropController extends DropzoneBaseController
         $form = $this->createForm(new DropType(), $drop);
 
         $previousPath = 'innova_collecticiel_drops_by_user_paginated';
-        if ($tab == 1) {
+        if ($tab === 1) {
             $previousPath = 'innova_collecticiel_drops_by_date_paginated';
-        } elseif ($tab == 2) {
+        } elseif ($tab === 2) {
             $previousPath = 'innova_collecticiel_drops_awaiting_paginated';
         }
 
@@ -678,8 +678,8 @@ class DropController extends DropzoneBaseController
             ->getDropAndValidEndedCorrectionsAndDocumentsByUser($dropzone, $drop->getId(), $userId);
 
         // if there is no result ( user is not the owner, or the drop has not ended Corrections , show 404)
-        if (count($dropSecure) == 0) {
-            if ($drop->getUser()->getId() != $userId) {
+        if (count($dropSecure) === 0) {
+            if ($drop->getUser()->getId() !== $userId) {
                 throw new AccessDeniedException();
             }
         } else {
@@ -786,7 +786,7 @@ class DropController extends DropzoneBaseController
             throw new AccessDeniedException();
         }
 
-        if ($curent_user_correction == null || $curent_user_correction->getId() != $correction->getId()) {
+        if ($curent_user_correction === null || $curent_user_correction->getId() !== $correction->getId()) {
             throw new AccessDeniedException();
         }
         $form = $this->createForm(new CorrectionReportType(), $correction);
@@ -857,7 +857,7 @@ class DropController extends DropzoneBaseController
         $em = $this->getDoctrine()->getManager();
         $correction->setReporter(false);
 
-        if ($invalidate == 1) {
+        if ($invalidate === 1) {
             $correction->setValid(false);
         }
 
@@ -865,7 +865,7 @@ class DropController extends DropzoneBaseController
         $em->flush();
 
         $correctionRepo = $this->getDoctrine()->getRepository('InnovaCollecticielBundle:Correction');
-        if ($correctionRepo->countReporter($dropzone, $drop) == 0) {
+        if ($correctionRepo->countReporter($dropzone, $drop) === 0) {
             $drop->setReported(false);
             $em->persist($drop);
             $em->flush();
@@ -1050,7 +1050,7 @@ class DropController extends DropzoneBaseController
                 // Nombre de demandes adressées/ Repo : Document
                 $countReceipts = $receiptRepo->haveReturnReceiptOrNotForADocument($user, $dropzone, $document);
                 // S'il y a déjà un accusé de réception alors je le supprime avant de créer le nouveau
-                if ($countReceipts != 0) {
+                if ($countReceipts !== 0) {
                     $reqDeleteReturnReceipt = $receiptRepo->deleteReturnReceipt($user, $dropzone, $document);
                 }
                 // Création du nouvel accusé de réception
