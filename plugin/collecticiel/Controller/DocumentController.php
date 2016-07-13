@@ -241,14 +241,14 @@ class DocumentController extends DropzoneBaseController
     }
 
     /**
-     * @Route(
+     *@Route(
      *      "/{resourceId}/document/{documentType}/{dropId}",
      *      name="innova_collecticiel_document",
      *      requirements={"resourceId" = "\d+", "dropId" = "\d+", "documentType" = "url|file|resource|text"}
      * )
-     * @ParamConverter("dropzone", class="InnovaCollecticielBundle:Dropzone", options={"id" = "resourceId"})
-     * @ParamConverter("drop", class="InnovaCollecticielBundle:Drop", options={"id" = "dropId"})
-     * @Template()
+     *@ParamConverter("dropzone", class="InnovaCollecticielBundle:Dropzone", options={"id" = "resourceId"})
+     *@ParamConverter("drop", class="InnovaCollecticielBundle:Drop", options={"id" = "dropId"})
+     *@Template()
      */
     public function documentAction($dropzone, $documentType, $drop)
     {
@@ -300,12 +300,12 @@ class DocumentController extends DropzoneBaseController
                 $event = new LogDropzoneAddDocumentEvent($dropzone, $dropzone->getManualState(), $usersIds);
                 $this->get('event_dispatcher')->dispatch('log', $event);
 
-/*
-InnoERV : demande de JJQ dans son document d'août 2015
-Quand un enseignant dépose un document (Fichier, URl, ressource ou texte)
-dans l'espace collecticiel d'un étudiant alors il faut revenir sur l'espace collecticiel de l'étudiant
-Travail effectué : changement de route et ajout d'un paramètre pour cette nouvelle route
-*/
+                /*
+                InnoERV : demande de JJQ dans son document d'août 2015
+                Quand un enseignant dépose un document (Fichier, URl, ressource ou texte)
+                dans l'espace collecticiel d'un étudiant alors il faut revenir sur l'espace collecticiel de l'étudiant
+                Travail effectué : changement de route et ajout d'un paramètre pour cette nouvelle route
+                */
                 return $this->redirect(
                     $this->generateUrl(
                         'innova_collecticiel_drop_switch',
@@ -337,16 +337,16 @@ Travail effectué : changement de route et ajout d'un paramètre pour cette nouv
     }
 
     /**
-     * @Route(
+     *@Route(
      *      "/{resourceId}/delete/document/{dropId}/{documentId}",
      *      name="innova_collecticiel_delete_document",
      *      requirements={"resourceId" = "\d+", "dropId" = "\d+", "documentId" = "\d+"}
      * )
-     * @ParamConverter("dropzone", class="InnovaCollecticielBundle:Dropzone", options={"id" = "resourceId"})
-     * @ParamConverter("user", options={"authenticatedUser" = true})
-     * @ParamConverter("drop", class="InnovaCollecticielBundle:Drop", options={"id" = "dropId"})
-     * @ParamConverter("document", class="InnovaCollecticielBundle:Document", options={"id" = "documentId"})
-     * @Template()
+     *@ParamConverter("dropzone", class="InnovaCollecticielBundle:Dropzone", options={"id" = "resourceId"})
+     *@ParamConverter("user", options={"authenticatedUser" = true})
+     *@ParamConverter("drop", class="InnovaCollecticielBundle:Drop", options={"id" = "dropId"})
+     *@ParamConverter("document", class="InnovaCollecticielBundle:Document", options={"id" = "documentId"})
+     *@Template()
      */
     public function deleteDocumentAction(Dropzone $dropzone, $user, Drop $drop, Document $document)
     {
@@ -415,15 +415,15 @@ Travail effectué : changement de route et ajout d'un paramètre pour cette nouv
     }
 
     /**
-     * @Route(
+     *@Route(
      *      "/{resourceId}/open/resource/{documentId}",
      *      name="innova_collecticiel_open_resource",
      *      requirements={"resourceId" = "\d+", "documentId" = "\d+"}
      * )
-     * @ParamConverter("dropzone", class="InnovaCollecticielBundle:Dropzone", options={"id" = "resourceId"})
-     * @ParamConverter("document", class="InnovaCollecticielBundle:Document", options={"id" = "documentId"})
-     * @ParamConverter("user", options={"authenticatedUser" = true})
-     * @Template()
+     *@ParamConverter("dropzone", class="InnovaCollecticielBundle:Dropzone", options={"id" = "resourceId"})
+     *@ParamConverter("document", class="InnovaCollecticielBundle:Document", options={"id" = "documentId"})
+     *@ParamConverter("user", options={"authenticatedUser" = true})
+     *@Template()
      */
     public function openResourceAction(Dropzone $dropzone, Document $document, $user)
     {
@@ -461,14 +461,14 @@ Travail effectué : changement de route et ajout d'un paramètre pour cette nouv
     }
 
     /**
-     * @Route(
+     *@Route(
      *      "/document/{documentId}",
      *      name="innova_collecticiel_validate_document",
      *      requirements={"documentId" = "\d+", "dropzoneId" = "\d+"},
      *      options={"expose"=true}
      * )
-     * @ParamConverter("document", class="InnovaCollecticielBundle:Document", options={"id" = "documentId"})
-     * @Template()
+     *@ParamConverter("document", class="InnovaCollecticielBundle:Document", options={"id" = "documentId"})
+     *@Template()
      */
     public function ajaxValidateDocumentAction(Document $document)
     {
@@ -526,27 +526,28 @@ Travail effectué : changement de route et ajout d'un paramètre pour cette nouv
         $this->get('event_dispatcher')->dispatch('log', $event);
 
         // Ajout afin d'afficher la partie du code avec "Demande transmise"
-        $template = $this->get('templating')->
-        render('InnovaCollecticielBundle:Document:documentIsValidate.html.twig',
+        $template = $this->get('templating')
+            ->render(
+                'InnovaCollecticielBundle:Document:documentIsValidate.html.twig',
                 array('document' => $document,
                       'collecticielOpenOrNot' => $collecticielOpenOrNot,
                       'dropzone' => $dropzones[0],
-                    )
-               );
+                )
+            );
 
         // Retour du template actualisé à l'Ajax et non plus du Json.
         return new Response($template);
     }
 
     /**
-     * @Route(
+     *@Route(
      *      "/undocument/{documentId}",
      *      name="innova_collecticiel_unvalidate_document",
      *      requirements={"documentId" = "\d+"},
      *      options={"expose"=true}
      * )
-     * @ParamConverter("document", class="InnovaCollecticielBundle:Document", options={"id" = "documentId"})
-     * @Template()
+     *@ParamConverter("document", class="InnovaCollecticielBundle:Document", options={"id" = "documentId"})
+     *@Template()
      */
     public function ajaxUnvalidateDocumentAction(Document $document)
     {
@@ -580,30 +581,35 @@ Travail effectué : changement de route et ajout d'un paramètre pour cette nouv
         $adminInnova = $this->get('request')->query->get('adminInnova');
 
         // Ajout afin d'afficher la partie du code avec "Demande transmise"
-        $template = $this->get('templating')->
-        render('InnovaCollecticielBundle:Document:documentIsValidate.html.twig',
-                array('document' => $document,
-                      'collecticielOpenOrNot' => $collecticielOpenOrNot,
-                      'adminInnova' => $adminInnova,
-                      'dropzone' => $dropzones[0], )
-               );
+        $template = $this->get('templating')
+            ->render(
+                'InnovaCollecticielBundle:Document:documentIsValidate.html.twig',
+                array(
+                    'document' => $document,
+                    'collecticielOpenOrNot' => $collecticielOpenOrNot,
+                    'adminInnova' => $adminInnova,
+                    'dropzone' => $dropzones[0],
+                )
+            );
 
         // Retour du template actualisé à l'Ajax et non plus du Json.
         return new Response($template);
     }
 
     /**
-     * @ParamConverter("document", class="InnovaCollecticielBundle:Document", options={"id" = "documentId"})
-     * @ParamConverter("dropzone", class="InnovaCollecticielBundle:Dropzone", options={"id" = "dropzoneId"})
-     * @Template()
+     *@ParamConverter("document",
+     * class="InnovaCollecticielBundle:Document", options={"id" = "documentId"})
+     *@ParamConverter("dropzone",
+     * class="InnovaCollecticielBundle:Dropzone", options={"id" = "dropzoneId"})
+     *@Template()
      */
     public function renderReturnReceiptAction(Document $document, Dropzone $dropzone)
     {
 
         // Récupération de l'accusé de réceptoin
         $returnReceiptType = $this->getDoctrine()
-        ->getRepository('InnovaCollecticielBundle:ReturnReceipt')
-        ->doneReturnReceiptForADocument($dropzone, $document);
+            ->getRepository('InnovaCollecticielBundle:ReturnReceipt')
+            ->doneReturnReceiptForADocument($dropzone, $document);
 
         // Initialisation de la variable car un document peut ne pas avoir d'accusé de réception.
         $id = 0;
