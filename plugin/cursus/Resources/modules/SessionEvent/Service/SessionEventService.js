@@ -192,7 +192,7 @@ export default class SessionEventService {
     }
 
     this.sessionEvents[sessionId].forEach(e => {
-      e['status'] = this.getSessionEventStatus(e['start_date'], e['end_date'], now)
+      e['status'] = this.getSessionEventStatus(e['startDate'], e['endDate'], now)
 
       if (e['status'] === 'closed') {
         this.closedSessionEvents[sessionId].push(e)

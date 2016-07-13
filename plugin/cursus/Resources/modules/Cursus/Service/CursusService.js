@@ -215,23 +215,24 @@ export default class CursusService {
   }
 
   createCursusCourse(cursusId) {
-    const modal = this.$uibModal.open({
-      templateUrl: Routing.generate('api_get_course_creation_form'),
-      controller: 'CursusCourseCreationModalCtrl',
-      controllerAs: 'cmc',
-      resolve: {
-        cursusId: () => { return cursusId },
-        callback: () => { return this._addCursusCallback }
-      }
-    })
-
-    modal.result.then(result => {
-      if (!result) {
-        return
-      } else {
-        this._addCursusCallback(result)
-      }
-    })
+    this.CourseService.createCourse(cursusId, this._addCursusCallback)
+    //const modal = this.$uibModal.open({
+    //  templateUrl: Routing.generate('api_get_course_creation_form'),
+    //  controller: 'CursusCourseCreationModalCtrl',
+    //  controllerAs: 'cmc',
+    //  resolve: {
+    //    cursusId: () => { return cursusId },
+    //    callback: () => { return this._addCursusCallback }
+    //  }
+    //})
+    //
+    //modal.result.then(result => {
+    //  if (!result) {
+    //    return
+    //  } else {
+    //    this._addCursusCallback(result)
+    //  }
+    //})
   }
 
   showCoursesListForCursus (cursusId, title) {
@@ -274,5 +275,15 @@ export default class CursusService {
       Translator.trans('remove_course', {}, 'cursus'),
       Translator.trans('remove_course_confirm_message', {}, 'cursus')
     )
+  }
+
+  getRootCursus () {
+    const url = Routing.generate('api_get_root_cursus')
+
+    return this.$http.get(url).then(d => {
+      if (d['status'] === 200) {
+        return d['data']
+      }
+    })
   }
 }

@@ -3810,6 +3810,11 @@ class CursusManager
         return count($ids) > 0 ? $this->courseRepo->findCoursesByIds($ids, $orderedBy, $order) : [];
     }
 
+    public function getCourseByCodeWithoutId($code, $id)
+    {
+        return $this->courseRepo->findCourseByCodeWithoutId($code, $id);
+    }
+
     /******************************************
      * Access to CursusUserRepository methods *
      ******************************************/

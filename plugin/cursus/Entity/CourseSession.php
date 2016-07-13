@@ -92,54 +92,63 @@ class CourseSession
      *     targetEntity="Claroline\CursusBundle\Entity\Cursus"
      * )
      * @ORM\JoinTable(name="claro_cursus_sessions")
+     * @Groups({"api_user_min"})
      */
     protected $cursus;
 
     /**
      * @ORM\Column(name="session_status", type="integer")
      * @Groups({"api_cursus", "api_user_min", "api_group_min"})
+     * @SerializedName("sessionStatus")
      */
     protected $sessionStatus = self::SESSION_NOT_STARTED;
 
     /**
      * @ORM\Column(name="default_session", type="boolean")
      * @Groups({"api_cursus", "api_user_min", "api_group_min"})
+     * @SerializedName("defaultSession")
      */
     protected $defaultSession = false;
 
     /**
      * @ORM\Column(name="creation_date", type="datetime", nullable=false)
      * @Groups({"api_cursus", "api_user_min", "api_group_min"})
+     * @SerializedName("creationDate")
      */
     protected $creationDate;
 
     /**
      * @ORM\Column(name="public_registration", type="boolean")
      * @Groups({"api_cursus", "api_user_min", "api_group_min"})
+     * @SerializedName("publicRegistration")
      */
     protected $publicRegistration = false;
 
     /**
      * @ORM\Column(name="public_unregistration", type="boolean")
      * @Groups({"api_cursus", "api_user_min", "api_group_min"})
+     * @SerializedName("publicUnregistration")
      */
     protected $publicUnregistration = false;
 
     /**
      * @ORM\Column(name="registration_validation", type="boolean")
      * @Groups({"api_cursus", "api_user_min", "api_group_min"})
+     * @SerializedName("registrationValidation")
      */
     protected $registrationValidation = false;
 
     /**
      * @ORM\Column(name="start_date", type="datetime", nullable=true)
      * @Groups({"api_cursus", "api_user_min", "api_group_min"})
+     * @SerializedName("startDate")
      */
     protected $startDate;
 
     /**
      * @ORM\Column(name="end_date", type="datetime", nullable=true)
      * @Groups({"api_cursus", "api_user_min", "api_group_min"})
+     * @SerializedName("endDate")
      */
     protected $endDate;
 
@@ -191,6 +200,7 @@ class CourseSession
      *     targetEntity="Claroline\CoreBundle\Entity\User"
      * )
      * @ORM\JoinTable(name="claro_cursusbundle_course_session_validators")
+     * @Groups({"api_user_min"})
      */
     protected $validators;
 
@@ -272,7 +282,6 @@ class CourseSession
         return $this->cursus->toArray();
     }
 
-    //wtf... so lazy...
     public function addCursu(Cursus $cursus)
     {
         if (!$this->cursus->contains($cursus)) {
@@ -298,6 +307,11 @@ class CourseSession
         }
 
         return $this;
+    }
+
+    public function emptyCursus()
+    {
+        $this->cursus->clear();
     }
 
     public function getSessionStatus()
@@ -497,6 +511,11 @@ class CourseSession
         }
 
         return $this;
+    }
+
+    public function emptyValidators()
+    {
+        $this->validators->clear();
     }
 
     public function getType()

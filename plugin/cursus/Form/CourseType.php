@@ -12,9 +12,9 @@
 namespace Claroline\CursusBundle\Form;
 
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Form\Angular\AngularType;
 use Claroline\CursusBundle\Manager\CursusManager;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -22,18 +22,15 @@ use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Range;
 
-class CourseType extends AngularType
+class CourseType extends AbstractType
 {
     private $cursusManager;
-    private $forApi = false;
-    private $ngAlias;
     private $translator;
     private $user;
 
-    public function __construct(User $user, CursusManager $cursusManager, TranslatorInterface $translator, $ngAlias = 'cmc')
+    public function __construct(User $user, CursusManager $cursusManager, TranslatorInterface $translator)
     {
         $this->cursusManager = $cursusManager;
-        $this->ngAlias = $ngAlias;
         $this->translator = $translator;
         $this->user = $user;
     }
@@ -232,18 +229,6 @@ class CourseType extends AngularType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $default = ['translation_domain' => 'cursus'];
-
-        if ($this->forApi) {
-            $default['csrf_protection'] = false;
-        }
-        $default['ng-model'] = 'course';
-        $default['ng-controllerAs'] = $this->ngAlias;
-        $resolver->setDefaults($default);
-    }
-
-    public function enableApi()
-    {
-        $this->forApi = true;
+        $resolver->setDefaults(['translation_domain' => 'cursus']);
     }
 }

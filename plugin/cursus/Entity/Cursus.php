@@ -34,13 +34,13 @@ class Cursus
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_cursus"})
+     * @Groups({"api_cursus", "api_user_min"})
      */
     protected $id;
 
     /**
      * @ORM\Column(unique=true, nullable=true)
-     * @Groups({"api_cursus"})
+     * @Groups({"api_cursus", "api_user_min"})
      * @SerializedName("code")
      */
     protected $code;
@@ -48,14 +48,14 @@ class Cursus
     /**
      * @ORM\Column()
      * @Assert\NotBlank()
-     * @Groups({"api_cursus"})
+     * @Groups({"api_cursus", "api_user_min"})
      * @SerializedName("title")
      */
     protected $title;
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     * @Groups({"api_cursus"})
+     * @Groups({"api_cursus", "api_user_min"})
      * @SerializedName("description")
      */
     protected $description;
@@ -71,14 +71,14 @@ class Cursus
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"api_cursus"})
+     * @Groups({"api_cursus", "api_user_min"})
      * @SerializedName("blocking")
      */
     protected $blocking = false;
 
     /**
      * @ORM\Column(type="json_array", nullable=true)
-     * @Groups({"api_cursus"})
+     * @Groups({"api_cursus", "api_user_min"})
      */
     protected $details;
 
@@ -105,7 +105,7 @@ class Cursus
 
     /**
      * @ORM\Column(name="cursus_order", type="integer")
-     * @Groups({"api_cursus"})
+     * @Groups({"api_cursus", "api_user_min"})
      * @SerializedName("cursusOrder")
      */
     protected $cursusOrder;
@@ -142,7 +142,7 @@ class Cursus
     /**
      * @Gedmo\TreeRoot
      * @ORM\Column(name="root", type="integer", nullable=true)
-     * @Groups({"api_cursus"})
+     * @Groups({"api_cursus", "api_user_min"})
      * @SerializedName("root")
      */
     private $root;
@@ -150,7 +150,7 @@ class Cursus
     /**
      * @Gedmo\TreeLevel
      * @ORM\Column(name="lvl", type="integer")
-     * @Groups({"api_cursus"})
+     * @Groups({"api_cursus", "api_user_min"})
      * @SerializedName("lvl")
      */
     private $lvl;
@@ -158,7 +158,7 @@ class Cursus
     /**
      * @Gedmo\TreeLeft
      * @ORM\Column(name="lft", type="integer")
-     * @Groups({"api_cursus"})
+     * @Groups({"api_cursus", "api_user_min"})
      * @SerializedName("lft")
      */
     private $lft;
@@ -166,7 +166,7 @@ class Cursus
     /**
      * @Gedmo\TreeRight
      * @ORM\Column(name="rgt", type="integer")
-     * @Groups({"api_cursus"})
+     * @Groups({"api_cursus", "api_user_min"})
      * @SerializedName("rgt")
      */
     private $rgt;

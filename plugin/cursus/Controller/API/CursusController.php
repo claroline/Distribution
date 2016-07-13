@@ -49,11 +49,7 @@ class CursusController extends FOSRestController
      *     "requestStack"  = @DI\Inject("request_stack")
      * })
      */
-    public function __construct(
-        CursusManager $cursusManager,
-        FormFactory $formFactory,
-        RequestStack $requestStack
-    ) {
+    public function __construct(CursusManager $cursusManager, FormFactory $formFactory, RequestStack $requestStack) {
         $this->cursusManager = $cursusManager;
         $this->formFactory = $formFactory;
         $this->request = $requestStack->getCurrentRequest();
@@ -71,6 +67,22 @@ class CursusController extends FOSRestController
      * )
      */
     public function getAllRootCursusAction()
+    {
+        return $this->cursusManager->getAllRootCursus('', 'cursusOrder');
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/root/cursus",
+     *     name="api_get_root_cursus"
+     * )
+     * @View(serializerGroups={"api_user_min"})
+     * @ApiDoc(
+     *     description="Returns root cursus list without children",
+     *     views = {"cursus"}
+     * )
+     */
+    public function getRootCursusAction()
     {
         return $this->cursusManager->getAllRootCursus('', 'cursusOrder');
     }
@@ -467,7 +479,7 @@ class CursusController extends FOSRestController
     }
 
     /**
-     * @View(serializerGroups={"api_cursus"})
+     * @View(serializerGroups={"api_user_min"})
      * @ApiDoc(
      *     description="Returns the courses list",
      *     views = {"cursus"}
@@ -493,7 +505,7 @@ class CursusController extends FOSRestController
     }
 
     /**
-     * @View(serializerGroups={"api_cursus"})
+     * @View(serializerGroups={"api_user_min"})
      * @ApiDoc(
      *     description="Returns the sessions list",
      *     views = {"cursus"}
@@ -506,7 +518,7 @@ class CursusController extends FOSRestController
     }
 
     /**
-     * @View(serializerGroups={"api_cursus"})
+     * @View(serializerGroups={"api_user_min"})
      * @ApiDoc(
      *     description="Returns the sessions list by course",
      *     views = {"cursus"}

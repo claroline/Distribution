@@ -11,9 +11,9 @@
 
 namespace Claroline\CursusBundle\Form;
 
-use Claroline\CoreBundle\Form\Angular\AngularType;
 use Claroline\CursusBundle\Manager\CursusManager;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -21,17 +21,14 @@ use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Range;
 
-class CourseSessionType extends AngularType
+class CourseSessionType extends AbstractType
 {
     private $cursusManager;
-    private $forApi = false;
-    private $ngAlias;
     private $translator;
 
-    public function __construct(CursusManager $cursusManager, TranslatorInterface $translator, $ngAlias = 'cmc')
+    public function __construct(CursusManager $cursusManager, TranslatorInterface $translator)
     {
         $this->cursusManager = $cursusManager;
-        $this->ngAlias = $ngAlias;
         $this->translator = $translator;
     }
 
@@ -55,7 +52,6 @@ class CourseSessionType extends AngularType
                 'required' => true,
                 'input' => 'datetime',
                 'format' => 'dd/MM/yyy HH:mm',
-//                'format' => 'MM/dd/yyyy',
                 'widget' => 'single_text',
                 'attr' => [
                     'class' => 'date',
@@ -75,8 +71,6 @@ class CourseSessionType extends AngularType
                 'required' => true,
                 'input' => 'datetime',
                 'format' => 'dd/MM/yyy HH:mm',
-//                'format' => 'MM/dd/yyyy',
-//                'format' => 'dd-MM-yyyy',
                 'widget' => 'single_text',
                 'attr' => [
                     'class' => 'date',
@@ -198,18 +192,6 @@ class CourseSessionType extends AngularType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $default = ['translation_domain' => 'cursus'];
-
-        if ($this->forApi) {
-            $default['csrf_protection'] = false;
-        }
-        $default['ng-model'] = 'session';
-        $default['ng-controllerAs'] = $this->ngAlias;
-        $resolver->setDefaults($default);
-    }
-
-    public function enableApi()
-    {
-        $this->forApi = true;
+        $resolver->setDefaults(['translation_domain' => 'cursus']);
     }
 }

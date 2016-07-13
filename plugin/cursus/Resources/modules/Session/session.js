@@ -12,6 +12,7 @@ import angular from 'angular/index'
 import 'angular-bootstrap'
 import 'angular-bootstrap-colorpicker'
 import 'angular-ui-translation/angular-translation'
+import 'angular-ui-tinymce'
 
 import SessionService from './Service/SessionService'
 import SessionCreationModalCtrl from './Controller/SessionCreationModalCtrl'
@@ -24,7 +25,8 @@ angular.module('SessionModule', [
   'ui.bootstrap',
   'ui.bootstrap.tpls',
   'colorpicker.module',
-  'ui.translation'
+  'ui.translation',
+  'ui.tinymce'
 ])
 .service('SessionService', SessionService)
 .controller('SessionCreationModalCtrl', SessionCreationModalCtrl)
@@ -32,3 +34,24 @@ angular.module('SessionModule', [
 .controller('SessionDeletionModalCtrl', SessionDeletionModalCtrl)
 .controller('UsersRegistrationModalCtrl', UsersRegistrationModalCtrl)
 .controller('GroupsRegistrationModalCtrl', GroupsRegistrationModalCtrl)
+.directive('datetimepickerNeutralTimezone', function() {
+  return {
+    restrict: 'A',
+    priority: 1,
+    require: 'ngModel',
+    link: (scope, element, attrs, ctrl) => {
+      ctrl.$formatters.push((value) => {
+        let date = new Date(Date.parse(value))
+        date = new Date(date.getTime() + (60000 * date.getTimezoneOffset()))
+
+        return date
+      })
+
+      ctrl.$parsers.push((value) => {
+        const date = new Date(value.getTime() - (60000 * value.getTimezoneOffset()))
+
+        return date
+      })
+    }
+  }
+})

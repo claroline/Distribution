@@ -10,6 +10,8 @@
 /*global Routing*/
 /*global Translator*/
 import angular from 'angular/index'
+import courseCreationFormTemplate from '../Partial/course_creation_form_modal.html'
+import courseEditionFormTemplate from '../Partial/course_edition_form_modal.html'
 import courseViewTemplate from '../Partial/course_view_modal.html'
 import coursesImportFormTemplate from '../Partial/courses_import_form.html'
 
@@ -101,45 +103,47 @@ export default class CourseService {
     }
   }
 
-  createCourse (callback = null) {
+  createCourse (cursusId = null, callback = null) {
     const addCallback = callback !== null ? callback : this._addCourseCallback
-    const modal = this.$uibModal.open({
-      templateUrl: Routing.generate('api_get_course_creation_form'),
+    this.$uibModal.open({
+      template: courseCreationFormTemplate,
       controller: 'CourseCreationModalCtrl',
       controllerAs: 'cmc',
       resolve: {
+        cursusId: () => { return cursusId },
         callback: () => { return addCallback }
-      }
-    })
-
-    modal.result.then(result => {
-      if (!result) {
-        return
-      } else {
-        addCallback(result)
       }
     })
   }
 
-  editCourse (courseId, callback = null) {
+  editCourse (course, callback = null) {
     const updateCallback = callback !== null ? callback : this._updateCourseCallback
-    const modal = this.$uibModal.open({
-      templateUrl: Routing.generate('api_get_course_edition_form', {course: courseId}) + '?bust=' + Math.random().toString(36).slice(2),
+    this.$uibModal.open({
+      template: courseEditionFormTemplate,
       controller: 'CourseEditionModalCtrl',
       controllerAs: 'cmc',
       resolve: {
-        courseId: () => { return courseId },
+        course: () => { return course },
         callback: () => { return updateCallback }
       }
     })
-
-    modal.result.then(result => {
-      if (!result) {
-        return
-      } else {
-        updateCallback(result)
-      }
-    })
+    //const modal = this.$uibModal.open({
+    //  templateUrl: Routing.generate('api_get_course_edition_form', {course: courseId}) + '?bust=' + Math.random().toString(36).slice(2),
+    //  controller: 'CourseEditionModalCtrl',
+    //  controllerAs: 'cmc',
+    //  resolve: {
+    //    courseId: () => { return courseId },
+    //    callback: () => { return updateCallback }
+    //  }
+    //})
+    //
+    //modal.result.then(result => {
+    //  if (!result) {
+    //    return
+    //  } else {
+    //    updateCallback(result)
+    //  }
+    //})
   }
 
   deleteCourse (courseId, callback = null) {
@@ -204,6 +208,51 @@ export default class CourseService {
           return 'initialized'
         }
       })
+    }
+  }
+
+  getTinymceConfiguration () {
+    let tinymce = window.tinymce
+    tinymce.claroline.init = tinymce.claroline.init || {}
+    tinymce.claroline.plugins = tinymce.claroline.plugins || {}
+
+    let plugins = [
+      'autoresize advlist autolink lists link image charmap print preview hr anchor pagebreak',
+      'searchreplace wordcount visualblocks visualchars fullscreen',
+      'insertdatetime media nonbreaking save table directionality',
+      'template paste textcolor emoticons code -accordion -mention -codemirror'
+    ]
+    let toolbar = 'bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | fullscreen displayAllButtons'
+
+    $.each(tinymce.claroline.plugins, (key, value) => {
+      if ('autosave' != key &&  value === true) {
+        plugins.push(key)
+        toolbar += ' ' + key
+      }
+    })
+
+    let config = {}
+
+    for (const prop in tinymce.claroline.configuration) {
+      if (tinymce.claroline.configuration.hasOwnProperty(prop)) {
+        config[prop] = tinymce.claroline.configuration[prop]
+      }
+    }
+    config.plugins = plugins
+    config.toolbar1 = toolbar
+    config.trusted = true
+    config.format = 'html'
+
+    return config
+  }
+
+  removeFromArray (targetArray, id) {
+    if (Array.isArray(targetArray)) {
+      const index = targetArray.findIndex(t => t['id'] === id)
+
+      if (index > -1) {
+        targetArray.splice(index, 1)
+      }
     }
   }
 }

@@ -789,4 +789,14 @@ class WorkspaceModelManager
     {
         return $this->logger;
     }
+
+    public function getModelsByUser(User $user)
+    {
+        return $this->modelRepository->findModelsByUser($user);
+    }
+
+    public function getModelById($id)
+    {
+        return $this->modelRepository->findOneById($id);
+    }
 }

@@ -82,12 +82,18 @@ edit_course: Modifier la formation
 edit_session: Modifier la session
 edit_session_event: Modifier la séance
 export_all_courses: Exporter toutes les formations
+form_not_blank_error: Cette valeur ne doit pas être vide.
+form_not_unique_error: Cette valeur est déjà utilisée.
+form_not_valid_error: Cette valeur n'est pas valide.
+form_number_inferior_error: Cette valeur doit être inférieure ou égale à %value%.
+form_number_superior_error: Cette valeur doit être supérieure ou égale à %value%.
 full_session_msg: La limite d'utilisateurs pour la session de formation est atteinte
+go_to_workspace: Accéder à l'espace d'activités
 generate_certificates: Générer les certificats
 icon: Icône
 import_courses: Importer des formations
 invalid_file: Fichier non valide
-invite_learners_to_session: Inviter des apprenants à la session
+invite_learners_to_session: Inviter les apprenants à la session
 learner: Apprenant
 learner_role_name: Rôle des apprenants
 learners: Apprenants
@@ -109,6 +115,7 @@ no_session: Aucune session de formation
 no_session_event: Aucune séance
 no_tutor: Aucun formateur
 not_authorized: Non autorisé
+not_blank_error: Cette valeur ne doit pas être vide.
 nothing_to_configure: Rien à configurer
 open_session_events: Séances ouvertes
 open_sessions: Sessions ouvertes
@@ -137,6 +144,7 @@ send_confirmation_mail_to_user: Envoyer un mail de confirmation à cet utilisate
 send_confirmation_mail_to_user_message: Êtes-vous sûr de vouloir envoyer un mail de confirmation à cet utilisateur ?
 send_mail_to_session_participants: Envoyer un courriel aux participants de la session
 send_session_infos: Envoyer un courriel de confirmation à tous les apprenants de la session
+select_course_for_session_creation: Sélectionnez la formation pour laquelle vous voulez créer une session
 select_session: Sélectionnez une session de formation
 selected_sessions: Sessions de formation sélectionnées
 self_register: S'inscrire
@@ -203,6 +211,7 @@ will_display_the_end_date_of_the_session: qui affichera la date de fin de la ses
 will_display_the_start_date_of_the_session: qui affichera la date de début de la session de formation
 will_display_the_name_of_the_session: qui affichera le nom de la session de formation
 will_display_the_title_of_the_course: qui affichera le titre de la formation
+with_session_event: Créer une séance par défaut
 word: Mot
 workspace_model: Modèle d'espace d'activités
 yes: Oui

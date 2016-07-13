@@ -40,7 +40,7 @@ class Workspace
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_workspace"})
+     * @Groups({"api_workspace", "api_user_min"})
      * @SerializedName("id")
      */
     protected $id;
@@ -48,7 +48,7 @@ class Workspace
     /**
      * @ORM\Column()
      * @Assert\NotBlank()
-     * @Groups({"api_workspace"})
+     * @Groups({"api_workspace", "api_user_min"})
      * @SerializedName("name")
      */
     protected $name;
@@ -63,7 +63,7 @@ class Workspace
     /**
      * @ORM\Column(unique=true)
      * @Assert\NotBlank()
-     * @Groups({"api_workspace"})
+     * @Groups({"api_workspace", "api_user_min"})
      * @SerializedName("code")
      */
     protected $code;

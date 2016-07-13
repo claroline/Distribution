@@ -7,12 +7,13 @@
  * file that was distributed with this source code.
  */
 
+import coursesListTemplate from '../Partial/session_creation_courses_list.html'
+
 export default class SessionsManagementCtrl {
-  constructor(NgTableParams, SessionService, SessionEventService) {
-    //this.CourseService = CourseService
+  constructor($uibModal, NgTableParams, SessionService, SessionEventService) {
+    this.$uibModal = $uibModal
     this.SessionService = SessionService
     this.SessionEventService = SessionEventService
-    //this.courses = CourseService.getCourses()
     this.sessions = SessionService.getSessions()
     this.events = SessionEventService.getOpenSessionEvents()
     this.selectedSessions = []
@@ -36,91 +37,35 @@ export default class SessionsManagementCtrl {
       placeHolder: 'jj/mm/aaaa'
     }
     this.isCollapsed = {}
+    this._addSessionCallback = this._addSessionCallback.bind(this)
+    this._updateSessionCallback = this._updateSessionCallback.bind(this)
     this.initialize()
-    //this._addCourseCallback = this._addCourseCallback.bind(this)
-    //this._updateCourseCallback = this._updateCourseCallback.bind(this)
-    //this._removeCourseCallback = this._removeCourseCallback.bind(this)
   }
 
-  //_addCourseCallback (data) {
-  //  const coursesJson = JSON.parse(data)
-  //
-  //  if (Array.isArray(coursesJson)) {
-  //    coursesJson.forEach(c => {
-  //      this.courses.push(c)
-  //    })
-  //  } else {
-  //    this.courses.push(coursesJson)
-  //  }
-  //  this.tableParams.reload()
-  //}
-  //
-  //_updateCourseCallback (data) {
-  //  const courseJson = JSON.parse(data)
-  //  const index = this.courses.findIndex(c => c['id'] === courseJson['id'])
-  //
-  //  if (index > -1) {
-  //    this.courses[index] = courseJson
-  //    this.tableParams.reload()
-  //  }
-  //}
-  //
-  //_removeCourseCallback (data) {
-  //  const courseJson = JSON.parse(data)
-  //  const index = this.courses.findIndex(c => c['id'] === courseJson['id'])
-  //
-  //  if (index > -1) {
-  //    this.courses.splice(index, 1)
-  //    this.tableParams.reload()
-  //  }
-  //}
+  _addSessionCallback (data) {
+    this.SessionService._addSessionCallback(data)
+    this.tableParams.reload()
+  }
+
+  _updateSessionCallback (data) {
+    this.SessionService._updateSessionCallback(data)
+    this.tableParams.reload()
+  }
 
   initialize() {
     this.SessionService.loadSessions()
-  //  this.CourseService.loadCourses()
   }
 
   isInitialized () {
     return this.SessionService.isInitialized()
   }
 
-  //createCourse () {
-  //  this.CourseService.createCourse(this._addCourseCallback)
-  //}
-  //
-  //editCourse (courseId) {
-  //  this.CourseService.editCourse(courseId, this._updateCourseCallback)
-  //}
-  //
-  //deleteCourse (courseId) {
-  //  this.CourseService.deleteCourse(courseId, this._removeCourseCallback)
-  //}
-  //
-  //viewCourse (courseId) {
-  //  this.CourseService.viewCourse(courseId)
-  //}
-  //
-  //importCourses () {
-  //  this.CourseService.importCourses(this._addCourseCallback)
-  //}
-  //
-  //test () {
-  //  console.log(this.selectedCourses)
-  //  const ids = this.selectedCourses.map((el) => {return el.id})
-  //  console.log(ids)
-  //}
-
   loadEvents (sessionId) {
     this.SessionEventService.loadEventsBySession(sessionId)
   }
 
-  //createSession (courseId) {
-  //  this.loadSessions(courseId)
-  //  this.SessionService.createSession(courseId)
-  //}
-
-  editSession (sessionId) {
-    this.SessionService.editSession(sessionId)
+  editSession (session) {
+    this.SessionService.editSession(session, this._updateSessionCallback)
   }
 
   deleteSession (sessionId) {
@@ -155,5 +100,16 @@ export default class SessionsManagementCtrl {
     }
 
     return isValid
+  }
+
+  displayCoursesList () {
+    this.$uibModal.open({
+      template: coursesListTemplate,
+      controller: 'SessionCreationCoursesListModalCtrl',
+      controllerAs: 'cmc',
+      resolve: {
+        callback: () => { return this._addSessionCallback }
+      }
+    })
   }
 }

@@ -14,13 +14,16 @@ import sessionDeleteTemplate from '../Partial/session_delete_modal.html'
 import learnersRegistrationTemplate from '../Partial/learners_registration_modal.html'
 import learnersGroupsRegistrationTemplate from '../Partial/learners_groups_registration_modal.html'
 import tutorsRegistrationTemplate from '../Partial/tutors_registration_modal.html'
+import sessionCreationFormTemplate from '../Partial/session_creation_form_modal.html'
+import sessionEditionFormTemplate from '../Partial/session_edition_form_modal.html'
 
 export default class SessionService {
-  constructor ($http, $sce, $uibModal, ClarolineAPIService) {
+  constructor ($http, $sce, $uibModal, ClarolineAPIService, CourseService) {
     this.$http = $http
     this.$sce = $sce
     this.$uibModal = $uibModal
     this.ClarolineAPIService = ClarolineAPIService
+    this.CourseService = CourseService
     this.initialized = false
     this.pendingInitialized = {}
     this.session = {}
@@ -48,81 +51,83 @@ export default class SessionService {
   }
 
   _addSessionCallback(data) {
-    if (this.initialized) {
-      const sessionsJson = JSON.parse(data)
+    const sessionsJson = JSON.parse(data)
 
-      if (Array.isArray(sessionsJson)) {
-        sessionsJson.forEach(s => {
-          if (s['course']['id']) {
-            const courseId = s['course']['id']
-            s['course_title'] = s['course']['title']
-            s['course_code'] = s['course']['code']
+    if (Array.isArray(sessionsJson)) {
+      sessionsJson.forEach(s => {
+        if (s['course']['id']) {
+          const courseId = s['course']['id']
+          s['course_title'] = s['course']['title']
+          s['course_code'] = s['course']['code']
 
-            if (s['default_session']) {
-              this._resetDefaultSessionCallback(courseId, s['id'])
-            }
-            this.courseSessions[courseId].push(s)
-            this.computeSessionsStatusByCourse(courseId)
+          if (s['defaultSession']) {
+            this._resetDefaultSessionCallback(courseId, s['id'])
           }
-          this.sessions.push(s)
-        })
-      } else {
-        if (sessionsJson['course']['id']) {
-          const courseId = sessionsJson['course']['id']
-          sessionsJson['course_title'] = sessionsJson['course']['title']
-          sessionsJson['course_code'] = sessionsJson['course']['code']
 
-          if (sessionsJson['default_session']) {
-            this._resetDefaultSessionCallback(courseId, sessionsJson['id'])
+          if (this.courseSessions[courseId] === undefined) {
+            this.courseSessions[courseId] = []
           }
-          this.courseSessions[courseId].push(sessionsJson)
+          this.courseSessions[courseId].push(s)
           this.computeSessionsStatusByCourse(courseId)
         }
-        this.sessions.push(sessionsJson)
+        this.sessions.push(s)
+      })
+    } else {
+      if (sessionsJson['course']['id']) {
+        const courseId = sessionsJson['course']['id']
+        sessionsJson['course_title'] = sessionsJson['course']['title']
+        sessionsJson['course_code'] = sessionsJson['course']['code']
+
+        if (sessionsJson['defaultSession']) {
+          this._resetDefaultSessionCallback(courseId, sessionsJson['id'])
+        }
+
+        if (this.courseSessions[courseId] === undefined) {
+          this.courseSessions[courseId] = []
+        }
+        this.courseSessions[courseId].push(sessionsJson)
+        this.computeSessionsStatusByCourse(courseId)
       }
+      this.sessions.push(sessionsJson)
     }
   }
 
   _updateSessionCallback(data) {
-    if (this.initialized) {
-      const sessionJson = JSON.parse(data)
-      sessionJson['course_title'] = sessionJson['course']['title']
-      sessionJson['course_code'] = sessionJson['course']['code']
-      const isDefault = sessionJson['default_session']
-      const sessionId = sessionJson['id']
-      const courseId = sessionJson['course']['id']
-      const index = this.sessions.findIndex(s => s['id'] === sessionId)
-      const sessionIndex = this.courseSessions[courseId].findIndex(s => s['id'] === sessionId)
+    const sessionJson = JSON.parse(data)
+    sessionJson['course_title'] = sessionJson['course']['title']
+    sessionJson['course_code'] = sessionJson['course']['code']
+    const isDefault = sessionJson['defaultSession']
+    const sessionId = sessionJson['id']
+    const courseId = sessionJson['course']['id']
+    const index = this.sessions.findIndex(s => s['id'] === sessionId)
+    const sessionIndex = this.courseSessions[courseId].findIndex(s => s['id'] === sessionId)
 
-      if (isDefault) {
-        this.resetDefaultSession(courseId, sessionId)
-      }
-
-      if (index > -1) {
-        this.sessions[index] = sessionJson
-      }
-
-      if (sessionIndex > -1) {
-        this.courseSessions[courseId][sessionIndex] = sessionJson
-      }
-      this.computeSessionsStatusByCourse(courseId)
+    if (isDefault) {
+      this.resetDefaultSession(courseId, sessionId)
     }
+
+    if (index > -1) {
+      this.sessions[index] = sessionJson
+    }
+
+    if (sessionIndex > -1) {
+      this.courseSessions[courseId][sessionIndex] = sessionJson
+    }
+    this.computeSessionsStatusByCourse(courseId)
   }
 
   _removeSessionCallback(data) {
-    if (this.initialized) {
-      const sessionJson = JSON.parse(data)
-      const courseId = sessionJson['course']['id']
-      this.removeFromArray(this.sessions, sessionJson['id'])
-      this.removeFromArray(this.courseSessions[courseId], sessionJson['id'])
-      this.computeSessionsStatusByCourse(courseId)
-    }
+    const sessionJson = JSON.parse(data)
+    const courseId = sessionJson['course']['id']
+    this.CourseService.removeFromArray(this.sessions, sessionJson['id'])
+    this.CourseService.removeFromArray(this.courseSessions[courseId], sessionJson['id'])
+    this.computeSessionsStatusByCourse(courseId)
   }
 
   _resetDefaultSessionCallback (courseId, sessionId) {
     this.courseSessions[courseId].forEach(s => {
-      if (s['default_session'] && s['id'] !== sessionId) {
-        s['default_session'] = false
+      if (s['defaultSession'] && s['id'] !== sessionId) {
+        s['defaultSession'] = false
       }
     })
   }
@@ -131,40 +136,40 @@ export default class SessionService {
     const sessionUser = JSON.parse(data)
     const id = sessionUser['id']
     const sessionId = sessionUser['session']['id']
-    this.removeFromArray(this.users[sessionId], id)
-    this.removeFromArray(this.learners[sessionId], id)
+    this.CourseService.removeFromArray(this.users[sessionId], id)
+    this.CourseService.removeFromArray(this.learners[sessionId], id)
   }
 
   _removeTutorCallback (data) {
     const sessionUser = JSON.parse(data)
     const id = sessionUser['id']
     const sessionId = sessionUser['session']['id']
-    this.removeFromArray(this.users[sessionId], id)
-    this.removeFromArray(this.tutors[sessionId], id)
+    this.CourseService.removeFromArray(this.users[sessionId], id)
+    this.CourseService.removeFromArray(this.tutors[sessionId], id)
   }
 
   _removeGroupCallback (data) {
     const sessionGroup = JSON.parse(data['group'])
     const sessionUsers = JSON.parse(data['users'])
     const sessionId = sessionGroup['session']['id']
-    this.removeFromArray(this.groups[sessionId], sessionGroup['id'])
+    this.CourseService.removeFromArray(this.groups[sessionId], sessionGroup['id'])
     sessionUsers.forEach(su => {
-      this.removeFromArray(this.users[sessionId], su['id'])
-      this.removeFromArray(this.learners[sessionId], su['id'])
+      this.CourseService.removeFromArray(this.users[sessionId], su['id'])
+      this.CourseService.removeFromArray(this.learners[sessionId], su['id'])
     })
   }
 
   _removePendingLearnerCallback (data) {
     const pendingLearner = JSON.parse(data)
     const sessionId = pendingLearner['session']['id']
-    this.removeFromArray(this.pendingLearners[sessionId], pendingLearner['id'])
+    this.CourseService.removeFromArray(this.pendingLearners[sessionId], pendingLearner['id'])
   }
 
   _acceptQueueCallback (data) {
     const queue = JSON.parse(data['queue'])
     const sessionUsers = JSON.parse(data['sessionUsers'])
     const sessionId = queue['session']['id']
-    this.removeFromArray(this.pendingLearners[sessionId], queue['id'])
+    this.CourseService.removeFromArray(this.pendingLearners[sessionId], queue['id'])
 
     sessionUsers.forEach(su => {
       const generatedSU = this.generateUserDatas(su)
@@ -188,7 +193,6 @@ export default class SessionService {
     const sessionId = sessionGroup['session']['id']
     const generatedSG = this.generateGroupDatas(sessionGroup)
     this.groups[sessionId].push(generatedSG)
-    console.log(this.groups)
 
     const sessionUsers = JSON.parse(usersData)
     sessionUsers.forEach(su => {
@@ -206,16 +210,6 @@ export default class SessionService {
       this.users[sessionId].push(generatedSU)
       this.tutors[sessionId].push(generatedSU)
     })
-  }
-
-  removeFromArray (targetArray, id) {
-    if (Array.isArray(targetArray)) {
-      const index = targetArray.findIndex(t => t['id'] === id)
-
-      if (index > -1) {
-        targetArray.splice(index, 1)
-      }
-    }
   }
 
   isInitialized () {
@@ -325,44 +319,28 @@ export default class SessionService {
     }
   }
 
-  createSession (courseId, callback = null) {
-    const addCallback = callback !== null ? callback : this._addSessionCallback
-    const modal = this.$uibModal.open({
-      templateUrl: Routing.generate('api_get_session_creation_form', {course: courseId}),
+  createSession (course, callback = null) {
+    const addCallback = (callback !== null) ? callback : this._addSessionCallback
+    this.$uibModal.open({
+      template: sessionCreationFormTemplate,
       controller: 'SessionCreationModalCtrl',
       controllerAs: 'cmc',
       resolve: {
-        courseId: () => { return courseId },
+        course: () => { return course },
         callback: () => { return addCallback }
-      }
-    })
-
-    modal.result.then(result => {
-      if (!result) {
-        return
-      } else {
-        addCallback(result)
       }
     })
   }
 
-  editSession (sessionId, callback = null) {
+  editSession (session, callback = null) {
     const updateCallback = callback !== null ? callback : this._updateSessionCallback
-    const modal = this.$uibModal.open({
-      templateUrl: Routing.generate('api_get_session_edition_form', {session: sessionId}) + '?bust=' + Math.random().toString(36).slice(2),
+    this.$uibModal.open({
+      template: sessionEditionFormTemplate,
       controller: 'SessionEditionModalCtrl',
       controllerAs: 'cmc',
       resolve: {
-        sessionId: () => { return sessionId },
+        session: () => { return session },
         callback: () => { return updateCallback }
-      }
-    })
-
-    modal.result.then(result => {
-      if (!result) {
-        return
-      } else {
-        updateCallback(result)
       }
     })
   }
@@ -439,7 +417,7 @@ export default class SessionService {
     const now = new Date()
 
     this.sessions.forEach(s => {
-      s['status'] = this.getSessionStatus(s['start_date'], s['end_date'], now)
+      s['status'] = this.getSessionStatus(s['startDate'], s['endDate'], now)
     })
   }
 
@@ -459,7 +437,7 @@ export default class SessionService {
     }
 
     this.courseSessions[courseId].forEach(s => {
-      s['status'] = this.getSessionStatus(s['start_date'], s['end_date'], now)
+      s['status'] = this.getSessionStatus(s['startDate'], s['endDate'], now)
 
       if (s['status'] === 'closed') {
         this.closedCourseSessions[courseId].push(s)

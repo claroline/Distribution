@@ -54,7 +54,7 @@ export default class SessionsChoicesTransferModalCtrl {
           return `<b>${Translator.trans('status', {}, 'platform')}</b>`
         },
         cellRenderer: scope => {
-          const status = scope.$row['session_status']
+          const status = scope.$row['sessionStatus']
           let cell = '<span>'
 
           if (status === 0) {

@@ -1,7 +1,41 @@
-<div class="panel-heading">
+<div class="panel-heading clearfix">
     <h3 class="panel-title">
         [{{ 'course'|trans:{}:'cursus' }}]
         {{ cmc.course['title'] }}
+        <span class="pull-right">
+            <a class="btn btn-success btn-sm"
+               ui-sref="courses_management"
+               data-toggle="tooltip"
+               data-placement="top"
+               title="{{ 'courses_management'|trans:{}:'cursus' }}"
+            >
+                <i class="fa fa-tasks"></i>
+            </a>
+            <a class="btn btn-default btn-sm"
+               ui-sref="sessions_management"
+               data-toggle="tooltip"
+               data-placement="top"
+               title="{{ 'sessions_management'|trans:{}:'cursus' }}"
+            >
+                <i class="fa fa-cubes"></i>
+            </a>
+            <a class="btn btn-default btn-sm"
+               ui-sref="root_cursus_management"
+               data-toggle="tooltip"
+               data-placement="top"
+               title="{{ 'cursus_management'|trans:{}:'cursus' }}"
+            >
+                <i class="fa fa-database"></i>
+            </a>
+            <a class="btn btn-default btn-sm"
+               ui-sref="configuration"
+               data-toggle="tooltip"
+               data-placement="top"
+               title="{{ 'configuration'|trans:{}:'platform' }}"
+            >
+                <i class="fa fa-cogs"></i>
+            </a>
+        </span>
     </h3>
 </div>
 <div class="panel-body cursus-management-panel">
@@ -38,15 +72,15 @@
                                data-placement="top"
                                title="{{ 'default_session'|trans:{}:'cursus' }}"
                                style="color: greenyellow"
-                               ng-if="session['default_session']"
+                               ng-if="session['defaultSession']"
                             >
                             </i>
                         </td>
-                        <td class="text-center" data-title="'start_date'|trans:{}:'platform'" sortable="'start_date'">
-                            {{ session['start_date']|date:'dd/MM/yyyy HH:mm' }}
+                        <td class="text-center" data-title="'start_date'|trans:{}:'platform'" sortable="'startDate'">
+                            {{ session['startDate']|date:'dd/MM/yyyy HH:mm' }}
                         </td>
-                        <td class="text-center" data-title="'end_date'|trans:{}:'platform'" sortable="'end_date'">
-                            {{ session['end_date']|date:'dd/MM/yyyy HH:mm' }}
+                        <td class="text-center" data-title="'end_date'|trans:{}:'platform'" sortable="'endDate'">
+                            {{ session['endDate']|date:'dd/MM/yyyy HH:mm' }}
                         </td>
                         <td class="text-center" data-title="'status'|trans:{}:'platform'" sortable="'status'">
                             <i class="fa fa-circle-thin"
@@ -102,7 +136,7 @@
                             <button class="btn btn-default btn-sm"
                                     data-toggle="tooltip"
                                     data-placement="top"
-                                    title="{{ 'invite_learners'|trans:{}:'cursus' }}"
+                                    title="{{ 'invite_learners_to_session'|trans:{}:'cursus' }}"
                                     ng-click="cmc.inviteLearners(session['id'])"
                             >
                                 <i class="fa fa-plus-square"></i>
@@ -118,7 +152,7 @@
                             <button class="btn btn-primary btn-sm"
                                     data-toggle="tooltip"
                                     data-placement="top"
-                                    title="{{ 'register_learners'|trans:{}:'cursus' }}"
+                                    title="{{ 'register_learners_to_session'|trans:{}:'cursus' }}"
                                     ng-click="cmc.registerLeaners(session['id'])"
                             >
                                 <i class="fa fa-sign-in"></i>
@@ -160,15 +194,15 @@
                                data-placement="top"
                                title="{{ 'default_session'|trans:{}:'cursus' }}"
                                style="color: greenyellow"
-                               ng-if="session['default_session']"
+                               ng-if="session['defaultSession']"
                             >
                             </i>
                         </td>
-                        <td class="text-center" data-title="'start_date'|trans:{}:'platform'" sortable="'start_date'">
-                            {{ session['start_date']|date:'dd/MM/yyyy HH:mm' }}
+                        <td class="text-center" data-title="'start_date'|trans:{}:'platform'" sortable="'startDate'">
+                            {{ session['startDate']|date:'dd/MM/yyyy HH:mm' }}
                         </td>
-                        <td class="text-center" data-title="'end_date'|trans:{}:'platform'" sortable="'end_date'">
-                            {{ session['end_date']|date:'dd/MM/yyyy HH:mm' }}
+                        <td class="text-center" data-title="'end_date'|trans:{}:'platform'" sortable="'endDate'">
+                            {{ session['endDate']|date:'dd/MM/yyyy HH:mm' }}
                         </td>
                         <td class="text-center" data-title="'actions'|trans:{}:'platform'">
                             <button class="btn btn-primary btn-sm"

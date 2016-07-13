@@ -12,17 +12,17 @@ export default class CoursesManagementCtrl {
     this.CourseService = CourseService
     this.SessionService = SessionService
     this.courses = CourseService.getCourses()
-    this.sessions = SessionService.getCourseSessions()
+    this.sessions = SessionService.getOpenCourseSessions()
     this.selectedCourses = []
     this.tableParams = new NgTableParams(
       {count: 20},
       {counts: [10, 20, 50, 100], dataset: this.courses}
     )
     this.isCollapsed = {}
-    this.initialize()
     this._addCourseCallback = this._addCourseCallback.bind(this)
     this._updateCourseCallback = this._updateCourseCallback.bind(this)
     this._removeCourseCallback = this._removeCourseCallback.bind(this)
+    this.initialize()
   }
 
   _addCourseCallback (data) {
@@ -67,7 +67,7 @@ export default class CoursesManagementCtrl {
   }
 
   createCourse () {
-    this.CourseService.createCourse(this._addCourseCallback)
+    this.CourseService.createCourse(null, this._addCourseCallback)
   }
 
   editCourse (courseId) {
@@ -96,13 +96,13 @@ export default class CoursesManagementCtrl {
     this.SessionService.loadSessionsByCourse(courseId)
   }
 
-  createSession (courseId) {
-    this.loadSessions(courseId)
-    this.SessionService.createSession(courseId)
+  createSession (course) {
+    this.loadSessions(course['id'])
+    this.SessionService.createSession(course)
   }
 
-  editSession (sessionId) {
-    this.SessionService.editSession(sessionId)
+  editSession (session) {
+    this.SessionService.editSession(session)
   }
 
   deleteSession (sessionId) {

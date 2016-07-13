@@ -29,6 +29,7 @@ import CoursesManagementCtrl from './Controller/CoursesManagementCtrl'
 import CourseManagementCtrl from './Controller/CourseManagementCtrl'
 import SessionsManagementCtrl from './Controller/SessionsManagementCtrl'
 import SessionManagementCtrl from './Controller/SessionManagementCtrl'
+import SessionCreationCoursesListModalCtrl from './Controller/SessionCreationCoursesListModalCtrl'
 
 angular.module('CursusManagementModule', [
   'ui.router',
@@ -49,8 +50,9 @@ angular.module('CursusManagementModule', [
 .controller('CursusManagementCtrl', ['$stateParams', 'CursusService', CursusManagementCtrl])
 .controller('CoursesManagementCtrl', ['NgTableParams', 'CourseService', 'SessionService', CoursesManagementCtrl])
 .controller('CourseManagementCtrl', ['$stateParams', 'NgTableParams', 'CourseService', 'SessionService', CourseManagementCtrl])
-.controller('SessionsManagementCtrl', ['NgTableParams', 'SessionService', 'SessionEventService', SessionsManagementCtrl])
+.controller('SessionsManagementCtrl', ['$uibModal', 'NgTableParams', 'SessionService', 'SessionEventService', SessionsManagementCtrl])
 .controller('SessionManagementCtrl', ['$stateParams', 'NgTableParams', 'SessionService', 'SessionEventService', SessionManagementCtrl])
+.controller('SessionCreationCoursesListModalCtrl', SessionCreationCoursesListModalCtrl)
 .config(Routing)
 .config([
   'cfpLoadingBarProvider',

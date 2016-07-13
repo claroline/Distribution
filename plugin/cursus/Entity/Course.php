@@ -86,6 +86,8 @@ class Course
      *     targetEntity="Claroline\CoreBundle\Entity\Model\WorkspaceModel"
      * )
      * @ORM\JoinColumn(name="workspace_model_id", nullable=true, onDelete="SET NULL")
+     * @Groups({"api_user_min"})
+     * @SerializedName("workspaceModel")
      */
     protected $workspaceModel;
 
@@ -124,6 +126,7 @@ class Course
      *     targetEntity="Claroline\CoreBundle\Entity\Workspace\Workspace"
      * )
      * @ORM\JoinColumn(name="workspace_id", nullable=true, onDelete="SET NULL")
+     * @Groups({"api_user_min"})
      */
     protected $workspace;
 
@@ -153,6 +156,7 @@ class Course
      *     targetEntity="Claroline\CoreBundle\Entity\User"
      * )
      * @ORM\JoinTable(name="claro_cursusbundle_course_validators")
+     * @Groups({"api_user_min"})
      */
     protected $validators;
 
@@ -361,6 +365,11 @@ class Course
         }
 
         return $this;
+    }
+
+    public function emptyValidators()
+    {
+        $this->validators->clear();
     }
 
     public function hasValidation()

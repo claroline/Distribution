@@ -14,6 +14,9 @@ namespace Claroline\CursusBundle\Controller\API;
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\ApiManager;
+use Claroline\CoreBundle\Manager\UserManager;
+use Claroline\CoreBundle\Manager\WorkspaceManager;
+use Claroline\CoreBundle\Manager\WorkspaceModelManager;
 use Claroline\CursusBundle\Entity\Course;
 use Claroline\CursusBundle\Entity\CourseSession;
 use Claroline\CursusBundle\Entity\CourseSessionGroup;
@@ -53,15 +56,21 @@ class AdminManagementController extends Controller
     private $request;
     private $serializer;
     private $translator;
+    private $userManager;
+    private $workspaceManager;
+    private $workspaceModelManager;
 
     /**
      * @DI\InjectParams({
-     *     "apiManager"      = @DI\Inject("claroline.manager.api_manager"),
-     *     "cursusManager"   = @DI\Inject("claroline.manager.cursus_manager"),
-     *     "eventDispatcher" = @DI\Inject("event_dispatcher"),
-     *     "request"         = @DI\Inject("request"),
-     *     "serializer"      = @DI\Inject("jms_serializer"),
-     *     "translator"      = @DI\Inject("translator")
+     *     "apiManager"            = @DI\Inject("claroline.manager.api_manager"),
+     *     "cursusManager"         = @DI\Inject("claroline.manager.cursus_manager"),
+     *     "eventDispatcher"       = @DI\Inject("event_dispatcher"),
+     *     "request"               = @DI\Inject("request"),
+     *     "serializer"            = @DI\Inject("jms_serializer"),
+     *     "translator"            = @DI\Inject("translator"),
+     *     "userManager"           = @DI\Inject("claroline.manager.user_manager"),
+     *     "workspaceManager"      = @DI\Inject("claroline.manager.workspace_manager"),
+     *     "workspaceModelManager" = @DI\Inject("claroline.manager.workspace_model_manager")
      * })
      */
     public function __construct(
@@ -70,7 +79,10 @@ class AdminManagementController extends Controller
         EventDispatcherInterface $eventDispatcher,
         Request $request,
         Serializer $serializer,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
+        UserManager $userManager,
+        WorkspaceManager $workspaceManager,
+        WorkspaceModelManager $workspaceModelManager
     ) {
         $this->apiManager = $apiManager;
         $this->cursusManager = $cursusManager;
@@ -78,6 +90,9 @@ class AdminManagementController extends Controller
         $this->request = $request;
         $this->serializer = $serializer;
         $this->translator = $translator;
+        $this->userManager = $userManager;
+        $this->workspaceManager = $workspaceManager;
+        $this->workspaceModelManager = $workspaceModelManager;
     }
 
     /**
@@ -390,29 +405,6 @@ class AdminManagementController extends Controller
 
     /**
      * @EXT\Route(
-     *     "/api/course/create/form",
-     *     name="api_get_course_creation_form",
-     *     options = {"expose"=true}
-     * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
-     *
-     * Returns course creation form
-     */
-    public function getCourseCreationFormAction(User $user)
-    {
-        $formType = new CourseType($user, $this->cursusManager, $this->translator);
-        $formType->enableApi();
-        $course = new Course();
-        $form = $this->createForm($formType, $course);
-
-        return $this->apiManager->handleFormView(
-            'ClarolineCursusBundle:API:AdminManagement\CourseCreateForm.html.twig',
-            $form
-        );
-    }
-
-    /**
-     * @EXT\Route(
      *     "/api/cursus/{cursus}/course/create",
      *     name="api_post_cursus_course_creation",
      *     options = {"expose"=true}
@@ -421,19 +413,41 @@ class AdminManagementController extends Controller
      */
     public function postCursusCourseCreateAction(User $user, Cursus $cursus)
     {
+        $courseDatas = $this->request->request->get('courseDatas', false);
         $formType = new CourseType($user, $this->cursusManager, $this->translator);
-        $formType->enableApi();
         $course = new Course();
+        $course->setTitle($courseDatas['title']);
+        $course->setCode($courseDatas['code']);
+        $course->setDescription($courseDatas['description']);
+        $course->setPublicRegistration($courseDatas['publicRegistration']);
+        $course->setPublicUnregistration($courseDatas['publicUnregistration']);
+        $course->setRegistrationValidation($courseDatas['registrationValidation']);
+        $course->setTutorRoleName($courseDatas['tutorRoleName']);
+        $course->setLearnerRoleName($courseDatas['learnerRoleName']);
+
+        if ($courseDatas['workspace']) {
+            $worskpace = $this->workspaceManager->getWorkspaceById($courseDatas['workspace']);
+            $course->setWorkspace($worskpace);
+        }
+        if ($courseDatas['workspaceModel']) {
+            $worskpaceModel = $this->workspaceModelManager->getModelById($courseDatas['workspaceModel']);
+            $course->setWorkspaceModel($worskpaceModel);
+        }
+//        $course->setIcon($courseDatas['icon']);
+        $course->setUserValidation($courseDatas['userValidation']);
+        $course->setOrganizationValidation($courseDatas['organizationValidation']);
+        $course->setMaxUsers($courseDatas['maxUsers']);
+        $course->setDefaultSessionDuration($courseDatas['defaultSessionDuration']);
+        $course->setWithSessionEvent($courseDatas['withSessionEvent']);
+        $validators = $this->userManager->getUsersByIds($courseDatas['validators']);
+
+        foreach ($validators as $validator) {
+            $course->addValidator($validator);
+        }
         $form = $this->createForm($formType, $course);
-        $form->submit($this->request);
+        $form->submit([], false);
 
         if ($form->isValid()) {
-            //            $icon = $form->get('icon')->getData();
-//
-//            if (!is_null($icon)) {
-//                $hashName = $this->cursusManager->saveIcon($icon);
-//                $course->setIcon($hashName);
-//            }
             $createdCourse = $this->cursusManager->createCourse(
                 $course->getTitle(),
                 $course->getCode(),
@@ -462,17 +476,7 @@ class AdminManagementController extends Controller
 
             return new JsonResponse($serializedCursus, 200);
         } else {
-            $options = [
-                'http_code' => 400,
-                'extra_parameters' => null,
-                'serializer_group' => 'api_cursus',
-            ];
-
-            return $this->apiManager->handleFormView(
-                'ClarolineCursusBundle:API:AdminManagement\CourseCreateForm.html.twig',
-                $form,
-                $options
-            );
+            return new JsonResponse($form->getErrors(), 200);
         }
     }
 
@@ -486,19 +490,41 @@ class AdminManagementController extends Controller
      */
     public function postCourseCreateAction(User $user)
     {
+        $courseDatas = $this->request->request->get('courseDatas', false);
         $formType = new CourseType($user, $this->cursusManager, $this->translator);
-        $formType->enableApi();
         $course = new Course();
+        $course->setTitle($courseDatas['title']);
+        $course->setCode($courseDatas['code']);
+        $course->setDescription($courseDatas['description']);
+        $course->setPublicRegistration($courseDatas['publicRegistration']);
+        $course->setPublicUnregistration($courseDatas['publicUnregistration']);
+        $course->setRegistrationValidation($courseDatas['registrationValidation']);
+        $course->setTutorRoleName($courseDatas['tutorRoleName']);
+        $course->setLearnerRoleName($courseDatas['learnerRoleName']);
+
+        if ($courseDatas['workspace']) {
+            $worskpace = $this->workspaceManager->getWorkspaceById($courseDatas['workspace']);
+            $course->setWorkspace($worskpace);
+        }
+        if ($courseDatas['workspaceModel']) {
+            $worskpaceModel = $this->workspaceModelManager->getModelById($courseDatas['workspaceModel']);
+            $course->setWorkspaceModel($worskpaceModel);
+        }
+//        $course->setIcon($courseDatas['icon']);
+        $course->setUserValidation($courseDatas['userValidation']);
+        $course->setOrganizationValidation($courseDatas['organizationValidation']);
+        $course->setMaxUsers($courseDatas['maxUsers']);
+        $course->setDefaultSessionDuration($courseDatas['defaultSessionDuration']);
+        $course->setWithSessionEvent($courseDatas['withSessionEvent']);
+        $validators = $this->userManager->getUsersByIds($courseDatas['validators']);
+
+        foreach ($validators as $validator) {
+            $course->addValidator($validator);
+        }
         $form = $this->createForm($formType, $course);
-        $form->submit($this->request);
+        $form->submit([], false);
 
         if ($form->isValid()) {
-            //            $icon = $form->get('icon')->getData();
-//
-//            if (!is_null($icon)) {
-//                $hashName = $this->cursusManager->saveIcon($icon);
-//                $course->setIcon($hashName);
-//            }
             $createdCourse = $this->cursusManager->createCourse(
                 $course->getTitle(),
                 $course->getCode(),
@@ -521,22 +547,12 @@ class AdminManagementController extends Controller
             $serializedCourse = $this->serializer->serialize(
                 $createdCourse,
                 'json',
-                SerializationContext::create()->setGroups(['api_cursus'])
+                SerializationContext::create()->setGroups(['api_user_min'])
             );
 
             return new JsonResponse($serializedCourse, 200);
         } else {
-            $options = [
-                'http_code' => 400,
-                'extra_parameters' => null,
-                'serializer_group' => 'api_cursus',
-            ];
-
-            return $this->apiManager->handleFormView(
-                'ClarolineCursusBundle:API:AdminManagement\CourseCreateForm.html.twig',
-                $form,
-                $options
-            );
+            return new JsonResponse($form->getErrors(), 200);
         }
     }
 
@@ -562,30 +578,6 @@ class AdminManagementController extends Controller
 
     /**
      * @EXT\Route(
-     *     "/api/course/{course}/edit/form",
-     *     name="api_get_course_edition_form",
-     *     options = {"expose"=true}
-     * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
-     *
-     * Returns the course edition form
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     */
-    public function getCourseEditionFormAction(User $user, Course $course)
-    {
-        $formType = new CourseType($user, $this->cursusManager, $this->translator);
-        $formType->enableApi();
-        $form = $this->createForm($formType, $course);
-
-        return $this->apiManager->handleFormView(
-            'ClarolineCursusBundle:API:AdminManagement\CourseEditForm.html.twig',
-            $form
-        );
-    }
-
-    /**
-     * @EXT\Route(
      *     "/api/course/{course}/edit",
      *     name="api_put_course_edition",
      *     options = {"expose"=true}
@@ -598,40 +590,57 @@ class AdminManagementController extends Controller
      */
     public function putCourseEditionAction(User $user, Course $course)
     {
+        $courseDatas = $this->request->request->get('courseDatas', false);
         $formType = new CourseType($user, $this->cursusManager, $this->translator);
-        $formType->enableApi();
+        $course->setTitle($courseDatas['title']);
+        $course->setCode($courseDatas['code']);
+        $course->setDescription($courseDatas['description']);
+        $course->setPublicRegistration($courseDatas['publicRegistration']);
+        $course->setPublicUnregistration($courseDatas['publicUnregistration']);
+        $course->setRegistrationValidation($courseDatas['registrationValidation']);
+        $course->setTutorRoleName($courseDatas['tutorRoleName']);
+        $course->setLearnerRoleName($courseDatas['learnerRoleName']);
+
+        if ($courseDatas['workspace']) {
+            $worskpace = $this->workspaceManager->getWorkspaceById($courseDatas['workspace']);
+            $course->setWorkspace($worskpace);
+        } else {
+            $course->setWorkspace(null);
+        }
+        if ($courseDatas['workspaceModel']) {
+            $worskpaceModel = $this->workspaceModelManager->getModelById($courseDatas['workspaceModel']);
+            $course->setWorkspaceModel($worskpaceModel);
+        } else {
+            $course->setWorkspaceModel(null);
+        }
+//        $course->setIcon($courseDatas['icon']);
+        $course->setUserValidation($courseDatas['userValidation']);
+        $course->setOrganizationValidation($courseDatas['organizationValidation']);
+        $course->setMaxUsers($courseDatas['maxUsers']);
+        $course->setDefaultSessionDuration($courseDatas['defaultSessionDuration']);
+        $course->setWithSessionEvent($courseDatas['withSessionEvent']);
+        $course->emptyValidators();
+        $validators = $this->userManager->getUsersByIds($courseDatas['validators']);
+
+        foreach ($validators as $validator) {
+            $course->addValidator($validator);
+        }
         $form = $this->createForm($formType, $course);
-        $form->submit($this->request);
+        $form->submit([], false);
 
         if ($form->isValid()) {
-            //            $icon = $form->get('icon')->getData();
-//
-//            if (!is_null($icon)) {
-//                $hashName = $this->cursusManager->changeIcon($course, $icon);
-//                $course->setIcon($hashName);
-//            }
             $this->cursusManager->persistCourse($course);
             $event = new LogCourseEditEvent($course);
             $this->eventDispatcher->dispatch('log', $event);
             $serializedCourse = $this->serializer->serialize(
                 $course,
                 'json',
-                SerializationContext::create()->setGroups(['api_cursus'])
+                SerializationContext::create()->setGroups(['api_user_min'])
             );
 
             return new JsonResponse($serializedCourse, 200);
         } else {
-            $options = [
-                'http_code' => 400,
-                'extra_parameters' => null,
-                'serializer_group' => 'api_cursus',
-            ];
-
-            return $this->apiManager->handleFormView(
-                'ClarolineCursusBundle:API:AdminManagement\CourseEditForm.html.twig',
-                $form,
-                $options
-            );
+            return new JsonResponse($form->getErrors(), 200);
         }
     }
 
@@ -737,6 +746,30 @@ class AdminManagementController extends Controller
 
     /**
      * @EXT\Route(
+     *     "/api/course/get/by/code/{code}/without/id/{id}",
+     *     name="api_get_course_by_code_without_id",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     *
+     * Returns the course
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getCourseByCodeWithoutIdAction($code, $id = 0)
+    {
+        $course = $this->cursusManager->getCourseByCodeWithoutId($code, $id);
+        $serializedCourse = $this->serializer->serialize(
+            $course,
+            'json',
+            SerializationContext::create()->setGroups(['api_cursus'])
+        );
+
+        return new JsonResponse($serializedCourse, 200);
+    }
+
+    /**
+     * @EXT\Route(
      *     "/api/session/{session}/get/by/id",
      *     name="api_get_session_by_id",
      *     options = {"expose"=true}
@@ -752,45 +785,10 @@ class AdminManagementController extends Controller
         $serializedSession = $this->serializer->serialize(
             $session,
             'json',
-            SerializationContext::create()->setGroups(['api_cursus'])
+            SerializationContext::create()->setGroups(['api_user_min'])
         );
 
         return new JsonResponse($serializedSession, 200);
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/api/course/{course}/session/create/form",
-     *     name="api_get_session_creation_form",
-     *     options = {"expose"=true}
-     * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
-     *
-     * Returns session creation form
-     */
-    public function getSessionCreationFormAction(Course $course)
-    {
-        $formType = new CourseSessionType($this->cursusManager, $this->translator);
-        $formType->enableApi();
-        $session = new CourseSession();
-        $session->setCourse($course);
-        $session->setPublicRegistration($course->getPublicRegistration());
-        $session->setPublicUnregistration($course->getPublicUnregistration());
-        $session->setMaxUsers($course->getMaxUsers());
-        $session->setUserValidation($course->getUserValidation());
-        $session->setOrganizationValidation($course->getOrganizationValidation());
-        $session->setRegistrationValidation($course->getRegistrationValidation());
-        $startDate = new \DateTime();
-        $session->setStartDate($startDate);
-        $endDate = clone $startDate;
-        $endDate->add(new \DateInterval('P'.$course->getDefaultSessionDuration().'D'));
-        $session->setEndDate($endDate);
-        $form = $this->createForm($formType, $session);
-
-        return $this->apiManager->handleFormView(
-            'ClarolineCursusBundle:API:AdminManagement\SessionCreateForm.html.twig',
-            $form
-        );
     }
 
     /**
@@ -803,11 +801,35 @@ class AdminManagementController extends Controller
      */
     public function postSessionCreateAction(Course $course)
     {
+        $sessionDatas = $this->request->request->get('sessionDatas', false);
         $formType = new CourseSessionType($this->cursusManager, $this->translator);
-        $formType->enableApi();
+        $trimmedStartDate = trim($sessionDatas['startDate'], 'Zz');
+        $trimmedEndDate = trim($sessionDatas['endDate'], 'Zz');
+        $startDate = new \DateTime($trimmedStartDate);
+        $endDate = new \DateTime($trimmedEndDate);
         $session = new CourseSession();
+        $session->setName($sessionDatas['name']);
+        $session->setStartDate($startDate);
+        $session->setEndDate($endDate);
+        $session->setDescription($sessionDatas['description']);
+        $session->setDefaultSession($sessionDatas['defaultSession']);
+        $session->setPublicRegistration($sessionDatas['publicRegistration']);
+        $session->setPublicUnregistration($sessionDatas['publicUnregistration']);
+        $session->setUserValidation($sessionDatas['userValidation']);
+        $session->setMaxUsers($sessionDatas['maxUsers']);
+        $session->setOrganizationValidation($sessionDatas['organizationValidation']);
+        $session->setRegistrationValidation($sessionDatas['registrationValidation']);
+        $cursus = $this->cursusManager->getCursusByIds($sessionDatas['cursus']);
+        $validators = $this->userManager->getUsersByIds($sessionDatas['validators']);
+
+        foreach ($cursus as $c) {
+            $session->addCursus($c);
+        }
+        foreach ($validators as $validator) {
+            $session->addValidator($validator);
+        }
         $form = $this->createForm($formType, $session);
-        $form->submit($this->request);
+        $form->submit([], false);
 
         if ($form->isValid()) {
             $createdSession = $this->cursusManager->createCourseSession(
@@ -825,53 +847,19 @@ class AdminManagementController extends Controller
                 $session->getUserValidation(),
                 $session->getOrganizationValidation(),
                 $session->getMaxUsers(),
-                $session->getType(),
+                0,
                 $session->getValidators()
             );
             $serializedSession = $this->serializer->serialize(
                 $createdSession,
                 'json',
-                SerializationContext::create()->setGroups(['api_cursus'])
+                SerializationContext::create()->setGroups(['api_user_min'])
             );
 
             return new JsonResponse($serializedSession, 200);
         } else {
-            $options = [
-                'http_code' => 400,
-                'extra_parameters' => null,
-                'serializer_group' => 'api_cursus',
-            ];
-
-            return $this->apiManager->handleFormView(
-                'ClarolineCursusBundle:API:AdminManagement\SessionCreateForm.html.twig',
-                $form,
-                $options
-            );
+            return new JsonResponse($form->getErrors(), 200);
         }
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/api/session/{session}/edit/form",
-     *     name="api_get_session_edition_form",
-     *     options = {"expose"=true}
-     * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
-     *
-     * Returns the session edition form
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     */
-    public function getSessionEditionFormAction(CourseSession $session)
-    {
-        $formType = new CourseSessionType($this->cursusManager, $this->translator);
-        $formType->enableApi();
-        $form = $this->createForm($formType, $session);
-
-        return $this->apiManager->handleFormView(
-            'ClarolineCursusBundle:API:AdminManagement\SessionEditForm.html.twig',
-            $form
-        );
     }
 
     /**
@@ -888,40 +876,50 @@ class AdminManagementController extends Controller
      */
     public function putSessionEditionAction(CourseSession $session)
     {
+        $sessionDatas = $this->request->request->get('sessionDatas', false);
         $formType = new CourseSessionType($this->cursusManager, $this->translator);
-        $formType->enableApi();
+        $trimmedStartDate = trim($sessionDatas['startDate'], 'Zz');
+        $trimmedEndDate = trim($sessionDatas['endDate'], 'Zz');
+        $startDate = new \DateTime($trimmedStartDate);
+        $endDate = new \DateTime($trimmedEndDate);
+        $session->setName($sessionDatas['name']);
+        $session->setStartDate($startDate);
+        $session->setEndDate($endDate);
+        $session->setDescription($sessionDatas['description']);
+        $session->setDefaultSession($sessionDatas['defaultSession']);
+        $session->setPublicRegistration($sessionDatas['publicRegistration']);
+        $session->setPublicUnregistration($sessionDatas['publicUnregistration']);
+        $session->setUserValidation($sessionDatas['userValidation']);
+        $session->setMaxUsers($sessionDatas['maxUsers']);
+        $session->setOrganizationValidation($sessionDatas['organizationValidation']);
+        $session->setRegistrationValidation($sessionDatas['registrationValidation']);
+        $cursus = $this->cursusManager->getCursusByIds($sessionDatas['cursus']);
+        $validators = $this->userManager->getUsersByIds($sessionDatas['validators']);
+        $session->emptyCursus();
+        $session->emptyValidators();
+
+        foreach ($cursus as $c) {
+            $session->addCursus($c);
+        }
+        foreach ($validators as $validator) {
+            $session->addValidator($validator);
+        }
         $form = $this->createForm($formType, $session);
-        $form->submit($this->request);
+        $form->submit([], false);
 
         if ($form->isValid()) {
-            //            $icon = $form->get('icon')->getData();
-//
-//            if (!is_null($icon)) {
-//                $hashName = $this->cursusManager->changeIcon($course, $icon);
-//                $course->setIcon($hashName);
-//            }
             $this->cursusManager->persistCourseSession($session);
             $event = new LogCourseSessionEditEvent($session);
             $this->eventDispatcher->dispatch('log', $event);
             $serializedSession = $this->serializer->serialize(
                 $session,
                 'json',
-                SerializationContext::create()->setGroups(['api_cursus'])
+                SerializationContext::create()->setGroups(['api_user_min'])
             );
 
             return new JsonResponse($serializedSession, 200);
         } else {
-            $options = [
-                'http_code' => 400,
-                'extra_parameters' => null,
-                'serializer_group' => 'api_cursus',
-            ];
-
-            return $this->apiManager->handleFormView(
-                'ClarolineCursusBundle:API:AdminManagement\SessionEditForm.html.twig',
-                $form,
-                $options
-            );
+            return new JsonResponse($form->getErrors(), 200);
         }
     }
 
@@ -1419,5 +1417,76 @@ class AdminManagementController extends Controller
         $results = $this->cursusManager->registerGroupToSession($session, $group, $groupType);
 
         return new JsonResponse($results, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/validators/roles",
+     *     name="api_get_validators_roles",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     *
+     * Retrieves required roles to be validator
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getValidatorsRolesAction()
+    {
+        $roles = $this->cursusManager->getValidatorsRoles();
+        $serializedRoles = $this->serializer->serialize(
+            $roles,
+            'json',
+            SerializationContext::create()->setGroups(['api_role'])
+        );
+        return new JsonResponse($serializedRoles, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/worskpaces",
+     *     name="api_get_workspaces",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     *
+     * Retrieves workspaces list for an user
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getWorkspacsAction()
+    {
+        $workspaces = $this->cursusManager->getWorkspacesListForCurrentUser();
+        $serializedWorkspaces = $this->serializer->serialize(
+            $workspaces,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
+
+        return new JsonResponse($serializedWorkspaces, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/worskpace/models",
+     *     name="api_get_workspace_models",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     *
+     * Retrieves workspace models list for an user
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getWorkspaceModelsAction(User $authenticatedUser)
+    {
+        $models = $this->workspaceModelManager->getModelsByUser($authenticatedUser);
+        $serializedModels = $this->serializer->serialize(
+            $models,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
+
+        return new JsonResponse($serializedModels, 200);
     }
 }

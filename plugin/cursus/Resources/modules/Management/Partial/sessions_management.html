@@ -1,6 +1,40 @@
-<div class="panel-heading">
+<div class="panel-heading clearfix">
     <h3 class="panel-title">
         {{ 'sessions_management'|trans:{}:'cursus' }}
+        <span class="pull-right">
+            <a class="btn btn-default btn-sm"
+               ui-sref="courses_management"
+               data-toggle="tooltip"
+               data-placement="top"
+               title="{{ 'courses_management'|trans:{}:'cursus' }}"
+            >
+                <i class="fa fa-tasks"></i>
+            </a>
+            <a class="btn btn-success btn-sm disabled"
+               ui-sref="sessions_management"
+               data-toggle="tooltip"
+               data-placement="top"
+               title="{{ 'sessions_management'|trans:{}:'cursus' }}"
+            >
+                <i class="fa fa-cubes"></i>
+            </a>
+            <a class="btn btn-default btn-sm"
+               ui-sref="root_cursus_management"
+               data-toggle="tooltip"
+               data-placement="top"
+               title="{{ 'cursus_management'|trans:{}:'cursus' }}"
+            >
+                <i class="fa fa-database"></i>
+            </a>
+            <a class="btn btn-default btn-sm"
+               ui-sref="configuration"
+               data-toggle="tooltip"
+               data-placement="top"
+               title="{{ 'configuration'|trans:{}:'platform' }}"
+            >
+                <i class="fa fa-cogs"></i>
+            </a>
+        </span>
     </h3>
 </div>
 <div class="panel-body">
@@ -70,16 +104,16 @@
     <br>
     <div ng-if="cmc.isInitialized() && cmc.sessions.length > 0">
         <table class="table" ng-table="cmc.tableParams" show-filter="true">
-            <tbody ng-repeat="session in $data" ng-if="cmc.isValidStartDate(session['start_date'])">
+            <tbody ng-repeat="session in $data" ng-if="cmc.isValidStartDate(session['startDate'])">
                 <tr>
                     <td>
                         <input type="checkbox" checklist-model="cmc.selectedSessions" checklist-value="session" ng-click="cmc.test()">
                     </td>
-                    <td class="text-center" data-title="'start_date'|trans:{}:'platform'" sortable="'start_date'">
-                        {{ session['start_date']|date:'dd/MM/yyyy HH:mm' }}
+                    <td class="text-center" data-title="'start_date'|trans:{}:'platform'" sortable="'startDate'">
+                        {{ session['startDate']|date:'dd/MM/yyyy HH:mm' }}
                     </td>
-                    <td class="text-center" data-title="'end_date'|trans:{}:'platform'" sortable="'end_date'">
-                        {{ session['end_date']|date:'dd/MM/yyyy HH:mm' }}
+                    <td class="text-center" data-title="'end_date'|trans:{}:'platform'" sortable="'endDate'">
+                        {{ session['endDate']|date:'dd/MM/yyyy HH:mm' }}
                     </td>
                     <td data-title="'name'|trans:{}:'platform'" filter="{name: 'text'}" sortable="'name'">
                         <span data-toggle="tooltip" data-placement="top" title="{{ 'display_session_events'|trans:{}:'cursus' }}" ng-click="cmc.isCollapsed[session['id']] = !cmc.isCollapsed[session['id']]">
@@ -114,7 +148,7 @@
                                 data-toggle="tooltip"
                                 data-placement="top"
                                 title="{{ 'edit_session'|trans:{}:'cursus' }}"
-                                ng-click="cmc.editSession(session['id'])"
+                                ng-click="cmc.editSession(session)"
                         >
                             <i class="fa fa-edit"></i>
                         </button>
@@ -156,10 +190,10 @@
                                         {{ event['name'] }}
                                     </td>
                                     <td class="text-center" ignore-cell="true">
-                                        {{ event['start_date']|date:'dd/MM/yyyy HH:mm' }}
+                                        {{ event['startDate']|date:'dd/MM/yyyy HH:mm' }}
                                     </td>
                                     <td class="text-center" ignore-cell="true">
-                                        {{ event['end_date']|date:'dd/MM/yyyy HH:mm' }}
+                                        {{ event['endDate']|date:'dd/MM/yyyy HH:mm' }}
                                     </td>
                                     <td class="text-center" ignore-cell="true">
                                         {{ event['location'] }}

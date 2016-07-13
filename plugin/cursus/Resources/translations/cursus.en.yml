@@ -82,8 +82,14 @@ edit_course: Edit training
 edit_session: Edit training session
 edit_session_event: Edit session event
 export_all_courses: Export all trainings
+form_not_blank_error: This value should not be blank.
+form_not_unique_error: This value is already used.
+form_not_valid_error: This value is not valid.
+form_number_inferior_error: This value should be %value% or less.
+form_number_superior_error: This value should be %value% or more.
 full_session_msg: Training session users limit has been reached
 generate_certificates: Generate certificates
+go_to_workspace: Go to workspace
 icon: Icon
 import_courses: Import trainings
 invalid_file: Invalid file
@@ -137,6 +143,7 @@ send_confirmation_mail_to_user: Send a confirmation mail to this user
 send_confirmation_mail_to_user_message: Are you sure you want to send a confirmation mail to this user ?
 send_mail_to_session_participants: Send an email to session participants
 send_session_infos: Send an email to all learners of the session
+select_course_for_session_creation: Select training for which you want to create a session
 select_session: Select a training session
 selected_sessions: Selected training sessions
 self_register: Register
@@ -203,6 +210,7 @@ will_display_the_end_date_of_the_session: will display the end date of the train
 will_display_the_start_date_of_the_session: will display the start date of the training session
 will_display_the_name_of_the_session: will display the name of the training session
 will_display_the_title_of_the_course: will display the title of the training
+with_session_event: Also create a default session event
 word: Word
 workspace_model: Workspace model
 yes: Yes

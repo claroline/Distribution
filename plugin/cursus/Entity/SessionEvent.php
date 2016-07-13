@@ -16,6 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
 use FormaLibre\ReservationBundle\Entity\Reservation;
 use FormaLibre\ReservationBundle\Entity\Resource;
 use JMS\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -52,12 +53,14 @@ class SessionEvent
     /**
      * @ORM\Column(name="start_date", type="datetime", nullable=false)
      * @Groups({"api_cursus"})
+     * @SerializedName("startDate")
      */
     protected $startDate;
 
     /**
      * @ORM\Column(name="end_date", type="datetime", nullable=false)
      * @Groups({"api_cursus"})
+     * @SerializedName("endDate")
      */
     protected $endDate;
 

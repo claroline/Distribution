@@ -1,32 +1,22 @@
-import indexTemplate from './Partial/index.html'
+/*global Translator*/
+
 import rootCursusManagementTemplate from './Partial/root_cursus_management.html'
 import cursusManagementTemplate from './Partial/cursus_management.html'
 import coursesManagementTemplate from './Partial/courses_management.html'
 import sessionsManagementTemplate from './Partial/sessions_management.html'
 import courseTemplate from './Partial/course_management.html'
 import sessionTemplate from './Partial/session_management.html'
+import configurationTemplate from './Partial/configuration.html'
 
 export default function($stateProvider, $urlRouterProvider) {
-  const translate = function(key) {
-    return window.Translator.trans(key, {}, 'cursus')
-  }
-
   $stateProvider
-    .state ('index', {
-      url: '/index',
-      template: indexTemplate,
-      ncyBreadcrumb: {
-        label: translate('courses_management')
-      }
-    })
     .state ('root_cursus_management', {
       url: '/cursus',
       template: rootCursusManagementTemplate,
       controller: 'RootCursusManagementCtrl',
       controllerAs: 'cmc',
       ncyBreadcrumb: {
-        label: translate('cursus_management'),
-        parent: 'index'
+        label: Translator.trans('cursus_management', {}, 'cursus')
       }
     })
     .state ('cursus', {
@@ -45,8 +35,7 @@ export default function($stateProvider, $urlRouterProvider) {
       controller: 'CoursesManagementCtrl',
       controllerAs: 'cmc',
       ncyBreadcrumb: {
-        label: translate('courses_management'),
-        parent: 'index'
+        label: Translator.trans('courses_management', {}, 'cursus')
       }
     })
     .state ('sessions_management', {
@@ -55,8 +44,7 @@ export default function($stateProvider, $urlRouterProvider) {
       controller: 'SessionsManagementCtrl',
       controllerAs: 'cmc',
       ncyBreadcrumb: {
-        label: translate('sessions_management'),
-        parent: 'index'
+        label: Translator.trans('sessions_management', {}, 'cursus')
       }
     })
     .state ('course', {
@@ -79,6 +67,13 @@ export default function($stateProvider, $urlRouterProvider) {
         parent: 'sessions_management'
       }
     })
+    .state ('configuration', {
+      url: '/configuration',
+      template: configurationTemplate,
+      ncyBreadcrumb: {
+        label: Translator.trans('configuration', {}, 'platform')
+      }
+    })
 
-  $urlRouterProvider.otherwise('/index')
+  $urlRouterProvider.otherwise('/courses')
 }
