@@ -227,7 +227,7 @@ class PathListener extends ContainerAware
         if ($resourceNode) {
             // Check if Node is in a subdirectory
             $wsRoot = $manager->getWorkspaceRoot($resourceNode->getWorkspace());
-            if ($wsRoot->getId() != $resourceNode->getParent()->getId()) {
+            if ($wsRoot->getId() !== $resourceNode->getParent()->getId()) {
                 // ResourceNode is not stored in WS root => create subdirectories tree
                 $ancestors = $manager->getAncestors($resourceNode);
 
