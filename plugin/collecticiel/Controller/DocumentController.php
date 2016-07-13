@@ -150,7 +150,7 @@ class DocumentController extends DropzoneBaseController
         $revision->setContent($richText);
         $revision->setUser($drop->getUser());
         $text = new Text();
-        // #272 : Maintenant, on insère le TITRE qui est saisi.
+        // Maintenant, on insère le TITRE qui est saisi.
         $text->setName($titleText);
         $revision->setText($text);
         $em->persist($text);
@@ -204,7 +204,7 @@ class DocumentController extends DropzoneBaseController
             $node = $this->createFile($dropzone, $drop, $file->getData());
         } elseif ($documentType === 'text') {
             $data = $form->getData();
-            // #272 : Maintenant, on insère le TITRE qui est saisi.
+            // Maintenant, on insère le TITRE qui est saisi.
             $node = $this->createText($dropzone, $drop, $data['document'], $data['title']);
         } elseif ($documentType === 'resource') {
             $data = $form->getData();
@@ -214,17 +214,15 @@ class DocumentController extends DropzoneBaseController
         }
         $document->setResourceNode($node);
 
-        // #19. Ajout de la valorisation de la Date. InnovaERV.
+        // Ajout de la valorisation de la Date. InnovaERV.
         $document->setDocumentDate(new \DateTime());
 
         $sender = $this->get('security.token_storage')->getToken()->getUser();
 
-        $canEdit = $dropzoneVoter->checkEditRight($dropzone);
-
         $document->setDrop($drop);
         $document->setSender($sender);
 
-        // #126. Ajout de la valorisation du titre du document. InnovaERV.
+        // Ajout de la valorisation du titre du document. InnovaERV.
         if ($documentType === 'text') {
             $document->setTitle($data['title']);
         }
@@ -252,7 +250,6 @@ class DocumentController extends DropzoneBaseController
     public function documentAction($dropzone, $documentType, $drop)
     {
         $this->get('innova.manager.dropzone_voter')->isAllowToOpen($dropzone);
-        $dropzoneManager = $this->get('innova.manager.dropzone_manager');
 
         if ($documentType === 'url') {
             if (!$dropzone->getAllowUrl()) {

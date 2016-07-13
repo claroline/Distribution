@@ -400,7 +400,6 @@ class DropController extends DropzoneBaseController
         $translator = $this->get('translator');
         $dropzoneManager = $this->get('innova.manager.dropzone_manager');
         $dropManager = $this->get('innova.manager.drop_manager');
-        $roleManager = $this->get('claroline.manager.role_manager');
         $dropzoneVoter = $this->get('innova.manager.dropzone_voter');
 
         $dropzoneVoter->isAllowToOpen($dropzone);
@@ -411,7 +410,6 @@ class DropController extends DropzoneBaseController
         $commentRepo = $em->getRepository('InnovaCollecticielBundle:Comment');
         $documentRepo = $em->getRepository('InnovaCollecticielBundle:Document');
         $receiptRepo = $em->getRepository('InnovaCollecticielBundle:ReturnReceipt');
-        $notationRepo = $em->getRepository('InnovaCollecticielBundle:Notation');
 
         $scaleRepo = $em->getRepository('InnovaCollecticielBundle:GradingScale');
         $scalesArray = $scaleRepo->getScaleArrayForDropzone($dropzone);
@@ -1051,7 +1049,7 @@ class DropController extends DropzoneBaseController
                 $countReceipts = $receiptRepo->haveReturnReceiptOrNotForADocument($user, $dropzone, $document);
                 // S'il y a déjà un accusé de réception alors je le supprime avant de créer le nouveau
                 if ($countReceipts !== 0) {
-                    $reqDeleteReturnReceipt = $receiptRepo->deleteReturnReceipt($user, $dropzone, $document);
+                    $receiptRepo->deleteReturnReceipt($user, $dropzone, $document);
                 }
                 // Création du nouvel accusé de réception
                 $receiptManager->create($document, $user, $dropzone, $returnReceiptType);
