@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Claroline\ScormBundle\Controller\API;
 
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
@@ -16,7 +17,6 @@ use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\ScormBundle\Entity\ScormResource;
 use Claroline\ScormBundle\Manager\ScormManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use JMS\SecurityExtraBundle\Annotation as SEC;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
@@ -99,7 +99,7 @@ class ScormController extends Controller
             'type' => $type,
             'workspace' => $resourceNode->getWorkspace(),
             'scos' => $serializedScos,
-            'trackings' => $serializedTrackings
+            'trackings' => $serializedTrackings,
         ];
     }
 

@@ -801,7 +801,7 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
         $roles = $this->getEntityRoles();
 
         foreach ($roles as $role) {
-            if ($role->getType() != Role::WS_ROLE) {
+            if ($role->getType() !== Role::WS_ROLE) {
                 return $role;
             }
         }
@@ -820,7 +820,7 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
         $roles = $this->getEntityRoles();
 
         foreach ($roles as $role) {
-            if ($role->getType() != Role::WS_ROLE) {
+            if ($role->getType() !== Role::WS_ROLE) {
                 $removedRole = $role;
             }
         }
@@ -843,7 +843,7 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
         $removedRoles = [];
 
         foreach ($roles as $role) {
-            if ($role->getType() != Role::WS_ROLE) {
+            if ($role->getType() !== Role::WS_ROLE) {
                 $removedRoles[] = $role;
             }
         }
