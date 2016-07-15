@@ -935,9 +935,6 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
             }
         }
 
-        /* @var \DateTime */
-        $expDate = $this->getExpirationDate();
-
         return ($this->getExpirationDate() >= new \DateTime()) ? true : false;
     }
 
