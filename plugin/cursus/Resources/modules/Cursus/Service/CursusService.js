@@ -10,6 +10,8 @@
 /*global Routing*/
 /*global Translator*/
 import angular from 'angular/index'
+import cursusCreationFormTemplate from '../Partial/cursus_creation_form_modal.html'
+import cursusEditionFormTemplate from '../Partial/cursus_edition_form_modal.html'
 import cursusCourseSelectionTemplate from '../Partial/cursus_course_selection_modal.html'
 import cursusHierarchyTemplate from '../Partial/cursus_hierarchy_modal.html'
 import cursusImportTemplate from '../Partial/cursus_import_form.html'
@@ -126,42 +128,28 @@ export default class CursusService {
     })
   }
 
-  createCursus(cursusId = null) {
-    const modal = this.$uibModal.open({
-      templateUrl: Routing.generate('api_get_cursus_creation_form'),
+  createCursus(cursusId = null, callback = null) {
+    const addCallback = callback !== null ? callback : this._addCursusCallback
+    this.$uibModal.open({
+      template: cursusCreationFormTemplate,
       controller: 'CursusCreationModalCtrl',
       controllerAs: 'cmc',
       resolve: {
         cursusId: () => { return cursusId },
-        callback: () => { return this._addCursusCallback }
-      }
-    })
-
-    modal.result.then(result => {
-      if (!result) {
-        return
-      } else {
-        this._addCursusCallback(result)
+        callback: () => { return addCallback }
       }
     })
   }
 
-  editCursus(cursusId) {
-    const modal = this.$uibModal.open({
-      templateUrl: Routing.generate('api_get_cursus_edition_form', {cursus: cursusId}) + '?bust=' + Math.random().toString(36).slice(2),
+  editCursus(cursus, callback = null) {
+    const updateCallback = callback !== null ? callback : this._updateCursusCallback
+    this.$uibModal.open({
+      template: cursusEditionFormTemplate,
       controller: 'CursusEditionModalCtrl',
       controllerAs: 'cmc',
       resolve: {
-        cursusId: () => { return cursusId },
-        callback: () => { return this._updateCursusCallback }
-      }
-    })
-
-    modal.result.then(result => {
-      if (!result) {
-        return
-      } else {
-        this._updateCursusCallback(result)
+        cursus: () => { return cursus },
+        callback: () => { return updateCallback }
       }
     })
   }
@@ -216,23 +204,6 @@ export default class CursusService {
 
   createCursusCourse(cursusId) {
     this.CourseService.createCourse(cursusId, this._addCursusCallback)
-    //const modal = this.$uibModal.open({
-    //  templateUrl: Routing.generate('api_get_course_creation_form'),
-    //  controller: 'CursusCourseCreationModalCtrl',
-    //  controllerAs: 'cmc',
-    //  resolve: {
-    //    cursusId: () => { return cursusId },
-    //    callback: () => { return this._addCursusCallback }
-    //  }
-    //})
-    //
-    //modal.result.then(result => {
-    //  if (!result) {
-    //    return
-    //  } else {
-    //    this._addCursusCallback(result)
-    //  }
-    //})
   }
 
   showCoursesListForCursus (cursusId, title) {

@@ -110,28 +110,6 @@ class AdminManagementController extends Controller
 
     /**
      * @EXT\Route(
-     *     "/api/cursus/create/form",
-     *     name="api_get_cursus_creation_form",
-     *     options = {"expose"=true}
-     * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
-     *
-     * Returns cursus creation form
-     */
-    public function getCursusCreationFormAction()
-    {
-        $formType = new CursusType();
-        $formType->enableApi();
-        $form = $this->createForm($formType);
-
-        return $this->apiManager->handleFormView(
-            'ClarolineCursusBundle:API:AdminManagement\CursusCreateForm.html.twig',
-            $form
-        );
-    }
-
-    /**
-     * @EXT\Route(
      *     "/api/cursus/create",
      *     name="api_post_cursus_creation",
      *     options = {"expose"=true}
@@ -144,14 +122,25 @@ class AdminManagementController extends Controller
      */
     public function postCursusCreationAction()
     {
+        $cursusDatas = $this->request->request->get('cursusDatas', false);
         $formType = new CursusType();
-        $formType->enableApi();
         $cursus = new Cursus();
+        $cursus->setTitle($cursusDatas['title']);
+        $cursus->setCode($cursusDatas['code']);
+        $cursus->setDescription($cursusDatas['description']);
+        $cursus->setBlocking($cursusDatas['blocking']);
+        $color = $cursusDatas['color'];
+        $details = ['color' => $color];
+        $cursus->setDetails($details);
+
+        if ($cursusDatas['workspace']) {
+            $worskpace = $this->workspaceManager->getWorkspaceById($cursusDatas['workspace']);
+            $cursus->setWorkspace($worskpace);
+        }
         $form = $this->createForm($formType, $cursus);
-        $form->submit($this->request);
+        $form->submit([], false);
 
         if ($form->isValid()) {
-            $color = $form->get('color')->getData();
             $createdCursus = $this->cursusManager->createCursus(
                 $cursus->getTitle(),
                 $cursus->getCode(),
@@ -166,22 +155,12 @@ class AdminManagementController extends Controller
             $serializedCursus = $this->serializer->serialize(
                 $createdCursus,
                 'json',
-                SerializationContext::create()->setGroups(['api_cursus'])
+                SerializationContext::create()->setGroups(['api_workspace_min'])
             );
 
             return new JsonResponse($serializedCursus, 200);
         } else {
-            $options = [
-                'http_code' => 400,
-                'extra_parameters' => null,
-                'serializer_group' => 'api_cursus',
-            ];
-
-            return $this->apiManager->handleFormView(
-                'ClarolineCursusBundle:API:AdminManagement\CursusCreateForm.html.twig',
-                $form,
-                $options
-            );
+            return new JsonResponse($form->getErrors(), 200);
         }
     }
 
@@ -199,14 +178,26 @@ class AdminManagementController extends Controller
      */
     public function postCursusChildCreationAction(Cursus $parent)
     {
+        $cursusDatas = $this->request->request->get('cursusDatas', false);
         $formType = new CursusType();
-        $formType->enableApi();
         $cursus = new Cursus();
+        $cursus->setParent($parent);
+        $cursus->setTitle($cursusDatas['title']);
+        $cursus->setCode($cursusDatas['code']);
+        $cursus->setDescription($cursusDatas['description']);
+        $cursus->setBlocking($cursusDatas['blocking']);
+        $color = $cursusDatas['color'];
+        $details = ['color' => $color];
+        $cursus->setDetails($details);
+
+        if ($cursusDatas['workspace']) {
+            $worskpace = $this->workspaceManager->getWorkspaceById($cursusDatas['workspace']);
+            $cursus->setWorkspace($worskpace);
+        }
         $form = $this->createForm($formType, $cursus);
-        $form->submit($this->request);
+        $form->submit([], false);
 
         if ($form->isValid()) {
-            $color = $form->get('color')->getData();
             $createdCursus = $this->cursusManager->createCursus(
                 $cursus->getTitle(),
                 $cursus->getCode(),
@@ -221,47 +212,13 @@ class AdminManagementController extends Controller
             $serializedCursus = $this->serializer->serialize(
                 $createdCursus,
                 'json',
-                SerializationContext::create()->setGroups(['api_cursus'])
+                SerializationContext::create()->setGroups(['api_workspace_min'])
             );
 
             return new JsonResponse($serializedCursus, 200);
         } else {
-            $options = [
-                'http_code' => 400,
-                'extra_parameters' => null,
-                'serializer_group' => 'api_cursus',
-            ];
-
-            return $this->apiManager->handleFormView(
-                'ClarolineCursusBundle:API:AdminManagement\CursusCreateForm.html.twig',
-                $form,
-                $options
-            );
+            return new JsonResponse($form->getErrors(), 200);
         }
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/api/cursus/{cursus}/edit/form",
-     *     name="api_get_cursus_edition_form",
-     *     options = {"expose"=true}
-     * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
-     *
-     * Returns the cursus edition form
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     */
-    public function getCursusEditionFormAction(Cursus $cursus)
-    {
-        $formType = new CursusType($cursus);
-        $formType->enableApi();
-        $form = $this->createForm($formType, $cursus);
-
-        return $this->apiManager->handleFormView(
-            'ClarolineCursusBundle:API:AdminManagement\CursusEditForm.html.twig',
-            $form
-        );
     }
 
     /**
@@ -278,42 +235,36 @@ class AdminManagementController extends Controller
      */
     public function putCursusEditionAction(Cursus $cursus)
     {
+        $cursusDatas = $this->request->request->get('cursusDatas', false);
         $formType = new CursusType($cursus);
-        $formType->enableApi();
+        $cursus->setTitle($cursusDatas['title']);
+        $cursus->setCode($cursusDatas['code']);
+        $cursus->setDescription($cursusDatas['description']);
+        $cursus->setBlocking($cursusDatas['blocking']);
+        $color = $cursusDatas['color'];
+        $details = ['color' => $color];
+        $cursus->setDetails($details);
+
+        if ($cursusDatas['workspace']) {
+            $worskpace = $this->workspaceManager->getWorkspaceById($cursusDatas['workspace']);
+            $cursus->setWorkspace($worskpace);
+        }
         $form = $this->createForm($formType, $cursus);
-        $form->submit($this->request);
+        $form->submit([], false);
 
         if ($form->isValid()) {
-            $color = $form->get('color')->getData();
-            $details = $cursus->getDetails();
-
-            if (is_null($details)) {
-                $details = [];
-            }
-            $details['color'] = $color;
-            $cursus->setDetails($details);
             $this->cursusManager->persistCursus($cursus);
             $event = new LogCursusEditEvent($cursus);
             $this->eventDispatcher->dispatch('log', $event);
             $serializedCursus = $this->serializer->serialize(
                 $cursus,
                 'json',
-                SerializationContext::create()->setGroups(['api_cursus'])
+                SerializationContext::create()->setGroups(['api_workspace_min'])
             );
 
             return new JsonResponse($serializedCursus, 200);
         } else {
-            $options = [
-                'http_code' => 400,
-                'extra_parameters' => null,
-                'serializer_group' => 'api_cursus',
-            ];
-
-            return $this->apiManager->handleFormView(
-                'ClarolineCursusBundle:API:AdminManagement\CursusEditForm.html.twig',
-                $form,
-                $options
-            );
+            return new JsonResponse($form->getErrors(), 200);
         }
     }
 
@@ -742,6 +693,30 @@ class AdminManagementController extends Controller
         );
 
         return new JsonResponse($serializedCourse, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/cursus/get/by/code/{code}/without/id/{id}",
+     *     name="api_get_cursus_by_code_without_id",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     *
+     * Returns the cursus
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getCursusByCodeWithoutIdAction($code, $id = 0)
+    {
+        $cursus = $this->cursusManager->getCursusByCodeWithoutId($code, $id);
+        $serializedCursus = $this->serializer->serialize(
+            $cursus,
+            'json',
+            SerializationContext::create()->setGroups(['api_cursus'])
+        );
+
+        return new JsonResponse($serializedCursus, 200);
     }
 
     /**
@@ -1454,7 +1429,7 @@ class AdminManagementController extends Controller
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function getWorkspacsAction()
+    public function getWorkspacesAction()
     {
         $workspaces = $this->cursusManager->getWorkspacesListForCurrentUser();
         $serializedWorkspaces = $this->serializer->serialize(

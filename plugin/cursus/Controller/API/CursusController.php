@@ -60,7 +60,7 @@ class CursusController extends FOSRestController
      *     "/root/cursus/all",
      *     name="api_get_all_root_cursus"
      * )
-     * @View(serializerGroups={"api_cursus"})
+     * @View(serializerGroups={"api_workspace_min"})
      * @ApiDoc(
      *     description="Returns root cursus list",
      *     views = {"cursus"}
@@ -92,7 +92,7 @@ class CursusController extends FOSRestController
      *     "/cursus/{cursus}",
      *     name="api_get_one_cursus"
      * )
-     * @View(serializerGroups={"api_cursus"})
+     * @View(serializerGroups={"api_workspace_min"})
      * @ApiDoc(
      *     description="Returns a cursus",
      *     views = {"cursus"}

@@ -11,21 +11,18 @@
 
 namespace Claroline\CursusBundle\Form;
 
-use Claroline\CoreBundle\Form\Angular\AngularType;
 use Claroline\CursusBundle\Entity\Cursus;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class CursusType extends AngularType
+class CursusType extends AbstractType
 {
     private $cursus;
-    private $forApi = false;
-    private $ngAlias;
 
-    public function __construct(Cursus $cursus = null, $ngAlias = 'cmc')
+    public function __construct(Cursus $cursus = null)
     {
         $this->cursus = $cursus;
-        $this->ngAlias = $ngAlias;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -99,18 +96,6 @@ class CursusType extends AngularType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $default = ['translation_domain' => 'cursus'];
-
-        if ($this->forApi) {
-            $default['csrf_protection'] = false;
-        }
-        $default['ng-model'] = 'cursus';
-        $default['ng-controllerAs'] = $this->ngAlias;
-        $resolver->setDefaults($default);
-    }
-
-    public function enableApi()
-    {
-        $this->forApi = true;
+        $resolver->setDefaults(['translation_domain' => 'cursus']);
     }
 }

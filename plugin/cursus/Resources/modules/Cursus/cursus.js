@@ -20,7 +20,6 @@ import CursusCreationModalCtrl from './Controller/CursusCreationModalCtrl'
 import CursusEditionModalCtrl from './Controller/CursusEditionModalCtrl'
 import CursusImportModalCtrl from './Controller/CursusImportModalCtrl'
 import CursusHierarchyModalCtrl from './Controller/CursusHierarchyModalCtrl'
-import CursusCourseCreationModalCtrl from './Controller/CursusCourseCreationModalCtrl'
 import CursusCourseSelectionModalCtrl from './Controller/CursusCourseSelectionModalCtrl'
 
 angular.module('CursusModule', [
@@ -36,5 +35,4 @@ angular.module('CursusModule', [
 .controller('CursusEditionModalCtrl', CursusEditionModalCtrl)
 .controller('CursusImportModalCtrl', CursusImportModalCtrl)
 .controller('CursusHierarchyModalCtrl', CursusHierarchyModalCtrl)
-.controller('CursusCourseCreationModalCtrl', CursusCourseCreationModalCtrl)
 .controller('CursusCourseSelectionModalCtrl', CursusCourseSelectionModalCtrl)

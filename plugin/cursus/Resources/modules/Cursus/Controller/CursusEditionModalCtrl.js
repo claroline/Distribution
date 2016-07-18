@@ -8,51 +8,113 @@
  */
 
 /*global Routing*/
+/*global Translator*/
 
 export default class CursusEditionModalCtrl {
-  constructor($http, $uibModal, $uibModalInstance, ClarolineAPIService, cursusId, callback) {
+  constructor($http, $uibModalInstance, CourseService, cursus, callback) {
     this.$http = $http
-    this.$uibModal = $uibModal
     this.$uibModalInstance = $uibModalInstance
-    this.ClarolineAPIService = ClarolineAPIService
-    this.cursusId = cursusId
     this.callback = callback
-    this.cursus = {}
+    this.source = cursus
+    this.cursusId = cursus['id']
+    this.cursus = {
+      title: null,
+      code: null,
+      description: null,
+      workspace: null,
+      blocking: false,
+      color: null
+    }
+    this.cursusErrors = {
+      title: null,
+      code: null
+    }
+    this.tinymceOptions = CourseService.getTinymceConfiguration()
+    this.workspaces = []
+    this.workspace = null
+    this.initializeCursus()
   }
 
-  submit() {
-    let data = this.ClarolineAPIService.formSerialize('cursus_form', this.cursus)
-    const route = Routing.generate('api_put_cursus_edition', {'_format': 'html', cursus: this.cursusId})
-    const headers = {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
+  initializeCursus () {
+    this.cursus['title'] = this.source['title']
+    this.cursus['blocking'] = this.source['blocking']
 
-    this.$http.post(route, data, headers).then(
-      d => {
-        this.$uibModalInstance.close(d.data)
-      },
-      d => {
-        if (d.status === 400) {
-          this.$uibModalInstance.close()
-          const instance = this.$uibModal.open({
-            template: d.data,
-            controller: 'CursusEditionModalCtrl',
-            controllerAs: 'cmc',
-            bindToController: true,
-            resolve: {
-              cursusId: () => { return this.cursusId },
-              callback: () => { return this.callback },
-              cursus: () => { return this.cursus }
-            }
-          })
+    if (this.source['code']) {
+      this.cursus['code'] = this.source['code']
+    }
 
-          instance.result.then(result => {
-            if (!result) {
-              return
-            } else {
-              this.callback(result)
-            }
-          })
+    if (this.source['description']) {
+      this.cursus['description'] = this.source['description']
+    }
+
+    if (this.source['details']['color']) {
+      this.cursus['color'] = this.source['details']['color']
+    }
+    const workspacesUrl = Routing.generate('api_get_workspaces')
+    this.$http.get(workspacesUrl).then(d => {
+      if (d['status'] === 200) {
+        const datas = JSON.parse(d['data'])
+        datas.forEach(w => this.workspaces.push(w))
+
+        if (this.source['workspace']) {
+          const selectedWorkspace = this.workspaces.find(w => w['id'] === this.source['workspace']['id'])
+          this.workspace = selectedWorkspace
         }
       }
-    )
+    })
+  }
+
+  submit () {
+    this.resetErrors()
+
+    if (!this.cursus['title']) {
+      this.cursusErrors['title'] = Translator.trans('form_not_blank_error', {}, 'cursus')
+    } else {
+      this.cursusErrors['title'] = null
+    }
+
+    if (this.workspace) {
+      this.cursus['workspace'] = this.workspace['id']
+    } else {
+      this.cursus['workspace'] = null
+    }
+
+    if (this.isValid()) {
+      const checkCodeUrl = Routing.generate('api_get_cursus_by_code_without_id', {code: this.cursus['code'], id : this.source['id']})
+      this.$http.get(checkCodeUrl).then(d => {
+        if (d['status'] === 200) {
+          if (d['data'] === 'null') {
+            const url = Routing.generate('api_put_cursus_edition', {cursus: this.source['id']})
+            this.$http.put(url, {cursusDatas: this.cursus}).then(d => {
+              this.callback(d['data'])
+              this.$uibModalInstance.close()
+            })
+          } else {
+            this.cursusErrors['code'] = Translator.trans('form_not_unique_error', {}, 'cursus')
+          }
+        }
+      })
+    } else {
+      console.log('Form is not valid.')
+    }
+  }
+
+  resetErrors () {
+    for (const key in this.cursusErrors) {
+      this.cursusErrors[key] = null
+    }
+  }
+
+  isValid () {
+    let valid = true
+
+    for (const key in this.cursusErrors) {
+      if (this.cursusErrors[key]) {
+        valid = false
+        break
+      }
+    }
+
+    return valid
   }
 }

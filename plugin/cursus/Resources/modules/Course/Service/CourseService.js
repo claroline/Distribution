@@ -127,23 +127,6 @@ export default class CourseService {
         callback: () => { return updateCallback }
       }
     })
-    //const modal = this.$uibModal.open({
-    //  templateUrl: Routing.generate('api_get_course_edition_form', {course: courseId}) + '?bust=' + Math.random().toString(36).slice(2),
-    //  controller: 'CourseEditionModalCtrl',
-    //  controllerAs: 'cmc',
-    //  resolve: {
-    //    courseId: () => { return courseId },
-    //    callback: () => { return updateCallback }
-    //  }
-    //})
-    //
-    //modal.result.then(result => {
-    //  if (!result) {
-    //    return
-    //  } else {
-    //    updateCallback(result)
-    //  }
-    //})
   }
 
   deleteCourse (courseId, callback = null) {

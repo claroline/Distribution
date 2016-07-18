@@ -8,53 +8,95 @@
  */
 
 /*global Routing*/
+/*global Translator*/
 
 export default class CursusCreationModalCtrl {
-  constructor($http, $uibModal, $uibModalInstance, ClarolineAPIService, cursusId, callback) {
+  constructor($http, $uibModalInstance, CourseService, cursusId, callback) {
     this.$http = $http
-    this.$uibModal = $uibModal
     this.$uibModalInstance = $uibModalInstance
-    this.ClarolineAPIService = ClarolineAPIService
     this.cursusId = cursusId
     this.callback = callback
-    this.cursus = {}
+    this.cursus = {
+      title: null,
+      code: null,
+      description: null,
+      workspace: null,
+      blocking: false,
+      color: null
+    }
+    this.cursusErrors = {
+      title: null,
+      code: null
+    }
+    this.tinymceOptions = CourseService.getTinymceConfiguration()
+    this.workspaces = []
+    this.workspace = null
+    this.initializeCursus()
   }
 
-  submit() {
-    let data = this.ClarolineAPIService.formSerialize('cursus_form', this.cursus)
-    const route = this.cursusId === null ?
-      Routing.generate('api_post_cursus_creation', {'_format': 'html'}) :
-      Routing.generate('api_post_cursus_child_creation', {'_format': 'html', parent: this.cursusId})
-    const headers = {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
-
-    this.$http.post(route, data, headers).then(
-      d => {
-        this.$uibModalInstance.close(d.data)
-      },
-      d => {
-        if (d.status === 400) {
-          this.$uibModalInstance.close()
-          const instance = this.$uibModal.open({
-            template: d.data,
-            controller: 'CursusCreationModalCtrl',
-            controllerAs: 'cmc',
-            bindToController: true,
-            resolve: {
-              cursusId: () => { return this.cursusId },
-              callback: () => { return this.callback },
-              cursus: () => { return this.cursus }
-            }
-          })
-
-          instance.result.then(result => {
-            if (!result) {
-              return
-            } else {
-              this.callback(result)
-            }
-          })
-        }
+  initializeCursus () {
+    const url = Routing.generate('api_get_workspaces')
+    this.$http.get(url).then(d => {
+      if (d['status'] === 200) {
+        const datas = JSON.parse(d['data'])
+        datas.forEach(w => this.workspaces.push(w))
       }
-    )
+    })
+  }
+
+  submit () {
+    this.resetErrors()
+
+    if (!this.cursus['title']) {
+      this.cursusErrors['title'] = Translator.trans('form_not_blank_error', {}, 'cursus')
+    } else {
+      this.cursusErrors['title'] = null
+    }
+
+    if (this.workspace) {
+      this.cursus['workspace'] = this.workspace['id']
+    } else {
+      this.cursus['workspace'] = null
+    }
+
+    if (this.isValid()) {
+      const checkCodeUrl = Routing.generate('api_get_cursus_by_code_without_id', {code: this.cursus['code']})
+      this.$http.get(checkCodeUrl).then(d => {
+        if (d['status'] === 200) {
+          if (d['data'] === 'null') {
+            const url = this.cursusId === null ?
+              Routing.generate('api_post_cursus_creation') :
+              Routing.generate('api_post_cursus_child_creation', {parent: this.cursusId})
+            this.$http.post(url, {cursusDatas: this.cursus}).then(d => {
+              this.callback(d['data'])
+              this.$uibModalInstance.close()
+            })
+          } else {
+            this.cursusErrors['code'] = Translator.trans('form_not_unique_error', {}, 'cursus')
+          }
+        }
+      })
+    } else {
+      console.log('Form is not valid.')
+    }
+  }
+
+  resetErrors () {
+    for (const key in this.cursusErrors) {
+      this.cursusErrors[key] = null
+    }
+  }
+
+  isValid () {
+    let valid = true
+
+    for (const key in this.cursusErrors) {
+      if (this.cursusErrors[key]) {
+        valid = false
+        break
+      }
+    }
+
+    return valid
   }
 }

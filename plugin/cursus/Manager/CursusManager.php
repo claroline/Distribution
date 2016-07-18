@@ -3744,6 +3744,11 @@ class CursusManager
         return $withPager ? $this->pagerFactory->createPagerFromArray($cursus, $page, $max) :  $cursus;
     }
 
+    public function getCursusByCodeWithoutId($code, $id)
+    {
+        return $this->cursusRepo->findCursusByCodeWithoutId($code, $id);
+    }
+
     /**************************************
      * Access to CourseRepository methods *
      **************************************/

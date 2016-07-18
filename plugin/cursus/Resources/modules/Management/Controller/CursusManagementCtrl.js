@@ -29,8 +29,8 @@ export default class CursusManagementCtrl {
     }
   }
 
-  editCursus (cursusId) {
-    this.CursusService.editCursus(cursusId)
+  editCursus (cursus) {
+    this.CursusService.editCursus(cursus)
   }
 
   createChildCursus (cursusId) {
