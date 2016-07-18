@@ -79,7 +79,6 @@ export default class SessionCreationModalCtrl {
     endDate.setDate(endDate.getDate() + this.course['defaultSessionDuration'])
     this.session['startDate'] = startDate
     this.session['endDate'] = endDate
-    console.debug(startDate)
     this.session['publicRegistration'] = this.course['publicRegistration']
     this.session['publicUnregistration'] = this.course['publicUnregistration']
     this.session['userValidation'] = this.course['userValidation']

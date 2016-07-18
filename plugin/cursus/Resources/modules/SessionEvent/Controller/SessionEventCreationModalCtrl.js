@@ -10,49 +10,105 @@
 /*global Routing*/
 
 export default class SessionEventCreationModalCtrl {
-  constructor($http, $uibModal, $uibModalInstance, ClarolineAPIService, sessionId, callback) {
+  constructor($http, $uibModalInstance, CourseService, session, callback) {
     this.$http = $http
-    this.$uibModal = $uibModal
     this.$uibModalInstance = $uibModalInstance
-    this.ClarolineAPIService = ClarolineAPIService
-    this.sessionId = sessionId
+    this.session = session
     this.callback = callback
-    this.sessionEvent = {}
+    this.sessionEvent = {
+      name: null,
+      startDate: null,
+      endDate: null,
+      description: null,
+      location: null
+    }
+    this.sessionEventErrors = {
+      name: null,
+      startDate: null,
+      endDate: null
+    }
+    this.dateOptions = {
+      formatYear: 'yy',
+      startingDay: 1,
+      placeHolder: 'jj/mm/aaaa'
+    }
+    this.dates = {
+      start: {format: 'dd/MM/yyyy', open: false},
+      end: {format: 'dd/MM/yyyy', open: false}
+    }
+    this.tinymceOptions = CourseService.getTinymceConfiguration()
+    this.initializeSessionEvent()
   }
 
-  submit() {
-    const data = this.ClarolineAPIService.formSerialize('session_event_form', this.sessionEvent)
-    const route = Routing.generate('api_post_session_event_creation', {'_format': 'html', session: this.sessionId})
-    const headers = {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
+  initializeSessionEvent () {
+    this.sessionEvent['startDate'] = this.session['startDate'].replace(/\+.*$/, '')
+    this.sessionEvent['endDate'] = this.session['endDate'].replace(/\+.*$/, '')
+  }
 
-    this.$http.post(route, data, headers).then(
-      d => {
-        this.$uibModalInstance.close(d.data)
-      },
-      d => {
-        if (d.status === 400) {
-          this.$uibModalInstance.close()
-          const instance = this.$uibModal.open({
-            template: d.data,
-            controller: 'SessionEventCreationModalCtrl',
-            controllerAs: 'cmc',
-            bindToController: true,
-            resolve: {
-              sessionId: () => { return this.sessionId },
-              callback: () => { return this.callback },
-              sessionEvent: () => { return this.sessionEvent }
-            }
-          })
+  submit () {
+    this.resetErrors()
 
-          instance.result.then(result => {
-            if (!result) {
-              return
-            } else {
-              this.callback(result)
-            }
-          })
-        }
+    if (!this.sessionEvent['name']) {
+      this.sessionEventErrors['name'] = Translator.trans('form_not_blank_error', {}, 'cursus')
+    } else {
+      this.sessionEventErrors['name'] = null
+    }
+
+    if (!this.sessionEvent['startDate']) {
+      if (this.sessionEvent['startDate'] === null) {
+        this.sessionEventErrors['startDate'] = Translator.trans('form_not_blank_error', {}, 'cursus')
+      } else {
+        this.sessionEventErrors['startDate'] = Translator.trans('form_not_valid_error', {}, 'cursus')
       }
-    )
+    } else {
+      this.sessionEventErrors['startDate'] = null
+    }
+
+    if (!this.sessionEvent['endDate']) {
+      if (this.sessionEvent['endDate'] === null) {
+        this.sessionEventErrors['endDate'] = Translator.trans('form_not_blank_error', {}, 'cursus')
+      } else {
+        this.sessionEventErrors['endDate'] = Translator.trans('form_not_valid_error', {}, 'cursus')
+      }
+    } else {
+      this.sessionEventErrors['endDate'] = null
+    }
+
+    if (this.isValid()) {
+      const url = Routing.generate('api_post_session_event_creation', {session: this.session['id']})
+      this.$http.post(url, {sessionEventDatas: this.sessionEvent}).then(d => {
+        this.callback(d['data'])
+        this.$uibModalInstance.close()
+      })
+    } else {
+      console.log('Form is not valid.')
+    }
+  }
+
+  resetErrors () {
+    for (const key in this.sessionEventErrors) {
+      this.sessionEventErrors[key] = null
+    }
+  }
+
+  isValid () {
+    let valid = true
+
+    for (const key in this.sessionEventErrors) {
+      if (this.sessionEventErrors[key]) {
+        valid = false
+        break
+      }
+    }
+
+    return valid
+  }
+
+  openDatePicker (type) {
+    if (type === 'start') {
+      this.dates['start']['open'] = true
+    } else if (type === 'end') {
+      this.dates['end']['open'] = true
+    }
   }
 }

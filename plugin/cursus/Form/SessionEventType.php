@@ -11,22 +11,14 @@
 
 namespace Claroline\CursusBundle\Form;
 
-use Claroline\CoreBundle\Form\Angular\AngularType;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class SessionEventType extends AngularType
+class SessionEventType extends AbstractType
 {
-    private $forApi = false;
-    private $ngAlias;
-
-    public function __construct($ngAlias = 'cmc')
-    {
-        $this->ngAlias = $ngAlias;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
@@ -94,18 +86,6 @@ class SessionEventType extends AngularType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $default = ['translation_domain' => 'cursus'];
-
-        if ($this->forApi) {
-            $default['csrf_protection'] = false;
-        }
-        $default['ng-model'] = 'sessionEvent';
-        $default['ng-controllerAs'] = $this->ngAlias;
-        $resolver->setDefaults($default);
-    }
-
-    public function enableApi()
-    {
-        $this->forApi = true;
+        $resolver->setDefaults(['translation_domain' => 'cursus']);
     }
 }

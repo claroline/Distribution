@@ -9,6 +9,8 @@
 
 /*global Routing*/
 /*global Translator*/
+import sessionEventCreationFormTemplate from '../Partial/session_event_creation_form_modal.html'
+import sessionEventEditionFormTemplate from '../Partial/session_event_edition_form_modal.html'
 
 export default class SessionEventService {
   constructor ($http, $sce, $uibModal, ClarolineAPIService) {
@@ -102,44 +104,28 @@ export default class SessionEventService {
     }
   }
 
-  createSessionEvent (sessionId, callback = null) {
+  createSessionEvent (session, callback = null) {
     const addCallback = (callback !== null) ? callback : this._addSessionEventCallback
-    const modal = this.$uibModal.open({
-      templateUrl: Routing.generate('api_get_session_event_creation_form', {session: sessionId}),
+    this.$uibModal.open({
+      template: sessionEventCreationFormTemplate,
       controller: 'SessionEventCreationModalCtrl',
       controllerAs: 'cmc',
       resolve: {
-        sessionId: () => { return sessionId },
+        session: () => { return session },
         callback: () => { return addCallback }
-      }
-    })
-
-    modal.result.then(result => {
-      if (!result) {
-        return
-      } else {
-        addCallback(result)
       }
     })
   }
 
-  editSessionEvent (sessionEventId, callback = null) {
-    const updateCallback = (callback !== null) ? callback : this._updateSessionEventCallback
-    const modal = this.$uibModal.open({
-      templateUrl: Routing.generate('api_get_session_event_edition_form', {sessionEvent: sessionEventId}) + '?bust=' + Math.random().toString(36).slice(2),
+  editSessionEvent (sessionEvent, callback = null) {
+    const updateCallback = callback !== null ? callback : this._updateSessionEventCallback
+    this.$uibModal.open({
+      template: sessionEventEditionFormTemplate,
       controller: 'SessionEventEditionModalCtrl',
       controllerAs: 'cmc',
       resolve: {
-        sessionEventId: () => { return sessionEventId },
+        sessionEvent: () => { return sessionEvent },
         callback: () => { return updateCallback }
-      }
-    })
-
-    modal.result.then(result => {
-      if (!result) {
-        return
-      } else {
-        updateCallback(result)
       }
     })
   }

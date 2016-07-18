@@ -944,33 +944,6 @@ class AdminManagementController extends Controller
 
     /**
      * @EXT\Route(
-     *     "/api/session/{session}/event/create/form",
-     *     name="api_get_session_event_creation_form",
-     *     options = {"expose"=true}
-     * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
-     *
-     * Returns session event creation form
-     */
-    public function getSessionEventCreationFormAction(CourseSession $session)
-    {
-        $formType = new SessionEventType();
-        $formType->enableApi();
-        $sessionEvent = new SessionEvent();
-        $sessionEvent->setSession($session);
-        $startDate = new \DateTime();
-        $sessionEvent->setStartDate($startDate);
-        $sessionEvent->setEndDate($session->getEndDate());
-        $form = $this->createForm($formType, $sessionEvent);
-
-        return $this->apiManager->handleFormView(
-            'ClarolineCursusBundle:API:AdminManagement\SessionEventCreateForm.html.twig',
-            $form
-        );
-    }
-
-    /**
-     * @EXT\Route(
      *     "/api/session/{session}/event/create",
      *     name="api_post_session_event_creation",
      *     options = {"expose"=true}
@@ -979,11 +952,20 @@ class AdminManagementController extends Controller
      */
     public function postSessionEventCreateAction(CourseSession $session)
     {
+        $sessionEventDatas = $this->request->request->get('sessionEventDatas', false);
         $formType = new SessionEventType();
-        $formType->enableApi();
+        $trimmedStartDate = trim($sessionEventDatas['startDate'], 'Zz');
+        $trimmedEndDate = trim($sessionEventDatas['endDate'], 'Zz');
+        $startDate = new \DateTime($trimmedStartDate);
+        $endDate = new \DateTime($trimmedEndDate);
         $sessionEvent = new SessionEvent();
+        $sessionEvent->setName($sessionEventDatas['name']);
+        $sessionEvent->setStartDate($startDate);
+        $sessionEvent->setEndDate($endDate);
+        $sessionEvent->setDescription($sessionEventDatas['description']);
+        $sessionEvent->setLocation($sessionEventDatas['location']);
         $form = $this->createForm($formType, $sessionEvent);
-        $form->submit($this->request);
+        $form->submit([], false);
 
         if ($form->isValid()) {
             $createdSessionEvent = $this->cursusManager->createSessionEvent(
@@ -1002,42 +984,8 @@ class AdminManagementController extends Controller
 
             return new JsonResponse($serializedSessionEvent, 200);
         } else {
-            $options = [
-                'http_code' => 400,
-                'extra_parameters' => null,
-                'serializer_group' => 'api_cursus',
-            ];
-
-            return $this->apiManager->handleFormView(
-                'ClarolineCursusBundle:API:AdminManagement\SessionEventCreateForm.html.twig',
-                $form,
-                $options
-            );
+            return new JsonResponse($form->getErrors(), 200);
         }
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/api/session/event/{sessionEvent}/edit/form",
-     *     name="api_get_session_event_edition_form",
-     *     options = {"expose"=true}
-     * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
-     *
-     * Returns the session event edition form
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     */
-    public function getSessionEventEditionFormAction(SessionEvent $sessionEvent)
-    {
-        $formType = new SessionEventType();
-        $formType->enableApi();
-        $form = $this->createForm($formType, $sessionEvent);
-
-        return $this->apiManager->handleFormView(
-            'ClarolineCursusBundle:API:AdminManagement\SessionEventEditForm.html.twig',
-            $form
-        );
     }
 
     /**
@@ -1054,10 +1002,19 @@ class AdminManagementController extends Controller
      */
     public function putSessionEventEditionAction(SessionEvent $sessionEvent)
     {
+        $sessionEventDatas = $this->request->request->get('sessionEventDatas', false);
         $formType = new SessionEventType();
-        $formType->enableApi();
+        $trimmedStartDate = trim($sessionEventDatas['startDate'], 'Zz');
+        $trimmedEndDate = trim($sessionEventDatas['endDate'], 'Zz');
+        $startDate = new \DateTime($trimmedStartDate);
+        $endDate = new \DateTime($trimmedEndDate);
+        $sessionEvent->setName($sessionEventDatas['name']);
+        $sessionEvent->setStartDate($startDate);
+        $sessionEvent->setEndDate($endDate);
+        $sessionEvent->setDescription($sessionEventDatas['description']);
+        $sessionEvent->setLocation($sessionEventDatas['location']);
         $form = $this->createForm($formType, $sessionEvent);
-        $form->submit($this->request);
+        $form->submit([], false);
 
         if ($form->isValid()) {
             $this->cursusManager->persistSessionEvent($sessionEvent);
@@ -1071,17 +1028,7 @@ class AdminManagementController extends Controller
 
             return new JsonResponse($serializedSessionEvent, 200);
         } else {
-            $options = [
-                'http_code' => 400,
-                'extra_parameters' => null,
-                'serializer_group' => 'api_cursus',
-            ];
-
-            return $this->apiManager->handleFormView(
-                'ClarolineCursusBundle:API:AdminManagement\SessionEventEditForm.html.twig',
-                $form,
-                $options
-            );
+            return new JsonResponse($form->getErrors(), 200);
         }
     }
 
