@@ -83,7 +83,7 @@
                 {{ 'workspace'|trans:{}:'platform' }}
             </label>
             <div class="col-md-9">
-                <select class="form-control" ng-model="cmc.workspace" ng-options="w['name'] for w in cmc.workspaces">
+                <select class="form-control" ng-model="cmc.workspace" ng-options="w['name'] for w in cmc.workspaces" ng-change="cmc.manageRolesChoices()">
                     <option></option>
                 </select>
             </div>
@@ -93,12 +93,12 @@
                 {{ 'workspace_model'|trans:{}:'cursus' }}
             </label>
             <div class="col-md-9">
-                <select class="form-control" ng-model="cmc.model" ng-options="wm['name'] for wm in cmc.workspaceModels">
+                <select class="form-control" ng-model="cmc.model" ng-options="wm['name'] for wm in cmc.workspaceModels" ng-change="cmc.manageRolesChoices()">
                     <option></option>
                 </select>
             </div>
         </div>
-        <div class="form-group row">
+        <div class="form-group row" ng-if="!cmc.workspace && !cmc.model">
             <label class="control-label col-md-3">
                 {{ 'tutor_role_name'|trans:{}:'cursus' }}
             </label>
@@ -106,12 +106,32 @@
                 <input type="text" class="form-control" ng-model="cmc.course['tutorRoleName']">
             </div>
         </div>
-        <div class="form-group row">
+        <div class="form-group row" ng-if="cmc.workspace || cmc.model">
+            <label class="control-label col-md-3">
+                {{ 'tutor_role_name'|trans:{}:'cursus' }}
+            </label>
+            <div class="col-md-9">
+                <select class="form-control" ng-model="cmc.course['tutorRoleName']" ng-options="r for r in cmc.rolesChoices">
+                    <option></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row" ng-if="!cmc.workspace && !cmc.model">
             <label class="control-label col-md-3">
                 {{ 'learner_role_name'|trans:{}:'cursus' }}
             </label>
             <div class="col-md-9">
                 <input type="text" class="form-control" ng-model="cmc.course['learnerRoleName']">
+            </div>
+        </div>
+        <div class="form-group row" ng-if="cmc.workspace || cmc.model">
+            <label class="control-label col-md-3">
+                {{ 'learner_role_name'|trans:{}:'cursus' }}
+            </label>
+            <div class="col-md-9">
+                <select class="form-control" ng-model="cmc.course['learnerRoleName']" ng-options="r for r in cmc.rolesChoices">
+                    <option></option>
+                </select>
             </div>
         </div>
         <div class="form-group row" ng-class="cmc.courseErrors['maxUsers'] ? 'has-error' : ''">

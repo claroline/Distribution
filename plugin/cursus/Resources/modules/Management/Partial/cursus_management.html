@@ -112,9 +112,11 @@
                 </span>
             </div>
             <span ng-if="cursus.course">
-                <span class="label label-primary pointer-hand">
-                    {{ cursus.course.title }}
-                </span>
+                <a ui-sref="course({courseId: cursus.course.id})">
+                    <span class="label label-primary">
+                        {{ cursus.course.title }}
+                    </span>
+                </a>
                 <button class="label label-danger" ng-click="cmc.removeCourse(cursus.id)">
                     <i class="fa fa-times"></i>
                 </button>

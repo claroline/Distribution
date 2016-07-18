@@ -52,6 +52,7 @@ export default class CourseEditionModalCtrl {
     this.workspace = null
     this.workspaceModels = []
     this.model = null
+    this.rolesChoices = []
     this._userpickerCallback = this._userpickerCallback.bind(this)
     this.initializeCourse()
   }
@@ -62,7 +63,15 @@ export default class CourseEditionModalCtrl {
   }
 
   initializeCourse () {
-    console.log(this.course)
+    if (this.source['tutorRoleName']) {
+      this.course['tutorRoleName'] = this.source['tutorRoleName']
+    }
+    if (this.source['learnerRoleName']) {
+      this.course['learnerRoleName'] = this.source['learnerRoleName']
+    }
+    if (this.source['icon']) {
+      this.course['icon'] = this.source['icon']
+    }
     const workspacesUrl = Routing.generate('api_get_workspaces')
     this.$http.get(workspacesUrl).then(d => {
       if (d['status'] === 200) {
@@ -72,6 +81,7 @@ export default class CourseEditionModalCtrl {
         if (this.source['workspace']) {
           const selectedWorkspace = this.workspaces.find(w => w['id'] === this.source['workspace']['id'])
           this.workspace = selectedWorkspace
+          this.manageRolesChoices()
         }
       }
     })
@@ -84,6 +94,7 @@ export default class CourseEditionModalCtrl {
         if (this.source['workspaceModel']) {
           const selectedModel = this.workspaceModels.find(wm => wm['id'] === this.source['workspaceModel']['id'])
           this.model = selectedModel
+          this.manageRolesChoices()
         }
       }
     })
@@ -94,14 +105,6 @@ export default class CourseEditionModalCtrl {
         datas.forEach(r => this.validatorsRoles.push(r['id']))
       }
     })
-
-    //this.CursusService.getRootCursus().then(d => {
-    //  d.forEach(c => this.cursusList.push(c))
-    //  this.source['cursus'].forEach(sc => {
-    //    const selectedCursus = this.cursusList.find(c => c['id'] === sc['id'])
-    //    this.cursus.push(selectedCursus)
-    //  })
-    //})
     this.source['validators'].forEach(v => this.validators.push(v))
     this.course['title'] = this.source['title']
     this.course['code'] = this.source['code']
@@ -118,15 +121,6 @@ export default class CourseEditionModalCtrl {
     }
     if (this.source['maxUsers']) {
       this.course['maxUsers'] = this.source['maxUsers']
-    }
-    if (this.source['tutorRoleName']) {
-      this.course['tutorRoleName'] = this.source['tutorRoleName']
-    }
-    if (this.source['learnerRoleName']) {
-      this.course['learnerRoleName'] = this.source['learnerRoleName']
-    }
-    if (this.source['icon']) {
-      this.course['icon'] = this.source['icon']
     }
   }
 
@@ -250,6 +244,56 @@ export default class CourseEditionModalCtrl {
     }
     userPicker.configure(options, this._userpickerCallback);
     userPicker.open();
+  }
+
+  manageRolesChoices () {
+    if (this.workspace) {
+      this.getWorkspaceRoles()
+    } else if (this.model) {
+      this.getModelRoles()
+    } else {
+      this.rolesChoices = []
+    }
+  }
+
+  getWorkspaceRoles () {
+    if (this.workspace) {
+      const url = Routing.generate('course_workspace_roles_translation_keys_retrieve', {workspace: this.workspace['id']})
+      this.$http.get(url).then(d => {
+        if (d['status'] === 200) {
+          this.rolesChoices = []
+          d['data'].forEach(r => this.rolesChoices.push(r))
+
+          if (this.rolesChoices.indexOf(this.course['tutorRoleName']) === -1) {
+            this.course['tutorRoleName'] = null
+          }
+
+          if (this.rolesChoices.indexOf(this.course['learnerRoleName']) === -1) {
+            this.course['learnerRoleName'] = null
+          }
+        }
+      })
+    }
+  }
+
+  getModelRoles () {
+    if (this.model) {
+      const url = Routing.generate('ws_model_roles_translation_keys_retrieve', {model: this.model['id']})
+      this.$http.get(url).then(d => {
+        if (d['status'] === 200) {
+          this.rolesChoices = []
+          d['data'].forEach(r => this.rolesChoices.push(r))
+
+          if (this.rolesChoices.indexOf(this.course['tutorRoleName']) === -1) {
+            this.course['tutorRoleName'] = null
+          }
+
+          if (this.rolesChoices.indexOf(this.course['learnerRoleName']) === -1) {
+            this.course['learnerRoleName'] = null
+          }
+        }
+      })
+    }
   }
 
   refreshScope () {
