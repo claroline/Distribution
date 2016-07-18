@@ -37,7 +37,7 @@ OpenQuestionService.prototype.answersAllFound = function answersAllFound(questio
 
             // Check in answer if the keyword as been used
             var searchFlags      = 'g' + (solution.caseSensitive ? 'i' : '');
-            var searchExpression = new RegExp(solution.word, searchFlags);
+            var searchExpression = new RegExp('\\b' + solution.word + '\\b', searchFlags);
             if (-1 !== answer.search(searchExpression)) {
                 numAnswersFound++;
             }
