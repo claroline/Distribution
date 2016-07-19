@@ -2005,7 +2005,6 @@ class CorrectionController extends DropzoneBaseController
     public function ajaxDropzoneAddMoreCommentsAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $dropzoneManager = $this->get('innova.manager.dropzone_manager');
 
         // Récupération de l'utilisateur
         $user = $this->get('security.token_storage')->getToken()->getUser();
@@ -2059,8 +2058,6 @@ class CorrectionController extends DropzoneBaseController
 
         $oldData = [];
 
-        $dropzoneVoter = $this->get('innova.manager.dropzone_voter');
-
         $page = 1;
 
         $pager = $this->getCriteriaPager($dropzone);
@@ -2070,11 +2067,11 @@ class CorrectionController extends DropzoneBaseController
             throw new NotFoundHttpException();
         }
 
-        $formComment = $this->createForm(
+        $this->createForm(
             new CommentType(new Comment(), null))
         ;
 
-        $form = $this->createForm(
+        $this->createForm(
             new CorrectionCriteriaPageType(),
             $oldData,
             [
@@ -2215,7 +2212,7 @@ class CorrectionController extends DropzoneBaseController
      * @Method("POST")
      * @Template()
      */
-    public function AddMoreCommentsInnovaAction()
+    public function addMoreCommentsInnovaAction()
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -2255,6 +2252,7 @@ class CorrectionController extends DropzoneBaseController
 
         $this->dispatch($event);
 
+        die('AddMoreCommentsInnovaAction');
         // Redirection vers la page des commentaires. InnovaERV.
         return $this->redirect(
             $this->generateUrl(
@@ -2262,7 +2260,6 @@ class CorrectionController extends DropzoneBaseController
                 [
                     'resourceId' => $dropzone->getId(),
                     'state' => 'edit',
-                    'correctionId' => $correction->getId(),
                     'documentId' => $document->getId(),
                 ]
             )
@@ -2280,7 +2277,7 @@ class CorrectionController extends DropzoneBaseController
      * @Method("POST")
      * @Template()
      */
-    public function AddCommentForDocsInnovaAction(User $user, Dropzone $dropzone)
+    public function addCommentForDocsInnovaAction(User $user, Dropzone $dropzone)
     {
         //
         // Saisie des commentaires à la volée.
