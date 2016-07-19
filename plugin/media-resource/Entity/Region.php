@@ -3,6 +3,7 @@
 namespace Innova\MediaResourceBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Zend\Stdlib\JsonSerializable;
 
 /**
  * Region.
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="media_resource_region")
  * @ORM\Entity(repositoryClass="Innova\MediaResourceBundle\Repository\RegionRepository")
  */
-class Region
+class Region implements JsonSerializable
 {
     /**
      * @var int
@@ -152,5 +153,17 @@ class Region
         $ms = \gmdate('i:s', $time);
 
         return $ms.':'.$milli;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->id,
+            'uuid' => $this->uuid,
+            'helps' => $this->regionConfig,
+            'start' => $this->start,
+            'end' => $this->end,
+            'note' => $this->note,
+        ];
     }
 }

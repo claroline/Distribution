@@ -18,22 +18,19 @@ class RegionManager
 {
     protected $em;
     protected $ut;
-    protected $regionConfigManager;
 
     /**
      * @DI\InjectParams({
      *      "em"                    = @DI\Inject("doctrine.orm.entity_manager"),
      *      "ut"                    = @DI\Inject("claroline.utilities.misc"),
-     *      "regionConfigManager"   = @DI\Inject("innova_media_resource.manager.media_resource_region_config")
      * })
      *
      * @param EntityManager $em
      */
-    public function __construct(EntityManager $em, ClaroUtilities $ut, RegionConfigManager $regionConfigManager)
+    public function __construct(EntityManager $em, ClaroUtilities $ut)
     {
         $this->em = $em;
         $this->ut = $ut;
-        $this->regionConfigManager = $regionConfigManager;
     }
 
     public function save(Region $region)
@@ -52,28 +49,6 @@ class RegionManager
     public function getRepository()
     {
         return $this->em->getRepository('InnovaMediaResourceBundle:Region');
-    }
-
-    /**
-     * Get regions from given times (array).
-     * return a sorted (by start ASC) array of unique regions.
-     */
-    public function getRegionsFromTimes(MediaResource $mr, $data)
-    {
-        $result = [];
-        foreach ($data as $time) {
-            $region = $this->em->getRepository('InnovaMediaResourceBundle:Region')->findRegionByTime($mr, $time);
-            if ($region !== null) {
-                $result[] = $region;
-            }
-        }
-        // remove duplicates
-        $result = array_unique($result, SORT_REGULAR);
-        usort($result, function ($a, $b) {
-          return $a->getStart() - $b->getStart();
-        });
-
-        return $result;
     }
 
     public function copyRegion(MediaResource $mr, Region $region)
@@ -112,20 +87,50 @@ class RegionManager
         $this->save($entity);
     }
 
+    private function checkData($data)
+    {
+        if (!isset($data['regions'])) {
+            return false;
+        }
+        $toCheck = $data['regions'];
+        $valid = true;
+        foreach ($toCheck as $value) {
+            $valid = isset($value['uuid'])
+                && isset($value['start'])
+                && isset($value['end'])
+                && isset($value['note'])
+                && isset($value['helps'])
+                && isset($value['helps']['loop'])
+                && isset($value['helps']['backward'])
+                && isset($value['helps']['rate'])
+                && isset($value['helps']['helpTexts'])
+                && isset($value['helps']['helpLinks'])
+                && isset($value['helps']['helpRegionUuid']);
+            if (!$valid) {
+                break;
+            }
+        }
+
+        return $valid;
+    }
+
     /**
      * Create/Update MediaResource regions and there config.
      *
      * @param MediaResource $mr
      * @param array of data
      */
-    public function handleMediaResourceRegions(MediaResource $mr, $data)
+    public function updateRegions(MediaResource $mr, $data)
     {
-        $regions = $this->getRegionsFromData($data);
+        if (!$this->checkData($data)) {
+            return false;
+        }
+        $regions = $data['regions'];
         $this->deleteUnusedRegions($mr, $regions);
         // update or create région
         foreach ($regions as $region) {
             // update
-            if ($region['id']) {
+            if (isset($region['id'])) {
                 $entity = $this->getRepository()->find($region['id']);
             }
             // new
@@ -143,22 +148,22 @@ class RegionManager
             $entity->setUuid($region['uuid']);
 
             $config = $entity->getRegionConfig();
-            $config->setLoop($region['loop']);
-            $config->setRate($region['rate']);
-            $config->setBackward($region['backward']);
-            $config->setHelpRegionUuid($region['help-region-uuid']);
+            $config->setLoop($region['helps']['loop']);
+            $config->setRate($region['helps']['rate']);
+            $config->setBackward($region['helps']['backward']);
+            $config->setHelpRegionUuid($region['helps']['helpRegionUuid']);
             $helpTexts = $config->getHelpTexts();
             if (count($helpTexts) > 0) {
                 $i = 0;
                 foreach ($helpTexts as $helpText) {
-                    $helpText->setText($region['helpTexts'][$i]);
+                    $helpText->setText($region['helps']['helpTexts'][$i]['text']);
                     ++$i;
                 }
             } else {
                 $i = 0;
-                foreach ($region['helpTexts'] as $helpText) {
+                foreach ($region['helps']['helpTexts'] as $helpText) {
                     $help = new HelpText();
-                    $help->setText($region['helpTexts'][$i]);
+                    $help->setText($region['helps']['helpTexts'][$i]['text']);
                     $help->setRegionConfig($config);
                     $config->addHelpText($help);
                     ++$i;
@@ -168,14 +173,14 @@ class RegionManager
             if (count($helpLinks) > 0) {
                 $i = 0;
                 foreach ($helpLinks as $helpLink) {
-                    $helpLink->setUrl($region['helpLinks'][$i]);
+                    $helpLink->setUrl($region['helps']['helpLinks'][$i]['url']);
                     ++$i;
                 }
             } else {
                 $i = 0;
-                foreach ($region['helpLinks'] as $helpText) {
+                foreach ($region['helps']['helpLinks'] as $helpText) {
                     $help = new HelpLink();
-                    $help->setUrl($region['helpLinks'][$i]);
+                    $help->setUrl($region['helps']['helpLinks'][$i]['url']);
                     $help->setRegionConfig($config);
                     $config->addHelpLink($help);
                     ++$i;
@@ -185,62 +190,6 @@ class RegionManager
         }
 
         return $mr;
-    }
-
-    /**
-     * tranform an array of separated data to an array of region / region config data.
-     *
-     * @param array $data
-     *
-     * @return an array of region and region config
-     */
-    private function getRegionsFromData($data)
-    {
-        $regions = [];
-        $starts = $data['start'];
-        $ends = $data['end'];
-        $notes = $data['note'];
-        $ids = $data['region-id'];
-        $uuids = $data['region-uuid'];
-        $helpRegionIds = $data['help-region-uuid'];
-        $loops = $data['loop'];
-        $backwards = $data['backward'];
-        $rates = $data['rate'];
-        $texts = $data['help-texts'];
-        $links = $data['help-links'];
-
-        $nbData = count($starts);
-
-        $helpTexts = [];
-        $helpLinks = [];
-        // always 3 texts / links per region ... but each one might be empty
-        $nbHelpTextsOrLinks = $nbData * 3;
-
-        // set region texts and links
-        $index = 0;
-        for ($i = 0; $i < $nbHelpTextsOrLinks; $i += 3) {
-            $helpTexts[$index] = [$texts[$i], $texts[$i + 1], $texts[$i + 2]];
-            $helpLinks[$index] = [$links[$i], $links[$i + 1], $links[$i + 2]];
-            ++$index;
-        }
-
-        for ($i = 0; $i < $nbData; ++$i) {
-            $regions[] = [
-                'id' => $ids[$i],
-                'uuid' => $uuids[$i],
-                'start' => $starts[$i],
-                'end' => $ends[$i],
-                'note' => $notes[$i],
-                'help-region-uuid' => $helpRegionIds[$i],
-                'loop' => $loops[$i],
-                'backward' => $backwards[$i],
-                'rate' => $rates[$i],
-                'helpTexts' => $helpTexts[$i],
-                'helpLinks' => $helpLinks[$i],
-            ];
-        }
-
-        return $regions;
     }
 
     /**

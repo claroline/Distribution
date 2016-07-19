@@ -10,7 +10,9 @@
     {% endstylesheets %}
 {% endblock %}
 
-{% block content %}
+
+{% block section_content %}
+    {{ parent() }}
     <div class="media-resource-content-container">
         <div class="alert-messages">
             {% for successMessage in app.session.flashbag.get('success') %}
@@ -36,4 +38,5 @@
 {% block javascripts %}
   {{parent()}}
   <script type="text/javascript" src="{{ url('bazinga_jstranslation_js', { 'domain':'media_resource' }) }}"></script>
+  <script type="text/javascript" src="{{ url('bazinga_jstranslation_js', { 'domain':'resource_form' }) }}"></script>
 {% endblock %}

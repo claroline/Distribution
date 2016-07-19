@@ -3,6 +3,7 @@
 namespace Innova\MediaResourceBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Zend\Stdlib\JsonSerializable;
 
 /**
  * Media.
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="media_resource_media")
  * @ORM\Entity
  */
-class Media
+class Media implements JsonSerializable
 {
     /**
      * @var int
@@ -100,5 +101,15 @@ class Media
     public function getType()
     {
         return $this->type;
+    }
+
+    public function jsonSerialize()
+    {
+        //$result = [];
+
+        return [
+            'url' => $this->getUrl(),
+            'type' => $this->getType(),
+        ];
     }
 }

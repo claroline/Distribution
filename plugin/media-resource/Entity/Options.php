@@ -3,6 +3,7 @@
 namespace Innova\MediaResourceBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Zend\Stdlib\JsonSerializable;
 
 /**
  * Options for a Media Resource.
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="media_resource_options")
  * @ORM\Entity
  */
-class Options
+class Options implements JsonSerializable
 {
     /**
      * @var int
@@ -112,5 +113,17 @@ class Options
     public function getTtsLanguage()
     {
         return $this->ttsLanguage;
+    }
+
+    public function jsonSerialize()
+    {
+        //$result = [];
+
+        return [
+            'id' => $this->id,
+            'lang' => $this->ttsLanguage,
+            'showTextTranscription' => $this->showTextTranscription,
+            'mode' => $this->mode,
+        ];
     }
 }

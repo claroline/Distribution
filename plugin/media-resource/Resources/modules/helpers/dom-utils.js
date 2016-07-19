@@ -62,8 +62,6 @@ export default class DomUtils {
         $(root).empty();
         var html = '';
         if (region.hasHelp) {
-            console.log('yep');
-            console.log(region);
             if (region.loop) {
                 html += '<div class="row">';
                 html += '   <div class="col-md-12">';
