@@ -50,37 +50,40 @@ class CorrectionController extends DropzoneBaseController
         if ($dropzone->isPeerReview() === false) {
             $this->getRequest()->getSession()->getFlashBag()->add(
                 'error',
-                $this->get('translator')->trans('The peer review is not enabled', array(), 'innova_collecticiel')
+                $this->get('translator')->trans('The peer review is not enabled', [], 'innova_collecticiel')
             );
 
             return $this->redirect(
                 $this->generateUrl(
                     'innova_collecticiel_open',
-                    array(
+                    [
                         'resourceId' => $dropzone->getId(),
-                    )
+                    ]
                 )
             );
         }
 
         // Check that the user has a finished dropzone for this drop.
-        $userDrop = $em->getRepository('InnovaCollecticielBundle:Drop')->findOneBy(array(
-            'user' => $user,
-            'dropzone' => $dropzone,
-            'finished' => true,
-        ));
+        $userDrop = $em->getRepository('InnovaCollecticielBundle:Drop')
+            ->findOneBy(
+                [
+                    'user' => $user,
+                    'dropzone' => $dropzone,
+                    'finished' => true,
+                ]
+            );
         if ($userDrop == null) {
             $this->getRequest()->getSession()->getFlashBag()->add(
                 'error',
-                $this->get('translator')->trans('You must have made ​​your copy before correcting', array(), 'innova_collecticiel')
+                $this->get('translator')->trans('You must have made ​​your copy before correcting', [], 'innova_collecticiel')
             );
 
             return $this->redirect(
                 $this->generateUrl(
                     'innova_collecticiel_open',
-                    array(
+                    [
                         'resourceId' => $dropzone->getId(),
-                    )
+                    ]
                 )
             );
         }
@@ -90,15 +93,15 @@ class CorrectionController extends DropzoneBaseController
         if ($nbCorrection >= $dropzone->getExpectedTotalCorrection()) {
             $this->getRequest()->getSession()->getFlashBag()->add(
                 'error',
-                $this->get('translator')->trans('You no longer have any copies to correct', array(), 'innova_collecticiel')
+                $this->get('translator')->trans('You no longer have any copies to correct', [], 'innova_collecticiel')
             );
 
             return $this->redirect(
                 $this->generateUrl(
                     'innova_collecticiel_open',
-                    array(
+                    [
                         'resourceId' => $dropzone->getId(),
-                    )
+                    ]
                 )
             );
         }
@@ -211,7 +214,7 @@ class CorrectionController extends DropzoneBaseController
 
         $this->getRequest()->getSession()->getFlashBag()->add(
             'success',
-            $this->get('translator')->trans('Your correction has been saved', array(), 'innova_collecticiel')
+            $this->get('translator')->trans('Your correction has been saved', [], 'innova_collecticiel')
         );
 
         // check if the drop owner can now access to his grade.
@@ -221,19 +224,19 @@ class CorrectionController extends DropzoneBaseController
             return $this->redirect(
                 $this->generateUrl(
                     'innova_collecticiel_drops_detail',
-                    array(
+                    [
                         'resourceId' => $dropzone->getId(),
                         'dropId' => $correction->getDrop()->getId(),
-                    )
+                    ]
                 )
             );
         } else {
             return $this->redirect(
                 $this->generateUrl(
                     'innova_collecticiel_open',
-                    array(
+                    [
                         'resourceId' => $dropzone->getId(),
-                    )
+                    ]
                 )
             );
         }
@@ -318,15 +321,15 @@ class CorrectionController extends DropzoneBaseController
                 'error',
                 $this
                     ->get('translator')
-                    ->trans('Unfortunately there is no copy to correct for the moment. Please try again later', array(), 'innova_collecticiel')
+                    ->trans('Unfortunately there is no copy to correct for the moment. Please try again later', [], 'innova_collecticiel')
             );
 
             return $this->redirect(
                 $this->generateUrl(
                     'innova_collecticiel_open',
-                    array(
+                    [
                         'resourceId' => $dropzone->getId(),
-                    )
+                    ]
                 )
             );
         }
@@ -338,8 +341,8 @@ class CorrectionController extends DropzoneBaseController
             throw new NotFoundHttpException();
         }
 
-        $oldData = array();
-        $grades = array();
+        $oldData = [];
+        $grades = [];
         if ($correction !== null) {
             $grades = $em
                 ->getRepository('InnovaCollecticielBundle:Grade')
@@ -353,7 +356,10 @@ class CorrectionController extends DropzoneBaseController
         $form = $this->createForm(
             new CorrectionCriteriaPageType(),
             $oldData,
-            array('criteria' => $pager->getCurrentPageResults(), 'totalChoice' => $dropzone->getTotalCriteriaColumn())
+            [
+                'criteria' => $pager->getCurrentPageResults(),
+                'totalChoice' => $dropzone->getTotalCriteriaColumn(),
+            ]
         );
 
         if ($this->getRequest()->isMethod('POST') && $correction !== null) {
@@ -372,10 +378,10 @@ class CorrectionController extends DropzoneBaseController
                     return $this->redirect(
                         $this->generateUrl(
                             'innova_collecticiel_correct_paginated',
-                            array(
+                            [
                                 'resourceId' => $dropzone->getId(),
                                 'page' => $pageNumber,
-                            )
+                            ]
                         )
                     );
                 } else {
@@ -383,19 +389,19 @@ class CorrectionController extends DropzoneBaseController
                         return $this->redirect(
                             $this->generateUrl(
                                 'innova_collecticiel_correct_paginated',
-                                array(
+                                [
                                     'resourceId' => $dropzone->getId(),
                                     'page' => ($page + 1),
-                                )
+                                ]
                             )
                         );
                     } else {
                         return $this->redirect(
                             $this->generateUrl(
                                 'innova_collecticiel_correct_comment',
-                                array(
+                                [
                                     'resourceId' => $dropzone->getId(),
-                                )
+                                ]
                             )
                         );
                     }
@@ -410,7 +416,7 @@ class CorrectionController extends DropzoneBaseController
 
         return $this->render(
             $view,
-            array(
+            [
                 'workspace' => $dropzone->getResourceNode()->getWorkspace(),
                 '_resource' => $dropzone,
                 'dropzone' => $dropzone,
@@ -420,7 +426,7 @@ class CorrectionController extends DropzoneBaseController
                 'admin' => false,
                 'edit' => true,
                 'dropzoneProgress' => $dropzoneProgress,
-            )
+            ]
         );
     }
 
@@ -457,21 +463,27 @@ class CorrectionController extends DropzoneBaseController
                     'error',
                     $this
                         ->get('translator')
-                        ->trans('Unfortunately there is no copy to correct for the moment. Please try again later', array(), 'innova_collecticiel')
+                        ->trans('Unfortunately there is no copy to correct for the moment. Please try again later', [], 'innova_collecticiel')
                 );
 
             return $this->redirect(
                 $this->generateUrl(
                     'innova_collecticiel_open',
-                    array(
+                    [
                         'resourceId' => $dropzone->getId(),
-                    )
+                    ]
                 )
             );
         }
 
         $pager = $this->getCriteriaPager($dropzone);
-        $form = $this->createForm(new CorrectionCommentType(), $correction, array('allowCommentInCorrection' => $dropzone->getAllowCommentInCorrection()));
+        $form = $this->createForm(
+                    new CorrectionCommentType(),
+                    $correction,
+                    [
+                        'allowCommentInCorrection' => $dropzone->getAllowCommentInCorrection(),
+                    ]
+                );
 
         if ($this->getRequest()->isMethod('POST')) {
             $form->handleRequest($this->getRequest());
@@ -488,15 +500,15 @@ class CorrectionController extends DropzoneBaseController
                             'error',
                             $this
                                 ->get('translator')
-                                ->trans('The comment field is required please let a comment', array(), 'innova_collecticiel')
+                                ->trans('The comment field is required please let a comment', [], 'innova_collecticiel')
                         );
 
                     return $this->redirect(
                         $this->generateUrl(
                             'innova_collecticiel_correct_comment',
-                            array(
+                            [
                                 'resourceId' => $dropzone->getId(),
-                            )
+                            ]
                         )
                     );
                 }
@@ -509,10 +521,10 @@ class CorrectionController extends DropzoneBaseController
                     return $this->redirect(
                         $this->generateUrl(
                             'innova_collecticiel_correct_paginated',
-                            array(
+                            [
                                 'resourceId' => $dropzone->getId(),
                                 'page' => $pager->getNbPages(),
-                            )
+                            ]
                         )
                     );
                 } else {
@@ -530,7 +542,7 @@ class CorrectionController extends DropzoneBaseController
 
         return $this->render(
             $view,
-            array(
+            [
                 'workspace' => $dropzone->getResourceNode()->getWorkspace(),
                 '_resource' => $dropzone,
                 'dropzone' => $dropzone,
@@ -541,7 +553,7 @@ class CorrectionController extends DropzoneBaseController
                 'edit' => true,
                 'totalGrade' => $totalGrade,
                 'dropzoneProgress' => $dropzoneProgress,
-            )
+            ]
         );
     }
 
@@ -605,16 +617,16 @@ class CorrectionController extends DropzoneBaseController
 
                 $this->getRequest()->getSession()->getFlashBag()->add(
                     'success',
-                    $this->get('translator')->trans('Your correction has been saved', array(), 'innova_collecticiel')
+                    $this->get('translator')->trans('Your correction has been saved', [], 'innova_collecticiel')
                 );
 
                 return $this->redirect(
                     $this->generateUrl(
                         'innova_collecticiel_drops_detail',
-                        array(
+                        [
                             'resourceId' => $dropzone->getId(),
                             'dropId' => $correction->getDrop()->getId(),
-                        )
+                        ]
                     )
                 );
             }
@@ -624,7 +636,7 @@ class CorrectionController extends DropzoneBaseController
 
         return $this->render(
             $view,
-            array(
+            [
                 'workspace' => $dropzone->getResourceNode()->getWorkspace(),
                 '_resource' => $dropzone,
                 'dropzone' => $dropzone,
@@ -634,7 +646,7 @@ class CorrectionController extends DropzoneBaseController
                 'edit' => $edit,
                 'state' => $state,
                 'backUserId' => $backUserId,
-            )
+            ]
         );
     }
 
@@ -686,11 +698,10 @@ class CorrectionController extends DropzoneBaseController
                         ->getDoctrine()
                         ->getRepository('InnovaCollecticielBundle:Comment')
                         ->findBy(
-                            array(
+                            [
                                 'document' => $documentId,
-    //                            'user' =>$correction->getUser()->getId()
-                                 )
-                            );
+                            ]
+                        );
 
                 // Parcours des commentaires des documents sélectionnés
                 foreach ($comments as $comment) {
@@ -700,18 +711,16 @@ class CorrectionController extends DropzoneBaseController
                             ->getDoctrine()
                             ->getRepository('InnovaCollecticielBundle:CommentRead')
                             ->findBy(
-                                array(
+                                [
                                     'comment' => $commentId,
                                     'user' => $correction->getUser()->getId(),
-                                    )
-                                );
+                                ]
+                            );
 
                     // Nombre de lectures du commentaire pour cet utilisateur pour ce commentaire du document
                     $countCommentRead = count($comments_read);
 
-//                    $countCommentRead = 0; // Pour les tests, à enlever
-                    // Ce commentaire n'avait pas été lu.
-                    // Donc, maintenant, il va l'être,
+                    // Ce commentaire n'avait pas été lu. Donc, maintenant, il va l'être,
                     // je dois donc insérer une occurrence dans la table CommentRead";
                     if (($countCommentRead) == 0) {
                         $comment_read_add = new CommentRead();
@@ -741,8 +750,6 @@ class CorrectionController extends DropzoneBaseController
             }
         }
 
-        /* @var Correction $correction */
-
         $edit = $state == 'edit';
 
         if ($correction === null) {
@@ -762,8 +769,8 @@ class CorrectionController extends DropzoneBaseController
             throw new NotFoundHttpException();
         }
 
-        $oldData = array();
-        $grades = array();
+        $oldData = [];
+        $grades = [];
         if ($correction !== null) {
             $grades = $em
                 ->getRepository('InnovaCollecticielBundle:Grade')
@@ -781,11 +788,11 @@ class CorrectionController extends DropzoneBaseController
         $form = $this->createForm(
             new CorrectionCriteriaPageType(),
             $oldData,
-            array(
+            [
                 'edit' => $edit,
                 'criteria' => $pager->getCurrentPageResults(),
                 'totalChoice' => $dropzone->getTotalCriteriaColumn(),
-            )
+            ]
         );
         if ($edit) {
             if ($this->getRequest()->isMethod('POST') && $correction !== null) {
@@ -811,12 +818,12 @@ class CorrectionController extends DropzoneBaseController
                         return $this->redirect(
                             $this->generateUrl(
                                 'innova_collecticiel_drops_detail_correction_paginated',
-                                array(
+                                [
                                     'resourceId' => $dropzone->getId(),
                                     'state' => 'edit',
                                     'correctionId' => $correction->getId(),
                                     'page' => $pageNumber,
-                                )
+                                ]
                             )
                         );
                     } else {
@@ -824,23 +831,23 @@ class CorrectionController extends DropzoneBaseController
                             return $this->redirect(
                                 $this->generateUrl(
                                     'innova_collecticiel_drops_detail_correction_paginated',
-                                    array(
+                                    [
                                         'resourceId' => $dropzone->getId(),
                                         'state' => 'edit',
                                         'correctionId' => $correction->getId(),
                                         'page' => ($page + 1),
-                                    )
+                                    ]
                                 )
                             );
                         } else {
                             return $this->redirect(
                                 $this->generateUrl(
                                     'innova_collecticiel_drops_detail_correction_comment',
-                                    array(
+                                    [
                                         'resourceId' => $dropzone->getId(),
                                         'state' => 'edit',
                                         'correctionId' => $correction->getId(),
-                                    )
+                                    ]
                                 )
                             );
                         }
@@ -858,7 +865,7 @@ class CorrectionController extends DropzoneBaseController
         if ($state == 'show' || $state == 'edit') {
             return $this->render(
                 $view,
-                array(
+                [
                     'workspace' => $dropzone->getResourceNode()->getWorkspace(),
                     '_resource' => $dropzone,
                     'dropzone' => $dropzone,
@@ -874,12 +881,12 @@ class CorrectionController extends DropzoneBaseController
                     'user' => $user,
                     'adminInnova' => $canEdit,
                     'collecticielOpenOrNot' => $collecticielOpenOrNot,
-                )
+                ]
             );
         } elseif ($state == 'preview') {
             return $this->render(
                 $view,
-                array(
+                [
                     'workspace' => $dropzone->getResourceNode()->getWorkspace(),
                     '_resource' => $dropzone,
                     'dropzone' => $dropzone,
@@ -892,7 +899,7 @@ class CorrectionController extends DropzoneBaseController
                     'state' => $state,
                     'adminInnova' => $canEdit,
                     'collecticielOpenOrNot' => $collecticielOpenOrNot,
-                )
+                ]
             );
         }
     }
@@ -930,7 +937,14 @@ class CorrectionController extends DropzoneBaseController
         }
 
         $pager = $this->getCriteriaPager($dropzone);
-        $form = $this->createForm(new CorrectionCommentType(), $correction, array('edit' => $edit, 'allowCommentInCorrection' => $dropzone->getAllowCommentInCorrection()));
+        $form = $this->createForm(
+            new CorrectionCommentType(),
+            $correction,
+            [
+                'edit' => $edit,
+                'allowCommentInCorrection' => $dropzone->getAllowCommentInCorrection(),
+            ]
+        );
 
         if ($edit) {
             if ($this->getRequest()->isMethod('POST')) {
@@ -946,12 +960,12 @@ class CorrectionController extends DropzoneBaseController
                         return $this->redirect(
                             $this->generateUrl(
                                 'innova_collecticiel_drops_detail_correction_paginated',
-                                array(
+                                [
                                     'resourceId' => $dropzone->getId(),
                                     'state' => 'edit',
                                     'correctionId' => $correction->getId(),
                                     'page' => $pager->getNbPages(),
-                                )
+                                ]
                             )
                         );
                     } else {
@@ -965,7 +979,7 @@ class CorrectionController extends DropzoneBaseController
 
             return $this->render(
                 $view,
-                array(
+                [
                     'workspace' => $dropzone->getResourceNode()->getWorkspace(),
                     '_resource' => $dropzone,
                     'dropzone' => $dropzone,
@@ -976,7 +990,7 @@ class CorrectionController extends DropzoneBaseController
                     'edit' => $edit,
                     'state' => $state,
                     'totalGrade' => $totalGrade,
-                )
+                ]
             );
         }
 
@@ -987,7 +1001,7 @@ class CorrectionController extends DropzoneBaseController
 
             return $this->render(
                 $view,
-                array(
+                [
                     'workspace' => $dropzone->getResourceNode()->getWorkspace(),
                     '_resource' => $dropzone,
                     'dropzone' => $dropzone,
@@ -998,14 +1012,14 @@ class CorrectionController extends DropzoneBaseController
                     'edit' => $edit,
                     'state' => $state,
                     'totalGrade' => $totalGrade,
-                )
+                ]
             );
         } elseif ($state == 'preview') {
             $totalGrade = $correction->getTotalGrade();
 
             return $this->render(
                 $view,
-                array(
+                [
                     'workspace' => $dropzone->getResourceNode()->getWorkspace(),
                     '_resource' => $dropzone,
                     'dropzone' => $dropzone,
@@ -1016,7 +1030,7 @@ class CorrectionController extends DropzoneBaseController
                     'edit' => false,
                     'state' => $state,
                     'totalGrade' => $totalGrade,
-                )
+                ]
             );
         }
     }
@@ -1057,12 +1071,12 @@ class CorrectionController extends DropzoneBaseController
         return $this->redirect(
             $this->generateUrl(
                 'innova_collecticiel_drops_detail_comment',
-                array(
+                [
                     'resourceId' => $dropzone->getId(),
                     'state' => 'edit',
                     'correctionId' => $correction->getId(),
                     'documentId' => $document->getId(),
-                )
+                ]
             )
         );
     }
@@ -1104,20 +1118,20 @@ class CorrectionController extends DropzoneBaseController
                 $return = $this->redirect(
                     $this->generateUrl(
                         'innova_collecticiel_drops_detail',
-                        array(
+                        [
                             'resourceId' => $dropzone->getId(),
                             'dropId' => $dropId,
-                        )
+                        ]
                     )
                 );
             } else {
                 $return = $this->redirect(
                     $this->generateUrl(
                         'innova_collecticiel_examiner_corrections',
-                        array(
+                        [
                             'resourceId' => $dropzone->getId(),
                             'userId' => $userId,
-                        )
+                        ]
                     )
                 );
             }
@@ -1133,15 +1147,18 @@ class CorrectionController extends DropzoneBaseController
                 $backUserId = $correction->getUser()->getId();
             }
 
-            $return = $this->render($view, array(
-                'workspace' => $dropzone->getResourceNode()->getWorkspace(),
-                '_resource' => $dropzone,
-                'dropzone' => $dropzone,
-                'correction' => $correction,
-                'drop' => $correction->getDrop(),
-                'backPage' => 'AdminCorrectionsByUser',
-                'backUserId' => $backUserId,
-            ));
+            $return = $this->render(
+                $view,
+                [
+                    'workspace' => $dropzone->getResourceNode()->getWorkspace(),
+                    '_resource' => $dropzone,
+                    'dropzone' => $dropzone,
+                    'correction' => $correction,
+                    'drop' => $correction->getDrop(),
+                    'backPage' => 'AdminCorrectionsByUser',
+                    'backUserId' => $backUserId,
+                ]
+            );
         }
 
         return $return;
@@ -1171,22 +1188,25 @@ class CorrectionController extends DropzoneBaseController
                 $view = 'InnovaCollecticielBundle:Correction:Admin/revalidateCorrectionModal.html.twig';
             }
 
-            return $this->render($view, array(
-                '_resource' => $dropzone,
-                'dropzone' => $dropzone,
-                'drop' => $correction->getDrop(),
-                'correction' => $correction,
-            ));
+            return $this->render(
+                $view,
+                [
+                    '_resource' => $dropzone,
+                    'dropzone' => $dropzone,
+                    'drop' => $correction->getDrop(),
+                    'correction' => $correction,
+                ]
+            );
         } else {
             $this->setCorrectionValidationAction($dropzone, $correction, 'yes', 'default');
 
             return $this->redirect(
                 $this->generateUrl(
                     'innova_collecticiel_drops_detail',
-                    array(
+                    [
                         'resourceId' => $dropzone->getId(),
                         'dropId' => $correction->getDrop()->getId(),
-                    )
+                    ]
                 )
             );
         }
@@ -1236,20 +1256,20 @@ class CorrectionController extends DropzoneBaseController
             return $this->redirect(
                 $this->generateUrl(
                     'innova_collecticiel_drops_detail',
-                    array(
+                    [
                         'resourceId' => $dropzone->getId(),
                         'dropId' => $correction->getDrop()->getId(),
-                    )
+                    ]
                 )
             );
         } elseif ($routeParam == 'byUser') {
             return $this->redirect(
                 $this->generateUrl(
                     'innova_collecticiel_examiner_corrections',
-                    array(
+                    [
                         'resourceId' => $dropzone->getId(),
                         'userId' => $correction->getUser()->getId(),
-                    )
+                    ]
                 )
             );
         }
@@ -1280,10 +1300,10 @@ class CorrectionController extends DropzoneBaseController
         return $this->redirect(
             $this->generateUrl(
                 'innova_collecticiel_drops_detail',
-                array(
+                [
                     'resourceId' => $dropzone->getId(),
                     'dropId' => $drop->getId(),
-                )
+                ]
             )
         );
     }
@@ -1328,15 +1348,15 @@ class CorrectionController extends DropzoneBaseController
                     ->getRequest()
                     ->getSession()
                     ->getFlashBag()
-                    ->add('success', $this->get('translator')->trans('Your report has been saved', array(), 'innova_collecticiel'));
+                    ->add('success', $this->get('translator')->trans('Your report has been saved', [], 'innova_collecticiel'));
 
                 return $this->redirect(
                     $this->generateUrl(
                         'innova_collecticiel_drop_detail_by_user',
-                        array(
+                        [
                             'resourceId' => $dropzoneId,
                             'dropId' => $dropId,
-                        )
+                        ]
                     )
                 );
             }
@@ -1349,14 +1369,17 @@ class CorrectionController extends DropzoneBaseController
             $view = 'InnovaCollecticielBundle:Correction:reportCorrectionModal.html.twig';
         }
 
-        return $this->render($view, array(
-            'workspace' => $dropzone->getResourceNode()->getWorkspace(),
-            '_resource' => $dropzone,
-            'dropzone' => $dropzone,
-            'drop' => $correction->getDrop(),
-            'correction' => $correction,
-            'form' => $form->createView(),
-        ));
+        return $this->render(
+            $view,
+            [
+                'workspace' => $dropzone->getResourceNode()->getWorkspace(),
+                '_resource' => $dropzone,
+                'dropzone' => $dropzone,
+                'drop' => $correction->getDrop(),
+                'correction' => $correction,
+                'form' => $form->createView(),
+            ]
+        );
     }
 
     protected function dispatchCorrectionReportEvent(Dropzone $dropzone, Correction $correction)
@@ -1403,10 +1426,10 @@ class CorrectionController extends DropzoneBaseController
         return $this->redirect(
             $this->generateUrl(
                 'innova_collecticiel_drops_detail',
-                array(
+                [
                     'resourceId' => $dropzone->getId(),
                     'dropId' => $correction->getDrop()->getId(),
-                )
+                ]
             )
         );
     }
@@ -1450,10 +1473,10 @@ class CorrectionController extends DropzoneBaseController
                 return $this->redirect(
                     $this->generateUrl(
                         'innova_collecticiel_examiner_corrections_paginated',
-                        array(
+                        [
                             'resourceId' => $dropzone->getId(),
                             'userId' => $user->getId(),
-                        )
+                        ]
                     )
                 );
             } else {
@@ -1462,13 +1485,13 @@ class CorrectionController extends DropzoneBaseController
         }
         $corrections = $pager->getCurrentPageResults();
 
-        return array(
-            '_resource' => $dropzone,
-            'dropzone' => $dropzone,
-            'pager' => $pager,
-            'user' => $user,
-            'corrections' => $corrections,
-        );
+        return [
+                '_resource' => $dropzone,
+                'dropzone' => $dropzone,
+                'pager' => $pager,
+                'user' => $user,
+                'corrections' => $corrections,
+            ];
     }
 
     /**
@@ -1516,10 +1539,10 @@ class CorrectionController extends DropzoneBaseController
                 return $this->redirect(
                     $this->generateUrl(
                         'innova_collecticiel_examiners_paginated',
-                        array(
+                        [
                             'resourceId' => $dropzone->getId(),
                             'page' => $pager->getNbPages(),
-                        )
+                        ]
                     )
                 );
             } else {
@@ -1532,7 +1555,7 @@ class CorrectionController extends DropzoneBaseController
         // add some count needed by the view.
         $usersAndCorrectionCount = $this->addCorrectionCount($dropzone, $users);
 
-        $response = array(
+        $response = [
             'workspace' => $dropzone->getResourceNode()->getWorkspace(),
             '_resource' => $dropzone,
             'dropzone' => $dropzone,
@@ -1541,7 +1564,7 @@ class CorrectionController extends DropzoneBaseController
             'nbDrop' => $dropRepo->countDrops($dropzone),
             'unterminated_drops' => $countUnterminatedDrops,
             'pager' => $pager,
-        );
+        ];
 
         return $this->render(
             'InnovaCollecticielBundle:Drop:Examiners/ExaminersByName.htlm.twig',
@@ -1553,9 +1576,9 @@ class CorrectionController extends DropzoneBaseController
     {
         $correctionRepo = $this->getDoctrine()->getManager()->getRepository('InnovaCollecticielBundle:Correction');
         $dropRepo = $this->getDoctrine()->getManager()->getRepository('InnovaCollecticielBundle:Drop');
-        $response = array();
+        $response = [];
         foreach ($users as $user) {
-            $responseItem = array();
+            $responseItem = [];
             $responseItem['userId'] = $user->getId();
             $corrections = $correctionRepo->getByDropzoneUser($dropzone->getId(), $user->getId());
             $isUnlockedDrop = $dropRepo->isUnlockedDrop($dropzone->getId(), $user->getId());
@@ -1616,10 +1639,10 @@ class CorrectionController extends DropzoneBaseController
         return $this->redirect(
             $this->generateUrl(
                 'innova_collecticiel_drops_detail',
-                array(
+                [
                     'resourceId' => $dropzone->getId(),
                     'dropId' => $drop->getId(),
-                )
+                ]
             )
         );
     }
@@ -1642,9 +1665,9 @@ class CorrectionController extends DropzoneBaseController
         return $this->redirect(
             $this->generateUrl(
                 'innova_collecticiel_edit_criteria',
-                array(
+                [
                     'resourceId' => $dropzone->getId(),
-                )
+                ]
             )
         );
     }
@@ -1706,11 +1729,11 @@ class CorrectionController extends DropzoneBaseController
         return $this->redirect(
             $this->generateUrl(
                 'innova_collecticiel_drops_detail_correction',
-                array(
+                [
                     'resourceId' => $dropzone->getId(),
                     'state' => 'edit',
                     'correctionId' => $correction->getId(),
-                )
+                ]
             )
         );
     }
@@ -1757,11 +1780,11 @@ class CorrectionController extends DropzoneBaseController
             return $this->redirect(
                 $this->generateUrl(
                     'innova_collecticiel_drops_detail_correction_standard',
-                    array(
+                    [
                         'resourceId' => $dropzone->getId(),
                         'state' => $state,
                         'correctionId' => $correctionId,
-                    )
+                    ]
                 )
             );
         }
@@ -1787,8 +1810,8 @@ class CorrectionController extends DropzoneBaseController
             throw new NotFoundHttpException();
         }
 
-        $oldData = array();
-        $grades = array();
+        $oldData = [];
+        $grades = [];
         if ($correction !== null) {
             $grades = $em
                 ->getRepository('InnovaCollecticielBundle:Grade')
@@ -1802,11 +1825,11 @@ class CorrectionController extends DropzoneBaseController
         $form = $this->createForm(
             new CorrectionCriteriaPageType(),
             $oldData,
-            array(
+            [
                 'edit' => $edit,
                 'criteria' => $pager->getCurrentPageResults(),
                 'totalChoice' => $dropzone->getTotalCriteriaColumn(),
-            )
+            ]
         );
         if ($edit) {
             if ($this->getRequest()->isMethod('POST') && $correction !== null) {
@@ -1832,12 +1855,12 @@ class CorrectionController extends DropzoneBaseController
                         return $this->redirect(
                             $this->generateUrl(
                                 'innova_collecticiel_drops_detail_correction_paginated',
-                                array(
+                                [
                                     'resourceId' => $dropzone->getId(),
                                     'state' => 'edit',
                                     'correctionId' => $correction->getId(),
                                     'page' => $pageNumber,
-                                )
+                                ]
                             )
                         );
                     } else {
@@ -1845,23 +1868,23 @@ class CorrectionController extends DropzoneBaseController
                             return $this->redirect(
                                 $this->generateUrl(
                                     'innova_collecticiel_drops_detail_correction_paginated',
-                                    array(
+                                    [
                                         'resourceId' => $dropzone->getId(),
                                         'state' => 'edit',
                                         'correctionId' => $correction->getId(),
                                         'page' => ($page + 1),
-                                    )
+                                    ]
                                 )
                             );
                         } else {
                             return $this->redirect(
                                 $this->generateUrl(
                                     'innova_collecticiel_drops_detail_correction_comment',
-                                    array(
+                                    [
                                         'resourceId' => $dropzone->getId(),
                                         'state' => 'edit',
                                         'correctionId' => $correction->getId(),
-                                    )
+                                    ]
                                 )
                             );
                         }
@@ -1875,7 +1898,7 @@ class CorrectionController extends DropzoneBaseController
         if ($state == 'show' || $state == 'edit') {
             return $this->render(
                 $view,
-                array(
+                [
                     'workspace' => $dropzone->getResourceNode()->getWorkspace(),
                     '_resource' => $dropzone,
                     'dropzone' => $dropzone,
@@ -1885,12 +1908,12 @@ class CorrectionController extends DropzoneBaseController
                     'admin' => true,
                     'edit' => $edit,
                     'state' => $state,
-                )
+                ]
             );
         } elseif ($state == 'preview') {
             return $this->render(
                 $view,
-                array(
+                [
                     'workspace' => $dropzone->getResourceNode()->getWorkspace(),
                     '_resource' => $dropzone,
                     'dropzone' => $dropzone,
@@ -1900,7 +1923,7 @@ class CorrectionController extends DropzoneBaseController
                     'admin' => false,
                     'edit' => false,
                     'state' => $state,
-                )
+                ]
             );
         }
     }
@@ -1946,7 +1969,7 @@ class CorrectionController extends DropzoneBaseController
 
                 // Envoi notification. InnovaERV
 //                $usersIds = $dropzoneManager->getDropzoneUsersIds($dropzone);
-                $usersIds = array();
+                $usersIds = [];
                 $usersIds[] = $dropzone->getResourceNode()->getCreator()->getId();
                 $usersIds[] = $document->getSender()->getId();
                 $event = new LogDropzoneAddCommentEvent($dropzone, $dropzone->getManualState(), $usersIds, $comment);
@@ -1967,12 +1990,12 @@ class CorrectionController extends DropzoneBaseController
         return $this->redirect(
             $this->generateUrl(
                 'innova_collecticiel_drops_detail_comment',
-                array(
+                [
                     'resourceId' => $dropzone->getId(),
                     'state' => 'edit',
                     'correctionId' => $correction->getId(),
                     'documentId' => $document->getId(),
-                )
+                ]
             )
         );
     }
@@ -2005,10 +2028,10 @@ class CorrectionController extends DropzoneBaseController
 
         // Récupération des documents sélectionnés
         $arrayDocsId = $this->get('request')->query->get('arrayDocsId');
-        $arrayDocsToView = array();
+        $arrayDocsToView = [];
 
         $arrayDropsId = $this->get('request')->query->get('arrayDropsId');
-        $arrayDropsToView = array();
+        $arrayDropsToView = [];
 
         $cpt = 0;
 
@@ -2045,7 +2068,7 @@ class CorrectionController extends DropzoneBaseController
         $edit = 'edit';
         $state = 'edit';
 
-        $oldData = array();
+        $oldData = [];
 
         $dropzoneVoter = $this->get('innova.manager.dropzone_voter');
         $canEdit = $dropzoneVoter->checkEditRight($dropzone);
@@ -2066,26 +2089,26 @@ class CorrectionController extends DropzoneBaseController
         $form = $this->createForm(
             new CorrectionCriteriaPageType(),
             $oldData,
-            array(
+            [
                 'edit' => $edit,
                 'criteria' => $pager->getCurrentPageResults(),
                 'totalChoice' => $dropzone->getTotalCriteriaColumn(),
-            )
+            ]
         );
 
         $redirectRoot = $this->generateUrl(
             'innova_collecticiel_add_more_comments_view',
-            array(
+            [
                 'dropzoneId' => $dropzoneId,
                 'arrayDocsId' => $arrayDocsId,
                 'arrayDropsId' => $arrayDropsId,
-                )
-            );
+            ]
+        );
 
         return new JsonResponse(
-            array(
+            [
                 'link' => $redirectRoot,
-            )
+            ]
         );
     }
 
@@ -2116,10 +2139,10 @@ class CorrectionController extends DropzoneBaseController
 
         // Récupération des documents sélectionnés
         $arrayDocsId = $this->get('request')->query->get('arrayDocsId');
-        $arrayDocsToView = array();
+        $arrayDocsToView = [];
 
         $arrayDropsId = $this->get('request')->query->get('arrayDropsId');
-        $arrayDropsToView = array();
+        $arrayDropsToView = [];
 
         $cpt = 0;
         $stringDocsId = '';
@@ -2143,7 +2166,7 @@ class CorrectionController extends DropzoneBaseController
         $edit = 'edit';
         $state = 'edit';
 
-        $oldData = array();
+        $oldData = [];
 
         $dropzoneVoter = $this->get('innova.manager.dropzone_voter');
         $canEdit = $dropzoneVoter->checkEditRight($dropzone);
@@ -2164,11 +2187,11 @@ class CorrectionController extends DropzoneBaseController
         $form = $this->createForm(
             new CorrectionCriteriaPageType(),
             $oldData,
-            array(
+            [
                 'edit' => $edit,
                 'criteria' => $pager->getCurrentPageResults(),
                 'totalChoice' => $dropzone->getTotalCriteriaColumn(),
-            )
+            ]
         );
 
         // Appel de la vue qui va gérer l'ajout des commentaires. InnovaERV.
@@ -2176,7 +2199,7 @@ class CorrectionController extends DropzoneBaseController
 
         return $this->render(
             $view,
-            array(
+            [
                 'workspace' => $dropzone->getResourceNode()->getWorkspace(),
                 '_resource' => $dropzone,
                 'dropzone' => $dropzone,
@@ -2192,7 +2215,7 @@ class CorrectionController extends DropzoneBaseController
                 'user' => $user,
                 'adminInnova' => $canEdit,
                 'collecticielOpenOrNot' => $collecticielOpenOrNot,
-            )
+            ]
         );
     }
 
@@ -2232,7 +2255,7 @@ class CorrectionController extends DropzoneBaseController
                 $dropzoneManager = $this->get('innova.manager.dropzone_manager');
 
                 // Envoi notification. InnovaERV
-                $usersIds = array();
+                $usersIds = [];
                 $usersIds[] = $dropzone->getResourceNode()->getCreator()->getId();
                 $usersIds[] = $document->getSender()->getId();
                 $event = new LogDropzoneAddCommentEvent($dropzone, $dropzone->getManualState(), $usersIds, $comment);
@@ -2253,12 +2276,12 @@ class CorrectionController extends DropzoneBaseController
         return $this->redirect(
             $this->generateUrl(
                 'innova_collecticiel_drops_detail_comment',
-                array(
+                [
                     'resourceId' => $dropzone->getId(),
                     'state' => 'edit',
                     'correctionId' => $correction->getId(),
                     'documentId' => $document->getId(),
-                )
+                ]
             )
         );
     }
@@ -2321,7 +2344,7 @@ class CorrectionController extends DropzoneBaseController
                         $em->persist($comment);
 
                         // Envoi notification. InnovaERV
-                        $usersIds = array();
+                        $usersIds = [];
 
                         // Ici, on récupère le créateur du collecticiel = l'admin
                         if ($document->getType() == 'url') {
@@ -2364,9 +2387,9 @@ class CorrectionController extends DropzoneBaseController
         return $this->redirect(
             $this->generateUrl(
                 'innova_collecticiel_drops_awaiting',
-                array(
+                [
                     'resourceId' => $dropzone->getId(),
-                )
+                ]
             )
         );
     }
