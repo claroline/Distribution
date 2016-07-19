@@ -1,17 +1,6 @@
-/* show help modal */
-#help-tab-panel{
+@import "../../../../../../../web/packages/bootstrap/less/variables.less";
 
-  .tab-content{
-    margin-top:15px;
-  }
 
-}
-
-input[type="url"]:invalid{
-  border-color: #b94a48;
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-  color: #b94a48;
-}
 
 /* main container for all views extending layout */
 .media-resource-content-container {
@@ -20,7 +9,7 @@ input[type="url"]:invalid{
     /* main container for players template */
     .media-resource-players-container {
         .help-details-row {
-          margin-top:15px;
+            margin-top: 15px;
         }
         /* EXERCISE VIEW - FREE */
         .my-flex-row {
@@ -112,132 +101,149 @@ input[type="url"]:invalid{
     }
     /* main container for administration template */
     .media-resource-administrate-container {
-        /* each region row */
-        .region {
-            margin: 0 auto;
-            padding: 5px;
-            border-bottom: 1px solid #eee;
-        }
-        .region-odd {
-            background-color: #ccc;
-        }
-        .region-even {
-            background-color: #eee;
-        }
-        *[contenteditable="true"]{
-          display: inline-block;
-        }
-        .note {
-            margin-top: 2px;
-            padding-left: 5px;
-            border: 1px solid #ccc;
-            border-radius: 2px;
-            min-height: 30px;
-            vertical-align: middle;
-            width: 100%;
-        }
-        .note.active-row {
-            border-top: 2px solid #06A0E0;
-            border-left: 1px solid #06A0E0;
-        }
-        .time-text {
-            width: 70px;
-            border: 1px solid #ccc;
-            overflow: hidden;
-            border-radius: 3px;
-            min-height: 30px;
-            padding-top: 3px;
-            margin-top: 2px;
-        }
-        .divide-marker-start {
-            width: 0;
-        }
-        .divide-marker {
-            background-color: rgba(0,161,229,1);
-            position: absolute;
-            top: 0;
-            z-index: 2;
-            height: 100%;
-        }
-        .marker-drag-handler {
-            position: absolute;
-            border-radius: 50%;
-            background-color: rgba(0,161,229,1);
-            cursor: pointer;
-            border: 1px solid white;
-        }
-        .annotation-container {
-            margin: 15px;
-        }
-        .annotation-buttons-container {
-            margin: 15px;
-        }
-        .annotation-button {
-            width: 15%;
-        }
-        .blue {
-            background-color: #00A1E5;
-        }
-        .blue.focus,
-        .blue:focus,
-        .blue:hover {
-            background-color: #00A1E5;
-            box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.3);
-        }
-        .red {
-            background-color: #AD0101;
-        }
-        .red.focus,
-        .red:focus,
-        .red:hover {
-            background-color: #AD0101;
-            box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.3);
-        }
-        .orange {
-            background-color: #F1591A;
-        }
-        .orange.focus,
-        .orange:focus,
-        .orange:hover {
-            background-color: #F1591A;
-            box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.3);
-        }
-        .black {
-            background-color: black;
-            color: #5A0000;
-        }
-        .black.focus,
-        .black:focus,
-        .black:hover {
-            background-color: black;
-            box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.3);
-        }
-        /* primary accent */
-        .accent-blue {
-            color: #2797ED;
-            font-size: 18px;
-        }
-        /* secondary accent */
-        .accent-red {
-            color: #AD0101;
-            font-size: 16px;
-        }
-        /* weak vowel */
-        .accent-orange {
-            color: #F1591A;
-            font-size: 10px;
-        }
-        /* no accent */
-        .accent-black {
-            font-size: 14px;
-            color: black;
+        .admin-comp {
+            position: relative;
+            /* Fix panel styles because of the wrap div .exercise-container used for the directive
+            * break the expected DOM structure by Bootstrap
+            * expected : .panel > .panel-heading
+            * current  : .panel > .media-resource-administrate-container > .admin-comp > .panel-heading
+            */
+            > .panel-heading {
+                color: @panel-default-text;
+                background-color: @panel-default-heading-bg;
+                border-color: @panel-default-border;
+            }
+            /* each region row */
+            .region {
+                margin: 0 auto;
+                padding: 5px;
+                border-bottom: 1px solid #eee;
+            }
+            .region-odd {
+                background-color: #ccc;
+            }
+            .region-even {
+                background-color: #eee;
+            }
+            *[contenteditable="true"] {
+                display: inline-block;
+            }
+            .note {
+                margin-top: 2px;
+                padding-left: 5px;
+                border: 1px solid #ccc;
+                border-radius: 2px;
+                min-height: 30px;
+                vertical-align: middle;
+                width: 100%;
+            }
+            .active-row {
+                border-radius: 5px;
+                border: 1px solid #06A0E0;
+                /*-moz-box-shadow: inset 10px 10px 5px 0px #06A0E0;
+                -webkit-box-shadow: inset 10px 10px 5px 0px #06A0E0;
+                -o-box-shadow: inset 10px 10px 5px 0px #06A0E0;
+                box-shadow: inset 10px 10px 5px 0px #06A0E0;*/
+            }
+            .time-text {
+                width: 70px;
+                border: 1px solid #ccc;
+                overflow: hidden;
+                border-radius: 3px;
+                min-height: 30px;
+                padding-top: 3px;
+                margin-top: 2px;
+            }
+            .divide-marker-start {
+                width: 0;
+            }
+            .divide-marker {
+                background-color: rgba(0,161,229,1);
+                position: absolute;
+                top: 0;
+                z-index: 2;
+                height: 100%;
+            }
+            .marker-drag-handler {
+                position: absolute;
+                border-radius: 50%;
+                background-color: rgba(0,161,229,1);
+                cursor: pointer;
+                border: 1px solid white;
+            }
+            .annotation-container {
+                margin: 15px;
+            }
+            .annotation-buttons-container {
+                margin: 15px;
+            }
+            .annotation-button {
+                width: 15%;
+            }
+            .blue {
+                background-color: #00A1E5;
+            }
+            .blue.focus,
+            .blue:focus,
+            .blue:hover {
+                background-color: #00A1E5;
+                box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.3);
+            }
+            .red {
+                background-color: #AD0101;
+            }
+            .red.focus,
+            .red:focus,
+            .red:hover {
+                background-color: #AD0101;
+                box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.3);
+            }
+            .orange {
+                background-color: #F1591A;
+            }
+            .orange.focus,
+            .orange:focus,
+            .orange:hover {
+                background-color: #F1591A;
+                box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.3);
+            }
+            .black {
+                background-color: black;
+                color: #5A0000;
+            }
+            .black.focus,
+            .black:focus,
+            .black:hover {
+                background-color: black;
+                box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.3);
+            }
+            /* primary accent */
+            .accent-blue {
+                color: #2797ED;
+                font-size: 18px;
+            }
+            /* secondary accent */
+            .accent-red {
+                color: #AD0101;
+                font-size: 16px;
+            }
+            /* weak vowel */
+            .accent-orange {
+                color: #F1591A;
+                font-size: 10px;
+            }
+            /* no accent */
+            .accent-black {
+                font-size: 14px;
+                color: black;
+            }
         }
     }
+    /* common style for wavesurfer regions */
 
     #waveform {
         background-color: #F3EAD1;
     }
-    /* common style for wavesurfer regions */
     .wavesurfer-region {
         z-index: 1 !important;
     }
@@ -245,4 +251,48 @@ input[type="url"]:invalid{
         width: 0;
         display: none;
     }
+}
+
+.full-height-row{
+  display: table;
+  width: 100%;
+  .full-height-col{
+    float: none;
+    display: table-cell;
+    vertical-align: middle;
+  }
+}
+
+#region-help-available{
+  margin-top:15px;
+}
+
+.margin-bottom-sx{
+    margin-bottom: 5px;
+}
+
+.margin-top-sx{
+    margin-top: 5px;
+}
+
+.margin-bottom-md{
+    margin-bottom: 10px;
+}
+
+.margin-top-md{
+    margin-top: 10px;
+}
+
+.margin-bottom-lg{
+    margin-bottom: 15px;
+}
+
+.margin-top-lg{
+    margin-top: 15px;
+}
+
+input[type="url"]:invalid {
+    border-color: #b94a48;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    color: #b94a48;
 }

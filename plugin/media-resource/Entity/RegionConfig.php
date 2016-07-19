@@ -4,6 +4,7 @@ namespace Innova\MediaResourceBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Zend\Stdlib\JsonSerializable;
 
 /**
  * RegionConfig.
@@ -11,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="media_resource_region_config")
  * @ORM\Entity
  */
-class RegionConfig
+class RegionConfig implements JsonSerializable
 {
     /**
      * @var int
@@ -179,5 +180,28 @@ class RegionConfig
         $this->helpRegionUuid = $helpRegionUuid;
 
         return $this;
+    }
+
+    public function jsonSerialize()
+    {
+        $links = [];
+        foreach ($this->helpLinks as $link) {
+            $links[] = $link->jsonSerialize();
+        }
+
+        $texts = [];
+        foreach ($this->helpTexts as $text) {
+            $texts[] = $text->jsonSerialize();
+        }
+
+        return [
+            'id' => $this->id,
+            'loop' => $this->loop,
+            'backward' => $this->backward,
+            'rate' => $this->rate,
+            'helpTexts' => $texts,
+            'helpLinks' => $links,
+            'helpRegionUuid' => $this->helpRegionUuid,
+        ];
     }
 }

@@ -3,6 +3,7 @@
 namespace Innova\MediaResourceBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Zend\Stdlib\JsonSerializable;
 
 /**
  * HelpLink.
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="media_resource_help_link")
  * @ORM\Entity
  */
-class HelpLink
+class HelpLink implements JsonSerializable
 {
     /**
      * @var int
@@ -67,5 +68,13 @@ class HelpLink
     public function getRegionConfig()
     {
         return $this->regionConfig;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->id,
+            'url' => $this->url,
+        ];
     }
 }

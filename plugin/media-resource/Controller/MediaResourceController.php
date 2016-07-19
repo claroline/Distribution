@@ -5,7 +5,6 @@ namespace Innova\MediaResourceBundle\Controller;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Innova\MediaResourceBundle\Entity\MediaResource;
 use Innova\MediaResourceBundle\Entity\Options;
-use Innova\MediaResourceBundle\Form\Type\OptionsType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -18,7 +17,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 /**
  * Class MediaResourceController.
  *
- * @Route("workspaces/{workspaceId}")
+ * @Route("workspaces/{workspaceId}", options={"expose"=true})
  * @ParamConverter("workspace", class="ClarolineCoreBundle:Workspace\Workspace", options={"mapping": {"workspaceId": "id"}})
  */
 class MediaResourceController extends Controller
@@ -60,72 +59,34 @@ class MediaResourceController extends Controller
             throw new AccessDeniedException();
         }
 
-        // use of specific method to order regions correctly
-        $regions = $this->get('innova_media_resource.manager.media_resource_region')->findByAndOrder($mr);
-        $options = $mr->getOptions();
-        // MediaResource Options form
-        $form = $this->container->get('form.factory')->create(new OptionsType(), $options);
-
         return $this->render('InnovaMediaResourceBundle:MediaResource:administrate.html.twig', [
                     '_resource' => $mr,
-                    'regions' => $regions,
                     'workspace' => $workspace,
-                    'form' => $form->createView(),
           ]
         );
     }
 
     /**
-     * All in one save action, save regions and ressource options
-     * !Only regions use a FormType.
+     * Save resource action, save regions and there configuration and ressource options.
      *
      * @Route("/save/{id}", requirements={"id" = "\d+"}, name="media_resource_save")
-     * @Method({"POST"})
+     * @Method("POST")
      */
     public function save(Workspace $workspace, MediaResource $resource)
     {
-        $flashMessageType = 'success';
-        $msg = $this->get('translator')->trans('resource_update_success', [], 'media_resource');
-        // handle options for the resource
-        $form = $this->container->get('form.factory')->create(new OptionsType(), $resource->getOptions());
-        // Try to process form
-        $request = $this->container->get('request');
-        $form->handleRequest($request);
-        $error = false;
+        $data = $this->container->get('request')->request->all();
+        $this->get('innova_media_resource.manager.media_resource_options')->update($resource->getOptions(), $data);
+        $this->get('innova_media_resource.manager.media_resource_region')->updateRegions($resource, $data);
 
-        // handle options for the resource
-        if ($form->isValid()) {
-            $options = $form->getData();
-            $resource->setOptions($options);
-            $resource = $this->get('innova_media_resource.manager.media_resource')->persist($resource);
-        } else {
-            $error = true;
-        }
-        // handle regions data
-        $data = $request->request->all();
-
-        $regionManager = $this->get('innova_media_resource.manager.media_resource_region');
-        if (!$regionManager->handleMediaResourceRegions($resource, $data)) {
-            $error = true;
-        }
-
-        if ($error) {
-            $msg = $this->get('translator')->trans('resource_update_error', [], 'media_resource');
-            $flashMessageType = 'error';
-        }
-
-        $this->get('session')->getFlashBag()->add($flashMessageType, $msg);
-        // redirect instead of render to avoid form (re)submition on F5
-        return $this->redirectToRoute('innova_media_resource_administrate', ['workspaceId' => $workspace->getId(), 'id' => $resource->getId()]);
+        return new JsonResponse($resource);
     }
 
     /**
      * Serve a ressource file that is not in the web folder as a base64 string.
      *
      * @Route(
-     *     "/get/media/{id}",
-     *     name="innova_get_mediaresource_resource_file",
-     *     options={"expose"=true}
+     *     "/media/{id}",
+     *     name="innova_get_mediaresource_resource_file"
      * )
      * @Method({"GET", "POST"})
      */
@@ -144,42 +105,20 @@ class MediaResourceController extends Controller
     }
 
     /**
-     * Get help relative to student identified problems.
-     *
-     * @Route(
-     *     "/{id}/helps",
-     *     name="mediaresource_get_regions_helps",
-     *     options={"expose"=true}
-     * )
-     * @Method({"GET"})
-     */
-    public function getRegionsHelps(MediaResource $resource)
-    {
-        $data = $this->container->get('request')->query->get('data');
-        $regionManager = $this->get('innova_media_resource.manager.media_resource_region');
-        $regions = $regionManager->getRegionsFromTimes($resource, $data);
-        $regionHelpManager = $this->get('innova_media_resource.manager.media_resource_region_config');
-        $helps = $regionHelpManager->getHelpsFromRegions($regions);
-
-        return new JsonResponse($helps);
-    }
-
-    /**
      * Create a zip that contains :
      * - the original file
      * - .vtt file (might be empty)
      * - all regions as audio files.
      *
      * @Route(
-     *     "/media/{id}/zip",
+     *     "/{id}/zip",
      *     name="mediaresource_zip_export",
-     *     options={"expose"=true}
      * )
-     * @Method({"GET"})
+     * @Method("POST")
      */
     public function exportToZip(MediaResource $resource)
     {
-        $data = $this->container->get('request')->query->get('data');
+        $data = $this->container->get('request')->request->all();
         $zipData = $this->get('innova_media_resource.manager.media_resource')->exportToZip($resource, $data);
 
         $response = new Response();

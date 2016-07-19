@@ -3,6 +3,7 @@
 namespace Innova\MediaResourceBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Zend\Stdlib\JsonSerializable;
 
 /**
  * RegionConfig.
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="media_resource_help_text")
  * @ORM\Entity
  */
-class HelpText
+class HelpText implements JsonSerializable
 {
     /**
      * @var int
@@ -67,5 +68,13 @@ class HelpText
     public function getRegionConfig()
     {
         return $this->regionConfig;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->id,
+            'text' => $this->text,
+        ];
     }
 }

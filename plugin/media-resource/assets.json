@@ -1,7 +1,7 @@
 {
   "webpack": {
     "entry": {
-      "admin": "administrate/administrate",
+      "admin": "administrate/app",
       "active": "players/play-active",
       "free": "players/play-free",
       "live": "players/play-live",
