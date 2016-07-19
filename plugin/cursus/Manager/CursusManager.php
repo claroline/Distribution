@@ -114,6 +114,7 @@ class CursusManager
     private $cursusGroupRepo;
     private $cursusUserRepo;
     private $cursusWordRepo;
+    private $reservationResourceRepo;
     private $sessionEventRepo;
     private $sessionGroupRepo;
     private $sessionQueueRepo;
@@ -200,6 +201,7 @@ class CursusManager
         $this->cursusGroupRepo = $om->getRepository('ClarolineCursusBundle:CursusGroup');
         $this->cursusUserRepo = $om->getRepository('ClarolineCursusBundle:CursusUser');
         $this->cursusWordRepo = $om->getRepository('ClarolineCursusBundle:CursusDisplayedWord');
+        $this->reservationResourceRepo = $om->getRepository('FormaLibre\ReservationBundle\Entity\Resource');
         $this->sessionEventRepo = $om->getRepository('ClarolineCursusBundle:SessionEvent');
         $this->sessionGroupRepo = $om->getRepository('ClarolineCursusBundle:CourseSessionGroup');
         $this->sessionQueueRepo = $om->getRepository('ClarolineCursusBundle:CourseSessionRegistrationQueue');
@@ -4348,6 +4350,15 @@ class CursusManager
     public function getUnvalidatedSearchedCourseQueues($search)
     {
         return $this->courseQueueRepo->findUnvalidatedSearchedCourseQueues($search);
+    }
+
+    /*******************************************************
+     * Access to CourseRegistrationQueueRepository methods *
+     *******************************************************/
+
+    public function getAllReservationResources()
+    {
+        return $this->reservationResourceRepo->findBy([], ['name' => 'asc']);
     }
 
     /******************

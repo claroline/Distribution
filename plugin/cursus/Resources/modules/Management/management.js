@@ -30,6 +30,7 @@ import CourseManagementCtrl from './Controller/CourseManagementCtrl'
 import SessionsManagementCtrl from './Controller/SessionsManagementCtrl'
 import SessionManagementCtrl from './Controller/SessionManagementCtrl'
 import SessionCreationCoursesListModalCtrl from './Controller/SessionCreationCoursesListModalCtrl'
+import LocationsManagementCtrl from './Controller/LocationsManagementCtrl'
 
 angular.module('CursusManagementModule', [
   'ui.router',
@@ -52,6 +53,7 @@ angular.module('CursusManagementModule', [
 .controller('CourseManagementCtrl', ['$stateParams', 'NgTableParams', 'CourseService', 'SessionService', CourseManagementCtrl])
 .controller('SessionsManagementCtrl', ['$uibModal', 'NgTableParams', 'SessionService', 'SessionEventService', SessionsManagementCtrl])
 .controller('SessionManagementCtrl', ['$stateParams', 'NgTableParams', 'SessionService', 'SessionEventService', SessionManagementCtrl])
+.controller('LocationsManagementCtrl', ['$http', 'NgTableParams', LocationsManagementCtrl])
 .controller('SessionCreationCoursesListModalCtrl', SessionCreationCoursesListModalCtrl)
 .config(Routing)
 .config([

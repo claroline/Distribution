@@ -155,6 +155,24 @@ class TaggedObjectRepository extends EntityRepository
         return $query->getOneOrNullResult();
     }
 
+    public function findOneTaggedObjectByTagNameAndObject($tagName, $objectId, $objectClass)
+    {
+        $dql = '
+            SELECT to
+            FROM Claroline\TagBundle\Entity\TaggedObject to
+            JOIN to.tag t
+            WHERE t.name = :tagName
+            AND to.objectId = :objectId
+            AND to.objectClass = :objectClass
+        ';
+        $query = $this->_em->createQuery($dql);
+        $query->setParameter('tagName', $tagName);
+        $query->setParameter('objectId', $objectId);
+        $query->setParameter('objectClass', $objectClass);
+
+        return $query->getResult();
+    }
+
     public function findTaggedObjectsByTags(array $tags, $orderedBy = 'name', $order = 'ASC')
     {
         $dql = "

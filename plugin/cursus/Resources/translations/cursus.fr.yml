@@ -67,6 +67,7 @@ delete_course_session_confirm_msg: Êtes-vous sûr de vouloir supprimer cette se
 delete_course_session_workspace_confirm_msg: Supprimer également l'espace d'activités associé
 delete_cursus: Supprimmer le cursus
 delete_cursus_confirm_message: Êtes-vous sûr de vouloir supprimer ce cursus ?
+delete_location: Supprimer la localisation
 delete_selected_courses: Supprimer les formations séléctionnées
 delete_selected_sessions: Supprimer les sessions séléctionnées
 delete_session: Supprimer la session
@@ -97,14 +98,19 @@ invite_learners_to_session: Inviter les apprenants à la session
 learner: Apprenant
 learner_role_name: Rôle des apprenants
 learners: Apprenants
+locations: Localisations
+locations_management: Gestion des localisations
 manager: Gestionnaire
+max_time_reservation: Temps max de réservation
 max_users: Nombre maximum d'utilisateurs
+messages_management: Gestion des messages
 no: Non
 no_closed_session: Aucune session terminée
 no_closed_session_event: Aucune séance terminée
 no_course: Aucune formation
 no_cursus: Aucun cursus
 no_description: Aucune description
+no_location: Aucune localisation
 no_open_session: Aucune session ouverte
 no_open_session_event: Aucune séance ouverte
 no_pending_learner: Aucun apprenant en attente
@@ -122,6 +128,7 @@ open_sessions: Sessions ouvertes
 organization_validation: Validation par l'organisation
 public_registration: Inscription publique
 public_unregistration: Désinscription publique
+quantity: Quantité
 queued_user_transfer: Transférer l'utilisateur en attente
 queued_users: Utilisateurs en attente
 registration_date: Date d'inscription

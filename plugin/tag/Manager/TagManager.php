@@ -231,6 +231,17 @@ class TagManager
         $this->om->flush();
     }
 
+    public function removeTaggedObjectByTagNameAndObjectIdAndClass($tagName, $objectId, $objectClass)
+    {
+        $taggedObjects = $this->getOneTaggedObjectByTagNameAndObject($tagName, $objectId, $objectClass);
+        $this->om->startFlushSuite();
+
+        foreach ($taggedObjects as $to) {
+            $this->deleteTaggedObject($to);
+        }
+        $this->om->endFlushSuite();
+    }
+
     /***********************************
      * Access to TagRepository methods *
      ***********************************/
@@ -390,6 +401,15 @@ class TagManager
     {
         return $this->taggedObjectRepo->findOneTaggedObjectByTagAndObject(
             $tag,
+            $objectId,
+            $objectClass
+        );
+    }
+
+    public function getOneTaggedObjectByTagNameAndObject($tagName, $objectId, $objectClass)
+    {
+        return $this->taggedObjectRepo->findOneTaggedObjectByTagNameAndObject(
+            $tagName,
             $objectId,
             $objectClass
         );

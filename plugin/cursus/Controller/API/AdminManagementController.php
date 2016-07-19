@@ -13,6 +13,7 @@ namespace Claroline\CursusBundle\Controller\API;
 
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Event\GenericDatasEvent;
 use Claroline\CoreBundle\Manager\ApiManager;
 use Claroline\CoreBundle\Manager\UserManager;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
@@ -33,6 +34,8 @@ use Claroline\CursusBundle\Form\CourseType;
 use Claroline\CursusBundle\Form\CursusType;
 use Claroline\CursusBundle\Form\SessionEventType;
 use Claroline\CursusBundle\Manager\CursusManager;
+use Claroline\TagBundle\Manager\TagManager;
+use FormaLibre\ReservationBundle\Entity\Resource;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\SecurityExtraBundle\Annotation as SEC;
 use JMS\Serializer\SerializationContext;
@@ -55,6 +58,7 @@ class AdminManagementController extends Controller
     private $eventDispatcher;
     private $request;
     private $serializer;
+    private $tagManager;
     private $translator;
     private $userManager;
     private $workspaceManager;
@@ -67,6 +71,7 @@ class AdminManagementController extends Controller
      *     "eventDispatcher"       = @DI\Inject("event_dispatcher"),
      *     "request"               = @DI\Inject("request"),
      *     "serializer"            = @DI\Inject("jms_serializer"),
+     *     "tagManager"            = @DI\Inject("claroline.manager.tag_manager"),
      *     "translator"            = @DI\Inject("translator"),
      *     "userManager"           = @DI\Inject("claroline.manager.user_manager"),
      *     "workspaceManager"      = @DI\Inject("claroline.manager.workspace_manager"),
@@ -79,6 +84,7 @@ class AdminManagementController extends Controller
         EventDispatcherInterface $eventDispatcher,
         Request $request,
         Serializer $serializer,
+        TagManager $tagManager,
         TranslatorInterface $translator,
         UserManager $userManager,
         WorkspaceManager $workspaceManager,
@@ -89,6 +95,7 @@ class AdminManagementController extends Controller
         $this->eventDispatcher = $eventDispatcher;
         $this->request = $request;
         $this->serializer = $serializer;
+        $this->tagManager = $tagManager;
         $this->translator = $translator;
         $this->userManager = $userManager;
         $this->workspaceManager = $workspaceManager;
@@ -1410,5 +1417,105 @@ class AdminManagementController extends Controller
         );
 
         return new JsonResponse($serializedModels, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/reservation/resources",
+     *     name="api_get_reservation_resources",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     *
+     * Retrieves reservation resources list
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getReservationResourcesAction()
+    {
+        $reservationResources = $this->cursusManager->getAllReservationResources();;
+        $serializedResources = $this->serializer->serialize(
+            $reservationResources,
+            'json',
+            SerializationContext::create()->setGroups(['api_reservation'])
+        );
+
+        return new JsonResponse($serializedResources, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/cursus/reservation/resources",
+     *     name="api_get_cursus_reservation_resources",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     *
+     * Retrieves cursus reservation resources list
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getCursusReservationResourcesAction()
+    {
+        $options = [
+            'tag' => 'cursus_location',
+            'strict' => true,
+            'class' => 'FormaLibre\ReservationBundle\Entity\Resource',
+            'object_response' => true,
+            'ordered_by' => 'name',
+            'order' => 'ASC'
+        ];
+        $event = $this->eventDispatcher->dispatch('claroline_retrieve_tagged_objects', new GenericDatasEvent($options));
+        $resources = $event->getResponse();
+        $serializedResources = $this->serializer->serialize(
+            $resources,
+            'json',
+            SerializationContext::create()->setGroups(['api_reservation'])
+        );
+
+        return new JsonResponse($serializedResources, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/cursus/reservation/resource/{resource}/tag/create",
+     *     name="api_post_cursus_reservation_resources_tag",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     *
+     * Tags reservation resource
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function postReservationResourceTagAction(Resource $resource)
+    {
+        $options = ['tag' => ['cursus_location'], 'object' => $resource];
+        $this->eventDispatcher->dispatch('claroline_tag_object', new GenericDatasEvent($options));
+
+        return new JsonResponse('success', 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/cursus/reservation/resource/{resource}/tag/delete",
+     *     name="api_delete_cursus_reservation_resources_tag",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     *
+     * Removes tag from reservation resource
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function deleteReservationResourceTagAction(Resource $resource)
+    {
+        $this->tagManager->removeTaggedObjectByTagNameAndObjectIdAndClass(
+            'cursus_location',
+            $resource->getId(),
+            'FormaLibre\ReservationBundle\Entity\Resource'
+        );
+
+        return new JsonResponse('success', 200);
     }
 }

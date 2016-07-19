@@ -162,6 +162,10 @@ export default class SessionManagementCtrl {
     this.SessionEventService.loadEventsBySession(this.sessionId)
   }
 
+  createSessionEvent () {
+    this.SessionEventService.createSessionEvent(this.session, this._addSessionEventCallback)
+  }
+
   editSession () {
     this.SessionService.editSession(this.sessionId, this._updateSessionCallback)
   }
