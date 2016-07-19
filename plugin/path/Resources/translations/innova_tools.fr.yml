@@ -55,6 +55,7 @@ others_paths : Autres parcours
 paths: Parcours
 path: Parcours
 path_back: Retour au parcours
+path_dashboard: Tableau de bord
 progression: Avancement
 paths_list: Liste des parcours
 path_not_found: Le parcours n'a pas été trouvé

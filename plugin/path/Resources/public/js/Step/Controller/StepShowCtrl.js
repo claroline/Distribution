@@ -11,6 +11,13 @@ var StepShowCtrl = function StepShowCtrl(step, inheritedResources, PathService, 
     this.filterDate             = $filter('date');
 
     this.authorization = authorization;
+    //override tests for manager
+    if (PathService.getEditEnabled){
+        if(!authorization){
+            this.authorization = {granted:true};
+        }
+    }
+
     if (authorization && authorization.granted) {
         // User has access to the current step
         if (angular.isDefined(this.step) && angular.isDefined(this.step.description) && typeof this.step.description == 'string') {
