@@ -14,7 +14,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 
 class NotationController extends DropzoneBaseController
 {
@@ -34,15 +33,13 @@ class NotationController extends DropzoneBaseController
         // Récupération de l'ID du document
         $documentId = $this->get('request')->query->get('documentId');
         $dropzoneId = $this->get('request')->query->get('dropzoneId');
-        $note = $this->get('request')->query->get('note');
+        $note = (int) $this->get('request')->query->get('note');
         $appreciation = $this->get('request')->query->get('appreciation');
         $recordOrTransmit = $this->get('request')->query->get('recordOrTransmit');
 
         $em = $this->getDoctrine()->getManager();
-        $dropzone
-            = $em->getRepository('InnovaCollecticielBundle:Dropzone')->find($dropzoneId);
-        $document
-            = $em->getRepository('InnovaCollecticielBundle:Document')->find($documentId);
+        $dropzone = $em->getRepository('InnovaCollecticielBundle:Dropzone')->find($dropzoneId);
+        $document = $em->getRepository('InnovaCollecticielBundle:Document')->find($documentId);
 
         // Récupération de l'utilisateur
         $user = $this->get('security.token_storage')->getToken()->getUser();
@@ -58,12 +55,12 @@ class NotationController extends DropzoneBaseController
 
         // Ajout pour avoir si la notation a été transmise ou pas.
         $notation = $em->getRepository('InnovaCollecticielBundle:Notation')
-            ->findBy(
-                [
-                    'document' => $document->getId(),
-                    'dropzone' => $dropzone->getId(),
-                ]
-            );
+                    ->findBy(
+                            [
+                                'document' => $document->getId(),
+                                'dropzone' => $dropzone->getId(),
+                            ]
+                        );
 
         if ($recordOrTransmit === 0) {
             if (!empty($notation)) {
@@ -101,12 +98,12 @@ class NotationController extends DropzoneBaseController
         if ($notationId === 0) {
             // Ajout pour avoir si la notation a été transmise ou pas.
             $notation = $em->getRepository('InnovaCollecticielBundle:Notation')
-                ->findBy(
-                    [
-                        'document' => $document->getId(),
-                        'dropzone' => $dropzone->getId(),
-                    ]
-                );
+                        ->findBy(
+                                [
+                                    'document' => $document->getId(),
+                                    'dropzone' => $dropzone->getId(),
+                                ]
+                            );
             $notationId = $notation[0]->getId();
         }
 
@@ -115,17 +112,16 @@ class NotationController extends DropzoneBaseController
         if (!empty($arrayCriteriaId)) {
             $cpt = 0;
             foreach ($arrayCriteriaId as $criteriaId) {
-                $gradingCriteria
-                    = $em->getRepository('InnovaCollecticielBundle:GradingCriteria')->find($criteriaId);
+                $gradingCriteria = $em->getRepository('InnovaCollecticielBundle:GradingCriteria')->find($criteriaId);
 
                 // Ajout pour avoir si la notation a été transmise ou pas.
                 $choiceCriteriaArray = $em->getRepository('InnovaCollecticielBundle:choiceCriteria')
-                    ->findBy(
-                        [
-                            'notation' => $notationId,
-                            'gradingCriteria' => $criteriaId,
-                        ]
-                    );
+                            ->findBy(
+                                    [
+                                        'notation' => $notationId,
+                                        'gradingCriteria' => $criteriaId,
+                                    ]
+                                );
 
                 // Nombre de notation pour le document et pour le dropzone
                 $countExistCriteria = count($choiceCriteriaArray);
@@ -139,7 +135,7 @@ class NotationController extends DropzoneBaseController
                 } else {
                     // Notation : mise à jour
                     $choiceCriteria = $em->getRepository('InnovaCollecticielBundle:choiceCriteria')
-                        ->find($choiceCriteriaArray[0]->getId());
+                      ->find($choiceCriteriaArray[0]->getId());
                     $choiceCriteria->setChoiceText($arrayCriteriaValue[$cpt]);
                 }
                 $em->persist($choiceCriteria);
@@ -151,10 +147,10 @@ class NotationController extends DropzoneBaseController
 
         // Redirection
         $url = $this->generateUrl(
-            'innova_collecticiel_drops_awaiting',
-            [
-                'resourceId' => $dropzone->getId(),
-            ]
+                'innova_collecticiel_drops_awaiting',
+                [
+                    'resourceId' => $dropzone->getId(),
+                ]
         );
 
         return new JsonResponse(['link' => $url]);
@@ -178,28 +174,22 @@ class NotationController extends DropzoneBaseController
 
         // Appel pour accés base         
         $em = $this->getDoctrine()->getManager();
-
         // Recherche en base des données du document à mettre à jour
         $document
             = $em->getRepository('InnovaCollecticielBundle:Document')
                 ->find($document->getId());
-
         $dropzone
             = $em->getRepository('InnovaCollecticielBundle:DropZone')
                 ->find($dropzone->getId());
 
-        $drop
-            = $em->getRepository('InnovaCollecticielBundle:Drop')
-                ->find($document->getDrop());
-
         // Recherche des critères de la notation
         $notation = $em->getRepository('InnovaCollecticielBundle:Notation')
-            ->findBy(
-                [
-                    'document' => $document->getId(),
-                    'dropzone' => $dropzone->getId(),
-                ]
-            );
+                    ->findBy(
+                            [
+                                'document' => $document->getId(),
+                                'dropzone' => $dropzone->getId(),
+                            ]
+                        );
 
         $notation[0]->setRecordOrTransmit(true);
 
@@ -208,7 +198,7 @@ class NotationController extends DropzoneBaseController
         $em->flush();
 
         $gradingScale = $em->getRepository('InnovaCollecticielBundle:GradingScale')
-            ->find($notation[0]->getAppreciation());
+                      ->find($notation[0]->getAppreciation());
 
         if (!empty($gradingScale)) {
             $notationScaleDocument = $gradingScale->getScaleName();
@@ -216,24 +206,14 @@ class NotationController extends DropzoneBaseController
             $notationScaleDocument = '';
         }
 
-        // Ajout afin d'afficher la partie du code avec "Demande transmise"
-        $template = $this->get('templating')
-            ->render(
-                'InnovaCollecticielBundle:Document:documentIsTransmit.html.twig',
-                [
-                    'document' => $document,
-                    'dropzone' => $dropzone,
-                    'drop' => $drop,
-                    'recordOrTransmitNotation' => 1,
-                    'notationDocument' => $notation[0]->getNote(),
-                    'maximumNotation' => $dropzone->getMaximumNotation(),
-                    'notationCommentDocument' => $notation[0]->getCommentText(),
-                    'notationQualityDocument' => $notation[0]->getQualityText(),
-                    'notationScaleDocument' => $notationScaleDocument,
-                ]
-            );
+        // Redirection
+        $url = $this->generateUrl(
+                    'innova_collecticiel_drops_awaiting',
+                    [
+                        'resourceId' => $dropzone->getId(),
+                    ]
+                );
 
-        // Retour du template actualisé à l'Ajax et non plus du Json.
-        return new Response($template);
+        return new JsonResponse(['link' => $url]);
     }
 }
