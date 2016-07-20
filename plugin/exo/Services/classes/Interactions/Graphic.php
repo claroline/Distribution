@@ -132,15 +132,22 @@ class Graphic extends Interaction
                 list($xr, $yr) = explode(',', $expected->getValue());
                 // Get tolerance zone
                 $zoneSize = $expected->getSize();
+                $zoneShape = $expected->getShape();
 
                 foreach ($coordsList as $coords) {
                     if (preg_match('/[0-9]+/', $coords)) {
                         // Get X and Y values from answers of the student
                         list($xa, $ya) = explode('-', $coords);
 
-                        if (($xa <= ($xr + $zoneSize)) && ($xa > $xr) &&
-                            ($ya <= ($yr + $zoneSize)) && ($ya > $yr)
-                        ) {
+                        if ($zoneShape === 'circle') {
+                            $xcenter = $xr + ($zoneSize / 2);
+                            $ycenter = $yr + ($zoneSize / 2);
+                            $valid = pow($xa - $xcenter, 2) + pow($ya - $ycenter, 2) <= pow($zoneSize / 2, 2);
+                        } elseif ($zoneShape === 'square') {
+                            $valid = ($xa <= ($xr + $zoneSize)) && ($xa > $xr) && ($ya <= ($yr + $zoneSize)) && ($ya > $yr);
+                        }
+
+                        if ($valid) {
                             // The student answer is in the answer zone give him the points
                             $score += $expected->getScoreCoords();
 
