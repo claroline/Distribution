@@ -35,7 +35,7 @@ class NotationController extends DropzoneBaseController
         $dropzoneId = $this->get('request')->query->get('dropzoneId');
         $note = (int) $this->get('request')->query->get('note');
         $appreciation = $this->get('request')->query->get('appreciation');
-        $recordOrTransmit = $this->get('request')->query->get('recordOrTransmit');
+        $recordOrTransmit = (int) $this->get('request')->query->get('recordOrTransmit');
 
         $em = $this->getDoctrine()->getManager();
         $dropzone = $em->getRepository('InnovaCollecticielBundle:Dropzone')->find($dropzoneId);
@@ -61,7 +61,6 @@ class NotationController extends DropzoneBaseController
                                 'dropzone' => $dropzone->getId(),
                             ]
                         );
-
         if ($recordOrTransmit === 0) {
             if (!empty($notation)) {
                 $notation[0]->setNote($note);
