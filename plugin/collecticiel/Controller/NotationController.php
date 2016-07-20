@@ -174,6 +174,7 @@ class NotationController extends DropzoneBaseController
 
         // Appel pour accés base         
         $em = $this->getDoctrine()->getManager();
+
         // Recherche en base des données du document à mettre à jour
         $document
             = $em->getRepository('InnovaCollecticielBundle:Document')
