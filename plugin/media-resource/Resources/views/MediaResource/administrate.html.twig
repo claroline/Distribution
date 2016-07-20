@@ -1,7 +1,7 @@
 {% extends "InnovaMediaResourceBundle::layout.html.twig" %}
 
 {% block media_resource_content %}
-    <div class="media-resource-administrate-container" data-ng-app="EALAdminApp" data-ng-cloak="">
+    <div class="media-resource-administrate-container" data-ng-app="AdminApp" data-ng-cloak="">
         <admin class="admin-comp" data-resource="{{ _resource | json_encode  }}"></admin>
     </div>
 {% endblock %}

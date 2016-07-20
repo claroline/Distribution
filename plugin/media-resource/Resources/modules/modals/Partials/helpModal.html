@@ -5,7 +5,8 @@
     <h4 class="modal-title">{{'region_help' | trans:{}:'media_resource'}}</h4>
 </div>
 <div class="modal-body">
-    <div id="help-tab-panel" role="tabpanel">
+    <!-- full help modal -->
+    <div data-ng-if="!modalCtrl.data.minimal" id="help-tab-panel" role="tabpanel">
         <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active">
                 <a href="#help-region-choice" aria-controls="help-region-choice" role="tab" data-toggle="tab">{{'help_modal_choice_tab_label' | trans:{}:'media_resource'}}</a>
@@ -70,7 +71,7 @@
                                         <i class="fa fa-exchange"></i>
                                     </button>
                                     <!-- if help.rate -->
-                                    <button data-ng-if="modalCtrl.selected.helps.rate" data-ng-click="modalCtrl.play($event, modalCtrl.playModes.SLOW)"  class="btn btn-default" title="{{'region_help_segment_playback_rate' | trans:{}:'media_resource'}}">
+                                    <button data-ng-if="modalCtrl.selected.helps.rate" data-ng-click="modalCtrl.play($event, modalCtrl.playModes.SLOW)" class="btn btn-default" title="{{'region_help_segment_playback_rate' | trans:{}:'media_resource'}}">
                                         x0.8
                                     </button>
                                     <!-- if (help.connex && help.connex.start && help.connex.end) -->
@@ -96,7 +97,8 @@
                                         class="btn btn-default"
                                         title="{{'region_help_help_text_label'|trans:{}:'media_resource'}} {{$index + 1}}"
                                         data-ng-if="item.text !== ''"
-                                        data-ng-click="modalCtrl.showHelpText($event, item.text)" data-ng-repeat="item in modalCtrl.selected.helps.helpTexts">
+                                        data-ng-click="modalCtrl.showHelpText($event, item.text)"
+                                        data-ng-repeat="item in modalCtrl.selected.helps.helpTexts">
                                         <i class="fa fa-eye"></i>
                                     </button>
                                 </div>
@@ -131,7 +133,26 @@
             </div>
         </div>
     </div>
-
+    <!-- minimal help modal -->
+    <div data-ng-if="modalCtrl.data.minimal">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="btn-group">
+                    <button class="btn btn-default" data-ng-click="modalCtrl.play(modalCtrl.playModes.NORMAL)" title="{{'region_help_segment_playback' | trans:{}:'media_resource'}}">
+                        <i class="fa fa-play"></i>
+                        /
+                        <i class="fa fa-pause"></i>
+                    </button>
+                    <button data-ng-click="modalCtrl.play($event, modalCtrl.playModes.LOOP)" class="btn btn-default" title="{{'region_help_segment_playback_loop' | trans:{}:'media_resource'}}">
+                        <i class="fa fa-retweet"></i>
+                    </button>
+                    <button data-ng-click="modalCtrl.play($event, modalCtrl.playModes.SLOW)" class="btn btn-default" title="{{'region_help_segment_playback_rate' | trans:{}:'media_resource'}}">
+                        x0.8
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="modal-footer">
     <button class="btn btn-primary" ng-click="modalCtrl.close()">{{'close' | trans:{}:'media_resource'}}</button>

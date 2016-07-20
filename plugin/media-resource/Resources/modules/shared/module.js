@@ -12,19 +12,19 @@ import RegionsService from './Services/RegionsService'
 
 angular
   .module('Shared', [
-      'ngSanitize'
+    'ngSanitize'
   ])
   .filter('unsafe', [
-      '$sce',
-      UnsafeFilter
+    '$sce',
+    UnsafeFilter
   ])
   .filter('secondsToHms', [
-      SecondsToHmsFilter
+    SecondsToHmsFilter
   ])
   .service('configService', [
-      '$filter',
-      ConfigService
+    '$filter',
+    ConfigService
   ])
   .service('regionsService', [
-      RegionsService
+    RegionsService
   ])
