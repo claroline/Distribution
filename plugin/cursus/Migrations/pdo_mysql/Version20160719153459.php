@@ -8,9 +8,9 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution
  *
- * Generation date: 2016/07/04 04:47:08
+ * Generation date: 2016/07/19 03:35:00
  */
-class Version20160704164706 extends AbstractMigration
+class Version20160719153459 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -104,6 +104,10 @@ class Version20160704164706 extends AbstractMigration
             ALTER TABLE claro_cursusbundle_course_session 
             ADD description LONGTEXT DEFAULT NULL
         ");
+        $this->addSql("
+            ALTER TABLE claro_cursusbundle_courses_widget_config 
+            ADD default_mode INT DEFAULT 0 NOT NULL
+        ");
     }
 
     public function down(Schema $schema)
@@ -129,6 +133,10 @@ class Version20160704164706 extends AbstractMigration
         $this->addSql("
             ALTER TABLE claro_cursusbundle_course_session 
             DROP description
+        ");
+        $this->addSql("
+            ALTER TABLE claro_cursusbundle_courses_widget_config 
+            DROP default_mode
         ");
     }
 }

@@ -20,6 +20,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class CoursesWidgetConfig
 {
+    const MODE_LIST = 0;
+    const MODE_CALENDAR = 1;
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -38,6 +41,11 @@ class CoursesWidgetConfig
      * @ORM\JoinColumn(name="cursus_id", nullable=true, onDelete="SET NULL")
      */
     protected $cursus;
+
+    /**
+     * @ORM\Column(name="default_mode", nullable=false, type="integer", options={"default" = 0})
+     */
+    protected $defaultMode = self::MODE_LIST;
 
     public function getId()
     {
@@ -67,5 +75,15 @@ class CoursesWidgetConfig
     public function setCursus(Cursus $cursus = null)
     {
         $this->cursus = $cursus;
+    }
+
+    public function getDefaultMode()
+    {
+        return $this->defaultMode;
+    }
+
+    public function setDefaultMode($defaultMode)
+    {
+        $this->defaultMode = $defaultMode;
     }
 }

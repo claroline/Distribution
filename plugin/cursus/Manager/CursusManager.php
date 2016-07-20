@@ -2758,7 +2758,7 @@ class CursusManager
                 $course->getUserValidation(),
                 $course->getOrganizationValidation(),
                 $course->getMaxUsers(),
-                $course->getType(),
+                0,
                 $course->getValidators()
             );
             $sessions[] = $session;
@@ -2834,7 +2834,7 @@ class CursusManager
                 $course->getUserValidation(),
                 $course->getOrganizationValidation(),
                 $course->getMaxUsers(),
-                $course->getType(),
+                0,
                 $course->getValidators()
             );
             $sessions[] = $session;

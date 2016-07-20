@@ -5,6 +5,7 @@ add_course_to_cursus: Add a training
 add_session: Add a training session
 application_date: Application date
 blocking: Blocking
+calendar_view: Calendar view
 click_on_link_below_to_confirm_request: Please click on link below to confirm request
 closed_session_events: Closed session events
 closed_sessions: Closed sessions
@@ -57,6 +58,7 @@ decline_failed: Decline failed
 decline_registration: Decline registration
 decline_registration_confirm_message: Are you sure you want to decline this user registration ?
 default: Default
+default_mode: Default mode
 default_session: Default training session
 default_session_duration_label: Default training session duration (day)
 default_session_end_date: Default training session end date
@@ -98,6 +100,7 @@ invite_learners_to_session: Invite learners to session
 learner: Learner
 learner_role_name: Learner role
 learners: Learners
+list_view: List view
 locations: Locations
 locations_management: Locations management
 manager: Manager

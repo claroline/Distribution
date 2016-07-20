@@ -66,6 +66,14 @@
             </span>
         </div>
     </div>
+    <button id="calendar-view-button"
+            class="btn btn-default pull-right"
+            data-toggle="tooltip"
+            data-placement="top"
+            title="{{ 'calendar_view'|trans({}, 'cursus') }}"
+    >
+        <i class="fa fa-calendar"></i>
+    </button>
 </div>
 
 {% if courses|length > 0 %}
@@ -214,5 +222,12 @@
      data-ordered-by="{{ orderedBy }}"
      data-order="{{ order }}"
      data-widget-instance-id="{{ widgetInstance.getId() }}"
+     data-mode="list"
 >
 </div>
+
+{% block javascripts %}
+    <script>
+        window['sessions_' + {{ widgetInstance.getId() }}] = {{ courseSessions|json_encode|raw }}
+    </script>
+{% endblock %}

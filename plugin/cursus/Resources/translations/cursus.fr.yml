@@ -5,6 +5,7 @@ add_course_to_cursus: Ajouter une formation
 add_session: Ajouter une session
 application_date: Date de soumission
 blocking: Bloquant
+calendar_view: Vue calendrier
 click_on_link_below_to_confirm_request: Veuillez cliquer sur le lien ci-dessous pour confirmer la demande
 closed_session_events: Séances terminées
 closed_sessions: Sessions terminées
@@ -57,6 +58,7 @@ decline_failed: Le refus a échoué
 decline_registration: Refuser l'inscription
 decline_registration_confirm_message: Êtes-vous sûr de vouloir refuser l'inscription de cet utilisateur ?
 default: Défaut
+default_mode: Mode par défaut
 default_session: Session par défaut
 default_session_duration_label: Durée par défaut d'une session de formation (jour)
 default_session_end_date: Date de fin de session de formation par défaut
@@ -98,6 +100,7 @@ invite_learners_to_session: Inviter les apprenants à la session
 learner: Apprenant
 learner_role_name: Rôle des apprenants
 learners: Apprenants
+list_view: Vue liste
 locations: Localisations
 locations_management: Gestion des localisations
 manager: Gestionnaire
