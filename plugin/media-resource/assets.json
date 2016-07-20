@@ -2,11 +2,7 @@
   "webpack": {
     "entry": {
       "admin": "administrate/app",
-      "active": "players/play-active",
-      "free": "players/play-free",
-      "live": "players/play-live",
-      "pause": "players/play-pause",
-      "scripted": "players/play-scripted-active"
+      "players": "players/app"
     }
   }
 }

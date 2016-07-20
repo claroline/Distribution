@@ -61,7 +61,6 @@ class MediaResourceController extends Controller
 
         return $this->render('InnovaMediaResourceBundle:MediaResource:administrate.html.twig', [
                     '_resource' => $mr,
-                    'workspace' => $workspace,
           ]
         );
     }

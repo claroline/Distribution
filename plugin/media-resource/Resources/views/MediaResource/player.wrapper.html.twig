@@ -1,38 +1,28 @@
 {% extends "InnovaMediaResourceBundle::layout.html.twig" %}
 
 {% block media_resource_content %}
-    <div class="media-resource-players-container">
-        <div class="panel panel-default">
-            <!-- PANEL HEADER -->
-            <div class="panel-heading clearfix">
-                {% include "InnovaMediaResourceBundle:MediaResource/Partials:players-panel-header.html.twig" with {'workspace': workspace, 'resource': _resource, 'name':_resource.name, 'mode': mode} %}
-            </div>
-            <div class="panel-body">
-                {% if mode is constant('Innova\\MediaResourceBundle\\Entity\\Options::CONTINUOUS_ACTIVE') %}
-                    {% include "InnovaMediaResourceBundle:MediaResource/Partials:player.active.html.twig" with {'_resource': _resource, 'workspace': workspace, 'regions': regions} %}
-                {% elseif mode is constant('Innova\\MediaResourceBundle\\Entity\\Options::CONTINUOUS_LIVE') %}
-                    {% include "InnovaMediaResourceBundle:MediaResource/Partials:player.live.html.twig" with {'_resource': _resource, 'workspace': workspace, 'regions': regions} %}
-                {% elseif mode is constant('Innova\\MediaResourceBundle\\Entity\\Options::FREE') %}
-                    {% include "InnovaMediaResourceBundle:MediaResource/Partials:player.free.html.twig" with {'_resource': _resource, 'workspace': workspace, 'regions': regions} %}
-                {% elseif mode is constant('Innova\\MediaResourceBundle\\Entity\\Options::CONTINUOUS_PAUSE') %}
-                    {% include "InnovaMediaResourceBundle:MediaResource/Partials:player.pause.html.twig" with {'_resource': _resource, 'workspace': workspace, 'regions': regions} %}
-                {% elseif mode is constant('Innova\\MediaResourceBundle\\Entity\\Options::SCRIPTED_ACTIVE') %}
-                    {% include "InnovaMediaResourceBundle:MediaResource/Partials:player.scripted.html.twig" with {'_resource': _resource, 'workspace': workspace, 'regions': regions} %}
-                {% endif %}
-
-            </div>
+    <div class="media-resource-players-container" data-ng-app="PlayersApp" data-ng-cloak="">
+        <div class="panel-heading clearfix">
+            {% include "InnovaMediaResourceBundle:MediaResource/Partials:players-panel-header.html.twig" with {'resource': _resource} %}
+        </div>
+        <div class="panel-body">
+            {% if _resource.options.mode is constant('Innova\\MediaResourceBundle\\Entity\\Options::CONTINUOUS_ACTIVE') %}
+                <active data-resource="{{ _resource | json_encode  }}"></active>
+            {% elseif _resource.options.mode is constant('Innova\\MediaResourceBundle\\Entity\\Options::CONTINUOUS_LIVE') %}
+                <live data-resource="{{ _resource | json_encode  }}"></live>
+            {% elseif _resource.options.mode is constant('Innova\\MediaResourceBundle\\Entity\\Options::FREE') %}
+                <free data-resource="{{ _resource | json_encode  }}"></free>
+            {% elseif _resource.options.mode is constant('Innova\\MediaResourceBundle\\Entity\\Options::CONTINUOUS_PAUSE') %}
+                <pause data-resource="{{ _resource | json_encode  }}"></pause>
+            {% elseif _resource.options.mode is constant('Innova\\MediaResourceBundle\\Entity\\Options::SCRIPTED_ACTIVE') %}
+                <scripted data-resource="{{ _resource | json_encode  }}"></scripted>
+            {% endif %}
         </div>
     </div>
-    <!-- HTML5 AUdio player used for specific playback (help and configuration) -->
-    <audio id="html-audio-player" controls style="display:none;" src=""/>
-    <!-- hidden fields -->
-    <input type="hidden" name="type" value="audio">
-    <input type="hidden" name="wId" value="{{workspace.id}}">
-    <input type="hidden" name="mrId" value="{{_resource.id}}">
-    <input type="hidden" name="tts" value="{{_resource.options.getTtsLanguage}}">
 
 {% endblock %}
 
 {% block javascripts %}
-  {{parent()}}
+    {{parent()}}
+    <script src="{{ hotAsset('dist/claroline-distribution-plugin-media-resource-players.js') }}"></script>
 {% endblock %}

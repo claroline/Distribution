@@ -9,16 +9,16 @@ import OptionsModalService from './Services/OptionsModalService'
 
 angular
     .module('Modals', [
-        'ui.bootstrap'
+      'ui.bootstrap'
     ])
     .service('helpModalService', [
-        '$uibModal',
-        'regionsService',
-        'configService',
-        HelpModalService
+      '$uibModal',
+      'regionsService',
+      'configService',
+      HelpModalService
     ])
     .service('optionsModalService', [
-        '$uibModal',
-        'regionsService',
-        OptionsModalService
+      '$uibModal',
+      'regionsService',
+      OptionsModalService
     ])

@@ -14,5 +14,5 @@
 </h3>
 
 {% if is_granted('ROLE_ADMIN') %}
-  <a target="_blank" href="{{ path('innova_media_resource_administrate', {'workspaceId': workspace.id ,'id':_resource.id })}}" title="{{'innova_media_resource_administrate' | trans({}, 'resource')}}" class="btn btn-primary fa fa-pencil pull-right"></a>
+  <a target="_blank" href="{{ path('innova_media_resource_administrate', {'workspaceId': _resource.getWorkspace.id ,'id':_resource.id })}}" title="{{'innova_media_resource_administrate' | trans({}, 'resource')}}" class="btn btn-primary fa fa-pencil pull-right"></a>
 {% endif %}
