@@ -124,6 +124,6 @@ ActiveCtrl.$inject = [
   'url',
   'configService',
   'helpModalService',
-  'regionsService',
+  'regionsService'
 ]
 export default ActiveCtrl

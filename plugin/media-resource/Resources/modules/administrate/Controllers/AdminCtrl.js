@@ -120,9 +120,7 @@ class AdminCtrl {
   }
 
   addMarker(time, uuid) {
-
     const $canvas = $('#waveform').find('wave').first().find('canvas').first()
-    const cWidth = $canvas.width()
     const cHeight = $canvas.height()
 
     const left = this.getMarkerLeftPostionFromTime(time)
@@ -183,7 +181,7 @@ class AdminCtrl {
           // update wavesurfer region highlight
         const current = this.regionsService.getRegionFromTime(time, this.resource.regions)
         this.wavesurfer.clearRegions()
-        const wRegion = this.wavesurfer.addRegion({
+        this.wavesurfer.addRegion({
           start: current.start,
           end: current.end,
           color: 'rgba(255,0,0,0.5)',
@@ -195,7 +193,7 @@ class AdminCtrl {
       }
     }.bind(this)
 
-    let dropMarker = function dropMarker(event) {
+    let dropMarker = function dropMarker() {
       this.$window.removeEventListener('mousemove', moveMarker)
       this.$window.removeEventListener('mouseup', dropMarker)
       this.$scope.$apply(function () {
@@ -263,7 +261,7 @@ class AdminCtrl {
       drag: false,
       resize: false
     }
-    let wRegion = this.wavesurfer.addRegion(params)
+    this.wavesurfer.addRegion(params)
   }
 
   // should do it with data-ng-class but this is not working well and would need $scope.$apply
@@ -462,34 +460,33 @@ class AdminCtrl {
   }
 
   initContentEditable() {
-      // CONTENT EDITABLE CHANGE EVENT MAPPING
-      $('body')
-        .on('focus', '[contenteditable]', function (event) {
-          const $input = $(event.target)
-          $input.data('before', $input.html())
-            // when focused skip to the start of the region on the waveform
-          const start = $input.closest('.region').find('.start').attr('data-start')
-          this.goTo(start)
-          return $input
-        }.bind(this))
-        .on('blur keypress keyup paste input', '[contenteditable]', function (e) {
-          var $input = $(this)
-            // do not allow user to add a line when pressing enter key
-          if (e.type === 'keypress' && e.which === 13) {
-            return false
-          }
+    $('body').on('focus', '[contenteditable]', function (event) {
+      const $input = $(event.target)
+      $input.data('before', $input.html())
+      // when focused skip to the start of the region on the waveform
+      const start = $input.closest('.region').find('.start').attr('data-start')
+      this.goTo(start)
+      return $input
+    }.bind(this))
+    .on('blur keypress keyup paste input', '[contenteditable]', function (e) {
+      const $input = $(this)
+      // do not allow user to add a line when pressing enter key
+      if (e.type === 'keypress' && e.which === 13) {
+        return false
+      }
 
-          if ($input.data('before') !== $input.html()) {
-            $input.data('before', $input.html())
-            $input.trigger('change')
-          }
-          return $input
-        })
-    }
-    /**
-     * Add span tag and css class to the selected text
-     * does not update the object !!
-     */
+      if ($input.data('before') !== $input.html()) {
+        $input.data('before', $input.html())
+        $input.trigger('change')
+      }
+      return $input
+    })
+  }
+
+  /**
+   * Add span tag and css class to the selected text
+   * does not update the object !!
+   */
   annotate(color) {
     const selection = window.getSelection()
     document.execCommand('insertHTML', false, '<span class="accent-' + color + '">' + selection.toString() + '</span>')
@@ -511,7 +508,7 @@ class AdminCtrl {
           window.URL.revokeObjectURL(url)
         }, 100)
       }.bind(this),
-      function onError(error) {
+      function onError() {
         this.httpSuccess = false
         this.httpError = true
       }.bind(this)
@@ -534,11 +531,11 @@ class AdminCtrl {
     })
 
     this.adminService.save(this.resource).then(
-      function onSuccess(response) {
+      function onSuccess() {
         this.httpError = false
         this.httpSuccess = true
       }.bind(this),
-      function onError(response) {
+      function onError() {
         this.httpSuccess = false
         this.httpError = true
       }.bind(this)

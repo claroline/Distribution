@@ -18,7 +18,7 @@ class UserService {
           .success(function onSuccess(response) {
             deferred.resolve(response)
           }.bind(this))
-          .error(function onError(response, status) {
+          .error(function onError(response) {
             deferred.reject(response)
           })
 

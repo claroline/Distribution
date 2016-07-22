@@ -23,7 +23,7 @@ class HelpModalService {
           this.playing = false
           this.audio = new Audio()
           this.currentMode = this.playModes.NORMAL
-          this.audio.addEventListener('pause', function (e) {
+          this.audio.addEventListener('pause', function () {
             if (this.audio.loop) {
               this.play(null, this.playModes.LOOP)
             } else {
@@ -49,9 +49,9 @@ class HelpModalService {
             return regionsService.regionHasHelpLinks(this.selected.helps)
           }
           this.hasPlayHelps = function () {
-              return regionsService.regionHasPlayHelps(this.selected.helps)
-            }
-            // play / pause
+            return regionsService.regionHasPlayHelps(this.selected.helps)
+          }
+          // play / pause
           this.play = function ($event, mode) {
             // allready playing but press another button
             if (mode !== this.currentMode && $event && this.playing) {
@@ -131,7 +131,7 @@ class HelpModalService {
               }
             }
             window.speechSynthesis.speak(utterance)
-            utterance.onend = function (event) {
+            utterance.onend = function () {
               return callback()
             }
           }

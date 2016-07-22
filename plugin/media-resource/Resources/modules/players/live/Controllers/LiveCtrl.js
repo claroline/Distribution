@@ -130,6 +130,6 @@ LiveCtrl.$inject = [
   'url',
   'configService',
   'helpModalService',
-  'regionsService',
+  'regionsService'
 ]
 export default LiveCtrl

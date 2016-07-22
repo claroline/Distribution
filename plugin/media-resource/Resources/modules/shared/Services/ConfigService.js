@@ -1,11 +1,9 @@
-
-
 class ConfigService {
-  constructor($filter){
+  constructor($filter) {
     this.filter = $filter
   }
 
-  getHelPlayModes(){
+  getHelPlayModes() {
     return {
       NORMAL: 1,
       LOOP: 2,
@@ -17,27 +15,47 @@ class ConfigService {
 
   getAvailableTTSLanguage($filter) {
 
-    return [
-          {name:Translator.trans('options_form_tts_choices_en_US', {}, 'media_resource'), value:'en-US'},
-          {name:Translator.trans('options_form_tts_choices_en_GB', {}, 'media_resource'), value:'en-GB'},
-          {name:Translator.trans('options_form_tts_choices_de_DE', {}, 'media_resource'), value:'de-DE'},
-          {name:Translator.trans('options_form_tts_choices_es_ES', {}, 'media_resource'), value:'es-ES'},
-          {name:Translator.trans('options_form_tts_choices_fr_FR', {}, 'media_resource'), value:'fr-FR'},
-          {name:Translator.trans('options_form_tts_choices_it_IT', {}, 'media_resource'), value:'it-IT'},
-    ]
+    return [{
+      name: Translator.trans('options_form_tts_choices_en_US', {}, 'media_resource'),
+      value: 'en-US'
+    }, {
+      name: Translator.trans('options_form_tts_choices_en_GB', {}, 'media_resource'),
+      value: 'en-GB'
+    }, {
+      name: Translator.trans('options_form_tts_choices_de_DE', {}, 'media_resource'),
+      value: 'de-DE'
+    }, {
+      name: Translator.trans('options_form_tts_choices_es_ES', {}, 'media_resource'),
+      value: 'es-ES'
+    }, {
+      name: Translator.trans('options_form_tts_choices_fr_FR', {}, 'media_resource'),
+      value: 'fr-FR'
+    }, {
+      name: Translator.trans('options_form_tts_choices_it_IT', {}, 'media_resource'),
+      value: 'it-IT'
+    }, ]
   }
 
   getAvailablePlayModes() {
-    return [
-            {name:Translator.trans('options_form_view_mode_choices_live', {}, 'media_resource'), value:'live'},
-            {name:Translator.trans('options_form_view_mode_choices_pause', {}, 'media_resource'), value:'pause'},
-            {name:Translator.trans('options_form_view_mode_choices_free', {}, 'media_resource'), value:'free'},
-            {name:Translator.trans('options_form_view_mode_choices_active', {}, 'media_resource'), value:'active'},
-            {name:Translator.trans('options_form_view_mode_choices_scripted_active', {}, 'media_resource'), value:'scripted_active'},
-    ]
+    return [{
+      name: Translator.trans('options_form_view_mode_choices_live', {}, 'media_resource'),
+      value: 'live'
+    }, {
+      name: Translator.trans('options_form_view_mode_choices_pause', {}, 'media_resource'),
+      value: 'pause'
+    }, {
+      name: Translator.trans('options_form_view_mode_choices_free', {}, 'media_resource'),
+      value: 'free'
+    }, {
+      name: Translator.trans('options_form_view_mode_choices_active', {}, 'media_resource'),
+      value: 'active'
+    }, {
+      name: Translator.trans('options_form_view_mode_choices_scripted_active', {}, 'media_resource'),
+      value: 'scripted_active'
+    }, ]
   }
 
-  getWavesurferOptions(){
+  getWavesurferOptions() {
     return {
       container: '#waveform',
       waveColor: '#172B32',
@@ -50,7 +68,7 @@ class ConfigService {
     }
   }
 
-  getAutoPauseTime(){
+  getAutoPauseTime() {
     return 2000
   }
 }

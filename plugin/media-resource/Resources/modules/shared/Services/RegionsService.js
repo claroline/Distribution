@@ -1,5 +1,5 @@
 class RegionsService {
-  
+
   create(start, end) {
     let region = {
       uuid: this.createGuid(),
@@ -76,16 +76,15 @@ class RegionsService {
   }
 
   createGuid() {
-      let uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        let r = Math.random() * 16 | 0,
-          v = c === 'x' ? r : (r & 0x3 | 0x8)
-        return v.toString(16)
-      })
-      return uuid.toUpperCase()
-    }
-    /**
-     * remove html form region note for TTS use
-     */
+    let uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      let r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8)
+      return v.toString(16)
+    })
+    return uuid.toUpperCase()
+  }
+  /**
+   * remove html form region note for TTS use
+   */
   removeHtml(string) {
     return string.replace(/<[^>]+>/g, '')
   }

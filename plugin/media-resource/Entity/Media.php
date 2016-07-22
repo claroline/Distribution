@@ -105,8 +105,6 @@ class Media implements JsonSerializable
 
     public function jsonSerialize()
     {
-        //$result = [];
-
         return [
             'url' => $this->getUrl(),
             'type' => $this->getType(),

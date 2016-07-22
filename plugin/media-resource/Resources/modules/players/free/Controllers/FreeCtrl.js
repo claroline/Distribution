@@ -107,8 +107,8 @@ class FreeCtrl {
       const current = this.regionsService.getRegionFromTime(this.wavesurfer.getCurrentTime(), this.resource.regions)
       if (current && this.currentRegion && current.uuid != this.currentRegion.uuid) {
         // update current region
-        this.$scope.$apply(function(){
-            this.currentRegion = current
+        this.$scope.$apply(function () {
+          this.currentRegion = current
         }.bind(this))
       }
     }.bind(this))
@@ -120,7 +120,6 @@ class FreeCtrl {
 
   highlight() {
     const $canvas = $('#waveform').find('wave').first().find('canvas').first()
-    const cWidth = $canvas.width()
     const cHeight = $canvas.height()
     const current = this.regionsService.getRegionFromTime(this.wavesurfer.getCurrentTime(), this.resource.regions)
     const left = this.getPositionFromTime(parseFloat(current.start))
@@ -162,7 +161,7 @@ class FreeCtrl {
     }
   }
 
-  hideHelpText(){
+  hideHelpText() {
     this.currentHelpTextIndex = 0
     this.helpText = ''
   }
@@ -194,7 +193,7 @@ class FreeCtrl {
     }
     const region = this.wavesurfer.addRegion(options)
     if (this.playing) {
-      this.playing = false;
+      this.playing = false
       this.wavesurfer.un('pause')
       this.wavesurfer.pause()
       this.wavesurfer.clearRegions()
@@ -296,7 +295,7 @@ class FreeCtrl {
       }
     }
     window.speechSynthesis.speak(utterance)
-    utterance.onend = function (event) {
+    utterance.onend = function () {
       return callback()
     }
   }
@@ -325,6 +324,6 @@ FreeCtrl.$inject = [
   'url',
   'configService',
   'helpModalService',
-  'regionsService',
+  'regionsService'
 ]
 export default FreeCtrl

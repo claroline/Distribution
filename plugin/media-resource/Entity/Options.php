@@ -117,8 +117,6 @@ class Options implements JsonSerializable
 
     public function jsonSerialize()
     {
-        //$result = [];
-
         return [
             'id' => $this->id,
             'lang' => $this->ttsLanguage,

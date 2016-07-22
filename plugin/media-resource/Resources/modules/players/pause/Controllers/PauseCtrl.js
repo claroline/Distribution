@@ -83,6 +83,6 @@ PauseCtrl.$inject = [
   '$scope',
   'url',
   'configService',
-  'regionsService',
+  'regionsService'
 ]
 export default PauseCtrl
