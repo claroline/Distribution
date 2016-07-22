@@ -69,7 +69,7 @@ class Graphic extends Interaction
      *
      * @return mixed[]
      */
-    public function responsePhp(\Symfony\Component\HttpFoundation\Request $request, $paperID = 0)
+    public function responsePhp(Request $request, $paperID = 0)
     {
         $answers = $request->request->get('answers'); // Answer of the student
         $graphId = $request->request->get('graphId'); // Id of the graphic interaction
@@ -311,7 +311,7 @@ class Graphic extends Interaction
         $resu = true;
         for ($v = 0; $v < $z; ++$v) {
             // if already placed at this right place
-            if ($coor == $verif[$v]) {
+            if ($coor === $verif[$v]) {
                 $resu = false;
                 break;
             } else {
