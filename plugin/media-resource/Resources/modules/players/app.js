@@ -15,8 +15,8 @@ import pauseTpl from './pause/Partials/pause.html'
 import PauseCtrl from './pause/Controllers/PauseCtrl'
 import FreeCtrl from './free/Controllers/FreeCtrl'
 import freeTpl from './free/Partials/free.html'
-
-
+import PanelHeaderCtrl from './panelHeader/Controllers/PanelHeaderCtrl'
+import panelHeaderTpl from './panelHeader/Partials/panel-header.html'
 
 let players = angular.module('PlayersApp', [
   'angular-loading-bar',
@@ -35,6 +35,16 @@ players.config([
     cfpLoadingBarProvider.spinnerTemplate  = '<div class="loading">Loading&#8230;</div>'
   }
 ])
+
+
+// panel header comp
+players.component('header', {
+  template: panelHeaderTpl,
+  bindings: {
+    resource: '='
+  },
+  controller: PanelHeaderCtrl
+})
 
 // live comp
 players.component('live', {

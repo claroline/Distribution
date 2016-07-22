@@ -46,5 +46,6 @@ adminApp.component('admin', {
 adminApp.service('AdminService', [
   '$http',
   '$q',
+  'url',
   AdminService
 ])

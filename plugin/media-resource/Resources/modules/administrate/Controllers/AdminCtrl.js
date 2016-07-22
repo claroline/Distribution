@@ -2,13 +2,12 @@ import WaveSurfer from 'wavesurfer.js/dist/wavesurfer'
 import 'wavesurfer.js/dist/plugin/wavesurfer.minimap.min'
 import 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min'
 import 'wavesurfer.js/dist/plugin/wavesurfer.regions.min'
+import $ from 'jquery'
 
 
 class AdminCtrl {
 
-  constructor($scope, $window, $document, secondsToHms, path, unsafe, url, configService, helpModalService, optionsModalService, regionsService, AdminService) {
-    console.log('construct ctrl admin')
-    console.log(this.resource)
+  constructor($scope, $window, url, configService, helpModalService, optionsModalService, regionsService, AdminService) {
     this.wavesurfer = Object.create(WaveSurfer)
     this.configService = configService
     this.urlService = url
@@ -24,7 +23,6 @@ class AdminCtrl {
     this.httpSuccess = false
     this.httpError = false
     this.$window = $window
-    this.$document = $document
     this.$scope = $scope
 
     this.currentRegion = null
@@ -42,11 +40,11 @@ class AdminCtrl {
   initWavesurfer() {
     const progressDiv = document.querySelector('#progress-bar')
     const progressBar = progressDiv.querySelector('.progress-bar')
-    const showProgress = function(percent) {
+    const showProgress = function (percent) {
       progressDiv.style.display = 'block'
       progressBar.style.width = percent + '%'
     }
-    const hideProgress = function() {
+    const hideProgress = function () {
       progressDiv.style.display = 'none'
     }
     this.wavesurfer.on('loading', showProgress)
@@ -67,7 +65,7 @@ class AdminCtrl {
     })
     this.wavesurfer.load(this.audioData)
 
-    this.wavesurfer.on('ready', function() {
+    this.wavesurfer.on('ready', function () {
       const timeline = Object.create(WaveSurfer.Timeline)
       timeline.init({
         wavesurfer: this.wavesurfer,
@@ -78,20 +76,20 @@ class AdminCtrl {
       this.highligthRegionRow(this.currentRegion)
     }.bind(this))
 
-    this.wavesurfer.on('seek', function() {
+    this.wavesurfer.on('seek', function () {
       const current = this.regionsService.getRegionFromTime(this.wavesurfer.getCurrentTime(), this.resource.regions)
       if (current && this.currentRegion && current.uuid != this.currentRegion.uuid) {
-                // update current region
+        // update current region
         this.currentRegion = current
         this.highlightWaveform()
         this.highligthRegionRow(this.currentRegion)
       }
     }.bind(this))
 
-    this.wavesurfer.on('audioprocess', function() {
+    this.wavesurfer.on('audioprocess', function () {
       const current = this.regionsService.getRegionFromTime(this.wavesurfer.getCurrentTime(), this.resource.regions)
       if (current && this.currentRegion && current.uuid != this.currentRegion.uuid) {
-                // update current region
+        // update current region
         this.currentRegion = current
         this.highlightWaveform()
         this.highligthRegionRow(this.currentRegion)
@@ -102,7 +100,7 @@ class AdminCtrl {
   initRegionsAndMarkers() {
     if (this.resource.regions.length === 0) {
       let region = this.regionsService.create(0, this.wavesurfer.getDuration())
-      this.$scope.$apply(function(){
+      this.$scope.$apply(function () {
         this.resource.regions.push(region)
         this.currentRegion = region
       }.bind(this))
@@ -115,8 +113,8 @@ class AdminCtrl {
     }
   }
 
-  optionsModeChanged(){
-    if(this.resource.options.mode !== 'free'){
+  optionsModeChanged() {
+    if (this.resource.options.mode !== 'free') {
       this.resource.options.showTextTranscription = false
     }
   }
@@ -156,8 +154,8 @@ class AdminCtrl {
     $('#waveform').find('wave').first().append(marker)
 
     let dragData
-            // set the drag data when handler is clicked
-    dragHandler.addEventListener('mousedown', function(event) {
+      // set the drag data when handler is clicked
+    dragHandler.addEventListener('mousedown', function (event) {
       var time = this.getTimeFromPosition($(event.target).closest('.divide-marker').position().left)
       dragData = this.setDragData(time, marker)
       this.$window.addEventListener('mousemove', moveMarker)
@@ -178,11 +176,11 @@ class AdminCtrl {
         if (dragData.nextRegion) {
           dragData.nextRegion.start = Number(time)
         }
-                // udpate dom marker data-time attribute
+        // udpate dom marker data-time attribute
         dragData.marker.dataset.time = time
-                    // udpate marker object time value
+          // udpate marker object time value
         dragData.markerO.time = time
-                    // update wavesurfer region highlight
+          // update wavesurfer region highlight
         const current = this.regionsService.getRegionFromTime(time, this.resource.regions)
         this.wavesurfer.clearRegions()
         const wRegion = this.wavesurfer.addRegion({
@@ -200,7 +198,7 @@ class AdminCtrl {
     let dropMarker = function dropMarker(event) {
       this.$window.removeEventListener('mousemove', moveMarker)
       this.$window.removeEventListener('mouseup', dropMarker)
-      this.$scope.$apply(function() {
+      this.$scope.$apply(function () {
         dragData.prevRegion.end = Number(dragData.marker.dataset.time)
         dragData.nextRegion.start = Number(dragData.marker.dataset.time)
       })
@@ -215,15 +213,15 @@ class AdminCtrl {
 
   setDragData(time, marker) {
     let data = {}
-            // marker should not be moved before the previous nore after the next one
+      // marker should not be moved before the previous nore after the next one
     const tolerance = 1
-            // since we are on a frontier, add / remove a little time to ensure next / prev search
+      // since we are on a frontier, add / remove a little time to ensure next / prev search
     let prevRegion = this.regionsService.getPrevRegion(time + 0.01, this.resource.regions)
     let nextRegion = this.regionsService.getNextRegion(time - 0.01, this.resource.regions)
     const min = prevRegion && prevRegion.start ? prevRegion.start : 0
     const max = nextRegion && nextRegion.end ? nextRegion.end : this.wavesurfer.getDuration()
 
-        // search for marker object
+    // search for marker object
     let markerObject
     for (let mark of this.markers) {
       if (mark.time.toFixed(2) === time.toFixed(2)) {
@@ -268,11 +266,11 @@ class AdminCtrl {
     let wRegion = this.wavesurfer.addRegion(params)
   }
 
-    // should do it with data-ng-class but this is not working well and would need $scope.$apply
-    // and we should avoid to use $scope.$apply
+  // should do it with data-ng-class but this is not working well and would need $scope.$apply
+  // and we should avoid to use $scope.$apply
   highligthRegionRow(region) {
     let row = this.getRegionRow(region)
-    $('.active-row').each(function() {
+    $('.active-row').each(function () {
       $(this).removeClass('active-row')
     })
     $(row).closest('.region').addClass('active-row')
@@ -280,7 +278,7 @@ class AdminCtrl {
 
   getRegionRow(region) {
     var row
-    $('.region').each(function() {
+    $('.region').each(function () {
       var temp = $(this)
       if ($(this).attr('data-uuid') === region.uuid) {
         row = temp
@@ -294,7 +292,7 @@ class AdminCtrl {
     this.optionsModalService.open()
   }
 
-    // confirm delete callback
+  // confirm delete callback
   deleteRegion(region) {
     this.removeMeFromHelp(region)
     if (region.start === 0) {
@@ -304,7 +302,7 @@ class AdminCtrl {
         this.currentRegion = next
       }
     } else { // all other cases
-            // get previous region and update it's end
+      // get previous region and update it's end
       let previous = this.regionsService.getPrevRegion(region.start + 0.1, this.resource.regions)
       if (previous) {
         previous.end = region.end
@@ -312,8 +310,8 @@ class AdminCtrl {
       }
     }
 
-        // remove marker from DOM
-    $('.marker-drag-handler').each(function() {
+    // remove marker from DOM
+    $('.marker-drag-handler').each(function () {
       const $marker = $(this).closest('.divide-marker')
       const time = Number($marker.attr('data-time'))
       if (region.start > 0 && time === region.start) {
@@ -324,14 +322,14 @@ class AdminCtrl {
     })
     const index = this.resource.regions.indexOf(region)
     this.resource.regions.splice(index, 1)
-            // remove marker from array
+      // remove marker from array
     for (let marker of this.markers) {
       if (marker.time === region.start) {
         const i = this.markers.indexOf(marker)
         this.markers.splice(i, 1)
       }
     }
-        // highlight region on waveform
+    // highlight region on waveform
     this.highlightWaveform()
     this.highligthRegionRow(this.currentRegion)
 
@@ -341,10 +339,10 @@ class AdminCtrl {
     return this.regionsService.regionHasHelp(helps) // helps && (helps.backward || helps.helpRegionUuid || helps.helpLinks.filter(el => el.url !== '').length > 0 || helps.helpTexts.filter(el => el.text !== '').length > 0 || helps.loop || helps.rate)
   }
 
-    /**
-     * checks for region that use the given region in there help
-     * if yes remove that help
-     */
+  /**
+   * checks for region that use the given region in there help
+   * if yes remove that help
+   */
   removeMeFromHelp(region) {
     for (let r of this.resource.regions) {
       if (r.helps.helpRegionUuid !== '' && r.helps.helpRegionUuid === region.uuid) {
@@ -374,7 +372,7 @@ class AdminCtrl {
     if (!this.playing) {
       wRegion.play()
       this.playing = true
-      this.wavesurfer.once('pause', function() {
+      this.wavesurfer.once('pause', function () {
         this.playing = false
       }.bind(this))
     } else {
@@ -394,14 +392,14 @@ class AdminCtrl {
 
   createRegion(time) {
     const toSplit = this.regionsService.getRegionFromTime(time, this.resource.regions)
-        // region to create after the given time
+      // region to create after the given time
     let region = this.regionsService.create(time, toSplit.end)
-        // update "left" region in collection
+      // update "left" region in collection
     toSplit.end = time
     this.resource.regions.push(region)
     this.currentRegion = region
     this.highlightWaveform()
-        // need to wait for the row to be added in the dom
+      // need to wait for the row to be added in the dom
     window.setTimeout(function () {
       this.highligthRegionRow(this.currentRegion)
     }.bind(this), 100)
@@ -427,7 +425,7 @@ class AdminCtrl {
       let next
       if (this.currentRegion.end < this.wavesurfer.getDuration().toFixed(2)) {
         next = this.regionsService.getNextRegion(this.wavesurfer.getCurrentTime(), this.resource.regions)
-                // go to start of the next region
+          // go to start of the next region
         this.goTo(next.start)
       }
     }
@@ -443,7 +441,7 @@ class AdminCtrl {
 
   help() {
     let previous = null
-        // search for prev region only if we are not in the first one
+      // search for prev region only if we are not in the first one
     if (this.currentRegion.start > 0) {
       for (let region of this.resource.regions) {
         if (region.end === this.currentRegion.start) {
@@ -464,9 +462,9 @@ class AdminCtrl {
   }
 
   initContentEditable() {
-        // CONTENT EDITABLE CHANGE EVENT MAPPING
-    $('body')
-        .on('focus', '[contenteditable]', function(event) {
+      // CONTENT EDITABLE CHANGE EVENT MAPPING
+      $('body')
+        .on('focus', '[contenteditable]', function (event) {
           const $input = $(event.target)
           $input.data('before', $input.html())
             // when focused skip to the start of the region on the waveform
@@ -474,7 +472,7 @@ class AdminCtrl {
           this.goTo(start)
           return $input
         }.bind(this))
-        .on('blur keypress keyup paste input', '[contenteditable]', function(e) {
+        .on('blur keypress keyup paste input', '[contenteditable]', function (e) {
           var $input = $(this)
             // do not allow user to add a line when pressing enter key
           if (e.type === 'keypress' && e.which === 13) {
@@ -487,11 +485,11 @@ class AdminCtrl {
           }
           return $input
         })
-  }
+    }
     /**
-    * Add span tag and css class to the selected text
-    * does not update the object !!
-    */
+     * Add span tag and css class to the selected text
+     * does not update the object !!
+     */
   annotate(color) {
     const selection = window.getSelection()
     document.execCommand('insertHTML', false, '<span class="accent-' + color + '">' + selection.toString() + '</span>')
@@ -499,25 +497,25 @@ class AdminCtrl {
 
   zip() {
     this.adminService.zip(this.resource).then(
-          function onSuccess(response) {
-            const a = document.createElement('a')
-            a.style.display = 'none'
-            const blob = new Blob([response])
-            const url = URL.createObjectURL(blob)
-            a.href = url
-            a.download = this.resource.name + '.zip'
-            document.body.appendChild(a)
-            a.click()
-            setTimeout(function() {
-              document.body.removeChild(a)
-              window.URL.revokeObjectURL(url)
-            }, 100)
-          }.bind(this),
-          function onError(error) {
-            this.httpSuccess = false
-            this.httpError = true
-          }.bind(this)
-        )
+      function onSuccess(response) {
+        const a = document.createElement('a')
+        a.style.display = 'none'
+        const blob = new Blob([response])
+        const url = URL.createObjectURL(blob)
+        a.href = url
+        a.download = this.resource.name + '.zip'
+        document.body.appendChild(a)
+        a.click()
+        setTimeout(function () {
+          document.body.removeChild(a)
+          window.URL.revokeObjectURL(url)
+        }, 100)
+      }.bind(this),
+      function onError(error) {
+        this.httpSuccess = false
+        this.httpError = true
+      }.bind(this)
+    )
   }
 
   togglePanel($event) {
@@ -526,9 +524,9 @@ class AdminCtrl {
   }
 
   save() {
-      // need to update every region note to add html class and tags
+    // need to update every region note to add html class and tags
     let my = this
-    $('.region').each(function(){
+    $('.region').each(function () {
       let note = $(this).find('[contenteditable]').html()
       let uuid = $(this).attr('data-uuid')
       let region = my.regionsService.getRegionByUuid(uuid, my.resource.regions)
@@ -536,24 +534,20 @@ class AdminCtrl {
     })
 
     this.adminService.save(this.resource).then(
-        function onSuccess(response) {
-          this.httpError = false
-          this.httpSuccess = true
-        }.bind(this),
-        function onError(response) {
-          this.httpSuccess = false
-          this.httpError = true
-        }.bind(this)
-      )
+      function onSuccess(response) {
+        this.httpError = false
+        this.httpSuccess = true
+      }.bind(this),
+      function onError(response) {
+        this.httpSuccess = false
+        this.httpError = true
+      }.bind(this)
+    )
   }
 }
 AdminCtrl.$inject = [
   '$scope',
   '$window',
-  '$document',
-  'secondsToHmsFilter',
-  'pathFilter',
-  'unsafeFilter',
   'url',
   'configService',
   'helpModalService',

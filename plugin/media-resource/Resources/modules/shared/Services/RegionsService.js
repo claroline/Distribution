@@ -1,9 +1,5 @@
 class RegionsService {
-  constructor() {
-
-  }
-
-
+  
   create(start, end) {
     let region = {
       uuid: this.createGuid(),
@@ -21,7 +17,6 @@ class RegionsService {
     }
     return region
   }
-
 
   getRegionByUuid(searched, regions) {
     let result = regions.find(el => el.uuid === searched)
@@ -43,7 +38,7 @@ class RegionsService {
   getNextRegion(time, regions) {
     let next
     let current = this.getRegionFromTime(time, regions)
-        // find next region relatively to current
+      // find next region relatively to current
     for (let region of regions) {
       if (region.start === current.end) {
         next = region
@@ -55,7 +50,7 @@ class RegionsService {
   getPrevRegion(time, regions) {
     let prev
     let current = this.getRegionFromTime(time, regions)
-        // find next region relatively to current
+      // find next region relatively to current
     for (let region of regions) {
       if (region.end === current.start) {
         prev = region
@@ -81,16 +76,16 @@ class RegionsService {
   }
 
   createGuid() {
-    let uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      let r = Math.random() * 16 | 0,
-        v = c === 'x' ? r : (r & 0x3 | 0x8)
-      return v.toString(16)
-    })
-    return uuid.toUpperCase()
-  }
+      let uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        let r = Math.random() * 16 | 0,
+          v = c === 'x' ? r : (r & 0x3 | 0x8)
+        return v.toString(16)
+      })
+      return uuid.toUpperCase()
+    }
     /**
-    * remove html form region note for TTS use
-    */
+     * remove html form region note for TTS use
+     */
   removeHtml(string) {
     return string.replace(/<[^>]+>/g, '')
   }

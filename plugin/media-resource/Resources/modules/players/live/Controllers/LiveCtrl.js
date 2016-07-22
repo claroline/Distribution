@@ -6,9 +6,7 @@ import 'wavesurfer.js/dist/plugin/wavesurfer.regions.min'
 
 class LiveCtrl {
 
-  constructor($scope, path, unsafe, url, configService, helpModalService, regionsService) {
-    console.log('construct ctrl live')
-    console.log(this.resource)
+  constructor($scope, url, configService, helpModalService, regionsService) {
     this.wavesurfer = Object.create(WaveSurfer)
     this.configService = configService
     this.urlService = url
@@ -18,9 +16,9 @@ class LiveCtrl {
     this.initWavesurfer()
     this.playing = false
     this.$scope = $scope
-    // enable disable help modal button
+      // enable disable help modal button
     this.showHelp = false
-    // wavesurfer region
+      // wavesurfer region
     this.currentRegion = null
   }
 
@@ -70,7 +68,7 @@ class LiveCtrl {
     }.bind(this))
 
     this.wavesurfer.on('pause', function () {
-      if(this.currentRegion){        
+      if (this.currentRegion) {
         this.playing = false
       }
 
@@ -127,11 +125,8 @@ class LiveCtrl {
   }
 }
 
-//$scope, path, unsafe, url, configService, helpModalService, regionsService
 LiveCtrl.$inject = [
   '$scope',
-  'pathFilter',
-  'unsafeFilter',
   'url',
   'configService',
   'helpModalService',

@@ -3,7 +3,7 @@
 {% block media_resource_content %}
     <div class="media-resource-players-container" data-ng-app="PlayersApp" data-ng-cloak="">
         <div class="panel-heading clearfix">
-            {% include "InnovaMediaResourceBundle:MediaResource/Partials:players-panel-header.html.twig" with {'resource': _resource} %}
+          <header data-resource="{{ _resource | json_encode  }}"></header>
         </div>
         <div class="panel-body">
             {% if _resource.options.mode is constant('Innova\\MediaResourceBundle\\Entity\\Options::CONTINUOUS_ACTIVE') %}

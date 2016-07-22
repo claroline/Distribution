@@ -6,9 +6,7 @@ import 'wavesurfer.js/dist/plugin/wavesurfer.regions.min'
 
 class ActiveCtrl {
 
-  constructor($scope, path, unsafe, url, configService, helpModalService, regionsService) {
-    console.log('construct ctrl active')
-    console.log(this.resource)
+  constructor($scope, url, configService, helpModalService, regionsService) {
     this.wavesurfer = Object.create(WaveSurfer)
     this.configService = configService
     this.urlService = url
@@ -121,11 +119,8 @@ class ActiveCtrl {
   }
 }
 
-//$scope, path, unsafe, url, configService, helpModalService, regionsService
 ActiveCtrl.$inject = [
   '$scope',
-  'pathFilter',
-  'unsafeFilter',
   'url',
   'configService',
   'helpModalService',
