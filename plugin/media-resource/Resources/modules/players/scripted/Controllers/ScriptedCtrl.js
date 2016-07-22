@@ -1,175 +1,98 @@
-import WaveSurfer from 'wavesurfer.js/dist/wavesurfer'
-import 'wavesurfer.js/dist/plugin/wavesurfer.minimap.min'
-import 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min'
-import 'wavesurfer.js/dist/plugin/wavesurfer.regions.min'
+import $ from 'jquery'
 
+class ScriptedCtrl {
 
-class PauseCtrl {
-
-  constructor($scope, path, unsafe, url, configService, helpModalService, regionsService) {
-    console.log('construct ctrl scripted active')
-    console.log(this.resource)
-    /*this.wavesurfer = Object.create(WaveSurfer)
+  constructor($scope, url, configService, helpModalService, regionsService) {
     this.configService = configService
     this.urlService = url
     this.helpModalService = helpModalService
     this.regionsService = regionsService
-    this.setSharedData()
-    this.initWavesurfer()
-    this.initContentEditable()
     this.playing = false
     this.$scope = $scope
-
-    this.currentRegion = null
-    if (this.resource.regions.length > 0) {
-      this.currentRegion = this.resource.regions[0]
-    }*/
-  }
-
-  setSharedData() {
-    this.options = this.configService.getWavesurferOptions()
-    this.modes = this.configService.getAvailablePlayModes()
-  }
-
-  initWavesurfer() {
-    const progressDiv = document.querySelector('#progress-bar')
-    const progressBar = progressDiv.querySelector('.progress-bar')
-    const showProgress = function(percent) {
-      progressDiv.style.display = 'block'
-      progressBar.style.width = percent + '%'
-    }
-    const hideProgress = function() {
-      progressDiv.style.display = 'none'
-    }
-    this.wavesurfer.on('loading', showProgress)
-    this.wavesurfer.on('ready', hideProgress)
-    this.wavesurfer.on('destroy', hideProgress)
-    this.wavesurfer.on('error', hideProgress)
-
-    this.wavesurfer.init(this.options)
-    this.wavesurfer.initMinimap({
-      height: 30,
-      waveColor: '#ddd',
-      progressColor: '#999',
-      cursorColor: '#999'
-    })
+    this.isFirstStep = true
+    this.showRetry = false
+    this.problems = 0
+    this.regionsIdentified = []
+    this.audioPlayer = document.getElementById('audio-player')
     this.audioData = this.urlService('innova_get_mediaresource_resource_file', {
       workspaceId: this.resource.workspaceId,
       id: this.resource.id
     })
-    this.wavesurfer.load(this.audioData)
+    this.audioPlayer.src = this.audioData
 
-    this.wavesurfer.on('ready', function() {
-      const timeline = Object.create(WaveSurfer.Timeline)
-      timeline.init({
-        wavesurfer: this.wavesurfer,
-        container: '#wave-timeline'
-      })
-
-    }.bind(this))
-
-    this.wavesurfer.on('seek', function() {
-      const current = this.regionsService.getRegionFromTime(this.wavesurfer.getCurrentTime(), this.resource.regions)
-      if (current && this.currentRegion && current.uuid != this.currentRegion.uuid) {
-                // update current region
-        this.currentRegion = current
-      }
-    }.bind(this))
-
-    this.wavesurfer.on('audioprocess', function() {
-      const current = this.regionsService.getRegionFromTime(this.wavesurfer.getCurrentTime(), this.resource.regions)
-      if (current && this.currentRegion && current.uuid != this.currentRegion.uuid) {
-                // update current region
-        this.currentRegion = current
-      }
-    }.bind(this))
-  }
-
-
-
-  getMarkerLeftPostionFromTime(time) {
-    const duration = this.wavesurfer.getDuration()
-    const $canvas = $('#waveform').find('wave').first().find('canvas').first()
-    const cWidth = $canvas.width()
-    return time * cWidth / duration
-  }
-
-  getTimeFromPosition(position) {
-    const duration = this.wavesurfer.getDuration()
-    const $canvas = $('#waveform').find('wave').first().find('canvas').first()
-    const cWidth = $canvas.width()
-    return position * duration / cWidth
-  }
-
-  hasHelp(helps) {
-    return this.regionsService.regionHasHelp(helps) // helps && (helps.backward || helps.helpRegionUuid || helps.helpLinks.filter(el => el.url !== '').length > 0 || helps.helpTexts.filter(el => el.text !== '').length > 0 || helps.loop || helps.rate)
-  }
-
-
-  play() {
-    if (!this.playing) {
-      this.wavesurfer.play()
+    this.audioPlayer.addEventListener('play', function () {
       this.playing = true
-    } else {
-      this.wavesurfer.pause()
-      this.playing = false
-    }
-  }
-
-  playRegion(region) {
-    const wRegion = this.wavesurfer.addRegion({
-      start: region ? region.start : this.currentRegion.start,
-      end: region ? region.end : this.currentRegion.end,
-      color: 'rgba(0,0,0,0)',
-      drag: false,
-      resize: false
     })
-    if (!this.playing) {
-      wRegion.play()
-      this.playing = true
-      this.wavesurfer.once('pause', function() {
-        this.playing = false
-      }.bind(this))
-    } else {
-      this.wavesurfer.pause()
+    this.audioPlayer.addEventListener('pause', function () {
       this.playing = false
-    }
+    })
+
+    $('body').on('keypress', function (e) {
+      if (e.which === 32) {
+        this.addProblem()
+      }
+    }.bind(this))
   }
 
+  addProblem() {
+    document.activeElement.blur()
+    const region = this.regionsService.getRegionFromTime(this.audioPlayer.currentTime, this.resource.regions)
+    let isInArray = this.regionsIdentified.length > 0 && this.regionsService.getRegionByUuid(region.uuid, this.regionsIdentified) !== undefined
+    if (!isInArray) {
+      this.regionsIdentified.push(region)
+    }
+    window.setTimeout(function () {
+      this.$scope.$apply(function () {
+        this.problems += 1
+      }.bind(this))
+    }.bind(this), 10)
 
+  }
 
-  help() {
+  playFirstStep() {
+    this.audioPlayer.play()
+    this.playing = true
+    this.isFirstStep = true
+    this.showRetry = false
+    this.audioPlayer.addEventListener('ended', function () {
+      this.playing = false
+      this.audioPlayer.currentTime = 0
+      if (this.regionsIdentified.length > 0) {
+        this.$scope.$apply(function () {
+          this.isFirstStep = false
+        }.bind(this))
+      } else {
+        this.$scope.$apply(function () {
+          this.showRetry = true
+        }.bind(this))
+      }
+    }.bind(this))
+    document.activeElement.blur()
+  }
+
+  help(current) {
     let previous = null
-        // search for prev region only if we are not in the first one
-    if (this.currentRegion.start > 0) {
+      // search for prev region only if we are not in the first one
+    if (current.start > 0) {
       for (let region of this.resource.regions) {
-        if (region.end === this.currentRegion.start) {
+        if (region.end === current.start) {
           previous = region
         }
       }
     }
+    this.audioPlayer.pause()
+    this.playing = false
 
-    if (this.playing) {
-      if (this.wavesurfer.isPlaying()) {
-        this.wavesurfer.pause()
-      }
-      this.playing = false
-    }
-
-    this.helpModalService.setData(this.currentRegion, previous, this.resource.regions, this.audioData, this.resource.options.lang)
+    this.helpModalService.setData(current, previous, this.resource.regions, this.audioData, this.resource.options.lang, false)
     this.helpModalService.open()
   }
-
-
 }
 
-PauseCtrl.$inject = [
+ScriptedCtrl.$inject = [
   '$scope',
-  'pathFilter',
-  'unsafeFilter',
   'url',
   'configService',
   'helpModalService',
   'regionsService',
 ]
-export default PauseCtrl
+export default ScriptedCtrl

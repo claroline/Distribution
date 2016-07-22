@@ -2,43 +2,45 @@ import WaveSurfer from 'wavesurfer.js/dist/wavesurfer'
 import 'wavesurfer.js/dist/plugin/wavesurfer.minimap.min'
 import 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min'
 import 'wavesurfer.js/dist/plugin/wavesurfer.regions.min'
-
+import $ from 'jquery'
 
 class FreeCtrl {
 
-  constructor($scope, path, unsafe, url, configService, helpModalService, regionsService) {
-    console.log('construct ctrl FreeCtrl')
-    console.log(this.resource)
-    /*this.wavesurfer = Object.create(WaveSurfer)
+  constructor($scope, url, configService, helpModalService, regionsService) {
+    this.wavesurfer = Object.create(WaveSurfer)
     this.configService = configService
     this.urlService = url
     this.helpModalService = helpModalService
     this.regionsService = regionsService
     this.setSharedData()
+    this.audioPlayer = new Audio()
     this.initWavesurfer()
-    this.initContentEditable()
     this.playing = false
     this.$scope = $scope
+    this.helpText = ''
+    this.currentHelpTextIndex = 0
+    this.showTextTranscriptionText = true
+    this.showHelp = false
 
     this.currentRegion = null
     if (this.resource.regions.length > 0) {
       this.currentRegion = this.resource.regions[0]
-    }*/
+    }
+    this.helpRegion = this.currentRegion
   }
 
   setSharedData() {
     this.options = this.configService.getWavesurferOptions()
-    this.modes = this.configService.getAvailablePlayModes()
   }
 
   initWavesurfer() {
     const progressDiv = document.querySelector('#progress-bar')
     const progressBar = progressDiv.querySelector('.progress-bar')
-    const showProgress = function(percent) {
+    const showProgress = function (percent) {
       progressDiv.style.display = 'block'
       progressBar.style.width = percent + '%'
     }
-    const hideProgress = function() {
+    const hideProgress = function () {
       progressDiv.style.display = 'none'
     }
     this.wavesurfer.on('loading', showProgress)
@@ -47,19 +49,16 @@ class FreeCtrl {
     this.wavesurfer.on('error', hideProgress)
 
     this.wavesurfer.init(this.options)
-    this.wavesurfer.initMinimap({
-      height: 30,
-      waveColor: '#ddd',
-      progressColor: '#999',
-      cursorColor: '#999'
-    })
+
     this.audioData = this.urlService('innova_get_mediaresource_resource_file', {
       workspaceId: this.resource.workspaceId,
       id: this.resource.id
     })
     this.wavesurfer.load(this.audioData)
 
-    this.wavesurfer.on('ready', function() {
+    this.audioPlayer.src = this.audioData
+
+    this.wavesurfer.on('ready', function () {
       const timeline = Object.create(WaveSurfer.Timeline)
       timeline.init({
         wavesurfer: this.wavesurfer,
@@ -68,106 +67,261 @@ class FreeCtrl {
 
     }.bind(this))
 
-    this.wavesurfer.on('seek', function() {
+    this.wavesurfer.on('seek', function () {
+
       const current = this.regionsService.getRegionFromTime(this.wavesurfer.getCurrentTime(), this.resource.regions)
       if (current && this.currentRegion && current.uuid != this.currentRegion.uuid) {
-                // update current region
+        // update current region
         this.currentRegion = current
       }
+      if (this.playing) {
+        if (this.wavesurfer.isPlaying()) {
+          this.wavesurfer.pause()
+          this.wavesurfer.setVolume(1)
+          this.wavesurfer.setPlaybackRate(1)
+        }
+        // pause help
+        this.audioPlayer.pause()
+        this.audioPlayer.currentTime = 0
+
+        if (this.helpRegion && current && current.uuid !== this.helpRegion.uuid) {
+          $('.region-highlight').remove()
+          this.showHelp = false
+          this.hideHelpText()
+        }
+        this.wavesurfer.play()
+      } else {
+        this.helpRegion = current
+          // hide any previous help info
+        $('.region-highlight').remove()
+        this.showHelp = false
+        this.helpText = ''
+          // show current help infos
+        this.hideHelpText()
+        this.highlight()
+      }
+
     }.bind(this))
 
-    this.wavesurfer.on('audioprocess', function() {
+    this.wavesurfer.on('audioprocess', function () {
       const current = this.regionsService.getRegionFromTime(this.wavesurfer.getCurrentTime(), this.resource.regions)
       if (current && this.currentRegion && current.uuid != this.currentRegion.uuid) {
-                // update current region
-        this.currentRegion = current
+        // update current region
+        this.$scope.$apply(function(){
+            this.currentRegion = current
+        }.bind(this))
       }
     }.bind(this))
   }
 
+  hasHelpText() {
+    return this.regionsService.regionHasHelpTexts(this.currentRegion.helps)
+  }
 
+  highlight() {
+    const $canvas = $('#waveform').find('wave').first().find('canvas').first()
+    const cWidth = $canvas.width()
+    const cHeight = $canvas.height()
+    const current = this.regionsService.getRegionFromTime(this.wavesurfer.getCurrentTime(), this.resource.regions)
+    const left = this.getPositionFromTime(parseFloat(current.start))
+    const width = this.getPositionFromTime(parseFloat(current.end)) - left
 
-  getMarkerLeftPostionFromTime(time) {
+    const elem = document.createElement('div')
+    elem.className = 'region-highlight'
+    elem.style.left = left + 'px'
+    elem.style.width = width + 'px'
+    elem.style.height = cHeight + 'px'
+    elem.style.top = '0px'
+    $('#waveform').find('wave').first().append(elem)
+    this.helpRegion = current
+  }
+
+  getPositionFromTime(time) {
     const duration = this.wavesurfer.getDuration()
     const $canvas = $('#waveform').find('wave').first().find('canvas').first()
     const cWidth = $canvas.width()
+
     return time * cWidth / duration
   }
 
-  getTimeFromPosition(position) {
-    const duration = this.wavesurfer.getDuration()
-    const $canvas = $('#waveform').find('wave').first().find('canvas').first()
-    const cWidth = $canvas.width()
-    return position * duration / cWidth
+  showHelpText() {
+    if (this.playing) {
+      this.playing = false
+      if (this.wavesurfer.isPlaying()) this.wavesurfer.pause()
+      this.audioPlayer.pause()
+      if (window.speechSynthesis.speaking) {
+        // can not really stop shared.playing tts since the callback can not be canceled
+        window.speechSynthesis.cancel()
+      }
+    }
+    this.helpText = this.currentRegion.helps.helpTexts[this.currentHelpTextIndex]
+    if (this.currentHelpTextIndex < this.currentRegion.helps.helpTexts.length - 1 && this.currentRegion.helps.helpTexts[this.currentHelpTextIndex + 1].text !== '') {
+      this.currentHelpTextIndex++
+    } else {
+      this.currentHelpTextIndex = 0
+    }
   }
 
-  hasHelp(helps) {
-    return this.regionsService.regionHasHelp(helps) // helps && (helps.backward || helps.helpRegionUuid || helps.helpLinks.filter(el => el.url !== '').length > 0 || helps.helpTexts.filter(el => el.text !== '').length > 0 || helps.loop || helps.rate)
+  hideHelpText(){
+    this.currentHelpTextIndex = 0
+    this.helpText = ''
   }
-
 
   play() {
     if (!this.playing) {
       this.wavesurfer.play()
       this.playing = true
+      $('.region-highlight').remove()
+      this.showHelp = false
     } else {
       this.wavesurfer.pause()
       this.playing = false
+      this.highlight()
+      this.showHelp = true
     }
   }
 
-  playRegion(region) {
-    const wRegion = this.wavesurfer.addRegion({
-      start: region ? region.start : this.currentRegion.start,
-      end: region ? region.end : this.currentRegion.end,
-      color: 'rgba(0,0,0,0)',
+  playInLoop() {
+    this.hideHelpText()
+    this.wavesurfer.setPlaybackRate(1)
+    const options = {
+      start: this.helpRegion.start,
+      end: this.helpRegion.end,
+      loop: true,
       drag: false,
-      resize: false
-    })
-    if (!this.playing) {
-      wRegion.play()
-      this.playing = true
-      this.wavesurfer.once('pause', function() {
-        this.playing = false
-      }.bind(this))
-    } else {
-      this.wavesurfer.pause()
-      this.playing = false
+      resize: false,
+      color: 'rgba(0,0,0,0)' //invisible
     }
-  }
-
-
-
-  help() {
-    let previous = null
-        // search for prev region only if we are not in the first one
-    if (this.currentRegion.start > 0) {
-      for (let region of this.resource.regions) {
-        if (region.end === this.currentRegion.start) {
-          previous = region
-        }
-      }
-    }
-
+    const region = this.wavesurfer.addRegion(options)
     if (this.playing) {
-      if (this.wavesurfer.isPlaying()) {
-        this.wavesurfer.pause()
-      }
-      this.playing = false
+      this.playing = false;
+      this.wavesurfer.un('pause')
+      this.wavesurfer.pause()
+      this.wavesurfer.clearRegions()
+    } else {
+      region.play()
+      this.wavesurfer.on('pause', function () {
+        if (options.loop) {
+          region.play()
+          this.playing = true
+        } else {
+          this.playing = false
+        }
+      }.bind(this))
     }
-
-    this.helpModalService.setData(this.currentRegion, previous, this.resource.regions, this.audioData, this.resource.options.lang)
-    this.helpModalService.open()
   }
 
+  playSlowly() {
+    this.hideHelpText()
+    const options = {
+      start: this.helpRegion.start,
+      end: this.helpRegion.end,
+      loop: false,
+      drag: false,
+      resize: false,
+      color: 'rgba(0,0,0,0)' //invisible
+    }
+    const region = this.wavesurfer.addRegion(options)
+      // stop playing if needed
+    if (this.playing) {
+      this.playing = false
+      this.wavesurfer.pause()
+      this.wavesurfer.clearRegions()
+      this.wavesurfer.setPlaybackRate(1)
+      this.audioPlayer.pause()
+      this.wavesurfer.setVolume(1)
+    } else {
+      this.wavesurfer.setPlaybackRate(0.8)
+      this.wavesurfer.setVolume(0)
+      this.audioPlayer.playbackRate = 0.8
+      this.audioPlayer.currentTime = this.helpRegion.start
+      region.play()
+      this.audioPlayer.play()
+      this.playing = true
+        // at the end of the region stop every audio readers
+      this.wavesurfer.once('pause', function () {
+        this.playing = false
+        this.audioPlayer.pause()
+        const progress = region.start / this.wavesurfer.getDuration()
+        this.wavesurfer.seekTo(progress)
+        this.audioPlayer.currentTime = region.start
+        this.wavesurfer.clearRegions()
+        this.wavesurfer.setPlaybackRate(1)
+        this.wavesurfer.setVolume(1)
+        this.audioPlayer.playbackRate = 1
+      }.bind(this))
+    }
+  }
 
+  playBackward() {
+    // is shared.playing for real audio (ie not for TTS)
+    if (this.playing) {
+      // stop audio playback before playing
+      this.audioPlayer.pause()
+      this.playing = false
+    }
+    if (window.SpeechSynthesisUtterance !== undefined) {
+      let text = this.regionsService.removeHtml(this.currentRegion.note)
+      const textArray = text.split(' ')
+      const startIndex = textArray.length - 1
+        // check if utterance is already speaking before playing (multiple click on backward button)
+      if (!window.speechSynthesis.speaking) {
+        this.handleUtterancePlayback(startIndex, textArray)
+      }
+    }
+  }
+
+  sayIt(text, callback) {
+    let utterance = new SpeechSynthesisUtterance()
+    utterance.text = text
+    let voices = window.speechSynthesis.getVoices()
+    if (voices.length === 0) {
+      // chrome hack...
+      window.setTimeout(function () {
+        voices = window.speechSynthesis.getVoices()
+        this.continueToSay(utterance, voices, this.resource.options.lang, callback)
+      }.bind(this), 200)
+    } else {
+      this.continueToSay(utterance, voices, this.resource.options.lang, callback)
+    }
+  }
+
+  continueToSay(utterance, voices, lang, callback) {
+    for (let voice of voices) {
+      // voices names are not the same depending on navigators
+      // chrome is always code1-code2 while fx is sometimes code1-code2 and sometimes code1
+      let fxLang = lang.split('-')[0]
+      if (voice.lang === lang || voice.lang === fxLang) {
+        utterance.voice = voice
+      }
+    }
+    window.speechSynthesis.speak(utterance)
+    utterance.onend = function (event) {
+      return callback()
+    }
+  }
+
+  handleUtterancePlayback(index, textArray) {
+    let toSay = ''
+    const length = textArray.length
+    for (let j = index; j < length; j++) {
+      toSay += textArray[j] + ' '
+    }
+    if (index >= 0) {
+      this.sayIt(toSay, function () {
+        index = index - 1
+        this.handleUtterancePlayback(index, textArray)
+      }.bind(this))
+    }
+  }
+
+  toggleTextTranscriptionText() {
+    this.showTextTranscriptionText = !this.showTextTranscriptionText
+  }
 }
 
-//$scope, path, unsafe, url, configService, helpModalService, regionsService
 FreeCtrl.$inject = [
   '$scope',
-  'pathFilter',
-  'unsafeFilter',
   'url',
   'configService',
   'helpModalService',

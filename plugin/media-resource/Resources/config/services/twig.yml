@@ -1,6 +1,0 @@
-
-services:    
-    innova_media_resource.twig.innotation_extension:
-        class: Innova\MediaResourceBundle\Twig\InnotationExtension
-        tags:
-            - { name: twig.extension }

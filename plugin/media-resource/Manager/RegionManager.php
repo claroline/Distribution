@@ -41,11 +41,6 @@ class RegionManager
         return $region;
     }
 
-    public function findByAndOrder(MediaResource $mr)
-    {
-        return $this->getRepository()->findBy(['mediaResource' => $mr], ['start' => 'ASC']);
-    }
-
     public function getRepository()
     {
         return $this->em->getRepository('InnovaMediaResourceBundle:Region');

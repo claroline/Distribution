@@ -41,7 +41,7 @@ help_modal_help_tab_label: Help available for the selected region
 
 # i
 innova_media_resource: Media Resource
-i_missed_the_region: I have missed the right region. Please show me previous region help!
+identified_region_helps: Below are the helps available for problems you pointed
 
 # l
 label_play_mode_live: Continuous live
@@ -91,7 +91,7 @@ play_pause_region: Play / Pause region
 #r
 region_help: Help
 region_help_preview: Preview planned help for the current region
-region_help_view: See availbale help
+region_help_view: See available help
 region_config: Configure help for the region
 region_delete: Delete region
 region_config_allow_rate: Allow playback rate change
@@ -129,3 +129,6 @@ scripted_active_identified_problems_label: %number% problem(s) identified
 scripted_active_explaination_step2_first: You can listen freely to the document.
 scripted_active_explaination_step2_second: Comprehension help are proposed for each identified problem.
 show_hide_options_panel: Show / Hide options panel
+
+#t
+textual_transcription: Textual transcription

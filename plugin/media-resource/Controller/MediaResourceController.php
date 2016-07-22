@@ -25,7 +25,7 @@ class MediaResourceController extends Controller
     /**
      * display a media resource.
      *
-     * @Route("/view/{id}", requirements={"id" = "\d+"}, name="innova_media_resource_open")
+     * @Route("/open/{id}", requirements={"id" = "\d+"}, name="innova_media_resource_open")
      * @Method("GET")
      */
     public function openAction(Workspace $workspace, MediaResource $mr)
@@ -33,16 +33,9 @@ class MediaResourceController extends Controller
         if (false === $this->container->get('security.context')->isGranted('OPEN', $mr->getResourceNode())) {
             throw new AccessDeniedException();
         }
-        // use of specific method to order regions correctly
-        $regions = $this->get('innova_media_resource.manager.media_resource_region')->findByAndOrder($mr);
-        // get options
-        $options = $mr->getOptions();
 
-        return $this->render('InnovaMediaResourceBundle:MediaResource:player.wrapper.html.twig', [
+        return $this->render('InnovaMediaResourceBundle:MediaResource:players.html.twig', [
                   '_resource' => $mr,
-                  'regions' => $regions,
-                  'workspace' => $workspace,
-                  'mode' => $options->getMode(),
               ]
       );
     }
@@ -84,7 +77,7 @@ class MediaResourceController extends Controller
      * Serve a ressource file that is not in the web folder as a base64 string.
      *
      * @Route(
-     *     "/media/{id}",
+     *     "/{id}/media",
      *     name="innova_get_mediaresource_resource_file"
      * )
      * @Method({"GET", "POST"})

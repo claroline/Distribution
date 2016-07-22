@@ -3,16 +3,17 @@
 * service for administration app
 */
 class AdminService {
-  constructor($http, $q) {
+  constructor($http, $q, url) {
     this.$http = $http
     this.$q = $q
+    this.url = url
   }
 
   save(resource) {
     let deferred = this.$q.defer()
     this.$http
           .post(
-              Routing.generate('media_resource_save', { workspaceId: resource.workspaceId, id: resource.id }),
+              this.url('media_resource_save', { workspaceId: resource.workspaceId, id: resource.id }),
               resource
           )
           .success(function onSuccess(response) {
@@ -29,7 +30,7 @@ class AdminService {
     let deferred = this.$q.defer()
     this.$http
           .post(
-              Routing.generate('mediaresource_zip_export', { workspaceId: resource.workspaceId, id: resource.id}),
+              this.url('mediaresource_zip_export', { workspaceId: resource.workspaceId, id: resource.id}),
               resource.regions,
               {responseType:'arraybuffer'}
           )

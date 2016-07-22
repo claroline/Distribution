@@ -95,9 +95,7 @@ class HelpModalService {
               this.audio.pause()
               this.playing = false
             }
-            if (window.SpeechSynthesisUtterance === undefined) {
-              console.log('not supported!')
-            } else {
+            if (window.SpeechSynthesisUtterance !== undefined) {
               let text = this.regionsService.removeHtml(this.selected.note)
               const textArray = text.split(' ')
               const startIndex = textArray.length - 1
