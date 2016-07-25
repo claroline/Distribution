@@ -11,11 +11,31 @@ class RegionsService {
         loop: false,
         rate: false,
         helpRegionUuid: '',
-        helpLinks: [],
-        helpTexts: []
+        helpLinks: this.createDefaultLinks(),
+        helpTexts: this.createDefaultTexts()
       }
     }
     return region
+  }
+
+  createDefaultLinks(){
+    let links = []
+    for(let i = 0; i < 3; i++){
+      links.push(
+        {id:null, url:''}
+      )
+    }
+    return links
+  }
+
+  createDefaultTexts(){
+    let texts = []
+    for(let i = 0; i < 3; i++){
+      texts.push(
+        {id:null, text:''}
+      )
+    }
+    return texts
   }
 
   getRegionByUuid(searched, regions) {
