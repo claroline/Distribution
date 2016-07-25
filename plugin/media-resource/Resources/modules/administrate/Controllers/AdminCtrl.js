@@ -7,8 +7,9 @@ import $ from 'jquery'
 
 class AdminCtrl {
 
-  constructor($scope, $window, url, configService, helpModalService, optionsModalService, regionsService, AdminService) {
+  constructor($scope, $window, $filter, url, configService, helpModalService, optionsModalService, regionsService, AdminService) {
     this.wavesurfer = Object.create(WaveSurfer)
+    this.filter = $filter
     this.configService = configService
     this.urlService = url
     this.helpModalService = helpModalService
@@ -143,8 +144,7 @@ class AdminCtrl {
     dragHandler.style.height = dragHandlerSize + 'px'
     dragHandler.style.top = dragHandlerTop + 'px'
     dragHandler.style.left = dragHandlerLeft + 'px'
-    dragHandler.title = Translator.trans('marker_drag_title', {}, 'media_resource')
-    dragHandler.dataset.position = dragHandlerLeft
+    dragHandler.title = this.filter('trans')('marker_drag_title', {}, 'media_resource')
     const guid = uuid || this.regionsService.createGuid()
     dragHandler.dataset.uuid = guid
 
@@ -545,6 +545,7 @@ class AdminCtrl {
 AdminCtrl.$inject = [
   '$scope',
   '$window',
+  '$filter',
   'url',
   'configService',
   'helpModalService',

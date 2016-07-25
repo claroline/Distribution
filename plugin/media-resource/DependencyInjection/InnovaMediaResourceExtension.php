@@ -9,12 +9,12 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class InnovaMediaResourceExtension extends Extension
 {
-    /**
+    /*
      * {@inheritdoc}
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $locator = new FileLocator(__DIR__.'/../Resources/config');
-        $loader = new YamlFileLoader($container, $locator);
+        //$locator = new FileLocator(__DIR__.'/../Resources/config');
+        //$loader = new YamlFileLoader($container, $locator);
     }
 }
