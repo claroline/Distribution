@@ -2,7 +2,7 @@
  * Shared module
  * Share services and data
  */
-
+import angular from 'angular/index'
 import 'angular-sanitize'
 import '#/main/core/fos-js-router/module'
 import UnsafeFilter from './Filters/UnsafeFilter'

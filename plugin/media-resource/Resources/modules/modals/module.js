@@ -1,3 +1,4 @@
+import angular from 'angular/index'
 import 'angular/angular.min'
 import 'angular-bootstrap'
 import HelpModalService from './Services/HelpModalService'
