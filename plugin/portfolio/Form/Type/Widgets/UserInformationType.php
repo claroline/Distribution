@@ -36,7 +36,7 @@ class UserInformationType extends AbstractWidgetType
                 array(
                     'required' => false,
                     'language' => $language,
-                    'format' => 'Y-M-d',
+                    'format' => 'Y/M/d',
                )
             )
             ->add('city', 'text')

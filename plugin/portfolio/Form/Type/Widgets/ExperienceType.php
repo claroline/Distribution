@@ -38,14 +38,14 @@ class ExperienceType extends AbstractWidgetType
                 array(
                     'required' => false,
                     'language' => $language,
-                    'format' => 'Y-M-d',
+                    'format' => 'Y/M/d',
                )
             )
             ->add('endDate', 'datepicker',
                 array(
                     'required' => false,
                     'language' => $language,
-                    'format' => 'Y-M-d',
+                    'format' => 'Y/M/d',
                )
             )
             ->add('description', 'tinymce')
