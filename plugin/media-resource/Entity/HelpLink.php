@@ -3,7 +3,6 @@
 namespace Innova\MediaResourceBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Zend\Stdlib\JsonSerializable;
 
 /**
  * HelpLink.
@@ -11,7 +10,7 @@ use Zend\Stdlib\JsonSerializable;
  * @ORM\Table(name="media_resource_help_link")
  * @ORM\Entity
  */
-class HelpLink implements JsonSerializable
+class HelpLink implements \JsonSerializable
 {
     /**
      * @var int

@@ -3,7 +3,6 @@
 namespace Innova\MediaResourceBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Zend\Stdlib\JsonSerializable;
 
 /**
  * Options for a Media Resource.
@@ -11,7 +10,7 @@ use Zend\Stdlib\JsonSerializable;
  * @ORM\Table(name="media_resource_options")
  * @ORM\Entity
  */
-class Options implements JsonSerializable
+class Options implements \JsonSerializable
 {
     /**
      * @var int
@@ -26,7 +25,7 @@ class Options implements JsonSerializable
      * View mode for the ressource.
      *
      * @var string
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string")
      */
     protected $mode;
 
@@ -62,9 +61,9 @@ class Options implements JsonSerializable
 
     public function __construct()
     {
-        $this->setMode(Self::FREE);
+        $this->setMode(self::FREE);
         $this->setShowTextTranscription(false);
-        $this->setTtsLanguage(Self::EN_US);
+        $this->setTtsLanguage(self::EN_US);
     }
 
     public function setId($id)

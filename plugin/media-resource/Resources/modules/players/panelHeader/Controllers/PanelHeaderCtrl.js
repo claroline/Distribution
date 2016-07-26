@@ -22,7 +22,6 @@ class PanelHeaderCtrl {
   }
 }
 
-//$scope, path, unsafe, url, configService, helpModalService, regionsService
 PanelHeaderCtrl.$inject = [
   '$scope',
   'url',

@@ -28,7 +28,7 @@ confirm_modal_title: Merci de confirmer
 # d
 delete_media_resource: Supprimer la ressource
 dialog_region_configure: Configurer la région
-delete_region_confirm: Êtes vous sur de vouloir supprimer cette région?
+delete_region_confirm: Êtes vous sur de vouloir supprimer cette région ?
 
 # e
 error_while_uploading: Erreur lors de l'upload du fichier.

@@ -5,6 +5,7 @@ import 'angular-route'
 import 'angular-ui-translation/angular-translation'
 import '#/main/core/fos-js-router/module'
 import '#/main/core/modal/module'
+import '#/main/core/html-truster/module'
 import '../shared/module'
 import '../modals/module'
 
@@ -15,6 +16,7 @@ import adminTpl from './Partials/admin.html'
 let adminApp = angular.module('AdminApp', [
   'ngRoute',
   'angular-loading-bar',
+  'ui.html-truster',
   'ui.translation',
   'ui.fos-js-router',
   'ui.modal',
@@ -33,7 +35,7 @@ adminApp.config([
 ])
 
 // main admin comp
-adminApp.component('admin', {
+adminApp.component('mrAdmin', {
   template: adminTpl,
   bindings: {
     resource: '='

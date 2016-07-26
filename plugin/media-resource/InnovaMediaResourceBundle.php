@@ -8,7 +8,6 @@ use Claroline\KernelBundle\Bundle\ConfigurationBuilder;
 
 /**
  * Bundle class.
- * Uncomment if necessary.
  */
 class InnovaMediaResourceBundle extends PluginBundle implements AutoConfigurableInterface
 {

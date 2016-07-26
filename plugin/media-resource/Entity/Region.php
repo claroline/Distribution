@@ -3,7 +3,6 @@
 namespace Innova\MediaResourceBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Zend\Stdlib\JsonSerializable;
 
 /**
  * Region.
@@ -11,7 +10,7 @@ use Zend\Stdlib\JsonSerializable;
  * @ORM\Table(name="media_resource_region")
  * @ORM\Entity(repositoryClass="Innova\MediaResourceBundle\Repository\RegionRepository")
  */
-class Region implements JsonSerializable
+class Region implements \JsonSerializable
 {
     /**
      * @var int
@@ -59,7 +58,7 @@ class Region implements JsonSerializable
     /**
      * @var string
      *
-     * @ORM\Column(name="uuid", type="string", length=255)
+     * @ORM\Column(name="uuid", type="string")
      */
     private $uuid;
 

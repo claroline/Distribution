@@ -37,18 +37,23 @@ class ConfigService {
 
   getAvailablePlayModes() {
     return [{
+      key: 'CONTINUOUS_LIVE',
       name: this.filter('trans')('options_form_view_mode_choices_live', {}, 'media_resource'),
       value: 'live'
     }, {
+      key: 'CONTINUOUS_PAUSE',
       name: this.filter('trans')('options_form_view_mode_choices_pause', {}, 'media_resource'),
       value: 'pause'
     }, {
+      key: 'FREE',
       name: this.filter('trans')('options_form_view_mode_choices_free', {}, 'media_resource'),
       value: 'free'
     }, {
+      key: 'CONTINUOUS_ACTIVE',
       name: this.filter('trans')('options_form_view_mode_choices_active', {}, 'media_resource'),
       value: 'active'
     }, {
+      key: 'SCRIPTED_ACTIVE',
       name: this.filter('trans')('options_form_view_mode_choices_scripted_active', {}, 'media_resource'),
       value: 'scripted_active'
     } ]

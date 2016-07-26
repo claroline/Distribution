@@ -7,7 +7,7 @@
                 <i style="cursor:pointer;" class="fa fa-font big bordered-top bordered-left bordered-right" title="{{'textual_transcription' | trans:{}:'media_resource'}}"></i>
             </div>
             <div class="player-col" style="width:90%;">
-                <div data-ng-if="$ctrl.showTextTranscriptionText" class="help-text" data-ng-bind-html="$ctrl.currentRegion.note | unsafe"></div>
+                <div data-ng-if="$ctrl.showTextTranscriptionText" class="help-text" data-ng-bind-html="$ctrl.currentRegion.note | trust_html"></div>
             </div>
         </div>
     </div>

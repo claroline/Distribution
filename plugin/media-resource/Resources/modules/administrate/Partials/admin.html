@@ -122,7 +122,7 @@
                             <div class="time-text end" data-ng-model="region.end">{{ region.end | secondsToHms }}</div>
                         </div>
                         <div class="col-xs-7">
-                            <div contenteditable="true" class="text-left note" data-ng-bind-html="region.note | unsafe" data-ng-model="region.note"></div>
+                            <div contenteditable="true" class="text-left note" data-ng-bind-html="region.note | trust_html" data-ng-model="region.note"></div>
                         </div>
                         <div class="col-xs-1 text-right">
                             <span class="badge row-index">{{ $index + 1 }}</span>

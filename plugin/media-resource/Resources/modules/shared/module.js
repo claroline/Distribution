@@ -5,7 +5,6 @@
 import angular from 'angular/index'
 import 'angular-sanitize'
 import '#/main/core/fos-js-router/module'
-import UnsafeFilter from './Filters/UnsafeFilter'
 import SecondsToHmsFilter from './Filters/SecondsToHmsFilter'
 import ConfigService from './Services/ConfigService'
 import RegionsService from './Services/RegionsService'
@@ -15,10 +14,6 @@ angular
   .module('Shared', [
     'ngSanitize',
     'ui.fos-js-router'
-  ])
-  .filter('unsafe', [
-    '$sce',
-    UnsafeFilter
   ])
   .filter('secondsToHms', [
     SecondsToHmsFilter

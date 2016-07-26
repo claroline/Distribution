@@ -4,7 +4,6 @@ namespace Innova\MediaResourceBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Zend\Stdlib\JsonSerializable;
 
 /**
  * RegionConfig.
@@ -12,7 +11,7 @@ use Zend\Stdlib\JsonSerializable;
  * @ORM\Table(name="media_resource_region_config")
  * @ORM\Entity
  */
-class RegionConfig implements JsonSerializable
+class RegionConfig implements \JsonSerializable
 {
     /**
      * @var int

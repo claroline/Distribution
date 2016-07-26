@@ -7,7 +7,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
-use Zend\Stdlib\JsonSerializable;
 
 /**
  * MediaResource Entity.
@@ -15,7 +14,7 @@ use Zend\Stdlib\JsonSerializable;
  * @ORM\Table(name="media_resource")
  * @ORM\Entity
  */
-class MediaResource extends AbstractResource implements JsonSerializable
+class MediaResource extends AbstractResource implements \JsonSerializable
 {
     /**
      * @var int
@@ -29,7 +28,7 @@ class MediaResource extends AbstractResource implements JsonSerializable
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=255)
+     * @ORM\Column(name="name", type="string")
      * @Assert\NotBlank
      */
     protected $name;

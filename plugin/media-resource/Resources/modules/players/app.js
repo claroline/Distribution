@@ -17,6 +17,8 @@ import FreeCtrl from './free/Controllers/FreeCtrl'
 import freeTpl from './free/Partials/free.html'
 import PanelHeaderCtrl from './panelHeader/Controllers/PanelHeaderCtrl'
 import panelHeaderTpl from './panelHeader/Partials/panel-header.html'
+import PlayersWrapperCtrl from './wrapper/Controllers/PlayersWrapperCtrl'
+import playersWrapperTpl from './wrapper/Partials/players.wrapper.html'
 
 let players = angular.module('PlayersApp', [
   'angular-loading-bar',
@@ -36,9 +38,17 @@ players.config([
   }
 ])
 
+// panel header comp
+players.component('mrPlayersWrapper', {
+  template: playersWrapperTpl,
+  bindings: {
+    resource: '='
+  },
+  controller: PlayersWrapperCtrl
+})
 
 // panel header comp
-players.component('header', {
+players.component('mrPlayerHeader', {
   template: panelHeaderTpl,
   bindings: {
     resource: '='
@@ -47,7 +57,7 @@ players.component('header', {
 })
 
 // live comp
-players.component('live', {
+players.component('mrPlayerLive', {
   template: liveTpl,
   bindings: {
     resource: '='
@@ -56,7 +66,7 @@ players.component('live', {
 })
 
 // active comp
-players.component('active', {
+players.component('mrPlayerActive', {
   template: activeTpl,
   bindings: {
     resource: '='
@@ -65,7 +75,7 @@ players.component('active', {
 })
 
 // scripted comp
-players.component('scripted', {
+players.component('mrPlayerScripted', {
   template: scriptedTpl,
   bindings: {
     resource: '='
@@ -74,7 +84,7 @@ players.component('scripted', {
 })
 
 // auto-pause comp
-players.component('pause', {
+players.component('mrPlayerPause', {
   template: pauseTpl,
   bindings: {
     resource: '='
@@ -83,7 +93,7 @@ players.component('pause', {
 })
 
 // scripted comp
-players.component('free', {
+players.component('mrPlayerFree', {
   template: freeTpl,
   bindings: {
     resource: '='

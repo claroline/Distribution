@@ -3,7 +3,6 @@
 namespace Innova\MediaResourceBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Zend\Stdlib\JsonSerializable;
 
 /**
  * Media.
@@ -11,7 +10,7 @@ use Zend\Stdlib\JsonSerializable;
  * @ORM\Table(name="media_resource_media")
  * @ORM\Entity
  */
-class Media implements JsonSerializable
+class Media implements \JsonSerializable
 {
     /**
      * @var int
@@ -25,20 +24,19 @@ class Media implements JsonSerializable
     /**
      * @var string
      *
-     * @ORM\Column(name="url", type="string", length=255)
+     * @ORM\Column(name="url", type="string")
      */
     private $url;
 
     /**
      * @var string
      *             audio or video
-     * @ORM\Column(name="type", type="string", length=255)
+     * @ORM\Column(name="type", type="string")
      */
     private $type;
 
     /**
      * @var MediaResource
-     *                    media resource owner
      *
      * @ORM\ManyToOne(targetEntity="Innova\MediaResourceBundle\Entity\MediaResource", inversedBy="medias")
      * @ORM\JoinColumn(name="media_resource_id", nullable=false)

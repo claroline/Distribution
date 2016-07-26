@@ -334,7 +334,7 @@ class AdminCtrl {
   }
 
   hasHelp(helps) {
-    return this.regionsService.regionHasHelp(helps) // helps && (helps.backward || helps.helpRegionUuid || helps.helpLinks.filter(el => el.url !== '').length > 0 || helps.helpTexts.filter(el => el.text !== '').length > 0 || helps.loop || helps.rate)
+    return this.regionsService.regionHasHelp(helps)
   }
 
   /**

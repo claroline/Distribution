@@ -2,24 +2,8 @@
 
 {% block media_resource_content %}
     <div class="media-resource-players-container" data-ng-app="PlayersApp" data-ng-cloak="">
-        <div class="panel-heading clearfix">
-          <header data-resource="{{ _resource | json_encode  }}"></header>
-        </div>
-        <div class="panel-body">
-            {% if _resource.options.mode is constant('Innova\\MediaResourceBundle\\Entity\\Options::CONTINUOUS_ACTIVE') %}
-                <active data-resource="{{ _resource | json_encode  }}"></active>
-            {% elseif _resource.options.mode is constant('Innova\\MediaResourceBundle\\Entity\\Options::CONTINUOUS_LIVE') %}
-                <live data-resource="{{ _resource | json_encode  }}"></live>
-            {% elseif _resource.options.mode is constant('Innova\\MediaResourceBundle\\Entity\\Options::FREE') %}
-                <free data-resource="{{ _resource | json_encode  }}"></free>
-            {% elseif _resource.options.mode is constant('Innova\\MediaResourceBundle\\Entity\\Options::CONTINUOUS_PAUSE') %}
-                <pause data-resource="{{ _resource | json_encode  }}"></pause>
-            {% elseif _resource.options.mode is constant('Innova\\MediaResourceBundle\\Entity\\Options::SCRIPTED_ACTIVE') %}
-                <scripted data-resource="{{ _resource | json_encode  }}"></scripted>
-            {% endif %}
-        </div>
+        <mr-players-wrapper class="players-wrapper" data-resource="{{_resource | json_encode}}"></mr-players-wrapper>
     </div>
-
 {% endblock %}
 
 {% block javascripts %}

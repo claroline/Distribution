@@ -3,7 +3,7 @@
 {% block stylesheets %}
     {{ parent() }}
 
-    {% stylesheets debug = false filter = 'lessphp, cssmin' output = 'vendor/claroline/plugin/innovamediaresource/css/innova-media-resource.css'
+    {% stylesheets debug=false filter='lessphp, cssmin' output='vendor/claroline/plugin/innovamediaresource/css/innova-media-resource.css'
     '@InnovaMediaResourceBundle/Resources/less/app.less'
  %}
     <link href="{{ asset_url }}" rel="stylesheet" media="screen"/>
@@ -36,7 +36,7 @@
 {% endblock %}
 
 {% block javascripts %}
-  {{parent()}}
+  {{ parent() }}
   <script type="text/javascript" src="{{ url('bazinga_jstranslation_js', { 'domain':'media_resource' }) }}"></script>
   <script type="text/javascript" src="{{ url('bazinga_jstranslation_js', { 'domain':'resource_form' }) }}"></script>
 {% endblock %}
