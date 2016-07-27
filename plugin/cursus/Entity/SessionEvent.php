@@ -81,6 +81,7 @@ class SessionEvent
      *     targetEntity="Claroline\CursusBundle\Entity\SessionEventComment",
      *     mappedBy="sessionEvent"
      * )
+     * @Groups({"api_cursus"})
      */
     protected $comments;
 

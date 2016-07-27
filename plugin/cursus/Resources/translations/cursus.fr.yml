@@ -130,6 +130,7 @@ open_session_events: Séances ouvertes
 open_sessions: Sessions ouvertes
 organization_validation: Validation par l'organisation
 public_registration: Inscription publique
+public_sessions_only: Seulement les sessions publiques (Vue calendrier)
 public_unregistration: Désinscription publique
 quantity: Quantité
 queued_user_transfer: Transférer l'utilisateur en attente
@@ -163,11 +164,15 @@ session_closed: Terminé
 session_creation: Création d'une session de formation
 session_deletion: Suppression de la session de formation
 session_description: Description de la session de formation
+session_details: Détails de la session de formation
 session_edition: Modification de la session de formation
+session_end_title: Fin de la session "%sessionName%"
 session_event_creation: Création d'une séance
 session_event_deletion: Suppression de la séance
 session_event_edition: Modification de la séance
 session_event_location: Lieu
+session_event_title: Séance "%eventName%"
+session_events: Séances
 session_events_details: Détails des séances
 session_not_enough_place_msg: Seulement %remainingPlaces% place(s) restante(s) dans la session "%sessionName%" de la formation "%courseTitle% [%courseCode%]"
 session_not_started: Non commencé
@@ -177,6 +182,7 @@ session_registration_request_confirmation: Confirmation de demande d'inscription
 session_request_confirm_msg: Vous avez demandé d'être inscrit à la session "%sessionName%" de la formation "%courseTitle% [%courseCode%]"
 session_request_confirmation_success: Demande d'inscription à la session "%sessionName%" de la formation "%courseTitle%" confirmée.
 session_self_registration_message: Êtes-vous sûr de vouloir vous inscrire à cette session de formation ?
+session_start_title: Début de la session "%sessionName%"
 sessions: Sessions de formation
 sessions_details: Détails des sessions
 sessions_for_registration_selection: Sélection des sessions de formation

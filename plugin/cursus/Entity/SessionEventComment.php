@@ -4,6 +4,7 @@ namespace Claroline\CursusBundle\Entity;
 
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -16,12 +17,14 @@ class SessionEventComment
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Groups({"api_cursus"})
      */
     protected $id;
 
     /**
      * @ORM\Column(type="text")
      * @Assert\NotBlank()
+     * @Groups({"api_cursus"})
      */
     protected $content;
 
@@ -44,11 +47,13 @@ class SessionEventComment
 
     /**
      * @ORM\Column(name="creation_date", type="datetime")
+     * @Groups({"api_cursus"})
      */
     protected $creationDate;
 
     /**
      * @ORM\Column(name="edition_date", type="datetime", nullable=true)
+     * @Groups({"api_cursus"})
      */
     protected $editionDate;
 

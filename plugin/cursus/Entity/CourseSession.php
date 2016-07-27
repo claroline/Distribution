@@ -215,6 +215,7 @@ class CourseSession
      *     targetEntity="Claroline\CursusBundle\Entity\SessionEvent",
      *     mappedBy="session"
      * )
+     * @Groups({"api_cursus"})
      */
     protected $events;
 

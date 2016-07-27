@@ -8,9 +8,9 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution
  *
- * Generation date: 2016/07/19 03:35:00
+ * Generation date: 2016/07/20 06:35:21
  */
-class Version20160719153459 extends AbstractMigration
+class Version20160720183520 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -106,7 +106,8 @@ class Version20160719153459 extends AbstractMigration
         ");
         $this->addSql("
             ALTER TABLE claro_cursusbundle_courses_widget_config 
-            ADD default_mode INT DEFAULT 0 NOT NULL
+            ADD default_mode INT DEFAULT 0 NOT NULL, 
+            ADD public_sessions_only TINYINT(1) DEFAULT '0' NOT NULL
         ");
     }
 
@@ -136,7 +137,8 @@ class Version20160719153459 extends AbstractMigration
         ");
         $this->addSql("
             ALTER TABLE claro_cursusbundle_courses_widget_config 
-            DROP default_mode
+            DROP default_mode, 
+            DROP public_sessions_only
         ");
     }
 }

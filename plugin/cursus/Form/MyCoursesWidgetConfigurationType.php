@@ -12,13 +12,12 @@
 namespace Claroline\CursusBundle\Form;
 
 use Claroline\CursusBundle\Entity\CoursesWidgetConfig;
-use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class CoursesWidgetConfigurationType extends AbstractType
+class MyCoursesWidgetConfigurationType extends AbstractType
 {
     private $translator;
 
@@ -29,22 +28,6 @@ class CoursesWidgetConfigurationType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add(
-            'cursus',
-            'entity',
-            [
-                'class' => 'ClarolineCursusBundle:Cursus',
-                'query_builder' => function (EntityRepository $er) {
-
-                    return $er->createQueryBuilder('c')
-                        ->where('c.course IS NULL')
-                        ->orderBy('c.title', 'ASC');
-                },
-                'property' => 'titleAndCode',
-                'required' => false,
-                'label' => 'cursus',
-            ]
-        );
         $builder->add(
             'defaultMode',
             'choice',
@@ -57,16 +40,11 @@ class CoursesWidgetConfigurationType extends AbstractType
                 'label' => 'default_mode',
             ]
         );
-        $builder->add(
-            'publicSessionsOnly',
-            'checkbox',
-            ['label' => 'public_sessions_only']
-        );
     }
 
     public function getName()
     {
-        return 'courses_widget_configuration_form';
+        return 'my_courses_widget_configuration_form';
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

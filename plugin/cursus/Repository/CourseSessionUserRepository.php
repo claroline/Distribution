@@ -67,6 +67,28 @@ class CourseSessionUserRepository extends EntityRepository
         return $executeQuery ? $query->getResult() : $query;
     }
 
+    public function findSessionUsersByUserAndSearch(User $user, $search, $executeQuery = true)
+    {
+        $dql = '
+            SELECT csu
+            FROM Claroline\CursusBundle\Entity\CourseSessionUser csu
+            JOIN csu.session s
+            JOIN s.course c
+            WHERE csu.user = :user
+            AND (
+                UPPER(c.title) LIKE :search
+                OR UPPER(s.name) LIKE :search
+            )
+            ORDER BY c.title ASC
+        ';
+        $query = $this->_em->createQuery($dql);
+        $query->setParameter('user', $user);
+        $upperSearch = strtoupper($search);
+        $query->setParameter('search', "%{$upperSearch}%");
+
+        return $executeQuery ? $query->getResult() : $query;
+    }
+
     public function findSessionUsersBySession(CourseSession $session, $executeQuery = true)
     {
         $dql = '

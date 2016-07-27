@@ -72,8 +72,9 @@ export default class SessionsManagementCtrl {
     this.SessionService.deleteSession(sessionId)
   }
 
-  createEvent (sessionId) {
-    this.SessionEventService.createSessionEvent(sessionId)
+  createEvent (session) {
+    this.loadEvents(session['id'])
+    this.SessionEventService.createSessionEvent(session)
   }
 
   openStartDatePicker () {

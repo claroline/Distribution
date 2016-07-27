@@ -4102,9 +4102,11 @@ class CursusManager
         );
     }
 
-    public function getSessionUsersByUser(User $user, $executeQuery = true)
+    public function getSessionUsersByUser(User $user, $search = '', $executeQuery = true)
     {
-        return $this->sessionUserRepo->findSessionUsersByUser($user, $executeQuery);
+        return $search === '' ?
+            $this->sessionUserRepo->findSessionUsersByUser($user, $executeQuery) :
+            $this->sessionUserRepo->findSessionUsersByUserAndSearch($user, $search, $executeQuery);
     }
 
     public function getSessionUsersBySession(CourseSession $session, $executeQuery = true)

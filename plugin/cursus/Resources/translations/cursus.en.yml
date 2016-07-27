@@ -129,6 +129,7 @@ open_session_events: Open session events
 open_sessions: Open sessions
 organization_validation: Organization validation
 public_registration: Public registration
+public_sessions_only: Public sessions only (Calendar view)
 public_unregistration: Public unregistration
 quantity: Quantity
 queued_user_transfer: Transfer queued user
@@ -162,11 +163,15 @@ session_closed: Closed
 session_creation: Training session creation
 session_deletion: Training session deletion
 session_description: Training session description
+session_details: Training session details
 session_edition: Training session edition
+session_end_title: End of session "%sessionName%"
 session_event_creation: Session event creation
 session_event_deletion: Session event deletion
 session_event_edition: Session event edition
 session_event_location: Location
+session_event_title: Session event "%eventName%"
+session_events: Session events
 session_events_details: Session events details
 session_not_enough_place_msg: Only %remainingPlaces% place(s) remaining in session "%sessionName%" of training "%courseTitle% [%courseCode%]"
 session_not_started: Not started
@@ -176,6 +181,7 @@ session_registration_request_confirmation: Training session registration request
 session_request_confirm_msg: You have request to register to session "%sessionName%" of training "%courseTitle% [%courseCode%]"
 session_request_confirmation_success: Registration request to session "%sessionName%" of training "%courseTitle%" confirmed.
 session_self_registration_message: Are you sure you want to register to this training session ?
+session_start_title: Start of session "%sessionName%"
 sessions: Training sessions
 sessions_details: Sessions details
 sessions_for_registration_selection: Training session selection

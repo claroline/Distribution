@@ -47,6 +47,11 @@ class CoursesWidgetConfig
      */
     protected $defaultMode = self::MODE_LIST;
 
+    /**
+     * @ORM\Column(name="public_sessions_only", nullable=false, type="boolean", options={"default" = 0})
+     */
+    protected $publicSessionsOnly = false;
+
     public function getId()
     {
         return $this->id;
@@ -85,5 +90,15 @@ class CoursesWidgetConfig
     public function setDefaultMode($defaultMode)
     {
         $this->defaultMode = $defaultMode;
+    }
+
+    public function isPublicSessionsOnly()
+    {
+        return $this->publicSessionsOnly;
+    }
+
+    public function setPublicSessionsOnly($publicSessionsOnly)
+    {
+        $this->publicSessionsOnly = $publicSessionsOnly;
     }
 }

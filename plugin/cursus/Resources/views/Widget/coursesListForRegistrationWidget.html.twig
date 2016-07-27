@@ -77,16 +77,15 @@
 </div>
 
 {% if courses|length > 0 %}
-
     {% if courses.getNbPages() > 1 %}
         {{ renderPager(courses, widgetInstance.getId(), search, max, orderedBy, order) }}
     {% endif %}
 
     <div class="panel-group" role="tablist">
-
         {% for course in courses %}
             {% set courseId = course.getId() %}
             {% set icon = course.getIcon() %}
+            {% set description = course.getDescription() %}
 
             {% if icon is empty %}
                 {% set iconPath = asset('bundles/clarolinecursus/images/no_icon.png') %}
@@ -106,23 +105,24 @@
                     </h3>
                 </div>
                 <div id="course-content-{{ courseId }}" class="panel-collapse collapse">
-                    <div class="panel-body">   
-                
-                        <div class="media">
-                            <div class="media-left col-md-2 text-center">
-                                <img class="media-object"
-                                     src="{{ iconPath }}"
-                                     alt=""
-                                     width="150px"
-                                >
+                    <div class="panel-body">
+                        {% if icon is not empty or description is not empty %}
+                            <div class="media">
+                                {% if icon is not empty %}
+                                    <div class="media-left col-md-2 text-center">
+                                        <img class="media-object" src="{{ iconPath }}" alt="" width="150px">
+                                    </div>
+                                {% endif %}
+                                {% if course.getDescription() is not empty %}
+                                    <div class="media-body col-md-10">
+                                        <div>
+                                            {{ description|raw }}
+                                        </div>
+                                    </div>
+                                {% endif %}
                             </div>
-                            <div class="media-body col-md-10">
-                                <div>
-                                    {{ course.getDescription()|raw }}
-                                </div>
-                            </div>
-                        </div>
-                        <hr>
+                            <hr>
+                        {% endif %}
 
                         {% if sessions[courseId] is not defined %}
                             <div class="alert alert-warning">
@@ -215,19 +215,3 @@
         {{ 'no_course'|trans({}, 'cursus') }}
     </div>
 {% endif %}
-
-<div id="courses-registration-widget-datas-box"
-     data-search="{{ search }}"
-     data-max="{{ max }}"
-     data-ordered-by="{{ orderedBy }}"
-     data-order="{{ order }}"
-     data-widget-instance-id="{{ widgetInstance.getId() }}"
-     data-mode="list"
->
-</div>
-
-{% block javascripts %}
-    <script>
-        window['sessions_' + {{ widgetInstance.getId() }}] = {{ courseSessions|json_encode|raw }}
-    </script>
-{% endblock %}

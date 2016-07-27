@@ -41,8 +41,7 @@
     <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'agenda' }) }}"></script>
     <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'cursus' }) }}"></script>
     <script>
-        window['sessions_' + {{ widgetInstance.getId() }}] = {{ courseSessions|json_encode|raw }}
-        window['registered-sessions_' + {{ widgetInstance.getId() }}] = {{ registeredSessions|json_encode|raw }}
-        window['pending-sessions_' + {{ widgetInstance.getId() }}] = {{ pendingSessions|json_encode|raw }}
+        window['sessions_' + {{ widgetInstance.getId() }}] = {{ sessions|json_encode|raw }}
+        window['editable-sessions_' + {{ widgetInstance.getId() }}] = {{ editableSessions|json_encode|raw }}
     </script>
 {% endblock %}
