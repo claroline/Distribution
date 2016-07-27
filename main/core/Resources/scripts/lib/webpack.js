@@ -43,9 +43,6 @@ function configure(rootDir, packages, isWatchMode) {
     ...makeBundleCommonsPlugins(commons)
   ]
 
-  console.log('plugins');
-  console.log(plugins);
-
   // prod build has additional constraints
   //
   // TODO: use tree-shaking when webpack 2.0 is stable
