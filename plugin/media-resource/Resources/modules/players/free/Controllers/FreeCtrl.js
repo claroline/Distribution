@@ -26,7 +26,6 @@ class FreeCtrl {
     if (this.resource.regions.length > 0) {
       this.currentRegion = this.resource.regions[0]
     }
-    this.helpRegion = this.currentRegion
   }
 
   setSharedData() {
@@ -65,12 +64,19 @@ class FreeCtrl {
         container: '#wave-timeline'
       })
 
+      // if no region create a default one... we need to do that only for this player since this is the default one
+      // if another player is selected in admin view, user will need to save and with this action a region will be created
+      if(this.resource.regions.length === 0){
+        this.currentRegion = this.regionsService.create(0, this.wavesurfer.getDuration())
+        this.resource.regions.push(this.currentRegion)
+      }
+
     }.bind(this))
 
     this.wavesurfer.on('seek', function () {
 
       const current = this.regionsService.getRegionFromTime(this.wavesurfer.getCurrentTime(), this.resource.regions)
-      if (current && this.currentRegion && current.uuid != this.currentRegion.uuid) {
+      if (current !== undefined && this.currentRegion && current.uuid !== this.currentRegion.uuid) {
         // update current region
         this.currentRegion = current
       }
@@ -83,19 +89,20 @@ class FreeCtrl {
         // pause help
         this.audioPlayer.pause()
         this.audioPlayer.currentTime = 0
-
-        if (this.helpRegion && current && current.uuid !== this.helpRegion.uuid) {
+        // hide highlight and help only if we change region
+        if (current !== undefined && this.currentRegion && current.uuid !== this.currentRegion.uuid) {
           $('.region-highlight').remove()
           this.showHelp = false
           this.hideHelpText()
         }
         this.wavesurfer.play()
       } else {
-        this.helpRegion = current
-          // hide any previous help info
+        // hide any previous help info
         $('.region-highlight').remove()
-        this.showHelp = false
-        this.helpText = ''
+        this.$scope.$apply(function(){
+          this.showHelp = true
+          this.helpText = ''
+        }.bind(this))
           // show current help infos
         this.hideHelpText()
         this.highlight()
@@ -105,7 +112,7 @@ class FreeCtrl {
 
     this.wavesurfer.on('audioprocess', function () {
       const current = this.regionsService.getRegionFromTime(this.wavesurfer.getCurrentTime(), this.resource.regions)
-      if (current && this.currentRegion && current.uuid != this.currentRegion.uuid) {
+      if (current !== undefined && this.currentRegion && current.uuid != this.currentRegion.uuid) {
         // update current region
         this.$scope.$apply(function () {
           this.currentRegion = current
@@ -122,17 +129,18 @@ class FreeCtrl {
     const $canvas = $('#waveform').find('wave').first().find('canvas').first()
     const cHeight = $canvas.height()
     const current = this.regionsService.getRegionFromTime(this.wavesurfer.getCurrentTime(), this.resource.regions)
-    const left = this.getPositionFromTime(parseFloat(current.start))
-    const width = this.getPositionFromTime(parseFloat(current.end)) - left
+    if(current !== undefined){
+      const left = this.getPositionFromTime(parseFloat(current.start))
+      const width = this.getPositionFromTime(parseFloat(current.end)) - left
 
-    const elem = document.createElement('div')
-    elem.className = 'region-highlight'
-    elem.style.left = left + 'px'
-    elem.style.width = width + 'px'
-    elem.style.height = cHeight + 'px'
-    elem.style.top = '0px'
-    $('#waveform').find('wave').first().append(elem)
-    this.helpRegion = current
+      const elem = document.createElement('div')
+      elem.className = 'region-highlight'
+      elem.style.left = left + 'px'
+      elem.style.width = width + 'px'
+      elem.style.height = cHeight + 'px'
+      elem.style.top = '0px'
+      $('#waveform').find('wave').first().append(elem)
+    }
   }
 
   getPositionFromTime(time) {
@@ -184,8 +192,8 @@ class FreeCtrl {
     this.hideHelpText()
     this.wavesurfer.setPlaybackRate(1)
     const options = {
-      start: this.helpRegion.start,
-      end: this.helpRegion.end,
+      start: this.currentRegion.start,
+      end: this.currentRegion.end,
       loop: true,
       drag: false,
       resize: false,
@@ -193,11 +201,13 @@ class FreeCtrl {
     }
     const region = this.wavesurfer.addRegion(options)
     if (this.playing) {
+      $('#btn-play').prop('disabled', false)
       this.playing = false
       this.wavesurfer.un('pause')
       this.wavesurfer.pause()
       this.wavesurfer.clearRegions()
     } else {
+      $('#btn-play').prop('disabled', true)
       region.play()
       this.wavesurfer.on('pause', function () {
         if (options.loop) {
@@ -213,8 +223,8 @@ class FreeCtrl {
   playSlowly() {
     this.hideHelpText()
     const options = {
-      start: this.helpRegion.start,
-      end: this.helpRegion.end,
+      start: this.currentRegion.start,
+      end: this.currentRegion.end,
       loop: false,
       drag: false,
       resize: false,
@@ -223,6 +233,7 @@ class FreeCtrl {
     const region = this.wavesurfer.addRegion(options)
       // stop playing if needed
     if (this.playing) {
+      $('#btn-play').prop('disabled', false)
       this.playing = false
       this.wavesurfer.pause()
       this.wavesurfer.clearRegions()
@@ -230,10 +241,11 @@ class FreeCtrl {
       this.audioPlayer.pause()
       this.wavesurfer.setVolume(1)
     } else {
+      $('#btn-play').prop('disabled', true)
       this.wavesurfer.setPlaybackRate(0.8)
       this.wavesurfer.setVolume(0)
       this.audioPlayer.playbackRate = 0.8
-      this.audioPlayer.currentTime = this.helpRegion.start
+      this.audioPlayer.currentTime = this.currentRegion.start
       region.play()
       this.audioPlayer.play()
       this.playing = true
@@ -258,6 +270,7 @@ class FreeCtrl {
       // stop audio playback before playing
       this.audioPlayer.pause()
       this.playing = false
+      $('#btn-play').prop('disabled', false)
     }
     if (window.SpeechSynthesisUtterance !== undefined) {
       let text = this.regionsService.removeHtml(this.currentRegion.note)
@@ -307,10 +320,13 @@ class FreeCtrl {
       toSay += textArray[j] + ' '
     }
     if (index >= 0) {
+      $('#btn-play').prop('disabled', true)
       this.sayIt(toSay, function () {
         index = index - 1
         this.handleUtterancePlayback(index, textArray)
       }.bind(this))
+    } else {
+      $('#btn-play').prop('disabled', false)
     }
   }
 

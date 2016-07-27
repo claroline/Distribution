@@ -2,4 +2,4 @@
     {{$ctrl.resource.name}} - {{$ctrl.mode}}
 </h3>
 
-<a data-ng-if="$ctrl.isAdmin" target="_blank" href="{{'innova_media_resource_administrate' | path:{'workspaceId':$ctrl.resource.workspaceId ,'id':$ctrl.resource.id } }}" class="btn btn-primary fa fa-pencil pull-right"></a>
+<a data-ng-if="$ctrl.isAdmin" href="{{'innova_media_resource_administrate' | path:{'workspaceId':$ctrl.resource.workspaceId ,'id':$ctrl.resource.id } }}" class="btn btn-primary fa fa-pencil pull-right"></a>

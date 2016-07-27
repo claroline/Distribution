@@ -3,7 +3,7 @@
     <h3 class="panel-title pull-left">
         {{$ctrl.resource.name}}
     </h3>
-    <a target="_blank" href="{{ 'innova_media_resource_open' | path:{'workspaceId': $ctrl.resource.workspaceId, 'id':$ctrl.resource.id} }}" title="{{'media_resource_open' | trans :{}:'media_resource'}}" class="btn btn-default fa fa-eye pull-right"></a>
+    <a href="{{ 'innova_media_resource_open' | path:{'workspaceId': $ctrl.resource.workspaceId, 'id':$ctrl.resource.id} }}" title="{{'media_resource_open' | trans :{}:'media_resource'}}" class="btn btn-default fa fa-eye pull-right"></a>
 </div>
 <div class="panel-body">
         <!-- options for the resource -->
