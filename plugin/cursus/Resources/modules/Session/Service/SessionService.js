@@ -100,7 +100,9 @@ export default class SessionService {
     const sessionId = sessionJson['id']
     const courseId = sessionJson['course']['id']
     const index = this.sessions.findIndex(s => s['id'] === sessionId)
-    const sessionIndex = this.courseSessions[courseId].findIndex(s => s['id'] === sessionId)
+    const sessionIndex = this.courseSessions[courseId] ?
+      this.courseSessions[courseId].findIndex(s => s['id'] === sessionId) :
+      -1
 
     if (isDefault) {
       this.resetDefaultSession(courseId, sessionId)
@@ -436,15 +438,17 @@ export default class SessionService {
       this.closedCourseSessions[courseId] = []
     }
 
-    this.courseSessions[courseId].forEach(s => {
-      s['status'] = this.getSessionStatus(s['startDate'], s['endDate'], now)
+    if (this.courseSessions[courseId]) {
+      this.courseSessions[courseId].forEach(s => {
+        s['status'] = this.getSessionStatus(s['startDate'], s['endDate'], now)
 
-      if (s['status'] === 'closed') {
-        this.closedCourseSessions[courseId].push(s)
-      } else {
-        this.openCourseSessions[courseId].push(s)
-      }
-    })
+        if (s['status'] === 'closed') {
+          this.closedCourseSessions[courseId].push(s)
+        } else {
+          this.openCourseSessions[courseId].push(s)
+        }
+      })
+    }
   }
 
   getWorkspaceFromSessionId (sessionId) {

@@ -39,6 +39,28 @@
     </h3>
 </div>
 <div class="panel-body cursus-management-panel">
+    <div class="pull-right">
+        <button class="btn btn-primary"
+                data-toggle="tooltip"
+                data-placement="top"
+                title="{{ 'edit_course'|trans:{}:'cursus' }}"
+                ng-click="cmc.editCourse()"
+        >
+            <i class="fa fa-edit"></i>
+        </button>
+        <button class="btn btn-primary"
+                data-toggle="tooltip"
+                data-placement="top"
+                title="{{ 'create_session'|trans:{}:'cursus' }}"
+                ng-click="cmc.createSession()"
+        >
+            <i class="fa fa-cube"></i>
+        </button>
+    </div>
+    <br>
+    <br>
+    <br>
+
     <uib-accordion>
         <uib-accordion-group is-open="cmc.isCollapsed['description']">
             <uib-accordion-heading>
@@ -46,7 +68,8 @@
                     {{ 'course_description'|trans:{}:'cursus' }}
                 </div>
             </uib-accordion-heading>
-            {{ cmc.course['description'] }}
+            <div ng-bind-html="cmc.course['description']|trust_html">
+            </div>
             <div class="alert alert-warning" ng-if="!cmc.course['description']">
                 {{ 'no_description'|trans:{}:'cursus' }}
             </div>
@@ -113,7 +136,7 @@
                                     data-toggle="tooltip"
                                     data-placement="top"
                                     title="{{ 'edit_session'|trans:{}:'cursus' }}"
-                                    ng-click="cmc.editSession(session['id'])"
+                                    ng-click="cmc.editSession(session)"
                             >
                                 <i class="fa fa-edit"></i>
                             </button>
@@ -209,7 +232,7 @@
                                     data-toggle="tooltip"
                                     data-placement="top"
                                     title="{{ 'edit_session'|trans:{}:'cursus' }}"
-                                    ng-click="cmc.editSession(session['id'])"
+                                    ng-click="cmc.editSession(session)"
                             >
                                 <i class="fa fa-edit"></i>
                             </button>

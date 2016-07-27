@@ -34,7 +34,21 @@ export default class CourseManagementCtrl {
       )
     }
     this.initialize()
+    this._updateCourseCallback = this._updateCourseCallback.bind(this)
+    this._addSessionCallback = this._addSessionCallback.bind(this)
     this._updateSessionCallback = this._updateSessionCallback.bind(this)
+  }
+
+  _updateCourseCallback (data) {
+    this.CourseService._updateCourseCallback(data)
+    const courseJson = JSON.parse(data)
+    this.course = courseJson
+    this.breadCrumbLabel = courseJson['title']
+  }
+
+  _addSessionCallback (data) {
+    this.SessionService._addSessionCallback(data)
+    this.refreshSessionsTables()
   }
 
   _updateSessionCallback(data) {
@@ -57,8 +71,17 @@ export default class CourseManagementCtrl {
     this.SessionService.loadSessionsByCourse(this.courseId)
   }
 
-  editSession (sessionId) {
-    this.SessionService.editSession(sessionId, this._updateSessionCallback)
+  editCourse () {
+    console.log(this.course)
+    this.CourseService.editCourse(this.course, this._updateCourseCallback)
+  }
+
+  createSession () {
+    this.SessionService.createSession(this.course, this._addSessionCallback)
+  }
+
+  editSession (session) {
+    this.SessionService.editSession(session, this._updateSessionCallback)
   }
 
   deleteSession (sessionId) {
@@ -74,7 +97,7 @@ export default class CourseManagementCtrl {
   }
 
   refreshSessionsTables () {
-    this.openTableParams.reload()
-    this.closedTableParams.reload()
+    this.tableParams['openSessions'].reload()
+    this.tableParams['closedSessions'].reload()
   }
 }

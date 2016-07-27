@@ -696,7 +696,7 @@ class AdminManagementController extends Controller
         $serializedCourse = $this->serializer->serialize(
             $course,
             'json',
-            SerializationContext::create()->setGroups(['api_cursus'])
+            SerializationContext::create()->setGroups(['api_user_min'])
         );
 
         return new JsonResponse($serializedCourse, 200);

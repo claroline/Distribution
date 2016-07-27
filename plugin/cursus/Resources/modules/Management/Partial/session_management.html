@@ -92,7 +92,8 @@
                     {{ 'session_description'|trans:{}:'cursus' }}
                 </div>
             </uib-accordion-heading>
-            {{ cmc.session['description'] }}
+            <div ng-bind-html="cmc.session['description']|trust_html">
+            </div>
             <div class="alert alert-warning" ng-if="!cmc.session['description']">
                 {{ 'no_description'|trans:{}:'cursus' }}
             </div>
