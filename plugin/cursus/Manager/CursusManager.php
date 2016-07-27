@@ -40,6 +40,7 @@ use Claroline\CursusBundle\Entity\CursusDisplayedWord;
 use Claroline\CursusBundle\Entity\CursusGroup;
 use Claroline\CursusBundle\Entity\CursusUser;
 use Claroline\CursusBundle\Entity\SessionEvent;
+use Claroline\CursusBundle\Entity\SessionEventComment;
 use Claroline\CursusBundle\Event\Log\LogCourseCreateEvent;
 use Claroline\CursusBundle\Event\Log\LogCourseDeleteEvent;
 use Claroline\CursusBundle\Event\Log\LogCourseQueueCreateEvent;
@@ -1552,6 +1553,24 @@ class CursusManager
         $this->om->flush();
         $event = new LogSessionEventDeleteEvent($details);
         $this->eventDispatcher->dispatch('log', $event);
+    }
+
+    public function createSessionEventComment(User $user, SessionEvent $sessionEvent, $content)
+    {
+        $comment = new SessionEventComment();
+        $comment->setUser($user);
+        $comment->setSessionEvent($sessionEvent);
+        $comment->setContent($content);
+        $comment->setCreationDate(new \DateTime());
+        $this->persistSessionEventComment($comment);
+
+        return $comment;
+    }
+
+    public function persistSessionEventComment(SessionEventComment $comment)
+    {
+        $this->om->persist($comment);
+        $this->om->flush();
     }
 
     public function resetDefaultSessionByCourse(Course $course, CourseSession $session = null)

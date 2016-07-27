@@ -21,6 +21,7 @@ use Claroline\CursusBundle\Entity\CourseSessionUser;
 use Claroline\CursusBundle\Entity\CoursesWidgetConfig;
 use Claroline\CursusBundle\Entity\Cursus;
 use Claroline\CursusBundle\Entity\CursusDisplayedWord;
+use Claroline\CursusBundle\Entity\SessionEvent;
 use Claroline\CursusBundle\Form\CoursesWidgetConfigurationType;
 use Claroline\CursusBundle\Form\CourseType;
 use Claroline\CursusBundle\Form\CursusType;
@@ -1443,6 +1444,34 @@ class CursusController extends Controller
             return new JsonResponse('success', 200);
         } else {
             return ['form' => $form->createView()];
+        }
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/session/event/{sessionEvent}/comment/create",
+     *     name="api_post_session_event_comment",
+     *     options={"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     */
+    public function postSessionEventCommentAction(User $user, SessionEvent $sessionEvent)
+    {
+        $session = $sessionEvent->getSession();
+        $sessionTutor = $this->cursusManager->getOneSessionUserBySessionAndUserAndType($session, $user, CourseSessionUser::TEACHER);
+
+        if (is_null($sessionTutor)) {
+            throw new AccessDeniedException();
+        } else {
+            $comment = $this->request->request->get('comment', false);
+            $sessionEventComment = $this->cursusManager->createSessionEventComment($user, $sessionEvent, $comment);
+            $serializedSessionEventComment = $this->serializer->serialize(
+                $sessionEventComment,
+                'json',
+                SerializationContext::create()->setGroups(['api_cursus'])
+            );
+
+            return new JsonResponse($serializedSessionEventComment, 200);
         }
     }
 

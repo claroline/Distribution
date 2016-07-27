@@ -138,6 +138,16 @@
           })
         })
 
+        function registerComment (eventId, comment) {
+          const index = events.findIndex(e => (e['id'] === eventId) && (e['type'] === 'session_event'))
+
+          if (index > -1) {
+            events[index]['comments'].push(comment)
+          }
+          console.log(index)
+          console.log(events[index]['comments'])
+        }
+
         function t (key) {
           if (typeof key === 'object') {
             let transWords = []
@@ -249,7 +259,6 @@
         function onEventClick (event, jsEvent) {
           jsEvent.stopPropagation()
           jsEvent.preventDefault()
-          console.log(event)
           let title = ''
           let body = ''
 
@@ -284,12 +293,23 @@
               let commentsElement = `
                 <b>${Translator.trans('comments', {}, 'platform')}</b>
                 <br>
-                <ul>
+                <ul id="event-comments-list">
               `
               event['comments'].forEach(e => {
                 commentsElement += `<li>${e['content']}</li>`
               })
               commentsElement += '</ul>'
+
+              let newCommentElement = `
+                <b>${Translator.trans('add_comment', {}, 'cursus')}</b>
+                <br>
+                <textarea id="new-comment-input" class="form-control" rows="5"></textarea>
+                <br>
+                <button id="new-comment-btn" data-event-id="${event['id']}" class="btn btn-primary btn-sm">
+                    ${Translator.trans('add', {}, 'platform')}
+                </button>
+              `
+
               body = `
                 <button class="btn btn-default btn-sm" data-toggle="collapse" href="#collapse-course-infos">
                     ${Translator.trans('course', {}, 'cursus')}
@@ -307,7 +327,6 @@
                     ${event['courseDescription'] ? event['courseDescription'] : ''}
                 </div>
                 <hr>
-
                 <button class="btn btn-default btn-sm" data-toggle="collapse" href="#collapse-session-infos">
                     ${Translator.trans('session', {}, 'cursus')}
                 </button>
@@ -328,16 +347,38 @@
                     <b>${Translator.trans('duration', {}, 'platform')} :</b>
                     ${event['startDate']} <i class="fa fa-long-arrow-right"></i> ${event['endDate']}
                     <br>
+                    ${event['location'] ? '<b>' + Translator.trans('location', {}, 'platform') + ' :</b>' : ''}
+                    ${event['location'] ? event['location'] : ''}
+                    <br>
                     ${event['description'] ? '<b>' + Translator.trans('description', {}, 'platform') + ' :</b>' : ''}
                     ${event['description'] ? event['description'] : ''}
                     <br>
-                    ${event['comments'].length > 0 ? commentsElement : ''}
+                    ${event['comments'].length > 0 || editableSessions[event['sessionId']] ? commentsElement : ''}
+                    <br>
+                    ${editableSessions[event['sessionId']] ? newCommentElement : ''}
                 </div>
               `
               break
           }
           window.Claroline.Modal.simpleContainer(title, body)
         }
+
+        $('body').on('click', '#new-comment-btn', function () {
+          const comment = $('#new-comment-input').val()
+          const eventId = parseInt($(this).data('event-id'))
+          const route = Routing.generate('api_post_session_event_comment', {sessionEvent: eventId})
+
+          $.ajax({
+            url: route,
+            type: 'POST',
+            data: {comment: comment},
+            success: function (datas) {
+              $('#new-comment-input').val('')
+              $('#event-comments-list').append(`<li>${comment}</li>`)
+              registerComment(eventId, JSON.parse(datas))
+            }
+          })
+        })
 
         initializeCalendar()
       })()

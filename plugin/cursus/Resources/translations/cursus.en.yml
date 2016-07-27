@@ -1,5 +1,6 @@
 accept_registration: Accept registration
 accept_registration_confirm_message: Are you sure you want to accept to register this user ?
+add_comment: Add comment
 add_course: Add training
 add_course_to_cursus: Add a training
 add_session: Add a training session
