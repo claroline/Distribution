@@ -167,6 +167,7 @@ session_description: Training session description
 session_details: Training session details
 session_edition: Training session edition
 session_end_title: End of session "%sessionName%"
+session_event: Session event
 session_event_creation: Session event creation
 session_event_deletion: Session event deletion
 session_event_edition: Session event edition

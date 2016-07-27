@@ -168,6 +168,7 @@ session_description: Description de la session de formation
 session_details: Détails de la session de formation
 session_edition: Modification de la session de formation
 session_end_title: Fin de la session "%sessionName%"
+session_event: Séance
 session_event_creation: Création d'une séance
 session_event_deletion: Suppression de la séance
 session_event_edition: Modification de la séance

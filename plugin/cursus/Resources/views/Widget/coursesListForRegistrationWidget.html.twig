@@ -158,6 +158,14 @@
                                         {% set endDate = session.getEndDate() %}
                                         <li>
                                             <span>
+                                                {% if session.getEvents()|length > 0 %}
+                                                    <i class="fa fa-chevron-circle-right pointer-hand"
+                                                       data-toggle="collapse"
+                                                       href="#collapse-events-{{ widgetInstance.getId() }}-{{ session.getId() }}"
+                                                       style="color: #337AB7"
+                                                    >
+                                                    </i>
+                                                {% endif %}
                                                 {{ session.getName() }}
                                                 [
                                                 {% if startDate is empty %}
@@ -196,6 +204,32 @@
                                                     </span>
                                                 {% endif %}
                                             </span>
+
+                                            {% if session.getEvents()|length > 0 %}
+                                                <div id="collapse-events-{{ widgetInstance.getId() }}-{{ session.getId() }}" class="collapse">
+                                                    <br>
+                                                    <div class="table-responsive">
+                                                        <table class="table">
+                                                            <tr>
+                                                                <th>{{ 'session_event'|trans({}, 'cursus') }}</th>
+                                                                <th>{{ 'duration'|trans({}, 'platform') }}</th>
+                                                                <th>{{ 'location'|trans({}, 'platform') }}</th>
+                                                            </tr>
+                                                            {% for event in session.getEvents() %}
+                                                                <tr>
+                                                                    <td>{{ event.getName() }}</td>
+                                                                    <td>
+                                                                        {{ event.getStartDate()|intl_date_format }}
+                                                                        <i class="fa fa-long-arrow-right"></i>
+                                                                        {{ event.getEndDate()|intl_date_format }}
+                                                                    </td>
+                                                                    <td>{{ event.getLocation()|raw }}</td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
                                         </li>
                                     {% endfor %}
                                 </ul>
