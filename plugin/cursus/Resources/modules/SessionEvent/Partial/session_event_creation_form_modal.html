@@ -93,6 +93,14 @@
         </div>
         <div class="form-group row">
             <label class="control-label col-md-3">
+                {{ 'internal_location'|trans:{}:'cursus' }}
+            </label>
+            <div class="col-md-9">
+                <input type="checkbox" ng-model="cmc.sessionEvent['internalLocation']">
+            </div>
+        </div>
+        <div class="form-group row" ng-if="!cmc.sessionEvent['internalLocation']">
+            <label class="control-label col-md-3">
                 {{ 'location'|trans:{}:'platform' }}
             </label>
             <div class="col-md-9">
@@ -103,6 +111,16 @@
                           ng-model="cmc.sessionEvent['location']"
                 >
                 </textarea>
+            </div>
+        </div>
+        <div class="form-group row" ng-if="cmc.sessionEvent['internalLocation']">
+            <label class="control-label col-md-3">
+                {{ 'location'|trans:{}:'platform' }}
+            </label>
+            <div class="col-md-9">
+                <select class="form-control" ng-model="cmc.locationResource" ng-options="lr['name'] for lr in cmc.locationResources">
+                    <option></option>
+                </select>
             </div>
         </div>
     </div>

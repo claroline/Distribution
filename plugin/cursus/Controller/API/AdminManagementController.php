@@ -975,7 +975,19 @@ class AdminManagementController extends Controller
         $sessionEvent->setStartDate($startDate);
         $sessionEvent->setEndDate($endDate);
         $sessionEvent->setDescription($sessionEventDatas['description']);
-        $sessionEvent->setLocation($sessionEventDatas['location']);
+
+        if ($sessionEventDatas['internalLocation']) {
+            if ($sessionEventDatas['locationResource']) {
+                $locationResource = $this->cursusManager->getReservationResourceById($sessionEventDatas['locationResource']);
+
+                if (!is_null($locationResource)) {
+                    $sessionEvent->setLocationResource($locationResource);
+                    $sessionEvent->setLocation($locationResource->getLocalisation());
+                }
+            }
+        } else {
+            $sessionEvent->setLocation($sessionEventDatas['location']);
+        }
         $form = $this->createForm($formType, $sessionEvent);
         $form->submit([], false);
 
@@ -986,7 +998,8 @@ class AdminManagementController extends Controller
                 $sessionEvent->getDescription(),
                 $sessionEvent->getStartDate(),
                 $sessionEvent->getEndDate(),
-                $sessionEvent->getLocation()
+                $sessionEvent->getLocation(),
+                $sessionEvent->getLocationResource()
             );
             $serializedSessionEvent = $this->serializer->serialize(
                 $createdSessionEvent,
@@ -1024,7 +1037,21 @@ class AdminManagementController extends Controller
         $sessionEvent->setStartDate($startDate);
         $sessionEvent->setEndDate($endDate);
         $sessionEvent->setDescription($sessionEventDatas['description']);
-        $sessionEvent->setLocation($sessionEventDatas['location']);
+        $sessionEvent->setLocationResource(null);
+        $sessionEvent->setLocation(null);
+
+        if ($sessionEventDatas['internalLocation']) {
+            if ($sessionEventDatas['locationResource']) {
+                $locationResource = $this->cursusManager->getReservationResourceById($sessionEventDatas['locationResource']);
+
+                if (!is_null($locationResource)) {
+                    $sessionEvent->setLocationResource($locationResource);
+                    $sessionEvent->setLocation($locationResource->getLocalisation());
+                }
+            }
+        } else {
+            $sessionEvent->setLocation($sessionEventDatas['location']);
+        }
         $form = $this->createForm($formType, $sessionEvent);
         $form->submit([], false);
 

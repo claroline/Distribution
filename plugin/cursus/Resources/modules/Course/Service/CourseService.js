@@ -256,4 +256,13 @@ export default class CourseService {
       }
     })
   }
+
+  getLocationResources () {
+    const url = Routing.generate('api_get_cursus_reservation_resources')
+    return this.$http.get(url).then(d => {
+      if (d['status'] === 200) {
+        return JSON.parse(d['data'])
+      }
+    })
+  }
 }

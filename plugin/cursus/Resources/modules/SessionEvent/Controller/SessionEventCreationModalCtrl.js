@@ -13,6 +13,7 @@ export default class SessionEventCreationModalCtrl {
   constructor($http, $uibModalInstance, CourseService, session, callback) {
     this.$http = $http
     this.$uibModalInstance = $uibModalInstance
+    this.CourseService = CourseService
     this.session = session
     this.callback = callback
     this.sessionEvent = {
@@ -20,7 +21,9 @@ export default class SessionEventCreationModalCtrl {
       startDate: null,
       endDate: null,
       description: null,
-      location: null
+      location: null,
+      internalLocation: false,
+      locationResource: null
     }
     this.sessionEventErrors = {
       name: null,
@@ -37,12 +40,17 @@ export default class SessionEventCreationModalCtrl {
       end: {format: 'dd/MM/yyyy', open: false}
     }
     this.tinymceOptions = CourseService.getTinymceConfiguration()
+    this.locationResources = []
+    this.locationResource = null
     this.initializeSessionEvent()
   }
 
   initializeSessionEvent () {
     this.sessionEvent['startDate'] = this.session['startDate'].replace(/\+.*$/, '')
     this.sessionEvent['endDate'] = this.session['endDate'].replace(/\+.*$/, '')
+    this.CourseService.getLocationResources().then(d => {
+      d.forEach(r => this.locationResources.push(r))
+    })
   }
 
   submit () {
@@ -72,6 +80,12 @@ export default class SessionEventCreationModalCtrl {
       }
     } else {
       this.sessionEventErrors['endDate'] = null
+    }
+
+    if (this.locationResource) {
+      this.sessionEvent['locationResource'] = this.locationResource['id']
+    } else {
+      this.sessionEvent['locationResource'] = null
     }
 
     if (this.isValid()) {

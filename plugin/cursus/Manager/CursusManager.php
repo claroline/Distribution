@@ -64,6 +64,7 @@ use Claroline\CursusBundle\Event\Log\LogSessionQueueDeclineEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionQueueOrganizationValidateEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionQueueUserValidateEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionQueueValidatorValidateEvent;
+use FormaLibre\ReservationBundle\Entity\Resource;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
@@ -1509,7 +1510,8 @@ class CursusManager
         $description = null,
         $startDate = null,
         $endDate = null,
-        $location = null
+        $location = null,
+        Resource $reservationResource = null
     ) {
         $eventName = is_null($name) ? $session->getName() : $name;
         $eventStartDate = is_null($startDate) ? $session->getStartDate() : $startDate;
@@ -1522,6 +1524,7 @@ class CursusManager
         $sessionEvent->setStartDate($eventStartDate);
         $sessionEvent->setEndDate($eventEndDate);
         $sessionEvent->setLocation($location);
+        $sessionEvent->setLocationResource($reservationResource);
         $this->persistSessionEvent($sessionEvent);
         $event = new LogSessionEventCreateEvent($sessionEvent);
         $this->eventDispatcher->dispatch('log', $event);
@@ -4373,13 +4376,18 @@ class CursusManager
         return $this->courseQueueRepo->findUnvalidatedSearchedCourseQueues($search);
     }
 
-    /*******************************************************
-     * Access to CourseRegistrationQueueRepository methods *
-     *******************************************************/
+    /***************************************************
+     * Access to ReservationResourceRepository methods *
+     ***************************************************/
 
     public function getAllReservationResources()
     {
         return $this->reservationResourceRepo->findBy([], ['name' => 'asc']);
+    }
+
+    public function getReservationResourceById($id)
+    {
+        return $this->reservationResourceRepo->findOneById($id);
     }
 
     /******************

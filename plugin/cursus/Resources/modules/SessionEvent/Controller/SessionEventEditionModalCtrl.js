@@ -13,6 +13,7 @@ export default class SessionEventEditionModalCtrl {
   constructor($http, $uibModalInstance, CourseService, sessionEvent, callback) {
     this.$http = $http
     this.$uibModalInstance = $uibModalInstance
+    this.CourseService = CourseService
     this.callback = callback
     this.source = sessionEvent
     this.sessionEvent = {
@@ -20,7 +21,9 @@ export default class SessionEventEditionModalCtrl {
       startDate: null,
       endDate: null,
       description: null,
-      location: null
+      location: null,
+      internalLocation: false,
+      locationResource: null
     }
     this.sessionEventErrors = {
       name: null,
@@ -37,6 +40,8 @@ export default class SessionEventEditionModalCtrl {
       end: {format: 'dd/MM/yyyy', open: false}
     }
     this.tinymceOptions = CourseService.getTinymceConfiguration()
+    this.locationResources = []
+    this.locationResource = null
     this.initializeSessionEvent()
   }
 
@@ -52,6 +57,18 @@ export default class SessionEventEditionModalCtrl {
     if (this.source['location']) {
       this.sessionEvent['location'] = this.source['location']
     }
+
+    if (this.source['locationResource']) {
+      this.sessionEvent['internalLocation'] = true
+    }
+    this.CourseService.getLocationResources().then(d => {
+      d.forEach(r => this.locationResources.push(r))
+
+      if (this.source['locationResource']) {
+          const selectedResource = this.locationResources.find(lr => lr['id'] === this.source['locationResource']['id'])
+          this.locationResource = selectedResource
+      }
+    })
   }
 
   submit () {
@@ -81,6 +98,12 @@ export default class SessionEventEditionModalCtrl {
       }
     } else {
       this.sessionEventErrors['endDate'] = null
+    }
+
+    if (this.locationResource) {
+      this.sessionEvent['locationResource'] = this.locationResource['id']
+    } else {
+      this.sessionEvent['locationResource'] = null
     }
 
     if (this.isValid()) {

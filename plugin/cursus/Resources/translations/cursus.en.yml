@@ -100,6 +100,7 @@ generate_certificates: Generate certificates
 go_to_workspace: Go to workspace
 icon: Icon
 import_courses: Import trainings
+internal_location: Internal location
 invalid_file: Invalid file
 invite_learners_to_session: Invite learners to session
 learner: Learner

@@ -21,7 +21,7 @@ class Resource
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_reservation"})
+     * @Groups({"api_reservation", "api_cursus"})
      */
     protected $id;
 
@@ -29,13 +29,13 @@ class Resource
      * @ORM\Column(name="name", type="text")
      * @Assert\Length(min="2", max="50")
      * @Assert\NotNull()
-     * @Groups({"api_reservation"})
+     * @Groups({"api_reservation", "api_cursus"})
      */
     private $name;
 
     /**
      * @ORM\Column(name="max_time_reservation", type="string", length=8, nullable=true)
-     * @Groups({"api_reservation"})
+     * @Groups({"api_reservation", "api_cursus"})
      * @SerializedName("maxTimeReservation")
      */
     private $maxTimeReservation;
@@ -43,28 +43,28 @@ class Resource
     /**
      * @ORM\ManyToOne(targetEntity="FormaLibre\ReservationBundle\Entity\ResourceType", inversedBy="resources")
      * @ORM\JoinColumn(name="resource_type", nullable=false, onDelete="CASCADE")
-     * @Groups({"api_reservation"})
+     * @Groups({"api_reservation", "api_cursus"})
      * @SerializedName("resourceType")
      */
     private $resourceType;
 
     /**
      * @ORM\Column(name="description", type="text", nullable=true)
-     * @Groups({"api_reservation"})
+     * @Groups({"api_reservation", "api_cursus"})
      */
     private $description;
 
     /**
      * @ORM\Column(name="localisation", type="string", length=255, nullable=true)
      * @Assert\Length(min="2", max="50")
-     * @Groups({"api_reservation"})
+     * @Groups({"api_reservation", "api_cursus"})
      */
     private $localisation;
 
     /**
      * @ORM\Column(name="quantity", type="integer", nullable=false)
      * @Assert\Range(min=1)
-     * @Groups({"api_reservation"})
+     * @Groups({"api_reservation", "api_cursus"})
      */
     private $quantity = 1;
 
@@ -82,7 +82,7 @@ class Resource
 
     /**
      * @ORM\Column(type="string", nullable=true)
-     * @Groups({"api_reservation"})
+     * @Groups({"api_reservation", "api_cursus"})
      */
     private $color;
 

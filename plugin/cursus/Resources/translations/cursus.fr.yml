@@ -100,6 +100,7 @@ generate_certificates: Générer les certificats
 go_to_workspace: Accéder à l'espace d'activités
 icon: Icône
 import_courses: Importer des formations
+internal_location: Localisation interne
 invalid_file: Fichier non valide
 invite_learners_to_session: Inviter les apprenants à la session
 learner: Apprenant
