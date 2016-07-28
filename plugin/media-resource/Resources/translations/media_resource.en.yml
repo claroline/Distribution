@@ -27,7 +27,7 @@ confirm_modal_title: Please confirm
 
 # d
 delete_media_resource: Delete Resource
-dialog_region_configure: Configure region
+dialog_region_configure: Configure region help
 delete_region_confirm: Are you sure you want to delete this region?
 
 # e
@@ -87,6 +87,16 @@ previous_segment: Previous region
 previous_region_help: Previous region help
 play_current_region: Play / Pause current region
 play_pause_region: Play / Pause region
+popover_transcription_title: What's this?
+popover_transcription_popover_title: Region textual transcription
+popover_transcription_popover_explain_first: This field allow you to set the region text transcription
+popover_transcription_popover_explain_second: This data will be used by TextToSpeach (i.e. Backward building help) and in the Free player mode
+popover_players_popover_title: Play modes
+popover_players_live: The student will be able to listen freely to the document and acces loop & slow helps everywhere
+popover_players_active: The student will access set helps when asking
+popover_players_pause: The player will automatically pause playback (2s) on each region end
+popover_players_scripted: 2 steps playback. First the student will tell each time he encounter a problem. Second he'll access all related help
+popover_players_free: Help and region are shown as soon as pause is asked. This player can display text transcription.
 
 #r
 region_help: Help
@@ -98,8 +108,10 @@ region_config_allow_rate: Allow playback rate change
 region_config_allow_bwb: Allow backward building playback
 region_config_allow_loop: Allow loop playback
 region_config_help_texts: Help texts
+region_config_help_text: Text n°
 region_config_help_texts_placeholder: Add a help text or leave empty
 region_config_help_links: Help links
+region_config_help_link: Link n°
 region_config_help_links_small: (absolute url : http://www.myurl.something)
 region_config_help_links_placeholder: Add a help link (http://www.mylink.com) or leave empty
 region_config_help_region_title: Related region
@@ -118,6 +130,10 @@ region_help_segment_playback_rate: Play the region slower
 region_help_related_segment_playback: Play the related region
 region_help_no_help_available: No help available for this region.
 resource_zip_export: Export as zip file
+region_list_start_end_title: Start / end
+region_list_transcription_title: Textual transcription
+region_list_number_title: Number
+region_list_actions_title: Actions
 
 #s
 save: Save

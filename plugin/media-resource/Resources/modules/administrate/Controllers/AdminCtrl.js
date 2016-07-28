@@ -4,11 +4,12 @@ import 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min'
 import 'wavesurfer.js/dist/plugin/wavesurfer.regions.min'
 import $ from 'jquery'
 
-
 class AdminCtrl {
 
   constructor($scope, $window, $filter, url, configService, helpModalService, optionsModalService, regionsService, AdminService) {
     this.wavesurfer = Object.create(WaveSurfer)
+    this.popoverTranscriptionTplUrl = 'popover.transcription.html'
+    this.popoverPlayersTplUrl = 'popover.players.html'
     this.filter = $filter
     this.configService = configService
     this.urlService = url

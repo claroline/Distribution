@@ -6,15 +6,15 @@
     <a href="{{ 'innova_media_resource_open' | path:{'workspaceId': $ctrl.resource.workspaceId, 'id':$ctrl.resource.id} }}" title="{{'media_resource_open' | trans :{}:'media_resource'}}" class="btn btn-default fa fa-eye pull-right"></a>
 </div>
 <div class="panel-body">
-        <!-- options for the resource -->
-      <div data-ng-if="$ctrl.httpSuccess" class="alert alert-dismissable alert-success">
-          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-          {{ 'resource_update_success' | trans:{}:'media_resource'}}
-      </div>
-      <div data-ng-if="$ctrl.httpError" class="alert alert-dismissable alert-danger">
-          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-          {{ 'resource_update_error' | trans:{}:'media_resource'}}
-      </div>
+    <!-- options for the resource -->
+    <div data-ng-if="$ctrl.httpSuccess" class="alert alert-dismissable alert-success">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        {{ 'resource_update_success' | trans:{}:'media_resource'}}
+    </div>
+    <div data-ng-if="$ctrl.httpError" class="alert alert-dismissable alert-danger">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        {{ 'resource_update_error' | trans:{}:'media_resource'}}
+    </div>
     <!-- options for the resource -->
     <div class="panel panel-primary options-panel">
         <div class="panel-heading clearfix">
@@ -26,6 +26,8 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label" for="media_resource_options_mode">
                     {{'options_form_view_mode' | trans:{}:'resource_form'}}
+                    <button popover-append-to-body="true" popover-placement="right" uib-popover-template="$ctrl.popoverPlayersTplUrl" title="{{'popover_button_title' | trans:{}:'media_resource'}}" popover-title="{{'popover_players_popover_title' | trans:{}:'media_resource'}}" type="button" class="btn btn-default fa fa-info"></button>
+
                 </label>
                 <div class="col-sm-10">
                     <select class="form-control" data-ng-change="$ctrl.optionsModeChanged()" data-ng-model="$ctrl.resource.options.mode">
@@ -114,6 +116,22 @@
             <!-- regions -->
             <div class="row">
                 <div class="col-md-12 text-center regions-container">
+                    <div class="row regions-titles">
+                        <div class="col-xs-2 text-center">
+                            <b>{{'region_list_start_end_title' | trans:{}:'media_resource'}}</b>
+                        </div>
+                        <div class="col-xs-7">
+                            <b>{{'region_list_transcription_title' | trans:{}:'media_resource'}}</b>
+                            <button uib-popover-template="$ctrl.popoverTranscriptionTplUrl" title="{{'popover_button_title' | trans:{}:'media_resource'}}" popover-title="{{'popover_transcription_popover_title' | trans:{}:'media_resource'}}" type="button" class="btn btn-default fa fa-info"></button>
+                        </div>
+                        <div class="col-xs-1 text-center">
+                            <b>{{'region_list_number_title' | trans:{}:'media_resource'}}</b>
+                        </div>
+                        <div class="col-xs-2 text-center">
+                            <b>{{'region_list_actions_title' | trans:{}:'media_resource'}}</b>
+                        </div>
+                    </div>
+                    <hr>
                     <div class="row region" data-uuid="{{region.uuid}}" data-ng-repeat="region in $ctrl.resource.regions | orderBy : 'start'">
                         <div class="col-xs-1 text-center">
                             <div class="time-text start" data-start="{{region.start}}" data-ng-model="region.start">{{ region.start | secondsToHms}}</div>
@@ -129,18 +147,20 @@
                         </div>
                         <div class="col-xs-2 text-right">
                             <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-default" data-ng-click="$ctrl.playRegion(region)" title="{{'play_pause_region' | trans:{}:'media_resource'}">
+                                <button type="button" class="btn btn-default" data-ng-click="$ctrl.playRegion(region)" title="{{'play_pause_region' | trans:{}:'media_resource'}}">
                                     |-&nbsp;<i class="fa fa-play"></i>&nbsp;-|
                                 </button>
                                 <button role="button" type="button" data-ng-class="$ctrl.hasHelp(region.helps) ? 'btn-warning':'btn-default'" class="btn" data-ng-click="$ctrl.configureRegionHelps(region)" title="{{'region_config' | trans:{}:'media_resource'}}">
                                     <i class="fa fa-cog"></i>
                                 </button>
                                 <button
-                                      role="button" data-ng-disabled="$ctrl.resource.regions.length === 1"
-                                      type="button" class="btn btn-danger"
-                                      data-confirm-modal="{{ 'delete_region_confirm'|trans:{}:'media_resource'}}"
-                                      data-confirm-modal-action="$ctrl.deleteRegion(region)"
-                                      title="{{'region_delete' | trans:{}:'media_resource'}}">
+                                    role="button"
+                                    data-ng-disabled="$ctrl.resource.regions.length === 1"
+                                    type="button"
+                                    class="btn btn-danger"
+                                    data-confirm-modal="{{ 'delete_region_confirm'|trans:{}:'media_resource'}}"
+                                    data-confirm-modal-action="$ctrl.deleteRegion(region)"
+                                    title="{{'region_delete' | trans:{}:'media_resource'}}">
                                     <i class="fa fa-trash-o"></i>
                                 </button>
                             </div>
@@ -169,4 +189,42 @@
             </div>
         </div>
     </div>
+    <!-- POPOVER(s)-->
+    <script type="text/ng-template" id="popover.players.html">
+        <div class="row">
+            <div class="col-md-12">
+                <ul>
+                    <li>
+                        <b>{{'options_form_view_mode_choices_live' | trans:{}:'media_resource'}}</b>: {{'popover_players_live' | trans:{}:'media_resource'}}
+                    </li>
+                    <li>
+                        <b>{{'options_form_view_mode_choices_active' | trans:{}:'media_resource'}}</b>: {{'popover_players_active' | trans:{}:'media_resource'}}
+                    </li>
+                    <li>
+                        <b>{{'options_form_view_mode_choices_pause' | trans:{}:'media_resource'}}</b>: {{'popover_players_pause' | trans:{}:'media_resource'}}
+                    </li>
+                    <li>
+                        <b>{{'options_form_view_mode_choices_scripted_active' | trans:{}:'media_resource'}}</b>: {{'popover_players_scripted' | trans:{}:'media_resource'}}
+                    </li>
+                    <li>
+                        <b>{{'options_form_view_mode_choices_free' | trans:{}:'media_resource'}}</b>: {{'popover_players_free' | trans:{}:'media_resource'}}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="popover.transcription.html">
+        <div class="row">
+            <div class="col-md-12">
+              <p>
+                {{'popover_transcription_popover_explain_first' | trans:{}:'media_resource'}}
+              </p>
+              <p>
+                {{'popover_transcription_popover_explain_second' | trans:{}:'media_resource'}}
+              </p>
+            </div>
+        </div>
+    </script>
+
 </div>

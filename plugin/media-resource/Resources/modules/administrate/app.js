@@ -1,6 +1,7 @@
 import angular from 'angular/index'
 import 'angular-loading-bar'
-import 'angular-strap'
+//import 'angular-strap'
+import 'angular-bootstrap'
 import 'angular-route'
 import 'angular-ui-translation/angular-translation'
 import '#/main/core/fos-js-router/module'
@@ -20,6 +21,7 @@ let adminApp = angular.module('AdminApp', [
   'ui.translation',
   'ui.fos-js-router',
   'ui.modal',
+  'ui.bootstrap.popover',
   'Shared',
   'Modals'
 ])

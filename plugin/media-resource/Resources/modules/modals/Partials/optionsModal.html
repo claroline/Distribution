@@ -30,7 +30,14 @@
                 <div class="row">
                     <div class="col-md-12">
                         <h4>{{'region_config_help_texts' | trans:{}:'media_resource'}}</h4>
-                        <input type="text" placeholder="{{'region_config_help_texts_placeholder' | trans:{}:'media_resource'}}" data-ng-repeat="item in modalCtrl.current.helps.helpTexts" class="form-control margin-bottom-sx" data-ng-model="item.text">
+                        <div data-ng-repeat="item in modalCtrl.current.helps.helpTexts">
+                          <label for="text_{{$index}}">{{'region_config_help_text' | trans:{}:'media_resource'}}{{$index + 1}}</label>
+                          <input
+                              id="text_{{$index}}"
+                              type="text"
+                              placeholder="{{'region_config_help_texts_placeholder' | trans:{}:'media_resource'}}"
+                              class="form-control margin-bottom-sx" data-ng-model="item.text">
+                        </div>
                     </div>
                 </div>
                 <hr>
@@ -40,14 +47,18 @@
                             &nbsp;
                             <small>{{'region_config_help_links_small' | trans:{}:'media_resource'}}</small>
                         </h4>
-                        <input
-                            type="url"
-                            pattern="https?://[a-z0-9\-_]+(\.[a-z0-9\-_]+)+([a-z0-9\-\.,@\?^=%&;:/~\+#]*[a-z0-9\-@\?^=%&;/~\+#])?"
-                            data-ng-repeat="item in modalCtrl.current.helps.helpLinks"
-                            class="form-control margin-bottom-sx"
-                            data-ng-model="item.url"
-                            name="modal-help-links[]"
-                            placeholder="{{'region_config_help_links_placeholder' | trans:{}:'media_resource'}}">
+                        <div data-ng-repeat="item in modalCtrl.current.helps.helpLinks">
+                          <label for="url_{{$index}}">{{'region_config_help_link' | trans:{}:'media_resource'}}{{$index + 1}}</label>
+                          <input
+                              id="url_{{$index}}"
+                              type="url"
+                              pattern="https?://[a-z0-9\-_]+(\.[a-z0-9\-_]+)+([a-z0-9\-\.,@\?^=%&;:/~\+#]*[a-z0-9\-@\?^=%&;/~\+#])?"
+                              class="form-control margin-bottom-sx"
+                              data-ng-model="item.url"
+                              name="modal-help-links[]"
+                              placeholder="{{'region_config_help_links_placeholder' | trans:{}:'media_resource'}}">
+                        </div>
+
                     </div>
                 </div>
                 <hr>

@@ -27,7 +27,7 @@ confirm_modal_title: Merci de confirmer
 
 # d
 delete_media_resource: Supprimer la ressource
-dialog_region_configure: Configurer la région
+dialog_region_configure: Configurer l'aide pour la région
 delete_region_confirm: Êtes vous sur de vouloir supprimer cette région ?
 
 # e
@@ -87,6 +87,16 @@ previous_segment: Région précédente
 previous_region_help: Aide pour la région précédente
 play_current_region: Play / Pause pour la région courante
 play_pause_region: Play / Pause pour la région
+popover_button_title: Qu'est-ce que c'est ?
+popover_transcription_popover_title: Transcription textuelle de la région
+popover_transcription_popover_explain_first: Ce champ vous permet de renseigner la transcription textuelle pour la région
+popover_transcription_popover_explain_second: Il sera utilisé par le TextToSpeach (i.e. l'aide de type Backward building) et dans le lecteur de type Free
+popover_players_popover_title: Mode de lecture
+popover_players_live: L'étudiant pourra lire librement le document et accéder aux aides de type boucle / ralenti partout
+popover_players_active: Lorsqu'il le demandera l'étudiant accèdera à l'aide donnée par l'enseignant
+popover_players_pause: Le lecteur effectue une pause automatique de 2 seconde à chaque frontière de région
+popover_players_scripted: Lecture en 2 étapes. 1 l'étudiant écoute le document et clique à chaque fois qu'il rencontre un porblème. 2 il pourra alors accéder aux aided conrrespondantes
+popover_players_free: Les aides et la region sont affichées dès que la lecture est en pause. Ce lecteur peut afficher la transcription textuelle
 
 #r
 region_help: Aide
@@ -98,8 +108,10 @@ region_config_allow_rate: Autoriser le changement de vitesse de lecture
 region_config_allow_bwb: Autoriser la lecture en backward building
 region_config_allow_loop: Autoriser la lecture en boucle
 region_config_help_texts: Textes d'aide
+region_config_help_text: Texte n°
 region_config_help_texts_placeholder: Ajoutez un texte d'aide ou laissez vide
 region_config_help_links: Liens d'aide
+region_config_help_link: Lien n°
 region_config_help_links_small: (url absolue : http://www.monurl.qqchose)
 region_config_help_links_placeholder: Ajoutez un lien d'aide (http://www.mylink.com) ou laissez vide
 region_config_help_add_link: Ajouter un lien http (jusqu'à 3 liens autorisés)
@@ -119,6 +131,10 @@ region_help_segment_playback_rate: Lire la région plus lentement
 region_help_related_segment_playback: Lire la région connexe
 region_help_no_help_available: Aucune aide disponible pour la région.
 resource_zip_export: Exporter comme fichier zip
+region_list_start_end_title: Début / fin
+region_list_transcription_title: Transcription textuelle
+region_list_number_title: Numéro
+region_list_actions_title: Actions
 
 #s
 save: Sauvegarder
