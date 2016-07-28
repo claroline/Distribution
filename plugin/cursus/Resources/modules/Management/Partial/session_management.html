@@ -61,6 +61,7 @@
                 data-placement="top"
                 title="{{ 'generate_certificates'|trans:{}:'cursus' }}"
                 ng-click="cmc.generateCertificates()"
+                ng-if="!cmc.isCertificatesDisabled"
         >
             <i class="fa fa-graduation-cap"></i>
         </button>
@@ -69,6 +70,7 @@
                 data-placement="top"
                 title="{{ 'invite_learners_to_session'|trans:{}:'cursus' }}"
                 ng-click="cmc.inviteLearners()"
+                ng-if="!cmc.isInvitationsDisabled"
         >
             <i class="fa fa-plus-square"></i>
         </button>
@@ -281,7 +283,7 @@
                             {{ event['endDate']|date:'dd/MM/yyyy HH:mm' }}
                         </td>
                         <td class="text-center" data-title="'session_event_location'|trans:{}:'cursus'" sortable="'location'">
-                            {{ event['location'] }}
+                            <div ng-bind-html="event['location']|trust_html"></div>
                         </td>
                         <td class="text-center" data-title="'actions'|trans:{}:'platform'">
                             <button class="btn btn-primary btn-sm"
@@ -338,7 +340,7 @@
                             {{ event['endDate']|date:'dd/MM/yyyy HH:mm' }}
                         </td>
                         <td class="text-center" data-title="'session_event_location'|trans:{}:'cursus'" sortable="'location'">
-                            {{ event['location'] }}
+                            <div ng-bind-html="event['location']|trust_html"></div>
                         </td>
                         <td class="text-center" data-title="'actions'|trans:{}:'platform'">
                             <button class="btn btn-primary btn-sm"

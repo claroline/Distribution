@@ -14,6 +14,7 @@ namespace Claroline\CursusBundle\Controller\API;
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\GenericDatasEvent;
+use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Manager\ApiManager;
 use Claroline\CoreBundle\Manager\UserManager;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
@@ -54,6 +55,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 class AdminManagementController extends Controller
 {
     private $apiManager;
+    private $configHandler;
     private $cursusManager;
     private $eventDispatcher;
     private $request;
@@ -67,6 +69,7 @@ class AdminManagementController extends Controller
     /**
      * @DI\InjectParams({
      *     "apiManager"            = @DI\Inject("claroline.manager.api_manager"),
+     *     "configHandler"         = @DI\Inject("claroline.config.platform_config_handler"),
      *     "cursusManager"         = @DI\Inject("claroline.manager.cursus_manager"),
      *     "eventDispatcher"       = @DI\Inject("event_dispatcher"),
      *     "request"               = @DI\Inject("request"),
@@ -80,6 +83,7 @@ class AdminManagementController extends Controller
      */
     public function __construct(
         ApiManager $apiManager,
+        PlatformConfigurationHandler $configHandler,
         CursusManager $cursusManager,
         EventDispatcherInterface $eventDispatcher,
         Request $request,
@@ -91,6 +95,7 @@ class AdminManagementController extends Controller
         WorkspaceModelManager $workspaceModelManager
     ) {
         $this->apiManager = $apiManager;
+        $this->configHandler = $configHandler;
         $this->cursusManager = $cursusManager;
         $this->eventDispatcher = $eventDispatcher;
         $this->request = $request;
@@ -1517,5 +1522,56 @@ class AdminManagementController extends Controller
         );
 
         return new JsonResponse('success', 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/cursus/general/parameters/retrieve",
+     *     name="api_get_cursus_general_parameters",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     *
+     * Returns the general parameters
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getGeneralParametersAction()
+    {
+        $datas = [];
+        $datas['disableInvitations'] = $this->configHandler->hasParameter('cursus_disable_invitations') ?
+            $this->configHandler->getParameter('cursus_disable_invitations') :
+            false;
+        $datas['disableCertificates'] = $this->configHandler->hasParameter('cursus_disable_certificates') ?
+            $this->configHandler->getParameter('cursus_disable_certificates') :
+            false;
+        $datas['enableCoursesProfileTab'] = $this->configHandler->hasParameter('cursus_enable_courses_profile_tab') ?
+            $this->configHandler->getParameter('cursus_enable_courses_profile_tab') :
+            false;
+
+
+        return new JsonResponse($datas, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/cursus/general/parameters/register",
+     *     name="api_post_cursus_general_parameters",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     *
+     * Sets the general parameters
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function postGeneralParametersAction()
+    {
+        $parameters = $this->request->request->get('parameters', false);
+        $this->configHandler->setParameter('cursus_disable_invitations', $parameters['disableInvitations']);
+        $this->configHandler->setParameter('cursus_disable_certificates', $parameters['disableCertificates']);
+        $this->configHandler->setParameter('cursus_enable_courses_profile_tab', $parameters['enableCoursesProfileTab']);
+
+        return new JsonResponse($parameters, 200);
     }
 }

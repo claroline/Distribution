@@ -1,6 +1,6 @@
 <div class="panel-heading clearfix">
     <h3 class="panel-title">
-        {{ 'configuration'|trans:{}:'platform' }}
+        {{ 'general_parameters'|trans:{}:'cursus' }}
         <span class="pull-right">
             <a class="btn btn-default btn-sm"
                ui-sref="courses_management"
@@ -26,7 +26,7 @@
             >
                 <i class="fa fa-database"></i>
             </a>
-            <a class="btn btn-success btn-sm disabled"
+            <a class="btn btn-success btn-sm"
                ui-sref="configuration"
                data-toggle="tooltip"
                data-placement="top"
@@ -37,17 +37,37 @@
         </span>
     </h3>
 </div>
-<div class="list-group">
-    <a class="list-group-item pointer-hand" class="list-group-item" ui-sref="general_parameters">
-        <i class="fa fa-cogs"></i>
-        {{ 'general_parameters'|trans:{}:'cursus' }}
-    </a>
-    <a class="list-group-item pointer-hand" class="list-group-item">
-        <i class="fa fa-envelope-o"></i>
-        {{ 'messages_management'|trans:{}:'cursus' }}
-    </a>
-    <a class="list-group-item pointer-hand" class="list-group-item" ui-sref="locations_management">
-        <i class="fa fa-map-marker"></i>
-        {{ 'locations_management'|trans:{}:'cursus' }}
+<div class="panel-body general-parameters-panel">
+    <div class="form-group row">
+        <label class="control-label col-md-3">
+            {{ 'disable_invitations'|trans:{}:'cursus' }}
+        </label>
+        <div class="col-md-9">
+            <input type="checkbox" ng-model="cmc.configs['disableInvitations']">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="control-label col-md-3">
+            {{ 'disable_certificates'|trans:{}:'cursus' }}
+        </label>
+        <div class="col-md-9">
+            <input type="checkbox" ng-model="cmc.configs['disableCertificates']">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="control-label col-md-3">
+            {{ 'enable_courses_tab_in_profile'|trans:{}:'cursus' }}
+        </label>
+        <div class="col-md-9">
+            <input type="checkbox" ng-model="cmc.configs['enableCoursesProfileTab']">
+        </div>
+    </div>
+</div>
+<div class="panel-footer">
+    <button class="btn btn-primary" ng-click="cmc.validate()">
+        {{ 'ok'|trans:{}:'platform' }}
+    </button>
+    <a class="btn btn-default" ui-sref="configuration">
+        {{ 'cancel'|trans:{}:'platform' }}
     </a>
 </div>

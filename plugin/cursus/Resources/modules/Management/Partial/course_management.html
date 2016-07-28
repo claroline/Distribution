@@ -153,6 +153,7 @@
                                     data-placement="top"
                                     title="{{ 'generate_certificates'|trans:{}:'cursus' }}"
                                     ng-click="cmc.generateCertificates(session['id'])"
+                                    ng-if="!cmc.isCertificatesDisabled"
                             >
                                 <i class="fa fa-graduation-cap"></i>
                             </button>
@@ -161,6 +162,7 @@
                                     data-placement="top"
                                     title="{{ 'invite_learners_to_session'|trans:{}:'cursus' }}"
                                     ng-click="cmc.inviteLearners(session['id'])"
+                                    ng-if="!cmc.isInvitationsDisabled"
                             >
                                 <i class="fa fa-plus-square"></i>
                             </button>
@@ -249,6 +251,7 @@
                                     data-placement="top"
                                     title="{{ 'generate_certificates'|trans:{}:'cursus' }}"
                                     ng-click="cmc.generateCertificates(session['id'])"
+                                    ng-if="!cmc.isCertificatesDisabled"
                             >
                                 <i class="fa fa-graduation-cap"></i>
                             </button>

@@ -7,6 +7,7 @@ import sessionsManagementTemplate from './Partial/sessions_management.html'
 import courseTemplate from './Partial/course_management.html'
 import sessionTemplate from './Partial/session_management.html'
 import configurationTemplate from './Partial/configuration.html'
+import parametersTemplate from './Partial/general_parameters.html'
 import locationsManagementTemplate from './Partial/locations_management.html'
 
 export default function($stateProvider, $urlRouterProvider) {
@@ -73,6 +74,16 @@ export default function($stateProvider, $urlRouterProvider) {
       template: configurationTemplate,
       ncyBreadcrumb: {
         label: Translator.trans('configuration', {}, 'platform')
+      }
+    })
+    .state ('general_parameters', {
+      url: '/configuration/parameters',
+      template: parametersTemplate,
+      controller: 'GeneralParametersCtrl',
+      controllerAs: 'cmc',
+      ncyBreadcrumb: {
+        label: Translator.trans('general_parameters', {}, 'cursus'),
+        parent: 'configuration'
       }
     })
     .state ('locations_management', {

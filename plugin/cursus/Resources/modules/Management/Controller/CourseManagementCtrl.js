@@ -33,6 +33,8 @@ export default class CourseManagementCtrl {
         {counts: [10, 20, 50, 100], dataset: this.closedSessions}
       )
     }
+    this.isCertificatesDisabled = true
+    this.isInvitationsDisabled = true
     this.initialize()
     this._updateCourseCallback = this._updateCourseCallback.bind(this)
     this._addSessionCallback = this._addSessionCallback.bind(this)
@@ -68,6 +70,10 @@ export default class CourseManagementCtrl {
         }
       })
     }
+    this.CourseService.getGeneralParameters().then(d => {
+      this.isCertificatesDisabled = d['disableCertificates']
+      this.isInvitationsDisabled = d['disableInvitations']
+    })
     this.SessionService.loadSessionsByCourse(this.courseId)
   }
 

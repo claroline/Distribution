@@ -196,7 +196,7 @@
                                         {{ event['endDate']|date:'dd/MM/yyyy HH:mm' }}
                                     </td>
                                     <td class="text-center" ignore-cell="true">
-                                        {{ event['location'] }}
+                                        <div ng-bind-html="event['location']|trust_html"></div>
                                     </td>
                                 </tr>
                             </table>

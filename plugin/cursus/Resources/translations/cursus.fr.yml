@@ -76,6 +76,8 @@ delete_selected_sessions: Supprimer les sessions séléctionnées
 delete_session: Supprimer la session
 delete_session_event: Supprimer la séance
 delete_session_event_confirm_message: Êtes-vous sûr de vouloir supprimer cette séance ?
+disable_certificates: Désactiver les certificats
+disable_invitations: Désactiver les invitations
 display_course_details: Voir les détails de la formation
 display_session_events: Voir les séances
 display_sessions: Voir les sessions
@@ -85,6 +87,7 @@ displayed_word: Mot affiché
 edit_course: Modifier la formation
 edit_session: Modifier la session
 edit_session_event: Modifier la séance
+enable_courses_tab_in_profile: Activer l'onglet "Formations" dans le profil
 export_all_courses: Exporter toutes les formations
 form_not_blank_error: Cette valeur ne doit pas être vide.
 form_not_unique_error: Cette valeur est déjà utilisée.
@@ -92,8 +95,9 @@ form_not_valid_error: Cette valeur n'est pas valide.
 form_number_inferior_error: Cette valeur doit être inférieure ou égale à %value%.
 form_number_superior_error: Cette valeur doit être supérieure ou égale à %value%.
 full_session_msg: La limite d'utilisateurs pour la session de formation est atteinte
-go_to_workspace: Accéder à l'espace d'activités
+general_parameters: Paramètres généraux
 generate_certificates: Générer les certificats
+go_to_workspace: Accéder à l'espace d'activités
 icon: Icône
 import_courses: Importer des formations
 invalid_file: Fichier non valide

@@ -8,8 +8,9 @@
  */
 
 export default class SessionManagementCtrl {
-  constructor($stateParams, NgTableParams, SessionService, SessionEventService) {
+  constructor($stateParams, NgTableParams, CourseService, SessionService, SessionEventService) {
     this.NgTableParams = NgTableParams
+    this.CourseService = CourseService
     this.SessionService = SessionService
     this.SessionEventService = SessionEventService
     this.sessionId = $stateParams.sessionId
@@ -54,6 +55,8 @@ export default class SessionManagementCtrl {
         {counts: [10, 20, 50, 100], dataset: this.closedEvents}
       )
     }
+    this.isCertificatesDisabled = true
+    this.isInvitationsDisabled = true
     this._updateSessionCallback = this._updateSessionCallback.bind(this)
     this._addSessionEventCallback = this._addSessionEventCallback.bind(this)
     this._updateSessionEventCallback = this._updateSessionEventCallback.bind(this)
@@ -156,6 +159,10 @@ export default class SessionManagementCtrl {
         }
       })
     }
+    this.CourseService.getGeneralParameters().then(d => {
+      this.isCertificatesDisabled = d['disableCertificates']
+      this.isInvitationsDisabled = d['disableInvitations']
+    })
     this.SessionService.loadUsersBySession(this.sessionId)
     this.SessionService.loadGroupsBySession(this.sessionId, this._initializeGroupsCallback)
     this.SessionService.loadPendingUsersBySession(this.sessionId)

@@ -76,6 +76,8 @@ delete_selected_sessions: Delete selected sessions
 delete_session: Delete training session
 delete_session_event: Delete session event
 delete_session_event_confirm_message: Are you sure you want to delete this session event ?
+disable_certificates: Disable ceritficates
+disable_invitations: Disable invitations
 display_course_details: Display training details
 display_session_events: Display session events
 display_sessions: Display sessions
@@ -85,6 +87,7 @@ displayed_word: Displayed word
 edit_course: Edit training
 edit_session: Edit training session
 edit_session_event: Edit session event
+enable_courses_tab_in_profile: Enable trainings tab in profile
 export_all_courses: Export all trainings
 form_not_blank_error: This value should not be blank.
 form_not_unique_error: This value is already used.
@@ -92,6 +95,7 @@ form_not_valid_error: This value is not valid.
 form_number_inferior_error: This value should be %value% or less.
 form_number_superior_error: This value should be %value% or more.
 full_session_msg: Training session users limit has been reached
+general_parameters: General parameters
 generate_certificates: Generate certificates
 go_to_workspace: Go to workspace
 icon: Icon

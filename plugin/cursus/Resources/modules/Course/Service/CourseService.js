@@ -238,4 +238,22 @@ export default class CourseService {
       }
     }
   }
+
+  getGeneralParameters () {
+    const url = Routing.generate('api_get_cursus_general_parameters')
+    return this.$http.get(url).then(d => {
+      if (d['status'] === 200) {
+        return d['data']
+      }
+    })
+  }
+
+  setGeneralParameters (params) {
+    const url = Routing.generate('api_post_cursus_general_parameters')
+    return this.$http.post(url, {parameters: params}).then(d => {
+      if (d['status'] === 200) {
+        return 'success'
+      }
+    })
+  }
 }
