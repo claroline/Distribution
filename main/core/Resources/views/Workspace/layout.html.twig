@@ -120,10 +120,14 @@
 
             setInterval(function() {
                 var newHeight = getIframeWindowHeight();
-                if (newHeight != oldHeight) {
-                    postHeight(newHeight);
+
+                if (newHeight =! null) {
+                    if (newHeight != oldHeight) {
+                        postHeight(newHeight);
+                    }
+                    oldHeight = newHeight;
                 }
-                oldHeight = newHeight;
+
             }, 2000);
             /* End of Hack */
 
