@@ -1,6 +1,5 @@
 import angular from 'angular/index'
 import 'angular-loading-bar'
-//import 'angular-strap'
 import 'angular-bootstrap'
 import 'angular-route'
 import 'angular-ui-translation/angular-translation'
