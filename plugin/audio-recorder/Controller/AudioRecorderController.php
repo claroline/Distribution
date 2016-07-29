@@ -6,9 +6,7 @@ use Innova\AudioRecorderBundle\Entity\AudioRecorderConfiguration;
 use Innova\AudioRecorderBundle\Form\Type\AudioRecorderConfigurationType;
 use Innova\AudioRecorderBundle\Manager\AudioRecorderManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -27,11 +25,11 @@ class AudioRecorderController extends Controller
     }
 
     /**
-     * @Route(
+     * @EXT\Route(
      *     "/configure/form",
      *     name="audio_recorder_config_form"
      * )
-     * @ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
      */
     public function pluginConfigureFormAction()
     {
@@ -45,9 +43,9 @@ class AudioRecorderController extends Controller
     }
 
     /**
-     * @Route("/update/configuration/{id}", name="audio_recorder_config_save")
-     * @ParamConverter("config", class="InnovaAudioRecorderBundle:AudioRecorderConfiguration")
-     * @Method("POST")
+     * @EXT\Route("/update/configuration/{id}", name="audio_recorder_config_save")
+     * @EXT\ParamConverter("config", class="InnovaAudioRecorderBundle:AudioRecorderConfiguration")
+     * @EXT\Method("POST")
      */
     public function updateConfigurationAction(AudioRecorderConfiguration $config, Request $request)
     {

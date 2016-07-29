@@ -6,9 +6,7 @@ use Innova\VideoRecorderBundle\Entity\VideoRecorderConfiguration;
 use Innova\VideoRecorderBundle\Form\Type\VideoRecorderConfigurationType;
 use Innova\VideoRecorderBundle\Manager\VideoRecorderManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -27,11 +25,11 @@ class VideoRecorderController extends Controller
     }
 
     /**
-     * @Route(
+     * @EXT\Route(
      *     "/configure/form",
      *     name="video_recorder_config_form"
      * )
-     * @ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
      */
     public function pluginConfigureFormAction()
     {
@@ -45,9 +43,9 @@ class VideoRecorderController extends Controller
     }
 
     /**
-     * @Route("/update/configuration/{id}", name="video_recorder_config_save")
-     * @ParamConverter("config", class="InnovaVideoRecorderBundle:VideoRecorderConfiguration")
-     * @Method("POST")
+     * @EXT\Route("/update/configuration/{id}", name="video_recorder_config_save")
+     * @EXT\ParamConverter("config", class="InnovaVideoRecorderBundle:VideoRecorderConfiguration")
+     * @EXT\Method("POST")
      */
     public function updateConfigurationAction(VideoRecorderConfiguration $config, Request $request)
     {
