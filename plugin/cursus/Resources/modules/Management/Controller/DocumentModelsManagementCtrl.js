@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+/*global Translator*/
+
 export default class DocumentModelsManagementCtrl {
   constructor (NgTableParams, CourseService, DocumentModelService) {
     this.CourseService = CourseService
@@ -23,13 +25,15 @@ export default class DocumentModelsManagementCtrl {
   }
 
   _addDocumentModelCallback (data) {
-    const documentModel = JSON.parse(data)
+    let documentModel = JSON.parse(data)
+    documentModel['documentTypeName'] = this.DocumentModelService.getDocumentTypeName(documentModel['documentType'])
     this.models.push(documentModel)
     this.tableParams.reload()
   }
 
   _updateDocumentModelCallback (data) {
-    const documentModel = JSON.parse(data)
+    let documentModel = JSON.parse(data)
+    documentModel['documentTypeName'] = this.DocumentModelService.getDocumentTypeName(documentModel['documentType'])
     const index = this.models.findIndex(m => m['id'] === documentModel['id'])
 
     if (index > -1) {
@@ -50,7 +54,10 @@ export default class DocumentModelsManagementCtrl {
 
   initialize () {
     this.DocumentModelService.getAllDocumentModels().then(d => {
-      d.forEach(m => this.models.push(m))
+      d.forEach(m => {
+        m['documentTypeName'] = this.DocumentModelService.getDocumentTypeName(m['documentType'])
+        this.models.push(m)
+      })
     })
   }
 

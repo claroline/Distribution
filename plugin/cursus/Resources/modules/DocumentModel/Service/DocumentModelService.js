@@ -30,6 +30,26 @@ export default class DocumentModelService {
     })
   }
 
+  getDocumentTypeName (documentType) {
+    let name = ''
+
+    switch (documentType) {
+      case 0 :
+        name = Translator.trans('session_invitation', {}, 'cursus')
+        break
+      case 1 :
+        name = Translator.trans('session_event_invitation', {}, 'cursus')
+        break
+      case 2 :
+        name = Translator.trans('session_certificate', {}, 'cursus')
+        break
+      default :
+        break;
+    }
+
+    return name
+  }
+
   createDocumentModel (callback = null) {
     this.$uibModal.open({
       template: documentModelFormTemplate,
