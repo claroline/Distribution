@@ -8,9 +8,9 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution
  *
- * Generation date: 2016/07/20 06:35:21
+ * Generation date: 2016/07/29 09:47:29
  */
-class Version20160720183520 extends AbstractMigration
+class Version20160729094726 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -21,6 +21,15 @@ class Version20160720183520 extends AbstractMigration
                 INDEX IDX_6B367C8591CC992 (course_id), 
                 INDEX IDX_6B367C832C8A3DE (organization_id), 
                 PRIMARY KEY(course_id, organization_id)
+            ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
+        ");
+        $this->addSql("
+            CREATE TABLE claro_cursusbundle_document_model (
+                id INT AUTO_INCREMENT NOT NULL, 
+                name LONGTEXT NOT NULL, 
+                content LONGTEXT NOT NULL, 
+                document_type INT NOT NULL, 
+                PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
         ");
         $this->addSql("
@@ -119,6 +128,9 @@ class Version20160720183520 extends AbstractMigration
         ");
         $this->addSql("
             DROP TABLE claro_cursusbundle_course_organizations
+        ");
+        $this->addSql("
+            DROP TABLE claro_cursusbundle_document_model
         ");
         $this->addSql("
             DROP TABLE claro_cursusbundle_session_event

@@ -39,6 +39,7 @@ courses_management: Trainings management
 create_course: Create training
 create_cursus: Create cursus
 create_cursus_child: Create a child
+create_document_model: Create invitation/certificate model
 create_new_session: Create a new training session
 create_session: Create training session
 create_session_event: Create session event
@@ -70,6 +71,8 @@ delete_course_session_confirm_msg: Are you sure you want to delete this training
 delete_course_session_workspace_confirm_msg: Also delete associated workspace
 delete_cursus: Delete cursus
 delete_cursus_confirm_message: Are you sure you want to delete this cursus ?
+delete_document_model: Delete invitation/certificate model
+delete_document_model_confirm_message: Are you sure you want to delete this invitation/certificate model ?
 delete_location: Delete location
 delete_selected_courses: Delete selected courses
 delete_selected_sessions: Delete selected sessions
@@ -84,6 +87,9 @@ display_sessions: Display sessions
 display_sessions_from: Display sessions from
 display_sessions_to: to
 displayed_word: Displayed word
+document_model_creation: Invitation/Certificate model creation
+document_model_edition: Invitation/Certificate model edition
+document_models_management: Invitation/Certificate models management
 edit_course: Edit training
 edit_session: Edit training session
 edit_session_event: Edit session event
@@ -112,13 +118,13 @@ locations_management: Locations management
 manager: Manager
 max_time_reservation: Max time reservation
 max_users: Max number of users
-messages_management: Messages management
 no: No
 no_closed_session: No closed session
 no_closed_session_event: No closed session event
 no_course: No training
 no_cursus: No cursus
 no_description: No description
+no_document_model: No invitation/certificate model
 no_location: No location
 no_open_session: No open session
 no_open_session_event: No open session event
@@ -165,6 +171,7 @@ select_session: Select a training session
 selected_sessions: Selected training sessions
 self_register: Register
 session: Training sessions
+session_certificate: Session certificate
 session_closed: Closed
 session_creation: Training session creation
 session_deletion: Training session deletion
@@ -176,10 +183,12 @@ session_event: Session event
 session_event_creation: Session event creation
 session_event_deletion: Session event deletion
 session_event_edition: Session event edition
+session_event_invitation: Session event invitation
 session_event_location: Location
 session_event_title: Session event "%eventName%"
 session_events: Session events
 session_events_details: Session events details
+session_invitation: Session invitation
 session_not_enough_place_msg: Only %remainingPlaces% place(s) remaining in session "%sessionName%" of training "%courseTitle% [%courseCode%]"
 session_not_started: Not started
 session_open: Ongoing

@@ -39,6 +39,7 @@ use Claroline\CursusBundle\Entity\Cursus;
 use Claroline\CursusBundle\Entity\CursusDisplayedWord;
 use Claroline\CursusBundle\Entity\CursusGroup;
 use Claroline\CursusBundle\Entity\CursusUser;
+use Claroline\CursusBundle\Entity\DocumentModel;
 use Claroline\CursusBundle\Entity\SessionEvent;
 use Claroline\CursusBundle\Entity\SessionEventComment;
 use Claroline\CursusBundle\Event\Log\LogCourseCreateEvent;
@@ -116,6 +117,7 @@ class CursusManager
     private $cursusGroupRepo;
     private $cursusUserRepo;
     private $cursusWordRepo;
+    private $documentModelRepo;
     private $reservationResourceRepo;
     private $sessionEventRepo;
     private $sessionGroupRepo;
@@ -203,6 +205,7 @@ class CursusManager
         $this->cursusGroupRepo = $om->getRepository('ClarolineCursusBundle:CursusGroup');
         $this->cursusUserRepo = $om->getRepository('ClarolineCursusBundle:CursusUser');
         $this->cursusWordRepo = $om->getRepository('ClarolineCursusBundle:CursusDisplayedWord');
+        $this->documentModelRepo = $om->getRepository('ClarolineCursusBundle:DocumentModel');
         $this->reservationResourceRepo = $om->getRepository('FormaLibre\ReservationBundle\Entity\Resource');
         $this->sessionEventRepo = $om->getRepository('ClarolineCursusBundle:SessionEvent');
         $this->sessionGroupRepo = $om->getRepository('ClarolineCursusBundle:CourseSessionGroup');
@@ -3676,6 +3679,29 @@ class CursusManager
         return $workspaces;
     }
 
+    public function createDocumentModel($name, $content, $type)
+    {
+        $documentModel = new DocumentModel();
+        $documentModel->setName($name);
+        $documentModel->setContent($content);
+        $documentModel->setDocumentType($type);
+        $this->persistDocumentModel($documentModel);
+
+        return $documentModel;
+    }
+
+    public function persistDocumentModel(DocumentModel $documentModel)
+    {
+        $this->om->persist($documentModel);
+        $this->om->flush();
+    }
+
+    public function deleteDocumentModel(DocumentModel $documentModel)
+    {
+        $this->om->remove($documentModel);
+        $this->om->flush();
+    }
+
     /***************************************************
      * Access to CursusDisplayedWordRepository methods *
      ***************************************************/
@@ -4376,13 +4402,32 @@ class CursusManager
         return $this->courseQueueRepo->findUnvalidatedSearchedCourseQueues($search);
     }
 
+    /*********************************************
+     * Access to DoucmentModelRepository methods *
+     *********************************************/
+
+    public function getAllDocumentModels()
+    {
+        return $this->documentModelRepo->findBy([], ['name' => 'ASC']);
+    }
+
+    public function getDocumentModelsByType($type)
+    {
+        return $this->documentModelRepo->findBy(['documentType' => $type], ['name' => 'ASC']);
+    }
+
+    public function getDocumentModelById($id)
+    {
+        return $this->documentModelRepo->findOneById($id);
+    }
+
     /***************************************************
      * Access to ReservationResourceRepository methods *
      ***************************************************/
 
     public function getAllReservationResources()
     {
-        return $this->reservationResourceRepo->findBy([], ['name' => 'asc']);
+        return $this->reservationResourceRepo->findBy([], ['name' => 'ASC']);
     }
 
     public function getReservationResourceById($id)

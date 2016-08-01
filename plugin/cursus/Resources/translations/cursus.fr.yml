@@ -39,6 +39,7 @@ courses_management: Gestion des formations
 create_cursus: Créer un cursus
 create_course: Créer une formation
 create_cursus_child: Créer un enfant
+create_document_model: Créer un modèle d'invitation ou de certificat
 create_new_session: Créer une nouvelle session de formation
 create_session: Créer une session de formation
 create_session_event: Créer une séance
@@ -68,8 +69,10 @@ delete_course: Supprimer la formation
 delete_course_confirm_message: Êtes-vous sûr de vouloir supprimer cette formation ?
 delete_course_session_confirm_msg: Êtes-vous sûr de vouloir supprimer cette session de formation ?
 delete_course_session_workspace_confirm_msg: Supprimer également l'espace d'activités associé
-delete_cursus: Supprimmer le cursus
+delete_cursus: Supprimer le cursus
 delete_cursus_confirm_message: Êtes-vous sûr de vouloir supprimer ce cursus ?
+delete_document_model: Supprimer le modèle d'invitation/certificat
+delete_document_model_confirm_message: Êtes-vous sûr de vouloir supprimer ce modèle d'invitation/certificat ?
 delete_location: Supprimer la localisation
 delete_selected_courses: Supprimer les formations séléctionnées
 delete_selected_sessions: Supprimer les sessions séléctionnées
@@ -84,6 +87,9 @@ display_sessions: Voir les sessions
 display_sessions_from: Afficher les sessions du
 display_sessions_to: au
 displayed_word: Mot affiché
+document_model_creation: Création d'un modèle d'invitation/certificat
+document_model_edition: Modification d'un modèle d'invitation/certificat
+document_models_management: Gestion des modèles d'invitation et certificat
 edit_course: Modifier la formation
 edit_session: Modifier la session
 edit_session_event: Modifier la séance
@@ -112,13 +118,13 @@ locations_management: Gestion des localisations
 manager: Gestionnaire
 max_time_reservation: Temps max de réservation
 max_users: Nombre maximum d'utilisateurs
-messages_management: Gestion des messages
 no: Non
 no_closed_session: Aucune session terminée
 no_closed_session_event: Aucune séance terminée
 no_course: Aucune formation
 no_cursus: Aucun cursus
 no_description: Aucune description
+no_document_model: Aucun modèle d'invitation/certificat
 no_location: Aucune localisation
 no_open_session: Aucune session ouverte
 no_open_session_event: Aucune séance ouverte
@@ -166,6 +172,7 @@ select_session: Sélectionnez une session de formation
 selected_sessions: Sessions de formation sélectionnées
 self_register: S'inscrire
 session: Session de formation
+session_certificate: Certificat pour une session
 session_closed: Terminé
 session_creation: Création d'une session de formation
 session_deletion: Suppression de la session de formation
@@ -177,10 +184,12 @@ session_event: Séance
 session_event_creation: Création d'une séance
 session_event_deletion: Suppression de la séance
 session_event_edition: Modification de la séance
+session_event_invitation: Invitation à une séance
 session_event_location: Lieu
 session_event_title: Séance "%eventName%"
 session_events: Séances
 session_events_details: Détails des séances
+session_invitation: Invitation à une session
 session_not_enough_place_msg: Seulement %remainingPlaces% place(s) restante(s) dans la session "%sessionName%" de la formation "%courseTitle% [%courseCode%]"
 session_not_started: Non commencé
 session_open: En cours

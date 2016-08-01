@@ -9,6 +9,7 @@ import sessionTemplate from './Partial/session_management.html'
 import configurationTemplate from './Partial/configuration.html'
 import parametersTemplate from './Partial/general_parameters.html'
 import locationsManagementTemplate from './Partial/locations_management.html'
+import documentModelsManagementTemplate from './Partial/document_models_management.html'
 
 export default function($stateProvider, $urlRouterProvider) {
   $stateProvider
@@ -93,6 +94,16 @@ export default function($stateProvider, $urlRouterProvider) {
       controllerAs: 'cmc',
       ncyBreadcrumb: {
         label: Translator.trans('locations_management', {}, 'cursus'),
+        parent: 'configuration'
+      }
+    })
+    .state ('document_models_management', {
+      url: '/configuration/documents',
+      template: documentModelsManagementTemplate,
+      controller: 'DocumentModelsManagementCtrl',
+      controllerAs: 'cmc',
+      ncyBreadcrumb: {
+        label: Translator.trans('document_models_management', {}, 'cursus'),
         parent: 'configuration'
       }
     })

@@ -25,6 +25,7 @@ use Claroline\CursusBundle\Entity\CourseSessionGroup;
 use Claroline\CursusBundle\Entity\CourseSessionRegistrationQueue;
 use Claroline\CursusBundle\Entity\CourseSessionUser;
 use Claroline\CursusBundle\Entity\Cursus;
+use Claroline\CursusBundle\Entity\DocumentModel;
 use Claroline\CursusBundle\Entity\SessionEvent;
 use Claroline\CursusBundle\Event\Log\LogCourseEditEvent;
 use Claroline\CursusBundle\Event\Log\LogCourseSessionEditEvent;
@@ -112,7 +113,7 @@ class AdminManagementController extends Controller
      *     "/admin/management/index",
      *     name="claro_cursus_admin_management_index"
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      * @EXT\Template()
      */
     public function indexAction()
@@ -126,7 +127,7 @@ class AdminManagementController extends Controller
      *     name="api_post_cursus_creation",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Creates a cursus
      *
@@ -182,7 +183,7 @@ class AdminManagementController extends Controller
      *     name="api_post_cursus_child_creation",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Creates a child cursus
      *
@@ -239,7 +240,7 @@ class AdminManagementController extends Controller
      *     name="api_put_cursus_edition",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Edits a cursus
      *
@@ -286,7 +287,7 @@ class AdminManagementController extends Controller
      *     name="api_delete_cursus",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Deletes cursus
      *
@@ -310,7 +311,7 @@ class AdminManagementController extends Controller
      *     name="api_post_cursus_import",
      *     options={"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      */
     public function postCursusImportAction()
     {
@@ -372,7 +373,7 @@ class AdminManagementController extends Controller
      *     name="api_post_cursus_course_creation",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      */
     public function postCursusCourseCreateAction(User $user, Cursus $cursus)
     {
@@ -449,7 +450,7 @@ class AdminManagementController extends Controller
      *     name="api_post_course_creation",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      */
     public function postCourseCreateAction(User $user)
     {
@@ -525,7 +526,7 @@ class AdminManagementController extends Controller
      *     name="api_post_cursus_course_add",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      */
     public function postCursusCourseAddAction(Cursus $cursus, Course $course)
     {
@@ -545,7 +546,7 @@ class AdminManagementController extends Controller
      *     name="api_put_course_edition",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Edits a course
      *
@@ -613,7 +614,7 @@ class AdminManagementController extends Controller
      *     name="api_delete_course",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Deletes course
      *
@@ -637,7 +638,7 @@ class AdminManagementController extends Controller
      *     name="api_post_courses_import",
      *     options={"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      */
     public function postCoursesImportAction()
     {
@@ -690,7 +691,7 @@ class AdminManagementController extends Controller
      *     name="api_get_course_by_id",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Returns the course
      *
@@ -713,7 +714,7 @@ class AdminManagementController extends Controller
      *     name="api_get_cursus_by_code_without_id",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Returns the cursus
      *
@@ -737,7 +738,7 @@ class AdminManagementController extends Controller
      *     name="api_get_course_by_code_without_id",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Returns the course
      *
@@ -761,7 +762,7 @@ class AdminManagementController extends Controller
      *     name="api_get_session_by_id",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Returns the session
      *
@@ -784,7 +785,7 @@ class AdminManagementController extends Controller
      *     name="api_post_session_creation",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      */
     public function postSessionCreateAction(Course $course)
     {
@@ -855,7 +856,7 @@ class AdminManagementController extends Controller
      *     name="api_put_session_edition",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Edits a session
      *
@@ -916,7 +917,7 @@ class AdminManagementController extends Controller
      *     name="api_delete_session",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Deletes session
      *
@@ -941,7 +942,7 @@ class AdminManagementController extends Controller
      *     name="api_put_session_default_reset",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Deletes session
      *
@@ -960,7 +961,7 @@ class AdminManagementController extends Controller
      *     name="api_post_session_event_creation",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      */
     public function postSessionEventCreateAction(CourseSession $session)
     {
@@ -1019,7 +1020,7 @@ class AdminManagementController extends Controller
      *     name="api_put_session_event_edition",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Edits a session event
      *
@@ -1077,7 +1078,7 @@ class AdminManagementController extends Controller
      *     name="api_delete_session_event",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Deletes session event
      *
@@ -1101,7 +1102,7 @@ class AdminManagementController extends Controller
      *     name="api_get_session_users_by_session_and_type",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Get the session learners list
      *
@@ -1125,7 +1126,7 @@ class AdminManagementController extends Controller
      *     name="api_get_session_users_by_session",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Get the session users list
      *
@@ -1149,7 +1150,7 @@ class AdminManagementController extends Controller
      *     name="api_get_session_groups_by_session",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Get the session groups list
      *
@@ -1173,7 +1174,7 @@ class AdminManagementController extends Controller
      *     name="api_get_session_pending_users_by_session",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Get the session pending users list
      *
@@ -1197,7 +1198,7 @@ class AdminManagementController extends Controller
      *     name="api_delete_session_user",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Deletes a session user
      *
@@ -1221,7 +1222,7 @@ class AdminManagementController extends Controller
      *     name="api_delete_session_group",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Deletes a session group
      *
@@ -1245,7 +1246,7 @@ class AdminManagementController extends Controller
      *     name="api_accept_session_registration_queue",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Accepts session registration queue
      *
@@ -1276,7 +1277,7 @@ class AdminManagementController extends Controller
      *     name="api_delete_session_registration_queue",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Deletes session registration queue
      *
@@ -1300,7 +1301,7 @@ class AdminManagementController extends Controller
      *     name="api_get_session_unregistered_users",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Displays the list of users who are not registered to the session
      *
@@ -1324,7 +1325,7 @@ class AdminManagementController extends Controller
      *     name="api_get_session_unregistered_groups",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Displays the list of groups that are not registered to the session
      *
@@ -1348,7 +1349,7 @@ class AdminManagementController extends Controller
      *     name="api_post_session_user_registration",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("authenticatedUser", converter="current_user")
      *
      * Registers an user to a session
      *
@@ -1367,7 +1368,7 @@ class AdminManagementController extends Controller
      *     name="api_post_session_group_registration",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Registers a group to a session
      *
@@ -1386,7 +1387,7 @@ class AdminManagementController extends Controller
      *     name="api_get_validators_roles",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Retrieves required roles to be validator
      *
@@ -1409,7 +1410,7 @@ class AdminManagementController extends Controller
      *     name="api_get_workspaces",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Retrieves workspaces list for an user
      *
@@ -1433,15 +1434,15 @@ class AdminManagementController extends Controller
      *     name="api_get_workspace_models",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Retrieves workspace models list for an user
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function getWorkspaceModelsAction(User $authenticatedUser)
+    public function getWorkspaceModelsAction(User $user)
     {
-        $models = $this->workspaceModelManager->getModelsByUser($authenticatedUser);
+        $models = $this->workspaceModelManager->getModelsByUser($user);
         $serializedModels = $this->serializer->serialize(
             $models,
             'json',
@@ -1457,7 +1458,7 @@ class AdminManagementController extends Controller
      *     name="api_get_reservation_resources",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Retrieves reservation resources list
      *
@@ -1481,7 +1482,7 @@ class AdminManagementController extends Controller
      *     name="api_get_cursus_reservation_resources",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Retrieves cursus reservation resources list
      *
@@ -1514,7 +1515,7 @@ class AdminManagementController extends Controller
      *     name="api_post_cursus_reservation_resources_tag",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Tags reservation resource
      *
@@ -1534,7 +1535,7 @@ class AdminManagementController extends Controller
      *     name="api_delete_cursus_reservation_resources_tag",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Removes tag from reservation resource
      *
@@ -1557,7 +1558,7 @@ class AdminManagementController extends Controller
      *     name="api_get_cursus_general_parameters",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Returns the general parameters
      *
@@ -1586,7 +1587,7 @@ class AdminManagementController extends Controller
      *     name="api_post_cursus_general_parameters",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Sets the general parameters
      *
@@ -1600,5 +1601,102 @@ class AdminManagementController extends Controller
         $this->configHandler->setParameter('cursus_enable_courses_profile_tab', $parameters['enableCoursesProfileTab']);
 
         return new JsonResponse($parameters, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/cursus/document/models/retrieve",
+     *     name="api_get_cursus_document_models",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     *
+     * Returns the document models list
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getDocumentModelsAction()
+    {
+        $models = $this->cursusManager->getAllDocumentModels();
+        $serializedModels = $this->serializer->serialize(
+            $models,
+            'json',
+            SerializationContext::create()->setGroups(['api_cursus'])
+        );
+
+        return new JsonResponse($serializedModels, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/cursus/document/model/create",
+     *     name="api_post_cursus_document_model_creation",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     */
+    public function postDocumentModelCreateAction()
+    {
+        $documentModelDatas = $this->request->request->get('documentModelDatas', false);
+        $documentModel = $this->cursusManager->createDocumentModel(
+            $documentModelDatas['name'],
+            $documentModelDatas['content'],
+            $documentModelDatas['documentType']
+        );
+        $serializedDocumentModel = $this->serializer->serialize(
+            $documentModel,
+            'json',
+            SerializationContext::create()->setGroups(['api_cursus'])
+        );
+
+        return new JsonResponse($serializedDocumentModel, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/cursus/document/model/{documentModel}/edit",
+     *     name="api_put_cursus_document_model_edition",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     */
+    public function putDocumentModelEditAction(DocumentModel $documentModel)
+    {
+        $documentModelDatas = $this->request->request->get('documentModelDatas', false);
+        $documentModel->setName($documentModelDatas['name']);
+        $documentModel->setContent($documentModelDatas['content']);
+        $documentModel->setDocumentType($documentModelDatas['documentType']);
+        $this->cursusManager->persistDocumentModel($documentModel);
+        $serializedDocumentModel = $this->serializer->serialize(
+            $documentModel,
+            'json',
+            SerializationContext::create()->setGroups(['api_cursus'])
+        );
+
+        return new JsonResponse($serializedDocumentModel, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/cursus/document/model/{documentModel}/delete",
+     *     name="api_delete_cursus_document_model",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     *
+     * Deletes session event
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function deleteDocumentModelAction(DocumentModel $documentModel)
+    {
+        $serializedDocumentModel = $this->serializer->serialize(
+            $documentModel,
+            'json',
+            SerializationContext::create()->setGroups(['api_cursus'])
+        );
+        $this->cursusManager->deleteDocumentModel($documentModel);
+
+        return new JsonResponse($serializedDocumentModel, 200);
     }
 }

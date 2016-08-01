@@ -1,0 +1,68 @@
+/*
+ * This file is part of the Claroline Connect package.
+ *
+ * (c) Claroline Consortium <consortium@claroline.net>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+export default class DocumentModelsManagementCtrl {
+  constructor (NgTableParams, CourseService, DocumentModelService) {
+    this.CourseService = CourseService
+    this.DocumentModelService = DocumentModelService
+    this.models = []
+    this.tableParams = new NgTableParams(
+      {count: 20},
+      {counts: [10, 20, 50, 100], dataset: this.models}
+    )
+    this.initialize()
+    this._addDocumentModelCallback = this._addDocumentModelCallback.bind(this)
+    this._updateDocumentModelCallback = this._updateDocumentModelCallback.bind(this)
+    this._removeDocumentModelCallback = this._removeDocumentModelCallback.bind(this)
+  }
+
+  _addDocumentModelCallback (data) {
+    const documentModel = JSON.parse(data)
+    this.models.push(documentModel)
+    this.tableParams.reload()
+  }
+
+  _updateDocumentModelCallback (data) {
+    const documentModel = JSON.parse(data)
+    const index = this.models.findIndex(m => m['id'] === documentModel['id'])
+
+    if (index > -1) {
+      this.models[index] = documentModel
+      this.tableParams.reload()
+    }
+  }
+
+  _removeDocumentModelCallback (data) {
+    const documentModel = JSON.parse(data)
+    const index = this.models.findIndex(m => m['id'] === documentModel['id'])
+
+    if (index > -1) {
+      this.models.splice(index, 1)
+      this.tableParams.reload()
+    }
+  }
+
+  initialize () {
+    this.DocumentModelService.getAllDocumentModels().then(d => {
+      d.forEach(m => this.models.push(m))
+    })
+  }
+
+  createDocumentModel () {
+    this.DocumentModelService.createDocumentModel(this._addDocumentModelCallback)
+  }
+
+  editDocumentModel (model) {
+    this.DocumentModelService.editDocumentModel(model, this._updateDocumentModelCallback)
+  }
+
+  deleteDocumentModel (modelId) {
+    this.DocumentModelService.deleteDocumentModel(modelId, this._removeDocumentModelCallback)
+  }
+}

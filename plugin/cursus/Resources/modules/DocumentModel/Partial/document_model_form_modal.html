@@ -1,0 +1,57 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="$close()">&times;</button>
+        <h3>{{ cmc.title }}</h3>
+    </div>
+    <div class="modal-body">
+        <div class="form-group row" ng-class="cmc.documentModelErrors['name'] ? 'has-error' : ''">
+            <label class="control-label col-md-3">
+                {{ 'name'|trans:{}:'platform' }}
+            </label>
+            <div class="col-md-9">
+                <input type="text" class="form-control" ng-model="cmc.documentModel['name']">
+                <div class="help-block field-error" ng-if="cmc.documentModelErrors['name']">
+                    {{ cmc.documentModelErrors['name'] }}
+                </div>
+            </div>
+        </div>
+        <div class="form-group row" ng-class="cmc.documentModelErrors['content'] ? 'has-error' : ''">
+            <label class="control-label col-md-3">
+                {{ 'content'|trans:{}:'platform' }}
+            </label>
+            <div class="col-md-9">
+                <textarea data-ui-tinymce="cmc.tinymceOptions"
+                          data-before-unload="off"
+                          id="document-model-content"
+                          class="form-control"
+                          ng-model="cmc.documentModel['content']"
+                >
+                </textarea>
+                <div class="help-block field-error" ng-if="cmc.documentModelErrors['content']">
+                    {{ cmc.documentModelErrors['content'] }}
+                </div>
+            </div>
+        </div>
+        <div class="form-group row" ng-class="cmc.documentModelErrors['documentType'] ? 'has-error' : ''">
+            <label class="control-label col-md-3">
+                {{ 'type'|trans:{}:'platform' }}
+            </label>
+            <div class="col-md-9">
+                <select class="form-control" ng-model="cmc.documentType" ng-options="t['name'] for t in cmc.documentTypes">
+                    <option></option>
+                </select>
+                <div class="help-block field-error" ng-if="cmc.documentModelErrors['documentType']">
+                    {{ cmc.documentModelErrors['documentType'] }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-default" data-dismiss="modal" ng-click="$close()">
+            {{ 'cancel'|trans:{}:'platform' }}
+        </button>
+        <button type="submit" class="btn btn-primary" ng-click="cmc.submit()">
+            {{ 'ok'|trans:{}:'platform' }}
+        </button>
+    </div>
+</div>
