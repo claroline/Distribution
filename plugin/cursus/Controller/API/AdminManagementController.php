@@ -1237,7 +1237,7 @@ class AdminManagementController extends Controller
         );
         $serializedSessionUsers = $this->cursusManager->unregisterGroupFromSession($sessionGroup);
 
-        return new JsonResponse(['group' =>$serializedSessionGroup, 'users' => $serializedSessionUsers], 200);
+        return new JsonResponse(['group' => $serializedSessionGroup, 'users' => $serializedSessionUsers], 200);
     }
 
     /**
@@ -1401,6 +1401,7 @@ class AdminManagementController extends Controller
             'json',
             SerializationContext::create()->setGroups(['api_role'])
         );
+
         return new JsonResponse($serializedRoles, 200);
     }
 
@@ -1466,7 +1467,7 @@ class AdminManagementController extends Controller
      */
     public function getReservationResourcesAction()
     {
-        $reservationResources = $this->cursusManager->getAllReservationResources();;
+        $reservationResources = $this->cursusManager->getAllReservationResources();
         $serializedResources = $this->serializer->serialize(
             $reservationResources,
             'json',
@@ -1496,7 +1497,7 @@ class AdminManagementController extends Controller
             'class' => 'FormaLibre\ReservationBundle\Entity\Resource',
             'object_response' => true,
             'ordered_by' => 'name',
-            'order' => 'ASC'
+            'order' => 'ASC',
         ];
         $event = $this->eventDispatcher->dispatch('claroline_retrieve_tagged_objects', new GenericDatasEvent($options));
         $resources = $event->getResponse();
@@ -1576,7 +1577,6 @@ class AdminManagementController extends Controller
         $datas['enableCoursesProfileTab'] = $this->configHandler->hasParameter('cursus_enable_courses_profile_tab') ?
             $this->configHandler->getParameter('cursus_enable_courses_profile_tab') :
             false;
-
 
         return new JsonResponse($datas, 200);
     }

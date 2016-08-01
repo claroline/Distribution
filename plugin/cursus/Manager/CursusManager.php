@@ -991,7 +991,7 @@ class CursusManager
 
     public function registerUsersToSession(CourseSession $session, array $users, $type)
     {
-        $results = ['status' => 'success', 'datas' => [],'sessionUsers' => '[]'];
+        $results = ['status' => 'success', 'datas' => [], 'sessionUsers' => '[]'];
         $registrationDate = new \DateTime();
         $course = $session->getCourse();
         $remainingPlaces = (intval($type) === CourseSessionUser::LEARNER) ?

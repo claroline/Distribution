@@ -95,8 +95,6 @@ export default class CursusEditionModalCtrl {
           }
         }
       })
-    } else {
-      console.log('Form is not valid.')
     }
   }
 

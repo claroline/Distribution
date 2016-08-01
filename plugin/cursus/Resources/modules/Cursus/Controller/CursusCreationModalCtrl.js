@@ -77,8 +77,6 @@ export default class CursusCreationModalCtrl {
           }
         }
       })
-    } else {
-      console.log('Form is not valid.')
     }
   }
 

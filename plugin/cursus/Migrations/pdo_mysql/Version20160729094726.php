@@ -6,7 +6,7 @@ use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
 /**
- * Auto-generated migration based on mapping information: modify it with caution
+ * Auto-generated migration based on mapping information: modify it with caution.
  *
  * Generation date: 2016/07/29 09:47:29
  */
@@ -14,7 +14,7 @@ class Version20160729094726 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
-        $this->addSql("
+        $this->addSql('
             CREATE TABLE claro_cursusbundle_course_organizations (
                 course_id INT NOT NULL, 
                 organization_id INT NOT NULL, 
@@ -22,8 +22,8 @@ class Version20160729094726 extends AbstractMigration
                 INDEX IDX_6B367C832C8A3DE (organization_id), 
                 PRIMARY KEY(course_id, organization_id)
             ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             CREATE TABLE claro_cursusbundle_document_model (
                 id INT AUTO_INCREMENT NOT NULL, 
                 name LONGTEXT NOT NULL, 
@@ -31,8 +31,8 @@ class Version20160729094726 extends AbstractMigration
                 document_type INT NOT NULL, 
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             CREATE TABLE claro_cursusbundle_session_event (
                 id INT AUTO_INCREMENT NOT NULL, 
                 session_id INT NOT NULL, 
@@ -48,8 +48,8 @@ class Version20160729094726 extends AbstractMigration
                 INDEX IDX_257C3061B83297E7 (reservation_id), 
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             CREATE TABLE claro_cursusbundle_session_event_comment (
                 id INT AUTO_INCREMENT NOT NULL, 
                 user_id INT NOT NULL, 
@@ -61,58 +61,58 @@ class Version20160729094726 extends AbstractMigration
                 INDEX IDX_21DFDBA8FA5B88E3 (session_event_id), 
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE claro_cursusbundle_course_organizations 
             ADD CONSTRAINT FK_6B367C8591CC992 FOREIGN KEY (course_id) 
             REFERENCES claro_cursusbundle_course (id) 
             ON DELETE CASCADE
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE claro_cursusbundle_course_organizations 
             ADD CONSTRAINT FK_6B367C832C8A3DE FOREIGN KEY (organization_id) 
             REFERENCES claro__organization (id) 
             ON DELETE CASCADE
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE claro_cursusbundle_session_event 
             ADD CONSTRAINT FK_257C3061613FECDF FOREIGN KEY (session_id) 
             REFERENCES claro_cursusbundle_course_session (id) 
             ON DELETE CASCADE
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE claro_cursusbundle_session_event 
             ADD CONSTRAINT FK_257C30619FE77A61 FOREIGN KEY (location_resource_id) 
             REFERENCES formalibre_reservation_resource (id) 
             ON DELETE SET NULL
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE claro_cursusbundle_session_event 
             ADD CONSTRAINT FK_257C3061B83297E7 FOREIGN KEY (reservation_id) 
             REFERENCES formalibre_reservation (id) 
             ON DELETE SET NULL
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE claro_cursusbundle_session_event_comment 
             ADD CONSTRAINT FK_21DFDBA8A76ED395 FOREIGN KEY (user_id) 
             REFERENCES claro_user (id) 
             ON DELETE CASCADE
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE claro_cursusbundle_session_event_comment 
             ADD CONSTRAINT FK_21DFDBA8FA5B88E3 FOREIGN KEY (session_event_id) 
             REFERENCES claro_cursusbundle_session_event (id) 
             ON DELETE CASCADE
-        ");
+        ');
         $this->addSql("
             ALTER TABLE claro_cursusbundle_course 
             ADD session_duration INT DEFAULT 1 NOT NULL, 
             ADD with_session_event TINYINT(1) DEFAULT '1' NOT NULL
         ");
-        $this->addSql("
+        $this->addSql('
             ALTER TABLE claro_cursusbundle_course_session 
             ADD description LONGTEXT DEFAULT NULL
-        ");
+        ');
         $this->addSql("
             ALTER TABLE claro_cursusbundle_courses_widget_config 
             ADD default_mode INT DEFAULT 0 NOT NULL, 
@@ -122,35 +122,35 @@ class Version20160729094726 extends AbstractMigration
 
     public function down(Schema $schema)
     {
-        $this->addSql("
+        $this->addSql('
             ALTER TABLE claro_cursusbundle_session_event_comment 
             DROP FOREIGN KEY FK_21DFDBA8FA5B88E3
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             DROP TABLE claro_cursusbundle_course_organizations
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             DROP TABLE claro_cursusbundle_document_model
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             DROP TABLE claro_cursusbundle_session_event
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             DROP TABLE claro_cursusbundle_session_event_comment
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE claro_cursusbundle_course 
             DROP session_duration, 
             DROP with_session_event
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE claro_cursusbundle_course_session 
             DROP description
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE claro_cursusbundle_courses_widget_config 
             DROP default_mode, 
             DROP public_sessions_only
-        ");
+        ');
     }
 }

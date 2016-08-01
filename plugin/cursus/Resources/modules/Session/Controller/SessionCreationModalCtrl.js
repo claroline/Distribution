@@ -145,8 +145,6 @@ export default class SessionCreationModalCtrl {
         this.callback(d['data'])
         this.$uibModalInstance.close()
       })
-    } else {
-      console.log('Form is not valid.')
     }
   }
 
@@ -191,7 +189,7 @@ export default class SessionCreationModalCtrl {
   }
 
   openUserPicker () {
-    let userPicker = new UserPicker();
+    let userPicker = new UserPicker()
     const options = {
       picker_name: 'validators-picker',
       picker_title: Translator.trans('validators_selection', {}, 'cursus'),
@@ -200,8 +198,8 @@ export default class SessionCreationModalCtrl {
       forced_roles: this.validatorsRoles,
       return_datas: true
     }
-    userPicker.configure(options, this._userpickerCallback);
-    userPicker.open();
+    userPicker.configure(options, this._userpickerCallback)
+    userPicker.open()
   }
 
   refreshScope () {

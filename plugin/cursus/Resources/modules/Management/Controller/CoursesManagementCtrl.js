@@ -87,9 +87,7 @@ export default class CoursesManagementCtrl {
   }
 
   test () {
-    console.log(this.selectedCourses)
-    const ids = this.selectedCourses.map((el) => {return el.id})
-    console.log(ids)
+    this.selectedCourses.map((el) => {return el.id})
   }
 
   loadSessions (courseId) {

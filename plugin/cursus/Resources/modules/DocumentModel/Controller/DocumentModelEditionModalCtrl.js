@@ -71,8 +71,6 @@ export default class DocumentModelEditionModalCtrl {
         this.callback(d['data'])
         this.$uibModalInstance.close()
       })
-    } else {
-      console.log('Form is not valid.')
     }
   }
 

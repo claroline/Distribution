@@ -78,7 +78,6 @@ export default class CourseManagementCtrl {
   }
 
   editCourse () {
-    console.log(this.course)
     this.CourseService.editCourse(this.course, this._updateCourseCallback)
   }
 

@@ -10,6 +10,7 @@
 /*global Routing*/
 /*global Translator*/
 import angular from 'angular/index'
+import $ from 'jquery'
 import courseFormTemplate from '../Partial/course_form_modal.html'
 import courseViewTemplate from '../Partial/course_view_modal.html'
 import coursesImportFormTemplate from '../Partial/courses_import_form.html'

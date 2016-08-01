@@ -49,7 +49,8 @@ class CursusController extends FOSRestController
      *     "requestStack"  = @DI\Inject("request_stack")
      * })
      */
-    public function __construct(CursusManager $cursusManager, FormFactory $formFactory, RequestStack $requestStack) {
+    public function __construct(CursusManager $cursusManager, FormFactory $formFactory, RequestStack $requestStack)
+    {
         $this->cursusManager = $cursusManager;
         $this->formFactory = $formFactory;
         $this->request = $requestStack->getCurrentRequest();

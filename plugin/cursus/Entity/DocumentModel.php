@@ -47,7 +47,6 @@ class DocumentModel
      */
     protected $documentType;
 
-
     public function getId()
     {
         return $this->id;

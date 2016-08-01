@@ -8,6 +8,7 @@
  */
 
 /*global Routing*/
+/*global Translator*/
 
 export default class SessionEventEditionModalCtrl {
   constructor($http, $uibModalInstance, CourseService, title, sessionEvent, callback) {
@@ -66,8 +67,8 @@ export default class SessionEventEditionModalCtrl {
       d.forEach(r => this.locationResources.push(r))
 
       if (this.source['locationResource']) {
-          const selectedResource = this.locationResources.find(lr => lr['id'] === this.source['locationResource']['id'])
-          this.locationResource = selectedResource
+        const selectedResource = this.locationResources.find(lr => lr['id'] === this.source['locationResource']['id'])
+        this.locationResource = selectedResource
       }
     })
   }
@@ -113,8 +114,6 @@ export default class SessionEventEditionModalCtrl {
         this.callback(d['data'])
         this.$uibModalInstance.close()
       })
-    } else {
-      console.log('Form is not valid.')
     }
   }
 

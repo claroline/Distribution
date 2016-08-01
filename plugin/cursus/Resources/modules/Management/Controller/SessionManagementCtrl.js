@@ -116,7 +116,7 @@ export default class SessionManagementCtrl {
     this.tableParams['pendingLearners'].reload()
   }
 
-  _initializeGroupsCallback (data) {
+  _initializeGroupsCallback () {
     this.groups = this.SessionService.getGroupsBySession(this.sessionId)
 
     this.tableParams['groups'] = new this.NgTableParams(
@@ -185,8 +185,7 @@ export default class SessionManagementCtrl {
     this.SessionEventService.deleteSessionEvent(eventId, this._removeSessionEventCallback)
   }
 
-  repeatEvent (eventId) {
-    console.log(this.learners)
+  repeatEvent () {
   }
 
   refreshEventsTables () {

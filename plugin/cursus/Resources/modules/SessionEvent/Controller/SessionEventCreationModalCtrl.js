@@ -8,6 +8,7 @@
  */
 
 /*global Routing*/
+/*global Translator*/
 
 export default class SessionEventCreationModalCtrl {
   constructor($http, $uibModalInstance, CourseService, title, session, callback) {
@@ -95,8 +96,6 @@ export default class SessionEventCreationModalCtrl {
         this.callback(d['data'])
         this.$uibModalInstance.close()
       })
-    } else {
-      console.log('Form is not valid.')
     }
   }
 

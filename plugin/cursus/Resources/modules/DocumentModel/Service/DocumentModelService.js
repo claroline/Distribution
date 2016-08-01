@@ -9,7 +9,6 @@
 
 /*global Routing*/
 /*global Translator*/
-import angular from 'angular/index'
 import documentModelFormTemplate from '../Partial/document_model_form_modal.html'
 
 export default class DocumentModelService {
@@ -34,17 +33,17 @@ export default class DocumentModelService {
     let name = ''
 
     switch (documentType) {
-      case 0 :
-        name = Translator.trans('session_invitation', {}, 'cursus')
-        break
-      case 1 :
-        name = Translator.trans('session_event_invitation', {}, 'cursus')
-        break
-      case 2 :
-        name = Translator.trans('session_certificate', {}, 'cursus')
-        break
-      default :
-        break;
+    case 0 :
+      name = Translator.trans('session_invitation', {}, 'cursus')
+      break
+    case 1 :
+      name = Translator.trans('session_event_invitation', {}, 'cursus')
+      break
+    case 2 :
+      name = Translator.trans('session_certificate', {}, 'cursus')
+      break
+    default :
+      break
     }
 
     return name

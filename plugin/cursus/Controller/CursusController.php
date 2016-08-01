@@ -1108,9 +1108,10 @@ class CursusController extends Controller
      * )
      * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
      */
-    public function courseQueueRegisterAction( ourse $course, User $authenticatedUser)
+    public function courseQueueRegisterAction(Course $course, User $authenticatedUser)
     {
-        $this->cursusManager->addUserToCourseQueue($authenticatedUser, $course);
+        $this->cursusManager->addUserToCourseQueue($a
+        uthenticatedUser, $course);
 
         return new JsonResponse('success', 200);
     }

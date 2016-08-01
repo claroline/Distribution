@@ -7,8 +7,6 @@
  * file that was distributed with this source code.
  */
 
-/*global Routing*/
-
 export default class SessionCreationCoursesListModalCtrl {
 
   constructor ($http, $uibModalInstance, NgTableParams, CourseService, SessionService, callback) {

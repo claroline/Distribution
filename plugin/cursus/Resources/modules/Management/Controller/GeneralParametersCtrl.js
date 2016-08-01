@@ -7,8 +7,6 @@
  * file that was distributed with this source code.
  */
 
-/*global Routing*/
-
 export default class GeneralParametersCtrl {
   constructor ($state, CourseService) {
     this.$state = $state
