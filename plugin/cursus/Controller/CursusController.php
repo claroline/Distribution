@@ -1110,8 +1110,7 @@ class CursusController extends Controller
      */
     public function courseQueueRegisterAction(Course $course, User $authenticatedUser)
     {
-        $this->cursusManager->addUserToCourseQueue($a
-        uthenticatedUser, $course);
+        $this->cursusManager->addUserToCourseQueue($authenticatedUser, $course);
 
         return new JsonResponse('success', 200);
     }
