@@ -9,8 +9,7 @@
 
 /*global Routing*/
 /*global Translator*/
-import sessionEventCreationFormTemplate from '../Partial/session_event_creation_form_modal.html'
-import sessionEventEditionFormTemplate from '../Partial/session_event_edition_form_modal.html'
+import sessionEventFormTemplate from '../Partial/session_event_form_modal.html'
 
 export default class SessionEventService {
   constructor ($http, $sce, $uibModal, ClarolineAPIService) {
@@ -107,10 +106,11 @@ export default class SessionEventService {
   createSessionEvent (session, callback = null) {
     const addCallback = (callback !== null) ? callback : this._addSessionEventCallback
     this.$uibModal.open({
-      template: sessionEventCreationFormTemplate,
+      template: sessionEventFormTemplate,
       controller: 'SessionEventCreationModalCtrl',
       controllerAs: 'cmc',
       resolve: {
+        title: () => { return Translator.trans('session_event_creation', {}, 'cursus') },
         session: () => { return session },
         callback: () => { return addCallback }
       }
@@ -120,10 +120,11 @@ export default class SessionEventService {
   editSessionEvent (sessionEvent, callback = null) {
     const updateCallback = callback !== null ? callback : this._updateSessionEventCallback
     this.$uibModal.open({
-      template: sessionEventEditionFormTemplate,
+      template: sessionEventFormTemplate,
       controller: 'SessionEventEditionModalCtrl',
       controllerAs: 'cmc',
       resolve: {
+        title: () => { return Translator.trans('session_event_edition', {}, 'cursus') },
         sessionEvent: () => { return sessionEvent },
         callback: () => { return updateCallback }
       }

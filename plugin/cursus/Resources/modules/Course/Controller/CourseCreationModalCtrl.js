@@ -12,10 +12,11 @@
 /*global UserPicker*/
 
 export default class CourseCreationModalCtrl {
-  constructor($rootScope, $http, $uibModalInstance, CourseService, cursusId, callback) {
+  constructor($rootScope, $http, $uibModalInstance, CourseService, title, cursusId, callback) {
     this.$rootScope = $rootScope
     this.$http = $http
     this.$uibModalInstance = $uibModalInstance
+    this.title = title
     this.cursusId = cursusId
     this.callback = callback
     this.course = {

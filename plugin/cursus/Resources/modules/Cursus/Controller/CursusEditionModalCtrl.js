@@ -11,10 +11,11 @@
 /*global Translator*/
 
 export default class CursusEditionModalCtrl {
-  constructor($http, $uibModalInstance, CourseService, cursus, callback) {
+  constructor($http, $uibModalInstance, CourseService, title, cursus, callback) {
     this.$http = $http
     this.$uibModalInstance = $uibModalInstance
     this.callback = callback
+    this.title = title
     this.source = cursus
     this.cursusId = cursus['id']
     this.cursus = {

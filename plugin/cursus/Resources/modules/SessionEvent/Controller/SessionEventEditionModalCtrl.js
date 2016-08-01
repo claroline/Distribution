@@ -10,11 +10,12 @@
 /*global Routing*/
 
 export default class SessionEventEditionModalCtrl {
-  constructor($http, $uibModalInstance, CourseService, sessionEvent, callback) {
+  constructor($http, $uibModalInstance, CourseService, title, sessionEvent, callback) {
     this.$http = $http
     this.$uibModalInstance = $uibModalInstance
     this.CourseService = CourseService
     this.callback = callback
+    this.title = title
     this.source = sessionEvent
     this.sessionEvent = {
       name: null,

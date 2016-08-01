@@ -12,11 +12,12 @@
 /*global UserPicker*/
 
 export default class SessionEditionModalCtrl {
-  constructor($rootScope, $http, $uibModalInstance, CursusService, CourseService, session, callback) {
+  constructor($rootScope, $http, $uibModalInstance, CursusService, CourseService, title, session, callback) {
     this.$rootScope = $rootScope
     this.$http = $http
     this.$uibModalInstance = $uibModalInstance
     this.CursusService = CursusService
+    this.title = title
     this.session = {
       name: null,
       startDate: null,

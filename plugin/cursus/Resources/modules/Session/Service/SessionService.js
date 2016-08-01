@@ -14,8 +14,7 @@ import sessionDeleteTemplate from '../Partial/session_delete_modal.html'
 import learnersRegistrationTemplate from '../Partial/learners_registration_modal.html'
 import learnersGroupsRegistrationTemplate from '../Partial/learners_groups_registration_modal.html'
 import tutorsRegistrationTemplate from '../Partial/tutors_registration_modal.html'
-import sessionCreationFormTemplate from '../Partial/session_creation_form_modal.html'
-import sessionEditionFormTemplate from '../Partial/session_edition_form_modal.html'
+import sessionFormTemplate from '../Partial/session_form_modal.html'
 
 export default class SessionService {
   constructor ($http, $sce, $uibModal, ClarolineAPIService, CourseService) {
@@ -324,10 +323,11 @@ export default class SessionService {
   createSession (course, callback = null) {
     const addCallback = (callback !== null) ? callback : this._addSessionCallback
     this.$uibModal.open({
-      template: sessionCreationFormTemplate,
+      template: sessionFormTemplate,
       controller: 'SessionCreationModalCtrl',
       controllerAs: 'cmc',
       resolve: {
+        title: () => { return Translator.trans('session_creation', {}, 'cursus') },
         course: () => { return course },
         callback: () => { return addCallback }
       }
@@ -337,10 +337,11 @@ export default class SessionService {
   editSession (session, callback = null) {
     const updateCallback = callback !== null ? callback : this._updateSessionCallback
     this.$uibModal.open({
-      template: sessionEditionFormTemplate,
+      template: sessionFormTemplate,
       controller: 'SessionEditionModalCtrl',
       controllerAs: 'cmc',
       resolve: {
+        title: () => { return Translator.trans('session_edition', {}, 'cursus') },
         session: () => { return session },
         callback: () => { return updateCallback }
       }

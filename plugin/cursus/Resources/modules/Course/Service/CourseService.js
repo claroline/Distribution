@@ -10,8 +10,7 @@
 /*global Routing*/
 /*global Translator*/
 import angular from 'angular/index'
-import courseCreationFormTemplate from '../Partial/course_creation_form_modal.html'
-import courseEditionFormTemplate from '../Partial/course_edition_form_modal.html'
+import courseFormTemplate from '../Partial/course_form_modal.html'
 import courseViewTemplate from '../Partial/course_view_modal.html'
 import coursesImportFormTemplate from '../Partial/courses_import_form.html'
 
@@ -106,10 +105,11 @@ export default class CourseService {
   createCourse (cursusId = null, callback = null) {
     const addCallback = callback !== null ? callback : this._addCourseCallback
     this.$uibModal.open({
-      template: courseCreationFormTemplate,
+      template: courseFormTemplate,
       controller: 'CourseCreationModalCtrl',
       controllerAs: 'cmc',
       resolve: {
+        title: () => { return Translator.trans('course_creation', {}, 'cursus') },
         cursusId: () => { return cursusId },
         callback: () => { return addCallback }
       }
@@ -119,10 +119,11 @@ export default class CourseService {
   editCourse (course, callback = null) {
     const updateCallback = callback !== null ? callback : this._updateCourseCallback
     this.$uibModal.open({
-      template: courseEditionFormTemplate,
+      template: courseFormTemplate,
       controller: 'CourseEditionModalCtrl',
       controllerAs: 'cmc',
       resolve: {
+        title: () => { return Translator.trans('course_edition', {}, 'cursus') },
         course: () => { return course },
         callback: () => { return updateCallback }
       }

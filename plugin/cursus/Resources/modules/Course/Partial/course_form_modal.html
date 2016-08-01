@@ -1,7 +1,7 @@
 <div class="modal-content">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="$close()">&times;</button>
-        <h3>{{ 'course_edition'|trans:{}:'cursus' }}</h3>
+        <h3>{{ cmc.title }}</h3>
     </div>
     <div class="modal-body">
         <div class="form-group row" ng-class="cmc.courseErrors['title'] ? 'has-error' : ''">
@@ -40,9 +40,6 @@
                 </textarea>
             </div>
         </div>
-
-        <!--ICON-->
-
         <div class="form-group row">
             <label class="control-label col-md-3">
                 {{ 'public_registration'|trans:{}:'cursus' }}

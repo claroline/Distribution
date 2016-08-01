@@ -10,8 +10,7 @@
 /*global Routing*/
 /*global Translator*/
 import angular from 'angular/index'
-import cursusCreationFormTemplate from '../Partial/cursus_creation_form_modal.html'
-import cursusEditionFormTemplate from '../Partial/cursus_edition_form_modal.html'
+import cursusFormTemplate from '../Partial/cursus_form_modal.html'
 import cursusCourseSelectionTemplate from '../Partial/cursus_course_selection_modal.html'
 import cursusHierarchyTemplate from '../Partial/cursus_hierarchy_modal.html'
 import cursusImportTemplate from '../Partial/cursus_import_form.html'
@@ -131,10 +130,11 @@ export default class CursusService {
   createCursus(cursusId = null, callback = null) {
     const addCallback = callback !== null ? callback : this._addCursusCallback
     this.$uibModal.open({
-      template: cursusCreationFormTemplate,
+      template: cursusFormTemplate,
       controller: 'CursusCreationModalCtrl',
       controllerAs: 'cmc',
       resolve: {
+        title: () => { return Translator.trans('cursus_creation', {}, 'cursus') },
         cursusId: () => { return cursusId },
         callback: () => { return addCallback }
       }
@@ -144,10 +144,11 @@ export default class CursusService {
   editCursus(cursus, callback = null) {
     const updateCallback = callback !== null ? callback : this._updateCursusCallback
     this.$uibModal.open({
-      template: cursusEditionFormTemplate,
+      template: cursusFormTemplate,
       controller: 'CursusEditionModalCtrl',
       controllerAs: 'cmc',
       resolve: {
+        title: () => { return Translator.trans('cursus_edition', {}, 'cursus') },
         cursus: () => { return cursus },
         callback: () => { return updateCallback }
       }
