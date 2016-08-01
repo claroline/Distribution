@@ -190,7 +190,7 @@
             "Icap\\LessonBundle\\": "plugin/lesson",
             "Claroline\\FlashCardBundle\\": "plugin/flashcard",
             "FormaLibre\\OfficeConnectBundle\\": "plugin/o365",
-            "Icap\\TagwordsBundle": "plugin/tagwords"
+            "Icap\\TagwordsBundle\\": "plugin/tagwords"
         }
     },
     "extra": {
