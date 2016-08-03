@@ -5,7 +5,7 @@
             ng-class="(tab['tabId'] === ahtcc.homeTabsOptions['selectedTabId']) ? 'active' : ''"
             data-hometab-config-id="{{ tab['configId'] }}"
         >
-            <a href="#" ng-click="ahtcc.showTab(tab['tabId'], tab['configId'])">
+            <a href="" ng-click="ahtcc.showTab(tab['tabId'], tab['configId'])">
                 <span class="icon-bg" style="background-color: {{ tab['color'] }}">
                 </span>
                 <span class="option-text">
@@ -22,10 +22,7 @@
         </li>
 
         <li class="new-home-tab">
-            <a href="#"
-               class="pointer-hand"
-               ng-click="ahtcc.createAdminHomeTab()"
-            >
+            <a href="" class="pointer-hand" ng-click="ahtcc.createAdminHomeTab()">
                 <span class="text-muted">
                     <i class="fa fa-plus"></i>
                     <span ng-if="ahtcc.adminHomeTabs.length === 0">

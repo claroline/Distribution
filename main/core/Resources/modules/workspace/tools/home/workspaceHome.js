@@ -26,5 +26,5 @@ angular.module('WorkspaceHomeModule', [
   'HomeTabsModule',
   'WidgetsModule'
 ])
-.controller('WorkspaceHomeCtrl', ['$http', 'HomeTabService', 'WidgetService', WorkspaceHomeCtrl])
+.controller('WorkspaceHomeCtrl', ['$http', '$stateParams', '$state', 'HomeTabService', 'WidgetService', WorkspaceHomeCtrl])
 .config(Routing)

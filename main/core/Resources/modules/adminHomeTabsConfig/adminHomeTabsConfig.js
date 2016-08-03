@@ -26,5 +26,5 @@ angular.module('AdminHomeTabsConfigModule', [
   'HomeTabsModule',
   'WidgetsModule'
 ])
-.controller('AdminHomeTabsConfigCtrl', ['$http', 'HomeTabService', 'WidgetService', AdminHomeTabsConfigCtrl])
+.controller('AdminHomeTabsConfigCtrl', ['$http', '$stateParams', '$state', 'HomeTabService', 'WidgetService', AdminHomeTabsConfigCtrl])
 .config(Routing)

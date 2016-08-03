@@ -13,10 +13,12 @@ import $ from 'jquery'
 
 export default class AdminHomeTabsConfigCtrl {
 
-  constructor($http, HomeTabService, WidgetService) {
+  constructor($http, $stateParams, $state, HomeTabService, WidgetService) {
     this.$http = $http
+    this.$state = $state
     this.HomeTabService = HomeTabService
     this.WidgetService = WidgetService
+    this.tabId = $stateParams.tabId
     this.adminHomeTabs = HomeTabService.getAdminHomeTabs()
     this.homeTabsOptions = HomeTabService.getOptions()
     this.widgets = WidgetService.getWidgets()
@@ -28,7 +30,7 @@ export default class AdminHomeTabsConfigCtrl {
 
   initialize() {
     this.WidgetService.setType('admin')
-    this.HomeTabService.loadAdminHomeTabs()
+    this.HomeTabService.loadAdminHomeTabs(this.tabId)
   }
 
   initializeDragAndDrop () {
@@ -54,6 +56,7 @@ export default class AdminHomeTabsConfigCtrl {
   }
 
   showTab(tabId, tabConfigId) {
+    this.$state.go('tab', {tabId: parseInt(tabId)}, {location: 'replace', inherit: false, reload: false, notify: false})
     this.homeTabsOptions['selectedTabId'] = tabId
     this.homeTabsOptions['selectedTabConfigId'] = tabConfigId
     this.WidgetService.loadAdminWidgets(tabId)
@@ -64,11 +67,13 @@ export default class AdminHomeTabsConfigCtrl {
   }
 
   editAdminHomeTab($event, tabConfigId) {
+    $event.preventDefault()
     $event.stopPropagation()
     this.HomeTabService.editAdminHomeTab(tabConfigId)
   }
 
   deleteAdminHomeTab($event, tabConfigId) {
+    $event.preventDefault()
     $event.stopPropagation()
     this.HomeTabService.deleteAdminHomeTab(tabConfigId)
   }
@@ -78,11 +83,13 @@ export default class AdminHomeTabsConfigCtrl {
   }
 
   editAdminWidget($event, widgetInstanceId, widgetHomeTabConfigId, widgetDisplayId, configurable) {
+    $event.preventDefault()
     $event.stopPropagation()
     this.WidgetService.editAdminWidget(widgetInstanceId, widgetHomeTabConfigId, widgetDisplayId, configurable)
   }
 
   deleteAdminWidget($event, widgetHTCId) {
+    $event.preventDefault()
     $event.stopPropagation()
     this.WidgetService.deleteAdminWidget(widgetHTCId)
   }

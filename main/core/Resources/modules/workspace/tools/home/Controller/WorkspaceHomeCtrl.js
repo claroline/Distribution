@@ -13,10 +13,12 @@ import $ from 'jquery'
 
 export default class WorkspaceHomeCtrl {
 
-  constructor($http, HomeTabService, WidgetService) {
+  constructor($http, $stateParams, $state, HomeTabService, WidgetService) {
     this.$http = $http
+    this.$state = $state
     this.HomeTabService = HomeTabService
     this.WidgetService = WidgetService
+    this.tabId = $stateParams.tabId
     this.workspaceHomeTabs = HomeTabService.getWorkspaceHomeTabs()
     this.homeTabsOptions = HomeTabService.getOptions()
     this.widgets = WidgetService.getWidgets()
@@ -32,7 +34,7 @@ export default class WorkspaceHomeCtrl {
     this.homeTabsOptions['canEdit'] = WorkspaceHomeCtrl._getGlobal('canEdit')
     this.widgetsOptions['canEdit'] = WorkspaceHomeCtrl._getGlobal('canEdit')
     this.WidgetService.setType('workspace')
-    this.HomeTabService.loadWorkspaceHomeTabs()
+    this.HomeTabService.loadWorkspaceHomeTabs(this.tabId)
   }
 
   initializeDragAndDrop () {
@@ -58,6 +60,7 @@ export default class WorkspaceHomeCtrl {
   }
 
   showTab(tabId, tabConfigId) {
+    this.$state.go('tab', {tabId: parseInt(tabId)}, {location: 'replace', inherit: false, reload: false, notify: false})
     this.homeTabsOptions['selectedTabId'] = tabId
     this.homeTabsOptions['selectedTabConfigId'] = tabConfigId
     this.WidgetService.loadWorkspaceWidgets(tabId)
@@ -68,16 +71,19 @@ export default class WorkspaceHomeCtrl {
   }
 
   editWorkspaceHomeTab($event, tabConfigId) {
+    $event.preventDefault()
     $event.stopPropagation()
     this.HomeTabService.editWorkspaceHomeTab(tabConfigId)
   }
 
   deleteWorkspaceHomeTab($event, tabConfigId) {
+    $event.preventDefault()
     $event.stopPropagation()
     this.HomeTabService.deleteWorkspaceHomeTab(tabConfigId)
   }
 
   pinWorkspaceHomeTab($event, tabConfigId) {
+    $event.preventDefault()
     $event.stopPropagation()
     this.HomeTabService.pinWorkspaceHomeTab(tabConfigId)
   }
@@ -87,11 +93,13 @@ export default class WorkspaceHomeCtrl {
   }
 
   editWorkspaceWidget($event, widgetInstanceId, widgetHomeTabConfigId, widgetDisplayId, configurable) {
+    $event.preventDefault()
     $event.stopPropagation()
     this.WidgetService.editWorkspaceWidget(widgetInstanceId, widgetHomeTabConfigId, widgetDisplayId, configurable)
   }
 
   deleteWorkspaceWidget($event, widgetHTCId) {
+    $event.preventDefault()
     $event.stopPropagation()
     this.WidgetService.deleteWorkspaceWidget(widgetHTCId)
   }

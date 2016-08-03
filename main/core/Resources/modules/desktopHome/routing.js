@@ -11,12 +11,12 @@ import mainTemplate from './Partial/main.html'
 
 export default function($stateProvider, $urlRouterProvider) {
   $stateProvider
-    .state ('main', {
-      url: '/main',
+    .state ('tab', {
+      url: '/tab/{tabId}',
       template: mainTemplate,
       controller: 'DesktopHomeMainCtrl',
       controllerAs: 'dhmc'
     })
 
-  $urlRouterProvider.otherwise('/main')
+  $urlRouterProvider.otherwise('/tab/-1')
 }

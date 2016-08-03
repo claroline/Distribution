@@ -191,7 +191,7 @@ export default class HomeTabService {
     })
   }
 
-  loadDesktopHomeTabs () {
+  loadDesktopHomeTabs (tabId) {
     const route = Routing.generate('api_get_desktop_home_tabs')
 
     return this.$http.get(route).then(datas => {
@@ -205,12 +205,12 @@ export default class HomeTabService {
         this.generateHomeTabsInfos(this.adminHomeTabs)
         this.generateHomeTabsInfos(this.userHomeTabs)
         this.generateHomeTabsInfos(this.workspaceHomeTabs)
-        this.selectDefaultHomeTab()
+        this.selectDefaultHomeTab(tabId)
       }
     })
   }
 
-  loadAdminHomeTabs () {
+  loadAdminHomeTabs (tabId) {
     const route = Routing.generate('api_get_admin_home_tabs')
 
     return this.$http.get(route).then(datas => {
@@ -218,12 +218,12 @@ export default class HomeTabService {
         this.adminHomeTabs.splice(0, this.adminHomeTabs.length)
         angular.merge(this.adminHomeTabs, this.homeTabsParse(datas['data']))
         this.generateHomeTabsInfos(this.adminHomeTabs)
-        this.selectDefaultAdminHomeTab()
+        this.selectDefaultAdminHomeTab(tabId)
       }
     })
   }
 
-  loadWorkspaceHomeTabs () {
+  loadWorkspaceHomeTabs (tabId) {
     const route = Routing.generate('api_get_workspace_home_tabs', {workspace: this.options['workspaceId']})
 
     return this.$http.get(route).then(datas => {
@@ -231,50 +231,92 @@ export default class HomeTabService {
         this.workspaceHomeTabs.splice(0, this.workspaceHomeTabs.length)
         angular.merge(this.workspaceHomeTabs, this.homeTabsParse(datas['data']))
         this.generateHomeTabsInfos(this.workspaceHomeTabs)
-        this.selectDefaultWorkspaceHomeTab()
+        this.selectDefaultWorkspaceHomeTab(tabId)
       }
     })
   }
 
-  selectDefaultAdminHomeTab () {
+  selectDefaultAdminHomeTab (tabId = -1) {
     this.options['selectedTabId'] = 0
     this.options['selectedTabConfigId'] = 0
 
-    if (this.adminHomeTabs.length > 0) {
-      this.options['selectedTabId'] = this.adminHomeTabs[0]['tabId']
-      this.options['selectedTabConfigId'] = this.adminHomeTabs[0]['configId']
+    if (tabId > 0) {
+      const homeTab = this.adminHomeTabs.find(ht => ht['tabId'] === parseInt(tabId))
+
+      if (homeTab) {
+        this.options['selectedTabId'] = homeTab['tabId']
+        this.options['selectedTabConfigId'] = homeTab['configId']
+      }
+    } else {
+      if (this.adminHomeTabs.length > 0) {
+        this.options['selectedTabId'] = this.adminHomeTabs[0]['tabId']
+        this.options['selectedTabConfigId'] = this.adminHomeTabs[0]['configId']
+      }
     }
     this.WidgetService.loadAdminWidgets(this.options['selectedTabId'])
   }
 
-  selectDefaultWorkspaceHomeTab () {
+  selectDefaultWorkspaceHomeTab (tabId = -1) {
     this.options['selectedTabId'] = 0
     this.options['selectedTabConfigId'] = 0
 
-    if (this.workspaceHomeTabs.length > 0) {
-      this.options['selectedTabId'] = this.workspaceHomeTabs[0]['tabId']
-      this.options['selectedTabConfigId'] = this.workspaceHomeTabs[0]['configId']
+    if (tabId > 0) {
+      const homeTab = this.workspaceHomeTabs.find(ht => ht['tabId'] === parseInt(tabId))
+
+      if (homeTab) {
+        this.options['selectedTabId'] = homeTab['tabId']
+        this.options['selectedTabConfigId'] = homeTab['configId']
+      }
+    } else {
+      if (this.workspaceHomeTabs.length > 0) {
+        this.options['selectedTabId'] = this.workspaceHomeTabs[0]['tabId']
+        this.options['selectedTabConfigId'] = this.workspaceHomeTabs[0]['configId']
+      }
     }
     this.WidgetService.loadWorkspaceWidgets(this.options['selectedTabId'])
   }
 
-  selectDefaultHomeTab () {
+  selectDefaultHomeTab (tabId = -1) {
     this.options['selectedTabId'] = 0
     this.options['selectedTabConfigId'] = 0
     this.options['selectedTabIsLocked'] = true
 
-    if (this.adminHomeTabs.length > 0) {
-      this.options['selectedTabId'] = this.adminHomeTabs[0]['tabId']
-      this.options['selectedTabConfigId'] = this.adminHomeTabs[0]['configId']
-      this.options['selectedTabIsLocked'] = this.adminHomeTabs[0]['locked']
-    } else if (this.userHomeTabs.length > 0) {
-      this.options['selectedTabId'] = this.userHomeTabs[0]['tabId']
-      this.options['selectedTabConfigId'] = this.userHomeTabs[0]['configId']
-      this.options['selectedTabIsLocked'] = false
-    } else if (this.workspaceHomeTabs.length > 0) {
-      this.options['selectedTabId'] = this.workspaceHomeTabs[0]['tabId']
-      this.options['selectedTabConfigId'] = this.workspaceHomeTabs[0]['configId']
-      this.options['selectedTabIsLocked'] = true
+    if (tabId > 0) {
+      let homeTab = this.adminHomeTabs.find(ht => ht['tabId'] === parseInt(tabId))
+
+      if (homeTab) {
+        this.options['selectedTabId'] = homeTab['tabId']
+        this.options['selectedTabConfigId'] = homeTab['configId']
+        this.options['selectedTabIsLocked'] = homeTab['locked']
+      }
+      homeTab = homeTab ? homeTab : this.userHomeTabs.find(ht => ht['tabId'] === parseInt(tabId))
+
+      if (homeTab) {
+        this.options['selectedTabId'] = homeTab['tabId']
+        this.options['selectedTabConfigId'] = homeTab['configId']
+        this.options['selectedTabIsLocked'] = false
+      }
+      homeTab = homeTab ? homeTab : this.workspaceHomeTabs.find(ht => ht['tabId'] === parseInt(tabId))
+
+      if (homeTab) {
+        this.options['selectedTabId'] = homeTab['tabId']
+        this.options['selectedTabConfigId'] = homeTab['configId']
+        this.options['selectedTabIsLocked'] = true
+      }
+    } else {
+      if (this.adminHomeTabs.length > 0) {
+        this.options['selectedTabId'] = this.adminHomeTabs[0]['tabId']
+        this.options['selectedTabConfigId'] = this.adminHomeTabs[0]['configId']
+        this.options['selectedTabIsLocked'] = this.adminHomeTabs[0]['locked']
+      } else if (this.userHomeTabs.length > 0) {
+        this.options['selectedTabId'] = this.userHomeTabs[0]['tabId']
+        this.options['selectedTabConfigId'] = this.userHomeTabs[0]['configId']
+        this.options['selectedTabIsLocked'] = false
+      } else if (this.workspaceHomeTabs.length > 0) {
+        this.options['selectedTabId'] = this.workspaceHomeTabs[0]['tabId']
+        this.options['selectedTabConfigId'] = this.workspaceHomeTabs[0]['configId']
+        this.options['selectedTabIsLocked'] = true
+      }
     }
     this.WidgetService.loadDesktopWidgets(this.options['selectedTabId'], this.options['canEdit'])
   }

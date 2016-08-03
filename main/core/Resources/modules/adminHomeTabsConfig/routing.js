@@ -11,12 +11,19 @@ import configTemplate from './Partial/config.html'
 
 export default function($stateProvider, $urlRouterProvider) {
   $stateProvider
-    .state ('config', {
-      url: '/config',
+    .state ('tab', {
+      url: '/tab/{tabId}',
       template: configTemplate,
       controller: 'AdminHomeTabsConfigCtrl',
       controllerAs: 'ahtcc'
     })
+  //$stateProvider
+  //  .state ('config', {
+  //    url: '/config',
+  //    template: configTemplate,
+  //    controller: 'AdminHomeTabsConfigCtrl',
+  //    controllerAs: 'ahtcc'
+  //  })
 
-  $urlRouterProvider.otherwise('/config')
+  $urlRouterProvider.otherwise('/tab/-1')
 }

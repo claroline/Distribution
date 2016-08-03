@@ -5,7 +5,7 @@
             ng-class="(tab['tabId'] === whc.homeTabsOptions['selectedTabId']) ? 'active' : ''"
             data-hometab-config-id="{{ tab['configId'] }}"
         >
-            <a href="#" ng-click="whc.showTab(tab['tabId'], tab['configId'])">
+            <a href="" ng-click="whc.showTab(tab['tabId'], tab['configId'])">
                 <span class="icon-bg" style="background-color: {{ tab['color'] }}">
                 </span>
                 <span class="option-text">
@@ -28,10 +28,7 @@
         </li>
 
         <li class="new-home-tab" ng-if="whc.homeTabsOptions['canEdit']">
-            <a href="#"
-               class="pointer-hand"
-               ng-click="whc.createWorkspaceHomeTab()"
-            >
+            <a href="" class="pointer-hand" ng-click="whc.createWorkspaceHomeTab()">
                 <span class="text-muted">
                     <i class="fa fa-plus"></i>
                     <span ng-if="whc.workspaceHomeTabs.length === 0">

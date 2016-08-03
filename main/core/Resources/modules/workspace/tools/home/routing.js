@@ -11,12 +11,12 @@ import homeTemplate from './Partial/home.html'
 
 export default function($stateProvider, $urlRouterProvider) {
   $stateProvider
-    .state ('home', {
-      url: '/home',
+    .state ('tab', {
+      url: '/tab/{tabId}',
       template: homeTemplate,
       controller: 'WorkspaceHomeCtrl',
       controllerAs: 'whc'
     })
 
-  $urlRouterProvider.otherwise('/home')
+  $urlRouterProvider.otherwise('/tab/-1')
 }

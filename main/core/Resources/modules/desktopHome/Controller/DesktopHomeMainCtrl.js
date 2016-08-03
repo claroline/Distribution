@@ -12,11 +12,12 @@ import angular from 'angular/index'
 import $ from 'jquery'
 
 export default class DesktopHomeMainCtrl {
-        
-  constructor($http, HomeTabService, WidgetService) {
+  constructor($http, $stateParams, $state, HomeTabService, WidgetService) {
     this.$http = $http
+    this.$state = $state
     this.HomeTabService = HomeTabService
     this.WidgetService = WidgetService
+    this.tabId = $stateParams.tabId
     this.adminHomeTabs = HomeTabService.getAdminHomeTabs()
     this.userHomeTabs = HomeTabService.getUserHomeTabs()
     this.workspaceHomeTabs = HomeTabService.getWorkspaceHomeTabs()
@@ -38,7 +39,7 @@ export default class DesktopHomeMainCtrl {
         this.isHomeLocked = datas['data']['isHomeLocked']
         this.editionMode = datas['data']['editionMode']
         this.homeTabsOptions['canEdit'] = !this.isHomeLocked && this.editionMode
-        this.HomeTabService.loadDesktopHomeTabs()
+        this.HomeTabService.loadDesktopHomeTabs(this.tabId)
       }
     })
   }
@@ -78,6 +79,7 @@ export default class DesktopHomeMainCtrl {
   }
 
   showTab(tabId, tabConfigId, tabIsLocked) {
+    this.$state.go('tab', {tabId: parseInt(tabId)}, {location: 'replace', inherit: false, reload: false, notify: false})
     this.homeTabsOptions['selectedTabId'] = tabId
     this.homeTabsOptions['selectedTabConfigId'] = tabConfigId
     this.homeTabsOptions['selectedTabIsLocked'] = tabIsLocked
@@ -89,21 +91,25 @@ export default class DesktopHomeMainCtrl {
   }
 
   editUserHomeTab($event, tabId) {
+    $event.preventDefault()
     $event.stopPropagation()
     this.HomeTabService.editUserHomeTab(tabId)
   }
 
   hideAmdinHomeTab($event, tabConfigId) {
+    $event.preventDefault()
     $event.stopPropagation()
     this.HomeTabService.hideAmdinHomeTab(tabConfigId)
   }
 
   deleteUserHomeTab($event, tabConfigId) {
+    $event.preventDefault()
     $event.stopPropagation()
     this.HomeTabService.deleteUserHomeTab(tabConfigId)
   }
 
   deletePinnedWorkspaceHomeTab($event, tabConfigId) {
+    $event.preventDefault()
     $event.stopPropagation()
     this.HomeTabService.deletePinnedWorkspaceHomeTab(tabConfigId)
   }
@@ -116,6 +122,7 @@ export default class DesktopHomeMainCtrl {
   }
 
   editUserWidget($event, widgetInstanceId, widgetDisplayId, configurable) {
+    $event.preventDefault()
     $event.stopPropagation()
 
     if (!this.isHomeLocked && this.editionMode) {
@@ -124,6 +131,7 @@ export default class DesktopHomeMainCtrl {
   }
 
   deleteUserWidget($event, widgetHTCId) {
+    $event.preventDefault()
     $event.stopPropagation()
 
     if (!this.isHomeLocked && this.editionMode) {
@@ -132,6 +140,7 @@ export default class DesktopHomeMainCtrl {
   }
 
   hideAdminWidget($event, widgetHTCId) {
+    $event.preventDefault()
     $event.stopPropagation()
 
     if (!this.isHomeLocked && this.editionMode) {
