@@ -1621,7 +1621,6 @@ class CursusManager
         $code = $this->generateWorkspaceCode($course->getCode());
 
         if (is_null($model)) {
-            $ds = DIRECTORY_SEPARATOR;
             $template = new File($this->defaultTemplate);
             $workspace = new Workspace();
             $workspace->setCreator($user);

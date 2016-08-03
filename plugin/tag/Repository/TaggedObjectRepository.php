@@ -211,7 +211,7 @@ class TaggedObjectRepository extends EntityRepository
     public function findTaggedResourcesByWorkspace(
         Workspace $workspace,
         $user = 'anon.',
-        array $roleNames = array('ROLE_ANONYMOUS')
+        array $roleNames = ['ROLE_ANONYMOUS']
     ) {
         $isManager = false;
 

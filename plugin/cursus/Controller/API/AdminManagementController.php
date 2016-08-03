@@ -397,7 +397,6 @@ class AdminManagementController extends Controller
             $worskpaceModel = $this->workspaceModelManager->getModelById($courseDatas['workspaceModel']);
             $course->setWorkspaceModel($worskpaceModel);
         }
-//        $course->setIcon($courseDatas['icon']);
         $course->setUserValidation($courseDatas['userValidation']);
         $course->setOrganizationValidation($courseDatas['organizationValidation']);
         $course->setMaxUsers($courseDatas['maxUsers']);
@@ -474,7 +473,6 @@ class AdminManagementController extends Controller
             $worskpaceModel = $this->workspaceModelManager->getModelById($courseDatas['workspaceModel']);
             $course->setWorkspaceModel($worskpaceModel);
         }
-//        $course->setIcon($courseDatas['icon']);
         $course->setUserValidation($courseDatas['userValidation']);
         $course->setOrganizationValidation($courseDatas['organizationValidation']);
         $course->setMaxUsers($courseDatas['maxUsers']);
@@ -577,7 +575,6 @@ class AdminManagementController extends Controller
         } else {
             $course->setWorkspaceModel(null);
         }
-//        $course->setIcon($courseDatas['icon']);
         $course->setUserValidation($courseDatas['userValidation']);
         $course->setOrganizationValidation($courseDatas['organizationValidation']);
         $course->setMaxUsers($courseDatas['maxUsers']);

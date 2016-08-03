@@ -17,6 +17,7 @@ use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Manager\ToolManager;
 use Claroline\CursusBundle\Entity\CourseRegistrationQueue;
 use Claroline\CursusBundle\Entity\CourseSessionRegistrationQueue;
+use Claroline\CursusBundle\Entity\CourseSessionUser;
 use Claroline\CursusBundle\Manager\CursusManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
@@ -105,14 +106,14 @@ class CursusRegistrationController extends Controller
             $course = $session->getCourse();
             $courseCode = $course->getCode();
 
-            if ($type == 0) {
+            if ($type === CourseSessionUser::LEARNER) {
                 if (!isset($learnerSessions[$courseCode])) {
                     $learnerSessions[$courseCode] = [];
                     $learnerSessions[$courseCode]['course'] = $course;
                     $learnerSessions[$courseCode]['sessions'] = [];
                 }
                 $learnerSessions[$courseCode]['sessions'][] = $sessionUser;
-            } elseif ($type == 1) {
+            } elseif ($type === CourseSessionUser::TEACHER) {
                 if (!isset($tutorSessions[$courseCode])) {
                     $tutorSessions[$courseCode] = [];
                     $tutorSessions[$courseCode]['course'] = $course;
@@ -173,14 +174,14 @@ class CursusRegistrationController extends Controller
             $course = $session->getCourse();
             $courseCode = $course->getCode();
 
-            if ($type == 0) {
+            if ($type === 0) {
                 if (!isset($learnerSessions[$courseCode])) {
                     $learnerSessions[$courseCode] = [];
                     $learnerSessions[$courseCode]['course'] = $course;
                     $learnerSessions[$courseCode]['sessions'] = [];
                 }
                 $learnerSessions[$courseCode]['sessions'][] = $sessionGroup;
-            } elseif ($type == 1) {
+            } elseif ($type === 1) {
                 if (!isset($tutorSessions[$courseCode])) {
                     $tutorSessions[$courseCode] = [];
                     $tutorSessions[$courseCode]['course'] = $course;

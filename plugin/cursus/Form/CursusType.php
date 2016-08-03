@@ -12,6 +12,7 @@
 namespace Claroline\CursusBundle\Form;
 
 use Claroline\CursusBundle\Entity\Cursus;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -55,7 +56,7 @@ class CursusType extends AbstractType
                 'expanded' => false,
                 'multiple' => false,
                 'property' => 'nameAndCode',
-                'query_builder' => function (\Doctrine\ORM\EntityRepository $er) {
+                'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('w')
                             ->where('w.isPersonal = false')
                             ->orderBy('w.name', 'ASC');
