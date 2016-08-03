@@ -3702,6 +3702,18 @@ class CursusManager
         $this->om->flush();
     }
 
+    public function getClosedSessionsByUser(User $user)
+    {
+        $sessions = [];
+        $sessionUsers = $this->sessionUserRepo->findClosedSessionUsersByUser($user);
+
+        foreach ($sessionUsers as $sessionUser) {
+            $sessions[] = $sessionUser->getSession();
+        }
+
+        return $sessions;
+    }
+
     /***************************************************
      * Access to CursusDisplayedWordRepository methods *
      ***************************************************/

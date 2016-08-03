@@ -170,7 +170,7 @@ select_course_for_session_creation: Select training for which you want to create
 select_session: Select a training session
 selected_sessions: Selected training sessions
 self_register: Register
-session: Training sessions
+session: Training session
 session_certificate: Session certificate
 session_closed: Closed
 session_creation: Training session creation

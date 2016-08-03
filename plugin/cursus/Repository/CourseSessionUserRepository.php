@@ -13,6 +13,7 @@ namespace Claroline\CursusBundle\Repository;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CursusBundle\Entity\CourseSession;
+use Claroline\CursusBundle\Entity\CourseSessionUser;
 use Doctrine\ORM\EntityRepository;
 
 class CourseSessionUserRepository extends EntityRepository
@@ -202,5 +203,24 @@ class CourseSessionUserRepository extends EntityRepository
         $query->setParameter('search', "%{$upperSearch}%");
 
         return $executeQuery ? $query->getResult() : $query;
+    }
+
+    public function findClosedSessionUsersByUser(User $user, $userType = CourseSessionUser::LEARNER)
+    {
+        $dql = '
+            SELECT csu
+            FROM Claroline\CursusBundle\Entity\CourseSessionUser csu
+            JOIN csu.session s
+            WHERE csu.userType = :userType
+            AND csu.user = :user
+            AND s.endDate < :now
+            ORDER BY s.endDate DESC
+        ';
+        $query = $this->_em->createQuery($dql);
+        $query->setParameter('user', $user);
+        $query->setParameter('userType', $userType);
+        $query->setParameter('now', new \DateTime());
+
+        return $query->getResult();
     }
 }
