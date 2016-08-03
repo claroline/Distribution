@@ -1172,6 +1172,23 @@ class WorkspaceController extends Controller
 
     /**
      * @EXT\Route(
+     *     "/{workspace}/open/tool/home/tab/{tabId}",
+     *     name="claro_display_workspace_home_tab",
+     *     options = {"expose"=true}
+     * )
+     *
+     * Displays the workspace home tab.
+     *
+     * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $workspace
+     * @param int                                              $tabId
+     */
+    public function displayWorkspaceHomeTabAction(Workspace $workspace, $tabId)
+    {
+        return $this->redirectToRoute('claro_workspace_home_display', ['workspace' => $workspace->getId(), 'tabId' => $tabId]);
+    }
+
+    /**
+     * @EXT\Route(
      *     "/{workspaceId}/tabs/picker",
      *     name="claro_list_visible_workspace_home_tabs_picker",
      *     options = {"expose"=true}

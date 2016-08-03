@@ -27,6 +27,9 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script>
+        window.tabId = {{ tabId }}
+    </script>
     <script src="{{ hotAsset('dist/claroline-distribution-main-core-desktop-home.js') }}"></script>
     <script src="{{ asset('packages/angular-gridster/dist/angular-gridster.min.js') }}"></script>
 {% endblock %}

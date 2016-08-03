@@ -44,7 +44,7 @@ class HomeController extends Controller
 
     /**
      * @EXT\Route(
-     *     "/desktop/home/display",
+     *     "/desktop/home/display/tab/{tabId}",
      *     name="claro_desktop_home_display",
      *     options = {"expose"=true}
      * )
@@ -55,14 +55,29 @@ class HomeController extends Controller
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function desktopHomeDisplayAction()
+    public function desktopHomeDisplayAction($tabId = -1)
     {
-        return [];
+        return ['tabId' => $tabId];
     }
 
     /**
      * @EXT\Route(
-     *     "/{workspace}/home/display",
+     *     "/desktop/tab/{tabId}",
+     *     name="claro_display_desktop_home_tab",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     *
+     * @param int $tabId
+     */
+    public function displayDesktopHomeTabAction($tabId)
+    {
+        return $this->redirectToRoute('claro_desktop_home_display', ['tabId' => $tabId]);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/{workspace}/home/display/tab/{tabId}",
      *     name="claro_workspace_home_display",
      *     options = {"expose"=true}
      * )
@@ -74,12 +89,12 @@ class HomeController extends Controller
      *
      * @return array
      */
-    public function workspaceHomeDisplayAction(Workspace $workspace)
+    public function workspaceHomeDisplayAction(Workspace $workspace, $tabId = -1)
     {
         $this->checkWorkspaceHomeAccess($workspace);
         $canEdit = $this->authorization->isGranted(['home', 'edit'], $workspace);
 
-        return ['workspace' => $workspace, 'canEdit' => $canEdit];
+        return ['workspace' => $workspace, 'canEdit' => $canEdit, 'tabId' => $tabId];
     }
 
     /**

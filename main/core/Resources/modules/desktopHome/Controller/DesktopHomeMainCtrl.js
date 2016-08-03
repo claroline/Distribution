@@ -17,7 +17,7 @@ export default class DesktopHomeMainCtrl {
     this.$state = $state
     this.HomeTabService = HomeTabService
     this.WidgetService = WidgetService
-    this.tabId = $stateParams.tabId
+    this.tabId = parseInt($stateParams.tabId)
     this.adminHomeTabs = HomeTabService.getAdminHomeTabs()
     this.userHomeTabs = HomeTabService.getUserHomeTabs()
     this.workspaceHomeTabs = HomeTabService.getWorkspaceHomeTabs()
@@ -39,6 +39,11 @@ export default class DesktopHomeMainCtrl {
         this.isHomeLocked = datas['data']['isHomeLocked']
         this.editionMode = datas['data']['editionMode']
         this.homeTabsOptions['canEdit'] = !this.isHomeLocked && this.editionMode
+
+        if (this.tabId === -1) {
+          this.tabId = parseInt(DesktopHomeMainCtrl._getGlobal('tabId'))
+          this.$state.go('tab', {tabId: this.tabId}, {location: 'replace', inherit: false, reload: false, notify: false})
+        }
         this.HomeTabService.loadDesktopHomeTabs(this.tabId)
       }
     })
@@ -146,5 +151,15 @@ export default class DesktopHomeMainCtrl {
     if (!this.isHomeLocked && this.editionMode) {
       this.WidgetService.hideAdminWidget(widgetHTCId)
     }
+  }
+
+  static _getGlobal (name) {
+    if (typeof window[name] === 'undefined') {
+      throw new Error(
+        `Expected ${name} to be exposed in a window.${name} variable`
+      )
+    }
+
+    return window[name]
   }
 }

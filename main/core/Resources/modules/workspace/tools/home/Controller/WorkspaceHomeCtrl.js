@@ -18,7 +18,7 @@ export default class WorkspaceHomeCtrl {
     this.$state = $state
     this.HomeTabService = HomeTabService
     this.WidgetService = WidgetService
-    this.tabId = $stateParams.tabId
+    this.tabId = parseInt($stateParams.tabId)
     this.workspaceHomeTabs = HomeTabService.getWorkspaceHomeTabs()
     this.homeTabsOptions = HomeTabService.getOptions()
     this.widgets = WidgetService.getWidgets()
@@ -34,6 +34,11 @@ export default class WorkspaceHomeCtrl {
     this.homeTabsOptions['canEdit'] = WorkspaceHomeCtrl._getGlobal('canEdit')
     this.widgetsOptions['canEdit'] = WorkspaceHomeCtrl._getGlobal('canEdit')
     this.WidgetService.setType('workspace')
+
+    if (this.tabId === -1) {
+      this.tabId = parseInt(WorkspaceHomeCtrl._getGlobal('tabId'))
+      this.$state.go('tab', {tabId: this.tabId}, {location: 'replace', inherit: false, reload: false, notify: false})
+    }
     this.HomeTabService.loadWorkspaceHomeTabs(this.tabId)
   }
 
