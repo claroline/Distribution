@@ -1609,14 +1609,13 @@ class UserManager
      */
     public function bindUserToOrganization()
     {
-        $limit = 2000;
+        $limit = 250;
         $offset = 0;
         $this->log('Add organizations to users...');
         $this->objectManager->startFlushSuite();
         $countUsers = $this->objectManager->count('ClarolineCoreBundle:User');
         $default = $this->organizationManager->getDefault();
         $i = 0;
-        $detach = [];
 
         while ($offset < $countUsers) {
             $users = $this->userRepo->findBy([], null, $limit, $offset);
@@ -1627,23 +1626,16 @@ class UserManager
                     $this->log('Add default organization for user '.$user->getUsername());
                     $user->addOrganization($default);
                     $this->objectManager->persist($user);
-                    $detach[] = $user;
-
-                    if ($i % 250 === 0) {
-                        $this->log("Flushing... [UOW = {$this->objectManager->getUnitOfWork()->size()}]");
-                        $this->objectManager->forceFlush();
-
-                        foreach ($detach as $el) {
-                            $this->objectManager->detach($el);
-                        }
-
-                        $detach = [];
-                    }
                 } else {
                     $this->log("Organization for user {$user->getUsername()} already exists");
-                    $this->objectManager->detach($user);
                 }
             }
+
+            $this->log("Flushing... [UOW = {$this->objectManager->getUnitOfWork()->size()}]");
+            $this->objectManager->forceFlush();
+            $this->objectManager->clear();
+            $default = $this->organizationManager->getDefault();
+            $this->objectManager->merge($default);
 
             $offset += $limit;
         }
