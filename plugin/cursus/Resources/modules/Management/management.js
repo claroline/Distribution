@@ -34,6 +34,8 @@ import SessionCreationCoursesListModalCtrl from './Controller/SessionCreationCou
 import GeneralParametersCtrl from './Controller/GeneralParametersCtrl'
 import LocationsManagementCtrl from './Controller/LocationsManagementCtrl'
 import DocumentModelsManagementCtrl from './Controller/DocumentModelsManagementCtrl'
+import DocumentModelCreationCtrl from './Controller/DocumentModelCreationCtrl'
+import DocumentModelEditionCtrl from './Controller/DocumentModelEditionCtrl'
 
 angular.module('CursusManagementModule', [
   'ui.router',
@@ -60,6 +62,8 @@ angular.module('CursusManagementModule', [
 .controller('GeneralParametersCtrl', ['$state', 'CourseService', GeneralParametersCtrl])
 .controller('LocationsManagementCtrl', ['$http', 'NgTableParams', LocationsManagementCtrl])
 .controller('DocumentModelsManagementCtrl', ['NgTableParams', 'CourseService', 'DocumentModelService', DocumentModelsManagementCtrl])
+.controller('DocumentModelCreationCtrl', ['$http', '$state', 'CourseService', DocumentModelCreationCtrl])
+.controller('DocumentModelEditionCtrl', ['$http', '$stateParams', '$state', 'CourseService', 'DocumentModelService', DocumentModelEditionCtrl])
 .controller('SessionCreationCoursesListModalCtrl', SessionCreationCoursesListModalCtrl)
 .config(Routing)
 .config([

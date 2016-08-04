@@ -11,8 +11,6 @@ import angular from 'angular/index'
 import 'angular-bootstrap'
 import 'angular-ui-translation/angular-translation'
 import DocumentModelService from './Service/DocumentModelService'
-import DocumentModelCreationModalCtrl from './Controller/DocumentModelCreationModalCtrl'
-import DocumentModelEditionModalCtrl from './Controller/DocumentModelEditionModalCtrl'
 
 angular.module('DocumentModelModule', [
   'ui.bootstrap',
@@ -20,5 +18,3 @@ angular.module('DocumentModelModule', [
   'ui.translation'
 ])
 .service('DocumentModelService', DocumentModelService)
-.controller('DocumentModelCreationModalCtrl', DocumentModelCreationModalCtrl)
-.controller('DocumentModelEditionModalCtrl', DocumentModelEditionModalCtrl)

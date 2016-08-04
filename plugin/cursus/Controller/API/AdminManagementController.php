@@ -1626,6 +1626,29 @@ class AdminManagementController extends Controller
 
     /**
      * @EXT\Route(
+     *     "/api/cursus/document/model/{documentModel}/retrieve",
+     *     name="api_get_cursus_document_model",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     *
+     * Returns the document model
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getDocumentModelAction(DocumentModel $documentModel)
+    {
+        $serializedModel = $this->serializer->serialize(
+            $documentModel,
+            'json',
+            SerializationContext::create()->setGroups(['api_cursus'])
+        );
+
+        return new JsonResponse($serializedModel, 200);
+    }
+
+    /**
+     * @EXT\Route(
      *     "/api/cursus/document/model/create",
      *     name="api_post_cursus_document_model_creation",
      *     options = {"expose"=true}

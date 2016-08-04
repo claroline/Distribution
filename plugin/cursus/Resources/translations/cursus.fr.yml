@@ -141,6 +141,21 @@ nothing_to_configure: Rien à configurer
 open_session_events: Séances ouvertes
 open_sessions: Sessions ouvertes
 organization_validation: Validation par l'organisation
+placeholder_course_code_message: Ce placeholder sera remplacé par le code de la formation
+placeholder_course_description_message: Ce placeholder sera remplacé par la description de la formation
+placeholder_course_title_message: Ce placeholder sera remplacé par le titre de la formation
+placeholder_first_name_message: Ce placeholder sera remplacé par le prénom de l'utilisateur
+placeholder_last_name_message: Ce placeholder sera remplacé par le nom de l'utilisateur
+placeholder_organization_message: Ce placeholder sera remplacé par le nom de l'organisation
+placeholder_session_description_message: Ce placeholder sera remplacé par la description de la session
+placeholder_session_end_message: Ce placeholder sera remplacé par la date de fin de la session
+placeholder_session_event_description_message: Ce placeholder sera remplacé par la description de la séance
+placeholder_session_event_end_message: Ce placeholder sera remplacé par la date de fin de la séance
+placeholder_session_event_location_message: Ce placeholder sera remplacé par la localisation de la séance
+placeholder_session_event_name_message: Ce placeholder sera remplacé par le nom de la séance
+placeholder_session_event_start_message: Ce placeholder sera remplacé par la date de début de la séance
+placeholder_session_name_message: Ce placeholder sera remplacé par le nom de la session
+placeholder_session_start_message: Ce placeholder sera remplacé par la date de début de la session
 public_registration: Inscription publique
 public_sessions_only: Seulement les sessions publiques (Vue calendrier)
 public_unregistration: Désinscription publique
@@ -233,6 +248,7 @@ user_validation: Validation de l'utilisateur
 validator: Validateur
 validators: Validateurs
 validators_selection: Sélection des responsables de validation
+variable_available_message: Vous pouvez utiliser les variables suivantes dans la partie "Contenu" du formulaire
 view_structure: Voir la structure
 waiting_for_session_transfer: En attente de transfert vers une session de formation
 waiting_organization_validation: En attente de confirmation de l'organisation

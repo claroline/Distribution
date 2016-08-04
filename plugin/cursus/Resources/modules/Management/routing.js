@@ -10,6 +10,7 @@ import configurationTemplate from './Partial/configuration.html'
 import parametersTemplate from './Partial/general_parameters.html'
 import locationsManagementTemplate from './Partial/locations_management.html'
 import documentModelsManagementTemplate from './Partial/document_models_management.html'
+import documentModelFormTemplate from './Partial/document_model_form.html'
 
 export default function($stateProvider, $urlRouterProvider) {
   $stateProvider
@@ -105,6 +106,26 @@ export default function($stateProvider, $urlRouterProvider) {
       ncyBreadcrumb: {
         label: Translator.trans('document_models_management', {}, 'cursus'),
         parent: 'configuration'
+      }
+    })
+    .state ('document_model_creation', {
+      url: '/configuration/documents/creation',
+      template: documentModelFormTemplate,
+      controller: 'DocumentModelCreationCtrl',
+      controllerAs: 'cmc',
+      ncyBreadcrumb: {
+        label: Translator.trans('document_model_creation', {}, 'cursus'),
+        parent: 'document_models_management'
+      }
+    })
+    .state ('document_model_edition', {
+      url: '/configuration/documents/{modelId}/edition',
+      template: documentModelFormTemplate,
+      controller: 'DocumentModelEditionCtrl',
+      controllerAs: 'cmc',
+      ncyBreadcrumb: {
+        label: Translator.trans('document_model_edition', {}, 'cursus'),
+        parent: 'document_models_management'
       }
     })
 

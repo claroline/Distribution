@@ -10,13 +10,11 @@
 /*global Routing*/
 /*global Translator*/
 
-export default class DocumentModelEditionModalCtrl {
-  constructor($http, $uibModalInstance, CourseService, title, model, callback) {
+export default class DocumentModelCreationCtrl {
+  constructor($http, $state, CourseService) {
     this.$http = $http
-    this.$uibModalInstance = $uibModalInstance
-    this.title = title
-    this.source = model
-    this.callback = callback
+    this.$state = $state
+    this.title = Translator.trans('document_model_creation', {}, 'cursus')
     this.documentModel = {
       name: null,
       content: null,
@@ -34,17 +32,6 @@ export default class DocumentModelEditionModalCtrl {
     ]
     this.documentType = null
     this.tinymceOptions = CourseService.getTinymceConfiguration()
-    this.initializeDocumentModel()
-  }
-
-  initializeDocumentModel () {
-    this.documentModel['name'] = this.source['name']
-    this.documentModel['content'] = this.source['content']
-    this.documentModel['documentType'] = this.source['documentType']
-
-    const selectedType = this.documentTypes.find(dt => dt['value'] === this.source['documentType'])
-    this.documentType = selectedType
-
   }
 
   submit () {
@@ -66,10 +53,9 @@ export default class DocumentModelEditionModalCtrl {
     }
 
     if (this.isValid()) {
-      const url = Routing.generate('api_put_cursus_document_model_edition', {documentModel: this.source['id']})
-      this.$http.put(url, {documentModelDatas: this.documentModel}).then(d => {
-        this.callback(d['data'])
-        this.$uibModalInstance.close()
+      const url = Routing.generate('api_post_cursus_document_model_creation')
+      this.$http.post(url, {documentModelDatas: this.documentModel}).then(() => {
+        this.$state.go('document_models_management')
       })
     }
   }
@@ -91,5 +77,9 @@ export default class DocumentModelEditionModalCtrl {
     }
 
     return valid
+  }
+
+  isSessionEvent () {
+    return this.documentType && this.documentType['value'] === 1
   }
 }

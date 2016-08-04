@@ -38,15 +38,15 @@
     </h3>
 </div>
 <div class="panel-body documents-management-panel">
-    <button class="btn btn-primary"
-            data-toggle="tooltip"
-            data-placement="top"
-            title="{{ 'create_document_model'|trans:{}:'cursus' }}"
-            ng-click="cmc.createDocumentModel()"
+    <a class="btn btn-primary"
+       data-toggle="tooltip"
+       data-placement="top"
+       title="{{ 'create_document_model'|trans:{}:'cursus' }}"
+       ui-sref="document_model_creation"
     >
         <i class="fa fa-plus"></i>
         {{ 'create_document_model'|trans:{}:'cursus' }}
-    </button>
+    </a>
     <br>
     <br>
     <div ng-if="cmc.models.length > 0">
@@ -59,14 +59,14 @@
                     {{ model['documentTypeName'] }}
                 </td>
                 <td class="text-center" data-title="'actions'|trans:{}:'platform'">
-                    <button class="btn btn-primary btn-sm"
-                            data-toggle="tooltip"
-                            data-placement="top"
-                            title="{{ 'edit_document_model'|trans:{}:'cursus' }}"
-                            ng-click="cmc.editDocumentModel(model)"
+                    <a class="btn btn-primary btn-sm"
+                       data-toggle="tooltip"
+                       data-placement="top"
+                       title="{{ 'edit_document_model'|trans:{}:'cursus' }}"
+                       ui-sref="document_model_edition({modelId: model['id']})"
                     >
                         <i class="fa fa-edit"></i>
-                    </button>
+                    </a>
                     <button class="btn btn-danger btn-sm"
                             data-toggle="tooltip"
                             data-placement="top"

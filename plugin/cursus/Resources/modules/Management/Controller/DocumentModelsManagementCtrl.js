@@ -59,14 +59,6 @@ export default class DocumentModelsManagementCtrl {
     })
   }
 
-  createDocumentModel () {
-    this.DocumentModelService.createDocumentModel(this._addDocumentModelCallback)
-  }
-
-  editDocumentModel (model) {
-    this.DocumentModelService.editDocumentModel(model, this._updateDocumentModelCallback)
-  }
-
   deleteDocumentModel (modelId) {
     this.DocumentModelService.deleteDocumentModel(modelId, this._removeDocumentModelCallback)
   }
