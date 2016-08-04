@@ -23,7 +23,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
-
 class DocumentController extends DropzoneBaseController
 {
     private function getDropZoneHiddenDirectory(Dropzone $dropzone)
