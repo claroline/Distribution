@@ -94,6 +94,9 @@ edit_course: Modifier la formation
 edit_session: Modifier la session
 edit_session_event: Modifier la séance
 enable_courses_tab_in_profile: Activer l'onglet "Formations" dans le profil
+every_day: Tous les jours
+every_month: Tous les mois
+every_week: Toutes les semaines
 export_all_courses: Exporter toutes les formations
 form_not_blank_error: Cette valeur ne doit pas être vide.
 form_not_unique_error: Cette valeur est déjà utilisée.
@@ -175,6 +178,7 @@ registration_failed: L'inscription a échouée
 remove_course: Retirer la formation
 remove_course_confirm_message: Êtes-vous sûr de vouloir retirer cette formation ?
 repeat_session_event: Répéter la séance
+repetition: Répétition
 send_confirmation_mail: Envoyer un mail de confirmation
 send_confirmation_mail_to_session: Envoyer un mail de confirmation à tous les apprenants de la session de formation
 send_confirmation_mail_to_session_message: Êtes-vous sûr de vouloir envoyer un mail de confirmation à tous les apprenants de la session de formation ?
@@ -243,6 +247,7 @@ unregister_tutor_from_session_confirm_message: Êtes-vous sûr de vouloir désin
 unregister_user_from_cursus_confirm_message: Êtes-vous sûr de vouloir désinscrire cet utilisateur de ce cursus ?
 unregister_user_from_session: Désinscrire l'utilisateur de la session de formation
 unregister_user_from_session_message: Êtes-vous sûr de vouloir désinscrire cet utilisateur de cette session de formation ?
+until: Jusqu'au
 user_sessions_management: Gestion des sessions de formation
 user_validation: Validation de l'utilisateur
 validator: Validateur

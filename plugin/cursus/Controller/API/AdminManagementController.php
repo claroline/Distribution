@@ -1719,4 +1719,32 @@ class AdminManagementController extends Controller
 
         return new JsonResponse($serializedDocumentModel, 200);
     }
+
+    /**
+     * @EXT\Route(
+     *     "/api/session/event/{sessionEvent}/repeat",
+     *     name="api_post_session_event_repeat",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     *
+     * Repeats a session event
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function postSessionEventRepeatAction(SessionEvent $sessionEvent)
+    {
+        $parameters = $this->request->request->get('repeatOptionsDatas', false);
+        $iteration = $parameters['iteration'];
+        $endDate = $parameters['endDate'] ? new \DateTime($parameters['endDate']) : null;
+        $duration = $parameters['duration'];
+        $createdSessionEvents = $this->cursusManager->repeatSessionEvent($sessionEvent, $iteration, $endDate, $duration);
+        $serializedSessionEvents = $this->serializer->serialize(
+            $createdSessionEvents,
+            'json',
+            SerializationContext::create()->setGroups(['api_cursus'])
+        );
+
+        return new JsonResponse($serializedSessionEvents, 200);
+    }
 }

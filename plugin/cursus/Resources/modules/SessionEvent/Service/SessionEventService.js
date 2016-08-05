@@ -10,6 +10,7 @@
 /*global Routing*/
 /*global Translator*/
 import sessionEventFormTemplate from '../Partial/session_event_form_modal.html'
+import sessionEventRepeatModalTemplate from '../Partial/session_event_repeat_form_modal.html'
 
 export default class SessionEventService {
   constructor ($http, $sce, $uibModal, ClarolineAPIService) {
@@ -21,6 +22,7 @@ export default class SessionEventService {
     this.openSessionEvents = {}
     this.closedSessionEvents = {}
     this._addSessionEventCallback = this._addSessionEventCallback.bind(this)
+    this._addMultipleSessionEventsCallback = this._addMultipleSessionEventsCallback.bind(this)
     this._updateSessionEventCallback = this._updateSessionEventCallback.bind(this)
     this._removeSessionEventCallback = this._removeSessionEventCallback.bind(this)
   }
@@ -31,6 +33,22 @@ export default class SessionEventService {
     if (eventJson['session']['id']) {
       const sessionId = eventJson['session']['id']
       this.sessionEvents[sessionId].push(eventJson)
+      this.computeSessionEventsStatusBySession(sessionId)
+    }
+  }
+
+  _addMultipleSessionEventsCallback(data) {
+    const eventsJson = JSON.parse(data)
+    let sessionIds = {}
+    eventsJson.forEach(e => {
+      if (e['session']['id']) {
+        const sessionId = e['session']['id']
+        sessionIds[sessionId] = sessionId
+        this.sessionEvents[sessionId].push(e)
+      }
+    })
+
+    for (let sessionId in sessionIds) {
       this.computeSessionEventsStatusBySession(sessionId)
     }
   }
@@ -148,9 +166,6 @@ export default class SessionEventService {
     const startDate = new Date(start)
     const endDate = new Date(end)
     const currentDate = (now === null) ? new Date() : now
-    //startDate.setHours(0, 0, 0, 0, 0)
-    //endDate.setHours(0, 0, 0, 0, 0)
-    //currentDate.setHours(0, 0, 0, 0, 0)
 
     if (startDate.getTime() > currentDate.getTime()) {
       status = 'not_started'
@@ -185,6 +200,19 @@ export default class SessionEventService {
         this.closedSessionEvents[sessionId].push(e)
       } else {
         this.openSessionEvents[sessionId].push(e)
+      }
+    })
+  }
+
+  repeatEvent (sessionEvent, callback = null) {
+    const addCallback = callback !== null ? callback : this._addMultipleSessionEventsCallback
+    this.$uibModal.open({
+      template: sessionEventRepeatModalTemplate,
+      controller: 'SessionEventRepeatModalCtrl',
+      controllerAs: 'cmc',
+      resolve: {
+        sessionEvent: () => { return sessionEvent },
+        callback: () => { return addCallback }
       }
     })
   }

@@ -15,6 +15,7 @@ import 'angular-ui-translation/angular-translation'
 import SessionEventService from './Service/SessionEventService'
 import SessionEventCreationModalCtrl from './Controller/SessionEventCreationModalCtrl'
 import SessionEventEditionModalCtrl from './Controller/SessionEventEditionModalCtrl'
+import SessionEventRepeatModalCtrl from './Controller/SessionEventRepeatModalCtrl'
 
 angular.module('SessionEventModule', [
   'ui.bootstrap',
@@ -24,3 +25,4 @@ angular.module('SessionEventModule', [
 .service('SessionEventService', SessionEventService)
 .controller('SessionEventCreationModalCtrl', SessionEventCreationModalCtrl)
 .controller('SessionEventEditionModalCtrl', SessionEventEditionModalCtrl)
+.controller('SessionEventRepeatModalCtrl', SessionEventRepeatModalCtrl)

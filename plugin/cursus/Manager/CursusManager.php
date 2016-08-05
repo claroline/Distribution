@@ -1579,6 +1579,55 @@ class CursusManager
         $this->om->flush();
     }
 
+    public function repeatSessionEvent(SessionEvent $sessionEvent, $iteration, \DateTime $until = null, $duration = null)
+    {
+        $createdSessionEvents = [];
+        $interval = $iteration === 0 ? 'P1D' : 'P7D';
+        $dateInterval = new \DateInterval($interval);
+        $session = $sessionEvent->getSession();
+        $description = $sessionEvent->getDescription();
+        $location = $sessionEvent->getLocation();
+        $locationResource = $sessionEvent->getLocationResource();
+        $name = $sessionEvent->getName();
+        $startDate = $sessionEvent->getStartDate();
+        $endDate = $sessionEvent->getEndDate();
+        $index = 1;
+
+        if (is_null($until) && !is_null($duration) && $duration > 0) {
+            $until = clone $startDate;
+            $daysToAdd = 7 * $duration;
+            $until->add(new \DateInterval('P'.$daysToAdd.'D'));
+        }
+        if (!is_null($until)) {
+            $until->setTime(23, 59, 59);
+            $this->om->startFlushSuite();
+
+            for ($startDate->add($dateInterval); $startDate < $until; $startDate->add($dateInterval)) {
+                $endDate->add($dateInterval);
+                $newStartDate = clone $startDate;
+                $newEndDate = clone  $endDate;
+                $newSessionEvent = new SessionEvent();
+                $newSessionEvent->setSession($session);
+                $newSessionEvent->setDescription($description);
+                $newSessionEvent->setLocation($location);
+                $newSessionEvent->setLocationResource($locationResource);
+                $newSessionEvent->setStartDate($newStartDate);
+                $newSessionEvent->setEndDate($newEndDate);
+                $newSessionEvent->setName($name." [$index]");
+                ++$index;
+                $this->persistSessionEvent($newSessionEvent);
+                $createdSessionEvents[] = $newSessionEvent;
+
+                if ($index % 300 === 0) {
+                    $this->om->forceFlush();
+                }
+            }
+            $this->om->endFlushSuite();
+        }
+
+        return $createdSessionEvents;
+    }
+
     public function resetDefaultSessionByCourse(Course $course, CourseSession $session = null)
     {
         $defaultSessions = $this->getDefaultSessionsByCourse($course);

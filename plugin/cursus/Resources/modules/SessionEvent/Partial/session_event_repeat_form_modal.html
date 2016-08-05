@@ -1,0 +1,72 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="$close()">&times;</button>
+        <h3>{{ 'repeat_session_event'|trans:{}:'cursus' }}</h3>
+    </div>
+    <div class="modal-body">
+        <div class="form-group row" ng-class="cmc.repeatOptionsErrors['iteration'] ? 'has-error' : ''">
+            <label class="control-label col-md-3">
+                {{ 'repetition'|trans:{}:'cursus' }}
+            </label>
+            <div class="col-md-9">
+                <select class="form-control" ng-model="cmc.iteration" ng-options="i['name'] for i in cmc.iterations">
+                    <option></option>
+                </select>
+                <div class="help-block field-error" ng-if="cmc.repeatOptionsErrors['iteration']">
+                    {{ cmc.repeatOptionsErrors['iteration'] }}
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="form-group row" ng-class="cmc.repeatOptionsErrors['endDate'] ? 'has-error' : ''" ng-if="!cmc.repeatOptions['duration']">
+            <label class="control-label col-md-3">
+                {{ 'until'|trans:{}:'cursus' }}
+            </label>
+            <div class="col-md-9">
+                <span class="input-group">
+                    <input type="text"
+                           class="form-control"
+                           uib-datepicker-popup="{{ cmc.endDate['format'] }}"
+                           is-open="cmc.endDate['open']"
+                           datepicker-options="cmc.dateOptions"
+                           ng-required="true"
+                           placeholder="{{ cmc.dateOptions['placeHolder'] }}"
+                           ng-model="cmc.endDate['date']"
+                    />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="cmc.openDatePicker()">
+                            <i class="fa fa-calendar"></i>
+                        </button>
+                    </span>
+                </span>
+                <div class="help-block field-error" ng-if="cmc.repeatOptionsErrors['endDate']">
+                    {{ cmc.repeatOptionsErrors['endDate'] }}
+                </div>
+            </div>
+        </div>
+        <div class="form-group row" ng-class="cmc.repeatOptionsErrors['duration'] ? 'has-error' : ''" ng-if="!cmc.endDate['date']">
+            <label class="control-label col-md-3">
+                {{ 'duration'|trans:{}:'platform' }}
+            </label>
+            <div class="col-md-9">
+                <span class="input-group">
+                    <input type="number" class="form-control" ng-model="cmc.repeatOptions['duration']">
+                     <span class="input-group-addon">
+                         {{ 'weeks'|trans:{}:'platform' }}
+                     </span>
+                </span>
+                <div class="help-block field-error" ng-if="cmc.repeatOptionsErrors['duration']">
+                    {{ cmc.repeatOptionsErrors['duration'] }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-default" data-dismiss="modal" ng-click="$close()">
+            {{ 'cancel'|trans:{}:'platform' }}
+        </button>
+        <button type="submit" class="btn btn-primary" ng-click="cmc.submit()">
+            {{ 'ok'|trans:{}:'platform' }}
+        </button>
+    </div>
+</div>

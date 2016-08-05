@@ -59,6 +59,7 @@ export default class SessionManagementCtrl {
     this.isInvitationsDisabled = true
     this._updateSessionCallback = this._updateSessionCallback.bind(this)
     this._addSessionEventCallback = this._addSessionEventCallback.bind(this)
+    this._addMultipleSessionEventsCallback = this._addMultipleSessionEventsCallback.bind(this)
     this._updateSessionEventCallback = this._updateSessionEventCallback.bind(this)
     this._removeSessionEventCallback = this._removeSessionEventCallback.bind(this)
     this._removeLearnerCallback = this._removeLearnerCallback.bind(this)
@@ -82,6 +83,11 @@ export default class SessionManagementCtrl {
 
   _addSessionEventCallback (data) {
     this.SessionEventService._addSessionEventCallback(data)
+    this.refreshEventsTables()
+  }
+
+  _addMultipleSessionEventsCallback (data) {
+    this.SessionEventService._addMultipleSessionEventsCallback(data)
     this.refreshEventsTables()
   }
 
@@ -185,7 +191,8 @@ export default class SessionManagementCtrl {
     this.SessionEventService.deleteSessionEvent(eventId, this._removeSessionEventCallback)
   }
 
-  repeatEvent () {
+  repeatEvent (sessionEvent) {
+    this.SessionEventService.repeatEvent(sessionEvent, this._addMultipleSessionEventsCallback)
   }
 
   refreshEventsTables () {

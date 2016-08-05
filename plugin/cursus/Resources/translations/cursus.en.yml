@@ -94,6 +94,9 @@ edit_course: Edit training
 edit_session: Edit training session
 edit_session_event: Edit session event
 enable_courses_tab_in_profile: Enable trainings tab in profile
+every_day: Every day
+every_month: Every month
+every_week: Every week
 export_all_courses: Export all trainings
 form_not_blank_error: This value should not be blank.
 form_not_unique_error: This value is already used.
@@ -174,6 +177,7 @@ registration_failed: Registration failed
 remove_course: Remove training
 remove_course_confirm_message: Are you sure you want to remove this training ?
 repeat_session_event: Repeat session event
+repetition: Repetition
 send_confirmation_mail: Send a confirmation mail
 send_confirmation_mail_to_session: Send a confirmation mail to all learners of the training session
 send_confirmation_mail_to_session_message: Are you sure you want to send a confirmation mail to all learners of the training session ?
@@ -242,6 +246,7 @@ unregister_tutor_from_session_confirm_message: Are you sure you want to unregist
 unregister_user_from_cursus_confirm_message: Are you sure you want to unregister this user from this cursus ?
 unregister_user_from_session: Unregister user from training session
 unregister_user_from_session_message: Are you sure you want to unregister this user from this training session ?
+until: Until
 user_sessions_management: Training sessions management
 user_validation: User validation
 validator: Validator
