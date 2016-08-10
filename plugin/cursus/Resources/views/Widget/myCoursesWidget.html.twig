@@ -27,7 +27,7 @@
     <script src="{{ asset('bundles/frontend/moment/min/moment-with-locales.min.js') }}"></script>
     <script src="{{ asset('bundles/frontend/fullcalendar/dist/fullcalendar.min.js') }}"></script>
     <script src="{{ asset('bundles/bazingajstranslation/js/translator.min.js') }}"></script>
-    <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'platfrom' }) }}"></script>
+    <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'platform' }) }}"></script>
     <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'agenda' }) }}"></script>
     <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'cursus' }) }}"></script>
     <script>
@@ -339,7 +339,9 @@
                 <hr>
                 <div>
                     <b>${Translator.trans('duration', {}, 'platform')} :</b>
-                    ${event['startDate']} <i class="fa fa-long-arrow-right"></i> ${event['endDate']}
+                    ${moment(event['startDate']).format('DD/MM/YYYY')}
+                    <i class="fa fa-long-arrow-right"></i>
+                    ${moment(event['endDate']).format('DD/MM/YYYY')}
                 </div>
               `
               break
@@ -524,7 +526,9 @@
                                         ${event['sessionName']}
                                         <br>
                                         <b>${Translator.trans('duration', {}, 'platform')} :</b>
-                                        ${event['sessionStartDate']} <i class="fa fa-long-arrow-right"></i> ${event['sessionEndDate']}
+                                        ${moment(event['sessionStartDate']).format('DD/MM/YYYY')}
+                                        <i class="fa fa-long-arrow-right"></i>
+                                        ${moment(event['sessionEndDate']).format('DD/MM/YYYY')}
                                         <br>
                                         ${event['sessionDescription'] ? '<b>' + Translator.trans('description', {}, 'platform') + ' :</b>' : ''}
                                         ${event['sessionDescription'] ? event['sessionDescription'] : ''}
@@ -542,7 +546,9 @@
                                 <div id="collapse-event" class="panel-collapse collapse in" role="tabpanel">
                                     <div class="panel-body">
                                         <b>${Translator.trans('duration', {}, 'platform')} :</b>
-                                        ${event['startDate']} <i class="fa fa-long-arrow-right"></i> ${event['endDate']}
+                                        ${moment(event['startDate']).format('DD/MM/YYYY HH:mm')}
+                                        <i class="fa fa-long-arrow-right"></i>
+                                        ${moment(event['endDate']).format('DD/MM/YYYY HH:mm')}
                                         <br>
                                         ${event['location'] ? '<b>' + Translator.trans('location', {}, 'platform') + ' :</b>' : ''}
                                         ${event['location'] ? event['location'] : ''}

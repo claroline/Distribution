@@ -27,7 +27,7 @@
     <script src="{{ asset('bundles/frontend/moment/min/moment-with-locales.min.js') }}"></script>
     <script src="{{ asset('bundles/frontend/fullcalendar/dist/fullcalendar.min.js') }}"></script>
     <script src="{{ asset('bundles/bazingajstranslation/js/translator.min.js') }}"></script>
-    <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'platfrom' }) }}"></script>
+    <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'platform' }) }}"></script>
     <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'agenda' }) }}"></script>
     <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'cursus' }) }}"></script>
     <script>
@@ -289,7 +289,10 @@
           event['events'].forEach(e => {
             eventsElement += `
               <li>
-                  <b>${e['name']}</b> [${e['startDate']} <i class="fa fa-long-arrow-right"></i> ${e['endDate']}]
+                  <b>${e['name']}</b>
+                  [${moment(e['startDate']).format('DD/MM/YYYY HH:mm')}
+                  <i class="fa fa-long-arrow-right"></i>
+                  ${moment(e['endDate']).format('DD/MM/YYYY HH:mm')}]
                   <br>
                   <b>${Translator.trans('location', {}, 'platform')}</b> :
                   ${e['location']}
@@ -350,11 +353,11 @@
                                 ${event['description'] ? '<tr><td colspan="2">' + event['description'] + '</td></tr>' : ''}
                                 <tr>
                                     <th>${Translator.trans('start_date', {}, 'platform')}</th>
-                                    <td>${new Date(event['startDate']).toLocaleDateString()}</td>
+                                    <td>${moment(event['startDate']).format('DD/MM/YYYY')}</td>
                                 </tr>
                                 <tr>
                                     <th>${Translator.trans('end_date', {}, 'platform')}</th>
-                                    <td>${new Date(event['endDate']).toLocaleDateString()}</td>
+                                    <td>${moment(event['endDate']).format('DD/MM/YYYY')}</td>
                                 </tr>
                             </table>
                         </div>

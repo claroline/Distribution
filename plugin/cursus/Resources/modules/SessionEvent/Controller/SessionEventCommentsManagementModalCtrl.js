@@ -7,9 +7,6 @@
  * file that was distributed with this source code.
  */
 
-/*global Routing*/
-/*global Translator*/
-
 export default class SessionEventCommentsManagementModalCtrl {
   constructor($sce, NgTableParams, CourseService, SessionEventService, sessionEvent) {
     this.$sce = $sce
