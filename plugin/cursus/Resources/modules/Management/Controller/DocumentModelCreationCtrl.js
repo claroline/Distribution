@@ -82,4 +82,8 @@ export default class DocumentModelCreationCtrl {
   isSessionEvent () {
     return this.documentType && this.documentType['value'] === 1
   }
+
+  isSession () {
+    return this.documentType && (this.documentType['value'] === 0 || this.documentType['value'] === 2)
+  }
 }

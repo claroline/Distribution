@@ -97,7 +97,7 @@
                 <div class="panel-heading">
                     <h3 class="panel-title">
                         <span data-toggle="collapse"
-                              href="#course-content-{{ courseId }}"
+                              href="#course-content-{{ widgetInstance.getId() }}-{{ courseId }}"
                               class="pointer-hand"
                         >
                             {{ course.getTitle() }}
@@ -105,7 +105,7 @@
                         </span>
                     </h3>
                 </div>
-                <div id="course-content-{{ courseId }}" class="panel-collapse collapse">
+                <div id="course-content-{{ widgetInstance.getId() }}-{{ courseId }}" class="panel-collapse collapse">
                     <div class="panel-body">
                         {% if icon is not empty or description is not empty %}
                             <div class="media">

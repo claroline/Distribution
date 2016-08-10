@@ -51,19 +51,10 @@
         <button class="btn btn-primary"
                 data-toggle="tooltip"
                 data-placement="top"
-                title="{{ 'send_mail_to_session_participants'|trans:{}:'cursus' }}"
-                ng-click="cmc.sendMailToSessionLearners()"
+                title="{{ 'create_session_event'|trans:{}:'cursus' }}"
+                ng-click="cmc.createSessionEvent()"
         >
-            <i class="fa fa-envelope-o"></i>
-        </button>
-        <button class="btn btn-primary"
-                data-toggle="tooltip"
-                data-placement="top"
-                title="{{ 'generate_certificates'|trans:{}:'cursus' }}"
-                ng-click="cmc.generateCertificates()"
-                ng-if="!cmc.isCertificatesDisabled"
-        >
-            <i class="fa fa-graduation-cap"></i>
+            <i class="fa fa-calendar"></i>
         </button>
         <button class="btn btn-primary"
                 data-toggle="tooltip"
@@ -77,10 +68,19 @@
         <button class="btn btn-primary"
                 data-toggle="tooltip"
                 data-placement="top"
-                title="{{ 'create_session_event'|trans:{}:'cursus' }}"
-                ng-click="cmc.createSessionEvent()"
+                title="{{ 'send_mail_to_session_participants'|trans:{}:'cursus' }}"
+                ng-click="cmc.sendMailToSessionLearners()"
         >
-            <i class="fa fa-calendar"></i>
+            <i class="fa fa-envelope-o"></i>
+        </button>
+        <button class="btn btn-primary"
+                data-toggle="tooltip"
+                data-placement="top"
+                title="{{ 'generate_certificates'|trans:{}:'cursus' }}"
+                ng-click="cmc.generateCertificates()"
+                ng-if="!cmc.isCertificatesDisabled"
+        >
+            <i class="fa fa-graduation-cap"></i>
         </button>
     </div>
     <br>
@@ -297,6 +297,14 @@
                             <button class="btn btn-default btn-sm"
                                     data-toggle="tooltip"
                                     data-placement="top"
+                                    title="{{ 'informations_management'|trans:{}:'cursus' }}"
+                                    ng-click="cmc.manageEventComments(event)"
+                            >
+                                <i class="fa fa-info"></i>
+                            </button>
+                            <button class="btn btn-default btn-sm"
+                                    data-toggle="tooltip"
+                                    data-placement="top"
                                     title="{{ 'repeat_session_event'|trans:{}:'cursus' }}"
                                     ng-click="cmc.repeatEvent(event)"
                             >
@@ -350,6 +358,14 @@
                                     ng-click="cmc.editEvent(event)"
                             >
                                 <i class="fa fa-edit"></i>
+                            </button>
+                            <button class="btn btn-default btn-sm"
+                                    data-toggle="tooltip"
+                                    data-placement="top"
+                                    title="{{ 'informations_management'|trans:{}:'cursus' }}"
+                                    ng-click="cmc.manageEventComments(event)"
+                            >
+                                <i class="fa fa-info"></i>
                             </button>
                             <button class="btn btn-danger btn-sm"
                                     data-toggle="tooltip"

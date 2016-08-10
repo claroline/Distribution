@@ -11,7 +11,7 @@
 /*global Translator*/
 
 export default class SessionEventEditionModalCtrl {
-  constructor($http, $uibModalInstance, CourseService, title, sessionEvent, callback) {
+  constructor($http, $uibModalInstance, CourseService, SessionService, title, sessionEvent, callback) {
     this.$http = $http
     this.$uibModalInstance = $uibModalInstance
     this.CourseService = CourseService
@@ -25,7 +25,8 @@ export default class SessionEventEditionModalCtrl {
       description: null,
       location: null,
       internalLocation: false,
-      locationResource: null
+      locationResource: null,
+      tutors: []
     }
     this.sessionEventErrors = {
       name: null,
@@ -44,6 +45,8 @@ export default class SessionEventEditionModalCtrl {
     this.tinymceOptions = CourseService.getTinymceConfiguration()
     this.locationResources = []
     this.locationResource = null
+    this.tutorsList = SessionService.getTutorsBySession(this.source['session']['id'])
+    this.tutors = []
     this.initializeSessionEvent()
   }
 
@@ -70,6 +73,11 @@ export default class SessionEventEditionModalCtrl {
         const selectedResource = this.locationResources.find(lr => lr['id'] === this.source['locationResource']['id'])
         this.locationResource = selectedResource
       }
+    })
+    this.source['tutors'].forEach(t => {
+
+      const selectedTutor = this.tutorsList.find(tl => t['id'] === tl['userId'])
+      this.tutors.push(selectedTutor)
     })
   }
 
@@ -107,6 +115,8 @@ export default class SessionEventEditionModalCtrl {
     } else {
       this.sessionEvent['locationResource'] = null
     }
+    this.sessionEvent['tutors'] = []
+    this.tutors.forEach(t => this.sessionEvent['tutors'].push(t['userId']))
 
     if (this.isValid()) {
       const url = Routing.generate('api_put_session_event_edition', {sessionEvent: this.source['id']})

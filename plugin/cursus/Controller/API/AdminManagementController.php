@@ -973,6 +973,11 @@ class AdminManagementController extends Controller
         $sessionEvent->setStartDate($startDate);
         $sessionEvent->setEndDate($endDate);
         $sessionEvent->setDescription($sessionEventDatas['description']);
+        $tutors = $this->userManager->getUsersByIds($sessionEventDatas['tutors']);
+
+        foreach ($tutors as $tutor) {
+            $sessionEvent->addTutor($tutor);
+        }
 
         if ($sessionEventDatas['internalLocation']) {
             if ($sessionEventDatas['locationResource']) {
@@ -997,12 +1002,13 @@ class AdminManagementController extends Controller
                 $sessionEvent->getStartDate(),
                 $sessionEvent->getEndDate(),
                 $sessionEvent->getLocation(),
-                $sessionEvent->getLocationResource()
+                $sessionEvent->getLocationResource(),
+                $sessionEvent->getTutors()
             );
             $serializedSessionEvent = $this->serializer->serialize(
                 $createdSessionEvent,
                 'json',
-                SerializationContext::create()->setGroups(['api_cursus'])
+                SerializationContext::create()->setGroups(['api_user_min'])
             );
 
             return new JsonResponse($serializedSessionEvent, 200);
@@ -1050,6 +1056,12 @@ class AdminManagementController extends Controller
         } else {
             $sessionEvent->setLocation($sessionEventDatas['location']);
         }
+        $sessionEvent->emptyTutors();
+        $tutors = $this->userManager->getUsersByIds($sessionEventDatas['tutors']);
+
+        foreach ($tutors as $tutor) {
+            $sessionEvent->addTutor($tutor);
+        }
         $form = $this->createForm($formType, $sessionEvent);
         $form->submit([], false);
 
@@ -1060,7 +1072,7 @@ class AdminManagementController extends Controller
             $serializedSessionEvent = $this->serializer->serialize(
                 $sessionEvent,
                 'json',
-                SerializationContext::create()->setGroups(['api_cursus'])
+                SerializationContext::create()->setGroups(['api_user_min'])
             );
 
             return new JsonResponse($serializedSessionEvent, 200);
@@ -1735,14 +1747,22 @@ class AdminManagementController extends Controller
     public function postSessionEventRepeatAction(SessionEvent $sessionEvent)
     {
         $parameters = $this->request->request->get('repeatOptionsDatas', false);
-        $iteration = $parameters['iteration'];
+        $iteration = [
+            'Monday' => $parameters['monday'],
+            'Tuesday' => $parameters['tuesday'],
+            'Wednesday' => $parameters['wednesday'],
+            'Thursday' => $parameters['thursday'],
+            'Friday' => $parameters['friday'],
+            'Saturday' => $parameters['saturday'],
+            'Sunday' => $parameters['sunday'],
+        ];
         $endDate = $parameters['endDate'] ? new \DateTime($parameters['endDate']) : null;
         $duration = $parameters['duration'];
         $createdSessionEvents = $this->cursusManager->repeatSessionEvent($sessionEvent, $iteration, $endDate, $duration);
         $serializedSessionEvents = $this->serializer->serialize(
             $createdSessionEvents,
             'json',
-            SerializationContext::create()->setGroups(['api_cursus'])
+            SerializationContext::create()->setGroups(['api_user_min'])
         );
 
         return new JsonResponse($serializedSessionEvents, 200);

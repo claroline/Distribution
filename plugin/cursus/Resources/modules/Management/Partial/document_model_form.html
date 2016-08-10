@@ -54,9 +54,24 @@
                 <strong>%last_name%</strong> :
                 {{ 'placeholder_last_name_message'|trans:{}:'cursus' }}.
             </li>
+        </ul>
+        <hr>
+        <ul>
             <li>
-                <strong>%organization%</strong> :
-                {{ 'placeholder_organization_message'|trans:{}:'cursus' }}.
+                <strong>%organization_name%</strong> :
+                {{ 'placeholder_organization_name_message'|trans:{}:'cursus' }}.
+            </li>
+            <li>
+                <strong>%organization_mail%</strong> :
+                {{ 'placeholder_organization_mail_message'|trans:{}:'cursus' }}.
+            </li>
+            <li>
+                <strong>%organization_address%</strong> :
+                {{ 'placeholder_organization_address_message'|trans:{}:'cursus' }}.
+            </li>
+            <li>
+                <strong>%organization_phone%</strong> :
+                {{ 'placeholder_organization_phone_message'|trans:{}:'cursus' }}.
             </li>
         </ul>
         <hr>
@@ -93,7 +108,13 @@
                 {{ 'placeholder_session_end_message'|trans:{}:'cursus' }}.
             </li>
         </ul>
-        <hr ng-if="cmc.isSessionEvent()">
+        <hr ng-if="cmc.isSession() || cmc.isSessionEvent()">
+        <ul ng-if="cmc.isSession()">
+            <li>
+                <strong>%events_list%</strong> :
+                {{ 'placeholder_session_events_list_message'|trans:{}:'cursus' }}.
+            </li>
+        </ul>
         <ul ng-if="cmc.isSessionEvent()">
             <li>
                 <strong>%event_name%</strong> :

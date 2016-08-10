@@ -241,4 +241,8 @@ export default class SessionManagementCtrl {
     $event.stopPropagation()
     this.SessionService.registerTutors(this.sessionId, this._addTutorsCallback)
   }
+
+  manageEventComments (sessionEvent) {
+    this.SessionEventService.manageComments(sessionEvent)
+  }
 }

@@ -32,6 +32,17 @@ class LogSessionEventEditEvent extends LogGenericEvent
         $details['courseId'] = $course->getId();
         $details['courseTitle'] = $course->getTitle();
         $details['courseCode'] = $course->getCode();
+        $details['tutors'] = [];
+
+        foreach ($sessionEvent->getTutors() as $tutor) {
+            $details['tutors'][] = [
+                'id' => $tutor->getId(),
+                'username' => $tutor->getUsername(),
+                'firstName' => $tutor->getFirstName(),
+                'lastName' => $tutor->getLastName(),
+                'guid' => $tutor->getGuid(),
+            ];
+        }
         parent::__construct(self::ACTION, $details);
     }
 

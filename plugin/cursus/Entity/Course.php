@@ -152,9 +152,7 @@ class Course
     protected $maxUsers;
 
     /**
-     * @ORM\ManyToMany(
-     *     targetEntity="Claroline\CoreBundle\Entity\User"
-     * )
+     * @ORM\ManyToMany(targetEntity="Claroline\CoreBundle\Entity\User")
      * @ORM\JoinTable(name="claro_cursusbundle_course_validators")
      * @Groups({"api_user_min"})
      */

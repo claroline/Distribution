@@ -43,5 +43,6 @@
     <script>
         window['sessions_' + {{ widgetInstance.getId() }}] = {{ sessions|json_encode|raw }}
         window['editable-sessions_' + {{ widgetInstance.getId() }}] = {{ editableSessions|json_encode|raw }}
+        window['workspaces_' + {{ widgetInstance.getId() }}] = {{ workspacesList|json_encode|raw }}
     </script>
 {% endblock %}

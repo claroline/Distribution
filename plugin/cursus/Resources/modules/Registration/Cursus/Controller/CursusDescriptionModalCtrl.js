@@ -9,9 +9,8 @@
     
 export default class CursusDescriptionModalCtrl {
         
-  constructor($uibModalInstance, $sce, title, description) {
+  constructor($uibModalInstance, title, description) {
     this.$uibModalInstance = $uibModalInstance
-    this.$sce = $sce
     this.title = title
     this.description = description
   }

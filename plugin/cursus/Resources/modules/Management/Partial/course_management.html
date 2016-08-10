@@ -143,8 +143,17 @@
                             <button class="btn btn-default btn-sm"
                                     data-toggle="tooltip"
                                     data-placement="top"
-                                    title="{{ 'send_session_infos'|trans:{}:'cursus' }}"
-                                    ng-click="cmc.sendSessionInfos(session['id'])"
+                                    title="{{ 'invite_learners_to_session'|trans:{}:'cursus' }}"
+                                    ng-click="cmc.inviteLearners(session['id'])"
+                                    ng-if="!cmc.isInvitationsDisabled"
+                            >
+                                <i class="fa fa-plus-square"></i>
+                            </button>
+                            <button class="btn btn-default btn-sm"
+                                    data-toggle="tooltip"
+                                    data-placement="top"
+                                    title="{{ 'send_mail_to_session_participants'|trans:{}:'cursus' }}"
+                                    ng-click="cmc.sendMailToSessionLearners(session['id'])"
                             >
                                 <i class="fa fa-envelope-o"></i>
                             </button>
@@ -156,15 +165,6 @@
                                     ng-if="!cmc.isCertificatesDisabled"
                             >
                                 <i class="fa fa-graduation-cap"></i>
-                            </button>
-                            <button class="btn btn-default btn-sm"
-                                    data-toggle="tooltip"
-                                    data-placement="top"
-                                    title="{{ 'invite_learners_to_session'|trans:{}:'cursus' }}"
-                                    ng-click="cmc.inviteLearners(session['id'])"
-                                    ng-if="!cmc.isInvitationsDisabled"
-                            >
-                                <i class="fa fa-plus-square"></i>
                             </button>
                             <button class="btn btn-default btn-sm"
                                     data-toggle="tooltip"
@@ -241,8 +241,8 @@
                             <button class="btn btn-default btn-sm"
                                     data-toggle="tooltip"
                                     data-placement="top"
-                                    title="{{ 'send_session_infos'|trans:{}:'cursus' }}"
-                                    ng-click="cmc.sendSessionInfos(session['id'])"
+                                    title="{{ 'send_mail_to_session_participants'|trans:{}:'cursus' }}"
+                                    ng-click="cmc.sendMailToSessionLearners(session['id'])"
                             >
                                 <i class="fa fa-envelope-o"></i>
                             </button>

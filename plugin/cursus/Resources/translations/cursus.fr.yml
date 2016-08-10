@@ -1,8 +1,8 @@
 accept_registration: Accepter l'inscription
 accept_registration_confirm_message: Êtes-vous sûr de vouloir accepter l'inscription de cet utilisateur ?
-add_comment: Ajouter un commentaire
 add_course: Ajouter la formation
 add_course_to_cursus: Ajouter une formation
+add_information: Ajouter une information
 add_session: Ajouter une session
 application_date: Date de soumission
 blocking: Bloquant
@@ -73,6 +73,7 @@ delete_cursus: Supprimer le cursus
 delete_cursus_confirm_message: Êtes-vous sûr de vouloir supprimer ce cursus ?
 delete_document_model: Supprimer le modèle d'invitation/certificat
 delete_document_model_confirm_message: Êtes-vous sûr de vouloir supprimer ce modèle d'invitation/certificat ?
+delete_information: Supprimer l'information
 delete_location: Supprimer la localisation
 delete_selected_courses: Supprimer les formations séléctionnées
 delete_selected_sessions: Supprimer les sessions séléctionnées
@@ -91,6 +92,7 @@ document_model_creation: Création d'un modèle d'invitation/certificat
 document_model_edition: Modification d'un modèle d'invitation/certificat
 document_models_management: Gestion des modèles d'invitation et certificat
 edit_course: Modifier la formation
+edit_information: Modifier l'information
 edit_session: Modifier la session
 edit_session_event: Modifier la séance
 enable_courses_tab_in_profile: Activer l'onglet "Formations" dans le profil
@@ -109,6 +111,7 @@ generate_certificates: Générer les certificats
 go_to_workspace: Accéder à l'espace d'activités
 icon: Icône
 import_courses: Importer des formations
+informations_management: Gestion des informations
 internal_location: Localisation interne
 invalid_file: Fichier non valide
 invite_learners_to_session: Inviter les apprenants à la session
@@ -128,6 +131,7 @@ no_course: Aucune formation
 no_cursus: Aucun cursus
 no_description: Aucune description
 no_document_model: Aucun modèle d'invitation/certificat
+no_information: Aucune information
 no_location: Aucune localisation
 no_open_session: Aucune session ouverte
 no_open_session_event: Aucune séance ouverte
@@ -149,7 +153,10 @@ placeholder_course_description_message: Ce placeholder sera remplacé par la des
 placeholder_course_title_message: Ce placeholder sera remplacé par le titre de la formation
 placeholder_first_name_message: Ce placeholder sera remplacé par le prénom de l'utilisateur
 placeholder_last_name_message: Ce placeholder sera remplacé par le nom de l'utilisateur
-placeholder_organization_message: Ce placeholder sera remplacé par le nom de l'organisation
+placeholder_organization_address_message: Ce placeholder sera remplacé par l'adresse de l'organisation
+placeholder_organization_mail_message: Ce placeholder sera remplacé par le courriel de l'organisation
+placeholder_organization_name_message: Ce placeholder sera remplacé par le nom de l'organisation
+placeholder_organization_phone_message: Ce placeholder sera remplacé par le numéro de téléphone de l'organisation
 placeholder_session_description_message: Ce placeholder sera remplacé par la description de la session
 placeholder_session_end_message: Ce placeholder sera remplacé par la date de fin de la session
 placeholder_session_event_description_message: Ce placeholder sera remplacé par la description de la séance
@@ -157,6 +164,7 @@ placeholder_session_event_end_message: Ce placeholder sera remplacé par la date
 placeholder_session_event_location_message: Ce placeholder sera remplacé par la localisation de la séance
 placeholder_session_event_name_message: Ce placeholder sera remplacé par le nom de la séance
 placeholder_session_event_start_message: Ce placeholder sera remplacé par la date de début de la séance
+placeholder_session_events_list_message: Ce placeholder sera remplacé par la liste des séances
 placeholder_session_name_message: Ce placeholder sera remplacé par le nom de la session
 placeholder_session_start_message: Ce placeholder sera remplacé par la date de début de la session
 public_registration: Inscription publique

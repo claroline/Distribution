@@ -4,8 +4,7 @@
         <h4>{{ cmc.course['title'] }} <small>[{{ cmc.course['code'] }}]</small></h4>
     </div>
     <div class="modal-body">
-        <div class="well well-sm" ng-if="cmc.course['description']">
-            {{ cmc.course['description'] }}
+        <div class="well well-sm" ng-if="cmc.course['description']" ng-bind-html="cmc.course['description']|trust_html">
         </div>
         <div class="table-responsive">
             <table class="table table-striped table-bordered table-condensed">

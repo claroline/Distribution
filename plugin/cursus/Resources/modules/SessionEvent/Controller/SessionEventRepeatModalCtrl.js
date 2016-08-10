@@ -17,7 +17,13 @@ export default class SessionEventRepeatModalCtrl {
     this.sessionEvent = sessionEvent
     this.callback = callback
     this.repeatOptions = {
-      iteration: null,
+      monday: true,
+      tuesday: true,
+      wednesday: true,
+      thursday: true,
+      friday: true,
+      saturday: false,
+      sunday: false,
       endDate: null,
       duration: null
     }
@@ -33,22 +39,21 @@ export default class SessionEventRepeatModalCtrl {
     }
     this.dateOptions = {formatYear: 'yy', startingDay: 1, placeHolder: 'jj/mm/aaaa'}
     this.endDate = {date: null, format: 'dd/MM/yyyy', open: false}
-    this.iterations = [
-      {name: Translator.trans('every_day', {}, 'cursus'), value: 0},
-      {name: Translator.trans('every_week', {}, 'cursus'), value: 1}
-    ]
-    this.iteration = null
   }
 
   submit () {
     this.repeatOptions['endDate'] = null
     this.resetErrors()
 
-    if (!this.iteration) {
+    if (!this.repeatOptions['monday'] &&
+      !this.repeatOptions['tuesday'] &&
+      !this.repeatOptions['wednesday'] &&
+      !this.repeatOptions['thursday'] &&
+      !this.repeatOptions['friday'] &&
+      !this.repeatOptions['saturday'] &&
+      !this.repeatOptions['sunday']
+    ) {
       this.repeatOptionsErrors['iteration'] = Translator.trans('form_not_blank_error', {}, 'cursus')
-      this.repeatOptions['iteration'] = null
-    } else {
-      this.repeatOptions['iteration'] = this.iteration['value']
     }
 
     if (!this.endDate['date'] && !this.repeatOptions['duration']) {
@@ -102,5 +107,9 @@ export default class SessionEventRepeatModalCtrl {
 
   openDatePicker () {
     this.endDate['open'] = true
+  }
+
+  checkDay (day) {
+    this.repeatOptions[day] = !this.repeatOptions[day]
   }
 }

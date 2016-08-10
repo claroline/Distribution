@@ -4,17 +4,66 @@
         <h3>{{ 'repeat_session_event'|trans:{}:'cursus' }}</h3>
     </div>
     <div class="modal-body">
-        <div class="form-group row" ng-class="cmc.repeatOptionsErrors['iteration'] ? 'has-error' : ''">
-            <label class="control-label col-md-3">
+        <div class="row">
+            <div class="col-md-12">
+            <label class="control-label" >
                 {{ 'repetition'|trans:{}:'cursus' }}
             </label>
-            <div class="col-md-9">
-                <select class="form-control" ng-model="cmc.iteration" ng-options="i['name'] for i in cmc.iterations">
-                    <option></option>
-                </select>
-                <div class="help-block field-error" ng-if="cmc.repeatOptionsErrors['iteration']">
-                    {{ cmc.repeatOptionsErrors['iteration'] }}
-                </div>
+            </div>
+        </div>
+        <div class="alert alert-danger" ng-if="cmc.repeatOptionsErrors['iteration']">
+            {{ cmc.repeatOptionsErrors['iteration'] }}
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <input type="checkbox" ng-model="cmc.repeatOptions['monday']">
+                <span class="pointer-hand" ng-click="cmc.checkDay('monday')">
+                    {{ 'day.monday'|trans:{}:'agenda' }}
+                </span>
+            </div>
+            <div class="col-md-6">
+                <input type="checkbox" ng-model="cmc.repeatOptions['saturday']">
+                <span class="pointer-hand" ng-click="cmc.checkDay('saturday')">
+                    {{ 'day.saturday'|trans:{}:'agenda' }}
+                </span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <input type="checkbox" ng-model="cmc.repeatOptions['tuesday']">
+                <span class="pointer-hand" ng-click="cmc.checkDay('tuesday')">
+                    {{ 'day.tuesday'|trans:{}:'agenda' }}
+                </span>
+            </div>
+            <div class="col-md-6">
+                <input type="checkbox" ng-model="cmc.repeatOptions['sunday']">
+                <span class="pointer-hand" ng-click="cmc.checkDay('sunday')">
+                    {{ 'day.sunday'|trans:{}:'agenda' }}
+                </span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <input type="checkbox" ng-model="cmc.repeatOptions['wednesday']">
+                <span class="pointer-hand" ng-click="cmc.checkDay('wednesday')">
+                    {{ 'day.wednesday'|trans:{}:'agenda' }}
+                </span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <input type="checkbox" ng-model="cmc.repeatOptions['thursday']">
+                <span class="pointer-hand" ng-click="cmc.checkDay('thursday')">
+                    {{ 'day.thursday'|trans:{}:'agenda' }}
+                </span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <input type="checkbox" ng-model="cmc.repeatOptions['friday']">
+                <span class="pointer-hand" ng-click="cmc.checkDay('friday')">
+                    {{ 'day.friday'|trans:{}:'agenda' }}
+                </span>
             </div>
         </div>
         <hr>

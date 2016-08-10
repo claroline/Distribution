@@ -16,9 +16,8 @@ import courseViewTemplate from '../Partial/course_view_modal.html'
 import coursesImportFormTemplate from '../Partial/courses_import_form.html'
 
 export default class CourseService {
-  constructor ($http, $sce, $uibModal, ClarolineAPIService) {
+  constructor ($http, $uibModal, ClarolineAPIService) {
     this.$http = $http
-    this.$sce = $sce
     this.$uibModal = $uibModal
     this.ClarolineAPIService = ClarolineAPIService
     this.course = {}

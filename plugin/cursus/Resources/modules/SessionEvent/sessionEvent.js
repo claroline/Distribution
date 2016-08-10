@@ -16,6 +16,7 @@ import SessionEventService from './Service/SessionEventService'
 import SessionEventCreationModalCtrl from './Controller/SessionEventCreationModalCtrl'
 import SessionEventEditionModalCtrl from './Controller/SessionEventEditionModalCtrl'
 import SessionEventRepeatModalCtrl from './Controller/SessionEventRepeatModalCtrl'
+import SessionEventCommentsManagementModalCtrl from './Controller/SessionEventCommentsManagementModalCtrl'
 
 angular.module('SessionEventModule', [
   'ui.bootstrap',
@@ -26,3 +27,4 @@ angular.module('SessionEventModule', [
 .controller('SessionEventCreationModalCtrl', SessionEventCreationModalCtrl)
 .controller('SessionEventEditionModalCtrl', SessionEventEditionModalCtrl)
 .controller('SessionEventRepeatModalCtrl', SessionEventRepeatModalCtrl)
+.controller('SessionEventCommentsManagementModalCtrl', SessionEventCommentsManagementModalCtrl)

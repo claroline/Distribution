@@ -561,7 +561,7 @@ class CursusController extends FOSRestController
     }
 
     /**
-     * @View(serializerGroups={"api_cursus"})
+     * @View(serializerGroups={"api_user_min"})
      * @ApiDoc(
      *     description="Returns the events list by session",
      *     views = {"cursus"}

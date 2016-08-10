@@ -32,6 +32,7 @@
     <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'cursus' }) }}"></script>
     <script>
       (function () {
+        const currentUserId = {{ user.getId() }}
         const widgetInstanceId = {{ widgetInstance.getId() }}
         let mode = ({{ mode }} === 1) ? 'calendar' : 'list'
         let currentSearch = ''
@@ -40,11 +41,15 @@
         let currentOrder = 'ASC'
         const sessionsIdx = 'sessions_' + widgetInstanceId
         const editableSessionsIdx = 'editable-sessions_' + widgetInstanceId
+        const workspacesIdx = 'workspaces_' + widgetInstanceId
         const widgetElement = $(`#my-courses-widget-${widgetInstanceId}`)
         const listElement = $(`#courses-list-${widgetInstanceId}`)
         let sessions = []
         let events = []
         let editableSessions = []
+        let workspaces = {}
+        let selectedEventId = null
+        let selectedCommentId = null
 
         function refreshCoursesList () {
           const route = mode === 'list' ?
@@ -146,6 +151,44 @@
           }
         }
 
+        function updateComment (eventId, commentId, content) {
+          const index = events.findIndex(e => (e['id'] === eventId) && (e['type'] === 'session_event'))
+
+          if (index > -1) {
+            const commentIndex = events[index]['comments'].findIndex(c => c['id'] === commentId)
+
+            if (commentIndex > -1) {
+              events[index]['comments'][commentIndex]['content'] = content
+            }
+          }
+        }
+
+        function removeComment (eventId, commentId) {
+          const index = events.findIndex(e => (e['id'] === eventId) && (e['type'] === 'session_event'))
+
+          if (index > -1) {
+            const commentIndex = events[index]['comments'].findIndex(c => c['id'] === commentId)
+
+            if (commentIndex > -1) {
+              events[index]['comments'].splice(commentIndex, 1)
+            }
+          }
+        }
+
+        function getCommentContent (eventId, commentId) {
+          const index = events.findIndex(e => (e['id'] === eventId) && (e['type'] === 'session_event'))
+
+          if (index > -1) {
+            const commentIndex = events[index]['comments'].findIndex(c => c['id'] === commentId)
+
+            if (commentIndex > -1) {
+              return events[index]['comments'][commentIndex]['content']
+            }
+          }
+
+          return ''
+        }
+
         function t (key) {
           if (typeof key === 'object') {
             let transWords = []
@@ -156,6 +199,18 @@
             return transWords
           }
           return Translator.trans(key, {}, 'agenda')
+        }
+
+        function computeEventColor (sessionId, tutors) {
+          if (editableSessions[sessionId]) {
+            const tutor = tutors.find(t => t['id'] === currentUserId)
+
+            if (!tutor) {
+              return '#777777'
+            }
+          }
+
+          return '#337AB7'
         }
 
         function initializeEvents () {
@@ -188,13 +243,13 @@
             events.push(sessionStartEvent)
             events.push(sessionEndEvent)
             s['events'].forEach(e => {
-                e['title'] = e['name']
+                e['title'] = e['comments'].length > 0 ? `!!! ${e['name']}` :  e['name']
                 e['start']= e['startDate']
                 e['end']= e['endDate']
                 e['editable']= false
                 e['allDay']= false
                 e['className']= 'pointer-hand'
-                e['color'] = '#337AB7'
+                e['color'] = computeEventColor(s['id'], e['tutors'])
                 e['type'] = 'session_event'
                 e['sessionId'] = s['id']
                 e['sessionName'] = s['name']
@@ -213,6 +268,7 @@
         function initializeCalendar () {
           sessions = (typeof window[sessionsIdx] === 'undefined') ? [] : JSON.parse(window[sessionsIdx])
           editableSessions = (typeof window[editableSessionsIdx] === 'undefined') ? [] : window[editableSessionsIdx]
+          workspaces = (typeof window[workspacesIdx] === 'undefined') ? {} : window[workspacesIdx]
           initializeEvents()
           $('#courses-widget-calendar-' + widgetInstanceId).fullCalendar({
             header: {
@@ -288,72 +344,222 @@
               `
               break
             case 'session_event':
+              const newCommentBtn = `
+                <button class="btn btn-default btn-sm" id="new-comment-creation-btn">
+                    <i class="fa fa-plus-circle"></i>
+                    ${Translator.trans('add_information', {}, 'cursus')}
+                </button>
+                <br>
+              `
+
+              const newCommentElement = `
+                <div id="comment-creation-box" class="hidden">
+                    <b>${Translator.trans('add_information', {}, 'cursus')}</b>
+                    <br>
+                    <textarea id="new-comment-input" class="form-control" rows="3"></textarea>
+                    <br>
+                    <button id="new-comment-btn" data-event-id="${event['id']}" class="btn btn-primary btn-sm">
+                        ${Translator.trans('add', {}, 'platform')}
+                    </button>
+                    <button id="new-comment-cancel-btn" class="btn btn-default btn-sm">
+                        ${Translator.trans('cancel', {}, 'platform')}
+                    </button>
+                </div>
+              `
+
+              const editCommentElement = `
+                <div id="comment-edition-box" class="hidden">
+                    <b>${Translator.trans('edit_information', {}, 'cursus')}</b>
+                    <br>
+                    <textarea id="comment-edition-input" class="form-control" rows="3"></textarea>
+                    <br>
+                    <button id="comment-edition-btn" class="btn btn-primary btn-sm">
+                        ${Translator.trans('edit', {}, 'platform')}
+                    </button>
+                    <button id="comment-edition-cancel-btn" class="btn btn-default btn-sm">
+                        ${Translator.trans('cancel', {}, 'platform')}
+                    </button>
+                </div>
+              `
+
+              const noCommentElement = `
+                <br>
+                <div class="alert alert-warning">
+                    ${Translator.trans('no_information', {}, 'cursus')}
+                </div>
+                `
+
               let commentsElement = `
-                <b>${Translator.trans('comments', {}, 'platform')}</b>
+                <br>
+                ${editableSessions[event['sessionId']] ? editCommentElement : ''}
                 <br>
                 <ul id="event-comments-list">
               `
-              event['comments'].forEach(e => {
-                commentsElement += `<li>${e['content']}</li>`
+              event['comments'].forEach(c => {
+                commentsElement += `
+                  <li id="comment-${c['id']}">
+                      <span class="comment-content">
+                          ${c['content']}
+                      </span>
+                      ${
+                        c['user']['id'] === currentUserId ?
+                          '&nbsp;<i class="fa fa-edit pointer-hand edit-comment-btn" data-comment-id="' +
+                              c['id'] + '" data-event-id="' + event['id'] + '" style="color: #337EC4" data-toggle="tooltip" data-placement="top" title="' +
+                              Translator.trans('edit_information', {}, 'cursus') +
+                          '"></i>' :
+                          ''
+                      }
+                      ${
+                        c['user']['id'] === currentUserId ?
+                          '&nbsp;<i class="fa fa-times-circle pointer-hand delete-comment-btn" data-comment-id="' +
+                              c['id'] + '" data-event-id="' + event['id'] + '" style="color: #D9534F" data-toggle="tooltip" data-placement="top" title="' +
+                              Translator.trans('delete_information', {}, 'cursus') +
+                          '"></i>' :
+                          ''
+                      }
+                  </li>
+                `
               })
-              commentsElement += '</ul>'
+              commentsElement += `
+                </ul>
+                <br>
+                ${editableSessions[event['sessionId']] ? newCommentBtn : ''}
+                ${editableSessions[event['sessionId']] ? newCommentElement : ''}
+              `
 
-              let newCommentElement = `
-                <b>${Translator.trans('add_comment', {}, 'cursus')}</b>
+              const workspaceLinkElement = workspaces[event['sessionId']] ?
+                `
+                  <a href="${Routing.generate('claro_workspace_open_tool', {workspaceId: workspaces[event['sessionId']]['id'], toolName: 'home'})}">
+                      <i class="fa fa-book"></i>
+                      ${workspaces[event['sessionId']]['name']}
+                  </a>
+                  <hr>
+                ` :
+                ''
+
+              const noTutorElement = `
                 <br>
-                <textarea id="new-comment-input" class="form-control" rows="5"></textarea>
+                <div class="alert alert-warning">
+                    ${Translator.trans('no_tutor', {}, 'cursus')}
+                </div>
+              `
+
+              let tutorsElement = `
                 <br>
-                <button id="new-comment-btn" data-event-id="${event['id']}" class="btn btn-primary btn-sm">
-                    ${Translator.trans('add', {}, 'platform')}
-                </button>
+                <div class="table-responsive">
+                    <table class="table">
+              `
+              event['tutors'].forEach(t => {
+                  tutorsElement += `
+                    <tr>
+                        <td>${t['firstName']} ${t['lastName']}</td>
+                        <td>
+                            <a href="${Routing.generate('claro_message_form_for_user', {user: t['id']})}">
+                                <i class="fa fa-envelope"></i>
+                            </a>
+                        </td>
+                    </tr>
+                  `
+              })
+              tutorsElement += `
+                    </table>
+                </div>
               `
 
               body = `
-                <button class="btn btn-default btn-sm" data-toggle="collapse" href="#collapse-course-infos">
-                    ${Translator.trans('course', {}, 'cursus')}
-                </button>
-                <div id="collapse-course-infos" class="collapse">
-                    <br>
-                    <br>
-                    <b>${Translator.trans('title', {}, 'platform')} :</b>
-                    ${event['courseTitle']}
-                    <br>
-                    <b>${Translator.trans('code', {}, 'platform')} :</b>
-                    ${event['courseCode']}
-                    <br>
-                    ${event['courseDescription'] ? '<b>' + Translator.trans('description', {}, 'platform') + ' :</b>' : ''}
-                    ${event['courseDescription'] ? event['courseDescription'] : ''}
-                </div>
-                <hr>
-                <button class="btn btn-default btn-sm" data-toggle="collapse" href="#collapse-session-infos">
-                    ${Translator.trans('session', {}, 'cursus')}
-                </button>
-                <div id="collapse-session-infos" class="collapse">
-                    <br>
-                    <br>
-                    <b>${Translator.trans('name', {}, 'platform')} :</b>
-                    ${event['sessionName']}
-                    <br>
-                    <b>${Translator.trans('duration', {}, 'platform')} :</b>
-                    ${event['sessionStartDate']} <i class="fa fa-long-arrow-right"></i> ${event['sessionEndDate']}
-                    <br>
-                    ${event['sessionDescription'] ? '<b>' + Translator.trans('description', {}, 'platform') + ' :</b>' : ''}
-                    ${event['sessionDescription'] ? event['sessionDescription'] : ''}
-                </div>
-                <hr>
-                <div>
-                    <b>${Translator.trans('duration', {}, 'platform')} :</b>
-                    ${event['startDate']} <i class="fa fa-long-arrow-right"></i> ${event['endDate']}
-                    <br>
-                    ${event['location'] ? '<b>' + Translator.trans('location', {}, 'platform') + ' :</b>' : ''}
-                    ${event['location'] ? event['location'] : ''}
-                    <br>
-                    ${event['description'] ? '<b>' + Translator.trans('description', {}, 'platform') + ' :</b>' : ''}
-                    ${event['description'] ? event['description'] : ''}
-                    <br>
-                    ${event['comments'].length > 0 || editableSessions[event['sessionId']] ? commentsElement : ''}
-                    <br>
-                    ${editableSessions[event['sessionId']] ? newCommentElement : ''}
+                ${workspaceLinkElement}
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="${event['comments'].length === 0 ? 'active' : ''}">
+                        <a href="#general-panel" role="tab" data-toggle="tab">
+                            ${Translator.trans('general', {}, 'platform')}
+                        </a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#tutors-panel" role="tab" data-toggle="tab">
+                            ${Translator.trans('tutors', {}, 'cursus')}
+                        </a>
+                    </li>
+                    <li role="presentation" class="${event['comments'].length > 0 ? 'active' : ''}">
+                        <a href="#comments-panel" role="tab" data-toggle="tab">
+                            ${Translator.trans('informations', {}, 'platform')}
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane ${event['comments'].length === 0 ? 'active' : ''}" id="general-panel">
+                        <br>
+                        <div class="panel-group" id="accordion-panel" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab">
+                                    <h4 class="panel-title">
+                                        <a role="button" data-toggle="collapse" data-parent="#accordion-panel" href="#collapse-course" aria-expanded="true">
+                                            ${Translator.trans('course', {}, 'cursus')}
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapse-course" class="panel-collapse collapse" role="tabpanel">
+                                    <div class="panel-body">
+                                        <b>${Translator.trans('title', {}, 'platform')} :</b>
+                                        ${event['courseTitle']}
+                                        <br>
+                                        <b>${Translator.trans('code', {}, 'platform')} :</b>
+                                        ${event['courseCode']}
+                                        <br>
+                                        ${event['courseDescription'] ? '<b>' + Translator.trans('description', {}, 'platform') + ' :</b>' : ''}
+                                        ${event['courseDescription'] ? event['courseDescription'] : ''}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab">
+                                    <h4 class="panel-title">
+                                        <a role="button" data-toggle="collapse" data-parent="#accordion-panel" href="#collapse-session" aria-expanded="true">
+                                            ${Translator.trans('session', {}, 'cursus')}
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapse-session" class="panel-collapse collapse" role="tabpanel">
+                                    <div class="panel-body">
+                                        <b>${Translator.trans('name', {}, 'platform')} :</b>
+                                        ${event['sessionName']}
+                                        <br>
+                                        <b>${Translator.trans('duration', {}, 'platform')} :</b>
+                                        ${event['sessionStartDate']} <i class="fa fa-long-arrow-right"></i> ${event['sessionEndDate']}
+                                        <br>
+                                        ${event['sessionDescription'] ? '<b>' + Translator.trans('description', {}, 'platform') + ' :</b>' : ''}
+                                        ${event['sessionDescription'] ? event['sessionDescription'] : ''}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab">
+                                    <h4 class="panel-title">
+                                        <a role="button" data-toggle="collapse" data-parent="#accordion-panel" href="#collapse-event" aria-expanded="true">
+                                            ${Translator.trans('session_event', {}, 'cursus')}
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapse-event" class="panel-collapse collapse in" role="tabpanel">
+                                    <div class="panel-body">
+                                        <b>${Translator.trans('duration', {}, 'platform')} :</b>
+                                        ${event['startDate']} <i class="fa fa-long-arrow-right"></i> ${event['endDate']}
+                                        <br>
+                                        ${event['location'] ? '<b>' + Translator.trans('location', {}, 'platform') + ' :</b>' : ''}
+                                        ${event['location'] ? event['location'] : ''}
+                                        <br>
+                                        ${event['description'] ? '<b>' + Translator.trans('description', {}, 'platform') + ' :</b>' : ''}
+                                        ${event['description'] ? event['description'] : ''}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="tutors-panel">
+                        ${event['tutors'].length > 0 ? tutorsElement : noTutorElement}
+                    </div>
+                    <div role="tabpanel" class="tab-pane ${event['comments'].length > 0 ? 'active' : ''}" id="comments-panel">
+                        ${event['comments'].length > 0 || editableSessions[event['sessionId']] ? commentsElement : noCommentElement}
+                    </div>
                 </div>
               `
               break
@@ -371,9 +577,105 @@
             type: 'POST',
             data: {comment: comment},
             success: function (datas) {
+              const createdComment = JSON.parse(datas)
+              const toAppend = `
+                <li id="comment-${createdComment['id']}">
+                    <span class="comment-content">
+                        ${createdComment['content']}
+                    </span>
+                    &nbsp;
+                    <i class="fa fa-edit pointer-hand edit-comment-btn"
+                       data-comment-id="${createdComment['id']}"
+                       data-event-id="${eventId}"
+                       data-toggle="tooltip"
+                       data-placement="top"
+                       title="${Translator.trans('edit_information', {}, 'cursus')}"
+                       style="color: #337EC4"
+                    >
+                    </i>
+                    &nbsp;
+                    <i class="fa fa-times-circle pointer-hand delete-comment-btn"
+                       data-comment-id="${createdComment['id']}"
+                       data-event-id="${eventId}"
+                       data-toggle="tooltip"
+                       data-placement="top"
+                       title="${Translator.trans('delete_information', {}, 'cursus')}"
+                       style="color: #D9534F"
+                    >
+                    </i>
+                </li>
+              `
+              $('#comment-creation-box').hide('slow')
               $('#new-comment-input').val('')
-              $('#event-comments-list').append(`<li>${comment}</li>`)
-              registerComment(eventId, JSON.parse(datas))
+              $('#new-comment-creation-btn').show('slow')
+              $('#event-comments-list').append(toAppend)
+              registerComment(eventId, createdComment)
+            }
+          })
+        })
+
+        $('body').on('click', '.edit-comment-btn', function () {
+          selectedCommentId = parseInt($(this).data('comment-id'))
+          selectedEventId = parseInt($(this).data('event-id'))
+          $('#comment-edition-input').val(getCommentContent(selectedEventId, selectedCommentId))
+          $('#comment-edition-box').show('slow')
+          $('#comment-edition-box').removeClass('hidden')
+        })
+
+        $('body').on('click', '#comment-edition-btn', function () {
+          const comment = $('#comment-edition-input').val()
+
+          if (comment) {
+            const url = Routing.generate('api_put_session_event_comment_edit', {sessionEventComment: selectedCommentId})
+            $.ajax({
+              url: url,
+              type: 'PUT',
+              data: {comment: comment},
+              success: function (d) {
+                const datas = JSON.parse(d)
+                $('#comment-edition-box').hide('slow')
+                $('#comment-edition-input').val('')
+                $(`#comment-${selectedCommentId}`).find('.comment-content').html(datas['content'])
+                updateComment(selectedEventId, selectedCommentId, datas['content'])
+                selectedEventId = null
+                selectedCommentId = null
+              }
+            })
+          }
+        })
+
+        $('body').on('click', '#comment-edition-cancel-btn', function () {
+          $('#comment-edition-box').hide('slow')
+          $('#comment-edition-input').val('')
+          selectedEventId = null
+          selectedCommentId = null
+        })
+
+        $('body').on('click', '#new-comment-creation-btn', function () {
+          $('#new-comment-creation-btn').hide('slow')
+          $('#comment-creation-box').show('slow')
+          $('#comment-creation-box').removeClass('hidden')
+        })
+
+        $('body').on('click', '#new-comment-cancel-btn', function () {
+          $('#comment-creation-box').hide('slow')
+          $('#new-comment-input').val('')
+          $('#new-comment-creation-btn').show('slow')
+        })
+
+        $('body').on('click', '.delete-comment-btn', function () {
+          const commentId = parseInt($(this).data('comment-id'))
+          const eventId = parseInt($(this).data('event-id'))
+          const route = Routing.generate('api_delete_session_event_comment', {sessionEventComment: commentId})
+
+          $.ajax({
+            url: route,
+            type: 'DELETE',
+            success: function (datas) {
+              if (datas === 'success') {
+                $(`#comment-${commentId}`).remove()
+                removeComment(eventId, commentId)
+              }
             }
           })
         })

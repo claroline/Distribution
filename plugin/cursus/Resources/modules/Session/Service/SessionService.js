@@ -17,9 +17,8 @@ import tutorsRegistrationTemplate from '../Partial/tutors_registration_modal.htm
 import sessionFormTemplate from '../Partial/session_form_modal.html'
 
 export default class SessionService {
-  constructor ($http, $sce, $uibModal, ClarolineAPIService, CourseService) {
+  constructor ($http, $uibModal, ClarolineAPIService, CourseService) {
     this.$http = $http
-    this.$sce = $sce
     this.$uibModal = $uibModal
     this.ClarolineAPIService = ClarolineAPIService
     this.CourseService = CourseService
@@ -493,6 +492,7 @@ export default class SessionService {
     datas['username'] = datas['user']['username']
     datas['firstName'] = datas['user']['firstName']
     datas['lastName'] = datas['user']['lastName']
+    datas['fullName'] = `${datas['user']['firstName']} ${datas['user']['lastName']}`
 
     return datas
   }

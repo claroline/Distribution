@@ -16,9 +16,8 @@ import cursusHierarchyTemplate from '../Partial/cursus_hierarchy_modal.html'
 import cursusImportTemplate from '../Partial/cursus_import_form.html'
 
 export default class CursusService {
-  constructor ($http, $sce, $uibModal, ClarolineAPIService, CourseService) {
+  constructor ($http, $uibModal, ClarolineAPIService, CourseService) {
     this.$http = $http
-    this.$sce = $sce
     this.$uibModal = $uibModal
     this.ClarolineAPIService = ClarolineAPIService
     this.CourseService = CourseService

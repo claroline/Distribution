@@ -1514,7 +1514,8 @@ class CursusManager
         $startDate = null,
         $endDate = null,
         $location = null,
-        Resource $reservationResource = null
+        Resource $reservationResource = null,
+        array $tutors = []
     ) {
         $eventName = is_null($name) ? $session->getName() : $name;
         $eventStartDate = is_null($startDate) ? $session->getStartDate() : $startDate;
@@ -1528,6 +1529,10 @@ class CursusManager
         $sessionEvent->setEndDate($eventEndDate);
         $sessionEvent->setLocation($location);
         $sessionEvent->setLocationResource($reservationResource);
+
+        foreach ($tutors as $tutor) {
+            $sessionEvent->addTutor($tutor);
+        }
         $this->persistSessionEvent($sessionEvent);
         $event = new LogSessionEventCreateEvent($sessionEvent);
         $this->eventDispatcher->dispatch('log', $event);
@@ -1579,19 +1584,34 @@ class CursusManager
         $this->om->flush();
     }
 
+    public function deleteSessionEventComment(SessionEventComment $comment)
+    {
+        $this->om->remove($comment);
+        $this->om->flush();
+    }
+
     public function repeatSessionEvent(SessionEvent $sessionEvent, $iteration, \DateTime $until = null, $duration = null)
     {
         $createdSessionEvents = [];
-        $interval = $iteration === 0 ? 'P1D' : 'P7D';
-        $dateInterval = new \DateInterval($interval);
+        $dateInterval = new \DateInterval('P1D');
         $session = $sessionEvent->getSession();
         $description = $sessionEvent->getDescription();
         $location = $sessionEvent->getLocation();
         $locationResource = $sessionEvent->getLocationResource();
         $name = $sessionEvent->getName();
-        $startDate = $sessionEvent->getStartDate();
+        $eventStartDate = $sessionEvent->getStartDate();
         $endDate = $sessionEvent->getEndDate();
+        $tutors = $sessionEvent->getTutors();
         $index = 1;
+        $year = intval($eventStartDate->format('Y'));
+        $month = intval($eventStartDate->format('m'));
+        $day = intval($eventStartDate->format('d'));
+        $hour = intval($eventStartDate->format('H'));
+        $minute = intval($eventStartDate->format('i'));
+        $startDate = new \DateTime();
+        $startDate->setTimezone(new \DateTimeZone('GMT'));
+        $startDate->setDate($year, $month, $day);
+        $startDate->setTime($hour, $minute);
 
         if (is_null($until) && !is_null($duration) && $duration > 0) {
             $until = clone $startDate;
@@ -1599,27 +1619,42 @@ class CursusManager
             $until->add(new \DateInterval('P'.$daysToAdd.'D'));
         }
         if (!is_null($until)) {
-            $until->setTime(23, 59, 59);
+            $untilYear = intval($until->format('Y'));
+            $untilMonth = intval($until->format('m'));
+            $untilDay = intval($until->format('d'));
+            $formattedUntil = new \DateTime();
+            $formattedUntil->setTimezone(new \DateTimeZone('GMT'));
+            $formattedUntil->setDate($untilYear, $untilMonth, $untilDay);
+            $formattedUntil->setTime(23, 59, 59);
             $this->om->startFlushSuite();
 
-            for ($startDate->add($dateInterval); $startDate < $until; $startDate->add($dateInterval)) {
+            for ($startDate->add($dateInterval); $startDate < $formattedUntil; $startDate->add($dateInterval)) {
+                $eventStartDate->add($dateInterval);
                 $endDate->add($dateInterval);
-                $newStartDate = clone $startDate;
-                $newEndDate = clone  $endDate;
-                $newSessionEvent = new SessionEvent();
-                $newSessionEvent->setSession($session);
-                $newSessionEvent->setDescription($description);
-                $newSessionEvent->setLocation($location);
-                $newSessionEvent->setLocationResource($locationResource);
-                $newSessionEvent->setStartDate($newStartDate);
-                $newSessionEvent->setEndDate($newEndDate);
-                $newSessionEvent->setName($name." [$index]");
-                ++$index;
-                $this->persistSessionEvent($newSessionEvent);
-                $createdSessionEvents[] = $newSessionEvent;
+                $day = $startDate->format('l');
 
-                if ($index % 300 === 0) {
-                    $this->om->forceFlush();
+                if ($iteration[$day]) {
+                    $newStartDate = clone  $eventStartDate;
+                    $newEndDate = clone  $endDate;
+                    $newSessionEvent = new SessionEvent();
+                    $newSessionEvent->setSession($session);
+                    $newSessionEvent->setDescription($description);
+                    $newSessionEvent->setLocation($location);
+                    $newSessionEvent->setLocationResource($locationResource);
+                    $newSessionEvent->setStartDate($newStartDate);
+                    $newSessionEvent->setEndDate($newEndDate);
+                    $newSessionEvent->setName($name." [$index]");
+
+                    foreach ($tutors as $tutor) {
+                        $newSessionEvent->addTutor($tutor);
+                    }
+                    ++$index;
+                    $this->persistSessionEvent($newSessionEvent);
+                    $createdSessionEvents[] = $newSessionEvent;
+
+                    if ($index % 300 === 0) {
+                        $this->om->forceFlush();
+                    }
                 }
             }
             $this->om->endFlushSuite();

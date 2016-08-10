@@ -11,11 +11,11 @@
 /*global Translator*/
 import sessionEventFormTemplate from '../Partial/session_event_form_modal.html'
 import sessionEventRepeatModalTemplate from '../Partial/session_event_repeat_form_modal.html'
+import sessionEventCommentsManagementTemplate from '../Partial/session_event_comments_management_modal.html'
 
 export default class SessionEventService {
-  constructor ($http, $sce, $uibModal, ClarolineAPIService) {
+  constructor ($http, $uibModal, ClarolineAPIService) {
     this.$http = $http
-    this.$sce = $sce
     this.$uibModal = $uibModal
     this.ClarolineAPIService = ClarolineAPIService
     this.sessionEvents = {}
@@ -213,6 +213,47 @@ export default class SessionEventService {
       resolve: {
         sessionEvent: () => { return sessionEvent },
         callback: () => { return addCallback }
+      }
+    })
+  }
+
+  manageComments (sessionEvent) {
+    this.$uibModal.open({
+      template: sessionEventCommentsManagementTemplate,
+      controller: 'SessionEventCommentsManagementModalCtrl',
+      controllerAs: 'cmc',
+      resolve: {
+        sessionEvent: () => { return sessionEvent }
+      }
+    })
+  }
+
+  createComment (sessionEventId, content) {
+    const url = Routing.generate('api_post_session_event_comment', {sessionEvent: sessionEventId})
+
+    return this.$http.post(url, {comment: content}).then(d => {
+      if (d['status'] === 200) {
+        return JSON.parse(d['data'])
+      }
+    })
+  }
+
+  editComment (commentId, content) {
+    const url = Routing.generate('api_put_session_event_comment_edit', {sessionEventComment: commentId})
+
+    return this.$http.put(url, {comment: content}).then(d => {
+      if (d['status'] === 200) {
+        return JSON.parse(d['data'])
+      }
+    })
+  }
+
+  deleteComment (commentId) {
+    const url = Routing.generate('api_delete_session_event_comment', {sessionEventComment: commentId})
+
+    return this.$http.delete(url).then(d => {
+      if (d['status'] === 200) {
+        return d['data']
       }
     })
   }

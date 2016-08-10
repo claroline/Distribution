@@ -11,10 +11,11 @@
 /*global Translator*/
 
 export default class SessionEventCreationModalCtrl {
-  constructor($http, $uibModalInstance, CourseService, title, session, callback) {
+  constructor($http, $uibModalInstance, CourseService, SessionService, title, session, callback) {
     this.$http = $http
     this.$uibModalInstance = $uibModalInstance
     this.CourseService = CourseService
+    this.SessionService = SessionService
     this.title = title
     this.session = session
     this.callback = callback
@@ -25,7 +26,8 @@ export default class SessionEventCreationModalCtrl {
       description: null,
       location: null,
       internalLocation: false,
-      locationResource: null
+      locationResource: null,
+      tutors: []
     }
     this.sessionEventErrors = {
       name: null,
@@ -44,6 +46,8 @@ export default class SessionEventCreationModalCtrl {
     this.tinymceOptions = CourseService.getTinymceConfiguration()
     this.locationResources = []
     this.locationResource = null
+    this.tutorsList = SessionService.getTutorsBySession(session['id'])
+    this.tutors = SessionService.getTutorsBySession(session['id'])
     this.initializeSessionEvent()
   }
 
@@ -89,6 +93,8 @@ export default class SessionEventCreationModalCtrl {
     } else {
       this.sessionEvent['locationResource'] = null
     }
+    this.sessionEvent['tutors'] = []
+    this.tutors.forEach(t => this.sessionEvent['tutors'].push(t['userId']))
 
     if (this.isValid()) {
       const url = Routing.generate('api_post_session_event_creation', {session: this.session['id']})

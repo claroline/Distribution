@@ -196,9 +196,7 @@ class CourseSession
     protected $maxUsers;
 
     /**
-     * @ORM\ManyToMany(
-     *     targetEntity="Claroline\CoreBundle\Entity\User"
-     * )
+     * @ORM\ManyToMany(targetEntity="Claroline\CoreBundle\Entity\User")
      * @ORM\JoinTable(name="claro_cursusbundle_course_session_validators")
      * @Groups({"api_user_min"})
      */
@@ -215,7 +213,7 @@ class CourseSession
      *     targetEntity="Claroline\CursusBundle\Entity\SessionEvent",
      *     mappedBy="session"
      * )
-     * @Groups({"api_cursus"})
+     * @Groups({"api_cursus", "api_user_min"})
      */
     protected $events;
 

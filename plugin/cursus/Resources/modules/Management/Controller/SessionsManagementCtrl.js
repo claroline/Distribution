@@ -73,6 +73,7 @@ export default class SessionsManagementCtrl {
   }
 
   createEvent (session) {
+    this.SessionService.loadUsersBySession(session['id'])
     this.loadEvents(session['id'])
     this.SessionEventService.createSessionEvent(session)
   }

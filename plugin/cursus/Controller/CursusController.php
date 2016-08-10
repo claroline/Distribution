@@ -22,6 +22,7 @@ use Claroline\CursusBundle\Entity\CoursesWidgetConfig;
 use Claroline\CursusBundle\Entity\Cursus;
 use Claroline\CursusBundle\Entity\CursusDisplayedWord;
 use Claroline\CursusBundle\Entity\SessionEvent;
+use Claroline\CursusBundle\Entity\SessionEventComment;
 use Claroline\CursusBundle\Form\CoursesWidgetConfigurationType;
 use Claroline\CursusBundle\Form\CourseType;
 use Claroline\CursusBundle\Form\CursusType;
@@ -1216,15 +1217,15 @@ class CursusController extends Controller
      *     name="claro_cursus_my_courses_widget",
      *     options={"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
      * @EXT\Template("ClarolineCursusBundle:Widget:myCoursesWidget.html.twig")
      */
-    public function myCoursesWidgetAction(WidgetInstance $widgetInstance)
+    public function myCoursesWidgetAction(User $user, WidgetInstance $widgetInstance)
     {
         $config = $this->cursusManager->getCoursesWidgetConfiguration($widgetInstance);
         $defaultMode = $config->getDefaultMode();
 
-        return ['widgetInstance' => $widgetInstance, 'mode' => $defaultMode];
+        return ['user' => $user, 'widgetInstance' => $widgetInstance, 'mode' => $defaultMode];
     }
 
     /**
@@ -1303,7 +1304,11 @@ class CursusController extends Controller
             $workspace = $session->getWorkspace();
 
             if (!is_null($workspace)) {
-                $workspacesList[$session->getId()] = $workspace;
+                $workspacesList[$session->getId()] = [
+                    'id' => $workspace->getId(),
+                    'name' => $workspace->getName(),
+                    'code' => $workspace->getCode(),
+                ];
             }
 
             if ($sessionUser->getUserType() === CourseSessionUser::TEACHER) {
@@ -1313,7 +1318,7 @@ class CursusController extends Controller
         $serializedSessions = $this->serializer->serialize(
             $sessions,
             'json',
-            SerializationContext::create()->setGroups(['api_cursus'])
+            SerializationContext::create()->setGroups(['api_user_min'])
         );
 
         return [
@@ -1461,18 +1466,66 @@ class CursusController extends Controller
         $sessionTutor = $this->cursusManager->getOneSessionUserBySessionAndUserAndType($session, $user, CourseSessionUser::TEACHER);
 
         if (is_null($sessionTutor)) {
-            throw new AccessDeniedException();
+            $this->checkToolAccess();
         } else {
             $comment = $this->request->request->get('comment', false);
             $sessionEventComment = $this->cursusManager->createSessionEventComment($user, $sessionEvent, $comment);
             $serializedSessionEventComment = $this->serializer->serialize(
                 $sessionEventComment,
                 'json',
-                SerializationContext::create()->setGroups(['api_cursus'])
+                SerializationContext::create()->setGroups(['api_user_min'])
             );
 
             return new JsonResponse($serializedSessionEventComment, 200);
         }
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/session/event/comment/{sessionEventComment}/edit",
+     *     name="api_put_session_event_comment_edit",
+     *     options={"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     */
+    public function putSessionEventCommentEditAction(User $user, SessionEventComment $sessionEventComment)
+    {
+        $creator = $sessionEventComment->getUser();
+
+        if ($user->getId() !== $creator->getId()) {
+            $this->checkToolAccess();
+        }
+        $content = $this->request->request->get('comment', false);
+        $sessionEventComment->setContent($content);
+        $sessionEventComment->setEditionDate(new \DateTime());
+        $this->cursusManager->persistSessionEventComment($sessionEventComment);
+        $serializedSessionEventComment = $this->serializer->serialize(
+            $sessionEventComment,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
+
+        return new JsonResponse($serializedSessionEventComment, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/session/event/comment/{sessionEventComment}/delete",
+     *     name="api_delete_session_event_comment",
+     *     options={"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     */
+    public function deleteSessionEventCommentAction(User $user, SessionEventComment $sessionEventComment)
+    {
+        $creator = $sessionEventComment->getUser();
+
+        if ($user->getId() !== $creator->getId()) {
+            $this->checkToolAccess();
+        }
+        $this->cursusManager->deleteSessionEventComment($sessionEventComment);
+
+        return new JsonResponse('success', 200);
     }
 
     private function checkToolAccess()

@@ -11,6 +11,7 @@
 
 namespace Claroline\CursusBundle\Entity;
 
+use Claroline\CoreBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use FormaLibre\ReservationBundle\Entity\Reservation;
@@ -29,14 +30,14 @@ class SessionEvent
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_cursus"})
+     * @Groups({"api_cursus", "api_user_min"})
      */
     protected $id;
 
     /**
      * @ORM\Column(name="event_name")
      * @Assert\NotBlank()
-     * @Groups({"api_cursus"})
+     * @Groups({"api_cursus", "api_user_min"})
      */
     protected $name;
 
@@ -46,33 +47,33 @@ class SessionEvent
      *     inversedBy="events"
      * )
      * @ORM\JoinColumn(name="session_id", nullable=false, onDelete="CASCADE")
-     * @Groups({"api_cursus"})
+     * @Groups({"api_cursus", "api_user_min"})
      */
     protected $session;
 
     /**
      * @ORM\Column(name="start_date", type="datetime", nullable=false)
-     * @Groups({"api_cursus"})
+     * @Groups({"api_cursus", "api_user_min"})
      * @SerializedName("startDate")
      */
     protected $startDate;
 
     /**
      * @ORM\Column(name="end_date", type="datetime", nullable=false)
-     * @Groups({"api_cursus"})
+     * @Groups({"api_cursus", "api_user_min"})
      * @SerializedName("endDate")
      */
     protected $endDate;
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     * @Groups({"api_cursus"})
+     * @Groups({"api_cursus", "api_user_min"})
      */
     protected $description;
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     * @Groups({"api_cursus"})
+     * @Groups({"api_cursus", "api_user_min"})
      */
     protected $location;
 
@@ -81,14 +82,14 @@ class SessionEvent
      *     targetEntity="Claroline\CursusBundle\Entity\SessionEventComment",
      *     mappedBy="sessionEvent"
      * )
-     * @Groups({"api_cursus"})
+     * @Groups({"api_cursus", "api_user_min"})
      */
     protected $comments;
 
     /**
      * @ORM\ManyToOne(targetEntity="FormaLibre\ReservationBundle\Entity\Resource")
      * @ORM\JoinColumn(name="location_resource_id", nullable=true, onDelete="SET NULL")
-     * @Groups({"api_cursus"})
+     * @Groups({"api_cursus", "api_user_min"})
      * @SerializedName("locationResource")
      */
     protected $locationResource;
@@ -99,9 +100,17 @@ class SessionEvent
      */
     protected $reservation;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="Claroline\CoreBundle\Entity\User")
+     * @ORM\JoinTable(name="claro_cursusbundle_session_event_tutors")
+     * @Groups({"api_user_min"})
+     */
+    protected $tutors;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
+        $this->tutors = new ArrayCollection();
     }
 
     public function getId()
@@ -197,5 +206,33 @@ class SessionEvent
     public function setReservation(Reservation $reservation = null)
     {
         $this->reservation = $reservation;
+    }
+
+    public function getTutors()
+    {
+        return $this->tutors->toArray();
+    }
+
+    public function addTutor(User $tutor)
+    {
+        if (!$this->tutors->contains($tutor)) {
+            $this->tutors->add($tutor);
+        }
+
+        return $this;
+    }
+
+    public function removeTutor(User $tutor)
+    {
+        if ($this->tutors->contains($tutor)) {
+            $this->tutors->removeElement($tutor);
+        }
+
+        return $this;
+    }
+
+    public function emptyTutors()
+    {
+        $this->tutors->clear();
     }
 }
