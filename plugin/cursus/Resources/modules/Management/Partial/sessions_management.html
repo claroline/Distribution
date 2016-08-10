@@ -110,10 +110,10 @@
                         <input type="checkbox" checklist-model="cmc.selectedSessions" checklist-value="session" ng-click="cmc.test()">
                     </td>
                     <td class="text-center" data-title="'start_date'|trans:{}:'platform'" sortable="'startDate'">
-                        {{ session['startDate']|date:'dd/MM/yyyy HH:mm' }}
+                        {{ session['startDate']|date:'dd/MM/yyyy' }}
                     </td>
                     <td class="text-center" data-title="'end_date'|trans:{}:'platform'" sortable="'endDate'">
-                        {{ session['endDate']|date:'dd/MM/yyyy HH:mm' }}
+                        {{ session['endDate']|date:'dd/MM/yyyy' }}
                     </td>
                     <td data-title="'name'|trans:{}:'platform'" filter="{name: 'text'}" sortable="'name'">
                         <span data-toggle="tooltip" data-placement="top" title="{{ 'display_session_events'|trans:{}:'cursus' }}" ng-click="cmc.isCollapsed[session['id']] = !cmc.isCollapsed[session['id']]">

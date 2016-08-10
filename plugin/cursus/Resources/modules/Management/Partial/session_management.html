@@ -94,6 +94,11 @@
                     {{ 'session_description'|trans:{}:'cursus' }}
                 </div>
             </uib-accordion-heading>
+            <b>{{ 'duration'|trans:{}:'platform' }} :</b>
+            {{ cmc.session['startDate']|date:'dd/MM/yyyy' }}
+            <i class="fa fa-long-arrow-right"></i>
+            {{ cmc.session['endDate']|date:'dd/MM/yyyy' }}
+            <hr>
             <div ng-bind-html="cmc.session['description']|trust_html">
             </div>
             <div class="alert alert-warning" ng-if="!cmc.session['description']">
