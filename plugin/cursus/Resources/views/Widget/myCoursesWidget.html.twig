@@ -468,6 +468,13 @@
                 </div>
               `
 
+              const locationElement = event['location'] ? `
+                ${event['location']['street']}, ${event['location']['street_number']}
+                <br>${event['location']['pc']} ${event['location']['town']}
+                <br>${event['location']['country']}
+              ` :
+              ''
+
               body = `
                 ${workspaceLinkElement}
                 <ul class="nav nav-tabs" role="tablist">
@@ -550,8 +557,9 @@
                                         <i class="fa fa-long-arrow-right"></i>
                                         ${moment(event['endDate']).format('DD/MM/YYYY HH:mm')}
                                         <br>
-                                        ${event['location'] ? '<b>' + Translator.trans('location', {}, 'platform') + ' :</b>' : ''}
-                                        ${event['location'] ? event['location'] : ''}
+                                        ${(event['location'] || event['locationExtra']) ? '<b>' + Translator.trans('location', {}, 'platform') + ' :</b>' : ''}
+                                        ${event['location'] ? '<br>' + locationElement : ''}
+                                        ${event['locationExtra'] ? '<br>' + event['locationExtra'] : ''}
                                         <br>
                                         ${event['description'] ? '<b>' + Translator.trans('description', {}, 'platform') + ' :</b>' : ''}
                                         ${event['description'] ? event['description'] : ''}

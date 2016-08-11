@@ -1052,7 +1052,7 @@ class CursusController extends Controller
         $serializedCourseSessions = $this->serializer->serialize(
             $toSerialize,
             'json',
-            SerializationContext::create()->setGroups(['api_cursus'])
+            SerializationContext::create()->setGroups(['api_user_min'])
         );
         $registeredSessions = [];
         $pendingSessions = [];

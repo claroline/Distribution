@@ -1514,6 +1514,7 @@ class CursusManager
         $startDate = null,
         $endDate = null,
         $location = null,
+        $locationExtra = null,
         Resource $reservationResource = null,
         array $tutors = []
     ) {
@@ -1528,6 +1529,7 @@ class CursusManager
         $sessionEvent->setStartDate($eventStartDate);
         $sessionEvent->setEndDate($eventEndDate);
         $sessionEvent->setLocation($location);
+        $sessionEvent->setLocationExtra($locationExtra);
         $sessionEvent->setLocationResource($reservationResource);
 
         foreach ($tutors as $tutor) {

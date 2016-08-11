@@ -214,6 +214,7 @@
                                                                 <th>{{ 'session_event'|trans({}, 'cursus') }}</th>
                                                                 <th>{{ 'duration'|trans({}, 'platform') }}</th>
                                                                 <th>{{ 'location'|trans({}, 'platform') }}</th>
+                                                                <th>{{ 'location_extra'|trans({}, 'cursus') }}</th>
                                                             </tr>
                                                             {% for event in session.getEvents() %}
                                                                 <tr>
@@ -223,7 +224,17 @@
                                                                         <i class="fa fa-long-arrow-right"></i>
                                                                         {{ event.getEndDate()|intl_date_format }}
                                                                     </td>
-                                                                    <td>{{ event.getLocation()|raw }}</td>
+                                                                    <td>
+                                                                        {% if event.getLocation() is not empty %}
+                                                                            {% set location = event.getLocation() %}
+                                                                            {{ location.getStreet() }}, {{ location.getStreetNumber() }}
+                                                                            <br>
+                                                                            {{ location.getPc() }} {{ location.getTown() }}
+                                                                            <br>
+                                                                            {{ location.getCountry() }}
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td>{{ event.getLocationExtra()|raw }}</td>
                                                                 </tr>
                                                             {% endfor %}
                                                         </table>

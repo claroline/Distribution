@@ -73,9 +73,9 @@ class SessionEventType extends AbstractType
             ]
         );
         $builder->add(
-            'location',
+            'locationExtra',
             'textarea',
-            ['required' => false, 'label' => 'location', 'translation_domain' => 'platform']
+            ['required' => false, 'label' => 'locationExtra', 'translation_domain' => 'platform']
         );
     }
 

@@ -8,11 +8,12 @@
  */
 
 export default class SessionManagementCtrl {
-  constructor($stateParams, NgTableParams, CourseService, SessionService, SessionEventService) {
+  constructor($stateParams, NgTableParams, CourseService, SessionService, SessionEventService, DocumentModelService) {
     this.NgTableParams = NgTableParams
     this.CourseService = CourseService
     this.SessionService = SessionService
     this.SessionEventService = SessionEventService
+    this.DocumentModelService = DocumentModelService
     this.sessionId = $stateParams.sessionId
     this.session = SessionService.getSession()
     this.openEvents = SessionEventService.getOpenSessionEventsBySession(this.sessionId)
@@ -244,5 +245,21 @@ export default class SessionManagementCtrl {
 
   manageEventComments (sessionEvent) {
     this.SessionEventService.manageComments(sessionEvent)
+  }
+
+  inviteLearners () {
+    this.DocumentModelService.displayDocumentSelection(this.session, 0)
+  }
+
+  generateCertificates () {
+    this.DocumentModelService.displayDocumentSelection(this.session, 2)
+  }
+
+  inviteLearnersToEvent (sessionEvent) {
+    this.DocumentModelService.displayDocumentSelection(sessionEvent, 1)
+  }
+
+  sendMailToSessionLearners () {
+    this.SessionService.sendMailToSession(this.session)
   }
 }

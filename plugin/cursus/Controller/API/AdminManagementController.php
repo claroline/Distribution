@@ -12,10 +12,12 @@
 namespace Claroline\CursusBundle\Controller\API;
 
 use Claroline\CoreBundle\Entity\Group;
+use Claroline\CoreBundle\Entity\Organization\Location;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\GenericDatasEvent;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Manager\ApiManager;
+use Claroline\CoreBundle\Manager\Organization\LocationManager;
 use Claroline\CoreBundle\Manager\UserManager;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
 use Claroline\CoreBundle\Manager\WorkspaceModelManager;
@@ -31,10 +33,6 @@ use Claroline\CursusBundle\Event\Log\LogCourseEditEvent;
 use Claroline\CursusBundle\Event\Log\LogCourseSessionEditEvent;
 use Claroline\CursusBundle\Event\Log\LogCursusEditEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionEventEditEvent;
-use Claroline\CursusBundle\Form\CourseSessionType;
-use Claroline\CursusBundle\Form\CourseType;
-use Claroline\CursusBundle\Form\CursusType;
-use Claroline\CursusBundle\Form\SessionEventType;
 use Claroline\CursusBundle\Manager\CursusManager;
 use Claroline\TagBundle\Manager\TagManager;
 use FormaLibre\ReservationBundle\Entity\Resource;
@@ -47,7 +45,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @DI\Tag("security.secure_service")
@@ -59,10 +56,10 @@ class AdminManagementController extends Controller
     private $configHandler;
     private $cursusManager;
     private $eventDispatcher;
+    private $locationManager;
     private $request;
     private $serializer;
     private $tagManager;
-    private $translator;
     private $userManager;
     private $workspaceManager;
     private $workspaceModelManager;
@@ -73,10 +70,10 @@ class AdminManagementController extends Controller
      *     "configHandler"         = @DI\Inject("claroline.config.platform_config_handler"),
      *     "cursusManager"         = @DI\Inject("claroline.manager.cursus_manager"),
      *     "eventDispatcher"       = @DI\Inject("event_dispatcher"),
+     *     "locationManager"       = @DI\Inject("claroline.manager.organization.location_manager"),
      *     "request"               = @DI\Inject("request"),
      *     "serializer"            = @DI\Inject("jms_serializer"),
      *     "tagManager"            = @DI\Inject("claroline.manager.tag_manager"),
-     *     "translator"            = @DI\Inject("translator"),
      *     "userManager"           = @DI\Inject("claroline.manager.user_manager"),
      *     "workspaceManager"      = @DI\Inject("claroline.manager.workspace_manager"),
      *     "workspaceModelManager" = @DI\Inject("claroline.manager.workspace_model_manager")
@@ -87,10 +84,10 @@ class AdminManagementController extends Controller
         PlatformConfigurationHandler $configHandler,
         CursusManager $cursusManager,
         EventDispatcherInterface $eventDispatcher,
+        LocationManager $locationManager,
         Request $request,
         Serializer $serializer,
         TagManager $tagManager,
-        TranslatorInterface $translator,
         UserManager $userManager,
         WorkspaceManager $workspaceManager,
         WorkspaceModelManager $workspaceModelManager
@@ -99,10 +96,10 @@ class AdminManagementController extends Controller
         $this->configHandler = $configHandler;
         $this->cursusManager = $cursusManager;
         $this->eventDispatcher = $eventDispatcher;
+        $this->locationManager = $locationManager;
         $this->request = $request;
         $this->serializer = $serializer;
         $this->tagManager = $tagManager;
-        $this->translator = $translator;
         $this->userManager = $userManager;
         $this->workspaceManager = $workspaceManager;
         $this->workspaceModelManager = $workspaceModelManager;
@@ -136,45 +133,29 @@ class AdminManagementController extends Controller
     public function postCursusCreationAction()
     {
         $cursusDatas = $this->request->request->get('cursusDatas', false);
-        $formType = new CursusType();
-        $cursus = new Cursus();
-        $cursus->setTitle($cursusDatas['title']);
-        $cursus->setCode($cursusDatas['code']);
-        $cursus->setDescription($cursusDatas['description']);
-        $cursus->setBlocking($cursusDatas['blocking']);
-        $color = $cursusDatas['color'];
-        $details = ['color' => $color];
-        $cursus->setDetails($details);
+        $worskpace = null;
 
         if ($cursusDatas['workspace']) {
             $worskpace = $this->workspaceManager->getWorkspaceById($cursusDatas['workspace']);
-            $cursus->setWorkspace($worskpace);
         }
-        $form = $this->createForm($formType, $cursus);
-        $form->submit([], false);
+        $createdCursus = $this->cursusManager->createCursus(
+            $cursusDatas['title'],
+            $cursusDatas['code'],
+            null,
+            null,
+            $cursusDatas['description'],
+            $cursusDatas['blocking'],
+            null,
+            $cursusDatas['color'],
+            $worskpace
+        );
+        $serializedCursus = $this->serializer->serialize(
+            $createdCursus,
+            'json',
+            SerializationContext::create()->setGroups(['api_workspace_min'])
+        );
 
-        if ($form->isValid()) {
-            $createdCursus = $this->cursusManager->createCursus(
-                $cursus->getTitle(),
-                $cursus->getCode(),
-                null,
-                null,
-                $cursus->getDescription(),
-                $cursus->isBlocking(),
-                $cursus->getIcon(),
-                $color,
-                $cursus->getWorkspace()
-            );
-            $serializedCursus = $this->serializer->serialize(
-                $createdCursus,
-                'json',
-                SerializationContext::create()->setGroups(['api_workspace_min'])
-            );
-
-            return new JsonResponse($serializedCursus, 200);
-        } else {
-            return new JsonResponse($form->getErrors(), 200);
-        }
+        return new JsonResponse($serializedCursus, 200);
     }
 
     /**
@@ -192,46 +173,29 @@ class AdminManagementController extends Controller
     public function postCursusChildCreationAction(Cursus $parent)
     {
         $cursusDatas = $this->request->request->get('cursusDatas', false);
-        $formType = new CursusType();
-        $cursus = new Cursus();
-        $cursus->setParent($parent);
-        $cursus->setTitle($cursusDatas['title']);
-        $cursus->setCode($cursusDatas['code']);
-        $cursus->setDescription($cursusDatas['description']);
-        $cursus->setBlocking($cursusDatas['blocking']);
-        $color = $cursusDatas['color'];
-        $details = ['color' => $color];
-        $cursus->setDetails($details);
+        $worskpace = null;
 
         if ($cursusDatas['workspace']) {
             $worskpace = $this->workspaceManager->getWorkspaceById($cursusDatas['workspace']);
-            $cursus->setWorkspace($worskpace);
         }
-        $form = $this->createForm($formType, $cursus);
-        $form->submit([], false);
+        $createdCursus = $this->cursusManager->createCursus(
+            $cursusDatas['title'],
+            $cursusDatas['code'],
+            $parent,
+            null,
+            $cursusDatas['description'],
+            $cursusDatas['blocking'],
+            null,
+            $cursusDatas['color'],
+            $worskpace
+        );
+        $serializedCursus = $this->serializer->serialize(
+            $createdCursus,
+            'json',
+            SerializationContext::create()->setGroups(['api_workspace_min'])
+        );
 
-        if ($form->isValid()) {
-            $createdCursus = $this->cursusManager->createCursus(
-                $cursus->getTitle(),
-                $cursus->getCode(),
-                $parent,
-                null,
-                $cursus->getDescription(),
-                $cursus->isBlocking(),
-                $cursus->getIcon(),
-                $color,
-                $cursus->getWorkspace()
-            );
-            $serializedCursus = $this->serializer->serialize(
-                $createdCursus,
-                'json',
-                SerializationContext::create()->setGroups(['api_workspace_min'])
-            );
-
-            return new JsonResponse($serializedCursus, 200);
-        } else {
-            return new JsonResponse($form->getErrors(), 200);
-        }
+        return new JsonResponse($serializedCursus, 200);
     }
 
     /**
@@ -249,7 +213,6 @@ class AdminManagementController extends Controller
     public function putCursusEditionAction(Cursus $cursus)
     {
         $cursusDatas = $this->request->request->get('cursusDatas', false);
-        $formType = new CursusType($cursus);
         $cursus->setTitle($cursusDatas['title']);
         $cursus->setCode($cursusDatas['code']);
         $cursus->setDescription($cursusDatas['description']);
@@ -262,23 +225,16 @@ class AdminManagementController extends Controller
             $worskpace = $this->workspaceManager->getWorkspaceById($cursusDatas['workspace']);
             $cursus->setWorkspace($worskpace);
         }
-        $form = $this->createForm($formType, $cursus);
-        $form->submit([], false);
+        $this->cursusManager->persistCursus($cursus);
+        $event = new LogCursusEditEvent($cursus);
+        $this->eventDispatcher->dispatch('log', $event);
+        $serializedCursus = $this->serializer->serialize(
+            $cursus,
+            'json',
+            SerializationContext::create()->setGroups(['api_workspace_min'])
+        );
 
-        if ($form->isValid()) {
-            $this->cursusManager->persistCursus($cursus);
-            $event = new LogCursusEditEvent($cursus);
-            $this->eventDispatcher->dispatch('log', $event);
-            $serializedCursus = $this->serializer->serialize(
-                $cursus,
-                'json',
-                SerializationContext::create()->setGroups(['api_workspace_min'])
-            );
-
-            return new JsonResponse($serializedCursus, 200);
-        } else {
-            return new JsonResponse($form->getErrors(), 200);
-        }
+        return new JsonResponse($serializedCursus, 200);
     }
 
     /**
@@ -375,72 +331,46 @@ class AdminManagementController extends Controller
      * )
      * @EXT\ParamConverter("user", converter="current_user")
      */
-    public function postCursusCourseCreateAction(User $user, Cursus $cursus)
+    public function postCursusCourseCreateAction(Cursus $cursus)
     {
         $courseDatas = $this->request->request->get('courseDatas', false);
-        $formType = new CourseType($user, $this->cursusManager, $this->translator);
-        $course = new Course();
-        $course->setTitle($courseDatas['title']);
-        $course->setCode($courseDatas['code']);
-        $course->setDescription($courseDatas['description']);
-        $course->setPublicRegistration($courseDatas['publicRegistration']);
-        $course->setPublicUnregistration($courseDatas['publicUnregistration']);
-        $course->setRegistrationValidation($courseDatas['registrationValidation']);
-        $course->setTutorRoleName($courseDatas['tutorRoleName']);
-        $course->setLearnerRoleName($courseDatas['learnerRoleName']);
+        $worskpace = null;
+        $worskpaceModel = null;
 
         if ($courseDatas['workspace']) {
             $worskpace = $this->workspaceManager->getWorkspaceById($courseDatas['workspace']);
-            $course->setWorkspace($worskpace);
         }
         if ($courseDatas['workspaceModel']) {
             $worskpaceModel = $this->workspaceModelManager->getModelById($courseDatas['workspaceModel']);
-            $course->setWorkspaceModel($worskpaceModel);
         }
-        $course->setUserValidation($courseDatas['userValidation']);
-        $course->setOrganizationValidation($courseDatas['organizationValidation']);
-        $course->setMaxUsers($courseDatas['maxUsers']);
-        $course->setDefaultSessionDuration($courseDatas['defaultSessionDuration']);
-        $course->setWithSessionEvent($courseDatas['withSessionEvent']);
         $validators = $this->userManager->getUsersByIds($courseDatas['validators']);
+        $createdCourse = $this->cursusManager->createCourse(
+            $courseDatas['title'],
+            $courseDatas['code'],
+            $courseDatas['description'],
+            $courseDatas['publicRegistration'],
+            $courseDatas['publicUnregistration'],
+            $courseDatas['registrationValidation'],
+            $courseDatas['tutorRoleName'],
+            $courseDatas['learnerRoleName'],
+            $worskpaceModel,
+            $worskpace,
+            null,
+            $courseDatas['userValidation'],
+            $courseDatas['organizationValidation'],
+            $courseDatas['maxUsers'],
+            $courseDatas['defaultSessionDuration'],
+            $courseDatas['withSessionEvent'],
+            $validators
+        );
+        $createdCursus = $this->cursusManager->addCoursesToCursus($cursus, [$createdCourse]);
+        $serializedCursus = $this->serializer->serialize(
+            $createdCursus,
+            'json',
+            SerializationContext::create()->setGroups(['api_cursus'])
+        );
 
-        foreach ($validators as $validator) {
-            $course->addValidator($validator);
-        }
-        $form = $this->createForm($formType, $course);
-        $form->submit([], false);
-
-        if ($form->isValid()) {
-            $createdCourse = $this->cursusManager->createCourse(
-                $course->getTitle(),
-                $course->getCode(),
-                $course->getDescription(),
-                $course->getPublicRegistration(),
-                $course->getPublicUnregistration(),
-                $course->getRegistrationValidation(),
-                $course->getTutorRoleName(),
-                $course->getLearnerRoleName(),
-                $course->getWorkspaceModel(),
-                $course->getWorkspace(),
-                $course->getIcon(),
-                $course->getUserValidation(),
-                $course->getOrganizationValidation(),
-                $course->getMaxUsers(),
-                $course->getDefaultSessionDuration(),
-                $course->getWithSessionEvent(),
-                $course->getValidators()
-            );
-            $createdCursus = $this->cursusManager->addCoursesToCursus($cursus, [$createdCourse]);
-            $serializedCursus = $this->serializer->serialize(
-                $createdCursus,
-                'json',
-                SerializationContext::create()->setGroups(['api_cursus'])
-            );
-
-            return new JsonResponse($serializedCursus, 200);
-        } else {
-            return new JsonResponse($form->getErrors(), 200);
-        }
+        return new JsonResponse($serializedCursus, 200);
     }
 
     /**
@@ -451,71 +381,45 @@ class AdminManagementController extends Controller
      * )
      * @EXT\ParamConverter("user", converter="current_user")
      */
-    public function postCourseCreateAction(User $user)
+    public function postCourseCreateAction()
     {
         $courseDatas = $this->request->request->get('courseDatas', false);
-        $formType = new CourseType($user, $this->cursusManager, $this->translator);
-        $course = new Course();
-        $course->setTitle($courseDatas['title']);
-        $course->setCode($courseDatas['code']);
-        $course->setDescription($courseDatas['description']);
-        $course->setPublicRegistration($courseDatas['publicRegistration']);
-        $course->setPublicUnregistration($courseDatas['publicUnregistration']);
-        $course->setRegistrationValidation($courseDatas['registrationValidation']);
-        $course->setTutorRoleName($courseDatas['tutorRoleName']);
-        $course->setLearnerRoleName($courseDatas['learnerRoleName']);
+        $worskpace = null;
+        $worskpaceModel = null;
 
         if ($courseDatas['workspace']) {
             $worskpace = $this->workspaceManager->getWorkspaceById($courseDatas['workspace']);
-            $course->setWorkspace($worskpace);
         }
         if ($courseDatas['workspaceModel']) {
             $worskpaceModel = $this->workspaceModelManager->getModelById($courseDatas['workspaceModel']);
-            $course->setWorkspaceModel($worskpaceModel);
         }
-        $course->setUserValidation($courseDatas['userValidation']);
-        $course->setOrganizationValidation($courseDatas['organizationValidation']);
-        $course->setMaxUsers($courseDatas['maxUsers']);
-        $course->setDefaultSessionDuration($courseDatas['defaultSessionDuration']);
-        $course->setWithSessionEvent($courseDatas['withSessionEvent']);
         $validators = $this->userManager->getUsersByIds($courseDatas['validators']);
+        $createdCourse = $this->cursusManager->createCourse(
+            $courseDatas['title'],
+            $courseDatas['code'],
+            $courseDatas['description'],
+            $courseDatas['publicRegistration'],
+            $courseDatas['publicUnregistration'],
+            $courseDatas['registrationValidation'],
+            $courseDatas['tutorRoleName'],
+            $courseDatas['learnerRoleName'],
+            $worskpaceModel,
+            $worskpace,
+            null,
+            $courseDatas['userValidation'],
+            $courseDatas['organizationValidation'],
+            $courseDatas['maxUsers'],
+            $courseDatas['defaultSessionDuration'],
+            $courseDatas['withSessionEvent'],
+            $validators
+        );
+        $serializedCourse = $this->serializer->serialize(
+            $createdCourse,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
 
-        foreach ($validators as $validator) {
-            $course->addValidator($validator);
-        }
-        $form = $this->createForm($formType, $course);
-        $form->submit([], false);
-
-        if ($form->isValid()) {
-            $createdCourse = $this->cursusManager->createCourse(
-                $course->getTitle(),
-                $course->getCode(),
-                $course->getDescription(),
-                $course->getPublicRegistration(),
-                $course->getPublicUnregistration(),
-                $course->getRegistrationValidation(),
-                $course->getTutorRoleName(),
-                $course->getLearnerRoleName(),
-                $course->getWorkspaceModel(),
-                $course->getWorkspace(),
-                $course->getIcon(),
-                $course->getUserValidation(),
-                $course->getOrganizationValidation(),
-                $course->getMaxUsers(),
-                $course->getDefaultSessionDuration(),
-                $course->getWithSessionEvent(),
-                $course->getValidators()
-            );
-            $serializedCourse = $this->serializer->serialize(
-                $createdCourse,
-                'json',
-                SerializationContext::create()->setGroups(['api_user_min'])
-            );
-
-            return new JsonResponse($serializedCourse, 200);
-        } else {
-            return new JsonResponse($form->getErrors(), 200);
-        }
+        return new JsonResponse($serializedCourse, 200);
     }
 
     /**
@@ -550,10 +454,9 @@ class AdminManagementController extends Controller
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function putCourseEditionAction(User $user, Course $course)
+    public function putCourseEditionAction(Course $course)
     {
         $courseDatas = $this->request->request->get('courseDatas', false);
-        $formType = new CourseType($user, $this->cursusManager, $this->translator);
         $course->setTitle($courseDatas['title']);
         $course->setCode($courseDatas['code']);
         $course->setDescription($courseDatas['description']);
@@ -586,23 +489,16 @@ class AdminManagementController extends Controller
         foreach ($validators as $validator) {
             $course->addValidator($validator);
         }
-        $form = $this->createForm($formType, $course);
-        $form->submit([], false);
+        $this->cursusManager->persistCourse($course);
+        $event = new LogCourseEditEvent($course);
+        $this->eventDispatcher->dispatch('log', $event);
+        $serializedCourse = $this->serializer->serialize(
+            $course,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
 
-        if ($form->isValid()) {
-            $this->cursusManager->persistCourse($course);
-            $event = new LogCourseEditEvent($course);
-            $this->eventDispatcher->dispatch('log', $event);
-            $serializedCourse = $this->serializer->serialize(
-                $course,
-                'json',
-                SerializationContext::create()->setGroups(['api_user_min'])
-            );
-
-            return new JsonResponse($serializedCourse, 200);
-        } else {
-            return new JsonResponse($form->getErrors(), 200);
-        }
+        return new JsonResponse($serializedCourse, 200);
     }
 
     /**
@@ -787,64 +683,37 @@ class AdminManagementController extends Controller
     public function postSessionCreateAction(Course $course)
     {
         $sessionDatas = $this->request->request->get('sessionDatas', false);
-        $formType = new CourseSessionType($this->cursusManager, $this->translator);
         $trimmedStartDate = trim($sessionDatas['startDate'], 'Zz');
         $trimmedEndDate = trim($sessionDatas['endDate'], 'Zz');
         $startDate = new \DateTime($trimmedStartDate);
         $endDate = new \DateTime($trimmedEndDate);
-        $session = new CourseSession();
-        $session->setName($sessionDatas['name']);
-        $session->setStartDate($startDate);
-        $session->setEndDate($endDate);
-        $session->setDescription($sessionDatas['description']);
-        $session->setDefaultSession($sessionDatas['defaultSession']);
-        $session->setPublicRegistration($sessionDatas['publicRegistration']);
-        $session->setPublicUnregistration($sessionDatas['publicUnregistration']);
-        $session->setUserValidation($sessionDatas['userValidation']);
-        $session->setMaxUsers($sessionDatas['maxUsers']);
-        $session->setOrganizationValidation($sessionDatas['organizationValidation']);
-        $session->setRegistrationValidation($sessionDatas['registrationValidation']);
         $cursus = $this->cursusManager->getCursusByIds($sessionDatas['cursus']);
         $validators = $this->userManager->getUsersByIds($sessionDatas['validators']);
+        $createdSession = $this->cursusManager->createCourseSession(
+            $course,
+            $sessionDatas['name'],
+            $sessionDatas['description'],
+            $cursus,
+            null,
+            $startDate,
+            $endDate,
+            $sessionDatas['defaultSession'],
+            $sessionDatas['publicRegistration'],
+            $sessionDatas['publicUnregistration'],
+            $sessionDatas['registrationValidation'],
+            $sessionDatas['userValidation'],
+            $sessionDatas['organizationValidation'],
+            $sessionDatas['maxUsers'],
+            0,
+            $validators
+        );
+        $serializedSession = $this->serializer->serialize(
+            $createdSession,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
 
-        foreach ($cursus as $c) {
-            $session->addCursus($c);
-        }
-        foreach ($validators as $validator) {
-            $session->addValidator($validator);
-        }
-        $form = $this->createForm($formType, $session);
-        $form->submit([], false);
-
-        if ($form->isValid()) {
-            $createdSession = $this->cursusManager->createCourseSession(
-                $course,
-                $session->getName(),
-                $session->getDescription(),
-                $session->getCursus(),
-                null,
-                $session->getStartDate(),
-                $session->getEndDate(),
-                $session->isDefaultSession(),
-                $session->getPublicRegistration(),
-                $session->getPublicUnregistration(),
-                $session->getRegistrationValidation(),
-                $session->getUserValidation(),
-                $session->getOrganizationValidation(),
-                $session->getMaxUsers(),
-                0,
-                $session->getValidators()
-            );
-            $serializedSession = $this->serializer->serialize(
-                $createdSession,
-                'json',
-                SerializationContext::create()->setGroups(['api_user_min'])
-            );
-
-            return new JsonResponse($serializedSession, 200);
-        } else {
-            return new JsonResponse($form->getErrors(), 200);
-        }
+        return new JsonResponse($serializedSession, 200);
     }
 
     /**
@@ -862,7 +731,6 @@ class AdminManagementController extends Controller
     public function putSessionEditionAction(CourseSession $session)
     {
         $sessionDatas = $this->request->request->get('sessionDatas', false);
-        $formType = new CourseSessionType($this->cursusManager, $this->translator);
         $trimmedStartDate = trim($sessionDatas['startDate'], 'Zz');
         $trimmedEndDate = trim($sessionDatas['endDate'], 'Zz');
         $startDate = new \DateTime($trimmedStartDate);
@@ -889,23 +757,16 @@ class AdminManagementController extends Controller
         foreach ($validators as $validator) {
             $session->addValidator($validator);
         }
-        $form = $this->createForm($formType, $session);
-        $form->submit([], false);
+        $this->cursusManager->persistCourseSession($session);
+        $event = new LogCourseSessionEditEvent($session);
+        $this->eventDispatcher->dispatch('log', $event);
+        $serializedSession = $this->serializer->serialize(
+            $session,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
 
-        if ($form->isValid()) {
-            $this->cursusManager->persistCourseSession($session);
-            $event = new LogCourseSessionEditEvent($session);
-            $this->eventDispatcher->dispatch('log', $event);
-            $serializedSession = $this->serializer->serialize(
-                $session,
-                'json',
-                SerializationContext::create()->setGroups(['api_user_min'])
-            );
-
-            return new JsonResponse($serializedSession, 200);
-        } else {
-            return new JsonResponse($form->getErrors(), 200);
-        }
+        return new JsonResponse($serializedSession, 200);
     }
 
     /**
@@ -963,58 +824,38 @@ class AdminManagementController extends Controller
     public function postSessionEventCreateAction(CourseSession $session)
     {
         $sessionEventDatas = $this->request->request->get('sessionEventDatas', false);
-        $formType = new SessionEventType();
         $trimmedStartDate = trim($sessionEventDatas['startDate'], 'Zz');
         $trimmedEndDate = trim($sessionEventDatas['endDate'], 'Zz');
         $startDate = new \DateTime($trimmedStartDate);
         $endDate = new \DateTime($trimmedEndDate);
-        $sessionEvent = new SessionEvent();
-        $sessionEvent->setName($sessionEventDatas['name']);
-        $sessionEvent->setStartDate($startDate);
-        $sessionEvent->setEndDate($endDate);
-        $sessionEvent->setDescription($sessionEventDatas['description']);
+        $location = null;
+        $locationResource = null;
         $tutors = $this->userManager->getUsersByIds($sessionEventDatas['tutors']);
 
-        foreach ($tutors as $tutor) {
-            $sessionEvent->addTutor($tutor);
+        if ($sessionEventDatas['location']) {
+            $location = $this->locationManager->getLocationById($sessionEventDatas['location']);
         }
-
-        if ($sessionEventDatas['internalLocation']) {
-            if ($sessionEventDatas['locationResource']) {
-                $locationResource = $this->cursusManager->getReservationResourceById($sessionEventDatas['locationResource']);
-
-                if (!is_null($locationResource)) {
-                    $sessionEvent->setLocationResource($locationResource);
-                    $sessionEvent->setLocation($locationResource->getLocalisation());
-                }
-            }
-        } else {
-            $sessionEvent->setLocation($sessionEventDatas['location']);
+        if ($sessionEventDatas['locationResource']) {
+            $locationResource = $this->cursusManager->getReservationResourceById($sessionEventDatas['locationResource']);
         }
-        $form = $this->createForm($formType, $sessionEvent);
-        $form->submit([], false);
+        $createdSessionEvent = $this->cursusManager->createSessionEvent(
+            $session,
+            $sessionEventDatas['name'],
+            $sessionEventDatas['description'],
+            $startDate,
+            $endDate,
+            $location,
+            $sessionEventDatas['locationExtra'],
+            $locationResource,
+            $tutors
+        );
+        $serializedSessionEvent = $this->serializer->serialize(
+            $createdSessionEvent,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
 
-        if ($form->isValid()) {
-            $createdSessionEvent = $this->cursusManager->createSessionEvent(
-                $session,
-                $sessionEvent->getName(),
-                $sessionEvent->getDescription(),
-                $sessionEvent->getStartDate(),
-                $sessionEvent->getEndDate(),
-                $sessionEvent->getLocation(),
-                $sessionEvent->getLocationResource(),
-                $sessionEvent->getTutors()
-            );
-            $serializedSessionEvent = $this->serializer->serialize(
-                $createdSessionEvent,
-                'json',
-                SerializationContext::create()->setGroups(['api_user_min'])
-            );
-
-            return new JsonResponse($serializedSessionEvent, 200);
-        } else {
-            return new JsonResponse($form->getErrors(), 200);
-        }
+        return new JsonResponse($serializedSessionEvent, 200);
     }
 
     /**
@@ -1032,7 +873,6 @@ class AdminManagementController extends Controller
     public function putSessionEventEditionAction(SessionEvent $sessionEvent)
     {
         $sessionEventDatas = $this->request->request->get('sessionEventDatas', false);
-        $formType = new SessionEventType();
         $trimmedStartDate = trim($sessionEventDatas['startDate'], 'Zz');
         $trimmedEndDate = trim($sessionEventDatas['endDate'], 'Zz');
         $startDate = new \DateTime($trimmedStartDate);
@@ -1041,20 +881,23 @@ class AdminManagementController extends Controller
         $sessionEvent->setStartDate($startDate);
         $sessionEvent->setEndDate($endDate);
         $sessionEvent->setDescription($sessionEventDatas['description']);
+        $sessionEvent->setLocationExtra($sessionEventDatas['locationExtra']);
         $sessionEvent->setLocationResource(null);
         $sessionEvent->setLocation(null);
 
-        if ($sessionEventDatas['internalLocation']) {
-            if ($sessionEventDatas['locationResource']) {
-                $locationResource = $this->cursusManager->getReservationResourceById($sessionEventDatas['locationResource']);
+        if ($sessionEventDatas['location']) {
+            $location = $this->locationManager->getLocationById($sessionEventDatas['location']);
 
-                if (!is_null($locationResource)) {
-                    $sessionEvent->setLocationResource($locationResource);
-                    $sessionEvent->setLocation($locationResource->getLocalisation());
-                }
+            if (!is_null($location)) {
+                $sessionEvent->setLocation($location);
             }
-        } else {
-            $sessionEvent->setLocation($sessionEventDatas['location']);
+        }
+        if ($sessionEventDatas['locationResource']) {
+            $locationResource = $this->cursusManager->getReservationResourceById($sessionEventDatas['locationResource']);
+
+            if (!is_null($locationResource)) {
+                $sessionEvent->setLocationResource($locationResource);
+            }
         }
         $sessionEvent->emptyTutors();
         $tutors = $this->userManager->getUsersByIds($sessionEventDatas['tutors']);
@@ -1062,23 +905,16 @@ class AdminManagementController extends Controller
         foreach ($tutors as $tutor) {
             $sessionEvent->addTutor($tutor);
         }
-        $form = $this->createForm($formType, $sessionEvent);
-        $form->submit([], false);
+        $this->cursusManager->persistSessionEvent($sessionEvent);
+        $event = new LogSessionEventEditEvent($sessionEvent);
+        $this->eventDispatcher->dispatch('log', $event);
+        $serializedSessionEvent = $this->serializer->serialize(
+            $sessionEvent,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
 
-        if ($form->isValid()) {
-            $this->cursusManager->persistSessionEvent($sessionEvent);
-            $event = new LogSessionEventEditEvent($sessionEvent);
-            $this->eventDispatcher->dispatch('log', $event);
-            $serializedSessionEvent = $this->serializer->serialize(
-                $sessionEvent,
-                'json',
-                SerializationContext::create()->setGroups(['api_user_min'])
-            );
-
-            return new JsonResponse($serializedSessionEvent, 200);
-        } else {
-            return new JsonResponse($form->getErrors(), 200);
-        }
+        return new JsonResponse($serializedSessionEvent, 200);
     }
 
     /**
@@ -1464,6 +1300,30 @@ class AdminManagementController extends Controller
 
     /**
      * @EXT\Route(
+     *     "/api/cursus/locations",
+     *     name="api_get_cursus_locations",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     *
+     * Retrieves locations list
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getLocationsAction()
+    {
+        $locations = $this->locationManager->getByTypes([Location::TYPE_DEPARTMENT, Location::TYPE_TRAINING]);
+        $serializedLocations = $this->serializer->serialize(
+            $locations,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
+
+        return new JsonResponse($serializedLocations, 200);
+    }
+
+    /**
+     * @EXT\Route(
      *     "/api/reservation/resources",
      *     name="api_get_reservation_resources",
      *     options = {"expose"=true}
@@ -1730,6 +1590,30 @@ class AdminManagementController extends Controller
         $this->cursusManager->deleteDocumentModel($documentModel);
 
         return new JsonResponse($serializedDocumentModel, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/cursus/document/models/type/{type}/retrieve",
+     *     name="api_get_cursus_document_models_by_type",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     *
+     * Returns the document models by type
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getDocumentModelsByTypeAction($type)
+    {
+        $documentModels = $this->cursusManager->getDocumentModelsByType($type);
+        $serializedModels = $this->serializer->serialize(
+            $documentModels,
+            'json',
+            SerializationContext::create()->setGroups(['api_cursus'])
+        );
+
+        return new JsonResponse($serializedModels, 200);
     }
 
     /**

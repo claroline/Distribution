@@ -113,12 +113,15 @@ icon: Icône
 import_courses: Importer des formations
 informations_management: Gestion des informations
 internal_location: Localisation interne
+internal_locations: Localisations internes
 invalid_file: Fichier non valide
 invite_learners_to_session: Inviter les apprenants à la session
+invite_learners_to_session_event: Inviter les apprenants à la séance
 learner: Apprenant
 learner_role_name: Rôle des apprenants
 learners: Apprenants
 list_view: Vue liste
+location_extra: Infos complémentaires
 locations: Localisations
 locations_management: Gestion des localisations
 manager: Gestionnaire
@@ -138,9 +141,11 @@ no_open_session_event: Aucune séance ouverte
 no_pending_learner: Aucun apprenant en attente
 no_registered_group: Aucun groupe inscrit
 no_registered_learner: Aucun apprenant inscrit
+no_resource: Aucune ressource
 no_result: Aucun résultat
 no_session: Aucune session de formation
 no_session_event: Aucune séance
+no_template: Aucun modèle
 no_tutor: Aucun formateur
 not_authorized: Non autorisé
 not_blank_error: Cette valeur ne doit pas être vide.
@@ -151,8 +156,9 @@ organization_validation: Validation par l'organisation
 placeholder_course_code_message: Ce placeholder sera remplacé par le code de la formation
 placeholder_course_description_message: Ce placeholder sera remplacé par la description de la formation
 placeholder_course_title_message: Ce placeholder sera remplacé par le titre de la formation
-placeholder_first_name_message: Ce placeholder sera remplacé par le prénom de l'utilisateur
-placeholder_last_name_message: Ce placeholder sera remplacé par le nom de l'utilisateur
+placeholder_date_message: Ce placeholder sera remplacé par la date de génération du document
+placeholder_first_name_message: Ce placeholder sera remplacé par le prénom du destinataire
+placeholder_last_name_message: Ce placeholder sera remplacé par le nom du destinataire
 placeholder_organization_address_message: Ce placeholder sera remplacé par l'adresse de l'organisation
 placeholder_organization_mail_message: Ce placeholder sera remplacé par le courriel de l'organisation
 placeholder_organization_name_message: Ce placeholder sera remplacé par le nom de l'organisation
@@ -161,12 +167,15 @@ placeholder_session_description_message: Ce placeholder sera remplacé par la de
 placeholder_session_end_message: Ce placeholder sera remplacé par la date de fin de la session
 placeholder_session_event_description_message: Ce placeholder sera remplacé par la description de la séance
 placeholder_session_event_end_message: Ce placeholder sera remplacé par la date de fin de la séance
+placeholder_session_event_location_extra_message: Ce placeholder sera remplacé par les informations complémentaires sur la localisation de la séance
 placeholder_session_event_location_message: Ce placeholder sera remplacé par la localisation de la séance
 placeholder_session_event_name_message: Ce placeholder sera remplacé par le nom de la séance
 placeholder_session_event_start_message: Ce placeholder sera remplacé par la date de début de la séance
+placeholder_session_event_trainers_message: Ce placeholder sera remplacé par la liste des formateurs de la séance
 placeholder_session_events_list_message: Ce placeholder sera remplacé par la liste des séances
 placeholder_session_name_message: Ce placeholder sera remplacé par le nom de la session
 placeholder_session_start_message: Ce placeholder sera remplacé par la date de début de la session
+placeholder_session_trainers_message: Ce placeholder sera remplacé par la liste des formateurs de la session
 public_registration: Inscription publique
 public_sessions_only: Seulement les sessions publiques (Vue calendrier)
 public_unregistration: Désinscription publique
@@ -192,7 +201,9 @@ send_confirmation_mail_to_session: Envoyer un mail de confirmation à tous les a
 send_confirmation_mail_to_session_message: Êtes-vous sûr de vouloir envoyer un mail de confirmation à tous les apprenants de la session de formation ?
 send_confirmation_mail_to_user: Envoyer un mail de confirmation à cet utilisateur
 send_confirmation_mail_to_user_message: Êtes-vous sûr de vouloir envoyer un mail de confirmation à cet utilisateur ?
-send_mail_to_session_participants: Envoyer un courriel aux participants de la session
+send_email: Envoyer un courrier
+send_message_to_session_participants: Envoyer un message aux participants de la session
+send_platform_message: Envoyer un message sur la plateforme
 send_session_infos: Envoyer un courriel de confirmation à tous les apprenants de la session
 select_course_for_session_creation: Sélectionnez la formation pour laquelle vous voulez créer une session
 select_session: Sélectionnez une session de formation

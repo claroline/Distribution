@@ -13,7 +13,6 @@ export default class CoursesManagementCtrl {
     this.SessionService = SessionService
     this.courses = CourseService.getCourses()
     this.sessions = SessionService.getOpenCourseSessions()
-    this.selectedCourses = []
     this.tableParams = new NgTableParams(
       {count: 20},
       {counts: [10, 20, 50, 100], dataset: this.courses}
@@ -84,10 +83,6 @@ export default class CoursesManagementCtrl {
 
   importCourses () {
     this.CourseService.importCourses(this._addCourseCallback)
-  }
-
-  test () {
-    this.selectedCourses.map((el) => {return el.id})
   }
 
   loadSessions (courseId) {

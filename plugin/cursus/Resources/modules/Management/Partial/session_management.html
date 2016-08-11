@@ -68,7 +68,7 @@
         <button class="btn btn-primary"
                 data-toggle="tooltip"
                 data-placement="top"
-                title="{{ 'send_mail_to_session_participants'|trans:{}:'cursus' }}"
+                title="{{ 'send_message_to_session_participants'|trans:{}:'cursus' }}"
                 ng-click="cmc.sendMailToSessionLearners()"
         >
             <i class="fa fa-envelope-o"></i>
@@ -287,8 +287,11 @@
                         <td class="text-center" data-title="'end_date'|trans:{}:'platform'" sortable="'endDate'">
                             {{ event['endDate']|date:'dd/MM/yyyy HH:mm' }}
                         </td>
-                        <td class="text-center" data-title="'session_event_location'|trans:{}:'cursus'" sortable="'location'">
-                            <div ng-bind-html="event['location']|trust_html"></div>
+                        <td class="text-center" data-title="'session_event_location'|trans:{}:'cursus'" filter="{address: 'text'}" sortable="'address'">
+                            <div ng-bind-html="event['address']|trust_html"></div>
+                        </td>
+                        <td class="text-center" data-title="'location_extra'|trans:{}:'cursus'" filter="{locationExtra: 'text'}" sortable="'locationExtra'">
+                            <div ng-bind-html="event['locationExtra']|trust_html"></div>
                         </td>
                         <td class="text-center" data-title="'actions'|trans:{}:'platform'">
                             <button class="btn btn-primary btn-sm"
@@ -298,6 +301,14 @@
                                     ng-click="cmc.editEvent(event)"
                             >
                                 <i class="fa fa-edit"></i>
+                            </button>
+                            <button class="btn btn-primary btn-sm"
+                                    data-toggle="tooltip"
+                                    data-placement="top"
+                                    title="{{ 'invite_learners_to_session_event'|trans:{}:'cursus' }}"
+                                    ng-click="cmc.inviteLearnersToEvent(event)"
+                            >
+                                <i class="fa fa-plus-square"></i>
                             </button>
                             <button class="btn btn-default btn-sm"
                                     data-toggle="tooltip"
@@ -352,8 +363,11 @@
                         <td class="text-center" data-title="'end_date'|trans:{}:'platform'" sortable="'endDate'">
                             {{ event['endDate']|date:'dd/MM/yyyy HH:mm' }}
                         </td>
-                        <td class="text-center" data-title="'session_event_location'|trans:{}:'cursus'" sortable="'location'">
-                            <div ng-bind-html="event['location']|trust_html"></div>
+                        <td class="text-center" data-title="'session_event_location'|trans:{}:'cursus'" sortable="'address'">
+                            <div ng-bind-html="event['address']|trust_html"></div>
+                        </td>
+                        <td class="text-center" data-title="'location_extra'|trans:{}:'cursus'" filter="{locationExtra: 'text'}" sortable="'locationExtra'">
+                            <div ng-bind-html="event['locationExtra']|trust_html"></div>
                         </td>
                         <td class="text-center" data-title="'actions'|trans:{}:'platform'">
                             <button class="btn btn-primary btn-sm"

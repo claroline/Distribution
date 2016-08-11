@@ -279,6 +279,7 @@
         }
 
         function onEventClick (event, jsEvent) {
+            console.log(event)
           jsEvent.stopPropagation()
           jsEvent.preventDefault()
           let registerBtn = ''
@@ -287,15 +288,29 @@
             <ul>
           `
           event['events'].forEach(e => {
+            let locationElement = ''
+
+            if (e['location']) {
+              locationElement = `
+                ${e['location']['street']}, ${e['location']['street_number']}
+                <br>${e['location']['pc']} ${e['location']['town']}
+                <br>${e['location']['country']}
+              `
+            }
             eventsElement += `
               <li>
                   <b>${e['name']}</b>
+                  <br>
                   [${moment(e['startDate']).format('DD/MM/YYYY HH:mm')}
                   <i class="fa fa-long-arrow-right"></i>
                   ${moment(e['endDate']).format('DD/MM/YYYY HH:mm')}]
                   <br>
+                  <br>
                   <b>${Translator.trans('location', {}, 'platform')}</b> :
-                  ${e['location']}
+                  <br>
+                  ${e['location'] ? locationElement : ''}
+                  ${e['locationExtra'] ? '<br>' + e['locationExtra'] : ''}
+                  <hr>
               </li>
             `
           })

@@ -47,10 +47,6 @@
             <span class="caret"></span>
         </button>
         <ul class="dropdown-menu">
-            <li ng-class="cmc.selectedCourses.length === 0 ? 'disabled' : ''">
-                <a href="">{{ 'delete_selected_courses'|trans:{}:'cursus' }}</a>
-            </li>
-            <li class="divider" role="separator"></li>
             <li ng-click="cmc.createCourse()">
                 <a href="">{{ 'create_course'|trans:{}:'cursus' }}</a>
             </li>
@@ -70,9 +66,6 @@
         <table class="table" ng-table="cmc.tableParams" show-filter="true">
             <tbody ng-repeat="course in $data">
             <tr>
-                <td>
-                    <input type="checkbox" checklist-model="cmc.selectedCourses" checklist-value="course" ng-click="cmc.test()">
-                </td>
                 <td data-title="'title'|trans:{}:'platform'" filter="{title: 'text'}" sortable="'title'">
                     <span data-toggle="tooltip" data-placement="top" title="{{ 'display_sessions'|trans:{}:'cursus' }}">
                         <i class="fa pointer-hand" ng-class="cmc.isCollapsed[course['id']] ? 'fa-chevron-circle-down' : 'fa-chevron-circle-right'"
@@ -126,7 +119,6 @@
                 </td>
             </tr>
             <tr uib-collapse="!cmc.isCollapsed[course['id']]">
-                <td></td>
                 <td colspan="3">
                     <div class="alert alert-warning" ng-if="!cmc.sessions[course['id']] || cmc.sessions[course['id']].length === 0">
                         {{ 'no_open_session'|trans:{}:'cursus' }}

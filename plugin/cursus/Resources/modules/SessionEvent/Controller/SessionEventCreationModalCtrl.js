@@ -25,6 +25,7 @@ export default class SessionEventCreationModalCtrl {
       endDate: null,
       description: null,
       location: null,
+      locationExtra: null,
       internalLocation: false,
       locationResource: null,
       tutors: []
@@ -44,6 +45,8 @@ export default class SessionEventCreationModalCtrl {
       end: {format: 'dd/MM/yyyy', open: false}
     }
     this.tinymceOptions = CourseService.getTinymceConfiguration()
+    this.locations = []
+    this.location = null
     this.locationResources = []
     this.locationResource = null
     this.tutorsList = SessionService.getTutorsBySession(session['id'])
@@ -54,6 +57,9 @@ export default class SessionEventCreationModalCtrl {
   initializeSessionEvent () {
     this.sessionEvent['startDate'] = this.session['startDate'].replace(/\+.*$/, '')
     this.sessionEvent['endDate'] = this.session['endDate'].replace(/\+.*$/, '')
+    this.CourseService.getLocations().then(d => {
+      d.forEach(l => this.locations.push(l))
+    })
     this.CourseService.getLocationResources().then(d => {
       d.forEach(r => this.locationResources.push(r))
     })
@@ -86,6 +92,12 @@ export default class SessionEventCreationModalCtrl {
       }
     } else {
       this.sessionEventErrors['endDate'] = null
+    }
+
+    if (this.location) {
+      this.sessionEvent['location'] = this.location['id']
+    } else {
+      this.sessionEvent['location'] = null
     }
 
     if (this.locationResource) {

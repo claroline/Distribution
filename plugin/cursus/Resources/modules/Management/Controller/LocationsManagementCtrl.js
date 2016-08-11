@@ -12,10 +12,15 @@
 export default class LocationsManagementCtrl {
   constructor($http, NgTableParams) {
     this.$http = $http
+    this.locations = []
     this.locationResources = []
     this.reservationResources = []
     this.tableParams = {
       locations:  new NgTableParams(
+        {count: 20},
+        {counts: [10, 20, 50, 100], dataset: this.locations}
+      ),
+      locationResources:  new NgTableParams(
         {count: 20},
         {counts: [10, 20, 50, 100], dataset: this.locationResources}
       ),
@@ -29,10 +34,13 @@ export default class LocationsManagementCtrl {
 
   initialize() {
     this.loadLocations()
-    this.loadResources()
   }
 
   loadLocations () {
+
+  }
+
+  loadLocationResources () {
     const url = Routing.generate('api_get_cursus_reservation_resources')
     this.$http.get(url).then(d => {
       if (d['status'] === 200) {
@@ -60,7 +68,7 @@ export default class LocationsManagementCtrl {
     })
   }
 
-  addLocation (resource) {
+  addLocationResource (resource) {
     const url = Routing.generate('api_post_cursus_reservation_resources_tag', {resource: resource['id']})
     this.$http.post(url).then(d => {
       if (d['status'] === 200 && d['data'] === 'success') {
@@ -69,7 +77,7 @@ export default class LocationsManagementCtrl {
     })
   }
 
-  removeLocation (resourceId) {
+  removeLocationResource (resourceId) {
     const url = Routing.generate('api_delete_cursus_reservation_resources_tag', {resource: resourceId})
     this.$http.delete(url).then(d => {
       if (d['status'] === 200 && d['data'] === 'success') {
@@ -82,7 +90,7 @@ export default class LocationsManagementCtrl {
     })
   }
 
-  isLocation (resourceId) {
+  isLocationResource (resourceId) {
     return this.locationResources.findIndex(l => l['id'] === resourceId) > -1
   }
 }

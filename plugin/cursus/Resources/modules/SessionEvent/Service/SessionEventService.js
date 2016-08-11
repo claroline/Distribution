@@ -194,6 +194,9 @@ export default class SessionEventService {
     }
 
     this.sessionEvents[sessionId].forEach(e => {
+      if (e['location']) {
+        e['address'] = `${e['location']['street']}, ${e['location']['street_number']}<br>${e['location']['pc']} ${e['location']['town']}<br>${e['location']['country']}`
+      }
       e['status'] = this.getSessionEventStatus(e['startDate'], e['endDate'], now)
 
       if (e['status'] === 'closed') {

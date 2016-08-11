@@ -8,9 +8,9 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution.
  *
- * Generation date: 2016/08/09 10:30:16
+ * Generation date: 2016/08/11 03:45:25
  */
-class Version20160809103015 extends AbstractMigration
+class Version20160811154524 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -36,14 +36,16 @@ class Version20160809103015 extends AbstractMigration
             CREATE TABLE claro_cursusbundle_session_event (
                 id INT AUTO_INCREMENT NOT NULL, 
                 session_id INT NOT NULL, 
+                location_id INT DEFAULT NULL, 
                 location_resource_id INT DEFAULT NULL, 
                 reservation_id INT DEFAULT NULL, 
                 event_name VARCHAR(255) NOT NULL, 
                 start_date DATETIME NOT NULL, 
                 end_date DATETIME NOT NULL, 
                 description LONGTEXT DEFAULT NULL, 
-                location LONGTEXT DEFAULT NULL, 
+                location_extra LONGTEXT DEFAULT NULL, 
                 INDEX IDX_257C3061613FECDF (session_id), 
+                INDEX IDX_257C306164D218E (location_id), 
                 INDEX IDX_257C30619FE77A61 (location_resource_id), 
                 INDEX IDX_257C3061B83297E7 (reservation_id), 
                 PRIMARY KEY(id)
@@ -88,6 +90,12 @@ class Version20160809103015 extends AbstractMigration
             ADD CONSTRAINT FK_257C3061613FECDF FOREIGN KEY (session_id) 
             REFERENCES claro_cursusbundle_course_session (id) 
             ON DELETE CASCADE
+        ');
+        $this->addSql('
+            ALTER TABLE claro_cursusbundle_session_event 
+            ADD CONSTRAINT FK_257C306164D218E FOREIGN KEY (location_id) 
+            REFERENCES claro__location (id) 
+            ON DELETE SET NULL
         ');
         $this->addSql('
             ALTER TABLE claro_cursusbundle_session_event 

@@ -91,38 +91,48 @@
                 </uib-timepicker>
             </div>
         </div>
+        <!--<div class="form-group row">-->
+            <!--<label class="control-label col-md-3">-->
+                <!--{{ 'internal_location'|trans:{}:'cursus' }}-->
+            <!--</label>-->
+            <!--<div class="col-md-9">-->
+                <!--<input type="checkbox" ng-model="cmc.sessionEvent['internalLocation']">-->
+            <!--</div>-->
+        <!--</div>-->
         <div class="form-group row">
             <label class="control-label col-md-3">
-                {{ 'internal_location'|trans:{}:'cursus' }}
-            </label>
-            <div class="col-md-9">
-                <input type="checkbox" ng-model="cmc.sessionEvent['internalLocation']">
-            </div>
-        </div>
-        <div class="form-group row" ng-if="!cmc.sessionEvent['internalLocation']">
-            <label class="control-label col-md-3">
                 {{ 'location'|trans:{}:'platform' }}
             </label>
             <div class="col-md-9">
-                <textarea data-ui-tinymce="cmc.tinymceOptions"
-                          data-before-unload="off"
-                          id="session-event-location"
-                          class="form-control"
-                          ng-model="cmc.sessionEvent['location']"
-                >
-                </textarea>
-            </div>
-        </div>
-        <div class="form-group row" ng-if="cmc.sessionEvent['internalLocation']">
-            <label class="control-label col-md-3">
-                {{ 'location'|trans:{}:'platform' }}
-            </label>
-            <div class="col-md-9">
-                <select class="form-control" ng-model="cmc.locationResource" ng-options="lr['name'] for lr in cmc.locationResources">
+                <select class="form-control" ng-model="cmc.location" ng-options="l['name'] for l in cmc.locations">
                     <option></option>
                 </select>
             </div>
         </div>
+        <div class="form-group row">
+            <label class="control-label col-md-3">
+                {{ 'location_extra'|trans:{}:'cursus' }}
+            </label>
+            <div class="col-md-9">
+                <textarea data-ui-tinymce="cmc.tinymceOptions"
+                          data-before-unload="off"
+                          id="session-event-location-extra"
+                          class="form-control"
+                          ng-model="cmc.sessionEvent['locationExtra']"
+                >
+                </textarea>
+            </div>
+        </div>
+        <!--<div class="form-group row" ng-if="cmc.sessionEvent['internalLocation']">-->
+            <!--<label class="control-label col-md-3">-->
+                <!--{{ 'location'|trans:{}:'platform' }}-->
+            <!--</label>-->
+            <!--<div class="col-md-9">-->
+                <!--<select class="form-control" ng-model="cmc.locationResource" ng-options="lr['name'] for lr in cmc.locationResources">-->
+                    <!--<option></option>-->
+                <!--</select>-->
+            <!--</div>-->
+        <!--</div>-->
         <div class="form-group row">
             <label class="control-label col-md-3">
                 {{ 'tutors'|trans:{}:'cursus' }}

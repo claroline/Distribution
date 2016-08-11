@@ -16,7 +16,6 @@ export default class SessionsManagementCtrl {
     this.SessionEventService = SessionEventService
     this.sessions = SessionService.getSessions()
     this.events = SessionEventService.getOpenSessionEvents()
-    this.selectedSessions = []
     this.tableParams = new NgTableParams(
       {count: 20},
       {counts: [10, 20, 50, 100], dataset: this.sessions}

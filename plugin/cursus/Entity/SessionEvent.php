@@ -11,6 +11,7 @@
 
 namespace Claroline\CursusBundle\Entity;
 
+use Claroline\CoreBundle\Entity\Organization\Location;
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -72,10 +73,18 @@ class SessionEvent
     protected $description;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
-     * @Groups({"api_cursus", "api_user_min"})
+     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Organization\Location")
+     * @ORM\JoinColumn(name="location_id", nullable=true, onDelete="SET NULL")
+     * @Groups({"api_user_min"})
      */
     protected $location;
+
+    /**
+     * @ORM\Column(name="location_extra", type="text", nullable=true)
+     * @Groups({"api_cursus", "api_user_min"})
+     * @SerializedName("locationExtra")
+     */
+    protected $locationExtra;
 
     /**
      * @ORM\OneToMany(
@@ -178,9 +187,19 @@ class SessionEvent
         return $this->location;
     }
 
-    public function setLocation($location)
+    public function setLocation(Location $location = null)
     {
         $this->location = $location;
+    }
+
+    public function getLocationExtra()
+    {
+        return $this->locationExtra;
+    }
+
+    public function setLocationExtra($locationExtra)
+    {
+        $this->locationExtra = $locationExtra;
     }
 
     public function getComments()
