@@ -183,18 +183,18 @@
                                     <button class="btn btn-default btn-sm"
                                             data-toggle="tooltip"
                                             data-placement="top"
-                                            title="{{ 'send_session_infos'|trans:{}:'cursus' }}"
-                                            ng-click="cmc.sendSessionInfos(session['id'])"
-                                    >
-                                        <i class="fa fa-envelope-o"></i>
-                                    </button>
-                                    <button class="btn btn-default btn-sm"
-                                            data-toggle="tooltip"
-                                            data-placement="top"
                                             title="{{ 'edit_session'|trans:{}:'cursus' }}"
                                             ng-click="cmc.editSession(session)"
                                     >
                                         <i class="fa fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-default btn-sm"
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="{{ 'send_message_to_session_participants'|trans:{}:'cursus' }}"
+                                            ng-click="cmc.sendMessageToSessionLearners(session)"
+                                    >
+                                        <i class="fa fa-envelope-o"></i>
                                     </button>
                                     <button class="btn btn-danger btn-sm"
                                             data-toggle="tooltip"

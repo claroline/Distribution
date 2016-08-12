@@ -10,9 +10,10 @@
 /*global Routing*/
 
 export default class CourseManagementCtrl {
-  constructor($stateParams, NgTableParams, CourseService, SessionService) {
+  constructor($stateParams, NgTableParams, CourseService, SessionService, DocumentModelService) {
     this.CourseService = CourseService
     this.SessionService = SessionService
+    this.DocumentModelService = DocumentModelService
     this.courseId = $stateParams.courseId
     this.course = CourseService.getCourse()
     this.openSessions = SessionService.getOpenCourseSessionsByCourse(this.courseId)
@@ -104,5 +105,17 @@ export default class CourseManagementCtrl {
   refreshSessionsTables () {
     this.tableParams['openSessions'].reload()
     this.tableParams['closedSessions'].reload()
+  }
+
+  sendMessageToSessionLearners (session) {
+    this.SessionService.sendMessageToSession(session)
+  }
+
+  inviteLearners (session) {
+    this.DocumentModelService.displayDocumentSelection(session, 0)
+  }
+
+  generateCertificates (session) {
+    this.DocumentModelService.displayDocumentSelection(session, 2)
   }
 }

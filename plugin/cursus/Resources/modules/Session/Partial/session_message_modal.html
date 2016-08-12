@@ -13,7 +13,7 @@
         <hr>
         <div class="form-group row">
             <div class="col-md-1">
-                <input id="internal-chk" type="checkbox" ng-model="cmc.mail['internal']">
+                <input id="internal-chk" type="checkbox" ng-model="cmc.message['internal']">
             </div>
             <label class="control-label pointer-hand col-md-11" for="internal-chk">
                 {{ 'send_platform_message'|trans:{}:'cursus' }}
@@ -21,38 +21,38 @@
         </div>
         <div class="form-group row">
             <div class="col-md-1">
-                <input id="external-chk" type="checkbox" ng-model="cmc.mail['external']">
+                <input id="external-chk" type="checkbox" ng-model="cmc.message['external']">
             </div>
             <label class="control-label pointer-hand col-md-11" for="external-chk">
                 {{ 'send_email'|trans:{}:'cursus' }}
             </label>
         </div>
         <hr>
-        <div class="form-group row" ng-class="cmc.mailErrors['object'] ? 'has-error' : ''">
+        <div class="form-group row" ng-class="cmc.messageErrors['object'] ? 'has-error' : ''">
             <label class="control-label col-md-12">
                 {{ 'object'|trans:{}:'platform' }}
             </label>
             <div class="col-md-12">
-                <input type="text" class="form-control" ng-model="cmc.mail['object']">
-                <div class="help-block field-error" ng-if="cmc.mailErrors['name']">
-                    {{ cmc.mailErrors['name'] }}
+                <input type="text" class="form-control" ng-model="cmc.message['object']">
+                <div class="help-block field-error" ng-if="cmc.messageErrors['name']">
+                    {{ cmc.messageErrors['name'] }}
                 </div>
             </div>
         </div>
-        <div class="form-group row" ng-class="cmc.mailErrors['body'] ? 'has-error' : ''">
+        <div class="form-group row" ng-class="cmc.messageErrors['content'] ? 'has-error' : ''">
             <label class="control-label col-md-12">
                 {{ 'message'|trans:{}:'platform' }}
             </label>
             <div class="col-md-12">
                 <textarea data-ui-tinymce="cmc.tinymceOptions"
                           data-before-unload="off"
-                          id="mail-body"
+                          id="message-body"
                           class="form-control"
-                          ng-model="cmc.mail['body']"
+                          ng-model="cmc.message['content']"
                 >
                 </textarea>
-                <div class="help-block field-error" ng-if="cmc.mailErrors['body']">
-                    {{ cmc.mailErrors['body'] }}
+                <div class="help-block field-error" ng-if="cmc.messageErrors['content']">
+                    {{ cmc.messageErrors['content'] }}
                 </div>
             </div>
         </div>
@@ -61,7 +61,7 @@
         <button class="btn btn-default" data-dismiss="modal" ng-click="$close()">
             {{ 'cancel'|trans:{}:'platform' }}
         </button>
-        <button type="submit" class="btn btn-primary" ng-click="cmc.submit()" ng-disabled="!cmc.mail['internal'] && !cmc.mail['external']">
+        <button type="submit" class="btn btn-primary" ng-click="cmc.submit()" ng-disabled="!cmc.message['internal'] && !cmc.message['external']">
             {{ 'ok'|trans:{}:'platform' }}
         </button>
     </div>

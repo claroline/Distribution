@@ -259,7 +259,7 @@ export default class SessionManagementCtrl {
     this.DocumentModelService.displayDocumentSelection(sessionEvent, 1)
   }
 
-  sendMailToSessionLearners () {
-    this.SessionService.sendMailToSession(this.session)
+  sendMessageToSessionLearners () {
+    this.SessionService.sendMessageToSession(this.session)
   }
 }

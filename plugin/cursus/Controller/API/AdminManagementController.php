@@ -1742,4 +1742,27 @@ class AdminManagementController extends Controller
 
         return new JsonResponse($serializedLocation, 200);
     }
+
+    /**
+     * @EXT\Route(
+     *     "/api/session/{session}/message/send",
+     *     name="api_post_session_message_send",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     */
+    public function postSessionMessageSendAction(User $user, CourseSession $session)
+    {
+        $messageDatas = $this->request->request->get('messageDatas', false);
+        $this->cursusManager->sendMessageToSession(
+            $user,
+            $session,
+            $messageDatas['object'],
+            $messageDatas['content'],
+            $messageDatas['internal'],
+            $messageDatas['external']
+        );
+
+        return new JsonResponse('success', 200);
+    }
 }

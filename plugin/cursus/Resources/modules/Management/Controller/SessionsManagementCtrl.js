@@ -113,4 +113,8 @@ export default class SessionsManagementCtrl {
       }
     })
   }
+
+  sendMessageToSessionLearners (session) {
+    this.SessionService.sendMessageToSession(session)
+  }
 }

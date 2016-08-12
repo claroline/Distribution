@@ -58,7 +58,7 @@ angular.module('CursusManagementModule', [
 .controller('RootCursusManagementCtrl', ['CursusService', RootCursusManagementCtrl])
 .controller('CursusManagementCtrl', ['$stateParams', 'CursusService', CursusManagementCtrl])
 .controller('CoursesManagementCtrl', ['NgTableParams', 'CourseService', 'SessionService', CoursesManagementCtrl])
-.controller('CourseManagementCtrl', ['$stateParams', 'NgTableParams', 'CourseService', 'SessionService', CourseManagementCtrl])
+.controller('CourseManagementCtrl', ['$stateParams', 'NgTableParams', 'CourseService', 'SessionService', 'DocumentModelService', CourseManagementCtrl])
 .controller('SessionsManagementCtrl', ['$uibModal', 'NgTableParams', 'SessionService', 'SessionEventService', SessionsManagementCtrl])
 .controller('SessionManagementCtrl', ['$stateParams', 'NgTableParams', 'CourseService', 'SessionService', 'SessionEventService', 'DocumentModelService', SessionManagementCtrl])
 .controller('GeneralParametersCtrl', ['$state', 'CourseService', GeneralParametersCtrl])

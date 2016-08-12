@@ -15,7 +15,7 @@ import learnersRegistrationTemplate from '../Partial/learners_registration_modal
 import learnersGroupsRegistrationTemplate from '../Partial/learners_groups_registration_modal.html'
 import tutorsRegistrationTemplate from '../Partial/tutors_registration_modal.html'
 import sessionFormTemplate from '../Partial/session_form_modal.html'
-import sessionMailTemplate from '../Partial/session_mail_modal.html'
+import sessionMessageTemplate from '../Partial/session_message_modal.html'
 
 export default class SessionService {
   constructor ($http, $uibModal, ClarolineAPIService, CourseService) {
@@ -702,10 +702,10 @@ export default class SessionService {
     })
   }
 
-  sendMailToSession (session) {
+  sendMessageToSession (session) {
     this.$uibModal.open({
-      template: sessionMailTemplate,
-      controller: 'SessionMailModalCtrl',
+      template: sessionMessageTemplate,
+      controller: 'SessionMessageModalCtrl',
       controllerAs: 'cmc',
       resolve: {
         session: () => { return session }

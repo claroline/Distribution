@@ -144,7 +144,7 @@
                                     data-toggle="tooltip"
                                     data-placement="top"
                                     title="{{ 'invite_learners_to_session'|trans:{}:'cursus' }}"
-                                    ng-click="cmc.inviteLearners(session['id'])"
+                                    ng-click="cmc.inviteLearners(session)"
                                     ng-if="!cmc.isInvitationsDisabled"
                             >
                                 <i class="fa fa-plus-square"></i>
@@ -153,7 +153,7 @@
                                     data-toggle="tooltip"
                                     data-placement="top"
                                     title="{{ 'send_message_to_session_participants'|trans:{}:'cursus' }}"
-                                    ng-click="cmc.sendMailToSessionLearners(session['id'])"
+                                    ng-click="cmc.sendMessageToSessionLearners(session)"
                             >
                                 <i class="fa fa-envelope-o"></i>
                             </button>
@@ -161,7 +161,7 @@
                                     data-toggle="tooltip"
                                     data-placement="top"
                                     title="{{ 'generate_certificates'|trans:{}:'cursus' }}"
-                                    ng-click="cmc.generateCertificates(session['id'])"
+                                    ng-click="cmc.generateCertificates(session)"
                                     ng-if="!cmc.isCertificatesDisabled"
                             >
                                 <i class="fa fa-graduation-cap"></i>
@@ -242,7 +242,7 @@
                                     data-toggle="tooltip"
                                     data-placement="top"
                                     title="{{ 'send_message_to_session_participants'|trans:{}:'cursus' }}"
-                                    ng-click="cmc.sendMailToSessionLearners(session['id'])"
+                                    ng-click="cmc.sendMessageToSessionLearners(session)"
                             >
                                 <i class="fa fa-envelope-o"></i>
                             </button>
@@ -250,7 +250,7 @@
                                     data-toggle="tooltip"
                                     data-placement="top"
                                     title="{{ 'generate_certificates'|trans:{}:'cursus' }}"
-                                    ng-click="cmc.generateCertificates(session['id'])"
+                                    ng-click="cmc.generateCertificates(session)"
                                     ng-if="!cmc.isCertificatesDisabled"
                             >
                                 <i class="fa fa-graduation-cap"></i>

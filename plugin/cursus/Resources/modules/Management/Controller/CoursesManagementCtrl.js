@@ -101,4 +101,8 @@ export default class CoursesManagementCtrl {
   deleteSession (sessionId) {
     this.SessionService.deleteSession(sessionId)
   }
+
+  sendMessageToSessionLearners (session) {
+    this.SessionService.sendMessageToSession(session)
+  }
 }

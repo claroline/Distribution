@@ -65,6 +65,7 @@ use Claroline\CursusBundle\Event\Log\LogSessionQueueDeclineEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionQueueOrganizationValidateEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionQueueUserValidateEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionQueueValidatorValidateEvent;
+use Claroline\MessageBundle\Manager\MessageManager;
 use FormaLibre\ReservationBundle\Entity\Resource;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\SerializationContext;
@@ -92,6 +93,7 @@ class CursusManager
     private $eventDispatcher;
     private $iconsDirectory;
     private $mailManager;
+    private $messageManager;
     private $om;
     private $pagerFactory;
     private $platformConfigHandler;
@@ -132,6 +134,7 @@ class CursusManager
  *     "eventDispatcher"       = @DI\Inject("event_dispatcher"),
  *     "clarolineDispatcher"   = @DI\Inject("claroline.event.event_dispatcher"),
  *     "mailManager"           = @DI\Inject("claroline.manager.mail_manager"),
+ *     "messageManager"        = @DI\Inject("claroline.manager.message_manager"),
  *     "om"                    = @DI\Inject("claroline.persistence.object_manager"),
  *     "pagerFactory"          = @DI\Inject("claroline.pager.pager_factory"),
  *     "platformConfigHandler" = @DI\Inject("claroline.config.platform_config_handler"),
@@ -156,6 +159,7 @@ class CursusManager
         ContentManager $contentManager,
         EventDispatcherInterface $eventDispatcher,
         MailManager $mailManager,
+        MessageManager $messageManager,
         ObjectManager $om,
         PagerFactory $pagerFactory,
         PlatformConfigurationHandler $platformConfigHandler,
@@ -180,6 +184,7 @@ class CursusManager
         $this->eventDispatcher = $eventDispatcher;
         $this->iconsDirectory = $this->container->getParameter('claroline.param.thumbnails_directory').'/';
         $this->mailManager = $mailManager;
+        $this->messageManager = $messageManager;
         $this->om = $om;
         $this->pagerFactory = $pagerFactory;
         $this->platformConfigHandler = $platformConfigHandler;
@@ -3797,6 +3802,23 @@ class CursusManager
         }
 
         return $sessions;
+    }
+
+    public function sendMessageToSession(User $user, CourseSession $session, $object, $content, $internal = true, $external = true)
+    {
+        $receivers = [];
+        $sessionUsers = $this->getSessionUsersBySessionAndType($session, CourseSessionUser::LEARNER);
+
+        foreach ($sessionUsers as $su) {
+            $receivers[] = $su->getUser();
+        }
+        if ($internal) {
+            $message = $this->messageManager->create($content, $object, $receivers, $user);
+            $this->messageManager->send($message, true, false);
+        }
+        if ($external) {
+            $this->mailManager->send($object, $content, $receivers);
+        }
     }
 
     /***************************************************
