@@ -1411,9 +1411,9 @@ class CursusManager
             $this->om->remove($learnerRole);
             $this->workspaceManager->deleteWorkspace($workspace);
         }
-        $this->om->endFlushSuite();
         $event = new LogCourseSessionDeleteEvent($details);
         $this->eventDispatcher->dispatch('log', $event);
+        $this->om->endFlushSuite();
     }
 
     public function createCourseSession(
