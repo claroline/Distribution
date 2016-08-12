@@ -291,3 +291,12 @@ with_session_event: Créer une séance par défaut
 word: Mot
 workspace_model: Modèle d'espace d'activités
 yes: Oui
+new_certificate_email: |
+  Madame, Monsieur,</br>
+  Veuillez trouver ci-dessous un lien permettant de télécharger votre attestation de participation à la formation: %session_name%</br>
+  Cordialement,</br>
+  L'équipe de formation
+new_certificate_email_title: Attestation de formation
+certificate: Certificat
+new_certificates_email_title: Nouveaux certificats
+new_certificates: Nouveaux certificats

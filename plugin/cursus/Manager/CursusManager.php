@@ -3991,7 +3991,7 @@ class CursusManager
         }
     }
 
-    public function generateCertificatesForUsers(array $users, $content)
+    public function generateCertificatesForUsers(array $users, $content, CourseSession $session)
     {
         $creator = $this->container->get('security.token_storage')->getToken()->getUser();
         $data = [];
@@ -4002,13 +4002,13 @@ class CursusManager
             $replacedContent = str_replace('%first_name%', $user->getFirstName(), $content);
             $replacedContent = str_replace('%last_name%', $user->getLastName(), $replacedContent);
             $pdf = $this->pdfManager->create($replacedContent, $name, $creator, 'session_certificate');
-            $title = $this->translator->trans('new_certificate', [], 'platform');
-            $link = $this->templating->render('ClarolineCursusBundle:Mail:certificate.html.twig', ['pdf' => $pdf]);
+            $title = $this->translator->trans('new_certificate_email_title', [], 'cursus');
+            $link = $this->templating->render('ClarolineCursusBundle:Mail:certificate.html.twig', ['pdf' => $pdf, 'session' => $session]);
             $this->mailManager->send($title, $link, [$user]);
             $data[] = ['user' => $user, 'pdf' => $pdf];
         }
 
-        $title = $this->translator->trans('new_certificates', [], 'platform');
+        $title = $this->translator->trans('new_certificates_email_title', [], 'platform');
         $adminContent = $this->templating->render('ClarolineCursusBundle:Mail:certificates.html.twig', ['data' => $data]);
         $this->mailManager->send($title, $adminContent, [$creator]);
     }
