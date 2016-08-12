@@ -44,34 +44,44 @@
                 {{ 'locations'|trans:{}:'cursus' }}
             </uib-tab-heading>
             <br>
+            <button class="btn btn-primary" ng-click="cmc.createLocation()">
+                <i class="fa fa-plus-circle"></i>
+                {{ 'add_location'|trans:{}:'cursus' }}
+            </button>
+            <br>
+            <br>
             <div class="table-responsive" ng-if="cmc.locations.length > 0">
                 <table class="table" ng-table="cmc.tableParams['locations']" show-filter="true">
                     <tr ng-repeat="location in $data">
-                        <!--<td data-title="'name'|trans:{}:'platform'" filter="{name: 'text'}" sortable="'name'">-->
-                            <!--{{ location['name'] }}-->
-                        <!--</td>-->
-                        <!--<td class="text-center" data-title="'type'|trans:{}:'platform'" filter="{type: 'text'}" sortable="'type'">-->
-                            <!--{{ location['type'] }}-->
-                        <!--</td>-->
-                        <!--<td class="text-center" data-title="'quantity'|trans:{}:'cursus'" filter="{quantity: 'number'}" sortable="'quantity'">-->
-                            <!--{{ location['quantity'] }}-->
-                        <!--</td>-->
-                        <!--<td class="text-center" data-title="'max_time_reservation'|trans:{}:'cursus'" filter="{maxTimeReservation: 'text'}" sortable="'maxTimeReservation'">-->
-                            <!--{{ location['maxTimeReservation'] }}-->
-                        <!--</td>-->
-                        <!--<td class="text-center" data-title="'location'|trans:{}:'platform'" filter="{localisation: 'text'}" sortable="'localisation'">-->
-                            <!--{{ location['localisation'] }}-->
-                        <!--</td>-->
-                        <!--<td class="text-center">-->
-                            <!--<button class="btn btn-danger btn-sm"-->
-                                    <!--data-toggle="tooltip"-->
-                                    <!--data-placement="top"-->
-                                    <!--title="{{ 'delete_location'|trans:{}:'cursus' }}"-->
-                                    <!--ng-click="cmc.removeLocationResource(resource['id'])"-->
-                            <!--&gt;-->
-                                <!--<i class="fa fa-trash"></i>-->
-                            <!--</button>-->
-                        <!--</td>-->
+                        <td data-title="'name'|trans:{}:'platform'" filter="{name: 'text'}" sortable="'name'">
+                            {{ location['name'] }}
+                        </td>
+                        <td class="text-center" data-title="'address'|trans:{}:'platform'" filter="{address: 'text'}" sortable="'address'">
+                            <div ng-bind-html="location['address']|trust_html"></div>
+                        </td>
+                        <td class="text-center" data-title="'phone'|trans:{}:'platform'" filter="{phone: 'text'}" sortable="'phone'">
+                            {{ location['phone'] }}
+                        </td>
+                        <td class="text-center">
+                            <button class="btn btn-primary btn-sm"
+                                    data-toggle="tooltip"
+                                    data-placement="top"
+                                    title="{{ 'edit_location'|trans:{}:'cursus' }}"
+                                    ng-click="cmc.editLocation(location)"
+                                    ng-if="location['type'] === 3"
+                            >
+                                <i class="fa fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm"
+                                    data-toggle="tooltip"
+                                    data-placement="top"
+                                    title="{{ 'delete_location'|trans:{}:'cursus' }}"
+                                    ng-click="cmc.deleteLocation(location['id'])"
+                                    ng-if="location['type'] === 3"
+                            >
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
                     </tr>
                 </table>
             </div>

@@ -36,6 +36,8 @@ import LocationsManagementCtrl from './Controller/LocationsManagementCtrl'
 import DocumentModelsManagementCtrl from './Controller/DocumentModelsManagementCtrl'
 import DocumentModelCreationCtrl from './Controller/DocumentModelCreationCtrl'
 import DocumentModelEditionCtrl from './Controller/DocumentModelEditionCtrl'
+import LocationCreationModalCtrl from './Controller/LocationCreationModalCtrl'
+import LocationEditionModalCtrl from './Controller/LocationEditionModalCtrl'
 
 angular.module('CursusManagementModule', [
   'ui.router',
@@ -60,11 +62,13 @@ angular.module('CursusManagementModule', [
 .controller('SessionsManagementCtrl', ['$uibModal', 'NgTableParams', 'SessionService', 'SessionEventService', SessionsManagementCtrl])
 .controller('SessionManagementCtrl', ['$stateParams', 'NgTableParams', 'CourseService', 'SessionService', 'SessionEventService', 'DocumentModelService', SessionManagementCtrl])
 .controller('GeneralParametersCtrl', ['$state', 'CourseService', GeneralParametersCtrl])
-.controller('LocationsManagementCtrl', ['$http', 'NgTableParams', LocationsManagementCtrl])
+.controller('LocationsManagementCtrl', ['$http', '$uibModal', 'NgTableParams', 'ClarolineAPIService', LocationsManagementCtrl])
 .controller('DocumentModelsManagementCtrl', ['NgTableParams', 'CourseService', 'DocumentModelService', DocumentModelsManagementCtrl])
 .controller('DocumentModelCreationCtrl', ['$http', '$state', 'CourseService', DocumentModelCreationCtrl])
 .controller('DocumentModelEditionCtrl', ['$http', '$stateParams', '$state', 'CourseService', 'DocumentModelService', DocumentModelEditionCtrl])
 .controller('SessionCreationCoursesListModalCtrl', SessionCreationCoursesListModalCtrl)
+.controller('LocationCreationModalCtrl', LocationCreationModalCtrl)
+.controller('LocationEditionModalCtrl', LocationEditionModalCtrl)
 .config(Routing)
 .config([
   'cfpLoadingBarProvider',

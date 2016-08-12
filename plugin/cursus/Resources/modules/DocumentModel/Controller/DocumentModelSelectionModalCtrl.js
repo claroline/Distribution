@@ -26,6 +26,6 @@ export default class DocumentModelSelectionModalCtrl {
   }
 
   submit () {
-    console.log(this.datas)
+    
   }
 }

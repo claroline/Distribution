@@ -3,6 +3,7 @@ accept_registration_confirm_message: Are you sure you want to accept to register
 add_course: Add training
 add_course_to_cursus: Add a training
 add_information: Add information
+add_location: Add location
 add_session: Add a training session
 application_date: Application date
 blocking: Blocking
@@ -40,6 +41,7 @@ create_course: Create training
 create_cursus: Create cursus
 create_cursus_child: Create a child
 create_document_model: Create invitation/certificate model
+create_location: Create location
 create_new_session: Create a new training session
 create_session: Create training session
 create_session_event: Create session event
@@ -75,6 +77,7 @@ delete_document_model: Delete invitation/certificate model
 delete_document_model_confirm_message: Are you sure you want to delete this invitation/certificate model ?
 delete_information: Delete information
 delete_location: Delete location
+delete_location_confirm_message: Are you sure you want to delete this location ?
 delete_selected_courses: Delete selected courses
 delete_selected_sessions: Delete selected sessions
 delete_session: Delete training session
@@ -93,6 +96,7 @@ document_model_edition: Invitation/Certificate model edition
 document_models_management: Invitation/Certificate models management
 edit_course: Edit training
 edit_information: Edit information
+edit_location: Edit location
 edit_session: Edit training session
 edit_session_event: Edit session event
 enable_courses_tab_in_profile: Enable trainings tab in profile

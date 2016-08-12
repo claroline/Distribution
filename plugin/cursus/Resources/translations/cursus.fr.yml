@@ -3,6 +3,7 @@ accept_registration_confirm_message: Êtes-vous sûr de vouloir accepter l'inscr
 add_course: Ajouter la formation
 add_course_to_cursus: Ajouter une formation
 add_information: Ajouter une information
+add_location: Ajouter une localisation
 add_session: Ajouter une session
 application_date: Date de soumission
 blocking: Bloquant
@@ -40,6 +41,7 @@ create_cursus: Créer un cursus
 create_course: Créer une formation
 create_cursus_child: Créer un enfant
 create_document_model: Créer un modèle d'invitation ou de certificat
+create_location: Créer une localisation
 create_new_session: Créer une nouvelle session de formation
 create_session: Créer une session de formation
 create_session_event: Créer une séance
@@ -75,6 +77,7 @@ delete_document_model: Supprimer le modèle d'invitation/certificat
 delete_document_model_confirm_message: Êtes-vous sûr de vouloir supprimer ce modèle d'invitation/certificat ?
 delete_information: Supprimer l'information
 delete_location: Supprimer la localisation
+delete_location_confirm_message: Êtes-vous sûr de vouloir supprimer cette localisation ?
 delete_selected_courses: Supprimer les formations séléctionnées
 delete_selected_sessions: Supprimer les sessions séléctionnées
 delete_session: Supprimer la session
@@ -93,6 +96,7 @@ document_model_edition: Modification d'un modèle d'invitation/certificat
 document_models_management: Gestion des modèles d'invitation et certificat
 edit_course: Modifier la formation
 edit_information: Modifier l'information
+edit_location: Modifier la localisation
 edit_session: Modifier la session
 edit_session_event: Modifier la séance
 enable_courses_tab_in_profile: Activer l'onglet "Formations" dans le profil

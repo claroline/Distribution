@@ -45,6 +45,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * @DI\Tag("security.secure_service")
@@ -1650,5 +1651,95 @@ class AdminManagementController extends Controller
         );
 
         return new JsonResponse($serializedSessionEvents, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/cursus/location/create",
+     *     name="api_post_cursus_location_creation",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     */
+    public function postLocationCreateAction()
+    {
+        $locationDatas = $this->request->request->get('locationDatas', false);
+        $location = new Location();
+        $location->setType(Location::TYPE_TRAINING);
+        $location->setName($locationDatas['name']);
+        $location->setStreet($locationDatas['street']);
+        $location->setStreetNumber($locationDatas['streetNumber']);
+        $location->setBoxNumber($locationDatas['boxNumber']);
+        $location->setPc($locationDatas['pc']);
+        $location->setTown($locationDatas['town']);
+        $location->setCountry($locationDatas['country']);
+        $location->setPhone($locationDatas['phone']);
+        $this->locationManager->create($location);
+        $serializedLocation = $this->serializer->serialize(
+            $location,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
+
+        return new JsonResponse($serializedLocation, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/cursus/location/{location}/edit",
+     *     name="api_put_cursus_location_edition",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     */
+    public function putLocationEditAction(Location $location)
+    {
+        if ($location->getType() !== Location::TYPE_TRAINING) {
+            throw new AccessDeniedException();
+        }
+        $locationDatas = $this->request->request->get('locationDatas', false);
+        $location->setName($locationDatas['name']);
+        $location->setStreet($locationDatas['street']);
+        $location->setStreetNumber($locationDatas['streetNumber']);
+        $location->setBoxNumber($locationDatas['boxNumber']);
+        $location->setPc($locationDatas['pc']);
+        $location->setTown($locationDatas['town']);
+        $location->setCountry($locationDatas['country']);
+        $location->setPhone($locationDatas['phone']);
+        $this->locationManager->edit($location);
+        $serializedLocation = $this->serializer->serialize(
+            $location,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
+
+        return new JsonResponse($serializedLocation, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/cursus/location/{location}/delete",
+     *     name="api_delete_cursus_location",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     *
+     * Deletes session event
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function deleteLocationAction(Location $location)
+    {
+        if ($location->getType() !== Location::TYPE_TRAINING) {
+            throw new AccessDeniedException();
+        }
+        $serializedLocation = $this->serializer->serialize(
+            $location,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
+        $this->locationManager->delete($location);
+
+        return new JsonResponse($serializedLocation, 200);
     }
 }
