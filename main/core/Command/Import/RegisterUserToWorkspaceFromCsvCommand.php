@@ -18,6 +18,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class RegisterUserToWorkspaceFromCsvCommand extends ContainerAwareCommand
 {
+    use BaseCommandTrait;
+    private $params = ['csv_workspace_registration_path' => 'Absolute path to the csv file: '];
+
     protected function configure()
     {
         $this->setName('claroline:workspace:register')
@@ -32,39 +35,6 @@ class RegisterUserToWorkspaceFromCsvCommand extends ContainerAwareCommand
                 ),
             ]
         );
-    }
-
-    protected function interact(InputInterface $input, OutputInterface $output)
-    {
-        $params = [
-            'csv_workspace_registration_path' => 'Absolute path to the csv file: ',
-        ];
-
-        foreach ($params as $argument => $argumentName) {
-            if (!$input->getArgument($argument)) {
-                $input->setArgument(
-                    $argument, $this->askArgument($output, $argumentName)
-                );
-            }
-        }
-    }
-
-    protected function askArgument(OutputInterface $output, $argumentName)
-    {
-        $argument = $this->getHelper('dialog')->askAndValidate(
-            $output,
-            $argumentName,
-            function ($argument) {
-
-                if (empty($argument)) {
-                    throw new \Exception('This argument is required');
-                }
-
-                return $argument;
-            }
-        );
-
-        return $argument;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
