@@ -3806,12 +3806,8 @@ class CursusManager
 
     public function sendMessageToSession(User $user, CourseSession $session, $object, $content, $internal = true, $external = true)
     {
-        $receivers = [];
-        $sessionUsers = $this->getSessionUsersBySessionAndType($session, CourseSessionUser::LEARNER);
+        $receivers = $this->getUsersBySessionAndType($session, CourseSessionUser::LEARNER);
 
-        foreach ($sessionUsers as $su) {
-            $receivers[] = $su->getUser();
-        }
         if ($internal) {
             $message = $this->messageManager->create($content, $object, $receivers, $user);
             $this->messageManager->send($message, true, false);
@@ -3819,6 +3815,28 @@ class CursusManager
         if ($external) {
             $this->mailManager->send($object, $content, $receivers);
         }
+    }
+
+    public function generateDocumentFromModel(DocumentModel $documentModel, $sourceId)
+    {
+        $type = $documentModel->getDocumentType();
+        $content = $documentModel->getContent();
+
+        switch ($type) {
+            case DocumentModel::SESSION_INVITATION :
+                break;
+            case DocumentModel::SESSION_EVENT_INVITATION :
+                break;
+            case DocumentModel::SESSION_CERTIFICATE :
+                $session = $this->courseSessionRepo->findOneById($sourceId);
+                $users = $this->getUsersBySessionAndType($session, CourseSessionUser::LEARNER);
+                $this->generateCertificatesForUsers($users, $content);
+                break;
+        }
+    }
+
+    public function generateCertificatesForUsers(array $users, $content)
+    {
     }
 
     /***************************************************
@@ -4574,17 +4592,13 @@ class CursusManager
         return $sessions;
     }
 
-    public function getUsersBySessionAndType(CourseSession $session, $userType = 0)
+    public function getUsersBySessionAndType(CourseSession $session, $userType = CourseSessionUser::LEARNER)
     {
         $users = [];
-        $sessionUsers = $this->getSessionUsersBySession($session);
+        $sessionUsers = $this->getSessionUsersBySessionAndType($session, $userType);
 
-        foreach ($sessionUsers as $sessionUser) {
-            $type = $sessionUser->getUserType();
-
-            if ($type === $userType) {
-                $users[] = $sessionUser->getUser();
-            }
+        foreach ($sessionUsers as $su) {
+            $users[] = $su->getUser();
         }
 
         return $users;
