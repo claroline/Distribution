@@ -1765,4 +1765,20 @@ class AdminManagementController extends Controller
 
         return new JsonResponse('success', 200);
     }
+
+    /**
+     * @EXT\Route(
+     *     "/api/cursus/document/model/{documentModel}/send",
+     *     name="api_post_cursus_document_send",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     */
+    public function postDocumentSendAction(DocumentModel $documentModel)
+    {
+        $sourceId = $this->request->request->get('sourceId', false);
+        $this->cursusManager->generateDocumentFromModel($documentModel, $sourceId);
+
+        return new JsonResponse('success', 200);
+    }
 }

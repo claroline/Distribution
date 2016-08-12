@@ -8,7 +8,9 @@
  */
 
 export default class DocumentModelSelectionModalCtrl {
-  constructor(DocumentModelService, datas, documentType, callback) {
+  constructor($http, $uibModalInstance, DocumentModelService, datas, documentType, callback) {
+    this.$http = $http
+    this.$uibModalInstance = $uibModalInstance
     this.DocumentModelService = DocumentModelService
     this.datas = datas
     this.documentType = documentType
@@ -26,6 +28,16 @@ export default class DocumentModelSelectionModalCtrl {
   }
 
   submit () {
-
+    if (this.documentModel) {
+      const url = Routing.generate('api_post_cursus_document_send', {documentModel: this.documentModel['id']})
+      this.$http.post(url, {sourceId: this.datas['id']}).then(d => {
+        if (d['status'] === 200) {
+          if (this.callback) {
+            this.callback(d['data'])
+          }
+          this.$uibModalInstance.close()
+        }
+      })
+    }
   }
 }

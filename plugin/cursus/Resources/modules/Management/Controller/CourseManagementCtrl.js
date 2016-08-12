@@ -40,6 +40,7 @@ export default class CourseManagementCtrl {
     this._updateCourseCallback = this._updateCourseCallback.bind(this)
     this._addSessionCallback = this._addSessionCallback.bind(this)
     this._updateSessionCallback = this._updateSessionCallback.bind(this)
+    this._removeSessionCallback = this._removeSessionCallback.bind(this)
   }
 
   _updateCourseCallback (data) {
@@ -56,6 +57,11 @@ export default class CourseManagementCtrl {
 
   _updateSessionCallback(data) {
     this.SessionService._updateSessionCallback(data)
+    this.refreshSessionsTables()
+  }
+
+  _removeSessionCallback(data) {
+    this.SessionService._removeSessionCallback(data)
     this.refreshSessionsTables()
   }
 
@@ -91,7 +97,7 @@ export default class CourseManagementCtrl {
   }
 
   deleteSession (sessionId) {
-    this.SessionService.deleteSession(sessionId)
+    this.SessionService.deleteSession(sessionId, this._removeSessionCallback)
   }
 
   openWorkspace (sessionId) {
