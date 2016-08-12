@@ -3821,6 +3821,146 @@ class CursusManager
         }
     }
 
+    public function convertKeysForSession(CourseSession $session, $content)
+    {
+        $course = $session->getCourse();
+        $events = $session->getEvents();
+        $eventsList = '';
+        $sessionTrainers = $this->getUsersBySessionAndType($session, CourseSessionUser::TEACHER);
+        $sessionTrainersHtml = '';
+
+        if (count($sessionTrainers) > 0) {
+            $sessionTrainersHtml = '<ul>';
+
+            foreach ($sessionTrainers as $trainer) {
+                $sessionTrainersHtml .= '<li>'.$trainer->getFirstName().' '.$trainer->getLastName().'</li>';
+            }
+            $sessionTrainersHtml .= '</ul>';
+        }
+        if (count($events) > 0) {
+            $eventsList = '<ul>';
+
+            foreach ($events as $event) {
+                $eventsList .= '<li>'.$event->getName().' ['.$event->getStartDate()->format('d/m/Y H:i').
+                    ' -> '.$event->getEndDate()->format('d/m/Y H:i').']';
+                $location = $event->getLocation();
+
+                if (!is_null($location)) {
+                    $locationHtml = '<br>'.$location->getStreet().', '.$location->getStreetNumber();
+                    $locationHtml .= $location->getBoxNumber() ? ' ('.$location->getBoxNumber().')' : '';
+                    $locationHtml .= '<br>'.$location->getPc().' '.$location->getTown().'<br>'.$location->getCountry();
+                    $locationHtml .= $location->getPhone() ? '<br>'.$location->getPhone() : '';
+                    $eventsList .= $locationHtml;
+                }
+                $eventsList .= $event->getLocationExtra();
+            }
+            $eventsList .= '</ul>';
+        }
+        $now = new \DateTime();
+        $keys = [
+            '%date%',
+            '%course_title%',
+            '%course_code%',
+            '%course_description%',
+            '%session_name%',
+            '%session_description%',
+            '%session_start%',
+            '%session_end%',
+            '%session_trainers%',
+            '%events_list%',
+        ];
+        $values = [
+            $now->format('d/m/Y'),
+            $course->getTitle(),
+            $course->getCode(),
+            $course->getDescription(),
+            $session->getName(),
+            $session->getDescription(),
+            $session->getStartDate()->format('d/m/Y'),
+            $session->getEndDate()->format('d/m/Y'),
+            $sessionTrainersHtml,
+            $eventsList,
+        ];
+
+        return str_replace($keys, $values, $content);
+    }
+
+    public function convertKeysForSessionEvent(SessionEvent $event, $content)
+    {
+        $session = $event->getSession();
+        $course = $session->getCourse();
+        $location = $event->getLocation();
+        $eventTrainers = $event->getTutors();
+        $sessionTrainers = $this->getUsersBySessionAndType($session, CourseSessionUser::TEACHER);
+        $sessionTrainersHtml = '';
+        $locationHtml = '';
+        $eventTrainersHtml = '';
+
+        if (!is_null($location)) {
+            $locationHtml = $location->getStreet().', '.$location->getStreetNumber();
+            $locationHtml .= $location->getBoxNumber() ? ' ('.$location->getBoxNumber().')' : '';
+            $locationHtml .= '<br>'.$location->getPc().' '.$location->getTown().'<br>'.$location->getCountry();
+            $locationHtml .= $location->getPhone() ? '<br>'.$location->getPhone() : '';
+        }
+
+        if (count($sessionTrainers) > 0) {
+            $sessionTrainersHtml = '<ul>';
+
+            foreach ($sessionTrainers as $trainer) {
+                $sessionTrainersHtml .= '<li>'.$trainer->getFirstName().' '.$trainer->getLastName().'</li>';
+            }
+            $sessionTrainersHtml .= '</ul>';
+        }
+        if (count($eventTrainers) > 0) {
+            $eventTrainersHtml = '<ul>';
+
+            foreach ($eventTrainers as $trainer) {
+                $eventTrainersHtml .= '<li>'.$trainer->getFirstName().' '.$trainer->getLastName().'</li>';
+            }
+            $eventTrainersHtml .= '</ul>';
+        }
+
+        $now = new \DateTime();
+        $keys = [
+            '%date%',
+            '%course_title%',
+            '%course_code%',
+            '%course_description%',
+            '%session_name%',
+            '%session_description%',
+            '%session_start%',
+            '%session_end%',
+            '%session_trainers%',
+            '%event_name%',
+            '%event_description%',
+            '%event_start%',
+            '%event_end%',
+            '%event_location%',
+            '%event_location_extra%',
+            '%event_trainers%',
+        ];
+        $values = [
+            $now->format('d/m/Y'),
+            $course->getTitle(),
+            $course->getCode(),
+            $course->getDescription(),
+            $session->getName(),
+            $session->getDescription(),
+            $session->getStartDate()->format('d/m/Y'),
+            $session->getEndDate()->format('d/m/Y'),
+            $sessionTrainersHtml,
+            $event->getName(),
+            $event->getDescription(),
+            $event->getStartDate()->format('d/m/Y H:i'),
+            $event->getEndDate()->format('d/m/Y H:i'),
+            $locationHtml,
+            $event->getLocationExtra(),
+            $eventTrainersHtml,
+        ];
+
+        return str_replace($keys, $values, $content);
+    }
+
     public function generateDocumentFromModel(DocumentModel $documentModel, $sourceId)
     {
         $type = $documentModel->getDocumentType();
@@ -3828,13 +3968,25 @@ class CursusManager
 
         switch ($type) {
             case DocumentModel::SESSION_INVITATION :
+                $session = $this->courseSessionRepo->findOneById($sourceId);
+                $users = $this->getUsersBySessionAndType($session, CourseSessionUser::LEARNER);
+                $title = $this->translator->trans('session_invitation', [], 'cursus');
+                $body = $this->convertKeysForSession($session, $content);
+                $this->sendInvitation($title, $users, $body);
                 break;
             case DocumentModel::SESSION_EVENT_INVITATION :
+                $sessionEvent = $this->sessionEventRepo->findOneById($sourceId);
+                $session = $sessionEvent->getSession();
+                $users = $this->getUsersBySessionAndType($session, CourseSessionUser::LEARNER);
+                $title = $this->translator->trans('session_event_invitation', [], 'cursus');
+                $body = $this->convertKeysForSessionEvent($sessionEvent, $content);
+                $this->sendInvitation($title, $users, $body);
                 break;
             case DocumentModel::SESSION_CERTIFICATE :
                 $session = $this->courseSessionRepo->findOneById($sourceId);
                 $users = $this->getUsersBySessionAndType($session, CourseSessionUser::LEARNER);
-                $this->generateCertificatesForUsers($users, $content);
+                $body = $this->convertKeysForSession($session, $content);
+                $this->generateCertificatesForUsers($users, $body, $session);
                 break;
         }
     }
@@ -3859,6 +4011,14 @@ class CursusManager
         $title = $this->translator->trans('new_certificates', [], 'platform');
         $adminContent = $this->templating->render('ClarolineCursusBundle:Mail:certificates.html.twig', ['data' => $data]);
         $this->mailManager->send($title, $adminContent, [$creator]);
+    }
+
+    public function sendInvitation($title, array $users, $content)
+    {
+        foreach ($users as $user) {
+            $body = str_replace(['%first_name%', '%last_name%'], [$user->getFirstName(), $user->getLastName()], $content);
+            $this->mailManager->send($title, $body, [$user]);
+        }
     }
 
     /***************************************************
