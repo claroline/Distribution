@@ -62,7 +62,7 @@ class PdfManager
         @mkdir($this->pdfDir);
         @mkdir($this->pdfDir.$ds.$subFolder);
 
-        $return = $this->snappy->generateFromHtml($html, $this->pdfDir.$ds.$path);
+        $this->snappy->generateFromHtml($html, $this->pdfDir.$ds.$path);
         $this->om->persist($pdf);
         $this->om->flush();
 
