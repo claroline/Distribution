@@ -3822,7 +3822,17 @@ class CursusManager
         $course = $session->getCourse();
         $events = $session->getEvents();
         $eventsList = '';
+        $sessionTrainers = $this->getUsersBySessionAndType($session, CourseSessionUser::TEACHER);
+        $sessionTrainersHtml = '';
 
+        if (count($sessionTrainers) > 0) {
+            $sessionTrainersHtml = '<ul>';
+
+            foreach ($sessionTrainers as $trainer) {
+                $sessionTrainersHtml .= '<li>'.$trainer->getFirstName().' '.$trainer->getLastName().'</li>';
+            }
+            $sessionTrainersHtml .= '</ul>';
+        }
         if (count($events) > 0) {
             $eventsList = '<ul>';
 
@@ -3853,7 +3863,7 @@ class CursusManager
             '%session_start%',
             '%session_end%',
             '%session_trainers%',
-            '%events_list%'
+            '%events_list%',
         ];
         $values = [
             $now->format('d/m/Y'),
@@ -3864,7 +3874,7 @@ class CursusManager
             $session->getDescription(),
             $session->getStartDate()->format('d/m/Y'),
             $session->getEndDate()->format('d/m/Y'),
-            '[session trainers]',
+            $sessionTrainersHtml,
             $eventsList,
         ];
 
@@ -3875,6 +3885,37 @@ class CursusManager
     {
         $session = $event->getSession();
         $course = $session->getCourse();
+        $location = $event->getLocation();
+        $eventTrainers = $event->getTutors();
+        $sessionTrainers = $this->getUsersBySessionAndType($session, CourseSessionUser::TEACHER);
+        $sessionTrainersHtml = '';
+        $locationHtml = '';
+        $eventTrainersHtml = '';
+
+        if (!is_null($location)) {
+            $locationHtml = $location->getStreet().', '.$location->getStreetNumber();
+            $locationHtml .= $location->getBoxNumber() ? ' ('.$location->getBoxNumber().')' : '';
+            $locationHtml .= '<br>'.$location->getPc().' '.$location->getTown().'<br>'.$location->getCountry();
+            $locationHtml .= $location->getPhone() ? '<br>'.$location->getPhone() : '';
+        }
+
+        if (count($sessionTrainers) > 0) {
+            $sessionTrainersHtml = '<ul>';
+
+            foreach ($sessionTrainers as $trainer) {
+                $sessionTrainersHtml .= '<li>'.$trainer->getFirstName().' '.$trainer->getLastName().'</li>';
+            }
+            $sessionTrainersHtml .= '</ul>';
+        }
+        if (count($eventTrainers) > 0) {
+            $eventTrainersHtml = '<ul>';
+
+            foreach ($eventTrainers as $trainer) {
+                $eventTrainersHtml .= '<li>'.$trainer->getFirstName().' '.$trainer->getLastName().'</li>';
+            }
+            $eventTrainersHtml .= '</ul>';
+        }
+
         $now = new \DateTime();
         $keys = [
             '%date%',
@@ -3892,7 +3933,7 @@ class CursusManager
             '%event_end%',
             '%event_location%',
             '%event_location_extra%',
-            '%event_trainers%'
+            '%event_trainers%',
         ];
         $values = [
             $now->format('d/m/Y'),
@@ -3903,14 +3944,14 @@ class CursusManager
             $session->getDescription(),
             $session->getStartDate()->format('d/m/Y'),
             $session->getEndDate()->format('d/m/Y'),
-            '[session trainers]',
+            $sessionTrainersHtml,
             $event->getName(),
             $event->getDescription(),
             $event->getStartDate()->format('d/m/Y H:i'),
             $event->getEndDate()->format('d/m/Y H:i'),
-            '[event location]',
+            $locationHtml,
             $event->getLocationExtra(),
-            '[event trainers]',
+            $eventTrainersHtml,
         ];
 
         return str_replace($keys, $values, $content);
@@ -3950,7 +3991,8 @@ class CursusManager
     {
     }
 
-    public function sendInvitation($title, array $users, $content) {
+    public function sendInvitation($title, array $users, $content)
+    {
         foreach ($users as $user) {
             $body = str_replace(['%first_name%', '%last_name%'], [$user->getFirstName(), $user->getLastName()], $content);
             $this->mailManager->send($title, $body, [$user]);
