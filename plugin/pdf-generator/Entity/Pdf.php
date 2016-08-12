@@ -11,6 +11,7 @@
 
 namespace Claroline\PdfGeneratorBundle\Entity;
 
+use Claroline\CoreBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation\Groups;
@@ -34,7 +35,6 @@ class Pdf
      *
      * @ORM\ManyToOne(
      *     targetEntity="Claroline\CoreBundle\Entity\User",
-     *     inversedBy="resourceNodes",
      *     cascade={"persist"}
      * )
      * @ORM\JoinColumn(onDelete="CASCADE", nullable=false)
@@ -83,7 +83,7 @@ class Pdf
 
     public function setCreator(User $user)
     {
-        $this->user = $user;
+        $this->creator = $user;
     }
 
     public function getCreator()

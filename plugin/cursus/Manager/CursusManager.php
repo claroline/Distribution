@@ -66,6 +66,7 @@ use Claroline\CursusBundle\Event\Log\LogSessionQueueOrganizationValidateEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionQueueUserValidateEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionQueueValidatorValidateEvent;
 use Claroline\MessageBundle\Manager\MessageManager;
+use Claroline\PdfGeneratorBundle\Manager\PdfManager;
 use FormaLibre\ReservationBundle\Entity\Resource;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\SerializationContext;
@@ -149,7 +150,8 @@ class CursusManager
  *     "userManager"           = @DI\Inject("claroline.manager.user_manager"),
  *     "ut"                    = @DI\Inject("claroline.utilities.misc"),
  *     "utils"                 = @DI\Inject("claroline.security.utilities"),
- *     "workspaceManager"      = @DI\Inject("claroline.manager.workspace_manager")
+ *     "workspaceManager"      = @DI\Inject("claroline.manager.workspace_manager"),
+ *     "pdfManager"            = @DI\Inject("claroline.manager.pdf_manager")
  * })
  */
     // why no claroline dispatcher ?
@@ -175,6 +177,7 @@ class CursusManager
         ClaroUtilities $ut,
         Utilities $utils,
         WorkspaceManager $workspaceManager,
+        PdfManager $pdfManager,
         $clarolineDispatcher
     ) {
         $this->archiveDir = $container->getParameter('claroline.param.platform_generated_archive_path');
@@ -201,6 +204,7 @@ class CursusManager
         $this->utils = $utils;
         $this->workspaceManager = $workspaceManager;
         $this->clarolineDispatcher = $clarolineDispatcher;
+        $this->pdfManager = $pdfManager;
 
         $this->courseRepo = $om->getRepository('ClarolineCursusBundle:Course');
         $this->courseQueueRepo = $om->getRepository('ClarolineCursusBundle:CourseRegistrationQueue');
@@ -3837,6 +3841,24 @@ class CursusManager
 
     public function generateCertificatesForUsers(array $users, $content)
     {
+        $creator = $this->container->get('security.token_storage')->getToken()->getUser();
+        $data = [];
+
+        foreach ($users as $user) {
+            //$name = $session->getName().'-'.$user->getUsername();
+            $name = 'helloworld';
+            $replacedContent = str_replace('%first_name%', $user->getFirstName(), $content);
+            $replacedContent = str_replace('%last_name%', $user->getLastName(), $replacedContent);
+            $pdf = $this->pdfManager->create($replacedContent, $name, $creator, 'session_certificate');
+            $title = $this->translator->trans('new_certificate', [], 'platform');
+            $link = $this->templating->render('ClarolineCursusBundle:Mail:certificate.html.twig', ['pdf' => $pdf]);
+            $this->mailManager->send($title, $link, [$user]);
+            $data[] = ['user' => $user, 'pdf' => $pdf];
+        }
+
+        $title = $this->translator->trans('new_certificates', [], 'platform');
+        $adminContent = $this->templating->render('ClarolineCursusBundle:Mail:certificates.html.twig', ['data' => $data]);
+        $this->mailManager->send($title, $adminContent, [$creator]);
     }
 
     /***************************************************

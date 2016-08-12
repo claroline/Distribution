@@ -42,28 +42,37 @@ class PdfManager
         $this->ut = $ut;
     }
 
-    public function generate($html, $name, User $creator, $subFolder = 'main')
+    public function create($html, $name, User $creator, $subFolder = 'main')
     {
         $ds = DIRECTORY_SEPARATOR;
         $guid = $this->ut->generateGuid();
         $path = $subFolder.$ds.$guid.'.pdf';
         $pdf = new Pdf();
+
         $pdf->setName($name);
         $pdf->setGuid($guid);
         $pdf->setPath($path);
         $pdf->setCreator($creator);
 
         if (file_exists($this->pdfDir.$ds.$path)) {
-            throw new \Exception("The path {$path} is already taken by an other file ! aborted.");
+            $realpath = realpath($this->pdfDir.$ds.$path);
+            throw new \Exception("The path {$realpath} is already taken by an other file ! aborted.");
         }
 
         @mkdir($this->pdfDir);
         @mkdir($this->pdfDir.$ds.$subFolder);
 
-        $this->snappy->generateFromHtml($html, $path);
+        $return = $this->snappy->generateFromHtml($html, $this->pdfDir.$ds.$path);
         $this->om->persist($pdf);
         $this->om->flush();
 
         return $pdf;
+    }
+
+    public function getFile(Pdf $pdf)
+    {
+        $ds = DIRECTORY_SEPARATOR;
+
+        return realpath($this->pdfDir.$ds.$pdf->getPath());
     }
 }
