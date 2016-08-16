@@ -3997,8 +3997,7 @@ class CursusManager
         $data = [];
 
         foreach ($users as $user) {
-            //$name = $session->getName().'-'.$user->getUsername();
-            $name = 'helloworld';
+            $name = $session->getName().'-'.$user->getUsername();
             $replacedContent = str_replace('%first_name%', $user->getFirstName(), $content);
             $replacedContent = str_replace('%last_name%', $user->getLastName(), $replacedContent);
             $pdf = $this->pdfManager->create($replacedContent, $name, $creator, 'session_certificate');
