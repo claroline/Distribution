@@ -38,6 +38,10 @@
 
 {% block javascripts %}
     {{ parent() }}
+    {% javascripts debug=false
+    'js/translations/cursus/*.js'
+    %}<script src="{{ asset_url }}"></script>
+{% endjavascripts %}
     <script type="text/javascript" src="{{ url('bazinga_jstranslation_js', { 'domain': 'tools' }) }}"></script>
     <script type="text/javascript" src="{{ url('bazinga_jstranslation_js', { 'domain': 'cursus' }) }}"></script>
     <script type='text/javascript' src='{{ hotAsset('dist/commons.js') }}'></script>
