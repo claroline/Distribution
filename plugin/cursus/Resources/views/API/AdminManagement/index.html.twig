@@ -33,11 +33,11 @@
     <script type='text/javascript' src="{{ asset('packages/ng-table/dist/ng-table.js') }}"></script>
     <script type="text/javascript" src="{{ hotAsset('dist/claroline-distribution-plugin-cursus-management.js') }}"></script>
 
-{% javascripts debug=false
-    'js/translations/agenda/*.js'
-    'js/translations/cursus/*.js'
-    'js/translations/tools/*.js'
-    %}<script src="{{ asset_url }}"></script>
-{% endjavascripts %}
-~                           
+    {% javascripts debug=false
+        'js/translations/agenda/*.js'
+        'js/translations/cursus/*.js'
+        'js/translations/tools/*.js'
+        %}<script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+
 {% endblock %}
