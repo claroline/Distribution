@@ -124,7 +124,7 @@ class GroupManager
             $newRolesTransactionKeys[] = $newRole->getTranslationKey();
         }
 
-        $changeSet['platformRole'] = [$oldRolesTranslationKeys, $newRolesTransactionKey];
+        $changeSet['platformRole'] = [$oldRolesTranslationKeys, $newRolesTransactionKeys];
         $this->eventDispatcher->dispatch('log', 'Log\LogGroupUpdate', [$group, $changeSet]);
 
         $this->om->persist($group);
@@ -612,7 +612,7 @@ class GroupManager
             $total = $this->container->get('claroline.manager.user_manager')->countUsersByRoleIncludingGroup($roleUser);
 
             if ($total + count($users) > $max) {
-                return ['form' => $form->createView(), 'error' => true, 'group' => $group];
+                return false;
             }
 
             return $this->importUsers($group, $users);
