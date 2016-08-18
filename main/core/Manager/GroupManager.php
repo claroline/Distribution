@@ -118,7 +118,7 @@ class GroupManager
             $oldRolesTranslationKeys[] = $oldRole->getTranslationKey();
         }
 
-        $newRolesTransactionKey = [];
+        $newRolesTransactionKeys = [];
 
         foreach ($newRoles as $newRole) {
             $newRolesTransactionKeys[] = $newRole->getTranslationKey();
