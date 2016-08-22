@@ -28,7 +28,7 @@ class UpdateRichTextCommand extends ContainerAwareCommand
             ->setDefinition([
                new InputArgument('old_string', InputArgument::REQUIRED, 'old str'),
                new InputArgument('new_string', InputArgument::REQUIRED, 'new str'),
-               new InputArgument('entity', InputArgument::REQUIRED, 'entity'),
+               new InputArgument('classes', InputArgument::REQUIRED, 'classes'),
            ]);
     }
 
@@ -50,26 +50,73 @@ class UpdateRichTextCommand extends ContainerAwareCommand
 
         $helper = $this->getHelper('question');
         $entities = array_keys($this->getParsableEntities());
-        $toolQuestion = new ChoiceQuestion('Entity to parse: ', $entities);
+        $question = new ChoiceQuestion('Entity to parse: ', $entities);
+        $question->setMultiselect(true);
 
-        while (null === $entity = $input->getArgument('entity')) {
-            $entity = $helper->ask($input, $output, $toolQuestion);
-            $input->setArgument('entity', $entity);
+        while (null === $entity = $input->getArgument('classes')) {
+            $entity = $helper->ask($input, $output, $question);
+            $input->setArgument('classes', $entity);
         }
+    }
+
+    protected function askArgument(OutputInterface $output, $argumentName)
+    {
+        $argument = $this->getHelper('dialog')->askAndValidate(
+            $output,
+            "Enter the {$argumentName}: ",
+            function ($argument) {
+                if (empty($argument)) {
+                    throw new \Exception('This argument is required');
+                }
+
+                return $argument;
+            }
+        );
+
+        return $argument;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $parsable = $this->getParsableEntities();
         $consoleLogger = ConsoleLogger::get($output);
+        $toMatch = $input->getArgument('old_string');
+        $toReplace = $input->getArgument('new_string');
+        $classes = $input->getArgument('classes');
+        $entities = [];
+
+        foreach ($classes as $class) {
+            $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+            $data = $em->getRepository($class)->createQueryBuilder('e')
+                ->where("e.{$parsable[$class]} LIKE :str")
+                ->setParameter('str', "%{$toMatch}%")
+                ->getQuery()
+                ->getResult();
+
+            $entities = array_merge($entities, $data);
+        }
+
+        $texts = array_map(function ($el) use ($parsable) {
+                $func = 'get'.ucFirst($parsable[get_class($el)]);
+
+                return $el->$func();
+            },
+            $entities
+        );
+
+        $helper = $this->getHelper('question');
+        $question = new ChoiceQuestion('Text founds: ', $texts);
+
+        $entities = $helper->ask($input, $output, $question);
     }
 
     private function getParsableEntities()
     {
         return [
-            'Claroline\CoreBundle\Entity\Resource\Text' => ['text'],
-            'Claroline\AgendaBundle\Entity\Event' => ['description'],
-            'Claroline\CoreBundle\Entity\Resource\Activity' => ['description'],
-            'Innova\PathBundle\Entity\Path\Path' => ['description'],
+            'Claroline\CoreBundle\Entity\Resource\Text' => 'text',
+            'Claroline\AgendaBundle\Entity\Event' => 'description',
+            'Claroline\CoreBundle\Entity\Resource\Activity' => 'description',
+            'Innova\PathBundle\Entity\Path\Path' => 'description',
         ];
     }
 }
