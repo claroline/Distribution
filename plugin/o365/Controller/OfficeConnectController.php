@@ -70,6 +70,7 @@ class OfficeConnectController extends Controller
         $providerKey = 'main';
         $token = new UsernamePasswordToken($userLoaded, $userLoaded->getPassword(), $providerKey, $userLoaded->getRoles());
         $securityContext->setToken($token);
+        $userManager->logUser($user);
 
         return new RedirectResponse($this->generateUrl('claro_desktop_open'));
     }
