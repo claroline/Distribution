@@ -33,7 +33,6 @@ class TranslationIntegrityCommand extends ContainerAwareCommand
         $frenchLations = $this->getLangFiles($translationFiles, self::BASE_LANG);
         $duplicates = $this->getDuplicates($frenchLations);
         $this->displayDuplicateErrors($duplicates, $output);
-        $missingValues = $this->getMissingValues($translationFiles);
     }
 
     private function getTranslationFiles()
@@ -59,10 +58,7 @@ class TranslationIntegrityCommand extends ContainerAwareCommand
 
     private function getDuplicates($translationFiles)
     {
-        $keys = [];
-        $values = [];
         $duplicates = [];
-        $errors = [];
 
         foreach ($translationFiles as $translationFile) {
             $translations = Yaml::parse($translationFile);
@@ -101,10 +97,6 @@ class TranslationIntegrityCommand extends ContainerAwareCommand
         }
 
         return $duplicates;
-    }
-
-    private function getMissingValues($translationFiles)
-    {
     }
 
     private function getLangFiles($translationFiles, $lang)
