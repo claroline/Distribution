@@ -1,4 +1,7 @@
 import observe from './observe'
+import $ from 'jquery'
+
+/* global videojs */
 
 observe('video', callback)
 
