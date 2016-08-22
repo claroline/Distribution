@@ -40,7 +40,6 @@
     {% set homeAsset = protocol ~ '://' ~ host ~ app.request.getBasePath() ~ '/' %}
 
     <div id="homeAsset" class="hide">{{ homeAsset }}</div>
-    <div id="homeAsset" class="hide">{{ app.request.getSchemeAndHttpHost() ~ app.request.getBasePath() ~ '/' }}</div>
     <div id="baseAsset" class="hide">{{ asset('') }}</div>
     <div id="homeLocale" class="hide">{% spaceless %}
             {% if asset_exists("bundles/stfalcontinymce/vendor/tinymce/langs/" ~ app.request.locale ~ ".js") %}
