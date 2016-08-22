@@ -28,7 +28,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class HomeTabManager
 {
-
     use LoggableTrait;
     /** @var HomeTabConfigRepository */
     private $homeTabConfigRepo;
