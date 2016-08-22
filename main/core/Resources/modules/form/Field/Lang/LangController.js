@@ -1,4 +1,5 @@
 import langs from './iso.js'
+import angular from 'angular/index'
 
 export default class LangController {
   constructor () {
