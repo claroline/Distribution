@@ -28,12 +28,12 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class HomeTabManager
 {
-    use LoggableTrait;
 
-    /** @var HomeTabRepository */
-    private $homeTabRepo;
+    use LoggableTrait;
     /** @var HomeTabConfigRepository */
     private $homeTabConfigRepo;
+    /** @var HomeTabRepository */
+    private $homeTabRepo;
     /** @var WidgetHomeTabConfigRepository */
     private $widgetHomeTabConfigRepo;
     private $om;
@@ -62,6 +62,9 @@ class HomeTabManager
         );
         $this->container = $container;
         $this->om = $om;
+        $this->homeTabRepo = $om->getRepository('ClarolineCoreBundle:Home\HomeTab');
+        $this->homeTabConfigRepo = $om->getRepository('ClarolineCoreBundle:Home\HomeTabConfig');
+        $this->widgetHomeTabConfigRepo = $om->getRepository('ClarolineCoreBundle:Widget\WidgetHomeTabConfig');
     }
 
     public function persistHomeTabConfigs(
@@ -365,10 +368,8 @@ class HomeTabManager
         $this->om->flush();
     }
 
-    public function createWorkspaceVersion(
-        HomeTabConfig $homeTabConfig,
-        Workspace $workspace
-    ) {
+    public function createWorkspaceVersion(HomeTabConfig $homeTabConfig, Workspace $workspace)
+    {
         $newHomeTabConfig = new HomeTabConfig();
         $newHomeTabConfig->setHomeTab($homeTabConfig->getHomeTab());
         $newHomeTabConfig->setType($homeTabConfig->getType());
@@ -382,10 +383,8 @@ class HomeTabManager
         return $newHomeTabConfig;
     }
 
-    public function createUserVersion(
-        HomeTabConfig $homeTabConfig,
-        User $user
-    ) {
+    public function createUserVersion(HomeTabConfig $homeTabConfig, User $user)
+    {
         $newHomeTabConfig = new HomeTabConfig();
         $newHomeTabConfig->setHomeTab($homeTabConfig->getHomeTab());
         $newHomeTabConfig->setType($homeTabConfig->getType());
@@ -393,6 +392,7 @@ class HomeTabManager
         $newHomeTabConfig->setVisible($homeTabConfig->isVisible());
         $newHomeTabConfig->setLocked($homeTabConfig->isLocked());
         $newHomeTabConfig->setTabOrder($homeTabConfig->getTabOrder());
+        $newHomeTabConfig->setDetails($homeTabConfig->getDetails());
         $this->om->persist($newHomeTabConfig);
         $this->om->flush();
 
@@ -462,10 +462,9 @@ class HomeTabManager
             false;
     }
 
-    public function checkHomeTabVisibilityForConfigByUser(
-        HomeTab $homeTab,
-        User $user
-    ) {
+    public function checkHomeTabVisibilityForConfigByUser(HomeTab $homeTab, User $user)
+    {
+        $visible = false;
         $adminHomeTabConfig = $this->homeTabConfigRepo->findOneBy(
             [
                 'homeTab' => $homeTab,
@@ -482,24 +481,22 @@ class HomeTabManager
         );
 
         if (is_null($adminHomeTabConfig) && is_null($userHomeTabConfig)) {
-            return false;
+            $visible = false;
         } elseif (is_null($userHomeTabConfig)) {
-            return $adminHomeTabConfig->isVisible();
+            $visible = $adminHomeTabConfig->isVisible();
         } elseif (is_null($adminHomeTabConfig)) {
-            return true;
+            $visible = true;
         } else {
             $visible = $adminHomeTabConfig->isLocked() ?
                 $adminHomeTabConfig->isVisible() :
                 true;
-
-            return $visible;
         }
+
+        return $visible;
     }
 
-    public function checkHomeTabVisibilityByUser(
-        HomeTab $homeTab,
-        User $user
-    ) {
+    public function checkHomeTabVisibilityByUser(HomeTab $homeTab, User $user)
+    {
         $adminHomeTabConfig = $this->homeTabConfigRepo->findOneBy(
             [
                 'homeTab' => $homeTab,
@@ -530,10 +527,8 @@ class HomeTabManager
         }
     }
 
-    public function checkHomeTabVisibilityByWorkspace(
-        HomeTab $homeTab,
-        Workspace $workspace
-    ) {
+    public function checkHomeTabVisibilityByWorkspace(HomeTab $homeTab, Workspace $workspace)
+    {
         $homeTabConfig = $this->homeTabConfigRepo->findOneBy(
             [
                 'homeTab' => $homeTab,
@@ -548,10 +543,8 @@ class HomeTabManager
         return $homeTabConfig->isVisible();
     }
 
-    public function checkHomeTabVisibilityByIdAndWorkspace(
-        $homeTabId,
-        Workspace $workspace
-    ) {
+    public function checkHomeTabVisibilityByIdAndWorkspace($homeTabId, Workspace $workspace)
+    {
         $homeTabConfig = $this
             ->homeTabConfigRepo
             ->checkHomeTabVisibilityByIdAndWorkspace($homeTabId, $workspace);
@@ -563,62 +556,34 @@ class HomeTabManager
         return true;
     }
 
-    public function insertWidgetHomeTabConfig(
-        WidgetHomeTabConfig $widgetHomeTabConfig
-    ) {
+    public function insertWidgetHomeTabConfig(WidgetHomeTabConfig $widgetHomeTabConfig)
+    {
         $this->om->persist($widgetHomeTabConfig);
         $this->om->flush();
     }
 
-    public function deleteWidgetHomeTabConfig(
-        WidgetHomeTabConfig $widgetHomeTabConfig
-    ) {
-        $widgetOrder = $widgetHomeTabConfig->getWidgetOrder();
-        $homeTab = $widgetHomeTabConfig->getHomeTab();
-        $user = $widgetHomeTabConfig->getUser();
-        $workspace = $widgetHomeTabConfig->getWorkspace();
-
-        if (is_null($user) && is_null($workspace)) {
-            $this->widgetHomeTabConfigRepo->updateAdminWidgetHomeTabConfig(
-                $homeTab,
-                $widgetOrder
-            );
-        } elseif (is_null($workspace)) {
-            $this->widgetHomeTabConfigRepo->updateWidgetHomeTabConfigByUser(
-                $homeTab,
-                $widgetOrder,
-                $user
-            );
-        } else {
-            $this->widgetHomeTabConfigRepo->updateWidgetHomeTabConfigByWorkspace(
-                $homeTab,
-                $widgetOrder,
-                $workspace
-            );
-        }
+    public function deleteWidgetHomeTabConfig(WidgetHomeTabConfig $widgetHomeTabConfig)
+    {
         $this->om->remove($widgetHomeTabConfig);
         $this->om->flush();
     }
 
-    public function changeVisibilityWidgetHomeTabConfig(
-        WidgetHomeTabConfig $widgetHomeTabConfig
-    ) {
-        $isVisible = !$widgetHomeTabConfig->isVisible();
+    public function changeVisibilityWidgetHomeTabConfig(WidgetHomeTabConfig $widgetHomeTabConfig, $visible = null)
+    {
+        $isVisible = is_null($visible) ? !$widgetHomeTabConfig->isVisible() : $visible;
         $widgetHomeTabConfig->setVisible($isVisible);
         $this->om->flush();
     }
 
-    public function changeLockWidgetHomeTabConfig(
-        WidgetHomeTabConfig $widgetHomeTabConfig
-    ) {
+    public function changeLockWidgetHomeTabConfig(WidgetHomeTabConfig $widgetHomeTabConfig)
+    {
         $isLocked = !$widgetHomeTabConfig->isLocked();
         $widgetHomeTabConfig->setLocked($isLocked);
         $this->om->flush();
     }
 
-    public function generateCopyOfAdminWorkspaceHomeTabs(
-        Workspace $workspace
-    ) {
+    public function generateCopyOfAdminWorkspaceHomeTabs(Workspace $workspace)
+    {
         $adminHomeTabConfigs = $this->homeTabConfigRepo
             ->findAdminWorkspaceHomeTabConfigs();
 
@@ -696,10 +661,8 @@ class HomeTabManager
         return $this->homeTabRepo->findOneBy($criterias);
     }
 
-    public function getHomeTabByIdAndWorkspace(
-        $homeTabId,
-        Workspace $workspace
-    ) {
+    public function getHomeTabByIdAndWorkspace($homeTabId, Workspace $workspace)
+    {
         return $this->homeTabRepo->findOneBy(
             ['id' => $homeTabId, 'workspace' => $workspace]
         );
@@ -715,58 +678,57 @@ class HomeTabManager
      */
     public function getAdminDesktopHomeTabConfigs()
     {
-        return $this->homeTabConfigRepo
-            ->findAdminDesktopHomeTabConfigs();
+        return $this->homeTabConfigRepo->findAdminDesktopHomeTabConfigs();
+    }
+
+    public function getAdminDesktopHomeTabConfigsByRoles(array $roleNames)
+    {
+        return $this->homeTabConfigRepo->findAdminDesktopHomeTabConfigsByRoles($roleNames);
+    }
+
+    public function getVisibleAdminDesktopHomeTabConfigsByRoles(array $roleNames)
+    {
+        return $this->homeTabConfigRepo->findVisibleAdminDesktopHomeTabConfigsByRoles($roleNames);
     }
 
     public function getAdminWorkspaceHomeTabConfigs()
     {
-        return $this->homeTabConfigRepo
-            ->findAdminWorkspaceHomeTabConfigs();
+        return $this->homeTabConfigRepo->findAdminWorkspaceHomeTabConfigs();
     }
 
     public function getAdminDesktopHomeTabConfigByHomeTab(HomeTab $homeTab)
     {
-        return $this->homeTabConfigRepo
-            ->findAdminDesktopHomeTabConfigByHomeTab($homeTab);
+        return $this->homeTabConfigRepo->findAdminDesktopHomeTabConfigByHomeTab($homeTab);
     }
 
     public function getDesktopHomeTabConfigsByUser(User $user)
     {
-        return $this->homeTabConfigRepo
-            ->findDesktopHomeTabConfigsByUser($user);
+        return $this->homeTabConfigRepo->findDesktopHomeTabConfigsByUser($user);
     }
 
-    public function getWorkspaceHomeTabConfigsByWorkspace(
-        Workspace $workspace
-    ) {
-        return $this->homeTabConfigRepo
-            ->findWorkspaceHomeTabConfigsByWorkspace($workspace);
+    public function getWorkspaceHomeTabConfigsByWorkspace(Workspace $workspace)
+    {
+        return $this->homeTabConfigRepo->findWorkspaceHomeTabConfigsByWorkspace($workspace);
     }
 
     public function getVisibleAdminDesktopHomeTabConfigs()
     {
-        return $this->homeTabConfigRepo
-            ->findVisibleAdminDesktopHomeTabConfigs();
+        return $this->homeTabConfigRepo->findVisibleAdminDesktopHomeTabConfigs();
     }
 
     public function getVisibleAdminWorkspaceHomeTabConfigs()
     {
-        return $this->homeTabConfigRepo
-            ->findVisibleAdminWorkspaceHomeTabConfigs();
+        return $this->homeTabConfigRepo->findVisibleAdminWorkspaceHomeTabConfigs();
     }
 
     public function getVisibleDesktopHomeTabConfigsByUser(User $user)
     {
-        return $this->homeTabConfigRepo
-            ->findVisibleDesktopHomeTabConfigsByUser($user);
+        return $this->homeTabConfigRepo->findVisibleDesktopHomeTabConfigsByUser($user);
     }
 
-    public function getVisibleWorkspaceHomeTabConfigsByWorkspace(
-        Workspace $workspace
-    ) {
-        return $this->homeTabConfigRepo
-            ->findVisibleWorkspaceHomeTabConfigsByWorkspace($workspace);
+    public function getVisibleWorkspaceHomeTabConfigsByWorkspace(Workspace $workspace)
+    {
+        return $this->homeTabConfigRepo->findVisibleWorkspaceHomeTabConfigsByWorkspace($workspace);
     }
 
     public function getVisibleWorkspaceHomeTabConfigsByWorkspaceAndRoles(
@@ -781,15 +743,12 @@ class HomeTabManager
 
     public function getOrderOfLastDesktopHomeTabConfigByUser(User $user)
     {
-        return $this->homeTabConfigRepo
-            ->findOrderOfLastDesktopHomeTabByUser($user);
+        return $this->homeTabConfigRepo->findOrderOfLastDesktopHomeTabByUser($user);
     }
 
-    public function getOrderOfLastWorkspaceHomeTabConfigByWorkspace(
-        Workspace $workspace
-    ) {
-        return $this->homeTabConfigRepo
-            ->findOrderOfLastWorkspaceHomeTabByWorkspace($workspace);
+    public function getOrderOfLastWorkspaceHomeTabConfigByWorkspace(Workspace $workspace)
+    {
+        return $this->homeTabConfigRepo->findOrderOfLastWorkspaceHomeTabByWorkspace($workspace);
     }
 
     public function getOrderOfLastAdminDesktopHomeTabConfig()
@@ -818,10 +777,8 @@ class HomeTabManager
         );
     }
 
-    public function getHomeTabConfigsByWorkspaceAndHomeTabs(
-        Workspace $workspace,
-        array $homeTabs
-    ) {
+    public function getHomeTabConfigsByWorkspaceAndHomeTabs(Workspace $workspace, array $homeTabs)
+    {
         if (count($homeTabs) === 0) {
             $homeTabConfigs = [];
         } else {
@@ -888,67 +845,42 @@ class HomeTabManager
 
     public function getWidgetConfigsByUser(HomeTab $homeTab, User $user)
     {
-        return $this->widgetHomeTabConfigRepo
-            ->findWidgetConfigsByUser($homeTab, $user);
+        return $this->widgetHomeTabConfigRepo->findWidgetConfigsByUser($homeTab, $user);
     }
 
     public function getVisibleWidgetConfigsByUser(HomeTab $homeTab, User $user)
     {
-        return $this->widgetHomeTabConfigRepo
-            ->findVisibleWidgetConfigsByUser($homeTab, $user);
+        return $this->widgetHomeTabConfigRepo->findVisibleWidgetConfigsByUser($homeTab, $user);
     }
 
-    public function getWidgetConfigsByWorkspace(
-        HomeTab $homeTab,
-        Workspace $workspace
-    ) {
-        return $this->widgetHomeTabConfigRepo
-            ->findWidgetConfigsByWorkspace($homeTab, $workspace);
+    public function getWidgetConfigsByWorkspace(HomeTab $homeTab, Workspace $workspace)
+    {
+        return $this->widgetHomeTabConfigRepo->findWidgetConfigsByWorkspace($homeTab, $workspace);
     }
 
-    public function getVisibleWidgetConfigsByWorkspace(
-        HomeTab $homeTab,
-        Workspace $workspace
-    ) {
-        return $this->widgetHomeTabConfigRepo
-            ->findVisibleWidgetConfigsByWorkspace($homeTab, $workspace);
+    public function getVisibleWidgetConfigsByWorkspace(HomeTab $homeTab, Workspace $workspace)
+    {
+        return $this->widgetHomeTabConfigRepo->findVisibleWidgetConfigsByWorkspace($homeTab, $workspace);
     }
 
-    public function getVisibleWidgetConfigsByTabIdAndWorkspace(
-        $homeTabId,
-        Workspace $workspace
-    ) {
-        return $this->widgetHomeTabConfigRepo
-            ->findVisibleWidgetConfigsByTabIdAndWorkspace($homeTabId, $workspace);
+    public function getVisibleWidgetConfigsByTabIdAndWorkspace($homeTabId, Workspace $workspace)
+    {
+        return $this->widgetHomeTabConfigRepo->findVisibleWidgetConfigsByTabIdAndWorkspace($homeTabId, $workspace);
     }
 
-    public function getVisibleWidgetConfigByWidgetIdAndTabIdAndWorkspace(
-        $widgetId,
-        $homeTabId,
-        Workspace $workspace
-    ) {
-        return $this->widgetHomeTabConfigRepo
-            ->findVisibleWidgetConfigByWidgetIdAndTabIdAndWorkspace($widgetId, $homeTabId, $workspace);
+    public function getVisibleWidgetConfigByWidgetIdAndTabIdAndWorkspace($widgetId, $homeTabId, Workspace $workspace)
+    {
+        return $this->widgetHomeTabConfigRepo->findVisibleWidgetConfigByWidgetIdAndTabIdAndWorkspace($widgetId, $homeTabId, $workspace);
     }
 
-    public function getUserAdminWidgetHomeTabConfig(
-        HomeTab $homeTab,
-        WidgetInstance $widgetInstance,
-        User $user
-    ) {
-        return $this->widgetHomeTabConfigRepo->findUserAdminWidgetHomeTabConfig(
-            $homeTab,
-            $widgetInstance,
-            $user
-        );
+    public function getUserAdminWidgetHomeTabConfig(HomeTab $homeTab, WidgetInstance $widgetInstance, User $user)
+    {
+        return $this->widgetHomeTabConfigRepo->findUserAdminWidgetHomeTabConfig($homeTab,  $widgetInstance, $user);
     }
 
     public function getWidgetHomeTabConfigsByHomeTabAndType(HomeTab $homeTab, $type)
     {
-        return $this->widgetHomeTabConfigRepo->findWidgetHomeTabConfigsByHomeTabAndType(
-            $homeTab,
-            $type
-        );
+        return $this->widgetHomeTabConfigRepo->findWidgetHomeTabConfigsByHomeTabAndType($homeTab, $type);
     }
 
     public function setLogger(LoggerInterface $logger)

@@ -762,7 +762,6 @@ class WorkspaceModelManager
         $resourcesModels = $model->getResourcesModel();
         $homeTabs = $model->getHomeTabs();
         $resourcesInfos = ['copies' => []];
-
         $this->duplicateWorkspaceRoles($modelWorkspace, $workspace, $user);
         $this->duplicateOrderedTools($modelWorkspace, $workspace);
         $rootDirectory = $this->duplicateRootDirectory($modelWorkspace, $workspace, $user);
@@ -786,5 +785,15 @@ class WorkspaceModelManager
     public function getLogger()
     {
         return $this->logger;
+    }
+
+    public function getModelsByUser(User $user)
+    {
+        return $this->modelRepository->findModelsByUser($user);
+    }
+
+    public function getModelById($id)
+    {
+        return $this->modelRepository->findOneById($id);
     }
 }

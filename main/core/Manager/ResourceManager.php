@@ -89,6 +89,7 @@ class ResourceManager
     /* @var PlatformConfigurationHandler */
     private $platformConfigHandler;
     private $filesDirectory;
+    /* @var ContainerInterface */
     private $container;
 
     /**
@@ -1066,7 +1067,7 @@ class ResourceManager
                 $nodes[0]->getName().'.'.$extension;
             $data['file'] = $event->getItem();
             $guesser = ExtensionGuesser::getInstance();
-            $data['mimeType'] = $guesser->guess($nodes[0]->getMimeType()) !== null ?  $nodes[0]->getMimeType() : null;
+            $data['mimeType'] = $guesser->guess($nodes[0]->getMimeType()) !== null ? $nodes[0]->getMimeType() : null;
 
             return $data;
         }
@@ -1680,14 +1681,13 @@ class ResourceManager
      */
     public function addStorageExceededFormError(Form $form, $fileSize, Workspace $workspace)
     {
-        //we want how many bites and well...
         $maxSize = $this->ut->getRealFileSize($workspace->getMaxStorageSize());
         $usedSize = $this->ut->getRealFileSize(
             $this->container->get('claroline.manager.workspace_manager')->getUsedStorage($workspace)
         );
 
         $storageLeft = $maxSize - $usedSize;
-        $fileSize = $this->ut->formatFileSize($fileSize);
+        $fileSize = $this->ut->formatFileSize($this->ut->getRealFileSize($fileSize));
         $storageLeft = $this->ut->formatFileSize($storageLeft);
 
         $translator = $this->container->get('translator');

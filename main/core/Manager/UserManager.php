@@ -156,6 +156,7 @@ class UserManager
 
         if (count($organizations) === 0 && count($user->getOrganizations()) === 0) {
             $organizations = [$this->organizationManager->getDefault()];
+            $user->setOrganizations($organizations);
         }
 
         $this->objectManager->startFlushSuite();
@@ -457,6 +458,18 @@ class UserManager
             }
 
             $group = $groupName ? $this->groupManager->getGroupByName($groupName) : null;
+            if ($groupName) {
+                $group = $this->groupManager->getGroupByNameAndScheduledForInsert($groupName);
+
+                if (!$group) {
+                    $group = new Group();
+                    $group->setName($groupName);
+                    $group = $this->groupManager->insertGroup($group);
+                }
+            } else {
+                $group = null;
+            }
+
             $newUser = new User();
             $newUser->setFirstName($firstName);
             $newUser->setLastName($lastName);
@@ -1383,6 +1396,8 @@ class UserManager
             $options->setDesktopMode(UserOptions::READ_ONLY_MODE);
         }
         $this->persistUserOptions($options);
+
+        return $options;
     }
 
     public function getUsersForUserPicker(
@@ -1621,14 +1636,13 @@ class UserManager
      */
     public function bindUserToOrganization()
     {
-        $limit = 2000;
+        $limit = 250;
         $offset = 0;
         $this->log('Add organizations to users...');
         $this->objectManager->startFlushSuite();
         $countUsers = $this->objectManager->count('ClarolineCoreBundle:User');
         $default = $this->organizationManager->getDefault();
         $i = 0;
-        $detach = [];
 
         while ($offset < $countUsers) {
             $users = $this->userRepo->findBy([], null, $limit, $offset);
@@ -1653,9 +1667,14 @@ class UserManager
                     }
                 } else {
                     $this->log("Organization for user {$user->getUsername()} already exists");
-                    $this->objectManager->detach($user);
                 }
             }
+
+            $this->log("Flushing... [UOW = {$this->objectManager->getUnitOfWork()->size()}]");
+            $this->objectManager->forceFlush();
+            $this->objectManager->clear();
+            $default = $this->organizationManager->getDefault();
+            $this->objectManager->merge($default);
 
             $offset += $limit;
         }
