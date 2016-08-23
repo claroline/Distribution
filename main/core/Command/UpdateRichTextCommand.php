@@ -11,7 +11,6 @@
 
 namespace Claroline\CoreBundle\Command;
 
-use Claroline\CoreBundle\Library\Logger\ConsoleLogger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
