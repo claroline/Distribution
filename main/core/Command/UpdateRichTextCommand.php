@@ -15,6 +15,7 @@ use Claroline\CoreBundle\Library\Logger\ConsoleLogger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
@@ -29,7 +30,13 @@ class UpdateRichTextCommand extends ContainerAwareCommand
                new InputArgument('old_string', InputArgument::REQUIRED, 'old str'),
                new InputArgument('new_string', InputArgument::REQUIRED, 'new str'),
                new InputArgument('classes', InputArgument::REQUIRED, 'classes'),
-           ]);
+           ])
+           ->addOption(
+               'confirm',
+               'c',
+               InputOption::VALUE_NONE,
+               'When set to true, no confirmation required'
+           );
     }
 
     protected function interact(InputInterface $input, OutputInterface $output)
@@ -84,30 +91,68 @@ class UpdateRichTextCommand extends ContainerAwareCommand
         $toReplace = $input->getArgument('new_string');
         $classes = $input->getArgument('classes');
         $entities = [];
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
 
         foreach ($classes as $class) {
-            $em = $this->getContainer()->get('doctrine.orm.entity_manager');
             $data = $em->getRepository($class)->createQueryBuilder('e')
                 ->where("e.{$parsable[$class]} LIKE :str")
                 ->setParameter('str', "%{$toMatch}%")
                 ->getQuery()
                 ->getResult();
 
-            $entities = array_merge($entities, $data);
+            if ($data) {
+                $entities = array_merge($entities, $data);
+            }
         }
 
-        $texts = array_map(function ($el) use ($parsable) {
-                $func = 'get'.ucFirst($parsable[get_class($el)]);
+        if (!$entities) {
+            $output->writeln('<error>No entities found...</error>');
 
-                return $el->$func();
+            return;
+        }
+
+        $i = 0;
+        $texts = array_map(function ($el) use ($parsable, &$i) {
+                $func = 'get'.ucFirst($parsable[get_class($el)]);
+                $text = "\n";
+                $text .= "[[index={$i}]]\n";
+                $text .= 'Class: '.get_class($el)."\n";
+                $text .= 'Id: '.$el->getId()."\n";
+                $text .= $el->$func();
+                ++$i;
+
+                return $text;
             },
             $entities
         );
 
-        $helper = $this->getHelper('question');
-        $question = new ChoiceQuestion('Text founds: ', $texts);
+        if ($input->getOption('confirm')) {
+            $data = $texts;
+        } else {
+            $helper = $this->getHelper('question');
+            $question = new ChoiceQuestion('Text founds: ', $texts);
+            $question->setMultiselect(true);
+            $data = $helper->ask($input, $output, $question);
+        }
 
-        $entities = $helper->ask($input, $output, $question);
+        $placeholder = '#\[\[index=([^\]]+)\]\]#';
+        $i = 0;
+        //get the index
+        foreach ($data as $el) {
+            preg_match_all($placeholder, $el, $matches, PREG_SET_ORDER);
+            $entity = $entities[$matches[0][1]];
+            $func = 'get'.ucFirst($parsable[get_class($entity)]);
+            $text = $entity->$func();
+            $text = str_replace($toMatch, $toReplace, $text);
+            $func = 'set'.ucFirst($parsable[get_class($entity)]);
+            $entity->$func($text);
+            $em->persist($entity);
+            ++$i;
+        }
+
+        $output->writeln("<comment>{$i} element changed... flushing</comment>");
+        $em->flush();
+        $output->writeln('<comment>Done</comment>');
     }
 
     private function getParsableEntities()
@@ -117,6 +162,7 @@ class UpdateRichTextCommand extends ContainerAwareCommand
             'Claroline\AgendaBundle\Entity\Event' => 'description',
             'Claroline\CoreBundle\Entity\Resource\Activity' => 'description',
             'Innova\PathBundle\Entity\Path\Path' => 'description',
+            'Claroline\CoreBundle\Entity\Widget\SimpleTextConfig' => 'content',
         ];
     }
 }
