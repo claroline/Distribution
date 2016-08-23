@@ -41,6 +41,8 @@ function StepListCtrl($scope, $uibModal, dragulaService, ExerciseService, StepSe
             this.StepService.reorderItems(step);
         }
     }.bind(this));
+    
+    console.log(this.steps);
 }
 
 /**
