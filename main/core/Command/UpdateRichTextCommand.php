@@ -86,7 +86,6 @@ class UpdateRichTextCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $parsable = $this->getParsableEntities();
-        $consoleLogger = ConsoleLogger::get($output);
         $toMatch = $input->getArgument('old_string');
         $toReplace = $input->getArgument('new_string');
         $classes = $input->getArgument('classes');
