@@ -347,7 +347,7 @@ class RichTextFormatter
         //ie: /path/to/web/app_dev.php
         $baseUrl = $this->config->getParameter('base_url');
 
-        //http://stackoverflow.com/questions/173851/what-is-the-canonical-way-to-determine-commandline-vs-http-execution-of-a-php-s
+        //@see http://stackoverflow.com/questions/173851/what-is-the-canonical-way-to-determine-commandline-vs-http-execution-of-a-php-s
         //we need to configure the router if we're doing the import by cli.
         if ($baseUrl && php_sapi_name() === 'cli') {
             $context = $this->router->getContext();
