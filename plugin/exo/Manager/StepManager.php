@@ -216,7 +216,7 @@ class StepManager
             'meta' => [
                 'description' => $step->getText(),
                 'maxAttempts' => $step->getMaxAttempts(),
-                'name'        => $step->getName(),
+                'name' => $step->getName(),
             ],
             'items' => $items,
         ];

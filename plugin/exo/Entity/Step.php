@@ -102,7 +102,7 @@ class Step
     {
         return $this->id;
     }
-    
+
     /**
      * Set name.
      * 
