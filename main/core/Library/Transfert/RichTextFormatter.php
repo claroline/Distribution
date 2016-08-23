@@ -62,7 +62,6 @@ class RichTextFormatter
         StrictDispatcher $eventDispatcher,
         PlatformConfigurationHandler $config
     ) {
-        $data = [];
         $this->resourceManagerImporter = null;
         $this->resourceManagerData = [];
         $this->resourceManager = $resourceManager;

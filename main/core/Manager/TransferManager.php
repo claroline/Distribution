@@ -18,7 +18,6 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Transfert\Importer;
 use Claroline\CoreBundle\Library\Transfert\RichTextInterface;
-use Claroline\CoreBundle\Library\Utilities\FileSystem;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
@@ -67,11 +66,9 @@ class TransferManager
      */
     public function validate(array $data, $validateProperties = true)
     {
-        $groupsImporter = $this->getImporterByName('groups');
         $rolesImporter = $this->getImporterByName('roles');
         $toolsImporter = $this->getImporterByName('tools');
         $importer = $this->getImporterByName('workspace_properties');
-        $usersImporter = $this->getImporterByName('user');
 
         //properties
         if ($validateProperties) {
@@ -134,7 +131,7 @@ class TransferManager
         }
 
         $this->log('Importing tools...');
-        $tools = $this->getImporterByName('tools')->import($data['tools'], $workspace, $importedRoles, $root);
+        $this->getImporterByName('tools')->import($data['tools'], $workspace, $importedRoles, $root);
         $this->om->endFlushSuite();
         //flush has to be forced unless it's a default template
         $defaults = [
@@ -235,7 +232,6 @@ class TransferManager
         $this->populateWorkspace($workspace, $template, $root, $entityRoles, true, false);
         $this->container->get('claroline.manager.workspace_manager')->createWorkspace($workspace);
         $this->om->endFlushSuite();
-        $fs = new FileSystem();
 
         return $workspace;
     }

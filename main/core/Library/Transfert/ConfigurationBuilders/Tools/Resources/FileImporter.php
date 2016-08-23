@@ -79,7 +79,7 @@ class FileImporter extends Importer implements ConfigurationInterface, RichTextI
 
     public function supports($type)
     {
-        return $type == 'yml' ? true : false;
+        return $type === 'yml' ? true : false;
     }
 
     public function validate(array $data)
@@ -135,7 +135,6 @@ class FileImporter extends Importer implements ConfigurationInterface, RichTextI
             return;
         }
 
-        $ds = DIRECTORY_SEPARATOR;
         $em = $this->container->get('doctrine.orm.entity_manager');
 
         if (isset($data[0])) {

@@ -21,6 +21,7 @@ use Doctrine\ORM\QueryBuilder;
 use Gedmo\Tree\Entity\Repository\MaterializedPathRepository;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Security\Core\Role\Role;
 
 /**
  * Repository for AbstractResource entities. The methods of this class may return
@@ -386,7 +387,7 @@ class ResourceNodeRepository extends MaterializedPathRepository implements Conta
             ->where('resourceNode.workspace = :workspace')
             ->andWhere('resourceNode.resourceType = :resourceType');
 
-        return $results = $qb->getQuery()->execute(
+        return $qb->getQuery()->execute(
             [
                 ':workspace' => $workspace,
                 ':resourceType' => $resourceType,
@@ -512,7 +513,7 @@ class ResourceNodeRepository extends MaterializedPathRepository implements Conta
         $rolenames = [];
 
         foreach ($roles as $role) {
-            if ($role instanceof \Symfony\Component\Security\Core\Role\Role) {
+            if ($role instanceof Role) {
                 $rolenames[] = $role->getRole();
             } else {
                 $rolenames[] = $role;

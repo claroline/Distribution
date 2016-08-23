@@ -79,7 +79,7 @@ class TextImporter extends Importer implements ConfigurationInterface, RichTextI
 
     public function supports($type)
     {
-        return $type == 'yml' ? true : false;
+        return $type === 'yml' ? true : false;
     }
 
     public function validate(array $data)
