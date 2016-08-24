@@ -4,8 +4,8 @@ namespace Claroline\CoreBubdle\Tests\API\User;
 
 use Claroline\CoreBundle\Entity\Facet\FieldFacet;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Claroline\CoreBundle\Library\Testing\Persister;
+use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 
 /**
  * Specific tests for organizations
@@ -51,13 +51,13 @@ class FacetControllerTest extends TransactionalTestCase
         $manager = $this->createManager();
         $this->login($manager);
 
-        $fields = array(
+        $fields = [
             'name' => 'facet',
             'force_creation_form' => false,
             'is_main' => true,
-        );
+        ];
 
-        $form = array('facet' => $fields);
+        $form = ['facet' => $fields];
         $this->client->request('POST', '/api/facet/create', $form);
         $data = $this->client->getResponse()->getContent();
         $data = json_decode($data, true);
@@ -70,13 +70,13 @@ class FacetControllerTest extends TransactionalTestCase
         $manager = $this->createManager();
         $this->login($manager);
 
-        $fields = array(
+        $fields = [
             'name' => 'newFacet',
             'force_creation_form' => false,
             'is_main' => false,
-        );
+        ];
 
-        $form = array('facet' => $fields);
+        $form = ['facet' => $fields];
         $this->client->request('PUT', "/api/facet/{$facet->getId()}", $form);
         $data = $this->client->getResponse()->getContent();
         $data = json_decode($data, true);
@@ -117,12 +117,12 @@ class FacetControllerTest extends TransactionalTestCase
         $facet = $this->persister->facet('facet', true, true);
         $manager = $this->createManager();
 
-        $fields = array(
+        $fields = [
             'name' => 'panel',
             'is_default_collapsed' => false,
-        );
+        ];
 
-        $form = array('panel' => $fields);
+        $form = ['panel' => $fields];
         $this->login($manager);
         $this->client->request('POST', "/api/facet/{$facet->getId()}/panel/create", $form);
         $data = $this->client->getResponse()->getContent();
@@ -140,12 +140,12 @@ class FacetControllerTest extends TransactionalTestCase
         $panel = $this->persister->panelFacet($facet, 'panel', false);
         $manager = $this->createManager();
 
-        $fields = array(
+        $fields = [
             'name' => 'panel_new',
             'is_default_collapsed' => false,
-        );
+        ];
 
-        $form = array('panel' => $fields);
+        $form = ['panel' => $fields];
         $this->login($manager);
         $this->client->request('PUT', "/api/facet/panel/{$panel->getId()}", $form);
         $data = $this->client->getResponse()->getContent();
@@ -172,10 +172,10 @@ class FacetControllerTest extends TransactionalTestCase
         $facet = $this->persister->facet('facet', true, true);
         $panel = $this->persister->panelFacet($facet, 'panel', false);
         $this->login($manager);
-        $form['field'] = array(
+        $form['field'] = [
             'name' => 'text',
             'type' => FieldFacet::STRING_TYPE,
-        );
+        ];
         $this->client->request('POST', "/api/facet/panel/{$panel->getId()}/field/create", $form);
         $data = $this->client->getResponse()->getContent();
         $data = json_decode($data, true);
@@ -194,10 +194,10 @@ class FacetControllerTest extends TransactionalTestCase
         $panel = $this->persister->panelFacet($facet, 'panel', false);
         $field = $this->persister->fieldFacet($panel, 'myname', FieldFacet::STRING_TYPE);
         $this->login($manager);
-        $form['field'] = array(
+        $form['field'] = [
             'name' => 'new_text',
             'type' => FieldFacet::STRING_TYPE,
-        );
+        ];
         $this->client->request('PUT', "/api/facet/panel/field/{$field->getId()}", $form);
         $data = $this->client->getResponse()->getContent();
         $data = json_decode($data, true);
@@ -223,7 +223,7 @@ class FacetControllerTest extends TransactionalTestCase
         $facet = $this->persister->facet('facet', true, true);
         $panel = $this->persister->panelFacet($facet, 'panel', false);
         $field = $this->persister->fieldFacet($panel, 'myname', FieldFacet::STRING_TYPE);
-        $form['choice'] = array('label' => 'choice');
+        $form['choice'] = ['label' => 'choice'];
         $this->login($manager);
         $this->client->request('POST', "/api/facet/panel/field/{$field->getId()}/choice", $form);
         $data = $this->client->getResponse()->getContent();
@@ -240,7 +240,7 @@ class FacetControllerTest extends TransactionalTestCase
         $manager = $this->createManager();
         $facet = $this->persister->facet('facet', true, true);
         $panel = $this->persister->panelFacet($facet, 'panel', false);
-        $field = $this->persister->fieldFacet($panel, 'myname', FieldFacet::STRING_TYPE, array('choice'));
+        $field = $this->persister->fieldFacet($panel, 'myname', FieldFacet::STRING_TYPE, ['choice']);
         $this->login($manager);
         $choices = $field->getFieldFacetChoices();
         $this->client->request('DELETE', "/api/facet/field/choice/{$choices[0]->getId()}");
@@ -264,8 +264,8 @@ class FacetControllerTest extends TransactionalTestCase
         $manager = $this->createManager();
         $this->login($manager);
         $roleId = $this->persister->role('ROLE_USER')->getId();
-        $params = array('base_data' => 'true', 'mail' => 'false', 'send_message' => 'true', 'phone' => 'false', 'role' => array('id' => $roleId));
-        $data['preferences'] = array($params);
+        $params = ['base_data' => 'true', 'mail' => 'false', 'send_message' => 'true', 'phone' => 'false', 'role' => ['id' => $roleId]];
+        $data['preferences'] = [$params];
         $this->client->request('PUT', '/api/facet/profile/preferences', $data);
         $data = $this->client->getResponse()->getContent();
         $data = json_decode($data, true);

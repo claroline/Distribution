@@ -4,8 +4,8 @@ namespace Claroline\CoreBubdle\Tests\API\User;
 
 use Claroline\CoreBundle\Entity\Facet\FieldFacet;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Claroline\CoreBundle\Library\Testing\Persister;
+use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 
 /**
  * Specific tests for organizations
@@ -75,12 +75,12 @@ class ProfileControllerTest extends TransactionalTestCase
         $user = $this->persister->user('user');
         $this->login($user);
 
-        $values = array(
-            array(
+        $values = [
+            [
                 'id' => $fields[0]->getId(),
                 'user_field_value' => 'value',
-            ),
-        );
+            ],
+        ];
 
         $data['fields'] = $values;
 
