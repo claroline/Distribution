@@ -40,7 +40,6 @@ class UpdateRichTextCommand extends ContainerAwareCommand
 
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        //@todo ask authentication source
         $params = [
             'old_string' => 'The string to match',
             'new_string' => 'The string to replace',
