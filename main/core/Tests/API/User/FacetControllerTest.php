@@ -210,11 +210,7 @@ class FacetControllerTest extends TransactionalTestCase
 
     public function testDeleteFieldFacetAction()
     {
-        $manager = $this->createManager();
-        $facet = $this->persister->facet('facet', true, true);
-        $panel = $this->persister->panelFacet($facet, 'panel', false);
-        $field = $this->persister->fieldFacet($panel, 'myname', FieldFacet::STRING_TYPE);
-        $this->login($manager);
+        $this->markTestSkipped('Not implemented yet');
     }
 
     public function testCreateFieldOptionsAction()

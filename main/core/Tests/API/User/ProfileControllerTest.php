@@ -103,7 +103,6 @@ class ProfileControllerTest extends TransactionalTestCase
     private function createFields()
     {
         $facetA = $this->persister->facet('facetA', true, true);
-        $facetB = $this->persister->facet('facetB', true, true);
         $panelA = $this->persister->panelFacet($facetA, 'panelA', false);
         $panelB = $this->persister->panelFacet($facetA, 'panelB', false);
         $panelC = $this->persister->panelFacet($facetA, 'panelC', false);
@@ -111,7 +110,7 @@ class ProfileControllerTest extends TransactionalTestCase
         $fieldA = $this->persister->fieldFacet($panelA, 'fieldA', FieldFacet::STRING_TYPE);
         $fieldB = $this->persister->fieldFacet($panelB, 'fieldB', FieldFacet::STRING_TYPE);
         $fieldC = $this->persister->fieldFacet($panelC, 'fieldC', FieldFacet::STRING_TYPE);
-        $fieldD = $this->persister->fieldFacet($panelD, 'fieldD', FieldFacet::STRING_TYPE);
+        $this->persister->fieldFacet($panelD, 'fieldD', FieldFacet::STRING_TYPE);
 
         $container = $this->client->getContainer();
         $role = $this->persister->role('ROLE_USER');
