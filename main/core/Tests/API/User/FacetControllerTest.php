@@ -2,6 +2,7 @@
 
 namespace Claroline\CoreBubdle\Tests\API\User;
 
+use Claroline\CoreBundle\Entity\Facet\FieldFacet;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Claroline\CoreBundle\Library\Testing\Persister;
@@ -173,11 +174,12 @@ class FacetControllerTest extends TransactionalTestCase
         $this->login($manager);
         $form['field'] = array(
             'name' => 'text',
-            'type' => 'text',
+            'type' => FieldFacet::STRING_TYPE,
         );
         $this->client->request('POST', "/api/facet/panel/{$panel->getId()}/field/create", $form);
         $data = $this->client->getResponse()->getContent();
         $data = json_decode($data, true);
+
         $this->assertEquals($data['name'], 'text');
         $this->client->request('GET', '/api/facets.json');
         $data = $this->client->getResponse()->getContent();
@@ -190,11 +192,11 @@ class FacetControllerTest extends TransactionalTestCase
         $manager = $this->createManager();
         $facet = $this->persister->facet('facet', true, true);
         $panel = $this->persister->panelFacet($facet, 'panel', false);
-        $field = $this->persister->fieldFacet($panel, 'myname', 'text');
+        $field = $this->persister->fieldFacet($panel, 'myname', FieldFacet::STRING_TYPE);
         $this->login($manager);
         $form['field'] = array(
             'name' => 'new_text',
-            'type' => 'text',
+            'type' => FieldFacet::STRING_TYPE,
         );
         $this->client->request('PUT', "/api/facet/panel/field/{$field->getId()}", $form);
         $data = $this->client->getResponse()->getContent();
@@ -211,7 +213,7 @@ class FacetControllerTest extends TransactionalTestCase
         $manager = $this->createManager();
         $facet = $this->persister->facet('facet', true, true);
         $panel = $this->persister->panelFacet($facet, 'panel', false);
-        $field = $this->persister->fieldFacet($panel, 'myname', 'text');
+        $field = $this->persister->fieldFacet($panel, 'myname', FieldFacet::STRING_TYPE);
         $this->login($manager);
     }
 
@@ -220,7 +222,7 @@ class FacetControllerTest extends TransactionalTestCase
         $manager = $this->createManager();
         $facet = $this->persister->facet('facet', true, true);
         $panel = $this->persister->panelFacet($facet, 'panel', false);
-        $field = $this->persister->fieldFacet($panel, 'myname', 'text');
+        $field = $this->persister->fieldFacet($panel, 'myname', FieldFacet::STRING_TYPE);
         $form['choice'] = array('label' => 'choice');
         $this->login($manager);
         $this->client->request('POST', "/api/facet/panel/field/{$field->getId()}/choice", $form);
@@ -238,7 +240,7 @@ class FacetControllerTest extends TransactionalTestCase
         $manager = $this->createManager();
         $facet = $this->persister->facet('facet', true, true);
         $panel = $this->persister->panelFacet($facet, 'panel', false);
-        $field = $this->persister->fieldFacet($panel, 'myname', 'text', array('choice'));
+        $field = $this->persister->fieldFacet($panel, 'myname', FieldFacet::STRING_TYPE, array('choice'));
         $this->login($manager);
         $choices = $field->getFieldFacetChoices();
         $this->client->request('DELETE', "/api/facet/field/choice/{$choices[0]->getId()}");
@@ -296,8 +298,8 @@ class FacetControllerTest extends TransactionalTestCase
         $this->login($manager);
         $facet = $this->persister->facet('facet', true, true);
         $panel = $this->persister->panelFacet($facet, 'panel', false);
-        $first = $this->persister->fieldFacet($panel, 'field1', 'text');
-        $second = $this->persister->fieldFacet($panel, 'field2', 'text');
+        $first = $this->persister->fieldFacet($panel, 'field1', FieldFacet::STRING_TYPE);
+        $second = $this->persister->fieldFacet($panel, 'field2', FieldFacet::STRING_TYPE);
         $qs = "?ids[]={$second->getId()}&ids[]={$first->getId()}";
         $this->client->request('PUT', "/api/facet/panel/{$panel->getId()}/fields/order{$qs}");
         $data = $this->client->getResponse()->getContent();

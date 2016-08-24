@@ -2,6 +2,7 @@
 
 namespace Claroline\CoreBubdle\Tests\API\User;
 
+use Claroline\CoreBundle\Entity\Facet\FieldFacet;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Claroline\CoreBundle\Library\Testing\Persister;
@@ -107,10 +108,10 @@ class ProfileControllerTest extends TransactionalTestCase
         $panelB = $this->persister->panelFacet($facetA, 'panelB', false);
         $panelC = $this->persister->panelFacet($facetA, 'panelC', false);
         $panelD = $this->persister->panelFacet($facetA, 'panelD', false, true);
-        $fieldA = $this->persister->fieldFacet($panelA, 'fieldA', 'text');
-        $fieldB = $this->persister->fieldFacet($panelB, 'fieldB', 'text');
-        $fieldC = $this->persister->fieldFacet($panelC, 'fieldC', 'text');
-        $fieldD = $this->persister->fieldFacet($panelD, 'fieldD', 'text');
+        $fieldA = $this->persister->fieldFacet($panelA, 'fieldA', FieldFacet::STRING_TYPE);
+        $fieldB = $this->persister->fieldFacet($panelB, 'fieldB', FieldFacet::STRING_TYPE);
+        $fieldC = $this->persister->fieldFacet($panelC, 'fieldC', FieldFacet::STRING_TYPE);
+        $fieldD = $this->persister->fieldFacet($panelD, 'fieldD', FieldFacet::STRING_TYPE);
 
         $container = $this->client->getContainer();
         $role = $this->persister->role('ROLE_USER');
