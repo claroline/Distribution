@@ -31,8 +31,8 @@ class UpdateRichTextCommand extends ContainerAwareCommand
                new InputArgument('classes', InputArgument::REQUIRED, 'classes'),
            ])
            ->addOption(
-               'confirm',
-               'c',
+               'force',
+               'f',
                InputOption::VALUE_NONE,
                'When set to true, no confirmation required'
            );
@@ -109,43 +109,38 @@ class UpdateRichTextCommand extends ContainerAwareCommand
             return;
         }
 
+        $output->writeln('<error>'.count($entities).' entities found.</error>');
+
         $i = 0;
-        $texts = array_map(function ($el) use ($parsable, &$i) {
-                $func = 'get'.ucFirst($parsable[get_class($el)]);
-                $text = "\n";
-                $text .= "[[index={$i}]]\n";
-                $text .= 'Class: '.get_class($el)."\n";
-                $text .= 'Id: '.$el->getId()."\n";
-                $text .= $el->$func();
-                ++$i;
 
-                return $text;
-            },
-            $entities
-        );
-
-        if ($input->getOption('confirm')) {
-            $data = $texts;
-        } else {
-            $helper = $this->getHelper('question');
-            $question = new ChoiceQuestion('Text founds: ', $texts);
-            $question->setMultiselect(true);
-            $data = $helper->ask($input, $output, $question);
-        }
-
-        $placeholder = '#\[\[index=([^\]]+)\]\]#';
-        $i = 0;
-        //get the index
-        foreach ($data as $el) {
-            preg_match_all($placeholder, $el, $matches, PREG_SET_ORDER);
-            $entity = $entities[$matches[0][1]];
+        foreach ($entities as $entity) {
+            $continue = false;
             $func = 'get'.ucFirst($parsable[get_class($entity)]);
             $text = $entity->$func();
-            $text = str_replace($toMatch, $toReplace, $text);
-            $func = 'set'.ucFirst($parsable[get_class($entity)]);
-            $entity->$func($text);
-            $em->persist($entity);
-            ++$i;
+
+            if ($input->getOption('force')) {
+                $continue = true;
+            } else {
+                $infos = 'Class: '.get_class($entity)."\n";
+                $infos .= 'Id: '.$entity->getId()."\n";
+                $infos .= $text;
+                $output->writeln('<comment>'.$infos.'</comment>');
+
+                $helper = $this->getHelper('question');
+                $question = new ChoiceQuestion('Edit ?', ['yes', 'no']);
+                $answer = $helper->ask($input, $output, $question);
+                if ($answer === 'yes') {
+                    $continue = true;
+                }
+            }
+
+            if ($continue) {
+                $text = str_replace($toMatch, $toReplace, $text);
+                $func = 'set'.ucFirst($parsable[get_class($entity)]);
+                $entity->$func($text);
+                $em->persist($entity);
+                ++$i;
+            }
         }
 
         $output->writeln("<comment>{$i} element changed... flushing</comment>");
@@ -156,7 +151,7 @@ class UpdateRichTextCommand extends ContainerAwareCommand
     private function getParsableEntities()
     {
         return [
-            'Claroline\CoreBundle\Entity\Resource\Text' => 'text',
+            'Claroline\CoreBundle\Entity\Resource\Revision' => 'content',
             'Claroline\AgendaBundle\Entity\Event' => 'description',
             'Claroline\CoreBundle\Entity\Resource\Activity' => 'description',
             'Innova\PathBundle\Entity\Path\Path' => 'description',
