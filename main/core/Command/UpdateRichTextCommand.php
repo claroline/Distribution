@@ -89,11 +89,12 @@ class UpdateRichTextCommand extends ContainerAwareCommand
         $classes = $input->getArgument('classes');
         $entities = [];
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        $escaped = addcslashes($toMatch, '%_');
 
         foreach ($classes as $class) {
             $data = $em->getRepository($class)->createQueryBuilder('e')
                 ->where("e.{$parsable[$class]} LIKE :str")
-                ->setParameter('str', "%{$toMatch}%")
+                ->setParameter('str', "%{$escaped}%")
                 ->getQuery()
                 ->getResult();
 
