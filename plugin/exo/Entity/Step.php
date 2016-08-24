@@ -23,11 +23,11 @@ class Step
     private $id;
 
     /**
-     * @var string
+     * @var int
      * 
-     * @ORM\Column(name="name", type="string", length=255, nullable=true)
+     * @ORM\Column(name="title", type="string")
      */
-    private $name = '';
+    private $title = '';
 
     /**
      * @var string
@@ -104,23 +104,23 @@ class Step
     }
 
     /**
-     * Set name.
-     * 
-     * @param string $name
+     * Set title.
+     *
+     * @param string $title
      */
-    public function setName($name)
+    public function setTitle($title)
     {
-        $this->name = $name;
+        $this->title = $title;
     }
 
     /**
-     * Get name.
-     * 
+     * Get title.
+     *
      * @return string
      */
-    public function getName()
+    public function getTitle()
     {
-        return $this->name;
+        return $this->title;
     }
 
     /**
