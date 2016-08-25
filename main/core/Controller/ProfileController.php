@@ -103,7 +103,7 @@ class ProfileController extends Controller
     private function isInRoles($role, $roles)
     {
         foreach ($roles as $current) {
-            if ($role->getId() == $current->getId()) {
+            if ($role->getId() === $current->getId()) {
                 return true;
             }
         }
@@ -234,9 +234,6 @@ class ProfileController extends Controller
         $roles = $this->roleManager->getPlatformRoles($user);
         $accesses = $this->profilePropertyManager->getAccessesForCurrentUser();
 
-        var_dump($user->getUsername());
-        var_dump($loggedUser->getUsername());
-
         $profileType = new ProfileType(
             $this->localeManager,
             $roles,
@@ -248,9 +245,6 @@ class ProfileController extends Controller
 
         $form = $this->createForm($profileType, $user);
         $form->handleRequest($this->request);
-
-        var_dump($form->getErrorsAsString());
-
         $unavailableRoles = [];
 
         if ($this->get('request')->getMethod() === 'POST') {
