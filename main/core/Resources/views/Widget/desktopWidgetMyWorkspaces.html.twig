@@ -20,18 +20,12 @@
     {% else %}
         {% for workspace in workspaces %}
         <li id="workspaces-list-element-{{ workspace.getId() }}">
-            <a class="col-md-6"
+            <a
                 {% if has_access_to_workspace(workspace.getId()) %}
                     href="{{ path('claro_workspace_open', {'workspaceId': workspace.getId()}) }}"
                 {% endif %}
             >
-                <i class="fa fa-book"></i>
-                {{ workspace.getName() }}
-                <span>
-                    <small>
-                        ({{ workspace.getCode() }})
-                    </small>
-                </span>
+                <i class="fa fa-book"></i>&nbsp {{ workspace.getName() }} &nbsp<small>({{ workspace.getCode()}})</small>
             </a>
         </li>
         {% endfor %}
