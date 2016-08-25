@@ -320,6 +320,7 @@ class UserManager
         $userRole = $this->roleManager->getUserRoleByUser($user);
 
         //soft delete~
+        $user->setIsRemoved(true);
         $user->setMail('mail#'.$user->getId());
         $user->setFirstName('firstname#'.$user->getId());
         $user->setLastName('lastname#'.$user->getId());
@@ -1546,7 +1547,7 @@ class UserManager
         $qb = $this->objectManager->createQueryBuilder();
         $count ? $qb->select('count(u)') : $qb->select('u');
         $qb->from('Claroline\CoreBundle\Entity\User', 'u')
-            ->where('u.isEnabled = true');
+            ->where('u.isRemoved = false');
 
         //Admin can see everything, but the others... well they can only see their own organizations.
         if (!$this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
@@ -1822,5 +1823,23 @@ class UserManager
         $details['resourceManagerDisplayMode'][$index] = $displayMode;
         $options->setDetails($details);
         $this->persistUserOptions($options);
+    }
+
+    public function enable(User $user)
+    {
+        $user->enable();
+        $this->objectManager->persist($user);
+        $this->objectManager->flush();
+
+        return $user;
+    }
+
+    public function disable(User $user)
+    {
+        $user->disable();
+        $this->objectManager->persist($user);
+        $this->objectManager->flush();
+
+        return $user;
     }
 }
