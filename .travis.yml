@@ -70,8 +70,8 @@ script:
   # run static analysis tools on modified files if needed
   - [[ $CHECK = true ]] && $ROOT/vendor/bin/phpmd --exclude main/core/Resources/bundle-creator,main/web-installer `cat git_diff_files.txt | xargs | sed -e :a -e '$!N; s/ /,/; ta'` text phpmd.xml
   - [[ $CHECK = true ]] && $ROOT/vendor/bin/md `cat git_diff_files.txt | tr '\n' ' '`
-  - [[ $CHECK = true ]] $ROOT/vendor/bin/php-cs-fixer fix --dry-run --diff --config-file=main/dev/Resources/travis/php-cs.php
-  - [[ $CHECK = true ]] $ROOT/node_modules/.bin/eslint `cat git_diff_files.txt | grep 'Resources/modules/.\+\.js' | tr '\n' ' '`
+  - [[ $CHECK = true ]] && $ROOT/vendor/bin/php-cs-fixer fix --dry-run --diff --config-file=main/dev/Resources/travis/php-cs.php
+  - [[ $CHECK = true ]] && $ROOT/node_modules/.bin/eslint `cat git_diff_files.txt | grep 'Resources/modules/.\+\.js' | tr '\n' ' '`
   # launch the whole test suite
   - SYMFONY_DEPRECATIONS_HELPER=weak $ROOT/vendor/bin/phpunit
 
