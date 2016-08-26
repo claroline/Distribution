@@ -129,7 +129,6 @@ class FileImporter extends Importer implements ConfigurationInterface, RichTextI
         return $data;
     }
 
-
     // data will usually look like this:
     //
     //  item:
@@ -147,7 +146,7 @@ class FileImporter extends Importer implements ConfigurationInterface, RichTextI
     /**
      * @param array $data The file informations from the yml file,
      */
-    public function format(array $data)
+    public function format($data)
     {
         if (!$this->container->get('claroline.config.platform_config_handler')->getParameter('enable_rich_text_file_import')) {
             return;
