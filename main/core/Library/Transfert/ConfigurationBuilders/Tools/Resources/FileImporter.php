@@ -129,7 +129,25 @@ class FileImporter extends Importer implements ConfigurationInterface, RichTextI
         return $data;
     }
 
-    public function format($data)
+
+    // data will usually look like this:
+    //
+    //  item:
+    //    name: Test_image.html
+    //    creator: null
+    //    parent: 0
+    //    type: file
+    //    roles:
+    //        -
+    //             role: { name: ROLE_WS_COLLABORATOR, rights: { open: true, export: true } }
+    //    uid: 4
+    //    data:
+    //        -
+    //             file: { path: 57a1a8a17766f.html, mime_type: text/html }
+    /**
+     * @param array $data The file informations from the yml file,
+     */
+    public function format(array $data)
     {
         if (!$this->container->get('claroline.config.platform_config_handler')->getParameter('enable_rich_text_file_import')) {
             return;

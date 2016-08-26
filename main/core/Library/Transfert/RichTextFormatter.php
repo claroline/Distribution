@@ -220,7 +220,7 @@ class RichTextFormatter
             $matchReplaced
         );
 
-        if (count($matchReplaced)  > 0) {
+        if (count($matchReplaced) > 0) {
             $txt = str_replace($matchReplaced[0], "[[uid={$nodeId}]]", $txt);
         }
 
