@@ -865,27 +865,12 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         return $executeQuery ? $query->getResult() : $query;
     }
 
-    public function findEnabledUserById($userId)
-    {
-        $dql = '
-            SELECT u
-            FROM Claroline\CoreBundle\Entity\User u
-            WHERE u.id = :userId
-            AND u.isRemoved = TRUE
-        ';
-
-        $query = $this->_em->createQuery($dql);
-        $query->setParameter('userId', $userId);
-
-        return $query->getOneOrNullResult();
-    }
-
     public function findAllEnabledUsers($executeQuery = true)
     {
         $dql = '
             SELECT u
             FROM Claroline\CoreBundle\Entity\User u
-            WHERE u.isRemoved = TRUE
+            WHERE u.isEnabled = TRUE
         ';
         $query = $this->_em->createQuery($dql);
 

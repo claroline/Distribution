@@ -974,16 +974,6 @@ class UserManager
     }
 
     /**
-     * @param int $userId
-     *
-     * @return User|null
-     */
-    public function getEnabledUserById($userId)
-    {
-        return $this->userRepo->findEnabledUserById($userId);
-    }
-
-    /**
      * @return User[]
      */
     public function getAllEnabledUsers($executeQuery = true)
