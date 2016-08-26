@@ -130,7 +130,6 @@ class FileImporter extends Importer implements ConfigurationInterface, RichTextI
     }
 
     // data will usually look like this:
-    //
     //  item:
     //    name: Test_image.html
     //    creator: null
