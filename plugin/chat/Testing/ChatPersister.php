@@ -6,13 +6,11 @@ use Claroline\ChatBundle\Entity\ChatRoom;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Persistence\ObjectManager;
-use JMS\DiExtraBundle\Annotation\Inject;
-use JMS\DiExtraBundle\Annotation\InjectParams;
-use JMS\DiExtraBundle\Annotation\Service;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * @service("claroline.chat_bundle.testing.persister")
+ * @DI\Service("claroline.chat_bundle.testing.persister")
  */
 class ChatPersister
 {
@@ -32,9 +30,9 @@ class ChatPersister
     private $container;
 
     /**
-     * @InjectParams({
-     *     "om"        = @Inject("claroline.persistence.object_manager"),
-     *     "container" = @Inject("service_container")
+     * @DI\InjectParams({
+     *     "om"        = @DI\Inject("claroline.persistence.object_manager"),
+     *     "container" = @DI\Inject("service_container")
      * })
      */
     public function __construct(ObjectManager $om, ContainerInterface $container)

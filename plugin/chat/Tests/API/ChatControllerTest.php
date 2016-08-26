@@ -2,7 +2,6 @@
 
 namespace Claroline\ChatBundle\Tests\API;
 
-use Claroline\CoreBundle\Library\Testing\Persister;
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 
 class ChatControllerTest extends TransactionalTestCase
