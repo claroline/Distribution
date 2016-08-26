@@ -305,8 +305,8 @@ Notify on drop: 'Nofify the evaluation managers when someone drops a copy.'
 Notifications: 'Notifications'
 unterminated drops: 'unfinished copie(s)'
 Notify on drop: 'Nofify the managers when someone drops a copy.'
-drop_info: 'Every added document is automatically saved. Anyway, think of clicking on 'Finish' at the bottom right once you have finshed. If you don''t do so, your copy will be considered as not rendered.'
-dropzone_startedNotValidatedYet_infos: 'These copies have to do with the people who have started dropping files but haven''t ckicked on 'Finish' to validate their copies. If you don''t do anything, these copies will be considered as not rendered and won''t appear in the list of copies being corrected.'
+drop_info: 'Every added document is automatically saved. Anyway, think of clicking on "Finish" at the bottom right once you have finshed. If you don''t do so, your copy will be considered as not rendered.'
+dropzone_startedNotValidatedYet_infos: 'These copies have to do with the people who have started dropping files but haven''t ckicked on "Finish" to validate their copies. If you don''t do anything, these copies will be considered as not rendered and won''t appear in the list of copies being corrected.'
 Close unterminated drops: 'Validate the unfinished copies'
 Sorted by date with reported drops first: 'Sort by date with reported copies first.'
 only reported drops: 'Only the reported copies'
@@ -318,7 +318,7 @@ Just save: 'Save without recalculating.'
 Save and recalculate all grade: 'Save and recalculate the scores'
 You will be abble to do it later if you want: 'Remark: You will be able to do it later if you want'
 copy: 'copy'
-Report reason: 'Reason
+Report reason: 'Reason'
 Reported copy : 'Copy has been reported'
 Your modifications will only affect new corrections. For older, do you want to apply modification and recalculate grades: 'Your modifications will only affect new corrections. Do you want to apply the changes and recalculate the grades for older corrections?'
 Validate copies: "Validate the copies"
@@ -327,7 +327,7 @@ Help on peerReview mode: 'Help on peer review mode.'
 PeerReview_helper_ideal_case: 'In the peer review, the respondents will correct themselves <b>autonomously in ideal conditions </b>where the number of participants is equal to the number of corrections + 1 or a multiple of this number.'
 PeerReview_helper_ideal_case_example: 'Example : If two corrections are expected, the evaluation will be totally autonomous only if the number of participants is a multiple of 3. (Student 1 corrects 2 and 3 , Student 2 corrects 1 and 3, Student 3 corrects 1 and 2).'
 PeerReview_helper_other_cases: 'In the other cases, <b>the evaluation manager will have to intervene</b> to add the missing correction(s) when the evaluation is finished.'
-PeerReview_helper_unlock_tool: 'Remark: A tool allows the manager to 'unlock' a copy if it has been corrected at least once. He may correct it himself. It allows the administrator to avoid to create all the expected corrections (e.g. 3)  if there are no corrections for a copy. This tool is only available when the evaluation is in the "finished" phase.'
+PeerReview_helper_unlock_tool: 'Remark: A tool allows the manager to "unlock" a copy if it has been corrected at least once. He may correct it himself. It allows the administrator to avoid to create all the expected corrections (e.g. 3)  if there are no corrections for a copy. This tool is only available when the evaluation is in the "finished" phase.'
 Made by: "Rendered by"
 Force comment in correction: "Make the comment compulsory."
 Please comment: "Please leave a comment."

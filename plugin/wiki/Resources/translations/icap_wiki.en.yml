@@ -57,7 +57,7 @@ normal_message: "Every one can contribute to the wiki. Any contribution is direc
 moderate_message: 'Every one can contribute. However, only the administrator and the moderator are allowed to publish.'
 read_only_message: 'Only the administrator and the moderator are allowed to contribute to the wiki.'
 note_well: "<strong>Remark</strong>: Note that in a normal and moderate functioning, every authenticated person can take part in the wiki"
-moderate_mode_warning: '<div><strong>The wiki runs in moderate mode.</strong></div> <div>The changes will only be available after administrator's approval. A complete history of a section's revisions can be found in the "history" page.</div>'
+moderate_mode_warning: '<div><strong>The wiki runs in moderate mode.</strong></div> <div>The changes will only be available after administrator''s approval. A complete history of a section''s revisions can be found in the "history" page.</div>'
 date_format: 'm/d/Y \\a\\t H:i'
 deleted_sections: 'Removed sections'
 restore_section: 'Restored section'
