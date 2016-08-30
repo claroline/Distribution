@@ -16,7 +16,7 @@ log_resource-icap_blog-configure_banner_filter:    'Configuration de la bannièr
 
 log_resource-icap_blog-post_update_shortname: 'Modification d''un article'
 log_resource-icap_blog-post_update_title:     'Modification d''un article d''un blog'
-log_resource-icap_blog-post_update_filter:    'Modification d''un article d'un blog'
+log_resource-icap_blog-post_update_filter:    'Modification d''un article d''un blog'
 
 log_resource-icap_blog-post_delete_shortname: 'Suppression d''un article'
 log_resource-icap_blog-post_delete_title:     'Suppression d''un article d''un blog'
