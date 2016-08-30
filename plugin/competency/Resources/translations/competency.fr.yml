@@ -1,11 +1,11 @@
 ability:
-  add: Ajouter une capacité
-  create: Créer une capacité
-  delete: Supprimer une capacité
-  edit: Modifier une capacité
-  linked_activity_count: Activités liées
-  min_activity_count: Nombre d'activités à réussir
-  required_activity_count: Requis
+  add: 'Ajouter une capacité'
+  create: 'Créer une capacité'
+  delete: 'Supprimer une capacité'
+  edit: 'Modifier une capacité'
+  linked_activity_count: 'Activités liées'
+  min_activity_count: 'Nombre d''activités à réussir'
+  required_activity_count: 'Requis'
 ability_: Capacité
 associated_competencies: Compétences associées
 collapse_all: Tout réduire
