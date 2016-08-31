@@ -69,7 +69,7 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
             ->setParameter('workspace', $workspace)
             ->setParameter('name', $widgetName)
             ->getQuery()
-            ->getSingleResult();
+            ->getOneOrNullResult();
     }
 
     public function findVisibleWidgetConfigsByUser(HomeTab $homeTab, User $user)
