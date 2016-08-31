@@ -929,12 +929,11 @@ class ResourceManager
         $count = count($nodes);
         $nodes[] = $resourceNode;
         $softDelete = $this->platformConfigHandler->getParameter('resource_soft_delete');
-        $eventSoftDelete = false;
-
         $this->om->startFlushSuite();
         $this->log('Looping through '.$count.' children...');
 
         foreach ($nodes as $node) {
+            $eventSoftDelete = false;
             $this->log('Removing '.$node->getName().'['.$node->getResourceType()->getName().':id:'.$node->getId().']');
             $resource = $this->getResourceFromNode($node);
             /*
