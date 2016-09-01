@@ -82,7 +82,7 @@ message:
   objective_competency_associated: 'Competency successfully associated.'
   objective_created: 'New objective successfully created.'
   objective_deleted: 'Objective successfully removed.'
-  objective_deletion_confirm:' Are you sure you want to delete this objective ? This action is irreversible.'
+  objective_deletion_confirm:' Are you sure you want to delete this objective ? This action is irreversible.
   objective_edited: 'Objective successfully edited.'
   objective_from_group_not_unassigned: 'This objective cannot be removed directly because it has been assigned to one of the user groups.'
   objective_unassigned: 'Objective successfully removed.'
