@@ -100,14 +100,14 @@ objective:
   create_short: 'Créer un objectif'
   delete: 'Supprimer un objectif'
   edit: 'Éditer un objectif d''apprentissage'
-  groups_with: 'Groupes ayant l'objectif %objective%'
+  groups_with: Groupes ayant l'objectif %objective%
   pick_level: 'Sélectionner le niveau de compétence à atteindre '
   see_all_groups: 'Voir tous les groupes'
   see_all_users: 'Voir tous les utilisateurs'
   unassign_group: 'Retirer un objectif à un groupe'
   unassign_user: 'Retirer un objectif à un utilisateur'
   user_history: 'Historique de progression'
-  users_with: 'Utilisateurs ayant l'objectif %objective%'
+  users_with: Utilisateurs ayant l'objectif %objective%
   users_from_group: 'Utilisateurs du groupe %group%'
 objective_: 'Objectif'
 objectives: 'Objectifs'
@@ -126,7 +126,7 @@ scale:
   default_level_name: 'Niveau 1'
   default_name: 'Échelle par défaut'
   edit: 'Modifier une échelle'
-  view: 'Détails de l'échelle'
+  view: Détails de l'échelle
 scale_: 'Échelle'
 scales: 'Échelles'
 user_picker:
