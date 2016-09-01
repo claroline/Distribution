@@ -99,7 +99,7 @@ export default class CursusRegistrationManagementCtrl {
         cellRenderer: scope => {
           return `
             <button class="btn btn-danger btn-sm"
-                    ng-click="crmc.unregisterUser(${scope.$row['id']}, \'${scope.$row['firstName']} ${scope.$row['lastName']} (${scope.$row['username']})\')"
+                    ng-click="crmc.unregisterUser($row)"
             >
               ${Translator.trans('unregister', {}, 'cursus')}
             </button>
@@ -158,7 +158,7 @@ export default class CursusRegistrationManagementCtrl {
         cellRenderer: scope => {
           return `
             <button class="btn btn-danger btn-sm"
-                    ng-click="crmc.unregisterGroup(${scope.$row['id']}, \'${scope.$row['groupName']}\')"
+                    ng-click="crmc.unregisterGroup($row)"
             >
               ${Translator.trans('unregister', {}, 'cursus')}
             </button>
@@ -257,7 +257,9 @@ export default class CursusRegistrationManagementCtrl {
     userPicker.open()
   }
 
-  unregisterGroup (cursusGroupId, groupName) {
+  unregisterGroup (group) {
+    const cursusGroupId = group.id 
+    const groupName = group.groupName
     this.$uibModal.open({
       template: groupUnregistrationTemplate,
       controller: 'CursusGroupUnregistrationModalCtrl',
@@ -321,134 +323,136 @@ export default class CursusRegistrationManagementCtrl {
     }
   }
 
-  unregisterUser (cursusUserId, name) {
-    this.$uibModal.open({
-      template: userUnregistrationTemplate,
-      controller: 'CursusUserUnregistrationModalCtrl',
-      controllerAs: 'cuumc',
-      resolve: {
-        cursusUserId: () => { return cursusUserId },
-        name: () => { return name },
-        callBack: () => { return this.removeCursusUser }
-      }
-    })
-  }
+  unregisterUser (user) {
+      const cursusUserId = user.id
+          const name = `${user['firstName']} ${user['lastName']} (${user['username']})`
+          this.$uibModal.open({
+template: userUnregistrationTemplate,
+controller: 'CursusUserUnregistrationModalCtrl',
+controllerAs: 'cuumc',
+resolve: {
+cursusUserId: () => { return cursusUserId },
+name: () => { return name },
+callBack: () => { return this.removeCursusUser }
+}
+})
+}
 
-  unregisterSelectedUsers () {
-    let idsTxt = ''
+unregisterSelectedUsers () {
+        let idsTxt = ''
 
-    for (let userId in this.selectedUsers) {
-      if (this.selectedUsers[userId]) {
-        idsTxt += userId + ','
-      }
-    }
-    const length = idsTxt.length
+                for (let userId in this.selectedUsers) {
+                        if (this.selectedUsers[userId]) {
+                                idsTxt += userId + ','
+                        }
+                }
+        const length = idsTxt.length
 
-    if (length > 0) {
-      idsTxt = idsTxt.substr(0, length - 1)
-    }
-    this.$uibModal.open({
-      template: usersUnregistrationTemplate,
-      controller: 'CursusUsersUnregistrationModalCtrl',
-      controllerAs: 'cuumc',
-      resolve: {
-        cursusId: () => { return this.currentCursusId },
-        usersIdsTxt: () => { return idsTxt },
-        callBack: () => { return this.removeCursusUsers }
-      }
-    })
-  }
+                if (length > 0) {
+                        idsTxt = idsTxt.substr(0, length - 1)
+                }
+        this.$uibModal.open({
+template: usersUnregistrationTemplate,
+controller: 'CursusUsersUnregistrationModalCtrl',
+controllerAs: 'cuumc',
+resolve: {
+cursusId: () => { return this.currentCursusId },
+usersIdsTxt: () => { return idsTxt },
+callBack: () => { return this.removeCursusUsers }
+}
+})
+}
 
-  removeCursusUser (cursusUserId) {
-    for (let i = 0; i < this.cursusUsers.length; i++) {
-      if (this.cursusUsers[i]['id'] === cursusUserId) {
-        this.cursusUsers.splice(i, 1)
-        break
-      }
-    }
-  }
-
-  isGroupSelected () {
-    let selected = false
-
-    for (let cursusGroupId in this.selectedCursusGroups) {
-      if (this.selectedCursusGroups[cursusGroupId]) {
-        selected = true
-        break
-      }
-    }
-
-    return selected
-  }
-
-  isUserSelected () {
-    let selected = false
-
-    for (let userId in this.selectedUsers) {
-      if (this.selectedUsers[userId]) {
-        selected = true
-        break
-      }
-    }
-
-    return selected
-  }
-
-  toggleAllGroups () {
-    this.allGroups = !this.allGroups
-
-    for (let cursusGroupId in this.selectedCursusGroups) {
-      this.selectedCursusGroups[cursusGroupId] = this.allGroups
-    }
-  }
-
-  toggleAllUsers () {
-    this.allUsers = !this.allUsers
-
-    for (let userId in this.selectedUsers) {
-      this.selectedUsers[userId] = this.allUsers
-    }
-  }
-
-  updateCursusUsers () {
-    const route = Routing.generate(
-      'api_get_cursus_users_for_cursus_registration',
-      {cursus: this.currentCursusId}
-    )
-    this.$http.get(route).then(datas => {
-      if (datas['status'] === 200) {
-        this.cursusUsers = datas['data']
-      }
-    })
-  }
-
-  initialize () {
-    const route = Routing.generate('api_get_datas_for_cursus_registration', {cursus: this.currentCursusId})
-    this.$http.get(route).then(datas => {
-      const data = datas['data']
-      this.hierarchy = data['hierarchy']
-      this.lockedHierarchy = data['lockedHierarchy']
-      this.unlockedCursus = data['unlockedCursus']
-      this.cursusGroups = data['cursusGroups']
-      this.cursusUsers = data['cursusUsers']
-
-      for (let i = 0; i < this.unlockedCursus.length; i++) {
-        this.unlockedCursusTxt += this.unlockedCursus[i]
-
-        if (i < this.unlockedCursus.length - 1) {
-          this.unlockedCursusTxt += ','
+removeCursusUser (cursusUserId) {
+        for (let i = 0; i < this.cursusUsers.length; i++) {
+                if (this.cursusUsers[i]['id'] === cursusUserId) {
+                        this.cursusUsers.splice(i, 1)
+                                break
+                }
         }
-      }
+}
 
-      for (let i = 0; i < this.cursusGroups.length; i++) {
-        let cursusGroupId = this.cursusGroups[i]['id']
-        this.selectedCursusGroups[cursusGroupId] = false
-      }
+isGroupSelected () {
+        let selected = false
 
-      for (let i = 0; i < this.cursusUsers.length; i++) {
-        let userId = this.cursusUsers[i]['userId']
-        this.selectedUsers[userId] = false
-      }
-    })
-  }
+                for (let cursusGroupId in this.selectedCursusGroups) {
+                        if (this.selectedCursusGroups[cursusGroupId]) {
+                                selected = true
+                                        break
+                        }
+                }
+
+        return selected
+}
+
+isUserSelected () {
+        let selected = false
+
+                for (let userId in this.selectedUsers) {
+                        if (this.selectedUsers[userId]) {
+                                selected = true
+                                        break
+                        }
+                }
+
+        return selected
+}
+
+toggleAllGroups () {
+        this.allGroups = !this.allGroups
+
+                for (let cursusGroupId in this.selectedCursusGroups) {
+                        this.selectedCursusGroups[cursusGroupId] = this.allGroups
+                }
+}
+
+toggleAllUsers () {
+        this.allUsers = !this.allUsers
+
+                for (let userId in this.selectedUsers) {
+                        this.selectedUsers[userId] = this.allUsers
+                }
+}
+
+updateCursusUsers () {
+        const route = Routing.generate(
+                        'api_get_cursus_users_for_cursus_registration',
+                        {cursus: this.currentCursusId}
+                        )
+                this.$http.get(route).then(datas => {
+                                if (datas['status'] === 200) {
+                                this.cursusUsers = datas['data']
+                                }
+                                })
+}
+
+initialize () {
+        const route = Routing.generate('api_get_datas_for_cursus_registration', {cursus: this.currentCursusId})
+                this.$http.get(route).then(datas => {
+                                const data = datas['data']
+                                this.hierarchy = data['hierarchy']
+                                this.lockedHierarchy = data['lockedHierarchy']
+                                this.unlockedCursus = data['unlockedCursus']
+                                this.cursusGroups = data['cursusGroups']
+                                this.cursusUsers = data['cursusUsers']
+
+                                for (let i = 0; i < this.unlockedCursus.length; i++) {
+                                this.unlockedCursusTxt += this.unlockedCursus[i]
+
+                                if (i < this.unlockedCursus.length - 1) {
+                                this.unlockedCursusTxt += ','
+                                }
+                                }
+
+                                for (let i = 0; i < this.cursusGroups.length; i++) {
+                                let cursusGroupId = this.cursusGroups[i]['id']
+                                this.selectedCursusGroups[cursusGroupId] = false
+                                }
+
+                                for (let i = 0; i < this.cursusUsers.length; i++) {
+                                        let userId = this.cursusUsers[i]['userId']
+                                                this.selectedUsers[userId] = false
+                                }
+                })
+}
 }
