@@ -121,10 +121,8 @@
             setInterval(function() {
                 var newHeight = getIframeWindowHeight();
 
-                if (newHeight =! null) {
-                    if (newHeight != oldHeight) {
-                        postHeight(newHeight);
-                    }
+                if (newHeight !== null && newHeight !== oldHeight) {
+                    postHeight(newHeight);
                     oldHeight = newHeight;
                 }
 
