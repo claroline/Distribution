@@ -96,7 +96,7 @@ export default class CursusRegistrationManagementCtrl {
             </button>
           `
         },
-        cellRenderer: scope => {
+        cellRenderer: () => {
           return `
             <button class="btn btn-danger btn-sm"
                     ng-click="crmc.unregisterUser($row)"
@@ -155,7 +155,7 @@ export default class CursusRegistrationManagementCtrl {
             </button>
           `
         },
-        cellRenderer: scope => {
+        cellRenderer: () => {
           return `
             <button class="btn btn-danger btn-sm"
                     ng-click="crmc.unregisterGroup($row)"
