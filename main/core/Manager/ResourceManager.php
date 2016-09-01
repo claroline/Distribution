@@ -949,7 +949,7 @@ class ResourceManager
                     );
 
                     $eventSoftDelete = $event->isSoftDelete();
-                    
+
                     foreach ($event->getFiles() as $file) {
                         if ($softDelete) {
                             $parts = explode(
