@@ -41,8 +41,8 @@ application/x.match+json: Association
 application/x.short+json: Ouverte
 
 # B
-badge_obtained: Félicitations ! Vous avez obtenu le badge de connaissances
-badge_no_obtained: Vous n'avez pas encore obtenu le badge de connaissance
+badge_obtained: Félicitations ! Vous avez obtenu le badge de connaissances.
+badge_no_obtained: Vous n'avez pas encore obtenu le badge de connaissance.
 back: Retour
 back_to_overview: Retourner à la vue d'ensemble de l'exercice
 back_to_the_list: Retour à la liste
