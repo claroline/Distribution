@@ -229,6 +229,7 @@ class ExerciseManager
         $newExercise->setMarkMode($exercise->getMarkMode());
         $newExercise->setDispButtonInterrupt($exercise->getDispButtonInterrupt());
         $newExercise->setLockAttempt($exercise->getLockAttempt());
+        $newExercise->setMinimalCorrection($exercise->isMinimalCorrection());
 
         /** @var \UJM\ExoBundle\Entity\Step $step */
         foreach ($exercise->getSteps() as $step) {
@@ -332,6 +333,7 @@ class ExerciseManager
         $exercise->setAnonymous($metadata->anonymous);
         $exercise->setDuration($metadata->duration);
         $exercise->setStatistics($metadata->statistics ? true : false);
+        $exercise->setMinimalCorrection($metadata->minimalCorrection ? true : false);
 
         $correctionDate = null;
         if (!empty($metadata->correctionDate) && CorrectionMode::AFTER_DATE === $metadata->correctionMode) {
@@ -388,6 +390,7 @@ class ExerciseManager
             'endDate' => $endDate,
             'published' => $node->isPublished(),
             'publishedOnce' => $exercise->wasPublishedOnce(),
+            'minimalCorrection' => $exercise->isMinimalCorrection(),
         ];
     }
 

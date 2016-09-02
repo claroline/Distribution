@@ -87,6 +87,14 @@ PaperService.prototype.setCurrent = function setCurrent(current) {
 };
 
 /**
+ * Get Exercise Metadata
+ */
+PaperService.prototype.getExerciseMeta = function getExerciseMeta() {
+    var exercise = this.ExerciseService.getExercise();
+    return exercise.meta;
+};
+
+/**
  * Get all papers for an Exercise
  * @returns {Promise}
  */

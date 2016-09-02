@@ -40,8 +40,8 @@ class InteractionQCMHandler extends QuestionHandler
         $interQCM->getQuestion()->setDateCreate(new \Datetime());
         $interQCM->getQuestion()->setUser($this->user);
 
-        $pointsWrong = str_replace(',', '.', $interQCM->getScoreFalseResponse());
-        $pointsRight = str_replace(',', '.', $interQCM->getScoreRightResponse());
+        $pointsWrong = floatval($interQCM->getScoreFalseResponse());
+        $pointsRight = floatval($interQCM->getScoreRightResponse());
 
         $interQCM->setScoreFalseResponse($pointsWrong);
         $interQCM->setScoreRightResponse($pointsRight);

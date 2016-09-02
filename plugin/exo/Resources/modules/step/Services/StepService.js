@@ -85,4 +85,12 @@ StepService.prototype.save = function save(step, meta) {
     return deferred.promise;
 };
 
+/**
+ * Get Exercise Metadata
+ */
+StepService.prototype.getExerciseMeta = function getExerciseMeta() {
+    var exercise = this.ExerciseService.getExercise();
+    return exercise.meta;
+};
+
 export default StepService

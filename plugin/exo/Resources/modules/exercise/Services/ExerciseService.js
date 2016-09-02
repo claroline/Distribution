@@ -56,7 +56,6 @@ ExerciseService.prototype.getExercise = function getExercise() {
  */
 ExerciseService.prototype.setExercise = function setExercise(exercise) {
     this.exercise = exercise;
-
     return this;
 };
 

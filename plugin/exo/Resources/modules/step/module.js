@@ -59,6 +59,7 @@ angular
     'UserPaperService',
     'FeedbackService',
     'QuestionService',
+    'StepService',
     StepShowCtrl
   ])
   .directive('stepShow', [
