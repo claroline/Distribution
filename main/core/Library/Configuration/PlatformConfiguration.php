@@ -85,6 +85,7 @@ class PlatformConfiguration
     private $googleGeocodingKey;
     private $formHoneypot;
     private $sslEnabled;
+    private $enableRichTextFileImport;
 
     /**
      * @param mixed $sessionDbDataCol
@@ -766,5 +767,15 @@ class PlatformConfiguration
     public function getSslEnabled()
     {
         return $this->sslEnabled;
+    }
+
+    public function setEnableRichTextFileImport($bool)
+    {
+        $this->enableRichTextFileImport = $bool;
+    }
+
+    public function getEnableRichTextFileImport()
+    {
+        return $this->enableRichTextFileImport;
     }
 }
