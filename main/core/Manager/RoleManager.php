@@ -346,7 +346,7 @@ class RoleManager
      */
     public function resetWorkspaceRolesForSubject(AbstractRoleSubject $subject, Workspace $workspace)
     {
-        $roles = $subject instanceof \Claroline\CoreBundle\Entity\Group ?
+        $roles = $subject instanceof Group ?
             $this->roleRepo->findByGroupAndWorkspace($subject, $workspace) :
             $this->roleRepo->findByUserAndWorkspace($subject, $workspace);
 
@@ -447,7 +447,7 @@ class RoleManager
 
         foreach ($subjects as $subject) {
             if ($subject->hasRole($managerRole->getName()) && in_array($managerRole, $roles)) {
-                $subject instanceof \Claroline\CoreBundle\Entity\Group ?
+                $subject instanceof Group ?
                     $removedGroupsManager++ :
                     $removedUsersManager++;
             }
