@@ -14,17 +14,17 @@ class Version20160901163804 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
-        $this->addSql("
-            ALTER TABLE ujm_exercise 
+        $this->addSql('
+            ALTER TABLE ujm_exercise
             ADD minimal_correction TINYINT(1) NOT NULL
-        ");
+        ');
     }
 
     public function down(Schema $schema)
     {
-        $this->addSql("
-            ALTER TABLE ujm_exercise 
+        $this->addSql('
+            ALTER TABLE ujm_exercise
             DROP minimal_correction
-        ");
+        ');
     }
 }
