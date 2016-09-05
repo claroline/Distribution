@@ -9,6 +9,7 @@ import 'angular-strap'
 import 'angular-ui-tinymce'
 import 'angular-ui-translation/angular-translation'
 import '#/main/core/modal/module'
+import '#/main/core/fos-js-router/module'
 
 import './../common/module'
 import './../feedback/module'
@@ -74,5 +75,7 @@ angular
   .service('ExerciseService', [
     '$http',
     '$q',
+    '$filter',
+    'url',
     ExerciseService
   ])

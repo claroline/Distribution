@@ -1,12 +1,18 @@
+import angular from 'angular/index'
+
+//this.filter('trans')('marker_drag_title', {}, 'media_resource')
+
 /**
  * Exercise Service
  * @param {Object} $http
  * @param {Object} $q
  * @constructor
  */
-function ExerciseService($http, $q) {
+function ExerciseService($http, $q, $filter, url) {
   this.$http = $http
   this.$q    = $q
+  this.filter = $filter
+  this.UrlService = url
 }
 
 /**
@@ -20,10 +26,10 @@ ExerciseService.prototype.exercise = null
  * @type {Object}
  */
 ExerciseService.prototype.correctionModes = {
-  '1': Translator.trans('at_the_end_of_assessment', {}, 'ujm_exo'),
-  '2': Translator.trans('after_the_last_attempt', {}, 'ujm_exo'),
-  '3': Translator.trans('from', {}, 'ujm_exo'),
-  '4': Translator.trans('never', {}, 'ujm_exo')
+  '1': this.filter.trans('at_the_end_of_assessment', {}, 'ujm_exo'),
+  '2': this.filter.trans('after_the_last_attempt', {}, 'ujm_exo'),
+  '3': this.filter.trans('from', {}, 'ujm_exo'),
+  '4': this.filter.trans('never', {}, 'ujm_exo')
 }
 
 /**
@@ -31,8 +37,8 @@ ExerciseService.prototype.correctionModes = {
  * @type {Object}
  */
 ExerciseService.prototype.markModes = {
-  '1': Translator.trans('at_the_same_time_that_the_correction', {}, 'ujm_exo'),
-  '2': Translator.trans('at_the_end_of_assessment', {}, 'ujm_exo')
+  '1': this.filter.trans('at_the_same_time_that_the_correction', {}, 'ujm_exo'),
+  '2': this.filter.trans('at_the_end_of_assessment', {}, 'ujm_exo')
 }
 
 /**
@@ -108,7 +114,7 @@ ExerciseService.prototype.save = function save(metadata) {
 
   this.$http
         .put(
-            Routing.generate('ujm_exercise_update_meta', { id: this.exercise.id }),
+            this.UrlService.generate('ujm_exercise_update_meta', { id: this.exercise.id }),
             metadata
         )
         .success(function onSuccess(response) {
@@ -117,7 +123,7 @@ ExerciseService.prototype.save = function save(metadata) {
 
           deferred.resolve(response)
         }.bind(this))
-        .error(function onError(response, status) {
+        .error(function onError(response) {
             // TODO : display message
 
           deferred.reject(response)
@@ -173,13 +179,13 @@ ExerciseService.prototype.reorderSteps = function reorderSteps() {
   var deferred = this.$q.defer()
   this.$http
         .put(
-            Routing.generate('exercise_step_reorder', { exerciseId: this.exercise.id }),
+            this.UrlService.generate('exercise_step_reorder', { exerciseId: this.exercise.id }),
             order
         )
         .success(function onSuccess(response) {
           deferred.resolve(response)
         })
-        .error(function onError(data, status) {
+        .error(function onError() {
           deferred.reject([])
         })
 
@@ -207,7 +213,7 @@ ExerciseService.prototype.addStep = function addStep() {
   var deferred = this.$q.defer()
   this.$http
         .post(
-            Routing.generate('exercise_step_add', { exerciseId: this.exercise.id }),
+            this.UrlService.generate('exercise_step_add', { exerciseId: this.exercise.id }),
             step
         )
         // Success callback
@@ -218,7 +224,7 @@ ExerciseService.prototype.addStep = function addStep() {
           deferred.resolve(response)
         })
         // Error callback
-        .error(function (data, status) {
+        .error(function () {
             // Remove step
           var pos = this.exercise.steps.indexOf(step)
           if (-1 !== pos) {
@@ -246,14 +252,14 @@ ExerciseService.prototype.removeStep = function removeStep(step) {
   var deferred = this.$q.defer()
   this.$http
         .delete(
-            Routing.generate('exercise_step_delete', { exerciseId: this.exercise.id, id: step.id })
+            this.UrlService.generate('exercise_step_delete', { exerciseId: this.exercise.id, id: step.id })
         )
         // Success callback
         .success(function (response) {
           deferred.resolve(response)
         })
         // Error callback
-        .error(function (data, status) {
+        .error(function () {
             // Restore item
             // TODO : push step at the correct position
           this.exercise.steps.push(stepBack)
@@ -279,14 +285,14 @@ ExerciseService.prototype.removeItem = function removeItem(step, item) {
   var deferred = this.$q.defer()
   this.$http
         .delete(
-            Routing.generate('ujm_exercise_question_delete', { id: this.exercise.id, qid: item.id })
+            this.UrlService.generate('ujm_exercise_question_delete', { id: this.exercise.id, qid: item.id })
         )
         // Success callback
         .success(function (response) {
           deferred.resolve(response)
         })
         // Error callback
-        .error(function (data, status) {
+        .error(function () {
             // Restore item
           step.items.push(itemBack)
 
@@ -313,7 +319,7 @@ ExerciseService.prototype.publish = function publish() {
 
   this.$http
         .post(
-            Routing.generate('ujm_exercise_publish', { id: this.exercise.id })
+            this.UrlService.generate('ujm_exercise_publish', { id: this.exercise.id })
         )
         // Success callback
         .success(function (response) {
@@ -322,7 +328,7 @@ ExerciseService.prototype.publish = function publish() {
           deferred.resolve(response)
         })
         // Error callback
-        .error(function (data, status) {
+        .error(function () {
             // Remove published flags
           this.exercise.meta.published     = false
           this.exercise.meta.publishedOnce = publishedOnceBackup
@@ -347,7 +353,7 @@ ExerciseService.prototype.unpublish = function unpublish() {
 
   this.$http
         .post(
-            Routing.generate('ujm_exercise_unpublish', { id: this.exercise.id })
+            this.UrlService.generate('ujm_exercise_unpublish', { id: this.exercise.id })
         )
         // Success callback
         .success(function (response) {
@@ -356,7 +362,7 @@ ExerciseService.prototype.unpublish = function unpublish() {
           deferred.resolve(response)
         })
         // Error callback
-        .error(function (data, status) {
+        .error(function () {
             // Remove published flags
           this.exercise.meta.published = true
 

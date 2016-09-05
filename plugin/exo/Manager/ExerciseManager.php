@@ -361,7 +361,7 @@ class ExerciseManager
         $authorName = sprintf('%s %s', $creator->getFirstName(), $creator->getLastName());
 
         // Accessibility dates
-        $startDate = $node->getAccessibleFrom()  ? $node->getAccessibleFrom()->format('Y-m-d\TH:i:s') : null;
+        $startDate = $node->getAccessibleFrom() ? $node->getAccessibleFrom()->format('Y-m-d\TH:i:s') : null;
         $endDate = $node->getAccessibleUntil() ? $node->getAccessibleUntil()->format('Y-m-d\TH:i:s') : null;
         $correctionDate = $exercise->getDateCorrection() ? $exercise->getDateCorrection()->format('Y-m-d\TH:i:s') : null;
 

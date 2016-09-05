@@ -1,3 +1,5 @@
+import angular from 'angular/index'
+
 /**
  * Step Service
  * @param {Object}          $http
@@ -6,9 +8,10 @@
  * @param {QuestionService} QuestionService
  * @constructor
  */
-function StepService($http, $q, ExerciseService, QuestionService) {
+function StepService($http, $q, url, ExerciseService, QuestionService) {
   this.$http = $http
   this.$q = $q
+  this.UrlService = url
   this.ExerciseService = ExerciseService
   this.QuestionService = QuestionService
 }
@@ -27,7 +30,7 @@ StepService.prototype.reorderItems = function reorderSteps(step) {
   var deferred = this.$q.defer()
   this.$http
         .put(
-            Routing.generate('exercise_question_reorder', { exerciseId: exercise.id, id: step.id }),
+            this.UrlService.generate('exercise_question_reorder', { exerciseId: exercise.id, id: step.id }),
             order
         )
         .success(function onSuccess(response) {
@@ -67,7 +70,7 @@ StepService.prototype.save = function save(step, meta) {
   var deferred = this.$q.defer()
   this.$http
         .put(
-            Routing.generate('exercise_step_update_meta', { exerciseId: exercise.id, id: step.id }),
+            this.UrlService.generate('exercise_step_update_meta', { exerciseId: exercise.id, id: step.id }),
             meta
         )
         .success(function onSuccess(response) {

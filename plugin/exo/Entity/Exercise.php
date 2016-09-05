@@ -134,7 +134,8 @@ class Exercise extends AbstractResource
 
     /**
      * Flag indicating that we do not show the entire correction for the exercise
-     * (equals hide Awaited answer filed) when displaying instant feedback and exercise correction page
+     * (equals hide Awaited answer filed) when displaying instant feedback and exercise correction page.
+     *
      * @ORM\Column(name="minimal_correction", type="boolean")
      */
     private $minimalCorrection = false;
@@ -466,8 +467,8 @@ class Exercise extends AbstractResource
     }
 
     /**
-    * Do we have to show the minimal correction view ?
-    */
+     * Do we have to show the minimal correction view ?
+     */
     public function setMinimalCorrection($minimalCorrection)
     {
         $this->minimalCorrection = $minimalCorrection;
@@ -475,9 +476,9 @@ class Exercise extends AbstractResource
     }
 
     /**
-    * Do we have to show the minimal correction view ?
-    * @return bool
-    */
+     * Do we have to show the minimal correction view ?
+     * @return bool
+     */
     public function isMinimalCorrection()
     {
         return $this->minimalCorrection;

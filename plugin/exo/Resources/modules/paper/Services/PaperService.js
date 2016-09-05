@@ -1,3 +1,5 @@
+import angular from 'angular/index'
+
 /**
  * Papers service
  * @param {Object}           $http
@@ -7,12 +9,13 @@
  * @param {QuestionService}  QuestionService
  * @constructor
  */
-function PaperService($http, $q, ExerciseService, StepService, QuestionService) {
+function PaperService($http, $q, ExerciseService, StepService, QuestionService, url) {
   this.$http           = $http
   this.$q              = $q
   this.ExerciseService = ExerciseService
   this.StepService     = StepService
   this.QuestionService = QuestionService
+  this.UrlService = url
 }
 
 /**
@@ -60,16 +63,14 @@ PaperService.prototype.getCurrent = function getCurrent(id) {
   if (!this.current || !this.current.paper || id !== this.current.paper.id) {
         // We need to load the paper from the server
     this.$http
-            .get(Routing.generate('exercise_export_paper', { id: id }))
+            .get(this.UrlService.generate('exercise_export_paper', { id: id }))
             .success(function (response) {
               this.current = response
 
               deferred.resolve(this.current)
             }.bind(this))
-            .error(function (data, status) {
+            .error(function () {
               deferred.reject([])
-              var msg = data && data.error && data.error.message ? data.error.message : 'Correction get one error'
-              var code = data && data.error && data.error.code ? data.error.code : 403
             })
   } else {
         // Send the current loaded paper
@@ -103,16 +104,14 @@ PaperService.prototype.getAll = function getAll() {
 
   var deferred = this.$q.defer()
   this.$http
-        .get(Routing.generate('exercise_papers', { id: exercise.id }))
+        .get(this.UrlService.generate('exercise_papers', { id: exercise.id }))
         .success(function (response) {
           this.setNbPapers(response.length)
 
           deferred.resolve(response)
         }.bind(this))
-        .error(function (data, status) {
+        .error(function () {
           deferred.reject([])
-          var msg = data && data.error && data.error.message ? data.error.message : 'Papers get all error'
-          var code = data && data.error && data.error.code ? data.error.code : 403
         })
 
   return deferred.promise
@@ -170,7 +169,7 @@ PaperService.prototype.deleteAll = function deleteAll(papers) {
 
   var deferred = this.$q.defer()
   this.$http
-        .delete(Routing.generate('ujm_exercise_delete_papers', { id: exercise.id }))
+        .delete(this.UrlService.generate('ujm_exercise_delete_papers', { id: exercise.id }))
         .success(function (response) {
           papers.splice(0, papers.length) // Empty the Papers list
 
@@ -178,7 +177,7 @@ PaperService.prototype.deleteAll = function deleteAll(papers) {
 
           deferred.resolve(response)
         }.bind(this))
-        .error(function (data, status) {
+        .error(function () {
           deferred.reject([])
         })
 
@@ -212,7 +211,7 @@ PaperService.prototype.saveScore = function saveScore(question, score) {
   var deferred = this.$q.defer()
   this.$http
         .put(
-            Routing.generate('exercise_save_score', { id: this.current.paper.id, questionId: question.id, score: score })
+            this.UrlService.generate('exercise_save_score', { id: this.current.paper.id, questionId: question.id, score: score })
         )
         .success(function onSuccess(response) {
             // Update paper instance
@@ -220,7 +219,7 @@ PaperService.prototype.saveScore = function saveScore(question, score) {
 
           deferred.resolve(response)
         }.bind(this))
-        .error(function onError(data, status) {
+        .error(function onError() {
           deferred.reject([])
         })
 
@@ -303,8 +302,8 @@ PaperService.prototype.orderStepQuestions = function orderStepQuestions(paper, s
     }
 
     if (itemsOrder) {
-      for (var i = 0; i < itemsOrder.length; i++) {
-        var question = this.StepService.getQuestion(step, itemsOrder[i])
+      for (var j = 0; j < itemsOrder.length; j++) {
+        var question = this.StepService.getQuestion(step, itemsOrder[j])
         if (question) {
           ordered.push(question)
         }
