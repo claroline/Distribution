@@ -45,6 +45,8 @@ class UserDeleteListener
     {
         $user = $event->getUser();
         $chatUser = $this->chatManager->getChatUserByUser($user);
-        $this->chatManager->deleteChatUser($chatUser);
+        if ($chatUser) {
+            $this->chatManager->deleteChatUser($chatUser);
+        }
     }
 }
