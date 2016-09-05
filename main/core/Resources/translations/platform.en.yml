@@ -1322,3 +1322,4 @@ field_not_empty: Please let the field empty
 disable: Disable
 enable: Enable
 workspace_access_date_invalid: The workspace access dates are passed
+organization_invalid: The organization %organization% doesn't exist at line %line%
