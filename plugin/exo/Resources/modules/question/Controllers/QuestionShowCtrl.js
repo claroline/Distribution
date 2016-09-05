@@ -9,10 +9,11 @@ export default class QuestionShowCtrl {
    * @param {QuestionService} QuestionService
    * @param {FeedbackService} FeedbackService
    */
-  constructor($uibModal, ExerciseService, FeedbackService) {
+  constructor($uibModal, ExerciseService, QuestionService, FeedbackService) {
     this.$uibModal = $uibModal
-    this.ExerciseService  = ExerciseService
-    this.FeedbackService  = FeedbackService
+    this.ExerciseService = ExerciseService
+    this.QuestionService = QuestionService
+    this.FeedbackService = FeedbackService
 
     /**
      * Is the Question panel collapsed ?
@@ -31,6 +32,10 @@ export default class QuestionShowCtrl {
      * @type {Object}
      */
     this.feedback = this.FeedbackService.get()
+
+    if (!this.answer) {
+      this.answer = this.QuestionService.getTypeService(this.question.type).initAnswer()
+    }
 
     // Force the feedback when correction is shown
     if (this.includeCorrection && !this.FeedbackService.isEnabled()) {

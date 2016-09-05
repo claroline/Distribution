@@ -48,6 +48,7 @@ angular
   .controller('QuestionShowCtrl', [
     '$uibModal',
     'ExerciseService',
+    'QuestionService',
     'FeedbackService',
     QuestionShowCtrl
   ])

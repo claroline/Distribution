@@ -39,8 +39,8 @@ function ExercisePlayerCtrl(
   this.step = step
 
   this.index = this.UserPaperService.getIndex(step)
-  this.previous = this.ExerciseService.getStep(this.UserPaperService.getPreviousStepId(step))
-  this.next = this.ExerciseService.getStep(this.UserPaperService.getNextStepId(step))
+  this.previous = this.UserPaperService.getPreviousStep(step)
+  this.next = this.UserPaperService.getNextStep(step)
 
   this.allAnswersFound = -1
 

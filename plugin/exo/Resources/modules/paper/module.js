@@ -38,6 +38,7 @@ angular
   .service('UserPaperService', [
     '$http',
     '$q',
+    '$filter',
     'PaperService',
     'ExerciseService',
     'url',
