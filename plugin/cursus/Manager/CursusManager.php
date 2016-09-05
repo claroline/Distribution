@@ -1089,7 +1089,7 @@ class CursusManager
         return $results;
     }
 
-    public function registerUsersToSessions(array $sessions, array $users, $type = 0)
+    public function registerUsersToSessions(array $sessions, array $users, $type = 0, $force = false)
     {
         $results = ['status' => 'success', 'datas' => []];
 
@@ -1118,13 +1118,15 @@ class CursusManager
 
             foreach ($sessions as $session) {
                 foreach ($users as $user) {
-                    $sessionUser = $this->sessionUserRepo->findOneSessionUserBySessionAndUserAndType(
-                        $session,
-                        $user,
-                        $type
-                    );
+                    if (!$force) {
+                        $sessionUser = $this->sessionUserRepo->findOneSessionUserBySessionAndUserAndType(
+                            $session,
+                            $user,
+                            $type
+                        );
+                    }
 
-                    if (is_null($sessionUser)) {
+                    if (is_null($sessionUser) || $force) {
                         $sessionUser = new CourseSessionUser();
                         $sessionUser->setSession($session);
                         $sessionUser->setUser($user);
