@@ -1118,6 +1118,8 @@ class CursusManager
 
             foreach ($sessions as $session) {
                 foreach ($users as $user) {
+                    $sessionUser = null;
+
                     if (!$force) {
                         $sessionUser = $this->sessionUserRepo->findOneSessionUserBySessionAndUserAndType(
                             $session,
