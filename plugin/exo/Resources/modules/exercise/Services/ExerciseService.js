@@ -1,18 +1,27 @@
 import angular from 'angular/index'
 
-//this.filter('trans')('marker_drag_title', {}, 'media_resource')
-
 /**
  * Exercise Service
  * @param {Object} $http
  * @param {Object} $q
  * @constructor
  */
-function ExerciseService($http, $q, $filter, url) {
+function ExerciseService($http, $q, Translator, url) {
   this.$http = $http
   this.$q    = $q
-  this.filter = $filter
   this.UrlService = url
+  this.correctionModes = {
+    '1': Translator.trans('at_the_end_of_assessment', {}, 'ujm_exo'),
+    '2': Translator.trans('after_the_last_attempt', {}, 'ujm_exo'),
+    '3': Translator.trans('from', {}, 'ujm_exo'),
+    '4': Translator.trans('never', {}, 'ujm_exo')
+  }
+
+  this.markModes = {
+    '1': Translator.trans('at_the_same_time_that_the_correction', {}, 'ujm_exo'),
+    '2': Translator.trans('at_the_end_of_assessment', {}, 'ujm_exo')
+  }
+
 }
 
 /**
@@ -20,26 +29,6 @@ function ExerciseService($http, $q, $filter, url) {
  * @type {Object}
  */
 ExerciseService.prototype.exercise = null
-
-/**
- * List of available correction modes for Exercise
- * @type {Object}
- */
-ExerciseService.prototype.correctionModes = {
-  '1': this.filter.trans('at_the_end_of_assessment', {}, 'ujm_exo'),
-  '2': this.filter.trans('after_the_last_attempt', {}, 'ujm_exo'),
-  '3': this.filter.trans('from', {}, 'ujm_exo'),
-  '4': this.filter.trans('never', {}, 'ujm_exo')
-}
-
-/**
- * List of available mark modes for Exercise
- * @type {Object}
- */
-ExerciseService.prototype.markModes = {
-  '1': this.filter.trans('at_the_same_time_that_the_correction', {}, 'ujm_exo'),
-  '2': this.filter.trans('at_the_end_of_assessment', {}, 'ujm_exo')
-}
 
 /**
  * Is the current User can edit the Exercise ?
