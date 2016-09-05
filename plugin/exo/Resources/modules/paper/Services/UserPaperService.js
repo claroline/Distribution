@@ -12,14 +12,16 @@ export default class UserPaperService {
    * @param {Object}          $http
    * @param {Object}          $q
    * @param {Object}          $filter
+   * @param {PaperGenerator}    PaperGenerator
    * @param {PaperService}    PaperService
    * @param {ExerciseService} ExerciseService
    * @param {url}             url
    */
-  constructor($http, $q, $filter, PaperService, ExerciseService, url) {
+  constructor($http, $q, $filter, PaperGenerator, PaperService, ExerciseService, url) {
     this.$http = $http
     this.$q = $q
     this.$filter = $filter
+    this.PaperGenerator = PaperGenerator
     this.PaperService = PaperService
     this.ExerciseService = ExerciseService
     this.UrlService = url
@@ -181,15 +183,21 @@ export default class UserPaperService {
 
     if (!this.paper || this.paper.end) {
       // Start a new Paper (or load an interrupted one)
-      this.$http
-        .post(this.UrlService('exercise_new_attempt', {id: exercise.id}))
-        .success(response => {
-          this.paper = response
-          deferred.resolve(this.paper)
-        })
-        .error(() => {
-          deferred.reject({})
-        })
+      if (!this.PaperService.isNoSaveMode()) {
+        // Submit the attempt to the server
+        this.$http
+          .post(this.UrlService('exercise_new_attempt', {id: exercise.id}))
+          .success(response => {
+            this.paper = response
+            deferred.resolve(this.paper)
+          })
+          .error(() => {
+            deferred.reject({})
+          })
+      } else {
+        this.paper = this.PaperGenerator.generate(exercise, 'anonymous', this.paper)
+        deferred.resolve(this.paper)
+      }
     } else {
       // Continue the current Paper
       deferred.resolve(this.paper)
@@ -213,60 +221,78 @@ export default class UserPaperService {
   submitStep(step) {
     const deferred = this.$q.defer()
 
-    // Get answers for each Question of the Step
-    const stepAnswers = {}
-    if (step && step.items) {
-      for (let i = 0; i < step.items.length; i++) {
-        let item = step.items[i]
-        let itemPaper = this.getQuestionPaper(item)
+    const stepPapers = []
+    for (let i = 0; i < step.items.length; i++) {
+      let item = step.items[i]
+      let itemPaper = this.getQuestionPaper(item)
 
-        if (itemPaper && itemPaper.answer) {
-          stepAnswers[item.id] = itemPaper.answer
-        } else {
-          stepAnswers[item.id] = ''
-        }
-      }
+      // Update nbTries
+      itemPaper.nbTries++
+
+      stepPapers.push(itemPaper)
     }
 
-    // There are answers to post
-    this.$http
-      .put(
-        this.UrlService('exercise_submit_step', {paperId: this.paper.id, stepId: step.id}),
-        {data: stepAnswers}
-      )
-      .success(response => {
-        if (response) {
-          for (let i = 0; i < response.length; i++) {
-            if (response[i]) {
-              let item = null
+    if (!this.PaperService.isNoSaveMode()) {
+      // Get answers for each Question of the Step
+      const stepAnswers = {}
+      for (let i = 0; i < stepPapers.length; i++) {
+        stepAnswers[stepPapers.id] = stepPapers.answer
+      }
 
-              // Get item in Step
-              for (let j = 0; j < step.items.length; j++) {
-                if (response[i].question.id === step.items[j].id) {
-                  item = step.items[j]
-                  break // Stop searching
+      // There are answers to post
+      this.$http
+        .put(
+          this.UrlService('exercise_submit_step', {paperId: this.paper.id, stepId: step.id}),
+          {data: stepAnswers}
+        )
+        .success(response => {
+          if (response) {
+            for (let i = 0; i < response.length; i++) {
+              if (response[i]) {
+                let item = null
+
+                // Get item in Step
+                for (let j = 0; j < step.items.length; j++) {
+                  if (response[i].question.id === step.items[j].id) {
+                    item = step.items[j]
+                    break // Stop searching
+                  }
                 }
-              }
 
-              if (item) {
-                // Update question with solutions and feedback
-                item.solutions = response[i].question.solutions ? response[i].question.solutions : []
-                item.feedback = response[i].question.feedback ? response[i].question.feedback : null
+                if (item) {
+                  // Update question with solutions and feedback
+                  item.solutions = response[i].question.solutions ? response[i].question.solutions : []
+                  item.feedback = response[i].question.feedback ? response[i].question.feedback : null
 
-                // Update paper with Score
-                const paper = this.getQuestionPaper(item)
-                paper.score = response[i].answer.score
-                paper.nbTries = response[i].answer.nbTries
+                  // Update paper with Score
+                  const paper = this.getQuestionPaper(item)
+                  paper.score = response[i].answer.score
+                  paper.nbTries = response[i].answer.nbTries
+                }
               }
             }
           }
-        }
 
-        deferred.resolve(response)
-      })
-      .error(() => {
-        deferred.reject([])
-      })
+          deferred.resolve(step)
+        })
+        .error(() => {
+          for (let i = 0; i < stepPapers.length; i++) {
+            stepPapers[i].nbTries -= 1
+          }
+
+          deferred.reject([])
+        })
+    } else {
+      const exercise = this.ExerciseService.getExercise()
+      if ('3' === exercise.meta.type) {
+        // Directly calculate score for submitted questions
+        for (let i = 0; i < stepPapers.length; i++) {
+          this.PaperService.calculateQuestionScore(stepPapers[i])
+        }
+      }
+
+      deferred.resolve(step)
+    }
 
     return deferred.promise
   }
@@ -283,22 +309,35 @@ export default class UserPaperService {
     this.paper.end = this.$filter('date')(new Date(), 'yyyy-MM-dd\'T\'HH:mm:ss')
     this.paper.interrupted = false
 
-    this.$http
-      .put(this.UrlService('exercise_finish_paper', {id: this.paper.id}))
-      .success(response => {
-        // Update the number of finished papers
-        this.nbPapers++
+    // Update the number of finished papers
+    this.nbPapers++
 
-        // Update the current User Paper with updated data (endDate particularly)
-        angular.merge(this.paper, response)
+    if (!this.PaperService.isNoSaveMode()) {
+      this.$http
+        .put(this.UrlService('exercise_finish_paper', {id: this.paper.id}))
+        .success(response => {
+          // Update the current User Paper with updated data (endDate particularly)
+          angular.merge(this.paper, response)
 
-        deferred.resolve(response)
-      })
-      .error(() => {
-        deferred.reject({})
-      })
+          deferred.resolve(response)
+        })
+        .error(() => {
+          this.nbPapers--
+          deferred.reject({})
+        })
+    } else {
+      if (this.isScoreAvailable(this.paper)) {
+        this.PaperService.calculateScore(this.paper)
+      }
+
+      deferred.resolve(this.paper)
+    }
 
     return deferred.promise
+  }
+
+  isNoSaveMode() {
+    return this.PaperService.isNoSaveMode()
   }
 
   /**

@@ -28,14 +28,41 @@ export default class PaperService {
      *
      * @type {{paper: object, questions: object}}
      */
-    this.current = null;
+    this.current = null
 
     /**
      * Number of papers already done for the current Exercise.
      *
      * @type {number}
      */
-    this.nbPapers = 0;
+    this.nbPapers = 0
+
+    /**
+     * Disable sending papers to server.
+     *
+     * @type {boolean}
+     */
+    this.noSaveMode = false
+  }
+
+  /**
+   * Is server save enabled ?
+   *
+   * @returns {boolean}
+   */
+  isNoSaveMode() {
+    return this.noSaveMode
+  }
+
+  /**
+   * Disable / Enable server save
+   *
+   * @param {boolean} noSaveMode
+   */
+  setNoSaveMode(noSaveMode) {
+    this.noSaveMode = noSaveMode
+
+    return this
   }
 
   /**
@@ -131,7 +158,7 @@ export default class PaperService {
     let questionPaper = null
 
     for (let i = 0; i < paper.questions.length; i++) {
-      if (paper.questions[i].id == question.id) {
+      if (paper.questions[i].id === question.id) {
         // Question paper found
         questionPaper = paper.questions[i]
         break
@@ -140,12 +167,15 @@ export default class PaperService {
 
     if (null === questionPaper) {
       // There is no Paper for the current Question => initialize Object properties
-      paper.questions.push({
+      questionPaper = {
         id     : question.id,
         answer : null,
+        score  : 0,
         nbTries: 0,
         hints  : []
-      })
+      }
+
+      paper.questions.push(questionPaper)
     }
 
     return questionPaper
@@ -245,6 +275,19 @@ export default class PaperService {
     return score
   }
 
+  calculateScore(paper) {
+    for (let i = 0; i < paper.questions.length; i++) {
+      this.calculateQuestionScore(paper.questions[i])
+    }
+  }
+
+  calculateQuestionScore(questionPaper) {
+    let item = this.ExerciseService.getItem(questionPaper.id)
+    if (item) {
+      this.QuestionService.calculateScore(item, questionPaper)
+    }
+  }
+
   /**
    * Order the Questions of a Step
    * @param   {Object} paper
@@ -277,12 +320,12 @@ export default class PaperService {
    * @returns {Array} The ordered list of Questions
    */
   orderStepQuestions(paper, step) {
-    var ordered = [];
+    let ordered = [];
     if (step.items && 0 !== step.items.length) {
       // Get order for the current Step
-      var itemsOrder = null;
+      let itemsOrder = null;
       if (paper && paper.order) {
-        for (var i = 0; i < paper.order.length; i++) {
+        for (let i = 0; i < paper.order.length; i++) {
           if (step.id === paper.order[i].id) {
             // Order for the current step found
             itemsOrder = paper.order[i].items;
@@ -292,7 +335,7 @@ export default class PaperService {
       }
 
       if (itemsOrder) {
-        for (var i = 0; i < itemsOrder.length; i++) {
+        for (let i = 0; i < itemsOrder.length; i++) {
           var question = this.StepService.getQuestion(step, itemsOrder[i]);
           if (question) {
             ordered.push(question);

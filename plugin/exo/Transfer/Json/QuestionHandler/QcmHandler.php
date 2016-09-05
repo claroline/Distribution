@@ -184,6 +184,7 @@ class QcmHandler implements QuestionHandlerInterface
             return $choiceData;
         }, $choices);
 
+        // TODO : to remove
         $exportData->scoreTotal = $this->container->get('ujm.exo.qcm_service')->maxScore($interaction);
 
         if (!$interaction->getWeightResponse()) {

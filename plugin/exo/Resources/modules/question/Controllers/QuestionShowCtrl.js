@@ -33,8 +33,9 @@ export default class QuestionShowCtrl {
      */
     this.feedback = this.FeedbackService.get()
 
-    if (!this.answer) {
-      this.answer = this.QuestionService.getTypeService(this.question.type).initAnswer()
+    // Initialize answer data if needed
+    if (null === this.questionPaper.answer) {
+      this.questionPaper.answer = this.QuestionService.getTypeService(this.question.type).initAnswer()
     }
 
     // Force the feedback when correction is shown
@@ -57,6 +58,15 @@ export default class QuestionShowCtrl {
         }
       }
     })
+  }
+
+  /**
+   * Get the total score of the Question
+   *
+   * @return {Number}
+   */
+  getTotalScore() {
+    return this.QuestionService.calculateTotal(this.question)
   }
 
   /**

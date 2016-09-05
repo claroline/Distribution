@@ -12,6 +12,7 @@ import './../feedback/module'
 import './../hint/module'
 import './../correction/module'
 import './../image/module'
+import './../score/module'
 
 import QuestionShowCtrl from './Controllers/QuestionShowCtrl'
 import ChoiceQuestionCtrl from './Controllers/Type/ChoiceQuestionCtrl'
@@ -43,7 +44,8 @@ angular
     'Feedback',
     'Image',
     'Hint',
-    'Correction'
+    'Correction',
+    'Score'
   ])
   .controller('QuestionShowCtrl', [
     '$uibModal',
@@ -109,6 +111,7 @@ angular
     OpenQuestionDirective
   ])
   .service('QuestionService', [
+    '$log',
     'ChoiceQuestionService',
     'ClozeQuestionService',
     'GraphicQuestionService',
@@ -117,23 +120,33 @@ angular
     QuestionService
   ])
   .service('ChoiceQuestionService', [
+    '$log',
+    'ScoreService',
     'FeedbackService',
     ChoiceQuestionService
   ])
   .service('ClozeQuestionService', [
+    '$log',
+    'ScoreService',
     'FeedbackService',
     ClozeQuestionService
   ])
   .service('GraphicQuestionService', [
+    '$log',
+    'ScoreService',
     'FeedbackService',
     'ImageAreaService',
     GraphicQuestionService
   ])
   .service('MatchQuestionService', [
+    '$log',
+    'ScoreService',
     'FeedbackService',
     MatchQuestionService
   ])
   .service('OpenQuestionService', [
+    '$log',
+    'ScoreService',
     'FeedbackService',
     OpenQuestionService
   ])

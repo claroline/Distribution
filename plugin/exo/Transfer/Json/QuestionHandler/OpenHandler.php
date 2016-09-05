@@ -124,8 +124,35 @@ class OpenHandler implements QuestionHandlerInterface
         $repo = $this->om->getRepository('UJMExoBundle:InteractionOpen');
         $openQuestion = $repo->findOneBy(['question' => $question]);
 
-        $exportData->scoreTotal = 5;
+        $exportData->typeOpen = $openQuestion->getTypeOpenQuestion()->getValue();
 
+        if ('long' === $exportData->typeOpen) {
+            $exportData->score = [
+                'type' => 'fixed',
+                'success' => $openQuestion->getScoreMaxLongResp(),
+                'failure' => 0,
+            ];
+        } else if ('oneWord' === $exportData->typeOpen) {
+            $exportData->score = [
+                'type' => 'fixed',
+                'success' => $openQuestion->getScoreMaxLongResp(),
+                'failure' => 0,
+            ];
+        } else {
+            $exportData->score = ['type' => 'sum'];
+        }
+
+        if ($openQuestion->getTypeOpenQuestion()->getValue() === 'long') {
+            $exportData->scoreMaxLongResp = $openQuestion->getScoreMaxLongResp();
+            $exportData->scoreTotal = $openQuestion->getScoreMaxLongResp();
+        } else {
+            $scoreTotal = 0;
+            foreach ($openQuestion->getWordResponses()->toArray() as $response) {
+                $scoreTotal = $scoreTotal + $response->getScore();
+            }
+            $exportData->scoreTotal = $scoreTotal;
+        }
+        
         if ($withSolution) {
             $responses = $openQuestion->getWordResponses();
 
@@ -140,18 +167,6 @@ class OpenHandler implements QuestionHandlerInterface
                 return $responseData;
             }, $responses->toArray());
         }
-        if ($openQuestion->getTypeOpenQuestion()->getValue() === 'long') {
-            $exportData->scoreMaxLongResp = $openQuestion->getScoreMaxLongResp();
-            $exportData->scoreTotal = $openQuestion->getScoreMaxLongResp();
-        } else {
-            $scoreTotal = 0;
-            foreach ($openQuestion->getWordResponses()->toArray() as $response) {
-                $scoreTotal = $scoreTotal + $response->getScore();
-            }
-            $exportData->scoreTotal = $scoreTotal;
-        }
-
-        $exportData->typeOpen = $openQuestion->getTypeOpenQuestion()->getValue();
 
         return $exportData;
     }

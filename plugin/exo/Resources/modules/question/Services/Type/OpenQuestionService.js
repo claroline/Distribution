@@ -5,10 +5,8 @@ import AbstractQuestionService from './AbstractQuestionService'
  * @param {FeedbackService}  FeedbackService
  * @constructor
  */
-function OpenQuestionService(FeedbackService) {
+function OpenQuestionService($log, ScoreService, FeedbackService) {
   AbstractQuestionService.apply(this, arguments)
-
-  this.FeedbackService = FeedbackService
 }
 
 // Extends AbstractQuestionCtrl
@@ -30,22 +28,11 @@ OpenQuestionService.prototype.answersAllFound = function answersAllFound(questio
 
   if ('long' !== question.typeOpen) {
     // Search used keywords in student answer
-    var numAnswersFound = 0
+    const foundKeywords = this.getFoundSolutions(question.solutions, answer)
 
-    for (var i = 0; i < question.solutions.length; i++) {
-      var solution = question.solutions[i]
-
-      // Check in answer if the keyword as been used
-      var searchFlags      = 'g' + (solution.caseSensitive ? 'i' : '')
-      var searchExpression = new RegExp('\\b' + solution.word + '\\b', searchFlags)
-      if (-1 !== answer.search(searchExpression)) {
-        numAnswersFound++
-      }
-    }
-
-    if (question.solutions.length === numAnswersFound) {
+    if (question.solutions.length === foundKeywords.length) {
       feedbackState = this.FeedbackService.SOLUTION_FOUND
-    } else if (question.solutions.length -1 === numAnswersFound) {
+    } else if (question.solutions.length -1 === foundKeywords.length) {
       feedbackState = this.FeedbackService.ONE_ANSWER_MISSING
     } else {
       feedbackState = this.FeedbackService.MULTIPLE_ANSWERS_MISSING
@@ -72,8 +59,8 @@ OpenQuestionService.prototype.getCorrectAnswer = function getCorrectAnswer(quest
     // Only get the list of required keywords
     if ('oneWord' === question.typeOpen) {
       // One word answer (get the keyword with the max score)
-      var betterFound = null
-      for (var i = 0; i < question.solutions.length; i++) {
+      let betterFound = null
+      for (let i = 0; i < question.solutions.length; i++) {
         if (null === betterFound || question.solutions[i].score > betterFound.score) {
           betterFound = question.solutions[i]
         }
@@ -87,6 +74,86 @@ OpenQuestionService.prototype.getCorrectAnswer = function getCorrectAnswer(quest
   }
 
   return answer
+}
+
+OpenQuestionService.prototype.getTotalScore = function (question) {
+  let total = 0
+
+  switch (question.typeOpen) {
+    case 'long':
+      total = question.score.success
+      break
+
+    case 'oneWord':
+      let maxScore = 0
+      for (let i = 0; i < question.solutions.length; i++) {
+        if (question.solutions[i].score > maxScore) {
+          maxScore = question.solutions[i].score
+        }
+      }
+
+      total = maxScore
+      break
+
+    case 'short':
+      for (let i = 0; i < question.solutions.length; i++) {
+        total += question.solutions[i].score
+      }
+      break
+  }
+
+  return total
+}
+
+/**
+ *
+ * @returns {number}
+ */
+OpenQuestionService.prototype.getAnswerScore = function (question, answer) {
+  let score = null
+
+  if ('long' !== question.typeOpen) {
+    const foundKeywords = this.getFoundSolutions(question, answer)
+
+    score = 0
+    if (foundKeywords.length !== 0) {
+      if ('oneWord' === question.typeOpen) {
+        // Give points for the first found
+        score += foundKeywords[0].score
+      } else if ('short' === question.typeOpen) {
+        // Give points for all the keywords
+        for (let i = 0; i < foundKeywords.length; i++) {
+          score += foundKeywords.score
+        }
+      }
+    }
+  } else {
+    // Open questions need to be manually corrected
+    score = -1
+  }
+
+  return score
+}
+
+OpenQuestionService.prototype.getFoundSolutions = function (question, answer) {
+  const found = []
+
+  if (answer) {
+    // Search used keywords in student answer
+    for (var i = 0; i < question.solutions.length; i++) {
+      let solution = question.solutions[i]
+
+      // Check in answer if the keyword as been used
+      const searchFlags      = 'g' + (solution.caseSensitive ? 'i' : '')
+      const searchExpression = new RegExp('\\b' + solution.word + '\\b', searchFlags)
+      if (-1 !== answer.search(searchExpression)) {
+        // Keyword has been found in answer => Update formatted answer
+        found.push(solution)
+      }
+    }
+  }
+
+  return found
 }
 
 export default OpenQuestionService

@@ -517,7 +517,7 @@ class PaperManager
         $paperQuestion = null;
         if ($answer || count($hints) > 0) {
             $paperQuestion = [
-                'id' => (string) $question->getId(),
+                'id' => $question->getId(),
                 'answer' => $answer,
                 'hints' => $hints,
                 'nbTries' => $nbTries,
