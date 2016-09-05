@@ -532,19 +532,22 @@ class CursusManager
         }
     }
 
-    public function registerUserToMultipleCursus(array $multipleCursus, User $user, $withWorkspace = true, $withCourse = false)
+    public function registerUserToMultipleCursus(array $multipleCursus, User $user, $withWorkspace = true, $withCourse = false, $force = false)
     {
         $registrationDate = new \DateTime();
 
         $this->om->startFlushSuite();
 
         foreach ($multipleCursus as $cursus) {
-            $cursusUser = $this->cursusUserRepo->findOneCursusUserByCursusAndUser(
-                $cursus,
-                $user
-            );
+            $cursusUser = null;
+            if (!$force) {
+                $cursusUser = $this->cursusUserRepo->findOneCursusUserByCursusAndUser(
+                    $cursus,
+                    $user
+                );
+            }
 
-            if (is_null($cursusUser)) {
+            if (is_null($cursusUser) || $force) {
                 $cursusUser = new CursusUser();
                 $cursusUser->setCursus($cursus);
                 $cursusUser->setUser($user);
