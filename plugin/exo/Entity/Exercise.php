@@ -472,11 +472,13 @@ class Exercise extends AbstractResource
     public function setMinimalCorrection($minimalCorrection)
     {
         $this->minimalCorrection = $minimalCorrection;
+
         return $this;
     }
 
     /**
      * Do we have to show the minimal correction view ?
+     *
      * @return bool
      */
     public function isMinimalCorrection()
