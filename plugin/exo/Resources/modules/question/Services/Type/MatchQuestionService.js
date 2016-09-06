@@ -75,7 +75,9 @@ MatchQuestionService.prototype.answersAllFound = function answersAllFound(questi
 }
 
 MatchQuestionService.prototype.initBindMatchQuestion = function initBindMatchQuestion(element) {
-    // defaults parameters for all connections
+  jsPlumb.setSuspendDrawing(false)
+
+  // defaults parameters for all connections
   jsPlumb.importDefaults({
     Anchors: ['RightMiddle', 'LeftMiddle'],
     ConnectionsDetachable: true,

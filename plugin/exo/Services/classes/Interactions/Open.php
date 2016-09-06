@@ -66,15 +66,15 @@ class Open extends Interaction
         $response = null,
         $penalty = null
     ) {
-        if ($interOpen->getTypeOpenQuestion() === 'long') {
+        if ($interOpen->getTypeOpenQuestion()->getValue() === 'long') {
             $score = -1;
-        } elseif ($interOpen->getTypeOpenQuestion() === 'oneWord') {
+        } elseif ($interOpen->getTypeOpenQuestion()->getValue() === 'oneWord') {
             $score = $this->getScoreOpenOneWord($response, $interOpen);
-        } elseif ($interOpen->getTypeOpenQuestion() === 'short') {
+        } elseif ($interOpen->getTypeOpenQuestion()->getValue() === 'short') {
             $score = $this->getScoreShortResponse($response, $interOpen);
         }
 
-        if ($interOpen->getTypeOpenQuestion() !== 'long') {
+        if ($interOpen->getTypeOpenQuestion()->getValue() !== 'long') {
             $score -= $penalty;
             if ($score < 0) {
                 $score = 0;

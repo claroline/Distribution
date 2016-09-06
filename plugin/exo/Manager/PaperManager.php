@@ -515,7 +515,7 @@ class PaperManager
         $nbTries = $response ? $response->getNbTries() : 0;
 
         $paperQuestion = null;
-        if ($answer || count($hints) > 0) {
+        if ($response || count($hints) > 0) {
             $paperQuestion = [
                 'id' => $question->getId(),
                 'answer' => $answer,
