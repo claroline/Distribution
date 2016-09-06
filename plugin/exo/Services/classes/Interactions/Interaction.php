@@ -7,9 +7,9 @@
 namespace UJM\ExoBundle\Services\classes\Interactions;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use JMS\DiExtraBundle\Annotation as DI;
 
 abstract class Interaction
 {
@@ -19,7 +19,7 @@ abstract class Interaction
      * @DI\InjectParams({
      *     "doctrine"   = @DI\Inject("doctrine")
      * })
-     * 
+     *
      * @param Registry $doctrine
      */
     public function __construct(
@@ -153,7 +153,7 @@ abstract class Interaction
      {
          $em = $this->doctrine->getEntityManager();
          $response = $em->getRepository('UJMExoBundle:Response')
-                        ->findBy(array('question' => $interaction->getId()));
+                        ->findBy(['question' => $interaction->getId()]);
 
          return count($response);
      }

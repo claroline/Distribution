@@ -24,7 +24,7 @@ class Step
 
     /**
      * @var int
-     * 
+     *
      * @ORM\Column(name="title", type="string")
      */
     private $title = '';

@@ -6,9 +6,9 @@
 
 namespace UJM\ExoBundle\Services\classes\Interactions;
 
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("ujm.exo.open_service")
@@ -41,13 +41,13 @@ class Open extends Interaction
 
         $score = $this->mark($interOpen, $response, $penalty);
 
-        $res = array(
+        $res = [
             'penalty' => $penalty,
             'interOpen' => $interOpen,
             'response' => $response,
             'score' => $score,
             'tempMark' => $tempMark,
-        );
+        ];
 
         return $res;
     }
@@ -154,7 +154,7 @@ class Open extends Interaction
     {
         $em = $this->doctrine->getManager();
 
-        $typeOpen = array();
+        $typeOpen = [];
         $types = $em->getRepository('UJMExoBundle:TypeOpenQuestion')
             ->findAll();
 

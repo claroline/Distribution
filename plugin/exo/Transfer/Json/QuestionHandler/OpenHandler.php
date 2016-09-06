@@ -4,12 +4,12 @@ namespace UJM\ExoBundle\Transfer\Json\QuestionHandler;
 
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use UJM\ExoBundle\Entity\InteractionOpen;
 use UJM\ExoBundle\Entity\Question;
 use UJM\ExoBundle\Entity\Response;
 use UJM\ExoBundle\Entity\WordResponse;
 use UJM\ExoBundle\Transfer\Json\QuestionHandlerInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * @DI\Service("ujm.exo.open_handler")
@@ -25,7 +25,7 @@ class OpenHandler implements QuestionHandlerInterface
      *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
      *     "container"       = @DI\Inject("service_container")
      * })
-     * 
+     *
      * @param ObjectManager      $om
      * @param ContainerInterface $container
      */
@@ -132,7 +132,7 @@ class OpenHandler implements QuestionHandlerInterface
                 'success' => $openQuestion->getScoreMaxLongResp(),
                 'failure' => 0,
             ];
-        } else if ('oneWord' === $exportData->typeOpen) {
+        } elseif ('oneWord' === $exportData->typeOpen) {
             $exportData->score = [
                 'type' => 'fixed',
                 'success' => $openQuestion->getScoreMaxLongResp(),
@@ -152,7 +152,7 @@ class OpenHandler implements QuestionHandlerInterface
             }
             $exportData->scoreTotal = $scoreTotal;
         }
-        
+
         if ($withSolution) {
             $responses = $openQuestion->getWordResponses();
 
