@@ -136,6 +136,29 @@ ExerciseService.prototype.getStep = function getStep(stepId) {
   return step
 }
 
+ExerciseService.prototype.getItem = function getItem(itemId) {
+  let item = null
+  if (this.exercise.steps) {
+    for (let i = 0; i < this.exercise.steps.length; i++) {
+      let step = this.exercise.steps[i]
+      if (step.items) {
+        for (let k = 0; k < step.items.length; k++) {
+          if (itemId === step.items[k].id) {
+            item = step.items[k]
+            break
+          }
+        }
+
+        if (item) {
+          break
+        }
+      }
+    }
+  }
+
+  return item
+}
+
 /**
  * Reorder the Steps of the current Exercise.
  */

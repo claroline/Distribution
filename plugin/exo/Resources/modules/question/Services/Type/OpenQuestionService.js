@@ -28,7 +28,7 @@ OpenQuestionService.prototype.answersAllFound = function answersAllFound(questio
 
   if ('long' !== question.typeOpen) {
     // Search used keywords in student answer
-    const foundKeywords = this.getFoundSolutions(question.solutions, answer)
+    const foundKeywords = this.getFoundSolutions(question, answer)
 
     if (question.solutions.length === foundKeywords.length) {
       feedbackState = this.FeedbackService.SOLUTION_FOUND
@@ -112,6 +112,9 @@ OpenQuestionService.prototype.getTotalScore = function (question) {
 OpenQuestionService.prototype.getAnswerScore = function (question, answer) {
   let score = null
 
+
+  console.log(question)
+
   if ('long' !== question.typeOpen) {
     const foundKeywords = this.getFoundSolutions(question, answer)
 
@@ -123,7 +126,7 @@ OpenQuestionService.prototype.getAnswerScore = function (question, answer) {
       } else if ('short' === question.typeOpen) {
         // Give points for all the keywords
         for (let i = 0; i < foundKeywords.length; i++) {
-          score += foundKeywords.score
+          score += foundKeywords[i].score
         }
       }
     }
@@ -138,7 +141,7 @@ OpenQuestionService.prototype.getAnswerScore = function (question, answer) {
 OpenQuestionService.prototype.getFoundSolutions = function (question, answer) {
   const found = []
 
-  if (answer) {
+  if (answer && question.solutions) {
     // Search used keywords in student answer
     for (var i = 0; i < question.solutions.length; i++) {
       let solution = question.solutions[i]

@@ -34,15 +34,15 @@ OpenQuestionCtrl.prototype.onFeedbackShow = function onFeedbackShow() {
     if ('long' !== this.question.typeOpen) {
       // Initialize answer with keywords
       // Search used keywords in student answer
-      const foundKeywords = this.OpenQuestionService.getFoundSolutions(this.question.solutions, this.answer)
+      const foundKeywords = this.OpenQuestionService.getFoundSolutions(this.question, this.answer)
       for (var i = 0; i < foundKeywords.length; i++) {
         // Check in answer if the keyword as been used
         const searchFlags = 'g' + (foundKeywords[i].caseSensitive ? 'i' : '')
         const searchExpression = new RegExp('\\b' + foundKeywords[i].word + '\\b', searchFlags)
 
         let keyword = ''
-        keyword += '<b class="text-success feedback-info" data-toggle="tooltip" title="' + (solution.feedback || '') + '">'
-        keyword += solution.word
+        keyword += '<b class="text-success feedback-info" data-toggle="tooltip" title="' + (foundKeywords[i].feedback || '') + '">'
+        keyword += foundKeywords[i].word
         keyword += '<span class="fa fa-fw fa-check"></span>'
         keyword += '</b>'
 
