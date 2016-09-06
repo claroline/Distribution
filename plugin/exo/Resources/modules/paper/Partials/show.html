@@ -25,7 +25,6 @@
     <div data-ng-repeat="step in paperShowCtrl.steps">
       <hr>
       <step-show
-
               data-step-index="{{ $index }}"
               data-step="step"
               data-solution-shown="true"
@@ -34,14 +33,7 @@
               data-all-answers-found="0">
       </step-show>
     </div>
-<!--
-    <question-show data-ng-repeat="question in paperShowCtrl.questions"
-                   data-question="question"
-                   data-question-paper="paperShowCtrl.getQuestionPaper(question)"
-                   data-include-correction="true"
-                   data-minimal-correction="paperShowCtrl.showMinimalCorrection()">
-    </question-show>
--->
+
     <!-- Display a big button for those who can edit Exercise OR a big button to play the Exercise if no alert -->
     <div class="row">
         <div class="col-md-8 col-md-offset-2">

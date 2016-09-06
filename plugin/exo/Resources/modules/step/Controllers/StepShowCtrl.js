@@ -21,9 +21,6 @@ function StepShowCtrl(UserPaperService, FeedbackService, QuestionService, StepSe
   this.FeedbackService
           .on('show', this.onFeedbackShow.bind(this))
 
-  this.FeedbackService
-          .on('hide', this.onFeedbackHide.bind(this))
-
   if (this.getQuestionPaper(this.items[0]).nbTries && this.getQuestionPaper(this.items[0]).nbTries >= this.step.meta.maxAttempts && this.feedback.enabled) {
     this.solutionShown = true
   }
@@ -35,6 +32,7 @@ function StepShowCtrl(UserPaperService, FeedbackService, QuestionService, StepSe
       this.solutionShown = true
     }
   }
+
   this.getStepTotalScore()
 }
 
@@ -108,6 +106,7 @@ StepShowCtrl.prototype.getStepTotalScore = function getStepTotalScore() {
  */
 StepShowCtrl.prototype.onFeedbackShow = function onFeedbackShow() {
   this.allAnswersFound = this.FeedbackService.SOLUTION_FOUND
+  this.stepScore = 0
   for (var i = 0; i < this.items.length; i++) {
     var question = this.items[i]
     var userPaper = this.getQuestionPaper(question)
@@ -122,13 +121,6 @@ StepShowCtrl.prototype.onFeedbackShow = function onFeedbackShow() {
 
 StepShowCtrl.prototype.showMinimalCorrection = function showMinimalCorrection() {
   return this.StepService.getExerciseMeta().minimalCorrection
-}
-
-/**
- * On Feedback Hide
- */
-StepShowCtrl.prototype.onFeedbackHide = function onFeedbackHide() {
-  this.stepScore = 0
 }
 
 /**
