@@ -18,10 +18,10 @@ OpenCorrectionCtrl.prototype = Object.create(AbstractCorrectionCtrl.prototype);
 OpenCorrectionCtrl.prototype.getKeywordStats = function getKeywordStats(keyword) {
     var stats = null;
 
-    if (this.question.solutions) {
-        for (var i = 0; i < this.question.solutions; i++) {
-            if (this.question.solutions[i].id == keyword.id) {
-                stats = this.question.solutions[i];
+    if (this.question.stats) {
+        for (var i = 0; i < this.question.stats.solutions; i++) {
+            if (this.question.stats.solutions[i].id == keyword.id) {
+                stats = this.question.stats.solutions[i];
             }
         }
 
