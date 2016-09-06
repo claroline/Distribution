@@ -224,6 +224,7 @@ maximum_tries: Maximum number of tries
 meaning_measure_difficulty: If the measure is high, the question is easy. If the measure is low on the contrary, the question is difficult.
 metadata_visible: Display exercise information
 metadata_visible_help: If checked, a table with the information about the exercise will be displayed.
+minimal_correction: Show minimal correction
 model: Model
 more_info: More information
 my_questions: My questions
