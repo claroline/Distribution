@@ -21,12 +21,23 @@
         </div>
     </h4>
 
+    <!-- Display the current Step -->
+    <step-show
+            data-ng-repeat="step in paperShowCtrl.steps"
+            data-step-index="{{ $index }}"
+            data-step="step"
+            data-solution-shown="true"
+            data-current-try="0"
+            data-feedback="true"
+            data-all-answers-found="0">
+    </step-show>
+<!--
     <question-show data-ng-repeat="question in paperShowCtrl.questions"
                    data-question="question"
                    data-question-paper="paperShowCtrl.getQuestionPaper(question)"
                    data-include-correction="true">
     </question-show>
-
+-->
     <!-- Display a big button for those who can edit Exercise OR a big button to play the Exercise if no alert -->
     <div class="row">
         <div class="col-md-8 col-md-offset-2">

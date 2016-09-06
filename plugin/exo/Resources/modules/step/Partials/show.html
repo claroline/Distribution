@@ -3,11 +3,14 @@
         {{ 'step'|trans:{}:'ujm_exo' }} <span class="badge">{{ stepShowCtrl.stepIndex*1 + 1 }}</span>
         <span data-ng-if="stepShowCtrl.step.meta.title">: {{ stepShowCtrl.step.meta.title }}</span>
 
-        <small data-ng-if="stepShowCtrl.step.meta.maxAttempts && stepShowCtrl.feedback.enabled" class="pull-right">
+
+        <small data-ng-if="!stepShowCtrl.solutionShown stepShowCtrl.step.meta.maxAttempts && stepShowCtrl.feedback.enabled" class="pull-right">
             <span>{{ 'sequence_nb_attempts'|trans:{ "1" : stepShowCtrl.currentTry }:'ujm_sequence' }}</span>
             <span>/ {{ stepShowCtrl.step.meta.maxAttempts }}</span>
             <span>({{ 'exercise_tries'|transChoice:stepShowCtrl.step.meta.maxAttempts:{ count: stepShowCtrl.step.meta.maxAttempts }:'ujm_exo'}})</span>
         </small>
+
+        <span data-ng-if class="label label-primary">{{ 'step_score'|trans:{}:'ujm_exo' }}: {{stepShowCtrl.stepScore}}/{{stepShowCtrl.stepScoreTotal}}</span>
     </h4>
 
     <div class="step-description panel panel-default" data-ng-if="0 !== stepShowCtrl.step.meta.description.length">
@@ -20,7 +23,7 @@
                    data-question-paper="stepShowCtrl.getQuestionPaper(item)"
                    data-include-correction="stepShowCtrl.solutionShown">
     </question-show>
-    
+
     <div class="alert alert-info" data-ng-if="stepShowCtrl.feedback.visible && !stepShowCtrl.solutionShown">
         {{ stepShowCtrl.getSuiteFeedback()|trans:{}:'ujm_sequence' }}
     </div>

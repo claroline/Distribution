@@ -19,6 +19,9 @@ function StepShowCtrl(UserPaperService, FeedbackService, QuestionService) {
   this.FeedbackService
           .on('show', this.onFeedbackShow.bind(this))
 
+  this.FeedbackService
+          .on('hide', this.onFeedbackHide.bind(this))
+
   if (this.getQuestionPaper(this.items[0]).nbTries && this.getQuestionPaper(this.items[0]).nbTries >= this.step.meta.maxAttempts && this.feedback.enabled) {
     this.solutionShown = true
   }
@@ -57,6 +60,18 @@ StepShowCtrl.prototype.items = []
 StepShowCtrl.prototype.stepIndex = 0
 
 /**
+ * Current step score
+ * @type {Number}
+ */
+StepShowCtrl.prototype.stepScore = 0
+
+/**
+ * Current step total score
+ * @type {Number}
+ */
+StepShowCtrl.prototype.stepScoreTotal = 0
+
+/**
  *
  * @type {boolean}
  */
@@ -84,12 +99,23 @@ StepShowCtrl.prototype.onFeedbackShow = function onFeedbackShow() {
   this.allAnswersFound = this.FeedbackService.SOLUTION_FOUND
   for (var i = 0; i < this.items.length; i++) {
     var question = this.items[i]
-    var answer = this.getQuestionPaper(question).answer
+    var userPaper = this.getQuestionPaper(question)
+    var answer = userPaper.answer
+    this.stepScore += userPaper.score
+    this.stepScoreTotal += question.scoreTotal
     this.feedback.state[question.id] = this.QuestionService.getTypeService(question.type).answersAllFound(question, answer)
     if (this.feedback.state[question.id] !== 0) {
       this.allAnswersFound = this.FeedbackService.MULTIPLE_ANSWERS_MISSING
     }
   }
+}
+
+/**
+ * On Feedback Hide
+ */
+StepShowCtrl.prototype.onFeedbackHide = function onFeedbackHide() {
+  this.stepScore = 0
+  this.stepScoreTotal = 0
 }
 
 /**
