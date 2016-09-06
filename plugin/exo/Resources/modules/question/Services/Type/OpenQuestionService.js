@@ -30,10 +30,21 @@ OpenQuestionService.prototype.answersAllFound = function answersAllFound(questio
     // Search used keywords in student answer
     const foundKeywords = this.getFoundSolutions(question, answer)
 
-    if (question.solutions.length === foundKeywords.length) {
-      feedbackState = this.FeedbackService.SOLUTION_FOUND
-    } else if (question.solutions.length -1 === foundKeywords.length) {
-      feedbackState = this.FeedbackService.ONE_ANSWER_MISSING
+    if (0 !== foundKeywords.length) {
+      if ('oneWord' === question.typeOpen) {
+        if (foundKeywords[0].score > 0) {
+          feedbackState = this.FeedbackService.SOLUTION_FOUND
+        } else {
+          feedbackState = this.FeedbackService.ONE_ANSWER_MISSING
+        }
+      } else {
+        // Short question
+        if (question.solutions.length === foundKeywords.length) {
+          feedbackState = this.FeedbackService.SOLUTION_FOUND
+        } else if (question.solutions.length - 1 === foundKeywords.length) {
+          feedbackState = this.FeedbackService.ONE_ANSWER_MISSING
+        }
+      }
     } else {
       feedbackState = this.FeedbackService.MULTIPLE_ANSWERS_MISSING
     }
