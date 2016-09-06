@@ -80,7 +80,8 @@ ChoiceQuestionService.prototype.getCorrectAnswer = function getCorrectAnswer(que
                 // Unique choice
                 if (choice.rightResponse) {
                     // Correct choice not already found OR current choice has more point than the previous found
-                    betterFound = choice;
+                    betterFound = choice
+                    break
                 }
             }
         }
@@ -161,20 +162,21 @@ ChoiceQuestionService.prototype.getChoiceFeedback = function getChoiceFeedback(q
 };
 
 /**
- * Get the Score of a Choice
+ * Get the Score of a Choice.
+ * 
  * @param   {Object} question
  * @param   {Object} choice
  * @returns {String}
  */
 ChoiceQuestionService.prototype.getChoiceScore = function getChoiceScore(question, choice) {
-    var feedback = '';
+    let score = 0;
 
     var solution = this.getChoiceSolution(question, choice);
     if (solution) {
-        feedback = solution.feedback;
+        score = solution.score;
     }
 
-    return feedback;
+    return score;
 };
 
 ChoiceQuestionService.prototype.getChoiceStats = function getChoiceStats(question, choice) {
@@ -200,6 +202,76 @@ ChoiceQuestionService.prototype.getChoiceStats = function getChoiceStats(questio
     }
 
     return stats;
-};
+}
+
+ChoiceQuestionService.prototype.getTotalScore = function (question) {
+  let total = 0
+
+  if ('fixed' === question.score.type) {
+    total = question.score.success
+  } else {
+    let correct = this.getCorrectAnswer(question)
+    for (let i = 0; i < correct.length; i++) {
+      total += this.getChoiceScore(question, {id: correct[i]})
+    }
+  }
+
+  return total
+}
+
+ChoiceQuestionService.prototype.getAnswerScore = function (question, answer) {
+  let score = 0
+
+  if (answer && 0 !== answer.length) {
+    const foundSolutions = this.getFoundSolutions(question, answer)
+    if (0 !== foundSolutions.length) {
+      if ('fixed' === question.score.type) {
+        // Check validitity of the answer
+        let valid = true
+        if (!question.multiple) {
+          if (!foundSolutions[0].rightResponse) {
+            valid = false
+          }
+        } else {
+          if (question.solutions.length === foundSolutions.length) {
+            // Correct number of solution found
+            for (let i = 0; i < foundSolutions.length; i++) {
+              if (!foundSolutions[i].rightResponse) {
+                // Invalid answer in response
+                valid = false
+                break
+              }
+            }
+          } else {
+            // Missing solutions in answer
+            valid = false
+          }
+        }
+
+        score += valid ? question.score.success : question.score.failure
+      } else {
+        // Sum all solution score
+        for (let i = 0; i < foundSolutions.length; i++) {
+          score += foundSolutions[i].score
+        }
+      }
+    }
+  }
+
+  return score
+}
+
+ChoiceQuestionService.prototype.getFoundSolutions = function (question, answer) {
+  let found = []
+  for (let i = 0; i < question.solutions.length; i++) {
+    for (let j = 0; j < answer.length; j++) {
+      if (question.solutions[i].id === answer[j]) {
+        found.push(question.solutions[i])
+      }
+    }
+  }
+
+  return found
+}
 
 export default ChoiceQuestionService

@@ -198,10 +198,15 @@ class QcmHandler implements QuestionHandlerInterface
         }
 
         if ($withSolution) {
-            $exportData->solutions = array_map(function ($choice) {
+            $exportData->solutions = array_map(function ($choice) use ($interaction) {
                 $solutionData = new \stdClass();
                 $solutionData->id = (string) $choice->getId();
-                $solutionData->score = $choice->getWeight();
+
+                if (!$interaction->getWeightResponse()) {
+                    $solutionData->score = $choice->getRightResponse() ? 1 : -1;
+                } else {
+                    $solutionData->score = $choice->getWeight();
+                }
                 $solutionData->rightResponse = $choice->getRightResponse();
 
                 if ($choice->getFeedback()) {

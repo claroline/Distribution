@@ -60,17 +60,29 @@ export default class QuestionShowCtrl {
     })
   }
 
+  /**
+   * Get the user score for the Question for display.
+   *
+   * @return {String}
+   */
   getScore() {
-    return this.questionPaper.score || this.QuestionService.calculateScore(this.question, this.questionPaper)
+    let score = 0
+    if (this.questionPaper.score || 0 === this.questionPaper.score) {
+      score = this.questionPaper.score
+    } else {
+      score = this.QuestionService.calculateScore(this.question, this.questionPaper)
+    }
+
+    return score + ''
   }
 
   /**
-   * Get the total score of the Question
+   * Get the total score of the Question for display.
    *
-   * @return {Number}
+   * @return {String}
    */
   getTotalScore() {
-    return this.QuestionService.calculateTotal(this.question)
+    return this.QuestionService.calculateTotal(this.question) + ''
   }
 
   /**

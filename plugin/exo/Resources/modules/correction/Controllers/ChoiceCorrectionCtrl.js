@@ -24,7 +24,7 @@ ChoiceCorrectionCtrl.prototype.isChoiceSelected = function isChoiceSelected(choi
     return this.ChoiceQuestionService.isChoiceSelected(this.answer, choice);
 };
 
-ChoiceCorrectionCtrl.prototype.getChoiceSolution = function getChoiceScore(choice) {
+ChoiceCorrectionCtrl.prototype.getChoiceSolution = function getChoiceSolution(choice) {
     return this.ChoiceQuestionService.getChoiceSolution(this.question, choice);
 };
 
