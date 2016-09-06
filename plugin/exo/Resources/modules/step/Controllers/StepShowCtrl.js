@@ -35,6 +35,7 @@ function StepShowCtrl(UserPaperService, FeedbackService, QuestionService, StepSe
       this.solutionShown = true
     }
   }
+  this.getStepTotalScore()
 }
 
 /**
@@ -94,6 +95,14 @@ StepShowCtrl.prototype.getQuestionPaper = function getQuestionPaper(question) {
   return this.UserPaperService.getQuestionPaper(question)
 }
 
+StepShowCtrl.prototype.getStepTotalScore = function getStepTotalScore() {
+  this.stepScoreTotal = 0
+  for (var i = 0; i < this.items.length; i++) {
+    var question = this.items[i]
+    this.stepScoreTotal += question.scoreTotal
+  }
+}
+
 /**
  * On Feedback Show
  */
@@ -104,7 +113,6 @@ StepShowCtrl.prototype.onFeedbackShow = function onFeedbackShow() {
     var userPaper = this.getQuestionPaper(question)
     var answer = userPaper.answer
     this.stepScore += userPaper.score
-    this.stepScoreTotal += question.scoreTotal
     this.feedback.state[question.id] = this.QuestionService.getTypeService(question.type).answersAllFound(question, answer)
     if (this.feedback.state[question.id] !== 0) {
       this.allAnswersFound = this.FeedbackService.MULTIPLE_ANSWERS_MISSING
@@ -121,7 +129,6 @@ StepShowCtrl.prototype.showMinimalCorrection = function showMinimalCorrection() 
  */
 StepShowCtrl.prototype.onFeedbackHide = function onFeedbackHide() {
   this.stepScore = 0
-  this.stepScoreTotal = 0
 }
 
 /**

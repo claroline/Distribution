@@ -21,16 +21,19 @@
         </div>
     </h4>
 
-    <!-- Display the current Step -->
-    <step-show
-            data-ng-repeat="step in paperShowCtrl.steps"
-            data-step-index="{{ $index }}"
-            data-step="step"
-            data-solution-shown="true"
-            data-current-try="0"
-            data-feedback="true"
-            data-all-answers-found="0">
-    </step-show>
+    <!-- Display the current paper grouped by step -->
+    <div data-ng-repeat="step in paperShowCtrl.steps">
+      <hr>
+      <step-show
+
+              data-step-index="{{ $index }}"
+              data-step="step"
+              data-solution-shown="true"
+              data-current-try="0"
+              data-feedback="true"
+              data-all-answers-found="0">
+      </step-show>
+    </div>
 <!--
     <question-show data-ng-repeat="question in paperShowCtrl.questions"
                    data-question="question"
