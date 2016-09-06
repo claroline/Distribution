@@ -6,7 +6,7 @@ import AbstractQuestionService from './AbstractQuestionService'
  * @constructor
  */
 function OpenQuestionService($log, FeedbackService) {
-  AbstractQuestionService.apply(this, arguments)
+  AbstractQuestionService.call(this, $log, FeedbackService)
 }
 
 // Extends AbstractQuestionCtrl
@@ -91,26 +91,27 @@ OpenQuestionService.prototype.getTotalScore = function (question) {
   let total = 0
 
   switch (question.typeOpen) {
-    case 'long':
-      total = question.score.success
-      break
-
-    case 'oneWord':
-      let maxScore = 0
-      for (let i = 0; i < question.solutions.length; i++) {
-        if (question.solutions[i].score > maxScore) {
-          maxScore = question.solutions[i].score
-        }
+  case 'long': {
+    total = question.score.success
+    break
+  }
+  case 'oneWord': {
+    let maxScore = 0
+    for (let i = 0; i < question.solutions.length; i++) {
+      if (question.solutions[i].score > maxScore) {
+        maxScore = question.solutions[i].score
       }
-
-      total = maxScore
-      break
-
-    case 'short':
-      for (let i = 0; i < question.solutions.length; i++) {
-        total += question.solutions[i].score
-      }
-      break
+    }
+  
+    total = maxScore
+    break
+  }
+  case 'short': {
+    for (let i = 0; i < question.solutions.length; i++) {
+      total += question.solutions[i].score
+    }
+    break
+  }
   }
 
   return total

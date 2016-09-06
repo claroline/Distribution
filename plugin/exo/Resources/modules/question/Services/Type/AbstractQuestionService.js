@@ -17,23 +17,22 @@ export default class AbstractQuestionService {
    * Initialize the answer object for the Question
    */
   initAnswer() {
-    this.$log.error('Each instance of AbstractQuestionType must implement the `initAnswer`.');
+    this.$log.error('Each instance of AbstractQuestionType must implement the `initAnswer`.')
   }
 
   /**
    * Get the correct answer from the solutions of a Question
-   * @param   {Object} question
    * @returns {Object|Array}
    */
-  getCorrectAnswer(question) {
-    this.$log.error('Each instance of AbstractQuestionType must implement the `getCorrectAnswer`.');
+  getCorrectAnswer() {
+    this.$log.error('Each instance of AbstractQuestionType must implement the `getCorrectAnswer(question)`.')
   }
 
-  getTotalScore(question) {
-    
+  getTotalScore() {
+    this.$log.error('Each instance of AbstractQuestionType must implement the `getTotalScore(question)`.')
   }
 
-  getAnswerScore(question, answer) {
-
+  getAnswerScore() {
+    this.$log.error('Each instance of AbstractQuestionType must implement the `getAnswerScore(question, answer)`.')
   }
 }

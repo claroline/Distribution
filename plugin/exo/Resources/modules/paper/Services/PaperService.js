@@ -16,11 +16,11 @@ export default class PaperService {
    * @param {Function}         url
    */
   constructor($http, $q, ExerciseService, StepService, QuestionService, url) {
-    this.$http           = $http;
-    this.$q              = $q;
-    this.ExerciseService = ExerciseService;
-    this.StepService     = StepService;
-    this.QuestionService = QuestionService;
+    this.$http           = $http
+    this.$q              = $q
+    this.ExerciseService = ExerciseService
+    this.StepService     = StepService
+    this.QuestionService = QuestionService
     this.UrlService = url
 
     /**
@@ -145,7 +145,7 @@ export default class PaperService {
         deferred.reject([])
       })
 
-    return deferred.promise;
+    return deferred.promise
   }
 
   /**
@@ -199,7 +199,7 @@ export default class PaperService {
       })
       .error(() => {
         deferred.reject([])
-      });
+      })
 
     return deferred.promise
   }
@@ -230,7 +230,7 @@ export default class PaperService {
    * Save the score for a question
    */
   saveScore(question, score) {
-    const deferred = this.$q.defer();
+    const deferred = this.$q.defer()
     this.$http
       .put(this.UrlService('exercise_save_score', { id: this.current.paper.id, questionId: question.id, score: score }))
       .success((response) => {
@@ -264,8 +264,6 @@ export default class PaperService {
         }
       }
     }
-
-    console.log(questions)
 
     return questions
   }
@@ -325,23 +323,23 @@ export default class PaperService {
    * @returns {Array}
    */
   orderQuestions(paper, questions) {
-    var ordered = [];
+    var ordered = []
 
     if (paper && paper.order) {
       for (var i = 0; i < paper.order.length; i++) {
-        var stepOrder = paper.order[i];
+        var stepOrder = paper.order[i]
         for (var j = 0; j < stepOrder.items.length; j++) {
-          var item = stepOrder.items[j];
-          var question = this.QuestionService.getQuestion(questions, item);
+          var item = stepOrder.items[j]
+          var question = this.QuestionService.getQuestion(questions, item)
           if (question) {
-            ordered.push(question);
+            ordered.push(question)
           }
         }
       }
     }
 
-    return ordered;
-  };
+    return ordered
+  }
 
   /**
    * Order the Questions of a Step
@@ -350,33 +348,33 @@ export default class PaperService {
    * @returns {Array} The ordered list of Questions
    */
   orderStepQuestions(paper, step) {
-    let ordered = [];
+    let ordered = []
     if (step.items && 0 !== step.items.length) {
       // Get order for the current Step
-      let itemsOrder = null;
+      let itemsOrder = null
       if (paper && paper.order) {
         for (let i = 0; i < paper.order.length; i++) {
           if (step.id === paper.order[i].id) {
             // Order for the current step found
-            itemsOrder = paper.order[i].items;
-            break; // Stop searching
+            itemsOrder = paper.order[i].items
+            break // Stop searching
           }
         }
       }
 
       if (itemsOrder) {
         for (let i = 0; i < itemsOrder.length; i++) {
-          var question = this.StepService.getQuestion(step, itemsOrder[i]);
+          var question = this.StepService.getQuestion(step, itemsOrder[i])
           if (question) {
-            ordered.push(question);
+            ordered.push(question)
           }
         }
       } else {
-        ordered = step.items;
+        ordered = step.items
       }
     }
 
-    return ordered;
+    return ordered
   }
 
   /**

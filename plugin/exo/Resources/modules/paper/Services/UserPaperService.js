@@ -382,32 +382,33 @@ export default class UserPaperService {
 
       switch (exercise.meta.correctionMode) {
         // At the end of assessment
-        case '1':
-          available = null !== paper.end
-          break
-
+      case '1': {
+        available = null !== paper.end
+        break
+      }
         // After the last attempt
-        case '2':
-          available = (0 === exercise.meta.maxAttempts || this.nbPapers >= exercise.meta.maxAttempts)
-          break
-
+      case '2': {
+        available = (0 === exercise.meta.maxAttempts || this.nbPapers >= exercise.meta.maxAttempts)
+        break
+      }
         // From a fixed date
-        case '3':
-          const now = new Date()
+      case '3': {
+        const now = new Date()
 
-          let correctionDate = null
-          if (null !== exercise.meta.correctionDate) {
-            correctionDate = new Date(Date.parse(exercise.meta.correctionDate))
-          }
+        let correctionDate = null
+        if (null !== exercise.meta.correctionDate) {
+          correctionDate = new Date(Date.parse(exercise.meta.correctionDate))
+        }
 
-          available = (null === correctionDate || now >= correctionDate)
-          break
-
+        available = (null === correctionDate || now >= correctionDate)
+        break
+      }
         // Never
-        default:
-        case '4':
-          available = false
-          break
+      default:
+      case '4': {
+        available = false
+        break
+      }
       }
     }
 
@@ -433,19 +434,19 @@ export default class UserPaperService {
 
       switch (exercise.meta.markMode) {
         // At the same time that the correction
-        case '1':
-          available = this.isCorrectionAvailable(paper)
-          break
+      case '1':
+        available = this.isCorrectionAvailable(paper)
+        break
 
         // At the end of the assessment
-        case '2':
-          available = null !== paper.end
-          break
+      case '2':
+        available = null !== paper.end
+        break
 
         // Show score if nothing specified
-        default:
-          available = false
-          break
+      default:
+        available = false
+        break
       }
     }
 

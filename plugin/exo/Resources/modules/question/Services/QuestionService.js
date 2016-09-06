@@ -21,14 +21,14 @@ export default class QuestionService {
     OpenQuestionService
   ) {
     this.$log = $log
-    this.services = {};
+    this.services = {}
 
     // Inject custom services
-    this.services['application/x.choice+json']  = ChoiceQuestionService;
-    this.services['application/x.match+json']   = MatchQuestionService;
-    this.services['application/x.cloze+json']   = ClozeQuestionService;
-    this.services['application/x.short+json']   = OpenQuestionService;
-    this.services['application/x.graphic+json'] = GraphicQuestionService;
+    this.services['application/x.choice+json']  = ChoiceQuestionService
+    this.services['application/x.match+json']   = MatchQuestionService
+    this.services['application/x.cloze+json']   = ClozeQuestionService
+    this.services['application/x.short+json']   = OpenQuestionService
+    this.services['application/x.graphic+json'] = GraphicQuestionService
   }
 
   /**
@@ -45,7 +45,7 @@ export default class QuestionService {
     }
 
     return service
-  };
+  }
 
   /**
    * Get a Question from its ID
@@ -54,7 +54,7 @@ export default class QuestionService {
    * @returns {Object}
    */
   getQuestion(questions, id) {
-    let question = null;
+    let question = null
     for (let i = 0; i < questions.length; i++) {
       if (id === questions[i].id) {
         question = questions[i]

@@ -6,7 +6,7 @@ import AbstractQuestionService from './AbstractQuestionService'
  * @constructor
  */
 function ClozeQuestionService($log, FeedbackService) {
-  AbstractQuestionService.apply(this, arguments)
+  AbstractQuestionService.call(this, $log, FeedbackService)
 }
 
 // Extends AbstractQuestionCtrl

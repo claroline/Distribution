@@ -8,7 +8,7 @@ import AbstractQuestionService from './AbstractQuestionService'
  * @constructor
  */
 function MatchQuestionService($log, FeedbackService) {
-  AbstractQuestionService.apply(this, arguments)
+  AbstractQuestionService.call(this, $log, FeedbackService)
 }
 
 // Extends AbstractQuestionCtrl

@@ -7,77 +7,77 @@ import AbstractQuestionService from './AbstractQuestionService'
  * @constructor
  */
 function GraphicQuestionService($log, FeedbackService, ImageAreaService) {
-    AbstractQuestionService.apply(this, arguments);
+  AbstractQuestionService.call(this, $log, FeedbackService)
 
-    this.ImageAreaService = ImageAreaService;
+  this.ImageAreaService = ImageAreaService
 }
 
 // Extends AbstractQuestionCtrl
-GraphicQuestionService.prototype = Object.create(AbstractQuestionService.prototype);
+GraphicQuestionService.prototype = Object.create(AbstractQuestionService.prototype)
 
 /**
  * Initialize the answer object for the Question
  */
 GraphicQuestionService.prototype.initAnswer = function initAnswer() {
-    return [];
-};
+  return []
+}
 
 /**
  * Get the correct answer from the solutions of a Question
- * @param   {Object} question
+ *
  * @returns {Array}
  */
-GraphicQuestionService.prototype.getCorrectAnswer = function getCorrectAnswer(question) {
-    var answer = [];
+GraphicQuestionService.prototype.getCorrectAnswer = function getCorrectAnswer() {
+  var answer = []
 
-    return answer;
-};
+  return answer
+}
 
 /**
  *
  */
 GraphicQuestionService.prototype.answersAllFound = function answersAllFound(question, answers) {
-    let feedbackState = -1;
+  let feedbackState = -1
 
-    if (question.solutions) {
-      const foundSolutions = this.getFoundSolutions(question, answers)
+  if (question.solutions) {
+    const foundSolutions = this.getFoundSolutions(question, answers)
 
-      if (foundSolutions.length === question.solutions.length) {
-          feedbackState = this.FeedbackService.SOLUTION_FOUND
-      } else if (foundSolutions.length === question.solutions.length - 1) {
-          feedbackState = this.FeedbackService.ONE_ANSWER_MISSING
-      } else {
-          feedbackState = this.FeedbackService.MULTIPLE_ANSWERS_MISSING
+    if (foundSolutions.length === question.solutions.length) {
+      feedbackState = this.FeedbackService.SOLUTION_FOUND
+    } else if (foundSolutions.length === question.solutions.length - 1) {
+      feedbackState = this.FeedbackService.ONE_ANSWER_MISSING
+    } else {
+      feedbackState = this.FeedbackService.MULTIPLE_ANSWERS_MISSING
+    }
+  }
+
+  return feedbackState
+}
+
+GraphicQuestionService.prototype.getAreaStats = function getAreaStats(question, areaId) {
+  var stats = null
+
+  if (question.stats && question.stats.solutions) {
+    for (var area in question.stats.solutions) {
+      if (question.stats.solutions.hasOwnProperty(area)) {
+        if (question.stats.solutions[area].id === areaId) {
+          stats = question.stats.solutions[area]
+          break
+        }
       }
     }
 
-    return feedbackState;
-};
-
-GraphicQuestionService.prototype.getAreaStats = function getAreaStats(question, areaId) {
-    var stats = null;
-
-    if (question.stats && question.stats.solutions) {
-        for (var area in question.stats.solutions) {
-            if (question.stats.solutions.hasOwnProperty(area)) {
-                if (question.stats.solutions[area].id = areaId) {
-                    stats = question.stats.solutions[area];
-                    break;
-                }
-            }
-        }
-
-        if (!stats) {
-            // No User have chosen this answer
-            stats = {
-                id: areaId,
-                count: 0
-            };
-        }
+    if (!stats) {
+      // No User have chosen this answer
+      stats = {
+        id: areaId,
+        count: 0
+      }
     }
+  }
 
-    return stats;
-};
+  return stats
+}
 
 GraphicQuestionService.prototype.getTotalScore = function (question) {
   let total = 0
