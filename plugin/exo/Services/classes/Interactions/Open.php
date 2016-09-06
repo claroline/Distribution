@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Services for the matching.
- */
-
 namespace UJM\ExoBundle\Services\classes\Interactions;
 
 use JMS\DiExtraBundle\Annotation as DI;
@@ -11,6 +7,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
+ * Services for open.
+ *
  * @DI\Service("ujm.exo.open_service")
  */
 class Open extends Interaction

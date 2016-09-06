@@ -1,9 +1,5 @@
 <?php
 
-/**
- * abstract class.
- */
-
 namespace UJM\ExoBundle\Services\classes\Interactions;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -11,6 +7,9 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
+/**
+ * abstract class.
+ */
 abstract class Interaction
 {
     protected $doctrine;
