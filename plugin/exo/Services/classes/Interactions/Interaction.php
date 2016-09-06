@@ -21,10 +21,8 @@ abstract class Interaction
      *
      * @param Registry $doctrine
      */
-    public function __construct(
-        Registry $doctrine
-
-    ) {
+    public function __construct(Registry $doctrine)
+    {
         $this->doctrine = $doctrine;
     }
 
@@ -49,7 +47,7 @@ abstract class Interaction
             if (count($lhp) > 0) {
                 $signe = substr($hint->getPenalty(), 0, 1);
 
-                if ($signe == '-') {
+                if ($signe === '-') {
                     $penalty += substr($hint->getPenalty(), 1);
                 } else {
                     $penalty += $hint->getPenalty();
@@ -72,12 +70,12 @@ abstract class Interaction
     protected function getPenalty($question, SessionInterface $session, $paperID)
     {
         $penalty = 0;
-        if ($paperID == 0) {
+        if ($paperID === 0) {
             if ($session->get('penalties')) {
                 foreach ($session->get('penalties') as $penal) {
                     $signe = substr($penal, 0, 1); // In order to manage the symbol of the penalty
 
-                    if ($signe == '-') {
+                    if ($signe === '-') {
                         $penalty += substr($penal, 1);
                     } else {
                         $penalty += $penal;

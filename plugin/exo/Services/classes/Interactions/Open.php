@@ -5,6 +5,7 @@ namespace UJM\ExoBundle\Services\classes\Interactions;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use UJM\ExoBundle\Entity\InteractionOpen;
 
 /**
  * Services for open.
@@ -54,26 +55,26 @@ class Open extends Interaction
      * implement the abstract method
      * To calculate the score.
      *
-     * @param \UJM\ExoBundle\Entity\InteractionOpen $interOpen
-     * @param string                                $response
-     * @param float                                 $penalty   penalty if the user showed hints
+     * @param InteractionOpen $interOpen
+     * @param string          $response
+     * @param float           $penalty   penalty if the user showed hints
      *
      * @return string userScore/scoreMax
      */
     public function mark(
-        \UJM\ExoBundle\Entity\InteractionOpen $interOpen = null,
+        InteractionOpen $interOpen = null,
         $response = null,
         $penalty = null
     ) {
-        if ($interOpen->getTypeOpenQuestion() == 'long') {
+        if ($interOpen->getTypeOpenQuestion() === 'long') {
             $score = -1;
-        } elseif ($interOpen->getTypeOpenQuestion() == 'oneWord') {
+        } elseif ($interOpen->getTypeOpenQuestion() === 'oneWord') {
             $score = $this->getScoreOpenOneWord($response, $interOpen);
-        } elseif ($interOpen->getTypeOpenQuestion() == 'short') {
+        } elseif ($interOpen->getTypeOpenQuestion() === 'short') {
             $score = $this->getScoreShortResponse($response, $interOpen);
         }
 
-        if ($interOpen->getTypeOpenQuestion() != 'long') {
+        if ($interOpen->getTypeOpenQuestion() !== 'long') {
             $score -= $penalty;
             if ($score < 0) {
                 $score = 0;
@@ -97,12 +98,12 @@ class Open extends Interaction
         $em = $this->doctrine->getManager();
         $scoreMax = 0;
 
-        if ($interOpen->getTypeOpenQuestion() == 'long') {
+        if ($interOpen->getTypeOpenQuestion() === 'long') {
             $scoreMax = $interOpen->getScoreMaxLongResp();
-        } elseif ($interOpen->getTypeOpenQuestion() == 'oneWord') {
+        } elseif ($interOpen->getTypeOpenQuestion() === 'oneWord') {
             $scoreMax = $em->getRepository('UJMExoBundle:WordResponse')
                 ->getScoreMaxOneWord($interOpen->getId());
-        } elseif ($interOpen->getTypeOpenQuestion() == 'short') {
+        } elseif ($interOpen->getTypeOpenQuestion() === 'short') {
             $scoreMax = $em->getRepository('UJMExoBundle:WordResponse')
                 ->getScoreMaxShort($interOpen->getId());
         }
