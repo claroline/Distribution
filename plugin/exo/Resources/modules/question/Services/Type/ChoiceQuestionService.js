@@ -5,7 +5,7 @@ import AbstractQuestionService from './AbstractQuestionService'
  * @param {FeedbackService} FeedbackService
  * @constructor
  */
-function ChoiceQuestionService($log, ScoreService, FeedbackService) {
+function ChoiceQuestionService($log, FeedbackService) {
     AbstractQuestionService.apply(this, arguments);
 }
 

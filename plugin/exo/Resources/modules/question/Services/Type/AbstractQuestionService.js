@@ -7,11 +7,9 @@ export default class AbstractQuestionService {
    * Constructor.
    * 
    * @param {Object} $log
-   * @param {ScoreService} ScoreService
    */
-  constructor($log, ScoreService, FeedbackService) {
+  constructor($log, FeedbackService) {
     this.$log = $log
-    this.ScoreService = ScoreService
     this.FeedbackService = FeedbackService
   }
   

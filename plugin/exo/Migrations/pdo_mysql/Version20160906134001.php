@@ -22,7 +22,7 @@ class Version20160906134001 extends AbstractMigration
     public function down(Schema $schema)
     {
         $this->addSql("
-            ALTER TABLE ujm_step CHANGE `value` `value` VARCHAR(255) DEFAULT NULL COLLATE utf8_unicode_ci
+            ALTER TABLE ujm_step CHANGE `value1090` `value` VARCHAR(255) DEFAULT NULL COLLATE utf8_unicode_ci
         ");
     }
 }

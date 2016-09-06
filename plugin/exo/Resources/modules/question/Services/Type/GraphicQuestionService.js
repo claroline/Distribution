@@ -6,7 +6,7 @@ import AbstractQuestionService from './AbstractQuestionService'
  * @param {ImageAreaService} ImageAreaService
  * @constructor
  */
-function GraphicQuestionService($log, ScoreService, FeedbackService, ImageAreaService) {
+function GraphicQuestionService($log, FeedbackService, ImageAreaService) {
     AbstractQuestionService.apply(this, arguments);
 
     this.ImageAreaService = ImageAreaService;

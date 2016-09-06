@@ -7,7 +7,7 @@ import AbstractQuestionService from './AbstractQuestionService'
  * @param {FeedbackService} FeedbackService
  * @constructor
  */
-function MatchQuestionService($log, ScoreService, FeedbackService) {
+function MatchQuestionService($log, FeedbackService) {
   AbstractQuestionService.apply(this, arguments)
 }
 

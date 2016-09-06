@@ -5,7 +5,7 @@ import AbstractQuestionService from './AbstractQuestionService'
  * @param {FeedbackService} FeedbackService
  * @constructor
  */
-function ClozeQuestionService($log, ScoreService, FeedbackService) {
+function ClozeQuestionService($log, FeedbackService) {
   AbstractQuestionService.apply(this, arguments)
 }
 
