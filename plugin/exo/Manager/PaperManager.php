@@ -370,7 +370,7 @@ class PaperManager
             'start' => $paper->getStart()->format('Y-m-d\TH:i:s'),
             'end' => $paper->getEnd() ? $paper->getEnd()->format('Y-m-d\TH:i:s') : null,
             'interrupted' => $paper->getInterupt(),
-            'scoreTotal' => $scoreAvailable ? $paper->getScore() : null,
+            'score' => $scoreAvailable ? $paper->getScore() : null,
             'order' => $this->getStepsQuestions($paper),
             'questions' => $this->exportPaperAnswers($paper, $scoreAvailable),
         ];

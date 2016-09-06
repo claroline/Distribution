@@ -330,6 +330,12 @@ export default class UserPaperService {
         this.PaperService.calculateScore(this.paper)
       }
 
+      // Set paper for correction display
+      this.PaperService.setCurrent({
+        paper: this.paper,
+        questions: this.PaperService.getPaperQuestions(this.paper)
+      })
+
       deferred.resolve(this.paper)
     }
 

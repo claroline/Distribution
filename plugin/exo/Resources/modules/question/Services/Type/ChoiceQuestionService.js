@@ -258,6 +258,10 @@ ChoiceQuestionService.prototype.getAnswerScore = function (question, answer) {
     }
   }
 
+  if (0 > score) {
+    score = 0
+  }
+
   return score
 }
 

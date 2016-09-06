@@ -1,12 +1,21 @@
 
 export default class PaperGenerator {
-  constructor($filter, ArrayService) {
+  /**
+   * Constructor.
+   *
+   * @param {object} $filter
+   * @param {IdentifierService} IdentifierService
+   * @param {ArrayService} ArrayService
+   */
+  constructor($filter, IdentifierService, ArrayService) {
     this.$filter = $filter
+    this.IdentifierService = IdentifierService
     this.ArrayService = ArrayService
   }
 
   generate(exercise, user, previousPaper) {
     return {
+      id: this.IdentifierService.generateUUID(),
       number: previousPaper ? previousPaper.number + 1 : 1,
       interrupted: true,
       user: user,

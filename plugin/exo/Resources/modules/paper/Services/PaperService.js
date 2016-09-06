@@ -247,25 +247,50 @@ export default class PaperService {
   }
 
   /**
+   * Get the Question of a Paper from the Exercise.
+   *
+   * @param paper
+   * @return {array}
+   */
+  getPaperQuestions(paper) {
+    const questions = []
+
+    for (let i = 0; i < paper.order.length; i++) {
+      let step = paper.order[i]
+      for (let j = 0; j < step.items.length; j++) {
+        let item = this.ExerciseService.getItem(step.items[j])
+        if (item) {
+          questions.push(item)
+        }
+      }
+    }
+
+    console.log(questions)
+
+    return questions
+  }
+
+  /**
    * Calculate the score of the Paper (/20)
    * @param   {Object} paper
    * @param   {Array} questions
    * @returns {number}
    */
   getPaperScore(paper, questions) {
-    let score = 0.0 // final score
-    let scoreTotal = 0
+    let score = 0.0
 
-    for (let i = 0; i < questions.length; i++) {
-      if (questions[i].scoreTotal) {
-        scoreTotal += questions[i].scoreTotal
-      }
+    if (null === paper.score) {
+      this.calculateScore(paper)
     }
 
-    let userScore = paper.scoreTotal
-    if (userScore) {
-      score = userScore * 20 / scoreTotal
-      if (userScore > 0) {
+    if (paper.score) {
+      let scoreTotal = 0
+      for (let i = 0; i < questions.length; i++) {
+        scoreTotal += this.QuestionService.calculateTotal(questions[i])
+      }
+
+      score = paper.score * 20 / scoreTotal
+      if (score > 0) {
         score = Math.round(score / 0.5) * 0.5
       } else {
         score = 0
@@ -276,9 +301,12 @@ export default class PaperService {
   }
 
   calculateScore(paper) {
+    paper.score = 0
     for (let i = 0; i < paper.questions.length; i++) {
-      this.calculateQuestionScore(paper.questions[i])
+      paper.score += this.calculateQuestionScore(paper.questions[i])
     }
+
+    return paper.score
   }
 
   calculateQuestionScore(questionPaper) {
@@ -286,6 +314,8 @@ export default class PaperService {
     if (item) {
       this.QuestionService.calculateScore(item, questionPaper)
     }
+
+    return questionPaper.score
   }
 
   /**

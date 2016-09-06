@@ -19,12 +19,12 @@
                     {{ 'score'|trans:{}:'ujm_exo' }}:
 
                     <!-- Feedback is visible and question is marked -->
-                    <span data-ng-if="-1 !== questionShowCtrl.getScore()">
+                    <span data-ng-if="'-1' !== questionShowCtrl.getScore()">
                         {{ questionShowCtrl.getScore() + '/' + questionShowCtrl.getTotalScore() }}
                     </span>
 
                     <!-- Feedback is visible but question require a manual correction -->
-                    <span data-ng-if="-1 === questionShowCtrl.getScore()">
+                    <span data-ng-if="'-1' === questionShowCtrl.getScore()">
                         {{ '?/' + questionShowCtrl.getTotalScore() }}
                     </span>
                 </span>

@@ -250,23 +250,24 @@ ExercisePlayerCtrl.prototype.end = function end() {
     this.TimerService.destroy(this.timer.id)
   }
 
-  this.submit()
-          .then(function onSuccess() {
-            // Answers submitted, we can now end the Exercise
-            this.UserPaperService
-                    .end()
-                    .then(function onSuccess() {
-                      if (this.UserPaperService.isCorrectionAvailable(this.paper)) {
-                        // go to paper correction view
-                        this.$location.path('/papers/' + this.paper.id)
-                      }
-                      else {
-                        // go to exercise papers list (to let the User show his registered paper)
-                        this.$location.path('/papers')
-                      }
-                    }.bind(this))
-            this.feedback.state = {}
-          }.bind(this))
+  this
+    .submit()
+    .then(function onSuccess() {
+      // Answers submitted, we can now end the Exercise
+      this.UserPaperService
+        .end()
+        .then(function onSuccess() {
+          if (this.UserPaperService.isCorrectionAvailable(this.paper)) {
+            // go to paper correction view
+            this.$location.path('/papers/' + this.paper.id)
+          }
+          else {
+            // go to exercise papers list (to let the User show his registered paper)
+            this.$location.path('/papers')
+          }
+        }.bind(this))
+      this.feedback.state = {}
+    }.bind(this))
 }
 
 /**

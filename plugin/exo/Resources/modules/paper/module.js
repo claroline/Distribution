@@ -31,6 +31,7 @@ angular
   ])
   .service('PaperGenerator', [
     '$filter',
+    'IdentifierService',
     'ArrayService',
     PaperGenerator
   ])

@@ -138,6 +138,10 @@ OpenQuestionService.prototype.getAnswerScore = function (question, answer) {
         }
       }
     }
+
+    if (0 > score) {
+      score = 0
+    }
   } else {
     // Open questions need to be manually corrected
     score = -1

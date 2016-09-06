@@ -218,6 +218,10 @@ ClozeQuestionService.prototype.getAnswerScore = function (question, answer) {
     score += solutionsFound[i].score
   }
 
+  if (0 > score) {
+    score = 0
+  }
+
   return score
 }
 

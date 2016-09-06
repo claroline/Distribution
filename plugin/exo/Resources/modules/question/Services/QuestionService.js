@@ -39,7 +39,7 @@ export default class QuestionService {
   getTypeService(questionType) {
     let service = null
     if (!this.services[questionType]) {
-      console.error('Question Type : try to get a Service for an undefined type `' + questionType + '`.')
+      this.$log.error('Question Type : try to get a Service for an undefined type `' + questionType + '`.')
     } else {
       service = this.services[questionType]
     }
@@ -74,6 +74,8 @@ export default class QuestionService {
         questionPaper.score -= questionPaper.hints[i].penalty
       }
     }
+
+    return questionPaper.score
   }
 
   calculateTotal(question) {

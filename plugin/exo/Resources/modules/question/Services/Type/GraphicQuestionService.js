@@ -97,6 +97,10 @@ GraphicQuestionService.prototype.getAnswerScore = function (question, answer) {
     score += foundSolutions[i].score
   }
 
+  if (0 > score) {
+    score = 0
+  }
+
   return score
 }
 
