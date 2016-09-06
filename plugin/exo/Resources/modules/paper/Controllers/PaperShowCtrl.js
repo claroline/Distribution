@@ -34,6 +34,10 @@ PaperShowCtrl.prototype.getQuestionPaper = function getQuestionPaper(question) {
   return this.PaperService.getQuestionPaper(this.paper, question)
 }
 
+PaperShowCtrl.prototype.showMinimalCorrection = function() {
+  return this.PaperService.getExerciseMeta().minimalCorrection
+}
+
 /**
  * Get the score of a Paper
  * @returns {Number}

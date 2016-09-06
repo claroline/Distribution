@@ -166,6 +166,7 @@ hole_edition: Hole edition
 hole_selector: Submit a list
 home_exercise: Home exercise
 hide_additional_info: Hide additional information
+hint_points: "[0,1] - %count% point|]1,Inf[ - %count% points"
 
 # I
 infiny: Indefinite
@@ -221,6 +222,7 @@ maximum_tries: Maximum number of tries
 meaning_measure_difficulty: If the measure is hight, the question is easy ; In return, if the measure is low, the question is difficult
 metadata_visible:      Display exercise information
 metadata_visible_help: If checked a table with the exercise information will be displayed on the overview
+minimal_correction: Show minimal correction
 model: Model
 more_info: More information
 my_questions: My questions
@@ -399,7 +401,7 @@ upload: Upload
 uploading: Uploading
 user: User
 users: Users
-ujm_exo_exercise_title: Title
+ujm_exo_exercise_name: Title
 ujm_exo_exercise_published: Publish resource
 
 # V
