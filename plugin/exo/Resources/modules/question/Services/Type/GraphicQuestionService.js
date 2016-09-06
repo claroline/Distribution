@@ -106,8 +106,8 @@ GraphicQuestionService.prototype.getFoundSolutions = function (question, answer)
   if (answer && 0 !== answer.length) {
     for (let i = 0; i < question.solutions.length; i++) {
       for (let j = 0; j < answer.length; j++) {
-        let found = this.ImageAreaService.isInArea(question.solutions[i], answer[j])
-        if (found) {
+        let areaFound = this.ImageAreaService.isInArea(question.solutions[i], answer[j])
+        if (areaFound) {
           found.push(question.solutions[i])
           break
         }
