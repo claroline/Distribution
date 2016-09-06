@@ -105,9 +105,15 @@ abstract class Interaction
      protected function getScoreWordResponse($wr, $response)
      {
          $score = 0;
-         if (((strcasecmp(trim($wr->getResponse()), trim($response)) == 0
-                 && $wr->getCaseSensitive() == false))
-                     || (trim($wr->getResponse()) == trim($response))) {
+
+         $formattedResponse = trim($response);
+         $formattedWord = trim($wr->getResponse());
+         if (!$wr->getCaseSensitive()) {
+             $formattedResponse = strtolower($formattedResponse);
+             $formattedWord = strtolower($formattedWord);
+         }
+
+         if ($formattedResponse === $formattedWord) {
              $score = $wr->getScore();
          }
 

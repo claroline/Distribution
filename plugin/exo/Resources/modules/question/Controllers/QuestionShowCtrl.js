@@ -60,6 +60,10 @@ export default class QuestionShowCtrl {
     })
   }
 
+  getScore() {
+    return this.questionPaper.score || this.QuestionService.calculateScore(this.question, this.questionPaper)
+  }
+
   /**
    * Get the total score of the Question
    *

@@ -92,4 +92,43 @@ GraphicQuestionService.prototype.getAreaStats = function getAreaStats(question, 
     return stats;
 };
 
+GraphicQuestionService.prototype.getTotalScore = function (question) {
+  let total = 0
+
+  for (let i = 0; i < question.solutions.length; i++) {
+    total += question.solutions[i].score
+  }
+
+  return total
+}
+
+GraphicQuestionService.prototype.getAnswerScore = function (question, answer) {
+  let score = 0
+
+  const foundSolutions = this.getFoundSolutions(question, answer)
+  for (let i = 0; i < foundSolutions.length; i++) {
+    score += foundSolutions[i].score
+  }
+
+  return score
+}
+
+GraphicQuestionService.prototype.getFoundSolutions = function (question, answer) {
+  let found = []
+
+  if (answer && 0 !== answer.length) {
+    for (let i = 0; i < question.solutions.length; i++) {
+      for (let j = 0; j < answer.length; j++) {
+        let found = this.ImageAreaService.isInArea(question.solutions[i], answer[j])
+        if (found) {
+          found.push(question.solutions[i])
+          break
+        }
+      }
+    }
+  }
+
+  return found
+}
+
 export default GraphicQuestionService

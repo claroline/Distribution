@@ -112,9 +112,6 @@ OpenQuestionService.prototype.getTotalScore = function (question) {
 OpenQuestionService.prototype.getAnswerScore = function (question, answer) {
   let score = null
 
-
-  console.log(question)
-
   if ('long' !== question.typeOpen) {
     const foundKeywords = this.getFoundSolutions(question, answer)
 

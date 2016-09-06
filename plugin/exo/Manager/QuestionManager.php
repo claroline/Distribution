@@ -213,15 +213,6 @@ class QuestionManager
         return $data;
     }
 
-    public function exportQuestionScore(Question $question, Paper $paper)
-    {
-        $response = $this->om
-            ->getRepository('UJMExoBundle:Response')
-            ->findOneBy(['paper' => $paper, 'question' => $question]);
-
-        return $response ? $response->getMark() : 0;
-    }
-
     /**
      * Ensures the format of the answer is correct and returns a list of
      * validation errors, if any.

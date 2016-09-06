@@ -108,7 +108,6 @@ class Open extends Interaction
             $scoreMax = $em->getRepository('UJMExoBundle:WordResponse')
                 ->getScoreMaxShort($interOpen->getId());
         }
-//        alert();
 
         return $scoreMax;
     }

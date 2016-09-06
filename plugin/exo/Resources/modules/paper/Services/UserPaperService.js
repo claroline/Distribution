@@ -236,7 +236,7 @@ export default class UserPaperService {
       // Get answers for each Question of the Step
       const stepAnswers = {}
       for (let i = 0; i < stepPapers.length; i++) {
-        stepAnswers[stepPapers.id] = stepPapers.answer
+        stepAnswers[stepPapers[i].id] = stepPapers[i].answer
       }
 
       // There are answers to post

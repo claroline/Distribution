@@ -47,6 +47,11 @@ OpenQuestionCtrl.prototype.onFeedbackShow = function onFeedbackShow() {
         keyword += '</b>'
 
         this.answerWithKeywords = this.answerWithKeywords.replace(searchExpression, keyword, searchFlags)
+
+        if ('oneWord' === this.question.typeOpen) {
+          // For one word question we give points only for the first typed word
+          break
+        }
       }
     }
   }
