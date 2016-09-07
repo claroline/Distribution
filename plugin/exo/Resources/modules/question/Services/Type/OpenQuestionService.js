@@ -26,30 +26,32 @@ OpenQuestionService.prototype.initAnswer = function initAnswer() {
 OpenQuestionService.prototype.answersAllFound = function answersAllFound(question, answer) {
   var feedbackState = -1
 
-  if ('long' !== question.typeOpen) {
-    // Search used keywords in student answer
-    const foundKeywords = this.getFoundSolutions(question, answer)
+  if (question.solutions) {
+    if ('long' !== question.typeOpen) {
+      // Search used keywords in student answer
+      const foundKeywords = this.getFoundSolutions(question, answer)
 
-    if (0 !== foundKeywords.length) {
-      if ('oneWord' === question.typeOpen) {
-        if (foundKeywords[0].score > 0) {
-          feedbackState = this.FeedbackService.SOLUTION_FOUND
+      if (0 !== foundKeywords.length) {
+        if ('oneWord' === question.typeOpen) {
+          if (foundKeywords[0].score > 0) {
+            feedbackState = this.FeedbackService.SOLUTION_FOUND
+          } else {
+            feedbackState = this.FeedbackService.ONE_ANSWER_MISSING
+          }
         } else {
-          feedbackState = this.FeedbackService.ONE_ANSWER_MISSING
+          // Short question
+          if (question.solutions.length === foundKeywords.length) {
+            feedbackState = this.FeedbackService.SOLUTION_FOUND
+          } else if (question.solutions.length - 1 === foundKeywords.length) {
+            feedbackState = this.FeedbackService.ONE_ANSWER_MISSING
+          }
         }
       } else {
-        // Short question
-        if (question.solutions.length === foundKeywords.length) {
-          feedbackState = this.FeedbackService.SOLUTION_FOUND
-        } else if (question.solutions.length - 1 === foundKeywords.length) {
-          feedbackState = this.FeedbackService.ONE_ANSWER_MISSING
-        }
+        feedbackState = this.FeedbackService.MULTIPLE_ANSWERS_MISSING
       }
     } else {
-      feedbackState = this.FeedbackService.MULTIPLE_ANSWERS_MISSING
+      feedbackState = this.FeedbackService.SOLUTION_FOUND
     }
-  } else {
-    feedbackState = this.FeedbackService.SOLUTION_FOUND
   }
 
   return feedbackState

@@ -25,18 +25,20 @@ ClozeQuestionService.prototype.answersAllFound = function answersAllFound(questi
   if (question.solutions) {
     var numAnswersFound = 0
 
-    for (var i = 0; i < question.solutions.length; i++) {
-      for (var j=0; j<question.solutions[i].answers.length; j++) {
-        for (var k=0; k<question.holes.length; k++) {
-          for (var l=0; l<answers.length; l++) {
-            if (answers[l].holeId === question.solutions[i].holeId) {
-              var answer = answers[l]
+    if (answer) {
+      for (var i = 0; i < question.solutions.length; i++) {
+        for (var j=0; j<question.solutions[i].answers.length; j++) {
+          for (var k=0; k<question.holes.length; k++) {
+            for (var l=0; l<answers.length; l++) {
+              if (answers[l].holeId === question.solutions[i].holeId) {
+                var answer = answers[l]
+              }
             }
-          }
-          if (question.holes[k].id === question.solutions[i].holeId && question.solutions[i].answers[j].text === answer.answerText && question.solutions[i].answers[j].score > 0 && !question.holes[k].selector) {
-            numAnswersFound++
-          } else if (question.holes[k].id === question.solutions[i].holeId && question.solutions[i].answers[j].id === answer.answerText && question.solutions[i].answers[j].score > 0 && question.holes[k].selector) {
-            numAnswersFound++
+            if (question.holes[k].id === question.solutions[i].holeId && question.solutions[i].answers[j].text === answer.answerText && question.solutions[i].answers[j].score > 0 && !question.holes[k].selector) {
+              numAnswersFound++
+            } else if (question.holes[k].id === question.solutions[i].holeId && question.solutions[i].answers[j].id === answer.answerText && question.solutions[i].answers[j].score > 0 && question.holes[k].selector) {
+              numAnswersFound++
+            }
           }
         }
       }

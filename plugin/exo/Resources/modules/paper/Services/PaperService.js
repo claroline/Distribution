@@ -385,4 +385,8 @@ export default class PaperService {
 
     return exercise.meta
   }
+
+  getPaperSteps(){
+    return this.ExerciseService.getExercise().steps
+  }
 }

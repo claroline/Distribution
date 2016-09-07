@@ -29,20 +29,23 @@ ChoiceQuestionService.prototype.answersAllFound = function answersAllFound(quest
     var numAnswersFound = 0
     var numSolutions = 0
     var uniqueSolutionFound = false
-    for (var i=0; i<question.solutions.length; i++) {
-      if (question.solutions[i].score > 0) {
-        numSolutions++
-      }
-      for (var j=0; j<answer.length; j++) {
-        if (question.solutions[i].id === answer[j] && question.solutions[i].score > 0) {
-          if (question.solutions[i].rightResponse && !question.multiple) {
-            uniqueSolutionFound = true
+
+    if (answer) {
+      for (var i=0; i<question.solutions.length; i++) {
+        if (question.solutions[i].score > 0) {
+          numSolutions++
+        }
+        for (var j=0; j<answer.length; j++) {
+          if (question.solutions[i].id === answer[j] && question.solutions[i].score > 0) {
+            if (question.solutions[i].rightResponse && !question.multiple) {
+              uniqueSolutionFound = true
+            }
+            numAnswersFound++
           }
-          numAnswersFound++
         }
       }
     }
-
+    
     if (numAnswersFound === numSolutions || uniqueSolutionFound) {
             // all answers have been found
       feedbackState = this.FeedbackService.SOLUTION_FOUND
