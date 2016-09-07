@@ -250,12 +250,10 @@ class ExerciseListener
     {
         if ($content) {
             $parsed = $this->container->get('claroline.scorm.rich_text_exporter')->parse($content);
-            $step['meta']['description'] = $parsed['text'];
+            $content = $parsed['text'];
             foreach ($parsed['resources'] as $resource) {
                 $event->addEmbedResource($resource);
             }
-
-            $content = $parsed['text'];
         }
 
         return $content;
