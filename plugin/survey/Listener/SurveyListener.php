@@ -83,10 +83,10 @@ class SurveyListener
         $form = $this->formFactory->create(new SurveyType(), new Survey());
         $content = $this->templating->render(
             'ClarolineCoreBundle:Resource:createForm.html.twig',
-            array(
+            [
                 'form' => $form->createView(),
                 'resourceType' => 'claroline_survey',
-            )
+            ]
         );
         $event->setResponseContent($content);
         $event->stopPropagation();
@@ -113,10 +113,10 @@ class SurveyListener
 
         $content = $this->templating->render(
             'ClarolineCoreBundle:Resource:createForm.html.twig',
-            array(
+            [
                 'form' => $form->createView(),
                 'resourceType' => 'claroline_survey',
-            )
+            ]
         );
         $event->setErrorFormContent($content);
         $event->stopPropagation();
@@ -132,7 +132,7 @@ class SurveyListener
         $params = array();
         $params['_controller'] = 'ClarolineSurveyBundle:Survey:index';
         $params['survey'] = $event->getResource()->getId();
-        $subRequest = $this->request->duplicate(array(), null, $params);
+        $subRequest = $this->request->duplicate([], null, $params);
         $response = $this->httpKernel
             ->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
         $event->setResponse($response);
@@ -192,7 +192,9 @@ class SurveyListener
 
                     $this->om->persist($copyMultiQuestion);
                     break;
-                case 'open-ended':
+                case 'open_ended':
+                case 'open_ended_bare':
+                case 'simple_text':
                 default:
                     break;
             }
