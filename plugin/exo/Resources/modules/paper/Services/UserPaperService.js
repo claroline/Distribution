@@ -16,8 +16,10 @@ export default class UserPaperService {
    * @param {PaperService}    PaperService
    * @param {ExerciseService} ExerciseService
    * @param {url}             url
+   * @param {CorrectionMode}  CorrectionMode
+   * @param {MarkMode}        MarkMode
    */
-  constructor($http, $q, $filter, PaperGenerator, PaperService, ExerciseService, url) {
+  constructor($http, $q, $filter, PaperGenerator, PaperService, ExerciseService, url, CorrectionMode, MarkMode) {
     this.$http = $http
     this.$q = $q
     this.$filter = $filter
@@ -25,6 +27,8 @@ export default class UserPaperService {
     this.PaperService = PaperService
     this.ExerciseService = ExerciseService
     this.UrlService = url
+    this.CorrectionMode = CorrectionMode
+    this.MarkMode = MarkMode
 
     /**
      * Current paper of the User.
@@ -381,18 +385,17 @@ export default class UserPaperService {
       const exercise = this.ExerciseService.getExercise()
 
       switch (exercise.meta.correctionMode) {
-        // At the end of assessment
-      case '1': {
+      case this.CorrectionMode.AFTER_END: {
         available = null !== paper.end
         break
       }
-        // After the last attempt
-      case '2': {
+
+      case this.CorrectionMode.AFTER_LAST_ATTEMPT: {
         available = (0 === exercise.meta.maxAttempts || this.nbPapers >= exercise.meta.maxAttempts)
         break
       }
-        // From a fixed date
-      case '3': {
+
+      case this.CorrectionMode.AFTER_DATE: {
         const now = new Date()
 
         let correctionDate = null
@@ -403,9 +406,9 @@ export default class UserPaperService {
         available = (null === correctionDate || now >= correctionDate)
         break
       }
-        // Never
+
       default:
-      case '4': {
+      case this.CorrectionMode.NEVER: {
         available = false
         break
       }
@@ -433,13 +436,11 @@ export default class UserPaperService {
       const exercise = this.ExerciseService.getExercise()
 
       switch (exercise.meta.markMode) {
-        // At the same time that the correction
-      case '1':
+      case this.MarkMode.WITH_CORRECTION:
         available = this.isCorrectionAvailable(paper)
         break
 
-        // At the end of the assessment
-      case '2':
+      case this.MarkMode.AFTER_END:
         available = null !== paper.end
         break
 

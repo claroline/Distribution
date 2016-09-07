@@ -10,6 +10,7 @@ import 'at-table/dist/angular-table'
 
 import '#/main/core/utilities/module'
 import './../common/module'
+import './../correction/module'
 
 import PaperService from './Services/PaperService'
 import PaperGenerator from './Services/PaperGenerator'
@@ -27,7 +28,8 @@ angular
     'angular-table',
     'ui.fos-js-router',
     'Common',
-    'Step'
+    'Step',
+    'Correction'
   ])
   .service('PaperGenerator', [
     '$filter',
@@ -52,6 +54,8 @@ angular
     'PaperService',
     'ExerciseService',
     'url',
+    'CorrectionMode',
+    'MarkMode',
     UserPaperService
   ])
   .controller('ManualMarkCtrl', [

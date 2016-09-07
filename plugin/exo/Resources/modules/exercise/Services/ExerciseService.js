@@ -6,22 +6,10 @@ import angular from 'angular/index'
  * @param {Object} $q
  * @constructor
  */
-function ExerciseService($http, $q, Translator, url) {
+function ExerciseService($http, $q, url) {
   this.$http = $http
   this.$q    = $q
   this.UrlService = url
-  this.correctionModes = {
-    '1': Translator.trans('at_the_end_of_assessment', {}, 'ujm_exo'),
-    '2': Translator.trans('after_the_last_attempt', {}, 'ujm_exo'),
-    '3': Translator.trans('from', {}, 'ujm_exo'),
-    '4': Translator.trans('never', {}, 'ujm_exo')
-  }
-
-  this.markModes = {
-    '1': Translator.trans('at_the_same_time_that_the_correction', {}, 'ujm_exo'),
-    '2': Translator.trans('at_the_end_of_assessment', {}, 'ujm_exo')
-  }
-
 }
 
 ExerciseService.prototype.TYPE_SUMMATIVE = '1'
