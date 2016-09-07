@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Command\Import;
 
+use Claroline\CoreBundle\Command\BaseCommandTrait;
 use Claroline\CoreBundle\Library\Logger\ConsoleLogger;
 use Claroline\CoreBundle\Validator\Constraints\CsvHomeTextWidget;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;

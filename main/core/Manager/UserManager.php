@@ -917,6 +917,11 @@ class UserManager
         return $this->pagerFactory->createPagerFromArray($users, $page, $max);
     }
 
+    public function getUsersExcudingRoles(array $roles)
+    {
+        return $this->userRepo->findUsersExcludingRoles($roles);
+    }
+
     /**
      * @param Role[] $roles
      * @param string $search
