@@ -48,7 +48,7 @@ function ExercisePlayerCtrl(
   this.FeedbackService.reset()
 
   // Configure Feedback
-  if ('3' === this.exercise.meta.type) {
+  if (this.ExerciseService.TYPE_FORMATIVE === this.exercise.meta.type) {
     // Enable feedback
     this.FeedbackService.enable()
   } else {

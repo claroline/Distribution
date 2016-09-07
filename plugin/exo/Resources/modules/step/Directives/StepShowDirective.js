@@ -17,7 +17,7 @@ function StepShowDirective() {
             stepIndex       : '@',
             currentTry      : '=',
             solutionShown   : '=',
-            allAnswersFound : '='
+            allAnswersFound : '=?'
         }
     };
 }

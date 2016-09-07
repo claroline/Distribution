@@ -284,7 +284,7 @@ export default class UserPaperService {
         })
     } else {
       const exercise = this.ExerciseService.getExercise()
-      if ('3' === exercise.meta.type) {
+      if (this.ExerciseService.TYPE_FORMATIVE === exercise.meta.type) {
         // Directly calculate score for submitted questions
         for (let i = 0; i < stepPapers.length; i++) {
           this.PaperService.calculateQuestionScore(stepPapers[i])

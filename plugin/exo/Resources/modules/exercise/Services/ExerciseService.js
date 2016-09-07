@@ -24,6 +24,10 @@ function ExerciseService($http, $q, Translator, url) {
 
 }
 
+ExerciseService.prototype.TYPE_SUMMATIVE = '1'
+ExerciseService.prototype.TYPE_EVALUATIVE = '2'
+ExerciseService.prototype.TYPE_FORMATIVE = '3'
+
 /**
  * Current Exercise
  * @type {Object}
