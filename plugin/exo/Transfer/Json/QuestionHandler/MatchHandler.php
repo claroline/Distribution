@@ -169,7 +169,7 @@ class MatchHandler implements QuestionHandlerInterface
                             $value = $importData->firstSet[$k]->data;
                             for ($l = 0, $max = count($persistedProposals); $l < $max; ++$l) {
                                 // find proposal by label... Unicity is not ensured!!!!
-                                if ($persistedProposals[$l]->getValue() == $value) {
+                                if ($persistedProposals[$l]->getValue() === $value) {
                                     $persistedProposals[$l]->addAssociatedLabel($label);
                                     $this->om->persist($persistedProposals[$l]);
                                     break;
