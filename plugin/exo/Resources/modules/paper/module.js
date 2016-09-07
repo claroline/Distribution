@@ -61,6 +61,7 @@ angular
   .controller('ManualMarkCtrl', [
     '$uibModalInstance',
     'PaperService',
+    'QuestionService',
     'question',
     ManualMarkCtrl
   ])

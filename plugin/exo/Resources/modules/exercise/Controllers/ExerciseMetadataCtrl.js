@@ -56,7 +56,7 @@ export default class ExerciseMetadataCtrl {
       .save(this.meta)
       .then(() => {
         // Go back on the overview
-        this.$location.path('/');
+        this.$location.path('/')
       })
-  };
+  }
 }

@@ -173,7 +173,6 @@ class GraphicHandler implements QuestionHandlerInterface
 
         $exportData->image = $this->exportImage($interaction->getPicture());
         $exportData->pointers = $interaction->getCoords()->count();
-        $exportData->scoreTotal = $this->graphicService->maxScore($interaction);
 
         if ($withSolution) {
             $exportData->solutions = $this->exportSolutions($interaction->getCoords()->toArray());

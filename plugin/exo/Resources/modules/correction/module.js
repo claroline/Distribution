@@ -2,6 +2,7 @@
  * Correction module
  */
 
+import angular from 'angular/index'
 import 'angular-ui-translation/angular-translation'
 import '#/main/core/translation/module'
 import './../common/module'

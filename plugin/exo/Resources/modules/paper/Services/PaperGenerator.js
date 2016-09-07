@@ -21,7 +21,6 @@ export default class PaperGenerator {
       user: user,
       start: this.$filter('date')(new Date(), 'yyyy-MM-dd\'T\'HH:mm:ss'),
       end: null,
-      scoreTotal: 0,
       order: previousPaper && exercise.meta.keepSteps ? previousPaper.order : this.generateOrder(exercise),
       questions: []
     }

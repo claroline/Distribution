@@ -238,15 +238,6 @@ class MatchHandler implements QuestionHandlerInterface
             return $secondSetData;
         }, $labels);
 
-        $scoreTotal = 0;
-        foreach ($proposals as $proposal) {
-            $associatedLabels = $proposal->getAssociatedLabel();
-            foreach ($associatedLabels as $label) {
-                $scoreTotal = $scoreTotal + $label->getScoreRightResponse();
-            }
-        }
-        $exportData->scoreTotal = $scoreTotal;
-
         if ($withSolution) {
             $exportData->solutions = array();
             foreach ($proposals as $proposal) {
