@@ -334,7 +334,7 @@ class HoleHandler implements QuestionHandlerInterface
             return ['Answer data must be an array, '.gettype($data).' given'];
         }
 
-        if (0 === $count = count($data)) {
+        if (0 === count($data)) {
             return [];
         }
 
