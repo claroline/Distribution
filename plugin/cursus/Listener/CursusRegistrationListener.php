@@ -13,7 +13,6 @@ namespace Claroline\CursusBundle\Listener;
 
 use Claroline\CoreBundle\Event\LogCreateEvent;
 use Claroline\CoreBundle\Event\OpenAdministrationToolEvent;
-use Claroline\CoreBundle\Manager\UserManager;
 use Claroline\CoreBundle\Menu\GroupAdditionalActionEvent;
 use Claroline\CoreBundle\Menu\UserAdditionalActionEvent;
 use Claroline\CursusBundle\Manager\CursusManager;
@@ -33,12 +32,10 @@ class CursusRegistrationListener
     private $request;
     private $router;
     private $translator;
-    private $userManager;
 
     /**
      * @DI\InjectParams({
      *     "cursusManager" = @DI\Inject("claroline.manager.cursus_manager"),
-     *     "userManager"   = @DI\Inject("claroline.manager.user_manager"),
      *     "httpKernel"    = @DI\Inject("http_kernel"),
      *     "requestStack"  = @DI\Inject("request_stack"),
      *     "router"       = @DI\Inject("router"),
@@ -47,14 +44,12 @@ class CursusRegistrationListener
      */
     public function __construct(
         CursusManager $cursusManager,
-        UserManager $userManager,
         HttpKernelInterface $httpKernel,
         RequestStack $requestStack,
         UrlGeneratorInterface $router,
         TranslatorInterface $translator
     ) {
         $this->cursusManager = $cursusManager;
-        $this->userManager = $userManager;
         $this->httpKernel = $httpKernel;
         $this->request = $requestStack->getCurrentRequest();
         $this->router = $router;
