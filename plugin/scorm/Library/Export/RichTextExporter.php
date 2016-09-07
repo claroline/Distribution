@@ -3,6 +3,7 @@
 namespace Claroline\ScormBundle\Library\Export;
 
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
+use Claroline\CoreBundle\Manager\ResourceManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -22,17 +23,30 @@ class RichTextExporter
     private $router;
 
     /**
+     * @var ResourceManager
+     */
+    private $resourceManager;
+
+    /**
+     * @var string
+     */
+    private $baseUrl;
+
+    /**
      * Class constructor.
      *
      * @param RouterInterface $router
      *
      * @DI\InjectParams({
-     *     "router" = @DI\Inject("router")
+     *     "router" = @DI\Inject("router"),
+     *     "resourceManager" = @Di\Inject("claroline.manager.resource_manager")
      * })
      */
-    public function __construct(RouterInterface $router)
+    public function __construct(RouterInterface $router, ResourceManager $resourceManager)
     {
         $this->router = $router;
+        $this->resourceManager = $resourceManager;
+        $this->baseUrl = $this->router->getContext()->getBaseUrl();
     }
 
     /**
@@ -41,52 +55,88 @@ class RichTextExporter
      * @param string $text
      * @param bool $replaceLinks
      *
-     * @return AbstractResource[]
+     * @return array
      */
     public function parse($text, $replaceLinks = true)
     {
-        $baseUrl = $this->router->getContext()->getBaseUrl();
+        $resources = [];
 
-        //first regex
-        $regex = '#'.$baseUrl.'/file/resource/media/([^\'"]+)#';
+        // Find media
+        $regex = '#'.$this->baseUrl.'/file/resource/media/([^\'"]+)#';
 
         preg_match_all($regex, $text, $matches, PREG_SET_ORDER);
-
         if (count($matches) > 0) {
             foreach ($matches as $match) {
-                if (!$this->getItemFromUid($match[1], $_data)) {
-                    $this->createDataFolder($_data);
-                    $node = $this->resourceManager->getNode($match[1]);
+                $node = $this->resourceManager->getNode($match[1]);
+                if ($node) {
+                    $resource = $this->resourceManager->getResourceFromNode($node);
 
-                    if ($node && $node->getResourceType()->getName() === 'file') {
-                        $el = $this->getImporterByName('resource_manager')->getResourceElement(
-                            $node,
-                            $node->getWorkspace(),
-                            $_files,
-                            $_data,
-                            true
-                        );
-                        $el['item']['parent'] = 'data_folder';
-                        $el['item']['roles'] = [['role' => [
-                            'name' => 'ROLE_USER',
-                            'rights' => $this->maskManager->decodeMask(7, $this->resourceManager->getResourceTypeByName('file')),
-                        ]]];
-                        $_data['data']['items'][] = $el;
+                    if (empty($resources[$node->getId()])) {
+                        $resources[$node->getId()] = $resource;
+                    }
+
+                    if ($replaceLinks) {
+                        $text = $this->replaceLink($text, $match[0], '/files/media_'.$match[1]);
                     }
                 }
-
-                $text = $this->replaceLink($text, $match[0], $match[1], $_data);
             }
         }
 
-        //second regex
-        $regex = '#'.$baseUrl.'/resource/open/([^/]+)/([^\'"]+)#';
-        preg_match_all($regex, $text, $matches, PREG_SET_ORDER);
+        // Find resources
+        $regex = '#'.$this->baseUrl.'/resource/open/([^/]+)/([^\'"]+)#';
 
+        preg_match_all($regex, $text, $matches, PREG_SET_ORDER);
         if (count($matches) > 0) {
             foreach ($matches as $match) {
-                $text = $this->replaceLink($text, $match[0], $match[2]);
+                $node = $this->resourceManager->getNode($match[2]);
+                if ($node) {
+                    $resource = $this->resourceManager->getResourceFromNode($node);
+
+                    if (empty($resources[$node->getId()])) {
+                        $resources[$node->getId()] = $resource;
+                    }
+
+                    if ($replaceLinks) {
+                        $text = $this->replaceLink($text, $match[0], '/scos/resource_'.$match[2].'.html');
+                    }
+                }
             }
         }
+
+        return [
+            'text' => $text,
+            'resources' => $resources
+        ];
+    }
+
+    private function replaceMediaLink()
+    {
+
+    }
+
+    private function replaceResourceLink()
+    {
+
+    }
+
+    private function replaceLink($txt, $fullMatch, $newLink)
+    {
+        //videos <source type="video/webm" src=...media...></source>
+        //files <a href=...open...> - name - </a>
+        //imgs <img style='max-width: 100%;' src='{$url}' alt='{$node->getName()}'>
+        $matchReplaced = [];
+        $fullMatch = preg_quote($fullMatch);
+
+        preg_match(
+            "#(<source|<a)(.*){$fullMatch}(.*)(</a>|</source>)#",
+            $txt,
+            $matchReplaced
+        );
+
+        if (count($matchReplaced) > 0) {
+            $txt = str_replace($matchReplaced[0], $newLink, $txt);
+        }
+
+        return $txt;
     }
 }
