@@ -155,7 +155,7 @@ class HoleHandler implements QuestionHandlerInterface
         $holeQuestion = $repo->findOneBy(['question' => $question]);
         $holes = $holeQuestion->getHoles()->toArray();
         $text = $holeQuestion->getHtmlWithoutValue();
-        
+
         $exportData->text = $text;
         if ($withSolution) {
             $exportData->solution = $holeQuestion->getHtml();

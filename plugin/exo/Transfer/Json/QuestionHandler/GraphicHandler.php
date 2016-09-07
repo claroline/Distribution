@@ -379,7 +379,7 @@ class GraphicHandler implements QuestionHandlerInterface
         }
 
         $rightCoords = $this->om->getRepository('UJMExoBundle:Coords')
-            ->findBy(array('interactionGraphic' => $interaction->getId()));
+            ->findBy(['interactionGraphic' => $interaction->getId()]);
 
         $answer = implode(';', array_map(function ($coords) {
             return (string) $coords['x'].'-'.(string) $coords['y'];
