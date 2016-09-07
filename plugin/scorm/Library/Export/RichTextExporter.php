@@ -5,7 +5,6 @@ namespace Claroline\ScormBundle\Library\Export;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\Routing\RouterInterface;
 
 /**
  * RichTextExporter.
@@ -18,36 +17,21 @@ use Symfony\Component\Routing\RouterInterface;
 class RichTextExporter
 {
     /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    /**
      * @var ResourceManager
      */
     private $resourceManager;
-
-    /**
-     * @var string
-     */
-    private $baseUrl;
-
     /**
      * Class constructor.
      *
-     * @param RouterInterface $router
      * @param ResourceManager $resourceManager
      *
      * @DI\InjectParams({
-     *     "router" = @DI\Inject("router"),
      *     "resourceManager" = @Di\Inject("claroline.manager.resource_manager")
      * })
      */
-    public function __construct(RouterInterface $router, ResourceManager $resourceManager)
+    public function __construct(ResourceManager $resourceManager)
     {
-        $this->router = $router;
         $this->resourceManager = $resourceManager;
-        $this->baseUrl = $this->router->getContext()->getBaseUrl();
     }
 
     /**
