@@ -2,14 +2,13 @@
 
 namespace Claroline\ScormBundle\Library\Export;
 
-use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
- * RichTextExporter
+ * RichTextExporter.
  *
  * Extracts the list of Resources from an HTML text to add them to the export
  * Replaces claroline URL with SCORM packages URL
@@ -55,7 +54,7 @@ class RichTextExporter
      * Parses a rich text to extract the resource list.
      *
      * @param string $text
-     * @param bool $replaceLinks
+     * @param bool   $replaceLinks
      *
      * @return array
      */
@@ -99,7 +98,7 @@ class RichTextExporter
 
         return [
             'text' => $text,
-            'resources' => $resources
+            'resources' => $resources,
         ];
     }
 
