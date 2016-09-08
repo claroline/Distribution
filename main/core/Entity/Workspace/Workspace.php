@@ -228,6 +228,14 @@ class Workspace
      */
     protected $events;
 
+    /**
+     * @ORM\OneToOne(
+     *     targetEntity="Claroline\CoreBundle\Entity\User",
+     *     mappedBy="personalWorkspace"
+     * )
+     */
+    protected $personalUser;
+
     public function __construct()
     {
         $this->roles = new ArrayCollection();
@@ -534,5 +542,10 @@ class Workspace
         }
 
         return;
+    }
+
+    public function getPersonalUser()
+    {
+        return $this->personalUser;
     }
 }

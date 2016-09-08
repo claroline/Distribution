@@ -11,7 +11,7 @@
 
 namespace Claroline\CoreBundle\Command\Import;
 
-use Claroline\CoreBundle\Command\BaseCommandTrait;
+use Claroline\CoreBundle\Command\Traits\BaseCommandTrait;
 use Claroline\CoreBundle\Validator\Constraints\CsvWorkspace;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -24,6 +24,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CreateWorkspaceFromCsvCommand extends ContainerAwareCommand
 {
     use BaseCommandTrait;
+
     private $params = ['csv_workspace_path' => 'Absolute path to the workspace file: '];
 
     protected function configure()

@@ -1162,4 +1162,21 @@ class WorkspaceManager
         $fs = new FileSystem();
         $fs->remove($extractPath);
     }
+
+    public function getPersonalWorkspaceExcudingRoles(array $roles, $includeOrphans)
+    {
+        return $this->workspaceRepo->findPersonalWorkspaceExcudingRoles($roles, $includeOrphans);
+    }
+
+    public function getPersonalWorkspaceByRolesIncludingGroups(array $roles, $includeOrphans)
+    {
+        return $this->workspaceRepo->findPersonalWorkspaceByRolesIncludingGroups($roles, $includeOrphans);
+    }
+
+    public function getNonPersonalByCode($code)
+    {
+        return $code ?
+            $this->workspaceRepo->findBy(['isPersonal' => false]) :
+            $this->workspaceRepo->findNonPersonalByCode($code);
+    }
 }

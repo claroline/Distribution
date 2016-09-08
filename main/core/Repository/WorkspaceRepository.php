@@ -220,7 +220,7 @@ class WorkspaceRepository extends EntityRepository
         $orderedToolType = 0
     ) {
         if (count($roleNames) === 0 || count($workspaces) === 0) {
-            return array();
+            return [];
         } else {
             $dql = '
                 SELECT DISTINCT w.id
@@ -1045,5 +1045,70 @@ class WorkspaceRepository extends EntityRepository
         $query->setParameter('search', "{$upperSearch}%");
 
         return $executeQuery ? $query->getResult() : $query;
+    }
+
+    public function findPersonalWorkspaceExcudingRoles(array $roles, $includeOrphans = false)
+    {
+        $dql = '
+            SELECT w from Claroline\CoreBundle\Entity\Workspace\Workspace w
+            JOIN w.personalUser u
+            WHERE u NOT IN (
+                SELECT u2 FROM Claroline\CoreBundle\Entity\User u2
+                LEFT JOIN u2.roles ur
+                LEFT JOIN u2.groups g
+                LEFT JOIN g.roles gr
+                WHERE (gr IN (:roles) OR ur IN (:roles))
+
+            )
+        ';
+
+        if (!$includeOrphans) {
+            $dql .= ' AND u.isRemoved = false';
+        }
+
+        $query = $this->_em->createQuery($dql);
+        $query->setParameter('roles', $roles);
+
+        return $query->getResult();
+    }
+
+    public function findPersonalWorkspaceByRolesIncludingGroups(array $roles, $includeOrphans = false)
+    {
+        $dql = '
+            SELECT w from Claroline\CoreBundle\Entity\Workspace\Workspace w
+            JOIN w.personalUser u
+            JOIN u.roles ur
+            LEFT JOIN u.groups g
+            LEFT JOIN g.roles gr
+            LEFT JOIN gr.workspace grws
+            LEFT JOIN ur.workspace uws
+            WHERE (uws.id = :wsId
+            OR grws.id = :wsId)
+            AND u.isRemoved = :isRemoved
+        ';
+
+        if (!$includeOrphans) {
+            $dql .= ' AND u.isRemoved = false';
+        }
+
+        $query = $this->_em->createQuery($dql);
+        $query->setParameter('roles', $roles);
+
+        return $query->getResult();
+    }
+
+    public function findNonPersonalByCode($code)
+    {
+        $dql = '
+            SELECT w from Claroline\CoreBundle\Entity\Workspace\WorkspaceModel
+            WHERE w.isPersonal = false
+            AND w.code LIKE :code
+        ';
+
+        $code = addcslashes($code);
+        $query = $this->_em->createQuery($dql);
+        $query->setParameter('code', "%{$code}%");
+
+        return $query->getResult();
     }
 }

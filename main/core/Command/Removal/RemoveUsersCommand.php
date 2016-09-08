@@ -11,20 +11,18 @@
 
 namespace Claroline\CoreBundle\Command\Removal;
 
-use Claroline\CoreBundle\Command\BaseCommandTrait;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 /**
- * Creates an user, optionaly with a specific role (default to simple user).
+ * Removes users from the platform.
  */
 class RemoveUsersCommand extends ContainerAwareCommand
 {
-    //use BaseCommandTrait;
-
     protected function configure()
     {
         $this->setName('claroline:remove:users')
@@ -63,19 +61,25 @@ class RemoveUsersCommand extends ContainerAwareCommand
             $userManager->getUsersExcudingRoles($rolesSearch) :
             $userManager->getByRolesIncludingGroups($rolesSearch);
 
-        $output->writeln('Do you really want to remove theses users ?');
-
         foreach ($usersToDelete as $user) {
             $output->writeln("{$user->getId()}: {$user->getFirstName()} {$user->getLastName()} - {$user->getUsername()}");
         }
 
-        $question = new ChoiceQuestion('Edit ?', ['yes', 'no']);
+        $question = new ConfirmationQuestion('Do you really want to remove theses users ? ', false);
         $continue = $helper->ask($input, $output, $question);
 
+        $consoleLogger = new ConsoleLogger($output, $verbosityLevelMap);
+        $transferManager->setLogger($consoleLogger);
+
         if ($continue) {
+            $om = $this->getContainer()->get('claroline.persistence.object_manager');
+            $om->startFlushSuite();
+
             foreach ($usersToDelete as $user) {
                 $userManager->deleteUser($user);
             }
+
+            $om->endFlushSuite();
         }
     }
 }
