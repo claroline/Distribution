@@ -241,6 +241,10 @@ class WorkspaceManager
     {
         $this->om->startFlushSuite();
         $root = $this->resourceManager->getWorkspaceRoot($workspace);
+        // if ($user = $workspace->getPersonalUser()) {
+        //     $user->setPersonalWorkspace(null);
+        //     $this->om->persist($user);
+        // }
 
         if ($root) {
             $this->log('Removing root directory '.$root->getName().'[id:'.$root->getId().']');
@@ -1163,20 +1167,20 @@ class WorkspaceManager
         $fs->remove($extractPath);
     }
 
-    public function getPersonalWorkspaceExcudingRoles(array $roles, $includeOrphans)
+    public function getPersonalWorkspaceExcudingRoles(array $roles, $includeOrphans, $offset = null, $limit = null)
     {
-        return $this->workspaceRepo->findPersonalWorkspaceExcudingRoles($roles, $includeOrphans);
+        return $this->workspaceRepo->findPersonalWorkspaceExcudingRoles($roles, $includeOrphans, $offset, $limit);
     }
 
-    public function getPersonalWorkspaceByRolesIncludingGroups(array $roles, $includeOrphans)
+    public function getPersonalWorkspaceByRolesIncludingGroups(array $roles, $includeOrphans, $offset = null, $limit = null)
     {
-        return $this->workspaceRepo->findPersonalWorkspaceByRolesIncludingGroups($roles, $includeOrphans);
+        return $this->workspaceRepo->findPersonalWorkspaceByRolesIncludingGroups($roles, $includeOrphans, $offset, $limit);
     }
 
-    public function getNonPersonalByCode($code)
+    public function getNonPersonalByCode($code, $offset = null, $limit = null)
     {
         return $code ?
             $this->workspaceRepo->findBy(['isPersonal' => false]) :
-            $this->workspaceRepo->findNonPersonalByCode($code);
+            $this->workspaceRepo->findNonPersonalByCode($code, $offset, $limit);
     }
 }

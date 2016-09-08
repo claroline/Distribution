@@ -1573,7 +1573,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         return $res;
     }
 
-    public function findUsersExcludingRoles(array $roles)
+    public function findUsersExcludingRoles(array $roles, $offset, $limit)
     {
         $dql = '
             SELECT u FROM Claroline\CoreBundle\Entity\User u
@@ -1589,6 +1589,8 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 
         $query = $this->_em->createQuery($dql);
         $query->setParameter('roles', $roles);
+        $query->setFirstResult($offset);
+        $query->setMaxResults($limit);
 
         return $query->getResult();
     }

@@ -231,7 +231,8 @@ class Workspace
     /**
      * @ORM\OneToOne(
      *     targetEntity="Claroline\CoreBundle\Entity\User",
-     *     mappedBy="personalWorkspace"
+     *     mappedBy="personalWorkspace",
+     *     cascade={"persist"}
      * )
      */
     protected $personalUser;

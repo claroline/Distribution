@@ -23,7 +23,13 @@ use Symfony\Component\Console\Question\Question;
 
 class RemoveWorkspaceCommand extends ContainerAwareCommand
 {
+    private $force = false;
+    private $output = null;
+    private $input = null;
+
     use AskRolesTrait;
+
+    const BATCH_SIZE = 25;
 
     protected function configure()
     {
@@ -43,6 +49,43 @@ class RemoveWorkspaceCommand extends ContainerAwareCommand
             InputOption::VALUE_NONE,
             'When set to true, removes the standard workspaces'
         );
+
+        $this->addOption(
+            'force',
+            'f',
+            InputOption::VALUE_NONE,
+            'When set to true, doesn\'t ask for a confirmation'
+        );
+    }
+
+    private function setForce($force)
+    {
+        $this->force = $force;
+    }
+
+    private function getForce()
+    {
+        return $this->force;
+    }
+
+    public function setOutput(OutputInterface $output)
+    {
+        $this->output = $output;
+    }
+
+    public function getOutput()
+    {
+        return $this->output;
+    }
+
+    public function setInput(InputInterface $input)
+    {
+        $this->input = $input;
+    }
+
+    public function getInput()
+    {
+        return $this->input;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -52,6 +95,9 @@ class RemoveWorkspaceCommand extends ContainerAwareCommand
         $toDelete = [];
         $personal = $input->getOption('personal');
         $standard = $input->getOption('standard');
+        $this->setForce($input->getOption('force'));
+        $this->setInput($input);
+        $this->setOutput($output);
 
         $verbosityLevelMap = [
             LogLevel::NOTICE => OutputInterface::VERBOSITY_NORMAL,
@@ -68,39 +114,75 @@ class RemoveWorkspaceCommand extends ContainerAwareCommand
             $all = $helper->ask($input, $output, $question);
             $question = new ConfirmationQuestion('Include workspaces from removed users (orphans) ? y/n [y] ', true);
             $includeOrphans = $helper->ask($input, $output, $question);
-
             $rolesSearch = $this->askRoles($all, $input, $output, $this->getContainer(), $helper);
-
-            $workspacesToDelete = $all ?
-                $workspaceManager->getPersonalWorkspaceExcudingRoles($rolesSearch, $includeOrphans) :
-                $workspaceManager->getPersonalWorkspaceByRolesIncludingGroups($rolesSearch, $includeOrphans);
+            $this->deletePersonalWorkspace($all, $rolesSearch, $includeOrphans);
         }
 
         if ($standard) {
             $question = new Question('Filter on code (continue if no filter)', null);
             $code = $helper->ask($input, $output, $question);
-            $toDelete = $workspaceManager->getNonPersonalByCode($code);
+            $this->deleteWorkspaceByCode($code);
         }
+    }
 
-        $workspaces = array_unique(array_merge($workspacesToDelete, $toDelete));
-        $output->writeln('Do you really want to remove theses workspaces ?');
+    private function deleteWorkspaceByCode($code)
+    {
+        $workspaceManager = $this->getContainer()->get('claroline.manager.workspace_manager');
+        $toDelete = $workspaceManager->getNonPersonalByCode($code);
+
+        if (count($toDelete) > 0) {
+            $this->confirmWorkspaceDelete($toDelete);
+            $this->deleteWorkspaceByCode($code, null, self::BATCH_SIZE);
+        }
+    }
+
+    /**
+     * batch removal. Recursive so the UOW isn't too massive.
+     */
+    private function deletePersonalWorkspace($all, $rolesSearch, $includeOrphans)
+    {
+        $workspaceManager = $this->getContainer()->get('claroline.manager.workspace_manager');
+        $workspacesToDelete = $all ?
+            $workspaceManager->getPersonalWorkspaceExcudingRoles($rolesSearch, $includeOrphans, null, self::BATCH_SIZE) :
+            $workspaceManager->getPersonalWorkspaceByRolesIncludingGroups($rolesSearch, $includeOrphans, null, self::BATCH_SIZE);
+
+        if (count($workspacesToDelete) > 0) {
+            $this->confirmWorkspaceDelete($workspacesToDelete);
+            $this->deletePersonalWorkspace($all, $rolesSearch, $includeOrphans);
+        }
+    }
+
+    private function confirmWorkspaceDelete($workspaces)
+    {
+        $helper = $this->getHelper('question');
+        $workspaceManager = $this->getContainer()->get('claroline.manager.workspace_manager');
 
         foreach ($workspaces as $workspace) {
-            $output->writeln("{$workspace->getId()}: {$workspace->getName()} - {$workspace->getCode()} ");
+            $this->getOutput()->writeln("{$workspace->getId()}: {$workspace->getName()} - {$workspace->getCode()} ");
         }
 
-        $question = new ConfirmationQuestion('Do you really want to remove theses workspaces ? y/n [n] ', false);
-        $continue = $helper->ask($input, $output, $question);
+        if (!$this->getForce()) {
+            $count = count($workspaces);
+            $question = new ConfirmationQuestion("Do you really want to remove theses {$count} workspaces ? y/n [y] ", true);
+            $continue = $helper->ask($this->getInput(), $this->getOutput(), $question);
+        }
 
-        if ($continue) {
+        if ($this->getForce() || $continue) {
             $om = $this->getContainer()->get('claroline.persistence.object_manager');
             $om->startFlushSuite();
+            $i = 0;
 
-            foreach ($workspaces as $workspace) {
+            foreach ($workspaces as $key => $workspace) {
                 $workspaceManager->deleteWorkspace($workspace);
+                ++$i;
             }
 
+            $this->getOutput()->writeln('<comment> Flushing... </comment>');
             $om->endFlushSuite();
+            $om->clear();
+        } else {
+            //stop script here
+            exit(0);
         }
     }
 }
