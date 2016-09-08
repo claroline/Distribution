@@ -6,23 +6,15 @@ import angular from 'angular/index'
  * @param {Object} $q
  * @constructor
  */
-function ExerciseService($http, $q, Translator, url) {
+function ExerciseService($http, $q, url) {
   this.$http = $http
   this.$q    = $q
   this.UrlService = url
-  this.correctionModes = {
-    '1': Translator.trans('at_the_end_of_assessment', {}, 'ujm_exo'),
-    '2': Translator.trans('after_the_last_attempt', {}, 'ujm_exo'),
-    '3': Translator.trans('from', {}, 'ujm_exo'),
-    '4': Translator.trans('never', {}, 'ujm_exo')
-  }
-
-  this.markModes = {
-    '1': Translator.trans('at_the_same_time_that_the_correction', {}, 'ujm_exo'),
-    '2': Translator.trans('at_the_end_of_assessment', {}, 'ujm_exo')
-  }
-
 }
+
+ExerciseService.prototype.TYPE_SUMMATIVE = '1'
+ExerciseService.prototype.TYPE_EVALUATIVE = '2'
+ExerciseService.prototype.TYPE_FORMATIVE = '3'
 
 /**
  * Current Exercise
@@ -74,26 +66,6 @@ ExerciseService.prototype.setEditEnabled = function setEditEnabled(editEnabled) 
 }
 
 /**
- * Get the total score of the Exercise
- * @returns {number}
- */
-ExerciseService.prototype.getScoreTotal = function getScoreTotal() {
-  var scoreTotal = 0
-  if (this.exercise && this.exercise.steps) {
-    for (var i = 0; i < this.exercise.steps.length; i++) {
-      var step = this.exercise.steps[i]
-      for (var j = 0; j < step.items.length; j++) {
-        if (step.items[j].scoreTotal) {
-          scoreTotal += step.items[j].scoreTotal
-        }
-      }
-    }
-  }
-
-  return scoreTotal
-}
-
-/**
  * Save modifications of the metadata of the Exercise
  * @param   {Object} metadata
  * @returns {Promise}
@@ -103,7 +75,7 @@ ExerciseService.prototype.save = function save(metadata) {
 
   this.$http
         .put(
-            this.UrlService.generate('ujm_exercise_update_meta', { id: this.exercise.id }),
+            this.UrlService('ujm_exercise_update_meta', { id: this.exercise.id }),
             metadata
         )
         .success(function onSuccess(response) {
@@ -156,6 +128,29 @@ ExerciseService.prototype.getStep = function getStep(stepId) {
   return step
 }
 
+ExerciseService.prototype.getItem = function getItem(itemId) {
+  let item = null
+  if (this.exercise.steps) {
+    for (let i = 0; i < this.exercise.steps.length; i++) {
+      let step = this.exercise.steps[i]
+      if (step.items) {
+        for (let k = 0; k < step.items.length; k++) {
+          if (itemId === step.items[k].id) {
+            item = step.items[k]
+            break
+          }
+        }
+
+        if (item) {
+          break
+        }
+      }
+    }
+  }
+
+  return item
+}
+
 /**
  * Reorder the Steps of the current Exercise.
  */
@@ -168,7 +163,7 @@ ExerciseService.prototype.reorderSteps = function reorderSteps() {
   var deferred = this.$q.defer()
   this.$http
         .put(
-            this.UrlService.generate('exercise_step_reorder', { exerciseId: this.exercise.id }),
+            this.UrlService('exercise_step_reorder', { exerciseId: this.exercise.id }),
             order
         )
         .success(function onSuccess(response) {
@@ -202,7 +197,7 @@ ExerciseService.prototype.addStep = function addStep() {
   var deferred = this.$q.defer()
   this.$http
         .post(
-            this.UrlService.generate('exercise_step_add', { exerciseId: this.exercise.id }),
+            this.UrlService('exercise_step_add', { exerciseId: this.exercise.id }),
             step
         )
         // Success callback
@@ -241,7 +236,7 @@ ExerciseService.prototype.removeStep = function removeStep(step) {
   var deferred = this.$q.defer()
   this.$http
         .delete(
-            this.UrlService.generate('exercise_step_delete', { exerciseId: this.exercise.id, id: step.id })
+            this.UrlService('exercise_step_delete', { exerciseId: this.exercise.id, id: step.id })
         )
         // Success callback
         .success(function (response) {
@@ -274,7 +269,7 @@ ExerciseService.prototype.removeItem = function removeItem(step, item) {
   var deferred = this.$q.defer()
   this.$http
         .delete(
-            this.UrlService.generate('ujm_exercise_question_delete', { id: this.exercise.id, qid: item.id })
+            this.UrlService('ujm_exercise_question_delete', { id: this.exercise.id, qid: item.id })
         )
         // Success callback
         .success(function (response) {
@@ -308,7 +303,7 @@ ExerciseService.prototype.publish = function publish() {
 
   this.$http
         .post(
-            this.UrlService.generate('ujm_exercise_publish', { id: this.exercise.id })
+            this.UrlService('ujm_exercise_publish', { id: this.exercise.id })
         )
         // Success callback
         .success(function (response) {
@@ -342,7 +337,7 @@ ExerciseService.prototype.unpublish = function unpublish() {
 
   this.$http
         .post(
-            this.UrlService.generate('ujm_exercise_unpublish', { id: this.exercise.id })
+            this.UrlService('ujm_exercise_unpublish', { id: this.exercise.id })
         )
         // Success callback
         .success(function (response) {
