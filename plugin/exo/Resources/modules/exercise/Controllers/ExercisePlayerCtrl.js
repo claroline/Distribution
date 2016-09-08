@@ -65,6 +65,11 @@ function ExercisePlayerCtrl(
   if (0 !== this.exercise.meta.duration) {
     this.timer = this.TimerService.new(this.exercise.id, this.exercise.meta.duration * 60, this.end.bind(this), true)
   }
+  for (var i = 0; i < this.paper.questions.length; i++) {
+    if (this.paper.questions[i].id.toString() === this.step.items[0].id.toString()) {
+      this.currentStepTry = this.paper.questions[i].nbTries
+    }
+  }
 }
 
 /**

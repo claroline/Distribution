@@ -32,6 +32,8 @@ function StepShowCtrl(UserPaperService, FeedbackService, QuestionService, StepSe
       this.solutionShown = true
     }
   }
+  
+  this.stepIndex = this.currentTry
 
   this.getStepTotalScore()
 }
@@ -105,6 +107,7 @@ StepShowCtrl.prototype.getStepTotalScore = function getStepTotalScore() {
  * On Feedback Show
  */
 StepShowCtrl.prototype.onFeedbackShow = function onFeedbackShow() {
+  this.stepIndex = this.currentTry
   this.allAnswersFound = this.FeedbackService.SOLUTION_FOUND
   this.stepScore = 0
   for (var i = 0; i < this.items.length; i++) {
