@@ -21,10 +21,11 @@ function StepShowCtrl(UserPaperService, FeedbackService, QuestionService, StepSe
   this.FeedbackService
           .on('show', this.onFeedbackShow.bind(this))
 
-  if (this.getQuestionPaper(this.items[0]).nbTries && this.getQuestionPaper(this.items[0]).nbTries >= this.step.meta.maxAttempts && this.feedback.enabled) {
+  if (this.items[0] && this.getQuestionPaper(this.items[0]).nbTries && this.getQuestionPaper(this.items[0]).nbTries >= this.step.meta.maxAttempts && this.feedback.enabled) {
     this.solutionShown = true
   }
-  if (this.feedback.enabled && this.getQuestionPaper(this.items[0]).nbTries) {
+
+  if (this.items[0] &&  this.feedback.enabled && this.getQuestionPaper(this.items[0]).nbTries) {
     this.onFeedbackShow()
 
     if (this.allAnswersFound === 0) {
@@ -121,6 +122,10 @@ StepShowCtrl.prototype.onFeedbackShow = function onFeedbackShow() {
 
 StepShowCtrl.prototype.showMinimalCorrection = function showMinimalCorrection() {
   return this.StepService.getExerciseMeta().minimalCorrection
+}
+
+StepShowCtrl.prototype.hideScore = function hideScore() {
+  return this.StepService.getExerciseMeta().markMode === this.UserPaperService.MarkMode.NEVER
 }
 
 /**

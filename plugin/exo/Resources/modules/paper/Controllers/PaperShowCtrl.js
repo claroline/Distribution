@@ -7,12 +7,13 @@
  */
 function PaperShowCtrl(paperPromise, PaperService, UserPaperService) {
   this.PaperService = PaperService
+  this.UserPaperService = UserPaperService
 
   this.paper        = paperPromise.paper
   this.questions    = this.PaperService.orderQuestions(this.paper, paperPromise.questions)
   this.steps        = this.PaperService.getPaperSteps()
 
-  UserPaperService.setPaper(this.paper)
+  this.UserPaperService.setPaper(this.paper)
 }
 
 PaperShowCtrl.prototype.paper = {}
@@ -36,6 +37,10 @@ PaperShowCtrl.prototype.getQuestionPaper = function getQuestionPaper(question) {
 
 PaperShowCtrl.prototype.showMinimalCorrection = function() {
   return this.PaperService.getExerciseMeta().minimalCorrection
+}
+
+PaperShowCtrl.prototype.hideScore = function() {
+  return this.PaperService.getExerciseMeta().markMode === this.UserPaperService.MarkMode.NEVER
 }
 
 /**
