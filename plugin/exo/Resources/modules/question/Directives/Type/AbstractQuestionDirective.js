@@ -1,3 +1,5 @@
+import FeedbackService from './../../../feedback/Services/FeedbackService'
+
 /**
  * Base directive configuration for all Question types
  * @param {FeedbackService} FeedbackService
