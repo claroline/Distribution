@@ -9,7 +9,7 @@
             <span>({{ 'exercise_tries'|transChoice:stepShowCtrl.step.meta.maxAttempts:{ count: stepShowCtrl.step.meta.maxAttempts }:'ujm_exo'}})</span>
         </small>
 
-        <span class="label label-success pull-right" data-ng-if="!stepShowCtrl.hideScore() && (stepShowCtrl.solutionShown || stepShowCtrl.feedback.visible)">
+        <span class="label label-success pull-right" data-ng-if="stepShowCtrl.showScore && (stepShowCtrl.solutionShown || stepShowCtrl.feedback.visible)">
             {{ 'step_score'|trans:{}:'ujm_exo' }}: {{ stepShowCtrl.feedback.visible ? stepShowCtrl.stepScore : 0 }}/{{ stepShowCtrl.stepScoreTotal }}
         </span>
     </h4>
@@ -17,7 +17,7 @@
     <div class="step-description panel panel-default" data-ng-if="0 !== stepShowCtrl.step.meta.description.length">
         <div class="panel-body" data-ng-bind-html="stepShowCtrl.step.meta.description"></div>
     </div>
-    
+
     <!-- Display items of the step -->
     <question-show
            data-ng-repeat="item in stepShowCtrl.items"
@@ -25,7 +25,7 @@
            data-question-paper="stepShowCtrl.getQuestionPaper(item)"
            data-include-correction="stepShowCtrl.solutionShown"
            data-minimal-correction="stepShowCtrl.showMinimalCorrection()"
-           data-hide-score="stepShowCtrl.hideScore()">
+           data-show-score="stepShowCtrl.showScore">
     </question-show>
 
     <div class="alert alert-info" data-ng-if="stepShowCtrl.feedback.visible && !stepShowCtrl.solutionShown">

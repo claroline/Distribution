@@ -34,6 +34,8 @@ function StepShowCtrl(UserPaperService, FeedbackService, QuestionService, StepSe
     }
   }
 
+  this.showScore = this.UserPaperService.isScoreAvailable(this.UserPaperService.getPaper())
+
   this.getStepTotalScore()
 }
 
@@ -86,6 +88,12 @@ StepShowCtrl.prototype.solutionShown = false
 StepShowCtrl.prototype.allAnswersFound = -1
 
 /**
+ *
+ * @type {boolean}
+ */
+StepShowCtrl.prototype.showScore = true
+
+/**
  * Get the Paper related to the Question
  * @param   {Object} question
  * @returns {Object}
@@ -122,10 +130,6 @@ StepShowCtrl.prototype.onFeedbackShow = function onFeedbackShow() {
 
 StepShowCtrl.prototype.showMinimalCorrection = function showMinimalCorrection() {
   return this.StepService.getExerciseMeta().minimalCorrection
-}
-
-StepShowCtrl.prototype.hideScore = function hideScore() {
-  return this.StepService.getExerciseMeta().markMode === this.UserPaperService.MarkMode.NEVER
 }
 
 /**

@@ -14,6 +14,7 @@ function PaperShowCtrl(paperPromise, PaperService, UserPaperService) {
   this.steps        = this.PaperService.getPaperSteps()
 
   this.UserPaperService.setPaper(this.paper)
+  this.showScore = this.UserPaperService.isScoreAvailable(this.paper)
 }
 
 PaperShowCtrl.prototype.paper = {}
@@ -23,6 +24,12 @@ PaperShowCtrl.prototype.paper = {}
  * @type {Array}
  */
 PaperShowCtrl.prototype.questions = []
+
+/**
+ *
+ * @type {boolean}
+ */
+PaperShowCtrl.prototype.showScore = true
 
 /**
  * Check whether a Paper needs a manual correction (if the score of one question is -1)
@@ -37,10 +44,6 @@ PaperShowCtrl.prototype.getQuestionPaper = function getQuestionPaper(question) {
 
 PaperShowCtrl.prototype.showMinimalCorrection = function() {
   return this.PaperService.getExerciseMeta().minimalCorrection
-}
-
-PaperShowCtrl.prototype.hideScore = function() {
-  return this.PaperService.getExerciseMeta().markMode === this.UserPaperService.MarkMode.NEVER
 }
 
 /**

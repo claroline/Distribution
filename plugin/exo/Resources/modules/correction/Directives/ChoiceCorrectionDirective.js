@@ -9,8 +9,8 @@ export default function ChoiceCorrectionDirective() {
     bindToController: true,
     template: choice,
     scope: {
-      question: '=',      
-      hideScore: '='
+      question: '=',
+      showScore: '='
     }
   }
 }

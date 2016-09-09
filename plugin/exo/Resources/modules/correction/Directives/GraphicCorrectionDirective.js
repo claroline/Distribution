@@ -10,7 +10,7 @@ export default function GraphicCorrectionCtrl() {
     template: graphic,
     scope: {
       question: '=',
-      hideScore: '='
+      showScore: '='
     }
   }
 }

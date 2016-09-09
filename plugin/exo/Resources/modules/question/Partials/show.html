@@ -15,7 +15,7 @@
                 </small>
 
                 <!-- Display score -->
-                <span class="label label-primary" data-ng-if="!questionShowCtrl.hideScore">
+                <span class="label label-primary" data-ng-if="questionShowCtrl.showScore">
                     {{ 'score'|trans:{}:'ujm_exo' }}:
 
                     <!-- Feedback is visible and question is marked -->
@@ -122,35 +122,35 @@
                 <choice-correction
                         data-ng-switch-when="application/x.choice+json"
                         data-question="questionShowCtrl.question"
-                        data-hide-score="questionShowCtrl.hideScore">
+                        data-show-score="questionShowCtrl.showScore">
                 </choice-correction>
 
                 <!-- Match Type -->
                 <match-correction
                         data-ng-switch-when="application/x.match+json"
                         data-question="questionShowCtrl.question"
-                        data-hide-score="questionShowCtrl.hideScore">
+                        data-show-score="questionShowCtrl.showScore">
                 </match-correction>
 
                 <!-- Cloze Type -->
                 <cloze-correction
                         data-ng-switch-when="application/x.cloze+json"
                         data-question="questionShowCtrl.question"
-                        data-hide-score="questionShowCtrl.hideScore">
+                        data-show-score="questionShowCtrl.showScore">
                 </cloze-correction>
 
                 <!-- Open Type -->
                 <open-correction
                         data-ng-switch-when="application/x.short+json"
                         data-question="questionShowCtrl.question"
-                        data-hide-score="questionShowCtrl.hideScore">
+                        data-show-score="questionShowCtrl.showScore">
                 </open-correction>
 
                 <!-- Graphic Type -->
                 <graphic-correction
                         data-ng-switch-when="application/x.graphic+json"
                         data-question="questionShowCtrl.question"
-                        data-hide-score="questionShowCtrl.hideScore">
+                        data-show-score="questionShowCtrl.showScore">
                 </graphic-correction>
             </div>
         </div>

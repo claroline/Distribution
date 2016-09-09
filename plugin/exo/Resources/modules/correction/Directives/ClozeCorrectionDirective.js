@@ -11,7 +11,7 @@ export default function ClozeCorrectionDirective($compile) {
     template: cloze,
     scope: {
       question: '=',
-      hideScore: '='
+      showScore: '='
     },
     compile: function compile() {
       return {

@@ -10,7 +10,7 @@ export default function MatchCorrectionDirective() {
     template: match,
     scope: {
       question: '=',
-      hideScore: '='
+      showScore: '='
     },
     link: function (scope, element, attr, ctrl) {
       ctrl.init(scope.question, scope.paper)

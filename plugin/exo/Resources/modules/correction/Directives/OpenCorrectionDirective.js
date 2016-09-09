@@ -10,7 +10,7 @@ export default function OpenCorrectionDirective() {
     template: open,
     scope: {
       question: '=',
-      hideScore: '='
+      showScore: '='
     }
   }
 }
