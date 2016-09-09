@@ -970,7 +970,7 @@ class SurveyController extends Controller
             case 'open_ended':
             case 'open_ended_bare':
 
-                $isRich = ($questionType === 'open_ended') ? true : false;
+                $isRich = $questionType === 'open_ended';
                 return $this->displayOpenEndedQuestion($question, null, false, $isRich);
             case 'simple_text':
 
@@ -1133,7 +1133,7 @@ class SurveyController extends Controller
                                 $choiceAnswer->getContent();
                         }
                     }
-                }  elseif ($question->getType() === 'simple_text') {
+                } elseif ($question->getType() === 'simple_text') {
                     $simpleTextAnswer = $this->surveyManager
                         ->getSimpleTextAnswerByUserAndSurveyAndQuestion(
                             $user,
@@ -2154,7 +2154,7 @@ class SurveyController extends Controller
                 );
             case 'open_ended':
             case 'open_ended_bare':
-                $isRich = ($questionType == 'open_ended') ? true : false;
+                $isRich = $questionType === 'open_ended';
                 return $this->displayOpenEndedQuestion(
                     $question,
                     $answers,
@@ -2254,17 +2254,15 @@ class SurveyController extends Controller
 
     private function displaySimpleTextQuestion(
         Question $question,
-        array $answers = null,
+        array $answers = [],
         $canEdit = true
     ) {
-        $answersDatas = is_null($answers) ? [] : $answers;
-
         return new Response(
             $this->templating->render(
                 'ClarolineSurveyBundle:Survey:displaySimpleTextQuestion.html.twig',
                 [
                     'question' => $question,
-                    'answers' => $answersDatas,
+                    'answers' => $answers,
                     'canEdit' => $canEdit,
                 ]
             )

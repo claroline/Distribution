@@ -11,15 +11,15 @@
 
 namespace Claroline\SurveyBundle\Listener;
 
-use Claroline\SurveyBundle\Entity\Choice;
-use Claroline\SurveyBundle\Entity\MultipleChoiceQuestion;
-use Claroline\SurveyBundle\Entity\Question;
 use Claroline\CoreBundle\Event\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\OpenResourceEvent;
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\SurveyBundle\Entity\Choice;
+use Claroline\SurveyBundle\Entity\MultipleChoiceQuestion;
+use Claroline\SurveyBundle\Entity\Question;
 use Claroline\SurveyBundle\Entity\Survey;
 use Claroline\SurveyBundle\Entity\SurveyQuestionRelation;
 use Claroline\SurveyBundle\Form\SurveyType;
@@ -105,7 +105,7 @@ class SurveyListener
         if ($form->isValid()) {
             $survey = $form->getData();
             $this->om->persist($survey);
-            $event->setResources(array($survey));
+            $event->setResources([$survey]);
             $event->stopPropagation();
 
             return;
@@ -129,7 +129,7 @@ class SurveyListener
      */
     public function onOpen(OpenResourceEvent $event)
     {
-        $params = array();
+        $params = [];
         $params['_controller'] = 'ClarolineSurveyBundle:Survey:index';
         $params['survey'] = $event->getResource()->getId();
         $subRequest = $this->request->duplicate([], null, $params);
