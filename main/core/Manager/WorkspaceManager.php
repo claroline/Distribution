@@ -241,10 +241,6 @@ class WorkspaceManager
     {
         $this->om->startFlushSuite();
         $root = $this->resourceManager->getWorkspaceRoot($workspace);
-        // if ($user = $workspace->getPersonalUser()) {
-        //     $user->setPersonalWorkspace(null);
-        //     $this->om->persist($user);
-        // }
 
         if ($root) {
             $this->log('Removing root directory '.$root->getName().'[id:'.$root->getId().']');
