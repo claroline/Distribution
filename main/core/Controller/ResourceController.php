@@ -559,7 +559,6 @@ class ResourceController
         $logManager = $this->logManager;
 
         $response = new StreamedResponse(function () use ($logManager, $resource) {
-
             $results = $logManager->countByUserListForCSV('workspace', null, $resource);
             $handle = fopen('php://output', 'w+');
             while (false !== ($row = $results->next())) {
