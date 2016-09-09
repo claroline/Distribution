@@ -971,7 +971,6 @@ class SurveyController extends Controller
             case 'open_ended_bare':
 
                 $isRich = $questionType === 'open_ended';
-
                 return $this->displayOpenEndedQuestion($question, null, false, $isRich);
             case 'simple_text':
 
