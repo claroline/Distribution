@@ -370,7 +370,7 @@ class PaperManager
             'start' => $paper->getStart()->format('Y-m-d\TH:i:s'),
             'end' => $paper->getEnd() ? $paper->getEnd()->format('Y-m-d\TH:i:s') : null,
             'interrupted' => $paper->getInterupt(),
-            'scoreTotal' => $scoreAvailable ? $paper->getScore() : null,
+            'score' => $scoreAvailable ? $paper->getScore() : null,
             'order' => $this->getStepsQuestions($paper),
             'questions' => $this->exportPaperAnswers($paper, $scoreAvailable),
         ];
@@ -515,9 +515,9 @@ class PaperManager
         $nbTries = $response ? $response->getNbTries() : 0;
 
         $paperQuestion = null;
-        if ($answer || count($hints) > 0) {
+        if ($response || count($hints) > 0) {
             $paperQuestion = [
-                'id' => (string) $question->getId(),
+                'id' => $question->getId(),
                 'answer' => $answer,
                 'hints' => $hints,
                 'nbTries' => $nbTries,
@@ -649,7 +649,9 @@ class PaperManager
             case MarkMode::AFTER_END:
                 $available = !empty($paper->getEnd());
                 break;
-
+            case MarkMode::NEVER:
+                $available = false;
+                break;
             case MarkMode::WITH_CORRECTION:
             default:
                 $available = $this->isSolutionAvailable($exercise, $paper);

@@ -21,10 +21,11 @@ function StepShowCtrl(UserPaperService, FeedbackService, QuestionService, StepSe
   this.FeedbackService
           .on('show', this.onFeedbackShow.bind(this))
 
-  if (this.getQuestionPaper(this.items[0]).nbTries && this.getQuestionPaper(this.items[0]).nbTries >= this.step.meta.maxAttempts && this.feedback.enabled) {
+  if (this.items[0] && this.getQuestionPaper(this.items[0]).nbTries && this.getQuestionPaper(this.items[0]).nbTries >= this.step.meta.maxAttempts && this.feedback.enabled) {
     this.solutionShown = true
   }
-  if (this.feedback.enabled && this.getQuestionPaper(this.items[0]).nbTries) {
+
+  if (this.items[0] &&  this.feedback.enabled && this.getQuestionPaper(this.items[0]).nbTries) {
     this.onFeedbackShow()
 
     if (this.allAnswersFound === 0) {
@@ -32,6 +33,10 @@ function StepShowCtrl(UserPaperService, FeedbackService, QuestionService, StepSe
       this.solutionShown = true
     }
   }
+
+  this.showScore = this.UserPaperService.isScoreAvailable(this.UserPaperService.getPaper())
+
+  this.getStepTotalScore()
 }
 
 /**
@@ -59,6 +64,18 @@ StepShowCtrl.prototype.items = []
 StepShowCtrl.prototype.stepIndex = 0
 
 /**
+ * Current step score
+ * @type {Number}
+ */
+StepShowCtrl.prototype.stepScore = 0
+
+/**
+ * Current step total score
+ * @type {Number}
+ */
+StepShowCtrl.prototype.stepScoreTotal = 0
+
+/**
  *
  * @type {boolean}
  */
@@ -71,6 +88,12 @@ StepShowCtrl.prototype.solutionShown = false
 StepShowCtrl.prototype.allAnswersFound = -1
 
 /**
+ *
+ * @type {boolean}
+ */
+StepShowCtrl.prototype.showScore = true
+
+/**
  * Get the Paper related to the Question
  * @param   {Object} question
  * @returns {Object}
@@ -79,14 +102,25 @@ StepShowCtrl.prototype.getQuestionPaper = function getQuestionPaper(question) {
   return this.UserPaperService.getQuestionPaper(question)
 }
 
+StepShowCtrl.prototype.getStepTotalScore = function getStepTotalScore() {
+  this.stepScoreTotal = 0
+  for (var i = 0; i < this.items.length; i++) {
+    var question = this.items[i]
+    this.stepScoreTotal += this.QuestionService.getTypeService(question.type).getTotalScore(question)
+  }
+}
+
 /**
  * On Feedback Show
  */
 StepShowCtrl.prototype.onFeedbackShow = function onFeedbackShow() {
   this.allAnswersFound = this.FeedbackService.SOLUTION_FOUND
+  this.stepScore = 0
   for (var i = 0; i < this.items.length; i++) {
     var question = this.items[i]
-    var answer = this.getQuestionPaper(question).answer
+    var userPaper = this.getQuestionPaper(question)
+    var answer = userPaper.answer
+    this.stepScore += this.QuestionService.getTypeService(question.type).getAnswerScore(question, answer)
     this.feedback.state[question.id] = this.QuestionService.getTypeService(question.type).answersAllFound(question, answer)
     if (this.feedback.state[question.id] !== 0) {
       this.allAnswersFound = this.FeedbackService.MULTIPLE_ANSWERS_MISSING
@@ -128,7 +162,9 @@ StepShowCtrl.prototype.getSuiteFeedback = function getSuiteFeedback() {
     if (this.currentTry < this.step.meta.maxAttempts) {
       sentence = 'some_answers_miss_try_again'
     } else {
-      sentence = 'max_attempts_reached_see_solution'
+      if (this.step.maxAttempts !== 0) {
+        sentence = 'max_attempts_reached_see_solution'
+      }
     }
   }
 

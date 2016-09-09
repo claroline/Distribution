@@ -63,7 +63,7 @@ choose_image : Choisir une image
 choose_category : Choisir une catégorie
 choose_type: Choisir un type
 color: Couleur
-comment: Commentaire
+comment: Feedback
 compose: Répondre
 consult_hint: Consulter l'indice entraîne une pénalité de X points. Voulez-vous continuer ?
 contain_search: Dont la question contient
@@ -106,6 +106,7 @@ edit_question: Éditer une question
 edit_step: Éditer les informations
 end_date: Date de fin
 entry: Entrer
+error_no_step_found: Une erreur est survenue lors de la récupération de l'étape courrante.
 exercise: Exercice
 exercise_alert_break: Interuption non autorisée. Votre copie sera considérée comme terminée !
 exercise_definition: Vue d'ensemble
@@ -130,7 +131,7 @@ export_qti_exercise : Exporter les questions de l'exercice au format QTI
 
 # F
 false_response: Points pour la mauvaise réponse
-feedback: Feedback général
+feedback: Commentaire
 feedback_answer_check: Commentaire si la réponse est selectionnée (facultatif)
 find_by: Trouver par
 find_in: Trouver dans
@@ -377,7 +378,8 @@ start_date: Date de début
 sort: Trier les documents
 summative : Sommatif
 show_additional_info: Afficher les informations supplémentaires
-step: Étape
+step: Etape
+step_score: Score de l'étape
 statistics: Afficher les statistiques
 step_items_count: "[0, 1] %count% question|]1,Inf[ %count% questions"
 step_item_add: Glisser/déposer ou cliquer sur le bouton "+" pour ajouter des questions
