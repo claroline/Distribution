@@ -589,6 +589,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         ';
         $query = $this->_em->createQuery($dql);
         $query->setParameter('roles', $roles);
+        $query->setParameter('search', "%{$search}%");
 
         return ($getQuery) ? $query : $query->getResult();
     }

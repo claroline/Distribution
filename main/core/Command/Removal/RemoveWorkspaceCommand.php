@@ -91,8 +91,6 @@ class RemoveWorkspaceCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $helper = $this->getHelper('question');
-        $workspacesToRemove = [];
-        $toDelete = [];
         $personal = $input->getOption('personal');
         $standard = $input->getOption('standard');
         $this->setForce($input->getOption('force'));
@@ -172,7 +170,7 @@ class RemoveWorkspaceCommand extends ContainerAwareCommand
             $om->startFlushSuite();
             $i = 0;
 
-            foreach ($workspaces as $key => $workspace) {
+            foreach ($workspaces as $workspace) {
                 $workspaceManager->deleteWorkspace($workspace);
                 ++$i;
             }
