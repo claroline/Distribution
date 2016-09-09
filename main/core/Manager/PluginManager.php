@@ -170,8 +170,6 @@ class PluginManager
                 if ($shortName) {
                     $parts = explode('\\', $bundle);
                     $enabledBundles[] = $parts[2];
-                } else {
-                    $enabledBundles[] = $bundles;
                 }
             }
         }
