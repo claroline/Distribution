@@ -1,9 +1,4 @@
 <?php
-/**
- * Created by : Vincent SAISSET
- * Date: 22/08/13
- * Time: 09:30.
- */
 
 namespace Innova\CollecticielBundle\Controller;
 
