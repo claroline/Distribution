@@ -56,13 +56,13 @@
             </a>
         </li>
         <li>
-            <a class="unpublish disabled" data-toggle="tooltip" data-placement="bottom" title="{{ 'unpublish'|trans({}, 'platform') }}">
-                <i class="fa fa-caret-square-o-left"></i>
+            <a class="publish disabled" data-toggle="tooltip" data-placement="bottom" title="{{ 'publish'|trans({}, 'platform') }}">
+                <i class="fa fa-eye"></i>
             </a>
         </li>
         <li>
-            <a class="publish disabled" data-toggle="tooltip" data-placement="bottom" title="{{ 'publish'|trans({}, 'platform') }}">
-                <i class="fa fa-caret-square-o-right"></i>
+            <a class="unpublish disabled" data-toggle="tooltip" data-placement="bottom" title="{{ 'unpublish'|trans({}, 'platform') }}">
+                <i class="fa fa-eye-slash"></i>
             </a>
         </li>
         <li class="dropdown">
