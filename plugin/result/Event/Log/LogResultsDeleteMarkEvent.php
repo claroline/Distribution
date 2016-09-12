@@ -15,15 +15,14 @@ use Claroline\ResultBundle\Entity\Mark;
  *
  * Date: 9/2/16
  */
-class LogResultsNewMarkEvent extends AbstractLogResourceEvent
+class LogResultsDeleteMarkEvent extends AbstractLogResourceEvent
 {
-    const ACTION = 'resource-claroline_result-mark_added';
+    const ACTION = 'resource-claroline_result-mark_deleted';
 
     /**
      * @param Mark $mark
-     * @param null $oldMark
      */
-    public function __construct(Mark $mark, $oldMark = null)
+    public function __construct(Mark $mark)
     {
         $result = $mark->getResult();
         $receiverUser = $mark->getUser();
@@ -34,11 +33,9 @@ class LogResultsNewMarkEvent extends AbstractLogResourceEvent
                 'username' => $receiverUser->getUsername(),
             ],
             'result' => $mark->getValue(),
-            'update' => $oldMark !== null,
             'mark' => [
                 'id' => $mark->getId(),
                 'value' => $mark->getValue(),
-                'oldValue' => $oldMark,
             ],
         ];
         parent::__construct($result->getResourceNode(), $details);
