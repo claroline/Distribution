@@ -434,7 +434,7 @@
     });
 
     function makePublicationHandler(status, view) {
-        return function () {
+        return function (event) {
             if (!this.$(event.currentTarget).hasClass('disabled')) {
                 var body = Twig.render(view, {'nodes': this.checkedNodes.nodes});
                 this.dispatcher.trigger('confirm', {
