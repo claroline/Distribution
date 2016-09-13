@@ -42,6 +42,7 @@ use Claroline\CursusBundle\Entity\CursusUser;
 use Claroline\CursusBundle\Entity\DocumentModel;
 use Claroline\CursusBundle\Entity\SessionEvent;
 use Claroline\CursusBundle\Entity\SessionEventComment;
+use Claroline\CursusBundle\Entity\SessionEventUser;
 use Claroline\CursusBundle\Event\Log\LogCourseCreateEvent;
 use Claroline\CursusBundle\Event\Log\LogCourseDeleteEvent;
 use Claroline\CursusBundle\Event\Log\LogCourseQueueCreateEvent;
@@ -60,6 +61,8 @@ use Claroline\CursusBundle\Event\Log\LogCursusUserRegistrationEvent;
 use Claroline\CursusBundle\Event\Log\LogCursusUserUnregistrationEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionEventCreateEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionEventDeleteEvent;
+use Claroline\CursusBundle\Event\Log\LogSessionEventUserRegistrationEvent;
+use Claroline\CursusBundle\Event\Log\LogSessionEventUserUnregistrationEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionQueueCreateEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionQueueDeclineEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionQueueOrganizationValidateEvent;
@@ -123,6 +126,7 @@ class CursusManager
     private $documentModelRepo;
     private $reservationResourceRepo;
     private $sessionEventRepo;
+    private $sessionEventUserRepo;
     private $sessionGroupRepo;
     private $sessionQueueRepo;
     private $sessionUserRepo;
@@ -217,6 +221,7 @@ class CursusManager
         $this->documentModelRepo = $om->getRepository('ClarolineCursusBundle:DocumentModel');
         $this->reservationResourceRepo = $om->getRepository('FormaLibre\ReservationBundle\Entity\Resource');
         $this->sessionEventRepo = $om->getRepository('ClarolineCursusBundle:SessionEvent');
+        $this->sessionEventUserRepo = $om->getRepository('ClarolineCursusBundle:SessionEventUser');
         $this->sessionGroupRepo = $om->getRepository('ClarolineCursusBundle:CourseSessionGroup');
         $this->sessionQueueRepo = $om->getRepository('ClarolineCursusBundle:CourseSessionRegistrationQueue');
         $this->sessionUserRepo = $om->getRepository('ClarolineCursusBundle:CourseSessionUser');
@@ -1021,11 +1026,7 @@ class CursusManager
             $this->om->startFlushSuite();
 
             foreach ($users as $user) {
-                $sessionUser = $this->sessionUserRepo->findOneSessionUserBySessionAndUserAndType(
-                    $session,
-                    $user,
-                    $type
-                );
+                $sessionUser = $this->sessionUserRepo->findOneSessionUserBySessionAndUserAndType($session, $user, $type);
 
                 if (is_null($sessionUser)) {
                     $sessionUser = new CourseSessionUser();
@@ -1037,6 +1038,7 @@ class CursusManager
                     $sessionUsers[] = $sessionUser;
                     $event = new LogCourseSessionUserRegistrationEvent($session, $user);
                     $this->eventDispatcher->dispatch('log', $event);
+                    $this->registerUserToAllAutomaticSessionEvent($user, $session);
                 }
             }
             $role = null;
@@ -1122,6 +1124,7 @@ class CursusManager
                         $this->om->persist($sessionUser);
                         $event = new LogCourseSessionUserRegistrationEvent($session, $user);
                         $this->eventDispatcher->dispatch('log', $event);
+                        $this->registerUserToAllAutomaticSessionEvent($user, $session);
                     }
                 }
                 $role = null;
@@ -1222,6 +1225,7 @@ class CursusManager
                     $sessionUser->setUserType($type);
                     $sessionUser->setRegistrationDate($registrationDate);
                     $this->om->persist($sessionUser);
+                    $this->registerUserToAllAutomaticSessionEvent($user, $session);
                     $sessionUsers[] = $sessionUser;
                 }
             }
@@ -1436,7 +1440,8 @@ class CursusManager
         $organizationValidation = false,
         $maxUsers = null,
         $type = 0,
-        array $validators = []
+        array $validators = [],
+        $eventRegistrationType = CourseSession::REGISTRATION_AUTO
     ) {
         if (is_null($creationDate)) {
             $creationDate = new \DateTime();
@@ -1460,6 +1465,7 @@ class CursusManager
         $session->setOrganizationValidation($organizationValidation);
         $session->setMaxUsers($maxUsers);
         $session->setType($type);
+        $session->setEventRegistrationType($eventRegistrationType);
 
         if ($defaultSession) {
             $this->resetDefaultSessionByCourse($course);
@@ -1525,7 +1531,9 @@ class CursusManager
         $location = null,
         $locationExtra = null,
         Resource $reservationResource = null,
-        array $tutors = []
+        array $tutors = [],
+        $registrationType = CourseSession::REGISTRATION_AUTO,
+        $maxUsers = null
     ) {
         $eventName = is_null($name) ? $session->getName() : $name;
         $eventStartDate = is_null($startDate) ? $session->getStartDate() : $startDate;
@@ -1540,6 +1548,8 @@ class CursusManager
         $sessionEvent->setLocation($location);
         $sessionEvent->setLocationExtra($locationExtra);
         $sessionEvent->setLocationResource($reservationResource);
+        $sessionEvent->setRegistrationType($registrationType);
+        $sessionEvent->setMaxUsers($maxUsers);
 
         foreach ($tutors as $tutor) {
             $sessionEvent->addTutor($tutor);
@@ -1547,6 +1557,10 @@ class CursusManager
         $this->persistSessionEvent($sessionEvent);
         $event = new LogSessionEventCreateEvent($sessionEvent);
         $this->eventDispatcher->dispatch('log', $event);
+
+        if ($sessionEvent->getRegistrationType() === CourseSession::REGISTRATION_AUTO) {
+            $this->registerSessionUsersToSessionEvent($sessionEvent);
+        }
 
         return $sessionEvent;
     }
@@ -2055,10 +2069,8 @@ class CursusManager
         return $queueDatas;
     }
 
-    public function transferQueuedUserToSession(
-        CourseRegistrationQueue $queue,
-        CourseSession $session
-    ) {
+    public function transferQueuedUserToSession(CourseRegistrationQueue $queue, CourseSession $session)
+    {
         $this->checkCursusToolRegistrationAccess();
         $user = $queue->getUser();
         $this->om->startFlushSuite();
@@ -3555,7 +3567,7 @@ class CursusManager
         }
 
         if ($queue->getStatus() === 0) {
-            $results = $this->registerUsersToSession($session, [$user], 0);
+            $results = $this->registerUsersToSession($session, [$user], CourseSessionUser::LEARNER);
 
             if ($results['status'] === 'success') {
                 $this->deleteSessionQueue($queue);
@@ -4018,6 +4030,244 @@ class CursusManager
             $body = str_replace(['%first_name%', '%last_name%'], [$user->getFirstName(), $user->getLastName()], $content);
             $this->mailManager->send($title, $body, [$user]);
         }
+    }
+
+    public function getUnregisteredUsersBySessionEvent(SessionEvent $sessionEvent)
+    {
+        $users = [];
+        $registeredUserIds = [];
+        $session = $sessionEvent->getSession();
+        $eventUsers = $sessionEvent->getSessionEventUsers();
+        $sessionLearners = $this->getUsersBySessionAndType($session);
+
+        foreach ($eventUsers as $eventUser) {
+            $registeredUserIds[] = $eventUser->getUser()->getId();
+        }
+        foreach ($sessionLearners as $learner) {
+            if (!in_array($learner->getId(), $registeredUserIds)) {
+                $users[] = $learner;
+            }
+        }
+
+        return $users;
+    }
+
+    public function registerUsersToSessionEvent(SessionEvent $sessionEvent, array $users)
+    {
+        $results = ['status' => 'success', 'datas' => [], 'sessionEventUsers' => []];
+        $session = $sessionEvent->getSession();
+        $course = $session->getCourse();
+        $registrationDate = new \DateTime();
+        $remainingPlaces = $this->getSessionEventRemainingPlaces($sessionEvent);
+
+        if (!is_null($remainingPlaces) && ($remainingPlaces < count($users))) {
+            $results['status'] = 'failed';
+            $results['datas']['remainingPlaces'] = $remainingPlaces;
+            $results['datas']['requiredPlaces'] = count($users);
+            $results['datas']['sessionEventId'] = $sessionEvent->getId();
+            $results['datas']['sessionEventName'] = $sessionEvent->getName();
+            $results['datas']['sessionId'] = $session->getId();
+            $results['datas']['sessionName'] = $session->getName();
+            $results['datas']['courseId'] = $course->getId();
+            $results['datas']['courseTitle'] = $course->getTitle();
+            $results['datas']['courseCode'] = $course->getCode();
+        } else {
+            $sessionEventUsers = [];
+            $this->om->startFlushSuite();
+
+            foreach ($users as $user) {
+                $sessionEventUser = $this->sessionEventUserRepo->findOneBy([
+                    'sessionEvent' => $sessionEvent,
+                    'user' => $user,
+                    'registrationStatus' => SessionEventUser::REGISTERED
+                ]);
+
+                if (is_null($sessionEventUser)) {
+                    $sessionEventUser = new SessionEventUser();
+                    $sessionEventUser->setSessionEvent($sessionEvent);
+                    $sessionEventUser->setUser($user);
+                    $sessionEventUser->setRegistrationStatus(SessionEventUser::REGISTERED);
+                    $sessionEventUser->setRegistrationDate($registrationDate);
+                    $this->om->persist($sessionEventUser);
+                    $sessionEventUsers[] = $sessionEventUser;
+                    $event = new LogSessionEventUserRegistrationEvent($sessionEvent, $user);
+                    $this->eventDispatcher->dispatch('log', $event);
+                }
+            }
+            $this->om->endFlushSuite();
+
+            foreach ($sessionEventUsers as $seu) {
+                $user = $seu->getUser();
+                $session = $sessionEvent->getSession();
+                $course = $session->getCourse();
+                $results['datas'] = [
+                    'id' => $seu->getId(),
+                    'user_id' => $user->getId(),
+                    'username' => $user->getUsername(),
+                    'user_first_name' => $user->getFirstName(),
+                    'user_last_name' => $user->getLastName(),
+                    'sessionEventId' => $sessionEvent->getId(),
+                    'sessionEventName' => $sessionEvent->getName(),
+                    'sessionId' => $session->getId(),
+                    'sessionName' => $session->getName(),
+                    'courseId' => $course->getId(),
+                    'courseTitle' => $course->getTitle(),
+                    'courseCode' => $course->getCode(),
+                ];
+            }
+            $results['sessionEventUsers'] = $this->serializer->serialize(
+                $sessionEventUsers,
+                'json',
+                SerializationContext::create()->setGroups(['api_user_min'])
+            );
+        }
+
+        return $results;
+    }
+
+    public function unregisterUsersFromSessionEvent(array $sessionEventUsers)
+    {
+        $this->om->startFlushSuite();
+
+        foreach ($sessionEventUsers as $sessionEventUser) {
+            if ($sessionEventUser->getRegistrationStatus() === SessionEventUser::REGISTERED) {
+                $event = new LogSessionEventUserUnregistrationEvent($sessionEventUser);
+                $this->eventDispatcher->dispatch('log', $event);
+            }
+            $this->om->remove($sessionEventUser);
+        }
+        $this->om->endFlushSuite();
+    }
+
+    public function getSessionEventRemainingPlaces(SessionEvent $sessionEvent)
+    {
+        $remainingPlaces = null;
+        $maxUsers = $sessionEvent->getMaxUsers();
+
+        if (!is_null($maxUsers)) {
+            $remainingPlaces = $maxUsers;
+            $eventUsers = $sessionEvent->getSessionEventUsers();
+
+            foreach ($eventUsers as $eventUser) {
+                if ($eventUser->getRegistrationStatus() === SessionEventUser::REGISTERED) {
+                    --$remainingPlaces;
+                }
+            }
+        }
+
+        return $remainingPlaces;
+    }
+
+    public function checkPendingSessionEventUsers (SessionEvent $sessionEvent)
+    {
+        $remainingPlaces = $this->getSessionEventRemainingPlaces($sessionEvent);
+        $session = $sessionEvent->getSession();
+        $users = $this->getUsersBySessionAndType($session);
+        $pendingUsersToRegister = $this->getSessionEventUsersFromListBySessionEventAndStatus(
+            $sessionEvent,
+            $users,
+            SessionEventUser::PENDING
+        );
+
+        if (is_null($remainingPlaces) || count($pendingUsersToRegister) < $remainingPlaces) {
+            $now = new \DateTime();
+            $this->om->startFlushSuite();
+
+            foreach ($pendingUsersToRegister as $sessionEventUser) {
+                $sessionEventUser->setRegistrationStatus(SessionEventUser::REGISTERED);
+                $sessionEventUser->setRegistrationDate($now);
+                $this->om->persist($sessionEventUser);
+            }
+            $this->om->endFlushSuite();
+
+            return $pendingUsersToRegister;
+        } else {
+
+            return [];
+        }
+    }
+
+    public function registerSessionUsersToSessionEvent(SessionEvent $sessionEvent)
+    {
+        $remainingPlaces = $this->getSessionEventRemainingPlaces($sessionEvent);
+        $session = $sessionEvent->getSession();
+        $users = $this->getUsersBySessionAndType($session);
+        $usersToRegister = $this->getUnregisteredUsersFromListBySessionEvent($sessionEvent, $users);
+        $registrationStatus = is_null($remainingPlaces) || count($usersToRegister) < $remainingPlaces ?
+            SessionEventUser::REGISTERED :
+            SessionEventUser::PENDING;
+
+        return $this->forceRegisterUsersWithTypeToSessionEvent($sessionEvent, $usersToRegister, $registrationStatus);
+    }
+
+    public function forceRegisterUsersWithTypeToSessionEvent(SessionEvent $sessionEvent, array $users, $registrationStatus)
+    {
+        $sessionEventUsers = [];
+        $registrationDate = SessionEventUser::REGISTERED ? new \DateTime() : null;
+        $this->om->startFlushSuite();
+
+        foreach ($users as $user) {
+            $sessionEventUser = $this->createSessionEventUser($user, $sessionEvent, $registrationStatus, $registrationDate);
+            $sessionEventUsers[] = $sessionEventUser;
+        }
+        $this->om->endFlushSuite();
+
+        return $sessionEventUsers;
+    }
+
+    public function getUsersBySessionEventAndStatus (SessionEvent $sessionEvent, $status)
+    {
+        $users = [];
+        $sessionEventUsers = $this->getSessionEventUsersBySessionEventAndStatus($sessionEvent, $status);
+
+        foreach ($sessionEventUsers as $sessionEventUser) {
+            $users[] = $sessionEventUser->getUser();
+        }
+
+        return $users;
+    }
+
+    public function registerUserToAllAutomaticSessionEvent (User $user, CourseSession $session)
+    {
+        $autoSessionEvents = $this->sessionEventRepo->findBy(['session' => $session, 'registrationType' => CourseSession::REGISTRATION_AUTO]);
+        $registrationDate = new \DateTime();
+        $this->om->startFlushSuite();
+
+        foreach ($autoSessionEvents as $sessionEvent) {
+            $sessionEventUser = $this->sessionEventUserRepo->findOneBy(['sessionEvent' => $sessionEvent, 'user' => $user]);
+
+            if (is_null($sessionEventUser)) {
+                $this->createSessionEventUser($user, $sessionEvent, SessionEventUser::REGISTERED, $registrationDate);
+            } else if ($sessionEventUser->getRegistrationStatus() === SessionEventUser::PENDING) {
+                $sessionEventUser->getRegistrationStatus(SessionEventUser::REGISTERED);
+                $sessionEventUser->setRegistrationDate($registrationDate);
+                $this->om->persist($sessionEventUser);
+            }
+        }
+        $this->om->endFlushSuite();
+    }
+
+    public function createSessionEventUser (
+        User $user,
+        SessionEvent $sessionEvent,
+        $registrationStatus,
+        $registrationDate = null,
+        $applicationDate = null
+    ) {
+        $sessionEventUser = new SessionEventUser();
+        $sessionEventUser->setSessionEvent($sessionEvent);
+        $sessionEventUser->setUser($user);
+        $sessionEventUser->setRegistrationStatus($registrationStatus);
+        $sessionEventUser->setRegistrationDate($registrationDate);
+        $sessionEventUser->setApplicationDate($applicationDate);
+        $this->om->persist($sessionEventUser);
+
+        if  ($registrationStatus === SessionEventUser::REGISTERED) {
+            $event = new LogSessionEventUserRegistrationEvent($sessionEvent, $user);
+            $this->eventDispatcher->dispatch('log', $event);
+        }
+
+        return $sessionEventUser;
     }
 
     /***************************************************
@@ -4782,6 +5032,30 @@ class CursusManager
     public function getReservationResourceById($id)
     {
         return $this->reservationResourceRepo->findOneById($id);
+    }
+
+    /************************************************
+     * Access to SessionEventUserRepository methods *
+     ************************************************/
+
+    public function getSessionEventUsersBySessionEvent(SessionEvent $sessionEvent)
+    {
+        return $this->sessionEventUserRepo->findBy(['sessionEvent' => $sessionEvent], ['registrationStatus' => 'DESC']);
+    }
+
+    public function getSessionEventUsersBySessionEventAndStatus(SessionEvent $sessionEvent, $status)
+    {
+        return $this->sessionEventUserRepo->findBy(['sessionEvent' => $sessionEvent, 'registrationStatus' => $status]);
+    }
+
+    public function getUnregisteredUsersFromListBySessionEvent(SessionEvent $sessionEvent, array $users)
+    {
+        return $this->sessionEventUserRepo->findUnregisteredUsersFromListBySessionEvent($sessionEvent, $users);
+    }
+
+    public function getSessionEventUsersFromListBySessionEventAndStatus(SessionEvent $sessionEvent, array $users, $status)
+    {
+        return $this->sessionEventUserRepo->findSessionEventUsersFromListBySessionEventAndStatus($sessionEvent, $users, $status);
     }
 
     /******************

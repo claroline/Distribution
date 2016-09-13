@@ -27,6 +27,7 @@ class CourseSessionUserRepository extends EntityRepository
             WHERE u.isRemoved = false
             AND csu.session = :session
             AND csu.userType = :userType
+            ORDER BY u.lastName ASC, u.firstName ASC
         ';
         $query = $this->_em->createQuery($dql);
         $query->setParameter('session', $session);

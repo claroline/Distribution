@@ -90,6 +90,7 @@ delete_session_event: Supprimer la séance
 delete_session_event_confirm_message: Êtes-vous sûr de vouloir supprimer cette séance ?
 disable_certificates: Désactiver les certificats
 disable_invitations: Désactiver les invitations
+disable_session_event_registration: Désactiver l'inscription aux séances
 disable_workspace_link: Désactiver le lien vers l'espace d'activités
 display_course_details: Voir les détails de la formation
 display_session_events: Voir les séances
@@ -106,6 +107,9 @@ edit_location: Modifier la localisation
 edit_session: Modifier la session
 edit_session_event: Modifier la séance
 enable_courses_tab_in_profile: Activer l'onglet "Formations" dans le profil
+event_registration_automatic: Automatique
+event_registration_manual: Manuelle
+event_registration_public: Publique
 every_day: Tous les jours
 every_month: Tous les mois
 every_week: Toutes les semaines
@@ -139,6 +143,7 @@ locations_management: Gestion des localisations
 manager: Gestionnaire
 max_time_reservation: Temps max de réservation
 max_users: Nombre maximum d'utilisateurs
+required_places_msg: Seulement %remainingPlaces% place(s) restante(s). Nécessaire : %requiredPlaces%.
 no: Non
 no_closed_session: Aucune session terminée
 no_closed_session_event: Aucune séance terminée
@@ -151,6 +156,7 @@ no_location: Aucune localisation
 no_ongoing_session: Aucune session en cours
 no_open_session: Aucune session ouverte
 no_open_session_event: Aucune séance ouverte
+no_participant: Aucun participant
 no_pending_learner: Aucun apprenant en attente
 no_registered_group: Aucun groupe inscrit
 no_registered_learner: Aucun apprenant inscrit
@@ -168,6 +174,7 @@ open_session_events: Séances ouvertes
 ongoing_sessions: Sessions en cours
 open_sessions: Sessions ouvertes
 organization_validation: Validation par l'organisation
+participants: Participants
 placeholder_course_code_message: Ce placeholder sera remplacé par le code de la formation
 placeholder_course_description_message: Ce placeholder sera remplacé par la description de la formation
 placeholder_course_title_message: Ce placeholder sera remplacé par le titre de la formation
@@ -204,11 +211,15 @@ register: Inscrire
 register_groups_to_cursus: Inscrire des groupes au cursus
 register_groups_to_session: Inscrire des groupes à la session de formation
 register_learners_to_session: Inscrire des apprenants à la session de formation
+register_participants: Inscrire des participants
+register_participants_to_session_event: Inscrire des participants à la séance
 register_tutors_to_session: Inscrire des formateurs à la session de formation
 register_users_to_cursus: Inscrire des utilisateurs au cursus
 registration_failed: L'inscription a échouée
 remove_course: Retirer la formation
 remove_course_confirm_message: Êtes-vous sûr de vouloir retirer cette formation ?
+remove_participant: Supprimer le participant
+remove_participant_confirm_message: Êtes-vous sûr de vouloir supprimer cet utilisateur de cette séance ?
 repeat_session_event: Répéter la séance
 repetition: Répétition
 send_confirmation_mail: Envoyer un mail de confirmation
@@ -236,9 +247,11 @@ session_end_title: Fin de la session "%sessionName%"
 session_event: Séance
 session_event_creation: Création d'une séance
 session_event_deletion: Suppression de la séance
+session_event_description: Description de la séance
 session_event_edition: Modification de la séance
 session_event_invitation: Invitation à une séance
 session_event_location: Lieu
+session_event_registration: Inscription aux séances
 session_event_title: Séance "%eventName%"
 session_events: Séances
 session_events_details: Détails des séances

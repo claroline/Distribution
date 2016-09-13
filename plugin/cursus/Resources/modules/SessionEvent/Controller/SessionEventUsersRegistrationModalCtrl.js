@@ -9,12 +9,12 @@
 
 /*global Routing*/
 
-export default class UsersRegistrationModalCtrl {
-  constructor($http, $uibModalInstance, NgTableParams, sessionId, userType, callback) {
+export default class SessionEventUsersRegistrationModalCtrl {
+  constructor($http, $uibModalInstance, NgTableParams, sessionId, sessionEventId, callback) {
     this.$http = $http
     this.$uibModalInstance = $uibModalInstance
     this.sessionId = sessionId
-    this.userType = userType
+    this.sessionEventId = sessionEventId
     this.callback = callback
     this.users = []
     this.tableParams = new NgTableParams(
@@ -26,7 +26,7 @@ export default class UsersRegistrationModalCtrl {
   }
 
   loadUsers () {
-    const route = Routing.generate('api_get_session_unregistered_users', {session: this.sessionId, userType: this.userType})
+    const route = Routing.generate('api_get_session_event_unregistered_users', {sessionEvent: this.sessionEventId})
     this.$http.get(route).then(d => {
       if (d['status'] === 200) {
         this.users.splice(0, this.users.length)
@@ -40,13 +40,15 @@ export default class UsersRegistrationModalCtrl {
 
   registerUser (userId) {
     this.errorMessages = []
-    const route = Routing.generate('api_post_session_user_registration', {session: this.sessionId, user: userId, userType: this.userType})
+    const route = Routing.generate('api_post_session_event_user_registration', {sessionEvent: this.sessionEventId, user: userId})
     this.$http.post(route).then(d => {
       if (d['status'] === 200) {
         const datas = d['data']
 
         if (datas['status'] === 'success') {
-          this.callback(datas['sessionUsers'])
+          if (this.callback) {
+            this.callback(datas['sessionEventUsers'])
+          }
           const index = this.users.findIndex(u => u['id'] === userId)
 
           if (index > -1) {

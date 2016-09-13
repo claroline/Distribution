@@ -29,6 +29,9 @@ class CourseSession
     const SESSION_NOT_STARTED = 0;
     const SESSION_OPEN = 1;
     const SESSION_CLOSED = 2;
+    const REGISTRATION_AUTO = 0;
+    const REGISTRATION_MANUAL = 1;
+    const REGISTRATION_PUBLIC = 2;
 
     /**
      * @ORM\Column(type="integer")
@@ -216,6 +219,13 @@ class CourseSession
      * @Groups({"api_cursus", "api_user_min"})
      */
     protected $events;
+
+    /**
+     * @ORM\Column(name="event_registration_type", type="integer", nullable=false, options={"default" = 0})
+     * @Groups({"api_cursus", "api_user_min"})
+     * @SerializedName("eventRegistrationType")
+     */
+    protected $eventRegistrationType = self::REGISTRATION_AUTO;
 
     public function __construct()
     {
@@ -535,6 +545,16 @@ class CourseSession
     public function getEvents()
     {
         return $this->events->toArray();
+    }
+
+    public function getEventRegistrationType()
+    {
+        return $this->eventRegistrationType;
+    }
+
+    public function setEventRegistrationType($eventRegistrationType)
+    {
+        $this->eventRegistrationType = $eventRegistrationType;
     }
 
     public function __toString()
