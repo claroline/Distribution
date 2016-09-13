@@ -1,5 +1,5 @@
 log_resource-claroline_result-mark_added_filter: 'Attribuer une note'
-log_resource-claroline_result-mark_added_sentence: 'a attribué la note de <strong>%mark%</strong> à <strong>%receiver_user%</strong>'
+log_resource-claroline_result-mark_added_sentence: 'a attribué la note <strong>%mark%</strong> à <strong>%receiver_user%</strong>'
 log_resource-claroline_result-mark_updated_sentence: 'a modifié la note de <strong>%receiver_user%</strong> de <strong>%old_mark%</strong> à <strong>%mark%</strong> '
 log_resource-claroline_result-mark_added_shortname: Attribution d'une note
 log_resource-claroline_result-mark_added_title: 'Attribuer une note'
