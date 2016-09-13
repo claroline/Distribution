@@ -20,6 +20,8 @@ class PdfPlayerListener extends ContainerAware
 {
     public function onOpenPdf(PlayFileEvent $event)
     {
+        $canDownload = $this->container->get('security.authorization_checker')->isGranted('EXPORT', $event->getResource()->getResourceNode());
+
         $path = $this->container->getParameter('claroline.param.files_directory')
             .DIRECTORY_SEPARATOR
             .$event->getResource()->getHashName();
@@ -28,6 +30,7 @@ class PdfPlayerListener extends ContainerAware
             [
                 'path' => $path,
                 'pdf' => $event->getResource(),
+                'canDownload' => $canDownload,
                 '_resource' => $event->getResource(),
             ]
         );
@@ -50,11 +53,10 @@ class PdfPlayerListener extends ContainerAware
         $event->setTemplate($template);
 
         // Add PDF file
-        $event->addFile('pdf_'.$resource->getResourceNode()->getId(), $resource->getHashName());
+        $event->addFile('file_'.$resource->getResourceNode()->getId(), $resource->getHashName());
 
         // Add assets
         $webpack = $this->container->get('claroline.extension.webpack');
-        $event->addAsset('commons.js', $webpack->hotAsset('dist/commons.js', true));
         $event->addAsset('claroline-distribution-plugin-pdf-player-pdf-viewer.js', $webpack->hotAsset('dist/claroline-distribution-plugin-pdf-player-pdf-viewer.js', true));
 
         // Add translations

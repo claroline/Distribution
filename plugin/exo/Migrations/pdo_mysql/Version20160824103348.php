@@ -15,7 +15,7 @@ class Version20160824103348 extends AbstractMigration
     public function up(Schema $schema)
     {
         $this->addSql('
-            ALTER TABLE ujm_step 
+            ALTER TABLE ujm_step
             ADD title VARCHAR(255) NOT NULL
         ');
     }
@@ -23,7 +23,7 @@ class Version20160824103348 extends AbstractMigration
     public function down(Schema $schema)
     {
         $this->addSql('
-            ALTER TABLE ujm_step 
+            ALTER TABLE ujm_step
             DROP title
         ');
     }

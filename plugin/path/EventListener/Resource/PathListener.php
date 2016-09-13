@@ -202,7 +202,17 @@ class PathListener extends ContainerAware
         // Decode the path structure to grab embed resources ans generate resource URL
         // We export them before rendering the template to have the correct structure in twig/angular
         $structure = json_decode($path->getStructure());
-        if ($structure && !empty($structure->steps)) {
+
+        if (!empty($structure->description)) {
+            $parsed = $this->container->get('claroline.scorm.rich_text_exporter')->parse($structure->description);
+            $structure->description = $parsed['text'];
+
+            foreach ($parsed['resources'] as $resource) {
+                $event->addEmbedResource($resource);
+            }
+        }
+
+        if (!empty($structure->steps)) {
             foreach ($structure->steps as $step) {
                 $this->exportStepResources($event, $step);
             }
@@ -225,7 +235,6 @@ class PathListener extends ContainerAware
         $webpack = $this->container->get('claroline.extension.webpack');
         $event->addAsset('tinymce.jquery.min.js', 'bundles/stfalcontinymce/vendor/tinymce/tinymce.jquery.min.js');
         $event->addAsset('jquery.tinymce.min.js', 'bundles/stfalcontinymce/vendor/tinymce/jquery.tinymce.min.js');
-        $event->addAsset('commons.js', $webpack->hotAsset('dist/commons.js', true));
         $event->addAsset('claroline-distribution-plugin-path-player.js', $webpack->hotAsset('dist/claroline-distribution-plugin-path-player.js', true));
         $event->addAsset('claroline-home.js', 'bundles/clarolinecore/js/home/home.js');
         $event->addAsset('claroline-common.js', 'bundles/clarolinecore/js/common.js');
@@ -239,6 +248,14 @@ class PathListener extends ContainerAware
 
     private function exportStepResources(ExportScormResourceEvent $event, \stdClass $step)
     {
+        if (!empty($step->description)) {
+            $parsed = $this->container->get('claroline.scorm.rich_text_exporter')->parse($step->description);
+            $step->description = $parsed['text'];
+            foreach ($parsed['resources'] as $resource) {
+                $event->addEmbedResource($resource);
+            }
+        }
+
         if (!empty($step->primaryResource)) {
             foreach ($step->primaryResource as $primary) {
                 $resource = $this->getResource($primary->resourceId);
@@ -392,7 +409,7 @@ class PathListener extends ContainerAware
         $resourceNode = $manager->getNode($resource->resourceId);
 
         $found = false;
-        if ($processedNodes[$resourceNode->getId()]) {
+        if ($resourceNode) {
             $resource->resourceId = $processedNodes[$resourceNode->getId()]->getId();
             $found = true;
         }

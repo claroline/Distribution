@@ -136,9 +136,13 @@ class AdminManagementController extends Controller
     {
         $cursusDatas = $this->request->request->get('cursusDatas', false);
         $worskpace = null;
+        $icon = null;
 
         if ($cursusDatas['workspace']) {
             $worskpace = $this->workspaceManager->getWorkspaceById($cursusDatas['workspace']);
+        }
+        if ($this->request->files->get('cursusDatas')['icon']) {
+            $icon = $this->cursusManager->saveIcon($this->request->files->get('cursusDatas')['icon']);
         }
         $createdCursus = $this->cursusManager->createCursus(
             $cursusDatas['title'],
@@ -147,7 +151,7 @@ class AdminManagementController extends Controller
             null,
             $cursusDatas['description'],
             $cursusDatas['blocking'],
-            null,
+            $icon,
             $cursusDatas['color'],
             $worskpace
         );
@@ -176,9 +180,13 @@ class AdminManagementController extends Controller
     {
         $cursusDatas = $this->request->request->get('cursusDatas', false);
         $worskpace = null;
+        $icon = null;
 
         if ($cursusDatas['workspace']) {
             $worskpace = $this->workspaceManager->getWorkspaceById($cursusDatas['workspace']);
+        }
+        if ($this->request->files->get('cursusDatas')['icon']) {
+            $icon = $this->cursusManager->saveIcon($this->request->files->get('cursusDatas')['icon']);
         }
         $createdCursus = $this->cursusManager->createCursus(
             $cursusDatas['title'],
@@ -187,7 +195,7 @@ class AdminManagementController extends Controller
             null,
             $cursusDatas['description'],
             $cursusDatas['blocking'],
-            null,
+            $icon,
             $cursusDatas['color'],
             $worskpace
         );
@@ -226,6 +234,10 @@ class AdminManagementController extends Controller
         if ($cursusDatas['workspace']) {
             $worskpace = $this->workspaceManager->getWorkspaceById($cursusDatas['workspace']);
             $cursus->setWorkspace($worskpace);
+        }
+        if ($this->request->files->get('cursusDatas')['icon']) {
+            $icon = $this->cursusManager->saveIcon($this->request->files->get('cursusDatas')['icon']);
+            $cursus->setIcon($icon);
         }
         $this->cursusManager->persistCursus($cursus);
         $event = new LogCursusEditEvent($cursus);
@@ -338,6 +350,7 @@ class AdminManagementController extends Controller
         $courseDatas = $this->request->request->get('courseDatas', false);
         $worskpace = null;
         $worskpaceModel = null;
+        $icon = null;
 
         if ($courseDatas['workspace']) {
             $worskpace = $this->workspaceManager->getWorkspaceById($courseDatas['workspace']);
@@ -345,7 +358,12 @@ class AdminManagementController extends Controller
         if ($courseDatas['workspaceModel']) {
             $worskpaceModel = $this->workspaceModelManager->getModelById($courseDatas['workspaceModel']);
         }
-        $validators = $this->userManager->getUsersByIds($courseDatas['validators']);
+        if ($this->request->files->get('courseDatas')['icon']) {
+            $icon = $this->cursusManager->saveIcon($this->request->files->get('courseDatas')['icon']);
+        }
+        $validators = isset($courseDatas['validators']) && count($courseDatas['validators']) > 0 ?
+            $this->userManager->getUsersByIds($courseDatas['validators']) :
+            [];
         $createdCourse = $this->cursusManager->createCourse(
             $courseDatas['title'],
             $courseDatas['code'],
@@ -357,7 +375,7 @@ class AdminManagementController extends Controller
             $courseDatas['learnerRoleName'],
             $worskpaceModel,
             $worskpace,
-            null,
+            $icon,
             $courseDatas['userValidation'],
             $courseDatas['organizationValidation'],
             $courseDatas['maxUsers'],
@@ -388,6 +406,7 @@ class AdminManagementController extends Controller
         $courseDatas = $this->request->request->get('courseDatas', false);
         $worskpace = null;
         $worskpaceModel = null;
+        $icon = null;
 
         if ($courseDatas['workspace']) {
             $worskpace = $this->workspaceManager->getWorkspaceById($courseDatas['workspace']);
@@ -395,7 +414,12 @@ class AdminManagementController extends Controller
         if ($courseDatas['workspaceModel']) {
             $worskpaceModel = $this->workspaceModelManager->getModelById($courseDatas['workspaceModel']);
         }
-        $validators = $this->userManager->getUsersByIds($courseDatas['validators']);
+        if ($this->request->files->get('courseDatas')['icon']) {
+            $icon = $this->cursusManager->saveIcon($this->request->files->get('courseDatas')['icon']);
+        }
+        $validators = isset($courseDatas['validators']) && count($courseDatas['validators']) > 0 ?
+            $this->userManager->getUsersByIds($courseDatas['validators']) :
+            [];
         $createdCourse = $this->cursusManager->createCourse(
             $courseDatas['title'],
             $courseDatas['code'],
@@ -407,7 +431,7 @@ class AdminManagementController extends Controller
             $courseDatas['learnerRoleName'],
             $worskpaceModel,
             $worskpace,
-            null,
+            $icon,
             $courseDatas['userValidation'],
             $courseDatas['organizationValidation'],
             $courseDatas['maxUsers'],
@@ -461,12 +485,15 @@ class AdminManagementController extends Controller
         $courseDatas = $this->request->request->get('courseDatas', false);
         $course->setTitle($courseDatas['title']);
         $course->setCode($courseDatas['code']);
-        $course->setDescription($courseDatas['description']);
+        $description = $courseDatas['description'] ? $courseDatas['description'] : null;
+        $course->setDescription($description);
         $course->setPublicRegistration($courseDatas['publicRegistration']);
         $course->setPublicUnregistration($courseDatas['publicUnregistration']);
         $course->setRegistrationValidation($courseDatas['registrationValidation']);
-        $course->setTutorRoleName($courseDatas['tutorRoleName']);
-        $course->setLearnerRoleName($courseDatas['learnerRoleName']);
+        $tutorRoleName = $courseDatas['tutorRoleName'] ? $courseDatas['tutorRoleName'] : null;
+        $course->setTutorRoleName($tutorRoleName);
+        $learnerRoleName = $courseDatas['learnerRoleName'] ? $courseDatas['learnerRoleName'] : null;
+        $course->setLearnerRoleName($learnerRoleName);
 
         if ($courseDatas['workspace']) {
             $worskpace = $this->workspaceManager->getWorkspaceById($courseDatas['workspace']);
@@ -480,13 +507,20 @@ class AdminManagementController extends Controller
         } else {
             $course->setWorkspaceModel(null);
         }
+        if ($this->request->files->get('courseDatas')['icon']) {
+            $icon = $this->cursusManager->saveIcon($this->request->files->get('courseDatas')['icon']);
+            $course->setIcon($icon);
+        }
         $course->setUserValidation($courseDatas['userValidation']);
         $course->setOrganizationValidation($courseDatas['organizationValidation']);
-        $course->setMaxUsers($courseDatas['maxUsers']);
+        $maxUsers = $courseDatas['maxUsers'] ? $courseDatas['maxUsers'] : null;
+        $course->setMaxUsers($maxUsers);
         $course->setDefaultSessionDuration($courseDatas['defaultSessionDuration']);
         $course->setWithSessionEvent($courseDatas['withSessionEvent']);
         $course->emptyValidators();
-        $validators = $this->userManager->getUsersByIds($courseDatas['validators']);
+        $validators = isset($courseDatas['validators']) && count($courseDatas['validators']) > 0 ?
+            $this->userManager->getUsersByIds($courseDatas['validators']) :
+            [];
 
         foreach ($validators as $validator) {
             $course->addValidator($validator);

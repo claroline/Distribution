@@ -105,7 +105,7 @@ class CsvUserValidator extends ConstraintValidator
                 $lastName = $user[1];
                 $username = $user[2];
                 $pwd = $user[3];
-                $email = $user[4];
+                $email = trim($user[4]);
 
                 if (isset($user[5])) {
                     $code = trim($user[5]) === '' ? null : $user[5];
@@ -129,6 +129,12 @@ class CsvUserValidator extends ConstraintValidator
                     $modelName = trim($user[8]) === '' ? null : $user[8];
                 } else {
                     $modelName = null;
+                }
+
+                if (isset($user[10])) {
+                    $organizationName = trim($user[10]) === '' ? null : $user[10];
+                } else {
+                    $organizationName = null;
                 }
 
                 (!array_key_exists($email, $mails)) ?
@@ -226,18 +232,33 @@ class CsvUserValidator extends ConstraintValidator
                     );
                 }
             }
-        }
 
-        if ($modelName) {
-            $model = $this->om->getRepository('ClarolineCoreBundle:Model\WorkspaceModel')->findOneByName($modelName);
+            if ($modelName) {
+                $model = $this->om->getRepository('ClarolineCoreBundle:Model\WorkspaceModel')->findOneByName($modelName);
 
-            if (!$model) {
-                $msg = $this->translator->trans(
-                    'model_invalid',
-                    ['%model%' => $modelName, '%line%' => $i + 1],
-                    'platform'
-                ).' ';
-                $this->context->addViolation($msg);
+                if (!$model) {
+                    $msg = $this->translator->trans(
+                        'model_invalid',
+                        ['%model%' => $modelName, '%line%' => $i + 1],
+                        'platform'
+                    ).' ';
+                    $this->context->addViolation($msg);
+                }
+            }
+
+            if ($organizationName) {
+                $organization = $this->om
+                    ->getRepository('Claroline\CoreBundle\Entity\Organization\Organization')
+                    ->findOneByName($organizationName);
+
+                if (!$organization) {
+                    $msg = $this->translator->trans(
+                        'organization_invalid',
+                        ['%organization%' => $organizationName, '%line%' => $i + 1],
+                        'platform'
+                    ).' ';
+                    $this->context->addViolation($msg);
+                }
             }
         }
 

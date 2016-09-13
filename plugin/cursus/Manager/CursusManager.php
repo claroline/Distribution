@@ -350,21 +350,29 @@ class CursusManager
         $course = new Course();
         $course->setTitle($title);
         $course->setCode($code);
-        $course->setDescription($description);
         $course->setPublicRegistration($publicRegistration);
         $course->setPublicUnregistration($publicUnregistration);
         $course->setRegistrationValidation($registrationValidation);
-        $course->setTutorRoleName($tutorRoleName);
-        $course->setLearnerRoleName($learnerRoleName);
         $course->setWorkspaceModel($workspaceModel);
         $course->setWorkspace($workspace);
         $course->setIcon($icon);
         $course->setUserValidation($userValidation);
         $course->setOrganizationValidation($organizationValidation);
-        $course->setMaxUsers($maxUsers);
         $course->setDefaultSessionDuration($defaultSessionDuration);
         $course->setWithSessionEvent($withSessionEvent);
 
+        if ($description) {
+            $course->setDescription($description);
+        }
+        if ($tutorRoleName) {
+            $course->setTutorRoleName($tutorRoleName);
+        }
+        if ($learnerRoleName) {
+            $course->setLearnerRoleName($learnerRoleName);
+        }
+        if ($maxUsers) {
+            $course->setMaxUsers($maxUsers);
+        }
         foreach ($validators as $validator) {
             $course->addValidator($validator);
         }
@@ -529,19 +537,22 @@ class CursusManager
         }
     }
 
-    public function registerUserToMultipleCursus(array $multipleCursus, User $user, $withWorkspace = true, $withCourse = false)
+    public function registerUserToMultipleCursus(array $multipleCursus, User $user, $withWorkspace = true, $withCourse = false, $force = false)
     {
         $registrationDate = new \DateTime();
 
         $this->om->startFlushSuite();
 
         foreach ($multipleCursus as $cursus) {
-            $cursusUser = $this->cursusUserRepo->findOneCursusUserByCursusAndUser(
-                $cursus,
-                $user
-            );
+            $cursusUser = null;
+            if (!$force) {
+                $cursusUser = $this->cursusUserRepo->findOneCursusUserByCursusAndUser(
+                    $cursus,
+                    $user
+                );
+            }
 
-            if (is_null($cursusUser)) {
+            if (is_null($cursusUser) || $force) {
                 $cursusUser = new CursusUser();
                 $cursusUser->setCursus($cursus);
                 $cursusUser->setUser($user);
@@ -1080,7 +1091,7 @@ class CursusManager
         return $results;
     }
 
-    public function registerUsersToSessions(array $sessions, array $users, $type = 0)
+    public function registerUsersToSessions(array $sessions, array $users, $type = 0, $force = false)
     {
         $results = ['status' => 'success', 'datas' => []];
 
@@ -1109,13 +1120,17 @@ class CursusManager
 
             foreach ($sessions as $session) {
                 foreach ($users as $user) {
-                    $sessionUser = $this->sessionUserRepo->findOneSessionUserBySessionAndUserAndType(
-                        $session,
-                        $user,
-                        $type
-                    );
+                    $sessionUser = null;
 
-                    if (is_null($sessionUser)) {
+                    if (!$force) {
+                        $sessionUser = $this->sessionUserRepo->findOneSessionUserBySessionAndUserAndType(
+                            $session,
+                            $user,
+                            $type
+                        );
+                    }
+
+                    if (is_null($sessionUser) || $force) {
                         $sessionUser = new CourseSessionUser();
                         $sessionUser->setSession($session);
                         $sessionUser->setUser($user);
