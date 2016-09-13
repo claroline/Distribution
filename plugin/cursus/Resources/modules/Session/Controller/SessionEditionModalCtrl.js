@@ -59,7 +59,7 @@ export default class SessionEditionModalCtrl {
     this.eventRegistrationTypeChoices = [
       {value: 0, name: Translator.trans('event_registration_automatic', {}, 'cursus')},
       {value: 1, name: Translator.trans('event_registration_manual', {}, 'cursus')},
-      {value: 2, name: Translator.trans('event_registration_public', {}, 'cursus')},
+      {value: 2, name: Translator.trans('event_registration_public', {}, 'cursus')}
     ]
     this.eventRegistrationType = this.eventRegistrationTypeChoices[0]
     this._userpickerCallback = this._userpickerCallback.bind(this)

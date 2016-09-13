@@ -54,7 +54,7 @@ export default class SessionEventEditionModalCtrl {
     this.registrationTypeChoices = [
       {value: 0, name: Translator.trans('event_registration_automatic', {}, 'cursus')},
       {value: 1, name: Translator.trans('event_registration_manual', {}, 'cursus')},
-      {value: 2, name: Translator.trans('event_registration_public', {}, 'cursus')},
+      {value: 2, name: Translator.trans('event_registration_public', {}, 'cursus')}
     ]
     this.registrationType = this.registrationTypeChoices[0]
     this.tutorsList = SessionService.getTutorsBySession(this.source['session']['id'])

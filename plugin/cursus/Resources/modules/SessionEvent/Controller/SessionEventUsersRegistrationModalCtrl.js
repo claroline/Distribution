@@ -8,6 +8,7 @@
  */
 
 /*global Routing*/
+/*global Translator*/
 
 export default class SessionEventUsersRegistrationModalCtrl {
   constructor($http, $uibModalInstance, NgTableParams, sessionId, sessionEventId, callback) {

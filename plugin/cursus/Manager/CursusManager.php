@@ -4094,7 +4094,7 @@ class CursusManager
                 $sessionEventUser = $this->sessionEventUserRepo->findOneBy([
                     'sessionEvent' => $sessionEvent,
                     'user' => $user,
-                    'registrationStatus' => SessionEventUser::REGISTERED
+                    'registrationStatus' => SessionEventUser::REGISTERED,
                 ]);
 
                 if (is_null($sessionEventUser)) {
@@ -4173,7 +4173,7 @@ class CursusManager
         return $remainingPlaces;
     }
 
-    public function checkPendingSessionEventUsers (SessionEvent $sessionEvent)
+    public function checkPendingSessionEventUsers(SessionEvent $sessionEvent)
     {
         $remainingPlaces = $this->getSessionEventRemainingPlaces($sessionEvent);
         $session = $sessionEvent->getSession();
@@ -4197,7 +4197,6 @@ class CursusManager
 
             return $pendingUsersToRegister;
         } else {
-
             return [];
         }
     }
@@ -4230,7 +4229,7 @@ class CursusManager
         return $sessionEventUsers;
     }
 
-    public function getUsersBySessionEventAndStatus (SessionEvent $sessionEvent, $status)
+    public function getUsersBySessionEventAndStatus(SessionEvent $sessionEvent, $status)
     {
         $users = [];
         $sessionEventUsers = $this->getSessionEventUsersBySessionEventAndStatus($sessionEvent, $status);
@@ -4242,7 +4241,7 @@ class CursusManager
         return $users;
     }
 
-    public function registerUserToAllAutomaticSessionEvent (User $user, CourseSession $session)
+    public function registerUserToAllAutomaticSessionEvent(User $user, CourseSession $session)
     {
         $autoSessionEvents = $this->sessionEventRepo->findBy(['session' => $session, 'registrationType' => CourseSession::REGISTRATION_AUTO]);
         $registrationDate = new \DateTime();
@@ -4253,7 +4252,7 @@ class CursusManager
 
             if (is_null($sessionEventUser)) {
                 $this->createSessionEventUser($user, $sessionEvent, SessionEventUser::REGISTERED, $registrationDate);
-            } else if ($sessionEventUser->getRegistrationStatus() === SessionEventUser::PENDING) {
+            } elseif ($sessionEventUser->getRegistrationStatus() === SessionEventUser::PENDING) {
                 $sessionEventUser->getRegistrationStatus(SessionEventUser::REGISTERED);
                 $sessionEventUser->setRegistrationDate($registrationDate);
                 $this->om->persist($sessionEventUser);
@@ -4262,7 +4261,7 @@ class CursusManager
         $this->om->endFlushSuite();
     }
 
-    public function createSessionEventUser (
+    public function createSessionEventUser(
         User $user,
         SessionEvent $sessionEvent,
         $registrationStatus,
@@ -4277,7 +4276,7 @@ class CursusManager
         $sessionEventUser->setApplicationDate($applicationDate);
         $this->om->persist($sessionEventUser);
 
-        if  ($registrationStatus === SessionEventUser::REGISTERED) {
+        if ($registrationStatus === SessionEventUser::REGISTERED) {
             $event = new LogSessionEventUserRegistrationEvent($sessionEvent, $user);
             $this->eventDispatcher->dispatch('log', $event);
         }
