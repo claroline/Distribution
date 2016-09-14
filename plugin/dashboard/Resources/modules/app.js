@@ -4,8 +4,8 @@ import 'angular-route'
 import 'angular-loading-bar'
 import 'angular-strap'
 import '#/main/core/fos-js-router/module'
-
 import '#/main/core/workspace/module'
+import '#/main/core/users/module'
 
 import './dashboards/module'
 
@@ -23,7 +23,8 @@ angular
       'ui.fos-js-router',
       'mgcrea.ngStrap.datepicker',
       'Dashboards',
-      'workspace'
+      'workspace',
+      'UsersManager'
     ])
     // Configure application
     .config([
@@ -73,6 +74,13 @@ angular
                 function workspacesResolve(WorkspaceService) {
                   // retrive user id from url ???
                   return WorkspaceService.getUserWorkspaces(2)
+                }
+              ],
+              user:[
+                'UserAPIService',
+                function userResolve(UserAPIService) {
+                  // retrive user id from url ???
+                  return UserAPIService.getConnectedUser()
                 }
               ]
             }

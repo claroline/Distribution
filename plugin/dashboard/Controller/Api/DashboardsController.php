@@ -65,7 +65,7 @@ class DashboardsController extends Controller
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
      * @EXT\Method("GET")
      */
-    public function getUserWorkspace(User $user)
+    public function getUserWorkspaces(User $user)
     {
     }
 }

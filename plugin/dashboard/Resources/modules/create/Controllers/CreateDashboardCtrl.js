@@ -5,9 +5,10 @@
    *
    * @param {object}  workspaces
    */
-   constructor(workspaces) {
+   constructor(workspaces, user) {
      this.workspaces = workspaces
-     console.log(this.workspaces)
+     this.user = user
+     console.log(this.user)
    }
 }
 
