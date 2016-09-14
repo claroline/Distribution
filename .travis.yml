@@ -72,8 +72,10 @@ script:
   - if [ "$DIFF" != '' ]; then $ROOT/vendor/bin/md `echo "$DIFF" | tr '\n' ' '`; fi
   - if [ "$DIFF" != '' ]; then $ROOT/vendor/bin/php-cs-fixer fix --dry-run --diff --config-file=main/dev/Resources/travis/php-cs.php; fi
   - if [ "$DIFF" != '' ]; then $ROOT/node_modules/.bin/eslint `echo "$DIFF" | grep 'Resources/modules/.\+\.js' | tr '\n' ' '`; fi
-  # launch the whole test suite
+  # launch js tests
   - SYMFONY_DEPRECATIONS_HELPER=weak $ROOT/vendor/bin/phpunit
+  # launc php tests
+  - $ROOT/node_modules/.bin/karma start --single-run --browsers PhantomJS
 
 after_success:
   # send a preview release to a remote server (only for internal PRs)
