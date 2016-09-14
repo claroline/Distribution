@@ -40,15 +40,15 @@ tinymce.claroline.editorChange = function (editor) {
     var min = 'autoresize_min_height'
 
     switch (true) {
-    case ( height <= tinymce.claroline.configuration[min]):
-      container.css('height', tinymce.claroline.configuration[min])
-      break
-    case ( height >= tinymce.claroline.configuration[max]):
-      container.css('height', tinymce.claroline.configuration[max])
-      container.css('overflow', 'scroll')
-      break
-    default:
-      container.css('height', height)
+      case ( height <= tinymce.claroline.configuration[min]):
+        container.css('height', tinymce.claroline.configuration[min])
+        break
+      case ( height >= tinymce.claroline.configuration[max]):
+        container.css('height', tinymce.claroline.configuration[max])
+        container.css('overflow', 'scroll')
+        break
+      default:
+        container.css('height', height)
     }
   }, 500)
 }
