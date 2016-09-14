@@ -1,15 +1,14 @@
 <?php
 
-/**
- * To import a question with holes in QTI.
- */
-
 namespace UJM\ExoBundle\Services\classes\QTI;
 
 use UJM\ExoBundle\Entity\Hole;
 use UJM\ExoBundle\Entity\InteractionHole;
 use UJM\ExoBundle\Entity\WordResponse;
 
+/**
+ * To import a question with holes in QTI.
+ */
 class HoleImport extends QtiImport
 {
     protected $interactionHole;
