@@ -1,0 +1,59 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{'dashboards' | trans:{}:'tools'}}</h3>
+    </div>
+    <div class="panel-body">
+        <!-- create new view row -->
+        <div class="row">
+            <div class="col-md-12">
+                <button class="btn btn-primary fa fa-plus" title="{{'click_to_add_view' | trans:{}:'dashboard'}}">&nbsp;
+                    {{'view' | trans:{}:'dashboard'}}</button>
+            </div>
+        </div>
+        <hr>
+        <!-- search in list row -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="{{'search' | trans:{}:'dashboard'}}...">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <!-- view list row -->
+        <div class="row" data-ng-if="dashboardsCtrl.dashboards.length > 0">
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <thead>
+                        <th>{{'view_name' | trans:{}:'dashboard'}}</th>
+                        <th>{{'actions' | trans:{}:'dashboard'}}</th>
+                    </thead>
+                    <tbody>
+                        <tr data-ng-repeat="item in dashboardsCtrl.dashboards">
+                            <td>{{item.title}}</td>
+                            <td>
+                                <button class="btn btn-primary fa fa-pencil" title="{{'edit_view' | trans:{}:'dashboard'}}">&nbsp;{{'edit' | trans:{}:'dashboard'}}</button>
+                                <button class="btn btn-default fa fa-share" title="{{'share_view' | trans:{}:'dashboard'}}">&nbsp;{{'share' | trans:{}:'dashboard'}}</button>
+                                <button class="btn btn-danger fa fa-trash" title="{{'delete_view' | trans:{}:'dashboard'}}">&nbsp;{{'delete' | trans:{}:'dashboard'}}</button>
+                            </td>
+                        </tr>
+                    </table>
+                </tbody>
+
+            </div>
+        </div>
+
+        <!-- view no item in list row -->
+        <div class="row" data-ng-if="dashboardsCtrl.dashboards.length === 0">
+            <div class="col-md-12">
+                <h3>No dashboard for now. Please use the + button to create a new one</h3>
+            </div>
+
+        </div>
+    </div>
+</div>

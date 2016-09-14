@@ -1,0 +1,25 @@
+# A
+actions: Actions
+
+# C
+click_to_add_view: Cliquez pour créer une vue
+
+# D
+delete_view: Supprimer cette vue
+delete: Supprimer
+
+# E
+edit: Éditer
+edit_view: Éditer cette vue
+
+# M
+message_no_views: Aucune vue pour le moment. Utilisez le bouton + pour en créer une.
+
+# V
+view: Vue
+view_name: Intitulé de la vue
+
+# S
+search: Recherche
+share: Partager
+share_view: Partager cette vue
