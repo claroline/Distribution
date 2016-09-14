@@ -76,12 +76,12 @@ class HoleImport extends QtiImport
             $responseIdentifier = $tabMatche[1];
             $correctResponse = $this->getCorrectResponse($responseIdentifier);
             if (substr($matche, 1, 20) == 'textEntryInteraction') {
-                $expectedLength = $tabMatche[3];
+                $expectedLength = $tabMatche[5];
                 $text = str_replace('textEntryInteraction', 'input', $matche);
                 /*For old questions with holes */
                 $text = preg_replace('(name=".*?")', '', $text);
-                if (isset($tabMatche[5])) {
-                    $text = str_replace('size="'.$tabMatche[5].'"', 'size="'.$tabMatche[5].'" type="text" value="'.$correctResponse.'"', $text);
+                if (isset($expectedLength)) {
+                    $text = str_replace('size="'.$expectedLength.'"', 'size="'.$expectedLength.'" type="text" value="'.$correctResponse.'"', $text);
                 }
                 /******************************/
                 $text = str_replace('responseIdentifier="'.$responseIdentifier.'"', 'id="'.$newId.'" class="blank" autocomplete="off" name="blank_'.$newId.'"', $text);
@@ -187,8 +187,7 @@ class HoleImport extends QtiImport
     /**
      * Create hole.
      *
-     *
-     * @param Intger $size     hole's size for the input
+     * @param int    $size     hole's size for the input
      * @param string $qtiId    id of hole in the qti file
      * @param bool   $selector text or list
      * @param int    $position position of hole in the text
