@@ -1,12 +1,11 @@
+import $ from 'jquery'
+import _ from 'underscore'
 import 'claroline-tinymce-mention/plugin.min'
 import 'tinymce-codemirror/plugins/codemirror/plugin.min'
 import './plugins/codemirror'
 
 var tinymce = window.tinymce
-var common = window.Claroline.Common
 var home = window.Claroline.Home
-var modal = window.Claroline.Modal
-var resourceManager = window.Claroline.ResourceManager
 var translator = window.Translator
 var routing = window.Routing
 
@@ -41,15 +40,15 @@ tinymce.claroline.editorChange = function (editor) {
     var min = 'autoresize_min_height'
 
     switch (true) {
-      case ( height <= tinymce.claroline.configuration[min]):
-        container.css('height', tinymce.claroline.configuration[min])
-        break
-      case ( height >= tinymce.claroline.configuration[max]):
-        container.css('height', tinymce.claroline.configuration[max])
-        container.css('overflow', 'scroll')
-        break
-      default:
-        container.css('height', height)
+    case ( height <= tinymce.claroline.configuration[min]):
+      container.css('height', tinymce.claroline.configuration[min])
+      break
+    case ( height >= tinymce.claroline.configuration[max]):
+      container.css('height', tinymce.claroline.configuration[max])
+      container.css('overflow', 'scroll')
+      break
+    default:
+      container.css('height', height)
     }
   }, 500)
 }
@@ -195,10 +194,10 @@ tinymce.claroline.mentionsItem = function (item) {
   }
 
   return '<li>' +
-  '<a href="javascript:;"><span class="user-picker-dropdown-avatar">' + avatar + '</span>' +
-  '<span class="user-picker-dropdown-name">' + item.name + '</span>' +
-  '<small class="user-picker-avatar-mail text-muted">(' + item.mail + ')</small></a>' +
-  '</li>'
+    '<a href="javascript:;"><span class="user-picker-dropdown-avatar">' + avatar + '</span>' +
+    '<span class="user-picker-dropdown-name">' + item.name + '</span>' +
+    '<small class="user-picker-avatar-mail text-muted">(' + item.mail + ')</small></a>' +
+    '</li>'
 }
 
 /**
@@ -231,7 +230,7 @@ tinymce.claroline.configuration = {
     home.asset + 'bundles/clarolinecore/css/common/tinymce.css'
   ],
   'toolbar2': 'styleselect | undo redo | forecolor backcolor | bullist numlist | outdent indent | ' +
-    'media link charmap | print preview code',
+  'media link charmap | print preview code',
   'extended_valid_elements': 'user[id], a[data-toggle|data-parent]',
   'paste_preprocess': tinymce.claroline.paste,
   'setup': tinymce.claroline.setup,
