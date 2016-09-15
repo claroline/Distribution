@@ -660,9 +660,9 @@ class SurveyManager
         );
     }
 
-    /*******************************************************
+    /*
      * Access to SimpleTextQuestionAnswerRepository methods *
-     *******************************************************/
+     */
 
     public function getSimpleTextAnswerByQuestionAnswer(
         QuestionAnswer $questionAnswer,
