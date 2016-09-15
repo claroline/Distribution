@@ -37,7 +37,6 @@ angular.module('UsersManager', [
    .service(
      'UserAPIService', [
        '$http',
-       '$q',
        'url',
        UserAPIService
      ])

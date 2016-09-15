@@ -93,6 +93,27 @@ class WorkspaceController extends FOSRestController
     }
 
     /**
+     * @ApiDoc(
+     *     description="Returns the list of workspace for the connected user",
+     *     views = {"workspace"}
+     * )
+     * @View(serializerGroups={"api_workspace"})
+     * @Get("/workspaces", name="get_connected_user_workspaces", options={ "method_prefix" = false })
+     * @ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     */
+    public function getConnectedUserWorkspacesAction(User $user)
+    {
+        $workspaces = $this->workspaceManager->getWorkspacesByUser($user);
+        $result = [];
+        foreach ($workspaces as $workspace) {
+            $exported = $this->workspaceManager->exportWorkspace($workspace);
+            array_push($result, $exported);
+        }
+
+        return $result;
+    }
+
+    /**
      * @View(serializerGroups={"api_workspace"})
      * @ApiDoc(
      *     description="Returns the workspaces list",

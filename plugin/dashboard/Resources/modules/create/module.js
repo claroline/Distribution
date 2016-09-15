@@ -6,15 +6,23 @@ import 'angular-strap'
 import 'angular-ui-translation/angular-translation'
 import '#/main/core/modal/module'
 import '#/main/core/fos-js-router/module'
+import '#/main/core/translation/module'
 
-//import DashboardsCtrl from './Controllers/DashboardsCtrl'
-//import DashboardService from './Services/DashboardService'
-//import DashboardsDirective from './Directives/DashboardsDirective'
+import StepOne from './Directives/StepOneDirective'
+import StepOneCtrl from './Controllers/StepOneCtrl'
 
 angular
   .module('Create', [
     'ui.translation',
     'ui.bootstrap',
     'ui.modal',
-    'mgcrea.ngStrap.datepicker'
+    'mgcrea.ngStrap.datepicker',
+    'translation'
+  ])
+  .controller('StepOneCtrl',[
+    'Translator',
+    StepOneCtrl
+  ])
+  .directive('stepOne', [
+    StepOne
   ])

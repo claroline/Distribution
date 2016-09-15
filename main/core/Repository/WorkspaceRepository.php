@@ -220,7 +220,7 @@ class WorkspaceRepository extends EntityRepository
         $orderedToolType = 0
     ) {
         if (count($roleNames) === 0 || count($workspaces) === 0) {
-            return array();
+            return [];
         } else {
             $dql = '
                 SELECT DISTINCT w.id

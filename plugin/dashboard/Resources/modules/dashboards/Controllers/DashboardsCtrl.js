@@ -5,7 +5,8 @@
    *
    * @param {object}           dashboards
    */
-   constructor(dashboards) {
+   constructor(user, dashboards) {
+     this.user = user
      this.dashboards = dashboards
    }
 }

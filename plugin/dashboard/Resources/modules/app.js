@@ -5,9 +5,11 @@ import 'angular-loading-bar'
 import 'angular-strap'
 import '#/main/core/fos-js-router/module'
 import '#/main/core/workspace/module'
-import '#/main/core/users/module'
+import '#/main/core/authentication/module'
+import '#/main/core/translation/module'
 
 import './dashboards/module'
+import './create/module'
 
 import dashboards from './dashboards/Partials/dashboards.html'
 import DashboardsCtrl from './dashboards/Controllers/DashboardsCtrl'
@@ -24,7 +26,9 @@ angular
       'mgcrea.ngStrap.datepicker',
       'Dashboards',
       'workspace',
-      'UsersManager'
+      'authentication',
+      'translation',
+      'Create'
     ])
     // Configure application
     .config([
@@ -56,6 +60,12 @@ angular
             controller  : DashboardsCtrl,
             controllerAs: 'dashboardsCtrl',
             resolve: {
+              user:[
+                'UserService',
+                function userResolve(UserService) {
+                  return UserService.getConnectedUser()
+                }
+              ],
               dashboards: [
                 'DashboardService',
                 function dashboardsResolve(DashboardService) {
@@ -69,18 +79,22 @@ angular
             controller  : CreateDashboardCtrl,
             controllerAs: 'createDashboardCtrl',
             resolve: {
+              user:[
+                'UserService',
+                function userResolve(UserService) {
+                  return UserService.getConnectedUser()
+                }
+              ],
               workspaces: [
                 'WorkspaceService',
                 function workspacesResolve(WorkspaceService) {
-                  // retrive user id from url ???
-                  return WorkspaceService.getUserWorkspaces(2)
+                  return WorkspaceService.getUserWorkspaces()
                 }
               ],
-              user:[
-                'UserAPIService',
-                function userResolve(UserAPIService) {
-                  // retrive user id from url ???
-                  return UserAPIService.getConnectedUser()
+              Translator: [
+                'Translator',
+                function workspacesResolve(Translator) {
+                  return Translator
                 }
               ]
             }

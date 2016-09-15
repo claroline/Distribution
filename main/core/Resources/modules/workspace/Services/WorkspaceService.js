@@ -7,11 +7,11 @@ class WorkspaceService{
     this.UrlService = url
   }
 
-  getUserWorkspaces(userId) {
+  getUserWorkspaces() {
     const deferred = this.$q.defer()
     this.$http
           .get(
-              this.UrlService('api_get_user_workspaces', {'user': userId})
+              this.UrlService('api_get_connected_user_workspaces', {})
           )
           .success(function onSuccess(response) {
             deferred.resolve(response)

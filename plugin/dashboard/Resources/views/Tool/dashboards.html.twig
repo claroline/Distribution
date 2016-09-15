@@ -29,8 +29,10 @@
 
 {% block section_content %}
     {# Initialize AngularJS application #}
-    <div data-ng-app="DashboardApp" data-ng-cloak="">
-        <div ng-view></div>
+    <div class="dashboard-app-container" data-ng-app="DashboardApp" data-ng-cloak="">
+        <div class="dashboard-app-views" ng-view>
+          
+        </div>
     </div>
 {% endblock %}
 

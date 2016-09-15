@@ -42,8 +42,8 @@ class DashboardManager
     public function getAll(User $user)
     {
         return [
-          ['title' => 'dashboard1'],
-          ['title' => 'dashboard2'],
+          ['id' => 1, 'title' => 'dashboard1'],
+          ['id' => 2, 'title' => 'dashboard2'],
         ];
         /*$audio = $this->getRepository()->findOneBy(['mediaResource' => $mr, 'type' => 'audio']);
 

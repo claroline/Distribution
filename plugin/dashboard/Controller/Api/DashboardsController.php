@@ -59,13 +59,4 @@ class DashboardsController extends Controller
 
         return new JsonResponse($dashboards);
     }
-
-    /**
-     * @EXT\Route("/workspaces", name="get_user_workspaces")
-     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
-     * @EXT\Method("GET")
-     */
-    public function getUserWorkspaces(User $user)
-    {
-    }
 }
