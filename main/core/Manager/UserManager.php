@@ -312,7 +312,7 @@ class UserManager
      */
     public function deleteUser(User $user)
     {
-
+        $this->log('Removing '.$user->getUsername().'...');
         /* When the api will identify a user, please uncomment this
         if ($this->container->get('security.token_storage')->getToken()->getUser()->getId() === $user->getId()) {
             throw new \Exception('A user cannot delete himself');
@@ -915,6 +915,19 @@ class UserManager
             ->findUsersByRolesIncludingGroups($roles, $executeQuery);
 
         return $this->pagerFactory->createPagerFromArray($users, $page, $max);
+    }
+
+    /*
+     * I don't want to break the old pager wich is oddly written
+     */
+    public function getUsersByRolesWithGroups(array $roles)
+    {
+        return $this->userRepo->findUsersByRolesIncludingGroups($roles, true);
+    }
+
+    public function getUsersExcudingRoles(array $roles, $offet = null, $limit = null)
+    {
+        return $this->userRepo->findUsersExcludingRoles($roles, $offet, $limit);
     }
 
     /**

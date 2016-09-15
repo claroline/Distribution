@@ -240,7 +240,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
                 ->leftJoin('r.workspace', 'w')
                 ->andWhere('r.workspace = :workspace')
                 ->setParameter('workspace', $workspace);
-        };
+        }
 
         return $executeQuery ? $userQueryBuilder->getQuery()->getResult() : $userQueryBuilder->getQuery();
     }
@@ -589,6 +589,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         ';
         $query = $this->_em->createQuery($dql);
         $query->setParameter('roles', $roles);
+        $query->setParameter('search', "%{$search}%");
 
         return ($getQuery) ? $query : $query->getResult();
     }
@@ -1571,5 +1572,27 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         $res = $query->getResult();
 
         return $res;
+    }
+
+    public function findUsersExcludingRoles(array $roles, $offset, $limit)
+    {
+        $dql = '
+            SELECT u FROM Claroline\CoreBundle\Entity\User u
+            WHERE u.isRemoved = false AND u NOT IN (
+                SELECT u2 FROM Claroline\CoreBundle\Entity\User u2
+                LEFT JOIN u2.roles ur
+                LEFT JOIN u2.groups g
+                LEFT JOIN g.roles gr
+                WHERE (gr IN (:roles) OR ur IN (:roles))
+
+            )
+        ';
+
+        $query = $this->_em->createQuery($dql);
+        $query->setParameter('roles', $roles);
+        $query->setFirstResult($offset);
+        $query->setMaxResults($limit);
+
+        return $query->getResult();
     }
 }
