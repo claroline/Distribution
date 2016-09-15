@@ -39,7 +39,7 @@ edition: Modification
 end_date: Date de fin
 export_all_results: Exporter tous les résultats
 export_question_results: Exporter les résultats de la question
-export_survey_answers: Exporter les réponses au sondage
+export_survey_answers: Exporter les réponses au sondage 
 horizontal: Horizontal
 how_to_publish_message: Le sondage nest pas encore publié. Personne ne peut y répondre. Vous pouvez le publier dans <Paramètres>.
 label_for_choice_other: Libellé du choix "Autre"
