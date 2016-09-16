@@ -861,6 +861,7 @@ class WorkspaceManager
 
         foreach ($workspaces as $workspace) {
             $this->om->startFlushSuite();
+            $endDate = null;
             $model = null;
             $name = $workspace[0];
             $code = $workspace[1];
@@ -869,6 +870,10 @@ class WorkspaceManager
             $registrationValidation = $workspace[4];
             $selfUnregistration = $workspace[5];
             $errors = [];
+
+            if ($logger) {
+                $logger('Creating '.$code.' ...');
+            }
 
             if (isset($workspace[6]) && trim($workspace[6]) !== '') {
                 $user = $this->om->getRepository('ClarolineCoreBundle:User')
@@ -882,6 +887,11 @@ class WorkspaceManager
                 ->findOneByName($workspace[7]);
             }
 
+            if (isset($workspace[8])) {
+                $endDate = new \DateTime();
+                $endDate->setTimestamp($workspace[8]);
+            }
+
             if ($model) {
                 $guid = $this->ut->generateGuid();
                 $workspace = new Workspace();
@@ -893,6 +903,9 @@ class WorkspaceManager
                 $workspace->setSelfUnregistration($selfUnregistration);
                 $workspace->setRegistrationValidation($registrationValidation);
                 $workspace->setGuid($guid);
+                if ($endDate) {
+                    $workspace->setEndDate($date);
+                }
                 $date = new \Datetime(date('d-m-Y H:i'));
                 $workspace->setCreationDate($date->getTimestamp());
                 $workspace->setCreator($user);
@@ -905,6 +918,10 @@ class WorkspaceManager
                 $workspace->setDisplayable($isVisible);
                 $workspace->setSelfRegistration($selfRegistration);
                 $workspace->setSelfUnregistration($registrationValidation);
+                $workspace->setCreator($user);
+                if ($endDate) {
+                    $workspace->setEndDate($endDate);
+                }
                 $template = new File($this->container->getParameter('claroline.param.default_template'));
                 $this->container->get('claroline.manager.transfer_manager')->createWorkspace($workspace, $template);
             }

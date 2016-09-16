@@ -146,7 +146,8 @@ class UserManager
         $rolesToAdd = [],
         $model = null,
         $publicUrl = null,
-        $organizations = []
+        $organizations = [],
+        $forcePersonalWorkspace = null
     ) {
         $additionnalRoles = [];
 
@@ -196,8 +197,14 @@ class UserManager
 
         $this->strictEventDispatcher->dispatch('user_created_event', 'UserCreated', ['user' => $user]);
 
-        if ($this->personalWorkspaceAllowed($additionnalRoles)) {
-            $this->setPersonalWorkspace($user, $model);
+        if ($forcePersonalWorkspace !== null) {
+            if ($forcePersonalWorkspace) {
+                $this->setPersonalWorkspace($user, $model);
+            }
+        } else {
+            if ($this->personalWorkspaceAllowed($additionnalRoles)) {
+                $this->setPersonalWorkspace($user, $model);
+            }
         }
 
         $this->objectManager->endFlushSuite();
@@ -442,6 +449,8 @@ class UserManager
                 $organizationName = null;
             }
 
+            $hasPersonalWorkspace = isset($user[11]) ? (bool) $user[11] : false;
+
             if ($modelName) {
                 $model = $this->objectManager
                     ->getRepository('Claroline\CoreBundle\Entity\Model\WorkspaceModel')
@@ -499,7 +508,16 @@ class UserManager
                 if ($logger) {
                     $logger(" User $j ($username) being created...");
                 }
-                $this->createUser($userEntity, $sendMail, $additionalRoles, $model, $username.uniqid(), $organizations);
+
+                $this->createUser(
+                    $userEntity,
+                    $sendMail,
+                    $additionalRoles,
+                    $model,
+                    $username.uniqid(),
+                    $organizations,
+                    $hasPersonalWorkspace
+                );
             }
 
             $this->objectManager->persist($userEntity);

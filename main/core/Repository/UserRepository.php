@@ -1548,6 +1548,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 
         return $query->getResult();
     }
+
     /**
      * @param Workspace $workspace
      *

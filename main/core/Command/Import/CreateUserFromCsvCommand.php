@@ -14,7 +14,6 @@ namespace Claroline\CoreBundle\Command\Import;
 use Claroline\CoreBundle\Command\Traits\BaseCommandTrait;
 use Claroline\CoreBundle\Library\Logger\ConsoleLogger;
 use Claroline\CoreBundle\Listener\DoctrineDebug;
-use Claroline\CoreBundle\Validator\Constraints\CsvUser;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -50,14 +49,6 @@ class CreateUserFromCsvCommand extends ContainerAwareCommand
         $validator = $this->getContainer()->get('validator');
         $file = $input->getArgument('csv_user_path');
         $lines = str_getcsv(file_get_contents($file), PHP_EOL);
-        $errors = $validator->validateValue($file, new CsvUser());
-
-        if (count($errors)) {
-            foreach ($errors as $error) {
-                $output->writeln("<error> {$error->getMessage()} </error>");
-            }
-            throw new \Exception('The csv file is incorrect');
-        }
 
         foreach ($lines as $line) {
             $users[] = str_getcsv($line, ';');
