@@ -4403,7 +4403,7 @@ class CursusManager
         switch ($sessionStatus) {
             case 'success':
                 $content = $sessionEventStatus === 'success' ?
-                    $this->translator->trans('session_and_event_registration_success_msg', [], 'cursus'):
+                    $this->translator->trans('session_and_event_registration_success_msg', [], 'cursus') :
                     $this->translator->trans('session_registration_success_and_event_registration_pending_msg', [], 'cursus');
                 break;
             case 'failed':
@@ -4414,7 +4414,7 @@ class CursusManager
                 break;
             case 'none':
                 $content = $sessionEventStatus === 'success' ?
-                    $this->translator->trans('session_event_registration_success_msg', [], 'cursus'):
+                    $this->translator->trans('session_event_registration_success_msg', [], 'cursus') :
                     $this->translator->trans('session_event_registration_pending_msg', [], 'cursus');
                 break;
         }

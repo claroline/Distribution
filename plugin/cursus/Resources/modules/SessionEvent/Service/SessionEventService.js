@@ -144,14 +144,14 @@ export default class SessionEventService {
     datas['fullName'] = `${datas['user']['firstName']} ${datas['user']['lastName']}`
 
     switch (datas['registrationStatus']) {
-    case 0:
-      datas['status'] = Translator.trans('registered', {}, 'platform')
-      break
-    case 1:
-      datas['status'] = Translator.trans('pending', {}, 'platform')
-      break
-    default:
-      datas['status'] = Translator.trans('unknown', {}, 'platform')
+      case 0:
+        datas['status'] = Translator.trans('registered', {}, 'platform')
+        break
+      case 1:
+        datas['status'] = Translator.trans('pending', {}, 'platform')
+        break
+      default:
+        datas['status'] = Translator.trans('unknown', {}, 'platform')
     }
 
     return datas
