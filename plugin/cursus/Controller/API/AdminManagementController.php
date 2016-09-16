@@ -1171,7 +1171,7 @@ class AdminManagementController extends Controller
     {
         $user = $queue->getUser();
         $session = $queue->getSession();
-        $results = $this->cursusManager->registerUsersToSession($session, [$user], 0);
+        $results = $this->cursusManager->registerUsersToSession($session, [$user], CourseSessionUser::LEARNER, true);
 
         if ($results['status'] === 'success') {
             $serializedQueue = $this->serializer->serialize(

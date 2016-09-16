@@ -36,7 +36,11 @@ class LogSessionEventUserUnregistrationEvent extends LogGenericEvent
         $details['courseId'] = $course->getId();
         $details['courseTitle'] = $course->getTitle();
         $details['courseCode'] = $course->getCode();
-        $details['registrationDate'] = $sessionEventUser->getRegistrationDate()->format('d/m/Y H:i:s');
+        $registrationDate = $sessionEventUser->getRegistrationDate();
+
+        if (!is_null($registrationDate)) {
+            $details['registrationDate'] = $registrationDate->format('d/m/Y H:i:s');
+        }
 
         parent::__construct(
             self::ACTION,

@@ -539,7 +539,7 @@ class CourseSession
 
     public function hasValidation()
     {
-        return $this->userValidation || $this->registrationValidation;
+        return $this->userValidation || $this->registrationValidation || $this->organizationValidation || count($this->getValidators()) > 0;
     }
 
     public function getEvents()

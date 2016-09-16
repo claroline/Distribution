@@ -235,6 +235,7 @@ select_course_for_session_creation: Sélectionnez la formation pour laquelle vou
 select_session: Sélectionnez une session de formation
 selected_sessions: Sessions de formation sélectionnées
 self_register: S'inscrire
+self_register_to_session_event: S'inscrire à la séance
 session: Session de formation
 session_certificate: Certificat pour une session
 session_closed: Terminé
@@ -252,6 +253,7 @@ session_event_edition: Modification de la séance
 session_event_invitation: Invitation à une séance
 session_event_location: Lieu
 session_event_registration: Inscription aux séances
+session_event_self_registration_message: Êtes-vous sûr de vouloir vous inscrire à cette séance ?
 session_event_title: Séance "%eventName%"
 session_events: Séances
 session_events_details: Détails des séances
