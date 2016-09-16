@@ -208,7 +208,6 @@ class ExerciseListener
                 '_resource' => $exercise,
                 // Angular JS data
                 'exercise' => $exerciseExport,
-                'locale' => $event->getLocale(),
             ]
         );
 
@@ -219,7 +218,6 @@ class ExerciseListener
         $webpack = $this->container->get('claroline.extension.webpack');
         $event->addAsset('ujm-exo.css', 'vendor/ujmexo/ujm-exo.css');
         $event->addAsset('jsPlumb-2.1.3-min.js', 'packages/jsPlumb/dist/js/jsPlumb-2.1.3-min.js');
-        $event->addAsset('commons.js', $webpack->hotAsset('dist/commons.js', true));
         $event->addAsset('claroline-distribution-plugin-exo-app.js', $webpack->hotAsset('dist/claroline-distribution-plugin-exo-app.js', true));
 
         // Set translations
@@ -242,6 +240,17 @@ class ExerciseListener
                 $item->invite = $this->exportHtmlContent($event, $item->invite);
                 $item->supplementary = $this->exportHtmlContent($event, $item->supplementary);
                 $item->specification = $this->exportHtmlContent($event, $item->specification);
+
+                // Export graphic question image
+                if ('application/x.graphic+json' === $item->type) {
+                    $filename = 'file_'.$item->id;
+                    $event->addFile(
+                        $filename,
+                        $this->container->getParameter('claroline.param.web_dir').DIRECTORY_SEPARATOR.$item->image->url,
+                        true
+                    );
+                    $item->image->url = '../files/'.$filename;
+                }
             }
         }
     }

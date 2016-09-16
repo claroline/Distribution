@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 
+{% import 'ClarolineCoreBundle::macros.html.twig' as macros %}
+
 <html>
     <head>
         <meta charset="UTF-8" />
@@ -8,6 +10,7 @@
         {% block stylesheets %}
             <link rel="stylesheet" media="screen" href="../commons/bootstrap.css" />
             <link rel="stylesheet" media="screen" href="../commons/font-awesome.css" />
+            <link rel="stylesheet" media="screen" href="../commons/video-js.min.css" />
 
             {% stylesheets debug=false filter='less, cssmin' output='vendor/clarolinescorm/claroline-reset.css'
                 '@ClarolineScormBundle/Resources/less/scorm-export.less'
@@ -23,15 +26,32 @@
                 {% endif %}
             {% endblock %}
         </title>
+
+        {% block javascripts_header %}{% endblock %}
     </head>
 
     <body class="scorm-export">
-        <div id="baseAsset" class="hide">/</div>
+        <div id="homeTheme" class="hide">../commons/bootstrap.css</div>
+        <div id="baseAsset" class="hide">./</div>
 
         <div class="container-fluid">
-            {% block content %}{% endblock %}
+            <div class="row content">
+                <div class="col-md-12">
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
         </div>
 
-        {% block javascripts %}{% endblock %}
+        {% block javascripts %}
+            <script src="../commons/jquery.min.js"></script>
+            <script src="../commons/commons.js"></script>
+            <script src="../commons/video.min.js"></script>
+
+            <script>
+                videojs.options.flash.swf = '../assets/video-js.swf'
+            </script>
+
+            <script src="../commons/claroline-distribution-plugin-video-player-watcher.js"></script>
+        {% endblock %}
     </body>
 </html>

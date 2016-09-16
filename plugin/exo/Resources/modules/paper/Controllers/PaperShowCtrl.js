@@ -1,18 +1,21 @@
 /**
  * Paper Show Controller
  * Displays the details of a Paper
- * @param {Object} paperPromise
+ * @param {Object} attempt
  * @param {PaperService} PaperService
  * @constructor
  */
-function PaperShowCtrl(paperPromise, PaperService, UserPaperService) {
+function PaperShowCtrl(attempt, PaperService, UserPaperService) {
   this.PaperService = PaperService
+  this.UserPaperService = UserPaperService
 
-  this.paper        = paperPromise.paper
-  this.questions    = this.PaperService.orderQuestions(this.paper, paperPromise.questions)
-  this.steps        = this.PaperService.getPaperSteps()
+  this.paper     = attempt.paper
+  this.questions = attempt.questions
+  this.steps     = this.PaperService.getPaperSteps()
 
-  UserPaperService.setPaper(this.paper)
+  this.UserPaperService.setPaper(this.paper)
+  this.UserPaperService.setQuestions(this.questions)
+  this.showScore = this.UserPaperService.isScoreAvailable(this.paper)
 }
 
 PaperShowCtrl.prototype.paper = {}
@@ -22,6 +25,16 @@ PaperShowCtrl.prototype.paper = {}
  * @type {Array}
  */
 PaperShowCtrl.prototype.questions = []
+
+/**
+ *
+ * @type {boolean}
+ */
+PaperShowCtrl.prototype.showScore = true
+
+PaperShowCtrl.prototype.orderStepQuestions = function (step) {
+  return this.UserPaperService.orderStepQuestions(step)
+}
 
 /**
  * Check whether a Paper needs a manual correction (if the score of one question is -1)
