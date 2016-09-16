@@ -4281,6 +4281,12 @@ class CursusManager
                 $sessionEventUser->setRegistrationStatus(SessionEventUser::REGISTERED);
                 $sessionEventUser->setRegistrationDate($now);
                 $this->om->persist($sessionEventUser);
+                $this->sendRegistrationConfirmationMessage(
+                    $sessionEventUser->getUser(),
+                    $sessionEventUser->getSessionEvent(),
+                    'none',
+                    'pending_to_registered'
+                );
             }
             $this->om->endFlushSuite();
 
@@ -4344,6 +4350,12 @@ class CursusManager
                 $seu->setRegistrationStatus(SessionEventUser::REGISTERED);
                 $seu->setRegistrationDate($registrationDate);
                 $this->om->persist($seu);
+                $this->sendRegistrationConfirmationMessage(
+                    $seu->getUser(),
+                    $seu->getSessionEvent(),
+                    'none',
+                    'pending_to_registered'
+                );
             }
         }
         $this->om->endFlushSuite();
@@ -4396,26 +4408,106 @@ class CursusManager
     private function sendRegistrationConfirmationMessage(User $user, SessionEvent $sessionEvent, $sessionStatus, $sessionEventStatus = null)
     {
         $session = $sessionEvent->getSession();
-        $course = $session->getCourse();
-        $object = $this->translator->trans('session_event_registration', [], 'cursus');
+        $object = '';
         $content = '';
+        $successObject = $this->translator->trans(
+            'session_event_registration_request',
+            [
+                '%event_name%' => $sessionEvent->getName(),
+                '%event_start_date%' => $sessionEvent->getStartDate()->format('d/m/Y'),
+                '%status%' => $this->translator->trans('registered', [], 'platform'),
+            ],
+            'cursus'
+        );
+        $failedObject = $this->translator->trans(
+            'session_event_registration_request',
+            [
+                '%event_name%' => $sessionEvent->getName(),
+                '%event_start_date%' => $sessionEvent->getStartDate()->format('d/m/Y'),
+                '%status%' => $this->translator->trans('failed', [], 'platform'),
+            ],
+            'cursus'
+        );
+        $pendingObject = $this->translator->trans(
+            'session_event_registration_request',
+            [
+                '%event_name%' => $sessionEvent->getName(),
+                '%event_start_date%' => $sessionEvent->getStartDate()->format('d/m/Y'),
+                '%status%' => $this->translator->trans('pending', [], 'platform'),
+            ],
+            'cursus'
+        );
 
         switch ($sessionStatus) {
             case 'success':
+                $object = $sessionEventStatus === 'success' ? $successObject : $pendingObject;
                 $content = $sessionEventStatus === 'success' ?
-                    $this->translator->trans('session_and_event_registration_success_msg', [], 'cursus') :
-                    $this->translator->trans('session_registration_success_and_event_registration_pending_msg', [], 'cursus');
+                    $this->translator->trans(
+                        'session_and_event_registration_success_msg',
+                        [
+                            '%event_name%' => $sessionEvent->getName(),
+                            '%event_start_date%' => $sessionEvent->getStartDate()->format('d/m/Y'),
+                            '%session_name%' => $session->getName(),
+                        ],
+                        'cursus'
+                    ) :
+                    $this->translator->trans(
+                        'session_and_event_registration_success_pending_msg',
+                        [
+                            '%event_name%' => $sessionEvent->getName(),
+                            '%event_start_date%' => $sessionEvent->getStartDate()->format('d/m/Y'),
+                            '%session_name%' => $session->getName(),
+                        ],
+                        'cursus'
+                    );
                 break;
             case 'failed':
-                $content = $this->translator->trans('session_registration_failed', [], 'cursus');
+                $object = $failedObject;
+                $content = $this->translator->trans(
+                    'session_and_event_registration_failed',
+                    ['%event_name%' => $sessionEvent->getName(), '%event_start_date%' => $sessionEvent->getStartDate()->format('d/m/Y')],
+                    'cursus'
+                );
                 break;
             case 'pending':
-                $content = $this->translator->trans('session_and_event_registration_pending_msg', [], 'cursus');
+                $object = $pendingObject;
+                $content = $this->translator->trans(
+                    'session_and_event_registration_pending_msg',
+                    [
+                        '%event_name%' => $sessionEvent->getName(),
+                        '%event_start_date%' => $sessionEvent->getStartDate()->format('d/m/Y'),
+                        '%session_name%' => $session->getName(),
+                    ],
+                    'cursus'
+                );
                 break;
             case 'none':
-                $content = $sessionEventStatus === 'success' ?
-                    $this->translator->trans('session_event_registration_success_msg', [], 'cursus') :
-                    $this->translator->trans('session_event_registration_pending_msg', [], 'cursus');
+                switch ($sessionEventStatus) {
+                    case 'success':
+                        $object = $successObject;
+                        $content = $this->translator->trans(
+                            'session_event_registration_success_msg',
+                            ['%event_name%' => $sessionEvent->getName(), '%event_start_date%' => $sessionEvent->getStartDate()->format('d/m/Y')],
+                            'cursus'
+                        );
+                        break;
+                    case 'failed':
+                        $object = $pendingObject;
+                        $content = $this->translator->trans(
+                            'session_event_registration_pending_msg',
+                            ['%event_name%' => $sessionEvent->getName(), '%event_start_date%' => $sessionEvent->getStartDate()->format('d/m/Y')],
+                            'cursus'
+                        );
+                        break;
+                    case 'pending_to_registered':
+                        $object = $successObject;
+                        $content = $this->translator->trans(
+                            'session_event_registration_pending_to_registered_msg',
+                            ['%event_name%' => $sessionEvent->getName(), '%event_start_date%' => $sessionEvent->getStartDate()->format('d/m/Y')],
+                            'cursus'
+                        );
+                        break;
+                }
                 break;
         }
         $message = $this->messageManager->create($content, $object, [$user]);

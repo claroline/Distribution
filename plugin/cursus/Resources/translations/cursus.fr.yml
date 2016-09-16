@@ -237,6 +237,22 @@ selected_sessions: Sessions de formation sélectionnées
 self_register: S'inscrire
 self_register_to_session_event: S'inscrire à la séance
 session: Session de formation
+session_and_event_registration_failed: |
+  Bonjour,<br><br>
+  Vous n'avez malheureusement pas pu être inscrit(e) à la séance "%event_name%" du %event_start_date% car plus aucune place n'est disponible pour cette session de formation.
+session_and_event_registration_success_msg: |
+  Bonjour,<br><br>
+  Vous avez bien été inscrit(e) à la séance "%event_name%" du %event_start_date%.<br>
+  Cette séance faisant partie de la session "%session_name%", vous avez également été automatiquement inscrit(e) aux autres séances obligatoires.
+session_and_event_registration_pending_msg: |
+  Bonjour,<br><br>
+  Vous avez bien été inscrit(e) à la session "%session_name%", ainsi qu'aux séances obligatoires de cette session.<br>
+  Néanmoins, il n'y a plus de place disponible pour la séance "%event_name%" du %event_start_date% que vous avez choisie.<br>
+  Vous êtes donc sur liste d'attente. Si une place se libère vous serez prévenu(e).
+session_and_event_registration_success_pending_msg: |
+  Bonjour,<br><br>
+  Nous avons bien reçu votre demande d'inscription à la séance "%event_name%" du %event_start_date%.<br>
+  Néanmoins, votre inscription doit d'abord être validée.
 session_certificate: Certificat pour une session
 session_closed: Terminé
 session_creation: Création d'une session de formation
@@ -253,6 +269,18 @@ session_event_edition: Modification de la séance
 session_event_invitation: Invitation à une séance
 session_event_location: Lieu
 session_event_registration: Inscription aux séances
+session_event_registration_pending_msg: |
+  Bonjour,<br><br>
+  Il n'y a plus de place disponible pour la séance "%event_name%" du %event_start_date% que vous avez choisie.<br>
+  Vous êtes donc sur liste d'attente. Si une place se libère vous serez prévenu(e).
+session_event_registration_pending_to_registered_msg: |
+  Bonjour,<br><br>
+  Vous étiez sur liste d'attente pour la séance "%event_name%" du %event_start_date%.<br>
+  Une place s'étant libérée, vous êtes désormais inscrit(e).
+session_event_registration_request: Demande d'inscription à la séance "%event_name%" du %event_start_date% [%status%]
+session_event_registration_success_msg: |
+  Bonjour,<br><br>
+  Vous avez bien été inscrit(e) à la séance "%event_name%" du %event_start_date%.
 session_event_self_registration_message: Êtes-vous sûr de vouloir vous inscrire à cette séance ?
 session_event_title: Séance "%eventName%"
 session_events: Séances

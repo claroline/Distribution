@@ -236,6 +236,22 @@ selected_sessions: Selected training sessions
 self_register: Register
 self_register_to_session_event: Register to session event
 session: Training session
+session_and_event_registration_failed: |
+  Hello,<br><br>
+  Unfortunately you haven't been registered to session event "%event_name%" on %event_start_date% because there is no more available place in training session.
+session_and_event_registration_success_msg: |
+  Hello,<br><br>
+  You have been registered to session event "%event_name%" on %event_start_date%.
+  This session event is part of training session "%session_name%". Therefore you have also been registered to all mandatory training sessions.
+session_and_event_registration_pending_msg: |
+  Hello,<br><br>
+  You have been registered to training session %session_name% and all its mandatory session events.<br>
+  As there is no more available place in the chosen session event "%event_name%" on %event_start_date% you have been put in a queue.
+  You will be informed when there is availability.
+session_and_event_registration_success_pending_msg: |
+  Hello,<br><br>
+  We have reveiced your request for registration to session event "%event_name%" on %event_start_date%.<br>
+  However your registration has to be validated before.
 session_certificate: Session certificate
 session_closed: Closed
 session_creation: Create training session
@@ -252,6 +268,18 @@ session_event_edition: Session event edition
 session_event_invitation: Session event invitation
 session_event_location: Location
 session_event_registration: Session event registration
+session_event_registration_pending_msg: |
+  Hello,<br><br>
+  There is no more available place in the chosen session event "%event_name%" on %event_start_date%.<br>
+  You have been put in a queue. You will be informed when there is availability.
+session_event_registration_pending_to_registered_msg: |
+  Hello,<br><br>
+  You were on a queue for session event "%event_name%" on %event_start_date%.<br>
+  As available place has been made you are now registered.
+session_event_registration_request: Request for registration to session event %event_name% on %event_start_date%
+session_event_registration_success_msg: |
+  Hello,<br><br>
+  You have been registered to session event "%event_name%" on %event_start_date%.
 session_event_self_registration_message: Are you sure you want to register to this session event ?
 session_event_title: Session event "%eventName%"
 session_events: Session events
