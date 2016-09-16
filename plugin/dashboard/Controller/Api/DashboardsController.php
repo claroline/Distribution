@@ -94,10 +94,11 @@ class DashboardsController extends Controller
      */
     public function getDashboardWorkspaceSpentTimes(User $user, Dashboard $dashboard)
     {
-        $all = false;
-        //$user->getId() === $dashboard->getWorkspace()->getCreator()->getId();
+        $all = $user->getId() === $dashboard->getWorkspace()->getCreator()->getId();
 
-        return $this->dashboardManager->getDashboardWorkspaceSpentTimes($dashboard->getWorkspace(), $user, $all);
+        $datas = $this->dashboardManager->getDashboardWorkspaceSpentTimes($dashboard->getWorkspace(), $user, $all);
+
+        return new JsonResponse($datas);
     }
 
     /**

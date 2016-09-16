@@ -66,7 +66,7 @@ class DashboardManager
     }
 
     /**
-     * here will go all the logic to calculate the spent times
+     * here will go all the logic to compute the spent times
      * Workspace
      * User
      * $all
@@ -75,81 +75,127 @@ class DashboardManager
      */
     public function getDashboardWorkspaceSpentTimes(Workspace $workspace, User $user, $all = false)
     {
-        $by = ['action' => 'workspace-enter', 'workspace' => $workspace];
-        if ($all === false) {
-            $by['doer'] = $user;
+        $datas = [];
+        // get users id
+        $ids = [];
+        if ($all) {
+            $selectUsersIds = 'SELECT DISTINCT doer_id FROM claro_log WHERE workspace_id = '.$workspace->getId().' AND action = "workspace-enter"';
+            $idStmt = $this->em->getConnection()->prepare($selectUsersIds);
+            $idStmt->execute();
+            $idResults = $idStmt->fetchAll();
+            foreach ($idResults as $result) {
+                $ids[] = $result['doer_id'];
+            }
+        } else {
+            $ids[] = $user->getId();
         }
+        // for each user (ie user ids) -> get 'workspace-enter' events for the given workspace order results by date ASC
+        $entersEventsDates = [];
+        foreach ($ids as $id) {
+            $userSqlSelect = 'SELECT first_name, last_name FROM claro_user WHERE id = '.$id;
+            $userSqlSelectStmt = $this->em->getConnection()->prepare($userSqlSelect);
+            $userSqlSelectStmt->execute();
+            $userData = $userSqlSelectStmt->fetch(); //Array ( [first_name] => patrick [last_name] => patrick )
+
+            $sqlDates = 'SELECT DISTINCT short_date_log FROM claro_log WHERE workspace_id = '.$workspace->getId().' AND action = "workspace-enter" AND doer_id ='.$id.' ORDER BY date_log ASC';
+            $datesStmt = $this->em->getConnection()->prepare($sqlDates);
+            $datesStmt->execute();
+            $datesResults = $datesStmt->fetchAll();
+
+            $dates = [];
+            foreach ($datesResults as $value) {
+                $dates[] = $value['short_date_log'];
+            }
+
+            $time = 0;
+            // now for each date
+            foreach ($dates as $date) {
+                // get the 'workspace-enter' events for this date for this user for this workspace
+                $sql = 'SELECT date_log FROM claro_log WHERE workspace_id = '
+                        .$workspace->getId().' AND action = "workspace-enter" AND doer_id ='.$id.' AND short_date_log = "'.$date.'" ORDER BY date_log DESC';
+                $stmt = $this->em->getConnection()->prepare($sql);
+                $stmt->execute();
+                $results = $stmt->fetchAll();
+
+                $datesLogs = [];
+                foreach ($results as $result) {
+                    $datesLogs[] = $result['date_log'];
+                }
+
+                if (count($datesLogs) > 1) {
+                    $index = 0;
+                    foreach ($datesLogs as $datetime) {
+                        // compute time diff between current and next (if defined)
+                      if (isset($datesLogs[$index + 1])) {
+                          $t1 = strtotime($datesLogs[$index]);
+                          $t2 = strtotime($datesLogs[$index + 1]);
+                          $diff = $t1 - $t2;
+                          $hours = $diff / (60 * 60);
+                          $time += $hours;
+                      }
+                        ++$index;
+                    }
+                }
+            }
+
+            $datas[] = [
+              'user' => [
+                'id' => $id,
+                'firstName' => $userData['first_name'],
+                'lastName' => $userData['last_name'],
+              ],
+              'hours' => $time,
+            ];
+        }
+
+        return $datas;
+
+/*
         $repository = $this->getClaroLogRepository();
-
-        /*
-        $query = $repository->createQueryBuilder('l')
-                            ->where('l.workspace = :workspaceId')
-                            ->andWhere('l.action = :action')
-                            ->setParameter('workspaceId', $workspace->getId())
-                            ->setParameter('action', 'workspace-enter')
-                            ->getQuery();
-        $results = $query->getResult();
-        echo $query->getSql();
-        echo '<hr>';
-        $nb = count($results);
-        echo $nb;
-        die();
-        */
-
-        /*$qb = $repository->createQueryBuilder('l');
-
-        $qb->where('l.workspace = :workspaceId')->andWhere('l.action = :action');
-        if ($all === false) {
-            $qb->andWhere('l.doer = :doer');
-        }
-
-        $qb->setParameter('workspaceId', $workspace->getId())
-        ->setParameter('action', 'workspace-enter');
-        if ($all === false) {
-            $qb->setParameter('doer', $user);
-        }
-        $query = $qb->getQuery();
-        $results = $query->getResult();
-        echo $query->getSql();
-        echo '<hr>';
-        $nb = count($results);
-        echo $nb;
-        die();
-*/
         $qb = $repository->createQueryBuilder('l');
+        $qb->addSelect('u');
         $qb->leftJoin('Claroline\CoreBundle\Entity\User', 'u', \Doctrine\ORM\Query\Expr\Join::WITH, 'l.doer = u.id');
-
-        /*
-        ->leftJoin(
-                    'User\Entity\User',
-                    'u',
-                    \Doctrine\ORM\Query\Expr\Join::WITH,
-                    'a.user = u.id'
-                )
-        */
-
-        $qb->where('l.workspace = :workspaceId')->andWhere('l.action = :action');
+        //$qb->groupBy('l.dateLog');
+        $qb->where('l.workspace = :workspaceId');
+        $qb->andWhere('l.action = :action');
         if ($all === false) {
             $qb->andWhere('l.doer = :doer');
         }
-        //u.Phonenumbers
-        //http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/query-builder.html
-
-        $qb->setParameter('workspaceId', $workspace->getId())
-        ->setParameter('action', 'workspace-enter');
+        $qb->setParameter('workspaceId', $workspace->getId());
+        $qb->setParameter('action', 'workspace-enter');
         if ($all === false) {
             $qb->setParameter('doer', $user);
         }
         $query = $qb->getQuery();
+
         $results = $query->getResult();
-        echo $query->getSql();
+
+        $times = [];
+
+        // only one event -> not able to compute time spent
+        if (count($results) === 1 && $all === false) {
+            return [];
+        } elseif (count($results) > 0) {
+            $times = $this->buildDataArray($results, $all);
+        }*/
+
+      /*  echo $query->getSql();
         echo '<hr>';
         $nb = count($results);
-        var_dump($results);
+        //var_dump($results);
         echo $nb;
-        die();
+        die();*/
+    }
 
-        //$test = $this->getClaroLogRepository()->findBy(['action' => 'workspace-enter', 'workspace' => $workspace]);
+    private function buildDataArray($results, $multipleUsers)
+    {
+        $times = [];
+        if (!$multipleUsers) {
+            $name = $results[0]['firstName'].' '.$results[0]['lastName'];
+            foreach ($results as $result) {
+            }
+        } else {
+        }
     }
 
     public function getAll(User $user)
