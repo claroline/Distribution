@@ -9,13 +9,15 @@ import '#/main/core/authentication/module'
 import '#/main/core/translation/module'
 
 import './dashboards/module'
+import './dashboard/module'
 import './create/module'
 
 import dashboards from './dashboards/Partials/dashboards.html'
-import DashboardsCtrl from './dashboards/Controllers/DashboardsCtrl'
 
-import CreateDashboardCtrl from './create/Controllers/CreateDashboardCtrl'
+
 import add from './create/Partials/add.html'
+
+import dashboard from './dashboard/Partials/dashboard.html'
 
 angular
   // Declare the new Application
@@ -28,7 +30,8 @@ angular
       'workspace',
       'authentication',
       'translation',
-      'Create'
+      'Create',
+      'Dashboard'
     ])
     // Configure application
     .config([
@@ -57,7 +60,7 @@ angular
           // Dahsboards list
           .when('/', {
             template: dashboards,
-            controller  : DashboardsCtrl,
+            controller  : 'DashboardsCtrl',
             controllerAs: 'dashboardsCtrl',
             resolve: {
               user:[
@@ -74,9 +77,34 @@ angular
               ]
             }
           })
+          .when('/dashboards/:id', {
+            template: dashboard,
+            controller  : 'DashboardCtrl',
+            controllerAs: 'dashboardCtrl',
+            resolve: {
+              user:[
+                'UserService',
+                function userResolve(UserService) {
+                  return UserService.getConnectedUser()
+                }
+              ],
+              dashboard: [
+                '$route',
+                'DashboardService',
+                function dashboardResolve($route, DashboardService) {
+                  var promise = null
+                  if ($route.current.params && $route.current.params.id) {
+                    promise = DashboardService.getOne($route.current.params.id)
+                  }
+
+                  return promise
+                }
+              ]
+            }
+          })
           .when('/new', {
             template: add,
-            controller  : CreateDashboardCtrl,
+            controller  : 'CreateDashboardCtrl',
             controllerAs: 'createDashboardCtrl',
             resolve: {
               user:[
@@ -91,10 +119,10 @@ angular
                   return WorkspaceService.getUserWorkspaces()
                 }
               ],
-              Translator: [
-                'Translator',
-                function workspacesResolve(Translator) {
-                  return Translator
+              nbDashboards:[
+                'DashboardService',
+                function nbDashboardResolve(DashboardService) {
+                  return DashboardService.countDashboards()
                 }
               ]
             }

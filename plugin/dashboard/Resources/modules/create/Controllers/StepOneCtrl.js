@@ -5,9 +5,10 @@
    *
    * @param {object}  Translator
    */
-   constructor(Translator) {
+   constructor(Translator, DashboardService) {
      this.Translator = Translator
-     this.selected = 'MY'
+     this.DashboardService = DashboardService
+     this.selectedFilter = 'MY'
 
      this.filters = [
        {
@@ -23,19 +24,16 @@
      this.filtered = this.workspaces.filter(el => el.creatorId === this.user.id)
    }
 
-   /**
-   * Add or remove worksapce id from dashboard selected workspace(s)
-   */
-   checkChange(id){
-     this.dashboard.workspace = this.filtered.find(el => el.id === id)
-   }
-
    filterList(){
      this.dashboard.workspace = {}
-     if(this.selected === 'MY'){
+     if(this.selectedFilter === 'MY'){
        this.filtered = this.workspaces.filter(el => el.creatorId === this.user.id)
+       // the user will be able to see the stats for all user belonging to this workspace
+       this.dashboard.all = true
      } else {
        this.filtered = this.workspaces.filter(el => el.creatorId !== this.user.id)
+       // // the user will be able to see it's own stats only
+       this.dashboard.all = false
      }
 
    }

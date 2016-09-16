@@ -11,55 +11,28 @@
         </div>
     </div>
     <hr>
-    <!-- search in list row -->
-    <!--
-        <div class="row">
-            <div class="col-md-12">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="{{'search' | trans:{}:'dashboard'}}...">
-                    <span class="input-group-btn">
-                        <button class="btn btn-default" type="button">
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </span>
-                </div>
-            </div>
-        </div>
-        <hr>
-      -->
     <!-- view list row -->
     <div class="row" data-ng-if="dashboardsCtrl.dashboards.length > 0">
         <div class="col-md-12">
             <table class="table table-striped">
                 <thead>
                     <th>{{'view_name' | trans:{}:'dashboard'}}</th>
-                    <!--
-                        <th>{{'actions' | trans:{}:'dashboard'}}</th>
-                      -->
                 </thead>
                 <tbody>
                     <tr data-ng-repeat="dashboard in dashboardsCtrl.dashboards">
                         <td>
-                            <a href="#/dashboards/{{dashboard.id}}">{{dashboard.title}}</a>
+                            <a href="#/dashboards/{{dashboard.id}}">{{dashboard.name}}</a>
                         </td>
-                        <!--
-                            <td>
-                                <button class="btn btn-primary" title="{{'edit_view' | trans:{}:'dashboard'}}"><i class="fa fa-pencil"></i> {{'edit' | trans:{}:'dashboard'}}</button>
-                                <button class="btn btn-default" title="{{'share_view' | trans:{}:'dashboard'}}"><i class="fa fa-share-alt"></i> {{'share' | trans:{}:'dashboard'}}</button>
-                                <button class="btn btn-danger" title="{{'delete_view' | trans:{}:'dashboard'}}"><i class="fa fa-trash"></i> {{'delete' | trans:{}:'dashboard'}}</button>
-                            </td>
-                          -->
                     </tr>
-                </table>
-            </tbody>
-
+                </tbody>
+            </table>
         </div>
     </div>
 
     <!-- view no item in list row -->
     <div class="row" data-ng-if="dashboardsCtrl.dashboards.length === 0">
         <div class="col-md-12">
-            <h3>No dashboard for now. Please use the + button to create a new one</h3>
+            <h3>{{'message_no_views' | trans:{}:'dashboard'}}</h3>
         </div>
     </div>
 </div>

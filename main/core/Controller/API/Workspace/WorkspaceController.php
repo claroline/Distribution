@@ -107,7 +107,7 @@ class WorkspaceController extends FOSRestController
         $result = [];
         foreach ($workspaces as $workspace) {
             $exported = $this->workspaceManager->exportWorkspace($workspace);
-            array_push($result, $exported);
+            $result[] = $exported;
         }
 
         return $result;

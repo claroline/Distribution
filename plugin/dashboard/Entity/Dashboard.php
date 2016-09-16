@@ -13,13 +13,12 @@ namespace Claroline\DashboardBundle\Entity;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity()
+ * @ORM\Entity
  * @ORM\Table(name="claro_dashboard")
  */
 class Dashboard
@@ -35,7 +34,7 @@ class Dashboard
      * @ORM\Column(length=50)
      * @Assert\NotBlank()
      */
-    private $title;
+    private $name;
 
     /**
      * @var \DateTime
@@ -65,53 +64,37 @@ class Dashboard
     /**
      * @var \Claroline\CoreBundle\Entity\Workspace\Workspace
      *
-     * @ORM\ManyToMany(
+     * @ORM\ManyToOne(
      *      targetEntity="Claroline\CoreBundle\Entity\Workspace\Workspace"
      * )
-     * @ORM\JoinTable(name="dashboard_workspaces",
-     *      joinColumns={@ORM\JoinColumn(name="dashboard_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="workspace_id", referencedColumnName="id")}
-     *      )
      */
-    protected $workspaces;
-
-    public function __construct()
-    {
-        $this->workspaces = new ArrayCollection();
-    }
+    protected $workspace;
 
     public function getId()
     {
         return $this->id;
     }
 
-    public function getTitle()
+    public function getName()
     {
-        return $this->title;
+        return $this->name;
     }
 
-    public function setTitle($title)
+    public function setName($name)
     {
-        $this->title = $title;
+        $this->name = $name;
     }
 
-    public function addWorkspace(Workspace $workspace)
+    public function setWorkspace(Workspace $workspace)
     {
-        $this->workspaces[] = $workspace;
+        $this->workspace = $workspace;
 
         return $this;
     }
 
-    public function removeWorkspace(Workspace $workspace)
+    public function getWorkspace()
     {
-        $this->workspaces->removeElement($workspace);
-
-        return $this;
-    }
-
-    public function getWorkspaces()
-    {
-        return $this->workspaces;
+        return $this->workspace;
     }
 
     public function setCreator(User $user)
