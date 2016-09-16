@@ -1047,10 +1047,19 @@ class WorkspaceRepository extends EntityRepository
         return $executeQuery ? $query->getResult() : $query;
     }
 
-    public function findPersonalWorkspaceExcudingRoles(array $roles, $includeOrphans = false, $offset = null, $limit = null)
+    public function findPersonalWorkspaceExcudingRoles(array $roles, $includeOrphans = false, $empty = false, $offset = null, $limit = null)
     {
         $dql = '
             SELECT w from Claroline\CoreBundle\Entity\Workspace\Workspace w
+        ';
+
+        if ($empty) {
+            $dql .= '
+                LEFT JOIN w.resources r
+            ';
+        }
+
+        $dql .= '
             LEFT JOIN w.personalUser u
             WHERE u NOT IN (
                 SELECT u2 FROM Claroline\CoreBundle\Entity\User u2
@@ -1067,6 +1076,12 @@ class WorkspaceRepository extends EntityRepository
             $dql .= ' AND u.isRemoved = false';
         }
 
+        if ($empty) {
+            $dql .= '
+            GROUP BY w.id
+            HAVING COUNT(r) <= 2';
+        }
+
         $query = $this->_em->createQuery($dql);
         $query->setParameter('roles', $roles);
         if ($offset) {
@@ -1077,7 +1092,7 @@ class WorkspaceRepository extends EntityRepository
         return $query->getResult();
     }
 
-    public function findPersonalWorkspaceByRolesIncludingGroups(array $roles, $includeOrphans = false, $offset = null, $limit = null)
+    public function findPersonalWorkspaceByRolesIncludingGroups(array $roles, $includeOrphans = false, $empty = false, $offset = null, $limit = null)
     {
         $dql = '
             SELECT w from Claroline\CoreBundle\Entity\Workspace\Workspace w
