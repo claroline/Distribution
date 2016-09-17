@@ -13,5 +13,6 @@ angular
     'DashboardService',
     'user',
     'dashboard',
+    'data',
     DashboardCtrl
   ])

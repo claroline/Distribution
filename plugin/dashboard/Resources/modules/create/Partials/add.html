@@ -11,9 +11,9 @@
 <div class="panel-footer">
   <div class="row">
     <div class="col-md-12 text-right">
-        <button class="btn btn-default" data-ng-if="createDashboardCtrl.currentStep > 1" data-ng-click="createDashboardCtrl.setStep(createDashboardCtrl.currentStep - 1)">Précédente</button>
-        <a class="btn btn-default" href="#/">Annuler</a>
-        <button class="btn btn-primary" data-ng-click="createDashboardCtrl.saveDashboard()">Save</button>
+        <button class="btn btn-default" data-ng-if="createDashboardCtrl.currentStep > 1" data-ng-click="createDashboardCtrl.setStep(createDashboardCtrl.currentStep - 1)">{{'previous' | trans:{}:'dashboard'}}</button>
+        <a class="btn btn-default" href="#/">{{'cancel' | trans:{}:'dashboard'}}</a>
+        <button class="btn btn-primary" data-ng-click="createDashboardCtrl.saveDashboard()">{{'save' | trans:{}:'dashboard'}}</button>
     </div>
   </div>
 </div>

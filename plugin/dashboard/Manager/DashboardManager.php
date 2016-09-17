@@ -89,13 +89,14 @@ class DashboardManager
         } else {
             $ids[] = $user->getId();
         }
+
         // for each user (ie user ids) -> get 'workspace-enter' events for the given workspace order results by date ASC
         $entersEventsDates = [];
         foreach ($ids as $id) {
             $userSqlSelect = 'SELECT first_name, last_name FROM claro_user WHERE id = '.$id;
             $userSqlSelectStmt = $this->em->getConnection()->prepare($userSqlSelect);
             $userSqlSelectStmt->execute();
-            $userData = $userSqlSelectStmt->fetch(); //Array ( [first_name] => patrick [last_name] => patrick )
+            $userData = $userSqlSelectStmt->fetch();
 
             $sqlDates = 'SELECT DISTINCT short_date_log FROM claro_log WHERE workspace_id = '.$workspace->getId().' AND action = "workspace-enter" AND doer_id ='.$id.' ORDER BY date_log ASC';
             $datesStmt = $this->em->getConnection()->prepare($sqlDates);
@@ -113,6 +114,7 @@ class DashboardManager
                 // get the 'workspace-enter' events for this date for this user for this workspace
                 $sql = 'SELECT date_log FROM claro_log WHERE workspace_id = '
                         .$workspace->getId().' AND action = "workspace-enter" AND doer_id ='.$id.' AND short_date_log = "'.$date.'" ORDER BY date_log DESC';
+
                 $stmt = $this->em->getConnection()->prepare($sql);
                 $stmt->execute();
                 $results = $stmt->fetchAll();
@@ -129,9 +131,11 @@ class DashboardManager
                       if (isset($datesLogs[$index + 1])) {
                           $t1 = strtotime($datesLogs[$index]);
                           $t2 = strtotime($datesLogs[$index + 1]);
-                          $diff = $t1 - $t2;
-                          $hours = $diff / (60 * 60);
-                          $time += $hours;
+                          $seconds = $t1 - $t2;
+                          // add time only if bewteen 5s and 2 hours
+                          if ($seconds > 5 && ($seconds / 60) < 120) {
+                              $time += $seconds;
+                          }
                       }
                         ++$index;
                     }
@@ -144,47 +148,11 @@ class DashboardManager
                 'firstName' => $userData['first_name'],
                 'lastName' => $userData['last_name'],
               ],
-              'hours' => $time,
+              'time' => $time,
             ];
         }
 
         return $datas;
-
-/*
-        $repository = $this->getClaroLogRepository();
-        $qb = $repository->createQueryBuilder('l');
-        $qb->addSelect('u');
-        $qb->leftJoin('Claroline\CoreBundle\Entity\User', 'u', \Doctrine\ORM\Query\Expr\Join::WITH, 'l.doer = u.id');
-        //$qb->groupBy('l.dateLog');
-        $qb->where('l.workspace = :workspaceId');
-        $qb->andWhere('l.action = :action');
-        if ($all === false) {
-            $qb->andWhere('l.doer = :doer');
-        }
-        $qb->setParameter('workspaceId', $workspace->getId());
-        $qb->setParameter('action', 'workspace-enter');
-        if ($all === false) {
-            $qb->setParameter('doer', $user);
-        }
-        $query = $qb->getQuery();
-
-        $results = $query->getResult();
-
-        $times = [];
-
-        // only one event -> not able to compute time spent
-        if (count($results) === 1 && $all === false) {
-            return [];
-        } elseif (count($results) > 0) {
-            $times = $this->buildDataArray($results, $all);
-        }*/
-
-      /*  echo $query->getSql();
-        echo '<hr>';
-        $nb = count($results);
-        //var_dump($results);
-        echo $nb;
-        die();*/
     }
 
     private function buildDataArray($results, $multipleUsers)

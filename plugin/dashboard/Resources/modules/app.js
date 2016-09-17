@@ -99,6 +99,18 @@ angular
 
                   return promise
                 }
+              ],
+              data:[
+                '$route',
+                'DashboardService',
+                function dashboardResolve($route, DashboardService) {
+                  var promise = null
+                  if ($route.current.params && $route.current.params.id) {
+                    promise = DashboardService.getDashboardData($route.current.params.id)
+                  }
+
+                  return promise
+                }
               ]
             }
           })

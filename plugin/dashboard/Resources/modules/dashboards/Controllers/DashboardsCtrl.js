@@ -8,7 +8,6 @@
    constructor(user, dashboards) {
      this.user = user
      this.dashboards = dashboards
-     console.log(this.dashboards)
    }
 }
 
