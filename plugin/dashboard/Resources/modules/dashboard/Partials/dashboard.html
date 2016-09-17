@@ -19,7 +19,7 @@
                 </tr>
               </tbody>
             </table>
-            <h5>{{'no_result_for_query' | trans:{}:'dashboard'}}</h5>
+            <h5 data-ng-if="dashboardCtrl.data.length === 0">{{'no_result_for_query' | trans:{}:'dashboard'}}</h5>
         </div>
     </div>
 </div>
