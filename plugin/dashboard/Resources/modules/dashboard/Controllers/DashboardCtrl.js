@@ -12,13 +12,6 @@
      this.user = user
      this.dashboard = dashboard
      this.data = data
-     /*let promise = this.DashboardService.getDashboardData(dashboard.id)
-     promise.then(function(response){
-       console.log(response)
-     })*/
-
-     console.log(this.dashboard)
-     console.log(this.data)
    }
 }
 
