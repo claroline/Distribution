@@ -66,10 +66,7 @@ class DashboardManager
     }
 
     /**
-     * here will go all the logic to compute the spent times
-     * Workspace
-     * User
-     * $all
+     * here goes all the logic to compute the spent times
      * - true if we want to calculate time for all users in the workspace (except for the given USER)
      * - false if we only want the time spent in the worksapce for the given user.
      */
@@ -91,7 +88,6 @@ class DashboardManager
         }
 
         // for each user (ie user ids) -> get 'workspace-enter' events for the given workspace order results by date ASC
-        $entersEventsDates = [];
         foreach ($ids as $id) {
             $userSqlSelect = 'SELECT first_name, last_name FROM claro_user WHERE id = '.$id;
             $userSqlSelectStmt = $this->em->getConnection()->prepare($userSqlSelect);
@@ -123,10 +119,9 @@ class DashboardManager
                 foreach ($results as $result) {
                     $datesLogs[] = $result['date_log'];
                 }
-
-                if (count($datesLogs) > 1) {
-                    $index = 0;
-                    foreach ($datesLogs as $datetime) {
+                $length = count($datesLogs);
+                if ($length > 1) {
+                    for ($index = 0; $index < $length; ++$index) {
                         // compute time diff between current and next (if defined)
                       if (isset($datesLogs[$index + 1])) {
                           $t1 = strtotime($datesLogs[$index]);
@@ -137,7 +132,6 @@ class DashboardManager
                               $time += $seconds;
                           }
                       }
-                        ++$index;
                     }
                 }
             }
@@ -153,17 +147,6 @@ class DashboardManager
         }
 
         return $datas;
-    }
-
-    private function buildDataArray($results, $multipleUsers)
-    {
-        $times = [];
-        if (!$multipleUsers) {
-            $name = $results[0]['firstName'].' '.$results[0]['lastName'];
-            foreach ($results as $result) {
-            }
-        } else {
-        }
     }
 
     public function getAll(User $user)
