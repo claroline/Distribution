@@ -62,13 +62,6 @@ class CsvWorkspaceValidator extends ConstraintValidator
 
                     return;
                 }
-
-                if (php_sapi_name() === 'cli' && $nbElements < 7) {
-                    $msg = $this->translator->trans('7_parameters_min_msg');
-                    $this->context->addViolation($msg);
-
-                    return;
-                }
             }
         }
 

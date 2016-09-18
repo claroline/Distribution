@@ -17,6 +17,7 @@ use Claroline\CoreBundle\Validator\Constraints\CsvWorkspace;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Console\Output\OutputInterface;
 use Claroline\CoreBundle\Library\Logger\ConsoleLogger;
 
@@ -35,12 +36,16 @@ class CreateWorkspaceFromCsvCommand extends ContainerAwareCommand
             ->setDescription('Create workspaces from a csv file')
             ->setAliases(['claroline:csv:workspace']);
         $this->setDefinition(
-            [new InputArgument('csv_workspace_path', InputArgument::REQUIRED, 'The absolute path to the csv file.')]
+            [
+		new InputArgument('csv_workspace_path', InputArgument::REQUIRED, 'The absolute path to the csv file.'),
+            	new InputArgument('owner_username', InputArgument::REQUIRED, 'The owner username')
+	    ]
         );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $username = $input->getArgument('owner_username');
         $consoleLogger = ConsoleLogger::get($output);
         $om = $this->getContainer()->get('claroline.persistence.object_manager');
         $om->setLogger($consoleLogger)->activateLog();
@@ -48,6 +53,9 @@ class CreateWorkspaceFromCsvCommand extends ContainerAwareCommand
             ->activateLog()
             ->setDebugLevel(DoctrineDebug::DEBUG_ALL)
             ->setVendor('Claroline');
+        $user = $this->getContainer()->get('claroline.manager.user_manager')->getUserByUsername($username);
+        $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
+        $this->getContainer()->get('security.context')->setToken($token);
 
         //validate the csv file...
         $validator = $this->getContainer()->get('validator');
