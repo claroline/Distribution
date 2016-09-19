@@ -1,6 +1,6 @@
 <?php
 
-namespace UJM\ExoBundle\Testing;
+namespace UJM\ExoBundle\Library\Testing;
 
 use Claroline\CoreBundle\Entity\Resource\MaskDecoder;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
@@ -53,7 +53,7 @@ class Persister
     private $multipleChoiceType;
 
     /**
-     * @var TypeMatch
+     * @var TypeMatching
      */
     private $matchType;
 
