@@ -12,10 +12,8 @@ use Claroline\CoreBundle\Event\PublicationChangeEvent;
 use Claroline\ScormBundle\Event\ExportScormResourceEvent;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use UJM\ExoBundle\Entity\Exercise;
-use UJM\ExoBundle\Entity\Subscription;
 use UJM\ExoBundle\Form\ExerciseType;
 
 /**
@@ -70,12 +68,9 @@ class ExerciseListener
         $form->handleRequest($request);
         if ($form->isValid()) {
             $em = $this->container->get('doctrine.orm.entity_manager');
-            $user = $this->container->get('security.token_storage')->getToken()->getUser();
 
             $exercise = $form->getData();
             $event->setPublished((bool) $form->get('published')->getData());
-
-            $this->container->get('ujm.exo.subscription_manager')->subscribe($exercise, $user);
 
             $em->persist($exercise);
 
@@ -125,8 +120,6 @@ class ExerciseListener
 
         $nbPapers = $em->getRepository('UJMExoBundle:Paper')->countExercisePapers($event->getResource());
         if (0 === $nbPapers) {
-            $this->container->get('ujm.exo.subscription_manager')->deleteSubscriptions($exercise);
-
             $em->remove($exercise);
         } else {
             // If papers, the Exercise is not completely removed
@@ -153,10 +146,6 @@ class ExerciseListener
         $newExercise = $this->container->get('ujm.exo.exercise_manager')->copyExercise($event->getResource());
 
         $this->container->get('doctrine.orm.entity_manager')->persist($newExercise);
-
-        // Create Subscription for User who has copied the Exercise
-        $user = $this->container->get('security.token_storage')->getToken()->getUser();
-        $this->container->get('ujm.exo.subscription_manager')->subscribe($newExercise, $user);
 
         $event->setCopy($newExercise);
         $event->stopPropagation();
