@@ -269,7 +269,7 @@ ExerciseService.prototype.removeItem = function removeItem(step, item) {
   var deferred = this.$q.defer()
   this.$http
         .delete(
-            this.UrlService('ujm_exercise_question_delete', { id: this.exercise.id, qid: item.id })
+            this.UrlService('exercise_question_delete', { exerciseId: this.exercise.id, id: step.id, questionId: item.id })
         )
         // Success callback
         .success(function (response) {

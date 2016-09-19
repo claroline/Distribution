@@ -105,6 +105,28 @@ class StepManager
     }
 
     /**
+     * Delete a Question from a Step.
+     *
+     * @param Step $step
+     * @param Question $question
+     */
+    public function deleteQuestion(Step $step, Question $question)
+    {
+        // Retrieve the link between Step and Question
+        $stepQuestions = $step->getStepQuestions()->toArray();
+
+        $toDelete = array_filter($stepQuestions, function ($stepQuestion) use ($question) {
+            return $question->getId() === $stepQuestion->getQuestion()->getId();
+        });
+
+        if (!empty($toDelete)) {
+            $toDelete = array_values($toDelete); // Reindex array
+            $this->om->remove($toDelete[0]);
+            $this->om->flush();
+        }
+    }
+
+    /**
      * Reorder the Questions of a Step.
      *
      * @param Step  $step
