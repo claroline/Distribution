@@ -73,8 +73,9 @@ class DashboardManager
     public function getDashboardWorkspaceSpentTimes(Workspace $workspace, User $user, $all = false)
     {
         $datas = [];
-        // get users id
-        $ids = [];
+
+        $ids[] = $user->getId();
+        // get other users id
         if ($all) {
             $selectUsersIds = 'SELECT DISTINCT doer_id FROM claro_log WHERE workspace_id = '.$workspace->getId().' AND action = "workspace-enter"';
             $idStmt = $this->em->getConnection()->prepare($selectUsersIds);
@@ -83,8 +84,6 @@ class DashboardManager
             foreach ($idResults as $result) {
                 $ids[] = $result['doer_id'];
             }
-        } else {
-            $ids[] = $user->getId();
         }
 
         // for each user (ie user ids) -> get 'workspace-enter' events for the given workspace order results by date ASC
@@ -107,9 +106,8 @@ class DashboardManager
             $time = 0;
             // now for each date
             foreach ($dates as $date) {
-                // get the 'workspace-enter' events for this date for this user for this workspace
-                $sql = 'SELECT date_log FROM claro_log WHERE workspace_id = '
-                        .$workspace->getId().' AND action = "workspace-enter" AND doer_id ='.$id.' AND short_date_log = "'.$date.'" ORDER BY date_log DESC';
+                // get the 'workspace-enter' events for this date for this user and for other workspace
+                $sql = 'SELECT date_log FROM claro_log WHERE action = "workspace-enter" AND doer_id ='.$id.' AND short_date_log = "'.$date.'" ORDER BY date_log DESC';
 
                 $stmt = $this->em->getConnection()->prepare($sql);
                 $stmt->execute();
