@@ -30,9 +30,6 @@ services:
         arguments: [@doctrine]
         tags:
             - { name: twig.extension }
-    ujm.exo_badge:
-        class: UJM\ExoBundle\Services\classes\BadgeExoService
-        arguments: [@doctrine]
 
     ujm.exo_category:
         class: UJM\ExoBundle\Services\classes\CategoryService

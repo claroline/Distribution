@@ -6,7 +6,7 @@ use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="UJM\ExoBundle\Repository\ChoiceRepository")
+ * @ORM\Entity()
  * @ORM\Table(name="ujm_choice")
  */
 class Choice
