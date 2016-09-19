@@ -1,12 +1,4 @@
 services:
-   
-    ujm.listener.exercise.display_log_listener:
-            class: UJM\ExoBundle\Listener\Log\DisplayLogListener
-            calls:
-                - [setContainer, ["@service_container"]]
-            tags:
-                - { name: kernel.event_listener, event: create_log_details_resource-ujm_exercise-exercise_evaluated, method: onCreateLogDetails }
-
     twig.extension.Interaction:
         class: UJM\ExoBundle\Services\twig\Interaction
         arguments: [@service_container]

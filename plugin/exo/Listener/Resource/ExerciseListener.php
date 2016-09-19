@@ -1,17 +1,17 @@
 <?php
 
-namespace UJM\ExoBundle\Listener;
+namespace UJM\ExoBundle\Listener\Resource;
 
 use Claroline\CoreBundle\Event\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\DeleteResourceEvent;
-use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Claroline\CoreBundle\Event\OpenResourceEvent;
 use Claroline\CoreBundle\Event\PublicationChangeEvent;
 use Claroline\ScormBundle\Event\ExportScormResourceEvent;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Form\ExerciseType;
@@ -42,6 +42,7 @@ class ExerciseListener
      */
     public function onCreateForm(CreateFormResourceEvent $event)
     {
+        /** @var FormInterface $form */
         $form = $this->container->get('form.factory')->create(new ExerciseType());
 
         $content = $this->container->get('templating')->render(
@@ -62,8 +63,9 @@ class ExerciseListener
      */
     public function onCreate(CreateResourceEvent $event)
     {
-        $request = $this->container->get('request');
+        /** @var FormInterface $form */
         $form = $this->container->get('form.factory')->create(new ExerciseType());
+        $request = $this->container->get('request');
 
         $form->handleRequest($request);
         if ($form->isValid()) {
@@ -116,6 +118,7 @@ class ExerciseListener
     {
         $em = $this->container->get('doctrine.orm.entity_manager');
 
+        /** @var Exercise $exercise */
         $exercise = $event->getResource();
 
         $nbPapers = $em->getRepository('UJMExoBundle:Paper')->countExercisePapers($event->getResource());
@@ -255,21 +258,5 @@ class ExerciseListener
         }
 
         return $content;
-    }
-
-    /**
-     * @DI\Observe("open_tool_desktop_ujm_questions")
-     *
-     * @param DisplayToolEvent $event
-     */
-    public function onDisplayDesktop(DisplayToolEvent $event)
-    {
-        $subRequest = $this->container->get('request')->duplicate([], null, [
-            '_controller' => 'UJMExoBundle:Question:index',
-        ]);
-
-        $response = $this->container->get('http_kernel')->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
-
-        $event->setContent($response->getContent());
     }
 }
