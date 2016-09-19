@@ -74,7 +74,7 @@ class DashboardManager
     {
         $datas = [];
 
-        $ids[] = $user->getId();
+        $ids = [];
         // get other users id
         if ($all) {
             $selectUsersIds = 'SELECT DISTINCT doer_id FROM claro_log WHERE workspace_id = '.$workspace->getId().' AND action = "workspace-enter"';
@@ -84,6 +84,8 @@ class DashboardManager
             foreach ($idResults as $result) {
                 $ids[] = $result['doer_id'];
             }
+        } else {
+            $ids[] = $user->getId();
         }
 
         // for each user (ie user ids) -> get 'workspace-enter' events for the given workspace order results by date ASC
