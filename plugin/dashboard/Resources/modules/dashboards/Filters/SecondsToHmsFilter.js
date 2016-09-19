@@ -18,11 +18,11 @@ function SecondsToHmsFilter (){
         seconds = '0' + seconds
       }
        // var time = hours + ':' + minutes + ':' + seconds + ':' + ms;
-      result = hours + ' h ' + minutes + '\' '
+      result = hours + ' h ' + minutes + '\' ' + seconds + '\'\''
     }
     else {
 
-      result = '00 h 00\''
+      result = '00 h 00\' 00\'\''
     }
     return result
   }

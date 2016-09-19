@@ -43,15 +43,23 @@ class DashboardManager
         return $this->em->getRepository('ClarolineCoreBundle:Log\Log');
     }
 
-    public function exportDashboard(Dashboard $dashboard)
+    /**
+     * get all dashboards for a given user.
+     */
+    public function getAll(User $user)
     {
-        return [
-          'id' => $dashboard->getId(),
-          'name' => $dashboard->getName(),
-          'workspace' => $this->workspaceManager->exportWorkspace($dashboard->getWorkspace()),
-      ];
+        $result = [];
+        $dashboards = $this->getRepository()->findBy(['creator' => $user]);
+        foreach ($dashboards as $dashboard) {
+            $result[] = $this->exportDashboard($dashboard);
+        }
+
+        return $result;
     }
 
+    /**
+     * create a dashboard.
+     */
     public function create(User $user, $data)
     {
         $dashboard = new Dashboard();
@@ -71,78 +79,34 @@ class DashboardManager
     public function getDashboardWorkspaceSpentTimes(Workspace $workspace, User $user, $all = false)
     {
         $datas = [];
-        $ids = [];
-        // users ids
+        // user(s) concerned by the query
         if ($all) {
-            // all user(s) belonging to the target workspace (manager and collaborators)...
-            $selectUsersIds = 'SELECT DISTINCT cur.user_id FROM claro_user_role cur JOIN claro_role cr ON cr.id = cur.role_id  WHERE cr.workspace_id = '.$workspace->getId();
-            $idStmt = $this->em->getConnection()->prepare($selectUsersIds);
-            $idStmt->execute();
-            $idResults = $idStmt->fetchAll();
-            foreach ($idResults as $result) {
-                $ids[] = $result['user_id'];
-            }
+            // get all users involved in the workspace
+            $ids = $this->getWorkspaceUsersIds($workspace);
         } else {
             // only the current user
             $ids[] = $user->getId();
         }
 
-        // for each user (ie user ids) -> get 'workspace-enter' events for the given workspace order results by date ASC
-        foreach ($ids as $id) {
-            $userSqlSelect = 'SELECT first_name, last_name FROM claro_user WHERE id = '.$id;
+        // // for each user (ie user ids) -> get first 'workspace-enter' event for the given workspace
+        foreach ($ids as $uid) {
+            $userSqlSelect = 'SELECT first_name, last_name FROM claro_user WHERE id = '.$uid;
             $userSqlSelectStmt = $this->em->getConnection()->prepare($userSqlSelect);
             $userSqlSelectStmt->execute();
             $userData = $userSqlSelectStmt->fetch();
 
-            // select all "workspace-enter" actions for the given user and workspace
-            $selectAllEnterEventsOnThisWorkspace = 'SELECT DISTINCT date_log FROM claro_log WHERE workspace_id = '.$workspace->getId().' AND action = "workspace-enter" AND doer_id ='.$id.' ORDER BY date_log ASC';
-            $selectAllEnterEventsOnThisWorkspaceStmt = $this->em->getConnection()->prepare($selectAllEnterEventsOnThisWorkspace);
-            $selectAllEnterEventsOnThisWorkspaceStmt->execute();
-            $enterOnThisWorksapceDatesResults = $selectAllEnterEventsOnThisWorkspaceStmt->fetchAll();
-            $enterOnThisWorksapceDates = [];
-            foreach ($enterOnThisWorksapceDatesResults as $resultDateTime) {
-                $enterOnThisWorksapceDates[] = $resultDateTime['date_log'];
-            }
+            // select first "workspace-enter" actions for the given user and workspace
+            $selectEnterEventOnThisWorkspace = 'SELECT DISTINCT date_log FROM claro_log WHERE workspace_id = '.$workspace->getId().' AND action = "workspace-enter" AND doer_id ='.$uid.' ORDER BY date_log ASC LIMIT 1';
+            $selectEnterEventOnThisWorkspaceStmt = $this->em->getConnection()->prepare($selectEnterEventOnThisWorkspace);
+            $selectEnterEventOnThisWorkspaceStmt->execute();
+            $enterOnThisWorksapceDateResult = $selectEnterEventOnThisWorkspaceStmt->fetch();
+            $refDate = $enterOnThisWorksapceDateResult['date_log'];
 
-            $time = 0; // final connection time in seconds
-            // foreach "enter on this workspace" datetime
-            foreach ($enterOnThisWorksapceDates as $dateTime) {
-                $countedEventsIds = [];
-                // select the first next enter event on another workspace (ie WHERE date_log > $dateTime AND date_log < $nextDateTime order by date_log ASC LIMIT 1)
-                $sql = 'SELECT id, date_log FROM claro_log WHERE action = "workspace-enter"';
-                $sql .= ' AND date_log > "'.$dateTime.'" AND doer_id = '.$id;
-                $countedEventIdsLength = count($countedEventsIds);
-                if ($countedEventIdsLength > 0) {
-                    $sql .= ' AND id NOT IN ( ';
-                    for ($i = 0; $i < $countedEventIdsLength; ++$i) {
-                        $sql .= $id;
-                        if ($i < $countedEventIdsLength - 1) {
-                            $sql .= ',';
-                        }
-                    }
-                    $sql .= ' )';
-                }
-
-                $sql .= ' ORDER BY date_log ASC LIMIT 1';
-                $stmt = $this->em->getConnection()->prepare($sql);
-                $stmt->execute();
-                $result = $stmt->fetchAll();
-
-                if (count($result) > 0) {
-                    $t1 = strtotime($dateTime);
-                    $t2 = strtotime($result[0]['date_log']);
-                    $seconds = $t2 - $t1;
-                        // add time only if bewteen 30s and 2 hours <= totally arbitrary !
-                        if ($seconds > 30 && ($seconds / 60) <= 120) {
-                            $time += $seconds;
-                        }
-                    $countedEventsIds[] = $result[0]['id'];
-                }
-            }
+            $time = $this->computeTimeForUserAndWorkspace($refDate, $uid, $workspace->getId(), 0);
 
             $datas[] = [
               'user' => [
-                'id' => $id,
+                'id' => $uid,
                 'firstName' => $userData['first_name'],
                 'lastName' => $userData['last_name'],
               ],
@@ -153,14 +117,67 @@ class DashboardManager
         return $datas;
     }
 
-    public function getAll(User $user)
+    /**
+     * Get all ids from users related to a given workspace.
+     */
+    private function getWorkspaceUsersIds(Workspace $workspace)
     {
-        $result = [];
-        $dashboards = $this->getRepository()->findBy(['creator' => $user]);
-        foreach ($dashboards as $dashboard) {
-            $result[] = $this->exportDashboard($dashboard);
+        // Select all user(s) belonging to the target workspace (manager and collaborators)...
+        $selectUsersIds = 'SELECT DISTINCT cur.user_id FROM claro_user_role cur JOIN claro_role cr ON cr.id = cur.role_id  WHERE cr.workspace_id = '.$workspace->getId();
+        $idStmt = $this->em->getConnection()->prepare($selectUsersIds);
+        $idStmt->execute();
+        $idResults = $idStmt->fetchAll();
+        foreach ($idResults as $result) {
+            $ids[] = $result['user_id'];
         }
 
-        return $result;
+        return $ids;
+    }
+
+    /**
+     * Search for out and in events on a given wokspace, for a given user and relativly to a date.
+     */
+    private function computeTimeForUserAndWorkspace($startDate, $userId, $workspaceId, $time)
+    {
+        // select first "out of this workspace event" (ie "workspace enter" on another workspace)
+        $sql = 'SELECT date_log FROM claro_log WHERE action LIKE "workspace-enter" AND doer_id = '.$userId.' AND date_log > "'.$startDate.'" ORDER BY date_log ASC LIMIT 1';
+        $stmt = $this->em->getConnection()->prepare($sql);
+        $stmt->execute();
+        $action = $stmt->fetch();
+        // if there is an action we can compute time
+        if ($action['date_log']) {
+            $t1 = strtotime($startDate);
+            $t2 = strtotime($action['date_log']);
+            $seconds = $t2 - $t1;
+            // add time only if bewteen 30s and 2 hours <= totally arbitrary !
+            if ($seconds > 5 && ($seconds / 60) <= 120) {
+                $time += $seconds;
+            }
+            // get next "enter the requested workspace enter event"
+            $sql = 'SELECT date_log FROM claro_log WHERE action LIKE "workspace-enter" AND doer_id = '.$userId.' AND date_log > "'.$action['date_log'].'" AND workspace_id = '.$workspaceId.' ORDER BY date_log ASC LIMIT 1';
+            $stmt = $this->em->getConnection()->prepare($sql);
+            $stmt->execute();
+            $nextEnterEvent = $stmt->fetch();
+            // if there is an "enter-workspace" action after the current one recall the method
+            if ($nextEnterEvent['date_log']) {
+                $this->computeTimeForUserAndWorkspace($nextEnterEvent['date_log'], $userId, $workspaceId, $time);
+            } else {
+                return $time;
+            }
+        } else {
+            return $time;
+        }
+    }
+
+    /**
+     * Export dashboard as array.
+     */
+    public function exportDashboard(Dashboard $dashboard)
+    {
+        return [
+          'id' => $dashboard->getId(),
+          'name' => $dashboard->getName(),
+          'workspace' => $this->workspaceManager->exportWorkspace($dashboard->getWorkspace()),
+      ];
     }
 }
