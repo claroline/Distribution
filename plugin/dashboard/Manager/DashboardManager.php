@@ -73,18 +73,19 @@ class DashboardManager
     public function getDashboardWorkspaceSpentTimes(Workspace $workspace, User $user, $all = false)
     {
         $datas = [];
-
         $ids = [];
-        // get other users id
+        // users ids
         if ($all) {
-            $selectUsersIds = 'SELECT DISTINCT doer_id FROM claro_log WHERE workspace_id = '.$workspace->getId().' AND action = "workspace-enter"';
+            // all user(s) belonging to the target workspace (manager and collaborators)... not in log !
+            $selectUsersIds = 'SELECT DISTINCT cur.user_id FROM claro_user_role cur JOIN claro_role cr ON cr.id = cur.role_id  WHERE cr.workspace_id = '.$workspace->getId();
             $idStmt = $this->em->getConnection()->prepare($selectUsersIds);
             $idStmt->execute();
             $idResults = $idStmt->fetchAll();
             foreach ($idResults as $result) {
-                $ids[] = $result['doer_id'];
+                $ids[] = $result['user_id'];
             }
         } else {
+            // only the current user
             $ids[] = $user->getId();
         }
 
@@ -95,44 +96,36 @@ class DashboardManager
             $userSqlSelectStmt->execute();
             $userData = $userSqlSelectStmt->fetch();
 
-            $sqlDates = 'SELECT DISTINCT short_date_log FROM claro_log WHERE workspace_id = '.$workspace->getId().' AND action = "workspace-enter" AND doer_id ='.$id.' ORDER BY date_log ASC';
-            $datesStmt = $this->em->getConnection()->prepare($sqlDates);
-            $datesStmt->execute();
-            $datesResults = $datesStmt->fetchAll();
-
-            $dates = [];
-            foreach ($datesResults as $value) {
-                $dates[] = $value['short_date_log'];
+            // select all "workspace-enter" actions for the given user and workspace
+            $selectAllEnterEventsOnThisWorkspace = 'SELECT date_log FROM claro_log WHERE workspace_id = '.$workspace->getId().' AND action = "workspace-enter" AND doer_id ='.$id.' ORDER BY date_log ASC';
+            $selectAllEnterEventsOnThisWorkspaceStmt = $this->em->getConnection()->prepare($selectAllEnterEventsOnThisWorkspace);
+            $selectAllEnterEventsOnThisWorkspaceStmt->execute();
+            $enterOnThisWorksapceDatesResults = $selectAllEnterEventsOnThisWorkspaceStmt->fetchAll();
+            $enterOnThisWorksapceDates = [];
+            foreach ($enterOnThisWorksapceDatesResults as $resultDateTime) {
+                $enterOnThisWorksapceDates[] = $resultDateTime['date_log'];
             }
+            $time = 0; // final connection time in seconds
+            // foreach enter on this workspace datetime
+            $index = 0;
+            foreach ($enterOnThisWorksapceDates as $dateTime) {
+                // select the first next enter event on another workspace (ie WHERE date_log > $dateTime AND date_log < $nextDateTime order by date_log ASC LIMIT 1)
+                if (isset($enterOnThisWorksapceDates[$index + 1])) {
+                    $sql = 'SELECT date_log FROM claro_log WHERE workspace_id != '.$workspace->getId().' AND action = "workspace-enter" AND date_log > "'.$dateTime.'" AND date_log < "'.$enterOnThisWorksapceDates[$index + 1].'" AND doer_id = '.$id.' ORDER BY date_log ASC LIMIT 1';
+                    $stmt = $this->em->getConnection()->prepare($sql);
+                    $stmt->execute();
+                    $result = $stmt->fetchAll();
 
-            $time = 0;
-            // now for each date
-            foreach ($dates as $date) {
-                // get the 'workspace-enter' events for this date for this user and for other workspace
-                $sql = 'SELECT date_log FROM claro_log WHERE action = "workspace-enter" AND doer_id ='.$id.' AND short_date_log = "'.$date.'" ORDER BY date_log DESC';
-
-                $stmt = $this->em->getConnection()->prepare($sql);
-                $stmt->execute();
-                $results = $stmt->fetchAll();
-
-                $datesLogs = [];
-                foreach ($results as $result) {
-                    $datesLogs[] = $result['date_log'];
-                }
-                $length = count($datesLogs);
-                if ($length > 1) {
-                    for ($index = 0; $index < $length; ++$index) {
-                        // compute time diff between current and next (if defined)
-                      if (isset($datesLogs[$index + 1])) {
-                          $t1 = strtotime($datesLogs[$index]);
-                          $t2 = strtotime($datesLogs[$index + 1]);
-                          $seconds = $t1 - $t2;
-                          // add time only if bewteen 5s and 2 hours
-                          if ($seconds > 5 && ($seconds / 60) < 120) {
-                              $time += $seconds;
-                          }
-                      }
+                    if (count($result) > 0) {
+                        $t1 = strtotime($dateTime);
+                        $t2 = strtotime($result[0]['date_log']);
+                        $seconds = $t2 - $t1;
+                        // add time only if bewteen 30s and 2 hours <= totally arbitrary !
+                        if ($seconds > 30 && ($seconds / 60) <= 120) {
+                            $time += $seconds;
+                        }
                     }
+                    ++$index;
                 }
             }
 
