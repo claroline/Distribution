@@ -20,7 +20,8 @@
          name: Translator.trans('workspaces_filter_attended', {}, 'dashboard')
        }
      ]
-     this.selectedFilter = (this.dashboard.workspace && this.dashboard.workspace.creatorId === this.user.id) || this.dashboard.workspace === undefined ? 'MY':'FOLLOWING'
+
+     this.selectedFilter = ((this.dashboard.workspace !== undefined && this.dashboard.workspace.creatorId === this.user.id) || this.dashboard.workspace === undefined) ? 'MY':'FOLLOWING'
      this.filterList()
    }
 
@@ -36,6 +37,10 @@
        // the user will be able to see it's own stats only
        this.filtered = this.workspaces.filter(el => el.creatorId !== this.user.id)
      }
+   }
+
+   selectedWorkspaceChanged(workspace){
+     this.dashboard.workspace = workspace
    }
 }
 
