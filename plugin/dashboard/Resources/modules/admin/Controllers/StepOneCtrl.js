@@ -4,12 +4,12 @@
    * Constructor.
    *
    * @param {object}  Translator
+   * @param {object}  DashboardService
    */
    constructor(Translator, DashboardService) {
      this.Translator = Translator
      this.DashboardService = DashboardService
-     this.selectedFilter = 'MY'
-
+     this.filtered = []
      this.filters = [
        {
          value: 'MY',
@@ -20,22 +20,22 @@
          name: Translator.trans('workspaces_filter_attended', {}, 'dashboard')
        }
      ]
-     this.filtered = []
-     this.filtered = this.workspaces.filter(el => el.creatorId === this.user.id)
+     this.selectedFilter = (this.dashboard.workspace && this.dashboard.workspace.creatorId === this.user.id) || this.dashboard.workspace === undefined ? 'MY':'FOLLOWING'
+     this.filterList()
    }
 
+   /**
+   * Filter workspace list depending on filter selected (MY / FOLLOWING)
+   */
    filterList(){
-     this.dashboard.workspace = {}
+     // 'MY' Workspaces means workspaces where I am the creator or Manager
      if(this.selectedFilter === 'MY'){
-       this.filtered = this.workspaces.filter(el => el.creatorId === this.user.id)
        // the user will be able to see the stats for all user belonging to this workspace
-       this.dashboard.all = true
+       this.filtered = this.workspaces.filter(el => el.creatorId === this.user.id)
      } else {
+       // the user will be able to see it's own stats only
        this.filtered = this.workspaces.filter(el => el.creatorId !== this.user.id)
-       // // the user will be able to see it's own stats only
-       this.dashboard.all = false
      }
-
    }
 }
 

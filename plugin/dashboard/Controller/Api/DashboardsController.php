@@ -3,6 +3,7 @@
 namespace Claroline\DashboardBundle\Controller\Api;
 
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\DashboardBundle\Entity\Dashboard;
 use Claroline\DashboardBundle\Manager\DashboardManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -63,6 +64,20 @@ class DashboardsController extends Controller
     }
 
     /**
+     * @EXT\Route("/put/{dashboardId}", name="update_dashboard")
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     * @EXT\ParamConverter("dashboard", class="ClarolineDashboardBundle:Dashboard", options={"mapping": {"dashboardId": "id"}})
+     * @EXT\Method("PUT")
+     */
+    public function updateDashboard(User $user, Dashboard $dashboard)
+    {
+        $data = $this->container->get('request')->request->all();
+        $dashboard = $this->dashboardManager->update($user, $dashboard, $data);
+
+        return new JsonResponse($dashboard);
+    }
+
+    /**
      * @EXT\Route("/dashboards", name="get_dashboards")
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
      * @EXT\Method("GET")
@@ -97,6 +112,20 @@ class DashboardsController extends Controller
         $all = $user->getId() === $dashboard->getWorkspace()->getCreator()->getId();
 
         $datas = $this->dashboardManager->getDashboardWorkspaceSpentTimes($dashboard->getWorkspace(), $user, $all);
+
+        return new JsonResponse($datas);
+    }
+
+    /**
+     * @EXT\Route("/dashboards/preview/{workspaceId}/times", name="get_dashboard_spent_times_by_workspace")
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     * @EXT\ParamConverter("workspace", class="ClarolineCoreBundle:Workspace\Workspace", options={"mapping": {"workspaceId": "id"}})
+     * @EXT\Method("GET")
+     */
+    public function getDashboardWorkspaceSpentTimesByWorkspace(User $user, Workspace $workspace)
+    {
+        $all = $user->getId() === $workspace->getCreator()->getId();
+        $datas = $this->dashboardManager->getDashboardWorkspaceSpentTimes($workspace, $user, $all);
 
         return new JsonResponse($datas);
     }

@@ -3,6 +3,7 @@ import angular from 'angular/index'
 import 'angular-route'
 import 'angular-loading-bar'
 import 'angular-strap'
+import 'angular-ui-translation/angular-translation'
 import '#/main/core/fos-js-router/module'
 import '#/main/core/workspace/module'
 import '#/main/core/authentication/module'
@@ -10,13 +11,10 @@ import '#/main/core/translation/module'
 
 import './dashboards/module'
 import './dashboard/module'
-import './create/module'
+import './admin/module'
 
 import dashboards from './dashboards/Partials/dashboards.html'
-
-
-import add from './create/Partials/add.html'
-
+import admin from './admin/Partials/admin.html'
 import dashboard from './dashboard/Partials/dashboard.html'
 
 angular
@@ -25,12 +23,13 @@ angular
       'ngRoute',
       'angular-loading-bar',
       'ui.fos-js-router',
+      'ui.translation',
       'mgcrea.ngStrap.datepicker',
-      'Dashboards',
-      'workspace',
       'authentication',
       'translation',
-      'Create',
+      'workspace',
+      'Dashboards',
+      'Admin',
       'Dashboard'
     ])
     // Configure application
@@ -115,9 +114,9 @@ angular
             }
           })
           .when('/new', {
-            template: add,
-            controller  : 'CreateDashboardCtrl',
-            controllerAs: 'createDashboardCtrl',
+            template: admin,
+            controller  : 'AdminDashboardCtrl',
+            controllerAs: 'adminDashboardCtrl',
             resolve: {
               user:[
                 'UserService',
@@ -128,13 +127,59 @@ angular
               workspaces: [
                 'WorkspaceService',
                 function workspacesResolve(WorkspaceService) {
-                  return WorkspaceService.getUserWorkspaces()
+                  return WorkspaceService.getConnectedUserWorkspaces()
                 }
               ],
               nbDashboards:[
                 'DashboardService',
                 function nbDashboardResolve(DashboardService) {
                   return DashboardService.countDashboards()
+                }
+              ],
+              dashboard: [
+                function dashboardResolve() {
+                  const today = new Date()
+                  const dashboardDefaultName = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate()
+                  return {
+                    name: dashboardDefaultName
+                  }
+                }
+              ]
+            }
+          })
+          .when('/dashboards/:id/edit', {
+            template: admin,
+            controller  : 'AdminDashboardCtrl',
+            controllerAs: 'adminDashboardCtrl',
+            resolve: {
+              user:[
+                'UserService',
+                function userResolve(UserService) {
+                  return UserService.getConnectedUser()
+                }
+              ],
+              workspaces: [
+                'WorkspaceService',
+                function workspacesResolve(WorkspaceService) {
+                  return WorkspaceService.getConnectedUserWorkspaces()
+                }
+              ],
+              nbDashboards:[
+                'DashboardService',
+                function nbDashboardResolve(DashboardService) {
+                  return DashboardService.countDashboards()
+                }
+              ],
+              dashboard: [
+                '$route',
+                'DashboardService',
+                function dashboardResolve($route, DashboardService) {
+                  var promise = null
+                  if ($route.current.params && $route.current.params.id) {
+                    promise = DashboardService.getOne($route.current.params.id)
+                  }
+
+                  return promise
                 }
               ]
             }

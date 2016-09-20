@@ -28,6 +28,20 @@ class DashboardService {
     return deferred.promise
   }
 
+  update(data){
+    const deferred = this.$q.defer()
+    this.$http
+      .put(this.UrlService('update_dashboard', {'dashboardId': data.id}), data)
+      .success(response => {
+        deferred.resolve(response)
+      })
+      .error(() => {
+        deferred.reject([])
+      })
+
+    return deferred.promise
+  }
+
   delete(id){
     const deferred = this.$q.defer()
     this.$http
@@ -74,6 +88,20 @@ class DashboardService {
     const deferred = this.$q.defer()
     this.$http
       .get(this.UrlService('get_dashboard_spent_times', {'dashboardId':id}))
+      .success(response => {
+        deferred.resolve(response)
+      })
+      .error(() => {
+        deferred.reject([])
+      })
+
+    return deferred.promise
+  }
+
+  getDashboardDataByWorkspace(id){
+    const deferred = this.$q.defer()
+    this.$http
+      .get(this.UrlService('get_dashboard_spent_times_by_workspace', {'workspaceId':id}))
       .success(response => {
         deferred.resolve(response)
       })

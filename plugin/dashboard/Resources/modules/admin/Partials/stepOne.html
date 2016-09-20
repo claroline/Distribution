@@ -29,7 +29,7 @@
                 <tr data-ng-repeat="workspace in stepOneCtrl.filtered">
                     <td>{{workspace.name}}</td>
                     <td>
-                        <input type="radio" name="workspaces" data-ng-value="workspace" data-ng-model="stepOneCtrl.dashboard.workspace" data-ng-click="stepOneCtrl.checkChange(workspace.id)">
+                        <input type="radio" name="workspaces" data-ng-value="workspace.id" data-ng-model="stepOneCtrl.dashboard.workspace.id">
                     </td>
                 </tr>
             </tbody>

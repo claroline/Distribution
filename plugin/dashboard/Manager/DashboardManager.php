@@ -73,6 +73,17 @@ class DashboardManager
         return $this->exportDashboard($dashboard);
     }
 
+    public function update(User $user, Dashboard $dashboard, $data)
+    {
+        $dashboard->setName($data['name']);
+        $wId = $data['workspace']['id'];
+        $dashboard->setWorkspace($this->workspaceManager->getWorkspaceById($wId));
+        $this->em->persist($dashboard);
+        $this->em->flush();
+
+        return $this->exportDashboard($dashboard);
+    }
+
     /**
      * delete a dashboard.
      */
@@ -190,6 +201,7 @@ class DashboardManager
     {
         return [
           'id' => $dashboard->getId(),
+          'creatorId' => $dashboard->getCreator()->getId(),
           'name' => $dashboard->getName(),
           'workspace' => $this->workspaceManager->exportWorkspace($dashboard->getWorkspace()),
       ];

@@ -6,31 +6,33 @@ import 'angular-strap'
 import 'angular-ui-translation/angular-translation'
 import '#/main/core/modal/module'
 import '#/main/core/fos-js-router/module'
-import '#/main/core/translation/module'
 
 import './../dashboards/module'
+import './../dashboard/module'
 
 import StepOne from './Directives/StepOneDirective'
 import StepOneCtrl from './Controllers/StepOneCtrl'
-import CreateDashboardCtrl from './Controllers/CreateDashboardCtrl'
+import AdminDashboardCtrl from './Controllers/AdminDashboardCtrl'
 
 angular
-  .module('Create', [
+  .module('Admin', [
     'ngRoute',
     'ui.translation',
     'ui.bootstrap',
     'ui.modal',
     'mgcrea.ngStrap.datepicker',
-    'translation',
-    'Dashboards'
+    'Dashboards',
+    'Dashboard'
   ])
-  .controller('CreateDashboardCtrl', [
+  .controller('AdminDashboardCtrl', [
     '$location',
+    'Translator',
     'DashboardService',
     'workspaces',
     'user',
     'nbDashboards',
-    CreateDashboardCtrl
+    'dashboard',
+    AdminDashboardCtrl
   ])
   .controller('StepOneCtrl',[
     'Translator',

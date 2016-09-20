@@ -16,6 +16,7 @@ delete: Supprimer
 # E
 edit: Éditer
 edit_view: Éditer cette vue
+edit_dashboard_title: Édition de la vue
 
 # M
 message_no_views: Aucune vue pour le moment. Utilisez le bouton + pour en créer une.

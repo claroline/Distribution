@@ -7,7 +7,7 @@ class WorkspaceService{
     this.UrlService = url
   }
 
-  getUserWorkspaces() {
+  getConnectedUserWorkspaces() {
     const deferred = this.$q.defer()
     this.$http
           .get(

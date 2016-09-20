@@ -25,6 +25,9 @@
                             <a href="#/dashboards/{{dashboard.id}}">{{dashboard.name}}</a>
                         </td>
                         <td>
+                          <a href="#/dashboards/{{dashboard.id}}/edit" class="btn btn-default" title="{{'edit_view' | trans:{}:'dashboard'}}">
+                            <i class="fa fa-pencil"></i> {{'edit' | trans:{}:'dashboard'}}
+                          </a>
                           <button class="btn btn-danger" title="{{'delete_view' | trans:{}:'dashboard'}}" data-ng-click="dashboardsCtrl.delete(dashboard.id)">
                             <i class="fa fa-trash"></i> {{'delete' | trans:{}:'dashboard'}}
                           </button>
