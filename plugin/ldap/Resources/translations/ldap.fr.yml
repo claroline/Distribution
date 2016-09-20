@@ -20,9 +20,9 @@ users_settings: Réglages d'utilisateurs
 name: 'Nom'
 host: 'Hôte'
 port: 'Port'
-distinguished_name: 'DN'
-username: 'Utilisateur'
-password: 'Mot de passe'
-protocol_version: 'Version'
+distinguished_name: DN
+username: Utilisateur
+password: Mot de passe
+protocol_version: Version
 append_dn: Ajouter le DN au nom d'utilisateur
-auto_creation: 'Créer l''utilisateur s''il n''existe pas.'
+auto_creation: Créer l'utilisateur s'il n''existe pas.
