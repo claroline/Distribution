@@ -1,6 +1,6 @@
-'Show actions for': 'Toon acties voor'
+'Show actions for': Toon acties voor
 all: alles
-'for user': 'voor gebruiker'
+'for user': voor gebruiker
 group: group
 log_add_user: log_add_user
 log_change_right: log_change_right

@@ -25,4 +25,4 @@ username: Utilisateur
 password: Mot de passe
 protocol_version: Version
 append_dn: Ajouter le DN au nom d'utilisateur
-auto_creation: Créer l'utilisateur s'il n''existe pas.
+auto_creation: Créer l'utilisateur s'il n'existe pas.

@@ -5,7 +5,7 @@
         <pdf-viewer
                 data-id="{{ _resource.resourceNode.id }}"
                 data-name="'{{ _resource.resourceNode.name }}'"
-                data-url="'{{ '../files/pdf_' ~ _resource.resourceNode.id }}'"
+                data-url="'{{ '../files/file_' ~ _resource.resourceNode.id }}'"
                 data-download="false">
         </pdf-viewer>
     </div>
@@ -20,6 +20,5 @@
 
     <script src="../commons/router.js"></script>
     <script src="../commons/routes.js"></script>
-    <script src="../assets/commons.js" ></script>
     <script src="../assets/claroline-distribution-plugin-pdf-player-pdf-viewer.js" ></script>
 {% endblock %}

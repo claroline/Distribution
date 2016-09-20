@@ -1082,9 +1082,10 @@ class UserManager
     {
         $accountDuration = $this->platformConfigHandler->getParameter('account_duration');
         $expirationDate = new \DateTime();
+        $expirationYear = (strtotime('2100-01-01')) ? 2100 : 2038;
 
         ($accountDuration === null) ?
-            $expirationDate->setDate(2100, 1, 1) :
+            $expirationDate->setDate($expirationYear, 1, 1) :
             $expirationDate->add(new \DateInterval('P'.$accountDuration.'D'));
 
         $user->setExpirationDate($expirationDate);
@@ -1378,9 +1379,8 @@ class UserManager
     private function generateRoleRestrictions(User $user)
     {
         $restrictions = [];
-        $adminRole = $this->roleManager->getRoleByUserAndRoleName($user, 'ROLE_ADMIN');
 
-        if (is_null($adminRole)) {
+        if (!$user->hasRole('ROLE_ADMIN')) {
             $wsRoles = $this->roleManager->getWorkspaceRolesByUser($user);
 
             foreach ($wsRoles as $wsRole) {
@@ -1411,9 +1411,8 @@ class UserManager
     private function generateGroupRestrictions(User $user)
     {
         $restrictions = [];
-        $adminRole = $this->roleManager->getRoleByUserAndRoleName($user, 'ROLE_ADMIN');
 
-        if (is_null($adminRole)) {
+        if (!$user->hasRole('ROLE_ADMIN')) {
             $restrictions = $user->getGroups()->toArray();
         }
 
@@ -1423,9 +1422,8 @@ class UserManager
     private function generateWorkspaceRestrictions(User $user)
     {
         $restrictions = [];
-        $adminRole = $this->roleManager->getRoleByUserAndRoleName($user, 'ROLE_ADMIN');
 
-        if (is_null($adminRole)) {
+        if (!$user->hasRole('ROLE_ADMIN')) {
             $restrictions = $this->workspaceManager->getWorkspacesByUser($user);
         }
 

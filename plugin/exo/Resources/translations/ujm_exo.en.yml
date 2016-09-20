@@ -108,6 +108,7 @@ edit_question: Edit a question
 edit_step: Edit information
 end_date: End date
 entry: Entry
+error_no_step_found: An error occured while retrieving the current step.
 exercise: Exercise
 exercise_alert_break: The interruption of this exercise is not allowed. Your paper will be considered finished !
 exercise_definition: Exercise definition
@@ -224,6 +225,7 @@ maximum_tries: Maximum number of tries
 meaning_measure_difficulty: If the measure is high, the question is easy. If the measure is low on the contrary, the question is difficult.
 metadata_visible: Display exercise information
 metadata_visible_help: If checked, a table with the information about the exercise will be displayed.
+metadata: Parameters
 minimal_correction: Show minimal correction
 model: Model
 more_info: More information
@@ -288,10 +290,10 @@ paper_legend: Papers which need manual correction
 paper_list: Papers list
 paper_count: "{0} no paper|{1} %count% paper|]1,Inf[ %count% papers"
 paper_need_manual_correction: This paper needs a manual correction
-metadata: Parameters
 partially: Partially correct
 penalty: Penalty
 percentage: Percentage
+pic_manage: Manage my documents
 picture_name: Picture name
 points: Points
 point_answer: You must assign a point to the correct answer.
@@ -384,6 +386,7 @@ sort: Sort documents
 summative : Summative
 show_additional_info: Display additional information
 step: Step
+step_score: Step score
 statistics: Display statistics
 step_items_count: "[0, 1] %count% question|]1,Inf[ %count% questions"
 step_item_add: Drag'n' drop or click the "+" button to add questions.
