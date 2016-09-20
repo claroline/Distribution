@@ -1,15 +1,15 @@
 'Show actions for': Toon acties voor
-all: alles
+all: allen
 'for user': voor gebruiker
-group: group
-log_add_user: log_add_user
-log_change_right: log_change_right
+group: Groep
+log_add_user: Gebruiker toevoegen
+log_change_right: Verandering van rechten
 log_change_set: log_change_set
 log_context: log_context
 log_copy: log_copy
 log_copy_source: log_copy_source
 log_create: log_create
-log_default_user: log_default_user
+log_default_user: Claroline Connect
 log_delete: log_delete
 log_doer: log_doer
 log_export: log_export
@@ -171,12 +171,12 @@ log_workspace-update_title: log_workspace-update_title
 log_workspace_read: log_workspace_read
 log_workspace_roles: log_workspace_roles
 log_workspace_source: log_workspace_source
-resource: resource
-role: role
-user: user
-workspace: workspace
+resource: leermiddel
+role: Rol
+user: Gebruiker
+workspace: Werkruimte
 global_tracking: global_tracking
 user_tracking: user_tracking
-user_list: user_list
+user_list: Gebruikerslijst
 actions_per_day_chart: actions_per_day_chart
 download_csv_list: download_csv_list

@@ -1,7 +1,7 @@
-'Show actions for': 'Show actions for'
+'Show actions for': Show actions for
 all: All
-for user: 'For user'
-group: 'Group'
+for user: For user
+group: Group
 log_add_user: 'Add user'
 log_change_right: 'Change rights'
 log_change_set: 'List of modified properties'

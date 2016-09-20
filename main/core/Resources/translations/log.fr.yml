@@ -9,11 +9,11 @@ log_context: 'Contexte :'
 log_copy: Copie
 log_copy_source: 'Source de la copie'
 log_create: Création
-log_default_user: 'Claroline Connect'
+log_default_user: Claroline Connect
 log_delete: Suppression
-log_doer: 'Auteur de l''action'
+log_doer: Auteur de l'action
 log_export: Téléchargement
-log_filter_actions: 'Afficher les actions'
+log_filter_actions: Afficher les actions
 log_group-add_user_filter: 'Ajout d''un utilisateur à un groupe'
 log_group-add_user_sentence: 'a ajouté %receiver_user% au groupe %receiver_group%'
 log_group-add_user_shortname: Ajout
@@ -134,11 +134,11 @@ log_workspace-role-change_right_filter: 'Changement des droits pour un rôle'
 log_workspace-role-change_right_sentence: 'a modifié les droits du rôle %role% pour %resource%'
 log_workspace-role-change_right_shortname: 'Changement de droits'
 log_workspace-role-change_right_title: 'Changement des droits pour un rôle (espace d''activités)'
-log_workspace-role-create_filter: 'Création d''un rôle'
-log_workspace-role-create_sentence: 'a créé un rôle dans %workspace%'
+log_workspace-role-create_filter: Een rol maken
+log_workspace-role-create_sentence: heeft een rol gemaakt in %workspace%
 log_workspace-role-create_shortname: Création
 log_workspace-role-create_title: 'Création d''un rôle (espace d''activités)'
-log_workspace-role-delete_filter: 'Suppression d''un rôle'
+log_workspace-role-delete_filter: Verwijderen van een rol
 log_workspace-role-delete_sentence: 'a supprimé un rôle dans %workspace%'
 log_workspace-role-delete_shortname: Suppression
 log_workspace-role-delete_title: 'Suppression d''un rôle (espace d''activités)'
@@ -172,10 +172,10 @@ log_workspace-update_title: 'Mise à jour d''un espace d''activités'
 log_workspace_read: 'Accessions à l''espace d''activités'
 log_workspace_roles: 'Rôles espace d''activités'
 log_workspace_source: 'Espace d''activités source'
-resource: 'Ressource'
-role: 'Rôle'
-user: 'Utilisateur'
-workspace: 'Espace d''activités'
+resource: Ressource
+role: Rôle
+user: Utilisateur
+workspace: Espace d'activités
 log_resource-custom_action_update_file_shortname: 'Mise à jour'
 log_resource-custom_action_update_file_sentence: 'Le fichier a été mis à jour.'
 global_tracking: 'Suivi global'
