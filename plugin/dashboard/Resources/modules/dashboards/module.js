@@ -11,6 +11,7 @@ angular
   .controller('DashboardsCtrl', [
     'user',
     'dashboards',
+    'DashboardService',
     DashboardsCtrl
   ])
   .service('DashboardService', [

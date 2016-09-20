@@ -74,6 +74,15 @@ class DashboardManager
     }
 
     /**
+     * delete a dashboard.
+     */
+    public function delete(Dashboard $dashboard)
+    {
+        $this->em->remove($dashboard);
+        $this->em->flush();
+    }
+
+    /**
      * Compute spent time for each user in a given workspace.
      */
     public function getDashboardWorkspaceSpentTimes(Workspace $workspace, User $user, $all = false)

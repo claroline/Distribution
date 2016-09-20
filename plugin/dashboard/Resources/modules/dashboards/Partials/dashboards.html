@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-md-12">
             <a class="btn btn-primary" href="#/new" title="{{'click_to_add_view' | trans:{}:'dashboard'}}">
-               <i class="fa fa-plus"> {{'view' | trans:{}:'dashboard'}}</i>
+               <i class="fa fa-plus"></i> {{'view' | trans:{}:'dashboard'}}
             </a>
         </div>
     </div>
@@ -17,11 +17,17 @@
             <table class="table table-striped">
                 <thead>
                     <th>{{'view_name' | trans:{}:'dashboard'}}</th>
+                    <th>{{'actions' | trans:{}:'dashboard'}}</th>
                 </thead>
                 <tbody>
                     <tr data-ng-repeat="dashboard in dashboardsCtrl.dashboards">
                         <td>
                             <a href="#/dashboards/{{dashboard.id}}">{{dashboard.name}}</a>
+                        </td>
+                        <td>
+                          <button class="btn btn-danger" title="{{'delete_view' | trans:{}:'dashboard'}}" data-ng-click="dashboardsCtrl.delete(dashboard.id)">
+                            <i class="fa fa-trash"></i> {{'delete' | trans:{}:'dashboard'}}
+                          </button>
                         </td>
                     </tr>
                 </tbody>

@@ -28,6 +28,20 @@ class DashboardService {
     return deferred.promise
   }
 
+  delete(id){
+    const deferred = this.$q.defer()
+    this.$http
+      .delete(this.UrlService('delete_dashboard', {'dashboardId':id}))
+      .success(response => {
+        deferred.resolve(response)
+      })
+      .error(() => {
+        deferred.reject([])
+      })
+
+    return deferred.promise
+  }
+
   getAll(){
     const deferred = this.$q.defer()
     this.$http

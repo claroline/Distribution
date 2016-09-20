@@ -102,6 +102,19 @@ class DashboardsController extends Controller
     }
 
     /**
+     * @EXT\Route("/dashboards/{dashboardId}/delete", name="delete_dashboard")
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     * @EXT\ParamConverter("dashboard", class="ClarolineDashboardBundle:Dashboard", options={"mapping": {"dashboardId": "id"}})
+     * @EXT\Method("DELETE")
+     */
+    public function deleteDashboard(User $user, Dashboard $dashboard)
+    {
+        $this->dashboardManager->delete($dashboard);
+        // return all existing dashboards
+        return $this->getAll($user);
+    }
+
+    /**
      * @EXT\Route("/dashboards/{dashboardId}", name="get_dashboard")
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
      * @EXT\ParamConverter("dashboard", class="ClarolineDashboardBundle:Dashboard", options={"mapping": {"dashboardId": "id"}})
