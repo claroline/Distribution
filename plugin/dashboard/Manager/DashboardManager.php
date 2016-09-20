@@ -88,7 +88,7 @@ class DashboardManager
             $ids[] = $user->getId();
         }
 
-        // // for each user (ie user ids) -> get first 'workspace-enter' event for the given workspace
+        // for each user (ie user ids) -> get first 'workspace-enter' event for the given workspace
         foreach ($ids as $uid) {
             $userSqlSelect = 'SELECT first_name, last_name FROM claro_user WHERE id = '.$uid;
             $userSqlSelectStmt = $this->em->getConnection()->prepare($userSqlSelect);
