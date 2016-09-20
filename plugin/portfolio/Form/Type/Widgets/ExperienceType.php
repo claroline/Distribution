@@ -51,7 +51,7 @@ class ExperienceType extends AbstractWidgetType
             ->add('description', 'tinymce')
             ->add('website', 'url',
                 [
-                    'required' => false
+                    'required' => false,
                 ]
             );
     }
