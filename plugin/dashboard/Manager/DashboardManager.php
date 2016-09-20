@@ -102,7 +102,10 @@ class DashboardManager
             $enterOnThisWorksapceDateResult = $selectEnterEventOnThisWorkspaceStmt->fetch();
             $refDate = $enterOnThisWorksapceDateResult['date_log'];
 
-            $time = $this->computeTimeForUserAndWorkspace($refDate, $uid, $workspace->getId(), 0);
+            $total = 0;
+            if ($refDate) {
+                $total = $this->computeTimeForUserAndWorkspace($refDate, $uid, $workspace->getId(), 0);
+            }
 
             $datas[] = [
               'user' => [
@@ -110,7 +113,7 @@ class DashboardManager
                 'firstName' => $userData['first_name'],
                 'lastName' => $userData['last_name'],
               ],
-              'time' => $time,
+              'time' => $total,
             ];
         }
 
@@ -144,11 +147,13 @@ class DashboardManager
         $stmt = $this->em->getConnection()->prepare($sql);
         $stmt->execute();
         $action = $stmt->fetch();
+
         // if there is an action we can compute time
         if ($action['date_log']) {
             $t1 = strtotime($startDate);
             $t2 = strtotime($action['date_log']);
             $seconds = $t2 - $t1;
+
             // add time only if bewteen 30s and 2 hours <= totally arbitrary !
             if ($seconds > 5 && ($seconds / 60) <= 120) {
                 $time += $seconds;
@@ -160,13 +165,13 @@ class DashboardManager
             $nextEnterEvent = $stmt->fetch();
             // if there is an "enter-workspace" action after the current one recall the method
             if ($nextEnterEvent['date_log']) {
-                $this->computeTimeForUserAndWorkspace($nextEnterEvent['date_log'], $userId, $workspaceId, $time);
+                return $this->computeTimeForUserAndWorkspace($nextEnterEvent['date_log'], $userId, $workspaceId, $time);
             } else {
                 return $time;
             }
-        } else {
-            return $time;
         }
+
+        return $time;
     }
 
     /**
