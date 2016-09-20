@@ -46,7 +46,7 @@ info:
   no_objective_users: This objective has not yet been assigned to een user. You can assign objectives to users in the "Objectives" tab.
   no_user_compententie_history: No activity associated with this compententie has been made yet.
   no_user_objectives: No objective has been assigned to een user yet. You can assign objectives to users in the "Objectives" tab.
-  scale_levels: "The levels must be separated by line breaks. Example:\n\nEasy\nMedium\nHard"
+  scale_levels: The levels must be separated by line breaks. Example:\n\nEasy\nMedium\nHard
 learners: Learners
 level:
   achieved: Achieved level
