@@ -12,7 +12,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ExperienceType extends AbstractWidgetType
 {
-    /** @var \Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler  */
+    /** @var \Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler */
     private $platformConfigHandler;
 
     /**
