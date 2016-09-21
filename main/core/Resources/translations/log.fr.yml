@@ -1,4 +1,4 @@
-'Show actions for': 'Afficher les actions suivantes :'
+'Show actions for': Afficher les actions suivantes :
 all: Tous
 'for user': Filtrer sur l''utilisateur :
 group: Groupe
@@ -26,33 +26,33 @@ log_group-delete_filter: Suppression d'un groupe
 log_group-delete_sentence: a supprimé le groupe %receiver_group%
 log_group-delete_shortname: Suppression
 log_group-delete_title: Suppression d'un groupe
-log_group-remove_user_filter: 'Utilisateur retiré d''un groupe'
-log_group-remove_user_sentence: 'a retiré %receiver_user% du groupe %receiver_group%'
+log_group-remove_user_filter: Utilisateur retiré d'un groupe
+log_group-remove_user_sentence: a retiré %receiver_user% du groupe %receiver_group%
 log_group-remove_user_shortname: Retrait
-log_group-remove_user_title: 'Utilisateur retiré d''un groupe'
-log_group-update_filter: 'Mise à jour d''un groupe'
-log_group-update_sentence: 'a modifié le groupe %receiver_group%'
+log_group-remove_user_title: Utilisateur retiré d'un groupe
+log_group-update_filter: Mise à jour d'un groupe
+log_group-update_sentence: a modifié le groupe %receiver_group%
 log_group-update_shortname: Modification
-log_group-update_title: 'Mise à jour d''un groupe'
-log_has_not_changed: 'N''a pas changé'
-log_hidden_workspace_widget_config_amount: 'Nombre d''actions'
-log_himself: 'L''auteur lui-même'
+log_group-update_title: Mise à jour d'un groupe
+log_has_not_changed: N'a pas changé
+log_hidden_workspace_widget_config_amount: Nombre d'actions
+log_himself: L'auteur lui-même
 log_login: Connexion
 log_move: Déplacement
-log_new_values: 'Nouvelles valeurs'
-log_no_actions_found: 'Aucune action trouvée'
-log_old_folder: 'Ancien dossier parent'
-log_old_values: 'Anciennes valeurs'
-log_old_workspace: 'Ancien espace d''activités'
-log_owner: 'Propriétaire de la ressource cible'
-log_platform_roles: 'Rôles plateforme'
+log_new_values: Nouvelles valeurs
+log_no_actions_found: Aucune action trouvée
+log_old_folder: Ancien dossier parent
+log_old_values: Anciennes valeurs
+log_old_workspace: Ancien espace d''activités
+log_owner: Propriétaire de la ressource cible
+log_platform_roles: Rôles plateforme
 log_read: Lecture
-log_receiver_group: 'Groupe cible de l''action'
-log_receiver_user: 'Utilisateur cible de l''action'
-log_remove_user: 'Retrait d''un utilisateur'
-log_resource: 'Ressource cible de l''action'
-log_resource-copy_filter: 'Copie d''une ressource'
-log_resource-copy_sentence: 'a copié %resource%'
+log_receiver_group: Groupe cible de l'action
+log_receiver_user: Utilisateur cible de l'action
+log_remove_user: Retrait d'un utilisateur
+log_resource: Ressource cible de l'action
+log_resource-copy_filter: Copie d''une ressource
+log_resource-copy_sentence: a copié %resource%
 log_resource-copy_shortname: Copie
 log_resource-copy_title: 'Copie d''une ressource'
 log_resource-create_filter: 'Création d''une ressource'

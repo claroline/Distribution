@@ -52,8 +52,8 @@ log_receiver_user: log_receiver_user
 log_remove_user: log_remove_user
 log_resource: log_resource
 log_resource-copy_filter: log_resource-copy_filter
-log_resource-copy_sentence: log_resource-copy_sentence
-log_resource-copy_shortname: log_resource-copy_shortname
+log_resource-copy_sentence: heeft %resource% gekopieerd
+log_resource-copy_shortname: Kopie
 log_resource-copy_title: log_resource-copy_title
 log_resource-create_filter: log_resource-create_filter
 log_resource-create_sentence: log_resource-create_sentence

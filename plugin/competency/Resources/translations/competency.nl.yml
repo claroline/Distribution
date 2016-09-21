@@ -3,25 +3,25 @@ ability:
   create: Maak een capaciteit
   delete: Verwijder een capaciteit
   edit: Bewerk een capaciteit
-  linked_activity_count: Verbonden activiteiten
+  linked_activity_count: Gekoppelde activiteiten
   min_activity_count: Aantal activiteiten te slagen
   required_activity_count: Vereist
 ability_: Capaciteit
-associated_compententies: Verbonden competenties
+associated_compententies: Gekoppelde competenties
 collapse_all: Alles openklappen
 compentency:
-  activities: Verbonden activiteiten
+  activities: Gekoppelde activiteiten
   associate: Associeer een competentie
   create: Maak een competentie
   create_sub: Maak een sub-competentie
   do_select: Selecteer een competentie
   delete: Verwijder een competentie
-  delete_association: Verwijder een associatie
+  delete_association: Verwijder een koppeling
   edit: Bewerk een competentie
 compentency_: competentie
 expand_all: Alles samenklappen
 framework:
-  create: Voeg een framework toe
+  create: Maak een framework
   delete: Verwijder een framework
   do_select: Selecteer een framework
   edit: Bewerk een framework
@@ -30,23 +30,23 @@ framework_: Framework
 info:
   ability_search: Voer hier de beschrijving van deze capaciteit.
   add_compententy_association: Klik op de onderstaande knop om een competentie te selecteren.
-  create_learning_objective: Klik op de onderstaande knop om een nieuwe doelstelling te scheppen.
-  no_ability_activities: No activiteit is associated with this capaciteit.
-  no_learning_objectives: There are no learning objectives yet.
-  no_compententy_activities: No activiteit is associated met deze competentie.
-  no_compententy_association: Er zijn nog geen geassocieerde competenties gemaakt.
-  no_frame: There are no frameworks yet. You can create een new framework or manage the scales of difficulty using the buttons below.
-  no_frame_no_scale: There are no frameworks and no scales yet. Indien uw kiest een framework nu te scheppen, it will be assigned een default schaal of one niveau. Alternatively, you can create een schaal and then associate it directly with your framework.
-  no_frame_to_select: No competentie framework has been defined yet.
-  no_group_objectives: No doelstelling has been assigned to een group yet. You can assign objectives to groups in the "Doelstellingen" tab.
-  no_my_objectives: No learning doelstelling is currently assigned to you.
-  no_scale: There are no scales yet. You can create een new schaal using the button below.
+  create_learning_objective: Klik op de onderstaande knop om een nieuw leerdoel te maken.
+  no_ability_activities: Er is geen activiteit gekoppeld met deze capaciteit.
+  no_learning_objectives: Er zijn nog geen leerdoelen gemaakt.
+  no_compententy_activities: Er is geen activiteit gekoppeld met deze competentie.
+  no_compententy_association: Er zijn nog geen gekoppelde competenties gemaakt.
+  no_frame: Er zijn nog geen comptetentieframeworks gemaakt. U kan een nieuw framework maken of de moeilijkheudsgrrad beheren door middel van onderstaande knoppen.
+  no_frame_no_scale: Er zijn nog geen comptetentieframeworks noch schalen gemaakt. Indien uw kiest een framework nu te scheppen, dan zal het een standaardschaal van één niveau toegewezen worden. Als alternatief kunt u een schaal maken en deze onmiddellijk koppelen met uw framework.
+  no_frame_to_select: Er zijn nog geen comptetentieframeworks gemaakt.
+  no_group_objectives: Er is nog geen leerdoel aan een groep toegewezen. U kan leerdoelen voor groepen toewijzen in de "Leerdoelen" tab.
+  no_my_objectives: U wordt nog geen leerdoel toegewezen.
+  no_scale: Er zijn nog geen schalen gemaakt. U kunt een nieuw schaal maken door middel van onderstaande knoppen.
   no_objective_group_users: Deze groep heeft momenteel geen leden.
-  no_objective_groups: Deze doelstelling has not yet been assigned to een group. You can assign objectives to groups in de "Doelstellingen" tab.
-  no_objective_users: Deze doelstelling has not yet been assigned to een user. You can assign objectives to users in de "Doelstellingen" tab.
-  no_user_compententie_history: No activiteit associated with this competentie has been made yet.
-  no_user_objectives: No doelstelling has been assigned to een user yet. You can assign objectives to users in de "Doelstellingen" tab.
-  scale_levels: De niveaus moeten door line breaks separated worden. Voorbeeld:\n\nEasy\nMedium\nHard
+  no_objective_groups: Dit leerdoel is nog niet toegewezen aan een groep. U kunt leerdoelen aan groepen toewijzen in de "Leerdoelen" tab.
+  no_objective_users: Dit leerdoel is nog niet toegewezen aan een gebruiker. U kunt leerdoelen aan gebruikers toewijzen in de "Leerdoelen" tab.
+  no_user_compententie_history: Er is nog geen activiteit gekoppeld met deze competentie.
+  no_user_objectives: Er is nog geen leerdoel aan een gebruiker toegewezen. U kunt leerdoelen aan gebruikers toewijzen in de "Leerdoelen" tab.
+  scale_levels: De niveaus moeten door nieuwe-regel-tekens gescheiden worden. Voorbeeld:\n\nEasy\nMedium\nHard
 learners: Lerenden
 level:
   achieved: Achieved niveau
@@ -57,7 +57,7 @@ level_: Niveau
 levels: Niveaus
 message:
   ability_added: Capaciteit met success toegevoegd.
-  ability_association_deletion_confirm: Bent u er zeker van dat u  delete the association with this capaciteit ?
+  ability_association_deletion_confirm: Bent u er zeker van dat u de koppeling met deze capaciteit wenst te verwijderen ?
   ability_created: Capaciteit met succes created.
   ability_deleted: Capaciteit met succes deleted.
   ability_deletion_confirm: Bent u er zeker van dat u  delete this capaciteit ?
@@ -69,57 +69,57 @@ message:
   compentency_edited: competentie met succes bewerkt.
   compentency_deleted: competentie met succes deleted.
   compentency_deletion_confirm: Bent u er zeker van dat u  delete this competentie ? This action is irreversible.
-  framework_created: New framework met succes created.
-  framework_deleted: Framework met succes deleted.
-  framework_deletion_confirm: Bent u er zeker van dat u  delete this framework ? This action is irreversible.
+  framework_created: Nieuw framework met succes gemaakt.
+  framework_deleted: Framework met succes verwijderd.
+  framework_deletion_confirm: Bent u er zeker van dat u dit framework wenst te verwijderen ? Deze actie is onomkeerbaar.
   framework_edited: Framework met succes bewerkt.
-  objective_already_assigned_to_group: This doelstelling has already been assigned to this group.
-  objective_already_assigned_to_user: This doelstelling has already been assigned to this user.
-  objective_assigned: Doelstelling met succes assigned.
-  objective_association_deleted: competentie met succes removed.
-  objective_association_deletion_confirm: Bent u er zeker van dat u  remove this competentie from the doelstelling ?
-  objective_compententie_already_associated: This competentie is already associated with the doelstelling.
+  objective_already_assigned_to_group: This leerdoel has already been assigned to this group.
+  objective_already_assigned_to_user: This leerdoel has already been assigned to this user.
+  objective_assigned: Leerdoel met succes toegewezen.
+  objective_association_deleted: Competentie met succes verwijderd.
+  objective_association_deletion_confirm: Bent u er zeker van dat u deze competentie van het leerdoel wenst te verwijderen ?
+  objective_compententie_already_associated: Deze competentie is al gekoppeld met het leerdoel.
   objective_compententie_associated: competentie met succes associated.
-  objective_created: New doelstelling met succes created.
-  objective_deleted: Doelstelling met succes removed.
-  objective_deletion_confirm: Bent u er zeker van dat u  delete this doelstelling ? Deze actie is irreversible.
-  objective_edited: Doelstelling met succes bewerkt.
-  objective_from_group_not_unassigned: This doelstelling cannot be removed directly because it was assigned to one of the user groups.
-  objective_unassigned: Doelstelling met succes removed.
-  objective_unassign_group_confirm: Bent u er zeker van dat u  take away this doelstelling from this group ?
-  objective_unassign_user_confirm: Bent u er zeker van dat u  take away this doelstelling from this user ?
-  scale_created: New schaal met succes created.
-  scale_deleted: schaal met succes deleted.
+  objective_created: New leerdoel met succes created.
+  objective_deleted: Leerdoel met succes removed.
+  objective_deletion_confirm: Bent u er zeker van dat u  delete this leerdoel ? Deze actie is irreversible.
+  objective_edited: Leerdoel met succes bewerkt.
+  objective_from_group_not_unassigned: This leerdoel cannot be removed directly because it was assigned to one of the user groups.
+  objective_unassigned: Leerdoel met succes removed.
+  objective_unassign_group_confirm: Bent u er zeker van dat u  take away this leerdoel from this group ?
+  objective_unassign_user_confirm: Bent u er zeker van dat u  take away this leerdoel from this user ?
+  scale_created: Nieuwe schaal met succes gemaakt.
+  scale_deleted: schaal met succes verwijderd.
   scale_deletion_confirm: Bent u er zeker van dat u deze schaal wenst te verwijderen ?
   scale_edited: schaal met succes bewerkt.
   sub_compententie_created: Sub-competentie met success gemaakt.
 objective:
-  assign: Een doelstelling toewijzen
-  assign_this: Assign this doelstelling
-  create: Schep een learning doelstelling
-  create_short: Schep een doelstelling
-  delete: Verwijder een doelstelling
-  edit: Bewerk een doelstelling
-  groups_with: Groups with the doelstelling %objective%
-  pick_level: Selecteer het te behalen niveau van compententiete
-  see_all_groups: View all groups
-  see_all_users: View all users
-  unassign_group: Take away een doelstelling from een group
-  unassign_user: Take away een doelstelling from een user
-  user_history: Progress history
-  users_with: Users with the doelstelling %objective%
-  users_from_group: Members of the group %group%
-objective_: Doelstelling
-objectives: Doelstellingen
-origin: Origin
+  assign: Een leerdoel toewijzen
+  assign_this: Dit leerdoel toewijzen
+  create: Maak een leerdoel
+  create_short: Maak een leerdoel
+  delete: Verwijder een leerdoel
+  edit: Bewerk een leerdoel
+  groups_with: Groepen met het leerdoel %objective%
+  pick_level: Selecteer het te behalen niveau van compententie
+  see_all_groups: Alle groepen zien
+  see_all_users: Alle gebruikers zien
+  unassign_group: Verwijder een leerdoel voor een groep
+  unassign_user: Verwijder een leerdoel voor een gebruiker
+  user_history: Vordering geschiedenis
+  users_with: Gebruikers met het leerdoel %objective%
+  users_from_group: Leden van de groep %group%
+objective_: Leerdoel
+objectives: Leerdoelen
+origin: Oorsprong
 tooltip:
   # cannot use pluralization techniques because transchoice filter is missing in twigjs
-  undeletable_scale: Deze schaal is geassocieerd met een framework en kan niet verwijderd worden.
-  undeletable_scale_plural: Deze schaal is geassocieerd met %count% frameworks en kan niet verwijderd worden.
-  uneditable_scale: Deze schaal cannot be bewerkt because it is associated with een capaciteit.
-  uneditable_scale_plural: Deze schaal cannot be bewerkt because it is associated with %count% abilities.
-manage_scales: Manage scales
-progress: Progress
+  undeletable_scale: Deze schaal is gekoppeld met een framework en kan niet verwijderd worden.
+  undeletable_scale_plural: Deze schaal is gekoppeld met %count% frameworks en kan niet verwijderd worden.
+  uneditable_scale: Deze schaal kan niet bewerkt worden omdat ze gekoppeld is met een capaciteit.
+  uneditable_scale_plural: Deze schaal kan niet bewerkt worden omdat ze gekoppeld is met %count% capaciteiten.
+manage_scales: Beheer van de schalen
+progress: Vordering
 scale:
   create: Schep een schaal
   delete: Verwijder een schaal
@@ -130,7 +130,7 @@ scale:
 scale_: schaal
 scales: Schalen
 user_picker:
-  select_target: Choose the selection target
+  select_target: Kies het voorwerp van de selectie
   enter_user_search: Enter een first name, last name or username and select een suggestion in the list
   enter_group_search: Enter een group name and select een suggestion in the list
-user_picker_: User(s) selection
+user_picker_: Selectie van gebruiker(s)
