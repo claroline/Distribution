@@ -89,23 +89,23 @@ message:
   objective_unassign_group_confirm: Bent u er zeker van dat u  take away this leerdoel from this group ?
   objective_unassign_user_confirm: Bent u er zeker van dat u  take away this leerdoel from this user ?
   scale_created: Nieuwe schaal met succes gemaakt.
-  scale_deleted: schaal met succes verwijderd.
+  scale_deleted: Schaal met succes verwijderd.
   scale_deletion_confirm: Bent u er zeker van dat u deze schaal wenst te verwijderen ?
-  scale_edited: schaal met succes bewerkt.
+  scale_edited: Schaal met succes bewerkt.
   sub_compententie_created: Sub-competentie met success gemaakt.
 objective:
   assign: Een leerdoel toewijzen
   assign_this: Dit leerdoel toewijzen
-  create: Maak een leerdoel
-  create_short: Maak een leerdoel
-  delete: Verwijder een leerdoel
-  edit: Bewerk een leerdoel
+  create: Een leerdoel maken
+  create_short: Een leerdoel maken
+  delete: Een leerdoel verwijderen
+  edit: Een leerdoel bewerken
   groups_with: Groepen met het leerdoel %objective%
   pick_level: Selecteer het te behalen niveau van compententie
   see_all_groups: Alle groepen zien
   see_all_users: Alle gebruikers zien
-  unassign_group: Verwijder een leerdoel voor een groep
-  unassign_user: Verwijder een leerdoel voor een gebruiker
+  unassign_group: Een leerdoel voor een groep verwijderen
+  unassign_user: Een leerdoel voor een gebruiker verwijderen
   user_history: Vordering geschiedenis
   users_with: Gebruikers met het leerdoel %objective%
   users_from_group: Leden van de groep %group%
@@ -118,19 +118,19 @@ tooltip:
   undeletable_scale_plural: Deze schaal is gekoppeld met %count% frameworks en kan niet verwijderd worden.
   uneditable_scale: Deze schaal kan niet bewerkt worden omdat ze gekoppeld is met een capaciteit.
   uneditable_scale_plural: Deze schaal kan niet bewerkt worden omdat ze gekoppeld is met %count% capaciteiten.
-manage_scales: Beheer van de schalen
+manage_scales: De schalen beheren
 progress: Vordering
 scale:
-  create: Schep een schaal
-  delete: Verwijder een schaal
+  create: Een schaal maken
+  delete: Een schaal verwijderen
   default_level_name: Level 1
-  default_name: Default schaal
-  edit: Bewerk een schaal
-  view: schaal details
+  default_name: Standaardschaal
+  edit: Een schaal bewerken
+  view: Schaal details
 scale_: schaal
 scales: Schalen
 user_picker:
   select_target: Kies het voorwerp van de selectie
-  enter_user_search: Enter een first name, last name or username and select een suggestion in the list
-  enter_group_search: Enter een group name and select een suggestion in the list
+  enter_user_search: Voer in een familienaam, een voornaam of een gebruikersnaam en selecteer een suggestie in de lijst.
+  enter_group_search: Voer in de naam van een groep en selecteer een suggestie in de lijst.
 user_picker_: Selectie van gebruiker(s)
