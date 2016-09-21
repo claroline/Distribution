@@ -1,5 +1,5 @@
-6_parameters_min_msg: Het CSV-bestand moet tenminste 6 elementen per lijn bevatten.
-7_parameters_min_msg: Het CSV-bestand moet tenminste 7 elementen per lijn bevatten.
+6_parameters_min_msg: Het CSV-bestand moet tenminste 6 elementen per regel bevatten.
+7_parameters_min_msg: Het CSV-bestand moet tenminste 7 elementen per regel bevatten.
 accept: Aanvaarden
 accessible_from: Toegankelijk vanaf
 accessible_until: Toegankelijk tot
@@ -7,7 +7,7 @@ account_created: 'Les informations de votre compte vous ont été envoyées par 
 account_duration_label: 'Durée de vie des comptes (jours)'
 account_general_statistics: 'Statistiques générales sur les comptes'
 action: Actie
-action_list: 'Liste des actions'
+action_list: Lijst van de acties
 actions: Acties
 actions_per_day: Aantal acties per dag
 activate_account: 'Activation du compte'

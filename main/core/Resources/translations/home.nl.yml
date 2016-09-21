@@ -1,4 +1,4 @@
-Collapse: Collapse
+Collapse: Openklappen
 add_a_link: add_a_link
 add_link_here: add_link_here
 confirm_delete_content_message: confirm_delete_content_message
@@ -7,12 +7,12 @@ content_pages: content_pages
 content_regions: content_regions
 content_size: content_size
 create_content: create_content
-days_ago: days_ago
+days_ago: dagen geleden
 edit_in_page: edit_in_page
 for_unlogged_users: for_unlogged_users
 header: header
 header_menu_available: header_menu_available
-hours_ago: hours_ago
+hours_ago: uren geleden
 interactive_content_add: interactive_content_add
 irreversible_action: irreversible_action
 left_direction: left_direction
@@ -40,5 +40,5 @@ show_workspace_menu_at_footer: show_workspace_menu_at_footer
 try_again_message: try_again_message
 unpublish_link: unpublish_link
 unpublish_page: unpublish_page
-weeks_ago: weeks_ago
-years_ago: years_ago
+weeks_ago: weken geleden
+years_ago: jaar geleden
