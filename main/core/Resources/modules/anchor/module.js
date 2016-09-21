@@ -1,9 +1,9 @@
-/* disable link attr directive */
+/* link module */
 
 import angular from 'angular/index'
 
 angular
-  .module('LinkDisabled', [])
+  .module('anchor', [])
   .directive('aDisabled', function() {
     return {
       compile: function(tElement, tAttrs) {
