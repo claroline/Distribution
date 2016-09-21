@@ -1,31 +1,31 @@
 'Show actions for': 'Afficher les actions suivantes :'
 all: Tous
-'for user': 'Filtrer sur l''utilisateur :'
+'for user': Filtrer sur l''utilisateur :
 group: Groupe
-log_add_user: 'Ajout d''un utilisateur'
-log_change_right: 'Changement de droits'
-log_change_set: 'Liste des propriétés modifiées'
-log_context: 'Contexte :'
+log_add_user: Ajout d'un utilisateur
+log_change_right: Changement de droits
+log_change_set: Liste des propriétés modifiées
+log_context: Contexte :
 log_copy: Copie
-log_copy_source: 'Source de la copie'
+log_copy_source: Source de la copie
 log_create: Création
 log_default_user: Claroline Connect
 log_delete: Suppression
 log_doer: Auteur de l'action
 log_export: Téléchargement
 log_filter_actions: Afficher les actions
-log_group-add_user_filter: 'Ajout d''un utilisateur à un groupe'
-log_group-add_user_sentence: 'a ajouté %receiver_user% au groupe %receiver_group%'
+log_group-add_user_filter: Ajout d'un utilisateur à un groupe
+log_group-add_user_sentence: a ajouté %receiver_user% au groupe %receiver_group%
 log_group-add_user_shortname: Ajout
-log_group-add_user_title: 'Ajout d''un utilisateur à un groupe'
-log_group-create_filter: 'Création d''un groupe'
-log_group-create_sentence: 'a créé le groupe %receiver_group%'
+log_group-add_user_title: Ajout d'un utilisateur à un groupe
+log_group-create_filter: Création d'un groupe
+log_group-create_sentence: a créé le groupe %receiver_group%
 log_group-create_shortname: Création
-log_group-create_title: 'Création d''un groupe'
-log_group-delete_filter: 'Suppression d''un groupe'
-log_group-delete_sentence: 'a supprimé le groupe %receiver_group%'
+log_group-create_title: Création d'un groupe
+log_group-delete_filter: Suppression d'un groupe
+log_group-delete_sentence: a supprimé le groupe %receiver_group%
 log_group-delete_shortname: Suppression
-log_group-delete_title: 'Suppression d''un groupe'
+log_group-delete_title: Suppression d'un groupe
 log_group-remove_user_filter: 'Utilisateur retiré d''un groupe'
 log_group-remove_user_sentence: 'a retiré %receiver_user% du groupe %receiver_group%'
 log_group-remove_user_shortname: Retrait

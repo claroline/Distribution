@@ -1,25 +1,25 @@
-'Show actions for': Toon acties voor
+'Show actions for': Toon de volgende acties
 all: allen
 'for user': voor gebruiker
 group: Groep
 log_add_user: Gebruiker toevoegen
 log_change_right: Verandering van rechten
-log_change_set: log_change_set
-log_context: log_context
-log_copy: log_copy
-log_copy_source: log_copy_source
-log_create: log_create
+log_change_set: Lijst van de bewerkte eigenschappen
+log_context: Context :
+log_copy: Kopie
+log_copy_source: Bron van de kopie
+log_create: Maken
 log_default_user: Claroline Connect
-log_delete: log_delete
-log_doer: log_doer
-log_export: log_export
-log_filter_actions: log_filter_actions
-log_group-add_user_filter: log_group-add_user_filter
-log_group-add_user_sentence: log_group-add_user_sentence
-log_group-add_user_shortname: log_group-add_user_shortname
-log_group-add_user_title: log_group-add_user_title
-log_group-create_filter: log_group-create_filter
-log_group-create_sentence: log_group-create_sentence
+log_delete: Verwijderen
+log_doer: Auteur van de actie
+log_export: Download
+log_filter_actions: Acties tonen
+log_group-add_user_filter: Een gebruiker aan een groep toevoegen
+log_group-add_user_sentence: heeft %receiver_user% toegevoegd aan groep %receiver_group%
+log_group-add_user_shortname: Toevoegen
+log_group-add_user_title: Een gebruiker aan een groep toevoegen
+log_group-create_filter: Een groep maken
+log_group-create_sentence: heeft de groep %receiver_group% gemaakt
 log_group-create_shortname: log_group-create_shortname
 log_group-create_title: log_group-create_title
 log_group-delete_filter: log_group-delete_filter
