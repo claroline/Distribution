@@ -73,21 +73,21 @@ message:
   framework_deleted: Framework met succes verwijderd.
   framework_deletion_confirm: Bent u er zeker van dat u dit framework wenst te verwijderen ? Deze actie is onomkeerbaar.
   framework_edited: Framework met succes bewerkt.
-  objective_already_assigned_to_group: This leerdoel has already been assigned to this group.
-  objective_already_assigned_to_user: This leerdoel has already been assigned to this user.
+  objective_already_assigned_to_group: Dit leerdoel is al aan deze groep toegewezen.
+  objective_already_assigned_to_user: Dit leerdoel is al aan deze gebruiker toegewezen.
   objective_assigned: Leerdoel met succes toegewezen.
   objective_association_deleted: Competentie met succes verwijderd.
   objective_association_deletion_confirm: Bent u er zeker van dat u deze competentie van het leerdoel wenst te verwijderen ?
   objective_compententie_already_associated: Deze competentie is al gekoppeld met het leerdoel.
-  objective_compententie_associated: competentie met succes associated.
-  objective_created: New leerdoel met succes gemaakt.
+  objective_compententie_associated: Competentie met succes gekoppeld.
+  objective_created: Nieuw leerdoel met succes gemaakt.
   objective_deleted: Leerdoel met succes verwijderd.
-  objective_deletion_confirm: Bent u er zeker van dat u  delete this leerdoel ? Deze actie is onomkeerbaar.
+  objective_deletion_confirm: Bent u er zeker van dat u dit leerdoel wenst te verwijderen ? Deze actie is onomkeerbaar.
   objective_edited: Leerdoel met succes bewerkt.
-  objective_from_group_not_unassigned: This leerdoel cannot be removed directly because it was assigned to one of the user groups.
-  objective_unassigned: Leerdoel met succes removed.
-  objective_unassign_group_confirm: Bent u er zeker van dat u  take away this leerdoel from this group ?
-  objective_unassign_user_confirm: Bent u er zeker van dat u  take away this leerdoel from this user ?
+  objective_from_group_not_unassigned: Dit leerdoel kan niet direct verwijderd worden omdat het toegewezen is aan één van de groepen van gebruikers.
+  objective_unassigned: Leerdoel met succes verwijderd.
+  objective_unassign_group_confirm: Bent u er zeker van dat u dit leerdoel niet meer wenst toe te wijzen aan deze groep ?
+  objective_unassign_user_confirm: Bent u er zeker van dat u dit leerdoel niet meer wenst toe te wijzen aan deze gebruiker ?
   scale_created: Nieuwe schaal met succes gemaakt.
   scale_deleted: Schaal met succes verwijderd.
   scale_deletion_confirm: Bent u er zeker van dat u deze schaal wenst te verwijderen ?
@@ -123,7 +123,7 @@ progress: Vordering
 scale:
   create: Een schaal maken
   delete: Een schaal verwijderen
-  default_level_name: Level 1
+  default_level_name: Niveau 1
   default_name: Standaardschaal
   edit: Een schaal bewerken
   view: Schaal details
