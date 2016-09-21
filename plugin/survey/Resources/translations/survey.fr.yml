@@ -60,12 +60,8 @@ no_question: Aucune question
 not_mandatory_answer_message: Une réponse n'est pas requise
 number_of_respondents: Nombre de personnes ayant répondu
 number_of_responses: Nombre de réponses
-<<<<<<< HEAD
-open_ended: Ouverte
-=======
 open_ended: Ouverte, avec éditeur
 open_ended_bare: Ouverte, sans éditeur
->>>>>>> b1955577572dad335fa4926223976970e0363ae6
 parameters: Paramètres
 parameters_edition: Modification des paramètres
 publication_date: Date de publication
@@ -96,10 +92,7 @@ return: Retour
 selected_answers_deletion: Supprimer les réponses sélectionnées
 selected_answers_deletion_confirm_message: Êtes-vous sûr de vouloir supprimer les réponses sélectionnées ?
 show_result_to_users: Afficher le résultat aux utilisateurs
-<<<<<<< HEAD
-=======
 simple_text: Texte simple
->>>>>>> b1955577572dad335fa4926223976970e0363ae6
 start_date: Date de début
 status: Statut
 survey_answer: Réponse
@@ -125,8 +118,4 @@ unpublished_user_message: Le sondage nest pas encore publié.
 vertical: Vertical
 view_question_btn_explanation: Aperçu de la question
 view_survey_results: Voir les résultats du sondage
-<<<<<<< HEAD
 view_your_answers: Voir vos réponses
-=======
-view_your_answers: Voir vos réponses
->>>>>>> b1955577572dad335fa4926223976970e0363ae6

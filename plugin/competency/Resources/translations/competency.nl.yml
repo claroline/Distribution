@@ -49,10 +49,10 @@ info:
   scale_levels: De niveaus moeten door nieuwe-regel-tekens gescheiden worden. Voorbeeld:\n\nEasy\nMedium\nHard
 learners: Lerenden
 level:
-  achieved: Achieved niveau
-  expected: Expected niveau
-  obtained: Obtained niveau
-  not_achieved: Level not achieved
+  achieved: Gerealiseerd niveau
+  expected: Verwacht niveau
+  obtained: Bereikt niveau
+  not_achieved: Niveau niet bereikt
 level_: Niveau
 levels: Niveaus
 message:
@@ -80,9 +80,9 @@ message:
   objective_association_deletion_confirm: Bent u er zeker van dat u deze competentie van het leerdoel wenst te verwijderen ?
   objective_compententie_already_associated: Deze competentie is al gekoppeld met het leerdoel.
   objective_compententie_associated: competentie met succes associated.
-  objective_created: New leerdoel met succes created.
-  objective_deleted: Leerdoel met succes removed.
-  objective_deletion_confirm: Bent u er zeker van dat u  delete this leerdoel ? Deze actie is irreversible.
+  objective_created: New leerdoel met succes gemaakt.
+  objective_deleted: Leerdoel met succes verwijderd.
+  objective_deletion_confirm: Bent u er zeker van dat u  delete this leerdoel ? Deze actie is onomkeerbaar.
   objective_edited: Leerdoel met succes bewerkt.
   objective_from_group_not_unassigned: This leerdoel cannot be removed directly because it was assigned to one of the user groups.
   objective_unassigned: Leerdoel met succes removed.
