@@ -54,7 +54,7 @@ class Facebook implements NetworkInterface
         $api_url = sprintf(self::API_URL, urlencode($url));
         $data = null;
         try {
-            $data = json_decode(file_get_contents($api_url));
+            $data = json_decode(json_encode(file_get_contents($api_url), true));
         } catch (\Exception $e) {
             $data = null;
         }
