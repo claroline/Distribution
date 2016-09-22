@@ -166,6 +166,6 @@ angular
     .run(function($rootScope, $location, $anchorScroll) {
       // Automatically scroll to the Step content
       $rootScope.$on('$routeChangeSuccess', () => {
-        $anchorScroll('scroll-to-onload')
+        $anchorScroll('claroline-base-layout-body')
       })
     })

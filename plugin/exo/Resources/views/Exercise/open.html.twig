@@ -19,7 +19,7 @@
 {# Content of the Page #}
 {% block section_content %}
     {# Initialize AngularJS application #}
-    <div data-ng-app="ExerciseApp" data-ng-cloak="" id="scroll-to-onload">
+    <div data-ng-app="ExerciseApp" data-ng-cloak="">
         <exercise
             data-exercise="{{ exercise | json_encode | raw | escape }}"
             data-nb-papers="{{ nbPapers }}"
