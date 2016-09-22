@@ -34,15 +34,14 @@ class InteractionQCM extends AbstractInteraction
     private $weightResponse = false;
 
     /**
-     * @ORM\OneToMany(
-     *     targetEntity="Choice",
-     *     mappedBy="interactionQCM",
-     *     cascade={"remove"}
-     * )
+     * @ORM\OneToMany(targetEntity="Choice", mappedBy="interactionQCM", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @ORM\OrderBy({"ordre" = "ASC"})
      */
     private $choices;
 
     /**
+     * @deprecated the only purpose of this is to know if it's a multiple or unique choice question (a boolean is sufficient)
+     *
      * @ORM\ManyToOne(targetEntity="TypeQCM")
      * @ORM\JoinColumn(name="type_qcm_id", referencedColumnName="id")
      */
@@ -65,6 +64,8 @@ class InteractionQCM extends AbstractInteraction
     }
 
     /**
+     * @deprecated will be removed in the next release
+     *
      * @return TypeQCM
      */
     public function getTypeQCM()
@@ -73,6 +74,8 @@ class InteractionQCM extends AbstractInteraction
     }
 
     /**
+     * @deprecated will be removed in the next release
+     *
      * @param TypeQCM $typeQCM
      */
     public function setTypeQCM(TypeQCM $typeQCM)
@@ -147,16 +150,6 @@ class InteractionQCM extends AbstractInteraction
     /**
      * @return ArrayCollection
      */
-    public function setChoices(ArrayCollection $choices)
-    {
-        $this->choices = $choices;
-
-        return $this->choices;
-    }
-
-    /**
-     * @return ArrayCollection
-     */
     public function getChoices()
     {
         return $this->choices;
@@ -167,8 +160,20 @@ class InteractionQCM extends AbstractInteraction
      */
     public function addChoice(Choice $choice)
     {
-        $this->choices->add($choice);
-        $choice->setInteractionQCM($this);
+        if (!$this->choices->contains($choice)) {
+            $this->choices->add($choice);
+            $choice->setInteractionQCM($this);
+        }
+    }
+
+    /**
+     * @param Choice $choice
+     */
+    public function removeChoice(Choice $choice)
+    {
+        if ($this->choices->contains($choice)) {
+            $this->choices->removeElement($choice);
+        }
     }
 
     public function shuffleChoices()
@@ -197,7 +202,7 @@ class InteractionQCM extends AbstractInteraction
         $choiceCount = count($this->choices);
 
         while ($i < $choiceCount) {
-            if ($tabFixed[$i] != -1) {
+            if ($tabFixed[$i] !== -1) {
                 $choices[] = $this->choices[$i];
             } else {
                 $index = $tabShuffle[0];
@@ -212,6 +217,9 @@ class InteractionQCM extends AbstractInteraction
         $this->choices = $choices;
     }
 
+    /**
+     * @deprecated let Doctrine order the collection itself
+     */
     public function sortChoices()
     {
         $tab = [];

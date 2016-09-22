@@ -24,6 +24,7 @@ use UJM\ExoBundle\Entity\Step;
 use UJM\ExoBundle\Entity\StepQuestion;
 use UJM\ExoBundle\Entity\TypeMatching;
 use UJM\ExoBundle\Entity\TypeQCM;
+use UJM\ExoBundle\Library\Question\QuestionType;
 use UJM\ExoBundle\Manager\PaperManager;
 
 /**
@@ -96,6 +97,7 @@ class Persister
     public function qcmQuestion($title, array $choices = [], $description = '')
     {
         $question = new Question();
+        $question->setMimeType(QuestionType::CHOICE);
         $question->setTitle($title);
         $question->setInvite('Invite...');
         $question->setDescription($description);
@@ -130,6 +132,7 @@ class Persister
     public function openQuestion($title)
     {
         $question = new Question();
+        $question->setMimeType(QuestionType::OPEN);
         $question->setTitle($title);
         $question->setInvite('Invite...');
 
@@ -168,6 +171,7 @@ class Persister
     public function matchQuestion($title, $labels = [], $proposals = [])
     {
         $question = new Question();
+        $question->setMimeType(QuestionType::MATCH);
         $question->setTitle($title);
         $question->setInvite('Invite...');
 

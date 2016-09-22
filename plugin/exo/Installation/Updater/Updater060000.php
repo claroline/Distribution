@@ -1,11 +1,11 @@
 <?php
 
-namespace UJM\ExoBundle\Installation;
+namespace UJM\ExoBundle\Installation\Updater;
 
 use Claroline\BundleRecorder\Log\LoggableTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class Updater600100
+class Updater060000
 {
     use LoggableTrait;
 

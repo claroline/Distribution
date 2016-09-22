@@ -1,14 +1,18 @@
 <?php
 
-namespace UJM\ExoBundle\Installation;
+namespace UJM\ExoBundle\Installation\Updater;
 
 use Claroline\BundleRecorder\Log\LoggableTrait;
+use Doctrine\DBAL\Driver\Connection;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class Updater700100
+class Updater070000
 {
     use LoggableTrait;
 
+    /**
+     * @var Connection
+     */
     private $connection;
 
     public function __construct(ContainerInterface $container)
@@ -31,7 +35,7 @@ class Updater700100
             WHERE value = \'To pair\'
         ';
         $res = $this->connection->query($query);
-        if ($res->rowCount() == 0) {
+        if ($res->rowCount() === 0) {
             $this->connection->exec("
                 INSERT INTO ujm_type_matching VALUES(3,'To pair', 3)
             ");

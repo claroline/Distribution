@@ -1,11 +1,11 @@
 <?php
 
-namespace UJM\ExoBundle\Installation;
+namespace UJM\ExoBundle\Installation\Updater;
 
 use Claroline\BundleRecorder\Log\LoggableTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class Updater600200
+class Updater060200
 {
     use LoggableTrait;
 
@@ -210,7 +210,7 @@ class Updater600200
         ");
 
         foreach ($exoQuestion as $eq) {
-            if ($eq['exercise_id'] != $exoId) {
+            if ($eq['exercise_id'] !== $exoId) {
                 $exoId = $eq['exercise_id'];
             }
 
@@ -293,7 +293,7 @@ class Updater600200
                 .'WHERE paper_id='.$idPaper;
         $result = $this->connection->query($query)->fetch();
 
-        if ($result['score'] == '') {
+        if (empty($result['score'])) {
             $score = 0;
         } else {
             $score = $result['score'];

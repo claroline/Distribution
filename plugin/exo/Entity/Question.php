@@ -10,6 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="UJM\ExoBundle\Repository\QuestionRepository")
  * @ORM\Table(name="ujm_question")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Question
 {
@@ -24,6 +25,15 @@ class Question
      * @ORM\Column
      */
     private $type;
+
+    /**
+     * The mime type of the Question type.
+     *
+     * @ORM\Column("mime_type", type="string")
+     *
+     * @var string
+     */
+    private $mimeType;
 
     /**
      * @ORM\Column
@@ -59,11 +69,6 @@ class Question
     /**
      * @ORM\Column(type="boolean")
      */
-    private $locked = false;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
     private $model = false;
 
     /**
@@ -87,18 +92,19 @@ class Question
     private $user;
 
     /**
-     * @ORM\OneToMany(
-     *     targetEntity="Hint",
-     *     mappedBy="question",
-     *     cascade={"remove", "persist"}
-     * )
+     * @ORM\OneToMany(targetEntity="Hint", mappedBy="question", cascade={"remove", "persist"}, orphanRemoval=true)
      */
     private $hints;
 
     /**
-     * @ORM\OneToMany(targetEntity="ObjectQuestion", mappedBy="question", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="QuestionObject", mappedBy="question", cascade={"remove", "persist"}, orphanRemoval=true)
      */
     private $objects;
+
+    /**
+     * @ORM\OneToMany(targetEntity="QuestionResource", mappedBy="question", cascade={"remove", "persist"}, orphanRemoval=true)
+     */
+    private $resources;
 
     /**
      * Note: used for joins only., orphanRemoval=true.
@@ -111,8 +117,10 @@ class Question
     {
         $this->hints = new ArrayCollection();
         $this->objects = new ArrayCollection();
+        $this->resources = new ArrayCollection();
         $this->stepQuestions = new ArrayCollection();
         $this->dateCreate = new \DateTime();
+        $this->dateModify = new \DateTime();
     }
 
     /**
@@ -131,6 +139,26 @@ class Question
     public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     * Gets mime type.
+     *
+     * @return string
+     */
+    public function getMimeType()
+    {
+        return $this->mimeType;
+    }
+
+    /**
+     * Sets mime type.
+     *
+     * @param $mimeType
+     */
+    public function setMimeType($mimeType)
+    {
+        $this->mimeType = $mimeType;
     }
 
     /**
@@ -189,12 +217,18 @@ class Question
         return $this->invite;
     }
 
+    /**
+     * @return ArrayCollection
+     */
     public function getObjects()
     {
         return $this->objects;
     }
 
-    public function addObject(ObjectQuestion $object)
+    /**
+     * @param QuestionObject $object
+     */
+    public function addObject(QuestionObject $object)
     {
         if (!$this->objects->contains($object)) {
             $this->objects->add($object);
@@ -202,11 +236,44 @@ class Question
         }
     }
 
-    public function removeObject(ObjectQuestion $object)
+    /**
+     * @param QuestionObject $object
+     */
+    public function removeObject(QuestionObject $object)
     {
         if ($this->objects->contains($object)) {
             $this->objects->removeElement($object);
             $object->setQuestion(null);
+        }
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResources()
+    {
+        return $this->resources;
+    }
+
+    /**
+     * @param QuestionResource $resource
+     */
+    public function addResource(QuestionResource $resource)
+    {
+        if (!$this->resources->contains($resource)) {
+            $this->resources->add($resource);
+            $resource->setQuestion($this);
+        }
+    }
+
+    /**
+     * @param QuestionResource $resource
+     */
+    public function removeResource(QuestionResource $resource)
+    {
+        if ($this->resources->contains($resource)) {
+            $this->resources->removeElement($resource);
+            $resource->setQuestion(null);
         }
     }
 
@@ -227,11 +294,23 @@ class Question
     }
 
     /**
+     * @deprecated let the PrePersist hook do job
+     *
      * @param \Datetime $dateCreate
      */
     public function setDateCreate(\DateTime $dateCreate)
     {
         $this->dateCreate = $dateCreate;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function updateDateCreate()
+    {
+        if (empty($this->dateCreate)) {
+            $this->dateCreate = new \DateTime();
+        }
     }
 
     /**
@@ -243,6 +322,8 @@ class Question
     }
 
     /**
+     * @deprecated let the PreUpdate hook do job
+     *
      * @param \Datetime $dateModify
      */
     public function setDateModify(\DateTime $dateModify)
@@ -251,27 +332,19 @@ class Question
     }
 
     /**
+     * @ORM\PreUpdate
+     */
+    public function updateDateModify()
+    {
+        $this->dateModify = new \DateTime();
+    }
+
+    /**
      * @return \Datetime
      */
     public function getDateModify()
     {
         return $this->dateModify;
-    }
-
-    /**
-     * @param bool $locked
-     */
-    public function setLocked($locked)
-    {
-        $this->locked = $locked;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getLocked()
-    {
-        return $this->locked;
     }
 
     /**
@@ -335,17 +408,19 @@ class Question
      */
     public function addHint(Hint $hint)
     {
-        $this->hints->add($hint);
-        $hint->setQuestion($this);
+        if (!$this->hints->contains($hint)) {
+            $this->hints->add($hint);
+            $hint->setQuestion($this);
+        }
     }
 
     /**
-     * @param array $hints
+     * @param Hint $hint
      */
-    public function setHints(array $hints)
+    public function removeHint(Hint $hint)
     {
-        foreach ($hints as $hint) {
-            $this->addHint($hint);
+        if ($this->hints->contains($hint)) {
+            $this->hints->removeElement($hint);
         }
     }
 

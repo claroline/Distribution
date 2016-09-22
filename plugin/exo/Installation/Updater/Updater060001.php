@@ -1,14 +1,18 @@
 <?php
 
-namespace UJM\ExoBundle\Installation;
+namespace UJM\ExoBundle\Installation\Updater;
 
 use Claroline\BundleRecorder\Log\LoggableTrait;
+use Doctrine\DBAL\Driver\Connection;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class Updater600101
+class Updater060001
 {
     use LoggableTrait;
 
+    /**
+     * @var Connection
+     */
     private $connection;
 
     public function __construct(ContainerInterface $container)
@@ -32,7 +36,7 @@ class Updater600101
             WHERE version = \'20150923181250\'
         ';
         $res = $this->connection->query($query);
-        if ($res->rowCount() == 0) {
+        if ($res->rowCount() === 0) {
             $this->connection->exec("
                 INSERT INTO doctrine_ujmexobundle_versions VALUES('20150923181250')
             ");
