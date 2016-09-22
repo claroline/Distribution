@@ -21,7 +21,7 @@ activities: Activiteiten
 activity_already: Deze leermiddel is al aanwezig in de activiteit
 activity_remove_primary_resource: De hoofdleermiddel verwijderen
 activity_resource_not_allowed: U mag geen llermiddel van deze type toevoegen.
-activity_resource_remove: Bent u er zeker van dat u deze leermiddel van deze activiteit wenst te verwijderen ?
+activity_resource_remove: Bent u er zeker van dat u    wenst te u deze leermiddel van deze activiteit wenst te verwijderen ?
 activity_rule_configuration_for_auto_evaluation: Configuratie van de regel voor de automatische evaluatie
 activity_rule_form_action_explanation: De automatische evaluatie baseert zich op de acties op de gekoppelde leermiddelen.
 activity_rule_form_activeFrom: UItgevoerd in de periode tussen
@@ -82,59 +82,59 @@ all: Tous
 all_available_workspaces: Alle beschikbare werkruimten
 all_my_contacts: Al mijn contactpersonen
 all_my_workspaces: Al mijn werkruimten
-all_public_personal_workspaces: 'Tous les espaces personnels publics'
-all_public_workspaces: 'Tous les espaces d''activités publics'
+all_public_personal_workspaces: Alle openbare persoonlijke werkruimten
+all_public_workspaces: Alle openbare werkruimten
 all_roles: Alle rollen
-all_visible_users: 'Tous les utilisateurs visibles'
-all_workspaces: 'Tous les espaces d''activités'
-already_existing_user: 'L''utilisateur existe déjà.'
-already_exists: 'existe déjà'
-already_exists_in_workspace: 'existe déjà dans l''werkruimte'
-an_error_occured_message: 'Une erreur s''est produite. Veuillez contacter l''administrateur de la platform.'
+all_visible_users: Alle zichtbare gebruikers
+all_workspaces: Alle werkruimten
+already_existing_user: De gebruiker bestaat al.
+already_exists: bestaat al
+already_exists_in_workspace: bestaat al in de werkruimte
+an_error_occured_message: Er is een fout opgetreden. Gelieve contact op te nemen met de beheerder van het platform.
 analytics_connections: 'Visites utilisateurs'
-analytics_home: 'Vue d''ensemble'
-analytics_resources: 'Contenu platform'
-analytics_top: 'Top des activités'
-analytics_return_platform_content: 'Retour aux statistiques globales du contenu platform'
+analytics_home: Overzicht
+analytics_resources: Inhoud van het platform
+analytics_top: Top van de activiteiten
+analytics_return_platform_content: Terug naar de globale statistieken van de inhoud van het platform
 anonymous: Anonyme
 answer: Répondre
 anywhere: Waar dan ook
 appearance: Apparence
 apply: Appliquer
-apply_recursively_to_directories: 'Appliquer au contenu du répertoire et aux sous-répertoires'
-at_least_one_category_has_to_be_selected: 'Au moins une catégorie doit être selectionnée'
-attempt: Tentative
-attempts: Tentatives
-auth_mode: 'Mode d''authentification'
-authentication: Authentification
-authentication_invalid: 'La source d''authentification %authentication% de la ligne %line% n''est pas valide.'
-authentication_source: 'Source d''authentification'
+apply_recursively_to_directories: Toepassen op de inhoud van de directory en de subdirectories.
+at_least_one_category_has_to_be_selected: Er moet tenminste één categorie geselecteerd worden.
+attempt: Poging
+attempts: Pogingen
+auth_mode: Authenticatiemodus
+authentication: Authenticatie
+authentication_invalid: De authenticatiebron in regel %line% is niet geldig.
+authentication_source: Authenticatiebron
 author: Auteur
 automatic: Automatique
 available: Disponible
-available_widgets: 'Widgets disponibles'
-available_workspaces: 'Espaces d''activités disponibles'
-back: Retour
-back_to_activities_list: 'Retour à la liste des activités'
-back_to_profile: 'Retour au profil'
-background_color: 'Couleur du fond d''écran'
-backup_reminder: 'Pensez à faire une sauvegarde de la platform avant de procéder à une mise à jour.'
-bad_request: 'La requête est incorrecte. Si vous êtes arrivé sur cette page via un lien interne, veuillez signaler le problème à l''''administrateur de la platform.'
-base_informations: 'Informations de base'
+available_widgets: Beschikbare widgets
+available_workspaces: Beschikbare werkruimten
+back: Terug
+back_to_activities_list: Terug naar de lijst van de activiteiten
+back_to_profile: Terug naar het profiel
+background_color: Achtergrondkleur
+backup_reminder: Denk eraan een back-up van het platform te maken vooraleer een update uit te voeren.
+bad_request: Het verzoek is onjuist. Si vous êtes arrivé sur cette page via un lien interne, veuillez signaler le problème à l'administrateur de la platform.
+base_informations: Basisinformatie
 best_score: 'Meilleur score'
 by: par
-by_user: 'Par utilisateur'
-by_workspace: 'Par espace'
+by_user: Per gebruiker
+by_workspace: Per werkruimte
 canCopy: 'Droit de copier'
 canCreate: 'Création de %type%'
-canDelete: 'Droit de supprimer'
+canDelete: 'Droit de verwijderen'
 canEdit: 'Droit de modifier'
 canExport: 'Droit d''exporter'
 canOpen: 'Droit d''ouvrir'
 can_edit_permission: 'Peut éditer les permissions'
 cancel: Annuler
 cannot_change_password: 'Vous ne pouvez pas changer votre mot de passe.'
-cannot_delete_unique_manager: 'Impossible de supprimer le seul gestionnaire.'
+cannot_delete_unique_manager: 'Impossible de verwijderen le seul gestionnaire.'
 cannot_unsubscribe_from_workspace: 'Impossible de vous désinscrire de l''werkruimte.'
 captcha: Captcha
 categories: Catégories
@@ -158,37 +158,37 @@ classroom: 'En classe'
 click_to_view_modify_profile: 'Voir/modifier votre profil'
 client_ip: 'Adresse IP du client'
 client_name: 'Nom du client'
-close: Fermer
+close: Sluiten
 closed_account: 'Compte clôturé'
 code: Code
 code_found_at: 'Le code %code% a été trouvé aux lignes %lines%.'
 collaborative: Collaboratif
 collaborator: Collaborateur
-collapse: Replier
-color: Couleur
+collapse: Samenklappen
+color: Kleur
 comment: Commentaire
-communication: Communication
+communication: Communicatie
 completed: Terminé
-configuration: Configuration
+configuration: Configuratie
 configure: Configurer
 confirm: OK
 confirm_send_data: 'Nous vous proposons de marquer votre accord pour l''envoi de données :'
 connections: 'Nb Cnx.'
-contact: Contact
+contact: Contactpersoon
 contacts_per_page: 'Contacts par page'
-content: Contenu
+content: Inhoud
 cookie_lifetime: 'Durée de vie du cookie'
 copiable: Copiable
 copies: Copies
 copy: Copier
 count_resources: 'Nombre de ressources'
-create: Créer
+create: Maken
 create_account: 'Créer le compte'
 create_and_update: 'Création et mise à jour'
 create_category: 'Créer une catégorie'
 create_client: 'Créer un client'
 create_facet: 'Créer une facette'
-create_field: 'Créer un champ'
+create_field: 'Créer een veld'
 create_group: 'Créer un groupe'
 create_learning_outcomes: 'Créer un référentiel de compétences'
 create_model: 'Créer un modèle'
@@ -263,7 +263,7 @@ date_range.this_year: 'Année en cours'
 date_range.to: A
 date_range.today: 'Aujourd''hui'
 date_range.week: s
-date_range.yesterday: Hier
+date_range.yesterday: Gisteren
 db_table: 'Table de la base de données'
 decline: Refuser
 default_language: 'Langue par défaut'
@@ -271,21 +271,21 @@ default_role: 'Rôle par défaut'
 deletable: Supprimable
 delete: Supprimer
 delete_category: 'Supprimer la catégorie'
-delete_category_confirm_message: 'Voulez-vous vraiment supprimer cette catégorie ?'
+delete_category_confirm_message: 'Voulez-vous vraiment verwijderen cette catégorie ?'
 delete_category_confirm_title: 'Suppression d''une catégorie'
 delete_client: 'Supprimer un client'
-delete_client_message: 'Bent u er zeker van dat vouloir supprimer ce client ?'
+delete_client_message: 'Bent u er zeker van dat u    wenst te vouloir verwijderen ce client ?'
 delete_contact: 'Supprimer le contact'
-delete_contact_confirm_message: 'Voulez-vous vraiment supprimer ce contact ?'
+delete_contact_confirm_message: 'Voulez-vous vraiment verwijderen ce contact ?'
 delete_friend_pending: 'Supprimer une demande d''ami'
-delete_friend_pending_message: 'Bent u er zeker van dat vouloir supprimer cette demande d''ami ?'
+delete_friend_pending_message: 'Bent u er zeker van dat u    wenst te vouloir verwijderen cette demande d''ami ?'
 delete_home_tab: 'Supprimer l''tab'
 delete_learning_outcomes: 'Suppression d''un référentiel de compétences'
-delete_learning_outcomes_confirm_message: 'Voulez-vous vraiment supprimer ce référentiel de compétences ?'
+delete_learning_outcomes_confirm_message: 'Voulez-vous vraiment verwijderen ce référentiel de compétences ?'
 delete_platform_friend: 'Supprimer une platform amie'
-delete_platform_friend_message: 'Bent u er zeker van dat vouloir supprimer cette platform amie ?'
-description: Description
-desktop: Bureau
+delete_platform_friend_message: 'Bent u er zeker van dat u    wenst te vouloir verwijderen cette platform amie ?'
+description: Beschrijving
+desktop: Bureaublad
 desktop_and_home: 'Bureau et accueil'
 desktop_home_tab_creation: 'Création d''un tab pour le bureau'
 desktop_home_tab_edition: 'Edition de l''tab pour le bureau'
@@ -293,8 +293,8 @@ desktop_home_tabs: 'Onglets pour le bureau'
 desktop_parameters: 'Paramètres du bureau'
 desktop_tools: 'Outils du bureau'
 destination: Destination
-directory: Répertoire
-display: Afficher
+directory: Directory
+display: Tonen
 display_at_registration: 'Afficher à la création du compte'
 display_captcha: 'Afficher les captchas pour les anonymes'
 display_options: 'Options d''affichage'
@@ -304,15 +304,15 @@ does_not_exist: 'n''existe pas'
 does_not_exist_in_workspace: 'n''existe pas dans l''werkruimte'
 done_on: 'effectuée sur'
 down: Descendre
-download: Télécharger
+download: Downloaden
 downloads: 'Nb tchg.'
 drag_file_here: 'Déplacez le fichier ici'
 drop_file: 'Déposez le fichier'
 dsn: dsn
 duration: Durée
-edit: Modifier
+edit: Bewerken
 edit_facet: 'Editer une facette'
-edit_field: 'Editer un champ'
+edit_field: 'Editer een veld'
 edit_maintenance_message: 'Modifier le message de maintenance'
 edit_password: 'Modifier le mot de passe'
 edit_password_error: 'Une erreur est survenue pendant la modification du mot de passe.'
@@ -331,7 +331,7 @@ edit_root_directory_icon: 'Modifier l''icône du répertoire racine'
 edit_security_token: 'Modification du jeton d''authentification'
 edit_your_profile_error: 'Une erreur est survenue pendant la modification de votre profil.'
 edit_your_profile_success: 'Modification de votre profil effectuée avec succès.'
-editable: Modifiable
+editable: Bewerkbaar
 editable_facet_form_explanation: 'Le champ "Modifiable" permet de spécifier si l''élément doit être modifiable ou non par l''utilisateur.'
 email: 'Courriel'
 email_found_at: 'Le courriel %email% a été trouvé aux lignes %lines%'
@@ -341,7 +341,7 @@ end_date: 'Date de fin'
 end_maintenance: 'Terminer le mode maintenance'
 enter_tag_name_message: 'Veuillez entrer un nom de Tag'
 entries_per_day: 'Nombre d''entrées par jour'
-error: Erreur
+error: Fout
 error_occured: 'Une erreur s''est produite'
 evaluation: Evaluation
 evaluation-automatic: Automatique
@@ -350,8 +350,8 @@ evaluation_edition: Evaluation
 evaluation_type: 'Type d''évaluation'
 excel_export: 'Export vers Excel'
 expiration_date: 'Date d''expiration'
-export: Exporter
-exportable: Exportable
+export: Uitvoeren
+exportable: Uitvoerbaar
 ext_php_missing: 'L''extension php %ext% est manquante.'
 external_pdo_database: 'Base de données externe (PDO)'
 facebook: Facebook
@@ -363,20 +363,20 @@ failed: Echoué
 fast_answer: 'Réponse rapide'
 fb_client_id: 'Id de l''application'
 fb_client_secret: 'Secret de l''application'
-file: Fichier
-files: Fichiers
+file: Bestand
+files: Bestanden
 filter: Filtrer
 filter_actions: 'Filtrer les actions'
-filters: Filtres
+filters: Filters
 find_workspaces: 'Tous les espaces d''activités publics'
-firstName: Prénom
-first_name: Prénom
+firstName: Voornaam
+first_name: Voornaam
 footer: 'Pied de page'
 for_period: 'sur la période du :'
 forgot_password: 'Mot de passe oublié ?'
-form_role: Rôle
+form_role: Rol
 friend_platform: 'Plateformes amies'
-from: Depuis
+from: Sinds
 from_message: De
 fullscreen_text_editor: 'Vous pouvez utiliser la version plein écran de l''éditeur afin d''y inclure du HTML.'
 general: Général
@@ -394,16 +394,16 @@ google_tag_validation: 'Balise HTML de validation Google'
 grant_access: 'Donner l''accès'
 grant_type: Permissions
 graph_draw_area: 'Tracez une zone sur le graphique pour zoomer. Double cliquez pour annuler'
-group: Groupe
+group: Groep
 group_configuration: 'Configuration du groupe'
 group_creation: 'Création d''un groupe'
 group_parameter: 'Paramètres du groupe'
 group_invalid: 'Le groupe %group% n''est pas valide à la ligne %line%.'
 organization_invalid: 'L''organization %organization% n''est pas valide à la ligne %line%.'
 groups: Groupes
-groups_list: 'Liste des groupes'
+groups_list: 'Liste des groepen'
 groups_per_page: 'Groupes par page'
-groups_registration_in_workspace: 'Inscription des groupes à l''werkruimte'
+groups_registration_in_workspace: 'Inscription des groepen à l''werkruimte'
 has_been_created: 'a été créé'
 has_been_created_in_workspace: 'a été créé dans l''werkruimte'
 has_been_deleted: 'a été supprimé'
@@ -420,7 +420,7 @@ has_been_unregistered_from_workspace: 'a été désincrit(e) de l''werkruimte'
 has_been_updated: 'a été mis à jour'
 has_not_been_imported: 'n''a pas été importé(e)'
 has_not_been_imported_into_the_group: 'n''a pas été importé(e) dans le groupe'
-height: Hauteur
+height: Hoogte
 help_url: 'URL de l''aide'
 hide: Cacher
 hide_breadcrumb: 'Cacher le fil d''Ariane'
@@ -436,7 +436,7 @@ home_tab_bookmark_confirm_title: 'Epingler cet tab au bureau'
 home_tab_bookmark_delete_confirm_message: 'Voulez-vous vraiment retirer cet tab de votre bureau ?'
 home_tab_bookmark_delete_confirm_title: 'Retrait de l''tab'
 home_tab_creation: 'Création d''un tab'
-home_tab_delete_confirm_message: 'Voulez-vous vraiment supprimer cet tab ?'
+home_tab_delete_confirm_message: 'Voulez-vous vraiment verwijderen cet tab ?'
 home_tab_delete_confirm_title: 'Suppression de l''tab'
 home_tab_edition: 'Edition de l''tab'
 home_tab_roles_explanation: 'Si aucun rôle n''est coché, l''tab sera visible par tous les utilisateurs.<br>Sinon, il sera uniquement visiible par les utilisateurs ayant un des rôles sélectionnés.'
@@ -455,7 +455,7 @@ import_profile_pics: 'Importer des photos d''utilisateur'
 import_profile_pics_explanation: 'Veuillez sélectionner une archive au format .zip. Cette archive doit contenir une liste d''images dont les noms sont structurés de cette manière: identifiant.extension'
 import_roles: 'Importer des rôles'
 import_user_file_file: 'Importer depuis un fichier csv'
-import_users: 'Importer des utilisateurs'
+import_users: 'Importer gebruikers'
 in_workspace: 'dans l''werkruimte'
 incomplete: Incomplet
 indexing: Référencement
@@ -466,9 +466,9 @@ infos_sending_bar_msg: 'Cliquez sur cette barre pour plus d''informations.'
 infos_sending_has_not_been_accepted: 'L''envoi d''informations n''a pas été accepté'
 initialize: Initialiser
 inscription_mail: 'Courriel d''inscription'
-install: Installer
+install: Installeren
 install_update_cant_be_undone: 'Les opérations d''installation et de mise à jour ne peuvent pas être annulées.'
-installed: Installé
+installed: Geinstalleerd
 instructions: Consignes
 internal_error: 'Erreur interne du serveur. Veuillez contactez l''administrateur de la platform.'
 internal_portfolio: 'Portfolio interne à la platform'
@@ -492,9 +492,9 @@ is_not_writable: 'n''est pas accessible en écriture'
 is_not_writable_recursive: 'et ses sous dossiers ne sont pas accessibles en écriture.'
 jqplot_date_output_format: '%d-%m-%Y'
 keep_me_logged_in: 'Se souvenir de moi'
-language: Langue
-language_select: 'Sélectionnez une langue'
-lastName: Nom
+language: Taal
+language_select: Kies een taal
+lastName: Naam
 last_30_days_activity: Activiteiten van de laatste 30 dagen
 last_action: '{1} Dernière action|[1,Inf] %logAmount% dernières actions'
 last_attempt_date: 'Date de la dernière tentative'
@@ -502,30 +502,30 @@ last_manager_error_message: 'Vous ne pouvez pas retirer tous les gestionnaires.'
 last_modification: Dernière modification
 last_name: Naam
 layout: Layout
-learning_outcomes: 'Référentiel de compétences'
-learning_outcomes_creation: 'Création d''un référentiel de compétences'
-learning_place: 'Lieu d''apprentissage'
-learning_profil: 'Profil d''apprentissage'
+learning_outcomes: Competentieframework
+learning_outcomes_creation: Een competentieframework maken
+learning_place: Leerplaats
+learning_profil: Leerprofiel
 leave_this_page: 'Si vous quittez cette page, vous risquez de perdre vos modifications.'
 left: Links
-license: License
+license: Licentie
 limit: Limite
-line_number: 'Ligne %line%:'
+line_number: Regel %line%:
 line_per_page: 'Résultats par page'
 link: Lien
 link_outdated: 'le lien n''est plus valide'
-link_workspace: 'Lier un werkruimte'
+link_workspace: Een werkruimte koppelen
 links: Liens
-list_groups: 'Lister les groupes'
+list_groups: 'Lister les groepen'
 list_users: 'Lister les utilisateurs'
 list_view: 'Vue en liste'
-list_workspaces: 'Tous les espaces d''activités'
+list_workspaces: Alle werkruimten
 lock: Verrouiller
 locked: Verrouillé
 login: Connexion
 login_failure: 'La connexion a échoué. Vérifiez que votre nom d''utilisateur et votre mot de passe sont corrects.'
 logout: Déconnexion
-logs: suivi
+logs: Toezicht
 logs_error_location: 'En cas d''erreur, les logs se trouvent dans le dossier app/log/update-xxx.log.'
 mail: Mail
 mail_click: 'Cliquez sur ce lien pour réinitialiser votre mot de passe.'
@@ -560,13 +560,13 @@ max_storage_size: 'Espace de stockage maximum'
 media_most_viewed: 'Médias les plus consultés'
 menu_bar: 'Barre de menu'
 menu_bar_configuration: 'Configuration de la barre de menu'
-message: Message
+message: Boodschap
 message_form_content: Inhoud
 message_form_object: Objet
 message_form_to: A
-messages: Messages
-messages_confirm_delete: 'Etes-vous sûr de vouloir supprimer ce(s) message(s) ?'
-messages_confirm_permanent_delete: 'Etes-vous sûr de vouloir supprimer définitivement ce(s) message(s) ?'
+messages: Boodschappen
+messages_confirm_delete: 'Etes-vous sûr de vouloir verwijderen ce(s) message(s) ?'
+messages_confirm_permanent_delete: 'Etes-vous sûr de vouloir verwijderen définitivement ce(s) message(s) ?'
 messages_confirm_restore: 'Etes-vous sûr de vouloir restaurer ce(s) message(s) ?'
 messages_received: 'Messages reçus'
 messages_received_removed: 'Messages reçus supprimés'
@@ -581,8 +581,8 @@ missing_%password%: 'La variable %password% est manquante pour la langue "%langu
 missing_%username%: 'La variable %username% est manquante pour la langue "%language%".'
 mixed: Mixte
 mode: Mode
-model: Modèle
-models: Modèles
+model: Model
+models: Modellen
 month.April: April
 month.August: Augustus
 month.December: December
@@ -609,11 +609,11 @@ my_resources: 'Mes ressources'
 my_workspace: 'Espace personnel'
 my_workspaces: 'Mes espaces d''activités'
 name: Naam
-name_required: 'Nom requis'
+name_required: De naam is vereist
 new: Nieuw
 new_folder_in_current_ws: 'Nouveau répertoire dans l''espace d''activité courant'
 new_message: 'Nouveau message'
-new_message_alert: 'Vous avez %count% nouveaux message(s).'
+new_message_alert: U hebt %count% nieuwe boodschappen.
 new_password: 'Nouveau mot de passe'
 new_role_message: 'Vous venez de recevoir le role %name%.'
 new_role_message_object: 'Vos permissions sur la platform ont changé.'
@@ -626,15 +626,15 @@ no_contact: 'Aucun contact'
 no_email: 'Ce courriel ne correspond pas à un utilisateur inscrit.'
 no_filter: 'Aucun filtre'
 no_group: 'Aucun groupe'
-no_home_tab: 'Il n''y a aucun tab'
-no_learning_outcomes: 'Aucun référentiel de compétences'
-no_message: 'Aucun message'
-no_model: 'Aucun modèle'
+no_home_tab: Er is geen tab.
+no_learning_outcomes: Geen competentieframework.
+no_message: Geen boodschap.
+no_model: Geen model.
 no_resources_in_workspace: 'Cet espace ne contient actuellement aucune ressource.'
 no_role_selected_message: 'Aucun rôle sélectionné.'
 no_search_results: 'Votre recherche n''a retourné aucun résultat.'
 no_tag: 'Il n''y a aucun Tag'
-no_user: 'Aucun utilisateur'
+no_user: Geen gebruiker.
 no_workspace: 'Il n''y a aucun werkruimte'
 non_personal_workspaces_only: 'Les espaces non personnels seulement'
 none: Aucun(e)
@@ -645,16 +645,16 @@ not_managed_by_claroline_repository: 'Etat indisponible'
 note: Note
 notification_activated: 'Notifications activées.'
 notification_deactivated: 'Notifications désactivées.'
-notifications: Notifications
-number: Nombre
-number_of_attempts: 'Nombre de tentatives'
+notifications: Notities
+number: Aantal
+number_of_attempts: Aantal pogingen
 number_of_attempts_explanation: 'La signification du nombre de tentatives peut varier en fonction de l''activité. Il ne s''agit pas forcément du nombre de fois où l''activité a été exécutée.'
 oauth: Oauth
 oauth_client_list: 'Liste des clients Oauth'
 object: Objet
 occurrence: Occurrence
 ok: Ok
-only_for_workspace_creation: 'Seulement pour la création d''un werkruimte'
+only_for_workspace_creation: Alleen voor het maken van een werkruimte
 open: Open
 open_resource_when_opening_ws: 'Ouvrir une ressource à l''ouverture de l''werkruimte'
 operation_done: 'Opération effectuée.'
@@ -664,24 +664,24 @@ order: Ordre
 organize_admin_tags: 'Organiser les Tags administrateur'
 organize_categories: 'Organiser les catégories'
 organize_private_tags: 'Organiser les Tags personnels'
-others: Autres
+others: Andere
 over_max_length: 'Cette valeur est trop longue.'
 owner: Eigenaar
 owner_s: Eigenaar(s)
-parameters: Paramètres
+parameters: Instellingen
 parameters_save_error: 'Une erreur est survenue pendant la sauvegarde des paramètres.'
 parameters_save_success: 'Paramètres sauvegardés avec succès.'
-passed: Réussi
+passed: Geslaagd
 passing_score: 'Score pour réussir'
 password: 'Mot de passe'
 password_mismatch: 'Les mots de passe ne correspondent pas.'
 password_ok: 'Votre mot de passe a été modifié. Vous pouvez maintenant vous connecter.'
 paste: Coller
 path: Emplacement
-pdf_export: Export PDF
+pdf_export: PDF uitvoer
 pending: 'En attente'
 pending_friends: 'Amis en attente'
-pending_users_list: 'Liste des utilisateurs en attente'
+pending_users_list: 'Liste gebruikers en attente'
 permissions: Permissions
 personal_data: 'Aucune donnée personnelle ne sera récupérée. Les données techniques et statistiques récupérées seront exclusivement utilisées en relation avec le projet Claroline Connect et ne seront pas diffusées autrement.'
 personal_workspace: 'Espace personnel'
@@ -703,7 +703,7 @@ platform_init_date: 'Date d''activation de la platform'
 platform_parameters: 'Paramètres de la platform'
 platform_plugins: 'Plugins de la platform'
 platform_refresh: 'Rafraîchir les fichiers de la platform'
-platform_refresh_confirm: 'Bent u er zeker van dat vouloir rafraîchir les fichiers de la platform ?'
+platform_refresh_confirm: 'Bent u er zeker van dat u    wenst te vouloir rafraîchir les fichiers de la platform ?'
 platform_role: 'Rôle platform'
 platform_widgets: 'Widgets de la platform'
 please_validate_your_account: 'Un courriel vient de vous être envoyé pour activer votre compte.'
@@ -774,34 +774,34 @@ registration_to_workspaces: 'Inscription à des espaces d''activités'
 registration_validation: 'Validation de l''inscription'
 remove: Enlever
 remove_contact_from_category: 'Retirer le contact de la catégorie'
-remove_contact_from_category_confirm_message: 'Bent u er zeker van dat vouloir retirer ce contact de cette catégorie ?'
+remove_contact_from_category_confirm_message: 'Bent u er zeker van dat u    wenst te vouloir retirer ce contact de cette catégorie ?'
 remove_facet: 'Supprimer une facette'
-remove_facet_confirm: 'Etes-vous sur de vouloir supprimer la facette %name% ?'
-remove_field: 'Supprimer un champ'
-remove_field_confirm: 'Êtes-vous sur de vouloir supprimer le champ %name% ?'
-remove_group_confirm_message: 'Bent u er zeker van dat vouloir supprimer ce groupe ?'
+remove_facet_confirm: 'Etes-vous sur de vouloir verwijderen la facette %name% ?'
+remove_field: 'Supprimer een veld'
+remove_field_confirm: 'Êtes-vous sur de vouloir verwijderen le champ %name% ?'
+remove_group_confirm_message: 'Bent u er zeker van dat u    wenst te vouloir verwijderen ce groupe ?'
 remove_group_from_model: 'Retirer un groupe'
-remove_group_from_model_confirm: 'Bent u er zeker van dat vouloir retirer le groupe %groupe% ?'
-remove_group_s_confirm_message: 'Bent u er zeker van dat vouloir supprimer ces %count% groupes?'
-remove_message_confirm_message: 'Bent u er zeker van dat vouloir supprimer ce message ?'
-remove_message_s_confirm_message: 'Bent u er zeker van dat vouloir supprimer ces %count% messages?'
+remove_group_from_model_confirm: 'Bent u er zeker van dat u    wenst te vouloir retirer le groupe %groupe% ?'
+remove_group_s_confirm_message: 'Bent u er zeker van dat u    wenst te vouloir verwijderen ces %count% groepen?'
+remove_message_confirm_message: 'Bent u er zeker van dat u    wenst te vouloir verwijderen ce message ?'
+remove_message_s_confirm_message: 'Bent u er zeker van dat u    wenst te vouloir verwijderen ces %count% messages?'
 remove_model: 'Supprimer un modèle'
-remove_model_confirm: 'Bent u er zeker van dat vouloir supprimer le modèle %name% ?'
+remove_model_confirm: 'Bent u er zeker van dat u    wenst te vouloir verwijderen le modèle %name% ?'
 remove_resource_from_model: 'Retirer une ressource du modèle'
-remove_resource_from_model_comfirm: 'Bent u er zeker van dat vouloir retirer cette ressource ?'
+remove_resource_from_model_comfirm: 'Bent u er zeker van dat u    wenst te vouloir retirer cette ressource ?'
 remove_role: 'Supprimer un rôle.'
-remove_role_confirm: 'Bent u er zeker van dat vouloir supprimer le rôle %name% ?'
+remove_role_confirm: 'Bent u er zeker van dat u    wenst te vouloir verwijderen le rôle %name% ?'
 remove_subcategory: 'Retirer la sous-catégorie'
-remove_user_confirm_message: 'Bent u er zeker van dat vouloir supprimer cet utilisateur ?'
+remove_user_confirm_message: 'Bent u er zeker van dat u    wenst te vouloir verwijderen cet utilisateur ?'
 remove_user_from_model: 'Retirer un utilisateur'
-remove_user_from_model_confirm: 'Bent u er zeker van dat vouloir retirer l''utilisateur %name% ?'
-remove_user_s_confirm_message: 'Bent u er zeker van dat vouloir supprimer ces %count% utilisateurs ?'
-remove_workspace_confirm: 'Bent u er zeker van dat vouloir supprimer cet werkruimte ?'
-remove_workspace_from_category_confirm_message: 'Bent u er zeker van dat vouloir retirer cet werkruimte de cette catégorie ?'
+remove_user_from_model_confirm: 'Bent u er zeker van dat u    wenst te vouloir retirer l''utilisateur %name% ?'
+remove_user_s_confirm_message: 'Bent u er zeker van dat u    wenst te vouloir verwijderen ces %count% utilisateurs ?'
+remove_workspace_confirm: 'Bent u er zeker van dat u    wenst te vouloir verwijderen cet werkruimte ?'
+remove_workspace_from_category_confirm_message: 'Bent u er zeker van dat u    wenst te vouloir retirer cet werkruimte de cette catégorie ?'
 remove_workspace_from_category_confirm_title: 'Retrait d''un werkruimte d''une catégorie'
 remove_workspace_from_selection: 'Retirer un werkruimte de la sélection'
-remove_workspace_role_warning: 'Bent u er zeker van dat vouloir supprimer ce rôle ? Si ce rôle est associé à des utilisateurs, ces utilisateurs perdront leurs droits d''accès fournis pour ce rôle.'
-remove_workspaces_confirm: 'Bent u er zeker van dat vouloir supprimer ces %count% espaces d''activités ?'
+remove_workspace_role_warning: 'Bent u er zeker van dat u    wenst te vouloir verwijderen ce rôle ? Si ce rôle est associé à gebruikers, ces utilisateurs perdront leurs droits d''accès fournis pour ce rôle.'
+remove_workspaces_confirm: 'Bent u er zeker van dat u    wenst te vouloir verwijderen ces %count% espaces d''activités ?'
 rename: Renommer
 rename_category: 'Renommer la catégorie'
 rename_tool: 'Renommer un outil'
@@ -816,7 +816,7 @@ requirement_failed_for_install: 'Prérequis non remplis pour l''installation'
 requirement_failed_for_update: 'Prérequis non remplis pour la mise à jour'
 reset: Réinitialiser
 reset_password: 'Réinitialiser le mot de passe'
-reset_password_message: 'Bent u er zeker van dat vouloir réinitialiser le mot de passe ?'
+reset_password_message: 'Bent u er zeker van dat u    wenst te vouloir réinitialiser le mot de passe ?'
 reset_password_txt: 'Vous avez demandé la réinitialisation de votre mot de passe. Si vous n''êtes pas à l''origine de cette action, veuillez ignorer ce message.'
 reset_pwd_form_password: 'Votre mot de passe actuel'
 resetting_your_password: 'Réinitialisation de votre mot de passe'
@@ -824,13 +824,13 @@ resource: Ressource
 resource_action_denied_message: 'L''action %action% n''a pas pu être exécutée sur la resource ''%path%'': accès refusé.'
 resource_creation_denied: 'Vous n''avez pas la permission de créer une ressource dans le répertoire ''%path%'': accès refusé.'
 resource_creation_wrong_type: 'Vous n''avez pas la permission de créer un(e) %type% dans le répertoire ''%path%'': accès refusé.'
-resource_delete: 'Bent u er zeker van dat vouloir supprimer cette ressource ?'
+resource_delete: 'Bent u er zeker van dat u    wenst te vouloir verwijderen cette ressource ?'
 resource_limit_exceeded: 'La limite maximale (%max%) de ressources est dépassée. Vous avez déjà créé %current% ressources.'
 resource_picker: 'Sélecteur de ressources'
 resource_to_open: 'Ressource à ouvrir'
 resource_type: 'Type de ressource'
 resources: Ressources
-resources_delete: 'Bent u er zeker van dat vouloir supprimer ces ressources ?'
+resources_delete: 'Bent u er zeker van dat u    wenst te vouloir verwijderen ces ressources ?'
 resources_import: 'Importation de ressources'
 resources_most_downloaded: 'Ressources les plus téléchargées'
 resources_rights: 'Droits des ressources'
@@ -865,7 +865,7 @@ search_group: 'Rechercher un groupe'
 search_user: 'Rechercher un utilisateur'
 search_workspace: 'Rechercher un werkruimte'
 security_token: 'Jeton d''authentification'
-security_token_delete_confirm_message: 'Bent u er zeker van dat vouloir supprimer ce jeton d''authentification ?'
+security_token_delete_confirm_message: 'Bent u er zeker van dat u    wenst te vouloir verwijderen ce jeton d''authentification ?'
 security_token_delete_confirm_title: 'Suppression du jeton d''authentification'
 security_token_list: 'Liste des jetons d''authentification'
 security_tokens_management: 'Gestion des jetons d''authentification'
@@ -881,10 +881,10 @@ select_a_workspace: 'Sélectionnez un werkruimte'
 select_all: 'Tout sélectionner'
 select_category: 'Sélectionner une catégorie'
 select_contacts_title: 'Sélectionnez les destinataires'
-select_groups_for_registration_to_workspace: 'Choississez les groupes à inscrire'
+select_groups_for_registration_to_workspace: 'Choississez les groepen à inscrire'
 select_roles_to_assign: 'Selectionnez les rôles à attribuer'
 select_users_for_registration_to_workspace: 'Choississez les utilisateurs à inscrire'
-select_users_to_add_to_your_contacts: 'Sélectionnez des utilisateurs à ajouter à vos contacts'
+select_users_to_add_to_your_contacts: 'Sélectionnez gebruikers à ajouter à vos contacts'
 select_workspace_to_link: 'Choisissez un werkruimte à lier'
 select_workspaces_for_registration: 'Choisissez les espaces d''activités pour l''inscription'
 selected_users: 'Utilisateurs sélectionnés'
@@ -941,13 +941,13 @@ storage_limit_exceeded: 'Il ne vous reste pas assez d''espace de stockage (%stor
 storage_type: 'Type de stockage'
 storage_used: 'Espace de stockage utlisé'
 subcategories: Sous-catégories
-subscribe_groups: 'Inscrire des groupes'
-subscribe_selected_groups: 'Inscrire les groupes sélectionnés'
+subscribe_groups: 'Inscrire des groepen'
+subscribe_selected_groups: 'Inscrire les groepen sélectionnés'
 subscribe_selected_users: 'Inscrire les utilisateurs sélectionnés'
-subscribe_users: 'Inscrire des utilisateurs'
+subscribe_users: 'Inscrire gebruikers'
 subscription: Inscription
 success_rate: 'Taux de réussite'
-successfull_workspace_creation: 'L''espace d''activité %name% a été créé avec succès.'
+successfull_workspace_creation: 'L''espace d''activité %name% a été met succes gemaakt..'
 support_email: 'Courriel du support'
 switch: Echanger
 tab: Onglet
@@ -1003,9 +1003,9 @@ top_extension: 'Top des extensions (médias), par nombre de fichiers'
 top_media_views: 'Top des médias les plus consultés'
 top_resources_downloads: 'Top des ressources les plus téléchargées'
 top_resources_views: 'Top des ressources les plus consultées'
-top_users_connections: 'Top des utilisateurs s''étant le plus connecté'
-top_users_workspaces_enrolled: 'Top des utilisateurs étant inscrits dans le plus de modules'
-top_users_workspaces_owners: 'Top des utilisateurs ayant créé le plus de modules'
+top_users_connections: 'Top gebruikers s''étant le plus connecté'
+top_users_workspaces_enrolled: 'Top gebruikers étant inscrits dans le plus de modules'
+top_users_workspaces_owners: 'Top gebruikers ayant créé le plus de modules'
 top_workspaces_connections: 'Top des espaces d''activités les plus consultés'
 top_workspaces_resources: 'Top des espaces d''activités ayant le plus de ressources'
 total: Totaal
@@ -1035,10 +1035,10 @@ unpublish: Dépublier
 unpublished: 'Non publié'
 unregister: Désinscription
 unregister_from_a_workspace: 'Me désinscrire d''un werkruimte'
-unregister_group_confirm_message: 'Bent u er zeker van dat vouloir désinscrire ce groupe ?'
-unregister_group_s_confirm_message: 'Bent u er zeker van dat vouloir désinscrire ces %count% groupes?'
-unregister_user_confirm_message: 'Bent u er zeker van dat vouloir désinscrire cet utilisateur ?'
-unregister_user_s_confirm_message: 'Bent u er zeker van dat vouloir désinscrire ces %count% utilisateurs ?'
+unregister_group_confirm_message: 'Bent u er zeker van dat u    wenst te vouloir désinscrire ce groupe ?'
+unregister_group_s_confirm_message: 'Bent u er zeker van dat u    wenst te vouloir désinscrire ces %count% groepen?'
+unregister_user_confirm_message: 'Bent u er zeker van dat u    wenst te vouloir désinscrire cet utilisateur ?'
+unregister_user_s_confirm_message: 'Bent u er zeker van dat u    wenst te vouloir désinscrire ces %count% utilisateurs ?'
 unregistered: 'Non inscrit'
 unregistered_groups: 'Groupes non enregistrés'
 unregistered_users: 'Utilisateurs non enregistrés'
@@ -1061,7 +1061,7 @@ user: Gebruiker
 user_accounts: 'Comptes utilisateur'
 user_enable_mail_notification_label: 'Activer les notifications par courriel'
 user_creation: 'Création d''un utilisateur'
-user_creation_success: 'Le compte utilisateur a été créé avec succès.'
+user_creation_success: 'Le compte utilisateur a été met succes gemaakt..'
 user_info: 'Informations utilisateur'
 user_limit_reached: 'La limite de création d''utilisateurs a été atteinte.'
 user_limit_success_update: 'La limite d''utilisateurs par rôle a été mise à jour avec succès.'
@@ -1083,14 +1083,14 @@ username_or_email: 'Nom d''utilisateur ou courriel'
 users: Utilisateurs
 users_cannot_be_registered_to_group: 'Les utilisateurs ne peuvent pas être inscrits dans le groupe'
 users_connected_once: 'utilisateurs connectés au moins 1 fois sur la platform'
-users_from_group_registration: 'Inscription des utilisateurs du groupe'
-users_import: 'Importer des utilisateurs'
-users_list: 'Liste des utilisateurs'
-users_management: 'Gestion des utilisateurs'
+users_from_group_registration: 'Inscription gebruikers du groupe'
+users_import: 'Importer gebruikers'
+users_list: 'Liste gebruikers'
+users_management: 'Gestion gebruikers'
 users_minimum_requirement_msg: 'Les utilisateurs doivent remplir ces conditions: login de 3 caractères, mot de passe de 4 caractères, courriel valide.'
 users_per_page: 'Utilisateurs par page'
-users_registration_in_workspace: 'Inscription des utilisateurs dans l''werkruimte'
-users_visits: 'Visites des utilisateurs'
+users_registration_in_workspace: 'Inscription gebruikers dans l''werkruimte'
+users_visits: 'Visites gebruikers'
 validate: Valider
 validation: Validation
 variable_available_message: 'Vous pouvez utiliser les variables suivantes dans votre formulaire'
@@ -1127,9 +1127,9 @@ workspace_classification: 'Classification des espaces d''activités'
 workspace_code_invalid: 'Le code %code% est déjà utilisé à la ligne %line%.'
 workspace_creator: 'Créateur de l''espace'
 workspace_delete: 'Supprimer l''werkruimte'
-workspace_delete_confirm_message: 'Etes-vous sûr de vouloir supprimer cet werkruimte ?'
+workspace_delete_confirm_message: 'Etes-vous sûr de vouloir verwijderen cet werkruimte ?'
 workspace_delete_confirm_title: 'Confirmation de suppression'
-workspace_delete_success_message: 'L''werkruimte "%workspaceName%" été supprimé.'
+workspace_delete_success_message: 'L''werkruimte "%workspaceName%" été verweiderd.'
 workspace_display: Affichage
 workspace_home_tab_creation: 'Création d''un tab pour les espaces d''activités'
 workspace_home_tab_edition: 'Edition de l''tab pour les espaces d''activités'
@@ -1176,13 +1176,13 @@ your_workspace_activity_overview: 'Aperçu des activités récentes de vos espac
 404: 'La page que vous cherchez n''existe pas.'
 initialize_your_password: Initialisation du mot de passe
 hide_client: Cacher un client
-hide_client_message: Bent u er zeker van dat vouloir cacher ce client ?
-filter_by: Filtrer sur
+hide_client_message: Bent u er zeker van dat u    wenst te vouloir cacher ce client ?
+filter_by: Filtreren op
 domain_name: 'Nom de domaine'
 import_csv: 'Importer un csv'
 admin_profile_properties_explanations: 'Les propriétés cochées seront modifiables par les utilisateurs disposant du rôle requis.'
 self_unregistration: Auto-désinscription
-is_visible: Visible par les utilisateurs
+is_visible: Zichtbaar door de gebruikers
 year: jaar
 month: maand
 week: week
@@ -1190,16 +1190,16 @@ day: dag
 hour: uur
 minute: minuut
 second: second
-years: jaren
+years: jaar
 months: maanden
 weeks: weken
 days: dagen
-hours: uren
+hours: uur
 minutes: minuten
 seconds: seconden
 time_ago: %count% %unit% geleden
 mail_options: Options du courriel
-mailer_from: Champ "from" du courriel
+mailer_from: Veld "from" du courriel
 desktop_root_directory_upload_error: Vous ne pouvez pas ajouter de ressources à la racine du bureau.
 pick_a_resource: Choisissez une ressource
 invalid_host: Hôte invalide (accès à %url% refusé).
@@ -1207,12 +1207,12 @@ request_friend: Requête d'ami
 activated: Activé
 not_activated: Désactivé
 add_pending: toevoegen une platform amie
-add_friend_confirm_message: Bent u er zeker van dat vouloir ajouter cette platform amie ?
-edit_client: Modifier le client
+add_friend_confirm_message: Bent u er zeker van dat u    wenst te vouloir ajouter cette platform amie ?
+edit_client: De klant bewerken
 0_or_1: 0 of 1
 import_resources_explanation: L'import de ressources demande un fichier .zip généré par Claroline contenant le fichier manifest.yml. Si vous désirez importer un autre fichier zip, veuillez créer une ressource de type 'Fichier' et sélectionnez 'décompresser'.
 root_rights_change_explanation: Cette page vous permet de modifier les permissions sur la ressource racine d'un espace d'activités. Si vous désirez affecter toutes les ressources, sélectionnez 'Appliquer au contenu du répertoire et sous répertoires'.
-registration_mail_validation: Validation de l'inscription des utilisateurs
+registration_mail_validation: Validation de l'inscription gebruikers
 send_mail_info: Envoyer un courriel de confirmation (platform accessible sans confirmation de la réception du courriel)
 force_mail_validation: Forcer la validation du courriel (utilisateur bloqué tant que la réception du courriel n'a pas été confirmée)
 replace_validation_email_message: qui affichera le lien de validation du courriel
@@ -1223,110 +1223,110 @@ email_confirmation_message: La platform ne peut pas vous envoyer tous les courri
 email_sent: Courriel de validation envoyé à l'adresse %email%. Veuillez consulter vos pourriels si vous n'avez rien reçu.
 email_validation: Validation du courriel
 email_validation_url_display: Veuillez vous rendre à l'url suivante pour confirmer votre courriel: %url%
-email_validated: Courriel validé
-oauth_application_request: L'application "%name%" désire se connecter à %platform%
-oauth_required_data: Les informations suivantes seront envoyées:
-client_list: Liste des clients
-allow_authentication: Autoriser l'authentification
-user_subscription_notification_for_admin: s'est inscrit dans l'espace d'activités %workspace%
-filter_by: Filtrer sur
-user_list: Liste des utilisateurs
-list: Lister
-group_list: Liste des groupes
-loading: Chargement
-register_to_workspace_account_exists: Vous avez déjà un compte? Identifiez-vous %link% pour vous inscrire.
+email_validated: E-mail gevalideerd
+oauth_application_request: Het pakket "%name%" wenst wenst aansluiting tot %platform%
+oauth_required_data: De volgende informatie zal gestuurd worden :
+client_list: Lijst van de klanten
+allow_authentication: De authenticatie toelaten.
+user_subscription_notification_for_admin: heeft zich ingeschreven in de werkruimte %workspace%.
+filter_by: Filtreren op
+user_list: Lijst van de gebruikers
+list: Een lijst maken
+group_list: Lijst van de groepen
+loading: Inladen
+register_to_workspace_account_exists: Hebt u al een rekening ? Log u in %link% om u in te schrijven.
 here: hier
-group_list: Liste des groupes
-box_number : Numéro de boîte
-street_number: Numéro de rue
+group_list: Lijst van de groepen
+box_number : Postbus
+street_number: Straatnummer
 street: Straat
-postal_code: Code postal
-town: Ville
-country: Pays
-create_location: Créer une localisation
-locations: Lieux
-location: Lieu
+postal_code: Postcode
+town: Stad
+country: Land
+create_location: Een locatie maken
+locations: Plaatsen
+location: Plaats
 add: Toevoegen
-administrators: Administrateurs
-edit_organization: Modifier une organisation
-coordinates: Coordonnées
+administrators: Beheerders
+edit_organization: Een organisatie bewerken
+coordinates: Contactgegevens
 address: Adres
-add_users_to_group: toevoegen des utilisateurs à un groupe
-add_users_to_group_confirm: Bent u er zeker van dat vouloir ajouter le(s) utlisateur(s) [ %user_list% ] dans le groupe %group% ?
-user_added: Utilisateur %user% ajouté.
-user_removed: Utilisateur %user% supprimé.
-remove_users_from_group: Supprimer des utilisateurs d'un groupe
-remove_users_from_group_confirm: Bent u er zeker van dat vouloir supprimer le(s) utilisateur(s) [ %user_list% ] du groupe %group% ?
-delete_groups: Supprimer des groupes
-delete_groups_confirm: Bent u er zeker van dat vouloir supprimer le(s) groupe(s) [ %group_list% ] ?
-group_removed: Groupe %group% supprimé.
-group_created: Groupe %group% créé.
+add_users_to_group: Gebruikers aan een groep toevoegen
+add_users_to_group_confirm: Bent u er zeker van dat u deze gebruiker(s) [ %user_list% ] wenst toe te voegen aan groep %group% ?
+user_added: Gebruiker %user% toegevoegd.
+user_removed: Gebruiker %user% verweiderd.
+remove_users_from_group: Gebruikers van een groep verwijderen
+remove_users_from_group_confirm: Bent u er zeker van dat u deze gebruiker(s) [ %user_list% ] wenst te verwijderen van de groep %group% ?
+delete_groups: Groepen verwijderen
+delete_groups_confirm: Bent u er zeker van dat u deze groep(en) [ %group_list% ] wenst te verwijderen ?
+group_removed: Groep %group% verweiderd.
+group_created: Groep %group% gemaakt.
 edit_group: Een groep bewerken
-manage_group: Gérer les groupes
-init_password: Réinitialisation du mot de passe
-init_password_confirm: Bent u er zeker van dat vouloir réinitialiser les mots de passe des utilisateurs [ %user_list% ] ?
-password_initialized: Mot de passe réinitialisé pour %user%
-delete_users: Supprimer des utilisateurs
-delete_users_confirm: Bent u er zeker van dat vouloir supprimer ces utilisateurs [ %user_list% ] ?
-organizations: Organisation
-group_name: Nom du groupe
-profile_edition: Modification du profil
-claro_admin_personal_workspace_resource_rights: Gestion des ressources de l'espace personnel
-organization_name: Nom de l'organisation
+manage_group: De groepen beheren
+init_password: Het wachtwoord herstellen
+init_password_confirm: Bent u er zeker van dat u de wachtwoorden voor deze gebruiker(s) [ %user_list% ] wenst te herstellen ?
+password_initialized: Wachtwoord hersteld voor %user%.
+delete_users: Gebruikers verwijderen
+delete_users_confirm: Bent u er zeker van dat u deze gebruiker(s) [ %user_list% ] wenst te verwijderen ?
+organizations: Organisatie
+group_name: Naam van de groep
+profile_edition: Het profiel bewerken
+claro_admin_personal_workspace_resource_rights: De leermiddelen van de persoonlijke werkruimte beheren
+organization_name: Naam van de organisatie
 plugins: Plugins
-activate: Activer
+activate: Activeren
 version: Versie
 origin: Oorsprong
-cache_management: Gestion du cache
-cache_management_explanation: Votre dossier app/cache doit être vidé manuellement pour finaliser les changements.
-required_by: Requis par:
-require: Requiert:
-requirement_warning: Attention aux prérequis
-roles_updated: Rôles mis à jour
-role_update: Mise à jour des rôles
-role_update_confirm:  Bent u er zeker van dat vouloir ajouter les rôles suivants [ %role_list ] aux utilisateurs [ %user_list% ] ?
+cache_management: De cache beheren
+cache_management_explanation: Uw app/cache bestand moet manueel worden geleegd om de wijzigingen te voltooien.
+required_by: Vereist door :
+require: Vereist :
+requirement_warning: Let op eisen
+roles_updated: Rollen bewerkt
+role_update: De rollen bewerken
+role_update_confirm:  Bent u er zeker van dat u de volgende rollen [ %role_list ] wenst toe te voegen aan deze gebruikers [ %user_list% ] ?
 add_roles: Rollen toevoegen
-csv_delete: Suppression par csv
-import_facets: Importer des facettes
-csv: Csv
-csv_format_facets: Format du csv:
+csv_delete: Verwijderen met CSV-bestand
+import_facets: Facetten invoeren
+csv: CSV
+csv_format_facets: Formaat van het CSV-bestand :
 csv_format_facets_line_1: Première ligne: liste des facettes par nom séparées par des point-virgules (facette1;facette2;facette3;...)
 csv_format_facets_line_end: Lignes suivantes: username;valeur facette 1; valeur facette2; valeur facette3;...
 create_panel: Créer un panel
 edit_panel: Modifier un panel
 is_main_facet_label: Mettre dans l'tab General
-delete_panel: Supprimer un panel
-delete_panel_confirm: Bent u er zeker van dat vouloir supprimer ce panel ?
-edit_mode: Mode édition
-display_mode: Mode affichage
-roles_panels_form_explanation: Définissez l'accessibilité au panel par rôle.
-delete_field: Supprimer un champ
-delete_field_confirm: Êtes-vous vraiment sûr de vouloir supprimer ce champ ?
-facet_imported: Facettes importées
-radio: Bouton radio
-select: Liste déroulante
-checkboxes: Checkboxes
-facet_edited: Facette éditée avec succès
-facet_created: Facette créée avec succès
-facet_removed: Facette supprimée avec succès
-facet_roles_edited: Rôles de la facette édités avec succès
-panel_created: Panel créé avec succès
-panel_edited: Panel édité avec succès
-panel_removed: Panel supprimé avec succès
-field_created: Champ créé avec succès
-field_edited: Champ édité avec succès
-field_removed: Champ supprimé avec succès
-panel_roles_edited: Rôles du panel édités avec succès
-profile_preference_edited: Préférences du profil éditées avec succès
-organization: Organisation
-workspace_not_exists: L'espace d'activités %code% n'existe pas à la ligne %line%.
-tab_not_exists: 'L''tab %tab% n''existe pas à la ligne %line%.'
-file_not_exists: 'Le fichier %file% n''existe pas à la ligne %line%.'
-use_honeypot: Activer le honeypot pour les anonymes (anti-pourriels)
-mandatory: Obligatoire
-leave_empty: Laissez ce champ vide pour prouver que vous n'êtes pas un robot.
-field_not_empty: Veuillez laisser le champ vide
-disable: Désactiver
-enable: Activer
-workspace_access_date_invalid: Les dates d'accès de l'espace d'activités sont dépassées
-organization_invalid: Lijn %line% : de organizatie bestaat niet.
+delete_panel: Een panel verwijderen
+delete_panel_confirm: Bent u er zeker van dat u dit panel wenst te verwijderen ?
+edit_mode: Bewerkmodus
+display_mode: Weergavemodus
+roles_panels_form_explanation: Definieer de toegankelijkheid tot het panel door rol.
+delete_field: Een veld verwijderen
+delete_field_confirm: Bent u er zeker van dat u dit veld wenst te verwijderen ?
+facet_imported: Ingevoerde facetten
+radio: Radioknop
+select: Keuzelijst
+checkboxes: Selectievakjes
+facet_edited: Facet met succes bewerkt.
+facet_created: Facet met succes gemaakt.
+facet_removed: Facet met succes verwijderd.
+facet_roles_edited: Rôles de la facette met succes bewerkt.
+panel_created: Panel met succes gemaakt.
+panel_edited: Panel met succes bewerkt.
+panel_removed: Panel met succes verwijderd.
+field_created: Veld met succes gemaakt.
+field_edited: Veld met succes bewerkt.
+field_removed: Veld met succes verwijderd.
+panel_roles_edited: Rollen van het panel met succes bewerkt.
+profile_preference_edited: Voorkeuren van het profiel met succes bewerkt.
+organization: Organisatie
+workspace_not_exists: Regel %line%: De werkruimte bestaat niet.
+tab_not_exists: Regel %line%: De tab bestaat niet.
+file_not_exists: Regel %line%: Het bestand bestaat niet.
+use_honeypot: Activeer de honeypot voor de naamlozen (anti-spam).
+mandatory: Verplicht
+leave_empty: Laat dit veld leeg om te bewijzen dat u geen robot bent.
+field_not_empty: Gelieve dit veld leeg te laten.
+disable: Desactiveren
+enable: Activeren
+workspace_access_date_invalid: De data voor de toegang tot de werkruimten zijn overschreden.
+organization_invalid: Regel %line% : De organizatie bestaat niet.
