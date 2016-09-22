@@ -127,59 +127,59 @@ log_workspace-delete_sentence: heeft %workspace% verwijderd
 log_workspace-delete_shortname: Verwijderen
 log_workspace-delete_title: Een werkruimte verwijderen
 log_workspace-enter_filter: Toegang tot een werkruimte
-log_workspace-enter_sentence: log_workspace-enter_sentence
-log_workspace-enter_shortname: log_workspace-enter_shortname
-log_workspace-enter_title: log_workspace-enter_title
-log_workspace-role-change_right_filter: log_workspace-role-change_right_filter
-log_workspace-role-change_right_sentence: log_workspace-role-change_right_sentence
-log_workspace-role-change_right_shortname: log_workspace-role-change_right_shortname
-log_workspace-role-change_right_title: log_workspace-role-change_right_title
-log_workspace-role-create_filter: log_workspace-role-create_filter
-log_workspace-role-create_sentence: log_workspace-role-create_sentence
-log_workspace-role-create_shortname: log_workspace-role-create_shortname
-log_workspace-role-create_title: log_workspace-role-create_title
-log_workspace-role-delete_filter: log_workspace-role-delete_filter
-log_workspace-role-delete_sentence: log_workspace-role-delete_sentence
-log_workspace-role-delete_shortname: log_workspace-role-delete_shortname
-log_workspace-role-delete_title: log_workspace-role-delete_title
-log_workspace-role-subscribe_group_filter: log_workspace-role-subscribe_group_filter
-log_workspace-role-subscribe_group_sentence: log_workspace-role-subscribe_group_sentence
-log_workspace-role-subscribe_group_shortname: log_workspace-role-subscribe_group_shortname
-log_workspace-role-subscribe_group_title: log_workspace-role-subscribe_group_title
-log_workspace-role-subscribe_user_filter: log_workspace-role-subscribe_user_filter
-log_workspace-role-subscribe_user_sentence: log_workspace-role-subscribe_user_sentence
-log_workspace-role-subscribe_user_shortname: log_workspace-role-subscribe_user_shortname
-log_workspace-role-subscribe_user_title: log_workspace-role-subscribe_user_title
-log_workspace-role-unsubscribe_group_filter: log_workspace-role-unsubscribe_group_filter
-log_workspace-role-unsubscribe_group_sentence: log_workspace-role-unsubscribe_group_sentence
-log_workspace-role-unsubscribe_group_shortname: log_workspace-role-unsubscribe_group_shortname
-log_workspace-role-unsubscribe_group_title: log_workspace-role-unsubscribe_group_title
-log_workspace-role-unsubscribe_user_filter: log_workspace-role-unsubscribe_user_filter
-log_workspace-role-unsubscribe_user_sentence: log_workspace-role-unsubscribe_user_sentence
-log_workspace-role-unsubscribe_user_shortname: log_workspace-role-unsubscribe_user_shortname
-log_workspace-role-unsubscribe_user_title: log_workspace-role-unsubscribe_user_title
-log_workspace-role-update_filter: log_workspace-role-update_filter
-log_workspace-role-update_sentence: log_workspace-role-update_sentence
-log_workspace-role-update_shortname: log_workspace-role-update_shortname
-log_workspace-role-update_title: log_workspace-role-update_title
-log_workspace-tool-read_filter: log_workspace-tool-read_filter
-log_workspace-tool-read_sentence: log_workspace-tool-read_sentence
-log_workspace-tool-read_shortname: log_workspace-tool-read_shortname
-log_workspace-tool-read_title: log_workspace-tool-read_title
-log_workspace-update_filter: log_workspace-update_filter
-log_workspace-update_shortname: log_workspace-update_shortname
-log_workspace-update_title: log_workspace-update_title
-log_workspace_read: log_workspace_read
-log_workspace_roles:
-log_workspace_source:
-resource: leermiddel
+log_workspace-enter_sentence: heeft zich ingelogd in %workspace%
+log_workspace-enter_shortname: Toegang
+log_workspace-enter_title: Toegang tot een werkruimte
+log_workspace-role-change_right_filter: De rechten voor een rol bewerken
+log_workspace-role-change_right_sentence: heeft de rechten voor %role% in %resource% bewerkt
+log_workspace-role-change_right_shortname: Rechten bewerken
+log_workspace-role-change_right_title: De rechten voor een rol bewerken (werkruimte)
+log_workspace-role-create_filter: Een rol maken
+log_workspace-role-create_sentence: heeft een rol gemaakt in %workspace%
+log_workspace-role-create_shortname: Maken
+log_workspace-role-create_title: Een rol maken (werkruimte)
+log_workspace-role-delete_filter: Een rol verwijderen
+log_workspace-role-delete_sentence: heeft een rol verwijderd in %workspace%
+log_workspace-role-delete_shortname: Verwijderen
+log_workspace-role-delete_title: Een rol verwijderen (werkruimte)
+log_workspace-role-subscribe_group_filter: Een rol aan een groep toewijzen
+log_workspace-role-subscribe_group_sentence: heeft de rol %role% toegewezen aan de groep %receiver_group% in %workspace%
+log_workspace-role-subscribe_group_shortname: Toewijzen
+log_workspace-role-subscribe_group_title: Een rol aan een groep toewijzen (werkruimte)
+log_workspace-role-subscribe_user_filter: Een rol aan een gebruiker toewijzen
+log_workspace-role-subscribe_user_sentence: heeft de rol %role% toegewezen aan de gebruiker %receiver_user% in %workspace%
+log_workspace-role-subscribe_user_shortname: Toewijzen
+log_workspace-role-subscribe_user_title: Een rol aan een gebruiker toewijzen (werkruimte)
+log_workspace-role-unsubscribe_group_filter: Een rol verwijderen voor een groep
+log_workspace-role-unsubscribe_group_sentence: heeft de rol %role% verwijderd voor de  groep %receiver_group% in %workspace%
+log_workspace-role-unsubscribe_group_shortname: Verwijderen
+log_workspace-role-unsubscribe_group_title: Een rol verwijderen voor een groep (werkruimte)
+log_workspace-role-unsubscribe_user_filter: Een rol verwijderen voor een gebruiker
+log_workspace-role-unsubscribe_user_sentence: heeft de rol %role% verwijderd voor de gebruiker %receiver_user% in %workspace%
+log_workspace-role-unsubscribe_user_shortname: Verwijderen
+log_workspace-role-unsubscribe_user_title: Een rol verwijderen voor een gebruiker (werkruimte)
+log_workspace-role-update_filter: Een rol bewerken
+log_workspace-role-update_sentence: heeft een rol bewerkt in %workspace%
+log_workspace-role-update_shortname: Bewerken
+log_workspace-role-update_title: Een rol bewerken (werkruimte)
+log_workspace-tool-read_filter: Een hulpmiddel openen
+log_workspace-tool-read_sentence: heeft de hulpmiddel %tool% geopend in %workspace%
+log_workspace-tool-read_shortname: Openen
+log_workspace-tool-read_title: Een hulpmiddel in een werkruimte openen
+log_workspace-update_filter: Update
+log_workspace-update_shortname: Bewerken
+log_workspace-update_title: Update van een werkruimte
+log_workspace_read: Toegang tot de werkruimte
+log_workspace_roles: Rollen in de werkruimte
+log_workspace_source: Bronwerkruimte
+resource: Leermiddel
 role: Rol
 user: Gebruiker
 workspace: Werkruimte
 log_resource-custom_action_update_file_shortname: Update
 log_resource-custom_action_update_file_sentence: Het bestand is bewerkt.
-global_tracking: Suivi global
-user_tracking: Suivi par utilisateur
+global_tracking: Globaal toezicht
+user_tracking: Toezicht per gebruiker
 user_list: Lijst van de gebruikers
 actions_per_day_chart:
 click_to_choose: klik om de lijst van de acties te tonen

@@ -126,50 +126,50 @@ log_workspace-delete_filter: Suppression
 log_workspace-delete_sentence: a supprimé l'espace d'activités %workspace%
 log_workspace-delete_shortname: Suppression
 log_workspace-delete_title: Suppression d'un espace d'activités
-log_workspace-enter_filter: 'Accès à un espace d''activités'
-log_workspace-enter_sentence: 'a accédé à l''espace d''activités %workspace%'
+log_workspace-enter_filter: Accès à un espace d'activités
+log_workspace-enter_sentence: a accédé à l'espace d''activités %workspace%
 log_workspace-enter_shortname: Ouverture
-log_workspace-enter_title: 'Accès à un espace d''activités'
-log_workspace-role-change_right_filter: 'Changement des droits pour un rôle'
-log_workspace-role-change_right_sentence: 'a modifié les droits du rôle %role% pour %resource%'
-log_workspace-role-change_right_shortname: 'Changement de droits'
-log_workspace-role-change_right_title: 'Changement des droits pour un rôle (espace d''activités)'
+log_workspace-enter_title: Accès à un espace d'activités
+log_workspace-role-change_right_filter: Changement des droits pour un rôle
+log_workspace-role-change_right_sentence: a modifié les droits du rôle %role% pour %resource%
+log_workspace-role-change_right_shortname: Changement de droits
+log_workspace-role-change_right_title: Changement des droits pour un rôle (espace d'activités)
 log_workspace-role-create_filter: Créer un rôle
 log_workspace-role-create_sentence: a créé un rôle dans %workspace%
 log_workspace-role-create_shortname: Création
-log_workspace-role-create_title: 'Création d''un rôle (espace d''activités)'
+log_workspace-role-create_title: Création d'un rôle (espace d'activités)
 log_workspace-role-delete_filter: Suppression d'un rôle
-log_workspace-role-delete_sentence: 'a supprimé un rôle dans %workspace%'
+log_workspace-role-delete_sentence: a supprimé un rôle dans %workspace%
 log_workspace-role-delete_shortname: Suppression
-log_workspace-role-delete_title: 'Suppression d''un rôle (espace d''activités)'
-log_workspace-role-subscribe_group_filter: 'Attribution d''un rôle à un groupe'
-log_workspace-role-subscribe_group_sentence: 'a attribué le rôle %role% au groupe %receiver_group% dans %workspace%'
+log_workspace-role-delete_title: Suppression d'un rôle (espace d'activités)
+log_workspace-role-subscribe_group_filter: Attribution d'un rôle à un groupe
+log_workspace-role-subscribe_group_sentence: a attribué le rôle %role% au groupe %receiver_group% dans %workspace%
 log_workspace-role-subscribe_group_shortname: Attribution
-log_workspace-role-subscribe_group_title: 'Attribution d''un rôle à un groupe (espace d''activités)'
-log_workspace-role-subscribe_user_filter: 'Attribution d''un rôle à un utilisateur'
-log_workspace-role-subscribe_user_sentence: 'a attribué le rôle %role% à %receiver_user% dans %workspace%'
+log_workspace-role-subscribe_group_title: Attribution d'un rôle à un groupe (espace d'activités)
+log_workspace-role-subscribe_user_filter: Attribution d'un rôle à un utilisateur
+log_workspace-role-subscribe_user_sentence: a attribué le rôle %role% à %receiver_user% dans %workspace%
 log_workspace-role-subscribe_user_shortname: Attribution
-log_workspace-role-subscribe_user_title: 'Attribution d''un rôle à un utilisateur (espace d''activités)'
-log_workspace-role-unsubscribe_group_filter: 'Suppression d''un rôle pour un groupe'
-log_workspace-role-unsubscribe_group_sentence: 'a supprimé le rôle %role% pour le groupe %receiver_group% %workspace%'
+log_workspace-role-subscribe_user_title: Attribution d'un rôle à un utilisateur (espace d'activités)
+log_workspace-role-unsubscribe_group_filter: Suppression d'un rôle pour un groupe
+log_workspace-role-unsubscribe_group_sentence: a supprimé le rôle %role% pour le groupe %receiver_group% %workspace%
 log_workspace-role-unsubscribe_group_shortname: Suppression
-log_workspace-role-unsubscribe_group_title: ' pour un groupe (espace d''activités)'
-log_workspace-role-unsubscribe_user_filter: 'Suppression d''un rôle pour un utilisateur'
-log_workspace-role-unsubscribe_user_sentence: 'a supprimé le rôle %role% pour %receiver_user% dans %workspace%'
+log_workspace-role-unsubscribe_group_title:  pour un groupe (espace d'activités)
+log_workspace-role-unsubscribe_user_filter: Suppression d'un rôle pour un utilisateur
+log_workspace-role-unsubscribe_user_sentence: a supprimé le rôle %role% pour %receiver_user% dans %workspace%
 log_workspace-role-unsubscribe_user_shortname: Suppression
-log_workspace-role-unsubscribe_user_title: 'Suppression d''un rôle pour un utilisateur (espace d''activités)'
-log_workspace-role-update_filter: 'Mise à jour d''un rôle'
-log_workspace-role-update_sentence: 'a modifié un rôle dans %workspace%'
+log_workspace-role-unsubscribe_user_title: Suppression d'un rôle pour un utilisateur (espace d'activités)
+log_workspace-role-update_filter: Mise à jour d'un rôle
+log_workspace-role-update_sentence: a modifié un rôle dans %workspace%
 log_workspace-role-update_shortname: Modification
-log_workspace-role-update_title: 'Mise à jour d''un rôle (espace d''activités)'
-log_workspace-tool-read_filter: 'Ouverture d''un outil'
-log_workspace-tool-read_sentence: 'a ouvert l''outil %tool% dans %workspace%'
+log_workspace-role-update_title: Mise à jour d'un rôle (espace d'activités)
+log_workspace-tool-read_filter: Ouverture d'un outil
+log_workspace-tool-read_sentence: a ouvert l'outil %tool% dans %workspace%
 log_workspace-tool-read_shortname: Ouverture
-log_workspace-tool-read_title: 'Ouverture d''un outil dans un espace d''activités'
-log_workspace-update_filter: 'Mise à jour'
+log_workspace-tool-read_title: Ouverture d'un outil dans un espace d'activités
+log_workspace-update_filter: Mise à jour
 log_workspace-update_shortname: Modification
-log_workspace-update_title: 'Mise à jour d''un espace d''activités'
-log_workspace_read: 'Accessions à l''espace d''activités'
+log_workspace-update_title: Mise à jour d'un espace d'activités
+log_workspace_read: Accessions à l'espace d'activités
 log_workspace_roles: Rôles espace d'activités
 log_workspace_source: Espace d'activités source
 resource: Ressource
