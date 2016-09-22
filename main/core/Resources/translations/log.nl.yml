@@ -182,5 +182,5 @@ global_tracking: Globaal toezicht
 user_tracking: Toezicht per gebruiker
 user_list: Lijst van de gebruikers
 actions_per_day_chart:
-click_to_choose: klik om de lijst van de acties te tonen
+click_to_choose: Klik om de lijst van de acties te tonen
 download_csv_list: De lijst in .CSV-formaat downloaden

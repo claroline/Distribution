@@ -181,6 +181,6 @@ log_resource-custom_action_update_file_sentence: Le fichier a été mis à jour.
 global_tracking: Suivi global
 user_tracking: Suivi par utilisateur
 user_list: Liste des utilisateurs
-actions_per_day_chart: Graphique des actions par jour
+actions_per_day_chart: Grafiek van de acties per dag
 click_to_choose: Cliquer pour afficher la liste des actions
 download_csv_list: Télécharger la liste au format .CSV
