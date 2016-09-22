@@ -65,7 +65,8 @@ function configure(rootDir, packages, isWatchMode) {
     makeJsLoader(isProd),
     makeRawLoader(),
     makeJqueryUiLoader(),
-    makeCssLoader()
+    makeCssLoader(),
+    makeUrlLoader()
   ]
 
   return {
@@ -275,6 +276,13 @@ function makeCssLoader() {
   return {
     test: /\.css$/,
     loader: 'style!css'
+  }
+}
+
+function makeUrlLoader() {
+  return {
+    test: /\.(jpe?g|png|gif|svg)$/,
+    loader: 'url?limit=25000'
   }
 }
 
