@@ -19,7 +19,7 @@ class Choice
     private $id;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $label;
 
@@ -84,6 +84,8 @@ class Choice
     }
 
     /**
+     * @deprecated use setOrder() instead
+     *
      * @param int $ordre
      */
     public function setOrdre($ordre)
@@ -92,9 +94,27 @@ class Choice
     }
 
     /**
+     * @deprecated use getOrder() instead
+     *
      * @return int
      */
     public function getOrdre()
+    {
+        return $this->ordre;
+    }
+
+    /**
+     * @param int $order
+     */
+    public function setOrder($order)
+    {
+        $this->ordre = $order;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOrder()
     {
         return $this->ordre;
     }
@@ -190,7 +210,7 @@ class Choice
     /**
      * @param ResourceNode $resourceNode
      */
-    public function setResourceNode(ResourceNode $resourceNode)
+    public function setResourceNode(ResourceNode $resourceNode = null)
     {
         $this->resourceNode = $resourceNode;
     }
