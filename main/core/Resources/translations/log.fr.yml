@@ -1,6 +1,6 @@
 'Show actions for': Afficher les actions suivantes :
 all: Tous
-'for user': Filtrer sur l''utilisateur :
+'for user': Filtrer sur l'utilisateur :
 group: Groupe
 log_add_user: Ajout d'un utilisateur
 log_change_right: Changement de droits
@@ -127,7 +127,7 @@ log_workspace-delete_sentence: a supprimé l'espace d'activités %workspace%
 log_workspace-delete_shortname: Suppression
 log_workspace-delete_title: Suppression d'un espace d'activités
 log_workspace-enter_filter: Accès à un espace d'activités
-log_workspace-enter_sentence: a accédé à l'espace d''activités %workspace%
+log_workspace-enter_sentence: a accédé à l'espace d'activités %workspace%
 log_workspace-enter_shortname: Ouverture
 log_workspace-enter_title: Accès à un espace d'activités
 log_workspace-role-change_right_filter: Changement des droits pour un rôle
