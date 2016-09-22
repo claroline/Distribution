@@ -24,8 +24,7 @@ ClozeQuestionService.prototype.answersAllFound = function answersAllFound(questi
 
   if (question.solutions) {
     var numAnswersFound = 0
-
-    if (answers) {
+    if (answers.length > 0) {
       for (var i = 0; i < question.solutions.length; i++) {
         for (var j=0; j<question.solutions[i].answers.length; j++) {
           for (var k=0; k<question.holes.length; k++) {
@@ -43,7 +42,6 @@ ClozeQuestionService.prototype.answersAllFound = function answersAllFound(questi
         }
       }
     }
-
     if (numAnswersFound === question.solutions.length) {
       // all answers have been found
       feedbackState = this.FeedbackService.SOLUTION_FOUND
@@ -116,10 +114,12 @@ ClozeQuestionService.prototype.getHoleCorrectAnswers = function getHoleCorrectAn
  */
 ClozeQuestionService.prototype.getHoleAnswer = function getHoleAnswer(answer, hole) {
   var holeAnswer = null
-  for (var i = 0; i < answer.length; i++) {
-    if (hole.id === answer[i].holeId) {
-      holeAnswer = answer[i]
-      break // Stop searching
+  if(null !== answer){
+    for (var i = 0; i < answer.length; i++) {
+      if (hole.id === answer[i].holeId) {
+        holeAnswer = answer[i]
+        break // Stop searching
+      }
     }
   }
 
