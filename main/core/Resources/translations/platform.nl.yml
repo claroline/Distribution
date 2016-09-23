@@ -1060,50 +1060,50 @@ use_test_repo: 'Utiliser les dépôts de test'
 user: Gebruiker
 user_accounts: 'Comptes utilisateur'
 user_enable_mail_notification_label: 'Activer les notifications par courriel'
-user_creation: 'Création d''un utilisateur'
+user_creation: Een gebruiker maken
 user_creation_success: 'Le compte utilisateur a été met succes gemaakt..'
 user_info: 'Informations utilisateur'
 user_limit_reached: 'La limite de création d''utilisateurs a été atteinte.'
 user_limit_success_update: 'La limite d''utilisateurs par rôle a été mise à jour avec succès.'
-user_limit_too_low: 'Il y a déjà %total% %role%(s). La limite %newMax% est trop faible.'
-user_menu: 'Menu utilisateur'
-user_menu_configuration: 'Configuration du menu utilisateur'
-user_options_form_desktopBackgroundColor: 'Couleur de fond du bureau'
-user_parameters: 'Paramètres de l''utilisateur'
-user_picker: 'Outil de sélection d''un utilisateur'
-user_profile: 'Profil utilisateur'
-user_public_profile_not_visible: 'Votre profil public n''est visible par personne. <br> Vous pouvez rendre votre profil visible par les <span class="shared_policy_link shared_policy_link_platform_users">utilisateurs de la platform</span>, ou par <span class="shared_policy_link shared_policy_link_everybody">tout le monde</span>.'
-user_selector: 'Sélecteur d''utilisateurs'
-user_visit: 'Audience/Visites utilisateurs'
-username: 'Identifiant'
-username_already_used: 'L''identifiant %username% est déjà utilisé'
-username_and_email_from_two_different_users: 'Le nom d''utilisateur %username% et le courriel %email% sont tous deux utilisés et n''appartiennent pas au même utilisateur.'
-username_found_at: 'Le nom d''utilisateur %username% a été trouvé aux lignes: %lines%'
+user_limit_too_low: Er zijn al %total% %role%l(en). De limiet %newMax% is te laag.
+user_menu: Gebruikersmenu
+user_menu_configuration: Het gebruikersmenu instellen
+user_options_form_desktopBackgroundColor: Achtergrondkleur
+user_parameters: Instellingen van de gebruiker
+user_picker: Om gebruikers te kiezen
+user_profile: Gebruikersprofiel
+user_public_profile_not_visible: Uw openbaar profiel is onzichtbaar.<br> U mag uw profiel zichtbaar maken voor de <span class="shared_policy_link shared_policy_link_platform_users">platformgebruikers</span>, of voor <span class="shared_policy_link shared_policy_link_everybody">iedereen</span>.
+user_selector: Om gebruikers te kiezen
+user_visit: Bezoeken van de gebruikers
+username: ID
+username_already_used: De ID %username% wordt al gebruikt.
+username_and_email_from_two_different_users: De gebruikersnaam %username% en de e-mail %email% worden bieden gebruikt en behoren niet tot dezelfde gebruiker.
+username_found_at: Regels %lines%: De gebruikersnaam %username% is gevonden.
 username_or_email: Gebruikersnaam of e-mail
 users: Gebruikers
-users_cannot_be_registered_to_group: 'Les utilisateurs ne peuvent pas être inscrits dans le groupe'
-users_connected_once: 'utilisateurs connectés au moins 1 fois sur la platform'
+users_cannot_be_registered_to_group: De gebruikers kunnen niet bij die groep ingeschreven worden.
+users_connected_once: Gebruikers tenminste 1 keer ingelogd op het platform
 users_from_group_registration: Inschriving gebruikers van de groep
 users_import: Gebruikers invoeren
 users_list: Lijst van de gebruikers
 users_management: De gebruikers beheersen
-users_minimum_requirement_msg: 'Les utilisateurs doivent remplir ces conditions: login de 3 caractères, mot de passe de 4 caractères, courriel valide.'
-users_per_page: 'Utilisateurs par page'
-users_registration_in_workspace: 'Inscription gebruikers dans l''werkruimte'
-users_visits: 'Visites gebruikers'
+users_minimum_requirement_msg: De gebruikers moeten voldoen aan deze voorwaarden: een login van 3 tekens, een wachtwoord van 4 tekens en een geldige e-mail.
+users_per_page: Gebruikers per pagina
+users_registration_in_workspace: Inschrijving van gebruikers in de werkruimte'
+users_visits: Bezoeken van de gebruikers'
 validate: Valider
 validation: Validation
-variable_available_message: 'Vous pouvez utiliser les variables suivantes dans votre formulaire'
+variable_available_message: U kunt de volgende variabelen in uw formulier gebruiken
 verification: Vérification
-verify_your_password: 'Veuillez retaper votre mot de passe'
+verify_your_password: Voer opnieuw uw wachtwoord in
 view: Voir
-view_category_hierarchy: 'Visualiser de structuur van de categorieën'
+view_category_hierarchy: De structuur van de categorieën visualiseren
 views: 'Nb vues'
 visibility: Visibilité
 visible: Visible
 visitor: Visiteur
-warning_user_impersonation: 'Vous êtes connecté en tant que %user%.'
-warning_workspace_impersonation: 'Vous êtes connecté en tant que %role% du workspace %workspace%.'
+warning_user_impersonation: U bent ingelogd als %user%.
+warning_workspace_impersonation: U bent ingelogd als %role% van in werkruimte %workspace%.'
 warnings: Let op
 widget: Widget
 widget_configuration: Instellingen van de widget
