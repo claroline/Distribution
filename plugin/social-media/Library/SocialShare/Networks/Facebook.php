@@ -7,7 +7,6 @@
  * Author: Panagiotis TSAVDARIS
  * Date: 4/23/15
  */
-
 namespace Icap\SocialmediaBundle\Library\SocialShare\Networks;
 
 class Facebook implements NetworkInterface
