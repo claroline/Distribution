@@ -177,42 +177,42 @@ connections: 'Nb Cnx.'
 contact: Contact
 contacts_per_page: 'Contacts par page'
 content: Contenu
-cookie_lifetime: 'Durée de vie du cookie'
+cookie_lifetime: Durée de vie du cookie
 copiable: Copiable
 copies: Copies
 copy: Copier
-count_resources: 'Nombre de ressources'
+count_resources: Nombre de ressources
 create: Créer
-create_account: 'Créer le compte'
-create_and_update: 'Création et mise à jour'
-create_category: 'Créer une catégorie'
-create_client: 'Créer un client'
-create_facet: 'Créer une facette'
-create_field: 'Créer un champ'
-create_group: 'Créer un groupe'
-create_learning_outcomes: 'Créer un référentiel de compétences'
-create_model: 'Créer un modèle'
-create_new_admin_tag: 'Créer un nouveau Tag administrateur'
-create_new_home_tab: 'Créer un nouvel onglet'
-create_new_tag: 'Créer un nouveau Tag'
-create_new_user_account: 'Création de votre compte Claroline Connect'
-create_only: 'Création seulement'
-create_pane: 'Créer un panel'
-create_resource: 'Créer une nouvelle ressource'
-create_role: 'Créer un rôle'
-create_security_token: 'Créer un jeton d''authentification'
-create_subcategory: 'Créer une sous-catégorie'
-create_user: 'Créer un utilisateur'
-create_users: 'Créer les utilisateurs'
-create_widget_instance: 'Créer un nouveau Widget'
-create_workspace: 'Créer un espace d''activités'
-created_by: 'Créé par %creator% le %creationDate%'
-creating: 'En cours de création'
+create_account: Créer le compte
+create_and_update: Création et mise à jour
+create_category: Créer une catégorie
+create_client: Créer un client
+create_facet: Créer une facette
+create_field: Créer un champ
+create_group: Créer un groupe
+create_learning_outcomes: Créer un référentiel de compétences
+create_model: Créer un modèle
+create_new_admin_tag: Créer un nouveau Tag administrateur
+create_new_home_tab: Créer un nouvel onglet
+create_new_tag: Créer un nouveau Tag
+create_new_user_account: Création de votre compte Claroline Connect
+create_only: Création seulement
+create_pane: Créer un panel
+create_resource: Créer une nouvelle ressource
+create_role: Créer un rôle
+create_security_token: Créer un jeton d'authentification
+create_subcategory: Créer une sous-catégorie
+create_user: Créer un utilisateur
+create_users: Créer les utilisateurs
+create_widget_instance: Créer un nouveau Widget
+create_workspace: Créer un espace d'activités
+created_by: Créé par %creator% le %creationDate%
+creating: En cours de création
 creation: Création
-creation_date: 'Date de création'
+creation_date: Date de création
 creator: Créateur
-csv_export: 'Export csv'
-csv_select: 'Sélectionnez un fichier csv:'
+csv_export: Export csv
+csv_select: Sélectionnez un fichier csv:
 csv_format_info: 'Informations sur le format du fichier csv'
 csv_format_user_list: 'Format: liste des noms d''utilisateur séparés par un retour à la ligne.'
 csv_users_import_infos: 'Informations sur le format du fichier csv'

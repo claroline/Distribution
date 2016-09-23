@@ -209,11 +209,11 @@ create_workspace: Een werkruimte maken
 created_by: Door %creator% gemmakt op %creationDate%
 creating: 'En cours de création'
 creation: Maken
-creation_date: 'Date de création'
-creator: Créateur
-csv_export: 'Export csv'
-csv_select: 'Sélectionnez un fichier csv:'
-csv_format_info: 'Informations sur le format du fichier csv'
+creation_date: Aanmaakdatum
+creator: Maker
+csv_export: CSV uitvoer
+csv_select: Kies een CSV-bestand:
+csv_format_info: Informatie over het formaat van het CSV-bestand
 csv_format_user_list: 'Format: liste des noms d''utilisateur séparés par un retour à la ligne.'
 csv_users_import_infos: 'Informations sur le format du fichier csv'
 csv_users_import_infos_format: Format
@@ -882,7 +882,7 @@ select_all: Alles kiezen
 select_category: Een categorie liezen
 select_contacts_title: De geadesseerden kiezen
 select_groups_for_registration_to_workspace: Kies de in te schrijven groepen
-select_roles_to_assign: 'Selectionnez les rôles à attribuer'
+select_roles_to_assign: kies de toe te wijzen rollen
 select_users_for_registration_to_workspace: Kies de in te schrijven gebruikers
 select_users_to_add_to_your_contacts: 'Sélectionnez gebruikers à ajouter à vos contacts'
 select_workspace_to_link: 'Choisissez un werkruimte à lier'
@@ -896,7 +896,7 @@ send_mail: Een e-mail sturen
 send_mail_at_workspace_registration: 'Envoyer un courriel lors de l''inscription d''un utilisateur à un werkruimte'
 send_message: Een bericht sturen
 send_message_to_workspace: Een bericht sturen
-send_message_to_workspace_info: 'Cette liste reprend les espaces d''activités dont vous êtes le gestionnaire.'
+send_message_to_workspace_info: 'Deze lijst reprend les espaces d''activités dont vous êtes le gestionnaire.'
 server: Server
 session: Sessie
 session_db_cannot_perform_operations: 'L''écriture et/ou la lecture d''enregistrements dans la table renseignée est impossible. Veuillez vérifier que l''utilisateur de la base de données dispose de droits suffisants et qu''aucune contrainte particulière n''a été affectée à cette table.'
@@ -997,7 +997,7 @@ tool_is_visible_and_can_be_opened: 'L''outil est visible et peut être ouvert'
 tool_parameters: 'Paramètres des outils'
 tool_roles_create_directory: 'L''option "Créer un répertoire" vous permet de créer automatiquement un répertoire dédié aux utilisateurs de ce groupe.'
 tools: Werktuigen
-tools_rights_configuration: 'Configuration des droits sur les outils'
+tools_rights_configuration: De rechten instelle op de hulpmiddelen
 top: Top
 top_extension: 'Top des extensions (médias), par nombre de fichiers'
 top_media_views: 'Top des médias les plus consultés'
@@ -1009,15 +1009,15 @@ top_users_workspaces_owners: 'Top gebruikers ayant créé le plus de modules'
 top_workspaces_connections: 'Top des espaces d''activités les plus consultés'
 top_workspaces_resources: 'Top des espaces d''activités ayant le plus de ressources'
 total: Totaal
-total_time: 'Durée totale'
-traffic: Fréquentation
-transport: Transport
-trash: Corbeille
-tune: Personnaliser
-tune_public_url_error: 'Une erreur s''est produite lors de la personnalisation de l''URL de votre profil public.'
-tune_public_url_success: 'Personnalisation de l''URL de votre profil public effectuée avec succès.'
-tune_your_public_profile: 'Personnalisez votre profil public'
-tune_your_public_profile_url: 'Personnalisez l''URL de votre profil public'
+total_time: Totale duur
+traffic: Verkeer op de site
+transport: Vervoer
+trash: Prullenbak
+tune: Personnaliseren
+tune_public_url_error: Er is een fout opgetreden tijdens het personnaliseren van de URL van uw openbaar profiel'
+tune_public_url_success: Het personnaliseren van de URL van uw openbaar profiel is met succes uitgevoerd.
+tune_your_public_profile: Personnaliseer uw openbaar profiel
+tune_your_public_profile_url: Personnaliseer de URL van uw openbaar profiel
 type: Type
 type_s: Type(s)
 unable_to_start_gmail: 'La connexion avec le service SMTP de Gmail ne peut pas être établie. Veuillez vérifier que le nom d''utilisateur et le mot de passe que vous avez renseignés sont corrects.'
@@ -1028,7 +1028,7 @@ unauthorized: 'Vous n''êtes pas autorisé à consulter cette page.'
 unavailable_platform: 'La platform n''est pas disponible.'
 unavailable_role: 'Le rôle %translationKey% n''est pas utilisable'
 uncompress_file: 'Décompresser le fichier si possible'
-under_min_length: 'Cette valeur est trop courte'
+under_min_length: Deze waarde is te kort
 unique_connections: 'Nb Cnx. uniques'
 unknown: Inconnu
 unpublish: Dépublier
@@ -1079,14 +1079,14 @@ username: 'Identifiant'
 username_already_used: 'L''identifiant %username% est déjà utilisé'
 username_and_email_from_two_different_users: 'Le nom d''utilisateur %username% et le courriel %email% sont tous deux utilisés et n''appartiennent pas au même utilisateur.'
 username_found_at: 'Le nom d''utilisateur %username% a été trouvé aux lignes: %lines%'
-username_or_email: 'Nom d''utilisateur ou courriel'
-users: Utilisateurs
+username_or_email: Gebruikersnaam of e-mail
+users: Gebruikers
 users_cannot_be_registered_to_group: 'Les utilisateurs ne peuvent pas être inscrits dans le groupe'
 users_connected_once: 'utilisateurs connectés au moins 1 fois sur la platform'
-users_from_group_registration: 'Inscription gebruikers du groupe'
-users_import: 'Importer gebruikers'
-users_list: 'Liste gebruikers'
-users_management: 'Gestion gebruikers'
+users_from_group_registration: Inschriving gebruikers van de groep
+users_import: Gebruikers invoeren
+users_list: Lijst van de gebruikers
+users_management: De gebruikers beheersen
 users_minimum_requirement_msg: 'Les utilisateurs doivent remplir ces conditions: login de 3 caractères, mot de passe de 4 caractères, courriel valide.'
 users_per_page: 'Utilisateurs par page'
 users_registration_in_workspace: 'Inscription gebruikers dans l''werkruimte'
@@ -1097,70 +1097,70 @@ variable_available_message: 'Vous pouvez utiliser les variables suivantes dans v
 verification: Vérification
 verify_your_password: 'Veuillez retaper votre mot de passe'
 view: Voir
-view_category_hierarchy: 'Visualiser la structure des categorieën'
+view_category_hierarchy: 'Visualiser de structuur van de categorieën'
 views: 'Nb vues'
 visibility: Visibilité
 visible: Visible
 visitor: Visiteur
 warning_user_impersonation: 'Vous êtes connecté en tant que %user%.'
 warning_workspace_impersonation: 'Vous êtes connecté en tant que %role% du workspace %workspace%.'
-warnings: Attention
+warnings: Let op
 widget: Widget
-widget_configuration: 'Configuration du widget'
+widget_configuration: Instellingen van de widget
 widget_creation_roles: 'Rôles pouvant créer le widget sur leur bureau'
 widget_home_tab_delete_confirm_message: 'Voulez-vous vraiment retirer ce widget de cet tab ?'
-widget_home_tab_delete_confirm_title: 'Suppression du widget de l''tab'
-widget_settings: 'Paramètres des widgets'
-widget_visible_actions: 'Choisissez les actions visibles dans le widget'
-widget_workspace_pick: 'Choisissez les espaces de travail affichés par le widget'
+widget_home_tab_delete_confirm_title: De widget van de tab verwijderen
+widget_settings: Instellingen van de widgets
+widget_visible_actions: Kies de  acties die zichtbaar zijn in de widget
+widget_workspace_pick: Kies de door de widget getoonde werkruimten.
 widgets: Widgets
-widgets_configuration: 'Configuration des widgets'
-width: Largeur
-with_role: 'avec le rôle'
-with_tutor: Tutoré
-workspace: 'Espace d''activités'
-workspace.create: 'Créer un nouvel werkruimte'
-workspace.name_not_blank: 'Veuillez spécifier un nom pour cet werkruimte.'
-workspace_activity_overview: 'Aperçu des activités récentes de %workspaceName%'
-workspace_administration: Administration
-workspace_classification: 'Classification des espaces d''activités'
-workspace_code_invalid: 'Le code %code% est déjà utilisé à la ligne %line%.'
-workspace_creator: 'Créateur de l''espace'
-workspace_delete: 'Supprimer l''werkruimte'
-workspace_delete_confirm_message: 'Etes-vous sûr de vouloir verwijderen cet werkruimte ?'
-workspace_delete_confirm_title: 'Confirmation de suppression'
-workspace_delete_success_message: 'L''werkruimte "%workspaceName%" été verweiderd.'
+widgets_configuration: De widgets instellen
+width: Breedte
+with_role: met de rol
+with_tutor: Begeleid
+workspace: Werkruimte
+workspace.create: Een nieuwe werkruimte maken
+workspace.name_not_blank: Geef een naam aan deze werkruimte.
+workspace_activity_overview: Overzicht van de laatste activiteiten in %workspaceName%
+workspace_administration: Administratie
+workspace_classification: Classificatie van de werkruimten
+workspace_code_invalid: Regel %line%: De code %code% is al in gebruik.
+workspace_creator: Maker van de ruimte
+workspace_delete: De werkruimte verwijderen
+workspace_delete_confirm_message: Bent u er zeker van dat u deze werkruimte wenst te verwijderen ?
+workspace_delete_confirm_title: Bevestiging van verwijderen
+workspace_delete_success_message: De werkruimte "%workspaceName%" is verweiderd.
 workspace_display: Affichage
-workspace_home_tab_creation: 'Création d''un tab pour les espaces d''activités'
-workspace_home_tab_edition: 'Edition de l''tab pour les espaces d''activités'
-workspace_home_tabs: 'Onglets pour les espaces d''activités'
-workspace_import: 'Importer un werkruimte'
-workspace_list: 'Liste des espaces d''activités'
-workspace_management: 'L''werkruimte a été créé le %creationDate%, par %creator%. Il y a %count% inscrit(s).'
-workspace_management_date_null: 'Il y a %count% inscrit(s). La date de création de l''espace et son créateur ne sont pas connus.'
-workspace_max_users: 'Nombre maximal d''utilisateurs par werkruimte'
-workspace_model_invalid: 'Le modèle %model% n''existe pas à la ligne %line%.'
-workspace_order_tool_edit_form_name: Nom
-workspace_queue_cancel_confirm_message: 'Voulez-vous vraiment annuler votre demande d''inscription à cet werkruimte ?'
-workspace_queue_cancel_confirm_title: 'Annuler la demande d''inscription'
-workspace_registration_confirm_title: 'Voulez-vous vous inscrire à cet werkruimte ?'
-workspace_registration_message: 'Vous avez été inscrit à l''werkruimte %workspace_name%'
-workspace_registration_message_object: 'Inscription à un werkruimte'
-workspace_remove_from_category_confirm_message: 'Voulez-vous vraiment retirer l''werkruimte de cette categorie ?'
-workspace_remove_from_category_confirm_title: 'Retrait d''un werkruimte d''une categorie'
-workspace_resource: Ressources
-workspace_role_type_form_requireDir: 'Créer un répertoire'
-workspace_role_type_form_translationKey: Nom
-workspace_tag_form_name: Nom
-workspace_tag_remove_confirm_message: 'Voulez-vous vraiment retirer cette categorie ?'
-workspace_tag_remove_confirm_title: 'Retrait d''une categorie'
-workspace_template_form_name: Nom
-workspace_tools: Outils
-workspace_unregistration_confirm_title: 'Voulez-vous vous désinscrire de cet werkruimte ?'
-workspace_user_invalid: 'L''utilisateur %username% n''existe pas à la ligne %line%.'
+workspace_home_tab_creation: Een tab voor de werkruimten maken
+workspace_home_tab_edition: De tab voor de werkruimten bewerken
+workspace_home_tabs: Tabs voor de werkruimten
+workspace_import: Een werkruimte invoeren
+workspace_list: Lijst van de werkruimten
+workspace_management: De werkruimte is op %creationDate%  gemaakt door %creator%. Er zijn %count% ingeschreven gebruiker(s).
+workspace_management_date_null: Er zijn %count% ingeschreven gebruiker(s). De aanmaakdatum en de maker zijn onbekend.
+workspace_max_users: Maximumaantal gebruikers per werkruimte
+workspace_model_invalid: Regel %line%: Het model bestaat niet.
+workspace_order_tool_edit_form_name: Naam
+workspace_queue_cancel_confirm_message: Bent u er zeker van dat u uw inschrijving bij deze werkruimte wenst te annuleren ?
+workspace_queue_cancel_confirm_title: De inschrijvingsaanvraag annuleren
+workspace_registration_confirm_title: Wenst u zich in te schrijven bij deze werkruimte ?
+workspace_registration_message: U bent ingeschreven bij de werkruimte %workspace_name%.
+workspace_registration_message_object: Inschrijving aan een werkruimte
+workspace_remove_from_category_confirm_message: Bent u er zeker van dat u deze werkruimte van deze categorie wenst te verwijderen ?
+workspace_remove_from_category_confirm_title: Een werkruimte van een categorie intrekken
+workspace_resource: Leermiddelen
+workspace_role_type_form_requireDir: Een directory maken
+workspace_role_type_form_translationKey: Naam
+workspace_tag_form_name: Naam
+workspace_tag_remove_confirm_message: Bent u er zeker van dat u deze categorie wenst te verwijderen ?
+workspace_tag_remove_confirm_title: Een categorie verwijderen
+workspace_template_form_name: Naam
+workspace_tools: Hulpmiddelen
+workspace_unregistration_confirm_title: Wilt u zich uitschrijven van deze werkruimte ?'
+workspace_user_invalid: Regel %line%: De grbruiker %username% bestaat niet.
 workspace_welcome: Accueil
 workspaces: Werkruimten
-workspaces_included_in_category: 'Espaces d''activités enregistrés dans cette categorie'
+workspaces_included_in_category: De in deze categorie opgeslagen werkruimten
 workspaces_management: De werkruimten beheren
 workspaces_per_page: Werkruimten per pagina
 wrong_captcha: De ingevoerde code komt niet overeen met het opgegeven beeld.
