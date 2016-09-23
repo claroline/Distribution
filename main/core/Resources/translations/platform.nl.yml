@@ -91,7 +91,7 @@ already_existing_user: De gebruiker bestaat al.
 already_exists: bestaat al
 already_exists_in_workspace: bestaat al in de werkruimte
 an_error_occured_message: Er is een fout opgetreden. Gelieve contact op te nemen met de beheerder van het platform.
-analytics_connections: 'Visites utilisateurs'
+analytics_connections: Bezoeken van gebruikers
 analytics_home: Overzicht
 analytics_resources: Inhoud van het platform
 analytics_top: Top van de activiteiten
@@ -138,41 +138,41 @@ cannot_delete_unique_manager: Het is onmogelijk de enige beheerder te verwijdere
 cannot_unsubscribe_from_workspace: Het is onmogelijk u uit te schrijven van de werkruimte.
 captcha: Captcha
 categories: Catégories
-categories_organization: 'Organisation des categorieën'
+categories_organization: Organisatie van de categorieën
 categorize: Op categorie sorteren
 category: Categorie
 category_creation: Een categorie maken
-category_edition: 'Modification de la categorie'
+category_edition: De categorie bewerken
 category_explanations_1: Elke categorie moet een unieke naam hebben.
 category_explanations_2: Een categorie selecteren om haar sub-categorieën te beheren.
 category_root: Basiscategorieën
 category_structure: Structuur van de categorieën
 change_view: Wijzig de display
 choose_from_resource_manager: of kies een bestand 'dans le gestionnaire de ressources'
-choose_logo: 'Choisir un logo'
-choose_resource_form_type: 'Type de ressource'
-claroline_bundle_missing: 'Le bundle %bundle% n''est pas installé. Veuillez l''installer avant d''aller plus loin.'
-classify_my_workspaces: 'Classer mes espaces'
-classify_workspaces: 'Classer les espaces'
-classroom: 'En classe'
-click_to_view_modify_profile: 'Voir/modifier votre profil'
-client_ip: 'Adresse IP du client'
-client_name: 'Nom du client'
+choose_logo: Een logo kiezen
+choose_resource_form_type: Leermiddeltype
+claroline_bundle_missing: De bundle %bundle% is niet geïnstalleerd. Instaleer die alvorens verder te gaan.
+classify_my_workspaces: Mijn ruimten sorteren
+classify_workspaces: De ruimten sorteren
+classroom: In klas
+click_to_view_modify_profile: Uw profiel zien/bewerken
+client_ip: IP-adres van de klant
+client_name: Klantnaam
 close: Sluiten
-closed_account: 'Compte clôturé'
+closed_account: Afgesloten rekening
 code: Code
-code_found_at: 'Le code %code% a été trouvé aux lignes %lines%.'
-collaborative: Collaboratif
-collaborator: Collaborateur
+code_found_at: De code %code% is gevonden in regels %lines%.
+collaborative: Collaboratief
+collaborator: Samenwerker
 collapse: Samenklappen
 color: Kleur
 comment: Commentaire
 communication: Communicatie
-completed: Terminé
+completed: Voltooid
 configuration: Configuratie
 configure: Configurer
 confirm: OK
-confirm_send_data: 'Nous vous proposons de marquer votre accord pour l''envoi de données :'
+confirm_send_data: We stellen u voor akkoord te gaan met het sturen van gegevens:
 connections: Aantal connecties
 contact: Contactpersoon
 contacts_per_page: Contactpersonen per pagina
@@ -206,77 +206,77 @@ create_user: Een gebruiker maken
 create_users: De gebruikers maken
 create_widget_instance: Een nieuwe widget maken
 create_workspace: Een werkruimte maken
-created_by: Door %creator% gemmakt op %creationDate%
-creating: 'En cours de création'
+created_by: Door %creator% gemaakt op %creationDate%
+creating: Bezig met het maken
 creation: Maken
 creation_date: Aanmaakdatum
 creator: Maker
 csv_export: CSV uitvoer
 csv_select: Kies een CSV-bestand:
 csv_format_info: Informatie over het formaat van het CSV-bestand
-csv_format_user_list: 'Format: liste des noms d''utilisateur séparés par un retour à la ligne.'
-csv_users_import_infos: 'Informations sur le format du fichier csv'
-csv_users_import_infos_format: Format
-csv_users_import_infos_format_a: 'Les données d''un utilisateur doivent être définies sur une ligne et séparées par un point virgule.'
+csv_format_user_list: Formaat: lijst van de gebruikersnamen gescheiden door een regeleinde
+csv_users_import_infos: Informatie over het formaat van het CSV-bestand
+csv_users_import_infos_format: Formaat
+csv_users_import_infos_format_a: De gegevens van een gebruiker moeten op een regel gedefinieerd worden en door een kommapunt gescheiden worden.
 csv_users_import_infos_format_b: 'Notez que vous ne devez pas ajouter d''en-tête au fichier.'
-csv_users_import_infos_optional: Optionnel
-csv_users_import_infos_required: Requis
-csv_users_import_infos_ws_role_a: 'Les rôles prédéfinis par la platform sont "Collaborateur" et "Gestionnaire" et les valeurs à utiliser dans le csv sont respectivement "collaborator" et "manager".'
-csv_users_import_infos_ws_role_b: 'Si ces rôles sont modifiés, le nouveau nom entré doit être utilisé dans le csv.'
-csv_users_import_infos_format_a: 'Les données d''un utilisateur doivent être définies sur une ligne et séparées par un point virgule.'
-csv_workspaces_import_infos_format_a: 'Les données d''un werkruimte doivent être définies sur une ligne et séparées par un point virgule.'
-curl_facebook_application_validation_error: 'Extension php curl manquante.'
-current_category: 'Catégorie courante'
-cut: Couper
-dashboard: 'Tableau de bord'
-data_col: 'Colonne des données'
-database: 'Base de données'
-database_connection_failed: 'La connexion à la base de données a échoué.'
-date: Date
+csv_users_import_infos_optional: Optioneel
+csv_users_import_infos_required: Vereist
+csv_users_import_infos_ws_role_a: De door het platform vooraf gedefinieerde rollen zijn "Samenwerke" en "Beheerder" en de in het CSV-bestand te gebruiken waarden zijn respectievelijk "collaborator" en "manager".
+csv_users_import_infos_ws_role_b: Indien deze rollen gewijzigd worden, moet de nieuwe naam in het CSV-bestand gebruikt worden.
+csv_users_import_infos_format_a: De gegevens van een gebruiker moeten op een regel gedefinieerd worden en door een kommapunt gescheiden worden.
+csv_workspaces_import_infos_format_a: De gegevens van een werkruimte moeten op een regel gedefinieerd worden en door een kommapunt gescheiden worden.
+curl_facebook_application_validation_error: Uitbreiding php curl ontbreekt
+current_category: Huidige categorie
+cut: Knippen
+dashboard: Dashboard
+data_col: Kolom van de gegevens
+database: Gegevensbank
+database_connection_failed: De verbinding met de database is mislukt.
+date: Datum
 date_agenda_display_format_for_form: dd-MM-yyyy
 date_form_datepicker_format: dd/mm/yyyy
 date_form_datepicker_php: d-m-Y
 date_form_format: dd/MM/yyyy
 date_form_placeholder: jj/mm/aaaa
 date_format: d/m/Y
-date_range.apply: Appliquer
-date_range.clear: Effacer
+date_range.apply: 'Appliquer'
+date_range.clear: 'Effacer'
 date_range.custom_range: 'Plage personnalisée'
-date_range.day_names: '["Di","Lu","Ma","Me","Je","Ve","Sa"]'
+date_range.day_names: ["Zo","Ma","Di","Wo","Do","Vr","Za"]
 date_range.first_day: '1'
 date_range.format: d/m/Y
 date_range.format.with_hours: 'd/m/Y H:i:s'
-date_range.from: De
+date_range.from: Van
 date_range.js_format: DD/MM/YYYY
 date_range.last_month: 'Mois précédent'
 date_range.last_school_year: 'Année scolaire précédente'
-date_range.last_seven_days: '7 derniers jours'
-date_range.last_thirty_days: '30 derniers jours'
+date_range.last_seven_days: Laatste 7 dagen
+date_range.last_thirty_days: Laatste 30 dagen
 date_range.last_week: 'Semaine précédente'
 date_range.last_year: 'Année précédente'
-date_range.month_names: '["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"]'
+date_range.month_names: ["Januari","Februari","Maart","April","Mei","Juni","Juli","Augustus","September","October","November","December"]
 date_range.separator: '-'
-date_range.this_month: 'Mois en cours'
-date_range.this_school_year: 'Année scolaire en cours'
-date_range.this_week: 'Semaine en cours'
+date_range.this_month: Lopende maand
+date_range.this_school_year: Lopend schooljaar
+date_range.this_week: Lopende week
 date_range.this_year: 'Année en cours'
-date_range.to: A
-date_range.today: 'Aujourd''hui'
-date_range.week: s
+date_range.to: 'Tot'
+date_range.today: Vandaag
+date_range.week: 's'
 date_range.yesterday: Gisteren
 db_table: 'Table de la base de données'
-decline: Refuser
-default_language: 'Langue par défaut'
-default_role: 'Rôle par défaut'
-deletable: Supprimable
-delete: Supprimer
+decline: Weigeren
+default_language: Standaardtaal
+default_role: Standaardrol
+deletable: 'Supprimable'
+delete: Verwijderen
 delete_category: 'Supprimer la categorie'
 delete_category_confirm_message: 'Voulez-vous vraiment verwijderen cette categorie ?'
 delete_category_confirm_title: 'Suppression d''une categorie'
-delete_client: 'Supprimer un client'
-delete_client_message: 'Bent u er zeker van dat u    wenst te vouloir verwijderen ce client ?'
-delete_contact: 'Supprimer le contact'
-delete_contact_confirm_message: 'Voulez-vous vraiment verwijderen ce contact ?'
+delete_client: Een klant verwijderen
+delete_client_message: Bent u er zeker van dat u deze klant wenst te verwijderen ?
+delete_contact: De contactpersoon verwijderen
+delete_contact_confirm_message: Bent u er zeker van dat u deze contactpersoon wenst te verwijderen ?
 delete_friend_pending: 'Supprimer une demande d''ami'
 delete_friend_pending_message: 'Bent u er zeker van dat u    wenst te vouloir verwijderen cette demande d''ami ?'
 delete_home_tab: 'Supprimer l''tab'
@@ -288,31 +288,31 @@ description: Beschrijving
 desktop: Bureaublad
 desktop_and_home: 'Bureau et accueil'
 desktop_home_tab_creation: 'Création d''un tab pour le bureau'
-desktop_home_tab_edition: 'Edition de l''tab pour le bureau'
+desktop_home_tab_edition: De tab voor het bureaublad bewerken
 desktop_home_tabs: 'Onglets pour le bureau'
 desktop_parameters: 'Paramètres du bureau'
 desktop_tools: 'Outils du bureau'
-destination: Destination
+destination: 'Destination'
 directory: Directory
 display: Tonen
-display_at_registration: 'Afficher à la création du compte'
+display_at_registration: Tonen bij het maken van de rekening
 display_captcha: 'Afficher les captchas pour les anonymes'
 display_options: 'Options d''affichage'
 displayable_in_workspace_list: 'Visible dans la liste des espaces'
 distinguished_name: 'Nom distinctif (DN)'
-does_not_exist: 'n''existe pas'
-does_not_exist_in_workspace: 'n''existe pas dans l''werkruimte'
-done_on: 'effectuée sur'
-down: Descendre
+does_not_exist: bestaat niet
+does_not_exist_in_workspace: bestaat niet in de werkruimte
+done_on: uitgevoerd op
+down: 'Descendre'
 download: Downloaden
 downloads: 'Nb tchg.'
-drag_file_here: 'Déplacez le fichier ici'
-drop_file: 'Déposez le fichier'
-dsn: dsn
-duration: Durée
+drag_file_here: Verplaats het bestand hier
+drop_file: 'Zet het bestand neer'
+dsn: 'dsn'
+duration: Duur
 edit: Bewerken
-edit_facet: 'Editer une facette'
-edit_field: 'Editer een veld'
+edit_facet: Een facet bewerken
+edit_field: Een veld bewerken
 edit_maintenance_message: 'Modifier le message de maintenance'
 edit_password: 'Modifier le mot de passe'
 edit_password_error: 'Une erreur est survenue pendant la modification du mot de passe.'
@@ -422,15 +422,15 @@ has_not_been_imported: 'n''a pas été importé(e)'
 has_not_been_imported_into_the_group: 'n''a pas été importé(e) dans le groupe'
 height: Hoogte
 help_url: 'URL de l''aide'
-hide: Cacher
+hide: Verbergen
 hide_breadcrumb: 'Cacher le fil d''Ariane'
 hide_tools_menu: 'Cacher le menu d''outils (sauf pour les gestionnaires)'
-history: Historique
-home: Accueil
+history: 'Historique'
+home: 'Accueil'
 home_lock: 'Verrouillage du bureau'
 home_manager: 'Gestionnaire de l''accueil'
 home_parameters: 'Paramètres de l''accueil'
-home_tab: Onglet
+home_tab: Tab
 home_tab_bookmark_confirm_message: 'Cet tab sera disponible sur votre bureau.'
 home_tab_bookmark_confirm_title: 'Epingler cet tab au bureau'
 home_tab_bookmark_delete_confirm_message: 'Voulez-vous vraiment retirer cet tab de votre bureau ?'
@@ -460,7 +460,7 @@ in_workspace: 'dans l''werkruimte'
 incomplete: Incomplet
 indexing: Référencement
 individual: Individuel
-informations: Informations
+informations: Informatie
 infos_sending_acceptance: 'Acceptation d''envoi d''informations'
 infos_sending_bar_msg: 'Cliquez sur cette barre pour plus d''informations.'
 infos_sending_has_not_been_accepted: 'L''envoi d''informations n''a pas été accepté'
@@ -1107,7 +1107,7 @@ warning_workspace_impersonation: U bent ingelogd als %role% van in werkruimte %w
 warnings: Let op
 widget: Widget
 widget_configuration: Instellingen van de widget
-widget_creation_roles: 'Rôles pouvant créer le widget sur leur bureau'
+widget_creation_roles: Rollen die een widget op het bureaublad mogen maken
 widget_home_tab_delete_confirm_message: 'Voulez-vous vraiment retirer ce widget de cet tab ?'
 widget_home_tab_delete_confirm_title: De widget van de tab verwijderen
 widget_settings: Instellingen van de widgets
