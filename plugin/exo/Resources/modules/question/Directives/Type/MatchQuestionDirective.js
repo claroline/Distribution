@@ -34,12 +34,6 @@ function MatchQuestionDirective(FeedbackService, $timeout, $window, MatchQuestio
               return controller.handleBeforeDrop(info)
             })
 
-            /*jsPlumb.bind('beforeDetach', function(connection){
-              // According to the doc Returning false - or nothing - from this callback will cause the detach to be abandoned, and the Connection will be reinstated or left on its current target.
-              // But if we return false User will not be allowed to remove connection by clicking on it
-              // If we return nothing this will be possible
-            })*/
-
             jsPlumb.bind('beforeStartDetach', function(){
               return false
             })
