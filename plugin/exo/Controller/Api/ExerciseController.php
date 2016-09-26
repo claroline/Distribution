@@ -18,6 +18,7 @@ use UJM\ExoBundle\Manager\ExerciseManager;
 use UJM\ExoBundle\Manager\PaperManager;
 use UJM\ExoBundle\Manager\QuestionManager;
 use UJM\ExoBundle\Services\classes\PaperService;
+use UJM\ExoBundle\Transfer\Json\ValidationException;
 
 /**
  * Exercise Controller.
@@ -112,17 +113,49 @@ class ExerciseController
     }
 
     /**
-     * Update the properties of an Exercise.
+     * Updates an Exercise.
      *
-     * @EXT\Route(
-     *     "/{id}/update",
-     *     name="exercise_update_meta",
-     *     options={"expose"=true}
-     * )
+     * @EXT\Route("/{id}", name="exercise_update")
      * @EXT\Method("PUT")
      *
      * @param Exercise $exercise
-     * @param Request $request
+     * @param Request  $request
+     *
+     * @return JsonResponse
+     */
+    public function updateAction(Exercise $exercise, Request $request)
+    {
+        $this->assertHasPermission('ADMINISTRATE', $exercise);
+
+        $dataRaw = $request->getContent();
+
+        if ($dataRaw) {
+            $data = json_decode($dataRaw);
+            if (null === $data) {
+                return new JsonResponse([[
+                    'path' => '',
+                    'message' => 'Invalid JSON data',
+                ]], 422);
+            }
+
+            try {
+                $this->exerciseManager->update($exercise, $data);
+            } catch (ValidationException $e) {
+                return new JsonResponse($e->getErrors(), 422);
+            }
+        }
+
+        return new JsonResponse($this->exerciseManager->export($exercise));
+    }
+
+    /**
+     * Update the properties of an Exercise.
+     *
+     * @EXT\Route("/{id}/update", name="exercise_update_meta")
+     * @EXT\Method("PUT")
+     *
+     * @param Exercise $exercise
+     * @param Request  $request
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */

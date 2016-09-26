@@ -7,8 +7,10 @@ use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Step;
 use UJM\ExoBundle\Library\Mode\CorrectionMode;
+use UJM\ExoBundle\Serializer\ExerciseSerializer;
 use UJM\ExoBundle\Transfer\Json\ValidationException;
 use UJM\ExoBundle\Transfer\Json\Validator;
+use UJM\ExoBundle\Validator\JsonSchema\ExerciseValidator;
 
 /**
  * @DI\Service("ujm.exo.exercise_manager")
@@ -21,9 +23,21 @@ class ExerciseManager
     private $om;
 
     /**
+     * @deprecated use $validator instead
+     *
      * @var Validator
      */
+    private $oldValidator;
+
+    /**
+     * @var ExerciseValidator
+     */
     private $validator;
+
+    /**
+     * @var ExerciseSerializer
+     */
+    private $serializer;
 
     /**
      * @var StepManager
@@ -32,24 +46,106 @@ class ExerciseManager
 
     /**
      * @DI\InjectParams({
-     *     "om"          = @DI\Inject("claroline.persistence.object_manager"),
-     *     "validator"   = @DI\Inject("ujm.exo.json_validator"),
-     *     "stepManager" = @DI\Inject("ujm.exo.step_manager")
+     *     "om"           = @DI\Inject("claroline.persistence.object_manager"),
+     *     "validator"    = @DI\Inject("ujm_exo.validator.exercise"),
+     *     "oldValidator" = @DI\Inject("ujm.exo.json_validator"),
+     *     "serializer"   = @DI\Inject("ujm_exo.serializer.exercise"),
+     *     "stepManager"  = @DI\Inject("ujm.exo.step_manager")
      * })
      *
-     * @param ObjectManager $om
-     * @param Validator     $validator
-     * @param StepManager   $stepManager
+     * @param ObjectManager      $om
+     * @param ExerciseValidator  $validator
+     * @param Validator          $oldValidator
+     * @param ExerciseSerializer $serializer
+     * @param StepManager        $stepManager
      */
-    public function __construct(ObjectManager $om, Validator $validator, StepManager $stepManager)
+    public function __construct(
+        ObjectManager $om,
+        ExerciseValidator $validator,
+        Validator $oldValidator,
+        ExerciseSerializer $serializer,
+        StepManager $stepManager)
     {
         $this->om = $om;
         $this->validator = $validator;
+        $this->oldValidator = $oldValidator;
+        $this->serializer = $serializer;
         $this->stepManager = $stepManager;
     }
 
     /**
+     * Validates and creates a new Exercise from raw data.
+     *
+     * @param \stdClass $data
+     *
+     * @return Exercise
+     *
+     * @throws ValidationException
+     */
+    public function create(\stdClass $data)
+    {
+        return $this->update(new Exercise(), $data);
+    }
+
+    /**
+     * Validates and updates an Exercise entity with raw data.
+     *
+     * @param Exercise  $exercise
+     * @param \stdClass $data
+     *
+     * @return Exercise
+     *
+     * @throws ValidationException
+     */
+    public function update(Exercise $exercise, \stdClass $data)
+    {
+        // Validate received data
+        $errors = $this->validator->validate($data, ['solutionsRequired' => true]);
+        if (count($errors) > 0) {
+            throw new ValidationException('Exercise is not valid', $errors);
+        }
+
+        // Update Exercise with new data
+        $this->serializer->deserialize($data, ['entity' => $exercise]);
+
+        // Save to DB
+        $this->om->persist($exercise);
+        $this->om->flush();
+
+        return $exercise;
+    }
+
+    /**
+     * Exports an Exercise.
+     *
+     * @param Exercise $exercise
+     * @param array    $options
+     *
+     * @return \stdClass
+     */
+    public function export(Exercise $exercise, array $options = [])
+    {
+        return $this->serializer->serialize($exercise, $options);
+    }
+
+    /**
+     * Creates a copy of an Exercise.
+     *
+     * @param Exercise $exercise
+     *
+     * @return Exercise
+     */
+    public function copy(Exercise $exercise)
+    {
+        $exerciseData = $this->serializer->serialize($exercise);
+
+        return $this->create($exerciseData);
+    }
+
+    /**
      * Create and add a new Step to an Exercise.
+     *
+     * @deprecated not used anymore in the new update system
      *
      * @param Exercise $exercise
      *
@@ -72,6 +168,8 @@ class ExerciseManager
     /**
      * Delete a Step.
      *
+     * @deprecated not used anymore in the new update system
+     *
      * @param Exercise $exercise
      * @param Step     $step
      */
@@ -93,6 +191,8 @@ class ExerciseManager
 
     /**
      * Reorder the steps of an Exercise.
+     *
+     * @deprecated not used anymore in the new update system
      *
      * @param Exercise $exercise
      * @param array    $order    an ordered array of Step IDs
@@ -208,6 +308,8 @@ class ExerciseManager
     /**
      * Create a copy of an Exercise.
      *
+     * @deprecated use copy() instead
+     *
      * @param Exercise $exercise
      *
      * @return Exercise the copy of the Exercise
@@ -243,27 +345,9 @@ class ExerciseManager
     }
 
     /**
-     * @todo actual import...
-     *
-     * Imports an exercise in a JSON format
-     *
-     * @param string $data
-     *
-     * @throws ValidationException if the exercise is not valid
-     */
-    public function importExercise($data)
-    {
-        $exerciseData = json_decode($data);
-
-        $errors = $this->validator->validateExercise($exerciseData);
-
-        if (count($errors) > 0) {
-            throw new ValidationException('Exercise is not valid', $errors);
-        }
-    }
-
-    /**
      * Exports an exercise in a JSON-encodable format.
+     *
+     * @deprecated use export() instead
      *
      * @param Exercise $exercise
      * @param bool     $withSolutions
@@ -286,6 +370,8 @@ class ExerciseManager
     /**
      * Exports an exercise in a JSON-encodable format.
      *
+     * @deprecated use export() with `$options['minimal'] = true` instead
+     *
      * @param Exercise $exercise
      *
      * @return array
@@ -301,6 +387,8 @@ class ExerciseManager
     /**
      * Update the Exercise metadata.
      *
+     * @deprecated use update() instead
+     *
      * @param Exercise  $exercise
      * @param \stdClass $metadata
      *
@@ -308,7 +396,7 @@ class ExerciseManager
      */
     public function updateMetadata(Exercise $exercise, \stdClass $metadata)
     {
-        $errors = $this->validator->validateExerciseMetadata($metadata);
+        $errors = $this->oldValidator->validateExerciseMetadata($metadata);
 
         if (count($errors) > 0) {
             throw new ValidationException('Exercise metadata are not valid', $errors);
@@ -349,6 +437,8 @@ class ExerciseManager
 
     /**
      * Export metadata of the Exercise in a JSON-encodable format.
+     *
+     * @deprecated see export()
      *
      * @param Exercise $exercise
      *
@@ -396,6 +486,8 @@ class ExerciseManager
 
     /**
      * Export exercise with steps with questions.
+     *
+     * @deprecated see export()
      *
      * @param Exercise $exercise
      * @param bool     $withSolutions
