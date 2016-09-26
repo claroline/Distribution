@@ -199,7 +199,7 @@ Evaluation type : Type d'évaluation
 Evaluation: Évaluation
 Examiner: Correcteur
 Examiners : Correcteurs
-Examiners Instructions: Instructions aux correcteurs
+Examiners Instructions: Consignes aux correcteurs
 Expected total correction: Nombre de corrections attendues par document
 expected_total_correction: Trois conditions sont nécessaires pour qu'un étudiant valide son évaluation :<br/>- Il doit avoir rendu sa copie.<br/>- Il doit avoir corrigé N autre(s) copie(s).<br/>- Sa copie doit avoir reçu N correction(s).<br/><br/>Le tirage d''une copie lors d'une correction est fait de manière aléatoire et anonyme.
 
@@ -242,10 +242,10 @@ Info ratingScale : Informations / critères accompagnant l'appréciation
 innova_collecticiel_common_form_instruction: Instruction
 innova_collecticiel_criterion_form_instruction: Instruction
 innova_collecticiel_form_name: Titre du collecticiel
-Instruction Innova: Instructions
+Instruction Innova: Consignes
 Instruction_: Instruction :
 Instruction: Consignes (et fichiers mis à disposition dans les différents espaces)
-Instructions for examiners: Instructions spécifiques aux correcteurs
+Instructions for examiners: Consignes spécifiques aux correcteurs
 Insufficient : Insuffisant
 Invalidate all corrections: Invalider toutes les corrections
 Invalidate this correction: Invalider la correction
@@ -381,7 +381,7 @@ Reason of reporting: Raison du signalement
 Recalculate all grade: Recalculer toutes les notes
 Recalculate the score: Recalculer la note
 recalculate_helper: Utile si vous avez supprimé des critères de correction alors que des gens avaient déjà commencé à corriger. Cela adaptera la note. Si vous avez ajouté de nouveaux critères, la note pour ce critère sera de 0 par défaut.
-Recall instructions: Rappel des instructions
+Recall instructions: Rappel des consignes
 Relevant documents: Documents concernés
 Remove report: Retirer le signalement
 Report comment: Expliquez la raison de votre signalement
