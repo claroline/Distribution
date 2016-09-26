@@ -12,14 +12,14 @@
 namespace Claroline\CoreBundle\Command\Import;
 
 use Claroline\CoreBundle\Command\Traits\BaseCommandTrait;
+use Claroline\CoreBundle\Library\Logger\ConsoleLogger;
 use Claroline\CoreBundle\Listener\DoctrineDebug;
 use Claroline\CoreBundle\Validator\Constraints\CsvWorkspace;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Console\Output\OutputInterface;
-use Claroline\CoreBundle\Library\Logger\ConsoleLogger;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 /**
  * Creates an user, optionaly with a specific role (default to simple user).
@@ -37,9 +37,9 @@ class CreateWorkspaceFromCsvCommand extends ContainerAwareCommand
             ->setAliases(['claroline:csv:workspace']);
         $this->setDefinition(
             [
-		new InputArgument('csv_workspace_path', InputArgument::REQUIRED, 'The absolute path to the csv file.'),
-            	new InputArgument('owner_username', InputArgument::REQUIRED, 'The owner username')
-	    ]
+        new InputArgument('csv_workspace_path', InputArgument::REQUIRED, 'The absolute path to the csv file.'),
+                new InputArgument('owner_username', InputArgument::REQUIRED, 'The owner username'),
+        ]
         );
     }
 

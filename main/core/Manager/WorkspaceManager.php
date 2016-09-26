@@ -859,7 +859,7 @@ class WorkspaceManager
         $workspaceModelManager = $this->container->get('claroline.manager.workspace_model_manager');
 
         foreach ($workspaces as $workspace) {
-            $i++;
+            ++$i;
             $this->om->startFlushSuite();
             $endDate = null;
             $model = null;
@@ -872,7 +872,7 @@ class WorkspaceManager
             $errors = [];
 
             if ($logger) {
-                $logger('Creating '.$code.' ('. $i . '/' . count($workspaces) . ') ...');
+                $logger('Creating '.$code.' ('.$i.'/'.count($workspaces).') ...');
             }
 
             if (isset($workspace[6]) && trim($workspace[6]) !== '') {
@@ -926,20 +926,18 @@ class WorkspaceManager
                 $this->container->get('claroline.manager.transfer_manager')->createWorkspace($workspace, $template, true);
             }
 
-
-            $logger('UOW: ' . $this->om->getUnitOfWork()->size());		
+            $logger('UOW: '.$this->om->getUnitOfWork()->size());
 
             if ($i % 100 === 0) {
                 $this->om->forceFlush();
-		$user = $this->om->getRepository('ClarolineCoreBundle:User')->find($user->getId());
-		$this->om->merge($user);
-		$this->om->refresh($user);
+                $user = $this->om->getRepository('ClarolineCoreBundle:User')->find($user->getId());
+                $this->om->merge($user);
+                $this->om->refresh($user);
             }
-
         }
 
-	$logger('Final flush...');
-	$this->om->endFlushSuite();
+        $logger('Final flush...');
+        $this->om->endFlushSuite();
     }
 
     public function getDisplayableNonPersonalWorkspaces(

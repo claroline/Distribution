@@ -20,7 +20,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface; /**
  * Creates an user, optionaly with a specific role (default to simple user).
  */
-
 class CreateUserFromCsvCommand extends ContainerAwareCommand
 {
     use BaseCommandTrait;
