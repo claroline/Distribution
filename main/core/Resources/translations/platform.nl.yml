@@ -239,89 +239,89 @@ date_form_datepicker_php: d-m-Y
 date_form_format: dd/MM/yyyy
 date_form_placeholder: jj/mm/aaaa
 date_format: d/m/Y
-date_range.apply: 'Appliquer'
-date_range.clear: 'Effacer'
-date_range.custom_range: 'Plage personnalisée'
+date_range.apply: Toepassen
+date_range.clear: Uitwissen
+date_range.custom_range: Gepersonnaliseerde blok
 date_range.day_names: ["Zo","Ma","Di","Wo","Do","Vr","Za"]
-date_range.first_day: '1'
+date_range.first_day: 1
 date_range.format: d/m/Y
-date_range.format.with_hours: 'd/m/Y H:i:s'
+date_range.format.with_hours: d/m/Y H:i:s
 date_range.from: Van
 date_range.js_format: DD/MM/YYYY
-date_range.last_month: 'Mois précédent'
-date_range.last_school_year: 'Année scolaire précédente'
+date_range.last_month: Voorafgaande maand
+date_range.last_school_year: Voorafgaand schooljaar
 date_range.last_seven_days: Laatste 7 dagen
 date_range.last_thirty_days: Laatste 30 dagen
-date_range.last_week: 'Semaine précédente'
-date_range.last_year: 'Année précédente'
+date_range.last_week: Voorafgaande week
+date_range.last_year: Voorafgaand jaar
 date_range.month_names: ["Januari","Februari","Maart","April","Mei","Juni","Juli","Augustus","September","October","November","December"]
-date_range.separator: '-'
+date_range.separator: -
 date_range.this_month: Lopende maand
 date_range.this_school_year: Lopend schooljaar
 date_range.this_week: Lopende week
-date_range.this_year: 'Année en cours'
-date_range.to: 'Tot'
+date_range.this_year: Lopend jaar
+date_range.to: Tot
 date_range.today: Vandaag
 date_range.week: 's'
 date_range.yesterday: Gisteren
-db_table: 'Table de la base de données'
+db_table: Tabel van de gegevensank
 decline: Weigeren
 default_language: Standaardtaal
 default_role: Standaardrol
-deletable: 'Supprimable'
+deletable: Verwijderbaar
 delete: Verwijderen
-delete_category: 'Supprimer la categorie'
-delete_category_confirm_message: 'Voulez-vous vraiment verwijderen cette categorie ?'
-delete_category_confirm_title: 'Suppression d''une categorie'
+delete_category: De categorie verwijderen
+delete_category_confirm_message: Bent u er zeker van dat u deze categorie wenst te verwijderen ?
+delete_category_confirm_title: Een categorie verwijderen
 delete_client: Een klant verwijderen
 delete_client_message: Bent u er zeker van dat u deze klant wenst te verwijderen ?
 delete_contact: De contactpersoon verwijderen
 delete_contact_confirm_message: Bent u er zeker van dat u deze contactpersoon wenst te verwijderen ?
-delete_friend_pending: 'Supprimer une demande d''ami'
-delete_friend_pending_message: 'Bent u er zeker van dat u    wenst te vouloir verwijderen cette demande d''ami ?'
-delete_home_tab: 'Supprimer l''tab'
-delete_learning_outcomes: 'Suppression d''un référentiel de compétences'
-delete_learning_outcomes_confirm_message: 'Voulez-vous vraiment verwijderen ce référentiel de compétences ?'
-delete_platform_friend: 'Supprimer une platform amie'
-delete_platform_friend_message: 'Bent u er zeker van dat u    wenst te vouloir verwijderen cette platform amie ?'
+delete_friend_pending: Een vriendaanvraag verwijderen
+delete_friend_pending_message: Bent u er zeker van dat u deze vriendaanvraag wenst te verwijderen ?
+delete_home_tab: De tab verwijderen
+delete_learning_outcomes: Een competentieframework verwijderen
+delete_learning_outcomes_confirm_message: Bent u er zeker van dat u dit competentieframework wenst te verwijderen ?
+delete_platform_friend: Een vriendplatform verwijderen
+delete_platform_friend_message: Bent u er zeker van dat u dit vriendplatform wenst te verwijderen ?
 description: Beschrijving
 desktop: Bureaublad
-desktop_and_home: 'Bureau et accueil'
-desktop_home_tab_creation: 'Création d''un tab pour le bureau'
+desktop_and_home: Bureaublad en startpagina
+desktop_home_tab_creation: Een tab voor het bureaublad maken
 desktop_home_tab_edition: De tab voor het bureaublad bewerken
-desktop_home_tabs: 'Onglets pour le bureau'
-desktop_parameters: 'Paramètres du bureau'
-desktop_tools: 'Outils du bureau'
-destination: 'Destination'
+desktop_home_tabs: Tabs voor het bureaublad
+desktop_parameters: Instellingen bureaublad
+desktop_tools: Hulpmiddelen van het du bureaublad
+destination: Bestemming
 directory: Directory
 display: Tonen
 display_at_registration: Tonen bij het maken van de rekening
-display_captcha: 'Afficher les captchas pour les anonymes'
-display_options: 'Options d''affichage'
-displayable_in_workspace_list: 'Visible dans la liste des espaces'
-distinguished_name: 'Nom distinctif (DN)'
+display_captcha: De captchas tonen voor der onbekende personen
+display_options: Opties van het uiterlijk
+displayable_in_workspace_list: Zichtbaar in de lijst van de ruimten
+distinguished_name: Unieke naam (DN)
 does_not_exist: bestaat niet
 does_not_exist_in_workspace: bestaat niet in de werkruimte
 done_on: uitgevoerd op
-down: 'Descendre'
+down: Naar beneden
 download: Downloaden
-downloads: 'Nb tchg.'
+downloads: Aantal downloads
 drag_file_here: Verplaats het bestand hier
-drop_file: 'Zet het bestand neer'
-dsn: 'dsn'
+drop_file: Zet het bestand neer
+dsn: DSN
 duration: Duur
 edit: Bewerken
 edit_facet: Een facet bewerken
 edit_field: Een veld bewerken
-edit_maintenance_message: 'Modifier le message de maintenance'
-edit_password: 'Modifier le mot de passe'
-edit_password_error: 'Une erreur est survenue pendant la modification du mot de passe.'
-edit_password_error_current: 'Votre mot de passe actuel n''est pas correct.'
-edit_password_message: 'Êtes-vous sur de vouloir modifier votre mot de passe ?'
-edit_password_success: 'Modification de votre mot de passe effectuée avec succès.'
-edit_profile: 'Modifier votre profil'
-edit_profile_error: 'Une erreur est survenue pendant la modification du profil.'
-edit_profile_error_right: 'Vous n''êtes pas autorisé à uploader des images. Veuillez contactez votre administrateur.'
+edit_maintenance_message: Het onderhoudsbericht bewerken
+edit_password: Het wachtwoord bewerken
+edit_password_error: Er is een fout opgetreden tijdens het bewerken van het wachtwoord.
+edit_password_error_current: Uw huidige wachtwoord is niet correct.
+edit_password_message: Bent u er zeker van dat u uw wachtwoord wenst te bewerken ?
+edit_password_success: Wachtwoord met succes bewerkt.
+edit_profile: Uw profiel bewerken
+edit_profile_error: Er is een fout opgetreden tijdens het bewerken van uw profiel.
+edit_profile_error_right: U bent niet toegelaten beelden up te loaden. Gelieve contact te nemen met de sitebeheerder.
 edit_profile_success: 'Modification du profil effectuée avec succès.'
 edit_public_profile: 'Modifier le profil public'
 edit_public_profile_preferences_error: 'Une erreur est survenue lors de la modification des préférences de votre profil public.'
@@ -333,20 +333,20 @@ edit_your_profile_error: 'Une erreur est survenue pendant la modification de vot
 edit_your_profile_success: 'Modification de votre profil effectuée avec succès.'
 editable: Bewerkbaar
 editable_facet_form_explanation: 'Le champ "Modifiable" permet de spécifier si l''élément doit être modifiable ou non par l''utilisateur.'
-email: 'Courriel'
-email_found_at: 'Le courriel %email% a été trouvé aux lignes %lines%'
-empty_file: 'Fichier vide'
-encryption: Encryption
-end_date: 'Date de fin'
+email: E-mail
+email_found_at: De e-mail %email% is gevonden in regels %lines%.
+empty_file: Leeg bestand
+encryption: Versleuteling
+end_date: Einddatum
 end_maintenance: 'Terminer le mode maintenance'
-enter_tag_name_message: 'Veuillez entrer un nom de Tag'
+enter_tag_name_message: Gelieve een tagnaam in te voeren
 entries_per_day: 'Nombre d''entrées par jour'
 error: Fout
-error_occured: 'Une erreur s''est produite'
-evaluation: Evaluation
-evaluation-automatic: Automatique
-evaluation-manual: Manuelle
-evaluation_edition: Evaluation
+error_occured: Er is een fout opgetreden
+evaluation: Evaluatie
+evaluation-automatic: Automatisch
+evaluation-manual: 'Manuelle'
+evaluation_edition: 'Evaluation'
 evaluation_type: 'Type d''évaluation'
 excel_export: 'Export vers Excel'
 expiration_date: 'Date d''expiration'
@@ -356,30 +356,30 @@ ext_php_missing: 'L''extension php %ext% est manquante.'
 external_pdo_database: 'Base de données externe (PDO)'
 facebook: Facebook
 facebook_application_validation_error: 'Les identifiants fournis ne sont pas valides.'
-facet_management: 'Gestion des facettes'
-facets: Facettes
+facet_management: De facetten beheren
+facets: Facetten
 fail_add_user_group_message: 'Ces utilisateurs n''ont pas pu être ajoutés au groupe. Vérifiez la limite d''utilisateurs par rôle.'
-failed: Echoué
+failed: 'Echoué'
 fast_answer: 'Réponse rapide'
 fb_client_id: 'Id de l''application'
 fb_client_secret: 'Secret de l''application'
 file: Bestand
 files: Bestanden
-filter: Filtrer
-filter_actions: 'Filtrer les actions'
+filter: Filtreren
+filter_actions: De acties filtreren
 filters: Filters
 find_workspaces: 'Tous les espaces d''activités publics'
 firstName: Voornaam
 first_name: Voornaam
 footer: 'Pied de page'
 for_period: 'sur la période du :'
-forgot_password: 'Mot de passe oublié ?'
+forgot_password: Wachtwoord vergeten ?
 form_role: Rol
-friend_platform: 'Plateformes amies'
+friend_platform: Vriendplatformen
 from: Sinds
 from_message: De
 fullscreen_text_editor: 'Vous pouvez utiliser la version plein écran de l''éditeur afin d''y inclure du HTML.'
-general: Général
+general: 'Général'
 general_parameters: 'Paramètres généraux'
 general_parameters_portfolio_url_help: 'commence par http://'
 general_parameters_updated_success: 'Paramètres généraux modifiés avec succès.'
@@ -391,12 +391,12 @@ generate_url_subscription_anonyme: 'Inscription à l''werkruimte par un anonyme'
 generate_url_subscription_fail: 'Vous devez d''abord cochez la case de l''inscription publique avant de pouvoir voir l''url.'
 get_mail_notifications: 'Recevoir une copie des messages sur %adress%.'
 google_tag_validation: 'Balise HTML de validation Google'
-grant_access: 'Donner l''accès'
+grant_access: Toegang geven
 grant_type: Permissions
 graph_draw_area: 'Tracez une zone sur le graphique pour zoomer. Double cliquez pour annuler'
 group: Groep
 group_configuration: 'Configuration du groupe'
-group_creation: 'Création d''un groupe'
+group_creation: Een groep maken
 group_parameter: 'Paramètres du groupe'
 group_invalid: 'Le groupe %group% n''est pas valide à la ligne %line%.'
 organization_invalid: 'L''organization %organization% n''est pas valide à la ligne %line%.'
@@ -425,8 +425,8 @@ help_url: 'URL de l''aide'
 hide: Verbergen
 hide_breadcrumb: 'Cacher le fil d''Ariane'
 hide_tools_menu: 'Cacher le menu d''outils (sauf pour les gestionnaires)'
-history: 'Historique'
-home: 'Accueil'
+history: Geschiedenis
+home: Startpagina
 home_lock: 'Verrouillage du bureau'
 home_manager: 'Gestionnaire de l''accueil'
 home_parameters: 'Paramètres de l''accueil'
@@ -444,35 +444,35 @@ home_tab_widgets: 'Widgets de l''tab'
 home_tab_widgets_configuration: 'Configuration des widgets de l''tab'
 home_tabs: 'Onglets de la page d''accueil'
 home_tabs_configuration: 'Configuration des onglets de la page d''accueil'
-host: Hôte
-icon: Icône
+host: 'Hôte
+icon: 'Icône'
 id: Id
 id_col: 'Colonne des identifiants'
 identical_group_name: 'Nom de groupe identique'
 identical_role_name: 'Nom de rôle identique'
-import: Importer
+import: Invoeren
 import_profile_pics: 'Importer des photos d''utilisateur'
 import_profile_pics_explanation: 'Veuillez sélectionner une archive au format .zip. Cette archive doit contenir une liste d''images dont les noms sont structurés de cette manière: identifiant.extension'
 import_roles: 'Importer des rôles'
 import_user_file_file: 'Importer depuis un fichier csv'
 import_users: 'Importer gebruikers'
 in_workspace: 'dans l''werkruimte'
-incomplete: Incomplet
-indexing: Référencement
-individual: Individuel
+incomplete: Onvoltooid
+indexing: 'Référencement'
+individual: 'Individuel'
 informations: Informatie
 infos_sending_acceptance: 'Acceptation d''envoi d''informations'
 infos_sending_bar_msg: 'Cliquez sur cette barre pour plus d''informations.'
 infos_sending_has_not_been_accepted: 'L''envoi d''informations n''a pas été accepté'
-initialize: Initialiser
+initialize: 'Initialiser'
 inscription_mail: 'Courriel d''inscription'
 install: Installeren
 install_update_cant_be_undone: 'Les opérations d''installation et de mise à jour ne peuvent pas être annulées.'
 installed: Geinstalleerd
-instructions: Consignes
-internal_error: 'Erreur interne du serveur. Veuillez contactez l''administrateur de la platform.'
+instructions: Aanwijzigen
+internal_error: Interne systeemfout. Gelieven contact te nemen met de sitebeheerder.
 internal_portfolio: 'Portfolio interne à la platform'
-invalid_action: 'Action non valide'
+invalid_action: Ongeldige actie
 invalid_auth_mode: 'Cryptage non valide'
 invalid_csv_file: 'Le fichier .csv n''est pas valide'
 invalid_driver: 'Ce driver n''est pas valide'
@@ -483,7 +483,7 @@ invalid_form: 'Le formulaire n''est pas valide'
 invalid_syntax: 'Syntaxe non valide'
 invalid_transport: 'Transport non valide'
 invalid_url: 'Cette url n''est pas valide'
-ip_address: 'Adresse IP'
+ip_address: IP-adres
 irreversible_action: 'Cette action est irréversible'
 is_already_in_category: 'est déjà dans la categorie'
 is_already_in_use: 'est déjà utilisé'
@@ -497,11 +497,11 @@ language_select: Kies een taal
 lastName: Naam
 last_30_days_activity: Activiteiten van de laatste 30 dagen
 last_action: '{1} Dernière action|[1,Inf] %logAmount% dernières actions'
-last_attempt_date: 'Date de la dernière tentative'
-last_manager_error_message: 'Vous ne pouvez pas retirer tous les gestionnaires.'
+last_attempt_date: Datum van de laatste poging
+last_manager_error_message: U bent niet toegelaten alle beheerders in te trekken.
 last_modification: Dernière modification
 last_name: Naam
-layout: Layout
+layout: Uiterlijk
 learning_outcomes: Competentieframework
 learning_outcomes_creation: Een competentieframework maken
 learning_place: Leerplaats
@@ -576,11 +576,11 @@ messages_sent_removed: Verwijderde gestuurde berichten
 meta_tag_paste: 'Collez ici la balise meta fournie par Google Webmaster.'
 method_of_work: Werkmethoden
 misc: Divers
-missing_%content%: 'La variable %content% est manquante pour la langue "%language%".'
-missing_%password%: 'La variable %password% est manquante pour la langue "%language%".'
-missing_%username%: 'La variable %username% est manquante pour la langue "%language%".'
-mixed: Mixte
-mode: Mode
+missing_%content%: 'La variable %content% ontbreekt voor "%language%".'
+missing_%password%: 'La variable %password% ontbreekt voor "%language%".'
+missing_%username%: 'La variable %username% ontbreekt voor "%language%".'
+mixed: 'Mixte'
+mode: 'Mode'
 model: Model
 models: Modellen
 month.April: April
@@ -600,7 +600,7 @@ my_account: Mijn rekening
 my_agenda: Mijn agenda
 my_applications: Mijn pakketten
 my_contacts: Mijn contactpersonen
-my_favourite_workspaces: 'Mes espaces d''activités favoris'
+my_favourite_workspaces: Mijn favorieten werkruimten
 my_notes: Mijn cijfers
 my_portfolio: Mijn portfolio
 my_profile: Mijn profiel
@@ -633,11 +633,11 @@ no_model: Geen model.
 no_resources_in_workspace: 'Cet espace ne contient actuellement aucune ressource.'
 no_role_selected_message: 'Aucun rôle sélectionné.'
 no_search_results: 'Votre recherche n''a retourné aucun résultat.'
-no_tag: 'Il n''y a aucun Tag'
+no_tag: Er is geen tag.
 no_user: Geen gebruiker.
 no_workspace: Er is geen werkruimte.
 non_personal_workspaces_only: Alleen de persoonlijke ruimten.
-none: Aucun(e)
+none: 'Aucun(e)'
 not_allowed_message: 'Vous n''êtes pas autorisé(e) à effectuer cette action.'
 not_attempted: Niet gepoogd
 not_blank_expected: Deze waarde mag niet leeg zijn.
@@ -656,7 +656,7 @@ occurrence: Occurrence
 ok: Ok
 only_for_workspace_creation: Alleen voor het maken van een werkruimte
 open: Open
-open_resource_when_opening_ws: 'Ouvrir une ressource à l''ouverture de l''werkruimte'
+open_resource_when_opening_ws: Een leermiddel openen bij het openen van de werkruimte.
 operation_done: De operatie is uitgevoerd.
 options: Options
 or: Ou
@@ -699,7 +699,7 @@ placeholder_platform_name_message: 'Ce paramètre fictif est optionnel et sera r
 platform_appearance: Uiterlijk van het platform
 platform_expiration_date: Vervaldatum van het platform
 platform_icon: Iconen van het platform
-platform_init_date: 'Date d''activation van het platform'
+platform_init_date: Activeringsdatum van het platform'
 platform_parameters: Instellingen van het platform
 platform_plugins: Plugins van het platform
 platform_refresh: De bestanden van het platform vernieuwen
@@ -756,7 +756,7 @@ recursive_dir_action: 'Appliquer au contenu du répertoire et aux sub-répertoir
 redirect_after_login_option: 'Redirection après login'
 redirect_after_login_option_desktop: 'Bureau'
 redirect_after_login_option_last: 'Dernière page active'
-redirect_after_login_option_url: 'URL'
+redirect_after_login_option_url: URL
 redirect_after_login_option_workspace_tag: 'Vers l''werkruimte avec le tag : '
 redirect_uri: 'Url de redirection'
 refresh: Rafraîchir
@@ -814,7 +814,7 @@ replace_platform_name_display_message: 'qui sera remplacé par le nom de votre p
 replace_username_display_message: 'qui affichera le nom de l''utilisateur'
 requirement_failed_for_install: 'Prérequis non remplis pour l''installation'
 requirement_failed_for_update: 'Prérequis non remplis pour la mise à jour'
-reset: Réinitialiser
+reset: 'Réinitialiser'
 reset_password: 'Réinitialiser le mot de passe'
 reset_password_message: 'Bent u er zeker van dat u    wenst te vouloir réinitialiser le mot de passe ?'
 reset_password_txt: 'Vous avez demandé la réinitialisation de votre mot de passe. Si vous n''êtes pas à l''origine de cette action, veuillez ignorer ce message.'
@@ -910,28 +910,28 @@ session_db_no_table: 'La table renseignée n''existe pas.'
 session_db_no_time_col: 'La colonne des durées n''existe pas.'
 session_id: 'Identifiant de session'
 session_lifetime: 'Durée de la session'
-settings: Paramètres
-sharable: Partageable
-share: Partager
-show: Afficher
-show_actions: 'Afficher les actions'
+settings: Instellingen
+sharable: Deelbaar
+share: Delen
+show: Tonen
+show_actions: De acties tonen
 show_all_my_contacts: 'Montrer "Tous mes contacts"'
 show_all_visible_users: 'Montrer "Tous les utilisateurs visibles"'
-show_as: 'Se connecter en tant que'
-show_as_admin: 'Se connecter en tant qu''admin'
-show_as_user: 'Se connecter en tant qu''utilisateur'
+show_as: Zich inloggen als
+show_as_admin: Zich inloggen als admin
+show_as_user: Zich inloggen als gebruiker
 show_help_button: 'Montrer le bouton d''aide'
-show_mail: 'Montrer le courriel'
+show_mail: De e-mail tonen
 show_name_in_top_bar: 'Afficher le nom de la platform dans la barre supérieure'
 show_phone: 'Montrer le numéro de téléphone'
 show_picture: 'Montrer la photo'
-show_profile: 'Voir le profil'
+show_profile: Het profiel zien
 show_profile_for_anonymous: 'Profil public accessible aux anonymes'
 show_register_button_in_login_page: 'Montrer le bouton d''inscription sur la page de connexion'
 show_username: 'Montrer le nom d''utilisateur'
 simple: Simple
 size: Taille
-start_date: 'Date de début'
+start_date: Begindatum
 start_maintenance: 'Lancer le mode maintenance'
 statistics: Statistiques
 statistics_data: 'nombre d''espaces, nombre d''utilisateurs'
@@ -945,7 +945,7 @@ subscribe_groups: 'Inscrire des groepen'
 subscribe_selected_groups: 'Inscrire les groepen sélectionnés'
 subscribe_selected_users: 'Inscrire les utilisateurs sélectionnés'
 subscribe_users: 'Inscrire gebruikers'
-subscription: Inscription
+subscription: Inschrijving
 success_rate: 'Taux de réussite'
 successfull_workspace_creation: 'L''espace d''activité %name% a été met succes gemaakt..'
 support_email: 'Courriel du support'
@@ -960,7 +960,7 @@ tags_hierarchy: 'Hiérarchie des Tags'
 tags_list: 'Liste des Tags'
 tags_management: 'Gestion des Tags'
 tags_organization: 'Organisation des Tags'
-teacher: Professeur
+teacher: Leraar
 technical: Techniques
 technical_data: 'URL, version, langue principale, IP et courriel du support'
 term_of_service: 'Conditions d''utilisation'
@@ -968,10 +968,10 @@ term_of_service_activation_message: 'Activez les conditions d''utilisation dans 
 terms_enabled_but_empty: 'Les conditions d''utilisation ne peuvent être activées que si le texte est fourni dans au moins une langue.'
 terms_of_service_acceptance: 'J''accepte les conditions d''utilisation'
 test_repository_activated: 'Les dépôts de test sont activés'
-text: Texte
-text_title_color: Couleur du texte dans le titre
+text: Tekst
+text_title_color: Kleur van de tekst in de titel
 the_following_users_were_not_imported: 'Les utilisateurs suivants n''ont pas pu être importés:'
-the_workspace: 'L''werkruimte'
+the_workspace: De werkruimte
 theme: Thème
 this_page_requires_authentication: 'Cette page requiert une authentification. Veuillez vous identifier.'
 this_resource_is_not_published: 'Cette ressource n''est pas publiée'
@@ -988,7 +988,7 @@ to_publish: Publier
 to_workspace_members: 'aux membres de cet espace'
 today: 'Aujourd''hui'
 token: Token
-tool: Outil
+tool: Hulpmidden
 tool_admin_disabled: 'L''administrateur de la platform a désactivé l''outil'
 tool_can_be_edited: 'L''outil peut être modifié'
 tool_cannot_be_edited: 'L''outil ne peut pas être modifié'
@@ -997,7 +997,7 @@ tool_is_visible_and_can_be_opened: 'L''outil est visible et peut être ouvert'
 tool_parameters: 'Paramètres des outils'
 tool_roles_create_directory: 'L''option "Créer un répertoire" vous permet de créer automatiquement un répertoire dédié aux utilisateurs de ce groupe.'
 tools: Werktuigen
-tools_rights_configuration: De rechten instelle op de hulpmiddelen
+tools_rights_configuration: De rechten instellen op de hulpmiddelen
 top: Top
 top_extension: 'Top des extensions (médias), par nombre de fichiers'
 top_media_views: 'Top des médias les plus consultés'
@@ -1043,14 +1043,14 @@ unregistered: 'Non inscrit'
 unregistered_groups: 'Groupes non enregistrés'
 unregistered_users: 'Utilisateurs non enregistrés'
 unwritable_file_exception: 'Vous n''avez pas la permission d''écrire dans le fichier %path%.'
-up: Monter
+up: Naar boven
 up_to_date: 'À jour'
 update: 'Mettre à jour vers %version%'
 update_available: 'Mise à jour disponible'
 update_impossible: 'Mise à jour impossible'
 updated_by: 'Dernière mise à jour : %modificationDate%'
 upgrade: 'Mettre à jour'
-upload: Téléchargement
+upload: Upload
 upload_denied: 'Vous n''avez pas la permission de créer une ressource à cet endroit'
 upload_fail: 'Echec du téléchargement'
 upload_file: 'Télécharger un fichier'
@@ -1058,11 +1058,11 @@ url_invalid: 'Le code n''est pas correct, n''essayez pas de changer l''adresse'
 use_stable_repo: 'Utiliser les dépôts stables'
 use_test_repo: 'Utiliser les dépôts de test'
 user: Gebruiker
-user_accounts: 'Comptes utilisateur'
-user_enable_mail_notification_label: 'Activer les notifications par courriel'
+user_accounts: Rekeningen van de gebruikers
+user_enable_mail_notification_label: De notities per e-mail activeren
 user_creation: Een gebruiker maken
-user_creation_success: 'Le compte utilisateur a été met succes gemaakt..'
-user_info: 'Informations utilisateur'
+user_creation_success: De gebruikersrekening is met succes gemaakt.
+user_info: Gebruikersinformatie
 user_limit_reached: 'La limite de création d''utilisateurs a été atteinte.'
 user_limit_success_update: 'La limite d''utilisateurs par rôle a été mise à jour avec succès.'
 user_limit_too_low: Er zijn al %total% %role%l(en). De limiet %newMax% is te laag.
@@ -1091,24 +1091,24 @@ users_minimum_requirement_msg: De gebruikers moeten voldoen aan deze voorwaarden
 users_per_page: Gebruikers per pagina
 users_registration_in_workspace: Inschrijving van gebruikers in de werkruimte'
 users_visits: Bezoeken van de gebruikers'
-validate: Valider
-validation: Validation
+validate: Valideren
+validation: Validatie
 variable_available_message: U kunt de volgende variabelen in uw formulier gebruiken
-verification: Vérification
+verification: Controle
 verify_your_password: Voer opnieuw uw wachtwoord in
 view: Voir
 view_category_hierarchy: De structuur van de categorieën visualiseren
-views: 'Nb vues'
-visibility: Visibilité
-visible: Visible
-visitor: Visiteur
+views: Aantal keer bekeken
+visibility: Zichtbaarheid
+visible: Zichtbaar
+visitor: Bezoeker
 warning_user_impersonation: U bent ingelogd als %user%.
 warning_workspace_impersonation: U bent ingelogd als %role% van in werkruimte %workspace%.'
 warnings: Let op
 widget: Widget
 widget_configuration: Instellingen van de widget
 widget_creation_roles: Rollen die een widget op het bureaublad mogen maken
-widget_home_tab_delete_confirm_message: 'Voulez-vous vraiment retirer ce widget de cet tab ?'
+widget_home_tab_delete_confirm_message: Bent u er zeker van dat uw deze widget van die tab wenst te verwijderen ?'
 widget_home_tab_delete_confirm_title: De widget van de tab verwijderen
 widget_settings: Instellingen van de widgets
 widget_visible_actions: Kies de  acties die zichtbaar zijn in de widget
