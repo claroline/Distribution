@@ -103,14 +103,9 @@ class WorkspaceController extends FOSRestController
      */
     public function getConnectedUserWorkspacesAction(User $user)
     {
-        $workspaces = $this->workspaceManager->getWorkspacesByUser($user);
-        $result = [];
-        foreach ($workspaces as $workspace) {
-            $exported = $this->workspaceManager->exportWorkspace($workspace);
-            $result[] = $exported;
-        }
-
-        return $result;
+        return array_map(function ($workspace) {
+            return $this->workspaceManager->exportWorkspace($workspace);
+        }, $this->workspaceManager->getWorkspacesByUser($user));
     }
 
     /**

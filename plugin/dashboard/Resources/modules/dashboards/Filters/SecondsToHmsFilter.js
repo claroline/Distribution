@@ -17,7 +17,7 @@ function SecondsToHmsFilter (){
       if (seconds < 10) {
         seconds = '0' + seconds
       }
-       // var time = hours + ':' + minutes + ':' + seconds + ':' + ms;
+      
       result = hours + ' h ' + minutes + '\' ' + seconds + '\'\''
     }
     else {

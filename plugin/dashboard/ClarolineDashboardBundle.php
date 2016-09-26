@@ -7,7 +7,6 @@ use Claroline\KernelBundle\Bundle\ConfigurationBuilder;
 
 /**
  * Bundle class.
- * Uncomment if necessary.
  */
 class ClarolineDashboardBundle extends PluginBundle
 {

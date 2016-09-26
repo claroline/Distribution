@@ -48,13 +48,9 @@ class DashboardManager
      */
     public function getAll(User $user)
     {
-        $result = [];
-        $dashboards = $this->getRepository()->findBy(['creator' => $user]);
-        foreach ($dashboards as $dashboard) {
-            $result[] = $this->exportDashboard($dashboard);
-        }
-
-        return $result;
+        return array_map(function ($dashboard) {
+            return $this->exportDashboard($dashboard);
+        }, $this->getRepository()->findBy(['creator' => $user]));
     }
 
     /**

@@ -1,6 +1,4 @@
-
-
-class WorkspaceService{
+export default class WorkspaceService{
   constructor($http, $q, url){
     this.$http = $http
     this.$q = $q
@@ -23,5 +21,3 @@ class WorkspaceService{
     return deferred.promise
   }
 }
-
-export default WorkspaceService

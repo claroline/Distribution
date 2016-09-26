@@ -111,9 +111,9 @@ class DashboardsController extends Controller
     {
         $all = $user->getId() === $dashboard->getWorkspace()->getCreator()->getId();
 
-        $datas = $this->dashboardManager->getDashboardWorkspaceSpentTimes($dashboard->getWorkspace(), $user, $all);
+        $data = $this->dashboardManager->getDashboardWorkspaceSpentTimes($dashboard->getWorkspace(), $user, $all);
 
-        return new JsonResponse($datas);
+        return new JsonResponse($data);
     }
 
     /**
@@ -125,9 +125,9 @@ class DashboardsController extends Controller
     public function getDashboardWorkspaceSpentTimesByWorkspace(User $user, Workspace $workspace)
     {
         $all = $user->getId() === $workspace->getCreator()->getId();
-        $datas = $this->dashboardManager->getDashboardWorkspaceSpentTimes($workspace, $user, $all);
+        $data = $this->dashboardManager->getDashboardWorkspaceSpentTimes($workspace, $user, $all);
 
-        return new JsonResponse($datas);
+        return new JsonResponse($data);
     }
 
     /**
@@ -139,8 +139,6 @@ class DashboardsController extends Controller
     public function deleteDashboard(User $user, Dashboard $dashboard)
     {
         $this->dashboardManager->delete($dashboard);
-        // return all existing dashboards
-        return $this->getAll($user);
     }
 
     /**

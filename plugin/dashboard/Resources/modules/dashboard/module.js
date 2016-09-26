@@ -1,7 +1,6 @@
 
 import angular from 'angular/index'
 import DashboardCtrl from './Controllers/DashboardCtrl'
-import DetailsCtrl from './Controllers/DetailsCtrl'
 import DetailsDirective from './Directives/DetailsDirective'
 
 angular
@@ -16,9 +15,6 @@ angular
     'dashboard',
     'data',
     DashboardCtrl
-  ])
-  .controller('DetailsCtrl',[
-    DetailsCtrl
   ])
   .directive('dashboardDetails', [
     DetailsDirective

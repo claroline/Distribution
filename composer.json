@@ -138,8 +138,7 @@
         "innova/media-resource-bundle": "*",
         "ujm/exo-bundle": "*",
         "icap/lesson-bundle": "*",
-        "formalibre/office-connect-bundle": "*",
-        "claroline/dashboard-bundle": "*"
+        "formalibre/office-connect-bundle": "*"
     },
     "autoload": {
         "psr-4": {

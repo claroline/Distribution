@@ -13,8 +13,10 @@
 
    delete(id){
      let promise = this.DashboardService.delete(id)
-     promise.then(function(response){
-       this.dashboards = response
+     promise.then(function(){
+       // remove from local collection
+       const deleted = this.dashboards.find(el => el.id === id)
+       this.dashboards.splice(this.dashboards.indexOf(deleted), 1)
      }.bind(this))
    }
 }

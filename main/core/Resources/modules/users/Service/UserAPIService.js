@@ -8,25 +8,27 @@ export default class UserAPIService {
 
   removeFromCsv(formData) {
     return this.$http.post(
-            this.UrlService('api_csv_remove_user'),
-            formData, {
-              transformRequest: angular.identity,
-              headers: {
-                'Content-Type': undefined
-              }
-            }
-        )
+      this.UrlService('api_csv_remove_user'),
+      formData,
+      {
+        transformRequest: angular.identity,
+        headers: {
+          'Content-Type': undefined
+        }
+      }
+    )
   }
 
   importCsvFacets(formData) {
     return this.$http.post(
-            this.UrlService('api_csv_import_facets'),
-            formData, {
-              transformRequest: angular.identity,
-              headers: {
-                'Content-Type': undefined
-              }
-            }
-        )
+      this.UrlService('api_csv_import_facets'),
+      formData,
+      {
+        transformRequest: angular.identity,
+        headers: {
+          'Content-Type': undefined
+        }
+      }
+    )
   }
 }
