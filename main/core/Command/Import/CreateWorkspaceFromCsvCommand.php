@@ -34,8 +34,10 @@ class CreateWorkspaceFromCsvCommand extends ContainerAwareCommand
             ->setDescription('Create workspaces from a csv file')
             ->setAliases(['claroline:csv:workspace']);
         $this->setDefinition(
-            [new InputArgument('csv_workspace_path', InputArgument::REQUIRED, 'The absolute path to the csv file.')],
-            [new InputArgument('owner_username', InputArgument::REQUIRED, 'The owner username'),
+            [
+		new InputArgument('csv_workspace_path', InputArgument::REQUIRED, 'The absolute path to the csv file.'),
+            	new InputArgument('owner_username', InputArgument::REQUIRED, 'The owner username'),
+            ]
         );
     }
 
