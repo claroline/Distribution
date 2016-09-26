@@ -378,8 +378,19 @@ class UserManager
      *
      * @return array
      */
-    public function importUsers(array $users, $sendMail = true, $logger = null, $additionalRoles = [], $enableEmailNotifaction = false)
-    {
+    public function importUsers(
+        array $users,
+        $sendMail = true,
+        $logger = null,
+        $additionalRoles = [],
+        $enableEmailNotifaction = false,
+        $options = []
+    ) {
+        //build options
+        if (!isset($options['ignore-update'])) {
+            $options['ignore-update'] = false;
+        }
+
         $returnValues = [];
         //keep these roles before the clear() will mess everything up. It's not what we want.
         $tmpRoles = $additionalRoles;
@@ -450,6 +461,8 @@ class UserManager
             }
 
             $hasPersonalWorkspace = isset($user[11]) ? (bool) $user[11] : false;
+            $isMailValidated = isset($user[12]) ? (bool) $user[12] : false;
+            $isMailNotified = isset($user[13]) ? (bool) $user[13] : $enableEmailNotifaction;
 
             if ($modelName) {
                 $model = $this->objectManager
@@ -481,6 +494,12 @@ class UserManager
             }
 
             $userEntity = $this->getUserByUsernameOrMail($username, $email);
+
+            if ($userEntity && $options['ignore-update']) {
+                $logger(" Skipping  {$userEntity->getUsername()}...");
+                continue;
+            }
+
             $isNew = false;
 
             if (!$userEntity) {
@@ -497,7 +516,8 @@ class UserManager
             $userEntity->setPhone($phone);
             $userEntity->setLocale($lg);
             $userEntity->setAuthentication($authentication);
-            $userEntity->setIsMailNotified($enableEmailNotifaction);
+            $userEntity->setIsMailNotified($isMailNotified);
+            $userEntity->setIsMailValidated($isMailValidated);
 
             if (!$isNew && $logger) {
                 $logger(" User $j ($username) being updated...");

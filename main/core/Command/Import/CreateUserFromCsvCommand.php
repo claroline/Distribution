@@ -17,7 +17,10 @@ use Claroline\CoreBundle\Listener\DoctrineDebug;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface; /**
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+
+/**
  * Creates an user, optionaly with a specific role (default to simple user).
  */
 class CreateUserFromCsvCommand extends ContainerAwareCommand
@@ -32,6 +35,12 @@ class CreateUserFromCsvCommand extends ContainerAwareCommand
             ->setAliases(['claroline:csv:user']);
         $this->setDefinition(
             [new InputArgument('csv_user_path', InputArgument::REQUIRED, 'The absolute path to the csv file.')]
+        );
+        $this->addOption(
+            'ignore-update',
+            'i',
+            InputOption::VALUE_NONE,
+            'When set to true, updates are not triggered'
         );
     }
 
@@ -53,9 +62,18 @@ class CreateUserFromCsvCommand extends ContainerAwareCommand
             $users[] = str_getcsv($line, ';');
         }
 
+        $options['ignore-update'] = $input->getOption('ignore-update');
+
         $userManager = $this->getContainer()->get('claroline.manager.user_manager');
-        $userManager->importUsers($users, false, function ($message) use ($output) {
-            $output->writeln($message);
-        });
+        $userManager->importUsers(
+            $users,
+            false,
+            function ($message) use ($output) {
+                $output->writeln($message);
+            },
+            [],
+            false,
+            $options
+        );
     }
 }
