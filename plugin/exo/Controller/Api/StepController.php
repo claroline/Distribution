@@ -2,9 +2,9 @@
 
 namespace UJM\ExoBundle\Controller\Api;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
+use JMS\DiExtraBundle\Annotation as DI;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -117,7 +117,7 @@ class StepController
     }
 
     /**
-     * Delete a Step from the Exercise.
+     * Delete a Step from an Exercise.
      *
      * @EXT\Route(
      *     "/{id}",
@@ -132,7 +132,7 @@ class StepController
      *
      * @return JsonResponse
      */
-    public function deleteStepAction(Exercise $exercise, Step $step)
+    public function deleteAction(Exercise $exercise, Step $step)
     {
         $this->assertHasPermission('ADMINISTRATE', $exercise);
 
@@ -184,7 +184,7 @@ class StepController
     }
 
     /**
-     * Delete a Question from a Step.
+     * Removes a Question from a Step.
      *
      * @EXT\Route(
      *     "/{id}/question/{questionId}",
@@ -195,16 +195,19 @@ class StepController
      * @EXT\ParamConverter("question", class="UJMExoBundle:Question", options={"mapping": {"questionId": "id"}})
      *
      * @param Exercise $exercise
-     * @param Step $step
+     * @param Step     $step
      * @param Question $question
      *
      * @return JsonResponse
      */
-    public function deleteQuestionAction(Exercise $exercise, Step $step, Question $question)
+    public function removeQuestionAction(Exercise $exercise, Step $step, Question $question)
     {
         $this->assertHasPermission('ADMINISTRATE', $exercise);
 
-        $this->stepManager->deleteQuestion($step, $question);
+        $errors = $this->stepManager->removeQuestion($step, $question);
+        if (count($errors) !== 0) {
+            return new JsonResponse($errors, 422);
+        }
 
         return new JsonResponse($this->exerciseManager->exportExercise($exercise, false));
     }
@@ -220,7 +223,7 @@ class StepController
      * )
      * @EXT\Method("PUT")
      * @EXT\ParamConverter("exercise", class="UJMExoBundle:Exercise", options={"mapping": {"exerciseId": "id"}})
-     
+
      * @param Exercise $exercise
      * @param Step     $step
      * @param Request  $request
