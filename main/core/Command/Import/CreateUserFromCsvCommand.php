@@ -54,7 +54,6 @@ class CreateUserFromCsvCommand extends ContainerAwareCommand
             ->activateLog()
             ->setDebugLevel(DoctrineDebug::DEBUG_ALL)
             ->setVendor('Claroline');
-        $validator = $this->getContainer()->get('validator');
         $file = $input->getArgument('csv_user_path');
         $lines = str_getcsv(file_get_contents($file), PHP_EOL);
 
