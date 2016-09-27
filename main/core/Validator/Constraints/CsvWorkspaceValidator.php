@@ -55,7 +55,7 @@ class CsvWorkspaceValidator extends ConstraintValidator
             $linesTab = explode(';', $line);
             $nbElements = count($linesTab);
 
-            if (trim($line) != '') {
+            if (trim($line) !== '') {
                 if ($nbElements < 6) {
                     $msg = $this->translator->trans('6_parameters_min_msg');
                     $this->context->addViolation($msg);
@@ -66,7 +66,7 @@ class CsvWorkspaceValidator extends ConstraintValidator
         }
 
         foreach ($lines as $i => $line) {
-            if (trim($line) != '') {
+            if (trim($line) !== '') {
                 $workspace = explode(';', $line);
                 $code = $workspace[1];
 
