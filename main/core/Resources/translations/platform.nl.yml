@@ -999,15 +999,15 @@ tool_roles_create_directory: 'L''option "Créer un répertoire" vous permet de c
 tools: Werktuigen
 tools_rights_configuration: De rechten instellen op de hulpmiddelen
 top: Top
-top_extension: 'Top des extensions (médias), par nombre de fichiers'
-top_media_views: 'Top des médias les plus consultés'
-top_resources_downloads: 'Top des ressources les plus téléchargées'
-top_resources_views: 'Top des ressources les plus consultées'
-top_users_connections: 'Top gebruikers s''étant le plus connecté'
-top_users_workspaces_enrolled: 'Top gebruikers étant inscrits dans le plus de modules'
-top_users_workspaces_owners: 'Top gebruikers ayant créé le plus de modules'
-top_workspaces_connections: 'Top des espaces d''activités les plus consultés'
-top_workspaces_resources: 'Top des espaces d''activités ayant le plus de ressources'
+top_extension: Top van de uitbreidingen (media), per aantal bestanden.
+top_media_views: Top van de meest geraadpleegde media.
+top_resources_downloads: Top van de meest gedownloade leermiddelen.
+top_resources_views: Top van de meest geraadpleegde leermiddelen.
+top_users_connections: Top van de gebruikers die zich het meest ingelogd zijn.
+top_users_workspaces_enrolled: Top van de gebruikers die in het grootste aantal modulen ingeschreven zijn.
+top_users_workspaces_owners: Top van de gebruikers die het grrotste aantal modulen hebben gemaakt.
+top_workspaces_connections:  Top van de meest geraadpleegde werkruimten.
+top_workspaces_resources: Top van de werkruimten die het grootste aantal leermiddelen bevatten.
 total: Totaal
 total_time: Totale duur
 traffic: Verkeer op de site
@@ -1020,29 +1020,29 @@ tune_your_public_profile: Personnaliseer uw openbaar profiel
 tune_your_public_profile_url: Personnaliseer de URL van uw openbaar profiel
 type: Type
 type_s: Type(s)
-unable_to_start_gmail: 'La connexion avec le service SMTP de Gmail ne peut pas être établie. Veuillez vérifier que le nom d''utilisateur et le mot de passe que vous avez renseignés sont corrects.'
-unable_to_start_sendmail: 'La connexion avec Sendmail ou Postfix ne peut pas être établie. Veuillez vérifier qu''un de ces logiciels est installé et correctement configuré.'
-unable_to_start_smtp: 'La connexion avec le serveur SMTP ne peut pas être établie. Veuillez vérifier que les paramètres que vous avez renseignés sont corrects.'
-unable_to_start_transport: 'La connexion avec le serveur de courriels ne peut pas être établie. Veuillez vérifier que les paramètres que vous avez renseignés sont corrects.'
-unauthorized: 'Vous n''êtes pas autorisé à consulter cette page.'
-unavailable_platform: 'La platform n''est pas disponible.'
-unavailable_role: 'Le rôle %translationKey% n''est pas utilisable'
-uncompress_file: 'Décompresser le fichier si possible'
+unable_to_start_gmail: De verbinding met de SMTP-server van Gmail kan niet tot stand gebracht worden. Gelieve na te kijken of de gebruikersnaam en het wachtwoord correct zijn.
+unable_to_start_sendmail: De verbinding me Sendmail of Postfix kan niet tot stand gebracht worden. Gelieve na te kijken of één van deze paketten coorrect geinstalleerd en ingesteld is.
+unable_to_start_smtp: De verbinding met de SMTP-server kan niet tot stand gebracht worden. Gelieve na te kijken of  of de instellingen die u aanmeldt, correct zijn.
+unable_to_start_transport: De verbinding met de server van e-mails kan niet tot stand gebracht worden. Gelieve na te kijken of de instellingen die u aanmeldt, correct zijn.
+unauthorized: U bent niet toegelaten deze pagina te raadplegen.
+unavailable_platform: Het platform is niet beschikbaar.
+unavailable_role: De rol %translationKey% kan niet gebruikt worden.
+uncompress_file: Het bestand comprimeren indien mogelijk
 under_min_length: Deze waarde is te kort
-unique_connections: 'Nb Cnx. uniques'
+unique_connections: Aantal unieke connecties
 unknown: Onbekend
-unpublish: 'Dépublier'
-unpublished: 'Non publié'
-unregister: 'Désinscription'
-unregister_from_a_workspace: 'Me désinscrire d''un werkruimte'
-unregister_group_confirm_message: 'Bent u er zeker van dat u    wenst te vouloir désinscrire ce groupe ?'
-unregister_group_s_confirm_message: 'Bent u er zeker van dat u    wenst te vouloir désinscrire ces %count% groepen?'
-unregister_user_confirm_message: 'Bent u er zeker van dat u    wenst te vouloir désinscrire cet utilisateur ?'
-unregister_user_s_confirm_message: 'Bent u er zeker van dat u    wenst te vouloir désinscrire ces %count% utilisateurs ?'
+unpublish: Niet meer publiceren
+unpublished: Niet gepubliceerd
+unregister: Uitschrijving
+unregister_from_a_workspace: Mij uitschrijven van een werkruimte
+unregister_group_confirm_message: Bent u er zeker van dat u deze groep wenst uit te schrijven ?
+unregister_group_s_confirm_message: Bent u er zeker van dat u deze %count% groepen wenst uit te schrijven ?
+unregister_user_confirm_message: Bent u er zeker van dat u deze gebruiker wenst uit te schrijven ?
+unregister_user_s_confirm_message: Bent u er zeker van dat u deze %count% gebruikers wenst uit te schrijven ?
 unregistered: Niet ingeschreven
-unregistered_groups: 'Groupes non enregistrés'
-unregistered_users: 'Utilisateurs non enregistrés'
-unwritable_file_exception: 'Vous n''avez pas la permission d''écrire dans le fichier %path%.'
+unregistered_groups: Niet ingeschreven groepen
+unregistered_users: Niet ingeschreven gebruikers
+unwritable_file_exception: U bent niet toegelaten in het bestand %path% te schrijven.
 up: Naar boven
 up_to_date: Up to date
 update: Update naar %version%
@@ -1051,19 +1051,19 @@ update_impossible: Update onmogelijk
 updated_by: Laatste update : %modificationDate%
 upgrade: Upgrade
 upload: Upload
-upload_denied: 'Vous n''avez pas la permission de créer une ressource à cet endroit'
+upload_denied: U bent niet toegelaten leermiddelen hier te maken.
 upload_fail: Downloaden is mislukt
 upload_file: Een bestand downloaden
 url_invalid: De code is niet correct, probeer niet het adres te veranderen.
-use_stable_repo: 'Utiliser les dépôts stables'
-use_test_repo: 'Utiliser les dépôts de test'
+use_stable_repo: Gebruik de stabiele pakketten
+use_test_repo: Gebruik de testpakketten
 user: Gebruiker
 user_accounts: Rekeningen van de gebruikers
 user_enable_mail_notification_label: De notities per e-mail activeren
 user_creation: Een gebruiker maken
 user_creation_success: De gebruikersrekening is met succes gemaakt.
 user_info: Gebruikersinformatie
-user_limit_reached: 'La limite de création d''utilisateurs a été atteinte.'
+user_limit_reached: De limiet om gebruikers te maken is bereikt.
 user_limit_success_update: De limiet van gebruikers per rol is met succes bijgewerkt.
 user_limit_too_low: Er zijn al %total% %role%l(en). De limiet %newMax% is te laag.
 user_menu: Gebruikersmenu
