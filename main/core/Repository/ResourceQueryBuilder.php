@@ -209,7 +209,7 @@ class ResourceQueryBuilder
      */
     public function whereRoleIn(array $roles)
     {
-        if (0 < $count = count($roles)) {
+        if (0 < count($roles)) {
             $this->leftJoinRights = true;
             $eol = PHP_EOL;
             $clause = "{$eol}({$eol}";
