@@ -484,19 +484,19 @@ invalid_syntax: 'Syntaxe non valide'
 invalid_transport: 'Transport non valide'
 invalid_url: 'Cette url n''est pas valide'
 ip_address: IP-adres
-irreversible_action: 'Cette action est irréversible'
-is_already_in_category: 'est déjà dans la categorie'
-is_already_in_use: 'est déjà utilisé'
-is_mail_displayed: 'Afficher le courriel ?'
+irreversible_action: Deze actie is onomkeerbaar
+is_already_in_category: is al aanwezig in de categorie
+is_already_in_use: is al gebruikt
+is_mail_displayed: De e-mail tonen ?
 is_not_writable: 'n''est pas accessible en écriture'
 is_not_writable_recursive: 'et ses sous dossiers ne sont pas accessibles en écriture.'
-jqplot_date_output_format: '%d-%m-%Y'
-keep_me_logged_in: 'Se souvenir de moi'
+jqplot_date_output_format: %d-%m-%Y
+keep_me_logged_in: Gebruikersnaam onthouden
 language: Taal
 language_select: Kies een taal
 lastName: Naam
 last_30_days_activity: Activiteiten van de laatste 30 dagen
-last_action: '{1} Dernière action|[1,Inf] %logAmount% dernières actions'
+last_action: {1} Laatste actie|[1,Inf] %logAmount% laatste acties
 last_attempt_date: Datum van de laatste poging
 last_manager_error_message: U bent niet toegelaten alle beheerders in te trekken.
 last_modification: Dernière modification
@@ -506,7 +506,7 @@ learning_outcomes: Competentieframework
 learning_outcomes_creation: Een competentieframework maken
 learning_place: Leerplaats
 learning_profil: Leerprofiel
-leave_this_page: 'Si vous quittez cette page, vous risquez de perdre vos modifications.'
+leave_this_page: Als u deze pagina verlaat, loopt u het risico om uw veranderingen te verliezen.
 left: Links
 license: Licentie
 limit: Limite
@@ -516,25 +516,25 @@ link: Lien
 link_outdated: 'le lien n''est plus valide'
 link_workspace: Een werkruimte koppelen
 links: Liens
-list_groups: 'Lister les groepen'
-list_users: 'Lister les utilisateurs'
-list_view: 'Vue en liste'
+list_groups: Lijst van de groepen
+list_users: Lijst van de gebruikers
+list_view: Lijstweergave
 list_workspaces: Alle werkruimten
-lock: Verrouiller
-locked: Verrouillé
-login: Connexion
+lock: 'Verrouiller'
+locked: 'Verrouillé'
+login: Connectie
 login_failure: 'La connexion a échoué. Vérifiez que votre nom d''utilisateur et votre mot de passe sont corrects.'
-logout: Déconnexion
+logout: 'Déconnexion'
 logs: Toezicht
 logs_error_location: 'En cas d''erreur, les logs se trouvent dans le dossier app/log/update-xxx.log.'
-mail: Mail
+mail: E-mail
 mail_click: 'Cliquez sur ce lien pour réinitialiser votre mot de passe.'
-mail_config_problem: 'Veuillez contacter l''administrateur pour réinitialiser votre mot de passe.'
-mail_invalid: 'Le format de votre courriel n''est pas valide'
+mail_config_problem: Gelieve contact op te nemen met de sitebeheerder om uw wachtwoord te resetten.
+mail_invalid: Het formaat van uw e-mail is niet geldig.
 mail_layout: 'Mise en page des courriels.'
 mail_layout_message_override: 'Vous pouvez redéfinir ici la mise en forme des courriels envoyés par la platform.'
 mail_login: 'Cliquez sur le lien'
-mail_message: 'Vous avez demandé la réinitialisation de votre mot de passe. Cliquez sur lien ci-dessous pour le réinitialiser.</br>Si vous n''êtes pas à l''origine de cette action, veuillez ignorer ce message.'
+mail_message: 'Vous avez demandé la réinitialisation van uw wachtwoord. Cliquez sur lien ci-dessous pour le réinitialiser.</br>Si vous n''êtes pas à l''origine de cette action, veuillez ignorer ce message.'
 mail_not_available: 'La fonction d''envoi de courriel n''est pas disponible.'
 mail_not_exist: 'Ce courriel n''existe pas '
 mail_sent: 'Un courriel vient de vous être envoyé. Vérifiez votre dossier "pourriels" au cas où celui-ci n''apparaîtrait pas dans votre boîte de réception.'
@@ -630,15 +630,15 @@ no_home_tab: Er is geen tab.
 no_learning_outcomes: Geen competentieframework.
 no_message: Geen bericht.
 no_model: Geen model.
-no_resources_in_workspace: 'Cet espace ne contient actuellement aucune ressource.'
-no_role_selected_message: 'Aucun rôle sélectionné.'
-no_search_results: 'Votre recherche n''a retourné aucun résultat.'
+no_resources_in_workspace: Deze ruimte bevat momenteel geen leermiddel.
+no_role_selected_message: Geen geselecteerde rol
+no_search_results: Uw zoekopdracht heeft geen resultaat gegeven.
 no_tag: Er is geen tag.
 no_user: Geen gebruiker.
 no_workspace: Er is geen werkruimte.
 non_personal_workspaces_only: Alleen de persoonlijke ruimten.
-none: 'Aucun(e)'
-not_allowed_message: 'Vous n''êtes pas autorisé(e) à effectuer cette action.'
+none: Nul
+not_allowed_message: U bent niet toegelaten deze actie uit te voeren.
 not_attempted: Niet gepoogd
 not_blank_expected: Deze waarde mag niet leeg zijn.
 not_managed_by_claroline_repository: De staat is niet beschikbaar.
@@ -685,9 +685,9 @@ pending_users_list: Lijst van de gebruikers in wacht
 permissions: Toelatingen
 personal_data: 'Aucune donnée personnelle ne sera récupérée. Les données techniques et statistiques récupérées seront exclusivement utilisées en relation avec le projet Claroline Connect et ne seront pas diffusées autrement.'
 personal_workspace: Persoonlijke ruimte
-personal_workspace_management: 'Gestion de l''espace personnel'
-personal_workspace_tools_management: 'Gestion des outils de l''espace personnel'
-personal_workspaces_only: 'Les espaces personnels seulement'
+personal_workspace_management: De persoonlijke ruimte beheren
+personal_workspace_tools_management: De hulpmiddelen van de persoonlijke ruimte beheren
+personal_workspaces_only: Alleen de persoonlijke ruimten
 phone: Telefoon
 picture: Profielfoto
 picture_profile: Profielfoto
@@ -706,7 +706,7 @@ platform_refresh: De bestanden van het platform vernieuwen
 platform_refresh_confirm: Bent u er zeker van dat u de bestanden van het platform wenst te vernieuwen ?
 platform_role: Rollen voor het platform
 platform_widgets: Widgets van het platform
-please_validate_your_account: 'Un courriel vient de vous être envoyé pour activer votre compte.'
+please_validate_your_account: Een e-mail is naar u verzonden om uw rekening te activeren.
 please_wait: Even geduld...
 port: Port
 portal: Portail de ressources
@@ -736,9 +736,9 @@ public_profile_preferences_allow_mail_sending: 'Envoi de courriel'
 public_profile_preferences_allow_message_sending: 'Envoi de message'
 public_profile_undiscoverable: Onvindbaar profiel
 public_profile_undiscoverable_anonymously: 'Connexion obligatoire pour accéder au profil'
-public_profile_undiscoverable_anonymously_text: 'Vous devez être <a href="%loginUrl%" title="Connexion">connecté(e)</a> à la platform pour accéder au profil <strong>%publicUrl%</strong>'
-public_profile_undiscoverable_text: 'Nous n''avons trouvé aucun profil concordant pour <strong>%publicUrl%</strong>'
-public_profile_url_tuning_only_once: 'La personnalisation de l''URL de votre profil public n''est possible qu''une seule fois'
+public_profile_undiscoverable_anonymously_text: U moet <a href="%loginUrl%" title="Connexion">ingelogd</a> zijn om toegang te krijgen tot uw profiel <strong>%publicUrl%</strong>.
+public_profile_undiscoverable_text: 'Nous n'avons trouvé aucun profil concordant pour <strong>%publicUrl%</strong>'
+public_profile_url_tuning_only_once: 'La personnalisation de l'URL de votre profil public n''est possible qu'une seule fois'
 public_registration: Openbare inschrijving
 public_unregistration: Openbare uitschrijving
 public_url_help: 'Note : Votre URL personnalisée doit comprendre au maximum 30 lettres ou chiffres. Ne pas utiliser d''espaces, de symboles ou de caractères spéciaux.'
@@ -746,8 +746,8 @@ public_workspace_empty: Er is geen openbare werkruimte.
 public_workspaces: Openbare werkruimten
 publish: Gepubliceerd
 publish_resource: De leermiddel publiceren
-published: Publié
-published_to_portal: Gepubliceerd op het portaal van leermiddelen
+published: Gepubliceerd
+published_to_portal: Gepubliceerd op het portaal van de leermiddelen
 published_to_portal_message: 'Cette option rendra la ressource accessible à tous les utilisateurs anonymes . Vous devrez enlever les droits aux anonymes dans la gestion des droits pour restreindre de nouveau l''accès.'
 put_back_permissions_after_update: 'N''oubliez pas de remettre les permissions d''origine après une mise à jour.'
 receiver: destinataire(s)
@@ -761,9 +761,9 @@ redirect_after_login_option_workspace_tag: 'Vers l''werkruimte avec le tag : '
 redirect_uri: 'Url de redirection'
 refresh: Rafraîchir
 refresh_explanation: "Certains problèmes peuvent apparaître en raison de fichiers javascript et css qui n'ont pas bien été générés.</br>\nAfin de tenter de résoudre ce problème, veuillez cliquer sur \"Rafraîchir\".  </br>\nPour augmenter vos chances, vous pouvez également essayer de vider le dossier app/cache de la platform manuellement avant de tenter l'opération.\n"
-register: Inscription
-register_to_a_public_workspace: 'Inscription à un werkruimte public'
-register_to_a_workspace: 'M''inscrire à un espace'
+register: Inschrijven
+register_to_a_public_workspace: Inschrijving aan een openbare werkruimte
+register_to_a_workspace: Mij inschrijven aan een ruimte
 registered: Ingeschreven
 registered_groups: Ingescreven groepen
 registered_user_amount: Aantal ingeschreven personen
@@ -772,8 +772,8 @@ registration: Inschrijving
 registration_mail_content_override: 'Vous pouvez redéfinir ici le contenu du courriel d''inscription.'
 registration_to_workspaces: 'Inscription à des espaces d''activités'
 registration_validation: 'Validation de l''inscription'
-remove: Enlever
-remove_contact_from_category: 'Retirer le contact de la categorie'
+remove: Verwijderen
+remove_contact_from_category: De contactpersson van de categorie verwijderen
 remove_contact_from_category_confirm_message: 'Bent u er zeker van dat u    wenst te vouloir retirer ce contact de cette categorie ?'
 remove_facet: 'Supprimer une facette'
 remove_facet_confirm: 'Etes-vous sur de vouloir verwijderen la facette %name% ?'
@@ -790,12 +790,12 @@ remove_model_confirm: 'Bent u er zeker van dat u    wenst te vouloir verwijderen
 remove_resource_from_model: 'Retirer une ressource du modèle'
 remove_resource_from_model_comfirm: 'Bent u er zeker van dat u    wenst te vouloir retirer cette ressource ?'
 remove_role: 'Supprimer un rôle.'
-remove_role_confirm: 'Bent u er zeker van dat u    wenst te vouloir verwijderen le rôle %name% ?'
-remove_subcategory: 'Retirer la sub-categorie'
-remove_user_confirm_message: 'Bent u er zeker van dat u    wenst te vouloir verwijderen cet utilisateur ?'
-remove_user_from_model: 'Retirer un utilisateur'
-remove_user_from_model_confirm: 'Bent u er zeker van dat u    wenst te vouloir retirer l''utilisateur %name% ?'
-remove_user_s_confirm_message: 'Bent u er zeker van dat u    wenst te vouloir verwijderen ces %count% utilisateurs ?'
+remove_role_confirm: Bent u er zeker van dat u de rol %name% wenst te verwijderen ?
+remove_subcategory: De sub-categorie verwijderen
+remove_user_confirm_message: Bent u er zeker van dat u deze gebruiker wenst te verwijderen ?
+remove_user_from_model: Een gebruiker verwijderen
+remove_user_from_model_confirm: Bent u er zeker van dat u de gebruiker %name% wenst te verwijderen ?
+remove_user_s_confirm_message: Bent u er zeker van dat u deze %count% gebruikers wenst te verwijderen ?
 remove_workspace_confirm: 'Bent u er zeker van dat u    wenst te vouloir verwijderen cet werkruimte ?'
 remove_workspace_from_category_confirm_message: 'Bent u er zeker van dat u    wenst te vouloir retirer cet werkruimte de cette categorie ?'
 remove_workspace_from_category_confirm_title: 'Retrait d''un werkruimte d''une categorie'
@@ -807,19 +807,19 @@ rename_category: De categorie hernoemen
 rename_tool: Een hulpmiddel hernoemen
 rename_widget_instance: Een widget hernoemen
 repeat_password: Herhaal het wachtwoord
-replace_first_name_display_message: 'qui affichera le prénom de l''utilisateur'
-'replace_last_name_display_message''': 'qui affichera le nom de famille de l''utilisateur'
-replace_password_display: 'qui affichera le mot de passe de l''utilisateur'
+replace_first_name_display_message: 'qui affichera le prénom van de gebruiker'
+'replace_last_name_display_message''': 'qui affichera le nom de famille van de gebruiker'
+replace_password_display: 'qui affichera het wachtwoord van de gebruiker'
 replace_platform_name_display_message: 'qui sera remplacé par le nom de votre platform'
-replace_username_display_message: 'qui affichera le nom de l''utilisateur'
+replace_username_display_message: 'qui affichera le nom van de gebruiker'
 requirement_failed_for_install: 'Prérequis non remplis pour l''installation'
 requirement_failed_for_update: 'Prérequis non remplis pour la mise à jour'
 reset: 'Réinitialiser'
-reset_password: 'Réinitialiser le mot de passe'
-reset_password_message: 'Bent u er zeker van dat u    wenst te vouloir réinitialiser le mot de passe ?'
-reset_password_txt: 'Vous avez demandé la réinitialisation de votre mot de passe. Si vous n''êtes pas à l''origine de cette action, veuillez ignorer ce message.'
-reset_pwd_form_password: 'Votre mot de passe actuel'
-resetting_your_password: 'Réinitialisation de votre mot de passe'
+reset_password: 'Réinitialiser het wachtwoord'
+reset_password_message: Bent u er zeker van dat u het wachtwoord wenst te resetten ?
+reset_password_txt: U hebt de reset van uw wachtwoord gevraagd. Als u niet aan de oorsprong van deze actie bent, gelieve dit bericht te negeren.
+reset_pwd_form_password: Uw huidig wachtwoord
+resetting_your_password: Reset van uw wachtwoord
 resource: Hulpmiddel
 resource_action_denied_message: 'L''action %action% n''a pas pu être exécutée sur la resource ''%path%'': accès refusé.'
 resource_creation_denied: 'Vous n''avez pas la permission de créer une ressource dans le répertoire ''%path%'': accès refusé.'
@@ -827,33 +827,33 @@ resource_creation_wrong_type: 'Vous n''avez pas la permission de créer un(e) %t
 resource_delete: 'Bent u er zeker van dat u    wenst te vouloir verwijderen cette ressource ?'
 resource_limit_exceeded: 'La limite maximale (%max%) de ressources est dépassée. Vous avez déjà créé %current% ressources.'
 resource_picker: 'Sélecteur de ressources'
-resource_to_open: 'Ressource à ouvrir'
-resource_type: 'Type de ressource'
+resource_to_open: Leermiddel te openen
+resource_type: Type van leermiddel
 resources: Hulpmiddelen
-resources_delete: 'Bent u er zeker van dat u    wenst te vouloir verwijderen ces ressources ?'
-resources_import: 'Importation de ressources'
+resources_delete: Bent u er zeker van dat u deze leermiddelen wenst te verwijderen ?
+resources_import: Leermiddelen invoeren
 resources_most_downloaded: 'Ressources les plus téléchargées'
-resources_rights: 'Droits des ressources'
+resources_rights: Rechten op de leermiddelen
 resources_rights_management: 'Gestion des droits des ressources'
 resources_usage_list: 'Liste d''utilisation des ressources'
 resources_usage_ratio: 'Taux d''utilisation des ressources'
 restore: Restaurer
 restore_messages_confirm_message: 'message(s) restauré(s)'
 results: Résultats
-results_for_search_on: 'Résultats de la recherche sur'
+results_for_search_on: Resultaten van de zoekopdracht op
 right: Droit
 rights: Droits
 rights_management: De rechten beheren
 role: Rôle
 role_creation: Een rol maken
-role_edition: 'Modification d''un rôle'
+role_edition: Een rol bewerken
 role_limit_reached: 'La limite d''utilisateur de type %translationKey% a été atteinte.'
 role_list: 'Liste des roles'
 role_name_changed_success: 'Le nom du rôle a été mis à jour avec succès.'
 role_name_type_form_translationKey: Nom
 roles: Rôles
-roles_facet_form_explanation: 'Ce formulaire vous permet de spécifier quels rôles peuvent voir la facette dans le profil public de l''utilisateur.'
-roles_fields_form_explanation: 'Ce formulaire vous permet de spécifier quels rôles peuvent voir et éditer le champ dans le profil public de l''utilisateur.'
+roles_facet_form_explanation: 'Ce formulaire vous permet de spécifier quels rôles peuvent voir la facette dans le profil public van de gebruiker.'
+roles_fields_form_explanation: 'Ce formulaire vous permet de spécifier quels rôles peuvent voir et éditer le champ dans le profil public van de gebruiker.'
 roles_management: De rollen beheren
 save: Opslaan
 save_as_template: Uitvoeren
@@ -873,7 +873,7 @@ see: Voir
 see_all: Allen zien
 see_more: Meer zien
 see_public_profile: Zie mijn openbaar profiel
-select_a_filter_type: 'Sélectionnez un type de filtre'
+select_a_filter_type: Kies een filtertype
 select_a_group: Kies een groep
 select_a_role: Kies een  rol
 select_a_template: Kies een  model
@@ -884,118 +884,118 @@ select_contacts_title: De geadesseerden kiezen
 select_groups_for_registration_to_workspace: Kies de in te schrijven groepen
 select_roles_to_assign: kies de toe te wijzen rollen
 select_users_for_registration_to_workspace: Kies de in te schrijven gebruikers
-select_users_to_add_to_your_contacts: 'Sélectionnez gebruikers à ajouter à vos contacts'
+select_users_to_add_to_your_contacts: Kies de gebruikers aan uw contactpersonen toe te voegen.
 select_workspace_to_link: 'Choisissez un werkruimte à lier'
-select_workspaces_for_registration: 'Choisissez les espaces d''activités pour l''inscription'
+select_workspaces_for_registration: Kies de werkruimten voor de inschrijving.
 selected_users: Gekozen gebruikers
 selected_workspaces_for_registration: 'Espaces d''activités sélectionnés pour l''inscription'
 selected_workspaces_will_be_put_in_it: 'Les espaces d''activités sélectionnés y seront disponibles'
 self_registration: Auto-inscription
 send: Sturen
 send_mail: Een e-mail sturen
-send_mail_at_workspace_registration: 'Envoyer un courriel lors de l''inscription d''un utilisateur à un werkruimte'
+send_mail_at_workspace_registration: Een e-mail sturen bij het inschrijven van een gebruiker aan een werkruimte.
 send_message: Een bericht sturen
 send_message_to_workspace: Een bericht sturen
-send_message_to_workspace_info: 'Deze lijst reprend les espaces d''activités dont vous êtes le gestionnaire.'
+send_message_to_workspace_info: Deze lijst hervat de werkruimten die u beheert.
 server: Server
 session: Sessie
 session_db_cannot_perform_operations: 'L''écriture et/ou la lecture d''enregistrements dans la table renseignée est impossible. Veuillez vérifier que l''utilisateur de la base de données dispose de droits suffisants et qu''aucune contrainte particulière n''a été affectée à cette table.'
 session_db_id_col_must_be_pk: 'La colonne des identifiants (et uniquement cette colonne) doit être la clé primaire de la table.'
 session_db_invalid_type_data_col: 'La colonne des données doit être de type "text" (e.g. "LONGTEXT").'
-session_db_invalid_type_id_col: 'La colonne des identifiants doit être de type "string" (e.g. "VARCHAR").'
-session_db_invalid_type_time_col: 'La colonne des durées doit être de type "integer" (e.g. "INT").'
-session_db_no_data_col: 'La colonne des données n''existe pas.'
-session_db_no_id_col: 'La colonne des identifiants n''existe pas.'
-session_db_no_table: 'La table renseignée n''existe pas.'
-session_db_no_time_col: 'La colonne des durées n''existe pas.'
-session_id: 'Identifiant de session'
-session_lifetime: 'Durée de la session'
+session_db_invalid_type_id_col: De kolom met de ID's moet van het type "string" zijn (e.g. "VARCHAR").
+session_db_invalid_type_time_col: De kolom met de duren moet van het type "integer" zijn (e.g. "INT").
+session_db_no_data_col: De kolom met de ID's bestaat niet.
+session_db_no_id_col: La colonne des identifiants n'existe pas.
+session_db_no_table: De aangemelde tabel bestaat niet.
+session_db_no_time_col: De kolom met de duren bestaat niet.
+session_id: Sessie ID
+session_lifetime: Duur van de sessie
 settings: Instellingen
 sharable: Deelbaar
 share: Delen
 show: Tonen
 show_actions: De acties tonen
-show_all_my_contacts: 'Montrer "Tous mes contacts"'
-show_all_visible_users: 'Montrer "Tous les utilisateurs visibles"'
+show_all_my_contacts: Al mijn contactpersonen tonen
+show_all_visible_users: Alle zichtbare gebruikers tonen
 show_as: Zich inloggen als
 show_as_admin: Zich inloggen als admin
 show_as_user: Zich inloggen als gebruiker
-show_help_button: 'Montrer le bouton d''aide'
+show_help_button: De hulpknop tonen
 show_mail: De e-mail tonen
-show_name_in_top_bar: 'Afficher le nom de la platform dans la barre supérieure'
-show_phone: 'Montrer le numéro de téléphone'
-show_picture: 'Montrer la photo'
+show_name_in_top_bar: De naam van het platform in de bovenbalk tonen
+show_phone: Het telefoonnummer tonen
+show_picture: De foto tonen
 show_profile: Het profiel zien
-show_profile_for_anonymous: 'Profil public accessible aux anonymes'
-show_register_button_in_login_page: 'Montrer le bouton d''inscription sur la page de connexion'
-show_username: 'Montrer le nom d''utilisateur'
-simple: Simple
-size: Taille
+show_profile_for_anonymous: Openbaar profiel zichtbaar door onbekenden
+show_register_button_in_login_page: De inschrijvingsknop op de connectiepagina tonen.
+show_username: De gebruikersnaam tonen
+simple: Simpel
+size: Grootte
 start_date: Begindatum
-start_maintenance: 'Lancer le mode maintenance'
-statistics: Statistiques
-statistics_data: 'nombre d''espaces, nombre d''utilisateurs'
+start_maintenance: De onderhoudsmodus inschakelen
+statistics: Statistieken
+statistics_data: aantal ruimten, aantal gebruikers
 status: Statut
-steal_session: 'Voler la session'
-storage_limit_exceeded: 'Il ne vous reste pas assez d''espace de stockage (%storageLeft%) dans votre werkruimte. La taille de votre fichier est de %fileSize%.'
-storage_type: 'Type de stockage'
-storage_used: 'Espace de stockage utlisé'
-subcategories: Sous-categorieën
-subscribe_groups: 'Inscrire des groepen'
-subscribe_selected_groups: 'Inscrire les groepen sélectionnés'
-subscribe_selected_users: 'Inscrire les utilisateurs sélectionnés'
-subscribe_users: 'Inscrire gebruikers'
+steal_session: De sessie stelen
+storage_limit_exceeded: U hebt een onvoldoende opslagruimte (%storageLeft%) in uw werkruimte. De grootte van uw bestand is de volgende: %fileSize%.
+storage_type: Opslagtype
+storage_used: Gebruikte opslagruimte
+subcategories: Subcategorieën
+subscribe_groups: Groepen inschrijven
+subscribe_selected_groups: De geselecteerde groepen inschrijven
+subscribe_selected_users: De geselecteerde gebruikers inschrijven
+subscribe_users: Gebruikers inschrijven
 subscription: Inschrijving
-success_rate: 'Taux de réussite'
-successfull_workspace_creation: 'L''espace d''activité %name% a été met succes gemaakt..'
-support_email: 'Courriel du support'
+success_rate: Slagingspercentage
+successfull_workspace_creation: De werkruimte %name% is met succes gemaakt.
+support_email: Support e-mail
 switch: Echanger
 tab: Onglet
 tabs: Onglets
 tag: Tag
-tag_children_list: 'Liste des enfants'
-tag_potential_children_list: 'Liste des enfants potentiels'
-tags_add_remove_children_to: 'toevoegen/Retirer des enfants au Tag'
-tags_hierarchy: 'Hiérarchie des Tags'
-tags_list: 'Liste des Tags'
-tags_management: 'Gestion des Tags'
-tags_organization: 'Organisation des Tags'
+tag_children_list: Lijst van de kinderen
+tag_potential_children_list: Lijst van de potentiële kinderen
+tags_add_remove_children_to: Kinderen van de tag toevoegen/intrekken
+tags_hierarchy: Hiërarchie van de tags
+tags_list: Lijst van de tags
+tags_management: De tags beheren
+tags_organization: De tags organiseren
 teacher: Leraar
 technical: Techniques
-technical_data: 'URL, version, langue principale, IP et courriel du support'
-term_of_service: 'Conditions d''utilisation'
-term_of_service_activation_message: 'Activez les conditions d''utilisation dans la platform'
-terms_enabled_but_empty: 'Les conditions d''utilisation ne peuvent être activées que si le texte est fourni dans au moins une langue.'
-terms_of_service_acceptance: 'J''accepte les conditions d''utilisation'
-test_repository_activated: 'Les dépôts de test sont activés'
+technical_data: URL, versie, hoofdtaal, IP en support e-mail
+term_of_service: Gebruiksvoorwaarden
+term_of_service_activation_message: Activeer de gebruiksvoorwaarden op het platform.
+terms_enabled_but_empty: De gebruiksvoorwaarden kunnen alleen geactiveerd worden als de tekst ervan tenminste in één taal gegeven wordt.
+terms_of_service_acceptance: Ik aanvaard de gebruiksvoorwaarden.
+test_repository_activated: De testpakketten zijn geactiveerd
 text: Tekst
 text_title_color: Kleur van de tekst in de titel
-the_following_users_were_not_imported: 'Les utilisateurs suivants n''ont pas pu être importés:'
+the_following_users_were_not_imported: De volgende gebruikers kunnen niet ingevoerd worden :
 the_workspace: De werkruimte
-theme: Thème
-this_page_requires_authentication: 'Cette page requiert une authentification. Veuillez vous identifier.'
-this_resource_is_not_published: 'Cette ressource n''est pas publiée'
-time_col: 'Colonne des durées'
-tinymce_all_buttons: 'Tous les outils'
-tips: Astuces
+theme: Thema
+this_page_requires_authentication: Deze pagina vereist een authenticatie. U moet zich identificeren.
+this_resource_is_not_published: Deze leermiddel is niet gepubliceerd
+time_col: Kolom van de duren
+tinymce_all_buttons: Alle hulpmiddelen
+tips: Tips
 title: Titel
-to: Jusque
-to_anonymous: 'aux utilisateurs anonymes'
-to_everyone: 'à tout le monde'
+to: Tot
+to_anonymous: aan de onbekende gebruikers
+to_everyone: aan iedereen
 to_message: Aan
-to_platform_users: 'aux utilisateurs de la platform'
-to_publish: Publier
-to_workspace_members: 'aux membres de cet espace'
-today: 'Aujourd''hui'
+to_platform_users: aan de leden van het platformgit
+to_publish: Publiceren
+to_workspace_members: aan de leden van deze werkruimte
+today: Vandaag
 token: Token
 tool: Hulpmidden
-tool_admin_disabled: 'L''administrateur de la platform a désactivé l''outil'
-tool_can_be_edited: 'L''outil peut être modifié'
-tool_cannot_be_edited: 'L''outil ne peut pas être modifié'
-tool_is_not_visible_and_cannot_be_opened: 'L''outil n''est pas visible et ne peut pas être ouvert'
-tool_is_visible_and_can_be_opened: 'L''outil est visible et peut être ouvert'
-tool_parameters: 'Paramètres des outils'
-tool_roles_create_directory: 'L''option "Créer un répertoire" vous permet de créer automatiquement un répertoire dédié aux utilisateurs de ce groupe.'
+tool_admin_disabled: De sitebeheerder van het platform heeft de hulpmiddel gedeactiveerd.
+tool_can_be_edited: De hulpmiddel mag bewerkt worden.
+tool_cannot_be_edited: De hulpmiddel mag niet bewerkt worden.
+tool_is_not_visible_and_cannot_be_opened: De hulpmiddel is niet zichtbaar en mag niet geopend worden.
+tool_is_visible_and_can_be_opened: De hulpmiddel is zichtbaar en mag geopend worden.
+tool_parameters: Instellingen hulpmiddelen
+tool_roles_create_directory: Met de optie "Een directory maken" kunt u automatisch een directory maken die gewijd is aan de gebruikers van deze groep.
 tools: Werktuigen
 tools_rights_configuration: De rechten instellen op de hulpmiddelen
 top: Top

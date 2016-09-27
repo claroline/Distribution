@@ -938,36 +938,36 @@ size: Taille
 start_date: 'Date de début'
 start_maintenance: 'Lancer le mode maintenance'
 statistics: Statistiques
-statistics_data: 'nombre d''espaces, nombre d''utilisateurs'
+statistics_data: nombre d'espaces, nombre d'utilisateurs
 status: Statut
-steal_session: 'Voler la session'
-storage_limit_exceeded: 'Il ne vous reste pas assez d''espace de stockage (%storageLeft%) dans votre espace d''activités. La taille de votre fichier est de %fileSize%.'
-storage_type: 'Type de stockage'
-storage_used: 'Espace de stockage utlisé'
+steal_session: Voler la session
+storage_limit_exceeded: Il ne vous reste pas assez d'espace de stockage (%storageLeft%) dans votre espace d'activités. La taille de votre fichier est de %fileSize%.
+storage_type: Type de stockage
+storage_used: Espace de stockage utilisé
 subcategories: Sous-catégories
-subscribe_groups: 'Inscrire des groupes'
-subscribe_selected_groups: 'Inscrire les groupes sélectionnés'
-subscribe_selected_users: 'Inscrire les utilisateurs sélectionnés'
-subscribe_users: 'Inscrire des utilisateurs'
+subscribe_groups: Inscrire des groupes
+subscribe_selected_groups: Inscrire les groupes sélectionnés
+subscribe_selected_users: Inscrire les utilisateurs sélectionnés
+subscribe_users: Inscrire des utilisateurs
 subscription: Inscription
-success_rate: 'Taux de réussite'
-successfull_workspace_creation: 'L''espace d''activité %name% a été créé avec succès.'
-support_email: 'Courriel du support'
+success_rate: Taux de réussite
+successfull_workspace_creation: L'espace d'activités %name% a été créé avec succès.
+support_email: Courriel du support
 switch: Echanger
 tab: Onglet
 tabs: Onglets
 tag: Tag
-tag_children_list: 'Liste des enfants'
-tag_potential_children_list: 'Liste des enfants potentiels'
-tags_add_remove_children_to: 'Ajouter/Retirer des enfants au Tag'
-tags_hierarchy: 'Hiérarchie des Tags'
+tag_children_list: Liste des enfants
+tag_potential_children_list: Liste des enfants potentiels
+tags_add_remove_children_to: Ajouter/Retirer des enfants au Tag
+tags_hierarchy: Hiérarchie des Tags
 tags_list: 'Liste des Tags'
-tags_management: 'Gestion des Tags'
-tags_organization: 'Organisation des Tags'
+tags_management: Gestion des Tags
+tags_organization: Organisation des Tags
 teacher: Professeur
 technical: Techniques
-technical_data: 'URL, version, langue principale, IP et courriel du support'
-term_of_service: 'Conditions d''utilisation'
+technical_data: URL, version, langue principale, IP et courriel du support
+term_of_service: Conditions d''utilisation
 term_of_service_activation_message: 'Activez les conditions d''utilisation dans la plateforme'
 terms_enabled_but_empty: 'Les conditions d''utilisation ne peuvent être activées que si le texte est fourni dans au moins une langue.'
 terms_of_service_acceptance: 'J''accepte les conditions d''utilisation'
