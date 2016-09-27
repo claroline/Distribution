@@ -1056,13 +1056,13 @@ updated_by: 'Dernière mise à jour : %modificationDate%'
 upgrade: 'Mettre à jour'
 upload: Téléchargement
 upload_denied: 'Vous n''avez pas la permission de créer une ressource à cet endroit'
-upload_fail: 'Echec du téléchargement'
-upload_file: 'Télécharger un fichier'
-url_invalid: 'Le code n''est pas correct, n''essayez pas de changer l''adresse'
+upload_fail: Échec du téléchargement
+upload_file: Télécharger un fichier
+url_invalid: Le code n'est pas correct, n'essayez pas de changer l'adresse.
 use_stable_repo: 'Utiliser les dépôts stables'
 use_test_repo: 'Utiliser les dépôts de test'
 user: Utilisateur
-user_accounts: 'Comptes utilisateur'
+user_accounts: Comptes utilisateur
 user_enable_mail_notification_label: 'Activer les notifications par courriel'
 user_creation: 'Création d''un utilisateur'
 user_creation_success: 'Le compte utilisateur a été créé avec succès.'
