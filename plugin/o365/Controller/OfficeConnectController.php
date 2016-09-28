@@ -50,6 +50,15 @@ class OfficeConnectController extends Controller
         $this->authHelper->GetAuthenticationHeaderFor3LeggedFlow($_GET['code']);
         $jsonResponse = $this->graphHelper->getMeEntry();
         $userResponse = new O365ResponseUser($jsonResponse);
+        $missingProperties = $userResponse->validate();
+
+        if (count($missingProperties) > 0) {
+            return $this->render(
+                'FormaLibreOfficeConnectBundle:Authentication:missingProperties.html.twig',
+                ['missingProperties' => $missingProperties]
+            );
+        }
+
         $userManager = $this->get('claroline.manager.user_manager');
         $email = $userResponse->getEmail();
         $user = $userManager->getUserByEmail($email);
@@ -61,8 +70,9 @@ class OfficeConnectController extends Controller
             $user->setUsername($userResponse->getUsername());
             $user->setPlainPassword($userResponse->getEmail());
             $user->setMail($userResponse->getEmail());
+            $user->setIsMailValidated(true);
             $roleName = PlatformRoles::USER;
-            $userManager->createUser($user, $roleName);
+            $userManager->createUser($user, false);
         }
 
         $userRepo = $this->get('doctrine.orm.entity_manager')->getRepository('ClarolineCoreBundle:User');
