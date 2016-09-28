@@ -40,7 +40,6 @@ class RemoveFilesFromUnusedWorkspaceCommand extends ContainerAwareCommand
         $container = $this->getContainer();
         $fs = new FileSystem();
         $helper = $this->getHelper('question');
-        //['pdf', 'templates'];
 
         //Parse the file directory and fetch the other directories
         //We should find Workspaces and Users. Workspaces being formatted like "WORKSPACE_[ID]
