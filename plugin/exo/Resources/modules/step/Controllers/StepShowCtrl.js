@@ -58,18 +58,6 @@ StepShowCtrl.prototype.items = []
 StepShowCtrl.prototype.position = 0
 
 /**
- * Current step score
- * @type {Number}
- */
-StepShowCtrl.prototype.stepScore = 0
-
-/**
- * Current step total score
- * @type {Number}
- */
-StepShowCtrl.prototype.stepScoreTotal = 0
-
-/**
  *
  * @type {boolean}
  */
