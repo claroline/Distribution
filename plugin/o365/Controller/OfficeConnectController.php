@@ -3,7 +3,6 @@
 namespace FormaLibre\OfficeConnectBundle\Controller;
 
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Library\Security\PlatformRoles;
 use FormaLibre\OfficeConnectBundle\Library\O365ResponseUser;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
@@ -71,7 +70,6 @@ class OfficeConnectController extends Controller
             $user->setPlainPassword($userResponse->getEmail());
             $user->setMail($userResponse->getEmail());
             $user->setIsMailValidated(true);
-            $roleName = PlatformRoles::USER;
             $userManager->createUser($user, false);
         }
 
