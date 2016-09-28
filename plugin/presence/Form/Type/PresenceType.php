@@ -14,18 +14,18 @@ class PresenceType extends AbstractType
              ->add(
                  'userStudent',
                  'entity',
-                 array(
+                 [
                      'required' => false,
                      'disabled' => true,
                      'read_only' => true,
                      'class' => 'Claroline\CoreBundle\Entity\User',
                      'property' => 'UserName',
-                 )
+                 ]
              )
              ->add(
                  'Status',
                  'entity',
-                 array(
+                 [
                      'multiple' => false,
                      'expanded' => true,
                      'label' => 'Status:',
@@ -33,16 +33,16 @@ class PresenceType extends AbstractType
                      'data_class' => 'FormaLibre\PresenceBundle\Entity\Status',
                      'property' => 'statusName',
 
-                 )
+                 ]
 
              );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => 'FormaLibre\PresenceBundle\Entity\Presence',
-            ));
+            ]);
     }
 
     public function getName()
