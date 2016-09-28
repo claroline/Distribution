@@ -1198,33 +1198,33 @@ hours: uur
 minutes: minuten
 seconds: seconden
 time_ago: %count% %unit% geleden
-mail_options: Options du courriel
-mailer_from: Veld "from" du courriel
+mail_options: opties van de e-mail
+mailer_from: Veld "van" van de e-mail
 desktop_root_directory_upload_error: Vous ne pouvez pas ajouter de ressources à la racine du bureau.
-pick_a_resource: Choisissez une ressource
-invalid_host: Hôte invalide (accès à %url% refusé).
-request_friend: Requête d'ami
-activated: Activé
-not_activated: Désactivé
-add_pending: toevoegen une platform amie
-add_friend_confirm_message: Bent u er zeker van dat u    wenst te vouloir ajouter cette platform amie ?
+pick_a_resource: Kies een leermiddel
+invalid_host: Ongeldig host (toegang tot %url% geweigerd).
+request_friend: Vrienaanvraag
+activated: Geactiveerd
+not_activated: Gedeactiveerd
+add_pending: Een vrienplatform toevoegen
+add_friend_confirm_message: Bent u er zeker van dat u dit vriendplatform wenst toe te voegen ?
 edit_client: De klant bewerken
 0_or_1: 0 of 1
-import_resources_explanation: L'import de ressources demande un fichier .zip généré par Claroline contenant le fichier manifest.yml. Si vous désirez importer un autre fichier zip, veuillez créer une ressource de type 'Fichier' et sélectionnez 'décompresser'.
-root_rights_change_explanation: Cette page vous permet de modifier les permissions sur la ressource racine d'un espace d'activités. Si vous désirez affecter toutes les ressources, sélectionnez 'Appliquer au contenu du répertoire et sous répertoires'.
+import_resources_explanation: Het invoeren van leermiddelen vergt een door Claroline gegenereerd ZIP-bestand dat het bestand manifest.yml bevat. indien u een ander ZIP-bestand wenst in te voeren, gelieve een leermiddel te maken van het type "Bestand" en selecteer "Decomprimeren".
+root_rights_change_explanation: Op deze pagina kunt u de rechten op de rootleermiddel van een werkruimte bewerken. Indien u al de leermiddlen wenst te bewerken, selecteer "Toepasseen op de inhoud van de directory en de subdirectories".
 registration_mail_validation: Validation de l'inscription gebruikers
-send_mail_info: Envoyer un courriel de confirmation (platform accessible sans confirmation de la réception du courriel)
-force_mail_validation: Forcer la validation du courriel (utilisateur bloqué tant que la réception du courriel n'a pas été confirmée)
-replace_validation_email_message: qui affichera le lien de validation du courriel
-email_not_activated_part_1: Votre courriel n'a pas été validé (%email%). Cliquez
-email_not_activated_part_2: ici
-email_not_activated_part_3: pour l'activer
-email_confirmation_message: La platform ne peut pas vous envoyer tous les courriels tant que votre adresse n'a pas été confirmée.
-email_sent: Courriel de validation envoyé à l'adresse %email%. Veuillez consulter vos pourriels si vous n'avez rien reçu.
-email_validation: Validation du courriel
-email_validation_url_display: Veuillez vous rendre à l'url suivante pour confirmer votre courriel: %url%
+send_mail_info: Een bevestiging per e-mail sturen (platform toegankelijk zonder bevestiging van het ophalen van de e-mail)
+force_mail_validation: Dwingen tot de bevestiging van de e-mail (Gebruiker geblokkeerd zolang de ontvangst van e-mail is niet bevestigd)
+replace_validation_email_message: die de validatielink van de e-mail zal tonen.
+email_not_activated_part_1: Uw e-mail (%email%) is niet gevalideerd. Klik
+email_not_activated_part_2: hier
+email_not_activated_part_3: om die te activeren.
+email_confirmation_message: Het platform kan u uw e-mails niet sturen zolang uw adres niet bevestigd is.
+email_sent: Validatie e-mail gestuurd naar %email%. Gelieve uw spams te raadplegen indien u niets ontvangen hebt.
+email_validation: Validatie van de e-mail
+email_validation_url_display: Gelieve naar de volgende URL te gaan om uw e-mail te bevestigen:  %url%.
 email_validated: E-mail gevalideerd
-oauth_application_request: Het pakket "%name%" wenst wenst aansluiting tot %platform%
+oauth_application_request: Het pakket "%name%" wenst aansluiting tot het %platform%.
 oauth_required_data: De volgende informatie zal gestuurd worden :
 client_list: Lijst van de klanten
 allow_authentication: De authenticatie toelaten.

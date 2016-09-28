@@ -202,7 +202,7 @@ create_resource: Créer une nouvelle ressource
 create_role: Créer un rôle
 create_security_token: Créer un jeton d'authentification
 create_subcategory: Créer une sous-catégorie
-create_user: Créer un utilisateurcd tr
+create_user: Créer un utilisateur
 create_users: Créer les utilisateurs
 create_widget_instance: Créer un nouveau Widget
 create_workspace: Créer un espace d'activités
@@ -213,12 +213,12 @@ creation_date: Date de création
 creator: Créateur
 csv_export: Export csv
 csv_select: Sélectionnez un fichier csv:
-csv_format_info: 'Informations sur le format du fichier csv'
-csv_format_user_list: 'Format: liste des noms d''utilisateur séparés par un retour à la ligne.'
-csv_users_import_infos: 'Informations sur le format du fichier csv'
+csv_format_info: Informations sur le format du fichier csv
+csv_format_user_list: Format: liste des noms d''utilisateur séparés par un retour à la ligne.
+csv_users_import_infos: Informations sur le format du fichier csv
 csv_users_import_infos_format: Format
-csv_users_import_infos_format_a: 'Les données d''un utilisateur doivent être définies sur une ligne et séparées par un point virgule.'
-csv_users_import_infos_format_b: 'Notez que vous ne devez pas ajouter d''en-tête au fichier.'
+csv_users_import_infos_format_a: Les données d'un utilisateur doivent être définies sur une ligne et séparées par un point virgule.
+csv_users_import_infos_format_b: Notez que vous ne devez pas ajouter d'en-tête au fichier.
 csv_users_import_infos_optional: Optionnel
 csv_users_import_infos_required: Requis
 csv_users_import_infos_ws_role_a: 'Les rôles prédéfinis par la plateforme sont "Collaborateur" et "Gestionnaire" et les valeurs à utiliser dans le csv sont respectivement "collaborator" et "manager".'
@@ -226,12 +226,12 @@ csv_users_import_infos_ws_role_b: 'Si ces rôles sont modifiés, le nouveau nom 
 csv_users_import_infos_format_a: 'Les données d''un utilisateur doivent être définies sur une ligne et séparées par un point virgule.'
 csv_workspaces_import_infos_format_a: 'Les données d''un espace d''activités doivent être définies sur une ligne et séparées par un point virgule.'
 curl_facebook_application_validation_error: 'Extension php curl manquante.'
-current_category: 'Catégorie courante'
+current_category: Catégorie courante
 cut: Couper
-dashboard: 'Tableau de bord'
-data_col: 'Colonne des données'
-database: 'Base de données'
-database_connection_failed: 'La connexion à la base de données a échoué.'
+dashboard: Tableau de bord
+data_col: Colonne des données
+database: Base de données
+database_connection_failed: La connexion à la base de données a échoué.
 date: Date
 date_agenda_display_format_for_form: dd-MM-yyyy
 date_form_datepicker_format: dd/mm/yyyy
