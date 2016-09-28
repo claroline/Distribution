@@ -62,9 +62,13 @@ export default class UserController {
           `
 
           let switchTitle = scope.$row['is_enabled'] ? Translator.trans('disable', {}, 'platform'): Translator.trans('enable', {}, 'platform');
-          
+
           content += `
             <button title='${switchTitle}' class='btn btn-default' ng-click='uc.switchUserState($row)'><i ng-class="$row.is_enabled ? 'fa fa-ban': 'fa fa-check'"></i></button>
+          `
+
+          content += `
+            <button title='${switchTitle}' class='btn btn-default' ng-click='uc.switchPersonalWorkspace($row)'><i ng-class="$row.personal_workspace ? 'fa fa-ban': 'fa fa-book'"></i></button>
           `
 
           return `<div>${content}</div>`
@@ -290,5 +294,13 @@ export default class UserController {
 
       this.$http.post(Routing.generate(route, {'user': user.id}))
 
+  }
+
+  switchPersonalWorkspace (user) {
+      const route = user.personal_workspace ? 'api_delete_personal_workspace': 'api_create_personal_workspace'
+
+      this.$http.post(Routing.generate(route, {'user': user.id})).then(d => {
+          user.personal_workspace ? delete user.personal_workspace: user.personal_workspace = true
+      })
   }
 }
