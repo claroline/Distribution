@@ -31,8 +31,6 @@ function StepShowCtrl(UserPaperService, FeedbackService, QuestionService, StepSe
   }
 
   this.showScore = this.UserPaperService.isScoreAvailable(this.UserPaperService.getPaper())
-
-  this.getStepTotalScore()
 }
 
 /**
@@ -98,28 +96,44 @@ StepShowCtrl.prototype.getQuestionPaper = function getQuestionPaper(question) {
   return this.UserPaperService.getQuestionPaper(question)
 }
 
-StepShowCtrl.prototype.getStepTotalScore = function getStepTotalScore() {
-  this.stepScoreTotal = 0
-  for (var i = 0; i < this.items.length; i++) {
-    var question = this.items[i]
-    this.stepScoreTotal += this.QuestionService.getTypeService(question.type).getTotalScore(question)
+/**
+ * Get step total available score and step current score
+ */
+StepShowCtrl.prototype.getStepScores = function getStepScores() {
+  let availablePoints = 0
+  let stepScore
+  if(this.items){
+    const needStepScore = this.items && this.items.length > 0 && (this.items.filter(el => el.typeOpen && el.typeOpen === 'long').length < this.items.length)
+    stepScore = needStepScore ? 0 : '?'
+    for (const question of this.items) {
+      availablePoints += this.QuestionService.getTypeService(question.type).getTotalScore(question)
+      const userPaper = this.getQuestionPaper(question)
+      const answer = userPaper.answer
+      // add score for step only if questions is not of long open type
+      if(needStepScore && question.typeOpen !== 'long') {
+        stepScore += this.QuestionService.getTypeService(question.type).getAnswerScore(question, answer)
+      }
+    }
   }
+  return stepScore + '/' + availablePoints
 }
 
 /**
  * On Feedback Show
  */
 StepShowCtrl.prototype.onFeedbackShow = function onFeedbackShow() {
+
   this.allAnswersFound = this.FeedbackService.SOLUTION_FOUND
-  this.stepScore = 0
-  for (var i = 0; i < this.items.length; i++) {
-    var question = this.items[i]
-    var userPaper = this.getQuestionPaper(question)
-    var answer = userPaper.answer
-    this.stepScore += this.QuestionService.getTypeService(question.type).getAnswerScore(question, answer)
-    this.feedback.state[question.id] = this.QuestionService.getTypeService(question.type).answersAllFound(question, answer)
-    if (this.feedback.state[question.id] !== 0) {
-      this.allAnswersFound = this.FeedbackService.MULTIPLE_ANSWERS_MISSING
+
+  if(this.items){
+    for (const question of this.items) {
+      const userPaper = this.getQuestionPaper(question)
+      const answer = userPaper.answer
+
+      this.feedback.state[question.id] = this.QuestionService.getTypeService(question.type).answersAllFound(question, answer)
+      if (this.feedback.state[question.id] !== 0) {
+        this.allAnswersFound = this.FeedbackService.MULTIPLE_ANSWERS_MISSING
+      }
     }
   }
 }

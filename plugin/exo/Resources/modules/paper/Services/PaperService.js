@@ -315,10 +315,10 @@ export default class PaperService {
 
     return questionPaper.score
   }
-  
+
   /**
    * Get the Questions of a Step.
-   * 
+   *
    * @param   {Object} paper
    * @param   {Object} step
    * @param   {array}  questions
@@ -354,6 +354,6 @@ export default class PaperService {
   }
 
   getPaperSteps(){
-    return this.ExerciseService.getExercise().steps
+    return this.current.paper.order
   }
 }
