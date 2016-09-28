@@ -1,11 +1,5 @@
 <?php
 
-/**
- * Description of O365ResponseUser.
- *
- * @author nbr
- */
-
 namespace FormaLibre\OfficeConnectBundle\Library;
 
 class O365ResponseUser
