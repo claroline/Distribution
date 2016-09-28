@@ -134,7 +134,7 @@ Evaluation not started: l'évaluation n'a pas démarré
 Evaluation not started: L'évaluation n'a pas encore commencé.
 Examiner: Correcteur
 Examiners : Correcteurs
-Examiners Instructions: Instructions aux correcteurs
+Examiners Instructions: Consignes aux correcteurs
 Expected total correction: Nombre de corrections attendues par copie
 expected_total_correction: Trois conditions sont nécessaires pour qu'un étudiant valide son évaluation :<br/>- Il doit avoir rendu sa copie.<br/>- Il doit avoir corrigé N autre(s) copie(s).<br/>- Sa copie doit avoir reçu N correction(s).<br/><br/>Le tirage d''une copie lors d'une correction est fait de manière aléatoire et anonyme.
 
@@ -173,8 +173,8 @@ icap_dropzone_common_form_instruction: Instruction
 icap_dropzone_criterion_form_instruction: Instruction
 icap_dropzone_form_name: Nom de l'évaluation
 Instruction_: Instruction :
-Instruction: Instructions
-Instructions for examiners: Instructions spécifiques aux correcteurs
+Instruction: Consignes
+Instructions for examiners: Consignes spécifiques aux correcteurs
 Invalidate all corrections: Invalider toutes les corrections
 Invalidate this correction: Invalider la correction
 Invalidate: Invalider
@@ -277,7 +277,7 @@ Reason of reporting: Raison du signalement
 Recalculate all grade: Recalculer toutes les notes
 Recalculate the score: Recalculer le score
 recalculate_helper: Utile si vous avez supprimé des critères de correction alors que des gens avaient déjà commencé à corriger. Cela adaptera la note. Si vous avez ajouté de nouveaux critères, la note pour ce critère sera de 0 par défaut.
-Recall instructions: Rappel des instructions
+Recall instructions: Rappel des consignes
 Relevant documents: Documents concernés
 Remove report: Retirer le signalement
 Report comment: Expliquez la raison de votre signalement

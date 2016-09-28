@@ -388,10 +388,10 @@ generate_token: 'Générer un token aléatoire'
 generate_url: 'Inscription publique'
 generate_url_subscription: 'Inscription à l''espace d''activités par un utilisateur'
 generate_url_subscription_anonyme: 'Inscription à l''espace d''activités par un anonyme'
-generate_url_subscription_fail: 'Vous devez d''abord cochez la case de l''inscription publique avant de pouvoir voir l''url.'
-get_mail_notifications: 'Recevoir une copie des messages sur %adress%.'
-google_tag_validation: 'Balise HTML de validation Google'
-grant_access: 'Donner l''accès'
+generate_url_subscription_fail: Vous devez d'abord cocher la case de l'inscription publique avant de pouvoir voir l'url.
+get_mail_notifications: Recevoir une copie des messages sur %adress%.
+google_tag_validation: Balise HTML de validation Google
+grant_access: Donner l'accès
 grant_type: Permissions
 graph_draw_area: 'Tracez une zone sur le graphique pour zoomer. Double cliquez pour annuler'
 group: Groupe
@@ -421,32 +421,32 @@ has_been_updated: 'a été mis à jour'
 has_not_been_imported: 'n''a pas été importé(e)'
 has_not_been_imported_into_the_group: 'n''a pas été importé(e) dans le groupe'
 height: Hauteur
-help_url: 'URL de l''aide'
+help_url: URL de l'aide
 hide: Cacher
-hide_breadcrumb: 'Cacher le fil d''Ariane'
-hide_tools_menu: 'Cacher le menu d''outils (sauf pour les gestionnaires)'
+hide_breadcrumb: Cacher le fil d'Ariane
+hide_tools_menu: Cacher le menu d'outils (sauf pour les gestionnaires).
 history: Historique
 home: Accueil
-home_lock: 'Verrouillage du bureau'
-home_manager: 'Gestionnaire de l''accueil'
-home_parameters: 'Paramètres de l''accueil'
+home_lock: Verrouillage du bureau
+home_manager: Gestionnaire de l'accueil
+home_parameters: Paramètres de l'accueil
 home_tab: Onglet
-home_tab_bookmark_confirm_message: 'Cet onglet sera disponible sur votre bureau.'
-home_tab_bookmark_confirm_title: 'Epingler cet onglet au bureau'
-home_tab_bookmark_delete_confirm_message: 'Voulez-vous vraiment retirer cet onglet de votre bureau ?'
-home_tab_bookmark_delete_confirm_title: 'Retrait de l''onglet'
-home_tab_creation: 'Création d''un onglet'
+home_tab_bookmark_confirm_message: Cet onglet sera disponible sur votre bureau.
+home_tab_bookmark_confirm_title: Épingler cet onglet au bureau
+home_tab_bookmark_delete_confirm_message: Voulez-vous vraiment retirer cet onglet de votre bureau ?
+home_tab_bookmark_delete_confirm_title: Retrait de l'onglet
+home_tab_creation: Création d'un onglet
 home_tab_delete_confirm_message: 'Voulez-vous vraiment supprimer cet onglet ?'
 home_tab_delete_confirm_title: 'Suppression de l''onglet'
 home_tab_edition: 'Edition de l''onglet'
-home_tab_roles_explanation: 'Si aucun rôle n''est coché, l''onglet sera visible par tous les utilisateurs.<br>Sinon, il sera uniquement visiible par les utilisateurs ayant un des rôles sélectionnés.'
+home_tab_roles_explanation: Si aucun rôle n'est coché, l'onglet sera visible par tous les utilisateurs.<br>Sinon, il sera uniquement visible par les utilisateurs ayant un des rôles sélectionnés.
 home_tab_widgets: 'Widgets de l''onglet'
 home_tab_widgets_configuration: 'Configuration des widgets de l''onglet'
 home_tabs: 'Onglets de la page d''accueil'
 home_tabs_configuration: 'Configuration des onglets de la page d''accueil'
 host: Hôte
 icon: Icône
-id: Id
+id: ID
 id_col: 'Colonne des identifiants'
 identical_group_name: 'Nom de groupe identique'
 identical_role_name: 'Nom de rôle identique'
