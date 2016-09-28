@@ -83,6 +83,6 @@ class OfficeConnectController extends Controller
         $securityContext->setToken($token);
         $userManager->logUser($user);
 
-        return new RedirectResponse($this->generateUrl('claro_desktop_open'));
+        return $this->get('claroline.authentication_handler')->onAuthenticationSuccess($this->get('request'), $token);
     }
 }
