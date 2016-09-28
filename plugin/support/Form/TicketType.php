@@ -24,33 +24,33 @@ class TicketType extends AbstractType
         $builder->add(
             'title',
             'text',
-            array(
+            [
                 'required' => true,
                 'label' => 'title',
                 'translation_domain' => 'platform',
-            )
+            ]
         );
 
         if ($this->mode === 1) {
             $builder->add(
                 'description',
                 'textarea',
-                array(
+                [
                     'required' => false,
                     'label' => 'additional_infos',
                     'translation_domain' => 'support',
                     'attr' => ['placeholder' => $this->translator->trans('description_placeholder_text', [], 'support')],
-                )
+                ]
             );
         } else {
             $builder->add(
                 'description',
                 'tinymce',
-                array(
+                [
                     'required' => true,
                     'label' => 'description',
                     'translation_domain' => 'platform',
-                )
+                ]
             );
         }
 
@@ -58,7 +58,7 @@ class TicketType extends AbstractType
             $builder->add(
                 'type',
                 'entity',
-                array(
+                [
                     'label' => 'type',
                     'class' => 'FormaLibreSupportBundle:Type',
                     'translation_domain' => 'support',
@@ -71,24 +71,24 @@ class TicketType extends AbstractType
                     'expanded' => false,
                     'multiple' => false,
                     'required' => true,
-                )
+                ]
             );
         }
         $builder->add(
             'contactMail',
             'email',
-            array(
+            [
                 'required' => true,
                 'label' => 'contact_email',
-            )
+            ]
         );
         $builder->add(
             'contactPhone',
             'text',
-            array(
+            [
                 'required' => true,
                 'label' => 'contact_phone',
-            )
+            ]
         );
     }
 
@@ -99,6 +99,6 @@ class TicketType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'support'));
+        $resolver->setDefaults(['translation_domain' => 'support']);
     }
 }

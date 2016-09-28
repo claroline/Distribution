@@ -201,10 +201,10 @@ class SupportManager
             $config = $configs[0];
         } else {
             $config = new Configuration();
-            $details = array(
+            $details = [
                 'with_credits' => false,
-                'contacts' => array(),
-            );
+                'contacts' => [],
+            ];
             $config->setDetails($details);
             $this->persistConfiguration($config);
         }
@@ -231,7 +231,7 @@ class SupportManager
         $config = $this->getConfiguration();
         $details = $config->getDetails();
 
-        return isset($details['contacts']) ? $details['contacts'] : array();
+        return isset($details['contacts']) ? $details['contacts'] : [];
     }
 
     public function sendTicketMail(User $user, Ticket $ticket, $type = '', Comment $comment = null)
@@ -241,7 +241,7 @@ class SupportManager
         $extra = [];
 
         switch ($type) {
-            case 'new_ticket' :
+            case 'new_ticket':
                 $contactIds = $this->getConfigurationContactsOption();
                 $contactMail = $ticket->getContactMail();
 
@@ -268,7 +268,7 @@ class SupportManager
                 }
                 break;
 
-            case 'ticket_edition' :
+            case 'ticket_edition':
                 $contactIds = $this->getConfigurationContactsOption();
                 $contactMail = $ticket->getContactMail();
 
@@ -295,7 +295,7 @@ class SupportManager
                 }
                 break;
 
-            case 'ticket_deletion' :
+            case 'ticket_deletion':
                 $contactIds = $this->getConfigurationContactsOption();
 
                 if (count($contactIds) > 0) {
@@ -313,7 +313,7 @@ class SupportManager
                 }
                 break;
 
-            case 'new_admin_comment' :
+            case 'new_admin_comment':
                 $extra['to'] = [$ticket->getContactMail()];
 
                 if (!is_null($comment)) {
@@ -329,7 +329,7 @@ class SupportManager
                 }
                 break;
 
-            case 'new_comment' :
+            case 'new_comment':
                 $contactIds = $this->getConfigurationContactsOption();
                 $contactMail = $ticket->getContactMail();
 
@@ -356,7 +356,7 @@ class SupportManager
                 }
                 break;
 
-            default :
+            default:
                 break;
         }
 
