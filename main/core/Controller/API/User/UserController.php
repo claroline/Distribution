@@ -176,7 +176,6 @@ class UserController extends FOSRestController
 
         $form = $this->formFactory->create($profileType);
         $form->submit($this->request);
-        //$form->handleRequest($this->request);
 
         if ($form->isValid()) {
             //can we create the user in the current organization ?
@@ -221,7 +220,6 @@ class UserController extends FOSRestController
         $userRole = $this->roleManager->getUserRoleByUser($user);
         $form = $this->formFactory->create($formType, $user);
         $form->submit($this->request);
-        //$form->handleRequest($this->request);
 
         if ($form->isValid()) {
             $user = $form->getData();
