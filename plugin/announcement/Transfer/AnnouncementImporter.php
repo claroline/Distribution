@@ -101,7 +101,7 @@ class AnnouncementImporter extends Importer implements ConfigurationInterface, R
 
     public function supports($type)
     {
-        return $type === 'yml' ? true : false;
+        return $type === 'yml';
     }
 
     public function validate(array $data)
@@ -117,14 +117,14 @@ class AnnouncementImporter extends Importer implements ConfigurationInterface, R
         return !file_exists($rootpath.$ds.$v);
     }
 
-    public function import(array $datas)
+    public function import(array $data)
     {
         $announcementAggregate = new AnnouncementAggregate();
         $user = $this->tokenStorage->getToken()->getUser();
         $ds = DIRECTORY_SEPARATOR;
 
-        if (isset($datas['data'])) {
-            foreach ($datas['data'] as $announcementDatas) {
+        if (isset($data['data'])) {
+            foreach ($data['data'] as $announcementDatas) {
                 $announcement = new Announcement();
                 $announcement->setAggregate($announcementAggregate);
                 $announcement->setCreator($user);
@@ -157,9 +157,9 @@ class AnnouncementImporter extends Importer implements ConfigurationInterface, R
         return $announcementAggregate;
     }
 
-    public function export(Workspace $workspace, array &$_files, $object)
+    public function export(Workspace $workspace, array &$files, $object)
     {
-        $datas = [];
+        $data = [];
         $announcements = $object->getAnnouncements();
 
         foreach ($announcements as $announcement) {
@@ -167,8 +167,8 @@ class AnnouncementImporter extends Importer implements ConfigurationInterface, R
             $uid = uniqid().'.txt';
             $tmpPath = sys_get_temp_dir().DIRECTORY_SEPARATOR.$uid;
             file_put_contents($tmpPath, $content);
-            $_files[$uid] = $tmpPath;
-            $datas[] = [
+            $files[$uid] = $tmpPath;
+            $data[] = [
                 'announcement' => [
                     'title' => $announcement->getTitle(),
                     'announcer' => $announcement->getAnnouncer(),
@@ -182,14 +182,14 @@ class AnnouncementImporter extends Importer implements ConfigurationInterface, R
             ];
         }
 
-        return $datas;
+        return $data;
     }
 
-    public function format($datas)
+    public function format($data)
     {
-        foreach ($datas as $data) {
-            if (isset($data['announcement']['content']['path'])) {
-                $path = $data['announcement']['content']['path'];
+        foreach ($data as $d) {
+            if (isset($d['announcement']['content']['path'])) {
+                $path = $d['announcement']['content']['path'];
                 $content = file_get_contents($this->getRootPath().DIRECTORY_SEPARATOR.$path);
                 $entities = $this->om->getRepository('ClarolineAnnouncementBundle:Announcement')->findByContent($content);
 
