@@ -38,7 +38,7 @@ class DomainNameValidator extends ConstraintValidator
         $found = false;
 
         foreach ($urls as $url) {
-            if ($this->urlExists($value)) {
+            if ($this->urlExists($url)) {
                 $found = true;
             }
         }
@@ -53,9 +53,7 @@ class DomainNameValidator extends ConstraintValidator
         $found = false;
         $handle = curl_init($url);
         curl_setopt($handle,  CURLOPT_RETURNTRANSFER, true);
-
-        /* Get the HTML or whatever is linked in $url. */
-        $response = curl_exec($handle);
+        curl_exec($handle);
 
         /* Check for 404 (file not found). */
         $httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
