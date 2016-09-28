@@ -6,14 +6,17 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class TicketType extends AbstractType
 {
     private $mode;
+    private $translator;
 
-    public function __construct($mode = 0)
+    public function __construct(TranslatorInterface $translator, $mode = 0)
     {
         $this->mode = $mode;
+        $this->translator = $translator;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -36,6 +39,7 @@ class TicketType extends AbstractType
                     'required' => false,
                     'label' => 'additional_infos',
                     'translation_domain' => 'support',
+                    'attr' => ['placeholder' => $this->translator->trans('description_placeholder_text', [], 'support')],
                 )
             );
         } else {
