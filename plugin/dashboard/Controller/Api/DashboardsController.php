@@ -139,6 +139,8 @@ class DashboardsController extends Controller
     public function deleteDashboard(User $user, Dashboard $dashboard)
     {
         $this->dashboardManager->delete($dashboard);
+
+        return new JsonResponse(null, 204);
     }
 
     /**
