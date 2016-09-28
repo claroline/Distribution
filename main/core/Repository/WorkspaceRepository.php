@@ -1122,18 +1122,35 @@ class WorkspaceRepository extends EntityRepository
         return $query->getResult();
     }
 
-    public function findNonPersonalByCode($code, $offset = null, $limit = null)
+    public function findNonPersonalByCodeAndName($code, $name, $offset = null, $limit = null)
     {
         $dql = '
             SELECT w FROM Claroline\CoreBundle\Entity\Workspace\Workspace w
             WHERE w.isPersonal = false
-            AND w.code LIKE :code
         ';
 
+        if ($code) {
+            $dql .= ' AND w.code LIKE :code';
+        }
+
+        if ($name) {
+            $dql .= ' AND w.name LIKE :name';
+        }
+
         $code = addcslashes($code, '%_');
+        $name = addcslashes($name, '%_');
         $query = $this->_em->createQuery($dql);
-        $query->setParameter('code', "%{$code}%");
+
+        if ($code) {
+            $query->setParameter('code', "%{$code}%");
+        }
+
+        if ($name) {
+            $query->setParameter('name', "%{$name}%");
+        }
+
         $query->setMaxResults($limit);
+
         if ($offset) {
             $query->setFirstResult($offset);
         }

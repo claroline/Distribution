@@ -126,14 +126,16 @@ class RemoveWorkspaceCommand extends ContainerAwareCommand
         if ($standard) {
             $question = new Question('Filter on code (continue if no filter)', null);
             $code = $helper->ask($input, $output, $question);
-            $this->deleteWorkspaceByCode($code);
+            $question = new Question('Filter on name (continue if no filter)', null);
+            $name = $helper->ask($input, $output, $question);
+            $this->deleteWorkspaceByCodeAndName($code, $name);
         }
     }
 
-    private function deleteWorkspaceByCode($code)
+    private function deleteWorkspaceByCodeAndName($code, $name)
     {
         $workspaceManager = $this->getContainer()->get('claroline.manager.workspace_manager');
-        $toDelete = $workspaceManager->getNonPersonalByCode($code);
+        $toDelete = $workspaceManager->getNonPersonalByCodeAndName($code, $name);
 
         if (count($toDelete) > 0) {
             $this->confirmWorkspaceDelete($toDelete);

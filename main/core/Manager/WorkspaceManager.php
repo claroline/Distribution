@@ -1192,10 +1192,10 @@ class WorkspaceManager
         return $this->workspaceRepo->findPersonalWorkspaceByRolesIncludingGroups($roles, $includeOrphans, $empty, $offset, $limit);
     }
 
-    public function getNonPersonalByCode($code, $offset = null, $limit = null)
+    public function getNonPersonalByCodeAndName($code, $name, $offset = null, $limit = null)
     {
-        return $code ?
+        return !$code && !$name ?
             $this->workspaceRepo->findBy(['isPersonal' => false]) :
-            $this->workspaceRepo->findNonPersonalByCode($code, $offset, $limit);
+            $this->workspaceRepo->findNonPersonalByCodeAndName($code, $name, $offset, $limit);
     }
 }
