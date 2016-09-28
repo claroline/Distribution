@@ -86,7 +86,6 @@ class AdminSupportController extends Controller
      */
     public function adminSupportIndexAction()
     {
-        throw new \Exception('mdr');
         $types = $this->supportManager->getAllTypes();
         $counters = array();
 
