@@ -496,7 +496,7 @@ language: Taal
 language_select: Kies een taal
 lastName: Naam
 last_30_days_activity: Activiteiten van de laatste 30 dagen
-last_action: {1} Laatste actie|[1,Inf] %logAmount% laatste acties
+last_action: '{1} Laatste actie|[1,Inf] %logAmount% laatste acties'
 last_attempt_date: Datum van de laatste poging
 last_manager_error_message: U bent niet toegelaten alle beheerders in te trekken.
 last_modification: Dernière modification
