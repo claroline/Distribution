@@ -81,7 +81,7 @@ Comments add: Ajouter un commentaire
 Comments list: Commentaire - Évaluation
 Comments on: Commentaire - Évaluation sur
 Common information: Informations générales
-common_explication: Cet outil met à disposition des utilisateurs un espace dans lequel ils peuvent déposer des documents de différents types : fichier (à téléverser), texte libre (à rédiger en ligne)	 ressources (à sélectionner depuis lespace des ressoures) et lien Internet.<br/>Lutilisateur peut demander une évaluation ou un simple commentaire pour lun ou lautre des documents déposés dans son espace. Ces deux types de demandes (simple commentaire ou évaluation) ont été regroupés sous le terme "demande de commentaire".<br/>Dans cette version 1 du collecticiel seuls les enseignants reçoivent des "demandes de commentaires".
+common_explication: Cet outil met à la disposition des utilisateurs un espace dans lequel ils peuvent déposer des documents de différents types : fichier (à téléverser), texte libre (à rédiger en ligne), ressources (à sélectionner depuis l'espace des ressoures) et lien Internet.<br/>L'utilisateur peut demander une évaluation ou un simple commentaire pour l'un ou l'autre des documents déposés dans son espace. Ces deux types de demandes (simple commentaire ou évaluation) ont été regroupés sous le terme "demande de commentaire".<br/>Dans cette version 1 du collecticiel, seuls les enseignants reçoivent des "demandes de commentaires".
 Common: Général
 Complete Corrections: Corrections terminées
 Complete evaluation: Compléter le collecticiel
@@ -298,7 +298,7 @@ Need to be the author: Vous devez être l'auteur de la correction pour effectuer
 Next: Suivant
 Nickname: Identifiant
 No action allowed : Aucune action possible
-No copy waiting for correction: Aucune copie en attente de correction
+No copy waiting for correction: À ce jour, aucune demande ne vous a été adressée.
 No copy was made: Aucun document n'a été rendue
 No correction: Aucune correction.
 no document added yet: Aucun document ajouté pour l'instant
@@ -359,7 +359,7 @@ People that have a copy in this dropzone: Personnes ayant déposé un document d
 People will not be able to drop anymore: Fermeture du collecticiel
 Picture: Image de profil
 Planification instruction: L'ouverture du collecticiel peut se réaliser de manière manuelle ou en fonction des dates	de début (ouverture du collecticiel) et de fin (fermeture).
-Planification peer review instruction: Elle se divise en plusieurs étapes : l'ouverture de l'évaluation en autorisant le dépôt, début de l'évaluation par les pairs qui clôture le dépôt et la fin de l'évaluation.
+Planification peer review instruction: Elle se divise en plusieurs étapes: l'ouverture de l'évaluation en autorisant le dépôt, début de l'évaluation par les pairs qui clôture le dépôt et la fin de l'évaluation.
 Planning: Ouverture
 Please comment: Merci de laisser un commentaire
 Please complete text : Veuillez renseigner le champ "Texte"
