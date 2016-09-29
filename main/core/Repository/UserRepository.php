@@ -37,6 +37,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
             WHERE u.username LIKE :username
             OR u.mail LIKE :username
             OR u.administrativeCode LIKE :username
+            AND u.isEnabled = true
         ';
         $query = $this->_em->createQuery($dql);
         $query->setParameter('username', $username);
