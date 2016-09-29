@@ -193,6 +193,7 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
      *     cascade={"persist"}
      * )
      * @ORM\JoinColumn(name="workspace_id", onDelete="SET NULL")
+     * @Groups({"api_user"})
      */
     protected $personalWorkspace;
 
