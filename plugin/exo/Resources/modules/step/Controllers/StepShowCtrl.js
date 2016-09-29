@@ -16,7 +16,7 @@ function StepShowCtrl(UserPaperService, FeedbackService, QuestionService, StepSe
   this.feedback = this.FeedbackService.get()
 
   this.FeedbackService
-          .on('show', this.onFeedbackShow.bind(this))
+            .on('show', this.onFeedbackShow.bind(this))
 
   if (!this.solutionShown && this.feedback.enabled && this.items[0]) {
     const questionPaper = this.getQuestionPaper(this.items[0])
@@ -76,6 +76,12 @@ StepShowCtrl.prototype.allAnswersFound = -1
 StepShowCtrl.prototype.showScore = true
 
 /**
+ *
+ * @type {boolean}
+ */
+StepShowCtrl.prototype.stepNeedsManualCorrection = false
+
+/**
  * Get the Paper related to the Question
  * @param   {Object} question
  * @returns {Object}
@@ -87,22 +93,37 @@ StepShowCtrl.prototype.getQuestionPaper = function getQuestionPaper(question) {
 /**
  * Get step total available score and step current score
  */
-StepShowCtrl.prototype.getStepScores = function getStepScores() {
-  let availablePoints = 0
-  let stepScore
-  if(this.items){
-    const needStepScore = this.items && this.items.length > 0 && (this.items.filter(el => el.typeOpen && el.typeOpen === 'long').length < this.items.length)
-    stepScore = needStepScore ? 0 : '?'
+StepShowCtrl.prototype.getStepAvailablePoints = function getStepAvailablePoints() {
+  if (this.items) {
     for (const question of this.items) {
-      availablePoints += this.QuestionService.getTypeService(question.type).getTotalScore(question)
-      const userPaper = this.getQuestionPaper(question)
-      const answer = userPaper.answer
-      // add score for step only if questions is not of long open type
-      if(needStepScore && question.typeOpen !== 'long') {
-        stepScore += this.QuestionService.getTypeService(question.type).getAnswerScore(question, answer)
-      }
+      this.stepAvailablePoints += this.QuestionService.getTypeService(question.type).getTotalScore(question)
     }
   }
+}
+
+/**
+ * Get step total available score and step current score
+ */
+StepShowCtrl.prototype.getStepScores = function getStepScores() {
+  let availablePoints = 0
+  let stepScore = 0
+  let nbWithoutScore = 0
+  if(this.items){
+    for (const question of this.items) {
+      availablePoints += this.QuestionService.getTypeService(question.type).getTotalScore(question)
+      const questionPaper = this.getQuestionPaper(question)
+      let score = this.QuestionService.calculateScore(question, questionPaper)
+      // if question of type open long with no score
+      if(score !== -1){
+        stepScore += score
+      } else {
+        this.stepNeedsManualCorrection = true
+        ++nbWithoutScore
+      }
+    }
+    stepScore = nbWithoutScore === this.items.length ? '?' : stepScore
+  }
+
   return stepScore + '/' + availablePoints
 }
 
