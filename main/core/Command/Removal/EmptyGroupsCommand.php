@@ -25,12 +25,6 @@ use Symfony\Component\Console\Question\Question;
  */
 class EmptyGroupsCommand extends ContainerAwareCommand
 {
-    const BATCH_SIZE = 10;
-
-    private $force = false;
-    private $output = null;
-    private $input = null;
-
     protected function configure()
     {
         $this->setName('claroline:groups:empty')
