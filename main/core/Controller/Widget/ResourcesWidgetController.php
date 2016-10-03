@@ -71,7 +71,7 @@ class ResourcesWidgetController extends Controller
         $resourceNodes = [];
 
         switch ($mode) {
-            case ResourcesWidgetConfig::DIRECTORY_MODE :
+            case ResourcesWidgetConfig::DIRECTORY_MODE:
                 $directoriesIds = $config->getDirectories();
 
                 foreach ($directoriesIds as $directoryId) {
@@ -85,7 +85,7 @@ class ResourcesWidgetController extends Controller
                     }
                 }
                 break;
-            case ResourcesWidgetConfig::TAG_MODE :
+            case ResourcesWidgetConfig::TAG_MODE:
                 $tags = $config->getTags();
 
                 foreach ($tags as $tagName) {
