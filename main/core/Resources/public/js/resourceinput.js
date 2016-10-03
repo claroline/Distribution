@@ -95,7 +95,7 @@
         ];
         var arrayParameterList = [
             'typeBlackList',
-            'tetypeWhiteList'
+            'typeWhiteList'
         ];
 
         for (var i = 0; i < simpleParameterList.length; i++) {
