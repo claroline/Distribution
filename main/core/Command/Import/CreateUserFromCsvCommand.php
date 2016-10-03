@@ -67,8 +67,8 @@ class CreateUserFromCsvCommand extends ContainerAwareCommand
         $userManager->importUsers(
             $users,
             false,
-            function ($message) use ($output) {
-                $output->writeln($message);
+            function ($message) use ($consoleLogger) {
+                $consoleLogger->log(LogLevel::DEBUG, $message);
             },
             [],
             false,
