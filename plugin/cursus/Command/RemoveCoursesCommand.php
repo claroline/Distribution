@@ -44,7 +44,6 @@ class RemoveCoursesCommand extends ContainerAwareCommand
 
                 if ($i % 100 === 0) {
                     $om->forceFlush();
-                    $om->clear();
                 }
                 ++$i;
             }
@@ -54,7 +53,6 @@ class RemoveCoursesCommand extends ContainerAwareCommand
 
             if ($i % 100 === 0) {
                 $om->forceFlush();
-                $om->clear();
             }
             ++$i;
         }
