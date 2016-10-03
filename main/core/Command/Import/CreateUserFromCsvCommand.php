@@ -14,6 +14,7 @@ namespace Claroline\CoreBundle\Command\Import;
 use Claroline\CoreBundle\Command\Traits\BaseCommandTrait;
 use Claroline\CoreBundle\Library\Logger\ConsoleLogger;
 use Claroline\CoreBundle\Listener\DoctrineDebug;
+use Psr\Log\LogLevel;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
