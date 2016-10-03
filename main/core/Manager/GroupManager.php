@@ -501,12 +501,14 @@ class GroupManager
 
         //Admin can see everything, but the others... well they can only see their own organizations.
         //Cli always win aswell
-        if (!$this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
-            $currentUser = $this->container->get('security.token_storage')->getToken()->getUser();
-            $qb->join('g.organizations', 'go');
-            $qb->join('go.administrators', 'ga');
-            $qb->andWhere('ga.id = :userId');
-            $qb->setParameter('userId', $currentUser->getId());
+        if (php_sapi_name() !== 'cli' || $this->container->get('kernel')->getEnvironment() === 'test') {
+            if (!$this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+                $currentUser = $this->container->get('security.token_storage')->getToken()->getUser();
+                $qb->join('g.organizations', 'go');
+                $qb->join('go.administrators', 'ga');
+                $qb->andWhere('ga.id = :userId');
+                $qb->setParameter('userId', $currentUser->getId());
+            }
         }
 
         foreach ($searches as $key => $search) {
