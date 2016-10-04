@@ -40,8 +40,6 @@ class EmptyGroupsCommand extends ContainerAwareCommand
     {
         $container = $this->getContainer();
         $helper = $this->getHelper('question');
-        //get excluding roles
-
         $all = $input->getOption('all');
         $question = $all ? 'Excude on name (continue if no filter): ' : 'Filter on name (continue if no filter): ';
         $question = new Question($question, null);
