@@ -164,7 +164,7 @@ class ToolsImporter extends Importer implements ConfigurationInterface
 
             if ($addRoleToOtr && $toolEntity) {
                 $otr = $this->toolManager
-                    ->addWorkspaceTool(
+                    ->setWorkspaceTool(
                         $toolEntity,
                         $position,
                         $tool['tool']['translation'],
@@ -177,7 +177,7 @@ class ToolsImporter extends Importer implements ConfigurationInterface
             if (isset($tool['tool']['roles']) && $addRoleToOtr && $otr) {
                 foreach ($tool['tool']['roles'] as $role) {
                     $roleEntity = $this->roleManager->getRoleByName($role['name'].'_'.$workspace->getGuid());
-                    $this->toolRightManager->createToolRights(
+                    $this->toolRightManager->setToolRights(
                         $otr,
                         $entityRoles[$role['name']],
                         ToolMaskDecoder::$defaultValues['open']

@@ -386,7 +386,7 @@ class WorkspaceModelManager
         $workspaceRoles = $this->getArrayRolesByWorkspace($workspace);
 
         foreach ($orderedTools as $orderedTool) {
-            $workspaceOrderedTool = $this->toolManager->addWorkspaceTool(
+            $workspaceOrderedTool = $this->toolManager->setWorkspaceTool(
                 $orderedTool->getTool(),
                 $orderedTool->getOrder(),
                 $orderedTool->getName(),
@@ -399,7 +399,7 @@ class WorkspaceModelManager
                 $role = $right->getRole();
 
                 if ($role->getType() === 1) {
-                    $this->toolRightsManager->createToolRights(
+                    $this->toolRightsManager->setToolRights(
                         $workspaceOrderedTool,
                         $role,
                         $right->getMask()
@@ -408,7 +408,7 @@ class WorkspaceModelManager
                     $key = $role->getTranslationKey();
 
                     if (isset($workspaceRoles[$key]) && !empty($workspaceRoles[$key])) {
-                        $this->toolRightsManager->createToolRights(
+                        $this->toolRightsManager->setToolRights(
                             $workspaceOrderedTool,
                             $workspaceRoles[$key],
                             $right->getMask()
@@ -756,7 +756,7 @@ class WorkspaceModelManager
         $this->om->flush();
     }
 
-    public function addDataFromModel(WorkspaceModel $model, Workspace $workspace, User $user, &$errors)
+    public function addDataFromModel(WorkspaceModel $model, Workspace $workspace, User $user, &$errors = [])
     {
         $modelWorkspace = $model->getWorkspace();
         $resourcesModels = $model->getResourcesModel();
@@ -775,6 +775,15 @@ class WorkspaceModelManager
         $this->om->forceFlush();
 
         $errors['widgetConfigErrors'] = $this->duplicateHomeTabs($modelWorkspace, $workspace, $homeTabs->toArray(), $resourcesInfos);
+    }
+
+    /**
+     * Currently only set the tools permissions.
+     */
+    public function updateDataFromModel(WorkspaceModel $model, Workspace $workspace)
+    {
+        $modelWorkspace = $model->getWorkspace();
+        $this->duplicateOrderedTools($model->getWorkspace(), $workspace);
     }
 
     public function setLogger(LoggerInterface $logger)

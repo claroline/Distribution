@@ -53,7 +53,7 @@ class ToolManagerTest extends MockeryTestCase
     public function testImport()
     {
         $manager = $this->getManager(
-            array('createOrderedTool', 'addRoleToOrderedTool', 'addWorkspaceTool', 'extractFiles')
+            array('createOrderedTool', 'addRoleToOrderedTool', 'setWorkspaceTool', 'extractFiles')
         );
         $roleA = $this->mock('Claroline\CoreBundle\Entity\Role');
         $roleB = $this->mock('Claroline\CoreBundle\Entity\Role');
@@ -72,7 +72,7 @@ class ToolManagerTest extends MockeryTestCase
         $tool = $this->mock('Claroline\CoreBundle\Entity\Tool\Tool');
         $orderedTool = $this->mock('Claroline\CoreBundle\Entity\Tool\OrderedTool');
         $manager->shouldReceive('extractFiles')->once()->with($arch, $config)->andReturn($files);
-        $manager->shouldReceive('addWorkspaceTool')->with($tool, $position, $name, $workspace)
+        $manager->shouldReceive('setWorkspaceTool')->with($tool, $position, $name, $workspace)
             ->once()->andReturn($orderedTool);
         $manager->shouldReceive('addRoleToOrderedTool')->times(2);
         $tool->shouldReceive('getName')->once()->andReturn('claro_tool');
@@ -94,9 +94,9 @@ class ToolManagerTest extends MockeryTestCase
     }
 
     /**
-     * @dataProvider addWorkspaceToolProvider
+     * @dataProvider setWorkspaceToolProvider
      */
-    public function testAddWorkspaceTool($switchTool, $isExceptionExpected)
+    public function testsetWorkspaceTool($switchTool, $isExceptionExpected)
     {
         $tool = $this->mock('Claroline\CoreBundle\Entity\Tool\Tool');
         $workspace = $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
@@ -120,7 +120,7 @@ class ToolManagerTest extends MockeryTestCase
             $this->om->shouldReceive('flush')->once();
         }
 
-        $this->getManager()->addWorkspaceTool($tool, 1, 'tool', $workspace);
+        $this->getManager()->setWorkspaceTool($tool, 1, 'tool', $workspace);
     }
 
     public function testAddRole()
@@ -290,7 +290,7 @@ class ToolManagerTest extends MockeryTestCase
 
     public function testAddMissingWorkspaceTools()
     {
-        $manager = $this->getManager(array('addWorkspaceTool'));
+        $manager = $this->getManager(array('setWorkspaceTool'));
 
         $tool = $this->mock('Claroline\CoreBundle\Entity\Tool\Tool');
         $tool->shouldReceive('isDisplayableInWorkspace')->andReturn(true);
@@ -320,7 +320,7 @@ class ToolManagerTest extends MockeryTestCase
         $this->orderedToolRepo->shouldReceive('findOneBy')
             ->with(array('workspace' => $workspace, 'tool' => $tool))->andReturn(null);
         $this->translator->shouldReceive('trans')->once();
-        $manager->shouldReceive('addWorkspaceTool')->once();
+        $manager->shouldReceive('setWorkspaceTool')->once();
 
         $this->assertEquals($expected, $manager->addMissingWorkspaceTools($workspace));
     }
@@ -525,7 +525,7 @@ class ToolManagerTest extends MockeryTestCase
         );
     }
 
-    public function addWorkspaceToolProvider()
+    public function setWorkspaceToolProvider()
     {
         $switchTool = $this->mock('Claroline\CoreBundle\Entity\Tool\OrderedTool');
 
