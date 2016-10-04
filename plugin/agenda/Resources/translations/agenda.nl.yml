@@ -1,10 +1,10 @@
-add_event: Ajouter un évènement
-isTask: Tâche
-all_day: toute la journée
-at: à
-cancel: Annuler
-close: Fermer
-confirm: Êtes-vous sûr ?
+add_event: Een evenement toevoegen
+isTask: Taak
+all_day: de hele dag
+at: op
+cancel: Annuleren
+close: Sluiten
+confirm: Bent u er zeker van ?
 date_invalid: Une erreur s'est produite, vérifiez que la date de début se situe avant la date de fin.
 day_: Jour
 day:
