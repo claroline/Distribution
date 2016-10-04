@@ -11,9 +11,12 @@
 
 namespace Claroline\CoreBundle\Manager;
 
+use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Tool\OrderedTool;
 use Claroline\CoreBundle\Entity\Tool\Tool;
+use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Testing\MockeryTestCase;
 use Mockery as m;
 
@@ -65,7 +68,7 @@ class ToolManagerTest extends MockeryTestCase
         $name = 'toolName';
         $workspace = $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
         $resource = $this->mock('Claroline\CoreBundle\Entity\Resource\Directory');
-        $node = new \Claroline\CoreBundle\Entity\Resource\ResourceNode();
+        $node = new ResourceNode();
         $resource->shouldReceive('getResourceNode')->once()->andReturn($node);
         $userManager = $this->mock('Claroline\CoreBundle\Entity\User');
         $position = 1;
@@ -439,7 +442,7 @@ class ToolManagerTest extends MockeryTestCase
     public function testgetOneByWorkspaceAndTool()
     {
         $tool = new Tool();
-        $ws = new \Claroline\CoreBundle\Entity\Workspace\Workspace();
+        $ws = new Workspace();
 
         $this->orderedToolRepo->shouldReceive('findOneBy')->once()
             ->with(['workspace' => $ws, 'tool' => $tool])->andReturn('return');
@@ -450,7 +453,7 @@ class ToolManagerTest extends MockeryTestCase
     public function testAddRequiredToolsUser()
     {
         $manager = $this->getManager(['addDesktopTool']);
-        $user = new \Claroline\CoreBundle\Entity\User();
+        $user = new User();
         $home = $this->mock('Claroline\CoreBundle\Entity\Tool\Tool');
         $resmanager = $this->mock('Claroline\CoreBundle\Entity\Tool\Tool');
         $parameters = $this->mock('Claroline\CoreBundle\Entity\Tool\Tool');
