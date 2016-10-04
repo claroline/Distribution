@@ -16,6 +16,7 @@ use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 
 class DisplayWidgetEvent extends Event implements DataConveyorEventInterface
 {
+    protected $content;
     protected $instance;
     protected $isPopulated = false;
 
