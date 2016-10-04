@@ -124,15 +124,10 @@ class AnnouncementManager
         );
     }
 
-    public function sendMail(Announcement $announcement)
+    public function sendMail(Announcement $announcement, $users = null)
     {
-        $targets = $this->getUsersByResource($announcement->getAggregate()->getResourceNode(), 1);
-        $this->mailManager->send(
-            $announcement->getTitle(),
-            $announcement->getContent(),
-            $targets,
-            $announcement->getCreator()
-        );
+        $targets = is_null($users) ? $this->getUsersByResource($announcement->getAggregate()->getResourceNode(), 1) : $users;
+        $this->mailManager->send($announcement->getTitle(), $announcement->getContent(), $targets, $announcement->getCreator());
     }
 
     //@todo make a dql request to retrieve the users (it may be a difficult one to do)

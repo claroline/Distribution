@@ -27,6 +27,7 @@ use Claroline\CoreBundle\Pager\PagerFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -123,6 +124,7 @@ class AnnouncementController extends Controller
             '_resource' => $aggregate,
             'announcements' => $pager,
             'resourceCollection' => $collection,
+            'workspace' => $aggregate->getResourceNode()->getWorkspace(),
         );
     }
 
@@ -451,6 +453,35 @@ class AnnouncementController extends Controller
         $pager = $this->pagerFactory->createPagerFromArray($data, $page, 5);
 
         return array('datas' => $pager, 'widgetType' => 'desktop');
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/announcement/{announcement}/send/mail",
+     *     name="claro_announcement_send_mail",
+     *     options={"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     * @EXT\ParamConverter(
+     *     "users",
+     *      class="ClarolineCoreBundle:User",
+     *      options={"multipleIds" = true, "name" = "usersIds"}
+     * )
+     *
+     * Sends announcement by mail
+     *
+     * @return Response
+     */
+    public function announcementSendMailAction(Announcement $announcement, array $users)
+    {
+        $resource = $announcement->getAggregate();
+        $this->checkAccess('EDIT', $resource);
+
+        if (count($users) > 0) {
+            $this->announcementManager->sendMail($announcement, $users);
+        }
+
+        return new JsonResponse('success', 200);
     }
 
     /**
