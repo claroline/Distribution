@@ -782,7 +782,6 @@ class WorkspaceModelManager
      */
     public function updateDataFromModel(WorkspaceModel $model, Workspace $workspace)
     {
-        $modelWorkspace = $model->getWorkspace();
         $this->duplicateOrderedTools($model->getWorkspace(), $workspace);
     }
 

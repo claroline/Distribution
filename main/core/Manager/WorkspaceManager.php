@@ -894,7 +894,6 @@ class WorkspaceManager
             $selfRegistration = $workspace[3];
             $registrationValidation = $workspace[4];
             $selfUnregistration = $workspace[5];
-            $errors = [];
 
             if (isset($workspace[6]) && trim($workspace[6]) !== '') {
                 $user = $this->om->getRepository('ClarolineCoreBundle:User')
