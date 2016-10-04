@@ -14,6 +14,7 @@ at: at
 by: by
 created_on: 'Created on'
 create_new_announcement: 'Add an announcement'
+notification_option_info: The notification option is disabled if a start date is defined.
 notify_user: "Notify the user"
 published_on: 'Published on'
 send_mail_user_picker_title: Please select the users to who you to send the announcement

@@ -14,6 +14,7 @@ at: à
 by: par
 created_on: 'Créée le'
 create_new_announcement: 'Ajouter une annonce'
+notification_option_info: L'option de notification est désactivée si une date de début est définie.
 notify_user: "Notifier l'utilisateur"
 published_on: 'Publiée le'
 send_mail_user_picker_title: Veuillez sélectionner les utilisateurs à qui vous voulez envoyer l'annonce
