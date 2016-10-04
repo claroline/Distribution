@@ -25,8 +25,8 @@ agenda:
     end_date: Einddatum
     localisation: Localisatie
     max_time_reservation: Maximum reservatieduur
-    max_255_characters: Maximum 255 karakertekens
-    resource: Leermiddel
+    max_255_characters: Maximum 255 karakers
+    resource: Middel
     resource_type: Type van middel
     select_resource_pls: -- Gelieve een middel te kiezen --
     start_date: Startdatum
@@ -60,47 +60,47 @@ agenda:
     author: Gemaakt door
   resource:
     admin: Admin
-    admin_info: Peut créer, modifier et supprimer n'importe quelles réservations.
-    book: Réserver
-    book_info: Peut créer des réservations, les modifier et les supprimer.
-    cannot_see: Pas accès
-    cannot_see_info: Ne peut ni voir, ni modifier les réservations.
-    rights_info: Les droits d'accès varient pour chaque ressource.
+    admin_info: Mag reservaties maken, bewerken en verwijderen.
+    book: Reserveren
+    book_info: Mag reservaties maken, bewerken en verwijderen.
+    cannot_see: Geen toegang
+    cannot_see_info: Mag de reservaties noch zien, noch bewerken.
+    rights_info: De toegangsrechten veriëren voor elke middel.
     see: Zien
-    see_info: Peut uniquement voir les réservations.
+    see_info: Mag alléén de reservaties zien.
   today: Vandaag
   week: Week
   week_number_title: S
 confirm_reservation_deletion_content: Bent u er zeker van dat u deze reservatie wenst te verwijderen ?
 confirm_reservation_deletion_title: Een reservatie verwijderen
-confirm_resource_type_deletion_title: Een type van leermiddel verwijderen
-confirm_resource_type_deletion_content: Êtes-vous sûr de vouloir supprimer ce type de ressources ? Cette action supprimera toutes les ressources appartenant à ce type de ressources ainsi que les éventuelles réservations en cours de chaque ressource.
-confirm_resource_deletion_title: Suppression d'une ressource
-confirm_resource_deletion_content: Êtes-vous sûr de vouloir supprimer cette ressource ? Cette action supprimera également toutes les réservations liées à cette ressource.
-delete_resource: De leermiddel verwijderen
-delete_resource_type: Supprimer ce type de ressources
+confirm_resource_type_deletion_title: Een type van middel verwijderen
+confirm_resource_type_deletion_content: Bent u er zeker van dat u dit type van middelen wenst te verwijderen ? Deze actie zal al de reservaties verwijderen voor dit type van middelen en ook de lopende reservaties voor elke middel.
+confirm_resource_deletion_title: Een middel verwijderen
+confirm_resource_deletion_content: Bent u er zeker van dat u deze middel wenst te verwijderen ? Deze actie zal al de reservaties verwijderen die gekoppeld zijn met deze middel.
+delete_resource: De middel verwijderen
+delete_resource_type: Dit type van middel verwijderen
 error_: Fout
 error:
   empty_input: Het veld mag niet leeg zijn.
-  resource_type_already_exists: Ce type de ressource existe déjà.
-  number_reservations_exceeded: Nombre des réservations dépassées avec cette ressource. Veuillez changer la date à laquelle vous voulez réserver cette ressource.
-  max_time_reservation_exceeded: Vous avez dépassé le temps maximum de réservation de cette ressource.
-export_resources: De leermiddelen uitvoeren
+  resource_type_already_exists: Dit type van middel bestaat al.
+  number_reservations_exceeded: Aantal reservaties overschreden voor deze middel. Gelieve de datum te wijzigen.
+  max_time_reservation_exceeded: U hebt de maximum reservatieduur overschreden voor deze middel.
+export_resources: De middelen uitvoeren
 filter:
-  by_resource: Filtrer par ressource
-  no_resource_found: Aucune ressource trouvée
-  no_resource_type_found: Aucun type de ressources trouvés
+  by_resource: Op de middelen filtreren
+  no_resource_found: Geen middel gevonden
+  no_resource_type_found: Geen type van middel gevonden
 form:
   change_resource_type_name_title: De naam bewerken
   change_resource_type_name: De naam bewerken
   color: Kleur
   description: Beschrijving
   localisation: Localisatie
-  maxTime: Temps maximum de réservation
-  maxTimeOfReservation: Temps maximum par réservation (optioneel)
+  maxTime: Maximum reservatieduur
+  maxTimeOfReservation: Maximum duur per reservatie (optioneel)
   name: Naam
   quantity: Hoeveelheid
-  information_about_quantity_modification: La modification de la quantité de ressources disponibles affectera uniquement les futures réservations.
+  information_about_quantity_modification: Het bewerken van de hoeveelheid beschikbare middelen zal alléén de toekomstige reservaties beïnvloeden.
 import_: Invoeren
 import:
   resources: Middelen invoeren
@@ -108,8 +108,9 @@ import:
   resources_title: Middelen invoeren
   resources_info: |
     Gelieve een CSV-bestand te kiezen met een komma om de elementen te scheiden en aanhalingstekens rondom complexe tekstvelden. De eerste regel van het bestand moet 7 kolommen bevatten (Zie onderstaand voorbeeld):
-    - de naamvan het type van middel (min 2 en max 50 tekens)
-    - de naamvan van de middel (min 2 en max 50 tekens)
+
+    - de naam van het type van middel (min 2 en max 50 tekens)
+    - de naam van de middel (min 2 en max 50 tekens)
     - de maximum reservatieduur in het formaat hh:mm ou hh:mm:ss (optioneel)
     - de beschrijving (optioneel)
     - de localisatie ((optioneel)
@@ -134,9 +135,9 @@ picker:
   select_year: Kies een jaar
   prev_year: Voorafgaand jaar
   next_year: Volgend jaar
-  select_decade: Sélectionnez une décade
-  prev_decade: Décade précédente
-  next_decade: Décade suivante
+  select_decade: Een decennium kiezen
+  prev_decade: Voorafgaand decennium
+  next_decade: Volgen decennium
   prev_century: Voorafgaande eeuw
   next_century: Volgende eeuw
 reservation: Reservatie
