@@ -629,6 +629,7 @@ no_home_tab: 'There is no Home tab'
 no_learning_outcomes: 'No learning outcomes'
 no_message: 'No message'
 no_model: 'No model'
+no_resource: No resource
 no_resources_in_workspace: 'There are currently no resources in this workspace.'
 no_role_selected_message: 'No role selected.'
 no_search_results: 'Your search hasn''t returned any result.'
@@ -1126,6 +1127,7 @@ with_tutor: Tutored
 workspace: Workspace
 workspace.create: 'Create a new workspace'
 workspace.name_not_blank: 'The workspace''s name is required.'
+workspace_access_disabled: Your access to the workspace is disabled.
 workspace_activity_overview: 'Overview of recent activities in %workspaceName%'
 workspace_administration: Administration
 workspace_classification: 'Workspace classification'

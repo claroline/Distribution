@@ -320,6 +320,31 @@ class WorkspaceManager
         return $this->workspaceRepo->findByUser($user);
     }
 
+    public function exportWorkspace(Workspace $workspace)
+    {
+        return [
+          'id' => $workspace->getId(),
+          'guid' => $workspace->getGuid(),
+          'name' => $workspace->getName(),
+          'description' => $workspace->getDescription(),
+          'code' => $workspace->getCode(),
+          'maxStorageSize' => $workspace->getMaxStorageSize(),
+          'maxUploadResources' => $workspace->getMaxUploadResources(),
+          'maxUsers' => $workspace->getMaxUsers(),
+          'displayable' => $workspace->isDisplayable(),
+          'creatorId' => $workspace->getCreator()->getId(),
+          'selfRegistration' => $workspace->getSelfRegistration(),
+          'registrationValidation' => $workspace->getRegistrationValidation(),
+          'selfUnregistration' => $workspace->getSelfUnregistration(),
+          'creationDate' => $workspace->getCreationDate(),
+          'isPersonal' => $workspace->isPersonal(),
+          'startDate' => $workspace->getStartDate(),
+          'endDate' => $workspace->getEndDate(),
+          'isAccessDate' => $workspace->getIsAccessDate(),
+          'type' => $workspace->getWorkspaceType(),
+        ];
+    }
+
     /**
      * @return \Claroline\CoreBundle\Entity\Workspace\Workspace
      */
@@ -904,7 +929,7 @@ class WorkspaceManager
                 $workspace->setRegistrationValidation($registrationValidation);
                 $workspace->setGuid($guid);
                 if ($endDate) {
-                    $workspace->setEndDate($date);
+                    $workspace->setEndDate($endDate);
                 }
                 $date = new \Datetime(date('d-m-Y H:i'));
                 $workspace->setCreationDate($date->getTimestamp());
