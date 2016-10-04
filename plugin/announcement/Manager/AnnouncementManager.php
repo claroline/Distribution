@@ -80,8 +80,8 @@ class AnnouncementManager
 
     public function getVisibleAnnouncementsByWorkspaces(array $workspaces, array $roles)
     {
-        $managerWorkspaces = array();
-        $nonManagerWorkspaces = array();
+        $managerWorkspaces = [];
+        $nonManagerWorkspaces = [];
 
         foreach ($workspaces as $workspace) {
             if (in_array("ROLE_WS_MANAGER_{$workspace->getGuid()}", $roles)) {
@@ -114,13 +114,13 @@ class AnnouncementManager
         $this->eventDispatcher->dispatch(
             'claroline_message_sending_to_users',
             'SendMessage',
-            array(
+            [
                 $announcement->getCreator(),
                 $announcement->getContent(),
                 $announcement->getTitle(),
                 null,
                 $targets,
-            )
+            ]
         );
     }
 
