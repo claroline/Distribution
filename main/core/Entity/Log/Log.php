@@ -24,7 +24,11 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\Log\LogRepository")
- * @ORM\Table(name="claro_log")
+ * @ORM\Table(name="claro_log", indexes={
+ *     @Index(name="action_idx", columns={"action"}),
+ *     @Index(name="tool_idx", columns={"tool_name"}),
+ *     @Index(name="doer_type_idx", columns={"doer_type"})
+ * })
  */
 class Log
 {
@@ -40,7 +44,7 @@ class Log
     protected $id;
 
     /**
-     * @ORM\Column(indexes={@Index(name="action_idx", columns={"action"})})
+     * @ORM\Column()
      */
     protected $action;
 
