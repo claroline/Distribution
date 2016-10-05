@@ -5,138 +5,138 @@ at: op
 cancel: Annuleren
 close: Sluiten
 confirm: Bent u er zeker van ?
-date_invalid: Une erreur s'est produite, vérifiez que la date de début se situe avant la date de fin.
-day_: Jour
+date_invalid: Er is een fout opgetreden. Kijk na of de startdatum voor de einddatum komt.
+day_: Dag
 day:
-  mon: Lun
-  monday: Lundi
-  tue: Mar
-  tuesday: Mardi
-  wed: Mer
-  wednesday: Mercredi
-  thu: Jeu
-  thursday: Jeudi
-  fri: Ven
-  friday: Vendredi
-  sat: Sam
-  saturday: Samedi
-  sun: Dim
-  sunday: Dimanche
+  mon: Ma
+  monday: Maandag
+  tue: Din
+  tuesday: Dinsdag
+  wed: Woe
+  wednesday: Woensdag
+  thu: Don
+  thursday: Donderdag
+  fri: Vri
+  friday: Vrijdag
+  sat: Zat
+  saturday: Zaterdag
+  sun: Zon
+  sunday: Zondag
 date_agenda_display_format: DD-MM-YYYY
 date_agenda_display_format_for_form: dd-MM-yyyy
-end: Fin
-end_date: Date de fin
-export: Exporter les évènements
-error: Une erreur s'est produite, veuillez réessayer.
-event: Evénement
-filter_user: Filtrer par utilisateur
-filter_ws: Filtrer par espace d'activités
-filter_tasks: Filtrer les tâches
+end: Einde
+end_date: Einddatum
+export: De evenementen uitvoeren
+error: Er is een fout opgetreden. Gelieve opnieuw te proberen.
+event: Evenement
+filter_user: Op de gebruikers filtreren
+filter_ws: Op de werkruimten filtreren
+filter_tasks: De takan filtreren
 form:
-  all_day: Toute la journée
-  description: Description
-  end: Date de fin
-  task: Tâche
-  priority: Priorité
-  priority_hight: Haute
-  start: Date de début
-  title: Titre
-  author: Créé par
-  invitations: Invitations
-  status: Status
-high: Haute
-hide_tasks: Cacher toutes les tâches
-import_agenda_file: Importer
-invitation_to_an_event: Invitation à un évènement
-invitation_not_found: L'invitation à l'évènement n'a pas été trouvée. Il a peut-être été modifié ou supprimé.
-invitation_already_done: L'action demandée a déjà été appliquée à l'évènement. Aucune modification n'a été effectuée.
-invitation_joined: L'invitation a bien été acceptée. Un nouvel évènement a été créé dans votre bureau. Vous pouvez ainsi voir qui participe également à cet évènement. Vous pouvez changer le titre et la description sans que les modifications ne se propagent chez les autres invités.
-invitation_set_maybe: Vous avez bien indiqué vous participerez peut-être à l'évènement. Cet évènement a été créé dans votre bureau. Vous pouvez ainsi voir qui participe également à cet évènement. Vous pouvez changer le titre et la description sans que les modifications ne se propagent chez les autres invités.
-invitation_canceled: L'invitation a bien été supprimée. Aucun évènement n'a été créé dans votre agenda. Vous pouvez, à tout moment, modifier votre choix en cliquant sur les autres actions disponibles dans le message privé reçu.
-invitation_back_to_calendar: Retourner sur le calendrier du bureau
-invitation_guests: Invités
-invitation_ignore: Invitation pas encore acceptée
-invitation_join: Invitation acceptée
-invitation_maybe: L'utilisateur participera peut-être
-invitation_resign: L'utilisateur ne participera pas
-invitation_join_label: Participer
-invitation_maybe_label: Peut-être
-in_x_days: Dans %nbDays% jours
-isAllDay: Toute la journée
-length: Durée
-limit_date: Date limite
-low: Basse
-medium: Normale
-midnight: minuit
-modify: Modifier l'évènement
-month_: Mois
+  all_day: De hele dag
+  description: Beschrijving
+  end: Einddatum
+  task: Taak
+  priority: Voorrang
+  priority_hight: Hoog
+  start: Startdatum
+  title: Titel
+  author: Gemaakt door
+  invitations: Uitnodigingen
+  status: Statuut
+high: Hoog
+hide_tasks: Alle taken verbergen
+import_agenda_file: Invoeren
+invitation_to_an_event: Uitnodiging tot een evenement
+invitation_not_found: De uitnodiging tot het evenement is niet gevonden. Het is misschien bewerkt of verwijderd.
+invitation_already_done: De aangevraagde actie is al op het evenement toegepast. Er is geen bewerking uitgeoefend.
+invitation_joined: De uitnodiging is aanvaard. Er is een nieuw evenement is op uw bureaublad gemaakt. U kan zien wie aan het evenement deelneemt. U mag de titel en de beschrijving wijzigen zonder die naar alle andere uitgenodigden te sturen.
+invitation_set_maybe: U hebt aangemeld dat u aan het evenement deelneemt. Dit evenement is op uw bureaublad gemaakt. Vous pouvez ainsi voir qui participe également à cet évènement. U mag de titel en de beschrijving wijzigen zonder die naar alle andere uitgenodigden te sturen.
+invitation_canceled: De uitnodiging is verwijderd. Er is geen evenement in uw agenda gemaakt. U kunt op elk moment uw keuze wijzigen door op de andere acties te klikken die beschikbaar zijn in het ontvangen pivé-bericht.
+invitation_back_to_calendar: Terug naar de agenda
+invitation_guests: Uitgenodigden
+invitation_ignore: Nog niet aanvaarde uitnodiging
+invitation_join: Uitnodiging aanvaard
+invitation_maybe: De gebruiker neemt er misschien deel aan
+invitation_resign: De gebruiker neemt er misschien deel aan
+invitation_join_label: Deelnemen
+invitation_maybe_label: Misschien
+in_x_days: Binnen %nbDays% dagen
+isAllDay: De hele dag
+length: Duur
+limit_date: Uiterste datum
+low: Laag
+medium: Normaal
+midnight: middernacht
+modify: Het evenement bewerken
+month_: Maand
 month:
-  jan: Janv
-  january: Janvier
-  feb: Févr
-  february: Février
-  mar: Mars
-  march: Mars
-  apr: Avr
-  april: Avril
-  may: Mai
-  jun: Juin
-  june: Juin
-  jul: Juil
-  july: Juillet
-  aug: Août
-  august: Août
-  sept: Sept
-  september: Septembre
-  oct: Oct
-  october: Octobre
+  jan: Jan
+  january: Januari
+  feb: Feb
+  february: Februari
+  mar: Maa
+  march: Maart
+  apr: Apr
+  april: April
+  may: Mei
+  jun: Jun
+  june: Juni
+  jul: Jul
+  july: Juli
+  aug: Aug
+  august: Augustus
+  sept: Sep
+  september: September
+  oct: Okt
+  october: Oktober
   nov: Nov
-  november: Novembre
-  dec: Déc
-  december: Décembre
+  november: November
+  dec: Dec
+  december: December
 next: '>'
 nextYear: '>>'
-no_event_found: Pas d'évènement
-no_description: Pas de description
-no_task_found: Pas de tâche
-no_filter_tasks: Pas de filtre
-noon: midi
-now: Maintenant
-no_task_now: Aucune tâche à réaliser
+no_event_found: Geen evenement
+no_description: Geen beschrijving
+no_task_found: Geen taak
+no_filter_tasks: Geen filter
+noon: middag
+now: Nu
+no_task_now: Geen taak te voltooien
 prev: '<'
 prevYear: '<<'
 picker:
-  close: Fermer
-  go_to_today: Aujourd'hui
-  locale: fr
-  select_month: Sélectionnez un mois
-  prev_month: Mois précédent
-  next_month: Mois suivant
-  select_year: Sélectionnez une année
-  prev_year: Année précédente
-  next_year: Année suivante
-  select_decade: Sélectionnez une décade
-  prev_decade: Décade précédente
-  next_decade: Décade suivante
-  prev_century: Siècle précédent
-  next_century: Siècle suivant
-  switch_mode: Changer de mode
-remove_event: Supprimer un évènement
-remove_event_confirm: Êtes-vous sûr de vouloir supprimer cet évènement ?
-send_message_content: Vous avez reçu une invitation à rejoindre un évènement de la part de %Sender%.<br> Cette évènement se déroule du %Start% au %End% avec comme description: %Description%.<br><a href="%JoinAction%" class="btn btn-success">Participer</a> <a href="%MaybeAction%" class="btn btn-primary">Peut-être</a> <a href="%ResignAction%" class="btn btn-danger">Ne participe pas</a>
-send_message_object: Invitation à un évènement: %EventName%
-start_date: 'Date de début'
-show_task_only: Ne montrer que les tâches
-task: Tâche
-task_done: Tâche réalisée !
-task_not_done: Tâche non finie !
-tasks: Tâches
-title: Le titre est obligatoire.
-today: Aujourd'hui
-today_widget: Aujourd'hui
-tomorrow: Demain
+  close: Sluiten
+  go_to_today: Vandaag
+  locale: nl
+  select_month: Een maand kiezen
+  prev_month: Voorafgaande maand
+  next_month: Volgende maand
+  select_year: Kies een jaar
+  prev_year: Voorafgaand jaar
+  next_year: Volgend jaar
+  select_decade: Kies een decennium
+  prev_decade: Voorafgaand decennium
+  next_decade: Volgend decennium
+  prev_century: Voorafggande eeuw
+  next_century: Volgende eeuw
+  switch_mode: De modus wijzigen
+remove_event: Een evenement verwijderen
+remove_event_confirm: Bent u er zeker van dat u dit evenement wenst te verwijderen ?
+send_message_content: U hebt een uitnodiging gekregen om deel te nemen aan een evenement door %Sender%.<br> Dit evenement vindt plaats van %Start% tot %End% met de beschrijving: %Description%.<br><a href="%JoinAction%" class="btn btn-success">Neemt deel</a> <a href="%MaybeAction%" class="btn btn-primary">Misschien</a> <a href="%ResignAction%" class="btn btn-danger">Neemt niet deel</a>
+send_message_object: Uitnodiging tot een evenement: %EventName%
+start_date: Startdatum
+show_task_only: Alléén de taken tonen
+task: Taak
+task_done: Voltooide taak !
+task_not_done: Onvoltooide taak !
+tasks: Taken
+title: De titel is verplicht.
+today: Vandaag
+today_widget: Vandaag
+tomorrow: Morgen
 type: Type
-update: Modifier
-update_event: Mettre à jour un évènement
-week: Semaine
-workspace: Espace d'activités
+update: Bewerken
+update_event: Een evenement bewerken
+week: Week
+workspace: Werkruimten
