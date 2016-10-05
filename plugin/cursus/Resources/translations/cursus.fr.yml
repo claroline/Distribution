@@ -311,6 +311,7 @@ to_define: A définir
 tutor: Formateur
 tutor_role_name: Rôle des formateurs
 tutors: Formateurs
+unavailable_widget_for_anonymous: Ce widget n'est pas disponible pour les anonymes.
 unregister: Désinscrire
 unregister_group_from_cursus_confirm_message: Êtes-vous sûr de vouloir désinscrire ce groupe de ce cursus ?
 unregister_group_from_session: Désinscrire le groupe de la session de formation
