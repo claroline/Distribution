@@ -19,6 +19,7 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Index;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
@@ -39,7 +40,7 @@ class Log
     protected $id;
 
     /**
-     * @ORM\Column()
+     * @ORM\Column(indexes={@Index(name="action_idx", columns={"action"})})
      */
     protected $action;
 
