@@ -3,6 +3,15 @@ import FormField from '../Form/Field'
 import FormPanel from '../Form/Panel'
 import FormPanelRole from '../Form/PanelRole'
 import FormProfilePreference from '../Form/ProfilePreference'
+import angular from 'angular/index'
+import facetFormTpl from '../Partial/facet_form.html'
+import facetRolesFormTpl from '../Partial/facet_roles_form.html'
+import panelFormTpl from '../Partial/panel_form.html'
+import fieldFormTpl from '../Partial/field_form.html'
+import panelRolesTpl from '../Partial/panel_roles_form.html'
+
+/* global Routing */
+/* global Translator */
 
 export default class FacetController {
   constructor ($http, $uibModal, FormBuilderService, ClarolineAPIService, dragulaService, $scope) {
@@ -30,23 +39,6 @@ export default class FacetController {
     $http.get(Routing.generate('api_get_platform_roles_admin_excluded')).then(d => this.platformRoles = d.data)
     // build the profile preferences array. This could be done on the server side.
     $http.get(Routing.generate('api_get_profile_preferences')).then(d => {
-      const missingRoles = this.platformRoles.filter(element => {
-        let found = false
-        d.data.forEach(profilePreference => {
-          if (element.id === profilePreference.role.id) found = true
-        })
-        return !found
-      }).forEach(element => {
-        d.data.push(
-          {
-            base_data: false,
-            mail: false,
-            phone: false,
-            send_message: false,
-            role: element
-          }
-        )
-      })
       this.profilePreferences = d.data
     })
 
@@ -77,7 +69,7 @@ export default class FacetController {
     this.alerts.splice(index, 1)
   }
 
-  onPanelBagDrop (el, target, source, siblings) {
+  onPanelBagDrop (el, target, source) {
     // this is dirty but I can't retrieve the facet list otherwise
     const facetId = parseInt(source.attr('data-facet-id'))
     let container = null
@@ -94,16 +86,16 @@ export default class FacetController {
 
       const qs = this.FormBuilderService.generateQueryString(list, 'ids')
       this.$http.put(Routing.generate('api_put_panels_order', {facet: facetId}) + '?' + qs).then(
-        d => {
+        () => {
         },
-        d => {
-          ClarolineAPIService.errorModal()
+        () => {
+          this.ClarolineAPIService.errorModal()
         }
       )
     }
   }
 
-  onFieldBagDrop (el, target, source, siblings) {
+  onFieldBagDrop (el, target) {
     let container = null
     const panelId = parseInt(target.attr('data-panel-id'))
 
@@ -124,9 +116,9 @@ export default class FacetController {
 
       const qs = this.FormBuilderService.generateQueryString(list, 'ids')
       this.$http.put(Routing.generate('api_put_fields_order', {panel: panelId}) + '?' + qs).then(
-        d => {
+        () => {
         },
-        d => ClarolineAPIService.errorModal()
+        () => this.ClarolineAPIService.errorModal()
 
       )
     }
@@ -134,7 +126,7 @@ export default class FacetController {
 
   onAddFacetFormRequest () {
     const modalInstance = this.$uibModal.open({
-      template: require('../Partial/facet_form.html'),
+      template: facetFormTpl,
       controller: 'ModalController',
       controllerAs: 'mc',
       resolve: {
@@ -160,7 +152,7 @@ export default class FacetController {
             msg: this.translate('facet_created')
           })
         },
-        d => ClarolineAPIService.errorModal()
+        () => this.ClarolineAPIService.errorModal()
       )
     })
   }
@@ -169,7 +161,7 @@ export default class FacetController {
     // for error handling
 
     const modalInstance = this.$uibModal.open({
-      template: require('../Partial/facet_form.html'),
+      template: facetFormTpl,
       controller: 'ModalController',
       controllerAs: 'mc',
       resolve: {
@@ -187,18 +179,18 @@ export default class FacetController {
 
     modalInstance.result.then(result => {
       if (!result) return
-      var data = this.FormBuilderService.submit(
+      this.FormBuilderService.submit(
         Routing.generate('api_put_facet', {facet: result.id}),
         {'facet': result},
         'PUT'
       ).then(
-        d => {
+        () => {
           this.alerts.push({
             type: 'success',
             msg: this.translate('facet_edited')
           })
         },
-        d => ClarolineAPIService.errorModal()
+        () => this.ClarolineAPIService.errorModal()
       )
     })
   }
@@ -222,7 +214,7 @@ export default class FacetController {
 
   onSetFacetRoles (facet) {
     const modalInstance = this.$uibModal.open({
-      template: require('../Partial/facet_roles_form.html'),
+      template: facetRolesFormTpl,
       controller: 'FacetRolesController',
       controllerAs: 'frc',
       resolve: {
@@ -239,20 +231,20 @@ export default class FacetController {
       const route = Routing.generate('api_put_facet_roles', {'facet': facet.id}) + '?' + qs
 
       this.$http.put(route).then(
-        d => {
+        () => {
           this.alerts.push({
             type: 'success',
             msg: this.translate('facet_roles_edited')
           })
         },
-        d => ClarolineAPIService.errorModal()
+        () => this.ClarolineAPIService.errorModal()
       )
     })
   }
 
   onAddPanelFormRequest (facet) {
     const modalInstance = this.$uibModal.open({
-      template: require('../Partial/panel_form.html'),
+      template: panelFormTpl,
       controller: 'ModalController',
       controllerAs: 'mc',
       resolve: {
@@ -279,18 +271,17 @@ export default class FacetController {
             msg: this.translate('panel_created')
           })
         },
-        d => ClarolineAPIService.errorModal()
+        () => this.ClarolineAPIService.errorModal()
       )
     })
   }
 
   onEditPanelFormRequest (panel) {
     // for error handling
-    const backup = angular.copy(panel)
     this.formPanel.model = panel
 
     const modalInstance = this.$uibModal.open({
-      template: require('../Partial/panel_form.html'),
+      template: panelFormTpl,
       controller: 'ModalController',
       controllerAs: 'mc',
       resolve: {
@@ -309,13 +300,13 @@ export default class FacetController {
     modalInstance.result.then(result => {
       if (!result) return
       this.FormBuilderService.submit(Routing.generate('api_put_panel_facet', {panel: panel.id}), {'panel': result}, 'PUT').then(
-        d => {
+        () => {
           this.alerts.push({
             type: 'success',
             msg: this.translate('panel_edited')
           })
         },
-        d => ClarolineAPIService.errorModal()
+        () => this.ClarolineAPIService.errorModal()
       )
     })
   }
@@ -327,7 +318,7 @@ export default class FacetController {
       {url, method: 'DELETE'},
       function () {
         this.facets.forEach(facet => {
-          facet.panels.forEach(el => {
+          facet.panels.forEach(() => {
             let idx = facet.panels.indexOf(panel)
             if (idx > -1) facet.panels.splice(idx, 1)
           })
@@ -345,7 +336,7 @@ export default class FacetController {
 
   onAddFieldFormRequest (panel) {
     const modalInstance = this.$uibModal.open({
-      template: require('../Partial/field_form.html'),
+      template: fieldFormTpl,
       controller: 'FieldModalController',
       controllerAs: 'fmc',
       resolve: {
@@ -372,18 +363,16 @@ export default class FacetController {
             msg: this.translate('field_created')
           })
         },
-        d => ClarolineAPIService.errorModal()
+        () => this.ClarolineAPIService.errorModal()
       )
     })
   }
 
   onEditFieldFormRequest (field) {
-    // for error handling
-    const backup = angular.copy(field)
     this.formField.model = field
 
     const modalInstance = this.$uibModal.open({
-      template: require('../Partial/field_form.html'),
+      template: fieldFormTpl,
       controller: 'FieldModalController',
       controllerAs: 'fmc',
       resolve: {
@@ -402,13 +391,13 @@ export default class FacetController {
     modalInstance.result.then(result => {
       if (!result) return
       this.FormBuilderService.submit(Routing.generate('api_put_field_facet', {field: field.id}), {'field': result}, 'PUT').then(
-        d => {
+        () => {
           this.alerts.push({
             type: 'success',
             msg: this.translate('field_edited')
           })
         },
-        d => ClarolineAPIService.errorModal()
+        () => this.ClarolineAPIService.errorModal()
       )
     })
   }
@@ -421,7 +410,7 @@ export default class FacetController {
       function () {
         this.facets.forEach(facet => {
           facet.panels.forEach(panel => {
-            panel.fields.forEach(el => {
+            panel.fields.forEach(() => {
               let idx = panel.fields.indexOf(field)
               if (idx > -1) panel.fields.splice(idx, 1)
             })
@@ -439,7 +428,7 @@ export default class FacetController {
 
   onSetPanelRoles (panel) {
     const modalInstance = this.$uibModal.open({
-      template: require('../Partial/panel_roles_form.html'),
+      template: panelRolesTpl,
       controller: 'PanelRolesController',
       controllerAs: 'firc',
       resolve: {
@@ -454,26 +443,26 @@ export default class FacetController {
 
     modalInstance.result.then(panel => {
       this.FormBuilderService.submit(Routing.generate('api_put_panel_roles', {panel: panel.id}), {'roles': panel.panel_facets_role, 'is_editable': panel.is_editable}, 'PUT').then(
-        d => {
+        () => {
           this.alerts.push({
             type: 'success',
             msg: this.translate('panel_roles_edited')
           })
         },
-        d => ClarolineAPIService.errorModal()
+        () => this.ClarolineAPIService.errorModal()
       )
     })
   }
 
-  onSubmitProfilePreferences (form) {
+  onSubmitProfilePreferences () {
     this.FormBuilderService.submit(Routing.generate('api_put_profile_preferences'), {'preferences': this.profilePreferences}, 'PUT').then(
-      d => {
+      () => {
         this.alerts.push({
           type: 'success',
           msg: this.translate('profile_preference_edited')
         })
       },
-      d => ClarolineAPIService.errorModal()
+      () => this.ClarolineAPIService.errorModal()
     )
   }
 
@@ -482,7 +471,7 @@ export default class FacetController {
   }
 
   onFacetDown (facet) {
-      const length = facet.is_main ? this.mainFacets.length : this.tabFacets.length
+    const length = facet.is_main ? this.mainFacets.length : this.tabFacets.length
     if (facet.position < length - 1) {
       this.$http.put(Routing.generate('api_move_facet_down', {'facet': facet.id})).then(d => {
         facet = d.data
@@ -496,8 +485,6 @@ export default class FacetController {
   }
 
   onFacetUp (facet) {
-    const length = facet.is_main ? this.mainFacets.length : this.tabFacets.length
-
     if (facet.position > 0) {
       this.$http.put(Routing.generate('api_move_facet_up', {'facet': facet.id})).then(d => {
         facet = d.data

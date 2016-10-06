@@ -43,7 +43,7 @@ class FacetRepository extends EntityRepository
             $query = $this->_em->createQuery($dql);
             $query->setParameter('rolenames', $roleNames);
         }
-        if ($max != null) {
+        if ($max !== null) {
             $query->setMaxResults($max);
         }
 
