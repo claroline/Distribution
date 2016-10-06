@@ -494,7 +494,7 @@ class UserManager
                 $group = null;
             }
 
-            $userEntity = $this->getUserByUsernameOrMail($username, $email);
+            $userEntity = $this->getUserByUsernameOrMailOrCode($username, $email, $code);
 
             if ($userEntity && $options['ignore-update']) {
                 $logger(" Skipping  {$userEntity->getUsername()}...");
@@ -1240,6 +1240,11 @@ class UserManager
             $mail,
             $executeQuery
         );
+    }
+
+    public function getUserByUsernameOrMailOrCode($username, $mail, $code)
+    {
+        return $this->userRepo->findUserByUsernameOrMailOrCode($username, $mail, $code);
     }
 
     public function getUserByUsernameAndMail($username, $mail, $executeQuery = true)
