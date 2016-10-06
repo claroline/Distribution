@@ -8,9 +8,9 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution.
  *
- * Generation date: 2016/10/05 05:08:40
+ * Generation date: 2016/10/06 04:43:49
  */
-class Version20161005170840 extends AbstractMigration
+class Version20161006164348 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -19,6 +19,9 @@ class Version20161005170840 extends AbstractMigration
         ');
         $this->addSql('
             CREATE INDEX name_idx ON claro__event (name)
+        ');
+        $this->addSql('
+            CREATE INDEX mask_idx ON claro_resource_rights (mask)
         ');
         $this->addSql('
             CREATE INDEX action_idx ON claro_log (action)
@@ -47,6 +50,9 @@ class Version20161005170840 extends AbstractMigration
         ');
         $this->addSql('
             DROP INDEX doer_type_idx ON claro_log
+        ');
+        $this->addSql('
+            DROP INDEX mask_idx ON claro_resource_rights
         ');
         $this->addSql('
             DROP INDEX name_idx ON claro_workspace
