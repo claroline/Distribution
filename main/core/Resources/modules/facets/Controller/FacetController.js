@@ -12,11 +12,21 @@ export default class FacetController {
     this.ClarolineAPIService = ClarolineAPIService
     this.dragulaService = dragulaService
     this.facets = []
+    this.mainFacets = []
+    this.tabFacets = []
     this.platformRoles = []
     this.profilePreferences = []
     this.alerts = []
     this.$scope = $scope
-    $http.get(Routing.generate('api_get_facets')).then(d => this.facets = d.data)
+    $http.get(Routing.generate('api_get_facets')).then(
+      d => {
+        this.facets = d.data
+        this.mainFacets = this.facets.filter(el => {
+          return el.is_main})
+        this.tabFacets = this.facets.filter(el => {
+          return !el.is_main})
+      }
+    )
     $http.get(Routing.generate('api_get_platform_roles_admin_excluded')).then(d => this.platformRoles = d.data)
     // build the profile preferences array. This could be done on the server side.
     $http.get(Routing.generate('api_get_profile_preferences')).then(d => {
@@ -63,8 +73,8 @@ export default class FacetController {
     $scope.$on('field-bag.drop', this.onFieldBagDrop.bind(this))
   }
 
-  closeAlert(index) {
-      this.alerts.splice(index, 1);
+  closeAlert (index) {
+    this.alerts.splice(index, 1)
   }
 
   onPanelBagDrop (el, target, source, siblings) {
@@ -144,11 +154,11 @@ export default class FacetController {
       if (!result) return
       this.FormBuilderService.submit(Routing.generate('api_post_facet'), {'facet': result}).then(
         d => {
-            this.facets.push(d.data)
-            this.alerts.push({
-                type: 'success',
-                msg: this.translate('facet_created')
-            })
+          this.facets.push(d.data)
+          this.alerts.push({
+            type: 'success',
+            msg: this.translate('facet_created')
+          })
         },
         d => ClarolineAPIService.errorModal()
       )
@@ -183,10 +193,10 @@ export default class FacetController {
         'PUT'
       ).then(
         d => {
-            this.alerts.push({
-                type: 'success',
-                msg: this.translate('facet_edited')
-            })
+          this.alerts.push({
+            type: 'success',
+            msg: this.translate('facet_edited')
+          })
         },
         d => ClarolineAPIService.errorModal()
       )
@@ -201,8 +211,8 @@ export default class FacetController {
       function () {
         this.ClarolineAPIService.removeElements([facet], this.facets)
         this.alerts.push({
-            type: 'success',
-            msg: this.translate('facet_removed')
+          type: 'success',
+          msg: this.translate('facet_removed')
         })
       }.bind(this),
       Translator.trans('delete_facet', {}, 'platform'),
@@ -230,10 +240,10 @@ export default class FacetController {
 
       this.$http.put(route).then(
         d => {
-            this.alerts.push({
-                type: 'success',
-                msg: this.translate('facet_roles_edited')
-            })
+          this.alerts.push({
+            type: 'success',
+            msg: this.translate('facet_roles_edited')
+          })
         },
         d => ClarolineAPIService.errorModal()
       )
@@ -265,8 +275,8 @@ export default class FacetController {
           if (!facet.panels) facet.panels = []
           facet.panels.push(d.data)
           this.alerts.push({
-              type: 'success',
-              msg: this.translate('panel_created')
+            type: 'success',
+            msg: this.translate('panel_created')
           })
         },
         d => ClarolineAPIService.errorModal()
@@ -300,10 +310,10 @@ export default class FacetController {
       if (!result) return
       this.FormBuilderService.submit(Routing.generate('api_put_panel_facet', {panel: panel.id}), {'panel': result}, 'PUT').then(
         d => {
-            this.alerts.push({
-                type: 'success',
-                msg: this.translate('panel_edited')
-            })
+          this.alerts.push({
+            type: 'success',
+            msg: this.translate('panel_edited')
+          })
         },
         d => ClarolineAPIService.errorModal()
       )
@@ -328,8 +338,8 @@ export default class FacetController {
       Translator.trans('delete_panel_confirm', 'platform')
     )
     this.alerts.push({
-        type: 'success',
-        msg: this.translate('panel_removed')
+      type: 'success',
+      msg: this.translate('panel_removed')
     })
   }
 
@@ -358,8 +368,8 @@ export default class FacetController {
           if (!panel.fields) panel.fields = []
           panel.fields.push(d.data)
           this.alerts.push({
-              type: 'success',
-              msg: this.translate('field_created')
+            type: 'success',
+            msg: this.translate('field_created')
           })
         },
         d => ClarolineAPIService.errorModal()
@@ -393,10 +403,10 @@ export default class FacetController {
       if (!result) return
       this.FormBuilderService.submit(Routing.generate('api_put_field_facet', {field: field.id}), {'field': result}, 'PUT').then(
         d => {
-            this.alerts.push({
-                type: 'success',
-                msg: this.translate('field_edited')
-            })
+          this.alerts.push({
+            type: 'success',
+            msg: this.translate('field_edited')
+          })
         },
         d => ClarolineAPIService.errorModal()
       )
@@ -422,8 +432,8 @@ export default class FacetController {
       Translator.trans('delete_field_confirm', 'platform')
     )
     this.alerts.push({
-        type: 'success',
-        msg: this.translate('field_removed')
+      type: 'success',
+      msg: this.translate('field_removed')
     })
   }
 
@@ -445,10 +455,10 @@ export default class FacetController {
     modalInstance.result.then(panel => {
       this.FormBuilderService.submit(Routing.generate('api_put_panel_roles', {panel: panel.id}), {'roles': panel.panel_facets_role, 'is_editable': panel.is_editable}, 'PUT').then(
         d => {
-            this.alerts.push({
-                type: 'success',
-                msg: this.translate('panel_roles_edited')
-            })
+          this.alerts.push({
+            type: 'success',
+            msg: this.translate('panel_roles_edited')
+          })
         },
         d => ClarolineAPIService.errorModal()
       )
@@ -458,16 +468,45 @@ export default class FacetController {
   onSubmitProfilePreferences (form) {
     this.FormBuilderService.submit(Routing.generate('api_put_profile_preferences'), {'preferences': this.profilePreferences}, 'PUT').then(
       d => {
-          this.alerts.push({
-              type: 'success',
-              msg: this.translate('profile_preference_edited')
-          })
+        this.alerts.push({
+          type: 'success',
+          msg: this.translate('profile_preference_edited')
+        })
       },
       d => ClarolineAPIService.errorModal()
     )
   }
 
-  translate(msg) {
-      return Translator.trans(msg, {}, 'platform')
+  translate (msg) {
+    return Translator.trans(msg, {}, 'platform')
+  }
+
+  onFacetDown (facet) {
+      const length = facet.is_main ? this.mainFacets.length : this.tabFacets.length
+    if (facet.position < length - 1) {
+      this.$http.put(Routing.generate('api_move_facet_down', {'facet': facet.id})).then(d => {
+        facet = d.data
+        let list = facet.is_main ? angular.copy(this.mainFacets) : angular.copy(this.tabFacets)
+        let b = list[facet.position - 1]
+        list[facet.position - 1] = list[facet.position]
+        list[facet.position] = b
+        facet.is_main ? this.mainFacets = list : this.tabFacets = list
+      })
+    }
+  }
+
+  onFacetUp (facet) {
+    const length = facet.is_main ? this.mainFacets.length : this.tabFacets.length
+
+    if (facet.position > 0) {
+      this.$http.put(Routing.generate('api_move_facet_up', {'facet': facet.id})).then(d => {
+        facet = d.data
+        let list = facet.is_main ? angular.copy(this.mainFacets) : angular.copy(this.tabFacets)
+        let b = list[facet.position + 1]
+        list[facet.position + 1] = list[facet.position]
+        list[facet.position] = b
+        facet.is_main ? this.mainFacets = list : this.tabFacets = list
+      })
+    }
   }
 }
