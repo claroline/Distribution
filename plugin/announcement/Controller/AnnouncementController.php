@@ -426,7 +426,7 @@ class AnnouncementController extends Controller
      * Renders announcements in a pager.
      *
      * @param WidgetInstance $widgetInstance
-     * @param int $page
+     * @param int            $page
      *
      * @return Response
      */
