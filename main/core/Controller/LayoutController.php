@@ -26,6 +26,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Role\SwitchUserRole;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -276,7 +277,7 @@ class LayoutController extends Controller
     {
         if ($token = $this->tokenStorage->getToken()) {
             foreach ($token->getRoles() as $role) {
-                if ($role SwitchUserRole) {
+                if ($role instanceof SwitchUserRole) {
                     return true;
                 }
             }
