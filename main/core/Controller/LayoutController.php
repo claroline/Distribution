@@ -276,7 +276,7 @@ class LayoutController extends Controller
     {
         if ($token = $this->tokenStorage->getToken()) {
             foreach ($token->getRoles() as $role) {
-                if ($role instanceof \Symfony\Component\Security\Core\Role\SwitchUserRole) {
+                if ($role SwitchUserRole) {
                     return true;
                 }
             }
