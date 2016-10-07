@@ -221,7 +221,6 @@ class ParametersController extends Controller
                             'registration_mail_validation' => $form['registrationMailValidation']->getData(),
                             'is_pdf_export_active' => $form['isPdfExportActive']->getData(),
                             'ssl_enabled' => $form['sslEnabled']->getData(),
-                            'login_target_route' => $form['loginTargetRoute']->getData(),
                         ]
                     );
 
