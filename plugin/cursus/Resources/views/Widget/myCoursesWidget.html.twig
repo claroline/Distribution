@@ -1,6 +1,6 @@
 {% if user == 'anon.' %}
-    <div class="alert alert-danger">
-        {{ 'unavailable_widget_for_anonymous'|trans({}, 'cursus') }}
+    <div class="alert alert-warning">
+        {{ 'no_course'|trans({}, 'cursus') }}
     </div>
 {% else %}
     <div id="my-courses-widget-{{ widgetInstance.getId() }}">

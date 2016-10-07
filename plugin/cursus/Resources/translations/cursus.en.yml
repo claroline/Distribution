@@ -310,7 +310,6 @@ to_define: To define
 tutor: Tutor
 tutor_role_name: Tutor role
 tutors: Tutors
-unavailable_widget_for_anonymous: This widget is not available for anonymous.
 unregister: Unregister
 unregister_group_from_cursus_confirm_message: Are you sure you want to unregister this group from this cursus ?
 unregister_group_from_session: Unregister group from training session
