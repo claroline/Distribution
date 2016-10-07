@@ -302,31 +302,31 @@ class TagController extends Controller
      *     name="claro_tag_resources_widget",
      *     options={"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
      * @EXT\Template("ClarolineTagBundle:Widget:resourcesTagsWidget.html.twig")
      */
     public function resourcesTagsWidgetAction(WidgetInstance $widgetInstance)
     {
         $workspace = $widgetInstance->getWorkspace();
-        $user = $this->tokenStorage->getToken()->getUser();
-        $roles = $this->tokenStorage->getToken()->getRoles();
+        $token = $this->tokenStorage->getToken();
+        $user = $token->getUser();
+        $roles = $token->getRoles();
         $roleNames = array();
+        $datas = array();
 
         foreach ($roles as $role) {
             $roleNames[] = $role->getRole();
         }
-
         $config = $this->tagManager->getResourcesTagsWidgetConfig($widgetInstance);
         $details = $config->getDetails();
         $nbTags = !empty($details) && isset($details['nb_tags']) ? $details['nb_tags'] : 10;
-        $taggedObjects = $this->tagManager->getTaggedResourcesByWorkspace(
-            $workspace,
-            $user,
-            $roleNames
-        );
+
+        if (is_null($workspace)) {
+            $taggedObjects = $this->tagManager->getTaggedResourcesByRoles($user, $roleNames);
+        } else {
+            $taggedObjects = $this->tagManager->getTaggedResourcesByWorkspace($workspace, $user, $roleNames);
+        }
         $tags = array();
         $sorted = array();
-        $datas = array();
         // Sort all tagged objects by tag
         foreach ($taggedObjects as $taggedObject) {
             $tag = $taggedObject->getTag();
