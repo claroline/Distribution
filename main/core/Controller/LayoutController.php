@@ -155,7 +155,7 @@ class LayoutController extends Controller
         $homeMenu = $this->configHandler->getParameter('home_menu');
         $showHelpButton = $this->configHandler->getParameter('show_help_button');
         $helpUrl = $this->configHandler->getParameter('help_url');
-        $loginTargetRoute = $this->ch->getParameter('login_target_route');
+        $loginTargetRoute = $this->configHandler->getParameter('login_target_route');
 
         if (is_numeric($homeMenu)) {
             $homeMenu = $this->homeManager->getContentByType('menu', $homeMenu);
