@@ -130,8 +130,6 @@ class AuthenticationController
             $error = $this->request->getSession()->get(SecurityContext::AUTHENTICATION_ERROR);
         }
 
-        $session = $this->request->getSession();
-
         return [
             'last_username' => $lastUsername,
             'error' => $error,
