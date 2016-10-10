@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle;
 
+use Bazinga\Bundle\JsTranslationBundle\BazingaJsTranslationBundle;
 use Claroline\CoreBundle\DependencyInjection\Compiler\DoctrineEntityListenerPass;
 use Claroline\CoreBundle\DependencyInjection\Compiler\DynamicConfigPass;
 use Claroline\CoreBundle\DependencyInjection\Compiler\ImportersConfigPass;
@@ -26,6 +27,8 @@ use Claroline\KernelBundle\Bundle\ConfigurationProviderInterface;
 use FOS\OAuthServerBundle\FOSOAuthServerBundle;
 use IDCI\Bundle\ExporterBundle\IDCIExporterBundle;
 use Nelmio\ApiDocBundle\NelmioApiDocBundle;
+use Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle;
+use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Zenstruck\Bundle\FormBundle\ZenstruckFormBundle;
@@ -110,7 +113,7 @@ class ClarolineCoreBundle extends InstallableBundle implements AutoConfigurableI
             if (in_array($environment, ['prod', 'dev', 'test'])) {
                 return $config->addContainerResource($this->buildPath("{$envConfigs[$bundleClass]}_{$environment}"));
             }
-        } elseif ($bundle instanceof \Bazinga\Bundle\JsTranslationBundle\BazingaJsTranslationBundle) {
+        } elseif ($bundle instanceof BazingaJsTranslationBundle) {
             return $config->addRoutingResource($this->buildPath('bazinga_routing'));
         } elseif ($bundle instanceof FOSOAuthServerBundle) {
             $config = new ConfigurationBuilder();
@@ -141,11 +144,11 @@ class ClarolineCoreBundle extends InstallableBundle implements AutoConfigurableI
 
             return $config;
         } elseif (in_array($environment, ['dev', 'test'])) {
-            if ($bundle instanceof \Symfony\Bundle\WebProfilerBundle\WebProfilerBundle) {
+            if ($bundle instanceof WebProfilerBundle) {
                 return $config
                     ->addContainerResource($this->buildPath('web_profiler'))
                     ->addRoutingResource($this->buildPath('web_profiler_routing'));
-            } elseif ($bundle instanceof \Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle) {
+            } elseif ($bundle instanceof SensioGeneratorBundle) {
                 return $config;
             }
         }
