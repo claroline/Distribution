@@ -322,16 +322,18 @@ class DatabaseWriter
     ) {
         $widget = $this->em->getRepository('ClarolineCoreBundle:Widget\Widget')
             ->findOneByName($widgetConfiguration['name']);
+        $withDisplay = false;
 
-        if ($widget === null) {
+        if (is_null($widget)) {
             $widget = new Widget();
 
             foreach ($roles as $role) {
                 $widget->addRole($role);
             }
+            $withDisplay = true;
         }
 
-        $this->persistWidget($widgetConfiguration, $plugin, $pluginBundle, $widget);
+        $this->persistWidget($widgetConfiguration, $plugin, $pluginBundle, $widget, $withDisplay);
     }
 
     private function createAdditionalAction(array $action, PluginBundle $pluginBundle)
@@ -600,16 +602,19 @@ class DatabaseWriter
      * @param PluginBundle $pluginBundle
      * @param Widget       $widget
      */
-    private function persistWidget($widgetConfiguration, Plugin $plugin, PluginBundle $pluginBundle, Widget $widget)
+    private function persistWidget($widgetConfiguration, Plugin $plugin, PluginBundle $pluginBundle, Widget $widget, $withDisplay = true)
     {
         $widget->setName($widgetConfiguration['name']);
         $widget->setConfigurable($widgetConfiguration['is_configurable']);
-        $widget->setDisplayableInDesktop($widgetConfiguration['is_displayable_in_desktop']);
-        $widget->setDisplayableInWorkspace($widgetConfiguration['is_displayable_in_workspace']);
         $widget->setExportable($widgetConfiguration['is_exportable']);
         $widget->setPlugin($plugin);
         $widget->setDefaultWidth($widgetConfiguration['default_width']);
         $widget->setDefaultHeight($widgetConfiguration['default_height']);
+
+        if ($withDisplay) {
+            $widget->setIsDisplayableInDesktop($widgetConfiguration['is_displayable_in_desktop']);
+            $widget->setIsDisplayableInWorkspace($widgetConfiguration['is_displayable_in_workspace']);
+        }
         $this->em->persist($widget);
     }
 
