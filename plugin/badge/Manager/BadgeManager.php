@@ -365,7 +365,6 @@ class BadgeManager
                 $isOwned = false;
                 foreach ($workspaceBadge->getUserBadges() as $userBadge) {
                     if ($user->getId() === $userBadge->getUser()->getId()) {
-                        $ownedBadges[] = $userBadge;
                         $isOwned = true;
                     }
                 }
