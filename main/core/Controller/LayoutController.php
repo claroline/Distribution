@@ -196,9 +196,11 @@ class LayoutController extends Controller
                 $registerTarget = $this->router->generate('claro_registration_user_registration_form');
             }
 
-            $loginTarget = !$loginTargetRoute ?
-                $this->router->generate('claro_security_login') :
-                $this->router->generate($loginTargetRoute);
+            if (!$loginTargetRoute) {
+                $loginTarget = $this->router->generate('claro_security_login');
+            } else {
+                $loginTarget = $this->routeExists($loginTargetRoute) ? $this->router->generate($loginTargetRoute) : $loginTargetRoute;
+            }
         }
 
         return [
@@ -301,5 +303,13 @@ class LayoutController extends Controller
         }
 
         return $workspaces;
+    }
+
+    private function routeExists($name)
+    {
+        // I assume that you have a link to the container in your twig extension class
+        $router = $this->container->get('router');
+
+        return (null === $router->getRouteCollection()->get($name)) ? false : true;
     }
 }
