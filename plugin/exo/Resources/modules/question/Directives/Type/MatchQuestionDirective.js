@@ -35,7 +35,7 @@ function MatchQuestionDirective(FeedbackService, $timeout, $window, MatchQuestio
             })
 
             /**
-             * Ensure the deconnction is only done when clicking on an exisiting connection
+             * Ensure the deconnection is only done when clicking on an exisiting connection
              */
             jsPlumb.bind('beforeStartDetach', function(data){
               return data.source.id && data.source.id.indexOf('draggable') !== -1
