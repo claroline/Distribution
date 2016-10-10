@@ -571,7 +571,7 @@ class DatabaseWriter
 
         foreach ($rightsName as $rights) {
             foreach ($permMap as $value => $perm) {
-                if ($perm == $rights['name']) {
+                if ($perm === $rights['name']) {
                     $mask += $value;
                 }
             }

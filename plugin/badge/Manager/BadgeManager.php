@@ -142,7 +142,6 @@ class BadgeManager
             $this->entityManager->remove($userBadge);
             if (!$delayFlushAndEvent) {
                 $this->entityManager->flush();
-                //$this->dispatchBadgeRevokingEvent($badge, $user, $issuer);
             }
 
             $badgeRevoked = true;
