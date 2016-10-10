@@ -58,7 +58,7 @@ class GraphicTypeValidator extends JsonSchemaValidator implements QuestionHandle
         if ($maxScore <= 0) {
             $errors[] = [
                 'path' => '/solutions',
-                'message' => 'there is no solution with a positive score',
+                'message' => 'There is no solution with a positive score',
             ];
         }
 
