@@ -84,10 +84,6 @@ class StepSerializer implements SerializerInterface
             $step->setText($data->description);
         }
 
-        if (!empty($data->meta)) {
-            $this->deserializeMetadata($step, $data->meta);
-        }
-
         if (!empty($data->parameters)) {
             $this->deserializeParameters($step, $data->parameters);
         }
@@ -113,18 +109,6 @@ class StepSerializer implements SerializerInterface
         $this->serializeOldMetadata($step, $metadata);
 
         return $metadata;
-    }
-
-    /**
-     * Deserializes Step metadata.
-     *
-     * @param Step      $step
-     * @param \stdClass $metadata
-     */
-    private function deserializeMetadata(Step $step, \stdClass $metadata)
-    {
-        $step->setTitle($metadata->title);
-        $step->setText($metadata->description);
     }
 
     /**
@@ -192,7 +176,6 @@ class StepSerializer implements SerializerInterface
             // Searches for an existing question entity.
             foreach ($stepQuestions as $entityIndex => $entityStepQuestion) {
                 /** @var StepQuestion $entityStepQuestion */
-
                 if ($entityStepQuestion->getQuestion()->getId() === $item->id) {
                     $stepQuestion = $entityStepQuestion;
                     unset($stepQuestions[$entityIndex]);
