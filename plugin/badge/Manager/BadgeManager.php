@@ -2,16 +2,16 @@
 
 namespace Icap\BadgeBundle\Manager;
 
+use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Event\Log\LogGenericEvent;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\QueryBuilder;
 use Icap\BadgeBundle\Entity\Badge;
 use Icap\BadgeBundle\Entity\BadgeClaim;
 use Icap\BadgeBundle\Entity\BadgeRule;
 use Icap\BadgeBundle\Entity\UserBadge;
-use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Icap\BadgeBundle\Event\Log\LogBadgeAwardEvent;
-use Claroline\CoreBundle\Event\Log\LogGenericEvent;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
