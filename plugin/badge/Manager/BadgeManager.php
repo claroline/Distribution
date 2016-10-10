@@ -361,17 +361,19 @@ class BadgeManager
 
         $user = $this->tokenStorage->getToken()->getUser();
 
-        foreach ($workspaceBadges as $workspaceBadge) {
-            $isOwned = false;
-            foreach ($workspaceBadge->getUserBadges() as $userBadge) {
-                if ($user->getId() === $userBadge->getUser()->getId()) {
-                    $ownedBadges[] = $userBadge;
-                    $isOwned = true;
+        if ($user !== 'anon.') {
+            foreach ($workspaceBadges as $workspaceBadge) {
+                $isOwned = false;
+                foreach ($workspaceBadge->getUserBadges() as $userBadge) {
+                    if ($user->getId() === $userBadge->getUser()->getId()) {
+                        $ownedBadges[] = $userBadge;
+                        $isOwned = true;
+                    }
                 }
-            }
 
-            if (!$isOwned) {
-                $availableBadges[] = $workspaceBadge;
+                if (!$isOwned) {
+                    $availableBadges[] = $workspaceBadge;
+                }
             }
         }
 
@@ -428,5 +430,21 @@ class BadgeManager
             ->andWhere('badge.workspace IS NULL')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param int $limit
+     *
+     * @return Badge[]
+     */
+    public function getLoggedUserLastAwardedBadges($limit = 10)
+    {
+        $loggedUser = $this->tokenStorage->getToken()->getUser();
+        $userBadgeRepository = $this->entityManager->getRepository('IcapBadgeBundle:UserBadge');
+        $lastAwardedBadges = $loggedUser !== 'anon.' ?
+            $userBadgeRepository->findUserLastAwardedBadges($loggedUser, $limit) :
+            [];
+
+        return $lastAwardedBadges;
     }
 }

@@ -10,6 +10,7 @@ use Icap\BadgeBundle\Manager\BadgeWidgetManager;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\Form\FormInterface;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @DI\Service()
@@ -40,6 +41,7 @@ class BadgeUsageWidgetListener
      * @var string
      */
     private $platformName;
+    private $tokenStorage;
 
     /**
      * @DI\InjectParams({
@@ -49,19 +51,27 @@ class BadgeUsageWidgetListener
      *     "badgeClaimManager"  = @DI\Inject("icap_badge.manager.badge_claim"),
      *     "badgeWidgetManager" = @DI\Inject("icap_badge.manager.badge_widget"),
      *     "configHandler"      = @DI\Inject("claroline.config.platform_config_handler"),
+     *     "tokenStorage"       = @DI\Inject("security.token_storage")
      * })
      */
-    public function __construct(TwigEngine $templating, FormInterface $badgeUsageForm, BadgeManager $badgeManager,
-        BadgeWidgetManager $badgeWidgetManager, PlatformConfigurationHandler $configHandler)
-    {
+    public function __construct(
+        TwigEngine $templating,
+        FormInterface $badgeUsageForm,
+        BadgeManager $badgeManager,
+        BadgeWidgetManager $badgeWidgetManager,
+        PlatformConfigurationHandler $configHandler,
+        TokenStorageInterface $tokenStorage
+    ) {
         $this->templating = $templating;
         $this->badgeUsageForm = $badgeUsageForm;
         $this->badgeManager = $badgeManager;
         $this->badgeWidgetManager = $badgeWidgetManager;
         $this->platformName = $configHandler->getParameter('name');
+
         if ($this->platformName === null || empty($this->platformName)) {
             $this->platformName = 'Claroline';
         }
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
@@ -72,12 +82,26 @@ class BadgeUsageWidgetListener
     public function onDisplay(DisplayWidgetEvent $event)
     {
         $widgetInstance = $event->getInstance();
+        $workspace = $widgetInstance->getWorkspace();
+        $user = $this->tokenStorage->getToken()->getUser();
         $badgeWidgetConfig = $this->badgeWidgetManager->getBadgeUsageConfigForInstance($widgetInstance);
-        $lastAwardedBadges = $this->badgeManager->getWorkspaceLastAwardedBadgesToLoggedUser($widgetInstance->getWorkspace(), $badgeWidgetConfig->getNumberLastAwardedBadge());
-        $mostAwardedBadges = $this->badgeManager->getWorkspaceMostAwardedBadges($widgetInstance->getWorkspace(), $badgeWidgetConfig->getNumberMostAwardedBadge());
         $simple_view_widget = $badgeWidgetConfig->isSimpleView();
-        $availableBadges = $this->badgeManager->getWorkspaceAvailableBadges($widgetInstance->getWorkspace());
+        $nbLastAwarded = $badgeWidgetConfig->getNumberLastAwardedBadge();
+        $nbMostAwarded = $badgeWidgetConfig->getNumberMostAwardedBadge();
+        $mostAwardedBadges = [];
+        $availableBadges = [];
 
+        if (!is_null($workspace)) {
+            $lastAwardedBadges = $user !== 'anon.' ?
+                $this->badgeManager->getWorkspaceLastAwardedBadgesToLoggedUser($workspace, $nbLastAwarded) :
+                [];
+            $mostAwardedBadges = $this->badgeManager->getWorkspaceMostAwardedBadges($workspace, $nbMostAwarded);
+            $availableBadges = $this->badgeManager->getWorkspaceAvailableBadges($workspace);
+            $widgetType = 'workspace';
+        } else {
+            $lastAwardedBadges = $this->badgeManager->getLoggedUserLastAwardedBadges($nbLastAwarded);
+            $widgetType = 'desktop';
+        }
         $content = $this->templating->render(
             'IcapBadgeBundle:Widget:badge_usage.html.twig',
             array(
@@ -86,6 +110,7 @@ class BadgeUsageWidgetListener
                 'availableBadges' => $availableBadges,
                 'simple_view_widget' => $simple_view_widget,
                 'systemName' => $this->platformName,
+                'widgetType' => $widgetType,
             )
         );
         $event->setContent($content);

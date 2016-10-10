@@ -284,4 +284,25 @@ class UserBadgeRepository extends EntityRepository
 
         return $qb1->getQuery()->getResult();
     }
+
+    /**
+     * @param User $user
+     * @param int  $limit
+     *
+     * @return Badge[]
+     */
+    public function findUserLastAwardedBadges(User $user, $limit = 10)
+    {
+        $query = $this->getEntityManager()
+            ->createQuery(
+                'SELECT ub, b
+                FROM IcapBadgeBundle:UserBadge ub
+                JOIN ub.badge b
+                WHERE ub.user = :userId
+                ORDER BY ub.issuedAt DESC'
+            )
+            ->setParameter('userId', $user->getId());
+
+        return $query->setMaxResults($limit)->getResult();
+    }
 }
