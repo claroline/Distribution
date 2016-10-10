@@ -68,32 +68,4 @@ class ResultListenerTest extends TransactionalTestCase
         $this->listener->setRequest(new Request());
         $this->listener->onDelete(new DeleteResourceEvent(new Result()));
     }
-
-    /**
-     * @expectedException \LogicException
-     */
-    public function testOnWidgetThrowsIfNoUser()
-    {
-        $this->listener->setRequest(new Request());
-        $this->listener->onDisplayWidget(new DisplayWidgetEvent(new WidgetInstance()));
-    }
-
-    /**
-     * @expectedException \Symfony\Component\Security\Core\Exception\AccessDeniedException
-     */
-    public function testOnWidgetThrowsIfUserIsNotWorkspaceMember()
-    {
-        $user = $this->persist->user('bob');
-        $this->om->flush();
-
-        /** @var TokenStorage $storage */
-        $storage = $this->client->getContainer()->get('security.context');
-        $storage->setToken(new UsernamePasswordToken($user, null, 'main'));
-
-        $widget = new WidgetInstance();
-        $widget->setWorkspace($user->getPersonalWorkspace());
-
-        $this->listener->setRequest(new Request());
-        $this->listener->onDisplayWidget(new DisplayWidgetEvent($widget));
-    }
 }
