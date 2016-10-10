@@ -120,7 +120,7 @@ class MailManager
         $users = $this->container->get('claroline.manager.user_manager')->getByEmailValidationHash($hash);
         $url =
             $this->container->get('request')->getSchemeAndHttpHost()
-            .$this->router->generate('claro_security_validate_email', ['hash' => $hash]);
+            .$this->router->generate('claro_security_validate_email', ['hash' => $hash], true);
         $body = $this->translator->trans('email_validation_url_display', ['%url%' => $url], 'platform');
         $subject = $this->translator->trans('email_validation', [], 'platform');
 
@@ -141,7 +141,7 @@ class MailManager
         $subject = $content[$displayedLocale]['title'];
         $url =
             $this->container->get('request')->getSchemeAndHttpHost()
-            .$this->router->generate('claro_security_validate_email', ['hash' => $user->getEmailValidationHash()]);
+            .$this->router->generate('claro_security_validate_email', ['hash' => $user->getEmailValidationHash()], true);
         $validationLink = $this->translator->trans('email_validation_url_display', ['%url%' => $url], 'platform');
 
         $body = str_replace('%first_name%', $user->getFirstName(), $body);
