@@ -17,13 +17,11 @@ interface SerializerInterface
     /**
      * Converts raw data into entities.
      *
-     * If `$options['entity']` is set, it will be populated,
-     * else, a new object is created.
-     *
-     * @param \stdClass $data
-     * @param array     $options
+     * @param \stdClass $data    - the data to deserialize
+     * @param mixed     $entity  - the entity to populate (if null, a new one is created)
+     * @param array     $options - the deserialization options
      *
      * @return mixed
      */
-    public function deserialize($data, array $options = []);
+    public function deserialize($data, $entity = null, array $options = []);
 }

@@ -106,7 +106,7 @@ class ExerciseManager
         }
 
         // Update Exercise with new data
-        $this->serializer->deserialize($data, ['entity' => $exercise]);
+        $this->serializer->deserialize($data, $exercise);
 
         // Save to DB
         $this->om->persist($exercise);

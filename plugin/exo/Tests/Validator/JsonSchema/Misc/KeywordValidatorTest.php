@@ -74,8 +74,10 @@ class KeywordValidatorTest extends JsonSchemaTestCase
         // Test with option not set (expects no schema validation error)
         $this->assertEquals(0, count($validator->validateCollection($collectionData)));
 
+        $errors = $validator->validateCollection($collectionData, ['validateSchema' => true]);
+
         // Test with option set to `true` (expects schema validation errors)
-        $this->assertGreaterThan(0, count($validator->validateCollection($collectionData, ['validateSchema' => true])));
+        $this->assertGreaterThan(0, count($errors));
     }
 
     /**

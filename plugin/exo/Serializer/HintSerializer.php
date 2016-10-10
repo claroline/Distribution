@@ -41,13 +41,16 @@ class HintSerializer implements SerializerInterface
      * {@inheritdoc}
      *
      * @param \stdClass $data
+     * @param Hint      $hint
      * @param array     $options
      *
      * @return Hint
      */
-    public function deserialize($data, array $options = [])
+    public function deserialize($data, $hint = null, array $options = [])
     {
-        $hint = !empty($options['entity']) ? $options['entity'] : new Hint();
+        if (empty($hint)) {
+            $hint = new Hint();
+        }
 
         if (!empty($data->penalty) || 0 === $data->penalty) {
             $hint->setPenalty($data->penalty);

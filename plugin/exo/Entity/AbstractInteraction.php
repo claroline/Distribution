@@ -36,6 +36,8 @@ abstract class AbstractInteraction implements QuestionTypeProviderInterface
     final public function setQuestion(Question $question)
     {
         $this->question = $question;
+
+        $question->setInteraction($this);
         $question->setType(static::getQuestionType());
     }
 

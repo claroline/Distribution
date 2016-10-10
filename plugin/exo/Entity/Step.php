@@ -85,7 +85,7 @@ class Step
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="StepQuestion", mappedBy="step", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="StepQuestion", mappedBy="step", cascade={"persist", "remove"}, orphanRemoval=true)
      * @ORM\OrderBy({"order" = "ASC"})
      */
     private $stepQuestions;
