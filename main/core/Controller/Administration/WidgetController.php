@@ -100,10 +100,7 @@ class WidgetController extends Controller
      */
     public function widgetEditFormAction(Widget $widget)
     {
-        $form = $this->formFactory->create(
-            new WidgetEditType($widget->isDisplayableInDesktop()),
-            $widget
-        );
+        $form = $this->formFactory->create(new WidgetEditType(), $widget);
 
         return array('form' => $form->createView(), 'widget' => $widget);
     }
@@ -121,10 +118,7 @@ class WidgetController extends Controller
      */
     public function widgetEditAction(Widget $widget)
     {
-        $form = $this->formFactory->create(
-            new WidgetEditType($widget->isDisplayableInDesktop()),
-            $widget
-        );
+        $form = $this->formFactory->create(new WidgetEditType(), $widget);
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
