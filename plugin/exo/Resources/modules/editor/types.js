@@ -3,6 +3,7 @@ import match from './items/match'
 import short from './items/short'
 import cloze from './items/cloze'
 import graphic from './items/graphic'
+import open from './items/open'
 
 export const TYPE_QUIZ = 'quiz'
 export const TYPE_STEP = 'step'
@@ -44,7 +45,8 @@ let definitions = [
   match,
   short,
   cloze,
-  graphic
+  graphic,
+  open
 ]
 
 export const mimeTypes = definitions.map(def => def.type)
