@@ -43,9 +43,24 @@ class MatchTypeSerializer implements QuestionHandlerInterface, SerializerInterfa
         return $questionData;
     }
 
-    public function deserialize($data, array $options = [])
+    /**
+     * Converts raw data into a Match question entity.
+     *
+     * @param \stdClass           $data
+     * @param InteractionMatching $matchQuestion
+     * @param array               $options
+     *
+     * @return InteractionMatching
+     */
+    public function deserialize($data, $matchQuestion = null, array $options = [])
     {
+        if (empty($matchQuestion)) {
+            $matchQuestion = new InteractionMatching();
+        }
+
         // TODO: Implement deserialize() method.
+
+        return $matchQuestion;
     }
 
     private function serializeSolutions($questionType)

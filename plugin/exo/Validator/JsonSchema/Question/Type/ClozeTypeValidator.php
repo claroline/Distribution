@@ -72,6 +72,13 @@ class ClozeTypeValidator extends JsonSchemaValidator implements QuestionHandlerI
             return $hole->id;
         }, $question->holes);
 
+        if (count($question->holes) !== count($question->solutions)) {
+            $errors[] = [
+                'path' => '/solutions',
+                'message' => 'there must be the same number of solutions and holes',
+            ];
+        }
+
         foreach ($question->solutions as $index => $solution) {
             if (!in_array($solution->holeId, $holeIds)) {
                 $errors[] = [
@@ -81,7 +88,7 @@ class ClozeTypeValidator extends JsonSchemaValidator implements QuestionHandlerI
             }
 
             // Validates hole keywords
-            array_merge($errors, $this->keywordValidator->validateCollection($solution->answers, ['validateScore' => true]));
+            $errors = array_merge($errors, $this->keywordValidator->validateCollection($solution->answers, ['validateScore' => true]));
         }
 
         return $errors;

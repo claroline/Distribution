@@ -41,8 +41,7 @@ class WordsTypeValidatorTest extends JsonSchemaTestCase
         $questionData = $this->loadExampleData('question/words/examples/valid/multiple-answers.json');
 
         $this->keywordValidator->expects($this->exactly(1))
-            ->method('validateCollection')
-            ->with(['keywords' => $questionData->solutions, 'options' => ['validateScore' => true]]);
+            ->method('validateCollection');
 
         $this->validator->validate($questionData, ['solutionsRequired' => true]);
     }

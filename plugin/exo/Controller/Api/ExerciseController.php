@@ -92,7 +92,7 @@ class ExerciseController
     {
         $this->assertHasPermission('ADMINISTRATE', $exercise);
 
-        return new JsonResponse($this->exerciseManager->exportExercise($exercise));
+        return new JsonResponse($this->exerciseManager->export($exercise, ['includeSolutions' => true]));
     }
 
     /**
@@ -109,7 +109,7 @@ class ExerciseController
     {
         $this->assertHasPermission('OPEN', $exercise);
 
-        return new JsonResponse($this->exerciseManager->exportExerciseMinimal($exercise));
+        return new JsonResponse($this->exerciseManager->export($exercise, ['minimal' => true]));
     }
 
     /**
@@ -145,7 +145,7 @@ class ExerciseController
             }
         }
 
-        return new JsonResponse($this->exerciseManager->export($exercise));
+        return new JsonResponse($this->exerciseManager->export($exercise, ['includeSolutions' => true]));
     }
 
     /**
