@@ -142,40 +142,21 @@ class ExerciseSerializer implements SerializerInterface
     {
         $parameters = new \stdClass();
         $parameters->type = $exercise->getType();
-
         $parameters->random = $exercise->getShuffle();
-
-        $pick = $exercise->getPickSteps();
-        if ($pick) {
-            $parameters->pick = $pick;
-        }
-
-        if ($pick || $parameters->random) {
-            $parameters->keepSteps = $exercise->getKeepSteps();
-        }
-
-        if ($exercise->getMaxAttempts()) {
-            $parameters->maxAttempts = $exercise->getMaxAttempts();
-        }
-
+        $parameters->pick = $exercise->getPickSteps();
+        $parameters->keepSteps = $exercise->getKeepSteps();
+        $parameters->maxAttempts = $exercise->getMaxAttempts();
         $parameters->interruptible = $exercise->getDispButtonInterrupt();
         $parameters->showMetadata = $exercise->isMetadataVisible();
         $parameters->showStatistics = $exercise->hasStatistics();
         $parameters->showFullCorrection = !$exercise->isMinimalCorrection();
-
         $parameters->anonymous = $exercise->getAnonymous();
-
-        if (!empty($exercise->getDuration())) {
-            $parameters->duration = $exercise->getDuration();
-        }
-
+        $parameters->duration = $exercise->getDuration();
         $parameters->showScoreAt = $exercise->getMarkMode();
         $parameters->showCorrectionAt = $exercise->getCorrectionMode();
 
         $correctionDate = $exercise->getDateCorrection();
-        if (!empty($correctionDate)) {
-            $parameters->correctionDate = $correctionDate->format('Y-m-d\TH:i:s');
-        }
+        $parameters->correctionDate = !empty($correctionDate) ? $correctionDate->format('Y-m-d\TH:i:s') : null;
 
         return $parameters;
     }
@@ -189,31 +170,16 @@ class ExerciseSerializer implements SerializerInterface
     private function deserializeParameters(Exercise $exercise, \stdClass $parameters)
     {
         $exercise->setType($parameters->type);
-
-        if (isset($parameters->pick)) {
-            $exercise->setPickSteps($parameters->pick);
-        }
-
+        $exercise->setPickSteps($parameters->pick);
         $exercise->setShuffle($parameters->random);
-
-        if ($parameters->pick || $parameters->random) {
-            $exercise->setKeepSteps($parameters->keepSteps);
-        }
-
-        if (isset($parameters->maxAttempts)) {
-            $exercise->setMaxAttempts($parameters->maxAttempts);
-        }
-
+        $exercise->setKeepSteps($parameters->keepSteps);
+        $exercise->setMaxAttempts($parameters->maxAttempts);
         $exercise->setDispButtonInterrupt($parameters->interruptible);
         $exercise->setMetadataVisible($parameters->showMetadata);
         $exercise->setMarkMode($parameters->showScoreAt);
         $exercise->setCorrectionMode($parameters->showCorrectionAt);
         $exercise->setAnonymous($parameters->anonymous);
-
-        if (isset($parameters->duration)) {
-            $exercise->setDuration($parameters->duration);
-        }
-
+        $exercise->setDuration($parameters->duration);
         $exercise->setStatistics($parameters->showStatistics);
         $exercise->setMinimalCorrection(!$parameters->showFullCorrection);
 
