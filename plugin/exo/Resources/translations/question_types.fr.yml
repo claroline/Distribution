@@ -2,9 +2,11 @@ choice: Choix multiple
 choice_desc: Choisir une ou plusieurs réponses parmi une liste de choix possibles.
 cloze: Texte à trous
 cloze_desc: Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
+open: Question ouverte
+open_desc: Ut rhoncus libero ac rutrum ornare. Pellentesque ut urna lacinia, porttitor sem vitae, mollis tellus.
 match-1: Appariement
 match-1_desc: Créer des liaisons entre des éléments appartenant à deux ensembles différents.
-short: Question ouverte
+short: Question ouverte courte
 short_desc: Ut rhoncus libero ac rutrum ornare. Pellentesque ut urna lacinia, porttitor sem vitae, mollis tellus.
 graphic: Question graphique
 graphic_desc: Nulla et sem blandit, sodales nulla sed, euismod nisl.

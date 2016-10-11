@@ -21,7 +21,7 @@ let Open = props =>
     name="maxLength"
     component={Controls.Number}
     min={0}
-    label={tex('open_max_length')}
+    label={tex('open_maximum_length')}
   />
 </fieldset>
 

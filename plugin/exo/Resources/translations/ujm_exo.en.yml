@@ -299,6 +299,7 @@ only_owner_graphic: Only the owner can change the picture
 open: Open
 open_creation: Open creation
 open_edition: Open Edition
+open_maximum_length: Answer maximum length (char number)
 orders: Instructions
 orthography: Allow misspellings
 overview: Overview

@@ -32,13 +32,6 @@ class InteractionOpenType extends AbstractType
             );
         $builder
             ->add(
-                'orthographyCorrect', 'checkbox', [
-                    'label' => 'orthography',
-                    'required' => false,
-                ]
-            );
-        $builder
-            ->add(
                 'wordResponses', 'collection', [
                     'type' => new WordResponseType(),
                     'prototype' => true,
