@@ -11,6 +11,7 @@ use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Hint;
 use UJM\ExoBundle\Entity\Question;
 use UJM\ExoBundle\Library\Testing\Persister;
+use UJM\ExoBundle\Manager\PaperManager;
 
 /**
  * Specific tests for ChoiceQuestionType.
@@ -23,6 +24,8 @@ class ExerciseControllerChoiceTest extends TransactionalTestCase
     private $om;
     /** @var Persister */
     private $persist;
+    /** @var PaperManager */
+    private $paperManager;
     /** @var User */
     private $john;
     /** @var User */
@@ -44,10 +47,9 @@ class ExerciseControllerChoiceTest extends TransactionalTestCase
     {
         parent::setUp();
         $this->om = $this->client->getContainer()->get('claroline.persistence.object_manager');
-        $manager = $this->client->getContainer()->get('ujm.exo.paper_manager');
-        $ut = $this->client->getContainer()->get('claroline.utilities.misc');
+        $this->paperManager = $this->client->getContainer()->get('ujm.exo.paper_manager');
 
-        $this->persist = new Persister($this->om, $manager, $ut);
+        $this->persist = new Persister($this->om);
         $this->john = $this->persist->user('john');
         $this->bob = $this->persist->user('bob');
 
@@ -63,7 +65,7 @@ class ExerciseControllerChoiceTest extends TransactionalTestCase
 
     public function testSubmitAnswerInInvalidFormat()
     {
-        $pa1 = $this->persist->paper($this->john, $this->ex1);
+        $pa1 = $this->paperManager->createPaper($this->ex1, $this->john);
         $this->om->flush();
 
         $step = $this->ex1->getSteps()->get(0);
@@ -80,7 +82,7 @@ class ExerciseControllerChoiceTest extends TransactionalTestCase
 
     public function testSubmitAnswer()
     {
-        $pa1 = $this->persist->paper($this->john, $this->ex1);
+        $pa1 = $this->paperManager->createPaper($this->ex1, $this->john);
         $this->om->flush();
 
         $id = (string) $this->ch1->getId();

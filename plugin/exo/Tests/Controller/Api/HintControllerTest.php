@@ -11,6 +11,7 @@ use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Hint;
 use UJM\ExoBundle\Entity\Question;
 use UJM\ExoBundle\Library\Testing\Persister;
+use UJM\ExoBundle\Manager\PaperManager;
 
 /**
  * Tests that are common to all exercise / question types.
@@ -23,6 +24,8 @@ class HintControllerTest extends TransactionalTestCase
     private $om;
     /** @var Persister */
     private $persist;
+    /** @var PaperManager */
+    private $paperManager;
     /** @var User */
     private $john;
     /** @var User */
@@ -42,10 +45,9 @@ class HintControllerTest extends TransactionalTestCase
     {
         parent::setUp();
         $this->om = $this->client->getContainer()->get('claroline.persistence.object_manager');
-        $manager = $this->client->getContainer()->get('ujm.exo.paper_manager');
-        $ut = $this->client->getContainer()->get('claroline.utilities.misc');
+        $this->paperManager = $this->client->getContainer()->get('ujm.exo.paper_manager');
 
-        $this->persist = new Persister($this->om, $manager, $ut);
+        $this->persist = new Persister($this->om);
         $this->john = $this->persist->user('john');
         $this->bob = $this->persist->user('bob');
 
@@ -72,7 +74,7 @@ class HintControllerTest extends TransactionalTestCase
 
     public function testAnonymousHint()
     {
-        $pa1 = $this->persist->paper($this->john, $this->ex1);
+        $pa1 = $this->paperManager->createPaper($this->ex1, $this->john);
         $this->om->flush();
 
         $this->request('GET', "/exercise/api/papers/{$pa1->getId()}/hints/{$this->hi1->getId()}");
@@ -81,7 +83,7 @@ class HintControllerTest extends TransactionalTestCase
 
     public function testHintAfterPaperEnd()
     {
-        $pa1 = $this->persist->paper($this->john, $this->ex1);
+        $pa1 = $this->paperManager->createPaper($this->ex1, $this->john);
         $date = new \DateTime();
         $date->add(\DateInterval::createFromDateString('yesterday'));
         $pa1->setEnd($date);
@@ -93,7 +95,7 @@ class HintControllerTest extends TransactionalTestCase
 
     public function testHintByNotPaperUser()
     {
-        $pa1 = $this->persist->paper($this->john, $this->ex1);
+        $pa1 = $this->paperManager->createPaper($this->ex1, $this->john);
         $this->om->flush();
 
         $this->request('GET', "/exercise/api/papers/{$pa1->getId()}/hints/{$this->hi1->getId()}", $this->bob);
@@ -102,7 +104,7 @@ class HintControllerTest extends TransactionalTestCase
 
     public function testHint()
     {
-        $pa1 = $this->persist->paper($this->john, $this->ex1);
+        $pa1 = $this->paperManager->createPaper($this->ex1, $this->john);
         $this->om->flush();
 
         $this->request('GET', "/exercise/api/papers/{$pa1->getId()}/hints/{$this->hi1->getId()}", $this->john);

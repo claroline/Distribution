@@ -8,7 +8,6 @@ use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use UJM\ExoBundle\Entity\Category;
 use UJM\ExoBundle\Entity\Choice;
@@ -18,7 +17,6 @@ use UJM\ExoBundle\Entity\InteractionMatching;
 use UJM\ExoBundle\Entity\InteractionOpen;
 use UJM\ExoBundle\Entity\InteractionQCM;
 use UJM\ExoBundle\Entity\Label;
-use UJM\ExoBundle\Entity\Paper;
 use UJM\ExoBundle\Entity\Proposal;
 use UJM\ExoBundle\Entity\Question;
 use UJM\ExoBundle\Entity\Step;
@@ -26,7 +24,6 @@ use UJM\ExoBundle\Entity\StepQuestion;
 use UJM\ExoBundle\Entity\TypeMatching;
 use UJM\ExoBundle\Entity\TypeQCM;
 use UJM\ExoBundle\Library\Question\QuestionType;
-use UJM\ExoBundle\Manager\PaperManager;
 
 /**
  * Simple testing utility allowing to create and persist
@@ -38,11 +35,6 @@ class Persister
      * @var ObjectManager
      */
     private $om;
-
-    /**
-     * @var ClaroUtilities
-     */
-    private $utilities;
 
     /**
      * @var ResourceType
@@ -64,16 +56,9 @@ class Persister
      */
     private $matchType;
 
-    /**
-     * @var PaperManager
-     */
-    private $paperManager;
-
-    public function __construct(ObjectManager $om, PaperManager $paperManager, ClaroUtilities $utilities)
+    public function __construct(ObjectManager $om)
     {
         $this->om = $om;
-        $this->paperManager = $paperManager;
-        $this->utilities = $utilities;
     }
 
     /**
@@ -104,7 +89,7 @@ class Persister
     public function qcmQuestion($title, array $choices = [], $description = '')
     {
         $question = new Question();
-        $question->setUuid($this->utilities->generateGuid());
+        $question->setUuid(uniqid());
         $question->setMimeType(QuestionType::CHOICE);
         $question->setTitle($title);
         $question->setInvite('Invite...');
@@ -140,15 +125,16 @@ class Persister
     public function openQuestion($title)
     {
         $question = new Question();
-        $question->setUuid($this->utilities->generateGuid());
+        $question->setUuid(uniqid());
         $question->setMimeType(QuestionType::OPEN);
         $question->setTitle($title);
         $question->setInvite('Invite...');
 
-        $interactionQcm = new InteractionOpen();
-        $interactionQcm->setQuestion($question);
+        $interactionOpen = new InteractionOpen();
+        $interactionOpen->setQuestion($question);
+        $interactionOpen->setScoreMaxLongResp(10);
 
-        $this->om->persist($interactionQcm);
+        $this->om->persist($interactionOpen);
         $this->om->persist($question);
 
         return $question;
@@ -180,7 +166,7 @@ class Persister
     public function matchQuestion($title, $labels = [], $proposals = [])
     {
         $question = new Question();
-        $question->setUuid($this->utilities->generateGuid());
+        $question->setUuid(uniqid());
         $question->setMimeType(QuestionType::MATCH);
         $question->setTitle($title);
         $question->setInvite('Invite...');
@@ -222,7 +208,8 @@ class Persister
      public function exercise($title, array $questions = [], User $user = null)
      {
          $exercise = new Exercise();
-         $exercise->setUuid($this->utilities->generateGuid());
+         $exercise->setUuid(uniqid());
+         $exercise->setDescription('Lorem ipsum dolor sit');
          if ($user) {
              if (!isset($this->exoType)) {
                  $this->exoType = new ResourceType();
@@ -245,7 +232,7 @@ class Persister
 
          for ($i = 0, $max = count($questions); $i < $max; ++$i) {
              $step = new Step();
-             $step->setUuid($this->utilities->generateGuid());
+             $step->setUuid(uniqid());
              $step->setText('step');
              $step->setOrder($i);
 
@@ -263,22 +250,6 @@ class Persister
 
          return $exercise;
      }
-
-    /**
-     * @param User     $user
-     * @param Exercise $exercise
-     *
-     * @return Paper
-     */
-    public function paper(User $user, Exercise $exercise)
-    {
-        return $this->paperManager->createPaper($exercise, $user);
-    }
-
-    public function finishpaper(Paper $paper)
-    {
-        $this->paperManager->finishPaper($paper);
-    }
 
     /**
      * @param string $username

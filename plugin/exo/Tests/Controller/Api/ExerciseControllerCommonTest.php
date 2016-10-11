@@ -11,6 +11,7 @@ use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Hint;
 use UJM\ExoBundle\Entity\Question;
 use UJM\ExoBundle\Library\Testing\Persister;
+use UJM\ExoBundle\Manager\PaperManager;
 
 /**
  * Tests that are common to all exercise / question types.
@@ -23,6 +24,12 @@ class ExerciseControllerCommonTest extends TransactionalTestCase
     private $om;
     /** @var Persister */
     private $persist;
+
+    /**
+     * @var PaperManager
+     */
+    private $paperManager;
+
     /** @var User */
     private $john;
     /** @var User */
@@ -44,10 +51,9 @@ class ExerciseControllerCommonTest extends TransactionalTestCase
     {
         parent::setUp();
         $this->om = $this->client->getContainer()->get('claroline.persistence.object_manager');
-        $manager = $this->client->getContainer()->get('ujm.exo.paper_manager');
-        $ut = $this->client->getContainer()->get('claroline.utilities.misc');
+        $this->paperManager = $this->client->getContainer()->get('ujm.exo.paper_manager');
 
-        $this->persist = new Persister($this->om, $manager, $ut);
+        $this->persist = new Persister($this->om, $this->paperManager);
         $this->john = $this->persist->user('john');
         $this->bob = $this->persist->user('bob');
 
@@ -143,10 +149,13 @@ class ExerciseControllerCommonTest extends TransactionalTestCase
     {
         // set exercise max attempts
         $this->ex1->setMaxAttempts(1);
+
         // first attempt for bob
-        $pa1 = $this->persist->paper($this->bob, $this->ex1);
+        $paper = $this->paperManager->createPaper($this->ex1, $this->bob);
+
         // finish bob's first paper
-        $this->persist->finishpaper($pa1);
+        $this->paperManager->finishPaper($paper);
+
         $this->om->flush();
 
         // second attempt for bob
@@ -165,10 +174,13 @@ class ExerciseControllerCommonTest extends TransactionalTestCase
     {
         // set exercise max attempts
         $this->ex1->setMaxAttempts(1);
-        // first attempt for john
-        $pa1 = $this->persist->paper($this->john, $this->ex1);
+
+        // first attempt for bob
+        $paper = $this->paperManager->createPaper($this->ex1, $this->john);
+
         // finish john's first paper
-        $this->persist->finishpaper($pa1);
+        $this->paperManager->finishPaper($paper);
+
         $this->om->flush();
 
         // second attempt for john
@@ -190,10 +202,10 @@ class ExerciseControllerCommonTest extends TransactionalTestCase
     public function testUserPapers()
     {
         // creator of the resource is considered as administrator of the resource
-        $pa1 = $this->persist->paper($this->bob, $this->ex1);
+        $pa1 = $this->paperManager->createPaper($this->ex1, $this->bob);
 
         // check that only one paper will be returned even if another user paper exists
-        $this->persist->paper($this->admin, $this->ex1);
+        $this->paperManager->createPaper($this->ex1, $this->admin);
 
         $this->om->flush();
 
@@ -211,10 +223,10 @@ class ExerciseControllerCommonTest extends TransactionalTestCase
      */
     public function testAdminPapers()
     {
-        $pa1 = $this->persist->paper($this->admin, $this->ex1);
-        $pa2 = $this->persist->paper($this->john, $this->ex1);
-        $pa3 = $this->persist->paper($this->bob, $this->ex1);
-        $pa4 = $this->persist->paper($this->bob, $this->ex1);
+        $pa1 = $this->paperManager->createPaper($this->ex1, $this->admin);
+        $pa2 = $this->paperManager->createPaper($this->ex1, $this->john);
+        $pa3 = $this->paperManager->createPaper($this->ex1, $this->bob);
+        $pa4 = $this->paperManager->createPaper($this->ex1, $this->bob);
         $this->om->flush();
 
         $this->request('GET', "/exercise/api/exercises/{$this->ex1->getId()}/papers", $this->john);

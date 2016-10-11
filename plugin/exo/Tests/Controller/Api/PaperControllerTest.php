@@ -11,6 +11,7 @@ use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Hint;
 use UJM\ExoBundle\Entity\Question;
 use UJM\ExoBundle\Library\Testing\Persister;
+use UJM\ExoBundle\Manager\PaperManager;
 
 /**
  * Tests that are common to all exercise / question types.
@@ -23,6 +24,8 @@ class PaperControllerTest extends TransactionalTestCase
     private $om;
     /** @var Persister */
     private $persist;
+    /** @var PaperManager */
+    private $paperManager;
     /** @var User */
     private $john;
     /** @var User */
@@ -44,10 +47,9 @@ class PaperControllerTest extends TransactionalTestCase
     {
         parent::setUp();
         $this->om = $this->client->getContainer()->get('claroline.persistence.object_manager');
-        $manager = $this->client->getContainer()->get('ujm.exo.paper_manager');
-        $ut = $this->client->getContainer()->get('claroline.utilities.misc');
+        $this->paperManager = $this->client->getContainer()->get('ujm.exo.paper_manager');
 
-        $this->persist = new Persister($this->om, $manager, $ut);
+        $this->persist = new Persister($this->om);
         $this->john = $this->persist->user('john');
         $this->bob = $this->persist->user('bob');
 
@@ -78,10 +80,10 @@ class PaperControllerTest extends TransactionalTestCase
     public function testUserPaper()
     {
         // create one paper
-        $pa1 = $this->persist->paper($this->bob, $this->ex1);
+        $pa1 = $this->paperManager->createPaper($this->ex1, $this->bob);
 
         // create another one
-        $this->persist->paper($this->bob, $this->ex1);
+        $this->paperManager->createPaper($this->ex1, $this->bob);
 
         $this->om->flush();
 
@@ -94,7 +96,7 @@ class PaperControllerTest extends TransactionalTestCase
 
     public function testAnonymousSubmit()
     {
-        $pa1 = $this->persist->paper($this->john, $this->ex1);
+        $pa1 = $this->paperManager->createPaper($this->ex1, $this->john);
         $this->om->flush();
 
         $step = $this->ex1->getSteps()->get(0);
@@ -105,7 +107,7 @@ class PaperControllerTest extends TransactionalTestCase
 
     public function testSubmitAnswerAfterPaperEnd()
     {
-        $pa1 = $this->persist->paper($this->john, $this->ex1);
+        $pa1 = $this->paperManager->createPaper($this->ex1, $this->john);
         $date = new \DateTime();
         $date->add(\DateInterval::createFromDateString('yesterday'));
         $pa1->setEnd($date);
@@ -119,7 +121,7 @@ class PaperControllerTest extends TransactionalTestCase
 
     public function testSubmitAnswerByNotPaperUser()
     {
-        $pa1 = $this->persist->paper($this->john, $this->ex1);
+        $pa1 = $this->paperManager->createPaper($this->ex1, $this->john);
         $this->om->flush();
 
         $step = $this->ex1->getSteps()->get(0);
@@ -130,7 +132,7 @@ class PaperControllerTest extends TransactionalTestCase
 
     public function testFinishPaperByNotPaperCreator()
     {
-        $pa1 = $this->persist->paper($this->john, $this->ex1);
+        $pa1 = $this->paperManager->createPaper($this->ex1, $this->john);
         $this->om->flush();
 
         $this->request('PUT', "/exercise/api/papers/{$pa1->getId()}/end", $this->bob);
@@ -139,7 +141,7 @@ class PaperControllerTest extends TransactionalTestCase
 
     public function testFinishPaper()
     {
-        $pa1 = $this->persist->paper($this->john, $this->ex1);
+        $pa1 = $this->paperManager->createPaper($this->ex1, $this->john);
         $this->om->flush();
 
         // end the paper
