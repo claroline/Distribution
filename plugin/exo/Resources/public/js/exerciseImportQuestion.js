@@ -13,7 +13,7 @@ function addQuestionInOrder(idQ) {
     }
 }
 
-function importQuestion(pathImport, exoID, pageToGo) {
+function importQuestion(exoID, pageToGo) {
     if (pos == 0) {
         alert(Translator.trans('no_thing_import', {}, 'ujm_exo'))
     } else {
