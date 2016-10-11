@@ -12,6 +12,11 @@ use UJM\ExoBundle\Validator\JsonSchema\ExerciseValidator;
 class ExerciseSerializerTest extends JsonDataTestCase
 {
     /**
+     * @var ObjectManager
+     */
+    private $om;
+
+    /**
      * @var Persister
      */
     private $persister;
@@ -35,9 +40,8 @@ class ExerciseSerializerTest extends JsonDataTestCase
     {
         parent::setUp();
 
-        /** @var ObjectManager $om */
-        $om = $this->client->getContainer()->get('claroline.persistence.object_manager');
-        $this->persister = new Persister($om);
+        $this->om = $this->client->getContainer()->get('claroline.persistence.object_manager');
+        $this->persister = new Persister($this->om);
 
         // We trust validator service as it is fully tested
         $this->validator = $this->client->getContainer()->get('ujm_exo.validator.exercise');
@@ -52,6 +56,9 @@ class ExerciseSerializerTest extends JsonDataTestCase
             ],
             $this->persister->user('john')
         );
+
+        $this->om->persist($this->exercise);
+        $this->om->flush();
     }
 
     /**
@@ -81,7 +88,7 @@ class ExerciseSerializerTest extends JsonDataTestCase
     }
 
     /**
-     * The serializer MUST return a minimal representation of the Exercise if the option `minimal` is set
+     * The serializer MUST return a minimal representation of the Exercise if the option `minimal` is set.
      * In this case `parameters` and `steps` MUST be excluded.
      */
     public function testSerializeMinimalOption()
@@ -112,6 +119,9 @@ class ExerciseSerializerTest extends JsonDataTestCase
         $this->assertCount(count($exerciseData->steps), $exercise->getSteps());
     }
 
+    /**
+     * The serializer MUST update the entity object passed as param and MUST NOT create a new one.
+     */
     public function testDeserializeUpdateEntityIfExist()
     {
         $exerciseData = $this->loadTestData('exercise/valid/with-steps.json');
@@ -124,5 +134,15 @@ class ExerciseSerializerTest extends JsonDataTestCase
 
         // Checks there is the correct number of steps
         $this->assertCount(count($exerciseData->steps), $this->exercise->getSteps());
+
+        // Checks no new entity have been created
+        $nbBefore = count($this->om->getRepository('UJMExoBundle:Exercise')->findAll());
+
+        $this->om->persist($this->exercise);
+        $this->om->flush();
+
+        $nbAfter = count($this->om->getRepository('UJMExoBundle:Exercise')->findAll());
+
+        $this->assertEquals($nbBefore, $nbAfter);
     }
 }
