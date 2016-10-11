@@ -217,11 +217,9 @@ class AgendaManager
     {
         $ical = new ICal($file->getPathname());
         $events = $ical->events();
-        //$this->om->startFlushSuite();
         $tabs = [];
 
-        foreach ($events as $i => $event) {
-            var_dump($event);
+        foreach ($events as $event) {
             $e = new Event();
             $e->setTitle($event->summary);
             $e->setStart($ical->iCalDateToUnixTimestamp($event->dtstart));
@@ -237,7 +235,6 @@ class AgendaManager
             $this->om->flush();
             $tabs[] = $e->jsonSerialize();
         }
-        //$this->om->endFlushSuite();
 
         return $tabs;
     }
@@ -287,7 +284,7 @@ class AgendaManager
     {
         $data = [];
 
-        foreach ($invitations as $key => $invitation) {
+        foreach ($invitations as $invitation) {
             $data[] = $invitation->getEvent()->jsonSerialize($this->tokenStorage->getToken()->getUser());
         }
 
@@ -333,7 +330,7 @@ class AgendaManager
             function ($a, $b) {
                 $aStartTimestamp = $a->getStartInTimestamp();
                 $bStartTimestamp = $b->getStartInTimestamp();
-                if ($aStartTimestamp == $bStartTimestamp) {
+                if ($aStartTimestamp === $bStartTimestamp) {
                     return 0;
                 }
 
