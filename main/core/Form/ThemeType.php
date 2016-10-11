@@ -33,7 +33,16 @@ class ThemeType extends AbstractType
                     new NotBlank(),
                     new File(['maxSize' => '300k']),
                 ],
-            ]);
+            ])
+            ->add(
+                'extendingDefault',
+                'checkbox',
+                [
+                    'label' => 'extend_default_theme',
+                    'translation_domain' => 'theme',
+                    'required' => false,
+                ]
+            );
     }
 
     public function getName()

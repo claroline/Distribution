@@ -101,7 +101,8 @@ class ThemeController
         if ($form->isValid()) {
             $this->manager->createCustomTheme(
                 $form['name']->getData(),
-                $form['stylesheet']->getData()
+                $form['stylesheet']->getData(),
+                $form['extendingDefault']->getData()
             );
 
             return new RedirectResponse($this->router->generate('claro_admin_theme_list'));
