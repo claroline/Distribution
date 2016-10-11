@@ -7,7 +7,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerAware;
 
 /**
- * @DI\Service("ujm.exo.exercise_listener")
+ * @DI\Service("ujm.exo.exercise_log_listener")
  */
 class DisplayLogListener extends ContainerAware
 {

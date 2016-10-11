@@ -2,10 +2,10 @@
 
 namespace UJM\ExoBundle\Form;
 
+use Claroline\CoreBundle\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Claroline\CoreBundle\Entity\User;
 
 class InteractionOpenType extends AbstractType
 {
@@ -24,46 +24,46 @@ class InteractionOpenType extends AbstractType
             ->add('question', new QuestionType($this->user, $this->catID));
         $builder
             ->add(
-                'typeopenquestion', 'entity', array(
+                'typeopenquestion', 'entity', [
                     'class' => 'UJM\\ExoBundle\\Entity\\TypeOpenQuestion',
                     'label' => 'type_question',
                     'choice_translation_domain' => true,
-                )
+                ]
             );
         $builder
             ->add(
-                'orthographyCorrect', 'checkbox', array(
+                'orthographyCorrect', 'checkbox', [
                     'label' => 'orthography',
                     'required' => false,
-                )
+                ]
             );
         $builder
             ->add(
-                'wordResponses', 'collection', array(
+                'wordResponses', 'collection', [
                     'type' => new WordResponseType(),
                     'prototype' => true,
                     'allow_add' => true,
                     'allow_delete' => true,
-                )
+                ]
             );
         $builder
             ->add(
-                'scoreMaxLongResp', 'text', array(
+                'scoreMaxLongResp', 'text', [
                 'required' => false,
                 'label' => 'right_response',
-                    'attr' => array('placeholder' => 'points'),
-                )
+                    'attr' => ['placeholder' => 'points'],
+                ]
             );
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'UJM\ExoBundle\Entity\InteractionOpen',
                 'cascade_validation' => true,
                 'translation_domain' => 'ujm_exo',
-            )
+            ]
         );
     }
 
