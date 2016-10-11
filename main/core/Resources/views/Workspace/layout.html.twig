@@ -116,12 +116,16 @@
             var getIframeWindowHeight = function() {
                 return $("iframe#embeddedActivity").contents().find('body').first().height();
             }
+
             var oldHeight= getIframeWindowHeight();
 
             setInterval(function() {
                 var newHeight = getIframeWindowHeight();
 
-                if (newHeight !== null && newHeight !== oldHeight) {
+                //dont resize if it's not that much different
+                var interval = 150;
+
+                if (newHeight !== null && newHeight > oldHeight + interval) {
                     postHeight(newHeight);
                     oldHeight = newHeight;
                 }
