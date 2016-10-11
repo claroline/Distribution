@@ -106,7 +106,7 @@ class StepManager
         }
 
         // Update Step with new data
-        $this->serializer->deserialize($data, ['entity' => $step]);
+        $this->serializer->deserialize($data, $step);
 
         // Save to DB
         $this->om->persist($step);

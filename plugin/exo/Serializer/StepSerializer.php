@@ -55,11 +55,8 @@ class StepSerializer implements SerializerInterface
             $stepData->description = $step->getText();
         }
 
-        $stepData->meta = $this->serializeMetadata($step);
         $stepData->parameters = $this->serializeParameters($step);
         $stepData->items = $this->serializeItems($step, $options);
-
-        $this->serializeOld($step, $stepData);
 
         return $stepData;
     }
@@ -68,13 +65,16 @@ class StepSerializer implements SerializerInterface
      * Converts raw data into a Step entity.
      *
      * @param \stdClass $data
+     * @param Step      $step
      * @param array     $options
      *
      * @return Step
      */
-    public function deserialize($data, array $options = [])
+    public function deserialize($data, $step = null, array $options = [])
     {
-        $step = !empty($options['entity']) ? $options['entity'] : new Step();
+        if (empty($step)) {
+            $step = new Step();
+        }
 
         if (isset($data->title)) {
             $step->setTitle($data->title);
@@ -89,26 +89,10 @@ class StepSerializer implements SerializerInterface
         }
 
         if (!empty($data->items)) {
-            $this->deserializeItems($step, $data->items);
+            $this->deserializeItems($step, $data->items, $options);
         }
 
         return $step;
-    }
-
-    /**
-     * Serializes metadata properties.
-     *
-     * @param Step $step
-     *
-     * @return \stdClass
-     */
-    private function serializeMetadata(Step $step)
-    {
-        $metadata = new \stdClass();
-
-        $this->serializeOldMetadata($step, $metadata);
-
-        return $metadata;
     }
 
     /**
@@ -121,7 +105,10 @@ class StepSerializer implements SerializerInterface
     private function serializeParameters(Step $step)
     {
         $parameters = new \stdClass();
-        $parameters->maxAttempts = $step->getMaxAttempts();
+
+        if ($step->getMaxAttempts()) {
+            $parameters->maxAttempts = $step->getMaxAttempts();
+        }
 
         return $parameters;
     }
@@ -134,7 +121,9 @@ class StepSerializer implements SerializerInterface
      */
     private function deserializeParameters(Step $step, \stdClass $parameters)
     {
-        $step->setMaxAttempts($parameters->maxAttempts);
+        if (isset($parameters->maxAttempts)) {
+            $step->setMaxAttempts($parameters->maxAttempts);
+        }
     }
 
     /**
@@ -151,9 +140,7 @@ class StepSerializer implements SerializerInterface
         $stepQuestions = $step->getStepQuestions()->toArray();
 
         return array_map(function (StepQuestion $stepQuestion) use ($options) {
-            $question = $stepQuestion->getQuestion();
-
-            return $this->questionSerializer->serialize($question, $options);
+            return $this->questionSerializer->serialize($stepQuestion->getQuestion(), $options);
         }, $stepQuestions);
     }
 
@@ -163,30 +150,30 @@ class StepSerializer implements SerializerInterface
      *
      * @param Step  $step
      * @param array $items
+     * @param array $options
      *
      * @return array
      */
-    public function deserializeItems(Step $step, array $items = [])
+    public function deserializeItems(Step $step, array $items = [], array $options = [])
     {
         $stepQuestions = $step->getStepQuestions()->toArray();
 
-        foreach ($items as $index => $item) {
+        foreach ($items as $index => $itemData) {
+            $item = null;
             $stepQuestion = null;
 
             // Searches for an existing question entity.
             foreach ($stepQuestions as $entityIndex => $entityStepQuestion) {
                 /** @var StepQuestion $entityStepQuestion */
-                if ($entityStepQuestion->getQuestion()->getId() === $item->id) {
+                if ($entityStepQuestion->getQuestion()->getUuid() === $itemData->id) {
                     $stepQuestion = $entityStepQuestion;
+                    $item = $stepQuestion->getQuestion();
                     unset($stepQuestions[$entityIndex]);
                     break;
                 }
             }
 
-            $entity = $this->questionSerializer->deserialize(
-                $item,
-                !empty($stepQuestion) ? ['entity' => $stepQuestion->getQuestion()] : []
-            );
+            $entity = $this->questionSerializer->deserialize($itemData, $item, $options);
 
             if (empty($stepQuestion)) {
                 // Creation of a new item (we need to link it to the Step)
@@ -203,36 +190,5 @@ class StepSerializer implements SerializerInterface
                 $step->removeStepQuestion($stepQuestionToRemove);
             }
         }
-    }
-
-    /**
-     * Serializes old properties.
-     *
-     * For retro-compatibility purpose.
-     * Will be removed after the next release.
-     *
-     * @param Step      $step
-     * @param \stdClass $stepData
-     */
-    private function serializeOld(Step $step, \stdClass $stepData)
-    {
-        $stepData->maxAttempts = $step->getMaxAttempts();
-    }
-
-    /**
-     * Serializes old metadata properties.
-     *
-     * For retro-compatibility purpose.
-     * Will be removed after the next release.
-     *
-     * @param Step      $step
-     * @param \stdClass $metadata
-     *
-     * @return \stdClass
-     */
-    private function serializeOldMetadata(Step $step, $metadata)
-    {
-        $metadata->title = $step->getTitle();
-        $metadata->description = $step->getText();
     }
 }

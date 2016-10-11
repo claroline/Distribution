@@ -184,6 +184,20 @@ class Hole
     }
 
     /**
+     * Sets keywords collection.
+     *
+     * @param array $keywords
+     */
+    public function setKeywords(array $keywords)
+    {
+        $this->keywords = new ArrayCollection(array_map(function (WordResponse $keyword) {
+            $keyword->setHole($this);
+
+            return $keyword;
+        }, $keywords));
+    }
+
+    /**
      * Adds a keyword.
      *
      * @param WordResponse $keyword

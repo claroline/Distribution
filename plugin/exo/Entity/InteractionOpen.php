@@ -21,11 +21,7 @@ class InteractionOpen extends AbstractInteraction
     private $typeopenquestion;
 
     /**
-     * @ORM\OneToMany(
-     *     targetEntity="WordResponse",
-     *     mappedBy="interactionopen",
-     *     cascade={"remove"}
-     * )
+     * @ORM\OneToMany(targetEntity="WordResponse", mappedBy="interactionopen", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private $keywords;
 
@@ -71,6 +67,20 @@ class InteractionOpen extends AbstractInteraction
     public function getKeywords()
     {
         return $this->keywords;
+    }
+
+    /**
+     * Sets keywords collection.
+     *
+     * @param array $keywords
+     */
+    public function setKeywords(array $keywords)
+    {
+        $this->keywords = new ArrayCollection(array_map(function (WordResponse $keyword) {
+            $keyword->setInteractionOpen($this);
+
+            return $keyword;
+        }, $keywords));
     }
 
     /**

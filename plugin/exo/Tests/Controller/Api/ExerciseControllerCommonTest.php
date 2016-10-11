@@ -98,8 +98,8 @@ class ExerciseControllerCommonTest extends TransactionalTestCase
 
         $content = json_decode($this->client->getResponse()->getContent());
         $this->assertEquals($this->ex1->getId(), $content->id);
-        $this->assertEquals('ex1', $content->meta->title);
-        $this->assertEquals('qu1', $content->steps[0]->items[0]->title);
+        $this->assertEquals('ex1', $content->title);
+        $this->assertEquals('Invite...', $content->steps[0]->items[0]->content);
     }
 
     /**
@@ -112,7 +112,7 @@ class ExerciseControllerCommonTest extends TransactionalTestCase
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $content = json_decode($this->client->getResponse()->getContent());
         $this->assertEquals($this->ex1->getId(), $content->id);
-        $this->assertEquals('ex1', $content->meta->title);
+        $this->assertEquals('ex1', $content->title);
         $this->assertFalse(property_exists($content, 'steps'));
     }
 
