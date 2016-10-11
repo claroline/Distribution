@@ -57,7 +57,7 @@ class Label
     private $interactionMatching;
 
     /**
-     * @var text
+     * @var string
      *
      * @ORM\Column(name="feedback", type="text", nullable=true)
      */
@@ -130,8 +130,10 @@ class Label
 
     /**
      * Set InteractionMatching.
+     *
+     * @param InteractionMatching $interactionMatching
      */
-    public function setInteractionMatching(\UJM\ExoBundle\Entity\InteractionMatching $interactionMatching)
+    public function setInteractionMatching(InteractionMatching $interactionMatching)
     {
         $this->interactionMatching = $interactionMatching;
     }
@@ -186,7 +188,7 @@ class Label
     /**
      * set feedback.
      *
-     * @param \UJM\ExoBundle\Entity\text $feedback
+     * @param string $feedback
      */
     public function setFeedback($feedback)
     {

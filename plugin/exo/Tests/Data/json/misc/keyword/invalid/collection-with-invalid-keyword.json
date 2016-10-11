@@ -1,0 +1,13 @@
+[
+  {
+    "text": "lorem",
+    "caseSensitive": false,
+    "score": 2,
+    "unauthorized-property": "unauthorized"
+  },
+  {
+    "text": "ipsum",
+    "caseSensitive": false,
+    "score": 3
+  }
+]

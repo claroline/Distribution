@@ -2,6 +2,7 @@
 
 namespace UJM\ExoBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -31,16 +32,11 @@ class Hole
     /**
      * @var int
      *
+     * @deprecated no longer used
+     *
      * @ORM\Column(name="position", type="integer", nullable=true)
      */
     private $position;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="orthography", type="boolean", nullable=true)
-     */
-    private $orthography;
 
     /**
      * @var bool
@@ -50,22 +46,29 @@ class Hole
     private $selector;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="placeholder", type="string", nullable=true)
+     */
+    private $placeholder;
+
+    /**
      * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\InteractionHole", inversedBy="holes")
      * @ORM\JoinColumn(name="interaction_hole_id", referencedColumnName="id")
      */
     private $interactionHole;
 
     /**
-     * @ORM\OneToMany(targetEntity="UJM\ExoBundle\Entity\WordResponse", mappedBy="hole", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="UJM\ExoBundle\Entity\WordResponse", mappedBy="hole", cascade={"persist", "remove"}, orphanRemoval=true)
      */
-    private $wordResponses;
+    private $keywords;
 
     /**
      * Constructs a new instance of choices.
      */
     public function __construct()
     {
-        $this->wordResponses = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->keywords = new ArrayCollection();
     }
 
     /**
@@ -101,6 +104,8 @@ class Hole
     /**
      * Set position.
      *
+     * @deprecated the underlying property will be removed in next release
+     *
      * @param int $position
      */
     public function setPosition($position)
@@ -111,29 +116,13 @@ class Hole
     /**
      * Get position.
      *
+     * @deprecated the underlying property will be removed in next release
+     *
      * @return int
      */
     public function getPosition()
     {
         return $this->position;
-    }
-
-    /**
-     * Set orthography.
-     *
-     * @param int $orthography
-     */
-    public function setOrthography($orthography)
-    {
-        $this->orthography = $orthography;
-    }
-
-    /**
-     * Get orthography.
-     */
-    public function getOrthography()
-    {
-        return $this->orthography;
     }
 
     /**
@@ -154,29 +143,99 @@ class Hole
         return $this->selector;
     }
 
+    /**
+     * Get placeholder.
+     *
+     * @return string
+     */
+    public function getPlaceholder()
+    {
+        return $this->placeholder;
+    }
+
+    /**
+     * Set placeholder.
+     *
+     * @param string $placeholder
+     */
+    public function setPlaceholder($placeholder)
+    {
+        $this->placeholder = $placeholder;
+    }
+
     public function getInteractionHole()
     {
         return $this->interactionHole;
     }
 
-    public function setInteractionHole(\UJM\ExoBundle\Entity\InteractionHole $interactionHole)
+    public function setInteractionHole(InteractionHole $interactionHole)
     {
         $this->interactionHole = $interactionHole;
     }
 
-    public function getWordResponses()
+    /**
+     * Get keywords.
+     *
+     * @return ArrayCollection
+     */
+    public function getKeywords()
     {
-        return $this->wordResponses;
+        return $this->keywords;
     }
 
-    public function addWordResponse(\UJM\ExoBundle\Entity\WordResponse $wordResponse)
+    /**
+     * Adds a keyword.
+     *
+     * @param WordResponse $keyword
+     */
+    public function addKeyword(WordResponse $keyword)
     {
-        $this->wordResponses[] = $wordResponse;
+        if (!$this->keywords->contains($keyword)) {
+            $this->keywords->add($keyword);
+            $keyword->setHole($this);
+        }
+    }
+
+    /**
+     * Removes a keyword.
+     *
+     * @param WordResponse $keyword
+     */
+    public function removeKeyword(WordResponse $keyword)
+    {
+        if ($this->keywords->contains($keyword)) {
+            $this->keywords->removeElement($keyword);
+        }
+    }
+
+    /**
+     * @deprecated use getKeywords() instead
+     *
+     * @return ArrayCollection
+     */
+    public function getWordResponses()
+    {
+        return $this->keywords;
+    }
+
+    /**
+     * @deprecated use addKeyword() instead
+     *
+     * @param WordResponse $wordResponse
+     */
+    public function addWordResponse(WordResponse $wordResponse)
+    {
+        $this->keywords[] = $wordResponse;
 
         $wordResponse->setHole($this);
     }
 
-    public function removeWordResponse(\UJM\ExoBundle\Entity\WordResponse $wordResponse)
+    /**
+     * @deprecated use removeKeyword() instead
+     *
+     * @param WordResponse $wordResponse
+     */
+    public function removeWordResponse(WordResponse $wordResponse)
     {
     }
 
@@ -185,13 +244,13 @@ class Hole
         if ($this->id) {
             $this->id = null;
 
-            $newWordResponses = new \Doctrine\Common\Collections\ArrayCollection();
-            foreach ($this->wordResponses as $wordResponse) {
+            $newWordResponses = new ArrayCollection();
+            foreach ($this->keywords as $wordResponse) {
                 $newWordResponse = clone $wordResponse;
                 $newWordResponse->setHole($this);
                 $newWordResponses->add($newWordResponse);
             }
-            $this->wordResponses = $newWordResponses;
+            $this->keywords = $newWordResponses;
         }
     }
 }

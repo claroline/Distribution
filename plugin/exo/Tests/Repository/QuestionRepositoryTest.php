@@ -5,7 +5,7 @@ namespace UJM\ExoBundle\Repository;
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\SurveyBundle\Repository\QuestionRepository;
-use UJM\ExoBundle\Testing\Persister;
+use UJM\ExoBundle\Library\Testing\Persister;
 
 class QuestionRepositoryTest extends TransactionalTestCase
 {
@@ -60,7 +60,8 @@ class QuestionRepositoryTest extends TransactionalTestCase
         //Il faut rajouter les steps..
         $q1 = $this->persist->qcmQuestion('qcm1');
         $q2 = $this->persist->qcmQuestion('qcm2');
-        $q3 = $this->persist->qcmQuestion('qcm3'); // extr
+        $this->persist->qcmQuestion('qcm3'); // extr
+
         $e1 = $this->persist->exercise('ex1', [$q1, $q2]);
         $this->om->flush();
 

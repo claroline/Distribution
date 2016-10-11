@@ -4,8 +4,8 @@ namespace UJM\ExoBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use UJM\ExoBundle\Entity\Exercise;
-use UJM\ExoBundle\Entity\StepQuestion;
 use UJM\ExoBundle\Entity\Question;
+use UJM\ExoBundle\Entity\StepQuestion;
 
 /**
  * StepQuestionRepository.
@@ -60,13 +60,13 @@ class StepQuestionRepository extends EntityRepository
      */
     public function findExoByOrder(Exercise $exo)
     {
-        return $query = $this->createQueryBuilder('sq')
-                ->join('sq.step', 's')
-                ->where('s.exercise = :exercise')
-                ->setParameter(':exercise', $exo)
-                ->orderBy('sq.ordre')
-                ->getQuery()
-                ->getResult();
+        return $this->createQueryBuilder('sq')
+            ->join('sq.step', 's')
+            ->where('s.exercise = :exercise')
+            ->setParameter(':exercise', $exo)
+            ->orderBy('sq.order')
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -79,16 +79,16 @@ class StepQuestionRepository extends EntityRepository
      */
     public function findStepByExoQuestion(Exercise $exo, Question $question)
     {
-        return $query = $this->createQueryBuilder('sq')
-                ->join('sq.step', 's')
-                ->where('s.exercise = :exercise')
-                ->andWhere('sq.question = :question')
-                ->setParameters([
-                    'exercise' => $exo,
-                    'question' => $question,
-                ])
-                ->getQuery()
-                ->getSingleResult();
+        return $this->createQueryBuilder('sq')
+            ->join('sq.step', 's')
+            ->where('s.exercise = :exercise')
+            ->andWhere('sq.question = :question')
+            ->setParameters([
+                'exercise' => $exo,
+                'question' => $question,
+            ])
+            ->getQuery()
+            ->getSingleResult();
     }
 
     /**
@@ -101,10 +101,10 @@ class StepQuestionRepository extends EntityRepository
      */
     public function getExercises(Question $question)
     {
-        return $query = $this->createQueryBuilder('sq')
-                ->where('sq.question = :question')
-                ->setParameter(':question', $question)
-                ->getQuery()
-                ->getResult();
+        return $this->createQueryBuilder('sq')
+            ->where('sq.question = :question')
+            ->setParameter(':question', $question)
+            ->getQuery()
+            ->getResult();
     }
 }

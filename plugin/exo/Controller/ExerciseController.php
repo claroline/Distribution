@@ -61,79 +61,6 @@ class ExerciseController extends Controller
     }
 
     /**
-     * Update the properties of an Exercise.
-     *
-     * @EXT\Route(
-     *     "/{id}/update",
-     *     name="ujm_exercise_update_meta",
-     *     options={"expose"=true}
-     * )
-     * @EXT\Method("PUT")
-     *
-     * @param Exercise $exercise
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function updateMetadataAction(Exercise $exercise)
-    {
-        $this->assertHasPermission('ADMINISTRATE', $exercise);
-
-        // Get Exercise data from the Request
-        $dataRaw = $this->get('request')->getContent();
-        if (!empty($dataRaw)) {
-            $this->get('ujm.exo.exercise_manager')->updateMetadata($exercise, json_decode($dataRaw));
-        }
-
-        return new JsonResponse($this->get('ujm.exo.exercise_manager')->exportExercise($exercise, false));
-    }
-
-    /**
-     * Publishes an exercise.
-     *
-     * @EXT\Route(
-     *     "/{id}/publish",
-     *     name="ujm_exercise_publish",
-     *     options={"expose"=true}
-     * )
-     * @EXT\Method("POST")
-     *
-     * @param Exercise $exercise
-     *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     */
-    public function publishAction(Exercise $exercise)
-    {
-        $this->assertHasPermission('ADMINISTRATE', $exercise);
-
-        $this->get('ujm.exo.exercise_manager')->publish($exercise);
-
-        return new JsonResponse($this->get('ujm.exo.exercise_manager')->exportExercise($exercise, false));
-    }
-
-    /**
-     * Unpublishes an exercise.
-     *
-     * @EXT\Route(
-     *     "/{id}/unpublish",
-     *     name="ujm_exercise_unpublish",
-     *     options={"expose"=true}
-     * )
-     * @EXT\Method("POST")
-     *
-     * @param Exercise $exercise
-     *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     */
-    public function unpublishAction(Exercise $exercise)
-    {
-        $this->assertHasPermission('ADMINISTRATE', $exercise);
-
-        $this->get('ujm.exo.exercise_manager')->unpublish($exercise);
-
-        return new JsonResponse($this->get('ujm.exo.exercise_manager')->exportExercise($exercise, false));
-    }
-
-    /**
      * Deletes all the papers associated with an exercise.
      *
      * @EXT\Route(
@@ -182,7 +109,7 @@ class ExerciseController extends Controller
     {
         $this->assertHasPermission('ADMINISTRATE', $exercise);
 
-        if ($QuestionsExo == '') {
+        if (empty($QuestionsExo)) {
             $QuestionsExo = false;
         }
 
@@ -210,16 +137,16 @@ class ExerciseController extends Controller
         $pageToGo = $request->query->get('pageGoNow'); // Page to go for the list of the questions of the exercise
 
         // If change page of my questions array
-        if ($click == 'my') {
+        if ($click === 'my') {
             // The choosen new page is for my questions array
             $pagerMy = $page;
         // Else if change page of my shared questions array
-        } elseif ($click == 'shared') {
+        } elseif ($click === 'shared') {
             // The choosen new page is for my shared questions array
             $pagerShared = $page;
         }
 
-        if ($QuestionsExo == 'true') {
+        if ((bool) $QuestionsExo === true) {
             $listQExo = $questionSer->getListQuestionExo($idExo, $user, $exercise);
             $allActions = $questionSer->getActionsAllQuestions($listQExo, $user->getId());
 
@@ -255,7 +182,7 @@ class ExerciseController extends Controller
                     ->getRepository('UJMExoBundle:Exercise')
                     ->getExerciseAdmin($user->getId());
 
-        if ($QuestionsExo == 'false') {
+        if ((bool) $QuestionsExo === 'false') {
             $vars['pagerMy'] = $pagerfantaMy;
             $vars['pagerShared'] = $pagerfantaShared;
             $vars['interactions'] = $interactionsPager;
@@ -314,37 +241,6 @@ class ExerciseController extends Controller
         } else {
             return $this->redirect($this->generateUrl('ujm_exercise_import_question', ['exoID' => $exoID]));
         }
-    }
-
-    /**
-     * Delete the Question of the exercise.
-     *
-     * @EXT\Route(
-     *     "/{id}/question/{qid}",
-     *     name="ujm_exercise_question_delete",
-     *     options={"expose"=true}
-     * )
-     * @EXT\Method("DELETE")
-     * @ParamConverter("Exercise", class="UJMExoBundle:Exercise")
-     *
-     * @param Exercise $exercise
-     * @param int      $qid      id of question to delete
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     */
-    public function deleteQuestionAction(Exercise $exercise, $qid)
-    {
-        $this->assertHasPermission('ADMINISTRATE', $exercise);
-
-        $em = $this->getDoctrine()->getManager();
-        $question = $em->getRepository('UJMExoBundle:Question')->find($qid);
-        //Temporary : Waiting step manager
-        $sq = $em->getRepository('UJMExoBundle:StepQuestion')
-            ->findStepByExoQuestion($exercise, $question);
-        $em->remove($sq);
-        $em->flush();
-
-        return new JsonResponse($this->get('ujm.exo.exercise_manager')->exportExercise($exercise, false));
     }
 
     /**
