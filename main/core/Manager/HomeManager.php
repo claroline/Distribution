@@ -149,7 +149,7 @@ class HomeManager
             }
 
             if ($first) {
-                for ($i = 0; $i < $type->getMaxContentPage() && $first != null; ++$i) {
+                for ($i = 0; $i < $type->getMaxContentPage() && $first !== null; ++$i) {
                     $variables = [];
                     $variables['content'] = $first->getContent();
                     $variables['size'] = $first->getSize();
@@ -183,7 +183,7 @@ class HomeManager
         foreach ($regions as $region) {
             $first = $this->contentRegion->findOneBy(['back' => null, 'region' => $region]);
 
-            while ($first != null) {
+            while ($first !== null) {
                 $contentType = $this->contentType->findOneBy(['content' => $first->getContent()]);
 
                 if ($contentType) {
