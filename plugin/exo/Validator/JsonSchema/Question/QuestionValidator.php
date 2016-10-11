@@ -65,6 +65,15 @@ class QuestionValidator extends JsonSchemaValidator
             ];
         }
 
+        if (!isset($question->score)) {
+            // No question with no score
+            // this is not in the schema because this will become optional when exercise without scores will be implemented
+            $errors[] = [
+                'path' => '/score',
+                'message' => 'Question score is required',
+            ];
+        }
+
         if (!$this->validatorCollector->hasHandlerForMimeType($question->type)) {
             $errors[] = [
                 'path' => '/type',
@@ -78,7 +87,7 @@ class QuestionValidator extends JsonSchemaValidator
                 ];
             } else {
                 // Forward to the correct handler
-                array_merge($errors, $this->validatorCollector->validateMimeType($question, $options));
+                $errors = array_merge($errors, $this->validatorCollector->validateMimeType($question, $options));
             }
         }
 

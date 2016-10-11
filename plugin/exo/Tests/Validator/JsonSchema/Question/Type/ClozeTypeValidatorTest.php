@@ -34,6 +34,22 @@ class ClozeTypeValidatorTest extends JsonSchemaTestCase
     }
 
     /**
+     * The validator MUST return an error if there is not the same number of solutions and holes.
+     */
+    public function testInvalidNumberOfSolutionsThrowsError()
+    {
+        $questionData = $this->loadTestData('question/cloze/invalid/invalid-number-of-solutions.json');
+
+        $errors = $this->validator->validate($questionData, ['solutionsRequired' => true]);
+
+        $this->assertGreaterThan(0, count($errors));
+        $this->assertTrue(in_array([
+            'path' => '/solutions',
+            'message' => 'there must be the same number of solutions and holes',
+        ], $errors));
+    }
+
+    /**
      * The validator MUST execute validation for its keywords when `solutionRequired`.
      */
     public function testSolutionKeywordsAreValidatedToo()

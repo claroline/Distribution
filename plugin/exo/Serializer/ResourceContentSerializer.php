@@ -112,17 +112,18 @@ class ResourceContentSerializer implements SerializerInterface
      * The only purpose of this serializer is to expose a common data representation of a resource,
      * it's not made to create/update them so the deserialization only returns an existing ResourceNode
      *
-     * @param \stdClass $data
-     * @param array     $options
+     * @param \stdClass    $data
+     * @param ResourceNode $resourceNode
+     * @param array        $options
      *
      * @return mixed
      */
-    public function deserialize($data, array $options = [])
+    public function deserialize($data, $resourceNode = null, array $options = [])
     {
-        if (!empty($options['entity'])) {
-            return $options['entity'];
-        } else {
-            return $this->om->getRepository('ClarolineCoreBundle:Resource\ResourceNode')->find($data->id);
+        if (empty($resourceNode)) {
+            $resourceNode = $this->om->getRepository('ClarolineCoreBundle:Resource\ResourceNode')->find($data->id);
         }
+
+        return $resourceNode;
     }
 }

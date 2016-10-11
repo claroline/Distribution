@@ -39,7 +39,7 @@ class ExerciseValidator extends JsonSchemaValidator
         $errors = [];
 
         if (isset($exercise->parameters)) {
-            array_merge($errors, $this->validateParameters($exercise->parameters));
+            $errors = array_merge($errors, $this->validateParameters($exercise->parameters));
         }
 
         if (isset($exercise->steps)) {

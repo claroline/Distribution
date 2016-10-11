@@ -51,7 +51,7 @@ class ExerciseSerializer implements SerializerInterface
 
 A Serializer exposes 2 methods : 
 - `serialize($entity, array $options = [])` : converts `$entity` into raw data (e.g. array, stdClass)
-- `deserialize($data, array $options = [])` : converts `$data` into symfony entities
+- `deserialize($data, $entity = null, array $options = [])` : converts `$data` into symfony entities
 
 The `$options` parameters can contain a `$options['entity']`. If it is set, the deserialization will populate this entity
 instead of creating a new one.

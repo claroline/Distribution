@@ -10,11 +10,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="UJM\ExoBundle\Repository\QuestionRepository")
  * @ORM\Table(name="ujm_question")
+ * @ORM\EntityListeners({"\UJM\ExoBundle\Listener\Entity\QuestionListener"})
  * @ORM\HasLifecycleCallbacks()
  */
 class Question
 {
     /**
+     * @var int
+     *
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -22,51 +25,74 @@ class Question
     private $id;
 
     /**
-     * @ORM\Column
+     * @var string
+     *
+     * @ORM\Column("uuid", type="string", length=36)
+     */
+    protected $uuid;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column()
      */
     private $type;
 
     /**
      * The mime type of the Question type.
      *
-     * @ORM\Column("mime_type", type="string")
-     *
      * @var string
+     *
+     * @ORM\Column("mime_type", type="string")
      */
     private $mimeType;
 
     /**
-     * @ORM\Column
+     * @var string
+     *
+     * @ORM\Column("title", type="string", nullable=true)
      */
     private $title;
 
     /**
+     * @var string
+     *
      * @ORM\Column(type="text", nullable=true)
      */
     private $description;
 
     /**
+     * @var string
+     *
      * @ORM\Column(type="text")
      * @Assert\NotBlank
      */
     private $invite;
 
     /**
+     * @var string
+     *
      * @ORM\Column(type="text", nullable=true)
      */
     private $feedback;
 
     /**
+     * @var \DateTime
+     *
      * @ORM\Column(name="date_create", type="datetime")
      */
     private $dateCreate;
 
     /**
+     * @var \DateTime
+     *
      * @ORM\Column(name="date_modify", type="datetime", nullable=true)
      */
     private $dateModify;
 
     /**
+     * @var bool
+     *
      * @ORM\Column(type="boolean")
      */
     private $model = false;
@@ -113,6 +139,14 @@ class Question
      */
     private $stepQuestions;
 
+    /**
+     * The linked interaction entity.
+     * This is populated by Doctrine Lifecycle events.
+     *
+     * @var AbstractInteraction
+     */
+    private $interaction = null;
+
     public function __construct()
     {
         $this->hints = new ArrayCollection();
@@ -121,6 +155,34 @@ class Question
         $this->stepQuestions = new ArrayCollection();
         $this->dateCreate = new \DateTime();
         $this->dateModify = new \DateTime();
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Gets UUID.
+     *
+     * @return string
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * Sets UUID.
+     *
+     * @param $uuid
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
     }
 
     /**
@@ -159,14 +221,6 @@ class Question
     public function setMimeType($mimeType)
     {
         $this->mimeType = $mimeType;
-    }
-
-    /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
     }
 
     /**
@@ -358,6 +412,16 @@ class Question
     /**
      * @return bool
      */
+    public function isModel()
+    {
+        return $this->model;
+    }
+
+    /**
+     * @deprecated use isModel() instead
+     *
+     * @return bool
+     */
     public function getModel()
     {
         return $this->model;
@@ -454,5 +518,21 @@ class Question
     public function getSpecification()
     {
         return $this->specification;
+    }
+
+    /**
+     * @return AbstractInteraction
+     */
+    public function getInteraction()
+    {
+        return $this->interaction;
+    }
+
+    /**
+     * @param AbstractInteraction $interaction
+     */
+    public function setInteraction(AbstractInteraction $interaction)
+    {
+        $this->interaction = $interaction;
     }
 }

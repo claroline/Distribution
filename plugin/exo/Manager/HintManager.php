@@ -90,7 +90,7 @@ class HintManager
         }
 
         // Update Exercise with new data
-        $this->serializer->deserialize($data, ['entity' => $hint]);
+        $this->serializer->deserialize($data, $hint);
 
         // Save to DB
         $this->om->persist($hint);

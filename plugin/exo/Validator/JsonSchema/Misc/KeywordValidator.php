@@ -48,9 +48,9 @@ class KeywordValidator extends JsonSchemaValidator
         foreach ($keywords as $index => $keyword) {
             // Validate keyword
             if (isset($options['validateSchema']) && $options['validateSchema']) {
-                array_merge($errors, $this->validate($keyword, $options));
+                $errors = array_merge($errors, $this->validate($keyword, $options));
             } else {
-                array_merge($errors, $this->validateAfterSchema($keyword, $options));
+                $errors = array_merge($errors, $this->validateAfterSchema($keyword, $options));
             }
 
             if (empty($errors)) {

@@ -49,19 +49,22 @@ class GraphicTypeSerializer implements QuestionHandlerInterface, SerializerInter
     /**
      * Converts raw data into a Graphic question entity.
      *
-     * @param \stdClass $data
-     * @param array     $options
+     * @param \stdClass          $data
+     * @param InteractionGraphic $graphicQuestion
+     * @param array              $options
      *
      * @return InteractionGraphic
      */
-    public function deserialize($data, array $options = [])
+    public function deserialize($data, $graphicQuestion = null, array $options = [])
     {
-        $entity = !empty($options['entity']) ? $options['entity'] : new InteractionGraphic();
+        if (empty($graphicQuestion)) {
+            $graphicQuestion = new InteractionGraphic();
+        }
 
-        $this->deserializeImage($entity, $data->image);
-        $this->deserializeAreas($entity, $data->solutions);
+        $this->deserializeImage($graphicQuestion, $data->image);
+        $this->deserializeAreas($graphicQuestion, $data->solutions);
 
-        return $entity;
+        return $graphicQuestion;
     }
 
     /**
@@ -152,17 +155,6 @@ class GraphicTypeSerializer implements QuestionHandlerInterface, SerializerInter
 
             $graphicQuestion->addArea($area);
         }
-
-        array_map(function (Coords $area) {
-            $solutionData = new \stdClass();
-            $solutionData->area = $this->serializeArea($area);
-            $solutionData->score = $area->getScore();
-            if ($area->getFeedback()) {
-                $solutionData->feedback = $area->getFeedback();
-            }
-
-            return $solutionData;
-        }, $graphicQuestion->getAreas()->toArray());
 
         // Remaining areas are no longer in the question
         foreach ($areaEntities as $areaToRemove) {

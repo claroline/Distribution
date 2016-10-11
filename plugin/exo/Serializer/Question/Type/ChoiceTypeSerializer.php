@@ -67,7 +67,7 @@ class ChoiceTypeSerializer implements QuestionHandlerInterface, SerializerInterf
         $questionData->multiple = $choiceQuestion->getTypeQCM()->getCode() === 1;
 
         // Serializes choices
-        $this->serializeChoices($choiceQuestion, $options);
+        $questionData->choices = $this->serializeChoices($choiceQuestion, $options);
 
         // Serializes score type
         $questionData->score = new \stdClass();
@@ -89,14 +89,17 @@ class ChoiceTypeSerializer implements QuestionHandlerInterface, SerializerInterf
     /**
      * Converts raw data into a Choice question entity.
      *
-     * @param \stdClass $data
-     * @param array     $options
+     * @param \stdClass      $data
+     * @param InteractionQCM $choiceQuestion
+     * @param array          $options
      *
      * @return InteractionQCM
      */
-    public function deserialize($data, array $options = [])
+    public function deserialize($data, $choiceQuestion = null, array $options = [])
     {
-        $choiceQuestion = !empty($options['entity']) ? $options['entity'] : new InteractionQCM();
+        if (empty($choiceQuestion)) {
+            $choiceQuestion = new InteractionQCM();
+        }
 
         $subTypeCode = $data->multiple ? 1 : 2;
         $subType = $this->om->getRepository('UJMExoBundle:TypeQCM')->findOneByCode($subTypeCode);
@@ -121,16 +124,14 @@ class ChoiceTypeSerializer implements QuestionHandlerInterface, SerializerInterf
      * Shuffles and serializes the Question choices.
      * To avoid shuffling, set `$options['randomize']` to false (eg. we don't want shuffle for papers).
      *
-     * @param InteractionQCM $questionType
+     * @param InteractionQCM $choiceQuestion
      * @param array          $options
      *
      * @return array
      */
-    private function serializeChoices(InteractionQCM $questionType, array $options = [])
+    private function serializeChoices(InteractionQCM $choiceQuestion, array $options = [])
     {
-        return array_map(function ($choice) use ($options) {
-            /* @var Choice $choice */
-
+        return array_map(function (Choice $choice) use ($options) {
             $node = $choice->getResourceNode();
             if (!empty($node)) {
                 $choiceData = $this->resourceContentSerializer->serialize($node, $options);
@@ -142,7 +143,7 @@ class ChoiceTypeSerializer implements QuestionHandlerInterface, SerializerInterf
             }
 
             return $choiceData;
-        }, $questionType->getChoices()->toArray());
+        }, $choiceQuestion->getChoices()->toArray());
     }
 
     /**

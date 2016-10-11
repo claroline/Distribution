@@ -83,6 +83,22 @@ class QuestionValidatorTest extends JsonSchemaTestCase
     }
 
     /**
+     * The validator MUST return an error if question has no score.
+     */
+    public function testMissingScoreThrowsError()
+    {
+        $questionData = $this->loadTestData('question/base/invalid/no-score.json');
+
+        $errors = $this->validator->validate($questionData);
+
+        $this->assertGreaterThan(0, count($errors));
+        $this->assertTrue(in_array([
+            'path' => '/score',
+            'message' => 'Question score is required',
+        ], $errors));
+    }
+
+    /**
      * The validator MUST return an error if question has no solution and the `solutionsRequired` option is set to true.
      */
     public function testMissingSolutionsWhenRequiredThrowsError()

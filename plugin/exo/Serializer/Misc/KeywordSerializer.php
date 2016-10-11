@@ -38,14 +38,17 @@ class KeywordSerializer implements SerializerInterface
     /**
      * Converts raw data into a Keyword entity.
      *
-     * @param \stdClass $data
-     * @param array     $options
+     * @param \stdClass    $data
+     * @param WordResponse $keyword
+     * @param array        $options
      *
      * @return WordResponse
      */
-    public function deserialize($data, array $options = [])
+    public function deserialize($data, $keyword = null, array $options = [])
     {
-        $keyword = !empty($options['entity']) ? $options['entity'] : new WordResponse();
+        if (empty($keyword)) {
+            $keyword = new WordResponse();
+        }
 
         $keyword->setText($data->text);
         $keyword->setCaseSensitive($data->caseSensitive);
@@ -56,5 +59,38 @@ class KeywordSerializer implements SerializerInterface
         }
 
         return $keyword;
+    }
+
+    /**
+     * Updates a collection of keywords entities from raw data.
+     * The one which are not in `$keywordCollection` are removed from the entity collection.
+     *
+     * @param \stdClass[]    $keywordCollection
+     * @param WordResponse[] $keywordEntities
+     * @param array          $options
+     *
+     * @return WordResponse[] - the list of updated WordResponse entities (and without the one no longer in `$keywordCollection`)
+     */
+    public function deserializeCollection(array $keywordCollection, array $keywordEntities, array $options = [])
+    {
+        $keywords = [];
+
+        foreach ($keywordCollection as $keywordData) {
+            $keyword = null;
+
+            // Searches for an existing keyword entity.
+            foreach ($keywordEntities as $entityKeyword) {
+                if ($entityKeyword->getText() === $keywordData->text
+                    && $entityKeyword->isCaseSensitive() === $keywordData->caseSensitive) {
+                    $keyword = $entityKeyword;
+                    break;
+                }
+            }
+
+            // Update or create keyword
+            $keywords[] = $this->deserialize($keywordData, $keyword, $options);
+        }
+
+        return $keywords;
     }
 }

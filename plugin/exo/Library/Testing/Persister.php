@@ -97,6 +97,7 @@ class Persister
     public function qcmQuestion($title, array $choices = [], $description = '')
     {
         $question = new Question();
+        $question->setUuid('3532D05C-CAE9-4ED2-9A55-6D7216C166EE');
         $question->setMimeType(QuestionType::CHOICE);
         $question->setTitle($title);
         $question->setInvite('Invite...');
@@ -132,6 +133,7 @@ class Persister
     public function openQuestion($title)
     {
         $question = new Question();
+        $question->setUuid('864FF1A6-68E3-411C-9C76-B341DE79ADCA');
         $question->setMimeType(QuestionType::OPEN);
         $question->setTitle($title);
         $question->setInvite('Invite...');
@@ -171,6 +173,7 @@ class Persister
     public function matchQuestion($title, $labels = [], $proposals = [])
     {
         $question = new Question();
+        $question->setUuid('7C676890-F800-443E-B98C-2B5FF815FD3B');
         $question->setMimeType(QuestionType::MATCH);
         $question->setTitle($title);
         $question->setInvite('Invite...');

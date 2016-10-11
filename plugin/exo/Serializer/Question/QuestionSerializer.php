@@ -4,7 +4,6 @@ namespace UJM\ExoBundle\Serializer\Question;
 
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use UJM\ExoBundle\Entity\AbstractInteraction;
 use UJM\ExoBundle\Entity\Hint;
 use UJM\ExoBundle\Entity\Question;
 use UJM\ExoBundle\Entity\QuestionObject;
@@ -84,7 +83,7 @@ class QuestionSerializer implements SerializerInterface
         $questionData->meta = $this->serializeMetadata($question, $options);
 
         // Add generic question information
-        $questionData->id = (string) $question->getId();
+        $questionData->id = $question->getUuid();
         $questionData->type = $question->getMimeType();
         $questionData->title = $question->getTitle();
         $questionData->description = $question->getDescription();
@@ -119,13 +118,24 @@ class QuestionSerializer implements SerializerInterface
      * Converts raw data into a Question entity.
      *
      * @param \stdClass $data
+     * @param Question  $question
      * @param array     $options
      *
      * @return Question
      */
-    public function deserialize($data, array $options = [])
+    public function deserialize($data, $question = null, array $options = [])
     {
-        $question = !empty($options['entity']) ? $options['entity'] : new Question();
+        if (empty($question)) {
+            // Loads the Question from DB if already exist
+            $question = $this->om->getRepository('UJMExoBundle:Question')->findOneBy([
+                'guid' => $data->id,
+            ]);
+
+            if (empty($question)) {
+                // Question not exist
+                $question = new Question();
+            }
+        }
 
         $question->setMimeType($data->type);
 
@@ -150,18 +160,22 @@ class QuestionSerializer implements SerializerInterface
         }
 
         if (!empty($data->hints)) {
-            $this->deserializeHints($question, $data->hints);
+            $this->deserializeHints($question, $data->hints, $options);
         }
 
         if (!empty($data->objects)) {
-            $this->deserializeObjects($question, $data->objects);
+            $this->deserializeObjects($question, $data->objects, $options);
         }
 
         if (!empty($data->resources)) {
-            $this->deserializeResources($question, $data->resources);
+            $this->deserializeResources($question, $data->resources, $options);
         }
 
         $this->deserializeQuestionType($question, $data, $options);
+
+        if (isset($data->meta)) {
+            $this->deserializeMetadata($question, $data->meta);
+        }
 
         return $question;
     }
@@ -171,12 +185,7 @@ class QuestionSerializer implements SerializerInterface
         /** @var SerializerInterface $typeSerializer */
         $typeSerializer = $this->serializerCollector->getHandlerForMimeType($question->getMimeType());
 
-        /** @var AbstractInteraction $type */
-        $type = $this->om->getRepository('UJMExoBundle:InteractionQCM')->findOneBy([
-            'question' => $question,
-        ]);
-
-        return $typeSerializer->serialize($type, $options);
+        return $typeSerializer->serialize($question->getInteraction(), $options);
     }
 
     private function deserializeQuestionType(Question $question, \stdClass $data, array $options = [])
@@ -184,14 +193,8 @@ class QuestionSerializer implements SerializerInterface
         /** @var SerializerInterface $typeSerializer */
         $typeSerializer = $this->serializerCollector->getHandlerForMimeType($question->getMimeType());
 
-        /** @var AbstractInteraction $type */
-        $type = $this->om->getRepository('UJMExoBundle:InteractionQCM')->findOneBy([
-            'question' => $question,
-        ]);
-
         // Deserialize question type data
-        $options['entity'] = $type;
-        $type = $typeSerializer->deserialize($data, $options);
+        $type = $typeSerializer->deserialize($data, $question->getInteraction(), $options);
         $type->setQuestion($question);
     }
 
@@ -205,12 +208,17 @@ class QuestionSerializer implements SerializerInterface
      */
     private function serializeMetadata(Question $question, array $options = [])
     {
-        $creator = $question->getUser();
-        $author = new \stdClass();
-        $author->name = sprintf('%s %s', $creator->getFirstName(), $creator->getLastName());
-
         $metadata = new \stdClass();
-        $metadata->authors = [$author];
+
+        $creator = $question->getUser();
+        if ($creator) {
+            $author = new \stdClass();
+            $author->name = sprintf('%s %s', $creator->getFirstName(), $creator->getLastName());
+
+            $metadata->authors = [$author];
+        }
+
+        $metadata->model = $question->isModel();
         $metadata->created = $question->getDateCreate()->format('Y-m-d\TH:i:s');
         $metadata->updated = $question->getDateModify()->format('Y-m-d\TH:i:s');
 
@@ -223,6 +231,19 @@ class QuestionSerializer implements SerializerInterface
         }
 
         return $metadata;
+    }
+
+    /**
+     * Deserializes Question metadata.
+     *
+     * @param Question  $question
+     * @param \stdClass $metadata
+     */
+    public function deserializeMetadata(Question $question, \stdClass $metadata)
+    {
+        if (isset($metadata->model)) {
+            $question->setModel($metadata->model);
+        }
     }
 
     /**
@@ -247,8 +268,9 @@ class QuestionSerializer implements SerializerInterface
      *
      * @param Question $question
      * @param array    $hints
+     * @param array    $options
      */
-    private function deserializeHints(Question $question, array $hints = [])
+    private function deserializeHints(Question $question, array $hints = [], array $options = [])
     {
         $hintEntities = $question->getHints()->toArray();
 
@@ -265,7 +287,7 @@ class QuestionSerializer implements SerializerInterface
                 }
             }
 
-            $entity = $this->hintSerializer->deserialize($hintData, !empty($existingHint) ? ['entity' => $existingHint] : []);
+            $entity = $this->hintSerializer->deserialize($hintData, $existingHint, $options);
 
             if (empty($existingHint)) {
                 // Creation of a new hint (we need to link it to the question)
@@ -303,8 +325,9 @@ class QuestionSerializer implements SerializerInterface
      *
      * @param Question $question
      * @param array    $objects
+     * @param array    $options
      */
-    private function deserializeObjects(Question $question, array $objects = [])
+    private function deserializeObjects(Question $question, array $objects = [], array $options = [])
     {
         $objectEntities = $question->getObjects()->toArray();
 
@@ -323,7 +346,7 @@ class QuestionSerializer implements SerializerInterface
 
             // Link object to question
             if (empty($existingObject)) {
-                $node = $this->resourceContentSerializer->deserialize($objectData, ['entity' => $existingObject]);
+                $node = $this->resourceContentSerializer->deserialize($objectData, $existingObject, $options);
                 if ($node) {
                     $question->addObject($node);
                 }
@@ -360,8 +383,9 @@ class QuestionSerializer implements SerializerInterface
      *
      * @param Question $question
      * @param array    $resources
+     * @param array    $options
      */
-    private function deserializeResources(Question $question, array $resources = [])
+    private function deserializeResources(Question $question, array $resources = [], array $options = [])
     {
         $resourceEntities = $question->getResources()->toArray();
 
@@ -380,7 +404,7 @@ class QuestionSerializer implements SerializerInterface
 
             // Link resource to question
             if (empty($existingResource)) {
-                $node = $this->resourceContentSerializer->deserialize($resourceData, ['entity' => $existingResource]);
+                $node = $this->resourceContentSerializer->deserialize($resourceData, $existingResource, $options);
                 if ($node) {
                     $question->addResource($node);
                 }

@@ -69,20 +69,23 @@ class ClozeTypeSerializer implements QuestionHandlerInterface, SerializerInterfa
     /**
      * Converts raw data into a Cloze question entity.
      *
-     * @param \stdClass $data
-     * @param array     $options
+     * @param \stdClass       $data
+     * @param InteractionHole $clozeQuestion
+     * @param array           $options
      *
      * @return InteractionHole
      */
-    public function deserialize($data, array $options = [])
+    public function deserialize($data, $clozeQuestion = null, array $options = [])
     {
-        $entity = !empty($options['entity']) ? $options['entity'] : new InteractionHole();
+        if (empty($clozeQuestion)) {
+            $clozeQuestion = new InteractionHole();
+        }
 
-        $entity->setText($data->text);
+        $clozeQuestion->setText($data->text);
 
-        $this->deserializeHoles($entity, $data->holes, $data->solutions);
+        $this->deserializeHoles($clozeQuestion, $data->holes, $data->solutions, $options);
 
-        return $entity;
+        return $clozeQuestion;
     }
 
     /**
@@ -121,8 +124,9 @@ class ClozeTypeSerializer implements QuestionHandlerInterface, SerializerInterfa
      * @param InteractionHole $clozeQuestion
      * @param array           $holes
      * @param array           $solutions
+     * @param array           $options
      */
-    private function deserializeHoles(InteractionHole $clozeQuestion, array $holes, array $solutions)
+    private function deserializeHoles(InteractionHole $clozeQuestion, array $holes, array $solutions, array $options = [])
     {
         $holeEntities = $clozeQuestion->getHoles()->toArray();
 
@@ -153,7 +157,7 @@ class ClozeTypeSerializer implements QuestionHandlerInterface, SerializerInterfa
 
             foreach ($solutions as $solution) {
                 if ($solution->holeId === $holeData->id) {
-                    // TODO : update or create keywords
+                    $this->deserializeHoleKeywords($hole, $holeData->keywords, $options);
 
                     break;
                 }
@@ -166,6 +170,19 @@ class ClozeTypeSerializer implements QuestionHandlerInterface, SerializerInterfa
         foreach ($holeEntities as $holeToRemove) {
             $clozeQuestion->removeHole($holeToRemove);
         }
+    }
+
+    /**
+     * Deserializes the keywords of a Hole.
+     *
+     * @param Hole  $hole
+     * @param array $keywords
+     * @param array $options
+     */
+    private function deserializeHoleKeywords(Hole $hole, array $keywords, array $options = [])
+    {
+        $updatedKeywords = $this->keywordSerializer->deserializeCollection($keywords, $hole->getKeywords()->toArray(), $options);
+        $hole->setKeywords($updatedKeywords);
     }
 
     private function serializeSolutions(InteractionHole $clozeQuestion)

@@ -148,7 +148,7 @@ class QuestionManager
         }
 
         // Update Exercise with new data
-        $this->serializer->deserialize($data, ['entity' => $question]);
+        $this->serializer->deserialize($data, $question);
 
         // Save to DB
         $this->om->persist($question);

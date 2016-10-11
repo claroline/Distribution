@@ -38,7 +38,7 @@ class InteractionHole extends AbstractInteraction
      *     cascade={"persist", "remove"},
      *     orphanRemoval=true
      * )
-     * @ORM\OrderBy({"order" = "ASC"})
+     * @ORM\OrderBy({"position" = "ASC"})
      */
     private $holes;
 
