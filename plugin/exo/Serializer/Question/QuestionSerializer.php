@@ -128,7 +128,7 @@ class QuestionSerializer implements SerializerInterface
         if (empty($question)) {
             // Loads the Question from DB if already exist
             $question = $this->om->getRepository('UJMExoBundle:Question')->findOneBy([
-                'guid' => $data->id,
+                'uuid' => $data->id,
             ]);
 
             if (empty($question)) {
@@ -137,6 +137,7 @@ class QuestionSerializer implements SerializerInterface
             }
         }
 
+        $question->setUuid($data->id);
         $question->setMimeType($data->type);
 
         if (isset($data->title)) {
