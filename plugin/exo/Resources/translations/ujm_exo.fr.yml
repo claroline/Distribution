@@ -295,6 +295,7 @@ num_paper: Numéro de la copie
 only_once: => Les bonnes réponses ne sont comptabilisées qu'une seule fois.
 only_owner_graphic: Seul le propriétaire peut changer l'image
 open: Ouverte
+open_maximum_length: Longueur maximum de la réponse (nombre de caractères)
 open_creation: Création d'une question ouverte
 open_edition: Edition d'une question ouverte
 orders: Consignes

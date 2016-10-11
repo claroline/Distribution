@@ -88,6 +88,9 @@ function reduceItems(items = {}, action = {}) {
         case 'application/x.choice+json':
           newItem = properties[action.itemType].reducer(newItem, action)
           break
+        case 'application/x.open+json':
+          newItem = properties[action.itemType].reducer(newItem, action)
+          break
       }
       return update(items, {[action.id]: {$set: newItem}})
     }
