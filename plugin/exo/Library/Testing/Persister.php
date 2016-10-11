@@ -8,6 +8,7 @@ use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use UJM\ExoBundle\Entity\Category;
 use UJM\ExoBundle\Entity\Choice;
@@ -39,6 +40,11 @@ class Persister
     private $om;
 
     /**
+     * @var ClaroUtilities
+     */
+    private $utilities;
+
+    /**
      * @var ResourceType
      */
     private $exoType;
@@ -63,10 +69,11 @@ class Persister
      */
     private $paperManager;
 
-    public function __construct(ObjectManager $om, PaperManager $paperManager)
+    public function __construct(ObjectManager $om, PaperManager $paperManager, ClaroUtilities $utilities)
     {
         $this->om = $om;
         $this->paperManager = $paperManager;
+        $this->utilities = $utilities;
     }
 
     /**
@@ -97,7 +104,7 @@ class Persister
     public function qcmQuestion($title, array $choices = [], $description = '')
     {
         $question = new Question();
-        $question->setUuid('3532D05C-CAE9-4ED2-9A55-6D7216C166EE');
+        $question->setUuid($this->utilities->generateGuid());
         $question->setMimeType(QuestionType::CHOICE);
         $question->setTitle($title);
         $question->setInvite('Invite...');
@@ -133,7 +140,7 @@ class Persister
     public function openQuestion($title)
     {
         $question = new Question();
-        $question->setUuid('864FF1A6-68E3-411C-9C76-B341DE79ADCA');
+        $question->setUuid($this->utilities->generateGuid());
         $question->setMimeType(QuestionType::OPEN);
         $question->setTitle($title);
         $question->setInvite('Invite...');
@@ -173,7 +180,7 @@ class Persister
     public function matchQuestion($title, $labels = [], $proposals = [])
     {
         $question = new Question();
-        $question->setUuid('7C676890-F800-443E-B98C-2B5FF815FD3B');
+        $question->setUuid($this->utilities->generateGuid());
         $question->setMimeType(QuestionType::MATCH);
         $question->setTitle($title);
         $question->setInvite('Invite...');
@@ -215,6 +222,7 @@ class Persister
      public function exercise($title, array $questions = [], User $user = null)
      {
          $exercise = new Exercise();
+         $exercise->setUuid($this->utilities->generateGuid());
          if ($user) {
              if (!isset($this->exoType)) {
                  $this->exoType = new ResourceType();
@@ -237,6 +245,7 @@ class Persister
 
          for ($i = 0, $max = count($questions); $i < $max; ++$i) {
              $step = new Step();
+             $step->setUuid($this->utilities->generateGuid());
              $step->setText('step');
              $step->setOrder($i);
 

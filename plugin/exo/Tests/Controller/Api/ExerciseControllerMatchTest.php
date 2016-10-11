@@ -47,7 +47,9 @@ class ExerciseControllerMatchTest extends TransactionalTestCase
         parent::setUp();
         $this->om = $this->client->getContainer()->get('claroline.persistence.object_manager');
         $manager = $this->client->getContainer()->get('ujm.exo.paper_manager');
-        $this->persist = new Persister($this->om, $manager);
+        $ut = $this->client->getContainer()->get('claroline.utilities.misc');
+
+        $this->persist = new Persister($this->om, $manager, $ut);
         $this->john = $this->persist->user('john');
         $this->bob = $this->persist->user('bob');
 

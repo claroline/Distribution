@@ -47,7 +47,7 @@ class ExerciseSerializer implements SerializerInterface
         $node = $exercise->getResourceNode();
 
         $exerciseData = new \stdClass();
-        $exerciseData->id = (string) $exercise->getId();
+        $exerciseData->id = $exercise->getUuid();
         $exerciseData->title = $node->getName();
 
         if (!empty($exercise->getDescription())) {
@@ -78,6 +78,8 @@ class ExerciseSerializer implements SerializerInterface
         if (empty($exercise)) {
             $exercise = new Exercise();
         }
+
+        $exercise->setUuid($data->id);
 
         // Update ResourceNode
         $node = $exercise->getResourceNode();
@@ -259,7 +261,7 @@ class ExerciseSerializer implements SerializerInterface
             // Searches for an existing step entity.
             foreach ($stepEntities as $entityIndex => $entityStep) {
                 /** @var Step $entityStep */
-                if ((string) $entityStep->getId() === $stepData->id) {
+                if ($entityStep->getUuid() === $stepData->id) {
                     $existingStep = $entityStep;
                     unset($stepEntities[$entityIndex]);
                     break;

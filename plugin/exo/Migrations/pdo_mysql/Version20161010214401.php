@@ -15,6 +15,16 @@ class Version20161010214401 extends AbstractMigration
     public function up(Schema $schema)
     {
         $this->addSql('
+            ALTER TABLE ujm_exercise 
+            ADD uuid VARCHAR(36) NOT NULL
+        ');
+
+        $this->addSql('
+            ALTER TABLE ujm_step 
+            ADD uuid VARCHAR(36) NOT NULL
+        ');
+
+        $this->addSql('
             ALTER TABLE ujm_question 
             ADD uuid VARCHAR(36) NOT NULL
         ');
@@ -22,6 +32,16 @@ class Version20161010214401 extends AbstractMigration
 
     public function down(Schema $schema)
     {
+        $this->addSql('
+            ALTER TABLE ujm_exercise
+            DROP uuid
+        ');
+
+        $this->addSql('
+            ALTER TABLE ujm_step 
+            DROP uuid
+        ');
+
         $this->addSql('
             ALTER TABLE ujm_question 
             DROP uuid

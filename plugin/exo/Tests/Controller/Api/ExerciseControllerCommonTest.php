@@ -45,7 +45,9 @@ class ExerciseControllerCommonTest extends TransactionalTestCase
         parent::setUp();
         $this->om = $this->client->getContainer()->get('claroline.persistence.object_manager');
         $manager = $this->client->getContainer()->get('ujm.exo.paper_manager');
-        $this->persist = new Persister($this->om, $manager);
+        $ut = $this->client->getContainer()->get('claroline.utilities.misc');
+
+        $this->persist = new Persister($this->om, $manager, $ut);
         $this->john = $this->persist->user('john');
         $this->bob = $this->persist->user('bob');
 
@@ -75,29 +77,29 @@ class ExerciseControllerCommonTest extends TransactionalTestCase
 
     public function testAnonymousExport()
     {
-        $this->request('GET', "/exercise/api/exercises/{$this->ex1->getId()}");
+        $this->request('GET', "/exercise/api/exercises/{$this->ex1->getUuid()}");
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
     }
 
     public function testNonCreatorExport()
     {
-        $this->request('GET', "/exercise/api/exercises/{$this->ex1->getId()}", $this->bob);
+        $this->request('GET', "/exercise/api/exercises/{$this->ex1->getUuid()}", $this->bob);
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
     }
 
     public function testNonCreatorAdminExport()
     {
-        $this->request('GET', "/exercise/api/exercises/{$this->ex1->getId()}", $this->admin);
+        $this->request('GET', "/exercise/api/exercises/{$this->ex1->getUuid()}", $this->admin);
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
     }
 
     public function testExport()
     {
-        $this->request('GET', "/exercise/api/exercises/{$this->ex1->getId()}", $this->john);
+        $this->request('GET', "/exercise/api/exercises/{$this->ex1->getUuid()}", $this->john);
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
 
         $content = json_decode($this->client->getResponse()->getContent());
-        $this->assertEquals($this->ex1->getId(), $content->id);
+        $this->assertEquals($this->ex1->getUuid(), $content->id);
         $this->assertEquals('ex1', $content->title);
         $this->assertEquals('Invite...', $content->steps[0]->items[0]->content);
     }
@@ -108,10 +110,10 @@ class ExerciseControllerCommonTest extends TransactionalTestCase
      */
     public function testMinimalExport()
     {
-        $this->request('GET', "/exercise/api/exercises/{$this->ex1->getId()}/minimal", $this->john);
+        $this->request('GET', "/exercise/api/exercises/{$this->ex1->getUuid()}/minimal", $this->john);
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $content = json_decode($this->client->getResponse()->getContent());
-        $this->assertEquals($this->ex1->getId(), $content->id);
+        $this->assertEquals($this->ex1->getUuid(), $content->id);
         $this->assertEquals('ex1', $content->title);
         $this->assertFalse(property_exists($content, 'steps'));
     }

@@ -19,6 +19,13 @@ class Exercise extends AbstractResource
     const TYPE_FORMATIVE = '3';
 
     /**
+     * @var string
+     *
+     * @ORM\Column("uuid", type="string", length=36)
+     */
+    private $uuid;
+
+    /**
      * @ORM\Column(name="description", type="text", nullable=true)
      */
     private $description = '';
@@ -192,6 +199,26 @@ class Exercise extends AbstractResource
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Gets UUID.
+     *
+     * @return string
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * Sets UUID.
+     *
+     * @param $uuid
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
     }
 
     /**

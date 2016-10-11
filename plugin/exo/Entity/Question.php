@@ -29,7 +29,7 @@ class Question
      *
      * @ORM\Column("uuid", type="string", length=36)
      */
-    protected $uuid;
+    private $uuid;
 
     /**
      * @var string
