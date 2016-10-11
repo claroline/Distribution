@@ -10,10 +10,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="UJM\ExoBundle\Repository\QuestionRepository")
  * @ORM\Table(name="ujm_question")
+ * @ORM\EntityListeners({"\UJM\ExoBundle\Listener\Entity\QuestionListener"})
+ * @ORM\HasLifecycleCallbacks()
  */
 class Question
 {
     /**
+     * @var int
+     *
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -21,47 +25,74 @@ class Question
     private $id;
 
     /**
-     * @ORM\Column
+     * @var string
+     *
+     * @ORM\Column("uuid", type="string", length=36)
+     */
+    protected $uuid;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column()
      */
     private $type;
 
     /**
-     * @ORM\Column
+     * The mime type of the Question type.
+     *
+     * @var string
+     *
+     * @ORM\Column("mime_type", type="string")
+     */
+    private $mimeType;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column("title", type="string", nullable=true)
      */
     private $title;
 
     /**
+     * @var string
+     *
      * @ORM\Column(type="text", nullable=true)
      */
     private $description;
 
     /**
+     * @var string
+     *
      * @ORM\Column(type="text")
      * @Assert\NotBlank
      */
     private $invite;
 
     /**
+     * @var string
+     *
      * @ORM\Column(type="text", nullable=true)
      */
     private $feedback;
 
     /**
+     * @var \DateTime
+     *
      * @ORM\Column(name="date_create", type="datetime")
      */
     private $dateCreate;
 
     /**
+     * @var \DateTime
+     *
      * @ORM\Column(name="date_modify", type="datetime", nullable=true)
      */
     private $dateModify;
 
     /**
-     * @ORM\Column(type="boolean")
-     */
-    private $locked = false;
-
-    /**
+     * @var bool
+     *
      * @ORM\Column(type="boolean")
      */
     private $model = false;
@@ -87,18 +118,19 @@ class Question
     private $user;
 
     /**
-     * @ORM\OneToMany(
-     *     targetEntity="Hint",
-     *     mappedBy="question",
-     *     cascade={"remove", "persist"}
-     * )
+     * @ORM\OneToMany(targetEntity="Hint", mappedBy="question", cascade={"remove", "persist"}, orphanRemoval=true)
      */
     private $hints;
 
     /**
-     * @ORM\OneToMany(targetEntity="ObjectQuestion", mappedBy="question", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="QuestionObject", mappedBy="question", cascade={"remove", "persist"}, orphanRemoval=true)
      */
     private $objects;
+
+    /**
+     * @ORM\OneToMany(targetEntity="QuestionResource", mappedBy="question", cascade={"remove", "persist"}, orphanRemoval=true)
+     */
+    private $resources;
 
     /**
      * Note: used for joins only., orphanRemoval=true.
@@ -107,12 +139,50 @@ class Question
      */
     private $stepQuestions;
 
+    /**
+     * The linked interaction entity.
+     * This is populated by Doctrine Lifecycle events.
+     *
+     * @var AbstractInteraction
+     */
+    private $interaction = null;
+
     public function __construct()
     {
         $this->hints = new ArrayCollection();
         $this->objects = new ArrayCollection();
+        $this->resources = new ArrayCollection();
         $this->stepQuestions = new ArrayCollection();
         $this->dateCreate = new \DateTime();
+        $this->dateModify = new \DateTime();
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Gets UUID.
+     *
+     * @return string
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * Sets UUID.
+     *
+     * @param $uuid
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
     }
 
     /**
@@ -134,11 +204,23 @@ class Question
     }
 
     /**
-     * @return int
+     * Gets mime type.
+     *
+     * @return string
      */
-    public function getId()
+    public function getMimeType()
     {
-        return $this->id;
+        return $this->mimeType;
+    }
+
+    /**
+     * Sets mime type.
+     *
+     * @param $mimeType
+     */
+    public function setMimeType($mimeType)
+    {
+        $this->mimeType = $mimeType;
     }
 
     /**
@@ -189,12 +271,18 @@ class Question
         return $this->invite;
     }
 
+    /**
+     * @return ArrayCollection
+     */
     public function getObjects()
     {
         return $this->objects;
     }
 
-    public function addObject(ObjectQuestion $object)
+    /**
+     * @param QuestionObject $object
+     */
+    public function addObject(QuestionObject $object)
     {
         if (!$this->objects->contains($object)) {
             $this->objects->add($object);
@@ -202,11 +290,44 @@ class Question
         }
     }
 
-    public function removeObject(ObjectQuestion $object)
+    /**
+     * @param QuestionObject $object
+     */
+    public function removeObject(QuestionObject $object)
     {
         if ($this->objects->contains($object)) {
             $this->objects->removeElement($object);
             $object->setQuestion(null);
+        }
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResources()
+    {
+        return $this->resources;
+    }
+
+    /**
+     * @param QuestionResource $resource
+     */
+    public function addResource(QuestionResource $resource)
+    {
+        if (!$this->resources->contains($resource)) {
+            $this->resources->add($resource);
+            $resource->setQuestion($this);
+        }
+    }
+
+    /**
+     * @param QuestionResource $resource
+     */
+    public function removeResource(QuestionResource $resource)
+    {
+        if ($this->resources->contains($resource)) {
+            $this->resources->removeElement($resource);
+            $resource->setQuestion(null);
         }
     }
 
@@ -227,11 +348,23 @@ class Question
     }
 
     /**
+     * @deprecated let the PrePersist hook do job
+     *
      * @param \Datetime $dateCreate
      */
     public function setDateCreate(\DateTime $dateCreate)
     {
         $this->dateCreate = $dateCreate;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function updateDateCreate()
+    {
+        if (empty($this->dateCreate)) {
+            $this->dateCreate = new \DateTime();
+        }
     }
 
     /**
@@ -243,11 +376,21 @@ class Question
     }
 
     /**
+     * @deprecated let the PreUpdate hook do job
+     *
      * @param \Datetime $dateModify
      */
     public function setDateModify(\DateTime $dateModify)
     {
         $this->dateModify = $dateModify;
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function updateDateModify()
+    {
+        $this->dateModify = new \DateTime();
     }
 
     /**
@@ -259,22 +402,6 @@ class Question
     }
 
     /**
-     * @param bool $locked
-     */
-    public function setLocked($locked)
-    {
-        $this->locked = $locked;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getLocked()
-    {
-        return $this->locked;
-    }
-
-    /**
      * @param bool $model
      */
     public function setModel($model)
@@ -283,6 +410,16 @@ class Question
     }
 
     /**
+     * @return bool
+     */
+    public function isModel()
+    {
+        return $this->model;
+    }
+
+    /**
+     * @deprecated use isModel() instead
+     *
      * @return bool
      */
     public function getModel()
@@ -335,17 +472,19 @@ class Question
      */
     public function addHint(Hint $hint)
     {
-        $this->hints->add($hint);
-        $hint->setQuestion($this);
+        if (!$this->hints->contains($hint)) {
+            $this->hints->add($hint);
+            $hint->setQuestion($this);
+        }
     }
 
     /**
-     * @param array $hints
+     * @param Hint $hint
      */
-    public function setHints(array $hints)
+    public function removeHint(Hint $hint)
     {
-        foreach ($hints as $hint) {
-            $this->addHint($hint);
+        if ($this->hints->contains($hint)) {
+            $this->hints->removeElement($hint);
         }
     }
 
@@ -379,5 +518,21 @@ class Question
     public function getSpecification()
     {
         return $this->specification;
+    }
+
+    /**
+     * @return AbstractInteraction
+     */
+    public function getInteraction()
+    {
+        return $this->interaction;
+    }
+
+    /**
+     * @param AbstractInteraction $interaction
+     */
+    public function setInteraction(AbstractInteraction $interaction)
+    {
+        $this->interaction = $interaction;
     }
 }

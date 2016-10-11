@@ -1,13 +1,13 @@
 <?php
 
-/**
- * To import an open question.
- */
-
 namespace UJM\ExoBundle\Services\classes\QTI;
 
 use UJM\ExoBundle\Entity\InteractionOpen;
+use UJM\ExoBundle\Entity\TypeOpenQuestion;
 
+/**
+ * To import an open question.
+ */
 class OpenImport extends QtiImport
 {
     protected $interactionOpen;
@@ -47,7 +47,6 @@ class OpenImport extends QtiImport
 
         $this->interactionOpen = new InteractionOpen();
         $this->interactionOpen->setQuestion($this->question);
-        $this->interactionOpen->setOrthographyCorrect(false);
         $this->interactionOpen->setTypeOpenQuestion($codeTypeOpen);
         $this->interactionOpen->setScoreMaxLongResp($val->nodeValue);
 
@@ -59,7 +58,7 @@ class OpenImport extends QtiImport
      * return the TypeOpenQuestion.
      *
      *
-     * @return UJM\ExoBundle\Entity\TypeOpenQuestion
+     * @return TypeOpenQuestion
      */
     protected function getCodeTypeOpen()
     {
@@ -109,7 +108,7 @@ class OpenImport extends QtiImport
 
     private function longQtiValidate()
     {
-        if ($this->assessmentItem->getElementsByTagName('responseDeclaration')->item(0) == null) {
+        if (empty($this->assessmentItem->getElementsByTagName('responseDeclaration')->item(0))) {
             return false;
         }
 
@@ -118,11 +117,8 @@ class OpenImport extends QtiImport
 
     private function shortQtiValidate()
     {
-        if ($this->assessmentItem->getElementsByTagName('responseDeclaration')->item(0) == null) {
-            return false;
-        }
         $rd = $this->assessmentItem->getElementsByTagName('responseDeclaration')->item(0);
-        if ($rd->getElementsByTagName('mapping')->item(0) == null) {
+        if (empty($rd) || empty($rd->getElementsByTagName('mapping')->item(0))) {
             return false;
         }
 

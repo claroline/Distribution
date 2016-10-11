@@ -6,6 +6,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * An Open question.
+ *
  * @ORM\Entity
  * @ORM\Table(name="ujm_interaction_open")
  */
@@ -14,23 +16,14 @@ class InteractionOpen extends AbstractInteraction
     const TYPE = 'InteractionOpen';
 
     /**
-     * @ORM\Column(name="orthography_correct", type="boolean")
-     */
-    private $orthographyCorrect = false;
-
-    /**
      * @ORM\ManyToOne(targetEntity="TypeOpenQuestion")
      */
     private $typeopenquestion;
 
     /**
-     * @ORM\OneToMany(
-     *     targetEntity="WordResponse",
-     *     mappedBy="interactionopen",
-     *     cascade={"remove"}
-     * )
+     * @ORM\OneToMany(targetEntity="WordResponse", mappedBy="interactionopen", cascade={"persist", "remove"}, orphanRemoval=true)
      */
-    private $wordResponses;
+    private $keywords;
 
     /**
      * @ORM\Column(type="float", nullable=true)
@@ -39,7 +32,7 @@ class InteractionOpen extends AbstractInteraction
 
     public function __construct()
     {
-        $this->wordResponses = new ArrayCollection();
+        $this->keywords = new ArrayCollection();
     }
 
     /**
@@ -48,22 +41,6 @@ class InteractionOpen extends AbstractInteraction
     public static function getQuestionType()
     {
         return self::TYPE;
-    }
-
-    /**
-     * @param bool $orthographyCorrect
-     */
-    public function setOrthographyCorrect($orthographyCorrect)
-    {
-        $this->orthographyCorrect = $orthographyCorrect;
-    }
-
-    /**
-     * Get orthographyCorrect.
-     */
-    public function getOrthographyCorrect()
-    {
-        return $this->orthographyCorrect;
     }
 
     /**
@@ -83,28 +60,83 @@ class InteractionOpen extends AbstractInteraction
     }
 
     /**
+     * Get keywords.
+     *
+     * @return ArrayCollection
+     */
+    public function getKeywords()
+    {
+        return $this->keywords;
+    }
+
+    /**
+     * Sets keywords collection.
+     *
+     * @param array $keywords
+     */
+    public function setKeywords(array $keywords)
+    {
+        $this->keywords = new ArrayCollection(array_map(function (WordResponse $keyword) {
+            $keyword->setInteractionOpen($this);
+
+            return $keyword;
+        }, $keywords));
+    }
+
+    /**
+     * Adds a keyword.
+     *
+     * @param WordResponse $keyword
+     */
+    public function addKeyword(WordResponse $keyword)
+    {
+        if (!$this->keywords->contains($keyword)) {
+            $this->keywords->add($keyword);
+            $keyword->setInteractionOpen($this);
+        }
+    }
+
+    /**
+     * Removes a keyword.
+     *
+     * @param WordResponse $keyword
+     */
+    public function removeKeyword(WordResponse $keyword)
+    {
+        if ($this->keywords->contains($keyword)) {
+            $this->keywords->removeElement($keyword);
+        }
+    }
+
+    /**
+     * @deprecated use getKeywords() instead
+     *
      * @return ArrayCollection
      */
     public function getWordResponses()
     {
-        return $this->wordResponses;
+        return $this->keywords;
     }
 
     /**
+     * @deprecated use addKeyword() instead
+     *
      * @param WordResponse $wordResponse
      */
     public function addWordResponse(WordResponse $wordResponse)
     {
-        $this->wordResponses->add($wordResponse);
+        $this->keywords->add($wordResponse);
         $wordResponse->setInteractionOpen($this);
     }
 
     /**
+     * @deprecated use removeKeywords() instead
+     *
      * @param WordResponse $wordResponse
      */
     public function removeWordResponse(WordResponse $wordResponse)
     {
-        $this->wordResponses->removeElement($wordResponse);
+        $this->keywords->removeElement($wordResponse);
     }
 
     /**
@@ -130,13 +162,13 @@ class InteractionOpen extends AbstractInteraction
             $this->question = clone $this->question;
             $newWordResponses = new ArrayCollection();
 
-            foreach ($this->wordResponses as $wordResponse) {
+            foreach ($this->keywords as $wordResponse) {
                 $newWordResponse = clone $wordResponse;
                 $newWordResponse->setInteractionOpen($this);
                 $newWordResponses->add($newWordResponse);
             }
 
-            $this->wordResponses = $newWordResponses;
+            $this->keywords = $newWordResponses;
         }
     }
 }

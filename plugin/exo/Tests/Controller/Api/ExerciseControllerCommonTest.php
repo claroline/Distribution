@@ -3,14 +3,14 @@
 namespace UJM\ExoBundle\Tests\Controller\Api;
 
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Library\Testing\RequestTrait;
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use UJM\ExoBundle\Entity\Choice;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Hint;
 use UJM\ExoBundle\Entity\Question;
-use UJM\ExoBundle\Testing\Persister;
-use UJM\ExoBundle\Testing\RequestTrait;
+use UJM\ExoBundle\Library\Testing\Persister;
 
 /**
  * Tests that are common to all exercise / question types.
@@ -98,8 +98,8 @@ class ExerciseControllerCommonTest extends TransactionalTestCase
 
         $content = json_decode($this->client->getResponse()->getContent());
         $this->assertEquals($this->ex1->getId(), $content->id);
-        $this->assertEquals('ex1', $content->meta->title);
-        $this->assertEquals('qu1', $content->steps[0]->items[0]->title);
+        $this->assertEquals('ex1', $content->title);
+        $this->assertEquals('Invite...', $content->steps[0]->items[0]->content);
     }
 
     /**
@@ -112,7 +112,7 @@ class ExerciseControllerCommonTest extends TransactionalTestCase
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $content = json_decode($this->client->getResponse()->getContent());
         $this->assertEquals($this->ex1->getId(), $content->id);
-        $this->assertEquals('ex1', $content->meta->title);
+        $this->assertEquals('ex1', $content->title);
         $this->assertFalse(property_exists($content, 'steps'));
     }
 

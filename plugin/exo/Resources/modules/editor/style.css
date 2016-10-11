@@ -1,0 +1,369 @@
+/* TODO: Switch to less and use appropriate variables */
+
+.quiz-editor {
+  display: flex;
+  width: 100%;
+  padding: 0;
+}
+
+.quiz-editor .edit-zone {
+  flex: 1 100%;
+  padding: 14px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.quiz-editor .edit-zone .panel-body {
+  padding: 18px 10%;
+}
+
+.quiz-editor .edit-zone .panel-body > * {
+  max-width: 620px;
+  margin: auto;
+}
+
+.quiz-editor .panel-title,
+.quiz-editor .panel-title a {
+  text-decoration: none;
+}
+
+.quiz-editor .thumbnail-box {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  align-items: center;
+  width: 126px;
+  height: 640px;
+  overflow: auto;
+  padding: 4px;
+  background-color: #f5f5f5;
+  text-align: center;
+}
+
+.thumbnail-box .thumbnail {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: 100px;
+  height: 100px;
+  margin: 4px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: bold;
+  color: #777;
+}
+
+.thumbnail-box .thumbnail a {
+  color: #777;
+  text-decoration: none;
+}
+
+.thumbnail-box .thumbnail.active {
+  border-color: #337ab7;
+}
+
+.thumbnail-box .step-actions,
+.thumbnail-box .step-title,
+.thumbnail-box .step-bottom {
+  height: 33%;
+}
+
+.thumbnail-box .step-actions {
+  display: flex;
+  justify-content: space-between;
+  visibility: hidden;
+}
+
+.thumbnail-box .step-title {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  outline: 0;
+}
+
+.thumbnail-box .thumbnail:hover {
+  border-color: #337ab7;
+  cursor: pointer;
+}
+
+.thumbnail-box .thumbnail.active:hover .step-actions {
+  visibility: visible;
+}
+
+.thumbnail-box .new-step {
+  flex: none;
+  margin: 10px;
+  font-weight: bold;
+}
+
+.quiz-editor .panel-title {
+  cursor: pointer;
+}
+
+.quiz-editor .panel-icon {
+  width: 16px;
+}
+
+.quiz-editor .item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.quiz-editor .item-actions {
+  display: inline-block;
+  margin: -11px -5px;
+  color: #555;
+}
+
+.quiz-editor .item-actions > [role=button] {
+  margin-left: 8px;
+}
+
+.quiz-editor .step-footer {
+  text-align: center;
+}
+
+.quiz-editor .hint-items > ul {
+  padding-left: 0;
+  list-style-type: none;
+}
+
+.quiz-editor .hint-item {
+  display: flex;
+}
+
+.quiz-editor .hint-value {
+  flex-grow: 1;
+}
+
+.quiz-editor .hint-penalty {
+  width: 60px;
+  margin: 0 12px;
+}
+
+.quiz-editor .no-hint-info {
+  padding: 12px 0;
+}
+
+.quiz-editor .hint-items .footer {
+  margin-left: 20px;
+  margin-right: 98px;
+  text-align: center;
+}
+
+.quiz-editor .text-editor {
+  position: relative;
+}
+
+.quiz-editor .text-editor [role=textbox].form-control {
+  height: auto;
+}
+
+.quiz-editor .text-editor [role=textbox].form-control p:last-of-type {
+  margin-bottom: 0;
+}
+
+.quiz-editor .text-editor .toolbar-toggle {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  z-index: 1;
+  background-color: white;
+  color: #777;
+  font-size: 18px;
+}
+
+.quiz-editor .text-editor .mce-toolbar-grp {
+  max-height: 500px;
+  transition: max-height 0.6s ease-in;
+}
+
+.quiz-editor .text-editor.minimal .mce-toolbar-grp {
+  max-height: 0;
+  transition: none;
+}
+
+.quiz-editor .text-editor.minimal .mce-edit-area {
+  border: none;
+}
+
+.quiz-editor .error-text {
+  color: #b94a48;
+  margin: 5px auto 10px auto;
+}
+
+.quiz-editor .help-block .fa,
+.quiz-editor .error-text .fa {
+  margin-right: 7px;
+}
+
+.drag-handle {
+  cursor: move;
+}
+
+.icon-small {
+  width: 16px;
+  height: 16px;
+  margin-right: 12px;
+  margin-bottom: -1px; /* tmp fix */
+  stroke: #555;
+  fill: #555;
+}
+
+.icon-large {
+  width: 64px;
+  height: 64px;
+  padding: 10px;
+  border: solid 2px #777;
+  border-radius: 16px;
+  fill: #777;
+  stroke: #777;
+}
+
+.fa.disabled {
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+.add-item-modal .modal-body {
+  padding: 0;
+}
+
+.modal-item-entry {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  min-height: 90px;
+  padding: 18px;
+  border-bottom: solid 1px #e5e5e5;
+}
+
+.modal-item-entry:hover {
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+
+.modal-item-name {
+  font-size: 20px;
+}
+
+.modal-item-desc {
+  width: 86%;
+}
+
+.scroller::-webkit-scrollbar {
+  width: 9px;
+}
+
+.scroller::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: rgba(100, 100, 100, .2);
+}
+.scroller::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.help-texts {
+  margin-left: 12px;
+}
+
+.check-group .help-texts {
+  margin-left: 20px;
+}
+
+.sub-fields {
+  margin-left: 20px;
+}
+
+.react-datepicker__input-container {
+  display: block;
+}
+
+a[role=tab] {
+  cursor: pointer;
+}
+
+/* CHOICES */
+
+.quiz-editor .choice-items {
+  padding: 0;
+}
+
+.quiz-editor .choice-items li {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.quiz-editor .choice-items li > div {
+  display: flex;
+}
+
+.quiz-editor .choice-items .choice-tick {
+  margin: 0 7px 0 0;
+}
+
+.quiz-editor .choice-items .text-editor {
+  margin-right: 12px;
+}
+
+.quiz-editor .choice-items .choice-score {
+  width: 60px;
+  margin-right: 8px;
+}
+
+.quiz-editor .choice-items .feedback-container {
+  padding-left: 20px;
+}
+
+.quiz-editor .choice-items .footer {
+  margin-left: 20px;
+  margin-right: 98px;
+  text-align: center;
+}
+
+.quiz-editor .choice-items .text-fields {
+  flex-grow: 1;
+}
+
+.quiz-editor .choice-items .right-controls {
+  display: flex;
+}
+
+.quiz-editor .choice-items .right-controls [role=button]{
+  margin-left: 8px;
+}
+
+@media (max-width: 991px) {
+  .quiz-editor {
+    flex-direction: column;
+  }
+
+  .quiz-editor .edit-zone {
+    padding: 10px;
+  }
+
+  .quiz-editor .edit-zone .panel-body {
+    padding: 10px;
+  }
+
+  .quiz-editor .thumbnail-box {
+    flex-direction: row;
+    width: 100%;
+    height: 106px;
+  }
+
+  .thumbnail-box .thumbnail {
+    width: 80px;
+    height: 80px;
+  }
+
+  .scroller::-webkit-scrollbar {
+    height: 9px;
+  }
+}

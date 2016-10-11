@@ -6,6 +6,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * A Cloze question.
+ *
  * @ORM\Entity
  * @ORM\Table(name="ujm_interaction_hole")
  */
@@ -14,21 +16,29 @@ class InteractionHole extends AbstractInteraction
     const TYPE = 'InteractionHole';
 
     /**
+     * HTML with holes filled with solutions.
+     *
+     * @deprecated it's not needed to store this as it's never used and can be recalculated
+     *
      * @ORM\Column(type="text")
      */
     private $html;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * The HTML text with empty holes.
+     *
+     * @ORM\Column(name="htmlWithoutValue", type="text")
      */
-    private $htmlWithoutValue;
+    private $text;
 
     /**
      * @ORM\OneToMany(
      *     targetEntity="Hole",
      *     mappedBy="interactionHole",
-     *     cascade={"remove"}
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
      * )
+     * @ORM\OrderBy({"position" = "ASC"})
      */
     private $holes;
 
@@ -46,6 +56,8 @@ class InteractionHole extends AbstractInteraction
     }
 
     /**
+     * @deprecated the underlying property will be removed in the next release
+     *
      * @param string $html
      */
     public function setHtml($html)
@@ -54,6 +66,8 @@ class InteractionHole extends AbstractInteraction
     }
 
     /**
+     * @deprecated the underlying property will be removed in the next release
+     *
      * @return string
      */
     public function getHtml()
@@ -62,22 +76,48 @@ class InteractionHole extends AbstractInteraction
     }
 
     /**
+     * Gets text.
+     *
+     * @return string
+     */
+    public function getText()
+    {
+        return $this->text;
+    }
+
+    /**
+     * Sets text.
+     *
+     * @param $text
+     */
+    public function setText($text)
+    {
+        $this->text = $text;
+    }
+
+    /**
+     * @deprecated use setText() instead
+     *
      * @param string $htmlWithoutValue
      */
     public function setHtmlWithoutValue($htmlWithoutValue)
     {
-        $this->htmlWithoutValue = $htmlWithoutValue;
+        $this->text = $htmlWithoutValue;
     }
 
     /**
+     * @deprecated use getText() instead
+     *
      * @return string
      */
     public function getHtmlWithoutValue()
     {
-        return $this->htmlWithoutValue;
+        return $this->text;
     }
 
     /**
+     * Gets holes.
+     *
      * @return ArrayCollection
      */
     public function getHoles()
@@ -86,6 +126,8 @@ class InteractionHole extends AbstractInteraction
     }
 
     /**
+     * Adds an hole.
+     *
      * @param Hole $hole
      */
     public function addHole(Hole $hole)
@@ -95,6 +137,8 @@ class InteractionHole extends AbstractInteraction
     }
 
     /**
+     * Removes an hole.
+     *
      * @param Hole $hole
      */
     public function removeHole(Hole $hole)

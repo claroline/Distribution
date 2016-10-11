@@ -10,6 +10,7 @@
         '@UJMExoBundle/Resources/less/main.less'
     %}
     <link rel="stylesheet" media="screen" href="{{ asset_url }}" />
+    <link rel="stylesheet" media="screen" href="{{ asset('packages/nprogress/nprogress.css') }}" />
     {% endstylesheets %}
 {% endblock %}
 
@@ -18,6 +19,73 @@
 
 {# Content of the Page #}
 {% block section_content %}
+    {# question icons #}
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+      <symbol id="icon-choice" viewBox="0 0 32 32">
+        <path d="M3 7l3 3 7-7" fill="none" stroke-width="3.2" stroke-linecap="square"/>
+        <path d="M14.807 26.72h16.386c.037 0 .066.03.066.065v2.43c0 .036-.03.066-.067.066H14.807c-.037 0-.066-.03-.066-.065v-2.43c0-.036.03-.066.067-.066zM14.807 16.72h16.386c.037 0 .066.03.066.065v2.43c0 .036-.03.066-.067.066H14.807c-.037 0-.066-.03-.066-.065v-2.43c0-.036.03-.066.067-.066z" stroke-width="1.439"/>
+        <path d="M16.77 6.71h14.46c.036 0 .066.03.066.066v2.448c0 .036-.03.066-.066.066H16.77c-.036 0-.066-.03-.066-.066V6.776c0-.036.03-.066.066-.066z" stroke-width="1.421"/>
+        <path d="M9.198 18a3.223 3.198 0 0 1-3.223 3.198A3.223 3.198 0 0 1 2.752 18a3.223 3.198 0 0 1 3.223-3.198A3.223 3.198 0 0 1 9.198 18z" stroke-width="1.57" fill="none"/>
+        <path d="M9.214 28a3.218 3.214 0 0 1-3.218 3.214A3.218 3.214 0 0 1 2.778 28a3.218 3.214 0 0 1 3.218-3.214A3.218 3.214 0 0 1 9.214 28z" stroke-width="1.573" fill="none"/>
+      </symbol>
+      <symbol id="icon-short" viewBox="0 0 32 32">
+        <g transform="translate(1.5, 2)">
+          <path d="M1.106 4.763h17.788c.14 0 .255.023.255.05V7.01c0 .028-.115.05-.256.05H1.106c-.14 0-.255-.022-.255-.05V4.814c0-.028.115-.05.256-.05z" stroke-width="1.703" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M.912 24.738h12.176c.096 0 .174.025.174.056v2.412c0 .03-.078.056-.174.056H.912c-.096 0-.174-.025-.174-.056v-2.412c0-.03.078-.056.174-.056z" stroke-width="1.476" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M.98 14.78h14.04c.11 0 .2.024.2.053v2.334c0 .03-.09.053-.2.053H.98c-.11 0-.2-.024-.2-.053v-2.334c0-.03.09-.053.2-.053z" stroke-width="1.559" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M23.945 8.433L17.74 22.725l.346 4.397 3.448-2.75L27.74 10.08z" fill-rule="evenodd" stroke-width="1.15895776"/>
+          <path d="M25.515 4.922l.564-1.3 3.737 1.623-.565 1.3z" stroke-width="1.24136072" stroke-linecap="square"/>
+          <path d="M26.497 3.563l.266-.613c.084-.193.307-.282.5-.198l2.38 1.034c.194.084.282.307.198.5l-.265.613c-.084.193-.307.28-.5.197l-2.38-1.034c-.194-.084-.282-.307-.198-.5z" stroke-width="1.9603930000000003" stroke-linecap="square"/>
+        </g>
+      </symbol>
+      <symbol id="icon-open" viewBox="0 0 32 32">
+        <g transform="translate(1.5, 2)">
+          <path d="M1.106 4.763h17.788c.14 0 .255.023.255.05V7.01c0 .028-.115.05-.256.05H1.106c-.14 0-.255-.022-.255-.05V4.814c0-.028.115-.05.256-.05z" stroke-width="1.703" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M.912 24.738h12.176c.096 0 .174.025.174.056v2.412c0 .03-.078.056-.174.056H.912c-.096 0-.174-.025-.174-.056v-2.412c0-.03.078-.056.174-.056z" stroke-width="1.476" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M.98 14.78h14.04c.11 0 .2.024.2.053v2.334c0 .03-.09.053-.2.053H.98c-.11 0-.2-.024-.2-.053v-2.334c0-.03.09-.053.2-.053z" stroke-width="1.559" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M23.945 8.433L17.74 22.725l.346 4.397 3.448-2.75L27.74 10.08z" fill-rule="evenodd" stroke-width="1.15895776"/>
+          <path d="M25.515 4.922l.564-1.3 3.737 1.623-.565 1.3z" stroke-width="1.24136072" stroke-linecap="square"/>
+          <path d="M26.497 3.563l.266-.613c.084-.193.307-.282.5-.198l2.38 1.034c.194.084.282.307.198.5l-.265.613c-.084.193-.307.28-.5.197l-2.38-1.034c-.194-.084-.282-.307-.198-.5z" stroke-width="1.9603930000000003" stroke-linecap="square"/>
+        </g>
+      </symbol>
+      <symbol id="icon-cloze" viewBox="0 0 32 32">
+        <rect width="23.712" height="1.4" x="4.144" y="1.144" rx=".594" ry=".045" stroke-width="2.5" stroke-linecap="round"/>
+        <rect width="23.712" height="1.4" x="4.144" y="29.144" rx=".594" ry=".045" stroke-width="2.5" stroke-linecap="round"/>
+        <rect width="7.082" height="1.4" x="4.459" y="15.459" rx=".403" ry=".044" stroke-width="2.5" stroke-linecap="round"/>
+        <rect width="3.54" height="1.4" x="24.23" y="15.23" rx=".202" ry=".063" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M15.538 21.59h3.21v3.322h-3.21V21.59zm3.21-1.385h-3.21v-1.808q0-1.162.373-1.984.374-.822 1.335-1.737l1.082-1.045q.757-.715 1.022-1.185.275-.47.275-.974 0-.786-.553-1.185-.553-.4-1.66-.4-1.008 0-2.114.424-1.094.41-2.248 1.23V8.396q1.178-.657 2.38-.986 1.214-.342 2.428-.342 2.428 0 3.81 1.104 1.382 1.103 1.382 3.04 0 .893-.408 1.667-.41.763-1.54 1.843l-1.056 1.01Q19.228 16.506 19 17q-.228.493-.228 1.21 0 .105-.012.246 0 .14-.012.305v1.445z" style="line-height:125%;-inkscape-font-specification:'DejaVu Sans Mono, Bold';text-align:start" font-weight="bold" font-size="24.327" font-family="DejaVu Sans Mono" letter-spacing="0" word-spacing="0"/>
+      </symbol>
+      <symbol id="icon-graphic" viewBox="0 0 32 32">
+        <g fill="none" stroke-linecap="square">
+          <path d="M15.037 8.014A7.047 7.047 0 0 1 7.99 15.06 7.047 7.047 0 0 1 .944 8.015 7.047 7.047 0 0 1 7.99.968a7.047 7.047 0 0 1 7.047 7.046z" stroke-width="1.92628956"/>
+          <path d="M4.733 7.614h6.515c.053 0 .095.022.095.05v.625c0 .026-.042.048-.095.048H4.733c-.053 0-.095-.022-.095-.05v-.625c0-.027.042-.05.095-.05z" stroke-width="1.30354938"/>
+          <path d="M7.703 4.526h.575c.088 0 .16.006.16.012v6.876c0 .007-.072.012-.16.012h-.575c-.088 0-.16-.005-.16-.012V4.538c0-.006.072-.012.16-.012z" stroke-width="1.11031971"/>
+        </g>
+        <path d="M1.04 31.502L10 23l4 4 9-10 8.507 6.72v7.78z" fill-rule="evenodd" stroke-width=".994"/>
+      </symbol>
+      <symbol id="icon-match-1" viewBox="0 0 32 32">
+        <g stroke-width="1.6" fill="none">
+          <circle cy="4" cx="4" r="3.2"/>
+          <circle cy="4" cx="28" r="3.2"/>
+          <circle cy="28" cx="4" r="3.2"/>
+          <circle cy="16" cx="28" r="3.2"/>
+          <circle cy="16" cx="4" r="3.2"/>
+          <circle cy="28" cx="28" r="3.2"/>
+        <g stroke-width="3.8">
+          <path d="M7 4h18"/>
+          <path d="M6.813 26.294L25.22 17.63"/>
+        </g>
+      </symbol>
+      <symbol id="icon-match-2" viewBox="0 0 32 32">
+        <path d="M15.686 15h14.628c.388 0 .7.046.7.104v15.634c0 .058-.312.104-.7.104H15.686c-.388 0-.7-.046-.7-.104V15.104c0-.058.312-.104.7-.104z" stroke="#000" stroke-width="2.158" stroke-linecap="square" fill="none"/>
+        <path d="M14.687 26.866l-3-.024c-.39-.003-.702-.046-.702-.104V11.104c0-.058.313-.104.7-.104h14.63c.387 0 .7.046.7.104L27 13" stroke="#000" stroke-width="2.158" stroke-linecap="square" fill="none"/>
+        <path d="M8.85 17.387l-7.507-.047c-.407-.002-.734-.05-.734-.11V.72c0-.062.326-.11.733-.11h15.314c.407 0 .734.048.734.11v9.2" fill="none"/>
+        <path d="M9.05 16.92H1.7c-.387 0-.7-.045-.7-.103V1.183c0-.058.313-.104.7-.104H16.33c.39 0 .7.045.702.103l.044 7.73" stroke="#000" stroke-width="2.158" stroke-linecap="square" fill="none"/>
+        <path d="M8.513 4.21L4.195 8.502l4.326.014z" fill-rule="evenodd" stroke="#000"/>
+        <path d="M5 3L3 5l2 2 2-2z" fill="none"/>
+      </symbol>
+    </svg>
+
     {# Initialize AngularJS application #}
     <div data-ng-app="ExerciseApp" data-ng-cloak="">
         <exercise
@@ -36,6 +104,7 @@
     {# Translations #}
     <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'ujm_sequence' }) }}"></script>
     <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'ujm_exo' }) }}"></script>
+    <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'question_types' }) }}"></script>
 
     {# cannot use jsPlumb with webpack now (https://github.com/sporritt/jsPlumb/issues/314) #}
     <script src="{{ asset('packages/jsPlumb/dist/js/jsPlumb-2.1.3-min.js') }}"></script>

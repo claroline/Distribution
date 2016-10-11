@@ -7,8 +7,11 @@ use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Question;
 use UJM\ExoBundle\Entity\Step;
 use UJM\ExoBundle\Entity\StepQuestion;
+use UJM\ExoBundle\Repository\StepQuestionRepository;
+use UJM\ExoBundle\Serializer\StepSerializer;
 use UJM\ExoBundle\Transfer\Json\ValidationException;
 use UJM\ExoBundle\Transfer\Json\Validator;
+use UJM\ExoBundle\Validator\JsonSchema\StepValidator;
 
 /**
  * @DI\Service("ujm.exo.step_manager")
@@ -21,12 +24,21 @@ class StepManager
     private $om;
 
     /**
-     * @var Validator
+     * @var StepValidator
      */
     private $validator;
 
     /**
+     * @var Validator
+     *
+     * @deprecated use $validator instead
+     */
+    private $oldValidator;
+
+    /**
      * @var QuestionManager
+     *
+     * @deprecated it's no longer needed by the class
      */
     private $questionManager;
 
@@ -35,26 +47,91 @@ class StepManager
      *
      * @DI\InjectParams({
      *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
-     *     "validator"   = @DI\Inject("ujm.exo.json_validator"),
+     *     "validator"       = @DI\Inject("ujm_exo.validator.step"),
+     *     "oldValidator"    = @DI\Inject("ujm.exo.json_validator"),
+     *     "serializer"      = @DI\Inject("ujm_exo.serializer.step"),
      *     "questionManager" = @DI\Inject("ujm.exo.question_manager")
      * })
      *
      * @param ObjectManager   $om
-     * @param Validator       $validator
+     * @param StepValidator   $validator
+     * @param Validator       $oldValidator
+     * @param StepSerializer  $serializer
      * @param QuestionManager $questionManager
      */
     public function __construct(
         ObjectManager $om,
-        Validator $validator,
+        StepValidator $validator,
+        Validator $oldValidator,
+        StepSerializer $serializer,
         QuestionManager $questionManager)
     {
         $this->om = $om;
         $this->validator = $validator;
+        $this->oldValidator = $oldValidator;
+        $this->serializer = $serializer;
         $this->questionManager = $questionManager;
     }
 
     /**
+     * Validates and creates a new Step from raw data.
+     *
+     * @param \stdClass $data
+     *
+     * @return Step
+     *
+     * @throws ValidationException
+     */
+    public function create(\stdClass $data)
+    {
+        return $this->update(new Step(), $data);
+    }
+
+    /**
+     * Validates and updates a Step entity with raw data.
+     *
+     * @param Step      $step
+     * @param \stdClass $data
+     *
+     * @return Step
+     *
+     * @throws ValidationException
+     */
+    public function update(Step $step, \stdClass $data)
+    {
+        // Validate received data
+        $errors = $this->validator->validate($data);
+        if (count($errors) > 0) {
+            throw new ValidationException('Step is not valid', $errors);
+        }
+
+        // Update Step with new data
+        $this->serializer->deserialize($data, $step);
+
+        // Save to DB
+        $this->om->persist($step);
+        $this->om->flush();
+
+        return $step;
+    }
+
+    /**
+     * Exports a Step.
+     *
+     * @param Step  $step
+     * @param array $options
+     *
+     * @return array
+     */
+    public function export(Step $step, array $options = [])
+    {
+        return $this->serializer->serialize($step, $options);
+    }
+
+    /**
      * Update the Step metadata.
+     *
+     * @deprecated use StepManager::update() instead
      *
      * @param Step      $step
      * @param \stdClass $metadata
@@ -63,7 +140,7 @@ class StepManager
      */
     public function updateMetadata(Step $step, \stdClass $metadata)
     {
-        $errors = $this->validator->validateStepMetadata($metadata);
+        $errors = $this->oldValidator->validateStepMetadata($metadata);
 
         if (count($errors) > 0) {
             throw new ValidationException('Step metadata are not valid', $errors);
@@ -88,20 +165,43 @@ class StepManager
      */
     public function addQuestion(Step $step, Question $question, $order = -1)
     {
-        $stepQuestion = new StepQuestion();
+        $step->addQuestion($question, $order);
 
-        $stepQuestion->setStep($step);
-        $stepQuestion->setQuestion($question);
+        $this->om->persist($step);
+        $this->om->flush();
+    }
 
-        if (-1 === $order) {
-            // Calculate current Question order
-            $order = count($step->getStepQuestions());
+    /**
+     * Removes the link between a Question and a Step.
+     *
+     * @param Step     $step
+     * @param Question $question
+     *
+     * @return array
+     */
+    public function removeQuestion(Step $step, Question $question)
+    {
+        $errors = [];
+
+        // Retrieve the link between Step and Question
+        $stepQuestions = $step->getStepQuestions()->toArray();
+        $toDelete = array_filter($stepQuestions, function ($stepQuestion) use ($question) {
+            /* @var StepQuestion $stepQuestion */
+            return $question->getId() === $stepQuestion->getQuestion()->getId();
+        });
+
+        if (!empty($toDelete)) {
+            $toDelete = array_values($toDelete); // Reindex array
+
+            $this->om->remove($toDelete[0]);
+            $this->om->flush();
+        } else {
+            $errors[] = [
+                'message' => 'The question "'.$question->getId().'". is not linked to step "'.$step->getId().'".',
+            ];
         }
 
-        $stepQuestion->setOrdre($order);
-
-        $this->om->persist($stepQuestion);
-        $this->om->flush();
+        return $errors;
     }
 
     /**
@@ -116,13 +216,16 @@ class StepManager
     {
         $reorderToo = []; // List of Steps we need to reorder too (because we have transferred some Questions)
         foreach ($order as $pos => $questionId) {
+            /** @var StepQuestionRepository $stepQuestionRepo */
+            $stepQuestionRepo = $this->om->getRepository('UJMExoBundle:StepQuestion');
+
             /** @var StepQuestion $stepQuestion */
-            $stepQuestion = $this->om->getRepository('UJMExoBundle:StepQuestion')->findByExerciseAndQuestion($step->getExercise(), $questionId);
+            $stepQuestion = $stepQuestionRepo->findByExerciseAndQuestion($step->getExercise(), $questionId);
             if (!$stepQuestion) {
                 // Question is not linked to the Exercise, there is a problem with the order array
-                return [
+                return [[
                     'message' => 'Can not reorder the Question. Unknown question found.',
-                ];
+                ]];
             }
 
             $oldStep = $stepQuestion->getStep();
@@ -136,7 +239,7 @@ class StepManager
             }
 
             // Update order
-            $stepQuestion->setOrdre($pos);
+            $stepQuestion->setOrder($pos);
 
             $this->om->persist($stepQuestion);
         }
@@ -148,7 +251,7 @@ class StepManager
                 $stepQuestions = $stepToReorder->getStepQuestions();
                 /** @var StepQuestion $sqToReorder */
                 foreach ($stepQuestions as $pos => $sqToReorder) {
-                    $sqToReorder->setOrdre($pos);
+                    $sqToReorder->setOrder($pos);
                 }
             }
         }
@@ -160,6 +263,8 @@ class StepManager
 
     /**
      * Create a copy of a Step.
+     *
+     * @deprecated see ExerciseManager:copy()
      *
      * @param Step $step
      *
@@ -185,7 +290,7 @@ class StepManager
 
             $newStepQuestion->setStep($newStep);
             $newStepQuestion->setQuestion($stepQuestion->getQuestion());
-            $newStepQuestion->setOrdre($stepQuestion->getOrdre());
+            $newStepQuestion->setOrder($stepQuestion->getOrder());
         }
 
         return $newStep;
@@ -193,6 +298,8 @@ class StepManager
 
     /**
      * Exports a step in a JSON-encodable format.
+     *
+     * @deprecated use StepManager::export instead
      *
      * @param Step $step
      * @param bool $withSolutions

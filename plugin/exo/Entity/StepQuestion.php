@@ -21,7 +21,7 @@ class StepQuestion
 
     /**
      * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Question", inversedBy="stepQuestions")
+     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Question", inversedBy="stepQuestions", cascade={"persist"})
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $question;
@@ -33,7 +33,7 @@ class StepQuestion
      *
      * @ORM\Column(name="ordre", type="integer")
      */
-    private $ordre;
+    private $order;
 
     /**
      * Set Step.
@@ -80,11 +80,35 @@ class StepQuestion
     /**
      * Set order.
      *
+     * @deprecated use setOrder instead
+     *
      * @param int $order
      */
     public function setOrdre($order)
     {
-        $this->ordre = $order;
+        $this->order = $order;
+    }
+
+    /**
+     * Get order.
+     *
+     * @deprecated use getOrder instead
+     *
+     * @return int
+     */
+    public function getOrdre()
+    {
+        return $this->order;
+    }
+
+    /**
+     * Set order.
+     *
+     * @param int $order
+     */
+    public function setOrder($order)
+    {
+        $this->order = $order;
     }
 
     /**
@@ -92,8 +116,8 @@ class StepQuestion
      *
      * @return int
      */
-    public function getOrdre()
+    public function getOrder()
     {
-        return $this->ordre;
+        return $this->order;
     }
 }

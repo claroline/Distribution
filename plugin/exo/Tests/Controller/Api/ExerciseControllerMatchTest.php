@@ -3,12 +3,12 @@
 namespace UJM\ExoBundle\Tests\Controller\Api;
 
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Library\Testing\RequestTrait;
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Question;
-use UJM\ExoBundle\Testing\Persister;
-use UJM\ExoBundle\Testing\RequestTrait;
+use UJM\ExoBundle\Library\Testing\Persister;
 
 /**
  * Tests that are specific to MatchQuestionType.

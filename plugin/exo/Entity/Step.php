@@ -6,7 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * UJM\ExoBundle\Entity\Step.
+ * Represents a Step in an Exercise.
  *
  * @ORM\Entity(repositoryClass="UJM\ExoBundle\Repository\StepRepository")
  * @ORM\Table(name="ujm_step")
@@ -85,8 +85,8 @@ class Step
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="StepQuestion", mappedBy="step", cascade={"all"})
-     * @ORM\OrderBy({"ordre" = "ASC"})
+     * @ORM\OneToMany(targetEntity="StepQuestion", mappedBy="step", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @ORM\OrderBy({"order" = "ASC"})
      */
     private $stepQuestions;
 
@@ -281,6 +281,28 @@ class Step
     public function getStepQuestions()
     {
         return $this->stepQuestions;
+    }
+
+    /**
+     * Shortcuts to add Questions to Step.
+     * Avoids the need to manually initialize a StepQuestion object to hold the relation.
+     *
+     * @param Question $question - the question to add to the step
+     * @param int      $order    - the position of question in step. If -1 the question will be added at the end of the Step
+     */
+    public function addQuestion(Question $question, $order = -1)
+    {
+        $stepQuestion = new StepQuestion();
+
+        $stepQuestion->setStep($this);
+        $stepQuestion->setQuestion($question);
+
+        if (-1 === $order) {
+            // Calculate current Question order
+            $order = count($this->getStepQuestions());
+        }
+
+        $stepQuestion->setOrdre($order);
     }
 
     /**
