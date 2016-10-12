@@ -39,7 +39,7 @@ class ReceiverConstraintTest extends MockeryTestCase
 
         $receiverConstraint = new ReceiverConstraint();
 
-        $isApplicableTo = $receiverConstraint->isApplicableTo($badgeRule);
+        $receiverConstraint->isApplicableTo($badgeRule);
     }
 
     public function testIsApplicableTo()

@@ -11,6 +11,8 @@
 
 namespace Claroline\CoreBundle\Library\Installation\Plugin;
 
+use Claroline\CoreBundle\Entity\Resource\MaskDecoder;
+use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Library\Testing\MockeryTestCase;
 
 class DatabaseWriterTest extends MockeryTestCase
@@ -53,9 +55,8 @@ class DatabaseWriterTest extends MockeryTestCase
     public function testPersistCustomActionIfDecodersAreFound()
     {
         $this->markTestSkipped('Database writer should be refactored and properly tested');
-        $resourceType = new \Claroline\CoreBundle\Entity\Resource\ResourceType();
-        $actions = [['name' => 'open', 'menu_name' => 'open']];
-        $decoder = new \Claroline\CoreBundle\Entity\Resource\MaskDecoder();
+        $resourceType = new ResourceType();
+        $decoder = new MaskDecoder();
         $decoderRepo = $this->mock('Doctrine\ORM\EntityRepository');
         $decoderRepo->shouldReceive('findBy')->with(['resourceType' => $resourceType])
             ->andReturn([$decoder]);

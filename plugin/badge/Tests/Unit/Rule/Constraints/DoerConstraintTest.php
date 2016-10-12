@@ -39,7 +39,7 @@ class DoerConstraintTest extends MockeryTestCase
 
         $doerConstraint = new DoerConstraint();
 
-        $isApplicableTo = $doerConstraint->isApplicableTo($badgeRule);
+        $doerConstraint->isApplicableTo($badgeRule);
     }
 
     public function testIsApplicableTo()
