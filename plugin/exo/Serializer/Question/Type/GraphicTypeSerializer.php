@@ -206,6 +206,12 @@ class GraphicTypeSerializer implements QuestionHandlerInterface, SerializerInter
         return $areaData;
     }
 
+    /**
+     * Deserializes an Area.
+     *
+     * @param Coords    $area
+     * @param \stdClass $data
+     */
     private function deserializeArea(Coords $area, \stdClass $data)
     {
         $area->setColor($data->color);

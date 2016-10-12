@@ -2,8 +2,8 @@
 
 namespace UJM\ExoBundle\Repository;
 
-use Doctrine\ORM\EntityRepository;
 use Claroline\CoreBundle\Entity\User;
+use Doctrine\ORM\EntityRepository;
 
 /**
  * ShareRepository.
@@ -44,10 +44,10 @@ class ShareRepository extends EntityRepository
      */
     public function getUserInteractionSharedImport($exoId, $uid, $em)
     {
-        $questions = array();
+        $questions = [];
 
         $dql = 'SELECT sq FROM UJM\ExoBundle\Entity\StepQuestion sq JOIN sq.step s WHERE s.exercise= ?1
-                ORDER BY sq.ordre';
+                ORDER BY sq.order';
 
         $query = $em->createQuery($dql)->setParameter(1, $exoId);
         $eqs = $query->getResult();
@@ -85,7 +85,7 @@ class ShareRepository extends EntityRepository
             AND s.user = ?2';
 
         $query = $this->_em->createQuery($dql)
-                      ->setParameters(array(1 => "%{$whatToFind}%", 2 => $userId));
+                      ->setParameters([1 => "%{$whatToFind}%", 2 => $userId]);
 
         return $query->getResult();
     }
@@ -107,7 +107,7 @@ class ShareRepository extends EntityRepository
             AND s.user = ?2';
 
         $query = $this->_em->createQuery($dql)
-                      ->setParameters(array(1 => "%{$whatToFind}%", 2 => $userId));
+                      ->setParameters([1 => "%{$whatToFind}%", 2 => $userId]);
 
         return $query->getResult();
     }
@@ -130,7 +130,7 @@ class ShareRepository extends EntityRepository
                 AND q.type LIKE ?1';
 
         $query = $this->_em->createQuery($dql)
-                      ->setParameters(array(1 => "%{$whatToFind}%", 2 => $userId));
+                      ->setParameters([1 => "%{$whatToFind}%", 2 => $userId]);
 
         return $query->getResult();
     }
@@ -153,7 +153,7 @@ class ShareRepository extends EntityRepository
                 AND q.invite LIKE ?1';
 
         $query = $this->_em->createQuery($dql)
-                      ->setParameters(array(1 => "%{$whatToFind}%", 2 => $userId));
+                      ->setParameters([1 => "%{$whatToFind}%", 2 => $userId]);
 
         return $query->getResult();
     }
@@ -178,7 +178,7 @@ class ShareRepository extends EntityRepository
         ';
 
         $query = $this->_em->createQuery($dql)
-                      ->setParameters(array(1 => "%{$whatToFind}%", 2 => $userId));
+                      ->setParameters([1 => "%{$whatToFind}%", 2 => $userId]);
 
         return $query->getResult();
     }

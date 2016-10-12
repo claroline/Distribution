@@ -155,9 +155,19 @@ class ExerciseSerializer implements SerializerInterface
                 break;
         }
 
-        $parameters->random = $exercise->getShuffle();
+        if ($exercise->getShuffle()) {
+            $parameters->randomOrder = $exercise->getKeepSteps() ? 'once' : 'always';
+        } else {
+            $parameters->randomOrder = 'never';
+        }
+
+        if ($exercise->getPickSteps()) {
+            $parameters->randomPick = $exercise->getKeepSteps() ? 'once' : 'always';
+        } else {
+            $parameters->randomPick = 'never';
+        }
+
         $parameters->pick = $exercise->getPickSteps();
-        $parameters->draw = $exercise->getKeepSteps() ? 'once' : 'attempt';
         $parameters->maxAttempts = $exercise->getMaxAttempts();
         $parameters->interruptible = $exercise->getDispButtonInterrupt();
         $parameters->showMetadata = $exercise->isMetadataVisible();
@@ -207,54 +217,95 @@ class ExerciseSerializer implements SerializerInterface
      */
     private function deserializeParameters(Exercise $exercise, \stdClass $parameters)
     {
-        $exercise->setType($parameters->type);
-        $exercise->setPickSteps($parameters->pick);
-        $exercise->setShuffle($parameters->random);
+        if (isset($parameters->type)) {
+            $exercise->setType($parameters->type);
+        }
 
-        if ('once' === $parameters->draw) {
+        if (isset($parameters->randomOrder)) {
+            if ('once' === $parameters->randomOrder || 'always' === $parameters->randomOrder) {
+                $exercise->setShuffle(true);
+            } else {
+                $exercise->setShuffle(false);
+            }
+        }
+
+        if (isset($parameters->randomPick)) {
+            if ('once' === $parameters->randomPick || 'always' === $parameters->randomPick) {
+                $exercise->setPickSteps($parameters->pick);
+            } else {
+                $exercise->setPickSteps(0);
+            }
+        }
+
+        if ((isset($parameters->randomOrder) && 'once' === $parameters->randomOrder)
+            || (isset($parameters->randomPick) && 'once' === $parameters->randomPick)) {
             $exercise->setKeepSteps(true);
         } else {
             $exercise->setKeepSteps(false);
         }
 
-        $exercise->setMaxAttempts($parameters->maxAttempts);
-        $exercise->setDispButtonInterrupt($parameters->interruptible);
-        $exercise->setMetadataVisible($parameters->showMetadata);
-        $exercise->setAnonymous($parameters->anonymous);
-        $exercise->setDuration($parameters->duration);
-        $exercise->setStatistics($parameters->showStatistics);
-        $exercise->setMinimalCorrection(!$parameters->showFullCorrection);
-
-        switch ($parameters->showScoreAt) {
-            case 'validation':
-                $exercise->setMarkMode(MarkMode::AFTER_END);
-                break;
-            case 'correction':
-                $exercise->setMarkMode(MarkMode::WITH_CORRECTION);
-                break;
-            case 'never':
-                $exercise->setMarkMode(MarkMode::NEVER);
-                break;
+        if (isset($parameters->maxAttempts)) {
+            $exercise->setMaxAttempts($parameters->maxAttempts);
         }
 
-        $correctionDate = null;
-        switch ($parameters->showCorrectionAt) {
-            case 'validation':
-                $exercise->setCorrectionMode(CorrectionMode::AFTER_END);
-                break;
-            case 'lastAttempt':
-                $exercise->setCorrectionMode(CorrectionMode::AFTER_LAST_ATTEMPT);
-                break;
-            case 'date':
-                $exercise->setCorrectionMode(CorrectionMode::AFTER_DATE);
-                $correctionDate = \DateTime::createFromFormat('Y-m-d\TH:i:s', $parameters->correctionDate);
-                break;
-            case 'never':
-                $exercise->setCorrectionMode(CorrectionMode::NEVER);
-                break;
+        if (isset($parameters->interruptible)) {
+            $exercise->setDispButtonInterrupt($parameters->interruptible);
         }
 
-        $exercise->setDateCorrection($correctionDate);
+        if (isset($parameters->showMetadata)) {
+            $exercise->setMetadataVisible($parameters->showMetadata);
+        }
+
+        if (isset($parameters->anonymous)) {
+            $exercise->setAnonymous($parameters->anonymous);
+        }
+
+        if (isset($parameters->duration)) {
+            $exercise->setDuration($parameters->duration);
+        }
+
+        if (isset($parameters->showStatistics)) {
+            $exercise->setStatistics($parameters->showStatistics);
+        }
+
+        if (isset($parameters->showFullCorrection)) {
+            $exercise->setMinimalCorrection(!$parameters->showFullCorrection);
+        }
+
+        if (isset($parameters->showScoreAt)) {
+            switch ($parameters->showScoreAt) {
+                case 'validation':
+                    $exercise->setMarkMode(MarkMode::AFTER_END);
+                    break;
+                case 'correction':
+                    $exercise->setMarkMode(MarkMode::WITH_CORRECTION);
+                    break;
+                case 'never':
+                    $exercise->setMarkMode(MarkMode::NEVER);
+                    break;
+            }
+        }
+
+        if (isset($parameters->showCorrectionAt)) {
+            $correctionDate = null;
+            switch ($parameters->showCorrectionAt) {
+                case 'validation':
+                    $exercise->setCorrectionMode(CorrectionMode::AFTER_END);
+                    break;
+                case 'lastAttempt':
+                    $exercise->setCorrectionMode(CorrectionMode::AFTER_LAST_ATTEMPT);
+                    break;
+                case 'date':
+                    $exercise->setCorrectionMode(CorrectionMode::AFTER_DATE);
+                    $correctionDate = \DateTime::createFromFormat('Y-m-d\TH:i:s', $parameters->correctionDate);
+                    break;
+                case 'never':
+                    $exercise->setCorrectionMode(CorrectionMode::NEVER);
+                    break;
+            }
+
+            $exercise->setDateCorrection($correctionDate);
+        }
     }
 
     /**
