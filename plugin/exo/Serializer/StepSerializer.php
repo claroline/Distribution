@@ -45,7 +45,7 @@ class StepSerializer implements SerializerInterface
     public function serialize($step, array $options = [])
     {
         $stepData = new \stdClass();
-        $stepData->id = (string) $step->getId();
+        $stepData->id = $step->getUuid();
 
         if (!empty($step->getTitle())) {
             $stepData->title = $step->getTitle();
@@ -75,6 +75,8 @@ class StepSerializer implements SerializerInterface
         if (empty($step)) {
             $step = new Step();
         }
+
+        $step->setUuid($data->id);
 
         if (isset($data->title)) {
             $step->setTitle($data->title);

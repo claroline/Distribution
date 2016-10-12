@@ -85,11 +85,27 @@ class QuestionSerializer implements SerializerInterface
         // Add generic question information
         $questionData->id = $question->getUuid();
         $questionData->type = $question->getMimeType();
-        $questionData->title = $question->getTitle();
-        $questionData->description = $question->getDescription();
         $questionData->content = $question->getInvite();
-        $questionData->info = $question->getSupplementary();
-        $questionData->instruction = $question->getSpecification();
+
+        $title = $question->getTitle();
+        if (!empty($title)) {
+            $questionData->title = $title;
+        }
+
+        $description = $question->getDescription();
+        if (!empty($description)) {
+            $questionData->description = $description;
+        }
+
+        $info = $question->getSupplementary();
+        if (!empty($info)) {
+            $questionData->info = $info;
+        }
+
+        $instruction = $question->getSpecification();
+        if (!empty($instruction)) {
+            $questionData->instruction = $question->getSpecification();
+        }
 
         // Serialize Hints
         if (0 !== $question->getHints()->count()) {

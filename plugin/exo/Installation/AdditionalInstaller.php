@@ -7,7 +7,7 @@ use UJM\ExoBundle\Installation\Updater\Updater060000;
 use UJM\ExoBundle\Installation\Updater\Updater060001;
 use UJM\ExoBundle\Installation\Updater\Updater060200;
 use UJM\ExoBundle\Installation\Updater\Updater070000;
-use UJM\ExoBundle\Installation\Updater\Updater070100;
+use UJM\ExoBundle\Installation\Updater\Updater080000;
 
 class AdditionalInstaller extends BaseInstaller
 {
@@ -52,8 +52,8 @@ class AdditionalInstaller extends BaseInstaller
             $updater->postUpdate();
         }
 
-        if (version_compare($currentVersion, '7.1.0', '<')) {
-            $updater = new Updater070100($this->container);
+        if (version_compare($currentVersion, '8.0.0', '<')) {
+            $updater = new Updater080000($this->container);
             $updater->setLogger($this->logger);
             $updater->postUpdate();
         }

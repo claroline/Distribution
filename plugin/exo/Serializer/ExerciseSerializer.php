@@ -6,6 +6,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Step;
 use UJM\ExoBundle\Library\Mode\CorrectionMode;
+use UJM\ExoBundle\Library\Mode\MarkMode;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
 
 /**
@@ -47,7 +48,7 @@ class ExerciseSerializer implements SerializerInterface
         $node = $exercise->getResourceNode();
 
         $exerciseData = new \stdClass();
-        $exerciseData->id = (string) $exercise->getId();
+        $exerciseData->id = $exercise->getUuid();
         $exerciseData->title = $node->getName();
 
         if (!empty($exercise->getDescription())) {
@@ -78,6 +79,8 @@ class ExerciseSerializer implements SerializerInterface
         if (empty($exercise)) {
             $exercise = new Exercise();
         }
+
+        $exercise->setUuid($data->id);
 
         // Update ResourceNode
         $node = $exercise->getResourceNode();
@@ -139,41 +142,59 @@ class ExerciseSerializer implements SerializerInterface
     private function serializeParameters(Exercise $exercise)
     {
         $parameters = new \stdClass();
-        $parameters->type = $exercise->getType();
+
+        switch ($exercise->getType()) {
+            case Exercise::TYPE_EVALUATIVE:
+                $parameters->type = 'evaluative';
+                break;
+            case Exercise::TYPE_FORMATIVE:
+                $parameters->type = 'formative';
+                break;
+            case Exercise::TYPE_SUMMATIVE:
+                $parameters->type = 'summative';
+                break;
+        }
 
         $parameters->random = $exercise->getShuffle();
-
-        $pick = $exercise->getPickSteps();
-        if ($pick) {
-            $parameters->pick = $pick;
-        }
-
-        if ($pick || $parameters->random) {
-            $parameters->keepSteps = $exercise->getKeepSteps();
-        }
-
-        if ($exercise->getMaxAttempts()) {
-            $parameters->maxAttempts = $exercise->getMaxAttempts();
-        }
-
+        $parameters->pick = $exercise->getPickSteps();
+        $parameters->draw = $exercise->getKeepSteps() ? 'once' : 'attempt';
+        $parameters->maxAttempts = $exercise->getMaxAttempts();
         $parameters->interruptible = $exercise->getDispButtonInterrupt();
         $parameters->showMetadata = $exercise->isMetadataVisible();
         $parameters->showStatistics = $exercise->hasStatistics();
         $parameters->showFullCorrection = !$exercise->isMinimalCorrection();
-
         $parameters->anonymous = $exercise->getAnonymous();
+        $parameters->duration = $exercise->getDuration();
 
-        if (!empty($exercise->getDuration())) {
-            $parameters->duration = $exercise->getDuration();
+        switch ($exercise->getMarkMode()) {
+            case MarkMode::AFTER_END:
+                $parameters->showScoreAt = 'validation';
+                break;
+            case MarkMode::WITH_CORRECTION:
+                $parameters->showScoreAt = 'correction';
+                break;
+            case MarkMode::NEVER:
+                $parameters->showScoreAt = 'never';
+                break;
         }
 
-        $parameters->showScoreAt = $exercise->getMarkMode();
-        $parameters->showCorrectionAt = $exercise->getCorrectionMode();
+        switch ($exercise->getCorrectionMode()) {
+            case CorrectionMode::AFTER_END:
+                $parameters->showCorrectionAt = 'validation';
+                break;
+            case CorrectionMode::AFTER_LAST_ATTEMPT:
+                $parameters->showCorrectionAt = 'lastAttempt';
+                break;
+            case CorrectionMode::AFTER_DATE:
+                $parameters->showCorrectionAt = 'date';
+                break;
+            case CorrectionMode::NEVER:
+                $parameters->showCorrectionAt = 'never';
+                break;
+        }
 
         $correctionDate = $exercise->getDateCorrection();
-        if (!empty($correctionDate)) {
-            $parameters->correctionDate = $correctionDate->format('Y-m-d\TH:i:s');
-        }
+        $parameters->correctionDate = !empty($correctionDate) ? $correctionDate->format('Y-m-d\TH:i:s') : null;
 
         return $parameters;
     }
@@ -187,37 +208,50 @@ class ExerciseSerializer implements SerializerInterface
     private function deserializeParameters(Exercise $exercise, \stdClass $parameters)
     {
         $exercise->setType($parameters->type);
-
-        if (isset($parameters->pick)) {
-            $exercise->setPickSteps($parameters->pick);
-        }
-
+        $exercise->setPickSteps($parameters->pick);
         $exercise->setShuffle($parameters->random);
 
-        if ($parameters->pick || $parameters->random) {
-            $exercise->setKeepSteps($parameters->keepSteps);
+        if ('once' === $parameters->draw) {
+            $exercise->setKeepSteps(true);
+        } else {
+            $exercise->setKeepSteps(false);
         }
 
-        if (isset($parameters->maxAttempts)) {
-            $exercise->setMaxAttempts($parameters->maxAttempts);
-        }
-
+        $exercise->setMaxAttempts($parameters->maxAttempts);
         $exercise->setDispButtonInterrupt($parameters->interruptible);
         $exercise->setMetadataVisible($parameters->showMetadata);
-        $exercise->setMarkMode($parameters->showScoreAt);
-        $exercise->setCorrectionMode($parameters->showCorrectionAt);
         $exercise->setAnonymous($parameters->anonymous);
-
-        if (isset($parameters->duration)) {
-            $exercise->setDuration($parameters->duration);
-        }
-
+        $exercise->setDuration($parameters->duration);
         $exercise->setStatistics($parameters->showStatistics);
         $exercise->setMinimalCorrection(!$parameters->showFullCorrection);
 
+        switch ($parameters->showScoreAt) {
+            case 'validation':
+                $exercise->setMarkMode(MarkMode::AFTER_END);
+                break;
+            case 'correction':
+                $exercise->setMarkMode(MarkMode::WITH_CORRECTION);
+                break;
+            case 'never':
+                $exercise->setMarkMode(MarkMode::NEVER);
+                break;
+        }
+
         $correctionDate = null;
-        if (!empty($parameters->showCorrectionAt) && CorrectionMode::AFTER_DATE === $parameters->showCorrectionAt) {
-            $correctionDate = \DateTime::createFromFormat('Y-m-d\TH:i:s', $parameters->correctionDate);
+        switch ($parameters->showCorrectionAt) {
+            case 'validation':
+                $exercise->setCorrectionMode(CorrectionMode::AFTER_END);
+                break;
+            case 'lastAttempt':
+                $exercise->setCorrectionMode(CorrectionMode::AFTER_LAST_ATTEMPT);
+                break;
+            case 'date':
+                $exercise->setCorrectionMode(CorrectionMode::AFTER_DATE);
+                $correctionDate = \DateTime::createFromFormat('Y-m-d\TH:i:s', $parameters->correctionDate);
+                break;
+            case 'never':
+                $exercise->setCorrectionMode(CorrectionMode::NEVER);
+                break;
         }
 
         $exercise->setDateCorrection($correctionDate);
@@ -259,7 +293,7 @@ class ExerciseSerializer implements SerializerInterface
             // Searches for an existing step entity.
             foreach ($stepEntities as $entityIndex => $entityStep) {
                 /** @var Step $entityStep */
-                if ((string) $entityStep->getId() === $stepData->id) {
+                if ($entityStep->getUuid() === $stepData->id) {
                     $existingStep = $entityStep;
                     unset($stepEntities[$entityIndex]);
                     break;

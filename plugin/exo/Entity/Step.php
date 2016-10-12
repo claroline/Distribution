@@ -23,6 +23,13 @@ class Step
     private $id;
 
     /**
+     * @var string
+     *
+     * @ORM\Column("uuid", type="string", length=36)
+     */
+    private $uuid;
+
+    /**
      * @var int
      *
      * @ORM\Column(name="title", type="string")
@@ -101,6 +108,26 @@ class Step
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Gets UUID.
+     *
+     * @return string
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * Sets UUID.
+     *
+     * @param $uuid
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
     }
 
     /**

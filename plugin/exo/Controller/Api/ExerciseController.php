@@ -25,7 +25,6 @@ use UJM\ExoBundle\Transfer\Json\ValidationException;
  *
  * @EXT\Route(
  *     "/exercises",
- *     requirements={"id"="\d+"},
  *     options={"expose"=true},
  *     defaults={"_format": "json"}
  * )
@@ -83,6 +82,7 @@ class ExerciseController
      * in a JSON format.
      *
      * @EXT\Route("/{id}", name="exercise_get")
+     * @EXT\ParamConverter("exercise", class="UJMExoBundle:Exercise", options={"mapping": {"id": "uuid"}})
      *
      * @param Exercise $exercise
      *
@@ -100,6 +100,7 @@ class ExerciseController
      * in a JSON format.
      *
      * @EXT\Route("/{id}/minimal", name="exercise_get_minimal")
+     * @EXT\ParamConverter("exercise", class="UJMExoBundle:Exercise", options={"mapping": {"id": "uuid"}})
      *
      * @param Exercise $exercise
      *
@@ -116,6 +117,7 @@ class ExerciseController
      * Updates an Exercise.
      *
      * @EXT\Route("/{id}", name="exercise_update")
+     * @EXT\ParamConverter("exercise", class="UJMExoBundle:Exercise", options={"mapping": {"id": "uuid"}})
      * @EXT\Method("PUT")
      *
      * @param Exercise $exercise
@@ -151,7 +153,7 @@ class ExerciseController
     /**
      * Update the properties of an Exercise.
      *
-     * @EXT\Route("/{id}/update", name="exercise_update_meta")
+     * @EXT\Route("/{id}/update", name="exercise_update_meta", requirements={"id"="\d+"})
      * @EXT\Method("PUT")
      *
      * @param Exercise $exercise
@@ -178,6 +180,7 @@ class ExerciseController
      * @EXT\Route(
      *     "/{id}/publish",
      *     name="exercise_publish",
+     *     requirements={"id"="\d+"},
      *     options={"expose"=true}
      * )
      * @EXT\Method("POST")
@@ -201,6 +204,7 @@ class ExerciseController
      * @EXT\Route(
      *     "/{id}/unpublish",
      *     name="exercise_unpublish",
+     *     requirements={"id"="\d+"},
      *     options={"expose"=true}
      * )
      * @EXT\Method("POST")
@@ -222,7 +226,7 @@ class ExerciseController
      * Opens an exercise, creating a new paper or re-using an unfinished one.
      * Also check that max attempts are not reached if needed.
      *
-     * @EXT\Route("/{id}/attempts", name="exercise_new_attempt")
+     * @EXT\Route("/{id}/attempts", name="exercise_new_attempt", requirements={"id"="\d+"})
      * @EXT\Method("POST")
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
      *
@@ -256,7 +260,7 @@ class ExerciseController
     /**
      * Returns all the papers associated with an exercise for the current user.
      *
-     * @EXT\Route("/{id}/papers", name="exercise_papers")
+     * @EXT\Route("/{id}/papers", name="exercise_papers", requirements={"id"="\d+"})
      * @EXT\ParamConverter("user", converter="current_user")
      *
      * @param User     $user
@@ -278,7 +282,7 @@ class ExerciseController
     /**
      * Exports papers into a CSV format.
      *
-     * @EXT\Route("/{id}/papers/export", name="exercise_papers_export")
+     * @EXT\Route("/{id}/papers/export", name="exercise_papers_export", requirements={"id"="\d+"})
      *
      * @param Exercise $exercise
      *

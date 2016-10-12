@@ -2,13 +2,19 @@
 
 namespace UJM\ExoBundle\Tests\Serializer;
 
-use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
+use Claroline\CoreBundle\Persistence\ObjectManager;
 use UJM\ExoBundle\Entity\Hint;
+use UJM\ExoBundle\Library\Testing\Json\JsonDataTestCase;
 use UJM\ExoBundle\Serializer\HintSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\HintValidator;
 
-class HintSerializerTest extends TransactionalTestCase
+class HintSerializerTest extends JsonDataTestCase
 {
+    /**
+     * @var ObjectManager
+     */
+    private $om;
+
     /**
      * @var HintValidator
      */
@@ -25,6 +31,8 @@ class HintSerializerTest extends TransactionalTestCase
     {
         parent::setUp();
 
+        $this->om = $this->client->getContainer()->get('claroline.persistence.object_manager');
+
         // We trust validator service as it is fully tested
         $this->validator = $this->client->getContainer()->get('ujm_exo.validator.hint');
         $this->serializer = $this->client->getContainer()->get('ujm_exo.serializer.hint');
@@ -32,8 +40,14 @@ class HintSerializerTest extends TransactionalTestCase
         $this->hint = new Hint();
         $this->hint->setPenalty(2);
         $this->hint->setValue('hint text');
+
+        $this->om->persist($this->hint);
+        $this->om->flush();
     }
 
+    /**
+     * The serialized data MUST respect the JSON schema.
+     */
     public function testSerializedDataAreSchemaValid()
     {
         $serialized = $this->serializer->serialize($this->hint);
@@ -68,15 +82,47 @@ class HintSerializerTest extends TransactionalTestCase
 
     public function testDeserializedDataAreCorrectlySet()
     {
-        $hintData = new \stdClass();
+        $hintData = $this->loadTestData('hint/valid/full.json');
 
-        $hintData->penalty = 2;
-        $hintData->value = 'hint text';
+        $hint = $this->serializer->deserialize($hintData);
 
-        $deserialized = $this->serializer->deserialize($hintData);
+        $this->assertInstanceOf('UJM\ExoBundle\Entity\Hint', $hint);
+        $this->compareHintAndData($hint, $hintData);
+    }
 
-        $this->assertInstanceOf('UJM\ExoBundle\Entity\Hint', $deserialized);
-        $this->assertEquals(2, $deserialized->getPenalty());
-        $this->assertEquals('hint text', $deserialized->getValue());
+    /**
+     * The serializer MUST update the entity object passed as param and MUST NOT create a new one.
+     */
+    public function testDeserializeUpdateEntityIfExist()
+    {
+        $hintData = $this->loadTestData('hint/valid/full.json');
+
+        $updatedHint = $this->serializer->deserialize($hintData, $this->hint);
+
+        // The original keyword entity must have been updated
+        $this->compareHintAndData($this->hint, $hintData);
+
+        // Checks no new entity have been created
+        $nbBefore = count($this->om->getRepository('UJMExoBundle:Hint')->findAll());
+
+        // Save the keyword to DB
+        $this->om->persist($updatedHint);
+        $this->om->flush();
+
+        $nbAfter = count($this->om->getRepository('UJMExoBundle:Hint')->findAll());
+
+        $this->assertEquals($nbBefore, $nbAfter);
+    }
+
+    /**
+     * Compares the data between a hint entity and a keyword raw object.
+     *
+     * @param Hint      $hint
+     * @param \stdClass $hintData
+     */
+    private function compareHintAndData(Hint $hint, \stdClass $hintData)
+    {
+        $this->assertEquals($hintData->penalty, $hint->getPenalty());
+        $this->assertEquals($hintData->value, $hint->getValue());
     }
 }

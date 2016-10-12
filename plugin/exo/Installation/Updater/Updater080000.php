@@ -6,21 +6,15 @@ use Claroline\BundleRecorder\Log\LoggableTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use UJM\ExoBundle\Library\Question\QuestionType;
 
-class Updater070100
+class Updater080000
 {
     use LoggableTrait;
 
     private $connection;
 
-    private $om;
-
-    private $ut;
-
     public function __construct(ContainerInterface $container)
     {
         $this->connection = $container->get('doctrine.dbal.default_connection');
-        $this->om = $container->get('claroline.persistence.object_manager');
-        $this->ut = $container->get('claroline.utilities.misc');
     }
 
     public function postUpdate()
@@ -75,39 +69,17 @@ class Updater070100
 
     private function initializeUuid()
     {
-        $classes = [
-            'UJM\ExoBundle\Entity\Question',
+        $tables = [
+            'ujm_exercise',
+            'ujm_step',
+            'ujm_question',
         ];
 
-        foreach ($classes as $class) {
-            $this->setUuidForClass($class);
+        foreach ($tables as $table) {
+            $this->log("Adding UUID in table '{$table}...");
+
+            $query = 'UPDATE '.$table.' SET uuid = (SELECT UUID()) WHERE uuid IS NULL OR uuid = ""';
+            $this->connection->query($query);
         }
-    }
-
-    public function setUuidForClass($class)
-    {
-        $entities = $this->om->getRepository($class)->findAll();
-        $totalObjects = count($entities);
-        $i = 0;
-        $this->log("Adding UUID for {$totalObjects} {$class}...");
-
-        foreach ($entities as $entity) {
-            if (!$entity->getUuid()) {
-                $entity->setUuid($this->ut->generateGuid());
-                $this->om->persist($entity);
-            }
-            ++$i;
-
-            if ($i % 300 === 0) {
-                $this->log("Flushing [{$i}/{$totalObjects}]");
-                $this->om->flush();
-            }
-        }
-
-        $this->om->flush();
-        $this->log("UUID added for {$totalObjects} {$class} !");
-        $this->log('Clearing object manager...');
-        $this->om->clear();
-        $this->log('done !');
     }
 }
