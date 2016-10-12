@@ -296,6 +296,7 @@ only_once: => Les bonnes réponses ne sont comptabilisées qu'une seule fois.
 only_owner_graphic: Seul le propriétaire peut changer l'image
 open: Ouverte
 open_maximum_length: Longueur maximum de la réponse (nombre de caractères)
+open_maximum_length_help: Laissez cette valeur à 0 si il n'y a pas de longueur maximum pour la réponse
 open_creation: Création d'une question ouverte
 open_edition: Edition d'une question ouverte
 orders: Consignes
@@ -376,6 +377,7 @@ score_displaying: Affichage du score
 score_list_question: Note et liste des questions
 score_error: Attention, le score doit être un chiffre !
 score_max : Score maximum possible
+score_max_help: Laissez cette valeur à 0 si la notation est manuelle
 score_false_label: Résultat incorrect
 score_right_label: Résultat correct
 score_right_label_matching: Score de l'association
@@ -415,6 +417,7 @@ stat_users: "[0, 1] %count% utilisateur|]1,Inf[ %count% utilisateurs"
 stat_have_responded: ont répondu
 sum_score_choice_at_least_one_correct_answer_error: Au moins une réponse doit avoir un score positif.
 sum_score_choice_no_correct_answer_error: La réponse correcte doit avoir un score positif.
+should_be_greater_or_equal_to_zero: Cette valeur devrait être supérieur ou égal à 0
 
 # T
 temporary_mark: Note temporaire
