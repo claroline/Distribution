@@ -214,7 +214,7 @@ creator: Créateur
 csv_export: Export csv
 csv_select: Sélectionnez un fichier csv:
 csv_format_info: Informations sur le format du fichier csv
-csv_format_user_list: Format: liste des noms d''utilisateur séparés par un retour à la ligne.
+csv_format_user_list: Format: liste de noms d''utilisateur, d''email ou de code administratifs séparés par un retour à la ligne.
 csv_users_import_infos: Informations sur le format du fichier csv
 csv_users_import_infos_format: Format
 csv_users_import_infos_format_a: Les données d'un utilisateur doivent être définies sur une ligne et séparées par un point virgule.
@@ -298,6 +298,8 @@ display: Afficher
 display_at_registration: 'Afficher à la création du compte'
 display_captcha: 'Afficher les captchas pour les anonymes'
 display_options: 'Options d''affichage'
+displayable_in_desktop: Disponible dans le bureau
+displayable_in_workspace: Disponible dans l'espace d'activités
 displayable_in_workspace_list: 'Visible dans la liste des espaces'
 distinguished_name: 'Nom distinctif (DN)'
 does_not_exist: 'n''existe pas'
@@ -630,6 +632,7 @@ no_home_tab: 'Il n''y a aucun onglet'
 no_learning_outcomes: 'Aucun référentiel de compétences'
 no_message: 'Aucun message'
 no_model: 'Aucun modèle'
+no_resource: Aucune ressource
 no_resources_in_workspace: 'Cet espace ne contient actuellement aucune ressource.'
 no_role_selected_message: 'Aucun rôle sélectionné.'
 no_search_results: 'Votre recherche n''a retourné aucun résultat.'
@@ -858,6 +861,7 @@ role_name_type_form_translationKey: Nom
 roles: Rôles
 roles_facet_form_explanation: 'Ce formulaire vous permet de spécifier quels rôles peuvent voir la facette dans le profil public de l''utilisateur.'
 roles_fields_form_explanation: 'Ce formulaire vous permet de spécifier quels rôles peuvent voir et éditer le champ dans le profil public de l''utilisateur.'
+roles_for_desktop_widget: Rôles (Bureau)
 roles_management: 'Gestion des rôles'
 save: Sauvegarder
 save_as_template: 'Exporter'
@@ -1125,6 +1129,7 @@ with_tutor: Tutoré
 workspace: 'Espace d''activités'
 workspace.create: 'Créer un nouvel espace d''activités'
 workspace.name_not_blank: 'Veuillez spécifier un nom pour cet espace d''activités.'
+workspace_access_disabled: Votre accès à cet espace d'activités est désactivé
 workspace_activity_overview: 'Aperçu des activités récentes de %workspaceName%'
 workspace_administration: Administration
 workspace_classification: 'Classification des espaces d''activités'
@@ -1334,3 +1339,4 @@ disable: Désactiver
 enable: Activer
 workspace_access_date_invalid: Les dates d'accès de l'espace d'activités sont dépassées
 organization_invalid: L'organisation %organization% n'existe pas à la ligne %line%
+user_limit_reached: Limite d'utilisateur atteinte

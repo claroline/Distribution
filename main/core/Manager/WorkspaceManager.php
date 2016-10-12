@@ -320,6 +320,31 @@ class WorkspaceManager
         return $this->workspaceRepo->findByUser($user);
     }
 
+    public function exportWorkspace(Workspace $workspace)
+    {
+        return [
+          'id' => $workspace->getId(),
+          'guid' => $workspace->getGuid(),
+          'name' => $workspace->getName(),
+          'description' => $workspace->getDescription(),
+          'code' => $workspace->getCode(),
+          'maxStorageSize' => $workspace->getMaxStorageSize(),
+          'maxUploadResources' => $workspace->getMaxUploadResources(),
+          'maxUsers' => $workspace->getMaxUsers(),
+          'displayable' => $workspace->isDisplayable(),
+          'creatorId' => $workspace->getCreator()->getId(),
+          'selfRegistration' => $workspace->getSelfRegistration(),
+          'registrationValidation' => $workspace->getRegistrationValidation(),
+          'selfUnregistration' => $workspace->getSelfUnregistration(),
+          'creationDate' => $workspace->getCreationDate(),
+          'isPersonal' => $workspace->isPersonal(),
+          'startDate' => $workspace->getStartDate(),
+          'endDate' => $workspace->getEndDate(),
+          'isAccessDate' => $workspace->getIsAccessDate(),
+          'type' => $workspace->getWorkspaceType(),
+        ];
+    }
+
     /**
      * @return \Claroline\CoreBundle\Entity\Workspace\Workspace
      */
@@ -853,7 +878,7 @@ class WorkspaceManager
      *
      * @param array $workspaces
      */
-    public function importWorkspaces(array $workspaces, $logger = null)
+    public function importWorkspaces(array $workspaces, $logger = null, $update = false)
     {
         $i = 0;
         $workspaceModelManager = $this->container->get('claroline.manager.workspace_model_manager');
@@ -869,11 +894,6 @@ class WorkspaceManager
             $selfRegistration = $workspace[3];
             $registrationValidation = $workspace[4];
             $selfUnregistration = $workspace[5];
-            $errors = [];
-
-            if ($logger) {
-                $logger('Creating '.$code.' ('.$i.'/'.count($workspaces).') ...');
-            }
 
             if (isset($workspace[6]) && trim($workspace[6]) !== '') {
                 $user = $this->om->getRepository('ClarolineCoreBundle:User')
@@ -892,40 +912,53 @@ class WorkspaceManager
                 $endDate->setTimestamp($workspace[8]);
             }
 
-            if ($model) {
-                $guid = $this->ut->generateGuid();
-                $workspace = new Workspace();
-                $this->createWorkspace($workspace);
-                $workspace->setName($name);
-                $workspace->setCode($code);
-                $workspace->setDisplayable($isVisible);
-                $workspace->setSelfRegistration($selfRegistration);
-                $workspace->setSelfUnregistration($selfUnregistration);
-                $workspace->setRegistrationValidation($registrationValidation);
-                $workspace->setGuid($guid);
-                if ($endDate) {
-                    $workspace->setEndDate($date);
+            if ($update) {
+                $workspace = $this->getOneByCode($code);
+                if (!$workspace) {
+                    //if the workspace doesn't exists, just keep going...
+                    continue;
                 }
-                $date = new \Datetime(date('d-m-Y H:i'));
-                $workspace->setCreationDate($date->getTimestamp());
-                $workspace->setCreator($user);
-                $workspaceModelManager->addDataFromModel($model, $workspace, $user, $errors);
+                if ($logger) {
+                    $logger('Updating '.$code.' ('.$i.'/'.count($workspaces).') ...');
+                }
             } else {
-                //this should be changed later
                 $workspace = new Workspace();
-                $workspace->setName($name);
-                $workspace->setCode($code);
-                $workspace->setDisplayable($isVisible);
-                $workspace->setSelfRegistration($selfRegistration);
-                $workspace->setSelfUnregistration($registrationValidation);
-                $workspace->setCreator($user);
-                if ($endDate) {
-                    $workspace->setEndDate($endDate);
-                }
-                $template = new File($this->container->getParameter('claroline.param.default_template'));
-                $this->container->get('claroline.manager.transfer_manager')->createWorkspace($workspace, $template, true);
             }
 
+            $workspace->setName($name);
+            $workspace->setCode($code);
+            $workspace->setDisplayable($isVisible);
+            $workspace->setSelfRegistration($selfRegistration);
+            $workspace->setSelfUnregistration($selfUnregistration);
+            $workspace->setRegistrationValidation($registrationValidation);
+            $workspace->setCreator($user);
+
+            if ($endDate) {
+                $workspace->setEndDate($endDate);
+            }
+
+            if (!$update) {
+                if ($logger) {
+                    $logger('Creating '.$code.' ('.$i.'/'.count($workspaces).') ...');
+                }
+                if ($model) {
+                    $guid = $this->ut->generateGuid();
+                    $this->createWorkspace($workspace);
+                    $workspace->setGuid($guid);
+                    $date = new \Datetime(date('d-m-Y H:i'));
+                    $workspace->setCreationDate($date->getTimestamp());
+                    $workspaceModelManager->addDataFromModel($model, $workspace, $user);
+                } else {
+                    $template = new File($this->container->getParameter('claroline.param.default_template'));
+                    $this->container->get('claroline.manager.transfer_manager')->createWorkspace($workspace, $template, true);
+                }
+            } else {
+                if ($model) {
+                    $workspaceModelManager->updateDataFromModel($model, $workspace);
+                }
+            }
+
+            $this->om->persist($workspace);
             $logger('UOW: '.$this->om->getUnitOfWork()->size());
 
             if ($i % 100 === 0) {
