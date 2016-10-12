@@ -63,9 +63,8 @@ class WikiListener
      */
     public function onCreate(CreateResourceEvent $event)
     {
-        $request = $this->container->get('request');
         $form = $this->container->get('form.factory')->create(new WikiType(), new Wiki());
-        $form->handleRequest($request);
+        $form->handleRequest($this->request);
 
         if ($form->isValid()) {
             $wiki = $form->getData();

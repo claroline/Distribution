@@ -32,7 +32,7 @@ class BlogController extends BaseController
      * @ParamConverter("blog", class="IcapBlogBundle:Blog", options={"id" = "blogId"})
      * @Template()
      */
-    public function viewAction(Request $request, Blog $blog, $page, $filter = null)
+    public function viewAction(Request $request, Blog $blog, $page = 1, $filter = null)
     {
         $this->checkAccess('OPEN', $blog);
 

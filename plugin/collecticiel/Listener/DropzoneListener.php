@@ -70,9 +70,8 @@ class DropzoneListener
      */
     public function onCreate(CreateResourceEvent $event)
     {
-        $request = $this->container->get('request');
         $form = $this->container->get('form.factory')->create(new DropzoneType(), new Dropzone());
-        $form->handleRequest($request);
+        $form->handleRequest($this->request);
 
         if ($form->isValid()) {
             $dropzone = $form->getData();
