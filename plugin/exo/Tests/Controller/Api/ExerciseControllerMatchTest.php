@@ -7,8 +7,11 @@ use Claroline\CoreBundle\Library\Testing\RequestTrait;
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use UJM\ExoBundle\Entity\Exercise;
+use UJM\ExoBundle\Entity\Label;
+use UJM\ExoBundle\Entity\Proposal;
 use UJM\ExoBundle\Entity\Question;
 use UJM\ExoBundle\Library\Testing\Persister;
+use UJM\ExoBundle\Manager\PaperManager;
 
 /**
  * Tests that are specific to MatchQuestionType.
@@ -21,6 +24,8 @@ class ExerciseControllerMatchTest extends TransactionalTestCase
     private $om;
     /** @var Persister */
     private $persist;
+    /** @var PaperManager */
+    private $paperManager;
     /** @var User */
     private $john;
     /** @var User */
@@ -46,8 +51,9 @@ class ExerciseControllerMatchTest extends TransactionalTestCase
     {
         parent::setUp();
         $this->om = $this->client->getContainer()->get('claroline.persistence.object_manager');
-        $manager = $this->client->getContainer()->get('ujm.exo.paper_manager');
-        $this->persist = new Persister($this->om, $manager);
+        $this->paperManager = $this->client->getContainer()->get('ujm.exo.paper_manager');
+
+        $this->persist = new Persister($this->om);
         $this->john = $this->persist->user('john');
         $this->bob = $this->persist->user('bob');
 
@@ -71,7 +77,7 @@ class ExerciseControllerMatchTest extends TransactionalTestCase
 
     public function testSubmitAnswerInInvalidFormat()
     {
-        $pa1 = $this->persist->paper($this->john, $this->ex1);
+        $pa1 = $this->paperManager->createPaper($this->ex1, $this->john);
         $this->om->flush();
 
         $step = $this->ex1->getSteps()->get(0);
@@ -90,7 +96,7 @@ class ExerciseControllerMatchTest extends TransactionalTestCase
 
     public function testSubmitAnswer()
     {
-        $pa1 = $this->persist->paper($this->john, $this->ex1);
+        $pa1 = $this->paperManager->createPaper($this->ex1, $this->john);
         $this->om->flush();
 
         $propId1 = (string) $this->prop1->getId();

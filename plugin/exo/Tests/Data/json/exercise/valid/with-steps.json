@@ -1,27 +1,61 @@
 {
   "id": "1",
+  "title": "quiz title",
+  "parameters": {
+    "type": "summative",
+    "anonymous": false,
+    "interruptible": true,
+    "duration": 0,
+    "maxAttempts": 5,
+    "random": false,
+    "pick": 0,
+    "draw": "once",
+    "showMetadata": true,
+    "showStatistics": false,
+    "showFullCorrection": true,
+    "showCorrectionAt": "validation",
+    "showScoreAt": "correction"
+  },
   "steps": [
     {
       "id": "2",
       "items": [
         {
-          "id": "2",
+          "id": "1",
           "type": "application/x.choice+json",
-          "title": "Question ?",
+          "content": "Question ?",
+          "score": {
+            "type": "sum"
+          },
           "choices": [
             {
-              "id": "3",
-              "type": "text/plain",
-              "data": "True"
+              "id": "1",
+              "type": "text/html",
+              "data": "choice 1"
             },
             {
-              "id": "4",
-              "type": "text/plain",
-              "data": "False"
+              "id": "2",
+              "type": "text/html",
+              "data": "choice 2"
+            },
+            {
+              "id": "3",
+              "type": "text/html",
+              "data": "choice 3"
             }
           ],
           "random": false,
-          "multiple": false
+          "multiple": false,
+          "solutions": [
+            {
+              "id": "1",
+              "score": 2
+            },
+            {
+              "id": "3",
+              "score": 1
+            }
+          ]
         }
       ]
     }
