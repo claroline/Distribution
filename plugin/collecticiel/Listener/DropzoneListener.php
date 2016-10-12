@@ -2,20 +2,20 @@
 
 namespace Innova\CollecticielBundle\Listener;
 
-use Claroline\CoreBundle\Event\CustomActionResourceEvent;
-use Claroline\CoreBundle\Event\PluginOptionsEvent;
+use Claroline\CoreBundle\Event\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
+use Claroline\CoreBundle\Event\CustomActionResourceEvent;
 use Claroline\CoreBundle\Event\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\OpenResourceEvent;
-use Claroline\CoreBundle\Event\CopyResourceEvent;
+use Claroline\CoreBundle\Event\PluginOptionsEvent;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Innova\CollecticielBundle\Entity\Criterion;
 use Innova\CollecticielBundle\Entity\Dropzone;
 use Innova\CollecticielBundle\Form\DropzoneType;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
@@ -53,10 +53,10 @@ class DropzoneListener
 
         $content = $this->container->get('templating')->render(
             'ClarolineCoreBundle:Resource:createForm.html.twig',
-            array(
+            [
                 'form' => $form->createView(),
                 'resourceType' => 'innova_collecticiel',
-            )
+            ]
         );
 
         $event->setResponseContent($content);
@@ -76,14 +76,14 @@ class DropzoneListener
 
         if ($form->isValid()) {
             $dropzone = $form->getData();
-            $event->setResources(array($dropzone));
+            $event->setResources([$dropzone]);
         } else {
             $content = $this->container->get('templating')->render(
                 'ClarolineCoreBundle:Resource:createForm.html.twig',
-                array(
+                [
                     'form' => $form->createView(),
                     'resourceType' => 'innova_collecticiel',
-                )
+                ]
             );
             $event->setErrorFormContent($content);
         }
@@ -102,7 +102,7 @@ class DropzoneListener
         // suite demande JJQ, voir son document de référence d'août 2015
         // il faut venir sur l'onglet "Mon espace collecticiel" et non plus sur "Drop"
         // Point 5 du document
-        $collection = new ResourceCollection(array($event->getResource()->getResourceNode()));
+        $collection = new ResourceCollection([$event->getResource()->getResourceNode()]);
         if (false === $this->container->get('security.authorization_checker')->isGranted('EDIT', $collection)) {
             $params['_controller'] = 'InnovaCollecticielBundle:Drop:drop';
         } else {
@@ -154,14 +154,14 @@ class DropzoneListener
                 ->get('router')
                 ->generate(
                     'innova_collecticiel_drop',
-                    array('resourceId' => $event->getResource()->getId())
+                    ['resourceId' => $event->getResource()->getId()]
                 );
         } else {
             $route = $this->container
                 ->get('router')
                 ->generate(
                     'innova_collecticiel_shared_spaces',
-                    array('resourceId' => $event->getResource()->getId())
+                    ['resourceId' => $event->getResource()->getId()]
                 );
         }
 
@@ -180,7 +180,7 @@ class DropzoneListener
             ->get('router')
             ->generate(
                 'innova_collecticiel_edit',
-                array('resourceId' => $event->getResource()->getId())
+                ['resourceId' => $event->getResource()->getId()]
             );
         $event->setResponse(new RedirectResponse($route));
         $event->stopPropagation();
@@ -192,7 +192,7 @@ class DropzoneListener
             ->get('router')
             ->generate(
                 'innova_collecticiel_drops_awaiting',
-                array('resourceId' => $event->getResource()->getId())
+                ['resourceId' => $event->getResource()->getId()]
         );
 
         $event->setResponse(new RedirectResponse($route));
@@ -222,14 +222,14 @@ class DropzoneListener
 //            ->get('doctrine.orm.entity_manager')
 //            ->getRepository('IcapReferenceBundle:ReferenceBankOptions')
 //            ->findAll();
-//
+
 //        $referenceOptions = null;
 //        if ((count($referenceOptionsList)) > 0) {
 //            $referenceOptions = $referenceOptionsList[0];
 //        } else {
 //            $referenceOptions = new ReferenceBankOptions();
 //        }
-//
+
 //        $form = $this->container->get('form.factory')->create(new ReferenceBankOptionsType(), $referenceOptions);
 //        $content = $this->container->get('templating')->render(
 //            'IcapReferenceBundle::plugin_options_form.html.twig', array(
