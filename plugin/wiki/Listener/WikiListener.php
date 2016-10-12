@@ -2,15 +2,15 @@
 
 namespace Icap\WikiBundle\Listener;
 
+use Claroline\CoreBundle\Event\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\OpenResourceEvent;
-use Claroline\CoreBundle\Event\CopyResourceEvent;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Icap\WikiBundle\Entity\Wiki;
 use Icap\WikiBundle\Form\WikiType;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
@@ -47,10 +47,10 @@ class WikiListener
         $form = $this->container->get('form.factory')->create(new WikiType(), new Wiki());
         $content = $this->container->get('templating')->render(
             'ClarolineCoreBundle:Resource:createForm.html.twig',
-            array(
+            [
                 'form' => $form->createView(),
                 'resourceType' => 'icap_wiki',
-            )
+            ]
         );
         $event->setResponseContent($content);
         $event->stopPropagation();
@@ -69,14 +69,14 @@ class WikiListener
 
         if ($form->isValid()) {
             $wiki = $form->getData();
-            $event->setResources(array($wiki));
+            $event->setResources([$wiki]);
         } else {
             $content = $this->container->get('templating')->render(
                 'ClarolineCoreBundle:Resource:createForm.html.twig',
-                array(
+                [
                     'form' => $form->createView(),
                     'resourceType' => 'icap_wiki',
-                )
+                ]
             );
             $event->setErrorFormContent($content);
         }
