@@ -51,10 +51,10 @@ class BlogListener
         $form = $this->container->get('form.factory')->create(new BlogType(), new Blog());
         $content = $this->container->get('templating')->render(
             'ClarolineCoreBundle:Resource:createForm.html.twig',
-            array(
+            [
                 'form' => $form->createView(),
                 'resourceType' => 'icap_blog',
-            )
+            ]
         );
         $event->setResponseContent($content);
         $event->stopPropagation();
@@ -71,7 +71,7 @@ class BlogListener
         $form->bind($this->request);
 
         if ($form->isValid()) {
-            $event->setResources(array($form->getData()));
+            $event->setResources([$form->getData()]);
             $event->stopPropagation();
 
             return;
@@ -79,10 +79,10 @@ class BlogListener
 
         $content = $this->container->get('templating')->render(
             'ClarolineCoreBundle:Resource:createForm.html.twig',
-            array(
+            [
                 'form' => $form->createView(),
                 'resourceType' => 'icap_blog',
-            )
+            ]
         );
         $event->setErrorFormContent($content);
         $event->stopPropagation();
@@ -183,7 +183,7 @@ class BlogListener
             ->get('router')
             ->generate(
                 'icap_blog_configure',
-                array('blogId' => $event->getResource()->getId())
+                ['blogId' => $event->getResource()->getId()]
             );
         $event->setResponse(new RedirectResponse($route));
         $event->stopPropagation();
