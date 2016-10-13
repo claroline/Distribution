@@ -1334,3 +1334,4 @@ enable: Enable
 workspace_access_date_invalid: The workspace access dates are passed
 organization_invalid: The organization %organization% doesn't exist at line %line%
 user_limit_reached: User limit reached
+outdated_brower_message: Your browser is not supported, please update it for a better experience.
