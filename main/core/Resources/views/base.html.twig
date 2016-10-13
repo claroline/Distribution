@@ -40,6 +40,10 @@
         {% endblock %}
     </head>
     <body id="claroline-base-layout-body">
+        <div class="alert alert-danger outdated-browser-warning" style="text-align='center';">
+            <a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a>
+            <div align="center"> {{ 'outdated_brower_message'|trans({}, 'platform') }} </div>
+        </div>
         {% block layout %}{% endblock %}
         {% block javascripts %}{% endblock %}
     </body>
