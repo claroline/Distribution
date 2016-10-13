@@ -11,7 +11,7 @@ use Claroline\CoreBundle\Event\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\OpenResourceEvent;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\ScormBundle\Event\ExportScormResourceEvent;
-use Innova\PathBundle\Entity\Path\Path;;
+use Innova\PathBundle\Entity\Path\Path;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
