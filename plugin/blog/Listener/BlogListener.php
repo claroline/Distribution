@@ -8,6 +8,7 @@ use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\CustomActionResourceEvent;
 use Claroline\CoreBundle\Event\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\OpenResourceEvent;
+use Claroline\CoreBundle\Manager\ResourceManager;
 use Icap\BlogBundle\Entity\Blog;
 use Icap\BlogBundle\Entity\Comment;
 use Icap\BlogBundle\Entity\Post;
@@ -26,19 +27,26 @@ class BlogListener
     private $container;
     private $httpKernel;
     private $request;
+    private $resourceManager;
 
     /**
      * @DI\InjectParams({
-     *     "container"    = @DI\Inject("service_container"),
-     *     "httpKernel"   = @DI\Inject("http_kernel"),
-     *     "requestStack" = @DI\Inject("request_stack")
+     *     "container"       = @DI\Inject("service_container"),
+     *     "httpKernel"      = @DI\Inject("http_kernel"),
+     *     "requestStack"    = @DI\Inject("request_stack"),
+     *     "resourceManager" = @DI\Inject("claroline.manager.resource_manager")
      * })
      */
-    public function __construct(ContainerInterface $container, HttpKernelInterface $httpKernel, RequestStack $requestStack)
-    {
+    public function __construct(
+        ContainerInterface $container,
+        HttpKernelInterface $httpKernel,
+        RequestStack $requestStack,
+        ResourceManager $resourceManager
+    ) {
         $this->container = $container;
         $this->httpKernel = $httpKernel;
         $this->request = $requestStack->getCurrentRequest();
+        $this->resourceManager = $resourceManager;
     }
 
     /**
@@ -179,11 +187,14 @@ class BlogListener
      */
     public function onConfigure(CustomActionResourceEvent $event)
     {
+        $resource = get_class($event->getResource()) === 'Claroline\CoreBundle\Entity\Resource\ResourceShortcut' ?
+            $this->resourceManager->getResourceFromShortcut($event->getResource()->getResourceNode()) :
+            $event->getResource();
         $route = $this->container
             ->get('router')
             ->generate(
                 'icap_blog_configure',
-                ['blogId' => $event->getResource()->getId()]
+                ['blogId' => $resource->getId()]
             );
         $event->setResponse(new RedirectResponse($route));
         $event->stopPropagation();
