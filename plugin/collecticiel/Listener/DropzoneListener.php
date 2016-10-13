@@ -10,6 +10,7 @@ use Claroline\CoreBundle\Event\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\OpenResourceEvent;
 use Claroline\CoreBundle\Event\PluginOptionsEvent;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
+use Claroline\CoreBundle\Manager\ResourceManager;
 use Innova\CollecticielBundle\Entity\Criterion;
 use Innova\CollecticielBundle\Entity\Dropzone;
 use Innova\CollecticielBundle\Form\DropzoneType;
@@ -27,19 +28,26 @@ class DropzoneListener
     private $container;
     private $httpKernel;
     private $request;
+    private $resourceManager;
 
     /**
      * @DI\InjectParams({
-     *     "container"    = @DI\Inject("service_container"),
-     *     "httpKernel"   = @DI\Inject("http_kernel"),
-     *     "requestStack" = @DI\Inject("request_stack")
+     *     "container"       = @DI\Inject("service_container"),
+     *     "httpKernel"      = @DI\Inject("http_kernel"),
+     *     "requestStack"    = @DI\Inject("request_stack"),
+     *     "resourceManager" = @DI\Inject("claroline.manager.resource_manager")
      * })
      */
-    public function __construct(ContainerInterface $container, HttpKernelInterface $httpKernel, RequestStack $requestStack)
-    {
+    public function __construct(
+        ContainerInterface $container,
+        HttpKernelInterface $httpKernel,
+        RequestStack $requestStack,
+        ResourceManager $resourceManager
+    ) {
         $this->container = $container;
         $this->httpKernel = $httpKernel;
         $this->request = $requestStack->getCurrentRequest();
+        $this->resourceManager = $resourceManager;
     }
 
     /**
@@ -139,13 +147,10 @@ class DropzoneListener
      */
     public function onOpenCustom(CustomActionResourceEvent $event)
     {
-        $em = $this->container->get('doctrine.orm.entity_manager');
-
-        $dropzone = $em->getRepository('InnovaCollecticielBundle:Dropzone')
-            ->find($event->getResource()->getId());
-
+        $dropzone = get_class($event->getResource()) === 'Claroline\CoreBundle\Entity\Resource\ResourceShortcut' ?
+            $this->resourceManager->getResourceFromShortcut($event->getResource()->getResourceNode()) :
+            $event->getResource();
         $dropzoneVoter = $this->container->get('innova.manager.dropzone_voter');
-
         $canEdit = $dropzoneVoter->checkEditRight($dropzone);
 
         if (!$canEdit) {
@@ -153,14 +158,14 @@ class DropzoneListener
                 ->get('router')
                 ->generate(
                     'innova_collecticiel_drop',
-                    ['resourceId' => $event->getResource()->getId()]
+                    ['resourceId' => $dropzone->getId()]
                 );
         } else {
             $route = $this->container
                 ->get('router')
                 ->generate(
                     'innova_collecticiel_shared_spaces',
-                    ['resourceId' => $event->getResource()->getId()]
+                    ['resourceId' => $dropzone->getId()]
                 );
         }
 
@@ -175,11 +180,14 @@ class DropzoneListener
      */
     public function onEdit(CustomActionResourceEvent $event)
     {
+        $resource = get_class($event->getResource()) === 'Claroline\CoreBundle\Entity\Resource\ResourceShortcut' ?
+            $this->resourceManager->getResourceFromShortcut($event->getResource()->getResourceNode()) :
+            $event->getResource();
         $route = $this->container
             ->get('router')
             ->generate(
                 'innova_collecticiel_edit',
-                ['resourceId' => $event->getResource()->getId()]
+                ['resourceId' => $resource->getId()]
             );
         $event->setResponse(new RedirectResponse($route));
         $event->stopPropagation();
