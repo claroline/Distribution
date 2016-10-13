@@ -1,7 +1,7 @@
 import modernizr from 'modernizr'
 import $ from 'jquery'
 
-/* global Routing */
+/* global Translator */
 
 if (!modernizr.mutationobserver) {
   showWarning()
