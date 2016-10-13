@@ -136,11 +136,7 @@ class BlogListener
         $entityManager = $this->container->get('claroline.persistence.object_manager');
         /** @var \Icap\BlogBundle\Entity\Blog $blog */
         $blog = $event->getResource();
-
-        $user = $this->container->get('security.token_storage')->getToken()->getUser();
-
         $newBlog = new Blog();
-
         $entityManager->persist($newBlog);
         $entityManager->flush($newBlog);
 

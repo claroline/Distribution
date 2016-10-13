@@ -97,7 +97,7 @@ class DropController extends DropzoneBaseController
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
 
-            if (count($notFinishedDrop->getDocuments()) == 0) {
+            if (count($notFinishedDrop->getDocuments()) === 0) {
                 $form->addError(new FormError('Add at least one document'));
             }
 
@@ -261,7 +261,7 @@ class DropController extends DropzoneBaseController
         $this->get('icap.manager.dropzone_voter')->isAllowToEdit($dropzone);
         $dropRepo = $this->getDoctrine()->getManager()->getRepository('IcapDropzoneBundle:Drop');
         $drop = $dropRepo->getDropByUser($dropzone->getId(), $userId);
-        if ($drop != null) {
+        if ($drop !== null) {
             $drop->setUnlockedUser(true);
         }
         $em = $this->getDoctrine()->getManager();
@@ -599,9 +599,9 @@ class DropController extends DropzoneBaseController
         $form = $this->createForm(new DropType(), $drop);
 
         $previousPath = 'icap_dropzone_drops_by_user_paginated';
-        if ($tab == 1) {
+        if ($tab === 1) {
             $previousPath = 'icap_dropzone_drops_by_date_paginated';
-        } elseif ($tab == 2) {
+        } elseif ($tab === 2) {
             $previousPath = 'icap_dropzone_drops_awaiting_paginated';
         }
 
@@ -711,8 +711,8 @@ class DropController extends DropzoneBaseController
             ->getDropAndValidEndedCorrectionsAndDocumentsByUser($dropzone, $drop->getId(), $userId);
 
         // if there is no result ( user is not the owner, or the drop has not ended Corrections , show 404)
-        if (count($dropSecure) == 0) {
-            if ($drop->getUser()->getId() != $userId) {
+        if (count($dropSecure) === 0) {
+            if ($drop->getUser()->getId() !== $userId) {
                 throw new AccessDeniedException();
             }
         } else {
@@ -815,7 +815,7 @@ class DropController extends DropzoneBaseController
             throw new AccessDeniedException();
         }
 
-        if ($curent_user_correction == null || $curent_user_correction->getId() != $correction->getId()) {
+        if ($curent_user_correction === null || $curent_user_correction->getId() !== $correction->getId()) {
             throw new AccessDeniedException();
         }
         $form = $this->createForm(new CorrectionReportType(), $correction);
@@ -892,7 +892,7 @@ class DropController extends DropzoneBaseController
         $em = $this->getDoctrine()->getManager();
         $correction->setReporter(false);
 
-        if ($invalidate == 1) {
+        if ($invalidate === 1) {
             $correction->setValid(false);
         }
 
@@ -900,7 +900,7 @@ class DropController extends DropzoneBaseController
         $em->flush();
 
         $correctionRepo = $this->getDoctrine()->getRepository('IcapDropzoneBundle:Correction');
-        if ($correctionRepo->countReporter($dropzone, $drop) == 0) {
+        if ($correctionRepo->countReporter($dropzone, $drop) === 0) {
             $drop->setReported(false);
             $em->persist($drop);
             $em->flush();

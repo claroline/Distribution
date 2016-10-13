@@ -199,27 +199,6 @@ class DropzoneListener
      */
     public function onAdministrate(PluginOptionsEvent $event)
     {
-        //        $referenceOptionsList = $this->container
-//            ->get('doctrine.orm.entity_manager')
-//            ->getRepository('IcapReferenceBundle:ReferenceBankOptions')
-//            ->findAll();
-
-//        $referenceOptions = null;
-//        if ((count($referenceOptionsList)) > 0) {
-//            $referenceOptions = $referenceOptionsList[0];
-//        } else {
-//            $referenceOptions = new ReferenceBankOptions();
-//        }
-
-//        $form = $this->container->get('form.factory')->create(new ReferenceBankOptionsType(), $referenceOptions);
-//        $content = $this->container->get('templating')->render(
-//            'IcapReferenceBundle::plugin_options_form.html.twig', array(
-//                'form' => $form->createView()
-//            )
-//        );
-//        $response = new Response($content);
-//        $event->setResponse($response);
-//        $event->stopPropagation();
     }
 
     /**
