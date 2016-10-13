@@ -374,7 +374,7 @@ class DropController extends DropzoneBaseController
      * @ParamConverter("dropzone", class="IcapDropzoneBundle:Dropzone", options={"id" = "resourceId"})
      * @Template()
      **/
-    public function dropsByDefaultAction($dropzone, $page)
+    public function dropsByDefaultAction($dropzone, $page = 1)
     {
         $this->get('icap.manager.dropzone_voter')->isAllowToOpen($dropzone);
         $this->get('icap.manager.dropzone_voter')->isAllowToEdit($dropzone);
