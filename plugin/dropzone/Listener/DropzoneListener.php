@@ -2,13 +2,13 @@
 
 namespace Icap\DropzoneBundle\Listener;
 
-use Claroline\CoreBundle\Event\CustomActionResourceEvent;
-use Claroline\CoreBundle\Event\PluginOptionsEvent;
+use Claroline\CoreBundle\Event\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
+use Claroline\CoreBundle\Event\CustomActionResourceEvent;
 use Claroline\CoreBundle\Event\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\OpenResourceEvent;
-use Claroline\CoreBundle\Event\CopyResourceEvent;
+use Claroline\CoreBundle\Event\PluginOptionsEvent;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Icap\DropzoneBundle\Entity\Criterion;
@@ -59,10 +59,10 @@ class DropzoneListener
         $form = $this->container->get('form.factory')->create(new DropzoneType(), new Dropzone());
         $content = $this->container->get('templating')->render(
             'ClarolineCoreBundle:Resource:createForm.html.twig',
-            array(
+            [
                 'form' => $form->createView(),
                 'resourceType' => 'icap_dropzone',
-            )
+            ]
         );
 
         $event->setResponseContent($content);
@@ -81,14 +81,14 @@ class DropzoneListener
 
         if ($form->isValid()) {
             $dropzone = $form->getData();
-            $event->setResources(array($dropzone));
+            $event->setResources([$dropzone]);
         } else {
             $content = $this->container->get('templating')->render(
                 'ClarolineCoreBundle:Resource:createForm.html.twig',
-                array(
+                [
                     'form' => $form->createView(),
                     'resourceType' => 'icap_dropzone',
-                )
+                ]
             );
             $event->setErrorFormContent($content);
         }
@@ -103,7 +103,7 @@ class DropzoneListener
     public function onOpen(OpenResourceEvent $event)
     {
         $params = [];
-        $collection = new ResourceCollection(array($event->getResource()->getResourceNode()));
+        $collection = new ResourceCollection([$event->getResource()->getResourceNode()]);
 
         if (false === $this->container->get('security.authorization_checker')->isGranted('EDIT', $collection)) {
             $params['_controller'] = 'IcapDropzoneBundle:Dropzone:open';
@@ -203,14 +203,14 @@ class DropzoneListener
 //            ->get('doctrine.orm.entity_manager')
 //            ->getRepository('IcapReferenceBundle:ReferenceBankOptions')
 //            ->findAll();
-//
+
 //        $referenceOptions = null;
 //        if ((count($referenceOptionsList)) > 0) {
 //            $referenceOptions = $referenceOptionsList[0];
 //        } else {
 //            $referenceOptions = new ReferenceBankOptions();
 //        }
-//
+
 //        $form = $this->container->get('form.factory')->create(new ReferenceBankOptionsType(), $referenceOptions);
 //        $content = $this->container->get('templating')->render(
 //            'IcapReferenceBundle::plugin_options_form.html.twig', array(
