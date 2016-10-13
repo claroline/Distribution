@@ -5,18 +5,17 @@
  * Date: 7/4/14
  * Time: 4:02 PM.
  */
-
 namespace Icap\WebsiteBundle\Listener;
 
-use Icap\WebsiteBundle\Entity\Website;
-use Icap\WebsiteBundle\Form\WebsiteType;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Claroline\CoreBundle\Event\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\OpenResourceEvent;
-use Claroline\CoreBundle\Event\CopyResourceEvent;
+use Icap\WebsiteBundle\Entity\Website;
+use Icap\WebsiteBundle\Form\WebsiteType;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
@@ -53,10 +52,10 @@ class WebsiteListener
         $form = $this->container->get('form.factory')->create(new WebsiteType(), new Website());
         $content = $this->container->get('templating')->render(
             'ClarolineCoreBundle:Resource:createForm.html.twig',
-            array(
+            [
                 'form' => $form->createView(),
                 'resourceType' => 'icap_website',
-            )
+            ]
         );
         $event->setResponseContent($content);
         $event->stopPropagation();
@@ -74,14 +73,14 @@ class WebsiteListener
         $form->handleRequest($request);
         if ($form->isValid()) {
             $website = $form->getData();
-            $event->setResources(array($website));
+            $event->setResources([$website]);
         } else {
             $content = $this->container->get('templating')->render(
                 'ClarolineCoreBundle:Resource:createForm.html.twig',
-                array(
+                [
                     'form' => $form->createView(),
                     'resourceType' => 'icap_website',
-                )
+                ]
             );
             $event->setErrorFormContent($content);
         }
