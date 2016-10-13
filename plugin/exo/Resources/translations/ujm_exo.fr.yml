@@ -417,7 +417,7 @@ stat_users: "[0, 1] %count% utilisateur|]1,Inf[ %count% utilisateurs"
 stat_have_responded: ont répondu
 sum_score_choice_at_least_one_correct_answer_error: Au moins une réponse doit avoir un score positif.
 sum_score_choice_no_correct_answer_error: La réponse correcte doit avoir un score positif.
-should_be_greater_or_equal_to_zero: Cette valeur devrait être supérieur ou égal à 0
+should_be_greater_or_equal_to_zero: Cette valeur devrait être supérieure ou égal à 0
 
 # T
 temporary_mark: Note temporaire
