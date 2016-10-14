@@ -1,1 +1,1 @@
-import modernizr from 'modernizr'
+import 'modernizr'
