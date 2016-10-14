@@ -1,3 +1,6 @@
+import merge from 'lodash/merge'
+import sanitize from './sanitizers'
+import validate from './validators'
 import {getIndex, makeId, makeItemPanelKey, update} from './util'
 import {properties, TYPE_QUIZ, TYPE_STEP} from './types'
 import {
@@ -13,7 +16,9 @@ import {
   PANEL_STEP_SELECT,
   STEP_CREATE,
   STEP_MOVE,
-  STEP_DELETE
+  STEP_DELETE,
+  STEP_UPDATE,
+  QUIZ_UPDATE
 } from './actions'
 
 function initialQuizState() {
@@ -25,6 +30,13 @@ function initialQuizState() {
 
 function reduceQuiz(quiz = initialQuizState(), action = {}) {
   switch (action.type) {
+    case QUIZ_UPDATE: {
+      const sanitizedProps = sanitize.quiz(action.newProperties)
+      const updatedQuiz = merge({}, quiz, sanitizedProps)
+      const errors = validate.quiz(updatedQuiz)
+      updatedQuiz._errors = errors
+      return updatedQuiz
+    }
     case STEP_CREATE:
       return update(quiz, {steps: {$push: [action.id]}})
     case STEP_DELETE:
@@ -46,6 +58,19 @@ function reduceQuiz(quiz = initialQuizState(), action = {}) {
 
 function reduceSteps(steps = {}, action = {}) {
   switch (action.type) {
+    case STEP_CREATE: {
+      const newStep = {id: action.id, items: [], parameters: {}}
+      return update(steps, {[action.id]: {$set: newStep}})
+    }
+    case STEP_DELETE:
+      return update(steps, {$delete: action.id})
+    case STEP_UPDATE: {
+      const sanitizedProps = sanitize.step(action.newProperties)
+      const updatedStep = merge({}, steps[action.id], sanitizedProps)
+      const errors = validate.step(updatedStep)
+      updatedStep._errors = errors
+      return update(steps, {[action.id]: {$set: updatedStep}})
+    }
     case ITEM_CREATE:
       return update(steps, {[action.stepId]: {items: {$push: [action.id]}}})
     case ITEM_DELETE: {
@@ -64,12 +89,6 @@ function reduceSteps(steps = {}, action = {}) {
         }
       })
     }
-    case STEP_CREATE: {
-      const newStep = {id: action.id, items: [], meta: {}}
-      return update(steps, {[action.id]: {$set: newStep}})
-    }
-    case STEP_DELETE:
-      return update(steps, {$delete: action.id})
   }
   return steps
 }
@@ -80,9 +99,7 @@ function reduceItems(items = {}, action = {}) {
       let newItem = {
         id: action.id,
         type: action.itemType,
-        score: {
-          type: 'sum'
-        }
+        score: {type: 'sum'}
       }
       switch (action.itemType) {
         case 'application/x.choice+json':

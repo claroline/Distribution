@@ -1,7 +1,7 @@
 import {Open as component} from './open.jsx'
 import {ITEM_CREATE} from './../actions'
 import {update} from './../util'
-import {notBlank, number, min} from './../lib/validate'
+import {notBlank, number, gteZero} from './../lib/validate'
 
 function reducer(item = {}, action) {
   switch (action.type) {
@@ -25,7 +25,7 @@ function validateFormValues(values) {
   return {
     maxScore: notBlank(values.maxScore)
       || number(values.maxScore)
-      || min(values.maxScore, 0)
+      || gteZero(values.maxScore)
   }
 }
 

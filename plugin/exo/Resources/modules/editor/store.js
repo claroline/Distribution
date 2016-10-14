@@ -44,6 +44,7 @@ function normalizeState(rawQuiz) {
   rawQuiz.id = rawQuiz.id.toString() // api response error, shouldn't be necessary
   rawQuiz.steps.forEach(step => {
     step.id = step.id.toString() // same
+    step._errors = {parameters: {}}
     step.items = step.items.map(item => {
       item.id = item.id.toString() // same
       items[item.id] = item
@@ -57,7 +58,8 @@ function normalizeState(rawQuiz) {
       title: rawQuiz.title,
       description: rawQuiz.description,
       parameters: rawQuiz.parameters,
-      steps: rawQuiz.steps.map(step => step.id)
+      steps: rawQuiz.steps.map(step => step.id),
+      _errors: {parameters: {}}
     },
     steps,
     items,

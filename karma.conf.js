@@ -4,6 +4,22 @@ const buildConfig = require('./main/core/Resources/scripts/lib/webpack')
 const rootDir = __dirname + '/../../..'
 const webpack = buildConfig(rootDir, collectPackages(rootDir), true)
 
+// this plugin ensures any babel compilation error will be correctly reported
+// and will prevent the test suite from running
+// (see https://github.com/webpack/karma-webpack/issues/49)
+webpack.plugins.push(function () {
+  this.plugin('done', stats => {
+    if (stats.compilation.errors.length > 0) {
+      if (stats.compilation.errors[0].name === 'ModuleBuildError') {
+        // assume it's a babel syntax error and rethrow it
+        throw stats.compilation.errors[0].error.error
+      }
+
+      throw new Error(stats.compilation.errors[0].message)
+    }
+  })
+})
+
 module.exports = config => {
   config.set({
     basePath: '',
@@ -20,10 +36,10 @@ module.exports = config => {
     preprocessors: {
       './*/*/Resources/**/*test.js': ['webpack']
     },
-    reporters: ['progress'],
+    reporters: ['dots'],
     port: 9876,
     colors: true,
-    logLevel: config.LOG_DEBUG,
+    logLevel: config.LOG_WARN,
     client: {
       captureConsole: true,
       mocha: {

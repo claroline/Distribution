@@ -66,7 +66,8 @@ function configure(rootDir, packages, isWatchMode) {
     makeRawLoader(),
     makeJqueryUiLoader(),
     makeCssLoader(),
-    makeUrlLoader()
+    makeUrlLoader(),
+    makeJsonLoader()
   ]
 
   return {
@@ -78,13 +79,20 @@ function configure(rootDir, packages, isWatchMode) {
     },
     plugins: plugins,
     module: { loaders: loaders },
-    devtool: isProd ? false : 'cheap-module-eval-source-map',
+    devtool: isProd ? false : 'eval',
     devServer: {
       headers: { 'Access-Control-Allow-Origin': '*' }
     },
     _debug: {
       'Detected webpack configs': packageNames,
       'Compiled entries': entries
+    },
+    externals: isProd ? {} : {
+      // the following is needed for enzyme
+      // (https://github.com/airbnb/enzyme/blob/master/docs/guides/webpack.md#react-15-compatibility)
+      'react/addons': true,
+      'react/lib/ExecutionEnvironment': true,
+      'react/lib/ReactContext': true
     }
   }
 }
@@ -279,10 +287,23 @@ function makeCssLoader() {
   }
 }
 
+/**
+ * This loader makes base64 encoded URIs for images.
+ */
 function makeUrlLoader() {
   return {
     test: /\.(jpe?g|png|gif|svg)$/,
     loader: 'url?limit=25000'
+  }
+}
+
+/**
+ * This loader loads JSON files.
+ */
+function makeJsonLoader() {
+  return {
+    test: /\.json$/,
+    loader: 'json'
   }
 }
 

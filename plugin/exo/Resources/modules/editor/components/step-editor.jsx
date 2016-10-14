@@ -119,8 +119,7 @@ let ItemPanel = props =>
         >
           {props.expanded &&
             <ItemForm
-              id={props.item.id}
-              initialValues={properties[props.item.type].initialFormValues(props.item)}
+              item={props.item}
             >
               {React.createElement(
                 properties[props.item.type].component,
@@ -188,8 +187,8 @@ export const StepEditor = props =>
         }
       >
         <StepForm
-          stepId={props.step.id}
-          initialValues={props.step}
+          onChange={(newValue) => props.updateStep(props.step.id, newValue)}
+          {...props.step}
         />
       </Panel>
       {props.step.items.map((item, index) =>
@@ -223,10 +222,13 @@ StepEditor.propTypes = {
     id: T.string.isRequired,
     title: T.string,
     description: T.string,
-    maxAttempts: T.number,
+    parameters: T.shape({
+      maxAttempts: T.number.isRequired
+    }).isRequired,
     items: T.arrayOf(T.object).isRequired
   }).isRequired,
   activePanelKey: T.oneOfType([T.string, T.bool]).isRequired,
+  updateStep: T.func.isRequired,
   handlePanelClick: T.func.isRequired,
   handleItemDeleteClick: T.func.isRequired,
   handleItemMove: T.func.isRequired,

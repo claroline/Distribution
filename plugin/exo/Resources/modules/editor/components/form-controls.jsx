@@ -369,7 +369,8 @@ Number.propTypes = {
 }
 
 // tmp
-const locale = document.querySelector('#homeLocale').innerHTML.trim()
+// const locale = document.querySelector('#homeLocale').innerHTML.trim()
+const locale = 'en'
 
 export const Date = props =>
   <FormGroup {...props}>
