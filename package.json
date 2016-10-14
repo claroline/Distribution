@@ -28,7 +28,7 @@
     "karma-webpack": "^1.7.0",
     "less": "^2.5.3",
     "mocha": "^2.5.3",
-    "modernizr": "https://registry.npmjs.org/modernizr/-/modernizr-3.3.1.tgz",
+    "modernizr": "^3.3.1",
     "modernizr-loader": "0.0.5",
     "postcss-cli": "^2.5.0",
     "raw-loader": "^0.5.1",

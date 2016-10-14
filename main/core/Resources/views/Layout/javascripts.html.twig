@@ -1,13 +1,3 @@
-{% javascripts debug=false
-    'bundles/bazingajstranslation/js/translator.min.js'
-    'js/translations/resource/*.js'
-    'js/translations/home/*.js'
-    'js/translations/platform/*.js'
-    'js/translations/error/*.js'
-    'js/translations/validators/*.js'
-    %}<script src="{{ asset_url }}"></script>
-{% endjavascripts %}
-<script src="{{ hotAsset('dist/claroline-distribution-main-core-modernizr.js') }}"></script>
 <script src='{{ asset('bundles/clarolinecore/js/iframe/iframe.js') }}'></script>
 {% javascripts debug=false filter='jsmin' output='vendor/twitter/bootstrap/js/bootstrap.js'
     'packages/bootstrap/js/transition.js'
@@ -76,6 +66,16 @@
     'packages/jquery-ui/ui/sortable.js'
 %}
     <script src="{{ asset_url }}"></script>
+{% endjavascripts %}
+
+{% javascripts debug=false
+    'bundles/bazingajstranslation/js/translator.min.js'
+    'js/translations/resource/*.js'
+    'js/translations/home/*.js'
+    'js/translations/platform/*.js'
+    'js/translations/error/*.js'
+    'js/translations/validators/*.js'
+    %}<script src="{{ asset_url }}"></script>
 {% endjavascripts %}
 
 <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
@@ -150,6 +150,8 @@
 <script src="{{ asset('bundles/clarolinecore/js/tinymce/resource_picker_button.js') }}"></script>
 <script src="{{ asset('bundles/clarolinecore/js/tinymce/resource_picker.js') }}"></script>
 <script src="{{ asset('bundles/clarolinecore/js/tinymce/resource_upload_button.js') }}"></script>
+<script src="{{ hotAsset('dist/claroline-distribution-main-core-modernizr.js') }}"></script>
+
 <script>
     $('body').tooltip({
         selector: '[data-toggle=tooltip]'
