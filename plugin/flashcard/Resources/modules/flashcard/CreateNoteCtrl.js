@@ -25,6 +25,7 @@ export default class CreateNoteCtrl {
             values: [],
             label: 'note_type',
             choice_name: 'name',
+            choice_value: 'field_labels',
             validators: [new NotBlank()]
         }
 
@@ -52,7 +53,7 @@ export default class CreateNoteCtrl {
           'id': fieldLabel.id,
           'value': this.fieldValues[i]
         }
-      }
+    }
 
       this._service.createNote(this.noteTypeChoosen, fields).then(
         d => {

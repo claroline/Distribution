@@ -1,7 +1,6 @@
 <form name="createNoteForm" novalidate>
 
   <div class="panel-body" >
-
     <div class="alert alert-danger"
          data-ng-if="vm.errorMessage !== null">
       <i class="fa fa-warning"></i>
@@ -33,7 +32,7 @@
     </div>
     <div class="form-group"
          data-ng-if="vm.noteTypeChoosen"
-         data-ng-repeat="fieldLabel in vm.noteTypeChoosen.field_labels">
+         data-ng-repeat="fieldLabel in vm.noteTypeChoosen">
       <label for="field-{{ fieldLabel.id }}-value">{{ fieldLabel.name }}</label>
       <input id="field-{{ fieldLabel.id }}-value"
              type="text"
