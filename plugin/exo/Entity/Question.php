@@ -27,7 +27,7 @@ class Question
     /**
      * @var string
      *
-     * @ORM\Column("uuid", type="string", length=36)
+     * @ORM\Column("uuid", type="string", length=36, unique=true)
      */
     private $uuid;
 
