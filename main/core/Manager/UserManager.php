@@ -417,6 +417,8 @@ class UserManager
         $this->objectManager->startFlushSuite();
         $i = 1;
         $j = 0;
+        $countCreated = 0;
+        $countUpdated = 0;
 
         foreach ($users as $user) {
             $firstName = $user[0];
@@ -498,7 +500,8 @@ class UserManager
 
             if (!$userEntity) {
                 $userEntity = $this->userRepo->findOneByUsername($username);
-                if (!$userEntity) {
+                if (!$userEntity && $code !== null) {
+                    //the code isn't required afaik
                     $userEntity = $this->userRepo->findOneByAdministrativeCode($code);
                 }
             }
@@ -513,6 +516,9 @@ class UserManager
             if (!$userEntity) {
                 $isNew = true;
                 $userEntity = new User();
+                ++$countCreated;
+            } else {
+                ++$countUpdated;
             }
 
             $userEntity->setUsername($username);
@@ -588,6 +594,8 @@ class UserManager
         }
 
         $this->objectManager->endFlushSuite();
+        $logger($countCreated.' users created.');
+        $logger($countUpdated.' users updated.');
 
         return $returnValues;
     }
