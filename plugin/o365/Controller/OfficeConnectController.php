@@ -62,7 +62,7 @@ class OfficeConnectController extends Controller
                     ['missingProperties' => $missingProperties]
                 );
             }
-            
+
             $user = new User();
             $user->setFirstName($userResponse->getNickname());
             $user->setLastName($userResponse->getRealName());
