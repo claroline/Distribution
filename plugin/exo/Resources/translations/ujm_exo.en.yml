@@ -300,6 +300,7 @@ open: Open
 open_creation: Open creation
 open_edition: Open Edition
 open_maximum_length: Answer maximum length (char number)
+open_maximum_length_help: Leave this value to 0 if there is no maximum length for the answer
 orders: Instructions
 orthography: Allow misspellings
 overview: Overview
@@ -383,6 +384,7 @@ score_displaying: Score displaying
 score_list_question: Score and list of questions
 score_error: Be careful: the score must be a integer.
 score_max : Maximum potential score
+score_max_help: Leave this value to 0 if the notation is manual
 score_false_label: Wrong result
 score_right_label: Correct result
 score_right_label_matching: Score of the association
@@ -422,6 +424,7 @@ stat_users: "[0, 1] %count% user|]1,Inf[ %count% users"
 stat_have_responded: have responded
 sum_score_choice_at_least_one_correct_answer_error: At least one answer must have a positive score.
 sum_score_choice_no_correct_answer_error: The correct answer must have a positive score.
+should_be_greater_or_equal_to_zero: This value should be greater or equals to 0
 
 # T
 temporary_mark: Temporary score
