@@ -9,11 +9,11 @@
     "maxAttempts": 5,
     "randomOrder": "once",
     "randomPick": "once",
-    "pick": 1,
+    "pick": 0,
     "showMetadata": true,
     "showStatistics": false,
     "showFullCorrection": true,
-    "showCorrectionAt": "validation",
+    "showCorrectionAt": "date",
     "showScoreAt": "correction"
   },
   "steps": [

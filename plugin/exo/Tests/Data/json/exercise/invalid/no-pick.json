@@ -9,7 +9,6 @@
     "maxAttempts": 5,
     "randomOrder": "once",
     "randomPick": "once",
-    "pick": 1,
     "showMetadata": true,
     "showStatistics": false,
     "showFullCorrection": true,
