@@ -1937,4 +1937,16 @@ class ResourceManager
     {
         return $this->logger;
     }
+
+    public function getResourcesByIds(array $roles, $user, array $ids)
+    {
+        return count($ids) > 0 ? $this->resourceNodeRepo->findResourcesByIds($roles, $user, $ids) : [];
+    }
+
+    public function getResourceFromShortcut(ResourceNode $node)
+    {
+        $target = $this->getRealTarget($node);
+
+        return $this->getResourceFromNode($target);
+    }
 }

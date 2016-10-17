@@ -66,8 +66,8 @@ function ExercisePlayerCtrl(
   this.areMaxAttemptsReached()
 
   // Initialize Timer if needed
-  if (0 !== this.exercise.meta.duration) {
-    this.timer = this.TimerService.new(this.exercise.id, this.exercise.meta.duration * 60, this.end.bind(this), true)
+  if (!isNaN(Number(this.exercise.meta.duration)) && 0 !== Number(this.exercise.meta.duration)) {
+    this.timer = this.TimerService.new(this.exercise.id, Number(this.exercise.meta.duration) * 60, this.end.bind(this), true)
   }
 
   if (this.step && this.step.items[0]) {
@@ -196,18 +196,27 @@ ExercisePlayerCtrl.prototype.areMaxAttemptsReached = function areMaxAttemptsReac
  */
 ExercisePlayerCtrl.prototype.isButtonEnabled = function isButtonEnabled(button) {
   var buttonEnabled
+
+  var isFormative = this.feedback.enabled
+  var feedbackShown = this.feedback.visible
+  var allAnswersFound = this.allAnswersFound === 0
+  var maxStepReached = this.currentStepTry >= this.step.meta.maxAttempts
+  var minimalCorrection = this.exercise.meta.minimalCorrection
+
+  var navigateOneStep = isFormative && !allAnswersFound && (!feedbackShown || (feedbackShown && (!maxStepReached || (maxStepReached && !minimalCorrection && !this.solutionShown))))
+
   if (button === 'retry') {
-    buttonEnabled = this.feedback.enabled && this.feedback.visible && (this.currentStepTry < this.step.meta.maxAttempts || this.step.meta.maxAttempts === 0) && this.allAnswersFound !== 0
+    buttonEnabled = isFormative && feedbackShown && (this.currentStepTry < this.step.meta.maxAttempts || this.step.meta.maxAttempts === 0) && !allAnswersFound
   } else if (button === 'next') {
-    buttonEnabled = !this.next || (this.feedback.enabled && !this.feedback.visible && !(this.allAnswersFound === 0)) || (this.feedback.enabled && this.feedback.visible && !this.solutionShown && !(this.allAnswersFound === 0))
+    buttonEnabled = !this.next || navigateOneStep
   } else if (button === 'navigation') {
-    buttonEnabled = (this.feedback.enabled && !this.feedback.visible) || (this.feedback.enabled && this.feedback.visible && !this.solutionShown && !(this.allAnswersFound === 0))
+    buttonEnabled = (isFormative && !feedbackShown) || (isFormative && feedbackShown && !this.solutionShown && !allAnswersFound)
   } else if (button === 'end') {
-    buttonEnabled = (this.feedback.enabled && !this.feedback.visible) || (this.feedback.enabled && this.feedback.visible && !this.solutionShown && !(this.allAnswersFound === 0))
+    buttonEnabled = navigateOneStep
   } else if (button === 'validate') {
-    buttonEnabled = this.feedback.enabled && !this.feedback.visible && (this.currentStepTry <= this.step.meta.maxAttempts || this.step.meta.maxAttempts === 0) && this.allAnswersFound !== 0
+    buttonEnabled = isFormative && !feedbackShown && (this.currentStepTry <= this.step.meta.maxAttempts || this.step.meta.maxAttempts === 0) && !allAnswersFound
   } else if (button === 'previous') {
-    buttonEnabled = !this.previous || (this.feedback.enabled && !this.feedback.visible && !(this.allAnswersFound === 0)) || (this.feedback.enabled && this.feedback.visible && !this.solutionShown && !(this.allAnswersFound === 0))
+    buttonEnabled = !this.previous || navigateOneStep
   }
 
   return buttonEnabled

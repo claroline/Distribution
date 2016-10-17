@@ -525,7 +525,7 @@ ul.desktop-parameters-menu
     }
     > .nav.nav-pills{
         > li > a {
-            background-color: @component-active-bg;
+            background-color: @navbar-inverse-bg;
             color: #fff;
             &:hover {
                  background-color: darken(@body-bg, 30%);
@@ -751,10 +751,6 @@ ul.desktop-parameters-menu
     .node-zoom-rules(125, 16px, 18px);
     .node-zoom-rules(150, 18px, 20px);
     .node-zoom-rules(200, 20px, 28px);
-
-    .resource-li {
-        height: 50px;
-    }
 
     .node-thumbnail {
 
@@ -1828,4 +1824,16 @@ body.mce-fullscreen .modal.fullscreen {
 .unclickable {
     pointer-events: none;
     cursor: default;
+}
+
+/*************/
+/* MODERNIZR */
+/*************/
+
+.no-mutationobserver .outdated-browser-warning {
+  display: block;
+}
+
+.outdated-browser-warning {
+  display: none;
 }
