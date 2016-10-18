@@ -76,7 +76,6 @@ export default class WidgetService {
   }
 
   _updateWidgetsDisplay () {
-    console.log('hey')
     if (this.type === 'desktop') {
       this.checkDesktopWidgetsDisplayOptions()
     } else if (this.type === 'admin') {
