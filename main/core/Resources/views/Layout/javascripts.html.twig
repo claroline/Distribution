@@ -1,3 +1,8 @@
+<script>
+    if (window.sessionStorage.getItem('hide_brower_warning'))
+        //$('.outdated-browser-warning').hide();
+    }
+</script>
 <script src='{{ asset('bundles/clarolinecore/js/iframe/iframe.js') }}'></script>
 {% javascripts debug=false filter='jsmin' output='vendor/twitter/bootstrap/js/bootstrap.js'
     'packages/bootstrap/js/transition.js'
@@ -174,10 +179,7 @@
     });
 
     $('#close-browser-warning').on('click', function(event) {
-        $.ajax({
-            url: Routing.generate('close_outdated_browser_warning'),
-            type: 'GET'
-        });
+        window.sessionStorage.setItem('hide_brower_warning', true);
     })
 
     // The following code fixes the issue of unscrollable modal due to focus loss when multiple modals are opened.

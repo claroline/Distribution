@@ -23,7 +23,6 @@ use Claroline\CoreBundle\Manager\WorkspaceManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -266,19 +265,6 @@ class LayoutController extends Controller
             'workspace' => $workspaceName,
             'role' => $roleName,
         ];
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/close/warning/browser",
-     *     name="close_outdated_browser_warning"
-     * )
-     */
-    public function closeOutdatedBrowserWarningAction()
-    {
-        $this->get('request')->getSession()->set('hide_browser_warning', true);
-
-        return new JsonResponse();
     }
 
     //not routed
