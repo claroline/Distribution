@@ -15,8 +15,6 @@ use Claroline\CoreBundle\Entity\Plugin;
 use Claroline\CoreBundle\Library\PluginBundle;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\KernelBundle\Manager\BundleManager;
-use Composer\Json\JsonFile;
-use Composer\Repository\InstalledFilesystemRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -32,7 +30,6 @@ class PluginManager
     private $kernel;
     private $bundleManager;
     private $loadedBundles;
-    private $installedBundles;
 
     /**
      * @DI\InjectParams({
@@ -57,7 +54,6 @@ class PluginManager
         $this->loadedBundles = parse_ini_file($this->iniFile);
         BundleManager::initialize($kernel, $this->iniFile);
         $this->bundleManager = BundleManager::getInstance();
-        $this->installedRepoFile = $this->kernel->getRootDir().'/../vendor/composer/installed.json';
     }
 
     public function getDistributionVersion()
@@ -383,49 +379,5 @@ class PluginManager
         $parts = explode('\\', $name);
 
         return count($parts) === 3 ? $parts[2] : $name;
-    }
-
-    public function getCurrentDistributionCommit()
-    {
-        $previous = $this->openRepository($this->installedRepoFile);
-
-        foreach ($previous->getCanonicalPackages() as $package) {
-            if ($package->getName() === 'claroline/distribution') {
-                return $package->getSourceReference();
-            }
-        }
-    }
-
-    /**
-     * @param string $repoFile
-     * @param bool   $filter
-     *
-     * Currently copy pasted from OperationExecutor
-     *
-     * @return InstalledFilesystemRepository
-     */
-    private function openRepository($repoFile, $filter = true)
-    {
-        $json = new JsonFile($repoFile);
-
-        if (!$json->exists()) {
-            throw new \RuntimeException(
-                "Repository file '{$repoFile}' doesn't exist",
-                123 // this code is there for unit testing only
-            );
-        }
-
-        $repo = new InstalledFilesystemRepository($json);
-
-        if ($filter) {
-            foreach ($repo->getPackages() as $package) {
-                if ($package->getType() !== 'claroline-core'
-                    && $package->getType() !== 'claroline-plugin') {
-                    $repo->removePackage($package);
-                }
-            }
-        }
-
-        return $repo;
     }
 }

@@ -9,11 +9,6 @@ claro_oauth_authorize:
     resource: "@ClarolineCoreBundle/Controller/OauthController.php"
     type: annotation
 
-claro_layout:
-    resource: "@ClarolineCoreBundle/Controller/LayoutController.php"
-    type: annotation
-    options: { expose: true }
-
 claro_index:
     resource: "@ClarolineCoreBundle/Controller/HomeController.php"
     type: annotation
