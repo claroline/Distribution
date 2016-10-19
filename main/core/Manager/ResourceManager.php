@@ -1155,6 +1155,7 @@ class ResourceManager
         $data['name'] = 'archive.zip';
         $data['file'] = $pathArch;
         $data['mimeType'] = 'application/zip';
+        $this->container->get('claroline.core_bundle.listener.kernel_terminate_listener')->addElementToRemove($pathArch);
 
         return $data;
     }
