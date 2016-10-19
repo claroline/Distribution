@@ -1,4 +1,4 @@
-import {Match as component} from './match.jsx'
+import {Pair as component} from './pair.jsx'
 import {ITEM_CREATE} from './../actions'
 import {update} from './../util'
 
@@ -7,8 +7,8 @@ function reducer(question = {}, action) {
     case ITEM_CREATE: {
 
       return update(question, {
-        firstSet: {$set: []},
-        secondSet: {$set: []},
+        pairs: {$set: []},
+        odd: {$set: []},
         solutions: {$set: []}
       })
     }
@@ -18,8 +18,8 @@ function reducer(question = {}, action) {
 
 function initialFormValues(question) {
   return update(question, {
-    firstSet: {$set: question.firstSet},
-    secondSet: {$set: question.secondSet},
+    pairs: {$set: question.pairs},
+    odd: {$set: question.odd},
     solutions: {$set: question.solutions}
   })
 }
@@ -30,8 +30,8 @@ function validateFormValues(values) {
 }
 
 export default {
-  type: 'application/x.match+json',
-  name: 'match',
+  type: 'application/x.pair+json',
+  name: 'pair',
   question: true,
   component,
   reducer,

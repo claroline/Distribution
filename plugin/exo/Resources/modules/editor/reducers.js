@@ -94,6 +94,15 @@ function reduceItems(items = {}, action = {}) {
         case 'application/x.words+json':
           newItem = properties[action.itemType].reducer(newItem, action)
           break
+        case 'application/x.set+json':
+          newItem = properties[action.itemType].reducer(newItem, action)
+          break
+        case 'application/x.match+json':
+          newItem = properties[action.itemType].reducer(newItem, action)
+          break
+        case 'application/x.pair+json':
+          newItem = properties[action.itemType].reducer(newItem, action)
+          break
       }
       return update(items, {[action.id]: {$set: newItem}})
     }

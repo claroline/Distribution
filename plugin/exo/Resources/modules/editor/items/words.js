@@ -4,7 +4,7 @@ import {update} from './../util'
 import {ITEM_FORM} from './../components/item-form.jsx'
 
 function reducer(words = {}, action) {
-  
+
   switch (action.type) {
     case ITEM_CREATE: {
       return update(words, {
@@ -33,7 +33,7 @@ function initialFormValues(words) {
 
 function validateFormValues(values) {
   const errors = {}
-  //console.log(values)
+  console.log(values)  
   return errors
 }
 
@@ -59,7 +59,6 @@ export function wordCaseSensitiveSelector(state){
   } else {
     return formValues.solutions.map(() => false)
   }
-
 }
 
 export default {

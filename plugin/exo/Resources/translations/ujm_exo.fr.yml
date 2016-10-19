@@ -420,6 +420,14 @@ stat_have_responded: ont répondu
 sum_score_choice_at_least_one_correct_answer_error: Au moins une réponse doit avoir un score positif.
 sum_score_choice_no_correct_answer_error: La réponse correcte doit avoir un score positif.
 should_be_greater_or_equal_to_zero: Cette valeur devrait être supérieure ou égal à 0
+set_member_feedback_info: Commentaire si l'association est effectuée
+set_question_add_member: Ajouter une proposition
+set_question_add_set: Ajouter un ensemble
+set_question_add_odds: Ajout d'intrus
+set_question_add_odd: Ajouter un intru
+set_question_penalty_label: Pénalité pour toute mauvaise association
+set_question_shuffle_label: Ordre des propositions et des ensembles aléatoire
+show_hide_panel_content: Afficher / cacher le contenu du panel
 
 # T
 temporary_mark: Note temporaire

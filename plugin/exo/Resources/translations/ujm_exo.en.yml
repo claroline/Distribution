@@ -427,6 +427,14 @@ stat_have_responded: have responded
 sum_score_choice_at_least_one_correct_answer_error: At least one answer must have a positive score.
 sum_score_choice_no_correct_answer_error: The correct answer must have a positive score.
 should_be_greater_or_equal_to_zero: This value should be greater or equals to 0
+set_member_feedback_info: Comment if this association is done
+set_question_add_member: Add member
+set_question_add_set: Add a set
+set_question_add_odds: Add odds
+set_question_add_odd: Add an odd
+set_question_penalty_label: Panalty for any bad association
+set_question_shuffle_label: Shuffle members and sets order
+show_hide_panel_content: Show / hide panel content
 
 # T
 temporary_mark: Temporary score

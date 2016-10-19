@@ -4,6 +4,8 @@ import cloze from './items/cloze'
 import graphic from './items/graphic'
 import open from './items/open'
 import words from './items/words'
+import set from './items/set'
+import pair from './items/pair'
 
 export const TYPE_QUIZ = 'quiz'
 export const TYPE_STEP = 'step'
@@ -46,7 +48,9 @@ let definitions = [
   open,
   cloze,
   graphic,
-  words
+  words,
+  set,
+  pair
 ]
 
 export const mimeTypes = definitions.map(def => def.type)
