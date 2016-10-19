@@ -47,7 +47,7 @@ class ComposerExtension extends \Twig_Extension
 
     public function getName()
     {
-        return 'plugin_extension';
+        return 'composer_extension';
     }
 
     public function getCurrentDistributionCommit()
