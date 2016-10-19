@@ -27,14 +27,14 @@ class MemberItem extends Component {
           <textarea
             className="form-control claroline-tiny-mce hide"
             value={getMemberData(this.props.solution.memberId, this.props.members)}
-            onChange=""
+            onChange={() => {}}
           />
         {this.state.showFeedback &&
           <div className="feedback-container">
             <textarea
               className="form-control claroline-tiny-mce hide"
               value={this.props.solution.feedback}
-              onChange=""
+              onChange={() => {}}
             />
           </div>
         }
@@ -46,7 +46,7 @@ class MemberItem extends Component {
               title={tex('score')}
               type="number"
               className="form-control member-score"
-              onChange=""
+              onChange={() => {}}
             />
             <span
               role="button"
@@ -104,7 +104,7 @@ class SetPanel extends Component {
             className="form-control input-control-sm"
             value={this.props.set.name}
             type="text"
-            onChange="" />
+            onChange={() => {}} />
         </div>
         {!this.state.toggled &&
           <div className="panel-body">
@@ -205,7 +205,7 @@ class OddsPanel extends Component {
                   <textarea
                     className="form-control claroline-tiny-mce hide"
                     value={'I am an ODD'}
-                    onChange=""
+                    onChange={() => {}}
                   />
                 </div>
                 <div className="right-controls">
@@ -252,15 +252,15 @@ const SetForm = props =>
         title={tex('score')}
         type="number"
         className="form-control member-score"
-        onChange=""
+        onChange={() => {}}
       />
     </div>
     <div className="checkbox">
       <label>
         <input
           type="checkbox"
-          onChange=""
-          value={props.shuffle} /> 
+          onChange={() => {}}
+          name={props.shuffle} />
         {tex('set_question_shuffle_label')}
       </label>
     </div>
