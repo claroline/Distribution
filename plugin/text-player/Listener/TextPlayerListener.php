@@ -12,6 +12,7 @@
 namespace Claroline\TextPlayerBundle\Listener;
 
 use Claroline\CoreBundle\Event\PlayFileEvent;
+use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Symfony\Component\HttpFoundation\Response;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -38,6 +39,9 @@ class TextPlayerListener
      */
     public function onOpenText(PlayFileEvent $event)
     {
+        $authorization = $this->container->get('security.authorization_checker');
+        $collection = new ResourceCollection([$event->getResource()->getResourceNode()]);
+        $canExport = $authorization->isGranted('EXPORT', $collection);
         $path = $this->container->getParameter('claroline.param.files_directory')
             .DIRECTORY_SEPARATOR
             .$event->getResource()->getHashName();
@@ -48,6 +52,7 @@ class TextPlayerListener
                 'path' => $path,
                 'text' => $text,
                 '_resource' => $event->getResource(),
+                'canExport' => $canExport,
             )
         );
 
