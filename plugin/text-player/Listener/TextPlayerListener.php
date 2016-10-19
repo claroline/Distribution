@@ -13,9 +13,9 @@ namespace Claroline\TextPlayerBundle\Listener;
 
 use Claroline\CoreBundle\Event\PlayFileEvent;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
-use Symfony\Component\HttpFoundation\Response;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  *  @DI\Service()
@@ -48,12 +48,12 @@ class TextPlayerListener
         $text = file_get_contents($path);
         $content = $this->container->get('templating')->render(
             'ClarolineTextPlayerBundle::text.html.twig',
-            array(
+            [
                 'path' => $path,
                 'text' => $text,
                 '_resource' => $event->getResource(),
                 'canExport' => $canExport,
-            )
+            ]
         );
 
         $response = new Response($content);
