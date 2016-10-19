@@ -313,7 +313,8 @@ class TransferManager
         //generate the archive in a temp dir
         $content = Yaml::dump($data, 10);
         //zip and returns the archive
-        $archDir = sys_get_temp_dir().DIRECTORY_SEPARATOR.uniqid();
+        $archDir = $this->container->get('claroline.config.platform_config_handler')->getParameter('tmp_dir')
+            .DIRECTORY_SEPARATOR.uniqid();
         $archPath = $archDir.DIRECTORY_SEPARATOR.'archive.zip';
         mkdir($archDir);
         $manifestPath = $archDir.DIRECTORY_SEPARATOR.'manifest.yml';
@@ -371,7 +372,8 @@ class TransferManager
         //generate the archive in a temp dir
         $content = Yaml::dump($data, 10);
         //zip and returns the archive
-        $archDir = sys_get_temp_dir().DIRECTORY_SEPARATOR.uniqid();
+        $archDir = $this->container->get('claroline.config.platform_config_handler')->getParameter('tmp_dir')
+            .DIRECTORY_SEPARATOR.uniqid();
         $archPath = $archDir.DIRECTORY_SEPARATOR.'archive.zip';
         mkdir($archDir);
         $manifestPath = $archDir.DIRECTORY_SEPARATOR.'manifest.yml';

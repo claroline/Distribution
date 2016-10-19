@@ -81,6 +81,7 @@ class ImportWorkspaceModelCommand extends ContainerAwareCommand
         ];
         $consoleLogger = new ConsoleLogger($output, $verbosityLevelMap);
         $workspaceManager = $this->getContainer()->get('claroline.manager.workspace_manager');
+        $ch = $this->getContainer()->get('claroline.config.platform_config_handler');
         $workspaceManager->setLogger($consoleLogger);
         $dirPath = $input->getArgument('directory_path');
         $username = $input->getArgument('owner_username');
@@ -119,10 +120,11 @@ class ImportWorkspaceModelCommand extends ContainerAwareCommand
                 $this->getContainer()->get('security.context')->setToken($token);
                 $workspace = new Workspace();
                 $workspace->setCreator($user);
-                $newpath = sys_get_temp_dir().DIRECTORY_SEPARATOR.'files'.DIRECTORY_SEPARATOR.uniqid();
+                $newpath = $ch->getParameter('tmp_dir').DIRECTORY_SEPARATOR.'files'.DIRECTORY_SEPARATOR.uniqid();
                 $file = new File($newpath);
                 $workspaceManager->create($workspace, $file);
                 $output->writeln("<comment> Workspace {$i}/{$total} created. </comment>");
+                unlink($newpath);
             }
         }
     }

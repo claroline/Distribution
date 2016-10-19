@@ -1076,7 +1076,8 @@ class ResourceManager
         }
 
         $archive = new \ZipArchive();
-        $pathArch = sys_get_temp_dir().DIRECTORY_SEPARATOR.$this->ut->generateGuid().'.zip';
+        $pathArch = $this->container->get('claroline.config.platform_config_handler')
+            ->getParameter('tmp_dir').DIRECTORY_SEPARATOR.$this->ut->generateGuid().'.zip';
         $archive->open($pathArch, \ZipArchive::CREATE);
         $nodes = $this->expandResources($elements);
 
