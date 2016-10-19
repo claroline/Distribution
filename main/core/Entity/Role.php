@@ -280,6 +280,16 @@ class Role implements RoleInterface
         }
     }
 
+    public function removeUser(User $user)
+    {
+        $user->getRoles()->removeElement($this);
+    }
+
+    public function initUsers()
+    {
+        $this->users = new ArrayCollection();
+    }
+
     public function getGroups()
     {
         return $this->groups;
