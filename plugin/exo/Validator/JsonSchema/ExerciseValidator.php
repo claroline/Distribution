@@ -56,6 +56,22 @@ class ExerciseValidator extends JsonSchemaValidator
     {
         $errors = [];
 
+        if (isset($parameters->randomPick) && 'never' !== $parameters->randomPick && !isset($parameters->pick)) {
+            // Random pick is enabled but the number of steps to pick is missing
+            $errors[] = [
+                'path' => '/parameters/randomPick',
+                'message' => 'The property `pick` is required when `randomPick` is not "never"',
+            ];
+        }
+
+        if (isset($parameters->showCorrectionAt) && 'date' === $parameters->showCorrectionAt && empty($parameters->correctionDate)) {
+            // Correction is shown at a date, but the date is not specified
+            $errors[] = [
+                'path' => '/parameters/correctionDate',
+                'message' => 'The property `correctionDate` is required when `showCorrectionAt` is "date"',
+            ];
+        }
+
         if (isset($parameters->correctionDate)) {
             $dateTime = \DateTime::createFromFormat('Y-m-d\TH:i:s', $parameters->correctionDate);
             if (!$dateTime || $dateTime->format('Y-m-d\TH:i:s') !== $parameters->correctionDate) {

@@ -85,6 +85,11 @@ class ExerciseSerializerTest extends JsonDataTestCase
         $this->assertTrue(!empty($data->meta));
         $this->assertTrue(!empty($data->parameters));
         $this->assertTrue(!empty($data->steps));
+
+        // Checks parameters that need transformation
+        $this->assertEquals('never', $data->parameters->randomOrder);
+        $this->assertEquals('never', $data->parameters->randomPick);
+        $this->assertEquals(0, $data->parameters->pick);
     }
 
     /**
@@ -112,8 +117,9 @@ class ExerciseSerializerTest extends JsonDataTestCase
         $this->assertEquals($exerciseData->id, $exercise->getUuid());
 
         // Checks some parameters
-        $this->assertEquals($exerciseData->parameters->random, $exercise->getShuffle());
+        $this->assertTrue($exercise->getShuffle());
         $this->assertEquals($exerciseData->parameters->pick, $exercise->getPickSteps());
+        $this->assertTrue($exercise->getKeepSteps());
 
         // Checks there is the correct number of steps
         $this->assertCount(count($exerciseData->steps), $exercise->getSteps());
@@ -126,11 +132,12 @@ class ExerciseSerializerTest extends JsonDataTestCase
     {
         $exerciseData = $this->loadTestData('exercise/valid/with-steps.json');
 
-        $this->serializer->deserialize($exerciseData, $this->exercise);
+        $updatedExercise = $this->serializer->deserialize($exerciseData, $this->exercise);
 
         // Checks some parameters
-        $this->assertEquals($exerciseData->parameters->random, $this->exercise->getShuffle());
+        $this->assertTrue($this->exercise->getShuffle());
         $this->assertEquals($exerciseData->parameters->pick, $this->exercise->getPickSteps());
+        $this->assertTrue($this->exercise->getKeepSteps());
 
         // Checks there is the correct number of steps
         $this->assertCount(count($exerciseData->steps), $this->exercise->getSteps());
@@ -138,11 +145,19 @@ class ExerciseSerializerTest extends JsonDataTestCase
         // Checks no new entity have been created
         $nbBefore = count($this->om->getRepository('UJMExoBundle:Exercise')->findAll());
 
-        $this->om->persist($this->exercise);
+        $this->om->persist($updatedExercise);
         $this->om->flush();
 
         $nbAfter = count($this->om->getRepository('UJMExoBundle:Exercise')->findAll());
 
         $this->assertEquals($nbBefore, $nbAfter);
+    }
+
+    public function testAddStep()
+    {
+    }
+
+    public function testRemoveStep()
+    {
     }
 }

@@ -3,11 +3,19 @@
 namespace UJM\ExoBundle\Tests\Serializer\Question;
 
 use UJM\ExoBundle\Library\Testing\Json\JsonDataTestCase;
+use UJM\ExoBundle\Serializer\Question\QuestionSerializer;
+use UJM\ExoBundle\Validator\JsonSchema\Question\QuestionValidator;
 
 class QuestionSerializerTest extends JsonDataTestCase
 {
+    /**
+     * @var QuestionValidator
+     */
     private $validator;
 
+    /**
+     * @var QuestionSerializer
+     */
     private $serializer;
 
     protected function setUp()
