@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the Claroline Connect package.
  *
@@ -112,7 +113,7 @@ class LessonManager
             $chapterArray = [
                 'id' => $chapter->getId(),
                 'parent_id' => ($chapter->getParent() !== null) ? $chapter->getParent()->getId() : null,
-                'is_root' => $chapter->getId() == $rootChapter->getId(),
+                'is_root' => $chapter->getId() === $rootChapter->getId(),
                 'title' => $chapter->getTitle(),
                 'path' => $uid,
             ];

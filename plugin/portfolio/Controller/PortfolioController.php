@@ -348,7 +348,7 @@ class PortfolioController extends Controller
                     /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */
                     $file = $importData->getContent();
 
-                    $portfolio = $importManager->simulateImport(file_get_contents($file->getPathName()), $loggedUser, $importData->getFormat());
+                    $importManager->simulateImport(file_get_contents($file->getPathName()), $loggedUser, $importData->getFormat());
                     $previewId = uniqid();
                     $temporaryImportFilePath = sprintf('%s-%s-%s.%s', strtolower($loggedUser->getUsername()), date("Y_m_d\TH_i_s\Z"), $previewId, $importData->getFormat()).'.import';
                     $file->move(
