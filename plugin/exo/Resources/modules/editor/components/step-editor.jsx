@@ -120,12 +120,23 @@ let ItemPanel = props =>
           {props.expanded &&
             <ItemForm
               item={props.item}
+              onChange={newProperties =>
+                props.handleItemUpdate(props.item.id, newProperties)
+              }
+              onHintsChange={(updateType, payload) =>
+                props.handleItemHintsUpdate(props.item.id, updateType, payload)
+              }
             >
+            {
+              <span>'CHILD'</span>
+              /*
               {React.createElement(
                 properties[props.item.type].component,
                 props.item
-              )}
+              )}*/
+              }
             </ItemForm>
+
           }
         </Panel>
       </div>
@@ -139,6 +150,7 @@ ItemPanel.propTypes = {
   expanded: T.bool.isRequired,
   handlePanelClick: T.func.isRequired,
   handleItemDeleteClick: T.func.isRequired,
+  handleItemUpdate: T.func.isRequired,
   showModal: T.func.isRequired,
   connectDragSource: T.func.isRequired,
   isDragging: T.bool.isRequired,
@@ -204,6 +216,8 @@ export const StepEditor = props =>
           handlePanelClick={props.handlePanelClick}
           handleItemDeleteClick={props.handleItemDeleteClick}
           handleItemCreate={props.handleItemCreate}
+          handleItemUpdate={props.handleItemUpdate}
+          handleItemHintsUpdate={props.handleItemHintsUpdate}
           showModal={props.showModal}
           {...props}
         />
@@ -233,6 +247,8 @@ StepEditor.propTypes = {
   handleItemDeleteClick: T.func.isRequired,
   handleItemMove: T.func.isRequired,
   handleItemCreate: T.func.isRequired,
+  handleItemUpdate: T.func.isRequired,
+  handleItemHintsUpdate: T.func.isRequired,
   showModal: T.func.isRequired,
   closeModal: T.func.isRequired
 }

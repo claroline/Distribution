@@ -135,6 +135,7 @@
 
 .quiz-editor .hint-item {
   display: flex;
+  margin-bottom: 12px;
 }
 
 .quiz-editor .hint-value {
@@ -198,7 +199,9 @@
 }
 
 .quiz-editor .help-block .fa,
-.quiz-editor .error-text .fa {
+.quiz-editor .error-text .fa,
+.quiz-editor .btn .fa,
+.quiz-editor .sub-section a[role="button"] .fa {
   margin-right: 7px;
 }
 

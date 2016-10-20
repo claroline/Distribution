@@ -3,7 +3,13 @@ import {assertEqual} from './test-utils'
 import {lastId} from './util'
 import {actions} from './actions'
 import {reducers} from './reducers'
-import {TYPE_QUIZ, TYPE_STEP} from './types'
+import {
+  TYPE_QUIZ,
+  TYPE_STEP,
+  UPDATE_ADD,
+  UPDATE_CHANGE,
+  UPDATE_REMOVE
+} from './types'
 
 describe('Quiz reducer', () => {
   it('returns a new quiz by default', () => {
@@ -167,6 +173,88 @@ describe('Items reducer', () => {
     const newState = reducers.items(items, actions.deleteItem('1', 'does not matter here'))
     assertEqual(newState, {
       '2': {id: '2', type: 'text/plain'}
+    })
+  })
+
+  it('updates hints on add hint', () => {
+    const items = freeze({
+      '1': {id: '2', type: 'application/x.choice+json', hints: []},
+      '2': {id: '2', type: 'text/plain'}
+    })
+    const newState = reducers.items(items, actions.updateItemHints('1', UPDATE_ADD, {}))
+    assertEqual(newState, {
+      '1': {
+        id: '2',
+        type: 'application/x.choice+json',
+        hints: [
+          {
+            id: lastId(),
+            data: '',
+            penalty: 0
+          }
+        ]
+      },
+      '2': {id: '2', type: 'text/plain'}
+    })
+
+    it('updates hints on remove hint', () => {
+      const items = freeze({
+        '1': {id: '1', type: 'text/plain'},
+        '2': {
+          id: '2',
+          type: 'application/x.choice+json',
+          hints: [
+            {
+              id: '123',
+              data: 'foo',
+              penalty: 1.5
+            }
+          ]
+        }
+      })
+      const newState = reducers.items(
+        items,
+        actions.updateItemHints('2', UPDATE_REMOVE, {id: '123'})
+      )
+      assertEqual(newState, {
+        '1': {id: '1', type: 'text/plain'},
+        '2': {id: '2', type: 'application/x.choice+json', hints: []}
+      })
+    })
+  })
+
+  it('updates hints on change hint', () => {
+    const items = freeze({
+      '1': {id: '1', type: 'text/plain'},
+      '2': {
+        id: '2',
+        type: 'application/x.choice+json',
+        hints: [
+          {
+            id: '123',
+            data: 'foo',
+            penalty: 1.5
+          }
+        ]
+      }
+    })
+    const newState = reducers.items(
+      items,
+      actions.updateItemHints('2', UPDATE_CHANGE, {id: '123', data: 'bar'})
+    )
+    assertEqual(newState, {
+      '1': {id: '1', type: 'text/plain'},
+      '2': {
+        id: '2',
+        type: 'application/x.choice+json',
+        hints: [
+          {
+            id: '123',
+            data: 'bar',
+            penalty: 1.5
+          }
+        ]
+      }
     })
   })
 })

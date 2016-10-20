@@ -2,11 +2,23 @@ import merge from 'lodash/merge'
 import sanitize from './sanitizers'
 import validate from './validators'
 import {getIndex, makeId, makeItemPanelKey, update} from './util'
-import {properties, TYPE_QUIZ, TYPE_STEP} from './types'
+import {
+  properties,
+  TYPE_QUIZ,
+  TYPE_STEP,
+  SHUFFLE_NEVER,
+  SHUFFLE_ONCE,
+  SHUFFLE_ALWAYS,
+  UPDATE_ADD,
+  UPDATE_CHANGE,
+  UPDATE_REMOVE
+} from './types'
 import {
   ITEM_CREATE,
   ITEM_DELETE,
+  ITEM_UPDATE,
   ITEM_MOVE,
+  ITEM_HINTS_UPDATE,
   MODAL_FADE,
   MODAL_HIDE,
   MODAL_SHOW,
@@ -33,6 +45,12 @@ function reduceQuiz(quiz = initialQuizState(), action = {}) {
     case QUIZ_UPDATE: {
       const sanitizedProps = sanitize.quiz(action.newProperties)
       const updatedQuiz = merge({}, quiz, sanitizedProps)
+
+      if (updatedQuiz.parameters.randomPick === SHUFFLE_ALWAYS
+        && updatedQuiz.parameters.randomOrder === SHUFFLE_ONCE) {
+        updatedQuiz.parameters.randomOrder = SHUFFLE_NEVER
+      }
+
       const errors = validate.quiz(updatedQuiz)
       updatedQuiz._errors = errors
       return updatedQuiz
@@ -113,6 +131,50 @@ function reduceItems(items = {}, action = {}) {
     }
     case ITEM_DELETE:
       return update(items, {$delete: action.id})
+    case ITEM_UPDATE: {
+      const updatedItem = merge({}, items[action.id], action.newProperties)
+      const errors = validate.item(updatedItem)
+      updatedItem._errors = errors
+      return update(items, {[action.id]: {$set: updatedItem}})
+    }
+    case ITEM_HINTS_UPDATE:
+      switch (action.updateType) {
+        case UPDATE_ADD:
+          return update(items, {
+            [action.itemId]: {
+              hints: {
+                $push: [{
+                  id: makeId(),
+                  data: '',
+                  penalty: 0
+                }]
+              }
+            }
+          })
+        case UPDATE_CHANGE: {
+          const hints = items[action.itemId].hints
+          const index = hints.findIndex(hint => hint.id === action.payload.id)
+          return update(items, {
+            [action.itemId]: {
+              hints: {
+                [index]: {$set: Object.assign({}, hints[index], action.payload)}
+              }
+            }
+          })
+        }
+        case UPDATE_REMOVE:
+          return update(items, {
+            [action.itemId]: {
+              hints: {
+                $set: items[action.itemId].hints.filter(
+                  hint => hint.id !== action.payload.id
+                )
+              }
+            }
+          })
+        default:
+          return items
+      }
   }
   return items
 }

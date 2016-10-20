@@ -21,7 +21,14 @@ function validateStep(step) {
   }
 }
 
+function validateItem(item) {
+  return {
+    content: notBlank(item.content, true)
+  }
+}
+
 export default {
   quiz: validateQuiz,
-  step: validateStep
+  step: validateStep,
+  item: validateItem
 }

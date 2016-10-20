@@ -1,6 +1,7 @@
 import React from 'react'
 import {shallow, mount} from 'enzyme'
 import {spyConsole, renew, ensure} from './../test-utils'
+import {SHUFFLE_ONCE, SHUFFLE_NEVER} from './../types'
 import {QuizEditor} from './quiz-editor.jsx'
 
 describe('<QuizEditor/>', () => {
@@ -77,7 +78,8 @@ function fixture() {
     parameters: {
       type: 'type',
       showMetadata: true,
-      random: false,
+      randomOrder: SHUFFLE_NEVER,
+      randomPick: SHUFFLE_ONCE,
       pick: 12,
       duration: 123,
       maxAttempts: 4,

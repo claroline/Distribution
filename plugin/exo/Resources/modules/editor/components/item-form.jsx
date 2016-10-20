@@ -2,7 +2,12 @@ import React, {Component, PropTypes as T} from 'react'
 import {t, tex} from './../lib/translate'
 import {notBlank} from './../lib/validate'
 import {makeId} from './../util'
-import {properties} from './../types'
+import {
+  properties,
+  UPDATE_ADD,
+  UPDATE_CHANGE,
+  UPDATE_REMOVE
+} from './../types'
 import {FormGroup} from './form/form-group.jsx'
 import {Textarea} from './form/textarea.jsx'
 import {SubSection} from './form/sub-section.jsx'
@@ -18,7 +23,7 @@ const Metadata = props =>
       <input
         id={`item-${props.item.id}-title`}
         type="text"
-        value={props.item.title}
+        value={props.item.title || ''}
         className="form-control"
         onChange={e => props.onChange({title: e.target.value})}
       />
@@ -29,7 +34,7 @@ const Metadata = props =>
     >
       <Textarea
         id={`item-${props.item.id}-description`}
-        content={props.item.description}
+        content={props.item.description || ''}
         onChange={description => props.onChange({description})}
       />
     </FormGroup>
@@ -39,7 +44,7 @@ const Metadata = props =>
     >
       <Textarea
         id={`item-${props.item.id}-instruction`}
-        content={props.item.instruction}
+        content={props.item.instruction || ''}
         onChange={instruction => props.onChange({instruction})}
       />
     </FormGroup>
@@ -49,7 +54,7 @@ const Metadata = props =>
     >
       <Textarea
         id={`item-${props.item.id}-info`}
-        content={props.item.info}
+        content={props.item.info || ''}
         onChange={info => props.onChange({info})}
       />
     </FormGroup>
@@ -69,36 +74,31 @@ Metadata.propTypes = {
 const Hint = props =>
   <div className="hint-item">
     <div className="hint-value">
-      <FormGroup
-        controlId={`hint-${props.id}-data`}
-        label={tex('hint')}
-      >
-        <Textarea
-          id={`hint-${props.id}`}
-          content={props.data}
-          onChange={text => onChange('data', text)}
-        />
-      </FormGroup>
-    </div>
-    <FormGroup
-      controlId={`hint-${props.id}-penalty`}
-      label={tex('number_steps_draw')}
-      help={tex('number_steps_draw_help')}
-      error={props.errors.parameters.pick}
-    >
-      <input
-        id={`hint-${props.id}-penalty`}
-        type="number"
-        min="0"
-        value={props.penalty}
-        className="form-control hint-penalty"
-        title={tex('penalty')}
-        onChange={e => props.onChange('penalty', e.target.value)}
+      <Textarea
+        id={`hint-${props.id}`}
+        title={tex('hint')}
+        content={props.data}
+        onChange={data => props.onChange(UPDATE_CHANGE, {id: props.id, data})}
       />
-    </FormGroup>
+    </div>
+    <input
+      id={`hint-${props.id}-penalty`}
+      title={tex('penalty')}
+      type="number"
+      min="0"
+      value={props.penalty}
+      className="form-control hint-penalty"
+      title={tex('penalty')}
+      aria-label={tex('penalty')}
+      onChange={e => props.onChange(
+        UPDATE_CHANGE,
+        {id: props.id, penalty: e.target.value}
+      )}
+    />
     <span
       role="button"
       title={t('delete')}
+      aria-label={t('delete')}
       className="fa fa-trash-o"
       onClick={props.onRemove}
     />
@@ -107,7 +107,7 @@ const Hint = props =>
 Hint.propTypes = {
   id: T.string.isRequired,
   data: T.string.isRequired,
-  penalty: T.string.isRequired,
+  penalty: T.number.isRequired,
   onChange: T.func.isRequired,
   onRemove: T.func.isRequired
 }
@@ -125,8 +125,8 @@ const Hints = props =>
         <li key={hint.id}>
           <Hint
             {...hint}
-            onChange={() => alert('change hint')}
-            onRemove={() => alert('remove hint')}
+            onChange={props.onChange}
+            onRemove={() => props.onChange(UPDATE_REMOVE, {id: hint.id})}
           />
         </li>
       )}
@@ -134,7 +134,7 @@ const Hints = props =>
         <button
           type="button"
           className="btn btn-default"
-          onClick={() => alert('create hint')}
+          onClick={() => props.onChange(UPDATE_ADD, {})}
         >
           <span className="fa fa-plus"/>
           {tex('add_hint')}
@@ -146,7 +146,8 @@ const Hints = props =>
 Hints.propTypes = {
   hints: T.arrayOf(T.shape({
     id: T.string.isRequired
-  })).isRequired
+  })).isRequired,
+  onChange: T.func.isRequired
 }
 
 export class ItemForm extends Component {
@@ -164,6 +165,7 @@ export class ItemForm extends Component {
         <FormGroup
           controlId={`item-${this.props.id}-content`}
           label={tex('question')}
+          error={this.props.item._errors.content}
         >
           <Textarea
             id={`item-${this.props.id}-content`}
@@ -189,7 +191,10 @@ export class ItemForm extends Component {
           toggle={() => this.setState({feedbackHidden: !this.state.feedbackHidden})}
         >
           <fieldset>
-            <Hints hints={this.props.item.hints}/>
+            <Hints
+              hints={this.props.item.hints}
+              onChange={this.props.onHintsChange}
+            />
             <hr/>
             <FormGroup
               controlId={`item-${this.props.item.id}-feedback`}
@@ -213,15 +218,12 @@ ItemForm.propTypes = {
     id: T.string.isRequired,
     title: T.string.isRequired,
     description: T.string.isRequired,
-    instruction: T.string.isRequired,
-    info: T.string.isRequired,
     content: T.string.isRequired,
     hints: T.arrayOf(T.object).isRequired,
-    feedback: T.string.isRequired
+    feedback: T.string.isRequired,
+    _errors: T.object.isRequired
   }).isRequired,
   children: T.oneOfType([T.object, T.array]).isRequired,
   onChange: T.func.isRequired,
-  onHintAdd: T.func.isRequired,
-  onHintRemove: T.func.isRequired,
-  onHintChange: T.func.isRequired
+  onHintsChange: T.func.isRequired
 }

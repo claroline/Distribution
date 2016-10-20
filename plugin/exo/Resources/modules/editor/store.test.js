@@ -15,7 +15,7 @@ describe('#createStore', () => {
           'items': [
             {
               'id': 'x',
-              'type': 'text/html'
+              'type': 'application/x.choice+json'
             }
           ]
         }
@@ -41,7 +41,8 @@ describe('#createStore', () => {
       items: {
         'x': {
           id: 'x',
-          type: 'text/html'
+          type: 'application/x.choice+json',
+          _errors: {}
         }
       },
       currentObject: {

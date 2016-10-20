@@ -41,13 +41,11 @@ export function createStore(rawQuiz) {
 function normalizeState(rawQuiz) {
   const items = {}
   const steps = {}
-  rawQuiz.id = rawQuiz.id.toString() // api response error, shouldn't be necessary
   rawQuiz.steps.forEach(step => {
-    step.id = step.id.toString() // same
     step._errors = {parameters: {}}
     step.items = step.items.map(item => {
-      item.id = item.id.toString() // same
       items[item.id] = item
+      item._errors = {}
       return item.id
     })
     steps[step.id] = step
@@ -64,7 +62,7 @@ function normalizeState(rawQuiz) {
     steps,
     items,
     currentObject: {
-      id: rawQuiz.id.toString(),
+      id: rawQuiz.id,
       type: TYPE_QUIZ
     }
   }

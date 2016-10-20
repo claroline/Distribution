@@ -2,6 +2,7 @@
 
 import assert from 'assert'
 import diff from 'json-diff'
+import escapeRegExp from 'lodash/escapeRegExp'
 
 export const ensure = {
   equal: assertEqual,
@@ -106,7 +107,7 @@ function assertPropTypesErrors(propNames, criterium, componentRegex, makeErrorRe
   })
   const notFound = propNames.filter(name => {
     return !componentPropsWarnings.find(warning => {
-      return warning.match(makeErrorRegex(name))
+      return warning.match(makeErrorRegex(escapeRegExp(name)))
     })
   })
   assertEqual([], notFound, `Failed asserting some props were ${criterium}`)

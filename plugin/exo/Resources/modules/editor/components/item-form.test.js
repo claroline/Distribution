@@ -11,25 +11,21 @@ describe('<ItemForm/>', () => {
   afterEach(spyConsole.restore)
 
   it('has required props', () => {
-    shallow(<ItemForm item={{}}/>)
+    shallow(<ItemForm item={{_errors: {}}}/>)
     ensure.missingProps('ItemForm', [
       'item.id',
       'children',
       'onChange',
-      'onHintAdd',
-      'onHintRemove',
-      'onHintChange'
+      'onHintsChange'
     ])
   })
 
   it('has typed props', () => {
     shallow(
       <ItemForm
-        item={{id: 123}}
+        item={{id: 123, _errors: {}}}
         onChange="foo"
-        onHintAdd="bar"
-        onHintRemove="baz"
-        onHintChange="quz"
+        onHintsChange="bar"
       >
         {false}
       </ItemForm>
@@ -38,9 +34,7 @@ describe('<ItemForm/>', () => {
       'item.id',
       'children',
       'onChange',
-      'onHintAdd',
-      'onHintRemove',
-      'onHintChange'
+      'onHintsChange'
     ])
   })
 
@@ -57,12 +51,11 @@ describe('<ItemForm/>', () => {
           info: 'INFO',
           content: 'CONTENT',
           hints: [],
-          feedback: 'FEEDBACK'
+          feedback: 'FEEDBACK',
+          _errors: {}
         }}
         onChange={newValue => updatedValue = newValue}
-        onHintAdd={() => {}}
-        onHintRemove={() => {}}
-        onHintChange={() => {}}
+        onHintsChange={() => {}}
       >
         <input value="CHILD"/>
       </ItemForm>

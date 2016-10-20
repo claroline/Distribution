@@ -32,6 +32,8 @@ attempt_info3: Attempt #
 attempt_info4: You have
 attempt_info5: in order to improve your score
 attempt_info6: You have no more attempts.
+at_first_attempt: At first attempt
+at_each_attempt: At each attempt
 at_the_end_of_assessment: At the end of the assessment
 at_the_same_time_that_the_correction: At the same time as the correction
 availability_of_correction: Availability of correction
@@ -356,8 +358,9 @@ question_graphic_set_pointers: Click on the picture to place a pointer
 question_graphic_nb_pointers: "{0} There is no more pointer to place on the picture.|{1} There is still %count% pointer to place on the picture.|]1,Inf[ There are still %count% pointers to place on the picture."
 
 # R
+random_order: Random order
 random_picking: Random picking
-random_step_picking: Step picking
+random_step_picking: Random step picking
 random_steps: Random order of steps
 random_questions: Random order of questions
 random_steps_order: Random order of steps
@@ -416,6 +419,7 @@ sort: Sort documents
 summative : Summative
 show_additional_info: Display additional information
 step: Step
+step_picking: Step picking
 step_score: Step score
 statistics: Display statistics
 step_items_count: "[0, 1] %count% question|]1,Inf[ %count% questions"

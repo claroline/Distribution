@@ -6,11 +6,16 @@ import {t, tex} from './../lib/translate'
 import {FormGroup} from './form/form-group.jsx'
 import {CheckGroup} from './form/check-group.jsx'
 import {Textarea} from './form/textarea.jsx'
+import {Radios} from './form/radios.jsx'
 import {Date} from './form/date.jsx'
 import {
   quizTypes,
+  shuffleModes,
   correctionModes,
   markModes,
+  SHUFFLE_ALWAYS,
+  SHUFFLE_ONCE,
+  SHUFFLE_NEVER,
   SHOW_CORRECTION_AT_DATE
 } from './../types'
 
@@ -59,29 +64,64 @@ const Properties = props =>
     />
   </fieldset>
 
+const shuffleOptions = () => {
+  if (!shuffleOptions._options) {
+    shuffleOptions._options = shuffleModes.map(mode => {
+      return {
+        value: mode[0],
+        label: tex(mode[1])
+      }
+    })
+  }
+
+  return shuffleOptions._options
+}
+
+const orderModes = pickMode => {
+  if (pickMode !== SHUFFLE_ALWAYS) {
+    return shuffleOptions()
+  }
+
+  return shuffleOptions().filter(mode => mode.value !== SHUFFLE_ONCE)
+}
+
 const StepPicking = props =>
   <fieldset>
-    <FormGroup
-      controlId="quiz-pick"
-      label={tex('number_steps_draw')}
-      help={tex('number_steps_draw_help')}
-      error={props.errors.parameters.pick}
-    >
-      <input
-        id="quiz-pick"
-        type="number"
-        min="0"
-        value={props.parameters.pick}
-        className="form-control"
-        onChange={e => props.onChange(param('pick', e.target.value))}
+    <FormGroup controlId="quiz-random-pick" label={tex('random_picking')}>
+      <Radios
+        groupName="quiz-random-pick"
+        options={shuffleOptions()}
+        checkedValue={props.parameters.randomPick}
+        onChange={mode => props.onChange(param('randomPick', mode))}
       />
     </FormGroup>
-    <CheckGroup
-      checkId="quiz-random"
-      checked={props.parameters.random}
-      label={tex('random_steps_order')}
-      onChange={checked => props.onChange(param('random', checked))}
-    />
+    {props.parameters.randomPick !== SHUFFLE_NEVER &&
+      <div className="sub-fields">
+        <FormGroup
+          controlId="quiz-pick"
+          label={tex('number_steps_draw')}
+          help={tex('number_steps_draw_help')}
+          error={props.errors.parameters.pick}
+        >
+          <input
+            id="quiz-pick"
+            type="number"
+            min="0"
+            value={props.parameters.pick}
+            className="form-control"
+            onChange={e => props.onChange(param('pick', e.target.value))}
+          />
+        </FormGroup>
+      </div>
+    }
+    <FormGroup controlId="quiz-random-order" label={tex('random_order')}>
+      <Radios
+        groupName="quiz-random-order"
+        options={orderModes(props.parameters.randomPick)}
+        checkedValue={props.parameters.randomOrder}
+        onChange={mode => props.onChange(param('randomOrder', mode))}
+      />
+    </FormGroup>
   </fieldset>
 
 const Signing = props =>
@@ -225,7 +265,7 @@ export const QuizEditor = props => {
         activeKey={props.activePanelKey}
       >
         {makePanel(Properties, t('properties'), 'properties', props)}
-        {makePanel(StepPicking, tex('random_step_picking'), 'step-picking',props)}
+        {makePanel(StepPicking, tex('step_picking'), 'step-picking',props)}
         {makePanel(Signing, tex('signing'), 'signing', props)}
         {makePanel(Correction, tex('correction'), 'correction', props)}
       </PanelGroup>
@@ -240,7 +280,8 @@ QuizEditor.propTypes = {
     parameters: T.shape({
       type: T.string.isRequired,
       showMetadata: T.bool.isRequired,
-      random: T.bool.isRequired,
+      randomOrder: T.string.isRequired,
+      randomPick: T.string.isRequired,
       pick: T.number.isRequired,
       duration: T.number.isRequired,
       maxAttempts: T.number.isRequired,

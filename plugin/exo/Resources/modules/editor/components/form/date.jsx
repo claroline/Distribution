@@ -24,11 +24,6 @@ Date.propTypes = {
   value: T.string
 }
 
-export const DateGroup = props =>
-  <FormGroup {...props}>
-    <Date id={props.controlId} {...props}/>
-  </FormGroup>
-
 // tmp: current way of retrieving locale...
 function getLocale() {
   const locale = document.querySelector('#homeLocale')

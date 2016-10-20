@@ -2,7 +2,7 @@ import React, {PropTypes as T} from 'react'
 import Collapse from 'react-bootstrap/lib/Collapse'
 
 export const SubSection = props =>
-  <div>
+  <div className="sub-section">
     {props.hidden &&
       <a role="button" onClick={props.toggle}>
         <span className="fa fa-caret-right"/>

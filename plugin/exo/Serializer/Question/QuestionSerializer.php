@@ -87,43 +87,16 @@ class QuestionSerializer implements SerializerInterface
         $questionData->type = $question->getMimeType();
         $questionData->content = $question->getInvite();
 
-        $title = $question->getTitle();
-        if (!empty($title)) {
-            $questionData->title = $title;
-        }
-
-        $description = $question->getDescription();
-        if (!empty($description)) {
-            $questionData->description = $description;
-        }
-
-        $info = $question->getSupplementary();
-        if (!empty($info)) {
-            $questionData->info = $info;
-        }
-
-        $instruction = $question->getSpecification();
-        if (!empty($instruction)) {
-            $questionData->instruction = $question->getSpecification();
-        }
-
-        // Serialize Hints
-        if (0 !== $question->getHints()->count()) {
-            $questionData->hints = $this->serializeHints($question, $options);
-        }
-
-        // Serialize Objects
-        if (0 !== $question->getObjects()->count()) {
-            $questionData->objects = $this->serializeObjects($question);
-        }
-
-        // Serialize Resources
-        if (0 !== $question->getResources()->count()) {
-            $questionData->resources = $this->serializeResources($question);
-        }
+        $questionData->title = $question->getTitle();
+        $questionData->description = $question->getDescription();
+        $questionData->info = $question->getSupplementary();
+        $questionData->instruction = $question->getSpecification();
+        $questionData->hints = $this->serializeHints($question, $options);
+        $questionData->objects = $this->serializeObjects($question);
+        $questionData->resources = $this->serializeResources($question);
 
         // Serialize feedback
-        if (isset($options['includeSolutions']) && $options['includeSolutions'] && $question->getFeedback()) {
+        if (isset($options['includeSolutions']) && $options['includeSolutions']) {
             $questionData->feedback = $question->getFeedback();
         }
 
