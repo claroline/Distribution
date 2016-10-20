@@ -334,6 +334,8 @@ class TransferManager
             throw new \Exception('Unable to create archive . '.$archPath.' (error '.$success.')');
         }
 
+        $this->container->get('claroline.core_bundle.listener.kernel_terminate_listener')->addElementToRemove($archPath);
+
         return $archPath;
     }
 
@@ -392,6 +394,8 @@ class TransferManager
         } else {
             throw new \Exception('Unable to create archive . '.$archPath.' (error '.$success.')');
         }
+
+        $this->container->get('claroline.core_bundle.listener.kernel_terminate_listener')->addElementToRemove($archPath);
 
         return $archPath;
     }
