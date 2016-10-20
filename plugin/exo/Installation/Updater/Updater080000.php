@@ -61,7 +61,33 @@ class Updater080000
         $this->connection->query($query);
 
         // Update match questions
-        $query = 'UPDATE ujm_question SET mime_type= "'.QuestionType::MATCH.'" WHERE type="InteractionMatch"';
+        $query = 'UPDATE ujm_question AS q ';
+        $query .= 'LEFT JOIN ujm_interaction_matching AS m ON (m.question_id = q.id) ';
+        $query .= 'LEFT JOIN ujm_type_matching AS t ON (m.type_matching_id = t.id) ';
+        $query .= 'SET q.mime_type= "'.QuestionType::MATCH.'" ';
+        $query .= 'WHERE q.type="InteractionMatching" ';
+        $query .= '  AND t.value = "To bind" ';
+
+        $this->connection->query($query);
+
+        // Update match questions
+        $query = 'UPDATE ujm_question AS q ';
+        $query .= 'LEFT JOIN ujm_interaction_matching AS m ON (m.question_id = q.id) ';
+        $query .= 'LEFT JOIN ujm_type_matching AS t ON (m.type_matching_id = t.id) ';
+        $query .= 'SET q.mime_type= "'.QuestionType::PAIR.'" ';
+        $query .= 'WHERE q.type="InteractionMatching" ';
+        $query .= '  AND t.value = "To pair" ';
+
+        $this->connection->query($query);
+
+        // Update set questions
+        $query = 'UPDATE ujm_question AS q ';
+        $query .= 'LEFT JOIN ujm_interaction_matching AS m ON (m.question_id = q.id) ';
+        $query .= 'LEFT JOIN ujm_type_matching AS t ON (m.type_matching_id = t.id) ';
+        $query .= 'SET q.mime_type= "'.QuestionType::SET.'" ';
+        $query .= 'WHERE q.type="InteractionMatching" ';
+        $query .= '  AND t.value = "To drag" ';
+
         $this->connection->query($query);
 
         $this->log('done !');

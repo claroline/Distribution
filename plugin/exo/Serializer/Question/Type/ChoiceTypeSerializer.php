@@ -178,7 +178,7 @@ class ChoiceTypeSerializer implements QuestionHandlerInterface, SerializerInterf
             $choice->setOrder($index);
 
             // Set choice content
-            if ('text/html' === $choiceData->type) {
+            if ('text/html' === $choiceData->type || 'text/plain' === $choiceData->type) {
                 // HTML is directly stored in the choice entity
                 $choice->setLabel($choiceData->data);
                 $choice->setResourceNode(null);

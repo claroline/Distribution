@@ -9,14 +9,14 @@ use UJM\ExoBundle\Library\Question\QuestionType;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
 
 /**
- * @DI\Service("ujm_exo.serializer.question_match")
+ * @DI\Service("ujm_exo.serializer.question_set")
  * @DI\Tag("ujm_exo.question.serializer")
  */
-class MatchTypeSerializer implements QuestionHandlerInterface, SerializerInterface
+class SetTypeSerializer implements QuestionHandlerInterface, SerializerInterface
 {
     public function getQuestionMimeType()
     {
-        return QuestionType::MATCH;
+        return QuestionType::SET;
     }
 
     /**
@@ -43,23 +43,23 @@ class MatchTypeSerializer implements QuestionHandlerInterface, SerializerInterfa
     }
 
     /**
-     * Converts raw data into a Match question entity.
+     * Converts raw data into a Set question entity.
      *
      * @param \stdClass           $data
-     * @param InteractionMatching $matchQuestion
+     * @param InteractionMatching $setQuestion
      * @param array               $options
      *
      * @return InteractionMatching
      */
-    public function deserialize($data, $matchQuestion = null, array $options = [])
+    public function deserialize($data, $setQuestion = null, array $options = [])
     {
-        if (empty($matchQuestion)) {
-            $matchQuestion = new InteractionMatching();
+        if (empty($setQuestion)) {
+            $setQuestion = new InteractionMatching();
         }
 
         // TODO: Implement deserialize() method.
 
-        return $matchQuestion;
+        return $setQuestion;
     }
 
     private function serializeSolutions($questionType)
