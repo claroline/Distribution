@@ -1,15 +1,5 @@
 <?php
 
-/**
- * This file is part of the Claroline Connect package.
- *
- * (c) Claroline Consortium <consortium@claroline.net>
- *
- * Author: Panagiotis TSAVDARIS
- *
- * Date: 3/11/15
- */
-
 namespace Icap\LessonBundle\Manager;
 
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
