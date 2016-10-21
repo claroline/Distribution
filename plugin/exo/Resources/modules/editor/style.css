@@ -502,6 +502,11 @@ a[role=tab] {
   margin-left: 8px;
 }
 
+.popover{
+  max-width: 450px !important;
+  min-width: 250px !important;
+}
+
 
 
 .btn-relative{

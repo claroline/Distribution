@@ -1,19 +1,13 @@
 import React, {Component} from 'react'
-import ReactDOM from 'react-dom'
 import {tex} from './../lib/translate'
 import Popover from 'react-bootstrap/lib/Popover'
-import Modal from 'react-bootstrap/lib/Modal'
 import Button from 'react-bootstrap/lib/Button'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
+import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar'
 
-const T = React.PropTypes
+
 /* global jsPlumb */
 
-function handleBeforeDrop(data) {
-  console.log('before drop')
-  console.log(data)
-  return true
-}
 
 export function initJsPlumb() {
 
@@ -45,7 +39,7 @@ export function initJsPlumb() {
     }
   })
 
-  jsPlumb.setContainer(document.getElementById('match-question-container'))
+  jsPlumb.setContainer(document.getElementById('match-question-container-id'))
 
   jsPlumb.addEndpoint(jsPlumb.getSelector('.source'), {
     anchor: 'RightMiddle',
@@ -82,218 +76,94 @@ function addConnections(){
   }
 }
 
-function removeConnection(connection){
-  if (connection._jsPlumb.hoverPaintStyle.strokeStyle === '#FC0000') {
-    jsPlumb.detach(connection)
-  }
-}
-
-function configConnection(connection, event){
-  console.log(event)
-  console.log(connection)
-
-  let rootNode = document.getElementById('popover-place-holder')
-  const rect = rootNode.getBoundingClientRect()
-  console.log(event.screenY)
-  console.log(rect.top)
-  console.log(rootNode)
-  const props = {
-    data: {
-      id:connection.sourceId + '-' + connection.targetId,
-      layerX:event.layerX,
-      layerY:event.layerY,
-      screenX: event.screenX,
-      screenY: event.screenY,
-      left: event.screenX - rect.right,
-      top: event.screenY - rect.top,
-      title:connection.sourceId + '-' + connection.targetId,
-      score: 1,
-      feedback: ''
-    }
-  }
-
-  //let rootNode = document.getElementById('popover-place-holder')
-  while (rootNode.firstChild) {
-    rootNode.removeChild(rootNode.firstChild)
-  }
-  ReactDOM.render(
-    <MyPopOver {...props}/>, rootNode
-  )
-
-  /*ReactDOM.render(
-    <MeModal {...props}/>, rootNode
-  )*/
-}
-
-class MyPopOver extends Component {
-  constructor(props){
-    super(props)
-    console.log('construct')
-    console.log(this.props)
-  }
-
-  handleClick (){
-    document.getElementById('match-popover').remove()
-  }
-
-  render() {
-
-    return (
-      // With overlay -> Invariant Violation: React.Children.only expected to receive a single React element child.
-      <div id="match-popover" className="text-center">
-      <Popover positionLeft={this.props.data.left} positionTop={this.props.data.top} placement="top" id={this.props.data.id} title={this.props.data.title}>
-        <label>Score</label>
-        <input type="number" value={this.props.data.score}></input>
-        <label>Feedback</label>
-        <textarea value={this.props.data.feedback}></textarea>
-        <Button onClick={this.handleClick.bind(this)}>Close Popover</Button>
-      </Popover>
-      </div>
-    )
-  }
-}
-
-MyPopOver.propTypes = {
-  data: T.object.isRequired
-}
-
-class ModalButton extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {show: false}
-  }
-
-  handleClick(){
-    this.setState({show: !this.state.show})
-    console.log(this)
-    this.refs.modal.open()
-  }
-
-  render() {
-    return (
-      <Button onClick={this.handleClick.bind(this)}>
-        <MeModal ref='modal'/>
-        Open Modal
-      </Button>
-    )
-  }
-
-}
-
-class MeModal extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {visible: false}
-  }
-
-  open() {
-    this.setState({ visible: true })
-  }
-
-  close() {
-    this.setState({ visible: false })
-  }
-
-  render () {
-    return (
-      <Modal show={this.state.visible} onHide={this.close.bind(this)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <h4>Text in a modal</h4>
-          <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</p>
-
-
-          <hr />
-
-          <h4>Overflowing text to show scroll behavior</h4>
-          <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
-          <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
-          <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
-          <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
-          <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
-          <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
-          <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
-          <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
-          <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={this.close.bind(this)}>Close</Button>
-        </Modal.Footer>
-      </Modal>
-
-    )
-  }
-}
-
-
-MeModal.propTypes = {
-  visible: T.bool
-}
-
-class PopoverPlaceHolder extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {visible: false}
-  }
-
-  appendPopover(data) {
-    console.log('show popover')
-    //this.setState({ visible: !this.state.visible })
-        /*var blahs = this.state.blah;
-        blahs.push(blah);
-        this.setState({ blah: blahs });*/
-  }
-
-  togglePopover() {
-    console.log('show popover')
-    this.setState({ visible: !this.state.visible })
-        /*var blahs = this.state.blah;
-        blahs.push(blah);
-        this.setState({ blah: blahs });*/
-  }
-
-  render () {
-    return (
-      <div ref='popover-place-holder' id="popover-place-holder">
-        {
-          this.state.visible &&
-          <h1>POPOVER !</h1>
-        }
-      </div>
-    )
-  }
-}
 
 class Match extends Component {
 
   constructor(props) {
     super(props)
+    this.state = {
+      popover:{
+        id:0,
+        visible:false,
+        top:0,
+        left:0,
+        title:'popover',
+        feedback:'',
+        score:0
+      }
+    }
   }
 
   componentDidMount() {
     initJsPlumb()
     addConnections()
-    jsPlumb.bind('beforeDrop', function (data) {
-      return handleBeforeDrop(data)
+
+    // new connection created event
+    jsPlumb.bind('connection', function(connection, event) {
+      // paint it red
+      //connection._jsPlumb.hoverPaintStyle.strokeStyle = '#FC0000'
+      let rootNode = document.getElementById('popover-place-holder')
+      const rect = rootNode.getBoundingClientRect()
+      this.setState({
+        popover: {
+          visible: true,
+          id:connection.sourceId + '-' + connection.targetId,
+          left: event.pageX - rect.right,
+          top: event.layerY - rect.top,
+          title:connection.sourceId + '-' + connection.targetId,
+          score: 1,
+          feedback: 'This is a feedback',
+          jsPlumbConnection: connection
+        }
+      })
+    }.bind(this))
+
+    jsPlumb.bind('beforeDrop', function () {
+      return true
     })
 
-    // remove one connection
+    // configure connection
     jsPlumb.bind('click', function (connection, event) {
-      configConnection(connection, event)
+      let rootNode = document.getElementById('popover-place-holder')
+      // paint it red
+      //connection._jsPlumb.hoverPaintStyle.strokeStyle = '#FC0000'
+      const rect = rootNode.getBoundingClientRect()
+      this.setState({
+        popover: {
+          visible: true,
+          id:connection.sourceId + '-' + connection.targetId,
+          left: event.pageX - rect.right,
+          top: event.layerY - rect.top,
+          title:connection.sourceId + '-' + connection.targetId,
+          score: 1,
+          feedback: 'This is a feedback',
+          jsPlumbConnection: connection
+        }
+      })
+
+    }.bind(this))
+  }
+
+  removeConnection(connection){
+    jsPlumb.detach(connection)
+    this.setState({
+      popover: {
+        visible: false
+      }
     })
+  }
 
-    jsPlumb.bind('dblclick', function (connection) {
-      removeConnection(connection)
-    })
+  onFocus(){
+    console.log('focused')
+  }
 
-
+  onBlur(){
+    console.log('blur')
   }
 
   render() {
     return (
-      <div id="match-question-container" className="match-question-container">
+      <div onFocus={this.onFocus.bind(this)} id="match-question-container-id" className="match-question-container">
         <div className="form-group">
           <label htmlFor="set-penalty">{tex('set_question_penalty_label')}</label>
           <input
@@ -326,15 +196,44 @@ class Match extends Component {
                   <textarea className="form-control" value="Oh" />
                 </div>
               </div>
-              <hr/>
-              <button className="btn btn-default">
-                <i className="fa fa-plus"></i> &nbsp;Add a proposal
-              </button>
             </div>
+            <hr/>
+            <button className="btn btn-default">
+              <i className="fa fa-plus"></i> &nbsp;Ajouter un item
+            </button>
           </div>
-          <div className="col-md-2">
-            <PopoverPlaceHolder></PopoverPlaceHolder>
-            <ModalButton />
+          <div id="popover-place-holder" className="col-md-2">
+            { this.state.popover.visible &&
+              <Popover
+                  onBlur={this.onBlur.bind(this)}
+                  positionLeft={this.state.popover.left}
+                  positionTop={this.state.popover.top}
+                  placement="top"
+                  id={this.state.popover.id}
+                  title={this.state.popover.title}>
+                <div className="form-group">
+                  <label>Score</label>
+                  <input className="form-control" type="number" value={this.state.popover.score}></input>
+                </div>
+                <div className="form-group">
+                  <label>Feedback</label>
+                  <textarea className="form-control" value={this.state.popover.feedback}></textarea>
+                </div>
+                <hr/>
+                <div className="row">
+                  <div className="col-xs-12 text-center">
+                    <div className="btn-group">
+                      <Button onClick={() => this.setState({popover: {visible: !this.state.popover.visible}})} title={'close'}>
+                        <i className="fa fa-close"></i>
+                      </Button>
+                      <Button onClick={() => this.removeConnection(this.state.popover.jsPlumbConnection)} title={'delete'}>
+                        <i className="fa fa-trash"></i>
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </Popover>
+            }
           </div>
           <div className="col-md-5 text-center">
             <div className="items-container">
@@ -355,9 +254,10 @@ class Match extends Component {
                 </div>
               </div>
             </div>
+
             <hr/>
             <button className="btn btn-default">
-              <i className="fa fa-plus"></i> &nbsp;Add a label
+              <i className="fa fa-plus"></i> &nbsp;Ajouter un item
             </button>
           </div>
         </div>
