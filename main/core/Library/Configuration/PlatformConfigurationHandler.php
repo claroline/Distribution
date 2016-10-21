@@ -98,6 +98,7 @@ class PlatformConfigurationHandler
         'ssl_enabled' => false,
         'enable_rich_text_file_import' => false,
         'login_target_route' => 'claro_security_login',
+        'enable_opengraph' => true,
     ];
     private $lockedParameters;
 
@@ -225,6 +226,7 @@ class PlatformConfigurationHandler
         $config->setSslEnabled($this->parameters['ssl_enabled']);
         $config->setEnableRichTextFileImport($this->parameters['enable_rich_text_file_import']);
         $config->setLoginTargetRoute($this->parameters['login_target_route']);
+        $config->setEnableOpengraph($this->parameters['enable_opengraph']);
 
         return $config;
     }
