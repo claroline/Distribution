@@ -294,6 +294,7 @@ class PathManager
         $pathData['published'] = $path->isPublished();
         $pathData['summaryDisplayed'] = $path->isSummaryDisplayed();
         $pathData['completeBlockingCondition'] = $path->isCompleteBlockingCondition();
+        $pathData['manualProgressionAllowed'] = $path->isManualProgressionAllowed();
 
         // Get path structure into a file (to replace resources ID with placeholders)
         $uid = uniqid().'.txt';
@@ -342,6 +343,7 @@ class PathManager
         $path->setModified($pathData['modified']);
         $path->setSummaryDisplayed($pathData['summaryDisplayed']);
         $path->setCompleteBlockingCondition($pathData['completeBlockingCondition']);
+        $path->setManualProgressionAllowed($pathData['manualProgressionAllowed']);
 
         // Create steps
         $stepData = $data['data']['steps'];
