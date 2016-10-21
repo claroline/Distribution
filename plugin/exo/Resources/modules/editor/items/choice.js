@@ -11,29 +11,42 @@ function reducer(item = {}, action) {
       const firstChoiceId = makeId()
       const secondChoiceId = makeId()
 
-      return update(item, {
-        multiple: {$set: false},
-        random: {$set: false},
-        choices: {$set: [
+      return Object.assign({}, item, {
+        multiple: false,
+        random: false,
+        choices: [
           {
             id: firstChoiceId,
-            data: null
+            data: '',
+            _checked: true,
+            _score: 1,
+            _feedback: '',
+            _errors: {},
+            _deletable: false
           },
           {
             id: secondChoiceId,
-            data: null
+            data: '',
+            _checked: false,
+            _score: 0,
+            _feedback: '',
+            _errors: {},
+            _deletable: false
           }
-        ]},
-        solutions: {$set: [
+        ],
+        solutions: [
           {
             id: firstChoiceId,
-            score: 1
+            score: 1,
+            feedback: ''
           },
           {
             id: secondChoiceId,
-            score: 0
+            score: 0,
+            feedback: ''
           }
-        ]}
+        ],
+        _errors: {}
       })
     }
   }

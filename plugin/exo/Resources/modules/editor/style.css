@@ -135,7 +135,6 @@
 
 .quiz-editor .hint-item {
   display: flex;
-  margin-bottom: 12px;
 }
 
 .quiz-editor .hint-value {
@@ -159,6 +158,7 @@
 
 .quiz-editor .text-editor {
   position: relative;
+  margin-bottom: 12px;
 }
 
 .quiz-editor .text-editor [role=textbox].form-control {
@@ -303,7 +303,7 @@ a[role=tab] {
   flex-direction: column;
 }
 
-.quiz-editor .choice-items li > div {
+.quiz-editor .choice-items .choice-item {
   display: flex;
 }
 

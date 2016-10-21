@@ -127,14 +127,13 @@ let ItemPanel = props =>
                 props.handleItemHintsUpdate(props.item.id, updateType, payload)
               }
             >
-            {
-              <span>'CHILD'</span>
-              /*
               {React.createElement(
                 properties[props.item.type].component,
-                props.item
-              )}*/
-              }
+                {
+                  item: props.item,
+                  onChange: () => alert('item detail update')
+                }
+              )}
             </ItemForm>
 
           }

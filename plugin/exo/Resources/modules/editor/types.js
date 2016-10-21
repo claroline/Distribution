@@ -53,6 +53,9 @@ export const UPDATE_ADD = 'add'
 export const UPDATE_CHANGE = 'change'
 export const UPDATE_REMOVE = 'remove'
 
+export const SCORE_SUM = 'sum'
+export const SCORE_FIXED = 'fixed'
+
 let definitions = [
   choice,
   match,

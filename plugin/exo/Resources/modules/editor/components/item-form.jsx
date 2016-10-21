@@ -216,8 +216,6 @@ export class ItemForm extends Component {
 ItemForm.propTypes = {
   item: T.shape({
     id: T.string.isRequired,
-    title: T.string.isRequired,
-    description: T.string.isRequired,
     content: T.string.isRequired,
     hints: T.arrayOf(T.object).isRequired,
     feedback: T.string.isRequired,
