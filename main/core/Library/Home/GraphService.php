@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Library\Home;
 
-use Symfony\Component\DomCrawler\Crawler;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\DomCrawler\Crawler;
 
 /**
  * @DI\Service("claroline.common.graph_service")
@@ -58,7 +58,7 @@ class GraphService
     public function twitter()
     {
         $this->find(
-            array('title', 'description', 'type', 'video', 'site_name', 'url', 'image'),
+            ['title', 'description', 'type', 'video', 'site_name', 'url', 'image'],
             'og',
             'property'
         );
@@ -67,7 +67,7 @@ class GraphService
     public function openGraph()
     {
         $this->find(
-            array('card', 'site', 'player', 'player:width', 'player:height', 'image'),
+            ['card', 'site', 'player', 'player:width', 'player:height', 'image'],
             'twitter',
             'name'
         );
