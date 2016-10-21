@@ -48,14 +48,7 @@ class DropRepository extends EntityRepository
             }
         }
 
-        $arrayResult = [];
-
-        foreach ($dropIds as $key => $value) {
-            isset($value);
-            $arrayResult[] = $key;
-        }
-
-        return $arrayResult;
+        return array_keys($dropIds);
     }
 
     public function getDropIdNotFullyCorrected($dropzone)
