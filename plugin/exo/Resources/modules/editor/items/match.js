@@ -10,7 +10,9 @@ function reducer(question = {}, action) {
       return update(question, {
         firstSet: {$set: []},
         secondSet: {$set: []},
-        solutions: {$set: []}
+        solutions: {$set: []},
+        random: {$set: false},
+        penalty: {$set: 0}
       })
     }
   }
@@ -21,7 +23,9 @@ function initialFormValues(question) {
   return update(question, {
     firstSet: {$set: question.firstSet},
     secondSet: {$set: question.secondSet},
-    solutions: {$set: question.solutions}
+    solutions: {$set: question.solutions},
+    random: {$set: question.random},
+    penalty: {$set: question.penalty}
   })
 }
 
