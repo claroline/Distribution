@@ -1,7 +1,7 @@
 import React from 'react'
 import {shallow, mount} from 'enzyme'
 import {spyConsole, renew, ensure} from './../test-utils'
-import {SHUFFLE_ONCE, SHUFFLE_NEVER} from './../types'
+import {SHUFFLE_ONCE, SHUFFLE_NEVER} from './../enums'
 import {QuizEditor} from './quiz-editor.jsx'
 
 describe('<QuizEditor/>', () => {

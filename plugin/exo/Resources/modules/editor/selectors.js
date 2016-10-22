@@ -1,5 +1,5 @@
 import {createSelector} from 'reselect'
-import {TYPE_QUIZ, TYPE_STEP} from './types'
+import {TYPE_QUIZ, TYPE_STEP} from './enums'
 
 const quiz = state => state.quiz
 const steps = state => state.steps

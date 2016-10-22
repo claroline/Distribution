@@ -5,7 +5,7 @@ import PanelGroup from 'react-bootstrap/lib/PanelGroup'
 import {makeItemPanelKey, makeStepPropPanelKey} from './../util'
 import {t, tex, trans} from './../lib/translate'
 import {makeSortable, SORT_VERTICAL} from './../lib/sortable'
-import {properties} from './../types'
+import {getDefinition} from './../item-types'
 import {StepForm} from './step-form.jsx'
 import {ItemForm} from './item-form.jsx'
 import {MODAL_DELETE_CONFIRM, MODAL_ADD_ITEM} from './modals.jsx'
@@ -72,10 +72,10 @@ const ItemHeader = props =>
   >
     <span>
       <svg className="icon-small">
-        <use xlinkHref={`#icon-${properties[props.item.type].name}`}/>
+        <use xlinkHref={`#icon-${getDefinition(props.item.type).name}`}/>
       </svg>
       <span className="panel-title">
-        {props.item.title || trans(properties[props.item.type].name, {}, 'question_types')}
+        {props.item.title || trans(getDefinition(props.item.type).name, {}, 'question_types')}
       </span>
     </span>
     <ItemActions
@@ -128,7 +128,7 @@ let ItemPanel = props =>
               }
             >
               {React.createElement(
-                properties[props.item.type].component,
+                getDefinition(props.item.type).component,
                 {
                   item: props.item,
                   onChange: () => alert('item detail update')

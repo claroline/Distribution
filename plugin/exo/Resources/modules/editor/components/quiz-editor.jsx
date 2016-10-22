@@ -17,7 +17,7 @@ import {
   SHUFFLE_ONCE,
   SHUFFLE_NEVER,
   SHOW_CORRECTION_AT_DATE
-} from './../types'
+} from './../enums'
 
 const param = (property, value) => ({parameters: {[property]: value}})
 

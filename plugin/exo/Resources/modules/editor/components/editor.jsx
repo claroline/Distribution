@@ -6,7 +6,7 @@ import {QuizEditor} from './quiz-editor.jsx'
 import {StepEditor} from './step-editor.jsx'
 import Modals from './modals.jsx'
 import {actions} from './../actions'
-import {TYPE_QUIZ, TYPE_STEP} from './../types'
+import {TYPE_QUIZ, TYPE_STEP} from './../enums'
 import select from './../selectors'
 
 const T = React.PropTypes

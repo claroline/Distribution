@@ -3,7 +3,6 @@ import {ITEM_CREATE} from './../actions'
 import {makeId, update} from './../util'
 import {tex} from './../lib/translate'
 import {Choice as component} from './choice.jsx'
-import {ITEM_FORM} from './../components/item-form.jsx'
 
 function reducer(item = {}, action) {
   switch (action.type) {
@@ -106,40 +105,40 @@ export function makeNewChoice() {
     score: 0
   }
 }
-
-export function choiceDeletablesSelector(state) {
-  const formValues = state.form[ITEM_FORM].values
-  const gtTwo = formValues.choices.length > 2
-
-  return formValues.choices.map(() => gtTwo)
-}
-
-export function choiceTicksSelector(state) {
-  const formValues = state.form[ITEM_FORM].values
-
-  if (formValues.multiple) {
-    return formValues.choices.map(choice => choice.score > 0)
-  }
-
-  let max = 0
-  let maxId = null
-
-  formValues.choices.forEach(choice => {
-    if (choice.score > max) {
-      max = choice.score
-      maxId = choice.id
-    }
-  })
-
-  return formValues.choices.map(choice => max > 0 && choice.id === maxId)
-}
+//
+// export function choiceDeletablesSelector(state) {
+//   const formValues = state.form[ITEM_FORM].values
+//   const gtTwo = formValues.choices.length > 2
+//
+//   return formValues.choices.map(() => gtTwo)
+// }
+//
+// export function choiceTicksSelector(state) {
+//   const formValues = state.form[ITEM_FORM].values
+//
+//   if (formValues.multiple) {
+//     return formValues.choices.map(choice => choice.score > 0)
+//   }
+//
+//   let max = 0
+//   let maxId = null
+//
+//   formValues.choices.forEach(choice => {
+//     if (choice.score > max) {
+//       max = choice.score
+//       maxId = choice.id
+//     }
+//   })
+//
+//   return formValues.choices.map(choice => max > 0 && choice.id === maxId)
+// }
 
 export default {
   type: 'application/x.choice+json',
   name: 'choice',
-  question: true,
   component,
   reducer,
+
   initialFormValues,
   validateFormValues
 }

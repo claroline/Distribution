@@ -2,12 +2,7 @@ import React, {Component, PropTypes as T} from 'react'
 import {t, tex} from './../lib/translate'
 import {notBlank} from './../lib/validate'
 import {makeId} from './../util'
-import {
-  properties,
-  UPDATE_ADD,
-  UPDATE_CHANGE,
-  UPDATE_REMOVE
-} from './../types'
+import {UPDATE_ADD, UPDATE_CHANGE, UPDATE_REMOVE} from './../enums'
 import {FormGroup} from './form/form-group.jsx'
 import {Textarea} from './form/textarea.jsx'
 import {SubSection} from './form/sub-section.jsx'

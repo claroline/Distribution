@@ -1,6 +1,6 @@
 import freeze from 'deep-freeze'
 import {assertEqual} from './test-utils'
-import {TYPE_QUIZ, TYPE_STEP} from './types'
+import {TYPE_QUIZ, TYPE_STEP} from './enums'
 import select from './selectors'
 
 describe('Thumbnails selector', () => {

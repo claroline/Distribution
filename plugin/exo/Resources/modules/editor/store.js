@@ -7,9 +7,7 @@ import {
   createStore as baseCreate
 } from 'redux'
 import thunk from 'redux-thunk'
-import {reducer as formReducer} from 'redux-form'
 import {reducers} from './reducers'
-import {TYPE_QUIZ, mimeTypes} from './types'
 
 const middleware = [thunk]
 
@@ -24,46 +22,12 @@ const reducer = combineReducers({
   items: reducers.items,
   currentObject: reducers.currentObject,
   openPanels: reducers.openPanels,
-  modal: reducers.modal,
-  categories: () => ['C1', 'C2'], // FIXME
-  itemTypes: () => mimeTypes,
-  form: formReducer
+  modal: reducers.modal
 })
 
-export function createStore(rawQuiz) {
-  const initialState = normalizeState(rawQuiz)
+export function createStore(initialState) {
   return baseCreate(reducer, initialState, compose(
     applyMiddleware(...middleware),
     window.devToolsExtension ? window.devToolsExtension() : f => f
   ))
-}
-
-function normalizeState(rawQuiz) {
-  const items = {}
-  const steps = {}
-  rawQuiz.steps.forEach(step => {
-    step._errors = {parameters: {}}
-    step.items = step.items.map(item => {
-      items[item.id] = item
-      item._errors = {}
-      return item.id
-    })
-    steps[step.id] = step
-  })
-  return {
-    quiz: {
-      id: rawQuiz.id,
-      title: rawQuiz.title,
-      description: rawQuiz.description,
-      parameters: rawQuiz.parameters,
-      steps: rawQuiz.steps.map(step => step.id),
-      _errors: {parameters: {}}
-    },
-    steps,
-    items,
-    currentObject: {
-      id: rawQuiz.id,
-      type: TYPE_QUIZ
-    }
-  }
 }

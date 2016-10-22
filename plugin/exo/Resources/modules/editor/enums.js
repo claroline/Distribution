@@ -1,9 +1,3 @@
-import choice from './items/choice'
-import match from './items/match'
-import cloze from './items/cloze'
-import graphic from './items/graphic'
-import open from './items/open'
-
 export const TYPE_QUIZ = 'quiz'
 export const TYPE_STEP = 'step'
 
@@ -55,25 +49,3 @@ export const UPDATE_REMOVE = 'remove'
 
 export const SCORE_SUM = 'sum'
 export const SCORE_FIXED = 'fixed'
-
-let definitions = [
-  choice,
-  match,
-  open,
-  cloze,
-  graphic
-]
-
-export const mimeTypes = definitions.map(def => def.type)
-
-export const properties = definitions.reduce((props, def) => {
-  props[def.type] = {
-    name: def.name,
-    question: def.question,
-    component: def.component,
-    reducer: def.reducer,
-    initialFormValues: def.initialFormValues || (values => values),
-    validateFormValues: def.validateFormValues || (() => {})
-  }
-  return props
-}, {})

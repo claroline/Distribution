@@ -2,6 +2,7 @@ const path = require('path')
 const webpack = require('webpack')
 const failPlugin = require('webpack-fail-plugin')
 const assetsPlugin = require('assets-webpack-plugin')
+const CircularDependencyPlugin = require('circular-dependency-plugin')
 
 /**
  * Builds a webpack configuration suitable for export.
@@ -58,6 +59,10 @@ function configure(rootDir, packages, isWatchMode) {
       makeNoErrorsPlugin(),
       makeFailOnErrorPlugin(),
       makeCommonsPlugin()
+    )
+  } else {
+    plugins.push(
+      makeCircularDependencyPlugin()
     )
   }
 
@@ -234,6 +239,19 @@ function makeNoErrorsPlugin() {
  */
 function makeFailOnErrorPlugin() {
   return failPlugin
+}
+
+/**
+ * This plugin detects circular dependencies in modules and issues warnings or
+ * errors. Circular dependencies can be a source of mysterious bugs:
+ *
+ * @see http://stackoverflow.com/questions/35240716/webpack-import-returns-undefined-depending-on-the-order-of-imports
+ */
+function makeCircularDependencyPlugin() {
+  return new CircularDependencyPlugin({
+    exclude: /web\/packages|node_modules/,
+    failOnError: false // default: only warnings
+  })
 }
 
 /**

@@ -1,15 +1,16 @@
 import freeze from 'deep-freeze'
 import {assertEqual} from './test-utils'
 import {lastId} from './util'
-import {actions} from './actions'
+import {ITEM_CREATE, actions} from './actions'
 import {reducers} from './reducers'
+import {registerItemType, resetTypes} from './item-types'
 import {
   TYPE_QUIZ,
   TYPE_STEP,
   UPDATE_ADD,
   UPDATE_CHANGE,
   UPDATE_REMOVE
-} from './types'
+} from './enums'
 
 describe('Quiz reducer', () => {
   it('returns a new quiz by default', () => {
@@ -155,14 +156,30 @@ describe('Items reducer', () => {
   })
 
   it('creates a base question object and delegates to question reducer', () => {
-    const items = reducers.items(freeze({}), actions.createItem('1', 'application/x.choice+json'))
+    const dummyType = {
+      name: 'foo',
+      type: 'foo/bar',
+      component: {}, // doesn't matter here
+      reducer: (item, action) => {
+        if (action.type === ITEM_CREATE) {
+          return Object.assign({}, item, {foo: 'bar'})
+        }
+
+        return item
+      }
+    }
+
+    registerItemType(dummyType)
+
+    const items = reducers.items(freeze({}), actions.createItem('1', 'foo/bar'))
     const keys = Object.keys(items)
     assertEqual(keys.length, 1)
     assertEqual(typeof keys[0], 'string')
-    assertEqual(items[keys[0]].type, 'application/x.choice+json')
+    assertEqual(items[keys[0]].type, 'foo/bar')
     assertEqual(items[keys[0]].score, {type: 'sum'})
-    assertEqual(items[keys[0]].choices.length, 2)
-    assertEqual(items[keys[0]].solutions.length, 2)
+    assertEqual(items[keys[0]].foo, 'bar')
+
+    resetTypes()
   })
 
   it('removes item object on item deletion', () => {

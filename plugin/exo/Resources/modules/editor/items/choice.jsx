@@ -1,7 +1,7 @@
 import React, {Component, PropTypes as T} from 'react'
 import classes from 'classnames'
 import {t, tex} from './../lib/translate'
-import {SCORE_SUM, SCORE_FIXED} from './../types'
+import {SCORE_SUM, SCORE_FIXED} from './../enums'
 import {Textarea} from './../components/form/textarea.jsx'
 import {CheckGroup} from './../components/form/check-group.jsx'
 import {FormGroup} from './../components/form/form-group.jsx'

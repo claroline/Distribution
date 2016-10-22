@@ -2,8 +2,8 @@ import merge from 'lodash/merge'
 import sanitize from './sanitizers'
 import validate from './validators'
 import {getIndex, makeId, makeItemPanelKey, update} from './util'
+import {getDefinition} from './item-types'
 import {
-  properties,
   TYPE_QUIZ,
   TYPE_STEP,
   SHUFFLE_NEVER,
@@ -12,7 +12,7 @@ import {
   UPDATE_ADD,
   UPDATE_CHANGE,
   UPDATE_REMOVE
-} from './types'
+} from './enums'
 import {
   ITEM_CREATE,
   ITEM_DELETE,
@@ -122,14 +122,7 @@ function reduceItems(items = {}, action = {}) {
         score: {type: 'sum'},
         feedback: ''
       }
-      switch (action.itemType) {
-        case 'application/x.choice+json':
-          newItem = properties[action.itemType].reducer(newItem, action)
-          break
-        case 'application/x.open+json':
-          newItem = properties[action.itemType].reducer(newItem, action)
-          break
-      }
+      newItem = getDefinition(action.itemType).reducer(newItem, action)
       return update(items, {[action.id]: {$set: newItem}})
     }
     case ITEM_DELETE:
