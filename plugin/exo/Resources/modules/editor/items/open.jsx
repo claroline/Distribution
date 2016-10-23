@@ -1,9 +1,9 @@
-import React from 'react'
+import React, {PropTypes as T} from 'react'
 import {Field} from 'redux-form'
 import {tex} from './../lib/translate'
-import Controls from './../components/form-controls.jsx'
 
-const T = React.PropTypes
+// tmp...
+const Controls = {}
 
 export const Open = () =>
   <fieldset>
