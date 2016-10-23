@@ -5,7 +5,7 @@ The whole quiz data is processed to make it suitable for edition:
 
 1. Get raw server data (currently embedded in an HTML attribute)
 2. Normalize it (flatten structure to ease updates)
-3. Augment it:
+3. Decorate it:
    - Add sections to hold editor state
    - Add convenience properties where selectors wouldn't be practical
    - Store UI flags (e.g. errors/touched attributes for forms)

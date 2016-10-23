@@ -1,36 +1,43 @@
+import merge from 'lodash/merge'
 import zipObject from 'lodash/zipObject'
 import {ITEM_CREATE} from './../actions'
-import {makeId, update} from './../util'
+import {makeActionCreator, makeId} from './../util'
 import {tex} from './../lib/translate'
 import {Choice as component} from './choice.jsx'
 
-function reducer(item = {}, action) {
+const UPDATE_PROP = 'UPDATE_PROP'
+
+export const actions = {
+  updateProperty: makeActionCreator(UPDATE_PROP, 'property')
+}
+
+
+// reduce
+
+// decorate
+
+// sanitize
+
+// validate
+
+
+
+function reduce(item = {}, action) {
   switch (action.type) {
     case ITEM_CREATE: {
       const firstChoiceId = makeId()
       const secondChoiceId = makeId()
-
-      return Object.assign({}, item, {
+      return decorate(Object.assign({}, item, {
         multiple: false,
         random: false,
         choices: [
           {
             id: firstChoiceId,
-            data: '',
-            _checked: true,
-            _score: 1,
-            _feedback: '',
-            _errors: {},
-            _deletable: false
+            data: ''
           },
           {
             id: secondChoiceId,
-            data: '',
-            _checked: false,
-            _score: 0,
-            _feedback: '',
-            _errors: {},
-            _deletable: false
+            data: ''
           }
         ],
         solutions: [
@@ -44,32 +51,70 @@ function reducer(item = {}, action) {
             score: 0,
             feedback: ''
           }
-        ],
-        _errors: {}
-      })
+        ]
+      }))
+    }
+    case UPDATE_PROP: {
+      // mark as touched
+
+      return merge({}, item, action.property)
     }
   }
   return item
 }
 
-function initialFormValues(item) {
+function decorate(item) {
   const solutionsById = zipObject(
     item.solutions.map(solution => solution.id),
     item.solutions
   )
   const choicesWithSolutions = item.choices.map(
-    choice => Object.assign({}, choice, solutionsById[choice.id])
+    choice => Object.assign({}, choice, {
+      _score: solutionsById[choice.id].score,
+      _feedback: solutionsById[choice.id].feedback,
+      _checked: false,
+      _deletable: item.solutions.length > 2,
+      _errors: {},
+      _touched: {}
+    })
   )
 
-  return update(item, {
-    choices: {$set: choicesWithSolutions},
-    fixedScore: {$set: item.score.type === 'fixed'},
-    fixedFailure: {$set: 0},
-    fixedSuccess: {$set: 1}
+  let decorated = Object.assign({}, item, {
+    choices: choicesWithSolutions
   })
+
+  return setChoiceTicks(decorated)
 }
 
-function validateFormValues(values) {
+function setChoiceTicks(item) {
+  if (item.multiple) {
+    item.choices.forEach(
+      choice => choice._checked = choice._score > 0
+    )
+  } else {
+    let max = 0
+    let maxId = null
+
+    item.choices.forEach(choice => {
+      if (choice._score > max) {
+        max = choice._score
+        maxId = choice.id
+      }
+    })
+
+    item.choices.forEach(choice =>
+      choice._checked = max > 0 && choice.id === maxId
+    )
+  }
+
+  return item
+}
+
+function sanitize() {
+
+}
+
+function validate(values) {
   const errors = {choices: []}
 
   if (values.fixedScore) {
@@ -98,13 +143,13 @@ function validateFormValues(values) {
   return errors
 }
 
-export function makeNewChoice() {
-  return {
-    id: makeId(),
-    data: null,
-    score: 0
-  }
-}
+// export function makeNewChoice() {
+//   return {
+//     id: makeId(),
+//     data: null,
+//     score: 0
+//   }
+// }
 //
 // export function choiceDeletablesSelector(state) {
 //   const formValues = state.form[ITEM_FORM].values
@@ -137,8 +182,8 @@ export default {
   type: 'application/x.choice+json',
   name: 'choice',
   component,
-  reducer,
-
-  initialFormValues,
-  validateFormValues
+  reduce,
+  decorate,
+  sanitize,
+  validate
 }

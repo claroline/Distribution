@@ -1,9 +1,9 @@
 import freeze from 'deep-freeze'
 import {assertEqual} from './test-utils'
-import {TYPE_QUIZ} from './enums'
-import {augment} from './augmenter'
+import {TYPE_QUIZ, SCORE_SUM, SCORE_FIXED} from './enums'
+import {decorate} from './decorator'
 
-describe('Augmenter', () => {
+describe('Decorator', () => {
   it('adds editor state sections and convenience fields to quiz state', () => {
     const state = freeze({
       quiz: {
@@ -27,7 +27,12 @@ describe('Augmenter', () => {
         },
         y: {
           id: 'y',
-          type: 'bar/quz'
+          type: 'bar/quz',
+          score: {
+            type: SCORE_FIXED,
+            success: 5,
+            failure: 2
+          }
         },
         z: {
           id: 'z',
@@ -35,7 +40,7 @@ describe('Augmenter', () => {
         }
       }
     })
-    assertEqual(augment(state), {
+    assertEqual(decorate(state), {
       quiz: {
         id: '1',
         steps: ['a', 'b'],
@@ -72,20 +77,47 @@ describe('Augmenter', () => {
         x: {
           id: 'x',
           type: 'foo/bar',
-          _errors: {},
-          _touched: {}
+          score: {
+            type: SCORE_SUM,
+            success: 1,
+            failure: 0
+          },
+          _errors: {
+            score: {}
+          },
+          _touched: {
+            score: {}
+          }
         },
         y: {
           id: 'y',
           type: 'bar/quz',
-          _errors: {},
-          _touched: {}
+          score: {
+            type: SCORE_FIXED,
+            success: 5,
+            failure: 2
+          },
+          _errors: {
+            score: {}
+          },
+          _touched: {
+            score: {}
+          }
         },
         z: {
           id: 'z',
           type: 'text/html',
-          _errors: {},
-          _touched: {}
+          score: {
+            type: SCORE_SUM,
+            success: 1,
+            failure: 0
+          },
+          _errors: {
+            score: {}
+          },
+          _touched: {
+            score: {}
+          }
         }
       },
       currentObject: {
@@ -95,7 +127,7 @@ describe('Augmenter', () => {
     })
   })
 
-  it('calls available augmenter for each item type', () => {
+  it('calls available decorator for each item type', () => {
     const state = freeze({
       quiz: {
         id: '1',
@@ -114,14 +146,14 @@ describe('Augmenter', () => {
         }
       }
     })
-    const itemAugmenters = {
+    const itemDecorators = {
       'application/foo.bar+json': item => {
         return Object.assign({}, item, {
           _foo: `${item.id}-bar`
         })
       }
     }
-    assertEqual(augment(state, itemAugmenters), {
+    assertEqual(decorate(state, itemDecorators), {
       quiz: {
         id: '1',
         steps: ['a'],
@@ -148,9 +180,18 @@ describe('Augmenter', () => {
         x: {
           id: 'x',
           type: 'application/foo.bar+json',
+          score: {
+            type: SCORE_SUM,
+            success: 1,
+            failure: 0
+          },
           _foo: 'x-bar',
-          _errors: {},
-          _touched: {}
+          _errors: {
+            score: {}
+          },
+          _touched: {
+            score: {}
+          }
         }
       },
       currentObject: {

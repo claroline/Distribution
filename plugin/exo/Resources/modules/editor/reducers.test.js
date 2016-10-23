@@ -160,7 +160,7 @@ describe('Items reducer', () => {
       name: 'foo',
       type: 'foo/bar',
       component: {}, // doesn't matter here
-      reducer: (item, action) => {
+      reduce: (item, action) => {
         if (action.type === ITEM_CREATE) {
           return Object.assign({}, item, {foo: 'bar'})
         }

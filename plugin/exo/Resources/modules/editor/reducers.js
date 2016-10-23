@@ -19,6 +19,7 @@ import {
   ITEM_UPDATE,
   ITEM_MOVE,
   ITEM_HINTS_UPDATE,
+  ITEM_DETAIL_UPDATE,
   MODAL_FADE,
   MODAL_HIDE,
   MODAL_SHOW,
@@ -122,7 +123,7 @@ function reduceItems(items = {}, action = {}) {
         score: {type: 'sum'},
         feedback: ''
       }
-      newItem = getDefinition(action.itemType).reducer(newItem, action)
+      newItem = getDefinition(action.itemType).reduce(newItem, action)
       return update(items, {[action.id]: {$set: newItem}})
     }
     case ITEM_DELETE:
@@ -171,6 +172,16 @@ function reduceItems(items = {}, action = {}) {
         default:
           return items
       }
+    case ITEM_DETAIL_UPDATE: {
+      const def = getDefinition(items[action.id].type)
+      const updatedItem = def.reduce(items[action.id], action.subAction)
+
+      // should validate here...
+
+      // const errors = validate.item(updatedItem)
+      // updatedItem._errors = errors
+      return update(items, {[action.id]: {$set: updatedItem}})
+    }
   }
   return items
 }

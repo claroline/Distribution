@@ -36,6 +36,23 @@ export function lastId() {
   return `generated-id-${idCount}`
 }
 
+// test purpose only
+export function lastIds(count) {
+  if (count > idCount) {
+    throw new Error(
+      `Cannot access last ${count} ids, only ${idCount} were generated`
+    )
+  }
+
+  const ids = []
+
+  for (let i = idCount - count + 1; i <= idCount; ++i) {
+    ids.push(`generated-id-${i}`)
+  }
+
+  return ids
+}
+
 export function makeItemPanelKey(itemType, itemId) {
   return `item-${itemType}-${itemId}`
 }

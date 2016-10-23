@@ -4,6 +4,7 @@ import {
   registerItemType,
   listItemMimeTypes,
   getDefinition,
+  getDecorators,
   resetTypes
 } from './item-types'
 
@@ -41,15 +42,51 @@ describe('Registering an item type', () => {
         type: 'foo/bar',
         component: () => {}
       })
-    }, /reducer is mandatory/i)
+    }, /reduce is mandatory/i)
     assert.throws(() => {
       registerItemType({
         name: 'foo',
         type: 'foo/bar',
         component: () => {},
-        reducer: 'bar'
+        reduce: 'bar'
       })
-    }, /reducer must be a function/i)
+    }, /reduce must be a function/i)
+
+    it('throws if decorate is not a function', () => {
+      assert.throws(() => {
+        registerItemType({
+          name: 'foo',
+          type: 'foo/bar',
+          component: () => {},
+          reduce: () => {},
+          decorate: false
+        })
+      }, /decorate must be a function/i)
+    })
+
+    it('throws if sanitize is not a function', () => {
+      assert.throws(() => {
+        registerItemType({
+          name: 'foo',
+          type: 'foo/bar',
+          component: () => {},
+          reduce: () => {},
+          sanitize: false
+        })
+      }, /sanitize must be a function/i)
+    })
+
+    it('throws if validate is not a function', () => {
+      assert.throws(() => {
+        registerItemType({
+          name: 'foo',
+          type: 'foo/bar',
+          component: () => {},
+          reduce: () => {},
+          validate: false
+        })
+      }, /validate must be a function/i)
+    })
   })
 
   it('registers valid types as expected', () => {
@@ -69,13 +106,32 @@ describe('Registering an item type', () => {
     assertEqual(getDefinition('foo/bar').question, true)
   })
 
-  it('defaults augmenters to identity functions', () => {
+  it('defaults decorators to identity functions', () => {
     registerItemType(validDefinitionFixture())
-    assertEqual(typeof getDefinition('foo/bar').augmenter, 'function')
+    assertEqual(typeof getDefinition('foo/bar').decorate, 'function')
+  })
+
+  it('defaults sanitizers to identity functions', () => {
+    registerItemType(validDefinitionFixture())
+    assertEqual(typeof getDefinition('foo/bar').sanitize, 'function')
+  })
+
+  it('defaults validators to identity functions', () => {
+    registerItemType(validDefinitionFixture())
+    assertEqual(typeof getDefinition('foo/bar').validate, 'function')
+  })
+
+  it('throws if definition contains extra properties', () => {
+    const definition = Object.assign({}, validDefinitionFixture(), {bar: 'baz'})
+    assert.throws(() => {
+      registerItemType(definition)
+    }, /unknown property 'bar' in 'foo' definition/i)
   })
 })
 
 describe('Getting a type definition', () => {
+  afterEach(resetTypes)
+
   it('throws if type does not exist', () => {
     assert.throws(() => {
       getDefinition('unknown/type')
@@ -87,8 +143,19 @@ describe('Getting a type definition', () => {
     const def = getDefinition('foo/bar')
     assertEqual(def.type, 'foo/bar')
     assertEqual(typeof def.component, 'function')
-    assertEqual(typeof def.reducer, 'function')
-    assertEqual(typeof def.augmenter, 'function')
+    assertEqual(typeof def.reduce, 'function')
+    assertEqual(typeof def.decorate, 'function')
+  })
+})
+
+describe('Getting type decorates', () => {
+  afterEach(resetTypes)
+
+  it('sorts decorators by type', () => {
+    registerItemType(validDefinitionFixture())
+    const decorators = getDecorators()
+    assertEqual(Object.keys(decorators), ['foo/bar'])
+    assertEqual(typeof decorators['foo/bar'], 'function')
   })
 })
 
@@ -97,6 +164,6 @@ function validDefinitionFixture() {
     name: 'foo',
     type: 'foo/bar',
     component: () => {},
-    reducer: () => {}
+    reduce: () => {}
   }
 }

@@ -131,7 +131,8 @@ let ItemPanel = props =>
                 getDefinition(props.item.type).component,
                 {
                   item: props.item,
-                  onChange: () => alert('item detail update')
+                  onChange: subAction =>
+                    props.handleItemDetailUpdate(props.item.id, subAction)
                 }
               )}
             </ItemForm>
@@ -150,6 +151,7 @@ ItemPanel.propTypes = {
   handlePanelClick: T.func.isRequired,
   handleItemDeleteClick: T.func.isRequired,
   handleItemUpdate: T.func.isRequired,
+  handleItemDetailUpdate: T.func.isRequired,
   showModal: T.func.isRequired,
   connectDragSource: T.func.isRequired,
   isDragging: T.bool.isRequired,
@@ -217,6 +219,7 @@ export const StepEditor = props =>
           handleItemCreate={props.handleItemCreate}
           handleItemUpdate={props.handleItemUpdate}
           handleItemHintsUpdate={props.handleItemHintsUpdate}
+          handleItemDetailUpdate={props.handleItemDetailUpdate}
           showModal={props.showModal}
           {...props}
         />

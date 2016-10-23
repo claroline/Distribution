@@ -3,7 +3,7 @@ import {ITEM_CREATE} from './../actions'
 import {update} from './../util'
 import {notBlank, number, gteZero} from './../lib/validate'
 
-function reducer(item = {}, action) {
+function reduce(item = {}, action) {
   switch (action.type) {
     case ITEM_CREATE: {
       return update(open, {
@@ -15,13 +15,13 @@ function reducer(item = {}, action) {
   return item
 }
 
-function initialFormValues(item) {
-  return update(item, {
-    maxScore: {$set: item.score.max}
-  })
-}
+// function initialFormValues(item) {
+//   return update(item, {
+//     maxScore: {$set: item.score.max}
+//   })
+// }
 
-function validateFormValues(values) {
+function validate(values) {
   return {
     maxScore: notBlank(values.maxScore)
       || number(values.maxScore)
@@ -32,9 +32,7 @@ function validateFormValues(values) {
 export default {
   type: 'application/x.open+json',
   name: 'open',
-  question: true,
   component,
-  reducer,
-  initialFormValues,
-  validateFormValues
+  reduce,
+  validate
 }

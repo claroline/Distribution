@@ -1,4 +1,17 @@
 import invariant from 'invariant'
+import difference from 'lodash/difference'
+import mapValues from 'lodash/mapValues'
+
+const typeProperties = [
+  'name',
+  'type',
+  'question',
+  'component',
+  'reduce',
+  'decorate',
+  'sanitize',
+  'validate'
+]
 
 let registeredTypes = {}
 
@@ -12,9 +25,10 @@ export function registerItemType(definition) {
   definition.question = typeof definition.question !== 'undefined' ?
     definition.question :
     true
-  definition.augmenter = typeof definition.augmenter !== 'undefined' ?
-    definition.augmenter :
-    (item => item)
+
+  definition.decorate = getOptionalFunction('decorate')
+  definition.sanitize = getOptionalFunction('sanitize')
+  definition.validate = getOptionalFunction('validate')
 
   registeredTypes[definition.type] = definition
 }
@@ -31,17 +45,68 @@ export function getDefinition(type) {
   return registeredTypes[type]
 }
 
+export function getDecorators() {
+  return mapValues(registeredTypes, type => type.decorate)
+}
+
 // testing purposes only
 export function resetTypes() {
   registeredTypes = {}
 }
 
 function assertValidItemType(definition) {
-  invariant(definition.name, 'name is mandatory')
-  invariant(typeof definition.name === 'string', 'name must be a string')
-  invariant(definition.type, 'mime type is mandatory')
-  invariant(typeof definition.type === 'string', 'mime type must be a string')
-  invariant(definition.component, 'component is mandatory')
-  invariant(definition.reducer, 'reducer is mandatory')
-  invariant(typeof definition.reducer === 'function', 'reducer must be a function')
+  invariant(
+    definition.name,
+    makeError('name is mandatory', definition)
+  )
+  invariant(
+    typeof definition.name === 'string',
+    makeError('name must be a string', definition)
+  )
+  invariant(
+    definition.type,
+    makeError('mime type is mandatory', definition)
+  )
+  invariant(
+    typeof definition.type === 'string',
+    makeError('mime type must be a string', definition)
+  )
+  invariant(
+    definition.component,
+    makeError('component is mandatory', definition)
+  )
+  invariant(
+    definition.reduce,
+    makeError('reduce is mandatory', definition)
+  )
+  invariant(
+    typeof definition.reduce === 'function',
+    makeError('reduce must be a function', definition)
+  )
+
+  const extraProperties = difference(Object.keys(definition), typeProperties)
+
+  if (extraProperties.length > 0) {
+    invariant(
+      false,
+      makeError(`unknown property '${extraProperties[0]}'`, definition)
+    )
+  }
+}
+
+function getOptionalFunction(definition, name) {
+  if (typeof definition[name] !== 'undefined') {
+    invariant(
+      typeof definition[name] === 'function',
+      makeError(`${name} must be a function`, definition)
+    )
+    return definition[name]
+  }
+  return arg => arg
+}
+
+function makeError(message, definition) {
+  const name = definition.name ? definition.name.toString() : '[unnamed]'
+
+  return `${message} in '${name}' definition`
 }
