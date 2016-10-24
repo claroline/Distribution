@@ -22,7 +22,9 @@ class ChoiceItem extends Component {
             type={this.props.multiple ? 'checkbox' : 'radio'}
             checked={this.props.checked}
             readOnly={!this.props.fixedScore}
-            onChange={checked => this.props.onChange({_checked})}
+            onChange={e => this.props.onChange(
+              actions.updateChoice(this.props.id, 'checked', e.target.checked)
+            )}
           />
         </div>
         <div className="text-fields">
@@ -30,7 +32,9 @@ class ChoiceItem extends Component {
             id={`choice-${this.props.id}-data`}
             title={tex('response')}
             content={this.props.data}
-            onChange={data => this.props.onChange({data})}
+            onChange={data => this.props.onChange(
+              actions.updateChoice(this.props.id, 'data', data)
+            )}
           />
           {this.state.showFeedback &&
             <div className="feedback-container">
@@ -38,7 +42,9 @@ class ChoiceItem extends Component {
                 id={`choice-${this.props.id}-feedback`}
                 title={tex('feedback')}
                 content={this.props.feedback}
-                onChange={feedback => this.props.onChange({feedback})}
+                onChange={text => this.props.onChange(
+                  actions.updateChoice(this.props.id, 'feedback', text)
+                )}
               />
             </div>
           }
@@ -50,7 +56,9 @@ class ChoiceItem extends Component {
                 type="number"
                 className="form-control choice-score"
                 value={this.props.score}
-                onChange={e => this.props.onChange({score: e.target.value})}
+                onChange={e => this.props.onChange(
+                  actions.updateChoice(this.props.id, 'score', e.target.value)
+                )}
               />
             }
             <span
@@ -58,7 +66,9 @@ class ChoiceItem extends Component {
               aria-disabled={!this.props.deletable}
               title={t('delete')}
               className={classes('fa', 'fa-trash-o', {disabled: !this.props.deletable})}
-              onClick={() => this.props.deletable && this.props.onRemove()}
+              onClick={() => this.props.deletable && this.props.onChange(
+                actions.removeChoice(this.props.id)
+              )}
             />
             <span
               role="button"
@@ -81,7 +91,6 @@ ChoiceItem.propTypes = {
   fixedScore: T.bool.isRequired,
   checked: T.bool.isRequired,
   deletable: T.bool.isRequired,
-  onRemove: T.func.isRequired,
   onChange: T.func.isRequired
 }
 
@@ -106,7 +115,6 @@ const ChoiceItems = props =>
             checked={choice._checked}
             deletable={choice._deletable}
             onChange={props.onChange}
-            onRemove={() => alert('removing')}
           />
         </li>
       )}
@@ -114,7 +122,7 @@ const ChoiceItems = props =>
         <button
           type="button"
           className="btn btn-default"
-          onClick={() => alert('adding')}
+          onClick={() => props.onChange(actions.addChoice())}
         >
           <span className="fa fa-plus"/>
           {tex('add_choice')}
@@ -135,8 +143,7 @@ ChoiceItems.propTypes = {
       _feedback: T.string,
       _checked: T.bool.isRequired,
       _deletable: T.bool.isRequired,
-      _score: T.number.isRequired,
-      _errors: T.object.isRequired
+      _score: T.number.isRequired
     })).isRequired,
     _errors: T.object.isRequired
   }).isRequired,
@@ -162,9 +169,7 @@ export const Choice = props =>
       checked={props.item.score.type === SCORE_FIXED}
       label={tex('fixed_score')}
       onChange={checked => props.onChange(actions.updateProperty({
-        score: {
-          type: checked ? SCORE_FIXED : SCORE_SUM
-        }
+        score: {type: checked ? SCORE_FIXED : SCORE_SUM}
       }))}
     />
     {props.item.score.type === SCORE_FIXED &&

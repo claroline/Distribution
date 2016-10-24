@@ -1,6 +1,7 @@
 import merge from 'lodash/merge'
 import sanitize from './sanitizers'
 import validate from './validators'
+import {decorateItem} from './decorators'
 import {getIndex, makeId, makeItemPanelKey, update} from './util'
 import {getDefinition} from './item-types'
 import {
@@ -115,23 +116,23 @@ function reduceSteps(steps = {}, action = {}) {
 function reduceItems(items = {}, action = {}) {
   switch (action.type) {
     case ITEM_CREATE: {
-      let newItem = {
+      let newItem = decorateItem({
         id: action.id,
         type: action.itemType,
         content: '',
         hints: [],
-        score: {type: 'sum'},
         feedback: ''
-      }
-      newItem = getDefinition(action.itemType).reduce(newItem, action)
+      })
+      newItem = decorateItem(newItem)
+      const def = getDefinition(action.itemType)
+      newItem = def.reduce(newItem, action)
       return update(items, {[action.id]: {$set: newItem}})
     }
     case ITEM_DELETE:
       return update(items, {$delete: action.id})
     case ITEM_UPDATE: {
-      const updatedItem = merge({}, items[action.id], action.newProperties)
-      const errors = validate.item(updatedItem)
-      updatedItem._errors = errors
+      let updatedItem = merge({}, items[action.id], action.newProperties)
+      merge(updatedItem._errors, validate.item(updatedItem))
       return update(items, {[action.id]: {$set: updatedItem}})
     }
     case ITEM_HINTS_UPDATE:

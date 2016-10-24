@@ -64,18 +64,6 @@ describe('Registering an item type', () => {
       }, /decorate must be a function/i)
     })
 
-    it('throws if sanitize is not a function', () => {
-      assert.throws(() => {
-        registerItemType({
-          name: 'foo',
-          type: 'foo/bar',
-          component: () => {},
-          reduce: () => {},
-          sanitize: false
-        })
-      }, /sanitize must be a function/i)
-    })
-
     it('throws if validate is not a function', () => {
       assert.throws(() => {
         registerItemType({
@@ -109,11 +97,6 @@ describe('Registering an item type', () => {
   it('defaults decorators to identity functions', () => {
     registerItemType(validDefinitionFixture())
     assertEqual(typeof getDefinition('foo/bar').decorate, 'function')
-  })
-
-  it('defaults sanitizers to identity functions', () => {
-    registerItemType(validDefinitionFixture())
-    assertEqual(typeof getDefinition('foo/bar').sanitize, 'function')
   })
 
   it('defaults validators to identity functions', () => {

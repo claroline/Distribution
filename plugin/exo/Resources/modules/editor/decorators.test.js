@@ -1,7 +1,7 @@
 import freeze from 'deep-freeze'
 import {assertEqual} from './test-utils'
 import {TYPE_QUIZ, SCORE_SUM, SCORE_FIXED} from './enums'
-import {decorate} from './decorator'
+import {decorate} from './decorators'
 
 describe('Decorator', () => {
   it('adds editor state sections and convenience fields to quiz state', () => {

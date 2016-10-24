@@ -9,7 +9,6 @@ const typeProperties = [
   'component',
   'reduce',
   'decorate',
-  'sanitize',
   'validate'
 ]
 
@@ -27,7 +26,6 @@ export function registerItemType(definition) {
     true
 
   definition.decorate = getOptionalFunction('decorate')
-  definition.sanitize = getOptionalFunction('sanitize')
   definition.validate = getOptionalFunction('validate')
 
   registeredTypes[definition.type] = definition

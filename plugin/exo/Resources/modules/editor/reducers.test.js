@@ -9,7 +9,8 @@ import {
   TYPE_STEP,
   UPDATE_ADD,
   UPDATE_CHANGE,
-  UPDATE_REMOVE
+  UPDATE_REMOVE,
+  SCORE_SUM
 } from './enums'
 
 describe('Quiz reducer', () => {
@@ -176,7 +177,11 @@ describe('Items reducer', () => {
     assertEqual(keys.length, 1)
     assertEqual(typeof keys[0], 'string')
     assertEqual(items[keys[0]].type, 'foo/bar')
-    assertEqual(items[keys[0]].score, {type: 'sum'})
+    assertEqual(items[keys[0]].score, {
+      type: SCORE_SUM,
+      success: 1,
+      failure: 0
+    })
     assertEqual(items[keys[0]].foo, 'bar')
 
     resetTypes()

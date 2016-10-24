@@ -1,26 +1,46 @@
+import cloneDeep from 'lodash/cloneDeep'
 import merge from 'lodash/merge'
 import zipObject from 'lodash/zipObject'
 import {ITEM_CREATE} from './../actions'
+import {SCORE_FIXED} from './../enums'
 import {makeActionCreator, makeId} from './../util'
 import {tex} from './../lib/translate'
 import {Choice as component} from './choice.jsx'
 
 const UPDATE_PROP = 'UPDATE_PROP'
+const UPDATE_CHOICE = 'UPDATE_CHOICE'
+const ADD_CHOICE = 'ADD_CHOICE'
+const REMOVE_CHOICE = 'REMOVE_CHOICE'
 
 export const actions = {
-  updateProperty: makeActionCreator(UPDATE_PROP, 'property')
+  updateProperty: makeActionCreator(UPDATE_PROP, 'property'),
+  updateChoice: makeActionCreator(UPDATE_CHOICE, 'id', 'property', 'value'),
+  addChoice: makeActionCreator(ADD_CHOICE),
+  removeChoice: makeActionCreator(REMOVE_CHOICE, 'id')
 }
-
-
-// reduce
-
-// decorate
-
-// sanitize
 
 // validate
 
+function decorate(item) {
+  const solutionsById = zipObject(
+    item.solutions.map(solution => solution.id),
+    item.solutions
+  )
+  const choicesWithSolutions = item.choices.map(
+    choice => Object.assign({}, choice, {
+      _score: solutionsById[choice.id].score,
+      _feedback: solutionsById[choice.id].feedback,
+      _checked: false,
+      _deletable: item.solutions.length > 2
+    })
+  )
 
+  let decorated = Object.assign({}, item, {
+    choices: choicesWithSolutions
+  })
+
+  return setChoiceTicks(decorated)
+}
 
 function reduce(item = {}, action) {
   switch (action.type) {
@@ -55,35 +75,96 @@ function reduce(item = {}, action) {
       }))
     }
     case UPDATE_PROP: {
+      const newItem = cloneDeep(item)
+
       // mark as touched
 
-      return merge({}, item, action.property)
+      if (action.property.score) {
+        if (action.property.score.success) {
+          action.property.score.success = parseFloat(action.property.score.success)
+        }
+        if (action.property.score.failure) {
+          action.property.score.failure = parseFloat(action.property.score.failure)
+        }
+      }
+
+      setChoiceTicks(merge(newItem, action.property))
+
+      if (newItem.score.type === SCORE_FIXED) {
+        setScores(newItem, choice => choice._checked ? 1 : 0)
+      }
+
+      return newItem
+    }
+
+    case UPDATE_CHOICE: {
+      const newItem = cloneDeep(item)
+
+      // mark as touched
+
+      const choiceIndex = newItem.choices.findIndex(choice => choice.id === action.id)
+      const value = action.property === 'score' ? parseFloat(action.value) : action.value
+      const decoratedName = action.property === 'data' ? 'data' : `_${action.property}`
+
+      if (decoratedName === '_checked' && !item.multiple) {
+        newItem.choices.forEach(choice => choice._checked = false)
+      }
+
+      newItem.choices[choiceIndex][decoratedName] = value
+
+      if (newItem.score.type === SCORE_FIXED) {
+        setScores(newItem, choice => choice._checked ? 1 : 0)
+      }
+
+      if (action.property === 'score' || action.property === 'feedback') {
+        const solutionIndex = newItem.solutions.findIndex(
+          solution => solution.id === action.id
+        )
+        newItem.solutions[solutionIndex][action.property] = value
+      }
+
+      return setChoiceTicks(newItem)
+    }
+    case ADD_CHOICE: {
+      const newItem = cloneDeep(item)
+      const choiceId = makeId()
+      newItem.choices.push({
+        id: choiceId,
+        data: '',
+        _feedback: '',
+        _score: 0,
+        _checked: false,
+        _deletable: true
+      })
+      newItem.solutions.push({
+        id: choiceId,
+        feedback: '',
+        score: 0
+      })
+      const deletable = newItem.choices.length > 2
+      newItem.choices.forEach(choice => choice._deletable = deletable)
+      return newItem
+    }
+    case REMOVE_CHOICE: {
+      const newItem = cloneDeep(item)
+      const choiceIndex = newItem.choices.findIndex(choice => choice.id === action.id)
+      const solutionIndex = newItem.solutions.findIndex(solution => solution.id === action.id)
+      newItem.choices.splice(choiceIndex, 1)
+      newItem.solutions.splice(solutionIndex, 1)
+      newItem.choices.forEach(choice => choice._deletable = newItem.choices.length > 2)
+      return newItem
     }
   }
   return item
 }
 
-function decorate(item) {
-  const solutionsById = zipObject(
-    item.solutions.map(solution => solution.id),
-    item.solutions
-  )
-  const choicesWithSolutions = item.choices.map(
-    choice => Object.assign({}, choice, {
-      _score: solutionsById[choice.id].score,
-      _feedback: solutionsById[choice.id].feedback,
-      _checked: false,
-      _deletable: item.solutions.length > 2,
-      _errors: {},
-      _touched: {}
-    })
-  )
-
-  let decorated = Object.assign({}, item, {
-    choices: choicesWithSolutions
+function setScores(item, setter) {
+  const scores = {}
+  item.choices.forEach(choice => {
+    choice._score = setter(choice)
+    scores[choice.id] = choice._score
   })
-
-  return setChoiceTicks(decorated)
+  item.solutions.forEach(solution => solution.score = scores[solution.id])
 }
 
 function setChoiceTicks(item) {
@@ -108,10 +189,6 @@ function setChoiceTicks(item) {
   }
 
   return item
-}
-
-function sanitize() {
-
 }
 
 function validate(values) {
@@ -143,47 +220,11 @@ function validate(values) {
   return errors
 }
 
-// export function makeNewChoice() {
-//   return {
-//     id: makeId(),
-//     data: null,
-//     score: 0
-//   }
-// }
-//
-// export function choiceDeletablesSelector(state) {
-//   const formValues = state.form[ITEM_FORM].values
-//   const gtTwo = formValues.choices.length > 2
-//
-//   return formValues.choices.map(() => gtTwo)
-// }
-//
-// export function choiceTicksSelector(state) {
-//   const formValues = state.form[ITEM_FORM].values
-//
-//   if (formValues.multiple) {
-//     return formValues.choices.map(choice => choice.score > 0)
-//   }
-//
-//   let max = 0
-//   let maxId = null
-//
-//   formValues.choices.forEach(choice => {
-//     if (choice.score > max) {
-//       max = choice.score
-//       maxId = choice.id
-//     }
-//   })
-//
-//   return formValues.choices.map(choice => max > 0 && choice.id === maxId)
-// }
-
 export default {
   type: 'application/x.choice+json',
   name: 'choice',
   component,
   reduce,
   decorate,
-  sanitize,
   validate
 }

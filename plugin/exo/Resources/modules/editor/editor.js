@@ -6,7 +6,7 @@ import HTML5Backend from 'react-dnd-html5-backend'
 import {Editor as EditorComponent} from './components/editor.jsx'
 import {registerItemType, getDecorators} from './item-types'
 import {normalize} from './normalizer'
-import {decorate} from './decorator'
+import {decorate} from './decorators'
 import {createStore} from './store'
 import './style.css'
 

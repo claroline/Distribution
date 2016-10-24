@@ -1,15 +1,17 @@
 import React from 'react'
 import freeze from 'deep-freeze'
+import merge from 'lodash/merge'
 import {shallow, mount} from 'enzyme'
 import {spyConsole, renew, ensure} from './../test-utils'
-import {lastIds} from './../util'
-import {actions} from './../actions'
-import definition from './choice'
+import {SCORE_SUM, SCORE_FIXED} from './../enums'
+import {lastId, lastIds} from './../util'
+import {actions as actions} from './../actions'
+import definition, {actions as subActions} from './choice'
 
 describe('Choice reducer', () => {
   const reduce = definition.reduce
 
-  it('sets choice properties and decorates base question on creation', () => {
+  it('augments and decorates base question on creation', () => {
     const item = {
       id: '1',
       type: 'application/x.choice+json',
@@ -30,9 +32,7 @@ describe('Choice reducer', () => {
           _score: 1,
           _feedback: '',
           _checked: true,
-          _deletable: false,
-          _errors: {},
-          _touched: {}
+          _deletable: false
         },
         {
           id: ids[1],
@@ -40,9 +40,7 @@ describe('Choice reducer', () => {
           _score: 0,
           _feedback: '',
           _checked: false,
-          _deletable: false,
-          _errors: {},
-          _touched: {}
+          _deletable: false
         }
       ],
       solutions: [
@@ -58,6 +56,181 @@ describe('Choice reducer', () => {
         }
       ]
     })
+  })
+
+  it('updates base properties', () => {
+    const item = makeFixture()
+    const reduced = reduce(item, subActions.updateProperty({random: true}))
+    const expected = makeFixture({random: true})
+    ensure.equal(reduced, expected)
+  })
+
+  it('updates choice data', () => {
+    const item = makeFixture()
+    const reduced = reduce(item, subActions.updateChoice('2', 'data', 'Bar updated'))
+    const expected = makeFixture({choices: [{}, {data: 'Bar updated'}, {}]})
+    ensure.equal(reduced, expected)
+  })
+
+  it('updates score data', () => {
+    const item = makeFixture()
+    const reduced = reduce(item, subActions.updateChoice('1', 'score', 123))
+    const expected = makeFixture({
+      choices: [{_score: 123}, {}, {}],
+      solutions: [{score: 123}, {}, {}]
+    })
+    ensure.equal(reduced, expected)
+  })
+
+  it('sets choice ticks on multiple prop update', () => {
+    const item = makeFixture()
+    const reduced = reduce(item, subActions.updateProperty({multiple: true}))
+    const expected = makeFixture({
+      multiple: true,
+      choices: [{}, {}, {_checked: true}]
+    })
+    ensure.equal(reduced, expected)
+  })
+
+  it('sets choice ticks on score update', () => {
+    const item = makeFixture()
+    const reduced = reduce(item, subActions.updateChoice('1', 'score', 0))
+    const expected = makeFixture({
+      choices: [{_checked: false, _score: 0}, {}, {_checked: true}],
+      solutions: [{score: 0}, {}, {}]
+    })
+    ensure.equal(reduced, expected)
+  })
+
+  it('sets choice scores on score type update', () => {
+    const item = makeFixture()
+    const reduced = reduce(item, subActions.updateProperty({score: {type: SCORE_FIXED}}))
+    const expected = makeFixture({
+      choices: [{_score: 1}, {}, {_score: 0}],
+      solutions: [{score: 1}, {}, {score: 0}],
+      score: {type: SCORE_FIXED}
+    })
+    ensure.equal(reduced, expected)
+  })
+
+  it('sets choice scores and ticks on check in fixed mode (unique)', () => {
+    const item = makeFixture({score: {type: SCORE_FIXED}})
+    const reduced = reduce(item, subActions.updateChoice('2', 'checked', true))
+    const expected = makeFixture({
+      choices: [
+        {_score: 0, _checked: false},
+        {_score: 1, _checked: true},
+        {_score: 0}
+      ],
+      solutions: [
+        {score: 0},
+        {score: 1},
+        {score: 0}
+      ],
+      score: {type: SCORE_FIXED}
+    })
+    ensure.equal(reduced, expected)
+  })
+
+  it('sets choice scores and ticks on check in fixed mode (multiple)', () => {
+    const item = makeFixture({
+      multiple: true,
+      choices: [
+        {_score: 1},
+        {_score: 0},
+        {_score: 1, _checked: true}
+      ],
+      solutions: [
+        {score: 1},
+        {score: 0},
+        {score: 1}
+      ],
+      score: {type: SCORE_FIXED}
+    })
+    const reduced = reduce(item, subActions.updateChoice('2', 'checked', true))
+    const expected = makeFixture({
+      multiple: true,
+      choices: [
+        {_score: 1},
+        {_score: 1, _checked: true},
+        {_score: 1, _checked: true}
+      ],
+      solutions: [
+        {score: 1},
+        {score: 1},
+        {score: 1}
+      ],
+      score: {type: SCORE_FIXED}
+    })
+    ensure.equal(reduced, expected)
+  })
+
+  it('updates choices and solutions on choice add', () => {
+    const item = makeFixture()
+    const reduced = reduce(item, subActions.addChoice())
+    const expected = makeFixture({
+      choices: [{}, {}, {},
+        {
+          id: lastId(),
+          data: '',
+          _feedback: '',
+          _score: 0,
+          _checked: false,
+          _deletable: true
+        }
+      ],
+      solutions: [{}, {}, {},
+        {
+          id: lastId(),
+          feedback: '',
+          score: 0
+        }
+      ]
+    })
+    ensure.equal(reduced, expected)
+  })
+
+  it('updates choices and solutions on choice remove', () => {
+    const item = makeFixture()
+    const reduced = reduce(item, subActions.removeChoice('2'))
+    const expected = makeFixture({}, false)
+    expected.choices.splice(1, 1)
+    expected.solutions.splice(1, 1)
+    expected.choices.forEach(choice => choice._deletable = false)
+    ensure.equal(reduced, expected)
+  })
+
+  it('updates deletable flags on choice add', () => {
+    let item = makeFixture({}, false)
+    item.choices.splice(2, 1)
+    item.solutions.splice(2, 1)
+    item.choices.forEach(choice => choice._deletable = false)
+    item = freeze(item)
+    const reduced = reduce(item, subActions.addChoice())
+    const expected = makeFixture({
+      choices: [
+        {},
+        {},
+        {
+          id: lastId(),
+          data: '',
+          _feedback: '',
+          _score: 0,
+          _checked: false,
+          _deletable: true
+        }
+      ],
+      solutions: [
+        {},
+        {},
+        {
+          id: lastId(),
+          feedback: '',
+          score: 0
+        }
+      ]
+    })
+    ensure.equal(reduced, expected)
   })
 })
 
@@ -105,9 +278,7 @@ describe('Choice decorator', () => {
           _score: 1,
           _feedback: 'Feed foo',
           _checked: true,
-          _deletable: false,
-          _errors: {},
-          _touched: {}
+          _deletable: false
         },
         {
           id: '3',
@@ -115,9 +286,7 @@ describe('Choice decorator', () => {
           _score: 0,
           _feedback: 'Feed bar',
           _checked: false,
-          _deletable: false,
-          _errors: {},
-          _touched: {}
+          _deletable: false
         }
       ],
       solutions: [
@@ -260,8 +429,7 @@ describe('<Choice/>', () => {
               _score: 1,
               _feedback: 'Feed foo',
               _checked: false,
-              _deletable: false,
-              _errors: {}
+              _deletable: false
             },
             {
               id: '3',
@@ -269,8 +437,7 @@ describe('<Choice/>', () => {
               _score: 0,
               _feedback: 'Feed bar',
               _checked: true,
-              _deletable: false,
-              _errors: {}
+              _deletable: false
             }
           ],
           score: {
@@ -284,3 +451,63 @@ describe('<Choice/>', () => {
     ensure.propTypesOk()
   })
 })
+
+function makeFixture(props = {}, frozen = true) {
+  const fixture = merge({
+    id: '1',
+    type: 'application/x.choice+json',
+    content: 'Question?',
+    multiple: false,
+    random: false,
+    choices: [
+      {
+        id: '1',
+        data: 'Foo',
+        _score: 2,
+        _feedback: 'Feedback foo',
+        _checked: true,
+        _deletable: true
+      },
+      {
+        id: '2',
+        data: 'Bar',
+        _score: 0,
+        _feedback: 'Feedback bar',
+        _checked: false,
+        _deletable: true
+      },
+      {
+        id: '3',
+        data: 'Baz',
+        _score: 1.5,
+        _feedback: 'Feedback baz',
+        _checked: false,
+        _deletable: true
+      }
+    ],
+    solutions: [
+      {
+        id: '1',
+        score: 2,
+        feedback: 'Feedback foo'
+      },
+      {
+        id: '2',
+        score: 0,
+        feedback: 'Feedback bar'
+      },
+      {
+        id: '3',
+        score: 1.5,
+        feedback: 'Feedback baz'
+      }
+    ],
+    score: {
+      type: SCORE_SUM,
+      success: 1,
+      failure: 0
+    }
+  }, props)
+
+  return frozen ? freeze(fixture) : fixture
+}

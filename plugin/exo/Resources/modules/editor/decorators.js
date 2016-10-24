@@ -10,16 +10,20 @@ export function decorate(state, itemDecorators = {}) {
     steps: mapValues(state.steps, step => addFormFlags(step, true)),
     items: mapValues(state.items, item => {
       const subDecorator = itemDecorators[item.type] || (item => item)
-      const decorated = addFormFlags(addScoreProperties(item))
-      decorated._errors.score = {}
-      decorated._touched.score = {}
-      return subDecorator(decorated)
+      return decorateItem(item, subDecorator)
     }),
     currentObject: {
       id: state.quiz.id,
       type: TYPE_QUIZ
     }
   })
+}
+
+export function decorateItem(item, subDecorator = item => item) {
+  const decorated = addFormFlags(addScoreProperties(item))
+  decorated._errors.score = {}
+  decorated._touched.score = {}
+  return subDecorator(decorated)
 }
 
 function addFormFlags(object, withParams = false) {
