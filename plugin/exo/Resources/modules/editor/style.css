@@ -502,12 +502,16 @@ a[role=tab] {
   margin-left: 8px;
 }
 
-.popover{
+.quiz-editor .match-question-container .items-container #popover-place-holder{
+  position: relative;
+}
+
+.quiz-editor .match-question-container #popover-place-holder .popover{
   max-width: 450px !important;
   min-width: 250px !important;
 }
 
-
+/* GENERIC STYLES */
 
 .btn-relative{
   position: relative !important;

@@ -1,8 +1,10 @@
 import React, {Component} from 'react'
-import {tex} from './../lib/translate'
+import {tex, t} from './../lib/translate'
 import Popover from 'react-bootstrap/lib/Popover'
 import Button from 'react-bootstrap/lib/Button'
-
+import {
+  makeNewItem
+} from './match'
 
 /* global jsPlumb */
 
@@ -23,17 +25,21 @@ export function initJsPlumb() {
   })
 
   jsPlumb.registerConnectionTypes({
-    right: {
+    'valid': {
       paintStyle     : { strokeStyle: '#5CB85C', lineWidth: 5 },
       hoverPaintStyle: { strokeStyle: 'green',   lineWidth: 6 }
     },
-    wrong: {
+    'invalid': {
       paintStyle:      { strokeStyle: '#D9534F', lineWidth: 5 },
       hoverPaintStyle: { strokeStyle: 'red',     lineWidth: 6 }
     },
-    default: {
+    'selected': {
+      paintStyle:      { strokeStyle: '#006DCC', lineWidth: 6 },
+      hoverPaintStyle: { strokeStyle: '#006DCC', lineWidth: 6 }
+    },
+    'default': {
       paintStyle     : { strokeStyle: 'grey',    lineWidth: 5 },
-      hoverPaintStyle: { strokeStyle: '#FC0000', lineWidth: 6 }
+      hoverPaintStyle: { strokeStyle: 'orange', lineWidth: 6 }
     }
   })
 
@@ -55,29 +61,29 @@ export function initJsPlumb() {
 }
 
 function addConnections(data){
-
-
   for (let item of data) {
     jsPlumb.connect({
-      source: 'draggable_' + item.left,
-      target: 'droppable_' + item.right
+      source: 'draggable_' + item.firstId,
+      target: 'droppable_' + item.secondId
     })
+  }
+}
+
+function getPopoverPosition(e) {
+  const rect =  document.getElementById('popover-place-holder').getBoundingClientRect()
+  return {
+    left: 0 - rect.width / 2,
+    top: e.clientY - rect.top
   }
 }
 
 class MatchLinkPopover extends Component {
   constructor(props){
     super(props)
-    // here we should retrieve MatchLink
-    // - title (composed with source.text + ' - ' + target.text)
-    // - sourceId
-    // - targetId
-    // - score
-    // - feedback
 
     this.state = {
-      feedback:'',
-      score:1
+      feedback: null === this.props.solution || undefined === this.props.solution ? '' : this.props.solution.feedback,
+      score: null === this.props.solution || undefined === this.props.solution ? 0 : this.props.solution.score
     }
   }
 
@@ -92,11 +98,11 @@ class MatchLinkPopover extends Component {
   render() {
     return (
       <Popover
-        positionLeft={this.props.data.popover.left}
-        positionTop={this.props.data.popover.top}
-        placement="top"
-        id={this.props.data.popover.id}
-        title={this.props.data.popover.title}>
+        positionLeft={this.props.popover.left}
+        positionTop={this.props.popover.top}
+        placement="bottom"
+        id={this.props.popover.id}
+        title={this.props.popover.title}>
           <div className="form-group">
             <label>Score</label>
             <input className="form-control"  onChange={this.handleScoreChange.bind(this)} type="number" value={this.state.score}></input>
@@ -112,7 +118,7 @@ class MatchLinkPopover extends Component {
                 <Button onClick={() => this.props.handlePopoverClose()} title={'close'}>
                   <i className="fa fa-close"></i>
                 </Button>
-                <Button onClick={() => this.props.handleConnectionDelete(this.props.data.popover.jsPlumbConnection)} title={'delete'}>
+                <Button bsClass={'btn btn-danger'} onClick={() => this.props.handleConnectionDelete()} title={'delete'}>
                   <i className="fa fa-trash"></i>
                 </Button>
               </div>
@@ -123,7 +129,8 @@ class MatchLinkPopover extends Component {
   }
 }
 MatchLinkPopover.propTypes = {
-  data: React.PropTypes.object.isRequired,
+  popover: React.PropTypes.object.isRequired,
+  solution: React.PropTypes.object,
   handlePopoverClose: React.PropTypes.func.isRequired,
   handleConnectionDelete: React.PropTypes.func.isRequired
 }
@@ -139,10 +146,10 @@ class Match extends Component {
         visible:false,
         top:0,
         left:0,
-        title:'popover'
+        title:''
       },
-      penalty:props.penalty,
-      random: props.random
+      jsPlumbConnection: null,
+      solution: null // current solution that is edited
     }
   }
 
@@ -151,18 +158,22 @@ class Match extends Component {
     addConnections(this.props.solutions)
 
     // new connection created event
-    jsPlumb.bind('connection', function(connection, event) {
-      let rootNode = document.getElementById('popover-place-holder')
-      const rect = rootNode.getBoundingClientRect()
+    jsPlumb.bind('connection', function(data, event) {
+      data.connection.setType('selected')
+      const positions = getPopoverPosition(event)
+      const firstSetId = data.sourceId.replace('draggable_', '')
+      const secondSetId = data.targetId.replace('droppable_', '')
+      const title = this.props.firstSet.find(el => el.id === firstSetId).data + ' - ' + this.props.secondSet.find(el => el.id === secondSetId).data
       this.setState({
         popover: {
           visible: true,
-          id:connection.sourceId + '-' + connection.targetId,
-          left: 0, // layerX ? screenX ? any other one ? this position calculation is wrong !! event.clientX - rect.right
-          top: event.layerY - rect.top, // layerY ? screenY ? pageY ? any other one ? this position calculation is wrong !! event.clientY - rect.top
-          title:connection.sourceId + '-' + connection.targetId,
-          jsPlumbConnection: connection
-        }
+          id:data.sourceId + '-' + data.targetId,
+          left: positions.left,
+          top: positions.top,
+          title:title
+        },
+        jsPlumbConnection: data.connection,
+        solution: null
       })
     }.bind(this))
 
@@ -172,23 +183,31 @@ class Match extends Component {
 
     // configure connection
     jsPlumb.bind('click', function (connection, event) {
-      let rootNode = document.getElementById('popover-place-holder')
-      const rect = rootNode.getBoundingClientRect()
+      connection.setType('selected')
+      const positions = getPopoverPosition(event)
+      const firstSetId = connection.sourceId.replace('draggable_', '')
+      const secondSetId = connection.targetId.replace('droppable_', '')
+      const title = this.props.firstSet.find(el => el.id === firstSetId).data + ' - ' + this.props.secondSet.find(el => el.id === secondSetId).data
+      const solution = this.props.solutions.find(el => el.firstId === firstSetId && el.secondId === secondSetId)
       this.setState({
         popover: {
           visible: true,
-          id:connection.sourceId + '-' + connection.targetId,
-          left: 0, // layerX ? screenX ? any other one ? this position calculation is wrong !!
-          top: event.layerY - rect.top, // layerY ? screenY ? pageY ? any other one ? this position calculation is wrong !!
-          title:connection.sourceId + '-' + connection.targetId,
-          jsPlumbConnection: connection
-        }
+          id:firstSetId + '-' + secondSetId,
+          left: positions.left,
+          top: positions.top,
+          title:title
+        },
+        jsPlumbConnection: connection,
+        solution: solution
       })
     }.bind(this))
   }
 
-  removeConnection(connection){
-    jsPlumb.detach(connection)
+  removeConnection(){
+    jsPlumb.detach(this.state.jsPlumbConnection)
+    const firstSetId = this.state.jsPlumbConnection.sourceId.replace('draggable_', '')
+    const secondSetId = this.state.jsPlumbConnection.targetId.replace('droppable_', '')
+    // should also delete the corresponding solution in props
     this.setState({
       popover: {
         visible: false
@@ -199,7 +218,26 @@ class Match extends Component {
   }
 
   closePopover(){
-    this.setState({popover: {visible: !this.state.popover.visible}})
+    const list = jsPlumb.getConnections()
+    for(const conn of list){
+      conn.setType('default')
+    }
+    this.setState({popover: {visible: false}})
+  }
+  // click outside the popover but inside the question items row will close the popover
+  handlePopoverFocusOut(event){
+    const elem = event.target.closest('#popover-place-holder')
+    if(null === elem){
+      this.closePopover()
+    }
+  }
+
+  addFirstSetItem(){
+    const item = makeNewItem()
+  }
+
+  addSecondSetItem(){
+    const item = makeNewItem()
   }
 
   render() {
@@ -225,20 +263,27 @@ class Match extends Component {
           </label>
         </div>
         <hr/>
-        <div className="row">
+        <div className="row" onClick={this.handlePopoverFocusOut.bind(this)}>
           <div className="col-md-5 text-center">
             <div className="items-container">
-              <div className="item-flex-row text-center source" id="draggable_1">
+            {this.props.firstSet.map((item, index) =>
+              <div key={item.id} className="item-flex-row text-center source" id={'draggable_' + item.id}>
                 <div className="left-controls">
-                  <a role="button" className="fa fa-trash-o"/>
+                  <a role="button" title={t('delete')} className="fa fa-trash-o"/>
                 </div>
                 <div className="text-fields">
-                  <textarea className="form-control" value="Oh" />
+                  { item.type === 'text/html' &&
+                    <textarea className="form-control" value={item.data} />
+                  }
+                  { item.type === 'text/plain' &&
+                    <input className="form-control" value={item.data} />
+                  }
                 </div>
               </div>
+            )}
             </div>
             <hr/>
-            <Button>
+            <Button onClick={this.addFirstSetItem.bind(this)}>
               <i className="fa fa-plus"></i> &nbsp;Ajouter un item
             </Button>
           </div>
@@ -247,30 +292,31 @@ class Match extends Component {
               <MatchLinkPopover
                 handleConnectionDelete={this.removeConnection.bind(this)}
                 handlePopoverClose={this.closePopover.bind(this)}
-                data={this.state}/>
+                popover={this.state.popover}
+                solution={this.state.solution}
+                />
             }
           </div>
           <div className="col-md-5 text-center">
             <div className="items-container">
-              <div className="item-flex-row text-center target" id="droppable_1">
-                <div className="text-fields">
-                  <textarea className="form-control" value="My" />
+              {this.props.secondSet.map((item, index) =>
+                <div key={item.id} className="item-flex-row text-center target" id={'droppable_' + item.id}>
+                  <div className="text-fields">
+                    { item.type === 'text/html' &&
+                      <textarea className="form-control" value={item.data} />
+                    }
+                    { item.type === 'text/plain' &&
+                      <input className="form-control" value={item.data} />
+                    }
+                  </div>
+                  <div className="right-controls">
+                    <a role="button" className="fa fa-trash-o"/>
+                  </div>
                 </div>
-                <div className="right-controls">
-                  <a role="button" className="fa fa-trash-o"/>
-                </div>
-              </div>
-              <div className="item-flex-row target" id="droppable_2">
-                <div className="text-fields">
-                  <textarea className="form-control" value="God" />
-                </div>
-                <div className="right-controls">
-                  <a role="button" className="fa fa-trash-o"/>
-                </div>
-              </div>
+              )}
             </div>
             <hr/>
-            <Button>
+            <Button onClick={this.addSecondSetItem.bind(this)}>
               <i className="fa fa-plus"></i> &nbsp;Ajouter un item
             </Button>
           </div>
