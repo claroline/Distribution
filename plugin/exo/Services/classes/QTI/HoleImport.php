@@ -83,13 +83,13 @@ class HoleImport extends QtiImport
                 $expectedLength = $interaction->attributes->getNamedItem('expectedLength')->nodeValue;
                 $text = str_replace('textEntryInteraction', 'input ', $text);
                 $text = str_replace(
-                    'responseIdentifier="' . $responseIdentifier . '"',
-                    'id="' . $newId . '" class="blank" autocomplete="off" name="blank_' . $newId . '"',
+                    'responseIdentifier="'.$responseIdentifier.'"',
+                    'id="'.$newId.'" class="blank" autocomplete="off" name="blank_'.$newId.'"',
                     $text
                 );
                 $text = str_replace(
-                    'expectedLength="' . $expectedLength . '"',
-                    'size="' . $expectedLength . '" type="text" value="' . $correctResponse . '"',
+                    'expectedLength="'.$expectedLength.'"',
+                    'size="'.$expectedLength.'" type="text" value="'.$correctResponse.'"',
                     $text
                 );
                 $this->createHole($expectedLength, $responseIdentifier, false, $newId);
