@@ -65,6 +65,57 @@ class QuestionController
     }
 
     /**
+     * Imports questions in QTI format.
+     *
+     * @EXT\Route("/import", name="question_import_qti")
+     * @EXT\Method("POST")
+     *
+     * @param Request $request
+     *
+     *
+     */
+    public function importQTIAction(Request $request)
+    {
+
+    }
+
+    /**
+     * Exports questions in QTI format.
+     *
+     * @EXT\Route("/export", name="question_export_qti")
+     * @EXT\Method("POST")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function exportQTIAction(Request $request)
+    {
+        $errors = [];
+
+        $data = $this->decodeRequestData($request);
+        if (empty($data)) {
+            // Invalid or empty JSON data received
+            $errors[] = [
+                'path' => '',
+                'message' => 'Invalid JSON data',
+            ];
+        } else if (!is_array($data)) {
+            $errors[] = [
+                'path' => '',
+                'message' => 'Invalid data sent. Expected an array of Question IDs.',
+            ];
+        }
+
+        if (empty($errors)) {
+            // TODO : do the QTI export
+        } else {
+            // Invalid data received
+            return new JsonResponse($errors, 422);
+        }
+    }
+
+    /**
      * Gets detail information about a Question.
      *
      * @EXT\Route("/{id}", name="question_get")
