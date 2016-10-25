@@ -81,7 +81,7 @@ class DropController extends DropzoneBaseController
         $recordOrTransmitNotations = [];
 
         foreach ($dropzone->getDrops() as $dropList) {
-            $recordOrTransmitNotations = $dropManager->getRecordOrTransmitNotation($dropList);
+            $recordOrTransmitNotations += $dropManager->getRecordOrTransmitNotation($dropList);
         }
 
         $form_url = $this->createForm(new DocumentType(), null, ['documentType' => 'url']);
@@ -391,7 +391,7 @@ class DropController extends DropzoneBaseController
      * @ParamConverter("dropzone", class="InnovaCollecticielBundle:Dropzone", options={"id" = "resourceId"})
      * @Template()
      */
-    public function dropsAwaitingAction(Dropzone $dropzone, $page)
+    public function dropsAwaitingAction(Dropzone $dropzone, $page = 1)
     {
         $translator = $this->get('translator');
         $dropzoneManager = $this->get('innova.manager.dropzone_manager');
@@ -445,8 +445,8 @@ class DropController extends DropzoneBaseController
         $notationAppreciationDocuments = [];
 
         foreach ($dropzone->getDrops() as $drop) {
-            $notationDocuments = $dropManager->getNotationForDocuments($drop);
-            $recordOrTransmitNotations = $dropManager->getRecordOrTransmitNotation($drop);
+            $notationDocuments += $dropManager->getNotationForDocuments($drop);
+            $recordOrTransmitNotations += $dropManager->getRecordOrTransmitNotation($drop);
 
             // Nombre de commentaires non lus / Repo : Comment
             $nbCommentsPerUser = $commentRepo->countCommentNotRead($drop->getUser());
@@ -484,10 +484,10 @@ class DropController extends DropzoneBaseController
             $userToCommentCount[$dropUserId] = $nbCommentsPerUser;
             $userNbTextToRead[$dropUserId] = $nbTextToRead;
 
-            $notationCommentDocuments = $dropManager->getNotationCommentForDocuments($drop);
-            $notationQualityDocuments = $dropManager->getNotationQualityForDocuments($drop);
-            $notationAssessorDocuments = $dropManager->getNotationAssessorForDocuments($drop);
-            $notationAppreciationDocuments = $dropManager->getAppreciationForDocuments($drop);
+            $notationCommentDocuments += $dropManager->getNotationCommentForDocuments($drop);
+            $notationQualityDocuments += $dropManager->getNotationQualityForDocuments($drop);
+            $notationAssessorDocuments += $dropManager->getNotationAssessorForDocuments($drop);
+            $notationAppreciationDocuments += $dropManager->getAppreciationForDocuments($drop);
         }
 
         // Calcul du nombre de documents sans accusé de réception

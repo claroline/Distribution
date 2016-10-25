@@ -96,6 +96,8 @@ export default class PathEditCtrl extends PathBaseCtrl {
           this.published = true
           this.unsaved   = false
 
+          this.historyService.clear()
+
           if (this.path.steps[0] !== 'undefined') {
             this.pathService.goTo(this.path.steps[0])
           }
