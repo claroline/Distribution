@@ -1,7 +1,8 @@
 {
   "webpack": {
     "entry": {
-      "app": "app"
+      "exercise": "exercise",
+      "bank": "bank/index"
     }
   }
 }

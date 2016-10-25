@@ -386,7 +386,7 @@ score_max_help: Laissez cette valeur à 0 si la notation est manuelle
 score_false_label: Résultat incorrect
 score_right_label: Résultat correct
 score_right_label_matching: Score de l'association
-search: Rechercher un document
+search: Rechercher
 search_question: Chercher des questions
 search_user_paper: Rechercher les copies de l'utilisateur
 see_shared_with: Question partagée avec des utilisateurs
