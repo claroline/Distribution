@@ -1,44 +1,34 @@
 import mapValues from 'lodash/mapValues'
-import merge from 'lodash/merge'
-import {TYPE_QUIZ, SCORE_SUM} from './enums'
+import cloneDeep from 'lodash/cloneDeep'
+import defaultsDeep from 'lodash/defaultsDeep'
+import defaults from './defaults'
+import {TYPE_QUIZ} from './enums'
 
-// augment normalized quiz data with editor state attributes
+// augment normalized quiz data with editor state attributes and default values
 // (can be passed an array of sub-decorators for each item mime type)
 export function decorate(state, itemDecorators = {}) {
-  return Object.assign({}, state, {
-    quiz: addFormFlags(state.quiz, true),
-    steps: mapValues(state.steps, step => addFormFlags(step, true)),
-    items: mapValues(state.items, item => {
+  const newState = cloneDeep(state)
+
+  return Object.assign(newState, {
+    quiz: defaultsDeep(newState.quiz, defaults.quiz),
+    steps: mapValues(newState.steps, step => defaultsDeep(step, defaults.step)),
+    items: mapValues(newState.items, item => {
       const subDecorator = itemDecorators[item.type] || (item => item)
       return decorateItem(item, subDecorator)
     }),
     currentObject: {
-      id: state.quiz.id,
+      id: newState.quiz.id,
       type: TYPE_QUIZ
     }
   })
 }
 
 export function decorateItem(item, subDecorator = item => item) {
-  const decorated = addFormFlags(addScoreProperties(item))
-  decorated._errors.score = {}
-  decorated._touched.score = {}
+  let decorated = defaultsDeep(item, defaults.item)
+
+  decorated.hints = decorated.hints.map(hint =>
+    defaultsDeep(hint, defaults.hint)
+  )
+
   return subDecorator(decorated)
-}
-
-function addFormFlags(object, withParams = false) {
-  return Object.assign({}, object, {
-    _errors: withParams ? {parameters: {}}: {},
-    _touched: withParams ? {parameters: {}}: {}
-  })
-}
-
-function addScoreProperties(item) {
-  return merge({
-    score: {
-      type: SCORE_SUM,
-      success: 1,
-      failure: 0
-    }
-  }, item)
 }

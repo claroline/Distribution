@@ -73,7 +73,15 @@ describe('Step reducer', () => {
     const newState = reducers.steps(steps, actions.createStep())
     assertEqual(newState, {
       '1': {id: '1', items: [], parameters: {}},
-      [lastId()]: {id: lastId(), items: [], parameters: {}}
+      [lastId()]: {
+        id: lastId(),
+        title: '',
+        description: '',
+        items: [],
+        parameters: {
+          maxAttempts: 0
+        }
+      }
     })
   })
 

@@ -1,6 +1,7 @@
 import React, {Component, PropTypes as T} from 'react'
 import Panel from 'react-bootstrap/lib/Panel'
 import PanelGroup from 'react-bootstrap/lib/PanelGroup'
+import get from 'lodash/get'
 import classes from 'classnames'
 import {t, tex} from './../lib/translate'
 import {FormGroup} from './form/form-group.jsx'
@@ -38,7 +39,7 @@ const Properties = props =>
     <FormGroup
       controlId="quiz-title"
       label={t('title')}
-      error={props.errors.title}
+      error={get(props, 'errors.title')}
     >
       <input
         id="quiz-title"
@@ -101,7 +102,7 @@ const StepPicking = props =>
           controlId="quiz-pick"
           label={tex('number_steps_draw')}
           help={tex('number_steps_draw_help')}
-          error={props.errors.parameters.pick}
+          error={get(props, 'errors.parameters.pick')}
         >
           <input
             id="quiz-pick"
@@ -130,7 +131,7 @@ const Signing = props =>
       controlId="quiz-duration"
       label={tex('duration')}
       help={tex('duration_help')}
-      error={props.errors.parameters.duration}
+      error={get(props, 'errors.parameters.duration')}
     >
       <input
         id="quiz-duration"
@@ -145,7 +146,7 @@ const Signing = props =>
       controlId="quiz-maxAttempts"
       label={tex('maximum_attempts')}
       help={tex('number_max_attempts_help')}
-      error={props.errors.parameters.maxAttempts}
+      error={get(props, 'errors.parameters.maxAttempts')}
     >
       <input
         id="quiz-maxAttempts"
@@ -190,7 +191,7 @@ const Correction = props =>
           <Date
             id="quiz-correctionDate"
             name="quiz-correctionDate"
-            value={props.parameters.correctionDate}
+            value={props.parameters.correctionDate || ''}
             onChange={date => props.onChange(param('correctionDate', date))}
           />
         </FormGroup>
@@ -292,9 +293,6 @@ QuizEditor.propTypes = {
       showScoreAt: T.string.isRequired,
       showStatistics: T.bool.isRequired,
       showFullCorrection: T.bool.isRequired
-    }).isRequired,
-    _errors: T.shape({
-      parameters: T.object.isRequired
     }).isRequired
   }).isRequired,
   updateProperties: T.func.isRequired,

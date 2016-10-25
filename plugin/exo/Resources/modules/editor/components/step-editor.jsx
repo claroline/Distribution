@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {PropTypes as T} from 'react'
 import classes from 'classnames'
 import Panel from 'react-bootstrap/lib/Panel'
 import PanelGroup from 'react-bootstrap/lib/PanelGroup'
@@ -9,8 +9,6 @@ import {getDefinition} from './../item-types'
 import {StepForm} from './step-form.jsx'
 import {ItemForm} from './item-form.jsx'
 import {MODAL_DELETE_CONFIRM, MODAL_ADD_ITEM} from './modals.jsx'
-
-const T = React.PropTypes
 
 const ParametersHeader = props =>
   <div onClick={props.onClick} className="panel-title">
@@ -236,8 +234,8 @@ export const StepEditor = props =>
 StepEditor.propTypes = {
   step: T.shape({
     id: T.string.isRequired,
-    title: T.string,
-    description: T.string,
+    title: T.string.isRequired,
+    description: T.string.isRequired,
     parameters: T.shape({
       maxAttempts: T.number.isRequired
     }).isRequired,

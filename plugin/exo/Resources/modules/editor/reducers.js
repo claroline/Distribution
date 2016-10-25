@@ -79,7 +79,15 @@ function reduceQuiz(quiz = initialQuizState(), action = {}) {
 function reduceSteps(steps = {}, action = {}) {
   switch (action.type) {
     case STEP_CREATE: {
-      const newStep = {id: action.id, items: [], parameters: {}}
+      const newStep = {
+        id: action.id,
+        title: '',
+        description: '',
+        items: [],
+        parameters: {
+          maxAttempts: 0
+        }
+      }
       return update(steps, {[action.id]: {$set: newStep}})
     }
     case STEP_DELETE:

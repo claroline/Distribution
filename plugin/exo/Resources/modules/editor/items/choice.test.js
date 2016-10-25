@@ -630,9 +630,10 @@ describe('<Choice/>', () => {
             }
           ],
           score: {
-            type: 'sum'
-          },
-          _errors: {}
+            type: 'sum',
+            success: 1,
+            failure: 0
+          }
         }}
         onChange={() => {}}
       />

@@ -1,4 +1,5 @@
 import React, {Component, PropTypes as T} from 'react'
+import get from 'lodash/get'
 import {t, tex} from './../lib/translate'
 import {notBlank} from './../lib/validate'
 import {makeId} from './../util'
@@ -58,10 +59,10 @@ const Metadata = props =>
 Metadata.propTypes = {
   item: T.shape({
     id: T.string.isRequired,
-    title: T.string,
-    description: T.string,
-    instruction: T.string,
-    info: T.string
+    title: T.string.isRequired,
+    description: T.string.isRequired,
+    instruction: T.string.isRequired,
+    info: T.string.isRequired
   }).isRequired,
   onChange: T.func.isRequired
 }
@@ -160,7 +161,7 @@ export class ItemForm extends Component {
         <FormGroup
           controlId={`item-${this.props.id}-content`}
           label={tex('question')}
-          error={this.props.item._errors.content}
+          error={get(this.props.item, '_errors.content')}
         >
           <Textarea
             id={`item-${this.props.id}-content`}
@@ -214,7 +215,7 @@ ItemForm.propTypes = {
     content: T.string.isRequired,
     hints: T.arrayOf(T.object).isRequired,
     feedback: T.string.isRequired,
-    _errors: T.object.isRequired
+    _errors: T.object
   }).isRequired,
   children: T.oneOfType([T.object, T.array]).isRequired,
   onChange: T.func.isRequired,

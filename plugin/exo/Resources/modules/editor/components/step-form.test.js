@@ -12,10 +12,7 @@ describe('<StepForm/>', () => {
 
   it('has required props', () => {
     shallow(
-      <StepForm
-        parameters={{}}
-        _errors={{parameters: {}}}
-      />
+      <StepForm parameters={{}}/>
     )
     ensure.missingProps('StepForm', [
       'id',
@@ -34,7 +31,6 @@ describe('<StepForm/>', () => {
         description={{}}
         parameters={{maxAttempts: false}}
         onChange="foo"
-        _errors={{parameters: {}}}
       />
     )
     ensure.invalidProps('StepForm', [
@@ -56,7 +52,6 @@ describe('<StepForm/>', () => {
         description="DESC"
         parameters={{maxAttempts: 3}}
         onChange={value => updatedValue = value}
-       _errors={{parameters: {}}}
       />
     )
 

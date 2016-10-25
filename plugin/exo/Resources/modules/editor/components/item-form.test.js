@@ -51,8 +51,7 @@ describe('<ItemForm/>', () => {
           info: 'INFO',
           content: 'CONTENT',
           hints: [],
-          feedback: 'FEEDBACK',
-          _errors: {}
+          feedback: 'FEEDBACK'
         }}
         onChange={newValue => updatedValue = newValue}
         onHintsChange={() => {}}

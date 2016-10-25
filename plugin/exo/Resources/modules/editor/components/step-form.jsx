@@ -1,4 +1,5 @@
 import React, {PropTypes as T} from 'react'
+import get from 'lodash/get'
 import {t, tex} from './../lib/translate'
 import {FormGroup} from './form/form-group.jsx'
 import {Textarea} from './form/textarea.jsx'
@@ -31,7 +32,7 @@ export const StepForm = props => {
       <FormGroup
         controlId={`step-${props.id}-maxAttempts`}
         label={tex('maximum_tries')}
-        error={props._errors.parameters.maxAttempts}
+        error={get(props, '_errors.parameters.maxAttempts')}
       >
         <input
           id={`step-${props.id}-maxAttempts`}
@@ -52,9 +53,7 @@ StepForm.propTypes = {
   description: T.string.isRequired,
   parameters: T.shape({
     maxAttempts: T.number.isRequired
-  }),
-  _errors: T.shape({
-    parameters: T.object.isRequired
-  }),
-  onChange: T.func.isRequired
+  }).isRequired,
+  onChange: T.func.isRequired,
+  _errors: T.object
 }

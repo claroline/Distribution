@@ -13,14 +13,7 @@ describe('quiz validator', () => {
         maxAttempts: 3
       }
     }
-    assertEqual(validate.quiz(quiz), {
-      title: undefined,
-      parameters: {
-        pick: undefined,
-        duration: undefined,
-        maxAttempts: undefined
-      }
-    })
+    assertEqual(validate.quiz(quiz), {})
   })
 
   it('returns validation errors if invalid', () => {
@@ -50,11 +43,7 @@ describe('step validator', () => {
         maxAttempts: 3
       }
     }
-    assertEqual(validate.step(step), {
-      parameters: {
-        maxAttempts: undefined
-      }
-    })
+    assertEqual(validate.step(step), {})
   })
 
   it('returns validation errors if invalid', () => {

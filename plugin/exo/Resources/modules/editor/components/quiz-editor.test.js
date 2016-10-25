@@ -90,9 +90,6 @@ function fixture() {
       showScoreAt: 'never',
       showStatistics: true,
       showFullCorrection: false
-    },
-    _errors: {
-      parameters: {}
     }
   }
 }

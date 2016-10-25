@@ -1,4 +1,5 @@
 import React, {Component, PropTypes as T} from 'react'
+import get from 'lodash/get'
 import classes from 'classnames'
 import {t, tex} from './../lib/translate'
 import {SCORE_SUM, SCORE_FIXED} from './../enums'
@@ -96,7 +97,7 @@ ChoiceItem.propTypes = {
 
 const ChoiceItems = props =>
   <div>
-    {props.item._errors.choices &&
+    {get(props.item, '_errors.choices') &&
       <div className="error-text">
         <span className="fa fa-warning"></span>
         {props.item._errors.choices}
@@ -145,7 +146,7 @@ ChoiceItems.propTypes = {
       _deletable: T.bool.isRequired,
       _score: T.number.isRequired
     })).isRequired,
-    _errors: T.object.isRequired
+    _errors: T.object,
   }).isRequired,
   onChange: T.func.isRequired
 }
@@ -177,7 +178,7 @@ export const Choice = props =>
         <FormGroup
           controlId={`item-${props.item.id}-fixedSuccess`}
           label={tex('fixed_score_on_success')}
-          error={props.item._errors.score.success}
+          error={get(props.item, '._errors.score.success')}
         >
           <input
             id={`item-${props.item.id}-fixedSuccess`}
@@ -193,7 +194,7 @@ export const Choice = props =>
         <FormGroup
           controlId={`item-${props.item.id}-fixedFailure`}
           label={tex('fixed_score_on_failure')}
-          error={props.item._errors.failure}
+          error={get(props.item, '._errors.failure')}
         >
           <input
             id={`item-${props.item.id}-fixedFailure`}
@@ -218,11 +219,10 @@ Choice.propTypes = {
     random: T.bool.isRequired,
     score: T.shape({
       type: T.string.isRequired,
-      success: T.number,
-      failure: T.number
+      success: T.number.isRequired,
+      failure: T.number.isRequired
     }),
-    choices: T.arrayOf(T.object).isRequired,
-    _errors: T.object.isRequired,
+    choices: T.arrayOf(T.object).isRequired
   }).isRequired,
   onChange: T.func.isRequired
 }

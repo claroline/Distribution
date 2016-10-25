@@ -3,23 +3,31 @@ import {getDefinition} from './item-types'
 
 function validateQuiz(quiz) {
   const parameters = quiz.parameters
+  const errors = {}
+  const paramErrors = {}
 
-  return {
-    title: notBlank(quiz.title),
-    parameters: {
-      pick: chain(parameters.pick, [notBlank, number, gteZero]),
-      duration: chain(parameters.duration, [notBlank, number, gteZero]),
-      maxAttempts: chain(parameters.maxAttempts, [notBlank, number, gteZero])
-    }
+  setIfError(errors, 'title', notBlank(quiz.title))
+  setIfError(paramErrors, 'pick', chain(parameters.pick, [notBlank, number, gteZero]))
+  setIfError(paramErrors, 'duration', chain(parameters.duration, [notBlank, number, gteZero]))
+  setIfError(paramErrors, 'maxAttempts', chain(parameters.maxAttempts, [notBlank, number, gteZero]))
+
+  if (Object.keys(paramErrors).length > 0) {
+    errors.parameters = paramErrors
   }
+
+  return errors
 }
 
 function validateStep(step) {
-  return {
-    parameters: {
-      maxAttempts: chain(step.parameters.maxAttempts, [notBlank, number, gteZero])
-    }
-  }
+  const errors = {}
+
+  setIfError(
+    errors,
+    'parameters.maxAttempts',
+    chain(step.parameters.maxAttempts, [notBlank, number, gteZero])
+  )
+
+  return errors
 }
 
 function validateItem(item) {

@@ -8,7 +8,7 @@ The whole quiz data is processed to make it suitable for edition:
 3. Decorate it:
    - Add sections to hold editor state
    - Add convenience properties where selectors wouldn't be practical
-   - Store UI flags (e.g. errors/touched attributes for forms)
+   - Add UI flags and defaults for missing values
 4. Initialize the store with the resulting data structure
 
 Rendering

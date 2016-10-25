@@ -1,75 +1,37 @@
 import freeze from 'deep-freeze'
 import {assertEqual} from './test-utils'
-import {TYPE_QUIZ, SCORE_SUM, SCORE_FIXED} from './enums'
 import {decorate} from './decorators'
+import {
+  TYPE_QUIZ,
+  QUIZ_SUMMATIVE,
+  SHUFFLE_NEVER,
+  SHOW_CORRECTION_AT_VALIDATION,
+  SHOW_SCORE_AT_CORRECTION,
+  SCORE_SUM,
+  SCORE_FIXED
+} from './enums'
 
 describe('Decorator', () => {
-  it('adds editor state sections and convenience fields to quiz state', () => {
+  it('adds editor state sections and default values to quiz state', () => {
     const state = freeze({
       quiz: {
         id: '1',
-        steps: ['a', 'b']
+        steps: ['a', 'b'],
+        parameters: {
+          showMetadata: false
+        }
       },
       steps: {
         a: {
           id: 'a',
+          title: 'Step A',
           items: ['x', 'y']
         },
         b: {
           id: 'b',
-          items: ['z']
-        }
-      },
-      items: {
-        x: {
-          id: 'x',
-          type: 'foo/bar'
-        },
-        y: {
-          id: 'y',
-          type: 'bar/quz',
-          score: {
-            type: SCORE_FIXED,
-            success: 5,
-            failure: 2
-          }
-        },
-        z: {
-          id: 'z',
-          type: 'text/html'
-        }
-      }
-    })
-    assertEqual(decorate(state), {
-      quiz: {
-        id: '1',
-        steps: ['a', 'b'],
-        _errors: {
-          parameters: {}
-        },
-        _touched: {
-          parameters: {}
-        }
-      },
-      steps: {
-        a: {
-          id: 'a',
-          items: ['x', 'y'],
-          _errors: {
-            parameters: {}
-          },
-          _touched: {
-            parameters: {}
-          }
-        },
-        b: {
-          id: 'b',
           items: ['z'],
-          _errors: {
-            parameters: {}
-          },
-          _touched: {
-            parameters: {}
+          parameters: {
+            maxAttempts: 4
           }
         }
       },
@@ -77,17 +39,10 @@ describe('Decorator', () => {
         x: {
           id: 'x',
           type: 'foo/bar',
-          score: {
-            type: SCORE_SUM,
-            success: 1,
-            failure: 0
-          },
-          _errors: {
-            score: {}
-          },
-          _touched: {
-            score: {}
-          }
+          hints: [
+            {value: 'Foo'},
+            {value: 'Bar'}
+          ]
         },
         y: {
           id: 'y',
@@ -96,27 +51,110 @@ describe('Decorator', () => {
             type: SCORE_FIXED,
             success: 5,
             failure: 2
-          },
-          _errors: {
-            score: {}
-          },
-          _touched: {
-            score: {}
+          }
+        },
+        z: {
+          id: 'z',
+          title: 'Item Z',
+          type: 'text/html'
+        }
+      }
+    })
+    assertEqual(decorate(state), {
+      quiz: {
+        id: '1',
+        description: '',
+        steps: ['a', 'b'],
+        parameters: {
+          type: QUIZ_SUMMATIVE,
+          showMetadata: false,
+          randomOrder: SHUFFLE_NEVER,
+          randomPick: SHUFFLE_NEVER,
+          pick: 0,
+          duration: 0,
+          maxAttempts: 0,
+          interruptible: false,
+          showCorrectionAt: SHOW_CORRECTION_AT_VALIDATION,
+          correctionDate: '',
+          anonymous: false,
+          showScoreAt: SHOW_SCORE_AT_CORRECTION,
+          showStatistics: false,
+          showFullCorrection: true
+        }
+      },
+      steps: {
+        a: {
+          id: 'a',
+          items: ['x', 'y'],
+          title: 'Step A',
+          description: '',
+          parameters: {
+            maxAttempts: 0
+          }
+        },
+        b: {
+          id: 'b',
+          items: ['z'],
+          title: '',
+          description: '',
+          parameters: {
+            maxAttempts: 4
+          }
+        }
+      },
+      items: {
+        x: {
+          id: 'x',
+          type: 'foo/bar',
+          title: '',
+          description: '',
+          instruction: '',
+          info: '',
+          hints: [
+            {
+              value: 'Foo',
+              penalty: 0
+            },
+            {
+              value: 'Bar',
+              penalty: 0
+            }
+          ],
+          feedback: '',
+          score: {
+            type: SCORE_SUM,
+            success: 1,
+            failure: 0
+          }
+        },
+        y: {
+          id: 'y',
+          title: '',
+          description: '',
+          instruction: '',
+          info: '',
+          hints: [],
+          feedback: '',
+          type: 'bar/quz',
+          score: {
+            type: SCORE_FIXED,
+            success: 5,
+            failure: 2
           }
         },
         z: {
           id: 'z',
           type: 'text/html',
+          title: 'Item Z',
+          description: '',
+          instruction: '',
+          info: '',
+          hints: [],
+          feedback: '',
           score: {
             type: SCORE_SUM,
             success: 1,
             failure: 0
-          },
-          _errors: {
-            score: {}
-          },
-          _touched: {
-            score: {}
           }
         }
       },
@@ -157,22 +195,32 @@ describe('Decorator', () => {
       quiz: {
         id: '1',
         steps: ['a'],
-        _errors: {
-          parameters: {}
-        },
-        _touched: {
-          parameters: {}
+        description: '',
+        parameters: {
+          type: QUIZ_SUMMATIVE,
+          showMetadata: true,
+          randomOrder: SHUFFLE_NEVER,
+          randomPick: SHUFFLE_NEVER,
+          pick: 0,
+          duration: 0,
+          maxAttempts: 0,
+          interruptible: false,
+          showCorrectionAt: SHOW_CORRECTION_AT_VALIDATION,
+          correctionDate: '',
+          anonymous: false,
+          showScoreAt: SHOW_SCORE_AT_CORRECTION,
+          showStatistics: false,
+          showFullCorrection: true
         }
       },
       steps: {
         a: {
           id: 'a',
+          title: '',
+          description: '',
           items: ['x'],
-          _errors: {
-            parameters: {}
-          },
-          _touched: {
-            parameters: {}
+          parameters: {
+            maxAttempts: 0
           }
         }
       },
@@ -180,18 +228,18 @@ describe('Decorator', () => {
         x: {
           id: 'x',
           type: 'application/foo.bar+json',
+          title: '',
+          description: '',
+          instruction: '',
+          info: '',
+          hints: [],
+          feedback: '',
           score: {
             type: SCORE_SUM,
             success: 1,
             failure: 0
           },
-          _foo: 'x-bar',
-          _errors: {
-            score: {}
-          },
-          _touched: {
-            score: {}
-          }
+          _foo: 'x-bar'
         }
       },
       currentObject: {
