@@ -7,7 +7,7 @@
 
 {% block javascripts_header %}
     {{ parent() }}
-    {% include 'ClarolineCoreBundle:Layout:javascripts.html.twig' %}
+    <script type="text/javascript" src='{{ asset('packages/jquery/dist/jquery.min.js') }}'></script>
 {% endblock %}
 
 {% block layout %}
@@ -24,5 +24,6 @@
 {% endblock %}
 
 {% block javascripts %}
+    {{ parent() }}
     <script type="text/javascript" src='{{ asset('bundles/clarolinecore/js/iframe/iframe.js') }}'></script>
 {% endblock %}

@@ -27,13 +27,13 @@ use Symfony\Component\HttpFoundation\Request;
 class MediacenterController extends Controller
 {
     /**
-     * @Route("/update", name="inwicast_mediacenter_update")
+     * @Route("/admin/configure", name="inwicast_mediacenter_configure")
      * @Method({"GET", "POST"})
      * @Template("InwicastClarolinePluginBundle:Mediacenter:form.html.twig")
      * @param Request $request
      * @return array
      */
-    public function updateAction(Request $request)
+    public function configureAction(Request $request)
     {
         $this->checkAdmin();
         $mediacenterManager = $this->getMediacenterManager();
@@ -55,7 +55,7 @@ class MediacenterController extends Controller
     }
 
     /**
-     * @Route("/update/success", name="inwicast_mediacenter_update_success")
+     * @Route("/admin/configure/success", name="inwicast_mediacenter_configure_success")
      * @Method({"GET"})
      * @Template()
      *
