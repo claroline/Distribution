@@ -2,7 +2,7 @@ import React, {Component, PropTypes as T} from 'react'
 import {t, tex} from './../lib/translate'
 import {notBlank} from './../lib/validate'
 import {makeId} from './../util'
-import {HINT_ADD, HINT_UPDATE, HINT_REMOVE} from './../actions'
+import {HINT_ADD, HINT_CHANGE, HINT_REMOVE} from './../actions'
 import {FormGroup} from './form/form-group.jsx'
 import {Textarea} from './form/textarea.jsx'
 import {SubSection} from './form/sub-section.jsx'
@@ -73,7 +73,7 @@ const Hint = props =>
         id={`hint-${props.id}`}
         title={tex('hint')}
         content={props.data}
-        onChange={data => props.onChange(HINT_UPDATE, {id: props.id, data})}
+        onChange={data => props.onChange(HINT_CHANGE, {id: props.id, data})}
       />
     </div>
     <input
@@ -86,7 +86,7 @@ const Hint = props =>
       title={tex('penalty')}
       aria-label={tex('penalty')}
       onChange={e => props.onChange(
-        HINT_UPDATE,
+        HINT_CHANGE,
         {id: props.id, penalty: e.target.value}
       )}
     />

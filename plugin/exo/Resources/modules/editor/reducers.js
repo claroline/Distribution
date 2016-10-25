@@ -155,6 +155,11 @@ function reduceItems(items = {}, action = {}) {
         case HINT_CHANGE: {
           const hints = items[action.itemId].hints
           const index = hints.findIndex(hint => hint.id === action.payload.id)
+
+          if (action.payload.penalty) {
+            action.payload.penalty = parseFloat(action.payload.penalty)
+          }
+
           return update(items, {
             [action.itemId]: {
               hints: {
