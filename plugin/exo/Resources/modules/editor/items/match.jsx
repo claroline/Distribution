@@ -2,12 +2,15 @@ import React, {Component} from 'react'
 import {tex, t} from './../lib/translate'
 import Popover from 'react-bootstrap/lib/Popover'
 import Button from 'react-bootstrap/lib/Button'
+import classes from 'classnames'
+
 import {
   makeNewItem
 } from './match'
 
-/* global jsPlumb */
+const T = React.PropTypes
 
+/* global jsPlumb */
 
 export function initJsPlumb() {
 
@@ -63,8 +66,8 @@ export function initJsPlumb() {
 function addConnections(data){
   for (let item of data) {
     jsPlumb.connect({
-      source: 'draggable_' + item.firstId,
-      target: 'droppable_' + item.secondId
+      source: 'source_' + item.firstId,
+      target: 'target_' + item.secondId
     })
   }
 }
@@ -129,10 +132,39 @@ class MatchLinkPopover extends Component {
   }
 }
 MatchLinkPopover.propTypes = {
-  popover: React.PropTypes.object.isRequired,
-  solution: React.PropTypes.object,
-  handlePopoverClose: React.PropTypes.func.isRequired,
-  handleConnectionDelete: React.PropTypes.func.isRequired
+  popover: T.object.isRequired,
+  solution: T.object,
+  handlePopoverClose: T.func.isRequired,
+  handleConnectionDelete: T.func.isRequired
+}
+
+class MatchItem extends Component{
+  constructor(props) {
+    super(props)
+  }
+
+  render () {
+    return (
+      <div className={classes('item-flex-row', 'text-center', this.props.type)} id={this.props.type + '_' + this.props.item.id}>
+        <div className="left-controls">
+          <a role="button" title={t('delete')} className="fa fa-trash-o"/>
+        </div>
+        <div className="text-fields">
+          { this.props.item.type === 'text/html' &&
+            <textarea className="form-control" value={this.props.item.data} />
+          }
+          { this.props.item.type === 'text/plain' &&
+            <input className="form-control" value={this.props.item.data} />
+          }
+        </div>
+      </div>
+    )
+  }
+}
+
+MatchItem.propTypes = {
+  type: T.string.isRequired,
+  item: T.object.isRequired
 }
 
 
@@ -159,10 +191,11 @@ class Match extends Component {
 
     // new connection created event
     jsPlumb.bind('connection', function(data, event) {
+
       data.connection.setType('selected')
       const positions = getPopoverPosition(event)
-      const firstSetId = data.sourceId.replace('draggable_', '')
-      const secondSetId = data.targetId.replace('droppable_', '')
+      const firstSetId = data.sourceId.replace('source_', '')
+      const secondSetId = data.targetId.replace('target_', '')
       const title = this.props.firstSet.find(el => el.id === firstSetId).data + ' - ' + this.props.secondSet.find(el => el.id === secondSetId).data
       this.setState({
         popover: {
@@ -177,16 +210,18 @@ class Match extends Component {
       })
     }.bind(this))
 
-    jsPlumb.bind('beforeDrop', function () {
-      return true
+    jsPlumb.bind('beforeDrop', function (connection) {
+      // check that the connection is not already in jsPlumbConnections before creating it
+      const list = jsPlumb.getConnections().filter(el => el.sourceId === connection.sourceId && el.targetId === connection.targetId )
+      return list.length === 0
     })
 
     // configure connection
     jsPlumb.bind('click', function (connection, event) {
       connection.setType('selected')
       const positions = getPopoverPosition(event)
-      const firstSetId = connection.sourceId.replace('draggable_', '')
-      const secondSetId = connection.targetId.replace('droppable_', '')
+      const firstSetId = connection.sourceId.replace('source_', '')
+      const secondSetId = connection.targetId.replace('target_', '')
       const title = this.props.firstSet.find(el => el.id === firstSetId).data + ' - ' + this.props.secondSet.find(el => el.id === secondSetId).data
       const solution = this.props.solutions.find(el => el.firstId === firstSetId && el.secondId === secondSetId)
       this.setState({
@@ -205,15 +240,15 @@ class Match extends Component {
 
   removeConnection(){
     jsPlumb.detach(this.state.jsPlumbConnection)
-    const firstSetId = this.state.jsPlumbConnection.sourceId.replace('draggable_', '')
-    const secondSetId = this.state.jsPlumbConnection.targetId.replace('droppable_', '')
-    // should also delete the corresponding solution in props
+    const firstSetId = this.state.jsPlumbConnection.sourceId.replace('source_', '')
+    const secondSetId = this.state.jsPlumbConnection.targetId.replace('target_', '')
+    // TODO also delete the corresponding solution in props
     this.setState({
       popover: {
         visible: false
       },
-      penalty:0,
-      random: false
+      jsPlumbConnection: null,
+      solution: null
     })
   }
 
@@ -234,10 +269,18 @@ class Match extends Component {
 
   addFirstSetItem(){
     const item = makeNewItem()
+    // TODO add new item to firstSet prop
   }
 
   addSecondSetItem(){
     const item = makeNewItem()
+    // TODO add new item to secondSet prop
+  }
+
+  // TODO handle RTE size change to repaint connections && endpoints
+  handleTinyMceResize(){
+    jsPlumb.repaintEverything()
+
   }
 
   render() {
@@ -267,19 +310,7 @@ class Match extends Component {
           <div className="col-md-5 text-center">
             <div className="items-container">
             {this.props.firstSet.map((item, index) =>
-              <div key={item.id} className="item-flex-row text-center source" id={'draggable_' + item.id}>
-                <div className="left-controls">
-                  <a role="button" title={t('delete')} className="fa fa-trash-o"/>
-                </div>
-                <div className="text-fields">
-                  { item.type === 'text/html' &&
-                    <textarea className="form-control" value={item.data} />
-                  }
-                  { item.type === 'text/plain' &&
-                    <input className="form-control" value={item.data} />
-                  }
-                </div>
-              </div>
+              <MatchItem key={'source_' + item.id} item={item} type="source" />
             )}
             </div>
             <hr/>
@@ -300,19 +331,7 @@ class Match extends Component {
           <div className="col-md-5 text-center">
             <div className="items-container">
               {this.props.secondSet.map((item, index) =>
-                <div key={item.id} className="item-flex-row text-center target" id={'droppable_' + item.id}>
-                  <div className="text-fields">
-                    { item.type === 'text/html' &&
-                      <textarea className="form-control" value={item.data} />
-                    }
-                    { item.type === 'text/plain' &&
-                      <input className="form-control" value={item.data} />
-                    }
-                  </div>
-                  <div className="right-controls">
-                    <a role="button" className="fa fa-trash-o"/>
-                  </div>
-                </div>
+                <MatchItem key={'target_' + item.id} item={item} type="target" />
               )}
             </div>
             <hr/>
