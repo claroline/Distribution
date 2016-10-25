@@ -6,6 +6,7 @@ import {ITEM_CREATE} from './../actions'
 import {SCORE_FIXED} from './../enums'
 import {makeActionCreator, makeId} from './../util'
 import {tex} from './../lib/translate'
+import {notBlank} from './../lib/validate'
 import {Choice as component} from './choice.jsx'
 
 const UPDATE_PROP = 'UPDATE_PROP'
@@ -160,7 +161,7 @@ function reduce(item = {}, action) {
 function validate(item) {
   const errors = {}
 
-  if (item.choices.find(choice => !choice.data)) {
+  if (item.choices.find(choice => notBlank(choice.data, true))) {
     errors.choices = tex('choice_empty_data_error')
   }
 

@@ -413,6 +413,27 @@ describe('Choice validator', () => {
     })
   })
 
+  it('checks answer html is not empty', () => {
+    const errors = validate({
+      choices: [
+        {
+          data: 'Foo',
+          _score: 1
+        },
+        {
+          data: '<p></p>',
+          _score: 0
+        }
+      ],
+      score: {
+        type: SCORE_SUM
+      }
+    })
+    ensure.equal(errors, {
+      choices: 'choice_empty_data_error'
+    })
+  })
+
   it('checks at least one answer has a positive score in sum/multiple mode', () => {
     const errors = validate({
       multiple: true,
