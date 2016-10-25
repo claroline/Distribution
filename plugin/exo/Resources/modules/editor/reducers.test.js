@@ -1,15 +1,19 @@
 import freeze from 'deep-freeze'
+import merge from 'lodash/merge'
 import {assertEqual} from './test-utils'
 import {lastId} from './util'
-import {ITEM_CREATE, actions} from './actions'
 import {reducers} from './reducers'
 import {registerItemType, resetTypes} from './item-types'
 import {
+  ITEM_CREATE,
+  HINT_ADD,
+  HINT_CHANGE,
+  HINT_REMOVE,
+  actions
+} from './actions'
+import {
   TYPE_QUIZ,
   TYPE_STEP,
-  UPDATE_ADD,
-  UPDATE_CHANGE,
-  UPDATE_REMOVE,
   SCORE_SUM
 } from './enums'
 
@@ -151,40 +155,123 @@ describe('Step reducer', () => {
 })
 
 describe('Items reducer', () => {
+  afterEach(resetTypes)
+
   it('returns an empty object by default', () => {
     const items = reducers.items(undefined, {})
     assertEqual(items, {})
   })
 
   it('creates a base question object and delegates to question reducer', () => {
-    const dummyType = {
-      name: 'foo',
-      type: 'foo/bar',
-      component: {}, // doesn't matter here
+    registerFixtureType({
       reduce: (item, action) => {
-        if (action.type === ITEM_CREATE) {
-          return Object.assign({}, item, {foo: 'bar'})
-        }
-
-        return item
+        return action.type === ITEM_CREATE ?
+          Object.assign({}, item, {foo: 'bar'}) :
+          item
       }
-    }
-
-    registerItemType(dummyType)
-
+    })
     const items = reducers.items(freeze({}), actions.createItem('1', 'foo/bar'))
-    const keys = Object.keys(items)
-    assertEqual(keys.length, 1)
-    assertEqual(typeof keys[0], 'string')
-    assertEqual(items[keys[0]].type, 'foo/bar')
-    assertEqual(items[keys[0]].score, {
+    assertEqual(Object.keys(items).length, 1)
+    assertEqual(items[lastId()].type, 'foo/bar')
+    assertEqual(items[lastId()].content, '')
+    assertEqual(items[lastId()].foo, 'bar')
+    assertEqual(items[lastId()].score, {
       type: SCORE_SUM,
       success: 1,
       failure: 0
     })
-    assertEqual(items[keys[0]].foo, 'bar')
+  })
 
-    resetTypes()
+  it('calls item validator on creation', () => {
+    registerFixtureType({
+      validate: () => ({foo: 'Should be bar'})
+    })
+    const items = reducers.items(freeze({}), actions.createItem('1', 'foo/bar'))
+    const keys = Object.keys(items)
+    assertEqual(keys.length, 1)
+    assertEqual(items[keys[0]]._errors, {
+      content: 'This value should not be blank.',
+      foo: 'Should be bar'
+    })
+  })
+
+  it('updates base item properties', () => {
+    registerFixtureType()
+    const items = freeze({
+      '1': {
+        id: '1',
+        type: 'foo/bar',
+        content: 'Question?',
+        _errors: {}
+      }
+    })
+    const updated = reducers.items(items, actions.updateItem('1', {
+      content: 'New question?'
+    }))
+    assertEqual(updated['1'], {
+      id: '1',
+      type: 'foo/bar',
+      content: 'New question?',
+      _errors: {}
+    })
+  })
+
+  it('calls item validator on base update', () => {
+    registerFixtureType()
+    const items = freeze({
+      '1': {
+        id: '1',
+        type: 'foo/bar',
+        content: 'Question?'
+      }
+    })
+    const updated = reducers.items(items, actions.updateItem('1', {content: ''}))
+    assertEqual(updated['1']._errors, {
+      content: 'This value should not be blank.'
+    })
+  })
+
+  it('delegates to item type reducer on detail update', () => {
+    registerFixtureType({
+      reduce: item => Object.assign({}, item, {reduced: true})
+    })
+    const items = freeze({
+      '1': {
+        id: '1',
+        type: 'foo/bar',
+        content: 'Question?',
+        _errors: {}
+      }
+    })
+    const updated = reducers.items(items, actions.updateItemDetail('1', {}))
+    assertEqual(updated['1'], {
+      id: '1',
+      type: 'foo/bar',
+      content: 'Question?',
+      reduced: true,
+      _errors: {}
+    })
+  })
+
+  it('calls item validator on detail update', () => {
+    registerFixtureType({
+      validate: item => {
+        return item.foo !== 'bar' ? {foo: 'Should be bar'} : {}
+      }
+    })
+    const items = freeze({
+      '1': {
+        id: '1',
+        type: 'foo/bar',
+        content: '',
+        foo: 'baz'
+      }
+    })
+    const updated = reducers.items(items, actions.updateItemDetail('1', {}))
+    assertEqual(updated['1']._errors, {
+      content: 'This value should not be blank.',
+      foo: 'Should be bar'
+    })
   })
 
   it('removes item object on item deletion', () => {
@@ -203,7 +290,7 @@ describe('Items reducer', () => {
       '1': {id: '2', type: 'application/x.choice+json', hints: []},
       '2': {id: '2', type: 'text/plain'}
     })
-    const newState = reducers.items(items, actions.updateItemHints('1', UPDATE_ADD, {}))
+    const newState = reducers.items(items, actions.updateItemHints('1', HINT_ADD, {}))
     assertEqual(newState, {
       '1': {
         id: '2',
@@ -236,7 +323,7 @@ describe('Items reducer', () => {
       })
       const newState = reducers.items(
         items,
-        actions.updateItemHints('2', UPDATE_REMOVE, {id: '123'})
+        actions.updateItemHints('2', HINT_REMOVE, {id: '123'})
       )
       assertEqual(newState, {
         '1': {id: '1', type: 'text/plain'},
@@ -262,7 +349,7 @@ describe('Items reducer', () => {
     })
     const newState = reducers.items(
       items,
-      actions.updateItemHints('2', UPDATE_CHANGE, {id: '123', data: 'bar'})
+      actions.updateItemHints('2', HINT_CHANGE, {id: '123', data: 'bar'})
     )
     assertEqual(newState, {
       '1': {id: '1', type: 'text/plain'},
@@ -355,3 +442,15 @@ describe('Open panels reducer', () => {
     assertEqual(newState, {[TYPE_QUIZ]: false, [TYPE_STEP]: {'1': false}})
   })
 })
+
+function registerFixtureType(properties = {}) {
+  return registerItemType(merge(
+    {
+      name: 'foo',
+      type: 'foo/bar',
+      component: {},
+      reduce: item => item
+    },
+    properties
+  ))
+}

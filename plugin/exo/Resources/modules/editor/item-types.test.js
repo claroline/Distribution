@@ -80,6 +80,11 @@ describe('Registering an item type', () => {
   it('registers valid types as expected', () => {
     registerItemType(validDefinitionFixture())
     assertEqual(listItemMimeTypes(), ['foo/bar'])
+    const def = getDefinition('foo/bar')
+    assertEqual(def.name, 'foo')
+    assertEqual(def.type, 'foo/bar')
+    assertEqual(def.component(), 'component')
+    assertEqual(def.reduce('item'), 'item')
   })
 
   it('throws if item type is already registered', () => {
@@ -96,12 +101,12 @@ describe('Registering an item type', () => {
 
   it('defaults decorators to identity functions', () => {
     registerItemType(validDefinitionFixture())
-    assertEqual(typeof getDefinition('foo/bar').decorate, 'function')
+    assertEqual(getDefinition('foo/bar').decorate('item'), 'item')
   })
 
-  it('defaults validators to identity functions', () => {
+  it('defaults validators to noop functions', () => {
     registerItemType(validDefinitionFixture())
-    assertEqual(typeof getDefinition('foo/bar').validate, 'function')
+    assertEqual(getDefinition('foo/bar').validate('item'), {})
   })
 
   it('throws if definition contains extra properties', () => {
@@ -125,9 +130,10 @@ describe('Getting a type definition', () => {
     registerItemType(validDefinitionFixture())
     const def = getDefinition('foo/bar')
     assertEqual(def.type, 'foo/bar')
-    assertEqual(typeof def.component, 'function')
-    assertEqual(typeof def.reduce, 'function')
-    assertEqual(typeof def.decorate, 'function')
+    assertEqual(def.component(), 'component')
+    assertEqual(def.reduce('item'), 'item')
+    assertEqual(def.decorate('item'), 'item')
+    assertEqual(def.validate('item'), {})
   })
 })
 
@@ -146,7 +152,7 @@ function validDefinitionFixture() {
   return {
     name: 'foo',
     type: 'foo/bar',
-    component: () => {},
-    reduce: () => {}
+    component: () => 'component',
+    reduce: item => item
   }
 }

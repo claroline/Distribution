@@ -1,3 +1,4 @@
+import set from 'lodash/set'
 import {trans} from './translate'
 import {extractTextFromHtml} from './../util'
 
@@ -35,4 +36,10 @@ export function chain(value, validators) {
   return validators.reduce((result, validate) => {
     return result || validate(value)
   }, undefined)
+}
+
+export function setIfError(errors, errorPath, error) {
+  if (typeof error !== 'undefined') {
+    set(errors, errorPath, error)
+  }
 }

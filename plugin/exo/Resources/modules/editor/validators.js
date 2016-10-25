@@ -1,4 +1,5 @@
-import {notBlank, number, gteZero, chain} from './lib/validate'
+import {notBlank, number, gteZero, chain, setIfError} from './lib/validate'
+import {getDefinition} from './item-types'
 
 function validateQuiz(quiz) {
   const parameters = quiz.parameters
@@ -22,9 +23,18 @@ function validateStep(step) {
 }
 
 function validateItem(item) {
-  return {
-    content: notBlank(item.content, true)
-  }
+  const errors = validateBaseItem(item)
+  const subErrors = getDefinition(item.type).validate(item)
+
+  return Object.assign(errors, subErrors)
+}
+
+function validateBaseItem(item) {
+  const errors = {}
+
+  setIfError(errors, 'content', notBlank(item.content, true))
+
+  return errors
 }
 
 export default {

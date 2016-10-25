@@ -9,10 +9,7 @@ import {
   TYPE_STEP,
   SHUFFLE_NEVER,
   SHUFFLE_ONCE,
-  SHUFFLE_ALWAYS,
-  UPDATE_ADD,
-  UPDATE_CHANGE,
-  UPDATE_REMOVE
+  SHUFFLE_ALWAYS
 } from './enums'
 import {
   ITEM_CREATE,
@@ -32,7 +29,10 @@ import {
   STEP_MOVE,
   STEP_DELETE,
   STEP_UPDATE,
-  QUIZ_UPDATE
+  QUIZ_UPDATE,
+  HINT_ADD,
+  HINT_CHANGE,
+  HINT_REMOVE
 } from './actions'
 
 function initialQuizState() {
@@ -126,18 +126,21 @@ function reduceItems(items = {}, action = {}) {
       newItem = decorateItem(newItem)
       const def = getDefinition(action.itemType)
       newItem = def.reduce(newItem, action)
+      const errors = validate.item(newItem)
+      newItem = Object.assign({}, newItem, {_errors: errors})
+
       return update(items, {[action.id]: {$set: newItem}})
     }
     case ITEM_DELETE:
       return update(items, {$delete: action.id})
     case ITEM_UPDATE: {
       let updatedItem = merge({}, items[action.id], action.newProperties)
-      merge(updatedItem._errors, validate.item(updatedItem))
+      updatedItem._errors = validate.item(updatedItem)
       return update(items, {[action.id]: {$set: updatedItem}})
     }
     case ITEM_HINTS_UPDATE:
       switch (action.updateType) {
-        case UPDATE_ADD:
+        case HINT_ADD:
           return update(items, {
             [action.itemId]: {
               hints: {
@@ -149,7 +152,7 @@ function reduceItems(items = {}, action = {}) {
               }
             }
           })
-        case UPDATE_CHANGE: {
+        case HINT_CHANGE: {
           const hints = items[action.itemId].hints
           const index = hints.findIndex(hint => hint.id === action.payload.id)
           return update(items, {
@@ -160,7 +163,7 @@ function reduceItems(items = {}, action = {}) {
             }
           })
         }
-        case UPDATE_REMOVE:
+        case HINT_REMOVE:
           return update(items, {
             [action.itemId]: {
               hints: {
@@ -175,12 +178,9 @@ function reduceItems(items = {}, action = {}) {
       }
     case ITEM_DETAIL_UPDATE: {
       const def = getDefinition(items[action.id].type)
-      const updatedItem = def.reduce(items[action.id], action.subAction)
-
-      // should validate here...
-
-      // const errors = validate.item(updatedItem)
-      // updatedItem._errors = errors
+      let updatedItem = def.reduce(items[action.id], action.subAction)
+      const errors = validate.item(updatedItem)
+      updatedItem = update(updatedItem, {_errors: {$set: errors}})
       return update(items, {[action.id]: {$set: updatedItem}})
     }
   }

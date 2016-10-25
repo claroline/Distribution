@@ -1,5 +1,7 @@
+import merge from 'lodash/merge'
 import validate from './validators'
-import {ensure} from './test-utils'
+import {registerItemType, resetTypes} from './item-types'
+import {assertEqual} from './test-utils'
 
 describe('quiz validator', () => {
   it('returns no errors on valid quiz', () => {
@@ -11,7 +13,7 @@ describe('quiz validator', () => {
         maxAttempts: 3
       }
     }
-    ensure.equal(validate.quiz(quiz), {
+    assertEqual(validate.quiz(quiz), {
       title: undefined,
       parameters: {
         pick: undefined,
@@ -30,7 +32,7 @@ describe('quiz validator', () => {
         maxAttempts: -3
       }
     }
-    ensure.equal(validate.quiz(quiz), {
+    assertEqual(validate.quiz(quiz), {
       title: 'This value should not be blank.',
       parameters: {
         pick: 'This value should not be blank.',
@@ -48,7 +50,7 @@ describe('step validator', () => {
         maxAttempts: 3
       }
     }
-    ensure.equal(validate.step(step), {
+    assertEqual(validate.step(step), {
       parameters: {
         maxAttempts: undefined
       }
@@ -61,10 +63,83 @@ describe('step validator', () => {
         maxAttempts: -3
       }
     }
-    ensure.equal(validate.step(step), {
+    assertEqual(validate.step(step), {
       parameters: {
         maxAttempts: 'This value should be 0 or more.'
       }
     })
   })
 })
+
+describe('item validator', () => {
+  afterEach(resetTypes)
+
+  it('checks base item properties', () => {
+    registerFixtureType()
+    const item = {
+      id: '1',
+      type: 'foo/bar',
+      content: ''
+    }
+    assertEqual(validate.item(item), {
+      content: 'This value should not be blank.'
+    })
+  })
+
+  it('delegates to item type validator', () => {
+    registerFixtureType({
+      validate: item => {
+        return item.foo !== 'bar' ? {foo: 'Should be bar'} : {}
+      }
+    })
+    const item = {
+      id: '1',
+      type: 'foo/bar',
+      content: 'Question?',
+      foo: false
+    }
+    assertEqual(validate.item(item), {
+      foo: 'Should be bar'
+    })
+  })
+
+  it('merges base and type errors', () => {
+    registerFixtureType({
+      validate: item => {
+        return item.foo !== 'bar' ? {foo: 'Should be bar'} : {}
+      }
+    })
+    const item = {
+      id: '1',
+      type: 'foo/bar',
+      content: '',
+      foo: 'baz'
+    }
+    assertEqual(validate.item(item), {
+      content: 'This value should not be blank.',
+      foo: 'Should be bar'
+    })
+  })
+
+  it('returns an empty object when validation succeeds', () => {
+    registerFixtureType()
+    const item = {
+      id: '1',
+      type: 'foo/bar',
+      content: 'Question'
+    }
+    assertEqual(validate.item(item), {})
+  })
+})
+
+function registerFixtureType(properties = {}) {
+  return registerItemType(merge(
+    {
+      name: 'foo',
+      type: 'foo/bar',
+      component: {},
+      reduce: item => item
+    },
+    properties
+  ))
+}

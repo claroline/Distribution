@@ -21,6 +21,9 @@ export const STEP_DELETE = 'STEP_DELETE'
 export const STEP_UPDATE = 'STEP_UPDATE'
 export const STEP_MOVE = 'STEP_MOVE'
 export const QUIZ_UPDATE = 'QUIZ_UPDATE'
+export const HINT_ADD = 'HINT_ADD'
+export const HINT_CHANGE = 'HINT_CHANGE'
+export const HINT_REMOVE = 'HINT_REMOVE'
 
 export const actions = {}
 

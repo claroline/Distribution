@@ -2,7 +2,7 @@ import React from 'react'
 import freeze from 'deep-freeze'
 import merge from 'lodash/merge'
 import {shallow, mount} from 'enzyme'
-import {spyConsole, renew, ensure} from './../test-utils'
+import {spyConsole, renew, ensure, mockTranslator} from './../test-utils'
 import {SCORE_SUM, SCORE_FIXED} from './../enums'
 import {lastId, lastIds} from './../util'
 import {actions as actions} from './../actions'
@@ -384,6 +384,174 @@ describe('Choice decorator', () => {
     ensure.equal(decorated.choices[0]._checked, false)
     ensure.equal(decorated.choices[1]._checked, false)
     ensure.equal(decorated.choices[2]._checked, true)
+  })
+})
+
+describe('Choice validator', () => {
+  before(mockTranslator)
+
+  const validate = definition.validate
+
+  it('checks answer data are not empty', () => {
+    const errors = validate({
+      choices: [
+        {
+          data: 'Foo',
+          _score: 1
+        },
+        {
+          data: '',
+          _score: 0
+        }
+      ],
+      score: {
+        type: SCORE_SUM
+      }
+    })
+    ensure.equal(errors, {
+      choices: 'choice_empty_data_error'
+    })
+  })
+
+  it('checks at least one answer has a positive score in sum/multiple mode', () => {
+    const errors = validate({
+      multiple: true,
+      choices: [
+        {
+          data: 'Foo',
+          _score: 0
+        },
+        {
+          data: 'Bar',
+          _score: 0
+        }
+      ],
+      score: {
+        type: SCORE_SUM
+      }
+    })
+    ensure.equal(errors, {
+      choices: 'sum_score_choice_at_least_one_correct_answer_error'
+    })
+  })
+
+  it('checks at least one answer has a positive score in sum/unique mode', () => {
+    const errors = validate({
+      multiple: false,
+      choices: [
+        {
+          data: 'Foo',
+          _score: 0
+        },
+        {
+          data: 'Bar',
+          _score: 0
+        }
+      ],
+      score: {
+        type: SCORE_SUM
+      }
+    })
+    ensure.equal(errors, {
+      choices: 'sum_score_choice_no_correct_answer_error'
+    })
+  })
+
+  it('checks success score is above failure in fixed mode', () => {
+    const errors = validate({
+      multiple: false,
+      choices: [
+        {
+          data: 'Foo',
+          _score: 0
+        },
+        {
+          data: 'Bar',
+          _score: 1
+        }
+      ],
+      score: {
+        type: SCORE_FIXED,
+        success: 0,
+        failure: 2
+      }
+    })
+    ensure.equal(errors, {
+      score: {
+        failure: 'fixed_failure_above_success_error',
+        success: 'fixed_success_under_failure_error'
+      }
+    })
+  })
+
+  it('checks at least one answer has a positive score in fixed/multiple mode', () => {
+    const errors = validate({
+      multiple: true,
+      choices: [
+        {
+          data: 'Foo',
+          _score: 0
+        },
+        {
+          data: 'Bar',
+          _score: 0
+        }
+      ],
+      score: {
+        type: SCORE_FIXED,
+        success: 2,
+        failure: 0
+      }
+    })
+    ensure.equal(errors, {
+      choices: 'fixed_score_choice_at_least_one_correct_answer_error'
+    })
+  })
+
+  it('checks at least one answer has a positive score in fixed/unique mode', () => {
+    const errors = validate({
+      multiple: false,
+      choices: [
+        {
+          data: 'Foo',
+          _score: 0
+        },
+        {
+          data: 'Bar',
+          _score: 0
+        }
+      ],
+      score: {
+        type: SCORE_FIXED,
+        success: 2,
+        failure: 0
+      }
+    })
+    ensure.equal(errors, {
+      choices: 'fixed_score_choice_no_correct_answer_error'
+    })
+  })
+
+  it('returns no errors if item is valid', () => {
+    const errors = validate({
+      multiple: false,
+      choices: [
+        {
+          data: 'Foo',
+          _score: 1
+        },
+        {
+          data: 'Bar',
+          _score: 0
+        }
+      ],
+      score: {
+        type: SCORE_FIXED,
+        success: 2,
+        failure: 0
+      }
+    })
+    ensure.equal(errors, {})
   })
 })
 

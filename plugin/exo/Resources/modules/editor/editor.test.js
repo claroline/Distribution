@@ -37,7 +37,9 @@ function quizFixture() {
         items: [
           {
             id: 'x',
-            type: 'application/x.choice+json'
+            type: 'application/x.choice+json',
+            choices: [],
+            solutions: []
           },
           {
             id: 'y',

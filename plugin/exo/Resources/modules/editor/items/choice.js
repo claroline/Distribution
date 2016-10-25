@@ -1,6 +1,7 @@
 import cloneDeep from 'lodash/cloneDeep'
 import merge from 'lodash/merge'
 import zipObject from 'lodash/zipObject'
+import set from 'lodash/set'
 import {ITEM_CREATE} from './../actions'
 import {SCORE_FIXED} from './../enums'
 import {makeActionCreator, makeId} from './../util'
@@ -18,8 +19,6 @@ export const actions = {
   addChoice: makeActionCreator(ADD_CHOICE),
   removeChoice: makeActionCreator(REMOVE_CHOICE, 'id')
 }
-
-// validate
 
 function decorate(item) {
   const solutionsById = zipObject(
@@ -158,6 +157,39 @@ function reduce(item = {}, action) {
   return item
 }
 
+function validate(item) {
+  const errors = {}
+
+  if (item.choices.find(choice => !choice.data)) {
+    errors.choices = tex('choice_empty_data_error')
+  }
+
+  if (item.score.type === SCORE_FIXED) {
+    if (item.score.failure >= item.score.success) {
+      set(errors, 'score.failure', tex('fixed_failure_above_success_error'))
+      set(errors, 'score.success', tex('fixed_success_under_failure_error'))
+    }
+
+    if (!item.choices.find(choice => choice._score > 0)) {
+      errors.choices = tex(
+        item.multiple ?
+          'fixed_score_choice_at_least_one_correct_answer_error' :
+          'fixed_score_choice_no_correct_answer_error'
+      )
+    }
+  } else {
+    if (!item.choices.find(choice => choice._score > 0)) {
+      errors.choices = tex(
+        item.multiple ?
+          'sum_score_choice_at_least_one_correct_answer_error' :
+          'sum_score_choice_no_correct_answer_error'
+      )
+    }
+  }
+
+  return errors
+}
+
 function setScores(item, setter) {
   const scores = {}
   item.choices.forEach(choice => {
@@ -189,35 +221,6 @@ function setChoiceTicks(item) {
   }
 
   return item
-}
-
-function validate(values) {
-  const errors = {choices: []}
-
-  if (values.fixedScore) {
-    if (values.fixedFailure >= values.fixedSuccess) {
-      errors.fixedFailure = tex('fixed_failure_above_success_error')
-      errors.fixedSuccess = tex('fixed_success_under_failure_error')
-    }
-
-    if (!values.choices.find(choice => choice.score > 0)) {
-      errors.choices._error = tex(
-        values.multiple ?
-          'fixed_score_choice_at_least_one_correct_answer_error' :
-          'fixed_score_choice_no_correct_answer_error'
-      )
-    }
-  } else {
-    if (!values.choices.find(choice => choice.score > 0)) {
-      errors.choices._error = tex(
-        values.multiple ?
-          'sum_score_choice_at_least_one_correct_answer_error' :
-          'sum_score_choice_no_correct_answer_error'
-      )
-    }
-  }
-
-  return errors
 }
 
 export default {

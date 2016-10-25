@@ -2,7 +2,7 @@ import React, {Component, PropTypes as T} from 'react'
 import {t, tex} from './../lib/translate'
 import {notBlank} from './../lib/validate'
 import {makeId} from './../util'
-import {UPDATE_ADD, UPDATE_CHANGE, UPDATE_REMOVE} from './../enums'
+import {HINT_ADD, HINT_UPDATE, HINT_REMOVE} from './../actions'
 import {FormGroup} from './form/form-group.jsx'
 import {Textarea} from './form/textarea.jsx'
 import {SubSection} from './form/sub-section.jsx'
@@ -73,7 +73,7 @@ const Hint = props =>
         id={`hint-${props.id}`}
         title={tex('hint')}
         content={props.data}
-        onChange={data => props.onChange(UPDATE_CHANGE, {id: props.id, data})}
+        onChange={data => props.onChange(HINT_UPDATE, {id: props.id, data})}
       />
     </div>
     <input
@@ -86,7 +86,7 @@ const Hint = props =>
       title={tex('penalty')}
       aria-label={tex('penalty')}
       onChange={e => props.onChange(
-        UPDATE_CHANGE,
+        HINT_UPDATE,
         {id: props.id, penalty: e.target.value}
       )}
     />
@@ -121,7 +121,7 @@ const Hints = props =>
           <Hint
             {...hint}
             onChange={props.onChange}
-            onRemove={() => props.onChange(UPDATE_REMOVE, {id: hint.id})}
+            onRemove={() => props.onChange(HINT_REMOVE, {id: hint.id})}
           />
         </li>
       )}
@@ -129,7 +129,7 @@ const Hints = props =>
         <button
           type="button"
           className="btn btn-default"
-          onClick={() => props.onChange(UPDATE_ADD, {})}
+          onClick={() => props.onChange(HINT_ADD, {})}
         >
           <span className="fa fa-plus"/>
           {tex('add_hint')}

@@ -25,8 +25,8 @@ export function registerItemType(definition) {
     definition.question :
     true
 
-  definition.decorate = getOptionalFunction('decorate')
-  definition.validate = getOptionalFunction('validate')
+  definition.decorate = getOptionalFunction(definition, 'decorate', item => item)
+  definition.validate = getOptionalFunction(definition, 'validate', () => ({}))
 
   registeredTypes[definition.type] = definition
 }
@@ -92,7 +92,7 @@ function assertValidItemType(definition) {
   }
 }
 
-function getOptionalFunction(definition, name) {
+function getOptionalFunction(definition, name, defaultFunc) {
   if (typeof definition[name] !== 'undefined') {
     invariant(
       typeof definition[name] === 'function',
@@ -100,7 +100,7 @@ function getOptionalFunction(definition, name) {
     )
     return definition[name]
   }
-  return arg => arg
+  return defaultFunc
 }
 
 function makeError(message, definition) {

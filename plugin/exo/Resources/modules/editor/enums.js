@@ -43,9 +43,5 @@ export const markModes = [
   [SHOW_SCORE_AT_NEVER, 'never']
 ]
 
-export const UPDATE_ADD = 'add'
-export const UPDATE_CHANGE = 'change'
-export const UPDATE_REMOVE = 'remove'
-
 export const SCORE_SUM = 'sum'
 export const SCORE_FIXED = 'fixed'

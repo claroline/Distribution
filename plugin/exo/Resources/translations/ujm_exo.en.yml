@@ -63,6 +63,7 @@ change: Change
 change_name: Change the name of the document
 change_order: Use drag and drop to change the order of the questions.
 choice: Choice
+choice_empty_data_error: Answer data should not be blank.
 choice_feedback_info: Feedback if this answer is checked
 choose_image : Choose an image
 choose_category : Choose a category
