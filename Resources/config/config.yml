@@ -1,5 +1,5 @@
 plugin:
-    has_options: true
+    has_options: false
     icon: res_inwicast.png
 
     # Widgets declared by your plugin.
@@ -15,3 +15,6 @@ plugin:
         class: play-circle
         is_displayable_in_workspace: false
         is_displayable_in_desktop: true
+    admin_tools:
+      - name: inwicast_configuration
+        class: play-circle

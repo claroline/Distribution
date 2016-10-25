@@ -40,7 +40,9 @@
         </div>
     </div>
     <div class="panel-footer">
-        <a href="{{ path('claro_admin_open_tool', {'toolName': 'platform_packages'}) }}"
-           class="btn btn-default btn-primary">{{ 'back_to_packages' | trans({}, 'widget') }}</a>
+        <a href="{{ path('claro_admin_open_tool', {'toolName': 'platform_parameters'}) }}"
+           class="btn btn-default btn-primary">{{ 'back_to_parameters' | trans({}, 'widget') }}</a>
+        <a href="{{ path('claro_admin_open_tool', {'toolName': 'inwicast_configuration'}) }}"
+           class="btn btn-default btn-default">{{ 'reconfigure' | trans({}, 'widget') }}</a>
     </div>
 {% endblock %}

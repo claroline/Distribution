@@ -72,24 +72,6 @@ class ClarolinePluginListener extends ContainerAware
         $this->templating = $container->get('templating');
     }
 
-    /**
-     * @DI\Observe("plugin_options_clarolinepluginbundle")
-     */
-    public function onPluginConfigure(PluginOptionsEvent $event)
-    {
-        $mediacenterManager = $this->getMediacenterManager();
-        $form = $mediacenterManager->getMediacenterForm();
-        $content = $this->templating->render(
-            'InwicastClarolinePluginBundle:Mediacenter:form.html.twig',
-            array(
-                'form' => $form->createView()
-            )
-        );
-
-        $event->setResponse(new Response($content));
-        $event->stopPropagation();
-    }
-
     //-------------------------------
     // WIDGET SERVICES
     //-------------------------------
