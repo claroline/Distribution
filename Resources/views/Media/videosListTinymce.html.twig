@@ -8,6 +8,9 @@
 {% block javascripts_header %}
     {{ parent() }}
     <script type="text/javascript" src='{{ asset('packages/jquery/dist/jquery.min.js') }}'></script>
+    {% if app.environment == 'prod' %}
+        <script src="{{ hotAsset('dist/commons.js') }}"></script>
+    {% endif %}
 {% endblock %}
 
 {% block layout %}
