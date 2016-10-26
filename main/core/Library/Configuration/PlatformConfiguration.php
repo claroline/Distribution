@@ -88,7 +88,7 @@ class PlatformConfiguration
     private $enableRichTextFileImport;
     private $loginTargetRoute;
     private $enableOpengraph;
-
+    private $tmpDir;
     /**
      * @param mixed $sessionDbDataCol
      */
@@ -799,5 +799,15 @@ class PlatformConfiguration
     public function getEnableOpengraph()
     {
         return $this->enableOpengraph;
+    }
+
+    public function setTmpDir($tmpDir)
+    {
+        $this->tmpDir = $tmpDir;
+    }
+
+    public function getTmpDir()
+    {
+        return $this->tmpDir;
     }
 }

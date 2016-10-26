@@ -222,6 +222,7 @@ class ParametersController extends Controller
                             'is_pdf_export_active' => $form['isPdfExportActive']->getData(),
                             'ssl_enabled' => $form['sslEnabled']->getData(),
                             'enable_opengraph' => $form['enableOpengraph']->getData(),
+                            'tmp_dir' => $form['tmpDir']->getData(),
                         ]
                     );
 
