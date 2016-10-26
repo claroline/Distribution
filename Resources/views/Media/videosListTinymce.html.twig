@@ -2,7 +2,7 @@
 
 {% block stylesheets %}
     {% include 'ClarolineCoreBundle:Layout:stylesheets.html.twig' %}
-    <link href="{{ asset('bundles/clarolineinwicastplugin/css/design.css') }}" type="text/css" rel="stylesheet"/>
+    <link href="{{ asset('bundles/inwicastclarolineplugin/css/design.css') }}" type="text/css" rel="stylesheet"/>
 {% endblock %}
 
 {% block javascripts_header %}
@@ -22,7 +22,7 @@
         <div class="tinymce_title_choose">
             {{ "choose_video_tinymce"|trans({}, "widget") }}
         </div>
-        {% include 'ClarolineInwicastPluginBundle:Media:videosListTpl.html.twig' with {'medialist' : medialist}  %}
+        {% include 'InwicastClarolinePluginBundle:Media:videosListTpl.html.twig' with {'medialist' : medialist}  %}
     {% endif %}
 {% endblock %}
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\InwicastPluginBundle\Repository;
+namespace Inwicast\ClarolinePluginBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 

@@ -9,12 +9,12 @@
  * Date: 2/19/15
  */
 
-namespace Claroline\InwicastPluginBundle\Controller;
+namespace Inwicast\ClarolinePluginBundle\Controller;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
-use Claroline\InwicastPluginBundle\Entity\Mediacenter;
-use Claroline\InwicastPluginBundle\Exception\NoMediacenterException;
+use Inwicast\ClarolinePluginBundle\Entity\Mediacenter;
+use Inwicast\ClarolinePluginBundle\Exception\NoMediacenterException;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\SerializerBuilder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -29,7 +29,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * @Route("/inwicast/mediacenter/media")
  * Class MediaController
- * @package Claroline\InwicastPluginBundle\Controller
+ * @package Inwicast\ClarolinePluginBundle\Controller
  */
 class MediaController extends Controller
 {
@@ -46,7 +46,7 @@ class MediaController extends Controller
 
             return new RedirectResponse($content);
         } catch(NoMediacenterException $nme) {
-            return $this->render("ClarolineInwicastPluginBundle:Mediacenter:error.html.twig");
+            return $this->render("InwicastClarolinePluginBundle:Mediacenter:error.html.twig");
         }
     }
     /**
@@ -60,7 +60,7 @@ class MediaController extends Controller
         try{
             $mediacenter = $this->getMediacenterManager()->getMediacenter();
         } catch(NoMediacenterException $nme) {
-            return $this->render("ClarolineInwicastPluginBundle:Mediacenter:error.html.twig");
+            return $this->render("InwicastClarolinePluginBundle:Mediacenter:error.html.twig");
         }
 
         $mediaRef = $request->get("media_ref");
@@ -76,7 +76,7 @@ class MediaController extends Controller
      *      name="inwicast_mediacenter_user_videos"
      * )
      * @Method({"GET"})
-     * @Template("ClarolineInwicastPluginBundle:Media:videosList.html.twig")
+     * @Template("InwicastClarolinePluginBundle:Media:videosList.html.twig")
      * @ParamConverter("user", options={"authenticatedUser" = true})
      * @ParamConverter("widget", class="ClarolineCoreBundle:Widget\WidgetInstance", options={"id" = "widgetId"})
      */
@@ -91,7 +91,7 @@ class MediaController extends Controller
      *      options={"expose"=true}
      * )
      * @Method({"GET"})
-     * @Template("ClarolineInwicastPluginBundle:Media:videosListTinymce.html.twig")
+     * @Template("InwicastClarolinePluginBundle:Media:videosListTinymce.html.twig")
      * @ParamConverter("user", options={"authenticatedUser" = true})
      */
     public function listTinymceAction(User $user)
@@ -135,7 +135,7 @@ class MediaController extends Controller
                 'username'  => $user->getUsername()
             );
         } catch(NoMediacenterException $nme) {
-            return $this->render('ClarolineInwicastPluginBundle:Mediacenter:error.html.twig');
+            return $this->render('InwicastClarolinePluginBundle:Mediacenter:error.html.twig');
         }
 
         // Return $result

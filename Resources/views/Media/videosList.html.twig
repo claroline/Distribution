@@ -13,8 +13,8 @@
 {% else %}
 <form action="{{ path('inwicast_mediacenter_media_post', {'widgetId': widget.getId()}) }}" method="post"
       id="inwicast_claroline_plugin_diplay" class="widget-content-config-form">
-    <link href="{{ asset('bundles/clarolineinwicastplugin/css/design.css') }}" type="text/css" rel="stylesheet"/>
-    {% include 'ClarolineInwicastPluginBundle:Media:videosListTpl.html.twig' with {'medialist' : medialist}  %}
+    <link href="{{ asset('bundles/inwicastclarolineplugin/css/design.css') }}" type="text/css" rel="stylesheet"/>
+    {% include 'InwicastClarolinePluginBundle:Media:videosListTpl.html.twig' with {'medialist' : medialist}  %}
     <br/>
 
     <div class="row container-fluid">

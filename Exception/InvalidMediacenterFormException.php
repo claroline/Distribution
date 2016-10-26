@@ -9,7 +9,7 @@
  * Date: 2/20/15
  */
 
-namespace Claroline\InwicastPluginBundle\Exception;
+namespace Inwicast\ClarolinePluginBundle\Exception;
 
 
 class InvalidMediacenterFormException extends \RuntimeException

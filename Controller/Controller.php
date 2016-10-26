@@ -9,7 +9,7 @@
  * Date: 3/20/15
  */
 
-namespace Claroline\InwicastPluginBundle\Controller;
+namespace Inwicast\ClarolinePluginBundle\Controller;
 
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
@@ -46,7 +46,7 @@ class Controller extends BaseController
     }
 
     /**
-     * @return \Claroline\InwicastPluginBundle\Manager\MediacenterManager
+     * @return \Inwicast\ClarolinePluginBundle\Manager\MediacenterManager
      */
     protected function getMediacenterManager()
     {
@@ -54,7 +54,7 @@ class Controller extends BaseController
     }
 
     /**
-     * @return \Claroline\InwicastPluginBundle\Manager\MediaManager
+     * @return \Inwicast\ClarolinePluginBundle\Manager\MediaManager
      */
     protected function getMediaManager()
     {
@@ -62,7 +62,7 @@ class Controller extends BaseController
     }
 
     /**
-     * @return \Claroline\InwicastPluginBundle\Manager\MediacenterUserManager
+     * @return \Inwicast\ClarolinePluginBundle\Manager\MediacenterUserManager
      */
     protected function getMediacenterUserManager()
     {

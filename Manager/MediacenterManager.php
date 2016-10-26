@@ -9,13 +9,13 @@
  * Date: 2/19/15
  */
 
-namespace Claroline\InwicastPluginBundle\Manager;
+namespace Inwicast\ClarolinePluginBundle\Manager;
 
 use Doctrine\ORM\EntityManager;
-use Claroline\InwicastPluginBundle\Entity\Mediacenter;
-use Claroline\InwicastPluginBundle\Exception\InvalidMediacenterFormException;
-use Claroline\InwicastPluginBundle\Exception\NoMediacenterException;
-use Claroline\InwicastPluginBundle\Repository\MediacenterRepository;
+use Inwicast\ClarolinePluginBundle\Entity\Mediacenter;
+use Inwicast\ClarolinePluginBundle\Exception\InvalidMediacenterFormException;
+use Inwicast\ClarolinePluginBundle\Exception\NoMediacenterException;
+use Inwicast\ClarolinePluginBundle\Repository\MediacenterRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,7 +31,7 @@ class MediacenterManager
     private $em;
 
     /**
-     * @var \Claroline\InwicastPluginBundle\Repository\MediacenterRepository
+     * @var \Inwicast\ClarolinePluginBundle\Repository\MediacenterRepository
      */
     private $mediacenterRepository;
 

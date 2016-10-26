@@ -1,11 +1,11 @@
 <?php
 
-namespace Claroline\InwicastPluginBundle\Repository;
+namespace Inwicast\ClarolinePluginBundle\Repository;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Doctrine\Bundle\DoctrineBundle\ConnectionFactory;
-use Claroline\InwicastPluginBundle\Entity\Mediacenter;
+use Inwicast\ClarolinePluginBundle\Entity\Mediacenter;
 
 /**
  * MediacenterUserRepository

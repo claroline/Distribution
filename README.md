@@ -9,7 +9,7 @@ Plugin for Inwicast Mediacenter integration in [Claroline Connect](https://githu
 ### Installation
 When Claroline Connect is installed, run:
 
-    composer update claroline/inwicast-plugin-bundle --prefer-source
+    composer update icap/inwicast-plugin-bundle --prefer-source
 
 ### Configuration
 As admin on Claroline Connect, go to Administration > Inwicast configuration (left side toolbar)

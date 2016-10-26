@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\InwicastPluginBundle\DependencyInjection;
+namespace Inwicast\ClarolinePluginBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
