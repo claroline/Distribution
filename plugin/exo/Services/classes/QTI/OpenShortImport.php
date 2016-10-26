@@ -7,6 +7,7 @@
 namespace UJM\ExoBundle\Services\classes\QTI;
 
 use UJM\ExoBundle\Entity\WordResponse;
+use UJM\ExoBundle\Library\Question\QuestionType;
 
 class OpenShortImport extends OpenImport
 {
@@ -25,12 +26,11 @@ class OpenShortImport extends OpenImport
         parent::import($qtiRepos, $assessmentItem, $path);
         $this->createWordResponse();
 
+        $this->question->setMimeType(QuestionType::WORDS);
+
         return $this->interactionOpen;
     }
 
-    /**
-     *
-     */
     protected function getPromptChild()
     {
         $text = '';

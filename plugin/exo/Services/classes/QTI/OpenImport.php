@@ -4,6 +4,7 @@ namespace UJM\ExoBundle\Services\classes\QTI;
 
 use UJM\ExoBundle\Entity\InteractionOpen;
 use UJM\ExoBundle\Entity\TypeOpenQuestion;
+use UJM\ExoBundle\Library\Question\QuestionType;
 
 /**
  * To import an open question.
@@ -31,19 +32,25 @@ class OpenImport extends QtiImport
             return false;
         }
 
-        $this->createQuestion(InteractionOpen::TYPE);
-        $this->createInteractionOpen();
+        $codeTypeOpen = $this->getCodeTypeOpen();
+
+        $mimeType = QuestionType::WORDS;
+        if ('long' === $codeTypeOpen->getValue()) {
+            $mimeType = QuestionType::OPEN;
+        }
+
+        $this->createQuestion(InteractionOpen::TYPE, $mimeType);
+        $this->createInteractionOpen($codeTypeOpen);
     }
 
     /**
      * Create the InteractionOpen object.
      */
-    protected function createInteractionOpen()
+    protected function createInteractionOpen($codeTypeOpen)
     {
         $ocd = $this->assessmentItem->getElementsByTagName('outcomeDeclaration')->item(0);
         $df = $ocd->getElementsByTagName('defaultValue')->item(0);
         $val = $df->getElementsByTagName('value')->item(0);
-        $codeTypeOpen = $this->getCodeTypeOpen();
 
         $this->interactionOpen = new InteractionOpen();
         $this->interactionOpen->setQuestion($this->question);

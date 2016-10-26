@@ -21,6 +21,10 @@ abstract class QtiImport
     protected $user;
     protected $qtiRepos;
     protected $qtiCat;
+
+    /**
+     * @var Question
+     */
     protected $question;
     protected $assessmentItem;
     protected $dirQTI;
@@ -42,13 +46,18 @@ abstract class QtiImport
     }
 
     /**
-     * Create the question objet.
+     * Create the question object.
+     *
+     * @param string $type
+     * @param string $mimeType
      */
-    protected function createQuestion($type)
+    protected function createQuestion($type, $mimeType)
     {
         $this->objectToResource();
         $this->question = new Question();
         $this->question->setTitle($this->getTitle());
+        $this->question->setUuid(uniqid());
+        $this->question->setMimeType($mimeType);
         $this->question->setDateCreate(new \Datetime());
         $this->question->setUser($this->user);
         $this->question->setCategory($this->qtiCat);

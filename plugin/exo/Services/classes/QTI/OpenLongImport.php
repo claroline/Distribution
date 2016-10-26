@@ -6,6 +6,8 @@
 
 namespace UJM\ExoBundle\Services\classes\QTI;
 
+use UJM\ExoBundle\Library\Question\QuestionType;
+
 class OpenLongImport extends OpenImport
 {
     /**
@@ -22,12 +24,11 @@ class OpenLongImport extends OpenImport
         $this->codeType = 2;
         parent::import($qtiRepos, $assessmentItem, $path);
 
+        $this->question->setMimeType(QuestionType::OPEN);
+
         return $this->interactionOpen;
     }
 
-    /**
-     *
-     */
     protected function getPromptChild()
     {
         $text = '';

@@ -9,6 +9,7 @@ namespace UJM\ExoBundle\Services\classes\QTI;
 use UJM\ExoBundle\Entity\Coords;
 use UJM\ExoBundle\Entity\InteractionGraphic;
 use UJM\ExoBundle\Entity\Picture;
+use UJM\ExoBundle\Library\Question\QuestionType;
 
 class GraphicImport extends QtiImport
 {
@@ -34,7 +35,7 @@ class GraphicImport extends QtiImport
             return false;
         }
 
-        $this->createQuestion(InteractionGraphic::TYPE);
+        $this->createQuestion(InteractionGraphic::TYPE, QuestionType::GRAPHIC);
         $this->createInteractionGraphic();
 
         return $this->interactionGraph;
