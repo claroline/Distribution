@@ -1,5 +1,5 @@
 {
-    "name": "inwicast/claroline-plugin-bundle",
+    "name": "claroline/inwicast-plugin-bundle",
     "description": "Inwicast plugin for Claroline Connect",
     "keywords": ["Claroline", "Plugin", "Website", "ICAP"],
     "homepage": "http://www.claroline.net",
@@ -12,11 +12,13 @@
         }
     ],
     "autoload": {
-        "psr-0": {
-            "Inwicast\\ClarolinePluginBundle": ""
+        "psr-4": {
+            "Claroline\\InwicastPluginBundle": ""
         }
     },
-    "target-dir": "Inwicast/ClarolinePluginBundle",
+    "replace": {
+        "inwicast/claroline-plugin-bundle": "*"
+    },
     "require": {
         "php": ">=5.4.1",
         "claroline/distribution": ">=8.0"

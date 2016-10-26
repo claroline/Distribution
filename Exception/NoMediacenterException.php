@@ -9,7 +9,7 @@
  * Date: 3/24/15
  */
 
-namespace Inwicast\ClarolinePluginBundle\Exception;
+namespace Claroline\InwicastPluginBundle\Exception;
 
 
 class NoMediacenterException extends \RuntimeException

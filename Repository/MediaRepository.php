@@ -1,9 +1,9 @@
 <?php
 
-namespace Inwicast\ClarolinePluginBundle\Repository;
+namespace Claroline\InwicastPluginBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
-use Inwicast\ClarolinePluginBundle\Entity\Media;
+use Claroline\InwicastPluginBundle\Entity\Media;
 
 /**
  * MediaRepository
@@ -17,7 +17,7 @@ class MediaRepository extends EntityRepository
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select('media')
-            ->from('Inwicast\ClarolinePluginBundle\Entity\Media', 'media')
+            ->from('Claroline\InwicastPluginBundle\Entity\Media', 'media')
             ->where('media.widgetInstance = :widgetinstance')
             ->setParameter("widgetinstance", $widgetInstance);
 

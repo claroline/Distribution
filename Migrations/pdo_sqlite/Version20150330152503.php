@@ -1,6 +1,6 @@
 <?php
 
-namespace Inwicast\ClarolinePluginBundle\Migrations\pdo_sqlite;
+namespace Claroline\InwicastPluginBundle\Migrations\pdo_sqlite;
 
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;

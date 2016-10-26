@@ -1,6 +1,6 @@
 <?php
 
-namespace Inwicast\ClarolinePluginBundle\Migrations\sqlanywhere;
+namespace Claroline\InwicastPluginBundle\Migrations\sqlanywhere;
 
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Inwicast\ClarolinePluginBundle\Entity;
+namespace Claroline\InwicastPluginBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
@@ -10,7 +10,7 @@ use JMS\Serializer\Annotation as JMS;
  * Media
  *
  * @ORM\Table(name="inwicast_plugin_media")
- * @ORM\Entity(repositoryClass="Inwicast\ClarolinePluginBundle\Repository\MediaRepository")
+ * @ORM\Entity(repositoryClass="Claroline\InwicastPluginBundle\Repository\MediaRepository")
  * @JMS\ExclusionPolicy("none")
  */
 class Media

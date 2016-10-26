@@ -1,6 +1,6 @@
 <?php
 
-namespace Inwicast\ClarolinePluginBundle\Migrations\drizzle_pdo_mysql;
+namespace Claroline\InwicastPluginBundle\Migrations\drizzle_pdo_mysql;
 
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;

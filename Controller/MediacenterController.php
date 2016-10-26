@@ -9,10 +9,10 @@
  * Date: 2/19/15
  */
 
-namespace Inwicast\ClarolinePluginBundle\Controller;
+namespace Claroline\InwicastPluginBundle\Controller;
 
-use Inwicast\ClarolinePluginBundle\Entity\Mediacenter;
-use Inwicast\ClarolinePluginBundle\Exception\InvalidMediacenterFormException;
+use Claroline\InwicastPluginBundle\Entity\Mediacenter;
+use Claroline\InwicastPluginBundle\Exception\InvalidMediacenterFormException;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -22,14 +22,14 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * @Route("/inwicast/mediacenter")
  * Class MediacenterController
- * @package Inwicast\ClarolinePluginBundle\Controller
+ * @package Claroline\InwicastPluginBundle\Controller
  */
 class MediacenterController extends Controller
 {
     /**
      * @Route("/admin/configure", name="inwicast_mediacenter_configure")
      * @Method({"GET", "POST"})
-     * @Template("InwicastClarolinePluginBundle:Mediacenter:form.html.twig")
+     * @Template("ClarolineInwicastPluginBundle:Mediacenter:form.html.twig")
      * @param Request $request
      * @return array
      */
@@ -45,7 +45,7 @@ class MediacenterController extends Controller
         }
 
         $response = $this->forward(
-            "InwicastClarolinePluginBundle:Mediacenter:success",
+            "ClarolineInwicastPluginBundle:Mediacenter:success",
             array(
                 'mediacenter' => $mediacenter
             )

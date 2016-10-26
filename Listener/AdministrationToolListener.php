@@ -9,7 +9,7 @@
  * Date: 10/24/16
  */
 
-namespace Inwicast\ClarolinePluginBundle\Listener;
+namespace Claroline\InwicastPluginBundle\Listener;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\Event\OpenAdministrationToolEvent;
@@ -17,7 +17,7 @@ use Claroline\CoreBundle\Listener\AdministrationToolListener as BaseAdministrati
 
 /**
  * Class AdministrationToolListener
- * @package Inwicast\ClarolinePluginBundle\Listener
+ * @package Claroline\InwicastPluginBundle\Listener
  *
  * @DI\Service()
  */
@@ -30,6 +30,6 @@ class AdministrationToolListener extends BaseAdministrationToolListener
      */
     public function onOpenInwicastConfiguration(OpenAdministrationToolEvent $event)
     {
-        $this->redirect(['_controller' => 'InwicastClarolinePluginBundle:Mediacenter:configure'], $event);
+        $this->redirect(['_controller' => 'ClarolineInwicastPluginBundle:Mediacenter:configure'], $event);
     }
 }

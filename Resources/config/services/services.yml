@@ -1,9 +1,9 @@
 parameters:
-    inwicast.plugin.mediacenter.class:                Inwicast\ClarolinePluginBundle\Entity\Mediacenter
-    inwicast.plugin.repository.mediacenter.class:     Inwicast\ClarolinePluginBundle\Repository\MediacenterRepository
-    inwicast.plugin.media.class:                      Inwicast\ClarolinePluginBundle\Entity\Media
-    inwicast.plugin.repository.media.class:           Inwicast\ClarolinePluginBundle\Repository\MediaRepository
-    inwicast.plugin.repository.mediacenteruser.class: Inwicast\ClarolinePluginBundle\Repository\MediacenterUserRepository
+    inwicast.plugin.mediacenter.class:                Claroline\InwicastPluginBundle\Entity\Mediacenter
+    inwicast.plugin.repository.mediacenter.class:     Claroline\InwicastPluginBundle\Repository\MediacenterRepository
+    inwicast.plugin.media.class:                      Claroline\InwicastPluginBundle\Entity\Media
+    inwicast.plugin.repository.media.class:           Claroline\InwicastPluginBundle\Repository\MediaRepository
+    inwicast.plugin.repository.mediacenteruser.class: Claroline\InwicastPluginBundle\Repository\MediacenterUserRepository
 
 services:
     inwicast.plugin.repository.mediacenter:
