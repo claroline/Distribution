@@ -9,7 +9,7 @@
  * Date: 2/20/15
  */
 
-namespace Inwicast\ClarolinePluginBundle\Form;
+namespace Claroline\InwicastPluginBundle\Form;
 
 
 use JMS\DiExtraBundle\Annotation as DI;
@@ -19,7 +19,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * Class MediacenterType
- * @package Inwicast\ClarolinePluginBundle\Form
+ * @package Claroline\InwicastPluginBundle\Form
  *
  * @DI\FormType;
  */
@@ -52,7 +52,7 @@ class MediacenterType extends AbstractType
         $resolver->setDefaults(
             array(
                 'translation_domain' => 'widget',
-                'data_class'         => 'Inwicast\ClarolinePluginBundle\Entity\Mediacenter',
+                'data_class'         => 'Claroline\InwicastPluginBundle\Entity\Mediacenter',
                 'csrf_protection'    => true
             )
         );

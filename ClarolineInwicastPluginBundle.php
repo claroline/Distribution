@@ -9,12 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Inwicast\ClarolinePluginBundle;
+namespace Claroline\InwicastPluginBundle;
 
 use Claroline\CoreBundle\Library\PluginBundle;
 use Claroline\KernelBundle\Bundle\ConfigurationBuilder;
 
-class InwicastClarolinePluginBundle extends PluginBundle
+class ClarolineInwicastPluginBundle extends PluginBundle
 {
     public function getConfiguration($environment)
     {

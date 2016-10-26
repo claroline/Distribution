@@ -9,10 +9,10 @@
  * Date: 4/3/15
  */
 
-namespace Inwicast\ClarolinePluginBundle\Installation;
+namespace Claroline\InwicastPluginBundle\Installation;
 
 use Claroline\InstallationBundle\Additional\AdditionalInstaller as BaseInstaller;
-use Inwicast\ClarolinePluginBundle\Installation\Updater;
+use Claroline\InwicastPluginBundle\Installation\Updater;
 
 class AdditionalInstaller extends BaseInstaller
 {

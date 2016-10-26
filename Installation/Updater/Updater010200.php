@@ -9,7 +9,7 @@
  * Date: 4/3/15
  */
 
-namespace Inwicast\ClarolinePluginBundle\Installation\Updater;
+namespace Claroline\InwicastPluginBundle\Installation\Updater;
 
 
 use Claroline\CoreBundle\Entity\Tool\Tool;

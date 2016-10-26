@@ -9,24 +9,24 @@
  * Date: 2/19/15
  */
 
-namespace Inwicast\ClarolinePluginBundle\Manager;
+namespace Claroline\InwicastPluginBundle\Manager;
 
 use Claroline\CoreBundle\Entity\User;
-use Inwicast\ClarolinePluginBundle\Entity\Mediacenter;
-use Inwicast\ClarolinePluginBundle\Repository\MediacenterUserRepository;
+use Claroline\InwicastPluginBundle\Entity\Mediacenter;
+use Claroline\InwicastPluginBundle\Repository\MediacenterUserRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
  * Class MediacenterUserManager
- * @package Inwicast\ClarolinePluginBundle\Manager
+ * @package Claroline\InwicastPluginBundle\Manager
  *
  * @DI\Service("inwicast.plugin.manager.mediacenteruser")
  */
 class MediacenterUserManager
 {
     /**
-     * @var \Inwicast\ClarolinePluginBundle\Repository\MediacenterUserRepository
+     * @var \Claroline\InwicastPluginBundle\Repository\MediacenterUserRepository
      */
     private $mediacenterUserRepository;
 

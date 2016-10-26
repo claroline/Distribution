@@ -1,4 +1,4 @@
 inwicast_claroline:
-    resource: "@InwicastClarolinePluginBundle/Controller/"
+    resource: "@ClarolineInwicastPluginBundle/Controller/"
     type:     annotation
     prefix:   /
