@@ -27,7 +27,7 @@ class PairTypeValidator extends JsonSchemaValidator implements QuestionHandlerIn
      * Performs additional validations.
      *
      * @param \stdClass $question
-     * @param array $options
+     * @param array     $options
      *
      * @return array
      */

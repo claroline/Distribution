@@ -36,7 +36,7 @@ class MatchTypeValidator extends JsonSchemaValidator implements QuestionHandlerI
 
     /**
      * Checks :
-     *  - The solutions IDs are consistent with proposals and labels IDs
+     *  - The solutions IDs are consistent with proposals and labels IDs.
      *
      * @param \stdClass $question
      *

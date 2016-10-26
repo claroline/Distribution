@@ -1,9 +1,5 @@
 <?php
 
-/**
- * To import a QCM question in QTI.
- */
-
 namespace UJM\ExoBundle\Services\classes\QTI;
 
 use UJM\ExoBundle\Entity\Coords;
@@ -11,6 +7,9 @@ use UJM\ExoBundle\Entity\InteractionGraphic;
 use UJM\ExoBundle\Entity\Picture;
 use UJM\ExoBundle\Library\Question\QuestionType;
 
+/**
+ * To import a QCM question in QTI.
+ */
 class GraphicImport extends QtiImport
 {
     protected $interactionGraph;
@@ -18,13 +17,13 @@ class GraphicImport extends QtiImport
     /**
      * Implements the abstract method.
      *
-     * @param qtiRepository $qtiRepos
-     * @param DOMElement    $assessmentItem assessmentItem of the question to imported
+     * @param QtiRepository $qtiRepos
+     * @param \DOMElement   $assessmentItem assessmentItem of the question to imported
      * @param string        $path           parent directory of the files
      *
-     * @return UJM\ExoBundle\Entity\InteractionGraphic
+     * @return InteractionGraphic
      */
-    public function import(qtiRepository $qtiRepos, $assessmentItem, $path)
+    public function import(QtiRepository $qtiRepos, $assessmentItem, $path)
     {
         $this->qtiRepos = $qtiRepos;
         $this->path = $path;
@@ -198,10 +197,12 @@ class GraphicImport extends QtiImport
      */
     protected function qtiValidate()
     {
-        if ($this->assessmentItem->getElementsByTagName('areaMapping')->item(0) == null) {
+        $am = $this->assessmentItem->getElementsByTagName('areaMapping')->item(0);
+
+        if (!isset($am)) {
             return false;
         }
-        $am = $this->assessmentItem->getElementsByTagName('areaMapping')->item(0);
+
         foreach ($am->getElementsByTagName('areaMapEntry') as $areaMapEntry) {
             $tabCoords = explode(',', $areaMapEntry->getAttribute('coords'));
             if (!isset($tabCoords[0]) || !isset($tabCoords[1]) || !isset($tabCoords[2])) {

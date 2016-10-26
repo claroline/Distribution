@@ -27,7 +27,7 @@ class SetTypeValidator extends JsonSchemaValidator implements QuestionHandlerInt
      * Performs additional validations.
      *
      * @param \stdClass $question
-     * @param array $options
+     * @param array     $options
      *
      * @return array
      */
@@ -44,7 +44,7 @@ class SetTypeValidator extends JsonSchemaValidator implements QuestionHandlerInt
 
     /**
      * Validates the solution of the question.
-     * 
+     *
      * Checks :
      *  - The solution `memberId` must match the `members` IDs.
      *  - The solution `setId` must match the `sets` IDs.

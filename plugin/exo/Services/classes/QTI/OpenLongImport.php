@@ -1,13 +1,12 @@
 <?php
 
-/**
- * To import a long open question.
- */
-
 namespace UJM\ExoBundle\Services\classes\QTI;
 
 use UJM\ExoBundle\Library\Question\QuestionType;
 
+/**
+ * To import a long open question.
+ */
 class OpenLongImport extends OpenImport
 {
     /**
