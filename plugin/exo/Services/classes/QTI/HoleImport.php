@@ -5,6 +5,7 @@ namespace UJM\ExoBundle\Services\classes\QTI;
 use UJM\ExoBundle\Entity\Hole;
 use UJM\ExoBundle\Entity\InteractionHole;
 use UJM\ExoBundle\Entity\WordResponse;
+use UJM\ExoBundle\Library\Question\QuestionType;
 
 /**
  * To import a question with holes in QTI.
@@ -36,7 +37,7 @@ class HoleImport extends QtiImport
             return false;
         }
 
-        $this->createQuestion(InteractionHole::TYPE);
+        $this->createQuestion(InteractionHole::TYPE, QuestionType::CLOZE);
         $this->createInteractionHole();
 
         $this->om->forceFlush();

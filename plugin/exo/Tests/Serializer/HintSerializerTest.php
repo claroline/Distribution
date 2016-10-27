@@ -115,7 +115,7 @@ class HintSerializerTest extends JsonDataTestCase
     }
 
     /**
-     * Compares the data between a hint entity and a keyword raw object.
+     * Compares the data between a hint entity and a hint raw object.
      *
      * @param Hint      $hint
      * @param \stdClass $hintData

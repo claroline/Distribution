@@ -8,26 +8,26 @@ use UJM\ExoBundle\Library\Question\QuestionType;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
 
 /**
- * @DI\Service("ujm_exo.validator.question_choice")
+ * @DI\Service("ujm_exo.validator.question_set")
  * @DI\Tag("ujm_exo.question.validator")
  */
-class ChoiceTypeValidator extends JsonSchemaValidator implements QuestionHandlerInterface
+class SetTypeValidator extends JsonSchemaValidator implements QuestionHandlerInterface
 {
     public function getQuestionMimeType()
     {
-        return QuestionType::CHOICE;
+        return QuestionType::SET;
     }
 
     public function getJsonSchemaUri()
     {
-        return 'question/choice/schema.json';
+        return 'question/set/schema.json';
     }
 
     /**
      * Performs additional validations.
      *
-     * @param mixed $question
-     * @param array $options
+     * @param \stdClass $question
+     * @param array     $options
      *
      * @return array
      */
@@ -46,8 +46,8 @@ class ChoiceTypeValidator extends JsonSchemaValidator implements QuestionHandler
      * Validates the solution of the question.
      *
      * Checks :
-     *  - The solutions IDs are consistent with choices IDs
-     *  - There is at least one solution with a positive score.
+     *  - The solution `memberId` must match the `members` IDs.
+     *  - The solution `setId` must match the `sets` IDs.
      *
      * @param \stdClass $question
      *
@@ -57,31 +57,30 @@ class ChoiceTypeValidator extends JsonSchemaValidator implements QuestionHandler
     {
         $errors = [];
 
-        // check solution IDs are consistent with choice IDs
-        $choiceIds = array_map(function ($choice) {
-            return $choice->id;
-        }, $question->choices);
+        // check solution IDs are consistent with set IDs
+        $setIds = array_map(function ($set) {
+            return $set->id;
+        }, $question->sets);
 
-        $maxScore = -1;
+        // check solution IDs are consistent with member IDs
+        $memberIds = array_map(function ($member) {
+            return $member->id;
+        }, $question->members);
+
         foreach ($question->solutions as $index => $solution) {
-            if (!in_array($solution->id, $choiceIds)) {
+            if (!in_array($solution->setId, $setIds)) {
                 $errors[] = [
                     'path' => "/solutions[{$index}]",
-                    'message' => "id {$solution->id} doesn't match any choice id",
+                    'message' => "id {$solution->setId} doesn't match any set id",
                 ];
             }
 
-            if ($solution->score > $maxScore) {
-                $maxScore = $solution->score;
+            if (!in_array($solution->memberId, $memberIds)) {
+                $errors[] = [
+                    'path' => "/solutions[{$index}]",
+                    'message' => "id {$solution->memberId} doesn't match any member id",
+                ];
             }
-        }
-
-        // check there is a positive score solution
-        if ($maxScore <= 0) {
-            $errors[] = [
-                'path' => '/solutions',
-                'message' => 'There is no solution with a positive score',
-            ];
         }
 
         return $errors;

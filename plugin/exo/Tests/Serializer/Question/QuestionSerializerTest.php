@@ -29,37 +29,64 @@ class QuestionSerializerTest extends JsonDataTestCase
 
     public function testSerializedDataAreSchemaValid()
     {
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
     }
 
     public function testSerializedDataAreCorrectlySet()
     {
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
     }
 
     public function testDeserializedDataAreCorrectlySet()
     {
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
     }
 
     public function testAddHint()
     {
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
     }
 
     public function testRemoveHint()
     {
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
     }
 
     public function testAddQuestionObject()
     {
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
     }
 
     public function testRemoveQuestionObject()
     {
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
     }
 
     public function testAddQuestionResource()
     {
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
     }
 
     public function testRemoveQuestionResource()
     {
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
     }
 }

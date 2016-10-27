@@ -42,7 +42,10 @@ class QuestionListener
      */
     public function prePersist(Question $question, LifecycleEventArgs $event)
     {
-        $event->getEntityManager()->persist($question->getInteraction());
+        $interaction = $question->getInteraction();
+        if (null !== $interaction) {
+            $event->getEntityManager()->persist($interaction);
+        }
     }
 
     /**
@@ -53,6 +56,9 @@ class QuestionListener
      */
     public function preRemove(Question $question, LifecycleEventArgs $event)
     {
-        $event->getEntityManager()->remove($question->getInteraction());
+        $interaction = $question->getInteraction();
+        if (null !== $interaction) {
+            $event->getEntityManager()->persist($interaction);
+        }
     }
 }

@@ -36,8 +36,7 @@ class MatchTypeValidator extends JsonSchemaValidator implements QuestionHandlerI
 
     /**
      * Checks :
-     *  - The solutions IDs are consistent with proposals and labels IDs
-     *  - There is at least one solution with a positive score.
+     *  - The solutions IDs are consistent with proposals and labels IDs.
      *
      * @param \stdClass $question
      *
@@ -56,7 +55,6 @@ class MatchTypeValidator extends JsonSchemaValidator implements QuestionHandlerI
             return $label->id;
         }, $question->secondSet);
 
-        $maxScore = -1;
         foreach ($question->solutions as $index => $solution) {
             if (!in_array($solution->firstId, $proposalIds)) {
                 $errors[] = [
@@ -71,18 +69,6 @@ class MatchTypeValidator extends JsonSchemaValidator implements QuestionHandlerI
                     'message' => "id {$solution->secondId} doesn't match any label id",
                 ];
             }
-
-            if ($solution->score > $maxScore) {
-                $maxScore = $solution->score;
-            }
-        }
-
-        // check there is a positive score solution
-        if ($maxScore <= 0) {
-            $errors[] = [
-                'path' => '/solutions',
-                'message' => 'there is no solution with a positive score',
-            ];
         }
 
         return $errors;

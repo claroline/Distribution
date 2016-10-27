@@ -8,21 +8,29 @@ use UJM\ExoBundle\Library\Question\QuestionType;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
 
 /**
- * @DI\Service("ujm_exo.validator.question_graphic")
+ * @DI\Service("ujm_exo.validator.question_pair")
  * @DI\Tag("ujm_exo.question.validator")
  */
-class GraphicTypeValidator extends JsonSchemaValidator implements QuestionHandlerInterface
+class PairTypeValidator extends JsonSchemaValidator implements QuestionHandlerInterface
 {
     public function getQuestionMimeType()
     {
-        return QuestionType::GRAPHIC;
+        return QuestionType::PAIR;
     }
 
     public function getJsonSchemaUri()
     {
-        return 'question/graphic/schema.json';
+        return 'question/pair/schema.json';
     }
 
+    /**
+     * Performs additional validations.
+     *
+     * @param \stdClass $question
+     * @param array     $options
+     *
+     * @return array
+     */
     public function validateAfterSchema($question, array $options = [])
     {
         $errors = [];
@@ -35,8 +43,14 @@ class GraphicTypeValidator extends JsonSchemaValidator implements QuestionHandle
     }
 
     /**
+     * Validates the solution of the question.
+     *
      * Checks :
-     *  - There is at least one solution with a positive score.
+     *  - The solution `leftId` must match the `left` IDs.
+     *  - The solution `rightId` must match the `right` IDs.
+     *  - The `left` elements are only linked to one `right` in the solutions
+     *  - If only 1 `left`, at least 2 `right` are required.
+     *  - If only 1 `right`, at least 2 `left` are required.
      *
      * @param \stdClass $question
      *
@@ -44,23 +58,6 @@ class GraphicTypeValidator extends JsonSchemaValidator implements QuestionHandle
      */
     protected function validateSolutions(\stdClass $question)
     {
-        $errors = [];
-
-        $maxScore = -1;
-        foreach ($question->solutions as $solution) {
-            if ($solution->score > $maxScore) {
-                $maxScore = $solution->score;
-            }
-        }
-
-        // check there is a positive score solution
-        if ($maxScore <= 0) {
-            $errors[] = [
-                'path' => '/solutions',
-                'message' => 'There is no solution with a positive score',
-            ];
-        }
-
-        return $errors;
+        return [];
     }
 }
