@@ -4,10 +4,6 @@ import Popover from 'react-bootstrap/lib/Popover'
 import Button from 'react-bootstrap/lib/Button'
 import classes from 'classnames'
 
-import {
-  makeNewItem
-} from './match'
-
 const T = React.PropTypes
 
 /* global jsPlumb */
@@ -243,8 +239,6 @@ class Match extends Component {
 
   removeConnection(){
     jsPlumb.detach(this.state.jsPlumbConnection)
-    const firstSetId = this.state.jsPlumbConnection.sourceId.replace('source_', '')
-    const secondSetId = this.state.jsPlumbConnection.targetId.replace('target_', '')
     // TODO also delete the corresponding solution in props
     this.setState({
       popover: {
@@ -271,12 +265,10 @@ class Match extends Component {
   }
 
   addFirstSetItem(){
-    const item = makeNewItem()
     // TODO add new item to firstSet prop
   }
 
   addSecondSetItem(){
-    const item = makeNewItem()
     // TODO add new item to secondSet prop
   }
 
@@ -312,7 +304,7 @@ class Match extends Component {
         <div className="row" onClick={this.handlePopoverFocusOut.bind(this)}>
           <div className="col-md-5 text-center">
             <div className="items-container">
-            {this.props.firstSet.map((item, index) =>
+            {this.props.firstSet.map((item) =>
               <MatchItem key={'source_' + item.id} item={item} type="source" />
             )}
             </div>
@@ -333,7 +325,7 @@ class Match extends Component {
           </div>
           <div className="col-md-5 text-center">
             <div className="items-container">
-              {this.props.secondSet.map((item, index) =>
+              {this.props.secondSet.map((item) =>
                 <MatchItem key={'target_' + item.id} item={item} type="target" />
               )}
             </div>

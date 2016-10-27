@@ -31,7 +31,7 @@ function initialFormValues(words) {
 
 }
 
-function validateFormValues(values) {
+function validateFormValues() {
   const errors = {}
   return errors
 }

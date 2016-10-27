@@ -72,7 +72,7 @@ export function makeNewItem(){
   }
 }
 
-function validateFormValues(values) {
+function validateFormValues() {
   const errors = {}
   return errors
 }

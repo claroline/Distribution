@@ -65,7 +65,7 @@ function initialFormValues(question) {
   })
 }
 
-function validateFormValues(values) {
+function validateFormValues() {
   const errors = {}
   return errors
 }
