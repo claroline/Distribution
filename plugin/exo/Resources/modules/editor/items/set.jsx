@@ -25,14 +25,14 @@ class MemberItem extends Component {
       <div className="member-container">
         <div className="text-fields">
           <textarea
-            className="form-control claroline-tiny-mce hide"
+            className="form-control"
             value={getMemberData(this.props.solution.memberId, this.props.members)}
             onChange={() => {}}
           />
         {this.state.showFeedback &&
           <div className="feedback-container">
             <textarea
-              className="form-control claroline-tiny-mce hide"
+              className="form-control"
               value={this.props.solution.feedback}
               onChange={() => {}}
             />
@@ -203,7 +203,7 @@ class OddsPanel extends Component {
               <div className="member-container">
                 <div className="text-fields">
                   <textarea
-                    className="form-control claroline-tiny-mce hide"
+                    className="form-control"
                     value={'I am an ODD'}
                     onChange={() => {}}
                   />
