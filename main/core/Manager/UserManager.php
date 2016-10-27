@@ -45,7 +45,7 @@ class UserManager
 {
     use LoggableTrait;
 
-    const MAX_USER_BATCH_SIZE = 20;
+    const MAX_USER_BATCH_SIZE = 100;
     const MAX_EDIT_BATCH_SIZE = 100;
 
     private $container;
@@ -147,7 +147,8 @@ class UserManager
         $model = null,
         $publicUrl = null,
         $organizations = [],
-        $forcePersonalWorkspace = null
+        $forcePersonalWorkspace = null,
+        $forceRoleValidation = true
     ) {
         $additionnalRoles = [];
 
@@ -164,13 +165,11 @@ class UserManager
         $user->setGuid($this->container->get('claroline.utilities.misc')->generateGuid());
         $user->setEmailValidationHash($this->container->get('claroline.utilities.misc')->generateGuid());
         $user->setOrganizations($organizations);
-        $this->objectManager->persist($user);
         $publicUrl ? $user->setPublicUrl($publicUrl) : $user->setPublicUrl($this->generatePublicUrl($user));
         $this->toolManager->addRequiredToolsToUser($user, 0);
         $this->toolManager->addRequiredToolsToUser($user, 1);
-        $this->roleManager->setRoleToRoleSubject($user, PlatformRoles::USER);
-        $this->objectManager->persist($user);
-        $this->strictEventDispatcher->dispatch('log', 'Log\LogUserCreate', [$user]);
+        $roleUser = $this->roleManager->getRoleByName(PlatformRoles::USER);
+        $user->addRole($roleUser);
         $this->roleManager->createUserRole($user);
 
         foreach ($additionnalRoles as $role) {
@@ -186,16 +185,12 @@ class UserManager
                 $password = sha1(rand(1000, 10000).$user->getUsername().$user->getSalt());
                 $user->setResetPasswordHash($password);
                 $user->setIsEnabled(false);
-                $this->objectManager->persist($user);
-                $this->objectManager->flush();
                 $this->mailManager->sendEnableAccountMessage($user);
             } elseif ($mailValidation === PlatformConfiguration::REGISTRATION_MAIL_VALIDATION_PARTIAL) {
                 //don't change anything
                 $this->mailManager->sendCreationMessage($user);
             }
         }
-
-        $this->strictEventDispatcher->dispatch('user_created_event', 'UserCreated', ['user' => $user]);
 
         if ($forcePersonalWorkspace !== null) {
             if ($forcePersonalWorkspace) {
@@ -207,6 +202,9 @@ class UserManager
             }
         }
 
+        $this->objectManager->persist($user);
+        $this->strictEventDispatcher->dispatch('user_created_event', 'UserCreated', ['user' => $user]);
+        $this->strictEventDispatcher->dispatch('log', 'Log\LogUserCreate', [$user]);
         $this->objectManager->endFlushSuite();
 
         return $user;
@@ -419,6 +417,8 @@ class UserManager
         $this->objectManager->startFlushSuite();
         $i = 1;
         $j = 0;
+        $countCreated = 0;
+        $countUpdated = 0;
 
         foreach ($users as $user) {
             $firstName = $user[0];
@@ -496,7 +496,15 @@ class UserManager
                 $group = null;
             }
 
-            $userEntity = $this->getUserByUsernameOrMail($username, $email);
+            $userEntity = $this->userRepo->findOneByMail($email);
+
+            if (!$userEntity) {
+                $userEntity = $this->userRepo->findOneByUsername($username);
+                if (!$userEntity && $code !== null) {
+                    //the code isn't required afaik
+                    $userEntity = $this->userRepo->findOneByAdministrativeCode($code);
+                }
+            }
 
             if ($userEntity && $options['ignore-update']) {
                 $logger(" Skipping  {$userEntity->getUsername()}...");
@@ -508,10 +516,13 @@ class UserManager
             if (!$userEntity) {
                 $isNew = true;
                 $userEntity = new User();
-                $userEntity->setUsername($username);
-                $userEntity->setMail($email);
+                ++$countCreated;
+            } else {
+                ++$countUpdated;
             }
 
+            $userEntity->setUsername($username);
+            $userEntity->setMail($email);
             $userEntity->setFirstName($firstName);
             $userEntity->setLastName($lastName);
             $userEntity->setPlainPassword($pwd);
@@ -539,7 +550,8 @@ class UserManager
                     $model,
                     $username.uniqid(),
                     $organizations,
-                    $hasPersonalWorkspace
+                    $hasPersonalWorkspace,
+                    false
                 );
             }
 
@@ -582,6 +594,8 @@ class UserManager
         }
 
         $this->objectManager->endFlushSuite();
+        $logger($countCreated.' users created.');
+        $logger($countUpdated.' users updated.');
 
         return $returnValues;
     }
@@ -1243,6 +1257,11 @@ class UserManager
         );
     }
 
+    public function getUserByUsernameOrMailOrCode($username, $mail, $code)
+    {
+        return $this->userRepo->findUserByUsernameOrMailOrCode($username, $mail, $code);
+    }
+
     public function getUserByUsernameAndMail($username, $mail, $executeQuery = true)
     {
         return $this->userRepo->findUserByUsernameAndMail(
@@ -1261,7 +1280,7 @@ class UserManager
     {
         $archive = new \ZipArchive();
         $archive->open($filepath);
-        $tmpDir = sys_get_temp_dir().DIRECTORY_SEPARATOR.uniqid();
+        $tmpDir = $this->platformConfigHandler->getParameter('tmp_dir').DIRECTORY_SEPARATOR.uniqid();
         //add the tmp dir to the "trash list files"
         $tmpList = $this->container->getParameter('claroline.param.platform_generated_archive_path');
         file_put_contents($tmpList, $tmpDir."\n", FILE_APPEND);

@@ -204,7 +204,7 @@ class TransferManager
         );
 
         //batch import with default template shouldn't be flushed
-        if (strpos($template->getPathname(), 'default.zip') === false) {
+        if (strpos($template->getPathname(), 'default.zip') === false && strpos($template->getPathname(), 'personal.zip') === false) {
             $this->om->forceFlush();
         }
 
@@ -257,9 +257,13 @@ class TransferManager
         foreach ($data['tools'] as $tool) {
             $importer = $this->getImporterByName($tool['tool']['type']);
 
-            if (isset($tool['tool']['data']) && $importer instanceof RichTextInterface) {
-                $data['data'] = $tool['tool']['data'];
-                $importer->format($data);
+            if ($importer) {
+                $importer->setWorkspace($workspace);
+
+                if (isset($tool['tool']['data']) && $importer instanceof RichTextInterface) {
+                    $data['data'] = $tool['tool']['data'];
+                    $importer->format($data);
+                }
             }
         }
 
@@ -309,7 +313,8 @@ class TransferManager
         //generate the archive in a temp dir
         $content = Yaml::dump($data, 10);
         //zip and returns the archive
-        $archDir = sys_get_temp_dir().DIRECTORY_SEPARATOR.uniqid();
+        $archDir = $this->container->get('claroline.config.platform_config_handler')->getParameter('tmp_dir')
+            .DIRECTORY_SEPARATOR.uniqid();
         $archPath = $archDir.DIRECTORY_SEPARATOR.'archive.zip';
         mkdir($archDir);
         $manifestPath = $archDir.DIRECTORY_SEPARATOR.'manifest.yml';
@@ -328,6 +333,8 @@ class TransferManager
         } else {
             throw new \Exception('Unable to create archive . '.$archPath.' (error '.$success.')');
         }
+
+        $this->container->get('claroline.core_bundle.listener.kernel_terminate_listener')->addElementToRemove($archPath);
 
         return $archPath;
     }
@@ -367,7 +374,8 @@ class TransferManager
         //generate the archive in a temp dir
         $content = Yaml::dump($data, 10);
         //zip and returns the archive
-        $archDir = sys_get_temp_dir().DIRECTORY_SEPARATOR.uniqid();
+        $archDir = $this->container->get('claroline.config.platform_config_handler')->getParameter('tmp_dir')
+            .DIRECTORY_SEPARATOR.uniqid();
         $archPath = $archDir.DIRECTORY_SEPARATOR.'archive.zip';
         mkdir($archDir);
         $manifestPath = $archDir.DIRECTORY_SEPARATOR.'manifest.yml';
@@ -386,6 +394,8 @@ class TransferManager
         } else {
             throw new \Exception('Unable to create archive . '.$archPath.' (error '.$success.')');
         }
+
+        $this->container->get('claroline.core_bundle.listener.kernel_terminate_listener')->addElementToRemove($archPath);
 
         return $archPath;
     }

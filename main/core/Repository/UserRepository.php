@@ -406,7 +406,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
      *
      * @return int
      */
-    public function countUsersByRole($role, $restrictionRoleNames)
+    public function countUsersByRole(Role $role, $restrictionRoleNames = null)
     {
         $qb = $this->createQueryBuilder('user')
             ->select('COUNT(DISTINCT user.id)')
@@ -1138,6 +1138,24 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         $query->setParameter('mail', $mail);
 
         return $executeQuery ? $query->getOneOrNullResult() : $query;
+    }
+
+    public function findUserByUsernameOrMailOrCode($username, $mail, $code)
+    {
+        $dql = '
+            SELECT u
+            FROM Claroline\CoreBundle\Entity\User u
+            WHERE u.username = :username
+            OR u.mail = :mail
+            OR u.administrativeCode = :code
+        ';
+
+        $query = $this->_em->createQuery($dql);
+        $query->setParameter('username', $username);
+        $query->setParameter('mail', $mail);
+        $query->setParameter('code', $code);
+
+        return $query->getOneOrNullResult();
     }
 
     public function findUserByUsernameAndMail($username, $mail, $executeQuery = true)

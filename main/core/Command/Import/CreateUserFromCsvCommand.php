@@ -14,6 +14,8 @@ namespace Claroline\CoreBundle\Command\Import;
 use Claroline\CoreBundle\Command\Traits\BaseCommandTrait;
 use Claroline\CoreBundle\Library\Logger\ConsoleLogger;
 use Claroline\CoreBundle\Listener\DoctrineDebug;
+use Claroline\CoreBundle\Validator\Constraints\CsvUser;
+use Psr\Log\LogLevel;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -42,6 +44,12 @@ class CreateUserFromCsvCommand extends ContainerAwareCommand
             InputOption::VALUE_NONE,
             'When set to true, updates are not triggered'
         );
+        $this->addOption(
+            'validate',
+            'c',
+            InputOption::VALUE_NONE,
+            'When set to true, validate the csv'
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -49,13 +57,30 @@ class CreateUserFromCsvCommand extends ContainerAwareCommand
         //validate the csv file...
         $consoleLogger = ConsoleLogger::get($output);
         $om = $this->getContainer()->get('claroline.persistence.object_manager');
-        $om->setLogger($consoleLogger)->activateLog();
-        $this->getContainer()->get('claroline.doctrine.debug')->setLogger($consoleLogger)
+
+        if ($output->isDebug()) {
+            $om->setLogger($consoleLogger)->activateLog();
+            $this->getContainer()->get('claroline.doctrine.debug')->setLogger($consoleLogger)
             ->activateLog()
             ->setDebugLevel(DoctrineDebug::DEBUG_ALL)
             ->setVendor('Claroline');
+        }
+
         $file = $input->getArgument('csv_user_path');
         $lines = str_getcsv(file_get_contents($file), PHP_EOL);
+
+        if ($input->getOption('validate')) {
+            $validator = $this->getContainer()->get('validator');
+            $constraint = new CsvUser(1);
+            $errors = $validator->validateValue($file, $constraint);
+
+            if (count($errors)) {
+                foreach ($errors as $error) {
+                    $output->writeln("<error> {$error->getMessage()} </error>");
+                }
+                throw new \Exception('The csv file is incorrect');
+            }
+        }
 
         foreach ($lines as $line) {
             $users[] = str_getcsv($line, ';');
@@ -67,8 +92,8 @@ class CreateUserFromCsvCommand extends ContainerAwareCommand
         $userManager->importUsers(
             $users,
             false,
-            function ($message) use ($output) {
-                $output->writeln($message);
+            function ($message) use ($consoleLogger) {
+                $consoleLogger->log(LogLevel::DEBUG, $message);
             },
             [],
             false,

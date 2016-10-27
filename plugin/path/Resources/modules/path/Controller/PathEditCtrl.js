@@ -96,6 +96,8 @@ export default class PathEditCtrl extends PathBaseCtrl {
           this.published = true
           this.unsaved   = false
 
+          this.historyService.clear()
+
           if (this.path.steps[0] !== 'undefined') {
             this.pathService.goTo(this.path.steps[0])
           }
@@ -150,6 +152,6 @@ export default class PathEditCtrl extends PathBaseCtrl {
   }
 
   unlockManager() {
-    this.window.location.href = this.UrlGenerator('innova_path_manage_results', {id: this.id})
+    this.window.location.href = this.UrlGenerator('innova_path_manage_results', {id: this.path.id})
   }
 }

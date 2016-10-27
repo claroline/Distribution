@@ -34,6 +34,8 @@
     "lodash": "^4.16.1",
     "mocha": "^2.5.3",
     "moment": "^2.15.1",
+    "modernizr": "^3.3.1",
+    "modernizr-loader": "0.0.5",
     "postcss-cli": "^2.5.0",
     "raw-loader": "^0.5.1",
     "react": "^15.3.1",
