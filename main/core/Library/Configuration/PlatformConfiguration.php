@@ -86,6 +86,8 @@ class PlatformConfiguration
     private $formHoneypot;
     private $sslEnabled;
     private $enableRichTextFileImport;
+    private $loginTargetRoute;
+    private $tmpDir;
 
     /**
      * @param mixed $sessionDbDataCol
@@ -777,5 +779,25 @@ class PlatformConfiguration
     public function getEnableRichTextFileImport()
     {
         return $this->enableRichTextFileImport;
+    }
+
+    public function setLoginTargetRoute($loginTargetRoute)
+    {
+        $this->loginTargetRoute = $loginTargetRoute;
+    }
+
+    public function getLoginTargetRoute()
+    {
+        return $this->loginTargetRoute;
+    }
+
+    public function setTmpDir($tmpDir)
+    {
+        $this->tmpDir = $tmpDir;
+    }
+
+    public function getTmpDir()
+    {
+        return $this->tmpDir;
     }
 }

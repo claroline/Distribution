@@ -313,7 +313,7 @@ a[role=tab] {
 }
 
 .quiz-editor .choice-items .choice-score {
-  width: 60px;
+  width: 70px;
   margin-right: 8px;
 }
 
@@ -338,6 +338,288 @@ a[role=tab] {
 .quiz-editor .choice-items .right-controls [role=button]{
   margin-left: 8px;
 }
+
+/* WORDS */
+
+.quiz-editor .words-items {
+  padding: 0;
+}
+
+.quiz-editor .words-items li {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.quiz-editor .words-items li > div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.quiz-editor .words-items .feedback-container {
+  padding-left: 20px;
+}
+
+.quiz-editor .words-items .footer {
+  margin-left: 20px;
+  margin-right: 98px;
+  text-align: center;
+}
+
+.quiz-editor .words-items .texts-fields {
+  flex-grow: 1;
+}
+
+.quiz-editor .words-items .right-controls {
+  display: flex;
+  flex-direction: row;
+}
+
+.quiz-editor .words-items .right-controls .word-score {
+  width: 70px;
+}
+
+.quiz-editor .words-items .case-sensitive-checkbox {
+  margin: 10px;
+}
+
+.quiz-editor .words-items .right-controls [role=button] {
+  margin-left: 8px;
+}
+
+/* SETS */
+.quiz-editor .set-question-container {
+  padding: 0;
+}
+
+.quiz-editor .set-question-container li {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.quiz-editor .set-question-container li > div {
+  display: flex;
+  justify-content: space-between;
+}
+
+
+.quiz-editor .set-question-container .text-editor {
+  margin-right: 12px;
+}
+
+.quiz-editor .set-question-container .solution-score {
+  width: 70px;
+  margin-right: 8px;
+}
+
+.quiz-editor .set-question-container .feedback-container {
+  padding-left: 20px;
+  padding-top: 5px;
+}
+
+.quiz-editor .set-question-container .add-set-footer {
+  margin-top: 10px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.quiz-editor .set-question-container .member-container{
+  display: flex;
+  margin-bottom: 5px;
+}
+
+.quiz-editor .set-question-container .text-fields {
+  flex-grow: 1;
+  margin-right: 5px;
+}
+
+.quiz-editor .set-question-container .right-controls {
+  display: flex;
+}
+
+.quiz-editor .set-question-container .right-controls [role=button]{
+  margin-left: 8px;
+}
+
+/* MATCH */
+
+.quiz-editor .match-question-container {
+  padding: 0;
+}
+
+.quiz-editor .match-question-container .text-editor {
+  margin-right: 12px;
+}
+
+.quiz-editor .match-question-container .solution-score {
+  width: 60px;
+  margin-right: 8px;
+}
+
+.quiz-editor .match-question-container .feedback-container {
+  padding-left: 20px;
+  padding-top: 5px;
+}
+
+.quiz-editor .match-question-container .add-set-footer {
+  margin-top: 10px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.quiz-editor .match-question-container .items-container {
+  display: flex;
+  margin-bottom: 5px;
+}
+
+.quiz-editor .match-question-container .items-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.quiz-editor .match-question-container .items-container .item-flex-row {
+  display: flex;
+  background-color: #eee;
+  padding: 15px;
+  margin: 5px;
+  justify-content: space-between;
+}
+
+.quiz-editor .match-question-container .items-container .item-flex-row .left-controls {
+  display: flex;
+}
+
+.quiz-editor .match-question-container .items-container .item-flex-row .left-controls [role=button]{
+  margin-right: 8px;
+}
+
+.quiz-editor .match-question-container .items-container .item-flex-row .right-controls {
+  display: flex;
+}
+
+.quiz-editor .match-question-container .items-container .item-flex-row .right-controls [role=button]{
+  margin-left: 8px;
+}
+
+.quiz-editor .match-question-container .items-container #popover-place-holder{
+  position: relative;
+}
+
+.quiz-editor .match-question-container #popover-place-holder .popover{
+  max-width: 450px !important;
+  min-width: 250px !important;
+}
+
+/* PAIR */
+.quiz-editor .pair-question-container .pair-item-row {
+  display: flex;
+  margin-bottom: 15px;
+  background-color: #eee;
+  padding: 15px;
+  border-radius: 15px;
+  justify-content: space-around;
+}
+
+.quiz-editor .pair-question-container .pair-item-row .pair-title-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-weight: bolder;
+}
+
+.quiz-editor .pair-question-container .pair-item-row .input-col {
+  flex-direction: column;
+  justify-content: center;
+}
+
+.quiz-editor .pair-question-container .pair-item-row .input-col .feedback-container {
+  margin-top: 15px;
+  padding-right: 8px;
+}
+
+.quiz-editor .pair-question-container .pair-item-row .input-col .fields-row {
+  display: flex;
+}
+
+.quiz-editor .pair-question-container .pair-item-row .input-col .fields-row .col {
+  padding-right: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.quiz-editor .pair-question-container .pair-item-row .input-col .fields-row .score {
+  width: 70px;
+}
+
+.quiz-editor .pair-question-container .pair-item-row .right-controls [role=button]{
+  padding-right: 8px;
+}
+
+.quiz-editor .pair-question-container .odd-item-panel .title-container {
+  font-weight: bolder;
+  margin-bottom: 15px;
+}
+
+.quiz-editor .pair-question-container .odd-item-row {
+  display: flex;
+  margin-bottom: 15px;
+  background-color: #eee;
+  padding: 15px;
+  border-radius: 15px;
+  justify-content: center;
+}
+
+.quiz-editor .pair-question-container .odd-item-row .text-fields {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.quiz-editor .pair-question-container .odd-item-row .right-controls {
+  display: flex;
+  padding: 8px;
+}
+
+.quiz-editor .pair-question-container .odd-item-row .right-controls [role=button] {
+  margin-left: 8px;
+}
+
+/* GENERIC STYLES */
+.btn-relative{
+  position: relative !important;
+}
+
+.margin-bottom-m {
+  margin-bottom: 10px !important;
+}
+
+.margin-top-m {
+  margin-top: 10px !important;
+}
+
+.padding-right-sm {
+  padding-right: 5px !important;
+}
+
+.input-control-sm {
+  width: 25% !important;
+}
+
+.input-control-m {
+  width: 50% !important;
+}
+
+.input-control-lg {
+  width: 75% !important;
+}
+
+.flex-row {
+  display: flex;
+}
+
+
 
 @media (max-width: 991px) {
   .quiz-editor {

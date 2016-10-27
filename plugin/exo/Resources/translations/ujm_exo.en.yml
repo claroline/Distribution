@@ -9,6 +9,7 @@ add_proposal: Add a proposal
 add_question: Add a question
 add_step: Add a step
 add_zone_answer: Add an answer zone
+add_keyword: Add a key word
 additional_info: Additional information
 advanced_edition: Advanced edition
 after_the_last_attempt: After the last attempt
@@ -414,6 +415,7 @@ start_date: Start date
 sort: Sort documents
 summative : Summative
 show_additional_info: Display additional information
+show_case_sensitive_option: Show case control option
 step: Step
 step_score: Step score
 statistics: Display statistics
@@ -425,6 +427,14 @@ stat_have_responded: have responded
 sum_score_choice_at_least_one_correct_answer_error: At least one answer must have a positive score.
 sum_score_choice_no_correct_answer_error: The correct answer must have a positive score.
 should_be_greater_or_equal_to_zero: This value should be greater or equals to 0
+set_member_feedback_info: Comment if this association is done
+set_question_add_member: Add member
+set_question_add_set: Add a set
+set_question_add_odds: Add odds
+set_question_add_odd: Add an odd
+set_question_penalty_label: Panalty for any bad association
+set_question_shuffle_label: Shuffle members and sets order
+show_hide_panel_content: Show / hide panel content
 
 # T
 temporary_mark: Temporary score
@@ -456,6 +466,8 @@ weight_choice: Assign points by answer
 wrong: Wrong
 wrong_name: The input name is wrong
 wrong_point: The input value is wrong
+words_case_sensitive_answer: Should the answer respect the key word case to be considered as valid?
+words_feedback_info: Comment if the keyword appear in the answer
 
 # Y
 yes: Yes
