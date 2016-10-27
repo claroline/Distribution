@@ -100,7 +100,7 @@ FormGroup.propTypes = {
     touched: T.bool.isRequired,
     error: T.string
   }),
-  children: T.object.isRequired,
+  children: T.oneOfType([T.object, T.array]).isRequired,
   label: T.string,
   help: T.string
 }
@@ -380,15 +380,16 @@ export const Date = props =>
       selected={props.input.value ? moment.utc(props.input.value) : null}
       minDate={moment.utc()}
       locale={locale}
-      onChange={date => props.input.onChange(date)}
+      onChange={date => props.input.onChange(moment.utc(date).format())}
+      onBlur={() => {}}
     />
   </FormGroup>
 
 Date.propTypes = {
   input: T.shape({
     name: T.string.isRequired,
-    value: T.string.isRequired,
-    onChange: T.func.isRequired
+    onChange: T.func.isRequired,
+    value: T.string
   })
 }
 
@@ -416,7 +417,7 @@ CollapsibleSection.propTypes = {
   showText: T.string.isRequired,
   hideText: T.string.isRequired,
   toggle: T.func.isRequired,
-  children: T.object.isRequired
+  children: T.oneOfType([T.object, T.array]).isRequired
 }
 
 function helpId(fieldName, type = 'error') {

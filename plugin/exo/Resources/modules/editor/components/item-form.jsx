@@ -177,7 +177,7 @@ class ItemForm extends Component {
 ItemForm.propTypes = {
   id: T.string.isRequired,
   initialValues: T.object.isRequired,
-  children: T.object.isRequired
+  children: T.oneOfType([T.object, T.array]).isRequired
 }
 
 const ReduxedItemForm = reduxForm({
