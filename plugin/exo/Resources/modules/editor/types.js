@@ -1,8 +1,11 @@
 import choice from './items/choice'
 import match from './items/match'
-import short from './items/short'
 import cloze from './items/cloze'
 import graphic from './items/graphic'
+import open from './items/open'
+import words from './items/words'
+import set from './items/set'
+import pair from './items/pair'
 
 export const TYPE_QUIZ = 'quiz'
 export const TYPE_STEP = 'step'
@@ -42,9 +45,12 @@ export const markModes = [
 let definitions = [
   choice,
   match,
-  short,
+  open,
   cloze,
-  graphic
+  graphic,
+  words,
+  set,
+  pair
 ]
 
 export const mimeTypes = definitions.map(def => def.type)

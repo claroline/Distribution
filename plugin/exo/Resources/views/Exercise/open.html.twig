@@ -10,7 +10,6 @@
         '@UJMExoBundle/Resources/less/main.less'
     %}
     <link rel="stylesheet" media="screen" href="{{ asset_url }}" />
-    <link rel="stylesheet" media="screen" href="{{ asset('packages/nprogress/nprogress.css') }}" />
     {% endstylesheets %}
 {% endblock %}
 
@@ -28,7 +27,17 @@
         <path d="M9.198 18a3.223 3.198 0 0 1-3.223 3.198A3.223 3.198 0 0 1 2.752 18a3.223 3.198 0 0 1 3.223-3.198A3.223 3.198 0 0 1 9.198 18z" stroke-width="1.57" fill="none"/>
         <path d="M9.214 28a3.218 3.214 0 0 1-3.218 3.214A3.218 3.214 0 0 1 2.778 28a3.218 3.214 0 0 1 3.218-3.214A3.218 3.214 0 0 1 9.214 28z" stroke-width="1.573" fill="none"/>
       </symbol>
-      <symbol id="icon-short" viewBox="0 0 32 32">
+      <symbol id="icon-open" viewBox="0 0 32 32">
+        <g transform="translate(1.5, 2)">
+          <path d="M1.106 4.763h17.788c.14 0 .255.023.255.05V7.01c0 .028-.115.05-.256.05H1.106c-.14 0-.255-.022-.255-.05V4.814c0-.028.115-.05.256-.05z" stroke-width="1.703" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M.912 24.738h12.176c.096 0 .174.025.174.056v2.412c0 .03-.078.056-.174.056H.912c-.096 0-.174-.025-.174-.056v-2.412c0-.03.078-.056.174-.056z" stroke-width="1.476" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M.98 14.78h14.04c.11 0 .2.024.2.053v2.334c0 .03-.09.053-.2.053H.98c-.11 0-.2-.024-.2-.053v-2.334c0-.03.09-.053.2-.053z" stroke-width="1.559" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M23.945 8.433L17.74 22.725l.346 4.397 3.448-2.75L27.74 10.08z" fill-rule="evenodd" stroke-width="1.15895776"/>
+          <path d="M25.515 4.922l.564-1.3 3.737 1.623-.565 1.3z" stroke-width="1.24136072" stroke-linecap="square"/>
+          <path d="M26.497 3.563l.266-.613c.084-.193.307-.282.5-.198l2.38 1.034c.194.084.282.307.198.5l-.265.613c-.084.193-.307.28-.5.197l-2.38-1.034c-.194-.084-.282-.307-.198-.5z" stroke-width="1.9603930000000003" stroke-linecap="square"/>
+        </g>
+      </symbol>
+      <symbol id="icon-words" viewBox="0 0 32 32">
         <g transform="translate(1.5, 2)">
           <path d="M1.106 4.763h17.788c.14 0 .255.023.255.05V7.01c0 .028-.115.05-.256.05H1.106c-.14 0-.255-.022-.255-.05V4.814c0-.028.115-.05.256-.05z" stroke-width="1.703" stroke-linecap="round" stroke-linejoin="round"/>
           <path d="M.912 24.738h12.176c.096 0 .174.025.174.056v2.412c0 .03-.078.056-.174.056H.912c-.096 0-.174-.025-.174-.056v-2.412c0-.03.078-.056.174-.056z" stroke-width="1.476" stroke-linecap="round" stroke-linejoin="round"/>
@@ -53,7 +62,7 @@
         </g>
         <path d="M1.04 31.502L10 23l4 4 9-10 8.507 6.72v7.78z" fill-rule="evenodd" stroke-width=".994"/>
       </symbol>
-      <symbol id="icon-match-1" viewBox="0 0 32 32">
+      <symbol id="icon-match" viewBox="0 0 32 32">
         <g stroke-width="1.6" fill="none">
           <circle cy="4" cx="4" r="3.2"/>
           <circle cy="4" cx="28" r="3.2"/>
@@ -66,13 +75,26 @@
           <path d="M6.813 26.294L25.22 17.63"/>
         </g>
       </symbol>
-      <symbol id="icon-match-2" viewBox="0 0 32 32">
+      <symbol id="icon-set" viewBox="0 0 32 32">
         <path d="M15.686 15h14.628c.388 0 .7.046.7.104v15.634c0 .058-.312.104-.7.104H15.686c-.388 0-.7-.046-.7-.104V15.104c0-.058.312-.104.7-.104z" stroke="#000" stroke-width="2.158" stroke-linecap="square" fill="none"/>
         <path d="M14.687 26.866l-3-.024c-.39-.003-.702-.046-.702-.104V11.104c0-.058.313-.104.7-.104h14.63c.387 0 .7.046.7.104L27 13" stroke="#000" stroke-width="2.158" stroke-linecap="square" fill="none"/>
         <path d="M8.85 17.387l-7.507-.047c-.407-.002-.734-.05-.734-.11V.72c0-.062.326-.11.733-.11h15.314c.407 0 .734.048.734.11v9.2" fill="none"/>
         <path d="M9.05 16.92H1.7c-.387 0-.7-.045-.7-.103V1.183c0-.058.313-.104.7-.104H16.33c.39 0 .7.045.702.103l.044 7.73" stroke="#000" stroke-width="2.158" stroke-linecap="square" fill="none"/>
         <path d="M8.513 4.21L4.195 8.502l4.326.014z" fill-rule="evenodd" stroke="#000"/>
         <path d="M5 3L3 5l2 2 2-2z" fill="none"/>
+      </symbol>
+      <symbol id="icon-pair" viewBox="0 0 32 32">
+        <g stroke-width="1.6" fill="none">
+          <circle cy="4" cx="4" r="3.2"/>
+          <circle cy="4" cx="28" r="3.2"/>
+          <circle cy="28" cx="4" r="3.2"/>
+          <circle cy="16" cx="28" r="3.2"/>
+          <circle cy="16" cx="4" r="3.2"/>
+          <circle cy="28" cx="28" r="3.2"/>
+        <g stroke-width="3.8">
+          <path d="M7 4h18"/>
+          <path d="M6.813 26.294L25.22 17.63"/>
+        </g>
       </symbol>
     </svg>
 

@@ -1,18 +1,18 @@
 <?php
 
-/**
- * To import a question in QTI.
- */
-
 namespace UJM\ExoBundle\Services\classes\QTI;
 
 use Claroline\CoreBundle\Entity\Resource\Directory;
 use Claroline\CoreBundle\Entity\Resource\File;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use UJM\ExoBundle\Entity\AbstractInteraction;
 use UJM\ExoBundle\Entity\Category;
 use UJM\ExoBundle\Entity\Question;
 
+/**
+ * To import a question in QTI.
+ */
 abstract class QtiImport
 {
     protected $om;
@@ -21,6 +21,10 @@ abstract class QtiImport
     protected $user;
     protected $qtiRepos;
     protected $qtiCat;
+
+    /**
+     * @var Question
+     */
     protected $question;
     protected $assessmentItem;
     protected $dirQTI;
@@ -42,13 +46,18 @@ abstract class QtiImport
     }
 
     /**
-     * Create the question objet.
+     * Create the question object.
+     *
+     * @param string $type
+     * @param string $mimeType
      */
-    protected function createQuestion($type)
+    protected function createQuestion($type, $mimeType)
     {
         $this->objectToResource();
         $this->question = new Question();
         $this->question->setTitle($this->getTitle());
+        $this->question->setUuid(uniqid());
+        $this->question->setMimeType($mimeType);
         $this->question->setDateCreate(new \Datetime());
         $this->question->setUser($this->user);
         $this->question->setCategory($this->qtiCat);
@@ -81,11 +90,12 @@ abstract class QtiImport
      */
     protected function getQTICategory()
     {
-        $this->qtiCat = $this->om
-                             ->getRepository('UJMExoBundle:Category')
-                             ->findOneBy(['value' => 'QTI',
-                                               'user' => $this->user->getId(), ]);
-        if ($this->qtiCat === null) {
+        $this->qtiCat = $this->om->getRepository('UJMExoBundle:Category')->findOneBy([
+            'value' => 'QTI',
+            'user' => $this->user->getId(),
+        ]);
+
+        if (!isset($this->qtiCat)) {
             $this->createQTICategory();
         }
     }
@@ -107,7 +117,7 @@ abstract class QtiImport
     /**
      * init assessmentItem.
      *
-     * @param DOMElement $assessmentItem assessmentItem of the question to imported
+     * @param \DOMElement $assessmentItem assessmentItem of the question to imported
      */
     protected function initAssessmentItem($assessmentItem)
     {
@@ -236,8 +246,8 @@ abstract class QtiImport
      * Replace the object tag by a link to the Claroline resource.
      *
      *
-     * @param DOMNodelist::item                    $ob           element object
-     * @param Claroline\CoreBundle\Entity\Resource $resourceNode
+     * @param DOMNodelist::item                     $ob           element object
+     * @param \Claroline\CoreBundle\Entity\Resource $resourceNode
      */
     private function replaceNode($ob, $resourceNode)
     {
@@ -344,13 +354,13 @@ abstract class QtiImport
     /**
      * abstract method to import a question.
      *
-     * @param qtiRepository $qtiRepos
-     * @param DOMElement    $assessmentItem assessmentItem of the question to imported
+     * @param QtiRepository $qtiRepos
+     * @param \DOMElement   $assessmentItem assessmentItem of the question to imported
      * @param string        $path           parent directory of the files
      *
-     * @return UJM\ExoBundle\Entity\InteractionQCM or InteractionGraphic or ....
+     * @return AbstractInteraction
      */
-    abstract public function import(qtiRepository $qtiRepos, $assessmentItem, $path);
+    abstract public function import(QtiRepository $qtiRepos, $assessmentItem, $path);
 
     /**
      * abstract method to get the prompt.
