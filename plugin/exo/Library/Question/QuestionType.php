@@ -36,6 +36,20 @@ final class QuestionType
     const MATCH = 'application/x.match+json';
 
     /**
+     * The user have to associate one element to another.
+     *
+     * @var string
+     */
+    const PAIR = 'application/x.pair+json';
+
+    /**
+     * The user have to classify elements into categories.
+     *
+     * @var string
+     */
+    const SET = 'application/x.set+json';
+
+    /**
      * The user have to write his answer using predefined keywords.
      *
      * @var string
@@ -61,6 +75,8 @@ final class QuestionType
             static::CLOZE,
             static::GRAPHIC,
             static::MATCH,
+            static::PAIR,
+            static::SET,
             static::WORDS,
             static::OPEN,
         ];

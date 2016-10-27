@@ -1,14 +1,14 @@
 <?php
 
-/**
- * To import a QCM question in QTI.
- */
-
 namespace UJM\ExoBundle\Services\classes\QTI;
 
 use UJM\ExoBundle\Entity\Choice;
 use UJM\ExoBundle\Entity\InteractionQCM;
+use UJM\ExoBundle\Library\Question\QuestionType;
 
+/**
+ * To import a QCM question in QTI.
+ */
 class QcmImport extends QtiImport
 {
     protected $interactionQCM;
@@ -31,7 +31,7 @@ class QcmImport extends QtiImport
         if ($this->qtiValidate() === false) {
             return false;
         }
-        $this->createQuestion(InteractionQCM::TYPE);
+        $this->createQuestion(InteractionQCM::TYPE, QuestionType::CHOICE);
         $this->createInteractionQCM();
 
         return $this->interactionQCM;

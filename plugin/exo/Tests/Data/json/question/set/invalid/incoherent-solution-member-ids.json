@@ -1,0 +1,45 @@
+{
+  "id": "1",
+  "type": "application/x.set+json",
+  "content": "Question ?",
+  "sets": [
+    {
+      "id": "2",
+      "name": "Set A"
+    },
+    {
+      "id": "3",
+      "name": "Set B"
+    }
+  ],
+  "members": [
+    {
+      "id": "4",
+      "type": "text/plain",
+      "data": "Item X"
+    },
+    {
+      "id": "5",
+      "type": "text/plain",
+      "data": "Item Y"
+    },
+    {
+      "id": "6",
+      "type": "text/plain",
+      "data": "Item Z"
+    }
+  ],
+  "solutions": [
+    {
+      "setId": "2",
+      "memberId": "42",
+      "score": 3
+    },
+    {
+      "setId": "3",
+      "memberId": "5",
+      "score": 0.5
+    }
+  ],
+  "penalty": 1
+}
