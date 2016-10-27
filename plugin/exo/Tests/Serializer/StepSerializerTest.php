@@ -29,21 +29,36 @@ class StepSerializerTest extends JsonDataTestCase
 
     public function testSerializedDataAreSchemaValid()
     {
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
     }
 
     public function testSerializedDataAreCorrectlySet()
     {
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
     }
 
     public function testDeserializedDataAreCorrectlySet()
     {
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
     }
 
     public function testAddItem()
     {
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
     }
 
     public function testRemoveItem()
     {
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
     }
 }

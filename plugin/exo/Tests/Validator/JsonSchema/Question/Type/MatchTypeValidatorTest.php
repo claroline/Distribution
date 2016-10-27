@@ -26,5 +26,8 @@ class MatchTypeValidatorTest extends JsonSchemaTestCase
      */
     public function testIncoherentIdsInSolutionThrowErrors()
     {
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
     }
 }
