@@ -9,6 +9,7 @@ add_proposal: Ajouter une proposition
 add_question: Ajouter une question
 add_step: Ajouter une étape
 add_zone_answer: Ajouter une zone de réponse
+add_keyword: Ajouter un mot clé
 additional_info: Informations complémentaires
 advanced_edition: Edition avancée
 after_the_last_attempt: Après le dernier essai
@@ -295,6 +296,8 @@ num_paper: Numéro de la copie
 only_once: => Les bonnes réponses ne sont comptabilisées qu'une seule fois.
 only_owner_graphic: Seul le propriétaire peut changer l'image
 open: Ouverte
+open_maximum_length: Longueur maximum de la réponse (nombre de caractères)
+open_maximum_length_help: Laissez cette valeur à 0 si il n'y a pas de longueur maximum pour la réponse
 open_creation: Création d'une question ouverte
 open_edition: Edition d'une question ouverte
 orders: Consignes
@@ -375,6 +378,7 @@ score_displaying: Affichage du score
 score_list_question: Note et liste des questions
 score_error: Attention, le score doit être un chiffre !
 score_max : Score maximum possible
+score_max_help: Laissez cette valeur à 0 si la notation est manuelle
 score_false_label: Résultat incorrect
 score_right_label: Résultat correct
 score_right_label_matching: Score de l'association
@@ -396,6 +400,7 @@ short: Courte
 show: Afficher
 show_instructions: Montrer les consignes
 show_additional_info: Afficher les informations supplémentaires
+show_case_sensitive_option: Montrer l'option de contrôle de la casse
 show_interact_fields: Indices et commentaire final
 show_metadata_fields: Métadonnées et consignes
 signing: Passation
@@ -414,6 +419,15 @@ stat_users: "[0, 1] %count% utilisateur|]1,Inf[ %count% utilisateurs"
 stat_have_responded: ont répondu
 sum_score_choice_at_least_one_correct_answer_error: Au moins une réponse doit avoir un score positif.
 sum_score_choice_no_correct_answer_error: La réponse correcte doit avoir un score positif.
+should_be_greater_or_equal_to_zero: Cette valeur devrait être supérieure ou égal à 0
+set_member_feedback_info: Commentaire si l'association est effectuée
+set_question_add_member: Ajouter une proposition
+set_question_add_set: Ajouter un ensemble
+set_question_add_odds: Ajout d'intrus
+set_question_add_odd: Ajouter un intru
+set_question_penalty_label: Pénalité pour toute mauvaise association
+set_question_shuffle_label: Ordre des propositions et des ensembles aléatoire
+show_hide_panel_content: Afficher / cacher le contenu du panel
 
 # T
 temporary_mark: Note temporaire
@@ -445,6 +459,8 @@ weight_choice: Attribuer les points par réponse
 wrong: Fausse
 wrong_name: Le nom saisi est incorrect
 wrong_point: La valeur saisie est incorrecte
+words_case_sensitive_answer: La réponse doit elle respecter la casse du mot clé pour être valide ?
+words_feedback_info: Commentaire si le mot clé apparait dans la réponse
 
 # Y
 yes: Oui

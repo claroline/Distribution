@@ -4,8 +4,8 @@ namespace UJM\ExoBundle\Manager;
 
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Persistence\ObjectManager;
-use UJM\ExoBundle\Transfer\Json\Validator;
 use UJM\ExoBundle\Entity\Exercise;
+use UJM\ExoBundle\Transfer\Json\Validator;
 
 class ExerciseManagerTest extends \PHPUnit_Framework_TestCase
 {
@@ -20,8 +20,10 @@ class ExerciseManagerTest extends \PHPUnit_Framework_TestCase
     {
         $this->om = $this->mock('Claroline\CoreBundle\Persistence\ObjectManager');
         $this->validator = $this->mock('UJM\ExoBundle\Transfer\Json\Validator');
+        $newValidator = $this->mock('UJM\ExoBundle\Validator\JsonSchema\ExerciseValidator');
+        $serializer = $this->mock('UJM\ExoBundle\Serializer\ExerciseSerializer');
         $stepManager = $this->mock('UJM\ExoBundle\Manager\StepManager');
-        $this->manager = new ExerciseManager($this->om, $this->validator, $stepManager);
+        $this->manager = new ExerciseManager($this->om, $newValidator, $this->validator, $serializer, $stepManager);
     }
 
     /**
@@ -82,17 +84,6 @@ class ExerciseManagerTest extends \PHPUnit_Framework_TestCase
         $this->manager->unpublish($exercise);
 
         $this->assertFalse($node->isPublished());
-    }
-
-    /**
-     * @expectedException \UJM\ExoBundle\Transfer\Json\ValidationException
-     */
-    public function testImportExerciseThrowsOnValidationError()
-    {
-        $this->validator->expects($this->once())
-            ->method('validateExercise')
-            ->willReturn([['path' => '', 'message' => 'some error']]);
-        $this->manager->importExercise('{}');
     }
 
     /**

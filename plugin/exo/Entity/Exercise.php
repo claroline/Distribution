@@ -19,6 +19,13 @@ class Exercise extends AbstractResource
     const TYPE_FORMATIVE = '3';
 
     /**
+     * @var string
+     *
+     * @ORM\Column("uuid", type="string", length=36)
+     */
+    private $uuid;
+
+    /**
      * @ORM\Column(name="description", type="text", nullable=true)
      */
     private $description = '';
@@ -173,7 +180,7 @@ class Exercise extends AbstractResource
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Step", mappedBy="exercise", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="Step", mappedBy="exercise", cascade={"all"}, orphanRemoval=true)
      * @ORM\OrderBy({"order" = "ASC"})
      */
     private $steps;
@@ -192,6 +199,26 @@ class Exercise extends AbstractResource
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Gets UUID.
+     *
+     * @return string
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * Sets UUID.
+     *
+     * @param $uuid
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
     }
 
     /**
@@ -559,6 +586,12 @@ class Exercise extends AbstractResource
     public function addStep(Step $step)
     {
         if (!$this->steps->contains($step)) {
+            $order = $step->getOrder();
+            if (empty($order) && 0 !== $order) {
+                // Set step order if not exist
+                $step->setOrder($this->steps->count() + 1);
+            }
+
             $this->steps->add($step);
 
             $step->setExercise($this);

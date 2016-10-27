@@ -2,14 +2,15 @@
 
 namespace UJM\ExoBundle\Controller\Api;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
+use JMS\DiExtraBundle\Annotation as DI;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use UJM\ExoBundle\Entity\Exercise;
+use UJM\ExoBundle\Entity\Question;
 use UJM\ExoBundle\Entity\Step;
 use UJM\ExoBundle\Manager\ExerciseManager;
 use UJM\ExoBundle\Manager\StepManager;
@@ -18,7 +19,7 @@ use UJM\ExoBundle\Manager\StepManager;
  * Exercise Controller.
  *
  * @EXT\Route(
- *     "/exercises/{exerciseId}",
+ *     "/exercises/{exerciseId}/steps",
  *     options={"expose"=true},
  *     defaults={"_format": "json"}
  * )
@@ -66,7 +67,7 @@ class StepController
      * Add a Step to the Exercise.
      *
      * @EXT\Route(
-     *     "/steps",
+     *     "",
      *     name="exercise_step_add",
      *     options={"expose"=true}
      * )
@@ -89,7 +90,7 @@ class StepController
      * Update the properties of a Step.
      *
      * @EXT\Route(
-     *     "/steps/{id}",
+     *     "/{id}",
      *     name="exercise_step_update_meta",
      *     requirements={"id"="\d+"},
      *     options={"expose"=true}
@@ -116,10 +117,10 @@ class StepController
     }
 
     /**
-     * Delete a Step from the Exercise.
+     * Delete a Step from an Exercise.
      *
      * @EXT\Route(
-     *     "/steps/{id}",
+     *     "/{id}",
      *     name="exercise_step_delete",
      *     requirements={"id"="\d+"},
      *     options={"expose"=true}
@@ -131,7 +132,7 @@ class StepController
      *
      * @return JsonResponse
      */
-    public function deleteStepAction(Exercise $exercise, Step $step)
+    public function deleteAction(Exercise $exercise, Step $step)
     {
         $this->assertHasPermission('ADMINISTRATE', $exercise);
 
@@ -145,7 +146,7 @@ class StepController
      * Reorder the Steps of an Exercise.
      *
      * @EXT\Route(
-     *     "/steps/reorder",
+     *     "/reorder",
      *     name="exercise_step_reorder",
      *     options={"expose"=true}
      * )
@@ -183,17 +184,46 @@ class StepController
     }
 
     /**
+     * Removes a Question from a Step.
+     *
+     * @EXT\Route(
+     *     "/{id}/question/{questionId}",
+     *     name="exercise_question_delete",
+     *     options={"expose"=true}
+     * )
+     * @EXT\Method("DELETE")
+     * @EXT\ParamConverter("question", class="UJMExoBundle:Question", options={"mapping": {"questionId": "id"}})
+     *
+     * @param Exercise $exercise
+     * @param Step     $step
+     * @param Question $question
+     *
+     * @return JsonResponse
+     */
+    public function removeQuestionAction(Exercise $exercise, Step $step, Question $question)
+    {
+        $this->assertHasPermission('ADMINISTRATE', $exercise);
+
+        $errors = $this->stepManager->removeQuestion($step, $question);
+        if (count($errors) !== 0) {
+            return new JsonResponse($errors, 422);
+        }
+
+        return new JsonResponse($this->exerciseManager->exportExercise($exercise, false));
+    }
+
+    /**
      * Reorder the Questions of a Step.
      *
      * @EXT\Route(
-     *     "/steps/{id}/questions/reorder",
+     *     "/{id}/questions/reorder",
      *     name="exercise_question_reorder",
      *     requirements={"id"="\d+"},
      *     options={"expose"=true}
      * )
      * @EXT\Method("PUT")
      * @EXT\ParamConverter("exercise", class="UJMExoBundle:Exercise", options={"mapping": {"exerciseId": "id"}})
-     
+
      * @param Exercise $exercise
      * @param Step     $step
      * @param Request  $request

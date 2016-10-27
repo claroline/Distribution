@@ -124,7 +124,7 @@ let ItemPanel = props =>
             >
               {React.createElement(
                 properties[props.item.type].component,
-                {item: props.item}
+                props.item
               )}
             </ItemForm>
           }
