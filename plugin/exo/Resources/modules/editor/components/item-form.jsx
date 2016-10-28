@@ -21,7 +21,7 @@ const Metadata = props =>
         type="text"
         value={props.item.title || ''}
         className="form-control"
-        onChange={e => props.onChange({title: e.target.value})}
+        onChange={e => props.onChange('title', e.target.value)}
       />
     </FormGroup>
     <FormGroup
@@ -31,7 +31,7 @@ const Metadata = props =>
       <Textarea
         id={`item-${props.item.id}-description`}
         content={props.item.description || ''}
-        onChange={description => props.onChange({description})}
+        onChange={text => props.onChange('description', text)}
       />
     </FormGroup>
     <FormGroup
@@ -41,7 +41,7 @@ const Metadata = props =>
       <Textarea
         id={`item-${props.item.id}-instruction`}
         content={props.item.instruction || ''}
-        onChange={instruction => props.onChange({instruction})}
+        onChange={text => props.onChange('instruction', text)}
       />
     </FormGroup>
     <FormGroup
@@ -51,7 +51,7 @@ const Metadata = props =>
       <Textarea
         id={`item-${props.item.id}-info`}
         content={props.item.info || ''}
-        onChange={info => props.onChange({info})}
+        onChange={text => props.onChange('info', text)}
       />
     </FormGroup>
   </fieldset>
@@ -73,8 +73,8 @@ const Hint = props =>
       <Textarea
         id={`hint-${props.id}`}
         title={tex('hint')}
-        content={props.data}
-        onChange={data => props.onChange(HINT_CHANGE, {id: props.id, data})}
+        content={props.value}
+        onChange={value => props.onChange(HINT_CHANGE, {id: props.id, value})}
       />
     </div>
     <input
@@ -102,7 +102,7 @@ const Hint = props =>
 
 Hint.propTypes = {
   id: T.string.isRequired,
-  data: T.string.isRequired,
+  value: T.string.isRequired,
   penalty: T.number.isRequired,
   onChange: T.func.isRequired,
   onRemove: T.func.isRequired
@@ -161,12 +161,15 @@ export class ItemForm extends Component {
         <FormGroup
           controlId={`item-${this.props.id}-content`}
           label={tex('question')}
-          error={get(this.props.item, '_errors.content')}
+          error={
+            get(this.props.item, '_touched.content')
+            && get(this.props.item, '_errors.content')
+          }
         >
           <Textarea
             id={`item-${this.props.id}-content`}
             content={this.props.item.content}
-            onChange={content => this.props.onChange({content})}
+            onChange={content => this.props.onChange('content', content)}
           />
         </FormGroup>
         <SubSection
@@ -199,7 +202,7 @@ export class ItemForm extends Component {
               <Textarea
                 id={`item-${this.props.item.id}-feedback`}
                 content={this.props.item.feedback}
-                onChange={feedback => this.props.onChange({feedback})}
+                onChange={text => this.props.onChange('feedback', text)}
               />
             </FormGroup>
           </fieldset>

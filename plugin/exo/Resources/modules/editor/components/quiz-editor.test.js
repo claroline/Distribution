@@ -45,12 +45,16 @@ describe('<QuizEditor/>', () => {
   })
 
   it('renders a form and dispatches changes', () => {
+    let updatedPath = null
     let updatedValue = null
 
     const form = mount(
       <QuizEditor
         quiz={fixture()}
-        updateProperties={newValue => updatedValue = newValue}
+        updateProperties={(path, value) => {
+          updatedPath = path
+          updatedValue = value
+        }}
         activePanelKey={false}
         handlePanelClick={() => {}}
       />
@@ -62,12 +66,14 @@ describe('<QuizEditor/>', () => {
     const title = form.find('input#quiz-title')
     ensure.equal(title.length, 1, 'has title input')
     title.simulate('change', {target: {value: 'FOO'}})
-    ensure.equal(updatedValue, {title: 'FOO'})
+    ensure.equal(updatedPath, 'title')
+    ensure.equal(updatedValue, 'FOO')
 
     const anonymous = form.find('input#quiz-anonymous')
     ensure.equal(anonymous.length, 1, 'has anonymous checkbox')
     anonymous.simulate('change', {target: {checked: true}})
-    ensure.equal(updatedValue, {parameters: {anonymous: true}})
+    ensure.equal(updatedPath, 'parameters.anonymous')
+    ensure.equal(updatedValue, true)
   })
 })
 

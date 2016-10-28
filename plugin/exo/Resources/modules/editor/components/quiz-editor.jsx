@@ -20,8 +20,6 @@ import {
   SHOW_CORRECTION_AT_DATE
 } from './../enums'
 
-const param = (property, value) => ({parameters: {[property]: value}})
-
 const Properties = props =>
   <fieldset>
     <FormGroup controlId="quiz-type" label={t('type')}>
@@ -29,7 +27,7 @@ const Properties = props =>
         id="quiz-type"
         value={props.parameters.type}
         className="form-control"
-        onChange={e => props.onChange(param('type', e.target.value))}
+        onChange={e => props.onChange('parameters.type', e.target.value)}
       >
         {quizTypes.map(type =>
           <option key={type[0]} value={type[0]}>{tex(type[1])}</option>
@@ -46,14 +44,14 @@ const Properties = props =>
         type="text"
         value={props.title}
         className="form-control"
-        onChange={e => props.onChange({title: e.target.value})}
+        onChange={e => props.onChange('title', e.target.value)}
       />
     </FormGroup>
     <FormGroup controlId="quiz-description" label={t('description')}>
       <Textarea
         id="quiz-description"
         content={props.description}
-        onChange={description => props.onChange({description})}
+        onChange={description => props.onChange('description', description)}
       />
     </FormGroup>
     <CheckGroup
@@ -61,7 +59,7 @@ const Properties = props =>
       checked={props.parameters.showMetadata}
       label={tex('metadata_visible')}
       help={tex('metadata_visible_help')}
-      onChange={checked => props.onChange(param('showMetadata', checked))}
+      onChange={checked => props.onChange('parameters.showMetadata', checked)}
     />
   </fieldset>
 
@@ -93,7 +91,7 @@ const StepPicking = props =>
         groupName="quiz-random-pick"
         options={shuffleOptions()}
         checkedValue={props.parameters.randomPick}
-        onChange={mode => props.onChange(param('randomPick', mode))}
+        onChange={mode => props.onChange('parameters.randomPick', mode)}
       />
     </FormGroup>
     {props.parameters.randomPick !== SHUFFLE_NEVER &&
@@ -110,7 +108,7 @@ const StepPicking = props =>
             min="0"
             value={props.parameters.pick}
             className="form-control"
-            onChange={e => props.onChange(param('pick', e.target.value))}
+            onChange={e => props.onChange('parameters.pick', e.target.value)}
           />
         </FormGroup>
       </div>
@@ -120,7 +118,7 @@ const StepPicking = props =>
         groupName="quiz-random-order"
         options={orderModes(props.parameters.randomPick)}
         checkedValue={props.parameters.randomOrder}
-        onChange={mode => props.onChange(param('randomOrder', mode))}
+        onChange={mode => props.onChange('parameters.randomOrder', mode)}
       />
     </FormGroup>
   </fieldset>
@@ -139,7 +137,7 @@ const Signing = props =>
         min="0"
         value={props.parameters.duration}
         className="form-control"
-        onChange={e => props.onChange(param('duration', e.target.value))}
+        onChange={e => props.onChange('parameters.duration', e.target.value)}
       />
     </FormGroup>
     <FormGroup
@@ -154,14 +152,14 @@ const Signing = props =>
         min="0"
         value={props.parameters.maxAttempts}
         className="form-control"
-        onChange={e => props.onChange(param('maxAttempts', e.target.value))}
+        onChange={e => props.onChange('parameters.maxAttempts', e.target.value)}
       />
     </FormGroup>
     <CheckGroup
       checkId="quiz-interruptible"
       checked={props.parameters.interruptible}
       label={tex('allow_test_exit')}
-      onChange={checked => props.onChange(param('interruptible', checked))}
+      onChange={checked => props.onChange('parameters.interruptible', checked)}
     />
 </fieldset>
 
@@ -175,7 +173,7 @@ const Correction = props =>
         id="quiz-showCorrectionAt"
         value={props.parameters.showCorrectionAt}
         className="form-control"
-        onChange={e => props.onChange(param('showCorrectionAt', e.target.value))}
+        onChange={e => props.onChange('parameters.showCorrectionAt', e.target.value)}
       >
         {correctionModes.map(mode =>
           <option key={mode[0]} value={mode[0]}>{tex(mode[1])}</option>
@@ -192,7 +190,7 @@ const Correction = props =>
             id="quiz-correctionDate"
             name="quiz-correctionDate"
             value={props.parameters.correctionDate || ''}
-            onChange={date => props.onChange(param('correctionDate', date))}
+            onChange={date => props.onChange('parameters.correctionDate', date)}
           />
         </FormGroup>
       </div>
@@ -202,7 +200,7 @@ const Correction = props =>
         id="quiz-showScoreAt"
         value={props.parameters.showScoreAt}
         className="form-control"
-        onChange={e => props.onChange(param('showScoreAt', e.target.value))}
+        onChange={e => props.onChange('parameters.showScoreAt', e.target.value)}
       >
         {markModes.map(mode =>
           <option key={mode[0]} value={mode[0]}>
@@ -215,19 +213,19 @@ const Correction = props =>
       checkId="quiz-anonymous"
       checked={props.parameters.anonymous}
       label={t('anonymous')}
-      onChange={checked => props.onChange(param('anonymous', checked))}
+      onChange={checked => props.onChange('parameters.anonymous', checked)}
     />
     <CheckGroup
       checkId="quiz-showFullCorrection"
       checked={props.parameters.showFullCorrection}
       label={tex('maximal_correction')}
-      onChange={checked => props.onChange(param('showFullCorrection', checked))}
+      onChange={checked => props.onChange('parameters.showFullCorrection', checked)}
     />
     <CheckGroup
       checkId="quiz-showStatistics"
       checked={props.parameters.showStatistics}
       label={tex('statistics')}
-      onChange={checked => props.onChange(param('showStatistics', checked))}
+      onChange={checked => props.onChange('parameters.showStatistics', checked)}
     />
   </fieldset>
 

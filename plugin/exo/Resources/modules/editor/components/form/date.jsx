@@ -2,6 +2,7 @@ import React, {PropTypes as T} from 'react'
 import DatePicker from 'react-datepicker'
 import moment from 'moment'
 import {FormGroup} from './form-group.jsx'
+import 'react-datepicker/dist/react-datepicker.css'
 
 const locale = getLocale()
 

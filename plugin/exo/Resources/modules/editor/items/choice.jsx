@@ -97,7 +97,8 @@ ChoiceItem.propTypes = {
 
 const ChoiceItems = props =>
   <div>
-    {get(props.item, '_errors.choices') &&
+    {get(props.item, '_touched.choices') &&
+      get(props.item, '_errors.choices') &&
       <div className="error-text">
         <span className="fa fa-warning"></span>
         {props.item._errors.choices}
@@ -157,28 +158,28 @@ export const Choice = props =>
       checkId={`item-${props.item.id}-multiple`}
       checked={props.item.multiple}
       label={tex('Multiple responses')}
-      onChange={checked => props.onChange(actions.updateProperty({multiple: checked}))}
+      onChange={checked => props.onChange(actions.updateProperty('multiple', checked))}
     />
     <CheckGroup
       checkId={`item-${props.item.id}-random`}
       checked={props.item.random}
       label={tex('qcm_shuffle')}
-      onChange={checked => props.onChange(actions.updateProperty({random: checked}))}
+      onChange={checked => props.onChange(actions.updateProperty('random', checked))}
     />
     <CheckGroup
       checkId={`item-${props.item.id}-fixedScore`}
       checked={props.item.score.type === SCORE_FIXED}
       label={tex('fixed_score')}
-      onChange={checked => props.onChange(actions.updateProperty({
-        score: {type: checked ? SCORE_FIXED : SCORE_SUM}
-      }))}
+      onChange={checked => props.onChange(
+        actions.updateProperty('score.type', checked ? SCORE_FIXED : SCORE_SUM)
+      )}
     />
     {props.item.score.type === SCORE_FIXED &&
       <div className="sub-fields">
         <FormGroup
           controlId={`item-${props.item.id}-fixedSuccess`}
           label={tex('fixed_score_on_success')}
-          error={get(props.item, '._errors.score.success')}
+          error={get(props.item, '_errors.score.success')}
         >
           <input
             id={`item-${props.item.id}-fixedSuccess`}
@@ -186,23 +187,23 @@ export const Choice = props =>
             min="0"
             value={props.item.score.success}
             className="form-control"
-            onChange={e => props.onChange(actions.updateProperty({
-              score: {success: e.target.value}})
+            onChange={e => props.onChange(
+              actions.updateProperty('score.success', e.target.value)
             )}
           />
         </FormGroup>
         <FormGroup
           controlId={`item-${props.item.id}-fixedFailure`}
           label={tex('fixed_score_on_failure')}
-          error={get(props.item, '._errors.failure')}
+          error={get(props.item, '_errors.score.failure')}
         >
           <input
             id={`item-${props.item.id}-fixedFailure`}
             type="number"
             value={props.item.score.failure}
             className="form-control"
-            onChange={e => props.onChange(actions.updateProperty({
-              score: {failure: e.target.value}})
+            onChange={e => props.onChange(
+              actions.updateProperty('score.failure', e.target.value)
             )}
           />
         </FormGroup>

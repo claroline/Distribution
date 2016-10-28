@@ -39,6 +39,7 @@ describe('<ItemForm/>', () => {
   })
 
   it('renders a form and dispatches changes', () => {
+    let updatedPath = null
     let updatedValue = null
 
     const form = mount(
@@ -53,7 +54,10 @@ describe('<ItemForm/>', () => {
           hints: [],
           feedback: 'FEEDBACK'
         }}
-        onChange={newValue => updatedValue = newValue}
+        onChange={(path, value) => {
+          updatedPath = path
+          updatedValue = value
+        }}
         onHintsChange={() => {}}
       >
         <input value="CHILD"/>
@@ -66,6 +70,7 @@ describe('<ItemForm/>', () => {
     const title = form.find('input#item-ID-title')
     ensure.equal(title.length, 1, 'has title input')
     title.simulate('change', {target: {value: 'FOO'}})
-    ensure.equal(updatedValue, {title: 'FOO'})
+    ensure.equal(updatedPath, 'title')
+    ensure.equal(updatedValue, 'FOO')
   })
 })

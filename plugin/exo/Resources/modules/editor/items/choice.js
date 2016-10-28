@@ -15,7 +15,7 @@ const ADD_CHOICE = 'ADD_CHOICE'
 const REMOVE_CHOICE = 'REMOVE_CHOICE'
 
 export const actions = {
-  updateProperty: makeActionCreator(UPDATE_PROP, 'property'),
+  updateProperty: makeActionCreator(UPDATE_PROP, 'property', 'value'),
   updateChoice: makeActionCreator(UPDATE_CHOICE, 'id', 'property', 'value'),
   addChoice: makeActionCreator(ADD_CHOICE),
   removeChoice: makeActionCreator(REMOVE_CHOICE, 'id')
@@ -75,20 +75,19 @@ function reduce(item = {}, action) {
       }))
     }
     case UPDATE_PROP: {
-      const newItem = cloneDeep(item)
+      let value = action.value
 
-      // mark as touched
-
-      if (action.property.score) {
-        if (action.property.score.success) {
-          action.property.score.success = parseFloat(action.property.score.success)
-        }
-        if (action.property.score.failure) {
-          action.property.score.failure = parseFloat(action.property.score.failure)
-        }
+      if (action.property === 'score.success' || action.property === 'score.failure') {
+        value = parseFloat(value)
       }
 
-      setChoiceTicks(merge(newItem, action.property))
+      const newItem = cloneDeep(item)
+      newItem._touched = merge(
+        newItem._touched || {},
+        set({}, action.property, true)
+      )
+      const property = set({}, action.property, value)
+      setChoiceTicks(merge(newItem, property))
 
       if (newItem.score.type === SCORE_FIXED) {
         setScores(newItem, choice => choice._checked ? 1 : 0)

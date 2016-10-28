@@ -118,8 +118,8 @@ let ItemPanel = props =>
           {props.expanded &&
             <ItemForm
               item={props.item}
-              onChange={newProperties =>
-                props.handleItemUpdate(props.item.id, newProperties)
+              onChange={(propertyPath, value) =>
+                props.handleItemUpdate(props.item.id, propertyPath, value)
               }
               onHintsChange={(updateType, payload) =>
                 props.handleItemHintsUpdate(props.item.id, updateType, payload)

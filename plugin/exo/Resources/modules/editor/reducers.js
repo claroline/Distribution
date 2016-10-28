@@ -1,4 +1,5 @@
 import merge from 'lodash/merge'
+import set from 'lodash/set'
 import sanitize from './sanitizers'
 import validate from './validators'
 import {decorateItem} from './decorators'
@@ -45,7 +46,7 @@ function initialQuizState() {
 function reduceQuiz(quiz = initialQuizState(), action = {}) {
   switch (action.type) {
     case QUIZ_UPDATE: {
-      const sanitizedProps = sanitize.quiz(action.newProperties)
+      const sanitizedProps = sanitize.quiz(action.propertyPath, action.value)
       const updatedQuiz = merge({}, quiz, sanitizedProps)
 
       if (updatedQuiz.parameters.randomPick === SHUFFLE_ALWAYS
@@ -55,6 +56,10 @@ function reduceQuiz(quiz = initialQuizState(), action = {}) {
 
       const errors = validate.quiz(updatedQuiz)
       updatedQuiz._errors = errors
+      updatedQuiz._touched = merge(
+        updatedQuiz._touched || {},
+        set({}, action.propertyPath, true)
+      )
       return updatedQuiz
     }
     case STEP_CREATE:
@@ -142,8 +147,16 @@ function reduceItems(items = {}, action = {}) {
     case ITEM_DELETE:
       return update(items, {$delete: action.id})
     case ITEM_UPDATE: {
-      let updatedItem = merge({}, items[action.id], action.newProperties)
+      let updatedItem = merge(
+        {},
+        items[action.id],
+        set({}, action.propertyPath, action.value)
+      )
       updatedItem._errors = validate.item(updatedItem)
+      updatedItem._touched = merge(
+        updatedItem._touched || {},
+        set({}, action.propertyPath, true)
+      )
       return update(items, {[action.id]: {$set: updatedItem}})
     }
     case ITEM_HINTS_UPDATE:
@@ -154,7 +167,7 @@ function reduceItems(items = {}, action = {}) {
               hints: {
                 $push: [{
                   id: makeId(),
-                  data: '',
+                  value: '',
                   penalty: 0
                 }]
               }

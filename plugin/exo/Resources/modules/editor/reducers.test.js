@@ -25,7 +25,7 @@ describe('Quiz reducer', () => {
     assertEqual(quiz.steps.length, 0, 'Steps must be empty')
   })
 
-  it('update properties on change', () => {
+  it('updates properties and marks them as touched on change', () => {
     const quiz = freeze({
       id: '1',
       parameters: {
@@ -33,13 +33,18 @@ describe('Quiz reducer', () => {
         showMetadata: true
       }
     })
-    const newState = reducers.quiz(quiz, actions.updateQuiz({parameters: {type: 'summative'}}))
+    const newState = reducers.quiz(quiz, actions.updateQuiz('parameters.type', 'summative'))
     delete newState._errors // not the point here
     assertEqual(newState, {
       id: '1',
       parameters: {
         type: 'summative',
         showMetadata: true
+      },
+      _touched: {
+        parameters: {
+          type: true
+        }
       }
     })
   })
@@ -203,24 +208,22 @@ describe('Items reducer', () => {
     })
   })
 
-  it('updates base item properties', () => {
+  it('updates base item properties and marks them as touched', () => {
     registerFixtureType()
     const items = freeze({
       '1': {
         id: '1',
         type: 'foo/bar',
-        content: 'Question?',
-        _errors: {}
+        content: 'Question?'
       }
     })
-    const updated = reducers.items(items, actions.updateItem('1', {
-      content: 'New question?'
-    }))
+    const updated = reducers.items(items, actions.updateItem('1', 'content', 'New question?'))
     assertEqual(updated['1'], {
       id: '1',
       type: 'foo/bar',
       content: 'New question?',
-      _errors: {}
+      _errors: {},
+      _touched: {content: true}
     })
   })
 
@@ -233,7 +236,7 @@ describe('Items reducer', () => {
         content: 'Question?'
       }
     })
-    const updated = reducers.items(items, actions.updateItem('1', {content: ''}))
+    const updated = reducers.items(items, actions.updateItem('1', 'content', ''))
     assertEqual(updated['1']._errors, {
       content: 'This value should not be blank.'
     })
@@ -306,7 +309,7 @@ describe('Items reducer', () => {
         hints: [
           {
             id: lastId(),
-            data: '',
+            value: '',
             penalty: 0
           }
         ]
@@ -323,7 +326,7 @@ describe('Items reducer', () => {
           hints: [
             {
               id: '123',
-              data: 'foo',
+              value: 'foo',
               penalty: 1.5
             }
           ]
@@ -349,7 +352,7 @@ describe('Items reducer', () => {
         hints: [
           {
             id: '123',
-            data: 'foo',
+            value: 'foo',
             penalty: 1.5
           }
         ]
@@ -357,7 +360,7 @@ describe('Items reducer', () => {
     })
     const newState = reducers.items(
       items,
-      actions.updateItemHints('2', HINT_CHANGE, {id: '123', data: 'bar'})
+      actions.updateItemHints('2', HINT_CHANGE, {id: '123', value: 'bar'})
     )
     assertEqual(newState, {
       '1': {id: '1', type: 'text/plain'},
@@ -367,7 +370,7 @@ describe('Items reducer', () => {
         hints: [
           {
             id: '123',
-            data: 'bar',
+            value: 'bar',
             penalty: 1.5
           }
         ]

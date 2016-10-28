@@ -1,18 +1,15 @@
-function sanitizeQuiz(quiz) {
-  if (quiz.parameters) {
-    const parameters = quiz.parameters
+import set from 'lodash/set'
 
-    if (parameters.pick) {
-      parameters.pick = parseInt(parameters.pick)
-    }
-    if (parameters.duration) {
-      parameters.duration = parseInt(parameters.duration)
-    }
-    if (parameters.maxAttempts) {
-      parameters.maxAttempts = parseInt(parameters.maxAttempts)
-    }
+function sanitizeQuiz(propertyPath, value) {
+  if (propertyPath === 'parameters.pick'
+    || propertyPath === 'parameters.duration'
+    || propertyPath === 'parameters.maxAttempts') {
+    value = parseInt(value)
   }
-  return quiz
+
+  let properties = {}
+
+  return set(properties, propertyPath, value)
 }
 
 function sanitizeStep(step) {

@@ -3,22 +3,18 @@ import {ensure} from './test-utils'
 
 describe('sanitize quiz', () => {
   it('converts numeric fields to integers', () => {
-    const quiz = {
-      title: 'foo',
-      parameters: {
-        duration: '12',
-        pick: '34',
-        maxAttempts: '56'
-      }
-    }
-    ensure.equal(sanitize.quiz(quiz), {
-      title: 'foo',
-      parameters: {
-        duration: 12,
-        pick: 34,
-        maxAttempts: 56
-      }
-    })
+    ensure.equal(
+      sanitize.quiz('parameters.duration', '12'),
+      {parameters: {duration: 12}}
+    )
+    ensure.equal(
+      sanitize.quiz('parameters.pick', '34'),
+      {parameters: {pick: 34}}
+    )
+    ensure.equal(
+      sanitize.quiz('parameters.maxAttempts', '56'),
+      {parameters: {maxAttempts: 56}}
+    )
   })
 })
 
