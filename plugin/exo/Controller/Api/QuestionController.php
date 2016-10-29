@@ -247,6 +247,28 @@ class QuestionController
     }
 
     /**
+     * Copies a Question.
+     *
+     * @EXT\Route("/{id}", name="question_copy")
+     * @EXT\Method("POST")
+     *
+     * @param Question $question
+     *
+     * @return JsonResponse
+     */
+    public function copyAction(Question $question)
+    {
+        $newQuestion = $this->questionManager->copy($question);
+
+        return new JsonResponse(
+            $this->questionManager->export($newQuestion, [
+                'includeSolutions' => true,
+                'includeUsedBy' => true,
+            ])
+        );
+    }
+
+    /**
      * Gets and Deserializes JSON data from Request.
      *
      * @param Request $request
