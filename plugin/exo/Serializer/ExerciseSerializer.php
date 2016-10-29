@@ -80,7 +80,9 @@ class ExerciseSerializer implements SerializerInterface
             $exercise = new Exercise();
         }
 
-        $exercise->setUuid($data->id);
+        if (!empty($data->id)) {
+            $exercise->setUuid($data->id);
+        }
 
         // Update ResourceNode
         $node = $exercise->getResourceNode();
