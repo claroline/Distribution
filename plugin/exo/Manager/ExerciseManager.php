@@ -137,7 +137,10 @@ class ExerciseManager
      */
     public function copy(Exercise $exercise)
     {
-        $exerciseData = $this->serializer->serialize($exercise);
+        $exerciseData = $this->serializer->serialize($exercise, ['includeSolutions' => true]);
+
+        // Remove UUID to force the generation of a new one
+        $exerciseData->id = '';
 
         return $this->create($exerciseData);
     }
