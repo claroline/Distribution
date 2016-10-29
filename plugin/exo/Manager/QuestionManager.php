@@ -201,6 +201,23 @@ class QuestionManager
     }
 
     /**
+     * Creates a copy of a Question.
+     *
+     * @param Question $question
+     *
+     * @return Question
+     */
+    public function copy(Question $question)
+    {
+        $questionData = $this->serializer->serialize($question, ['includeSolutions' => true]);
+
+        // Remove UUID to force the generation of a new one
+        $questionData->id = '';
+
+        return $this->create($questionData);
+    }
+
+    /**
      * Deletes a Question.
      * It's only possible if the Question is not used in an Exercise.
      *
