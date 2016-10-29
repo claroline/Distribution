@@ -153,7 +153,10 @@ class QuestionSerializer implements SerializerInterface
             }
         }
 
-        $question->setUuid($data->id);
+        if (!empty($data->id)) {
+            $question->setUuid($data->id);
+        }
+
         $question->setMimeType($data->type);
 
         if (isset($data->title)) {
@@ -261,6 +264,8 @@ class QuestionSerializer implements SerializerInterface
         if (isset($metadata->model)) {
             $question->setModel($metadata->model);
         }
+
+        // TODO : set author
     }
 
     /**
