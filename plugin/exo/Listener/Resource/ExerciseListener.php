@@ -146,9 +146,7 @@ class ExerciseListener
      */
     public function onCopy(CopyResourceEvent $event)
     {
-        $newExercise = $this->container->get('ujm.exo.exercise_manager')->copyExercise($event->getResource());
-
-        $this->container->get('doctrine.orm.entity_manager')->persist($newExercise);
+        $newExercise = $this->container->get('ujm.exo.exercise_manager')->copy($event->getResource());
 
         $event->setCopy($newExercise);
         $event->stopPropagation();
