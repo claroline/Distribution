@@ -302,12 +302,29 @@ class GeneralType extends AbstractType
                 ]
             )
             ->add(
+                'enableOpengraph',
+                'checkbox',
+                [
+                    'label' => 'enable_opengraph',
+                    'required' => false,
+                    'disabled' => isset($this->lockedParams['default_workspace_tag']),
+                ]
+            )
+            ->add(
                 'isPdfExportActive',
                 'checkbox',
                 [
                     'label' => 'activate_pdf_export',
                     'required' => false,
                     'disabled' => isset($this->lockedParams['is_pdf_export_active']),
+                ]
+            )
+            ->add(
+                'tmpDir',
+                'text',
+                [
+                    'label' => 'temporary_directory',
+                    'disabled' => isset($this->lockedParams['tmp_dir']),
                 ]
             );
 
