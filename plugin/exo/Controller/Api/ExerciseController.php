@@ -96,24 +96,6 @@ class ExerciseController
     }
 
     /**
-     * Exports the minimal representation of an exercise (id + meta)
-     * in a JSON format.
-     *
-     * @EXT\Route("/{id}/minimal", name="exercise_get_minimal")
-     * @EXT\ParamConverter("exercise", class="UJMExoBundle:Exercise", options={"mapping": {"id": "uuid"}})
-     *
-     * @param Exercise $exercise
-     *
-     * @return JsonResponse
-     */
-    public function minimalExportAction(Exercise $exercise)
-    {
-        $this->assertHasPermission('OPEN', $exercise);
-
-        return new JsonResponse($this->exerciseManager->export($exercise, ['minimal' => true]));
-    }
-
-    /**
      * Updates an Exercise.
      *
      * @EXT\Route("/{id}", name="exercise_update")
