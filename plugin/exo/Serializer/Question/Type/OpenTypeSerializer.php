@@ -71,7 +71,9 @@ class OpenTypeSerializer implements QuestionHandlerInterface, SerializerInterfac
      */
     public function deserialize($data, $openQuestion = null, array $options = [])
     {
-        $openQuestion = !empty($options['entity']) ? $options['entity'] : new InteractionOpen();
+        if (empty($openQuestion)) {
+            $openQuestion = new InteractionOpen();
+        }
 
         $openQuestion->setScoreMaxLongResp($data->score->success);
 

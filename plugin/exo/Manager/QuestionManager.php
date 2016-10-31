@@ -11,6 +11,8 @@ use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Hint;
 use UJM\ExoBundle\Entity\Question;
 use UJM\ExoBundle\Entity\Response;
+use UJM\ExoBundle\Library\Options\Transfer;
+use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Serializer\Question\QuestionSerializer;
 use UJM\ExoBundle\Transfer\Json\QuestionHandlerCollector;
 use UJM\ExoBundle\Transfer\Json\ValidationException;
@@ -142,7 +144,7 @@ class QuestionManager
     public function update(Question $question, \stdClass $data)
     {
         // Validate received data
-        $errors = $this->validator->validate($data);
+        $errors = $this->validator->validate($data, [Validation::REQUIRE_SOLUTIONS]);
         if (count($errors) > 0) {
             throw new ValidationException('Question is not valid', $errors);
         }
@@ -209,7 +211,7 @@ class QuestionManager
      */
     public function copy(Question $question)
     {
-        $questionData = $this->serializer->serialize($question, ['includeSolutions' => true]);
+        $questionData = $this->serializer->serialize($question, [Transfer::INCLUDE_SOLUTIONS]);
 
         // Remove UUID to force the generation of a new one
         $questionData->id = '';

@@ -4,6 +4,7 @@ namespace UJM\ExoBundle\Library\Validator;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Library\Json\JsonSchema;
+use UJM\ExoBundle\Library\Options\Validation;
 
 /**
  * Base class for Validators that uses JSON schema definition.
@@ -58,13 +59,28 @@ abstract class JsonSchemaValidator implements ValidatorInterface
      */
     public function validate($data, array $options = [])
     {
-        // Validate against JSON schema
-        $errors = $this->jsonSchema->validate($data, $this->getJsonSchemaUri());
+        if (!in_array(Validation::NO_SCHEMA, $options)) {
+            // Validate against JSON schema
+            $errors = $this->validateSchema($data);
+        }
+
         if (empty($errors)) {
             // Perform additional checks
             $errors = $this->validateAfterSchema($data, $options);
         }
 
         return $errors;
+    }
+
+    /**
+     * Validates data against JSON schema.
+     *
+     * @param mixed $data - the data to validate
+     *
+     * @return array - the list of validation errors
+     */
+    private function validateSchema($data)
+    {
+        return $this->jsonSchema->validate($data, $this->getJsonSchemaUri());
     }
 }

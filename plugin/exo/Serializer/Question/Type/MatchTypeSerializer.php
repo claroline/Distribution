@@ -4,6 +4,7 @@ namespace UJM\ExoBundle\Serializer\Question\Type;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\InteractionMatching;
+use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Question\Handler\QuestionHandlerInterface;
 use UJM\ExoBundle\Library\Question\QuestionType;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
@@ -31,7 +32,7 @@ class MatchTypeSerializer implements QuestionHandlerInterface, SerializerInterfa
     {
         $questionData = new \stdClass();
 
-        if (isset($options['includeSolutions']) && $options['includeSolutions']) {
+        if (in_array(Transfer::INCLUDE_SOLUTIONS, $options)) {
             $questionData->solutions = $this->serializeSolutions($matchQuestion);
         }
 

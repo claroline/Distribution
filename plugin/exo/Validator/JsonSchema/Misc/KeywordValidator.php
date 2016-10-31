@@ -3,6 +3,7 @@
 namespace UJM\ExoBundle\Validator\JsonSchema\Misc;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
 
 /**
@@ -47,11 +48,7 @@ class KeywordValidator extends JsonSchemaValidator
         $keywordsData = []; // We will store text and caseSensitive to check there is no duplicate
         foreach ($keywords as $index => $keyword) {
             // Validate keyword
-            if (isset($options['validateSchema']) && $options['validateSchema']) {
-                $errors = array_merge($errors, $this->validate($keyword, $options));
-            } else {
-                $errors = array_merge($errors, $this->validateAfterSchema($keyword, $options));
-            }
+            $errors = array_merge($errors, $this->validateAfterSchema($keyword, $options));
 
             if (empty($errors)) {
                 if ($keyword->score > $maxScore) {
@@ -74,7 +71,7 @@ class KeywordValidator extends JsonSchemaValidator
         }
 
         // check there is a keyword with a positive score
-        if (isset($options['validateScore']) && $options['validateScore'] && $maxScore <= 0) {
+        if (in_array(Validation::VALIDATE_SCORE, $options) && $maxScore <= 0) {
             $errors[] = [
                 'path' => '',
                 'message' => 'there is no keyword with a positive score',

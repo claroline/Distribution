@@ -8,6 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use UJM\ExoBundle\Entity\Question;
+use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Manager\QuestionManager;
 use UJM\ExoBundle\Transfer\Json\ValidationException;
 
@@ -62,57 +63,6 @@ class QuestionController
                 'includeUsedBy' => true,
             ])
         );
-    }
-
-    /**
-     * Imports questions in QTI format.
-     *
-     * @EXT\Route("/import", name="question_import_qti")
-     * @EXT\Method("POST")
-     *
-     * @param Request $request
-     *
-     *
-     */
-    public function importQTIAction(Request $request)
-    {
-
-    }
-
-    /**
-     * Exports questions in QTI format.
-     *
-     * @EXT\Route("/export", name="question_export_qti")
-     * @EXT\Method("POST")
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
-     */
-    public function exportQTIAction(Request $request)
-    {
-        $errors = [];
-
-        $data = $this->decodeRequestData($request);
-        if (empty($data)) {
-            // Invalid or empty JSON data received
-            $errors[] = [
-                'path' => '',
-                'message' => 'Invalid JSON data',
-            ];
-        } else if (!is_array($data)) {
-            $errors[] = [
-                'path' => '',
-                'message' => 'Invalid data sent. Expected an array of Question IDs.',
-            ];
-        }
-
-        if (empty($errors)) {
-            // TODO : do the QTI export
-        } else {
-            // Invalid data received
-            return new JsonResponse($errors, 422);
-        }
     }
 
     /**
@@ -214,10 +164,7 @@ class QuestionController
         if (empty($errors)) {
             // Question updated
             return new JsonResponse(
-                $this->questionManager->export($question, [
-                    'includeSolutions' => true,
-                    'includeUsedBy' => true,
-                ])
+                $this->questionManager->export($question, [Transfer::INCLUDE_SOLUTIONS, Transfer::INCLUDE_ADMIN_META])
             );
         } else {
             // Invalid data received
@@ -244,6 +191,66 @@ class QuestionController
         }
 
         return new JsonResponse(null, 204);
+    }
+
+    /**
+     * Imports questions in QTI format.
+     *
+     * @EXT\Route("{id}/docimology", name="question_import_qti")
+     * @EXT\Method("GET")
+     */
+    public function docimologyAction()
+    {
+
+    }
+
+    /**
+     * Imports questions in QTI format.
+     *
+     * @EXT\Route("/import", name="question_import_qti")
+     * @EXT\Method("POST")
+     *
+     * @param Request $request
+     */
+    public function importQTIAction(Request $request)
+    {
+
+    }
+
+    /**
+     * Exports questions in QTI format.
+     *
+     * @EXT\Route("/export", name="question_export_qti")
+     * @EXT\Method("POST")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function exportQTIAction(Request $request)
+    {
+        $errors = [];
+
+        $data = $this->decodeRequestData($request);
+        if (empty($data)) {
+            // Invalid or empty JSON data received
+            $errors[] = [
+                'path' => '',
+                'message' => 'Invalid JSON data',
+            ];
+        } else if (!is_array($data)) {
+            $errors[] = [
+                'path' => '',
+                'message' => 'Invalid data sent. Expected an array of Question IDs.',
+            ];
+        }
+
+        if (empty($errors)) {
+            // TODO : do the QTI export
+        } else {
+            // Invalid data received
+            return new JsonResponse($errors, 422);
+        }
     }
 
     /**

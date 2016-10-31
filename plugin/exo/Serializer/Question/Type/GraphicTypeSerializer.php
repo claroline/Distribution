@@ -5,6 +5,7 @@ namespace UJM\ExoBundle\Serializer\Question\Type;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Coords;
 use UJM\ExoBundle\Entity\InteractionGraphic;
+use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Question\Handler\QuestionHandlerInterface;
 use UJM\ExoBundle\Library\Question\QuestionType;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
@@ -35,7 +36,7 @@ class GraphicTypeSerializer implements QuestionHandlerInterface, SerializerInter
         $questionData->image = $this->serializeImage($graphicQuestion);
         $questionData->pointers = $graphicQuestion->getAreas()->count();
 
-        if (isset($options['includeSolutions']) && $options['includeSolutions']) {
+        if (in_array(Transfer::INCLUDE_SOLUTIONS, $options)) {
             $questionData->solutions = $this->serializeSolutions($graphicQuestion);
         }
 

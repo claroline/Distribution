@@ -7,6 +7,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\InteractionOpen;
 use UJM\ExoBundle\Entity\TypeOpenQuestion;
 use UJM\ExoBundle\Entity\WordResponse;
+use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Question\Handler\QuestionHandlerInterface;
 use UJM\ExoBundle\Library\Question\QuestionType;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
@@ -64,7 +65,7 @@ class WordsTypeSerializer implements QuestionHandlerInterface, SerializerInterfa
     {
         $questionData = new \stdClass();
 
-        if (isset($options['includeSolutions']) && $options['includeSolutions']) {
+        if (in_array(Transfer::INCLUDE_SOLUTIONS, $options)) {
             $questionData->solutions = $this->serializeSolutions($wordsQuestion);
         }
 
@@ -89,8 +90,6 @@ class WordsTypeSerializer implements QuestionHandlerInterface, SerializerInterfa
         if (empty($wordsQuestion)) {
             $wordsQuestion = new InteractionOpen();
         }
-
-        // TODO : make a distinction between oneWord / short
 
         /** @var TypeOpenQuestion $type */
         $type = $this->om->getRepository('UJMExoBundle:TypeOpenQuestion')->findOneBy([
