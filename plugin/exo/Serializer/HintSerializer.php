@@ -4,6 +4,7 @@ namespace UJM\ExoBundle\Serializer;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Hint;
+use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
 
 /**
@@ -30,7 +31,7 @@ class HintSerializer implements SerializerInterface
             $hintData->penalty = $hint->getPenalty();
         }
 
-        if (isset($options['includeSolutions']) && $options['includeSolutions']) {
+        if (in_array(Transfer::INCLUDE_SOLUTIONS, $options)) {
             $hintData->value = $hint->getValue();
         }
 

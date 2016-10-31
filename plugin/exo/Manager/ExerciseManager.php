@@ -7,6 +7,8 @@ use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Step;
 use UJM\ExoBundle\Library\Mode\CorrectionMode;
+use UJM\ExoBundle\Library\Options\Transfer;
+use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Serializer\ExerciseSerializer;
 use UJM\ExoBundle\Transfer\Json\ValidationException;
 use UJM\ExoBundle\Transfer\Json\Validator;
@@ -100,7 +102,7 @@ class ExerciseManager
     public function update(Exercise $exercise, \stdClass $data)
     {
         // Validate received data
-        $errors = $this->validator->validate($data, ['solutionsRequired' => true]);
+        $errors = $this->validator->validate($data, [Validation::REQUIRE_SOLUTIONS]);
         if (count($errors) > 0) {
             throw new ValidationException('Exercise is not valid', $errors);
         }
@@ -137,7 +139,7 @@ class ExerciseManager
      */
     public function copy(Exercise $exercise)
     {
-        $exerciseData = $this->serializer->serialize($exercise, ['includeSolutions' => true]);
+        $exerciseData = $this->serializer->serialize($exercise, [Transfer::INCLUDE_SOLUTIONS]);
 
         // Remove UUID to force the generation of a new one
         $exerciseData->id = '';

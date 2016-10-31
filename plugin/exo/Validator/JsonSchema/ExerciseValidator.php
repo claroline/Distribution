@@ -3,6 +3,8 @@
 namespace UJM\ExoBundle\Validator\JsonSchema;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Library\Options\Recurrence;
+use UJM\ExoBundle\Library\Options\ShowCorrectionAt;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
 
 /**
@@ -56,7 +58,7 @@ class ExerciseValidator extends JsonSchemaValidator
     {
         $errors = [];
 
-        if (isset($parameters->randomPick) && 'never' !== $parameters->randomPick && !isset($parameters->pick)) {
+        if (isset($parameters->randomPick) && Recurrence::NEVER !== $parameters->randomPick && !isset($parameters->pick)) {
             // Random pick is enabled but the number of steps to pick is missing
             $errors[] = [
                 'path' => '/parameters/randomPick',
@@ -64,7 +66,7 @@ class ExerciseValidator extends JsonSchemaValidator
             ];
         }
 
-        if (isset($parameters->showCorrectionAt) && 'date' === $parameters->showCorrectionAt && empty($parameters->correctionDate)) {
+        if (isset($parameters->showCorrectionAt) && ShowCorrectionAt::AFTER_DATE === $parameters->showCorrectionAt && empty($parameters->correctionDate)) {
             // Correction is shown at a date, but the date is not specified
             $errors[] = [
                 'path' => '/parameters/correctionDate',

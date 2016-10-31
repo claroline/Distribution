@@ -40,7 +40,7 @@ class StepSerializer implements SerializerInterface
      * @param Step  $step
      * @param array $options
      *
-     * @return array
+     * @return \stdClass
      */
     public function serialize($step, array $options = [])
     {

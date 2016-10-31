@@ -3,6 +3,7 @@
 namespace UJM\ExoBundle\Validator\JsonSchema;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
 
 /**
@@ -27,7 +28,7 @@ class HintValidator extends JsonSchemaValidator
     {
         $errors = [];
 
-        if (!empty($options['solutionsRequired']) && $options['solutionsRequired'] && empty($hint->value)) {
+        if (in_array(Validation::REQUIRE_SOLUTIONS, $options) && empty($hint->value)) {
             $errors[] = [
                 'path' => '/value',
                 'message' => 'Hint requires a "value" property',

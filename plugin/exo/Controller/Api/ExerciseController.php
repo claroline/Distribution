@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use UJM\ExoBundle\Entity\Exercise;
+use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Manager\ExerciseManager;
 use UJM\ExoBundle\Manager\PaperManager;
 use UJM\ExoBundle\Manager\QuestionManager;
@@ -92,7 +93,7 @@ class ExerciseController
     {
         $this->assertHasPermission('ADMINISTRATE', $exercise);
 
-        return new JsonResponse($this->exerciseManager->export($exercise, ['includeSolutions' => true]));
+        return new JsonResponse($this->exerciseManager->export($exercise, [Transfer::INCLUDE_SOLUTIONS]));
     }
 
     /**
@@ -129,7 +130,7 @@ class ExerciseController
             }
         }
 
-        return new JsonResponse($this->exerciseManager->export($exercise, ['includeSolutions' => true]));
+        return new JsonResponse($this->exerciseManager->export($exercise, [Transfer::INCLUDE_SOLUTIONS]));
     }
 
     /**

@@ -4,6 +4,8 @@ namespace UJM\ExoBundle\Tests\Serializer;
 
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use UJM\ExoBundle\Entity\Hint;
+use UJM\ExoBundle\Library\Options\Transfer;
+use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Testing\Json\JsonDataTestCase;
 use UJM\ExoBundle\Serializer\HintSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\HintValidator;
@@ -55,6 +57,13 @@ class HintSerializerTest extends JsonDataTestCase
         $this->assertCount(0, $this->validator->validate($serialized));
     }
 
+    public function testSerializedDataWithSolutionsAreSchemaValid()
+    {
+        $serialized = $this->serializer->serialize($this->hint, [Transfer::INCLUDE_SOLUTIONS]);
+
+        $this->assertCount(0, $this->validator->validate($serialized, [Validation::REQUIRE_SOLUTIONS]));
+    }
+
     public function testSerializedDataAreCorrectlySet()
     {
         $serialized = $this->serializer->serialize($this->hint);
@@ -75,7 +84,7 @@ class HintSerializerTest extends JsonDataTestCase
 
     public function testSerializedDataWithSolutions()
     {
-        $serialized = $this->serializer->serialize($this->hint, ['includeSolutions' => true]);
+        $serialized = $this->serializer->serialize($this->hint, [Transfer::INCLUDE_SOLUTIONS]);
 
         $this->assertEquals('hint text', $serialized->value);
     }

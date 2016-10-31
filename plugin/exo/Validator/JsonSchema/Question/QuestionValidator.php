@@ -3,6 +3,7 @@
 namespace UJM\ExoBundle\Validator\JsonSchema\Question;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
 use UJM\ExoBundle\Validator\JsonSchema\HintValidator;
 
@@ -80,7 +81,7 @@ class QuestionValidator extends JsonSchemaValidator
                 'message' => 'Unknown question type "'.$question->type.'"',
             ];
         } else {
-            if (isset($options['solutionsRequired']) && $options['solutionsRequired'] && !isset($question->solutions)) {
+            if (in_array(Validation::REQUIRE_SOLUTIONS, $options) && !isset($question->solutions)) {
                 $errors[] = [
                     'path' => '/solutions',
                     'message' => 'Question requires a "solutions" property',
