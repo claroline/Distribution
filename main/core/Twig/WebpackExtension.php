@@ -91,7 +91,7 @@ class WebpackExtension extends \Twig_Extension
     private function getWebpackAssets()
     {
         if (!$this->assetCache) {
-            $assetFile = realpath("{$this->rootDir}/../webpack-assets.json");
+            $assetFile = "{$this->rootDir}/../webpack-assets.json";
 
             if (!file_exists($assetFile)) {
                 throw new \Exception(sprintf(
