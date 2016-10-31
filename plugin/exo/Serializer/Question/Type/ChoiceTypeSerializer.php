@@ -6,6 +6,7 @@ use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Choice;
 use UJM\ExoBundle\Entity\InteractionQCM;
+use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Question\Handler\QuestionHandlerInterface;
 use UJM\ExoBundle\Library\Question\QuestionType;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
@@ -79,7 +80,7 @@ class ChoiceTypeSerializer implements QuestionHandlerInterface, SerializerInterf
             $questionData->score->type = 'sum';
         }
 
-        if (isset($options['includeSolutions']) && $options['includeSolutions']) {
+        if (in_array(Transfer::INCLUDE_SOLUTIONS, $options)) {
             $questionData->solutions = $this->serializeSolutions($choiceQuestion);
         }
 

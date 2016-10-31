@@ -8,6 +8,7 @@ use UJM\ExoBundle\Entity\Hint;
 use UJM\ExoBundle\Entity\Question;
 use UJM\ExoBundle\Entity\QuestionObject;
 use UJM\ExoBundle\Entity\QuestionResource;
+use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
 use UJM\ExoBundle\Repository\QuestionRepository;
 use UJM\ExoBundle\Serializer\HintSerializer;
@@ -123,7 +124,7 @@ class QuestionSerializer implements SerializerInterface
         }
 
         // Serialize feedback
-        if (isset($options['includeSolutions']) && $options['includeSolutions'] && $question->getFeedback()) {
+        if (in_array(Transfer::INCLUDE_SOLUTIONS, $options) && $question->getFeedback()) {
             $questionData->feedback = $question->getFeedback();
         }
 
@@ -238,11 +239,12 @@ class QuestionSerializer implements SerializerInterface
             $metadata->authors = [$author];
         }
 
-        $metadata->model = $question->isModel();
         $metadata->created = $question->getDateCreate()->format('Y-m-d\TH:i:s');
         $metadata->updated = $question->getDateModify()->format('Y-m-d\TH:i:s');
 
-        if (isset($options['includeUsedBy']) && $options['includeUsedBy']) {
+        if (in_array(Transfer::INCLUDE_ADMIN_META, $options)) {
+            $metadata->model = $question->isModel();
+
             // Includes the list of Exercises using this question
             /** @var QuestionRepository $questionRepo */
             $questionRepo = $this->om->getRepository('UJMExoBundle:Question');

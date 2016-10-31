@@ -3,6 +3,7 @@
 namespace UJM\ExoBundle\Validator\JsonSchema\Question\Type;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Question\Handler\QuestionHandlerInterface;
 use UJM\ExoBundle\Library\Question\QuestionType;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
@@ -47,7 +48,7 @@ class ClozeTypeValidator extends JsonSchemaValidator implements QuestionHandlerI
     {
         $errors = [];
 
-        if (isset($options['solutionsRequired']) && $options['solutionsRequired']) {
+        if (in_array(Validation::REQUIRE_SOLUTIONS, $options)) {
             $errors = $this->validateSolutions($question);
         }
 
@@ -88,7 +89,7 @@ class ClozeTypeValidator extends JsonSchemaValidator implements QuestionHandlerI
             }
 
             // Validates hole keywords
-            $errors = array_merge($errors, $this->keywordValidator->validateCollection($solution->answers, ['validateScore' => true]));
+            $errors = array_merge($errors, $this->keywordValidator->validateCollection($solution->answers, [Validation::NO_SCHEMA, Validation::VALIDATE_SCORE]));
         }
 
         return $errors;

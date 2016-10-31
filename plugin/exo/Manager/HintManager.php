@@ -8,6 +8,7 @@ use UJM\ExoBundle\Entity\Hint;
 use UJM\ExoBundle\Entity\LinkHintPaper;
 use UJM\ExoBundle\Entity\Paper;
 use UJM\ExoBundle\Entity\Question;
+use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Repository\HintRepository;
 use UJM\ExoBundle\Repository\PaperRepository;
 use UJM\ExoBundle\Serializer\HintSerializer;
@@ -84,7 +85,7 @@ class HintManager
     public function update(Hint $hint, \stdClass $data)
     {
         // Validate received data
-        $errors = $this->validator->validate($data);
+        $errors = $this->validator->validate($data, [Validation::REQUIRE_SOLUTIONS]);
         if (count($errors) > 0) {
             throw new ValidationException('Hint is not valid', $errors);
         }

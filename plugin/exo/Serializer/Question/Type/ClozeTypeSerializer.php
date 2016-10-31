@@ -6,6 +6,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Hole;
 use UJM\ExoBundle\Entity\InteractionHole;
 use UJM\ExoBundle\Entity\WordResponse;
+use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Question\Handler\QuestionHandlerInterface;
 use UJM\ExoBundle\Library\Question\QuestionType;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
@@ -55,7 +56,7 @@ class ClozeTypeSerializer implements QuestionHandlerInterface, SerializerInterfa
 
         $questionData->text = $clozeQuestion->getText();
         $questionData->holes = $this->serializeHoles($clozeQuestion);
-        if (isset($options['includeSolutions']) && $options['includeSolutions']) {
+        if (in_array(Transfer::INCLUDE_SOLUTIONS, $options)) {
             $questionData->solutions = $this->serializeSolutions($clozeQuestion);
         }
 
