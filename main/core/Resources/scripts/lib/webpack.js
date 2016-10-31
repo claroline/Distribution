@@ -265,7 +265,7 @@ function makeJsLoader(isProd) {
     query: {
       cacheDirectory: true,
       presets: ['es2015', 'react'],
-      plugins: ['transform-runtime']
+      plugins: isProd ? ['transform-runtime'] : ['transform-runtime', 'istanbul']
     }
   }
 }

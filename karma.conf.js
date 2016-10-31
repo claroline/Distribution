@@ -34,9 +34,10 @@ module.exports = config => {
       'plugin/result/**/*'
     ],
     preprocessors: {
+      './*/*/Resources/**/[^.]+.js': ['coverage'],
       './*/*/Resources/**/*test.js': ['webpack']
     },
-    reporters: ['dots'],
+    reporters: ['dots', 'coverage'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_WARN,
