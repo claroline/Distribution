@@ -18,7 +18,8 @@ module.exports = {
   plugins: [
     plugins.assetsInfoFile(),
     plugins.bowerFileLookup(),
-    plugins.distributionShortcut()
+    plugins.distributionShortcut(),
+    ...plugins.dllReferences(shared.dllManifests())
   ],
   module: {
     loaders: [

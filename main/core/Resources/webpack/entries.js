@@ -1,5 +1,4 @@
 const fs = require('fs')
-const colors = require('colors/safe')
 const paths = require('./paths')
 
 /**
@@ -12,12 +11,8 @@ function collectEntries() {
   const webpackPackages = packages.filter(def => def.assets && def.assets.webpack)
   const packageNames = webpackPackages.map(def => def.name)
   const normalizedPackages = normalizeNames(webpackPackages)
-  const entries = extractEntries(normalizedPackages)
-  const debug = JSON.stringify({'Collected entries': entries}, null, 2)
 
-  console.log(colors.yellow(`${debug}\n`))
-
-  return entries
+  return extractEntries(normalizedPackages)
 }
 
 /**

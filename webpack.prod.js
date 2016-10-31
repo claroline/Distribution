@@ -4,6 +4,10 @@ const shared = require('./main/core/Resources/webpack/shared')
 const plugins = require('./main/core/Resources/webpack/plugins')
 const loaders = require('./main/core/Resources/webpack/loaders')
 
+if (process.env.NODE_ENV !== 'production') {
+  throw new Error('Production builds must have NODE_ENV=production')
+}
+
 module.exports = {
   entry: entries(),
   output: {
@@ -22,7 +26,8 @@ module.exports = {
     plugins.commonsChunk(),
     plugins.dedupeModules(),
     plugins.rejectBuildErrors(),
-    plugins.exitWithErrorCode()
+    plugins.exitWithErrorCode(),
+    ...plugins.dllReferences(shared.dllManifests())
   ],
   module: {
     loaders: [

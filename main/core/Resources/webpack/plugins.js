@@ -47,7 +47,7 @@ const distributionShortcut = () => {
 const commonsChunk = () => {
   return new webpack.optimize.CommonsChunkPlugin({
     name: 'commons',
-    minChunks: 3
+    minChunks: 5
   })
 }
 
@@ -93,13 +93,35 @@ const rejectBuildErrors = () => {
 }
 
 /**
- * This plugin makes webpack exit with a non-zero status code
- * in case of error when not in watch mode.
+ * Makes webpack exit with a non-zero status code in case of error when not
+ * in watch mode.
  *
  * @see https://github.com/webpack/webpack/issues/708
  */
 const exitWithErrorCode = () => {
   return FailPlugin
+}
+
+/**
+ * Bundles entries in separate DLLs to improve build performance.
+ */
+const dlls = () => {
+  return new webpack.DllPlugin({
+    path: `${paths.output()}/[name].manifest.json`,
+    name: '[name]_dll_[hash]'
+  })
+}
+
+/**
+ * Includes references to generated DLLs
+ */
+const dllReferences = manifests => {
+  return manifests.map(manifest =>
+    new webpack.DllReferencePlugin({
+      context: '.',
+      manifest
+    })
+  )
 }
 
 module.exports = {
@@ -110,5 +132,7 @@ module.exports = {
   dedupeModules,
   defineProdEnv,
   rejectBuildErrors,
-  exitWithErrorCode
+  exitWithErrorCode,
+  dllReferences,
+  dlls
 }
