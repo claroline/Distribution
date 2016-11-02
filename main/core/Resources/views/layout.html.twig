@@ -25,6 +25,7 @@
 {% block layout %}
     <div id="sf-environement" data-env="{{ app.environment }}" class="hide"></div>
     <div id="homePath" class="hide">{{ path("claro_index") }}</div>
+
     {% if config.getParameter('ssl_enabled') or app.request.isSecure() %}
         {% set protocol = 'https' %}
     {% else %}
@@ -39,6 +40,12 @@
 
     {% set homeAsset = protocol ~ '://' ~ host ~ app.request.getBasePath() ~ '/' %}
 
+    <div
+        id="platform-configuration"
+        class="hide"
+        data-enable-opengraph="{{ config.getParameter('enable_opengraph') }}"
+    >
+    </div>
     <div id="homeAsset" class="hide">{{ homeAsset }}</div>
     <div id="baseAsset" class="hide">{{ asset('') }}</div>
     <div id="homeTheme" class="hide">{{ macros.getTheme(config)|trim }}</div>

@@ -49,6 +49,9 @@ class DeckManager
      */
     public function create(Deck $deck)
     {
+        foreach ($deck->getUserPreferences() as $userPref) {
+            $this->om->persist($userPref);
+        }
         $this->om->persist($deck);
         $this->om->flush();
 
@@ -68,7 +71,7 @@ class DeckManager
 
     /**
      * Returns the content of the result resource form.
-     * 
+     *
      * @param FormView $view
      *
      * @return string

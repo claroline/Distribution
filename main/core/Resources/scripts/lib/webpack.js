@@ -12,13 +12,13 @@ const CircularDependencyPlugin = require('circular-dependency-plugin')
  * @param isWatchMode     Whether webpack is to be run in watch mode
  * @returns Object
  */
-function configure(rootDir, packages, isWatchMode) {
+function configure (rootDir, packages, isWatchMode) {
   const isProd = !isWatchMode
 
   // see https://github.com/facebookincubator/create-react-app/blob/master/config/webpack.config.prod.js#L21
   // (note: the whole config should probably be refactored to match that format)
   if (isProd && process.env.NODE_ENV !== 'production') {
-    throw new Error('Production builds must have NODE_ENV=production.');
+    throw new Error('Production builds must have NODE_ENV=production.')
   }
 
   // first we must parse the webpack configs of each bundle
@@ -72,15 +72,22 @@ function configure(rootDir, packages, isWatchMode) {
     makeJqueryUiLoader(),
     makeCssLoader(),
     makeUrlLoader(),
-    makeJsonLoader()
+    makeJsonLoader(),
+    makeModernizerLoader()
   ]
 
   return {
     entry: entries,
     output: output,
+    externals: {
+      // require("jquery") is external and available on the global var jQuery
+      'jquery': 'jQuery'
+    },
     resolve: {
       root: root,
-      alias: { jquery: __dirname + '/../../modules/jquery' }
+      alias: {
+          modernizr$: __dirname + '/../config/.modernizrrc'
+      }
     },
     plugins: plugins,
     module: { loaders: loaders },
@@ -108,7 +115,7 @@ function configure(rootDir, packages, isWatchMode) {
  *
  * "foo/bar-bundle" -> "foo-bar"
  */
-function normalizeNames(packages) {
+function normalizeNames (packages) {
   return packages.map(def => {
     var parts = def.name.split(/\/|\-/)
 
@@ -126,14 +133,14 @@ function normalizeNames(packages) {
  * Merges "entry" sections of package configs into one object,
  * prefixing entry names and paths with package names/paths.
  */
-function extractEntries(packages) {
+function extractEntries (packages) {
   return packages
     .filter(def => def.assets.webpack && def.assets.webpack.entry)
     .reduce((entries, def) => {
       Object.keys(def.assets.webpack.entry).forEach(entry => {
-         def.meta ?
-           entries[`${def.name}-${def.assets.webpack.entry[entry].dir}-${entry}`] = `${def.assets.webpack.entry[entry].prefix}/Resources/modules/${def.assets.webpack.entry[entry].name}`:
-           entries[`${def.name}-${entry}`] = `${def.path}/Resources/modules/${def.assets.webpack.entry[entry]}`
+        def.meta ?
+          entries[`${def.name}-${def.assets.webpack.entry[entry].dir}-${entry}`] = `${def.assets.webpack.entry[entry].prefix}/Resources/modules/${def.assets.webpack.entry[entry].name}` :
+          entries[`${def.name}-${entry}`] = `${def.path}/Resources/modules/${def.assets.webpack.entry[entry]}`
       })
 
       return entries
@@ -145,7 +152,7 @@ function extractEntries(packages) {
  * stored in the bower web/packages directory by inspecting their
  * bower config (default is to look in package.json).
  */
-function makeBowerPlugin() {
+function makeBowerPlugin () {
   return new webpack.ResolverPlugin(
     new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin(
       '.bower.json',
@@ -170,7 +177,7 @@ function makeBowerPlugin() {
  *
  * /path/to/vendor/claroline/distribution/main/core/Resources/modules/foo/bar
  */
-function makeBundleResolverPlugin(rootDir) {
+function makeBundleResolverPlugin (rootDir) {
   return new webpack.NormalModuleReplacementPlugin(/^#\//, request => {
     const parts = request.request.substr(2).split('/')
     const resolved = [...parts.slice(0, 2), 'Resources/modules', ...parts.slice(2)]
@@ -182,7 +189,7 @@ function makeBundleResolverPlugin(rootDir) {
  * This plugin builds a common file for the whole platform
  * (might require minChunks adjustments)
  */
-function makeCommonsPlugin() {
+function makeCommonsPlugin () {
   return new webpack.optimize.CommonsChunkPlugin({
     name: 'commons',
     minChunks: 3
@@ -194,17 +201,17 @@ function makeCommonsPlugin() {
  * ("webpack-assets.json" by default). This is useful to retrieve assets names
  * when a hash has been used for cache busting.
  */
-function makeAssetsPlugin() {
+function makeAssetsPlugin () {
   return new assetsPlugin({
     fullPath: false,
     prettyPrint: true
-  });
+  })
 }
 
 /**
  * This plugin removes equal or similar files from the output.
  */
-function makeDedupePlugin() {
+function makeDedupePlugin () {
   return new webpack.optimize.DedupePlugin()
 }
 
@@ -214,7 +221,7 @@ function makeDedupePlugin() {
  * to "production", so that libraries that make use of that flag
  * for debug purposes are silent.
  */
-function makeDefinePlugin() {
+function makeDefinePlugin () {
   return new webpack.DefinePlugin({
     'process.env': {
       NODE_ENV: JSON.stringify('production')
@@ -225,7 +232,7 @@ function makeDefinePlugin() {
 /**
  * This plugin ensures no assets are emitted that include errors.
  */
-function makeNoErrorsPlugin() {
+function makeNoErrorsPlugin () {
   return new webpack.NoErrorsPlugin({
     bail: true
   })
@@ -237,7 +244,7 @@ function makeNoErrorsPlugin() {
  *
  * @see https://github.com/webpack/webpack/issues/708
  */
-function makeFailOnErrorPlugin() {
+function makeFailOnErrorPlugin () {
   return failPlugin
 }
 
@@ -257,7 +264,7 @@ function makeCircularDependencyPlugin() {
 /**
  * This loader enables es6 transpilation with babel.
  */
-function makeJsLoader(isProd) {
+function makeJsLoader (isProd) {
   return {
     test: /\.jsx?$/,
     exclude: /(node_modules|packages)/,
@@ -275,7 +282,7 @@ function makeJsLoader(isProd) {
  * This loader returns the file content as plain string,
  * without any transformation.
  */
-function makeRawLoader() {
+function makeRawLoader () {
   return {
     test: /\.html$/,
     loader: 'raw'
@@ -289,7 +296,7 @@ function makeRawLoader() {
  * could probably be removed when jQuery is required only through module
  * imports.
  */
-function makeJqueryUiLoader() {
+function makeJqueryUiLoader () {
   return {
     test: /jquery-ui/,
     loader: 'imports?define=>false'
@@ -299,7 +306,7 @@ function makeJqueryUiLoader() {
 /**
  * This loader loads CSS files.
  */
-function makeCssLoader() {
+function makeCssLoader () {
   return {
     test: /\.css$/,
     loader: 'style!css'
@@ -309,7 +316,7 @@ function makeCssLoader() {
 /**
  * This loader makes base64 encoded URIs for images.
  */
-function makeUrlLoader() {
+function makeUrlLoader () {
   return {
     test: /\.(jpe?g|png|gif|svg)$/,
     loader: 'url?limit=25000'
@@ -319,10 +326,17 @@ function makeUrlLoader() {
 /**
  * This loader loads JSON files.
  */
-function makeJsonLoader() {
+function makeJsonLoader () {
   return {
     test: /\.json$/,
     loader: 'json'
+  }
+}
+
+function makeModernizerLoader () {
+  return {
+    test: /\.modernizrrc$/,
+    loader: 'modernizr'
   }
 }
 

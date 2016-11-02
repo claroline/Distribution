@@ -61,12 +61,14 @@ tinymce.claroline.editorChange = function (editor) {
  *
  */
 tinymce.claroline.paste = function (plugin, args) {
-  var link = $('<div>' + args.content + '</div>').text().trim() // inside div because a bug of jquery
+  if ($('#platform-configuration').attr('data-enable-opengraph') === '1') {
+    var link = $('<div>' + args.content + '</div>').text().trim() // inside div because a bug of jquery
 
-  home.canGenerateContent(link, function (data) {
-    tinymce.activeEditor.insertContent('<div>' + data + '</div>')
-    tinymce.claroline.editorChange(tinymce.activeEditor)
-  })
+    home.canGenerateContent(link, function (data) {
+      tinymce.activeEditor.insertContent('<div>' + data + '</div>')
+      tinymce.claroline.editorChange(tinymce.activeEditor)
+    })
+  }
 }
 
 /**
@@ -194,10 +196,10 @@ tinymce.claroline.mentionsItem = function (item) {
   }
 
   return '<li>' +
-    '<a href="javascript:;"><span class="user-picker-dropdown-avatar">' + avatar + '</span>' +
-    '<span class="user-picker-dropdown-name">' + item.name + '</span>' +
-    '<small class="user-picker-avatar-mail text-muted">(' + item.mail + ')</small></a>' +
-    '</li>'
+  '<a href="javascript:;"><span class="user-picker-dropdown-avatar">' + avatar + '</span>' +
+  '<span class="user-picker-dropdown-name">' + item.name + '</span>' +
+  '<small class="user-picker-avatar-mail text-muted">(' + item.mail + ')</small></a>' +
+  '</li>'
 }
 
 /**
@@ -230,7 +232,7 @@ tinymce.claroline.configuration = {
     home.asset + 'bundles/clarolinecore/css/common/tinymce.css'
   ],
   'toolbar2': 'styleselect | undo redo | forecolor backcolor | bullist numlist | outdent indent | ' +
-  'media link charmap | print preview code',
+    'media link charmap | print preview code',
   'extended_valid_elements': 'user[id], a[data-toggle|data-parent]',
   'paste_preprocess': tinymce.claroline.paste,
   'setup': tinymce.claroline.setup,
