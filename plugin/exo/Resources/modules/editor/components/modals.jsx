@@ -81,7 +81,7 @@ const AddItemModal = props =>
             onClick={() => props.handleSelect(type)}
           >
             <svg className="icon-large">
-              <use href={`#icon-${getDefinition(type).name}`}></use>
+              <use xlinkHref={`#icon-${getDefinition(type).name}`}/>
             </svg>
             <div className="modal-item-desc">
               <span className="modal-item-name">

@@ -22,16 +22,12 @@ class MatchTypeValidatorTest extends JsonSchemaTestCase
     }
 
     /**
-     * The validator MUST return errors if there is no solution with a positive score.
-     */
-    public function testNoSolutionWithPositiveScoreThrowsError()
-    {
-    }
-
-    /**
      * The validator MUST return errors if the solution ids do not match label/proposal ids.
      */
     public function testIncoherentIdsInSolutionThrowErrors()
     {
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
     }
 }

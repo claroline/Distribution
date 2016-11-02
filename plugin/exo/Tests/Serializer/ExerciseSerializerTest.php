@@ -155,9 +155,15 @@ class ExerciseSerializerTest extends JsonDataTestCase
 
     public function testAddStep()
     {
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
     }
 
     public function testRemoveStep()
     {
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
     }
 }
