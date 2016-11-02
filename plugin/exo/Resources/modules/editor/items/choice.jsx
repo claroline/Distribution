@@ -105,7 +105,7 @@ const ChoiceItems = props =>
       </div>
     }
     <ul className="choice-items">
-      {props.item.choices.map((choice, index) =>
+      {props.item.choices.map(choice =>
         <li key={choice.id}>
           <ChoiceItem
             id={choice.id}
@@ -147,7 +147,7 @@ ChoiceItems.propTypes = {
       _deletable: T.bool.isRequired,
       _score: T.number.isRequired
     })).isRequired,
-    _errors: T.object,
+    _errors: T.object
   }).isRequired,
   onChange: T.func.isRequired
 }

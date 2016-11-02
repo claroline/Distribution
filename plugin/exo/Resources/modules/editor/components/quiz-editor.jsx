@@ -69,7 +69,8 @@ Properties.propTypes = {
   parameters: T.shape({
     type: T.string.isRequired,
     showMetadata: T.bool.isRequired
-  }).isRequired
+  }).isRequired,
+  onChange: T.func.isRequired
 }
 
 const shuffleOptions = () => {
@@ -132,6 +133,15 @@ const StepPicking = props =>
     </FormGroup>
   </fieldset>
 
+StepPicking.propTypes = {
+  parameters: T.shape({
+    pick: T.number.isRequired,
+    randomPick: T.string.isRequired,
+    randomOrder: T.string.isRequired
+  }).isRequired,
+  onChange: T.func.isRequired
+}
+
 const Signing = props =>
   <fieldset>
     <FormGroup
@@ -171,6 +181,15 @@ const Signing = props =>
       onChange={checked => props.onChange('parameters.interruptible', checked)}
     />
 </fieldset>
+
+Signing.propTypes = {
+  parameters: T.shape({
+    duration: T.number.isRequired,
+    maxAttempts: T.number.isRequired,
+    interruptible: T.bool.isRequired
+  }).isRequired,
+  onChange: T.func.isRequired
+}
 
 const Correction = props =>
   <fieldset>
@@ -238,6 +257,18 @@ const Correction = props =>
     />
   </fieldset>
 
+Correction.propTypes = {
+  parameters: T.shape({
+    showCorrectionAt: T.string.isRequired,
+    showScoreAt: T.string.isRequired,
+    showFullCorrection: T.bool.isRequired,
+    showStatistics: T.bool.isRequired,
+    anonymous: T.bool.isRequired,
+    correctionDate: T.string.isRequired
+  }).isRequired,
+  onChange: T.func.isRequired
+}
+
 function makePanel(Section, title, key, props) {
   const caretIcon = key === props.activePanelKey ?
     'fa-caret-down' :
@@ -265,6 +296,14 @@ function makePanel(Section, title, key, props) {
   )
 }
 
+makePanel.propTypes = {
+  activePanelKey: T.string.isRequired,
+  handlePanelClick: T.func.isRequired,
+  updateProperties: T.func.isRequired,
+  quiz: T.object.isRequired,
+  _errors: T.object
+}
+
 export const QuizEditor = props => {
   return (
     <form>
@@ -273,7 +312,7 @@ export const QuizEditor = props => {
         activeKey={props.activePanelKey}
       >
         {makePanel(Properties, t('properties'), 'properties', props)}
-        {makePanel(StepPicking, tex('step_picking'), 'step-picking',props)}
+        {makePanel(StepPicking, tex('step_picking'), 'step-picking', props)}
         {makePanel(Signing, tex('signing'), 'signing', props)}
         {makePanel(Correction, tex('correction'), 'correction', props)}
       </PanelGroup>
@@ -282,6 +321,7 @@ export const QuizEditor = props => {
 }
 
 QuizEditor.propTypes = {
+  initialValues: T.object.isRequired,
   quiz: T.shape({
     title: T.string.isRequired,
     description: T.string.isRequired,
