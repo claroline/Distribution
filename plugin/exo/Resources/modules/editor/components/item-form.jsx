@@ -72,7 +72,7 @@ const Hint = props =>
         id={`hint-${props.id}`}
         title={tex('hint')}
         content={props.value}
-        onChange={value => props.onPropChange(HINT_CHANGE, {id: props.id, value})}
+        onChange={value => props.onChange(HINT_CHANGE, {id: props.id, value})}
       />
     </div>
     <input
@@ -82,9 +82,8 @@ const Hint = props =>
       min="0"
       value={props.penalty}
       className="form-control hint-penalty"
-      title={tex('penalty')}
       aria-label={tex('penalty')}
-      onChange={e => props.onPropChange(
+      onChange={e => props.onChange(
         HINT_CHANGE,
         {id: props.id, penalty: e.target.value}
       )}
@@ -102,7 +101,7 @@ Hint.propTypes = {
   id: T.string.isRequired,
   value: T.string.isRequired,
   penalty: T.number.isRequired,
-  onPropChange: T.func.isRequired,
+  onChange: T.func.isRequired,
   onRemove: T.func.isRequired
 }
 
@@ -119,7 +118,7 @@ const Hints = props =>
         <li key={hint.id}>
           <Hint
             {...hint}
-            onPropChange={props.onChange}
+            onChange={props.onChange}
             onRemove={() => props.onChange(HINT_REMOVE, {id: hint.id})}
           />
         </li>
