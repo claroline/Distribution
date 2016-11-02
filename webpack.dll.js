@@ -6,13 +6,14 @@ module.exports = {
   entry: libraries,
   output: {
     path: paths.output(),
-    filename: '[name].dll.js',
-    library: '[name]_dll_[hash]'
+    filename: '[name]-[hash].js',
+    library: '[name]_[hash]'
   },
   resolve: {
     root: paths.bower()
   },
   plugins: [
+    plugins.assetsInfoFile('webpack-dlls.json'),
     plugins.bowerFileLookup(),
     plugins.dlls()
   ],

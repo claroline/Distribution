@@ -56,10 +56,11 @@ const commonsChunk = () => {
  * ("webpack-assets.json" by default). This is useful to retrieve assets names
  * when a hash has been used for cache busting.
  */
-const assetsInfoFile = () => {
+const assetsInfoFile = filename => {
   return new AssetsPlugin({
     fullPath: false,
-    prettyPrint: true
+    prettyPrint: true,
+    filename: filename || 'webpack-assets.json'
   })
 }
 
@@ -108,7 +109,7 @@ const exitWithErrorCode = () => {
 const dlls = () => {
   return new webpack.DllPlugin({
     path: `${paths.output()}/[name].manifest.json`,
-    name: '[name]_dll_[hash]'
+    name: '[name]_[hash]'
   })
 }
 

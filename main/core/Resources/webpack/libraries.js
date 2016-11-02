@@ -4,7 +4,7 @@
  * (@see webpack DllPlugin and DllReferencePlugin)
  */
 module.exports = {
-  angular: [
+  'angular_dll': [
     'angular',
     'angular/angular.min',
     'angular-animate',
