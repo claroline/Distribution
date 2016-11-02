@@ -1,9 +1,24 @@
+import merge from 'lodash/merge'
+import set from 'lodash/set'
+import sanitize from './sanitizers'
+import validate from './validators'
+import {decorateItem} from './decorators'
 import {getIndex, makeId, makeItemPanelKey, update} from './util'
-import {properties, TYPE_QUIZ, TYPE_STEP} from './types'
+import {getDefinition} from './item-types'
+import {
+  TYPE_QUIZ,
+  TYPE_STEP,
+  SHUFFLE_NEVER,
+  SHUFFLE_ONCE,
+  SHUFFLE_ALWAYS
+} from './enums'
 import {
   ITEM_CREATE,
   ITEM_DELETE,
+  ITEM_UPDATE,
   ITEM_MOVE,
+  ITEM_HINTS_UPDATE,
+  ITEM_DETAIL_UPDATE,
   MODAL_FADE,
   MODAL_HIDE,
   MODAL_SHOW,
@@ -13,7 +28,12 @@ import {
   PANEL_STEP_SELECT,
   STEP_CREATE,
   STEP_MOVE,
-  STEP_DELETE
+  STEP_DELETE,
+  STEP_UPDATE,
+  QUIZ_UPDATE,
+  HINT_ADD,
+  HINT_CHANGE,
+  HINT_REMOVE
 } from './actions'
 
 function initialQuizState() {
@@ -25,6 +45,23 @@ function initialQuizState() {
 
 function reduceQuiz(quiz = initialQuizState(), action = {}) {
   switch (action.type) {
+    case QUIZ_UPDATE: {
+      const sanitizedProps = sanitize.quiz(action.propertyPath, action.value)
+      const updatedQuiz = merge({}, quiz, sanitizedProps)
+
+      if (updatedQuiz.parameters.randomPick === SHUFFLE_ALWAYS
+        && updatedQuiz.parameters.randomOrder === SHUFFLE_ONCE) {
+        updatedQuiz.parameters.randomOrder = SHUFFLE_NEVER
+      }
+
+      const errors = validate.quiz(updatedQuiz)
+      updatedQuiz._errors = errors
+      updatedQuiz._touched = merge(
+        updatedQuiz._touched || {},
+        set({}, action.propertyPath, true)
+      )
+      return updatedQuiz
+    }
     case STEP_CREATE:
       return update(quiz, {steps: {$push: [action.id]}})
     case STEP_DELETE:
@@ -46,6 +83,27 @@ function reduceQuiz(quiz = initialQuizState(), action = {}) {
 
 function reduceSteps(steps = {}, action = {}) {
   switch (action.type) {
+    case STEP_CREATE: {
+      const newStep = {
+        id: action.id,
+        title: '',
+        description: '',
+        items: [],
+        parameters: {
+          maxAttempts: 0
+        }
+      }
+      return update(steps, {[action.id]: {$set: newStep}})
+    }
+    case STEP_DELETE:
+      return update(steps, {$delete: action.id})
+    case STEP_UPDATE: {
+      const sanitizedProps = sanitize.step(action.newProperties)
+      const updatedStep = merge({}, steps[action.id], sanitizedProps)
+      const errors = validate.step(updatedStep)
+      updatedStep._errors = errors
+      return update(steps, {[action.id]: {$set: updatedStep}})
+    }
     case ITEM_CREATE:
       return update(steps, {[action.stepId]: {items: {$push: [action.id]}}})
     case ITEM_DELETE: {
@@ -64,12 +122,6 @@ function reduceSteps(steps = {}, action = {}) {
         }
       })
     }
-    case STEP_CREATE: {
-      const newStep = {id: action.id, items: [], meta: {}}
-      return update(steps, {[action.id]: {$set: newStep}})
-    }
-    case STEP_DELETE:
-      return update(steps, {$delete: action.id})
   }
   return steps
 }
@@ -77,25 +129,86 @@ function reduceSteps(steps = {}, action = {}) {
 function reduceItems(items = {}, action = {}) {
   switch (action.type) {
     case ITEM_CREATE: {
-      let newItem = {
+      let newItem = decorateItem({
         id: action.id,
         type: action.itemType,
-        score: {
-          type: 'sum'
-        }
-      }
-      switch (action.itemType) {
-        case 'application/x.choice+json':
-          newItem = properties[action.itemType].reducer(newItem, action)
-          break
-        case 'application/x.open+json':
-          newItem = properties[action.itemType].reducer(newItem, action)
-          break
-      }
+        content: '',
+        hints: [],
+        feedback: ''
+      })
+      newItem = decorateItem(newItem)
+      const def = getDefinition(action.itemType)
+      newItem = def.reduce(newItem, action)
+      const errors = validate.item(newItem)
+      newItem = Object.assign({}, newItem, {_errors: errors})
+
       return update(items, {[action.id]: {$set: newItem}})
     }
     case ITEM_DELETE:
       return update(items, {$delete: action.id})
+    case ITEM_UPDATE: {
+      let updatedItem = merge(
+        {},
+        items[action.id],
+        set({}, action.propertyPath, action.value)
+      )
+      updatedItem._errors = validate.item(updatedItem)
+      updatedItem._touched = merge(
+        updatedItem._touched || {},
+        set({}, action.propertyPath, true)
+      )
+      return update(items, {[action.id]: {$set: updatedItem}})
+    }
+    case ITEM_HINTS_UPDATE:
+      switch (action.updateType) {
+        case HINT_ADD:
+          return update(items, {
+            [action.itemId]: {
+              hints: {
+                $push: [{
+                  id: makeId(),
+                  value: '',
+                  penalty: 0
+                }]
+              }
+            }
+          })
+        case HINT_CHANGE: {
+          const hints = items[action.itemId].hints
+          const index = hints.findIndex(hint => hint.id === action.payload.id)
+
+          if (action.payload.penalty) {
+            action.payload.penalty = parseFloat(action.payload.penalty)
+          }
+
+          return update(items, {
+            [action.itemId]: {
+              hints: {
+                [index]: {$set: Object.assign({}, hints[index], action.payload)}
+              }
+            }
+          })
+        }
+        case HINT_REMOVE:
+          return update(items, {
+            [action.itemId]: {
+              hints: {
+                $set: items[action.itemId].hints.filter(
+                  hint => hint.id !== action.payload.id
+                )
+              }
+            }
+          })
+        default:
+          return items
+      }
+    case ITEM_DETAIL_UPDATE: {
+      const def = getDefinition(items[action.id].type)
+      let updatedItem = def.reduce(items[action.id], action.subAction)
+      const errors = validate.item(updatedItem)
+      updatedItem = update(updatedItem, {_errors: {$set: errors}})
+      return update(items, {[action.id]: {$set: updatedItem}})
+    }
   }
   return items
 }

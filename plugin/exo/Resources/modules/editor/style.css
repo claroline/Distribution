@@ -158,6 +158,7 @@
 
 .quiz-editor .text-editor {
   position: relative;
+  margin-bottom: 12px;
 }
 
 .quiz-editor .text-editor [role=textbox].form-control {
@@ -198,7 +199,9 @@
 }
 
 .quiz-editor .help-block .fa,
-.quiz-editor .error-text .fa {
+.quiz-editor .error-text .fa,
+.quiz-editor .btn .fa,
+.quiz-editor .sub-section a[role="button"] .fa {
   margin-right: 7px;
 }
 
@@ -300,7 +303,7 @@ a[role=tab] {
   flex-direction: column;
 }
 
-.quiz-editor .choice-items li > div {
+.quiz-editor .choice-items .choice-item {
   display: flex;
 }
 

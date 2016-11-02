@@ -1,5 +1,6 @@
 import update from 'immutability-helper'
 import invariant from 'invariant'
+import React from 'react'
 
 // re-export immutability-helper with a custom delete command
 update.extend('$delete', (property, object) => {
@@ -33,6 +34,23 @@ export function makeId() {
 // return the last generated id (mainly for test purposes)
 export function lastId() {
   return `generated-id-${idCount}`
+}
+
+// test purpose only
+export function lastIds(count) {
+  if (count > idCount) {
+    throw new Error(
+      `Cannot access last ${count} ids, only ${idCount} were generated`
+    )
+  }
+
+  const ids = []
+
+  for (let i = idCount - count + 1; i <= idCount; ++i) {
+    ids.push(`generated-id-${i}`)
+  }
+
+  return ids
 }
 
 export function makeItemPanelKey(itemType, itemId) {
@@ -70,4 +88,12 @@ export function extractTextFromHtml(html) {
   wrapper.innerHTML = html
 
   return wrapper.textContent
+}
+
+export function makeInputPropType(valueType) {
+  return React.PropTypes.shape({
+    input: React.PropTypes.shape({
+      value: valueType
+    }).isRequired
+  })
 }

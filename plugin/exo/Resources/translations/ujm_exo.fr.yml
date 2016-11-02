@@ -32,6 +32,8 @@ attempt_info3: Essai n°
 attempt_info4: Il vous reste
 attempt_info5: afin d'améliorer votre score.
 attempt_info6: Il ne vous reste plus aucun essai.
+at_first_attempt: Au premier essai
+at_each_attempt: À chaque essai
 at_the_end_of_assessment: A la fin du test
 at_the_same_time_that_the_correction: En même temps que la correction
 availability_of_correction: Disponibilité de la correction
@@ -61,6 +63,7 @@ change: Changer
 change_name: Changer le nom du document
 change_order: Pour changer l'ordre des questions, déplacez-les en utilisant le glisser/déposer.
 choice: Choix
+choice_empty_data_error: Le texte des réponses ne peut pas être vide
 choice_feedback_info: Commentaire si la réponse est selectionnée
 choose_image : Choisir une image
 choose_category : Choisir une catégorie
@@ -240,6 +243,7 @@ maximum_tries: Nombre d'essais maximum
 meaning_measure_difficulty: Si l'indice est élevé, c'est que la question est facile. Inversement, si un indice est faible, la question est difficile.
 metadata_visible: Afficher les informations
 metadata_visible_help: Si coché, un tableau récapitulatif sera affiché sur la vue d'ensemble de l'exercice.
+maximal_correction: Afficher les solutions
 minimal_correction: Cacher les solutions
 minimize: Réduire
 model: Modèle
@@ -348,9 +352,10 @@ question_graphic_set_pointers: Cliquez sur l'image pour placer un pointeur
 question_graphic_nb_pointers: "{0} Il ne reste plus aucun pointeur à placer sur l'image.|{1} Il reste %count% pointeur à placer sur l'image.|]1,Inf[ Il reste %count% pointeurs à placer sur l'image."
 
 # R
+random_order: Ordre aléatoire
 random_picking: Tirage aléatoire
 random_questions: Ordre des questions aléatoire
-random_step_picking: Tirage des étapes
+random_step_picking: Tirage aléatoire des étapes
 random_steps: Ordre des étapes aléatoire
 random_steps_order: Ordre aléatoire des étapes
 raz: => Pour remettre tous les pointeurs à leurs position initiale, appuyez sur "c".
@@ -413,6 +418,7 @@ statistics: Afficher les statistiques
 step_items_count: "[0, 1] %count% question|]1,Inf[ %count% questions"
 step_item_add: Glisser/déposer ou cliquer sur le bouton "+" pour ajouter des questions
 step_need_manual_correction: Cette étape nécessite une correction manuelle
+step_picking: Tirage des étapes
 stat_users: "[0, 1] %count% utilisateur|]1,Inf[ %count% utilisateurs"
 stat_have_responded: ont répondu
 sum_score_choice_at_least_one_correct_answer_error: Au moins une réponse doit avoir un score positif.

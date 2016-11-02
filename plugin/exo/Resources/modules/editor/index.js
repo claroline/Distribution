@@ -1,30 +1,11 @@
 import angular from 'angular/index'
-
-import React from 'react'
-import ReactDOM from 'react-dom'
-import {Provider} from 'react-redux'
-import {DragDropContext} from 'react-dnd'
-import HTML5Backend from 'react-dnd-html5-backend'
-import {createStore} from './store'
-import {Editor} from './components/editor.jsx'
-
-import './style.css'
+import {Editor} from './editor'
 
 const rawQuiz = JSON.parse(document.querySelector('exercise').dataset.exercise)
-const store = createStore(rawQuiz)
-const dndEditor = DragDropContext(HTML5Backend)(Editor)
+const editor = new Editor(rawQuiz)
 
 angular.module('editor', [])
   .component('editor', {
-    controller: ['$element', el => {
-      ReactDOM.render(
-        React.createElement(
-          Provider,
-          {store},
-          React.createElement(dndEditor)
-        ),
-        el[0]
-      )
-    }],
+    controller: ['$element', el => editor.render(el[0])],
     template: '<div></div>'
   })

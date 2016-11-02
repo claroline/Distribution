@@ -1,11 +1,9 @@
-import React from 'react'
+import React, {PropTypes as T} from 'react'
 import classes from 'classnames'
 import {t, tex} from './../lib/translate'
 import {makeSortable} from './../lib/sortable'
 import {MODAL_DELETE_CONFIRM} from './modals.jsx'
-import {TYPE_STEP, TYPE_QUIZ} from './../types'
-
-const T = React.PropTypes
+import {TYPE_STEP, TYPE_QUIZ} from './../enums'
 
 const Actions = props =>
   <span className="step-actions">

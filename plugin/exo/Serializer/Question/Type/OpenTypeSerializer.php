@@ -53,11 +53,9 @@ class OpenTypeSerializer implements QuestionHandlerInterface, SerializerInterfac
         $questionData = new \stdClass();
 
         $questionData->contentType = 'text';
-
         $questionData->score = new \stdClass();
-        $questionData->score->type = 'fixed';
-        $questionData->score->success = $openQuestion->getScoreMaxLongResp();
-        $questionData->score->failure = 0;
+        $questionData->score->type = 'manual';
+        $questionData->score->max = $openQuestion->getScoreMaxLongResp();
 
         return $questionData;
     }

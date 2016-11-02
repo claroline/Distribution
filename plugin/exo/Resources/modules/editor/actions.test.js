@@ -1,8 +1,8 @@
 import thunk from 'redux-thunk'
 import assert from 'assert'
-import {assertEqual} from './test-util'
+import {assertEqual} from './test-utils'
 import configureMockStore from 'redux-mock-store'
-import {TYPE_STEP} from './types'
+import {TYPE_STEP} from './enums'
 import {
   ITEMS_DELETE,
   OBJECT_NEXT,

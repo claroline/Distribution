@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {Component, PropTypes as T} from 'react'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 import Tooltip from 'react-bootstrap/lib/Tooltip'
 import {tex} from './../lib/translate'
@@ -60,8 +60,6 @@ export class ThumbnailBox extends Component {
     )
   }
 }
-
-const T = React.PropTypes
 
 ThumbnailBox.propTypes = {
   thumbnails: T.arrayOf(T.object).isRequired,

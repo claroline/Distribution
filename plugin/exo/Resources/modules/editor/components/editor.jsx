@@ -6,7 +6,7 @@ import {QuizEditor} from './quiz-editor.jsx'
 import {StepEditor} from './step-editor.jsx'
 import Modals from './modals.jsx'
 import {actions} from './../actions'
-import {TYPE_QUIZ, TYPE_STEP} from './../types'
+import {TYPE_QUIZ, TYPE_STEP} from './../enums'
 import select from './../selectors'
 
 const T = React.PropTypes
@@ -15,10 +15,10 @@ let Editor = props =>
   <div className="panel-body quiz-editor">
     <ThumbnailBox
       thumbnails={props.thumbnails}
-      onThumbnailClick={props.handleThumbnailClick}
-      onThumbnailMove={props.handleThumbnailMove}
-      onNewStepClick={props.handleNewStepClick}
-      onStepDeleteClick={props.handleStepDeleteClick}
+      onThumbnailClick={props.selectObject}
+      onThumbnailMove={props.moveStep}
+      onNewStepClick={props.createStep}
+      onStepDeleteClick={props.deleteStepAndItems}
       showModal={props.showModal}
     />
     <div className="edit-zone">{selectSubEditor(props)}</div>
@@ -27,10 +27,10 @@ let Editor = props =>
 
 Editor.propTypes = {
   thumbnails: T.arrayOf(T.object).isRequired,
-  handleThumbnailClick: T.func.isRequired,
-  handleThumbnailMove: T.func.isRequired,
-  handleNewStepClick: T.func.isRequired,
-  handleStepDeleteClick: T.func.isRequired,
+  selectObject: T.func.isRequired,
+  moveStep: T.func.isRequired,
+  createStep: T.func.isRequired,
+  deleteStepAndItems: T.func.isRequired,
   showModal: T.func.isRequired
 }
 
@@ -39,20 +39,25 @@ function selectSubEditor(props) {
     case TYPE_QUIZ:
       return (
         <QuizEditor
+          quiz={props.quizProperties}
+          updateProperties={props.updateQuiz}
           activePanelKey={props.activeQuizPanel}
-          handlePanelClick={props.handleQuizPanelClick}
-          initialValues={props.quizProperties}
+          handlePanelClick={props.selectQuizPanel}
         />
       )
     case TYPE_STEP:
       return (
         <StepEditor
           step={props.currentObject}
+          updateStep={props.updateStep}
           activePanelKey={props.activeStepPanel}
-          handlePanelClick={props.handleStepPanelClick}
-          handleItemDeleteClick={props.handleItemDeleteClick}
-          handleItemMove={props.handleItemMove}
-          handleItemCreate={props.handleItemCreate}
+          handlePanelClick={props.selectStepPanel}
+          handleItemDeleteClick={props.deleteItem}
+          handleItemMove={props.moveItem}
+          handleItemCreate={props.createItem}
+          handleItemUpdate={props.updateItem}
+          handleItemHintsUpdate={props.updateItemHints}
+          handleItemDetailUpdate={props.updateItemDetail}
           showModal={props.showModal}
           closeModal={props.fadeModal}
         />
@@ -63,16 +68,21 @@ function selectSubEditor(props) {
 
 selectSubEditor.propTypes = {
   activeQuizPanel: T.string.isRequired,
-  handleQuizPanelClick: T.func.isRequired,
+  selectQuizPanel: T.func.isRequired,
+  updateQuiz: T.func.isRequired,
   quizProperties: T.object.isRequired,
   currentObject: T.shape({
     type: T.string.isRequired
   }).isRequired,
+  updateStep: T.string.isRequired,
   activeStepPanel: T.string.isRequired,
-  handleStepPanelClick: T.func.isRequired,
-  handleItemDeleteClick: T.func.isRequired,
-  handleItemMove: T.func.isRequired,
-  handleItemCreate: T.func.isRequired,
+  selectStepPanel: T.func.isRequired,
+  deleteItem: T.func.isRequired,
+  moveItem: T.func.isRequired,
+  createItem: T.func.isRequired,
+  updateItem: T.func.isRequired,
+  updateItemHints: T.func.isRequired,
+  updateItemDetail: T.func.isRequired,
   showModal: T.func.isRequired,
   fadeModal: T.func.isRequired
 }
@@ -108,52 +118,11 @@ function mapStateToProps(state) {
     currentObject: select.currentObjectDeep(state),
     activeQuizPanel: select.quizOpenPanel(state),
     activeStepPanel: select.stepOpenPanel(state),
-    quizProperties: select.quizProperties(state),
+    quizProperties: select.quiz(state),
     modal: select.modal(state)
   }
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    handleThumbnailClick(id, type) {
-      dispatch(actions.selectObject(id, type))
-    },
-    handleThumbnailMove(id, swapId) {
-      dispatch(actions.moveStep(id, swapId))
-    },
-    handleNewStepClick() {
-      dispatch(actions.createStep())
-    },
-    handleQuizPanelClick(panelKey) {
-      dispatch(actions.selectQuizPanel(panelKey))
-    },
-    handleStepPanelClick(stepId, panelKey) {
-      dispatch(actions.selectStepPanel(stepId, panelKey))
-    },
-    handleStepDeleteClick(stepId) {
-      dispatch(actions.deleteStepAndItems(stepId))
-    },
-    handleItemDeleteClick(itemId, stepId) {
-      dispatch(actions.deleteItem(itemId, stepId))
-    },
-    handleItemMove(id, swapId, stepId) {
-      dispatch(actions.moveItem(id, swapId, stepId))
-    },
-    handleItemCreate(stepId, type) {
-      dispatch(actions.createItem(stepId, type))
-    },
-    fadeModal() {
-      dispatch(actions.fadeModal())
-    },
-    hideModal() {
-      dispatch(actions.hideModal())
-    },
-    showModal(type, props) {
-      dispatch(actions.showModal(type, props))
-    }
-  }
-}
-
-Editor = connect(mapStateToProps, mapDispatchToProps)(Editor)
+Editor = connect(mapStateToProps, actions)(Editor)
 
 export {Editor}

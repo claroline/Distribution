@@ -1,208 +1,347 @@
-import React from 'react'
-import {Field, Fields, reduxForm} from 'redux-form'
+import React, {PropTypes as T} from 'react'
 import Panel from 'react-bootstrap/lib/Panel'
 import PanelGroup from 'react-bootstrap/lib/PanelGroup'
+import get from 'lodash/get'
 import classes from 'classnames'
 import {t, tex} from './../lib/translate'
-import {notBlank} from './../lib/validate'
-import Controls from './form-controls.jsx'
+import {FormGroup} from './form/form-group.jsx'
+import {CheckGroup} from './form/check-group.jsx'
+import {Textarea} from './form/textarea.jsx'
+import {Radios} from './form/radios.jsx'
+import {Date} from './form/date.jsx'
 import {
   quizTypes,
+  shuffleModes,
   correctionModes,
   markModes,
+  SHUFFLE_ALWAYS,
+  SHUFFLE_ONCE,
+  SHUFFLE_NEVER,
   SHOW_CORRECTION_AT_DATE
-} from './../types'
+} from './../enums'
 
-const T = React.PropTypes
-
-const Properties = () =>
-  <div>
-    <Field
-      name="type"
-      component={Controls.Select}
-      options={quizTypes.map(type => [type[0], tex(type[1])])}
-      label={t('type')}
-    />
-    <Field
-      name="title"
-      component={Controls.Text}
+const Properties = props =>
+  <fieldset>
+    <FormGroup controlId="quiz-type" label={t('type')}>
+      <select
+        id="quiz-type"
+        value={props.parameters.type}
+        className="form-control"
+        onChange={e => props.onChange('parameters.type', e.target.value)}
+      >
+        {quizTypes.map(type =>
+          <option key={type[0]} value={type[0]}>{tex(type[1])}</option>
+        )}
+      </select>
+    </FormGroup>
+    <FormGroup
+      controlId="quiz-title"
       label={t('title')}
-    />
-    <Field
-      id="quiz-description"
-      name="description"
-      component={Controls.Textarea}
-      label={t('description')}
-    />
-    <Field
-      name="metadataVisible"
-      component={Controls.SingleCheck}
+      error={get(props, 'errors.title')}
+    >
+      <input
+        id="quiz-title"
+        type="text"
+        value={props.title}
+        className="form-control"
+        onChange={e => props.onChange('title', e.target.value)}
+      />
+    </FormGroup>
+    <FormGroup controlId="quiz-description" label={t('description')}>
+      <Textarea
+        id="quiz-description"
+        content={props.description}
+        onChange={description => props.onChange('description', description)}
+      />
+    </FormGroup>
+    <CheckGroup
+      checkId="quiz-show-metadata"
+      checked={props.parameters.showMetadata}
       label={tex('metadata_visible')}
       help={tex('metadata_visible_help')}
+      onChange={checked => props.onChange('parameters.showMetadata', checked)}
     />
-  </div>
+  </fieldset>
+
+Properties.propTypes = {
+  title: T.string.isRequired,
+  description: T.string.isRequired,
+  parameters: T.shape({
+    type: T.string.isRequired,
+    showMetadata: T.bool.isRequired
+  }).isRequired,
+  onChange: T.func.isRequired
+}
+
+const shuffleOptions = () => {
+  if (!shuffleOptions._options) {
+    shuffleOptions._options = shuffleModes.map(mode => {
+      return {
+        value: mode[0],
+        label: tex(mode[1])
+      }
+    })
+  }
+
+  return shuffleOptions._options
+}
+
+const orderModes = pickMode => {
+  if (pickMode !== SHUFFLE_ALWAYS) {
+    return shuffleOptions()
+  }
+
+  return shuffleOptions().filter(mode => mode.value !== SHUFFLE_ONCE)
+}
 
 const StepPicking = props =>
-  <div>
-    <Field
-      name="random"
-      component={Controls.SingleCheck}
-      label={tex('random_steps_order')}
-    />
-    {props.random.input.value === true &&
+  <fieldset>
+    <FormGroup controlId="quiz-random-pick" label={tex('random_picking')}>
+      <Radios
+        groupName="quiz-random-pick"
+        options={shuffleOptions()}
+        checkedValue={props.parameters.randomPick}
+        onChange={mode => props.onChange('parameters.randomPick', mode)}
+      />
+    </FormGroup>
+    {props.parameters.randomPick !== SHUFFLE_NEVER &&
       <div className="sub-fields">
-        <Field
-          name="pick"
-          component={Controls.Number}
-          min={0}
+        <FormGroup
+          controlId="quiz-pick"
           label={tex('number_steps_draw')}
           help={tex('number_steps_draw_help')}
-        />
+          error={get(props, 'errors.parameters.pick')}
+        >
+          <input
+            id="quiz-pick"
+            type="number"
+            min="0"
+            value={props.parameters.pick}
+            className="form-control"
+            onChange={e => props.onChange('parameters.pick', e.target.value)}
+          />
+        </FormGroup>
       </div>
     }
-  </div>
+    <FormGroup controlId="quiz-random-order" label={tex('random_order')}>
+      <Radios
+        groupName="quiz-random-order"
+        options={orderModes(props.parameters.randomPick)}
+        checkedValue={props.parameters.randomOrder}
+        onChange={mode => props.onChange('parameters.randomOrder', mode)}
+      />
+    </FormGroup>
+  </fieldset>
 
 StepPicking.propTypes = {
-  random: T.shape({
-    input: T.shape({
-      value: T.bool.isRequired
-    }).isRequired
-  }).isRequired
+  parameters: T.shape({
+    pick: T.number.isRequired,
+    randomPick: T.string.isRequired,
+    randomOrder: T.string.isRequired
+  }).isRequired,
+  onChange: T.func.isRequired
 }
 
-const Signing = () =>
-  <div>
-    <Field
-      name="duration"
-      component={Controls.Number}
-      min={0}
+const Signing = props =>
+  <fieldset>
+    <FormGroup
+      controlId="quiz-duration"
       label={tex('duration')}
       help={tex('duration_help')}
-    />
-    <Field
-      name="maxAttempts"
-      component={Controls.Number}
-      min={0}
+      error={get(props, 'errors.parameters.duration')}
+    >
+      <input
+        id="quiz-duration"
+        type="number"
+        min="0"
+        value={props.parameters.duration}
+        className="form-control"
+        onChange={e => props.onChange('parameters.duration', e.target.value)}
+      />
+    </FormGroup>
+    <FormGroup
+      controlId="quiz-maxAttempts"
       label={tex('maximum_attempts')}
       help={tex('number_max_attempts_help')}
-    />
-    <Field
-      name="dispButtonInterrupt"
-      component={Controls.SingleCheck}
+      error={get(props, 'errors.parameters.maxAttempts')}
+    >
+      <input
+        id="quiz-maxAttempts"
+        type="number"
+        min="0"
+        value={props.parameters.maxAttempts}
+        className="form-control"
+        onChange={e => props.onChange('parameters.maxAttempts', e.target.value)}
+      />
+    </FormGroup>
+    <CheckGroup
+      checkId="quiz-interruptible"
+      checked={props.parameters.interruptible}
       label={tex('allow_test_exit')}
+      onChange={checked => props.onChange('parameters.interruptible', checked)}
     />
-    <Field
-      name="anonymous"
-      component={Controls.SingleCheck}
-      label={t('anonymous')}
-    />
-  </div>
+</fieldset>
 
-const CorrectionMode = props =>
-  <div>
-    <Field
-      name="correctionMode"
-      component={Controls.Select}
-      options={correctionModes.map(mode => [mode[0], tex(mode[1])])}
-      label={tex('availability_of_correction')}
-    />
-    {props.correctionMode.input.value === SHOW_CORRECTION_AT_DATE &&
-      <div className="sub-fields">
-        <Field
-          name="correctionDate"
-          component={Controls.Date}
-          label={tex('correction_date')}
-        />
-      </div>
-    }
-  </div>
-
-CorrectionMode.propTypes = {
-  correctionMode: T.shape({
-    input: T.shape({
-      value: T.string.isRequired
-    }).isRequired
-  }).isRequired
+Signing.propTypes = {
+  parameters: T.shape({
+    duration: T.number.isRequired,
+    maxAttempts: T.number.isRequired,
+    interruptible: T.bool.isRequired
+  }).isRequired,
+  onChange: T.func.isRequired
 }
 
-const CorrectionOptions = () =>
-  <div>
-    <Field
-      name="markMode"
-      component={Controls.Select}
-      options={markModes.map(mode => [mode[0], tex(mode[1])])}
-      label={tex('score_displaying')}
+const Correction = props =>
+  <fieldset>
+    <FormGroup
+      controlId="quiz-showCorrectionAt"
+      label={tex('availability_of_correction')}
+    >
+      <select
+        id="quiz-showCorrectionAt"
+        value={props.parameters.showCorrectionAt}
+        className="form-control"
+        onChange={e => props.onChange('parameters.showCorrectionAt', e.target.value)}
+      >
+        {correctionModes.map(mode =>
+          <option key={mode[0]} value={mode[0]}>{tex(mode[1])}</option>
+        )}
+      </select>
+    </FormGroup>
+    {props.parameters.showCorrectionAt === SHOW_CORRECTION_AT_DATE &&
+      <div className="sub-fields">
+        <FormGroup
+          controlId="quiz-correctionDate"
+          label={tex('correction_date')}
+        >
+          <Date
+            id="quiz-correctionDate"
+            name="quiz-correctionDate"
+            value={props.parameters.correctionDate || ''}
+            onChange={date => props.onChange('parameters.correctionDate', date)}
+          />
+        </FormGroup>
+      </div>
+    }
+    <FormGroup controlId="quiz-showScoreAt" label={tex('score_displaying')}>
+      <select
+        id="quiz-showScoreAt"
+        value={props.parameters.showScoreAt}
+        className="form-control"
+        onChange={e => props.onChange('parameters.showScoreAt', e.target.value)}
+      >
+        {markModes.map(mode =>
+          <option key={mode[0]} value={mode[0]}>
+            {tex(mode[1])}
+          </option>
+        )}
+      </select>
+    </FormGroup>
+    <CheckGroup
+      checkId="quiz-anonymous"
+      checked={props.parameters.anonymous}
+      label={t('anonymous')}
+      onChange={checked => props.onChange('parameters.anonymous', checked)}
     />
-    <Field
-      name="statistics"
-      component={Controls.SingleCheck}
+    <CheckGroup
+      checkId="quiz-showFullCorrection"
+      checked={props.parameters.showFullCorrection}
+      label={tex('maximal_correction')}
+      onChange={checked => props.onChange('parameters.showFullCorrection', checked)}
+    />
+    <CheckGroup
+      checkId="quiz-showStatistics"
+      checked={props.parameters.showStatistics}
       label={tex('statistics')}
+      onChange={checked => props.onChange('parameters.showStatistics', checked)}
     />
-    <Field
-      name="minimalCorrection"
-      component={Controls.SingleCheck}
-      label={tex('minimal_correction')}
-    />
-  </div>
+  </fieldset>
 
-function makeSectionHeader(title, key, {activePanelKey, handlePanelClick}) {
-  const caretIcon = key === activePanelKey ? 'fa-caret-down' :'fa-caret-right'
-  return (
-    <div onClick={() => handlePanelClick(key)}>
+Correction.propTypes = {
+  parameters: T.shape({
+    showCorrectionAt: T.string.isRequired,
+    showScoreAt: T.string.isRequired,
+    showFullCorrection: T.bool.isRequired,
+    showStatistics: T.bool.isRequired,
+    anonymous: T.bool.isRequired,
+    correctionDate: T.string
+  }).isRequired,
+  onChange: T.func.isRequired
+}
+
+function makePanel(Section, title, key, props) {
+  const caretIcon = key === props.activePanelKey ?
+    'fa-caret-down' :
+    'fa-caret-right'
+
+  const Header =
+    <div onClick={() => props.handlePanelClick(key)}>
       <span>
         <span className={classes('panel-icon', 'fa', caretIcon)}/>
         &nbsp;{title}
       </span>
     </div>
+
+  return (
+    <Panel
+      eventKey={key}
+      header={Header}
+    >
+      <Section
+        onChange={props.updateProperties}
+        errors={props.quiz._errors}
+        {...props.quiz}
+      />
+    </Panel>
   )
 }
 
-let QuizEditor = props =>
-  <form>
-    <PanelGroup
-      accordion
-      activeKey={props.activePanelKey}
-    >
-      <Panel
-        eventKey="properties"
-        header={makeSectionHeader(t('properties'), 'properties', props)}
-      >
-        {props.activePanelKey === 'properties' && <Properties/>}
-      </Panel>
-      <Panel
-        eventKey="step-picking"
-        header={makeSectionHeader(tex('random_step_picking'), 'step-picking', props)}
-      >
-        <Fields names={['random', 'pick']} component={StepPicking}/>
-      </Panel>
-      <Panel
-        eventKey="signing"
-        header={makeSectionHeader(tex('signing'), 'signing', props)}
-      >
-        <Signing/>
-      </Panel>
-      <Panel
-        eventKey="correction"
-        header={makeSectionHeader(tex('correction'), 'correction', props)}
-      >
-        <Fields names={['correctionMode', 'correctionDate']} component={CorrectionMode}/>
-        <CorrectionOptions/>
-      </Panel>
-    </PanelGroup>
-  </form>
+makePanel.propTypes = {
+  activePanelKey: T.string.isRequired,
+  handlePanelClick: T.func.isRequired,
+  updateProperties: T.func.isRequired,
+  quiz: T.object.isRequired,
+  _errors: T.object
+}
 
-QuizEditor = reduxForm({
-  form: 'quiz-properties',
-  touchOnChange: true,
-  validate: values => ({
-    title: notBlank(values.title)
-  })
-})(QuizEditor)
+export const QuizEditor = props => {
+  return (
+    <form>
+      <PanelGroup
+        accordion
+        activeKey={props.activePanelKey}
+      >
+        {makePanel(Properties, t('properties'), 'properties', props)}
+        {makePanel(StepPicking, tex('step_picking'), 'step-picking', props)}
+        {makePanel(Signing, tex('signing'), 'signing', props)}
+        {makePanel(Correction, tex('correction'), 'correction', props)}
+      </PanelGroup>
+    </form>
+  )
+}
 
 QuizEditor.propTypes = {
-  initialValues: T.object.isRequired,
+  quiz: T.shape({
+    title: T.string.isRequired,
+    description: T.string.isRequired,
+    parameters: T.shape({
+      type: T.string.isRequired,
+      showMetadata: T.bool.isRequired,
+      randomOrder: T.string.isRequired,
+      randomPick: T.string.isRequired,
+      pick: T.number.isRequired,
+      duration: T.number.isRequired,
+      maxAttempts: T.number.isRequired,
+      interruptible: T.bool.isRequired,
+      showCorrectionAt: T.string.isRequired,
+      correctionDate: T.string,
+      anonymous: T.bool.isRequired,
+      showScoreAt: T.string.isRequired,
+      showStatistics: T.bool.isRequired,
+      showFullCorrection: T.bool.isRequired
+    }).isRequired
+  }).isRequired,
+  updateProperties: T.func.isRequired,
   activePanelKey: T.oneOfType([T.string, T.bool]).isRequired,
   handlePanelClick: T.func.isRequired
 }
-
-export {QuizEditor}

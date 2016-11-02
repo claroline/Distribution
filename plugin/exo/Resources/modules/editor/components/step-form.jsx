@@ -1,39 +1,59 @@
-import React from 'react'
-import {Field, reduxForm} from 'redux-form'
+import React, {PropTypes as T} from 'react'
+import get from 'lodash/get'
 import {t, tex} from './../lib/translate'
-import Controls from './form-controls.jsx'
+import {FormGroup} from './form/form-group.jsx'
+import {Textarea} from './form/textarea.jsx'
 
-let StepForm = props =>
-  <form>
-    <Field
-      name="title"
-      component={Controls.Text}
-      label={t('title')}
-    />
-    <Field
-      id={`step-${props.stepId}-description`}
-      name="description"
-      component={Controls.Textarea}
-      label={t('description')}
-    />
-    <Field
-      id={`step-${props.stepId}-max-attempts`}
-      name="maxAttempts"
-      component={Controls.Number}
-      min={0}
-      label={tex('maximum_tries')}
-    />
-  </form>
-
-const T = React.PropTypes
-
-StepForm.propTypes = {
-  stepId: T.string.isRequired,
-  initialValues: T.object.isRequired
+export const StepForm = props => {
+  return (
+    <form>
+      <FormGroup
+        controlId={`step-${props.id}-title`}
+        label={t('title')}
+      >
+        <input
+          id={`step-${props.id}-title`}
+          type="text"
+          value={props.title}
+          className="form-control"
+          onChange={e => props.onChange({title: e.target.value})}
+        />
+      </FormGroup>
+      <FormGroup
+        controlId={`step-${props.id}-description`}
+        label={t('description')}
+      >
+        <Textarea
+          id={`step-${props.id}-description`}
+          content={props.description}
+          onChange={description => props.onChange({description})}
+        />
+      </FormGroup>
+      <FormGroup
+        controlId={`step-${props.id}-maxAttempts`}
+        label={tex('maximum_tries')}
+        error={get(props, '_errors.parameters.maxAttempts')}
+      >
+        <input
+          id={`step-${props.id}-maxAttempts`}
+          type="number"
+          min="0"
+          value={props.parameters.maxAttempts}
+          className="form-control"
+          onChange={e => props.onChange({parameters: {maxAttempts: e.target.value}})}
+        />
+      </FormGroup>
+    </form>
+  )
 }
 
-StepForm = reduxForm({
-  form: 'step-properties'
-})(StepForm)
-
-export {StepForm}
+StepForm.propTypes = {
+  id: T.string.isRequired,
+  title: T.string.isRequired,
+  description: T.string.isRequired,
+  parameters: T.shape({
+    maxAttempts: T.number.isRequired
+  }).isRequired,
+  onChange: T.func.isRequired,
+  _errors: T.object
+}

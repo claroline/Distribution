@@ -20,7 +20,7 @@ exec('git diff --cached --name-status --diff-filter=ACM', $files);
 foreach ($files as $file) {
     $fileName = trim(substr($file, 1));
 
-    if (preg_match('#Resources/modules/.+\.js$#', $fileName)) {
+    if (preg_match('#Resources/modules/.+\.jsx?$#', $fileName)) {
         exec("{$eslint} {$fileName}", $output, $code);
 
         if ($code !== 0) {

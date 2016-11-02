@@ -1,98 +1,125 @@
-import React, {Component} from 'react'
-import {Field, FieldArray, reduxForm} from 'redux-form'
+import React, {Component, PropTypes as T} from 'react'
+import get from 'lodash/get'
 import {t, tex} from './../lib/translate'
-import {notBlank} from './../lib/validate'
-import {makeId} from './../util'
-import {properties} from './../types'
-import Controls from './form-controls.jsx'
+import {HINT_ADD, HINT_CHANGE, HINT_REMOVE} from './../actions'
+import {FormGroup} from './form/form-group.jsx'
+import {Textarea} from './form/textarea.jsx'
+import {SubSection} from './form/sub-section.jsx'
 
-// TODO: update field names when available (specification, supplementary, etc.)
 // TODO: add categories, objects, resources, define-as-model
-
-const T = React.PropTypes
-const id = (field, itemId) => `item-${itemId}-field-${field}`
-
-export const ITEM_FORM = 'item-properties'
 
 const Metadata = props =>
   <fieldset>
-    <Field
-      name="title"
-      component={Controls.Text}
+    <FormGroup
+      controlId={`item-${props.item.id}-title`}
       label={t('title')}
-    />
-    <Field
-      id={id('description', props.itemId)}
-      name="description"
-      component={Controls.Textarea}
+    >
+      <input
+        id={`item-${props.item.id}-title`}
+        type="text"
+        value={props.item.title || ''}
+        className="form-control"
+        onChange={e => props.onChange('title', e.target.value)}
+      />
+    </FormGroup>
+    <FormGroup
+      controlId={`item-${props.item.id}-description`}
       label={t('description')}
-    />
-    <Field
-      id={id('instruction', props.itemId)}
-      name="specification"
-      component={Controls.Textarea}
+    >
+      <Textarea
+        id={`item-${props.item.id}-description`}
+        content={props.item.description || ''}
+        onChange={text => props.onChange('description', text)}
+      />
+    </FormGroup>
+    <FormGroup
+      controlId={`item-${props.item.id}-instruction`}
       label={tex('instruction')}
-    />
-    <Field
-      id={id('info', props.itemId)}
-      name="supplementary"
-      component={Controls.Textarea}
+    >
+      <Textarea
+        id={`item-${props.item.id}-instruction`}
+        content={props.item.instruction || ''}
+        onChange={text => props.onChange('instruction', text)}
+      />
+    </FormGroup>
+    <FormGroup
+      controlId={`item-${props.item.id}-info`}
       label={tex('additional_info')}
-    />
+    >
+      <Textarea
+        id={`item-${props.item.id}-info`}
+        content={props.item.info || ''}
+        onChange={text => props.onChange('info', text)}
+      />
+    </FormGroup>
   </fieldset>
 
 Metadata.propTypes = {
-  itemId: T.string.isRequired
+  item: T.shape({
+    id: T.string.isRequired,
+    title: T.string.isRequired,
+    description: T.string.isRequired,
+    instruction: T.string.isRequired,
+    info: T.string.isRequired
+  }).isRequired,
+  onChange: T.func.isRequired
 }
 
 const Hint = props =>
   <div className="hint-item">
     <div className="hint-value">
-      <Field
-        id={`${props.name}.data`}
-        name={`${props.name}.data`}
+      <Textarea
+        id={`hint-${props.id}`}
         title={tex('hint')}
-        component={Controls.Textarea}
+        content={props.value}
+        onChange={value => props.onChange(HINT_CHANGE, {id: props.id, value})}
       />
     </div>
-    <Field
-      name={`${props.name}.penalty`}
-      className="form-control hint-penalty"
+    <input
+      id={`hint-${props.id}-penalty`}
       title={tex('penalty')}
-      component="input"
       type="number"
       min="0"
+      value={props.penalty}
+      className="form-control hint-penalty"
+      aria-label={tex('penalty')}
+      onChange={e => props.onChange(
+        HINT_CHANGE,
+        {id: props.id, penalty: e.target.value}
+      )}
     />
     <span
       role="button"
       title={t('delete')}
+      aria-label={t('delete')}
       className="fa fa-trash-o"
       onClick={props.onRemove}
     />
   </div>
 
 Hint.propTypes = {
-  name: T.string.isRequired,
+  id: T.string.isRequired,
+  value: T.string.isRequired,
+  penalty: T.number.isRequired,
+  onChange: T.func.isRequired,
   onRemove: T.func.isRequired
 }
 
 const Hints = props =>
   <div className="hint-items">
-    <label
-      className="control-label"
-      htmlFor="hint-list"
-    >
+    <label className="control-label" htmlFor="hint-list">
       {tex('hints')}
     </label>
-    {props.fields.length === 0 &&
+    {props.hints.length === 0 &&
       <div className="no-hint-info">{tex('no_hint_info')}</div>
     }
     <ul id="hint-list">
-      {props.fields.map((hint, index) =>
-        <li key={hint}>
+      {props.hints.map(hint =>
+        <li key={hint.id}>
           <Hint
-            name={hint}
-            onRemove={() => props.fields.remove(index)}
+            {...hint}
+            onChange={props.onChange}
+            onRemove={() => props.onChange(HINT_REMOVE, {id: hint.id})}
           />
         </li>
       )}
@@ -100,39 +127,23 @@ const Hints = props =>
         <button
           type="button"
           className="btn btn-default"
-          onClick={() => props.fields.push({id: makeId(), penalty: 0})}
+          onClick={() => props.onChange(HINT_ADD, {})}
         >
           <span className="fa fa-plus"/>
-          &nbsp;{tex('add_hint')}
+          {tex('add_hint')}
         </button>
       </div>
     </ul>
   </div>
 
 Hints.propTypes = {
-  fields: T.object.isRequired
+  hints: T.arrayOf(T.shape({
+    id: T.string.isRequired
+  })).isRequired,
+  onChange: T.func.isRequired
 }
 
-const Interact = props =>
-  <fieldset>
-    <FieldArray
-      name="hints"
-      component={Hints}
-    />
-    <hr/>
-    <Field
-      id={id('feedback', props.itemId)}
-      name="feedback"
-      component={Controls.Textarea}
-      label={tex('feedback')}
-    />
-  </fieldset>
-
-Interact.propTypes = {
-  itemId: T.string.isRequired
-}
-
-class ItemForm extends Component {
+export class ItemForm extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -144,54 +155,69 @@ class ItemForm extends Component {
   render() {
     return (
       <form>
-        <Field
-          id={id('question', this.props.id)}
-          name="invite"
-          component={Controls.Textarea}
+        <FormGroup
+          controlId={`item-${this.props.item.id}-content`}
           label={tex('question')}
-        />
-        <Controls.CollapsibleSection
+          error={
+            get(this.props.item, '_touched.content')
+            && get(this.props.item, '_errors.content')
+          }
+        >
+          <Textarea
+            id={`item-${this.props.item.id}-content`}
+            content={this.props.item.content}
+            onChange={content => this.props.onChange('content', content)}
+          />
+        </FormGroup>
+        <SubSection
           hidden={this.state.metaHidden}
           showText={tex('show_metadata_fields')}
           hideText={tex('hide_metadata_fields')}
           toggle={() => this.setState({metaHidden: !this.state.metaHidden})}
         >
-          <Metadata itemId={this.props.id}/>
-        </Controls.CollapsibleSection>
+          <Metadata item={this.props.item} onChange={this.props.onChange}/>
+        </SubSection>
         <hr/>
         {this.props.children}
         <hr/>
-        <Controls.CollapsibleSection
+        <SubSection
           hidden={this.state.feedbackHidden}
           showText={tex('show_interact_fields')}
           hideText={tex('hide_interact_fields')}
           toggle={() => this.setState({feedbackHidden: !this.state.feedbackHidden})}
         >
-          <Interact itemId={this.props.id}/>
-        </Controls.CollapsibleSection>
+          <fieldset>
+            <Hints
+              hints={this.props.item.hints}
+              onChange={this.props.onHintsChange}
+            />
+            <hr/>
+            <FormGroup
+              controlId={`item-${this.props.item.id}-feedback`}
+              label={tex('feedback')}
+            >
+              <Textarea
+                id={`item-${this.props.item.id}-feedback`}
+                content={this.props.item.feedback}
+                onChange={text => this.props.onChange('feedback', text)}
+              />
+            </FormGroup>
+          </fieldset>
+        </SubSection>
       </form>
     )
   }
 }
 
 ItemForm.propTypes = {
-  id: T.string.isRequired,
-  initialValues: T.object.isRequired,
-  children: T.oneOfType([T.object, T.array]).isRequired
+  item: T.shape({
+    id: T.string.isRequired,
+    content: T.string.isRequired,
+    hints: T.arrayOf(T.object).isRequired,
+    feedback: T.string.isRequired,
+    _errors: T.object
+  }).isRequired,
+  children: T.oneOfType([T.object, T.array]).isRequired,
+  onChange: T.func.isRequired,
+  onHintsChange: T.func.isRequired
 }
-
-const ReduxedItemForm = reduxForm({
-  form: ITEM_FORM,
-  touchOnChange: true,
-  validate: values => {
-    const errors = {
-      invite: notBlank(values.invite, true)
-    }
-    const typeValidate = properties[values.type].validateFormValues
-    const typeErrors = typeValidate(values)
-
-    return Object.assign(errors, typeErrors)
-  }
-})(ItemForm)
-
-export {ReduxedItemForm as ItemForm}

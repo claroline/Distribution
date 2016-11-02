@@ -1,46 +1,38 @@
 import {Open as component} from './open.jsx'
 import {ITEM_CREATE} from './../actions'
 import {update} from './../util'
-import {tex} from './../lib/translate'
+import {notBlank, number, gteZero} from './../lib/validate'
 
-function reducer(open = {}, action) {
+function reduce(item = {}, action) {
   switch (action.type) {
     case ITEM_CREATE: {
-
       return update(open, {
         maxScore: {$set: 0},
         maxLength: {$set: 0}
       })
     }
   }
-  return open
+  return item
 }
 
-function initialFormValues(open) {
-  return update(open, {
-    maxScore: {$set: open.maxScore},
-    maxLength: {$set: open.maxLength}
-  })
-}
+// function initialFormValues(item) {
+//   return update(item, {
+//     maxScore: {$set: item.score.max}
+//   })
+// }
 
-function validateFormValues(values) {
-  const errors = {open: []}
-  if(values.maxScore < 0){
-    errors.maxScore = tex('should_be_greater_or_equal_to_zero')
+function validate(values) {
+  return {
+    maxScore: notBlank(values.maxScore)
+      || number(values.maxScore)
+      || gteZero(values.maxScore)
   }
-
-  if(!values.maxLength || values.maxLength < 0){
-    errors.maxLength = tex('should_be_greater_or_equal_to_zero')
-  }
-  return errors
 }
 
 export default {
   type: 'application/x.open+json',
   name: 'open',
-  question: true,
   component,
-  reducer,
-  initialFormValues,
-  validateFormValues
+  reduce,
+  validate
 }

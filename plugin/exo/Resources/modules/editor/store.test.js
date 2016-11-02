@@ -1,59 +1,28 @@
-import {assertEqual} from './test-util'
+import {assertEqual} from './test-utils'
 import {createStore} from './store'
-import {TYPE_QUIZ, TYPE_STEP, mimeTypes as itemTypes} from './types'
 
-describe('#createStore', () => {
-  it('normalizes and augments quiz data', () => {
-    const quiz = {
-      id: '1',
-      meta: {},
-      steps: [
-        {
-          'id': 'a',
-          'items': [
-            {
-              'id': 'x',
-              'type': 'text/html'
-            }
-          ]
-        }
-      ]
+describe('createStore', () => {
+  it('initializes the store with initial data and calls reducer', () => {
+    const state = {
+      quiz: {id: '1'},
+      steps: {},
+      items: {}
     }
-    const store = createStore(quiz)
+    const store = createStore(state)
     assertEqual(store.getState(), {
-      quiz: {
-        id: '1',
-        meta: {},
-        steps: ['a']
-      },
-      steps: {
-        'a': {
-          'id': 'a',
-          'items': ['x']
-        }
-      },
-      items: {
-        'x': {
-          id: 'x',
-          type: 'text/html'
-        }
-      },
-      currentObject: {
-        id: '1',
-        type: TYPE_QUIZ
-      },
+      quiz: {id: '1'},
+      steps: {},
+      items: {},
+      currentObject: {},
       openPanels: {
-        [TYPE_QUIZ]: false,
-        [TYPE_STEP]: {}
+        quiz: false,
+        step: {}
       },
       modal: {
         type: null,
         props: {},
         fading: false
-      },
-      itemTypes,
-      categories: ['C1', 'C2'],
-      form: {}
+      }
     })
   })
 })

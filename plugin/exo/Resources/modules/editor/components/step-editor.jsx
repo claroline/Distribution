@@ -1,16 +1,14 @@
-import React from 'react'
+import React, {PropTypes as T} from 'react'
 import classes from 'classnames'
 import Panel from 'react-bootstrap/lib/Panel'
 import PanelGroup from 'react-bootstrap/lib/PanelGroup'
 import {makeItemPanelKey, makeStepPropPanelKey} from './../util'
 import {t, tex, trans} from './../lib/translate'
 import {makeSortable, SORT_VERTICAL} from './../lib/sortable'
-import {properties} from './../types'
+import {getDefinition} from './../item-types'
 import {StepForm} from './step-form.jsx'
 import {ItemForm} from './item-form.jsx'
 import {MODAL_DELETE_CONFIRM, MODAL_ADD_ITEM} from './modals.jsx'
-
-const T = React.PropTypes
 
 const ParametersHeader = props =>
   <div onClick={props.onClick} className="panel-title">
@@ -72,10 +70,10 @@ const ItemHeader = props =>
   >
     <span>
       <svg className="icon-small">
-        <use xlinkHref={`#icon-${properties[props.item.type].name}`}/>
+        <use xlinkHref={`#icon-${getDefinition(props.item.type).name}`}/>
       </svg>
       <span className="panel-title">
-        {props.item.title || trans(properties[props.item.type].name, {}, 'question_types')}
+        {props.item.title || trans(getDefinition(props.item.type).name, {}, 'question_types')}
       </span>
     </span>
     <ItemActions
@@ -119,14 +117,24 @@ let ItemPanel = props =>
         >
           {props.expanded &&
             <ItemForm
-              id={props.item.id}
-              initialValues={properties[props.item.type].initialFormValues(props.item)}
+              item={props.item}
+              onChange={(propertyPath, value) =>
+                props.handleItemUpdate(props.item.id, propertyPath, value)
+              }
+              onHintsChange={(updateType, payload) =>
+                props.handleItemHintsUpdate(props.item.id, updateType, payload)
+              }
             >
               {React.createElement(
-                properties[props.item.type].component,
-                props.item
+                getDefinition(props.item.type).component,
+                {
+                  item: props.item,
+                  onChange: subAction =>
+                    props.handleItemDetailUpdate(props.item.id, subAction)
+                }
               )}
             </ItemForm>
+
           }
         </Panel>
       </div>
@@ -140,6 +148,8 @@ ItemPanel.propTypes = {
   expanded: T.bool.isRequired,
   handlePanelClick: T.func.isRequired,
   handleItemDeleteClick: T.func.isRequired,
+  handleItemUpdate: T.func.isRequired,
+  handleItemDetailUpdate: T.func.isRequired,
   showModal: T.func.isRequired,
   connectDragSource: T.func.isRequired,
   isDragging: T.bool.isRequired,
@@ -187,7 +197,10 @@ export const StepEditor = props =>
           />
         }
       >
-        <StepForm stepId={props.step.id} initialValues={props.step.meta}/>
+        <StepForm
+          onChange={(newValue) => props.updateStep(props.step.id, newValue)}
+          {...props.step}
+        />
       </Panel>
       {props.step.items.map((item, index) =>
         <ItemPanel
@@ -202,6 +215,9 @@ export const StepEditor = props =>
           handlePanelClick={props.handlePanelClick}
           handleItemDeleteClick={props.handleItemDeleteClick}
           handleItemCreate={props.handleItemCreate}
+          handleItemUpdate={props.handleItemUpdate}
+          handleItemHintsUpdate={props.handleItemHintsUpdate}
+          handleItemDetailUpdate={props.handleItemDetailUpdate}
           showModal={props.showModal}
           {...props}
         />
@@ -218,14 +234,21 @@ export const StepEditor = props =>
 StepEditor.propTypes = {
   step: T.shape({
     id: T.string.isRequired,
-    items: T.arrayOf(T.object).isRequired,
-    meta: T.object.isRequired
+    title: T.string.isRequired,
+    description: T.string.isRequired,
+    parameters: T.shape({
+      maxAttempts: T.number.isRequired
+    }).isRequired,
+    items: T.arrayOf(T.object).isRequired
   }).isRequired,
   activePanelKey: T.oneOfType([T.string, T.bool]).isRequired,
+  updateStep: T.func.isRequired,
   handlePanelClick: T.func.isRequired,
   handleItemDeleteClick: T.func.isRequired,
   handleItemMove: T.func.isRequired,
   handleItemCreate: T.func.isRequired,
+  handleItemUpdate: T.func.isRequired,
+  handleItemHintsUpdate: T.func.isRequired,
   showModal: T.func.isRequired,
   closeModal: T.func.isRequired
 }

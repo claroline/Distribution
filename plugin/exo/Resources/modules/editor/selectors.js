@@ -1,11 +1,10 @@
 import {createSelector} from 'reselect'
-import {TYPE_QUIZ, TYPE_STEP} from './types'
+import {TYPE_QUIZ, TYPE_STEP} from './enums'
 
 const quiz = state => state.quiz
 const steps = state => state.steps
 const items = state => state.items
 const currentObject = state => state.currentObject
-const quizProperties = state => state.quiz.meta
 const quizOpenPanel = state => state.openPanels[TYPE_QUIZ]
 const openStepPanels = state => state.openPanels[TYPE_STEP]
 const modal = state => state.modal
@@ -61,14 +60,10 @@ const currentObjectDeep = createSelector(
       }
     }
 
-    const step = steps[current.id]
-
-    return {
+    return Object.assign({}, steps[current.id], {
       type: TYPE_STEP,
-      id: step.id,
-      items: step.items.map(itemId => items[itemId]),
-      meta: step.meta
-    }
+      items: steps[current.id].items.map(itemId => items[itemId])
+    })
   }
 )
 
@@ -110,7 +105,7 @@ const nextObject = createSelector(
 )
 
 export default {
-  quizProperties,
+  quiz,
   thumbnails,
   currentObjectDeep,
   quizOpenPanel,

@@ -55,9 +55,9 @@ class ExerciseController extends Controller
             'nbPapers' => $nbPapers,
 
             // Angular JS data
-            'exercise' => $this->get('ujm.exo.exercise_manager')->exportExercise(
+            'exercise' => $this->get('ujm.exo.exercise_manager')->export(
                 $exercise,
-                $this->hasPermission('ADMINISTRATE', $exercise)
+                ['includeSolutions' => true]
             ),
             'editEnabled' => $exerciseSer->isExerciseAdmin($exercise),
         ]);
