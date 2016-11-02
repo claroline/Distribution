@@ -1,4 +1,4 @@
-import React, {Component, PropTypes as T} from 'react'
+import React, {PropTypes as T} from 'react'
 import Panel from 'react-bootstrap/lib/Panel'
 import PanelGroup from 'react-bootstrap/lib/PanelGroup'
 import get from 'lodash/get'
@@ -62,6 +62,15 @@ const Properties = props =>
       onChange={checked => props.onChange('parameters.showMetadata', checked)}
     />
   </fieldset>
+
+Properties.propTypes = {
+  title: T.string.isRequired,
+  description: T.string.isRequired,
+  parameters: T.shape({
+    type: T.string.isRequired,
+    showMetadata: T.bool.isRequired
+  }).isRequired
+}
 
 const shuffleOptions = () => {
   if (!shuffleOptions._options) {

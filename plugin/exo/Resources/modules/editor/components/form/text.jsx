@@ -1,5 +1,6 @@
 import React, {Component, PropTypes as T} from 'react'
 import debounce from 'lodash/debounce'
+import {FormGroup} from './form-group.jsx'
 
 /******
  ** WARNING: kept for future use -- changes/tests are needed
@@ -39,7 +40,7 @@ export class Text extends Component {
           type="text"
           value={this.getValue()}
           onChange={this.handleChange}
-          aria-describedby={helpIds(this.props.input.name, this.props.help)}/>
+          aria-describedby={this.props.input.name}/>
       </FormGroup>
     )
   }

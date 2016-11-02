@@ -1,8 +1,6 @@
 import React, {Component, PropTypes as T} from 'react'
 import get from 'lodash/get'
 import {t, tex} from './../lib/translate'
-import {notBlank} from './../lib/validate'
-import {makeId} from './../util'
 import {HINT_ADD, HINT_CHANGE, HINT_REMOVE} from './../actions'
 import {FormGroup} from './form/form-group.jsx'
 import {Textarea} from './form/textarea.jsx'
@@ -74,7 +72,7 @@ const Hint = props =>
         id={`hint-${props.id}`}
         title={tex('hint')}
         content={props.value}
-        onChange={value => props.onChange(HINT_CHANGE, {id: props.id, value})}
+        onChange={value => props.onPropChange(HINT_CHANGE, {id: props.id, value})}
       />
     </div>
     <input
@@ -86,7 +84,7 @@ const Hint = props =>
       className="form-control hint-penalty"
       title={tex('penalty')}
       aria-label={tex('penalty')}
-      onChange={e => props.onChange(
+      onChange={e => props.onPropChange(
         HINT_CHANGE,
         {id: props.id, penalty: e.target.value}
       )}
@@ -104,7 +102,7 @@ Hint.propTypes = {
   id: T.string.isRequired,
   value: T.string.isRequired,
   penalty: T.number.isRequired,
-  onChange: T.func.isRequired,
+  onPropChange: T.func.isRequired,
   onRemove: T.func.isRequired
 }
 
@@ -117,11 +115,11 @@ const Hints = props =>
       <div className="no-hint-info">{tex('no_hint_info')}</div>
     }
     <ul id="hint-list">
-      {props.hints.map((hint, index) =>
+      {props.hints.map(hint =>
         <li key={hint.id}>
           <Hint
             {...hint}
-            onChange={props.onChange}
+            onPropChange={props.onChange}
             onRemove={() => props.onChange(HINT_REMOVE, {id: hint.id})}
           />
         </li>
@@ -159,7 +157,7 @@ export class ItemForm extends Component {
     return (
       <form>
         <FormGroup
-          controlId={`item-${this.props.id}-content`}
+          controlId={`item-${this.props.item.id}-content`}
           label={tex('question')}
           error={
             get(this.props.item, '_touched.content')
@@ -167,7 +165,7 @@ export class ItemForm extends Component {
           }
         >
           <Textarea
-            id={`item-${this.props.id}-content`}
+            id={`item-${this.props.item.id}-content`}
             content={this.props.item.content}
             onChange={content => this.props.onChange('content', content)}
           />
