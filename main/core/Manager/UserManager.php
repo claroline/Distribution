@@ -507,7 +507,9 @@ class UserManager
             }
 
             if ($userEntity && $options['ignore-update']) {
-                $logger(" Skipping  {$userEntity->getUsername()}...");
+                if ($logger) {
+                    $logger(" Skipping  {$userEntity->getUsername()}...");
+                }
                 continue;
             }
 
@@ -594,8 +596,10 @@ class UserManager
         }
 
         $this->objectManager->endFlushSuite();
-        $logger($countCreated.' users created.');
-        $logger($countUpdated.' users updated.');
+        if ($logger) {
+            $logger($countCreated.' users created.');
+            $logger($countUpdated.' users updated.');
+        }
 
         return $returnValues;
     }
@@ -1280,7 +1284,7 @@ class UserManager
     {
         $archive = new \ZipArchive();
         $archive->open($filepath);
-        $tmpDir = sys_get_temp_dir().DIRECTORY_SEPARATOR.uniqid();
+        $tmpDir = $this->platformConfigHandler->getParameter('tmp_dir').DIRECTORY_SEPARATOR.uniqid();
         //add the tmp dir to the "trash list files"
         $tmpList = $this->container->getParameter('claroline.param.platform_generated_archive_path');
         file_put_contents($tmpList, $tmpDir."\n", FILE_APPEND);

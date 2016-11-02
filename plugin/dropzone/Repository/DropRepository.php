@@ -1,9 +1,4 @@
 <?php
-/**
- * Created by : Vincent SAISSET
- * Date: 05/09/13
- * Time: 14:56.
- */
 
 namespace Icap\DropzoneBundle\Repository;
 
@@ -25,7 +20,7 @@ class DropRepository extends EntityRepository
 
         $result = $query->getResult();
 
-        $dropIds = array();
+        $dropIds = [];
         foreach ($result as $line) {
             if ($line['valid'] === null) {
                 $dropIds[$line['did']] = 'has no correction';
@@ -49,13 +44,7 @@ class DropRepository extends EntityRepository
             }
         }
 
-        $arrayResult = array();
-
-        foreach ($dropIds as $key => $value) {
-            $arrayResult[] = $key;
-        }
-
-        return $arrayResult;
+        return array_keys($dropIds);
     }
 
     public function getDropIdNotFullyCorrected($dropzone)
@@ -73,7 +62,7 @@ class DropRepository extends EntityRepository
 
         $result = $query->getResult();
 
-        $dropIds = array();
+        $dropIds = [];
         foreach ($result as $line) {
             $dropIds[] = $line['did'];
         }
@@ -98,7 +87,7 @@ class DropRepository extends EntityRepository
             ->andWhere('drop.user = :user')
             ->setParameter('dropzone', $dropzoneId)
             ->setParameter('user', $userId);
-        $isUnlockedDrop = $qb->getQuery()->getSingleScalarResult();
+        $isUnlockedDrop = $qb->getQuery()->getOneOrNullResult();
 
         return $isUnlockedDrop;
     }
@@ -109,7 +98,7 @@ class DropRepository extends EntityRepository
         $dropIdNotCorrected = $this->getDropIdNotCorrected($dropzone);
 
         if (count($dropIdNotCorrected) <= 0) {
-            return array();
+            return [];
         }
         // Remove copies that the logged user has already corrected
         $alreadyCorrectedDropIds = $this->getEntityManager()->getRepository('IcapDropzoneBundle:Correction')->getAlreadyCorrectedDropIds($dropzone, $user);
@@ -142,7 +131,7 @@ class DropRepository extends EntityRepository
     public function drawDropForCorrection(Dropzone $dropzone, $user)
     {
         $possibleIds = $this->getPossibleDropIdsForDrawing($dropzone, $user);
-        if (count($possibleIds) == 0) {
+        if (count($possibleIds) === 0) {
             return;
         }
 
@@ -192,7 +181,7 @@ class DropRepository extends EntityRepository
     {
         $lines = $this->getDropIdsFullyCorrectedQuery($dropzone)->getResult();
 
-        $dropIds = array();
+        $dropIds = [];
         foreach ($lines as $line) {
             $dropIds[] = $line['did'];
         }
@@ -215,7 +204,7 @@ class DropRepository extends EntityRepository
     {
         $lines = $this->getDropIdsFullyCorrectedQuery($dropzone)->getResult();
 
-        $dropIds = array();
+        $dropIds = [];
         foreach ($lines as $line) {
             $dropIds[] = $line['did'];
         }
@@ -238,7 +227,7 @@ class DropRepository extends EntityRepository
     {
         $lines = $this->getDropIdsFullyCorrectedQuery($dropzone)->getResult();
 
-        $dropIds = array();
+        $dropIds = [];
         foreach ($lines as $line) {
             $dropIds[] = $line['did'];
         }
@@ -261,7 +250,7 @@ class DropRepository extends EntityRepository
     {
         $lines = $this->getDropIdsFullyCorrectedQuery($dropzone)->getResult();
 
-        $dropIds = array();
+        $dropIds = [];
         foreach ($lines as $line) {
             $dropIds[] = $line['did'];
         }
@@ -285,7 +274,7 @@ class DropRepository extends EntityRepository
     {
         $lines = $this->getDropIdsFullyCorrectedQuery($dropzone)->getResult();
 
-        $dropIds = array();
+        $dropIds = [];
         foreach ($lines as $line) {
             $dropIds[] = $line['did'];
         }
@@ -379,7 +368,7 @@ class DropRepository extends EntityRepository
             ->setParameter('dropzone', $dropzone);
 
         $result = $query->getSingleScalarResult();
-        if ($result == null) {
+        if ($result === null) {
             return 0;
         } else {
             return $result;
