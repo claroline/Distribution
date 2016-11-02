@@ -264,7 +264,7 @@ Correction.propTypes = {
     showFullCorrection: T.bool.isRequired,
     showStatistics: T.bool.isRequired,
     anonymous: T.bool.isRequired,
-    correctionDate: T.string.isRequired
+    correctionDate: T.string
   }).isRequired,
   onChange: T.func.isRequired
 }
@@ -321,7 +321,6 @@ export const QuizEditor = props => {
 }
 
 QuizEditor.propTypes = {
-  initialValues: T.object.isRequired,
   quiz: T.shape({
     title: T.string.isRequired,
     description: T.string.isRequired,
