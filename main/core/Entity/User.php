@@ -1194,7 +1194,7 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
     {
         $this->organizations = $organizations instanceof ArrayCollection ?
             $organizations :
-            new ArrayCollection(organizations);
+            new ArrayCollection($organizations);
     }
 
     public static function getUserSearchableFields()
