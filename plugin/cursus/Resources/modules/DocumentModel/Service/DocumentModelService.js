@@ -61,6 +61,9 @@ export default class DocumentModelService {
     case 2 :
       name = Translator.trans('session_certificate', {}, 'cursus')
       break
+    case 3 :
+      name = Translator.trans('session_event_certificate', {}, 'cursus')
+      break
     default :
       break
     }

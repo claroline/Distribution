@@ -9,6 +9,7 @@ application_date: Date de soumission
 blocking: Bloquant
 calendar_view: Vue calendrier
 calendar_view_options: Options de la vue calendrier
+certificate: Certificat
 chronologic_view: Vue chronologique
 chronological_view_options: Options de la vue chronologique
 click_on_link_below_to_confirm_request: Veuillez cliquer sur le lien ci-dessous pour confirmer la demande
@@ -145,7 +146,20 @@ locations_management: Gestion des localisations
 manager: Gestionnaire
 max_time_reservation: Temps maximum de réservation
 max_users: Nombre maximum d'utilisateurs
-required_places_msg: Seulement %remainingPlaces% place(s) restante(s). Nécessaire : %requiredPlaces%.
+new_certificate_email: |
+  Madame, Monsieur,</br>
+  Veuillez trouver ci-dessous un lien permettant de télécharger votre attestation de participation à la formation: %session_name%</br>
+  Cordialement,</br>
+  L'équipe de formation
+new_certificate_email_title: Attestation de formation
+new_certificates: Nouveaux certificats
+new_certificates_email_title: Nouveaux certificats
+new_event_certificate_email: |
+  Madame, Monsieur,</br>
+  Veuillez trouver ci-dessous un lien permettant de télécharger votre attestation de participation à la séance: %event_name%</br>
+  Cordialement,</br>
+  L'équipe de formation
+new_event_certificate_email_title: Attestation de participation à une séance
 no: Non
 no_closed_session: Aucune session terminée
 no_closed_session_event: Aucune séance terminée
@@ -224,6 +238,7 @@ remove_participant: Supprimer le participant
 remove_participant_confirm_message: Êtes-vous sûr de vouloir supprimer cet utilisateur de cette séance ?
 repeat_session_event: Répéter la séance
 repetition: Répétition
+required_places_msg: Seulement %remainingPlaces% place(s) restante(s). Nécessaire : %requiredPlaces%.
 send_confirmation_mail: Envoyer un courriel de confirmation
 send_confirmation_mail_to_session: Envoyer un courriel de confirmation à tous les apprenants de la session de formation.
 send_confirmation_mail_to_session_message: Êtes-vous sûr de vouloir envoyer un courriel de confirmation à tous les apprenants de la session de formation ?
@@ -265,6 +280,7 @@ session_details: Détails de la session de formation
 session_edition: Modification de la session de formation
 session_end_title: Fin de la session "%sessionName%"
 session_event: Séance
+session_event_certificate: Certificat pour une séance
 session_event_creation: Création d'une séance
 session_event_deletion: Suppression de la séance
 session_event_description: Description de la séance
@@ -360,12 +376,3 @@ with_session_event: Créer une séance par défaut
 word: Mot
 workspace_model: Modèle d'espace d'activités
 yes: Oui
-new_certificate_email: |
-  Madame, Monsieur,</br>
-  Veuillez trouver ci-dessous un lien permettant de télécharger votre attestation de participation à la formation: %session_name%</br>
-  Cordialement,</br>
-  L'équipe de formation
-new_certificate_email_title: Attestation de formation
-certificate: Certificat
-new_certificates_email_title: Nouveaux certificats
-new_certificates: Nouveaux certificats

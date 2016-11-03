@@ -4041,6 +4041,13 @@ class CursusManager
                 $body = $this->convertKeysForSession($session, $content, false);
                 $this->generateCertificatesForUsers($users, $body, $session);
                 break;
+            case DocumentModel::SESSION_EVENT_CERTIFICATE:
+                $sessionEvent = $this->sessionEventRepo->findOneById($sourceId);
+                $session = $sessionEvent->getSession();
+                $users = $this->getUsersBySessionAndType($session, CourseSessionUser::LEARNER);
+                $body = $this->convertKeysForSessionEvent($sessionEvent, $content);
+                $this->generateEventCertificatesForUsers($users, $body, $session);
+                break;
         }
     }
 
@@ -4079,6 +4086,27 @@ class CursusManager
             $pdf = $this->pdfManager->create($replacedContent, $name, $creator, 'session_certificate');
             $title = $this->translator->trans('new_certificate_email_title', [], 'cursus');
             $link = $this->templating->render('ClarolineCursusBundle:Mail:certificate.html.twig', ['pdf' => $pdf, 'session' => $session]);
+            $this->mailManager->send($title, $link, [$user]);
+            $data[] = ['user' => $user, 'pdf' => $pdf];
+        }
+
+        $title = $this->translator->trans('new_certificates_email_title', [], 'platform');
+        $adminContent = $this->templating->render('ClarolineCursusBundle:Mail:certificates.html.twig', ['data' => $data]);
+        $this->mailManager->send($title, $adminContent, [$creator]);
+    }
+
+    public function generateEventCertificatesForUsers(array $users, $content, SessionEvent $event)
+    {
+        $creator = $this->container->get('security.token_storage')->getToken()->getUser();
+        $data = [];
+
+        foreach ($users as $user) {
+            $name = $event->getName().'-'.$user->getUsername();
+            $replacedContent = str_replace('%first_name%', $user->getFirstName(), $content);
+            $replacedContent = str_replace('%last_name%', $user->getLastName(), $replacedContent);
+            $pdf = $this->pdfManager->create($replacedContent, $name, $creator, 'session_event_certificate');
+            $title = $this->translator->trans('new_event_certificate_email_title', [], 'cursus');
+            $link = $this->templating->render('ClarolineCursusBundle:Mail:event_certificate.html.twig', ['pdf' => $pdf, 'sessionEvent' => $event]);
             $this->mailManager->send($title, $link, [$user]);
             $data[] = ['user' => $user, 'pdf' => $pdf];
         }

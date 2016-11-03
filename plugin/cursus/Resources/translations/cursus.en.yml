@@ -9,6 +9,7 @@ application_date: Application date
 blocking: Blocking
 calendar_view: Calendar view
 calendar_view_options: Calendar view options
+certificate: Certificate
 chronologic_view: Chronologic view
 chronological_view_options: Chronological view options
 click_on_link_below_to_confirm_request: Please click on the link below to confirm your request
@@ -145,7 +146,20 @@ locations_management: Locations management
 manager: Manager
 max_time_reservation: Maximum reservation time
 max_users: Maximum number of users
-required_places_msg: Only %remainingPlaces% remaining place(s). Needed : %requiredPlaces%.
+new_certificate_email: |
+  Hello,</br>
+  You will find below a link to download your certificate to the training session : %session_name%</br>
+  Regards,</br>
+  The training team
+new_certificate_email_title: Training certificate
+new_certificates: New certificates
+new_certificates_email_title: New certificates
+new_event_certificate_email: |
+  Hello,</br>
+  You will find below a link to download your certificate to the session event : %event_name%</br>
+  Regards,</br>
+  The training team
+new_event_certificate_email_title: Session event certificate
 no: No
 no_closed_session: No closed session
 no_closed_session_event: No closed session event
@@ -223,6 +237,7 @@ remove_participant: Remove participant
 remove_participant_confirm_message: Are you sure you want to remove this user from this session event ?
 repeat_session_event: Repeat session event
 repetition: Repetition
+required_places_msg: Only %remainingPlaces% remaining place(s). Needed : %requiredPlaces%.
 send_confirmation_mail: Send a confirmation email
 send_confirmation_mail_to_session: Send a confirmation email to all learners of the training session
 send_confirmation_mail_to_session_message: Are you sure you want to send a confirmation email to all learners of the training session ?
@@ -264,6 +279,7 @@ session_details: Training session details
 session_edition: Edit training session
 session_end_title: End of session "%sessionName%"
 session_event: Session event
+session_event_certificate: Session event certificate
 session_event_creation: Session event creation
 session_event_deletion: Session event deletion
 session_event_description: Session event description
