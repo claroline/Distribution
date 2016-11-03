@@ -1188,11 +1188,17 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
             $this->organizations->add($organization);
         }
     }
-
+    
     //sometimes it's passed as an array and I don't understand why.
+    //
+    // tip: that's because you pass it an array elsewhere
+    //
+    // todo: remove this method
     public function setOrganizations($organizations)
     {
-        $this->organizations = $organizations;
+        $this->organizations = $organizations instanceof ArrayCollection ?
+            $organizations :
+            new ArrayCollection(organizations);
     }
 
     public static function getUserSearchableFields()
