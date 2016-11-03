@@ -95,7 +95,7 @@ class ExerciseSerializerTest extends JsonDataTestCase
 
     /**
      * The serializer MUST return a minimal representation of the Exercise if the option `minimal` is set.
-     * In this case `parameters` and `steps` MUST be excluded.
+     * In this case `description`, `parameters`, `steps` MUST be excluded.
      */
     public function testSerializeMinimalOption()
     {
@@ -103,6 +103,7 @@ class ExerciseSerializerTest extends JsonDataTestCase
 
         $this->assertFalse(property_exists($data, 'steps'));
         $this->assertFalse(property_exists($data, 'parameters'));
+        $this->assertFalse(property_exists($data, 'description'));
     }
 
     /**

@@ -3,6 +3,8 @@
 namespace UJM\ExoBundle\Tests\Validator\JsonSchema;
 
 use UJM\ExoBundle\Library\Testing\Json\JsonSchemaTestCase;
+use UJM\ExoBundle\Validator\JsonSchema\ContentValidator;
+use UJM\ExoBundle\Validator\JsonSchema\Question\QuestionValidator;
 use UJM\ExoBundle\Validator\JsonSchema\StepValidator;
 
 class StepValidatorTest extends JsonSchemaTestCase
@@ -13,12 +15,12 @@ class StepValidatorTest extends JsonSchemaTestCase
     private $validator;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var QuestionValidator|\PHPUnit_Framework_MockObject_MockObject
      */
     private $questionValidator;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var ContentValidator|\PHPUnit_Framework_MockObject_MockObject
      */
     private $contentValidator;
 
@@ -26,12 +28,12 @@ class StepValidatorTest extends JsonSchemaTestCase
     {
         parent::setUp();
 
-        $this->questionValidator = $this->mock('UJM\ExoBundle\Validator\JsonSchema\Question\QuestionValidator');
+        $this->questionValidator = $this->getMock('UJM\ExoBundle\Validator\JsonSchema\Question\QuestionValidator', [], [], '', false);
         $this->questionValidator->expects($this->any())
             ->method('validateAfterSchema')
             ->willReturn([]);
 
-        $this->contentValidator = $this->mock('UJM\ExoBundle\Validator\JsonSchema\ContentValidator');
+        $this->contentValidator = $this->getMock('UJM\ExoBundle\Validator\JsonSchema\ContentValidator', [], [], '', false);
         $this->contentValidator->expects($this->any())
             ->method('validateAfterSchema')
             ->willReturn([]);

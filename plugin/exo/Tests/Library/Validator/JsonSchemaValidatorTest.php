@@ -3,16 +3,21 @@
 namespace UJM\ExoBundle\Tests\Library\Validator;
 
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
+use UJM\ExoBundle\Library\Json\JsonSchema;
 use UJM\ExoBundle\Library\Options\Validation;
-use UJM\ExoBundle\Library\Testing\Json\JsonSchemaTestCase;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
 
-class JsonSchemaValidatorTest extends JsonSchemaTestCase
+class JsonSchemaValidatorTest extends TransactionalTestCase
 {
     /**
-     * @var JsonSchemaValidator
+     * @var JsonSchemaValidator|\PHPUnit_Framework_MockObject_MockObject
      */
     private $validator;
+
+    /**
+     * @var JsonSchema|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $jsonSchema;
 
     public function setUp()
     {
@@ -20,7 +25,8 @@ class JsonSchemaValidatorTest extends JsonSchemaTestCase
 
         $this->validator = $this->getMockForAbstractClass('UJM\ExoBundle\Library\Validator\JsonSchemaValidator');
 
-        $this->injectJsonSchemaMock($this->validator);
+        $this->jsonSchema = $this->getMock('UJM\ExoBundle\Library\Json\JsonSchema', [], [], '', false);
+        $this->validator->setJsonSchema($this->jsonSchema);
     }
 
     /**
@@ -29,8 +35,8 @@ class JsonSchemaValidatorTest extends JsonSchemaTestCase
     public function testValidatePerformsValidateAfterSchemaIfNoError()
     {
         // Validate schema generates no error
-        $this->validator->expects($this->once())
-            ->method('validateSchema')
+        $this->jsonSchema->expects($this->once())
+            ->method('validate')
             ->willReturn([]);
 
         // If no errors on schema validation, custom validation is performed
@@ -46,8 +52,8 @@ class JsonSchemaValidatorTest extends JsonSchemaTestCase
     public function testValidateNotPerformValidateAfterSchemaIfErrors()
     {
         // Validate schema generates errors
-        $this->validator->expects($this->once())
-            ->method('validateSchema')
+        $this->jsonSchema->expects($this->once())
+            ->method('validate')
             ->willReturn(['some errors']);
 
         // If errors on schema validation, no custom validation is performed
@@ -63,8 +69,8 @@ class JsonSchemaValidatorTest extends JsonSchemaTestCase
     public function testNoSchemaValidationIfOptionSet()
     {
         // Validate schema generates errors
-        $this->validator->expects($this->never())
-            ->method('validateSchema');
+        $this->jsonSchema->expects($this->never())
+            ->method('validate');
 
         $this->validator->validate([], [Validation::NO_SCHEMA]);
     }

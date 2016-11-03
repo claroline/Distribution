@@ -55,14 +55,13 @@ class ExerciseSerializer implements SerializerInterface
         $exerciseData = new \stdClass();
         $exerciseData->id = $exercise->getUuid();
         $exerciseData->title = $node->getName();
-
-        if (!empty($exercise->getDescription())) {
-            $exerciseData->description = $exercise->getDescription();
-        }
-
         $exerciseData->meta = $this->serializeMetadata($exercise);
 
         if (!in_array(Transfer::MINIMAL, $options)) {
+            if (!empty($exercise->getDescription())) {
+                $exerciseData->description = $exercise->getDescription();
+            }
+            
             $exerciseData->parameters = $this->serializeParameters($exercise);
             $exerciseData->steps = $this->serializeSteps($exercise, $options);
         }

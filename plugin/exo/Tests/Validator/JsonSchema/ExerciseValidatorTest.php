@@ -4,6 +4,7 @@ namespace UJM\ExoBundle\Tests\Validator\JsonSchema;
 
 use UJM\ExoBundle\Library\Testing\Json\JsonSchemaTestCase;
 use UJM\ExoBundle\Validator\JsonSchema\ExerciseValidator;
+use UJM\ExoBundle\Validator\JsonSchema\StepValidator;
 
 class ExerciseValidatorTest extends JsonSchemaTestCase
 {
@@ -13,7 +14,7 @@ class ExerciseValidatorTest extends JsonSchemaTestCase
     private $validator;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var StepValidator|\PHPUnit_Framework_MockObject_MockObject
      */
     private $stepValidator;
 
@@ -21,7 +22,7 @@ class ExerciseValidatorTest extends JsonSchemaTestCase
     {
         parent::setUp();
 
-        $this->stepValidator = $this->mock('UJM\ExoBundle\Validator\JsonSchema\StepValidator');
+        $this->stepValidator = $this->getMock('UJM\ExoBundle\Validator\JsonSchema\StepValidator', [], [], '', false);
         $this->stepValidator->expects($this->any())
             ->method('validateAfterSchema')
             ->willReturn([]);

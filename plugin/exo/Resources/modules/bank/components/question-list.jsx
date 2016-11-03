@@ -81,6 +81,9 @@ export default class QuestionList extends Component {
                 <span className="fa fa-fw fa-pencil" />
               </a>
               <a role="button" href="" className="btn btn-sm btn-link">
+                <span className="fa fa-fw fa-copy" />
+              </a>
+              <a role="button" href="" className="btn btn-sm btn-link">
                 <span className="fa fa-fw fa-share" />
               </a>
               <a role="button" href="" className="btn btn-sm btn-link">

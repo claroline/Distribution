@@ -15,7 +15,7 @@ use UJM\ExoBundle\Library\Serializer\SerializerInterface;
 class HintSerializer implements SerializerInterface
 {
     /**
-     * {@inheritdoc}
+     * Converts a Hint into a JSON-encodable structure.
      *
      * @param Hint  $hint
      * @param array $options
@@ -39,7 +39,7 @@ class HintSerializer implements SerializerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Converts raw data into a Hint entity.
      *
      * @param \stdClass $data
      * @param Hint      $hint
