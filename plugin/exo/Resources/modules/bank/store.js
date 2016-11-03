@@ -10,7 +10,7 @@ import thunk from 'redux-thunk'
 import bankApp from './reducers/index'
 
 // TODO : don't load it from editor module
-import {mimeTypes} from './../editor/types'
+import {listItemMimeTypes} from './../editor/item-types'
 
 const middleware = [thunk]
 
@@ -19,7 +19,7 @@ if (process.env.NODE_ENV !== 'production') {
   middleware.push(freeze)
 }
 
-bankApp.itemTypes = () => mimeTypes
+bankApp.itemTypes = () => listItemMimeTypes()
 
 export function createStore(initialState) {
   return baseCreate(

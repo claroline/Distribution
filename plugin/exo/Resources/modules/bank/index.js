@@ -6,6 +6,16 @@ import Bank from './components/bank.jsx'
 
 import './style.css'
 
+// TODO : do not load from editor.
+import {registerItemType} from './../editor/item-types'
+import choice from './../editor/items/choice'
+import match from './../editor/items/match'
+import cloze from './../editor/items/cloze'
+import graphic from './../editor/items/graphic'
+import open from './../editor/items/open'
+
+[choice, match, cloze, graphic, open].forEach(registerItemType)
+
 const store = createStore({
   questions: [
     {
