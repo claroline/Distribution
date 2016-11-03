@@ -20,7 +20,6 @@ class Updater080000
     public function postUpdate()
     {
         $this->addMimeTypeToQuestions();
-        $this->initializeUuid();
     }
 
     /**
@@ -91,21 +90,5 @@ class Updater080000
         $this->connection->query($query);
 
         $this->log('done !');
-    }
-
-    private function initializeUuid()
-    {
-        $tables = [
-            'ujm_exercise',
-            'ujm_step',
-            'ujm_question',
-        ];
-
-        foreach ($tables as $table) {
-            $this->log("Adding UUID in table '{$table}...");
-
-            $query = 'UPDATE '.$table.' SET uuid = (SELECT UUID()) WHERE uuid IS NULL OR uuid = ""';
-            $this->connection->query($query);
-        }
     }
 }

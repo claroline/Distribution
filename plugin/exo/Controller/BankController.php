@@ -5,6 +5,7 @@ namespace UJM\ExoBundle\Controller;
 use Claroline\CoreBundle\Entity\User;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
+use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Manager\QuestionManager;
 
 /**
@@ -40,8 +41,13 @@ class BankController
      */
     public function openAction(User $user)
     {
+        $search = $this->questionManager->search($user);
+
         return [
-            'questions' => $this->questionManager->exportUserQuestions($user),
+            'questions' => array_map(function ($question) {
+                return $this->questionManager->export($question, [Transfer::MINIMAL, Transfer::INCLUDE_ADMIN_META]);
+            }, $search['questions']),
+            'total' => $search['total']
         ];
     }
 }

@@ -22,7 +22,7 @@ use UJM\ExoBundle\Services\classes\PaperService;
 use UJM\ExoBundle\Transfer\Json\ValidationException;
 
 /**
- * Exercise Controller.
+ * Exercise API Controller exposes REST API.
  *
  * @EXT\Route(
  *     "/exercises",
@@ -308,6 +308,29 @@ class ExerciseController
             'Content-Type' => 'application/force-download',
             'Content-Disposition' => 'attachment; filename="export.csv"',
         ]);
+    }
+
+    /**
+     * Deletes all the papers associated with an exercise.
+     *
+     * @EXT\Route(
+     *     "/{id}/papers",
+     *     name="ujm_exercise_delete_papers",
+     *     options={"expose"=true}
+     * )
+     * @EXT\Method("DELETE")
+     *
+     * @param Exercise $exercise
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function papersDeleteAction(Exercise $exercise)
+    {
+        $this->assertHasPermission('ADMINISTRATE', $exercise);
+
+        $this->exerciseManager->deletePapers($exercise);
+
+        return new JsonResponse([]);
     }
 
     private function assertHasPermission($permission, Exercise $exercise)

@@ -114,9 +114,12 @@ class Question
     private $category;
 
     /**
+     * The user who have created the question.
+     *
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\User")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="SET NULL")
      */
-    private $user;
+    private $creator;
 
     /**
      * @ORM\OneToMany(targetEntity="Hint", mappedBy="question", cascade={"remove", "persist"}, orphanRemoval=true)
@@ -432,17 +435,37 @@ class Question
     /**
      * @return User
      */
-    public function getUser()
+    public function getCreator()
     {
-        return $this->user;
+        return $this->creator;
     }
 
     /**
+     * @param User $creator
+     */
+    public function setCreator(User $creator)
+    {
+        $this->creator = $creator;
+    }
+
+    /**
+     * @deprecated use getCreator() instead.
+     *
+     * @return User
+     */
+    public function getUser()
+    {
+        return $this->creator;
+    }
+
+    /**
+     * @deprecated use setCreator() instead.
+     *
      * @param User $user
      */
     public function setUser(User $user)
     {
-        $this->user = $user;
+        $this->creator = $user;
     }
 
     /**
