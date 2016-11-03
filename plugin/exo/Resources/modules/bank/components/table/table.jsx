@@ -71,6 +71,9 @@ const TableHeader = props =>
         <b>10</b> questions selected (<a href="">select all <b>153</b> questions</a>)
       </td>
       <td className="text-right">
+        <a role="button" href="" className="btn btn-sm btn-link">
+          <span className="fa fa-fw fa-copy" />
+        </a>
         <button role="button" className="btn btn-sm btn-link">
           <span className="fa fa-fw fa-share" />
         </button>

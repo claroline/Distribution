@@ -45,25 +45,6 @@ class ExerciseServices
     }
 
     /**
-     * Return the number of papers for an exercise and for an user.
-     *
-     *
-     * @param int  $uid      id User
-     * @param int  $exoID    id Exercise
-     * @param bool $finished to count or no paper n o finished
-     *
-     * @return int
-     */
-    public function getNbPaper($uid, $exoID, $finished = false)
-    {
-        $papers = $this->om
-                       ->getRepository('UJMExoBundle:Paper')
-                       ->getExerciseUserPapers($uid, $exoID, $finished);
-
-        return count($papers);
-    }
-
-    /**
      * Get max score possible for an exercise.
      *
      *
@@ -93,6 +74,7 @@ class ExerciseServices
     /**
      * To know if an user is the creator of an exercise.
      *
+     * @deprecated only used in QuestionController in an old bank method.
      *
      * @param Exercise $exercise
      *
@@ -109,60 +91,9 @@ class ExerciseServices
     }
 
     /**
-     * For all papers for an user and an exercise get scorePaper, maxExoScore, scoreTemp (all questions marked or no).
-     *
-     *
-     * @param int $userId id User
-     * @param int $exoId  id Exercise
-     *
-     * @return array
-     */
-    public function getScoresUser($userId, $exoId)
-    {
-        $tabScoresUser = array();
-        $i = 0;
-
-        $papers = $this->om
-                       ->getRepository('UJMExoBundle:Paper')
-                       ->getExerciseUserPapers($userId, $exoId);
-
-        foreach ($papers as $paper) {
-            $infosPaper = $this->container->get('ujm.exo_paper')->getInfosPaper($paper);
-            $tabScoresUser[$i]['score'] = $infosPaper['scorePaper'];
-            $tabScoresUser[$i]['maxExoScore'] = $infosPaper['maxExoScore'];
-            $tabScoresUser[$i]['scoreTemp'] = $infosPaper['scoreTemp'];
-
-            ++$i;
-        }
-
-        return $tabScoresUser;
-    }
-
-    /**
-     * To control the max attempts, allow to know if an user can again execute an exercise.
-     *
-     *
-     * @param \UJM\ExoBundle\Entity\Exercise $exercise
-     * @param int                            $uid
-     * @param bool                           $exoAdmin
-     *
-     * @return bool
-     */
-    public function controlMaxAttemps($exercise, $uid, $exoAdmin)
-    {
-        if (($exoAdmin === false) && ($exercise->getMaxAttempts() > 0)
-            && ($exercise->getMaxAttempts() <= $this->getNbPaper($uid,
-            $exercise->getId(), true))
-        ) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
      * Add an Interaction in an exercise if created from an exercise.
      *
+     * @deprecated only used in old symfony forms.
      *
      * @param Question $question
      * @param Exercise $exercise

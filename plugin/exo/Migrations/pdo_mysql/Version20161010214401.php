@@ -19,6 +19,11 @@ class Version20161010214401 extends AbstractMigration
             ADD uuid VARCHAR(36) NOT NULL
         ');
 
+        // The new column needs to be filled to be able to add the UNIQUE constraint
+        $this->addSql("
+            UPDATE ujm_exercise SET uuid = (SELECT UUID())
+        ");
+
         $this->addSql('
             CREATE UNIQUE INDEX UNIQ_374DF525D17F50A6 ON ujm_exercise (uuid)
         ');
@@ -28,6 +33,11 @@ class Version20161010214401 extends AbstractMigration
             ADD uuid VARCHAR(36) NOT NULL
         ');
 
+        // The new column needs to be filled to be able to add the UNIQUE constraint
+        $this->addSql("
+            UPDATE ujm_step SET uuid = (SELECT UUID())
+        ");
+
         $this->addSql('
             CREATE UNIQUE INDEX UNIQ_C2803688D17F50A6 ON ujm_step (uuid)
         ');
@@ -36,6 +46,11 @@ class Version20161010214401 extends AbstractMigration
             ALTER TABLE ujm_question 
             ADD uuid VARCHAR(36) NOT NULL
         ');
+
+        // The new column needs to be filled to be able to add the UNIQUE constraint
+        $this->addSql("
+            UPDATE ujm_question SET uuid = (SELECT UUID())
+        ");
 
         $this->addSql('
             CREATE UNIQUE INDEX UNIQ_2F606977D17F50A6 ON ujm_question (uuid)

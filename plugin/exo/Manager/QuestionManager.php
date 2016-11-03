@@ -13,6 +13,7 @@ use UJM\ExoBundle\Entity\Question;
 use UJM\ExoBundle\Entity\Response;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Options\Validation;
+use UJM\ExoBundle\Repository\QuestionRepository;
 use UJM\ExoBundle\Serializer\Question\QuestionSerializer;
 use UJM\ExoBundle\Transfer\Json\QuestionHandlerCollector;
 use UJM\ExoBundle\Transfer\Json\ValidationException;
@@ -28,6 +29,11 @@ class QuestionManager
      * @var ObjectManager
      */
     private $om;
+
+    /**
+     * @var QuestionRepository
+     */
+    private $repository;
 
     /**
      * @var UrlGeneratorInterface
@@ -109,12 +115,32 @@ class QuestionManager
     ) {
         $this->router = $router;
         $this->om = $om;
+        $this->repository = $this->om->getRepository('UJMExoBundle:Question');
         $this->oldValidator = $oldValidator;
         $this->validator = $validator;
         $this->serializer = $serializer;
         $this->handlerCollector = $collector;
         $this->rm = $rm;
         $this->hintManager = $hintManager;
+    }
+
+    /**
+     * Searches questions for a User.
+     *
+     * @param User $user
+     * @param array $filters
+     * @param int $page
+     * @param int $number
+     * @param array $orderBy
+     *
+     * @return array
+     */
+    public function search(User $user, array $filters = [], $page = 0, $number = -1, array $orderBy = [])
+    {
+        return [
+            'questions' => $this->repository->search($user, $filters, $page, $number, $orderBy),
+            'total' => 100
+        ];
     }
 
     /**
@@ -160,36 +186,6 @@ class QuestionManager
     }
 
     /**
-     * Exports the Questions of a User (owned + shared with him).
-     *
-     * @param User  $user
-     * @param array $options
-     *
-     * @return array
-     */
-    public function exportUserQuestions(User $user, array $options = [])
-    {
-        // Get the questions created by the current User
-        $owned = $this->om->getRepository('UJMExoBundle:Question')->findBy([
-            'user' => $user,
-        ]);
-
-        // Get the questions shared with the current User
-        $shared = $this->om->getRepository('UJMExoBundle:Share')->findBy([
-            'user' => $user,
-        ]);
-
-        return [
-            'owned' => array_map(function (Question $question) use ($options) {
-                return $this->export($question, $options);
-            }, $owned),
-            'shared' => array_map(function (Question $question) use ($options) {
-                return $this->export($question, $options);
-            }, $shared),
-        ];
-    }
-
-    /**
      * Exports a Question.
      *
      * @param Question $question
@@ -229,7 +225,7 @@ class QuestionManager
      */
     public function delete(Question $question)
     {
-        // Check if the question is used
+        // TODO : Check if the question is used
         $isUsed = false;
         if ($isUsed) {
             throw new ValidationException('Question can not be deleted', [
