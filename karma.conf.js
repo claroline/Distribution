@@ -1,8 +1,4 @@
-const collectPackages = require('./main/core/Resources/scripts/lib/collect-packages')
-const buildConfig = require('./main/core/Resources/scripts/lib/webpack')
-
-const rootDir = __dirname + '/../../..'
-const webpack = buildConfig(rootDir, collectPackages(rootDir), true)
+const webpackConfig = require('./webpack.test')
 
 module.exports = config => {
   const base = {
@@ -14,12 +10,6 @@ module.exports = config => {
         watched: false
       },
       '*/*/Resources/**/*test.js'
-    ],
-    exclude: [
-      // tmp excludes (legacy/node tests)
-      'main/core/Resources/scripts/test/**/*',
-      'main/core/Resources/public/js/tests/**/*',
-      'plugin/result/**/*'
     ],
     preprocessors: {
       'main/core/Resources/modules/es6-shim/index.js': ['webpack'],
@@ -46,7 +36,7 @@ module.exports = config => {
     singleRun: false,
     failOnEmptyTestSuite: false,
     concurrency: Infinity,
-    webpack,
+    webpack: webpackConfig,
     webpackServer: {
       quiet: true
     }
