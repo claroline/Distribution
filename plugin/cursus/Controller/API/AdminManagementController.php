@@ -1200,6 +1200,7 @@ class AdminManagementController extends Controller
             );
             $results['queue'] = $serializedQueue;
             $this->cursusManager->deleteSessionQueue($queue);
+            $this->cursusManager->sendSessionRegistrationConfirmationMessage($user, $session, 'validated');
         }
 
         return new JsonResponse($results, 200);

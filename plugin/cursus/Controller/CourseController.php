@@ -856,10 +856,8 @@ class CourseController extends Controller
      *
      * @param User $user
      */
-    public function courseSessionUserConfirmationMailSendAction(
-        CourseSession $session,
-        User $user
-    ) {
+    public function courseSessionUserConfirmationMailSendAction(CourseSession $session, User $user)
+    {
         $confirmationEmail = $this->cursusManager->getConfirmationEmail();
 
         if (!is_null($confirmationEmail)) {

@@ -279,7 +279,7 @@ session_event_registration_pending_to_registered_msg: |
   Hello,<br><br>
   You were on a queue for session event "%event_name%" on %event_start_date%.<br>
   As available place has been made you are now registered.
-session_event_registration_request: Request for registration to session event %event_name% on %event_start_date%
+session_event_registration_request: Request for registration to session event %event_name% on %event_start_date% [%status%]
 session_event_registration_success_msg: |
   Hello,<br><br>
   You have been registered to session event "%event_name%" on %event_start_date%.
@@ -292,7 +292,17 @@ session_not_enough_place_msg: Only %remainingPlaces% remaining place(s) in sessi
 session_not_started: Not started
 session_open: Ongoing
 session_registration: Training session registration
+session_registration_object: Registration to session "%session_name%" from %start_date% to %end_date% [%status%]
+session_registration_pending_msg: |
+  Hello,<br><br>
+  Your registration to session "%session_name%" from %start_date% to %end_date% is pending for validation.
+session_registration_registered_msg: |
+  Hello,<br><br>
+  You have been registered to session "%session_name%" from %start_date% to %end_date%.
 session_registration_request_confirmation: Training session registration request confirmation
+session_registration_validated_msg: |
+  Hello,<br><br>
+  Your registration to session "%session_name%" from %start_date% to %end_date% has been validated.
 session_request_confirm_msg: You have requested to register to session "%sessionName%" of training "%courseTitle% [%courseCode%]"
 session_request_confirmation_success: Registration request to session "%sessionName%" of training "%courseTitle%" confirmed.
 session_self_registration_message: Are you sure you want to register to this training session ?
@@ -330,6 +340,7 @@ unstarted_sessions: Unstarted sessions
 until: Until
 user_sessions_management: Training sessions management
 user_validation: User validation
+validated: Validated
 validator: Validator
 validators: Validators
 validators_selection: Validators selection

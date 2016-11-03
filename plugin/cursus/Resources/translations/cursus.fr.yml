@@ -293,7 +293,17 @@ session_not_enough_place_msg: Seulement %remainingPlaces% place(s) restante(s) d
 session_not_started: Non commencé
 session_open: En cours
 session_registration: Inscription à une session de formation
+session_registration_object: Inscription à la session "%session_name%" du %start_date% au %end_date% [%status%]
+session_registration_pending_msg: |
+  Bonjour,<br><br>
+  Votre demande d'inscription à la session "%session_name%" du %start_date% au %end_date% a bien été enregistrée et est en cours de validation.
+session_registration_registered_msg: |
+  Bonjour,<br><br>
+  Vous êtes bien inscrit à la session "%session_name%" du %start_date% au %end_date%.
 session_registration_request_confirmation: Confirmation de demande d'inscription à une session de formation
+session_registration_validated_msg: |
+  Bonjour,<br><br>
+  Votre demande d'inscription à la session "%session_name%" du %start_date% au %end_date% a bien été validée.
 session_request_confirm_msg: Vous avez demandé d'être inscrit à la session "%sessionName%" de la formation "%courseTitle% [%courseCode%]"
 session_request_confirmation_success: Demande d'inscription à la session "%sessionName%" de la formation "%courseTitle%" confirmée.
 session_self_registration_message: Êtes-vous sûr de vouloir vous inscrire à cette session de formation ?
@@ -331,6 +341,7 @@ unstarted_sessions: Sessions à venir
 until: Jusqu'au
 user_sessions_management: Gestion des sessions de formation
 user_validation: Validation de l'utilisateur
+validated: Validée
 validator: Validateur
 validators: Validateurs
 validators_selection: Sélection des responsables de validation

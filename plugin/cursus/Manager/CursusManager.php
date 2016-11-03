@@ -1049,6 +1049,12 @@ class CursusManager
                     $sessionUser->setRegistrationDate($registrationDate);
                     $this->om->persist($sessionUser);
                     $sessionUsers[] = $sessionUser;
+
+                    if ($type === CourseSessionUser::LEARNER) {
+                        $this->sendSessionRegistrationConfirmationMessage($user, $session, 'registered');
+                    } elseif ($type === CourseSessionUser::PENDING_LEARNER) {
+                        $this->sendSessionRegistrationConfirmationMessage($user, $session, 'pending');
+                    }
                     $event = new LogCourseSessionUserRegistrationEvent($session, $user);
                     $this->eventDispatcher->dispatch('log', $event);
 
@@ -1143,6 +1149,12 @@ class CursusManager
                         $sessionUser->setUserType($type);
                         $sessionUser->setRegistrationDate($registrationDate);
                         $this->om->persist($sessionUser);
+
+                        if ($type === CourseSessionUser::LEARNER) {
+                            $this->sendSessionRegistrationConfirmationMessage($user, $session, 'registered');
+                        } elseif ($type === CourseSessionUser::PENDING_LEARNER) {
+                            $this->sendSessionRegistrationConfirmationMessage($user, $session, 'pending');
+                        }
                         $event = new LogCourseSessionUserRegistrationEvent($session, $user);
                         $this->eventDispatcher->dispatch('log', $event);
                         $this->registerUserToAllAutomaticSessionEvent($user, $session);
@@ -1946,6 +1958,7 @@ class CursusManager
 
                 $event = new LogSessionQueueCreateEvent($queue);
                 $this->eventDispatcher->dispatch('log', $event);
+                $this->sendSessionRegistrationConfirmationMessage($user, $session, 'pending');
 
                 if (($status & CourseRegistrationQueue::WAITING_USER) === CourseRegistrationQueue::WAITING_USER) {
                     $this->sendSessionQueueRequestConfirmationMail($queue);
@@ -3594,6 +3607,7 @@ class CursusManager
 
             if ($results['status'] === 'success') {
                 $this->deleteSessionQueue($queue);
+                $this->sendSessionRegistrationConfirmationMessage($user, $session, 'validated');
             } else {
                 $queue->setStatus(CourseRegistrationQueue::WAITING);
                 $this->persistCourseSessionRegistrationQueue($queue);
@@ -3771,6 +3785,7 @@ class CursusManager
 
                 if ($results['status'] === 'success') {
                     $this->deleteSessionQueue($queue);
+                    $this->sendSessionRegistrationConfirmationMessage($user, $session, 'validated');
                     $queueDatas['type'] = 'registered';
                 } else {
                     $queue->setStatus(CourseRegistrationQueue::WAITING);
@@ -4215,7 +4230,7 @@ class CursusManager
                             if ($sessionDatas['status'] === 'success') {
                                 $sessionRegistrationStatus = 'registered';
                             } else {
-                                $this->sendRegistrationConfirmationMessage($user, $sessionEvent, 'failed');
+                                $this->sendEventRegistrationConfirmationMessage($user, $sessionEvent, 'failed');
                             }
                         }
                         if ($sessionRegistrationStatus === 'registered') {
@@ -4224,10 +4239,10 @@ class CursusManager
                             if ($eventDatas['status'] === 'failed') {
                                 $this->createSessionEventUser($user, $sessionEvent, SessionEventUser::PENDING, null, new \DateTime());
                             }
-                            $this->sendRegistrationConfirmationMessage($user, $sessionEvent, 'success', $eventDatas['status']);
+                            $this->sendEventRegistrationConfirmationMessage($user, $sessionEvent, 'success', $eventDatas['status']);
                         } elseif ($sessionRegistrationStatus === 'pending') {
                             $this->createSessionEventUser($user, $sessionEvent, SessionEventUser::PENDING, null, new \DateTime());
-                            $this->sendRegistrationConfirmationMessage($user, $sessionEvent, 'pending', 'failed');
+                            $this->sendEventRegistrationConfirmationMessage($user, $sessionEvent, 'pending', 'failed');
                         }
                     }
                 } elseif (!is_null($sessionUser)) {
@@ -4236,10 +4251,10 @@ class CursusManager
                     if ($eventDatas['status'] === 'failed') {
                         $this->createSessionEventUser($user, $sessionEvent, SessionEventUser::PENDING, null, new \DateTime());
                     }
-                    $this->sendRegistrationConfirmationMessage($user, $sessionEvent, 'none', $eventDatas['status']);
+                    $this->sendEventRegistrationConfirmationMessage($user, $sessionEvent, 'none', $eventDatas['status']);
                 } else {
                     $this->createSessionEventUser($user, $sessionEvent, SessionEventUser::PENDING, null, new \DateTime());
-                    $this->sendRegistrationConfirmationMessage($user, $sessionEvent, 'none', 'failed');
+                    $this->sendEventRegistrationConfirmationMessage($user, $sessionEvent, 'none', 'failed');
                 }
             }
         }
@@ -4285,7 +4300,7 @@ class CursusManager
                 $sessionEventUser->setRegistrationStatus(SessionEventUser::REGISTERED);
                 $sessionEventUser->setRegistrationDate($now);
                 $this->om->persist($sessionEventUser);
-                $this->sendRegistrationConfirmationMessage(
+                $this->sendEventRegistrationConfirmationMessage(
                     $sessionEventUser->getUser(),
                     $sessionEventUser->getSessionEvent(),
                     'none',
@@ -4354,7 +4369,7 @@ class CursusManager
                 $seu->setRegistrationStatus(SessionEventUser::REGISTERED);
                 $seu->setRegistrationDate($registrationDate);
                 $this->om->persist($seu);
-                $this->sendRegistrationConfirmationMessage(
+                $this->sendEventRegistrationConfirmationMessage(
                     $seu->getUser(),
                     $seu->getSessionEvent(),
                     'none',
@@ -4409,7 +4424,84 @@ class CursusManager
         return $sessionEventUser;
     }
 
-    private function sendRegistrationConfirmationMessage(User $user, SessionEvent $sessionEvent, $sessionStatus, $sessionEventStatus = null)
+    public function sendSessionRegistrationConfirmationMessage(User $user, CourseSession $session, $sessionStatus)
+    {
+        $content = '';
+        $object = '';
+        $sessionName = $session->getName();
+        $startDate = $session->getStartDate()->format('d/m/Y');
+        $endDate = $session->getEndDate()->format('d/m/Y');
+
+        switch ($sessionStatus) {
+            case 'registered':
+                $object = $this->translator->trans(
+                    'session_registration_object',
+                    [
+                        '%session_name%' => $sessionName,
+                        '%start_date%' => $startDate,
+                        '%end_date%' => $endDate,
+                        '%status%' => $this->translator->trans('registered', [], 'platform'),
+                    ],
+                    'cursus'
+                );
+                $content = $this->translator->trans(
+                    'session_registration_registered_msg',
+                    [
+                        '%session_name%' => $sessionName,
+                        '%start_date%' => $startDate,
+                        '%end_date%' => $endDate,
+                    ],
+                    'cursus'
+                );
+                break;
+            case 'pending':
+                $object = $this->translator->trans(
+                    'session_registration_object',
+                    [
+                        '%session_name%' => $sessionName,
+                        '%start_date%' => $startDate,
+                        '%end_date%' => $endDate,
+                        '%status%' => $this->translator->trans('pending', [], 'platform'),
+                    ],
+                    'cursus'
+                );
+                $content = $this->translator->trans(
+                    'session_registration_pending_msg',
+                    [
+                        '%session_name%' => $sessionName,
+                        '%start_date%' => $startDate,
+                        '%end_date%' => $endDate,
+                    ],
+                    'cursus'
+                );
+                break;
+            case 'validated':
+                $object = $this->translator->trans(
+                    'session_registration_object',
+                    [
+                        '%session_name%' => $sessionName,
+                        '%start_date%' => $startDate,
+                        '%end_date%' => $endDate,
+                        '%status%' => $this->translator->trans('validated', [], 'cursus'),
+                    ],
+                    'cursus'
+                );
+                $content = $this->translator->trans(
+                    'session_registration_validated_msg',
+                    [
+                        '%session_name%' => $sessionName,
+                        '%start_date%' => $startDate,
+                        '%end_date%' => $endDate,
+                    ],
+                    'cursus'
+                );
+                break;
+        }
+        $message = $this->messageManager->create($content, $object, [$user]);
+        $this->messageManager->send($message, true, false);
+    }
+
+    private function sendEventRegistrationConfirmationMessage(User $user, SessionEvent $sessionEvent, $sessionStatus, $sessionEventStatus = null)
     {
         $session = $sessionEvent->getSession();
         $object = '';
