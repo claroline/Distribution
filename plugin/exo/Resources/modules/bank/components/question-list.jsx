@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 // TODO : do not load from editor
-import {properties} from './../../editor/types'
+import {getDefinition} from './../../editor/item-types'
 
 import {
   Table,
@@ -59,7 +59,7 @@ export default class QuestionList extends Component {
             </TableCell>
             <TableCell align="center">
               <svg className="icon-small">
-                <use xlinkHref={`#icon-${properties[question.type].name}`}/>
+                <use xlinkHref={`#icon-${getDefinition(question.type).name}`}/>
               </svg>
             </TableCell>
             <TableCell>
