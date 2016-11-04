@@ -24,7 +24,7 @@ export default class DocumentModelSelectionModalCtrl {
   }
 
   initialize () {
-    this.DocumentModelService.getDocumentModelsByType(this.documentType).then(d => {
+    this.DocumentModelService.getPopulatedDocumentModelsByType(this.documentType, this.datas['id']).then(d => {
       d.forEach(dc => this.documentModels.push(dc))
     })
   }

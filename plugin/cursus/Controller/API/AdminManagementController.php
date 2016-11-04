@@ -1811,6 +1811,25 @@ class AdminManagementController extends Controller
 
     /**
      * @EXT\Route(
+     *     "/api/cursus/populated/document/models/type/{type}/source/{sourceId}/retrieve",
+     *     name="api_get_cursus_populated_document_models_by_type",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     *
+     * Returns the populated document models by type
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getPopulatedDocumentModelsByTypeAction($type, $sourceId)
+    {
+        $documentModels = $this->cursusManager->getPopulatedDocumentModelsByType($type, $sourceId);
+
+        return new JsonResponse($documentModels, 200);
+    }
+
+    /**
+     * @EXT\Route(
      *     "/api/session/event/{sessionEvent}/repeat",
      *     name="api_post_session_event_repeat",
      *     options = {"expose"=true}

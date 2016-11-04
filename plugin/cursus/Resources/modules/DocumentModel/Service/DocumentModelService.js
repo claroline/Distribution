@@ -48,6 +48,16 @@ export default class DocumentModelService {
     })
   }
 
+  getPopulatedDocumentModelsByType (type, sourceId) {
+    const url = Routing.generate('api_get_cursus_populated_document_models_by_type', {type: type, sourceId: sourceId})
+
+    return this.$http.get(url).then(d => {
+      if (d['status'] === 200) {
+        return d['data']
+      }
+    })
+  }
+
   getDocumentTypeName (documentType) {
     let name = ''
 

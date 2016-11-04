@@ -4124,6 +4124,37 @@ class CursusManager
         }
     }
 
+    public function getPopulatedDocumentModelsByType($type, $sourceId)
+    {
+        $documents = [];
+        $documentModels = $this->getDocumentModelsByType($type);
+
+        switch ($type) {
+            case DocumentModel::SESSION_INVITATION:
+            case DocumentModel::SESSION_CERTIFICATE:
+                $session = $this->courseSessionRepo->findOneById($sourceId);
+
+                foreach ($documentModels as $documentModel) {
+                    $content = $documentModel->getContent();
+                    $populatedContent = $this->convertKeysForSession($session, $content);
+                    $documents[] = ['id' => $documentModel->getId(), 'name' => $documentModel->getName(), 'content' => $populatedContent];
+                }
+                break;
+            case DocumentModel::SESSION_EVENT_INVITATION:
+            case DocumentModel::SESSION_EVENT_CERTIFICATE:
+                $sessionEvent = $this->sessionEventRepo->findOneById($sourceId);
+
+                foreach ($documentModels as $documentModel) {
+                    $content = $documentModel->getContent();
+                    $populatedContent = $this->convertKeysForSessionEvent($sessionEvent, $content);
+                    $documents[] = ['id' => $documentModel->getId(), 'name' => $documentModel->getName(), 'content' => $populatedContent];
+                }
+                break;
+        }
+
+        return $documents;
+    }
+
     public function getUnregisteredUsersBySessionEvent(SessionEvent $sessionEvent)
     {
         $users = [];
