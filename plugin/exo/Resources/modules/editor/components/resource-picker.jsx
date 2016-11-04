@@ -9,25 +9,32 @@ class ResourcePicker extends Component {
   constructor(props){
     super(props)
     this.resourcePickerParams = {
-      isPickerMultiSelectAllowed: this.props.isMultiSelect,
-      typeWhiteList: this.props.allowedTypes,
+      isPickerMultiSelectAllowed: this.props.multiple,
       callback: (nodes) => {
         this.addResource(nodes)
         // Remove checked nodes for next time
         nodes = {}
       }
     }
+
+    if(this.props.typeWhiteList.length > 0){
+      this.resourcePickerParams.typeWhiteList = this.props.typeWhiteList
+    }
+
+    if(this.props.typeBlackList.length > 0){
+      this.resourcePickerParams.typeBlackList = this.props.typeBlackList
+    }
   }
 
   addResource(nodes){
-    if (typeof nodes === 'object' && nodes.length !== 0) {
+    if (typeof nodes === 'object') {
       for (const key in nodes) {
         if (nodes.hasOwnProperty(key)) {
           const object = {
             nodeId: key,
             node: nodes[key]
           }
-          this.props.onExitedObjectPicker(object)
+          this.props.onSelect(object)
           break
         }
       }
@@ -35,7 +42,6 @@ class ResourcePicker extends Component {
   }
 
   togglePicker(){
-
     if (!Claroline.ResourceManager.hasPicker(PICKER_NAME)) {
       Claroline.ResourceManager.createPicker(PICKER_NAME, this.resourcePickerParams, true)
     } else {
@@ -48,7 +54,7 @@ class ResourcePicker extends Component {
     return(
       <div>
         <a role="button" onClick={this.togglePicker.bind(this)}>
-          <i className="fa fa-folder-open"></i>&nbsp;{t('add_resource')}
+          <span className="fa fa-folder-open"></span>&nbsp;{t('add_resource')}
         </a>
       </div>
     )
@@ -56,10 +62,16 @@ class ResourcePicker extends Component {
 }
 
 ResourcePicker.propTypes = {
-  onExitedObjectPicker: T.func.isRequired,
-  title: T.string.isRequired,
-  isMultiSelect: T.bool.isRequired,
-  allowedTypes: T.arrayOf(T.string).isRequired
+  onSelect: T.func.isRequired,
+  multiple: T.bool,
+  typeWhiteList: T.arrayOf(T.string),
+  typeBlackList: T.arrayOf(T.string)
+}
+
+ResourcePicker.defaultProps = {
+  multiple: false,
+  typeWhiteList: [],
+  typeBlackList: []
 }
 
 export {ResourcePicker}

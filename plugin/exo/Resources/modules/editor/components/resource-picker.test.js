@@ -13,42 +13,45 @@ describe('<ResourcePicker/>', () => {
   it('has required props', () => {
     shallow(<ResourcePicker />)
     ensure.missingProps('ResourcePicker', [
-      'title',
-      'onExitedObjectPicker',
-      'isMultiSelect',
-      'allowedTypes'
+      'onSelect'
     ])
   })
 
   it('has typed props', () => {
     shallow(
       <ResourcePicker
-        title={123}
-        onExitedObjectPicker="foo"
-        allowedTypes={{}}
-        isMultiSelect="boolean"
+        onSelect="foo"
+        typeWhiteList={{}}
+        multiple="boolean"
       />
     )
     ensure.invalidProps('ResourcePicker', [
-      'title',
-      'onExitedObjectPicker',
-      'isMultiSelect',
-      'allowedTypes'
+      'onSelect',
+      'multiple',
+      'typeWhiteList'
     ])
   })
 
   it('renders a link button', () => {
+    window.Claroline = {
+      ResourceManager: {
+        picker: () => {},
+        hasPicker: () => {},
+        createPicker: () => {}
+      }
+    }
     const picker = mount(
       <ResourcePicker
-        title="Picker"
-        onExitedObjectPicker={()=> {}}
-        allowedTypes={['files']}
-        isMultiSelect={false}
+        onSelect={()=> {}}
+        typeWhiteList={['files']}
+        multiple={false}
       />
     )
 
     ensure.propTypesOk()
     ensure.equal(picker.find('a').length, 1, 'has button link')
+    const btnLink = picker.find('a')
+    btnLink.simulate('click')
   })
 
 })
