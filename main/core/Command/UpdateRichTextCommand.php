@@ -18,8 +18,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 
-class UpdateRichTextCommand extends ContainerAwareCommand
-{
+class UpdateRichTextCommand extends ContainerAwareCommand{
     protected function configure()
     {
         $this->setName('claroline:rich_texts:update')
