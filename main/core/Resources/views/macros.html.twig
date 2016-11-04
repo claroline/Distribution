@@ -152,6 +152,12 @@
             {% set themeCSS = getAssetPath() ~ '/themes/claroline/bootstrap.css' %}
         {% endif %}
 
-        {{ themeCSS }}
+        {{ themeCSS ~ '?commit=' ~ get_current_distribution_commit() }}
+    {% endspaceless %}
+{% endmacro %}
+
+{% macro getDefaultTheme() %}
+    {% spaceless %}
+        {{ getAssetPath() ~ '/themes/claroline/bootstrap.css' }}
     {% endspaceless %}
 {% endmacro %}

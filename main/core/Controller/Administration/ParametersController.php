@@ -221,6 +221,8 @@ class ParametersController extends Controller
                             'registration_mail_validation' => $form['registrationMailValidation']->getData(),
                             'is_pdf_export_active' => $form['isPdfExportActive']->getData(),
                             'ssl_enabled' => $form['sslEnabled']->getData(),
+                            'enable_opengraph' => $form['enableOpengraph']->getData(),
+                            'tmp_dir' => $form['tmpDir']->getData(),
                         ]
                     );
 
@@ -302,7 +304,11 @@ class ParametersController extends Controller
                             'logo' => $this->request->get('selectlogo'),
                         ]
                     );
+                    $theme = $this->themeManager->getThemeByNormalizedName($form['theme']->getData());
 
+                    if (!is_null($theme)) {
+                        $this->configHandler->setParameter('theme_extending_default', $theme->isExtendingDefault());
+                    }
                     $logo = $this->request->files->get('logo');
 
                     if ($logo) {
