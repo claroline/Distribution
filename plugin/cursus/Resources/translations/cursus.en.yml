@@ -125,6 +125,7 @@ form_number_superior_error: This value must be %value% or more.
 full_session_msg: Training session users limit has been reached
 general_parameters: General parameters
 generate_certificates: Generate certificates
+generate_event_certificates: Generate event certificates
 go_to_workspace: Go to workspace
 icon: Icon
 import_courses: Import trainings

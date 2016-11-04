@@ -312,6 +312,15 @@
                             >
                                 <i class="fa fa-plus-square"></i>
                             </button>
+                            <button class="btn btn-primary btn-sm"
+                                    data-toggle="tooltip"
+                                    data-placement="top"
+                                    title="{{ 'generate_event_certificates'|trans:{}:'cursus' }}"
+                                    ng-click="cmc.generateEventCertificates(event)"
+                                    ng-if="!cmc.isCertificatesDisabled"
+                            >
+                                <i class="fa fa-graduation-cap"></i>
+                            </button>
                             <button class="btn btn-default btn-sm"
                                     data-toggle="tooltip"
                                     data-placement="top"

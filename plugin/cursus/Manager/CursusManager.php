@@ -4029,8 +4029,7 @@ class CursusManager
                 break;
             case DocumentModel::SESSION_EVENT_INVITATION:
                 $sessionEvent = $this->sessionEventRepo->findOneById($sourceId);
-                $session = $sessionEvent->getSession();
-                $users = $this->getUsersBySessionAndType($session, CourseSessionUser::LEARNER);
+                $users = $this->getUsersBySessionEventAndStatus($sessionEvent, SessionEventUser::REGISTERED);
                 $title = $this->translator->trans('session_event_invitation', [], 'cursus');
                 $body = $this->convertKeysForSessionEvent($sessionEvent, $content);
                 $this->sendInvitation($title, $users, $body);
@@ -4043,10 +4042,9 @@ class CursusManager
                 break;
             case DocumentModel::SESSION_EVENT_CERTIFICATE:
                 $sessionEvent = $this->sessionEventRepo->findOneById($sourceId);
-                $session = $sessionEvent->getSession();
-                $users = $this->getUsersBySessionAndType($session, CourseSessionUser::LEARNER);
+                $users = $this->getUsersBySessionEventAndStatus($sessionEvent, SessionEventUser::REGISTERED);
                 $body = $this->convertKeysForSessionEvent($sessionEvent, $content);
-                $this->generateEventCertificatesForUsers($users, $body, $session);
+                $this->generateEventCertificatesForUsers($users, $body, $sessionEvent);
                 break;
         }
     }
@@ -4090,7 +4088,7 @@ class CursusManager
             $data[] = ['user' => $user, 'pdf' => $pdf];
         }
 
-        $title = $this->translator->trans('new_certificates_email_title', [], 'platform');
+        $title = $this->translator->trans('new_certificates_email_title', [], 'cursus');
         $adminContent = $this->templating->render('ClarolineCursusBundle:Mail:certificates.html.twig', ['data' => $data]);
         $this->mailManager->send($title, $adminContent, [$creator]);
     }
@@ -4111,7 +4109,7 @@ class CursusManager
             $data[] = ['user' => $user, 'pdf' => $pdf];
         }
 
-        $title = $this->translator->trans('new_certificates_email_title', [], 'platform');
+        $title = $this->translator->trans('new_certificates_email_title', [], 'cursus');
         $adminContent = $this->templating->render('ClarolineCursusBundle:Mail:certificates.html.twig', ['data' => $data]);
         $this->mailManager->send($title, $adminContent, [$creator]);
     }

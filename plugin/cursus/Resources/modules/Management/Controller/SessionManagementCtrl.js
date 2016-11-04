@@ -255,6 +255,10 @@ export default class SessionManagementCtrl {
     this.DocumentModelService.displayDocumentSelection(this.session, 2)
   }
 
+  generateEventCertificates (sessionEvent) {
+    this.DocumentModelService.displayDocumentSelection(sessionEvent, 3)
+  }
+
   inviteLearnersToEvent (sessionEvent) {
     this.DocumentModelService.displayDocumentSelection(sessionEvent, 1)
   }

@@ -125,6 +125,7 @@ form_number_superior_error: Cette valeur doit être supérieure ou égale à %va
 full_session_msg: La limite d'utilisateurs pour la session de formation est atteinte
 general_parameters: Paramètres généraux
 generate_certificates: Générer les certificats
+generate_event_certificates: Générer les certificats pour la séance
 go_to_workspace: Accéder à l'espace d'activités
 icon: Icône
 import_courses: Importer des formations
