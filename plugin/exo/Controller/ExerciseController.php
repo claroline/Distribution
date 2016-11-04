@@ -11,7 +11,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use UJM\ExoBundle\Entity\Exercise;
-use UJM\ExoBundle\Entity\Step;
 
 class ExerciseController extends Controller
 {
