@@ -5,12 +5,12 @@ import {t} from './../lib/translate'
 
 /* global Claroline */
 
-class ObjectPicker extends Component {
+class ResourcePicker extends Component {
   constructor(props){
     super(props)
     this.resourcePickerParams = {
-      isPickerMultiSelectAllowed: false,
-      typeWhiteList: [ 'file' ],
+      isPickerMultiSelectAllowed: this.props.isMultiSelect,
+      typeWhiteList: this.props.allowedTypes,
       callback: (nodes) => {
         this.addResource(nodes)
         // Remove checked nodes for next time
@@ -55,9 +55,11 @@ class ObjectPicker extends Component {
   }
 }
 
-ObjectPicker.propTypes = {
+ResourcePicker.propTypes = {
   onExitedObjectPicker: T.func.isRequired,
-  title: T.string.isRequired
+  title: T.string.isRequired,
+  isMultiSelect: T.bool.isRequired,
+  allowedTypes: T.arrayOf(T.string).isRequired
 }
 
-export default ObjectPicker
+export {ResourcePicker}
