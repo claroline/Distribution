@@ -21,7 +21,6 @@ use Claroline\CoreBundle\Manager\FacetManager;
 use Claroline\CoreBundle\Manager\ProfilePropertyManager;
 use Symfony\Component\Form\FormFactoryInterface;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Entity\Facet\Facet;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
