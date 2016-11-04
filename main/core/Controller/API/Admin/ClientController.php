@@ -13,7 +13,6 @@ namespace Claroline\CoreBundle\Controller\API\Admin;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use FOS\RestBundle\Controller\FOSRestController;
-use FOS\RestBundle\Controller\Annotations\View;
 use Claroline\CoreBundle\Manager\OauthManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
