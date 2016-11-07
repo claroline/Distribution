@@ -82,6 +82,15 @@
         >
             <i class="fa fa-info"></i>
         </button>
+        <a class="btn btn-primary"
+           href="{{ 'api_get_session_event_users_csv_export'|path:{'sessionEvent': cmc.sessionEventId} }}"
+           data-toggle="tooltip"
+           data-placement="top"
+           title="{{ 'export_participants'|trans:{}:'cursus' }}"
+        >
+            <i class="fa fa-users"></i>
+            <i class="fa fa-sign-out"></i>
+        </a>
     </div>
     <br>
     <br>

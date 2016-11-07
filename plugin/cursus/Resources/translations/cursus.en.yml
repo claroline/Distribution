@@ -117,6 +117,8 @@ every_day: Every day
 every_month: Every month
 every_week: Every week
 export_all_courses: Export all trainings
+export_participants: Export participants
+export_users: Export users
 form_not_blank_error: This value may not be blank.
 form_not_unique_error: This value is already used.
 form_not_valid_error: This value is not valid.
@@ -335,6 +337,8 @@ sessions_registration_as_tutor: Training sessions registration as tutor
 show_hide_closed_sessions: Show/hide closed training sessions
 the_displayed_word_for: The displayed word for
 to_define: To define
+trainer: Trainer
+trainers: Trainers
 tutor: Tutor
 tutor_role_name: Tutor role
 tutors: Tutors

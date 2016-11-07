@@ -46,7 +46,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @DI\Tag("security.secure_service")
@@ -62,6 +64,7 @@ class AdminManagementController extends Controller
     private $request;
     private $serializer;
     private $tagManager;
+    private $translator;
     private $userManager;
     private $workspaceManager;
     private $workspaceModelManager;
@@ -76,6 +79,7 @@ class AdminManagementController extends Controller
      *     "request"               = @DI\Inject("request"),
      *     "serializer"            = @DI\Inject("jms_serializer"),
      *     "tagManager"            = @DI\Inject("claroline.manager.tag_manager"),
+     *     "translator"            = @DI\Inject("translator"),
      *     "userManager"           = @DI\Inject("claroline.manager.user_manager"),
      *     "workspaceManager"      = @DI\Inject("claroline.manager.workspace_manager"),
      *     "workspaceModelManager" = @DI\Inject("claroline.manager.workspace_model_manager")
@@ -90,6 +94,7 @@ class AdminManagementController extends Controller
         Request $request,
         Serializer $serializer,
         TagManager $tagManager,
+        TranslatorInterface $translator,
         UserManager $userManager,
         WorkspaceManager $workspaceManager,
         WorkspaceModelManager $workspaceModelManager
@@ -102,6 +107,7 @@ class AdminManagementController extends Controller
         $this->request = $request;
         $this->serializer = $serializer;
         $this->tagManager = $tagManager;
+        $this->translator = $translator;
         $this->userManager = $userManager;
         $this->workspaceManager = $workspaceManager;
         $this->workspaceModelManager = $workspaceModelManager;
@@ -1991,5 +1997,98 @@ class AdminManagementController extends Controller
         $this->cursusManager->generateDocumentFromModel($documentModel, $sourceId);
 
         return new JsonResponse('success', 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/session/{session}/users/type/{type}/csv/export",
+     *     name="api_get_session_users_csv_export",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     */
+    public function exportCsvSessionUsersAction(CourseSession $session, $type)
+    {
+        $exportType = intval($type);
+        $users = [];
+
+        if ($exportType === 1 || $exportType === 3) {
+            $users['learners'] = $this->cursusManager->getUsersBySessionAndType($session, CourseSessionUser::LEARNER);
+        }
+        if ($exportType === 2 || $exportType === 3) {
+            $users['trainers'] = $this->cursusManager->getUsersBySessionAndType($session, CourseSessionUser::TEACHER);
+        }
+        $response = new StreamedResponse();
+        $response->setCallBack(
+            function () use ($users) {
+                $handle = fopen('php://output', 'r+');
+
+                if (count($users) === 2) {
+                    fwrite($handle, $this->translator->trans('trainers', [], 'cursus').PHP_EOL);
+                }
+                if (isset($users['trainers'])) {
+                    foreach ($users['trainers'] as $user) {
+                        fwrite($handle, implode(';', [$user->getFirstName(), $user->getLastName()]) . PHP_EOL);
+                    }
+                }
+                if (count($users) === 2) {
+                    fwrite($handle, PHP_EOL);
+                    fwrite($handle, $this->translator->trans('learners', [], 'cursus').PHP_EOL);
+                }
+                if (isset($users['learners'])) {
+                    foreach ($users['learners'] as $user) {
+                        fwrite($handle, implode(';', [$user->getFirstName(), $user->getLastName()]) . PHP_EOL);
+                    }
+                }
+                fclose($handle);
+            }
+        );
+        $fileName = $session->getName();
+
+        if ($exportType === 1) {
+            $fileName .= '['.$this->translator->trans('learners', [], 'cursus').']';
+        } elseif ($exportType === 2) {
+            $fileName .= '['.$this->translator->trans('trainers', [], 'cursus').']';
+        }
+
+        $response->headers->set('Content-Transfer-Encoding', 'octet-stream');
+        $response->headers->set('Content-Type', 'application/force-download');
+        $response->headers->set('Content-Disposition', 'attachment; filename='.$fileName.'.csv');
+        $response->headers->set('Content-Type', 'text/csv');
+        $response->headers->set('Connection', 'close');
+
+        return $response;
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/session/event/{sessionEvent}/users/csv/export",
+     *     name="api_get_session_event_users_csv_export",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     */
+    public function exportCsvSessionEventUsersAction(SessionEvent $sessionEvent)
+    {
+        $users = $this->cursusManager->getUsersBySessionEventAndStatus($sessionEvent, SessionEventUser::REGISTERED);
+        $response = new StreamedResponse();
+        $response->setCallBack(
+            function () use ($users) {
+                $handle = fopen('php://output', 'r+');
+
+                foreach ($users as $user) {
+                    fwrite($handle, implode(';', [$user->getFirstName(), $user->getLastName()]).PHP_EOL);
+                }
+                fclose($handle);
+            }
+        );
+
+        $response->headers->set('Content-Transfer-Encoding', 'octet-stream');
+        $response->headers->set('Content-Type', 'application/force-download');
+        $response->headers->set('Content-Disposition', 'attachment; filename='.$sessionEvent->getName().'.csv');
+        $response->headers->set('Content-Type', 'text/csv');
+        $response->headers->set('Connection', 'close');
+
+        return $response;
     }
 }

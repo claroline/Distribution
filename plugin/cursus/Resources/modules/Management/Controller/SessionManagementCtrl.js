@@ -266,4 +266,8 @@ export default class SessionManagementCtrl {
   sendMessageToSessionLearners () {
     this.SessionService.sendMessageToSession(this.session)
   }
+
+  exportUsers () {
+    this.SessionService.exportUsersForm(this.sessionId)
+  }
 }
