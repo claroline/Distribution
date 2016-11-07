@@ -13,7 +13,7 @@ ConfigurationPlugin.prototype.apply = function (compiler) {
     const configurations = getConfigurations()
     compilation.assets['plugins-config.json'] = {
       source: function () {
-        return JSON.stringify(configurations)
+        return 'export default ' + JSON.stringify(configurations)
       },
       size: function () {
         return configurations.length
