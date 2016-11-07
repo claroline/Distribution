@@ -9,7 +9,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 module.exports = {
-  entry: entries(),
+  entry: entries.collectEntries(),
   output: {
     path: paths.output(),
     filename: '[name]-[hash].js'
@@ -27,6 +27,7 @@ module.exports = {
     plugins.dedupeModules(),
     plugins.rejectBuildErrors(),
     plugins.exitWithErrorCode(),
+    plugins.clarolineConfiguration(),
     ...plugins.dllReferences(shared.dllManifests())
   ],
   module: {

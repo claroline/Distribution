@@ -5,7 +5,7 @@ const plugins = require('./main/core/Resources/webpack/plugins')
 const loaders = require('./main/core/Resources/webpack/loaders')
 
 module.exports = {
-  entry: entries(),
+  entry: entries.collectEntries(),
   output: {
     path: paths.output(),
     publicPath: 'http://localhost:8080/dist',
@@ -19,6 +19,7 @@ module.exports = {
     plugins.assetsInfoFile(),
     plugins.bowerFileLookup(),
     plugins.distributionShortcut(),
+    plugins.clarolineConfiguration(),
     ...plugins.dllReferences(shared.dllManifests())
   ],
   module: {

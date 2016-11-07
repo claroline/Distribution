@@ -1,6 +1,7 @@
 const webpack = require('webpack')
 const AssetsPlugin = require('assets-webpack-plugin')
 const FailPlugin = require('webpack-fail-plugin')
+const ConfigurationPlugin = require('./plugins/configuration')
 const paths = require('./paths')
 
 /**
@@ -117,12 +118,14 @@ const dlls = () => {
  * Includes references to generated DLLs
  */
 const dllReferences = manifests => {
-  return manifests.map(manifest =>
-    new webpack.DllReferencePlugin({
-      context: '.',
-      manifest
-    })
+  return manifests.map(manifest => new webpack.DllReferencePlugin({
+    context: '.',
+  manifest})
   )
+}
+
+const clarolineConfiguration = () => {
+  return new ConfigurationPlugin({options: true})
 }
 
 module.exports = {
@@ -135,5 +138,5 @@ module.exports = {
   rejectBuildErrors,
   exitWithErrorCode,
   dllReferences,
-  dlls
-}
+  dlls,
+clarolineConfiguration}

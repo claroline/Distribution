@@ -1,0 +1,13 @@
+{
+    "administration": {
+        "users": {
+            "buttons": [
+                {
+                    "name": "tag",
+                    "href": "path/to/tag",
+                    "icon": "ahah/je/suis/tag"
+                }
+            ]
+        }
+    }
+}
