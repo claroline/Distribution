@@ -65,7 +65,6 @@ const imageUris = () => {
  * @see https://github.com/peerigon/modernizr-loader
  */
 const modernizr = () => {
-  console.error('mod')
   return {
     test: /\.modernizrrc$/,
     loader: 'modernizr'
