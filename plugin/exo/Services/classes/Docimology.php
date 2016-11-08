@@ -1,14 +1,13 @@
 <?php
 
-/**
- * Services for the docimology.
- */
-
 namespace UJM\ExoBundle\Services\classes;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Symfony\Component\DependencyInjection\Container;
 
+/**
+ * Services for the docimology.
+ */
 class Docimology
 {
     private $doctrine;
@@ -82,10 +81,6 @@ class Docimology
             $seriesResponsesTab[1] .= (string) $responses['partiallyRight'].',';
             $seriesResponsesTab[2] .= (string) $responses['wrong'].',';
             $seriesResponsesTab[3] .= (string) $responses['noResponse'].',';
-        }
-
-        foreach ($seriesResponsesTab as $s) {
-            $s = substr($s, 0, strlen($s) - 1);
         }
 
         $histoSuccess['questionsList'] = $questionList;
@@ -267,12 +262,13 @@ class Docimology
      * To get array of marks for an exercise.
      *
      *
-     * @param UJM\ExoBundle\Entity\Exercise $exercise
+     * @param \UJM\ExoBundle\Entity\Exercise $exercise
      *
      * @return float[]
      */
     private function getArrayMarks($exercise)
     {
+        $tabMarks = [];
         $paperSer = $this->container->get('ujm.exo_paper');
         $em = $this->doctrine->getManager();
         if ($exercise->getPickSteps() === 0) {
@@ -294,7 +290,9 @@ class Docimology
             }
         }
 
-        ksort($tabMarks);
+        if (!empty($tabMarks)) {
+            ksort($tabMarks);
+        }
 
         return $tabMarks;
     }

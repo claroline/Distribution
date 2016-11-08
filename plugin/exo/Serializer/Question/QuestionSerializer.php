@@ -267,7 +267,11 @@ class QuestionSerializer implements SerializerInterface
             /** @var QuestionRepository $questionRepo */
             $questionRepo = $this->om->getRepository('UJMExoBundle:Question');
 
+            // Gets exercises that use this question
             $metadata->usedBy = $questionRepo->findUsages($question);
+
+            // Gets users who have access to this question
+            $metadata->sharedWith = [];
 
             // Adds category
             $metadata->category = $this->categorySerializer->serialize($question->getCategory(), $options);

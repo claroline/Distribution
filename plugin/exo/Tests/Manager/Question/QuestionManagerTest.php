@@ -1,6 +1,6 @@
 <?php
 
-namespace UJM\ExoBundle\Manager;
+namespace UJM\ExoBundle\Manager\Question;
 
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Claroline\CoreBundle\Persistence\ObjectManager;

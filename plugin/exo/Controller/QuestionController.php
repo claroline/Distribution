@@ -169,16 +169,11 @@ class QuestionController extends Controller
     public function bankFilterAction($idExo = -1)
     {
         $vars = [];
-        $shareRight = [];
-        $questionWithResponse = [];
-        $alreadyShared = [];
 
         $services = $this->container->get('ujm.exo_question');
 
         $user = $this->container->get('security.token_storage')->getToken()->getUser();
         $uid = $user->getId();
-
-        $actionQ = [];
 
         if ((string) $idExo === '-1') {
             $listQExo = $this->getDoctrine()

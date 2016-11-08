@@ -5,8 +5,9 @@
     {{ parent() }}
 
     {# Exercise styles #}
-    {% stylesheets debug=false filter='less, cssmin' output='vendor/ujmexo/ujm-exo.css'
-    '@UJMExoBundle/Resources/less/main.less'
+    {% stylesheets debug=false filter='less, cssmin' output='vendor/ujmexo/bank.css'
+        '@UJMExoBundle/Resources/less/v2/override.less'
+        '@UJMExoBundle/Resources/less/v2/page.less'
     %}
     <link rel="stylesheet" media="screen" href="{{ asset_url }}" />
     {% endstylesheets %}

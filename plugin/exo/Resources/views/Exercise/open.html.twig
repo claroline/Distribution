@@ -10,12 +10,12 @@
         '@UJMExoBundle/Resources/less/main.less'
     %}
     <link rel="stylesheet" media="screen" href="{{ asset_url }}" />
-    <link rel="stylesheet" media="screen" href="{{ asset('packages/nprogress/nprogress.css') }}" />
     {% endstylesheets %}
+    <link rel="stylesheet" media="screen" href="{{ asset('packages/nprogress/nprogress.css') }}" />
 {% endblock %}
 
 {# Title of the Page #}
-{% block title %} {{ 'exercise' | trans({}, 'ujm_exo') }} : {{ _resource.resourceNode.name }} {% endblock %}
+{% block title %}{{ _resource.resourceNode.name }}{% endblock %}
 
 {# Content of the Page #}
 {% block section_content %}
