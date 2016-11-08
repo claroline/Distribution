@@ -143,7 +143,7 @@ const noCircularDependencies = () => {
  * Makes the build crash in case of babel compilation errors. That
  * behaviour is pretty much needed when testing with karma.
  *
- * @see https://github.com/webpack/karma-webpack/issues/49)
+ * @see https://github.com/webpack/karma-webpack/issues/49
  */
 const rethrowCompilationErrors = () => {
   return function () {

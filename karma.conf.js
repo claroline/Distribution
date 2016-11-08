@@ -1,3 +1,4 @@
+const paths = require('./main/core/Resources/webpack/paths')
 const webpackConfig = require('./webpack.test')
 
 module.exports = config => {
@@ -9,14 +10,13 @@ module.exports = config => {
         pattern: 'main/core/Resources/modules/karma/index.js',
         watched: false
       },
-      '*/*/Resources/**/*test.js'
+      '*/*/Resources/modules/**/*test.js'
     ],
     preprocessors: {
-      'main/core/Resources/modules/karma/index.js': ['webpack'],
-      './*/*/Resources/**/[^.]+.js': ['coverage'],
-      './*/*/Resources/**/*test.js': ['webpack']
+      './*/*/Resources/modules/**/[^.]+.js': ['coverage'],
+      './*/*/Resources/modules/**/*.js': ['webpack']
     },
-    reporters: ['dots', 'coverage'],
+    reporters: ['dots'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_WARN,
@@ -31,6 +31,15 @@ module.exports = config => {
         base: 'Chrome',
         flags: ['--no-sandbox']
       }
+    },
+    coverageReporter: {
+      includeAllSources: true,
+      reporters:[
+        {
+          type: 'html',
+          dir: `${paths.root()}/coverage`
+        }
+      ]
     },
     autoWatch: true,
     browsers: ['Chrome'],
