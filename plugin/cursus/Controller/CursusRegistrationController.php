@@ -99,6 +99,8 @@ class CursusRegistrationController extends Controller
         $sessionUsers = $this->cursusManager->getSessionUsersByUser($user);
         $tutorSessions = [];
         $learnerSessions = [];
+        $sessionEvents = [];
+        $eventsUsers = $this->cursusManager->getSessionEventUsersByUser($user);
 
         foreach ($sessionUsers as $sessionUser) {
             $type = $sessionUser->getUserType();
@@ -122,11 +124,22 @@ class CursusRegistrationController extends Controller
                 $tutorSessions[$courseCode]['sessions'][] = $sessionUser;
             }
         }
+        foreach ($eventsUsers as $eventUser) {
+            $event = $eventUser->getSessionEvent();
+            $session = $event->getSession();
+            $sessionId = $session->getId();
+
+            if (!isset($sessionEvents[$sessionId])) {
+                $sessionEvents[$sessionId] = [];
+            }
+            $sessionEvents[$sessionId][] = ['event' => $event, 'eventUser' => $eventUser];
+        }
 
         return [
             'user' => $user,
             'tutorSessions' => $tutorSessions,
             'learnerSessions' => $learnerSessions,
+            'sessionEvents' => $sessionEvents,
         ];
     }
 

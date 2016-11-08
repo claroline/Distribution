@@ -127,6 +127,8 @@ form_number_superior_error: Cette valeur doit être supérieure ou égale à %va
 full_session_msg: La limite d'utilisateurs pour la session de formation est atteinte
 general_parameters: Paramètres généraux
 generate_certificates: Générer les certificats
+generate_certificate: Générer le certificat
+generate_event_certificate: Générer le certificat pour la séance
 generate_event_certificates: Générer les certificats pour la séance
 go_to_workspace: Accéder à l'espace d'activités
 icon: Icône
@@ -137,6 +139,8 @@ internal_locations: Localisations internes
 invalid_file: Fichier non valide
 invite_learners_to_session: Inviter les apprenants à la session
 invite_learners_to_session_event: Inviter les apprenants à la séance
+invite_to_session: Inviter à la session
+invite_to_session_event: Inviter à la séance
 learner: Apprenant
 learner_role_name: Rôle des apprenants
 learners: Apprenants
@@ -357,6 +361,8 @@ unregister_tutor_from_session: Désinscrire le formateur de la session de format
 unregister_tutor_from_session_confirm_message: Êtes-vous sûr de vouloir désinscrire ce formateur de cette session de formation ?
 unregister_user_from_cursus_confirm_message: Êtes-vous sûr de vouloir désinscrire cet utilisateur de ce cursus ?
 unregister_user_from_session: Désinscrire l'utilisateur de la session de formation
+unregister_user_from_session_event: Désinscrire l'utilisateur de la séance
+unregister_user_from_session_event_message: Êtes-vous sûr de vouloir désinscrire cet utilisateur de cette séance ?
 unregister_user_from_session_message: Êtes-vous sûr de vouloir désinscrire cet utilisateur de cette session de formation ?
 unstarted_sessions: Sessions à venir
 until: Jusqu'au

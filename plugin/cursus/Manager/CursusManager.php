@@ -4014,7 +4014,7 @@ class CursusManager
         return str_replace($keys, $values, $content);
     }
 
-    public function generateDocumentFromModel(DocumentModel $documentModel, $sourceId)
+    public function generateDocumentFromModel(DocumentModel $documentModel, $sourceId, array $users = null)
     {
         $type = $documentModel->getDocumentType();
         $content = $documentModel->getContent();
@@ -4022,31 +4022,48 @@ class CursusManager
         switch ($type) {
             case DocumentModel::SESSION_INVITATION:
                 $session = $this->courseSessionRepo->findOneById($sourceId);
-                $users = $this->getUsersBySessionAndType($session, CourseSessionUser::LEARNER);
+
+                if (is_null($users)) {
+                    $users = $this->getUsersBySessionAndType($session, CourseSessionUser::LEARNER);
+                }
                 $title = $this->translator->trans('session_invitation', [], 'cursus');
                 $body = $this->convertKeysForSession($session, $content);
                 $this->sendInvitation($title, $users, $body);
                 break;
             case DocumentModel::SESSION_EVENT_INVITATION:
                 $sessionEvent = $this->sessionEventRepo->findOneById($sourceId);
-                $users = $this->getUsersBySessionEventAndStatus($sessionEvent, SessionEventUser::REGISTERED);
+
+                if (is_null($users)) {
+                    $users = $this->getUsersBySessionEventAndStatus($sessionEvent, SessionEventUser::REGISTERED);
+                }
                 $title = $this->translator->trans('session_event_invitation', [], 'cursus');
                 $body = $this->convertKeysForSessionEvent($sessionEvent, $content);
                 $this->sendInvitation($title, $users, $body);
                 break;
             case DocumentModel::SESSION_CERTIFICATE:
                 $session = $this->courseSessionRepo->findOneById($sourceId);
-                $users = $this->getUsersBySessionAndType($session, CourseSessionUser::LEARNER);
+
+                if (is_null($users)) {
+                    $users = $this->getUsersBySessionAndType($session, CourseSessionUser::LEARNER);
+                }
                 $body = $this->convertKeysForSession($session, $content, false);
                 $this->generateCertificatesForUsers($users, $body, $session);
                 break;
             case DocumentModel::SESSION_EVENT_CERTIFICATE:
                 $sessionEvent = $this->sessionEventRepo->findOneById($sourceId);
-                $users = $this->getUsersBySessionEventAndStatus($sessionEvent, SessionEventUser::REGISTERED);
+
+                if (is_null($users)) {
+                    $users = $this->getUsersBySessionEventAndStatus($sessionEvent, SessionEventUser::REGISTERED);
+                }
                 $body = $this->convertKeysForSessionEvent($sessionEvent, $content);
                 $this->generateEventCertificatesForUsers($users, $body, $sessionEvent);
                 break;
         }
+    }
+
+    public function generateDocumentFromModelForUser(DocumentModel $documentModel, User $user, $sourceId)
+    {
+        $this->generateDocumentFromModel($documentModel, $sourceId, [$user]);
     }
 
     public function generateCertificatesForUsers(array $users, $content, CourseSession $session)

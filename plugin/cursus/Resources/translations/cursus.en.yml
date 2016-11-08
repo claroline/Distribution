@@ -126,7 +126,9 @@ form_number_inferior_error: This value must be %value% or less.
 form_number_superior_error: This value must be %value% or more.
 full_session_msg: Training session users limit has been reached
 general_parameters: General parameters
+generate_certificate: Generate certificate
 generate_certificates: Generate certificates
+generate_event_certificate: Generate event certificate
 generate_event_certificates: Generate event certificates
 go_to_workspace: Go to workspace
 icon: Icon
@@ -137,6 +139,8 @@ internal_locations: Internal locations
 invalid_file: Invalid file
 invite_learners_to_session: Invite learners to session
 invite_learners_to_session_event: Invite learners to session event
+invite_to_session: Invite to session
+invite_to_session_event: Invite to session event
 learner: Learner
 learner_role_name: Learner role
 learners: Learners
@@ -356,6 +360,8 @@ unregister_tutor_from_session: Unregister tutor from training session
 unregister_tutor_from_session_confirm_message: Are you sure you want to unregister this tutor from this training session ?
 unregister_user_from_cursus_confirm_message: Are you sure you want to unregister this user from this cursus ?
 unregister_user_from_session: Unregister user from training session
+unregister_user_from_session_event: Unregister user from session event
+unregister_user_from_session_event_message: Are you sure you want to unregister this user from this session event ?
 unregister_user_from_session_message: Are you sure you want to unregister this user from this training session ?
 unstarted_sessions: Unstarted sessions
 until: Until

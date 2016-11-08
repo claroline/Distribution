@@ -25,6 +25,7 @@ use Claroline\CursusBundle\Entity\CourseSessionGroup;
 use Claroline\CursusBundle\Entity\CourseSessionRegistrationQueue;
 use Claroline\CursusBundle\Entity\CourseSessionUser;
 use Claroline\CursusBundle\Entity\CursusDisplayedWord;
+use Claroline\CursusBundle\Entity\SessionEventUser;
 use Claroline\CursusBundle\Form\CourseQueuedUserTransferType;
 use Claroline\CursusBundle\Form\CourseSessionEditType;
 use Claroline\CursusBundle\Form\CourseSessionType;
@@ -699,6 +700,23 @@ class CourseController extends Controller
     public function courseSessionUserUnregisterAction(CourseSessionUser $sessionUser)
     {
         $this->cursusManager->unregisterUsersFromSession([$sessionUser]);
+
+        return new JsonResponse('success', 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "cursus/session/evnet/unregister/user/{sessionEventUser}",
+     *     name="claro_cursus_session_event_unregister_user",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     *
+     * @param SessionEventUser $sessionEventUser
+     */
+    public function sessionEventUserUnregisterAction(SessionEventUser $sessionEventUser)
+    {
+        $this->cursusManager->unregisterUsersFromSessionEvent([$sessionEventUser]);
 
         return new JsonResponse('success', 200);
     }
