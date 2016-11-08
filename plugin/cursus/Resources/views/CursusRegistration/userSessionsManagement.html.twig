@@ -22,12 +22,21 @@
                 {% set session = userSession.getSession() %}
                 {% set sessionId = session.getId() %}
                 <li id="session-row-{{ userSession.getId() }}">
-                    <span class="label label-default pointer-hand" data-toggle="collapse" href="#event-{{ sessionId }}">
+                    <span class="label label-default pointer-hand" data-toggle="collapse" href="#events-{{ type }}-{{ sessionId }}">
                         {{ session.getName() }}
                     </span>
                     &nbsp;
+                    <span class="label label-primary pointer-hand session-event-registration-btn"
+                          data-session-id="{{ session.getId() }}"
+                          data-session-name="{{ session.getName() }}"
+                          data-toggle="tooltip"
+                          data-placement="top"
+                          title="{{ 'session_event_registration'|trans({}, 'cursus') }}"
+                    >
+                        <i class="fa fa-calendar"></i>
+                    </span>
+                    &nbsp;
                     <span class="label label-primary pointer-hand send-session-invitation-btn"
-                          data-user-id="{{ user.getId() }}"
                           data-session-id="{{ session.getId() }}"
                           data-toggle="tooltip"
                           data-placement="top"
@@ -37,7 +46,6 @@
                     </span>
                     &nbsp;
                     <span class="label label-primary pointer-hand generate-session-certificate-btn"
-                          data-user-id="{{ user.getId() }}"
                           data-session-id="{{ session.getId() }}"
                           data-toggle="tooltip"
                           data-placement="top"
@@ -62,8 +70,8 @@
 
                     {% if type == 0 and events[sessionId] is defined %}
                         &nbsp;
-                        <i class="fa fa-caret-down pointer-hand" data-toggle="collapse" href="#event-{{ sessionId }}"></i>
-                        <ul id="event-{{ sessionId }}" class="collapse">
+                        <i class="fa fa-caret-down pointer-hand" data-toggle="collapse" href="#events-{{ type }}-{{ sessionId }}"></i>
+                        <ul id="events-{{ type }}-{{ sessionId }}" class="collapse">
                             {% for eventData in events[sessionId] %}
                                 {% set event = eventData['event'] %}
                                 {% set eventUser = eventData['eventUser'] %}
@@ -77,7 +85,6 @@
                                     {{ event.getName() }}
                                     &nbsp;
                                     <span class="label label-primary pointer-hand send-session-event-invitation-btn"
-                                          data-user-id="{{ user.getId() }}"
                                           data-session-event-id="{{ event.getId() }}"
                                           data-toggle="tooltip"
                                           data-placement="top"
@@ -87,7 +94,6 @@
                                     </span>
                                     &nbsp;
                                     <span class="label label-primary pointer-hand generate-session-event-certificate-btn"
-                                          data-user-id="{{ user.getId() }}"
                                           data-session-event-id="{{ event.getId() }}"
                                           data-toggle="tooltip"
                                           data-placement="top"
@@ -136,7 +142,7 @@
             {{ 'user_sessions_management'|trans({}, 'cursus') }}
         </h3>
     </div>
-    <div class="panel-body">
+    <div id="user-sessions-managament-body" class="panel-body">
         {{ macros.flashBox() }}
         <h3>{{ user.getFirstName() }} {{ user.getLastName() }}</h3>
         <hr>
@@ -225,9 +231,26 @@
         </div>
     </div>
 
-    <div id="user-sessions-datas-box"
-         data-user-id="{{ user.getId() }}"
-    >
+    <div id="session-event-registration-modal" class="modal fade" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3>{{ 'session_event_registration'|trans({}, 'cursus') }}</h3>
+                    [<span id="session-event-registration-title"></span>]
+                </div>
+                <div class="modal-body" id="session-event-registration-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        {{ 'close'|trans({}, 'platform') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="user-sessions-datas-box" data-user-id="{{ user.getId() }}">
     </div>
 {% endblock %}
 

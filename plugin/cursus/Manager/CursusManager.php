@@ -3871,7 +3871,7 @@ class CursusManager
         }
     }
 
-    public function convertKeysForSession(CourseSession $session, $content, $withEventsList = true)
+    public function convertKeysForSession(CourseSession $session, $content, $withEventsList = true, User $user = null)
     {
         $course = $session->getCourse();
         $events = $session->getEvents();
@@ -3897,7 +3897,7 @@ class CursusManager
 
                 if (!is_null($location)) {
                     $locationHtml = '<br>'.$location->getStreet().', '.$location->getStreetNumber();
-                    $locationHtml .= $location->getBoxNumber() ? ' ('.$location->getBoxNumber().')' : '';
+                    $locationHtml .= $location->getBoxNumber() ? ' / '.$location->getBoxNumber() : '';
                     $locationHtml .= '<br>'.$location->getPc().' '.$location->getTown().'<br>'.$location->getCountry();
                     $locationHtml .= $location->getPhone() ? '<br>'.$location->getPhone() : '';
                     $eventsList .= $locationHtml;
@@ -3935,10 +3935,17 @@ class CursusManager
             $values[] = $eventsList;
         }
 
+        if (!is_null($user)) {
+            $keys[] = '%first_name%';
+            $keys[] = '%last_name%';
+            $values[] = $user->getFirstName();
+            $values[] = $user->getLastName();
+        }
+
         return str_replace($keys, $values, $content);
     }
 
-    public function convertKeysForSessionEvent(SessionEvent $event, $content)
+    public function convertKeysForSessionEvent(SessionEvent $event, $content, User $user = null)
     {
         $session = $event->getSession();
         $course = $session->getCourse();
@@ -3951,7 +3958,7 @@ class CursusManager
 
         if (!is_null($location)) {
             $locationHtml = $location->getStreet().', '.$location->getStreetNumber();
-            $locationHtml .= $location->getBoxNumber() ? ' ('.$location->getBoxNumber().')' : '';
+            $locationHtml .= $location->getBoxNumber() ? ' / '.$location->getBoxNumber() : '';
             $locationHtml .= '<br>'.$location->getPc().' '.$location->getTown().'<br>'.$location->getCountry();
             $locationHtml .= $location->getPhone() ? '<br>'.$location->getPhone() : '';
         }
@@ -4010,6 +4017,13 @@ class CursusManager
             $event->getLocationExtra(),
             $eventTrainersHtml,
         ];
+
+        if (!is_null($user)) {
+            $keys[] = '%first_name%';
+            $keys[] = '%last_name%';
+            $values[] = $user->getFirstName();
+            $values[] = $user->getLastName();
+        }
 
         return str_replace($keys, $values, $content);
     }
@@ -4139,7 +4153,7 @@ class CursusManager
         }
     }
 
-    public function getPopulatedDocumentModelsByType($type, $sourceId)
+    public function getPopulatedDocumentModelsByType($type, $sourceId, User $user = null)
     {
         $documents = [];
         $documentModels = $this->getDocumentModelsByType($type);
@@ -4151,7 +4165,7 @@ class CursusManager
 
                 foreach ($documentModels as $documentModel) {
                     $content = $documentModel->getContent();
-                    $populatedContent = $this->convertKeysForSession($session, $content);
+                    $populatedContent = $this->convertKeysForSession($session, $content, true, $user);
                     $documents[] = ['id' => $documentModel->getId(), 'name' => $documentModel->getName(), 'content' => $populatedContent];
                 }
                 break;
@@ -4161,7 +4175,7 @@ class CursusManager
 
                 foreach ($documentModels as $documentModel) {
                     $content = $documentModel->getContent();
-                    $populatedContent = $this->convertKeysForSessionEvent($sessionEvent, $content);
+                    $populatedContent = $this->convertKeysForSessionEvent($sessionEvent, $content, $user);
                     $documents[] = ['id' => $documentModel->getId(), 'name' => $documentModel->getName(), 'content' => $populatedContent];
                 }
                 break;
@@ -5487,6 +5501,11 @@ class CursusManager
     public function getSessionEventUsersBySessionEventAndStatus(SessionEvent $sessionEvent, $status)
     {
         return $this->sessionEventUserRepo->findBy(['sessionEvent' => $sessionEvent, 'registrationStatus' => $status]);
+    }
+
+    public function getSessionEventUsersByUserAndSession(User $user, CourseSession $session)
+    {
+        return $this->sessionEventUserRepo->findSessionEventUsersByUserAndSession($user, $session);
     }
 
     public function getSessionEventUsersByUserAndSessionAndStatus(User $user, CourseSession $session, $status)

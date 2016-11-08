@@ -16,8 +16,10 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Manager\ToolManager;
 use Claroline\CursusBundle\Entity\CourseRegistrationQueue;
+use Claroline\CursusBundle\Entity\CourseSession;
 use Claroline\CursusBundle\Entity\CourseSessionRegistrationQueue;
 use Claroline\CursusBundle\Entity\CourseSessionUser;
+use Claroline\CursusBundle\Entity\SessionEventUser;
 use Claroline\CursusBundle\Manager\CursusManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
@@ -296,10 +298,7 @@ class CursusRegistrationController extends Controller
         }
 
         return new RedirectResponse(
-            $this->router->generate(
-                'claro_cursus_user_sessions_management',
-                ['user' => $user->getId()]
-            )
+            $this->router->generate('claro_cursus_user_sessions_management', ['user' => $user->getId()])
         );
     }
 
@@ -343,10 +342,7 @@ class CursusRegistrationController extends Controller
         }
 
         return new RedirectResponse(
-            $this->router->generate(
-                'claro_cursus_group_sessions_management',
-                ['group' => $group->getId()]
-            )
+            $this->router->generate('claro_cursus_group_sessions_management', ['group' => $group->getId()])
         );
     }
 
@@ -358,10 +354,8 @@ class CursusRegistrationController extends Controller
      * )
      * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
      */
-    public function courseRegistrationQueueUserValidateAction(
-        User $authenticatedUser,
-        CourseRegistrationQueue $queue
-    ) {
+    public function courseRegistrationQueueUserValidateAction(User $authenticatedUser, CourseRegistrationQueue $queue)
+    {
         $user = $queue->getUser();
 
         if ($authenticatedUser->getId() !== $user->getId()) {
@@ -379,9 +373,7 @@ class CursusRegistrationController extends Controller
             )
         );
 
-        return new RedirectResponse(
-            $this->router->generate('claro_desktop_open')
-        );
+        return new RedirectResponse($this->router->generate('claro_desktop_open'));
     }
 
     /**
@@ -392,10 +384,8 @@ class CursusRegistrationController extends Controller
      * )
      * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
      */
-    public function sessionRegistrationQueueUserValidateAction(
-        User $authenticatedUser,
-        CourseSessionRegistrationQueue $queue
-    ) {
+    public function sessionRegistrationQueueUserValidateAction(User $authenticatedUser, CourseSessionRegistrationQueue $queue)
+    {
         $user = $queue->getUser();
 
         if ($authenticatedUser->getId() !== $user->getId()) {
@@ -414,17 +404,37 @@ class CursusRegistrationController extends Controller
             )
         );
 
-        return new RedirectResponse(
-            $this->router->generate('claro_desktop_open')
-        );
+        return new RedirectResponse($this->router->generate('claro_desktop_open'));
+    }
+
+    /**
+     * @EXT\Route(
+     *     "session/{session}/events/registration/user/{user}/management",
+     *     name="claro_cursus_session_events_registration_management",
+     *     options={"expose"=true}
+     * )
+     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\Template()
+     */
+    public function sessionEventsRegistrationManagementAction(User $user, CourseSession $session)
+    {
+        $status = [];
+        $sessionEvents = $this->cursusManager->getEventsBySession($session);
+        $sessionEventsUsers = $this->cursusManager->getSessionEventUsersByUserAndSession($user, $session);
+
+        foreach ($sessionEventsUsers as $sessionEventUser) {
+            $sessionEventId = $sessionEventUser->getSessionEvent()->getId();
+            $status[$sessionEventId] = $sessionEventUser->getRegistrationStatus();
+        }
+
+        return ['sessionEvents' => $sessionEvents, 'status' => $status];
     }
 
     private function checkToolAccess()
     {
         $cursusTool = $this->toolManager->getAdminToolByName('claroline_cursus_tool_registration');
 
-        if (is_null($cursusTool) ||
-            !$this->authorization->isGranted('OPEN', $cursusTool)) {
+        if (is_null($cursusTool) || !$this->authorization->isGranted('OPEN', $cursusTool)) {
             throw new AccessDeniedException();
         }
     }

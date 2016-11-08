@@ -123,7 +123,8 @@ form_not_unique_error: This value is already used.
 form_not_valid_error: This value is not valid.
 form_number_inferior_error: This value must be %value% or less.
 form_number_superior_error: This value must be %value% or more.
-full_session_msg: Training session users limit has been reached
+full_session_event_msg: The users limit of the session event has been reached
+full_session_msg: The users limit of the training session has been reached
 general_parameters: General parameters
 generate_certificate: Generate certificate
 generate_certificates: Generate certificates
@@ -175,6 +176,7 @@ no_description: No description
 no_document_model: No invitation/certificate model
 no_information: No information
 no_location: No location
+no_more_place: No more place
 no_ongoing_session: No ongoing session
 no_open_session: No open session
 no_open_session_event: No open session event

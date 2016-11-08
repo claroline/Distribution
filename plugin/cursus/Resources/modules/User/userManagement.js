@@ -1,7 +1,7 @@
 import $ from 'jquery'
 
+const userId = parseInt($('#user-sessions-datas-box').data('user-id'))
 let sourceId
-let userId
 let documentId
 let documentData = []
 
@@ -12,7 +12,7 @@ function initializeSelect (type)
   $('#document-selection-details').empty()
   $('#submit-document-selection').prop('disabled', true)
   $.ajax({
-    url: Routing.generate('api_get_cursus_populated_document_models_by_type', {type: type, sourceId: sourceId}),
+    url: Routing.generate('api_get_cursus_populated_document_models_by_type_for_user', {user: userId, type: type, sourceId: sourceId}),
     type: 'GET',
     success: function (data) {
       $('#document-selection-select').append('<option value="0" selected="selected"></option>')
@@ -25,7 +25,7 @@ function initializeSelect (type)
   })
 }
 
-$('.delete-session-user-btn').on('click', function () {
+$('#user-sessions-managament-body').on('click', '.delete-session-user-btn', function () {
   const sessionUserId = $(this).data('session-user-id')
 
   window.Claroline.Modal.confirmRequest(
@@ -37,7 +37,7 @@ $('.delete-session-user-btn').on('click', function () {
   )
 })
 
-$('.delete-session-event-user-btn').on('click', function () {
+$('#user-sessions-managament-body').on('click', '.delete-session-event-user-btn', function () {
   const sessionEventUserId = $(this).data('session-event-user-id')
 
   window.Claroline.Modal.confirmRequest(
@@ -49,30 +49,26 @@ $('.delete-session-event-user-btn').on('click', function () {
   )
 })
 
-$('.send-session-invitation-btn').on('click', function () {
+$('#user-sessions-managament-body').on('click', '.send-session-invitation-btn', function () {
   sourceId = parseInt($(this).data('session-id'))
-  userId = parseInt($(this).data('user-id'))
   $('#document-selection-title').html(Translator.trans('session_invitation', {}, 'cursus'))
   initializeSelect(0)
 })
 
-$('.generate-session-certificate-btn').on('click', function () {
+$('#user-sessions-managament-body').on('click', '.generate-session-certificate-btn', function () {
   sourceId = parseInt($(this).data('session-id'))
-  userId = parseInt($(this).data('user-id'))
   $('#document-selection-title').html(Translator.trans('session_certificate', {}, 'cursus'))
   initializeSelect(2)
 })
 
-$('.send-session-event-invitation-btn').on('click', function () {
+$('#user-sessions-managament-body').on('click', '.send-session-event-invitation-btn', function () {
   sourceId = parseInt($(this).data('session-event-id'))
-  userId = parseInt($(this).data('user-id'))
   $('#document-selection-title').html(Translator.trans('session_event_invitation', {}, 'cursus'))
   initializeSelect(1)
 })
 
-$('.generate-session-event-certificate-btn').on('click', function () {
+$('#user-sessions-managament-body').on('click', '.generate-session-event-certificate-btn', function () {
   sourceId = parseInt($(this).data('session-event-id'))
-  userId = parseInt($(this).data('user-id'))
   $('#document-selection-title').html(Translator.trans('session_event_certificate', {}, 'cursus'))
   initializeSelect(3)
 })
@@ -99,6 +95,71 @@ $('#submit-document-selection').on('click', function () {
       }
     })
   }
+})
+
+$('.session-event-registration-btn').on('click', function () {
+  const sessionId = parseInt($(this).data('session-id'))
+  const sessionName = $(this).data('session-name')
+  $('#session-event-registration-title').html(sessionName)
+  $.ajax({
+    url: Routing.generate('claro_cursus_session_events_registration_management', {user: userId, session: sessionId}),
+    type: 'GET',
+    success: function (data) {
+      $('#session-event-registration-body').html(data)
+      $('#session-event-registration-modal').modal('show')
+    }
+  })
+})
+
+$('#session-event-registration-modal').on('click', '.register-user-to-session-event-btn', function () {
+  const sessionId = parseInt($(this).data('session-id'))
+  const sessionEventId = parseInt($(this).data('session-event-id'))
+  $.ajax({
+    url: Routing.generate('api_post_session_event_user_registration', {sessionEvent: sessionEventId, user: userId}),
+    type: 'POST',
+    success: function (data) {
+      if (data['status'] === 'success') {
+        const successLabel = `<label class="label label-success">${Translator.trans('registered', {}, 'platform')}</label>`
+        $(`.registration-button-${sessionEventId}`).html(successLabel)
+        const eventRow = `
+          <li id="event-row-${data['datas']['id']}">
+              ${data['datas']['sessionEventName']}
+              &nbsp;
+              <span class="label label-primary pointer-hand send-session-event-invitation-btn"
+                    data-session-event-id="${data['datas']['sessionEventId']}"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="${Translator.trans('invite_to_session_event', {}, 'cursus')}"
+              >
+                  <i class="fa fa-plus-square"></i>
+              </span>
+              &nbsp;
+              <span class="label label-primary pointer-hand generate-session-event-certificate-btn"
+                    data-session-event-id="${data['datas']['sessionEventId']}"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="${Translator.trans('generate_event_certificate', {}, 'cursus')}"
+              >
+                  <i class="fa fa-graduation-cap"></i>
+              </span>
+              &nbsp;
+              <span class="label label-danger pointer-hand delete-session-event-user-btn"
+                    data-session-event-user-id="${data['datas']['id']}"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="${Translator.trans('unregister_user_from_session_event', {}, 'cursus')}"
+              >
+                  <i class="fa fa-times"></i>
+              </span>
+          </li>
+        `
+        $(`#events-0-${data['datas']['sessionId']}`).append(eventRow)
+      } else if (data['status'] === 'failed') {
+        const failedLabel = `<label class="label label-danger">${Translator.trans('no_more_place', {}, 'cursus')}</label>`
+        $(`.registration-button-${sessionEventId}`).html(failedLabel)
+      }
+    }
+  })
 })
 
 var removeSessionRow = function (event, sessionUserId) {
