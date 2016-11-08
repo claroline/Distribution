@@ -1200,6 +1200,8 @@ class CursusManager
             $event = new LogCourseSessionUserUnregistrationEvent($sessionUser);
             $this->eventDispatcher->dispatch('log', $event);
             $this->om->remove($sessionUser);
+            $sessionEventUsers = $this->getSessionEventUsersByUserAndSession($user, $session);
+            $this->unregisterUsersFromSessionEvent($sessionEventUsers);
         }
         $this->om->endFlushSuite();
     }

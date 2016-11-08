@@ -689,23 +689,6 @@ class CourseController extends Controller
 
     /**
      * @EXT\Route(
-     *     "cursus/course/session/unregister/user/{sessionUser}",
-     *     name="claro_cursus_course_session_unregister_user",
-     *     options = {"expose"=true}
-     * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-     *
-     * @param CourseSessionUser $sessionUser
-     */
-    public function courseSessionUserUnregisterAction(CourseSessionUser $sessionUser)
-    {
-        $this->cursusManager->unregisterUsersFromSession([$sessionUser]);
-
-        return new JsonResponse('success', 200);
-    }
-
-    /**
-     * @EXT\Route(
      *     "cursus/session/evnet/unregister/user/{sessionEventUser}",
      *     name="claro_cursus_session_event_unregister_user",
      *     options = {"expose"=true}

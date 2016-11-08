@@ -29,7 +29,7 @@ $('#user-sessions-managament-body').on('click', '.delete-session-user-btn', func
   const sessionUserId = $(this).data('session-user-id')
 
   window.Claroline.Modal.confirmRequest(
-    Routing.generate('claro_cursus_course_session_unregister_user', {'sessionUser': sessionUserId}),
+    Routing.generate('api_delete_session_user', {'sessionUser': sessionUserId}),
     removeSessionRow,
     sessionUserId,
     Translator.trans('unregister_user_from_session_message', {}, 'cursus'),
