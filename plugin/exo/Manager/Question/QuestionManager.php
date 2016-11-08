@@ -1,6 +1,6 @@
 <?php
 
-namespace UJM\ExoBundle\Manager;
+namespace UJM\ExoBundle\Manager\Question;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\ResourceManager;
@@ -13,6 +13,7 @@ use UJM\ExoBundle\Entity\Question;
 use UJM\ExoBundle\Entity\Response;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Options\Validation;
+use UJM\ExoBundle\Manager\HintManager;
 use UJM\ExoBundle\Repository\QuestionRepository;
 use UJM\ExoBundle\Serializer\Question\QuestionSerializer;
 use UJM\ExoBundle\Transfer\Json\QuestionHandlerCollector;

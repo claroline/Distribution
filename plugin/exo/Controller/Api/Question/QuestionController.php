@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use UJM\ExoBundle\Entity\Question;
 use UJM\ExoBundle\Library\Options\Transfer;
-use UJM\ExoBundle\Manager\QuestionManager;
+use UJM\ExoBundle\Manager\Question\QuestionManager;
 use UJM\ExoBundle\Transfer\Json\ValidationException;
 
 /**

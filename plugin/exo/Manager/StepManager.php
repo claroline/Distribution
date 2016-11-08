@@ -8,6 +8,7 @@ use UJM\ExoBundle\Entity\Question;
 use UJM\ExoBundle\Entity\Step;
 use UJM\ExoBundle\Entity\StepQuestion;
 use UJM\ExoBundle\Library\Options\Validation;
+use UJM\ExoBundle\Manager\Question\QuestionManager;
 use UJM\ExoBundle\Repository\StepQuestionRepository;
 use UJM\ExoBundle\Serializer\StepSerializer;
 use UJM\ExoBundle\Transfer\Json\ValidationException;

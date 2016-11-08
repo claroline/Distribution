@@ -59,7 +59,7 @@ export default class QuestionList extends Component {
             </TableCell>
             <TableCell align="center">
               <svg className="icon-small">
-                <use xlinkHref={`#icon-${getDefinition(question.type).name}`}/>
+                <use xlinkHref={`#icon-${getDefinition(question.type).name}`} />
               </svg>
             </TableCell>
             <TableCell>
