@@ -7,25 +7,25 @@
  * file that was distributed with this source code.
  */
 
-export default class SessionUsersExportModalCtrl {
-  constructor($uibModalInstance, SessionService, sessionId) {
+export default class SessionEvantUsersExportModalCtrl {
+  constructor($uibModalInstance, SessionEventService, sessionEventId) {
     this.$uibModalInstance = $uibModalInstance
-    this.SessionService = SessionService
-    this.sessionId = sessionId
-    this.learners = true
+    this.SessionEventService = SessionEventService
+    this.sessionEventId = sessionEventId
+    this.participants = true
     this.trainers = false
   }
 
   submit () {
     let exportType = 0
 
-    if (this.learners) {
+    if (this.participants) {
       exportType += 1
     }
     if (this.trainers) {
       exportType += 2
     }
-    this.SessionService.exportUsers(this.sessionId, exportType)
+    this.SessionEventService.exportUsers(this.sessionEventId, exportType)
     this.$uibModalInstance.close()
   }
 }

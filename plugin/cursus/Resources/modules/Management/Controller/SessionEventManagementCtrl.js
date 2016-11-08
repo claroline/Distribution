@@ -107,4 +107,8 @@ export default class SessionEventManagementCtrl {
   generateEventCertificates () {
     this.DocumentModelService.displayDocumentSelection(this.sessionEvent, 3)
   }
+
+  exportUsers () {
+    this.SessionEventService.exportUsersForm(this.sessionEventId)
+  }
 }

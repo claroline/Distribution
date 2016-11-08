@@ -2076,30 +2076,58 @@ class AdminManagementController extends Controller
 
     /**
      * @EXT\Route(
-     *     "/api/session/event/{sessionEvent}/users/csv/export",
+     *     "/api/session/event/{sessionEvent}/users/type/{type}/csv/export",
      *     name="api_get_session_event_users_csv_export",
      *     options = {"expose"=true}
      * )
      * @EXT\ParamConverter("user", converter="current_user")
      */
-    public function exportCsvSessionEventUsersAction(SessionEvent $sessionEvent)
+    public function exportCsvSessionEventUsersAction(SessionEvent $sessionEvent, $type)
     {
-        $users = $this->cursusManager->getUsersBySessionEventAndStatus($sessionEvent, SessionEventUser::REGISTERED);
+        $exportType = intval($type);
+        $users = [];
+
+        if ($exportType === 1 || $exportType === 3) {
+            $users['participants'] = $this->cursusManager->getUsersBySessionEventAndStatus($sessionEvent, SessionEventUser::REGISTERED);
+        }
+        if ($exportType === 2 || $exportType === 3) {
+            $users['trainers'] = $sessionEvent->getTutors();
+        }
         $response = new StreamedResponse();
         $response->setCallBack(
             function () use ($users) {
                 $handle = fopen('php://output', 'r+');
 
-                foreach ($users as $user) {
-                    fwrite($handle, implode(';', [$user->getFirstName(), $user->getLastName()]).PHP_EOL);
+                if (count($users) === 2) {
+                    fwrite($handle, $this->translator->trans('trainers', [], 'cursus').PHP_EOL);
+                }
+                if (isset($users['trainers'])) {
+                    foreach ($users['trainers'] as $user) {
+                        fwrite($handle, implode(';', [$user->getFirstName(), $user->getLastName()]) . PHP_EOL);
+                    }
+                }
+                if (count($users) === 2) {
+                    fwrite($handle, PHP_EOL);
+                    fwrite($handle, $this->translator->trans('participants', [], 'cursus').PHP_EOL);
+                }
+                if (isset($users['participants'])) {
+                    foreach ($users['participants'] as $user) {
+                        fwrite($handle, implode(';', [$user->getFirstName(), $user->getLastName()]) . PHP_EOL);
+                    }
                 }
                 fclose($handle);
             }
         );
+        $fileName = $sessionEvent->getName();
 
+        if ($exportType === 1) {
+            $fileName .= '['.$this->translator->trans('participants', [], 'cursus').']';
+        } elseif ($exportType === 2) {
+            $fileName .= '['.$this->translator->trans('trainers', [], 'cursus').']';
+        }
         $response->headers->set('Content-Transfer-Encoding', 'octet-stream');
         $response->headers->set('Content-Type', 'application/force-download');
-        $response->headers->set('Content-Disposition', 'attachment; filename='.$sessionEvent->getName().'.csv');
+        $response->headers->set('Content-Disposition', 'attachment; filename='.$fileName.'.csv');
         $response->headers->set('Content-Type', 'text/csv');
         $response->headers->set('Connection', 'close');
 
