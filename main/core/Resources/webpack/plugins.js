@@ -47,10 +47,6 @@ const distributionShortcut = () => {
  * Example:
  *
  * import from 'clarolineconfig'
- *
- * will be resolved to:
- *
- * /path/to/vendor/claroline/distribution/main/core/Resources/modules/foo/bar
  */
 const configShortcut = () => {
   return new webpack.NormalModuleReplacementPlugin(/^clarolineconfig$/, request => {
