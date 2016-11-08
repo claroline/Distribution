@@ -12,14 +12,15 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Step;
+use UJM\ExoBundle\Library\Options\Transfer;
+use UJM\ExoBundle\Services\classes\Docimology;
 
 /**
  * Exercise Controller renders views.
  *
  * @EXT\Route(
  *     "/exercises",
- *     options={"expose"=true},
- *     defaults={"_format": "json"}
+ *     options={"expose"=true}
  * )
  * @EXT\Method("GET")
  */
@@ -31,12 +32,7 @@ class ExerciseController extends Controller
      * @param Exercise $exercise
      * @param User     $user
      *
-     * @EXT\Route(
-     *     "/{id}",
-     *     name="ujm_exercise_open",
-     *     requirements={"id"="\d+"},
-     *     options={"expose"=true}
-     * )
+     * @EXT\Route("/{id}", name="ujm_exercise_open", requirements={"id"="\d+"})
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
      * @EXT\Template("UJMExoBundle:Exercise:open.html.twig")
      *
@@ -68,7 +64,7 @@ class ExerciseController extends Controller
             // Angular JS data
             'exercise' => $this->get('ujm.exo.exercise_manager')->export(
                 $exercise,
-                $isAdmin
+                $isAdmin ? [Transfer::INCLUDE_SOLUTIONS] : []
             ),
             'editEnabled' => $isAdmin,
         ];
@@ -77,7 +73,7 @@ class ExerciseController extends Controller
     /**
      * To display the docimology's histograms.
      *
-     * @EXT\Route("{id}/docimology", name="ujm_exercise_docimology", options={"expose"=true})
+     * @EXT\Route("/{id}/docimology", name="ujm_exercise_docimology", requirements={"id"="\d+"})
      * @EXT\Template("UJMExoBundle:Exercise:docimology.html.twig")
      *
      * @param Exercise $exercise
@@ -88,44 +84,40 @@ class ExerciseController extends Controller
     {
         $this->assertHasPermission('ADMINISTRATE', $exercise);
 
-        $docimoServ = $this->container->get('ujm.exo_docimology');
+        /** @var Docimology $docimoServ */
+        /*$docimoServ = $this->container->get('ujm.exo_docimology');
         $em = $this->getDoctrine()->getManager();
 
         $sqs = $em->getRepository('UJMExoBundle:StepQuestion')->findExoByOrder($exercise);
 
         $papers = $em->getRepository('UJMExoBundle:Paper')->getExerciseAllPapers($exercise->getId());
-        $nbPapers = count($papers);
 
-        $workspace = $exercise->getResourceNode()->getWorkspace();
+        $histoMark = $docimoServ->histoMark($exercise->getId());
+        $histoSuccess = $docimoServ->histoSuccess($exercise->getId(), $sqs, $papers);
 
-        $parameters['nbPapers'] = $nbPapers;
-        $parameters['workspace'] = $workspace;
-        $parameters['exoID'] = $exercise->getId();
-        $parameters['_resource'] = $exercise;
-
-        if ($nbPapers >= 12) {
-            $histoMark = $docimoServ->histoMark($exercise->getId());
-            $histoSuccess = $docimoServ->histoSuccess($exercise->getId(), $sqs, $papers);
-
-            if ($exercise->getPickSteps() === 0) {
-                $histoDiscrimination = $docimoServ->histoDiscrimination($exercise->getId(), $sqs, $papers);
-            } else {
-                $histoDiscrimination['coeffQ'] = 'none';
-            }
-
-            $histoMeasureDifficulty = $docimoServ->histoMeasureOfDifficulty($exercise->getId(), $sqs);
-
-            $parameters['scoreList'] = $histoMark['scoreList'];
-            $parameters['frequencyMarks'] = $histoMark['frequencyMarks'];
-            $parameters['maxY'] = $histoMark['maxY'];
-            $parameters['questionsList'] = $histoSuccess['questionsList'];
-            $parameters['seriesResponsesTab'] = $histoSuccess['seriesResponsesTab'];
-            $parameters['maxY2'] = $histoSuccess['maxY'];
-            $parameters['coeffQ'] = $histoDiscrimination['coeffQ'];
-            $parameters['MeasureDifficulty'] = $histoMeasureDifficulty;
+        if ($exercise->getPickSteps() === 0) {
+            $histoDiscrimination = $docimoServ->histoDiscrimination($exercise->getId(), $sqs, $papers);
+        } else {
+            $histoDiscrimination['coeffQ'] = 'none';
         }
 
-        return $parameters;
+        $histoMeasureDifficulty = $docimoServ->histoMeasureOfDifficulty($exercise->getId(), $sqs);*/
+
+        return [
+            'workspace' => $exercise->getResourceNode()->getWorkspace(),
+            '_resource' => $exercise,
+            'exercise' => $this->get('ujm.exo.exercise_manager')->export($exercise)
+
+            /*'nbPapers' => count($papers),
+            'scoreList' => $histoMark['scoreList'],
+            'frequencyMarks' => $histoMark['frequencyMarks'],
+            'maxY' => $histoMark['maxY'],
+            'questionsList' => $histoSuccess['questionsList'],
+            'seriesResponsesTab' => $histoSuccess['seriesResponsesTab'],
+            'maxY2' => $histoSuccess['maxY'],
+            'coeffQ' => $histoDiscrimination['coeffQ'],
+            'MeasureDifficulty' => $histoMeasureDifficulty,*/
+        ];
     }
 
     /**

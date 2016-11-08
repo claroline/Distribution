@@ -17,7 +17,7 @@ use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Manager\ExerciseManager;
 use UJM\ExoBundle\Manager\PaperManager;
-use UJM\ExoBundle\Manager\QuestionManager;
+use UJM\ExoBundle\Manager\Question\QuestionManager;
 use UJM\ExoBundle\Services\classes\PaperService;
 use UJM\ExoBundle\Transfer\Json\ValidationException;
 

@@ -1,103 +1,67 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import {DropdownButton, MenuItem} from 'react-bootstrap'
 
-import {actions as paginationActions} from './../actions/pagination'
-import {countPages} from './../selectors/pagination'
+import { actions as paginationActions } from './../actions/pagination'
+import { countPages } from './../selectors/pagination'
 import VisibleQuestions from './../containers/visible-questions.jsx'
 import Pagination from './pagination/pagination.jsx'
+import PageHeader from './../../page/components/page-header.jsx'
+import PageActions from './../../page/components/page-actions.jsx'
 
-import {tex} from './../../utils/translate'
-import {MODAL_ADD_ITEM} from './../../editor/components/modals.jsx'
-import {actions as editorActions} from './../../editor/actions'
+import { tex } from './../../utils/translate'
+import { MODAL_ADD_ITEM } from './../../editor/components/modals.jsx'
+
+// TODO : do not load from editor
+import { actions as editorActions } from './../../editor/actions'
 
 const T = React.PropTypes
 
-const AddQuestionButton = props =>
-  <button
-    type="button"
-    className="btn btn-link"
-    onClick={() => props.showModal(MODAL_ADD_ITEM, {
-        title: tex('add_question'),
-        handleSelect: type => {
-          props.closeModal()
-          props.handleItemCreate(type)
-        }
-      })
-    }
-  >
-    <span className="fa fa-plus"></span>
-    &nbsp;{tex('add_question')}
-  </button>
-
-AddQuestionButton.propTypes = {
-  showModal: T.func.isRequired,
-  closeModal: T.func.isRequired,
-  handleItemCreate: T.func.isRequired
-}
-
-const SearchButton = props =>
-  <button
-    type="button"
-    className="btn btn-link"
-    onClick={() => props.showModal(MODAL_SEARCH, {
-        title: tex('search'),
-        handleSearch: () => {
-          props.closeModal()
-          props.handleSearch()
-        }
-      })
-    }
-  >
-    <span className="fa fa-fw fa-search"></span>
-    &nbsp;{tex('search')}
-  </button>
-
-SearchButton.propTypes = {
-  showModal: T.func.isRequired,
-  closeModal: T.func.isRequired,
-  handleSearch: T.func.isRequired
-}
-
 class Bank extends Component {
   render() {
+    const actions = [
+      {
+        icon: 'fa fa-fw fa-plus',
+        label: tex('add_question'),
+        handleAction: () => this.props.showModal(MODAL_ADD_ITEM, {
+          title: tex('add_question'),
+          handleSelect: type => {
+            this.props.closeModal()
+            this.props.handleItemCreate(type)
+          }
+        }),
+        primary: true
+      },
+      {
+        icon: 'fa fa-fw fa-search',
+        label: tex('search'),
+        handleAction: () => this.props.showModal(MODAL_SEARCH, {
+          title: tex('search'),
+          handleSearch: () => {
+            this.props.closeModal()
+            this.props.handleSearch()
+          }
+        }),
+        primary: true
+      },
+      {
+        icon: 'fa fa-fw fa-download',
+        label: 'Import QTI questions',
+        handleAction: () => true,
+        primary: false
+      },
+      {
+        icon: 'fa fa-fw fa-file',
+        label: 'Manage medias',
+        handleAction: () => true,
+        primary: false
+      }
+    ]
+
     return (
       <div>
-        <div className="snap">
-          <h1 className="page-header">Banque de questions</h1>
-
-          <div className="actions">
-            <AddQuestionButton
-              showModal={this.props.showModal}
-              closeModal={this.props.hideModal}
-              handleItemCreate={this.props.handleItemCreate}
-            />
-
-            <SearchButton
-              showModal={this.props.showModal}
-              closeModal={this.props.hideModal}
-              handleSearch={this.props.handleSearch}
-            />
-
-            <DropdownButton
-              id={`dropdown-other-actions`}
-              title={<span className="fa fa-fw fa-ellipsis-v"></span>}
-              bsStyle={`link`}
-              noCaret={true}
-              pullRight={true}
-            >
-              <MenuItem header>More actions</MenuItem>
-              <MenuItem eventKey="1">
-                <span className="fa fa-fw fa-download"></span>
-                Import QTI questions
-              </MenuItem>
-              <MenuItem eventKey="2">
-                <span className="fa fa-fw fa-file"></span>
-                Manage medias
-              </MenuItem>
-            </DropdownButton>
-          </div>
-        </div>
+        <PageHeader title="Banque de questions">
+          <PageActions actions={actions} />
+        </PageHeader>
 
         <VisibleQuestions />
 

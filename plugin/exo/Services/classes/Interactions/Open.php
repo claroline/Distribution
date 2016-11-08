@@ -126,24 +126,6 @@ class Open extends Interaction
     }
 
     /**
-     * implement the abstract method.
-     *
-     * call getAlreadyResponded and prepare the interaction to displayed if necessary
-     *
-     * @param \UJM\ExoBundle\Entity\Interaction                            $interactionToDisplay interaction (question) to displayed
-     * @param \Symfony\Component\HttpFoundation\Session\SessionInterface   $session
-     * @param \UJM\ExoBundle\Entity\InteractionX (qcm, graphic, open, ...) $interactionX
-     *
-     * @return \UJM\ExoBundle\Entity\Response
-     */
-    public function getResponseGiven($interactionToDisplay, SessionInterface $session, $interactionX)
-    {
-        $responseGiven = $this->getAlreadyResponded($interactionToDisplay, $session);
-
-        return $responseGiven;
-    }
-
-    /**
      * Get the types of open question long, short, numeric, one word.
      *
      *

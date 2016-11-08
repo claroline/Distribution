@@ -15,6 +15,7 @@ use UJM\ExoBundle\Entity\StepQuestion;
 use UJM\ExoBundle\Event\Log\LogExerciseEvaluatedEvent;
 use UJM\ExoBundle\Library\Mode\CorrectionMode;
 use UJM\ExoBundle\Library\Mode\MarkMode;
+use UJM\ExoBundle\Manager\Question\QuestionManager;
 use UJM\ExoBundle\Services\classes\PaperService;
 use UJM\ExoBundle\Transfer\Json\QuestionHandlerCollector;
 

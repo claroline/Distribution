@@ -6,10 +6,16 @@ use Claroline\CoreBundle\Entity\User;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use UJM\ExoBundle\Library\Options\Transfer;
-use UJM\ExoBundle\Manager\QuestionManager;
+use UJM\ExoBundle\Manager\Question\QuestionManager;
 
 /**
  * Class BankController
+ *
+ * @EXT\Route(
+ *     "/questions",
+ *     options={"expose"=true}
+ * )
+ * @EXT\Method("GET")
  */
 class BankController
 {
@@ -35,7 +41,6 @@ class BankController
      * @EXT\Route("", name="question_bank", options={"expose"=true})
      * @EXT\ParamConverter("user", converter="current_user")
      * @EXT\Template("UJMExoBundle::bank.html.twig")
-     * @EXT\Method("GET")
      *
      * @return array
      */
