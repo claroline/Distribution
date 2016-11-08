@@ -2,6 +2,7 @@
 
 namespace UJM\ExoBundle\Tests\Validator\JsonSchema\Misc;
 
+use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Testing\Json\JsonSchemaTestCase;
 use UJM\ExoBundle\Validator\JsonSchema\Misc\KeywordValidator;
 
@@ -58,26 +59,7 @@ class KeywordValidatorTest extends JsonSchemaTestCase
         $this->assertEquals(0, count($this->validator->validateCollection($collectionData)));
 
         // Test with option set to `true` (expects errors)
-        $this->assertGreaterThan(0, count($this->validator->validateCollection($collectionData, ['validateScore' => true])));
-    }
-
-    /**
-     * The validator MUST validate each keyword against its JSON schema if the option `validateSchema` is set.
-     */
-    public function testCollectionSchemasAreValidatedIfValidateSchemaOption()
-    {
-        $collectionData = $this->loadTestData('misc/keyword/invalid/collection-with-invalid-keyword.json');
-
-        // We get the real validator instance because we have mocked the JsonSchema validator
-        $validator = $this->client->getContainer()->get('ujm_exo.validator.keyword');
-
-        // Test with option not set (expects no schema validation error)
-        $this->assertEquals(0, count($validator->validateCollection($collectionData)));
-
-        $errors = $validator->validateCollection($collectionData, ['validateSchema' => true]);
-
-        // Test with option set to `true` (expects schema validation errors)
-        $this->assertGreaterThan(0, count($errors));
+        $this->assertGreaterThan(0, count($this->validator->validateCollection($collectionData, [Validation::VALIDATE_SCORE])));
     }
 
     /**
@@ -87,7 +69,7 @@ class KeywordValidatorTest extends JsonSchemaTestCase
     {
         $collectionData = $this->loadTestData('misc/keyword/invalid/collection-with-no-positive-score.json');
 
-        $errors = $this->validator->validateCollection($collectionData, ['validateScore' => true]);
+        $errors = $this->validator->validateCollection($collectionData, [Validation::VALIDATE_SCORE]);
 
         $this->assertGreaterThan(0, count($errors));
         $this->assertTrue(in_array([

@@ -12,7 +12,18 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Step;
+use UJM\ExoBundle\Library\Options\Transfer;
+use UJM\ExoBundle\Services\classes\Docimology;
 
+/**
+ * Exercise Controller renders views.
+ *
+ * @EXT\Route(
+ *     "/exercises",
+ *     options={"expose"=true}
+ * )
+ * @EXT\Method("GET")
+ */
 class ExerciseController extends Controller
 {
     /**
@@ -21,21 +32,15 @@ class ExerciseController extends Controller
      * @param Exercise $exercise
      * @param User     $user
      *
-     * @EXT\Route(
-     *     "/{id}",
-     *     name="ujm_exercise_open",
-     *     requirements={"id"="\d+"},
-     *     options={"expose"=true}
-     * )
+     * @EXT\Route("/{id}", name="ujm_exercise_open", requirements={"id"="\d+"})
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
+     * @EXT\Template("UJMExoBundle:Exercise:open.html.twig")
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return array
      */
     public function openAction(Exercise $exercise, User $user = null)
     {
         $this->assertHasPermission('OPEN', $exercise);
-
-        $exerciseSer = $this->container->get('ujm.exo_exercise');
 
         $nbUserPapers = 0;
         if ($user instanceof User) {
@@ -45,8 +50,10 @@ class ExerciseController extends Controller
         // TODO : no need to count the $nbPapers for regular Users as it's only for admin purpose (we maybe need to put the call in Angular ?)
         $nbPapers = $this->container->get('ujm.exo.paper_manager')->countExercisePapers($exercise);
 
+        $isAdmin = $this->hasPermission('ADMINISTRATE', $exercise);
+
         // Display the Summary of the Exercise
-        return $this->render('UJMExoBundle:Exercise:open.html.twig', [
+        return [
             // Used to build the Claroline Breadcrumbs
             '_resource' => $exercise,
             'workspace' => $exercise->getResourceNode()->getWorkspace(),
@@ -57,33 +64,60 @@ class ExerciseController extends Controller
             // Angular JS data
             'exercise' => $this->get('ujm.exo.exercise_manager')->export(
                 $exercise,
-                ['includeSolutions' => true]
+                $isAdmin ? [Transfer::INCLUDE_SOLUTIONS] : []
             ),
-            'editEnabled' => $exerciseSer->isExerciseAdmin($exercise),
-        ]);
+            'editEnabled' => $isAdmin,
+        ];
     }
 
     /**
-     * Deletes all the papers associated with an exercise.
+     * To display the docimology's histograms.
      *
-     * @EXT\Route(
-     *     "/{id}/papers",
-     *     name="ujm_exercise_delete_papers",
-     *     options={"expose"=true}
-     * )
-     * @EXT\Method("DELETE")
+     * @EXT\Route("/{id}/docimology", name="ujm_exercise_docimology", requirements={"id"="\d+"})
+     * @EXT\Template("UJMExoBundle:Exercise:docimology.html.twig")
      *
      * @param Exercise $exercise
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return array
      */
-    public function deletePapersAction(Exercise $exercise)
+    public function docimologyAction(Exercise $exercise)
     {
         $this->assertHasPermission('ADMINISTRATE', $exercise);
 
-        $this->get('ujm.exo.exercise_manager')->deletePapers($exercise);
+        /** @var Docimology $docimoServ */
+        /*$docimoServ = $this->container->get('ujm.exo_docimology');
+        $em = $this->getDoctrine()->getManager();
 
-        return new JsonResponse([]);
+        $sqs = $em->getRepository('UJMExoBundle:StepQuestion')->findExoByOrder($exercise);
+
+        $papers = $em->getRepository('UJMExoBundle:Paper')->getExerciseAllPapers($exercise->getId());
+
+        $histoMark = $docimoServ->histoMark($exercise->getId());
+        $histoSuccess = $docimoServ->histoSuccess($exercise->getId(), $sqs, $papers);
+
+        if ($exercise->getPickSteps() === 0) {
+            $histoDiscrimination = $docimoServ->histoDiscrimination($exercise->getId(), $sqs, $papers);
+        } else {
+            $histoDiscrimination['coeffQ'] = 'none';
+        }
+
+        $histoMeasureDifficulty = $docimoServ->histoMeasureOfDifficulty($exercise->getId(), $sqs);*/
+
+        return [
+            'workspace' => $exercise->getResourceNode()->getWorkspace(),
+            '_resource' => $exercise,
+            'exercise' => $this->get('ujm.exo.exercise_manager')->export($exercise)
+
+            /*'nbPapers' => count($papers),
+            'scoreList' => $histoMark['scoreList'],
+            'frequencyMarks' => $histoMark['frequencyMarks'],
+            'maxY' => $histoMark['maxY'],
+            'questionsList' => $histoSuccess['questionsList'],
+            'seriesResponsesTab' => $histoSuccess['seriesResponsesTab'],
+            'maxY2' => $histoSuccess['maxY'],
+            'coeffQ' => $histoDiscrimination['coeffQ'],
+            'MeasureDifficulty' => $histoMeasureDifficulty,*/
+        ];
     }
 
     /**
@@ -243,64 +277,6 @@ class ExerciseController extends Controller
             return new Response($url);
         } else {
             return $this->redirect($this->generateUrl('ujm_exercise_import_question', ['exoID' => $exoID]));
-        }
-    }
-
-    /**
-     * To display the docimology's histograms.
-     *
-     * @EXT\Route("/docimology/{id}", name="ujm_exercise_docimology", options={"expose"=true})
-     * @ParamConverter("Exercise", class="UJMExoBundle:Exercise")
-     *
-     * @param Exercise $exercise
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function docimologyAction(Exercise $exercise)
-    {
-        $this->assertHasPermission('OPEN', $exercise);
-
-        $docimoServ = $this->container->get('ujm.exo_docimology');
-        $em = $this->getDoctrine()->getManager();
-
-        $sqs = $em->getRepository('UJMExoBundle:StepQuestion')->findExoByOrder($exercise);
-
-        $papers = $em->getRepository('UJMExoBundle:Paper')->getExerciseAllPapers($exercise->getId());
-        $nbPapers = count($papers);
-
-        if ($this->container->get('ujm.exo_exercise')->isExerciseAdmin($exercise)) {
-            $workspace = $exercise->getResourceNode()->getWorkspace();
-
-            $parameters['nbPapers'] = $nbPapers;
-            $parameters['workspace'] = $workspace;
-            $parameters['exoID'] = $exercise->getId();
-            $parameters['_resource'] = $exercise;
-
-            if ($nbPapers >= 12) {
-                $histoMark = $docimoServ->histoMark($exercise->getId());
-                $histoSuccess = $docimoServ->histoSuccess($exercise->getId(), $sqs, $papers);
-
-                if ($exercise->getPickSteps() === 0) {
-                    $histoDiscrimination = $docimoServ->histoDiscrimination($exercise->getId(), $sqs, $papers);
-                } else {
-                    $histoDiscrimination['coeffQ'] = 'none';
-                }
-
-                $histoMeasureDifficulty = $docimoServ->histoMeasureOfDifficulty($exercise->getId(), $sqs);
-
-                $parameters['scoreList'] = $histoMark['scoreList'];
-                $parameters['frequencyMarks'] = $histoMark['frequencyMarks'];
-                $parameters['maxY'] = $histoMark['maxY'];
-                $parameters['questionsList'] = $histoSuccess['questionsList'];
-                $parameters['seriesResponsesTab'] = $histoSuccess['seriesResponsesTab'];
-                $parameters['maxY2'] = $histoSuccess['maxY'];
-                $parameters['coeffQ'] = $histoDiscrimination['coeffQ'];
-                $parameters['MeasureDifficulty'] = $histoMeasureDifficulty;
-            }
-
-            return $this->render('UJMExoBundle:Exercise:docimology.html.twig', $parameters);
-        } else {
-            return $this->redirect($this->generateUrl('ujm_exercise_open', ['id' => $exercise->getId()]));
         }
     }
 

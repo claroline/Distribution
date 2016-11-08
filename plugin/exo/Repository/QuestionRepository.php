@@ -10,6 +10,62 @@ use UJM\ExoBundle\Entity\Step;
 
 class QuestionRepository extends EntityRepository
 {
+    public function search(User $user, array $filters = [], $page = 0, $number = -1, array $orderBy = [])
+    {
+        $qb = $this->createQueryBuilder('q');
+
+        // Get questions created by the User
+        $qb->where('q.creator = :user');
+        $qb->setParameter('user', $user);
+
+        if (empty($filters['self_only'])) {
+            // Includes shared questions
+        }
+
+        // Type
+        if (!empty($filters['type'])) {
+            $qb->andWhere('q.mimeType = :type');
+            $qb->setParameter('type', $filters['type']);
+        }
+
+        // Title / Content
+        if (!empty($filters['content'])) {
+            // TODO : escape search string
+            $qb->andWhere('(q.content LIKE "%:text%" OR q.title LIKE "%:text%")');
+            $qb->setParameter('text', $filters['content']);
+        }
+
+        // Dates
+
+        // Category
+        if (!empty($filters['category'])) {
+            $qb->andWhere('q.category = :category');
+            $qb->setParameter('type', $filters['category']);
+        }
+
+        // Exercise
+        if (!empty($filters['exercise'])) {
+            $qb
+                ->join('q.stepQuestions', 'sq')
+                ->join('sq.step', 's')
+                ->join('s.exercise', 'e')
+                ->andWhere('e.uuid = :exerciseId');
+
+            $qb->setParameter('exerciseId', $filters['exercise']);
+        }
+
+        // Model
+        if (!empty($filters['model'])) {
+            $qb->andWhere('q.model = true');
+        }
+
+        /*$qb->orderBy();*/
+        /*$this->addOrderBy($orderBy);
+        $this->addPagination($page, $number);*/
+
+        return $qb->getQuery()->getResult();
+    }
+
     /**
      * Returns all the questions created by a given user. Allows to
      * select only questions defined as models (defaults to false).
@@ -22,9 +78,9 @@ class QuestionRepository extends EntityRepository
     public function findByUser(User $user, $limitToModels = false)
     {
         $qb = $this->createQueryBuilder('q')
-            ->join('q.user', 'u')
+            ->join('q.creator', 'u')
             ->join('q.category', 'c')
-            ->where('q.user = :user');
+            ->where('q.creator = :creator');
 
         if ($limitToModels) {
             $qb->andWhere('q.model = true');
@@ -32,7 +88,7 @@ class QuestionRepository extends EntityRepository
 
         return $qb
             ->orderBy('c.value, q.title', 'ASC')
-            ->setParameter('user', $user)
+            ->setParameter('creator', $user)
             ->getQuery()
             ->getResult();
     }
@@ -119,7 +175,7 @@ class QuestionRepository extends EntityRepository
 
         $qb = $this->createQueryBuilder('q')
             ->leftJoin('q.category', 'c')
-            ->where('q.user = :user');
+            ->where('q.creator = :creator');
 
         if ($limitToModels) {
             $qb->andWhere('q.model = true');
@@ -129,7 +185,7 @@ class QuestionRepository extends EntityRepository
             ->andWhere($qb->expr()->notIn('q', $stepQuestionsQuery->getDQL()))
             ->orderBy('c.value, q.title', 'ASC')
             ->setParameters([
-                'user' => $user,
+                'creator' => $user,
                 'exercise' => $exercise,
             ])
             ->getQuery()
@@ -149,10 +205,10 @@ class QuestionRepository extends EntityRepository
     {
         return $this->createQueryBuilder('q')
             ->join('q.category', 'c')
-            ->where('q.user = :user')
+            ->where('q.creator = :creator')
             ->andWhere('c.value LIKE :search')
             ->setParameters([
-                'user' => $user,
+                'creator' => $user,
                 'search' => "%{$categoryName}%",
             ])
             ->getQuery()
@@ -171,10 +227,10 @@ class QuestionRepository extends EntityRepository
     public function findByUserAndType(User $user, $type)
     {
         return $this->createQueryBuilder('q')
-            ->where('q.user = :user')
+            ->where('q.creator = :creator')
             ->andWhere('q.type LIKE :search')
             ->setParameters([
-                'user' => $user,
+                'creator' => $user,
                 'search' => "%{$type}%",
             ])
             ->getQuery()
@@ -193,10 +249,10 @@ class QuestionRepository extends EntityRepository
     public function findByUserAndTitle(User $user, $title)
     {
         return $this->createQueryBuilder('q')
-            ->where('q.user = :user')
+            ->where('q.creator = :creator')
             ->andWhere('q.title LIKE :search')
             ->setParameters([
-                'user' => $user,
+                'creator' => $user,
                 'search' => "%{$title}%",
             ])
             ->getQuery()
@@ -215,10 +271,10 @@ class QuestionRepository extends EntityRepository
     public function findByUserAndInvite(User $user, $invite)
     {
         return $this->createQueryBuilder('q')
-            ->where('q.user = :user')
+            ->where('q.creator = :creator')
             ->andWhere('q.invite LIKE :search')
             ->setParameters([
-                'user' => $user,
+                'creator' => $user,
                 'search' => "%{$invite}%",
             ])
             ->getQuery()
@@ -245,10 +301,10 @@ class QuestionRepository extends EntityRepository
             ->orWhere('q.type LIKE :search')
             ->orWhere('q.title LIKE :search')
             ->orWhere('q.invite LIKE :search')
-            ->andWhere('q.user = :user');
+            ->andWhere('q.creator = :creator');
 
         $parameters = [
-            'user' => $user,
+            'creator' => $user,
             'search' => "%{$content}%",
         ];
 

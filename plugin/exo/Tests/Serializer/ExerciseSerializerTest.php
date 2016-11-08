@@ -4,6 +4,7 @@ namespace UJM\ExoBundle\Tests\Serializer;
 
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use UJM\ExoBundle\Entity\Exercise;
+use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Testing\Json\JsonDataTestCase;
 use UJM\ExoBundle\Library\Testing\Persister;
 use UJM\ExoBundle\Serializer\ExerciseSerializer;
@@ -94,14 +95,15 @@ class ExerciseSerializerTest extends JsonDataTestCase
 
     /**
      * The serializer MUST return a minimal representation of the Exercise if the option `minimal` is set.
-     * In this case `parameters` and `steps` MUST be excluded.
+     * In this case `description`, `parameters`, `steps` MUST be excluded.
      */
     public function testSerializeMinimalOption()
     {
-        $data = $this->serializer->serialize($this->exercise, ['minimal' => true]);
+        $data = $this->serializer->serialize($this->exercise, [Transfer::MINIMAL]);
 
         $this->assertFalse(property_exists($data, 'steps'));
         $this->assertFalse(property_exists($data, 'parameters'));
+        $this->assertFalse(property_exists($data, 'description'));
     }
 
     /**

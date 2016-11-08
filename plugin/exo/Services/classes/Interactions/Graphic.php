@@ -278,24 +278,7 @@ class Graphic extends Interaction
             ->getRepository('UJMExoBundle:InteractionGraphic')
             ->findOneByQuestion($questionId);
     }
-
-    /**
-     * implement the abstract method.
-     *
-     * call getAlreadyResponded and prepare the interaction to displayed if necessary
-     *
-     * @param \UJM\ExoBundle\Entity\Interaction                            $interactionToDisplay interaction (question) to displayed
-     * @param \Symfony\Component\HttpFoundation\Session\SessionInterface   $session
-     * @param \UJM\ExoBundle\Entity\InteractionX (qcm, graphic, open, ...) $interactionX
-     *
-     * @return \UJM\ExoBundle\Entity\Response
-     */
-    public function getResponseGiven($interactionToDisplay, SessionInterface $session, $interactionX)
-    {
-        $responseGiven = $this->getAlreadyResponded($interactionToDisplay, $session);
-
-        return $responseGiven;
-    }
+    
     /**
      * Temporary method (to delete with the full angular)
      * Graphic question : Check if the suggested answer zone isn't already right in order not to have points twice.

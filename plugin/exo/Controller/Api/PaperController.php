@@ -17,7 +17,7 @@ use UJM\ExoBundle\Entity\Question;
 use UJM\ExoBundle\Entity\Step;
 use UJM\ExoBundle\Entity\StepQuestion;
 use UJM\ExoBundle\Manager\PaperManager;
-use UJM\ExoBundle\Manager\QuestionManager;
+use UJM\ExoBundle\Manager\Question\QuestionManager;
 use UJM\ExoBundle\Manager\StepManager;
 
 /**

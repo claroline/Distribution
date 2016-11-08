@@ -14,14 +14,15 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use UJM\ExoBundle\Entity\Exercise;
+use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Manager\ExerciseManager;
 use UJM\ExoBundle\Manager\PaperManager;
-use UJM\ExoBundle\Manager\QuestionManager;
+use UJM\ExoBundle\Manager\Question\QuestionManager;
 use UJM\ExoBundle\Services\classes\PaperService;
 use UJM\ExoBundle\Transfer\Json\ValidationException;
 
 /**
- * Exercise Controller.
+ * Exercise API Controller exposes REST API.
  *
  * @EXT\Route(
  *     "/exercises",
@@ -92,25 +93,7 @@ class ExerciseController
     {
         $this->assertHasPermission('ADMINISTRATE', $exercise);
 
-        return new JsonResponse($this->exerciseManager->export($exercise, ['includeSolutions' => true]));
-    }
-
-    /**
-     * Exports the minimal representation of an exercise (id + meta)
-     * in a JSON format.
-     *
-     * @EXT\Route("/{id}/minimal", name="exercise_get_minimal")
-     * @EXT\ParamConverter("exercise", class="UJMExoBundle:Exercise", options={"mapping": {"id": "uuid"}})
-     *
-     * @param Exercise $exercise
-     *
-     * @return JsonResponse
-     */
-    public function minimalExportAction(Exercise $exercise)
-    {
-        $this->assertHasPermission('OPEN', $exercise);
-
-        return new JsonResponse($this->exerciseManager->export($exercise, ['minimal' => true]));
+        return new JsonResponse($this->exerciseManager->export($exercise, [Transfer::INCLUDE_SOLUTIONS]));
     }
 
     /**
@@ -147,7 +130,7 @@ class ExerciseController
             }
         }
 
-        return new JsonResponse($this->exerciseManager->export($exercise, ['includeSolutions' => true]));
+        return new JsonResponse($this->exerciseManager->export($exercise, [Transfer::INCLUDE_SOLUTIONS]));
     }
 
     /**
@@ -325,6 +308,29 @@ class ExerciseController
             'Content-Type' => 'application/force-download',
             'Content-Disposition' => 'attachment; filename="export.csv"',
         ]);
+    }
+
+    /**
+     * Deletes all the papers associated with an exercise.
+     *
+     * @EXT\Route(
+     *     "/{id}/papers",
+     *     name="ujm_exercise_delete_papers",
+     *     options={"expose"=true}
+     * )
+     * @EXT\Method("DELETE")
+     *
+     * @param Exercise $exercise
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function papersDeleteAction(Exercise $exercise)
+    {
+        $this->assertHasPermission('ADMINISTRATE', $exercise);
+
+        $this->exerciseManager->deletePapers($exercise);
+
+        return new JsonResponse([]);
     }
 
     private function assertHasPermission($permission, Exercise $exercise)

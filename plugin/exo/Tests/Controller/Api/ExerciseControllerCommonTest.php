@@ -110,20 +110,6 @@ class ExerciseControllerCommonTest extends TransactionalTestCase
         $this->assertEquals('Invite...', $content->steps[0]->items[0]->content);
     }
 
-    /**
-     * Minimal exercise export is used to get exercise data from paper list and paper details views
-     * It returns only exercise metadata and id and is available for all "CAN OPEN RESOURCE" users.
-     */
-    public function testMinimalExport()
-    {
-        $this->request('GET', "/exercise/api/exercises/{$this->ex1->getUuid()}/minimal", $this->john);
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $content = json_decode($this->client->getResponse()->getContent());
-        $this->assertEquals($this->ex1->getUuid(), $content->id);
-        $this->assertEquals('ex1', $content->title);
-        $this->assertFalse(property_exists($content, 'steps'));
-    }
-
     public function testAnonymousAttempt()
     {
         $this->request('POST', "/exercise/api/exercises/{$this->ex1->getId()}/attempts");

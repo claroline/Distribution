@@ -193,13 +193,4 @@ abstract class Interaction
       * @return \UJM\ExoBundle\Entity\InteractionX (qcm, graphic, open, ...)
       */
      abstract public function getInteractionX($questionId);
-
-     /**
-      * abstract method.
-      *
-      * @param int $interId id of inetraction
-      * @param \Symfony\Component\HttpFoundation\Session\SessionInterface $session
-      * @param \UJM\ExoBundle\Entity\InteractionX (qcm, graphic, open, ...) $interactionX
-      */
-     abstract public function getResponseGiven($interId, SessionInterface $session, $interactionX);
 }
