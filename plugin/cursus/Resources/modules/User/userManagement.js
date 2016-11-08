@@ -1,3 +1,5 @@
+/*global Routing*/
+/*global Translator*/
 import $ from 'jquery'
 
 const userId = parseInt($('#user-sessions-datas-box').data('user-id'))
@@ -112,7 +114,6 @@ $('.session-event-registration-btn').on('click', function () {
 })
 
 $('#session-event-registration-modal').on('click', '.register-user-to-session-event-btn', function () {
-  const sessionId = parseInt($(this).data('session-id'))
   const sessionEventId = parseInt($(this).data('session-event-id'))
   $.ajax({
     url: Routing.generate('api_post_session_event_user_registration', {sessionEvent: sessionEventId, user: userId}),

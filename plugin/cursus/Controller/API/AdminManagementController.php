@@ -2061,7 +2061,7 @@ class AdminManagementController extends Controller
                 }
                 if (isset($users['trainers'])) {
                     foreach ($users['trainers'] as $user) {
-                        fwrite($handle, implode(';', [$user->getFirstName(), $user->getLastName()]) . PHP_EOL);
+                        fwrite($handle, implode(';', [$user->getFirstName(), $user->getLastName()]).PHP_EOL);
                     }
                 }
                 if (count($users) === 2) {
@@ -2070,7 +2070,7 @@ class AdminManagementController extends Controller
                 }
                 if (isset($users['learners'])) {
                     foreach ($users['learners'] as $user) {
-                        fwrite($handle, implode(';', [$user->getFirstName(), $user->getLastName()]) . PHP_EOL);
+                        fwrite($handle, implode(';', [$user->getFirstName(), $user->getLastName()]).PHP_EOL);
                     }
                 }
                 fclose($handle);
@@ -2122,7 +2122,7 @@ class AdminManagementController extends Controller
                 }
                 if (isset($users['trainers'])) {
                     foreach ($users['trainers'] as $user) {
-                        fwrite($handle, implode(';', [$user->getFirstName(), $user->getLastName()]) . PHP_EOL);
+                        fwrite($handle, implode(';', [$user->getFirstName(), $user->getLastName()]).PHP_EOL);
                     }
                 }
                 if (count($users) === 2) {
@@ -2131,7 +2131,7 @@ class AdminManagementController extends Controller
                 }
                 if (isset($users['participants'])) {
                     foreach ($users['participants'] as $user) {
-                        fwrite($handle, implode(';', [$user->getFirstName(), $user->getLastName()]) . PHP_EOL);
+                        fwrite($handle, implode(';', [$user->getFirstName(), $user->getLastName()]).PHP_EOL);
                     }
                 }
                 fclose($handle);
