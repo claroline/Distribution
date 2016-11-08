@@ -25,6 +25,8 @@ export default class UserController {
     this.fields = []
     this.managedOrganizations = []
     this.$uibModal = $uibModal
+    //console.log(Configuration.getConfig())
+    //console.log(Configuration.get('administration.users.buttons'))
 
     const columns = [
       {
