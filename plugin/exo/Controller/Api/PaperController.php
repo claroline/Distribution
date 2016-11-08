@@ -17,13 +17,14 @@ use UJM\ExoBundle\Entity\Question;
 use UJM\ExoBundle\Entity\Step;
 use UJM\ExoBundle\Entity\StepQuestion;
 use UJM\ExoBundle\Manager\PaperManager;
-use UJM\ExoBundle\Manager\QuestionManager;
+use UJM\ExoBundle\Manager\Question\QuestionManager;
 use UJM\ExoBundle\Manager\StepManager;
 
 /**
  * Paper Controller.
  *
  * @EXT\Route(
+ *     "/papers",
  *     requirements={"id"="\d+"},
  *     options={"expose"=true},
  *     defaults={"_format": "json"}
@@ -86,7 +87,7 @@ class PaperController
     /**
      * Records an answer for an exercise Step.
      *
-     * @EXT\Route("/papers/{paperId}/steps/{stepId}", name="exercise_submit_step")
+     * @EXT\Route("/{paperId}/steps/{stepId}", name="exercise_submit_step")
      * @EXT\Method("PUT")
      *
      * @EXT\ParamConverter("user",  converter="current_user", options={"allowAnonymous"=true})
@@ -144,7 +145,7 @@ class PaperController
     /**
      * Marks a paper as finished.
      *
-     * @EXT\Route("/papers/{id}/end", name="exercise_finish_paper")
+     * @EXT\Route("/{id}/end", name="exercise_finish_paper")
      * @EXT\Method("PUT")
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
      *
@@ -167,7 +168,7 @@ class PaperController
      * Also includes the complete definition and solution of each question
      * associated with the exercise.
      *
-     * @EXT\Route("/papers/{id}", name="exercise_export_paper")
+     * @EXT\Route("/{id}", name="exercise_export_paper")
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
      *
      * @param Paper $paper
@@ -192,7 +193,7 @@ class PaperController
     /**
      * Saves the score of a question that need manual correction.
      *
-     * @EXT\Route("/papers/{id}/questions/{questionId}/score/{score}", name="exercise_save_score")
+     * @EXT\Route("/{id}/questions/{questionId}/score/{score}", name="exercise_save_score")
      * @EXT\Method("PUT")
      * @EXT\ParamConverter("question", class="UJMExoBundle:Question", options={"mapping": {"questionId": "id"}})
      *

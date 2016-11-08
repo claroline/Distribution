@@ -1,36 +1,36 @@
 <?php
 
+namespace UJM\ExoBundle\Services\classes\QTI;
+
+use UJM\ExoBundle\Entity\InteractionOpen;
+use UJM\ExoBundle\Entity\WordResponse;
+use UJM\ExoBundle\Library\Question\QuestionType;
+
 /**
  * To import an open question whith one word.
  */
-
-namespace UJM\ExoBundle\Services\classes\QTI;
-
-use UJM\ExoBundle\Entity\WordResponse;
-
 class OpenShortImport extends OpenImport
 {
     /**
      * overload the export method.
      *
-     * @param qtiRepository $qtiRepos
-     * @param DOMElement    $assessmentItem assessmentItem of the question to imported
+     * @param QtiRepository $qtiRepo
+     * @param \DOMElement   $assessmentItem assessmentItem of the question to imported
      * @param string        $path           parent directory of the files
      *
-     * @return UJM\ExoBundle\Entity\InteractionOpen
+     * @return InteractionOpen
      */
-    public function import(qtiRepository $qtiRepos, $assessmentItem, $path)
+    public function import(QtiRepository $qtiRepo, $assessmentItem, $path)
     {
         $this->codeType = 3;
-        parent::import($qtiRepos, $assessmentItem, $path);
+        parent::import($qtiRepo, $assessmentItem, $path);
         $this->createWordResponse();
+
+        $this->question->setMimeType(QuestionType::WORDS);
 
         return $this->interactionOpen;
     }
 
-    /**
-     *
-     */
     protected function getPromptChild()
     {
         $text = '';
@@ -65,7 +65,7 @@ class OpenShortImport extends OpenImport
             $keyWord->setResponse($me->getAttribute('mapKey'));
             $keyWord->setScore($me->getAttribute('mappedValue'));
             $keyWord->setInteractionOpen($this->interactionOpen);
-            if ($me->getAttribute('caseSensitive') == true) {
+            if ((string) $me->getAttribute('caseSensitive') === 'true') {
                 $keyWord->setCaseSensitive(true);
             } else {
                 $keyWord->setCaseSensitive(false);

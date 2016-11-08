@@ -19,6 +19,7 @@ module.exports = {
     plugins.assetsInfoFile(),
     plugins.bowerFileLookup(),
     plugins.distributionShortcut(),
+    plugins.noCircularDependencies(),
     ...plugins.dllReferences(shared.dllManifests())
   ],
   module: {
@@ -28,7 +29,8 @@ module.exports = {
       loaders.jqueryUiNoAmd(),
       loaders.css(),
       loaders.imageUris(),
-      loaders.modernizr()
+      loaders.modernizr(),
+      loaders.json()
     ]
   },
   externals: shared.externals(),

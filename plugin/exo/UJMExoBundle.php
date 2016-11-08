@@ -5,6 +5,7 @@ namespace UJM\ExoBundle;
 use Claroline\CoreBundle\Library\PluginBundle;
 use Claroline\KernelBundle\Bundle\ConfigurationBuilder;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use UJM\ExoBundle\DependencyInjection\Compiler\QuestionDefinitionsPass;
 use UJM\ExoBundle\DependencyInjection\Compiler\QuestionHandlerPass;
 use UJM\ExoBundle\Installation\AdditionalInstaller;
 
@@ -19,7 +20,7 @@ class UJMExoBundle extends PluginBundle
     {
         $config = new ConfigurationBuilder();
 
-        return $config->addRoutingResource(__DIR__.'/Resources/config/routing.yml', null, 'exercise');
+        return $config->addRoutingResource(__DIR__.'/Resources/config/routing.yml');
     }
 
     public function getRequiredFixturesDirectory($environment)
@@ -36,5 +37,6 @@ class UJMExoBundle extends PluginBundle
     {
         parent::build($container);
         $container->addCompilerPass(new QuestionHandlerPass());
+        $container->addCompilerPass(new QuestionDefinitionsPass());
     }
 }

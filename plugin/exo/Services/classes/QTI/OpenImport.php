@@ -1,13 +1,14 @@
 <?php
 
-/**
- * To import an open question.
- */
-
 namespace UJM\ExoBundle\Services\classes\QTI;
 
 use UJM\ExoBundle\Entity\InteractionOpen;
+use UJM\ExoBundle\Entity\TypeOpenQuestion;
+use UJM\ExoBundle\Library\Question\QuestionType;
 
+/**
+ * To import an open question.
+ */
 class OpenImport extends QtiImport
 {
     protected $interactionOpen;
@@ -16,13 +17,13 @@ class OpenImport extends QtiImport
     /**
      * Implements the abstract method.
      *
-     * @param qtiRepository $qtiRepos
-     * @param DOMElement    $assessmentItem assessmentItem of the question to imported
+     * @param qtiRepository $qtiRepo
+     * @param \DOMElement   $assessmentItem assessmentItem of the question to imported
      * @param string        $path           parent directory of the files
      */
-    public function import(qtiRepository $qtiRepos, $assessmentItem, $path)
+    public function import(QtiRepository $qtiRepo, $assessmentItem, $path)
     {
-        $this->qtiRepos = $qtiRepos;
+        $this->qtiRepos = $qtiRepo;
         $this->path = $path;
         $this->getQTICategory();
         $this->initAssessmentItem($assessmentItem);
@@ -31,23 +32,28 @@ class OpenImport extends QtiImport
             return false;
         }
 
-        $this->createQuestion(InteractionOpen::TYPE);
-        $this->createInteractionOpen();
+        $codeTypeOpen = $this->getCodeTypeOpen();
+
+        $mimeType = QuestionType::WORDS;
+        if ('long' === $codeTypeOpen->getValue()) {
+            $mimeType = QuestionType::OPEN;
+        }
+
+        $this->createQuestion(InteractionOpen::TYPE, $mimeType);
+        $this->createInteractionOpen($codeTypeOpen);
     }
 
     /**
      * Create the InteractionOpen object.
      */
-    protected function createInteractionOpen()
+    protected function createInteractionOpen($codeTypeOpen)
     {
         $ocd = $this->assessmentItem->getElementsByTagName('outcomeDeclaration')->item(0);
         $df = $ocd->getElementsByTagName('defaultValue')->item(0);
         $val = $df->getElementsByTagName('value')->item(0);
-        $codeTypeOpen = $this->getCodeTypeOpen();
 
         $this->interactionOpen = new InteractionOpen();
         $this->interactionOpen->setQuestion($this->question);
-        $this->interactionOpen->setOrthographyCorrect(false);
         $this->interactionOpen->setTypeOpenQuestion($codeTypeOpen);
         $this->interactionOpen->setScoreMaxLongResp($val->nodeValue);
 
@@ -59,7 +65,7 @@ class OpenImport extends QtiImport
      * return the TypeOpenQuestion.
      *
      *
-     * @return UJM\ExoBundle\Entity\TypeOpenQuestion
+     * @return TypeOpenQuestion
      */
     protected function getCodeTypeOpen()
     {
@@ -109,7 +115,7 @@ class OpenImport extends QtiImport
 
     private function longQtiValidate()
     {
-        if ($this->assessmentItem->getElementsByTagName('responseDeclaration')->item(0) == null) {
+        if (empty($this->assessmentItem->getElementsByTagName('responseDeclaration')->item(0))) {
             return false;
         }
 
@@ -118,11 +124,8 @@ class OpenImport extends QtiImport
 
     private function shortQtiValidate()
     {
-        if ($this->assessmentItem->getElementsByTagName('responseDeclaration')->item(0) == null) {
-            return false;
-        }
         $rd = $this->assessmentItem->getElementsByTagName('responseDeclaration')->item(0);
-        if ($rd->getElementsByTagName('mapping')->item(0) == null) {
+        if (empty($rd) || empty($rd->getElementsByTagName('mapping')->item(0))) {
             return false;
         }
 

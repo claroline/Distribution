@@ -13,9 +13,10 @@ module.exports = config => {
     ],
     preprocessors: {
       'main/core/Resources/modules/karma/index.js': ['webpack'],
+      './*/*/Resources/**/[^.]+.js': ['coverage'],
       './*/*/Resources/**/*test.js': ['webpack']
     },
-    reporters: ['progress'],
+    reporters: ['dots', 'coverage'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_WARN,

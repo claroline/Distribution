@@ -227,47 +227,4 @@ class PaperService
 
         return $orderFormated;
     }
-
-    /**
-     * For the navigation in a paper
-     * Finds and displays the question selected by the User in an assessment.
-     *
-     *
-     * @param int                               $numQuestionToDisplayed position of the question in the paper
-     * @param \UJM\ExoBundle\Entity\Interaction $interactionToDisplay   interaction (question) to displayed
-     * @param string                            $typeInterToDisplayed
-     * @param bool                              $dispButtonInterrupt    to display or no the button "Interrupt"
-     * @param int                               $maxAttempsAllowed      the number of max attemps allowed for the exercise
-     * @param Claroline workspace               $workspace
-     * @param \UJM\ExoBundle\Entity\Paper       $paper                  current paper
-     * @param SessionInterface session
-     *
-     * @return array
-     */
-    public function displayQuestion(
-        $numQuestionToDisplayed, $interactionToDisplay,
-        $typeInterToDisplayed, $dispButtonInterrupt, $maxAttempsAllowed,
-        $workspace, Paper $paper, SessionInterface $session
-    ) {
-        $tabOrderInter = $session->get('tabOrderInter');
-
-        $interSer = $this->container->get('ujm.exo_'.$interactionToDisplay->getType());
-        $interactionToDisplayed = $interSer->getInteractionX($interactionToDisplay->getId());
-
-        $responseGiven = $interSer->getResponseGiven($interactionToDisplay, $session, $interactionToDisplayed);
-
-        $array['workspace'] = $workspace;
-        $array['tabOrderInter'] = $tabOrderInter;
-        $array['interactionToDisplayed'] = $interactionToDisplayed;
-        $array['interactionType'] = $typeInterToDisplayed;
-        $array['numQ'] = $numQuestionToDisplayed;
-        $array['paper'] = $session->get('paper');
-        $array['numAttempt'] = $paper->getNumPaper();
-        $array['response'] = $responseGiven;
-        $array['dispButtonInterrupt'] = $dispButtonInterrupt;
-        $array['maxAttempsAllowed'] = $maxAttempsAllowed;
-        $array['_resource'] = $paper->getExercise();
-
-        return $array;
-    }
 }

@@ -71,11 +71,22 @@ const modernizr = () => {
   }
 }
 
+/**
+ * Loads JSON files.
+ */
+const json = () => {
+  return {
+    test: /\.json$/,
+    loader: 'json'
+  }
+}
+
 module.exports = {
   babel,
   rawHtml,
   jqueryUiNoAmd,
   css,
   imageUris,
-  modernizr
+  modernizr,
+  json
 }
