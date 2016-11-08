@@ -56,7 +56,6 @@ abstract class QtiImport
         $this->objectToResource();
         $this->question = new Question();
         $this->question->setTitle($this->getTitle());
-        $this->question->setUuid(uniqid());
         $this->question->setMimeType($mimeType);
         $this->question->setDateCreate(new \Datetime());
         $this->question->setUser($this->user);
