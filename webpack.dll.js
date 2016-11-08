@@ -15,6 +15,7 @@ module.exports = {
   plugins: [
     plugins.assetsInfoFile('webpack-dlls.json'),
     plugins.bowerFileLookup(),
+    plugins.clarolineConfiguration(),
     plugins.dlls()
   ],
   devtool: false

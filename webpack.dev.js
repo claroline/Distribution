@@ -14,12 +14,13 @@ module.exports = {
   resolve: {
     root: paths.bower(),
     alias: shared.aliases()
-  },
+},
   plugins: [
     plugins.assetsInfoFile(),
     plugins.bowerFileLookup(),
     plugins.distributionShortcut(),
-    plugins.clarolineConfiguration(),
+    //plugins.clarolineConfiguration(),
+    plugins.configShortcut(),
     ...plugins.dllReferences(shared.dllManifests())
   ],
   module: {
