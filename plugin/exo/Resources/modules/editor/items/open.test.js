@@ -27,14 +27,14 @@ describe('Open reducer', () => {
 
   it('updates base properties and marks them as touched', () => {
     const item = makeFixture()
-    const reduced = reduce(item, subActions.updateOpen(item.id, 'maxLength', 255))
+    const reduced = reduce(item, subActions.update('maxLength', 255))
     const expected = makeFixture({maxLength: 255, _touched: {maxLength: true}})
     ensure.equal(reduced, expected)
   })
 
   it('sanitizes incoming data', () => {
     const item = makeFixture()
-    const reduced = reduce(item, subActions.updateOpen(item.id, 'maxScore', '10'))
+    const reduced = reduce(item, subActions.update('maxScore', '10'))
     const expected = makeFixture({
       maxScore: 10,
       _touched: {
@@ -147,8 +147,10 @@ describe('<Open/>', () => {
     ensure.invalidProps('Open', ['item.id', 'onChange'])
   })
 
-  it('renders appropriate props', () => {
-    mount(
+  it('renders appropriate fields and handle changes', () => {
+    let updatedValue = null
+
+    const form = mount(
       <Open
         item={{
           id: '1',
@@ -156,10 +158,22 @@ describe('<Open/>', () => {
           maxLength: 255,
           maxScore: 10
         }}
-        onChange={() => {}}
+        onChange={value => updatedValue = value}
       />
     )
     ensure.propTypesOk()
+
+    const maxScore = form.find('input#item-1-maxScore')
+    ensure.equal(maxScore.length, 1, 'has maxScore input')
+    maxScore.simulate('change', {target: {value: 10}})
+    ensure.equal(updatedValue.value, 10)
+    ensure.equal(updatedValue.property, 'maxScore')
+
+    const maxLength = form.find('input#item-1-maxLength')
+    ensure.equal(maxLength.length, 1, 'has maxLength input')
+    maxLength.simulate('change', {target: {value: 255}})
+    ensure.equal(updatedValue.value, 255)
+    ensure.equal(updatedValue.property, 'maxLength')
   })
 })
 

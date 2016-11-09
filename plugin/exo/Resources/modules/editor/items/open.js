@@ -1,15 +1,15 @@
 import {Open as component} from './open.jsx'
 import {ITEM_CREATE} from './../actions'
-import {notBlank, number, gteZero} from './../lib/validate'
+import {setIfError, notBlank, number, gteZero, chain} from './../lib/validate'
 import {makeActionCreator} from './../util'
 import cloneDeep from 'lodash/cloneDeep'
 import merge from 'lodash/merge'
 import set from 'lodash/set'
 
-const UPDATE_OPEN = 'UPDATE_OPEN'
+const UPDATE = 'UPDATE'
 
 export const actions = {
-  updateOpen: makeActionCreator(UPDATE_OPEN, 'id', 'property', 'value')
+  update: makeActionCreator(UPDATE, 'property', 'value')
 }
 
 function reduce(item = {}, action) {
@@ -21,18 +21,13 @@ function reduce(item = {}, action) {
       })
     }
 
-    case UPDATE_OPEN: {
+    case UPDATE: {
       const newItem = cloneDeep(item)
       newItem._touched = merge(
         newItem._touched || {},
         set({}, action.property, true)
       )
-      const newValue = parseFloat(action.value)
-      if(action.property === 'maxScore'){
-        newItem.maxScore = newValue
-      } else if(action.property === 'maxLength'){
-        newItem.maxLength = newValue
-      }
+      newItem[action.property] = parseFloat(action.value)
       return newItem
     }
   }
@@ -41,34 +36,10 @@ function reduce(item = {}, action) {
 
 
 function validate(values) {
-  let errors = {}
-  if(undefined !== notBlank(values.maxScore)){
-    errors =  {
-      maxScore: notBlank(values.maxScore)
-    }
-  } else if(undefined !== number(values.maxScore)){
-    errors = {
-      maxScore : number(values.maxScore)
-    }
-  } else if(undefined !== gteZero(values.maxScore)){
-    errors = {
-      maxScore : gteZero(values.maxScore)
-    }
-  }
+  const errors = {}
+  setIfError(errors, 'maxScore', chain(values.maxScore, [notBlank, number, gteZero]))
+  setIfError(errors, 'maxLength', chain(values.maxLength, [notBlank, number, gteZero]))
 
-  if(undefined !== notBlank(values.maxLength)){
-    errors =  {
-      maxLength: notBlank(values.maxLength)
-    }
-  } else if(undefined !== number(values.maxLength)){
-    errors = {
-      maxLength : number(values.maxLength)
-    }
-  } else if(undefined !== gteZero(values.maxLength)){
-    errors = {
-      maxLength : gteZero(values.maxLength)
-    }
-  }
   return errors
 }
 

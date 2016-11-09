@@ -1,4 +1,4 @@
-import React, {PropTypes as T}from 'react'
+import React, {PropTypes as T} from 'react'
 import {tex} from './../lib/translate'
 import {actions} from './open'
 import get from 'lodash/get'
@@ -18,7 +18,7 @@ export const Open = (props) =>
         value={props.item.maxScore}
         className="form-control"
         onChange={e => props.onChange(
-          actions.updateOpen(props.item.id, 'maxScore', e.target.value)
+          actions.update('maxScore', e.target.value)
         )}
       />
     </FormGroup>
@@ -35,7 +35,7 @@ export const Open = (props) =>
         value={props.item.maxLength}
         className="form-control"
         onChange={e => props.onChange(
-          actions.updateOpen(props.item.id, 'maxLength', e.target.value)
+          actions.update('maxLength', e.target.value)
         )}
       />
     </FormGroup>
