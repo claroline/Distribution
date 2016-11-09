@@ -1,8 +1,8 @@
-const paths = require('./main/core/Resources/webpack/paths')
-const entries = require('./main/core/Resources/webpack/entries')
-const shared = require('./main/core/Resources/webpack/shared')
-const plugins = require('./main/core/Resources/webpack/plugins')
-const loaders = require('./main/core/Resources/webpack/loaders')
+const paths = require('./main/core/Resources/server/webpack/paths')
+const entries = require('./main/core/Resources/server/webpack/entries')
+const shared = require('./main/core/Resources/server/webpack/shared')
+const plugins = require('./main/core/Resources/server/webpack/plugins')
+const loaders = require('./main/core/Resources/server/webpack/loaders')
 
 if (process.env.NODE_ENV !== 'production') {
   throw new Error('Production builds must have NODE_ENV=production')
@@ -27,7 +27,8 @@ module.exports = {
     plugins.dedupeModules(),
     plugins.rejectBuildErrors(),
     plugins.exitWithErrorCode(),
-    //plugins.clarolineConfiguration(),
+    plugins.clarolineConfiguration(),
+    plugins.configShortcut(),
     ...plugins.dllReferences(shared.dllManifests())
   ],
   module: {

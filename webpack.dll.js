@@ -1,6 +1,6 @@
-const paths = require('./main/core/Resources/webpack/paths')
-const plugins = require('./main/core/Resources/webpack/plugins')
-const libraries = require('./main/core/Resources/webpack/libraries')
+const paths = require('./main/core/Resources/server/webpack/paths')
+const plugins = require('./main/core/Resources/server/webpack/plugins')
+const libraries = require('./main/core/Resources/server/webpack/libraries')
 
 module.exports = {
   entry: libraries,
@@ -15,7 +15,6 @@ module.exports = {
   plugins: [
     plugins.assetsInfoFile('webpack-dlls.json'),
     plugins.bowerFileLookup(),
-    plugins.clarolineConfiguration(),
     plugins.dlls()
   ],
   devtool: false

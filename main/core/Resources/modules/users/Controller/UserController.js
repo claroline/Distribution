@@ -4,7 +4,7 @@ import UserInfoHtml from '../Partial/user_info.html'
 import angular from 'angular/index'
 import removeTpl from '../Partial/csv_remove.html'
 import importTpl from '../Partial/csv_facet.html'
-//import Configuration from '#/main/core/_librairy/Configuration'
+import Configuration from '#/main/core/_librairy/Configuration/Configuration'
 
 /* global Routing */
 /* global Translator */
@@ -25,8 +25,7 @@ export default class UserController {
     this.fields = []
     this.managedOrganizations = []
     this.$uibModal = $uibModal
-    //console.log(Configuration.getConfig())
-    //console.log(Configuration.get('administration.users.buttons'))
+    const buttons = Configuration.getUsersAdministrationActions()
 
     const columns = [
       {
@@ -79,6 +78,12 @@ export default class UserController {
           content += `
             <button title='${switchTitle}' class='btn btn-default' ng-click='uc.switchPersonalWorkspace($row)'><i ng-class="$row.personal_workspace ? 'fa fa-ban': 'fa fa-book'"></i></button>
           `
+
+          buttons.forEach(button => {
+            content += `
+                  <a title='${button.name}' href=${button.href} class='btn btn-default'><i class="${button.class}"></i></a>
+              `
+          })
 
           return `<div>${content}</div>`
         }
@@ -229,7 +234,6 @@ export default class UserController {
 
     const users = this.selected.map(s => s.username).join(', ')
     const roles = this.selectedRoles.map(r => this.translate(r.translation_key)).join(', ')
-
 
     this.ClarolineAPIService.confirm(
       {url, method: 'PUT'},
