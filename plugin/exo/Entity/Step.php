@@ -4,6 +4,7 @@ namespace UJM\ExoBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Represents a Step in an Exercise.
@@ -99,6 +100,7 @@ class Step
 
     public function __construct()
     {
+        $this->uuid = Uuid::uuid4();
         $this->stepQuestions = new ArrayCollection();
     }
 

@@ -5,6 +5,7 @@ namespace UJM\ExoBundle\Entity;
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 use UJM\ExoBundle\Library\Mode\CorrectionMode;
 use UJM\ExoBundle\Library\Mode\MarkMode;
 
@@ -187,6 +188,7 @@ class Exercise extends AbstractResource
 
     public function __construct()
     {
+        $this->uuid = Uuid::uuid4();
         $this->dateCorrection = new \DateTime();
         $this->steps = new ArrayCollection();
     }

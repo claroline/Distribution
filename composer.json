@@ -43,6 +43,7 @@
         "jms/security-extra-bundle": "1.5.1",
         "jms/serializer-bundle": "~0.13",
         "jms/twig-js-bundle": "1.0.0",
+        "johngrogg/ics-parser": "dev-master",
         "u01jmg3/ics-parser": "2.0.0",
         "json-quiz/json-quiz": "dev-master",
         "knplabs/knp-menu-bundle": "2.0.0",
@@ -82,7 +83,8 @@
         "innova/angular-ui-resource-picker-bundle": "~6.0",
         "innova/angular-ui-tinymce-bundle": "5.*",
         "claroline/front-end-bundle": "dev-7.x-test",
-        "ocramius/proxy-manager": "1.0.2"
+        "ocramius/proxy-manager": "1.0.2",
+        "ramsey/uuid": "~3.5"
     },
     "replace": {
         "claroline/distribution-bundle": "*",
