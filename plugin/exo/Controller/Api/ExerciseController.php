@@ -31,7 +31,7 @@ use UJM\ExoBundle\Transfer\Json\ValidationException;
  * )
  * @EXT\Method("GET")
  */
-class ExerciseController
+class ExerciseController extends AbstractController
 {
     private $om;
     private $authorization;
@@ -112,25 +112,30 @@ class ExerciseController
     {
         $this->assertHasPermission('ADMINISTRATE', $exercise);
 
-        $dataRaw = $request->getContent();
+        $errors = [];
 
-        if ($dataRaw) {
-            $data = json_decode($dataRaw);
-            if (null === $data) {
-                return new JsonResponse([[
-                    'path' => '',
-                    'message' => 'Invalid JSON data',
-                ]], 422);
-            }
-
+        $data = $this->decodeRequestData($request);
+        if (null === $data) {
+            $errors[] = [
+                'path' => '',
+                'message' => 'Invalid JSON data',
+            ];
+        } else {
+            // Try to update exercise
             try {
                 $this->exerciseManager->update($exercise, $data);
             } catch (ValidationException $e) {
-                return new JsonResponse($e->getErrors(), 422);
+                $errors = $e->getErrors();
             }
         }
 
-        return new JsonResponse($this->exerciseManager->export($exercise, [Transfer::INCLUDE_SOLUTIONS]));
+        if (empty($errors)) {
+            // Exercise updated
+            return new JsonResponse($this->exerciseManager->export($exercise, [Transfer::INCLUDE_SOLUTIONS]));
+        } else {
+            // Invalid data received
+            return new JsonResponse($errors, 422);
+        }
     }
 
     /**

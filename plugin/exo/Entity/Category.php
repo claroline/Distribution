@@ -4,6 +4,7 @@ namespace UJM\ExoBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Claroline\CoreBundle\Entity\User;
+use Ramsey\Uuid\Uuid;
 
 /**
  * UJM\ExoBundle\Entity\Category.
@@ -53,7 +54,7 @@ class Category
      */
     public function __construct()
     {
-        // TODO : initialize UUID
+        $this->uuid = Uuid::uuid4();
     }
 
     /**

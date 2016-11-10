@@ -72,7 +72,7 @@ class Persister
     {
         $choice = new Choice();
         $choice->setLabel($text);
-        $choice->setOrdre($order);
+        $choice->setOrder($order);
         $choice->setWeight($score);
         $this->om->persist($choice);
 
@@ -287,14 +287,23 @@ class Persister
     }
 
     /**
+     * Creates a category.
+     * 
      * @param string $name
+     * @param User $user
      *
      * @return Category
      */
-    public function category($name)
+    public function category($name, User $user = null)
     {
         $category = new Category();
-        $category->setValue($name);
+        $category->setUuid(uniqid());
+        $category->setName($name);
+        
+        if (!empty($user)) {
+            $category->setUser($user);
+        }
+
         $this->om->persist($category);
 
         return $category;

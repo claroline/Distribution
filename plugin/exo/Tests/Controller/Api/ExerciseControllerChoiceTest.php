@@ -72,7 +72,7 @@ class ExerciseControllerChoiceTest extends TransactionalTestCase
 
         $this->request(
             'PUT',
-            "/exercise/api/papers/{$pa1->getId()}/steps/{$step->getId()}",
+            "/api/papers/{$pa1->getId()}/steps/{$step->getId()}",
             $this->john,
             ['data' => ['not a choice id']]
         );
@@ -91,7 +91,7 @@ class ExerciseControllerChoiceTest extends TransactionalTestCase
 
         $this->request(
             'PUT',
-            "/exercise/api/papers/{$pa1->getId()}/steps/{$step->getId()}",
+            "/api/papers/{$pa1->getId()}/steps/{$step->getId()}",
             $this->john,
             [
                 'data' => [$this->qu1->getId() => [$id]],

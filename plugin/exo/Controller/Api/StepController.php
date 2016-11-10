@@ -24,6 +24,8 @@ use UJM\ExoBundle\Manager\StepManager;
  *     defaults={"_format": "json"}
  * )
  * @EXT\ParamConverter("exercise", class="UJMExoBundle:Exercise", options={"mapping": {"exerciseId": "id"}})
+ *
+ * @deprecated Step management is now done in the exercise update process. Stand alone management is no longer needed
  */
 class StepController
 {
@@ -44,9 +46,9 @@ class StepController
 
     /**
      * @DI\InjectParams({
-     *     "authorization" = @DI\Inject("security.authorization_checker"),
+     *     "authorization"   = @DI\Inject("security.authorization_checker"),
      *     "exerciseManager" = @DI\Inject("ujm.exo.exercise_manager"),
-     *     "stepManager" = @DI\Inject("ujm.exo.step_manager")
+     *     "stepManager"     = @DI\Inject("ujm.exo.step_manager")
      * })
      *
      * @param AuthorizationCheckerInterface $authorization

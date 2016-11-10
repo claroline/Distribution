@@ -77,7 +77,7 @@ class HintControllerTest extends TransactionalTestCase
         $pa1 = $this->paperManager->createPaper($this->ex1, $this->john);
         $this->om->flush();
 
-        $this->request('GET', "/exercise/api/papers/{$pa1->getId()}/hints/{$this->hi1->getId()}");
+        $this->request('GET', "/api/papers/{$pa1->getId()}/hints/{$this->hi1->getId()}");
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
     }
 
@@ -89,7 +89,7 @@ class HintControllerTest extends TransactionalTestCase
         $pa1->setEnd($date);
         $this->om->flush();
 
-        $this->request('GET', "/exercise/api/papers/{$pa1->getId()}/hints/{$this->hi1->getId()}", $this->john);
+        $this->request('GET', "/api/papers/{$pa1->getId()}/hints/{$this->hi1->getId()}", $this->john);
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
     }
 
@@ -98,7 +98,7 @@ class HintControllerTest extends TransactionalTestCase
         $pa1 = $this->paperManager->createPaper($this->ex1, $this->john);
         $this->om->flush();
 
-        $this->request('GET', "/exercise/api/papers/{$pa1->getId()}/hints/{$this->hi1->getId()}", $this->bob);
+        $this->request('GET', "/api/papers/{$pa1->getId()}/hints/{$this->hi1->getId()}", $this->bob);
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
     }
 
@@ -107,7 +107,7 @@ class HintControllerTest extends TransactionalTestCase
         $pa1 = $this->paperManager->createPaper($this->ex1, $this->john);
         $this->om->flush();
 
-        $this->request('GET', "/exercise/api/papers/{$pa1->getId()}/hints/{$this->hi1->getId()}", $this->john);
+        $this->request('GET', "/api/papers/{$pa1->getId()}/hints/{$this->hi1->getId()}", $this->john);
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $this->assertEquals('hi1', json_decode($this->client->getResponse()->getContent()));
     }

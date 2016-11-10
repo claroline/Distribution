@@ -58,6 +58,7 @@ class QuestionSerializer implements SerializerInterface
      * QuestionSerializer constructor.
      *
      * @param ObjectManager                 $om
+     * @param TokenStorageInterface         $tokenStorage
      * @param QuestionDefinitionsCollection $questionDefinitions
      * @param CategorySerializer            $categorySerializer
      * @param HintSerializer                $hintSerializer
@@ -74,12 +75,14 @@ class QuestionSerializer implements SerializerInterface
      */
     public function __construct(
         ObjectManager $om,
+        TokenStorageInterface $tokenStorage,
         QuestionDefinitionsCollection $questionDefinitions,
         CategorySerializer $categorySerializer,
         HintSerializer $hintSerializer,
         ResourceContentSerializer $resourceContentSerializer)
     {
         $this->om = $om;
+        $this->tokenStorage = $tokenStorage;
         $this->questionDefinitions = $questionDefinitions;
         $this->categorySerializer = $categorySerializer;
         $this->hintSerializer = $hintSerializer;
@@ -212,15 +215,24 @@ class QuestionSerializer implements SerializerInterface
             $this->deserializeResources($question, $data->resources, $options);
         }
 
-        $this->deserializeQuestionType($question, $data, $options);
-
         if (isset($data->meta)) {
             $this->deserializeMetadata($question, $data->meta);
         }
 
+        $this->deserializeQuestionType($question, $data, $options);
+
         return $question;
     }
 
+    /**
+     * Serializes Question data specific to its type.
+     * Forwards the serialization to the correct handler.
+     *
+     * @param Question $question
+     * @param array $options
+     *
+     * @return \stdClass
+     */
     private function serializeQuestionType(Question $question, array $options = [])
     {
         $definition = $this->questionDefinitions->get($question->getMimeType());
@@ -228,6 +240,15 @@ class QuestionSerializer implements SerializerInterface
         return $definition->serializeQuestion($question->getInteraction(), $options);
     }
 
+    /**
+     * Deserializes Question data specific to its type.
+     * Forwards the serialization to the correct handler.
+     *
+     * @param Question $question
+     * @param \stdClass $data
+     *
+     * @param array $options
+     */
     private function deserializeQuestionType(Question $question, \stdClass $data, array $options = [])
     {
         $definition = $this->questionDefinitions->get($question->getMimeType());
@@ -263,7 +284,6 @@ class QuestionSerializer implements SerializerInterface
         if (in_array(Transfer::INCLUDE_ADMIN_META, $options)) {
             $metadata->model = $question->isModel();
 
-            // Includes the list of Exercises using this question
             /** @var QuestionRepository $questionRepo */
             $questionRepo = $this->om->getRepository('UJMExoBundle:Question');
 
@@ -301,7 +321,10 @@ class QuestionSerializer implements SerializerInterface
             }
         }
 
-        // TODO : Sets category
+        if (isset($metadata->category)) {
+            $category = $this->categorySerializer->deserialize($metadata->category);
+            $question->setCategory($category);
+        }
     }
 
     /**
