@@ -49,7 +49,7 @@ const distributionShortcut = () => {
  * import from 'clarolineconfig'
  */
 const configShortcut = () => {
-  return new webpack.NormalModuleReplacementPlugin(/^clarolineconfig$/, request => {
+  return new webpack.NormalModuleReplacementPlugin(/^bundle-configs$/, request => {
     request.request = paths.root() + '/web/dist/plugins-config.js'
   })
 }
@@ -134,8 +134,8 @@ const dlls = () => {
 const dllReferences = manifests => {
   return manifests.map(manifest => new webpack.DllReferencePlugin({
     context: '.',
-  manifest})
-  )
+    manifest
+  }))
 }
 
 const clarolineConfiguration = () => {

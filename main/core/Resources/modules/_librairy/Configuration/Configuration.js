@@ -1,22 +1,23 @@
-import config from 'clarolineconfig'
+import config from 'bundle-configs'
 import union from 'lodash/union'
 import get from 'lodash/get'
+import defaults from 'lodash/defaults'
 
 class Configuration {
-  constructor (config) {
+  constructor(config) {
     // set the default actions here
     this.config = getDefaultConfig(config)
   }
 
-  getConfig () {
+  getConfig() {
     return this.config
   }
 
-  setConfig (config) {
+  setConfig(config) {
     this.config = getDefaultConfig(config)
   }
 
-  getUsersAdministrationActions () {
+  getUsersAdministrationActions() {
     let actions = []
 
     for (var bundle in this.config) {
@@ -31,7 +32,7 @@ class Configuration {
 
 // default actions. Maybe do something cleaner later
 
-function getDefaultConfig (config) {
+function getDefaultConfig(config) {
   for (var bundle in config) {
     setDefaultBundle(config[bundle])
   }
@@ -39,26 +40,12 @@ function getDefaultConfig (config) {
   return config
 }
 
-function setDefaultBundle (bundle) {
+function setDefaultBundle(bundle) {
   if (bundle.actions) {
-    bundle.actions.forEach(action => {
-      setDefaultAction(action)
+    bundle.actions.forEach((action, key) => {
+      bundle.actions[key] = defaults({href: '#', class: 'fa fa-cog'}, action)
     })
   }
 }
 
-function setDefaultAction (action) {
-  if (!action.href) {
-    action.href = '#'
-  }
-
-  if (!action.class) {
-    action.class = 'fa fa-cog'
-  }
-
-  return action
-}
-
-const conf = new Configuration(config)
-
-export default conf
+export default new Configuration(config)
