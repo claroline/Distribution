@@ -87,7 +87,7 @@ class PaperControllerTest extends TransactionalTestCase
 
         $this->om->flush();
 
-        $this->request('GET', "/exercise/api/papers/{$pa1->getId()}", $this->bob);
+        $this->request('GET', "/api/papers/{$pa1->getId()}", $this->bob);
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $content = json_decode($this->client->getResponse()->getContent());
         $this->assertEquals($pa1->getId(), $content->paper->id);
@@ -101,7 +101,7 @@ class PaperControllerTest extends TransactionalTestCase
 
         $step = $this->ex1->getSteps()->get(0);
 
-        $this->request('PUT', "/exercise/api/papers/{$pa1->getId()}/steps/{$step->getId()}");
+        $this->request('PUT', "/api/papers/{$pa1->getId()}/steps/{$step->getId()}");
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
     }
 
@@ -115,7 +115,7 @@ class PaperControllerTest extends TransactionalTestCase
 
         $step = $this->ex1->getSteps()->get(0);
 
-        $this->request('PUT', "/exercise/api/papers/{$pa1->getId()}/steps/{$step->getId()}", $this->john);
+        $this->request('PUT', "/api/papers/{$pa1->getId()}/steps/{$step->getId()}", $this->john);
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
     }
 
@@ -126,7 +126,7 @@ class PaperControllerTest extends TransactionalTestCase
 
         $step = $this->ex1->getSteps()->get(0);
 
-        $this->request('PUT', "/exercise/api/papers/{$pa1->getId()}/steps/{$step->getId()}", $this->bob);
+        $this->request('PUT', "/api/papers/{$pa1->getId()}/steps/{$step->getId()}", $this->bob);
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
     }
 
@@ -135,7 +135,7 @@ class PaperControllerTest extends TransactionalTestCase
         $pa1 = $this->paperManager->createPaper($this->ex1, $this->john);
         $this->om->flush();
 
-        $this->request('PUT', "/exercise/api/papers/{$pa1->getId()}/end", $this->bob);
+        $this->request('PUT', "/api/papers/{$pa1->getId()}/end", $this->bob);
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
     }
 
@@ -145,7 +145,7 @@ class PaperControllerTest extends TransactionalTestCase
         $this->om->flush();
 
         // end the paper
-        $this->request('PUT', "/exercise/api/papers/{$pa1->getId()}/end", $this->john);
+        $this->request('PUT', "/api/papers/{$pa1->getId()}/end", $this->john);
 
         // Check if the Paper has been correctly updated
         $this->assertFalse($pa1->getInterupt());

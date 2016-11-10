@@ -58,7 +58,7 @@ class CategoryManager
         CategorySerializer $serializer)
     {
         $this->om = $om;
-        $this->repository = $this->om->getRepository('UJMExoBundle:Question\Category');
+        $this->repository = $this->om->getRepository('UJMExoBundle:Category');
         $this->validator = $validator;
         $this->serializer = $serializer;
     }
@@ -92,7 +92,7 @@ class CategoryManager
     }
 
     /**
-     * Validates and updates an Category entity with raw data.
+     * Validates and updates a Category entity with raw data.
      *
      * @param Category  $category
      * @param \stdClass $data
@@ -130,5 +130,26 @@ class CategoryManager
     public function export(Category $category, array $options = [])
     {
         return $this->serializer->serialize($category, $options);
+    }
+
+    /**
+     * Deletes a Category.
+     *
+     * @param Category $category
+     * 
+     * @throws ValidationException
+     */
+    public function delete(Category $category)
+    {
+        $count = $this->repository->countQuestions($category);
+        if ($count > 0) {
+            throw new ValidationException('Category can not be deleted', [[
+                'path' => '',
+                'message' => "category is used by {$count} questions"
+            ]]);
+        }
+
+        $this->om->remove($category);
+        $this->om->flush();
     }
 }

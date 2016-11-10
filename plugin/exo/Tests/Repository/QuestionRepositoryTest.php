@@ -1,6 +1,6 @@
 <?php
 
-namespace UJM\ExoBundle\Repository;
+namespace UJM\ExoBundle\Tests\Repository;
 
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Claroline\CoreBundle\Persistence\ObjectManager;
@@ -40,7 +40,7 @@ class QuestionRepositoryTest extends TransactionalTestCase
         $q3 = $this->persist->qcmQuestion('qcm3');
         $u1 = $this->persist->user('u1');
         $u2 = $this->persist->user('u2');
-        $c1 = $this->persist->category('c1');
+        $c1 = $this->persist->category('c1', $u1);
 
         $q1->setUser($u1);
         $q2->setUser($u1);
@@ -106,9 +106,9 @@ class QuestionRepositoryTest extends TransactionalTestCase
         $q3 = $this->persist->qcmQuestion('q3');
         $q4 = $this->persist->qcmQuestion('q4');
         $q5 = $this->persist->qcmQuestion('q5'); // extra
-        $c1 = $this->persist->category('bar');
-        $c2 = $this->persist->category('foo');
-        $c3 = $this->persist->category('baz');
+        $c1 = $this->persist->category('bar', $u1);
+        $c2 = $this->persist->category('foo', $u1);
+        $c3 = $this->persist->category('baz', $u1);
 
         $q1->setUser($u1);
         $q2->setUser($u2);
@@ -200,8 +200,8 @@ class QuestionRepositoryTest extends TransactionalTestCase
         $q4 = $this->persist->qcmQuestion('q4');
         $q5 = $this->persist->qcmQuestion('q5');
         $q6 = $this->persist->qcmQuestion('q6');
-        $c1 = $this->persist->category('-match-');
-        $c2 = $this->persist->category('c2');
+        $c1 = $this->persist->category('-match-', $u1);
+        $c2 = $this->persist->category('c2', $u1);
         $e1 = $this->persist->exercise('e1', [$q1, $q2, $q3]);
 
         $q1->setUser($u1);

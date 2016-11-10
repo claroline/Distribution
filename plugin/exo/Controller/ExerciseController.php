@@ -3,15 +3,12 @@
 namespace UJM\ExoBundle\Controller;
 
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Library\Resource\ResourceCollection;
+use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use UJM\ExoBundle\Entity\Exercise;
-use UJM\ExoBundle\Entity\Step;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Services\classes\Docimology;
 
@@ -130,7 +127,7 @@ class ExerciseController extends Controller
      *     options={"expose"=true}
      * )
      *
-     * @ParamConverter("Exercise", class="UJMExoBundle:Exercise")
+     * @EXT\ParamConverter("Exercise", class="UJMExoBundle:Exercise")
      *
      * @param Exercise $exercise
      * @param int      $pageGoNow    page going for the pagination

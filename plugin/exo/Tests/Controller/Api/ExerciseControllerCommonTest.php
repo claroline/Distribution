@@ -83,25 +83,25 @@ class ExerciseControllerCommonTest extends TransactionalTestCase
 
     public function testAnonymousExport()
     {
-        $this->request('GET', "/exercise/api/exercises/{$this->ex1->getUuid()}");
+        $this->request('GET', "/api/exercises/{$this->ex1->getUuid()}");
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
     }
 
     public function testNonCreatorExport()
     {
-        $this->request('GET', "/exercise/api/exercises/{$this->ex1->getUuid()}", $this->bob);
+        $this->request('GET', "/api/exercises/{$this->ex1->getUuid()}", $this->bob);
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
     }
 
     public function testNonCreatorAdminExport()
     {
-        $this->request('GET', "/exercise/api/exercises/{$this->ex1->getUuid()}", $this->admin);
+        $this->request('GET', "/api/exercises/{$this->ex1->getUuid()}", $this->admin);
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
     }
 
     public function testExport()
     {
-        $this->request('GET', "/exercise/api/exercises/{$this->ex1->getUuid()}", $this->john);
+        $this->request('GET', "/api/exercises/{$this->ex1->getUuid()}", $this->john);
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
 
         $content = json_decode($this->client->getResponse()->getContent());
@@ -112,13 +112,13 @@ class ExerciseControllerCommonTest extends TransactionalTestCase
 
     public function testAnonymousAttempt()
     {
-        $this->request('POST', "/exercise/api/exercises/{$this->ex1->getId()}/attempts");
+        $this->request('POST', "/api/exercises/{$this->ex1->getId()}/attempts");
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
     }
 
     public function testAttempt()
     {
-        $this->request('POST', "/exercise/api/exercises/{$this->ex1->getId()}/attempts", $this->john);
+        $this->request('POST', "/api/exercises/{$this->ex1->getId()}/attempts", $this->john);
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
 
         $content = json_decode($this->client->getResponse()->getContent());
@@ -145,7 +145,7 @@ class ExerciseControllerCommonTest extends TransactionalTestCase
         $this->om->flush();
 
         // second attempt for bob
-        $this->request('POST', "/exercise/api/exercises/{$this->ex1->getId()}/attempts", $this->bob);
+        $this->request('POST', "/api/exercises/{$this->ex1->getId()}/attempts", $this->bob);
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
         $content = json_decode($this->client->getResponse()->getContent());
         $this->assertEquals('Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException', $content->error->exception[0]->class);
@@ -170,7 +170,7 @@ class ExerciseControllerCommonTest extends TransactionalTestCase
         $this->om->flush();
 
         // second attempt for john
-        $this->request('POST', "/exercise/api/exercises/{$this->ex1->getId()}/attempts", $this->john);
+        $this->request('POST', "/api/exercises/{$this->ex1->getId()}/attempts", $this->john);
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $content = json_decode($this->client->getResponse()->getContent());
         $this->assertInternalType('object', $content);
@@ -178,7 +178,7 @@ class ExerciseControllerCommonTest extends TransactionalTestCase
 
     public function testAnonymousPapers()
     {
-        $this->request('GET', "/exercise/api/exercises/{$this->ex1->getId()}/papers");
+        $this->request('GET', "/api/exercises/{$this->ex1->getId()}/papers");
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
     }
 
@@ -195,7 +195,7 @@ class ExerciseControllerCommonTest extends TransactionalTestCase
 
         $this->om->flush();
 
-        $this->request('GET', "/exercise/api/exercises/{$this->ex1->getId()}/papers", $this->bob);
+        $this->request('GET', "/api/exercises/{$this->ex1->getId()}/papers", $this->bob);
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
 
         $content = json_decode($this->client->getResponse()->getContent());
@@ -215,7 +215,7 @@ class ExerciseControllerCommonTest extends TransactionalTestCase
         $pa4 = $this->paperManager->createPaper($this->ex1, $this->bob);
         $this->om->flush();
 
-        $this->request('GET', "/exercise/api/exercises/{$this->ex1->getId()}/papers", $this->john);
+        $this->request('GET', "/api/exercises/{$this->ex1->getId()}/papers", $this->john);
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
 
         $content = json_decode($this->client->getResponse()->getContent());

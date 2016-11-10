@@ -7,6 +7,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use UJM\ExoBundle\Controller\Api\AbstractController;
 use UJM\ExoBundle\Entity\Question;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Manager\Question\QuestionManager;
@@ -22,7 +23,7 @@ use UJM\ExoBundle\Transfer\Json\ValidationException;
  * )
  * @EXT\Method("GET")
  */
-class QuestionController
+class QuestionController extends AbstractController
 {
     /**
      * @var QuestionManager
@@ -255,24 +256,5 @@ class QuestionController
         return new JsonResponse(
             $this->questionManager->export($newQuestion, [Transfer::MINIMAL, Transfer::INCLUDE_ADMIN_META])
         );
-    }
-
-    /**
-     * Gets and Deserializes JSON data from Request.
-     *
-     * @param Request $request
-     *
-     * @return mixed $data
-     */
-    private function decodeRequestData(Request $request)
-    {
-        $dataRaw = $request->getContent();
-
-        $data = null;
-        if (!empty($dataRaw)) {
-            $data = json_decode($dataRaw);
-        }
-
-        return $data;
     }
 }
