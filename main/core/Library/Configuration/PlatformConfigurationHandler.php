@@ -98,6 +98,7 @@ class PlatformConfigurationHandler
         'ssl_enabled' => false,
         'enable_rich_text_file_import' => false,
         'login_target_route' => 'claro_security_login',
+        'enable_opengraph' => true,
     ];
     private $lockedParameters;
 
@@ -109,6 +110,7 @@ class PlatformConfigurationHandler
      */
     public function __construct($configFile, $lockedConfigFile)
     {
+        self::$defaultParameters['tmp_dir'] = sys_get_temp_dir();
         $this->configFile = $configFile;
         $this->parameters = $this->mergeParameters();
         $this->lockedParameters = $this->generateLockedParameters($lockedConfigFile);
@@ -225,6 +227,8 @@ class PlatformConfigurationHandler
         $config->setSslEnabled($this->parameters['ssl_enabled']);
         $config->setEnableRichTextFileImport($this->parameters['enable_rich_text_file_import']);
         $config->setLoginTargetRoute($this->parameters['login_target_route']);
+        $config->setEnableOpengraph($this->parameters['enable_opengraph']);
+        $config->setTmpDir($this->parameters['tmp_dir']);
 
         return $config;
     }

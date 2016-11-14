@@ -1,7 +1,7 @@
 language: php
 
 php:
-  - "5.5"
+  - "5.6"
 
 addons:
   apt:
@@ -30,6 +30,10 @@ mysql:
   encoding: utf8
 
 before_install:
+  # prepare execution of chromium in js tests
+  - export CHROME_BIN=chromium-browser
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
   # ensure the target branch is present (original clone is shallowed/single-branched)
   - git remote set-branches --add origin $TRAVIS_BRANCH
   - git fetch origin
@@ -49,11 +53,12 @@ before_install:
 before_script:
   # get and configure claroline platform
   - curl -L https://github.com/claroline/Claroline/archive/${TRAVIS_BRANCH}.tar.gz | tar xzv
-  - cd Claroline-master
+  - cd Claroline-${TRAVIS_BRANCH}
   - php scripts/configure.php --default
   # override platform composer.json with build/repo local reference
   - rm -rf ../$TRAVIS_REPO_SLUG/.git
-  - php ../$TRAVIS_REPO_SLUG/main/dev/Resources/travis/pre-composer.php claroline/distribution ../$TRAVIS_REPO_SLUG dev-$TRAVIS_BRANCH
+  - if [[ $TRAVIS_BRANCH =~ ^[0-9]\.x$ ]]; then export COMPOSER_REF=$TRAVIS_BRANCH; else export COMPOSER_REF="dev-$TRAVIS_BRANCH"; fi
+  - php ../$TRAVIS_REPO_SLUG/main/dev/Resources/travis/pre-composer.php claroline/distribution ../$TRAVIS_REPO_SLUG $COMPOSER_REF
   # fetch dependencies and build (currently this is done in prod mode)
   - export TRAVIS_REPO_SLUG REMOTE_HOST REMOTE_USER REMOTE_PASS CACHE_PATH
   - bash ../$TRAVIS_REPO_SLUG/main/dev/Resources/travis/fetch-deps.bash
@@ -73,11 +78,11 @@ script:
   - if [ "$DIFF" != '' ]; then $ROOT/vendor/bin/phpmd --exclude main/core/Resources/bundle-creator,main/web-installer `echo "$DIFF" | xargs | sed -e :a -e '$!N; s/ /,/; ta'` text phpmd.xml; fi
   - if [ "$DIFF" != '' ]; then $ROOT/vendor/bin/md `echo "$DIFF" | tr '\n' ' '`; fi
   - if [ "$DIFF" != '' ]; then $ROOT/vendor/bin/php-cs-fixer fix --dry-run --diff --config-file=main/dev/Resources/travis/php-cs.php; fi
-  - if [ "$DIFF" != '' ]; then $ROOT/node_modules/.bin/eslint `echo "$DIFF" | grep 'Resources/modules/.\+\.js' | tr '\n' ' '`; fi
-  # launch js tests
+  - if [ "$DIFF" != '' ]; then $ROOT/node_modules/.bin/eslint --ext js --ext jsx `echo "$DIFF" | grep 'Resources/modules/.\+\.js' | tr '\n' ' '`; fi
+  # launch php tests
   - SYMFONY_DEPRECATIONS_HELPER=weak $ROOT/vendor/bin/phpunit
-  # launc php tests
-  - $ROOT/node_modules/.bin/karma start --single-run --browsers PhantomJS
+  # launch js tests
+  - $ROOT/node_modules/.bin/karma start --single-run
 
 after_success:
   # send a preview release to a remote server (only for internal PRs)

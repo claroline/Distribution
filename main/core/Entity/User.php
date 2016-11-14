@@ -134,7 +134,7 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
      *
      * @ORM\Column(unique=true)
      * @Assert\NotBlank()
-     * @Assert\Email(checkMX = false)
+     * @Assert\Email(strict = true)
      * @Groups({"api_user", "api_user_min"})
      * @SerializedName("mail")
      */
@@ -1189,10 +1189,12 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
         }
     }
 
-    //sometimes it's passed as an array and I don't understand why.
+    // todo: remove this method
     public function setOrganizations($organizations)
     {
-        $this->organizations = $organizations;
+        $this->organizations = $organizations instanceof ArrayCollection ?
+            $organizations :
+            new ArrayCollection($organizations);
     }
 
     public static function getUserSearchableFields()
