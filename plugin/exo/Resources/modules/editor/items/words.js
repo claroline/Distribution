@@ -110,18 +110,9 @@ function validate(item) {
     errors.solutions = tex('words_no_valid_solution')
   }
 
-  /*const errors = {}
-  setIfError(errors, 'solutions', )
-
-  return errors*/
-
   if (undefined !== item.solutions.find(solution => chain(solution.score, [notBlank, number]))) {
     errors.solutions = tex('words_score_not_valid')
   }
-
-  /*if (undefined !== item.solutions.find(solution => undefined !== number(solution.score) || undefined !== notBlank(solution.score))) {
-    errors.solutions = tex('words_score_not_valid')
-  }*/
   return errors
 }
 
