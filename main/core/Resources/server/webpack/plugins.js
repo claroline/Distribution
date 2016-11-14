@@ -139,7 +139,7 @@ const dllReferences = manifests => {
 }
 
 const clarolineConfiguration = () => {
-  return new ConfigurationPlugin({})
+  return new ConfigurationPlugin()
 }
 
 module.exports = {

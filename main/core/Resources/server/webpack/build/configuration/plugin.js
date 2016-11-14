@@ -3,23 +3,15 @@ const entries = require('../../entries')
 const fs = require('fs')
 const validator = require('./validator')
 
-// no implementation yet
-function ConfigurationPlugin(options) {
-  // Setup the plugin instance with options...
+function ConfigurationPlugin() {
 }
-
-//global because I'm lazy atm
-var first = true
 
 ConfigurationPlugin.prototype.apply = function(compiler) {
   var generated = false
   compiler.plugin('compile', function(compilation) {
     if (!generated) {
       console.log('\nGenerating claroline configuration file...')
-      str = 'module.exports = {\n'
-      str = writeLn(str, getConfigurations())
-      str = writeLn(str, '}\n')
-
+      str = `module.exports = {${getConfigurations()}}`
       fs.writeFileSync(paths.root() + '/web/dist/plugins-config.js', str)
       generated = true
     }
@@ -43,6 +35,7 @@ function getConfigurations() {
 
 function getMetaEntries(targetDir) {
   var str = ''
+  var requirements = []
 
   entries.getMetaBundles(targetDir).forEach(bundle => {
     var configFile = `${bundle}/Resources/config/config.js`
@@ -50,19 +43,11 @@ function getMetaEntries(targetDir) {
       var plugin = require(configFile)
       validator.validate(plugin)
       var mod = bundle.split('/').pop()
-      if (!first) {
-        str = writeLn(str, ',')
-      }
-      str = writeLn(str, `    ${mod}: require('${configFile}')`)
-      first = false
+      requirements.push(`    ${mod}: require('${configFile}')`)
     }
   })
 
-  return str
-}
-
-function writeLn(str, line) {
-  return str += line + '\n'
+  return requirements.join(',\n')
 }
 
 module.exports = ConfigurationPlugin
