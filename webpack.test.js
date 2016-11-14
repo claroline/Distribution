@@ -22,7 +22,7 @@ module.exports = {
   ],
   module: {
     loaders: [
-      loaders.babel(),
+      loaders.babel(true),
       loaders.rawHtml(),
       loaders.jqueryUiNoAmd(),
       loaders.css(),
