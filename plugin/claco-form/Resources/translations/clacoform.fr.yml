@@ -1,0 +1,32 @@
+add_entry: Ajouter une fiche
+categories_management: Gestion des catégories
+choice_entry_all: Toutes
+choice_entry_published: Publiées
+choice_menu_position_both: Les deux
+choice_menu_position_down: En bas
+choice_menu_position_up: En haut
+comments: Commentaires
+display: Affichage
+entries_list_search: Liste de fiche (Recherche)
+entry_addition: Ajout d'une fiche
+fields_management: Gestion des champs
+find_entry: Touver une fiche
+general_configuration: Configuration générale
+keywords: Mots-clés
+keywords_management: Gestion des mots-clés
+label_creation_enabled: Autoriser l'ajout de fiche
+label_default_home: Type d'accueil par défaut
+label_display_nb_entries: Indiquer le nombre de fiches
+label_edition_enabled: Autoriser l'édition personnelle
+label_max_entries: Nombre de depôts autorisés par utilisateur (0 = illimité)
+label_menu_position: Position du menu
+label_moderated: Modération des fiches
+menu: Menu
+metadata: Métadonnées
+random_entries: Fiches aléatoires
+random_entry: Fiche aléatoire
+random_mode: Mode aléatoire
+search_mode: Mode liste/recherche
+template_management: Gestion du template
+votes: Votes
+votes_management: Gestion des votes

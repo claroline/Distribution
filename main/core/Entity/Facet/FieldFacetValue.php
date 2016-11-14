@@ -56,7 +56,7 @@ class FieldFacetValue
      *     inversedBy="fieldsFacetValue",
      *     cascade={"persist"}
      * )
-     * @ORM\JoinColumn(onDelete="CASCADE", nullable=false)
+     * @ORM\JoinColumn(onDelete="CASCADE", nullable=true)
      */
     protected $user;
 

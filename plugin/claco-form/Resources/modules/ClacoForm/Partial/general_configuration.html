@@ -1,0 +1,324 @@
+<div class="panel panel-default">
+    <div class="panel-heading clearfix">
+        <h3 class="panel-title">
+            {{ 'general_configuration'|trans:{}:'clacoform' }}
+            <div class="btn-group pull-right" uib-dropdown ng-if="cfc.canEdit()">
+                <button class="btn btn-default btn-sm" uib-dropdown-toggle>
+                    <i class="fa fa-cogs"></i>
+                    <i class="fa fa-caret-down"></i>
+                </button>
+                <ul class="dropdown-menu" uib-dropdown-menu role="menu">
+                    <li role="menuitem">
+                        <a ui-sref="general_configuration">
+                            {{ 'general_configuration'|trans:{}:'clacoform' }}
+                        </a>
+                    </li>
+                    <li role="menuitem">
+                        <a ui-sref="fields_management">
+                            {{ 'fields_management'|trans:{}:'clacoform' }}
+                        </a>
+                    </li>
+                    <li role="menuitem">
+                        <a ui-sref="template_management">
+                            {{ 'template_management'|trans:{}:'clacoform' }}
+                        </a>
+                    </li>
+                    <li role="menuitem">
+                        <a ui-sref="votes_management">
+                            {{ 'votes_management'|trans:{}:'clacoform' }}
+                        </a>
+                    </li>
+                    <li role="menuitem">
+                        <a ui-sref="categories_management">
+                            {{ 'categories_management'|trans:{}:'clacoform' }}
+                        </a>
+                    </li>
+                    <li role="menuitem">
+                        <a ui-sref="keywords_management">
+                            {{ 'keywords_management'|trans:{}:'clacoform' }}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </h3>
+    </div>
+    <div class="panel-body">
+        <div class="panel panel-default" ng-if="cfc.canEdit()">
+            <div class="panel-heading">
+                <span class="pointer-hand" ng-click="cfc.isCollapsed['general'] = !cfc.isCollapsed['general']">
+                    {{ 'general'|trans:{}:'platform' }}
+                    <i ng-class="cfc.isCollapsed['general'] ? 'fa fa-chevron-circle-right' : 'fa fa-chevron-circle-down'">
+                    </i>
+                </span>
+            </div>
+            <div class="panel-body" uib-collapse="cfc.isCollapsed['general']">
+                <div class="form-group row" ng-class="cfc.configErrors['max_entries'] ? 'has-error' : ''">
+                    <span class="control-label col-md-3">
+                        {{ 'label_max_entries'|trans:{}:'clacoform' }}
+                    </span>
+                    <div class="col-md-2">
+                        <input type="number" class="form-control" ng-model="cfc.config['max_entries']">
+                        <div class="help-block field-error" ng-if="cfc.configErrors['max_entries']">
+                            {{ cfc.configErrors['max_entries'] }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <span class="control-label col-md-3">
+                        {{ 'label_creation_enabled'|trans:{}:'clacoform' }}
+                    </span>
+                    <div class="col-md-9">
+                        <label>
+                            <input type="radio" ng-model="cfc.config['creation_enabled']" ng-value="true"/>
+                            {{ 'yes'|trans:{}:'platform' }}
+                        </label>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <label>
+                            <input type="radio" ng-model="cfc.config['creation_enabled']" ng-value="false"/>
+                            {{ 'no'|trans:{}:'platform' }}
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <span class="control-label col-md-3">
+                        {{ 'label_edition_enabled'|trans:{}:'clacoform' }}
+                    </span>
+                    <div class="col-md-9">
+                        <label>
+                            <input type="radio" ng-model="cfc.config['edition_enabled']" ng-value="true"/>
+                            {{ 'yes'|trans:{}:'platform' }}
+                        </label>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <label>
+                            <input type="radio" ng-model="cfc.config['edition_enabled']" ng-value="false"/>
+                            {{ 'no'|trans:{}:'platform' }}
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <span class="control-label col-md-3">
+                        {{ 'label_moderated'|trans:{}:'clacoform' }}
+                    </span>
+                    <div class="col-md-9">
+                        <label>
+                            <input type="radio" ng-model="cfc.config['moderated']" ng-value="true"/>
+                            {{ 'yes'|trans:{}:'platform' }}
+                        </label>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <label>
+                            <input type="radio" ng-model="cfc.config['moderated']" ng-value="false"/>
+                            {{ 'no'|trans:{}:'platform' }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-heading">
+                <span class="pointer-hand" ng-click="cfc.isCollapsed['display'] = !cfc.isCollapsed['display']">
+                    {{ 'display'|trans:{}:'clacoform' }}
+                    <i ng-class="cfc.isCollapsed['display'] ? 'fa fa-chevron-circle-right' : 'fa fa-chevron-circle-down'">
+                    </i>
+                </span>
+            </div>
+            <div class="panel-body" uib-collapse="cfc.isCollapsed['display']">
+                <div class="form-group row">
+                    <span class="control-label col-md-3">
+                        {{ 'label_default_home'|trans:{}:'clacoform' }}
+                    </span>
+                    <div class="col-md-9">
+                        <label>
+                            <input type="radio" ng-model="cfc.config['default_home']" value="menu"/>
+                            {{ 'menu'|trans:{}:'clacoform' }}
+                        </label>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <label>
+                            <input type="radio" ng-model="cfc.config['default_home']" value="random"/>
+                            {{ 'random_mode'|trans:{}:'clacoform' }}
+                        </label>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <label>
+                            <input type="radio" ng-model="cfc.config['default_home']" value="search"/>
+                            {{ 'search_mode'|trans:{}:'clacoform' }}
+                        </label>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <label>
+                            <input type="radio" ng-model="cfc.config['default_home']" value="add"/>
+                            {{ 'entry_addition'|trans:{}:'clacoform' }}
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <span class="control-label col-md-3">
+                        {{ 'label_display_nb_entries'|trans:{}:'clacoform' }}
+                    </span>
+                    <div class="col-md-9">
+                        <label>
+                            <input type="radio" ng-model="cfc.config['display_nb_entries']" value="all"/>
+                            {{ 'choice_entry_all'|trans:{}:'clacoform' }}
+                        </label>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <label>
+                            <input type="radio" ng-model="cfc.config['display_nb_entries']" value="published"/>
+                            {{ 'choice_entry_published'|trans:{}:'clacoform' }}
+                        </label>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <label>
+                            <input type="radio" ng-model="cfc.config['display_nb_entries']" value="none"/>
+                            {{ 'no'|trans:{}:'platform' }}
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <span class="control-label col-md-3">
+                        {{ 'label_menu_position'|trans:{}:'clacoform' }}
+                    </span>
+                    <div class="col-md-9">
+                        <label>
+                            <input type="radio" ng-model="cfc.config['menu_position']" value="down"/>
+                            {{ 'choice_menu_position_down'|trans:{}:'clacoform' }}
+                        </label>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <label>
+                            <input type="radio" ng-model="cfc.config['menu_position']" value="up"/>
+                            {{ 'choice_menu_position_up'|trans:{}:'clacoform' }}
+                        </label>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <label>
+                            <input type="radio" ng-model="cfc.config['menu_position']" value="both"/>
+                            {{ 'choice_menu_position_both'|trans:{}:'clacoform' }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-heading">
+                <span class="pointer-hand" ng-click="cfc.isCollapsed['random'] = !cfc.isCollapsed['random']">
+                    {{ 'random_entries'|trans:{}:'clacoform' }}
+                    <i ng-class="cfc.isCollapsed['random'] ? 'fa fa-chevron-circle-right' : 'fa fa-chevron-circle-down'">
+                    </i>
+                </span>
+            </div>
+            <div class="panel-body" uib-collapse="cfc.isCollapsed['random']">
+                <div class="form-group row">
+                    <span class="control-label col-md-3">
+                        {{ 'label_random_enabled'|trans:{}:'clacoform' }}
+                    </span>
+                    <div class="col-md-9">
+                        <label>
+                            <input type="radio" ng-model="cfc.config['random_enabled']" ng-value="true"/>
+                            {{ 'yes'|trans:{}:'platform' }}
+                        </label>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <label>
+                            <input type="radio" ng-model="cfc.config['random_enabled']" ng-value="false"/>
+                            {{ 'no'|trans:{}:'platform' }}
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <span class="control-label col-md-3">
+                        {{ 'label_random_date'|trans:{}:'clacoform' }}
+                    </span>
+                    <div class="col-md-2">
+                        <span class="input-group">
+                            <input type="text"
+                                   class="form-control"
+                                   uib-datepicker-popup="{{ cfc.randomStartDate['format'] }}"
+                                   ng-model="cfc.randomStartDate['random_start_date']"
+                                   is-open="cfc.randomStartDate['open']"
+                                   datepicker-options="cfc.dateOptions"
+                                   ng-required="true"
+                                   placeholder="{{ cfc.dateOptions['placeHolder'] }}"
+                            />
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="cfc.openStartDatePicker()">
+                                    <i class="fa fa-calendar"></i>
+                                </button>
+                            </span>
+                        </span>
+                    </div>
+                    <!--<div class="col-md-9">-->
+                        <!--<label>-->
+                            <!--<input type="radio" ng-model="cfc.config['random_enabled']" ng-value="true"/>-->
+                            <!--{{ 'yes'|trans:{}:'platform' }}-->
+                        <!--</label>-->
+                        <!--&nbsp;&nbsp;&nbsp;&nbsp;-->
+                        <!--<label>-->
+                            <!--<input type="radio" ng-model="cfc.config['random_enabled']" ng-value="false"/>-->
+                            <!--{{ 'no'|trans:{}:'platform' }}-->
+                        <!--</label>-->
+                    <!--</div>-->
+                </div>
+            </div>
+            <div class="panel-heading">
+                <span class="pointer-hand" ng-click="cfc.isCollapsed['find'] = !cfc.isCollapsed['find']">
+                    {{ 'entries_list_search'|trans:{}:'clacoform' }}
+                    <i ng-class="cfc.isCollapsed['find'] ? 'fa fa-chevron-circle-right' : 'fa fa-chevron-circle-down'">
+                    </i>
+                </span>
+            </div>
+            <div class="panel-body" uib-collapse="cfc.isCollapsed['find']">
+                <!--Search ici-->
+            </div>
+            <div class="panel-heading">
+                <span class="pointer-hand" ng-click="cfc.isCollapsed['data'] = !cfc.isCollapsed['data']">
+                    {{ 'metadata'|trans:{}:'clacoform' }}
+                    <i ng-class="cfc.isCollapsed['data'] ? 'fa fa-chevron-circle-right' : 'fa fa-chevron-circle-down'">
+                    </i>
+                </span>
+            </div>
+            <div class="panel-body" uib-collapse="cfc.isCollapsed['data']">
+                <!--Metadata ici-->
+            </div>
+            <div class="panel-heading">
+                <span class="pointer-hand" ng-click="cfc.isCollapsed['categories'] = !cfc.isCollapsed['categories']">
+                    {{ 'categories'|trans:{}:'platform' }}
+                    <i ng-class="cfc.isCollapsed['categories'] ? 'fa fa-chevron-circle-right' : 'fa fa-chevron-circle-down'">
+                    </i>
+                </span>
+            </div>
+            <div class="panel-body" uib-collapse="cfc.isCollapsed['categories']">
+                <!--categories ici-->
+            </div>
+            <div class="panel-heading">
+                <span class="pointer-hand" ng-click="cfc.isCollapsed['comments'] = !cfc.isCollapsed['comments']">
+                    {{ 'comments'|trans:{}:'clacoform' }}
+                    <i ng-class="cfc.isCollapsed['comments'] ? 'fa fa-chevron-circle-right' : 'fa fa-chevron-circle-down'">
+                    </i>
+                </span>
+            </div>
+            <div class="panel-body" uib-collapse="cfc.isCollapsed['comments']">
+                <!--comments ici-->
+            </div>
+            <div class="panel-heading">
+                <span class="pointer-hand" ng-click="cfc.isCollapsed['votes'] = !cfc.isCollapsed['votes']">
+                    {{ 'votes'|trans:{}:'clacoform' }}
+                    <i ng-class="cfc.isCollapsed['votes'] ? 'fa fa-chevron-circle-right' : 'fa fa-chevron-circle-down'">
+                    </i>
+                </span>
+            </div>
+            <div class="panel-body" uib-collapse="cfc.isCollapsed['votes']">
+                <!--votes ici-->
+            </div>
+            <div class="panel-heading">
+                <span class="pointer-hand" ng-click="cfc.isCollapsed['keywords'] = !cfc.isCollapsed['keywords']">
+                    {{ 'keywords'|trans:{}:'clacoform' }}
+                    <i ng-class="cfc.isCollapsed['keywords'] ? 'fa fa-chevron-circle-right' : 'fa fa-chevron-circle-down'">
+                    </i>
+                </span>
+            </div>
+            <div class="panel-body" uib-collapse="cfc.isCollapsed['keywords']">
+                <!--keywords ici-->
+            </div>
+        </div>
+        <div class="alert alert-danger" ng-if="!cfc.canEdit()">
+            {{ 'unauthorized'|trans:{}:'platform' }}
+        </div>
+    </div>
+    <div class="panel-footer">
+        <button class="btn btn-primary" ng-click="cfc.submit()">
+            {{ 'ok'|trans:{}:'platform' }}
+        </button>
+        <a class="btn btn-default" ui-sref="menu">
+            {{ 'cancel'|trans:{}:'platform' }}
+        </a>
+    </div>
+</div>

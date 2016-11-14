@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Entity\Facet;
 
+use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Accessor;
@@ -69,7 +70,7 @@ class FieldFacet
      *      targetEntity="Claroline\CoreBundle\Entity\Facet\PanelFacet",
      *      inversedBy="fieldsFacet"
      * )
-     * @ORM\JoinColumn(onDelete="CASCADE", nullable=false)
+     * @ORM\JoinColumn(onDelete="CASCADE", nullable=true)
      */
     protected $panelFacet;
 
@@ -83,7 +84,7 @@ class FieldFacet
     protected $fieldsFacetValue;
 
     /**
-     * @ORM\Column(type="integer", name="position")
+     * @ORM\Column(type="integer", name="position", nullable=true)
      * @Groups({"api_facet_admin", "api_profile"})
      */
     protected $position;
@@ -121,6 +122,22 @@ class FieldFacet
      * @Groups({"api_profile", "api_facet_admin"})
      */
     protected $isRequired = false;
+
+    /**
+     * @ORM\Column(name="is_visible", type="boolean", options={"default" = 1})
+     * @Groups({"api_profile"})
+     * @Accessor(getter="isVisible")
+     */
+    protected $isVisible = true;
+
+    /**
+     * @ORM\ManyToOne(
+     *     targetEntity="Claroline\CoreBundle\Entity\Resource\ResourceNode",
+     *     inversedBy="fields"
+     * )
+     * @ORM\JoinColumn(name="resource_node", onDelete="CASCADE", nullable=true)
+     */
+    protected $resourceNode;
 
     public function __construct()
     {
@@ -278,6 +295,16 @@ class FieldFacet
         $this->isRequired = $isRequired;
     }
 
+    public function isVisible()
+    {
+        return $this->isVisible;
+    }
+
+    public function setIsVisible($isVisible)
+    {
+        $this->$isVisible = $isVisible;
+    }
+
     public function getPrettyName()
     {
         $string = str_replace(' ', '-', $this->name); // Replaces all spaces with hyphens.
@@ -285,5 +312,15 @@ class FieldFacet
         $string = preg_replace('/-+/', '-', $string); // Replaces multiple hyphens with single one.
 
         return strtolower($string);
+    }
+
+    public function getResourceNode()
+    {
+        return $this->resourceNode;
+    }
+
+    public function setResourceNode(ResourceNode $resourceNode)
+    {
+        $this->resourceNode = $resourceNode;
     }
 }

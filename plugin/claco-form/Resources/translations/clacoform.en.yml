@@ -1,0 +1,32 @@
+add_entry: Add an entry
+categories_management: Categories management
+choice_entry_all: All
+choice_entry_published: Published
+choice_menu_position_both: Both
+choice_menu_position_down: Down
+choice_menu_position_up: Up
+comments: Comments
+display: Display
+entries_list_search: List of entries (Search)
+entry_addition: Addition of an entry
+fields_management: Fields management
+find_entry: Find an entry
+general_configuration: General configuration
+keywords: Keywords
+keywords_management: Keywords management
+label_creation_enabled: Allow addition
+label_default_home: Home by default
+label_display_nb_entries: Display the number of entries
+label_edition_enabled: Allow edition
+label_max_entries: Number of allowed addition by user (0 = unlimited)
+label_menu_position: Menu position
+label_moderated: Moderate addition
+menu: Menu
+metadata: Metadata
+random_entries: Random entries
+random_entry: Random entry
+random_mode: Random mode
+search_mode: List/Search mode
+template_management: Template management
+votes: Votes
+votes_management: Votes management
