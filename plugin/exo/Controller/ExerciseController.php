@@ -70,7 +70,8 @@ class ExerciseController extends Controller
     /**
      * To display the docimology's histograms.
      *
-     * @EXT\Route("/{id}/docimology", name="ujm_exercise_docimology", requirements={"id"="\d+"})
+     * @EXT\Route("/{id}/docimology", name="ujm_exercise_docimology")
+     * @EXT\ParamConverter("exercise", class="UJMExoBundle:Exercise", options={"mapping": {"id": "uuid"}})
      * @EXT\Template("UJMExoBundle:Exercise:docimology.html.twig")
      *
      * @param Exercise $exercise
