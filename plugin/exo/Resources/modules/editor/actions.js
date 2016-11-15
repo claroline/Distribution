@@ -24,6 +24,9 @@ export const QUIZ_UPDATE = 'QUIZ_UPDATE'
 export const HINT_ADD = 'HINT_ADD'
 export const HINT_CHANGE = 'HINT_CHANGE'
 export const HINT_REMOVE = 'HINT_REMOVE'
+export const QUESTION_PICKER_SHOW = 'QUESTION_PICKER_SHOW'
+export const QUESTION_PICKER_HIDE = 'QUESTION_PICKER_HIDE'
+export const QUESTION_PICKER_FADE = 'QUESTION_PICKER_HIDE'
 
 export const actions = {}
 
@@ -44,6 +47,10 @@ actions.updateItem = makeActionCreator(ITEM_UPDATE, 'id', 'propertyPath', 'value
 actions.updateItemDetail = makeActionCreator(ITEM_DETAIL_UPDATE, 'id', 'subAction')
 actions.updateItemHints = makeActionCreator(ITEM_HINTS_UPDATE, 'itemId', 'updateType', 'payload')
 actions.updateStep = makeActionCreator(STEP_UPDATE, 'id', 'newProperties')
+
+actions.showQuestionPicker = makeActionCreator(QUESTION_PICKER_SHOW, 'props')
+actions.fadeQuestionPicker = makeActionCreator(QUESTION_PICKER_FADE)
+actions.hideQuestionPicker = makeActionCreator(QUESTION_PICKER_HIDE)
 
 actions.createItem = (stepId, type) => {
   invariant(stepId, 'stepId is mandatory')

@@ -7,6 +7,8 @@ add_label: Ajouter un label
 add_new_picture: Ajouter une nouvelle image
 add_proposal: Ajouter une proposition
 add_question: Ajouter une question
+add_question_from_existing: Sélectionner une question existante
+add_question_from_new: Créer une nouvelle question
 add_step: Ajouter une étape
 add_zone_answer: Ajouter une zone de réponse
 additional_info: Informations complémentaires

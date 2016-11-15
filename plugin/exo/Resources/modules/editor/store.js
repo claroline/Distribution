@@ -22,7 +22,8 @@ const reducer = combineReducers({
   items: reducers.items,
   currentObject: reducers.currentObject,
   openPanels: reducers.openPanels,
-  modal: reducers.modal
+  modal: reducers.modal,
+  questionPicker: reducers.questionPicker
 })
 
 export function createStore(initialState) {
