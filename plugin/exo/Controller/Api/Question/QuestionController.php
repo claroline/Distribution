@@ -49,7 +49,6 @@ class QuestionController extends AbstractController
      * (its owns and the ones that are shared with him).
      *
      * @EXT\Route("", name="question_list")
-     * @EXT\Method("GET")
      * @EXT\ParamConverter("user", converter="current_user")
      *
      * @param User $user
@@ -61,7 +60,7 @@ class QuestionController extends AbstractController
         $search = $this->questionManager->search($user);
 
         return new JsonResponse([
-            'questions' => array_map(function ($question) {
+            'questions' => array_map(function (Question $question) {
                 return $this->questionManager->export($question, [Transfer::MINIMAL, Transfer::INCLUDE_ADMIN_META]);
             }, $search['questions']),
             'total' => $search['total']
@@ -72,7 +71,7 @@ class QuestionController extends AbstractController
      * Gets detail information about a Question.
      *
      * @EXT\Route("/{id}", name="question_get")
-     * @EXT\Method("POST")
+     * @EXT\ParamConverter("question", class="UJMExoBundle:Question", options={"mapping": {"id": "uuid"}})
      *
      * @param Question $question
      *
@@ -131,6 +130,7 @@ class QuestionController extends AbstractController
      * Updates a Question.
      *
      * @EXT\Route("/{id}", name="question_update")
+     * @EXT\ParamConverter("question", class="UJMExoBundle:Question", options={"mapping": {"id": "uuid"}})
      * @EXT\Method("PUT")
      *
      * @param Question $question
@@ -173,6 +173,7 @@ class QuestionController extends AbstractController
      * Deletes a Question.
      *
      * @EXT\Route("/{id}", name="question_delete")
+     * @EXT\ParamConverter("question", class="UJMExoBundle:Question", options={"mapping": {"id": "uuid"}})
      * @EXT\Method("DELETE")
      *
      * @param Question $question
@@ -243,6 +244,7 @@ class QuestionController extends AbstractController
      * Copies a Question.
      *
      * @EXT\Route("/{id}", name="question_copy")
+     * @EXT\ParamConverter("question", class="UJMExoBundle:Question", options={"mapping": {"id": "uuid"}})
      * @EXT\Method("POST")
      *
      * @param Question $question
