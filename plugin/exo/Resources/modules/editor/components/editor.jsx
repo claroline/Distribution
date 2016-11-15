@@ -5,7 +5,7 @@ import {ThumbnailBox} from './thumbnail-box.jsx'
 import {QuizEditor} from './quiz-editor.jsx'
 import {StepEditor} from './step-editor.jsx'
 import Modals from './modals.jsx'
-import QuestionPicker from './question-picker.jsx'
+import {QuestionPicker} from './question-picker.jsx'
 import {actions} from './../actions'
 import {TYPE_QUIZ, TYPE_STEP} from './../enums'
 import select from './../selectors'
@@ -121,6 +121,8 @@ function makeQuestionPicker(props){
   return (
     <QuestionPicker
       show={!props.modal.fading}
+      fadeQuestionPicker={props.fadeQuestionPicker}
+      hideQuestionPicker={props.hideQuestionPicker}
       {...props.modal.props}
     />
   )
@@ -130,7 +132,9 @@ makeQuestionPicker.propTypes = {
   modal: T.shape({
     fading: T.bool.isRequired,
     props: T.object.isRequired
-  })
+  }),
+  fadeQuestionPicker: T.func.isRequired,
+  hideQuestionPicker: T.func.isRequired
 }
 
 

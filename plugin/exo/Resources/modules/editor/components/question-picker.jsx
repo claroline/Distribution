@@ -1,13 +1,12 @@
 import React, {Component, PropTypes as T} from 'react'
-
 import Modal from 'react-bootstrap/lib/Modal'
 import {trans} from './../lib/translate'
-
 
 
 class QuestionPicker extends Component {
   constructor(props){
     super(props)
+    console.log(props)
     this.state = {
       show: this.props.show
     }
@@ -24,6 +23,7 @@ class QuestionPicker extends Component {
     const question = {
       title: 'test'
     }
+    console.log(this.props)
     this.props.handleSelect(question)
   }
 
@@ -32,7 +32,7 @@ class QuestionPicker extends Component {
       <Modal
         show={this.state.show}
         onHide={this.close.bind(this)}
-        onExited={this.addQuestion}
+        onExited={this.addQuestion.bind(this)}
           >
             <Modal.Header closeButton>
               <Modal.Title>{this.props.title}</Modal.Title>
@@ -47,7 +47,7 @@ class QuestionPicker extends Component {
                     </div>
                   </div>
                 </div>
-                <div className="form-group" style={{paddingLeft:'15px;'}}>
+                <div className="form-group" style={{paddingLeft:'15px'}}>
                   <div className="btn-group">
                     <button className="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       &nbsp;{trans('Choisir un type')}&nbsp;
