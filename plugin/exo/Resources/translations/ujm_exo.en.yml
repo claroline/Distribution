@@ -462,6 +462,12 @@ weight_choice: Assign points by answer
 wrong: Wrong
 wrong_name: The input name is wrong
 wrong_point: The input value is wrong
+words_empty_text_error: Keyword can not be empty.
+words_no_valid_solution: At least one keyword must have a score greater than 0.
+words_add_word: Add a keyword
+words_show_case_sensitive_option: Enable/disable the ability to define case verification on keywords.
+words_feedback_info: Feedback if the keyword is in answer
+words_case_sensitive: The answer must respect the keyword case to be valid
 
 # Y
 yes: Yes

@@ -1,4 +1,3 @@
-const paths = require('./main/core/Resources/webpack/paths')
 const webpackConfig = require('./webpack.test')
 
 module.exports = config => {
@@ -7,16 +6,16 @@ module.exports = config => {
     frameworks: ['mocha'],
     files: [
       {
-        pattern: 'main/core/Resources/modules/karma/index.js',
+        pattern: 'main/core/Resources/modules/core-js/index.js',
         watched: false
       },
-      '*/*/Resources/modules/**/*test.js'
+      '*/*/Resources/**/*test.js'
     ],
     preprocessors: {
-      './*/*/Resources/modules/**/[^.]+.js': ['coverage'],
-      './*/*/Resources/modules/**/*.js': ['webpack']
+      'main/core/Resources/modules/core-js/index.js': ['webpack'],
+      './*/*/Resources/**/*test.js': ['webpack']
     },
-    reporters: ['dots'],
+    reporters: ['progress'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_WARN,
@@ -32,15 +31,6 @@ module.exports = config => {
         flags: ['--no-sandbox']
       }
     },
-    coverageReporter: {
-      includeAllSources: true,
-      reporters:[
-        {
-          type: 'html',
-          dir: `${paths.root()}/coverage`
-        }
-      ]
-    },
     autoWatch: true,
     browsers: ['Chrome'],
     singleRun: false,
@@ -54,7 +44,7 @@ module.exports = config => {
 
   // see https://swizec.com/blog/how-to-run-javascript-tests-in-chrome-on-travis/swizec/6647
   if (process.env.TRAVIS) {
-    base.browsers = ['ChromeTravis'];
+    base.browsers = ['ChromeTravis']
   }
 
   config.set(base)
