@@ -4,7 +4,7 @@ import UserInfoHtml from '../Partial/user_info.html'
 import angular from 'angular/index'
 import removeTpl from '../Partial/csv_remove.html'
 import importTpl from '../Partial/csv_facet.html'
-import Configuration from '#/main/core/librairy/Configuration/Configuration'
+import Configuration from '#/main/core/library/Configuration/Configuration'
 
 /* global Routing */
 /* global Translator */
