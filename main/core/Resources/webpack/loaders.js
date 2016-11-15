@@ -1,7 +1,7 @@
 /**
  * Transpiles es6 and jsx files with babel.
  */
-const babel = () => {
+const babel = instrument => {
   return {
     test: /\.jsx?$/,
     exclude: /(node_modules|packages)/,
@@ -9,7 +9,9 @@ const babel = () => {
     query: {
       cacheDirectory: true,
       presets: ['es2015', 'react'],
-      plugins: ['transform-runtime']
+      plugins: instrument ?
+        ['transform-runtime', 'istanbul'] :
+        ['transform-runtime']
     }
   }
 }
