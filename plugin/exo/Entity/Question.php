@@ -6,7 +6,6 @@ use Claroline\CoreBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="UJM\ExoBundle\Repository\QuestionRepository")
@@ -65,10 +64,9 @@ class Question
     /**
      * @var string
      *
-     * @ORM\Column(type="text")
-     * @Assert\NotBlank
+     * @ORM\Column(name="invite", type="text")
      */
-    private $invite;
+    private $content;
 
     /**
      * @var string
@@ -261,19 +259,43 @@ class Question
     }
 
     /**
+     * Sets content.
+     *
+     * @param string $content
+     */
+    public function setContent($content)
+    {
+        $this->content = $content;
+    }
+
+    /**
+     * Gets content.
+     *
+     * @return string
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    /**
      * @param string $invite
+     *
+     * @deprecated use setContent() instead
      */
     public function setInvite($invite)
     {
-        $this->invite = $invite;
+        $this->content = $invite;
     }
 
     /**
      * @return string
+     *
+     * @deprecated use getContent() instead
      */
     public function getInvite()
     {
-        return $this->invite;
+        return $this->content;
     }
 
     /**
