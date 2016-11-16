@@ -16,8 +16,7 @@ use UJM\ExoBundle\Transfer\Json\ValidationException;
  *
  * @EXT\Route(
  *     "/questions",
- *     options={"expose"=true},
- *     defaults={"_format": "json"}
+ *     options={"expose"=true}
  * )
  * @EXT\Method("GET")
  */
@@ -32,7 +31,7 @@ class QuestionController
      * QuestionController constructor.
      *
      * @DI\InjectParams({
-     *     "questionManager" = @DI\Inject("ujm_exo.manager.question")
+     *     "questionManager" = @DI\Inject("ujm.exo.question_manager")
      * })
      *
      * @param QuestionManager $questionManager

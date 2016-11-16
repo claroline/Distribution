@@ -64,6 +64,7 @@ function selectSubEditor(props) {
           showModal={props.showModal}
           closeModal={props.fadeModal}
           showQuestionPicker={props.showQuestionPicker}
+          closeQuestionPicker={props.fadeQuestionPicker}
         />
       )
   }
@@ -88,8 +89,9 @@ selectSubEditor.propTypes = {
   updateItemHints: T.func.isRequired,
   updateItemDetail: T.func.isRequired,
   showModal: T.func.isRequired,
+  fadeModal: T.func.isRequired,
   showQuestionPicker: T.func.isRequired,
-  fadeModal: T.func.isRequired
+  fadeQuestionPicker: T.func.isRequired
 }
 
 function makeModal(props) {
@@ -120,16 +122,16 @@ makeModal.propTypes = {
 function makeQuestionPicker(props){
   return (
     <QuestionPicker
-      show={!props.modal.fading}
+      show={!props.questionPicker.fading}
       fadeQuestionPicker={props.fadeQuestionPicker}
       hideQuestionPicker={props.hideQuestionPicker}
-      {...props.modal.props}
+      {...props.questionPicker.props}
     />
   )
 }
 
 makeQuestionPicker.propTypes = {
-  modal: T.shape({
+  questionPicker: T.shape({
     fading: T.bool.isRequired,
     props: T.object.isRequired
   }),

@@ -285,8 +285,11 @@ function reduceModal(modalState = initialModalState, action) {
 }
 
 const initialPickerState = {
-  props: {},
-  fading: false
+  props: {
+    title: '',
+    handleSelect: () => {}
+  },
+  fading: true // strange
 }
 
 function reduceQuestionPicker(pickerState = initialPickerState, action) {
