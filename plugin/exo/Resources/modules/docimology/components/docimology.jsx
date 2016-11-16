@@ -20,7 +20,7 @@ const CountCard = props =>
     <span className={`icon ${props.icon}`}></span>
     <div className="panel-body text-right">
       {props.label}
-      <div className="h2 text-right text-info">{props.count}</div>
+      <div className="h3 text-right text-info">{props.count}</div>
     </div>
   </div>
 
@@ -87,19 +87,26 @@ class Docimology extends Component {
           />
         </PageHeader>
 
-        <GeneralStats />
-
-        <ObjectSelector 
+        <ObjectSelector
           exercise={this.props.exercise}
           current={this.props.currentObject}
           handleSelect={this.props.selectObject}
         />
+        <GeneralStats />
 
         <h2 className="h3">Indice de réussite</h2>
 
         <div className="row">
-          <div className="col-md-4">
-            <PieChart data={[10, 6, 3, 5]} colors={['#b94a48', '#c09853', '#468847', '#aaa']} width={390} />
+          <div className="col-md-4" style={{marginBottom: '20px'}}>
+            <PieChart data={[10, 6, 3, 5]} colors={['#b94a48', '#c09853', '#468847', '#aaa']} width={380} />
+          </div>
+
+          <div className="col-md-8">
+            <div className="panel panel-default">
+              <div className="panel-body">
+
+              </div>
+            </div>
           </div>
         </div>
 

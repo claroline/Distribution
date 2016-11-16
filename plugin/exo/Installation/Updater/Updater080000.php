@@ -3,6 +3,7 @@
 namespace UJM\ExoBundle\Installation\Updater;
 
 use Claroline\BundleRecorder\Log\LoggableTrait;
+use Doctrine\DBAL\Driver\Connection;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use UJM\ExoBundle\Library\Question\QuestionType;
 
@@ -10,6 +11,9 @@ class Updater080000
 {
     use LoggableTrait;
 
+    /**
+     * @var Connection
+     */
     private $connection;
 
     public function __construct(ContainerInterface $container)
@@ -29,65 +33,64 @@ class Updater080000
     {
         $this->log('Add mime-type to Questions...');
 
-        // Update choice questions
-        $query = 'UPDATE ujm_question SET mime_type= "'.QuestionType::CHOICE.'" WHERE type="InteractionQCM"';
-        $this->connection->query($query);
+        $types = [
+            'InteractionQCM' => QuestionType::CHOICE,
+            'InteractionGraphic' => QuestionType::GRAPHIC,
+            'InteractionHole' => QuestionType::CLOZE,
+        ];
 
-        // Update graphic questions
-        $query = 'UPDATE ujm_question SET mime_type= "'.QuestionType::GRAPHIC.'" WHERE type="InteractionGraphic"';
-        $this->connection->query($query);
+        $sth = $this->connection->prepare('UPDATE ujm_question SET mime_type = :mimeType WHERE type = :type');
+        foreach ($types as $type => $mimeType) {
+            $sth->execute([
+                ':mimeType' => $mimeType,
+                ':type' => $type,
+            ]);
+        }
 
-        // Update cloze questions
-        $query = 'UPDATE ujm_question SET mime_type= "'.QuestionType::CLOZE.'" WHERE type="InteractionHole"';
-        $this->connection->query($query);
+        // Update old open questions
+        $sth = $this->connection->prepare('
+            UPDATE ujm_question AS q 
+            LEFT JOIN ujm_interaction_open AS o ON (o.question_id = q.id) 
+            LEFT JOIN ujm_type_open_question AS t ON (o.typeopenquestion_id = t.id) 
+            SET q.mime_type= :mimeType 
+            WHERE q.type="InteractionOpen" 
+              AND t.value IN (:typeOpen) 
+        ');
 
         // Update words questions (InteractionOpen + type = oneWord | short)
-        $query = 'UPDATE ujm_question AS q ';
-        $query .= 'LEFT JOIN ujm_interaction_open AS o ON (o.question_id = q.id) ';
-        $query .= 'LEFT JOIN ujm_type_open_question AS t ON (o.typeopenquestion_id = t.id) ';
-        $query .= 'SET q.mime_type= "'.QuestionType::WORDS.'" ';
-        $query .= 'WHERE q.type="InteractionOpen" ';
-        $query .= '  AND t.value != "long" ';
-        $this->connection->query($query);
+        $sth->execute([
+            ':mimeType' => QuestionType::WORDS,
+            ':typeOpen' => '"oneWord", "short"'
+        ]);
 
         // Update open questions (InteractionOpen + type = long)
-        $query = 'UPDATE ujm_question AS q ';
-        $query .= 'LEFT JOIN ujm_interaction_open AS o ON (o.question_id = q.id) ';
-        $query .= 'LEFT JOIN ujm_type_open_question AS t ON (o.typeopenquestion_id = t.id) ';
-        $query .= 'SET q.mime_type= "'.QuestionType::OPEN.'" ';
-        $query .= 'WHERE q.type="InteractionOpen" ';
-        $query .= '  AND t.value = "long" ';
-        $this->connection->query($query);
+        $sth->execute([
+            ':mimeType' => QuestionType::OPEN,
+            ':typeOpen' => '"long"'
+        ]);
 
-        // Update match questions
-        $query = 'UPDATE ujm_question AS q ';
-        $query .= 'LEFT JOIN ujm_interaction_matching AS m ON (m.question_id = q.id) ';
-        $query .= 'LEFT JOIN ujm_type_matching AS t ON (m.type_matching_id = t.id) ';
-        $query .= 'SET q.mime_type= "'.QuestionType::MATCH.'" ';
-        $query .= 'WHERE q.type="InteractionMatching" ';
-        $query .= '  AND t.value = "To bind" ';
+        // Update old match questions
+        $matchTypes = [
+            'To bind' => QuestionType::MATCH,
+            'To pair' => QuestionType::PAIR,
+            'To drag' => QuestionType::SET,
+        ];
 
-        $this->connection->query($query);
+        $sth = $this->connection->prepare('
+            UPDATE ujm_question AS q 
+            LEFT JOIN ujm_interaction_matching AS m ON (m.question_id = q.id) 
+            LEFT JOIN ujm_type_matching AS t ON (m.type_matching_id = t.id) 
+            SET q.mime_type= :mimeType 
+            WHERE q.type="InteractionMatching" 
+              AND t.value = :typeMatch 
+        ');
 
-        // Update match questions
-        $query = 'UPDATE ujm_question AS q ';
-        $query .= 'LEFT JOIN ujm_interaction_matching AS m ON (m.question_id = q.id) ';
-        $query .= 'LEFT JOIN ujm_type_matching AS t ON (m.type_matching_id = t.id) ';
-        $query .= 'SET q.mime_type= "'.QuestionType::PAIR.'" ';
-        $query .= 'WHERE q.type="InteractionMatching" ';
-        $query .= '  AND t.value = "To pair" ';
-
-        $this->connection->query($query);
-
-        // Update set questions
-        $query = 'UPDATE ujm_question AS q ';
-        $query .= 'LEFT JOIN ujm_interaction_matching AS m ON (m.question_id = q.id) ';
-        $query .= 'LEFT JOIN ujm_type_matching AS t ON (m.type_matching_id = t.id) ';
-        $query .= 'SET q.mime_type= "'.QuestionType::SET.'" ';
-        $query .= 'WHERE q.type="InteractionMatching" ';
-        $query .= '  AND t.value = "To drag" ';
-
-        $this->connection->query($query);
+        foreach ($matchTypes as $matchType => $mimeType) {
+            $sth->execute([
+                ':mimeType' => $mimeType,
+                ':typeMatch' => $matchType
+            ]);
+        }
 
         $this->log('done !');
     }

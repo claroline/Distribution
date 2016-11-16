@@ -1,11 +1,3 @@
-.icon-small {
-    width: 16px;
-    height: 16px;
-    margin-bottom: -2px; /* tmp fix */
-    stroke: #555;
-    fill: #555;
-}
-
 .chart {
     display: block;
     position: relative;
@@ -27,7 +19,7 @@
     border-right: 1px solid #ddd; /* Same as panel-default border */
 }
 
-.general-stats .h2 {
+.general-stats .h3 {
     margin-top: 10px;
     margin-bottom: 0;
 }

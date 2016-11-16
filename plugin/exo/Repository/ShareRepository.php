@@ -150,7 +150,7 @@ class ShareRepository extends EntityRepository
         $dql = 'SELECT s FROM UJM\ExoBundle\Entity\Share s
                 JOIN s.question q
                 WHERE s.user = ?2
-                AND q.invite LIKE ?1';
+                AND q.content LIKE ?1';
 
         $query = $this->_em->createQuery($dql)
                       ->setParameters([1 => "%{$whatToFind}%", 2 => $userId]);

@@ -226,12 +226,12 @@ class QuestionManager
      */
     public function delete(Question $question)
     {
-        // TODO : Check if the question is used
-        $isUsed = false;
-        if ($isUsed) {
+        $exercises = $this->repository->findUsedBy($question);
+        if (count($exercises) > 0) {
+            // Question is used, we can't delete it
             throw new ValidationException('Question can not be deleted', [
                 'path' => '',
-                'message' => '', // The list of Exercises using it
+                'message' => "Question {$question->getUuid()} is linked to exercises.",
             ]);
         }
 

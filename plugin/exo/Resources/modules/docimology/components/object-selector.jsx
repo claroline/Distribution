@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { DropdownButton, MenuItem } from 'react-bootstrap'
 
+import ItemIcon from './../../items/common/item-icon.jsx'
 // TODO : do not load from editor.
 import {getDefinition} from './../../editor/item-types'
 
@@ -42,10 +43,8 @@ export default class ObjectSelector extends Component {
         onSelect={() => this.props.handleSelect('question', question.id) }
         active={'question' === this.props.current.type && this.props.current.id === question.id}
       >
-        <svg className="icon-small">
-          <use xlinkHref={`#icon-${getDefinition(question.type).name}`} />
-        </svg>
-        &nbsp;{question.title || question.content}
+        <ItemIcon name={getDefinition(question.type).name} />
+        {question.title || question.content}
       </MenuItem>
     )
   }

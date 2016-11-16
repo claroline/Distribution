@@ -8,7 +8,7 @@ use UJM\ExoBundle\Library\Options\ShowCorrectionAt;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
 
 /**
- * @DI\Service("ujm_exo.validator.exercise", parent="ujm_exo.validator.json_schema")
+ * @DI\Service("ujm_exo.validator.exercise")
  */
 class ExerciseValidator extends JsonSchemaValidator
 {

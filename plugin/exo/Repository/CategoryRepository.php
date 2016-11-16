@@ -20,7 +20,7 @@ class CategoryRepository extends EntityRepository
     public function countQuestions(Category $category)
     {
         $query = $this->getEntityManager()
-            ->createQuery('SELECT COUNT(*) FROM UJM\ExoBundle\Entity\Question AS q WHERE q.category = :category')
+            ->createQuery('SELECT COUNT(q) FROM UJM\ExoBundle\Entity\Question q WHERE q.category = :category')
             ->setParameter('category', $category);
 
         return $query->getSingleScalarResult();
