@@ -40,6 +40,8 @@ class CategoryController extends AbstractController
      */
     public function __construct(CategoryManager $categoryManager)
     {
+        // introduce MD and CS error
+        $array = array();
         $this->categoryManager = $categoryManager;
     }
 
