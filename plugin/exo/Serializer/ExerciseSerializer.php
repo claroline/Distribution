@@ -15,12 +15,17 @@ use UJM\ExoBundle\Library\Options\ShowScoreAt;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
 
 /**
- * Serializer for step data.
+ * Serializer for exercise data.
  *
  * @DI\Service("ujm_exo.serializer.exercise")
  */
 class ExerciseSerializer implements SerializerInterface
 {
+    /**
+     * @var UserSerializer
+     */
+    private $userSerializer;
+
     /**
      * @var StepSerializer
      */
@@ -30,13 +35,18 @@ class ExerciseSerializer implements SerializerInterface
      * ExerciseSerializer constructor.
      *
      * @param StepSerializer $stepSerializer
+     * @param UserSerializer $userSerializer
      *
      * @DI\InjectParams({
+     *     "userSerializer" = @DI\Inject("ujm_exo.serializer.user"),
      *     "stepSerializer" = @DI\Inject("ujm_exo.serializer.step")
      * })
      */
-    public function __construct(StepSerializer $stepSerializer)
+    public function __construct(
+        UserSerializer $userSerializer,
+        StepSerializer $stepSerializer)
     {
+        $this->userSerializer = $userSerializer;
         $this->stepSerializer = $stepSerializer;
     }
 
@@ -55,7 +65,7 @@ class ExerciseSerializer implements SerializerInterface
         $exerciseData = new \stdClass();
         $exerciseData->id = $exercise->getUuid();
         $exerciseData->title = $node->getName();
-        $exerciseData->meta = $this->serializeMetadata($exercise);
+        $exerciseData->meta = $this->serializeMetadata($exercise, $options);
 
         if (!in_array(Transfer::MINIMAL, $options)) {
             if (!empty($exercise->getDescription())) {
@@ -113,21 +123,21 @@ class ExerciseSerializer implements SerializerInterface
      * Serializes Exercise metadata.
      *
      * @param Exercise $exercise
+     * @param array    $options
      *
      * @return \stdClass
      */
-    private function serializeMetadata(Exercise $exercise)
+    private function serializeMetadata(Exercise $exercise, array $options = [])
     {
         $metadata = new \stdClass();
 
         $node = $exercise->getResourceNode();
 
         $creator = $node->getCreator();
-        if ($creator) {
-            $author = new \stdClass();
-            $author->name = sprintf('%s %s', $creator->getFirstName(), $creator->getLastName());
-
-            $metadata->authors = [$author];
+        if (!empty($creator)) {
+            $metadata->authors = [
+                $this->userSerializer->serialize($creator, $options),
+            ];
         }
 
         $metadata->created = $node->getCreationDate()->format('Y-m-d\TH:i:s');

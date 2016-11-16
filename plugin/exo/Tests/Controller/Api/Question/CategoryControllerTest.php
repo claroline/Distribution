@@ -55,7 +55,7 @@ class CategoryControllerTest extends TransactionalTestCase
         $this->john = $this->persist->user('john');
         $this->bob = $this->persist->user('bob');
         $this->categoryJohn = $this->persist->category('categoryJohn', $this->john);
-        $this->categoryBob = $this->persist->category('categoryBob', $this->john);
+        $this->categoryBob = $this->persist->category('categoryBob', $this->bob);
 
         $this->om->flush();
     }
@@ -166,7 +166,8 @@ class CategoryControllerTest extends TransactionalTestCase
 
         $this->assertEquals(422, $this->client->getResponse()->getStatusCode());
 
-        $content = json_decode($this->client->getResponse()->getContent());
+        $content = json_decode($this->client->getResponse()->getContent(), true);
+
         $this->assertTrue(is_array($content));
         $this->assertTrue(count($content) > 0);
 
@@ -227,7 +228,8 @@ class CategoryControllerTest extends TransactionalTestCase
 
         $this->assertEquals(422, $this->client->getResponse()->getStatusCode());
 
-        $content = json_decode($this->client->getResponse()->getContent());
+        $content = json_decode($this->client->getResponse()->getContent(), true);
+
         $this->assertTrue(is_array($content));
         $this->assertTrue(count($content) > 0);
         $this->assertContains([

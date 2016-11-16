@@ -6,23 +6,25 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Hint;
 use UJM\ExoBundle\Entity\Question;
 use UJM\ExoBundle\Entity\QuestionObject;
 use UJM\ExoBundle\Entity\QuestionResource;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Question\QuestionDefinitionsCollection;
-use UJM\ExoBundle\Library\Serializer\SerializerInterface;
+use UJM\ExoBundle\Library\Serializer\AbstractSerializer;
 use UJM\ExoBundle\Repository\QuestionRepository;
 use UJM\ExoBundle\Serializer\HintSerializer;
 use UJM\ExoBundle\Serializer\ResourceContentSerializer;
+use UJM\ExoBundle\Serializer\UserSerializer;
 
 /**
  * Serializer for question data.
  *
  * @DI\Service("ujm_exo.serializer.question")
  */
-class QuestionSerializer implements SerializerInterface
+class QuestionSerializer extends AbstractSerializer
 {
     /**
      * @var ObjectManager
@@ -38,6 +40,11 @@ class QuestionSerializer implements SerializerInterface
      * @var QuestionDefinitionsCollection
      */
     private $questionDefinitions;
+
+    /**
+     * @var UserSerializer
+     */
+    private $userSerializer;
 
     /**
      * @var CategorySerializer
@@ -60,6 +67,7 @@ class QuestionSerializer implements SerializerInterface
      * @param ObjectManager                 $om
      * @param TokenStorageInterface         $tokenStorage
      * @param QuestionDefinitionsCollection $questionDefinitions
+     * @param UserSerializer                $userSerializer
      * @param CategorySerializer            $categorySerializer
      * @param HintSerializer                $hintSerializer
      * @param ResourceContentSerializer     $resourceContentSerializer
@@ -68,6 +76,7 @@ class QuestionSerializer implements SerializerInterface
      *     "om"                        = @DI\Inject("claroline.persistence.object_manager"),
      *     "tokenStorage"              = @DI\Inject("security.token_storage"),
      *     "questionDefinitions"       = @DI\Inject("ujm_exo.collection.question_definitions"),
+     *     "userSerializer"            = @DI\Inject("ujm_exo.serializer.user"),
      *     "categorySerializer"        = @DI\Inject("ujm_exo.serializer.category"),
      *     "hintSerializer"            = @DI\Inject("ujm_exo.serializer.hint"),
      *     "resourceContentSerializer" = @DI\Inject("ujm_exo.serializer.resource_content")
@@ -77,6 +86,7 @@ class QuestionSerializer implements SerializerInterface
         ObjectManager $om,
         TokenStorageInterface $tokenStorage,
         QuestionDefinitionsCollection $questionDefinitions,
+        UserSerializer $userSerializer,
         CategorySerializer $categorySerializer,
         HintSerializer $hintSerializer,
         ResourceContentSerializer $resourceContentSerializer)
@@ -84,6 +94,7 @@ class QuestionSerializer implements SerializerInterface
         $this->om = $om;
         $this->tokenStorage = $tokenStorage;
         $this->questionDefinitions = $questionDefinitions;
+        $this->userSerializer = $userSerializer;
         $this->categorySerializer = $categorySerializer;
         $this->hintSerializer = $hintSerializer;
         $this->resourceContentSerializer = $resourceContentSerializer;
@@ -102,54 +113,39 @@ class QuestionSerializer implements SerializerInterface
         // Serialize specific data for the question type
         $questionData = $this->serializeQuestionType($question, $options);
 
-        $questionData->meta = $this->serializeMetadata($question, $options);
-
-        // Add generic question information
-        $questionData->id = $question->getUuid();
-        $questionData->type = $question->getMimeType();
-        $questionData->content = $question->getInvite();
-
-        $title = $question->getTitle();
-        if (!empty($title)) {
-            $questionData->title = $title;
-        }
-
-        if (!in_array(Transfer::MINIMAL, $options)) {
-            $description = $question->getDescription();
-            if (!empty($description)) {
-                $questionData->description = $description;
+        $mapping = [
+            'id' => 'uuid',
+            'type' => 'mimeType',
+            'content' => 'content',
+            'title' => 'title',
+            'meta' => function (Question $question) use ($options) {
+                $this->serializeMetadata($question, $options);
             }
+        ];
 
-            $info = $question->getSupplementary();
-            if (!empty($info)) {
-                $questionData->info = $info;
-            }
+        if (!$this->hasOption(Transfer::MINIMAL, $options)) {
+            $mapping = array_merge($mapping, [
+                'description' => 'description',
+                'info' => 'supplementary',
+                'instruction' => 'specification',
+                'hints' => function (Question $question) use ($options) {
+                    return $this->serializeHints($question, $options);
+                },
+                'objects' => function (Question $question) {
+                    return $this->serializeObjects($question);
+                },
+                'resources' => function (Question $question) {
+                    return $this->serializeResources($question);
+                },
+            ]);
 
-            $instruction = $question->getSpecification();
-            if (!empty($instruction)) {
-                $questionData->instruction = $question->getSpecification();
-            }
-
-            // Serialize Hints
-            if (0 !== $question->getHints()->count()) {
-                $questionData->hints = $this->serializeHints($question, $options);
-            }
-
-            // Serialize Objects
-            if (0 !== $question->getObjects()->count()) {
-                $questionData->objects = $this->serializeObjects($question);
-            }
-
-            // Serialize Resources
-            if (0 !== $question->getResources()->count()) {
-                $questionData->resources = $this->serializeResources($question);
-            }
-
-            // Serialize feedback
-            if (in_array(Transfer::INCLUDE_SOLUTIONS, $options) && $question->getFeedback()) {
-                $questionData->feedback = $question->getFeedback();
+            if (!$this->hasOption(Transfer::INCLUDE_SOLUTIONS, $options)) {
+                // Serialize feedback
+                $mapping['feedback'] = 'feedback';
             }
         }
+
+        $this->mapEntityToObject($mapping, $question, $questionData);
 
         return $questionData;
     }
@@ -167,9 +163,11 @@ class QuestionSerializer implements SerializerInterface
     {
         if (empty($question)) {
             // Loads the Question from DB if already exist
-            $question = $this->om->getRepository('UJMExoBundle:Question')->findOneBy([
-                'uuid' => $data->id,
-            ]);
+            if (!empty($data->id)) {
+                $question = $this->om->getRepository('UJMExoBundle:Question')->findOneBy([
+                    'uuid' => $data->id,
+                ]);
+            }
 
             if (empty($question)) {
                 // Question not exist
@@ -181,43 +179,27 @@ class QuestionSerializer implements SerializerInterface
             $question->setUuid($data->id);
         }
 
-        $question->setMimeType($data->type);
-
-        if (isset($data->title)) {
-            $question->setTitle($data->title);
-        }
-
-        if (isset($data->description)) {
-            $question->setDescription($data->description);
-        }
-
-        if (isset($data->content)) {
-            $question->setInvite($data->content);
-        }
-
-        if (isset($data->info)) {
-            $question->setSupplementary($data->info);
-        }
-
-        if (isset($data->instruction)) {
-            $question->setSpecification($data->instruction);
-        }
-
-        if (!empty($data->hints)) {
-            $this->deserializeHints($question, $data->hints, $options);
-        }
-
-        if (!empty($data->objects)) {
-            $this->deserializeObjects($question, $data->objects, $options);
-        }
-
-        if (!empty($data->resources)) {
-            $this->deserializeResources($question, $data->resources, $options);
-        }
-
-        if (isset($data->meta)) {
-            $this->deserializeMetadata($question, $data->meta);
-        }
+        // Map data to entity (dataProperty => entityProperty/function to call)
+        $this->mapObjectToEntity([
+            'type' => 'mimeType',
+            'content' => 'content',
+            'title' => 'title',
+            'description' => 'description',
+            'info' => 'supplementary',
+            'instruction' => 'specification',
+            'hints' => function (Question $question, \stdClass $data) use ($options) {
+                return $this->deserializeHints($question, $data->hints, $options);
+            },
+            'objects' => function (Question $question, \stdClass $data) use ($options) {
+                return $this->deserializeObjects($question, $data->objects, $options);
+            },
+            'resources' => function (Question $question, \stdClass $data) use ($options) {
+                return $this->deserializeResources($question, $data->resources, $options);
+            },
+            'meta' => function (Question $question, \stdClass $data) {
+                return $this->deserializeMetadata($question, $data->meta);
+            }
+        ], $data, $question);
 
         $this->deserializeQuestionType($question, $data, $options);
 
@@ -271,27 +253,32 @@ class QuestionSerializer implements SerializerInterface
         $metadata = new \stdClass();
 
         $creator = $question->getCreator();
-        if ($creator) {
-            $author = new \stdClass();
-            $author->name = sprintf('%s %s', $creator->getFirstName(), $creator->getLastName());
-
-            $metadata->authors = [$author];
+        if (!empty($creator)) {
+            $metadata->authors = [
+                $this->userSerializer->serialize($creator, $options),
+            ];
         }
 
         $metadata->created = $question->getDateCreate()->format('Y-m-d\TH:i:s');
         $metadata->updated = $question->getDateModify()->format('Y-m-d\TH:i:s');
 
-        if (in_array(Transfer::INCLUDE_ADMIN_META, $options)) {
+        if ($this->hasOption(Transfer::INCLUDE_ADMIN_META, $options)) {
             $metadata->model = $question->isModel();
 
             /** @var QuestionRepository $questionRepo */
             $questionRepo = $this->om->getRepository('UJMExoBundle:Question');
 
             // Gets exercises that use this question
-            $metadata->usedBy = $questionRepo->findUsages($question);
+            $exercises = $questionRepo->findUsedBy($question);
+            $metadata->usedBy = array_map(function (Exercise $exercise) use ($options) {
+                return $exercise->getUuid();
+            }, $exercises);
 
             // Gets users who have access to this question
-            $metadata->sharedWith = [];
+            $users = $questionRepo->findSharedWith($question);
+            $metadata->sharedWith = array_map(function (User $user) use ($options) {
+                return $this->userSerializer->serialize($user, $options);
+            }, $users);
 
             // Adds category
             $metadata->category = $this->categorySerializer->serialize($question->getCategory(), $options);

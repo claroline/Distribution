@@ -36,6 +36,7 @@ class QuestionRepository extends EntityRepository
         }
 
         // Dates
+        // TODO : add date filters
 
         // Category
         if (!empty($filters['category'])) {
@@ -58,6 +59,9 @@ class QuestionRepository extends EntityRepository
         if (!empty($filters['model'])) {
             $qb->andWhere('q.model = true');
         }
+
+        // TODO : order query
+        // TODO : add pagination
 
         /*$qb->orderBy();*/
         /*$this->addOrderBy($orderBy);
@@ -87,15 +91,20 @@ class QuestionRepository extends EntityRepository
         }
 
         return $qb
-            ->orderBy('c.value, q.title', 'ASC')
+            ->orderBy('c.name, q.title', 'ASC')
             ->setParameter('creator', $user)
             ->getQuery()
             ->getResult();
     }
 
-    public function findUsages(Question $question)
+    public function findUsedBy(Question $question)
     {
         /*$this->createQueryBuilder()*/
+        return [];
+    }
+
+    public function findSharedWith(Question $question)
+    {
         return [];
     }
 
@@ -183,7 +192,7 @@ class QuestionRepository extends EntityRepository
 
         return $qb
             ->andWhere($qb->expr()->notIn('q', $stepQuestionsQuery->getDQL()))
-            ->orderBy('c.value, q.title', 'ASC')
+            ->orderBy('c.name, q.title', 'ASC')
             ->setParameters([
                 'creator' => $user,
                 'exercise' => $exercise,
@@ -206,7 +215,7 @@ class QuestionRepository extends EntityRepository
         return $this->createQueryBuilder('q')
             ->join('q.category', 'c')
             ->where('q.creator = :creator')
-            ->andWhere('c.value LIKE :search')
+            ->andWhere('c.name LIKE :search')
             ->setParameters([
                 'creator' => $user,
                 'search' => "%{$categoryName}%",
@@ -272,7 +281,7 @@ class QuestionRepository extends EntityRepository
     {
         return $this->createQueryBuilder('q')
             ->where('q.creator = :creator')
-            ->andWhere('q.invite LIKE :search')
+            ->andWhere('q.content LIKE :search')
             ->setParameters([
                 'creator' => $user,
                 'search' => "%{$invite}%",
@@ -297,10 +306,10 @@ class QuestionRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('q')
             ->leftJoin('q.category', 'c')
-            ->Where('c.value LIKE :search')
+            ->where('c.name LIKE :search')
             ->orWhere('q.type LIKE :search')
             ->orWhere('q.title LIKE :search')
-            ->orWhere('q.invite LIKE :search')
+            ->orWhere('q.content LIKE :search')
             ->andWhere('q.creator = :creator');
 
         $parameters = [
@@ -319,7 +328,7 @@ class QuestionRepository extends EntityRepository
             $parameters['exercise'] = $excluded;
         }
 
-        return $qb->orderBy('c.value, q.title', 'ASC')
+        return $qb->orderBy('c.name, q.title', 'ASC')
             ->setParameters($parameters)
             ->getQuery()
             ->getResult();

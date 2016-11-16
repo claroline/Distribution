@@ -53,7 +53,7 @@ abstract class AbstractDefinition implements QuestionDefinitionInterface
     }
 
     /**
-     * Deserializes choice question data.
+     * Deserializes question data.
      *
      * @param \stdClass           $data
      * @param AbstractInteraction $question
