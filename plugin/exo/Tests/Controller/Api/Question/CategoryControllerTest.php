@@ -89,7 +89,13 @@ class CategoryControllerTest extends TransactionalTestCase
             'name' => 'categoryCreate'
         ];
 
-        $this->request('POST', '/api/categories', $this->john, $newData);
+        $this->request(
+            'POST',
+            '/api/categories',
+            $this->john,
+            [],
+            json_encode($newData)
+        );
 
         $this->assertEquals(201, $this->client->getResponse()->getStatusCode());
 
@@ -117,7 +123,13 @@ class CategoryControllerTest extends TransactionalTestCase
             'name' => ['not-a-string']
         ];
 
-        $this->request('POST', "/api/categories/{$this->categoryJohn->getUuid()}", $this->john, $invalidData);
+        $this->request(
+            'POST',
+            "/api/categories/{$this->categoryJohn->getUuid()}",
+            $this->john,
+            [],
+            json_encode($invalidData)
+        );
 
         $this->assertEquals(422, $this->client->getResponse()->getStatusCode());
 
@@ -142,7 +154,13 @@ class CategoryControllerTest extends TransactionalTestCase
             'name' => 'categoryUpdate'
         ];
 
-        $this->request('PUT', "/api/categories/{$this->categoryJohn->getUuid()}", $this->john, $updateData);
+        $this->request(
+            'PUT', 
+            "/api/categories/{$this->categoryJohn->getUuid()}", 
+            $this->john,
+            [],
+            json_encode($updateData)
+        );
 
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
 
@@ -162,7 +180,13 @@ class CategoryControllerTest extends TransactionalTestCase
             'name' => ['not-a-string']
         ];
 
-        $this->request('PUT', "/api/categories/{$this->categoryJohn->getUuid()}", $this->john, $invalidData);
+        $this->request(
+            'PUT', 
+            "/api/categories/{$this->categoryJohn->getUuid()}", 
+            $this->john,
+            [],
+            json_encode($invalidData)
+        );
 
         $this->assertEquals(422, $this->client->getResponse()->getStatusCode());
 
@@ -189,7 +213,13 @@ class CategoryControllerTest extends TransactionalTestCase
             'name' => 'categoryUpdate'
         ];
 
-        $this->request('PUT', "/api/categories/{$this->categoryBob->getUuid()}", $this->john, $updateData);
+        $this->request(
+            'PUT',
+            "/api/categories/{$this->categoryBob->getUuid()}",
+            $this->john,
+            [],
+            json_encode($updateData)
+        );
     }
 
     /**
