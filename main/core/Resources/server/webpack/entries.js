@@ -167,9 +167,10 @@ function isMetaPackage (rootDir) {
   return fs.existsSync(rootDir + '/main')
 }
 
-module.exports = module.exports = {
+module.exports = {
   collectEntries,
   collectPackages,
   isMetaPackage,
   getMetaBundles,
-normalizeName}
+  normalizeName
+}
