@@ -88,7 +88,6 @@ export const QuizBar = props =>
   </Navbar>
 
 QuizBar.propTypes = {
-  editable: T.bool.isRequired,
   empty: T.bool.isRequired,
   published: T.bool.isRequired
 }

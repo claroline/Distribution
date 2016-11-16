@@ -4,7 +4,9 @@ import ReactDOM from 'react-dom'
 
 //import {Editor} from './editor/editor'
 
-import {QuizBar} from './components/quiz-bar.jsx'
+//import {QuizBar} from './components/quiz-bar.jsx'
+
+import {QuizOverview} from './components/quiz-overview.jsx'
 
 const container = document.querySelector('.quiz-container')
 
@@ -18,12 +20,22 @@ const empty = !rawQuiz.steps.length
 //
 // React.render()
 
+// ReactDOM.render(
+//   <QuizBar
+//     title={rawQuiz.title}
+//     editable={editable}
+//     empty={empty}
+//     published={false}
+//   />,
+//   container
+// )
+
 ReactDOM.render(
-  <QuizBar
-    title={rawQuiz.title}
+  <QuizOverview
     editable={editable}
     empty={empty}
-    published={false}
+    created={rawQuiz.meta.created}
+    parameters={rawQuiz.parameters}
   />,
   container
 )
