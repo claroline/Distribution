@@ -7,7 +7,7 @@ add_label: Add a label
 add_new_picture: Add a new picture
 add_proposal: Add a proposal
 add_question: Add a question
-add_question_from_existing: Pick an exisiting question
+add_question_from_existing: Import one/many question(s)
 add_question_from_new: Create new question
 add_step: Add a step
 add_zone_answer: Add an answer zone
@@ -16,6 +16,7 @@ advanced_edition: Advanced edition
 after_the_last_attempt: After the last attempt
 alert_ending: Are you sure you want to finish ? (You won't be allowed to modify your answers anymore.)
 all: All
+all_types: All types
 allow_to_edit: Allow to edit
 allow_test_exit: Allow test exit
 all_question: All the questions

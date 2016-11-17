@@ -58,6 +58,7 @@ function selectSubEditor(props) {
           handleItemDeleteClick={props.deleteItem}
           handleItemMove={props.moveItem}
           handleItemCreate={props.createItem}
+          handleItemCreateFromExisting={props.createItemFromExisting}
           handleItemUpdate={props.updateItem}
           handleItemHintsUpdate={props.updateItemHints}
           handleItemDetailUpdate={props.updateItemDetail}
@@ -85,6 +86,7 @@ selectSubEditor.propTypes = {
   deleteItem: T.func.isRequired,
   moveItem: T.func.isRequired,
   createItem: T.func.isRequired,
+  createItemFromExisting: T.func.isRequired,
   updateItem: T.func.isRequired,
   updateItemHints: T.func.isRequired,
   updateItemDetail: T.func.isRequired,

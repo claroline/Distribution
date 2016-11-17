@@ -183,9 +183,7 @@ const StepFooter = props =>
             <a role="button" onClick={() => props.showQuestionPicker({
               title: tex('add_question_from_existing'),
               handleSelect: selected => {
-
-                console.log(selected)
-                //props.handleItemCreate(props.stepId, selected)
+                props.handleItemCreateFromExisting(props.stepId, selected)
               }
             })}>{tex('add_question_from_existing')}</a>
           </li>
@@ -197,6 +195,7 @@ StepFooter.propTypes = {
   stepId: T.string.isRequired,
   showModal: T.func.isRequired,
   handleItemCreate: T.func.isRequired,
+  handleItemCreateFromExisting: T.func.isRequired,
   showQuestionPicker: T.func.isRequired
 }
 
@@ -248,6 +247,7 @@ export const StepEditor = props =>
       closeQuestionPicker={props.closeQuestionPicker}
       closeModal={props.closeModal}
       handleItemCreate={props.handleItemCreate}
+      handleItemCreateFromExisting={props.handleItemCreateFromExisting}
     />
   </div>
 
@@ -267,6 +267,7 @@ StepEditor.propTypes = {
   handleItemDeleteClick: T.func.isRequired,
   handleItemMove: T.func.isRequired,
   handleItemCreate: T.func.isRequired,
+  handleItemCreateFromExisting: T.func.isRequired,
   handleItemUpdate: T.func.isRequired,
   handleItemHintsUpdate: T.func.isRequired,
   showModal: T.func.isRequired,

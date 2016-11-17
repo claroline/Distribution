@@ -14,6 +14,7 @@ import {
 } from './enums'
 import {
   ITEM_CREATE,
+  ITEM_CREATE_FROM_EXISTING,
   ITEM_DELETE,
   ITEM_UPDATE,
   ITEM_MOVE,
@@ -107,6 +108,12 @@ function reduceSteps(steps = {}, action = {}) {
       updatedStep._errors = errors
       return update(steps, {[action.id]: {$set: updatedStep}})
     }
+    case ITEM_CREATE_FROM_EXISTING: {
+      const ids = action.items.map(item => {
+        return item.id
+      })
+      return update(steps, {[action.stepId]: {items: {$push: ids}}})
+    }
     case ITEM_CREATE:
       return update(steps, {[action.stepId]: {items: {$push: [action.id]}}})
     case ITEM_DELETE: {
@@ -146,6 +153,29 @@ function reduceItems(items = {}, action = {}) {
       newItem = Object.assign({}, newItem, {_errors: errors})
 
       return update(items, {[action.id]: {$set: newItem}})
+    }
+    case ITEM_CREATE_FROM_EXISTING: {
+    /*  let newItem = decorateItem({
+        id: action.id,
+        type: action.item.type,
+        content: action.item.content,
+        hints: action.item.hints,
+        feedback: action.item.feedback
+      })
+      newItem = decorateItem(newItem)*/
+      const items = action.items
+      const newItems = []
+      action.items.forEach(item => {
+        const def = getDefinition(item.type)
+        let newItem = def.reduce(item, action)
+        const errors = validate.item(newItem)
+        newItem = Object.assign({}, newItem, {_errors: errors})
+        newItems.push(newItem)
+        update(items, {[item.id]: {$set: newItem}})
+      })
+
+
+      return items
     }
     case ITEM_DELETE:
       return update(items, {$delete: action.id})

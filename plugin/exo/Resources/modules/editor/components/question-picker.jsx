@@ -1,134 +1,92 @@
 import React, {Component, PropTypes as T} from 'react'
 import Modal from 'react-bootstrap/lib/Modal'
-import {trans, t} from './../lib/translate'
+import {trans, t, tex} from './../lib/translate'
+import {listItemNames as listTypes} from './../item-types'
 
-/* global Routing $ */
+/* global Routing */
 
 class QuestionPicker extends Component {
   constructor(props){
     super(props)
-    // @TODO retrive question list from API
+
+    const types = listTypes()
+
+    this.state = {
+      selected: [],
+      criterion: null,
+      questions: [],
+      types: types
+    }
+  }
+
+  handleSearchTextChange(value){
+    this.setState({criterion: value})
+  }
+
+  handleQuestionSelection(question){
+    let actual = this.state.selected
+    actual.push(question)
+    this.setState({selected: actual})
+  }
+
+  componentDidMount() {
+    this.getQuestions()
+  }
+
+  getQuestions(){
+    /*const url = Routing.generate('question_list')
+    const params = {
+      method: 'POST' ,
+      credentials: 'include'
+    }
+
+    fetch(url, params)
+    .then(response => {
+      return response.json()
+    })
+    .then( jsonData =>  {
+      let questions = jsonData.owned.concat(jsonData.shared)
+      this.setState({questions: questions})
+    })*/
+
     const questions = [
       {
         id: '1',
         title: 'Question 1',
         question: 'Veuillez me répondre',
-        type: 'application/x.open+json'
+        type: 'application/x.open+json',
+        feedback: '',
+        hints:[],
+        maxScore: 10,
+        maxLength: 255
       },
       {
         id: '2',
-        title: 'Question 2',
+        title: null,
         question: 'Oui ou non?',
-        type: 'application/x.choice+json'
+        type: 'application/x.choice+json',
+        feedback: '',
+        hints:[],
+        choices: [
+
+        ]
       }
     ]
 
-    this.state = {
-      question: null,
-      type:null,
-      questions: questions,
-      types:[
-        {
-          mime:'application/x.choice+json',
-          name:trans('choice')
-        },
-        {
-          mime:'application/x.open+json',
-          name:trans('open')
-        },
-        {
-          mime:'application/x.words+json',
-          name:trans('words')
-        },
-        {
-          mime:'application/x.match+json',
-          name:trans('match')
-        },
-        {
-          mime:'application/x.graphic+json',
-          name:trans('graphic')
-        },
-        {
-          mime:'application/x.cloze+json',
-          name:trans('cloze')
-        }
-      ]
-    }
-
-    this.getData()
-  }
-
-  getData(){
-    const url = Routing.generate('question_list')
-    const myHeaders = new Headers({
-      'Access-Control-Allow-Origin':'*'
-    })
-    var myInit = {
-      method: 'POST' ,
-      headers: myHeaders,
-      mode: 'cors',
-      cache: 'default',
-      credentials: 'include'
-    }
-
-    fetch(url, myInit)
-    .then(function(response) {
-      console.log(response)
-      //return response.blob()
-    })
-    .then(function(myBlob) {
-      //var objectURL = URL.createObjectURL(myBlob)
-      //myImage.src = objectURL
-    })
-
-    /*fetch(url, {
-      method: 'post',
-      headers : new Headers({
-        'Content-Type': 'application/x-www-form-urlencoded'
-      })
-    }).then(function(response) {
-    	console.log(response)
-      return response.json()
-    }).then(function(json){
-      console.log(json)
-    }).catch(function(err) {
-    	console.log(err)
-    })*/
-
-    /*const req = new XMLHttpRequest()
-    req.open('POST', url, true)
-    req.onreadystatechange = function (aEvt) {
-      if (req.readyState == 4) {
-        if(req.status == 200){
-          console.log(req.response)
-        }
-        else{
-          console.log('Erreur pendant le chargement de la page.\n')
-        }
-
-      }
-    }
-    req.send(null)*/
-
-    /*$.ajax({
-      url: url,
-      method:'POST',
-      success: function(result){
-        console.log(result)
-      }
-    })*/
-
-
+    this.setState({questions: questions})
   }
 
   handleClick(){
-    this.props.handleSelect(this.state.question)
+    if (this.state.selected.length > 0) {
+      this.props.handleSelect(this.state.selected)
+    }
+
     this.props.fadeQuestionPicker()
   }
 
   getTypeName(mimeType){
-    const type = this.state.types.find(type => type.mime === mimeType)
-    return undefined !== type ? type.name: 'not found'
+    const type = this.state.types.find(type => type.type === mimeType)
+    return undefined !== type ? trans(type.name, {}, 'question_types'): t('error')
   }
 
   render(){
@@ -141,65 +99,31 @@ class QuestionPicker extends Component {
           <Modal.Title>{this.props.title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form className="form-inline">
-            <div className="form-group">
-              <div className="input-group">
-                <input type="text" className="form-control" placeholder="Titre / Question" />
-                <div className="input-group-addon">
-                      <span className="fa fa-search"></span>
-                </div>
-              </div>
-            </div>
-            <div className="form-group" style={{paddingLeft:'15px'}}>
-              <div className="btn-group">
-                <button className="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  &nbsp;{trans('Choisir un type')}&nbsp;
-                  <span className="caret"></span>
-                </button>
-                <ul className="dropdown-menu">
-                  <li>
-                    <a role="button" onClick={() => this.setState({type: null})}>{trans('Tous')}</a>
-                  </li>
-                  {
-                    this.state.types.map((type,index) =>
-                      <li key={index}>
-                        <a role="button" onClick={() => this.setState({type: type.mime})}>{type.name}</a>
-                      </li>
-                    )
-                  }
-                </ul>
-              </div>
-            </div>
-          </form>
-          <hr/>
-          <table className="table table-striped">
-            <thead>
-              <tr>
-                <th></th>
-                <th>Titre</th>
-                <th>Invite</th>
-                <th>Type</th>
-              </tr>
-            </thead>
-            <tbody>
-              {this.state.questions.map(question =>
-                <tr key={question.id}>
-                  <td>
-                    <input name="question" type="radio" onChange={() => this.handleQuestionSelection(question)} value={question.id} />
-                  </td>
-                  <td>{question.title}</td>
-                  <td>{question.question}</td>
-                  <td>{this.getTypeName(question.type)}</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+          <input id="searchText" placeholder={tex('Titre / Question')} type="text" onChange={(e) => this.handleSearchTextChange(e.target.value)} className="form-control" />
+
+          {this.state.questions.length > 0 &&
+            <table className="table table-striped">
+              <tbody>
+                {this.state.questions.map(item =>
+                  <tr key={item.id}>
+                    <td>
+                      <input name="question" type="checkbox" onClick={() => this.handleQuestionSelection(item)} />
+                    </td>
+                    <td>{item.title ? item.title : item.question }</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          }
+          { this.state.questions.length === 0 &&
+            <h5>{t('no_search_results')}</h5>
+          }
         </Modal.Body>
         <Modal.Footer>
           <button className="btn btn-default" onClick={this.props.fadeQuestionPicker}>
             {t('cancel')}
           </button>
-          <button className="btn btn-primary" onClick={this.handleClick.bind(this)}>
+          <button className="btn btn-primary" disabled={this.state.selected.length === 0} onClick={this.handleClick.bind(this)}>
             {t('ok')}
           </button>
         </Modal.Footer>
@@ -215,7 +139,5 @@ QuestionPicker.propTypes = {
   fadeQuestionPicker: T.func.isRequired,
   hideQuestionPicker: T.func.isRequired
 }
-
-
 
 export {QuestionPicker}

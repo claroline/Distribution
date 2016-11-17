@@ -7,7 +7,7 @@ add_label: Ajouter un label
 add_new_picture: Ajouter une nouvelle image
 add_proposal: Ajouter une proposition
 add_question: Ajouter une question
-add_question_from_existing: Sélectionner une question existante
+add_question_from_existing: Importer une/des question(s)
 add_question_from_new: Créer une nouvelle question
 add_step: Ajouter une étape
 add_zone_answer: Ajouter une zone de réponse
@@ -16,6 +16,7 @@ advanced_edition: Edition avancée
 after_the_last_attempt: Après le dernier essai
 alert_ending: Êtes-vous sûr(e) de vouloir terminer ? (Vous ne pourrez plus modifier vos réponses.)
 all: Tout
+all_types: Tous les types
 allow_to_edit: Autoriser l'édition
 allow_test_exit: Permettre d'interrompre l'exercice
 all_question: Toutes les questions

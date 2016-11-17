@@ -3,6 +3,7 @@ import select from './selectors'
 import {makeActionCreator, makeId} from './util'
 
 export const ITEM_CREATE = 'ITEM_CREATE'
+export const ITEM_CREATE_FROM_EXISTING = 'ITEM_CREATE_FROM_EXISTING'
 export const ITEM_UPDATE = 'ITEM_UPDATE'
 export const ITEM_DELETE = 'ITEM_DELETE'
 export const ITEM_MOVE = 'ITEM_MOVE'
@@ -60,6 +61,16 @@ actions.createItem = (stepId, type) => {
     id: makeId(),
     stepId,
     itemType: type
+  }
+}
+
+actions.createItemFromExisting = (stepId, questions) => {
+  invariant(stepId, 'stepId is mandatory')
+  invariant(questions, 'questions is mandatory')
+  return {
+    type: ITEM_CREATE_FROM_EXISTING,
+    stepId,
+    items: questions
   }
 }
 
