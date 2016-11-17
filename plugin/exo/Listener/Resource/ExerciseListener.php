@@ -14,7 +14,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use UJM\ExoBundle\Entity\Exercise;
-use UJM\ExoBundle\Form\ExerciseType;
+use UJM\ExoBundle\Form\Type\ExerciseType;
 
 /**
  * @DI\Service("ujm.exo.exercise_listener")

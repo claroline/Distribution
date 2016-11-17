@@ -11,7 +11,7 @@ use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Manager\Question\QuestionManager;
 use UJM\ExoBundle\Repository\StepQuestionRepository;
 use UJM\ExoBundle\Serializer\StepSerializer;
-use UJM\ExoBundle\Transfer\Json\ValidationException;
+use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Transfer\Json\Validator;
 use UJM\ExoBundle\Validator\JsonSchema\StepValidator;
 

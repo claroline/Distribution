@@ -1,17 +1,16 @@
 <?php
 
-/**
- * Services for the paper.
- */
-
 namespace UJM\ExoBundle\Services\classes;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\HttpFoundation\Request;
+use UJM\ExoBundle\Entity\AbstractInteraction;
 use UJM\ExoBundle\Entity\Paper;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use UJM\ExoBundle\Entity\Response;
 
+/**
+ * Services for the paper.
+ */
 class PaperService
 {
     private $doctrine;
@@ -28,18 +27,6 @@ class PaperService
     {
         $this->doctrine = $doctrine;
         $this->container = $container;
-    }
-
-    /**
-     * Get IP client.
-     *
-     * @param Request $request
-     *
-     * @return IP Client
-     */
-    public function getIP(Request $request)
-    {
-        return $request->getClientIp();
     }
 
     /**
@@ -72,8 +59,7 @@ class PaperService
     }
 
     /**
-     * To round up and down a score.
-     *
+     * Round up and down a score.
      *
      * @param float $toBeAdjusted
      *
@@ -85,10 +71,9 @@ class PaperService
     }
 
     /**
-     * Get informations about a paper response, maxExoScore, scorePaper, scoreTemp (all questions graphiced or no).
+     * Get information about a paper response, maxExoScore, scorePaper, scoreTemp (all questions graphiced or no).
      *
-     *
-     * @param \UJM\ExoBundle\Entity\Paper\paper $paper
+     * @param Paper $paper
      *
      * @return array
      */
@@ -126,10 +111,10 @@ class PaperService
      * sort the array of interactions in the order recorded for the paper.
      *
      *
-     * @param Collection of \UJM\ExoBundle\Entity\Interaction $interactions
+     * @param AbstractInteraction[] $interactions
      * @param string                                          $order
      *
-     * @return UJM\ExoBundle\Entity\Interaction[]
+     * @return AbstractInteraction[]
      */
     private function sortInteractions($interactions, $order)
     {
@@ -153,11 +138,10 @@ class PaperService
     /**
      * sort the array of responses to match the order of questions.
      *
+     * @param Response[] $responses
+     * @param string $order
      *
-     * @param Collection of \UJM\ExoBundle\Entity\Response $responses
-     * @param string                                       $order
-     *
-     * @return UJM\ExoBundle\Entity\Response[]
+     * @return Response[]
      */
     private function sortResponses($responses, $order)
     {
@@ -175,7 +159,7 @@ class PaperService
             }
             //if no response
             if ($tem == 0) {
-                $response = new \UJM\ExoBundle\Entity\Response();
+                $response = new Response();
                 $response->setResponse('');
                 $response->setMark(0);
 
@@ -187,7 +171,7 @@ class PaperService
     }
 
     /**
-     * @param string $order
+     * @param string $orderQuestion
      *
      * Return \UJM\ExoBundle\Interaction[]
      */
@@ -196,7 +180,8 @@ class PaperService
         $questionIds = explode(';', substr($orderQuestion, 0, -1));
         $em = $this->doctrine->getManager();
 
-        return $em->getRepository('UJMExoBundle:Question')
+        return $em
+            ->getRepository('UJMExoBundle:Question')
             ->findByIds($questionIds);
     }
 
@@ -209,22 +194,21 @@ class PaperService
     {
         $em = $this->doctrine->getManager();
 
-        $responses = $em->getRepository('UJMExoBundle:Response')
-                        ->getPaperResponses($paperId);
-
-        return $responses;
+        return $em
+            ->getRepository('UJMExoBundle:Response')
+            ->getPaperResponses($paperId);
     }
 
     /**
-     * @param string $order
+     * @param string $orderOrig
      *
-     * Return integer[];
+     * @return integer[]
      */
     private function formatQuestionOrder($orderOrig)
     {
         $order = substr($orderOrig, 0, strlen($orderOrig) - 1);
-        $orderFormated = explode(';', $order);
+        $orderFormatted = explode(';', $order);
 
-        return $orderFormated;
+        return $orderFormatted;
     }
 }

@@ -2,8 +2,6 @@
 
 namespace UJM\ExoBundle\Manager;
 
-/*use Symfony\Component\Serializer\Encoder\JsonEncoder;*/
-
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Question;
 

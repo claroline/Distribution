@@ -243,7 +243,7 @@ class MatchingExport extends QtiExport
         $mapping = $this->document->CreateElement('mapping');
         $mapping->setAttribute('defaultValue', '0');
         //get associations
-        $this->AssociationsMapEntry($mapping);
+        $this->associationsMapEntry($mapping);
         $this->responseDeclaration[0]->appendChild($mapping);
     }
 
@@ -253,7 +253,7 @@ class MatchingExport extends QtiExport
      *
      * @param type $mapping
      */
-    protected function AssociationsMapEntry($mapping)
+    protected function associationsMapEntry($mapping)
     {
         foreach ($this->interactionmatching->getLabels() as $keyLa => $la) {
             $labels[$keyLa] = $la->getId();
@@ -261,7 +261,7 @@ class MatchingExport extends QtiExport
             $nbrLabel[$la->getId()] = 0;
         }
         //recup of associated labels
-        $allAssocLabel = $this->AssociatedLabels();
+        $allAssocLabel = $this->associatedLabels();
         $nbrLabelAssociated = $this->nbrLabel($nbrLabel, $labels, $allAssocLabel);
 
         foreach ($allAssocLabel as $key => $assocLabel) {
@@ -328,7 +328,7 @@ class MatchingExport extends QtiExport
         foreach ($this->interactionmatching->getLabels() as $keyLa => $la) {
             $labels[$keyLa] = $la->getId();
         }
-        $allAssocLabel = $this->AssociatedLabels();
+        $allAssocLabel = $this->associatedLabels();
 
         foreach ($allAssocLabel as $key => $assocLabel) {
             foreach ($assocLabel as $label) {
@@ -354,10 +354,11 @@ class MatchingExport extends QtiExport
      * returns associated labels.
      *
      *
-     * @return $assocLabels
+     * @return array
      */
-    protected function AssociatedLabels()
+    protected function associatedLabels()
     {
+        $assocLabels = [];
         foreach ($this->interactionmatching->getProposals() as $key => $la) {
             $assocLabels[$key] = $la->getAssociatedLabel();
         }

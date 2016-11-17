@@ -1,32 +1,4 @@
 services:
-    twig.extension.Interaction:
-        class: UJM\ExoBundle\Services\twig\Interaction
-        arguments: [@service_container]
-        tags:
-            - { name: twig.extension }
-            
-    twig.extension.InteractionGraphic:
-        class: UJM\ExoBundle\Services\twig\InteractionGraphic
-        arguments: [@doctrine]
-        tags:
-            - { name: twig.extension }
-
-    twig.extension.InteractionMatching:
-        class: UJM\ExoBundle\Services\twig\InteractionMatching
-        arguments: [@doctrine, @service_container]
-        tags:
-            - { name: twig.extension }
-            
-    twig.extension.InteractionOpen:
-        class: UJM\ExoBundle\Services\twig\InteractionOpen
-        arguments: [@doctrine]
-        tags:
-            - { name: twig.extension }
-
-    ujm.exo_category:
-        class: UJM\ExoBundle\Services\classes\CategoryService
-        arguments: [@doctrine, @security.token_storage, @translator]
-        
     ujm.exo_docimology:
         class: UJM\ExoBundle\Services\classes\Docimology
         arguments: [@doctrine, @service_container]
@@ -58,14 +30,6 @@ services:
     ujm.exo_paper:
         class: UJM\ExoBundle\Services\classes\PaperService
         arguments: [@doctrine, @service_container]
-        
-    ujm.exo_pagination:
-        class: UJM\ExoBundle\Services\classes\PaginationService
-        arguments: [@doctrine, @service_container]
-        
-    ujm.exo_search_question:
-        class: UJM\ExoBundle\Services\classes\SearchQuestionService
-        arguments: [@doctrine, @service_container,@security.token_storage]
 
     ujm.exo_qti_export_InteractionQCM:
         class: UJM\ExoBundle\Services\classes\QTI\QcmExport
@@ -147,19 +111,4 @@ services:
 
     ujm.exo_question:
         class: UJM\ExoBundle\Services\classes\QuestionService
-        arguments: [@doctrine, @security.token_storage, @kernel]
-
-    ujm.exo_validator_isvalidqcmglobalmark:
-        class: UJM\ExoBundle\Validator\Constraints\isValidQCMGlobalMarkValidator
-        arguments: [@request]
-        scope: request
-        tags:
-            - { name: validator.constraint_validator, alias: ujm.exercise_isvalidqcmglobalmark }
-
-    ujm.exo_validator_isvalidqcmmark:
-        class: UJM\ExoBundle\Validator\Constraints\isValidQCMMarkValidator
-        arguments: [@request]
-        scope: request
-        tags:
-            - { name: validator.constraint_validator, alias: ujm.exercise_isvalidqcmmark }
-            
+        arguments: [@claroline.persistence.object_manager, @security.token_storage]

@@ -4,7 +4,6 @@ namespace UJM\ExoBundle\Services\classes\Interactions;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
@@ -118,30 +117,6 @@ abstract class Interaction
      }
 
      /**
-      * Find if exist already an answer.
-      *
-      * @param \UJM\ExoBundle\Entity\AbstractInteraction $interactionToDisplay interaction (question) to displayed
-      * @param \Symfony\Component\HttpFoundation\Session\SessionInterface $session
-      *
-      * @return \UJM\ExoBundle\Entity\Response
-      */
-     public function getAlreadyResponded($interactionToDisplay, $session)
-     {
-         $responseGiven = $this->doctrine
-                               ->getManager()
-                               ->getRepository('UJMExoBundle:Response')
-                               ->getAlreadyResponded($session->get('paper'), $interactionToDisplay->getId());
-
-         if (count($responseGiven) > 0) {
-             $responseGiven = $responseGiven[0]->getResponse();
-         } else {
-             $responseGiven = '';
-         }
-
-         return $responseGiven;
-     }
-
-     /**
       * @param \UJM\ExoBundle\Entity\Interaction $interaction
       *
       * @return int
@@ -154,18 +129,6 @@ abstract class Interaction
 
          return count($response);
      }
-
-     /**
-      * abstract method
-      * To process the user's response for a paper(or a test).
-      *
-      *
-      * @param \Symfony\Component\HttpFoundation\Request $request
-      * @param int $paperID id Paper or 0 if it's just a question test and not a paper
-      *
-      * @return array
-      */
-     abstract public function response(Request $request, $paperID = 0);
 
      /**
       * abstract method

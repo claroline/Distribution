@@ -270,7 +270,7 @@ class QuestionSerializer extends AbstractSerializer
 
             // Gets exercises that use this question
             $exercises = $questionRepo->findUsedBy($question);
-            $metadata->usedBy = array_map(function (Exercise $exercise) use ($options) {
+            $metadata->usedBy = array_map(function (Exercise $exercise) {
                 return $exercise->getUuid();
             }, $exercises);
 

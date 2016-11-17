@@ -7,6 +7,9 @@ use UJM\ExoBundle\Entity\Question;
 
 class ShareController
 {
+    /**
+     * 
+     */
     public function addAction()
     {
 

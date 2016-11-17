@@ -51,7 +51,7 @@ class ChoiceQuestionValidator extends JsonSchemaValidator
         $errors = [];
 
         // check solution IDs are consistent with choice IDs
-        $choiceIds = array_map(function ($choice) {
+        $choiceIds = array_map(function (\stdClass $choice) {
             return $choice->id;
         }, $question->choices);
 

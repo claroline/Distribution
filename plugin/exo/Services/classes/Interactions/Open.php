@@ -3,8 +3,6 @@
 namespace UJM\ExoBundle\Services\classes\Interactions;
 
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use UJM\ExoBundle\Entity\InteractionOpen;
 
 /**
@@ -14,43 +12,6 @@ use UJM\ExoBundle\Entity\InteractionOpen;
  */
 class Open extends Interaction
 {
-    /**
-     * implement the abstract method
-     * To process the user's response for a paper(or a test).
-     *
-     *
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param int                                       $paperID id Paper or 0 if it's just a question test and not a paper
-     *
-     * @return mixed[]
-     */
-    public function response(Request $request, $paperID = 0)
-    {
-        $interactionOpenID = $request->request->get('interactionOpenToValidated');
-        $tempMark = true;
-
-        $session = $request->getSession();
-
-        $em = $this->doctrine->getManager();
-        $interOpen = $em->getRepository('UJMExoBundle:InteractionOpen')->find($interactionOpenID);
-
-        $response = $request->request->get('interOpen');
-
-        $penalty = $this->getPenalty($interOpen->getQuestion(), $session, $paperID);
-
-        $score = $this->mark($interOpen, $response, $penalty);
-
-        $res = [
-            'penalty' => $penalty,
-            'interOpen' => $interOpen,
-            'response' => $response,
-            'score' => $score,
-            'tempMark' => $tempMark,
-        ];
-
-        return $res;
-    }
-
     /**
      * implement the abstract method
      * To calculate the score.

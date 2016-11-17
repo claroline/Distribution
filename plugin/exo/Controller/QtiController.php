@@ -83,27 +83,14 @@ class QtiController extends Controller
         $file = $request->files->get('qtifile');
 
         $qtiRepo->createDirQTI();
-        $root = [];
-        $fichier = [];
 
         $file->move($qtiRepo->getUserDir(), $file->getClientOriginalName());
         $zip = new \ZipArchive();
         if ($zip->open($qtiRepo->getUserDir().$file->getClientOriginalName()) !== true) {
             return false;
         }
-        $res = zip_open($qtiRepo->getUserDir().$file->getClientOriginalName());
-        $zip->extractTo($qtiRepo->getUserDir());
 
-        $i = 0;
-        while ($zip_entry = zip_read($res)) {
-            if (zip_entry_filesize($zip_entry) > 0) {
-                $nom_fichier = zip_entry_name($zip_entry);
-                if (substr($nom_fichier, -4, 4) === '.xml') {
-                    $root[$i] = $fichier = explode('/', $nom_fichier);
-                }
-            }
-            ++$i;
-        }
+        $zip->extractTo($qtiRepo->getUserDir());
 
         $zip->close();
 
@@ -173,7 +160,7 @@ class QtiController extends Controller
      *
      * @param int $id : id of question
      */
-    public function ExportAction($id)
+    public function exportAction($id)
     {
         $service = $this->container->get('ujm.exo_question');
         $question = $service->controlUserQuestion($id);

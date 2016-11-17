@@ -39,20 +39,6 @@ interface QuestionHandlerInterface
     public function validateAfterSchema(\stdClass $questionData);
 
     /**
-     * Converts the interaction details of a JSON-decoded question to
-     * their corresponding entities and persists them (without flushing).
-     *
-     * This method is called when importing a question in JSON format. It
-     * is passed the question entity which will be flushed at the end of
-     * the import process, as well as the JSON-decoded data to import. Its
-     * role is to handle anything specific to the supported question type.
-     *
-     * @param Question  $question
-     * @param \stdClass $importData
-     */
-    public function persistInteractionDetails(Question $question, \stdClass $importData);
-
-    /**
      * Converts the interaction details of a question to a standard object
      * representation ready to be JSON-encoded.
      *

@@ -92,33 +92,6 @@ class OpenHandler implements QuestionHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function persistInteractionDetails(Question $question, \stdClass $importData)
-    {
-        $interaction = new InteractionOpen();
-
-        for ($i = 0, $max = count($importData->holes); $i < $max; ++$i) {
-            // temporary limitation
-            if ($importData->holes[$i]->type !== 'text/html') {
-                throw new \Exception(
-                "Import not implemented for MIME type {$importData->holes[$i]->type}"
-                );
-            }
-
-            $hole = new Hole();
-            $hole->setOrdre($i);
-
-            $hole->setInteractionHole($interaction);
-            $interaction->addHole($hole);
-            $this->om->persist($hole);
-        }
-
-        $interaction->setQuestion($question);
-        $this->om->persist($interaction);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function convertInteractionDetails(Question $question, \stdClass $exportData, $withSolution = true, $forPaperList = false)
     {
         $repo = $this->om->getRepository('UJMExoBundle:InteractionOpen');
@@ -235,9 +208,7 @@ class OpenHandler implements QuestionHandlerInterface
             return ['Answer data must be a string, '.gettype($data).' given'];
         }
 
-        $count = 0;
-
-        if (0 === $count = count($data)) {
+        if (0 === count($data)) {
             return ['Answer data cannot be empty'];
         }
 

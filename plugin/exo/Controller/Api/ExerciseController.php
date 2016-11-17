@@ -11,32 +11,25 @@ use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Manager\ExerciseManager;
 use UJM\ExoBundle\Manager\PaperManager;
-use UJM\ExoBundle\Manager\Question\QuestionManager;
 use UJM\ExoBundle\Services\classes\PaperService;
-use UJM\ExoBundle\Transfer\Json\ValidationException;
+use UJM\ExoBundle\Library\Validator\ValidationException;
 
 /**
  * Exercise API Controller exposes REST API.
  *
- * @EXT\Route(
- *     "/exercises",
- *     options={"expose"=true},
- *     defaults={"_format": "json"}
- * )
- * @EXT\Method("GET")
+ * @EXT\Route("/exercises", options={"expose"=true})
  */
 class ExerciseController extends AbstractController
 {
     private $om;
     private $authorization;
     private $exerciseManager;
-    private $questionManager;
     private $paperManager;
     private $paperService;
     private $translator;
@@ -46,7 +39,6 @@ class ExerciseController extends AbstractController
      *     "om"                 = @DI\Inject("claroline.persistence.object_manager"),
      *     "authorization"      = @DI\Inject("security.authorization_checker"),
      *     "exerciseManager"    = @DI\Inject("ujm.exo.exercise_manager"),
-     *     "questionManager"    = @DI\Inject("ujm.exo.question_manager"),
      *     "paperManager"       = @DI\Inject("ujm.exo.paper_manager"),
      *     "paperService"       = @DI\Inject("ujm.exo_paper"),
      *     "translator"         = @DI\Inject("translator.default")
@@ -55,7 +47,6 @@ class ExerciseController extends AbstractController
      * @param ObjectManager                 $om
      * @param AuthorizationCheckerInterface $authorization
      * @param ExerciseManager               $exerciseManager
-     * @param QuestionManager               $questionManager
      * @param PaperManager                  $paperManager
      * @param PaperService                  $paperService
      * @param Translator                    $translator
@@ -64,7 +55,6 @@ class ExerciseController extends AbstractController
         ObjectManager $om,
         AuthorizationCheckerInterface $authorization,
         ExerciseManager $exerciseManager,
-        QuestionManager $questionManager,
         PaperManager $paperManager,
         PaperService $paperService,
         Translator $translator
@@ -72,7 +62,6 @@ class ExerciseController extends AbstractController
         $this->om = $om;
         $this->authorization = $authorization;
         $this->exerciseManager = $exerciseManager;
-        $this->questionManager = $questionManager;
         $this->paperManager = $paperManager;
         $this->paperService = $paperService;
         $this->translator = $translator;
@@ -83,6 +72,7 @@ class ExerciseController extends AbstractController
      * in a JSON format.
      *
      * @EXT\Route("/{id}", name="exercise_get")
+     * @EXT\Method("GET")
      * @EXT\ParamConverter("exercise", class="UJMExoBundle:Exercise", options={"mapping": {"id": "uuid"}})
      *
      * @param Exercise $exercise
@@ -233,7 +223,7 @@ class ExerciseController extends AbstractController
             $nbFinishedPapers = $this->paperManager->countUserFinishedPapers($exercise, $user);
 
             if ($max > 0 && $nbFinishedPapers >= $max) {
-                throw new AccessDeniedHttpException('max attempts reached');
+                throw new AccessDeniedException('max attempts reached');
             }
         }
 
@@ -343,7 +333,7 @@ class ExerciseController extends AbstractController
         $collection = new ResourceCollection([$exercise->getResourceNode()]);
 
         if (!$this->authorization->isGranted($permission, $collection)) {
-            throw new AccessDeniedHttpException();
+            throw new AccessDeniedException($collection->getErrorsForDisplay());
         }
     }
 

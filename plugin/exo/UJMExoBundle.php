@@ -23,11 +23,6 @@ class UJMExoBundle extends PluginBundle
         return $config->addRoutingResource(__DIR__.'/Resources/config/routing.yml');
     }
 
-    public function getRequiredFixturesDirectory($environment)
-    {
-        return 'DataFixtures';
-    }
-
     public function getAdditionalInstaller()
     {
         return new AdditionalInstaller();

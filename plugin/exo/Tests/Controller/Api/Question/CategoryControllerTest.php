@@ -6,7 +6,7 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Testing\RequestTrait;
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Claroline\CoreBundle\Persistence\ObjectManager;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use UJM\ExoBundle\Entity\Category;
 use UJM\ExoBundle\Library\Testing\Persister;
 
@@ -119,13 +119,13 @@ class CategoryControllerTest extends TransactionalTestCase
     public function testCreateCategoryWithInvalidData()
     {
         $invalidData = [
-            'id' => $this->categoryJohn->getUuid(),
+            'id' => uniqid(),
             'name' => ['not-a-string']
         ];
 
         $this->request(
             'POST',
-            "/api/categories/{$this->categoryJohn->getUuid()}",
+            "/api/categories",
             $this->john,
             [],
             json_encode($invalidData)
@@ -204,7 +204,7 @@ class CategoryControllerTest extends TransactionalTestCase
     /**
      * The `update` action MUST NOT allow to update a category by a user not linked to the category.
      *
-     * @expectedException AccessDeniedHttpException
+     * @expectedException AccessDeniedException
      */
     public function testUpdateCategoryByNotAdminUser()
     {
@@ -237,7 +237,7 @@ class CategoryControllerTest extends TransactionalTestCase
     /**
      * The `delete` action MUST NOT allow to delete a category by a user not linked to the category.
      *
-     * @expectedException AccessDeniedHttpException
+     * @expectedException AccessDeniedException
      */
     public function testDeleteCategoryByNotAdminUser()
     {

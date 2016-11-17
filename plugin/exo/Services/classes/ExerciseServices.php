@@ -2,8 +2,6 @@
 
 namespace UJM\ExoBundle\Services\classes;
 
-use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Library\Resource\ResourceCollection;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Symfony\Component\DependencyInjection\Container;
@@ -72,53 +70,6 @@ class ExerciseServices
     }
 
     /**
-     * To know if an user is the creator of an exercise.
-     *
-     * @deprecated only used in QuestionController in an old bank method.
-     *
-     * @param Exercise $exercise
-     *
-     * @return bool
-     */
-    public function isExerciseAdmin(Exercise $exercise)
-    {
-        $collection = new ResourceCollection([$exercise->getResourceNode()]);
-        if ($this->authorizationChecker->isGranted('ADMINISTRATE', $collection)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Add an Interaction in an exercise if created from an exercise.
-     *
-     * @deprecated only used in old symfony forms.
-     *
-     * @param Question $question
-     * @param Exercise $exercise
-     * @param Step     $step
-     */
-    public function addQuestionInExercise(Question $question, Exercise $exercise, Step $step = null)
-    {
-        if (null === $step) {
-            // Create a new Step to add the Question
-            $this->createStepForOneQuestion($exercise, $question, 1);
-        } else {
-            // Add the question to the existing Step
-            $em = $this->doctrine->getManager();
-
-            $sq = new StepQuestion();
-            $sq->setOrdre($step->getStepQuestions()->count() + 1);
-            $sq->setStep($step);
-            $sq->setQuestion($question);
-
-            $em->persist($sq);
-            $em->flush();
-        }
-    }
-
-    /**
      * Add a question in a step.
      *
      *
@@ -144,55 +95,6 @@ class ExerciseServices
             $this->om->persist($sq);
             $this->om->flush();
         }
-    }
-
-    /**
-     * @deprecated
-     *
-     * @return User
-     */
-    public function getUser()
-    {
-        return $this->container->get('security.token_storage')->getToken()->getUser();
-    }
-
-    /**
-     * @return int or String
-     *
-     * @deprecated
-     */
-    public function getUserId()
-    {
-        $user = $this->getUser();
-        if (is_object($user)) {
-            $uid = $user->getId();
-        } else {
-            $uid = 'anonymous';
-        }
-
-        return $uid;
-    }
-
-    /**
-     * Temporary : Waiting step manager.
-     *
-     * Create a step for one question in the exercise
-     *
-     * @param Exercise $exercise
-     * @param Question $question
-     * @param int      $orderStep order of the step in the exercise
-     */
-    public function createStepForOneQuestion(Exercise $exercise, Question $question, $orderStep)
-    {
-        $em = $this->doctrine->getManager();
-        $step = $this->createStep($exercise, $orderStep);
-
-        $sq = new StepQuestion();
-        $sq->setStep($step);
-        $sq->setQuestion($question);
-        $sq->setOrdre(1);
-        $em->persist($sq);
-        $em->flush();
     }
 
     /**

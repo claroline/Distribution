@@ -1,60 +1,16 @@
 <?php
 
-/**
- * Services for the matching.
- */
-
 namespace UJM\ExoBundle\Services\classes\Interactions;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
+ * Services for the matching.
+ *
  * @DI\Service("ujm.exo.matching_service")
  */
 class Matching extends Interaction
 {
-    /**
-     * implement the abstract method
-     * To process the user's response for a paper(or a test).
-     *
-     *
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param int                                       $paperID id Paper or 0 if it's just a question test and not a paper
-     *
-     * @return mixed[]
-     */
-    public function response(Request $request, $paperID = 0)
-    {
-        $interactionMatchingId = $request->request->get('interactionMatchingToValidated');
-        $response = $request->request->get('jsonResponse');
-
-        $em = $this->doctrine->getManager();
-        $interMatching = $em->getRepository('UJMExoBundle:InteractionMatching')->find($interactionMatchingId);
-
-        $session = $request->getSession();
-
-        $penalty = $this->getPenalty($interMatching->getQuestion(), $session, $paperID);
-
-        $tabsResponses = $this->initTabResponseMatching($response, $interMatching);
-        $tabRightResponse = $tabsResponses[1];
-        $tabResponseIndex = $tabsResponses[0];
-
-        $score = $this->mark($interMatching, $penalty, $tabRightResponse, $tabResponseIndex);
-
-        $res = array(
-            'score' => $score,
-            'penalty' => $penalty,
-            'interMatching' => $interMatching,
-            'tabRightResponse' => $tabRightResponse,
-            'tabResponseIndex' => $tabResponseIndex,
-            'response' => $response,
-        );
-
-        return $res;
-    }
-
     /**
      * implement the abstract method
      * To calculate the score.

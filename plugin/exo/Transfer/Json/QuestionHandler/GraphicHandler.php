@@ -114,57 +114,6 @@ class GraphicHandler implements QuestionHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function persistInteractionDetails(Question $question, \stdClass $importData)
-    {
-        $interaction = new InteractionGraphic();
-
-        for ($i = 0, $max = count($importData->coords); $i < $max; ++$i) {
-            $coord = new Coords();
-
-            foreach ($importData->solutions as $solution) {
-                if ($solution->id === $importData->choices[$i]->id) {
-                    $coord->setValue($solution->value);
-                    $coord->setShape($solution->shape);
-                    $coord->setScoreCoords($solution->score);
-                    $coord->setSize($solution->size);
-                    if (isset($solution->feedback)) {
-                        $coord->setFeedback($solution->feedback);
-                    }
-                    // should be required ?
-                    if (isset($solution->color)) {
-                        $coord->setColor($solution->color);
-                    } else {
-                        $coord->setColor('white');
-                    }
-                }
-            }
-
-            $coord->setInteractionGraphic($interaction);
-            $interaction->addCoord($coord);
-            $this->om->persist($coord);
-        }
-
-        // should we upload the picture ??
-        $picture = new Picture();
-        $picture->setLabel($importData->document->label ? $importData->document->label : '');
-        $picture->setUrl($importData->document->url);
-        $picture->setWidth($importData->width);
-        $picture->setHeight($importData->height);
-
-        $ext = pathinfo($importData->document->url)['extension'];
-        $picture->setType($ext);
-
-        $this->om->persist($picture);
-
-        $interaction->setPicture($picture);
-        $interaction->setQuestion($question);
-
-        $this->om->persist($interaction);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function convertInteractionDetails(Question $question, \stdClass $exportData, $withSolution = true, $forPaperList = false)
     {
         $interaction = $this->om->getRepository('UJMExoBundle:InteractionGraphic')->findOneBy([

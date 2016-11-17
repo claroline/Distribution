@@ -7,20 +7,16 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use UJM\ExoBundle\Controller\Api\AbstractController;
 use UJM\ExoBundle\Entity\Category;
 use UJM\ExoBundle\Manager\Question\CategoryManager;
-use UJM\ExoBundle\Transfer\Json\ValidationException;
+use UJM\ExoBundle\Library\Validator\ValidationException;
 
 /**
  * Category API Controller exposes REST API.
  *
- * @EXT\Route(
- *     "/categories",
- *     options={"expose"=true}
- * )
- * @EXT\Method("GET")
+ * @EXT\Route("/categories", options={"expose"=true})
  */
 class CategoryController extends AbstractController
 {
@@ -40,15 +36,14 @@ class CategoryController extends AbstractController
      */
     public function __construct(CategoryManager $categoryManager)
     {
-        // introduce MD and CS error
-        $array = array();
         $this->categoryManager = $categoryManager;
     }
 
     /**
-     * Lists all categories of a a user.
+     * Lists all categories of a user.
      *
      * @EXT\Route("", name="question_category_list")
+     * @EXT\Method("GET")
      * @EXT\ParamConverter("user", converter="current_user")
      *
      * @param User $user
@@ -179,12 +174,12 @@ class CategoryController extends AbstractController
      * @param User $user
      * @param Category $category
      *
-     * @throws AccessDeniedHttpException
+     * @throws AccessDeniedException
      */
     private function assertIsAdmin(User $user, Category $category)
     {
         if ($user->getId() !== $category->getUser()->getId()) {
-            throw new AccessDeniedHttpException();
+            throw new AccessDeniedException();
         }
     }
 }

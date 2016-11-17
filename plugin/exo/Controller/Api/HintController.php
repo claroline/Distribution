@@ -6,7 +6,7 @@ use Claroline\CoreBundle\Entity\User;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use UJM\ExoBundle\Entity\Hint;
 use UJM\ExoBundle\Entity\Paper;
 use UJM\ExoBundle\Manager\HintManager;
@@ -16,8 +16,7 @@ use UJM\ExoBundle\Manager\HintManager;
  *
  * @EXT\Route(
  *     "/papers/{paperId}/hints/{id}",
- *     options={"expose"=true},
- *     defaults={"_format": "json"}
+ *     options={"expose"=true}
  * )
  * @EXT\ParamConverter("paper", class="UJMExoBundle:Paper", options={"mapping": {"paperId": "id"}})
  * @EXT\ParamConverter("hint", class="UJMExoBundle:Hint")
@@ -60,7 +59,7 @@ class HintController
      *
      * @return JsonResponse
      */
-    public function showHintAction(Paper $paper, Hint $hint, User $user = null)
+    public function showAction(Paper $paper, Hint $hint, User $user = null)
     {
         $this->assertHasPaperAccess($paper, $user);
 
@@ -81,7 +80,7 @@ class HintController
     private function assertHasPaperAccess(Paper $paper, User $user = null)
     {
         if ($paper->getEnd() || $user !== $paper->getUser()) {
-            throw new AccessDeniedHttpException();
+            throw new AccessDeniedException();
         }
     }
 }

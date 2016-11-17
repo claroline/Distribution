@@ -63,10 +63,6 @@ class QuestionRepository extends EntityRepository
         // TODO : order query
         // TODO : add pagination
 
-        /*$qb->orderBy();*/
-        /*$this->addOrderBy($orderBy);
-        $this->addPagination($page, $number);*/
-
         return $qb->getQuery()->getResult();
     }
 

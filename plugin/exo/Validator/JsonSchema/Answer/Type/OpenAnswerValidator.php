@@ -1,7 +1,32 @@
 <?php
+
+namespace UJM\ExoBundle\Validator\JsonSchema\Answer\Type;
+
+use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
+
 /**
- * Created by PhpStorm.
- * User: Corum
- * Date: 31/10/2016
- * Time: 12:42
+ * @DI\Service("ujm_exo.validator.answer_open")
  */
+class OpenAnswerValidator extends JsonSchemaValidator
+{
+    public function getJsonSchemaUri()
+    {
+        return 'answer/open/schema.json';
+    }
+
+    /**
+     * Performs additional validations.
+     *
+     * @param \stdClass $question
+     * @param array $options
+     *
+     * @return array
+     */
+    public function validateAfterSchema($question, array $options = [])
+    {
+        // TODO : implement method.
+
+        return [];
+    }
+}

@@ -9,7 +9,7 @@ use UJM\ExoBundle\Entity\Category;
 use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Repository\CategoryRepository;
 use UJM\ExoBundle\Serializer\Question\CategorySerializer;
-use UJM\ExoBundle\Transfer\Json\ValidationException;
+use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Validator\JsonSchema\Question\CategoryValidator;
 
 /**

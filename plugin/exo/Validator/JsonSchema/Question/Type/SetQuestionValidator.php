@@ -51,12 +51,12 @@ class SetQuestionValidator extends JsonSchemaValidator
         $errors = [];
 
         // check solution IDs are consistent with set IDs
-        $setIds = array_map(function ($set) {
+        $setIds = array_map(function (\stdClass $set) {
             return $set->id;
         }, $question->sets);
 
         // check solution IDs are consistent with member IDs
-        $memberIds = array_map(function ($member) {
+        $memberIds = array_map(function (\stdClass $member) {
             return $member->id;
         }, $question->members);
 

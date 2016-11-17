@@ -135,13 +135,6 @@ class Question
     private $resources;
 
     /**
-     * Note: used for joins only., orphanRemoval=true.
-     *
-     * @ORM\OneToMany(targetEntity="StepQuestion", mappedBy="question")
-     */
-    private $stepQuestions;
-
-    /**
      * The linked interaction entity.
      * This is populated by Doctrine Lifecycle events.
      *
@@ -155,7 +148,6 @@ class Question
         $this->hints = new ArrayCollection();
         $this->objects = new ArrayCollection();
         $this->resources = new ArrayCollection();
-        $this->stepQuestions = new ArrayCollection();
         $this->dateCreate = new \DateTime();
         $this->dateModify = new \DateTime();
     }

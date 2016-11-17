@@ -53,7 +53,7 @@ class ExerciseControllerCommonTest extends TransactionalTestCase
         $this->om = $this->client->getContainer()->get('claroline.persistence.object_manager');
         $this->paperManager = $this->client->getContainer()->get('ujm.exo.paper_manager');
 
-        $this->persist = new Persister($this->om, $this->paperManager);
+        $this->persist = new Persister($this->om);
         $this->john = $this->persist->user('john');
         $this->bob = $this->persist->user('bob');
 
@@ -148,7 +148,7 @@ class ExerciseControllerCommonTest extends TransactionalTestCase
         $this->request('POST', "/api/exercises/{$this->ex1->getId()}/attempts", $this->bob);
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
         $content = json_decode($this->client->getResponse()->getContent());
-        $this->assertEquals('Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException', $content->error->exception[0]->class);
+        $this->assertEquals('Symfony\Component\Security\Core\Exception\AccessDeniedException', $content->error->exception[0]->class);
         $this->assertEquals('max attempts reached', $content->error->exception[0]->message);
     }
 

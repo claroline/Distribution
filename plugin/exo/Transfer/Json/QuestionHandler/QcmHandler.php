@@ -106,61 +106,6 @@ class QcmHandler implements QuestionHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function persistInteractionDetails(Question $question, \stdClass $importData)
-    {
-        $interaction = new InteractionQCM();
-
-        if ($importData->score->type === 'sum') {
-            $interaction->setWeightResponse(true); //weighted true
-        } elseif ($importData->score->type === 'fixed') {
-            $interaction->setWeightResponse(false); //no weighted false
-            $interaction->setScoreRightResponse($importData->score->success);
-            $interaction->setScoreFalseResponse($importData->score->failure);
-        }
-
-        for ($i = 0, $max = count($importData->choices); $i < $max; ++$i) {
-            // temporary limitation
-            if ($importData->choices[$i]->type !== 'text/html') {
-                throw new \Exception(
-                    "Import not implemented for MIME type {$importData->choices[$i]->type}"
-                );
-            }
-
-            $choice = new Choice();
-            $choice->setLabel($importData->choices[$i]->data);
-            $choice->setOrdre($i);
-
-            foreach ($importData->solutions as $solution) {
-                if ($solution->id === $importData->choices[$i]->id) {
-                    $choice->setWeight($solution->score);
-
-                    if (0 < $solution->score) {
-                        $choice->setRightResponse(true);
-                    }
-
-                    if (isset($solution->feedback)) {
-                        $choice->setFeedback($solution->feedback);
-                    }
-                }
-            }
-
-            $choice->setInteractionQCM($interaction);
-            $interaction->addChoice($choice);
-            $this->om->persist($choice);
-        }
-
-        $subTypeCode = $importData->multiple ? 1 : 2;
-        $subType = $this->om->getRepository('UJMExoBundle:TypeQCM')
-            ->findOneByCode($subTypeCode);
-        $interaction->setTypeQCM($subType);
-        $interaction->setShuffle($importData->random);
-        $interaction->setQuestion($question);
-        $this->om->persist($interaction);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function convertInteractionDetails(Question $question, \stdClass $exportData, $withSolution = true, $forPaperList = false)
     {
         $repo = $this->om->getRepository('UJMExoBundle:InteractionQCM');
@@ -296,11 +241,9 @@ class QcmHandler implements QuestionHandlerInterface
             return ['Answer data must be an array, '.gettype($data).' given'];
         }
 
-        $count = 0;
-
-        if (0 === $count = count($data)) {
-            //return ['Answer data cannot be empty'];
-            // data CAN be empty ! (for example editing a multiple choice question and unchecking all choices)
+        $count = count($data);
+        if (0 === $count) {
+            // data CAN be empty (for example editing a multiple choice question and unchecking all choices)
             return [];
         }
 

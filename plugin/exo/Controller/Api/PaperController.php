@@ -4,13 +4,12 @@ namespace UJM\ExoBundle\Controller\Api;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
-use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Paper;
 use UJM\ExoBundle\Entity\Question;
@@ -18,31 +17,14 @@ use UJM\ExoBundle\Entity\Step;
 use UJM\ExoBundle\Entity\StepQuestion;
 use UJM\ExoBundle\Manager\PaperManager;
 use UJM\ExoBundle\Manager\Question\QuestionManager;
-use UJM\ExoBundle\Manager\StepManager;
 
 /**
  * Paper Controller.
  *
- * @EXT\Route(
- *     "/papers",
- *     requirements={"id"="\d+"},
- *     options={"expose"=true},
- *     defaults={"_format": "json"}
- * )
- * @EXT\Method("GET")
+ * @EXT\Route("/papers", requirements={"id"="\d+"}, options={"expose"=true})
  */
 class PaperController
 {
-    /**
-     * @var ObjectManager
-     */
-    private $om;
-
-    /**
-     * @var StepManager
-     */
-    private $stepManager;
-
     /**
      * @var QuestionManager
      */
@@ -57,29 +39,21 @@ class PaperController
      * PaperController constructor.
      *
      * @DI\InjectParams({
-     *     "objectManager"   = @DI\Inject("claroline.persistence.object_manager"),
      *     "authorization"   = @DI\Inject("security.authorization_checker"),
-     *     "stepManager"     = @DI\Inject("ujm.exo.step_manager"),
      *     "questionManager" = @DI\Inject("ujm.exo.question_manager"),
      *     "paperManager"    = @DI\Inject("ujm.exo.paper_manager")
      * })
      *
-     * @param ObjectManager                 $objectManager
      * @param AuthorizationCheckerInterface $authorization
-     * @param StepManager                   $stepManager
      * @param QuestionManager               $questionManager
      * @param PaperManager                  $paperManager
      */
     public function __construct(
-        ObjectManager   $objectManager,
         AuthorizationCheckerInterface $authorization,
-        StepManager     $stepManager,
         QuestionManager $questionManager,
         PaperManager    $paperManager)
     {
-        $this->om = $objectManager;
         $this->authorization = $authorization;
-        $this->stepManager = $stepManager;
         $this->questionManager = $questionManager;
         $this->paperManager = $paperManager;
     }
@@ -169,6 +143,7 @@ class PaperController
      * associated with the exercise.
      *
      * @EXT\Route("/{id}", name="exercise_export_paper")
+     * @EXT\Method("GET")
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
      *
      * @param Paper $paper
@@ -181,7 +156,7 @@ class PaperController
         // ATTENTION : As is, anonymous have access to all the other anonymous Papers !!!
         if (!$this->isAdmin($paper->getExercise()) && $paper->getUser() !== $user) {
             // Only administrator or the User attached can see a Paper
-            throw new AccessDeniedHttpException();
+            throw new AccessDeniedException();
         }
 
         return new JsonResponse([
@@ -222,7 +197,7 @@ class PaperController
     private function assertHasPaperAccess(Paper $paper, User $user = null)
     {
         if ($paper->getEnd() || $user !== $paper->getUser()) {
-            throw new AccessDeniedHttpException();
+            throw new AccessDeniedException();
         }
     }
 
@@ -245,7 +220,7 @@ class PaperController
         $collection = new ResourceCollection([$exercise->getResourceNode()]);
 
         if (!$this->authorization->isGranted($permission, $collection)) {
-            throw new AccessDeniedHttpException();
+            throw new AccessDeniedException($collection->getErrorsForDisplay());
         }
     }
 }

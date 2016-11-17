@@ -8,17 +8,14 @@ use Doctrine\Common\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use UJM\ExoBundle\Entity\Exercise;
-use UJM\ExoBundle\Entity\Hint;
 use UJM\ExoBundle\Entity\Question;
 use UJM\ExoBundle\Entity\Response;
-use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Manager\HintManager;
 use UJM\ExoBundle\Repository\QuestionRepository;
 use UJM\ExoBundle\Serializer\Question\QuestionSerializer;
 use UJM\ExoBundle\Transfer\Json\QuestionHandlerCollector;
-use UJM\ExoBundle\Transfer\Json\ValidationException;
-use UJM\ExoBundle\Transfer\Json\Validator;
+use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Validator\JsonSchema\Question\QuestionValidator;
 
 /**
@@ -61,13 +58,6 @@ class QuestionManager
     private $serializer;
 
     /**
-     * @var Validator
-     *
-     * @deprecated use $validator instead
-     */
-    private $oldValidator;
-
-    /**
      * @var QuestionHandlerCollector
      *
      * @deprecated
@@ -89,7 +79,6 @@ class QuestionManager
      *     "om"           = @DI\Inject("claroline.persistence.object_manager"),
      *     "validator"    = @DI\Inject("ujm_exo.validator.question"),
      *     "serializer"   = @DI\Inject("ujm_exo.serializer.question"),
-     *     "oldValidator" = @DI\Inject("ujm.exo.json_validator"),
      *     "collector"    = @DI\Inject("ujm.exo.question_handler_collector"),
      *     "rm"           = @DI\Inject("claroline.manager.resource_manager"),
      *     "hintManager"  = @DI\Inject("ujm.exo.hint_manager"),
@@ -97,7 +86,6 @@ class QuestionManager
      *
      * @param UrlGeneratorInterface    $router
      * @param ObjectManager            $om
-     * @param Validator                $oldValidator
      * @param QuestionValidator        $validator
      * @param QuestionSerializer       $serializer
      * @param QuestionHandlerCollector $collector
@@ -107,7 +95,6 @@ class QuestionManager
     public function __construct(
         UrlGeneratorInterface $router,
         ObjectManager $om,
-        Validator $oldValidator,
         QuestionValidator $validator,
         QuestionSerializer $serializer,
         QuestionHandlerCollector $collector,
@@ -117,7 +104,6 @@ class QuestionManager
         $this->router = $router;
         $this->om = $om;
         $this->repository = $this->om->getRepository('UJMExoBundle:Question');
-        $this->oldValidator = $oldValidator;
         $this->validator = $validator;
         $this->serializer = $serializer;
         $this->handlerCollector = $collector;
@@ -200,23 +186,6 @@ class QuestionManager
     }
 
     /**
-     * Creates a copy of a Question.
-     *
-     * @param Question $question
-     *
-     * @return Question
-     */
-    public function copy(Question $question)
-    {
-        $questionData = $this->serializer->serialize($question, [Transfer::INCLUDE_SOLUTIONS]);
-
-        // Remove UUID to force the generation of a new one
-        $questionData->id = '';
-
-        return $this->create($questionData);
-    }
-
-    /**
      * Deletes a Question.
      * It's only possible if the Question is not used in an Exercise.
      *
@@ -236,47 +205,6 @@ class QuestionManager
         }
 
         $this->om->remove($question);
-        $this->om->flush();
-    }
-
-    /**
-     * Imports a question in a JSON-decoded format.
-     *
-     * @deprecated use create() instead
-     *
-     * @param \stdClass $data
-     *
-     * @throws ValidationException if the question is not valid
-     * @throws \Exception          if the question type import is not implemented
-     */
-    public function importQuestion(\stdClass $data)
-    {
-        if (count($errors = $this->oldValidator->validateQuestion($data)) > 0) {
-            throw new ValidationException('Question is not valid', $errors);
-        }
-
-        $handler = $this->handlerCollector->getHandlerForMimeType($data->type);
-
-        $question = new Question();
-        $question->setTitle($data->title);
-        $question->setInvite($data->title);
-
-        if (isset($data->hints)) {
-            foreach ($data->hints as $hintData) {
-                $hint = new Hint();
-                $hint->setValue($hintData->text);
-                $hint->setPenalty($hintData->penalty);
-                $question->addHint($hint);
-                $this->om->persist($hint);
-            }
-        }
-
-        if (isset($data->feedback)) {
-            $question->setFeedback($data->feedback);
-        }
-
-        $handler->persistInteractionDetails($question, $data);
-        $this->om->persist($question);
         $this->om->flush();
     }
 

@@ -40,11 +40,11 @@ class MatchQuestionValidator extends JsonSchemaValidator
         $errors = [];
 
         // check solution IDs are consistent with proposals IDs
-        $proposalIds = array_map(function ($proposal) {
+        $proposalIds = array_map(function (\stdClass $proposal) {
             return $proposal->id;
         }, $question->firstSet);
 
-        $labelIds = array_map(function ($label) {
+        $labelIds = array_map(function (\stdClass $label) {
             return $label->id;
         }, $question->secondSet);
 

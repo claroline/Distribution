@@ -51,7 +51,7 @@ class StepValidator extends JsonSchemaValidator
 
         if (isset($step->items)) {
             // Apply custom validation to step items
-            array_map(function ($item) use (&$errors, $options) {
+            array_map(function (\stdClass $item) use (&$errors, $options) {
                 if (1 === preg_match('#^application\/x\.[^/]+\+json$#', $item->type)) {
                     // Item is a Question
                     $itemErrors = $this->questionValidator->validateAfterSchema($item, $options);

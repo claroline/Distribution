@@ -7,11 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 /**
  * Transfers questions in QTI format.
  *
- * @EXT\Route(
- *     "/qti",
- *     options={"expose"=true},
- *     defaults={"_format": "json"}
- * )
+ * @EXT\Route("/qti", options={"expose"=true})
  */
 class QTIController
 {

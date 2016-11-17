@@ -10,7 +10,7 @@ use UJM\ExoBundle\Library\Mode\CorrectionMode;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Serializer\ExerciseSerializer;
-use UJM\ExoBundle\Transfer\Json\ValidationException;
+use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Transfer\Json\Validator;
 use UJM\ExoBundle\Validator\JsonSchema\ExerciseValidator;
 
@@ -171,64 +171,6 @@ class ExerciseManager
     }
 
     /**
-     * Delete a Step.
-     *
-     * @deprecated not used anymore in the new update system
-     *
-     * @param Exercise $exercise
-     * @param Step     $step
-     */
-    public function deleteStep(Exercise $exercise, Step $step)
-    {
-        $exercise->removeStep($step);
-
-        // Update steps order
-        $steps = $exercise->getSteps();
-        foreach ($steps as $pos => $stepToReorder) {
-            $stepToReorder->setOrder($pos);
-
-            $this->om->persist($step);
-        }
-
-        $this->om->remove($step);
-        $this->om->flush();
-    }
-
-    /**
-     * Reorder the steps of an Exercise.
-     *
-     * @deprecated not used anymore in the new update system
-     *
-     * @param Exercise $exercise
-     * @param array    $order    an ordered array of Step IDs
-     *
-     * @return array array of errors if something went wrong
-     */
-    public function reorderSteps(Exercise $exercise, array $order)
-    {
-        $steps = $exercise->getSteps();
-
-        /** @var Step $step */
-        foreach ($steps as $step) {
-            // Get new position of the Step
-            $pos = array_search($step->getId(), $order);
-            if (-1 === $pos) {
-                // We need all the steps, to keep the order coherent
-                return [
-                    'message' => 'Can not reorder the Exercise. Missing steps in order array.',
-                ];
-            }
-
-            $step->setOrder($pos);
-            $this->om->persist($step);
-        }
-
-        $this->om->flush();
-
-        return [];
-    }
-
-    /**
      * Publishes an exercise.
      *
      * @param Exercise $exercise
@@ -311,45 +253,6 @@ class ExerciseManager
     }
 
     /**
-     * Create a copy of an Exercise.
-     *
-     * @deprecated use copy() instead
-     *
-     * @param Exercise $exercise
-     *
-     * @return Exercise the copy of the Exercise
-     */
-    public function copyExercise(Exercise $exercise)
-    {
-        $newExercise = new Exercise();
-
-        // Populate Exercise properties
-        $newExercise->setName($exercise->getName());
-        $newExercise->setDescription($exercise->getDescription());
-        $newExercise->setShuffle($exercise->getShuffle());
-        $newExercise->setPickSteps($exercise->getPickSteps());
-        $newExercise->setDuration($exercise->getDuration());
-        $newExercise->setDoprint($exercise->getDoprint());
-        $newExercise->setMaxAttempts($exercise->getMaxAttempts());
-        $newExercise->setCorrectionMode($exercise->getCorrectionMode());
-        $newExercise->setDateCorrection($exercise->getDateCorrection());
-        $newExercise->setMarkMode($exercise->getMarkMode());
-        $newExercise->setDispButtonInterrupt($exercise->getDispButtonInterrupt());
-        $newExercise->setLockAttempt($exercise->getLockAttempt());
-        $newExercise->setMinimalCorrection($exercise->isMinimalCorrection());
-
-        /** @var \UJM\ExoBundle\Entity\Step $step */
-        foreach ($exercise->getSteps() as $step) {
-            $newStep = $this->stepManager->copyStep($step);
-
-            // Add step to Exercise
-            $newExercise->addStep($newStep);
-        }
-
-        return $newExercise;
-    }
-
-    /**
      * Exports an exercise in a JSON-encodable format.
      *
      * @deprecated use export() instead
@@ -369,23 +272,6 @@ class ExerciseManager
             'id' => $exercise->getId(),
             'meta' => $this->exportMetadata($exercise),
             'steps' => $this->exportSteps($exercise, $withSolutions),
-        ];
-    }
-
-    /**
-     * Exports an exercise in a JSON-encodable format.
-     *
-     * @deprecated use export() with `$options['minimal'] = true` instead
-     *
-     * @param Exercise $exercise
-     *
-     * @return array
-     */
-    public function exportExerciseMinimal(Exercise $exercise)
-    {
-        return [
-            'id' => $exercise->getId(),
-            'meta' => $this->exportMetadata($exercise),
         ];
     }
 

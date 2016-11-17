@@ -17,25 +17,6 @@ use UJM\ExoBundle\Entity\Paper;
 class ResponseRepository extends EntityRepository
 {
     /**
-     * Allow to know if exists already a response for a question of a user's paper.
-     *
-     * @param int $paperID
-     * @param int $questionID
-     *
-     * @return Response[]
-     */
-    public function getAlreadyResponded($paperID, $questionID)
-    {
-        $qb = $this->createQueryBuilder('r');
-        $qb->join('r.paper', 'p')
-            ->join('r.question', 'q')
-            ->where($qb->expr()->in('p.id', $paperID))
-            ->andWhere($qb->expr()->in('q.id', $questionID));
-
-        return $qb->getQuery()->getResult();
-    }
-
-    /**
      * Scores of an exercise for each paper.
      *
      *

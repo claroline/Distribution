@@ -51,7 +51,7 @@ class QuestionValidatorTest extends JsonSchemaTestCase
             ->willReturn([]);
 
         // Do not validate Categories
-        $this->categoryValidator = $this->getMock('UJM\ExoBundle\Validator\JsonSchema\CategoryValidator', [], [], '', false);
+        $this->categoryValidator = $this->getMock('UJM\ExoBundle\Validator\JsonSchema\Question\CategoryValidator', [], [], '', false);
         $this->categoryValidator->expects($this->any())
             ->method('validateAfterSchema')
             ->willReturn([]);

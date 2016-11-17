@@ -6,8 +6,6 @@ use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use UJM\ExoBundle\Entity\InteractionMatching;
-use UJM\ExoBundle\Entity\Label;
-use UJM\ExoBundle\Entity\Proposal;
 use UJM\ExoBundle\Entity\Question;
 use UJM\ExoBundle\Entity\Response;
 use UJM\ExoBundle\Transfer\Json\QuestionHandlerInterface;
@@ -113,90 +111,6 @@ class MatchHandler implements QuestionHandlerInterface
         }
 
         return $errors;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function persistInteractionDetails(Question $question, \stdClass $importData)
-    {
-        // used by QuestionManager->importQuestion
-        // this importQuestion method seems to be used only in test context...
-        $interaction = new InteractionMatching();
-
-        // handle proposals
-        $persistedProposals = []; // do not add twice the same label!!
-        // for each firstSet in data (= proposal)
-        for ($i = 0, $max = count($importData->firstSet); $i < $max; ++$i) {
-            // temporary limitation
-            if ($importData->firstSet[$i]->type !== 'text/plain') {
-                throw new \Exception(
-                "Import not implemented for MIME type {$importData->firstSet[$i]->type}"
-                );
-            }
-            // create a Proposal
-            $proposal = new Proposal();
-            $proposal->setValue($importData->firstSet[$i]->data);
-            $proposal->setOrdre($i);
-            $proposal->setInteractionMatching($interaction);
-            $interaction->addProposal($proposal);
-            $this->om->persist($proposal);
-            array_push($persistedProposals, $proposal);
-        }
-
-        for ($j = 0, $max = count($importData->secondSet); $j < $max; ++$j) {
-            if ($importData->secondSet[$j]->type !== 'text/plain') {
-                throw new \Exception(
-                "Import not implemented for MIME type {$importData->secondSet[$j]->type}"
-                );
-            }
-            // create interraction label in any case
-            $label = new Label();
-            $label->setValue($importData->secondSet[$j]->data);
-            $label->setOrdre($j);
-            // check if current label is in the solution
-            foreach ($importData->solutions as $solution) {
-                // label is in solution get score from solution
-                if ($solution->secondId === $importData->secondSet[$j]->id) {
-                    $label->setScoreRightResponse($solution->score);
-
-                    // here we should add proposal to label $proposal->addAssociatedLabel($label);
-                    // but how to retrieve the correct proposal (no flush = no id) ??
-                    // find this solution a bit overkill
-                    // @TODO find a better way to do that!!!!
-                    for ($k = 0, $max = count($importData->firstSet); $k < $max; ++$k) {
-                        if ($solution->firstId === $importData->firstSet[$k]->id) {
-                            $value = $importData->firstSet[$k]->data;
-                            for ($l = 0, $max = count($persistedProposals); $l < $max; ++$l) {
-                                // find proposal by label... Unicity is not ensured!!!!
-                                if ($persistedProposals[$l]->getValue() === $value) {
-                                    $persistedProposals[$l]->addAssociatedLabel($label);
-                                    $this->om->persist($persistedProposals[$l]);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // get feedback from solution
-                if (isset($solution->feedback)) {
-                    $label->setFeedback($solution->feedback);
-                }
-            }
-
-            $label->setInteractionMatching($interaction);
-            $interaction->addLabel($label);
-            $this->om->persist($label);
-        }
-
-        $subTypeCode = $importData->toBind ? 1 : 2;
-        $subType = $this->om->getRepository('UJMExoBundle:TypeMatching')
-                ->findOneByCode($subTypeCode);
-        $interaction->setTypeMatching($subType);
-        $interaction->setShuffle($importData->random);
-        $interaction->setQuestion($question);
-        $this->om->persist($interaction);
     }
 
     /**
@@ -313,8 +227,7 @@ class MatchHandler implements QuestionHandlerInterface
             return ['Answer data must be an array, '.gettype($data).' given'];
         }
 
-        $count = 0;
-        if (0 === $count = count($data)) {
+        if (0 === count($data)) {
             // no need to check anything
             return [];
         }

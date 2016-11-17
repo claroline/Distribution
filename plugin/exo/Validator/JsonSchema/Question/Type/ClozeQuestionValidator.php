@@ -61,7 +61,7 @@ class ClozeQuestionValidator extends JsonSchemaValidator
         $errors = [];
 
         // check solution IDs are consistent with hole IDs
-        $holeIds = array_map(function ($hole) {
+        $holeIds = array_map(function (\stdClass $hole) {
             return $hole->id;
         }, $question->holes);
 

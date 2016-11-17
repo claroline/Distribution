@@ -12,7 +12,7 @@ use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Repository\HintRepository;
 use UJM\ExoBundle\Repository\PaperRepository;
 use UJM\ExoBundle\Serializer\HintSerializer;
-use UJM\ExoBundle\Transfer\Json\ValidationException;
+use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Validator\JsonSchema\HintValidator;
 
 /**

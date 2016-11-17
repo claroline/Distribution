@@ -23,7 +23,7 @@
     "redux-form": "^6.0.5",
     "redux-thunk": "^2.1.0",
     "reselect": "^2.5.3",
-    "d3": "^4.3.0",
+    "rd3": "^0.7.3",
     "svg4everybody": "^2.1.2"
   },
   "files": [

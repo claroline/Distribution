@@ -37,7 +37,7 @@ class QuestionBankListener
     public function onDisplayDesktop(DisplayToolEvent $event)
     {
         $subRequest = $this->container->get('request')->duplicate([], null, [
-            '_controller' => 'UJMExoBundle:Bank:open',
+            '_controller' => 'UJMExoBundle:Tool\QuestionBank:open',
         ]);
 
         $response = $this->container->get('http_kernel')->handle($subRequest, HttpKernelInterface::SUB_REQUEST);

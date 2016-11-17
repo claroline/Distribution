@@ -122,33 +122,6 @@ class HoleHandler implements QuestionHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function persistInteractionDetails(Question $question, \stdClass $importData)
-    {
-        $interaction = new InteractionHole();
-
-        for ($i = 0, $max = count($importData->holes); $i < $max; ++$i) {
-            // temporary limitation
-            if ($importData->holes[$i]->type !== 'text/html') {
-                throw new \Exception(
-                    "Import not implemented for MIME type {$importData->holes[$i]->type}"
-                );
-            }
-
-            $hole = new Hole();
-            $hole->setOrdre($i);
-
-            $hole->setInteractionHole($interaction);
-            $interaction->addHole($hole);
-            $this->om->persist($hole);
-        }
-
-        $interaction->setQuestion($question);
-        $this->om->persist($interaction);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function convertInteractionDetails(Question $question, \stdClass $exportData, $withSolution = true, $forPaperList = false)
     {
         $repo = $this->om->getRepository('UJMExoBundle:InteractionHole');

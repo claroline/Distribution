@@ -1,57 +1,16 @@
 <?php
 
-/**
- * Services for the qcm.
- */
-
 namespace UJM\ExoBundle\Services\classes\Interactions;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
+ * Services for the qcm.
+ * 
  * @DI\Service("ujm.exo.qcm_service")
  */
 class Qcm extends Interaction
 {
-    /**
-     * implement the abstract method
-     * To process the user's response for a paper(or a test).
-     *
-     *
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param int                                       $paperID id Paper or 0 if it's just a question test and not a paper
-     *
-     * @return mixed[]
-     */
-    public function response(Request $request, $paperID = 0)
-    {
-        $interactionQCMID = $request->request->get('interactionQCMToValidated');
-
-        $em = $this->doctrine->getManager();
-        $interQCM = $em->getRepository('UJMExoBundle:InteractionQCM')->find($interactionQCMID);
-
-        $response = $this->convertResponseInArray($request->request->get('choice'), $interQCM->getTypeQCM()->getCode());
-        $responseID = $this->convertResponseInChr($response);
-
-        $allChoices = $interQCM->getChoices();
-
-        $session = $request->getSession();
-        $penalty = $this->getPenalty($interQCM->getQuestion(), $session, $paperID);
-
-        $score = $this->mark($interQCM, $response, $allChoices, $penalty);
-
-        $res = array(
-            'score' => $score,
-            'penalty' => $penalty,
-            'interQCM' => $interQCM,
-            'response' => $responseID,
-        );
-
-        return $res;
-    }
-
     /**
      * implement the abstract method
      * To calculate the score for a QCM.
@@ -143,51 +102,6 @@ class Qcm extends Interaction
     }
 
     /**
-     * Get response in array.
-     *
-     *
-     * @param array [integer] or int $response
-     * @param int                    $qcmCode  type of qcm (multiple or simple)
-     *
-     * @return int[]
-     */
-    private function convertResponseInArray($resp, $qcmCode)
-    {
-        $response = array();
-
-        if ($qcmCode == 2) {
-            $response[] = $resp;
-        } else {
-            if ($resp != null) {
-                $response = $resp;
-            }
-        }
-
-        return $response;
-    }
-
-    /**
-     * Get response in String.
-     *
-     *
-     * @param array [integer] or int $response
-     *
-     * @return string
-     */
-    private function convertResponseInChr($response)
-    {
-        $responseID = '';
-
-        foreach ($response as $res) {
-            if ($res != null) {
-                $responseID .= $res.';';
-            }
-        }
-
-        return $responseID;
-    }
-
-    /**
      * Calculate the score with weightResponse.
      *
      *
@@ -236,7 +150,6 @@ class Qcm extends Interaction
      */
     private function markGlobal($allChoices, $response, $interQCM, $penalty)
     {
-        $score = 0;
         $rightChoices = array();
         foreach ($allChoices as $choice) {
             if ($choice->getRightResponse()) {
