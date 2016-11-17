@@ -17,7 +17,7 @@ module.exports = {
   plugins: [
     plugins.bowerFileLookup(),
     plugins.distributionShortcut(),
-    plugins.configShortcut()
+    plugins.configShortcut(),
     plugins.noCircularDependencies(),
     plugins.rethrowCompilationErrors()
   ],
@@ -32,10 +32,5 @@ module.exports = {
       loaders.json()
     ]
   },
-  externals: {
-    // https://github.com/airbnb/enzyme/blob/master/docs/guides/webpack.md#react-15-compatibility)
-    'react/addons': true,
-    'react/lib/ExecutionEnvironment': true,
-    'react/lib/ReactContext': true
-  }
+  externals: shared.externals()
 }
