@@ -21,6 +21,8 @@ class QuestionPicker extends Component {
 
   handleSearchTextChange(value){
     this.setState({criterion: value})
+    // @TODO refresh results
+    this.getQuestions()
   }
 
   handleQuestionSelection(question){
@@ -53,7 +55,7 @@ class QuestionPicker extends Component {
       {
         id: '1',
         title: 'Question 1',
-        question: 'Veuillez me répondre',
+        content: 'Veuillez me répondre',
         type: 'application/x.open+json',
         feedback: '',
         hints:[],
@@ -63,13 +65,23 @@ class QuestionPicker extends Component {
       {
         id: '2',
         title: null,
-        question: 'Oui ou non?',
+        content: 'Oui ou non?',
         type: 'application/x.choice+json',
         feedback: '',
         hints:[],
+        multiple: false,
+        random: false,
         choices: [
-
-        ]
+          {
+            id: '1',
+            data: 'first choice'
+          },
+          {
+            id: '2',
+            data: 'second choice'
+          }
+        ],
+        solutions:[]
       }
     ]
 
@@ -80,7 +92,7 @@ class QuestionPicker extends Component {
     if (this.state.selected.length > 0) {
       this.props.handleSelect(this.state.selected)
     }
-
+    // close picker
     this.props.fadeQuestionPicker()
   }
 
@@ -92,6 +104,7 @@ class QuestionPicker extends Component {
   render(){
     return(
       <Modal
+        className="pick-question-modal"
         show={this.props.show}
         onHide={this.props.fadeQuestionPicker}
         onExited={this.props.hideQuestionPicker}>
@@ -99,26 +112,31 @@ class QuestionPicker extends Component {
           <Modal.Title>{this.props.title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <input id="searchText" placeholder={tex('Titre / Question')} type="text" onChange={(e) => this.handleSearchTextChange(e.target.value)} className="form-control" />
+          <div className="form-group">
+            <input id="searchText" placeholder={tex('search_by_title_or_content')} type="text" onChange={(e) => this.handleSearchTextChange(e.target.value)} className="form-control" />
+          </div>
 
-          {this.state.questions.length > 0 &&
-            <table className="table table-striped">
-              <tbody>
-                {this.state.questions.map(item =>
-                  <tr key={item.id}>
-                    <td>
-                      <input name="question" type="checkbox" onClick={() => this.handleQuestionSelection(item)} />
-                    </td>
-                    <td>{item.title ? item.title : item.question }</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          }
           { this.state.questions.length === 0 &&
-            <h5>{t('no_search_results')}</h5>
+            <div className="text-center">
+              <hr/>
+              <h4>{t('no_search_results')}</h4>
+            </div>
           }
         </Modal.Body>
+        {this.state.questions.length > 0 &&
+          <table className="table table-responsive table-striped question-list-table">
+            <tbody>
+              {this.state.questions.map(item =>
+                <tr key={item.id}>
+                  <td>
+                    <input name="question" type="checkbox" onClick={() => this.handleQuestionSelection(item)} />
+                  </td>
+                  <td>{item.title ? item.title : item.content }</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        }
         <Modal.Footer>
           <button className="btn btn-default" onClick={this.props.fadeQuestionPicker}>
             {t('cancel')}

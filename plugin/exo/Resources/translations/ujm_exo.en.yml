@@ -399,6 +399,7 @@ score_right_label_matching: Score of the association
 search: Search
 search_question: Search questions
 search_user_paper: Search papers of a user
+search_by_title_or_content: Search by question title / content 
 see_shared_with: Question shared with users
 select: Select
 select_type: select the type of the exercise

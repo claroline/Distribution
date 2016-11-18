@@ -155,25 +155,14 @@ function reduceItems(items = {}, action = {}) {
       return update(items, {[action.id]: {$set: newItem}})
     }
     case ITEM_CREATE_FROM_EXISTING: {
-    /*  let newItem = decorateItem({
-        id: action.id,
-        type: action.item.type,
-        content: action.item.content,
-        hints: action.item.hints,
-        feedback: action.item.feedback
-      })
-      newItem = decorateItem(newItem)*/
-      const items = action.items
-      const newItems = []
       action.items.forEach(item => {
+        let newItem = decorateItem(item)
         const def = getDefinition(item.type)
-        let newItem = def.reduce(item, action)
+        newItem = def.reduce(newItem, action)
         const errors = validate.item(newItem)
         newItem = Object.assign({}, newItem, {_errors: errors})
-        newItems.push(newItem)
-        update(items, {[item.id]: {$set: newItem}})
+        items = update(items, {[item.id]: {$set: newItem}})
       })
-
 
       return items
     }
