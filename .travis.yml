@@ -55,23 +55,22 @@ before_script:
   # get and configure claroline platform
   - curl -L https://github.com/claroline/Claroline/archive/${TRAVIS_BRANCH}.tar.gz | tar xzv
   - cd Claroline-${TRAVIS_BRANCH}
+  - ls vendor/claroline
   - php scripts/configure.php --default
+  - ls vendor/claroline
   # override platform composer.json with build/repo local reference
   - php $TRAVIS_BUILD_DIR/main/dev/Resources/travis/pre-composer.php claroline/distribution $TRAVIS_BUILD_DIR "*"
+  - ls vendor/claroline
   # fetch dependencies and build (currently this is done in prod mode)
   - export TRAVIS_REPO_SLUG REMOTE_HOST REMOTE_USER REMOTE_PASS CACHE_PATH
   - bash $TRAVIS_BUILD_DIR/main/dev/Resources/travis/fetch-deps.bash
   - export NODE_ENV=production
-  - cd vendor/claroline/distribution
-  - git branch
-  - cd -
   - composer build
   - export NODE_ENV=development
   - php app/console claroline:install --env=test -vvv
   # move to distribution directory
   - export ROOT=`pwd`
   - cd vendor/claroline/distribution
-  - git branch
   # set a flag indicating whether there are files to be analysed (vs simple deletions, renaming, etc.)
   - export DIFF=`cat git_diff_files.txt`
   - if [ "$DIFF" = '' ]; then echo 'No files to be analysed\n'; fi
