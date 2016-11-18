@@ -39,71 +39,41 @@ class PaperRepository extends EntityRepository
     }
 
     /**
-     * Get the user's papers for an exercise.
+     * Gets the score of a paper by adding the score of each answer.
      *
+     * @param Paper $paper
      *
-     * @param int  $userID     id User
-     * @param int  $exerciseID id Exercise
-     * @param bool $finished   to return or no the papers no finished
-     *
-     * @return Paper[]
+     * @return float
      */
-    public function getExerciseUserPapers($userID, $exerciseID, $finished = false)
+    public function getScore(Paper $paper)
     {
-        $qb = $this->createQueryBuilder('p');
-        $qb->join('p.user', 'u')
-            ->join('p.exercise', 'e')
-            ->where($qb->expr()->in('u.id', $userID))
-            ->andWhere($qb->expr()->in('e.id', $exerciseID))
-            ->orderBy('p.id', 'ASC');
-
-        if ($finished === true) {
-            $qb->andWhere('p.end is NOT NULL');
-        }
-
-        return $qb->getQuery()->getResult();
+        return $this->getEntityManager()
+            ->createQuery('
+                SELECT SUM(r.mark) FROM UJM\ExoBundle\Entity\Response AS r
+                WHERE r.paper= :paper
+                  AND r.mark != -1
+            ')
+            ->setParameters(['paper' => $paper])
+            ->getSingleScalarResult();
     }
 
     /**
-     * Get all papers for an exercise.
+     * Checks that all the answers of a Paper have been marked.
      *
+     * @param Paper $paper
      *
-     * @param int $exerciseID id Exercise
-     *
-     * @return Paper[]
+     * @return bool
      */
-    public function getExerciseAllPapers($exerciseID)
+    public function isFullyEvaluated(Paper $paper)
     {
-        $qb = $this->createQueryBuilder('p');
-        $qb->join('p.exercise', 'e')
-            ->leftJoin('p.user', 'u')
-            ->where($qb->expr()->in('e.id', $exerciseID))
-            ->orderBy('u.lastName', 'ASC')
-            ->addOrderBy('u.firstName', 'ASC')
-            ->addOrderBy('p.id', 'ASC');
-
-        return $qb->getQuery()->getResult();
-    }
-
-    /**
-     * Returns all papers for an exercise for CSV export.
-     *
-     *
-     * @param int $exerciseID id Exercise
-     *
-     * @return Paper[]
-     */
-    public function getExerciseAllPapersIterator($exerciseID)
-    {
-        $qb = $this->createQueryBuilder('p');
-        $qb->join('p.exercise', 'e')
-            ->join('p.user', 'u')
-            ->where($qb->expr()->in('e.id', $exerciseID))
-            ->orderBy('u.lastName', 'ASC')
-            ->addOrderBy('u.firstName', 'ASC')
-            ->addOrderBy('p.id', 'ASC');
-
-        return $qb->getQuery()->iterate();
+        return 0 === $this->getEntityManager()
+            ->createQuery('
+                SELECT COUNT(r) FROM UJM\ExoBundle\Entity\Response AS r
+                WHERE r.paper= :paper
+                  AND r.mark = -1
+            ')
+            ->setParameters(['paper' => $paper])
+            ->getSingleScalarResult();
     }
 
     /**

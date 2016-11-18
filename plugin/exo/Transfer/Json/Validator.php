@@ -69,24 +69,6 @@ class Validator
     }
 
     /**
-     * Validates a JSON-decoded step metadata against the available
-     * metadata schemas. Returns an array of validation errors.
-     *
-     * @param \stdClass $metadata
-     *
-     * @return array
-     */
-    public function validateStepMetadata(\stdClass $metadata)
-    {
-        // Validate standard metadata fields
-        $schema = $this->getSchema('http://json-quiz.github.io/json-quiz/schemas/metadata/schema.json');
-        $validator = $this->getValidator();
-        $errors = $validator->validate($metadata, $schema);
-
-        return $errors;
-    }
-
-    /**
      * Validates a JSON-decoded question against the available
      * question schemas. Returns an array of validation errors.
      *
@@ -130,21 +112,6 @@ class Validator
             'path' => '',
             'message' => 'Question cannot be validated due to missing property "type"',
         ]];
-    }
-
-    /**
-     * Validates a json-decoded exercise against the quiz schema.
-     *
-     * @param \stdClass $quiz
-     *
-     * @return array
-     */
-    public function validateExercise(\stdClass $quiz)
-    {
-        $schema = $this->getSchema('http://json-quiz.github.io/json-quiz/schemas/quiz/schema.json');
-        $validator = $this->getValidator();
-
-        return $validator->validate($quiz, $schema);
     }
 
     private function getValidator()

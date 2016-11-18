@@ -6,7 +6,6 @@ use Doctrine\ORM\EntityRepository;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Question;
 use UJM\ExoBundle\Entity\Response;
-use UJM\ExoBundle\Entity\Paper;
 
 /**
  * ResponseRepository.
@@ -18,7 +17,6 @@ class ResponseRepository extends EntityRepository
 {
     /**
      * Scores of an exercise for each paper.
-     *
      *
      * @param int    $exoId id Exercise
      * @param string $order to order result
@@ -32,7 +30,7 @@ class ResponseRepository extends EntityRepository
            ->join('r.paper', 'p')
            ->join('p.exercise', 'e')
            ->where('e.id = ?1')
-           ->andWhere('p.interupt =  ?2')
+           ->andWhere('p.interrupted =  ?2')
            ->groupBy('p.id')
            ->orderBy($order, 'ASC')
            ->setParameters(array(1 => $exoId, 2 => 0));
@@ -41,8 +39,7 @@ class ResponseRepository extends EntityRepository
     }
 
     /**
-     * Get the reponses for a paper and an user.
-     *
+     * Get the responses for a paper and an user.
      *
      * @param int $paperID id paper
      *
@@ -130,52 +127,5 @@ class ResponseRepository extends EntityRepository
             ->setParameter('question', $question)
             ->getQuery()
             ->getResult();
-    }
-
-    /**
-     * Get the score total for a paper.
-     *
-     *
-     * @param int $paperId id paper
-     *
-     * @return int
-     */
-    public function getScoreExercise($paperId)
-    {
-        //doesn't take long open question not marked
-        $dql = '
-            SELECT sum(r.mark) as score
-            FROM UJM\ExoBundle\Entity\Response r
-            WHERE r.paper= ?1
-            AND r.mark >= 0
-        ';
-
-        $query = $this->_em->createQuery($dql)
-                      ->setParameters(array(1 => $paperId));
-
-        $res = $query->getOneOrNullResult();
-
-        return $res['score'];
-    }
-
-    /**
-     * Check if all the responses of a Paper have been evaluated.
-     *
-     * @param Paper $paper
-     *
-     * @return bool
-     */
-    public function allPaperResponsesMarked(Paper $paper)
-    {
-        $qb = $this->createQueryBuilder('r');
-
-        $count = $qb->select('COUNT(r)')
-            ->where('r.mark = -1')
-            ->andWhere('r.paper = :paper')
-            ->setParameter('paper', $paper)
-            ->getQuery()
-            ->getSingleScalarResult();
-
-        return 0 === (int) $count;
     }
 }

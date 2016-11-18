@@ -91,13 +91,11 @@ class ExerciseImporter extends Importer implements ConfigurationInterface
                         ->scalarNode('nbQuestion')->end()
                         ->booleanNode('keepSameQuestion')->end()
                         ->scalarNode('duration')->end()
-                        ->booleanNode('doPrint')->end()
                         ->scalarNode('maxAttempts')->end()
                         ->scalarNode('correctionMode')->end()
                         ->scalarNode('dateCorrection')->end()
                         ->scalarNode('markMode')->end()
                         ->booleanNode('dispButtonInterrupt')->end()
-                        ->booleanNode('lockAttempt')->end()
                         ->booleanNode('anonymous')->end()
                         ->scalarNode('type')->end()
                     ->end()
@@ -164,13 +162,11 @@ class ExerciseImporter extends Importer implements ConfigurationInterface
             'nbQuestion' => $object->getPickSteps(),
             'keepSameQuestion' => $object->getKeepSteps(),
             'duration' => $object->getDuration(),
-            'doPrint' => $object->getDoprint(),
             'maxAttempts' => $object->getMaxAttempts(),
             'correctionMode' => $object->getCorrectionMode(),
             'dateCorrection' => $object->getDateCorrection(),
             'markMode' => $object->getMarkMode(),
             'dispButtonInterrupt' => $object->getDispButtonInterrupt(),
-            'lockAttempt' => $object->getLockAttempt(),
             'anonymous' => $object->getAnonymous(),
             'type' => $object->getType(),
         ];
@@ -195,13 +191,11 @@ class ExerciseImporter extends Importer implements ConfigurationInterface
         $newExercise->setPickSteps($exercise['nbQuestion']);
         $newExercise->setKeepSteps($exercise['keepSameQuestion']);
         $newExercise->setDuration($exercise['duration']);
-        $newExercise->setDoprint($exercise['doPrint']);
         $newExercise->setMaxAttempts($exercise['maxAttempts']);
         $newExercise->setDateCorrection(new \Datetime());
         $newExercise->setCorrectionMode($exercise['correctionMode']);
         $newExercise->setMarkMode($exercise['markMode']);
         $newExercise->setDispButtonInterrupt($exercise['dispButtonInterrupt']);
-        $newExercise->setLockAttempt($exercise['lockAttempt']);
         $newExercise->setAnonymous($exercise['anonymous']);
         $newExercise->setType($exercise['type']);
 

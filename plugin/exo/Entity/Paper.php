@@ -39,19 +39,9 @@ class Paper
     private $ordreQuestion;
 
     /**
-     * @ORM\Column(type="boolean", nullable=true)
+     * @ORM\Column(name="interupt", type="boolean", nullable=true)
      */
-    private $archive = false;
-
-    /**
-     * @ORM\Column(name="date_archive", type="date", nullable=true)
-     */
-    private $dateArchive;
-
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
-    private $interupt = true;
+    private $interrupted = true;
 
     /**
      * @ORM\Column(type="float", nullable=true)
@@ -152,51 +142,19 @@ class Paper
     }
 
     /**
-     * @param bool $archive
+     * @param bool $interrupted
      */
-    public function setArchive($archive)
+    public function setInterrupted($interrupted)
     {
-        $this->archive = $archive;
+        $this->interrupted = $interrupted;
     }
 
     /**
      * @return bool
      */
-    public function getArchive()
+    public function isInterrupted()
     {
-        return $this->archive;
-    }
-
-    /**
-     * @param \DateTime $dateArchive
-     */
-    public function setDateArchive($dateArchive)
-    {
-        $this->dateArchive = $dateArchive;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getDateArchive()
-    {
-        return $this->dateArchive;
-    }
-
-    /**
-     * @param bool $interupt
-     */
-    public function setInterupt($interupt)
-    {
-        $this->interupt = $interupt;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getInterupt()
-    {
-        return $this->interupt;
+        return $this->interrupted;
     }
 
     /**

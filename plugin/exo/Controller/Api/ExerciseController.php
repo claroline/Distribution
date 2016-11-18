@@ -11,12 +11,15 @@ use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use UJM\ExoBundle\Entity\Exercise;
+use UJM\ExoBundle\Entity\Paper;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Manager\ExerciseManager;
 use UJM\ExoBundle\Manager\PaperManager;
+use UJM\ExoBundle\Repository\PaperRepository;
 use UJM\ExoBundle\Services\classes\PaperService;
 use UJM\ExoBundle\Library\Validator\ValidationException;
 
@@ -258,7 +261,7 @@ class ExerciseController extends AbstractController
     }
 
     /**
-     * Exports papers into a CSV format.
+     * Exports papers into a CSV file.
      *
      * @EXT\Route("/{id}/papers/export", name="exercise_papers_export", requirements={"id"="\d+"})
      *
@@ -270,10 +273,45 @@ class ExerciseController extends AbstractController
     {
         $this->assertHasPermission('ADMINISTRATE', $exercise);
 
-        $iterableResult = $this->om->getRepository('UJMExoBundle:Paper')
-            ->getExerciseAllPapersIterator($exercise->getId());
+        /** @var PaperRepository $repo */
+        $repo = $this->om->getRepository('UJMExoBundle:Paper');
 
-        $handle = fopen('php://memory', 'r+');
+        $papers = $repo->findBy([
+            'exercise' => $exercise
+        ]);
+
+        return new StreamedResponse(function () use ($repo, $papers) {
+            $handle = fopen('php://output', 'w+');
+
+            /** @var Paper $paper */
+            foreach ($papers as $paper) {
+                $score = $repo->getScore($paper);
+                $scoreTotal = 20;
+                
+                fputcsv(
+                    $handle,
+                    [
+                        $paper->getUser()->getFirstName().'-'.$paper->getUser()->getLastName(),
+                        $paper->getNumPaper(),
+                        $paper->getStart()->format('Y-m-d H:i:s'),
+                        $paper->getEnd() ? $paper->getEnd()->format('Y-m-d H:i:s') : '',
+                        $paper->isInterrupted(),
+                        'score',
+                    ],
+                    ';'
+                );
+            }
+
+            fclose($handle);
+        }, 200, [
+            'Content-Type' => 'application/force-download',
+            'Content-Disposition' => 'attachment; filename="export.csv"',
+        ]);
+        
+        /*$iterableResult = $this->om->getRepository('UJMExoBundle:Paper')
+            ->getExerciseAllPapersIterator($exercise->getId());*/
+
+        /*$handle = fopen('php://memory', 'r+');
         while (false !== ($row = $iterableResult->next())) {
             $rowCSV = [];
             $infosPaper = $this->paperService->getInfosPaper($row[0]);
@@ -288,7 +326,7 @@ class ExerciseController extends AbstractController
             } else {
                 $rowCSV[] = $this->translator->trans('no_finish', [], 'ujm_exo');
             }
-            $rowCSV[] = $row[0]->getInterupt();
+            $rowCSV[] = $row[0]->isInterrupted();
             $rowCSV[] = $this->paperService->roundUpDown($score);
 
             fputcsv($handle, $rowCSV);
@@ -297,12 +335,12 @@ class ExerciseController extends AbstractController
 
         rewind($handle);
         $content = stream_get_contents($handle);
-        fclose($handle);
+        fclose($handle);*/
 
-        return new Response($content, 200, [
+        /*return new Response($content, 200, [
             'Content-Type' => 'application/force-download',
             'Content-Disposition' => 'attachment; filename="export.csv"',
-        ]);
+        ]);*/
     }
 
     /**

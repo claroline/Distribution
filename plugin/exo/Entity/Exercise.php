@@ -10,7 +10,7 @@ use UJM\ExoBundle\Library\Mode\CorrectionMode;
 use UJM\ExoBundle\Library\Mode\MarkMode;
 
 /**
- * @ORM\Entity(repositoryClass="UJM\ExoBundle\Repository\ExerciseRepository")
+ * @ORM\Entity()
  * @ORM\Table(name="ujm_exercise")
  */
 class Exercise extends AbstractResource
@@ -66,11 +66,6 @@ class Exercise extends AbstractResource
      * @ORM\Column(name="duration", type="integer")
      */
     private $duration = 0;
-
-    /**
-     * @ORM\Column(name="doprint", type="boolean", nullable=true)
-     */
-    private $doprint = false;
 
     /**
      * Number of attempts allowed for the Exercise.
@@ -134,11 +129,6 @@ class Exercise extends AbstractResource
      * @ORM\Column(type="boolean")
      */
     private $statistics = false;
-
-    /**
-     * @ORM\Column(name="lock_attempt", type="boolean", nullable=true)
-     */
-    private $lockAttempt = false;
 
     /**
      * Flag indicating that we do not show the entire correction for the exercise
@@ -322,24 +312,6 @@ class Exercise extends AbstractResource
     }
 
     /**
-     * Set doprint.
-     *
-     * @param bool $doprint
-     */
-    public function setDoprint($doprint)
-    {
-        $this->doprint = $doprint;
-    }
-
-    /**
-     * Get doprint.
-     */
-    public function getDoprint()
-    {
-        return $this->doprint;
-    }
-
-    /**
      * Set maxAttempts.
      *
      * @param int $maxAttempts
@@ -478,31 +450,13 @@ class Exercise extends AbstractResource
     }
 
     /**
-     * Set lockAttempt.
+     * Set minimal correction.
      *
-     * @param bool $lockAttempt
-     */
-    public function setLockAttempt($lockAttempt)
-    {
-        $this->lockAttempt = $lockAttempt;
-    }
-
-    /**
-     * Get lockAttempt.
-     */
-    public function getLockAttempt()
-    {
-        return $this->lockAttempt;
-    }
-
-    /**
-     * Do we have to show the minimal correction view ?
+     * @param bool $minimalCorrection
      */
     public function setMinimalCorrection($minimalCorrection)
     {
         $this->minimalCorrection = $minimalCorrection;
-
-        return $this;
     }
 
     /**
@@ -513,11 +467,6 @@ class Exercise extends AbstractResource
     public function isMinimalCorrection()
     {
         return $this->minimalCorrection;
-    }
-
-    public function archiveExercise()
-    {
-        $this->resourceNode = null;
     }
 
     /**

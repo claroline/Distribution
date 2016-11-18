@@ -42,6 +42,8 @@ class ExerciseManager
     private $serializer;
 
     /**
+     * @deprecated
+     *
      * @var StepManager
      */
     private $stepManager;
@@ -145,6 +147,24 @@ class ExerciseManager
         $exerciseData->id = '';
 
         return $this->create($exerciseData);
+    }
+
+    /**
+     * Checks if an Exercise can be deleted.
+     * The exercise needs to have no paper to be safely removed.
+     *
+     * @param Exercise $exercise
+     *
+     * @return bool
+     */
+    public function isDeletable(Exercise $exercise)
+    {
+        $nbPapers = $this->om->getRepository('UJMExoBundle:Paper')->countExercisePapers($exercise);
+        if (0 !== $nbPapers) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -304,7 +324,6 @@ class ExerciseManager
         $exercise->setShuffle($metadata->random);
         $exercise->setKeepSteps($metadata->keepSteps);
         $exercise->setMaxAttempts($metadata->maxAttempts);
-        $exercise->setLockAttempt($metadata->lockAttempt);
         $exercise->setDispButtonInterrupt($metadata->dispButtonInterrupt);
         $exercise->setMetadataVisible($metadata->metadataVisible);
         $exercise->setMarkMode($metadata->markMode);
@@ -358,7 +377,6 @@ class ExerciseManager
             'random' => $exercise->getShuffle(),
             'keepSteps' => $exercise->getKeepSteps(),
             'maxAttempts' => $exercise->getMaxAttempts(),
-            'lockAttempt' => $exercise->getLockAttempt(),
             'dispButtonInterrupt' => $exercise->getDispButtonInterrupt(),
             'metadataVisible' => $exercise->isMetadataVisible(),
             'statistics' => $exercise->hasStatistics(),

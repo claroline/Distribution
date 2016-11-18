@@ -148,7 +148,7 @@ class PaperControllerTest extends TransactionalTestCase
         $this->request('PUT', "/api/papers/{$pa1->getId()}/end", $this->john);
 
         // Check if the Paper has been correctly updated
-        $this->assertFalse($pa1->getInterupt());
+        $this->assertFalse($pa1->isInterrupted());
         $this->assertTrue($pa1->getEnd() !== null);
 
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());

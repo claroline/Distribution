@@ -24,7 +24,6 @@ class ExerciseServices
     /**
      * Constructor.
      *
-     *
      * @param \Claroline\CoreBundle\Persistence\ObjectManager                              $om
      * @param \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface $authorizationChecker
      * @param \Doctrine\Bundle\DoctrineBundle\Registry                                     $doctrine
@@ -44,7 +43,6 @@ class ExerciseServices
 
     /**
      * Get max score possible for an exercise.
-     *
      *
      * @param Exercise $exercise
      *
@@ -72,12 +70,11 @@ class ExerciseServices
     /**
      * Add a question in a step.
      *
-     *
      * @param Question $question
      * @param Step     $step
      * @param int      $order
      *
-     * @deprecated Use StepManager::addQuestion(Step $step, Question $question, $order = -1) instead
+     * @deprecated
      */
     public function addQuestionInStep($question, $step, $order)
     {

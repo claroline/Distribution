@@ -17,13 +17,17 @@ use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Form\Type\ExerciseType;
 
 /**
- * @DI\Service("ujm.exo.exercise_listener")
+ * Listens to resource events dispatched by the core.
+ *
+ * @DI\Service("ujm_exo.listener.exercise")
  */
 class ExerciseListener
 {
     private $container;
 
     /**
+     * ExerciseListener constructor.
+     *
      * @DI\InjectParams({
      *     "container" = @DI\Inject("service_container")
      * })
@@ -36,6 +40,8 @@ class ExerciseListener
     }
 
     /**
+     * Displays a form to create an Exercise resource.
+     *
      * @DI\Observe("create_form_ujm_exercise")
      *
      * @param CreateFormResourceEvent $event
@@ -57,6 +63,8 @@ class ExerciseListener
     }
 
     /**
+     * Creates a new Exercise resource.
+     *
      * @DI\Observe("create_ujm_exercise")
      *
      * @param CreateResourceEvent $event
@@ -92,6 +100,8 @@ class ExerciseListener
     }
 
     /**
+     * Opens the Exercise resource.
+     *
      * @DI\Observe("open_ujm_exercise")
      *
      * @param OpenResourceEvent $event
@@ -110,36 +120,26 @@ class ExerciseListener
     }
 
     /**
+     * Deletes an Exercise resource.
+     *
      * @DI\Observe("delete_ujm_exercise")
      *
      * @param DeleteResourceEvent $event
      */
     public function onDelete(DeleteResourceEvent $event)
     {
-        $em = $this->container->get('doctrine.orm.entity_manager');
-
-        /** @var Exercise $exercise */
-        $exercise = $event->getResource();
-
-        $nbPapers = $em->getRepository('UJMExoBundle:Paper')->countExercisePapers($event->getResource());
-        if (0 === $nbPapers) {
-            $em->remove($exercise);
-        } else {
+        $deletable = $this->container->get('ujm.exo.exercise_manager')->isDeletable($event->getResource());;
+        if (!$deletable) {
             // If papers, the Exercise is not completely removed
             $event->enableSoftDelete();
-
-            $em->remove($exercise->getResourceNode());
-
-            $exercise->archiveExercise();
-
-            $em->persist($exercise);
-            $em->flush();
         }
 
         $event->stopPropagation();
     }
 
     /**
+     * Copies an Exercise resource.
+     *
      * @DI\Observe("copy_ujm_exercise")
      *
      * @param CopyResourceEvent $event
@@ -172,6 +172,8 @@ class ExerciseListener
     }
 
     /**
+     * Exports an Exercise resource in SCORM format.
+     *
      * @DI\Observe("export_scorm_ujm_exercise")
      *
      * @param ExportScormResourceEvent $event

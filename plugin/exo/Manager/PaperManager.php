@@ -16,6 +16,7 @@ use UJM\ExoBundle\Event\Log\LogExerciseEvaluatedEvent;
 use UJM\ExoBundle\Library\Mode\CorrectionMode;
 use UJM\ExoBundle\Library\Mode\MarkMode;
 use UJM\ExoBundle\Manager\Question\QuestionManager;
+use UJM\ExoBundle\Repository\PaperRepository;
 use UJM\ExoBundle\Services\classes\PaperService;
 use UJM\ExoBundle\Transfer\Json\QuestionHandlerCollector;
 
@@ -252,8 +253,8 @@ class PaperManager
             $paper->setEnd(new \DateTime());
         }
 
-        $paper->setInterupt(false);
-        $paper->setScore($this->calculateScore($paper->getId()));
+        $paper->setInterrupted(false);
+        $paper->setScore($this->calculateScore($paper));
 
         $this->om->flush();
 
@@ -271,8 +272,8 @@ class PaperManager
             $paper->setEnd(new \DateTime());
         }
 
-        $paper->setInterupt(true); // keep track that the user has not finished
-        $paper->setScore($this->calculateScore($paper->getId()));
+        $paper->setInterrupted(true); // keep track that the user has not finished
+        $paper->setScore($this->calculateScore($paper));
 
         $this->om->flush();
 
@@ -284,11 +285,14 @@ class PaperManager
      *
      * @param Paper $paper
      *
-     * @return $boolean
+     * @return bool
      */
     public function checkPaperEvaluated(Paper $paper)
     {
-        $fullyEvaluated = $this->om->getRepository('UJMExoBundle:Response')->allPaperResponsesMarked($paper);
+        /** @var PaperRepository $repo */
+        $repo = $this->om->getRepository('UJMExoBundle:Paper');
+
+        $fullyEvaluated = $repo->isFullyEvaluated($paper);
         if ($fullyEvaluated) {
             $event = new LogExerciseEvaluatedEvent($paper->getExercise(), [
                 'result' => $paper->getScore(),
@@ -301,12 +305,32 @@ class PaperManager
         return $fullyEvaluated;
     }
 
-    private function calculateScore($paperId)
+    /**
+     * Calculates the score of a Paper.
+     *
+     * @param Paper $paper
+     *
+     * @return float
+     */
+    public function calculateScore(Paper $paper)
     {
-        $score = $this->om->getRepository('UJMExoBundle:Response')
-                          ->getScoreExercise($paperId);
+        /** @var PaperRepository $repo */
+        $repo = $this->om->getRepository('UJMExoBundle:Paper');
 
-        return $score;
+        return $repo->getScore($paper);
+    }
+
+    /**
+     * Calculates the total score of a Paper.
+     *
+     * @param Paper $paper
+     *
+     * @return float
+     */
+    public function calculateTotal(Paper $paper)
+    {
+
+        return 0;
     }
 
     /**
@@ -369,7 +393,7 @@ class PaperManager
             'user' => $this->showUserPaper($paper),
             'start' => $paper->getStart()->format('Y-m-d\TH:i:s'),
             'end' => $paper->getEnd() ? $paper->getEnd()->format('Y-m-d\TH:i:s') : null,
-            'interrupted' => $paper->getInterupt(),
+            'interrupted' => $paper->isInterrupted(),
             'score' => $scoreAvailable ? $paper->getScore() : null,
             'order' => $this->getStepsQuestions($paper),
             'questions' => $this->exportPaperAnswers($paper, $scoreAvailable),
