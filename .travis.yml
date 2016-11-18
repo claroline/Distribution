@@ -51,6 +51,7 @@ before_install:
   - nvm install 5
 
 before_script:
+  - echo ${TRAVIS_BRANCH}
   # get and configure claroline platform
   - curl -L https://github.com/claroline/Claroline/archive/${TRAVIS_BRANCH}.tar.gz | tar xzv
   - cd Claroline-${TRAVIS_BRANCH}
@@ -67,6 +68,7 @@ before_script:
   # move to distribution directory
   - export ROOT=`pwd`
   - cd vendor/claroline/distribution
+  - git branch
   # set a flag indicating whether there are files to be analysed (vs simple deletions, renaming, etc.)
   - export DIFF=`cat git_diff_files.txt`
   - if [ "$DIFF" = '' ]; then echo 'No files to be analysed\n'; fi
