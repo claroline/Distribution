@@ -17,7 +17,9 @@ module.exports = {
   plugins: [
     plugins.bowerFileLookup(),
     plugins.distributionShortcut(),
-    plugins.configShortcut()
+    plugins.configShortcut(),
+    plugins.noCircularDependencies(),
+    plugins.rethrowCompilationErrors()
   ],
   module: {
     loaders: [
@@ -26,7 +28,8 @@ module.exports = {
       loaders.jqueryUiNoAmd(),
       loaders.css(),
       loaders.imageUris(),
-      loaders.modernizr()
+      loaders.modernizr(),
+      loaders.json()
     ]
   },
   externals: shared.externals()
