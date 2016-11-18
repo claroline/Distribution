@@ -132,30 +132,6 @@ class ExerciseController extends AbstractController
     }
 
     /**
-     * Update the properties of an Exercise.
-     *
-     * @EXT\Route("/{id}/update", name="exercise_update_meta", requirements={"id"="\d+"})
-     * @EXT\Method("PUT")
-     *
-     * @param Exercise $exercise
-     * @param Request  $request
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function updateMetadataAction(Exercise $exercise, Request $request)
-    {
-        $this->assertHasPermission('ADMINISTRATE', $exercise);
-
-        // Get Exercise data from the Request
-        $dataRaw = $request->getContent();
-        if (!empty($dataRaw)) {
-            $this->exerciseManager->updateMetadata($exercise, json_decode($dataRaw));
-        }
-
-        return new JsonResponse($this->exerciseManager->exportExercise($exercise, false));
-    }
-
-    /**
      * Publishes an exercise.
      *
      * @EXT\Route(
@@ -292,7 +268,7 @@ class ExerciseController extends AbstractController
                     $handle,
                     [
                         $paper->getUser()->getFirstName().'-'.$paper->getUser()->getLastName(),
-                        $paper->getNumPaper(),
+                        $paper->getNumber(),
                         $paper->getStart()->format('Y-m-d H:i:s'),
                         $paper->getEnd() ? $paper->getEnd()->format('Y-m-d H:i:s') : '',
                         $paper->isInterrupted(),

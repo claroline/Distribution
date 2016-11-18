@@ -4,6 +4,7 @@ namespace UJM\ExoBundle\Library\Question\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Library\Question\QuestionType;
+use UJM\ExoBundle\Serializer\Answer\Type\MatchAnswerSerializer;
 use UJM\ExoBundle\Serializer\Question\Type\MatchQuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Question\Type\MatchQuestionValidator;
 
@@ -26,26 +27,35 @@ class MatchDefinition extends AbstractDefinition
     private $serializer;
 
     /**
-     * Match constructor.
+     * @var MatchAnswerSerializer
+     */
+    private $answerSerializer;
+
+    /**
+     * MatchDefinition constructor.
      *
      * @param MatchQuestionValidator  $validator
      * @param MatchQuestionSerializer $serializer
+     * @param MatchAnswerSerializer $answerSerializer
      *
      * @DI\InjectParams({
      *     "validator"  = @DI\Inject("ujm_exo.validator.question_match"),
-     *     "serializer" = @DI\Inject("ujm_exo.serializer.question_match")
+     *     "serializer" = @DI\Inject("ujm_exo.serializer.question_match"),
+     *     "answerSerializer" = @DI\Inject("ujm_exo.serializer.answer_match")
      * })
      */
     public function __construct(
         MatchQuestionValidator $validator,
-        MatchQuestionSerializer $serializer)
+        MatchQuestionSerializer $serializer,
+        MatchAnswerSerializer $answerSerializer)
     {
         $this->validator = $validator;
         $this->serializer = $serializer;
+        $this->answerSerializer = $answerSerializer;
     }
 
     /**
-     * Get the match question mime-type.
+     * Gets the match question mime-type.
      *
      * @return string
      */
@@ -55,7 +65,7 @@ class MatchDefinition extends AbstractDefinition
     }
 
     /**
-     * Get the match question validator.
+     * Gets the match question validator.
      *
      * @return MatchQuestionValidator
      */
@@ -65,12 +75,22 @@ class MatchDefinition extends AbstractDefinition
     }
 
     /**
-     * Get the match question serializer.
+     * Gets the match question serializer.
      *
      * @return MatchQuestionSerializer
      */
     protected function getQuestionSerializer()
     {
         return $this->serializer;
+    }
+
+    /**
+     * Gets the match answer serializer.
+     *
+     * @return MatchAnswerSerializer
+     */
+    protected function getAnswerSerializer()
+    {
+        return $this->answerSerializer;
     }
 }

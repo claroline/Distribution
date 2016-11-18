@@ -5,25 +5,21 @@ namespace UJM\ExoBundle\Manager;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use UJM\ExoBundle\Entity\Exercise;
-use UJM\ExoBundle\Transfer\Json\Validator;
 
 class ExerciseManagerTest extends \PHPUnit_Framework_TestCase
 {
     /** @var ObjectManager */
     private $om;
-    /** @var Validator */
-    private $validator;
     /** @var ExerciseManager */
     private $manager;
 
     protected function setUp()
     {
         $this->om = $this->mock('Claroline\CoreBundle\Persistence\ObjectManager');
-        $this->validator = $this->mock('UJM\ExoBundle\Transfer\Json\Validator');
         $newValidator = $this->mock('UJM\ExoBundle\Validator\JsonSchema\ExerciseValidator');
         $serializer = $this->mock('UJM\ExoBundle\Serializer\ExerciseSerializer');
         $stepManager = $this->mock('UJM\ExoBundle\Manager\StepManager');
-        $this->manager = new ExerciseManager($this->om, $newValidator, $this->validator, $serializer, $stepManager);
+        $this->manager = new ExerciseManager($this->om, $newValidator, $serializer, $stepManager);
     }
 
     /**

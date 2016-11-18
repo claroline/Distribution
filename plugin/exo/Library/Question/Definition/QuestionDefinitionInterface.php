@@ -3,6 +3,7 @@
 namespace UJM\ExoBundle\Library\Question\Definition;
 
 use UJM\ExoBundle\Entity\AbstractInteraction;
+use UJM\ExoBundle\Entity\Attempt\Answer;
 
 /**
  * Interface for the definition of a question type
@@ -34,7 +35,7 @@ interface QuestionDefinitionInterface
      *
      * @return \stdClass
      */
-    public function serializeQuestion($question, array $options = []);
+    public function serializeQuestion(AbstractInteraction $question, array $options = []);
 
     /**
      * Deserializes question data.
@@ -45,7 +46,7 @@ interface QuestionDefinitionInterface
      *
      * @return AbstractInteraction
      */
-    public function deserializeQuestion(\stdClass $data, $question = null, array $options = []);
+    public function deserializeQuestion(\stdClass $data, AbstractInteraction $question = null, array $options = []);
 
     /**
      * Validates question answer.
@@ -59,14 +60,25 @@ interface QuestionDefinitionInterface
     public function validateAnswer(\stdClass $question, $answer, array $options = []);
 
     /**
-     * @return mixed
+     * Serializes answer entity.
+     *
+     * @param mixed $answer
+     * @param array $options
+     *
+     * @return \stdClass
      */
-    public function serializeAnswer();
+    public function serializeAnswer($answer, array $options = []);
 
     /**
-     * @return mixed
+     * Deserializes answer data.
+     *
+     * @param mixed $data
+     * @param string $answer
+     * @param array $options
+     *
+     * @return string
      */
-    public function deserializeAnswer();
+    public function deserializeAnswer($data, $answer = null, array $options = []);
 
     /**
      * Calculates the score of an answer to a question.
@@ -76,7 +88,7 @@ interface QuestionDefinitionInterface
      *
      * @return float
      */
-    public function calculateScore($question, $answer);
+    public function calculateScore(AbstractInteraction $question, $answer);
 
     /**
      * Calculates the total score of a question.
@@ -85,5 +97,5 @@ interface QuestionDefinitionInterface
      *
      * @return float
      */
-    public function calculateTotal($question);
+    public function calculateTotal(AbstractInteraction $question);
 }

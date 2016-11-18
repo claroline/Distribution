@@ -5,13 +5,10 @@ namespace UJM\ExoBundle\Manager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Exercise;
-use UJM\ExoBundle\Entity\Step;
-use UJM\ExoBundle\Library\Mode\CorrectionMode;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Serializer\ExerciseSerializer;
 use UJM\ExoBundle\Library\Validator\ValidationException;
-use UJM\ExoBundle\Transfer\Json\Validator;
 use UJM\ExoBundle\Validator\JsonSchema\ExerciseValidator;
 
 /**
@@ -23,13 +20,6 @@ class ExerciseManager
      * @var ObjectManager
      */
     private $om;
-
-    /**
-     * @deprecated use $validator instead
-     *
-     * @var Validator
-     */
-    private $oldValidator;
 
     /**
      * @var ExerciseValidator
@@ -52,27 +42,23 @@ class ExerciseManager
      * @DI\InjectParams({
      *     "om"           = @DI\Inject("claroline.persistence.object_manager"),
      *     "validator"    = @DI\Inject("ujm_exo.validator.exercise"),
-     *     "oldValidator" = @DI\Inject("ujm.exo.json_validator"),
      *     "serializer"   = @DI\Inject("ujm_exo.serializer.exercise"),
      *     "stepManager"  = @DI\Inject("ujm.exo.step_manager")
      * })
      *
      * @param ObjectManager      $om
      * @param ExerciseValidator  $validator
-     * @param Validator          $oldValidator
      * @param ExerciseSerializer $serializer
      * @param StepManager        $stepManager
      */
     public function __construct(
         ObjectManager $om,
         ExerciseValidator $validator,
-        Validator $oldValidator,
         ExerciseSerializer $serializer,
         StepManager $stepManager)
     {
         $this->om = $om;
         $this->validator = $validator;
-        $this->oldValidator = $oldValidator;
         $this->serializer = $serializer;
         $this->stepManager = $stepManager;
     }
@@ -168,29 +154,6 @@ class ExerciseManager
     }
 
     /**
-     * Create and add a new Step to an Exercise.
-     *
-     * @deprecated not used anymore in the new update system
-     *
-     * @param Exercise $exercise
-     *
-     * @return Step
-     */
-    public function addStep(Exercise $exercise)
-    {
-        $step = new Step();
-        $step->setOrder($exercise->getSteps()->count() + 1);
-
-        // Link the Step to the Exercise
-        $exercise->addStep($step);
-
-        $this->om->persist($step);
-        $this->om->flush();
-
-        return $step;
-    }
-
-    /**
      * Publishes an exercise.
      *
      * @param Exercise $exercise
@@ -250,7 +213,7 @@ class ExerciseManager
 
         $paperRepo = $this->om->getRepository('UJMExoBundle:Paper');
         $linkHintPaperRepo = $this->om->getRepository('UJMExoBundle:LinkHintPaper');
-        $responseRepo = $this->om->getRepository('UJMExoBundle:Response');
+        $responseRepo = $this->om->getRepository('UJMExoBundle:Attempt\Answer');
         $papers = $paperRepo->findByExercise($exercise);
 
         foreach ($papers as $paper) {
@@ -293,56 +256,6 @@ class ExerciseManager
             'meta' => $this->exportMetadata($exercise),
             'steps' => $this->exportSteps($exercise, $withSolutions),
         ];
-    }
-
-    /**
-     * Update the Exercise metadata.
-     *
-     * @deprecated use update() instead
-     *
-     * @param Exercise  $exercise
-     * @param \stdClass $metadata
-     *
-     * @throws ValidationException
-     */
-    public function updateMetadata(Exercise $exercise, \stdClass $metadata)
-    {
-        $errors = $this->oldValidator->validateExerciseMetadata($metadata);
-
-        if (count($errors) > 0) {
-            throw new ValidationException('Exercise metadata are not valid', $errors);
-        }
-
-        // Update ResourceNode
-        $node = $exercise->getResourceNode();
-        $node->setName($metadata->title);
-
-        // Update Exercise
-        $exercise->setDescription($metadata->description);
-        $exercise->setType($metadata->type);
-        $exercise->setPickSteps($metadata->pick ? $metadata->pick : 0);
-        $exercise->setShuffle($metadata->random);
-        $exercise->setKeepSteps($metadata->keepSteps);
-        $exercise->setMaxAttempts($metadata->maxAttempts);
-        $exercise->setDispButtonInterrupt($metadata->dispButtonInterrupt);
-        $exercise->setMetadataVisible($metadata->metadataVisible);
-        $exercise->setMarkMode($metadata->markMode);
-        $exercise->setCorrectionMode($metadata->correctionMode);
-        $exercise->setAnonymous($metadata->anonymous);
-        $exercise->setDuration($metadata->duration);
-        $exercise->setStatistics($metadata->statistics ? true : false);
-        $exercise->setMinimalCorrection($metadata->minimalCorrection ? true : false);
-
-        $correctionDate = null;
-        if (!empty($metadata->correctionDate) && CorrectionMode::AFTER_DATE === $metadata->correctionMode) {
-            $correctionDate = \DateTime::createFromFormat('Y-m-d\TH:i:s', $metadata->correctionDate);
-        }
-
-        $exercise->setDateCorrection($correctionDate);
-
-        // Save to DB
-        $this->om->persist($exercise);
-        $this->om->flush();
     }
 
     /**

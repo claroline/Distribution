@@ -3,7 +3,7 @@
 namespace UJM\ExoBundle\Transfer\Json;
 
 use UJM\ExoBundle\Entity\Question;
-use UJM\ExoBundle\Entity\Response;
+use UJM\ExoBundle\Entity\Attempt\Answer;
 
 interface QuestionHandlerInterface
 {
@@ -63,11 +63,11 @@ interface QuestionHandlerInterface
      * Converts the details of an answer to a representation ready to
      * be JSON-encoded.
      *
-     * @param Response $response
+     * @param Answer $response
      *
      * @return mixed
      */
-    public function convertAnswerDetails(Response $response);
+    public function convertAnswerDetails(Answer $response);
 
     /**
      * Ensures answer data is in the correct format and returns validation
@@ -84,10 +84,10 @@ interface QuestionHandlerInterface
      * Populates an answer with its actual contents and mark.
      *
      * @param Question $question
-     * @param Response $response
+     * @param Answer $response
      * @param mixed    $data
      */
-    public function storeAnswerAndMark(Question $question, Response $response, $data);
+    public function storeAnswerAndMark(Question $question, Answer $response, $data);
 
     /**
      * Generates stats for the given Question and set of Responses.

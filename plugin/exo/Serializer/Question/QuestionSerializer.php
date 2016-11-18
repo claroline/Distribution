@@ -113,7 +113,8 @@ class QuestionSerializer extends AbstractSerializer
         // Serialize specific data for the question type
         $questionData = $this->serializeQuestionType($question, $options);
 
-        $mapping = [
+        // Adds minimal information
+        $this->mapEntityToObject([
             'id' => 'uuid',
             'type' => 'mimeType',
             'content' => 'content',
@@ -121,10 +122,11 @@ class QuestionSerializer extends AbstractSerializer
             'meta' => function (Question $question) use ($options) {
                 $this->serializeMetadata($question, $options);
             }
-        ];
+        ], $question, $questionData);
 
+        // Adds full definition of the question
         if (!$this->hasOption(Transfer::MINIMAL, $options)) {
-            $mapping = array_merge($mapping, [
+            $this->mapEntityToObject([
                 'description' => 'description',
                 'info' => 'supplementary',
                 'instruction' => 'specification',
@@ -137,15 +139,15 @@ class QuestionSerializer extends AbstractSerializer
                 'resources' => function (Question $question) {
                     return $this->serializeResources($question);
                 },
-            ]);
+            ], $question, $questionData);
 
+            // Adds question feedback
             if (!$this->hasOption(Transfer::INCLUDE_SOLUTIONS, $options)) {
-                // Serialize feedback
-                $mapping['feedback'] = 'feedback';
+                $this->mapEntityToObject([
+                    'feedback' => 'feedback',
+                ], $question, $questionData);
             }
         }
-
-        $this->mapEntityToObject($mapping, $question, $questionData);
 
         return $questionData;
     }

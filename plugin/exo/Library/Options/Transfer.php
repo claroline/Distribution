@@ -27,4 +27,11 @@ final class Transfer
      * @var string
      */
     const INCLUDE_SOLUTIONS = 'includeSolutions';
+
+    /**
+     * Adds user scores in the serialized data.
+     * 
+     * @var string
+     */
+    const INCLUDE_USER_SCORE = 'includeUserScore';
 }

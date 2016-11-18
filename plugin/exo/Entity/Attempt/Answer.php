@@ -1,14 +1,16 @@
 <?php
 
-namespace UJM\ExoBundle\Entity;
+namespace UJM\ExoBundle\Entity\Attempt;
 
 use Doctrine\ORM\Mapping as ORM;
+use UJM\ExoBundle\Entity\Paper;
+use UJM\ExoBundle\Entity\Question;
 
 /**
- * @ORM\Entity(repositoryClass="UJM\ExoBundle\Repository\ResponseRepository")
+ * @ORM\Entity(repositoryClass="UJM\ExoBundle\Repository\AnswerRepository")
  * @ORM\Table(name="ujm_response")
  */
-class Response
+class Answer
 {
     /**
      * @ORM\Column(type="integer")
@@ -23,6 +25,8 @@ class Response
     private $ip;
 
     /**
+     * The score obtained for this question.
+     *
      * @ORM\Column(type="float")
      */
     private $mark;
@@ -33,17 +37,22 @@ class Response
     private $nbTries = 1;
 
     /**
+     * The answer data formatted in string for DB storage.
+     *
+     * @var string
+     *
      * @ORM\Column(type="text", nullable=true)
      */
     private $response;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Paper")
+     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Paper", inversedBy="answers")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $paper;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Question")
+     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Question")
      */
     private $question;
 
@@ -72,6 +81,28 @@ class Response
     }
 
     /**
+     * Sets score.
+     *
+     * @param float $score
+     */
+    public function setScore($score)
+    {
+        $this->mark = $score;
+    }
+
+    /**
+     * Gets score.
+     *
+     * @return float
+     */
+    public function getScore()
+    {
+        return $this->mark;
+    }
+
+    /**
+     * @deprecated
+     *
      * @param float $mark
      */
     public function setMark($mark)
@@ -80,6 +111,8 @@ class Response
     }
 
     /**
+     * @deprecated
+     *
      * @return float
      */
     public function getMark()
@@ -104,6 +137,28 @@ class Response
     }
 
     /**
+     * Sets data.
+     *
+     * @param string $data
+     */
+    public function setData($data)
+    {
+        $this->response = $data;
+    }
+
+    /**
+     * Gets data.
+     *
+     * @return string
+     */
+    public function getData()
+    {
+        return $this->response;
+    }
+
+    /**
+     * @deprecated
+     *
      * @param string $response
      */
     public function setResponse($response)
@@ -112,6 +167,8 @@ class Response
     }
 
     /**
+     * @deprecated
+     *
      * @return string
      */
     public function getResponse()

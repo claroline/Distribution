@@ -4,6 +4,7 @@ namespace UJM\ExoBundle\Library\Question\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Library\Question\QuestionType;
+use UJM\ExoBundle\Serializer\Answer\Type\OpenAnswerSerializer;
 use UJM\ExoBundle\Serializer\Question\Type\OpenQuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Question\Type\OpenQuestionValidator;
 
@@ -26,26 +27,35 @@ class OpenDefinition extends AbstractDefinition
     private $serializer;
 
     /**
-     * Open constructor.
+     * @var OpenAnswerSerializer
+     */
+    private $answerSerializer;
+
+    /**
+     * OpenDefinition constructor.
      *
      * @param OpenQuestionValidator  $validator
      * @param OpenQuestionSerializer $serializer
+     * @param OpenAnswerSerializer $answerSerializer
      *
      * @DI\InjectParams({
      *     "validator"  = @DI\Inject("ujm_exo.validator.question_open"),
-     *     "serializer" = @DI\Inject("ujm_exo.serializer.question_open")
+     *     "serializer" = @DI\Inject("ujm_exo.serializer.question_open"),
+     *     "answerSerializer" = @DI\Inject("ujm_exo.serializer.answer_open")
      * })
      */
     public function __construct(
         OpenQuestionValidator $validator,
-        OpenQuestionSerializer $serializer)
+        OpenQuestionSerializer $serializer,
+        OpenAnswerSerializer $answerSerializer)
     {
         $this->validator = $validator;
         $this->serializer = $serializer;
+        $this->answerSerializer = $answerSerializer;
     }
 
     /**
-     * Get the open question mime-type.
+     * Gets the open question mime-type.
      *
      * @return string
      */
@@ -55,7 +65,7 @@ class OpenDefinition extends AbstractDefinition
     }
 
     /**
-     * Get the open question validator.
+     * Gets the open question validator.
      *
      * @return OpenQuestionValidator
      */
@@ -65,12 +75,22 @@ class OpenDefinition extends AbstractDefinition
     }
 
     /**
-     * Get the open question serializer.
+     * Gets the open question serializer.
      *
      * @return OpenQuestionSerializer
      */
     protected function getQuestionSerializer()
     {
         return $this->serializer;
+    }
+
+    /**
+     * Gets the open answer serializer.
+     *
+     * @return OpenAnswerSerializer
+     */
+    protected function getAnswerSerializer()
+    {
+        return $this->answerSerializer;
     }
 }

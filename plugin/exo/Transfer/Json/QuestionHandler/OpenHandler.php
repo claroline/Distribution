@@ -7,7 +7,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use UJM\ExoBundle\Entity\InteractionOpen;
 use UJM\ExoBundle\Entity\Question;
-use UJM\ExoBundle\Entity\Response;
+use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\WordResponse;
 use UJM\ExoBundle\Transfer\Json\QuestionHandlerInterface;
 
@@ -118,7 +118,7 @@ class OpenHandler implements QuestionHandlerInterface
         if ($withSolution) {
             $responses = $openQuestion->getWordResponses();
 
-            $exportData->solutions = array_map(function ($wr) {
+            $exportData->solutions = array_map(function (WordResponse $wr) {
                 $responseData = new \stdClass();
                 $responseData->id = (string) $wr->getId();
                 $responseData->word = $wr->getResponse();
@@ -140,7 +140,7 @@ class OpenHandler implements QuestionHandlerInterface
 
         $responses = $openQuestion->getWordResponses();
 
-        $exportData->solutions = array_map(function ($wr) {
+        $exportData->solutions = array_map(function (WordResponse $wr) {
             $responseData = new \stdClass();
             $responseData->id = (string) $wr->getId();
             $responseData->word = $wr->getResponse();
@@ -165,7 +165,7 @@ class OpenHandler implements QuestionHandlerInterface
 
         $keywords = [];
 
-        /** @var Response $answer */
+        /** @var Answer $answer */
         foreach ($answers as $answer) {
             $decoded = $this->convertAnswerDetails($answer);
 
@@ -194,7 +194,7 @@ class OpenHandler implements QuestionHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function convertAnswerDetails(Response $response)
+    public function convertAnswerDetails(Answer $response)
     {
         return $response->getResponse();
     }
@@ -220,7 +220,7 @@ class OpenHandler implements QuestionHandlerInterface
      *
      * {@inheritdoc}
      */
-    public function storeAnswerAndMark(Question $question, Response $response, $data)
+    public function storeAnswerAndMark(Question $question, Answer $response, $data)
     {
         $interaction = $this->om->getRepository('UJMExoBundle:InteractionOpen')
                 ->findOneByQuestion($question);

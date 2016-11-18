@@ -8,7 +8,7 @@ use UJM\ExoBundle\Entity\Coords;
 use UJM\ExoBundle\Entity\InteractionGraphic;
 use UJM\ExoBundle\Entity\Picture;
 use UJM\ExoBundle\Entity\Question;
-use UJM\ExoBundle\Entity\Response;
+use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Services\classes\Interactions\Graphic;
 use UJM\ExoBundle\Transfer\Json\QuestionHandlerInterface;
 
@@ -146,7 +146,7 @@ class GraphicHandler implements QuestionHandlerInterface
 
         $areas = [];
 
-        /** @var Response $answer */
+        /** @var Answer $answer */
         foreach ($answers as $answer) {
             $decoded = $this->convertAnswerDetails($answer);
 
@@ -282,7 +282,7 @@ class GraphicHandler implements QuestionHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function convertAnswerDetails(Response $response)
+    public function convertAnswerDetails(Answer $response)
     {
         $parts = explode(';', $response->getResponse());
 
@@ -313,7 +313,7 @@ class GraphicHandler implements QuestionHandlerInterface
      *
      * {@inheritdoc}
      */
-    public function storeAnswerAndMark(Question $question, Response $response, $data)
+    public function storeAnswerAndMark(Question $question, Answer $response, $data)
     {
         // a response is recorded like this : 471 - 335.9999694824219;583 - 125;
         $interaction = $this->om->getRepository('UJMExoBundle:InteractionGraphic')
@@ -330,7 +330,7 @@ class GraphicHandler implements QuestionHandlerInterface
         $rightCoords = $this->om->getRepository('UJMExoBundle:Coords')
             ->findBy(['interactionGraphic' => $interaction->getId()]);
 
-        $answer = implode(';', array_map(function ($coords) {
+        $answer = implode(';', array_map(function (array $coords) {
             return (string) $coords['x'].'-'.(string) $coords['y'];
         }, $data));
 

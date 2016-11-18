@@ -45,7 +45,7 @@ class PaperManagerTest extends \PHPUnit_Framework_TestCase
         // Create the first Paper which will be used to generate order for the next ones
         $paper1 = new Paper();
         $paper1->setUser($user);
-        $paper1->setNumPaper(1);
+        $paper1->setNumber(1);
         $paper1->setStart(new \DateTime());
         $paper1->setOrdreQuestion('1;2;3;4');
 

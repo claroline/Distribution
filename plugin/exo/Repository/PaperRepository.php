@@ -49,7 +49,7 @@ class PaperRepository extends EntityRepository
     {
         return $this->getEntityManager()
             ->createQuery('
-                SELECT SUM(r.mark) FROM UJM\ExoBundle\Entity\Response AS r
+                SELECT SUM(r.mark) FROM UJM\ExoBundle\Entity\Attempt\Answer AS r
                 WHERE r.paper= :paper
                   AND r.mark != -1
             ')
@@ -68,7 +68,7 @@ class PaperRepository extends EntityRepository
     {
         return 0 === $this->getEntityManager()
             ->createQuery('
-                SELECT COUNT(r) FROM UJM\ExoBundle\Entity\Response AS r
+                SELECT COUNT(r) FROM UJM\ExoBundle\Entity\Attempt\Answer AS r
                 WHERE r.paper= :paper
                   AND r.mark = -1
             ')

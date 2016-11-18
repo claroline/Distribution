@@ -8,7 +8,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use UJM\ExoBundle\Entity\Choice;
 use UJM\ExoBundle\Entity\InteractionQCM;
 use UJM\ExoBundle\Entity\Question;
-use UJM\ExoBundle\Entity\Response;
+use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Transfer\Json\QuestionHandlerInterface;
 
 /**
@@ -71,7 +71,7 @@ class QcmHandler implements QuestionHandlerInterface
         }
 
         // check solution ids are consistent with choice ids
-        $choiceIds = array_map(function ($choice) {
+        $choiceIds = array_map(function (\stdClass $choice) {
             return $choice->id;
         }, $questionData->choices);
 
@@ -120,7 +120,7 @@ class QcmHandler implements QuestionHandlerInterface
         $choices = $interaction->getChoices()->toArray();
 
         $exportData->multiple = $interaction->getTypeQCM()->getCode() === 1;
-        $exportData->choices = array_map(function ($choice) {
+        $exportData->choices = array_map(function (Choice $choice) {
             $choiceData = new \stdClass();
             $choiceData->id = (string) $choice->getId();
             $choiceData->type = 'text/html';
@@ -140,7 +140,7 @@ class QcmHandler implements QuestionHandlerInterface
         }
 
         if ($withSolution) {
-            $exportData->solutions = array_map(function ($choice) use ($interaction) {
+            $exportData->solutions = array_map(function (Choice $choice) use ($interaction) {
                 $solutionData = new \stdClass();
                 $solutionData->id = (string) $choice->getId();
 
@@ -170,9 +170,7 @@ class QcmHandler implements QuestionHandlerInterface
         $interaction = $repo->findOneBy(['question' => $question]);
 
         $choices = $interaction->getChoices()->toArray();
-        $exportData->solutions = array_map(function ($choice) use ($interaction) {
-            /* @var Choice $choice */
-
+        $exportData->solutions = array_map(function (Choice $choice) use ($interaction) {
             $solutionData = new \stdClass();
             $solutionData->id = (string) $choice->getId();
 
@@ -201,7 +199,7 @@ class QcmHandler implements QuestionHandlerInterface
     {
         $choices = [];
 
-        /** @var Response $answer */
+        /** @var Answer $answer */
         foreach ($answers as $answer) {
             $decoded = $this->convertAnswerDetails($answer);
 
@@ -223,7 +221,7 @@ class QcmHandler implements QuestionHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function convertAnswerDetails(Response $response)
+    public function convertAnswerDetails(Answer $response)
     {
         $parts = explode(';', $response->getResponse());
 
@@ -249,7 +247,7 @@ class QcmHandler implements QuestionHandlerInterface
 
         $interaction = $this->om->getRepository('UJMExoBundle:InteractionQCM')
             ->findOneByQuestion($question);
-        $choiceIds = array_map(function ($choice) {
+        $choiceIds = array_map(function (Choice $choice) {
             return (string) $choice->getId();
         }, $interaction->getChoices()->toArray());
 
@@ -275,7 +273,7 @@ class QcmHandler implements QuestionHandlerInterface
      *
      * {@inheritdoc}
      */
-    public function storeAnswerAndMark(Question $question, Response $responseEntity, $data)
+    public function storeAnswerAndMark(Question $question, Answer $responseEntity, $data)
     {
         $interaction = $this->om->getRepository('UJMExoBundle:InteractionQCM')
             ->findOneByQuestion($question);

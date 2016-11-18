@@ -176,6 +176,9 @@ class Exercise extends AbstractResource
      */
     private $steps;
 
+    /**
+     * Exercise constructor.
+     */
     public function __construct()
     {
         $this->uuid = Uuid::uuid4();

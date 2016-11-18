@@ -6,8 +6,10 @@ use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use UJM\ExoBundle\Entity\InteractionMatching;
+use UJM\ExoBundle\Entity\Label;
+use UJM\ExoBundle\Entity\Proposal;
 use UJM\ExoBundle\Entity\Question;
-use UJM\ExoBundle\Entity\Response;
+use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Transfer\Json\QuestionHandlerInterface;
 
 /**
@@ -133,7 +135,7 @@ class MatchHandler implements QuestionHandlerInterface
         $proposals = $match->getProposals()->toArray();
         $exportData->toBind = $match->getTypeMatching()->getCode() === 1 ? true : false;
         $exportData->typeMatch = $match->getTypeMatching()->getCode();
-        $exportData->firstSet = array_map(function ($proposal) {
+        $exportData->firstSet = array_map(function (Proposal $proposal) {
             $firstSetData = new \stdClass();
             $firstSetData->id = (string) $proposal->getId();
             $firstSetData->type = 'text/plain';
@@ -143,7 +145,7 @@ class MatchHandler implements QuestionHandlerInterface
         }, $proposals);
 
         $labels = $match->getLabels()->toArray();
-        $exportData->secondSet = array_map(function ($label) {
+        $exportData->secondSet = array_map(function (Label $label) {
             $secondSetData = new \stdClass();
             $secondSetData->id = (string) $label->getId();
             $secondSetData->type = 'text/plain';
@@ -199,7 +201,7 @@ class MatchHandler implements QuestionHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function convertAnswerDetails(Response $response)
+    public function convertAnswerDetails(Answer $response)
     {
         $parts = explode(';', $response->getResponse());
 
@@ -241,7 +243,7 @@ class MatchHandler implements QuestionHandlerInterface
         }, $proposals);
 
         $labels = $interaction->getLabels()->toArray();
-        $labelsIds = array_map(function ($label) {
+        $labelsIds = array_map(function (Label $label) {
             return (string) $label->getId();
         }, $labels);
 
@@ -283,7 +285,7 @@ class MatchHandler implements QuestionHandlerInterface
       *
       * {@inheritdoc}
       */
-     public function storeAnswerAndMark(Question $question, Response $response, $data)
+     public function storeAnswerAndMark(Question $question, Answer $response, $data)
      {
          $interaction = $this->om->getRepository('UJMExoBundle:InteractionMatching')
                  ->findOneByQuestion($question);

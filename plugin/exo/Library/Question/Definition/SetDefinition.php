@@ -4,6 +4,7 @@ namespace UJM\ExoBundle\Library\Question\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Library\Question\QuestionType;
+use UJM\ExoBundle\Serializer\Answer\Type\SetAnswerSerializer;
 use UJM\ExoBundle\Serializer\Question\Type\SetQuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Question\Type\SetQuestionValidator;
 
@@ -26,26 +27,35 @@ class SetDefinition extends AbstractDefinition
     private $serializer;
 
     /**
-     * Set constructor.
+     * @var SetAnswerSerializer
+     */
+    private $answerSerializer;
+
+    /**
+     * SetDefinition constructor.
      *
      * @param SetQuestionValidator  $validator
      * @param SetQuestionSerializer $serializer
+     * @param SetAnswerSerializer $answerSerializer
      *
      * @DI\InjectParams({
      *     "validator"  = @DI\Inject("ujm_exo.validator.question_set"),
-     *     "serializer" = @DI\Inject("ujm_exo.serializer.question_set")
+     *     "serializer" = @DI\Inject("ujm_exo.serializer.question_set"),
+     *     "answerSerializer" = @DI\Inject("ujm_exo.serializer.answer_set")
      * })
      */
     public function __construct(
         SetQuestionValidator $validator,
-        SetQuestionSerializer $serializer)
+        SetQuestionSerializer $serializer,
+        SetAnswerSerializer $answerSerializer)
     {
         $this->validator = $validator;
         $this->serializer = $serializer;
+        $this->answerSerializer = $answerSerializer;
     }
 
     /**
-     * Get the set question mime-type.
+     * Gets the set question mime-type.
      *
      * @return string
      */
@@ -55,7 +65,7 @@ class SetDefinition extends AbstractDefinition
     }
 
     /**
-     * Get the set question validator.
+     * Gets the set question validator.
      *
      * @return SetQuestionValidator
      */
@@ -65,12 +75,22 @@ class SetDefinition extends AbstractDefinition
     }
 
     /**
-     * Get the set question serializer.
+     * Gets the set question serializer.
      *
      * @return SetQuestionSerializer
      */
     protected function getQuestionSerializer()
     {
         return $this->serializer;
+    }
+
+    /**
+     * Gets the set answer serializer.
+     *
+     * @return SetAnswerSerializer
+     */
+    protected function getAnswerSerializer()
+    {
+        return $this->answerSerializer;
     }
 }

@@ -9,7 +9,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Question;
-use UJM\ExoBundle\Entity\Response;
+use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Manager\HintManager;
 use UJM\ExoBundle\Repository\QuestionRepository;
@@ -285,7 +285,7 @@ class QuestionManager
         $questionStats = new \stdClass();
 
         // We load all the answers for the question (we need to get the entities as the response in DB are not processable as is)
-        $answers = $this->om->getRepository('UJMExoBundle:Response')->findByExerciseAndQuestion($exercise, $question);
+        $answers = $this->om->getRepository('UJMExoBundle:Attempt\Answer')->findByExerciseAndQuestion($exercise, $question);
 
         // Number of Users that have seen the question in their exercise
         $questionStats->seen = count($answers);
@@ -293,7 +293,7 @@ class QuestionManager
         // Number of Users that have responded to the question (no blank answer)
         $questionStats->answered = 0;
         if (!empty($answers)) {
-            /* @var Response $answer */
+            /* @var Answer $answer */
             for ($i = 0; $i < $questionStats->seen; ++$i) {
                 if (!empty($answers[$i]->getResponse())) {
                     ++$questionStats->answered;

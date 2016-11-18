@@ -15,6 +15,8 @@ use UJM\ExoBundle\Entity\Paper;
 use UJM\ExoBundle\Entity\Question;
 use UJM\ExoBundle\Entity\Step;
 use UJM\ExoBundle\Entity\StepQuestion;
+use UJM\ExoBundle\Library\Validator\ValidationException;
+use UJM\ExoBundle\Manager\AnswerManager;
 use UJM\ExoBundle\Manager\PaperManager;
 use UJM\ExoBundle\Manager\Question\QuestionManager;
 
@@ -23,8 +25,13 @@ use UJM\ExoBundle\Manager\Question\QuestionManager;
  *
  * @EXT\Route("/papers", requirements={"id"="\d+"}, options={"expose"=true})
  */
-class PaperController
+class PaperController extends AbstractController
 {
+    /**
+     * @var AnswerManager
+     */
+    private $answerManager;
+
     /**
      * @var QuestionManager
      */
@@ -56,6 +63,43 @@ class PaperController
         $this->authorization = $authorization;
         $this->questionManager = $questionManager;
         $this->paperManager = $paperManager;
+    }
+
+    /**
+     * Submits answers to an Exercise.
+     *
+     * @EXT\Route("/{id}/submit", name="exercise_submit_answers")
+     * @EXT\Method("POST")
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
+     *
+     * @param User $user
+     * @param Paper $paper
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function submitAction(Paper $paper, User $user = null, Request $request)
+    {
+        $this->assertHasPaperAccess($paper, $user);
+
+        $errors = [];
+
+        $data = $this->decodeRequestData($request);
+        if (empty($data)) {
+
+        } else {
+            try {
+                $this->answerManager->submit();
+            } catch (ValidationException $e) {
+                $errors = $e->getErrors();
+            }
+        }
+
+        if (!empty($errors)) {
+            return new JsonResponse($errors, 422);
+        } else {
+            return new JsonResponse(null, 204);
+        }
     }
 
     /**

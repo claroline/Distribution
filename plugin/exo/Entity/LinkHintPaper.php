@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * UJM\ExoBundle\Entity\LinkHintPaper.
  *
- * @ORM\Entity(repositoryClass="UJM\ExoBundle\Repository\LinkHintPaperRepository")
+ * @ORM\Entity()
  * @ORM\Table(name="ujm_link_hint_paper")
  */
 class LinkHintPaper
@@ -23,11 +23,6 @@ class LinkHintPaper
      * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Paper")
      */
     private $paper;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $view = true;
 
     public function __construct(Hint $hint, Paper $paper)
     {
@@ -53,21 +48,5 @@ class LinkHintPaper
     public function getPaper()
     {
         return $this->paper;
-    }
-
-    /**
-     * @param bool $view
-     */
-    public function setView($view)
-    {
-        $this->view = $view;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getView()
-    {
-        return $this->view;
     }
 }

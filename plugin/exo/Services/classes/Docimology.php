@@ -58,7 +58,7 @@ class Docimology
 
             $interQuestionsTab = explode(';', $interQuestions);
             foreach ($interQuestionsTab as $interQuestion) {
-                $flag = $em->getRepository('UJMExoBundle:Response')->findOneBy(
+                $flag = $em->getRepository('UJMExoBundle:Attempt\Answer')->findOneBy(
                     array(
                         'question' => $interQuestion,
                         'paper' => $paper->getId(),
@@ -190,7 +190,7 @@ class Docimology
      * To have the status of an answer.
      *
      *
-     * @param array $responses result of getExerciseInterResponsesWithCount (ResponseRepository)
+     * @param array $responses result of getExerciseInterResponsesWithCount (AnswerRepository)
      * @param float $scoreMax  score max possible for a question
      *
      * @return array
@@ -246,7 +246,7 @@ class Docimology
     {
         $em = $this->doctrine->getManager();
         $question = $sq->getQuestion();
-        $responses = $em->getRepository('UJMExoBundle:Response')
+        $responses = $em->getRepository('UJMExoBundle:Attempt\Answer')
                         ->getExerciseInterResponsesWithCount($exerciseId, $question->getId());
         $typeInter = $question->getType();
         $interSer = $this->container->get('ujm.exo_'.$typeInter);
@@ -274,7 +274,7 @@ class Docimology
         if ($exercise->getPickSteps() === 0) {
             $exoScoreMax = $this->container->get('ujm.exo_exercise')->getExerciseTotalScore($exercise);
         }
-        $marks = $em->getRepository('UJMExoBundle:Response')->getExerciseMarks($exercise->getId(), 'noteExo');
+        $marks = $em->getRepository('UJMExoBundle:Attempt\Answer')->getExerciseMarks($exercise->getId(), 'noteExo');
         foreach ($marks as $mark) {
             if ($exercise->getPickSteps() > 0) {
                 $exoScoreMax = $this->container->get('ujm.exo_paper')->getPaperTotalScore($mark['paper']);
@@ -309,7 +309,7 @@ class Docimology
         $em = $this->doctrine->getManager();
         $tabScoreQ = array();
         foreach ($sqs as $sq) {
-            $responses = $em->getRepository('UJMExoBundle:Response')
+            $responses = $em->getRepository('UJMExoBundle:Attempt\Answer')
                             ->getExerciseInterResponses($exerciseId, $sq->getQuestion()->getId());
             foreach ($responses as $response) {
                 $tabScoreQ[$sq->getQuestion()->getId()][] = $response['mark'];
@@ -331,7 +331,7 @@ class Docimology
     private function getScoreByExercise($exerciseId)
     {
         $em = $this->doctrine->getManager();
-        $marks = $em->getRepository('UJMExoBundle:Response')->getExerciseMarks($exerciseId, 'paper');
+        $marks = $em->getRepository('UJMExoBundle:Attempt\Answer')->getExerciseMarks($exerciseId, 'paper');
         $tabScoreExo = array();
 
         foreach ($marks as $mark) {

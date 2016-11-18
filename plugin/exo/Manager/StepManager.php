@@ -6,7 +6,6 @@ use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Step;
 use UJM\ExoBundle\Entity\StepQuestion;
 use UJM\ExoBundle\Manager\Question\QuestionManager;
-use UJM\ExoBundle\Transfer\Json\Validator;
 
 /**
  * @DI\Service("ujm.exo.step_manager")
@@ -15,13 +14,6 @@ use UJM\ExoBundle\Transfer\Json\Validator;
  */
 class StepManager
 {
-    /**
-     * @var Validator
-     *
-     * @deprecated use $validator instead
-     */
-    private $oldValidator;
-
     /**
      * @var QuestionManager
      *
@@ -33,18 +25,13 @@ class StepManager
      * StepManager constructor.
      *
      * @DI\InjectParams({
-     *     "oldValidator"    = @DI\Inject("ujm.exo.json_validator"),
      *     "questionManager" = @DI\Inject("ujm.exo.question_manager")
      * })
      *
-     * @param Validator       $oldValidator
      * @param QuestionManager $questionManager
      */
-    public function __construct(
-        Validator $oldValidator,
-        QuestionManager $questionManager)
+    public function __construct(QuestionManager $questionManager)
     {
-        $this->oldValidator = $oldValidator;
         $this->questionManager = $questionManager;
     }
 

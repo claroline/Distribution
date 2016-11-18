@@ -4,6 +4,7 @@ namespace UJM\ExoBundle\Library\Question\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Library\Question\QuestionType;
+use UJM\ExoBundle\Serializer\Answer\Type\PairAnswerSerializer;
 use UJM\ExoBundle\Serializer\Question\Type\PairQuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Question\Type\PairQuestionValidator;
 
@@ -26,26 +27,35 @@ class PairDefinition extends AbstractDefinition
     private $serializer;
 
     /**
-     * Pair constructor.
+     * @var PairAnswerSerializer
+     */
+    private $answerSerializer;
+
+    /**
+     * PairDefinition constructor.
      *
      * @param PairQuestionValidator  $validator
      * @param PairQuestionSerializer $serializer
+     * @param PairAnswerSerializer $answerSerializer
      *
      * @DI\InjectParams({
      *     "validator"  = @DI\Inject("ujm_exo.validator.question_pair"),
-     *     "serializer" = @DI\Inject("ujm_exo.serializer.question_pair")
+     *     "serializer" = @DI\Inject("ujm_exo.serializer.question_pair"),
+     *     "answerSerializer" = @DI\Inject("ujm_exo.serializer.answer_pair")
      * })
      */
     public function __construct(
         PairQuestionValidator $validator,
-        PairQuestionSerializer $serializer)
+        PairQuestionSerializer $serializer,
+        PairAnswerSerializer $answerSerializer)
     {
         $this->validator = $validator;
         $this->serializer = $serializer;
+        $this->answerSerializer = $answerSerializer;
     }
 
     /**
-     * Get the pair question mime-type.
+     * Gets the pair question mime-type.
      *
      * @return string
      */
@@ -55,7 +65,7 @@ class PairDefinition extends AbstractDefinition
     }
 
     /**
-     * Get the pair question validator.
+     * Gets the pair question validator.
      *
      * @return PairQuestionValidator
      */
@@ -65,12 +75,22 @@ class PairDefinition extends AbstractDefinition
     }
 
     /**
-     * Get the pair question serializer.
+     * Gets the pair question serializer.
      *
      * @return PairQuestionSerializer
      */
     protected function getQuestionSerializer()
     {
         return $this->serializer;
+    }
+
+    /**
+     * Gets the pair answer serializer.
+     *
+     * @return PairAnswerSerializer
+     */
+    protected function getAnswerSerializer()
+    {
+        return $this->answerSerializer;
     }
 }

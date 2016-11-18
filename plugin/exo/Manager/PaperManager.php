@@ -10,14 +10,13 @@ use Symfony\Component\Translation\TranslatorInterface;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Paper;
 use UJM\ExoBundle\Entity\Question;
-use UJM\ExoBundle\Entity\Response;
+use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\StepQuestion;
 use UJM\ExoBundle\Event\Log\LogExerciseEvaluatedEvent;
 use UJM\ExoBundle\Library\Mode\CorrectionMode;
 use UJM\ExoBundle\Library\Mode\MarkMode;
 use UJM\ExoBundle\Manager\Question\QuestionManager;
 use UJM\ExoBundle\Repository\PaperRepository;
-use UJM\ExoBundle\Services\classes\PaperService;
 use UJM\ExoBundle\Transfer\Json\QuestionHandlerCollector;
 
 /**
@@ -56,19 +55,13 @@ class PaperManager
     private $hintManager;
 
     /**
-     * @var PaperService
-     */
-    private $paperService;
-
-    /**
      * @DI\InjectParams({
      *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
      *     "eventDispatcher" = @DI\Inject("event_dispatcher"),
      *     "translator"      = @DI\Inject("translator"),
      *     "collector"       = @DI\Inject("ujm.exo.question_handler_collector"),
      *     "questionManager" = @DI\Inject("ujm.exo.question_manager"),
-     *     "hintManager"     = @DI\Inject("ujm.exo.hint_manager"),
-     *     "paperService"    = @DI\Inject("ujm.exo_paper")
+     *     "hintManager"     = @DI\Inject("ujm.exo.hint_manager")
      * })
      *
      * @param ObjectManager            $om
@@ -77,7 +70,6 @@ class PaperManager
      * @param QuestionHandlerCollector $collector
      * @param QuestionManager          $questionManager
      * @param HintManager              $hintManager
-     * @param PaperService             $paperService
      */
     public function __construct(
         ObjectManager $om,
@@ -85,8 +77,7 @@ class PaperManager
         TranslatorInterface $translator,
         QuestionHandlerCollector $collector,
         QuestionManager $questionManager,
-        HintManager $hintManager,
-        PaperService $paperService
+        HintManager $hintManager
     ) {
         $this->om = $om;
         $this->eventDispatcher = $eventDispatcher;
@@ -94,7 +85,6 @@ class PaperManager
         $this->handlerCollector = $collector;
         $this->questionManager = $questionManager;
         $this->hintManager = $hintManager;
-        $this->paperService = $paperService;
     }
 
     /**
@@ -150,7 +140,7 @@ class PaperManager
             );
 
             if ($lastPaper) {
-                $paperNum = $lastPaper->getNumPaper() + 1;
+                $paperNum = $lastPaper->getNumber() + 1;
             }
         }
 
@@ -171,7 +161,7 @@ class PaperManager
         $paper = new Paper();
         $paper->setExercise($exercise);
         $paper->setUser($user);
-        $paper->setNumPaper($paperNum);
+        $paper->setNumber($paperNum);
         $paper->setOrdreQuestion($order);
         $paper->setAnonymous($exercise->getAnonymous());
 
@@ -179,6 +169,11 @@ class PaperManager
         $this->om->flush();
 
         return $paper;
+    }
+
+    public function submitAnswers(Paper $paper, $answerData, $clientIp)
+    {
+
     }
 
     /**
@@ -193,25 +188,25 @@ class PaperManager
     {
         $handler = $this->handlerCollector->getHandlerForInteractionType($question->getType());
 
-        $response = $this->om->getRepository('UJMExoBundle:Response')
+        $answer = $this->om->getRepository('UJMExoBundle:Attempt\Answer')
             ->findOneBy(['paper' => $paper, 'question' => $question]);
 
-        if (!$response) {
-            $response = new Response();
-            $response->setPaper($paper);
-            $response->setQuestion($question);
-            $response->setIp($ip);
+        if (!$answer) {
+            $answer = new Answer();
+            $answer->setPaper($paper);
+            $answer->setQuestion($question);
+            $answer->setIp($ip);
         } else {
-            $response->setNbTries($response->getNbTries() + 1);
+            $answer->setNbTries($answer->getNbTries() + 1);
         }
 
-        $handler->storeAnswerAndMark($question, $response, $data);
-        if (-1 !== $response->getMark()) {
+        $handler->storeAnswerAndMark($question, $answer, $data);
+        if (-1 !== $answer->getMark()) {
             // Only apply penalties if the answer has been marked
-            $this->applyPenalties($paper, $question, $response);
+            $this->applyPenalties($paper, $question, $answer);
         }
 
-        $this->om->persist($response);
+        $this->om->persist($answer);
         $this->om->flush();
     }
 
@@ -222,8 +217,8 @@ class PaperManager
      */
     public function recordScore(Question $question, Paper $paper, $score)
     {
-        /** @var Response $response */
-        $response = $this->om->getRepository('UJMExoBundle:Response')
+        /** @var Answer $response */
+        $response = $this->om->getRepository('UJMExoBundle:Attempt\Answer')
             ->findOneBy(['paper' => $paper, 'question' => $question]);
 
         $response->setMark($score);
@@ -296,7 +291,7 @@ class PaperManager
         if ($fullyEvaluated) {
             $event = new LogExerciseEvaluatedEvent($paper->getExercise(), [
                 'result' => $paper->getScore(),
-                'resultMax' => $this->paperService->getPaperTotalScore($paper->getId()),
+                'resultMax' => $this->calculateTotal($paper),
             ]);
 
             $this->eventDispatcher->dispatch('log', $event);
@@ -389,7 +384,7 @@ class PaperManager
 
         $_paper = [
             'id' => $paper->getId(),
-            'number' => $paper->getNumPaper(),
+            'number' => $paper->getNumber(),
             'user' => $this->showUserPaper($paper),
             'start' => $paper->getStart()->format('Y-m-d\TH:i:s'),
             'end' => $paper->getEnd() ? $paper->getEnd()->format('Y-m-d\TH:i:s') : null,
@@ -411,7 +406,7 @@ class PaperManager
      */
     private function showUserPaper(Paper $paper)
     {
-        if (!$paper->getUser() || $paper->getAnonymous()) {
+        if (!$paper->getUser() || $paper->isAnonymous()) {
             $showUser = $this->translator->trans('anonymous', [], 'ujm_exo');
         } else {
             $showUser = $paper->getUser()->getFirstName().' '.$paper->getUser()->getLastName();
@@ -447,7 +442,7 @@ class PaperManager
             ->countExercisePapers($exercise);
     }
 
-    private function applyPenalties(Paper $paper, Question $question, Response $response)
+    private function applyPenalties(Paper $paper, Question $question, Answer $response)
     {
         $penalty = $this->hintManager->getPenalty($paper, $question);
 
@@ -524,7 +519,7 @@ class PaperManager
      */
     public function exportPaperAnswer(Question $question, Paper $paper, $withScore = false)
     {
-        $responseRepo = $this->om->getRepository('UJMExoBundle:Response');
+        $responseRepo = $this->om->getRepository('UJMExoBundle:Attempt\Answer');
 
         $handler = $this->handlerCollector->getHandlerForInteractionType($question->getType());
         // TODO: these two queries must be moved out of the loop
@@ -642,7 +637,7 @@ class PaperManager
                 break;
 
             case CorrectionMode::AFTER_LAST_ATTEMPT:
-                $available = 0 === $exercise->getMaxAttempts() || $paper->getNumPaper() === $exercise->getMaxAttempts();
+                $available = 0 === $exercise->getMaxAttempts() || $paper->getNumber() === $exercise->getMaxAttempts();
                 break;
 
             case CorrectionMode::AFTER_DATE:

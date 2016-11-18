@@ -8,7 +8,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use UJM\ExoBundle\Entity\Hole;
 use UJM\ExoBundle\Entity\InteractionHole;
 use UJM\ExoBundle\Entity\Question;
-use UJM\ExoBundle\Entity\Response;
+use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\WordResponse;
 use UJM\ExoBundle\Transfer\Json\QuestionHandlerInterface;
 
@@ -132,18 +132,18 @@ class HoleHandler implements QuestionHandlerInterface
         $exportData->text = $text;
         if ($withSolution) {
             $exportData->solution = $holeQuestion->getHtml();
-            $exportData->solutions = array_map(function ($hole) {
+            $exportData->solutions = array_map(function (Hole $hole) {
                 $solutionData = new \stdClass();
                 $solutionData->holeId = (string) $hole->getId();
                 $wordResponses = $hole->getWordResponses()->toArray();
                 $expectedWord = null;
-                array_walk($wordResponses, function ($wr) use (&$expectedWord) {
+                array_walk($wordResponses, function (WordResponse $wr) use (&$expectedWord) {
                     if (empty($expectedWord) || ($wr->getScore() > $expectedWord->getScore())) {
                         $expectedWord = $wr;
                     }
                 });
 
-                $solutionData->answers = array_map(function ($wr) use ($expectedWord) {
+                $solutionData->answers = array_map(function (WordResponse $wr) use ($expectedWord) {
                     $wrData = new \stdClass();
                     $wrData->id = (string) $wr->getId();
                     $wrData->text = (string) $wr->getResponse();
@@ -159,7 +159,7 @@ class HoleHandler implements QuestionHandlerInterface
             }, $holes);
         }
 
-        $exportData->holes = array_map(function ($hole) {
+        $exportData->holes = array_map(function (Hole $hole) {
             $holeData = new \stdClass();
             $holeData->id = (string) $hole->getId();
             $holeData->type = 'text/html';
@@ -178,19 +178,19 @@ class HoleHandler implements QuestionHandlerInterface
         $holeQuestion = $repo->findOneBy(['question' => $question]);
 
         $holes = $holeQuestion->getHoles()->toArray();
-        $exportData->solutions = array_map(function ($hole) {
+        $exportData->solutions = array_map(function (Hole $hole) {
             $solutionData = new \stdClass();
             $solutionData->holeId = (string) $hole->getId();
 
             $wordResponses = $hole->getWordResponses()->toArray();
             $expectedWord = null;
-            array_walk($wordResponses, function ($wr) use (&$expectedWord) {
+            array_walk($wordResponses, function (WordResponse $wr) use (&$expectedWord) {
                 if (empty($expectedWord) || ($wr->getScore() > $expectedWord->getScore())) {
                     $expectedWord = $wr;
                 }
             });
 
-            $solutionData->answers = array_map(function ($wr) use ($expectedWord) {
+            $solutionData->answers = array_map(function (WordResponse $wr) use ($expectedWord) {
                 $wrData = new \stdClass();
                 $wrData->id = (string) $wr->getId();
                 $wrData->text = (string) $wr->getResponse();
@@ -213,7 +213,7 @@ class HoleHandler implements QuestionHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function convertAnswerDetails(Response $response)
+    public function convertAnswerDetails(Answer $response)
     {
         $parts = json_decode($response->getResponse());
 
@@ -245,7 +245,7 @@ class HoleHandler implements QuestionHandlerInterface
 
         $holes = [];
 
-        /** @var Response $answer */
+        /** @var Answer $answer */
         foreach ($answers as $answer) {
             // Manually decode data to make it easier to process
             $decoded = $this->convertAnswerDetails($answer);
@@ -314,7 +314,7 @@ class HoleHandler implements QuestionHandlerInterface
         $interaction = $this->om->getRepository('UJMExoBundle:InteractionHole')
             ->findOneByQuestion($question);
 
-        $holeIds = array_map(function ($hole) {
+        $holeIds = array_map(function (Hole $hole) {
             return (string) $hole->getId();
         }, $interaction->getHoles()->toArray());
 
@@ -346,7 +346,7 @@ class HoleHandler implements QuestionHandlerInterface
      *
      * {@inheritdoc}
      */
-    public function storeAnswerAndMark(Question $question, Response $response, $data)
+    public function storeAnswerAndMark(Question $question, Answer $response, $data)
     {
         $interaction = $this->om->getRepository('UJMExoBundle:InteractionHole')
             ->findOneByQuestion($question);

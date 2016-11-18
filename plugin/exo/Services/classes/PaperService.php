@@ -6,7 +6,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Symfony\Component\DependencyInjection\Container;
 use UJM\ExoBundle\Entity\AbstractInteraction;
 use UJM\ExoBundle\Entity\Paper;
-use UJM\ExoBundle\Entity\Response;
+use UJM\ExoBundle\Entity\Attempt\Answer;
 
 /**
  * Services for the paper.
@@ -138,10 +138,10 @@ class PaperService
     /**
      * sort the array of responses to match the order of questions.
      *
-     * @param Response[] $responses
+     * @param Answer[] $responses
      * @param string $order
      *
-     * @return Response[]
+     * @return Answer[]
      */
     private function sortResponses($responses, $order)
     {
@@ -159,7 +159,7 @@ class PaperService
             }
             //if no response
             if ($tem == 0) {
-                $response = new Response();
+                $response = new Answer();
                 $response->setResponse('');
                 $response->setMark(0);
 
@@ -195,7 +195,7 @@ class PaperService
         $em = $this->doctrine->getManager();
 
         return $em
-            ->getRepository('UJMExoBundle:Response')
+            ->getRepository('UJMExoBundle:Attempt\Answer')
             ->getPaperResponses($paperId);
     }
 

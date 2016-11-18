@@ -3,6 +3,7 @@
 namespace UJM\ExoBundle\Library\Question\Definition;
 
 use UJM\ExoBundle\Entity\AbstractInteraction;
+use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
 use UJM\ExoBundle\Library\Validator\ValidatorInterface;
 
@@ -27,6 +28,13 @@ abstract class AbstractDefinition implements QuestionDefinitionInterface
     abstract protected function getQuestionSerializer();
 
     /**
+     * Gets the answer Serializer instance.
+     *
+     * @return SerializerInterface
+     */
+    abstract protected function getAnswerSerializer();
+
+    /**
      * Validates a choice question.
      *
      * @param \stdClass $question
@@ -47,7 +55,7 @@ abstract class AbstractDefinition implements QuestionDefinitionInterface
      *
      * @return \stdClass
      */
-    public function serializeQuestion($question, array $options = [])
+    public function serializeQuestion(AbstractInteraction $question, array $options = [])
     {
         return $this->getQuestionSerializer()->serialize($question, $options);
     }
@@ -55,15 +63,15 @@ abstract class AbstractDefinition implements QuestionDefinitionInterface
     /**
      * Deserializes question data.
      *
-     * @param \stdClass           $data
+     * @param \stdClass           $questionData
      * @param AbstractInteraction $question
      * @param array               $options
      *
      * @return AbstractInteraction
      */
-    public function deserializeQuestion(\stdClass $data, $question = null, array $options = [])
+    public function deserializeQuestion(\stdClass $questionData, AbstractInteraction $question = null, array $options = [])
     {
-        return $this->getQuestionSerializer()->deserialize($data, $question, $options);
+        return $this->getQuestionSerializer()->deserialize($questionData, $question, $options);
     }
 
     public function validateAnswer(\stdClass $question, $answer, array $options = [])
@@ -71,22 +79,30 @@ abstract class AbstractDefinition implements QuestionDefinitionInterface
 
     }
 
-    public function serializeAnswer()
+    /**
+     * Serializes a question answer.
+     *
+     * @param string $answer
+     * @param array $options
+     *
+     * @return mixed
+     */
+    public function serializeAnswer($answer, array $options = [])
+    {
+        return $this->getAnswerSerializer()->serialize($answer, $options);
+    }
+
+    public function deserializeAnswer($answerData, $answer = null, array $options = [])
+    {
+        return $this->getAnswerSerializer()->deserialize($answerData, $answer, $options);
+    }
+
+    public function calculateScore(AbstractInteraction $question, $answer)
     {
 
     }
 
-    public function deserializeAnswer()
-    {
-
-    }
-
-    public function calculateScore($question, $answer)
-    {
-
-    }
-
-    public function calculateTotal($question)
+    public function calculateTotal(AbstractInteraction $question)
     {
 
     }
