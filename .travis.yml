@@ -62,6 +62,9 @@ before_script:
   - export TRAVIS_REPO_SLUG REMOTE_HOST REMOTE_USER REMOTE_PASS CACHE_PATH
   - bash $TRAVIS_BUILD_DIR/main/dev/Resources/travis/fetch-deps.bash
   - export NODE_ENV=production
+  - cd vendor/claroline/distribution
+  - git branch
+  - cd -
   - composer build
   - export NODE_ENV=development
   - php app/console claroline:install --env=test -vvv
