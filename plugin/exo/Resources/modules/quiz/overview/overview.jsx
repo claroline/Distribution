@@ -2,7 +2,7 @@ import React, {Component, PropTypes as T} from 'react'
 import {connect} from 'react-redux'
 import classes from 'classnames'
 import {tex} from './../../utils/translate'
-import {selectors} from './selectors'
+import select from './../selectors'
 import {
   correctionModes,
   markModes,
@@ -203,6 +203,16 @@ Overview.propTypes = {
   }).isRequired
 }
 
-const ConnectedOverview = connect(selectors)(Overview)
+function mapStateToProps(state) {
+  return {
+    empty: select.empty(state),
+    editable: select.editable(state),
+    created: select.created(state),
+    description: select.description(state),
+    parameters: select.parameters(state)
+  }
+}
+
+const ConnectedOverview = connect(mapStateToProps)(Overview)
 
 export {ConnectedOverview as Overview}
