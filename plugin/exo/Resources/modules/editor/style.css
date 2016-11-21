@@ -174,7 +174,7 @@
   top: -5px;
   right: -5px;
   z-index: 1;
-  background-color: white;
+  background-color: transparent;
   color: #777;
   font-size: 18px;
 }
@@ -291,6 +291,16 @@ a[role=tab] {
   cursor: pointer;
 }
 
+.positive-score{
+  background-color: #d4ffb0;
+  border: 1px solid #d6e9c6;
+}
+
+.negative-score{
+  background-color: #f9e2e2;
+  border: 1px solid #ebccd1;
+}
+
 /* CHOICES */
 
 .quiz-editor .choice-items {
@@ -356,14 +366,13 @@ a[role=tab] {
 
 .quiz-editor .words-items .word-item {
   display: flex;
+  padding: 8px;
+  margin-bottom: 15px;
+  border-radius: 4px;
 }
 
 .quiz-editor .words-items .word-case-sensitive {
-  margin: 0 7px 0 0;
-}
-
-.quiz-editor .words-items .text-editor {
-  margin-right: 12px;
+  margin: 0 7px 0 7px;
 }
 
 .quiz-editor .words-items .word-score {
@@ -373,6 +382,7 @@ a[role=tab] {
 
 .quiz-editor .words-items .feedback-container {
   padding-left: 20px;
+  padding-top: 15px;
 }
 
 .quiz-editor .words-items .footer {

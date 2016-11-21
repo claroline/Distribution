@@ -16,14 +16,16 @@ class WordItem extends Component {
 
   render() {
     return (
-      <div className="word-item">
+      <div className={classes('word-item', {'positive-score': this.props.score > 0 } , {'negative-score': this.props.score <= 0 })}>
         <div className="text-fields">
-          <Textarea
+          <input
+            type="text"
             id={`solution-${this.props.index}-text`}
             title={tex('response')}
-            content={this.props.text}
-            onChange={text => this.props.onChange(
-              actions.updateSolution(this.props.index, 'text', text)
+            value={this.props.text}
+            className="form-control"
+            onChange={e => this.props.onChange(
+              actions.updateSolution(this.props.index, 'text', e.target.value)
             )}
           />
           {this.state.showFeedback &&
@@ -100,7 +102,7 @@ const WordsItems = props =>
       get(props.item, '_errors.solutions') &&
       <div className="error-text">
         <span className="fa fa-warning"></span>
-        {props.item._errors.globals}
+        {props.item._errors.solutions}
       </div>
     }
     <ul className="words-items">

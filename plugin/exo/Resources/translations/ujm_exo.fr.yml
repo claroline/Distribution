@@ -455,13 +455,12 @@ weight_choice: Attribuer les points par réponse
 wrong: Fausse
 wrong_name: Le nom saisi est incorrect
 wrong_point: La valeur saisie est incorrecte
-words_empty_text_error: Le mot clé ne peut pas être vide.
+words_empty_text_error: Un mot clé ne peut pas être vide.
 words_no_valid_solution: Au moins un mot clé doit avoir un score supérieur à 0.
 words_add_word: Ajouter un mot clé
-words_show_case_sensitive_option: Activer/désactiver la possiblité de définir la vérification de la casse sur le mot clé.
+words_show_case_sensitive_option: Activer/désactiver la fonctionnalité "respect de la casse".
 words_feedback_info: Feedback si le mot clé est dans la réponse
 words_case_sensitive: La réponse doit respecter la casse du mot clé pour être valide
-
 # Y
 yes: Oui
 your_answer: Votre réponse
