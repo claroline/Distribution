@@ -8,3 +8,5 @@ match-1: Appariement
 match-1_desc: Créer des liaisons entre des éléments appartenant à deux ensembles différents.
 graphic: Question graphique
 graphic_desc: Nulla et sem blandit, sodales nulla sed, euismod nisl.
+words: Mot(s) clé(s)
+words_desc: Texte libre devant contenir un ou plusieurs mots clés
