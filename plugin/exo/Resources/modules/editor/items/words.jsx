@@ -19,6 +19,7 @@ class WordItem extends Component {
       <div className={classes('word-item', {'positive-score': this.props.score > 0 } , {'negative-score': this.props.score <= 0 })}>
         <div className="text-fields">
           <input
+            type="text"
             id={`solution-${this.props.index}-text`}
             title={tex('response')}
             value={this.props.text}

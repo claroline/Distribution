@@ -233,7 +233,7 @@ describe('<Words/>', () => {
     )
     ensure.propTypesOk()
 
-    const text = form.find('div[role="textbox"]#solution-0-text')
+    const text = form.find('input[type="text"]#solution-0-text')
     ensure.equal(text.length, 1, 'has text input')
     // @TODO find a way to test that changes are handled
 
