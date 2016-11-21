@@ -43,16 +43,20 @@
         </h3>
     </div>
     <div class="panel-body">
+        <div class="alert alert-success" ng-if="cfc.getSuccessMessage()">
+            <i class="fa fa-times pointer-hand close" ng-click="cfc.clearSuccessMessage()"></i>
+            {{ cfc.getSuccessMessage() }}
+        </div>
         <div class="text-center">
             <a class="btn btn-default" ui-sref="create_entry">
                 <i class="fa fa-pencil-square-o fa-5x"></i>
                 <h4>{{ 'add_entry'|trans:{}:'clacoform' }}</h4>
             </a>
-            <a class="btn btn-default" ui-sref="find_entry">
+            <a class="btn btn-default" ui-sref="find_entry" ng-if="cfc.canSearch()">
                 <i class="fa fa-search fa-5x"></i>
                 <h4>{{ 'find_entry'|trans:{}:'clacoform' }}</h4>
             </a>
-            <a class="btn btn-default" ui-sref="random_entry">
+            <a class="btn btn-default" ui-sref="random_entry" ng-if="cfc.config['random_enabled']">
                 <i class="fa fa-random fa-5x"></i>
                 <h4>{{ 'random_entry'|trans:{}:'clacoform' }}</h4>
             </a>

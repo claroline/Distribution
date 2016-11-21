@@ -1,0 +1,79 @@
+/*
+ * This file is part of the Claroline Connect package.
+ *
+ * (c) Claroline Consortium <consortium@claroline.net>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+export default class TemplateManagementCtrl {
+  constructor ($state, ClacoFormService, FieldService) {
+    this.$state = $state
+    this.ClacoFormService = ClacoFormService
+    this.FieldService = FieldService
+    this.template = ClacoFormService.getTemplate()
+    this.fields = FieldService.getFields()
+    this.mandatory = []
+    this.optional = []
+    this.requiredErrors = []
+    this.duplicatedErrors = []
+    this.tinymceOptions = ClacoFormService.getTinymceConfiguration()
+    this.initialize()
+  }
+
+  initialize () {
+    this.ClacoFormService.clearSuccessMessage()
+    this.fields.forEach(f => {
+      this.FieldService.formatField(f)
+
+      if (f['required']) {
+        this.mandatory.push(f)
+      } else {
+        this.optional.push(f)
+      }
+    })
+  }
+
+  canEdit () {
+    return this.ClacoFormService.getCanEdit()
+  }
+
+  submit () {
+    if (this.isValid()) {
+      this.ClacoFormService.saveTemplate(this.template).then(d => {
+        if (d) {
+          this.$state.go('menu')
+        }
+      })
+    }
+  }
+
+  isValid () {
+    this.requiredErrors = []
+    this.duplicatedErrors = []
+
+    if (this.template) {
+      this.mandatory.forEach(f => {
+        const regex = new RegExp(`%${f['name']}%`, 'g')
+        const matches = this.template.match(regex)
+
+        if (matches === null) {
+          this.requiredErrors.push(f)
+        } else if (matches.length > 1) {
+          this.duplicatedErrors.push(f)
+        }
+      })
+      this.optional.forEach(f => {
+        const regex = new RegExp(`%${f['name']}%`, 'g')
+        const matches = this.template.match(regex)
+
+        if (matches !== null && matches.length > 1) {
+          this.duplicatedErrors.push(f)
+        }
+      })
+    }
+
+    return this.requiredErrors.length === 0 && this.duplicatedErrors.length === 0
+  }
+}

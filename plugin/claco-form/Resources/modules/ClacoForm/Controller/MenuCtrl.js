@@ -11,6 +11,7 @@ export default class MenuCtrl {
   constructor ($state, ClacoFormService) {
     this.$state = $state
     this.ClacoFormService = ClacoFormService
+    this.config = ClacoFormService.getResourceDetails()
   }
 
   canEdit () {
@@ -19,5 +20,17 @@ export default class MenuCtrl {
 
   getResourceNodeName () {
     return this.ClacoFormService.getResourceNodeName()
+  }
+
+  getSuccessMessage () {
+    return this.ClacoFormService.getSuccessMessage()
+  }
+
+  clearSuccessMessage () {
+    this.ClacoFormService.clearSuccessMessage()
+  }
+
+  canSearch () {
+    return this.config['search_enabled'] === 'all'
   }
 }

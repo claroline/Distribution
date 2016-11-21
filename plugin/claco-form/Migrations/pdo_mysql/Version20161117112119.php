@@ -8,14 +8,14 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution
  *
- * Generation date: 2016/11/03 10:23:07
+ * Generation date: 2016/11/17 11:21:20
  */
-class Version20161103102304 extends AbstractMigration
+class Version20161117112119 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
         $this->addSql("
-            CREATE TABLE claroline_clacoformbundle_comment (
+            CREATE TABLE claro_clacoformbundle_comment (
                 id INT AUTO_INCREMENT NOT NULL, 
                 user_id INT DEFAULT NULL, 
                 entry_id INT DEFAULT NULL, 
@@ -23,8 +23,8 @@ class Version20161103102304 extends AbstractMigration
                 creation_date DATETIME NOT NULL, 
                 edition_date DATETIME DEFAULT NULL, 
                 comment_status INT NOT NULL, 
-                INDEX IDX_E991A91DA76ED395 (user_id), 
-                INDEX IDX_E991A91DBA364942 (entry_id), 
+                INDEX IDX_23B30E0A76ED395 (user_id), 
+                INDEX IDX_23B30E0BA364942 (entry_id), 
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
         ");
@@ -71,10 +71,15 @@ class Version20161103102304 extends AbstractMigration
             CREATE TABLE claro_clacoformbundle_field (
                 id INT AUTO_INCREMENT NOT NULL, 
                 claco_form_id INT NOT NULL, 
-                field_id INT DEFAULT NULL, 
+                field_facet_id INT DEFAULT NULL, 
                 field_name VARCHAR(255) NOT NULL, 
+                field_type INT NOT NULL, 
+                required TINYINT(1) NOT NULL, 
+                searchable TINYINT(1) NOT NULL, 
+                is_metadata TINYINT(1) NOT NULL, 
                 INDEX IDX_F84976F7F7D9CC0C (claco_form_id), 
-                UNIQUE INDEX UNIQ_F84976F7443707B0 (field_id), 
+                UNIQUE INDEX UNIQ_F84976F72AB018E9 (field_facet_id), 
+                UNIQUE INDEX field_unique_name (claco_form_id, field_name), 
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
         ");
@@ -98,14 +103,14 @@ class Version20161103102304 extends AbstractMigration
             ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
         ");
         $this->addSql("
-            ALTER TABLE claroline_clacoformbundle_comment 
-            ADD CONSTRAINT FK_E991A91DA76ED395 FOREIGN KEY (user_id) 
+            ALTER TABLE claro_clacoformbundle_comment 
+            ADD CONSTRAINT FK_23B30E0A76ED395 FOREIGN KEY (user_id) 
             REFERENCES claro_user (id) 
             ON DELETE SET NULL
         ");
         $this->addSql("
-            ALTER TABLE claroline_clacoformbundle_comment 
-            ADD CONSTRAINT FK_E991A91DBA364942 FOREIGN KEY (entry_id) 
+            ALTER TABLE claro_clacoformbundle_comment 
+            ADD CONSTRAINT FK_23B30E0BA364942 FOREIGN KEY (entry_id) 
             REFERENCES claro_clacoformbundle_entry (id) 
             ON DELETE CASCADE
         ");
@@ -159,7 +164,7 @@ class Version20161103102304 extends AbstractMigration
         ");
         $this->addSql("
             ALTER TABLE claro_clacoformbundle_field 
-            ADD CONSTRAINT FK_F84976F7443707B0 FOREIGN KEY (field_id) 
+            ADD CONSTRAINT FK_F84976F72AB018E9 FOREIGN KEY (field_facet_id) 
             REFERENCES claro_field_facet (id) 
             ON DELETE CASCADE
         ");
@@ -186,8 +191,8 @@ class Version20161103102304 extends AbstractMigration
     public function down(Schema $schema)
     {
         $this->addSql("
-            ALTER TABLE claroline_clacoformbundle_comment 
-            DROP FOREIGN KEY FK_E991A91DBA364942
+            ALTER TABLE claro_clacoformbundle_comment 
+            DROP FOREIGN KEY FK_23B30E0BA364942
         ");
         $this->addSql("
             ALTER TABLE claro_clacoformbundle_entry_value 
@@ -218,7 +223,7 @@ class Version20161103102304 extends AbstractMigration
             DROP FOREIGN KEY FK_562FC19412469DE2
         ");
         $this->addSql("
-            DROP TABLE claroline_clacoformbundle_comment
+            DROP TABLE claro_clacoformbundle_comment
         ");
         $this->addSql("
             DROP TABLE claro_clacoformbundle_entry

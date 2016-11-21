@@ -8,13 +8,11 @@
  */
 
 export default class GeneralConfigurationCtrl {
-  constructor ($state, ClacoFormService) {
+  constructor ($state, ClacoFormService, CategoryService) {
     this.$state = $state
     this.ClacoFormService = ClacoFormService
     this.config = ClacoFormService.getResourceDetails()
-    this.configErrors = {
-      max_entries: null
-    }
+    this.configErrors = {max_entries: null}
     this.isCollapsed = {
       general: false,
       display: true,
@@ -26,20 +24,36 @@ export default class GeneralConfigurationCtrl {
       votes: true,
       keywords: true
     }
-    this.randomStartDate = {
-      date: null,
-      format: 'dd/MM/yyyy',
-      open: false
+    this.randomStartDate = {format: 'dd/MM/yyyy', open: false}
+    this.randomEndDate = {format: 'dd/MM/yyyy', open: false}
+    this.votesStartDate = {format: 'dd/MM/yyyy', open: false}
+    this.votesEndDate = {format: 'dd/MM/yyyy', open: false}
+    this.dateOptions = {formatYear: 'yy', startingDay: 1, placeHolder: 'jj/mm/aaaa'}
+    this.categoriesList = CategoryService.getCategories()
+    this.categories = []
+    this.initialize()
+  }
+
+  initialize () {
+    this.ClacoFormService.clearSuccessMessage()
+
+    if (this.config['random_start_date']) {
+      this.config['random_start_date'] = new Date(this.config['random_start_date'])
     }
-    this.randomEndDate = {
-      date: null,
-      format: 'dd/MM/yyyy',
-      open: false
+    if (this.config['random_end_date']) {
+      this.config['random_end_date'] = new Date(this.config['random_end_date'])
     }
-    this.dateOptions = {
-      formatYear: 'yy',
-      startingDay: 1,
-      placeHolder: 'jj/mm/aaaa'
+    if (this.config['votes_start_date']) {
+      this.config['votes_start_date'] = new Date(this.config['votes_start_date'])
+    }
+    if (this.config['votes_end_date']) {
+      this.config['votes_end_date'] = new Date(this.config['votes_end_date'])
+    }
+    if (this.config['random_categories']) {
+      this.config['random_categories'].forEach(categoryId => {
+        const selectedCategory = this.categoriesList.find(c => c['id'] === categoryId)
+        this.categories.push(selectedCategory)
+      })
     }
   }
 
@@ -48,15 +62,62 @@ export default class GeneralConfigurationCtrl {
   }
 
   submit () {
-    console.log(this.config)
-    //this.$state.go('menu')
+    this.resetErrors()
+
+    if (this.config['max_entries'] === null || this.config['max_entries'] === undefined) {
+      this.configErrors['max_entries'] = Translator.trans('form_not_blank_error', {}, 'clacoform')
+    } else {
+      this.config['max_entries'] = parseInt(this.config['max_entries'])
+
+      if (this.config['max_entries'] < 0) {
+        this.configErrors['max_entries'] = Translator.trans('form_number_superior_error', {value: 0}, 'clacoform')
+      }
+    }
+    this.config['random_categories'] = []
+    this.categories.forEach(c => this.config['random_categories'].push(c['id']))
+
+    if (this.isValid()) {
+      this.ClacoFormService.saveConfiguration(this.config).then(d => {
+        if (d) {
+          this.$state.go('menu')
+        }
+      })
+    }
   }
 
-  openStartDatePicker () {
-    this.randomStartDate['open'] = true
+  resetErrors () {
+    for (const key in this.configErrors) {
+      this.configErrors[key] = null
+    }
   }
 
-  openEndDatePicker () {
-    this.randomEndDate['open'] = true
+  isValid () {
+    let valid = true
+
+    for (const key in this.configErrors) {
+      if (this.configErrors[key]) {
+        valid = false
+        break
+      }
+    }
+
+    return valid
+  }
+
+  openDatePicker (type) {
+    switch (type) {
+      case 'randomStart':
+        this.randomStartDate['open'] = true
+        break
+      case 'randomEnd':
+        this.randomEndDate['open'] = true
+        break
+      case 'votesStart':
+        this.votesStartDate['open'] = true
+        break
+      case 'votesEnd':
+        this.votesEndDate['open'] = true
+        break
+    }
   }
 }

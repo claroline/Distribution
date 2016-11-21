@@ -239,7 +239,7 @@ class ClacoForm extends AbstractResource
         if (is_null($this->details)) {
             $this->details = [];
         }
-        $this->details['random_start_date'] = $startDate;
+        $this->details['random_start_date'] = !is_null($startDate) ? $startDate->format('Y-m-d') : null;
     }
 
     public function getRandomEndDate()
@@ -252,7 +252,7 @@ class ClacoForm extends AbstractResource
         if (is_null($this->details)) {
             $this->details = [];
         }
-        $this->details['random_end_date'] = $endDate;
+        $this->details['random_end_date'] = !is_null($endDate) ? $endDate->format('Y-m-d') : null;
     }
 
     public function getSearchEnabled()
@@ -450,30 +450,30 @@ class ClacoForm extends AbstractResource
         $this->details['open_votes'] = $openVotes;
     }
 
-    public function getVoteStartDate()
+    public function getVotesStartDate()
     {
-        return !is_null($this->details) && isset($this->details['vote_start_date']) ? $this->details['vote_start_date'] : null;
+        return !is_null($this->details) && isset($this->details['votes_start_date']) ? $this->details['votes_start_date'] : null;
     }
 
-    public function setVoteStartDate(\DateTime $startDate = null)
+    public function setVotesStartDate(\DateTime $startDate = null)
     {
         if (is_null($this->details)) {
             $this->details = [];
         }
-        $this->details['vote_start_date'] = $startDate;
+        $this->details['votes_start_date'] = !is_null($startDate) ? $startDate->format('Y-m-d') : null;
     }
 
-    public function getVoteEndDate()
+    public function getVotesEndDate()
     {
-        return !is_null($this->details) && isset($this->details['vote_end_date']) ? $this->details['vote_end_date'] : null;
+        return !is_null($this->details) && isset($this->details['votes_end_date']) ? $this->details['votes_end_date'] : null;
     }
 
-    public function setVoteEndDate(\DateTime $endDate = null)
+    public function setVotesEndDate(\DateTime $endDate = null)
     {
         if (is_null($this->details)) {
             $this->details = [];
         }
-        $this->details['vote_end_date'] = $endDate;
+        $this->details['votes_end_date'] = !is_null($endDate) ? $endDate->format('Y-m-d') : null;
     }
 
     public function isKeywordsEnabled()

@@ -14,12 +14,18 @@ import 'angular-bootstrap'
 import 'angular-animate'
 import 'angular-ui-translation/angular-translation'
 import 'angular-loading-bar'
+import 'angular-ui-tinymce'
 
 import '#/main/core/fos-js-router/module'
+import '../Field/field'
+import '../Category/category'
 
 import Routing from './routing.js'
 import MenuCtrl from './Controller/MenuCtrl'
 import GeneralConfigurationCtrl from './Controller/GeneralConfigurationCtrl'
+import FieldsManagementCtrl from './Controller/FieldsManagementCtrl'
+import CategoriesManagementCtrl from './Controller/CategoriesManagementCtrl'
+import TemplateManagementCtrl from './Controller/TemplateManagementCtrl'
 import ClacoFormService from './Service/ClacoFormService'
 
 angular.module('ClacoFormModule', [
@@ -30,11 +36,17 @@ angular.module('ClacoFormModule', [
   'ui.bootstrap.tpls',
   'angular-loading-bar',
   'ngTable',
-  'ui.fos-js-router'
+  'ui.fos-js-router',
+  'ui.tinymce',
+  'FieldModule',
+  'CategoryModule'
 ])
 .service('ClacoFormService', ClacoFormService)
 .controller('MenuCtrl', ['$state', 'ClacoFormService', MenuCtrl])
-.controller('GeneralConfigurationCtrl', ['$state', 'ClacoFormService', GeneralConfigurationCtrl])
+.controller('GeneralConfigurationCtrl', ['$state', 'ClacoFormService', 'CategoryService', GeneralConfigurationCtrl])
+.controller('FieldsManagementCtrl', ['NgTableParams', 'ClacoFormService', 'FieldService', FieldsManagementCtrl])
+.controller('CategoriesManagementCtrl', ['NgTableParams', 'ClacoFormService', 'CategoryService', CategoriesManagementCtrl])
+.controller('TemplateManagementCtrl', ['$state', 'ClacoFormService', 'FieldService', TemplateManagementCtrl])
 .config(Routing)
 .config([
   'cfpLoadingBarProvider',
@@ -43,6 +55,5 @@ angular.module('ClacoFormModule', [
     cfpLoadingBarProvider.latencyThreshold = 200
     cfpLoadingBarProvider.includeBar = true
     cfpLoadingBarProvider.includeSpinner = true
-    //cfpLoadingBarProvider.spinnerTemplate = '<div class="loading">Loading&#8230;</div>';
   }
 ])

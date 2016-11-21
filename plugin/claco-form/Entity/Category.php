@@ -47,7 +47,7 @@ class Category
      *     inversedBy="categories"
      * )
      * @ORM\JoinColumn(name="claco_form_id", nullable=false, onDelete="CASCADE")
-     * @Groups({"api_claco_form", "api_user_min"})
+     * @Groups({"api_claco_form"})
      * @SerializedName("clacoForm")
      */
     protected $clacoForm;
