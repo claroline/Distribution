@@ -5,8 +5,8 @@ namespace UJM\ExoBundle\Repository;
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use UJM\ExoBundle\Entity\Exercise;
-use UJM\ExoBundle\Entity\Hint;
-use UJM\ExoBundle\Entity\Paper;
+use UJM\ExoBundle\Entity\Question\Hint;
+use UJM\ExoBundle\Entity\Attempt\Paper;
 
 /**
  * PaperRepository.
@@ -39,13 +39,13 @@ class PaperRepository extends EntityRepository
     }
 
     /**
-     * Gets the score of a paper by adding the score of each answer.
+     * Finds the score of a paper by adding the score of each answer.
      *
      * @param Paper $paper
      *
      * @return float
      */
-    public function getScore(Paper $paper)
+    public function findScore(Paper $paper)
     {
         return $this->getEntityManager()
             ->createQuery('
@@ -85,16 +85,13 @@ class PaperRepository extends EntityRepository
      */
     public function countExercisePapers(Exercise $exercise)
     {
-        $qb = $this->createQueryBuilder('p');
-
-        $nbPapers = $qb->select('COUNT(p)')
-                       ->join('p.exercise', 'e')
-                       ->where('e = :exercise')
-                       ->setParameters(['exercise' => $exercise])
-                       ->getQuery()
-                       ->getSingleScalarResult();
-
-        return $nbPapers;
+        return $this->createQueryBuilder('p')
+            ->select('COUNT(p)')
+            ->join('p.exercise', 'e')
+            ->where('e = :exercise')
+            ->setParameters(['exercise' => $exercise])
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     /**
@@ -107,19 +104,16 @@ class PaperRepository extends EntityRepository
      */
     public function countUserFinishedPapers(Exercise $exercise, User $user)
     {
-        $qb = $this->createQueryBuilder('p');
-
-        $nb = $qb->select('COUNT(p)')
-                    ->join('p.exercise', 'e')
-                    ->join('p.user', 'u')
-                    ->where('u = :user')
-                    ->andWhere('e = :exercise')
-                    ->andWhere('p.end IS NOT NULL')
-                    ->setParameters(['user' => $user, 'exercise' => $exercise])
-                    ->getQuery()
-                    ->getSingleScalarResult();
-
-        return $nb;
+        return $this->createQueryBuilder('p')
+            ->select('COUNT(p)')
+            ->join('p.exercise', 'e')
+            ->join('p.user', 'u')
+            ->where('u = :user')
+            ->andWhere('e = :exercise')
+            ->andWhere('p.end IS NOT NULL')
+            ->setParameters(['user' => $user, 'exercise' => $exercise])
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     /**
@@ -132,9 +126,8 @@ class PaperRepository extends EntityRepository
      */
     public function hasHint(Paper $paper, Hint $hint)
     {
-        $qb = $this->createQueryBuilder('p');
-
-        $count = $qb->select('COUNT(p)')
+        $count = $this->createQueryBuilder('p')
+            ->select('COUNT(p)')
             ->join('p.exercise', 'e')
             ->join('e.steps', 's')
             ->join('s.stepQuestions', 'sq')

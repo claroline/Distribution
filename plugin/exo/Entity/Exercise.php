@@ -27,12 +27,16 @@ class Exercise extends AbstractResource
     private $uuid;
 
     /**
+     * @var string
+     * 
      * @ORM\Column(name="description", type="text", nullable=true)
      */
     private $description = '';
 
     /**
      * Are the Steps shuffled ?
+     *
+     * @var bool
      *
      * @ORM\Column(name="shuffle", type="boolean", nullable=true)
      */
@@ -164,7 +168,6 @@ class Exercise extends AbstractResource
      * @var string
      *
      * @ORM\Column(name="type", type="string", length=255)
-     * sommatif, formatif, certificatif
      */
     private $type = self::TYPE_SUMMATIVE;
 

@@ -12,7 +12,7 @@ class AnswerValidator extends JsonSchemaValidator
 {
     public function getJsonSchemaUri()
     {
-        return 'answer/base/schema.json';
+        return 'answer/schema.json';
     }
 
     /**

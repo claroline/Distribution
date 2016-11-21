@@ -3,6 +3,8 @@
 namespace UJM\ExoBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use UJM\ExoBundle\Entity\Question\Question;
+use UJM\ExoBundle\Library\Model\OrderTrait;
 
 /**
  * UJM\ExoBundle\Entity\StepQuestion.
@@ -12,6 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class StepQuestion
 {
+    use OrderTrait;
+    
     /**
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Step", inversedBy="stepQuestions")
@@ -21,19 +25,10 @@ class StepQuestion
 
     /**
      * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Question", inversedBy="stepQuestions", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Question\Question", cascade={"persist"})
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $question;
-
-    /**
-     * Order of the Question in the Step.
-     *
-     * @var int
-     *
-     * @ORM\Column(name="ordre", type="integer")
-     */
-    private $order;
 
     /**
      * Set Step.
@@ -75,49 +70,5 @@ class StepQuestion
     public function getQuestion()
     {
         return $this->question;
-    }
-
-    /**
-     * Set order.
-     *
-     * @deprecated use setOrder instead
-     *
-     * @param int $order
-     */
-    public function setOrdre($order)
-    {
-        $this->order = $order;
-    }
-
-    /**
-     * Get order.
-     *
-     * @deprecated use getOrder instead
-     *
-     * @return int
-     */
-    public function getOrdre()
-    {
-        return $this->order;
-    }
-
-    /**
-     * Set order.
-     *
-     * @param int $order
-     */
-    public function setOrder($order)
-    {
-        $this->order = $order;
-    }
-
-    /**
-     * Get order.
-     *
-     * @return int
-     */
-    public function getOrder()
-    {
-        return $this->order;
     }
 }

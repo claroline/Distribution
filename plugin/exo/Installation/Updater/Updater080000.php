@@ -24,6 +24,7 @@ class Updater080000
     public function postUpdate()
     {
         $this->addMimeTypeToQuestions();
+        $this->updateAnswerData();
     }
 
     /**
@@ -93,5 +94,20 @@ class Updater080000
         }
 
         $this->log('done !');
+    }
+
+    /**
+     * The answer data system uses custom encoding rules to converts answer data into string (to be stored in DB).
+     *
+     * The current methods updates existing data to just use the result of json_encode
+     * on API data to in DB. This avoid to add custom logic for all question types.
+     *
+     * Example for choice answer storage:
+     *  - old format : "1;2;3;4"
+     *  - new format : "[1,2,3,4]"
+     */
+    private function updateAnswerData()
+    {
+
     }
 }

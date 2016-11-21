@@ -3,6 +3,7 @@
 namespace UJM\ExoBundle\Library\Question\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Entity\AbstractInteraction;
 use UJM\ExoBundle\Library\Question\QuestionType;
 use UJM\ExoBundle\Serializer\Answer\Type\ChoiceAnswerSerializer;
 use UJM\ExoBundle\Serializer\Question\Type\ChoiceQuestionSerializer;
@@ -26,6 +27,9 @@ class ChoiceDefinition extends AbstractDefinition
      */
     private $serializer;
 
+    /**
+     * @var ChoiceAnswerSerializer
+     */
     private $answerSerializer;
 
     /**
@@ -62,6 +66,16 @@ class ChoiceDefinition extends AbstractDefinition
     }
 
     /**
+     * Gets the choice question entity.
+     *
+     * @return string
+     */
+    public function getEntityClass()
+    {
+        return 'ChoiceQuestion';
+    }
+
+    /**
      * Gets the choice question validator.
      *
      * @return ChoiceQuestionValidator
@@ -89,5 +103,27 @@ class ChoiceDefinition extends AbstractDefinition
     protected function getAnswerSerializer()
     {
         return $this->answerSerializer;
+    }
+
+    public function getStatistics(AbstractInteraction $choiceQuestion, array $answers)
+    {
+        $choices = [];
+
+        foreach ($answers as $answer) {
+            $decoded = $this->convertAnswerDetails($answer);
+
+            foreach ($decoded as $choiceId) {
+                if (!isset($choices[$choiceId])) {
+                    // First answer to have this solution
+                    $choices[$choiceId] = new \stdClass();
+                    $choices[$choiceId]->id = $choiceId;
+                    $choices[$choiceId]->count = 0;
+                }
+
+                ++$choices[$choiceId]->count;
+            }
+        }
+
+        return $choices;
     }
 }

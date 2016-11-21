@@ -4,6 +4,8 @@ namespace UJM\ExoBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use UJM\ExoBundle\Entity\Content\Image;
+use UJM\ExoBundle\Entity\Misc\Area;
 
 /**
  * A Graphic question.
@@ -16,12 +18,14 @@ class InteractionGraphic extends AbstractInteraction
     const TYPE = 'InteractionGraphic';
 
     /**
-     * @ORM\ManyToOne(targetEntity="Picture")
+     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Content\Image")
      */
     private $image;
 
     /**
-     * @ORM\OneToMany(targetEntity="Coords", mappedBy="interactionGraphic", cascade={"all"}, orphanRemoval=true)
+     * @todo remove the mapped by and add a join table
+     *
+     * @ORM\OneToMany(targetEntity="UJM\ExoBundle\Entity\Misc\Area", mappedBy="interactionGraphic", cascade={"all"}, orphanRemoval=true)
      */
     private $areas;
 
@@ -44,7 +48,7 @@ class InteractionGraphic extends AbstractInteraction
     /**
      * Gets image.
      *
-     * @return Picture
+     * @return Image
      */
     public function getImage()
     {
@@ -54,31 +58,11 @@ class InteractionGraphic extends AbstractInteraction
     /**
      * Sets image.
      *
-     * @param Picture $image
+     * @param Image $image
      */
-    public function setImage(Picture $image)
+    public function setImage(Image $image)
     {
         $this->image = $image;
-    }
-
-    /**
-     * @deprecated use getImage() instead
-     *
-     * @return Picture
-     */
-    public function getPicture()
-    {
-        return $this->image;
-    }
-
-    /**
-     * @deprecated use setImage() instead
-     *
-     * @param Picture $picture
-     */
-    public function setPicture(Picture $picture)
-    {
-        $this->image = $picture;
     }
 
     /**
@@ -94,9 +78,9 @@ class InteractionGraphic extends AbstractInteraction
     /**
      * Adds an area.
      *
-     * @param Coords $area
+     * @param Area $area
      */
-    public function addArea(Coords $area)
+    public function addArea(Area $area)
     {
         if (!$this->areas->contains($area)) {
             $this->areas->add($area);
@@ -107,50 +91,12 @@ class InteractionGraphic extends AbstractInteraction
     /**
      * Removes an area.
      *
-     * @param Coords $area
+     * @param Area $area
      */
-    public function removeArea(Coords $area)
+    public function removeArea(Area $area)
     {
         if ($this->areas->contains($area)) {
             $this->areas->removeElement($area);
-        }
-    }
-
-    /**
-     * @deprecated use getAreas() instead
-     *
-     * @return ArrayCollection
-     */
-    public function getCoords()
-    {
-        return $this->areas;
-    }
-
-    /**
-     * @deprecated use addArea() instead
-     *
-     * @param Coords $coords
-     */
-    public function addCoord(Coords $coords)
-    {
-        $this->areas->add($coords);
-        $coords->setInteractionGraphic($this);
-    }
-
-    public function __clone()
-    {
-        if ($this->id) {
-            $this->id = null;
-            $this->question = clone $this->question;
-            $newCoords = new ArrayCollection();
-
-            foreach ($this->areas as $coords) {
-                $newCoords = clone $coords;
-                $newCoords->setInteractionGraphic($this);
-                $newCoords->add($newCoords);
-            }
-
-            $this->areas = $newCoords;
         }
     }
 }

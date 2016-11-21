@@ -15,6 +15,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Form\Type\ExerciseType;
+use UJM\ExoBundle\Library\Options\Transfer;
 
 /**
  * Listens to resource events dispatched by the core.
@@ -109,7 +110,7 @@ class ExerciseListener
     public function onOpen(OpenResourceEvent $event)
     {
         $subRequest = $this->container->get('request_stack')->getCurrentRequest()->duplicate([], null, [
-            '_controller' => 'UJMExoBundle:Exercise:open',
+            '_controller' => 'UJMExoBundle:Resource\Exercise:open',
             'id' => $event->getResource()->getId(),
         ]);
 
@@ -183,14 +184,22 @@ class ExerciseListener
         /** @var Exercise $exercise */
         $exercise = $event->getResource();
 
-        $exerciseExport = $this->container->get('ujm.exo.exercise_manager')->exportExercise($exercise, true);
+        $exerciseExport = $this->container->get('ujm.exo.exercise_manager')->export($exercise, [Transfer::INCLUDE_SOLUTIONS]);
 
-        if ($exerciseExport['meta'] && $exerciseExport['meta']['description']) {
-            $exerciseExport['meta']['description'] = $this->exportHtmlContent($event, $exerciseExport['meta']['description']);
+        if (!empty($exerciseExport->description)) {
+            $exerciseExport->description = $this->exportHtmlContent($event, $exerciseExport->description);
         }
 
-        if ($exerciseExport['steps']) {
-            foreach ($exerciseExport['steps'] as $step) {
+        if (!empty($exerciseExport->instruction)) {
+            $exerciseExport->instruction = $this->exportHtmlContent($event, $exerciseExport->instruction);
+        }
+
+        if (!empty($exerciseExport->info)) {
+            $exerciseExport->info = $this->exportHtmlContent($event, $exerciseExport->info);
+        }
+
+        if ($exerciseExport->steps) {
+            foreach ($exerciseExport->steps as $step) {
                 $this->exportStep($event, $step);
             }
         }

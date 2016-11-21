@@ -16,13 +16,11 @@ class WordsAnswerSerializer implements SerializerInterface
      * @param string $wordsAnswer
      * @param array $options
      *
-     * @return \stdClass
+     * @return string - the answer string
      */
     public function serialize($wordsAnswer, array $options = [])
     {
-        $answerData = new \stdClass();
-
-        return $answerData;
+        return $wordsAnswer;
     }
 
     /**
@@ -32,10 +30,10 @@ class WordsAnswerSerializer implements SerializerInterface
      * @param string $wordsAnswer
      * @param array  $options
      *
-     * @return string
+     * @return string - the answer string
      */
     public function deserialize($data, $wordsAnswer = null, array $options = [])
     {
-
+        return $data;
     }
 }

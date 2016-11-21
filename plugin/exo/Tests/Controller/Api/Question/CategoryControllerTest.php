@@ -7,7 +7,7 @@ use Claroline\CoreBundle\Library\Testing\RequestTrait;
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use UJM\ExoBundle\Entity\Category;
+use UJM\ExoBundle\Entity\Question\Category;
 use UJM\ExoBundle\Library\Testing\Persister;
 
 class CategoryControllerTest extends TransactionalTestCase
@@ -106,7 +106,7 @@ class CategoryControllerTest extends TransactionalTestCase
 
         // Checks that John has one more category
         // John has 2 categories : the one created in the `setUp` + this one
-        $categories = $this->om->getRepository('UJMExoBundle:Category')->findBy([
+        $categories = $this->om->getRepository('UJMExoBundle:Question\Category')->findBy([
             'user' => $this->john,
         ]);
         $this->assertCount(2, $categories);

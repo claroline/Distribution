@@ -3,12 +3,12 @@
 namespace UJM\ExoBundle\Tests\Serializer;
 
 use Claroline\CoreBundle\Persistence\ObjectManager;
-use UJM\ExoBundle\Entity\Hint;
+use UJM\ExoBundle\Entity\Question\Hint;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Testing\Json\JsonDataTestCase;
-use UJM\ExoBundle\Serializer\HintSerializer;
-use UJM\ExoBundle\Validator\JsonSchema\HintValidator;
+use UJM\ExoBundle\Serializer\Question\HintSerializer;
+use UJM\ExoBundle\Validator\JsonSchema\Question\HintValidator;
 
 class HintSerializerTest extends JsonDataTestCase
 {
@@ -95,7 +95,7 @@ class HintSerializerTest extends JsonDataTestCase
 
         $hint = $this->serializer->deserialize($hintData);
 
-        $this->assertInstanceOf('UJM\ExoBundle\Entity\Hint', $hint);
+        $this->assertInstanceOf('UJM\ExoBundle\Entity\Misc\Hint', $hint);
         $this->compareHintAndData($hint, $hintData);
     }
 
@@ -112,13 +112,13 @@ class HintSerializerTest extends JsonDataTestCase
         $this->compareHintAndData($this->hint, $hintData);
 
         // Checks no new entity have been created
-        $nbBefore = count($this->om->getRepository('UJMExoBundle:Hint')->findAll());
+        $nbBefore = count($this->om->getRepository('UJMExoBundle:Misc\Hint')->findAll());
 
         // Save the keyword to DB
         $this->om->persist($updatedHint);
         $this->om->flush();
 
-        $nbAfter = count($this->om->getRepository('UJMExoBundle:Hint')->findAll());
+        $nbAfter = count($this->om->getRepository('UJMExoBundle:Misc\Hint')->findAll());
 
         $this->assertEquals($nbBefore, $nbAfter);
     }

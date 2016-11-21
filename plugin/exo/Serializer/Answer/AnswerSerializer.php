@@ -5,7 +5,6 @@ namespace UJM\ExoBundle\Serializer\Answer;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Library\Options\Transfer;
-use UJM\ExoBundle\Library\Question\QuestionDefinitionsCollection;
 use UJM\ExoBundle\Library\Serializer\AbstractSerializer;
 
 /**
@@ -15,25 +14,6 @@ use UJM\ExoBundle\Library\Serializer\AbstractSerializer;
  */
 class AnswerSerializer extends AbstractSerializer
 {
-    /**
-     * @var QuestionDefinitionsCollection
-     */
-    private $questionDefinitions;
-
-    /**
-     * AnswerSerializer constructor.
-     *
-     * @param QuestionDefinitionsCollection $questionDefinitions
-     *
-     * @DI\InjectParams({
-     *     "questionDefinitions" = @DI\Inject("ujm_exo.collection.question_definitions")
-     * })
-     */
-    public function __construct(QuestionDefinitionsCollection $questionDefinitions)
-    {
-        $this->questionDefinitions = $questionDefinitions;
-    }
-
     /**
      * Converts an Answer into a JSON-encodable structure.
      *
@@ -50,8 +30,8 @@ class AnswerSerializer extends AbstractSerializer
             'id' => function (Answer $answer) {
                 return $answer->getQuestion()->getUuid();
             },
-            'data' => function (Answer $answer) use ($options) {
-                return $this->serializeAnswerData($answer, $options);
+            'data' => function (Answer $answer) {
+                return json_decode($answer->getData());
             }
         ], $answer, $answerData);
 
@@ -69,33 +49,23 @@ class AnswerSerializer extends AbstractSerializer
      * Converts raw data into a Answer entity.
      *
      * @param \stdClass $data
-     * @param Answer    $entity
+     * @param Answer    $answer
      * @param array     $options
      *
      * @return Answer
      */
-    public function deserialize($data, $entity = null, array $options = [])
+    public function deserialize($data, $answer = null, array $options = [])
     {
         if (empty($entity)) {
             $entity = new Answer();
         }
 
+        $this->mapObjectToEntity([
+            'data' => function (Answer $answer, \stdClass $data) {
+                $answer->setData(json_encode($data->data));
+            },
+        ], $data, $answer);
+
         return $entity;
-    }
-
-    private function serializeAnswerData(Answer $answer, $options)
-    {
-        $definition = $this->questionDefinitions->get($answer->getQuestion()->getMimeType());
-
-        // Converts answer data
-        return $definition->serializeAnswer($answer->getData(), $options);
-    }
-
-    private function deserializeAnswerData(Answer $answer, $data, array $options = [])
-    {
-        $definition = $this->questionDefinitions->get($answer->getQuestion()->getMimeType());
-
-        // Converts answer data
-        /*return $definition->deserializeAnswer($answerData, $answer = null, array $options = []);*/
     }
 }

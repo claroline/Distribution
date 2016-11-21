@@ -8,7 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use UJM\ExoBundle\Controller\Api\AbstractController;
-use UJM\ExoBundle\Entity\Question;
+use UJM\ExoBundle\Entity\Question\Question;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Manager\Question\QuestionManager;
 use UJM\ExoBundle\Library\Validator\ValidationException;
@@ -29,7 +29,7 @@ class QuestionController extends AbstractController
      * QuestionController constructor.
      *
      * @DI\InjectParams({
-     *     "questionManager" = @DI\Inject("ujm.exo.question_manager")
+     *     "questionManager" = @DI\Inject("ujm_exo.manager.question")
      * })
      *
      * @param QuestionManager $questionManager
@@ -68,7 +68,7 @@ class QuestionController extends AbstractController
      *
      * @EXT\Route("/{id}", name="question_get")
      * @EXT\Method("GET")
-     * @EXT\ParamConverter("question", class="UJMExoBundle:Question", options={"mapping": {"id": "uuid"}})
+     * @EXT\ParamConverter("question", class="UJMExoBundle:Question\Question", options={"mapping": {"id": "uuid"}})
      *
      * @param Question $question
      *
@@ -128,7 +128,7 @@ class QuestionController extends AbstractController
      *
      * @EXT\Route("/{id}", name="question_update")
      * @EXT\Method("PUT")
-     * @EXT\ParamConverter("question", class="UJMExoBundle:Question", options={"mapping": {"id": "uuid"}})
+     * @EXT\ParamConverter("question", class="UJMExoBundle:Question\Question", options={"mapping": {"id": "uuid"}})
      *
      * @param Question $question
      * @param Request  $request
@@ -171,7 +171,7 @@ class QuestionController extends AbstractController
      *
      * @EXT\Route("/{id}", name="question_delete")
      * @EXT\Method("DELETE")
-     * @EXT\ParamConverter("question", class="UJMExoBundle:Question", options={"mapping": {"id": "uuid"}})
+     * @EXT\ParamConverter("question", class="UJMExoBundle:Question\Question", options={"mapping": {"id": "uuid"}})
      *
      * @param Question $question
      *

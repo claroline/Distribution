@@ -20,9 +20,11 @@ class SetAnswerSerializer implements SerializerInterface
      */
     public function serialize($setAnswer, array $options = [])
     {
-        $answerData = new \stdClass();
+        $parts = explode(';', $setAnswer);
 
-        return $answerData;
+        return array_filter($parts, function ($part) {
+            return $part !== '';
+        });
     }
 
     /**
@@ -36,6 +38,6 @@ class SetAnswerSerializer implements SerializerInterface
      */
     public function deserialize($data, $setAnswer = null, array $options = [])
     {
-
+        return count($data) > 0 ? implode(';', $data) : '';
     }
 }

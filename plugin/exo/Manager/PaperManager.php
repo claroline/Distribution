@@ -6,10 +6,9 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Translation\TranslatorInterface;
 use UJM\ExoBundle\Entity\Exercise;
-use UJM\ExoBundle\Entity\Paper;
-use UJM\ExoBundle\Entity\Question;
+use UJM\ExoBundle\Entity\Attempt\Paper;
+use UJM\ExoBundle\Entity\Question\Question;
 use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\StepQuestion;
 use UJM\ExoBundle\Event\Log\LogExerciseEvaluatedEvent;
@@ -17,10 +16,9 @@ use UJM\ExoBundle\Library\Mode\CorrectionMode;
 use UJM\ExoBundle\Library\Mode\MarkMode;
 use UJM\ExoBundle\Manager\Question\QuestionManager;
 use UJM\ExoBundle\Repository\PaperRepository;
-use UJM\ExoBundle\Transfer\Json\QuestionHandlerCollector;
 
 /**
- * @DI\Service("ujm.exo.paper_manager")
+ * @DI\Service("ujm_exo.manager.paper")
  */
 class PaperManager
 {
@@ -35,56 +33,33 @@ class PaperManager
     private $eventDispatcher;
 
     /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var QuestionHandlerCollector
-     */
-    private $handlerCollector;
-
-    /**
      * @var QuestionManager
      */
     private $questionManager;
 
     /**
-     * @var HintManager
-     */
-    private $hintManager;
-
-    /**
      * @DI\InjectParams({
      *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
      *     "eventDispatcher" = @DI\Inject("event_dispatcher"),
-     *     "translator"      = @DI\Inject("translator"),
-     *     "collector"       = @DI\Inject("ujm.exo.question_handler_collector"),
-     *     "questionManager" = @DI\Inject("ujm.exo.question_manager"),
-     *     "hintManager"     = @DI\Inject("ujm.exo.hint_manager")
+     *     "questionManager" = @DI\Inject("ujm_exo.manager.question")
      * })
      *
      * @param ObjectManager            $om
      * @param EventDispatcherInterface $eventDispatcher
-     * @param TranslatorInterface      $translator
-     * @param QuestionHandlerCollector $collector
      * @param QuestionManager          $questionManager
-     * @param HintManager              $hintManager
      */
     public function __construct(
         ObjectManager $om,
         EventDispatcherInterface $eventDispatcher,
-        TranslatorInterface $translator,
-        QuestionHandlerCollector $collector,
-        QuestionManager $questionManager,
-        HintManager $hintManager
-    ) {
+        QuestionManager $questionManager) {
         $this->om = $om;
         $this->eventDispatcher = $eventDispatcher;
-        $this->translator = $translator;
-        $this->handlerCollector = $collector;
         $this->questionManager = $questionManager;
-        $this->hintManager = $hintManager;
+    }
+
+    public function export(Paper $paper, array $options = [])
+    {
+        return $this->serializer->serialize($paper, $options);
     }
 
     /**
@@ -101,7 +76,7 @@ class PaperManager
         $papers = [];
         if ($user) {
             // If it's not an anonymous, load the previous unfinished papers
-            $papers = $this->om->getRepository('UJMExoBundle:Paper')->findUnfinishedPapers($user, $exercise);
+            $papers = $this->om->getRepository('UJMExoBundle:Attempt\Paper')->findUnfinishedPapers($user, $exercise);
         }
 
         if (count($papers) === 0) {
@@ -134,7 +109,7 @@ class PaperManager
         // Get the number of the new Paper
         $paperNum = 1;
         if ($user) {
-            $lastPaper = $this->om->getRepository('UJMExoBundle:Paper')->findOneBy(
+            $lastPaper = $this->om->getRepository('UJMExoBundle:Attempt\Paper')->findOneBy(
                 ['user' => $user, 'exercise' => $exercise],
                 ['start' => 'DESC']
             );
@@ -171,45 +146,6 @@ class PaperManager
         return $paper;
     }
 
-    public function submitAnswers(Paper $paper, $answerData, $clientIp)
-    {
-
-    }
-
-    /**
-     * Records or updates an answer for a given question and paper.
-     *
-     * @param Paper    $paper
-     * @param Question $question
-     * @param mixed    $data
-     * @param string   $ip
-     */
-    public function recordAnswer(Paper $paper, Question $question, $data, $ip)
-    {
-        $handler = $this->handlerCollector->getHandlerForInteractionType($question->getType());
-
-        $answer = $this->om->getRepository('UJMExoBundle:Attempt\Answer')
-            ->findOneBy(['paper' => $paper, 'question' => $question]);
-
-        if (!$answer) {
-            $answer = new Answer();
-            $answer->setPaper($paper);
-            $answer->setQuestion($question);
-            $answer->setIp($ip);
-        } else {
-            $answer->setNbTries($answer->getNbTries() + 1);
-        }
-
-        $handler->storeAnswerAndMark($question, $answer, $data);
-        if (-1 !== $answer->getMark()) {
-            // Only apply penalties if the answer has been marked
-            $this->applyPenalties($paper, $question, $answer);
-        }
-
-        $this->om->persist($answer);
-        $this->om->flush();
-    }
-
     /**
      * @param Question $question
      * @param Paper    $paper
@@ -221,13 +157,13 @@ class PaperManager
         $response = $this->om->getRepository('UJMExoBundle:Attempt\Answer')
             ->findOneBy(['paper' => $paper, 'question' => $question]);
 
-        $response->setMark($score);
+        $response->setScore($score);
 
         // Apply penalties to the score
         $this->applyPenalties($paper, $question, $response);
 
         $scorePaper = $paper->getScore();
-        $scoreExercise = $scorePaper + $response->getMark();
+        $scoreExercise = $scorePaper + $response->getScore();
         $paper->setScore($scoreExercise);
 
         $this->om->persist($paper);
@@ -285,7 +221,7 @@ class PaperManager
     public function checkPaperEvaluated(Paper $paper)
     {
         /** @var PaperRepository $repo */
-        $repo = $this->om->getRepository('UJMExoBundle:Paper');
+        $repo = $this->om->getRepository('UJMExoBundle:Attempt\Paper');
 
         $fullyEvaluated = $repo->isFullyEvaluated($paper);
         if ($fullyEvaluated) {
@@ -304,15 +240,24 @@ class PaperManager
      * Calculates the score of a Paper.
      *
      * @param Paper $paper
+     * @param float $base
      *
      * @return float
      */
-    public function calculateScore(Paper $paper)
+    public function calculateScore(Paper $paper, $base = null)
     {
         /** @var PaperRepository $repo */
-        $repo = $this->om->getRepository('UJMExoBundle:Paper');
+        $repo = $this->om->getRepository('UJMExoBundle:Attempt\Paper');
 
-        return $repo->getScore($paper);
+        $score = $repo->findScore($paper);
+        if (!empty($base)) {
+            $scoreTotal = $this->calculateTotal($paper);
+            if ($scoreTotal !== $base) {
+                $score = ($score / $scoreTotal) * $base;
+            }
+        }
+
+        return $score;
     }
 
     /**
@@ -325,7 +270,7 @@ class PaperManager
     public function calculateTotal(Paper $paper)
     {
 
-        return 0;
+        return 10;
     }
 
     /**
@@ -349,7 +294,7 @@ class PaperManager
             $search['user'] = $user;
         }
 
-        $papers = $this->om->getRepository('UJMExoBundle:Paper')
+        $papers = $this->om->getRepository('UJMExoBundle:Attempt\Paper')
             ->findBy($search);
 
         $exportPapers = [];
@@ -398,24 +343,6 @@ class PaperManager
     }
 
     /**
-     * Return user name or anonymous, according to exercise settings.
-     *
-     * @param Paper $paper
-     *
-     * @return string
-     */
-    private function showUserPaper(Paper $paper)
-    {
-        if (!$paper->getUser() || $paper->isAnonymous()) {
-            $showUser = $this->translator->trans('anonymous', [], 'ujm_exo');
-        } else {
-            $showUser = $paper->getUser()->getFirstName().' '.$paper->getUser()->getLastName();
-        }
-
-        return $showUser;
-    }
-
-    /**
      * Returns the number of finished papers already done by the user for a given exercise.
      *
      * @param Exercise $exercise
@@ -425,7 +352,7 @@ class PaperManager
      */
     public function countUserFinishedPapers(Exercise $exercise, User $user)
     {
-        return $this->om->getRepository('UJMExoBundle:Paper')
+        return $this->om->getRepository('UJMExoBundle:Attempt\Paper')
             ->countUserFinishedPapers($exercise, $user);
     }
 
@@ -438,18 +365,8 @@ class PaperManager
      */
     public function countExercisePapers(Exercise $exercise)
     {
-        return $this->om->getRepository('UJMExoBundle:Paper')
+        return $this->om->getRepository('UJMExoBundle:Attempt\Paper')
             ->countExercisePapers($exercise);
-    }
-
-    private function applyPenalties(Paper $paper, Question $question, Answer $response)
-    {
-        $penalty = $this->hintManager->getPenalty($paper, $question);
-
-        $response->setMark($response->getMark() - $penalty);
-        if ($response->getMark() < 0) {
-            $response->setMark(0);
-        }
     }
 
     /**
@@ -488,8 +405,6 @@ class PaperManager
      * @param bool  $withScore Do we need to export the score of the Paper ?
      *
      * @return array
-     *
-     * @throws \UJM\ExoBundle\Transfer\Json\UnregisteredHandlerException
      */
     public function exportPaperAnswers(Paper $paper, $withScore = false)
     {
@@ -507,48 +422,6 @@ class PaperManager
     }
 
     /**
-     * Export submitted answers for one Question of the Paper.
-     *
-     * @param Question $question
-     * @param Paper    $paper
-     * @param bool     $withScore Do we need to export the score of the Paper ?
-     *
-     * @return array
-     *
-     * @throws \UJM\ExoBundle\Transfer\Json\UnregisteredHandlerException
-     */
-    public function exportPaperAnswer(Question $question, Paper $paper, $withScore = false)
-    {
-        $responseRepo = $this->om->getRepository('UJMExoBundle:Attempt\Answer');
-
-        $handler = $this->handlerCollector->getHandlerForInteractionType($question->getType());
-        // TODO: these two queries must be moved out of the loop
-        $response = $responseRepo->findOneBy(['paper' => $paper, 'question' => $question]);
-
-        $usedHints = $this->hintManager->getUsedHints($paper, $question);
-        $hints = array_map(function ($hint) {
-            return $this->hintManager->exportHint($hint, true); // We always grab hint value for used hints
-        }, $usedHints);
-
-        $answer = $response ? $handler->convertAnswerDetails($response) : null;
-        $answerScore = $response ? $response->getMark() : 0;
-        $nbTries = $response ? $response->getNbTries() : 0;
-
-        $paperQuestion = null;
-        if ($response || count($hints) > 0) {
-            $paperQuestion = [
-                'id' => $question->getId(),
-                'answer' => $answer,
-                'hints' => $hints,
-                'nbTries' => $nbTries,
-                'score' => $withScore ? $answerScore : null,
-            ];
-        }
-
-        return $paperQuestion;
-    }
-
-    /**
      * Get the Questions linked to a Paper.
      *
      * @param Paper $paper
@@ -557,11 +430,11 @@ class PaperManager
      */
     private function getPaperQuestions(Paper $paper)
     {
-        $ids = explode(';', substr($paper->getOrdreQuestion(), 0, -1));
+        $ids = explode(';', substr($paper->getStructure(), 0, -1));
 
         $questions = [];
         foreach ($ids as $id) {
-            $question = $this->om->getRepository('UJMExoBundle:Question')->find($id);
+            $question = $this->om->getRepository('UJMExoBundle:Question\Question')->find($id);
             if ($question) {
                 $questions[] = $question;
             }
@@ -589,7 +462,7 @@ class PaperManager
             // Check if the question is attached to a Step
 
             /** @var StepQuestion $stepQuestion */
-            $stepQuestion = $this->om->getRepository('UJMExoBundle:StepQuestion')->findByExerciseAndQuestion($exercise, $question->getId());
+            $stepQuestion = $this->om->getRepository('UJMExoBundle:StepQuestion')->findByExerciseAndQuestion($exercise, $question);
             if ($stepQuestion) {
                 // Question linked to a Step
                 $step = $stepQuestion->getStep();
@@ -692,14 +565,11 @@ class PaperManager
      */
     public function pickQuestions(Exercise $exercise)
     {
-        $steps = $this->pickSteps($exercise);
-        $questionRepo = $this->om->getRepository('UJMExoBundle:Question');
         $finalQuestions = [];
 
+        $steps = $this->pickSteps($exercise);
         foreach ($steps as $step) {
-            // TODO : do not load the Questions from DB they already are in `$step->getStepQuestions()`
-            $questions = $questionRepo->findByStep($step);
-            $finalQuestions = array_merge($finalQuestions, $questions);
+            $finalQuestions = array_merge($finalQuestions, $step->getQuestions());
         }
 
         return $finalQuestions;

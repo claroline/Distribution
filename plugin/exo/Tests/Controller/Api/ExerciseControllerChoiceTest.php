@@ -8,8 +8,8 @@ use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use UJM\ExoBundle\Entity\Choice;
 use UJM\ExoBundle\Entity\Exercise;
-use UJM\ExoBundle\Entity\Hint;
-use UJM\ExoBundle\Entity\Question;
+use UJM\ExoBundle\Entity\Question\Hint;
+use UJM\ExoBundle\Entity\Question\Question;
 use UJM\ExoBundle\Library\Testing\Persister;
 use UJM\ExoBundle\Manager\PaperManager;
 
@@ -47,7 +47,7 @@ class ExerciseControllerChoiceTest extends TransactionalTestCase
     {
         parent::setUp();
         $this->om = $this->client->getContainer()->get('claroline.persistence.object_manager');
-        $this->paperManager = $this->client->getContainer()->get('ujm.exo.paper_manager');
+        $this->paperManager = $this->client->getContainer()->get('ujm_exo.manager.paper');
 
         $this->persist = new Persister($this->om);
         $this->john = $this->persist->user('john');

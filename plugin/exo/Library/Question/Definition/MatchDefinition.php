@@ -3,6 +3,7 @@
 namespace UJM\ExoBundle\Library\Question\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Entity\AbstractInteraction;
 use UJM\ExoBundle\Library\Question\QuestionType;
 use UJM\ExoBundle\Serializer\Answer\Type\MatchAnswerSerializer;
 use UJM\ExoBundle\Serializer\Question\Type\MatchQuestionSerializer;
@@ -65,6 +66,16 @@ class MatchDefinition extends AbstractDefinition
     }
 
     /**
+     * Gets the match question entity.
+     *
+     * @return string
+     */
+    public function getEntityClass()
+    {
+        return 'MatchQuestion';
+    }
+
+    /**
      * Gets the match question validator.
      *
      * @return MatchQuestionValidator
@@ -92,5 +103,23 @@ class MatchDefinition extends AbstractDefinition
     protected function getAnswerSerializer()
     {
         return $this->answerSerializer;
+    }
+
+    public function calculateTotal(AbstractInteraction $matchQuestion)
+    {
+        $scoreMax = 0;
+
+        foreach ($matchQuestion->getLabels() as $label) {
+            $scoreMax += $label->getScore();
+        }
+
+        return $scoreMax;
+    }
+
+    public function getStatistics(AbstractInteraction $matchQuestion, array $answers)
+    {
+        // TODO: Implement getStatistics() method.
+
+        return [];
     }
 }

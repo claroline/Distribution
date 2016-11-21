@@ -12,7 +12,7 @@ class GraphicAnswerValidator extends JsonSchemaValidator
 {
     public function getJsonSchemaUri()
     {
-        return 'answer/graphic/schema.json';
+        return 'answer-data/graphic/schema.json';
     }
 
     /**
@@ -25,7 +25,7 @@ class GraphicAnswerValidator extends JsonSchemaValidator
      */
     public function validateAfterSchema($question, array $options = [])
     {
-        // TODO : implement method.
+        // The answer coords needs to be inside the image
 
         return [];
     }

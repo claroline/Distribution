@@ -4,6 +4,7 @@ namespace UJM\ExoBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use UJM\ExoBundle\Entity\Misc\Choice;
 
 /**
  * @ORM\Entity
@@ -34,8 +35,8 @@ class InteractionQCM extends AbstractInteraction
     private $weightResponse = false;
 
     /**
-     * @ORM\OneToMany(targetEntity="Choice", mappedBy="interactionQCM", cascade={"persist", "remove"}, orphanRemoval=true)
-     * @ORM\OrderBy({"ordre" = "ASC"})
+     * @ORM\OneToMany(targetEntity="UJM\ExoBundle\Entity\Misc\Choice", mappedBy="interactionQCM", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @ORM\OrderBy({"order" = "ASC"})
      */
     private $choices;
 
@@ -173,85 +174,6 @@ class InteractionQCM extends AbstractInteraction
     {
         if ($this->choices->contains($choice)) {
             $this->choices->removeElement($choice);
-        }
-    }
-
-    public function shuffleChoices()
-    {
-        $this->sortChoices();
-        $i = 0;
-        $tabShuffle = [];
-        $tabFixed = [];
-        $choices = new ArrayCollection();
-        $choiceCount = count($this->choices);
-
-        while ($i < $choiceCount) {
-            if ($this->choices[$i]->getPositionForce() === false) {
-                $tabShuffle[$i] = $i;
-                $tabFixed[] = -1;
-            } else {
-                $tabFixed[] = $i;
-            }
-
-            ++$i;
-        }
-
-        shuffle($tabShuffle);
-
-        $i = 0;
-        $choiceCount = count($this->choices);
-
-        while ($i < $choiceCount) {
-            if ($tabFixed[$i] !== -1) {
-                $choices[] = $this->choices[$i];
-            } else {
-                $index = $tabShuffle[0];
-                $choices[] = $this->choices[$index];
-                unset($tabShuffle[0]);
-                $tabShuffle = array_merge($tabShuffle);
-            }
-
-            ++$i;
-        }
-
-        $this->choices = $choices;
-    }
-
-    /**
-     * @deprecated let Doctrine order the collection itself
-     */
-    public function sortChoices()
-    {
-        $tab = [];
-        $choices = new ArrayCollection();
-
-        foreach ($this->choices as $choice) {
-            $tab[] = $choice->getOrdre();
-        }
-
-        asort($tab);
-
-        foreach (array_keys($tab) as $indice) {
-            $choices[] = $this->choices[$indice];
-        }
-
-        $this->choices = $choices;
-    }
-
-    public function __clone()
-    {
-        if ($this->id) {
-            $this->id = null;
-            $this->question = clone $this->question;
-            $newChoices = new ArrayCollection();
-
-            foreach ($this->choices as $choice) {
-                $newChoice = clone $choice;
-                $newChoice->setInteractionQCM($this);
-                $newChoices->add($newChoice);
-            }
-
-            $this->choices = $newChoices;
         }
     }
 }

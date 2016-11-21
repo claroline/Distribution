@@ -4,7 +4,7 @@ namespace UJM\ExoBundle\Manager;
 
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Doctrine\Common\Collections\ArrayCollection;
-use UJM\ExoBundle\Entity\Paper;
+use UJM\ExoBundle\Entity\Attempt\Paper;
 
 class PaperManagerTest extends \PHPUnit_Framework_TestCase
 {
@@ -47,14 +47,14 @@ class PaperManagerTest extends \PHPUnit_Framework_TestCase
         $paper1->setUser($user);
         $paper1->setNumber(1);
         $paper1->setStart(new \DateTime());
-        $paper1->setOrdreQuestion('1;2;3;4');
+        $paper1->setStructure('1;2;3;4');
 
         // Second time, the repo needs to return us the previous created paper (`paper1`)
         $paperRepo = $this->mock('UJM\ExoBundle\Repository\PaperRepository');
 
         $this->om->expects($this->once())
             ->method('getRepository')
-            ->with('UJMExoBundle:Paper')
+            ->with('UJMExoBundle:Attempt\Paper')
             ->willReturn($paperRepo);
 
         $paperRepo->expects($this->once())
@@ -63,7 +63,7 @@ class PaperManagerTest extends \PHPUnit_Framework_TestCase
 
         $paper2 = $this->manager->createPaper($exercise, $user);
 
-        $this->assertEquals($paper1->getOrdreQuestion(), $paper2->getOrdreQuestion());
+        $this->assertEquals($paper1->getStructure(), $paper2->getStructure());
     }
 
     public function testShuffleSteps()

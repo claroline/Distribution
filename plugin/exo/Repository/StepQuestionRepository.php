@@ -4,7 +4,7 @@ namespace UJM\ExoBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use UJM\ExoBundle\Entity\Exercise;
-use UJM\ExoBundle\Entity\Question;
+use UJM\ExoBundle\Entity\Question\Question;
 use UJM\ExoBundle\Entity\StepQuestion;
 
 /**
@@ -19,92 +19,19 @@ class StepQuestionRepository extends EntityRepository
      * Get the StepQuestion that links the Question to an Exercise.
      *
      * @param Exercise $exercise
-     * @param string   $questionId
-     *
-     * @return StepQuestion
-     */
-    public function findByExerciseAndQuestion(Exercise $exercise, $questionId)
-    {
-        return $this->createQueryBuilder('sq')
-            ->join('sq.step', 's')
-            ->where('s.exercise = :exercise')
-            ->andWhere('sq.question = :questionId')
-            ->setParameter(':exercise', $exercise)
-            ->setParameter(':questionId', $questionId)
-            ->getQuery()
-            ->getOneOrNullResult();
-    }
-
-    /**
-     * Returns the order max.
-     *
-     * @param Exercise $exo
-     *
-     * @return StepQuestion[]
-     */
-    public function getMaxOrder(Exercise $exo)
-    {
-        return $this->createQueryBuilder('sq')
-            ->select('max(sq.ordre)')
-            ->join('sq.step', 's')
-            ->where('s.exercise = :exercise')
-            ->setParameter(':exercise', $exo)
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * @param Exercise $exo if Exercise
-     *
-     * @return StepQuestion[]
-     */
-    public function findExoByOrder(Exercise $exo)
-    {
-        return $this->createQueryBuilder('sq')
-            ->join('sq.step', 's')
-            ->where('s.exercise = :exercise')
-            ->setParameter(':exercise', $exo)
-            ->orderBy('sq.order')
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * Get StepQuestion with the question and exercise.
-     *
-     * @param Exercise $exo
      * @param Question $question
      *
      * @return StepQuestion
      */
-    public function findStepByExoQuestion(Exercise $exo, Question $question)
+    public function findByExerciseAndQuestion(Exercise $exercise, Question $question)
     {
         return $this->createQueryBuilder('sq')
             ->join('sq.step', 's')
             ->where('s.exercise = :exercise')
             ->andWhere('sq.question = :question')
-            ->setParameters([
-                'exercise' => $exo,
-                'question' => $question,
-            ])
-            ->getQuery()
-            ->getSingleResult();
-    }
-
-    /**
-     * Exercises use the question.
-     *
-     *
-     * @param Question $question
-     *
-     * @return StepQuestion[]
-     */
-    public function getExercises(Question $question)
-    {
-        return $this->createQueryBuilder('sq')
-            ->where('sq.question = :question')
+            ->setParameter(':exercise', $exercise)
             ->setParameter(':question', $question)
             ->getQuery()
-            ->getResult();
+            ->getOneOrNullResult();
     }
 }

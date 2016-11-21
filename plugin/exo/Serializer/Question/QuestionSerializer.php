@@ -7,15 +7,14 @@ use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use UJM\ExoBundle\Entity\Exercise;
-use UJM\ExoBundle\Entity\Hint;
-use UJM\ExoBundle\Entity\Question;
-use UJM\ExoBundle\Entity\QuestionObject;
-use UJM\ExoBundle\Entity\QuestionResource;
+use UJM\ExoBundle\Entity\Question\Hint;
+use UJM\ExoBundle\Entity\Question\Question;
+use UJM\ExoBundle\Entity\Question\QuestionObject;
+use UJM\ExoBundle\Entity\Question\QuestionResource;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Question\QuestionDefinitionsCollection;
 use UJM\ExoBundle\Library\Serializer\AbstractSerializer;
 use UJM\ExoBundle\Repository\QuestionRepository;
-use UJM\ExoBundle\Serializer\HintSerializer;
 use UJM\ExoBundle\Serializer\ResourceContentSerializer;
 use UJM\ExoBundle\Serializer\UserSerializer;
 
@@ -166,7 +165,7 @@ class QuestionSerializer extends AbstractSerializer
         if (empty($question)) {
             // Loads the Question from DB if already exist
             if (!empty($data->id)) {
-                $question = $this->om->getRepository('UJMExoBundle:Question')->findOneBy([
+                $question = $this->om->getRepository('UJMExoBundle:Question\Question')->findOneBy([
                     'uuid' => $data->id,
                 ]);
             }
@@ -174,11 +173,11 @@ class QuestionSerializer extends AbstractSerializer
             if (empty($question)) {
                 // Question not exist
                 $question = new Question();
-            }
-        }
 
-        if (!empty($data->id)) {
-            $question->setUuid($data->id);
+                if (!empty($data->id)) {
+                    $question->setUuid($data->id);
+                }
+            }
         }
 
         // Map data to entity (dataProperty => entityProperty/function to call)
@@ -268,7 +267,7 @@ class QuestionSerializer extends AbstractSerializer
             $metadata->model = $question->isModel();
 
             /** @var QuestionRepository $questionRepo */
-            $questionRepo = $this->om->getRepository('UJMExoBundle:Question');
+            $questionRepo = $this->om->getRepository('UJMExoBundle:Question\Question');
 
             // Gets exercises that use this question
             $exercises = $questionRepo->findUsedBy($question);

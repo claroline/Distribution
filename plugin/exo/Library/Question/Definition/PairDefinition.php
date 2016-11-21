@@ -3,6 +3,7 @@
 namespace UJM\ExoBundle\Library\Question\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Entity\AbstractInteraction;
 use UJM\ExoBundle\Library\Question\QuestionType;
 use UJM\ExoBundle\Serializer\Answer\Type\PairAnswerSerializer;
 use UJM\ExoBundle\Serializer\Question\Type\PairQuestionSerializer;
@@ -65,6 +66,16 @@ class PairDefinition extends AbstractDefinition
     }
 
     /**
+     * Gets the pair question entity.
+     *
+     * @return string
+     */
+    public function getEntityClass()
+    {
+        return 'PairQuestion';
+    }
+
+    /**
      * Gets the pair question validator.
      *
      * @return PairQuestionValidator
@@ -92,5 +103,23 @@ class PairDefinition extends AbstractDefinition
     protected function getAnswerSerializer()
     {
         return $this->answerSerializer;
+    }
+
+    public function calculateTotal(AbstractInteraction $pairQuestion)
+    {
+        $scoreMax = 0;
+
+        foreach ($pairQuestion->getLabels() as $label) {
+            $scoreMax += $label->getScore();
+        }
+
+        return $scoreMax;
+    }
+
+    public function getStatistics(AbstractInteraction $pairQuestion, array $answers)
+    {
+        // TODO: Implement getStatistics() method.
+
+        return [];
     }
 }

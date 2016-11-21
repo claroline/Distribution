@@ -39,11 +39,11 @@ class ExerciseController extends Controller
 
         $nbUserPapers = 0;
         if ($user instanceof User) {
-            $nbUserPapers = $this->container->get('ujm.exo.paper_manager')->countUserFinishedPapers($exercise, $user);
+            $nbUserPapers = $this->container->get('ujm_exo.manager.paper')->countUserFinishedPapers($exercise, $user);
         }
 
         // TODO : no need to count the $nbPapers for regular Users as it's only for admin purpose (we maybe need to put the call in Angular ?)
-        $nbPapers = $this->container->get('ujm.exo.paper_manager')->countExercisePapers($exercise);
+        $nbPapers = $this->container->get('ujm_exo.manager.paper')->countExercisePapers($exercise);
 
         $isAdmin = $this->isAdmin($exercise);
 
@@ -57,7 +57,7 @@ class ExerciseController extends Controller
             'nbPapers' => $nbPapers,
 
             // Angular JS data
-            'exercise' => $this->get('ujm.exo.exercise_manager')->export(
+            'exercise' => $this->get('ujm_exo.manager.exercise')->export(
                 $exercise,
                 $isAdmin ? [Transfer::INCLUDE_SOLUTIONS] : []
             ),
@@ -83,7 +83,7 @@ class ExerciseController extends Controller
         return [
             'workspace' => $exercise->getResourceNode()->getWorkspace(),
             '_resource' => $exercise,
-            'exercise' => $this->get('ujm.exo.exercise_manager')->export($exercise),
+            'exercise' => $this->get('ujm_exo.manager.exercise')->export($exercise),
         ];
     }
 

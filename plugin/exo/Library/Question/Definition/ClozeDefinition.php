@@ -3,6 +3,7 @@
 namespace UJM\ExoBundle\Library\Question\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Entity\AbstractInteraction;
 use UJM\ExoBundle\Library\Question\QuestionType;
 use UJM\ExoBundle\Serializer\Answer\Type\ClozeAnswerSerializer;
 use UJM\ExoBundle\Serializer\Question\Type\ClozeQuestionSerializer;
@@ -39,8 +40,8 @@ class ClozeDefinition extends AbstractDefinition
      * @param ClozeAnswerSerializer   $answerSerializer
      *
      * @DI\InjectParams({
-     *     "validator"  = @DI\Inject("ujm_exo.validator.question_cloze"),
-     *     "serializer" = @DI\Inject("ujm_exo.serializer.question_cloze"),
+     *     "validator"        = @DI\Inject("ujm_exo.validator.question_cloze"),
+     *     "serializer"       = @DI\Inject("ujm_exo.serializer.question_cloze"),
      *     "answerSerializer" = @DI\Inject("ujm_exo.serializer.answer_cloze")
      * })
      */
@@ -62,6 +63,16 @@ class ClozeDefinition extends AbstractDefinition
     public function getMimeType()
     {
         return QuestionType::CLOZE;
+    }
+
+    /**
+     * Gets the cloze question entity.
+     *
+     * @return string
+     */
+    public function getEntityClass()
+    {
+        return 'ClozeQuestion';
     }
 
     /**
@@ -92,5 +103,69 @@ class ClozeDefinition extends AbstractDefinition
     protected function getAnswerSerializer()
     {
         return $this->answerSerializer;
+    }
+
+    public function getStatistics(AbstractInteraction $clozeQuestion, array $answers)
+    {
+        // Create an array with holeId => holeObject for easy search
+        $holesMap = [];
+        /** @var Hole $hole */
+        foreach ($clozeQuestion->getHoles() as $hole) {
+            $holesMap[$hole->getId()] = $hole;
+        }
+
+        $holes = [];
+
+        /** @var Answer $answer */
+        foreach ($answers as $answer) {
+            // Manually decode data to make it easier to process
+            $decoded = $this->convertAnswerDetails($answer);
+
+            foreach ($decoded as $holeAnswer) {
+                if (!empty($holeAnswer->answerText)) {
+                    if (!isset($holes[$holeAnswer->holeId])) {
+                        $holes[$holeAnswer->holeId] = new \stdClass();
+                        $holes[$holeAnswer->holeId]->id = $holeAnswer->holeId;
+                        $holes[$holeAnswer->holeId]->answered = 0;
+
+                        // Answers counters for each keyword of the hole
+                        $holes[$holeAnswer->holeId]->keywords = [];
+                    }
+
+                    // Increment the hole answers count
+                    ++$holes[$holeAnswer->holeId]->answered;
+
+                    /** @var Keyword $keyword */
+                    foreach ($holesMap[$holeAnswer->holeId]->getKeywords() as $keyword) {
+                        // Check if the response match the current keyword
+                        if ($holesMap[$holeAnswer->holeId]->getSelector()) {
+                            // It's the ID of the keyword which is stored
+                            $found = $keyword->getId() === (int) $holeAnswer->answerText;
+                        } else {
+                            if ($keyword->isCaseSensitive()) {
+                                $found = strtolower($keyword->getText()) === strtolower($holeAnswer->answerText);
+                            } else {
+                                $found = $keyword->getText() === $holeAnswer->answerText;
+                            }
+                        }
+
+                        if ($found) {
+                            if (!isset($holes[$holeAnswer->holeId]->keywords[$keyword->getId()])) {
+                                // Initialize the Hole keyword counter if it's the first time we find it
+                                $holes[$holeAnswer->holeId]->keywords[$keyword->getId()] = new \stdClass();
+                                $holes[$holeAnswer->holeId]->keywords[$keyword->getId()]->id = $keyword->getId();
+                                $holes[$holeAnswer->holeId]->keywords[$keyword->getId()]->count = 0;
+                            }
+
+                            ++$holes[$holeAnswer->holeId]->keywords[$keyword->getId()]->count;
+
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $holes;
     }
 }

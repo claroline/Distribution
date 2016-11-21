@@ -20,9 +20,11 @@ class MatchAnswerSerializer implements SerializerInterface
      */
     public function serialize($matchAnswer, array $options = [])
     {
-        $answerData = new \stdClass();
+        $parts = explode(';', $matchAnswer);
 
-        return $answerData;
+        return array_filter($parts, function ($part) {
+            return $part !== '';
+        });
     }
 
     /**
@@ -36,6 +38,6 @@ class MatchAnswerSerializer implements SerializerInterface
      */
     public function deserialize($data, $matchAnswer = null, array $options = [])
     {
-
+        return count($data) > 0 ? implode(';', $data) : '';
     }
 }

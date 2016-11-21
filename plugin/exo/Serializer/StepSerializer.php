@@ -51,8 +51,8 @@ class StepSerializer implements SerializerInterface
             $stepData->title = $step->getTitle();
         }
 
-        if (!empty($step->getText())) {
-            $stepData->description = $step->getText();
+        if (!empty($step->getDescription())) {
+            $stepData->description = $step->getDescription();
         }
 
         $stepData->parameters = $this->serializeParameters($step);
@@ -74,16 +74,18 @@ class StepSerializer implements SerializerInterface
     {
         if (empty($step)) {
             $step = new Step();
-        }
 
-        $step->setUuid($data->id);
+            if (!empty($data->id)) {
+                $step->setUuid($data->id);
+            }
+        }
 
         if (isset($data->title)) {
             $step->setTitle($data->title);
         }
 
         if (isset($data->description)) {
-            $step->setText($data->description);
+            $step->setDescription($data->description);
         }
 
         if (!empty($data->parameters)) {

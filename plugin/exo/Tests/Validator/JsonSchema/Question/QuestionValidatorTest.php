@@ -5,7 +5,7 @@ namespace UJM\ExoBundle\Tests\Validator\JsonSchema\Question;
 use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Question\QuestionDefinitionsCollection;
 use UJM\ExoBundle\Library\Testing\Json\JsonSchemaTestCase;
-use UJM\ExoBundle\Validator\JsonSchema\HintValidator;
+use UJM\ExoBundle\Validator\JsonSchema\Question\HintValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Question\CategoryValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Question\QuestionValidator;
 
@@ -57,7 +57,7 @@ class QuestionValidatorTest extends JsonSchemaTestCase
             ->willReturn([]);
 
         // Do not validate Hints
-        $this->hintValidator = $this->getMock('UJM\ExoBundle\Validator\JsonSchema\HintValidator', [], [], '', false);
+        $this->hintValidator = $this->getMock('UJM\ExoBundle\Validator\JsonSchema\Question\HintValidator', [], [], '', false);
         $this->hintValidator->expects($this->any())
             ->method('validateAfterSchema')
             ->willReturn([]);

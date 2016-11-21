@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use UJM\ExoBundle\Controller\Api\AbstractController;
-use UJM\ExoBundle\Entity\Category;
+use UJM\ExoBundle\Entity\Question\Category;
 use UJM\ExoBundle\Manager\Question\CategoryManager;
 use UJM\ExoBundle\Library\Validator\ValidationException;
 

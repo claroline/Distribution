@@ -3,7 +3,7 @@
 namespace UJM\ExoBundle\Listener\Entity;
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
-use UJM\ExoBundle\Entity\Question;
+use UJM\ExoBundle\Entity\Question\Question;
 
 /**
  * Question Listener.

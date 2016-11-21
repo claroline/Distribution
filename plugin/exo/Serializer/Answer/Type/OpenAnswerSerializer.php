@@ -26,7 +26,7 @@ class OpenAnswerSerializer implements SerializerInterface
     }
 
     /**
-     * Converts raw data into a Open answer string.
+     * Converts raw data into an Open answer string.
      *
      * @param mixed  $data
      * @param string $openAnswer

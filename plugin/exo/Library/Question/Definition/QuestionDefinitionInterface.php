@@ -3,7 +3,6 @@
 namespace UJM\ExoBundle\Library\Question\Definition;
 
 use UJM\ExoBundle\Entity\AbstractInteraction;
-use UJM\ExoBundle\Entity\Attempt\Answer;
 
 /**
  * Interface for the definition of a question type
@@ -13,9 +12,21 @@ interface QuestionDefinitionInterface
     /**
      * Gets the mime type of the question.
      *
+     * It MUST have the format : application/x.{QUESTION_TYPE}+json
+     *
      * @return string
      */
     public function getMimeType();
+
+    /**
+     * Gets the entity class holding the specific question data.
+     *
+     * This method needs to only return the class name, without namespace (eg. ChoiceQuestion).
+     * The full namespace `UJM\ExoBundle\Entity\QuestionType` is added as prefix to the return value.
+     *
+     * @return string
+     */
+    public function getEntityClass();
 
     /**
      * Validates question data.
@@ -98,4 +109,14 @@ interface QuestionDefinitionInterface
      * @return float
      */
     public function calculateTotal(AbstractInteraction $question);
+
+    /**
+     * Gets statistics on answers given to a question.
+     *
+     * @param AbstractInteraction $question
+     * @param array $answers
+     *
+     * @return \stdClass
+     */
+    public function getStatistics(AbstractInteraction $question, array $answers);
 }

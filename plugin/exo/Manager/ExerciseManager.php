@@ -12,7 +12,7 @@ use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Validator\JsonSchema\ExerciseValidator;
 
 /**
- * @DI\Service("ujm.exo.exercise_manager")
+ * @DI\Service("ujm_exo.manager.exercise")
  */
 class ExerciseManager
 {
@@ -32,35 +32,24 @@ class ExerciseManager
     private $serializer;
 
     /**
-     * @deprecated
-     *
-     * @var StepManager
-     */
-    private $stepManager;
-
-    /**
      * @DI\InjectParams({
      *     "om"           = @DI\Inject("claroline.persistence.object_manager"),
      *     "validator"    = @DI\Inject("ujm_exo.validator.exercise"),
-     *     "serializer"   = @DI\Inject("ujm_exo.serializer.exercise"),
-     *     "stepManager"  = @DI\Inject("ujm.exo.step_manager")
+     *     "serializer"   = @DI\Inject("ujm_exo.serializer.exercise")
      * })
      *
      * @param ObjectManager      $om
      * @param ExerciseValidator  $validator
      * @param ExerciseSerializer $serializer
-     * @param StepManager        $stepManager
      */
     public function __construct(
         ObjectManager $om,
         ExerciseValidator $validator,
-        ExerciseSerializer $serializer,
-        StepManager $stepManager)
+        ExerciseSerializer $serializer)
     {
         $this->om = $om;
         $this->validator = $validator;
         $this->serializer = $serializer;
-        $this->stepManager = $stepManager;
     }
 
     /**
@@ -145,7 +134,7 @@ class ExerciseManager
      */
     public function isDeletable(Exercise $exercise)
     {
-        $nbPapers = $this->om->getRepository('UJMExoBundle:Paper')->countExercisePapers($exercise);
+        $nbPapers = $this->om->getRepository('UJMExoBundle:Attempt\Paper')->countExercisePapers($exercise);
         if (0 !== $nbPapers) {
             return false;
         }
@@ -187,7 +176,9 @@ class ExerciseManager
     public function unpublish(Exercise $exercise, $throwException = true)
     {
         if ($throwException && !$exercise->getResourceNode()->isPublished()) {
-            throw new \LogicException("Exercise {$exercise->getId()} is already unpublished");
+            throw new \LogicException(
+                "Exercise {$exercise->getId()} is already unpublished"
+            );
         }
 
         $exercise->getResourceNode()->setPublished(false);
@@ -197,134 +188,26 @@ class ExerciseManager
     /**
      * Deletes all the papers associated with an exercise.
      *
-     * @todo optimize request number using repository method(s)
-     *
      * @param Exercise $exercise
      *
-     * @throws \Exception if the exercise has been published at least once
+     * @throws \LogicException if the exercise has been published at least once
      */
     public function deletePapers(Exercise $exercise)
     {
         if ($exercise->wasPublishedOnce()) {
-            throw new \Exception(
-                "Cannot delete exercise {$exercise->getId()} papers as it has been published at least once"
+            throw new \LogicException(
+                "Papers for exercise {$exercise->getId()} cannot be deleted. Exercise has been published once."
             );
         }
 
-        $paperRepo = $this->om->getRepository('UJMExoBundle:Paper');
-        $linkHintPaperRepo = $this->om->getRepository('UJMExoBundle:LinkHintPaper');
-        $responseRepo = $this->om->getRepository('UJMExoBundle:Attempt\Answer');
-        $papers = $paperRepo->findByExercise($exercise);
+        $papers = $this->om->getRepository('UJMExoBundle:Attempt\Paper')->findBy([
+            'exercise' => $exercise,
+        ]);
 
         foreach ($papers as $paper) {
-            $links = $linkHintPaperRepo->findByPaper($paper);
-
-            foreach ($links as $link) {
-                $this->om->remove($link);
-            }
-
-            $responses = $responseRepo->findByPaper($paper);
-
-            foreach ($responses as $response) {
-                $this->om->remove($response);
-            }
-
             $this->om->remove($paper);
         }
 
         $this->om->flush();
-    }
-
-    /**
-     * Exports an exercise in a JSON-encodable format.
-     *
-     * @deprecated use export() instead
-     *
-     * @param Exercise $exercise
-     * @param bool     $withSolutions
-     *
-     * @return array
-     */
-    public function exportExercise(Exercise $exercise, $withSolutions = true)
-    {
-        if ($exercise->getType() === $exercise::TYPE_FORMATIVE) {
-            $withSolutions = true;
-        }
-
-        return [
-            'id' => $exercise->getId(),
-            'meta' => $this->exportMetadata($exercise),
-            'steps' => $this->exportSteps($exercise, $withSolutions),
-        ];
-    }
-
-    /**
-     * Export metadata of the Exercise in a JSON-encodable format.
-     *
-     * @deprecated see export()
-     *
-     * @param Exercise $exercise
-     *
-     * @return array
-     */
-    private function exportMetadata(Exercise $exercise)
-    {
-        $node = $exercise->getResourceNode();
-        $creator = $node->getCreator();
-        $authorName = sprintf('%s %s', $creator->getFirstName(), $creator->getLastName());
-
-        // Accessibility dates
-        $startDate = $node->getAccessibleFrom() ? $node->getAccessibleFrom()->format('Y-m-d\TH:i:s') : null;
-        $endDate = $node->getAccessibleUntil() ? $node->getAccessibleUntil()->format('Y-m-d\TH:i:s') : null;
-        $correctionDate = $exercise->getDateCorrection() ? $exercise->getDateCorrection()->format('Y-m-d\TH:i:s') : null;
-
-        return [
-            'authors' => [
-                ['name' => $authorName],
-            ],
-            'created' => $node->getCreationDate()->format('Y-m-d\TH:i:s'),
-            'title' => $node->getName(),
-            'description' => $exercise->getDescription(),
-            'type' => $exercise->getType(),
-            'pick' => $exercise->getPickSteps(),
-            'random' => $exercise->getShuffle(),
-            'keepSteps' => $exercise->getKeepSteps(),
-            'maxAttempts' => $exercise->getMaxAttempts(),
-            'dispButtonInterrupt' => $exercise->getDispButtonInterrupt(),
-            'metadataVisible' => $exercise->isMetadataVisible(),
-            'statistics' => $exercise->hasStatistics(),
-            'anonymous' => $exercise->getAnonymous(),
-            'duration' => $exercise->getDuration(),
-            'markMode' => $exercise->getMarkMode(),
-            'correctionMode' => $exercise->getCorrectionMode(),
-            'correctionDate' => $correctionDate,
-            'startDate' => $startDate,
-            'endDate' => $endDate,
-            'published' => $node->isPublished(),
-            'publishedOnce' => $exercise->wasPublishedOnce(),
-            'minimalCorrection' => $exercise->isMinimalCorrection(),
-        ];
-    }
-
-    /**
-     * Export exercise with steps with questions.
-     *
-     * @deprecated see export()
-     *
-     * @param Exercise $exercise
-     * @param bool     $withSolutions
-     *
-     * @return array
-     */
-    public function exportSteps(Exercise $exercise, $withSolutions = true)
-    {
-        $steps = $exercise->getSteps();
-
-        $data = [];
-        foreach ($steps as $step) {
-            $data[] = $this->stepManager->exportStep($step, $withSolutions);
-        }
-
-        return $data;
     }
 }

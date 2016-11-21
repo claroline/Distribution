@@ -7,35 +7,27 @@ use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
-use UJM\ExoBundle\Entity\Paper;
-use UJM\ExoBundle\Entity\Question;
-use UJM\ExoBundle\Entity\Step;
-use UJM\ExoBundle\Entity\StepQuestion;
-use UJM\ExoBundle\Library\Validator\ValidationException;
-use UJM\ExoBundle\Manager\AnswerManager;
+use UJM\ExoBundle\Entity\Question\Question;
 use UJM\ExoBundle\Manager\PaperManager;
-use UJM\ExoBundle\Manager\Question\QuestionManager;
+use UJM\ExoBundle\Repository\PaperRepository;
 
 /**
  * Paper Controller.
+ * Manages the submitted papers to an exercise.
  *
  * @EXT\Route("/papers", requirements={"id"="\d+"}, options={"expose"=true})
  */
 class PaperController extends AbstractController
 {
     /**
-     * @var AnswerManager
+     * @var AuthorizationCheckerInterface
      */
-    private $answerManager;
-
-    /**
-     * @var QuestionManager
-     */
-    private $questionManager;
+    private $authorization;
 
     /**
      * @var PaperManager
@@ -47,138 +39,41 @@ class PaperController extends AbstractController
      *
      * @DI\InjectParams({
      *     "authorization"   = @DI\Inject("security.authorization_checker"),
-     *     "questionManager" = @DI\Inject("ujm.exo.question_manager"),
-     *     "paperManager"    = @DI\Inject("ujm.exo.paper_manager")
+     *     "paperManager"    = @DI\Inject("ujm_exo.manager.paper")
      * })
      *
      * @param AuthorizationCheckerInterface $authorization
-     * @param QuestionManager               $questionManager
      * @param PaperManager                  $paperManager
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
-        QuestionManager $questionManager,
-        PaperManager    $paperManager)
+        PaperManager $paperManager)
     {
         $this->authorization = $authorization;
-        $this->questionManager = $questionManager;
         $this->paperManager = $paperManager;
     }
 
     /**
-     * Submits answers to an Exercise.
+     * Returns all the papers associated with an exercise.
+     * Administrators get the papers of all users, others get only theirs.
      *
-     * @EXT\Route("/{id}/submit", name="exercise_submit_answers")
-     * @EXT\Method("POST")
-     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
+     * @EXT\Route("/{id}/papers", name="exercise_papers", requirements={"id"="\d+"})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
-     * @param User $user
-     * @param Paper $paper
-     * @param Request $request
-     *
-     * @return JsonResponse
-     */
-    public function submitAction(Paper $paper, User $user = null, Request $request)
-    {
-        $this->assertHasPaperAccess($paper, $user);
-
-        $errors = [];
-
-        $data = $this->decodeRequestData($request);
-        if (empty($data)) {
-
-        } else {
-            try {
-                $this->answerManager->submit();
-            } catch (ValidationException $e) {
-                $errors = $e->getErrors();
-            }
-        }
-
-        if (!empty($errors)) {
-            return new JsonResponse($errors, 422);
-        } else {
-            return new JsonResponse(null, 204);
-        }
-    }
-
-    /**
-     * Records an answer for an exercise Step.
-     *
-     * @EXT\Route("/{paperId}/steps/{stepId}", name="exercise_submit_step")
-     * @EXT\Method("PUT")
-     *
-     * @EXT\ParamConverter("user",  converter="current_user", options={"allowAnonymous"=true})
-     * @EXT\ParamConverter("paper", class="UJMExoBundle:Paper", options={"mapping": {"paperId": "id"}})
-     * @EXT\ParamConverter("step",  class="UJMExoBundle:Step",  options={"mapping": {"stepId": "id"}})
-     *
-     * @param Paper   $paper
-     * @param Step    $step
-     * @param User    $user
-     * @param Request $request
+     * @param User     $user
+     * @param Exercise $exercise
      *
      * @return JsonResponse
      */
-    public function submitStepAction(Paper $paper, Step $step, User $user = null, Request $request)
+    public function listAction(User $user, Exercise $exercise)
     {
-        $this->assertHasPaperAccess($paper, $user);
+        $this->assertHasPermission('OPEN', $exercise);
 
-        // Get submitted answers from Request
-        $data = $request->request->get('data');
-
-        /** @var StepQuestion $stepQuestion */
-        foreach ($step->getStepQuestions() as $stepQuestion) {
-            /** @var Question $question */
-            $question = $stepQuestion->getQuestion();
-
-            // Get question data from Request
-            $questionData = !isset($data[$question->getId()]) ? null : $data[$question->getId()];
-
-            $errors = $this->questionManager->validateAnswerFormat($question, $questionData);
-            if (count($errors) !== 0) {
-                return new JsonResponse($errors, 422);
-            }
-
-            $this->paperManager->recordAnswer($paper, $question, $questionData, $request->getClientIp());
+        if ($this->isAdmin($exercise)) {
+            return new JsonResponse($this->paperManager->exportExercisePapers($exercise));
         }
 
-        if (Exercise::TYPE_FORMATIVE === $paper->getExercise()->getType()) {
-            // For formative, export solution and score for immediate feedback
-            $answers = [];
-
-            /** @var StepQuestion $stepQuestion */
-            foreach ($step->getStepQuestions() as $stepQuestion) {
-                $answers[] = [
-                    'question' => $this->questionManager->exportQuestionAnswers($stepQuestion->getQuestion()),
-                    'answer' => $this->paperManager->exportPaperAnswer($stepQuestion->getQuestion(), $paper, true),
-                ];
-            }
-
-            return new JsonResponse($answers, 200);
-        } else {
-            return new JsonResponse('', 204);
-        }
-    }
-
-    /**
-     * Marks a paper as finished.
-     *
-     * @EXT\Route("/{id}/end", name="exercise_finish_paper")
-     * @EXT\Method("PUT")
-     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
-     *
-     * @param Paper $paper
-     * @param User  $user
-     *
-     * @return JsonResponse
-     */
-    public function finishPaperAction(Paper $paper, User $user = null)
-    {
-        $this->assertHasPaperAccess($paper, $user);
-
-        $this->paperManager->finishPaper($paper);
-
-        return new JsonResponse($this->paperManager->exportPaper($paper), 200);
+        return new JsonResponse($this->paperManager->exportExercisePapers($exercise, $user));
     }
 
     /**
@@ -195,7 +90,7 @@ class PaperController extends AbstractController
      *
      * @return JsonResponse
      */
-    public function exportPaperAction(Paper $paper, User $user = null)
+    public function getAction(Paper $paper, User $user = null)
     {
         // ATTENTION : As is, anonymous have access to all the other anonymous Papers !!!
         if (!$this->isAdmin($paper->getExercise()) && $paper->getUser() !== $user) {
@@ -210,11 +105,80 @@ class PaperController extends AbstractController
     }
 
     /**
+     * Deletes all the papers associated with an exercise.
+     *
+     * @EXT\Route(
+     *     "/{id}/papers",
+     *     name="ujm_exercise_delete_papers",
+     *     options={"expose"=true}
+     * )
+     * @EXT\Method("DELETE")
+     *
+     * @param Exercise $exercise
+     *
+     * @return JsonResponse
+     */
+    public function deleteAction(Exercise $exercise)
+    {
+        $this->assertHasPermission('ADMINISTRATE', $exercise);
+
+        $this->exerciseManager->deletePapers($exercise);
+
+        return new JsonResponse(null, 204);
+    }
+
+    /**
+     * Exports papers into a CSV file.
+     *
+     * @EXT\Route("/{id}/papers/export", name="exercise_papers_export", requirements={"id"="\d+"})
+     *
+     * @param Exercise $exercise
+     *
+     * @return StreamedResponse
+     */
+    public function exportCsvAction(Exercise $exercise)
+    {
+        $this->assertHasPermission('ADMINISTRATE', $exercise);
+
+        /** @var PaperRepository $repo */
+        $repo = $this->om->getRepository('UJMExoBundle:Attempt\Paper');
+
+        $papers = $repo->findBy([
+            'exercise' => $exercise
+        ]);
+
+        return new StreamedResponse(function () use ($papers) {
+            $handle = fopen('php://output', 'w+');
+
+            /** @var Paper $paper */
+            foreach ($papers as $paper) {
+                fputcsv(
+                    $handle,
+                    [
+                        $paper->getUser()->getFirstName().'-'.$paper->getUser()->getLastName(),
+                        $paper->getNumber(),
+                        $paper->getStart()->format('Y-m-d H:i:s'),
+                        $paper->getEnd() ? $paper->getEnd()->format('Y-m-d H:i:s') : '',
+                        $paper->isInterrupted(),
+                        $this->paperManager->calculateScore($paper, 20),
+                    ],
+                    ';'
+                );
+            }
+
+            fclose($handle);
+        }, 200, [
+            'Content-Type' => 'application/force-download',
+            'Content-Disposition' => 'attachment; filename="export.csv"',
+        ]);
+    }
+
+    /**
      * Saves the score of a question that need manual correction.
      *
      * @EXT\Route("/{id}/questions/{questionId}/score/{score}", name="exercise_save_score")
      * @EXT\Method("PUT")
-     * @EXT\ParamConverter("question", class="UJMExoBundle:Question", options={"mapping": {"questionId": "id"}})
+     * @EXT\ParamConverter("question", class="UJMExoBundle:Question\Question", options={"mapping": {"questionId": "id"}})
      *
      * @param Question $question
      * @param Paper    $paper
@@ -229,20 +193,6 @@ class PaperController extends AbstractController
         $this->paperManager->recordScore($question, $paper, $score);
 
         return new JsonResponse($this->paperManager->exportPaper($paper, $this->isAdmin($paper->getExercise())), 200);
-    }
-
-    /**
-     * Checks whether a User has access to a Paper
-     * ATTENTION : As is, anonymous have access to all the other anonymous Papers !!!
-     *
-     * @param Paper     $paper
-     * @param User|null $user
-     */
-    private function assertHasPaperAccess(Paper $paper, User $user = null)
-    {
-        if ($paper->getEnd() || $user !== $paper->getUser()) {
-            throw new AccessDeniedException();
-        }
     }
 
     /**

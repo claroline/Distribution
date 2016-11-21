@@ -3,6 +3,7 @@
 namespace UJM\ExoBundle\Library\Question\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Entity\AbstractInteraction;
 use UJM\ExoBundle\Library\Question\QuestionType;
 use UJM\ExoBundle\Serializer\Answer\Type\OpenAnswerSerializer;
 use UJM\ExoBundle\Serializer\Question\Type\OpenQuestionSerializer;
@@ -65,6 +66,16 @@ class OpenDefinition extends AbstractDefinition
     }
 
     /**
+     * Gets the open question entity.
+     *
+     * @return string
+     */
+    public function getEntityClass()
+    {
+        return 'OpenQuestion';
+    }
+
+    /**
      * Gets the open question validator.
      *
      * @return OpenQuestionValidator
@@ -92,5 +103,10 @@ class OpenDefinition extends AbstractDefinition
     protected function getAnswerSerializer()
     {
         return $this->answerSerializer;
+    }
+
+    public function getStatistics(AbstractInteraction $openQuestion, array $answers)
+    {
+        return null;
     }
 }

@@ -38,7 +38,6 @@ link_exercice_home: Exercise home
 link_exercise_continue: Resume
 link_exercise_retry: Retry
 link_exercise_play: Answer
-link_exercise_docimology: Grading system
 link_csv_export: CSV export
 label_exercise_score: Global score
 label_exercise_question_score: Score

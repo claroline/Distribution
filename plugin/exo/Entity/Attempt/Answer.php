@@ -2,17 +2,22 @@
 
 namespace UJM\ExoBundle\Entity\Attempt;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use UJM\ExoBundle\Entity\Paper;
-use UJM\ExoBundle\Entity\Question;
+use UJM\ExoBundle\Entity\Question\Hint;
+use UJM\ExoBundle\Entity\Question\Question;
 
 /**
+ * An answer represents a user answer to a question.
+ *
  * @ORM\Entity(repositoryClass="UJM\ExoBundle\Repository\AnswerRepository")
  * @ORM\Table(name="ujm_response")
  */
 class Answer
 {
     /**
+     * @var int
+     *
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -20,6 +25,8 @@ class Answer
     private $id;
 
     /**
+     * @var string
+     * 
      * @ORM\Column
      */
     private $ip;
@@ -27,11 +34,15 @@ class Answer
     /**
      * The score obtained for this question.
      *
-     * @ORM\Column(type="float")
+     * @var float
+     *
+     * @ORM\Column(name="mark", type="float")
      */
     private $mark;
 
     /**
+     * @var int
+     *
      * @ORM\Column(name="nb_tries", type="integer")
      */
     private $nbTries = 1;
@@ -46,15 +57,43 @@ class Answer
     private $response;
 
     /**
-     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Paper", inversedBy="answers")
+     * The list of hints used to answer the question.
+     *
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="UJM\ExoBundle\Entity\Question\Hint")
+     * @ORM\JoinTable(
+     *     name="ujm_answer_hints",
+     *     joinColumns={@ORM\JoinColumn(name="answer_id", referencedColumnName="id")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="hint_id", referencedColumnName="id", unique=true)}
+     * )
+     */
+    private $usedHints;
+
+    /**
+     * @var Paper
+     *
+     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Attempt\Paper", inversedBy="answers")
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $paper;
 
     /**
-     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Question")
+     * The question that is answered.
+     *
+     * @var Question
+     *
+     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Question\Question")
      */
     private $question;
+
+    /**
+     * Answer constructor.
+     */
+    public function __construct()
+    {
+        $this->usedHints = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -96,26 +135,6 @@ class Answer
      * @return float
      */
     public function getScore()
-    {
-        return $this->mark;
-    }
-
-    /**
-     * @deprecated
-     *
-     * @param float $mark
-     */
-    public function setMark($mark)
-    {
-        $this->mark = $mark;
-    }
-
-    /**
-     * @deprecated
-     *
-     * @return float
-     */
-    public function getMark()
     {
         return $this->mark;
     }
@@ -174,6 +193,35 @@ class Answer
     public function getResponse()
     {
         return $this->response;
+    }
+
+    public function getUsedHints()
+    {
+        return $this->usedHints;
+    }
+
+    /**
+     * Adds an Hint.
+     *
+     * @param Hint $hint
+     */
+    public function addUsedHint(Hint $hint)
+    {
+        if (!$this->usedHints->contains($hint)) {
+            $this->usedHints->add($hint);
+        }
+    }
+
+    /**
+     * Removes an Hint.
+     *
+     * @param Hint $hint
+     */
+    public function removeUsedHint(Hint $hint)
+    {
+        if ($this->usedHints->contains($hint)) {
+            $this->usedHints->removeElement($hint);
+        }
     }
 
     /**

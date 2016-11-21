@@ -6,6 +6,7 @@ use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\InteractionOpen;
 use UJM\ExoBundle\Entity\TypeOpenQuestion;
+use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
 
 /**
@@ -49,6 +50,10 @@ class OpenQuestionSerializer implements SerializerInterface
         $questionData->score->type = 'manual';
         $questionData->score->max = $openQuestion->getScoreMaxLongResp();
 
+        if (in_array(Transfer::INCLUDE_SOLUTIONS, $options)) {
+            $questionData->solutions = [];
+        }
+
         return $questionData;
     }
 
@@ -67,7 +72,7 @@ class OpenQuestionSerializer implements SerializerInterface
             $openQuestion = new InteractionOpen();
         }
 
-        $openQuestion->setScoreMaxLongResp($data->score->success);
+        $openQuestion->setScoreMaxLongResp($data->score->max);
 
         if (empty($openQuestion->getTypeOpenQuestion())) {
             /** @var TypeOpenQuestion $type */

@@ -3,7 +3,7 @@
 namespace UJM\ExoBundle\Serializer\Question\Type;
 
 use JMS\DiExtraBundle\Annotation as DI;
-use UJM\ExoBundle\Entity\Coords;
+use UJM\ExoBundle\Entity\Misc\Area;
 use UJM\ExoBundle\Entity\InteractionGraphic;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
@@ -74,7 +74,7 @@ class GraphicQuestionSerializer implements SerializerInterface
         $image = new \stdClass();
 
         $imageMeta = new \stdClass();
-        $imageMeta->title = $questionImg->getLabel();
+        $imageMeta->title = $questionImg->getTitle();
 
         $image->id = (string) $questionImg->getId();
         $image->meta = $imageMeta;
@@ -104,7 +104,7 @@ class GraphicQuestionSerializer implements SerializerInterface
      */
     private function serializeSolutions(InteractionGraphic $graphicQuestion)
     {
-        return array_map(function (Coords $area) {
+        return array_map(function (Area $area) {
             $solutionData = new \stdClass();
             $solutionData->area = $this->serializeArea($area);
             $solutionData->score = $area->getScore();
@@ -131,7 +131,7 @@ class GraphicQuestionSerializer implements SerializerInterface
 
             // Searches for an existing area entity.
             foreach ($areaEntities as $entityIndex => $entityArea) {
-                /** @var Coords $entityArea */
+                /** @var Area $entityArea */
                 if ((string) $entityArea->getId() === $solutionData->area->id) {
                     $area = $entityArea;
                     unset($areaEntities[$entityIndex]);
@@ -140,7 +140,7 @@ class GraphicQuestionSerializer implements SerializerInterface
             }
 
             if (null === $area) {
-                $area = new Coords();
+                $area = new Area();
             }
 
             // Deserializes area definition
@@ -158,11 +158,11 @@ class GraphicQuestionSerializer implements SerializerInterface
     /**
      * Serializes an Area.
      *
-     * @param Coords $area
+     * @param Area $area
      *
      * @return \stdClass
      */
-    private function serializeArea(Coords $area)
+    private function serializeArea(Area $area)
     {
         $areaData = new \stdClass();
 
@@ -202,10 +202,10 @@ class GraphicQuestionSerializer implements SerializerInterface
     /**
      * Deserializes an Area.
      *
-     * @param Coords    $area
+     * @param Area    $area
      * @param \stdClass $data
      */
-    private function deserializeArea(Coords $area, \stdClass $data)
+    private function deserializeArea(Area $area, \stdClass $data)
     {
         $area->setColor($data->color);
         $area->setShape($data->shape);

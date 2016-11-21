@@ -3,7 +3,6 @@
 namespace UJM\ExoBundle\Library\Question\Definition;
 
 use UJM\ExoBundle\Entity\AbstractInteraction;
-use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
 use UJM\ExoBundle\Library\Validator\ValidatorInterface;
 
@@ -81,6 +80,7 @@ abstract class AbstractDefinition implements QuestionDefinitionInterface
 
     /**
      * Serializes a question answer.
+     * It gets the string representing the answer stored in DB and converts it into a comprehensive structure.
      *
      * @param string $answer
      * @param array $options
@@ -92,6 +92,16 @@ abstract class AbstractDefinition implements QuestionDefinitionInterface
         return $this->getAnswerSerializer()->serialize($answer, $options);
     }
 
+    /**
+     * Deserializes a question answer data.
+     * It gets the answer data and converts it into a string to be stored in the DB.
+     *
+     * @param mixed $answerData
+     * @param string $answer
+     * @param array $options
+     *
+     * @return string
+     */
     public function deserializeAnswer($answerData, $answer = null, array $options = [])
     {
         return $this->getAnswerSerializer()->deserialize($answerData, $answer, $options);
@@ -99,11 +109,6 @@ abstract class AbstractDefinition implements QuestionDefinitionInterface
 
     public function calculateScore(AbstractInteraction $question, $answer)
     {
-
-    }
-
-    public function calculateTotal(AbstractInteraction $question)
-    {
-
+        // TODO: Implement calculateScore() method.
     }
 }

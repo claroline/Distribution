@@ -12,7 +12,7 @@ class PairAnswerValidator extends JsonSchemaValidator
 {
     public function getJsonSchemaUri()
     {
-        return 'answer/pair/schema.json';
+        return 'answer-data/pair/schema.json';
     }
 
     /**
@@ -25,7 +25,49 @@ class PairAnswerValidator extends JsonSchemaValidator
      */
     public function validateAfterSchema($question, array $options = [])
     {
-        // TODO : implement method.
+
+        $interaction = $this->om->getRepository('UJMExoBundle:InteractionMatching')->findOneByQuestion($question);
+
+        $proposals = $interaction->getProposals()->toArray();
+
+        $proposalIds = array_map(function ($proposal) {
+            return (string) $proposal->getId();
+        }, $proposals);
+
+        $labels = $interaction->getLabels()->toArray();
+        $labelsIds = array_map(function (Label $label) {
+            return (string) $label->getId();
+        }, $labels);
+
+        $sourceIds = [];
+        $targetIds = [];
+        foreach ($data as $answer) {
+            if ($answer !== '') {
+                $set = explode(',', $answer);
+                array_push($sourceIds, $set[0]);
+                array_push($targetIds, $set[1]);
+            }
+        }
+
+        foreach ($sourceIds as $id) {
+            if (!is_string($id)) {
+                return ['Answer array must contain only string identifiers'];
+            }
+
+            if (!in_array($id, $proposalIds)) {
+                return ['Answer array identifiers must reference a question proposal id'];
+            }
+        }
+
+        foreach ($targetIds as $id) {
+            if (!is_string($id)) {
+                return ['Answer array must contain only string identifiers'];
+            }
+
+            if (!in_array($id, $labelsIds)) {
+                return ['Answer array identifiers must reference a question proposal associated label id'];
+            }
+        }
 
         return [];
     }

@@ -9,16 +9,16 @@ use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Persistence\ObjectManager;
-use UJM\ExoBundle\Entity\Category;
-use UJM\ExoBundle\Entity\Choice;
+use UJM\ExoBundle\Entity\Question\Category;
+use UJM\ExoBundle\Entity\Misc\Choice;
 use UJM\ExoBundle\Entity\Exercise;
-use UJM\ExoBundle\Entity\Hint;
+use UJM\ExoBundle\Entity\Question\Hint;
 use UJM\ExoBundle\Entity\InteractionMatching;
 use UJM\ExoBundle\Entity\InteractionOpen;
 use UJM\ExoBundle\Entity\InteractionQCM;
-use UJM\ExoBundle\Entity\Label;
-use UJM\ExoBundle\Entity\Proposal;
-use UJM\ExoBundle\Entity\Question;
+use UJM\ExoBundle\Entity\Misc\Label;
+use UJM\ExoBundle\Entity\Misc\Proposal;
+use UJM\ExoBundle\Entity\Question\Question;
 use UJM\ExoBundle\Entity\Step;
 use UJM\ExoBundle\Entity\StepQuestion;
 use UJM\ExoBundle\Entity\TypeMatching;
@@ -71,9 +71,9 @@ class Persister
     public function qcmChoice($text, $order, $score)
     {
         $choice = new Choice();
-        $choice->setLabel($text);
+        $choice->setData($text);
         $choice->setOrder($order);
-        $choice->setWeight($score);
+        $choice->setScore($score);
         $this->om->persist($choice);
 
         return $choice;
@@ -92,7 +92,7 @@ class Persister
         $question->setUuid(uniqid());
         $question->setMimeType(QuestionType::CHOICE);
         $question->setTitle($title);
-        $question->setInvite('Invite...');
+        $question->setContent('Invite...');
         $question->setDescription($description);
 
         if (!$this->multipleChoiceType) {
@@ -128,7 +128,7 @@ class Persister
         $question->setUuid(uniqid());
         $question->setMimeType(QuestionType::OPEN);
         $question->setTitle($title);
-        $question->setInvite('Invite...');
+        $question->setContent('Invite...');
 
         $interactionOpen = new InteractionOpen();
         $interactionOpen->setQuestion($question);
@@ -144,8 +144,8 @@ class Persister
     {
         $label = new Label();
         $label->setFeedback('feedback...');
-        $label->setValue($text);
-        $label->setScoreRightResponse($score);
+        $label->setData($text);
+        $label->setScore($score);
         $this->om->persist($label);
 
         return $label;
@@ -154,9 +154,9 @@ class Persister
     public function matchProposal($text, Label $label = null)
     {
         $proposal = new Proposal();
-        $proposal->setValue($text);
+        $proposal->setData($text);
         if ($label !== null) {
-            $proposal->addAssociatedLabel($label);
+            $proposal->addExpectedLabel($label);
         }
         $this->om->persist($proposal);
 
@@ -169,7 +169,7 @@ class Persister
         $question->setUuid(uniqid());
         $question->setMimeType(QuestionType::MATCH);
         $question->setTitle($title);
-        $question->setInvite('Invite...');
+        $question->setContent('Invite...');
 
         if (!$this->matchType) {
             $this->matchType = $this->om
@@ -233,7 +233,7 @@ class Persister
          for ($i = 0, $max = count($questions); $i < $max; ++$i) {
              $step = new Step();
              $step->setUuid(uniqid());
-             $step->setText('step');
+             $step->setDescription('step');
              $step->setOrder($i);
 
              // Add step to the exercise
@@ -244,7 +244,7 @@ class Persister
              $stepQuestion = new StepQuestion();
              $stepQuestion->setStep($step);
              $stepQuestion->setQuestion($questions[$i]);
-             $stepQuestion->setOrdre(0);
+             $stepQuestion->setOrder(0);
              $this->om->persist($stepQuestion);
          }
 

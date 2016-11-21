@@ -3,6 +3,7 @@
 namespace UJM\ExoBundle\Library\Question\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Entity\AbstractInteraction;
 use UJM\ExoBundle\Library\Question\QuestionType;
 use UJM\ExoBundle\Serializer\Answer\Type\SetAnswerSerializer;
 use UJM\ExoBundle\Serializer\Question\Type\SetQuestionSerializer;
@@ -65,6 +66,16 @@ class SetDefinition extends AbstractDefinition
     }
 
     /**
+     * Gets the set question entity.
+     *
+     * @return string
+     */
+    public function getEntityClass()
+    {
+        return 'SetQuestion';
+    }
+
+    /**
      * Gets the set question validator.
      *
      * @return SetQuestionValidator
@@ -92,5 +103,23 @@ class SetDefinition extends AbstractDefinition
     protected function getAnswerSerializer()
     {
         return $this->answerSerializer;
+    }
+
+    public function calculateTotal(AbstractInteraction $setQuestion)
+    {
+        $scoreMax = 0;
+
+        foreach ($setQuestion->getLabels() as $label) {
+            $scoreMax += $label->getScore();
+        }
+
+        return $scoreMax;
+    }
+
+    public function getStatistics(AbstractInteraction $setQuestion, array $answers)
+    {
+        // TODO: Implement getStatistics() method.
+
+        return [];
     }
 }

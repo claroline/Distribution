@@ -4,6 +4,8 @@ namespace UJM\ExoBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use UJM\ExoBundle\Entity\Misc\Label;
+use UJM\ExoBundle\Entity\Misc\Proposal;
 
 /**
  * @ORM\Entity
@@ -14,24 +16,32 @@ class InteractionMatching extends AbstractInteraction
     const TYPE = 'InteractionMatching';
 
     /**
+     * @var bool
+     *
      * @ORM\Column(type="boolean")
      */
     private $shuffle = false;
 
     /**
+     * @var ArrayCollection
+     *
      * @ORM\OneToMany(
-     *     targetEntity="Label",
+     *     targetEntity="UJM\ExoBundle\Entity\Misc\Label",
      *     mappedBy="interactionMatching",
-     *     cascade={"remove"}
+     *     cascade={"all"},
+     *     orphanRemoval=true
      * )
      */
     private $labels;
 
     /**
+     * @var ArrayCollection
+     *
      * @ORM\OneToMany(
-     *     targetEntity="Proposal",
+     *     targetEntity="UJM\ExoBundle\Entity\Misc\Proposal",
      *     mappedBy="interactionMatching",
-     *     cascade={"remove"}
+     *     cascade={"all"},
+     *     orphanRemoval=true
      * )
      */
     private $proposals;
@@ -43,7 +53,7 @@ class InteractionMatching extends AbstractInteraction
     private $typeMatching;
 
     /**
-     * Constructs a new instance of label and proposal.
+     * InteractionMatching constructor.
      */
     public function __construct()
     {
@@ -111,179 +121,33 @@ class InteractionMatching extends AbstractInteraction
     /**
      * @return ArrayCollection
      */
-    public function setProposals(ArrayCollection $proposals)
-    {
-        $this->proposals = $proposals;
-
-        return $this->proposals;
-    }
-
-    /**
-     * @return ArrayCollection
-     */
     public function getProposals()
     {
         return $this->proposals;
     }
 
     /**
+     * Adds a proposal.
+     *
      * @param Proposal $proposal
      */
     public function addProposal(Proposal $proposal)
     {
-        $this->proposals->add($proposal);
-        $proposal->setInteractionMatching($this);
+        if (!$this->proposals->contains($proposal)) {
+            $this->proposals->add($proposal);
+            $proposal->setInteractionMatching($this);
+        }
     }
 
-    public function shuffleProposals()
+    /**
+     * Removes a proposal.
+     *
+     * @param Proposal $proposal
+     */
+    public function removeProposal(Proposal $proposal)
     {
-        $this->sortProposals();
-        $i = 0;
-        $tabShuffle = array();
-        $tabFixed = array();
-        $proposals = new \Doctrine\Common\Collections\ArrayCollection();
-        $proposalCount = count($this->proposals);
-
-        while ($i < $proposalCount) {
-            if ($this->proposals[$i]->getPositionForce() === false) {
-                $tabShuffle[$i] = $i;
-                $tabFixed[] = -1;
-            } else {
-                $tabFixed[] = $i;
-            }
-            ++$i;
-        }
-
-        shuffle($tabShuffle);
-
-        $i = 0;
-        $proposalCount = count($this->proposals);
-
-        while ($i < $proposalCount) {
-            if ($tabFixed[$i] != -1) {
-                $proposals [] = $this->proposals[$i];
-            } else {
-                $index = $tabShuffle[0];
-                $proposals[] = $this->proposals[$index];
-                unset($tabShuffle[0]);
-                $tabShuffle = array_merge($tabShuffle);
-            }
-            ++$i;
-        }
-        $this->proposals = $proposals;
-    }
-
-    public function sortProposals()
-    {
-        $tab = [];
-        $proposals = new ArrayCollection();
-
-        foreach ($this->proposals as $proposal) {
-            $tab[] = $proposal->getOrdre();
-        }
-
-        asort($tab);
-
-        foreach (array_keys($tab) as $indice) {
-            $proposals[] = $this->proposals[$indice];
-        }
-
-        $this->proposals = $proposals;
-    }
-
-    public function shuffleLabels()
-    {
-        $this->sortLabels();
-
-        $i = 0;
-        $tabShuffle = [];
-        $tabFixed = [];
-        $labels = new ArrayCollection();
-        $labelCount = count($this->labels);
-
-        while ($i < $labelCount) {
-            if ($this->labels[$i]->getPositionForce() === false) {
-                $tabShuffle[$i] = $i;
-                $tabFixed[] = -1;
-            } else {
-                $tabFixed[] = $i;
-            }
-            ++$i;
-        }
-
-        $i = 0;
-        $labelCount = count($this->labels);
-
-        shuffle($tabShuffle);
-
-        while ($i < $labelCount) {
-            if ($tabFixed[$i] != -1) {
-                $labels [] = $this->labels[$i];
-            } else {
-                $index = $tabShuffle[0];
-                $labels[] = $this->labels[$index];
-                unset($tabShuffle[0]);
-                $tabShuffle = array_merge($tabShuffle);
-            }
-            ++$i;
-        }
-
-        $this->labels = $labels;
-    }
-
-    public function sortLabels()
-    {
-        $tab = [];
-        $labels = new ArrayCollection();
-
-        foreach ($this->labels as $label) {
-            $tab[] = $label->getOrdre();
-        }
-
-        asort($tab);
-
-        foreach (array_keys($tab) as $indice) {
-            $labels[] = $this->labels[$indice];
-        }
-
-        $this->labels = $labels;
-    }
-
-    public function __clone()
-    {
-        if ($this->id) {
-            $this->id = null;
-            $newLinkLabelProposal = [];
-            $this->question = clone $this->question;
-            $newLabels = new ArrayCollection();
-            $newProposals = new ArrayCollection();
-
-            foreach ($this->labels as $label) {
-                $newLabel = clone $label;
-                $newLabel->setInteractionMatching($this);
-                $newLabels->add($newLabel);
-                $newLinkLabelProposal[$label->getId()] = $newLabel;
-            }
-
-            $this->labels = $newLabels;
-
-            foreach ($this->proposals as $proposal) {
-                $newProposal = clone $proposal;
-                $newProposal->removeAssociatedLabel();
-                $newProposal->setInteractionMatching($this);
-                $newProposals->add($newProposal);
-
-                if ($proposal->getAssociatedLabel() != null) {
-                    $assocedLabel = $proposal->getAssociatedLabel();
-                    foreach ($assocedLabel as $assocLabel) {
-                        $newProposal->addAssociatedLabel(
-                            $newLinkLabelProposal[$assocLabel->getId()]
-                        );
-                    }
-                }
-            }
-
-            $this->proposals = $newProposals;
+        if ($this->proposals->contains($proposal)) {
+            $this->proposals->removeElement($proposal);
         }
     }
 }

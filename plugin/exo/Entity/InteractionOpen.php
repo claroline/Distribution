@@ -4,6 +4,7 @@ namespace UJM\ExoBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use UJM\ExoBundle\Entity\Misc\Keyword;
 
 /**
  * An Open question.
@@ -21,15 +22,27 @@ class InteractionOpen extends AbstractInteraction
     private $typeopenquestion;
 
     /**
-     * @ORM\OneToMany(targetEntity="WordResponse", mappedBy="interactionopen", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="UJM\ExoBundle\Entity\Misc\Keyword",
+     *     mappedBy="interactionopen",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     * )
      */
     private $keywords;
 
     /**
+     * @var float
+     *
      * @ORM\Column(type="float", nullable=true)
      */
     private $scoreMaxLongResp;
 
+    /**
+     * InteractionOpen constructor.
+     */
     public function __construct()
     {
         $this->keywords = new ArrayCollection();
@@ -76,7 +89,7 @@ class InteractionOpen extends AbstractInteraction
      */
     public function setKeywords(array $keywords)
     {
-        $this->keywords = new ArrayCollection(array_map(function (WordResponse $keyword) {
+        $this->keywords = new ArrayCollection(array_map(function (Keyword $keyword) {
             $keyword->setInteractionOpen($this);
 
             return $keyword;
@@ -86,9 +99,9 @@ class InteractionOpen extends AbstractInteraction
     /**
      * Adds a keyword.
      *
-     * @param WordResponse $keyword
+     * @param Keyword $keyword
      */
-    public function addKeyword(WordResponse $keyword)
+    public function addKeyword(Keyword $keyword)
     {
         if (!$this->keywords->contains($keyword)) {
             $this->keywords->add($keyword);
@@ -99,44 +112,13 @@ class InteractionOpen extends AbstractInteraction
     /**
      * Removes a keyword.
      *
-     * @param WordResponse $keyword
+     * @param Keyword $keyword
      */
-    public function removeKeyword(WordResponse $keyword)
+    public function removeKeyword(Keyword $keyword)
     {
         if ($this->keywords->contains($keyword)) {
             $this->keywords->removeElement($keyword);
         }
-    }
-
-    /**
-     * @deprecated use getKeywords() instead
-     *
-     * @return ArrayCollection
-     */
-    public function getWordResponses()
-    {
-        return $this->keywords;
-    }
-
-    /**
-     * @deprecated use addKeyword() instead
-     *
-     * @param WordResponse $wordResponse
-     */
-    public function addWordResponse(WordResponse $wordResponse)
-    {
-        $this->keywords->add($wordResponse);
-        $wordResponse->setInteractionOpen($this);
-    }
-
-    /**
-     * @deprecated use removeKeywords() instead
-     *
-     * @param WordResponse $wordResponse
-     */
-    public function removeWordResponse(WordResponse $wordResponse)
-    {
-        $this->keywords->removeElement($wordResponse);
     }
 
     /**
@@ -153,22 +135,5 @@ class InteractionOpen extends AbstractInteraction
     public function getScoreMaxLongResp()
     {
         return $this->scoreMaxLongResp;
-    }
-
-    public function __clone()
-    {
-        if ($this->id) {
-            $this->id = null;
-            $this->question = clone $this->question;
-            $newWordResponses = new ArrayCollection();
-
-            foreach ($this->keywords as $wordResponse) {
-                $newWordResponse = clone $wordResponse;
-                $newWordResponse->setInteractionOpen($this);
-                $newWordResponses->add($newWordResponse);
-            }
-
-            $this->keywords = $newWordResponses;
-        }
     }
 }

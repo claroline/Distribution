@@ -3,9 +3,9 @@
 namespace UJM\ExoBundle\Serializer\Question\Type;
 
 use JMS\DiExtraBundle\Annotation as DI;
-use UJM\ExoBundle\Entity\Hole;
+use UJM\ExoBundle\Entity\Misc\Hole;
 use UJM\ExoBundle\Entity\InteractionHole;
-use UJM\ExoBundle\Entity\WordResponse;
+use UJM\ExoBundle\Entity\Misc\Keyword;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
 use UJM\ExoBundle\Serializer\Misc\KeywordSerializer;
@@ -97,7 +97,7 @@ class ClozeQuestionSerializer implements SerializerInterface
 
             if ($hole->getSelector()) {
                 // We want to propose a list of choices
-                $holeData->choices = array_map(function (WordResponse $keyword) {
+                $holeData->choices = array_map(function (Keyword $keyword) {
                     return $keyword->getText();
                 }, $hole->getKeywords()->toArray());
             }
@@ -123,7 +123,7 @@ class ClozeQuestionSerializer implements SerializerInterface
     {
         $holeEntities = $clozeQuestion->getHoles()->toArray();
 
-        foreach ($holes as $index => $holeData) {
+        foreach ($holes as $holeData) {
             $hole = null;
 
             // Searches for an existing hole entity.
@@ -139,8 +139,6 @@ class ClozeQuestionSerializer implements SerializerInterface
             if (null === $hole) {
                 $hole = new Hole();
             }
-
-            $hole->setPosition($index);
 
             if (!empty($holeData->choices)) {
                 $hole->setSelector(true);
@@ -184,7 +182,7 @@ class ClozeQuestionSerializer implements SerializerInterface
             $solutionData = new \stdClass();
             $solutionData->holeId = (string) $hole->getId();
 
-            $solutionData->answers = array_map(function (WordResponse $keyword) {
+            $solutionData->answers = array_map(function (Keyword $keyword) {
                 return $this->keywordSerializer->serialize($keyword);
             }, $hole->getKeywords()->toArray());
 

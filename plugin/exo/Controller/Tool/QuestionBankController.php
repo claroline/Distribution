@@ -9,7 +9,8 @@ use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Manager\Question\QuestionManager;
 
 /**
- * Class QuestionBankController
+ * QuestionBankController
+ * The tool permits to users to manage their questions across the platform (edit, export, share, etc.).
  *
  * @EXT\Route(
  *     "/questions",
@@ -23,7 +24,7 @@ class QuestionBankController
      * QuestionBankController constructor.
      *
      * @DI\InjectParams({
-     *     "questionManager" = @DI\Inject("ujm.exo.question_manager")
+     *     "questionManager" = @DI\Inject("ujm_exo.manager.question")
      * })
      *
      * @param QuestionManager $questionManager
@@ -34,7 +35,7 @@ class QuestionBankController
     }
 
     /**
-     * Opens the bank of Questions.
+     * Opens the bank of Questions for the current user.
      *
      * @param User $user
      *

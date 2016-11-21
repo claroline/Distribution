@@ -5,6 +5,8 @@ namespace UJM\ExoBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
+use UJM\ExoBundle\Entity\Question\Question;
+use UJM\ExoBundle\Library\Model\OrderTrait;
 
 /**
  * Represents a Step in an Exercise.
@@ -30,19 +32,21 @@ class Step
      */
     private $uuid;
 
+    use OrderTrait;
+
     /**
      * @var int
      *
-     * @ORM\Column(name="title", type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
-    private $title = '';
+    private $title;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="value", type="text", nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
-    private $text = '';
+    private $description;
 
     /**
      * @var int
@@ -76,13 +80,6 @@ class Step
      * @ORM\Column(name="max_attempts", type="integer")
      */
     private $maxAttempts = 5;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="ordre", type="integer")
-     */
-    private $order;
 
     /**
      * @ORM\ManyToOne(targetEntity="Exercise", inversedBy="steps")
@@ -153,23 +150,23 @@ class Step
     }
 
     /**
-     * Set text.
+     * Set description.
      *
-     * @param string $text
+     * @param string $description
      */
-    public function setText($text)
+    public function setDescription($description)
     {
-        $this->text = $text;
+        $this->description = $description;
     }
 
     /**
-     * Get text.
+     * Get description.
      *
      * @return string
      */
-    public function getText()
+    public function getDescription()
     {
-        return $this->text;
+        return $this->description;
     }
 
     /**
@@ -269,26 +266,6 @@ class Step
     }
 
     /**
-     * Set order.
-     *
-     * @param int $order
-     */
-    public function setOrder($order)
-    {
-        $this->order = $order;
-    }
-
-    /**
-     * Get order.
-     *
-     * @return int
-     */
-    public function getOrder()
-    {
-        return $this->order;
-    }
-
-    /**
      * @param Exercise $exercise
      */
     public function setExercise(Exercise $exercise)
@@ -313,6 +290,40 @@ class Step
     }
 
     /**
+     * @param StepQuestion $stepQuestion
+     */
+    public function addStepQuestion(StepQuestion $stepQuestion)
+    {
+        if (!$this->stepQuestions->contains($stepQuestion)) {
+            $this->stepQuestions->add($stepQuestion);
+        }
+    }
+
+    /**
+     * @param StepQuestion $stepQuestion
+     */
+    public function removeStepQuestion(StepQuestion $stepQuestion)
+    {
+        if ($this->stepQuestions->contains($stepQuestion)) {
+            $this->stepQuestions->removeElement($stepQuestion);
+        }
+    }
+
+    /**
+     * Shortcuts to get the list of questions of the step.
+     * 
+     * @return array
+     */
+    public function getQuestions()
+    {
+        $stepQuestions = $this->stepQuestions->toArray();
+
+        return array_map(function (StepQuestion $stepQuestion) {
+            return $stepQuestion->getQuestion();
+        }, $stepQuestions);
+    }
+
+    /**
      * Shortcuts to add Questions to Step.
      * Avoids the need to manually initialize a StepQuestion object to hold the relation.
      *
@@ -331,26 +342,6 @@ class Step
             $order = count($this->getStepQuestions());
         }
 
-        $stepQuestion->setOrdre($order);
-    }
-
-    /**
-     * @param StepQuestion $stepQuestion
-     */
-    public function addStepQuestion(StepQuestion $stepQuestion)
-    {
-        if (!$this->stepQuestions->contains($stepQuestion)) {
-            $this->stepQuestions->add($stepQuestion);
-        }
-    }
-
-    /**
-     * @param StepQuestion $stepQuestion
-     */
-    public function removeStepQuestion(StepQuestion $stepQuestion)
-    {
-        if ($this->stepQuestions->contains($stepQuestion)) {
-            $this->stepQuestions->removeElement($stepQuestion);
-        }
+        $stepQuestion->setOrder($order);
     }
 }

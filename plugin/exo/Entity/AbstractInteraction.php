@@ -3,6 +3,7 @@
 namespace UJM\ExoBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use UJM\ExoBundle\Entity\Question\Question;
 
 /**
  * @ORM\MappedSuperclass
@@ -17,7 +18,7 @@ abstract class AbstractInteraction implements QuestionTypeProviderInterface
     protected $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="Question", cascade={"remove"})
+     * @ORM\OneToOne(targetEntity="UJM\ExoBundle\Entity\Question\Question", cascade={"remove"})
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     protected $question;

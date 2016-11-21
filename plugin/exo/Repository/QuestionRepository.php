@@ -5,8 +5,7 @@ namespace UJM\ExoBundle\Repository;
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use UJM\ExoBundle\Entity\Exercise;
-use UJM\ExoBundle\Entity\Question;
-use UJM\ExoBundle\Entity\Step;
+use UJM\ExoBundle\Entity\Question\Question;
 
 class QuestionRepository extends EntityRepository
 {
@@ -66,33 +65,6 @@ class QuestionRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    /**
-     * Returns all the questions created by a given user. Allows to
-     * select only questions defined as models (defaults to false).
-     *
-     * @param User $user
-     * @param bool $limitToModels
-     *
-     * @return array
-     */
-    public function findByUser(User $user, $limitToModels = false)
-    {
-        $qb = $this->createQueryBuilder('q')
-            ->join('q.creator', 'u')
-            ->join('q.category', 'c')
-            ->where('q.creator = :creator');
-
-        if ($limitToModels) {
-            $qb->andWhere('q.model = true');
-        }
-
-        return $qb
-            ->orderBy('c.name, q.title', 'ASC')
-            ->setParameter('creator', $user)
-            ->getQuery()
-            ->getResult();
-    }
-
     public function findUsedBy(Question $question)
     {
         /*$this->createQueryBuilder()*/
@@ -102,6 +74,11 @@ class QuestionRepository extends EntityRepository
     public function findSharedWith(Question $question)
     {
         return [];
+    }
+
+    public function findScores(Question $question, Exercise $exercise = null)
+    {
+
     }
 
     /**
@@ -124,27 +101,6 @@ class QuestionRepository extends EntityRepository
     }
 
     /**
-     * Returns all the questions linked to a given step.
-     *
-     * @deprecated this methods is only used in incorrect way. It will be deleted when there will be no more use
-     *
-     * @param Step $step
-     *
-     * @return Question[]
-     */
-    public function findByStep(Step $step)
-    {
-        return $this->createQueryBuilder('q')
-            ->join('q.stepQuestions', 'sq')
-            ->join('sq.step', 's')
-            ->where('sq.step = :step')
-            ->orderBy('sq.order')
-            ->setParameter(':step', $step)
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
      * Returns the questions corresponding to an array of ids.
      *
      * @param array $ids
@@ -156,43 +112,6 @@ class QuestionRepository extends EntityRepository
         return $this->createQueryBuilder('q')
             ->where('q IN (:ids)')
             ->setParameter('ids', $ids)
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * Returns the questions created by a user which are not
-     * associated with a given exercise. Allows to select only
-     * questions defined as models (defaults to false).
-     *
-     * @param User     $user
-     * @param Exercise $exercise
-     * @param bool     $limitToModels
-     *
-     * @return array
-     */
-    public function findByUserNotInExercise(User $user, Exercise $exercise, $limitToModels = false)
-    {
-        $stepQuestionsQuery = $this->createQueryBuilder('q1')
-            ->join('q1.stepQuestions', 'sq')
-            ->join('sq.step', 's')
-            ->where('s.exercise = :exercise');
-
-        $qb = $this->createQueryBuilder('q')
-            ->leftJoin('q.category', 'c')
-            ->where('q.creator = :creator');
-
-        if ($limitToModels) {
-            $qb->andWhere('q.model = true');
-        }
-
-        return $qb
-            ->andWhere($qb->expr()->notIn('q', $stepQuestionsQuery->getDQL()))
-            ->orderBy('c.name, q.title', 'ASC')
-            ->setParameters([
-                'creator' => $user,
-                'exercise' => $exercise,
-            ])
             ->getQuery()
             ->getResult();
     }

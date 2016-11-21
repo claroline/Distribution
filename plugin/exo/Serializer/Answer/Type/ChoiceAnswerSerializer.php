@@ -16,13 +16,16 @@ class ChoiceAnswerSerializer implements SerializerInterface
      * @param string $choiceAnswer
      * @param array $options
      *
-     * @return \stdClass
+     * @return array - an array of choice ids or an empty array if no answer
      */
     public function serialize($choiceAnswer, array $options = [])
     {
-        $answerData = new \stdClass();
+        $parts = explode(';', $choiceAnswer);
 
-        return $answerData;
+        // We need to filter empty values to managed old malformed data
+        return array_filter($parts, function ($part) {
+            return !empty($part);
+        });
     }
 
     /**
@@ -32,10 +35,10 @@ class ChoiceAnswerSerializer implements SerializerInterface
      * @param string $choiceAnswer
      * @param array  $options
      *
-     * @return string
+     * @return string - a string containing all the choice ids separated by `;` or an empty string if no answer
      */
     public function deserialize($data, $choiceAnswer = null, array $options = [])
     {
-
+        return count($data) > 0 ? implode(';', $data) : '';
     }
 }

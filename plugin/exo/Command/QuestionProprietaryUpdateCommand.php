@@ -48,11 +48,13 @@ class QuestionProprietaryUpdateCommand extends ContainerAwareCommand
         $helper = $this->getHelper('question');
         $om = $container->get('claroline.persistence.object_manager');
         $newOwner = $om->getRepository('ClarolineCoreBundle:User')->loadUserByUsername($username);
-        $question = $om->getRepository('UJM\ExoBundle\Entity\Question')->find($id);
+        $question = $om->getRepository('UJMExoBundle:Question\Question')->find($id);
         $all = $input->getOption('all');
 
         $questions = $all ?
-           $om->getRepository('UJM\ExoBundle\Entity\Question')->findByUser($question->getUser()) :
+           $om->getRepository('UJMExoBundle:Question\Question')->findBy([
+               'creator' => $question->getCreator(),
+           ]) :
            [$question];
 
         $output->writeln('Questions found:');

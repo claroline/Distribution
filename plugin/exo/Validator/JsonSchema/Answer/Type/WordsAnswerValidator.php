@@ -12,7 +12,7 @@ class WordsAnswerValidator extends JsonSchemaValidator
 {
     public function getJsonSchemaUri()
     {
-        return 'answer/cloze/schema.json';
+        return 'answer-data/words/schema.json';
     }
 
     /**
@@ -25,8 +25,6 @@ class WordsAnswerValidator extends JsonSchemaValidator
      */
     public function validateAfterSchema($question, array $options = [])
     {
-        // TODO : implement method.
-
         return [];
     }
 }

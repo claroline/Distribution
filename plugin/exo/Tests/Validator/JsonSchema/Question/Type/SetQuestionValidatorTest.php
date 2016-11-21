@@ -23,6 +23,22 @@ class SetQuestionValidatorTest extends JsonSchemaTestCase
     }
 
     /**
+     * The validator MUST return errors if there is no solution with a positive score.
+     */
+    public function testNoSolutionWithPositiveScoreThrowsError()
+    {
+        $questionData = $this->loadTestData('question/set/invalid/no-solution-with-positive-score.json');
+
+        $errors = $this->validator->validate($questionData, [Validation::REQUIRE_SOLUTIONS]);
+
+        $this->assertGreaterThan(0, count($errors));
+        $this->assertTrue(in_array([
+            'path' => '/solutions',
+            'message' => 'There is no solution with a positive score',
+        ], $errors));
+    }
+
+    /**
      * The validator MUST return errors if the solution ids do not match member ids.
      */
     public function testIncoherentMemberIdsInSolutionThrowErrors()

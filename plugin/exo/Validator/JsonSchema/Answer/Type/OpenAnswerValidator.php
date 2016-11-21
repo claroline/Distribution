@@ -12,7 +12,7 @@ class OpenAnswerValidator extends JsonSchemaValidator
 {
     public function getJsonSchemaUri()
     {
-        return 'answer/open/schema.json';
+        return 'answer-data/open/schema.json';
     }
 
     /**
@@ -25,7 +25,7 @@ class OpenAnswerValidator extends JsonSchemaValidator
      */
     public function validateAfterSchema($question, array $options = [])
     {
-        // TODO : implement method.
+        // Checks the content type of the answer match the content type of the question
 
         return [];
     }

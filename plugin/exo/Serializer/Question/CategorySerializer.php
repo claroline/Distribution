@@ -6,7 +6,7 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use UJM\ExoBundle\Entity\Category;
+use UJM\ExoBundle\Entity\Question\Category;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\AbstractSerializer;
 
@@ -79,9 +79,9 @@ class CategorySerializer extends AbstractSerializer
     public function deserialize($data, $category = null, array $options = [])
     {
         if (empty($category)) {
-            // Loads the Question from DB if already exist
+            // Loads the Category from DB if already exist
             if (!empty($data->id)) {
-                $category = $this->om->getRepository('UJMExoBundle:Category')->findOneBy([
+                $category = $this->om->getRepository('UJMExoBundle:Question\Category')->findOneBy([
                     'uuid' => $data->id,
                 ]);
             }
@@ -89,11 +89,11 @@ class CategorySerializer extends AbstractSerializer
             if (empty($category)) {
                 // Question not exist
                 $category = new Category();
-            }
-        }
 
-        if (!empty($data->id)) {
-            $category->setUuid($data->id);
+                if (!empty($data->id)) {
+                    $category->setUuid($data->id);
+                }
+            }
         }
 
         // Map data to entity (dataProperty => entityProperty/function to call)

@@ -6,7 +6,7 @@ use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\InteractionOpen;
 use UJM\ExoBundle\Entity\TypeOpenQuestion;
-use UJM\ExoBundle\Entity\WordResponse;
+use UJM\ExoBundle\Entity\Misc\Keyword;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
 use UJM\ExoBundle\Serializer\Misc\KeywordSerializer;
@@ -97,7 +97,7 @@ class WordsQuestionSerializer implements SerializerInterface
 
     private function serializeSolutions(InteractionOpen $wordsQuestion)
     {
-        return array_map(function (WordResponse $keyword) {
+        return array_map(function (Keyword $keyword) {
             return $this->keywordSerializer->serialize($keyword);
         }, $wordsQuestion->getKeywords()->toArray());
     }

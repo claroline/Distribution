@@ -6,7 +6,6 @@ use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Question\QuestionDefinitionsCollection;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
-use UJM\ExoBundle\Validator\JsonSchema\HintValidator;
 
 /**
  * @DI\Service("ujm_exo.validator.question")

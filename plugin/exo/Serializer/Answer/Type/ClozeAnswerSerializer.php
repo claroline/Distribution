@@ -20,9 +20,16 @@ class ClozeAnswerSerializer implements SerializerInterface
      */
     public function serialize($clozeAnswer, array $options = [])
     {
-        $answerData = new \stdClass();
+        $parts = json_decode($clozeAnswer);
 
-        return $answerData;
+        $array = [];
+        foreach ($parts as $key => $value) {
+            $array[$key] = $value;
+        }
+
+        return array_filter($array, function ($part) {
+            return $part !== '';
+        });
     }
 
     /**
@@ -36,6 +43,6 @@ class ClozeAnswerSerializer implements SerializerInterface
      */
     public function deserialize($data, $clozeAnswer = null, array $options = [])
     {
-
+        return json_encode($data);
     }
 }

@@ -4,7 +4,7 @@ namespace UJM\ExoBundle\Serializer\Question\Type;
 
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use UJM\ExoBundle\Entity\Choice;
+use UJM\ExoBundle\Entity\Misc\Choice;
 use UJM\ExoBundle\Entity\InteractionQCM;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
@@ -132,7 +132,7 @@ class ChoiceQuestionSerializer implements SerializerInterface
                 $choiceData = new \stdClass();
                 $choiceData->id = (string) $choice->getId();
                 $choiceData->type = 'text/html';
-                $choiceData->data = $choice->getLabel();
+                $choiceData->data = $choice->getData();
             }
 
             return $choiceData;
@@ -173,23 +173,23 @@ class ChoiceQuestionSerializer implements SerializerInterface
             // Set choice content
             if ('text/html' === $choiceData->type || 'text/plain' === $choiceData->type) {
                 // HTML is directly stored in the choice entity
-                $choice->setLabel($choiceData->data);
+                $choice->setData($choiceData->data);
                 $choice->setResourceNode(null);
             } else {
                 // Other types require a ResourceNode
                 $node = $this->resourceContentSerializer->deserialize($choiceData);
 
-                $choice->setLabel('');
+                $choice->setData('');
                 $choice->setResourceNode($node);
             }
 
             // Set choice score
             foreach ($solutions as $solution) {
                 if ($solution->id === $choiceData->id) {
-                    $choice->setWeight($solution->score);
+                    $choice->setScore($solution->score);
 
                     if (0 < $solution->score) {
-                        $choice->setRightResponse(true);
+                        $choice->setExpected(true);
                     }
 
                     if (isset($solution->feedback)) {
@@ -218,16 +218,10 @@ class ChoiceQuestionSerializer implements SerializerInterface
      */
     private function serializeSolutions(InteractionQCM $choiceQuestion)
     {
-        return array_map(function (Choice $choice) use ($choiceQuestion) {
+        return array_map(function (Choice $choice) {
             $solutionData = new \stdClass();
             $solutionData->id = (string) $choice->getId();
-
-            if (!$choiceQuestion->getWeightResponse()) {
-                $solutionData->score = $choice->getRightResponse() ? 1 : -1;
-            } else {
-                $solutionData->score = $choice->getWeight();
-            }
-            $solutionData->rightResponse = $choice->getRightResponse();
+            $solutionData->score = $choice->getScore();
 
             if ($choice->getFeedback()) {
                 $solutionData->feedback = $choice->getFeedback();

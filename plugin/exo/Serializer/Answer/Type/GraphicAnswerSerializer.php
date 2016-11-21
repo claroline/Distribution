@@ -20,9 +20,16 @@ class GraphicAnswerSerializer implements SerializerInterface
      */
     public function serialize($graphicAnswer, array $options = [])
     {
-        $answerData = new \stdClass();
+        $parts = explode(';', $graphicAnswer);
 
-        return $answerData;
+        $answers = [];
+        foreach ($parts as $coords) {
+            if ('' !== $coords) {
+                $answers[] = $this->exportCoords(explode('-', $coords));
+            }
+        }
+
+        return $answers;
     }
 
     /**
@@ -36,6 +43,8 @@ class GraphicAnswerSerializer implements SerializerInterface
      */
     public function deserialize($data, $graphicAnswer = null, array $options = [])
     {
-
+        $answer = implode(';', array_map(function (array $coords) {
+            return (string) $coords['x'].'-'.(string) $coords['y'];
+        }, $data));
     }
 }
