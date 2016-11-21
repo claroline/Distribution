@@ -60,6 +60,16 @@ class ClacoForm extends AbstractResource
     protected $categories;
 
     /**
+     * @ORM\OneToMany(
+     *     targetEntity="Claroline\ClacoFormBundle\Entity\Keyword",
+     *     mappedBy="clacoForm"
+     * )
+     * @Groups({"api_claco_form", "api_user_min"})
+     * @SerializedName("keywords")
+     */
+    protected $keywords;
+
+    /**
      * @ORM\Column(type="json_array", nullable=true)
      * @Groups({"api_claco_form", "api_user_min"})
      * @SerializedName("details")
@@ -68,8 +78,9 @@ class ClacoForm extends AbstractResource
 
     public function __construct()
     {
-        $this->fields = new ArrayCollection();
         $this->categories = new ArrayCollection();
+        $this->fields = new ArrayCollection();
+        $this->keywords = new ArrayCollection();
     }
 
     public function setId($id)
@@ -100,6 +111,11 @@ class ClacoForm extends AbstractResource
     public function getCategories()
     {
         return $this->categories->toArray();
+    }
+
+    public function getKeywords()
+    {
+        return $this->keywords->toArray();
     }
 
     public function getDetails()

@@ -25,6 +25,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Entry
 {
+    const PENDING = 0;
+    const PUBLISHED = 1;
+    const UNPUBLISHED = 2;
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -41,6 +45,13 @@ class Entry
      * @SerializedName("title")
      */
     protected $title;
+
+    /**
+     * @ORM\Column(name="entry_status", type="integer")
+     * @Groups({"api_claco_form", "api_user_min"})
+     * @SerializedName("status")
+     */
+    protected $status;
 
     /**
      * @ORM\ManyToOne(
@@ -87,11 +98,20 @@ class Entry
      */
     protected $categories;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="Claroline\ClacoFormBundle\Entity\Keyword")
+     * @ORM\JoinTable(name="claro_clacoformbundle_entry_keyword")
+     * @Groups({"api_claco_form", "api_user_min"})
+     * @SerializedName("keywords")
+     */
+    protected $keywords;
+
     public function __construct()
     {
         $this->values = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->categories = new ArrayCollection();
+        $this->keywords = new ArrayCollection();
     }
 
     public function getId()
@@ -112,6 +132,16 @@ class Entry
     public function setTitle($title)
     {
         $this->title = $title;
+    }
+
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    public function setStatus($status)
+    {
+        $this->status = $status;
     }
 
     public function getClacoForm()
@@ -216,5 +246,33 @@ class Entry
     public function emptyCategories()
     {
         $this->categories->clear();
+    }
+
+    public function getKeywords()
+    {
+        return $this->keywords->toArray();
+    }
+
+    public function addKeyword(Keyword $keyword)
+    {
+        if (!$this->keywords->contains($keyword)) {
+            $this->keywords->add($keyword);
+        }
+
+        return $this;
+    }
+
+    public function removeKeyword(Keyword $keyword)
+    {
+        if ($this->keywords->contains($keyword)) {
+            $this->keywords->removeElement($keyword);
+        }
+
+        return $this;
+    }
+
+    public function emptyKeywords()
+    {
+        $this->keywords->clear();
     }
 }

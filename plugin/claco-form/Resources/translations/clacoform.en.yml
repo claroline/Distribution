@@ -14,13 +14,17 @@ comments: Comments
 config_success_message: The configuration has been successfully saved.
 create_a_category: Create a category
 create_a_field: Create a field
+create_a_keyword: Create a keyword
 delete_category: Delete category
 delete_category_confirm_message: Are you sure you want to remove this category [%name%] ?
 delete_field: Delete field
 delete_field_confirm_message: Are you sure you want to remove this field [%name%] ?
+delete_keyword: Delete keyword
+delete_keyword_confirm_message: Are you sure you want to remove this keyword [%name%] ?
 display: Display
 edit_category: Edit category
 edit_field: Edit field
+edit_keyword: Edit keyword
 entries_list_search: List of entries (Search)
 entry_addition: Addition of an entry
 fields_management: Fields management
@@ -66,6 +70,7 @@ menu: Menu
 metadata: Metadata
 no_category: No category
 no_field: No field
+no_keyword: No keyword
 optional: Optional
 random_entries: Random entries
 random_entry: Random entry

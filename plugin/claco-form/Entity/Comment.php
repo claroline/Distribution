@@ -9,8 +9,8 @@ use JMS\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Table(name="claro_clacoformbundle_comment")
  * @ORM\Entity
+ * @ORM\Table(name="claro_clacoformbundle_comment")
  */
 class Comment
 {

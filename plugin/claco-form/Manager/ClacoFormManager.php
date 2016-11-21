@@ -14,6 +14,7 @@ namespace Claroline\ClacoFormBundle\Manager;
 use Claroline\ClacoFormBundle\Entity\Category;
 use Claroline\ClacoFormBundle\Entity\ClacoForm;
 use Claroline\ClacoFormBundle\Entity\Field;
+use Claroline\ClacoFormBundle\Entity\Keyword;
 use Claroline\ClacoFormBundle\Event\Log\LogCategoryCreateEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogCategoryDeleteEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogCategoryEditEvent;
@@ -22,6 +23,9 @@ use Claroline\ClacoFormBundle\Event\Log\LogClacoFormTemplateEditEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogFieldCreateEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogFieldDeleteEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogFieldEditEvent;
+use Claroline\ClacoFormBundle\Event\Log\LogKeywordCreateEvent;
+use Claroline\ClacoFormBundle\Event\Log\LogKeywordDeleteEvent;
+use Claroline\ClacoFormBundle\Event\Log\LogKeywordEditEvent;
 use Claroline\CoreBundle\Manager\FacetManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -38,6 +42,7 @@ class ClacoFormManager
 
     private $categoryRepo;
     private $fieldRepo;
+    private $keywordRepo;
 
     /**
      * @DI\InjectParams({
@@ -53,6 +58,7 @@ class ClacoFormManager
         $this->om = $om;
         $this->categoryRepo = $om->getRepository('ClarolineClacoFormBundle:Category');
         $this->fieldRepo = $om->getRepository('ClarolineClacoFormBundle:Field');
+        $this->keywordRepo = $om->getRepository('ClarolineClacoFormBundle:Keyword');
     }
 
     public function initializeClacoForm(ClacoForm $clacoForm)
@@ -311,6 +317,49 @@ class ClacoFormManager
         $this->eventDispatcher->dispatch('log', $event);
     }
 
+    public function persistKeyword(Keyword $keyword)
+    {
+        $this->om->persist($keyword);
+        $this->om->flush();
+    }
+
+    public function createKeyword(ClacoForm $clacoForm, $name)
+    {
+        $keyword = new Keyword();
+        $keyword->setClacoForm($clacoForm);
+        $keyword->setName($name);
+        $this->persistKeyword($keyword);
+        $event = new LogKeywordCreateEvent($keyword);
+        $this->eventDispatcher->dispatch('log', $event);
+
+        return $keyword;
+    }
+
+    public function editKeyword(Keyword $keyword, $name)
+    {
+        $keyword->setName($name);
+        $this->persistKeyword($keyword);
+        $event = new LogKeywordEditEvent($keyword);
+        $this->eventDispatcher->dispatch('log', $event);
+
+        return $keyword;
+    }
+
+    public function deleteKeyword(Keyword $keyword)
+    {
+        $clacoForm = $keyword->getClacoForm();
+        $resourceNode = $clacoForm->getResourceNode();
+        $details = [];
+        $details['id'] = $keyword->getId();
+        $details['name'] = $keyword->getName();
+        $details['resourceId'] = $clacoForm->getId();
+        $details['resourceNodeId'] = $resourceNode->getId();
+        $details['resourceName'] = $resourceNode->getName();
+        $this->om->remove($keyword);
+        $this->om->flush();
+        $event = new LogKeywordDeleteEvent($details);
+        $this->eventDispatcher->dispatch('log', $event);
+    }
 
     /****************************************
      * Access to CategoryRepository methods *
@@ -321,7 +370,6 @@ class ClacoFormManager
         return $this->categoryRepo->findBy(['clacoForm' => $clacoForm], ['name' => 'ASC']);
     }
 
-
     /*************************************
      * Access to FieldRepository methods *
      *************************************/
@@ -329,5 +377,14 @@ class ClacoFormManager
     public function getFieldByNameExcludingId(ClacoForm $clacoForm, $name, $id)
     {
         return $this->fieldRepo->findFieldByNameExcludingId($clacoForm, $name, $id);
+    }
+
+    /***************************************
+     * Access to KeywordRepository methods *
+     ***************************************/
+
+    public function getKeywordByNameExcludingId(ClacoForm $clacoForm, $name, $id)
+    {
+        return $this->keywordRepo->findKeywordByNameExcludingId($clacoForm, $name, $id);
     }
 }

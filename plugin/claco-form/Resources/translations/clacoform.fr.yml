@@ -14,13 +14,17 @@ comments: Commentaires
 config_success_message: La configuration a été enregistrée avec succès.
 create_a_category: Créer une catégorie
 create_a_field: Créer un champ
+create_a_keyword: Créer un mot-clé
 delete_category: Supprimer la catégorie
 delete_category_confirm_message: Êtes-vous sûr de vouloir supprimer cette catégorie [%name%] ?
 delete_field: Supprimer le champ
 delete_field_confirm_message: Êtes-vous sûr de vouloir retirer ce champ [%name%] ?
+delete_keyword: Supprimer le mot-clé
+delete_keyword_confirm_message: Êtes-vous sûr de vouloir retirer ce mot-clé [%name%] ?
 display: Affichage
 edit_category: Modifier la catégorie
 edit_field: Modifier le champ
+edit_keyword: Modifier le mot-clé
 entries_list_search: Liste de fiches (Recherche)
 entry_addition: Ajout d'une fiche
 fields_management: Gestion des champs
@@ -66,6 +70,7 @@ menu: Menu
 metadata: Métadonnées
 no_category: Aucune catégorie
 no_field: Aucun champ
+no_keyword: Aucun mot-clé
 optional: Optionel
 random_entries: Fiches aléatoires
 random_entry: Fiche aléatoire

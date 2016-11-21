@@ -37,6 +37,7 @@
         window.canEdit = {{ canEdit ? 'true' : 'false' }}
         window.fields = {{ fields|raw }}
         window.categories = {{ categories|raw }}
+        window.keywords = {{ keywords|raw }}
         window.template = `{{ clacoForm.getTemplate()|raw }}`
     </script>
     <script type='text/javascript' src="{{ asset('packages/angular/angular.min.js') }}"></script>

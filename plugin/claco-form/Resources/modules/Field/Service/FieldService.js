@@ -9,7 +9,6 @@
 
 /*global Routing*/
 /*global Translator*/
-import angular from 'angular/index'
 import fieldFormTemplate from '../Partial/field_form_modal.html'
 
 export default class FieldService {

@@ -9,7 +9,6 @@
 
 /*global Routing*/
 /*global Translator*/
-import angular from 'angular/index'
 import categoryFormTemplate from '../Partial/category_form_modal.html'
 
 export default class CategoryService {

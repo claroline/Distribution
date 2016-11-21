@@ -4,6 +4,7 @@ import menuTemplate from './Partial/menu.html'
 import generalConfigurationTemplate from './Partial/general_configuration.html'
 import fieldsManagementTemplate from './Partial/fields_management.html'
 import categoriesManagementTemplate from './Partial/categories_management.html'
+import keywordsManagementTemplate from './Partial/keywords_management.html'
 import templateManagementTemplate from './Partial/template_management.html'
 
 export default function($stateProvider, $urlRouterProvider) {
@@ -30,6 +31,12 @@ export default function($stateProvider, $urlRouterProvider) {
       url: '/categories_management',
       template: categoriesManagementTemplate,
       controller: 'CategoriesManagementCtrl',
+      controllerAs: 'cfc'
+    })
+    .state ('keywords_management', {
+      url: '/keywords_management',
+      template: keywordsManagementTemplate,
+      controller: 'KeywordsManagementCtrl',
       controllerAs: 'cfc'
     })
     .state ('template_management', {

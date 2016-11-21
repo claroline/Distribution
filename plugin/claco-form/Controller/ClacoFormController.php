@@ -14,6 +14,7 @@ namespace Claroline\ClacoFormBundle\Controller;
 use Claroline\ClacoFormBundle\Entity\Category;
 use Claroline\ClacoFormBundle\Entity\ClacoForm;
 use Claroline\ClacoFormBundle\Entity\Field;
+use Claroline\ClacoFormBundle\Entity\Keyword;
 use Claroline\ClacoFormBundle\Manager\ClacoFormManager;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Manager\UserManager;
@@ -77,6 +78,7 @@ class ClacoFormController extends Controller
         $canEdit = $this->hasRight($clacoForm, 'EDIT');
         $fields = $clacoForm->getFields();
         $categories = $clacoForm->getCategories();
+        $keywords = $clacoForm->getKeywords();
         $serializedFields = $this->serializer->serialize(
             $fields,
             'json',
@@ -87,12 +89,18 @@ class ClacoFormController extends Controller
             'json',
             SerializationContext::create()->setGroups(['api_user_min'])
         );
+        $serializedKeywords = $this->serializer->serialize(
+            $keywords,
+            'json',
+            SerializationContext::create()->setGroups(['api_claco_form'])
+        );
 
         return [
             'canEdit' => $canEdit,
             'clacoForm' => $clacoForm,
             'fields' => $serializedFields,
             'categories' => $serializedCategories,
+            'keywords' => $serializedKeywords,
         ];
     }
 
@@ -345,6 +353,110 @@ class ClacoFormController extends Controller
         $this->clacoFormManager->deleteCategory($category);
 
         return new JsonResponse($serializedCategory, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/claco/form/{clacoForm}/keyword/create",
+     *     name="claro_claco_form_keyword_create",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     *
+     * Creates a keyword
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function keywordCreateAction(ClacoForm $clacoForm)
+    {
+        $this->checkRight($clacoForm, 'EDIT');
+        $keywordData = $this->request->request->get('keywordData', false);
+        $keyword = $this->clacoFormManager->createKeyword($clacoForm, $keywordData['name']);
+        $serializedKeyword = $this->serializer->serialize(
+            $keyword,
+            'json',
+            SerializationContext::create()->setGroups(['api_claco_form'])
+        );
+
+        return new JsonResponse($serializedKeyword, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/claco/form/keyword/{keyword}/edit",
+     *     name="claro_claco_form_keyword_edit",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     *
+     * Edits a keyword
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function keywordEditAction(Keyword $keyword)
+    {
+        $clacoForm = $keyword->getClacoForm();
+        $this->checkRight($clacoForm, 'EDIT');
+        $keywordData = $this->request->request->get('keywordData', false);
+        $this->clacoFormManager->editKeyword($keyword, $keywordData['name']);
+        $serializedKeyword = $this->serializer->serialize(
+            $keyword,
+            'json',
+            SerializationContext::create()->setGroups(['api_claco_form'])
+        );
+
+        return new JsonResponse($serializedKeyword, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/claco/form/keyword/{keyword}/delete",
+     *     name="claro_claco_form_keyword_delete",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     *
+     * Deletes a keyword
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function keywordDeleteAction(Keyword $keyword)
+    {
+        $clacoForm = $keyword->getClacoForm();
+        $this->checkRight($clacoForm, 'EDIT');
+        $serializedKeyword = $this->serializer->serialize(
+            $keyword,
+            'json',
+            SerializationContext::create()->setGroups(['api_claco_form'])
+        );
+        $this->clacoFormManager->deleteKeyword($keyword);
+
+        return new JsonResponse($serializedKeyword, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/claco/form/{clacoForm}/keyword/get/by/name/{name}/excluding/id/{id}",
+     *     name="claro_claco_form_get_keyword_by_name_excluding_id",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     *
+     * Returns the keyword
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getKeywordByNameExcludingIdAction(ClacoForm $clacoForm, $name, $id = 0)
+    {
+        $this->checkRight($clacoForm, 'EDIT');
+        $keyword = $this->clacoFormManager->getKeywordByNameExcludingId($clacoForm, $name, $id);
+        $serializedKeyword = $this->serializer->serialize(
+            $keyword,
+            'json',
+            SerializationContext::create()->setGroups(['api_claco_form'])
+        );
+
+        return new JsonResponse($serializedKeyword, 200);
     }
 
     private function checkRight(ClacoForm $clacoForm, $right)
