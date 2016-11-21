@@ -102,7 +102,7 @@ function reduce(item = {}, action) {
 function validate(item) {
   const errors = {}
 
-  if (item.solutions.find(solution => notBlank(solution.text, true))) {
+  if (item.solutions.find(solution => notBlank(solution.text))) {
     errors.solutions = tex('words_empty_text_error')
   }
 
