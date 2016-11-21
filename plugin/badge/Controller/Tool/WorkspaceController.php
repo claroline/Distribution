@@ -605,7 +605,6 @@ class WorkspaceController extends Controller
             }
 
             fclose($handle);
-
         });
 
         $dateStr = date('Y-m-d');

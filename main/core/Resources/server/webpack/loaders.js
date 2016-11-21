@@ -71,7 +71,6 @@ const modernizr = () => {
     test: /\.modernizrrc$/,
     loader: 'modernizr'
   }
-
 }
 
 /**

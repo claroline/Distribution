@@ -1,3 +1,4 @@
+const paths = require('./main/core/Resources/server/webpack/paths')
 const webpackConfig = require('./webpack.test')
 
 module.exports = config => {
@@ -9,13 +10,13 @@ module.exports = config => {
         pattern: 'main/core/Resources/modules/core-js/index.js',
         watched: false
       },
-      '*/*/Resources/**/*test.js'
+      '*/*/Resources/modules/**/*test.js'
     ],
     preprocessors: {
-      'main/core/Resources/modules/core-js/index.js': ['webpack'],
-      './*/*/Resources/**/*test.js': ['webpack']
+      './*/*/Resources/modules/**/[^.]+.js': ['coverage'],
+      './*/*/Resources/modules/**/*.js': ['webpack']
     },
-    reporters: ['progress'],
+    reporters: ['dots'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_WARN,
@@ -30,6 +31,15 @@ module.exports = config => {
         base: 'Chrome',
         flags: ['--no-sandbox']
       }
+    },
+    coverageReporter: {
+      includeAllSources: true,
+      reporters:[
+        {
+          type: 'html',
+          dir: `${paths.root()}/coverage`
+        }
+      ]
     },
     autoWatch: true,
     browsers: ['Chrome'],

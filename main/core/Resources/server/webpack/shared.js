@@ -3,11 +3,7 @@ const paths = require('./paths')
 const libraries = require('./libraries')
 
 const externals = () => ({
-  'jquery': 'jQuery',
-  // https://github.com/airbnb/enzyme/blob/master/docs/guides/webpack.md#react-15-compatibility)
-  'react/addons': true,
-  'react/lib/ExecutionEnvironment': true,
-  'react/lib/ReactContext': true
+  'jquery': 'jQuery'
 })
 
 const aliases = () => ({
