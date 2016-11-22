@@ -369,7 +369,7 @@ class AdminManagementController extends Controller
         $organizationValidation = is_bool($courseDatas['organizationValidation']) ?
             $courseDatas['organizationValidation'] :
             $courseDatas['organizationValidation'] === 'true';
-        $withSession = is_bool($courseDatas['withSessionEvent']) ?
+        $withSessionEvent = is_bool($courseDatas['withSessionEvent']) ?
             $courseDatas['withSessionEvent'] :
             $courseDatas['withSessionEvent'] === 'true';
         if ($courseDatas['workspace']) {
@@ -400,7 +400,7 @@ class AdminManagementController extends Controller
             $organizationValidation,
             $courseDatas['maxUsers'],
             $courseDatas['defaultSessionDuration'],
-            $withSession,
+            $withSessionEvent,
             $validators,
             $courseDatas['displayOrder']
         );
@@ -443,7 +443,7 @@ class AdminManagementController extends Controller
         $organizationValidation = is_bool($courseDatas['organizationValidation']) ?
             $courseDatas['organizationValidation'] :
             $courseDatas['organizationValidation'] === 'true';
-        $withSession = is_bool($courseDatas['withSessionEvent']) ?
+        $withSessionEvent = is_bool($courseDatas['withSessionEvent']) ?
             $courseDatas['withSessionEvent'] :
             $courseDatas['withSessionEvent'] === 'true';
 
@@ -475,7 +475,7 @@ class AdminManagementController extends Controller
             $organizationValidation,
             $courseDatas['maxUsers'],
             $courseDatas['defaultSessionDuration'],
-            $withSession,
+            $withSessionEvent,
             $validators,
             $courseDatas['displayOrder']
         );
@@ -542,7 +542,7 @@ class AdminManagementController extends Controller
         $organizationValidation = is_bool($courseDatas['organizationValidation']) ?
             $courseDatas['organizationValidation'] :
             $courseDatas['organizationValidation'] === 'true';
-        $withSession = is_bool($courseDatas['withSessionEvent']) ?
+        $withSessionEvent = is_bool($courseDatas['withSessionEvent']) ?
             $courseDatas['withSessionEvent'] :
             $courseDatas['withSessionEvent'] === 'true';
         $course->setPublicRegistration($publicRegistration);
@@ -574,7 +574,7 @@ class AdminManagementController extends Controller
         $maxUsers = $courseDatas['maxUsers'] ? $courseDatas['maxUsers'] : null;
         $course->setMaxUsers($maxUsers);
         $course->setDefaultSessionDuration($courseDatas['defaultSessionDuration']);
-        $course->setWithSessionEvent($withSession);
+        $course->setWithSessionEvent($withSessionEvent);
         $course->setDisplayOrder($courseDatas['displayOrder']);
         $course->emptyValidators();
         $validators = isset($courseDatas['validators']) && count($courseDatas['validators']) > 0 ?
