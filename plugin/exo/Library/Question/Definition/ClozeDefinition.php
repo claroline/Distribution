@@ -105,6 +105,11 @@ class ClozeDefinition extends AbstractDefinition
         return $this->answerSerializer;
     }
 
+    public function calculateTotal(AbstractInteraction $question)
+    {
+        // TODO: Implement calculateTotal() method.
+    }
+
     public function getStatistics(AbstractInteraction $clozeQuestion, array $answers)
     {
         // Create an array with holeId => holeObject for easy search

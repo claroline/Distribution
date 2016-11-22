@@ -17,14 +17,40 @@ use UJM\ExoBundle\Entity\Attempt\Paper;
 class PaperRepository extends EntityRepository
 {
     /**
+     * Finds the last attempt of a user to an exercise.
+     *
+     * @param Exercise $exercise
+     * @param User $user
+     *
+     * @return null|Paper
+     */
+    public function findLastPaper(Exercise $exercise, User $user)
+    {
+        return 1 + $this->getEntityManager()
+            ->createQuery('
+                SELECT p.* 
+                FROM UJM\ExoBundle\Entity\Attempt\Paper AS p
+                WHERE p.user = :user
+                  AND p.exercise = :exercise
+                ORDER BY p.number DESC
+                LIMIT 0, 1
+            ')
+            ->setParameters([
+                'user' => $user,
+                'exercise' => $exercise,
+            ])
+            ->getOneOrNullResult();
+    }
+
+    /**
      * Returns the unfinished papers of a user for a given exercise, if any.
      *
-     * @param User     $user
      * @param Exercise $exercise
+     * @param User     $user
      *
      * @return Paper[]
      */
-    public function findUnfinishedPapers(User $user, Exercise $exercise)
+    public function findUnfinishedPapers(Exercise $exercise, User $user)
     {
         return $this->createQueryBuilder('p')
             ->join('p.user', 'u')
@@ -33,7 +59,10 @@ class PaperRepository extends EntityRepository
             ->andWhere('e = :exercise')
             ->andWhere('p.end IS NULL')
             ->orderBy('p.start', 'DESC')
-            ->setParameters(['user' => $user, 'exercise' => $exercise])
+            ->setParameters([
+                'user' => $user,
+                'exercise' => $exercise,
+            ])
             ->getQuery()
             ->getResult();
     }
@@ -49,11 +78,14 @@ class PaperRepository extends EntityRepository
     {
         return $this->getEntityManager()
             ->createQuery('
-                SELECT SUM(r.mark) FROM UJM\ExoBundle\Entity\Attempt\Answer AS r
-                WHERE r.paper= :paper
-                  AND r.mark != -1
+                SELECT SUM(a.mark) 
+                FROM UJM\ExoBundle\Entity\Attempt\Answer AS a
+                WHERE a.paper= :paper
+                  AND a.mark != -1
             ')
-            ->setParameters(['paper' => $paper])
+            ->setParameters([
+                'paper' => $paper,
+            ])
             ->getSingleScalarResult();
     }
 
@@ -68,11 +100,14 @@ class PaperRepository extends EntityRepository
     {
         return 0 === $this->getEntityManager()
             ->createQuery('
-                SELECT COUNT(r) FROM UJM\ExoBundle\Entity\Attempt\Answer AS r
-                WHERE r.paper= :paper
-                  AND r.mark = -1
+                SELECT COUNT(a) 
+                FROM UJM\ExoBundle\Entity\Attempt\Answer AS a
+                WHERE a.paper= :paper
+                  AND a.mark = -1
             ')
-            ->setParameters(['paper' => $paper])
+            ->setParameters([
+                'paper' => $paper,
+            ])
             ->getSingleScalarResult();
     }
 
@@ -85,12 +120,15 @@ class PaperRepository extends EntityRepository
      */
     public function countExercisePapers(Exercise $exercise)
     {
-        return $this->createQueryBuilder('p')
-            ->select('COUNT(p)')
-            ->join('p.exercise', 'e')
-            ->where('e = :exercise')
-            ->setParameters(['exercise' => $exercise])
-            ->getQuery()
+        return $this->getEntityManager()
+            ->createQuery('
+                SELECT COUNT(p) 
+                FROM UJM\ExoBundle\Entity\Attempt\Paper AS p
+                WHERE p.exercise = :exercise
+            ')
+            ->setParameters([
+                'exercise' => $exercise,
+            ])
             ->getSingleScalarResult();
     }
 
@@ -104,15 +142,18 @@ class PaperRepository extends EntityRepository
      */
     public function countUserFinishedPapers(Exercise $exercise, User $user)
     {
-        return $this->createQueryBuilder('p')
-            ->select('COUNT(p)')
-            ->join('p.exercise', 'e')
-            ->join('p.user', 'u')
-            ->where('u = :user')
-            ->andWhere('e = :exercise')
-            ->andWhere('p.end IS NOT NULL')
-            ->setParameters(['user' => $user, 'exercise' => $exercise])
-            ->getQuery()
+        return $this->getEntityManager()
+            ->createQuery('
+                SELECT COUNT(p) 
+                FROM UJM\ExoBundle\Entity\Attempt\Paper AS p
+                WHERE p.user = :user
+                  AND p.exercise = :exercise
+                  AND p.end IS NOT NULL
+            ')
+            ->setParameters([
+                'user' => $user,
+                'exercise' => $exercise,
+            ])
             ->getSingleScalarResult();
     }
 

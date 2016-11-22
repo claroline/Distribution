@@ -3,8 +3,7 @@
 namespace UJM\ExoBundle\Installation\Updater;
 
 use Claroline\BundleRecorder\Log\LoggableTrait;
-use Doctrine\DBAL\Driver\Connection;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Doctrine\DBAL\Connection;
 
 class Updater060001
 {
@@ -15,9 +14,9 @@ class Updater060001
      */
     private $connection;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(Connection $connection)
     {
-        $this->connection = $container->get('doctrine.dbal.default_connection');
+        $this->connection = $connection;
     }
 
     public function preUpdate()
@@ -44,7 +43,7 @@ class Updater060001
     }
 
     /**
-     * This cascad exist in V5 and in V6 > 6.0.0.
+     * This cascade exist in V5 and in V6 > 6.0.0.
      */
     public function upSchema()
     {

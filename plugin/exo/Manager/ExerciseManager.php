@@ -184,30 +184,4 @@ class ExerciseManager
         $exercise->getResourceNode()->setPublished(false);
         $this->om->flush();
     }
-
-    /**
-     * Deletes all the papers associated with an exercise.
-     *
-     * @param Exercise $exercise
-     *
-     * @throws \LogicException if the exercise has been published at least once
-     */
-    public function deletePapers(Exercise $exercise)
-    {
-        if ($exercise->wasPublishedOnce()) {
-            throw new \LogicException(
-                "Papers for exercise {$exercise->getId()} cannot be deleted. Exercise has been published once."
-            );
-        }
-
-        $papers = $this->om->getRepository('UJMExoBundle:Attempt\Paper')->findBy([
-            'exercise' => $exercise,
-        ]);
-
-        foreach ($papers as $paper) {
-            $this->om->remove($paper);
-        }
-
-        $this->om->flush();
-    }
 }

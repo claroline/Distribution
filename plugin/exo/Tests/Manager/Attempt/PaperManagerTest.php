@@ -1,15 +1,16 @@
 <?php
 
-namespace UJM\ExoBundle\Manager;
+namespace UJM\ExoBundle\Tests\Manager\Attempt;
 
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Doctrine\Common\Collections\ArrayCollection;
 use UJM\ExoBundle\Entity\Attempt\Paper;
+use UJM\ExoBundle\Manager\Attempt\PaperManager;
 
 class PaperManagerTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var ObjectManager
+     * @var ObjectManager|\PHPUnit_Framework_MockObject_MockObject
      */
     private $om;
 
@@ -25,11 +26,7 @@ class PaperManagerTest extends \PHPUnit_Framework_TestCase
         $this->manager = new PaperManager(
             $this->om,
             $this->mock('Symfony\Component\EventDispatcher\EventDispatcherInterface'),
-            $this->mock('Symfony\Component\Translation\TranslatorInterface'),
-            $this->mock('UJM\ExoBundle\Transfer\Json\QuestionHandlerCollector'),
-            $this->mock('UJM\ExoBundle\Manager\Question\QuestionManager'),
-            $this->mock('UJM\ExoBundle\Manager\HintManager'),
-            $this->mock('UJM\ExoBundle\Services\classes\PaperService')
+            $this->mock('UJM\ExoBundle\Manager\Question\QuestionManager')
         );
     }
 

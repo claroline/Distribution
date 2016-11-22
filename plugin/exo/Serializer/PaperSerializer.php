@@ -4,7 +4,7 @@ namespace UJM\ExoBundle\Serializer;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Attempt\Answer;
-use UJM\ExoBundle\Entity\Paper;
+use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\AbstractSerializer;
 use UJM\ExoBundle\Serializer\Answer\AnswerSerializer;
@@ -65,7 +65,7 @@ class PaperSerializer extends AbstractSerializer
             },
             'user' => function (Paper $paper) use ($options) {
                 $user = $paper->getUser();
-                if ($user && !$paper->isAnonymous()) {
+                if ($user && !$paper->isAnonymized()) {
                     $userData = $this->userSerializer->serialize($user, $options);
                 } else {
                     $userData = null;

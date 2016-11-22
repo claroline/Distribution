@@ -7,11 +7,11 @@ use Claroline\CoreBundle\Library\Testing\RequestTrait;
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use UJM\ExoBundle\Entity\Exercise;
-use UJM\ExoBundle\Entity\Label;
-use UJM\ExoBundle\Entity\Proposal;
+use UJM\ExoBundle\Entity\Misc\Label;
+use UJM\ExoBundle\Entity\Misc\Proposal;
 use UJM\ExoBundle\Entity\Question\Question;
 use UJM\ExoBundle\Library\Testing\Persister;
-use UJM\ExoBundle\Manager\PaperManager;
+use UJM\ExoBundle\Manager\Attempt\PaperManager;
 
 /**
  * Tests that are specific to MatchQuestionType.

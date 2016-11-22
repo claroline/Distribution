@@ -6,12 +6,12 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Testing\RequestTrait;
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Claroline\CoreBundle\Persistence\ObjectManager;
-use UJM\ExoBundle\Entity\Choice;
+use UJM\ExoBundle\Entity\Misc\Choice;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Question\Hint;
 use UJM\ExoBundle\Entity\Question\Question;
 use UJM\ExoBundle\Library\Testing\Persister;
-use UJM\ExoBundle\Manager\PaperManager;
+use UJM\ExoBundle\Manager\Attempt\PaperManager;
 
 /**
  * Tests that are common to all exercise / question types.

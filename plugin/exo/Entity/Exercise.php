@@ -112,9 +112,9 @@ class Exercise extends AbstractResource
      *
      * @var bool
      *
-     * @ORM\Column(name="disp_button_interrupt", type="boolean", nullable=true)
+     * @ORM\Column(type="boolean")
      */
-    private $dispButtonInterrupt = false;
+    private $interruptible = false;
 
     /**
      * Show the Exercise meta in the overview of the Exercise.
@@ -398,21 +398,23 @@ class Exercise extends AbstractResource
     }
 
     /**
-     * Set dispButtonInterrupt.
+     * Set interruptible.
      *
-     * @param bool $dispButtonInterrupt
+     * @param bool $interruptible
      */
-    public function setDispButtonInterrupt($dispButtonInterrupt)
+    public function setInterruptible($interruptible)
     {
-        $this->dispButtonInterrupt = $dispButtonInterrupt;
+        $this->interruptible = $interruptible;
     }
 
     /**
-     * Get dispButtonInterrupt.
+     * Is interruptible?
+     *
+     * @return bool
      */
-    public function getDispButtonInterrupt()
+    public function isInterruptible()
     {
-        return $this->dispButtonInterrupt;
+        return $this->interruptible;
     }
 
     /**

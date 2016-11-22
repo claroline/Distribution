@@ -185,7 +185,7 @@ class ExerciseSerializer implements SerializerInterface
 
         $parameters->pick = $exercise->getPickSteps();
         $parameters->maxAttempts = $exercise->getMaxAttempts();
-        $parameters->interruptible = $exercise->getDispButtonInterrupt();
+        $parameters->interruptible = $exercise->isInterruptible();
         $parameters->showMetadata = $exercise->isMetadataVisible();
         $parameters->showStatistics = $exercise->hasStatistics();
         $parameters->showFullCorrection = !$exercise->isMinimalCorrection();
@@ -265,7 +265,7 @@ class ExerciseSerializer implements SerializerInterface
         }
 
         if (isset($parameters->interruptible)) {
-            $exercise->setDispButtonInterrupt($parameters->interruptible);
+            $exercise->setInterruptible($parameters->interruptible);
         }
 
         if (isset($parameters->showMetadata)) {

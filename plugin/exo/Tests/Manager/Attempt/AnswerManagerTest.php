@@ -3,12 +3,12 @@
 namespace UJM\ExoBundle\Tests\Manager\Question;
 
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
-use UJM\ExoBundle\Manager\Question\QuestionManager;
+use UJM\ExoBundle\Manager\Attempt\AnswerManager;
 
-class QuestionManagerTest extends TransactionalTestCase
+class AnswerManagerTest extends TransactionalTestCase
 {
     /**
-     * @var QuestionManager
+     * @var AnswerManager
      */
     private $manager;
 
@@ -16,7 +16,7 @@ class QuestionManagerTest extends TransactionalTestCase
     {
         parent::setUp();
 
-        $this->manager = $this->client->getContainer()->get('ujm_exo.manager.question');
+        $this->manager = $this->client->getContainer()->get('ujm_exo.manager.answer');
     }
 
     public function testExport()

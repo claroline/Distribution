@@ -1,6 +1,6 @@
 <?php
 
-namespace UJM\ExoBundle\Manager;
+namespace UJM\ExoBundle\Manager\Question;
 
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Repository\UserRepository;

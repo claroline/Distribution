@@ -9,7 +9,7 @@ use Ramsey\Uuid\Uuid;
 use UJM\ExoBundle\Entity\Exercise;
 
 /**
- * A paper represents an user attempt to a quiz.
+ * A paper represents a user attempt to a quiz.
  *
  * @ORM\Entity(repositoryClass="UJM\ExoBundle\Repository\PaperRepository")
  * @ORM\Table(name="ujm_paper")
@@ -17,6 +17,8 @@ use UJM\ExoBundle\Entity\Exercise;
 class Paper
 {
     /**
+     * @var int
+     *
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -50,7 +52,7 @@ class Paper
      * 
      * @ORM\Column(name="ordre_question", type="text", nullable=true)
      */
-    private $ordreQuestion;
+    private $structure;
 
     /**
      * @ORM\Column(name="interupt", type="boolean", nullable=true)
@@ -63,9 +65,13 @@ class Paper
     private $score = null;
 
     /**
+     * Anonymize the user information when showing the paper.
+     *
+     * @var bool
+     *
      * @ORM\Column(name="anonymous", type="boolean", nullable=true)
      */
-    private $anonymous = false;
+    private $anonymized = false;
 
     /**
      * The user who made the attempt.
@@ -90,7 +96,7 @@ class Paper
      *
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="UJM\ExoBundle\Entity\Attempt\Answer", mappedBy="paper", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="UJM\ExoBundle\Entity\Attempt\Answer", mappedBy="paper", cascade={"all"}, orphanRemoval=true)
      */
     private $answers;
 
@@ -197,7 +203,7 @@ class Paper
      */
     public function setStructure($structure)
     {
-        $this->ordreQuestion = $structure;
+        $this->structure = $structure;
     }
 
     /**
@@ -207,27 +213,7 @@ class Paper
      */
     public function getStructure()
     {
-        return $this->ordreQuestion;
-    }
-
-    /**
-     * @deprecated
-     *
-     * @param string $ordreQuestion
-     */
-    public function setOrdreQuestion($ordreQuestion)
-    {
-        $this->ordreQuestion = $ordreQuestion;
-    }
-
-    /**
-     * @deprecated
-     *
-     * @return string
-     */
-    public function getOrdreQuestion()
-    {
-        return $this->ordreQuestion;
+        return $this->structure;
     }
 
     /**
@@ -295,21 +281,23 @@ class Paper
     }
 
     /**
-     * Set anonymous.
+     * Set anonymized.
      *
-     * @param bool $anonymous
+     * @param bool $anonymized
      */
-    public function setAnonymous($anonymous)
+    public function setAnonymized($anonymized)
     {
-        $this->anonymous = $anonymous;
+        $this->anonymized = $anonymized;
     }
 
     /**
-     * Is anonymous.
+     * Is anonymized ?
+     *
+     * @return bool
      */
-    public function isAnonymous()
+    public function isAnonymized()
     {
-        return $this->anonymous;
+        return $this->anonymized;
     }
 
     /**
@@ -323,6 +311,26 @@ class Paper
     }
 
     /**
+     * Gets the answer to a question if any exist.
+     *
+     * @param string $questionUuid
+     *
+     * @return Answer
+     */
+    public function getAnswer($questionUuid)
+    {
+        $found = null;
+        foreach ($this->answers as $answer) {
+            if ($answer->getQuestion()->getUuid() === $questionUuid) {
+                $found = $answer;
+                break;
+            }
+        }
+
+        return $found;
+    }
+
+    /**
      * Adds an answer.
      *
      * @param Answer $answer
@@ -331,6 +339,7 @@ class Paper
     {
         if (!$this->answers->contains($answer)) {
             $this->answers->add($answer);
+            $answer->setPaper($this);
         }
     }
 

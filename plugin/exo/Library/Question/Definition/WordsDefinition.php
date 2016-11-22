@@ -105,6 +105,11 @@ class WordsDefinition extends AbstractDefinition
         return $this->answerSerializer;
     }
 
+    public function calculateTotal(AbstractInteraction $question)
+    {
+        // TODO: Implement calculateTotal() method.
+    }
+
     public function getStatistics(AbstractInteraction $wordsQuestion, array $answers)
     {
         $keywords = [];

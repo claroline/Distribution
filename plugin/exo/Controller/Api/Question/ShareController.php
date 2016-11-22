@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use UJM\ExoBundle\Controller\Api\AbstractController;
 use UJM\ExoBundle\Library\Validator\ValidationException;
-use UJM\ExoBundle\Manager\ShareManager;
+use UJM\ExoBundle\Manager\Question\ShareManager;
 
 /**
  * Question Controller exposes REST API.

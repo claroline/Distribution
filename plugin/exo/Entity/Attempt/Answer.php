@@ -45,7 +45,7 @@ class Answer
      *
      * @ORM\Column(name="nb_tries", type="integer")
      */
-    private $nbTries = 1;
+    private $tries = 1;
 
     /**
      * The answer data formatted in string for DB storage.
@@ -84,6 +84,7 @@ class Answer
      * @var Question
      *
      * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Question\Question")
+     * @ORM\JoinColumn(onDelete="SET NULL")
      */
     private $question;
 
@@ -140,19 +141,23 @@ class Answer
     }
 
     /**
-     * @param int $nbTries
+     * Gets number or tries.
+     *
+     * @param int $tries
      */
-    public function setNbTries($nbTries)
+    public function setTries($tries)
     {
-        $this->nbTries = $nbTries;
+        $this->tries = $tries;
     }
 
     /**
+     * Sets number of tries.
+     *
      * @return int
      */
-    public function getNbTries()
+    public function getTries()
     {
-        return $this->nbTries;
+        return $this->tries;
     }
 
     /**
@@ -171,26 +176,6 @@ class Answer
      * @return string
      */
     public function getData()
-    {
-        return $this->response;
-    }
-
-    /**
-     * @deprecated
-     *
-     * @param string $response
-     */
-    public function setResponse($response)
-    {
-        $this->response = $response;
-    }
-
-    /**
-     * @deprecated
-     *
-     * @return string
-     */
-    public function getResponse()
     {
         return $this->response;
     }

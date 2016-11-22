@@ -114,7 +114,7 @@ class QuestionManager
             throw new ValidationException('Question is not valid', $errors);
         }
 
-        // Update Exercise with new data
+        // Update Question with new data
         $this->serializer->deserialize($data, $question);
 
         // Save to DB
@@ -125,7 +125,7 @@ class QuestionManager
     }
 
     /**
-     * Exports a Question.
+     * Exports a question.
      *
      * @param Question $question
      * @param array    $options
@@ -168,7 +168,7 @@ class QuestionManager
      *
      * @return \stdClass
      */
-    public function generateQuestionStats(Question $question, Exercise $exercise)
+    public function getStatistics(Question $question, Exercise $exercise)
     {
         $questionStats = new \stdClass();
 

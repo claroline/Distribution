@@ -1,10 +1,11 @@
 <?php
 
-namespace UJM\ExoBundle\Manager;
+namespace UJM\ExoBundle\Tests\Manager;
 
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use UJM\ExoBundle\Entity\Exercise;
+use UJM\ExoBundle\Manager\ExerciseManager;
 
 class ExerciseManagerTest extends \PHPUnit_Framework_TestCase
 {

@@ -4,8 +4,10 @@ namespace UJM\ExoBundle\Serializer\Answer;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Attempt\Answer;
+use UJM\ExoBundle\Entity\Question\Hint;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\AbstractSerializer;
+use UJM\ExoBundle\Serializer\Question\HintSerializer;
 
 /**
  * Serializer for answer data.
@@ -14,6 +16,25 @@ use UJM\ExoBundle\Library\Serializer\AbstractSerializer;
  */
 class AnswerSerializer extends AbstractSerializer
 {
+    /**
+     * @var HintSerializer
+     */
+    private $hintSerializer;
+
+    /**
+     * AnswerSerializer constructor.
+     *
+     * @DI\InjectParams({
+     *      "hintSerializer" = @DI\Inject("ujm_exo.serializer.hint")
+     * })
+     *
+     * @param HintSerializer $hintSerializer
+     */
+    public function __construct(HintSerializer $hintSerializer)
+    {
+        $this->hintSerializer = $hintSerializer;
+    }
+
     /**
      * Converts an Answer into a JSON-encodable structure.
      *
@@ -27,11 +48,15 @@ class AnswerSerializer extends AbstractSerializer
         $answerData = new \stdClass();
 
         $this->mapEntityToObject([
-            'id' => function (Answer $answer) {
+            'questionId' => function (Answer $answer) {
                 return $answer->getQuestion()->getUuid();
             },
+            'tries' => 'nbTries',
             'data' => function (Answer $answer) {
                 return json_decode($answer->getData());
+            },
+            'usedHints' => function (Answer $answer) {
+                return $this->serializeHints($answer);
             }
         ], $answer, $answerData);
 
@@ -67,5 +92,12 @@ class AnswerSerializer extends AbstractSerializer
         ], $data, $answer);
 
         return $entity;
+    }
+
+    private function serializeHints(Answer $answer)
+    {
+        return array_map(function (Hint $hint) {
+            return $this->hintSerializer->serialize($hint, [Transfer::INCLUDE_SOLUTIONS]);
+        }, $answer->getUsedHints()->toArray());
     }
 }

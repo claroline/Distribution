@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Question\Question;
-use UJM\ExoBundle\Manager\PaperManager;
+use UJM\ExoBundle\Manager\Attempt\PaperManager;
 use UJM\ExoBundle\Repository\PaperRepository;
 
 /**
@@ -92,6 +92,8 @@ class PaperController extends AbstractController
      */
     public function getAction(Paper $paper, User $user = null)
     {
+        $this->assertHasPermission('OPEN', $paper->getExercise());
+
         // ATTENTION : As is, anonymous have access to all the other anonymous Papers !!!
         if (!$this->isAdmin($paper->getExercise()) && $paper->getUser() !== $user) {
             // Only administrator or the User attached can see a Paper
@@ -122,7 +124,7 @@ class PaperController extends AbstractController
     {
         $this->assertHasPermission('ADMINISTRATE', $exercise);
 
-        $this->exerciseManager->deletePapers($exercise);
+        $this->paperManager->deletePapers($exercise);
 
         return new JsonResponse(null, 204);
     }

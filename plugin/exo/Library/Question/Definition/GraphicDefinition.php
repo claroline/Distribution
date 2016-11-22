@@ -120,6 +120,11 @@ class GraphicDefinition extends AbstractDefinition
         return $scoreMax;
     }
 
+    public function calculateTotal(AbstractInteraction $question)
+    {
+        // TODO: Implement calculateTotal() method.
+    }
+
     public function getStatistics(AbstractInteraction $graphicQuestion, array $answers)
     {
         $areasMap = [];

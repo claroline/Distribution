@@ -1,6 +1,6 @@
 <?php
 
-namespace UJM\ExoBundle\Manager;
+namespace UJM\ExoBundle\Manager\Attempt;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Persistence\ObjectManager;
@@ -83,7 +83,7 @@ class PaperManager
             // Create a new paper for anonymous or if no unfinished
             $paper = $this->createPaper($exercise, $user);
         } else {
-            if (!$exercise->getDispButtonInterrupt()) {
+            if (!$exercise->isInterruptible()) {
                 // User is not allowed to continue is previous paper => open a new one and close the previous
                 $this->closePaper($papers[0]);
 
@@ -137,7 +137,7 @@ class PaperManager
         $paper->setExercise($exercise);
         $paper->setUser($user);
         $paper->setNumber($paperNum);
-        $paper->setOrdreQuestion($order);
+        $paper->setStructure($order);
         $paper->setAnonymous($exercise->getAnonymous());
 
         $this->om->persist($paper);
@@ -168,44 +168,6 @@ class PaperManager
 
         $this->om->persist($paper);
         $this->om->persist($response);
-        $this->om->flush();
-
-        $this->checkPaperEvaluated($paper);
-    }
-
-    /**
-     * Terminates a user paper.
-     *
-     * @param Paper $paper
-     */
-    public function finishPaper(Paper $paper)
-    {
-        if (!$paper->getEnd()) {
-            $paper->setEnd(new \DateTime());
-        }
-
-        $paper->setInterrupted(false);
-        $paper->setScore($this->calculateScore($paper));
-
-        $this->om->flush();
-
-        $this->checkPaperEvaluated($paper);
-    }
-
-    /**
-     * Close a Paper that is not finished (because the Exercise does not allow interruption).
-     *
-     * @param Paper $paper
-     */
-    public function closePaper(Paper $paper)
-    {
-        if (!$paper->getEnd()) {
-            $paper->setEnd(new \DateTime());
-        }
-
-        $paper->setInterrupted(true); // keep track that the user has not finished
-        $paper->setScore($this->calculateScore($paper));
-
         $this->om->flush();
 
         $this->checkPaperEvaluated($paper);
@@ -340,6 +302,32 @@ class PaperManager
         ];
 
         return $_paper;
+    }
+
+    /**
+     * Deletes all the papers associated with an exercise.
+     *
+     * @param Exercise $exercise
+     *
+     * @throws \LogicException if the exercise has been published at least once
+     */
+    public function deletePapers(Exercise $exercise)
+    {
+        if ($exercise->wasPublishedOnce()) {
+            throw new \LogicException(
+                "Papers for exercise {$exercise->getId()} cannot be deleted. Exercise has been published once."
+            );
+        }
+
+        $papers = $this->om->getRepository('UJMExoBundle:Attempt\Paper')->findBy([
+            'exercise' => $exercise,
+        ]);
+
+        foreach ($papers as $paper) {
+            $this->om->remove($paper);
+        }
+
+        $this->om->flush();
     }
 
     /**
@@ -496,6 +484,8 @@ class PaperManager
     /**
      * Check if the solution of the Paper is available to User.
      *
+     * @todo checks here the exercise type and if user is admin ? Export will may be esaier
+     *
      * @param Exercise $exercise
      * @param Paper    $paper
      *
@@ -529,6 +519,8 @@ class PaperManager
 
     /**
      * Check if the score of the Paper is available to User.
+     *
+     * @todo checks here the exercise type and if user is admin ? Export will may be esaier
      *
      * @param Exercise $exercise
      * @param Paper    $paper
