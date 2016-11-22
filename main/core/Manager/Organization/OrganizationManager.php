@@ -83,7 +83,12 @@ class OrganizationManager
 
     public function getDefault()
     {
-        return $this->repo->findOneByDefault(true);
+        $defaultOrganization = $this->repo->findOneByDefault(true);
+        if ($defaultOrganization === null) {
+            $defaultOrganization = $this->createDefault();
+        }
+
+        return $defaultOrganization;
     }
 
     public function createDefault()
@@ -99,6 +104,8 @@ class OrganizationManager
         $orga->setParent(null);
         $this->om->persist($orga);
         $this->om->flush();
+
+        return $orga;
     }
 
     public function setLogger(LoggerInterface $logger)
