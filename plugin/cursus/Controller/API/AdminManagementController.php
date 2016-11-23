@@ -144,13 +144,14 @@ class AdminManagementController extends Controller
         if ($this->request->files->get('cursusDatas')['icon']) {
             $icon = $this->cursusManager->saveIcon($this->request->files->get('cursusDatas')['icon']);
         }
+        $blocking = is_bool($cursusDatas['blocking']) ? $cursusDatas['blocking'] : $cursusDatas['blocking'] === 'true';
         $createdCursus = $this->cursusManager->createCursus(
             $cursusDatas['title'],
             $cursusDatas['code'],
             null,
             null,
             $cursusDatas['description'],
-            $cursusDatas['blocking'],
+            $blocking,
             $icon,
             $cursusDatas['color'],
             $worskpace
@@ -188,13 +189,14 @@ class AdminManagementController extends Controller
         if ($this->request->files->get('cursusDatas')['icon']) {
             $icon = $this->cursusManager->saveIcon($this->request->files->get('cursusDatas')['icon']);
         }
+        $blocking = is_bool($cursusDatas['blocking']) ? $cursusDatas['blocking'] : $cursusDatas['blocking'] === 'true';
         $createdCursus = $this->cursusManager->createCursus(
             $cursusDatas['title'],
             $cursusDatas['code'],
             $parent,
             null,
             $cursusDatas['description'],
-            $cursusDatas['blocking'],
+            $blocking,
             $icon,
             $cursusDatas['color'],
             $worskpace
@@ -226,7 +228,8 @@ class AdminManagementController extends Controller
         $cursus->setTitle($cursusDatas['title']);
         $cursus->setCode($cursusDatas['code']);
         $cursus->setDescription($cursusDatas['description']);
-        $cursus->setBlocking((bool) $cursusDatas['blocking']);
+        $blocking = is_bool($cursusDatas['blocking']) ? $cursusDatas['blocking'] : $cursusDatas['blocking'] === 'true';
+        $cursus->setBlocking($blocking);
         $color = $cursusDatas['color'];
         $details = ['color' => $color];
         $cursus->setDetails($details);
@@ -351,7 +354,24 @@ class AdminManagementController extends Controller
         $worskpace = null;
         $worskpaceModel = null;
         $icon = null;
-
+        $publicRegistration = is_bool($courseDatas['publicRegistration']) ?
+            $courseDatas['publicRegistration'] :
+            $courseDatas['publicRegistration'] === 'true';
+        $publicUnregistration = is_bool($courseDatas['publicUnregistration']) ?
+            $courseDatas['publicUnregistration'] :
+            $courseDatas['publicUnregistration'] === 'true';
+        $registrationValidation = is_bool($courseDatas['registrationValidation']) ?
+            $courseDatas['registrationValidation'] :
+            $courseDatas['registrationValidation'] === 'true';
+        $userValidation = is_bool($courseDatas['userValidation']) ?
+            $courseDatas['userValidation'] :
+            $courseDatas['userValidation'] === 'true';
+        $organizationValidation = is_bool($courseDatas['organizationValidation']) ?
+            $courseDatas['organizationValidation'] :
+            $courseDatas['organizationValidation'] === 'true';
+        $withSessionEvent = is_bool($courseDatas['withSessionEvent']) ?
+            $courseDatas['withSessionEvent'] :
+            $courseDatas['withSessionEvent'] === 'true';
         if ($courseDatas['workspace']) {
             $worskpace = $this->workspaceManager->getWorkspaceById($courseDatas['workspace']);
         }
@@ -368,19 +388,19 @@ class AdminManagementController extends Controller
             $courseDatas['title'],
             $courseDatas['code'],
             $courseDatas['description'],
-            $courseDatas['publicRegistration'],
-            $courseDatas['publicUnregistration'],
-            $courseDatas['registrationValidation'],
+            $publicRegistration,
+            $publicUnregistration,
+            $registrationValidation,
             $courseDatas['tutorRoleName'],
             $courseDatas['learnerRoleName'],
             $worskpaceModel,
             $worskpace,
             $icon,
-            $courseDatas['userValidation'],
-            $courseDatas['organizationValidation'],
+            $userValidation,
+            $organizationValidation,
             $courseDatas['maxUsers'],
             $courseDatas['defaultSessionDuration'],
-            $courseDatas['withSessionEvent'],
+            $withSessionEvent,
             $validators,
             $courseDatas['displayOrder']
         );
@@ -408,6 +428,24 @@ class AdminManagementController extends Controller
         $worskpace = null;
         $worskpaceModel = null;
         $icon = null;
+        $publicRegistration = is_bool($courseDatas['publicRegistration']) ?
+            $courseDatas['publicRegistration'] :
+            $courseDatas['publicRegistration'] === 'true';
+        $publicUnregistration = is_bool($courseDatas['publicUnregistration']) ?
+            $courseDatas['publicUnregistration'] :
+            $courseDatas['publicUnregistration'] === 'true';
+        $registrationValidation = is_bool($courseDatas['registrationValidation']) ?
+            $courseDatas['registrationValidation'] :
+            $courseDatas['registrationValidation'] === 'true';
+        $userValidation = is_bool($courseDatas['userValidation']) ?
+            $courseDatas['userValidation'] :
+            $courseDatas['userValidation'] === 'true';
+        $organizationValidation = is_bool($courseDatas['organizationValidation']) ?
+            $courseDatas['organizationValidation'] :
+            $courseDatas['organizationValidation'] === 'true';
+        $withSessionEvent = is_bool($courseDatas['withSessionEvent']) ?
+            $courseDatas['withSessionEvent'] :
+            $courseDatas['withSessionEvent'] === 'true';
 
         if ($courseDatas['workspace']) {
             $worskpace = $this->workspaceManager->getWorkspaceById($courseDatas['workspace']);
@@ -425,19 +463,19 @@ class AdminManagementController extends Controller
             $courseDatas['title'],
             $courseDatas['code'],
             $courseDatas['description'],
-            $courseDatas['publicRegistration'],
-            $courseDatas['publicUnregistration'],
-            $courseDatas['registrationValidation'],
+            $publicRegistration,
+            $publicUnregistration,
+            $registrationValidation,
             $courseDatas['tutorRoleName'],
             $courseDatas['learnerRoleName'],
             $worskpaceModel,
             $worskpace,
             $icon,
-            $courseDatas['userValidation'],
-            $courseDatas['organizationValidation'],
+            $userValidation,
+            $organizationValidation,
             $courseDatas['maxUsers'],
             $courseDatas['defaultSessionDuration'],
-            $courseDatas['withSessionEvent'],
+            $withSessionEvent,
             $validators,
             $courseDatas['displayOrder']
         );
@@ -489,9 +527,27 @@ class AdminManagementController extends Controller
         $course->setCode($courseDatas['code']);
         $description = $courseDatas['description'] ? $courseDatas['description'] : null;
         $course->setDescription($description);
-        $course->setPublicRegistration((bool) $courseDatas['publicRegistration']);
-        $course->setPublicUnregistration((bool) $courseDatas['publicUnregistration']);
-        $course->setRegistrationValidation((bool) $courseDatas['registrationValidation']);
+        $publicRegistration = is_bool($courseDatas['publicRegistration']) ?
+            $courseDatas['publicRegistration'] :
+            $courseDatas['publicRegistration'] === 'true';
+        $publicUnregistration = is_bool($courseDatas['publicUnregistration']) ?
+            $courseDatas['publicUnregistration'] :
+            $courseDatas['publicUnregistration'] === 'true';
+        $registrationValidation = is_bool($courseDatas['registrationValidation']) ?
+            $courseDatas['registrationValidation'] :
+            $courseDatas['registrationValidation'] === 'true';
+        $userValidation = is_bool($courseDatas['userValidation']) ?
+            $courseDatas['userValidation'] :
+            $courseDatas['userValidation'] === 'true';
+        $organizationValidation = is_bool($courseDatas['organizationValidation']) ?
+            $courseDatas['organizationValidation'] :
+            $courseDatas['organizationValidation'] === 'true';
+        $withSessionEvent = is_bool($courseDatas['withSessionEvent']) ?
+            $courseDatas['withSessionEvent'] :
+            $courseDatas['withSessionEvent'] === 'true';
+        $course->setPublicRegistration($publicRegistration);
+        $course->setPublicUnregistration($publicUnregistration);
+        $course->setRegistrationValidation($registrationValidation);
         $tutorRoleName = $courseDatas['tutorRoleName'] ? $courseDatas['tutorRoleName'] : null;
         $course->setTutorRoleName($tutorRoleName);
         $learnerRoleName = $courseDatas['learnerRoleName'] ? $courseDatas['learnerRoleName'] : null;
@@ -513,12 +569,12 @@ class AdminManagementController extends Controller
             $icon = $this->cursusManager->saveIcon($this->request->files->get('courseDatas')['icon']);
             $course->setIcon($icon);
         }
-        $course->setUserValidation((bool) $courseDatas['userValidation']);
-        $course->setOrganizationValidation((bool) $courseDatas['organizationValidation']);
+        $course->setUserValidation($userValidation);
+        $course->setOrganizationValidation($organizationValidation);
         $maxUsers = $courseDatas['maxUsers'] ? $courseDatas['maxUsers'] : null;
         $course->setMaxUsers($maxUsers);
         $course->setDefaultSessionDuration($courseDatas['defaultSessionDuration']);
-        $course->setWithSessionEvent((bool) $courseDatas['withSessionEvent']);
+        $course->setWithSessionEvent($withSessionEvent);
         $course->setDisplayOrder($courseDatas['displayOrder']);
         $course->emptyValidators();
         $validators = isset($courseDatas['validators']) && count($courseDatas['validators']) > 0 ?
@@ -722,6 +778,24 @@ class AdminManagementController extends Controller
     public function postSessionCreateAction(Course $course)
     {
         $sessionDatas = $this->request->request->get('sessionDatas', false);
+        $defaultSession = is_bool($sessionDatas['defaultSession']) ?
+            $sessionDatas['defaultSession'] :
+            $sessionDatas['defaultSession'] === 'true';
+        $publicRegistration = is_bool($sessionDatas['publicRegistration']) ?
+            $sessionDatas['publicRegistration'] :
+            $sessionDatas['publicRegistration'] === 'true';
+        $publicUnregistration = is_bool($sessionDatas['publicUnregistration']) ?
+            $sessionDatas['publicUnregistration'] :
+            $sessionDatas['publicUnregistration'] === 'true';
+        $registrationValidation = is_bool($sessionDatas['registrationValidation']) ?
+            $sessionDatas['registrationValidation'] :
+            $sessionDatas['registrationValidation'] === 'true';
+        $userValidation = is_bool($sessionDatas['userValidation']) ?
+            $sessionDatas['userValidation'] :
+            $sessionDatas['userValidation'] === 'true';
+        $organizationValidation = is_bool($sessionDatas['organizationValidation']) ?
+            $sessionDatas['organizationValidation'] :
+            $sessionDatas['organizationValidation'] === 'true';
         $trimmedStartDate = trim($sessionDatas['startDate'], 'Zz');
         $trimmedEndDate = trim($sessionDatas['endDate'], 'Zz');
         $startDate = new \DateTime($trimmedStartDate);
@@ -738,12 +812,12 @@ class AdminManagementController extends Controller
             null,
             $startDate,
             $endDate,
-            $sessionDatas['defaultSession'],
-            $sessionDatas['publicRegistration'],
-            $sessionDatas['publicUnregistration'],
-            $sessionDatas['registrationValidation'],
-            $sessionDatas['userValidation'],
-            $sessionDatas['organizationValidation'],
+            $defaultSession,
+            $publicRegistration,
+            $publicUnregistration,
+            $registrationValidation,
+            $userValidation,
+            $organizationValidation,
             $sessionDatas['maxUsers'],
             0,
             $validators,
@@ -775,6 +849,24 @@ class AdminManagementController extends Controller
     public function putSessionEditionAction(CourseSession $session)
     {
         $sessionDatas = $this->request->request->get('sessionDatas', false);
+        $defaultSession = is_bool($sessionDatas['defaultSession']) ?
+            $sessionDatas['defaultSession'] :
+            $sessionDatas['defaultSession'] === 'true';
+        $publicRegistration = is_bool($sessionDatas['publicRegistration']) ?
+            $sessionDatas['publicRegistration'] :
+            $sessionDatas['publicRegistration'] === 'true';
+        $publicUnregistration = is_bool($sessionDatas['publicUnregistration']) ?
+            $sessionDatas['publicUnregistration'] :
+            $sessionDatas['publicUnregistration'] === 'true';
+        $registrationValidation = is_bool($sessionDatas['registrationValidation']) ?
+            $sessionDatas['registrationValidation'] :
+            $sessionDatas['registrationValidation'] === 'true';
+        $userValidation = is_bool($sessionDatas['userValidation']) ?
+            $sessionDatas['userValidation'] :
+            $sessionDatas['userValidation'] === 'true';
+        $organizationValidation = is_bool($sessionDatas['organizationValidation']) ?
+            $sessionDatas['organizationValidation'] :
+            $sessionDatas['organizationValidation'] === 'true';
         $trimmedStartDate = trim($sessionDatas['startDate'], 'Zz');
         $trimmedEndDate = trim($sessionDatas['endDate'], 'Zz');
         $startDate = new \DateTime($trimmedStartDate);
@@ -783,13 +875,13 @@ class AdminManagementController extends Controller
         $session->setStartDate($startDate);
         $session->setEndDate($endDate);
         $session->setDescription($sessionDatas['description']);
-        $session->setDefaultSession((bool) $sessionDatas['defaultSession']);
-        $session->setPublicRegistration((bool) $sessionDatas['publicRegistration']);
-        $session->setPublicUnregistration((bool) $sessionDatas['publicUnregistration']);
-        $session->setUserValidation((bool) $sessionDatas['userValidation']);
+        $session->setDefaultSession($defaultSession);
+        $session->setPublicRegistration($publicRegistration);
+        $session->setPublicUnregistration($publicUnregistration);
+        $session->setUserValidation($userValidation);
         $session->setMaxUsers($sessionDatas['maxUsers']);
-        $session->setOrganizationValidation((bool) $sessionDatas['organizationValidation']);
-        $session->setRegistrationValidation((bool) $sessionDatas['registrationValidation']);
+        $session->setOrganizationValidation($organizationValidation);
+        $session->setRegistrationValidation($registrationValidation);
         $session->setEventRegistrationType($sessionDatas['eventRegistrationType']);
         $session->setDisplayOrder($sessionDatas['displayOrder']);
         $details = $session->getDetails();
