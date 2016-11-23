@@ -6,7 +6,6 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Testing\RequestTrait;
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Claroline\CoreBundle\Persistence\ObjectManager;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use UJM\ExoBundle\Entity\Question\Category;
 use UJM\ExoBundle\Library\Testing\Persister;
 
@@ -79,14 +78,14 @@ class CategoryControllerTest extends TransactionalTestCase
     }
 
     /**
-     * The `create` action MUST return a 201 status code
-     * The `create` action MUST return an object representing the created category
+     * The `create` action MUST return a 201 status code when receiving valid data.
+     * The `create` action MUST return an object representing the created category.
      */
     public function testCreateCategory()
     {
         $newData = [
             'id' => uniqid(),
-            'name' => 'categoryCreate'
+            'name' => 'categoryCreate',
         ];
 
         $this->request(
@@ -113,14 +112,14 @@ class CategoryControllerTest extends TransactionalTestCase
     }
 
     /**
-     * The `create` action MUST return a 422 status code
+     * The `create` action MUST return a 422 status code when receiving invalid data.
      * The `create` action MUST return the list of validation errors.
      */
     public function testCreateCategoryWithInvalidData()
     {
         $invalidData = [
             'id' => uniqid(),
-            'name' => ['not-a-string']
+            'name' => ['not-a-string'],
         ];
 
         $this->request(
@@ -133,13 +132,13 @@ class CategoryControllerTest extends TransactionalTestCase
 
         $this->assertEquals(422, $this->client->getResponse()->getStatusCode());
 
-        $content = json_decode($this->client->getResponse()->getContent());
+        $content = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertTrue(is_array($content));
         $this->assertTrue(count($content) > 0);
 
         $this->assertContains([
             'path' => '/name',
-            'message' => 'should be string',
+            'message' => 'instance must be of type string',
         ], $content);
     }
 
@@ -151,7 +150,7 @@ class CategoryControllerTest extends TransactionalTestCase
     {
         $updateData = [
             'id' => $this->categoryJohn->getUuid(),
-            'name' => 'categoryUpdate'
+            'name' => 'categoryUpdate',
         ];
 
         $this->request(
@@ -165,6 +164,7 @@ class CategoryControllerTest extends TransactionalTestCase
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
 
         $content = json_decode($this->client->getResponse()->getContent());
+
         $this->assertInstanceOf('\stdClass', $content);
         $this->assertEquals($updateData['name'], $content->name);
     }
@@ -177,7 +177,7 @@ class CategoryControllerTest extends TransactionalTestCase
     {
         $invalidData = [
             'id' => $this->categoryJohn->getUuid(),
-            'name' => ['not-a-string']
+            'name' => ['not-a-string'],
         ];
 
         $this->request(
@@ -197,20 +197,18 @@ class CategoryControllerTest extends TransactionalTestCase
 
         $this->assertContains([
             'path' => '/name',
-            'message' => 'should be string',
+            'message' => 'instance must be of type string',
         ], $content);
     }
 
     /**
      * The `update` action MUST NOT allow to update a category by a user not linked to the category.
-     *
-     * @expectedException AccessDeniedException
      */
     public function testUpdateCategoryByNotAdminUser()
     {
         $updateData = [
             'id' => $this->categoryBob->getUuid(),
-            'name' => 'categoryUpdate'
+            'name' => 'categoryUpdate',
         ];
 
         $this->request(
@@ -220,6 +218,8 @@ class CategoryControllerTest extends TransactionalTestCase
             [],
             json_encode($updateData)
         );
+
+        $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
     }
 
     /**
@@ -236,12 +236,11 @@ class CategoryControllerTest extends TransactionalTestCase
 
     /**
      * The `delete` action MUST NOT allow to delete a category by a user not linked to the category.
-     *
-     * @expectedException AccessDeniedException
      */
     public function testDeleteCategoryByNotAdminUser()
     {
         $this->request('DELETE', "/api/categories/{$this->categoryBob->getUuid()}", $this->john);
+        $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
     }
 
     /**

@@ -3,9 +3,8 @@
 namespace UJM\ExoBundle\Library\Question\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
-use UJM\ExoBundle\Entity\AbstractInteraction;
+use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
 use UJM\ExoBundle\Library\Question\QuestionType;
-use UJM\ExoBundle\Serializer\Answer\Type\PairAnswerSerializer;
 use UJM\ExoBundle\Serializer\Question\Type\PairQuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Question\Type\PairQuestionValidator;
 
@@ -28,31 +27,22 @@ class PairDefinition extends AbstractDefinition
     private $serializer;
 
     /**
-     * @var PairAnswerSerializer
-     */
-    private $answerSerializer;
-
-    /**
      * PairDefinition constructor.
      *
      * @param PairQuestionValidator  $validator
      * @param PairQuestionSerializer $serializer
-     * @param PairAnswerSerializer $answerSerializer
      *
      * @DI\InjectParams({
      *     "validator"  = @DI\Inject("ujm_exo.validator.question_pair"),
-     *     "serializer" = @DI\Inject("ujm_exo.serializer.question_pair"),
-     *     "answerSerializer" = @DI\Inject("ujm_exo.serializer.answer_pair")
+     *     "serializer" = @DI\Inject("ujm_exo.serializer.question_pair")
      * })
      */
     public function __construct(
         PairQuestionValidator $validator,
-        PairQuestionSerializer $serializer,
-        PairAnswerSerializer $answerSerializer)
+        PairQuestionSerializer $serializer)
     {
         $this->validator = $validator;
         $this->serializer = $serializer;
-        $this->answerSerializer = $answerSerializer;
     }
 
     /**
@@ -60,7 +50,7 @@ class PairDefinition extends AbstractDefinition
      *
      * @return string
      */
-    public function getMimeType()
+    public static function getMimeType()
     {
         return QuestionType::PAIR;
     }
@@ -70,9 +60,9 @@ class PairDefinition extends AbstractDefinition
      *
      * @return string
      */
-    public function getEntityClass()
+    public static function getEntityClass()
     {
-        return 'PairQuestion';
+        return '\UJM\ExoBundle\Entity\QuestionType\MatchQuestion';
     }
 
     /**
@@ -95,28 +85,17 @@ class PairDefinition extends AbstractDefinition
         return $this->serializer;
     }
 
-    /**
-     * Gets the pair answer serializer.
-     *
-     * @return PairAnswerSerializer
-     */
-    protected function getAnswerSerializer()
+    public function correctAnswer(AbstractQuestion $question, $answer)
     {
-        return $this->answerSerializer;
+        // TODO: Implement correctAnswer() method.
     }
 
-    public function calculateTotal(AbstractInteraction $pairQuestion)
+    public function expectAnswer(AbstractQuestion $question)
     {
-        $scoreMax = 0;
-
-        foreach ($pairQuestion->getLabels() as $label) {
-            $scoreMax += $label->getScore();
-        }
-
-        return $scoreMax;
+        // TODO: Implement expectAnswer() method.
     }
 
-    public function getStatistics(AbstractInteraction $pairQuestion, array $answers)
+    public function getStatistics(AbstractQuestion $pairQuestion, array $answers)
     {
         // TODO: Implement getStatistics() method.
 

@@ -1,59 +1,49 @@
 <?php
 
-namespace UJM\ExoBundle\Entity;
+namespace UJM\ExoBundle\Entity\QuestionType;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use UJM\ExoBundle\Entity\Misc\Label;
 use UJM\ExoBundle\Entity\Misc\Proposal;
+use UJM\ExoBundle\Library\Model\ShuffleTrait;
 
 /**
+ * A Match question.
+ *
  * @ORM\Entity
  * @ORM\Table(name="ujm_interaction_matching")
  */
-class InteractionMatching extends AbstractInteraction
+class MatchQuestion extends AbstractQuestion
 {
-    const TYPE = 'InteractionMatching';
+    use ShuffleTrait;
 
     /**
-     * @var bool
-     *
-     * @ORM\Column(type="boolean")
-     */
-    private $shuffle = false;
-
-    /**
-     * @var ArrayCollection
-     *
      * @ORM\OneToMany(
      *     targetEntity="UJM\ExoBundle\Entity\Misc\Label",
      *     mappedBy="interactionMatching",
      *     cascade={"all"},
      *     orphanRemoval=true
      * )
+     *
+     * @var ArrayCollection
      */
     private $labels;
 
     /**
-     * @var ArrayCollection
-     *
      * @ORM\OneToMany(
      *     targetEntity="UJM\ExoBundle\Entity\Misc\Proposal",
      *     mappedBy="interactionMatching",
      *     cascade={"all"},
      *     orphanRemoval=true
      * )
+     *
+     * @var ArrayCollection
      */
     private $proposals;
 
     /**
-     * @ORM\ManyToOne(targetEntity="TypeMatching")
-     * @ORM\JoinColumn(name="type_matching_id", referencedColumnName="id")
-     */
-    private $typeMatching;
-
-    /**
-     * InteractionMatching constructor.
+     * MatchQuestion constructor.
      */
     public function __construct()
     {
@@ -62,46 +52,8 @@ class InteractionMatching extends AbstractInteraction
     }
 
     /**
-     * @return string
-     */
-    public static function getQuestionType()
-    {
-        return self::TYPE;
-    }
-
-    /**
-     * @param bool $shuffle
-     */
-    public function setShuffle($shuffle)
-    {
-        $this->shuffle = $shuffle;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getShuffle()
-    {
-        return $this->shuffle;
-    }
-
-    /**
-     * @return TypeMatching
-     */
-    public function getTypeMatching()
-    {
-        return $this->typeMatching;
-    }
-
-    /**
-     * @param TypeMatching $typeMatching
-     */
-    public function setTypeMatching(TypeMatching $typeMatching)
-    {
-        $this->typeMatching = $typeMatching;
-    }
-
-    /**
+     * Gets labels.
+     *
      * @return ArrayCollection
      */
     public function getLabels()
@@ -110,15 +62,33 @@ class InteractionMatching extends AbstractInteraction
     }
 
     /**
+     * Adds a label.
+     *
      * @param Label $label
      */
     public function addLabel(Label $label)
     {
-        $this->labels->add($label);
-        $label->setInteractionMatching($this);
+        if (!$this->labels->contains($label)) {
+            $this->labels->add($label);
+            $label->setInteractionMatching($this);
+        }
     }
 
     /**
+     * Removes a label.
+     *
+     * @param Label $label
+     */
+    public function removeLabel(Label $label)
+    {
+        if ($this->labels->contains($label)) {
+            $this->labels->removeElement($label);
+        }
+    }
+
+    /**
+     * Gets proposals.
+     *
      * @return ArrayCollection
      */
     public function getProposals()

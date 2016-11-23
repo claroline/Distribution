@@ -2,7 +2,8 @@
 
 namespace UJM\ExoBundle\Library\Question\Definition;
 
-use UJM\ExoBundle\Entity\AbstractInteraction;
+use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
+use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 
 /**
  * Interface for the definition of a question type
@@ -16,7 +17,7 @@ interface QuestionDefinitionInterface
      *
      * @return string
      */
-    public function getMimeType();
+    public static function getMimeType();
 
     /**
      * Gets the entity class holding the specific question data.
@@ -26,7 +27,7 @@ interface QuestionDefinitionInterface
      *
      * @return string
      */
-    public function getEntityClass();
+    public static function getEntityClass();
 
     /**
      * Validates question data.
@@ -41,23 +42,23 @@ interface QuestionDefinitionInterface
     /**
      * Serializes question entity.
      *
-     * @param AbstractInteraction $question
+     * @param AbstractQuestion $question
      * @param array               $options
      *
      * @return \stdClass
      */
-    public function serializeQuestion(AbstractInteraction $question, array $options = []);
+    public function serializeQuestion(AbstractQuestion $question, array $options = []);
 
     /**
      * Deserializes question data.
      *
      * @param \stdClass           $data
-     * @param AbstractInteraction $question
+     * @param AbstractQuestion $question
      * @param array               $options
      *
-     * @return AbstractInteraction
+     * @return AbstractQuestion
      */
-    public function deserializeQuestion(\stdClass $data, AbstractInteraction $question = null, array $options = []);
+    public function deserializeQuestion(\stdClass $data, AbstractQuestion $question = null, array $options = []);
 
     /**
      * Validates question answer.
@@ -71,52 +72,33 @@ interface QuestionDefinitionInterface
     public function validateAnswer(\stdClass $question, $answer, array $options = []);
 
     /**
-     * Serializes answer entity.
+     * Corrects an answer submitted to a question.
+     * This method formats the user answers into an array that can be used to calculate the obtained score.
+     * The outputted array MUST have the following structure
      *
-     * @param mixed $answer
-     * @param array $options
+     * @param AbstractQuestion $question
+     * @param $answer
      *
-     * @return \stdClass
+     * @return CorrectedAnswer
      */
-    public function serializeAnswer($answer, array $options = []);
+    public function correctAnswer(AbstractQuestion $question, $answer);
 
     /**
-     * Deserializes answer data.
+     * Returns the expected answers of the question.
      *
-     * @param mixed $data
-     * @param string $answer
-     * @param array $options
+     * @param AbstractQuestion $question
      *
-     * @return string
+     * @return mixed
      */
-    public function deserializeAnswer($data, $answer = null, array $options = []);
-
-    /**
-     * Calculates the score of an answer to a question.
-     *
-     * @param AbstractInteraction $question
-     * @param \stdClass $answer
-     *
-     * @return float
-     */
-    public function calculateScore(AbstractInteraction $question, $answer);
-
-    /**
-     * Calculates the total score of a question.
-     *
-     * @param AbstractInteraction $question
-     *
-     * @return float
-     */
-    public function calculateTotal(AbstractInteraction $question);
+    public function expectAnswer(AbstractQuestion $question);
 
     /**
      * Gets statistics on answers given to a question.
      *
-     * @param AbstractInteraction $question
+     * @param AbstractQuestion $question
      * @param array $answers
      *
      * @return \stdClass
      */
-    public function getStatistics(AbstractInteraction $question, array $answers);
+    public function getStatistics(AbstractQuestion $question, array $answers);
 }

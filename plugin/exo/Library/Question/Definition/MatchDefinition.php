@@ -3,9 +3,8 @@
 namespace UJM\ExoBundle\Library\Question\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
-use UJM\ExoBundle\Entity\AbstractInteraction;
+use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
 use UJM\ExoBundle\Library\Question\QuestionType;
-use UJM\ExoBundle\Serializer\Answer\Type\MatchAnswerSerializer;
 use UJM\ExoBundle\Serializer\Question\Type\MatchQuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Question\Type\MatchQuestionValidator;
 
@@ -28,31 +27,22 @@ class MatchDefinition extends AbstractDefinition
     private $serializer;
 
     /**
-     * @var MatchAnswerSerializer
-     */
-    private $answerSerializer;
-
-    /**
      * MatchDefinition constructor.
      *
      * @param MatchQuestionValidator  $validator
      * @param MatchQuestionSerializer $serializer
-     * @param MatchAnswerSerializer $answerSerializer
      *
      * @DI\InjectParams({
      *     "validator"  = @DI\Inject("ujm_exo.validator.question_match"),
-     *     "serializer" = @DI\Inject("ujm_exo.serializer.question_match"),
-     *     "answerSerializer" = @DI\Inject("ujm_exo.serializer.answer_match")
+     *     "serializer" = @DI\Inject("ujm_exo.serializer.question_match")
      * })
      */
     public function __construct(
         MatchQuestionValidator $validator,
-        MatchQuestionSerializer $serializer,
-        MatchAnswerSerializer $answerSerializer)
+        MatchQuestionSerializer $serializer)
     {
         $this->validator = $validator;
         $this->serializer = $serializer;
-        $this->answerSerializer = $answerSerializer;
     }
 
     /**
@@ -60,7 +50,7 @@ class MatchDefinition extends AbstractDefinition
      *
      * @return string
      */
-    public function getMimeType()
+    public static function getMimeType()
     {
         return QuestionType::MATCH;
     }
@@ -70,9 +60,9 @@ class MatchDefinition extends AbstractDefinition
      *
      * @return string
      */
-    public function getEntityClass()
+    public static function getEntityClass()
     {
-        return 'MatchQuestion';
+        return '\UJM\ExoBundle\Entity\QuestionType\MatchQuestion';
     }
 
     /**
@@ -95,28 +85,17 @@ class MatchDefinition extends AbstractDefinition
         return $this->serializer;
     }
 
-    /**
-     * Gets the match answer serializer.
-     *
-     * @return MatchAnswerSerializer
-     */
-    protected function getAnswerSerializer()
+    public function correctAnswer(AbstractQuestion $question, $answer)
     {
-        return $this->answerSerializer;
+        // TODO: Implement correctAnswer() method.
     }
 
-    public function calculateTotal(AbstractInteraction $matchQuestion)
+    public function expectAnswer(AbstractQuestion $question)
     {
-        $scoreMax = 0;
-
-        foreach ($matchQuestion->getLabels() as $label) {
-            $scoreMax += $label->getScore();
-        }
-
-        return $scoreMax;
+        // TODO: Implement expectAnswer() method.
     }
 
-    public function getStatistics(AbstractInteraction $matchQuestion, array $answers)
+    public function getStatistics(AbstractQuestion $matchQuestion, array $answers)
     {
         // TODO: Implement getStatistics() method.
 

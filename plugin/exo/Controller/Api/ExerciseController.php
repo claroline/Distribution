@@ -36,7 +36,7 @@ class ExerciseController extends AbstractController
      *
      * @DI\InjectParams({
      *     "authorization"   = @DI\Inject("security.authorization_checker"),
-     *     "exerciseManager" = @DI\Inject("ujm.exo.exercise_manager")
+     *     "exerciseManager" = @DI\Inject("ujm_exo.manager.exercise")
      * })
      *
      * @param AuthorizationCheckerInterface $authorization
@@ -117,8 +117,9 @@ class ExerciseController extends AbstractController
     /**
      * Publishes an exercise.
      *
-     * @EXT\Route("/{id}/publish", name="exercise_publish", requirements={"id"="\d+"})
+     * @EXT\Route("/{id}/publish", name="exercise_publish")
      * @EXT\Method("POST")
+     * @EXT\ParamConverter("exercise", class="UJMExoBundle:Exercise", options={"mapping": {"id": "uuid"}})
      *
      * @param Exercise $exercise
      *
@@ -138,8 +139,9 @@ class ExerciseController extends AbstractController
     /**
      * Unpublishes an exercise.
      *
-     * @EXT\Route("/{id}/unpublish", name="exercise_unpublish", requirements={"id"="\d+"})
+     * @EXT\Route("/{id}/unpublish", name="exercise_unpublish")
      * @EXT\Method("POST")
+     * @EXT\ParamConverter("exercise", class="UJMExoBundle:Exercise", options={"mapping": {"id": "uuid"}})
      *
      * @param Exercise $exercise
      *

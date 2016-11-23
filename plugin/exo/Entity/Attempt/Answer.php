@@ -26,7 +26,7 @@ class Answer
 
     /**
      * @var string
-     * 
+     *
      * @ORM\Column
      */
     private $ip;
@@ -36,9 +36,9 @@ class Answer
      *
      * @var float
      *
-     * @ORM\Column(name="mark", type="float")
+     * @ORM\Column(name="mark", type="float", nullable=true)
      */
-    private $mark;
+    private $score;
 
     /**
      * @var int
@@ -52,9 +52,9 @@ class Answer
      *
      * @var string
      *
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(name="response", type="text", nullable=true)
      */
-    private $response;
+    private $data;
 
     /**
      * The list of hints used to answer the question.
@@ -127,7 +127,7 @@ class Answer
      */
     public function setScore($score)
     {
-        $this->mark = $score;
+        $this->score = $score;
     }
 
     /**
@@ -137,7 +137,7 @@ class Answer
      */
     public function getScore()
     {
-        return $this->mark;
+        return $this->score;
     }
 
     /**
@@ -167,7 +167,7 @@ class Answer
      */
     public function setData($data)
     {
-        $this->response = $data;
+        $this->data = $data;
     }
 
     /**
@@ -177,9 +177,14 @@ class Answer
      */
     public function getData()
     {
-        return $this->response;
+        return $this->data;
     }
 
+    /**
+     * Gets used hints.
+     *
+     * @return ArrayCollection
+     */
     public function getUsedHints()
     {
         return $this->usedHints;

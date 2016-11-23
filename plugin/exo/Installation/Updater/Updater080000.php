@@ -4,7 +4,7 @@ namespace UJM\ExoBundle\Installation\Updater;
 
 use Claroline\BundleRecorder\Log\LoggableTrait;
 use Doctrine\DBAL\Connection;
-use UJM\ExoBundle\Library\Question\QuestionType;
+use UJM\ExoBundle\Library\Options\ExerciseType;
 
 class Updater080000
 {
@@ -22,73 +22,25 @@ class Updater080000
 
     public function postUpdate()
     {
-        $this->addMimeTypeToQuestions();
+        $this->updateExerciseTypes();
         $this->updateAnswerData();
     }
 
-    /**
-     * Sets questions mime type.
-     */
-    private function addMimeTypeToQuestions()
+    private function updateExerciseTypes()
     {
-        $this->log('Add mime-type to Questions...');
+        $this->log('Update Exercise types...');
 
         $types = [
-            'InteractionQCM' => QuestionType::CHOICE,
-            'InteractionGraphic' => QuestionType::GRAPHIC,
-            'InteractionHole' => QuestionType::CLOZE,
+            '1' => ExerciseType::SUMMATIVE,
+            '2' => ExerciseType::EVALUATIVE,
+            '3' => ExerciseType::FORMATIVE,
         ];
 
-        $sth = $this->connection->prepare('UPDATE ujm_question SET mime_type = :mimeType WHERE type = :type');
-        foreach ($types as $type => $mimeType) {
+        $sth = $this->connection->prepare('UPDATE ujm_exercise SET `type` = :newType WHERE `type` = :oldType');
+        foreach ($types as $oldType => $newType) {
             $sth->execute([
-                ':mimeType' => $mimeType,
-                ':type' => $type,
-            ]);
-        }
-
-        // Update old open questions
-        $sth = $this->connection->prepare('
-            UPDATE ujm_question AS q 
-            LEFT JOIN ujm_interaction_open AS o ON (o.question_id = q.id) 
-            LEFT JOIN ujm_type_open_question AS t ON (o.typeopenquestion_id = t.id) 
-            SET q.mime_type= :mimeType 
-            WHERE q.type="InteractionOpen" 
-              AND t.value IN (:typeOpen) 
-        ');
-
-        // Update words questions (InteractionOpen + type = oneWord | short)
-        $sth->execute([
-            ':mimeType' => QuestionType::WORDS,
-            ':typeOpen' => '"oneWord", "short"'
-        ]);
-
-        // Update open questions (InteractionOpen + type = long)
-        $sth->execute([
-            ':mimeType' => QuestionType::OPEN,
-            ':typeOpen' => '"long"'
-        ]);
-
-        // Update old match questions
-        $matchTypes = [
-            'To bind' => QuestionType::MATCH,
-            'To pair' => QuestionType::PAIR,
-            'To drag' => QuestionType::SET,
-        ];
-
-        $sth = $this->connection->prepare('
-            UPDATE ujm_question AS q 
-            LEFT JOIN ujm_interaction_matching AS m ON (m.question_id = q.id) 
-            LEFT JOIN ujm_type_matching AS t ON (m.type_matching_id = t.id) 
-            SET q.mime_type= :mimeType 
-            WHERE q.type="InteractionMatching" 
-              AND t.value = :typeMatch 
-        ');
-
-        foreach ($matchTypes as $matchType => $mimeType) {
-            $sth->execute([
-                ':mimeType' => $mimeType,
-                ':typeMatch' => $matchType
+                ':oldType' => $oldType,
+                ':newType' => $newType,
             ]);
         }
 
@@ -107,6 +59,44 @@ class Updater080000
      */
     private function updateAnswerData()
     {
+        // Load answers
+        $sth = $this->connection->prepare('
+            SELECT q.mime_type, a.*
+            FROM ujm_response AS a
+            LEFT JOIN ujm_question AS q ON (a.question_id = q.id)
+            WHERE data IS NOT NULL 
+              AND data != ""
+              AND q.mime_type != "application/x.open+json"
+              AND q.mime_type != "application/x.words+json"
+        ');
 
+        $answers = $sth->fetchAll();
+        foreach ($answers as $answer) {
+            $dataString = null;
+
+            // Calculate new data string (it's the json_encode of the data structure transferred in the API)
+            switch ($answer['mime_type']) {
+                case 'application/x.choice+json':
+                    $answerData = explode(';', $answer['data']);
+                    // Filter empty elements
+                    $answerData = array_filter($answerData, function ($part) {
+                        return !empty($part);
+                    });
+
+                    $dataString = json_encode($answerData);
+
+                    break;
+
+                default:
+                    break;
+            }
+
+            // Update answer data
+            if (!empty($dataString)) {
+                $sth = $this->connection->prepare('
+                    UPDATE ujm_response SET data = :data WHERE id 
+                ');
+            }
+        }
     }
 }

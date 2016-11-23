@@ -3,7 +3,7 @@
 namespace UJM\ExoBundle\Entity\Misc;
 
 use Doctrine\ORM\Mapping as ORM;
-use UJM\ExoBundle\Entity\InteractionOpen;
+use UJM\ExoBundle\Entity\QuestionType\OpenQuestion;
 use UJM\ExoBundle\Library\Model\FeedbackTrait;
 use UJM\ExoBundle\Library\Model\ScoreTrait;
 
@@ -45,9 +45,9 @@ class Keyword
     /**
      * @deprecated this relation needs to be removed as it is not needed
      *
-     * @var InteractionOpen
+     * @var OpenQuestion
      *
-     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\InteractionOpen", inversedBy="keywords")
+     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\QuestionType\OpenQuestion", inversedBy="keywords")
      * @ORM\JoinColumn(name="interaction_open_id", referencedColumnName="id")
      */
     private $interactionopen;
@@ -115,7 +115,7 @@ class Keyword
     /**
      * @deprecated this entity do not need to know open question as they also can be linked to holes
      *
-     * @return InteractionOpen
+     * @return OpenQuestion
      */
     public function getInteractionOpen()
     {
@@ -125,9 +125,9 @@ class Keyword
     /**
      * @deprecated this entity do not need to know open question as they also can be linked to holes
      *
-     * @param InteractionOpen $interactionOpen
+     * @param OpenQuestion $interactionOpen
      */
-    public function setInteractionOpen(InteractionOpen $interactionOpen)
+    public function setInteractionOpen(OpenQuestion $interactionOpen)
     {
         $this->interactionopen = $interactionOpen;
     }

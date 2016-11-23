@@ -1,6 +1,6 @@
 <?php
 
-namespace UJM\ExoBundle\Tests\Manager\Question;
+namespace UJM\ExoBundle\Tests\Manager\Attempt;
 
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use UJM\ExoBundle\Manager\Attempt\AnswerManager;
@@ -33,6 +33,9 @@ class AnswerManagerTest extends TransactionalTestCase
         );
     }
 
+    /**
+     * @expectedException \UJM\ExoBundle\Library\Validator\ValidationException
+     */
     public function testCreateWithInvalidData()
     {
         $this->markTestIncomplete(
@@ -47,6 +50,9 @@ class AnswerManagerTest extends TransactionalTestCase
         );
     }
 
+    /**
+     * @expectedException \UJM\ExoBundle\Library\Validator\ValidationException
+     */
     public function testUpdateWithInvalidData()
     {
         $this->markTestIncomplete(

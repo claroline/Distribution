@@ -1,6 +1,6 @@
 <?php
 
-namespace UJM\ExoBundle\Entity;
+namespace UJM\ExoBundle\Entity\QuestionType;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,21 +12,19 @@ use UJM\ExoBundle\Entity\Misc\Hole;
  * @ORM\Entity
  * @ORM\Table(name="ujm_interaction_hole")
  */
-class InteractionHole extends AbstractInteraction
+class ClozeQuestion extends AbstractQuestion
 {
-    const TYPE = 'InteractionHole';
-
     /**
      * The HTML text with empty holes.
      *
-     * @var string
-     *
      * @ORM\Column(name="htmlWithoutValue", type="text")
+     *
+     * @var string
      */
     private $text;
 
     /**
-     * @var ArrayCollection
+     * The list of holes present in the text.
      *
      * @ORM\OneToMany(
      *     targetEntity="UJM\ExoBundle\Entity\Misc\Hole",
@@ -34,23 +32,17 @@ class InteractionHole extends AbstractInteraction
      *     cascade={"persist", "remove"},
      *     orphanRemoval=true
      * )
+     *
+     * @var ArrayCollection
      */
     private $holes;
 
     /**
-     * InteractionHole constructor.
+     * ClozeQuestion constructor.
      */
     public function __construct()
     {
         $this->holes = new ArrayCollection();
-    }
-
-    /**
-     * @return string
-     */
-    public static function getQuestionType()
-    {
-        return self::TYPE;
     }
 
     /**
@@ -76,7 +68,7 @@ class InteractionHole extends AbstractInteraction
     /**
      * Gets holes.
      *
-     * @return Hole[]
+     * @return ArrayCollection
      */
     public function getHoles()
     {
@@ -84,7 +76,7 @@ class InteractionHole extends AbstractInteraction
     }
 
     /**
-     * Adds an hole.
+     * Adds a hole.
      *
      * @param Hole $hole
      */
@@ -97,7 +89,7 @@ class InteractionHole extends AbstractInteraction
     }
 
     /**
-     * Removes an hole.
+     * Removes a hole.
      *
      * @param Hole $hole
      */

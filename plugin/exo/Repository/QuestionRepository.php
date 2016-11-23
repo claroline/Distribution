@@ -7,6 +7,9 @@ use Doctrine\ORM\EntityRepository;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Question\Question;
 
+/**
+ * QuestionRepository.
+ */
 class QuestionRepository extends EntityRepository
 {
     public function search(User $user, array $filters = [], $page = 0, $number = -1, array $orderBy = [])
@@ -71,16 +74,6 @@ class QuestionRepository extends EntityRepository
         return [];
     }
 
-    public function findSharedWith(Question $question)
-    {
-        return [];
-    }
-
-    public function findScores(Question $question, Exercise $exercise = null)
-    {
-
-    }
-
     /**
      * Returns all the questions linked to a given exercise.
      *
@@ -90,28 +83,29 @@ class QuestionRepository extends EntityRepository
      */
     public function findByExercise(Exercise $exercise)
     {
-        return $this->createQueryBuilder('q')
-            ->join('q.stepQuestions', 'sq')
-            ->join('sq.step', 's')
-            ->where('s.exercise = :exercise')
-            ->orderBy('s.order, sq.order')
-            ->setParameter(':exercise', $exercise)
-            ->getQuery()
+        return $this->getEntityManager()
+            ->createQuery('
+                SELECT q
+                FROM UJM\ExoBundle\Entity\Question\Question AS q
+                JOIN UJM\ExoBundle\Entity\StepQuestion AS sq WITH sq.question = q 
+                JOIN UJM\ExoBundle\Entity\Step AS s WITH sq.step = s AND s.exercise = :exercise
+            ')
+            ->setParameter('exercise', $exercise)
             ->getResult();
     }
 
     /**
-     * Returns the questions corresponding to an array of ids.
+     * Returns the questions corresponding to an array of UUIDs.
      *
-     * @param array $ids
+     * @param array $uuids
      *
      * @return Question[]
      */
-    public function findByIds(array $ids)
+    public function findByUuids(array $uuids)
     {
         return $this->createQueryBuilder('q')
-            ->where('q IN (:ids)')
-            ->setParameter('ids', $ids)
+            ->where('q.uuid IN (:uuids)')
+            ->setParameter('uuids', $uuids)
             ->getQuery()
             ->getResult();
     }

@@ -4,8 +4,7 @@ namespace UJM\ExoBundle\Entity\Misc;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use UJM\ExoBundle\Entity\InteractionHole;
-use UJM\ExoBundle\Entity\Misc\Keyword;
+use UJM\ExoBundle\Entity\QuestionType\ClozeQuestion;
 
 /**
  * Hole.
@@ -16,50 +15,63 @@ use UJM\ExoBundle\Entity\Misc\Keyword;
 class Hole
 {
     /**
+     * The identifier of the hole.
+     *
      * @var int
      *
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
     /**
-     * @var int
+     * The display size of the hole input.
      *
-     * @ORM\Column(name="size", type="integer")
+     * @ORM\Column(type="integer")
+     *
+     * @var int
      */
     private $size;
 
     /**
-     * @var bool
+     * @ORM\Column(type="boolean")
      *
-     * @ORM\Column(name="selector", type="boolean", nullable=true)
+     * @var bool
      */
     private $selector = false;
 
     /**
-     * @var string
+     * The help text to display in the empty hole input.
      *
-     * @ORM\Column(name="placeholder", type="string", nullable=true)
+     * @ORM\Column(type="string", nullable=true)
+     *
+     * @var string
      */
     private $placeholder;
 
     /**
-     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\InteractionHole", inversedBy="holes")
+     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\QuestionType\ClozeQuestion", inversedBy="holes")
      * @ORM\JoinColumn(name="interaction_hole_id", referencedColumnName="id")
      */
     private $interactionHole;
 
     /**
-     * @var ArrayCollection
+     * The list of keywords attached to the hole.
      *
-     * @ORM\OneToMany(targetEntity="UJM\ExoBundle\Entity\Misc\Keyword", mappedBy="hole", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @ORM\OneToMany(
+     *     targetEntity="UJM\ExoBundle\Entity\Misc\Keyword",
+     *     mappedBy="hole",
+     *     cascade={"all"},
+     *     orphanRemoval=true
+     * )
+     *
+     * @var ArrayCollection
      */
     private $keywords;
 
     /**
-     * Constructs a new instance of choices.
+     * Hole constructor.
      */
     public function __construct()
     {
@@ -139,7 +151,7 @@ class Hole
         return $this->interactionHole;
     }
 
-    public function setInteractionHole(InteractionHole $interactionHole)
+    public function setInteractionHole(ClozeQuestion $interactionHole)
     {
         $this->interactionHole = $interactionHole;
     }

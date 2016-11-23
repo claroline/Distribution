@@ -5,8 +5,7 @@ namespace UJM\ExoBundle\Library\Model;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 
 /**
- * ContentTrait
- * Gives the ability to an entity to hold a content (either by using a ResourceNode or by using raw data).
+ * Gives an entity the ability to hold a content (either by using a ResourceNode or by using raw data).
  */
 trait ContentTrait
 {

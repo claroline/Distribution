@@ -89,11 +89,11 @@ class CategorySerializer extends AbstractSerializer
             if (empty($category)) {
                 // Question not exist
                 $category = new Category();
-
-                if (!empty($data->id)) {
-                    $category->setUuid($data->id);
-                }
             }
+        }
+
+        if (!empty($data->id)) {
+            $category->setUuid($data->id);
         }
 
         // Map data to entity (dataProperty => entityProperty/function to call)

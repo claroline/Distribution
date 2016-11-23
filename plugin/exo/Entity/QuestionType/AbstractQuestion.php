@@ -1,6 +1,6 @@
 <?php
 
-namespace UJM\ExoBundle\Entity;
+namespace UJM\ExoBundle\Entity\QuestionType;
 
 use Doctrine\ORM\Mapping as ORM;
 use UJM\ExoBundle\Entity\Question\Question;
@@ -8,18 +8,21 @@ use UJM\ExoBundle\Entity\Question\Question;
 /**
  * @ORM\MappedSuperclass
  */
-abstract class AbstractInteraction implements QuestionTypeProviderInterface
+abstract class AbstractQuestion
 {
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @var int
      */
     protected $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="UJM\ExoBundle\Entity\Question\Question", cascade={"remove"})
-     * @ORM\JoinColumn(onDelete="CASCADE")
+     * @ORM\OneToOne(targetEntity="UJM\ExoBundle\Entity\Question\Question")
+     *
+     * @var Question
      */
     protected $question;
 
@@ -39,7 +42,6 @@ abstract class AbstractInteraction implements QuestionTypeProviderInterface
         $this->question = $question;
 
         $question->setInteraction($this);
-        $question->setType(static::getQuestionType());
     }
 
     /**

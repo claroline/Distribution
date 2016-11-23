@@ -3,9 +3,8 @@
 namespace UJM\ExoBundle\Library\Question\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
-use UJM\ExoBundle\Entity\AbstractInteraction;
+use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
 use UJM\ExoBundle\Library\Question\QuestionType;
-use UJM\ExoBundle\Serializer\Answer\Type\ClozeAnswerSerializer;
 use UJM\ExoBundle\Serializer\Question\Type\ClozeQuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Question\Type\ClozeQuestionValidator;
 
@@ -28,31 +27,22 @@ class ClozeDefinition extends AbstractDefinition
     private $serializer;
 
     /**
-     * @var ClozeAnswerSerializer
-     */
-    private $answerSerializer;
-
-    /**
      * ClozeDefinition constructor.
      *
      * @param ClozeQuestionValidator  $validator
      * @param ClozeQuestionSerializer $serializer
-     * @param ClozeAnswerSerializer   $answerSerializer
      *
      * @DI\InjectParams({
      *     "validator"        = @DI\Inject("ujm_exo.validator.question_cloze"),
-     *     "serializer"       = @DI\Inject("ujm_exo.serializer.question_cloze"),
-     *     "answerSerializer" = @DI\Inject("ujm_exo.serializer.answer_cloze")
+     *     "serializer"       = @DI\Inject("ujm_exo.serializer.question_cloze")
      * })
      */
     public function __construct(
         ClozeQuestionValidator $validator,
-        ClozeQuestionSerializer $serializer,
-        ClozeAnswerSerializer $answerSerializer)
+        ClozeQuestionSerializer $serializer)
     {
         $this->validator = $validator;
         $this->serializer = $serializer;
-        $this->answerSerializer = $answerSerializer;
     }
 
     /**
@@ -60,7 +50,7 @@ class ClozeDefinition extends AbstractDefinition
      *
      * @return string
      */
-    public function getMimeType()
+    public static function getMimeType()
     {
         return QuestionType::CLOZE;
     }
@@ -70,9 +60,9 @@ class ClozeDefinition extends AbstractDefinition
      *
      * @return string
      */
-    public function getEntityClass()
+    public static function getEntityClass()
     {
-        return 'ClozeQuestion';
+        return '\UJM\ExoBundle\Entity\QuestionType\ClozeQuestion';
     }
 
     /**
@@ -95,22 +85,17 @@ class ClozeDefinition extends AbstractDefinition
         return $this->serializer;
     }
 
-    /**
-     * Gets the cloze answer serializer.
-     *
-     * @return ClozeAnswerSerializer
-     */
-    protected function getAnswerSerializer()
+    public function correctAnswer(AbstractQuestion $question, $answer)
     {
-        return $this->answerSerializer;
+        // TODO: Implement correctAnswer() method.
     }
 
-    public function calculateTotal(AbstractInteraction $question)
+    public function expectAnswer(AbstractQuestion $question)
     {
-        // TODO: Implement calculateTotal() method.
+        // TODO: Implement expectAnswer() method.
     }
 
-    public function getStatistics(AbstractInteraction $clozeQuestion, array $answers)
+    public function getStatistics(AbstractQuestion $clozeQuestion, array $answers)
     {
         // Create an array with holeId => holeObject for easy search
         $holesMap = [];

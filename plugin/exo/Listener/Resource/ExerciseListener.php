@@ -129,7 +129,7 @@ class ExerciseListener
      */
     public function onDelete(DeleteResourceEvent $event)
     {
-        $deletable = $this->container->get('ujm.exo.exercise_manager')->isDeletable($event->getResource());;
+        $deletable = $this->container->get('ujm_exo.manager.exercise')->isDeletable($event->getResource());;
         if (!$deletable) {
             // If papers, the Exercise is not completely removed
             $event->enableSoftDelete();
@@ -147,7 +147,7 @@ class ExerciseListener
      */
     public function onCopy(CopyResourceEvent $event)
     {
-        $newExercise = $this->container->get('ujm.exo.exercise_manager')->copy($event->getResource());
+        $newExercise = $this->container->get('ujm_exo.manager.exercise')->copy($event->getResource());
 
         $event->setCopy($newExercise);
         $event->stopPropagation();
@@ -164,9 +164,9 @@ class ExerciseListener
         $exercise = $event->getResource();
 
         if ($exercise->getResourceNode()->isPublished()) {
-            $this->container->get('ujm.exo.exercise_manager')->publish($exercise, false);
+            $this->container->get('ujm_exo.manager.exercise')->publish($exercise, false);
         } else {
-            $this->container->get('ujm.exo.exercise_manager')->unpublish($exercise, false);
+            $this->container->get('ujm_exo.manager.exercise')->unpublish($exercise, false);
         }
 
         $event->stopPropagation();
@@ -184,7 +184,7 @@ class ExerciseListener
         /** @var Exercise $exercise */
         $exercise = $event->getResource();
 
-        $exerciseExport = $this->container->get('ujm.exo.exercise_manager')->export($exercise, [Transfer::INCLUDE_SOLUTIONS]);
+        $exerciseExport = $this->container->get('ujm_exo.manager.exercise')->export($exercise, [Transfer::INCLUDE_SOLUTIONS]);
 
         if (!empty($exerciseExport->description)) {
             $exerciseExport->description = $this->exportHtmlContent($event, $exerciseExport->description);

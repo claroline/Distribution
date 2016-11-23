@@ -22,9 +22,9 @@ class AnswerRepository extends EntityRepository
      */
     public function findByExerciseAndQuestion(Exercise $exercise, Question $question)
     {
-        return $this->createQueryBuilder('r')
-            ->join('r.paper', 'p', 'WITH', 'p.exercise = :exercise')
-            ->where('r.question = :question')
+        return $this->createQueryBuilder('a')
+            ->join('a.paper', 'p', 'WITH', 'p.exercise = :exercise')
+            ->where('a.question = :question')
             ->setParameter('exercise', $exercise)
             ->setParameter('question', $question)
             ->getQuery()

@@ -7,7 +7,6 @@ use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Step;
 use UJM\ExoBundle\Library\Mode\CorrectionMode;
 use UJM\ExoBundle\Library\Mode\MarkMode;
-use UJM\ExoBundle\Library\Options\ExerciseType;
 use UJM\ExoBundle\Library\Options\Recurrence;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Options\ShowCorrectionAt;
@@ -159,38 +158,23 @@ class ExerciseSerializer implements SerializerInterface
     {
         $parameters = new \stdClass();
 
-        switch ($exercise->getType()) {
-            case Exercise::TYPE_EVALUATIVE:
-                $parameters->type = ExerciseType::EVALUATIVE;
-                break;
-            case Exercise::TYPE_FORMATIVE:
-                $parameters->type = ExerciseType::FORMATIVE;
-                break;
-            case Exercise::TYPE_SUMMATIVE:
-                $parameters->type = ExerciseType::SUMMATIVE;
-                break;
-        }
+        $parameters->type = $exercise->getType();
 
-        if ($exercise->getShuffle()) {
-            $parameters->randomOrder = $exercise->getKeepSteps() ? Recurrence::ONCE : Recurrence::ALWAYS;
-        } else {
-            $parameters->randomOrder = Recurrence::NEVER;
+        // Attempt parameters
+        $parameters->randomOrder = $exercise->getRandomOrder();
+        $parameters->randomPick = $exercise->getRandomPick();
+        $parameters->pick = $exercise->getPick();
+        if ($exercise->getMaxAttempts()) {
+            $parameters->maxAttempts = $exercise->getMaxAttempts();
         }
-
-        if ($exercise->getPickSteps()) {
-            $parameters->randomPick = $exercise->getKeepSteps() ? Recurrence::ONCE : Recurrence::ALWAYS;
-        } else {
-            $parameters->randomPick = Recurrence::NEVER;
-        }
-
-        $parameters->pick = $exercise->getPickSteps();
-        $parameters->maxAttempts = $exercise->getMaxAttempts();
+        $parameters->duration = $exercise->getDuration();
+        $parameters->anonymizeAttempts = $exercise->getAnonymizeAttempts();
         $parameters->interruptible = $exercise->isInterruptible();
+
+        // Visibility parameters
         $parameters->showMetadata = $exercise->isMetadataVisible();
         $parameters->showStatistics = $exercise->hasStatistics();
         $parameters->showFullCorrection = !$exercise->isMinimalCorrection();
-        $parameters->anonymous = $exercise->getAnonymous();
-        $parameters->duration = $exercise->getDuration();
 
         switch ($exercise->getMarkMode()) {
             case MarkMode::AFTER_END:
@@ -238,30 +222,28 @@ class ExerciseSerializer implements SerializerInterface
         }
 
         if (isset($parameters->randomOrder)) {
-            if (Recurrence::ONCE === $parameters->randomOrder || Recurrence::ALWAYS === $parameters->randomOrder) {
-                $exercise->setShuffle(true);
-            } else {
-                $exercise->setShuffle(false);
-            }
+            $exercise->setRandomOrder($parameters->randomOrder);
         }
 
         if (isset($parameters->randomPick)) {
+            $exercise->setRandomPick($parameters->randomPick);
             if (Recurrence::ONCE === $parameters->randomPick || Recurrence::ALWAYS === $parameters->randomPick) {
-                $exercise->setPickSteps($parameters->pick);
+                $exercise->setPick($parameters->pick);
             } else {
-                $exercise->setPickSteps(0);
+                $exercise->setPick(0);
             }
-        }
-
-        if ((isset($parameters->randomOrder) && Recurrence::ONCE === $parameters->randomOrder)
-            || (isset($parameters->randomPick) && Recurrence::ONCE === $parameters->randomPick)) {
-            $exercise->setKeepSteps(true);
-        } else {
-            $exercise->setKeepSteps(false);
         }
 
         if (isset($parameters->maxAttempts)) {
             $exercise->setMaxAttempts($parameters->maxAttempts);
+        }
+
+        if (isset($parameters->duration)) {
+            $exercise->setDuration($parameters->duration);
+        }
+
+        if (isset($parameters->anonymizeAttempts)) {
+            $exercise->setAnonymizeAttempts($parameters->anonymizeAttempts);
         }
 
         if (isset($parameters->interruptible)) {
@@ -270,14 +252,6 @@ class ExerciseSerializer implements SerializerInterface
 
         if (isset($parameters->showMetadata)) {
             $exercise->setMetadataVisible($parameters->showMetadata);
-        }
-
-        if (isset($parameters->anonymous)) {
-            $exercise->setAnonymous($parameters->anonymous);
-        }
-
-        if (isset($parameters->duration)) {
-            $exercise->setDuration($parameters->duration);
         }
 
         if (isset($parameters->showStatistics)) {

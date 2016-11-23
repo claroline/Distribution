@@ -4,7 +4,7 @@ namespace UJM\ExoBundle\Serializer\Question\Type;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Misc\Hole;
-use UJM\ExoBundle\Entity\InteractionHole;
+use UJM\ExoBundle\Entity\QuestionType\ClozeQuestion;
 use UJM\ExoBundle\Entity\Misc\Keyword;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
@@ -37,7 +37,7 @@ class ClozeQuestionSerializer implements SerializerInterface
     /**
      * Converts a Cloze question into a JSON-encodable structure.
      *
-     * @param InteractionHole $clozeQuestion
+     * @param ChoiceQuestion $clozeQuestion
      * @param array           $options
      *
      * @return \stdClass
@@ -63,15 +63,15 @@ class ClozeQuestionSerializer implements SerializerInterface
      * Converts raw data into a Cloze question entity.
      *
      * @param \stdClass       $data
-     * @param InteractionHole $clozeQuestion
+     * @param ClozeQuestion $clozeQuestion
      * @param array           $options
      *
-     * @return InteractionHole
+     * @return ClozeQuestion
      */
     public function deserialize($data, $clozeQuestion = null, array $options = [])
     {
         if (empty($clozeQuestion)) {
-            $clozeQuestion = new InteractionHole();
+            $clozeQuestion = new ClozeQuestion();
         }
 
         $clozeQuestion->setText($data->text);
@@ -84,11 +84,11 @@ class ClozeQuestionSerializer implements SerializerInterface
     /**
      * Serializes the Question holes.
      *
-     * @param InteractionHole $clozeQuestion
+     * @param ClozeQuestion $clozeQuestion
      *
      * @return array
      */
-    private function serializeHoles(InteractionHole $clozeQuestion)
+    private function serializeHoles(ClozeQuestion $clozeQuestion)
     {
         return array_map(function (Hole $hole) {
             $holeData = new \stdClass();
@@ -114,12 +114,12 @@ class ClozeQuestionSerializer implements SerializerInterface
     /**
      * Deserializes Question holes.
      *
-     * @param InteractionHole $clozeQuestion
+     * @param ClozeQuestion $clozeQuestion
      * @param array           $holes
      * @param array           $solutions
      * @param array           $options
      */
-    private function deserializeHoles(InteractionHole $clozeQuestion, array $holes, array $solutions, array $options = [])
+    private function deserializeHoles(ClozeQuestion $clozeQuestion, array $holes, array $solutions, array $options = [])
     {
         $holeEntities = $clozeQuestion->getHoles()->toArray();
 
@@ -176,7 +176,7 @@ class ClozeQuestionSerializer implements SerializerInterface
         $hole->setKeywords($updatedKeywords);
     }
 
-    private function serializeSolutions(InteractionHole $clozeQuestion)
+    private function serializeSolutions(ClozeQuestion $clozeQuestion)
     {
         return array_map(function (Hole $hole) {
             $solutionData = new \stdClass();

@@ -6,10 +6,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use UJM\ExoBundle\Entity\Question\Question;
+use UJM\ExoBundle\Library\Model\AttemptParametersTrait;
 use UJM\ExoBundle\Library\Model\OrderTrait;
 
 /**
- * Represents a Step in an Exercise.
+ * A step represents a group of items (questions or content) inside an exercise.
+ * It also have its specific attempt parameters.
  *
  * @ORM\Entity(repositoryClass="UJM\ExoBundle\Repository\StepRepository")
  * @ORM\Table(name="ujm_step")
@@ -34,6 +36,8 @@ class Step
 
     use OrderTrait;
 
+    use AttemptParametersTrait;
+
     /**
      * @var int
      *
@@ -49,39 +53,6 @@ class Step
     private $description;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="nbQuestion", type="integer")
-     */
-    private $nbQuestion = 0;
-
-    /**
-     * @ORM\Column(name="keepSameQuestion", type="boolean", nullable=true)
-     */
-    private $keepSameQuestion;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="shuffle", type="boolean", nullable=true)
-     */
-    private $shuffle = false;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="duration", type="integer")
-     */
-    private $duration = 0;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="max_attempts", type="integer")
-     */
-    private $maxAttempts = 5;
-
-    /**
      * @ORM\ManyToOne(targetEntity="Exercise", inversedBy="steps")
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
@@ -95,6 +66,9 @@ class Step
      */
     private $stepQuestions;
 
+    /**
+     * Step constructor.
+     */
     public function __construct()
     {
         $this->uuid = Uuid::uuid4();
@@ -170,102 +144,6 @@ class Step
     }
 
     /**
-     * Set nbQuestion.
-     *
-     * @param int $nbQuestion
-     */
-    public function setNbQuestion($nbQuestion)
-    {
-        $this->nbQuestion = $nbQuestion;
-    }
-
-    /**
-     * Get nbQuestion.
-     *
-     * @return int
-     */
-    public function getNbQuestion()
-    {
-        return $this->nbQuestion;
-    }
-
-    /**
-     * Set keepSameQuestion.
-     *
-     * @param bool $keepSameQuestion
-     */
-    public function setKeepSameQuestion($keepSameQuestion)
-    {
-        $this->keepSameQuestion = $keepSameQuestion;
-    }
-
-    /**
-     * Get keepSameQuestion.
-     */
-    public function getKeepSameQuestion()
-    {
-        return $this->keepSameQuestion;
-    }
-
-    /**
-     * Set shuffle.
-     *
-     * @param bool $shuffle
-     */
-    public function setShuffle($shuffle)
-    {
-        $this->shuffle = $shuffle;
-    }
-
-    /**
-     * Get shuffle.
-     */
-    public function getShuffle()
-    {
-        return $this->shuffle;
-    }
-
-    /**
-     * Set duration.
-     *
-     * @param int $duration
-     */
-    public function setDuration($duration)
-    {
-        $this->duration = $duration;
-    }
-
-    /**
-     * Get duration.
-     *
-     * @return int
-     */
-    public function getDuration()
-    {
-        return $this->duration;
-    }
-
-    /**
-     * Set maxAttempts.
-     *
-     * @param int $maxAttempts
-     */
-    public function setMaxAttempts($maxAttempts)
-    {
-        $this->maxAttempts = $maxAttempts;
-    }
-
-    /**
-     * Get maxAttempts.
-     *
-     * @return int
-     */
-    public function getMaxAttempts()
-    {
-        return $this->maxAttempts;
-    }
-
-    /**
      * @param Exercise $exercise
      */
     public function setExercise(Exercise $exercise)
@@ -310,7 +188,7 @@ class Step
     }
 
     /**
-     * Shortcuts to get the list of questions of the step.
+     * Shortcut to get the list of questions of the step.
      * 
      * @return array
      */
@@ -324,24 +202,25 @@ class Step
     }
 
     /**
-     * Shortcuts to add Questions to Step.
+     * Shortcut to add Questions to Step.
      * Avoids the need to manually initialize a StepQuestion object to hold the relation.
      *
      * @param Question $question - the question to add to the step
-     * @param int      $order    - the position of question in step. If -1 the question will be added at the end of the Step
      */
-    public function addQuestion(Question $question, $order = -1)
+    public function addQuestion(Question $question)
     {
-        $stepQuestion = new StepQuestion();
-
-        $stepQuestion->setStep($this);
-        $stepQuestion->setQuestion($question);
-
-        if (-1 === $order) {
-            // Calculate current Question order
-            $order = count($this->getStepQuestions());
+        $stepQuestions = $this->stepQuestions->toArray();
+        foreach ($stepQuestions as $stepQuestion) {
+            /** @var StepQuestion $stepQuestion */
+            if ($stepQuestion->getQuestion() === $question) {
+                return; // The question is already linked to the Step
+            }
         }
 
-        $stepQuestion->setOrder($order);
+        // Create a new StepQuestion to attach the question to the step
+        $stepQuestion = new StepQuestion();
+        $stepQuestion->setOrder($this->stepQuestions->count());
+        $stepQuestion->setStep($this);
+        $stepQuestion->setQuestion($question);
     }
 }

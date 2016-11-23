@@ -1,6 +1,6 @@
 <?php
 
-namespace UJM\ExoBundle\Entity;
+namespace UJM\ExoBundle\Entity\QuestionType;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,64 +12,33 @@ use UJM\ExoBundle\Entity\Misc\Keyword;
  * @ORM\Entity
  * @ORM\Table(name="ujm_interaction_open")
  */
-class InteractionOpen extends AbstractInteraction
+class OpenQuestion extends AbstractQuestion
 {
-    const TYPE = 'InteractionOpen';
-
     /**
-     * @ORM\ManyToOne(targetEntity="TypeOpenQuestion")
-     */
-    private $typeopenquestion;
-
-    /**
-     * @var ArrayCollection
-     *
      * @ORM\OneToMany(
      *     targetEntity="UJM\ExoBundle\Entity\Misc\Keyword",
      *     mappedBy="interactionopen",
      *     cascade={"persist", "remove"},
      *     orphanRemoval=true
      * )
+     *
+     * @var ArrayCollection
      */
     private $keywords;
 
     /**
-     * @var float
-     *
      * @ORM\Column(type="float", nullable=true)
+     *
+     * @var float
      */
     private $scoreMaxLongResp;
 
     /**
-     * InteractionOpen constructor.
+     * OpenQuestion constructor.
      */
     public function __construct()
     {
         $this->keywords = new ArrayCollection();
-    }
-
-    /**
-     * @return string
-     */
-    public static function getQuestionType()
-    {
-        return self::TYPE;
-    }
-
-    /**
-     * @return TypeOpenQuestion
-     */
-    public function getTypeOpenQuestion()
-    {
-        return $this->typeopenquestion;
-    }
-
-    /**
-     * @param TypeOpenQuestion $typeOpenQuestion
-     */
-    public function setTypeOpenQuestion(TypeOpenQuestion $typeOpenQuestion)
-    {
-        $this->typeopenquestion = $typeOpenQuestion;
     }
 
     /**

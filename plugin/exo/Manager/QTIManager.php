@@ -5,7 +5,6 @@ namespace UJM\ExoBundle\Manager;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Question\Question;
-use UJM\ExoBundle\Manager\Question\QuestionManager;
 
 /**
  * QTIManager.
@@ -14,25 +13,6 @@ use UJM\ExoBundle\Manager\Question\QuestionManager;
  */
 class QTIManager
 {
-    /**
-     * @var QuestionManager
-     */
-    private $questionManager;
-
-    /**
-     * QTIManager constructor.
-     *
-     * @DI\InjectParams({
-     *     "questionManager" = @DI\Inject("ujm_exo.manager.question")
-     * })
-     *
-     * @param QuestionManager $questionManager
-     */
-    public function __construct(QuestionManager $questionManager)
-    {
-        $this->questionManager = $questionManager;
-    }
-
     /**
      * Exports an Exercise into an assessment test.
      *
@@ -62,13 +42,21 @@ class QTIManager
      */
     public function exportQuestions(array $questions)
     {
+        foreach ($questions as $question) {
+
+        }
+
         return new \ZipArchive();
     }
 
     /**
      * Imports an assessment item as a new Question.
+     *
+     * @param mixed $data
+     *
+     * @return array
      */
-    public function importItems()
+    public function importItems($data)
     {
         return [];
     }

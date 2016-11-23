@@ -9,16 +9,17 @@ use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Question\Hint;
-use UJM\ExoBundle\Entity\Question\Question;
+use UJM\ExoBundle\Library\Attempt\PaperGenerator;
 use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Manager\Attempt\AnswerManager;
 use UJM\ExoBundle\Manager\Attempt\PaperManager;
+use UJM\ExoBundle\Manager\Question\QuestionManager;
 use UJM\ExoBundle\Repository\PaperRepository;
 
 /**
  * AttemptManager provides methods to manage user attempts to exercises.
  * 
- * @DI\Service("ujm_exo.manager.exercise")
+ * @DI\Service("ujm_exo.manager.attempt")
  */
 class AttemptManager
 {
@@ -43,27 +44,36 @@ class AttemptManager
     private $answerManager;
 
     /**
+     * @var QuestionManager
+     */
+    private $questionManager;
+
+    /**
      * AttemptManager constructor.
      *
      * @DI\InjectParams({
-     *     "om"            = @DI\Inject("claroline.persistence.object_manager"),
-     *     "paperManager"  = @DI\Inject("ujm_exo.manager.paper"),
-     *     "answerManager" = @DI\Inject("ujm_exo.manager.answer")
+     *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
+     *     "paperManager"    = @DI\Inject("ujm_exo.manager.paper"),
+     *     "answerManager"   = @DI\Inject("ujm_exo.manager.answer"),
+     *     "questionManager" = @DI\Inject("ujm_exo.manager.question")
      * })
      *
      * @param ObjectManager $om
      * @param PaperManager  $paperManager
      * @param AnswerManager $answerManager
+     * @param QuestionManager $questionManager
      */
     public function __construct(
         ObjectManager $om,
         PaperManager $paperManager,
-        AnswerManager $answerManager)
+        AnswerManager $answerManager,
+        QuestionManager $questionManager)
     {
         $this->om = $om;
         $this->paperManager = $paperManager;
         $this->paperRepository = $this->om->getRepository('UJMExoBundle:Attempt\Paper');
         $this->answerManager = $answerManager;
+        $this->questionManager = $questionManager;
     }
 
     /**
@@ -79,8 +89,7 @@ class AttemptManager
     public function canPass(Exercise $exercise, User $user = null)
     {
         $canPass = true;
-
-        if (!$this->isAdmin($exercise) && $user) {
+        if ($user) {
             $max = $exercise->getMaxAttempts();
             $nbFinishedPapers = $this->paperManager->countUserFinishedPapers($exercise, $user);
 
@@ -105,25 +114,8 @@ class AttemptManager
      */
     public function canUpdate(Paper $paper, User $user = null)
     {
-        return $paper->getEnd() || $user !== $paper->getUser();
-    }
-
-    /**
-     * Gets the list of questions picked for the attempt.
-     *
-     * The list may vary from one paper to another based on
-     * the exercise generation config (eg. random, pick subset of steps).
-     *
-     * @param Paper $paper
-     *
-     * @return Question[]
-     */
-    public function getQuestions(Paper $paper)
-    {
-        $questions = [];
-
-
-        return $questions;
+        return empty($paper->getEnd())
+            && $user === $paper->getUser();
     }
 
     /**
@@ -141,68 +133,25 @@ class AttemptManager
     public function startOrContinue(Exercise $exercise, User $user = null)
     {
         $papers = [];
-        if ($user) {
+        if (null !== $user) {
             // If it's not an anonymous, load the previous unfinished papers
             $papers = $this->paperRepository->findUnfinishedPapers($exercise, $user);
         }
 
-        if (count($papers) === 0) {
+        if (empty($papers)) {
             // Create a new paper for anonymous or if no unfinished
-            $paper = $this->generate($exercise, $user);
+            $paper = PaperGenerator::create($exercise, $user);
         } else {
             if (!$exercise->isInterruptible()) {
-                // User is not allowed to continue is previous paper => open a new one and close the previous
-                $this->close($papers[0], false);
+                // User is not allowed to continue is previous paper => close the previous and open a new one
+                $this->end($papers[0], false);
 
-                $paper = $this->generate($exercise, $user);
+                $paper = PaperGenerator::create($exercise, $user, $papers[0]);
             } else {
                 // User can continue his previous paper
                 $paper = $papers[0];
             }
         }
-
-        return $paper;
-    }
-
-    /**
-     * Generates a new user attempt to an exercise.
-     *
-     * @param Exercise $exercise
-     * @param User $user
-     *
-     * @return Paper
-     */
-    public function generate(Exercise $exercise, User $user = null)
-    {
-        // Get the number of the new Paper
-        $paperNum = 1;
-        if ($user) {
-            $lastPaper = $this->paperRepository->findLastPaper($exercise, $user);
-            if ($lastPaper) {
-                $paperNum = $lastPaper->getNumber() + 1;
-            }
-        }
-
-        // Generate the list of Steps and Questions for the Paper
-        $order = '';
-        if (!empty($lastPaper) && $exercise->getKeepSteps()) {
-            // Get steps order from the last user Paper
-            $order = $lastPaper->getStructure();
-        } else {
-            // Generate paper step order
-            $questions = $this->pickQuestions($exercise);
-            foreach ($questions as $question) {
-                $order .= $question->getId().';';
-            }
-        }
-
-        // Create the new Paper entity
-        $paper = new Paper();
-        $paper->setExercise($exercise);
-        $paper->setUser($user);
-        $paper->setNumber($paperNum);
-        $paper->setStructure($order);
-        $paper->setAnonymized($exercise->getAnonymous());
 
         $this->om->persist($paper);
         $this->om->flush();
@@ -215,12 +164,13 @@ class AttemptManager
      *
      * @param Paper $paper
      * @param \stdClass[] $answers
+     * @param string $clientIp
      *
      * @throws ValidationException - if there is any invalid answer
      *
      * @return Answer[]
      */
-    public function submit(Paper $paper, array $answers)
+    public function submit(Paper $paper, array $answers, $clientIp)
     {
         $submitted = [];
 
@@ -241,23 +191,28 @@ class AttemptManager
             }
 
             // Correct and mark answer
+            $score = $this->questionManager->calculateScore($answer->getQuestion(), $answer);
+            $answer->setScore($score);
+            $answer->setIp($clientIp);
 
+            $paper->addAnswer($answer);
             $submitted[] = $answer;
         }
-        
+
+        $this->om->persist($paper);
         $this->om->endFlushSuite();
 
         return $submitted;
     }
 
     /**
-     * Closes a user paper.
+     * Ends a user paper.
      * Sets the end date of the paper and calculates its score.
      *
      * @param Paper $paper
      * @param bool $finished
      */
-    public function close(Paper $paper, $finished = true)
+    public function end(Paper $paper, $finished = true)
     {
         if (!$paper->getEnd()) {
             $paper->setEnd(new \DateTime());
@@ -272,9 +227,19 @@ class AttemptManager
         $this->paperManager->checkPaperEvaluated($paper);
     }
 
-    public function useHint(Paper $paper, Hint $hint)
+    /**
+     * Flags an hint has used in the user paper and returns the hint content.
+     *
+     * @param Paper $paper
+     * @param Hint $hint
+     * @param string $clientIp
+     *
+     * @return mixed
+     */
+    public function useHint(Paper $paper, Hint $hint, $clientIp)
     {
         if (!$this->paperRepository->hasHint($paper, $hint)) {
+            // Hint is not related to a question of the current attempt
             throw new \LogicException("Hint {$hint->getId()} and paper {$paper->getId()} are not related");
         }
 
@@ -282,13 +247,17 @@ class AttemptManager
         $answer = $paper->getAnswer($hint->getQuestion()->getUuid());
         if (empty($answer)) {
             $answer = new Answer();
+            $answer->setTries(0); // Using an hint is not a try. This will be updated when user will submit his answer
             $answer->setQuestion($hint->getQuestion());
+            $answer->setIp($clientIp);
 
             // Link the new answer to the paper
             $paper->addAnswer($answer);
         }
 
+        $score = $this->questionManager->calculateScore($answer->getQuestion(), $answer);
         $answer->addUsedHint($hint);
+        $answer->setScore($score);
 
         $this->om->persist($answer);
         $this->om->flush();

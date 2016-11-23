@@ -16,7 +16,7 @@ use UJM\ExoBundle\Manager\QTIManager;
  *
  * @EXT\Route("/qti", options={"expose"=true})
  */
-class QTIController
+class QTIController extends AbstractController
 {
     /**
      * @var QTIManager
@@ -52,8 +52,9 @@ class QTIController
         $errors = [];
         $questions = [];
 
+        $data = $this->decodeRequestData($request);
         try {
-            $questions = $this->qtiManager->importItems();
+            $questions = $this->qtiManager->importItems($data);
         } catch (ValidationException $e) {
             $errors = $e->getErrors();
         }
@@ -99,8 +100,10 @@ class QTIController
      */
     public function exportQuestionsAction(Request $request)
     {
-        return new StreamedResponse(function () {
-            return $this->qtiManager->exportQuestions([]);
+        $data = $this->decodeRequestData($request);
+
+        return new StreamedResponse(function () use ($data) {
+            return $this->qtiManager->exportQuestions($data);
         }, 200, [
             'Content-Type' => 'application/force-download',
             'Content-Disposition' => 'attachment; filename="qti-items.csv"',

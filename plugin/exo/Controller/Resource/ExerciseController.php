@@ -13,10 +13,7 @@ use UJM\ExoBundle\Library\Options\Transfer;
 /**
  * Exercise Controller renders views.
  *
- * @EXT\Route(
- *     "/exercises",
- *     options={"expose"=true}
- * )
+ * @EXT\Route("/exercises", options={"expose"=true})
  * @EXT\Method("GET")
  */
 class ExerciseController extends Controller

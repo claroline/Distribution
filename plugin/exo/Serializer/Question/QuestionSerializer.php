@@ -11,6 +11,7 @@ use UJM\ExoBundle\Entity\Question\Hint;
 use UJM\ExoBundle\Entity\Question\Question;
 use UJM\ExoBundle\Entity\Question\QuestionObject;
 use UJM\ExoBundle\Entity\Question\QuestionResource;
+use UJM\ExoBundle\Entity\Question\Shared;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Question\QuestionDefinitionsCollection;
 use UJM\ExoBundle\Library\Serializer\AbstractSerializer;
@@ -173,11 +174,11 @@ class QuestionSerializer extends AbstractSerializer
             if (empty($question)) {
                 // Question not exist
                 $question = new Question();
-
-                if (!empty($data->id)) {
-                    $question->setUuid($data->id);
-                }
             }
+        }
+
+        if (!empty($data->id)) {
+            $question->setUuid($data->id);
         }
 
         // Map data to entity (dataProperty => entityProperty/function to call)
@@ -276,9 +277,13 @@ class QuestionSerializer extends AbstractSerializer
             }, $exercises);
 
             // Gets users who have access to this question
-            $users = $questionRepo->findSharedWith($question);
-            $metadata->sharedWith = array_map(function (User $user) use ($options) {
-                return $this->userSerializer->serialize($user, $options);
+            $users = $this->om->getRepository('UJMExoBundle:Question\Shared')->findBy(['question' => $question]);
+            $metadata->sharedWith = array_map(function (Shared $sharedQuestion) use ($options) {
+                $shared = new \stdClass();
+                $shared->adminRights = $sharedQuestion->hasAdminRights();
+                $shared->user = $this->userSerializer->serialize($sharedQuestion->getUser(), $options);
+
+                return $shared;
             }, $users);
 
             // Adds category

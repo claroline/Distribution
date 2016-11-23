@@ -2,9 +2,11 @@
 
 namespace UJM\ExoBundle\Serializer\Answer;
 
+use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\Question\Hint;
+use UJM\ExoBundle\Entity\Question\Question;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\AbstractSerializer;
 use UJM\ExoBundle\Serializer\Question\HintSerializer;
@@ -17,6 +19,11 @@ use UJM\ExoBundle\Serializer\Question\HintSerializer;
 class AnswerSerializer extends AbstractSerializer
 {
     /**
+     * @var ObjectManager
+     */
+    private $om;
+
+    /**
      * @var HintSerializer
      */
     private $hintSerializer;
@@ -25,13 +32,18 @@ class AnswerSerializer extends AbstractSerializer
      * AnswerSerializer constructor.
      *
      * @DI\InjectParams({
-     *      "hintSerializer" = @DI\Inject("ujm_exo.serializer.hint")
+     *     "om" = @DI\Inject("claroline.persistence.object_manager"),
+     *     "hintSerializer" = @DI\Inject("ujm_exo.serializer.hint")
      * })
      *
+     * @param ObjectManager $om
      * @param HintSerializer $hintSerializer
      */
-    public function __construct(HintSerializer $hintSerializer)
+    public function __construct(
+        ObjectManager $om,
+        HintSerializer $hintSerializer)
     {
+        $this->om = $om;
         $this->hintSerializer = $hintSerializer;
     }
 
@@ -81,8 +93,17 @@ class AnswerSerializer extends AbstractSerializer
      */
     public function deserialize($data, $answer = null, array $options = [])
     {
-        if (empty($entity)) {
-            $entity = new Answer();
+        if (empty($answer)) {
+            $answer = new Answer();
+        }
+
+        if (empty($answer->getQuestion())) {
+            /** @var Question $question */
+            $question = $this->om->getRepository('UJMExoBundle:Question\Question')->findOneBy([
+                'uuid' => $data->questionId,
+            ]);
+            
+            $answer->setQuestion($question);
         }
 
         $this->mapObjectToEntity([
@@ -91,7 +112,7 @@ class AnswerSerializer extends AbstractSerializer
             },
         ], $data, $answer);
 
-        return $entity;
+        return $answer;
     }
 
     private function serializeHints(Answer $answer)

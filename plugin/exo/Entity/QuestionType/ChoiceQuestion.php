@@ -1,23 +1,30 @@
 <?php
 
-namespace UJM\ExoBundle\Entity;
+namespace UJM\ExoBundle\Entity\QuestionType;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use UJM\ExoBundle\Entity\Misc\Choice;
+use UJM\ExoBundle\Library\Model\ShuffleTrait;
 
 /**
+ * A choice question.
+ *
  * @ORM\Entity
  * @ORM\Table(name="ujm_interaction_qcm")
  */
-class InteractionQCM extends AbstractInteraction
+class ChoiceQuestion extends AbstractQuestion
 {
-    const TYPE = 'InteractionQCM';
-
     /**
+     * Is it a multiple or a unique choice question ?
+     *
      * @ORM\Column(type="boolean")
+     *
+     * @var bool
      */
-    private $shuffle = false;
+    private $multiple = false;
+
+    use ShuffleTrait;
 
     /**
      * @ORM\Column(name="score_right_response", type="float", nullable=true)
@@ -35,18 +42,15 @@ class InteractionQCM extends AbstractInteraction
     private $weightResponse = false;
 
     /**
-     * @ORM\OneToMany(targetEntity="UJM\ExoBundle\Entity\Misc\Choice", mappedBy="interactionQCM", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @ORM\OneToMany(
+     *     targetEntity="UJM\ExoBundle\Entity\Misc\Choice",
+     *     mappedBy="interactionQCM",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     * )
      * @ORM\OrderBy({"order" = "ASC"})
      */
     private $choices;
-
-    /**
-     * @deprecated the only purpose of this is to know if it's a multiple or unique choice question (a boolean is sufficient)
-     *
-     * @ORM\ManyToOne(targetEntity="TypeQCM")
-     * @ORM\JoinColumn(name="type_qcm_id", referencedColumnName="id")
-     */
-    private $typeQCM;
 
     /**
      * Constructs a new instance of choices.
@@ -57,47 +61,23 @@ class InteractionQCM extends AbstractInteraction
     }
 
     /**
-     * @return string
-     */
-    public static function getQuestionType()
-    {
-        return self::TYPE;
-    }
-
-    /**
-     * @deprecated will be removed in the next release
+     * Is multiple ?
      *
-     * @return TypeQCM
-     */
-    public function getTypeQCM()
-    {
-        return $this->typeQCM;
-    }
-
-    /**
-     * @deprecated will be removed in the next release
-     *
-     * @param TypeQCM $typeQCM
-     */
-    public function setTypeQCM(TypeQCM $typeQCM)
-    {
-        $this->typeQCM = $typeQCM;
-    }
-
-    /**
-     * @param bool $shuffle
-     */
-    public function setShuffle($shuffle)
-    {
-        $this->shuffle = $shuffle;
-    }
-
-    /**
      * @return bool
      */
-    public function getShuffle()
+    public function isMultiple()
     {
-        return $this->shuffle;
+        return $this->multiple;
+    }
+
+    /**
+     * Sets multiple.
+     *
+     * @param bool $multiple
+     */
+    public function setMultiple($multiple)
+    {
+        $this->multiple = $multiple;
     }
 
     /**

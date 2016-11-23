@@ -8,7 +8,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
- * @DI\Service("ujm.exo.question_bank_listener")
+ * @DI\Service("ujm_exo.listener.question_bank")
  */
 class QuestionBankListener
 {

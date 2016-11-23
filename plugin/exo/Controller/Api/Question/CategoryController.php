@@ -104,7 +104,7 @@ class CategoryController extends AbstractController
      * @EXT\Route("/{id}", name="question_category_update")
      * @EXT\Method("PUT")
      * @EXT\ParamConverter("user", converter="current_user")
-     * @EXT\ParamConverter("category", class="UJMExoBundle:Category", options={"mapping": {"id": "uuid"}})
+     * @EXT\ParamConverter("category", class="UJMExoBundle:Question\Category", options={"mapping": {"id": "uuid"}})
      *
      * @param User $user
      * @param Category $category
@@ -148,7 +148,7 @@ class CategoryController extends AbstractController
      * @EXT\Route("/{id}", name="question_category_delete")
      * @EXT\Method("DELETE")
      * @EXT\ParamConverter("user", converter="current_user")
-     * @EXT\ParamConverter("category", class="UJMExoBundle:Category", options={"mapping": {"id": "uuid"}})
+     * @EXT\ParamConverter("category", class="UJMExoBundle:Question\Category", options={"mapping": {"id": "uuid"}})
      *
      * @param User $user
      * @param Category $category

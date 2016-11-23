@@ -65,6 +65,41 @@ class ExerciseValidatorTest extends JsonSchemaTestCase
     }
 
     /**
+     * The validator MUST throw error if the user want to pick more steps than there are in the exercise
+     */
+    public function testPickGreaterThanStepsThrowsError()
+    {
+        $exerciseData = $this->loadTestData('exercise/invalid/pick-greater-than-steps.json');
+
+        $errors = $this->validator->validate($exerciseData);
+
+        $this->assertGreaterThan(0, count($errors));
+        $this->assertTrue(in_array([
+            'path' => '/parameters/pick',
+            'message' => 'the property `pick` cannot be greater than the number of steps of the exercise',
+        ], $errors));
+    }
+
+    /**
+     * The validator MUST throw error if the attempt parameters `randomPick` and `randomOrder` are incompatible.
+     *
+     * We can not use the generated order (randomOrder) in previous papers if we generate new subsets of steps and
+     * questions for each paper (randomPick).
+     */
+    public function testIncompatiblePickAndRandomThrowsError()
+    {
+        $stepData = $this->loadTestData('exercise/invalid/incompatible-pick-and-random.json');
+
+        $errors = $this->validator->validate($stepData);
+
+        $this->assertGreaterThan(0, count($errors));
+        $this->assertTrue(in_array([
+            'path' => '/parameters/randomOrder',
+            'message' => 'The property `randomOrder` cannot be "once" when `randomPick` is "always"',
+        ], $errors));
+    }
+
+    /**
      * The validator MUST forward the validation of steps to the StepValidator.
      */
     public function testStepsAreValidatedToo()

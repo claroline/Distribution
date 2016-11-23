@@ -27,6 +27,10 @@ class AnswerValidator extends JsonSchemaValidator
     {
         // TODO : implement method.
 
+        // Checks the question exists
+
+        // Forward to question type validator
+
         return [];
     }
 }

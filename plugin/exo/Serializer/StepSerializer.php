@@ -5,6 +5,7 @@ namespace UJM\ExoBundle\Serializer;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Step;
 use UJM\ExoBundle\Entity\StepQuestion;
+use UJM\ExoBundle\Library\Options\Recurrence;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
 use UJM\ExoBundle\Serializer\Question\QuestionSerializer;
 
@@ -74,10 +75,10 @@ class StepSerializer implements SerializerInterface
     {
         if (empty($step)) {
             $step = new Step();
+        }
 
-            if (!empty($data->id)) {
-                $step->setUuid($data->id);
-            }
+        if (!empty($data->id)) {
+            $step->setUuid($data->id);
         }
 
         if (isset($data->title)) {
@@ -110,6 +111,12 @@ class StepSerializer implements SerializerInterface
     {
         $parameters = new \stdClass();
 
+        // Attempt parameters
+        $parameters->randomOrder = $step->getRandomOrder();
+        $parameters->randomPick = $step->getRandomPick();
+        $parameters->pick = $step->getPick();
+        $parameters->duration = $step->getDuration();
+
         if ($step->getMaxAttempts()) {
             $parameters->maxAttempts = $step->getMaxAttempts();
         }
@@ -125,8 +132,25 @@ class StepSerializer implements SerializerInterface
      */
     private function deserializeParameters(Step $step, \stdClass $parameters)
     {
+        if (isset($parameters->randomOrder)) {
+            $step->setRandomOrder($parameters->randomOrder);
+        }
+
+        if (isset($parameters->randomPick)) {
+            $step->setRandomPick($parameters->randomPick);
+            if (Recurrence::ONCE === $parameters->randomPick || Recurrence::ALWAYS === $parameters->randomPick) {
+                $step->setPick($parameters->pick);
+            } else {
+                $step->setPick(0);
+            }
+        }
+
         if (isset($parameters->maxAttempts)) {
             $step->setMaxAttempts($parameters->maxAttempts);
+        }
+
+        if (isset($parameters->duration)) {
+            $step->setDuration($parameters->duration);
         }
     }
 
@@ -181,7 +205,7 @@ class StepSerializer implements SerializerInterface
 
             if (empty($stepQuestion)) {
                 // Creation of a new item (we need to link it to the Step)
-                $step->addQuestion($entity, $index);
+                $step->addQuestion($entity);
             } else {
                 // Update order of the Question in the Step
                 $stepQuestion->setOrder($index);

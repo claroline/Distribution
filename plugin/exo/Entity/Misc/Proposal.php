@@ -4,7 +4,7 @@ namespace UJM\ExoBundle\Entity\Misc;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use UJM\ExoBundle\Entity\InteractionMatching;
+use UJM\ExoBundle\Entity\QuestionType\MatchQuestion;
 use UJM\ExoBundle\Library\Model\ContentTrait;
 use UJM\ExoBundle\Library\Model\OrderTrait;
 
@@ -39,7 +39,7 @@ class Proposal
     private $expectedLabels;
 
     /**
-     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\InteractionMatching", inversedBy="proposals")
+     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\QuestionType\MatchQuestion", inversedBy="proposals")
      * @ORM\JoinColumn(name="interaction_matching_id", referencedColumnName="id")
      */
     private $interactionMatching;
@@ -99,7 +99,7 @@ class Proposal
     /**
      * Get InteractionMatching.
      *
-     * @return InteractionMatching
+     * @return MatchQuestion
      */
     public function getInteractionMatching()
     {
@@ -109,9 +109,9 @@ class Proposal
     /**
      * Set InteractionMatching.
      *
-     * @param InteractionMatching $interactionMatching
+     * @param MatchQuestion $interactionMatching
      */
-    public function setInteractionMatching(InteractionMatching $interactionMatching)
+    public function setInteractionMatching(MatchQuestion $interactionMatching)
     {
         $this->interactionMatching = $interactionMatching;
     }

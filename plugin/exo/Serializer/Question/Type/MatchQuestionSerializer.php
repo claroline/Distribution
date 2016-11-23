@@ -3,7 +3,7 @@
 namespace UJM\ExoBundle\Serializer\Question\Type;
 
 use JMS\DiExtraBundle\Annotation as DI;
-use UJM\ExoBundle\Entity\InteractionMatching;
+use UJM\ExoBundle\Entity\QuestionType\MatchQuestion;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
 
@@ -15,7 +15,7 @@ class MatchQuestionSerializer implements SerializerInterface
     /**
      * Converts a Match question into a JSON-encodable structure.
      *
-     * @param InteractionMatching $matchQuestion
+     * @param MatchQuestion $matchQuestion
      * @param array               $options
      *
      * @return \stdClass
@@ -39,15 +39,15 @@ class MatchQuestionSerializer implements SerializerInterface
      * Converts raw data into a Match question entity.
      *
      * @param \stdClass           $data
-     * @param InteractionMatching $matchQuestion
+     * @param MatchQuestion $matchQuestion
      * @param array               $options
      *
-     * @return InteractionMatching
+     * @return MatchQuestion
      */
     public function deserialize($data, $matchQuestion = null, array $options = [])
     {
         if (empty($matchQuestion)) {
-            $matchQuestion = new InteractionMatching();
+            $matchQuestion = new MatchQuestion();
         }
 
         // TODO: Implement deserialize() method.

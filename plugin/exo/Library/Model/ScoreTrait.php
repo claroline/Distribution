@@ -3,8 +3,7 @@
 namespace UJM\ExoBundle\Library\Model;
 
 /**
- * ScoreTrait
- * Gives the ability to an entity to have a score
+ * Gives an entity the ability to have a score.
  */
 trait ScoreTrait
 {

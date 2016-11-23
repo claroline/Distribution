@@ -12,10 +12,7 @@ use UJM\ExoBundle\Manager\Question\QuestionManager;
  * QuestionBankController
  * The tool permits to users to manage their questions across the platform (edit, export, share, etc.).
  *
- * @EXT\Route(
- *     "/questions",
- *     options={"expose"=true}
- * )
+ * @EXT\Route("/questions", options={"expose"=true})
  * @EXT\Method("GET")
  */
 class QuestionBankController
@@ -39,7 +36,7 @@ class QuestionBankController
      *
      * @param User $user
      *
-     * @EXT\Route("", name="question_bank", options={"expose"=true})
+     * @EXT\Route("", name="question_bank")
      * @EXT\ParamConverter("user", converter="current_user")
      * @EXT\Template("UJMExoBundle:Tool:question-bank.html.twig")
      *

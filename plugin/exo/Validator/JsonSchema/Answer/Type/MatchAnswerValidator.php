@@ -3,6 +3,8 @@
 namespace UJM\ExoBundle\Validator\JsonSchema\Answer\Type;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Entity\Misc\Label;
+use UJM\ExoBundle\Entity\Misc\Proposal;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
 
 /**
@@ -25,12 +27,9 @@ class MatchAnswerValidator extends JsonSchemaValidator
      */
     public function validateAfterSchema($question, array $options = [])
     {
+        $proposals = $question->getProposals()->toArray();
 
-        $interaction = $this->om->getRepository('UJMExoBundle:InteractionMatching')->findOneByQuestion($question);
-
-        $proposals = $interaction->getProposals()->toArray();
-
-        $proposalIds = array_map(function ($proposal) {
+        $proposalIds = array_map(function (Proposal $proposal) {
             return (string) $proposal->getId();
         }, $proposals);
 
@@ -50,20 +49,12 @@ class MatchAnswerValidator extends JsonSchemaValidator
         }
 
         foreach ($sourceIds as $id) {
-            if (!is_string($id)) {
-                return ['Answer array must contain only string identifiers'];
-            }
-
             if (!in_array($id, $proposalIds)) {
                 return ['Answer array identifiers must reference a question proposal id'];
             }
         }
 
         foreach ($targetIds as $id) {
-            if (!is_string($id)) {
-                return ['Answer array must contain only string identifiers'];
-            }
-
             if (!in_array($id, $labelsIds)) {
                 return ['Answer array identifiers must reference a question proposal associated label id'];
             }

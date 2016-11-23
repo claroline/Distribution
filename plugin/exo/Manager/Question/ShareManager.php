@@ -49,7 +49,7 @@ class ShareManager
         /** @var QuestionRepository $questionRepo */
         $questionRepo = $this->om->getRepository('UJMExoBundle:Question\Question');
         // Loaded questions (we load it to be sure it exist)
-        $questions = $questionRepo->findByIds($shareRequest->questions);
+        $questions = $questionRepo->findByUuids($shareRequest->questions);
 
         /** @var UserRepository $userRepo */
         $userRepo = $this->om->getRepository('ClarolineCoreBundle:User');

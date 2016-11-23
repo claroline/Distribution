@@ -15,13 +15,12 @@ use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Question\Hint;
 use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Manager\AttemptManager;
-use UJM\ExoBundle\Manager\HintManager;
 use UJM\ExoBundle\Manager\Attempt\PaperManager;
 
 /**
  * Attempt Controller.
  *
- * @EXT\Route("/{exerciseId}/attempts", options={"expose"=true})
+ * @EXT\Route("/exercises/{exerciseId}/attempts", options={"expose"=true})
  * @EXT\ParamConverter("exercise", class="UJMExoBundle:Exercise", options={"mapping": {"exerciseId": "uuid"}})
  */
 class AttemptController extends AbstractController
@@ -42,34 +41,26 @@ class AttemptController extends AbstractController
     private $paperManager;
 
     /**
-     * @var HintManager
-     */
-    private $hintManager;
-
-    /**
      * AttemptController constructor.
      *
      * @DI\InjectParams({
      *     "authorization" = @DI\Inject("security.authorization_checker"),
      *     "attemptManager" = @DI\Inject("ujm_exo.manager.attempt"),
-     *     "paperManager" = @DI\Inject("ujm_exo.manager.paper"),
-     *     "hintManager" = @DI\Inject("ujm_exo.manager.hint")
+     *     "paperManager" = @DI\Inject("ujm_exo.manager.paper")
      * })
      *
      * @param AuthorizationCheckerInterface $authorization
      * @param AttemptManager $attemptManager
      * @param PaperManager $paperManager
-     * @param HintManager $hintManager
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
         AttemptManager $attemptManager,
-        PaperManager $paperManager,
-        HintManager $hintManager)
+        PaperManager $paperManager)
     {
         $this->authorization = $authorization;
+        $this->attemptManager = $attemptManager;
         $this->paperManager = $paperManager;
-        $this->hintManager = $hintManager;
     }
 
     /**
@@ -77,7 +68,7 @@ class AttemptController extends AbstractController
      * Also check that max attempts are not reached if needed.
      *
      * @EXT\Route("", name="exercise_attempt_new", requirements={"id"="\d+"})
-     * @EXT\Method("GET")
+     * @EXT\Method("POST")
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
      *
      * @param Exercise $exercise
@@ -89,16 +80,13 @@ class AttemptController extends AbstractController
     {
         $this->assertHasPermission('OPEN', $exercise);
 
-        if (!$this->attemptManager->canPass($exercise, $user)) {
+        if (!$this->isAdmin($exercise) && !$this->attemptManager->canPass($exercise, $user)) {
             throw new AccessDeniedException('max attempts reached');
         }
         
         $paper = $this->attemptManager->startOrContinue($exercise, $user);
 
-        return new JsonResponse([
-            'paper' => $this->paperManager->exportPaper($paper, $this->isAdmin($paper->getExercise())),
-            'questions' => $this->paperManager->exportPaperQuestions($paper, $this->isAdmin($paper->getExercise())),
-        ]);
+        return new JsonResponse($this->paperManager->exportWithQuestions($paper));
     }
 
     /**
@@ -106,7 +94,7 @@ class AttemptController extends AbstractController
      *
      * @EXT\Route("/{id}", name="exercise_attempt_submit")
      * @EXT\Method("PUT")
-     * @EXT\ParamConverter("paper", class="UJMExoBundle:Attempt\Paper", options={"mapping": {"paperId": "uuid"}})
+     * @EXT\ParamConverter("paper", class="UJMExoBundle:Attempt\Paper", options={"mapping": {"id": "uuid"}})
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
      *
      * @param User $user
@@ -130,7 +118,7 @@ class AttemptController extends AbstractController
             ];
         } else {
             try {
-                $this->attemptManager->submit($paper, $data);
+                $this->attemptManager->submit($paper, $data, $request->getClientIp());
             } catch (ValidationException $e) {
                 $errors = $e->getErrors();
             }
@@ -139,6 +127,7 @@ class AttemptController extends AbstractController
         if (!empty($errors)) {
             return new JsonResponse($errors, 422);
         } else {
+            // TODO : return the solution for formative exercises
             return new JsonResponse(null, 204);
         }
     }
@@ -148,7 +137,7 @@ class AttemptController extends AbstractController
      *
      * @EXT\Route("/{id}/end", name="exercise_attempt_finish")
      * @EXT\Method("PUT")
-     * @EXT\ParamConverter("paper", class="UJMExoBundle:Attempt\Paper", options={"mapping": {"paperId": "uuid"}})
+     * @EXT\ParamConverter("paper", class="UJMExoBundle:Attempt\Paper", options={"mapping": {"id": "uuid"}})
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
      *
      * @param Paper $paper
@@ -161,28 +150,30 @@ class AttemptController extends AbstractController
         $this->assertHasPermission('OPEN', $paper->getExercise());
         $this->assertHasPaperAccess($paper, $user);
 
-        $this->attemptManager->close($paper, true);
+        $this->attemptManager->end($paper, true);
 
-        return new JsonResponse($this->paperManager->exportPaper($paper), 200);
+        // TODO : check the score availability
+        return new JsonResponse($this->paperManager->export($paper), 200);
     }
 
     /**
      * Returns the content of a question hint, and records the fact that it has
      * been consulted within the context of a given paper.
      *
-     * @EXT\Route("/{paperId}/hints/{id}", name="exercise_attempt_hint_show")
+     * @EXT\Route("/{id}/hints/{hintId}", name="exercise_attempt_hint_show")
      * @EXT\Method("GET")
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
-     * @EXT\ParamConverter("paper", class="UJMExoBundle:Attempt\Paper", options={"mapping": {"paperId": "uuid"}})
-     * @EXT\ParamConverter("hint", class="UJMExoBundle:Question\Hint")
+     * @EXT\ParamConverter("paper", class="UJMExoBundle:Attempt\Paper", options={"mapping": {"id": "uuid"}})
+     * @EXT\ParamConverter("hint", class="UJMExoBundle:Question\Hint", options={"mapping": {"hintId": "id"}})
      *
      * @param Paper $paper
      * @param Hint  $hint
      * @param User  $user
+     * @param Request $request
      *
      * @return JsonResponse
      */
-    public function useHintAction(Paper $paper, Hint $hint, User $user = null)
+    public function useHintAction(Paper $paper, Hint $hint, User $user = null, Request $request)
     {
         $this->assertHasPermission('OPEN', $paper->getExercise());
         $this->assertHasPaperAccess($paper, $user);
@@ -191,7 +182,7 @@ class AttemptController extends AbstractController
         $errors = [];
 
         try {
-            $hintContent = $this->attemptManager->useHint($paper, $hint);
+            $hintContent = $this->attemptManager->useHint($paper, $hint, $request->getClientIp());
         } catch (\Exception $e) {
             $errors[] = [
                 'path' => '',
@@ -208,7 +199,6 @@ class AttemptController extends AbstractController
 
     /**
      * Checks whether a User has access to a Paper
-     * ATTENTION : As is, anonymous have access to all the other anonymous Papers !!!
      *
      * @param Paper $paper
      * @param User $user
@@ -220,6 +210,13 @@ class AttemptController extends AbstractController
         if (!$this->attemptManager->canUpdate($paper, $user)) {
             throw new AccessDeniedException();
         }
+    }
+
+    private function isAdmin(Exercise $exercise)
+    {
+        $collection = new ResourceCollection([$exercise->getResourceNode()]);
+
+        return $this->authorization->isGranted('ADMINISTRATE', $collection);
     }
 
     private function assertHasPermission($permission, Exercise $exercise)

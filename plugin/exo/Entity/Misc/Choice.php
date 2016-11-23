@@ -3,7 +3,7 @@
 namespace UJM\ExoBundle\Entity\Misc;
 
 use Doctrine\ORM\Mapping as ORM;
-use UJM\ExoBundle\Entity\InteractionQCM;
+use UJM\ExoBundle\Entity\QuestionType\ChoiceQuestion;
 use UJM\ExoBundle\Library\Model\ContentTrait;
 use UJM\ExoBundle\Library\Model\FeedbackTrait;
 use UJM\ExoBundle\Library\Model\OrderTrait;
@@ -44,7 +44,7 @@ class Choice
     private $expected = false;
 
     /**
-     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\InteractionQCM", inversedBy="choices")
+     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\QuestionType\ChoiceQuestion", inversedBy="choices")
      * @ORM\JoinColumn(name="interaction_qcm_id", referencedColumnName="id")
      */
     private $interactionQCM;
@@ -78,7 +78,7 @@ class Choice
     }
 
     /**
-     * @return InteractionQCM
+     * @return ChoiceQuestion
      */
     public function getInteractionQCM()
     {
@@ -86,9 +86,9 @@ class Choice
     }
 
     /**
-     * @param InteractionQCM $interactionQCM
+     * @param ChoiceQuestion $interactionQCM
      */
-    public function setInteractionQCM(InteractionQCM $interactionQCM)
+    public function setInteractionQCM(ChoiceQuestion $interactionQCM)
     {
         $this->interactionQCM = $interactionQCM;
     }

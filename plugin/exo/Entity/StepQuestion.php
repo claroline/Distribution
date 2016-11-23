@@ -7,26 +7,38 @@ use UJM\ExoBundle\Entity\Question\Question;
 use UJM\ExoBundle\Library\Model\OrderTrait;
 
 /**
- * UJM\ExoBundle\Entity\StepQuestion.
+ * A stepQuestion represents the link between a question and an exercise step.
+ * It also stores the position of the question in the step.
  *
- * @ORM\Entity(repositoryClass="UJM\ExoBundle\Repository\StepQuestionRepository")
+ * @ORM\Entity()
  * @ORM\Table(name="ujm_step_question")
  */
 class StepQuestion
 {
+    /*
+     * Keep the order of the question in the step.
+     */
     use OrderTrait;
     
     /**
+     * The parent step.
+     *
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Step", inversedBy="stepQuestions")
      * @ORM\JoinColumn(onDelete="CASCADE")
+     *
+     * @var Step
      */
     private $step;
 
     /**
+     * The linked question.
+     *
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Question\Question", cascade={"persist"})
      * @ORM\JoinColumn(onDelete="CASCADE")
+     *
+     * @var Question
      */
     private $question;
 

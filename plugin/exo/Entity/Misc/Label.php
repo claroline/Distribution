@@ -3,7 +3,7 @@
 namespace UJM\ExoBundle\Entity\Misc;
 
 use Doctrine\ORM\Mapping as ORM;
-use UJM\ExoBundle\Entity\InteractionMatching;
+use UJM\ExoBundle\Entity\QuestionType\MatchQuestion;
 use UJM\ExoBundle\Library\Model\ContentTrait;
 use UJM\ExoBundle\Library\Model\FeedbackTrait;
 use UJM\ExoBundle\Library\Model\OrderTrait;
@@ -35,7 +35,7 @@ class Label
     use ContentTrait;
 
     /**
-     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\InteractionMatching", inversedBy="labels")
+     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\QuestionType\MatchQuestion", inversedBy="labels")
      * @ORM\JoinColumn(name="interaction_matching_id", referencedColumnName="id")
      */
     private $interactionMatching;
@@ -53,7 +53,7 @@ class Label
     /**
      * Get InteractionMatching.
      *
-     * @return InteractionMatching
+     * @return MatchQuestion
      */
     public function getInteractionMatching()
     {
@@ -63,9 +63,9 @@ class Label
     /**
      * Set InteractionMatching.
      *
-     * @param InteractionMatching $interactionMatching
+     * @param MatchQuestion $interactionMatching
      */
-    public function setInteractionMatching(InteractionMatching $interactionMatching)
+    public function setInteractionMatching(MatchQuestion $interactionMatching)
     {
         $this->interactionMatching = $interactionMatching;
     }

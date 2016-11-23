@@ -2,10 +2,8 @@
 
 namespace UJM\ExoBundle\Serializer\Question\Type;
 
-use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use UJM\ExoBundle\Entity\InteractionOpen;
-use UJM\ExoBundle\Entity\TypeOpenQuestion;
+use UJM\ExoBundle\Entity\QuestionType\OpenQuestion;
 use UJM\ExoBundle\Entity\Misc\Keyword;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
@@ -17,11 +15,6 @@ use UJM\ExoBundle\Serializer\Misc\KeywordSerializer;
 class WordsQuestionSerializer implements SerializerInterface
 {
     /**
-     * @var ObjectManager
-     */
-    private $om;
-
-    /**
      * @var KeywordSerializer
      */
     private $keywordSerializer;
@@ -29,26 +22,21 @@ class WordsQuestionSerializer implements SerializerInterface
     /**
      * ClozeQuestionSerializer constructor.
      *
-     * @param ObjectManager     $om
      * @param KeywordSerializer $keywordSerializer
      *
      * @DI\InjectParams({
-     *     "om"                = @DI\Inject("claroline.persistence.object_manager"),
      *     "keywordSerializer" = @DI\Inject("ujm_exo.serializer.keyword")
      * })
      */
-    public function __construct(
-        ObjectManager $om,
-        KeywordSerializer $keywordSerializer)
+    public function __construct(KeywordSerializer $keywordSerializer)
     {
-        $this->om = $om;
         $this->keywordSerializer = $keywordSerializer;
     }
 
     /**
      * Converts a Words question into a JSON-encodable structure.
      *
-     * @param InteractionOpen $wordsQuestion
+     * @param OpenQuestion $wordsQuestion
      * @param array           $options
      *
      * @return \stdClass
@@ -72,30 +60,23 @@ class WordsQuestionSerializer implements SerializerInterface
      * Converts raw data into an Words question entity.
      *
      * @param \stdClass       $data
-     * @param InteractionOpen $wordsQuestion
+     * @param OpenQuestion $wordsQuestion
      * @param array           $options
      *
-     * @return InteractionOpen
+     * @return OpenQuestion
      */
     public function deserialize($data, $wordsQuestion = null, array $options = [])
     {
         if (empty($wordsQuestion)) {
-            $wordsQuestion = new InteractionOpen();
+            $wordsQuestion = new OpenQuestion();
         }
-
-        /** @var TypeOpenQuestion $type */
-        $type = $this->om->getRepository('UJMExoBundle:TypeOpenQuestion')->findOneBy([
-            'value' => 'short',
-        ]);
-
-        $wordsQuestion->setTypeOpenQuestion($type);
 
         $this->deserializeSolutions($wordsQuestion, $data->solutions, $options);
 
         return $wordsQuestion;
     }
 
-    private function serializeSolutions(InteractionOpen $wordsQuestion)
+    private function serializeSolutions(OpenQuestion $wordsQuestion)
     {
         return array_map(function (Keyword $keyword) {
             return $this->keywordSerializer->serialize($keyword);
@@ -105,11 +86,11 @@ class WordsQuestionSerializer implements SerializerInterface
     /**
      * Deserializes Question solutions (= a collection of keywords).
      *
-     * @param InteractionOpen $wordsQuestion
+     * @param OpenQuestion $wordsQuestion
      * @param array           $solutions
      * @param array           $options
      */
-    private function deserializeSolutions(InteractionOpen $wordsQuestion, array $solutions, array $options = [])
+    private function deserializeSolutions(OpenQuestion $wordsQuestion, array $solutions, array $options = [])
     {
         $updatedKeywords = $this->keywordSerializer->deserializeCollection($solutions, $wordsQuestion->getKeywords()->toArray(), $options);
 

@@ -67,6 +67,8 @@ class QuestionDefinitionsCollection
     }
 
     /**
+     * Checks if a mime-type is supported by the bundle.
+     * 
      * @param string $type
      *
      * @return bool
@@ -74,5 +76,15 @@ class QuestionDefinitionsCollection
     public function has($type)
     {
         return isset($this->definitions[$type]);
+    }
+
+    /**
+     * Gets the list of supported question mime-types.
+     *
+     * @return array
+     */
+    public function getSupportedTypes()
+    {
+        return array_keys($this->definitions);
     }
 }

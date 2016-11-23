@@ -161,6 +161,35 @@ class QuestionManager
     }
 
     /**
+     * Calculates the score of an answer to a question.
+     *
+     * @param Question $question
+     * @param mixed $answer
+     *
+     * @return float
+     */
+    public function calculateScore(Question $question, $answer)
+    {
+        // TODO : implement
+
+        return 0;
+    }
+
+    /**
+     * Calculates the total score of a question.
+     *
+     * @param Question $question
+     *
+     * @return float
+     */
+    public function calculateTotal(Question $question)
+    {
+        // TODO : implement
+
+        return 0;
+    }
+
+    /**
      * Get question statistics inside an Exercise.
      *
      * @param Question $question
@@ -168,7 +197,7 @@ class QuestionManager
      *
      * @return \stdClass
      */
-    public function getStatistics(Question $question, Exercise $exercise)
+    public function getStatistics(Question $question, Exercise $exercise = null)
     {
         $questionStats = new \stdClass();
 

@@ -3,8 +3,7 @@
 namespace UJM\ExoBundle\Library\Model;
 
 /**
- * OrderTrait
- * Gives the ability to an entity to be ordered in a collection
+ * Gives an entity the ability to be ordered in a collection.
  */
 trait OrderTrait
 {

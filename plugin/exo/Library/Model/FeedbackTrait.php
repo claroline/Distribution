@@ -3,8 +3,7 @@
 namespace UJM\ExoBundle\Library\Model;
 
 /**
- * FeedbackTrait
- * Gives the ability to an entity to have a feedback
+ * Gives an entity the ability to have a feedback
  */
 trait FeedbackTrait
 {

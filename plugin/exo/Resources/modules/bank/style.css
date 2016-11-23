@@ -10,7 +10,6 @@
 }
 
 #questions-bank tbody {
-  /*border-radius: 4px;*/
   background-color: #FFF;
   border: 1px solid #ddd;
 }
@@ -18,6 +17,7 @@
 #questions-bank .table .selected-rows {
   border-left: 1px solid #ddd;
   border-right: 1px solid #ddd;
+  border-top: 1px solid #ddd;
 }
 
 #questions-bank .table > thead > tr > th {
@@ -26,13 +26,6 @@
 
 #questions-bank .table > thead > tr > th {
   border-bottom-width: 1px;
-}
-
-#questions-bank .table > thead > tr > th,
-#questions-bank .table > thead > tr > td,
-#questions-bank .table > tbody > tr > th,
-#questions-bank .table > tbody > tr > td {
-  vertical-align: middle;
 }
 
 #questions-bank .btn-link-danger {

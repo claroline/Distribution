@@ -3,9 +3,8 @@
 namespace UJM\ExoBundle\Library\Question\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
-use UJM\ExoBundle\Entity\AbstractInteraction;
+use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
 use UJM\ExoBundle\Library\Question\QuestionType;
-use UJM\ExoBundle\Serializer\Answer\Type\ChoiceAnswerSerializer;
 use UJM\ExoBundle\Serializer\Question\Type\ChoiceQuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Question\Type\ChoiceQuestionValidator;
 
@@ -28,31 +27,22 @@ class ChoiceDefinition extends AbstractDefinition
     private $serializer;
 
     /**
-     * @var ChoiceAnswerSerializer
-     */
-    private $answerSerializer;
-
-    /**
      * ChoiceDefinition constructor.
      *
      * @param ChoiceQuestionValidator  $validator
      * @param ChoiceQuestionSerializer $serializer
-     * @param ChoiceAnswerSerializer   $answerSerializer
      *
      * @DI\InjectParams({
      *     "validator"        = @DI\Inject("ujm_exo.validator.question_choice"),
-     *     "serializer"       = @DI\Inject("ujm_exo.serializer.question_choice"),
-     *     "answerSerializer" = @DI\Inject("ujm_exo.serializer.answer_choice")
+     *     "serializer"       = @DI\Inject("ujm_exo.serializer.question_choice")
      * })
      */
     public function __construct(
         ChoiceQuestionValidator $validator,
-        ChoiceQuestionSerializer $serializer,
-        ChoiceAnswerSerializer $answerSerializer)
+        ChoiceQuestionSerializer $serializer)
     {
         $this->validator = $validator;
         $this->serializer = $serializer;
-        $this->answerSerializer = $answerSerializer;
     }
 
     /**
@@ -60,7 +50,7 @@ class ChoiceDefinition extends AbstractDefinition
      * 
      * @return string
      */
-    public function getMimeType()
+    public static function getMimeType()
     {
         return QuestionType::CHOICE;
     }
@@ -70,9 +60,9 @@ class ChoiceDefinition extends AbstractDefinition
      *
      * @return string
      */
-    public function getEntityClass()
+    public static function getEntityClass()
     {
-        return 'ChoiceQuestion';
+        return '\UJM\ExoBundle\Entity\QuestionType\ChoiceQuestion';
     }
 
     /**
@@ -95,22 +85,17 @@ class ChoiceDefinition extends AbstractDefinition
         return $this->serializer;
     }
 
-    /**
-     * Gets the choice answer serializer.
-     *
-     * @return ChoiceAnswerSerializer
-     */
-    protected function getAnswerSerializer()
+    public function correctAnswer(AbstractQuestion $question, $answer)
     {
-        return $this->answerSerializer;
+        // TODO: Implement correctAnswer() method.
     }
 
-    public function calculateTotal(AbstractInteraction $question)
+    public function expectAnswer(AbstractQuestion $question)
     {
-        // TODO: Implement calculateTotal() method.
+        // TODO: Implement expectAnswer() method.
     }
 
-    public function getStatistics(AbstractInteraction $choiceQuestion, array $answers)
+    public function getStatistics(AbstractQuestion $choiceQuestion, array $answers)
     {
         $choices = [];
 

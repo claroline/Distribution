@@ -9,6 +9,8 @@ use Doctrine\DBAL\Schema\Schema;
  * Auto-generated migration based on mapping information: modify it with caution.
  *
  * Generation date: 2016/10/10 09:44:04
+ *
+ * @todo : to remove. do not touch it. It's already in exo-v2 branch
  */
 class Version20161010214401 extends AbstractMigration
 {

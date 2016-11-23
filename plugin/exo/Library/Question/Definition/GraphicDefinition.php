@@ -3,9 +3,8 @@
 namespace UJM\ExoBundle\Library\Question\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
-use UJM\ExoBundle\Entity\AbstractInteraction;
+use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
 use UJM\ExoBundle\Library\Question\QuestionType;
-use UJM\ExoBundle\Serializer\Answer\Type\GraphicAnswerSerializer;
 use UJM\ExoBundle\Serializer\Question\Type\GraphicQuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Question\Type\GraphicQuestionValidator;
 
@@ -28,31 +27,22 @@ class GraphicDefinition extends AbstractDefinition
     private $serializer;
 
     /**
-     * @var GraphicAnswerSerializer
-     */
-    private $answerSerializer;
-
-    /**
      * GraphicDefinition constructor.
      *
      * @param GraphicQuestionValidator  $validator
      * @param GraphicQuestionSerializer $serializer
-     * @param GraphicAnswerSerializer $answerSerializer
      *
      * @DI\InjectParams({
      *     "validator"  = @DI\Inject("ujm_exo.validator.question_graphic"),
-     *     "serializer" = @DI\Inject("ujm_exo.serializer.question_graphic"),
-     *     "answerSerializer" = @DI\Inject("ujm_exo.serializer.answer_graphic")
+     *     "serializer" = @DI\Inject("ujm_exo.serializer.question_graphic")
      * })
      */
     public function __construct(
         GraphicQuestionValidator $validator,
-        GraphicQuestionSerializer $serializer,
-        GraphicAnswerSerializer $answerSerializer)
+        GraphicQuestionSerializer $serializer)
     {
         $this->validator = $validator;
         $this->serializer = $serializer;
-        $this->answerSerializer = $answerSerializer;
     }
 
     /**
@@ -60,7 +50,7 @@ class GraphicDefinition extends AbstractDefinition
      *
      * @return string
      */
-    public function getMimeType()
+    public static function getMimeType()
     {
         return QuestionType::GRAPHIC;
     }
@@ -70,9 +60,9 @@ class GraphicDefinition extends AbstractDefinition
      *
      * @return string
      */
-    public function getEntityClass()
+    public static function getEntityClass()
     {
-        return 'GraphicQuestion';
+        return '\UJM\ExoBundle\Entity\QuestionType\GraphicQuestion';
     }
 
     /**
@@ -95,37 +85,17 @@ class GraphicDefinition extends AbstractDefinition
         return $this->serializer;
     }
 
-    /**
-     * Gets the cloze answer serializer.
-     *
-     * @return GraphicAnswerSerializer
-     */
-    protected function getAnswerSerializer()
+    public function correctAnswer(AbstractQuestion $question, $answer)
     {
-        return $this->answerSerializer;
+        // TODO: Implement correctAnswer() method.
     }
 
-    public function calculateScore(AbstractInteraction $question, $answer)
+    public function expectAnswer(AbstractQuestion $question)
     {
-        $em = $this->doctrine->getManager();
-        $scoreMax = 0;
-
-        $rightCoords = $em->getRepository('UJMExoBundle:Misc\Area')
-            ->findBy(['interactionGraphic' => $interGraph->getId()]);
-
-        foreach ($rightCoords as $score) {
-            $scoreMax += $score->getScore();
-        }
-
-        return $scoreMax;
+        // TODO: Implement expectAnswer() method.
     }
 
-    public function calculateTotal(AbstractInteraction $question)
-    {
-        // TODO: Implement calculateTotal() method.
-    }
-
-    public function getStatistics(AbstractInteraction $graphicQuestion, array $answers)
+    public function getStatistics(AbstractQuestion $graphicQuestion, array $answers)
     {
         $areasMap = [];
         foreach ($graphicQuestion->getAreas() as $area) {

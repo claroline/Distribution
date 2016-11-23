@@ -3,7 +3,7 @@
 namespace UJM\ExoBundle\Entity\Misc;
 
 use Doctrine\ORM\Mapping as ORM;
-use UJM\ExoBundle\Entity\InteractionGraphic;
+use UJM\ExoBundle\Entity\QuestionType\GraphicQuestion;
 use UJM\ExoBundle\Library\Model\FeedbackTrait;
 use UJM\ExoBundle\Library\Model\ScoreTrait;
 
@@ -59,7 +59,7 @@ class Area
     /**
      * @deprecated this needs to be deleted to keep things separated
      *
-     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\InteractionGraphic", inversedBy="areas")
+     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\QuestionType\GraphicQuestion", inversedBy="areas")
      * @ORM\JoinColumn(name="interaction_graphic_id", referencedColumnName="id")
      */
     private $interactionGraphic;
@@ -137,7 +137,7 @@ class Area
     }
 
     /**
-     * @return InteractionGraphic
+     * @return GraphicQuestion
      */
     public function getInteractionGraphic()
     {
@@ -145,9 +145,9 @@ class Area
     }
 
     /**
-     * @param InteractionGraphic $interactionGraphic
+     * @param GraphicQuestion $interactionGraphic
      */
-    public function setInteractionGraphic(InteractionGraphic $interactionGraphic)
+    public function setInteractionGraphic(GraphicQuestion $interactionGraphic)
     {
         $this->interactionGraphic = $interactionGraphic;
     }

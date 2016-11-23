@@ -6,54 +6,54 @@ use Claroline\CoreBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
-use UJM\ExoBundle\Entity\AbstractInteraction;
+use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
 
 /**
  * @ORM\Entity(repositoryClass="UJM\ExoBundle\Repository\QuestionRepository")
  * @ORM\Table(name="ujm_question")
- * @ORM\EntityListeners({"\UJM\ExoBundle\Listener\Entity\QuestionListener"})
+ * @ORM\EntityListeners({"UJM\ExoBundle\Listener\Entity\QuestionListener"})
  * @ORM\HasLifecycleCallbacks()
  */
 class Question
 {
     /**
-     * @var int
-     *
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @var int
      */
     private $id;
 
     /**
-     * @var string
-     *
      * @ORM\Column("uuid", type="string", length=36, unique=true)
+     *
+     * @var string
      */
     private $uuid;
 
     /**
-     * @var string
-     *
-     * @ORM\Column()
-     */
-    private $type;
-
-    /**
      * The mime type of the Question type.
      *
-     * @var string
-     *
      * @ORM\Column("mime_type", type="string")
+     *
+     * @var string
      */
     private $mimeType;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", nullable=true)
      *
-     * @ORM\Column("title", type="string", nullable=true)
+     * @var string
      */
     private $title;
+
+    /**
+     * @ORM\Column(name="invite", type="text")
+     *
+     * @var string
+     */
+    private $content;
 
     /**
      * @var string
@@ -63,52 +63,58 @@ class Question
     private $description;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="invite", type="text")
-     */
-    private $content;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(type="text", nullable=true)
+     *
+     * @var string
      */
     private $feedback;
 
     /**
-     * @var \DateTime
+     * The creation date of the question.
      *
      * @ORM\Column(name="date_create", type="datetime")
+     *
+     * @var \DateTime
      */
     private $dateCreate;
 
     /**
-     * @var \DateTime
+     * The last update date of the question.
      *
      * @ORM\Column(name="date_modify", type="datetime", nullable=true)
+     *
+     * @var \DateTime
      */
     private $dateModify;
 
     /**
-     * @var bool
+     * A model can not be directly linked to an exercise.
+     * It needs to be duplicated first to keep the original question untouched.
      *
      * @ORM\Column(type="boolean")
+     *
+     * @var bool
      */
     private $model = false;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     *
+     * @var string
      */
     private $supplementary;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     *
+     * @var string
      */
     private $specification;
 
     /**
      * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Question\Category")
+     *
+     * @var Category
      */
     private $category;
 
@@ -117,23 +123,33 @@ class Question
      *
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\User")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="SET NULL")
+     *
+     * @var User
      */
     private $creator;
 
     /**
      * @ORM\OneToMany(targetEntity="Hint", mappedBy="question", cascade={"remove", "persist"}, orphanRemoval=true)
+     *
+     * @var ArrayCollection
      */
     private $hints;
 
     /**
      * @ORM\OneToMany(targetEntity="QuestionObject", mappedBy="question", cascade={"remove", "persist"}, orphanRemoval=true)
      * @ORM\OrderBy({"order"="ASC"})
+     *
+     * @var ArrayCollection
      */
     private $objects;
 
     /**
+     * A list of additional Resources that can help to answer the question.
+     * 
      * @ORM\OneToMany(targetEntity="QuestionResource", mappedBy="question", cascade={"remove", "persist"}, orphanRemoval=true)
      * @ORM\OrderBy({"order"="ASC"})
+     *
+     * @var ArrayCollection
      */
     private $resources;
 
@@ -141,7 +157,7 @@ class Question
      * The linked interaction entity.
      * This is populated by Doctrine Lifecycle events.
      *
-     * @var AbstractInteraction
+     * @var AbstractQuestion
      */
     private $interaction = null;
 
@@ -187,24 +203,6 @@ class Question
     }
 
     /**
-     * Note: this method is automatically called in AbstractInteraction#setQuestion.
-     *
-     * @param string $type
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
      * Gets mime type.
      *
      * @return string
@@ -241,22 +239,6 @@ class Question
     }
 
     /**
-     * @param string $description
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
      * Sets content.
      *
      * @param string $content
@@ -277,13 +259,19 @@ class Question
     }
 
     /**
-     * @return string
-     *
-     * @deprecated use getContent() instead
+     * @param string $description
      */
-    public function getInvite()
+    public function setDescription($description)
     {
-        return $this->content;
+        $this->description = $description;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
     }
 
     /**
@@ -363,16 +351,6 @@ class Question
     }
 
     /**
-     * @deprecated let the PrePersist hook do job
-     *
-     * @param \Datetime $dateCreate
-     */
-    public function setDateCreate(\DateTime $dateCreate)
-    {
-        $this->dateCreate = $dateCreate;
-    }
-
-    /**
      * @ORM\PrePersist
      */
     public function updateDateCreate()
@@ -388,16 +366,6 @@ class Question
     public function getDateCreate()
     {
         return $this->dateCreate;
-    }
-
-    /**
-     * @deprecated let the PreUpdate hook do job
-     *
-     * @param \Datetime $dateModify
-     */
-    public function setDateModify(\DateTime $dateModify)
-    {
-        $this->dateModify = $dateModify;
     }
 
     /**
@@ -428,16 +396,6 @@ class Question
      * @return bool
      */
     public function isModel()
-    {
-        return $this->model;
-    }
-
-    /**
-     * @deprecated use isModel() instead
-     *
-     * @return bool
-     */
-    public function getModel()
     {
         return $this->model;
     }
@@ -536,7 +494,7 @@ class Question
     }
 
     /**
-     * @return AbstractInteraction
+     * @return AbstractQuestion
      */
     public function getInteraction()
     {
@@ -544,9 +502,9 @@ class Question
     }
 
     /**
-     * @param AbstractInteraction $interaction
+     * @param AbstractQuestion $interaction
      */
-    public function setInteraction(AbstractInteraction $interaction)
+    public function setInteraction(AbstractQuestion $interaction)
     {
         $this->interaction = $interaction;
     }

@@ -2,10 +2,8 @@
 
 namespace UJM\ExoBundle\Serializer\Question\Type;
 
-use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use UJM\ExoBundle\Entity\InteractionOpen;
-use UJM\ExoBundle\Entity\TypeOpenQuestion;
+use UJM\ExoBundle\Entity\QuestionType\OpenQuestion;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
 
@@ -15,28 +13,9 @@ use UJM\ExoBundle\Library\Serializer\SerializerInterface;
 class OpenQuestionSerializer implements SerializerInterface
 {
     /**
-     * @var ObjectManager
-     */
-    private $om;
-
-    /**
-     * OpenQuestionSerializer constructor.
-     *
-     * @param ObjectManager $om
-     *
-     * @DI\InjectParams({
-     *     "om" = @DI\Inject("claroline.persistence.object_manager")
-     * })
-     */
-    public function __construct(ObjectManager $om)
-    {
-        $this->om = $om;
-    }
-
-    /**
      * Converts a Open question into a JSON-encodable structure.
      *
-     * @param InteractionOpen $openQuestion
+     * @param OpenQuestion $openQuestion
      * @param array           $options
      *
      * @return \stdClass
@@ -61,27 +40,18 @@ class OpenQuestionSerializer implements SerializerInterface
      * Converts raw data into an Open question entity.
      *
      * @param \stdClass       $data
-     * @param InteractionOpen $openQuestion
+     * @param OpenQuestion $openQuestion
      * @param array           $options
      *
-     * @return InteractionOpen
+     * @return OpenQuestion
      */
     public function deserialize($data, $openQuestion = null, array $options = [])
     {
         if (empty($openQuestion)) {
-            $openQuestion = new InteractionOpen();
+            $openQuestion = new OpenQuestion();
         }
 
         $openQuestion->setScoreMaxLongResp($data->score->max);
-
-        if (empty($openQuestion->getTypeOpenQuestion())) {
-            /** @var TypeOpenQuestion $type */
-            $type = $this->om->getRepository('UJMExoBundle:TypeOpenQuestion')->findOneBy([
-                'value' => 'long',
-            ]);
-
-            $openQuestion->setTypeOpenQuestion($type);
-        }
 
         return $openQuestion;
     }

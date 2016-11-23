@@ -7,6 +7,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Options\Validation;
+use UJM\ExoBundle\Manager\Attempt\PaperManager;
 use UJM\ExoBundle\Serializer\ExerciseSerializer;
 use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Validator\JsonSchema\ExerciseValidator;
@@ -32,24 +33,35 @@ class ExerciseManager
     private $serializer;
 
     /**
+     * @var PaperManager
+     */
+    private $paperManager;
+
+    /**
+     * ExerciseManager constructor.
+     * 
      * @DI\InjectParams({
      *     "om"           = @DI\Inject("claroline.persistence.object_manager"),
      *     "validator"    = @DI\Inject("ujm_exo.validator.exercise"),
-     *     "serializer"   = @DI\Inject("ujm_exo.serializer.exercise")
+     *     "serializer"   = @DI\Inject("ujm_exo.serializer.exercise"),
+     *     "paperManager"   = @DI\Inject("ujm_exo.manager.paper")
      * })
      *
      * @param ObjectManager      $om
      * @param ExerciseValidator  $validator
      * @param ExerciseSerializer $serializer
+     * @param PaperManager $paperManager
      */
     public function __construct(
         ObjectManager $om,
         ExerciseValidator $validator,
-        ExerciseSerializer $serializer)
+        ExerciseSerializer $serializer,
+        PaperManager $paperManager)
     {
         $this->om = $om;
         $this->validator = $validator;
         $this->serializer = $serializer;
+        $this->paperManager = $paperManager;
     }
 
     /**
@@ -126,7 +138,7 @@ class ExerciseManager
 
     /**
      * Checks if an Exercise can be deleted.
-     * The exercise needs to have no paper to be safely removed.
+     * The exercise needs to be unpublished or have no paper to be safely removed.
      *
      * @param Exercise $exercise
      *
@@ -134,12 +146,8 @@ class ExerciseManager
      */
     public function isDeletable(Exercise $exercise)
     {
-        $nbPapers = $this->om->getRepository('UJMExoBundle:Attempt\Paper')->countExercisePapers($exercise);
-        if (0 !== $nbPapers) {
-            return false;
-        }
-
-        return true;
+        return !$exercise->getResourceNode()->isPublished()
+            || 0 === $this->paperManager->countExercisePapers($exercise);
     }
 
     /**
@@ -157,7 +165,7 @@ class ExerciseManager
         }
 
         if (!$exercise->wasPublishedOnce()) {
-            $this->deletePapers($exercise);
+            $this->paperManager->deleteAll($exercise);
             $exercise->setPublishedOnce(true);
         }
 

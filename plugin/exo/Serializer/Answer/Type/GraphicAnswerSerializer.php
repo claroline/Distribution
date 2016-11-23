@@ -43,7 +43,7 @@ class GraphicAnswerSerializer implements SerializerInterface
      */
     public function deserialize($data, $graphicAnswer = null, array $options = [])
     {
-        $answer = implode(';', array_map(function (array $coords) {
+        return implode(';', array_map(function (array $coords) {
             return (string) $coords['x'].'-'.(string) $coords['y'];
         }, $data));
     }

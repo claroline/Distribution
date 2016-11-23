@@ -7,7 +7,7 @@ use Claroline\CoreBundle\Entity\User;
 use Ramsey\Uuid\Uuid;
 
 /**
- * UJM\ExoBundle\Entity\Category.
+ * Category.
  *
  * @ORM\Entity(repositoryClass="UJM\ExoBundle\Repository\CategoryRepository")
  * @ORM\Table(name="ujm_category")

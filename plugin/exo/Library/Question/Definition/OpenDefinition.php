@@ -3,9 +3,8 @@
 namespace UJM\ExoBundle\Library\Question\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
-use UJM\ExoBundle\Entity\AbstractInteraction;
+use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
 use UJM\ExoBundle\Library\Question\QuestionType;
-use UJM\ExoBundle\Serializer\Answer\Type\OpenAnswerSerializer;
 use UJM\ExoBundle\Serializer\Question\Type\OpenQuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Question\Type\OpenQuestionValidator;
 
@@ -28,31 +27,22 @@ class OpenDefinition extends AbstractDefinition
     private $serializer;
 
     /**
-     * @var OpenAnswerSerializer
-     */
-    private $answerSerializer;
-
-    /**
      * OpenDefinition constructor.
      *
      * @param OpenQuestionValidator  $validator
      * @param OpenQuestionSerializer $serializer
-     * @param OpenAnswerSerializer $answerSerializer
      *
      * @DI\InjectParams({
      *     "validator"  = @DI\Inject("ujm_exo.validator.question_open"),
-     *     "serializer" = @DI\Inject("ujm_exo.serializer.question_open"),
-     *     "answerSerializer" = @DI\Inject("ujm_exo.serializer.answer_open")
+     *     "serializer" = @DI\Inject("ujm_exo.serializer.question_open")
      * })
      */
     public function __construct(
         OpenQuestionValidator $validator,
-        OpenQuestionSerializer $serializer,
-        OpenAnswerSerializer $answerSerializer)
+        OpenQuestionSerializer $serializer)
     {
         $this->validator = $validator;
         $this->serializer = $serializer;
-        $this->answerSerializer = $answerSerializer;
     }
 
     /**
@@ -60,7 +50,7 @@ class OpenDefinition extends AbstractDefinition
      *
      * @return string
      */
-    public function getMimeType()
+    public static function getMimeType()
     {
         return QuestionType::OPEN;
     }
@@ -70,9 +60,9 @@ class OpenDefinition extends AbstractDefinition
      *
      * @return string
      */
-    public function getEntityClass()
+    public static function getEntityClass()
     {
-        return 'OpenQuestion';
+        return '\UJM\ExoBundle\Entity\QuestionType\OpenQuestion';
     }
 
     /**
@@ -95,22 +85,17 @@ class OpenDefinition extends AbstractDefinition
         return $this->serializer;
     }
 
-    /**
-     * Gets the open answer serializer.
-     *
-     * @return OpenAnswerSerializer
-     */
-    protected function getAnswerSerializer()
+    public function correctAnswer(AbstractQuestion $question, $answer)
     {
-        return $this->answerSerializer;
+        // TODO: Implement correctAnswer() method.
     }
 
-    public function calculateTotal(AbstractInteraction $question)
+    public function expectAnswer(AbstractQuestion $question)
     {
-        // TODO: Implement calculateTotal() method.
+        // TODO: Implement expectAnswer() method.
     }
 
-    public function getStatistics(AbstractInteraction $openQuestion, array $answers)
+    public function getStatistics(AbstractQuestion $openQuestion, array $answers)
     {
         return null;
     }

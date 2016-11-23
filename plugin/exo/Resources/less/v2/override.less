@@ -17,6 +17,10 @@ body {
     max-width: 1250px;
 }
 
+#footer {
+    background-color: #F3F3F3; /* because the new background color is the old footer color */
+}
+
 // Simplifies default style of breadcrumbs to gain space
 .breadcrumb {
     padding: 0;
@@ -25,6 +29,14 @@ body {
     border-radius: 0;
     margin-bottom: 10px;
     font-size: 12px; /* slightly smaller than the regular text */
+}
+
+// Fixes vertical align in tables
+.table > thead > tr > th,
+.table > thead > tr > td,
+.table > tbody > tr > th,
+.table > tbody > tr > td {
+    vertical-align: middle;
 }
 
 .dropdown-menu > li > a {

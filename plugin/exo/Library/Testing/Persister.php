@@ -13,16 +13,13 @@ use UJM\ExoBundle\Entity\Question\Category;
 use UJM\ExoBundle\Entity\Misc\Choice;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Question\Hint;
-use UJM\ExoBundle\Entity\InteractionMatching;
-use UJM\ExoBundle\Entity\InteractionOpen;
-use UJM\ExoBundle\Entity\InteractionQCM;
+use UJM\ExoBundle\Entity\QuestionType\MatchQuestion;
+use UJM\ExoBundle\Entity\QuestionType\OpenQuestion;
+use UJM\ExoBundle\Entity\QuestionType\ChoiceQuestion;
 use UJM\ExoBundle\Entity\Misc\Label;
 use UJM\ExoBundle\Entity\Misc\Proposal;
 use UJM\ExoBundle\Entity\Question\Question;
 use UJM\ExoBundle\Entity\Step;
-use UJM\ExoBundle\Entity\StepQuestion;
-use UJM\ExoBundle\Entity\TypeMatching;
-use UJM\ExoBundle\Entity\TypeQCM;
 use UJM\ExoBundle\Library\Question\QuestionType;
 
 /**
@@ -47,15 +44,10 @@ class Persister
     private $userRole;
 
     /**
-     * @var TypeQCM
+     * Persister constructor.
+     *
+     * @param ObjectManager $om
      */
-    private $multipleChoiceType;
-
-    /**
-     * @var TypeMatching
-     */
-    private $matchType;
-
     public function __construct(ObjectManager $om)
     {
         $this->om = $om;
@@ -89,25 +81,19 @@ class Persister
     public function qcmQuestion($title, array $choices = [], $description = '')
     {
         $question = new Question();
-        $question->setUuid(uniqid());
+        $question->setUuid(uniqid($title));
         $question->setMimeType(QuestionType::CHOICE);
         $question->setTitle($title);
         $question->setContent('Invite...');
         $question->setDescription($description);
 
-        if (!$this->multipleChoiceType) {
-            $this->multipleChoiceType = $this->om
-                ->getRepository('UJMExoBundle:TypeQCM')
-                ->findOneByValue('Multiple response');
-        }
-
-        $interactionQcm = new InteractionQCM();
+        $interactionQcm = new ChoiceQuestion();
         $interactionQcm->setQuestion($question);
-        $interactionQcm->setTypeQCM($this->multipleChoiceType);
+        $interactionQcm->setMultiple(true);
         $interactionQcm->setWeightResponse(true);
 
         for ($i = 0, $max = count($choices); $i < $max; ++$i) {
-            $choices[$i]->setOrdre($i);
+            $choices[$i]->setOrder($i);
             $interactionQcm->addChoice($choices[$i]);
         }
 
@@ -125,12 +111,12 @@ class Persister
     public function openQuestion($title)
     {
         $question = new Question();
-        $question->setUuid(uniqid());
+        $question->setUuid(uniqid($title));
         $question->setMimeType(QuestionType::OPEN);
         $question->setTitle($title);
         $question->setContent('Invite...');
 
-        $interactionOpen = new InteractionOpen();
+        $interactionOpen = new OpenQuestion();
         $interactionOpen->setQuestion($question);
         $interactionOpen->setScoreMaxLongResp(10);
 
@@ -166,29 +152,22 @@ class Persister
     public function matchQuestion($title, $labels = [], $proposals = [])
     {
         $question = new Question();
-        $question->setUuid(uniqid());
+        $question->setUuid(uniqid($title));
         $question->setMimeType(QuestionType::MATCH);
         $question->setTitle($title);
         $question->setContent('Invite...');
 
-        if (!$this->matchType) {
-            $this->matchType = $this->om
-                ->getRepository('UJMExoBundle:TypeMatching')
-                ->findOneByCode(1);
-        }
-
-        $interactionMatching = new InteractionMatching();
+        $interactionMatching = new MatchQuestion();
         $interactionMatching->setQuestion($question);
         $interactionMatching->setShuffle(false);
-        $interactionMatching->setTypeMatching($this->matchType);
 
         for ($i = 0, $max = count($labels); $i < $max; ++$i) {
-            $labels[$i]->setOrdre($i);
+            $labels[$i]->setOrder($i);
             $interactionMatching->addLabel($labels[$i]);
         }
 
         for ($i = 0, $max = count($proposals); $i < $max; ++$i) {
-            $proposals[$i]->setOrdre($i + 1);
+            $proposals[$i]->setOrder($i + 1);
             $interactionMatching->addProposal($proposals[$i]);
         }
 
@@ -199,17 +178,17 @@ class Persister
     }
 
      /**
-      * @param string        $title
-      * @param Question[]    $questions
-      * @param User          $user
+      * @param string $title
+      * @param array  $questionData - grouping questions in sub arrays will create 1 step for one sub array
+      * @param User   $user
       *
       * @return Exercise
       */
-     public function exercise($title, array $questions = [], User $user = null)
+     public function exercise($title, array $questionData = [], User $user = null)
      {
          $exercise = new Exercise();
-         $exercise->setUuid(uniqid());
-         $exercise->setDescription('Lorem ipsum dolor sit');
+         $exercise->setUuid(uniqid($title));
+         $exercise->setDescription('This is the description of my exercise');
          if ($user) {
              if (!isset($this->exoType)) {
                  $this->exoType = new ResourceType();
@@ -230,22 +209,21 @@ class Persister
 
          $this->om->persist($exercise);
 
-         for ($i = 0, $max = count($questions); $i < $max; ++$i) {
+         foreach ($questionData as $index => $data) {
              $step = new Step();
-             $step->setUuid(uniqid());
+             $step->setUuid(uniqid($index));
              $step->setDescription('step');
-             $step->setOrder($i);
+             $step->setOrder($index);
 
              // Add step to the exercise
              $exercise->addStep($step);
-
-             $this->om->persist($step);
-
-             $stepQuestion = new StepQuestion();
-             $stepQuestion->setStep($step);
-             $stepQuestion->setQuestion($questions[$i]);
-             $stepQuestion->setOrder(0);
-             $this->om->persist($stepQuestion);
+             if (is_array($data)) {
+                foreach ($data as $question) {
+                    $step->addQuestion($question);
+                }
+             } else {
+                 $step->addQuestion($data);
+             }
          }
 
          return $exercise;
@@ -297,7 +275,7 @@ class Persister
     public function category($name, User $user = null)
     {
         $category = new Category();
-        $category->setUuid(uniqid());
+        $category->setUuid(uniqid($name));
         $category->setName($name);
         
         if (!empty($user)) {
@@ -316,7 +294,9 @@ class Persister
      */
     public function role($name)
     {
-        $role = $this->om->getRepository('ClarolineCoreBundle:Role')->findOneByName($name);
+        $role = $this->om->getRepository('ClarolineCoreBundle:Role')->findOneBy([
+            'name' => $name
+        ]);
 
         if (!$role) {
             $role = new Role();

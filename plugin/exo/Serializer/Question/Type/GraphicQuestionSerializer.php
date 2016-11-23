@@ -4,7 +4,7 @@ namespace UJM\ExoBundle\Serializer\Question\Type;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Misc\Area;
-use UJM\ExoBundle\Entity\InteractionGraphic;
+use UJM\ExoBundle\Entity\QuestionType\GraphicQuestion;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
 
@@ -16,7 +16,7 @@ class GraphicQuestionSerializer implements SerializerInterface
     /**
      * Converts a Graphic question into a JSON-encodable structure.
      *
-     * @param InteractionGraphic $graphicQuestion
+     * @param GraphicQuestion $graphicQuestion
      * @param array              $options
      *
      * @return \stdClass
@@ -43,15 +43,15 @@ class GraphicQuestionSerializer implements SerializerInterface
      * Converts raw data into a Graphic question entity.
      *
      * @param \stdClass          $data
-     * @param InteractionGraphic $graphicQuestion
+     * @param GraphicQuestion $graphicQuestion
      * @param array              $options
      *
-     * @return InteractionGraphic
+     * @return GraphicQuestion
      */
     public function deserialize($data, $graphicQuestion = null, array $options = [])
     {
         if (empty($graphicQuestion)) {
-            $graphicQuestion = new InteractionGraphic();
+            $graphicQuestion = new GraphicQuestion();
         }
 
         $this->deserializeImage($graphicQuestion, $data->image);
@@ -63,11 +63,11 @@ class GraphicQuestionSerializer implements SerializerInterface
     /**
      * Serializes the Question image.
      *
-     * @param InteractionGraphic $graphicQuestion
+     * @param GraphicQuestion $graphicQuestion
      *
      * @return \stdClass
      */
-    private function serializeImage(InteractionGraphic $graphicQuestion)
+    private function serializeImage(GraphicQuestion $graphicQuestion)
     {
         $questionImg = $graphicQuestion->getImage();
 
@@ -88,21 +88,21 @@ class GraphicQuestionSerializer implements SerializerInterface
     /**
      * Deserializes the Question image.
      *
-     * @param InteractionGraphic $graphicQuestion
+     * @param GraphicQuestion $graphicQuestion
      * @param \stdClass          $image
      */
-    private function deserializeImage(InteractionGraphic $graphicQuestion, \stdClass $image)
+    private function deserializeImage(GraphicQuestion $graphicQuestion, \stdClass $image)
     {
     }
 
     /**
      * Serializes Question solutions.
      *
-     * @param InteractionGraphic $graphicQuestion
+     * @param GraphicQuestion $graphicQuestion
      *
      * @return array
      */
-    private function serializeSolutions(InteractionGraphic $graphicQuestion)
+    private function serializeSolutions(GraphicQuestion $graphicQuestion)
     {
         return array_map(function (Area $area) {
             $solutionData = new \stdClass();
@@ -119,10 +119,10 @@ class GraphicQuestionSerializer implements SerializerInterface
     /**
      * Deserializes Question areas.
      *
-     * @param InteractionGraphic $graphicQuestion
+     * @param GraphicQuestion $graphicQuestion
      * @param array              $solutions
      */
-    private function deserializeAreas(InteractionGraphic $graphicQuestion, array $solutions)
+    private function deserializeAreas(GraphicQuestion $graphicQuestion, array $solutions)
     {
         $areaEntities = $graphicQuestion->getAreas()->toArray();
 

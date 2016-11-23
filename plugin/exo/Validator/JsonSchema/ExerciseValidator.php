@@ -42,6 +42,13 @@ class ExerciseValidator extends JsonSchemaValidator
 
         if (isset($exercise->parameters)) {
             $errors = array_merge($errors, $this->validateParameters($exercise->parameters));
+            if (isset($exercise->parameters->pick) && isset($exercise->steps)
+                && count($exercise->steps) < $exercise->parameters->pick) {
+                $errors[] = [
+                    'path' => '/parameters/pick',
+                    'message' => 'the property `pick` cannot be greater than the number of steps of the exercise',
+                ];
+            }
         }
 
         if (isset($exercise->steps)) {
@@ -63,6 +70,16 @@ class ExerciseValidator extends JsonSchemaValidator
             $errors[] = [
                 'path' => '/parameters/randomPick',
                 'message' => 'The property `pick` is required when `randomPick` is not "never"',
+            ];
+        }
+
+        // We can not keep the randomOrder from previous papers as we generate a new subset of steps for each attempt
+        if (isset($parameters->randomPick) && Recurrence::ALWAYS === $parameters->randomPick
+            && isset($parameters->randomOrder) && Recurrence::ONCE === $parameters->randomOrder) {
+            // Incompatible randomOrder and randomPick properties
+            $errors[] = [
+                'path' => '/parameters/randomOrder',
+                'message' => 'The property `randomOrder` cannot be "once" when `randomPick` is "always"',
             ];
         }
 

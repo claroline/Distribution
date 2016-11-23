@@ -1,6 +1,6 @@
 <?php
 
-namespace UJM\ExoBundle\Entity;
+namespace UJM\ExoBundle\Entity\QuestionType;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -13,12 +13,14 @@ use UJM\ExoBundle\Entity\Misc\Area;
  * @ORM\Entity
  * @ORM\Table(name="ujm_interaction_graphic")
  */
-class InteractionGraphic extends AbstractInteraction
+class GraphicQuestion extends AbstractQuestion
 {
-    const TYPE = 'InteractionGraphic';
-
     /**
+     * The image of the question.
+     *
      * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Content\Image")
+     *
+     * @var Image
      */
     private $image;
 
@@ -30,19 +32,11 @@ class InteractionGraphic extends AbstractInteraction
     private $areas;
 
     /**
-     * Constructs a new instance of choices.
+     * GraphicQuestion constructor.
      */
     public function __construct()
     {
         $this->areas = new ArrayCollection();
-    }
-
-    /**
-     * @return string
-     */
-    public static function getQuestionType()
-    {
-        return self::TYPE;
     }
 
     /**

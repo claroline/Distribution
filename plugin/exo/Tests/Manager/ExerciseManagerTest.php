@@ -9,7 +9,7 @@ use UJM\ExoBundle\Manager\ExerciseManager;
 
 class ExerciseManagerTest extends \PHPUnit_Framework_TestCase
 {
-    /** @var ObjectManager */
+    /** @var ObjectManager|\PHPUnit_Framework_MockObject_MockObject */
     private $om;
     /** @var ExerciseManager */
     private $manager;
@@ -17,10 +17,11 @@ class ExerciseManagerTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->om = $this->mock('Claroline\CoreBundle\Persistence\ObjectManager');
-        $newValidator = $this->mock('UJM\ExoBundle\Validator\JsonSchema\ExerciseValidator');
+        $validator = $this->mock('UJM\ExoBundle\Validator\JsonSchema\ExerciseValidator');
         $serializer = $this->mock('UJM\ExoBundle\Serializer\ExerciseSerializer');
-        $stepManager = $this->mock('UJM\ExoBundle\Manager\StepManager');
-        $this->manager = new ExerciseManager($this->om, $newValidator, $serializer, $stepManager);
+        $paperManager = $this->mock('UJM\ExoBundle\Manager\Attempt\PaperManager');
+
+        $this->manager = new ExerciseManager($this->om, $validator, $serializer, $paperManager);
     }
 
     /**
@@ -83,27 +84,10 @@ class ExerciseManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($node->isPublished());
     }
 
-    /**
-     * @dataProvider validQuizProvider
-     *
-     * @param string $dataFilename
-     */
-    public function testSchemaRoundTrip($dataFilename)
-    {
-        $this->markTestIncomplete('Not implemented, should not use a mock');
-    }
-
     private function mock($class)
     {
         return $this->getMockBuilder($class)
             ->disableOriginalConstructor()
             ->getMock();
-    }
-
-    public function validQuizProvider()
-    {
-        return [
-            ['quiz-metadata.json'],
-        ];
     }
 }

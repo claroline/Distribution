@@ -13,6 +13,8 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Question\Question;
+use UJM\ExoBundle\Library\Options\Transfer;
+use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Manager\Attempt\PaperManager;
 use UJM\ExoBundle\Repository\PaperRepository;
 
@@ -20,7 +22,8 @@ use UJM\ExoBundle\Repository\PaperRepository;
  * Paper Controller.
  * Manages the submitted papers to an exercise.
  *
- * @EXT\Route("/papers", requirements={"id"="\d+"}, options={"expose"=true})
+ * @EXT\Route("exercises/{exerciseId}/papers", options={"expose"=true})
+ * @EXT\ParamConverter("exercise", class="UJMExoBundle:Exercise", options={"mapping": {"exerciseId": "uuid"}})
  */
 class PaperController extends AbstractController
 {
@@ -57,23 +60,22 @@ class PaperController extends AbstractController
      * Returns all the papers associated with an exercise.
      * Administrators get the papers of all users, others get only theirs.
      *
-     * @EXT\Route("/{id}/papers", name="exercise_papers", requirements={"id"="\d+"})
+     * @EXT\Route("", name="exercise_papers")
+     * @EXT\Method("GET")
      * @EXT\ParamConverter("user", converter="current_user")
      *
-     * @param User     $user
      * @param Exercise $exercise
+     * @param User     $user
      *
      * @return JsonResponse
      */
-    public function listAction(User $user, Exercise $exercise)
+    public function listAction(Exercise $exercise, User $user)
     {
         $this->assertHasPermission('OPEN', $exercise);
-
-        if ($this->isAdmin($exercise)) {
-            return new JsonResponse($this->paperManager->exportExercisePapers($exercise));
-        }
-
-        return new JsonResponse($this->paperManager->exportExercisePapers($exercise, $user));
+        
+        return new JsonResponse(
+            $this->paperManager->exportExercisePapers($exercise, $this->isAdmin($exercise) ? null : $user)
+        );
     }
 
     /**
@@ -83,16 +85,18 @@ class PaperController extends AbstractController
      *
      * @EXT\Route("/{id}", name="exercise_export_paper")
      * @EXT\Method("GET")
+     * @EXT\ParamConverter("paper", class="UJMExoBundle:Attempt\Paper", options={"mapping": {"id": "uuid"}})
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
      *
+     * @param Exercise $exercise
      * @param Paper $paper
      * @param User  $user
      *
      * @return JsonResponse
      */
-    public function getAction(Paper $paper, User $user = null)
+    public function getAction(Exercise $exercise, Paper $paper, User $user = null)
     {
-        $this->assertHasPermission('OPEN', $paper->getExercise());
+        $this->assertHasPermission('OPEN', $exercise);
 
         // ATTENTION : As is, anonymous have access to all the other anonymous Papers !!!
         if (!$this->isAdmin($paper->getExercise()) && $paper->getUser() !== $user) {
@@ -100,31 +104,52 @@ class PaperController extends AbstractController
             throw new AccessDeniedException();
         }
 
-        return new JsonResponse([
-            'questions' => $this->paperManager->exportPaperQuestions($paper, $this->isAdmin($paper->getExercise()), true),
-            'paper' => $this->paperManager->exportPaper($paper, $this->isAdmin($paper->getExercise())),
-        ]);
+        return new JsonResponse($this->paperManager->exportWithQuestions($paper));
     }
 
     /**
      * Deletes all the papers associated with an exercise.
      *
-     * @EXT\Route(
-     *     "/{id}/papers",
-     *     name="ujm_exercise_delete_papers",
-     *     options={"expose"=true}
-     * )
+     * @EXT\Route("", name="ujm_exercise_delete_papers")
      * @EXT\Method("DELETE")
      *
      * @param Exercise $exercise
      *
      * @return JsonResponse
      */
-    public function deleteAction(Exercise $exercise)
+    public function deleteAllAction(Exercise $exercise)
     {
         $this->assertHasPermission('ADMINISTRATE', $exercise);
 
-        $this->paperManager->deletePapers($exercise);
+        try {
+            $this->paperManager->deleteAll($exercise);
+        } catch (ValidationException $e) {
+            return new JsonResponse($e->getErrors(), 422);
+        }
+
+        return new JsonResponse(null, 204);
+    }
+
+    /**
+     * Deletes a paper from an exercise.
+     *
+     * @EXT\Route("/{id}", name="ujm_exercise_delete_paper")
+     * @EXT\Method("DELETE")
+     * @EXT\ParamConverter("paper", class="UJMExoBundle:Attempt\Paper", options={"mapping": {"id": "uuid"}})
+     *
+     * @param Paper $paper
+     *
+     * @return JsonResponse
+     */
+    public function deleteAction(Paper $paper)
+    {
+        $this->assertHasPermission('ADMINISTRATE', $paper->getExercise());
+
+        try {
+            $this->paperManager->delete($paper);
+        } catch (ValidationException $e) {
+            return new JsonResponse($e->getErrors(), 422);
+        }
 
         return new JsonResponse(null, 204);
     }
@@ -132,7 +157,8 @@ class PaperController extends AbstractController
     /**
      * Exports papers into a CSV file.
      *
-     * @EXT\Route("/{id}/papers/export", name="exercise_papers_export", requirements={"id"="\d+"})
+     * @EXT\Route("/export", name="exercise_papers_export")
+     * @EXT\Method("GET")
      *
      * @param Exercise $exercise
      *
@@ -154,18 +180,14 @@ class PaperController extends AbstractController
 
             /** @var Paper $paper */
             foreach ($papers as $paper) {
-                fputcsv(
-                    $handle,
-                    [
-                        $paper->getUser()->getFirstName().'-'.$paper->getUser()->getLastName(),
-                        $paper->getNumber(),
-                        $paper->getStart()->format('Y-m-d H:i:s'),
-                        $paper->getEnd() ? $paper->getEnd()->format('Y-m-d H:i:s') : '',
-                        $paper->isInterrupted(),
-                        $this->paperManager->calculateScore($paper, 20),
-                    ],
-                    ';'
-                );
+                fputcsv($handle, [
+                    $paper->getUser()->getFirstName().'-'.$paper->getUser()->getLastName(),
+                    $paper->getNumber(),
+                    $paper->getStart()->format('Y-m-d H:i:s'),
+                    $paper->getEnd() ? $paper->getEnd()->format('Y-m-d H:i:s') : '',
+                    $paper->isInterrupted(),
+                    $this->paperManager->calculateScore($paper, 20),
+                ], ';');
             }
 
             fclose($handle);
@@ -194,7 +216,7 @@ class PaperController extends AbstractController
 
         $this->paperManager->recordScore($question, $paper, $score);
 
-        return new JsonResponse($this->paperManager->exportPaper($paper, $this->isAdmin($paper->getExercise())), 200);
+        return new JsonResponse($this->paperManager->export($paper, [Transfer::INCLUDE_SOLUTIONS]), 200);
     }
 
     /**

@@ -33,11 +33,9 @@ class ChoiceAnswerValidator extends JsonSchemaValidator
             return [];
         }
 
-        $interaction = $this->om->getRepository('UJMExoBundle:InteractionQCM')
-            ->findOneByQuestion($question);
         $choiceIds = array_map(function (Choice $choice) {
             return (string) $choice->getId();
-        }, $interaction->getChoices()->toArray());
+        }, $question->getChoices()->toArray());
 
         foreach ($data as $id) {
             if (!is_string($id)) {
@@ -49,7 +47,7 @@ class ChoiceAnswerValidator extends JsonSchemaValidator
             }
         }
 
-        if ($interaction->getTypeQCM()->getCode() === 2 && $count > 1) {
+        if (!$question->isMultiple() && $count > 1) {
             return ['This question does not allow multiple answers'];
         }
 

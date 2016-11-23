@@ -33,6 +33,9 @@ class QuestionManagerTest extends TransactionalTestCase
         );
     }
 
+    /**
+     * @expectedException \UJM\ExoBundle\Library\Validator\ValidationException
+     */
     public function testCreateWithInvalidData()
     {
         $this->markTestIncomplete(
@@ -47,6 +50,9 @@ class QuestionManagerTest extends TransactionalTestCase
         );
     }
 
+    /**
+     * @expectedException \UJM\ExoBundle\Library\Validator\ValidationException
+     */
     public function testUpdateWithInvalidData()
     {
         $this->markTestIncomplete(
