@@ -234,6 +234,10 @@ mark: Note
 mark_question: Noter cette question
 mark_bigest: Le score doit être inférieur ou égal au score maximum
 mark_bigest_other: Le score est supérieur au score maximun
+match_add_item: Ajouter un item
+match_penalty_label: Pénalité pour toute mauvaise association
+match_shuffle_labels_and_proposals: Ordre des propositions et des labels aléatoire
+match_edit_connection: Éditer la connection
 matching: Association
 matching_creation: Création d'une question associative
 matching_edition: Edition d'une question associative

@@ -4,7 +4,9 @@ import Popover from 'react-bootstrap/lib/Popover'
 import classes from 'classnames'
 import {Textarea} from './../components/form/textarea.jsx'
 import {actions} from './match.js'
+import get from 'lodash/get'
 
+/* global jsPlumb */
 
 function getPopoverPosition(e) {
   const rect =  document.getElementById('popover-place-holder').getBoundingClientRect()
@@ -14,52 +16,96 @@ function getPopoverPosition(e) {
   }
 }
 
+function initJsPlumb() {
+  jsPlumb.setSuspendDrawing(false)
+
+  // defaults parameters for all connections
+  jsPlumb.importDefaults({
+    Anchors: ['RightMiddle', 'LeftMiddle'],
+    ConnectionsDetachable: true,
+    Connector: 'Straight',
+    DropOptions: {tolerance: 'touch'},
+    HoverPaintStyle: {strokeStyle: '#FC0000'},
+    LogEnabled: true,
+    PaintStyle: {strokeStyle: '#777', lineWidth: 4}
+  })
+
+  jsPlumb.registerConnectionTypes({
+    'valid': {
+      paintStyle     : { strokeStyle: '#5CB85C', lineWidth: 5 },
+      hoverPaintStyle: { strokeStyle: 'green',   lineWidth: 6 }
+    },
+    'invalid': {
+      paintStyle:      { strokeStyle: '#D9534F', lineWidth: 5 },
+      hoverPaintStyle: { strokeStyle: 'red',     lineWidth: 6 }
+    },
+    'selected': {
+      paintStyle:      { strokeStyle: '#006DCC', lineWidth: 6 },
+      hoverPaintStyle: { strokeStyle: '#006DCC', lineWidth: 6 }
+    },
+    'default': {
+      paintStyle     : { strokeStyle: 'grey',    lineWidth: 5 },
+      hoverPaintStyle: { strokeStyle: 'orange', lineWidth: 6 }
+    }
+  })
+
+  jsPlumb.setContainer(document.getElementById('match-question-container-id'))
+}
+
+function drawSolutions(solutions){
+  for (const solution of solutions) {
+    jsPlumb.connect({
+      source: 'source_' + solution.firstId,
+      target: 'target_' + solution.secondId,
+      type: solution.score > 0 ? 'valid':'invalid'
+    })
+  }
+}
+
 class MatchLinkPopover extends Component {
   constructor(props){
     super(props)
-
-    this.state = {
-      feedback: null === this.props.solution || undefined === this.props.solution ? '' : this.props.solution.feedback,
-      score: null === this.props.solution || undefined === this.props.solution ? 0 : this.props.solution.score
-    }
-  }
-
-  handleScoreChange(event){
-    this.setState({score: event.target.value})
-  }
-
-  handleFeedbackChange(event){
-    this.setState({feedback: event.target.value})
   }
 
   render() {
     return (
       <Popover
+        id={`popover-${this.props.solution.firstSetId}-${this.props.solution.secondSetId}`}
         positionLeft={this.props.popover.left}
         positionTop={this.props.popover.top}
         placement="bottom"
-        id={this.props.popover.id}
-        title={this.props.popover.title}>
-          <div className="form-group">
-            <label>Score</label>
-            <input className="form-control" onChange={this.handleScoreChange.bind(this)} type="number" value={this.props.solution.score}></input>
-          </div>
-          <div className="form-group">
-            <label>Feedback</label>
-            <textarea className="form-control" onChange={this.handleFeedbackChange.bind(this)} value={this.props.solution.feedback}></textarea>
-          </div>
-          <hr/>
-          <div className="row">
-            <div className="col-xs-12 text-center">
-              <div className="btn-group">
-                <button className="btn btn-default" onClick={() => this.props.handlePopoverClose()} title={'close'}>
-                  <i className="fa fa-close"></i>
-                </button>
-                <button className="btn btn-default" onClick={() => this.props.handleConnectionDelete()} title={'delete'}>
-                  <i className="fa fa-trash"></i>
-                </button>
-              </div>
+        title={
+          <div>
+            {this.props.popover.title}
+            <div className="pull-right">
+              <a role="button" className="btn btn-sm btn-link-danger fa fa-trash" onClick={() => this.props.handleConnectionDelete(this.props.solution.firstSetId, this.props.solution.secondSetId)} title={'delete'}/>
+              &nbsp;
+              <a role="button" className="btn btn-sm btn-link fa fa-close" onClick={() => this.props.handlePopoverClose()} title={'close'}></a>
             </div>
+          </div>
+        }>
+          <div className="form-group">
+            <label>{tex('score')}</label>
+            <input
+              className="form-control"
+              onChange={
+                e => this.props.onChange(
+                  actions.updateSolution(this.props.solution.firstSetId, this.props.solution.secondSetId, 'score', e.target.value)
+                )
+              }
+              type="number"
+              value={this.props.solution.score}
+             />
+          </div>
+          <div className="form-group">
+            <label>{tex('feedback')}</label>
+            <Textarea
+              id={`solution-${this.props.solution.firstSetId}-${this.props.solution.secondSetId}-feedback`}
+              content={this.props.solution.feedback}
+              onChange={feedback => this.props.onChange(
+                actions.updateSolution(this.props.solution.firstSetId, this.props.solution.secondSetId, 'feedback', feedback)
+              )}
+            />
           </div>
       </Popover>
     )
@@ -68,9 +114,10 @@ class MatchLinkPopover extends Component {
 
 MatchLinkPopover.propTypes = {
   popover: T.object.isRequired,
-  solution: T.object,
+  solution: T.object.isRequired,
   handlePopoverClose: T.func.isRequired,
-  handleConnectionDelete: T.func.isRequired
+  handleConnectionDelete: T.func.isRequired,
+  onChange: T.func.isRequired
 }
 
 class MatchItem extends Component{
@@ -82,6 +129,21 @@ class MatchItem extends Component{
     this.props.onMount(this.props.type, this.props.type + '_' + this.props.item.id)
   }
 
+  onSelfRemove(isLeftSet, id, elemId){
+    // remove item endpoint
+    // https://jsplumbtoolkit.com/community/doc/miscellaneous-examples.html
+    // Remove all Endpoints for the element, deleting their Connections.
+    // not sure about this one especially concerning events
+    jsPlumb.removeAllEndpoints(elemId)
+    this.props.onChange(
+      actions.removeSet(isLeftSet, this.props.item.id)
+    )
+
+    // there is also a pbm if there is one (ore several) element(s) below the current one... elements are going up in the dom
+    // but endpoints stay where they where before...
+    // node.parentNode.childNodes[] -> then exclude the current one from the list then for each child remove endpoint and redraw... :(
+  }
+
   render() {
     return (
       <div className={classes('item', this.props.type)} id={this.props.type + '_' + this.props.item.id}>
@@ -89,24 +151,28 @@ class MatchItem extends Component{
           <div className="left-controls">
             <a  role="button"
                 title={t('delete')}
-                className={classes('fa', 'fa-trash-o', {disabled: !this.props.item._deletable})}
-                onClick={() => this.props.item._deletable && this.props.onChange(
-                  actions.removeItem(true, this.props.item.id, this.props.type + '_' + this.props.item.id)
+                className={classes('btn', 'btn-sm', 'btn-link', 'fa', 'fa-trash-o', {disabled: !this.props.item._deletable})}
+                onClick={() => this.props.item._deletable && this.onSelfRemove(
+                  true, this.props.item.id, this.props.type + '_' + this.props.item.id
                 )}
             />
           </div>
         }
-
         <div className="text-fields">
-            <Textarea onChange={() => {}} id={`item-${this.props.item.id}-data`} className="form-control" content={this.props.item.data} />
+            <Textarea
+              onChange={data => this.props.onChange(
+                actions.updateSet(this.props.type === 'source', this.props.item.id, data)
+              )}
+              id={`item-${this.props.item.id}-data`}
+              content={this.props.item.data} />
         </div>
         { this.props.type === 'target' &&
           <div className="right-controls">
             <a  role="button"
                 title={t('delete')}
-                className={classes('fa', 'fa-trash-o', {disabled: !this.props.item._deletable})}
-                onClick={() => this.props.item._deletable && this.props.onChange(
-                  actions.removeItem(false, this.props.item.id, this.props.type + '_' + this.props.item.id)
+                className={classes('btn', 'btn-sm', 'btn-link', 'fa', 'fa-trash-o', {disabled: !this.props.item._deletable})}
+                onClick={() => this.props.item._deletable && this.onSelfRemove(
+                  false, this.props.item.id, this.props.type + '_' + this.props.item.id
                 )}
             />
           </div>
@@ -127,33 +193,49 @@ class Match extends Component {
 
   constructor(props) {
     super(props)
+    this.state = {
+      popover: {
+        visible: false,
+        left: 0,
+        top: 0,
+        title:null
+      },
+      jsPlumbConnection: null,
+      current: null
+    }
   }
 
   componentDidMount() {
 
-    this.props.onChange(actions.jsPlumbInit())
-
-    //initJsPlumb()
-    //addConnections(this.props.item.solutions)
+    initJsPlumb()
+    drawSolutions(this.props.item.solutions)
 
     // new connection created event
-    /*jsPlumb.bind('connection', function (data, event) {
-
+    jsPlumb.bind('connection', function (data, event) {
       data.connection.setType('selected')
       const positions = getPopoverPosition(event)
       const firstSetId = data.sourceId.replace('source_', '')
       const secondSetId = data.targetId.replace('target_', '')
       const title = this.props.item.firstSet.find(el => el.id === firstSetId).data + ' - ' + this.props.item.secondSet.find(el => el.id === secondSetId).data
+      const solution = {
+        firstSetId: firstSetId,
+        secondSetId: secondSetId,
+        feedback: '',
+        score: 1
+      }
+      // add solution to store
+      this.props.onChange(actions.addSolution(solution))
+      const solutionIndex = this.props.item.solutions.findIndex(solution => solution.firstSetId === firstSetId && solution.secondSetId === secondSetId)
+
       this.setState({
         popover: {
           visible: true,
-          id:data.sourceId + '-' + data.targetId,
           left: positions.left,
           top: positions.top,
           title:title
         },
         jsPlumbConnection: data.connection,
-        solution: null
+        current: solutionIndex
       })
     }.bind(this))
 
@@ -170,19 +252,19 @@ class Match extends Component {
       const firstSetId = connection.sourceId.replace('source_', '')
       const secondSetId = connection.targetId.replace('target_', '')
       const title = this.props.item.firstSet.find(el => el.id === firstSetId).data + ' - ' + this.props.item.secondSet.find(el => el.id === secondSetId).data
-      const solution = this.props.item.solutions.find(el => el.firstId === firstSetId && el.secondId === secondSetId)
+      const solutionIndex = this.props.item.solutions.findIndex(el => el.firstSetId === firstSetId && el.secondSetId === secondSetId)
+
       this.setState({
         popover: {
           visible: true,
-          id:firstSetId + '-' + secondSetId,
           left: positions.left,
           top: positions.top,
           title:title
         },
         jsPlumbConnection: connection,
-        solution: solution
+        current: solutionIndex
       })
-    }.bind(this))*/
+    }.bind(this))
   }
 
   /**
@@ -191,27 +273,55 @@ class Match extends Component {
   */
   newItemDidMount(type, id){
     const isLeftItem = type === 'source'
-    this.props.onChange(actions.jsPlumbAddEndpoint(isLeftItem, id))
+    const selector = '#' +  id
+    const anchor = isLeftItem ? 'RightMiddle' : 'LeftMiddle'
+    if (isLeftItem) {
+      jsPlumb.addEndpoint(jsPlumb.getSelector(selector), {
+        anchor: anchor,
+        cssClass: 'endPoints',
+        isSource: true,
+        maxConnections: -1
+      })
+    } else {
+      jsPlumb.addEndpoint(jsPlumb.getSelector(selector), {
+        anchor: anchor,
+        cssClass: 'endPoints',
+        isTarget: true,
+        maxConnections: -1
+      })
+    }
   }
 
-  removeConnection(){
-    /*jsPlumb.detach(this.state.jsPlumbConnection)
-    // TODO also delete the corresponding solution in props
+  removeConnection(firstSetId, secondSetId){
+    jsPlumb.detach(this.state.jsPlumbConnection)
     this.setState({
       popover: {
         visible: false
       },
       jsPlumbConnection: null,
-      solution: null
-    })*/
+      current: null
+    })
+    // also delete the corresponding solution in props
+    this.props.onChange(
+      actions.removeSolution(firstSetId, secondSetId)
+    )
   }
 
   closePopover(){
-    /*const list = jsPlumb.getConnections()
+    console.log('closePopover called')
+    this.setState({popover: {visible: false}})
+    const list = jsPlumb.getConnections()
     for(const conn of list){
-      conn.setType('default')
+      let type = 'valid'
+      const firstSetId = conn.sourceId.replace('source_', '')
+      const secondSetId = conn.targetId.replace('target_', '')
+      const solution = this.props.item.solutions.find(solution => solution.firstSetId === firstSetId && solution.secondSetId === secondSetId)
+      if(undefined !== solution && solution.score <= 0){
+        type = 'invalid'
+      }
+      conn.setType(type)
     }
-    this.setState({popover: {visible: false}})*/
+
   }
 
   // click outside the popover but inside the question items row will close the popover
@@ -223,22 +333,34 @@ class Match extends Component {
   }
 
 
-  // TODO handle RTE size change to repaint connections && endpoints
+  // TODO handle :
+  // - RTE size change to repaint connections && endpoints
+  // - Error message appear / disappear (make the dom change and the position of endpoints to)
+  // - Item deletion -> if any other item is below the one that is currently deleted it's follower will go up but the endpoint stay at the previous place
   handleTinyMceResize(){
-    //jsPlumb.repaintEverything()
+    jsPlumb.repaintEverything()
   }
 
   render() {
     return (
       <div id="match-question-container-id" className="match-question-container">
+        { get(this.props.item, '_touched') &&
+          get(this.props.item, '_errors.items') &&
+          <div className="error-text">
+            <span className="fa fa-warning"></span>
+            {this.props.item._errors.items}
+          </div>
+        }
         <div className="form-group">
-          <label htmlFor="set-penalty">{tex('match_question_penalty_label')}</label>
+          <label htmlFor="match-penalty">{tex('match_penalty_label')}</label>
           <input
-            id="set-penalty"
+            id="match-penalty"
+            className="form-control"
             value={this.props.item.penalty}
-            title={tex('score')}
             type="number"
-            className="form-control member-score"
+            onChange={e => this.props.onChange(
+               actions.updateProperty('penalty', e.target.value)
+            )}
           />
         </div>
         <div className="checkbox">
@@ -246,8 +368,11 @@ class Match extends Component {
             <input
               type="checkbox"
               checked={this.props.item.random}
-               />
-             {tex('match_shuffle_labels_and_proposals')}
+              onChange={e => this.props.onChange(
+                actions.updateProperty('random', e.target.value)
+              )}
+            />
+            {tex('match_shuffle_labels_and_proposals')}
           </label>
         </div>
         <hr/>
@@ -264,26 +389,23 @@ class Match extends Component {
               <button
                 type="button"
                 className="btn btn-default"
-                onClick={() => this.props.onChange(actions.addItem(true))}
+                onClick={() => this.props.onChange(actions.addSet(true))}
               >
                 <span className="fa fa-plus"/>
                 {tex('match_add_item')}
               </button>
             </div>
           </div>
-          <div id="popover-place-holder">
-            { this.props.item._popover.visible &&
-              <MatchLinkPopover
-                handleConnectionDelete={this.removeConnection.bind(this)}
-                handlePopoverClose={this.closePopover.bind(this)}
-                popover={this.props.item._popover}
-                solution={this.props.item._solution}
+          <div id="popover-place-holder" ref="popoverContainer">
+            { this.state.popover.visible &&
+                <MatchLinkPopover
+                  handleConnectionDelete={this.removeConnection.bind(this)}
+                  handlePopoverClose={this.closePopover.bind(this)}
+                  popover={this.state.popover}
+                  solution={this.props.item.solutions[this.state.current]}
+                  onChange={this.props.onChange}
                 />
-            }
-
-            { this.props.item._popover.visible &&
-              <h1>popover should be visible</h1>
-            }
+              }
           </div>
           <div className="item-col">
             <ul>
@@ -297,7 +419,7 @@ class Match extends Component {
               <button
                 type="button"
                 className="btn btn-default"
-                onClick={() => this.props.onChange(actions.addItem(false))}
+                onClick={() => this.props.onChange(actions.addSet(false))}
               >
                 <span className="fa fa-plus"/>
                 {tex('match_add_item')}
@@ -312,15 +434,25 @@ class Match extends Component {
 
 Match.propTypes = {
   item: T.shape({
-    id: T.string.isRequired,
     random: T.bool.isRequired,
     penalty: T.number.isRequired,
-    firstSet: T.arrayOf(T.object).isRequired,
-    secondSet: T.arrayOf(T.object).isRequired,
-    solutions: T.arrayOf(T.object).isRequired,
-    _solution: T.object.isRequired,
-    _popover: T.object.isRequired,
-    _jsPlumbConnection: T.object.isRequired
+    firstSet: T.arrayOf(T.shape({
+      id: T.string.isRequired,
+      type: T.string.isRequired,
+      data: T.string.isRequired
+    })).isRequired,
+    secondSet: T.arrayOf(T.shape({
+      id: T.string.isRequired,
+      type: T.string.isRequired,
+      data: T.string.isRequired
+    })).isRequired,
+    solutions: T.arrayOf(T.shape({
+      firstSetId: T.string.isRequired,
+      secondSetId: T.string.isRequired,
+      score: T.number.isRequired,
+      feedback: T.string
+    })).isRequired,
+    _errors: T.object
   }).isRequired,
   onChange: T.func.isRequired
 }

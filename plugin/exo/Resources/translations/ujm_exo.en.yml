@@ -235,6 +235,10 @@ mark: Score
 mark_question: Give a score to this question
 mark_bigest: The score must be smaller than or equal to the maximum score
 mark_bigest_other: The score is larger than the maximum score
+match_add_item: Add item
+match_penalty_label: Penality for any wrong association
+match_shuffle_labels_and_proposals: Shuffle proposal and label order
+match_edit_connection: Edit connection
 matching: Association
 matching_creation: Create association
 matching_edition: Edit association
