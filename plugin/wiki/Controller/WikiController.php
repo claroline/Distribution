@@ -19,19 +19,6 @@ class WikiController extends Controller
 {
     /**
      * @Route(
-     *      "pif/{wikiId}/{placeholder}",
-     *      defaults={"_format":"html"},
-     *      requirements={"wikiId" = "\d+", "placeholder" = ".*"},
-     *      name="icap_wiki_redirect"
-     * )
-     * @ParamConverter("wiki", class="IcapWikiBundle:Wiki", options={"id" = "wikiId"})
-     */
-    /*public function redirectAction(Wiki $wiki, Request $request) {
-        return $this->redirectToRoute('icap_wiki_view', array('wikiId' => $wiki->getId()));
-    }*/
-
-    /**
-     * @Route(
      *      "/{wikiId}.{_format}",
      *      defaults={"_format":"html"},
      *      requirements={"wikiId" = "\d+", "_format":"html|pdf"},
@@ -78,81 +65,5 @@ class WikiController extends Controller
         }
 
         return $response;
-    }
-
-    /**
-     * @Route(
-     *      "/configure/{wikiId}/{page}",
-     *      requirements={
-     *          "wikiId" = "\d+",
-     *          "page" = "\d+",
-     *      },
-     *      defaults = {
-     *          "page" = 1
-     *      },
-     *      name="icap_wiki_configure"
-     * )
-     * @ParamConverter("wiki", class="IcapWikiBundle:Wiki", options={"id" = "wikiId"})
-     * @ParamConverter("user", options={"authenticatedUser" = true})
-     * @Template()
-     */
-    public function configureAction(Request $request, Wiki $wiki, $user, $page)
-    {
-        $this->checkAccess('EDIT', $wiki);
-
-        return $this->persistWikiOptions($request, $wiki, $user, $page);
-    }
-
-    private function persistWikiOptions(Request $request, Wiki $wiki, User $user, $page)
-    {
-        $form = $this->createForm(new WikiOptionsType(), $wiki);
-        $sectionRepository = $this->get('icap.wiki.section_repository');
-        $query = $sectionRepository->findDeletedSectionsQuery($wiki);
-        $adapter = new DoctrineORMAdapter($query);
-        $pager = new PagerFanta($adapter);
-        $pager->setMaxPerPage(20);
-        try {
-            $pager->setCurrentPage($page);
-        } catch (NotValidCurrentPageException $exception) {
-            throw new NotFoundHttpException();
-        }
-        if ('POST' === $request->getMethod()) {
-            $form->handleRequest($request);
-            if ($form->isValid()) {
-                $flashBag = $this->get('session')->getFlashBag();
-                $translator = $this->get('translator');
-
-                try {
-                    $em = $this->getDoctrine()->getManager();
-                    $unitOfWork = $em->getUnitOfWork();
-                    $unitOfWork->computeChangeSets();
-                    $changeSet = $unitOfWork->getEntityChangeSet($wiki);
-                    $em->persist($wiki);
-                    $em->flush();
-
-                    $this->dispatchWikiConfigureEvent($wiki, $changeSet);
-
-                    $flashBag->add('success', $translator->trans('icap_wiki_options_save_success', [], 'icap_wiki'));
-                } catch (\Exception $exception) {
-                    $flashBag->add('error', $translator->trans('icap_wiki_options_save_error', [], 'icap_wiki'));
-                }
-
-                return $this->redirect(
-                    $this->generateUrl(
-                        'icap_wiki_view',
-                        [
-                            'wikiId' => $wiki->getId(),
-                        ]
-                    )
-                );
-            }
-        }
-
-        return [
-            '_resource' => $wiki,
-            'workspace' => $wiki->getResourceNode()->getWorkspace(),
-            'pager' => $pager,
-            'form' => $form->createView(),
-        ];
     }
 }
