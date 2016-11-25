@@ -26,8 +26,6 @@ export const actions = {
   removeSet: makeActionCreator(REMOVE_SET, 'isLeftSet', 'id')
 }
 
-
-
 function decorate(item) {
 
   const leftItemDeletable = getLeftItemDeletable(item)
@@ -114,7 +112,6 @@ function reduce(item = {}, action) {
     case REMOVE_SOLUTION: {
       const newItem = cloneDeep(item)
       const solutionIndex = newItem.solutions.findIndex(solution => solution.firstSetId === action.firstSetId && solution.secondSetId === action.secondSetId)
-
       newItem.solutions.splice(solutionIndex, 1)
       return newItem
     }
@@ -168,19 +165,14 @@ function reduce(item = {}, action) {
       if (action.isLeftSet) {
         const setIndex = newItem.firstSet.findIndex(set => set.id === action.id)
         newItem.firstSet.splice(setIndex, 1)
-        for(const index in newItem.solutions){
-          if(newItem.solutions[index].firstSetId === action.id){
-            newItem.solutions.splice(index, 1)
-          }
-        }
       } else {
         const setIndex = newItem.secondSet.findIndex(set => set.id === action.id)
         newItem.secondSet.splice(setIndex, 1)
-        for(const index in newItem.solutions){
-          if(newItem.solutions[index].secondSetId === action.id){
-            newItem.solutions.splice(index, 1)
-          }
-        }
+      }
+      const solutionsToRemove = newItem.solutions.filter(solution => action.isLeftSet ? solution.firstSetId === action.id : solution.secondSetId === action.id)
+      for(const solution of solutionsToRemove){
+        const index = newItem.solutions.indexOf(solution)
+        newItem.solutions.splice(index, 1)
       }
       const rightItemDeletable = getRightItemDeletable(newItem)
       newItem.firstSet.forEach(set => set._deletable = rightItemDeletable)
@@ -203,22 +195,27 @@ function getLeftItemDeletable(item){
 function validate(item) {
   const errors = {}
   // no blank item data
-  if (item.firstSet.find(set => notBlank(set.data)) || item.secondSet.find(set => notBlank(set.data))) {
+  if (item.firstSet.find(set => notBlank(set.data, true)) || item.secondSet.find(set => notBlank(set.data, true))) {
     errors.items = tex('match_item_empty_data_error')
   }
 
-  // at least one solution
-  if (item.solutions.length === 0) {
-    errors.solutions = tex('match_no_solution')
+  // empty penalty
+  if (chain(item.penalty, [notBlank, number])) {
+    errors.items = tex('match_penalty_not_valid')
+  }
+
+  // penalty greater than 0 and negatives score on solutions
+  if (item.penalty && item.penalty > 0 && item.solutions.length > 0 && item.solutions.filter(solution => solution.score < 0).length > 0) {
+    errors.warning = tex('match_warning_penalty_and_negative_scores')
   }
 
   // at least one solution with a score that is greater than 0
   if (undefined === item.solutions.find(solution => solution.score > 0)) {
-    errors.solutions = tex('match_no_valid_solution')
+    errors.items = tex('match_no_valid_solution')
   }
   // each solution should have a valid score
   if (undefined !== item.solutions.find(solution => chain(solution.score, [notBlank, number]))) {
-    errors.solutions = tex('match_score_not_valid')
+    errors.items = tex('match_score_not_valid')
   }
   return errors
 }

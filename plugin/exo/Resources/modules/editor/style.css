@@ -185,11 +185,6 @@
   transition: max-height 0.6s ease-in;
 }
 
-.quiz-editor .text-editor.minimal {
-  max-width: 200px;
-  min-width: 200px;
-}
-
 .quiz-editor .text-editor.minimal .mce-toolbar-grp {
   max-height: 0;
   transition: none;
@@ -415,7 +410,6 @@ a[role=tab] {
   padding: 0;
 }
 
-
 .quiz-editor .match-items {
   display: flex;
   justify-content: space-around;
@@ -433,29 +427,58 @@ a[role=tab] {
 }
 
 .quiz-editor .match-items .item-col {
-  flex-grow: 3;
+  flex-grow: 0;
+}
+
+.quiz-editor .match-items .item-col .text-editor.minimal {
+  width: 160px;
+  max-width: 160px;
+  min-width: 160px;
+  height: 100px;
+  min-height: 100px;
+  max-height: 100px;
+}
+
+.quiz-editor .match-items .item-col .text-editor.minimal .form-control {
+  width: 100%;
+  max-width: 100%;
+  min-width: 100%;
+  height: 100%;
+  min-height: 100%;
+  max-height: 100%;
+  overflow: auto;
 }
 
 .quiz-editor .match-items #popover-place-holder{
   position: relative;
-  flex-grow: 4;
+  flex-grow: 6;
 }
 
-.quiz-editor .match-items #popover-place-holder .popover{
+.quiz-editor .match-items #popover-place-holder .popover {
   max-width: 450px !important;
   min-width: 250px !important;
+}
+
+.quiz-editor .match-items #popover-place-holder .popover .popover-title{
+  display: block;
+}
+.quiz-editor .match-items #popover-place-holder .popover .popover-title:after {
+  clear: both;
+    content: ".";
+    display: inline-block;
+    height: 0;
+    visibility: hidden;
 }
 
 .quiz-editor .match-items .item {
   display: flex;
   background-color: #eee;
-  padding: 15px;
+  padding: 0 10px 0 10px;
   margin: 5px;
-  justify-content: space-between;
 }
 
 .quiz-editor .match-items .item-col .item .text-fields {
-  flex-grow: 1;
+  margin: 5px;
 }
 
 .quiz-editor .match-items .item .left-controls {

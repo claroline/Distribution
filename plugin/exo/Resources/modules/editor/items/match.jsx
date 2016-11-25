@@ -76,7 +76,7 @@ class MatchLinkPopover extends Component {
         placement="bottom"
         title={
           <div>
-            {this.props.popover.title}
+            {tex('match_edit_connection')}
             <div className="pull-right">
               <a role="button" className="btn btn-sm btn-link-danger fa fa-trash" onClick={() => this.props.handleConnectionDelete(this.props.solution.firstSetId, this.props.solution.secondSetId)} title={'delete'}/>
               &nbsp;
@@ -129,21 +129,6 @@ class MatchItem extends Component{
     this.props.onMount(this.props.type, this.props.type + '_' + this.props.item.id)
   }
 
-  onSelfRemove(isLeftSet, id, elemId){
-    // remove item endpoint
-    // https://jsplumbtoolkit.com/community/doc/miscellaneous-examples.html
-    // Remove all Endpoints for the element, deleting their Connections.
-    // not sure about this one especially concerning events
-    jsPlumb.removeAllEndpoints(elemId)
-    this.props.onChange(
-      actions.removeSet(isLeftSet, this.props.item.id)
-    )
-
-    // there is also a pbm if there is one (ore several) element(s) below the current one... elements are going up in the dom
-    // but endpoints stay where they where before...
-    // node.parentNode.childNodes[] -> then exclude the current one from the list then for each child remove endpoint and redraw... :(
-  }
-
   render() {
     return (
       <div className={classes('item', this.props.type)} id={this.props.type + '_' + this.props.item.id}>
@@ -152,7 +137,7 @@ class MatchItem extends Component{
             <a  role="button"
                 title={t('delete')}
                 className={classes('btn', 'btn-sm', 'btn-link', 'fa', 'fa-trash-o', {disabled: !this.props.item._deletable})}
-                onClick={() => this.props.item._deletable && this.onSelfRemove(
+                onClick={() => this.props.item._deletable && this.props.onUnmount(
                   true, this.props.item.id, this.props.type + '_' + this.props.item.id
                 )}
             />
@@ -163,7 +148,7 @@ class MatchItem extends Component{
               onChange={data => this.props.onChange(
                 actions.updateSet(this.props.type === 'source', this.props.item.id, data)
               )}
-              id={`item-${this.props.item.id}-data`}
+              id={`${this.props.type}-${this.props.item.id}-data`}
               content={this.props.item.data} />
         </div>
         { this.props.type === 'target' &&
@@ -171,7 +156,7 @@ class MatchItem extends Component{
             <a  role="button"
                 title={t('delete')}
                 className={classes('btn', 'btn-sm', 'btn-link', 'fa', 'fa-trash-o', {disabled: !this.props.item._deletable})}
-                onClick={() => this.props.item._deletable && this.onSelfRemove(
+                onClick={() => this.props.item._deletable && this.props.onUnmount(
                   false, this.props.item.id, this.props.type + '_' + this.props.item.id
                 )}
             />
@@ -186,6 +171,7 @@ MatchItem.propTypes = {
   type: T.string.isRequired,
   item: T.object.isRequired,
   onMount: T.func.isRequired,
+  onUnmount: T.func.isRequired,
   onChange: T.func.isRequired
 }
 
@@ -197,8 +183,7 @@ class Match extends Component {
       popover: {
         visible: false,
         left: 0,
-        top: 0,
-        title:null
+        top: 0
       },
       jsPlumbConnection: null,
       current: null
@@ -216,7 +201,6 @@ class Match extends Component {
       const positions = getPopoverPosition(event)
       const firstSetId = data.sourceId.replace('source_', '')
       const secondSetId = data.targetId.replace('target_', '')
-      const title = this.props.item.firstSet.find(el => el.id === firstSetId).data + ' - ' + this.props.item.secondSet.find(el => el.id === secondSetId).data
       const solution = {
         firstSetId: firstSetId,
         secondSetId: secondSetId,
@@ -231,8 +215,7 @@ class Match extends Component {
         popover: {
           visible: true,
           left: positions.left,
-          top: positions.top,
-          title:title
+          top: positions.top
         },
         jsPlumbConnection: data.connection,
         current: solutionIndex
@@ -251,15 +234,13 @@ class Match extends Component {
       const positions = getPopoverPosition(event)
       const firstSetId = connection.sourceId.replace('source_', '')
       const secondSetId = connection.targetId.replace('target_', '')
-      const title = this.props.item.firstSet.find(el => el.id === firstSetId).data + ' - ' + this.props.item.secondSet.find(el => el.id === secondSetId).data
       const solutionIndex = this.props.item.solutions.findIndex(el => el.firstSetId === firstSetId && el.secondSetId === secondSetId)
 
       this.setState({
         popover: {
           visible: true,
           left: positions.left,
-          top: positions.top,
-          title:title
+          top: positions.top
         },
         jsPlumbConnection: connection,
         current: solutionIndex
@@ -267,11 +248,24 @@ class Match extends Component {
     }.bind(this))
   }
 
+  itemWillUnmount(isLeftSet, id, elemId){
+    // remove item endpoint
+    // https://jsplumbtoolkit.com/community/doc/miscellaneous-examples.html
+    // Remove all Endpoints for the element, deleting their Connections.
+    // not sure about this one especially concerning events
+    jsPlumb.removeAllEndpoints(elemId)
+    this.props.onChange(
+      actions.removeSet(isLeftSet, id)
+    )
+
+    this.repaint()
+  }
+
   /**
    * When adding a firstSet or secondSet item we need to add an jsPlumb endpoint to it
    * In order to achieve that we need to wait for the new item to be mounted
   */
-  newItemDidMount(type, id){
+  itemDidMount(type, id){
     const isLeftItem = type === 'source'
     const selector = '#' +  id
     const anchor = isLeftItem ? 'RightMiddle' : 'LeftMiddle'
@@ -308,7 +302,6 @@ class Match extends Component {
   }
 
   closePopover(){
-    console.log('closePopover called')
     this.setState({popover: {visible: false}})
     const list = jsPlumb.getConnections()
     for(const conn of list){
@@ -321,7 +314,6 @@ class Match extends Component {
       }
       conn.setType(type)
     }
-
   }
 
   // click outside the popover but inside the question items row will close the popover
@@ -337,8 +329,10 @@ class Match extends Component {
   // - RTE size change to repaint connections && endpoints
   // - Error message appear / disappear (make the dom change and the position of endpoints to)
   // - Item deletion -> if any other item is below the one that is currently deleted it's follower will go up but the endpoint stay at the previous place
-  handleTinyMceResize(){
-    jsPlumb.repaintEverything()
+  repaint(){
+    window.setTimeout(() => {
+      jsPlumb.repaintEverything()
+    }, 10)
   }
 
   render() {
@@ -351,6 +345,13 @@ class Match extends Component {
             {this.props.item._errors.items}
           </div>
         }
+        { get(this.props.item, '_touched') &&
+          get(this.props.item, '_errors.warning') &&
+          <div className="error-text">
+            <span className="fa fa-info"></span>
+            {this.props.item._errors.warning}
+          </div>
+        }
         <div className="form-group">
           <label htmlFor="match-penalty">{tex('match_penalty_label')}</label>
           <input
@@ -358,6 +359,7 @@ class Match extends Component {
             className="form-control"
             value={this.props.item.penalty}
             type="number"
+            min="0"
             onChange={e => this.props.onChange(
                actions.updateProperty('penalty', e.target.value)
             )}
@@ -381,7 +383,13 @@ class Match extends Component {
             <ul>
             {this.props.item.firstSet.map((item) =>
               <li key={'source_' + item.id}>
-                <MatchItem onChange={this.props.onChange} onMount={this.newItemDidMount.bind(this)} item={item} type="source" />
+                <MatchItem
+                  onChange={this.props.onChange}
+                  onMount={this.itemDidMount.bind(this)}
+                  onUnmount={this.itemWillUnmount.bind(this)}
+                  item={item}
+                  type="source"
+                />
               </li>
             )}
             </ul>
@@ -411,7 +419,13 @@ class Match extends Component {
             <ul>
               {this.props.item.secondSet.map((item) =>
                 <li key={'target_' + item.id}>
-                  <MatchItem onChange={this.props.onChange} onMount={this.newItemDidMount.bind(this)} item={item} type="target" />
+                  <MatchItem
+                    onChange={this.props.onChange}
+                    onMount={this.itemDidMount.bind(this)}
+                    onUnmount={this.itemWillUnmount.bind(this)}
+                    item={item}
+                    type="target"
+                  />
                 </li>
               )}
             </ul>
@@ -427,6 +441,9 @@ class Match extends Component {
             </div>
           </div>
         </div>
+        { get(this.props.item, '_touched') &&
+          this.repaint()
+        }
       </div>
     )
   }
@@ -434,6 +451,7 @@ class Match extends Component {
 
 Match.propTypes = {
   item: T.shape({
+    id: T.string.isRequired,
     random: T.bool.isRequired,
     penalty: T.number.isRequired,
     firstSet: T.arrayOf(T.shape({
