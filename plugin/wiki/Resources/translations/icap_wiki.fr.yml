@@ -23,7 +23,7 @@ edit_section: Modifier la section
 edit_description: Modifier la description
 edit: Modifier
 error_401: Vous n'avez pas les droits nécessaires pour mener à bien l'opération demandée.
-error_404: La section demandée n'existe pas
+error_404: La section demandée n'existe pas.
 error_500: Le serveur a rencontré une erreur. Veuillez réessayer dans un moment.
 history: Historique
 icap_wiki_delete_section_type_children: Supprimer également les sous-sections
@@ -71,4 +71,5 @@ revision_comparison: Comparaison des versions
 revision_history: Historique des versions
 save: Sauvegarder
 set_active_contribution: Publier cette version
+waiting_for_moderation: En attente de modération
 wiki_contents: Sommaire

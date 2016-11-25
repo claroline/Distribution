@@ -45,7 +45,7 @@ class WikiController extends Controller
         $isAdmin = $this->isUserGranted('EDIT', $wiki);
         $user = $this->getLoggedUser();
         $sectionRepository = $this->get('icap.wiki.section_repository');
-        $tree = $sectionRepository->buildSectionTree($wiki, $isAdmin);
+        $tree = $sectionRepository->buildSectionTree($wiki, $isAdmin, $user);
         $deletedSections = $sectionRepository->findDeletedSections($wiki);
         $format = $request->get('_format');
         $response = new Response();

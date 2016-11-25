@@ -97,6 +97,8 @@ div.wiki-sections li.invisible-wiki-section div.wiki-section-text,
 div.wiki-sections li.invisible-wiki-section div.wiki-section-text *
 { color: #aaa!important; }
 
+div.wiki-sections li.invisible-wiki-section form { color: #333; }
+
 span.invisible-section-text {font-style: italic;}
 
 /*Delete section form*/

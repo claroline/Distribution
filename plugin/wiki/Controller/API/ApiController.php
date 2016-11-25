@@ -7,8 +7,11 @@ use Claroline\CoreBundle\Library\Resource\ResourceCollection;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\NamePrefix;
 use FOS\RestBundle\Controller\Annotations\Post;
+use FOS\RestBundle\Controller\Annotations\QueryParam;
+use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Controller\Annotations\Route;
 use FOS\RestBundle\Controller\FOSRestController;
+use FOS\RestBundle\Request\ParamFetcher;
 use Icap\WikiBundle\Entity\Contribution;
 use Icap\WikiBundle\Entity\Section;
 use Icap\WikiBundle\Entity\Wiki;
@@ -32,38 +35,42 @@ class ApiController extends FOSRestController
     /**
      * Update wiki options.
      *
+     * @param Wiki         $wiki
+     * @param ParamFetcher $paramFetcher
+     *
      * @Route(
      *     requirements={ "wiki" = "\d+" }
      * )
+     * @RequestParam(
+     *     name="mode",
+     *     description="In which mode should the wiki operate? 0 = normal, 1 = moderated, 2 = blocked",
+     *     requirements="[0,1,2]"
+     * )
      */
-    public function patchWikiAction(Wiki $wiki)
+    public function patchWikiAction(Wiki $wiki, ParamFetcher $paramFetcher)
     {
         $this->checkAccess('EDIT', $wiki);
 
-        $payload = $this->get('request')->getContent();
-        if (!empty($payload)) {
-            $params = json_decode($payload, true);
-            $mode = $params['mode'];
+        $mode = $paramFetcher->get('mode');
 
-            if (in_array($mode, [0, 1, 2])) {
-                $wiki->setMode($mode);
+        $wiki->setMode($mode);
 
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($wiki);
-                $em->flush();
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($wiki);
+        $em->flush();
 
-                $unitOfWork = $em->getUnitOfWork();
-                $unitOfWork->computeChangeSets();
-                $changeSet = $unitOfWork->getEntityChangeSet($wiki);
-                $this->dispatchWikiConfigureEvent($wiki, $changeSet);
-            }
-        }
+        $unitOfWork = $em->getUnitOfWork();
+        $unitOfWork->computeChangeSets();
+        $changeSet = $unitOfWork->getEntityChangeSet($wiki);
+        $this->dispatchWikiConfigureEvent($wiki, $changeSet);
 
-        return;
     }
 
     /**
      * Restore a soft deleted section.
+     * 
+     * @param Wiki    $wiki
+     * @param Section $section
      *
      * @Route(
      *     requirements={ "wiki" = "\d+", "section" = "\d+" }
@@ -76,97 +83,122 @@ class ApiController extends FOSRestController
         $sectionRepository = $this->get('icap.wiki.section_repository');
         $sectionRepository->restoreSection($section, $wiki->getRoot());
         $this->dispatchSectionRestoreEvent($wiki, $section);
-
-        return;
     }
 
     /**
      * Update section configuration (visibility or position in tree) but not the current contribution.
+     * 
+     * @param Wiki         $wiki
+     * @param Section      $section
+     * @param ParamFetcher $paramFetcher
+     *
+     * @return mixed[]
      *
      * @Route(
      *     requirements = { "wiki" = "\d+", "section" = "\d+" }
      * )
+     * @QueryParam(
+     *     name="visible",
+     *     requirements="(true|false)",
+     *     description="Sets the visibility of the section"
+     * )
+     * @QueryParam(
+     *     name="referenceSectionId",
+     *     requirements="\d+",
+     *     nullable=true,
+     *     description="Id of the section serving as new parent or sibling"
+     * )
+     * @QueryParam(
+     *     name="isBrother",
+     *     requirements="(true|false)",
+     *     nullable=true,
+     *     description="Should the section be treated as sibling of the reference section ?"
+     * )
      */
-    public function putWikiSectionAction(Wiki $wiki, Section $section)
+    public function putWikiSectionAction(Wiki $wiki, Section $section, ParamFetcher $paramFetcher)
     {
         $this->checkAccess('EDIT', $wiki);
 
-        $payload = $this->get('request')->getContent();
+        // Adjust visibility
+        $oldVisibility = $section->getVisible();
+        $newVisibility = $paramFetcher->get('visible') === 'true';
 
-        if (!empty($payload)) {
-            $params = json_decode($payload, true);
-
-            // Adjust visibility
-            $oldVisibility = $section->getVisible();
-            $newVisibility = $params['visible'];
-
-            if ($oldVisibility !== $newVisibility) {
-                $collection = $collection = new ResourceCollection([$wiki->getResourceNode()]);
-                $isAdmin = $this->isUserGranted('EDIT', $wiki, $collection);
-                $visible = ($newVisibility && $wiki->getMode() === 0) || ($newVisibility && $isAdmin);
-                $section->setVisible($visible);
-            }
-
-            // Move section in the tree
-            if ($params['referenceSectionId'] !== null) {
-                $oldParent = $section->getParent();
-                $oldLeft = $section->getLeft();
-
-                $referenceSectionId = $params['referenceSectionId'];
-                $isBrother = $params['isBrother'];
-                $referenceSection = $this->getSection($wiki, $referenceSectionId);
-                $repo = $this->get('icap.wiki.section_repository');
-
-                if ($isBrother === true && !$referenceSection->isRoot() && $referenceSection !== $oldLeft) {
-                    $repo->persistAsNextSiblingOf($section, $referenceSection);
-                    $newParent = $referenceSection->getParent();
-                    $changeSet = $section->getMoveEventChangeSet($oldParent, $oldLeft, $newParent);
-                    $this->dispatchSectionMoveEvent($wiki, $section, $changeSet);
-                } elseif ($referenceSection !== $oldParent) {
-                    $repo->persistAsFirstChildOf($section, $referenceSection);
-                    $newParent = $referenceSection;
-                    $changeSet = $section->getMoveEventChangeSet($oldParent, $oldLeft, $newParent);
-                    $this->dispatchSectionMoveEvent($wiki, $section, $changeSet);
-                }
-            }
-
-            // Save section in database
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($section);
-            $em->flush();
-
-            $sectionRepository = $this->get('icap.wiki.section_repository');
-            $isAdmin = $this->isUserGranted('EDIT', $wiki);
-
-            return [
-                'section' => [
-                    'id' => $section->getId(),
-                    'visible' => $section->getVisible(),
-                    'parent' => $section->getParent()->getId(),
-                    'left' => $section->getLeft(),
-                ],
-                'sections' => $sectionRepository->buildSectionTree($wiki, $isAdmin),
-            ];
+        if ($oldVisibility !== $newVisibility) {
+            $collection = $collection = new ResourceCollection([$wiki->getResourceNode()]);
+            $isAdmin = $this->isUserGranted('EDIT', $wiki, $collection);
+            $visible = ($newVisibility && $wiki->getMode() === 0) || ($newVisibility && $isAdmin);
+            $section->setVisible($visible);
         }
+
+        // Move section in the tree
+        $referenceSectionId = $paramFetcher->get('referenceSectionId');
+        $sectionRepository = $this->get('icap.wiki.section_repository');
+
+        if ($referenceSectionId !== null) {
+            $oldParent = $section->getParent();
+            $oldLeft = $section->getLeft();
+
+            $isBrother = $paramFetcher->get('isBrother') === 'true';
+            $referenceSection = $this->getSection($wiki, $referenceSectionId);
+
+            if ($isBrother && !$referenceSection->isRoot() && $referenceSection !== $oldLeft) {
+                $sectionRepository->persistAsNextSiblingOf($section, $referenceSection);
+                $newParent = $referenceSection->getParent();
+                $changeSet = $section->getMoveEventChangeSet($oldParent, $oldLeft, $newParent);
+                $this->dispatchSectionMoveEvent($wiki, $section, $changeSet);
+            } elseif ($referenceSection !== $oldParent) {
+                $sectionRepository->persistAsFirstChildOf($section, $referenceSection);
+                $newParent = $referenceSection;
+                $changeSet = $section->getMoveEventChangeSet($oldParent, $oldLeft, $newParent);
+                $this->dispatchSectionMoveEvent($wiki, $section, $changeSet);
+            }
+        }
+
+        // Save section in database
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($section);
+        $em->flush();
+
+        $isAdmin = $this->isUserGranted('EDIT', $wiki);
+
+        return [
+            'section' => [
+                'id' => $section->getId(),
+                'visible' => $section->getVisible(),
+                'parent' => $section->getParent()->getId(),
+                'left' => $section->getLeft(),
+            ],
+            'sections' => $sectionRepository->buildSectionTree($wiki, $isAdmin, $this->getLoggedUser()),
+        ];
     }
 
     /**
      * Soft or hard delete a section.
      *
+     * @param Wiki         $wiki
+     * @param Section      $section
+     * @param ParamFetcher $paramFetcher
+     *
+     * @return mixed[]
+     *
      * @Route(
      *     requirements={ "wiki" = "\d+", "section" = "\d+" }
      * )
+     * @QueryParam(
+     *     name="withChildren",
+     *     requirements="(true|false)",
+     *     nullable=true,
+     *     description="Should the section be soft deleted with its children ?"
+     * )
      */
-    public function deleteWikiSectionAction(Wiki $wiki, Section $section)
+    public function deleteWikiSectionAction(Wiki $wiki, Section $section, ParamFetcher $paramFetcher)
     {
-        $this->checkAccess('EDIT', $wiki);
-        $isAdmin = $this->isUserGranted('EDIT', $wiki);
 
         if (!$section->getDeleted()) {
             // Soft delete
             $repo = $this->get('icap.wiki.section_repository');
 
-            $withChildren = $this->get('request')->query->get('withChildren');
+            $withChildren = $paramFetcher->get('withChildren') === 'true';
             if ($withChildren) {
                 $repo->deleteSubtree($section);
             } else {
@@ -176,6 +208,8 @@ class ApiController extends FOSRestController
             $this->dispatchSectionDeleteEvent($wiki, $section);
             $this->dispatchSectionDeleteEvent($wiki, $section);
         } else {
+            $this->checkAccess('EDIT', $wiki);
+
             // Hard delete
             $em = $this->getDoctrine()->getManager();
             $em->remove($section);
@@ -184,14 +218,21 @@ class ApiController extends FOSRestController
             $this->dispatchSectionRemoveEvent($wiki, $section);
         }
 
+        $isAdmin = $this->isUserGranted('EDIT', $wiki);
+
         return [
-            'sections' => $repo->buildSectionTree($wiki, $isAdmin),
+            'sections' => $repo->buildSectionTree($wiki, $isAdmin, $this->getLoggedUser()),
             'deletedSections' => $repo->findDeletedSections($wiki),
         ];
     }
 
     /**
      * Move a section around the tree.
+     *
+     * @param Wiki    $wiki
+     * @param Section $section
+     *
+     * @return mixed[]
      *
      * @Post(
      *     "/api/wikis/{wiki}/sections/{section}",
@@ -254,6 +295,12 @@ class ApiController extends FOSRestController
     /**
      * Get one contribution by ID or all contributions in a section.
      *
+     * @param Wiki         $wiki
+     * @param Section      $section
+     * @param Contribution $contribution
+     *
+     * @return mixed[]
+     *
      * @Route(
      *     requirements={ "wiki" = "\d+", "section" = "\d+", "contribution" = "\d+" },
      *     defaults={ "contribution" = "null" }
@@ -294,11 +341,48 @@ class ApiController extends FOSRestController
     /**
      * Update (or create) a section when creating a new contribution.
      *
+     * @param ParamFetcher $paramFetcher
+     * @param Wiki         $wiki
+     * @param Section      $section
+     *
+     * @return mixed[]
+     *
      * @Route(
      *     requirements={ "wiki" = "\d+", "section" = "\d+" }
      * )
+     * @QueryParam(
+     *     name="visible",
+     *     requirements="(true|false)",
+     *     description="Sets the visibility of the section"
+     * )
+     * @QueryParam(
+     *     name="isBrother",
+     *     requirements="(true|false|undefined)",
+     *     nullable=true,
+     *     description="Should the section be treated as sibling of the reference section ?"
+     * )
+     * @RequestParam(
+     *     name="title",
+     *     requirements=".+",
+     *     description="Title of the new contribution"
+     * )
+     * @RequestParam(
+     *     name="text",
+     *     requirements=".+",
+     *     description="Content of the new contribution"
+     * )
+     * @RequestParam(
+     *     name="contributor",
+     *     requirements="\d+",
+     *     description="ID of the contributor"
+     * )
+     * @RequestParam(
+     *     name="parentSectionId",
+     *     requirements="\d+",
+     *     description="ID of the parent section"
+     * )
      */
-    public function postWikiSectionContributionAction(Wiki $wiki, Section $section = null)
+    public function postWikiSectionContributionAction(ParamFetcher $paramFetcher, Wiki $wiki, Section $section = null)
     {
         $this->checkAccess('OPEN', $wiki);
 
@@ -307,81 +391,79 @@ class ApiController extends FOSRestController
         $em = $this->getDoctrine()->getManager();
         $sectionRepository = $this->get('icap.wiki.section_repository');
 
-        $request = $this->get('request');
-        $visible = $request->query->get('visible') === 'true';
+        $contributor = $this->getDoctrine()
+            ->getRepository('ClarolineCoreBundle:User')
+            ->findOneById($paramFetcher->get('contributor'));
 
-        $payload = $request->getContent();
-        $params = json_decode($payload, true);
+        $collection = $collection = new ResourceCollection([$wiki->getResourceNode()]);
+        $isAdmin = $this->isUserGranted('EDIT', $wiki, $collection);
 
-        if (!empty($payload)) {
-            $contributor = $this->getDoctrine()
-                ->getRepository('ClarolineCoreBundle:User')
-                ->findOneById($params['contributor']);
+        // Section ID in URL is equal to 0, we need to create a new section
+        if ($createSection) {
+            $section = new Section();
+            $section->setWiki($wiki);
+            $section->setAuthor($contributor);
+            $section->setIsWikiAdmin($isAdmin);
 
-            $collection = $collection = new ResourceCollection([$wiki->getResourceNode()]);
-            $isAdmin = $this->isUserGranted('EDIT', $wiki, $collection);
+            $parentSectionId = $paramFetcher->get('parentSectionId');
+            $parent = $this->getSection($wiki, $parentSectionId);
 
-            // No section ID in URL, we need to create a new section
-            if ($createSection) {
-                $section = new Section();
-                $section->setWiki($wiki);
-                $section->setAuthor($contributor);
-                $section->setIsWikiAdmin($isAdmin);
-
-                $parentSectionId = $params['parentSectionId'];
-                $parent = $this->getSection($wiki, $parentSectionId);
-
-                $sectionRepository->persistAsLastChildOf($section, $parent);
-            }
-
-            $contribution = new Contribution();
-            $contribution->setTitle($params['title']);
-            $contribution->setText($params['text']);
-            $contribution->setSection($section);
-            $contribution->setContributor($contributor);
-            $contribution->setCreationDate(new \DateTime());
-            $section->setActiveContribution($contribution);
-
-            // Adjust section visibility
-            $visibility = ($visible && $wiki->getMode() === 0) || ($visible && $isAdmin);
-            $section->setVisible($visibility);
-
-            $em->persist($section);
-            $em->flush();
-
-            if ($createSection) {
-                $this->dispatchSectionCreateEvent($wiki, $section);
-            } else {
-                $unitOfWork = $em->getUnitOfWork();
-                $unitOfWork->computeChangeSets();
-                $changeSet = $unitOfWork->getEntityChangeSet($section);
-                $this->dispatchSectionUpdateEvent($wiki, $section, $changeSet);
-            }
-
-            return [
-                'section' => [
-                    'id' => $section->getId(),
-                    'visible' => $section->getVisible(),
-                 ],
-                'sections' => $sectionRepository->buildSectionTree($wiki, $isAdmin),
-                'contribution' => [
-                    'id' => $contribution->getId(),
-                    'is_active' => true,
-                    'contributor' => [
-                        'last_name' => $contribution->getContributor()->getLastName(),
-                        'first_name' => $contribution->getContributor()->getFirstName(),
-                        'user_name' => $contribution->getContributor()->getUserName(),
-                    ],
-                    'creation_date' => $contribution->getCreationDate(),
-                    'text' => $contribution->getText(),
-                    'title' => $contribution->getTitle(),
-                ],
-            ];
+            $sectionRepository->persistAsLastChildOf($section, $parent);
         }
+
+        $contribution = new Contribution();
+        $contribution->setTitle($paramFetcher->get('title'));
+        $contribution->setText($paramFetcher->get('text'));
+        $contribution->setSection($section);
+        $contribution->setContributor($contributor);
+        $contribution->setCreationDate(new \DateTime());
+        $section->setActiveContribution($contribution);
+
+        // Adjust section visibility
+        $visible = $paramFetcher->get('visible') === 'true';
+        $visibility = ($visible && $wiki->getMode() === 0) || ($visible && $isAdmin);
+        $section->setVisible($visibility);
+
+        $em->persist($section);
+        $em->flush();
+
+        if ($createSection) {
+            $this->dispatchSectionCreateEvent($wiki, $section);
+        } else {
+            $unitOfWork = $em->getUnitOfWork();
+            $unitOfWork->computeChangeSets();
+            $changeSet = $unitOfWork->getEntityChangeSet($section);
+            $this->dispatchSectionUpdateEvent($wiki, $section, $changeSet);
+        }
+
+        return [
+            'section' => [
+                'id' => $section->getId(),
+                'visible' => $section->getVisible(),
+             ],
+            'sections' => $sectionRepository->buildSectionTree($wiki, $isAdmin, $contributor),
+            'contribution' => [
+                'id' => $contribution->getId(),
+                'is_active' => true,
+                'contributor' => [
+                    'last_name' => $contribution->getContributor()->getLastName(),
+                    'first_name' => $contribution->getContributor()->getFirstName(),
+                    'user_name' => $contribution->getContributor()->getUserName(),
+                ],
+                'creation_date' => $contribution->getCreationDate(),
+                'text' => $contribution->getText(),
+                'title' => $contribution->getTitle(),
+            ],
+        ];
+
     }
 
     /**
      * Define a contribution as active.
+     *
+     * @param Wiki         $wiki
+     * @param Section      $section
+     * @param Contribution $contribution
      *
      * @Route(
      *     requirements={ "wiki" = "\d+", "section" = "\d+", "contribution" = "\d+" }
@@ -395,29 +477,37 @@ class ApiController extends FOSRestController
         $em = $this->getDoctrine()->getManager();
         $em->persist($section);
         $em->flush();
-
-        return;
     }
 
     /**
      * Obtain a diff between two contributions from the same section.
      *
+     * @param Wiki    $wiki
+     * @param Section $section
+     * @param int     $oldContributionId
+     * @param int     $newContributionId
+     *
+     * @return mixed[]
+     *
      * @Get(
-     *     "/api/wikis/{wiki}/sections/{section}/contributions/{oldContribId}/{newContribId}",
+     *     "/api/wikis/{wiki}/sections/{section}/contributions/{oldContributionId}/{newContributionId}",
      *     name="icap_wiki_api_get_wiki_section_contribution_diff",
-     *     requirements={ "wiki" = "\d+", "section" = "\d+", "oldContrib" = "\d+", "newContrib" = "\d+" },
+     *     requirements={ "wiki" = "\d+", "section" = "\d+", "oldContributionId" = "\d+", "newContribution  " = "\d+" },
      *     options = { "expose" = true }
      * )
      */
-    public function getWikiSectionContributionDiff(Wiki $wiki, Section $section, $oldContribId, $newContribId)
+    public function getWikiSectionContributionDiff(Wiki $wiki, Section $section, $oldContributionId, $newContributionId)
     {
         $response = new JsonResponse();
+        $data = [
+            'response' => [],
+        ];
 
         if ($section->getVisible() === true) {
-            $contributions = $this->get('icap.wiki.contribution_manager')->compareContributions($section, [$oldContribId, $newContribId]);
+            $contributions = $this->get('icap.wiki.contribution_manager')->compareContributions($section, [$oldContributionId, $newContributionId]);
 
             if (count($contributions) === 2) {
-                return $response->setData([
+                $data = [
                     'response' => [
                         [
                             'title' => $contributions[0]->getTitle(),
@@ -440,13 +530,11 @@ class ApiController extends FOSRestController
                             'creationDate' => $contributions[1]->getCreationDate(),
                         ],
                     ],
-                ]);
+                ];
             }
         }
 
-        return $response->setData([
-            'response' => [],
-        ]);
+        return $response->setData($data);
     }
 
     /**
@@ -643,6 +731,8 @@ class ApiController extends FOSRestController
      * @param Wiki $wiki
      * @param int  $sectionId
      *
+     * @throws NotFoundHttpException
+     *
      * @return Section $section
      */
     protected function getSection($wiki, $sectionId)
@@ -658,12 +748,14 @@ class ApiController extends FOSRestController
     }
 
     /**
-     * Retrieve a section from database.
+     * Retrieve a contribution from database.
      *
      * @param Section $section
      * @param int     $contributionId
      *
-     * @return Section $contri
+     * @throws NotFoundHttpException
+     *
+     * @return Contribution
      */
     protected function getContribution($section, $contributionId)
     {
@@ -680,7 +772,7 @@ class ApiController extends FOSRestController
     /**
      * Retrieve logged user. If anonymous return null.
      *
-     * @return user
+     * @return User
      */
     protected function getLoggedUser()
     {

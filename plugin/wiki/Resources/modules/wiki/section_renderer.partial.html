@@ -13,9 +13,14 @@
         data-ng-if="vm.wiki.isLoggedIn && (vm.wiki.isAdmin || vm.wiki.mode !== 2)"
         class="wiki-actions">
         <span
-            data-ng-if="!section.visible"
+            data-ng-if="vm.wiki.isAdmin && !section.visible"
             class="invisible-section-text">
-            ({{ "invisible"|trans:{}:'icap_wiki' }})
+            ({{ 'invisible'|trans:{}:'icap_wiki' }})
+        </span>
+        <span
+                data-ng-if="!vm.wiki.isAdmin && !section.visible"
+                class="invisible-section-text">
+            ({{ 'waiting_for_moderation'|trans:{}:'icap_wiki' }})
         </span>
         [
         <button
@@ -33,11 +38,28 @@
         </button>
         |
         <button
-            data-ng-click="vm.displaySection(section)"
-            class="history-section link-style"
-            data-ng-disabled="vm.isFormOpen">
+                data-ng-click="vm.displaySection(section)"
+                class="history-section link-style"
+                data-ng-disabled="vm.isFormOpen">
             {{ 'history'|trans:{}:'icap_wiki' }}
         </button>
+        <span data-ng-if="vm.wiki.isLoggedIn && vm.wiki.isAdmin">
+            |
+            <button
+                    data-ng-if="section.visible"
+                    data-ng-click="vm.toggleVisibility(section)"
+                    class="history-section link-style"
+                    data-ng-disabled="vm.isToggling">
+                {{ 'Rendre invisible'|trans:{}:'icap_wiki' }}
+            </button>
+            <button
+                    data-ng-if="!section.visible"
+                    data-ng-click="vm.toggleVisibility(section)"
+                    class="history-section link-style"
+                    data-ng-disabled="vm.isToggling">
+                {{ 'Rendre visible'|trans:{}:'icap_wiki' }}
+            </button>
+            </span>
         ]
     </small>
 </div>
@@ -102,7 +124,7 @@
                                 </div>
                                 <div class="form-group row">
                                     <label
-                                        data-ng-if="!section.isNew"
+                                        data-ng-if="vm.wiki.isLoggedIn && vm.wiki.isAdmin && !section.isNew"
                                         class="control-label col-md-12"
                                         for="icap_wiki_edit_section_type_visible">
                                         <input

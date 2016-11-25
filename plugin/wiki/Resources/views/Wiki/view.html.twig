@@ -37,8 +37,8 @@
             isLoggedIn: {{ user is not empty ? 'true' : 'false' }},
             isAdmin: {{ isAdmin ? 'true' : 'false' }},
             isPDFExportActive: {{ config.getParameter('is_pdf_export_active') == true ? 'true' : 'false' }},
-            sections: {{ tree|json_encode()|raw }},
-            deletedSections: {{ deletedSections|json_encode()|raw }},
+            sections: {{ tree|json_encode(constant('JSON_PRETTY_PRINT'))|raw }},
+            deletedSections: {{ deletedSections|json_encode(constant('JSON_PRETTY_PRINT'))|raw }},
             notificationButton: `{% render controller('IcapNotificationBundle:FollowerResource:renderForm', {'resourceId': _resource.resourceNode.id, 'resourceClass': _resource.resourceNode.class}) %}`
         });
     </script>

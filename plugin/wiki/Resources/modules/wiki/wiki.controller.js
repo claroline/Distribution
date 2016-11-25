@@ -134,6 +134,12 @@ export default class WikiController {
     }
   }
 
+  toggleVisibility(section) {
+    this.isToggling = true
+    this.wiki.toggleVisibility(section)
+      .finally(() => this.isToggling = false)
+  }
+
   saveNewSection (section) {
     this.disableFormButtons = true
     this._saveSectionWithNewContribution(section, this.currentContributions[section.id], this.currentSections[section.id])
@@ -162,7 +168,7 @@ export default class WikiController {
     ).finally(
       () => {
         this.isFormOpen = false
-        this.disableModalbuttons = false
+        this.disableModalButtons = false
         this._cancelModal()
       }
 

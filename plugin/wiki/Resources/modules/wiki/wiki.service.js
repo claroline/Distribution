@@ -69,8 +69,8 @@ export default class WikiService {
     const url = _url.get(this)('icap_wiki_api_get_wiki_section_contribution_diff', {
       'wiki': this.id,
       'section': sectionId,
-      'oldContribId': oldId,
-      'newContribId': newId
+      'oldContributionId': oldId,
+      'newContributionId': newId
     })
     let Diff = _$resource.get(this)(url)
     let diff = Diff.get(() => {
@@ -111,7 +111,7 @@ export default class WikiService {
       'referenceSectionId': updatedSection.referenceSectionId,
       'isBrother': updatedSection.isBrother
     })
-
+    
     let Contribution = _$resource.get(this)(url)
     let contribution = new Contribution(newContrib)
     contribution.contributor = this.activeUserId
@@ -130,14 +130,16 @@ export default class WikiService {
   updateSection (sect, updatedSec) {
     const url = _url.get(this)('icap_wiki_api_put_wiki_section', {
       'wiki': this.id,
-      'section': sect.id
+      'section': sect.id,
+      'visible': updatedSec.visible,
+      'referenceSectionId': updatedSec.referenceSectionId,
+      'isBrother': !!updatedSec.isBrother
+
     })
     let Section = _$resource.get(this)(url, null,
       {
         'update': { method: 'PUT'}
       })
-    // Make the option appear as false if the checkbox isn't checked, keep it true otherwise
-    updatedSec.isBrother = !!updatedSec.isBrother
 
     let section = new Section(updatedSec)
 
@@ -164,6 +166,27 @@ export default class WikiService {
         // Find old active contribution and mark it as pre-active
         contribution.is_active = true
         section.activeContribution = contribution
+      }
+    )
+  }
+
+  toggleVisibility(sect) {
+    const url = _url.get(this)('icap_wiki_api_put_wiki_section', {
+      'wiki': this.id,
+      'section': sect.id,
+      'visible': !sect.visible
+    })
+    
+    let Section = _$resource.get(this)(url, null,
+      {
+        'update': { method: 'PUT'}
+      })
+
+    let section = new Section(sect)
+
+    return section.$update(
+      success => {
+        sect.visible = !sect.visible
       }
     )
   }

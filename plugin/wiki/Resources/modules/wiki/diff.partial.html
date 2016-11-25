@@ -7,7 +7,7 @@
     <div class="panel-body">
         <div class="page-header">
             <h2 class="wiki-title-header">
-                <span data-ng-if="vm.wiki.displayedSection.level === 0">{{ vm.wiki.title }}</span>
+                <span data-ng-if="vm.wiki.displayedSection === null || vm.wiki.displayedSection.level === 0">{{ vm.wiki.title }}</span>
                 <span data-ng-if="vm.wiki.displayedSection.level !== 0">{{ vm.wiki.displayedSection.activeContribution.title }}</span>
                 : {{'revision_comparison'|trans:{}:'icap_wiki'}}
             </h2>
