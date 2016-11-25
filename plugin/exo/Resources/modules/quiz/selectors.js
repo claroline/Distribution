@@ -2,7 +2,7 @@ const empty = state => state.quiz.steps.length === 0
 const description = state => state.quiz.description
 const parameters = state => state.quiz.parameters
 const title = state => state.quiz.title
-const currentSection = () => 'overview'
+const currentSection = () => 'editor'
 
 // TODO: update when data is available
 const editable = () => true

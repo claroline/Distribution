@@ -2,7 +2,7 @@ import React, {Component, PropTypes as T} from 'react'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 import Tooltip from 'react-bootstrap/lib/Tooltip'
 import {tex} from './../../../utils/translate'
-import {SORT_DETECT} from './../../../utils/lib/sortable'
+import {SORT_DETECT} from './../../../utils/sortable'
 import {Thumbnail} from './thumbnail.jsx'
 
 export class ThumbnailBox extends Component {

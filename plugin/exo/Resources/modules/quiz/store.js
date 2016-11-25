@@ -7,7 +7,7 @@ import {
   createStore as baseCreate
 } from 'redux'
 import thunk from 'redux-thunk'
-import {reducers} from './editor/reducers'
+import {reducers as editorReducers} from './editor/reducers'
 
 const middleware = [thunk]
 
@@ -17,12 +17,12 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const reducer = combineReducers({
-  quiz: reducers.quiz,
-  steps: reducers.steps,
-  items: reducers.items,
-  currentObject: reducers.currentObject,
-  openPanels: reducers.openPanels,
-  modal: reducers.modal
+  quiz: editorReducers.quiz,
+  steps: editorReducers.steps,
+  items: editorReducers.items,
+  currentObject: editorReducers.currentObject,
+  openPanels: editorReducers.openPanels,
+  modal: editorReducers.modal
 })
 
 export function createStore(initialState) {

@@ -2,6 +2,7 @@ import React, {PropTypes as T} from 'react'
 import {connect} from 'react-redux'
 import {TopBar} from './top-bar.jsx'
 import {Overview} from './../overview/overview.jsx'
+import {Editor} from './../editor/components/editor.jsx'
 import select from './../selectors'
 
 let Quiz = props =>
@@ -12,7 +13,7 @@ let Quiz = props =>
     {props.editable &&
       <TopBar {...props}/>
     }
-    <Overview/>
+    {sectionComponent(props.currentSection)}
   </div>
 
 Quiz.propTypes = {
@@ -21,15 +22,15 @@ Quiz.propTypes = {
   currentSection: T.string.isRequired
 }
 
-// function pageComponent(page, props) {
-//   switch (page) {
-//     case 'editor':
-//       return <Editor {...props}/>
-//     case 'overview':
-//     default:
-//       return <Overview {...props}/>
-//   }
-// }
+function sectionComponent(section) {
+  switch (section) {
+    case 'editor':
+      return <Editor/>
+    case 'overview':
+    default:
+      return <Overview/>
+  }
+}
 
 function mapStateToProps(state) {
   return {
