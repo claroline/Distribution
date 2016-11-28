@@ -41,8 +41,7 @@ function decorate(item) {
       _deletable: rightItemDeletable
     })
   )
-  // not sure about this one... could be a serious drawback if user can not delete a solution
-  // and is forced to create a new one before deleting a wrong solution
+
   const solutionsWithDeletable = item.solutions.map(
     solution => Object.assign({}, solution, {
       _deletable: item.solutions.length > 0
@@ -90,16 +89,15 @@ function reduce(item = {}, action) {
     case ADD_SOLUTION: {
       const newItem = cloneDeep(item)
       newItem.solutions.push(action.solution)
+      newItem.solutions.forEach(solution => solution._deletable = newItem.solutions.length > 1)
       return newItem
     }
 
     case UPDATE_SOLUTION: {
       const newItem = cloneDeep(item)
-      // mark as touched
       const value = action.property === 'score' ? parseFloat(action.value) : action.value
-
       let solution = newItem.solutions.find(solution => solution.firstSetId === action.firstSetId && solution.secondSetId === action.secondSetId)
-
+      // mark as touched
       newItem._touched = merge(
         newItem._touched || {},
         set({}, action.property, true)
@@ -112,14 +110,15 @@ function reduce(item = {}, action) {
     case REMOVE_SOLUTION: {
       const newItem = cloneDeep(item)
       const solutionIndex = newItem.solutions.findIndex(solution => solution.firstSetId === action.firstSetId && solution.secondSetId === action.secondSetId)
-      newItem.solutions.splice(solutionIndex, 1)
+      newItem.solutions.splice(solutionIndex, 1)      
+      newItem.solutions.forEach(solution => solution._deletable = newItem.solutions.length > 1)
       return newItem
     }
 
     case UPDATE_PROP: {
       const newItem = cloneDeep(item)
-      // mark as touched
       const value = action.property === 'penalty' ? parseFloat(action.value) : Boolean(action.value)
+      // mark as touched
       newItem._touched = merge(
         newItem._touched || {},
         set({}, action.property, true)

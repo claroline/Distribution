@@ -78,7 +78,14 @@ class MatchLinkPopover extends Component {
           <div>
             {tex('match_edit_connection')}
             <div className="pull-right">
-              <a role="button" className="btn btn-sm btn-link-danger fa fa-trash" onClick={() => this.props.handleConnectionDelete(this.props.solution.firstSetId, this.props.solution.secondSetId)} title={'delete'}/>
+              <a
+                role="button"
+                title={'delete'}
+                className={classes('btn', 'btn-sm', 'btn-link-danger', 'fa fa-trash', {disabled: !this.props.solution._deletable})}
+                onClick={() => this.props.solution._deletable &&
+                  this.props.handleConnectionDelete(this.props.solution.firstSetId, this.props.solution.secondSetId)
+                }
+              />
               &nbsp;
               <a role="button" className="btn btn-sm btn-link fa fa-close" onClick={() => this.props.handlePopoverClose()} title={'close'}></a>
             </div>
