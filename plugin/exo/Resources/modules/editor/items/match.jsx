@@ -257,8 +257,6 @@ class Match extends Component {
     this.props.onChange(
       actions.removeSet(isLeftSet, id)
     )
-
-    this.repaint()
   }
 
   /**
@@ -324,15 +322,18 @@ class Match extends Component {
     }
   }
 
-
-  // TODO handle :
-  // - RTE size change to repaint connections && endpoints
-  // - Error message appear / disappear (make the dom change and the position of endpoints to)
-  // - Item deletion -> if any other item is below the one that is currently deleted it's follower will go up but the endpoint stay at the previous place
-  repaint(){
-    window.setTimeout(() => {
+  /**
+   * We need to tell jsPlumb to repaint each time something make the form changins it's size
+   * For now this handle :
+   * - Error message show / hide
+   * - Item deletion -> if any other item is below the one that is currently deleted it's follower will go up but the endpoint stay at the previous place
+   * - TODO handle RTE size change to repaint connections && endpoints
+   */
+  componentDidUpdate(prevProps){
+    const repaint = (prevProps.item.firstSet.length > this.props.item.firstSet.length || prevProps.item.secondSet.length > this.props.item.secondSet.length) || get(this.props.item, '_touched')
+    if(repaint) {
       jsPlumb.repaintEverything()
-    }, 10)
+    }
   }
 
   render() {
@@ -441,9 +442,6 @@ class Match extends Component {
             </div>
           </div>
         </div>
-        { get(this.props.item, '_touched') &&
-          this.repaint()
-        }
       </div>
     )
   }
