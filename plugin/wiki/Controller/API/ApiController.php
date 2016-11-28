@@ -63,12 +63,11 @@ class ApiController extends FOSRestController
         $unitOfWork->computeChangeSets();
         $changeSet = $unitOfWork->getEntityChangeSet($wiki);
         $this->dispatchWikiConfigureEvent($wiki, $changeSet);
-
     }
 
     /**
      * Restore a soft deleted section.
-     * 
+     *
      * @param Wiki    $wiki
      * @param Section $section
      *
@@ -87,7 +86,7 @@ class ApiController extends FOSRestController
 
     /**
      * Update section configuration (visibility or position in tree) but not the current contribution.
-     * 
+     *
      * @param Wiki         $wiki
      * @param Section      $section
      * @param ParamFetcher $paramFetcher
@@ -193,7 +192,6 @@ class ApiController extends FOSRestController
      */
     public function deleteWikiSectionAction(Wiki $wiki, Section $section, ParamFetcher $paramFetcher)
     {
-
         if (!$section->getDeleted()) {
             // Soft delete
             $repo = $this->get('icap.wiki.section_repository');
@@ -455,7 +453,6 @@ class ApiController extends FOSRestController
                 'title' => $contribution->getTitle(),
             ],
         ];
-
     }
 
     /**
