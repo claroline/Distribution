@@ -170,7 +170,8 @@ describe('Match reducer', () => {
           firstSetId: '2',
           secondSetId: '2',
           feedback: '',
-          score: 1
+          score: 1,
+          _deletable: true
         }
       ]
     })
@@ -182,6 +183,7 @@ describe('Match reducer', () => {
     const reduced = reduce(item, subActions.removeSolution('1','2'))
     const expected = makeFixture({}, false)
     expected.solutions.splice(1,1)
+    expected.solutions.forEach(solution => solution._deletable = false)
     ensure.equal(reduced, expected)
   })
 
@@ -226,6 +228,15 @@ describe('Match validator', () => {
     })
   })
 
+  it('checks that at least one solution exists', () => {
+    const item = makeFixture({}, false)
+    item.solutions.splice(0, 2)
+    const errors = validate(item)
+    ensure.equal(errors, {
+      solutions: 'match_no_solution'
+    })
+  })
+
   it('checks that at least one solution with a score that is greater than 0', () => {
     const item = makeFixture({
       solutions: [
@@ -235,7 +246,7 @@ describe('Match validator', () => {
     })
     const errors = validate(item)
     ensure.equal(errors, {
-      items: 'match_no_valid_solution'
+      solutions: 'match_no_valid_solution'
     })
   })
 
@@ -248,7 +259,7 @@ describe('Match validator', () => {
     })
     const errors = validate(item)
     ensure.equal(errors, {
-      items: 'match_score_not_valid'
+      solutions: 'match_score_not_valid'
     })
   })
 
@@ -378,13 +389,15 @@ function makeFixture(props = {}, frozen = true) {
         firstSetId: '1',
         secondSetId: '1',
         score: 2,
-        feedback: 'Well done'
+        feedback: 'Well done',
+        _deletable: true
       },
       {
         firstSetId: '1',
         secondSetId: '2',
         score: 1,
-        feedback: 'Congrats'
+        feedback: 'Congrats',
+        _deletable: true
       }
     ]
   }, props)

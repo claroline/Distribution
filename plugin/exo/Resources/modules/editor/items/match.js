@@ -142,11 +142,6 @@ function reduce(item = {}, action) {
       newItem.firstSet.forEach(set => set._deletable = leftItemDeletable)
       const rightItemDeletable = getRightItemDeletable(newItem)
       newItem.secondSet.forEach(set => set._deletable = rightItemDeletable)
-      // mark as touched
-      newItem._touched = merge(
-        newItem._touched || {},
-        set({}, ADD_SET, true)
-      )
       return newItem
     }
 
@@ -187,11 +182,6 @@ function reduce(item = {}, action) {
       newItem.firstSet.forEach(set => set._deletable = rightItemDeletable)
       const leftItemDeletable = getLeftItemDeletable(newItem)
       newItem.secondSet.forEach(set => set._deletable = leftItemDeletable)
-      // mark as touched
-      newItem._touched = merge(
-        newItem._touched || {},
-        set({}, REMOVE_SET, true)
-      )
       return newItem
     }
   }
@@ -214,20 +204,16 @@ function validate(item) {
     errors.warning = tex('match_warning_penalty_and_negative_scores')
   }
 
-  // each solution should have a valid score
-  if (undefined !== item.solutions.find(solution => chain(solution.score, [notBlank, number]))) {
-    errors.solutions = tex('match_score_not_valid')
-  }
-
-  // at least one solution with a score that is greater than 0
-  if (undefined === item.solutions.find(solution => solution.score > 0)) {
-    errors.solutions = tex('match_no_valid_solution')
-  }
-
   // at least one solution
   if (item.solutions.length === 0) {
     errors.solutions = tex('match_no_solution')
-  }
+  } else if (undefined !== item.solutions.find(solution => chain(solution.score, [notBlank, number]))) {
+    // each solution should have a valid score
+    errors.solutions = tex('match_score_not_valid')
+  } else if (undefined === item.solutions.find(solution => solution.score > 0)) {
+    // at least one solution with a score that is greater than 0
+    errors.solutions = tex('match_no_valid_solution')
+  }  
 
   // no blank item data
   if (item.firstSet.find(set => notBlank(set.data, true)) || item.secondSet.find(set => notBlank(set.data, true))) {
