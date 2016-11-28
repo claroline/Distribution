@@ -8,11 +8,12 @@ import get from 'lodash/get'
 
 /* global jsPlumb */
 
-function getPopoverPosition(e) {
-  const rect =  document.getElementById('popover-place-holder').getBoundingClientRect()
+function getPopoverPosition(connectionClass){
+  const containerRect =  document.getElementById('popover-place-holder').getBoundingClientRect()
+  const connectionRect =  document.querySelectorAll('.' + connectionClass)[0].getBoundingClientRect()
   return {
-    left: 0 - rect.width / 2,
-    top: e.clientY - rect.top
+    left: 0 - connectionRect.width / 2 + 20, // 20 is the endPoint width
+    top:  connectionRect.top + connectionRect.height / 2 - containerRect.top
   }
 }
 
@@ -203,11 +204,14 @@ class Match extends Component {
     drawSolutions(this.props.item.solutions)
 
     // new connection created event
-    jsPlumb.bind('connection', function (data, event) {
+    jsPlumb.bind('connection', function (data) {
       data.connection.setType('selected')
-      const positions = getPopoverPosition(event)
+
       const firstSetId = data.sourceId.replace('source_', '')
       const secondSetId = data.targetId.replace('target_', '')
+      const connectionClass = 'connection-' + firstSetId + '-' + secondSetId
+      data.connection.addClass(connectionClass)
+      const positions = getPopoverPosition(connectionClass)
       const solution = {
         firstSetId: firstSetId,
         secondSetId: secondSetId,
@@ -236,11 +240,13 @@ class Match extends Component {
     })
 
     // configure connection
-    jsPlumb.bind('click', function (connection, event) {
+    jsPlumb.bind('click', function (connection) {
       connection.setType('selected')
-      const positions = getPopoverPosition(event)
+
       const firstSetId = connection.sourceId.replace('source_', '')
       const secondSetId = connection.targetId.replace('target_', '')
+      const connectionClass = 'connection-' + firstSetId + '-' + secondSetId
+      const positions = getPopoverPosition(connectionClass)
       const solutionIndex = this.props.item.solutions.findIndex(el => el.firstSetId === firstSetId && el.secondSetId === secondSetId)
 
       this.setState({
