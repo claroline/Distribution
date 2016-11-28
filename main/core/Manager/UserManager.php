@@ -393,6 +393,7 @@ class UserManager
         }
 
         $returnValues = [];
+        $skipped = [];
         //keep these roles before the clear() will mess everything up. It's not what we want.
         $tmpRoles = $additionalRoles;
         $additionalRoles = [];
@@ -417,6 +418,8 @@ class UserManager
         $this->objectManager->startFlushSuite();
         $i = 1;
         $j = 0;
+        $countCreated = 0;
+        $countUpdated = 0;
 
         foreach ($users as $user) {
             $firstName = $user[0];
@@ -498,13 +501,16 @@ class UserManager
 
             if (!$userEntity) {
                 $userEntity = $this->userRepo->findOneByUsername($username);
-                if (!$userEntity) {
+                if (!$userEntity && $code !== null) {
+                    //the code isn't required afaik
                     $userEntity = $this->userRepo->findOneByAdministrativeCode($code);
                 }
             }
 
             if ($userEntity && $options['ignore-update']) {
-                $logger(" Skipping  {$userEntity->getUsername()}...");
+                if ($logger) {
+                    $logger(" Skipping  {$userEntity->getUsername()}...");
+                }
                 continue;
             }
 
@@ -513,19 +519,38 @@ class UserManager
             if (!$userEntity) {
                 $isNew = true;
                 $userEntity = new User();
+                $userEntity->setPlainPassword($pwd);
+                ++$countCreated;
+            } else {
+                if (!empty($pwd)) {
+                    $userEntity->setPlainPassword($pwd);
+                }
+                ++$countUpdated;
             }
 
             $userEntity->setUsername($username);
             $userEntity->setMail($email);
             $userEntity->setFirstName($firstName);
             $userEntity->setLastName($lastName);
-            $userEntity->setPlainPassword($pwd);
             $userEntity->setAdministrativeCode($code);
             $userEntity->setPhone($phone);
             $userEntity->setLocale($lg);
             $userEntity->setAuthentication($authentication);
             $userEntity->setIsMailNotified($isMailNotified);
             $userEntity->setIsMailValidated($isMailValidated);
+
+            if ($options['single-validate']) {
+                $errors = $this->validator->validate($userEntity);
+                if (count($errors) > 0) {
+                    $skipped[$i] = $userEntity;
+                    if ($isNew) {
+                        --$countCreated;
+                    } else {
+                        --$countUpdated;
+                    }
+                    continue;
+                }
+            }
 
             if (!$isNew && $logger) {
                 $logger(" User $j ($username) being updated...");
@@ -588,6 +613,15 @@ class UserManager
         }
 
         $this->objectManager->endFlushSuite();
+
+        if ($logger) {
+            $logger($countCreated.' users created.');
+            $logger($countUpdated.' users updated.');
+        }
+
+        foreach ($skipped as $key => $user) {
+            $logger('The user '.$user.' was skipped at line '.$key.' because it failed the validation pass.');
+        }
 
         return $returnValues;
     }
@@ -1272,7 +1306,7 @@ class UserManager
     {
         $archive = new \ZipArchive();
         $archive->open($filepath);
-        $tmpDir = sys_get_temp_dir().DIRECTORY_SEPARATOR.uniqid();
+        $tmpDir = $this->platformConfigHandler->getParameter('tmp_dir').DIRECTORY_SEPARATOR.uniqid();
         //add the tmp dir to the "trash list files"
         $tmpList = $this->container->getParameter('claroline.param.platform_generated_archive_path');
         file_put_contents($tmpList, $tmpDir."\n", FILE_APPEND);

@@ -24,6 +24,23 @@ use JMS\Serializer\Annotation\Groups;
 class Deck extends AbstractResource
 {
     /**
+     * List of the available themes.
+     *
+     * 'name' contains the name of the theme.
+     * 'value' contains the name of the css file.
+     */
+    public static $themes = [
+        [
+            'name' => 'Standard',
+            'value' => 'theme-std',
+        ],
+        [
+            'name' => 'Green',
+            'value' => 'theme-green',
+        ],
+    ];
+
+    /**
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
@@ -59,6 +76,14 @@ class Deck extends AbstractResource
      * @Groups({"api_flashcard", "api_flashcard_deck"})
      */
     protected $sessionDurationDefault;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="theme", type="string")
+     * @Groups({"api_flashcard", "api_flashcard_deck"})
+     */
+    protected $theme;
 
     /**
      * @ORM\OneToMany(targetEntity="UserPreference", mappedBy="deck")
@@ -182,6 +207,30 @@ class Deck extends AbstractResource
     }
 
     /**
+     * @param string $theme
+     *
+     * @return Deck
+     */
+    public function setTheme($theme)
+    {
+        $this->theme = $theme;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTheme()
+    {
+        if (!empty($this->theme)) {
+            return $this->theme;
+        } else {
+            return self::$themes[0]['value'];
+        }
+    }
+
+    /**
      * @return ArrayCollection
      */
     public function getUserPreferences()
@@ -208,9 +257,43 @@ class Deck extends AbstractResource
         $userPref = new UserPreference();
         $userPref->setNewCardDay($this->newCardDayDefault);
         $userPref->setSessionDuration($this->sessionDurationDefault);
+        $userPref->setTheme($this->getTheme());
         $userPref->setUser($user);
         $userPref->setDeck($this);
 
         return $userPref;
+    }
+
+    /**
+     * Set the preferences for a specified user. If the user already has
+     * preferences, then the new one overwrite the old one. If the user
+     * has no prefences yet, the given preferences are added.
+     *
+     * @param UserPreference $newUserPref
+     *
+     * @return Deck
+     */
+    public function setUserPreference(UserPreference $newUserPref)
+    {
+        foreach ($this->userPreferences as $i => $userPref) {
+            if ($newUserPref->getUser()->getId() === $userPref->getUser()->getId()) {
+                $this->userPreferences[$i] = $newUserPref;
+
+                return $this;
+            }
+        }
+        $this->userPreferences->add($newUserPref);
+
+        return $this;
+    }
+
+    /**
+     * Return the list of available theme.
+     *
+     * @return array
+     */
+    public static function getAllThemes()
+    {
+        return self::$themes;
     }
 }

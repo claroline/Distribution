@@ -13,6 +13,7 @@ namespace Claroline\FlashCardBundle\Entity;
 
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
 
 /**
  * UserPreference.
@@ -30,6 +31,7 @@ class UserPreference
      * @var int
      *
      * @ORM\Column(name="new_card_day", type="integer")
+     * @Groups({"api_flashcard", "api_flashcard_user_pref"})
      */
     private $newCardDay;
 
@@ -39,6 +41,14 @@ class UserPreference
      * @ORM\Column(name="session_duration", type="integer")
      */
     private $sessionDuration;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="theme", type="string")
+     * @Groups({"api_flashcard", "api_flashcard_user_pref"})
+     */
+    protected $theme;
 
     /**
      * @ORM\Id
@@ -92,6 +102,30 @@ class UserPreference
     public function getSessionDuration()
     {
         return $this->sessionDuration;
+    }
+
+    /**
+     * @param string $theme
+     *
+     * @return Deck
+     */
+    public function setTheme($theme)
+    {
+        $this->theme = $theme;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTheme()
+    {
+        if (!empty($this->theme)) {
+            return $this->theme;
+        } else {
+            return Deck::THEME_DEFAULT['value'];
+        }
     }
 
     /**

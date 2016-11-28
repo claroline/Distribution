@@ -18,7 +18,7 @@ use Doctrine\ORM\Mapping as ORM;
  * CardLog.
  *
  * @ORM\Table(name="claro_fcbundle_card_log")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Claroline\FlashCardBundle\Repository\CardLogRepository")
  */
 class CardLog
 {
@@ -48,7 +48,7 @@ class CardLog
     /**
      * @var bool
      *
-     * @ORM\Column(name="painfull", type="boolean")
+     * @ORM\Column(name="painful", type="boolean")
      */
     private $painful;
 
