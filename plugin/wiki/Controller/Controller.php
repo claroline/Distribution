@@ -2,21 +2,9 @@
 
 namespace Icap\WikiBundle\Controller;
 
-use Claroline\CoreBundle\Event\Log\LogResourceChildUpdateEvent;
 use Claroline\CoreBundle\Event\Log\LogResourceReadEvent;
-use Claroline\CoreBundle\Event\Log\LogResourceUpdateEvent;
 use Claroline\CoreBundle\Library\Resource\ResourceCollection;
-use Icap\WikiBundle\Entity\Contribution;
-use Icap\WikiBundle\Entity\Section;
 use Icap\WikiBundle\Entity\Wiki;
-use Icap\WikiBundle\Event\Log\LogContributionCreateEvent;
-use Icap\WikiBundle\Event\Log\LogSectionCreateEvent;
-use Icap\WikiBundle\Event\Log\LogSectionDeleteEvent;
-use Icap\WikiBundle\Event\Log\LogSectionMoveEvent;
-use Icap\WikiBundle\Event\Log\LogSectionRemoveEvent;
-use Icap\WikiBundle\Event\Log\LogSectionRestoreEvent;
-use Icap\WikiBundle\Event\Log\LogSectionUpdateEvent;
-use Icap\WikiBundle\Event\Log\LogWikiConfigureEvent;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 

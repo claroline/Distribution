@@ -4,16 +4,10 @@ namespace Icap\WikiBundle\Controller;
 
 use Claroline\CoreBundle\Entity\User;
 use Icap\WikiBundle\Entity\Wiki;
-use Icap\WikiBundle\Form\WikiOptionsType;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
-use Pagerfanta\Exception\NotValidCurrentPageException;
-use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class WikiController extends Controller
 {
