@@ -3,13 +3,13 @@ let _Messages = new WeakMap()
 let _transFilter = new WeakMap()
 
 export default class InterceptorFactory {
-  constructor ($location, Messages, transFilter) {
+  constructor($location, Messages, transFilter) {
     _$location.set(this, $location)
     _Messages.set(this, Messages)
     _transFilter.set(this, transFilter)
   }
 
-  get responseError () {
+  get responseError() {
     return rejection => {
 
       switch (rejection.status) {
@@ -27,7 +27,7 @@ export default class InterceptorFactory {
     }
   }
 
-  _setMessage (type, msg) {
+  _setMessage(type, msg) {
     _Messages.get(this).push({
       type: type,
       msg: _transFilter.get(this)(msg, {}, 'icap_wiki')

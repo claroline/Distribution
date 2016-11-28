@@ -2,7 +2,7 @@ let _$location = new WeakMap()
 let _$route = new WeakMap()
 
 export default class ContributionController {
-  constructor ($location, $route, wiki) {
+  constructor($location, $route, wiki) {
     _$location.set(this, $location)
     _$route.set(this, $route)
 
@@ -11,7 +11,7 @@ export default class ContributionController {
     this.init()
   }
 
-  init () {
+  init() {
     let sectionId = _$route.get(this).current.pathParams.sectionId
     this.wiki.setDisplayedSection(sectionId).then(
       () => {
@@ -21,11 +21,11 @@ export default class ContributionController {
     )
   }
 
-  displayHome () {
+  displayHome() {
     _$location.get(this).url('/')
   }
 
-  displaySection (section) {
+  displaySection(section) {
     _$location.get(this).url(`/section/${section.id}`)
   }
 

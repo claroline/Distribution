@@ -6,7 +6,7 @@ let _transFilter = new WeakMap()
 let _Messages= new WeakMap()
 
 export default class SectionController {
-  constructor ($scope, $resource, $location, $route, wiki, transFilter, Messages) {
+  constructor($scope, $resource, $location, $route, wiki, transFilter, Messages) {
     _$scope.set(this, $scope)
     _$resource.set(this, $resource)
     _$location.set(this, $location)
@@ -24,7 +24,7 @@ export default class SectionController {
     this.init()
   }
 
-  init () {
+  init() {
     let sectionId = _$route.get(this).current.pathParams.sectionId
     this.wiki.setDisplayedSection(sectionId)
 
@@ -39,17 +39,17 @@ export default class SectionController {
     })
   }
 
-  displayHome () {
+  displayHome() {
     _$location.get(this).url('/')
   }
 
-  displayContribution (section, contribution) {
+  displayContribution(section, contribution) {
     this.wiki.displayedContribution = contribution
     let url = `/section/${section.id}/contribution/${contribution.id}`
     _$location.get(this).url(url)
   }
 
-  setActiveContribution (section, contribution) {
+  setActiveContribution(section, contribution) {
     this.wiki.defineAsActive(section, contribution).then(
       () => {},
       () => {
@@ -58,11 +58,11 @@ export default class SectionController {
     )
   }
 
-  displayDiff (section, form) {
+  displayDiff(section, form) {
     _$location.get(this).url(`/section/${section.id}/compare/${form.oldid.$modelValue}/${form.diff.$modelValue}`)
   }
 
-  _setMessage (type, msg) {
+  _setMessage(type, msg) {
     _Messages.get(this).push({
       type: type,
       msg: _transFilter.get(this)(msg, {}, 'icap_wiki')

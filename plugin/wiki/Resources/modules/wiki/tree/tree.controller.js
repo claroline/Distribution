@@ -4,7 +4,7 @@ let _transFilter = new WeakMap()
 
 export default class TestController {
 
-  constructor (wikiService, treeService, $location, Messages, transFilter) {
+  constructor(wikiService, treeService, $location, Messages, transFilter) {
     this.wiki = wikiService
     this.treeService = treeService
     _$location.set(this, $location)
@@ -14,20 +14,20 @@ export default class TestController {
     this.dragEnabled = false
   }
 
-  get treeOptions () {
+  get treeOptions() {
     return {
       beforeDrop: this._dragSection.bind(this)
     }
   }
 
-  goToSection (id) {
+  goToSection(id) {
     // Links are only clickable in a not draggable state
     if (!this.dragEnabled) {
       _$location.get(this).hash(`sect-${id}`)
     }
   }
 
-  _dragSection (event) {
+  _dragSection(event) {
     this.dragEnabled = false
 
     // Which section id dragged?
@@ -65,7 +65,7 @@ export default class TestController {
     })
   }
 
-  _setMessage (type, msg) {
+  _setMessage(type, msg) {
     _Messages.get(this).push({
       type: type,
       msg: _transFilter.get(this)(msg, {}, 'icap_wiki')

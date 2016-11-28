@@ -2,7 +2,7 @@ let _$location = new WeakMap()
 let _$route = new WeakMap()
 
 export default class Diff {
-  constructor (wiki, $location, $route) {
+  constructor(wiki, $location, $route) {
     this.wiki = wiki
     _$location.set(this, $location)
     _$route.set(this, $route)
@@ -10,7 +10,7 @@ export default class Diff {
     this.init()
   }
 
-  init () {
+  init() {
     let oldId = _$route.get(this).current.params.oldId
     let newId = _$route.get(this).current.params.newId
     let sectionId = _$route.get(this).current.params.sectionId
@@ -22,11 +22,11 @@ export default class Diff {
     )
   }
 
-  displayHome () {
+  displayHome() {
     _$location.get(this).url('/')
   }
 
-  displaySection (section) {
+  displaySection(section) {
     _$location.get(this).url(`/section/${section.id}`)
   }
 

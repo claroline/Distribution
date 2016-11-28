@@ -5,7 +5,7 @@ let _url = new WeakMap()
 let _transFilter = new WeakMap()
 
 export default class WikiService {
-  constructor ($resource, wiki, $q, url, transFilter) {
+  constructor($resource, wiki, $q, url, transFilter) {
     _wiki.set(this, wiki)
     _$resource.set(this, $resource)
     _$q.set(this, $q)
@@ -17,21 +17,21 @@ export default class WikiService {
     this.oldMode = this.mode
   }
 
-  get activeUserId () { return _wiki.get(this).activeUserId }
-  get id () { return _wiki.get(this).id }
-  get title () { return _wiki.get(this).title }
-  get mode () { return _wiki.get(this).mode }
-  set mode (mode) { _wiki.get(this).mode = mode }
-  get isLoggedIn () { return _wiki.get(this).isLoggedIn }
-  get isAdmin () { return _wiki.get(this).isAdmin }
-  get isPDFExportActive () { return _wiki.get(this).isPDFExportActive }
-  get sections () { return _wiki.get(this).sections }
-  set sections (sections) { _wiki.get(this).sections = sections }
-  get deletedSections () { return _wiki.get(this).deletedSections }
-  set deletedSections (deletedSections) { _wiki.get(this).deletedSections = deletedSections }
-  get notificationButton () { return _wiki.get(this).notificationButton }
+  get activeUserId() { return _wiki.get(this).activeUserId }
+  get id() { return _wiki.get(this).id }
+  get title() { return _wiki.get(this).title }
+  get mode() { return _wiki.get(this).mode }
+  set mode(mode) { _wiki.get(this).mode = mode }
+  get isLoggedIn() { return _wiki.get(this).isLoggedIn }
+  get isAdmin() { return _wiki.get(this).isAdmin }
+  get isPDFExportActive() { return _wiki.get(this).isPDFExportActive }
+  get sections() { return _wiki.get(this).sections }
+  set sections(sections) { _wiki.get(this).sections = sections }
+  get deletedSections() { return _wiki.get(this).deletedSections }
+  set deletedSections(deletedSections) { _wiki.get(this).deletedSections = deletedSections }
+  get notificationButton() { return _wiki.get(this).notificationButton }
 
-  setDisplayedSection (id) {
+  setDisplayedSection(id) {
     if (!this.displayedSection) {
       this.displayedSection = this._recursiveSearch(this.sections, 'id', id)
     }
@@ -45,13 +45,13 @@ export default class WikiService {
     return _$q.get(this).resolve()
   }
 
-  setDisplayedContribution (id) {
+  setDisplayedContribution(id) {
     if (!this.displayedContribution && this.displayedSection) {
       this.displayedContribution = this._recursiveSearch(this.displayedSection.contributions, 'id', id)
     }
   }
 
-  loadContributions (section) {
+  loadContributions(section) {
     const url = _url.get(this)('icap_wiki_api_get_wiki_section_contribution', {
       'wiki': this.id,
       'section': section.id
@@ -65,7 +65,7 @@ export default class WikiService {
     return contribution.$promise
   }
 
-  setDiffContributions (sectionId, oldId, newId) {
+  setDiffContributions(sectionId, oldId, newId) {
     const url = _url.get(this)('icap_wiki_api_get_wiki_section_contribution_diff', {
       'wiki': this.id,
       'section': sectionId,
@@ -78,7 +78,7 @@ export default class WikiService {
     })
   }
 
-  _recursiveSearch (haystack, key, value, withParent = false , parent = {}) {
+  _recursiveSearch(haystack, key, value, withParent = false , parent = {}) {
     for (let element of haystack) {
       if (element[key] === value) {
         if (withParent) {
@@ -94,14 +94,14 @@ export default class WikiService {
     return null
   }
 
-  addSection (parent) {
+  addSection(parent) {
     let newSection = this.newEmptySection
     newSection.parentId = parent.id
     newSection.level = parent.level + 1
     parent.__children.push(newSection)
   }
 
-  editSection (section, newContrib, updatedSection) {
+  editSection(section, newContrib, updatedSection) {
     // If section doesn't exists in the database, the server will create a new one !
 
     const url = _url.get(this)('icap_wiki_api_post_wiki_section_contribution', {
@@ -127,7 +127,7 @@ export default class WikiService {
     )
   }
 
-  updateSection (sect, updatedSec) {
+  updateSection(sect, updatedSec) {
     const url = _url.get(this)('icap_wiki_api_put_wiki_section', {
       'wiki': this.id,
       'section': sect.id,
@@ -150,7 +150,7 @@ export default class WikiService {
     )
   }
 
-  defineAsActive (section, contribution) {
+  defineAsActive(section, contribution) {
     const url = _url.get(this)('icap_wiki_api_patch_wiki_section_contribution', {
       'wiki': this.id,
       'section': section.id,
@@ -185,13 +185,13 @@ export default class WikiService {
     let section = new Section(sect)
 
     return section.$update(
-      success => {
+      () => {
         sect.visible = !sect.visible
       }
     )
   }
 
-  updateOptions () {
+  updateOptions() {
     // Save old mode
     this.oldMode = this.mode
 
@@ -213,12 +213,12 @@ export default class WikiService {
     )
   }
 
-  revertMode () {
+  revertMode() {
     // This function is also called by wiki controller
     this.mode = this.oldMode
   }
 
-  softDeleteSection (sect, withChildren) {
+  softDeleteSection(sect, withChildren) {
     const url = _url.get(this)('icap_wiki_api_delete_wiki_section', {
       'wiki': this.id,
       'section': sect.id
@@ -235,7 +235,7 @@ export default class WikiService {
     )
   }
 
-  hardDeleteSection (sect, idx) {
+  hardDeleteSection(sect, idx) {
     const url = _url.get(this)('icap_wiki_api_delete_wiki_section', {
       'wiki': this.id,
       'section': sect.id
@@ -250,7 +250,7 @@ export default class WikiService {
     )
   }
 
-  restoreSection (sect) {
+  restoreSection(sect) {
     const url = _url.get(this)('icap_wiki_api_patch_wiki_section', {
       'wiki': this.id,
       'section': sect.id
@@ -275,7 +275,7 @@ export default class WikiService {
     )
   }
 
-  get newEmptySection () {
+  get newEmptySection() {
     return {
       'isNew': true,
       'id': 0,

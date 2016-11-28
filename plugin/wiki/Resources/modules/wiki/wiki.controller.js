@@ -13,7 +13,7 @@ let _$scope = new WeakMap()
 
 export default class WikiController {
 
-  constructor ($resource, wikiService, $location, $anchorScroll, $routeParams, Messages, transFilter, modal, $scope, tinyMceConfig) {
+  constructor($resource, wikiService, $location, $anchorScroll, $routeParams, Messages, transFilter, modal, $scope, tinyMceConfig) {
     _$resource.set(this, $resource)
     _$location.set(this, $location)
     _$anchorScroll.set(this, $anchorScroll)
@@ -33,49 +33,49 @@ export default class WikiController {
     this.isFormOpen = false
   }
 
-  getFontSize (level) {
+  getFontSize(level) {
     return level < 8 ? 21 - level + 'px' : '14px'
   }
 
-  get moderateModeWarningText () {
+  get moderateModeWarningText() {
     return _transFilter.get(this)('moderate_mode_warning', {}, 'icap_wiki')
   }
 
-  getDeletionDate (myDate) {
+  getDeletionDate(myDate) {
     return myDate.date || myDate
   }
 
-  displayUrl (url) {
+  displayUrl(url) {
     _$location.get(this).url(url)
   }
 
-  displayOptions () {
+  displayOptions() {
     this.wiki.oldMode = this.wiki.mode
     _$location.get(this).url('/options')
   }
 
-  displayHome () {
+  displayHome() {
     _$location.get(this).url('/')
   }
 
-  displaySection (section) {
+  displaySection(section) {
     this.wiki.displayedSection = section
     _$location.get(this).url(`/section/${section.id}`)
   }
 
-  displayContribution (section, contribution) {
+  displayContribution(section, contribution) {
     this.wiki.displayedContribution = contribution
     let url = `/section/${section.id}/contribution/${contribution.id}`
     _$location.get(this).url(url)
   }
 
-  addSection (section) {
+  addSection(section) {
     this.isFormOpen = true
     this.wiki.addSection(section)
     this.editSection(section.__children[section.__children.length - 1])
   }
 
-  editSection (section) {
+  editSection(section) {
     this.isFormOpen = true
 
     // Cancel every other current contribution (allow display of only one edit form at a time)
@@ -104,7 +104,7 @@ export default class WikiController {
     }
   }
 
-  cancelSection (section) {
+  cancelSection(section) {
     // Do not show this section anymore if creation has been canceled before being saved on server side
     if (section.isNew) {
       section.isStale = true
@@ -117,11 +117,11 @@ export default class WikiController {
     this.isFormOpen = false
   }
 
-  cancelNewSection () {
+  cancelNewSection() {
     this.createRootSection = false
   }
 
-  saveSection (section) {
+  saveSection(section) {
     this.disableFormButtons = true
 
     // Has the title or text been modified ? If not, just toggle visibility or move section
@@ -140,17 +140,17 @@ export default class WikiController {
       .finally(() => this.isToggling = false)
   }
 
-  saveNewSection (section) {
+  saveNewSection(section) {
     this.disableFormButtons = true
     this._saveSectionWithNewContribution(section, this.currentContributions[section.id], this.currentSections[section.id])
   }
 
-  confirmSoftDeleteSection (section) {
+  confirmSoftDeleteSection(section) {
     this.sectionToDelete = section
     this._modal(confirmDeletionTemplate)
   }
 
-  softDeleteSection (section, form) {
+  softDeleteSection(section, form) {
     this.disableModalButtons = true
 
     // Check if the checkbox exists and is checked
@@ -177,13 +177,13 @@ export default class WikiController {
     this.currentSections[section.id] = null
   }
 
-  confirmHardDeleteSection (section, idx) {
+  confirmHardDeleteSection(section, idx) {
     this.sectionToHardDelete = section
     this.sectionToHardDelete.idx = idx
     this._modal(confirmHardDeletionTemplate)
   }
 
-  hardDeleteSection (section) {
+  hardDeleteSection(section) {
     this.disableModalButtons = true
 
     this.wiki.hardDeleteSection(section, this.sectionToHardDelete.idx).then(
@@ -200,12 +200,12 @@ export default class WikiController {
     })
   }
 
-  cancelEditOptions () {
+  cancelEditOptions() {
     this.wiki.revertMode()
     _$location.get(this).url('/')
   }
 
-  saveOptions () {
+  saveOptions() {
     this.disableFormButtons = true
 
     this.wiki.updateOptions().then(
@@ -221,7 +221,7 @@ export default class WikiController {
     })
   }
 
-  restoreSection (section) {
+  restoreSection(section) {
     this.disableFormButtons = true
 
     this.wiki.restoreSection(section).then(
@@ -236,7 +236,7 @@ export default class WikiController {
     })
   }
 
-  _saveSectionWithNewContribution (section, newContrib, updatedSection) {
+  _saveSectionWithNewContribution(section, newContrib, updatedSection) {
     this.wiki.editSection(section, newContrib, updatedSection).then(
       () => {
         if (newContrib.id === 0) {
@@ -262,7 +262,7 @@ export default class WikiController {
     )
   }
 
-  _saveSectionWithoutNewContribution (section, updatedSection) {
+  _saveSectionWithoutNewContribution(section, updatedSection) {
     this.wiki.updateSection(section, updatedSection).then(
       () => {
         this.currentContributions[section.id] = null
@@ -278,18 +278,18 @@ export default class WikiController {
     })
   }
 
-  _setMessage (type, msg) {
+  _setMessage(type, msg) {
     _Messages.get(this).push({
       type: type,
       msg: _transFilter.get(this)(msg, {}, 'icap_wiki')
     })
   }
 
-  _modal (template) {
+  _modal(template) {
     _modalInstance.set(this, _modalFactory.get(this).open(template, _$scope.get(this)))
   }
 
-  _cancelModal () {
+  _cancelModal() {
     _modalInstance.get(this).dismiss()
   }
 

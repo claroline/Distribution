@@ -1,10 +1,10 @@
 export default class MessagesController {
-  constructor (messages) {
+  constructor(messages) {
     this.messages = messages
     this.dismissTimeOut = 5000
   }
 
-  closeMessage (index) {
+  closeMessage(index) {
     this.messages.splice(index, 1)
   }
 
