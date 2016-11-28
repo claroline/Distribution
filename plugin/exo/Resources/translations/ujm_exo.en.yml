@@ -243,7 +243,8 @@ match_item_empty_data_error: Item data can not be empty.
 match_no_valid_solution: At least one solution must have a score greater or equal to 0.
 match_score_not_valid: Each score must be a valid number.
 match_penalty_not_valid: The penalty must be a number greater or equal to 0.
-match_warning_penalty_and_negative_scores: Joint use of negative scores and penalties may lead to inconsistent results. 
+match_no_solution: There must be at least one solution.
+match_warning_penalty_and_negative_scores: Joint use of negative scores and penalties may lead to inconsistent results.
 matching: Association
 matching_creation: Create association
 matching_edition: Edit association
