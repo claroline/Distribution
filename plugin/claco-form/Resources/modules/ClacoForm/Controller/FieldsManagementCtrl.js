@@ -51,7 +51,6 @@ export default class FieldsManagementCtrl {
 
   initialize () {
     this.ClacoFormService.clearSuccessMessage()
-    this.fields.forEach(f => this.FieldService.formatField(f))
   }
 
   canEdit () {

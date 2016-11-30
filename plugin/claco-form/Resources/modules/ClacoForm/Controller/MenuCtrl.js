@@ -30,7 +30,11 @@ export default class MenuCtrl {
     this.ClacoFormService.clearSuccessMessage()
   }
 
+  canAdd () {
+    return this.ClacoFormService.getCanCreateEntry()
+  }
+
   canSearch () {
-    return this.config['search_enabled'] === 'all'
+    return this.ClacoFormService.getCanSearchEntry()
   }
 }

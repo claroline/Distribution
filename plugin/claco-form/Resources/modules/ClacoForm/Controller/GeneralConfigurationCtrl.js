@@ -11,6 +11,7 @@ export default class GeneralConfigurationCtrl {
   constructor ($state, ClacoFormService, CategoryService) {
     this.$state = $state
     this.ClacoFormService = ClacoFormService
+    this.resourceId = ClacoFormService.getResourceId()
     this.config = ClacoFormService.getResourceDetails()
     this.configErrors = {max_entries: null}
     this.isCollapsed = {
@@ -77,7 +78,7 @@ export default class GeneralConfigurationCtrl {
     this.categories.forEach(c => this.config['random_categories'].push(c['id']))
 
     if (this.isValid()) {
-      this.ClacoFormService.saveConfiguration(this.config).then(d => {
+      this.ClacoFormService.saveConfiguration(this.resourceId, this.config).then(d => {
         if (d) {
           this.$state.go('menu')
         }

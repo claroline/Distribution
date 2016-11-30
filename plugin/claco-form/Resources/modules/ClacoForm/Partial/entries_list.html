@@ -1,0 +1,138 @@
+<div class="panel panel-default">
+    <div class="panel-heading clearfix">
+        <h3 class="panel-title">
+            {{ 'entries_list'|trans:{}:'clacoform' }}
+            <div class="btn-group pull-right" uib-dropdown ng-if="cfc.canEdit()">
+                <button class="btn btn-default btn-sm" uib-dropdown-toggle>
+                    <i class="fa fa-cogs"></i>
+                    <i class="fa fa-caret-down"></i>
+                </button>
+                <ul class="dropdown-menu" uib-dropdown-menu role="menu">
+                    <li role="menuitem">
+                        <a ui-sref="menu">
+                            {{ 'main_menu'|trans:{}:'clacoform' }}
+                        </a>
+                    </li>
+                    <li role="menuitem">
+                        <a ui-sref="entry_creation">
+                            {{ 'add_entry'|trans:{}:'clacoform' }}
+                        </a>
+                    </li>
+                    <li role="menuitem">
+                        <a ui-sref="general_configuration">
+                            {{ 'general_configuration'|trans:{}:'clacoform' }}
+                        </a>
+                    </li>
+                    <li role="menuitem">
+                        <a ui-sref="fields_management">
+                            {{ 'fields_management'|trans:{}:'clacoform' }}
+                        </a>
+                    </li>
+                    <li role="menuitem">
+                        <a ui-sref="template_management">
+                            {{ 'template_management'|trans:{}:'clacoform' }}
+                        </a>
+                    </li>
+                    <li role="menuitem">
+                        <a ui-sref="votes_management">
+                            {{ 'votes_management'|trans:{}:'clacoform' }}
+                        </a>
+                    </li>
+                    <li role="menuitem">
+                        <a ui-sref="categories_management">
+                            {{ 'categories_management'|trans:{}:'clacoform' }}
+                        </a>
+                    </li>
+                    <li role="menuitem">
+                        <a ui-sref="keywords_management">
+                            {{ 'keywords_management'|trans:{}:'clacoform' }}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </h3>
+    </div>
+    <div class="panel-body">
+        <div>
+            <div class="table-responsive" ng-if="cfc.entries.length > 0">
+                <div ng-if="cfc.config['search_column_enabled']">
+                    <div class="btn-group pull-right" uib-dropdown dropdown-append-to-body="true" auto-close="outsideClick">
+                        <button class="btn btn-default btn-sm" area-expanded="true" uib-dropdown-toggle>
+                            {{ 'filters'|trans:{}:'platform' }}
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
+                            <li role="menuitem" ng-repeat="key in cfc.columnsKeys">
+                                <label>
+                                    <input type="checkbox" ng-model="cfc.columns[key]['value']">
+                                    {{ cfc.columns[key]['name'] }}
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+                    <br>
+                    <br>
+                </div>
+                <table class="table" ng-table-dynamic="cfc.tableParams with cfc.getDisplayedColumns()" show-filter="true">
+                    <tr ng-repeat="entry in $data" ng-class="cfc.getStatusClass(entry['status'])">
+                        <td class="text-center" ng-repeat="fc in cfc.fieldsColumns" ng-if="fc['id'] === 'alert' || cfc.columns[fc['id']]['value']">
+                            <span ng-if="fc['id'] === 'alert'">
+                                <i class="fa fa-exclamation-circle"
+                                   data-toggle="tooltip"
+                                   data-placement="top"
+                                   title="{{ 'pending'|trans:{}:'platform' }}"
+                                   ng-if="entry['status'] === 0"
+                                >
+                                </i>
+                                <i class="fa fa-comments"
+                                   data-toggle="tooltip"
+                                   data-placement="top"
+                                   title="{{ 'comments'|trans:{}:'clacoform' }}"
+                                   ng-if="entry['comments'].length > 0"
+                                >
+                                </i>
+                            </span>
+                            <span ng-if="fc['id'] === 'actions'">
+                                <span ng-if="entry['actions']">
+                                    <a class="btn btn-default btn-sm" ui-sref="entry_edition({entryId: entry['id']})">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
+                                    <button class="btn btn-default btn-sm"
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="{{ 'unpublish'|trans:{}:'platform' }}"
+                                            ng-click="cfc.changeEntryStatus(entry)"
+                                            ng-if="cfc.canEdit() && entry['status'] === 1"
+                                    >
+                                        <i class="fa fa-eye-slash"></i>
+                                    </button>
+                                    <button class="btn btn-default btn-sm"
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="{{ 'publish'|trans:{}:'platform' }}"
+                                            ng-click="cfc.changeEntryStatus(entry)"
+                                            ng-if="cfc.canEdit() && entry['status'] !== 1"
+                                    >
+                                        <i class="fa fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" ng-click="cfc.deleteEntry(entry)">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </span>
+                            </span>
+                            <span ng-if="fc['id'] === 'title' || fc['id'] === 'userString' || fc['id'] === 'creationDateString'">
+                                {{ entry[fc['id']] }}
+                            </span>
+                            <span ng-if="fc['id'] !== 'alert' && fc['id'] !== 'actions' && fc['id'] !== 'title' && fc['id'] !== 'userString' && fc['id'] !== 'creationDateString'">
+                                {{ entry['field_' + fc['id']] }}
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="alert alert-warning" ng-if="cfc.entries.length === 0">
+                {{ 'no_entry'|trans:{}:'clacoform' }}
+            </div>
+        </div>
+    </div>
+</div>

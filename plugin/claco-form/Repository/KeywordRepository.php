@@ -18,14 +18,14 @@ class KeywordRepository extends EntityRepository
 {
     public function findKeywordByNameExcludingId(ClacoForm $clacoForm, $name, $id)
     {
-        $dql = "
+        $dql = '
             SELECT k
             FROM Claroline\ClacoFormBundle\Entity\Keyword k
             JOIN k.clacoForm c
             WHERE c = :clacoForm
             AND UPPER(k.name) = :name
             AND k.id != :id
-        ";
+        ';
         $query = $this->_em->createQuery($dql);
         $query->setParameter('clacoForm', $clacoForm);
         $upperName = strtoupper($name);

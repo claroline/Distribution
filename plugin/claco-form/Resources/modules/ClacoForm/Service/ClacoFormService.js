@@ -12,10 +12,13 @@
 import $ from 'jquery'
 
 export default class ClacoFormService {
-  constructor ($http, $uibModal) {
+  constructor ($http, $uibModal, EntryService) {
     this.$http = $http
     this.$uibModal = $uibModal
+    this.EntryService = EntryService
+    this.isAnon = ClacoFormService._getGlobal('isAnon')
     this.canEdit = ClacoFormService._getGlobal('canEdit')
+    this.userId = ClacoFormService._getGlobal('userId')
     this.resourceId = ClacoFormService._getGlobal('resourceId')
     this.template = ClacoFormService._getGlobal('template')
     this.resourceDetails = ClacoFormService._getGlobal('resourceDetails')
@@ -24,8 +27,26 @@ export default class ClacoFormService {
     this.successMessage = null
   }
 
+  getIsAnon () {
+    return this.isAnon
+  }
+
+  getUserId () {
+    return this.userId
+  }
+
   getCanEdit () {
     return this.canEdit
+  }
+
+  getCanCreateEntry () {
+    return this.resourceDetails['creation_enabled'] &&
+      !(this.isAnon && this.resourceDetails['max_entries'] > 0) &&
+      !(this.resourceDetails['max_entries'] > 0 && this.EntryService.getNbMyEntries() >= this.resourceDetails['max_entries'])
+  }
+
+  getCanSearchEntry () {
+    return this.resourceDetails['search_enabled'] === 'all' || this.canEdit || !this.isAnon
   }
 
   getResourceId () {
@@ -66,8 +87,8 @@ export default class ClacoFormService {
     this.successMessage = null
   }
 
-  saveConfiguration (config) {
-    const url = Routing.generate('claro_claco_form_configuration_edit', {clacoForm: this.resourceId})
+  saveConfiguration (resourceId, config) {
+    const url = Routing.generate('claro_claco_form_configuration_edit', {clacoForm: resourceId})
 
     return this.$http.put(url, {configData: config}).then(d => {
       if (d['status'] === 200) {
@@ -79,8 +100,8 @@ export default class ClacoFormService {
     })
   }
 
-  saveTemplate (template) {
-    const url = Routing.generate('claro_claco_form_template_edit', {clacoForm: this.resourceId})
+  saveTemplate (resourceId, template) {
+    const url = Routing.generate('claro_claco_form_template_edit', {clacoForm: resourceId})
 
     return this.$http.put(url, {template: template}).then(d => {
       if (d['status'] === 200) {

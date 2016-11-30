@@ -658,4 +658,18 @@ class FacetManager
             }
         }
     }
+
+    public function isTypeWithChoices($type)
+    {
+        $withChoices = false;
+
+        switch ($type) {
+            case FieldFacet::CHECKBOXES_TYPE :
+            case FieldFacet::RADIO_TYPE :
+            case FieldFacet::SELECT_TYPE :
+                $withChoices = true;
+        }
+
+        return $withChoices;
+    }
 }

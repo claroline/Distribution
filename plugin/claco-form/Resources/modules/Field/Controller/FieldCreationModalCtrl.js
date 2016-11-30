@@ -30,6 +30,11 @@ export default class FieldCreationModalCtrl {
     }
     this.types = FieldService.getTypes()
     this.type = this.types[0]
+    this.index = 1
+    this.choices = [{index: this.index, value: ''}]
+    this.choicesErrors = {}
+    this.choicesErrors[this.index] = null
+    ++this.index
   }
 
   submit () {
@@ -37,9 +42,18 @@ export default class FieldCreationModalCtrl {
 
     if (!this.field['name']) {
       this.fieldErrors['name'] = Translator.trans('form_not_blank_error', {}, 'clacoform')
+    } else if (this.field['name'] === 'clacoform_entry_title') {
+      this.fieldErrors['name'] = Translator.trans('form_reserved_error', {}, 'clacoform')
     }
     this.field['type'] = this.type['value']
 
+    if (this.hasChoices()) {
+      this.choices.forEach(c => {
+        if (!c['value']) {
+          this.choicesErrors[c['index']] = Translator.trans('form_not_blank_error', {}, 'clacoform')
+        }
+      })
+    }
     if (this.isValid()) {
       const checkNameUrl = Routing.generate(
         'claro_claco_form_get_field_by_name_excluding_id',
@@ -49,7 +63,7 @@ export default class FieldCreationModalCtrl {
         if (d['status'] === 200) {
           if (d['data'] === 'null') {
             const url = Routing.generate('claro_claco_form_field_create', {clacoForm: this.resourceId})
-            this.$http.post(url, {fieldData: this.field}).then(d => {
+            this.$http.post(url, {fieldData: this.field, choicesData: this.choices}).then(d => {
               this.callback(d['data'])
               this.$uibModalInstance.close()
             })
@@ -65,6 +79,9 @@ export default class FieldCreationModalCtrl {
     for (const key in this.fieldErrors) {
       this.fieldErrors[key] = null
     }
+    for (const key in this.choicesErrors) {
+      this.choicesErrors[key] = null
+    }
   }
 
   isValid () {
@@ -76,61 +93,51 @@ export default class FieldCreationModalCtrl {
         break
       }
     }
+    if (valid && this.hasChoices()) {
+      valid = this.isChoicesValid()
+    }
 
     return valid
   }
 
-  manageTypes () {
-    console.log(this.type)
+  isChoicesValid () {
+    let valid = true
+
+    for (const key in this.choicesErrors) {
+      if (this.choicesErrors[key]) {
+        valid = false
+        break
+      }
+    }
+
+    return valid
   }
 
-  //manageRolesChoices () {
-  //  if (this.workspace) {
-  //    this.getWorkspaceRoles()
-  //  } else if (this.model) {
-  //    this.getModelRoles()
-  //  } else {
-  //    this.rolesChoices = []
-  //  }
-  //}
+  hasChoices () {
+    let hasChoice = false
 
-  //getWorkspaceRoles () {
-  //  if (this.workspace) {
-  //    const url = Routing.generate('course_workspace_roles_translation_keys_retrieve', {workspace: this.workspace['id']})
-  //    this.$http.get(url).then(d => {
-  //      if (d['status'] === 200) {
-  //        this.rolesChoices = []
-  //        d['data'].forEach(r => this.rolesChoices.push(r))
-  //
-  //        if (this.rolesChoices.indexOf(this.course['tutorRoleName']) === -1) {
-  //          this.course['tutorRoleName'] = null
-  //        }
-  //
-  //        if (this.rolesChoices.indexOf(this.course['learnerRoleName']) === -1) {
-  //          this.course['learnerRoleName'] = null
-  //        }
-  //      }
-  //    })
-  //  }
-  //}
+    switch (this.type['value']) {
+      case 4 :
+      case 5 :
+      case 6 :
+        hasChoice = true
+    }
 
-  //getModelRoles () {
-  //  if (this.model) {
-  //    const url = Routing.generate('ws_model_roles_translation_keys_retrieve', {model: this.model['id']})
-  //    this.$http.get(url).then(d => {
-  //      if (d['status'] === 200) {
-  //        this.rolesChoices = []
-  //        d['data'].forEach(r => this.rolesChoices.push(r))
-  //
-  //        if (this.rolesChoices.indexOf(this.course['tutorRoleName']) === -1) {
-  //          this.course['tutorRoleName'] = null
-  //        }
-  //
-  //        if (this.rolesChoices.indexOf(this.course['learnerRoleName']) === -1) {
-  //          this.course['learnerRoleName'] = null
-  //        }
-  //      }
-  //    })
-  //  }
-  //}
+    return hasChoice
+  }
+
+  addChoice () {
+    this.choices.push({index: this.index, value: ''})
+    this.choicesErrors[this.index] = null
+    ++this.index
+  }
+
+  removeChoice (index) {
+    const choiceIndex = this.choices.findIndex(c => c['index'] === index)
+
+    if (choiceIndex > -1) {
+      this.choices.splice(choiceIndex, 1)
+      delete this.choicesErrors[index]
+    }
+  }
 }

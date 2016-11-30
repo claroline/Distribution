@@ -8,9 +8,9 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution
  *
- * Generation date: 2016/11/21 09:44:52
+ * Generation date: 2016/11/30 11:26:14
  */
-class Version20161121094450 extends AbstractMigration
+class Version20161130112612 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -35,18 +35,11 @@ class Version20161121094450 extends AbstractMigration
                 user_id INT DEFAULT NULL, 
                 title VARCHAR(255) NOT NULL, 
                 entry_status INT NOT NULL, 
+                creation_date DATETIME NOT NULL, 
+                publication_date DATETIME DEFAULT NULL, 
                 INDEX IDX_889DAEDFF7D9CC0C (claco_form_id), 
                 INDEX IDX_889DAEDFA76ED395 (user_id), 
                 PRIMARY KEY(id)
-            ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
-        ");
-        $this->addSql("
-            CREATE TABLE claro_clacoformbundle_entry_value (
-                entry_id INT NOT NULL, 
-                fieldfacetvalue_id INT NOT NULL, 
-                INDEX IDX_1B3C48E4BA364942 (entry_id), 
-                INDEX IDX_1B3C48E49F093814 (fieldfacetvalue_id), 
-                PRIMARY KEY(entry_id, fieldfacetvalue_id)
             ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
         ");
         $this->addSql("
@@ -123,6 +116,19 @@ class Version20161121094450 extends AbstractMigration
             ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
         ");
         $this->addSql("
+            CREATE TABLE claro_clacoformbundle_field_value (
+                id INT AUTO_INCREMENT NOT NULL, 
+                entry_id INT DEFAULT NULL, 
+                field_id INT DEFAULT NULL, 
+                field_facet_value_id INT DEFAULT NULL, 
+                INDEX IDX_B481BDB9BA364942 (entry_id), 
+                INDEX IDX_B481BDB9443707B0 (field_id), 
+                UNIQUE INDEX UNIQ_B481BDB9D4EE0DAB (field_facet_value_id), 
+                UNIQUE INDEX field_unique_name (entry_id, field_id), 
+                PRIMARY KEY(id)
+            ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
+        ");
+        $this->addSql("
             ALTER TABLE claro_clacoformbundle_comment 
             ADD CONSTRAINT FK_23B30E0A76ED395 FOREIGN KEY (user_id) 
             REFERENCES claro_user (id) 
@@ -144,18 +150,6 @@ class Version20161121094450 extends AbstractMigration
             ALTER TABLE claro_clacoformbundle_entry 
             ADD CONSTRAINT FK_889DAEDFA76ED395 FOREIGN KEY (user_id) 
             REFERENCES claro_user (id) 
-            ON DELETE CASCADE
-        ");
-        $this->addSql("
-            ALTER TABLE claro_clacoformbundle_entry_value 
-            ADD CONSTRAINT FK_1B3C48E4BA364942 FOREIGN KEY (entry_id) 
-            REFERENCES claro_clacoformbundle_entry (id) 
-            ON DELETE CASCADE
-        ");
-        $this->addSql("
-            ALTER TABLE claro_clacoformbundle_entry_value 
-            ADD CONSTRAINT FK_1B3C48E49F093814 FOREIGN KEY (fieldfacetvalue_id) 
-            REFERENCES claro_field_facet_value (id) 
             ON DELETE CASCADE
         ");
         $this->addSql("
@@ -224,6 +218,24 @@ class Version20161121094450 extends AbstractMigration
             REFERENCES claro_user (id) 
             ON DELETE CASCADE
         ");
+        $this->addSql("
+            ALTER TABLE claro_clacoformbundle_field_value 
+            ADD CONSTRAINT FK_B481BDB9BA364942 FOREIGN KEY (entry_id) 
+            REFERENCES claro_clacoformbundle_entry (id) 
+            ON DELETE CASCADE
+        ");
+        $this->addSql("
+            ALTER TABLE claro_clacoformbundle_field_value 
+            ADD CONSTRAINT FK_B481BDB9443707B0 FOREIGN KEY (field_id) 
+            REFERENCES claro_clacoformbundle_field (id) 
+            ON DELETE CASCADE
+        ");
+        $this->addSql("
+            ALTER TABLE claro_clacoformbundle_field_value 
+            ADD CONSTRAINT FK_B481BDB9D4EE0DAB FOREIGN KEY (field_facet_value_id) 
+            REFERENCES claro_field_facet_value (id) 
+            ON DELETE CASCADE
+        ");
     }
 
     public function down(Schema $schema)
@@ -233,16 +245,16 @@ class Version20161121094450 extends AbstractMigration
             DROP FOREIGN KEY FK_23B30E0BA364942
         ");
         $this->addSql("
-            ALTER TABLE claro_clacoformbundle_entry_value 
-            DROP FOREIGN KEY FK_1B3C48E4BA364942
-        ");
-        $this->addSql("
             ALTER TABLE claro_clacoformbundle_entry_category 
             DROP FOREIGN KEY FK_2009A6BEBA364942
         ");
         $this->addSql("
             ALTER TABLE claro_clacoformbundle_entry_keyword 
             DROP FOREIGN KEY FK_C61CA20BBA364942
+        ");
+        $this->addSql("
+            ALTER TABLE claro_clacoformbundle_field_value 
+            DROP FOREIGN KEY FK_B481BDB9BA364942
         ");
         $this->addSql("
             ALTER TABLE claro_clacoformbundle_entry 
@@ -261,6 +273,10 @@ class Version20161121094450 extends AbstractMigration
             DROP FOREIGN KEY FK_E2D499A8F7D9CC0C
         ");
         $this->addSql("
+            ALTER TABLE claro_clacoformbundle_field_value 
+            DROP FOREIGN KEY FK_B481BDB9443707B0
+        ");
+        $this->addSql("
             ALTER TABLE claro_clacoformbundle_entry_keyword 
             DROP FOREIGN KEY FK_C61CA20B115D4552
         ");
@@ -277,9 +293,6 @@ class Version20161121094450 extends AbstractMigration
         ");
         $this->addSql("
             DROP TABLE claro_clacoformbundle_entry
-        ");
-        $this->addSql("
-            DROP TABLE claro_clacoformbundle_entry_value
         ");
         $this->addSql("
             DROP TABLE claro_clacoformbundle_entry_category
@@ -301,6 +314,9 @@ class Version20161121094450 extends AbstractMigration
         ");
         $this->addSql("
             DROP TABLE claro_clacoformbundle_category_manager
+        ");
+        $this->addSql("
+            DROP TABLE claro_clacoformbundle_field_value
         ");
     }
 }

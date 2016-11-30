@@ -34,7 +34,7 @@ class Field
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_claco_form", "api_facet_admin"})
+     * @Groups({"api_claco_form", "api_facet_admin", "api_user_min"})
      * @SerializedName("id")
      */
     protected $id;
@@ -53,14 +53,14 @@ class Field
     /**
      * @ORM\Column(name="field_name")
      * @Assert\NotBlank()
-     * @Groups({"api_claco_form", "api_facet_admin"})
+     * @Groups({"api_claco_form", "api_facet_admin", "api_user_min"})
      * @SerializedName("name")
      */
     protected $name;
 
     /**
      * @ORM\Column(name="field_type", type="integer")
-     * @Groups({"api_claco_form", "api_facet_admin"})
+     * @Groups({"api_claco_form", "api_facet_admin", "api_user_min"})
      * @SerializedName("type")
      */
     protected $type;
@@ -75,21 +75,21 @@ class Field
 
     /**
      * @ORM\Column(name="required", type="boolean")
-     * @Groups({"api_claco_form", "api_facet_admin"})
+     * @Groups({"api_claco_form", "api_facet_admin", "api_user_min"})
      * @SerializedName("required")
      */
     protected $required = true;
 
     /**
      * @ORM\Column(name="searchable", type="boolean")
-     * @Groups({"api_claco_form", "api_facet_admin"})
+     * @Groups({"api_claco_form", "api_facet_admin", "api_user_min"})
      * @SerializedName("searchable")
      */
     protected $searchable = true;
 
     /**
      * @ORM\Column(name="is_metadata", type="boolean")
-     * @Groups({"api_claco_form", "api_facet_admin"})
+     * @Groups({"api_claco_form", "api_facet_admin", "api_user_min"})
      * @SerializedName("isMetadata")
      */
     protected $isMetadata = false;

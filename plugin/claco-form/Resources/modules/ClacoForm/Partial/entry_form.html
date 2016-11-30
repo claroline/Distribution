@@ -1,7 +1,7 @@
 <div class="panel panel-default">
     <div class="panel-heading clearfix">
         <h3 class="panel-title">
-            {{ cfc.getResourceNodeName() }}
+            {{ cfc.title }}
             <div class="btn-group pull-right" uib-dropdown ng-if="cfc.canEdit()">
                 <button class="btn btn-default btn-sm" uib-dropdown-toggle>
                     <i class="fa fa-cogs"></i>
@@ -9,6 +9,11 @@
                 </button>
                 <ul class="dropdown-menu" uib-dropdown-menu role="menu">
                     <li role="menuitem">
+                        <a ui-sref="menu">
+                            {{ 'main_menu'|trans:{}:'clacoform' }}
+                        </a>
+                    </li>
+                    <li role="menuitem" ng-if="cfc.mode === 'edition'">
                         <a ui-sref="entry_creation">
                             {{ 'add_entry'|trans:{}:'clacoform' }}
                         </a>
@@ -52,24 +57,40 @@
             </div>
         </h3>
     </div>
-    <div class="panel-body">
-        <div class="alert alert-success" ng-if="cfc.getSuccessMessage()">
-            <i class="fa fa-times pointer-hand close" ng-click="cfc.clearSuccessMessage()"></i>
-            {{ cfc.getSuccessMessage() }}
+    <div class="panel-body" ng-if="cfc.isAllowed()">
+        <div ng-bind-html="cfc.template|trust_html" ng-if="cfc.template">
         </div>
-        <div class="text-center">
-            <a class="btn btn-default" ui-sref="entry_creation" ng-if="cfc.canAdd()">
-                <i class="fa fa-pencil-square-o fa-5x"></i>
-                <h4>{{ 'add_entry'|trans:{}:'clacoform' }}</h4>
-            </a>
-            <a class="btn btn-default" ui-sref="entries_list" ng-if="cfc.canSearch()">
-                <i class="fa fa-search fa-5x"></i>
-                <h4>{{ 'find_entry'|trans:{}:'clacoform' }}</h4>
-            </a>
-            <a class="btn btn-default" ui-sref="random_entry" ng-if="cfc.config['random_enabled']">
-                <i class="fa fa-random fa-5x"></i>
-                <h4>{{ 'random_entry'|trans:{}:'clacoform' }}</h4>
-            </a>
+        <div ng-if="!cfc.template">
+            <form-field field="[cfc.entryTitle['label'], 'text', {}]" ng-model="cfc.entryTitle['value']">
+            </form-field>
+            <div ng-repeat="field in cfc.fields">
+                <form-field field="[field['name'],
+                                   field['fieldFacet']['translation_key'],
+                                   {
+                                       values: field['fieldFacet']['field_facet_choices'],
+                                       choice_value: 'value',
+                                       error: cfc.entryErrors[field['id']],
+                                       noLabel: false
+                                   }]"
+                            ng-model="cfc.entry[field['id']]"
+                >
+                </form-field>
+            </div>
         </div>
+    </div>
+
+    <div class="panel-body" ng-if="!cfc.isAllowed()">
+        <div class="alert alert-danger">
+            {{ 'unauthorized'|trans:{}:'platform' }}
+        </div>
+    </div>
+
+    <div class="panel-footer" ng-if="cfc.isAllowed()">
+        <button class="btn btn-primary" ng-click="cfc.submit()">
+            {{ 'ok'|trans:{}:'platform' }}
+        </button>
+        <a class="btn btn-default" ng-click="cfc.cancel()">
+            {{ 'cancel'|trans:{}:'platform' }}
+        </a>
     </div>
 </div>

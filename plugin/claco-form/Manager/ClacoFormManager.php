@@ -13,51 +13,79 @@ namespace Claroline\ClacoFormBundle\Manager;
 
 use Claroline\ClacoFormBundle\Entity\Category;
 use Claroline\ClacoFormBundle\Entity\ClacoForm;
+use Claroline\ClacoFormBundle\Entity\Entry;
 use Claroline\ClacoFormBundle\Entity\Field;
+use Claroline\ClacoFormBundle\Entity\FieldValue;
 use Claroline\ClacoFormBundle\Entity\Keyword;
 use Claroline\ClacoFormBundle\Event\Log\LogCategoryCreateEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogCategoryDeleteEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogCategoryEditEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogClacoFormConfigureEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogClacoFormTemplateEditEvent;
+use Claroline\ClacoFormBundle\Event\Log\LogEntryCreateEvent;
+use Claroline\ClacoFormBundle\Event\Log\LogEntryDeleteEvent;
+use Claroline\ClacoFormBundle\Event\Log\LogEntryEditEvent;
+use Claroline\ClacoFormBundle\Event\Log\LogEntryStatusChangeEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogFieldCreateEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogFieldDeleteEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogFieldEditEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogKeywordCreateEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogKeywordDeleteEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogKeywordEditEvent;
+use Claroline\CoreBundle\Entity\Facet\FieldFacet;
+use Claroline\CoreBundle\Entity\Facet\FieldFacetValue;
+use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Manager\FacetManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * @DI\Service("claroline.manager.claco_form_manager")
  */
 class ClacoFormManager
 {
+    private $authorization;
     private $eventDispatcher;
     private $facetManager;
     private $om;
+    private $tokenStorage;
 
     private $categoryRepo;
+    private $entryRepo;
     private $fieldRepo;
+    private $fieldValueRepo;
     private $keywordRepo;
 
     /**
      * @DI\InjectParams({
+     *     "authorization"   = @DI\Inject("security.authorization_checker"),
      *     "eventDispatcher" = @DI\Inject("event_dispatcher"),
      *     "facetManager"    = @DI\Inject("claroline.manager.facet_manager"),
-     *     "om"              = @DI\Inject("claroline.persistence.object_manager")
+     *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
+     *     "tokenStorage"    = @DI\Inject("security.token_storage")
      * })
      */
-    public function __construct(EventDispatcherInterface $eventDispatcher, FacetManager $facetManager, ObjectManager $om)
-    {
+    public function __construct(
+        AuthorizationCheckerInterface $authorization,
+        EventDispatcherInterface $eventDispatcher,
+        FacetManager $facetManager,
+        ObjectManager $om,
+        TokenStorageInterface $tokenStorage
+    ) {
+        $this->authorization = $authorization;
         $this->eventDispatcher = $eventDispatcher;
         $this->facetManager = $facetManager;
         $this->om = $om;
+        $this->tokenStorage = $tokenStorage;
         $this->categoryRepo = $om->getRepository('ClarolineClacoFormBundle:Category');
+        $this->entryRepo = $om->getRepository('ClarolineClacoFormBundle:Entry');
         $this->fieldRepo = $om->getRepository('ClarolineClacoFormBundle:Field');
+        $this->fieldValueRepo = $om->getRepository('ClarolineClacoFormBundle:FieldValue');
         $this->keywordRepo = $om->getRepository('ClarolineClacoFormBundle:Keyword');
     }
 
@@ -78,7 +106,7 @@ class ClacoFormManager
         $clacoForm->setRandomEndDate(null);
 
         $clacoForm->setSearchEnabled('all');
-        $clacoForm->setSearchColumnEnabled(false);
+        $clacoForm->setSearchColumnEnabled(true);
 
         $clacoForm->setDisplayMetadata('none');
 
@@ -257,7 +285,15 @@ class ClacoFormManager
         $this->om->flush();
     }
 
-    public function createField(ClacoForm $clacoForm, $name, $type, $required = true, $searchable = true, $isMetadata = false)
+    public function createField(
+        ClacoForm $clacoForm,
+        $name,
+        $type,
+        $required = true,
+        $searchable = true,
+        $isMetadata = false,
+        array $choices = []
+    )
     {
         $this->om->startFlushSuite();
         $field = new Field();
@@ -268,6 +304,12 @@ class ClacoFormManager
         $field->setSearchable($searchable);
         $field->setIsMetadata($isMetadata);
         $fieldFacet = $this->facetManager->createField($name, $required, $type, true, $clacoForm->getResourceNode());
+
+        if ($this->facetManager->isTypeWithChoices($type)) {
+            foreach ($choices as $choice) {
+                $this->facetManager->addFacetFieldChoice($choice, $fieldFacet);
+            }
+        }
         $field->setFieldFacet($fieldFacet);
         $this->persistField($field);
         $this->om->endFlushSuite();
@@ -277,14 +319,36 @@ class ClacoFormManager
         return $field;
     }
 
-    public function editField(Field $field, $name, $type, $required = true, $searchable = true, $isMetadata = false)
-    {
+    public function editField(
+        Field $field,
+        $name,
+        $type,
+        $required = true,
+        $searchable = true,
+        $isMetadata = false,
+        array $oldChoices = [],
+        array $newChoices = []
+    ) {
+        $this->om->startFlushSuite();
         $field->setName($name);
         $field->setType($type);
         $field->setRequired($required);
         $field->setSearchable($searchable);
         $field->setIsMetadata($isMetadata);
+        $fieldFacet = $field->getFieldFacet();
+        $this->facetManager->editField($fieldFacet, $name, $required, $type);
+
+        if ($this->facetManager->isTypeWithChoices($type)) {
+            $this->updateChoices($fieldFacet, $oldChoices);
+
+            foreach ($newChoices as $choice) {
+                $this->facetManager->addFacetFieldChoice($choice, $fieldFacet);
+            }
+        } else {
+            $this->cleanChoices($fieldFacet);
+        }
         $this->persistField($field);
+        $this->om->endFlushSuite();
         $event = new LogFieldEditEvent($field);
         $this->eventDispatcher->dispatch('log', $event);
 
@@ -309,12 +373,49 @@ class ClacoFormManager
         $fieldFacet = $field->getFieldFacet();
 
         if (!is_null($fieldFacet)) {
+            $this->cleanChoices($fieldFacet);
             $this->om->remove($fieldFacet);
         }
         $this->om->remove($field);
         $this->om->endFlushSuite();
         $event = new LogFieldDeleteEvent($details);
         $this->eventDispatcher->dispatch('log', $event);
+    }
+
+    public function updateChoices(FieldFacet $fieldFacet, array $updatedChoices)
+    {
+        $choices = $fieldFacet->getFieldFacetChoicesArray();
+
+        foreach ($choices as $choice) {
+            $id = $choice->getId();
+            $index = 0;
+            $found = false;
+
+            foreach ($updatedChoices as $updateChoice) {
+                if ($updateChoice['index'] === $id) {
+                    $found = true;
+                    $choice->setLabel($updateChoice['value']);
+                    $this->om->persist($choice);
+                    break;
+                }
+                ++$index;
+            }
+            if (!$found) {
+                $this->om->remove($choice);
+            }
+        }
+        $this->om->persist($fieldFacet);
+        $this->om->flush();
+    }
+
+    public function cleanChoices(FieldFacet $fieldFacet)
+    {
+        $choices = $fieldFacet->getFieldFacetChoices();
+
+        foreach ($choices as $choice) {
+            $this->om->remove($choice);
+        }
+        $this->om->flush();
     }
 
     public function persistKeyword(Keyword $keyword)
@@ -361,6 +462,261 @@ class ClacoFormManager
         $this->eventDispatcher->dispatch('log', $event);
     }
 
+    public function getEntriesForUser(ClacoForm $clacoForm, User $user = null)
+    {
+        $searchEnabled = $clacoForm->getSearchEnabled();
+        $canEdit = $this->hasRight($clacoForm, 'EDIT');
+        $entries = [];
+
+        if ($canEdit) {
+            $entries = $this->entryRepo->findAll();
+        } else {
+            switch ($searchEnabled) {
+                case 'all' :
+                    if (is_null($user)) {
+                        $entries = $this->getPublishedEntries($clacoForm);
+                    } else {
+                        $entries = $this->getPublishedAndManageableEntries($clacoForm, $user);
+                    }
+                    break;
+                case 'none' :
+                    if (!is_null($user)) {
+                        $entries = $this->getEntriesByUser($clacoForm, $user);
+                    }
+                    break;
+                case 'manager' :
+                    if (!is_null($user)) {
+                        $entries = $this->getManageableEntries($clacoForm, $user);
+                    }
+                    break;
+            }
+        }
+
+        return $entries;
+    }
+
+    public function persistEntry(Entry $entry)
+    {
+        $this->om->persist($entry);
+        $this->om->flush();
+    }
+
+    public function canCreateEntry(ClacoForm $clacoForm, User $user = null)
+    {
+        $maxEntries = $clacoForm->getMaxEntries();
+
+        if (is_null($user)) {
+            $canCreate = $clacoForm->isCreationEnabled() && ($maxEntries === 0);
+        } else {
+            $userEntries = $this->getEntriesByUser($clacoForm, $user);
+            $canCreate = $clacoForm->isCreationEnabled() && (($maxEntries === 0) || ($maxEntries > count($userEntries)));
+        }
+
+        return $canCreate;
+    }
+
+    public function createEntry(ClacoForm $clacoForm, array $entryData, User $user = null, $title = null)
+    {
+        $this->om->startFlushSuite();
+        $now = new \DateTime();
+        $status = $clacoForm->isModerated() ? Entry::PENDING : Entry::PUBLISHED;
+        $entryTitle = $title;
+
+        if (is_null($entryTitle)) {
+            $entryTitle = is_null($user) ? 'anonymous_entry_' : $user->getUsername().'_';
+            $entryTitle .= $now->format('Y-m-d_H:i:s');
+        }
+        $entry = new Entry();
+        $entry->setClacoForm($clacoForm);
+        $entry->setUser($user);
+        $entry->setTitle($entryTitle);
+        $entry->setStatus($status);
+        $entry->setCreationDate($now);
+
+        if ($status === Entry::PUBLISHED) {
+            $entry->setPublicationDate($now);
+        }
+        foreach ($entryData as $key => $value) {
+            $field = $this->getFieldByClacoFormAndId($clacoForm, $key);
+
+            if (!is_null($field)) {
+                $fieldValue = $this->createFieldValue($entry, $field, $value, $user);
+                $entry->addFieldValue($fieldValue);
+            }
+        }
+        $this->persistEntry($entry);
+        $event = new LogEntryCreateEvent($entry);
+        $this->eventDispatcher->dispatch('log', $event);
+        $this->om->endFlushSuite();
+
+        return $entry;
+    }
+
+    public function editEntry(Entry $entry, array $entryData, $title = null)
+    {
+        $this->om->startFlushSuite();
+
+        if (is_null($title)) {
+            $user = $entry->getUser();
+            $now = new \DateTime();
+            $entryTitle = is_null($user) ? 'anonymous_entry_' : $user->getUsername().'_';
+            $entryTitle .= $now->format('Y-m-d_H:i:s');
+            $entry->setTitle($entryTitle);
+        } else {
+            $entry->setTitle($title);
+        }
+        foreach ($entryData as $key => $value) {
+            $fieldValue = $this->getFieldValueByEntryAndFieldId($entry, $key);
+
+            if (!is_null($fieldValue)) {
+                $fieldFacetValue = $fieldValue->getFieldFacetValue();
+                $this->editFieldFacetValue($fieldFacetValue, $value);
+            }
+        }
+        $this->persistEntry($entry);
+        $event = new LogEntryEditEvent($entry);
+        $this->eventDispatcher->dispatch('log', $event);
+        $this->om->endFlushSuite();
+
+        return $entry;
+    }
+
+    public function deleteEntry(Entry $entry)
+    {
+        $details = [];
+        $details['id'] = $entry->getId();
+        $details['title'] = $entry->getTitle();
+        $details['status'] = $entry->getStatus();
+        $details['creationDate'] = $entry->getCreationDate();
+        $details['publicationDate'] = $entry->getPublicationDate();
+        $user = $entry->getUser();
+
+        if (!is_null($user)) {
+            $details['userId'] = $user->getId();
+            $details['username'] = $user->getUsername();
+            $details['firstName'] = $user->getFirstName();
+            $details['lastName'] = $user->getLastName();
+        }
+        $fieldValues = $entry->getFieldValues();
+        $details['values'] = [];
+
+        foreach ($fieldValues as $fieldValue) {
+            $fieldFacetValue = $fieldValue->getFieldFacetValue();
+            $fieldFacet = $fieldFacetValue->getFieldFacet();
+            $details['values'][] = [
+                'id' => $fieldFacetValue->getId(),
+                'value' => $fieldFacetValue->getValue(),
+                'name' => $fieldFacet->getName(),
+                'type' => $fieldFacet->getType(),
+                'typeName' => $fieldFacet->getInputType(),
+            ] ;
+        }
+        $clacoForm = $entry->getClacoForm();
+        $resourceNode = $clacoForm->getResourceNode();
+        $details['resourceId'] = $clacoForm->getId();
+        $details['resourceNodeId'] = $resourceNode->getId();
+        $details['resourceName'] = $resourceNode->getName();
+
+        foreach ($fieldValues as $fieldValue) {
+            $this->om->remove($fieldValue->getFieldFacetValue());
+            $this->om->remove($fieldValue);
+        }
+        $this->om->remove($entry);
+        $this->om->flush();
+        $event = new LogEntryDeleteEvent($details);
+        $this->eventDispatcher->dispatch('log', $event);
+    }
+
+    public function changeEntryStatus(Entry $entry)
+    {
+        $status = $entry->getStatus();
+
+        switch ($status) {
+            case Entry::PENDING :
+                $entry->setPublicationDate(new \DateTime());
+            case Entry::UNPUBLISHED :
+                $entry->setStatus(Entry::PUBLISHED);
+                break;
+            case Entry::PUBLISHED :
+                $entry->setStatus(Entry::UNPUBLISHED);
+                break;
+        }
+        $this->persistEntry($entry);
+        $event = new LogEntryStatusChangeEvent($entry);
+        $this->eventDispatcher->dispatch('log', $event);
+
+        return $entry;
+    }
+
+    public function persistFieldValue(FieldValue $fieldValue)
+    {
+        $this->om->persist($fieldValue);
+        $this->om->flush();
+    }
+
+    public function createFieldValue(Entry $entry, Field $field, $value, User $user = null)
+    {
+        $fieldFacet = $field->getFieldFacet();
+        $fieldFacetValue = $this->createFieldFacetValue($fieldFacet, $value, $user);
+        $fieldValue = new FieldValue();
+        $fieldValue->setEntry($entry);
+        $fieldValue->setField($field);
+        $fieldValue->setFieldFacetValue($fieldFacetValue);
+        $this->persistFieldValue($fieldValue);
+
+        return  $fieldValue;
+    }
+
+    public function createFieldFacetValue(FieldFacet $fieldFacet, $value, User $user = null)
+    {
+        $fieldFacetValue = new FieldFacetValue();
+        $fieldFacetValue->setUser($user);
+        $fieldFacetValue->setFieldFacet($fieldFacet);
+
+        switch ($fieldFacet->getType()) {
+            case FieldFacet::DATE_TYPE:
+                $date = is_string($value) ? new \DateTime($value) : $value;
+                $fieldFacetValue->setDateValue($date);
+                break;
+            case FieldFacet::FLOAT_TYPE:
+                $fieldFacetValue->setFloatValue($value);
+                break;
+            case FieldFacet::CHECKBOXES_TYPE:
+                $fieldFacetValue->setArrayValue($value);
+                break;
+            default:
+                $fieldFacetValue->setStringValue($value);
+        }
+        $this->om->persist($fieldFacetValue);
+        $this->om->flush();
+
+        return $fieldFacetValue;
+    }
+
+    public function editFieldFacetValue(FieldFacetValue $fieldFacetValue, $value)
+    {
+        $fieldFacet = $fieldFacetValue->getFieldFacet();
+
+        switch ($fieldFacet->getType()) {
+            case FieldFacet::DATE_TYPE:
+                $date = is_string($value) ? new \DateTime($value) : $value;
+                $fieldFacetValue->setDateValue($date);
+                break;
+            case FieldFacet::FLOAT_TYPE:
+                $fieldFacetValue->setFloatValue($value);
+                break;
+            case FieldFacet::CHECKBOXES_TYPE:
+                $fieldFacetValue->setArrayValue($value);
+                break;
+            default:
+                $fieldFacetValue->setStringValue($value);
+        }
+        $this->om->persist($fieldFacetValue);
+        $this->om->flush();
+
+        return $fieldFacetValue;
+    }
+
     /****************************************
      * Access to CategoryRepository methods *
      ****************************************/
@@ -379,6 +735,25 @@ class ClacoFormManager
         return $this->fieldRepo->findFieldByNameExcludingId($clacoForm, $name, $id);
     }
 
+    public function getFieldByClacoFormAndId(ClacoForm $clacoForm, $id)
+    {
+        return $this->fieldRepo->findOneBy(['clacoForm' => $clacoForm, 'id' => $id]);
+    }
+
+    /******************************************
+     * Access to FieldValueRepository methods *
+     ******************************************/
+
+    public function getFieldValueByEntryAndField(Entry $entry, Field $field)
+    {
+        return $this->fieldValueRepo->findOneBy(['entry' => $entry, 'field' => $field]);
+    }
+
+    public function getFieldValueByEntryAndFieldId(Entry $entry, $fieldId)
+    {
+        return $this->fieldValueRepo->findOneBy(['entry' => $entry, 'field' => $fieldId]);
+    }
+
     /***************************************
      * Access to KeywordRepository methods *
      ***************************************/
@@ -386,5 +761,92 @@ class ClacoFormManager
     public function getKeywordByNameExcludingId(ClacoForm $clacoForm, $name, $id)
     {
         return $this->keywordRepo->findKeywordByNameExcludingId($clacoForm, $name, $id);
+    }
+
+    /*************************************
+     * Access to EntryRepository methods *
+     *************************************/
+
+    public function getEntriesByUser(ClacoForm $clacoForm, User $user)
+    {
+        return $this->entryRepo->findBy(['clacoForm' => $clacoForm, 'user' => $user]);
+    }
+
+    public function getPublishedEntries(ClacoForm $clacoForm)
+    {
+        return $this->entryRepo->findPublishedEntries($clacoForm);
+    }
+
+    public function getManageableEntries(ClacoForm $clacoForm, User $user)
+    {
+        return $this->entryRepo->findManageableEntries($clacoForm, $user);
+    }
+
+    public function getPublishedAndManageableEntries(ClacoForm $clacoForm, User $user)
+    {
+        return $this->entryRepo->findPublishedAndManageableEntries($clacoForm, $user);
+    }
+
+    /******************
+     * Rights methods *
+     ******************/
+
+    public function checkRight(ClacoForm $clacoForm, $right)
+    {
+        $collection = new ResourceCollection([$clacoForm->getResourceNode()]);
+
+        if (!$this->authorization->isGranted($right, $collection)) {
+            throw new AccessDeniedException($collection->getErrorsForDisplay());
+        }
+    }
+
+    public function hasRight(ClacoForm $clacoForm, $right)
+    {
+        $collection = new ResourceCollection([$clacoForm->getResourceNode()]);
+
+        return $this->authorization->isGranted($right, $collection);
+    }
+
+    public function isEntryManager(Entry $entry, User $user)
+    {
+        $categories = $entry->getCategories();
+
+        foreach ($categories as $category) {
+            $managers = $category->getManagers();
+
+            foreach ($managers as $manager) {
+                if ($manager->getId() === $user->getId()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public function checkEntryEdition(Entry $entry)
+    {
+        $user = $this->tokenStorage->getToken()->getUser();
+        $clacoForm = $entry->getClacoForm();
+        $canEdit = $this->hasRight($clacoForm, 'EDIT');
+        $editionEnabled = $clacoForm->isEditionEnabled();
+
+        if (!($canEdit ||
+             ($editionEnabled && ($entry->getUser() === $user)) ||
+             (($user !== 'anon.') && $this->isEntryManager($entry, $user)))
+        ) {
+            throw new AccessDeniedException();
+        }
+    }
+
+    public function checkEntryModeration(Entry $entry)
+    {
+        $user = $this->tokenStorage->getToken()->getUser();
+        $clacoForm = $entry->getClacoForm();
+        $canEdit = $this->hasRight($clacoForm, 'EDIT');
+
+        if (!$canEdit && (($user === 'anon.') || !$this->isEntryManager($entry, $user))) {
+            throw new AccessDeniedException();
+        }
     }
 }

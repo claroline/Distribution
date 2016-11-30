@@ -286,7 +286,7 @@ class ClacoForm extends AbstractResource
 
     public function isSearchColumnEnabled()
     {
-        return !is_null($this->details) && isset($this->details['search_column_enabled']) ? $this->details['search_column_enabled'] : false;
+        return !is_null($this->details) && isset($this->details['search_column_enabled']) ? $this->details['search_column_enabled'] : true;
     }
 
     public function setSearchColumnEnabled($searchColumnEnabled)

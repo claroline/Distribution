@@ -20,10 +20,49 @@
                 {{ 'type'|trans:{}:'platform' }}
             </label>
             <div class="col-md-9">
-                <select class="form-control" ng-model="cfc.type" ng-options="t['name'] for t in cfc.types" ng-change="cfc.manageTypes()">
+                <select class="form-control" ng-model="cfc.type" ng-options="t['name'] for t in cfc.types">
                 </select>
             </div>
         </div>
+        <div class="form-group row" ng-if="cfc.hasChoices()">
+            <hr>
+            <label class="control-label col-md-3">
+                {{ 'choices'|trans:{}:'clacoform' }}
+            </label>
+            <div class="col-md-9">
+                <div class="margin-bottom-sm" ng-class="cfc.oldChoicesErrors[choice['index']] ? 'has-error' : ''" ng-repeat="choice in cfc.oldChoices">
+                    <div class="input-group">
+                        <input type="text" class="form-control" ng-model="choice['value']">
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-danger" ng-click="cfc.removeOldChoice(choice['index'])">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </span>
+                    </div>
+                    <div class="help-block field-error" ng-if="cfc.oldChoicesErrors[choice['index']]">
+                        {{ cfc.oldChoicesErrors[choice['index']] }}
+                    </div>
+                </div>
+                <div class="margin-bottom-sm" ng-class="cfc.choicesErrors[choice['index']] ? 'has-error' : ''" ng-repeat="choice in cfc.choices">
+                    <div class="input-group">
+                        <input type="text" class="form-control" ng-model="choice['value']">
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-danger" ng-click="cfc.removeChoice(choice['index'])">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </span>
+                    </div>
+                    <div class="help-block field-error" ng-if="cfc.choicesErrors[choice['index']]">
+                        {{ cfc.choicesErrors[choice['index']] }}
+                    </div>
+                </div>
+                <button class="btn btn-primary btn-sm" ng-click="cfc.addChoice()">
+                    <i class="fa fa-plus-circle"></i>
+                    {{ 'add_choice'|trans:{}:'clacoform' }}
+                </button>
+            </div>
+        </div>
+        <hr ng-if="cfc.hasChoices()">
         <div class="form-group row">
             <label class="control-label col-md-3">
                 {{ 'mandatory'|trans:{}:'clacoform' }}

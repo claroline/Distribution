@@ -33,7 +33,7 @@ class FieldFacet
     const COUNTRY_TYPE = 7;
     const EMAIL_TYPE = 8;
 
-    private static $types = [
+    protected static $types = [
         self::STRING_TYPE,
         self::FLOAT_TYPE,
         self::DATE_TYPE,
@@ -48,20 +48,20 @@ class FieldFacet
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_facet_admin", "api_profile"})
+     * @Groups({"api_facet_admin", "api_profile", "api_user_min"})
      */
     protected $id;
 
     /**
      * @ORM\Column
      * @Assert\NotBlank()
-     * @Groups({"api_facet_admin", "api_profile"})
+     * @Groups({"api_facet_admin", "api_profile", "api_user_min"})
      */
     protected $name;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"api_facet_admin", "api_profile"})
+     * @Groups({"api_facet_admin", "api_profile", "api_user_min"})
      */
     protected $type;
 
@@ -90,7 +90,7 @@ class FieldFacet
     protected $position;
 
     /**
-     * @Groups({"api_facet_admin", "api_profile"})
+     * @Groups({"api_facet_admin", "api_profile", "api_user_min"})
      * @Accessor(getter="getInputType")
      */
     protected $translationKey;
@@ -205,7 +205,16 @@ class FieldFacet
 
     public function addFieldChoice(FieldFacetChoice $choice)
     {
-        $this->fieldFacetChoices->add($choice);
+        if (!$this->fieldFacetChoices->contains($choice)) {
+            $this->fieldFacetChoices->add($choice);
+        }
+    }
+
+    public function removeFieldChoice(FieldFacetChoice $choice)
+    {
+        if ($this->fieldFacetChoices->contains($choice)) {
+            $this->fieldFacetChoices->removeElement($choice);
+        }
     }
 
     public function setPosition($position)
@@ -241,7 +250,7 @@ class FieldFacet
             case self::STRING_TYPE: return 'text';
             case self::RADIO_TYPE: return 'radio';
             case self::SELECT_TYPE: return 'select';
-            case self::CHECKBOXES_TYPE: return 'checkbox';
+            case self::CHECKBOXES_TYPE: return 'checkboxes';
             case self::COUNTRY_TYPE: return 'country';
             case self::EMAIL_TYPE: return 'email';
             default: return 'error';
@@ -251,6 +260,11 @@ class FieldFacet
     public function getFieldFacetChoices()
     {
         return $this->fieldFacetChoices;
+    }
+
+    public function getFieldFacetChoicesArray()
+    {
+        return $this->fieldFacetChoices->toArray();
     }
 
     /**
@@ -319,7 +333,7 @@ class FieldFacet
         return $this->resourceNode;
     }
 
-    public function setResourceNode(ResourceNode $resourceNode)
+    public function setResourceNode(ResourceNode $resourceNode = null)
     {
         $this->resourceNode = $resourceNode;
     }

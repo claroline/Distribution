@@ -18,14 +18,14 @@ class FieldRepository extends EntityRepository
 {
     public function findFieldByNameExcludingId(ClacoForm $clacoForm, $name, $id)
     {
-        $dql = "
+        $dql = '
             SELECT f
             FROM Claroline\ClacoFormBundle\Entity\Field f
             JOIN f.clacoForm c
             WHERE c = :clacoForm
             AND UPPER(f.name) = :name
             AND f.id != :id
-        ";
+        ';
         $query = $this->_em->createQuery($dql);
         $query->setParameter('clacoForm', $clacoForm);
         $upperName = strtoupper($name);

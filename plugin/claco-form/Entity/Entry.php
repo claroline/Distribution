@@ -11,7 +11,6 @@
 
 namespace Claroline\ClacoFormBundle\Entity;
 
-use Claroline\CoreBundle\Entity\Facet\FieldFacetValue;
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -20,7 +19,7 @@ use JMS\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Claroline\ClacoFormBundle\Repository\EntryRepository")
  * @ORM\Table(name="claro_clacoformbundle_entry")
  */
 class Entry
@@ -59,7 +58,7 @@ class Entry
      *     inversedBy="categories"
      * )
      * @ORM\JoinColumn(name="claco_form_id", nullable=false, onDelete="CASCADE")
-     * @Groups({"api_claco_form", "api_user_min"})
+     * @Groups({"api_claco_form"})
      * @SerializedName("clacoForm")
      */
     protected $clacoForm;
@@ -73,12 +72,29 @@ class Entry
     protected $user;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Claroline\CoreBundle\Entity\Facet\FieldFacetValue")
+     * @ORM\Column(name="creation_date", type="datetime", nullable=false)
+     * @Groups({"api_claco_form", "api_user_min"})
+     * @SerializedName("creationDate")
+     */
+    protected $creationDate;
+
+    /**
+     * @ORM\Column(name="publication_date", type="datetime", nullable=true)
+     * @Groups({"api_claco_form", "api_user_min"})
+     * @SerializedName("publicationDate")
+     */
+    protected $publicationDate = null;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="Claroline\ClacoFormBundle\Entity\FieldValue",
+     *     mappedBy="entry"
+     * )
      * @ORM\JoinTable(name="claro_clacoformbundle_entry_value")
      * @Groups({"api_user_min"})
-     * @SerializedName("values")
+     * @SerializedName("fieldValues")
      */
-    protected $values;
+    protected $fieldValues;
 
     /**
      * @ORM\OneToMany(
@@ -108,9 +124,9 @@ class Entry
 
     public function __construct()
     {
-        $this->values = new ArrayCollection();
-        $this->comments = new ArrayCollection();
         $this->categories = new ArrayCollection();
+        $this->comments = new ArrayCollection();
+        $this->fieldValues = new ArrayCollection();
         $this->keywords = new ArrayCollection();
     }
 
@@ -154,6 +170,26 @@ class Entry
         $this->clacoForm = $clacoForm;
     }
 
+    public function getCreationDate()
+    {
+        return $this->creationDate;
+    }
+
+    public function setCreationDate(\DateTime $creationDate)
+    {
+        $this->creationDate = $creationDate;
+    }
+
+    public function getPublicationDate()
+    {
+        return $this->publicationDate;
+    }
+
+    public function setPublicationDate(\DateTime $publicationDate = null)
+    {
+        $this->publicationDate = $publicationDate;
+    }
+
     public function getUser()
     {
         return $this->user;
@@ -164,24 +200,24 @@ class Entry
         $this->user = $user;
     }
 
-    public function getValues()
+    public function getFieldValues()
     {
-        return $this->values->toArray();
+        return $this->fieldValues->toArray();
     }
 
-    public function addValue(FieldFacetValue $value)
+    public function addFieldValue(FieldValue $fieldValue)
     {
-        if (!$this->values->contains($value)) {
-            $this->values->add($value);
+        if (!$this->fieldValues->contains($fieldValue)) {
+            $this->fieldValues->add($fieldValue);
         }
 
         return $this;
     }
 
-    public function removeValue(FieldFacetValue $value)
+    public function removeValue(FieldValue $fieldValue)
     {
-        if ($this->values->contains($value)) {
-            $this->values->removeElement($value);
+        if ($this->fieldValues->contains($fieldValue)) {
+            $this->fieldValues->removeElement($fieldValue);
         }
 
         return $this;
@@ -189,7 +225,7 @@ class Entry
 
     public function emptyValues()
     {
-        $this->values->clear();
+        $this->fieldValues->clear();
     }
 
     public function getComments()

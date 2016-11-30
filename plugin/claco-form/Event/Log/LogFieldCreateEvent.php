@@ -22,6 +22,13 @@ class LogFieldCreateEvent extends LogGenericEvent
     {
         $clacoForm = $field->getClacoForm();
         $resourceNode = $clacoForm->getResourceNode();
+        $fieldFacet = $field->getFieldFacet();
+        $fieldFacetChoices = !is_null($fieldFacet) ? $fieldFacet->getFieldFacetChoicesArray() : [];
+        $choices = [];
+
+        foreach ($fieldFacetChoices as $fieldFacetChoice) {
+            $choices[] = $fieldFacetChoice->getLabel();
+        }
         $details = [];
         $details['id'] = $field->getId();
         $details['type'] = $field->getType();
@@ -29,6 +36,10 @@ class LogFieldCreateEvent extends LogGenericEvent
         $details['required'] = $field->isRequired();
         $details['searchable'] = $field->isSearchable();
         $details['isMetadata'] = $field->getIsMetadata();
+
+        if (count($choices) > 0) {
+            $details['choices'] = $choices;
+        }
         $details['resourceId'] = $clacoForm->getId();
         $details['resourceNodeId'] = $resourceNode->getId();
         $details['resourceName'] = $resourceNode->getName();

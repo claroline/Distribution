@@ -17,9 +17,11 @@ import 'angular-loading-bar'
 import 'angular-ui-tinymce'
 
 import '#/main/core/fos-js-router/module'
+import '#/main/core/form/module'
 import '../Field/field'
 import '../Category/category'
 import '../Keyword/keyword'
+import '../Entry/entry'
 
 import Routing from './routing.js'
 import MenuCtrl from './Controller/MenuCtrl'
@@ -28,6 +30,9 @@ import FieldsManagementCtrl from './Controller/FieldsManagementCtrl'
 import CategoriesManagementCtrl from './Controller/CategoriesManagementCtrl'
 import KeywordsManagementCtrl from './Controller/KeywordsManagementCtrl'
 import TemplateManagementCtrl from './Controller/TemplateManagementCtrl'
+import EntriesListCtrl from './Controller/EntriesListCtrl'
+import EntryCreationCtrl from './Controller/EntryCreationCtrl'
+import EntryEditionCtrl from './Controller/EntryEditionCtrl'
 import ClacoFormService from './Service/ClacoFormService'
 
 angular.module('ClacoFormModule', [
@@ -39,10 +44,12 @@ angular.module('ClacoFormModule', [
   'angular-loading-bar',
   'ngTable',
   'ui.fos-js-router',
+  'FormBuilder',
   'ui.tinymce',
   'FieldModule',
   'CategoryModule',
-  'KeywordModule'
+  'KeywordModule',
+  'EntryModule'
 ])
 .service('ClacoFormService', ClacoFormService)
 .controller('MenuCtrl', ['$state', 'ClacoFormService', MenuCtrl])
@@ -51,6 +58,9 @@ angular.module('ClacoFormModule', [
 .controller('CategoriesManagementCtrl', ['NgTableParams', 'ClacoFormService', 'CategoryService', CategoriesManagementCtrl])
 .controller('KeywordsManagementCtrl', ['NgTableParams', 'ClacoFormService', 'KeywordService', KeywordsManagementCtrl])
 .controller('TemplateManagementCtrl', ['$state', 'ClacoFormService', 'FieldService', TemplateManagementCtrl])
+.controller('EntriesListCtrl', ['NgTableParams', 'ClacoFormService', 'EntryService', 'FieldService', EntriesListCtrl])
+.controller('EntryCreationCtrl', ['$state', 'ClacoFormService', 'EntryService', 'FieldService', EntryCreationCtrl])
+.controller('EntryEditionCtrl', ['$state', '$stateParams', 'ClacoFormService', 'EntryService', 'FieldService', EntryEditionCtrl])
 .config(Routing)
 .config([
   'cfpLoadingBarProvider',

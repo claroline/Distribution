@@ -12,6 +12,7 @@ export default class TemplateManagementCtrl {
     this.$state = $state
     this.ClacoFormService = ClacoFormService
     this.FieldService = FieldService
+    this.resourceId = ClacoFormService.getResourceId()
     this.template = ClacoFormService.getTemplate()
     this.fields = FieldService.getFields()
     this.mandatory = []
@@ -25,8 +26,6 @@ export default class TemplateManagementCtrl {
   initialize () {
     this.ClacoFormService.clearSuccessMessage()
     this.fields.forEach(f => {
-      this.FieldService.formatField(f)
-
       if (f['required']) {
         this.mandatory.push(f)
       } else {
@@ -41,7 +40,7 @@ export default class TemplateManagementCtrl {
 
   submit () {
     if (this.isValid()) {
-      this.ClacoFormService.saveTemplate(this.template).then(d => {
+      this.ClacoFormService.saveTemplate(this.resourceId, this.template).then(d => {
         if (d) {
           this.$state.go('menu')
         }
@@ -54,6 +53,12 @@ export default class TemplateManagementCtrl {
     this.duplicatedErrors = []
 
     if (this.template) {
+      const titleRegex = new RegExp('%clacoform_entry_title%', 'g')
+      const titleMatches = this.template.match(titleRegex)
+
+      if (titleMatches !== null && titleMatches.length > 1) {
+        this.duplicatedErrors.push({name: 'clacoform_entry_title'})
+      }
       this.mandatory.forEach(f => {
         const regex = new RegExp(`%${f['name']}%`, 'g')
         const matches = this.template.match(regex)

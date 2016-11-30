@@ -14,6 +14,16 @@
                         </a>
                     </li>
                     <li role="menuitem">
+                        <a ui-sref="entry_creation">
+                            {{ 'add_entry'|trans:{}:'clacoform' }}
+                        </a>
+                    </li>
+                    <li role="menuitem">
+                        <a ui-sref="entries_list">
+                            {{ 'entries_list'|trans:{}:'clacoform' }}
+                        </a>
+                    </li>
+                    <li role="menuitem">
                         <a ui-sref="fields_management">
                             {{ 'fields_management'|trans:{}:'clacoform' }}
                         </a>
@@ -692,8 +702,8 @@
             {{ 'unauthorized'|trans:{}:'platform' }}
         </div>
     </div>
-    <div class="panel-footer">
-        <button class="btn btn-primary" ng-click="cfc.submit()" ng-if="cfc.canEdit()">
+    <div class="panel-footer" ng-if="cfc.canEdit()">
+        <button class="btn btn-primary" ng-click="cfc.submit()">
             {{ 'ok'|trans:{}:'platform' }}
         </button>
         <a class="btn btn-default" ui-sref="menu">

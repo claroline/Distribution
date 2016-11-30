@@ -1,0 +1,7 @@
+.pending-entry-row {
+    background-color: #F2B36F;
+}
+
+.unpublished-entry-row {
+    text-decoration: line-through;
+}
