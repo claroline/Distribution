@@ -35,7 +35,7 @@
         "gedmo/doctrine-extensions": "~2.3",
         "gregwar/captcha-bundle": "1.0.12",
         "guzzle/http": "~3.1",
-        "hwi/oauth-bundle": "0.5.*@dev",
+        "hwi/oauth-bundle": "0.5.*",
         "icap/html-diff": "~1.1",
         "idci/exporter-bundle": "1.0.0",
         "jdorn/sql-formatter": "~1.0",
