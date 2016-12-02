@@ -157,7 +157,7 @@ class UserManager
         }
 
         if (count($organizations) === 0 && count($user->getOrganizations()) === 0) {
-            $organizations = [$this->organizationManager->getDefault()];
+            $organizations = [$this->organizationManager->getDefault(true)];
             $user->setOrganizations($organizations);
         }
 
@@ -393,6 +393,7 @@ class UserManager
         }
 
         $returnValues = [];
+        $skipped = [];
         //keep these roles before the clear() will mess everything up. It's not what we want.
         $tmpRoles = $additionalRoles;
         $additionalRoles = [];
@@ -507,7 +508,9 @@ class UserManager
             }
 
             if ($userEntity && $options['ignore-update']) {
-                $logger(" Skipping  {$userEntity->getUsername()}...");
+                if ($logger) {
+                    $logger(" Skipping  {$userEntity->getUsername()}...");
+                }
                 continue;
             }
 
@@ -516,8 +519,12 @@ class UserManager
             if (!$userEntity) {
                 $isNew = true;
                 $userEntity = new User();
+                $userEntity->setPlainPassword($pwd);
                 ++$countCreated;
             } else {
+                if (!empty($pwd)) {
+                    $userEntity->setPlainPassword($pwd);
+                }
                 ++$countUpdated;
             }
 
@@ -525,13 +532,25 @@ class UserManager
             $userEntity->setMail($email);
             $userEntity->setFirstName($firstName);
             $userEntity->setLastName($lastName);
-            $userEntity->setPlainPassword($pwd);
             $userEntity->setAdministrativeCode($code);
             $userEntity->setPhone($phone);
             $userEntity->setLocale($lg);
             $userEntity->setAuthentication($authentication);
             $userEntity->setIsMailNotified($isMailNotified);
             $userEntity->setIsMailValidated($isMailValidated);
+
+            if ($options['single-validate']) {
+                $errors = $this->validator->validate($userEntity);
+                if (count($errors) > 0) {
+                    $skipped[$i] = $userEntity;
+                    if ($isNew) {
+                        --$countCreated;
+                    } else {
+                        --$countUpdated;
+                    }
+                    continue;
+                }
+            }
 
             if (!$isNew && $logger) {
                 $logger(" User $j ($username) being updated...");
@@ -594,8 +613,15 @@ class UserManager
         }
 
         $this->objectManager->endFlushSuite();
-        $logger($countCreated.' users created.');
-        $logger($countUpdated.' users updated.');
+
+        if ($logger) {
+            $logger($countCreated.' users created.');
+            $logger($countUpdated.' users updated.');
+        }
+
+        foreach ($skipped as $key => $user) {
+            $logger('The user '.$user.' was skipped at line '.$key.' because it failed the validation pass.');
+        }
 
         return $returnValues;
     }
