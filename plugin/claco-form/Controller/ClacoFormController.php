@@ -550,11 +550,11 @@ class ClacoFormController extends Controller
         $user = $this->tokenStorage->getToken()->getUser();
         $entryUser = $user === 'anon.' ? null : $user;
         $entryData = $this->request->request->get('entryData', false);
-        $titleData = $this->request->request->get('titleData', false);
-        $title = $titleData ? $titleData : null;
+        $title = $this->request->request->get('titleData', false);
+        $keywordsData = $this->request->request->get('keywordsData', false);
 
         if ($this->clacoFormManager->canCreateEntry($clacoForm, $entryUser)) {
-            $entry = $this->clacoFormManager->createEntry($clacoForm, $entryData, $entryUser, $title);
+            $entry = $this->clacoFormManager->createEntry($clacoForm, $entryData, $title, $keywordsData, $entryUser);
         } else {
             $entry = null;
         }
@@ -582,9 +582,10 @@ class ClacoFormController extends Controller
     {
         $this->clacoFormManager->checkEntryEdition($entry);
         $entryData = $this->request->request->get('entryData', false);
-        $titleData = $this->request->request->get('titleData', false);
-        $title = $titleData ? $titleData : null;
-        $updatedEntry = $this->clacoFormManager->editEntry($entry, $entryData, $title);
+        $title = $this->request->request->get('titleData', false);
+        $categoriesIds = $this->request->request->get('categoriesData', false);
+        $keywordsData = $this->request->request->get('keywordsData', false);
+        $updatedEntry = $this->clacoFormManager->editEntry($entry, $entryData, $title, $categoriesIds, $keywordsData);
         $serializedEntry = $this->serializer->serialize(
             $updatedEntry,
             'json',

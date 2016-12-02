@@ -101,10 +101,10 @@ export default class EntryService {
     return this.myEntries.find(e => e['id'] === entryId) !== undefined
   }
 
-  createEntry (resourceId, entryData, entryTitle = null) {
+  createEntry (resourceId, entryData, entryTitle, keywordsData = []) {
     const url = Routing.generate('claro_claco_form_entry_create', {clacoForm: resourceId})
 
-    return this.$http.post(url, {entryData: entryData, titleData: entryTitle}).then(d => {
+    return this.$http.post(url, {entryData: entryData, titleData: entryTitle, keywordsData: keywordsData}).then(d => {
       if (d['status'] === 200) {
         let entry = JSON.parse(d['data'])
         this.entries.push(entry)
@@ -116,11 +116,11 @@ export default class EntryService {
     })
   }
 
-  editEntry (entryId, entryData, entryTitle = null, callback = null) {
+  editEntry (entryId, entryData, entryTitle, categoriesData = [], keywordsData = [], callback = null) {
     const url = Routing.generate('claro_claco_form_entry_edit', {entry: entryId})
     const updateCallback = callback !== null ? callback : this._updateEntryCallback
 
-    return this.$http.post(url, {entryData: entryData, titleData: entryTitle}).then(d => {
+    return this.$http.post(url, {entryData: entryData, titleData: entryTitle, categoriesData: categoriesData, keywordsData: keywordsData}).then(d => {
       if (d['status'] === 200) {
         updateCallback(d['data'])
 
@@ -137,6 +137,20 @@ export default class EntryService {
       entry['userString'] = `${entry['user']['firstName']} ${entry['user']['lastName']}`
     } else {
       entry['userString'] = '-'
+    }
+    if (entry['categories'].length > 0) {
+      let categoriesNames = []
+      entry['categories'].forEach(c => categoriesNames.push(c['name']))
+      entry['categoriesString'] = categoriesNames.join()
+    } else {
+      entry['categoriesString'] = '-'
+    }
+    if (entry['keywords'].length > 0) {
+      let keywordsNames = []
+      entry['keywords'].forEach(k => keywordsNames.push(k['name']))
+      entry['keywordsString'] = keywordsNames.join()
+    } else {
+      entry['keywordsString'] = '-'
     }
     entry['alert'] = (entry['status'] === 0) || entry['comments'].length > 0
     entry['fieldValues'].forEach(v => {

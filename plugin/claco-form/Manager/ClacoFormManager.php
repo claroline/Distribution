@@ -426,12 +426,16 @@ class ClacoFormManager
 
     public function createKeyword(ClacoForm $clacoForm, $name)
     {
-        $keyword = new Keyword();
-        $keyword->setClacoForm($clacoForm);
-        $keyword->setName($name);
-        $this->persistKeyword($keyword);
-        $event = new LogKeywordCreateEvent($keyword);
-        $this->eventDispatcher->dispatch('log', $event);
+        $keyword = $this->getKeywordByName($clacoForm, $name);
+
+        if (is_null($keyword)) {
+            $keyword = new Keyword();
+            $keyword->setClacoForm($clacoForm);
+            $keyword->setName($name);
+            $this->persistKeyword($keyword);
+            $event = new LogKeywordCreateEvent($keyword);
+            $this->eventDispatcher->dispatch('log', $event);
+        }
 
         return $keyword;
     }
@@ -515,21 +519,15 @@ class ClacoFormManager
         return $canCreate;
     }
 
-    public function createEntry(ClacoForm $clacoForm, array $entryData, User $user = null, $title = null)
+    public function createEntry(ClacoForm $clacoForm, array $entryData, $title, array $keywordsData = [], User $user = null)
     {
         $this->om->startFlushSuite();
         $now = new \DateTime();
         $status = $clacoForm->isModerated() ? Entry::PENDING : Entry::PUBLISHED;
-        $entryTitle = $title;
-
-        if (is_null($entryTitle)) {
-            $entryTitle = is_null($user) ? 'anonymous_entry_' : $user->getUsername().'_';
-            $entryTitle .= $now->format('Y-m-d_H:i:s');
-        }
         $entry = new Entry();
         $entry->setClacoForm($clacoForm);
         $entry->setUser($user);
-        $entry->setTitle($entryTitle);
+        $entry->setTitle($title);
         $entry->setStatus($status);
         $entry->setCreationDate($now);
 
@@ -544,6 +542,16 @@ class ClacoFormManager
                 $entry->addFieldValue($fieldValue);
             }
         }
+        foreach ($keywordsData as $name) {
+            if ($clacoForm->isNewKeywordsEnabled()) {
+                $keyword = $this->createKeyword($clacoForm, $name);
+            } else {
+                $keyword = $this->getKeywordByName($clacoForm, $name);
+            }
+            if (!is_null($keyword)) {
+                $entry->addKeyword($keyword);
+            }
+        }
         $this->persistEntry($entry);
         $event = new LogEntryCreateEvent($entry);
         $this->eventDispatcher->dispatch('log', $event);
@@ -552,18 +560,20 @@ class ClacoFormManager
         return $entry;
     }
 
-    public function editEntry(Entry $entry, array $entryData, $title = null)
+    public function editEntry(Entry $entry, array $entryData, $title, array $categoriesIds = [], array $keywordsData = [])
     {
         $this->om->startFlushSuite();
+        $clacoForm = $entry->getClacoForm();
+        $entry->setTitle($title);
+        $entry->emptyCategories();
+        $entry->emptyKeywords();
 
-        if (is_null($title)) {
-            $user = $entry->getUser();
-            $now = new \DateTime();
-            $entryTitle = is_null($user) ? 'anonymous_entry_' : $user->getUsername().'_';
-            $entryTitle .= $now->format('Y-m-d_H:i:s');
-            $entry->setTitle($entryTitle);
-        } else {
-            $entry->setTitle($title);
+        foreach ($categoriesIds as $categoryId) {
+            $category = $this->categoryRepo->findOneById($categoryId);
+
+            if (!is_null($category)) {
+                $entry->addCategory($category);
+            }
         }
         foreach ($entryData as $key => $value) {
             $fieldValue = $this->getFieldValueByEntryAndFieldId($entry, $key);
@@ -571,6 +581,16 @@ class ClacoFormManager
             if (!is_null($fieldValue)) {
                 $fieldFacetValue = $fieldValue->getFieldFacetValue();
                 $this->editFieldFacetValue($fieldFacetValue, $value);
+            }
+        }
+        foreach ($keywordsData as $name) {
+            if ($clacoForm->isNewKeywordsEnabled()) {
+                $keyword = $this->createKeyword($clacoForm, $name);
+            } else {
+                $keyword = $this->getKeywordByName($clacoForm, $name);
+            }
+            if (!is_null($keyword)) {
+                $entry->addKeyword($keyword);
             }
         }
         $this->persistEntry($entry);
@@ -757,6 +777,11 @@ class ClacoFormManager
     /***************************************
      * Access to KeywordRepository methods *
      ***************************************/
+
+    public function getKeywordByName(ClacoForm $clacoForm, $name)
+    {
+        return $this->keywordRepo->findKeywordByName($clacoForm, $name);
+    }
 
     public function getKeywordByNameExcludingId(ClacoForm $clacoForm, $name, $id)
     {

@@ -1,5 +1,6 @@
 add_choice: Ajouter un choix
 add_entry: Ajouter une fiche
+all_entries: Toutes les fiches
 categories_management: Gestion des catégories
 category_notify_addition: Notifier (ajout)
 category_notify_edition: Notifier (modification)
@@ -78,6 +79,7 @@ managers_selection: Sélection des gestionnaires
 mandatory: Obligatoire
 menu: Menu
 metadata: Métadonnées
+my_entries: Mes fiches
 no_category: Aucune catégorie
 no_entry: Aucune fiche
 no_field: Aucun champ

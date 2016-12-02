@@ -59,8 +59,8 @@ angular.module('ClacoFormModule', [
 .controller('KeywordsManagementCtrl', ['NgTableParams', 'ClacoFormService', 'KeywordService', KeywordsManagementCtrl])
 .controller('TemplateManagementCtrl', ['$state', 'ClacoFormService', 'FieldService', TemplateManagementCtrl])
 .controller('EntriesListCtrl', ['NgTableParams', 'ClacoFormService', 'EntryService', 'FieldService', EntriesListCtrl])
-.controller('EntryCreationCtrl', ['$state', 'ClacoFormService', 'EntryService', 'FieldService', EntryCreationCtrl])
-.controller('EntryEditionCtrl', ['$state', '$stateParams', 'ClacoFormService', 'EntryService', 'FieldService', EntryEditionCtrl])
+.controller('EntryCreationCtrl', ['$state', 'ClacoFormService', 'EntryService', 'FieldService', 'KeywordService', EntryCreationCtrl])
+.controller('EntryEditionCtrl', ['$state', '$stateParams', 'ClacoFormService', 'EntryService', 'FieldService', 'CategoryService', 'KeywordService', EntryEditionCtrl])
 .config(Routing)
 .config([
   'cfpLoadingBarProvider',

@@ -1,5 +1,6 @@
 add_choice: Add a choice
 add_entry: Add an entry
+all_entries: All entries
 categories_management: Categories management
 category_notify_addition: Notify (addition)
 category_notify_edition: Notify (edition)
@@ -78,6 +79,7 @@ managers_selection: Managers selection
 mandatory: Mandatory
 menu: Menu
 metadata: Metadata
+my_entries: My entries
 no_category: No category
 no_entry: No entry
 no_field: No field

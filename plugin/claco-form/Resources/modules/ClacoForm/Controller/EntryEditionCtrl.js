@@ -10,10 +10,12 @@
 /*global Translator*/
 
 export default class EntryEditionCtrl {
-  constructor ($state, $stateParams, ClacoFormService, EntryService, FieldService) {
+  constructor ($state, $stateParams, ClacoFormService, EntryService, FieldService, CategoryService, KeywordService) {
     this.$state = $state
     this.ClacoFormService = ClacoFormService
     this.EntryService = EntryService
+    this.CategoryService = CategoryService
+    this.KeywordService = KeywordService
     this.entryId = parseInt($stateParams.entryId)
     this.source = {}
     this.entry = {}
@@ -26,6 +28,14 @@ export default class EntryEditionCtrl {
     this.fields = FieldService.getFields()
     this.tinymceOptions = ClacoFormService.getTinymceConfiguration()
     this.mode = 'edition'
+    this.categoriesChoices = []
+    this.categories = []
+    this.selectedCategory = null
+    this.showCategoriesSelect = false
+    this.keywordssChoices = []
+    this.keywords = []
+    this.selectedKeyword = null
+    this.showKeywordsSelect = false
     this.initialize()
   }
 
@@ -41,6 +51,8 @@ export default class EntryEditionCtrl {
       //})
     } else {
       this.initializeEntry()
+      this.initializeCategories()
+      this.initializeKeywords()
     }
     const replacedfield = `
       <form-field field="[field['name'], field['fieldFacet']['translation_key'], {error: cfc.entryErrors[field['id']], noLabel: true}]"
@@ -82,6 +94,16 @@ export default class EntryEditionCtrl {
     })
   }
 
+  initializeCategories () {
+    this.categoriesChoices = this.CategoryService.getCategories()
+    this.source['categories'].forEach(c => this.categories.push(c))
+  }
+
+  initializeKeywords () {
+    this.keywordsChoices = this.KeywordService.getKeywords()
+    this.source['keywords'].forEach(k => this.keywords.push(k['name']))
+  }
+
   canEdit () {
     return this.ClacoFormService.getCanEdit()
   }
@@ -90,8 +112,86 @@ export default class EntryEditionCtrl {
     return this.EntryService.getCanEditEntry(this.entryId)
   }
 
+  canManageCategories () {
+    return this.isAllowed() && this.canEdit()
+  }
+
+  canManageKeywords () {
+    return this.isAllowed() && this.config['keywords_enabled']
+  }
+
+  enableCategoriesSelect () {
+    this.showCategoriesSelect = true
+  }
+
+  disableCategoriesSelect () {
+    this.showCategoriesSelect = false
+    this.selectedCategory = null
+  }
+
+  addSelectedCategory () {
+    if (this.selectedCategory) {
+      const existingCategory = this.categories.find(c => c['id'] === this.selectedCategory['id'])
+
+      if (!existingCategory) {
+        this.categories.push(this.selectedCategory)
+      }
+    }
+    this.showCategoriesSelect = false
+    this.selectedCategory = null
+  }
+
+  removeCategory (category) {
+    const index = this.categories.findIndex(c => c['id'] === category['id'])
+
+    if (index > -1) {
+      this.categories.splice(index, 1)
+    }
+  }
+
+  enableKeywordsSelect () {
+    this.showKeywordsSelect = true
+  }
+
+  disableKeywordsSelect () {
+    this.showKeywordsSelect = false
+    this.selectedKeyword = null
+  }
+
+  addSelectedKeyword () {
+    if (this.selectedKeyword) {
+      if (this.config['new_keywords_enabled']) {
+        const existingKeyword = this.keywords.find(k => k.toUpperCase() === this.selectedKeyword.toUpperCase())
+
+        if (!existingKeyword) {
+          this.keywords.push(this.selectedKeyword)
+        }
+      } else {
+        const existingKeyword = this.keywords.find(k => k.toUpperCase() === this.selectedKeyword['name'].toUpperCase())
+
+        if (!existingKeyword) {
+          this.keywords.push(this.selectedKeyword['name'])
+        }
+      }
+    }
+    this.showKeywordsSelect = false
+    this.selectedKeyword = null
+  }
+
+  removeKeyword (keyword) {
+    const index = this.keywords.findIndex(k => k === keyword)
+
+    if (index > -1) {
+      this.keywords.splice(index, 1)
+    }
+  }
+
   submit () {
     this.resetErrors()
+
+    if (!this.entryTitle['value']) {
+      this.entryErrors['entry_title'] = Translator.trans('form_not_blank_error', {}, 'clacoform')
+    }
     this.fields.forEach(f => {
       const id = f['id']
 
@@ -102,7 +202,9 @@ export default class EntryEditionCtrl {
     })
 
     if (this.isValid()) {
-      this.EntryService.editEntry(this.source['id'], this.entry, this.entryTitle['value']).then(d => {
+      let categoriesIds = []
+      this.categories.forEach(c => categoriesIds.push(c['id']))
+      this.EntryService.editEntry(this.source['id'], this.entry, this.entryTitle['value'], categoriesIds, this.keywords).then(d => {
         if (d !== 'null') {
           this.$state.go('entries_list')
         }

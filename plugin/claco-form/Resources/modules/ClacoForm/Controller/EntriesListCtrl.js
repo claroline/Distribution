@@ -17,10 +17,25 @@ export default class EntriesManagementCtrl {
     this.config = ClacoFormService.getResourceDetails()
     this.fields = FieldService.getFields()
     this.entries = EntryService.getEntries()
-    this.tableParams = new NgTableParams(
-      {count: 20},
-      {counts: [10, 20, 50, 100], dataset: this.entries}
-    )
+    this.myEntries = EntryService.getMyEntries()
+    this.tableParams = {
+      entries: new NgTableParams(
+        {count: 20},
+        {counts: [10, 20, 50, 100], dataset: this.entries}
+      ),
+      myEntries: new NgTableParams(
+        {count: 20},
+        {counts: [10, 20, 50, 100], dataset: this.myEntries}
+      )
+    }
+    //this.tableParams = new NgTableParams(
+    //  {count: 20},
+    //  {counts: [10, 20, 50, 100], dataset: this.entries}
+    //)
+    //this.myTableParams = new NgTableParams(
+    //  {count: 20},
+    //  {counts: [10, 20, 50, 100], dataset: this.myEntries}
+    //)
     this.columns = {
       title: {name: Translator.trans('title', {}, 'platform'), value: true},
       creationDateString: {name: Translator.trans('date', {}, 'platform'), value: true},
@@ -30,9 +45,10 @@ export default class EntriesManagementCtrl {
     this.fieldsColumns = [
       {id: 'alert', sortable: 'alert'},
       {id: 'title', title: Translator.trans('title', {}, 'platform'), filter: {title: 'text'}, sortable: 'title'},
-      {id: 'creationDateString', title: Translator.trans('date', {}, 'platform'), filter: {creationDateString: 'text'}, sortable: 'creationDateString'},
+      {id: 'creationDateString', title: Translator.trans('date', {}, 'platform'), filter: {creationDateString: 'text'}, sortable: 'creationDate'},
       {id: 'userString', title: Translator.trans('user', {}, 'platform'), filter: {userString: 'text'}, sortable: 'userString'},
     ]
+    this.mode = 'all_entries'
     this._updateEntryCallback = this._updateEntryCallback.bind(this)
     this._removeEntryCallback = this._removeEntryCallback.bind(this)
     this.initialize()
@@ -50,6 +66,27 @@ export default class EntriesManagementCtrl {
 
   initialize () {
     this.ClacoFormService.clearSuccessMessage()
+
+    if (this.config['display_categories']) {
+      this.columns['categoriesString'] = {name: Translator.trans('categories', {}, 'platform'), value: true}
+      this.columnsKeys.push('categoriesString')
+      this.fieldsColumns.push({
+        id: 'categoriesString',
+        title: Translator.trans('categories', {}, 'platform'),
+        filter: {categoriesString: 'text'},
+        sortable: 'categoriesString'
+      })
+    }
+    if (this.config['display_keywords']) {
+      this.columns['keywordsString'] = {name: Translator.trans('keywords', {}, 'clacoform'), value: true}
+      this.columnsKeys.push('keywordsString')
+      this.fieldsColumns.push({
+        id: 'keywordsString',
+        title: Translator.trans('keywords', {}, 'clacoform'),
+        filter: {keywordsString: 'text'},
+        sortable: 'keywordsString'
+      })
+    }
     this.fields.forEach(f => {
       if (!f['isMetadata']) {
         const id = f['id']
@@ -111,6 +148,24 @@ export default class EntriesManagementCtrl {
     })
 
     return columns
+  }
+
+  isDefaultField (name) {
+    return name === 'title' ||
+      name === 'userString' ||
+      name === 'creationDateString' ||
+      name === 'categoriesString' ||
+      name === 'keywordsString'
+  }
+
+  isCustomField (name) {
+    return name !== 'alert' &&
+      name !== 'actions' &&
+      name !== 'title' &&
+      name !== 'userString' &&
+      name !== 'creationDateString' &&
+      name !== 'categoriesString' &&
+      name !== 'keywordsString'
   }
 
   deleteEntry (entry) {

@@ -48,6 +48,12 @@ class LogEntryEditEvent extends LogGenericEvent
                 'typeName' => $fieldFacet->getInputType(),
             ] ;
         }
+        $categories = $entry->getCategories();
+        $details['categories'] = [];
+
+        foreach ($categories as $category) {
+            $details['categories'][] = ['id' => $category->getId(), 'name' => $category->getName()];
+        }
         $clacoForm = $entry->getClacoForm();
         $resourceNode = $clacoForm->getResourceNode();
         $details['resourceId'] = $clacoForm->getId();

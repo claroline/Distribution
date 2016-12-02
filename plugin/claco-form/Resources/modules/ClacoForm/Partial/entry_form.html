@@ -61,7 +61,7 @@
         <div ng-bind-html="cfc.template|trust_html" ng-if="cfc.template">
         </div>
         <div ng-if="!cfc.template">
-            <form-field field="[cfc.entryTitle['label'], 'text', {}]" ng-model="cfc.entryTitle['value']">
+            <form-field field="[cfc.entryTitle['label'], 'text', {error: cfc.entryErrors['entry_title']}]" ng-model="cfc.entryTitle['value']">
             </form-field>
             <div ng-repeat="field in cfc.fields">
                 <form-field field="[field['name'],
@@ -78,10 +78,91 @@
             </div>
         </div>
     </div>
-
     <div class="panel-body" ng-if="!cfc.isAllowed()">
         <div class="alert alert-danger">
             {{ 'unauthorized'|trans:{}:'platform' }}
+        </div>
+    </div>
+
+    <div class="panel-heading" ng-if="cfc.canManageKeywords()">
+        <h3 class="panel-title">
+            {{ 'keywords'|trans:{}:'clacoform' }}
+        </h3>
+    </div>
+    <div class="panel-body" ng-if="cfc.canManageKeywords()">
+        <div class="btn-group margin-right-sm" ng-repeat="keyword in cfc.keywords">
+            <button class="btn btn-default">
+                {{ keyword }}
+            </button>
+            <button class="btn btn-danger" ng-click="cfc.removeKeyword(keyword)">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <button class="btn btn-default" ng-click="cfc.enableKeywordsSelect()">
+            <i class="fa fa-plus"></i>
+        </button>
+        <div class="row" ng-if="cfc.showKeywordsSelect">
+            <br>
+            <div class="col-md-6">
+                <div class="input-group">
+                    <select class="form-control"
+                            ng-model="cfc.selectedKeyword"
+                            ng-options="k['name'] for k in cfc.keywordsChoices"
+                            ng-if="!cfc.config['new_keywords_enabled']"
+                    >
+                    </select>
+                    <input type="text"
+                           class="form-control"
+                           ng-model="cfc.selectedKeyword"
+                           uib-typeahead="k['name'] for k in cfc.keywordsChoices| filter:{name:$viewValue}"
+                           ng-if="cfc.config['new_keywords_enabled']"
+                    >
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" ng-click="cfc.addSelectedKeyword()">
+                            {{ 'add'|trans:{}:'platform' }}
+                        </button>
+                        <button class="btn btn-default" ng-click="cfc.disableKeywordsSelect()">
+                            {{ 'cancel'|trans:{}:'platform' }}
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-heading" ng-if="cfc.canManageCategories()">
+        <h3 class="panel-title">
+            {{ 'categories'|trans:{}:'platform' }}
+        </h3>
+    </div>
+    <div class="panel-body" ng-if="cfc.canManageCategories()">
+        <div class="btn-group margin-right-sm" ng-repeat="category in cfc.categories">
+            <button class="btn btn-default">
+                {{ category['name'] }}
+            </button>
+            <button class="btn btn-danger" ng-click="cfc.removeCategory(category)">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <button class="btn btn-default" ng-click="cfc.enableCategoriesSelect()">
+            <i class="fa fa-plus"></i>
+        </button>
+        <div class="row" ng-if="cfc.showCategoriesSelect">
+            <br>
+            <div class="col-md-6">
+                <div class="input-group">
+                    <select class="form-control" ng-model="cfc.selectedCategory" ng-options="c['name'] for c in cfc.categoriesChoices">
+                    </select>
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" ng-click="cfc.addSelectedCategory()">
+                            {{ 'add'|trans:{}:'platform' }}
+                        </button>
+                        <button class="btn btn-default" ng-click="cfc.disableCategoriesSelect()">
+                            {{ 'cancel'|trans:{}:'platform' }}
+                        </button>
+                    </span>
+                </div>
+            </div>
         </div>
     </div>
 
