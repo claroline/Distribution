@@ -15,10 +15,12 @@ const UPDATE_ITEM = 'UPDATE_ITEM'
 const ADD_SET = 'ADD_SET'
 const UPDATE_SET = 'UPDATE_SET'
 const REMOVE_SET = 'REMOVE_SET'
-
 const ADD_ODD = 'ADD_ODD'
 const UPDATE_ODD = 'UPDATE_ODD'
 const REMOVE_ODD = 'REMOVE_ODD'
+
+const ADD_ASSOCIATION = 'ADD_ASSOCIATION'
+const REMOVE_ASSOCIATION = 'REMOVE_ASSOCIATION'
 
 export const actions = {
   updateProperty: makeActionCreator(UPDATE_PROP, 'property', 'value'),
@@ -31,32 +33,57 @@ export const actions = {
   addOdd:  makeActionCreator(ADD_ODD),
   removeOdd:  makeActionCreator(REMOVE_ODD, 'id'),
   updateOdd:  makeActionCreator(UPDATE_ODD, 'id', 'property', 'value'),
+  addAssociation: makeActionCreator(ADD_ASSOCIATION, 'setId', 'itemId', 'itemData'),
+  removeAssociation: makeActionCreator(REMOVE_ASSOCIATION, 'setId', 'itemId')
 }
 
-function decorate(item) {
+function decorate(question) {
 
-  const itemsWithDeletable = item.items.map(
-    el => Object.assign({}, el, {
-      _deletable: item.items.length > 1
+  const itemsWithDeletable = question.items.map(
+    item => Object.assign({}, item, {
+      _deletable: question.items.length > 1
     })
   )
 
-  const setsWithDeletable = item.sets.map(
-    el => Object.assign({}, el, {
-      _deletable: item.sets.length > 1
+  const setsWithDeletable = question.sets.map(
+    item => Object.assign({}, item, {
+      _deletable: question.sets.length > 1
     })
   )
 
-  let decorated = Object.assign({}, item, {
+  // solutions associations ? add solution item data
+  const associationsWithItemData = getAssociationsWithItemData(question)
+
+  let decorated = Object.assign({}, question, {
     items: itemsWithDeletable,
-    sets: setsWithDeletable
+    sets: setsWithDeletable,
+    solutions: Object.assign({}, question.solutions, {
+      associations: associationsWithItemData
+    })
   })
 
   return decorated
 }
 
+function getAssociationsWithItemData(item){
+
+  item.solutions.associations.forEach(
+    (association) => {
+      const questionItem = item.items.find(el => el.id === association.itemId)
+      const data = questionItem !== undefined ? questionItem.data : ''
+      Object.assign({}, association, {
+        _itemData: data
+      })
+    }
+  )
+
+  return item.solutions.associations
+}
+
 function reduce(item = {}, action) {
+
   switch (action.type) {
+
     case ITEM_CREATE: {
       return decorate(Object.assign({}, item, {
         random: false,
@@ -72,7 +99,8 @@ function reduce(item = {}, action) {
           {
             id: makeId(),
             type: 'text/html',
-            data: 'ITEM A'
+            data: 'ITEM A',
+            _deletable: false
           }
         ],
         solutions: {
@@ -99,20 +127,20 @@ function reduce(item = {}, action) {
       }
 
       newItem.items.push(toAdd)
-      newItem.items.forEach(item => item._deletable = newItem.items.length > 1)
+      newItem.items.forEach(el => el._deletable = newItem.items.length > 1)
       return newItem
     }
 
     case UPDATE_ITEM: {
       const newItem = cloneDeep(item)
-      const item = newItem.items.find(item => item.id === action.id)
-      item[action.property] = action.value
+      const toUpdate = newItem.items.find(item => item.id === action.id)
+      toUpdate[action.property] = action.value
       // mark items as touched
       newItem.items._touched = merge(
         newItem.items._touched || {},
         set({}, action.property, true)
       )
-      newItem.items.forEach(item => item._deletable = newItem.items.length > 1)
+      newItem.items.forEach(el => el._deletable = newItem.items.length > 1)
       return newItem
     }
 
@@ -121,6 +149,8 @@ function reduce(item = {}, action) {
       const index = newItem.items.findIndex(item => item.id === action.id)
       newItem.items.splice(index, 1)
       newItem.items.forEach(item => item._deletable = newItem.items.length > 1)
+      // @TODO do not forget remove item from solution
+
       return newItem
     }
 
@@ -154,6 +184,8 @@ function reduce(item = {}, action) {
       const index = newItem.sets.findIndex(set => set.id === action.id)
       newItem.sets.splice(index, 1)
       newItem.sets.forEach(set => set._deletable = newItem.sets.length > 1)
+      // @TODO do not forget remove set from solution
+
       return newItem
     }
 
@@ -187,6 +219,19 @@ function reduce(item = {}, action) {
         newItem.solutions.odds._touched || {},
         set({}, action.property, true)
       )
+      return newItem
+    }
+
+    case ADD_ASSOCIATION: {
+      const newItem = cloneDeep(item)
+      const toAdd = {
+        itemId: action.itemId,
+        setId: action.setId,
+        score: 0,
+        feedback: '',
+        _itemData: action.itemData
+      }
+      newItem.solutions.associations.push(toAdd)
       return newItem
     }
 

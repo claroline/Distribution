@@ -4,13 +4,134 @@ import classes from 'classnames'
 import {Textarea} from './../components/form/textarea.jsx'
 import {actions} from './set.js'
 import get from 'lodash/get'
-import {makeDraggable, makeDroppable} from './../lib/draggable'
+import {makeDraggable, makeDroppable} from './../lib/dragAndDrop'
 
-let SetItem = props => {
+
+
+let DropBox = props => {
+  return props.connectDropTarget (
+     <div className={classes(
+       'set-item-drop-container',
+       {'on-hover': props.isOver}
+     )}>
+       {tex('DROP ITEM HERE')}
+     </div>
+   )
+
+}
+
+DropBox.propTypes = {
+  connectDropTarget: T.func.isRequired,
+  isOver: T.bool.isRequired,
+  onDrop: T.func.isRequired,
+  canDrop: T.bool.isRequired,
+  object: T.object.isRequired
+}
+
+DropBox =  makeDroppable(DropBox, 'ITEM')
+
+class Set extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      showFeedback: false
+    }
+  }
+
+  render(){
+    return (
+      <li>
+        <div className="panel panel-default">
+          <div className="panel-heading clearfix">
+            <span className="btn-group pull-right">
+              <a
+                role="button"
+                title={t('delete')}
+                className={
+                  classes(
+                    'fa',
+                    'fa-trash-o',
+                    {disabled: !this.props.set._deletable}
+                  )
+                }>
+              </a>
+            </span>
+            <input
+              className="form-control input-control-sm"
+              value={this.props.set.id}
+              type="text"
+              onChange={() => {}} />
+          </div>
+          <div className="panel-body">
+            <ul>
+            { this.props.associations.map(ass =>
+              <li key={`${ass.itemId}-${ass.setId}`}>
+                <div className="text-fields">
+                  <div className="association-data-container">
+                    {ass._itemData}
+                  </div>
+                  {this.state.showFeedback &&
+                    <Textarea
+                      onChange={ (value) => this.props.onChange(
+                        actions.updateAssociation(ass.setId, ass.itemId, 'feedback', value)
+                      )}
+                      id={`${ass.itemId}-${ass.setId}-feedback`}
+                      content={ass.feedback}
+                    />
+                  }
+                </div>
+                <div className="right-controls">
+                  <input
+                    title={tex('score')}
+                    type="number"
+                    className="form-control association-score"
+                    value={ass.score}
+                    onChange={e => this.props.onChange(
+                      actions.updateAssociation(ass.setId, ass.itemId, 'score', e.target.value)
+                    )}
+                  />
+                  <a
+                    role="button"
+                    title={tex('feedback')}
+                    className="fa fa-comments-o"
+                    onClick={() => this.setState({showFeedback: !this.state.showFeedback})}>
+                  </a>
+                  <a
+                    role="button"
+                    title={t('delete')}
+                    className="btn btn-link fa fa-trash-o"
+                    onClick={() => this.props.onChange(actions.removeAssociation(ass.setId, ass.itemId))}>
+                  </a>
+                </div>
+              </li>
+            )}
+            </ul>
+            <DropBox object={this.props.set} onDrop={this.props.onDrop} />
+
+          </div>
+        </div>
+      </li>
+    )
+  }
+
+}
+
+Set.propTypes = {
+  onChange: T.func.isRequired,
+  set: T.object.isRequired,
+  onDrop: T.func.isRequired,
+  associations: T.arrayOf(T.object).isRequired
+}
+
+
+
+/*
+let Set = props => {
   return (
     <li>
       <div className="panel panel-default">
-        <div className="panel-heading">
+        <div className="panel-heading clearfix">
           <span className="btn-group pull-right">
             <a
               role="button"
@@ -22,7 +143,6 @@ let SetItem = props => {
                   {disabled: !props.set._deletable}
                 )
               }>
-
             </a>
           </span>
           <input
@@ -31,40 +151,114 @@ let SetItem = props => {
             type="text"
             onChange={() => {}} />
         </div>
-        {props.connectDropTarget(
-          <div className="panel-body">
-          </div>
-        )}
-        {props.isOver && <span>HOVER</span>}
+        <div className="panel-body">
+          <ul>
+          { props.associations.map(ass =>
+            <li key={`${ass.itemId}-${ass.setId}`}>
+              <div className="text-fields">
+                <div className="association-data-container">
+                  {ass._itemData}
+                </div>
+                {this.state.showFeedback &&
+                  <Textarea
+                    onChange={ (value) => props.onChange(
+                      actions.updateAssociation(ass.setId, ass.itemId, 'feedback', value)
+                    )}
+                    id={`${ass.itemId}-${ass.setId}-feedback`}
+                    content={ass.feedback}
+                  />
+                }
+              </div>
+              <div className="right-controls">
+                <input
+                  title={tex('score')}
+                  type="number"
+                  className="form-control association-score"
+                  value={ass.score}
+                  onChange={e => props.onChange(
+                    actions.updateAssociation(ass.setId, ass.itemId, 'score', e.target.value)
+                  )}
+                />
+                <a
+                  role="button"
+                  title={tex('feedback')}
+                  className="fa fa-comments-o"
+                  onClick={() => this.setState({showFeedback: !this.state.showFeedback})}>
+                </a>
+                <a
+                  role="button"
+                  title={t('delete')}
+                  className="btn btn-link fa fa-trash-o"
+                  onClick={() => props.onChange(actions.removeAssociation(ass.setId, ass.itemId))}>
+                </a>
+              </div>
+            </li>
+          )}
+          </ul>
+           {props.connectDropTarget (
+            <div className={classes(
+              'set-item-drop-container',
+              {'on-hover': props.isOver}
+            )}>
+              {tex('DROP ITEM HERE')}
+            </div>
+          )}
+
+        </div>
       </div>
     </li>
   )
 }
 
-SetItem.propTypes = {
+Set.propTypes = {
   onChange: T.func.isRequired,
   set: T.object.isRequired,
   connectDropTarget: T.func.isRequired,
   isOver: T.bool.isRequired,
-  canDrop: T.bool.isRequired
+  canDrop: T.bool.isRequired,
+  onDrop: T.func.isRequired,
+  associations: T.arrayOf(T.object).isRequired
 }
 
-SetItem = makeDroppable(SetItem, 'SET_ITEM')
+Set = makeDroppable(Set, 'ITEM')*/
+
+
 
 class SetList extends Component {
+
   constructor(props) {
     super(props)
   }
 
-  onItemDrop(){
-    console.log('drop')
+  /**
+   * handle item drop
+   * @var {source} dropped item (item)
+   * @var {target} target item (set)
+   */
+  onItemDrop(source, target){
+    console.log(target)
+    // @TODO add solution (check the item is not already inside before adding it)
+    if(undefined === this.props.solutions.associations.find(el => el.setId === target.set.id && el.itemId === source.item.id)){
+      this.props.onChange(actions.addAssociation(target.object.id, source.item.id, source.item.data))
+    }
   }
+
   render(){
     return (
       <div className="sets">
         <ul>
-          {this.props.sets.map((el) =>
-            <SetItem key={`set-id-${el.id}`} onChange={this.props.onChange} set={el} />
+          {this.props.sets.map((set) =>
+            <Set
+              key={`set-id-${set.id}`}
+              associations={
+                this.props.solutions.associations.filter(association => association.setId === set.id) || []
+              }
+              onDrop={
+                (source, target) => this.onItemDrop(source, target)
+              }
+              onChange={this.props.onChange}
+              set={set}
+            />
           )}
         </ul>
         <div className="footer text-center">
@@ -78,62 +272,61 @@ class SetList extends Component {
           </button>
         </div>
       </div>
-
     )
   }
 }
 
 SetList.propTypes = {
   onChange: T.func.isRequired,
-  sets: T.arrayOf(T.object).isRequired
+  sets: T.arrayOf(T.object).isRequired,
+  solutions: T.shape({
+    associations: T.arrayOf(T.object).isRequired,
+    odds: T.arrayOf(T.object)
+  }).isRequired
 }
 
-
 let Item = props => {
-  return (
-      <li>
-        {props.connectDragPreview (
-          <div className="text-fields">
-            <Textarea
-              onChange={value => props.onChange(
-                actions.updateItem(props.item.id, 'data', value)
-              )}
-              id={`${props.item.id}-data`}
-              content={props.item.data}
-            />
-          </div>
-        )}
-        <div className="right-controls">
+  return props.connectDragPreview (
+    <li>
+      <div className="text-fields">
+        <Textarea
+          onChange={ (value) => props.onChange(
+            actions.updateItem(props.item.id, 'data', value)
+          )}
+          id={`${props.item.id}-data`}
+          content={props.item.data}
+        />
+      </div>
+      <div className="right-controls">
+        <a
+          role="button"
+          title={t('delete')}
+          className={classes(
+            'btn',
+            'btn-link',
+            'fa',
+            'fa-trash-o',
+            {disabled: !props.item._deletable}
+          )}
+          onClick={() => actions.removeItem(props.item.id)}
+        />
+        {props.connectDragSource(
           <a
             role="button"
-            title={t('delete')}
+            title={t('move')}
+            draggable="true"
             className={classes(
               'btn',
               'btn-link',
               'fa',
-              'fa-trash-o',
-              {disabled: !props.item._deletable}
+              'fa-bars',
+              'drag-handle'
             )}
-            onClick={() => this.actions.removeItem(props.item.id)}
           />
-          {props.connectDragSource(
-            <a
-              role="button"
-              title={t('move')}
-              draggable="true"
-              className={classes(
-                'btn',
-                'btn-link',
-                'fa',
-                'fa-bars',
-                'drag-handle'
-              )}
-            />
-          )}
-        </div>
-      </li>
-    )
-
+        )}
+      </div>
+    </li>
+  )
 }
 
 Item.propTypes = {
@@ -149,6 +342,7 @@ class ItemList extends Component {
   constructor(props) {
     super(props)
   }
+
   render(){
     return (
       <div className="item-list">
@@ -286,7 +480,7 @@ class SetForm extends Component {
             <OddList onChange={this.props.onChange} odds={this.props.item.solutions.odds} />
           </div>
           <div className="sets-container">
-            <SetList onChange={this.props.onChange} sets={this.props.item.sets} />
+            <SetList solutions={this.props.item.solutions} onChange={this.props.onChange} sets={this.props.item.sets} />
           </div>
         </div>
       </div>
@@ -302,12 +496,7 @@ SetForm.propTypes = {
     sets: T.arrayOf(T.object).isRequired,
     items: T.arrayOf(T.object).isRequired,
     solutions: T.shape({
-      associations: T.arrayOf(T.shape({
-        setId: T.string.isRequired,
-        itemId:  T.string.isRequired,
-        score: T.number.isRequired,
-        feedback: T.string
-      })).isRequired,
+      associations: T.arrayOf(T.object).isRequired,
       odds: T.arrayOf(T.object)
     }).isRequired,
     _errors: T.object
