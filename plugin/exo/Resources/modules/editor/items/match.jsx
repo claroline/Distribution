@@ -17,7 +17,7 @@ function getPopoverPosition(connectionClass){
   }
 }
 
-function initJsPlumb() {
+function initJsPlumb(id) {
   jsPlumb.setSuspendDrawing(false)
 
   // defaults parameters for all connections
@@ -50,7 +50,7 @@ function initJsPlumb() {
     }
   })
 
-  jsPlumb.setContainer(document.getElementById('match-question-container-id'))
+  jsPlumb.setContainer(document.getElementById('match-question-container-id-' + id))
 }
 
 function drawSolutions(solutions){
@@ -200,7 +200,7 @@ class Match extends Component {
 
   componentDidMount() {
 
-    initJsPlumb()
+    initJsPlumb(this.props.item.id)
     drawSolutions(this.props.item.solutions)
 
     // new connection created event
@@ -351,7 +351,7 @@ class Match extends Component {
 
   render() {
     return (
-      <div id="match-question-container-id" className="match-question-container">
+      <div id={`match-question-container-id-${this.props.item.id}`} className="match-question-container">
         { get(this.props.item, '_touched') &&
           get(this.props.item, '_errors.items') &&
           <div className="error-text">
