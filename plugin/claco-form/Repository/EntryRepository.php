@@ -77,4 +77,21 @@ class EntryRepository extends EntityRepository
 
         return $query->getResult();
     }
+
+    public function findEntriesByCategories(ClacoForm $clacoForm, array $categories)
+    {
+        $dql = '
+            SELECT e
+            FROM Claroline\ClacoFormBundle\Entity\Entry e
+            JOIN e.clacoForm cf
+            JOIN e.categories cat
+            WHERE cf = :clacoForm
+            AND cat IN (:categories)
+        ';
+        $query = $this->_em->createQuery($dql);
+        $query->setParameter('clacoForm', $clacoForm);
+        $query->setParameter('categories', $categories);
+
+        return $query->getResult();
+    }
 }

@@ -54,6 +54,12 @@ class LogEntryEditEvent extends LogGenericEvent
         foreach ($categories as $category) {
             $details['categories'][] = ['id' => $category->getId(), 'name' => $category->getName()];
         }
+        $keywords = $entry->getKeywords();
+        $details['keywords'] = [];
+
+        foreach ($keywords as $keyword) {
+            $details['keywords'][] = ['id' => $keyword->getId(), 'name' => $keyword->getName()];
+        }
         $clacoForm = $entry->getClacoForm();
         $resourceNode = $clacoForm->getResourceNode();
         $details['resourceId'] = $clacoForm->getId();

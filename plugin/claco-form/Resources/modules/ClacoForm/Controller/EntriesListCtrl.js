@@ -10,14 +10,16 @@
 /*global Translator*/
 
 export default class EntriesManagementCtrl {
-  constructor (NgTableParams, ClacoFormService, EntryService, FieldService) {
+  constructor (NgTableParams, ClacoFormService, EntryService, FieldService, CategoryService) {
     this.ClacoFormService = ClacoFormService
     this.EntryService = EntryService
     this.FieldService = FieldService
+    this.CategoryService = CategoryService
     this.config = ClacoFormService.getResourceDetails()
     this.fields = FieldService.getFields()
     this.entries = EntryService.getEntries()
     this.myEntries = EntryService.getMyEntries()
+    this.managerEntries = EntryService.getManagerEntries()
     this.tableParams = {
       entries: new NgTableParams(
         {count: 20},
@@ -26,29 +28,17 @@ export default class EntriesManagementCtrl {
       myEntries: new NgTableParams(
         {count: 20},
         {counts: [10, 20, 50, 100], dataset: this.myEntries}
+      ),
+      managerEntries: new NgTableParams(
+        {count: 20},
+        {counts: [10, 20, 50, 100], dataset: this.managerEntries}
       )
     }
-    //this.tableParams = new NgTableParams(
-    //  {count: 20},
-    //  {counts: [10, 20, 50, 100], dataset: this.entries}
-    //)
-    //this.myTableParams = new NgTableParams(
-    //  {count: 20},
-    //  {counts: [10, 20, 50, 100], dataset: this.myEntries}
-    //)
-    this.columns = {
-      title: {name: Translator.trans('title', {}, 'platform'), value: true},
-      creationDateString: {name: Translator.trans('date', {}, 'platform'), value: true},
-      userString: {name: Translator.trans('user', {}, 'platform'), value: true}
-    }
-    this.columnsKeys = ['title', 'creationDateString', 'userString']
-    this.fieldsColumns = [
-      {id: 'alert', sortable: 'alert'},
-      {id: 'title', title: Translator.trans('title', {}, 'platform'), filter: {title: 'text'}, sortable: 'title'},
-      {id: 'creationDateString', title: Translator.trans('date', {}, 'platform'), filter: {creationDateString: 'text'}, sortable: 'creationDate'},
-      {id: 'userString', title: Translator.trans('user', {}, 'platform'), filter: {userString: 'text'}, sortable: 'userString'},
-    ]
-    this.mode = 'all_entries'
+    this.columns = {entries : {}, myEntries : {}, managerEntries : {}}
+    this.columnsKeys = {entries : [], myEntries : [], managerEntries : []}
+    this.fieldsColumns = {entries : [], myEntries : [], managerEntries : []}
+    this.modes = []
+    this.mode = null
     this._updateEntryCallback = this._updateEntryCallback.bind(this)
     this._removeEntryCallback = this._removeEntryCallback.bind(this)
     this.initialize()
@@ -56,61 +46,154 @@ export default class EntriesManagementCtrl {
 
   _updateEntryCallback (data) {
     this.EntryService._updateEntryCallback(data)
-    this.tableParams.reload()
+    this.tableParams['entries'].reload()
+    this.tableParams['myEntries'].reload()
+    this.tableParams['managerEntries'].reload()
   }
 
   _removeEntryCallback (data) {
     this.EntryService._removeEntryCallback(data)
-    this.tableParams.reload()
+    this.tableParams['entries'].reload()
+    this.tableParams['myEntries'].reload()
+    this.tableParams['managerEntries'].reload()
   }
 
   initialize () {
     this.ClacoFormService.clearSuccessMessage()
+    this.initializeModes()
+    this.initializeColumns()
+  }
 
+  initializeModes () {
+    if (this.ClacoFormService.getCanEdit() || this.config['search_enabled']) {
+      this.modes.push('all_entries')
+    }
+    if (this.CategoryService.getIsCategoryManager()) {
+      this.modes.push('manager_entries')
+    }
+    if (!this.ClacoFormService.getIsAnon()) {
+      this.modes.push('my_entries')
+    }
+    if (this.modes.length > 0) {
+      this.mode = this.modes[0]
+    }
+  }
+
+  initializeColumns () {
+    const displayMetadata = this.ClacoFormService.getCanEdit() ||
+      this.config['display_metadata'] === 'all' ||
+      ((this.config['display_metadata'] === 'manager') && this.CategoryService.getIsCategoryManager())
+    const transTitle = Translator.trans('title', {}, 'platform')
+    const transDate = Translator.trans('date', {}, 'platform')
+    const transUser = Translator.trans('user', {}, 'platform')
+    const transCategories = Translator.trans('categories', {}, 'platform')
+    const transKeywords = Translator.trans('keywords', {}, 'platform')
+    const transActions = Translator.trans('actions', {}, 'platform')
+    const alertFieldColumn = {id: 'alert', sortable: 'alert'}
+    const titleFieldColumn = {id: 'title', title: transTitle, filter: {title: 'text'}, sortable: 'title'}
+    const dateFieldColumn = {id: 'creationDateString', title: transDate, filter: {creationDateString: 'text'}, sortable: 'creationDate'}
+    const userFieldColumn = {id: 'userString', title: transUser, filter: {userString: 'text'}, sortable: 'userString'}
+
+    this.columns['entries']['title'] = {name: transTitle, value: true}
+    this.columns['myEntries']['title'] = {name: transTitle, value: true}
+    this.columns['managerEntries']['title'] = {name: transTitle, value: true}
+    this.columns['managerEntries']['creationDateString'] = {name: transDate, value: true}
+    this.columns['managerEntries']['userString'] = {name: transUser, value: true}
+    this.columns['myEntries']['creationDateString'] = {name: transDate, value: true}
+    this.columnsKeys['entries'].push('title')
+    this.columnsKeys['myEntries'].push('title')
+    this.columnsKeys['myEntries'].push('creationDateString')
+    this.columnsKeys['managerEntries'].push('title')
+    this.columnsKeys['managerEntries'].push('creationDateString')
+    this.columnsKeys['managerEntries'].push('userString')
+    this.fieldsColumns['entries'].push(alertFieldColumn)
+    this.fieldsColumns['entries'].push(titleFieldColumn)
+    this.fieldsColumns['myEntries'].push(alertFieldColumn)
+    this.fieldsColumns['myEntries'].push(titleFieldColumn)
+    this.fieldsColumns['myEntries'].push(dateFieldColumn)
+    this.fieldsColumns['managerEntries'].push(alertFieldColumn)
+    this.fieldsColumns['managerEntries'].push(titleFieldColumn)
+    this.fieldsColumns['managerEntries'].push(dateFieldColumn)
+    this.fieldsColumns['managerEntries'].push(userFieldColumn)
+
+    if (displayMetadata)  {
+      this.columns['entries']['creationDateString'] = {name: transDate, value: true}
+      this.columns['entries']['userString'] = {name: transUser, value: true}
+      this.columnsKeys['entries'].push('creationDateString')
+      this.columnsKeys['entries'].push('userString')
+      this.fieldsColumns['entries'].push(dateFieldColumn)
+      this.fieldsColumns['entries'].push(userFieldColumn)
+    }
     if (this.config['display_categories']) {
-      this.columns['categoriesString'] = {name: Translator.trans('categories', {}, 'platform'), value: true}
-      this.columnsKeys.push('categoriesString')
-      this.fieldsColumns.push({
+      this.columns['entries']['categoriesString'] = {name: transCategories, value: true}
+      this.columns['myEntries']['categoriesString'] = {name: transCategories, value: true}
+      this.columns['managerEntries']['categoriesString'] = {name: transCategories, value: true}
+      this.columnsKeys['entries'].push('categoriesString')
+      this.columnsKeys['myEntries'].push('categoriesString')
+      this.columnsKeys['managerEntries'].push('categoriesString')
+      const categoriesFieldColumns = {
         id: 'categoriesString',
-        title: Translator.trans('categories', {}, 'platform'),
+        title: transCategories,
         filter: {categoriesString: 'text'},
         sortable: 'categoriesString'
-      })
+      }
+      this.fieldsColumns['entries'].push(categoriesFieldColumns)
+      this.fieldsColumns['myEntries'].push(categoriesFieldColumns)
+      this.fieldsColumns['managerEntries'].push(categoriesFieldColumns)
     }
     if (this.config['display_keywords']) {
-      this.columns['keywordsString'] = {name: Translator.trans('keywords', {}, 'clacoform'), value: true}
-      this.columnsKeys.push('keywordsString')
-      this.fieldsColumns.push({
+      this.columns['entries']['keywordsString'] = {name: transKeywords, value: true}
+      this.columns['myEntries']['keywordsString'] = {name: transKeywords, value: true}
+      this.columns['managerEntries']['keywordsString'] = {name: transKeywords, value: true}
+      this.columnsKeys['entries'].push('keywordsString')
+      this.columnsKeys['myEntries'].push('keywordsString')
+      this.columnsKeys['managerEntries'].push('keywordsString')
+      const keywordsFieldColumns = {
         id: 'keywordsString',
-        title: Translator.trans('keywords', {}, 'clacoform'),
+        title: transKeywords,
         filter: {keywordsString: 'text'},
         sortable: 'keywordsString'
-      })
+      }
+      this.fieldsColumns['entries'].push(keywordsFieldColumns)
+      this.fieldsColumns['myEntries'].push(keywordsFieldColumns)
+      this.fieldsColumns['managerEntries'].push(keywordsFieldColumns)
     }
     this.fields.forEach(f => {
-      if (!f['isMetadata']) {
-        const id = f['id']
-        this.columns[id] = {name: f['name'], value: false}
-        this.columnsKeys.push(id)
-        let data = {id: id, title: f['name']}
+      const id = f['id']
+      let data = {id: id, title: f['name']}
 
-        if (f['type'] === 3) {
-          data['sortable'] = `${id}`
-        } else {
-          data['sortable'] = `field_${id}`
-        }
+      if (f['type'] === 3) {
+        data['sortable'] = `${id}`
+      } else {
+        data['sortable'] = `field_${id}`
+      }
+      data['filter'] = {['field_' + id]: 'text'}
+      this.columns['myEntries'][id] = {name: f['name'], value: false}
+      this.columns['managerEntries'][id] = {name: f['name'], value: false}
+      this.columnsKeys['myEntries'].push(id)
+      this.columnsKeys['managerEntries'].push(id)
+      this.fieldsColumns['myEntries'].push(data)
+      this.fieldsColumns['managerEntries'].push(data)
 
-        if (f['searchable']) {
-          data['filter'] = {['field_' + id]: 'text'}
-        }
-        this.fieldsColumns.push(data)
+      if (displayMetadata || !f['isMetadata']) {
+        this.columns['entries'][id] = {name: f['name'], value: false}
+        this.columnsKeys['entries'].push(id)
+        this.fieldsColumns['entries'].push(data)
       }
     })
+    this.columns['managerEntries']['actions'] = {name: transActions, value: true}
+    this.columnsKeys['managerEntries'].push('actions')
+    this.fieldsColumns['managerEntries'].push({id: 'actions', title: transActions})
 
-    if (this.canEdit() || (!this.isAnon() && this.config['edition_enabled'])) {
-      this.columns['actions'] = {name: Translator.trans('actions', {}, 'platform'), value: true}
-      this.columnsKeys.push('actions')
-      this.fieldsColumns.push({id: 'actions', title: Translator.trans('actions', {}, 'platform')})
+    if (this.canEdit()) {
+      this.columns['entries']['actions'] = {name: transActions, value: true}
+      this.columnsKeys['entries'].push('actions')
+      this.fieldsColumns['entries'].push({id: 'actions', title: transActions})
+    }
+    if (this.canEdit() || this.config['edition_enabled']) {
+      this.columns['myEntries']['actions'] = {name: transActions, value: true}
+      this.columnsKeys['myEntries'].push('actions')
+      this.fieldsColumns['myEntries'].push({id: 'actions', title: transActions})
     }
   }
 
@@ -134,14 +217,14 @@ export default class EntriesManagementCtrl {
     return statusClass
   }
 
-  getDisplayedColumns () {
+  getDisplayedColumns (type) {
     let columns = []
 
-    this.fieldsColumns.forEach(fc => {
+    this.fieldsColumns[type].forEach(fc => {
       if (fc['id'] === 'alert') {
         columns.push(fc)
       } else {
-        if (this.columns[fc['id']]['value']) {
+        if (this.columns[type][fc['id']]['value']) {
           columns.push(fc)
         }
       }

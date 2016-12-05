@@ -55,7 +55,7 @@ label_display_comment_author: Display comment author
 label_display_comment_date: Display comment date
 label_display_comments: Display commments
 label_display_keywords: Display keywords to users
-label_display_metadata: Display metadata
+label_display_metadata: Display confidential data
 label_display_nb_entries: Display the number of entries
 label_display_votes: Display votes
 label_edition_enabled: Allow edition
@@ -74,22 +74,24 @@ label_search_enabled: Allow listing/search
 label_votes_date: Allow votes between these two dates
 label_votes_enabled: Allow votes
 main_menu: Main menu
+manager_entries: Entries that I am manager
 managers: Managers
 managers_selection: Managers selection
 mandatory: Mandatory
 menu: Menu
-metadata: Metadata
+metadata: Confidential data
 my_entries: My entries
 no_category: No category
 no_entry: No entry
 no_field: No field
 no_keyword: No keyword
+no_manager_entry: You are the manager of no entry
+no_own_entry: You haven't create an entry yet
 optional: Optional
 random_entries: Random entries
 random_entry: Random entry
 random_mode: Random mode
 search_mode: List/Search mode
-searchable: Searchable
 template_duplicated_variables_message: Some fields are used more than once.
 template_management: Template management
 template_mandatory_variables_message: Mandatory fields must be used in the template.

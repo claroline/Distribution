@@ -75,19 +75,6 @@ export default class EntryEditionCtrl {
       const id = f['id']
       this.entry[id] = this.source[id]
 
-      //switch (f['type']) {
-      //  case 3 :
-      //    this.entry[id] = this.source[id]
-      //    //const valueDate = new Date(v['fieldFacetValue']['value'])
-      //    //entry[fieldId] = `${valueDate.getDate()}/${valueDate.getMonth() + 1}/${valueDate.getFullYear()}`
-      //    break
-      //  case 6 :
-      //    this.entry[id] = this.source[id].split(',')
-      //    break
-      //  default :
-      //    this.entry[id] = this.source[id]
-      //}
-
       if (f['required']) {
         this.entryErrors[id] = null
       }

@@ -19,7 +19,7 @@ use JMS\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Claroline\ClacoFormBundle\Repository\CategoryRepository")
  * @ORM\Table(name="claro_clacoformbundle_category")
  */
 class Category

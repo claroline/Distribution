@@ -294,18 +294,13 @@
                     </span>
                     <div class="col-md-9">
                         <label>
-                            <input type="radio" ng-model="cfc.config['search_enabled']" value="all"/>
+                            <input type="radio" ng-model="cfc.config['search_enabled']" ng-value="true"/>
                             {{ 'yes'|trans:{}:'platform' }}
                         </label>
                         &nbsp;&nbsp;&nbsp;&nbsp;
                         <label>
-                            <input type="radio" ng-model="cfc.config['search_enabled']" value="none"/>
+                            <input type="radio" ng-model="cfc.config['search_enabled']" ng-value="false"/>
                             {{ 'no'|trans:{}:'platform' }}
-                        </label>
-                        &nbsp;&nbsp;&nbsp;&nbsp;
-                        <label>
-                            <input type="radio" ng-model="cfc.config['search_enabled']" value="manager"/>
-                            {{ 'choice_manager_only'|trans:{}:'clacoform' }}
                         </label>
                     </div>
                 </div>

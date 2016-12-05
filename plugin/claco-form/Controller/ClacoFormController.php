@@ -73,26 +73,34 @@ class ClacoFormController extends Controller
         $user = $this->tokenStorage->getToken()->getUser();
         $isAnon = $user === 'anon.';
         $fields = $clacoForm->getFields();
-        $categories = $clacoForm->getCategories();
         $keywords = $clacoForm->getKeywords();
+        $categories = $clacoForm->getCategories();
         $myEntries = $isAnon ? [] : $this->clacoFormManager->getEntriesByUser($clacoForm, $user);
+        $myCategories = $isAnon ? [] : $this->clacoFormManager->getCategoriesByManager($clacoForm, $user);
+        $isCategoryManager = count($myCategories) > 0;
+        $managerEntries = $isAnon ? [] : $this->clacoFormManager->getEntriesByCategories($clacoForm, $myCategories);
         $serializedFields = $this->serializer->serialize(
             $fields,
             'json',
             SerializationContext::create()->setGroups(['api_facet_admin'])
-        );
-        $serializedCategories = $this->serializer->serialize(
-            $categories,
-            'json',
-            SerializationContext::create()->setGroups(['api_user_min'])
         );
         $serializedKeywords = $this->serializer->serialize(
             $keywords,
             'json',
             SerializationContext::create()->setGroups(['api_claco_form'])
         );
+        $serializedCategories = $this->serializer->serialize(
+            $categories,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
         $serializedMyEntries = $this->serializer->serialize(
             $myEntries,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
+        $serializedManagerEntries = $this->serializer->serialize(
+            $managerEntries,
             'json',
             SerializationContext::create()->setGroups(['api_user_min'])
         );
@@ -101,11 +109,13 @@ class ClacoFormController extends Controller
             'isAnon' => $isAnon,
             'userId' => $isAnon ? null : $user->getId(),
             'canEdit' => $canEdit,
+            'isCategoryManager' => $isCategoryManager,
             'clacoForm' => $clacoForm,
             'fields' => $serializedFields,
-            'categories' => $serializedCategories,
             'keywords' => $serializedKeywords,
+            'categories' => $serializedCategories,
             'myEntries' => $serializedMyEntries,
+            'managerEntries' => $serializedManagerEntries,
         ];
     }
 
@@ -160,18 +170,18 @@ class ClacoFormController extends Controller
         $choicesData = $this->request->request->get('choicesData', false);
         $choices = [];
 
-        foreach ($choicesData as $choice) {
-            $choices[] = $choice['value'];
+        if ($choicesData) {
+            foreach ($choicesData as $choice) {
+                $choices[] = $choice['value'];
+            }
         }
         $required = is_bool($fieldData['required']) ? $fieldData['required'] : $fieldData['required'] === 'true';
-        $searchable = is_bool($fieldData['searchable']) ? $fieldData['searchable'] : $fieldData['searchable'] === 'true';
         $isMetadata = is_bool($fieldData['isMetadata']) ? $fieldData['isMetadata'] : $fieldData['isMetadata'] === 'true';
         $field = $this->clacoFormManager->createField(
             $clacoForm,
             $fieldData['name'],
             $fieldData['type'],
             $required,
-            $searchable,
             $isMetadata,
             $choices
         );
@@ -212,14 +222,12 @@ class ClacoFormController extends Controller
             }
         }
         $required = is_bool($fieldData['required']) ? $fieldData['required'] : $fieldData['required'] === 'true';
-        $searchable = is_bool($fieldData['searchable']) ? $fieldData['searchable'] : $fieldData['searchable'] === 'true';
         $isMetadata = is_bool($fieldData['isMetadata']) ? $fieldData['isMetadata'] : $fieldData['isMetadata'] === 'true';
         $this->clacoFormManager->editField(
             $field,
             $fieldData['name'],
             $fieldData['type'],
             $required,
-            $searchable,
             $isMetadata,
             $oldChoices,
             $newChoices
@@ -634,7 +642,7 @@ class ClacoFormController extends Controller
      */
     public function entryRetrieveAction(Entry $entry)
     {
-//        $this->clacoFormManager->checkEntryEdition($entry);
+        $this->clacoFormManager->checkEntryEdition($entry);
         $serializedEntry = $this->serializer->serialize(
             $entry,
             'json',

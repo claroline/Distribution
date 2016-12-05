@@ -22,7 +22,6 @@ export default class FieldEditionModalCtrl {
       name: null,
       type: null,
       required: true,
-      searchable: true,
       isMetadata: false,
       choices: []
     }
@@ -44,7 +43,6 @@ export default class FieldEditionModalCtrl {
     this.field['name'] = this.source['name']
     this.field['type'] = this.source['type']
     this.field['required'] = this.source['required']
-    this.field['searchable'] = this.source['searchable']
     this.field['isMetadata'] = this.source['isMetadata']
     const selectedType = this.types.find(t => t['value'] === this.source['type'])
     this.type = selectedType

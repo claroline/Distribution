@@ -81,13 +81,6 @@ class Field
     protected $required = true;
 
     /**
-     * @ORM\Column(name="searchable", type="boolean")
-     * @Groups({"api_claco_form", "api_facet_admin", "api_user_min"})
-     * @SerializedName("searchable")
-     */
-    protected $searchable = true;
-
-    /**
      * @ORM\Column(name="is_metadata", type="boolean")
      * @Groups({"api_claco_form", "api_facet_admin", "api_user_min"})
      * @SerializedName("isMetadata")
@@ -152,16 +145,6 @@ class Field
     public function setRequired($required)
     {
         $this->required = $required;
-    }
-
-    public function isSearchable()
-    {
-        return $this->searchable;
-    }
-
-    public function setSearchable($searchable)
-    {
-        $this->searchable = $searchable;
     }
 
     public function getIsMetadata()

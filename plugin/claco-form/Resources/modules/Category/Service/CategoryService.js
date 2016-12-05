@@ -17,6 +17,7 @@ export default class CategoryService {
     this.$uibModal = $uibModal
     this.ClarolineAPIService = ClarolineAPIService
     this.canEdit = CategoryService._getGlobal('canEdit')
+    this.isCategoryManager = CategoryService._getGlobal('isCategoryManager')
     this.workspaceId = CategoryService._getGlobal('workspaceId')
     this.categories = CategoryService._getGlobal('categories')
     this._addCategoryCallback = this._addCategoryCallback.bind(this)
@@ -47,6 +48,10 @@ export default class CategoryService {
     if (index > -1) {
       this.categories.splice(index, 1)
     }
+  }
+
+  getIsCategoryManager () {
+    return this.isCategoryManager
   }
 
   getWorkspaceId () {

@@ -46,7 +46,7 @@ export default class ClacoFormService {
   }
 
   getCanSearchEntry () {
-    return this.resourceDetails['search_enabled'] === 'all' || this.canEdit || !this.isAnon
+    return this.resourceDetails['search_enabled'] || this.canEdit || !this.isAnon
   }
 
   getResourceId () {

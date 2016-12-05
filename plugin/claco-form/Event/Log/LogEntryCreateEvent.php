@@ -48,6 +48,12 @@ class LogEntryCreateEvent extends LogGenericEvent
                 'typeName' => $fieldFacet->getInputType(),
             ] ;
         }
+        $keywords = $entry->getKeywords();
+        $details['keywords'] = [];
+
+        foreach ($keywords as $keyword) {
+            $details['keywords'][] = ['id' => $keyword->getId(), 'name' => $keyword->getName()];
+        }
         $clacoForm = $entry->getClacoForm();
         $resourceNode = $clacoForm->getResourceNode();
         $details['resourceId'] = $clacoForm->getId();

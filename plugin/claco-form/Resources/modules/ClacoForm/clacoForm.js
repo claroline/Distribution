@@ -58,7 +58,7 @@ angular.module('ClacoFormModule', [
 .controller('CategoriesManagementCtrl', ['NgTableParams', 'ClacoFormService', 'CategoryService', CategoriesManagementCtrl])
 .controller('KeywordsManagementCtrl', ['NgTableParams', 'ClacoFormService', 'KeywordService', KeywordsManagementCtrl])
 .controller('TemplateManagementCtrl', ['$state', 'ClacoFormService', 'FieldService', TemplateManagementCtrl])
-.controller('EntriesListCtrl', ['NgTableParams', 'ClacoFormService', 'EntryService', 'FieldService', EntriesListCtrl])
+.controller('EntriesListCtrl', ['NgTableParams', 'ClacoFormService', 'EntryService', 'FieldService', 'CategoryService', EntriesListCtrl])
 .controller('EntryCreationCtrl', ['$state', 'ClacoFormService', 'EntryService', 'FieldService', 'KeywordService', EntryCreationCtrl])
 .controller('EntryEditionCtrl', ['$state', '$stateParams', 'ClacoFormService', 'EntryService', 'FieldService', 'CategoryService', 'KeywordService', EntryEditionCtrl])
 .config(Routing)

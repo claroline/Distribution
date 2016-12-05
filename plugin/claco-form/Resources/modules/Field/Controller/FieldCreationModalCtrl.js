@@ -21,7 +21,6 @@ export default class FieldCreationModalCtrl {
       name: null,
       type: null,
       required: true,
-      searchable: true,
       isMetadata: false,
       choices: []
     }

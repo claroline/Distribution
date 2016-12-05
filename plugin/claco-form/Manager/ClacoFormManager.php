@@ -105,7 +105,7 @@ class ClacoFormManager
         $clacoForm->setRandomStartDate(null);
         $clacoForm->setRandomEndDate(null);
 
-        $clacoForm->setSearchEnabled('all');
+        $clacoForm->setSearchEnabled(true);
         $clacoForm->setSearchColumnEnabled(true);
 
         $clacoForm->setDisplayMetadata('none');
@@ -290,7 +290,6 @@ class ClacoFormManager
         $name,
         $type,
         $required = true,
-        $searchable = true,
         $isMetadata = false,
         array $choices = []
     )
@@ -301,7 +300,6 @@ class ClacoFormManager
         $field->setName($name);
         $field->setType($type);
         $field->setRequired($required);
-        $field->setSearchable($searchable);
         $field->setIsMetadata($isMetadata);
         $fieldFacet = $this->facetManager->createField($name, $required, $type, true, $clacoForm->getResourceNode());
 
@@ -324,7 +322,6 @@ class ClacoFormManager
         $name,
         $type,
         $required = true,
-        $searchable = true,
         $isMetadata = false,
         array $oldChoices = [],
         array $newChoices = []
@@ -333,7 +330,6 @@ class ClacoFormManager
         $field->setName($name);
         $field->setType($type);
         $field->setRequired($required);
-        $field->setSearchable($searchable);
         $field->setIsMetadata($isMetadata);
         $fieldFacet = $field->getFieldFacet();
         $this->facetManager->editField($fieldFacet, $name, $required, $type);
@@ -364,7 +360,6 @@ class ClacoFormManager
         $details['type'] = $field->getType();
         $details['name'] = $field->getName();
         $details['required'] = $field->isRequired();
-        $details['searchable'] = $field->isSearchable();
         $details['isMetadata'] = $field->getIsMetadata();
         $details['resourceId'] = $clacoForm->getId();
         $details['resourceNodeId'] = $resourceNode->getId();
@@ -474,26 +469,8 @@ class ClacoFormManager
 
         if ($canEdit) {
             $entries = $this->entryRepo->findAll();
-        } else {
-            switch ($searchEnabled) {
-                case 'all' :
-                    if (is_null($user)) {
-                        $entries = $this->getPublishedEntries($clacoForm);
-                    } else {
-                        $entries = $this->getPublishedAndManageableEntries($clacoForm, $user);
-                    }
-                    break;
-                case 'none' :
-                    if (!is_null($user)) {
-                        $entries = $this->getEntriesByUser($clacoForm, $user);
-                    }
-                    break;
-                case 'manager' :
-                    if (!is_null($user)) {
-                        $entries = $this->getManageableEntries($clacoForm, $user);
-                    }
-                    break;
-            }
+        } elseif ($searchEnabled) {
+            $entries = is_null($user) ? $this->getPublishedEntries($clacoForm) : $this->getPublishedAndManageableEntries($clacoForm, $user);
         }
 
         return $entries;
@@ -631,6 +608,18 @@ class ClacoFormManager
                 'typeName' => $fieldFacet->getInputType(),
             ] ;
         }
+        $categories = $entry->getCategories();
+        $details['categories'] = [];
+
+        foreach ($categories as $category) {
+            $details['categories'][] = ['id' => $category->getId(), 'name' => $category->getName()];
+        }
+        $keywords = $entry->getKeywords();
+        $details['keywords'] = [];
+
+        foreach ($keywords as $keyword) {
+            $details['keywords'][] = ['id' => $keyword->getId(), 'name' => $keyword->getName()];
+        }
         $clacoForm = $entry->getClacoForm();
         $resourceNode = $clacoForm->getResourceNode();
         $details['resourceId'] = $clacoForm->getId();
@@ -746,6 +735,11 @@ class ClacoFormManager
         return $this->categoryRepo->findBy(['clacoForm' => $clacoForm], ['name' => 'ASC']);
     }
 
+    public function getCategoriesByManager(ClacoForm $clacoForm, User $manager)
+    {
+        return $this->categoryRepo->findCategoriesByManager($clacoForm, $manager);
+    }
+
     /*************************************
      * Access to FieldRepository methods *
      *************************************/
@@ -810,6 +804,11 @@ class ClacoFormManager
     public function getPublishedAndManageableEntries(ClacoForm $clacoForm, User $user)
     {
         return $this->entryRepo->findPublishedAndManageableEntries($clacoForm, $user);
+    }
+
+    public function getEntriesByCategories(ClacoForm $clacoForm, array $categories)
+    {
+        return count($categories) > 0 ? $this->entryRepo->findEntriesByCategories($clacoForm, $categories) : [];
     }
 
     /******************

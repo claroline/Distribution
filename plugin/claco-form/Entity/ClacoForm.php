@@ -273,7 +273,7 @@ class ClacoForm extends AbstractResource
 
     public function getSearchEnabled()
     {
-        return !is_null($this->details) && isset($this->details['search_enabled']) ? $this->details['search_enabled'] : 'all';
+        return !is_null($this->details) && isset($this->details['search_enabled']) ? $this->details['search_enabled'] : true;
     }
 
     public function setSearchEnabled($searchEnabled)

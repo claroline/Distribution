@@ -20,8 +20,9 @@ export default class EntryService {
     this.canEdit = EntryService._getGlobal('canEdit')
     this.resourceId = EntryService._getGlobal('resourceId')
     this.resourceDetails = EntryService._getGlobal('resourceDetails')
-    this.myEntries = EntryService._getGlobal('myEntries')
     this.entries = []
+    this.myEntries = EntryService._getGlobal('myEntries')
+    this.managerEntries = EntryService._getGlobal('managerEntries')
     this._updateEntryCallback = this._updateEntryCallback.bind(this)
     this._removeEntryCallback = this._removeEntryCallback.bind(this)
     this.initialize()
@@ -30,32 +31,41 @@ export default class EntryService {
   _updateEntryCallback (data) {
     let entry = JSON.parse(data)
     this.formatEntry(entry)
-    const entriesIndex = this.entries.findIndex(e => e['id'] === entry['id'])
-    const myEntriesIndex = this.myEntries.findIndex(e => e['id'] === entry['id'])
+    const entryIndex = this.entries.findIndex(e => e['id'] === entry['id'])
+    const myEntryIndex = this.myEntries.findIndex(e => e['id'] === entry['id'])
+    const managerEntryIndex = this.managerEntries.findIndex(e => e['id'] === entry['id'])
 
-    if (entriesIndex > -1) {
-      this.entries[entriesIndex] = entry
+    if (entryIndex > -1) {
+      this.entries[entryIndex] = entry
     }
-    if (myEntriesIndex > -1) {
-      this.myEntries[myEntriesIndex] = entry
+    if (myEntryIndex > -1) {
+      this.myEntries[myEntryIndex] = entry
+    }
+    if (managerEntryIndex > -1) {
+      this.managerEntries[managerEntryIndex] = entry
     }
   }
 
   _removeEntryCallback (data) {
     const entry = JSON.parse(data)
-    const entriesIndex = this.entries.findIndex(e => e['id'] === entry['id'])
-    const myEntriesIndex = this.myEntries.findIndex(e => e['id'] === entry['id'])
+    const entryIndex = this.entries.findIndex(e => e['id'] === entry['id'])
+    const myEntryIndex = this.myEntries.findIndex(e => e['id'] === entry['id'])
+    const managerEntryIndex = this.managerEntries.findIndex(e => e['id'] === entry['id'])
 
-    if (entriesIndex > -1) {
-      this.entries.splice(entriesIndex, 1)
+    if (entryIndex > -1) {
+      this.entries.splice(entryIndex, 1)
     }
-    if (myEntriesIndex > -1) {
-      this.myEntries.splice(myEntriesIndex, 1)
+    if (myEntryIndex > -1) {
+      this.myEntries.splice(myEntryIndex, 1)
+    }
+    if (managerEntryIndex > -1) {
+      this.managerEntries.splice(managerEntryIndex, 1)
     }
   }
 
   initialize () {
     this.myEntries.forEach(e => this.formatEntry(e))
+    this.managerEntries.forEach(e => this.formatEntry(e))
     const url = Routing.generate('claro_claco_form_entries_list', {clacoForm: this.resourceId})
     this.$http.get(url).then(d => {
       const data = JSON.parse(d['data'])
@@ -72,6 +82,10 @@ export default class EntryService {
 
   getMyEntries () {
     return this.myEntries
+  }
+
+  getManagerEntries () {
+    return this.managerEntries
   }
 
   getEntry (entryId) {
@@ -94,11 +108,15 @@ export default class EntryService {
   }
 
   getCanEditEntry (entryId) {
-    return this.canEdit || (this.resourceDetails['edition_enabled'] && this.isMyEntry(entryId))
+    return this.canEdit || this.isManagerEntry(entryId) || (this.resourceDetails['edition_enabled'] && this.isMyEntry(entryId))
   }
 
-  isMyEntry(entryId) {
+  isMyEntry (entryId) {
     return this.myEntries.find(e => e['id'] === entryId) !== undefined
+  }
+
+  isManagerEntry (entryId) {
+    return this.managerEntries.find(e => e['id'] === entryId) !== undefined
   }
 
   createEntry (resourceId, entryData, entryTitle, keywordsData = []) {
@@ -173,7 +191,6 @@ export default class EntryService {
           entry[fieldLabel] = v['fieldFacetValue']['value']
       }
     })
-    entry['actions'] = this.getCanEditEntry(entry['id'])
   }
 
   deleteEntry (entry, callback = null) {

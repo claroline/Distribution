@@ -34,7 +34,6 @@ class LogFieldCreateEvent extends LogGenericEvent
         $details['type'] = $field->getType();
         $details['name'] = $field->getName();
         $details['required'] = $field->isRequired();
-        $details['searchable'] = $field->isSearchable();
         $details['isMetadata'] = $field->getIsMetadata();
 
         if (count($choices) > 0) {
