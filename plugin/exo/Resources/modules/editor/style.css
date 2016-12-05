@@ -449,25 +449,25 @@ a[role=tab] {
   overflow: auto;
 }
 
-.quiz-editor .match-items #popover-place-holder{
+.quiz-editor .match-items .popover-container{
   position: relative;
   flex-grow: 6;
 }
 
-.quiz-editor .match-items #popover-place-holder .popover {
+.quiz-editor .match-items .popover-container .popover {
   max-width: 450px !important;
   min-width: 250px !important;
 }
 
-.quiz-editor .match-items #popover-place-holder .popover .popover-title{
+.quiz-editor .match-items.popover-container .popover .popover-title{
   display: block;
 }
-.quiz-editor .match-items #popover-place-holder .popover .popover-title:after {
+.quiz-editor .match-items .popover-container .popover .popover-title:after {
   clear: both;
-    content: ".";
-    display: inline-block;
-    height: 0;
-    visibility: hidden;
+  content: ".";
+  display: inline-block;
+  height: 0;
+  visibility: hidden;
 }
 
 .quiz-editor .match-items .item {

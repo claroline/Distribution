@@ -18,8 +18,6 @@ function getPopoverPosition(connectionClass, id){
 }
 
 function initJsPlumb(id, instance) {
-  instance.setSuspendDrawing(false)
-
   // defaults parameters for all connections
   instance.importDefaults({
     Anchors: ['RightMiddle', 'LeftMiddle'],
@@ -203,7 +201,6 @@ class Match extends Component {
 
     initJsPlumb(this.props.item.id, this.jsPlumb)
     drawSolutions(this.props.item.solutions, this.jsPlumb)
-
     // new connection created event
     this.jsPlumb.bind('connection', function (data) {
       data.connection.setType('selected')
@@ -238,7 +235,7 @@ class Match extends Component {
       // check that the connection is not already in jsPlumbConnections before creating it
       const list = this.jsPlumb.getConnections().filter(el => el.sourceId === connection.sourceId && el.targetId === connection.targetId )
       return list.length === 0
-    })
+    }.bind(this))
 
     // configure connection
     this.jsPlumb.bind('click', function (connection) {
@@ -281,15 +278,17 @@ class Match extends Component {
     const isLeftItem = type === 'source'
     const selector = '#' +  id
     const anchor = isLeftItem ? 'RightMiddle' : 'LeftMiddle'
+    const jsPlumbSelector = this.jsPlumb.getSelector(selector)
+
     if (isLeftItem) {
-      this.jsPlumb.addEndpoint(this.jsPlumb.getSelector(selector), {
+      this.jsPlumb.addEndpoint(jsPlumbSelector, {
         anchor: anchor,
         cssClass: 'endPoints',
         isSource: true,
         maxConnections: -1
       })
     } else {
-      this.jsPlumb.addEndpoint(this.jsPlumb.getSelector(selector), {
+      this.jsPlumb.addEndpoint(jsPlumbSelector, {
         anchor: anchor,
         cssClass: 'endPoints',
         isTarget: true,
@@ -330,7 +329,7 @@ class Match extends Component {
 
   // click outside the popover but inside the question items row will close the popover
   handlePopoverFocusOut(event){
-    const elem = event.target.closest('#popover-place-holder')
+    const elem = event.target.closest('#popover-place-holder-' + this.props.item.id)
     if(null === elem){
       this.closePopover()
     }
@@ -354,6 +353,8 @@ class Match extends Component {
     this.jsPlumb.detachEveryConnection()
     // use reset instead of deleteEveryEndpoint because reset also remove event listeners
     this.jsPlumb.reset()
+    this.jsPlumb = null
+    delete this.jsPlumb
   }
 
   render() {
@@ -432,7 +433,7 @@ class Match extends Component {
               </button>
             </div>
           </div>
-          <div id={`popover-place-holder-${this.props.item.id}`} ref="popoverContainer">
+          <div id={`popover-place-holder-${this.props.item.id}`} className="popover-container" ref="popoverContainer">
             { this.state.popover.visible &&
                 <MatchLinkPopover
                   handleConnectionDelete={this.removeConnection.bind(this)}
