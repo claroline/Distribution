@@ -8,8 +8,8 @@ import get from 'lodash/get'
 
 /* global jsPlumb */
 
-function getPopoverPosition(connectionClass){
-  const containerRect =  document.getElementById('popover-place-holder').getBoundingClientRect()
+function getPopoverPosition(connectionClass, id){
+  const containerRect =  document.getElementById('popover-place-holder-' + id).getBoundingClientRect()
   const connectionRect =  document.querySelectorAll('.' + connectionClass)[0].getBoundingClientRect()
   return {
     left: 0 - connectionRect.width / 2 + 20, // 20 is the endPoint width
@@ -212,7 +212,7 @@ class Match extends Component {
       const secondSetId = data.targetId.replace('target_', '')
       const connectionClass = 'connection-' + firstSetId + '-' + secondSetId
       data.connection.addClass(connectionClass)
-      const positions = getPopoverPosition(connectionClass)
+      const positions = getPopoverPosition(connectionClass, this.props.item.id)
       const solution = {
         firstSetId: firstSetId,
         secondSetId: secondSetId,
@@ -236,7 +236,7 @@ class Match extends Component {
 
     this.jsPlumb.bind('beforeDrop', function (connection) {
       // check that the connection is not already in jsPlumbConnections before creating it
-      const list = jsPlumb.getConnections().filter(el => el.sourceId === connection.sourceId && el.targetId === connection.targetId )
+      const list = this.jsPlumb.getConnections().filter(el => el.sourceId === connection.sourceId && el.targetId === connection.targetId )
       return list.length === 0
     })
 
@@ -247,7 +247,7 @@ class Match extends Component {
       const firstSetId = connection.sourceId.replace('source_', '')
       const secondSetId = connection.targetId.replace('target_', '')
       const connectionClass = 'connection-' + firstSetId + '-' + secondSetId
-      const positions = getPopoverPosition(connectionClass)
+      const positions = getPopoverPosition(connectionClass, this.props.item.id)
       const solutionIndex = this.props.item.solutions.findIndex(el => el.firstSetId === firstSetId && el.secondSetId === secondSetId)
 
       this.setState({
@@ -432,7 +432,7 @@ class Match extends Component {
               </button>
             </div>
           </div>
-          <div id="popover-place-holder" ref="popoverContainer">
+          <div id={`popover-place-holder-${this.props.item.id}`} ref="popoverContainer">
             { this.state.popover.visible &&
                 <MatchLinkPopover
                   handleConnectionDelete={this.removeConnection.bind(this)}
