@@ -17,11 +17,11 @@ function getPopoverPosition(connectionClass){
   }
 }
 
-function initJsPlumb(id) {
-  jsPlumb.setSuspendDrawing(false)
+function initJsPlumb(id, instance) {
+  instance.setSuspendDrawing(false)
 
   // defaults parameters for all connections
-  jsPlumb.importDefaults({
+  instance.importDefaults({
     Anchors: ['RightMiddle', 'LeftMiddle'],
     ConnectionsDetachable: true,
     Connector: 'Straight',
@@ -31,7 +31,7 @@ function initJsPlumb(id) {
     PaintStyle: {strokeStyle: '#777', lineWidth: 4}
   })
 
-  jsPlumb.registerConnectionTypes({
+  instance.registerConnectionTypes({
     'valid': {
       paintStyle     : { strokeStyle: '#5CB85C', lineWidth: 5 },
       hoverPaintStyle: { strokeStyle: 'green',   lineWidth: 6 }
@@ -50,12 +50,12 @@ function initJsPlumb(id) {
     }
   })
 
-  jsPlumb.setContainer(document.getElementById('match-question-container-id-' + id))
+  instance.setContainer(document.getElementById('match-question-container-id-' + id))
 }
 
-function drawSolutions(solutions){
+function drawSolutions(solutions, instance){
   for (const solution of solutions) {
-    jsPlumb.connect({
+    instance.connect({
       source: 'source_' + solution.firstId,
       target: 'target_' + solution.secondId,
       type: solution.score > 0 ? 'valid':'invalid'
@@ -187,6 +187,7 @@ class Match extends Component {
 
   constructor(props) {
     super(props)
+    this.jsPlumb = jsPlumb.getInstance()
     this.state = {
       popover: {
         visible: false,
@@ -200,11 +201,11 @@ class Match extends Component {
 
   componentDidMount() {
 
-    initJsPlumb(this.props.item.id)
-    drawSolutions(this.props.item.solutions)
+    initJsPlumb(this.props.item.id, this.jsPlumb)
+    drawSolutions(this.props.item.solutions, this.jsPlumb)
 
     // new connection created event
-    jsPlumb.bind('connection', function (data) {
+    this.jsPlumb.bind('connection', function (data) {
       data.connection.setType('selected')
 
       const firstSetId = data.sourceId.replace('source_', '')
@@ -233,14 +234,14 @@ class Match extends Component {
       })
     }.bind(this))
 
-    jsPlumb.bind('beforeDrop', function (connection) {
+    this.jsPlumb.bind('beforeDrop', function (connection) {
       // check that the connection is not already in jsPlumbConnections before creating it
       const list = jsPlumb.getConnections().filter(el => el.sourceId === connection.sourceId && el.targetId === connection.targetId )
       return list.length === 0
     })
 
     // configure connection
-    jsPlumb.bind('click', function (connection) {
+    this.jsPlumb.bind('click', function (connection) {
       connection.setType('selected')
 
       const firstSetId = connection.sourceId.replace('source_', '')
@@ -266,7 +267,7 @@ class Match extends Component {
     // https://jsplumbtoolkit.com/community/doc/miscellaneous-examples.html
     // Remove all Endpoints for the element, deleting their Connections.
     // not sure about this one especially concerning events
-    jsPlumb.removeAllEndpoints(elemId)
+    this.jsPlumb.removeAllEndpoints(elemId)
     this.props.onChange(
       actions.removeSet(isLeftSet, id)
     )
@@ -281,14 +282,14 @@ class Match extends Component {
     const selector = '#' +  id
     const anchor = isLeftItem ? 'RightMiddle' : 'LeftMiddle'
     if (isLeftItem) {
-      jsPlumb.addEndpoint(jsPlumb.getSelector(selector), {
+      this.jsPlumb.addEndpoint(this.jsPlumb.getSelector(selector), {
         anchor: anchor,
         cssClass: 'endPoints',
         isSource: true,
         maxConnections: -1
       })
     } else {
-      jsPlumb.addEndpoint(jsPlumb.getSelector(selector), {
+      this.jsPlumb.addEndpoint(this.jsPlumb.getSelector(selector), {
         anchor: anchor,
         cssClass: 'endPoints',
         isTarget: true,
@@ -298,7 +299,7 @@ class Match extends Component {
   }
 
   removeConnection(firstSetId, secondSetId){
-    jsPlumb.detach(this.state.jsPlumbConnection)
+    this.jsPlumb.detach(this.state.jsPlumbConnection)
     this.setState({
       popover: {
         visible: false
@@ -314,7 +315,7 @@ class Match extends Component {
 
   closePopover(){
     this.setState({popover: {visible: false}})
-    const list = jsPlumb.getConnections()
+    const list = this.jsPlumb.getConnections()
     for(const conn of list){
       let type = 'valid'
       const firstSetId = conn.sourceId.replace('source_', '')
@@ -345,8 +346,14 @@ class Match extends Component {
   componentDidUpdate(prevProps){
     const repaint = (prevProps.item.firstSet.length > this.props.item.firstSet.length || prevProps.item.secondSet.length > this.props.item.secondSet.length) || get(this.props.item, '_touched')
     if(repaint) {
-      jsPlumb.repaintEverything()
+      this.jsPlumb.repaintEverything()
     }
+  }
+
+  componentWillUnmount(){
+    this.jsPlumb.detachEveryConnection()
+    // use reset instead of deleteEveryEndpoint because reset also remove event listeners
+    this.jsPlumb.reset()
   }
 
   render() {
