@@ -431,6 +431,11 @@ stat_have_responded: have responded
 sum_score_choice_at_least_one_correct_answer_error: At least one answer must have a positive score.
 sum_score_choice_no_correct_answer_error: The correct answer must have a positive score.
 should_be_greater_or_equal_to_zero: This value should be greater or equals to 0
+set_penalty_label: Penalty for any wrong association
+set_shuffle_labels_and_proposals: Shuffle items
+set_add_item: Add an item
+set_add_odd: Add an odd
+set_add_set: Add a set
 
 # T
 temporary_mark: Temporary score
