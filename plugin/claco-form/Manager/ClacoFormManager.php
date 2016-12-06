@@ -572,6 +572,15 @@ class ClacoFormManager
             if (!is_null($field)) {
                 $fieldValue = $this->createFieldValue($entry, $field, $value, $user);
                 $entry->addFieldValue($fieldValue);
+                $type = $field->getType();
+
+                if ($this->facetManager->isTypeWithChoices($type)) {
+                    $categories = $this->getCategoriesFromFieldAndValue($field, $value);
+
+                    foreach ($categories as $category) {
+                        $entry->addCategory($category);
+                    }
+                }
             }
         }
         foreach ($keywordsData as $name) {
@@ -599,12 +608,15 @@ class ClacoFormManager
         $entry->setTitle($title);
         $entry->emptyCategories();
         $entry->emptyKeywords();
+        $toRemove = [];
+        $toAdd = [];
+        $currentCategories = [];
 
         foreach ($categoriesIds as $categoryId) {
             $category = $this->categoryRepo->findOneById($categoryId);
 
             if (!is_null($category)) {
-                $entry->addCategory($category);
+                $currentCategories[$category->getId()] = $category;
             }
         }
         foreach ($entryData as $key => $value) {
@@ -612,8 +624,34 @@ class ClacoFormManager
 
             if (!is_null($fieldValue)) {
                 $fieldFacetValue = $fieldValue->getFieldFacetValue();
+                $field = $fieldValue->getField();
+                $type = $field->getType();
+
+                if ($this->facetManager->isTypeWithChoices($type)) {
+                    $oldValue = $fieldFacetValue->getValue();
+                    $categoriesToRemove = $this->getCategoriesFromFieldAndValue($field, $oldValue);
+                    $categoriesToAdd = $this->getCategoriesFromFieldAndValue($field, $value);
+
+                    foreach ($categoriesToRemove as $catId => $cat) {
+                        $toRemove[$catId] = $cat;
+                    }
+                    foreach ($categoriesToAdd as $catId => $cat) {
+                        $toAdd[$catId] = $cat;
+                    }
+                }
                 $this->editFieldFacetValue($fieldFacetValue, $value);
             }
+        }
+        foreach ($toRemove as $categoryId => $category) {
+            if (isset($currentCategories[$categoryId])) {
+                unset($currentCategories[$categoryId]);
+            }
+        }
+        foreach ($currentCategories as $category) {
+            $entry->addCategory($category);
+        }
+        foreach ($toAdd as $category) {
+            $entry->addCategory($category);
         }
         foreach ($keywordsData as $name) {
             if ($clacoForm->isNewKeywordsEnabled()) {
@@ -631,6 +669,31 @@ class ClacoFormManager
         $this->om->endFlushSuite();
 
         return $entry;
+    }
+
+    private function getCategoriesFromFieldAndValue(Field $field, $value)
+    {
+        $categories = [];
+        $choiceCategories = [];
+        $values = is_array($value) ? $value : [$value];
+
+        foreach ($values as $v) {
+            $fccs = $this->getFieldChoicesCategoriesByFieldAndValue($field, $v);
+
+            foreach ($fccs as $fcc) {
+                $choiceCategories[] = $fcc;
+            }
+        }
+        foreach ($choiceCategories as $choiceCategory) {
+            $choiceValue = $choiceCategory->getValue();
+
+            if (in_array($choiceValue, $values, true)) {
+                $category = $choiceCategory->getCategory();
+                $categories[$category->getId()] = $category;
+            }
+        }
+
+        return $categories;
     }
 
     public function deleteEntry(Entry $entry)
@@ -878,6 +941,11 @@ class ClacoFormManager
     public function getFieldChoiceCategoryByFieldAndChoice(Field $field, FieldFacetChoice $choice)
     {
         return $this->fieldChoiceCategoryRepo->findOneBy(['field' => $field, 'fieldFacetChoice' => $choice]);
+    }
+
+    public function getFieldChoicesCategoriesByFieldAndValue(Field $field, $value)
+    {
+        return $this->fieldChoiceCategoryRepo->findBy(['field' => $field, 'value' => $value]);
     }
 
     /******************
