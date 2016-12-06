@@ -1,6 +1,7 @@
 add_choice: Add a choice
 add_entry: Add an entry
 all_entries: All entries
+associate_category: Associate a category
 categories_management: Categories management
 category_notify_addition: Notify (addition)
 category_notify_edition: Notify (edition)
@@ -91,6 +92,7 @@ optional: Optional
 random_entries: Random entries
 random_entry: Random entry
 random_mode: Random mode
+remove_category: Remove category
 search_mode: List/Search mode
 template_duplicated_variables_message: Some fields are used more than once.
 template_management: Template management

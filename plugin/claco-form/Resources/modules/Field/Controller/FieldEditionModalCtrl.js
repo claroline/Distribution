@@ -11,9 +11,10 @@
 /*global Translator*/
 
 export default class FieldEditionModalCtrl {
-  constructor($http, $uibModalInstance, FieldService, resourceId, field, title, callback) {
+  constructor($http, $uibModalInstance, FieldService, CategoryService, resourceId, field, title, callback) {
     this.$http = $http
     this.$uibModalInstance = $uibModalInstance
+    this.CategoryService = CategoryService
     this.resourceId = resourceId
     this.source = field
     this.title = title
@@ -35,6 +36,7 @@ export default class FieldEditionModalCtrl {
     this.index = 1
     this.choices = []
     this.choicesErrors = {}
+    this.categories = CategoryService.getCategories()
     this.initializeField()
     this.initializeChoices()
   }
@@ -52,8 +54,28 @@ export default class FieldEditionModalCtrl {
     if (this.source['fieldFacet']['field_facet_choices'].length > 0) {
       this.source['fieldFacet']['field_facet_choices'].forEach(c => {
         const id = c['id']
-        this.oldChoices.push({index: id, value: c['label']})
+        this.oldChoices.push({index: id, value: c['label'], category: null, categoryEnabled: false})
         this.oldChoicesErrors[id] = null
+      })
+      const choicesCategoriesUrl = Routing.generate('claro_claco_form_field_choices_categories_retrieve', {field: this.source['id']})
+      this.$http.get(choicesCategoriesUrl).then(d => {
+        if (d['status'] === 200) {
+          const choicesCategories = JSON.parse(d['data'])
+          choicesCategories.forEach(cc => {
+            const id = cc['fieldFacetChoice']['id']
+            const oldChoiceIndex = this.oldChoices.findIndex(oc => oc['index'] === id)
+
+            if (oldChoiceIndex > -1) {
+              const selectedCategory = this.categories.find(c => c['id'] === cc['category']['id'])
+
+              if (selectedCategory) {
+                this.oldChoices[oldChoiceIndex]['category'] = selectedCategory
+                this.oldChoices[oldChoiceIndex]['categoryEnabled'] = true
+              }
+            }
+          })
+          console.log(this.oldChoices)
+        }
       })
     } else {
       this.choices = [{index: this.index, value: ''}]
@@ -168,7 +190,7 @@ export default class FieldEditionModalCtrl {
   }
 
   addChoice () {
-    this.choices.push({index: this.index, value: ''})
+    this.choices.push({index: this.index, value: '', category: null, categoryEnabled: false})
     this.choicesErrors[this.index] = null
     ++this.index
   }
@@ -188,6 +210,40 @@ export default class FieldEditionModalCtrl {
     if (choiceIndex > -1) {
       this.choices.splice(choiceIndex, 1)
       delete this.choicesErrors[index]
+    }
+  }
+
+  enableOldChoiceCategory (index) {
+    const choiceIndex = this.oldChoices.findIndex(c => c['index'] === index)
+
+    if (choiceIndex > -1) {
+      this.oldChoices[choiceIndex]['categoryEnabled'] = true
+    }
+  }
+
+  disableOldChoiceCategory (index) {
+    const choiceIndex = this.oldChoices.findIndex(c => c['index'] === index)
+
+    if (choiceIndex > -1) {
+      this.oldChoices[choiceIndex]['categoryEnabled'] = false
+      this.oldChoices[choiceIndex]['category'] = null
+    }
+  }
+
+  enableChoiceCategory (index) {
+    const choiceIndex = this.choices.findIndex(c => c['index'] === index)
+
+    if (choiceIndex > -1) {
+      this.choices[choiceIndex]['categoryEnabled'] = true
+    }
+  }
+
+  disableChoiceCategory (index) {
+    const choiceIndex = this.choices.findIndex(c => c['index'] === index)
+
+    if (choiceIndex > -1) {
+      this.choices[choiceIndex]['categoryEnabled'] = false
+      this.choices[choiceIndex]['category'] = null
     }
   }
 }

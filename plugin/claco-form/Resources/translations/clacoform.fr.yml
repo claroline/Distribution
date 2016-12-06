@@ -1,6 +1,7 @@
 add_choice: Ajouter un choix
 add_entry: Ajouter une fiche
 all_entries: Toutes les fiches
+associate_category: Associer une catégorie
 categories_management: Gestion des catégories
 category_notify_addition: Notifier (ajout)
 category_notify_edition: Notifier (modification)
@@ -91,6 +92,7 @@ optional: Optionel
 random_entries: Fiches aléatoires
 random_entry: Fiche aléatoire
 random_mode: Mode aléatoire
+remove_category: Retirer la catégorie
 search_mode: Mode liste/recherche
 template_duplicated_variables_message: Certains champs sont utilisés plus d'une fois.
 template_management: Gestion du template

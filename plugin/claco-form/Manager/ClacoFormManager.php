@@ -15,6 +15,7 @@ use Claroline\ClacoFormBundle\Entity\Category;
 use Claroline\ClacoFormBundle\Entity\ClacoForm;
 use Claroline\ClacoFormBundle\Entity\Entry;
 use Claroline\ClacoFormBundle\Entity\Field;
+use Claroline\ClacoFormBundle\Entity\FieldChoiceCategory;
 use Claroline\ClacoFormBundle\Entity\FieldValue;
 use Claroline\ClacoFormBundle\Entity\Keyword;
 use Claroline\ClacoFormBundle\Event\Log\LogCategoryCreateEvent;
@@ -33,6 +34,7 @@ use Claroline\ClacoFormBundle\Event\Log\LogKeywordCreateEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogKeywordDeleteEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogKeywordEditEvent;
 use Claroline\CoreBundle\Entity\Facet\FieldFacet;
+use Claroline\CoreBundle\Entity\Facet\FieldFacetChoice;
 use Claroline\CoreBundle\Entity\Facet\FieldFacetValue;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
@@ -57,6 +59,7 @@ class ClacoFormManager
 
     private $categoryRepo;
     private $entryRepo;
+    private $fieldChoiceCategoryRepo;
     private $fieldRepo;
     private $fieldValueRepo;
     private $keywordRepo;
@@ -84,6 +87,7 @@ class ClacoFormManager
         $this->tokenStorage = $tokenStorage;
         $this->categoryRepo = $om->getRepository('ClarolineClacoFormBundle:Category');
         $this->entryRepo = $om->getRepository('ClarolineClacoFormBundle:Entry');
+        $this->fieldChoiceCategoryRepo = $om->getRepository('ClarolineClacoFormBundle:FieldChoiceCategory');
         $this->fieldRepo = $om->getRepository('ClarolineClacoFormBundle:Field');
         $this->fieldValueRepo = $om->getRepository('ClarolineClacoFormBundle:FieldValue');
         $this->keywordRepo = $om->getRepository('ClarolineClacoFormBundle:Keyword');
@@ -305,7 +309,11 @@ class ClacoFormManager
 
         if ($this->facetManager->isTypeWithChoices($type)) {
             foreach ($choices as $choice) {
-                $this->facetManager->addFacetFieldChoice($choice, $fieldFacet);
+                $fieldFacetChoice = $this->facetManager->addFacetFieldChoice($choice['value'], $fieldFacet);
+
+                if (!empty($choice['categoryId'])) {
+                    $this->createFieldChoiceCategory($field, $choice['categoryId'], $choice['value'], $fieldFacetChoice);
+                }
             }
         }
         $field->setFieldFacet($fieldFacet);
@@ -335,10 +343,14 @@ class ClacoFormManager
         $this->facetManager->editField($fieldFacet, $name, $required, $type);
 
         if ($this->facetManager->isTypeWithChoices($type)) {
-            $this->updateChoices($fieldFacet, $oldChoices);
+            $this->updateChoices($field, $fieldFacet, $oldChoices);
 
             foreach ($newChoices as $choice) {
-                $this->facetManager->addFacetFieldChoice($choice, $fieldFacet);
+                $fieldFacetChoice = $this->facetManager->addFacetFieldChoice($choice['value'], $fieldFacet);
+
+                if (!empty($choice['categoryId'])) {
+                    $this->createFieldChoiceCategory($field, $choice['categoryId'], $choice['value'], $fieldFacetChoice);
+                }
             }
         } else {
             $this->cleanChoices($fieldFacet);
@@ -377,7 +389,7 @@ class ClacoFormManager
         $this->eventDispatcher->dispatch('log', $event);
     }
 
-    public function updateChoices(FieldFacet $fieldFacet, array $updatedChoices)
+    public function updateChoices(Field $field, FieldFacet $fieldFacet, array $updatedChoices)
     {
         $choices = $fieldFacet->getFieldFacetChoicesArray();
 
@@ -386,11 +398,31 @@ class ClacoFormManager
             $index = 0;
             $found = false;
 
-            foreach ($updatedChoices as $updateChoice) {
-                if ($updateChoice['index'] === $id) {
+            foreach ($updatedChoices as $updatedChoice) {
+                if ($updatedChoice['index'] === $id) {
                     $found = true;
-                    $choice->setLabel($updateChoice['value']);
+                    $choice->setLabel($updatedChoice['value']);
                     $this->om->persist($choice);
+                    $choiceCategory = $this->getFieldChoiceCategoryByFieldAndChoice($field, $choice);
+
+                    if (is_null($choiceCategory)) {
+                        if (!empty($updatedChoice['categoryId'])) {
+                            $this->createFieldChoiceCategory($field, $updatedChoice['categoryId'], $updatedChoice['value'], $choice);
+                        }
+                    } else {
+                        $oldCategory = $choiceCategory->getCategory();
+
+                        if ($oldCategory->getId() === $updatedChoice['categoryId']) {
+                            $choiceCategory->setValue($updatedChoice['value']);
+                            $this->om->persist($choiceCategory);
+                        } else {
+                            $this->om->remove($choiceCategory);
+
+                            if (!empty($updatedChoice['categoryId'])) {
+                                $this->createFieldChoiceCategory($field, $updatedChoice['categoryId'], $updatedChoice['value'], $choice);
+                            }
+                        }
+                    }
                     break;
                 }
                 ++$index;
@@ -411,6 +443,29 @@ class ClacoFormManager
             $this->om->remove($choice);
         }
         $this->om->flush();
+    }
+
+    public function persistFieldChoiceCategory(FieldChoiceCategory $fieldChoiceCategory)
+    {
+        $this->om->persist($fieldChoiceCategory);
+        $this->om->flush();
+    }
+
+    public function createFieldChoiceCategory(Field $field, $categoryId, $value, FieldFacetChoice $fieldFacetChoice = null)
+    {
+        $fieldChoiceCategory = null;
+        $category = $this->categoryRepo->findOneById($categoryId);
+
+        if (!is_null($category)) {
+            $fieldChoiceCategory = new FieldChoiceCategory();
+            $fieldChoiceCategory->setField($field);
+            $fieldChoiceCategory->setCategory($category);
+            $fieldChoiceCategory->setValue($value);
+            $fieldChoiceCategory->setFieldFacetChoice($fieldFacetChoice);
+            $this->persistFieldChoiceCategory($fieldChoiceCategory);
+        }
+
+        return $fieldChoiceCategory;
     }
 
     public function persistKeyword(Keyword $keyword)
@@ -809,6 +864,20 @@ class ClacoFormManager
     public function getEntriesByCategories(ClacoForm $clacoForm, array $categories)
     {
         return count($categories) > 0 ? $this->entryRepo->findEntriesByCategories($clacoForm, $categories) : [];
+    }
+
+    /***************************************************
+     * Access to FieldChoiceCategoryRepository methods *
+     ***************************************************/
+
+    public function getFieldChoicesCategoriesByField(Field $field)
+    {
+        return $this->fieldChoiceCategoryRepo->findBy(['field' => $field]);
+    }
+
+    public function getFieldChoiceCategoryByFieldAndChoice(Field $field, FieldFacetChoice $choice)
+    {
+        return $this->fieldChoiceCategoryRepo->findOneBy(['field' => $field, 'fieldFacetChoice' => $choice]);
     }
 
     /******************

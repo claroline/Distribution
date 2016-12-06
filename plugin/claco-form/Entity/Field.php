@@ -12,6 +12,7 @@
 namespace Claroline\ClacoFormBundle\Entity;
 
 use Claroline\CoreBundle\Entity\Facet\FieldFacet;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation\SerializedName;
@@ -87,6 +88,19 @@ class Field
      */
     protected $isMetadata = false;
 
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="Claroline\ClacoFormBundle\Entity\FieldChoiceCategory",
+     *     mappedBy="field"
+     * )
+     */
+    protected $fieldChoiceCategories;
+
+    public function __construct()
+    {
+        $this->fieldChoiceCategories = new ArrayCollection();
+    }
+
     public function getId()
     {
         return $this->id;
@@ -155,5 +169,10 @@ class Field
     public function setIsMetadata($isMetadata)
     {
         $this->isMetadata = $isMetadata;
+    }
+
+    public function getFieldChoiceCategories()
+    {
+        return $this->fieldChoiceCategories->toArray();
     }
 }

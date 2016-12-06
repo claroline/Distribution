@@ -11,9 +11,10 @@
 /*global Translator*/
 
 export default class FieldCreationModalCtrl {
-  constructor($http, $uibModalInstance, FieldService, resourceId, title, callback) {
+  constructor($http, $uibModalInstance, FieldService, CategoryService, resourceId, title, callback) {
     this.$http = $http
     this.$uibModalInstance = $uibModalInstance
+    this.CategoryService = CategoryService
     this.resourceId = resourceId
     this.title = title
     this.callback = callback
@@ -30,9 +31,10 @@ export default class FieldCreationModalCtrl {
     this.types = FieldService.getTypes()
     this.type = this.types[0]
     this.index = 1
-    this.choices = [{index: this.index, value: ''}]
+    this.choices = [{index: this.index, value: '', category: null, categoryEnabled: false}]
     this.choicesErrors = {}
     this.choicesErrors[this.index] = null
+    this.categories = CategoryService.getCategories()
     ++this.index
   }
 
@@ -126,7 +128,7 @@ export default class FieldCreationModalCtrl {
   }
 
   addChoice () {
-    this.choices.push({index: this.index, value: ''})
+    this.choices.push({index: this.index, value: '', category: null, categoryEnabled: false})
     this.choicesErrors[this.index] = null
     ++this.index
   }
@@ -137,6 +139,23 @@ export default class FieldCreationModalCtrl {
     if (choiceIndex > -1) {
       this.choices.splice(choiceIndex, 1)
       delete this.choicesErrors[index]
+    }
+  }
+
+  enableChoiceCategory (index) {
+    const choiceIndex = this.choices.findIndex(c => c['index'] === index)
+
+    if (choiceIndex > -1) {
+      this.choices[choiceIndex]['categoryEnabled'] = true
+    }
+  }
+
+  disableChoiceCategory (index) {
+    const choiceIndex = this.choices.findIndex(c => c['index'] === index)
+
+    if (choiceIndex > -1) {
+      this.choices[choiceIndex]['categoryEnabled'] = false
+      this.choices[choiceIndex]['category'] = null
     }
   }
 }

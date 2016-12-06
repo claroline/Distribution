@@ -172,7 +172,8 @@ class ClacoFormController extends Controller
 
         if ($choicesData) {
             foreach ($choicesData as $choice) {
-                $choices[] = $choice['value'];
+                $categoryId = isset($choice['category']['id']) ? $choice['category']['id'] : null;
+                $choices[] = ['value' => $choice['value'], 'categoryId' => $categoryId];
             }
         }
         $required = is_bool($fieldData['required']) ? $fieldData['required'] : $fieldData['required'] === 'true';
@@ -216,9 +217,14 @@ class ClacoFormController extends Controller
         $oldChoices = $oldChoicesData ? $oldChoicesData : [];
         $newChoices = [];
 
+        foreach ($oldChoices as $key => $choice) {
+            $categoryId = isset($choice['category']['id']) ? $choice['category']['id'] : null;
+            $oldChoices[$key]['categoryId'] = $categoryId;
+        }
         if ($choicesData) {
             foreach ($choicesData as $choice) {
-                $newChoices[] = $choice['value'];
+                $categoryId = isset($choice['category']['id']) ? $choice['category']['id'] : null;
+                $newChoices[] = ['value' => $choice['value'], 'categoryId' => $categoryId];
             }
         }
         $required = is_bool($fieldData['required']) ? $fieldData['required'] : $fieldData['required'] === 'true';
@@ -290,6 +296,32 @@ class ClacoFormController extends Controller
         );
 
         return new JsonResponse($serializedField, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/claco/form/field/{field}/choices/categories/retrieve",
+     *     name="claro_claco_form_field_choices_categories_retrieve",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     *
+     * Retrieves categories associated to choices from a field
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function fieldChoicesCategoriesRetrieveAction(Field $field)
+    {
+        $clacoForm = $field->getClacoForm();
+        $this->clacoFormManager->checkRight($clacoForm, 'EDIT');
+        $fieldChoicesCategories = $this->clacoFormManager->getFieldChoicesCategoriesByField($field);
+        $serializedFieldChoicesCategories = $this->serializer->serialize(
+            $fieldChoicesCategories,
+            'json',
+            SerializationContext::create()->setGroups(['api_facet_admin'])
+        );
+
+        return new JsonResponse($serializedFieldChoicesCategories, 200);
     }
 
     /**

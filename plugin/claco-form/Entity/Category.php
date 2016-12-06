@@ -28,7 +28,7 @@ class Category
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_claco_form", "api_user_min"})
+     * @Groups({"api_claco_form", "api_user_min", "api_facet_admin"})
      * @SerializedName("id")
      */
     protected $id;
@@ -36,7 +36,7 @@ class Category
     /**
      * @ORM\Column(name="category_name")
      * @Assert\NotBlank()
-     * @Groups({"api_claco_form", "api_user_min"})
+     * @Groups({"api_claco_form", "api_user_min", "api_facet_admin"})
      * @SerializedName("name")
      */
     protected $name;

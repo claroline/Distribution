@@ -34,11 +34,35 @@
                     <div class="input-group">
                         <input type="text" class="form-control" ng-model="choice['value']">
                         <span class="input-group-btn">
+                            <button type="button" class="btn btn-default"
+                                    data-toggle="tooltip"
+                                    data-placement="top"
+                                    title="{{ 'associate_category'|trans:{}:'clacoform' }}"
+                                    ng-click="cfc.enableOldChoiceCategory(choice['index'])"
+                                    ng-if="!choice['categoryEnabled']"
+                            >
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button type="button" class="btn btn-warning"
+                                    data-toggle="tooltip"
+                                    data-placement="top"
+                                    title="{{ 'remove_category'|trans:{}:'clacoform' }}"
+                                    ng-click="cfc.disableOldChoiceCategory(choice['index'])"
+                                    ng-if="choice['categoryEnabled']"
+                            >
+                                <i class="fa fa-bars"></i>
+                            </button>
                             <button type="button" class="btn btn-danger" ng-click="cfc.removeOldChoice(choice['index'])">
                                 <i class="fa fa-trash"></i>
                             </button>
                         </span>
                     </div>
+                    <select class="form-control"
+                            ng-model="choice['category']"
+                            ng-options="category['name'] for category in cfc.categories"
+                            ng-if="choice['categoryEnabled']"
+                    >
+                    </select>
                     <div class="help-block field-error" ng-if="cfc.oldChoicesErrors[choice['index']]">
                         {{ cfc.oldChoicesErrors[choice['index']] }}
                     </div>
@@ -47,11 +71,35 @@
                     <div class="input-group">
                         <input type="text" class="form-control" ng-model="choice['value']">
                         <span class="input-group-btn">
+                            <button type="button" class="btn btn-default"
+                                    data-toggle="tooltip"
+                                    data-placement="top"
+                                    title="{{ 'associate_category'|trans:{}:'clacoform' }}"
+                                    ng-click="cfc.enableChoiceCategory(choice['index'])"
+                                    ng-if="!choice['categoryEnabled']"
+                            >
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button type="button" class="btn btn-warning"
+                                    data-toggle="tooltip"
+                                    data-placement="top"
+                                    title="{{ 'remove_category'|trans:{}:'clacoform' }}"
+                                    ng-click="cfc.disableChoiceCategory(choice['index'])"
+                                    ng-if="choice['categoryEnabled']"
+                            >
+                                <i class="fa fa-bars"></i>
+                            </button>
                             <button type="button" class="btn btn-danger" ng-click="cfc.removeChoice(choice['index'])">
                                 <i class="fa fa-trash"></i>
                             </button>
                         </span>
                     </div>
+                    <select class="form-control"
+                            ng-model="choice['category']"
+                            ng-options="category['name'] for category in cfc.categories"
+                            ng-if="choice['categoryEnabled']"
+                    >
+                    </select>
                     <div class="help-block field-error" ng-if="cfc.choicesErrors[choice['index']]">
                         {{ cfc.choicesErrors[choice['index']] }}
                     </div>
