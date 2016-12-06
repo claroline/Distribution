@@ -74,7 +74,6 @@ export default class FieldEditionModalCtrl {
               }
             }
           })
-          console.log(this.oldChoices)
         }
       })
     } else {
@@ -98,11 +97,37 @@ export default class FieldEditionModalCtrl {
       this.oldChoices.forEach(c => {
         if (!c['value']) {
           this.oldChoicesErrors[c['index']] = Translator.trans('form_not_blank_error', {}, 'clacoform')
+        } else {
+          this.oldChoices.forEach(oc => {
+            if ((oc['index'] !== c['index']) && (oc['value'] === c['value'])) {
+              this.oldChoicesErrors[c['index']] = Translator.trans('form_not_unique_error', {}, 'clacoform')
+              this.oldChoicesErrors[oc['index']] = Translator.trans('form_not_unique_error', {}, 'clacoform')
+            }
+          })
+          this.choices.forEach(nc => {
+            if (nc['value'] === c['value']) {
+              this.oldChoicesErrors[c['index']] = Translator.trans('form_not_unique_error', {}, 'clacoform')
+              this.choicesErrors[nc['index']] = Translator.trans('form_not_unique_error', {}, 'clacoform')
+            }
+          })
         }
       })
       this.choices.forEach(c => {
         if (!c['value']) {
           this.choicesErrors[c['index']] = Translator.trans('form_not_blank_error', {}, 'clacoform')
+        } else {
+          this.choices.forEach(nc => {
+            if ((nc['index'] !== c['index']) && (nc['value'] === c['value'])) {
+              this.choicesErrors[c['index']] = Translator.trans('form_not_unique_error', {}, 'clacoform')
+              this.choicesErrors[nc['index']] = Translator.trans('form_not_unique_error', {}, 'clacoform')
+            }
+          })
+          this.oldChoices.forEach(oc => {
+            if (oc['value'] === c['value']) {
+              this.choicesErrors[c['index']] = Translator.trans('form_not_unique_error', {}, 'clacoform')
+              this.oldChoicesErrors[oc['index']] = Translator.trans('form_not_unique_error', {}, 'clacoform')
+            }
+          })
         }
       })
     }

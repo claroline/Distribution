@@ -52,6 +52,13 @@ export default class FieldCreationModalCtrl {
       this.choices.forEach(c => {
         if (!c['value']) {
           this.choicesErrors[c['index']] = Translator.trans('form_not_blank_error', {}, 'clacoform')
+        } else {
+          this.choices.forEach(nc => {
+            if ((nc['index'] !== c['index']) && (nc['value'] === c['value'])) {
+              this.choicesErrors[c['index']] = Translator.trans('form_not_unique_error', {}, 'clacoform')
+              this.choicesErrors[nc['index']] = Translator.trans('form_not_unique_error', {}, 'clacoform')
+            }
+          })
         }
       })
     }
