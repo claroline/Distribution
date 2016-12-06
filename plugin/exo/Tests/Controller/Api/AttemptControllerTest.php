@@ -134,11 +134,11 @@ class AttemptControllerTest extends TransactionalTestCase
 
         // first attempt for bob
         $paper = PaperGenerator::create($this->ex1, $this->john);
+        $this->om->persist($paper);
+        $this->om->flush();
 
         // finish john's first paper
         $this->attemptManager->end($paper);
-
-        $this->om->persist($paper);
         $this->om->flush();
 
         // second attempt for john
@@ -204,7 +204,7 @@ class AttemptControllerTest extends TransactionalTestCase
         $this->assertTrue(count($content) > 0);
     }
 
-    public function testFinishPaperByNotPaperCreator()
+    public function testFinishPaperByNotPaperUser()
     {
         $pa1 = PaperGenerator::create($this->ex1, $this->john);
         $this->om->persist($pa1);

@@ -1,11 +1,9 @@
 {
   "id": "1",
   "type": "application/x.match+json",
-  "title": "Question ?",
-  "description": null,
-  "invite":"Question ?",
+  "content": "Question ?",
   "random": false,
-  "toBind": true,
+  "penalty": 0,
   "firstSet": [
     {
       "id": "2",
@@ -34,12 +32,12 @@
     {
       "firstId": "2",
       "secondId": "5",
-      "score": 0
+      "score": -2
     },
     {
       "firstId": "3",
       "secondId": "4",
-      "score": 2
+      "score": -2
     }
   ]
 }

@@ -131,9 +131,7 @@ class ExerciseController extends AbstractController
 
         $this->exerciseManager->publish($exercise);
 
-        return new JsonResponse(
-            $this->exerciseManager->export($exercise)
-        );
+        return new JsonResponse(null, 204);
     }
 
     /**
@@ -153,9 +151,7 @@ class ExerciseController extends AbstractController
 
         $this->exerciseManager->unpublish($exercise);
 
-        return new JsonResponse(
-            $this->exerciseManager->export($exercise)
-        );
+        return new JsonResponse(null, 204);
     }
 
     private function assertHasPermission($permission, Exercise $exercise)

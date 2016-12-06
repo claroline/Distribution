@@ -109,12 +109,16 @@ class ExerciseListener
      */
     public function onOpen(OpenResourceEvent $event)
     {
+        /** @var Exercise $exercise */
+        $exercise = $event->getResource();
+
+        // Forward request to the Resource controller
         $subRequest = $this->container->get('request_stack')->getCurrentRequest()->duplicate([], null, [
             '_controller' => 'UJMExoBundle:Resource\Exercise:open',
-            'id' => $event->getResource()->getId(),
+            'id' => $exercise->getUuid(),
         ]);
 
-        $response = $this->container->get('http_kernel')->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
+        $response = $this->container->get('http_kernel')->handle($subRequest, HttpKernelInterface::SUB_REQUEST, false);
 
         $event->setResponse($response);
         $event->stopPropagation();

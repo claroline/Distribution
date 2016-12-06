@@ -14,7 +14,6 @@ use UJM\ExoBundle\Library\Options\Transfer;
  * Exercise Controller renders views.
  *
  * @EXT\Route("/exercises", options={"expose"=true})
- * @EXT\Method("GET")
  */
 class ExerciseController extends Controller
 {
@@ -24,7 +23,9 @@ class ExerciseController extends Controller
      * @param Exercise $exercise
      * @param User     $user
      *
-     * @EXT\Route("/{id}", name="ujm_exercise_open", requirements={"id"="\d+"})
+     * @EXT\Route("/{id}", name="ujm_exercise_open")
+     * @EXT\Method("GET")
+     * @EXT\ParamConverter("exercise", class="UJMExoBundle:Exercise", options={"mapping": {"id": "uuid"}})
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
      * @EXT\Template("UJMExoBundle:Exercise:open.html.twig")
      *
@@ -47,8 +48,8 @@ class ExerciseController extends Controller
         // Display the Summary of the Exercise
         return [
             // Used to build the Claroline Breadcrumbs
-            '_resource' => $exercise,
             'workspace' => $exercise->getResourceNode()->getWorkspace(),
+            '_resource' => $exercise,
 
             'nbUserPapers' => $nbUserPapers,
             'nbPapers' => $nbPapers,
@@ -66,6 +67,7 @@ class ExerciseController extends Controller
      * To display the docimology's histograms.
      *
      * @EXT\Route("/{id}/docimology", name="ujm_exercise_docimology")
+     * @EXT\Method("GET")
      * @EXT\ParamConverter("exercise", class="UJMExoBundle:Exercise", options={"mapping": {"id": "uuid"}})
      * @EXT\Template("UJMExoBundle:Exercise:docimology.html.twig")
      *

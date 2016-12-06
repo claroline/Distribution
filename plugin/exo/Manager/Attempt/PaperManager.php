@@ -79,6 +79,7 @@ class PaperManager
 
     /**
      * Exports a user paper.
+     * NB: This method only returns the paper object, if you also need the list of questions, see `exportWithQuestions`.
      *
      * @param Paper $paper
      * @param array $options

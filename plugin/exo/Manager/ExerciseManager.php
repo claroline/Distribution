@@ -154,16 +154,11 @@ class ExerciseManager
      * Publishes an exercise.
      *
      * @param Exercise $exercise
-     * @param bool     $throwException Throw an exception if the Exercise is already published
      *
      * @throws \LogicException if the exercise is already published
      */
-    public function publish(Exercise $exercise, $throwException = true)
+    public function publish(Exercise $exercise)
     {
-        if ($throwException && $exercise->getResourceNode()->isPublished()) {
-            throw new \LogicException("Exercise {$exercise->getId()} is already published");
-        }
-
         if (!$exercise->wasPublishedOnce()) {
             $this->paperManager->deleteAll($exercise);
             $exercise->setPublishedOnce(true);
@@ -177,18 +172,9 @@ class ExerciseManager
      * Unpublishes an exercise.
      *
      * @param Exercise $exercise
-     * @param bool     $throwException Throw an exception if the Exercise is not published
-     *
-     * @throws \LogicException if the exercise is not published
      */
-    public function unpublish(Exercise $exercise, $throwException = true)
+    public function unpublish(Exercise $exercise)
     {
-        if ($throwException && !$exercise->getResourceNode()->isPublished()) {
-            throw new \LogicException(
-                "Exercise {$exercise->getId()} is already unpublished"
-            );
-        }
-
         $exercise->getResourceNode()->setPublished(false);
         $this->om->flush();
     }

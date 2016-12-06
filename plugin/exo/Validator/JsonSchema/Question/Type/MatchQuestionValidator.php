@@ -48,6 +48,7 @@ class MatchQuestionValidator extends JsonSchemaValidator
             return $label->id;
         }, $question->secondSet);
 
+        $maxScore = -1;
         foreach ($question->solutions as $index => $solution) {
             if (!in_array($solution->firstId, $proposalIds)) {
                 $errors[] = [
@@ -62,6 +63,18 @@ class MatchQuestionValidator extends JsonSchemaValidator
                     'message' => "id {$solution->secondId} doesn't match any label id",
                 ];
             }
+
+            if ($solution->score > $maxScore) {
+                $maxScore = $solution->score;
+            }
+        }
+
+        // Checks there is a positive score solution
+        if ($maxScore <= 0) {
+            $errors[] = [
+                'path' => '/solutions',
+                'message' => 'There is no solution with a positive score',
+            ];
         }
 
         return $errors;

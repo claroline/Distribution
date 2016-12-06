@@ -39,8 +39,10 @@ class SetQuestionValidator extends JsonSchemaValidator
      * Validates the solution of the question.
      *
      * Checks :
-     *  - The solution `memberId` must match the `members` IDs.
+     *  - The solution `itemId` must match the `items` IDs.
      *  - The solution `setId` must match the `sets` IDs.
+     *  - An odd `itemId` must match the `items` IDS.
+     *  - There is at least one solution with a positive score.
      *
      * @param \stdClass $question
      *
@@ -56,23 +58,51 @@ class SetQuestionValidator extends JsonSchemaValidator
         }, $question->sets);
 
         // check solution IDs are consistent with member IDs
-        $memberIds = array_map(function (\stdClass $member) {
-            return $member->id;
-        }, $question->members);
+        $itemIds = array_map(function (\stdClass $item) {
+            return $item->id;
+        }, $question->items);
 
-        foreach ($question->solutions as $index => $solution) {
-            if (!in_array($solution->setId, $setIds)) {
-                $errors[] = [
-                    'path' => "/solutions[{$index}]",
-                    'message' => "id {$solution->setId} doesn't match any set id",
-                ];
+        // Validate associations
+        if (!empty($question->solutions->associations)) {
+            $maxScore = -1;
+            foreach ($question->solutions->associations as $index => $association) {
+                if (!in_array($association->setId, $setIds)) {
+                    $errors[] = [
+                        'path' => "/solutions/associations[{$index}]",
+                        'message' => "id {$association->setId} doesn't match any set id",
+                    ];
+                }
+
+                if (!in_array($association->itemId, $itemIds)) {
+                    $errors[] = [
+                        'path' => "/solutions/associations[{$index}]",
+                        'message' => "id {$association->itemId} doesn't match any item id",
+                    ];
+                }
+
+                if ($association->score > $maxScore) {
+                    $maxScore = $association->score;
+                }
             }
 
-            if (!in_array($solution->memberId, $memberIds)) {
+            // Checks there is a positive score solution
+            if ($maxScore <= 0) {
                 $errors[] = [
-                    'path' => "/solutions[{$index}]",
-                    'message' => "id {$solution->memberId} doesn't match any member id",
+                    'path' => '/solutions',
+                    'message' => 'There is no solution with a positive score',
                 ];
+            }
+        }
+
+        // Validate odd
+        if (!empty($question->solutions->odd)) {
+            foreach ($question->solutions->odd as $index => $odd) {
+                if (!in_array($odd->itemId, $itemIds)) {
+                    $errors[] = [
+                        'path' => "/solutions/odd[{$index}]",
+                        'message' => "id {$odd->itemId} doesn't match any item id",
+                    ];
+                }
             }
         }
 

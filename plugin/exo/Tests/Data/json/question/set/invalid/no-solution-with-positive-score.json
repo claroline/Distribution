@@ -2,14 +2,18 @@
   "id": "1",
   "type": "application/x.set+json",
   "content": "Question ?",
+  "penalty": 1,
+  "random": false,
   "sets": [
     {
       "id": "2",
-      "name": "Set A"
+      "type": "text/html",
+      "data": "Set A"
     },
     {
       "id": "3",
-      "name": "Set B"
+      "type": "text/html",
+      "data": "Set B"
     }
   ],
   "items": [
@@ -32,16 +36,17 @@
   "solutions": {
     "associations": [
       {
-        "setId": "42",
+        "setId": "2",
         "itemId": "4",
-        "score": 3
+        "score": -1,
+        "feedback": "Lorem ipsum"
       },
       {
         "setId": "3",
         "itemId": "5",
-        "score": 0.5
+        "score": -0.5,
+        "feedback": "Lorem ipsum"
       }
     ]
-  },
-  "penalty": 1
+  }
 }

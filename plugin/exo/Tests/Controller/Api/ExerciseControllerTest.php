@@ -40,9 +40,10 @@ class ExerciseControllerTest extends TransactionalTestCase
         $this->john = $this->persist->user('john');
         $this->bob = $this->persist->user('bob');
 
-        $this->persist->role('ROLE_ADMIN');
+        $adminRole = $this->persist->role('ROLE_ADMIN');
         $this->admin = $this->persist->user('admin');
-
+        $this->admin->addRole($adminRole);
+        
         $this->exercise = $this->persist->exercise('ex1', [
             $this->persist->openQuestion('Question.'),
         ], $this->john);
@@ -62,26 +63,25 @@ class ExerciseControllerTest extends TransactionalTestCase
         $this->om->flush();
     }
 
-    public function testAnonymousExport()
+    public function testAnonymousGet()
     {
         $this->request('GET', "/api/exercises/{$this->exercise->getUuid()}");
-
         $this->assertEquals(401, $this->client->getResponse()->getStatusCode());
     }
 
-    public function testNonCreatorExport()
+    public function testNonCreatorGet()
     {
         $this->request('GET', "/api/exercises/{$this->exercise->getUuid()}", $this->bob);
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
     }
 
-    public function testNonCreatorAdminExport()
+    public function testAdminGet()
     {
         $this->request('GET', "/api/exercises/{$this->exercise->getUuid()}", $this->admin);
-        $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
-    public function testExport()
+    public function testCreatorGet()
     {
         $this->request('GET', "/api/exercises/{$this->exercise->getUuid()}", $this->john);
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -90,5 +90,116 @@ class ExerciseControllerTest extends TransactionalTestCase
         $this->assertEquals($this->exercise->getUuid(), $content->id);
         $this->assertEquals('ex1', $content->title);
         $this->assertEquals('Invite...', $content->steps[0]->items[0]->content);
+    }
+
+    public function testUpdateByUser()
+    {
+        // Send exercise data
+        $data = [];
+
+        $this->request('PUT', "/api/exercises/{$this->exercise->getUuid()}", $this->bob, [], json_encode($data));
+        $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
+    }
+
+    public function testUpdateByAdmin()
+    {
+
+    }
+
+    public function testUpdateWithValidData()
+    {
+
+    }
+
+    public function testUpdateWithInvalidData()
+    {
+        /*$invalidData = [
+            'id' => $this->categoryJohn->getUuid(),
+            'name' => ['not-a-string'],
+        ];
+
+        $this->request(
+            'PUT',
+            "/api/categories/{$this->categoryJohn->getUuid()}",
+            $this->john,
+            [],
+            json_encode($invalidData)
+        );
+
+        $this->assertEquals(422, $this->client->getResponse()->getStatusCode());
+
+        $content = json_decode($this->client->getResponse()->getContent(), true);
+
+        $this->assertTrue(is_array($content));
+        $this->assertTrue(count($content) > 0);
+
+        $this->assertContains([
+            'path' => '/name',
+            'message' => 'instance must be of type string',
+        ], $content);*/
+    }
+
+    /**
+     * A "normal" user MUST NOT be allowed to publish an exercise.
+     */
+    public function testPublishByUser()
+    {
+        $this->request('POST', "/api/exercises/{$this->exercise->getUuid()}/publish", $this->bob);
+
+        $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
+    }
+
+    /**
+     * The creator MUST be allowed to publish an exercise.
+     */
+    public function testPublishByCreator()
+    {
+        $this->request('POST', "/api/exercises/{$this->exercise->getUuid()}/publish", $this->john);
+
+        $this->assertEquals(204, $this->client->getResponse()->getStatusCode());
+        $this->assertTrue(empty($this->client->getResponse()->getContent()));
+    }
+
+    /**
+     * An "admin" user MUST be allowed to publish an exercise.
+     */
+    public function testPublishByAdmin()
+    {
+        $this->request('POST', "/api/exercises/{$this->exercise->getUuid()}/publish", $this->admin);
+
+        $this->assertEquals(204, $this->client->getResponse()->getStatusCode());
+        $this->assertTrue(empty($this->client->getResponse()->getContent()));
+    }
+
+    /**
+     * A "normal" user MUST NOT be allowed to unpublish an exercise.
+     */
+    public function testUnpublishByUser()
+    {
+        $this->request('POST', "/api/exercises/{$this->exercise->getUuid()}/unpublish", $this->bob);
+
+        $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
+    }
+
+    /**
+     * The creator MUST be allowed to unpublish an exercise.
+     */
+    public function testUnpublishByCreator()
+    {
+        $this->request('POST', "/api/exercises/{$this->exercise->getUuid()}/unpublish", $this->john);
+
+        $this->assertEquals(204, $this->client->getResponse()->getStatusCode());
+        $this->assertTrue(empty($this->client->getResponse()->getContent()));
+    }
+
+    /**
+     * An "admin" user MUST be allowed to unpublish an exercise.
+     */
+    public function testUnpublishByAdmin()
+    {
+        $this->request('POST', "/api/exercises/{$this->exercise->getUuid()}/unpublish", $this->admin);
+
+        $this->assertEquals(204, $this->client->getResponse()->getStatusCode());
+        $this->assertTrue(empty($this->client->getResponse()->getContent()));
     }
 }

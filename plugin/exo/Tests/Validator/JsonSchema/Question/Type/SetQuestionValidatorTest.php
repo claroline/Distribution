@@ -41,16 +41,16 @@ class SetQuestionValidatorTest extends JsonSchemaTestCase
     /**
      * The validator MUST return errors if the solution ids do not match member ids.
      */
-    public function testIncoherentMemberIdsInSolutionThrowErrors()
+    public function testIncoherentItemIdsInSolutionThrowErrors()
     {
-        $questionData = $this->loadTestData('question/set/invalid/incoherent-solution-member-ids.json');
+        $questionData = $this->loadTestData('question/set/invalid/incoherent-solution-item-ids.json');
 
         $errors = $this->validator->validate($questionData, [Validation::REQUIRE_SOLUTIONS]);
 
         $this->assertGreaterThan(0, count($errors));
         $this->assertTrue(in_array([
-            'path' => '/solutions[0]',
-            'message' => "id 42 doesn't match any member id",
+            'path' => '/solutions/associations[0]',
+            'message' => "id 42 doesn't match any item id",
         ], $errors));
     }
 
@@ -65,8 +65,24 @@ class SetQuestionValidatorTest extends JsonSchemaTestCase
 
         $this->assertGreaterThan(0, count($errors));
         $this->assertTrue(in_array([
-            'path' => '/solutions[0]',
+            'path' => '/solutions/associations[0]',
             'message' => "id 42 doesn't match any set id",
+        ], $errors));
+    }
+
+    /**
+     * The validator MUST return errors if odd solution ids do not match item ids.
+     */
+    public function testIncoherentItemIdsInOddThrowErrors()
+    {
+        $questionData = $this->loadTestData('question/set/invalid/incoherent-odd-item-ids.json');
+
+        $errors = $this->validator->validate($questionData, [Validation::REQUIRE_SOLUTIONS]);
+
+        $this->assertGreaterThan(0, count($errors));
+        $this->assertTrue(in_array([
+            'path' => "/solutions/odd[0]",
+            'message' => "id 123456 doesn't match any item id",
         ], $errors));
     }
 }
