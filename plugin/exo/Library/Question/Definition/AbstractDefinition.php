@@ -30,7 +30,7 @@ abstract class AbstractDefinition implements QuestionDefinitionInterface
      * Validates a choice question.
      *
      * @param \stdClass $question
-     * @param array $options
+     * @param array     $options
      *
      * @return array
      */
@@ -43,7 +43,7 @@ abstract class AbstractDefinition implements QuestionDefinitionInterface
      * Serializes a question entity.
      *
      * @param AbstractQuestion $question
-     * @param array               $options
+     * @param array            $options
      *
      * @return \stdClass
      */
@@ -55,9 +55,9 @@ abstract class AbstractDefinition implements QuestionDefinitionInterface
     /**
      * Deserializes question data.
      *
-     * @param \stdClass           $questionData
+     * @param \stdClass        $questionData
      * @param AbstractQuestion $question
-     * @param array               $options
+     * @param array            $options
      *
      * @return AbstractQuestion
      */
@@ -68,7 +68,6 @@ abstract class AbstractDefinition implements QuestionDefinitionInterface
 
     public function validateAnswer(\stdClass $question, $answer, array $options = [])
     {
-
     }
 
     public function calculateScore(AbstractQuestion $question, $answer)

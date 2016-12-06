@@ -13,7 +13,7 @@ class ScoreManager
     /**
      * Calculates the score obtained to a question based on a calculation rule.
      *
-     * @param \stdClass $scoreRule
+     * @param \stdClass       $scoreRule
      * @param CorrectedAnswer $correctedAnswer
      *
      * @return float|null the calculated score or null if it cannot be calculated automatically
@@ -58,7 +58,7 @@ class ScoreManager
      * and the expected answer.
      *
      * @param \stdClass $scoreRule
-     * @param array $expectedAnswers
+     * @param array     $expectedAnswers
      *
      * @return float|null
      */
@@ -93,7 +93,7 @@ class ScoreManager
     /**
      * Applies hint penalties to a score.
      *
-     * @param float $score
+     * @param float           $score
      * @param CorrectedAnswer $correctedAnswer
      *
      * @return float

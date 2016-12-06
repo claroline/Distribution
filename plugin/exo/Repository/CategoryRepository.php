@@ -15,7 +15,7 @@ class CategoryRepository extends EntityRepository
      *
      * @param Category $category
      *
-     * @return integer
+     * @return int
      */
     public function countQuestions(Category $category)
     {

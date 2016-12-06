@@ -36,7 +36,7 @@ class AnswerSerializer extends AbstractSerializer
      *     "hintSerializer" = @DI\Inject("ujm_exo.serializer.hint")
      * })
      *
-     * @param ObjectManager $om
+     * @param ObjectManager  $om
      * @param HintSerializer $hintSerializer
      */
     public function __construct(
@@ -51,7 +51,7 @@ class AnswerSerializer extends AbstractSerializer
      * Converts an Answer into a JSON-encodable structure.
      *
      * @param Answer $answer
-     * @param array $options
+     * @param array  $options
      *
      * @return \stdClass
      */
@@ -69,7 +69,7 @@ class AnswerSerializer extends AbstractSerializer
             },
             'usedHints' => function (Answer $answer) {
                 return $this->serializeHints($answer);
-            }
+            },
         ], $answer, $answerData);
 
         // Adds user score
@@ -102,7 +102,7 @@ class AnswerSerializer extends AbstractSerializer
             $question = $this->om->getRepository('UJMExoBundle:Question\Question')->findOneBy([
                 'uuid' => $data->questionId,
             ]);
-            
+
             $answer->setQuestion($question);
         }
 

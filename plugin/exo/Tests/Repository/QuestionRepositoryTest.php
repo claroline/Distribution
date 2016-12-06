@@ -5,8 +5,8 @@ namespace UJM\ExoBundle\Tests\Repository;
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use UJM\ExoBundle\Entity\Question\Question;
-use UJM\ExoBundle\Repository\QuestionRepository;
 use UJM\ExoBundle\Library\Testing\Persister;
+use UJM\ExoBundle\Repository\QuestionRepository;
 
 class QuestionRepositoryTest extends TransactionalTestCase
 {

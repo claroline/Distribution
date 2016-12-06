@@ -14,7 +14,7 @@ class ChoiceAnswerSerializer implements SerializerInterface
      * Converts a Choice answer into a JSON-encodable structure.
      *
      * @param string $choiceAnswer
-     * @param array $options
+     * @param array  $options
      *
      * @return array - an array of choice ids or an empty array if no answer
      */

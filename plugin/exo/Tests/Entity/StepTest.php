@@ -16,7 +16,7 @@ class StepTest extends \PHPUnit_Framework_TestCase
 
     /**
      * The `getQuestions` method is just a shortcut to access the questions without passing by StepQuestion entities
-     * so it MUST return the same number of elements than `getStepQuestions`
+     * so it MUST return the same number of elements than `getStepQuestions`.
      */
     public function testGetQuestions()
     {

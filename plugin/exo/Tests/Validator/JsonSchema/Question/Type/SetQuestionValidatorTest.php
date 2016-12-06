@@ -81,7 +81,7 @@ class SetQuestionValidatorTest extends JsonSchemaTestCase
 
         $this->assertGreaterThan(0, count($errors));
         $this->assertTrue(in_array([
-            'path' => "/solutions/odd[0]",
+            'path' => '/solutions/odd[0]',
             'message' => "id 123456 doesn't match any item id",
         ], $errors));
     }

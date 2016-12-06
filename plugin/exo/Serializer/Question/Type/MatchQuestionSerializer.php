@@ -16,7 +16,7 @@ class MatchQuestionSerializer implements SerializerInterface
      * Converts a Match question into a JSON-encodable structure.
      *
      * @param MatchQuestion $matchQuestion
-     * @param array               $options
+     * @param array         $options
      *
      * @return \stdClass
      */
@@ -38,9 +38,9 @@ class MatchQuestionSerializer implements SerializerInterface
     /**
      * Converts raw data into a Match question entity.
      *
-     * @param \stdClass           $data
+     * @param \stdClass     $data
      * @param MatchQuestion $matchQuestion
-     * @param array               $options
+     * @param array         $options
      *
      * @return MatchQuestion
      */

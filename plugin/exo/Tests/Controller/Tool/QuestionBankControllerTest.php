@@ -33,7 +33,7 @@ class QuestionBankControllerTest extends TransactionalTestCase
         $user = $this->persist->user('bob');
         $this->om->flush();
 
-        $crawler = $this->request('GET', "/questions", $user);
+        $crawler = $this->request('GET', '/questions', $user);
 
         // The user must have access to the exercise
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());

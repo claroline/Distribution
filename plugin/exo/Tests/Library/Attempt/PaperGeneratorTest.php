@@ -123,7 +123,7 @@ class PaperGeneratorTest extends TransactionalTestCase
     }
 
     /**
-     * If exercise is not configured, the paper MUST contain all the steps in the defined order
+     * If exercise is not configured, the paper MUST contain all the steps in the defined order.
      */
     public function testDefaultPickSteps()
     {
@@ -146,7 +146,7 @@ class PaperGeneratorTest extends TransactionalTestCase
     }
 
     /**
-     * If step is not configured, the paper MUST contain all the questions in the defined order
+     * If step is not configured, the paper MUST contain all the questions in the defined order.
      */
     public function testDefaultPickQuestions()
     {
@@ -180,7 +180,7 @@ class PaperGeneratorTest extends TransactionalTestCase
 
         // Checks the random part : the generator MUST NOT return the same set each time
         $randomWork = false;
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 5; ++$i) {
             // We loop 5 times because the generator can randomly generate many times the same set
             // Particularly if the whole steps set is small
             // This permits to avoid a false positive
@@ -212,7 +212,7 @@ class PaperGeneratorTest extends TransactionalTestCase
 
         // Checks the random part : the generator MUST NOT return the same set each time
         $randomWork = false;
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 5; ++$i) {
             // We loop 5 times because the generator can randomly generate many times the same set
             // Particularly if the whole questions set is small
             // This permits to avoid a false positive
@@ -242,7 +242,7 @@ class PaperGeneratorTest extends TransactionalTestCase
 
         // Generate more papers to see if the steps are randomized
         $randomWork = false;
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 5; ++$i) {
             // We loop 5 times because the generator can randomly generate many times the same order
             // Particularly if the whole steps set is small
             // This permits to avoid a false positive
@@ -273,7 +273,7 @@ class PaperGeneratorTest extends TransactionalTestCase
 
         // Generate more papers to see if the questions are randomized
         $randomWork = false;
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 5; ++$i) {
             // We loop 5 times because the generator can randomly generate many times the same order
             // Particularly if the whole questions set is small
             // This permits to avoid a false positive
@@ -341,7 +341,6 @@ class PaperGeneratorTest extends TransactionalTestCase
 
     public function testDeletedQuestionIsNotPickedAgain()
     {
-
     }
 
     /**
@@ -349,7 +348,7 @@ class PaperGeneratorTest extends TransactionalTestCase
      * The structure MUST be an array of step structures.
      *
      * @param Exercise $exercise
-     * @param mixed $exerciseStructure
+     * @param mixed    $exerciseStructure
      */
     private function checkExerciseStructure(Exercise $exercise, $exerciseStructure)
     {
@@ -365,7 +364,7 @@ class PaperGeneratorTest extends TransactionalTestCase
      * Checks the structure of a step has been generated accordingly to the generation options.
      * The structure MUST be an object containing the step uuid and a list of picked questions.
      *
-     * @param Step $step
+     * @param Step  $step
      * @param mixed $stepStructure
      */
     private function checkStepStructure(Step $step, $stepStructure)

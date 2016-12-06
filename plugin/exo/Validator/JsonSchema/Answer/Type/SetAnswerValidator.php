@@ -21,7 +21,7 @@ class SetAnswerValidator extends JsonSchemaValidator
      * Performs additional validations.
      *
      * @param \stdClass $question
-     * @param array $options
+     * @param array     $options
      *
      * @return array
      */

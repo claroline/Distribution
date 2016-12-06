@@ -133,7 +133,7 @@ class ExerciseListener
      */
     public function onDelete(DeleteResourceEvent $event)
     {
-        $deletable = $this->container->get('ujm_exo.manager.exercise')->isDeletable($event->getResource());;
+        $deletable = $this->container->get('ujm_exo.manager.exercise')->isDeletable($event->getResource());
         if (!$deletable) {
             // If papers, the Exercise is not completely removed
             $event->enableSoftDelete();

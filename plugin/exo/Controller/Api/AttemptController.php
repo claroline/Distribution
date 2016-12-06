@@ -14,8 +14,8 @@ use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Question\Hint;
 use UJM\ExoBundle\Library\Validator\ValidationException;
-use UJM\ExoBundle\Manager\AttemptManager;
 use UJM\ExoBundle\Manager\Attempt\PaperManager;
+use UJM\ExoBundle\Manager\AttemptManager;
 
 /**
  * Attempt Controller.
@@ -50,8 +50,8 @@ class AttemptController extends AbstractController
      * })
      *
      * @param AuthorizationCheckerInterface $authorization
-     * @param AttemptManager $attemptManager
-     * @param PaperManager $paperManager
+     * @param AttemptManager                $attemptManager
+     * @param PaperManager                  $paperManager
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
@@ -83,7 +83,7 @@ class AttemptController extends AbstractController
         if (!$this->isAdmin($exercise) && !$this->attemptManager->canPass($exercise, $user)) {
             throw new AccessDeniedException('max attempts reached');
         }
-        
+
         $paper = $this->attemptManager->startOrContinue($exercise, $user);
 
         return new JsonResponse($this->paperManager->exportWithQuestions($paper));
@@ -97,8 +97,8 @@ class AttemptController extends AbstractController
      * @EXT\ParamConverter("paper", class="UJMExoBundle:Attempt\Paper", options={"mapping": {"id": "uuid"}})
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
      *
-     * @param User $user
-     * @param Paper $paper
+     * @param User    $user
+     * @param Paper   $paper
      * @param Request $request
      *
      * @return JsonResponse
@@ -166,9 +166,9 @@ class AttemptController extends AbstractController
      * @EXT\ParamConverter("paper", class="UJMExoBundle:Attempt\Paper", options={"mapping": {"id": "uuid"}})
      * @EXT\ParamConverter("hint", class="UJMExoBundle:Question\Hint", options={"mapping": {"hintId": "id"}})
      *
-     * @param Paper $paper
-     * @param Hint  $hint
-     * @param User  $user
+     * @param Paper   $paper
+     * @param Hint    $hint
+     * @param User    $user
      * @param Request $request
      *
      * @return JsonResponse
@@ -186,7 +186,7 @@ class AttemptController extends AbstractController
         } catch (\Exception $e) {
             $errors[] = [
                 'path' => '',
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ];
         }
 
@@ -198,10 +198,10 @@ class AttemptController extends AbstractController
     }
 
     /**
-     * Checks whether a User has access to a Paper
+     * Checks whether a User has access to a Paper.
      *
      * @param Paper $paper
-     * @param User $user
+     * @param User  $user
      *
      * @throws AccessDeniedException
      */

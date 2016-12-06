@@ -30,7 +30,7 @@ final class Transfer
 
     /**
      * Adds user scores in the serialized data.
-     * 
+     *
      * @var string
      */
     const INCLUDE_USER_SCORE = 'includeUserScore';

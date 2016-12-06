@@ -10,8 +10,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use UJM\ExoBundle\Controller\Api\AbstractController;
 use UJM\ExoBundle\Entity\Question\Category;
-use UJM\ExoBundle\Manager\Question\CategoryManager;
 use UJM\ExoBundle\Library\Validator\ValidationException;
+use UJM\ExoBundle\Manager\Question\CategoryManager;
 
 /**
  * Category API Controller exposes REST API.
@@ -106,9 +106,9 @@ class CategoryController extends AbstractController
      * @EXT\ParamConverter("user", converter="current_user")
      * @EXT\ParamConverter("category", class="UJMExoBundle:Question\Category", options={"mapping": {"id": "uuid"}})
      *
-     * @param User $user
+     * @param User     $user
      * @param Category $category
-     * @param Request $request
+     * @param Request  $request
      *
      * @return JsonResponse
      */
@@ -150,7 +150,7 @@ class CategoryController extends AbstractController
      * @EXT\ParamConverter("user", converter="current_user")
      * @EXT\ParamConverter("category", class="UJMExoBundle:Question\Category", options={"mapping": {"id": "uuid"}})
      *
-     * @param User $user
+     * @param User     $user
      * @param Category $category
      *
      * @return JsonResponse
@@ -171,7 +171,7 @@ class CategoryController extends AbstractController
     /**
      * Checks the category belongs to the user.
      *
-     * @param User $user
+     * @param User     $user
      * @param Category $category
      *
      * @throws AccessDeniedException

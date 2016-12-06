@@ -113,7 +113,7 @@ class ExerciseManagerTest extends \PHPUnit_Framework_TestCase
         $this->paperManager->expects($this->once())
             ->method('countExercisePapers')
             ->willReturn(2);
-        
+
         $this->exercise->getResourceNode()->setPublished(true);
 
         $this->assertFalse($this->manager->isDeletable($this->exercise));

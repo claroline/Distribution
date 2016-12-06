@@ -37,7 +37,7 @@ class UserSerializer extends AbstractSerializer
     /**
      * Converts a User into a JSON-encodable structure.
      *
-     * @param User $user
+     * @param User  $user
      * @param array $options
      *
      * @return \stdClass
@@ -62,8 +62,8 @@ class UserSerializer extends AbstractSerializer
      * Note : we don't allow to update users here, so this method only returns the untouched entity instance.
      *
      * @param \stdClass $data
-     * @param null $user
-     * @param array $options
+     * @param null      $user
+     * @param array     $options
      *
      * @return User
      */

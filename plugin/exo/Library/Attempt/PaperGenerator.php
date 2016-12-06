@@ -47,7 +47,7 @@ class PaperGenerator
      * Generates the structure of the attempt based on Exercise and Steps parameters.
      *
      * @param Exercise $exercise
-     * @param Paper $previousPaper
+     * @param Paper    $previousPaper
      *
      * @return array
      */
@@ -80,9 +80,10 @@ class PaperGenerator
                     if ($a->getOrder() === $b->getOrder()) {
                         return 0;
                     }
+
                     return ($a->getOrder() < $b->getOrder()) ? -1 : 1;
                 });
-            } else if (Recurrence::ALWAYS === $exercise->getRandomOrder()) {
+            } elseif (Recurrence::ALWAYS === $exercise->getRandomOrder()) {
                 // Shuffle steps
                 shuffle($pickedSteps);
             }
@@ -114,9 +115,10 @@ class PaperGenerator
                         if ($a->getOrder() === $b->getOrder()) {
                             return 0;
                         }
+
                         return ($a->getOrder() < $b->getOrder()) ? -1 : 1;
                     });
-                } else if (Recurrence::ALWAYS === $pickedStep->getRandomOrder()) {
+                } elseif (Recurrence::ALWAYS === $pickedStep->getRandomOrder()) {
                     // Shuffle questions
                     shuffle($pickedQuestions);
                 }
@@ -137,7 +139,8 @@ class PaperGenerator
      * Gets a subset of steps in the exercise based on a previously generated paper structure.
      *
      * @param Exercise $exercise
-     * @param array $previousStructure
+     * @param array    $previousStructure
+     *
      * @return Step[]
      */
     private static function repickSteps(Exercise $exercise, array $previousStructure = [])
@@ -157,7 +160,7 @@ class PaperGenerator
     /**
      * Gets a subset of questions in the step based on a previously generated paper structure.
      *
-     * @param Step $step
+     * @param Step  $step
      * @param array $previousStructure
      *
      * @return StepQuestion[]
@@ -188,7 +191,7 @@ class PaperGenerator
     }
 
     /**
-     * Picks a subset of items in an array
+     * Picks a subset of items in an array.
      *
      * @param array $collection - the original collection
      * @param int   $count      - the number of items to pick in the collection (if 0, the whole collection is returned)

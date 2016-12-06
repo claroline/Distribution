@@ -72,7 +72,7 @@ class PaperController extends AbstractController
     public function listAction(Exercise $exercise, User $user)
     {
         $this->assertHasPermission('OPEN', $exercise);
-        
+
         return new JsonResponse(
             $this->paperManager->exportExercisePapers($exercise, $this->isAdmin($exercise) ? null : $user)
         );
@@ -89,8 +89,8 @@ class PaperController extends AbstractController
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
      *
      * @param Exercise $exercise
-     * @param Paper $paper
-     * @param User  $user
+     * @param Paper    $paper
+     * @param User     $user
      *
      * @return JsonResponse
      */
@@ -172,7 +172,7 @@ class PaperController extends AbstractController
         $repo = $this->om->getRepository('UJMExoBundle:Attempt\Paper');
 
         $papers = $repo->findBy([
-            'exercise' => $exercise
+            'exercise' => $exercise,
         ]);
 
         return new StreamedResponse(function () use ($papers) {

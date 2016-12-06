@@ -124,7 +124,7 @@ class CategoryControllerTest extends TransactionalTestCase
 
         $this->request(
             'POST',
-            "/api/categories",
+            '/api/categories',
             $this->john,
             [],
             json_encode($invalidData)
@@ -144,7 +144,7 @@ class CategoryControllerTest extends TransactionalTestCase
 
     /**
      * The `create` action MUST return a 200 status code
-     * The `create` action MUST return an object representing the updated category
+     * The `create` action MUST return an object representing the updated category.
      */
     public function testUpdateCategory()
     {
@@ -154,8 +154,8 @@ class CategoryControllerTest extends TransactionalTestCase
         ];
 
         $this->request(
-            'PUT', 
-            "/api/categories/{$this->categoryJohn->getUuid()}", 
+            'PUT',
+            "/api/categories/{$this->categoryJohn->getUuid()}",
             $this->john,
             [],
             json_encode($updateData)
@@ -181,8 +181,8 @@ class CategoryControllerTest extends TransactionalTestCase
         ];
 
         $this->request(
-            'PUT', 
-            "/api/categories/{$this->categoryJohn->getUuid()}", 
+            'PUT',
+            "/api/categories/{$this->categoryJohn->getUuid()}",
             $this->john,
             [],
             json_encode($invalidData)
@@ -263,7 +263,7 @@ class CategoryControllerTest extends TransactionalTestCase
         $this->assertTrue(count($content) > 0);
         $this->assertContains([
             'path' => '',
-            'message' => "category is used by 1 questions"
+            'message' => 'category is used by 1 questions',
         ], $content);
     }
 }

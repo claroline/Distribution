@@ -6,7 +6,7 @@ use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 
 /**
- * Interface for the definition of a question type
+ * Interface for the definition of a question type.
  */
 interface QuestionDefinitionInterface
 {
@@ -43,7 +43,7 @@ interface QuestionDefinitionInterface
      * Serializes question entity.
      *
      * @param AbstractQuestion $question
-     * @param array               $options
+     * @param array            $options
      *
      * @return \stdClass
      */
@@ -52,9 +52,9 @@ interface QuestionDefinitionInterface
     /**
      * Deserializes question data.
      *
-     * @param \stdClass           $data
+     * @param \stdClass        $data
      * @param AbstractQuestion $question
-     * @param array               $options
+     * @param array            $options
      *
      * @return AbstractQuestion
      */
@@ -74,7 +74,7 @@ interface QuestionDefinitionInterface
     /**
      * Corrects an answer submitted to a question.
      * This method formats the user answers into an array that can be used to calculate the obtained score.
-     * The outputted array MUST have the following structure
+     * The outputted array MUST have the following structure.
      *
      * @param AbstractQuestion $question
      * @param $answer
@@ -96,7 +96,7 @@ interface QuestionDefinitionInterface
      * Gets statistics on answers given to a question.
      *
      * @param AbstractQuestion $question
-     * @param array $answers
+     * @param array            $answers
      *
      * @return \stdClass
      */

@@ -30,7 +30,7 @@ class CorrectedAnswer
 
     /**
      * Penalties to apply to apply (eg. hints).
-     * 
+     *
      * @var array
      */
     private $penalties = [];

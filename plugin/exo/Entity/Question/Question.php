@@ -145,7 +145,7 @@ class Question
 
     /**
      * A list of additional Resources that can help to answer the question.
-     * 
+     *
      * @ORM\OneToMany(targetEntity="QuestionResource", mappedBy="question", cascade={"remove", "persist"}, orphanRemoval=true)
      * @ORM\OrderBy({"order"="ASC"})
      *

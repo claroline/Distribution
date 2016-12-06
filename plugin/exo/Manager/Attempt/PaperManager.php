@@ -6,10 +6,10 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use UJM\ExoBundle\Entity\Exercise;
-use UJM\ExoBundle\Entity\Attempt\Paper;
-use UJM\ExoBundle\Entity\Question\Question;
 use UJM\ExoBundle\Entity\Attempt\Answer;
+use UJM\ExoBundle\Entity\Attempt\Paper;
+use UJM\ExoBundle\Entity\Exercise;
+use UJM\ExoBundle\Entity\Question\Question;
 use UJM\ExoBundle\Event\Log\LogExerciseEvaluatedEvent;
 use UJM\ExoBundle\Library\Mode\CorrectionMode;
 use UJM\ExoBundle\Library\Mode\MarkMode;
@@ -148,7 +148,7 @@ class PaperManager
     }
 
     /**
-     * @deprecated this needs to be moved in the attempt manager or elsewhere.
+     * @deprecated this needs to be moved in the attempt manager or elsewhere
      *
      * @param Question $question
      * @param Paper    $paper
@@ -318,7 +318,7 @@ class PaperManager
             // Question is used, we can't delete it
             throw new ValidationException('Paper can not be deleted', [[
                 'path' => '',
-                'message' => "exercise has been published once.",
+                'message' => 'exercise has been published once.',
             ]]);
         }
 

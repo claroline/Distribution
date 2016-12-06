@@ -14,7 +14,7 @@ class OpenAnswerSerializer implements SerializerInterface
      * Converts a Open answer into a JSON-encodable structure.
      *
      * @param string $openAnswer
-     * @param array $options
+     * @param array  $options
      *
      * @return \stdClass
      */
@@ -36,6 +36,5 @@ class OpenAnswerSerializer implements SerializerInterface
      */
     public function deserialize($data, $openAnswer = null, array $options = [])
     {
-
     }
 }

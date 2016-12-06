@@ -17,7 +17,7 @@ class KeywordSerializer implements SerializerInterface
      * Converts a Keyword into a JSON-encodable structure.
      *
      * @param Keyword $keyword
-     * @param array        $options
+     * @param array   $options
      *
      * @return \stdClass
      */
@@ -38,9 +38,9 @@ class KeywordSerializer implements SerializerInterface
     /**
      * Converts raw data into a Keyword entity.
      *
-     * @param \stdClass    $data
-     * @param Keyword $keyword
-     * @param array        $options
+     * @param \stdClass $data
+     * @param Keyword   $keyword
+     * @param array     $options
      *
      * @return Keyword
      */
@@ -65,9 +65,9 @@ class KeywordSerializer implements SerializerInterface
      * Updates a collection of keywords entities from raw data.
      * The one which are not in `$keywordCollection` are removed from the entity collection.
      *
-     * @param \stdClass[]    $keywordCollection
-     * @param Keyword[] $keywordEntities
-     * @param array          $options
+     * @param \stdClass[] $keywordCollection
+     * @param Keyword[]   $keywordEntities
+     * @param array       $options
      *
      * @return Keyword[] - the list of updated Keyword entities (and without the one no longer in `$keywordCollection`)
      */

@@ -14,7 +14,7 @@ class SetAnswerSerializer implements SerializerInterface
      * Converts a Set answer into a JSON-encodable structure.
      *
      * @param string $setAnswer
-     * @param array $options
+     * @param array  $options
      *
      * @return \stdClass
      */

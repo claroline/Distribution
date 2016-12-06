@@ -9,16 +9,16 @@ use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Persistence\ObjectManager;
-use UJM\ExoBundle\Entity\Question\Category;
-use UJM\ExoBundle\Entity\Misc\Choice;
 use UJM\ExoBundle\Entity\Exercise;
-use UJM\ExoBundle\Entity\Question\Hint;
-use UJM\ExoBundle\Entity\QuestionType\MatchQuestion;
-use UJM\ExoBundle\Entity\QuestionType\OpenQuestion;
-use UJM\ExoBundle\Entity\QuestionType\ChoiceQuestion;
+use UJM\ExoBundle\Entity\Misc\Choice;
 use UJM\ExoBundle\Entity\Misc\Label;
 use UJM\ExoBundle\Entity\Misc\Proposal;
+use UJM\ExoBundle\Entity\Question\Category;
+use UJM\ExoBundle\Entity\Question\Hint;
 use UJM\ExoBundle\Entity\Question\Question;
+use UJM\ExoBundle\Entity\QuestionType\ChoiceQuestion;
+use UJM\ExoBundle\Entity\QuestionType\MatchQuestion;
+use UJM\ExoBundle\Entity\QuestionType\OpenQuestion;
 use UJM\ExoBundle\Entity\Step;
 use UJM\ExoBundle\Library\Question\QuestionType;
 
@@ -218,9 +218,9 @@ class Persister
              // Add step to the exercise
              $exercise->addStep($step);
              if (is_array($data)) {
-                foreach ($data as $question) {
-                    $step->addQuestion($question);
-                }
+                 foreach ($data as $question) {
+                     $step->addQuestion($question);
+                 }
              } else {
                  $step->addQuestion($data);
              }
@@ -267,9 +267,9 @@ class Persister
 
     /**
      * Creates a category.
-     * 
+     *
      * @param string $name
-     * @param User $user
+     * @param User   $user
      *
      * @return Category
      */
@@ -278,7 +278,7 @@ class Persister
         $category = new Category();
         $category->setUuid(uniqid($name));
         $category->setName($name);
-        
+
         if (!empty($user)) {
             $category->setUser($user);
         }
@@ -296,7 +296,7 @@ class Persister
     public function role($name)
     {
         $role = $this->om->getRepository('ClarolineCoreBundle:Role')->findOneBy([
-            'name' => $name
+            'name' => $name,
         ]);
 
         if (!$role) {

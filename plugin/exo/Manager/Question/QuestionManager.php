@@ -5,13 +5,13 @@ namespace UJM\ExoBundle\Manager\Question;
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\Common\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Question\Question;
-use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Library\Options\Validation;
+use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Repository\QuestionRepository;
 use UJM\ExoBundle\Serializer\Question\QuestionSerializer;
-use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Validator\JsonSchema\Question\QuestionValidator;
 
 /**
@@ -48,9 +48,9 @@ class QuestionManager
      *     "serializer"   = @DI\Inject("ujm_exo.serializer.question")
      * })
      *
-     * @param ObjectManager            $om
-     * @param QuestionValidator        $validator
-     * @param QuestionSerializer       $serializer
+     * @param ObjectManager      $om
+     * @param QuestionValidator  $validator
+     * @param QuestionSerializer $serializer
      */
     public function __construct(
         ObjectManager $om,
@@ -66,10 +66,10 @@ class QuestionManager
     /**
      * Searches questions for a User.
      *
-     * @param User $user
+     * @param User  $user
      * @param array $filters
-     * @param int $page
-     * @param int $number
+     * @param int   $page
+     * @param int   $number
      * @param array $orderBy
      *
      * @return array
@@ -78,7 +78,7 @@ class QuestionManager
     {
         return [
             'questions' => $this->repository->search($user, $filters, $page, $number, $orderBy),
-            'total' => 100
+            'total' => 100,
         ];
     }
 
@@ -164,7 +164,7 @@ class QuestionManager
      * Calculates the score of an answer to a question.
      *
      * @param Question $question
-     * @param mixed $answer
+     * @param mixed    $answer
      *
      * @return float
      */

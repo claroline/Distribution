@@ -10,8 +10,8 @@ use Symfony\Component\HttpFoundation\Request;
 use UJM\ExoBundle\Controller\Api\AbstractController;
 use UJM\ExoBundle\Entity\Question\Question;
 use UJM\ExoBundle\Library\Options\Transfer;
-use UJM\ExoBundle\Manager\Question\QuestionManager;
 use UJM\ExoBundle\Library\Validator\ValidationException;
+use UJM\ExoBundle\Manager\Question\QuestionManager;
 
 /**
  * Question Controller exposes REST API.
@@ -59,7 +59,7 @@ class QuestionController extends AbstractController
             'questions' => array_map(function (Question $question) {
                 return $this->questionManager->export($question, [Transfer::MINIMAL, Transfer::INCLUDE_ADMIN_META]);
             }, $search['questions']),
-            'total' => $search['total']
+            'total' => $search['total'],
         ]);
     }
 

@@ -3,9 +3,9 @@
 namespace UJM\ExoBundle\Library\Question;
 
 use JMS\DiExtraBundle\Annotation as DI;
-use UJM\ExoBundle\Library\Question\Definition\QuestionDefinitionInterface;
 use UJM\ExoBundle\Library\Question\Definition\Exception\UnregisterableDefinitionException;
 use UJM\ExoBundle\Library\Question\Definition\Exception\UnregisteredDefinitionException;
+use UJM\ExoBundle\Library\Question\Definition\QuestionDefinitionInterface;
 
 /**
  * Collects definition class for each Question type defined.
@@ -68,7 +68,7 @@ class QuestionDefinitionsCollection
 
     /**
      * Checks if a mime-type is supported by the bundle.
-     * 
+     *
      * @param string $type
      *
      * @return bool

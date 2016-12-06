@@ -7,9 +7,9 @@ use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Question\Category;
 use UJM\ExoBundle\Library\Options\Validation;
+use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Repository\CategoryRepository;
 use UJM\ExoBundle\Serializer\Question\CategorySerializer;
-use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Validator\JsonSchema\Question\CategoryValidator;
 
 /**
@@ -136,7 +136,7 @@ class CategoryManager
      * Deletes a Category.
      *
      * @param Category $category
-     * 
+     *
      * @throws ValidationException
      */
     public function delete(Category $category)
@@ -145,7 +145,7 @@ class CategoryManager
         if ($count > 0) {
             throw new ValidationException('Category can not be deleted', [[
                 'path' => '',
-                'message' => "category is used by {$count} questions"
+                'message' => "category is used by {$count} questions",
             ]]);
         }
 

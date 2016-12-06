@@ -19,6 +19,5 @@ class ExerciseRepository extends EntityRepository
      */
     public function findScores(Exercise $exercise)
     {
-
     }
 }

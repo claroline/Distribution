@@ -14,7 +14,7 @@ class GraphicAnswerSerializer implements SerializerInterface
      * Converts a Graphic answer into a JSON-encodable structure.
      *
      * @param string $graphicAnswer
-     * @param array $options
+     * @param array  $options
      *
      * @return \stdClass
      */

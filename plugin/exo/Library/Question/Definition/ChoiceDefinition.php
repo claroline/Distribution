@@ -47,7 +47,7 @@ class ChoiceDefinition extends AbstractDefinition
 
     /**
      * Gets the choice question mime-type.
-     * 
+     *
      * @return string
      */
     public static function getMimeType()

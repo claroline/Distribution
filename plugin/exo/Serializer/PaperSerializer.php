@@ -29,7 +29,7 @@ class PaperSerializer extends AbstractSerializer
     /**
      * PaperSerializer constructor.
      *
-     * @param UserSerializer $userSerializer
+     * @param UserSerializer   $userSerializer
      * @param AnswerSerializer $answerSerializer
      *
      * @DI\InjectParams({
@@ -140,6 +140,5 @@ class PaperSerializer extends AbstractSerializer
 
     private function serializeStructure(Paper $paper)
     {
-
     }
 }

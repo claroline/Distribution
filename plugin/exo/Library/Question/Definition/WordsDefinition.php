@@ -98,7 +98,7 @@ class WordsDefinition extends AbstractDefinition
     public function getStatistics(AbstractQuestion $wordsQuestion, array $answers)
     {
         $keywords = [];
-        
+
         foreach ($answers as $answer) {
             $decoded = $this->convertAnswerDetails($answer);
 

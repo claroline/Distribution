@@ -18,7 +18,7 @@ use UJM\ExoBundle\Repository\PaperRepository;
 
 /**
  * AttemptManager provides methods to manage user attempts to exercises.
- * 
+ *
  * @DI\Service("ujm_exo.manager.attempt")
  */
 class AttemptManager
@@ -58,9 +58,9 @@ class AttemptManager
      *     "questionManager" = @DI\Inject("ujm_exo.manager.question")
      * })
      *
-     * @param ObjectManager $om
-     * @param PaperManager  $paperManager
-     * @param AnswerManager $answerManager
+     * @param ObjectManager   $om
+     * @param PaperManager    $paperManager
+     * @param AnswerManager   $answerManager
      * @param QuestionManager $questionManager
      */
     public function __construct(
@@ -82,7 +82,7 @@ class AttemptManager
      * Based on the maximum attempt allowed and the number of already done by the user.
      *
      * @param Exercise $exercise
-     * @param User $user
+     * @param User     $user
      *
      * @return bool
      */
@@ -108,7 +108,7 @@ class AttemptManager
      * ATTENTION : As is, anonymous have access to all the other anonymous Papers !!!
      *
      * @param Paper $paper
-     * @param User $user
+     * @param User  $user
      *
      * @return bool
      */
@@ -162,9 +162,9 @@ class AttemptManager
     /**
      * Submits user answers to a paper.
      *
-     * @param Paper $paper
+     * @param Paper       $paper
      * @param \stdClass[] $answers
-     * @param string $clientIp
+     * @param string      $clientIp
      *
      * @throws ValidationException - if there is any invalid answer
      *
@@ -210,7 +210,7 @@ class AttemptManager
      * Sets the end date of the paper and calculates its score.
      *
      * @param Paper $paper
-     * @param bool $finished
+     * @param bool  $finished
      */
     public function end(Paper $paper, $finished = true)
     {
@@ -230,8 +230,8 @@ class AttemptManager
     /**
      * Flags an hint has used in the user paper and returns the hint content.
      *
-     * @param Paper $paper
-     * @param Hint $hint
+     * @param Paper  $paper
+     * @param Hint   $hint
      * @param string $clientIp
      *
      * @return mixed

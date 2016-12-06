@@ -26,7 +26,7 @@ class Exercise extends AbstractResource
 
     /**
      * @var string
-     * 
+     *
      * @ORM\Column(name="description", type="text", nullable=true)
      */
     private $description = '';
@@ -396,6 +396,7 @@ class Exercise extends AbstractResource
      * Gets a step by its UUID.
      *
      * @param $uuid
+     *
      * @return mixed|null
      */
     public function getStep($uuid)

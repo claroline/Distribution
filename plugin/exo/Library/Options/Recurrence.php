@@ -3,7 +3,7 @@
 namespace UJM\ExoBundle\Library\Options;
 
 /**
- * Defines the recurrence of an action
+ * Defines the recurrence of an action.
  */
 final class Recurrence
 {
@@ -23,7 +23,7 @@ final class Recurrence
 
     /**
      * The action is executed each time.
-     * 
+     *
      * @var string
      */
     const ALWAYS = 'always';

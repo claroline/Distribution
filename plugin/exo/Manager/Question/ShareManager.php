@@ -2,9 +2,11 @@
 
 namespace UJM\ExoBundle\Manager\Question;
 
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Repository\UserRepository;
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Entity\Question\Shared;
 use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Repository\QuestionRepository;
 
@@ -46,6 +48,8 @@ class ShareManager
             throw new ValidationException('Share request is not valid', $errors);
         }
 
+        $adminRights = isset($shareRequest->adminRights) && $shareRequest->adminRights;
+
         /** @var QuestionRepository $questionRepo */
         $questionRepo = $this->om->getRepository('UJMExoBundle:Question\Question');
         // Loaded questions (we load it to be sure it exist)
@@ -56,11 +60,25 @@ class ShareManager
         // Loaded users (we load it to be sure it exist)
         $users = $userRepo->findByIds($shareRequest->users);
 
+        // Share each question with each user
         foreach ($questions as $question) {
+            $sharedWith = $this->om->getRepository('UJMExoBundle:Question\Shared')->findBy(['question' => $question]);
             foreach ($users as $user) {
+                $shared = new Shared();
+                $shared->setQuestion($question);
+                $shared->setUser($user);
+                $shared->setAdminRights($adminRights);
 
+                $this->om->persist($shared);
             }
         }
+
+        $this->om->flush();
+    }
+
+    private function getExisting(User $user, array $shared)
+    {
+
     }
 
     /**

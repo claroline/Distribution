@@ -49,7 +49,7 @@ class Paper
 
     /**
      * The generated structure (steps and questions) for the attempt.
-     * 
+     *
      * @ORM\Column(name="ordre_question", type="text", nullable=true)
      */
     private $structure;
@@ -112,7 +112,7 @@ class Paper
 
     /**
      * Gets id.
-     * 
+     *
      * @return int
      */
     public function getId()

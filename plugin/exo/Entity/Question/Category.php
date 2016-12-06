@@ -2,8 +2,8 @@
 
 namespace UJM\ExoBundle\Entity\Question;
 
-use Doctrine\ORM\Mapping as ORM;
 use Claroline\CoreBundle\Entity\User;
+use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -110,7 +110,7 @@ class Category
     /**
      * Set value.
      *
-     * @deprecated use setName() instead.
+     * @deprecated use setName() instead
      *
      * @param string $value
      */
@@ -122,7 +122,7 @@ class Category
     /**
      * Get value.
      *
-     * @deprecated use getName() instead.
+     * @deprecated use getName() instead
      *
      * @return string
      */
@@ -174,7 +174,7 @@ class Category
     /**
      * get locker.
      *
-     * @deprecated use isDefault() instead.
+     * @deprecated use isDefault() instead
      *
      * @return bool
      */
@@ -186,7 +186,7 @@ class Category
     /**
      * set locker.
      *
-     * @deprecated use setDefault() instead.
+     * @deprecated use setDefault() instead
      *
      * @param bool $locker
      */

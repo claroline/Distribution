@@ -14,7 +14,7 @@ class MatchAnswerSerializer implements SerializerInterface
      * Converts a Match answer into a JSON-encodable structure.
      *
      * @param string $matchAnswer
-     * @param array $options
+     * @param array  $options
      *
      * @return \stdClass
      */

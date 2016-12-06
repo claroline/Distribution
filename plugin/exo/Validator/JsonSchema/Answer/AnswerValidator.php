@@ -19,7 +19,7 @@ class AnswerValidator extends JsonSchemaValidator
      * Performs additional validations.
      *
      * @param \stdClass $answer
-     * @param array $options
+     * @param array     $options
      *
      * @return array
      */

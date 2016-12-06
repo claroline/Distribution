@@ -40,7 +40,6 @@ class ExerciseImporter extends Importer
 
     public function validate(array $data)
     {
-
     }
 
     public function import(array $data)

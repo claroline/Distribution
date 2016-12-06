@@ -9,7 +9,7 @@ abstract class AbstractSerializer implements SerializerInterface
      *
      * @param $option
      * @param array $options
-     * 
+     *
      * @return bool
      */
     protected function hasOption($option, array $options = [])
@@ -42,7 +42,7 @@ abstract class AbstractSerializer implements SerializerInterface
 
                     // Inject data into entity
                     call_user_func([$entity, $setter], $data->{$dataProperty});
-                } else if (is_callable($map)) {
+                } elseif (is_callable($map)) {
                     // Call the defined function
                     // TODO : do not pass the whole data object to the callback
                     call_user_func($map, $entity, $data);
@@ -60,8 +60,8 @@ abstract class AbstractSerializer implements SerializerInterface
      *  - key   : the name of the property to create in the \stdClass
      *  - value : either an entity property (accessible with a getter) or a callback
      *
-     * @param array $mapping
-     * @param mixed $entity
+     * @param array     $mapping
+     * @param mixed     $entity
      * @param \stdClass $data
      *
      * @return \stdClass the updated raw object
@@ -76,7 +76,7 @@ abstract class AbstractSerializer implements SerializerInterface
 
                 // Inject data into object
                 $value = call_user_func([$entity, $getter]);
-            } else if (is_callable($map)) {
+            } elseif (is_callable($map)) {
                 // Call the defined function
                 $value = call_user_func($map, $entity);
             }
@@ -86,14 +86,14 @@ abstract class AbstractSerializer implements SerializerInterface
                 $data->{$dataProperty} = $value;
             }
         }
-        
+
         return $data;
     }
 
     /**
-     * Gets the correct getter name for an entity property
+     * Gets the correct getter name for an entity property.
      *
-     * @param mixed $entity
+     * @param mixed  $entity
      * @param string $property
      *
      * @return string
@@ -121,9 +121,9 @@ abstract class AbstractSerializer implements SerializerInterface
     }
 
     /**
-     * Gets the correct setter name for an entity property
+     * Gets the correct setter name for an entity property.
      *
-     * @param mixed $entity
+     * @param mixed  $entity
      * @param string $property
      *
      * @return string

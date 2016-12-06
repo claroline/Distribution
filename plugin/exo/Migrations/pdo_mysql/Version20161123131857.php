@@ -34,17 +34,17 @@ class Version20161123131857 extends AbstractMigration
             WHERE q.type='InteractionOpen' 
               AND t.value = 'long'
         ");
-        $this->addSql("
+        $this->addSql('
             ALTER TABLE ujm_interaction_open 
             DROP FOREIGN KEY FK_BFFE44F46AFD3CF
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             DROP INDEX IDX_BFFE44F46AFD3CF ON ujm_interaction_open
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE ujm_interaction_open 
             DROP typeopenquestion_id
-        ");
+        ');
 
         // Match questions
         // Adds match mime-type
@@ -74,59 +74,59 @@ class Version20161123131857 extends AbstractMigration
             WHERE q.type=\"InteractionMatching\" 
               AND t.value = 'To pair' 
         ");
-        $this->addSql("
+        $this->addSql('
             ALTER TABLE ujm_interaction_matching 
             DROP FOREIGN KEY FK_AC9801C7F881A129
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             DROP INDEX IDX_AC9801C7F881A129 ON ujm_interaction_matching
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE ujm_interaction_matching 
             DROP type_matching_id
-        ");
+        ');
 
         // Cloze questions
         $this->addSql("
             UPDATE ujm_question SET mime_type = 'application/x.cloze+json' WHERE `type` = 'InteractionHole'
         ");
-        $this->addSql("
+        $this->addSql('
             ALTER TABLE ujm_interaction_hole 
             DROP `html`
-        ");
+        ');
 
         // Choice questions
         $this->addSql("
             UPDATE ujm_question SET mime_type = 'application/x.choice+json' WHERE `type` = 'InteractionQCM'
         ");
-        $this->addSql("
+        $this->addSql('
             ALTER TABLE ujm_interaction_qcm 
             DROP FOREIGN KEY FK_58C3D5A1DCB52A9E
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             DROP INDEX IDX_58C3D5A1DCB52A9E ON ujm_interaction_qcm
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE ujm_interaction_qcm 
             ADD multiple TINYINT(1) NOT NULL
-        ");
+        ');
         // Migrates TypeQCM data into the new column `multiple`
-        $this->addSql("
+        $this->addSql('
             UPDATE ujm_interaction_qcm AS q
             LEFT JOIN ujm_type_qcm AS t ON q.type_qcm_id = t.id 
             SET q.multiple = true 
             WHERE t.code = 1
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             UPDATE ujm_interaction_qcm AS q
             LEFT JOIN ujm_type_qcm AS t ON q.type_qcm_id = t.id 
             SET q.multiple = false 
             WHERE t.code = 2
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE ujm_interaction_qcm 
             DROP type_qcm_id
-        ");
+        ');
 
         // Graphic questions
         $this->addSql("
@@ -137,55 +137,55 @@ class Version20161123131857 extends AbstractMigration
     public function down(Schema $schema)
     {
         // Open questions
-        $this->addSql("
+        $this->addSql('
             ALTER TABLE ujm_interaction_open 
             ADD typeopenquestion_id INT DEFAULT NULL
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE ujm_interaction_open 
             ADD CONSTRAINT FK_BFFE44F46AFD3CF FOREIGN KEY (typeopenquestion_id) 
             REFERENCES ujm_type_open_question (id)
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             CREATE INDEX IDX_BFFE44F46AFD3CF ON ujm_interaction_open (typeopenquestion_id)
-        ");
+        ');
 
         // Match questions
-        $this->addSql("
+        $this->addSql('
             ALTER TABLE ujm_interaction_matching 
             ADD type_matching_id INT DEFAULT NULL
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE ujm_interaction_matching 
             ADD CONSTRAINT FK_AC9801C7F881A129 FOREIGN KEY (type_matching_id) 
             REFERENCES ujm_type_matching (id)
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             CREATE INDEX IDX_AC9801C7F881A129 ON ujm_interaction_matching (type_matching_id)
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE ujm_object_question CHANGE entity_order `order` INT NOT NULL
-        ");
+        ');
 
         // Cloze questions
-        $this->addSql("
+        $this->addSql('
             ALTER TABLE ujm_interaction_hole 
             ADD `html` LONGTEXT NOT NULL COLLATE utf8_unicode_ci
-        ");
+        ');
 
         // Choice questions
-        $this->addSql("
+        $this->addSql('
             ALTER TABLE ujm_interaction_qcm 
             ADD type_qcm_id INT DEFAULT NULL, 
             DROP multiple
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE ujm_interaction_qcm 
             ADD CONSTRAINT FK_58C3D5A1DCB52A9E FOREIGN KEY (type_qcm_id) 
             REFERENCES ujm_type_qcm (id)
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             CREATE INDEX IDX_58C3D5A1DCB52A9E ON ujm_interaction_qcm (type_qcm_id)
-        ");
+        ');
     }
 }

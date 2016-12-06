@@ -8,9 +8,9 @@ use UJM\ExoBundle\Entity\Step;
 use UJM\ExoBundle\Library\Mode\CorrectionMode;
 use UJM\ExoBundle\Library\Mode\MarkMode;
 use UJM\ExoBundle\Library\Options\Recurrence;
-use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Options\ShowCorrectionAt;
 use UJM\ExoBundle\Library\Options\ShowScoreAt;
+use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
 
 /**
@@ -70,7 +70,7 @@ class ExerciseSerializer implements SerializerInterface
             if (!empty($exercise->getDescription())) {
                 $exerciseData->description = $exercise->getDescription();
             }
-            
+
             $exerciseData->parameters = $this->serializeParameters($exercise);
             $exerciseData->steps = $this->serializeSteps($exercise, $options);
         }

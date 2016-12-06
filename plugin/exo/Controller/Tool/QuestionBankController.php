@@ -50,7 +50,7 @@ class QuestionBankController
             'questions' => array_map(function ($question) {
                 return $this->questionManager->export($question, [Transfer::MINIMAL, Transfer::INCLUDE_ADMIN_META]);
             }, $search['questions']),
-            'total' => $search['total']
+            'total' => $search['total'],
         ];
     }
 }

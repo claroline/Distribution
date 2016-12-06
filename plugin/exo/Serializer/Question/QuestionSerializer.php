@@ -121,7 +121,7 @@ class QuestionSerializer extends AbstractSerializer
             'title' => 'title',
             'meta' => function (Question $question) use ($options) {
                 $this->serializeMetadata($question, $options);
-            }
+            },
         ], $question, $questionData);
 
         // Adds full definition of the question
@@ -200,7 +200,7 @@ class QuestionSerializer extends AbstractSerializer
             },
             'meta' => function (Question $question, \stdClass $data) {
                 return $this->deserializeMetadata($question, $data->meta);
-            }
+            },
         ], $data, $question);
 
         $this->deserializeQuestionType($question, $data, $options);
@@ -213,7 +213,7 @@ class QuestionSerializer extends AbstractSerializer
      * Forwards the serialization to the correct handler.
      *
      * @param Question $question
-     * @param array $options
+     * @param array    $options
      *
      * @return \stdClass
      */
@@ -228,10 +228,9 @@ class QuestionSerializer extends AbstractSerializer
      * Deserializes Question data specific to its type.
      * Forwards the serialization to the correct handler.
      *
-     * @param Question $question
+     * @param Question  $question
      * @param \stdClass $data
-     *
-     * @param array $options
+     * @param array     $options
      */
     private function deserializeQuestionType(Question $question, \stdClass $data, array $options = [])
     {

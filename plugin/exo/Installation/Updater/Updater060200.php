@@ -149,7 +149,7 @@ class Updater060200
                 WHERE id = {$res['id']}
             ");
         }
-        
+
         $this->connection->exec('
             UPDATE ujm_interaction_graphic
             SET document_id = NULL

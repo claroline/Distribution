@@ -51,7 +51,7 @@ class Area
 
     /**
      * @var float
-     * 
+     *
      * @ORM\Column(type="float")
      */
     private $size;

@@ -11,7 +11,7 @@ use UJM\ExoBundle\Validator\JsonSchema\Answer\AnswerValidator;
 
 /**
  * AnswerManager manages answers made by users to questions.
- * 
+ *
  * @DI\Service("ujm_exo.manager.answer")
  */
 class AnswerManager
@@ -40,8 +40,8 @@ class AnswerManager
      *     "serializer" = @DI\Inject("ujm_exo.serializer.answer")
      * })
      *
-     * @param ObjectManager $om
-     * @param AnswerValidator $validator
+     * @param ObjectManager    $om
+     * @param AnswerValidator  $validator
      * @param AnswerSerializer $serializer
      */
     public function __construct(
@@ -71,7 +71,7 @@ class AnswerManager
     /**
      * Validates and updates an Answer entity with raw data.
      *
-     * @param Answer $answer
+     * @param Answer    $answer
      * @param \stdClass $answerData
      *
      * @return Answer
@@ -99,7 +99,7 @@ class AnswerManager
      * Exports an answer.
      *
      * @param Answer $answer
-     * @param array    $options
+     * @param array  $options
      *
      * @return \stdClass
      */

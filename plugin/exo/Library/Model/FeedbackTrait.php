@@ -3,13 +3,13 @@
 namespace UJM\ExoBundle\Library\Model;
 
 /**
- * Gives an entity the ability to have a feedback
+ * Gives an entity the ability to have a feedback.
  */
 trait FeedbackTrait
 {
     /**
      * Feedback content.
-     * 
+     *
      * @var string
      *
      * @ORM\Column(name="feedback", type="text", nullable=true)

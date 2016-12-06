@@ -14,7 +14,7 @@ class ClozeAnswerSerializer implements SerializerInterface
      * Converts a Cloze answer into a JSON-encodable structure.
      *
      * @param string $clozeAnswer
-     * @param array $options
+     * @param array  $options
      *
      * @return \stdClass
      */

@@ -19,7 +19,7 @@ class StepQuestion
      * Keep the order of the question in the step.
      */
     use OrderTrait;
-    
+
     /**
      * The parent step.
      *

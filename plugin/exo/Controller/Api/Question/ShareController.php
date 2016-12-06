@@ -76,7 +76,6 @@ class ShareController extends AbstractController
      */
     public function updateAction(Request $request)
     {
-
     }
 
     /**

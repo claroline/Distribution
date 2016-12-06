@@ -16,7 +16,7 @@ class OpenQuestionSerializer implements SerializerInterface
      * Converts a Open question into a JSON-encodable structure.
      *
      * @param OpenQuestion $openQuestion
-     * @param array           $options
+     * @param array        $options
      *
      * @return \stdClass
      */
@@ -39,9 +39,9 @@ class OpenQuestionSerializer implements SerializerInterface
     /**
      * Converts raw data into an Open question entity.
      *
-     * @param \stdClass       $data
+     * @param \stdClass    $data
      * @param OpenQuestion $openQuestion
-     * @param array           $options
+     * @param array        $options
      *
      * @return OpenQuestion
      */

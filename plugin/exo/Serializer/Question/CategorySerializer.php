@@ -45,7 +45,7 @@ class CategorySerializer extends AbstractSerializer
         $this->om = $om;
         $this->tokenStorage = $tokenStorage;
     }
-    
+
     /**
      * Converts a Category into a JSON-encodable structure.
      *

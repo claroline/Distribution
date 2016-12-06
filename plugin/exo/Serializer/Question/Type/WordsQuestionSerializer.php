@@ -3,8 +3,8 @@
 namespace UJM\ExoBundle\Serializer\Question\Type;
 
 use JMS\DiExtraBundle\Annotation as DI;
-use UJM\ExoBundle\Entity\QuestionType\OpenQuestion;
 use UJM\ExoBundle\Entity\Misc\Keyword;
+use UJM\ExoBundle\Entity\QuestionType\OpenQuestion;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
 use UJM\ExoBundle\Serializer\Misc\KeywordSerializer;
@@ -37,7 +37,7 @@ class WordsQuestionSerializer implements SerializerInterface
      * Converts a Words question into a JSON-encodable structure.
      *
      * @param OpenQuestion $wordsQuestion
-     * @param array           $options
+     * @param array        $options
      *
      * @return \stdClass
      */
@@ -59,9 +59,9 @@ class WordsQuestionSerializer implements SerializerInterface
     /**
      * Converts raw data into an Words question entity.
      *
-     * @param \stdClass       $data
+     * @param \stdClass    $data
      * @param OpenQuestion $wordsQuestion
-     * @param array           $options
+     * @param array        $options
      *
      * @return OpenQuestion
      */
@@ -87,8 +87,8 @@ class WordsQuestionSerializer implements SerializerInterface
      * Deserializes Question solutions (= a collection of keywords).
      *
      * @param OpenQuestion $wordsQuestion
-     * @param array           $solutions
-     * @param array           $options
+     * @param array        $solutions
+     * @param array        $options
      */
     private function deserializeSolutions(OpenQuestion $wordsQuestion, array $solutions, array $options = [])
     {

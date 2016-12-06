@@ -189,7 +189,7 @@ class Step
 
     /**
      * Shortcut to get the list of questions of the step.
-     * 
+     *
      * @return array
      */
     public function getQuestions()

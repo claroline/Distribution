@@ -7,7 +7,7 @@ use UJM\ExoBundle\Library\Model\ContentTrait;
 
 /**
  * Hint.
- * 
+ *
  * @ORM\Entity()
  * @ORM\Table(name="ujm_hint")
  */

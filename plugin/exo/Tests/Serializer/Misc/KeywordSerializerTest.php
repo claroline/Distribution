@@ -111,8 +111,8 @@ class KeywordSerializerTest extends JsonDataTestCase
     /**
      * Compares the data between a keyword entity and a keyword raw object.
      *
-     * @param Keyword $keyword
-     * @param \stdClass    $keywordData
+     * @param Keyword   $keyword
+     * @param \stdClass $keywordData
      */
     private function compareKeywordAndData(Keyword $keyword, \stdClass $keywordData)
     {

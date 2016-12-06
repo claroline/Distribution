@@ -4,8 +4,8 @@ namespace UJM\ExoBundle\Serializer\Question\Type;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Misc\Hole;
-use UJM\ExoBundle\Entity\QuestionType\ClozeQuestion;
 use UJM\ExoBundle\Entity\Misc\Keyword;
+use UJM\ExoBundle\Entity\QuestionType\ClozeQuestion;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
 use UJM\ExoBundle\Serializer\Misc\KeywordSerializer;
@@ -38,7 +38,7 @@ class ClozeQuestionSerializer implements SerializerInterface
      * Converts a Cloze question into a JSON-encodable structure.
      *
      * @param ChoiceQuestion $clozeQuestion
-     * @param array           $options
+     * @param array          $options
      *
      * @return \stdClass
      */
@@ -62,9 +62,9 @@ class ClozeQuestionSerializer implements SerializerInterface
     /**
      * Converts raw data into a Cloze question entity.
      *
-     * @param \stdClass       $data
+     * @param \stdClass     $data
      * @param ClozeQuestion $clozeQuestion
-     * @param array           $options
+     * @param array         $options
      *
      * @return ClozeQuestion
      */
@@ -115,9 +115,9 @@ class ClozeQuestionSerializer implements SerializerInterface
      * Deserializes Question holes.
      *
      * @param ClozeQuestion $clozeQuestion
-     * @param array           $holes
-     * @param array           $solutions
-     * @param array           $options
+     * @param array         $holes
+     * @param array         $solutions
+     * @param array         $options
      */
     private function deserializeHoles(ClozeQuestion $clozeQuestion, array $holes, array $solutions, array $options = [])
     {

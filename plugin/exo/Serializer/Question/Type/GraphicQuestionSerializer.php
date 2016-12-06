@@ -17,7 +17,7 @@ class GraphicQuestionSerializer implements SerializerInterface
      * Converts a Graphic question into a JSON-encodable structure.
      *
      * @param GraphicQuestion $graphicQuestion
-     * @param array              $options
+     * @param array           $options
      *
      * @return \stdClass
      */
@@ -42,9 +42,9 @@ class GraphicQuestionSerializer implements SerializerInterface
     /**
      * Converts raw data into a Graphic question entity.
      *
-     * @param \stdClass          $data
+     * @param \stdClass       $data
      * @param GraphicQuestion $graphicQuestion
-     * @param array              $options
+     * @param array           $options
      *
      * @return GraphicQuestion
      */
@@ -89,7 +89,7 @@ class GraphicQuestionSerializer implements SerializerInterface
      * Deserializes the Question image.
      *
      * @param GraphicQuestion $graphicQuestion
-     * @param \stdClass          $image
+     * @param \stdClass       $image
      */
     private function deserializeImage(GraphicQuestion $graphicQuestion, \stdClass $image)
     {
@@ -120,7 +120,7 @@ class GraphicQuestionSerializer implements SerializerInterface
      * Deserializes Question areas.
      *
      * @param GraphicQuestion $graphicQuestion
-     * @param array              $solutions
+     * @param array           $solutions
      */
     private function deserializeAreas(GraphicQuestion $graphicQuestion, array $solutions)
     {
@@ -202,7 +202,7 @@ class GraphicQuestionSerializer implements SerializerInterface
     /**
      * Deserializes an Area.
      *
-     * @param Area    $area
+     * @param Area      $area
      * @param \stdClass $data
      */
     private function deserializeArea(Area $area, \stdClass $data)

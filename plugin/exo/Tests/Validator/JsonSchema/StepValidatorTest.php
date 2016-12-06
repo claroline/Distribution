@@ -60,7 +60,7 @@ class StepValidatorTest extends JsonSchemaTestCase
     }
 
     /**
-     * The validator MUST throw error if the user want to pick more steps than there are in the exercise
+     * The validator MUST throw error if the user want to pick more steps than there are in the exercise.
      */
     public function testPickGreaterThanStepsThrowsError()
     {

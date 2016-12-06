@@ -20,7 +20,7 @@ class PaperManagerTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->om = $this->mock('Claroline\CoreBundle\Persistence\ObjectManager');
-        $this->serializer =  $this->mock('UJM\ExoBundle\Serializer\PaperSerializer');
+        $this->serializer = $this->mock('UJM\ExoBundle\Serializer\PaperSerializer');
 
         $this->manager = new PaperManager(
             $this->om,

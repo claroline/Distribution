@@ -11,8 +11,8 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Library\Options\Transfer;
-use UJM\ExoBundle\Manager\ExerciseManager;
 use UJM\ExoBundle\Library\Validator\ValidationException;
+use UJM\ExoBundle\Manager\ExerciseManager;
 
 /**
  * Exercise API Controller exposes REST API.

@@ -14,7 +14,7 @@ class PairAnswerSerializer implements SerializerInterface
      * Converts a Pair answer into a JSON-encodable structure.
      *
      * @param string $pairAnswer
-     * @param array $options
+     * @param array  $options
      *
      * @return \stdClass
      */

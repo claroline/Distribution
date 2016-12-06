@@ -30,7 +30,6 @@ class QTIManager
      */
     public function importTest()
     {
-
     }
 
     /**
@@ -43,7 +42,6 @@ class QTIManager
     public function exportQuestions(array $questions)
     {
         foreach ($questions as $question) {
-
         }
 
         return new \ZipArchive();

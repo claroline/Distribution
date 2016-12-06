@@ -7,9 +7,9 @@ use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Options\Validation;
+use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Manager\Attempt\PaperManager;
 use UJM\ExoBundle\Serializer\ExerciseSerializer;
-use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Validator\JsonSchema\ExerciseValidator;
 
 /**
@@ -39,7 +39,7 @@ class ExerciseManager
 
     /**
      * ExerciseManager constructor.
-     * 
+     *
      * @DI\InjectParams({
      *     "om"           = @DI\Inject("claroline.persistence.object_manager"),
      *     "validator"    = @DI\Inject("ujm_exo.validator.exercise"),
@@ -50,7 +50,7 @@ class ExerciseManager
      * @param ObjectManager      $om
      * @param ExerciseValidator  $validator
      * @param ExerciseSerializer $serializer
-     * @param PaperManager $paperManager
+     * @param PaperManager       $paperManager
      */
     public function __construct(
         ObjectManager $om,

@@ -43,7 +43,7 @@ class ExerciseControllerTest extends TransactionalTestCase
         $adminRole = $this->persist->role('ROLE_ADMIN');
         $this->admin = $this->persist->user('admin');
         $this->admin->addRole($adminRole);
-        
+
         $this->exercise = $this->persist->exercise('ex1', [
             $this->persist->openQuestion('Question.'),
         ], $this->john);
@@ -103,12 +103,10 @@ class ExerciseControllerTest extends TransactionalTestCase
 
     public function testUpdateByAdmin()
     {
-
     }
 
     public function testUpdateWithValidData()
     {
-
     }
 
     public function testUpdateWithInvalidData()

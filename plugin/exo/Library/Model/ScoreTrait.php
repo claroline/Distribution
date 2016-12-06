@@ -9,7 +9,7 @@ trait ScoreTrait
 {
     /**
      * @var float
-     * 
+     *
      * @ORM\Column(name="score", type="float")
      */
     private $score;

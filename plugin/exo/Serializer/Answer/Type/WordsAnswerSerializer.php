@@ -14,7 +14,7 @@ class WordsAnswerSerializer implements SerializerInterface
      * Converts a Words answer into a JSON-encodable structure.
      *
      * @param string $wordsAnswer
-     * @param array $options
+     * @param array  $options
      *
      * @return string - the answer string
      */
