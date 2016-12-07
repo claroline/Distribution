@@ -21,9 +21,9 @@ PagePrimaryAction.propTypes = {
 
 const MoreActionsDropdown = props =>
   <DropdownButton
-    id={`dropdown-other-actions`}
+    id="dropdown-other-actions"
     title={<span className="fa fa-fw fa-ellipsis-v"></span>}
-    bsStyle={`link`}
+    bsStyle="link"
     noCaret={true}
     pullRight={true}
   >

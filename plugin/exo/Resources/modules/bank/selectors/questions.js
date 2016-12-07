@@ -5,7 +5,7 @@ const getPagination = (state) => state.pagination
 const getSortBy = (state) => state.sortBy
 
 const sortMethods = {
-  type: (a, b) => {
+  type: () => {
 
   },
   category: (a, b) => {
@@ -38,7 +38,7 @@ const sortMethods = {
 
     return 0
   },
-  author: (a, b) => {
+  author: () => {
 
   }
 }

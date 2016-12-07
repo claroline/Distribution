@@ -12,7 +12,8 @@ export default class Chart extends Component {
 
 Chart.propTypes = {
   width: T.number,
-  height: T.number
+  height: T.number,
+  children: T.node.isRequired
 }
 
 Chart.defaultProps = {

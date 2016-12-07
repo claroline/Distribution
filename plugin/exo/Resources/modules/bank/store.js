@@ -2,7 +2,6 @@
 
 import {
   applyMiddleware,
-  combineReducers,
   compose,
   createStore as baseCreate
 } from 'redux'

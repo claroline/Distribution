@@ -6,15 +6,15 @@ import {
   SEARCH_CLEAR
 } from './../actions/search'
 
-function addSearchFilter(searchState, action = {}) {
+function addSearchFilter() {
 
 }
 
-function removeSearchFilter(searchState, action = {}) {
+function removeSearchFilter() {
 
 }
 
-function clearFilter(searchState, action = {}) {
+function clearFilter() {
 
 }
 

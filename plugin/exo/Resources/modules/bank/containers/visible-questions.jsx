@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 
-import QuestionList from './../components/question-list.jsx';
+import QuestionList from './../components/question-list.jsx'
 import {getVisibleQuestions} from './../selectors/questions'
 import {actions as sortActions} from './../actions/sort-by'
 

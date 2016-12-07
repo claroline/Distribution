@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {arc} from "d3-shape"
+import {arc} from 'd3-shape'
 
 const T = React.PropTypes
 

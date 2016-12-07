@@ -30,7 +30,7 @@ CountCard.propTypes = {
   count: T.number.isRequired
 }
 
-const GeneralStats = props =>
+const GeneralStats = () =>
   <div className="general-stats row">
     <div className="col-md-3 col-xs-6">
       <CountCard label="steps" icon="fa fa-th-list" count={6} />

@@ -7,19 +7,19 @@ import {
   QUESTION_DELETE
 } from './../actions/questions'
 
-function requestQuestions(questionsState, action = {}) {
+function requestQuestions() {
 
 }
 
-function createQuestion(questionsState, action = {}) {
+function createQuestion() {
 
 }
 
-function updateQuestion(questionsState, action = {}) {
+function updateQuestion() {
 
 }
 
-function deleteQuestion(questionsState, action = {}) {
+function deleteQuestion() {
 
 }
 

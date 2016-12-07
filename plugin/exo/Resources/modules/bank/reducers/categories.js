@@ -4,7 +4,7 @@ import {
   CATEGORY_UPDATE
 } from './../actions/categories'
 
-function updateCategory(categoriesState, action = {}) {
+function updateCategory() {
 
 }
 

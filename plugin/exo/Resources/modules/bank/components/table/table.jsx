@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import classes from 'classnames'
 
 const T = React.PropTypes
@@ -9,11 +9,13 @@ const TableCell = props =>
   </td>
 
 TableCell.propTypes = {
-  align: T.oneOf(['left', 'center', 'right'])
+  align: T.oneOf(['left', 'center', 'right']),
+  children: T.oneOfType([T.object, T.array])
 }
 
 TableCell.defaultProps = {
-  align: 'left'
+  align: 'left',
+  children: null
 }
 
 const TableHeaderCell = props =>
@@ -22,11 +24,13 @@ const TableHeaderCell = props =>
   </th>
 
 TableHeaderCell.propTypes = {
-  align: T.oneOf(['left', 'center', 'right'])
+  align: T.oneOf(['left', 'center', 'right']),
+  children: T.node
 }
 
 TableHeaderCell.defaultProps = {
-  align: 'left'
+  align: 'left',
+  children: null
 }
 
 const TableSortingCell = props =>
@@ -50,12 +54,14 @@ const TableSortingCell = props =>
 TableSortingCell.propTypes = {
   align: T.oneOf(['left', 'center', 'right']),
   direction: T.oneOf([0, -1, 1]),
-  onSort: T.func.isRequired
+  onSort: T.func.isRequired,
+  children: T.node
 }
 
 TableSortingCell.defaultProps = {
   align: 'left',
-  direction: 0
+  direction: 0,
+  children: null
 }
 
 const TableHeader = props =>
@@ -87,10 +93,18 @@ const TableHeader = props =>
     </tr>
   </thead>
 
+TableHeader.propTypes = {
+  children: T.array.isRequired
+}
+
 const TableRow = props =>
   <tr>
     {props.children}
   </tr>
+
+TableRow.propTypes = {
+  children: T.node.isRequired
+}
 
 const Table = props =>
   <table className="table table-striped table-hover">
@@ -98,7 +112,8 @@ const Table = props =>
   </table>
 
 Table.propTypes = {
-  emptyText: T.string
+  emptyText: T.string,
+  children: T.array.isRequired
 }
 
 export {

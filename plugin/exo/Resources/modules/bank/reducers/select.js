@@ -7,15 +7,15 @@ import {
   ITEM_DESELECT_ALL
 } from './../actions/select'
 
-function selectItems(selectedState, action = {}) {
+function selectItems() {
 
 }
 
-function selectItem(selectedState, action = {}) {
+function selectItem() {
 
 }
 
-function deselectItem(selectedState, action = {}) {
+function deselectItem() {
 
 }
 

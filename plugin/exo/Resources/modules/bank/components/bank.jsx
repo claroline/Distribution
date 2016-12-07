@@ -34,7 +34,7 @@ class Bank extends Component {
       {
         icon: 'fa fa-fw fa-search',
         label: tex('search'),
-        handleAction: () => this.props.showModal(MODAL_SEARCH, {
+        handleAction: () => this.props.showModal('searchModal', {
           title: tex('search'),
           handleSearch: () => {
             this.props.closeModal()
@@ -79,11 +79,26 @@ class Bank extends Component {
   }
 }
 
+Bank.propTypes = {
+  showModal: T.func.isRequired,
+  closeModal: T.func.isRequired,
+  handleItemCreate: T.func.isRequired,
+  handleSearch: T.func.isRequired,
+  handlePageChange: T.func.isRequired,
+  handlePagePrevious: T.func.isRequired,
+  handlePageNext: T.func.isRequired,
+  handlePageSizeUpdate: T.func.isRequired,
+  pages: T.number.isRequired,
+  pagination: T.shape({
+    current: T.number.isRequired,
+    pageSize: T.number.isRequired
+  })
+}
+
 function mapStateToProps(state) {
   return {
     pagination: state.pagination,
-    pages: countPages(state),
-
+    pages: countPages(state)
   }
 }
 
@@ -98,7 +113,7 @@ function mapDispatchToProps(dispatch) {
     showModal(type, props) {
       dispatch(editorActions.showModal(type, props))
     },
-    handleItemCreate(type) {
+    handleItemCreate() {
 
     },
     handleSearch() {

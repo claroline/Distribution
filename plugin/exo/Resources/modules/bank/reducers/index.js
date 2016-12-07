@@ -7,7 +7,6 @@ import selectReducer          from './select'
 import sortByReducer          from './sort-by'
 import paginationReducer      from './pagination'
 import searchReducer          from './search'
-import modalReducer           from './../../modal/reducers'
 
 const bankApp = combineReducers({
   categories: categoriesReducer,
@@ -16,8 +15,7 @@ const bankApp = combineReducers({
   currentQuestion: currentQuestionReducer,
   sortBy: sortByReducer,
   pagination: paginationReducer,
-  search: searchReducer,
-  modal: modalReducer
+  search: searchReducer
 })
 
 export default bankApp

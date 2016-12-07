@@ -55,5 +55,5 @@ DataSeries.propTypes = {
 }
 
 DataSeries.defaultProps = {
-  color: '#337ab7', // Default bootstrap primary color
+  color: '#337ab7' // Default bootstrap primary color
 }

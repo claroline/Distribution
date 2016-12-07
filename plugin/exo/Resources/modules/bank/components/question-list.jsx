@@ -85,9 +85,9 @@ export default class QuestionList extends Component {
               </a>
 
               <DropdownButton
-                id={`dropdown-other-actions`}
+                id="dropdown-other-actions"
                 title={<span className="fa fa-fw fa-ellipsis-v"></span>}
-                bsStyle={`link`}
+                bsStyle="link"
                 noCaret={true}
                 pullRight={true}
                 className="btn-sm"
