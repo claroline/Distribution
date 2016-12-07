@@ -103,38 +103,23 @@ class ExerciseControllerTest extends TransactionalTestCase
 
     public function testUpdateByAdmin()
     {
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
     }
 
     public function testUpdateWithValidData()
     {
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
     }
 
     public function testUpdateWithInvalidData()
     {
-        /*$invalidData = [
-            'id' => $this->categoryJohn->getUuid(),
-            'name' => ['not-a-string'],
-        ];
-
-        $this->request(
-            'PUT',
-            "/api/categories/{$this->categoryJohn->getUuid()}",
-            $this->john,
-            [],
-            json_encode($invalidData)
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
         );
-
-        $this->assertEquals(422, $this->client->getResponse()->getStatusCode());
-
-        $content = json_decode($this->client->getResponse()->getContent(), true);
-
-        $this->assertTrue(is_array($content));
-        $this->assertTrue(count($content) > 0);
-
-        $this->assertContains([
-            'path' => '/name',
-            'message' => 'instance must be of type string',
-        ], $content);*/
     }
 
     /**
