@@ -24,6 +24,9 @@
                 </select>
             </div>
         </div>
+        <div class="alert alert-default" ng-if="cfc.type['value'] === 9">
+            {{ 'rich_text_field_info'|trans:{}:'clacoform' }}
+        </div>
         <div class="form-group row" ng-if="cfc.hasChoices()">
             <hr>
             <label class="control-label col-md-3">

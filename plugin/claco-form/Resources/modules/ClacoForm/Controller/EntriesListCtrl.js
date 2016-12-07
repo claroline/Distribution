@@ -175,7 +175,7 @@ export default class EntriesManagementCtrl {
       this.fieldsColumns['myEntries'].push(data)
       this.fieldsColumns['managerEntries'].push(data)
 
-      if (displayMetadata || !f['isMetadata']) {
+      if (f['type'] !== 9 && (displayMetadata || !f['isMetadata'])) {
         this.columns['entries'][id] = {name: f['name'], value: false}
         this.columnsKeys['entries'].push(id)
         this.fieldsColumns['entries'].push(data)

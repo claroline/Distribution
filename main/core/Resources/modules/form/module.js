@@ -6,6 +6,7 @@ import './Field/Checkbox/module'
 import './Field/Checkboxes/module'
 import './Field/Select/module'
 import './Field/Text/module'
+import './Field/RichText/module'
 import './Field/Radio/module'
 import './Field/Number/module'
 import './Field/Country/module'
@@ -25,6 +26,7 @@ angular.module('FormBuilder', [
   'FieldCheckboxes',
   'FieldSelect',
   'FieldText',
+  'FieldRichText',
   'FieldRadio',
   'FieldNumber',
   'FieldCountry',

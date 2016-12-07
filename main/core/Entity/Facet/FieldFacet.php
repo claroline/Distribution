@@ -32,6 +32,7 @@ class FieldFacet
     const CHECKBOXES_TYPE = 6;
     const COUNTRY_TYPE = 7;
     const EMAIL_TYPE = 8;
+    const RICH_TEXT_TYPE = 9;
 
     protected static $types = [
         self::STRING_TYPE,
@@ -42,6 +43,7 @@ class FieldFacet
         self::CHECKBOXES_TYPE,
         self::COUNTRY_TYPE,
         self::EMAIL_TYPE,
+        self::RICH_TEXT_TYPE,
     ];
 
     /**
@@ -238,6 +240,7 @@ class FieldFacet
             case self::CHECKBOXES_TYPE: return 'checkbox';
             case self::COUNTRY_TYPE: return 'country';
             case self::EMAIL_TYPE: return 'email';
+            case self::RICH_TEXT_TYPE: return 'rich_text';
             default: return 'error';
         }
     }
@@ -253,6 +256,7 @@ class FieldFacet
             case self::CHECKBOXES_TYPE: return 'checkboxes';
             case self::COUNTRY_TYPE: return 'country';
             case self::EMAIL_TYPE: return 'email';
+            case self::RICH_TEXT_TYPE: return 'rich_text';
             default: return 'error';
         }
     }

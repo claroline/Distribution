@@ -26,7 +26,8 @@ export default class FieldService {
       {value: 5, name: Translator.trans('select', {}, 'platform')},
       {value: 6, name: Translator.trans('checkboxes', {}, 'platform')},
       {value: 7, name: Translator.trans('country', {}, 'platform')},
-      {value: 8, name: Translator.trans('email', {}, 'platform')}
+      {value: 8, name: Translator.trans('email', {}, 'platform')},
+      {value: 9, name: Translator.trans('rich_text', {}, 'platform')},
     ]
     this.countries = [
       {label: 'Afghanistan', value: 'AF'},
