@@ -64,9 +64,13 @@ class ShareManager
         foreach ($questions as $question) {
             $sharedWith = $this->om->getRepository('UJMExoBundle:Question\Shared')->findBy(['question' => $question]);
             foreach ($users as $user) {
-                $shared = new Shared();
-                $shared->setQuestion($question);
-                $shared->setUser($user);
+                $shared = $this->getSharedForUser($user, $sharedWith);
+                if (empty($shared)) {
+                    $shared = new Shared();
+                    $shared->setQuestion($question);
+                    $shared->setUser($user);
+                }
+
                 $shared->setAdminRights($adminRights);
 
                 $this->om->persist($shared);
@@ -76,9 +80,25 @@ class ShareManager
         $this->om->flush();
     }
 
-    private function getExisting(User $user, array $shared)
+    /**
+     * Gets an existing share link for a user in the share list of the question.
+     *
+     * @param User $user
+     * @param Shared[] $shared
+     *
+     * @return Shared
+     */
+    private function getSharedForUser(User $user, array $shared)
     {
+        $userLink = null;
+        foreach ($shared as $shareLink) {
+            if ($shareLink->getUser() === $user) {
+                $userLink = $shareLink;
+                break;
+            }
+        }
 
+        return $userLink;
     }
 
     /**
