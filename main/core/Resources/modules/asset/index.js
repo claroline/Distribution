@@ -6,9 +6,6 @@
  * @returns {string}
  */
 export function asset(assetName) {
-  console.log(document)
-  console.log(document.getElementById('#baseAsset'))
-
   const element = document.getElementById('#baseAsset')
 
   let basePath = ''
