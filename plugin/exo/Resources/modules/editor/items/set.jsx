@@ -6,15 +6,13 @@ import {actions} from './set.js'
 import get from 'lodash/get'
 import {makeDraggable, makeDroppable} from './../lib/dragAndDrop'
 
-
-
 let DropBox = props => {
   return props.connectDropTarget (
      <div className={classes(
        'set-item-drop-container',
        {'on-hover': props.isOver}
      )}>
-       {tex('DROP ITEM HERE')}
+       {tex('set_drop_item')}
      </div>
    )
 }
@@ -39,7 +37,7 @@ class Association extends Component {
 
   render(){
     return (
-      <div className="association">
+      <div className={classes('association', {'positive-score' : this.props.association.score > 0}, {'negative-score': this.props.association.score < 1})}>
         <div className="text-fields">
           <div className="association-data">
             {this.props.association._itemData}
@@ -47,7 +45,7 @@ class Association extends Component {
           {this.state.showFeedback &&
             <div className="feedback-container">
               <Textarea
-                onChange={ (value) => this.props.onChange(
+                onChange={(value) => this.props.onChange(
                   actions.updateAssociation(this.props.association.setId, this.props.association.itemId, 'feedback', value)
                 )}
                 id={`${this.props.association.itemId}-${this.props.association.setId}-feedback`}
@@ -98,7 +96,7 @@ class Set extends Component {
 
   render(){
     return (
-        <div className="set-container">
+        <div className="set">
           <div className="set-heading">
             <div className="text-fields">
               <Textarea
@@ -218,7 +216,7 @@ let Item = props => {
       <div className="text-fields">
         <Textarea
           onChange={(value) => props.onChange(
-            actions.updateItem(props.item.id, 'data', value)
+            actions.updateItem(props.item.id, 'data', value, false)
           )}
           id={`${props.item.id}-data`}
           content={props.item.data}
@@ -235,7 +233,7 @@ let Item = props => {
             'fa-trash-o',
             {disabled: !props.item._deletable}
           )}
-          onClick={() => actions.removeItem(props.item.id)}
+          onClick={() => actions.removeItem(props.item.id, false)}
         />
         {props.connectDragSource(
           <a
@@ -274,7 +272,7 @@ class ItemList extends Component {
     return (
       <div className="item-list">
         <ul>
-          {this.props.items.map((item) =>
+          { this.props.items.filter(item => undefined === this.props.solutions.odd.find(el => el.itemId === item.id)).map((item) =>
             <li key={item.id}>
               <Item onChange={this.props.onChange} item={item}/>
             </li>
@@ -284,7 +282,7 @@ class ItemList extends Component {
           <button
             type="button"
             className="btn btn-default"
-            onClick={() => this.props.onChange(actions.addItem())}
+            onClick={() => this.props.onChange(actions.addItem(false))}
           >
             <span className="fa fa-plus"/>
             {tex('set_add_item')}
@@ -297,7 +295,8 @@ class ItemList extends Component {
 
 ItemList.propTypes = {
   items:  T.arrayOf(T.object).isRequired,
-  onChange: T.func.isRequired
+  onChange: T.func.isRequired,
+  solutions: T.object.isRequired
 }
 
 
@@ -312,70 +311,75 @@ class Odd extends Component {
 
   render(){
     return (
-        <div className="item">
-          <div className="text-fields">
-            <Textarea
-              onChange={(value) => this.props.onChange(
-                actions.updateOdd(this.props.odd.id, 'data', value)
-              )}
-              id={`odd-${this.props.odd.id}-data`}
-              content={this.props.odd.data}
-            />
-            {this.state.showFeedback &&
-              <div className="feedback-container">
-                <Textarea
-                  onChange={ (value) => this.props.onChange(
-                    actions.updateOdd(this.props.odd.id, 'feedback', value)
-                  )}
-                  id={`odd-${this.props.odd.id}-feedback`}
-                  content={this.props.odd.feedback}
-                />
-              </div>
-            }
-          </div>
-          <div className="right-controls">
-            <input
-              title={tex('score')}
-              type="number"
-              className="form-control odd-score"
-              value={this.props.odd.score}
-              onChange={e => this.props.onChange(
-                actions.updateOdd(this.props.odd.id, 'score', e.target.value)
-              )}
-            />
-            <a
-              role="button"
-              title={tex('feedback')}
-              className="btn btn-link fa fa-comments-o"
-              onClick={() => this.setState({showFeedback: !this.state.showFeedback})}>
-            </a>
-            <a
-              role="button"
-              title={t('delete')}
-              className="btn btn-link fa fa-trash-o"
-              onClick={() => this.props.onChange(actions.removeOdd(this.props.odd.id))}>
-            </a>
-          </div>
+      <div className={classes('item', {'positive-score' : this.props.solution.score > 0}, {'negative-score': this.props.solution.score < 1})}>
+        <div className="text-fields">
+          <Textarea
+            onChange={(value) => this.props.onChange(
+              actions.updateItem(this.props.odd.id, 'data', value, true)
+            )}
+            id={`odd-${this.props.odd.id}-data`}
+            content={this.props.odd.data}
+          />
+          {this.state.showFeedback &&
+            <div className="feedback-container">
+              <Textarea
+                onChange={ (value) => this.props.onChange(
+                  actions.updateItem(this.props.odd.id, 'feedback', value, true)
+                )}
+                id={`odd-${this.props.odd.id}-feedback`}
+                content={this.props.solution.feedback}
+              />
+            </div>
+          }
         </div>
-      )
+        <div className="right-controls">
+          <input
+            title={tex('score')}
+            type="number"
+            max="0"
+            className="form-control odd-score"
+            value={this.props.solution.score}
+            onChange={e => this.props.onChange(
+              actions.updateItem(this.props.odd.id, 'score', e.target.value, true)
+            )}
+          />
+          <a
+            role="button"
+            title={tex('feedback')}
+            className="btn btn-link fa fa-comments-o"
+            onClick={() => this.setState({showFeedback: !this.state.showFeedback})}>
+          </a>
+          <a
+            role="button"
+            title={t('delete')}
+            className="btn btn-link fa fa-trash-o"
+            onClick={() => this.props.onChange(actions.removeItem(this.props.odd.id, true))}>
+          </a>
+        </div>
+      </div>
+    )
   }
 }
 
-
 Odd.propTypes = {
   onChange: T.func.isRequired,
-  odd: T.object.isRequired
+  odd: T.object.isRequired,
+  solution: T.object.isRequired
 }
 
 class OddList extends Component {
 
+  constructor(props){
+    super(props)
+  }
+
   render(){
     return (
-      <div className="odds">
+      <div className="odd">
         <ul>
-          {this.props.odds.map((odd) =>
-            <li key={odd.id}>
-              <Odd onChange={this.props.onChange} odd={odd} />
+          { this.props.odd.filter(item => undefined !== this.props.solutions.odd.find(el => el.itemId === item.id)).map((oddItem) =>
+            <li key={oddItem.id}>
+              <Odd onChange={this.props.onChange} odd={oddItem} solution={this.props.solutions.odd.find(el => el.itemId === oddItem.id)}/>
             </li>
           )}
         </ul>
@@ -383,7 +387,7 @@ class OddList extends Component {
           <button
             type="button"
             className="btn btn-default"
-            onClick={() => this.props.onChange(actions.addOdd())}
+            onClick={() => this.props.onChange(actions.addItem(true))}
           >
             <span className="fa fa-plus"/>
             {tex('set_add_odd')}
@@ -396,7 +400,8 @@ class OddList extends Component {
 
 OddList.propTypes = {
   onChange: T.func.isRequired,
-  odds: T.arrayOf(T.object).isRequired
+  odd: T.arrayOf(T.object).isRequired,
+  solutions: T.object.isRequired
 }
 
 class SetForm extends Component {
@@ -409,17 +414,38 @@ class SetForm extends Component {
     return (
       <div className="set-question-container">
         { get(this.props.item, '_touched') &&
+          get(this.props.item, '_errors.item') &&
+          <div className="error-text">
+            <span className="fa fa-warning"></span>
+            {this.props.item._errors.item}
+          </div>
+        }
+        { get(this.props.item, '_itemsTouched') &&
           get(this.props.item, '_errors.items') &&
           <div className="error-text">
             <span className="fa fa-warning"></span>
             {this.props.item._errors.items}
           </div>
         }
-        { get(this.props.item, '_touched') &&
+        { get(this.props.item, '_setTouched') &&
+          get(this.props.item, '_errors.sets') &&
+          <div className="error-text">
+            <span className="fa fa-warning"></span>
+            {this.props.item._errors.sets}
+          </div>
+        }
+        { get(this.props.item, '_associationTouched') &&
           get(this.props.item, '_errors.solutions') &&
           <div className="error-text">
             <span className="fa fa-warning"></span>
             {this.props.item._errors.solutions}
+          </div>
+        }
+        { get(this.props.item, '_oddTouched') &&
+          get(this.props.item, '_errors.odd') &&
+          <div className="error-text">
+            <span className="fa fa-warning"></span>
+            {this.props.item._errors.odd}
           </div>
         }
         <div className="form-group">
@@ -449,14 +475,12 @@ class SetForm extends Component {
         </div>
         <hr/>
         <div className="sets-builder-container">
-          <div className="pool-container">
-            <ItemList
-              onChange={this.props.onChange}
-              items={this.props.item.items} />
+          <div className="pool-col">
+            <ItemList onChange={this.props.onChange} solutions={this.props.item.solutions} items={this.props.item.items} />
             <hr/>
-            <OddList onChange={this.props.onChange} odds={this.props.item.solutions.odds} />
+            <OddList onChange={this.props.onChange} solutions={this.props.item.solutions} odd={this.props.item.items} />
           </div>
-          <div className="sets-container">
+          <div className="sets-col">
             <SetList solutions={this.props.item.solutions} onChange={this.props.onChange} sets={this.props.item.sets} />
           </div>
         </div>
@@ -474,7 +498,7 @@ SetForm.propTypes = {
     items: T.arrayOf(T.object).isRequired,
     solutions: T.shape({
       associations: T.arrayOf(T.object).isRequired,
-      odds: T.arrayOf(T.object)
+      odd: T.arrayOf(T.object).isRequired
     }).isRequired,
     _errors: T.object
   }).isRequired,
