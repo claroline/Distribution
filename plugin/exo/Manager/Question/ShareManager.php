@@ -83,7 +83,7 @@ class ShareManager
     /**
      * Gets an existing share link for a user in the share list of the question.
      *
-     * @param User $user
+     * @param User     $user
      * @param Shared[] $shared
      *
      * @return Shared
