@@ -5,6 +5,7 @@ namespace UJM\ExoBundle\Entity;
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 use UJM\ExoBundle\Library\Mode\CorrectionMode;
 use UJM\ExoBundle\Library\Mode\MarkMode;
 
@@ -17,6 +18,13 @@ class Exercise extends AbstractResource
     const TYPE_SUMMATIVE = '1';
     const TYPE_EVALUATIVE = '2';
     const TYPE_FORMATIVE = '3';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column("uuid", type="string", length=36, unique=true)
+     */
+    private $uuid;
 
     /**
      * @ORM\Column(name="description", type="text", nullable=true)
@@ -173,13 +181,14 @@ class Exercise extends AbstractResource
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Step", mappedBy="exercise", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="Step", mappedBy="exercise", cascade={"all"}, orphanRemoval=true)
      * @ORM\OrderBy({"order" = "ASC"})
      */
     private $steps;
 
     public function __construct()
     {
+        $this->uuid = Uuid::uuid4();
         $this->dateCorrection = new \DateTime();
         $this->steps = new ArrayCollection();
     }
@@ -192,6 +201,26 @@ class Exercise extends AbstractResource
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Gets UUID.
+     *
+     * @return string
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * Sets UUID.
+     *
+     * @param $uuid
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
     }
 
     /**
@@ -559,6 +588,12 @@ class Exercise extends AbstractResource
     public function addStep(Step $step)
     {
         if (!$this->steps->contains($step)) {
+            $order = $step->getOrder();
+            if (empty($order) && 0 !== $order) {
+                // Set step order if not exist
+                $step->setOrder($this->steps->count() + 1);
+            }
+
             $this->steps->add($step);
 
             $step->setExercise($this);

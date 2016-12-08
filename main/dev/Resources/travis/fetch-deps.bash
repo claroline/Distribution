@@ -78,11 +78,8 @@ fetch() {
     rm -f $ARCHIVE
 }
 
-fetch composer $COMPOSER_SUM "composer update --prefer-dist" vendor
+fetch composer $COMPOSER_SUM "composer update --prefer-dist --no-scripts" vendor
 
-echo "Overriding distribution package with local build/repo..."
-rm -rf vendor/claroline/distribution
-cp -r $DIST vendor/claroline/distribution
 # this is normally done in the post-update-cmd script
 echo "Building app/config/bundles.ini..."
 composer bundles

@@ -25,7 +25,7 @@ class Hint
     /**
      * @ORM\Column(type="float")
      */
-    private $penalty;
+    private $penalty = 0;
 
     /**
      * @ORM\ManyToOne(targetEntity="Question", inversedBy="hints")
