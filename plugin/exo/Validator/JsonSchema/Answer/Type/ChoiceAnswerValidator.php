@@ -3,6 +3,8 @@
 namespace UJM\ExoBundle\Validator\JsonSchema\Answer\Type;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Entity\Misc\Choice;
+use UJM\ExoBundle\Entity\QuestionType\ChoiceQuestion;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
 
 /**
@@ -18,16 +20,15 @@ class ChoiceAnswerValidator extends JsonSchemaValidator
     /**
      * Performs additional validations.
      *
-     * @param \stdClass $question
-     * @param array     $options
+     * @param array          $answerData
+     * @param array          $options
+     * @param ChoiceQuestion $question
      *
      * @return array
      */
-    public function validateAfterSchema($question, array $options = [])
+    public function validateAfterSchema($answerData, array $options = [], ChoiceQuestion $question = null)
     {
-        // TODO : implement method.
-
-        $count = count($data);
+        $count = count($answerData);
         if (0 === $count) {
             // data CAN be empty (for example editing a multiple choice question and unchecking all choices)
             return [];
@@ -37,7 +38,7 @@ class ChoiceAnswerValidator extends JsonSchemaValidator
             return (string) $choice->getId();
         }, $question->getChoices()->toArray());
 
-        foreach ($data as $id) {
+        foreach ($answerData as $id) {
             if (!is_string($id)) {
                 return ['Answer array must contain only string identifiers'];
             }

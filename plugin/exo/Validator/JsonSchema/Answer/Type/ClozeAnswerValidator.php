@@ -3,6 +3,7 @@
 namespace UJM\ExoBundle\Validator\JsonSchema\Answer\Type;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Entity\QuestionType\ClozeQuestion;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
 
 /**
@@ -18,18 +19,19 @@ class ClozeAnswerValidator extends JsonSchemaValidator
     /**
      * Performs additional validations.
      *
-     * @param \stdClass $question
-     * @param array     $options
+     * @param array         $answerData
+     * @param array         $options
+     * @param ClozeQuestion $question
      *
      * @return array
      */
-    public function validateAfterSchema($question, array $options = [])
+    public function validateAfterSchema($answerData, array $options = [], ClozeQuestion $question = null)
     {
         $holeIds = array_map(function (\stdClass $hole) {
             return $hole->id;
-        }, $question->holes);
+        }, $question->getHoles()->toArray());
 
-        foreach ($data as $answer) {
+        foreach ($answerData as $answer) {
             if ($answer || $answer !== null) {
                 if (empty($answer['holeId'])) {
                     return ['Answer `holeId` cannot be empty'];

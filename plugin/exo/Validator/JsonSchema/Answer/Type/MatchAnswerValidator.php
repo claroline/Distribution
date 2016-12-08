@@ -5,6 +5,7 @@ namespace UJM\ExoBundle\Validator\JsonSchema\Answer\Type;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Misc\Label;
 use UJM\ExoBundle\Entity\Misc\Proposal;
+use UJM\ExoBundle\Entity\QuestionType\MatchQuestion;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
 
 /**
@@ -20,27 +21,25 @@ class MatchAnswerValidator extends JsonSchemaValidator
     /**
      * Performs additional validations.
      *
-     * @param \stdClass $question
-     * @param array     $options
+     * @param array         $answerData
+     * @param array         $options
+     * @param MatchQuestion $question
      *
      * @return array
      */
-    public function validateAfterSchema($question, array $options = [])
+    public function validateAfterSchema($answerData, array $options = [], MatchQuestion $question = null)
     {
-        $proposals = $question->getProposals()->toArray();
-
         $proposalIds = array_map(function (Proposal $proposal) {
             return (string) $proposal->getId();
-        }, $proposals);
+        }, $question->getProposals()->toArray());
 
-        $labels = $interaction->getLabels()->toArray();
         $labelsIds = array_map(function (Label $label) {
             return (string) $label->getId();
-        }, $labels);
+        }, $question->getLabels()->toArray());
 
         $sourceIds = [];
         $targetIds = [];
-        foreach ($data as $answer) {
+        foreach ($answerData as $answer) {
             if ($answer !== '') {
                 $set = explode(',', $answer);
                 array_push($sourceIds, $set[0]);
