@@ -48,7 +48,14 @@ function initJsPlumb(id, instance) {
     }
   })
 
-  instance.setContainer(document.getElementById('match-question-container-id-' + id))
+  console.log('id ' + id)
+  const exists = instance.getContainer() === undefined
+  console.log(exists)
+  console.log(document.getElementById('match-question-container-' + id))
+  if(instance.getContainer() === undefined){
+    instance.setContainer(document.getElementById('match-question-container-' + id))
+  }
+
 }
 
 function drawSolutions(solutions, instance){
@@ -185,7 +192,9 @@ class Match extends Component {
 
   constructor(props) {
     super(props)
+
     this.jsPlumb = jsPlumb.getInstance()
+
     this.state = {
       popover: {
         visible: false,
@@ -198,9 +207,17 @@ class Match extends Component {
   }
 
   componentDidMount() {
+    /*window.setTimeout(function () {
+      initJsPlumb(this.props.item.id, this.jsPlumb)
+      drawSolutions(this.props.item.solutions, this.jsPlumb)
+      console.log('did mount, init and draw called')
+    }.bind(this), 1000)*/
+    const exists = this.jsPlumb.getContainer() !== undefined
+    console.log(exists)
+    //initJsPlumb(this.props.item.id, this.jsPlumb)
+    //drawSolutions(this.props.item.solutions, this.jsPlumb)
+    console.log('did mount, init and draw called')
 
-    initJsPlumb(this.props.item.id, this.jsPlumb)
-    drawSolutions(this.props.item.solutions, this.jsPlumb)
     // new connection created event
     this.jsPlumb.bind('connection', function (data) {
       data.connection.setType('selected')
@@ -353,13 +370,15 @@ class Match extends Component {
     this.jsPlumb.detachEveryConnection()
     // use reset instead of deleteEveryEndpoint because reset also remove event listeners
     this.jsPlumb.reset()
+    this.jsPlumb.empty()
+    jsPlumb.reset()
     this.jsPlumb = null
     delete this.jsPlumb
   }
 
   render() {
     return (
-      <div id={`match-question-container-id-${this.props.item.id}`} className="match-question-container">
+      <div id={`match-question-container-${this.props.item.id}`} className="match-question-container">
         { get(this.props.item, '_touched') &&
           get(this.props.item, '_errors.items') &&
           <div className="error-text">
