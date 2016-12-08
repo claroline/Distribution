@@ -1,7 +1,7 @@
 import React from 'react'
 import freeze from 'deep-freeze'
 import merge from 'lodash/merge'
-import {shallow, mount} from 'enzyme'
+import {shallow} from 'enzyme'
 import {spyConsole, renew, ensure, mockTranslator} from './../test-utils'
 import {actions as actions} from './../actions'
 import definition, {actions as subActions} from './set'
@@ -427,32 +427,6 @@ describe('<Set />', () => {
     )
     ensure.invalidProps('Set', ['item.id', 'onChange'])
   })
-
-  /*it('renders appropriate fields and handle changes', () => {
-    let updatedValue = null
-    const item = makeFixture()
-
-    const form = mount(
-      <Set
-        item={item}
-        onChange={value => updatedValue = value}
-      />
-    )
-    ensure.propTypesOk()
-
-    const penalty = form.find('input#set-penalty')
-    ensure.equal(penalty.length, 1, 'has penalty input')
-    penalty.simulate('change', {target: {value: 5}})
-    ensure.equal(updatedValue.value, 5)
-    ensure.equal(updatedValue.property, 'penalty')
-
-    const random = form.find('input[type="checkbox"]')
-    ensure.equal(random.length, 1, 'has random checkbox')
-    random.simulate('change', {target: {value: true}})
-    ensure.equal(updatedValue.value, true)
-    ensure.equal(updatedValue.property, 'random')
-
-  })*/
 })
 
 
