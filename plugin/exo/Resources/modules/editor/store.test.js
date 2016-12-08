@@ -22,6 +22,13 @@ describe('createStore', () => {
         type: null,
         props: {},
         fading: false
+      },
+      questionPicker: {
+        props: {
+          title:'',
+          handleSelect: () => {}
+        },
+        fading: true
       }
     })
   })

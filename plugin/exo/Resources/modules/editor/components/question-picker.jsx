@@ -2,8 +2,8 @@ import React, {Component, PropTypes as T} from 'react'
 import Modal from 'react-bootstrap/lib/Modal'
 import {trans, t, tex} from './../lib/translate'
 import {listItemNames as listTypes} from './../item-types'
+import {generateUrl} from './../lib/routing'
 
-/* global Routing */
 
 class QuestionPicker extends Component {
   constructor(props){
@@ -36,7 +36,7 @@ class QuestionPicker extends Component {
   }
 
   getQuestions(){
-    /*const url = Routing.generate('question_list')
+    const url = generateUrl('question_list')
     const params = {
       method: 'POST' ,
       credentials: 'include'
@@ -49,43 +49,7 @@ class QuestionPicker extends Component {
     .then( jsonData =>  {
       let questions = jsonData.owned.concat(jsonData.shared)
       this.setState({questions: questions})
-    })*/
-
-    const questions = [
-      {
-        id: '1',
-        title: 'Question 1',
-        content: 'Veuillez me répondre',
-        type: 'application/x.open+json',
-        feedback: '',
-        hints:[],
-        maxScore: 10,
-        maxLength: 255
-      },
-      {
-        id: '2',
-        title: null,
-        content: 'Oui ou non?',
-        type: 'application/x.choice+json',
-        feedback: '',
-        hints:[],
-        multiple: false,
-        random: false,
-        choices: [
-          {
-            id: '1',
-            data: 'first choice'
-          },
-          {
-            id: '2',
-            data: 'second choice'
-          }
-        ],
-        solutions:[]
-      }
-    ]
-
-    this.setState({questions: questions})
+    })
   }
 
   handleClick(){
