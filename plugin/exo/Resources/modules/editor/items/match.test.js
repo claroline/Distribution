@@ -85,7 +85,7 @@ describe('Match reducer', () => {
     ensure.equal(reduced, expected)
   })
 
-  it('adds a set to firstSet when asked', () => {
+  it('adds an item to firstSet when asked', () => {
     const item = makeFixture()
     const reduced = reduce(item, subActions.addItem(true))
     const expected = makeFixture({
@@ -102,7 +102,7 @@ describe('Match reducer', () => {
     ensure.equal(reduced, expected)
   })
 
-  it('adds a set to secondSet when asked', () => {
+  it('adds an item to secondSet when asked', () => {
     const item = makeFixture()
     const reduced = reduce(item, subActions.addItem(false))
     const expected = makeFixture({
@@ -119,7 +119,7 @@ describe('Match reducer', () => {
     ensure.equal(reduced, expected)
   })
 
-  it('removes a set from firstSet when asked, update items _deletable property and solutions', () => {
+  it('removes an item from firstSet when asked, update items _deletable property and solutions', () => {
     const item = makeFixture()
     const reduced = reduce(item, subActions.removeItem(true, '1'))
     const expected = makeFixture({}, false)
@@ -130,7 +130,7 @@ describe('Match reducer', () => {
     ensure.equal(reduced, expected)
   })
 
-  it('removes a set from secondSet when asked, update items _deletable property and solutions', () => {
+  it('removes an item from secondSet when asked, update items _deletable property and solutions', () => {
     const item = makeFixture()
     const reduced = reduce(item, subActions.removeItem(false, '1'))
     const expected = makeFixture({}, false)
