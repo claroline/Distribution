@@ -1,7 +1,4 @@
 import {DragSource, DropTarget} from 'react-dnd'
-import invariant from 'invariant'
-
-
 
 // see https://gaearon.github.io/react-dnd/examples-sortable-simple.html
 export function makeDraggable(component, type) {
