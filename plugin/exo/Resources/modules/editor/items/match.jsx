@@ -17,9 +17,11 @@ function getPopoverPosition(connectionClass, id){
   }
 }
 
-function initJsPlumb(id, instance) {
+function initJsPlumb(id) {
+  jsPlumb.setSuspendDrawing(false)
+
   // defaults parameters for all connections
-  instance.importDefaults({
+  jsPlumb.importDefaults({
     Anchors: ['RightMiddle', 'LeftMiddle'],
     ConnectionsDetachable: true,
     Connector: 'Straight',
@@ -29,7 +31,7 @@ function initJsPlumb(id, instance) {
     PaintStyle: {strokeStyle: '#777', lineWidth: 4}
   })
 
-  instance.registerConnectionTypes({
+  jsPlumb.registerConnectionTypes({
     'valid': {
       paintStyle     : { strokeStyle: '#5CB85C', lineWidth: 5 },
       hoverPaintStyle: { strokeStyle: 'green',   lineWidth: 6 }
@@ -48,19 +50,12 @@ function initJsPlumb(id, instance) {
     }
   })
 
-  console.log('id ' + id)
-  const exists = instance.getContainer() === undefined
-  console.log(exists)
-  console.log(document.getElementById('match-question-container-' + id))
-  if(instance.getContainer() === undefined){
-    instance.setContainer(document.getElementById('match-question-container-' + id))
-  }
-
+  jsPlumb.setContainer(document.getElementById('match-question-container-id-' + id))
 }
 
-function drawSolutions(solutions, instance){
+function drawSolutions(solutions){
   for (const solution of solutions) {
-    instance.connect({
+    jsPlumb.connect({
       source: 'source_' + solution.firstId,
       target: 'target_' + solution.secondId,
       type: solution.score > 0 ? 'valid':'invalid'
@@ -159,7 +154,7 @@ class MatchItem extends Component{
         <div className="text-fields">
             <Textarea
               onChange={data => this.props.onChange(
-                actions.updateSet(this.props.type === 'source', this.props.item.id, data)
+                actions.updateItem(this.props.type === 'source', this.props.item.id, data)
               )}
               id={`${this.props.type}-${this.props.item.id}-data`}
               content={this.props.item.data} />
@@ -192,9 +187,6 @@ class Match extends Component {
 
   constructor(props) {
     super(props)
-
-    this.jsPlumb = jsPlumb.getInstance()
-
     this.state = {
       popover: {
         visible: false,
@@ -207,19 +199,12 @@ class Match extends Component {
   }
 
   componentDidMount() {
-    /*window.setTimeout(function () {
-      initJsPlumb(this.props.item.id, this.jsPlumb)
-      drawSolutions(this.props.item.solutions, this.jsPlumb)
-      console.log('did mount, init and draw called')
-    }.bind(this), 1000)*/
-    const exists = this.jsPlumb.getContainer() !== undefined
-    console.log(exists)
-    //initJsPlumb(this.props.item.id, this.jsPlumb)
-    //drawSolutions(this.props.item.solutions, this.jsPlumb)
-    console.log('did mount, init and draw called')
+
+    initJsPlumb(this.props.item.id)
+    drawSolutions(this.props.item.solutions)
 
     // new connection created event
-    this.jsPlumb.bind('connection', function (data) {
+    jsPlumb.bind('connection', function (data) {
       data.connection.setType('selected')
 
       const firstSetId = data.sourceId.replace('source_', '')
@@ -248,14 +233,14 @@ class Match extends Component {
       })
     }.bind(this))
 
-    this.jsPlumb.bind('beforeDrop', function (connection) {
+    jsPlumb.bind('beforeDrop', function (connection) {
       // check that the connection is not already in jsPlumbConnections before creating it
-      const list = this.jsPlumb.getConnections().filter(el => el.sourceId === connection.sourceId && el.targetId === connection.targetId )
+      const list = jsPlumb.getConnections().filter(el => el.sourceId === connection.sourceId && el.targetId === connection.targetId )
       return list.length === 0
-    }.bind(this))
+    })
 
     // configure connection
-    this.jsPlumb.bind('click', function (connection) {
+    jsPlumb.bind('click', function (connection) {
       connection.setType('selected')
 
       const firstSetId = connection.sourceId.replace('source_', '')
@@ -281,9 +266,9 @@ class Match extends Component {
     // https://jsplumbtoolkit.com/community/doc/miscellaneous-examples.html
     // Remove all Endpoints for the element, deleting their Connections.
     // not sure about this one especially concerning events
-    this.jsPlumb.removeAllEndpoints(elemId)
+    jsPlumb.removeAllEndpoints(elemId)
     this.props.onChange(
-      actions.removeSet(isLeftSet, id)
+      actions.removeItem(isLeftSet, id)
     )
   }
 
@@ -295,17 +280,15 @@ class Match extends Component {
     const isLeftItem = type === 'source'
     const selector = '#' +  id
     const anchor = isLeftItem ? 'RightMiddle' : 'LeftMiddle'
-    const jsPlumbSelector = this.jsPlumb.getSelector(selector)
-
     if (isLeftItem) {
-      this.jsPlumb.addEndpoint(jsPlumbSelector, {
+      jsPlumb.addEndpoint(jsPlumb.getSelector(selector), {
         anchor: anchor,
         cssClass: 'endPoints',
         isSource: true,
         maxConnections: -1
       })
     } else {
-      this.jsPlumb.addEndpoint(jsPlumbSelector, {
+      jsPlumb.addEndpoint(jsPlumb.getSelector(selector), {
         anchor: anchor,
         cssClass: 'endPoints',
         isTarget: true,
@@ -315,7 +298,7 @@ class Match extends Component {
   }
 
   removeConnection(firstSetId, secondSetId){
-    this.jsPlumb.detach(this.state.jsPlumbConnection)
+    jsPlumb.detach(this.state.jsPlumbConnection)
     this.setState({
       popover: {
         visible: false
@@ -331,7 +314,7 @@ class Match extends Component {
 
   closePopover(){
     this.setState({popover: {visible: false}})
-    const list = this.jsPlumb.getConnections()
+    const list = jsPlumb.getConnections()
     for(const conn of list){
       let type = 'valid'
       const firstSetId = conn.sourceId.replace('source_', '')
@@ -346,7 +329,7 @@ class Match extends Component {
 
   // click outside the popover but inside the question items row will close the popover
   handlePopoverFocusOut(event){
-    const elem = event.target.closest('#popover-place-holder-' + this.props.item.id)
+    const elem = event.target.closest('#popover-place-holder')
     if(null === elem){
       this.closePopover()
     }
@@ -362,23 +345,19 @@ class Match extends Component {
   componentDidUpdate(prevProps){
     const repaint = (prevProps.item.firstSet.length > this.props.item.firstSet.length || prevProps.item.secondSet.length > this.props.item.secondSet.length) || get(this.props.item, '_touched')
     if(repaint) {
-      this.jsPlumb.repaintEverything()
+      jsPlumb.repaintEverything()
     }
   }
 
   componentWillUnmount(){
-    this.jsPlumb.detachEveryConnection()
+    jsPlumb.detachEveryConnection()
     // use reset instead of deleteEveryEndpoint because reset also remove event listeners
-    this.jsPlumb.reset()
-    this.jsPlumb.empty()
     jsPlumb.reset()
-    this.jsPlumb = null
-    delete this.jsPlumb
   }
 
   render() {
     return (
-      <div id={`match-question-container-${this.props.item.id}`} className="match-question-container">
+      <div id={`match-question-container-id-${this.props.item.id}`} className="match-question-container">
         { get(this.props.item, '_touched') &&
           get(this.props.item, '_errors.items') &&
           <div className="error-text">
@@ -445,14 +424,14 @@ class Match extends Component {
               <button
                 type="button"
                 className="btn btn-default"
-                onClick={() => this.props.onChange(actions.addSet(true))}
+                onClick={() => this.props.onChange(actions.addItem(true))}
               >
                 <span className="fa fa-plus"/>
                 {tex('match_add_item')}
               </button>
             </div>
           </div>
-          <div id={`popover-place-holder-${this.props.item.id}`} className="popover-container" ref="popoverContainer">
+          <div id={`popover-place-holder-${this.props.item.id}`} ref="popoverContainer">
             { this.state.popover.visible &&
                 <MatchLinkPopover
                   handleConnectionDelete={this.removeConnection.bind(this)}
@@ -481,7 +460,7 @@ class Match extends Component {
               <button
                 type="button"
                 className="btn btn-default"
-                onClick={() => this.props.onChange(actions.addSet(false))}
+                onClick={() => this.props.onChange(actions.addItem(false))}
               >
                 <span className="fa fa-plus"/>
                 {tex('match_add_item')}

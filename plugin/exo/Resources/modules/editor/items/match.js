@@ -12,18 +12,18 @@ const UPDATE_SOLUTION = 'UPDATE_SOLUTION'
 const ADD_SOLUTION = 'ADD_SOLUTION'
 const REMOVE_SOLUTION = 'REMOVE_SOLUTION'
 const UPDATE_PROP = 'UPDATE_PROP'
-const ADD_SET = 'ADD_SET'
-const REMOVE_SET = 'REMOVE_SET'
-const UPDATE_SET = 'UPDATE_SET'
+const ADD_ITEM = 'ADD_ITEM'
+const REMOVE_ITEM = 'REMOVE_ITEM'
+const UPDATE_ITEM = 'UPDATE_ITEM'
 
 export const actions = {
   updateSolution: makeActionCreator(UPDATE_SOLUTION, 'firstSetId', 'secondSetId', 'property', 'value'),
   addSolution: makeActionCreator(ADD_SOLUTION, 'solution'),
   removeSolution: makeActionCreator(REMOVE_SOLUTION, 'firstSetId', 'secondSetId'),
   updateProperty: makeActionCreator(UPDATE_PROP, 'property', 'value'),
-  addSet: makeActionCreator(ADD_SET, 'isLeftSet'),
-  updateSet: makeActionCreator(UPDATE_SET, 'isLeftSet', 'id', 'value'),
-  removeSet: makeActionCreator(REMOVE_SET, 'isLeftSet', 'id')
+  addItem: makeActionCreator(ADD_ITEM, 'isLeftSet'),
+  updateItem: makeActionCreator(UPDATE_ITEM, 'isLeftSet', 'id', 'value'),
+  removeItem: makeActionCreator(REMOVE_ITEM, 'isLeftSet', 'id')
 }
 
 function decorate(item) {
@@ -127,7 +127,7 @@ function reduce(item = {}, action) {
       return newItem
     }
 
-    case ADD_SET: {
+    case ADD_ITEM: {
 
       const toAdd = {
         id: makeId(),
@@ -145,7 +145,7 @@ function reduce(item = {}, action) {
       return newItem
     }
 
-    case UPDATE_SET: {
+    case UPDATE_ITEM: {
       // type could be updated... but how ? text/html is always true ?
       const newItem = cloneDeep(item)
       // mark as touched (for now only data can be updated)
@@ -164,7 +164,7 @@ function reduce(item = {}, action) {
       return newItem
     }
 
-    case REMOVE_SET: {
+    case REMOVE_ITEM: {
       const newItem = cloneDeep(item)
       if (action.isLeftSet) {
         const setIndex = newItem.firstSet.findIndex(set => set.id === action.id)
@@ -213,7 +213,7 @@ function validate(item) {
   } else if (undefined === item.solutions.find(solution => solution.score > 0)) {
     // at least one solution with a score that is greater than 0
     errors.solutions = tex('match_no_valid_solution')
-  }  
+  }
 
   // no blank item data
   if (item.firstSet.find(set => notBlank(set.data, true)) || item.secondSet.find(set => notBlank(set.data, true))) {

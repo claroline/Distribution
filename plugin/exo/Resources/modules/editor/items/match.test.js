@@ -87,7 +87,7 @@ describe('Match reducer', () => {
 
   it('adds a set to firstSet when asked', () => {
     const item = makeFixture()
-    const reduced = reduce(item, subActions.addSet(true))
+    const reduced = reduce(item, subActions.addItem(true))
     const expected = makeFixture({
       firstSet: [{}, {},
         {
@@ -104,7 +104,7 @@ describe('Match reducer', () => {
 
   it('adds a set to secondSet when asked', () => {
     const item = makeFixture()
-    const reduced = reduce(item, subActions.addSet(false))
+    const reduced = reduce(item, subActions.addItem(false))
     const expected = makeFixture({
       firstSet: [{}, {}],
       secondSet: [{}, {},
@@ -121,7 +121,7 @@ describe('Match reducer', () => {
 
   it('removes a set from firstSet when asked, update items _deletable property and solutions', () => {
     const item = makeFixture()
-    const reduced = reduce(item, subActions.removeSet(true, '1'))
+    const reduced = reduce(item, subActions.removeItem(true, '1'))
     const expected = makeFixture({}, false)
     expected.firstSet.splice(0, 1)
     expected.firstSet.forEach(set => set._deletable = false)
@@ -132,7 +132,7 @@ describe('Match reducer', () => {
 
   it('removes a set from secondSet when asked, update items _deletable property and solutions', () => {
     const item = makeFixture()
-    const reduced = reduce(item, subActions.removeSet(false, '1'))
+    const reduced = reduce(item, subActions.removeItem(false, '1'))
     const expected = makeFixture({}, false)
     expected.secondSet.splice(0, 1)
     expected.firstSet.forEach(set => set._deletable = false)
@@ -273,6 +273,21 @@ describe('Match validator', () => {
 
 
 describe('<Match />', () => {
+  window.jsPlumb = {
+    getInstance: () => {},
+    getSelector: () => {},
+    addEndpoint: () => {},
+    setSuspendDrawing: () => {},
+    importDefaults: () => {},
+    registerConnectionTypes: () => {},
+    connect:() => {},
+    setContainer: () => {},
+    bind: () => {},
+    getConnections: () => {},
+    removeAllEndpoints: () => {},
+    detach: () => {},
+    repaintEverything: () => {}
+  }
   const Match = definition.component
 
   beforeEach(() => {
@@ -310,6 +325,7 @@ describe('<Match />', () => {
     let updatedValue = null
     const item = makeFixture()
     window.jsPlumb = {
+      getInstance: () => {},
       getSelector: () => {},
       addEndpoint: () => {},
       setSuspendDrawing: () => {},
