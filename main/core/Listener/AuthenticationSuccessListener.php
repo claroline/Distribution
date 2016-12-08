@@ -280,7 +280,7 @@ class AuthenticationSuccessListener implements AuthenticationSuccessHandlerInter
     {
         return in_array(
             $route,
-            $this->getExcludedRoutes()) || preg_match('/(claro_security_|oauth_|_login|claro_file)/',
+            $this->getExcludedRoutes()) || preg_match('/(claro_security_|oauth_|_login|claro_file|media)/',
             $route
         );
     }
