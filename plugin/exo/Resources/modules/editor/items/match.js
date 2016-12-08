@@ -17,9 +17,9 @@ const REMOVE_ITEM = 'REMOVE_ITEM'
 const UPDATE_ITEM = 'UPDATE_ITEM'
 
 export const actions = {
-  updateSolution: makeActionCreator(UPDATE_SOLUTION, 'firstSetId', 'secondSetId', 'property', 'value'),
+  updateSolution: makeActionCreator(UPDATE_SOLUTION, 'firstId', 'secondId', 'property', 'value'),
   addSolution: makeActionCreator(ADD_SOLUTION, 'solution'),
-  removeSolution: makeActionCreator(REMOVE_SOLUTION, 'firstSetId', 'secondSetId'),
+  removeSolution: makeActionCreator(REMOVE_SOLUTION, 'firstId', 'secondId'),
   updateProperty: makeActionCreator(UPDATE_PROP, 'property', 'value'),
   addItem: makeActionCreator(ADD_ITEM, 'isLeftSet'),
   updateItem: makeActionCreator(UPDATE_ITEM, 'isLeftSet', 'id', 'value'),
@@ -96,7 +96,7 @@ function reduce(item = {}, action) {
     case UPDATE_SOLUTION: {
       const newItem = cloneDeep(item)
       const value = action.property === 'score' ? parseFloat(action.value) : action.value
-      let solution = newItem.solutions.find(solution => solution.firstSetId === action.firstSetId && solution.secondSetId === action.secondSetId)
+      let solution = newItem.solutions.find(solution => solution.firstId === action.firstId && solution.secondId === action.secondId)
       // mark as touched
       newItem._touched = merge(
         newItem._touched || {},
@@ -109,7 +109,7 @@ function reduce(item = {}, action) {
 
     case REMOVE_SOLUTION: {
       const newItem = cloneDeep(item)
-      const solutionIndex = newItem.solutions.findIndex(solution => solution.firstSetId === action.firstSetId && solution.secondSetId === action.secondSetId)
+      const solutionIndex = newItem.solutions.findIndex(solution => solution.firstId === action.firstId && solution.secondId === action.secondId)
       newItem.solutions.splice(solutionIndex, 1)
       newItem.solutions.forEach(solution => solution._deletable = newItem.solutions.length > 1)
       return newItem
@@ -173,7 +173,7 @@ function reduce(item = {}, action) {
         const setIndex = newItem.secondSet.findIndex(set => set.id === action.id)
         newItem.secondSet.splice(setIndex, 1)
       }
-      const solutionsToRemove = newItem.solutions.filter(solution => action.isLeftSet ? solution.firstSetId === action.id : solution.secondSetId === action.id)
+      const solutionsToRemove = newItem.solutions.filter(solution => action.isLeftSet ? solution.firstId === action.id : solution.secondId === action.id)
       for(const solution of solutionsToRemove){
         const index = newItem.solutions.indexOf(solution)
         newItem.solutions.splice(index, 1)

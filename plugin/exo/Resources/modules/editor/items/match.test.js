@@ -158,8 +158,8 @@ describe('Match reducer', () => {
   it('updates solutions on solution add', () => {
     const item = makeFixture()
     const solution = {
-      firstSetId: '2',
-      secondSetId: '2',
+      firstId: '2',
+      secondId: '2',
       feedback: '',
       score: 1
     }
@@ -167,8 +167,8 @@ describe('Match reducer', () => {
     const expected = makeFixture({
       solutions: [{},{},
         {
-          firstSetId: '2',
-          secondSetId: '2',
+          firstId: '2',
+          secondId: '2',
           feedback: '',
           score: 1,
           _deletable: true
@@ -402,15 +402,15 @@ function makeFixture(props = {}, frozen = true) {
     ],
     solutions: [
       {
-        firstSetId: '1',
-        secondSetId: '1',
+        firstId: '1',
+        secondId: '1',
         score: 2,
         feedback: 'Well done',
         _deletable: true
       },
       {
-        firstSetId: '1',
-        secondSetId: '2',
+        firstId: '1',
+        secondId: '2',
         score: 1,
         feedback: 'Congrats',
         _deletable: true
