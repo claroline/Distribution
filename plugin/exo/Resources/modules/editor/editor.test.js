@@ -15,6 +15,9 @@ describe('Editor', () => {
   it('takes raw quiz data and renders a full editor', () => {
     const editor = new Editor(quizFixture())
     const element = document.createElement('div')
+    window.Routing = {
+      generate: () => {}
+    }
     editor.render(element)
 
     // this is just a rough test to check main components have been rendered
