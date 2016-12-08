@@ -16,10 +16,11 @@ import cloze from './items/cloze'
 import graphic from './items/graphic'
 import open from './items/open'
 import words from './items/words'
+import set from './items/set'
 
 export class Editor {
   constructor(rawQuizData) {
-    [choice, match, cloze, graphic, open, words].forEach(registerItemType)
+    [choice, match, cloze, graphic, open, words, set].forEach(registerItemType)
     this.store = createStore(decorate(normalize(rawQuizData), getDecorators()))
     this.dndEditor = DragDropContext(HTML5Backend)(EditorComponent)
   }
