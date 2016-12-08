@@ -274,20 +274,24 @@ describe('Match validator', () => {
 
 describe('<Match />', () => {
   window.jsPlumb = {
-    getInstance: () => {},
-    getSelector: () => {},
-    addEndpoint: () => {},
-    setSuspendDrawing: () => {},
-    importDefaults: () => {},
-    registerConnectionTypes: () => {},
-    connect:() => {},
-    setContainer: () => {},
-    bind: () => {},
-    getConnections: () => {},
-    removeAllEndpoints: () => {},
-    detach: () => {},
-    repaintEverything: () => {}
+    getInstance: () => {
+      return {
+        getSelector: () => {},
+        addEndpoint: () => {},
+        setSuspendDrawing: () => {},
+        importDefaults: () => {},
+        registerConnectionTypes: () => {},
+        connect:() => {},
+        setContainer: () => {},
+        bind: () => {},
+        getConnections: () => {},
+        removeAllEndpoints: () => {},
+        detach: () => {},
+        repaintEverything: () => {}
+      }
+    }
   }
+
   const Match = definition.component
 
   beforeEach(() => {
@@ -325,20 +329,24 @@ describe('<Match />', () => {
     let updatedValue = null
     const item = makeFixture()
     window.jsPlumb = {
-      getInstance: () => {},
-      getSelector: () => {},
-      addEndpoint: () => {},
-      setSuspendDrawing: () => {},
-      importDefaults: () => {},
-      registerConnectionTypes: () => {},
-      connect:() => {},
-      setContainer: () => {},
-      bind: () => {},
-      getConnections: () => {},
-      removeAllEndpoints: () => {},
-      detach: () => {},
-      repaintEverything: () => {}
+      getInstance: () => {
+        return {
+          getSelector: () => {},
+          addEndpoint: () => {},
+          setSuspendDrawing: () => {},
+          importDefaults: () => {},
+          registerConnectionTypes: () => {},
+          connect:() => {},
+          setContainer: () => {},
+          bind: () => {},
+          getConnections: () => {},
+          removeAllEndpoints: () => {},
+          detach: () => {},
+          repaintEverything: () => {}
+        }
+      }
     }
+    
     const form = mount(
       <Match
         item={item}
