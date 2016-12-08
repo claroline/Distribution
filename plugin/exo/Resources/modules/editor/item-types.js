@@ -35,7 +35,7 @@ export function listItemMimeTypes() {
   return Object.keys(registeredTypes)
 }
 
-export function listItemNames () {
+export function listItemNames() {
   let list = []
   for(const type in registeredTypes){
     list.push({
