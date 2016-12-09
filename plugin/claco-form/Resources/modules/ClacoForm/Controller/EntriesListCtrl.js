@@ -87,7 +87,7 @@ export default class EntriesManagementCtrl {
     const transDate = Translator.trans('date', {}, 'platform')
     const transUser = Translator.trans('user', {}, 'platform')
     const transCategories = Translator.trans('categories', {}, 'platform')
-    const transKeywords = Translator.trans('keywords', {}, 'platform')
+    const transKeywords = Translator.trans('keywords', {}, 'clacoform')
     const transActions = Translator.trans('actions', {}, 'platform')
     const alertFieldColumn = {id: 'alert', sortable: 'alert'}
     const titleFieldColumn = {id: 'title', title: transTitle, filter: {title: 'text'}, sortable: 'title'}

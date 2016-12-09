@@ -96,15 +96,24 @@ export default class EntryService {
     const url = Routing.generate('claro_claco_form_entry_retrieve', {entry: entryId})
 
     return this.$http.get(url).then(d => {
-      let entry = JSON.parse(d['data'])
-      this.formatEntry(entry)
+      if (d['status'] === 200) {
+        let entry = JSON.parse(d['data'])
+        this.formatEntry(entry)
 
-      return entry
+        return entry
+      }
     })
   }
 
   getNbMyEntries () {
     return this.myEntries.length
+  }
+
+  getCanOpenEntry (entryId) {
+    return this.canEdit ||
+      this.isManagerEntry(entryId) ||
+      this.isMyEntry(entryId) ||
+      (this.resourceDetails['search_enabled'] && (this.getEntryStatus(entryId) === 1))
   }
 
   getCanEditEntry (entryId) {
@@ -117,6 +126,12 @@ export default class EntryService {
 
   isManagerEntry (entryId) {
     return this.managerEntries.find(e => e['id'] === entryId) !== undefined
+  }
+
+  getEntryStatus (entryId) {
+    const entry = this.entries.find(e => e['id'] === entryId)
+
+    return entry ? entry['status'] : null
   }
 
   createEntry (resourceId, entryData, entryTitle, keywordsData = []) {
@@ -159,14 +174,14 @@ export default class EntryService {
     if (entry['categories'].length > 0) {
       let categoriesNames = []
       entry['categories'].forEach(c => categoriesNames.push(c['name']))
-      entry['categoriesString'] = categoriesNames.join()
+      entry['categoriesString'] = categoriesNames.join(', ')
     } else {
       entry['categoriesString'] = '-'
     }
     if (entry['keywords'].length > 0) {
       let keywordsNames = []
       entry['keywords'].forEach(k => keywordsNames.push(k['name']))
-      entry['keywordsString'] = keywordsNames.join()
+      entry['keywordsString'] = keywordsNames.join(', ')
     } else {
       entry['keywordsString'] = '-'
     }
@@ -182,7 +197,7 @@ export default class EntryService {
           entry[fieldLabel] = `${valueDate.getDate()}/${valueDate.getMonth() + 1}/${valueDate.getFullYear()}`
           break
         case 6 :
-          entry[fieldLabel] = v['fieldFacetValue']['value'].join()
+          entry[fieldLabel] = v['fieldFacetValue']['value'].join(', ')
           break
         case 7 :
           entry[fieldLabel] = this.FieldService.getCountryNameFromCode(v['fieldFacetValue']['value'])

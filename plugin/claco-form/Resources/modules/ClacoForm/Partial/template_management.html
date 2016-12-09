@@ -59,26 +59,25 @@
                     &times;
                 </button>
                 {{ 'template_variables_message'|trans:{}:'clacoform' }}
-                <div ng-if="cfc.mandatory.length > 0">
+                <div>
                     <br>
                     <h4>
                         {{ 'mandatory'|trans:{}:'clacoform' }}
                         <small>({{ 'template_mandatory_variables_message'|trans:{}:'clacoform' }})</small>
                     </h4>
                     <ul>
+                        <li>
+                            <b>%clacoform_entry_title%</b> : {{ 'entry_title_info'|trans:{}:'clacoform' }}
+                        </li>
                         <li ng-repeat="field in cfc.mandatory">
                             <b>%{{ field['name'] }}%</b> : {{ field['typeName'] }}
                         </li>
                     </ul>
                 </div>
-                <div>
-                    <hr ng-if="cfc.mandatory.length > 0">
-                    <br ng-if="cfc.mandatory.length == 0">
+                <div ng-if="cfc.optional.length > 0">
+                    <hr>
                     <h4>{{ 'optional'|trans:{}:'clacoform' }}</h4>
                     <ul>
-                        <li>
-                            <b>%clacoform_entry_title%</b> : {{ 'entry_title_info'|trans:{}:'clacoform' }}
-                        </li>
                         <li ng-repeat="field in cfc.optional">
                             <b>%{{ field['name'] }}%</b> : {{ field['typeName'] }}
                         </li>

@@ -13,6 +13,7 @@ namespace Claroline\ClacoFormBundle\Manager;
 
 use Claroline\ClacoFormBundle\Entity\Category;
 use Claroline\ClacoFormBundle\Entity\ClacoForm;
+use Claroline\ClacoFormBundle\Entity\Comment;
 use Claroline\ClacoFormBundle\Entity\Entry;
 use Claroline\ClacoFormBundle\Entity\Field;
 use Claroline\ClacoFormBundle\Entity\FieldChoiceCategory;
@@ -23,6 +24,10 @@ use Claroline\ClacoFormBundle\Event\Log\LogCategoryDeleteEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogCategoryEditEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogClacoFormConfigureEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogClacoFormTemplateEditEvent;
+use Claroline\ClacoFormBundle\Event\Log\LogCommentCreateEvent;
+use Claroline\ClacoFormBundle\Event\Log\LogCommentDeleteEvent;
+use Claroline\ClacoFormBundle\Event\Log\LogCommentEditEvent;
+use Claroline\ClacoFormBundle\Event\Log\LogCommentStatusChangeEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogEntryCreateEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogEntryDeleteEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogEntryEditEvent;
@@ -58,6 +63,7 @@ class ClacoFormManager
     private $tokenStorage;
 
     private $categoryRepo;
+    private $commentRepo;
     private $entryRepo;
     private $fieldChoiceCategoryRepo;
     private $fieldRepo;
@@ -86,6 +92,7 @@ class ClacoFormManager
         $this->om = $om;
         $this->tokenStorage = $tokenStorage;
         $this->categoryRepo = $om->getRepository('ClarolineClacoFormBundle:Category');
+        $this->commentRepo = $om->getRepository('ClarolineClacoFormBundle:Comment');
         $this->entryRepo = $om->getRepository('ClarolineClacoFormBundle:Entry');
         $this->fieldChoiceCategoryRepo = $om->getRepository('ClarolineClacoFormBundle:FieldChoiceCategory');
         $this->fieldRepo = $om->getRepository('ClarolineClacoFormBundle:Field');
@@ -622,7 +629,23 @@ class ClacoFormManager
         foreach ($entryData as $key => $value) {
             $fieldValue = $this->getFieldValueByEntryAndFieldId($entry, $key);
 
-            if (!is_null($fieldValue)) {
+            if (is_null($fieldValue)) {
+                $field = $this->getFieldByClacoFormAndId($clacoForm, $key);
+
+                if (!is_null($field)) {
+                    $fieldValue = $this->createFieldValue($entry, $field, $value, $entry->getUser());
+                    $entry->addFieldValue($fieldValue);
+                    $type = $field->getType();
+
+                    if ($this->facetManager->isTypeWithChoices($type)) {
+                        $categoriesToAdd = $this->getCategoriesFromFieldAndValue($field, $value);
+
+                        foreach ($categoriesToAdd as $catId => $cat) {
+                            $toAdd[$catId] = $cat;
+                        }
+                    }
+                }
+            } else {
                 $fieldFacetValue = $fieldValue->getFieldFacetValue();
                 $field = $fieldValue->getField();
                 $type = $field->getType();
@@ -844,6 +867,90 @@ class ClacoFormManager
         return $fieldFacetValue;
     }
 
+    public function persistComment(Comment $comment)
+    {
+        $this->om->persist($comment);
+        $this->om->flush();
+    }
+
+    public function createComment(Entry $entry, $content, User $user = null)
+    {
+        $clacoForm = $entry->getClacoForm();
+        $comment = new Comment();
+        $comment->setEntry($entry);
+        $comment->setUser($user);
+        $comment->setContent($content);
+        $comment->setCreationDate(new \DateTime());
+
+        switch ($clacoForm->getModerateComments()) {
+            case 'all' :
+                $status = Comment::PENDING;
+                break;
+            case 'anonymous' :
+                $status = is_null($user) ? Comment::PENDING : Comment::VALIDATED;
+                break;
+            default :
+                $status = Comment::VALIDATED;
+        }
+        $comment->setStatus($status);
+        $this->persistComment($comment);
+        $event = new LogCommentCreateEvent($comment);
+        $this->eventDispatcher->dispatch('log', $event);
+
+        return $comment;
+    }
+
+    public function editComment(Comment $comment, $content)
+    {
+        $comment->setContent($content);
+        $comment->setEditionDate(new \DateTime());
+        $this->persistComment($comment);
+        $event = new LogCommentEditEvent($comment);
+        $this->eventDispatcher->dispatch('log', $event);
+
+        return $comment;
+    }
+
+    public function changeCommentStatus(Comment $comment, $status)
+    {
+        $comment->setStatus($status);
+        $this->persistComment($comment);
+        $event = new LogCommentStatusChangeEvent($comment);
+        $this->eventDispatcher->dispatch('log', $event);
+
+        return $comment;
+    }
+
+    public function deleteComment(Comment $comment)
+    {
+        $details = [];
+        $details['id'] = $comment->getId();
+        $details['content'] = $comment->getContent();
+        $details['status'] = $comment->getStatus();
+        $details['creationDate'] = $comment->getCreationDate();
+        $details['editionDate'] = $comment->getEditionDate();
+        $user = $comment->getUser();
+
+        if (!is_null($user)) {
+            $details['userId'] = $user->getId();
+            $details['username'] = $user->getUsername();
+            $details['firstName'] = $user->getFirstName();
+            $details['lastName'] = $user->getLastName();
+        }
+        $entry = $comment->getEntry();
+        $details['entryId'] = $entry->getId();
+        $details['entryTitle'] = $entry->getTitle();
+        $clacoForm = $entry->getClacoForm();
+        $resourceNode = $clacoForm->getResourceNode();
+        $details['resourceId'] = $clacoForm->getId();
+        $details['resourceNodeId'] = $resourceNode->getId();
+        $details['resourceName'] = $resourceNode->getName();
+        $this->om->remove($comment);
+        $this->om->flush();
+        $event = new LogCommentDeleteEvent($details);
+        $this->eventDispatcher->dispatch('log', $event);
+    }
+
     /****************************************
      * Access to CategoryRepository methods *
      ****************************************/
@@ -929,6 +1036,25 @@ class ClacoFormManager
         return count($categories) > 0 ? $this->entryRepo->findEntriesByCategories($clacoForm, $categories) : [];
     }
 
+    /***************************************
+     * Access to CommentRepository methods *
+     ***************************************/
+
+    public function getCommentsByEntry(Entry $entry)
+    {
+        return $this->commentRepo->findBy(['entry' => $entry], ['creationDate' => 'DESC']);
+    }
+
+    public function getCommentsByEntryAndStatus(Entry $entry, $status)
+    {
+        return $this->commentRepo->findBy(['entry' => $entry, 'status' => $status], ['creationDate' => 'DESC']);
+    }
+
+    public function getAvailableCommentsForUser(Entry $entry, User $user)
+    {
+        return $this->commentRepo->findAvailableCommentsForUser($entry, $user);
+    }
+
     /***************************************************
      * Access to FieldChoiceCategoryRepository methods *
      ***************************************************/
@@ -985,28 +1111,88 @@ class ClacoFormManager
         return false;
     }
 
-    public function checkEntryEdition(Entry $entry)
+    public function hasEntryAccessRight(Entry $entry)
+    {
+        $clacoForm = $entry->getClacoForm();
+        $user = $this->tokenStorage->getToken()->getUser();
+        $canOpen = $this->hasRight($clacoForm, 'OPEN');
+        $canEdit = $this->hasRight($clacoForm, 'EDIT');
+
+        return $canEdit || (
+            $canOpen && (
+               ($entry->getUser() === $user) ||
+               (($user !== 'anon.') && $this->isEntryManager($entry, $user)) ||
+               (($entry->getStatus() === Entry::PUBLISHED) && $clacoForm->getSearchEnabled())
+            )
+        );
+    }
+
+    public function hasEntryEditionRight(Entry $entry)
     {
         $user = $this->tokenStorage->getToken()->getUser();
         $clacoForm = $entry->getClacoForm();
+        $canOpen = $this->hasRight($clacoForm, 'OPEN');
         $canEdit = $this->hasRight($clacoForm, 'EDIT');
         $editionEnabled = $clacoForm->isEditionEnabled();
 
-        if (!($canEdit ||
-             ($editionEnabled && ($entry->getUser() === $user)) ||
-             (($user !== 'anon.') && $this->isEntryManager($entry, $user)))
-        ) {
+        return $canEdit || (
+            $canOpen && (
+                ($editionEnabled && ($entry->getUser() === $user)) ||
+                (($user !== 'anon.') && $this->isEntryManager($entry, $user))
+            )
+        );
+    }
+
+    public function hasEntryModerationRight(Entry $entry)
+    {
+        $user = $this->tokenStorage->getToken()->getUser();
+        $clacoForm = $entry->getClacoForm();
+        $canOpen = $this->hasRight($clacoForm, 'OPEN');
+        $canEdit = $this->hasRight($clacoForm, 'EDIT');
+
+        return $canEdit || ($canOpen && ($user !== 'anon.') && $this->isEntryManager($entry, $user));
+    }
+
+    public function checkEntryAccess(Entry $entry)
+    {
+        if (!$this->hasEntryAccessRight($entry)) {
+            throw new AccessDeniedException();
+        }
+    }
+
+    public function checkEntryEdition(Entry $entry)
+    {
+        if (!$this->hasEntryEditionRight($entry)) {
             throw new AccessDeniedException();
         }
     }
 
     public function checkEntryModeration(Entry $entry)
     {
+        if (!$this->hasEntryModerationRight($entry)) {
+            throw new AccessDeniedException();
+        }
+    }
+
+    public function checkCommentCreationRight(Entry $entry)
+    {
         $user = $this->tokenStorage->getToken()->getUser();
         $clacoForm = $entry->getClacoForm();
-        $canEdit = $this->hasRight($clacoForm, 'EDIT');
 
-        if (!$canEdit && (($user === 'anon.') || !$this->isEntryManager($entry, $user))) {
+        if (!$this->hasEntryAccessRight($entry) ||
+            !$clacoForm->isCommentsEnabled() ||
+            (($user === 'anon.') && !$clacoForm->isAnonymousCommentsEnabled())) {
+
+            throw new AccessDeniedException();
+        }
+    }
+
+    public function checkCommentEditionRight(Comment $comment)
+    {
+        $user = $this->tokenStorage->getToken()->getUser();
+        $entry = $comment->getEntry();
+
+        if (!$this->hasEntryAccessRight($entry) || (($user !== $comment->getUser()) && !$this->hasEntryModerationRight($entry))) {
             throw new AccessDeniedException();
         }
     }

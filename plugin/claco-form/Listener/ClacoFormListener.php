@@ -76,7 +76,7 @@ class ClacoFormListener
      */
     public function onCreationForm(CreateFormResourceEvent $event)
     {
-        $form = $this->formFactory->create(new ResourceNameType(), new ClacoForm());
+        $form = $this->formFactory->create(new ResourceNameType(true), new ClacoForm());
         $content = $this->templating->render(
             'ClarolineCoreBundle:Resource:createForm.html.twig',
             [
@@ -95,10 +95,12 @@ class ClacoFormListener
      */
     public function onCreate(CreateResourceEvent $event)
     {
-        $form = $this->formFactory->create(new ResourceNameType(), new ClacoForm());
+        $form = $this->formFactory->create(new ResourceNameType(true), new ClacoForm());
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
+            $published = $form->get('published')->getData();
+            $event->setPublished($published);
             $clacoForm = $this->clacoFormManager->initializeClacoForm($form->getData());
             $event->setResources([$clacoForm]);
             $event->stopPropagation();

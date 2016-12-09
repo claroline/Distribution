@@ -8,14 +8,15 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution.
  *
- * Generation date: 2016/10/25 11:09:48
+ * Generation date: 2016/12/08 08:42:04
  */
-class Version20161025110947 extends AbstractMigration
+class Version20161208084201 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
         $this->addSql('
-            ALTER TABLE claro_field_facet_value CHANGE user_id user_id INT DEFAULT NULL
+            ALTER TABLE claro_field_facet_value CHANGE user_id user_id INT DEFAULT NULL, 
+            CHANGE stringValue stringValue LONGTEXT DEFAULT NULL
         ');
         $this->addSql("
             ALTER TABLE claro_field_facet 
@@ -52,7 +53,8 @@ class Version20161025110947 extends AbstractMigration
             CHANGE panelFacet_id panelFacet_id INT NOT NULL
         ');
         $this->addSql('
-            ALTER TABLE claro_field_facet_value CHANGE user_id user_id INT NOT NULL
+            ALTER TABLE claro_field_facet_value CHANGE user_id user_id INT NOT NULL, 
+            CHANGE stringValue stringValue VARCHAR(255) DEFAULT NULL COLLATE utf8_unicode_ci
         ');
     }
 }

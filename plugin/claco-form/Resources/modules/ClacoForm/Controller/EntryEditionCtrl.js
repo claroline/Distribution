@@ -48,6 +48,8 @@ export default class EntryEditionCtrl {
       //this.EntryService.getEntryById(this.entryId).then(d => {
       //  this.source = d
       //  this.initializeEntry()
+      //  this.initializeCategories()
+      //  this.initializeKeywords()
       //})
     } else {
       this.initializeEntry()
@@ -73,7 +75,7 @@ export default class EntryEditionCtrl {
     this.entryTitle['value'] = this.source['title']
     this.fields.forEach(f => {
       const id = f['id']
-      this.entry[id] = this.source[id]
+      this.entry[id] = this.source[id] !== undefined ? this.source[id] : null
 
       if (f['required']) {
         this.entryErrors[id] = null

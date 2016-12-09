@@ -22,6 +22,7 @@ import '../Field/field'
 import '../Category/category'
 import '../Keyword/keyword'
 import '../Entry/entry'
+import '../Comment/comment'
 
 import Routing from './routing.js'
 import MenuCtrl from './Controller/MenuCtrl'
@@ -33,6 +34,7 @@ import TemplateManagementCtrl from './Controller/TemplateManagementCtrl'
 import EntriesListCtrl from './Controller/EntriesListCtrl'
 import EntryCreationCtrl from './Controller/EntryCreationCtrl'
 import EntryEditionCtrl from './Controller/EntryEditionCtrl'
+import EntryViewCtrl from './Controller/EntryViewCtrl'
 import ClacoFormService from './Service/ClacoFormService'
 
 angular.module('ClacoFormModule', [
@@ -49,7 +51,8 @@ angular.module('ClacoFormModule', [
   'FieldModule',
   'CategoryModule',
   'KeywordModule',
-  'EntryModule'
+  'EntryModule',
+  'CommentModule'
 ])
 .service('ClacoFormService', ClacoFormService)
 .controller('MenuCtrl', ['$state', 'ClacoFormService', MenuCtrl])
@@ -61,6 +64,7 @@ angular.module('ClacoFormModule', [
 .controller('EntriesListCtrl', ['NgTableParams', 'ClacoFormService', 'EntryService', 'FieldService', 'CategoryService', EntriesListCtrl])
 .controller('EntryCreationCtrl', ['$state', 'ClacoFormService', 'EntryService', 'FieldService', 'KeywordService', EntryCreationCtrl])
 .controller('EntryEditionCtrl', ['$state', '$stateParams', 'ClacoFormService', 'EntryService', 'FieldService', 'CategoryService', 'KeywordService', EntryEditionCtrl])
+.controller('EntryViewCtrl', ['$state', '$stateParams', 'NgTableParams', 'ClacoFormService', 'EntryService', 'FieldService', 'CategoryService', 'KeywordService', 'CommentService', EntryViewCtrl])
 .config(Routing)
 .config([
   'cfpLoadingBarProvider',

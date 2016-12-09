@@ -8,6 +8,7 @@ import keywordsManagementTemplate from './Partial/keywords_management.html'
 import templateManagementTemplate from './Partial/template_management.html'
 import entriesListTemplate from './Partial/entries_list.html'
 import entryFormTemplate from './Partial/entry_form.html'
+import entryViewTemplate from './Partial/entry_view.html'
 
 export default function($stateProvider, $urlRouterProvider) {
   $stateProvider
@@ -63,6 +64,12 @@ export default function($stateProvider, $urlRouterProvider) {
       url: '/entries/{entryId}/edition',
       template: entryFormTemplate,
       controller: 'EntryEditionCtrl',
+      controllerAs: 'cfc'
+    })
+    .state ('entry_view', {
+      url: '/entries/{entryId}/view',
+      template: entryViewTemplate,
+      controller: 'EntryViewCtrl',
       controllerAs: 'cfc'
     })
 

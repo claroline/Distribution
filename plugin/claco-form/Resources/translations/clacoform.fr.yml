@@ -1,7 +1,10 @@
+activate: Activer
 add_choice: Ajouter un choix
+add_comment: Ajouter un commentaire
 add_entry: Ajouter une fiche
 all_entries: Toutes les fiches
 associate_category: Associer une catégorie
+block: Bloquer
 categories_management: Gestion des catégories
 category_notify_addition: Notifier (ajout)
 category_notify_edition: Notifier (modification)
@@ -14,6 +17,8 @@ choice_menu_position_both: Les deux
 choice_menu_position_down: En bas
 choice_menu_position_up: En haut
 choices: Choix
+comment_blocked_info: Ce commentaire a été bloqué. Il n'est plus visible.
+comment_pending_info: Ce commentaire doit être validé par un gestionnaire avant d'être visible.
 comments: Commentaires
 config_success_message: La configuration a été enregistrée avec succès.
 create_a_category: Créer une catégorie
@@ -21,6 +26,8 @@ create_a_field: Créer un champ
 create_a_keyword: Créer un mot-clé
 delete_category: Supprimer la catégorie
 delete_category_confirm_message: Êtes-vous sûr de vouloir supprimer cette catégorie [%name%] ?
+delete_comment: Supprimer le commentaire
+delete_comment_confirm_message: Êtes-vous sûr de vouloir supprimer ce commentaire ?
 delete_entry: Supprimer la fiche
 delete_entry_confirm_message: Êtes-vous sûr de vouloir supprimer cette fiche [%title%] ?
 delete_field: Supprimer le champ
@@ -37,7 +44,7 @@ entry_addition: Ajout d'une fiche
 entry_addition_success_message: La fiche a été ajoutée avec succès.
 entry_edition: Modification d'une fiche
 entry_title: Titre de la fiche
-entry_title_info: Texte qui sera utilisé comme titre pour la fiche. Si aucune valeur n'est entrée, un titre sera généré automatiquement.
+entry_title_info: Texte qui sera utilisé comme titre pour la fiche.
 fields_management: Gestion des champs
 find_entry: Trouver une fiche
 form_not_blank_error: Cette valeur ne doit pas être vide.
@@ -83,6 +90,7 @@ menu: Menu
 metadata: Données confidentielles
 my_entries: Mes fiches
 no_category: Aucune catégorie
+no_comment: Aucun commentaire
 no_entry: Aucune fiche
 no_field: Aucun champ
 no_keyword: Aucun mot-clé
@@ -101,5 +109,6 @@ template_mandatory_variables_message: Les champs obligatoires doivent impérativ
 template_missing_mandatory_variables_message: Certains champs obligatoires ne sont pas présents dans le template.
 template_success_message: Le template a été modifié avec succès.
 template_variables_message: Vous pouvez utiliser les variables suivantes. Elles seront remplacées par les champs correspondants.
+validate: Valider
 votes: Votes
 votes_management: Gestion des votes

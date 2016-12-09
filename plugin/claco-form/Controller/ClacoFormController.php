@@ -13,6 +13,7 @@ namespace Claroline\ClacoFormBundle\Controller;
 
 use Claroline\ClacoFormBundle\Entity\Category;
 use Claroline\ClacoFormBundle\Entity\ClacoForm;
+use Claroline\ClacoFormBundle\Entity\Comment;
 use Claroline\ClacoFormBundle\Entity\Entry;
 use Claroline\ClacoFormBundle\Entity\Field;
 use Claroline\ClacoFormBundle\Entity\Keyword;
@@ -666,15 +667,14 @@ class ClacoFormController extends Controller
      *     name="claro_claco_form_entry_retrieve",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", converter="current_user")
      *
-     * Retrieve an entry
+     * Retrieves an entry
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function entryRetrieveAction(Entry $entry)
     {
-        $this->clacoFormManager->checkEntryEdition($entry);
+        $this->clacoFormManager->checkEntryAccess($entry);
         $serializedEntry = $this->serializer->serialize(
             $entry,
             'json',
@@ -707,5 +707,165 @@ class ClacoFormController extends Controller
         );
 
         return new JsonResponse($serializedEntry, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/claco/form/entry/{entry}/comments/retrieve",
+     *     name="claro_claco_form_entry_comments_retrieve",
+     *     options = {"expose"=true}
+     * )
+     *
+     * Retrieves comments of an entry
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function entryCommentsRetrieveAction(Entry $entry)
+    {
+        $this->clacoFormManager->checkEntryAccess($entry);
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        if ($user === 'anon.') {
+            $comments = $this->clacoFormManager->getCommentsByEntryAndStatus($entry, Comment::VALIDATED);
+        } elseif ($this->clacoFormManager->hasEntryModerationRight($entry)) {
+            $comments = $this->clacoFormManager->getCommentsByEntry($entry);
+        } else {
+            $comments = $this->clacoFormManager->getAvailableCommentsForUser($entry, $user);
+        }
+        $serializedComments = $this->serializer->serialize(
+            $comments,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
+
+        return new JsonResponse($serializedComments, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/claco/form/entry/{entry}/comment/create",
+     *     name="claro_claco_form_entry_comment_create",
+     *     options = {"expose"=true}
+     * )
+     *
+     * Creates a comment
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function commentCreateAction(Entry $entry)
+    {
+        $this->clacoFormManager->checkCommentCreationRight($entry);
+        $content = $this->request->request->get('commentData', false);
+        $authenticatedUser = $this->tokenStorage->getToken()->getUser();
+        $user = $authenticatedUser !== 'anon.' ? $authenticatedUser : null;
+        $comment = $this->clacoFormManager->createComment($entry, $content, $user);
+        $serializedComment = $this->serializer->serialize(
+            $comment,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
+
+        return new JsonResponse($serializedComment, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/claco/form/entry/comment/{comment}/edit",
+     *     name="claro_claco_form_entry_comment_edit",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     *
+     * Edits a comment
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function commentEditAction(Comment $comment)
+    {
+        $this->clacoFormManager->checkCommentEditionRight($comment);
+        $content = $this->request->request->get('commentData', false);
+        $comment = $this->clacoFormManager->editComment($comment, $content);
+        $serializedComment = $this->serializer->serialize(
+            $comment,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
+
+        return new JsonResponse($serializedComment, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/claco/form/entry/comment/{comment}/delete",
+     *     name="claro_claco_form_entry_comment_delete",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     *
+     * Deletes a comment
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function commentDeleteAction(Comment $comment)
+    {
+        $this->clacoFormManager->checkCommentEditionRight($comment);
+        $serializedComment = $this->serializer->serialize(
+            $comment,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
+        $this->clacoFormManager->deleteComment($comment);
+
+        return new JsonResponse($serializedComment, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/claco/form/entry/comment/{comment}/activate",
+     *     name="claro_claco_form_entry_comment_activate",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     *
+     * Activates a comment
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function commentActivateAction(Comment $comment)
+    {
+        $this->clacoFormManager->checkEntryModeration($comment->getEntry());
+        $comment = $this->clacoFormManager->changeCommentStatus($comment, Comment::VALIDATED);
+        $serializedComment = $this->serializer->serialize(
+            $comment,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
+
+        return new JsonResponse($serializedComment, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/claco/form/entry/comment/{comment}/block",
+     *     name="claro_claco_form_entry_comment_block",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     *
+     * Blocks a comment
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function commentBlockAction(Comment $comment)
+    {
+        $this->clacoFormManager->checkEntryModeration($comment->getEntry());
+        $comment = $this->clacoFormManager->changeCommentStatus($comment, Comment::BLOCKED);
+        $serializedComment = $this->serializer->serialize(
+            $comment,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
+
+        return new JsonResponse($serializedComment, 200);
     }
 }

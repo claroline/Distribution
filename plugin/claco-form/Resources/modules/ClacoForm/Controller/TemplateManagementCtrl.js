@@ -56,7 +56,9 @@ export default class TemplateManagementCtrl {
       const titleRegex = new RegExp('%clacoform_entry_title%', 'g')
       const titleMatches = this.template.match(titleRegex)
 
-      if (titleMatches !== null && titleMatches.length > 1) {
+      if (titleMatches === null) {
+        this.requiredErrors.push({name: 'clacoform_entry_title'})
+      } else if (titleMatches.length > 1) {
         this.duplicatedErrors.push({name: 'clacoform_entry_title'})
       }
       this.mandatory.forEach(f => {

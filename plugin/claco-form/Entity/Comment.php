@@ -9,7 +9,7 @@ use JMS\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Claroline\ClacoFormBundle\Repository\CommentRepository")
  * @ORM\Table(name="claro_clacoformbundle_comment")
  */
 class Comment
@@ -51,8 +51,6 @@ class Comment
      *     inversedBy="comments"
      * )
      * @ORM\JoinColumn(name="entry_id", onDelete="CASCADE")
-     * @Groups({"api_claco_form", "api_user_min"})
-     * @SerializedName("entry")
      */
     protected $entry;
 

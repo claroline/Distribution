@@ -124,7 +124,12 @@
                                 </button>
                             </span>
                             <span ng-if="cfc.isDefaultField(fc['id'])">
-                                {{ entry[fc['id']] }}
+                                <a ui-sref="entry_view({entryId: entry['id']})" ng-if="fc['id'] === 'title'">
+                                    {{ entry[fc['id']] }}
+                                </a>
+                                <span ng-if="fc['id'] !== 'title'">
+                                    {{ entry[fc['id']] }}
+                                </span>
                             </span>
                             <span ng-if="cfc.isCustomField(fc['id'])">
                                 {{ entry['field_' + fc['id']] }}
