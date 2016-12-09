@@ -25,7 +25,7 @@ class Bank extends Component {
         handleAction: () => this.props.showModal(MODAL_ADD_ITEM, {
           title: tex('add_question'),
           handleSelect: type => {
-            this.props.closeModal()
+            this.props.hideModal()
             this.props.handleItemCreate(type)
           }
         }),
@@ -37,7 +37,7 @@ class Bank extends Component {
         handleAction: () => this.props.showModal('searchModal', {
           title: tex('search'),
           handleSearch: () => {
-            this.props.closeModal()
+            this.props.hideModal()
             this.props.handleSearch()
           }
         }),
@@ -81,7 +81,7 @@ class Bank extends Component {
 
 Bank.propTypes = {
   showModal: T.func.isRequired,
-  closeModal: T.func.isRequired,
+  hideModal: T.func.isRequired,
   handleItemCreate: T.func.isRequired,
   handleSearch: T.func.isRequired,
   handlePageChange: T.func.isRequired,

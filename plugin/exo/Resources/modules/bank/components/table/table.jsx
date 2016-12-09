@@ -10,7 +10,7 @@ const TableCell = props =>
 
 TableCell.propTypes = {
   align: T.oneOf(['left', 'center', 'right']),
-  children: T.oneOfType([T.object, T.array])
+  children: T.node
 }
 
 TableCell.defaultProps = {
