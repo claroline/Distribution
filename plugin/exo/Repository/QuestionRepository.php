@@ -37,6 +37,12 @@ class QuestionRepository extends EntityRepository
             ->getResult();
     }
 
+    public function findUsages(Question $question)
+    {
+        /*$this->createQueryBuilder()*/
+        return [];
+    }
+
     /**
      * Returns all the questions linked to a given exercise.
      *
@@ -50,7 +56,7 @@ class QuestionRepository extends EntityRepository
             ->join('q.stepQuestions', 'sq')
             ->join('sq.step', 's')
             ->where('s.exercise = :exercise')
-            ->orderBy('s.order, sq.ordre')
+            ->orderBy('s.order, sq.order')
             ->setParameter(':exercise', $exercise)
             ->getQuery()
             ->getResult();
@@ -71,7 +77,7 @@ class QuestionRepository extends EntityRepository
             ->join('q.stepQuestions', 'sq')
             ->join('sq.step', 's')
             ->where('sq.step = :step')
-            ->orderBy('sq.ordre')
+            ->orderBy('sq.order')
             ->setParameter(':step', $step)
             ->getQuery()
             ->getResult();

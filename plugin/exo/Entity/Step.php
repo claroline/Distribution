@@ -4,9 +4,10 @@ namespace UJM\ExoBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 
 /**
- * UJM\ExoBundle\Entity\Step.
+ * Represents a Step in an Exercise.
  *
  * @ORM\Entity(repositoryClass="UJM\ExoBundle\Repository\StepRepository")
  * @ORM\Table(name="ujm_step")
@@ -21,6 +22,13 @@ class Step
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column("uuid", type="string", length=36, unique=true)
+     */
+    private $uuid;
 
     /**
      * @var int
@@ -85,13 +93,14 @@ class Step
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="StepQuestion", mappedBy="step", cascade={"all"})
-     * @ORM\OrderBy({"ordre" = "ASC"})
+     * @ORM\OneToMany(targetEntity="StepQuestion", mappedBy="step", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @ORM\OrderBy({"order" = "ASC"})
      */
     private $stepQuestions;
 
     public function __construct()
     {
+        $this->uuid = Uuid::uuid4();
         $this->stepQuestions = new ArrayCollection();
     }
 
@@ -101,6 +110,26 @@ class Step
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Gets UUID.
+     *
+     * @return string
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * Sets UUID.
+     *
+     * @param $uuid
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
     }
 
     /**
@@ -281,6 +310,28 @@ class Step
     public function getStepQuestions()
     {
         return $this->stepQuestions;
+    }
+
+    /**
+     * Shortcuts to add Questions to Step.
+     * Avoids the need to manually initialize a StepQuestion object to hold the relation.
+     *
+     * @param Question $question - the question to add to the step
+     * @param int      $order    - the position of question in step. If -1 the question will be added at the end of the Step
+     */
+    public function addQuestion(Question $question, $order = -1)
+    {
+        $stepQuestion = new StepQuestion();
+
+        $stepQuestion->setStep($this);
+        $stepQuestion->setQuestion($question);
+
+        if (-1 === $order) {
+            // Calculate current Question order
+            $order = count($this->getStepQuestions());
+        }
+
+        $stepQuestion->setOrdre($order);
     }
 
     /**

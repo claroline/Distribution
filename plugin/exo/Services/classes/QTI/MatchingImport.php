@@ -1,15 +1,15 @@
 <?php
 
-/**
- * To import a Matching question in QTI.
- */
-
 namespace UJM\ExoBundle\Services\classes\QTI;
 
 use UJM\ExoBundle\Entity\InteractionMatching;
 use UJM\ExoBundle\Entity\Label;
 use UJM\ExoBundle\Entity\Proposal;
+use UJM\ExoBundle\Library\Question\QuestionType;
 
+/**
+ * To import a Matching question in QTI.
+ */
 class MatchingImport extends QtiImport
 {
     protected $interactionMatching;
@@ -19,13 +19,15 @@ class MatchingImport extends QtiImport
      * Implements the abstract method.
      *
      *
-     * @param qtiRepository $qtiRepos
-     * @param DOMElement    $assessmentItem assessmentItem of the question to imported
+     * @param QtiRepository $qtiRepo
+     * @param \DOMElement   $assessmentItem assessmentItem of the question to imported
      * @param string        $path           parent directory of the files
+     *
+     * @return InteractionMatching
      */
-    public function import(qtiRepository $qtiRepos, $assessmentItem, $path)
+    public function import(QtiRepository $qtiRepo, $assessmentItem, $path)
     {
-        $this->qtiRepos = $qtiRepos;
+        $this->qtiRepos = $qtiRepo;
         $this->path = $path;
         $this->getQTICategory();
         $this->initAssessmentItem($assessmentItem);
@@ -34,8 +36,14 @@ class MatchingImport extends QtiImport
             return false;
         }
 
-        $this->createQuestion(InteractionMatching::TYPE);
-        $this->createInteractionMatching();
+        $type = $this->matchingType();
+        $mimeType = QuestionType::SET;
+        if ('To bind' === $type->getValue()) {
+            $mimeType = QuestionType::MATCH;
+        }
+
+        $this->createQuestion(InteractionMatching::TYPE, $mimeType);
+        $this->createInteractionMatching($type);
 
         return $this->interactionMatching;
     }
@@ -43,12 +51,10 @@ class MatchingImport extends QtiImport
     /**
      * Implements the abstract method.
      *
-     *
-     * @return $text
+     * @return string
      */
     protected function getPrompt()
     {
-        $prompt = '';
         $ib = $this->assessmentItem->getElementsByTagName('itemBody')->item(0);
         $ci = $ib->getElementsByTagName('matchInteraction')->item(0);
         $text = '';
@@ -65,13 +71,15 @@ class MatchingImport extends QtiImport
 
     /**
      * Create the InteractionMatching object.
+     *
+     * @param string
      */
-    protected function createInteractionMatching()
+    protected function createInteractionMatching($typeMatching)
     {
         $this->interactionMatching = new InteractionMatching();
         $this->interactionMatching->setQuestion($this->question);
         //for recording the type of the question
-        $this->matchingType();
+        $this->interactionMatching->setTypeMatching($typeMatching);
         $this->getShuffle();
         $this->om->persist($this->interactionMatching);
         $this->om->flush();
@@ -87,7 +95,7 @@ class MatchingImport extends QtiImport
         $ib = $this->assessmentItem->getElementsByTagName('itemBody')->item(0);
         $mi = $ib->getElementsBYTagName('matchInteraction')->item(0);
         $shuffle = $mi->getAttribute('shuffle');
-        if ($shuffle == 'true') {
+        if ((string) $shuffle === 'true') {
             $this->interactionMatching->setShuffle(true);
         } else {
             $this->interactionMatching->setShuffle(false);
@@ -122,7 +130,7 @@ class MatchingImport extends QtiImport
             $label->setInteractionMatching($this->interactionMatching);
             $label->setOrdre($ordre);
 
-            if ($simpleLabel->hasAttribute('fixed') && $simpleLabel->getAttribute('fixed') == 'true') {
+            if ($simpleLabel->hasAttribute('fixed') && $simpleLabel->getAttribute('fixed') === 'true') {
                 $label->setPositionForce(true);
             } else {
                 $label->setPositionForce(false);
@@ -154,7 +162,7 @@ class MatchingImport extends QtiImport
             $proposal->setValue($this->value($simpleProposal));
             $proposal->setOrdre($ordre);
 
-            if ($simpleProposal->hasAttribute('fixed') && $simpleProposal->getAttribute('fixed') == 'true') {
+            if ($simpleProposal->hasAttribute('fixed') && $simpleProposal->getAttribute('fixed') === 'true') {
                 $proposal->setPositionForce(true);
             } else {
                 $proposal->setPositionForce(false);
@@ -174,7 +182,7 @@ class MatchingImport extends QtiImport
             }
             // foreach label of the export file, compare to the right relation
             foreach ($labels as $key => $label) {
-                if ($key == $rightLabel) {
+                if ((string) $key === $rightLabel) {
                     $proposal->addAssociatedLabel($label);
                     $proposal->setInteractionMatching($this->interactionMatching);
                     $this->om->persist($proposal);
@@ -251,19 +259,19 @@ class MatchingImport extends QtiImport
     protected function matchingType()
     {
         $ri = $this->assessmentItem->getElementsByTagName('responseDeclaration')->item(0);
-        if ($ri->hasAttribute('cardinality') && $ri->getAttribute('cardinality') == 'single') {
+        if ($ri->hasAttribute('cardinality') && $ri->getAttribute('cardinality') === 'single') {
             //type : to drag
-            $type = $this->om
-                         ->getRepository('UJMExoBundle:TypeMatching')
-                         ->findOneBy(['code' => 2]);
-            $this->interactionMatching->setTypeMatching($type);
+            $type = $this->om->getRepository('UJMExoBundle:TypeMatching')->findOneBy([
+                'code' => 2,
+            ]);
         } else {
             //type : to bind
-            $type = $this->om
-                         ->getRepository('UJMExoBundle:TypeMatching')
-                         ->findOneBy(['code' => 1]);
-            $this->interactionMatching->setTypeMatching($type);
+            $type = $this->om->getRepository('UJMExoBundle:TypeMatching')->findOneBy([
+                'code' => 1,
+            ]);
         }
+
+        return $type;
     }
 
     /**
@@ -271,11 +279,9 @@ class MatchingImport extends QtiImport
      */
     protected function qtiValidate()
     {
-        if ($this->assessmentItem->getElementsByTagName('itemBody')->item(0) == null) {
-            return false;
-        }
         $ib = $this->assessmentItem->getElementsByTagName('itemBody')->item(0);
-        if ($ib->getElementsByTagName('matchInteraction')->item(0) == null) {
+
+        if (!isset($ib)) {
             return false;
         }
 

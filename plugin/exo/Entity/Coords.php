@@ -7,6 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * UJM\ExoBundle\Entity\Coords.
  *
+ * @todo rename entity into Area
+ *
  * @ORM\Entity
  * @ORM\Table(name="ujm_coords")
  */
@@ -37,10 +39,10 @@ class Coords
     /**
      * @ORM\Column(name="score_coords", type="float")
      */
-    private $scoreCoords;
+    private $score;
 
     /**
-     * @ORM\ManyToOne(targetEntity="InteractionGraphic", inversedBy="coords")
+     * @ORM\ManyToOne(targetEntity="InteractionGraphic", inversedBy="areas")
      * @ORM\JoinColumn(name="interaction_graphic_id", referencedColumnName="id")
      */
     private $interactionGraphic;
@@ -112,19 +114,43 @@ class Coords
     }
 
     /**
+     * Sets score.
+     *
+     * @param float $score
+     */
+    public function setScore($score)
+    {
+        $this->score = $score;
+    }
+
+    /**
+     * Gets score.
+     *
+     * @return float
+     */
+    public function getScore()
+    {
+        return $this->score;
+    }
+
+    /**
+     * @deprecated use setScore() instead
+     *
      * @param float $scoreCoords
      */
     public function setScoreCoords($scoreCoords)
     {
-        $this->scoreCoords = $scoreCoords;
+        $this->score = $scoreCoords;
     }
 
     /**
+     * @deprecated use getScore() instead
+     *
      * @return float
      */
     public function getScoreCoords()
     {
-        return $this->scoreCoords;
+        return $this->score;
     }
 
     /**

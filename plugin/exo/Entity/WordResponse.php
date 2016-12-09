@@ -26,7 +26,7 @@ class WordResponse
      *
      * @ORM\Column(name="response", type="string", length=255)
      */
-    private $response;
+    private $text;
 
     /**
      * @var bool
@@ -43,19 +43,27 @@ class WordResponse
     private $score;
 
     /**
+     * @deprecated this relation needs to be removed as it is not needed
+     *
+     * @var InteractionOpen
+     *
      * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\InteractionOpen", inversedBy="wordResponses")
      * @ORM\JoinColumn(name="interaction_open_id", referencedColumnName="id")
      */
     private $interactionopen;
 
     /**
+     * @deprecated this relation needs to be removed as it is not needed
+     *
+     * @var Hole
+     *
      * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Hole", inversedBy="wordResponses")
      * @ORM\JoinColumn(name="hole_id", referencedColumnName="id")
      */
     private $hole;
 
     /**
-     * @var text
+     * @var string
      *
      * @ORM\Column(name="feedback", type="text", nullable=true)
      */
@@ -72,17 +80,63 @@ class WordResponse
     }
 
     /**
+     * Get text.
+     *
+     * @return string
+     */
+    public function getText()
+    {
+        return $this->text;
+    }
+
+    /**
+     * Set text.
+     *
+     * @param string $text
+     */
+    public function setText($text)
+    {
+        $this->text = $text;
+    }
+
+    /**
+     * Get response.
+     *
+     * @deprecated use getText() instead
+     *
+     * @return string
+     */
+    public function getResponse()
+    {
+        return $this->text;
+    }
+
+    /**
      * Set response.
+     *
+     * @deprecated use setText() instead
      *
      * @param string $response
      */
     public function setResponse($response)
     {
-        $this->response = $response;
+        $this->text = $response;
+    }
+
+    /**
+     * Is the keyword case sensitive ?
+     *
+     * @return bool
+     */
+    public function isCaseSensitive()
+    {
+        return $this->caseSensitive;
     }
 
     /**
      * Get caseSensitive.
+     *
+     * @deprecated use isCaseSensitive() instead
      *
      * @return bool
      */
@@ -102,13 +156,13 @@ class WordResponse
     }
 
     /**
-     * Get response.
+     * Get score.
      *
-     * @return string
+     * @return float
      */
-    public function getResponse()
+    public function getScore()
     {
-        return $this->response;
+        return $this->score;
     }
 
     /**
@@ -122,37 +176,47 @@ class WordResponse
     }
 
     /**
-     * Get score.
+     * @deprecated this entity do not need to know open question as they also can be linked to holes
      *
-     * @return float
+     * @return InteractionOpen
      */
-    public function getScore()
-    {
-        return $this->score;
-    }
-
     public function getInteractionOpen()
     {
         return $this->interactionopen;
     }
 
-    public function setInteractionOpen(\UJM\ExoBundle\Entity\InteractionOpen $interactionOpen)
+    /**
+     * @deprecated this entity do not need to know open question as they also can be linked to holes
+     *
+     * @param InteractionOpen $interactionOpen
+     */
+    public function setInteractionOpen(InteractionOpen $interactionOpen)
     {
         $this->interactionopen = $interactionOpen;
     }
 
+    /**
+     * @deprecated this entity do not need to know holes as they also can be linked to open questions
+     *
+     * @return Hole
+     */
     public function getHole()
     {
         return $this->hole;
     }
 
-    public function setHole(\UJM\ExoBundle\Entity\Hole $hole)
+    /**
+     * @deprecated this entity do not need to know holes as they also can be linked to open questions
+     *
+     * @param Hole $hole
+     */
+    public function setHole(Hole $hole)
     {
         $this->hole = $hole;
     }
 
     /**
-     * get feedback.
+     * Get feedback.
      *
      * @return string
      */
@@ -162,9 +226,9 @@ class WordResponse
     }
 
     /**
-     * set feedback.
+     * Set feedback.
      *
-     * @param \UJM\ExoBundle\Entity\text $feedback
+     * @param string $feedback
      */
     public function setFeedback($feedback)
     {
