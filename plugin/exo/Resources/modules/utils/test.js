@@ -85,8 +85,8 @@ function assertMissingProps(componentName, propNames) {
   assertPropTypesErrors(
     propNames,
     'missing',
-    `Required prop .+ not specified in \`${componentName}(\-|\`)`,
-    name => `Required prop \`${name}\``
+    `The prop .+ is marked as required in \`${componentName}(\-|\`)`,
+    name => `prop \`${name}\``
   )
 }
 

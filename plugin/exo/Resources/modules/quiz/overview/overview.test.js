@@ -1,5 +1,7 @@
 import React from 'react'
 import {shallow, mount} from 'enzyme'
+import configureMockStore from 'redux-mock-store'
+import merge from 'lodash/merge'
 import {spyConsole, renew, ensure, mockTranslator} from './../../utils/test'
 import {Overview} from './overview.jsx'
 import {
@@ -18,35 +20,35 @@ describe('<Overview/>', () => {
   afterEach(spyConsole.restore)
 
   it('has required props', () => {
-    shallow(<Overview parameters={{}}/>)
+    shallow(<Overview store={mockStore()}/>)
     ensure.missingProps(
       'Overview',
       [
-        'empty',
-        'editable',
-        'created',
+        /* can't tests these ones because selectors are hard-coded */
+        // 'empty',
+        // 'editable',
+        // 'created',
         'description',
-        'parameters.showMetadata'
+        'parameters'
       ]
     )
   })
 
   it('has typed props', () => {
-    shallow(
-      <Overview
-        empty={[]}
-        editable={{}}
-        created={123}
-        description={456}
-        parameters={true}
-      />
-    )
+    const store = mockStore({
+      quiz: {
+        description: 456,
+        parameters: true
+      }
+    })
+    shallow(<Overview store={store}/>)
     ensure.invalidProps(
       'Overview',
       [
-        'empty',
-        'editable',
-        'created',
+        /* same than above */
+        // 'empty',
+        // 'editable',
+        // 'created',
         'description',
         'parameters'
       ]
@@ -54,13 +56,10 @@ describe('<Overview/>', () => {
   })
 
   it('renders an expandable table with quiz properties', () => {
-    const overview = mount(
-      <Overview
-        empty={true}
-        editable={true}
-        created="2014/02/03"
-        description="DESC"
-        parameters={{
+    const store = mockStore({
+      quiz: {
+        description: 'DESC',
+        parameters: {
           type: QUIZ_SUMMATIVE,
           showMetadata: true,
           randomOrder: SHUFFLE_ALWAYS,
@@ -73,9 +72,11 @@ describe('<Overview/>', () => {
           correctionDate: '2015/05/12',
           anonymous: true,
           showScoreAt: SHOW_SCORE_AT_CORRECTION
-        }}
-      />
-    )
+        }
+      }
+    })
+    const overview = mount(<Overview store={store}/>)
+
     ensure.propTypesOk()
     ensure.equal(overview.find('table').length, 1)
     ensure.equal(overview.find('tr').length, 2)
@@ -86,3 +87,9 @@ describe('<Overview/>', () => {
     ensure.equal(overview.find('tr').length, 10)
   })
 })
+
+function mockStore(state = {}) {
+  const mock = configureMockStore()
+
+  return mock(merge({quiz: {steps: []}}, state))
+}
