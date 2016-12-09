@@ -1,0 +1,123 @@
+<?php
+
+namespace UJM\ExoBundle\Entity\QuestionType;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
+use UJM\ExoBundle\Entity\Misc\Label;
+use UJM\ExoBundle\Entity\Misc\Proposal;
+use UJM\ExoBundle\Library\Model\ShuffleTrait;
+
+/**
+ * A Match question.
+ *
+ * @ORM\Entity
+ * @ORM\Table(name="ujm_interaction_matching")
+ */
+class MatchQuestion extends AbstractQuestion
+{
+    use ShuffleTrait;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="UJM\ExoBundle\Entity\Misc\Label",
+     *     mappedBy="interactionMatching",
+     *     cascade={"all"},
+     *     orphanRemoval=true
+     * )
+     *
+     * @var ArrayCollection
+     */
+    private $labels;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="UJM\ExoBundle\Entity\Misc\Proposal",
+     *     mappedBy="interactionMatching",
+     *     cascade={"all"},
+     *     orphanRemoval=true
+     * )
+     *
+     * @var ArrayCollection
+     */
+    private $proposals;
+
+    /**
+     * MatchQuestion constructor.
+     */
+    public function __construct()
+    {
+        $this->labels = new ArrayCollection();
+        $this->proposals = new ArrayCollection();
+    }
+
+    /**
+     * Gets labels.
+     *
+     * @return ArrayCollection
+     */
+    public function getLabels()
+    {
+        return $this->labels;
+    }
+
+    /**
+     * Adds a label.
+     *
+     * @param Label $label
+     */
+    public function addLabel(Label $label)
+    {
+        if (!$this->labels->contains($label)) {
+            $this->labels->add($label);
+            $label->setInteractionMatching($this);
+        }
+    }
+
+    /**
+     * Removes a label.
+     *
+     * @param Label $label
+     */
+    public function removeLabel(Label $label)
+    {
+        if ($this->labels->contains($label)) {
+            $this->labels->removeElement($label);
+        }
+    }
+
+    /**
+     * Gets proposals.
+     *
+     * @return ArrayCollection
+     */
+    public function getProposals()
+    {
+        return $this->proposals;
+    }
+
+    /**
+     * Adds a proposal.
+     *
+     * @param Proposal $proposal
+     */
+    public function addProposal(Proposal $proposal)
+    {
+        if (!$this->proposals->contains($proposal)) {
+            $this->proposals->add($proposal);
+            $proposal->setInteractionMatching($this);
+        }
+    }
+
+    /**
+     * Removes a proposal.
+     *
+     * @param Proposal $proposal
+     */
+    public function removeProposal(Proposal $proposal)
+    {
+        if ($this->proposals->contains($proposal)) {
+            $this->proposals->removeElement($proposal);
+        }
+    }
+}

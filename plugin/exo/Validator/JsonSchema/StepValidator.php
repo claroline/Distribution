@@ -3,6 +3,7 @@
 namespace UJM\ExoBundle\Validator\JsonSchema;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Library\Options\Recurrence;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Question\QuestionValidator;
 
@@ -49,9 +50,20 @@ class StepValidator extends JsonSchemaValidator
     {
         $errors = [];
 
+        if (isset($step->parameters)) {
+            $errors = array_merge($errors, $this->validateParameters($step->parameters));
+            if (isset($step->parameters->pick) && isset($step->items)
+                && count($step->items) < $step->parameters->pick) {
+                $errors[] = [
+                    'path' => '/parameters/pick',
+                    'message' => 'the property `pick` cannot be greater than the number of items of the step',
+                ];
+            }
+        }
+
         if (isset($step->items)) {
             // Apply custom validation to step items
-            array_map(function ($item) use (&$errors, $options) {
+            array_map(function (\stdClass $item) use (&$errors, $options) {
                 if (1 === preg_match('#^application\/x\.[^/]+\+json$#', $item->type)) {
                     // Item is a Question
                     $itemErrors = $this->questionValidator->validateAfterSchema($item, $options);
@@ -64,6 +76,31 @@ class StepValidator extends JsonSchemaValidator
                     $errors = array_merge($errors, $itemErrors);
                 }
             }, $step->items);
+        }
+
+        return $errors;
+    }
+
+    private function validateParameters(\stdClass $parameters)
+    {
+        $errors = [];
+
+        if (isset($parameters->randomPick) && Recurrence::NEVER !== $parameters->randomPick && !isset($parameters->pick)) {
+            // Random pick is enabled but the number of steps to pick is missing
+            $errors[] = [
+                'path' => '/parameters/randomPick',
+                'message' => 'The property `pick` is required when `randomPick` is not "never"',
+            ];
+        }
+
+        // We can not keep the randomOrder from previous papers as we generate a new subset of items for each attempt
+        if (isset($parameters->randomPick) && Recurrence::ALWAYS === $parameters->randomPick
+            && isset($parameters->randomOrder) && Recurrence::ONCE === $parameters->randomOrder) {
+            // Incompatible randomOrder and randomPick properties
+            $errors[] = [
+                'path' => '/parameters/randomOrder',
+                'message' => 'The property `randomOrder` cannot be "once" when `randomPick` is "always"',
+            ];
         }
 
         return $errors;

@@ -14,25 +14,25 @@ class AdditionalInstaller extends BaseInstaller
     public function preUpdate($currentVersion, $targetVersion)
     {
         if (version_compare($currentVersion, '6.0.0', '<=')) {
-            $updater = new Updater060000($this->container);
+            $updater = new Updater060000($this->container->get('doctrine.dbal.default_connection'));
             $updater->setLogger($this->logger);
             $updater->preUpdate();
         }
 
         if (version_compare($currentVersion, '6.0.0', '=')) {
-            $updater = new Updater060001($this->container);
+            $updater = new Updater060001($this->container->get('doctrine.dbal.default_connection'));
             $updater->setLogger($this->logger);
             $updater->preUpdate();
         }
 
         if (version_compare($currentVersion, '6.2.0', '<')) {
-            $updater = new Updater060200($this->container);
+            $updater = new Updater060200($this->container->get('doctrine.dbal.default_connection'));
             $updater->setLogger($this->logger);
             $updater->preUpdate();
         }
 
         if (version_compare($currentVersion, '7.0.0', '<=')) {
-            $updater = new Updater070000($this->container);
+            $updater = new Updater070000($this->container->get('doctrine.dbal.default_connection'));
             $updater->setLogger($this->logger);
             $updater->preUpdate();
         }
@@ -41,19 +41,19 @@ class AdditionalInstaller extends BaseInstaller
     public function postUpdate($currentVersion, $targetVersion)
     {
         if (version_compare($currentVersion, '6.0.0', '<=')) {
-            $updater = new Updater060000($this->container);
+            $updater = new Updater060000($this->container->get('doctrine.dbal.default_connection'));
             $updater->setLogger($this->logger);
             $updater->postUpdate();
         }
 
         if (version_compare($currentVersion, '6.2.0', '<')) {
-            $updater = new Updater060200($this->container);
+            $updater = new Updater060200($this->container->get('doctrine.dbal.default_connection'));
             $updater->setLogger($this->logger);
             $updater->postUpdate();
         }
 
         if (version_compare($currentVersion, '8.0.0', '<')) {
-            $updater = new Updater080000($this->container);
+            $updater = new Updater080000($this->container->get('doctrine.dbal.default_connection'));
             $updater->setLogger($this->logger);
             $updater->postUpdate();
         }

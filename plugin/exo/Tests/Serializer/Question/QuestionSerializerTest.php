@@ -48,6 +48,48 @@ class QuestionSerializerTest extends JsonDataTestCase
         );
     }
 
+    public function testSerializeAdminMetaOption()
+    {
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
+    }
+
+    public function testSerializeMinimalOption()
+    {
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
+    }
+
+    public function testSetCreatorOnCreate()
+    {
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
+    }
+
+    public function testAddCategory()
+    {
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
+    }
+
+    public function testAddDefaultCategoryIfNoOne()
+    {
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
+    }
+
+    public function testChangeCategory()
+    {
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
+    }
+
     public function testAddHint()
     {
         $this->markTestIncomplete(

@@ -3,7 +3,7 @@
 namespace UJM\ExoBundle\Tests\Serializer\Misc;
 
 use Claroline\CoreBundle\Persistence\ObjectManager;
-use UJM\ExoBundle\Entity\WordResponse;
+use UJM\ExoBundle\Entity\Misc\Keyword;
 use UJM\ExoBundle\Library\Testing\Json\JsonDataTestCase;
 use UJM\ExoBundle\Serializer\Misc\KeywordSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Misc\KeywordValidator;
@@ -26,7 +26,7 @@ class KeywordSerializerTest extends JsonDataTestCase
     private $serializer;
 
     /**
-     * @var WordResponse
+     * @var Keyword
      */
     private $keyword;
 
@@ -40,7 +40,7 @@ class KeywordSerializerTest extends JsonDataTestCase
         $this->validator = $this->client->getContainer()->get('ujm_exo.validator.keyword');
         $this->serializer = $this->client->getContainer()->get('ujm_exo.serializer.keyword');
 
-        $this->keyword = new WordResponse();
+        $this->keyword = new Keyword();
         $this->keyword->setText('keyword');
         $this->keyword->setCaseSensitive(true);
         $this->keyword->setScore(5);
@@ -72,7 +72,7 @@ class KeywordSerializerTest extends JsonDataTestCase
     }
 
     /**
-     * The deserialized entity MUST be a WordResponse and contain all of the properties of raw data.
+     * The deserialized entity MUST be a Keyword and contain all of the properties of raw data.
      */
     public function testDeserializedDataAreCorrectlySet()
     {
@@ -80,7 +80,7 @@ class KeywordSerializerTest extends JsonDataTestCase
 
         $keyword = $this->serializer->deserialize($keywordData);
 
-        $this->assertInstanceOf('\UJM\ExoBundle\Entity\WordResponse', $keyword);
+        $this->assertInstanceOf('\UJM\ExoBundle\Entity\Misc\Keyword', $keyword);
         $this->compareKeywordAndData($keyword, $keywordData);
     }
 
@@ -97,13 +97,13 @@ class KeywordSerializerTest extends JsonDataTestCase
         $this->compareKeywordAndData($this->keyword, $keywordData);
 
         // Checks no new entity have been created
-        $nbBefore = count($this->om->getRepository('UJMExoBundle:WordResponse')->findAll());
+        $nbBefore = count($this->om->getRepository('UJMExoBundle:Misc\Keyword')->findAll());
 
         // Save the keyword to DB
         $this->om->persist($updatedKeyword);
         $this->om->flush();
 
-        $nbAfter = count($this->om->getRepository('UJMExoBundle:WordResponse')->findAll());
+        $nbAfter = count($this->om->getRepository('UJMExoBundle:Misc\Keyword')->findAll());
 
         $this->assertEquals($nbBefore, $nbAfter);
     }
@@ -111,10 +111,10 @@ class KeywordSerializerTest extends JsonDataTestCase
     /**
      * Compares the data between a keyword entity and a keyword raw object.
      *
-     * @param WordResponse $keyword
-     * @param \stdClass    $keywordData
+     * @param Keyword   $keyword
+     * @param \stdClass $keywordData
      */
-    private function compareKeywordAndData(WordResponse $keyword, \stdClass $keywordData)
+    private function compareKeywordAndData(Keyword $keyword, \stdClass $keywordData)
     {
         $this->assertEquals($keywordData->text, $keyword->getText());
         $this->assertEquals($keywordData->caseSensitive, $keyword->isCaseSensitive());

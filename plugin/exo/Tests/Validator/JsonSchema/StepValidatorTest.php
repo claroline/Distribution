@@ -3,6 +3,8 @@
 namespace UJM\ExoBundle\Tests\Validator\JsonSchema;
 
 use UJM\ExoBundle\Library\Testing\Json\JsonSchemaTestCase;
+use UJM\ExoBundle\Validator\JsonSchema\ContentValidator;
+use UJM\ExoBundle\Validator\JsonSchema\Question\QuestionValidator;
 use UJM\ExoBundle\Validator\JsonSchema\StepValidator;
 
 class StepValidatorTest extends JsonSchemaTestCase
@@ -13,12 +15,12 @@ class StepValidatorTest extends JsonSchemaTestCase
     private $validator;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var QuestionValidator|\PHPUnit_Framework_MockObject_MockObject
      */
     private $questionValidator;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var ContentValidator|\PHPUnit_Framework_MockObject_MockObject
      */
     private $contentValidator;
 
@@ -26,12 +28,12 @@ class StepValidatorTest extends JsonSchemaTestCase
     {
         parent::setUp();
 
-        $this->questionValidator = $this->mock('UJM\ExoBundle\Validator\JsonSchema\Question\QuestionValidator');
+        $this->questionValidator = $this->getMock('UJM\ExoBundle\Validator\JsonSchema\Question\QuestionValidator', [], [], '', false);
         $this->questionValidator->expects($this->any())
             ->method('validateAfterSchema')
             ->willReturn([]);
 
-        $this->contentValidator = $this->mock('UJM\ExoBundle\Validator\JsonSchema\ContentValidator');
+        $this->contentValidator = $this->getMock('UJM\ExoBundle\Validator\JsonSchema\ContentValidator', [], [], '', false);
         $this->contentValidator->expects($this->any())
             ->method('validateAfterSchema')
             ->willReturn([]);
@@ -39,6 +41,57 @@ class StepValidatorTest extends JsonSchemaTestCase
         $this->validator = $this->injectJsonSchemaMock(
             new StepValidator($this->questionValidator, $this->contentValidator)
         );
+    }
+
+    /**
+     * The validator MUST throw errors if random picking of steps is enabled and property `pick` is not set.
+     */
+    public function testNoPickWhenRequiredThrowsError()
+    {
+        $stepData = $this->loadTestData('step/invalid/no-pick.json');
+
+        $errors = $this->validator->validate($stepData);
+
+        $this->assertGreaterThan(0, count($errors));
+        $this->assertTrue(in_array([
+            'path' => '/parameters/randomPick',
+            'message' => 'The property `pick` is required when `randomPick` is not "never"',
+        ], $errors));
+    }
+
+    /**
+     * The validator MUST throw error if the user want to pick more steps than there are in the exercise.
+     */
+    public function testPickGreaterThanStepsThrowsError()
+    {
+        $stepData = $this->loadTestData('step/invalid/pick-greater-than-items.json');
+
+        $errors = $this->validator->validate($stepData);
+
+        $this->assertGreaterThan(0, count($errors));
+        $this->assertTrue(in_array([
+            'path' => '/parameters/pick',
+            'message' => 'the property `pick` cannot be greater than the number of items of the step',
+        ], $errors));
+    }
+
+    /**
+     * The validator MUST throw error if the attempt parameters `randomPick` and `randomOrder` are incompatible.
+     *
+     * We can not use the generated order (randomOrder) in previous papers if we generate new subsets of steps and
+     * questions for each paper (randomPick).
+     */
+    public function testIncompatiblePickAndRandomThrowsError()
+    {
+        $stepData = $this->loadTestData('step/invalid/incompatible-pick-and-random.json');
+
+        $errors = $this->validator->validate($stepData);
+
+        $this->assertGreaterThan(0, count($errors));
+        $this->assertTrue(in_array([
+            'path' => '/parameters/randomOrder',
+            'message' => 'The property `randomOrder` cannot be "once" when `randomPick` is "always"',
+        ], $errors));
     }
 
     /**

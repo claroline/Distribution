@@ -3,109 +3,100 @@
 namespace UJM\ExoBundle\Installation\Updater;
 
 use Claroline\BundleRecorder\Log\LoggableTrait;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use UJM\ExoBundle\Library\Question\QuestionType;
+use Doctrine\DBAL\Connection;
+use UJM\ExoBundle\Library\Options\ExerciseType;
 
 class Updater080000
 {
     use LoggableTrait;
 
+    /**
+     * @var Connection
+     */
     private $connection;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(Connection $connection)
     {
-        $this->connection = $container->get('doctrine.dbal.default_connection');
+        $this->connection = $connection;
     }
 
     public function postUpdate()
     {
-        $this->addMimeTypeToQuestions();
-        $this->initializeUuid();
+        $this->updateExerciseTypes();
+        $this->updateAnswerData();
     }
 
-    /**
-     * Sets questions mime type.
-     */
-    private function addMimeTypeToQuestions()
+    private function updateExerciseTypes()
     {
-        $this->log('Add mime-type to Questions...');
+        $this->log('Update Exercise types...');
 
-        // Update choice questions
-        $query = 'UPDATE ujm_question SET mime_type= "'.QuestionType::CHOICE.'" WHERE type="InteractionQCM"';
-        $this->connection->query($query);
+        $types = [
+            '1' => ExerciseType::SUMMATIVE,
+            '2' => ExerciseType::EVALUATIVE,
+            '3' => ExerciseType::FORMATIVE,
+        ];
 
-        // Update graphic questions
-        $query = 'UPDATE ujm_question SET mime_type= "'.QuestionType::GRAPHIC.'" WHERE type="InteractionGraphic"';
-        $this->connection->query($query);
-
-        // Update cloze questions
-        $query = 'UPDATE ujm_question SET mime_type= "'.QuestionType::CLOZE.'" WHERE type="InteractionHole"';
-        $this->connection->query($query);
-
-        // Update words questions (InteractionOpen + type = oneWord | short)
-        $query = 'UPDATE ujm_question AS q ';
-        $query .= 'LEFT JOIN ujm_interaction_open AS o ON (o.question_id = q.id) ';
-        $query .= 'LEFT JOIN ujm_type_open_question AS t ON (o.typeopenquestion_id = t.id) ';
-        $query .= 'SET q.mime_type= "'.QuestionType::WORDS.'" ';
-        $query .= 'WHERE q.type="InteractionOpen" ';
-        $query .= '  AND t.value != "long" ';
-        $this->connection->query($query);
-
-        // Update open questions (InteractionOpen + type = long)
-        $query = 'UPDATE ujm_question AS q ';
-        $query .= 'LEFT JOIN ujm_interaction_open AS o ON (o.question_id = q.id) ';
-        $query .= 'LEFT JOIN ujm_type_open_question AS t ON (o.typeopenquestion_id = t.id) ';
-        $query .= 'SET q.mime_type= "'.QuestionType::OPEN.'" ';
-        $query .= 'WHERE q.type="InteractionOpen" ';
-        $query .= '  AND t.value = "long" ';
-        $this->connection->query($query);
-
-        // Update match questions
-        $query = 'UPDATE ujm_question AS q ';
-        $query .= 'LEFT JOIN ujm_interaction_matching AS m ON (m.question_id = q.id) ';
-        $query .= 'LEFT JOIN ujm_type_matching AS t ON (m.type_matching_id = t.id) ';
-        $query .= 'SET q.mime_type= "'.QuestionType::MATCH.'" ';
-        $query .= 'WHERE q.type="InteractionMatching" ';
-        $query .= '  AND t.value = "To bind" ';
-
-        $this->connection->query($query);
-
-        // Update match questions
-        $query = 'UPDATE ujm_question AS q ';
-        $query .= 'LEFT JOIN ujm_interaction_matching AS m ON (m.question_id = q.id) ';
-        $query .= 'LEFT JOIN ujm_type_matching AS t ON (m.type_matching_id = t.id) ';
-        $query .= 'SET q.mime_type= "'.QuestionType::PAIR.'" ';
-        $query .= 'WHERE q.type="InteractionMatching" ';
-        $query .= '  AND t.value = "To pair" ';
-
-        $this->connection->query($query);
-
-        // Update set questions
-        $query = 'UPDATE ujm_question AS q ';
-        $query .= 'LEFT JOIN ujm_interaction_matching AS m ON (m.question_id = q.id) ';
-        $query .= 'LEFT JOIN ujm_type_matching AS t ON (m.type_matching_id = t.id) ';
-        $query .= 'SET q.mime_type= "'.QuestionType::SET.'" ';
-        $query .= 'WHERE q.type="InteractionMatching" ';
-        $query .= '  AND t.value = "To drag" ';
-
-        $this->connection->query($query);
+        $sth = $this->connection->prepare('UPDATE ujm_exercise SET `type` = :newType WHERE `type` = :oldType');
+        foreach ($types as $oldType => $newType) {
+            $sth->execute([
+                ':oldType' => $oldType,
+                ':newType' => $newType,
+            ]);
+        }
 
         $this->log('done !');
     }
 
-    private function initializeUuid()
+    /**
+     * The answer data system uses custom encoding rules to converts answer data into string (to be stored in DB).
+     *
+     * The current methods updates existing data to just use the result of json_encode
+     * on API data to in DB. This avoid to add custom logic for all question types.
+     *
+     * Example for choice answer storage:
+     *  - old format : "1;2;3;4"
+     *  - new format : "[1,2,3,4]"
+     */
+    private function updateAnswerData()
     {
-        $tables = [
-            'ujm_exercise',
-            'ujm_step',
-            'ujm_question',
-        ];
+        // Load answers
+        $sth = $this->connection->prepare('
+            SELECT q.mime_type, a.*
+            FROM ujm_response AS a
+            LEFT JOIN ujm_question AS q ON (a.question_id = q.id)
+            WHERE data IS NOT NULL 
+              AND data != ""
+              AND q.mime_type != "application/x.open+json"
+              AND q.mime_type != "application/x.words+json"
+        ');
 
-        foreach ($tables as $table) {
-            $this->log("Adding UUID in table '{$table}...");
+        $answers = $sth->fetchAll();
+        foreach ($answers as $answer) {
+            $dataString = null;
 
-            $query = 'UPDATE '.$table.' SET uuid = (SELECT UUID()) WHERE uuid IS NULL OR uuid = ""';
-            $this->connection->query($query);
+            // Calculate new data string (it's the json_encode of the data structure transferred in the API)
+            switch ($answer['mime_type']) {
+                case 'application/x.choice+json':
+                    $answerData = explode(';', $answer['data']);
+                    // Filter empty elements
+                    $answerData = array_filter($answerData, function ($part) {
+                        return !empty($part);
+                    });
+
+                    $dataString = json_encode($answerData);
+
+                    break;
+
+                default:
+                    break;
+            }
+
+            // Update answer data
+            if (!empty($dataString)) {
+                $sth = $this->connection->prepare('
+                    UPDATE ujm_response SET data = :data WHERE id 
+                ');
+            }
         }
     }
 }

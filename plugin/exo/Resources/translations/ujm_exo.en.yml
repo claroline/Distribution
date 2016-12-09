@@ -235,6 +235,16 @@ mark: Score
 mark_question: Give a score to this question
 mark_bigest: The score must be smaller than or equal to the maximum score
 mark_bigest_other: The score is larger than the maximum score
+match_add_item: Add item
+match_penalty_label: Penality for any wrong association
+match_shuffle_labels_and_proposals: Shuffle proposal and label order
+match_edit_connection: Edit connection
+match_item_empty_data_error: Item data can not be empty.
+match_no_valid_solution: At least one solution must have a score greater or equal to 0.
+match_score_not_valid: Each score must be a valid number.
+match_penalty_not_valid: The penalty must be a number greater or equal to 0.
+match_no_solution: There must be at least one solution.
+match_warning_penalty_and_negative_scores: Joint use of negative scores and penalties may lead to inconsistent results.
 matching: Association
 matching_creation: Create association
 matching_edition: Edit association
@@ -320,7 +330,6 @@ partially: Partially correct
 penalty: Penalty
 percentage: Percentage
 pic_manage: Manage my documents
-picture_name: Picture name
 points: Points
 point_answer: You must assign a point to the correct answer.
 # Preceding line to be checked in context !!! #
@@ -430,7 +439,23 @@ stat_users: "[0, 1] %count% user|]1,Inf[ %count% users"
 stat_have_responded: have responded
 sum_score_choice_at_least_one_correct_answer_error: At least one answer must have a positive score.
 sum_score_choice_no_correct_answer_error: The correct answer must have a positive score.
-should_be_greater_or_equal_to_zero: This value should be greater or equals to 0
+should_be_greater_or_equal_to_zero: This value should be greater or equals to 0.
+set_penalty_label: Penalty for any wrong association.
+set_shuffle_labels_and_proposals: Shuffle items.
+set_add_item: Add an item
+set_add_odd: Add an odd
+set_add_set: Add a set
+set_penalty_not_valid: The penalty must be a number greater or equal to 0.
+set_item_empty_data_error: Item data can not be empty.
+set_at_least_one_item: There must be at least one item.
+set_at_least_one_set: There must be at least one set.
+set_set_empty_data_error: Set data can not be empty.
+set_no_solution: There must be at least one solution.
+set_score_not_valid: Each score must be a valid number.
+set_no_valid_solution: At least one solution must have a score greater or equal to 0.
+set_odd_score_not_valid: Odd score must be inferior or equal to 0.
+set_odd_empty_data_error: odd data can not be empty.
+set_drop_item: Drop an item here
 
 # T
 temporary_mark: Temporary score
@@ -462,20 +487,13 @@ weight_choice: Assign points by answer
 wrong: Wrong
 wrong_name: The input name is wrong
 wrong_point: The input value is wrong
+words_empty_text_error: A keyword can not be empty.
+words_no_valid_solution: At least one keyword must have a score greater than 0.
+words_add_word: Add a keyword
+words_show_case_sensitive_option: Enable/disable "check case" functionality.
+words_feedback_info: Feedback if the keyword is in answer
+words_case_sensitive: The answer must respect the keyword case to be valid
 
 # Y
 yes: Yes
 your_answer: Your answer
-
-
-# Data in the DB
-InteractionGraphic: Graphic
-InteractionHole: Cloze text
-InteractionMatching: Matching
-InteractionOpen: Open
-InteractionQCM: QCM
-Multiple responses: Multiple responses
-oneWord: One word
-To drag: To drag
-To bind: To bind
-Unique response: Unique answer

@@ -12,7 +12,7 @@
       "name": "Set B"
     }
   ],
-  "members": [
+  "items": [
     {
       "id": "4",
       "type": "text/plain",
@@ -29,17 +29,19 @@
       "data": "Item Z"
     }
   ],
-  "solutions": [
-    {
-      "setId": "42",
-      "memberId": "4",
-      "score": 3
-    },
-    {
-      "setId": "3",
-      "memberId": "5",
-      "score": 0.5
-    }
-  ],
+  "solutions": {
+    "associations": [
+      {
+        "setId": "42",
+        "itemId": "4",
+        "score": 3
+      },
+      {
+        "setId": "3",
+        "itemId": "5",
+        "score": 0.5
+      }
+    ]
+  },
   "penalty": 1
 }

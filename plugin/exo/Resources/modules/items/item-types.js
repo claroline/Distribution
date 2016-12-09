@@ -2,6 +2,14 @@ import invariant from 'invariant'
 import difference from 'lodash/difference'
 import mapValues from 'lodash/mapValues'
 
+import choice from './choice/choice'
+import match from './match/match'
+import cloze from './cloze/cloze'
+import graphic from './graphic/graphic'
+import open from './open/open'
+import words from './words/words'
+import set from './set/set'
+
 const typeProperties = [
   'name',
   'type',
@@ -13,6 +21,7 @@ const typeProperties = [
 ]
 
 let registeredTypes = {}
+let defaultRegistered = false
 
 export function registerItemType(definition) {
   assertValidItemType(definition)
@@ -29,6 +38,13 @@ export function registerItemType(definition) {
   definition.validate = getOptionalFunction(definition, 'validate', () => ({}))
 
   registeredTypes[definition.type] = definition
+}
+
+export function registerDefaultItemTypes() {
+  if (!defaultRegistered) {
+    [choice, match, cloze, graphic, open, words, set].forEach(registerItemType)
+    defaultRegistered = true
+  }
 }
 
 export function listItemMimeTypes() {

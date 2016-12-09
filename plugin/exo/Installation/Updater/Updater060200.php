@@ -3,7 +3,7 @@
 namespace UJM\ExoBundle\Installation\Updater;
 
 use Claroline\BundleRecorder\Log\LoggableTrait;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Doctrine\DBAL\Connection;
 
 class Updater060200
 {
@@ -11,9 +11,9 @@ class Updater060200
 
     private $connection;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(Connection $connection)
     {
-        $this->connection = $container->get('doctrine.dbal.default_connection');
+        $this->connection = $connection;
     }
 
     public function preUpdate()
@@ -150,12 +150,6 @@ class Updater060200
             ");
         }
 
-        /*
-         * To execute :
-         * ALTER TABLE ujm_interaction_graphic
-            ADD CONSTRAINT FK_9EBD442FEE45BDBF FOREIGN KEY (picture_id)
-            REFERENCES ujm_picture (id)
-         */
         $this->connection->exec('
             UPDATE ujm_interaction_graphic
             SET document_id = NULL
@@ -199,7 +193,6 @@ class Updater060200
     private function migrateExerciseQuestionData()
     {
         $exoId = -1;
-        $stepId = -1;
         $orderStep = 1;
 
         $exoQuestion = $this->checkExoQuestion();

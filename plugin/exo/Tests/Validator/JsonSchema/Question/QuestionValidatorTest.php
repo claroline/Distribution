@@ -2,7 +2,11 @@
 
 namespace UJM\ExoBundle\Tests\Validator\JsonSchema\Question;
 
+use UJM\ExoBundle\Library\Options\Validation;
+use UJM\ExoBundle\Library\Question\QuestionDefinitionsCollection;
 use UJM\ExoBundle\Library\Testing\Json\JsonSchemaTestCase;
+use UJM\ExoBundle\Validator\JsonSchema\Question\CategoryValidator;
+use UJM\ExoBundle\Validator\JsonSchema\Question\HintValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Question\QuestionValidator;
 
 class QuestionValidatorTest extends JsonSchemaTestCase
@@ -13,7 +17,17 @@ class QuestionValidatorTest extends JsonSchemaTestCase
     private $validator;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var QuestionDefinitionsCollection|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $questionDefinitions;
+
+    /**
+     * @var CategoryValidator|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $categoryValidator;
+
+    /**
+     * @var HintValidator|\PHPUnit_Framework_MockObject_MockObject
      */
     private $hintValidator;
 
@@ -22,28 +36,34 @@ class QuestionValidatorTest extends JsonSchemaTestCase
         parent::setUp();
 
         // Mock Question Type validation (it's tested individually)
-        $validatorCollector = $this->mock('UJM\ExoBundle\Validator\JsonSchema\Question\QuestionValidatorCollector');
+        $this->questionDefinitions = $this->getMock('UJM\ExoBundle\Library\Question\QuestionDefinitionsCollection', [], [], '', false);
 
         // Do not check if the Question Type is supported
-        $validatorCollector
+        $this->questionDefinitions
             ->expects($this->any())
-            ->method('hasHandlerForMimeType')
+            ->method('has')
             ->willReturn(true);
 
         // Do not validate Question Type specific data
-        $validatorCollector
+        $this->questionDefinitions
             ->expects($this->any())
-            ->method('validateMimeType')
+            ->method('validateQuestion')
+            ->willReturn([]);
+
+        // Do not validate Categories
+        $this->categoryValidator = $this->getMock('UJM\ExoBundle\Validator\JsonSchema\Question\CategoryValidator', [], [], '', false);
+        $this->categoryValidator->expects($this->any())
+            ->method('validateAfterSchema')
             ->willReturn([]);
 
         // Do not validate Hints
-        $this->hintValidator = $this->mock('UJM\ExoBundle\Validator\JsonSchema\HintValidator');
+        $this->hintValidator = $this->getMock('UJM\ExoBundle\Validator\JsonSchema\Question\HintValidator', [], [], '', false);
         $this->hintValidator->expects($this->any())
             ->method('validateAfterSchema')
             ->willReturn([]);
 
         $this->validator = $this->injectJsonSchemaMock(
-            new QuestionValidator($validatorCollector, $this->hintValidator)
+            new QuestionValidator($this->questionDefinitions, $this->categoryValidator, $this->hintValidator)
         );
     }
 
@@ -105,13 +125,23 @@ class QuestionValidatorTest extends JsonSchemaTestCase
     {
         $questionData = $this->loadTestData('question/base/invalid/unknown-type.json');
 
-        $errors = $this->validator->validate($questionData, ['solutionsRequired' => true]);
+        $errors = $this->validator->validate($questionData, [Validation::REQUIRE_SOLUTIONS]);
 
         $this->assertGreaterThan(0, count($errors));
         $this->assertTrue(in_array([
             'path' => '/solutions',
             'message' => 'Question requires a "solutions" property',
         ], $errors));
+    }
+
+    public function testCategoryIsValidatedToo()
+    {
+        $questionData = $this->loadExampleData('question/base/examples/valid/with-metadata.json');
+
+        $this->categoryValidator->expects($this->once())
+            ->method('validateAfterSchema');
+
+        $this->validator->validate($questionData);
     }
 
     /**

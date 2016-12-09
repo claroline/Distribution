@@ -3,10 +3,12 @@
 namespace UJM\ExoBundle\Validator\JsonSchema;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Library\Options\Recurrence;
+use UJM\ExoBundle\Library\Options\ShowCorrectionAt;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
 
 /**
- * @DI\Service("ujm_exo.validator.exercise", parent="ujm_exo.validator.json_schema")
+ * @DI\Service("ujm_exo.validator.exercise")
  */
 class ExerciseValidator extends JsonSchemaValidator
 {
@@ -40,6 +42,13 @@ class ExerciseValidator extends JsonSchemaValidator
 
         if (isset($exercise->parameters)) {
             $errors = array_merge($errors, $this->validateParameters($exercise->parameters));
+            if (isset($exercise->parameters->pick) && isset($exercise->steps)
+                && count($exercise->steps) < $exercise->parameters->pick) {
+                $errors[] = [
+                    'path' => '/parameters/pick',
+                    'message' => 'the property `pick` cannot be greater than the number of steps of the exercise',
+                ];
+            }
         }
 
         if (isset($exercise->steps)) {
@@ -56,7 +65,7 @@ class ExerciseValidator extends JsonSchemaValidator
     {
         $errors = [];
 
-        if (isset($parameters->randomPick) && 'never' !== $parameters->randomPick && !isset($parameters->pick)) {
+        if (isset($parameters->randomPick) && Recurrence::NEVER !== $parameters->randomPick && !isset($parameters->pick)) {
             // Random pick is enabled but the number of steps to pick is missing
             $errors[] = [
                 'path' => '/parameters/randomPick',
@@ -64,7 +73,17 @@ class ExerciseValidator extends JsonSchemaValidator
             ];
         }
 
-        if (isset($parameters->showCorrectionAt) && 'date' === $parameters->showCorrectionAt && empty($parameters->correctionDate)) {
+        // We can not keep the randomOrder from previous papers as we generate a new subset of steps for each attempt
+        if (isset($parameters->randomPick) && Recurrence::ALWAYS === $parameters->randomPick
+            && isset($parameters->randomOrder) && Recurrence::ONCE === $parameters->randomOrder) {
+            // Incompatible randomOrder and randomPick properties
+            $errors[] = [
+                'path' => '/parameters/randomOrder',
+                'message' => 'The property `randomOrder` cannot be "once" when `randomPick` is "always"',
+            ];
+        }
+
+        if (isset($parameters->showCorrectionAt) && ShowCorrectionAt::AFTER_DATE === $parameters->showCorrectionAt && empty($parameters->correctionDate)) {
             // Correction is shown at a date, but the date is not specified
             $errors[] = [
                 'path' => '/parameters/correctionDate',

@@ -3,8 +3,9 @@
 namespace UJM\ExoBundle\Validator\JsonSchema\Question;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Library\Options\Validation;
+use UJM\ExoBundle\Library\Question\QuestionDefinitionsCollection;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
-use UJM\ExoBundle\Validator\JsonSchema\HintValidator;
 
 /**
  * @DI\Service("ujm_exo.validator.question")
@@ -12,9 +13,14 @@ use UJM\ExoBundle\Validator\JsonSchema\HintValidator;
 class QuestionValidator extends JsonSchemaValidator
 {
     /**
-     * @var QuestionValidatorCollector
+     * @var QuestionDefinitionsCollection
      */
-    private $validatorCollector;
+    private $questionDefinitions;
+
+    /**
+     * @var CategoryValidator
+     */
+    private $categoryValidator;
 
     /**
      * @var HintValidator
@@ -24,19 +30,23 @@ class QuestionValidator extends JsonSchemaValidator
     /**
      * QuestionValidator constructor.
      *
-     * @param QuestionValidatorCollector $validatorCollector
-     * @param HintValidator              $hintValidator
+     * @param QuestionDefinitionsCollection $questionDefinitions
+     * @param CategoryValidator             $categoryValidator
+     * @param HintValidator                 $hintValidator
      *
      * @DI\InjectParams({
-     *     "validatorCollector" = @DI\Inject("ujm_exo.validator.question_collector"),
-     *     "hintValidator"      = @DI\Inject("ujm_exo.validator.hint")
+     *     "questionDefinitions" = @DI\Inject("ujm_exo.collection.question_definitions"),
+     *     "categoryValidator"   = @DI\Inject("ujm_exo.validator.category"),
+     *     "hintValidator"       = @DI\Inject("ujm_exo.validator.hint")
      * })
      */
     public function __construct(
-        QuestionValidatorCollector $validatorCollector,
+        QuestionDefinitionsCollection $questionDefinitions,
+        CategoryValidator $categoryValidator,
         HintValidator $hintValidator)
     {
-        $this->validatorCollector = $validatorCollector;
+        $this->questionDefinitions = $questionDefinitions;
+        $this->categoryValidator = $categoryValidator;
         $this->hintValidator = $hintValidator;
     }
 
@@ -74,27 +84,42 @@ class QuestionValidator extends JsonSchemaValidator
             ];
         }
 
-        if (!$this->validatorCollector->hasHandlerForMimeType($question->type)) {
+        if (in_array(Validation::REQUIRE_SOLUTIONS, $options) && !isset($question->solutions)) {
+            // No question without solutions
+            $errors[] = [
+                'path' => '/solutions',
+                'message' => 'Question requires a "solutions" property',
+            ];
+        }
+
+        if (!$this->questionDefinitions->has($question->type)) {
             $errors[] = [
                 'path' => '/type',
                 'message' => 'Unknown question type "'.$question->type.'"',
             ];
-        } else {
-            if (isset($options['solutionsRequired']) && $options['solutionsRequired'] && !isset($question->solutions)) {
-                $errors[] = [
-                    'path' => '/solutions',
-                    'message' => 'Question requires a "solutions" property',
-                ];
-            } else {
-                // Forward to the correct handler
-                $errors = array_merge($errors, $this->validatorCollector->validateMimeType($question, $options));
-            }
         }
 
+        // Validate category
+        if (isset($question->meta) && isset($question->meta->category)) {
+            $errors = array_merge($errors, $this->categoryValidator->validateAfterSchema($question->meta->category, $options));
+        }
+
+        // Validate hints
         if (isset($question->hints)) {
             array_map(function ($hint) use (&$errors, $options) {
                 $errors = array_merge($errors, $this->hintValidator->validateAfterSchema($hint, $options));
             }, $question->hints);
+        }
+
+        // Validates specific data of the question type
+        if (empty($errors)) {
+            // Forward to the correct definition
+            $definition = $this->questionDefinitions->get($question->type);
+
+            $errors = array_merge(
+                $errors,
+                $definition->validateQuestion($question, array_merge($options, [Validation::NO_SCHEMA]))
+            );
         }
 
         return $errors;

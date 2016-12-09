@@ -14,16 +14,21 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use UJM\ExoBundle\Entity\Exercise;
-use UJM\ExoBundle\Form\ExerciseType;
+use UJM\ExoBundle\Form\Type\ExerciseType;
+use UJM\ExoBundle\Library\Options\Transfer;
 
 /**
- * @DI\Service("ujm.exo.exercise_listener")
+ * Listens to resource events dispatched by the core.
+ *
+ * @DI\Service("ujm_exo.listener.exercise")
  */
 class ExerciseListener
 {
     private $container;
 
     /**
+     * ExerciseListener constructor.
+     *
      * @DI\InjectParams({
      *     "container" = @DI\Inject("service_container")
      * })
@@ -36,6 +41,8 @@ class ExerciseListener
     }
 
     /**
+     * Displays a form to create an Exercise resource.
+     *
      * @DI\Observe("create_form_ujm_exercise")
      *
      * @param CreateFormResourceEvent $event
@@ -57,6 +64,8 @@ class ExerciseListener
     }
 
     /**
+     * Creates a new Exercise resource.
+     *
      * @DI\Observe("create_ujm_exercise")
      *
      * @param CreateResourceEvent $event
@@ -92,63 +101,57 @@ class ExerciseListener
     }
 
     /**
+     * Opens the Exercise resource.
+     *
      * @DI\Observe("open_ujm_exercise")
      *
      * @param OpenResourceEvent $event
      */
     public function onOpen(OpenResourceEvent $event)
     {
+        /** @var Exercise $exercise */
+        $exercise = $event->getResource();
+
+        // Forward request to the Resource controller
         $subRequest = $this->container->get('request_stack')->getCurrentRequest()->duplicate([], null, [
-            '_controller' => 'UJMExoBundle:Exercise:open',
-            'id' => $event->getResource()->getId(),
+            '_controller' => 'UJMExoBundle:Resource\Exercise:open',
+            'id' => $exercise->getUuid(),
         ]);
 
-        $response = $this->container->get('http_kernel')->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
+        $response = $this->container->get('http_kernel')->handle($subRequest, HttpKernelInterface::SUB_REQUEST, false);
 
         $event->setResponse($response);
         $event->stopPropagation();
     }
 
     /**
+     * Deletes an Exercise resource.
+     *
      * @DI\Observe("delete_ujm_exercise")
      *
      * @param DeleteResourceEvent $event
      */
     public function onDelete(DeleteResourceEvent $event)
     {
-        $em = $this->container->get('doctrine.orm.entity_manager');
-
-        /** @var Exercise $exercise */
-        $exercise = $event->getResource();
-
-        $nbPapers = $em->getRepository('UJMExoBundle:Paper')->countExercisePapers($event->getResource());
-        if (0 === $nbPapers) {
-            $em->remove($exercise);
-        } else {
+        $deletable = $this->container->get('ujm_exo.manager.exercise')->isDeletable($event->getResource());
+        if (!$deletable) {
             // If papers, the Exercise is not completely removed
             $event->enableSoftDelete();
-
-            $em->remove($exercise->getResourceNode());
-
-            $exercise->archiveExercise();
-
-            $em->persist($exercise);
-            $em->flush();
         }
 
         $event->stopPropagation();
     }
 
     /**
+     * Copies an Exercise resource.
+     *
      * @DI\Observe("copy_ujm_exercise")
      *
      * @param CopyResourceEvent $event
      */
     public function onCopy(CopyResourceEvent $event)
     {
-        $newExercise = $this->container->get('ujm.exo.exercise_manager')->copyExercise($event->getResource());
-
-        $this->container->get('doctrine.orm.entity_manager')->persist($newExercise);
+        $newExercise = $this->container->get('ujm_exo.manager.exercise')->copy($event->getResource());
 
         $event->setCopy($newExercise);
         $event->stopPropagation();
@@ -165,15 +168,17 @@ class ExerciseListener
         $exercise = $event->getResource();
 
         if ($exercise->getResourceNode()->isPublished()) {
-            $this->container->get('ujm.exo.exercise_manager')->publish($exercise, false);
+            $this->container->get('ujm_exo.manager.exercise')->publish($exercise, false);
         } else {
-            $this->container->get('ujm.exo.exercise_manager')->unpublish($exercise, false);
+            $this->container->get('ujm_exo.manager.exercise')->unpublish($exercise, false);
         }
 
         $event->stopPropagation();
     }
 
     /**
+     * Exports an Exercise resource in SCORM format.
+     *
      * @DI\Observe("export_scorm_ujm_exercise")
      *
      * @param ExportScormResourceEvent $event
@@ -183,14 +188,22 @@ class ExerciseListener
         /** @var Exercise $exercise */
         $exercise = $event->getResource();
 
-        $exerciseExport = $this->container->get('ujm.exo.exercise_manager')->exportExercise($exercise, true);
+        $exerciseExport = $this->container->get('ujm_exo.manager.exercise')->export($exercise, [Transfer::INCLUDE_SOLUTIONS]);
 
-        if ($exerciseExport['meta'] && $exerciseExport['meta']['description']) {
-            $exerciseExport['meta']['description'] = $this->exportHtmlContent($event, $exerciseExport['meta']['description']);
+        if (!empty($exerciseExport->description)) {
+            $exerciseExport->description = $this->exportHtmlContent($event, $exerciseExport->description);
         }
 
-        if ($exerciseExport['steps']) {
-            foreach ($exerciseExport['steps'] as $step) {
+        if (!empty($exerciseExport->instruction)) {
+            $exerciseExport->instruction = $this->exportHtmlContent($event, $exerciseExport->instruction);
+        }
+
+        if (!empty($exerciseExport->info)) {
+            $exerciseExport->info = $this->exportHtmlContent($event, $exerciseExport->info);
+        }
+
+        if ($exerciseExport->steps) {
+            foreach ($exerciseExport->steps as $step) {
                 $this->exportStep($event, $step);
             }
         }

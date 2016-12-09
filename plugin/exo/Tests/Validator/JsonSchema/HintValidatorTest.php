@@ -3,7 +3,7 @@
 namespace UJM\ExoBundle\Tests\Validator\JsonSchema;
 
 use UJM\ExoBundle\Library\Testing\Json\JsonSchemaTestCase;
-use UJM\ExoBundle\Validator\JsonSchema\HintValidator;
+use UJM\ExoBundle\Validator\JsonSchema\Question\HintValidator;
 
 class HintValidatorTest extends JsonSchemaTestCase
 {

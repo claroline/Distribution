@@ -1,4 +1,4 @@
-const paths = require('./main/core/Resources/webpack/paths')
+const paths = require('./main/core/Resources/server/webpack/paths')
 const webpackConfig = require('./webpack.test')
 
 module.exports = config => {
@@ -7,7 +7,7 @@ module.exports = config => {
     frameworks: ['mocha'],
     files: [
       {
-        pattern: 'main/core/Resources/modules/karma/index.js',
+        pattern: 'main/core/Resources/modules/core-js/index.js',
         watched: false
       },
       '*/*/Resources/modules/**/*\.test.js'
@@ -54,7 +54,7 @@ module.exports = config => {
 
   // see https://swizec.com/blog/how-to-run-javascript-tests-in-chrome-on-travis/swizec/6647
   if (process.env.TRAVIS) {
-    base.browsers = ['ChromeTravis'];
+    base.browsers = ['ChromeTravis']
   }
 
   config.set(base)

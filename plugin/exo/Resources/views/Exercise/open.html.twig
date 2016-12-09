@@ -10,10 +10,11 @@
     %}
     <link rel="stylesheet" media="screen" href="{{ asset_url }}" />
     {% endstylesheets %}
+    <link rel="stylesheet" media="screen" href="{{ asset('packages/nprogress/nprogress.css') }}" />
 {% endblock %}
 
 {# Title of the Page #}
-{% block title %} {{ 'exercise' | trans({}, 'ujm_exo') }} : {{ _resource.resourceNode.name }} {% endblock %}
+{% block title %}{{ _resource.resourceNode.name }}{% endblock %}
 
 {# Content of the Page #}
 {% block section_content %}
@@ -36,7 +37,7 @@
           <path d="M26.497 3.563l.266-.613c.084-.193.307-.282.5-.198l2.38 1.034c.194.084.282.307.198.5l-.265.613c-.084.193-.307.28-.5.197l-2.38-1.034c-.194-.084-.282-.307-.198-.5z" stroke-width="1.9603930000000003" stroke-linecap="square"/>
         </g>
       </symbol>
-      <symbol id="icon-open" viewBox="0 0 32 32">
+      <symbol id="icon-words" viewBox="0 0 32 32">
         <g transform="translate(1.5, 2)">
           <path d="M1.106 4.763h17.788c.14 0 .255.023.255.05V7.01c0 .028-.115.05-.256.05H1.106c-.14 0-.255-.022-.255-.05V4.814c0-.028.115-.05.256-.05z" stroke-width="1.703" stroke-linecap="round" stroke-linejoin="round"/>
           <path d="M.912 24.738h12.176c.096 0 .174.025.174.056v2.412c0 .03-.078.056-.174.056H.912c-.096 0-.174-.025-.174-.056v-2.412c0-.03.078-.056.174-.056z" stroke-width="1.476" stroke-linecap="round" stroke-linejoin="round"/>
@@ -61,7 +62,7 @@
         </g>
         <path d="M1.04 31.502L10 23l4 4 9-10 8.507 6.72v7.78z" fill-rule="evenodd" stroke-width=".994"/>
       </symbol>
-      <symbol id="icon-match-1" viewBox="0 0 32 32">
+      <symbol id="icon-match" viewBox="0 0 32 32">
         <g stroke-width="1.6" fill="none">
           <circle cy="4" cx="4" r="3.2"/>
           <circle cy="4" cx="28" r="3.2"/>
@@ -74,7 +75,7 @@
           <path d="M6.813 26.294L25.22 17.63"/>
         </g>
       </symbol>
-      <symbol id="icon-match-2" viewBox="0 0 32 32">
+      <symbol id="icon-set" viewBox="0 0 32 32">
         <path d="M15.686 15h14.628c.388 0 .7.046.7.104v15.634c0 .058-.312.104-.7.104H15.686c-.388 0-.7-.046-.7-.104V15.104c0-.058.312-.104.7-.104z" stroke="#000" stroke-width="2.158" stroke-linecap="square" fill="none"/>
         <path d="M14.687 26.866l-3-.024c-.39-.003-.702-.046-.702-.104V11.104c0-.058.313-.104.7-.104h14.63c.387 0 .7.046.7.104L27 13" stroke="#000" stroke-width="2.158" stroke-linecap="square" fill="none"/>
         <path d="M8.85 17.387l-7.507-.047c-.407-.002-.734-.05-.734-.11V.72c0-.062.326-.11.733-.11h15.314c.407 0 .734.048.734.11v9.2" fill="none"/>

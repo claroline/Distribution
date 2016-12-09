@@ -1,99 +1,166 @@
 <?php
 
-namespace UJM\ExoBundle\Manager;
+namespace UJM\ExoBundle\Tests\Manager;
 
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use UJM\ExoBundle\Entity\Exercise;
-use UJM\ExoBundle\Transfer\Json\Validator;
+use UJM\ExoBundle\Manager\Attempt\PaperManager;
+use UJM\ExoBundle\Manager\ExerciseManager;
+use UJM\ExoBundle\Serializer\ExerciseSerializer;
 
 class ExerciseManagerTest extends \PHPUnit_Framework_TestCase
 {
-    /** @var ObjectManager */
+    /** @var ObjectManager|\PHPUnit_Framework_MockObject_MockObject */
     private $om;
-    /** @var Validator */
-    private $validator;
+    /** @var ExerciseSerializer|\PHPUnit_Framework_MockObject_MockObject */
+    private $serializer;
+    /** @var PaperManager|\PHPUnit_Framework_MockObject_MockObject */
+    private $paperManager;
     /** @var ExerciseManager */
     private $manager;
+    /** @var Exercise */
+    private $exercise;
 
     protected function setUp()
     {
+        // Mock dependencies of the manager
         $this->om = $this->mock('Claroline\CoreBundle\Persistence\ObjectManager');
-        $this->validator = $this->mock('UJM\ExoBundle\Transfer\Json\Validator');
-        $newValidator = $this->mock('UJM\ExoBundle\Validator\JsonSchema\ExerciseValidator');
-        $serializer = $this->mock('UJM\ExoBundle\Serializer\ExerciseSerializer');
-        $stepManager = $this->mock('UJM\ExoBundle\Manager\StepManager');
-        $this->manager = new ExerciseManager($this->om, $newValidator, $this->validator, $serializer, $stepManager);
+        $validator = $this->mock('UJM\ExoBundle\Validator\JsonSchema\ExerciseValidator');
+        $this->serializer = $this->mock('UJM\ExoBundle\Serializer\ExerciseSerializer');
+        $this->paperManager = $this->mock('UJM\ExoBundle\Manager\Attempt\PaperManager');
+
+        $this->manager = new ExerciseManager($this->om, $validator, $this->serializer, $this->paperManager);
+
+        $node = new ResourceNode();
+        $this->exercise = new Exercise();
+        $this->exercise->setResourceNode($node);
+    }
+
+    public function testExport()
+    {
+        $options = [
+            'an array of options',
+        ];
+
+        // Checks the serializer is called
+        $this->serializer->expects($this->once())
+            ->method('serialize')
+            ->with($this->exercise, $options)
+            ->willReturn(new \stdClass());
+
+        $data = $this->manager->export($this->exercise, $options);
+
+        // Checks the result of the serializer is returned
+        $this->assertInstanceOf('\stdClass', $data);
+    }
+
+    public function testUpdate()
+    {
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException \UJM\ExoBundle\Library\Validator\ValidationException
      */
-    public function testPublishThrowsIfExerciseIsPublished()
+    public function testUpdateWithInvalidData()
     {
-        $node = new ResourceNode();
-        $node->setPublished(true);
-        $exercise = new Exercise();
-        $exercise->setResourceNode($node);
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
+    }
 
-        $this->manager->publish($exercise);
+    public function testCopy()
+    {
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
+    }
+
+    /**
+     * An exercise MUST be deletable if it's not published or have no paper.
+     */
+    public function testIsDeletableIfNoPapers()
+    {
+        $this->paperManager->expects($this->any())
+            ->method('countExercisePapers')
+            ->willReturn(0);
+        $this->exercise->getResourceNode()->setPublished(true);
+
+        $this->assertTrue($this->manager->isDeletable($this->exercise));
+    }
+
+    /**
+     * An exercise MUST be deletable if it's not published or has no paper.
+     */
+    public function testIsDeletableIfNotPublished()
+    {
+        $this->paperManager->expects($this->any())
+            ->method('countExercisePapers')
+            ->willReturn(10);
+        $this->exercise->getResourceNode()->setPublished(false);
+
+        $this->assertTrue($this->manager->isDeletable($this->exercise));
+    }
+
+    /**
+     * An exercise MUST NOT be deletable if it's published and has papers.
+     */
+    public function testIsNotDeletable()
+    {
+        $this->paperManager->expects($this->once())
+            ->method('countExercisePapers')
+            ->willReturn(2);
+
+        $this->exercise->getResourceNode()->setPublished(true);
+
+        $this->assertFalse($this->manager->isDeletable($this->exercise));
     }
 
     public function testPublishOncePublishedExercise()
     {
-        $node = new ResourceNode();
-        $node->setPublished(false);
-        $exercise = new Exercise();
-        $exercise->setPublishedOnce(true);
-        $exercise->setResourceNode($node);
+        $this->exercise->getResourceNode()->setPublished(false);
+        $this->exercise->setPublishedOnce(true);
 
         $this->om->expects($this->once())->method('flush');
 
-        $this->manager->publish($exercise);
+        $this->manager->publish($this->exercise);
 
-        $this->assertTrue($node->isPublished());
+        $this->assertTrue($this->exercise->getResourceNode()->isPublished());
+
+        // Checks papers have been untouched
+        $this->paperManager->expects($this->never())->method('deleteAll');
     }
 
     public function testPublishNeverPublishedExerciseDeleteItsPapers()
     {
-        $this->markTestIncomplete('Not implemented yet');
-    }
+        $this->exercise->getResourceNode()->setPublished(false);
+        $this->exercise->setPublishedOnce(false);
 
-    /**
-     * @expectedException \LogicException
-     */
-    public function testPublishThrowsIfExerciseIsUnpublished()
-    {
-        $node = new ResourceNode();
-        $node->setPublished(false);
-        $exercise = new Exercise();
-        $exercise->setResourceNode($node);
+        $this->om->expects($this->once())->method('flush');
+        // Checks papers have been deleted
+        $this->paperManager->expects($this->once())->method('deleteAll');
 
-        $this->manager->unpublish($exercise);
+        $this->manager->publish($this->exercise);
+
+        // Checks published flags
+        $this->assertTrue($this->exercise->getResourceNode()->isPublished());
+        $this->assertTrue($this->exercise->wasPublishedOnce());
     }
 
     public function testUnpublish()
     {
-        $node = new ResourceNode();
-        $node->setPublished(true);
-        $exercise = new Exercise();
-        $exercise->setResourceNode($node);
+        $this->exercise->getResourceNode()->setPublished(true);
+        $this->exercise->setPublishedOnce(true);
 
         $this->om->expects($this->once())->method('flush');
 
-        $this->manager->unpublish($exercise);
+        $this->manager->unpublish($this->exercise);
 
-        $this->assertFalse($node->isPublished());
-    }
-
-    /**
-     * @dataProvider validQuizProvider
-     *
-     * @param string $dataFilename
-     */
-    public function testSchemaRoundTrip($dataFilename)
-    {
-        $this->markTestIncomplete('Not implemented, should not use a mock');
+        $this->assertFalse($this->exercise->getResourceNode()->isPublished());
+        $this->assertTrue($this->exercise->wasPublishedOnce());
     }
 
     private function mock($class)
@@ -101,12 +168,5 @@ class ExerciseManagerTest extends \PHPUnit_Framework_TestCase
         return $this->getMockBuilder($class)
             ->disableOriginalConstructor()
             ->getMock();
-    }
-
-    public function validQuizProvider()
-    {
-        return [
-            ['quiz-metadata.json'],
-        ];
     }
 }

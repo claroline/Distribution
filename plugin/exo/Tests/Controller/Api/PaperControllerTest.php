@@ -5,16 +5,17 @@ namespace UJM\ExoBundle\Tests\Controller\Api;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Testing\RequestTrait;
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
+use Claroline\CoreBundle\Manager\RightsManager;
+use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
-use UJM\ExoBundle\Entity\Choice;
+use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
-use UJM\ExoBundle\Entity\Hint;
-use UJM\ExoBundle\Entity\Question;
+use UJM\ExoBundle\Library\Attempt\PaperGenerator;
 use UJM\ExoBundle\Library\Testing\Persister;
-use UJM\ExoBundle\Manager\PaperManager;
+use UJM\ExoBundle\Manager\Attempt\PaperManager;
 
 /**
- * Tests that are common to all exercise / question types.
+ * Tests the papers endpoints (list, read, delete, ...).
  */
 class PaperControllerTest extends TransactionalTestCase
 {
@@ -26,135 +27,326 @@ class PaperControllerTest extends TransactionalTestCase
     private $persist;
     /** @var PaperManager */
     private $paperManager;
+    /** @var RightsManager */
+    private $rightsManager;
+    /** @var RoleManager */
+    private $roleManager;
     /** @var User */
     private $john;
     /** @var User */
     private $bob;
-    /** @var User */
-    private $admin;
-    /** @var Choice */
-    private $ch1;
-    /** @var Choice */
-    private $ch2;
-    /** @var Question */
-    private $qu1;
-    /** @var Hint */
-    private $hi1;
     /** @var Exercise */
-    private $ex1;
+    private $exercise;
 
     protected function setUp()
     {
         parent::setUp();
+
         $this->om = $this->client->getContainer()->get('claroline.persistence.object_manager');
-        $this->paperManager = $this->client->getContainer()->get('ujm.exo.paper_manager');
+        $this->paperManager = $this->client->getContainer()->get('ujm_exo.manager.paper');
+        $this->rightsManager = $this->client->getContainer()->get('claroline.manager.rights_manager');
+        $this->roleManager = $this->client->getContainer()->get('claroline.manager.role_manager');
 
         $this->persist = new Persister($this->om);
         $this->john = $this->persist->user('john');
         $this->bob = $this->persist->user('bob');
 
-        $this->persist->role('ROLE_ADMIN');
-        $this->admin = $this->persist->user('admin');
-
-        $this->ch1 = $this->persist->qcmChoice('ch1', 1, 1);
-        $this->ch2 = $this->persist->qcmChoice('ch2', 2, 0);
-        $this->qu1 = $this->persist->qcmQuestion('qu1', [$this->ch1, $this->ch2]);
-        $this->hi1 = $this->persist->hint($this->qu1, 'hi1');
-        $this->ex1 = $this->persist->exercise('ex1', [$this->qu1], $this->john);
+        $this->exercise = $this->persist->exercise('ex1', [], $this->john);
 
         // Set up Exercise permissions
         // create 'open' mask in db
-        $type = $this->ex1->getResourceNode()->getResourceType();
+        $type = $this->exercise->getResourceNode()->getResourceType();
         $this->persist->maskDecoder($type, 'open', 1);
         $this->om->flush();
 
-        $rightsManager = $this->client->getContainer()->get('claroline.manager.rights_manager');
-        $roleManager = $this->client->getContainer()->get('claroline.manager.role_manager');
-
         // add open permissions to all users
-        $rightsManager->editPerms(1, $roleManager->getRoleByName('ROLE_USER'), $this->ex1->getResourceNode());
+        $this->rightsManager->editPerms(1, $this->roleManager->getRoleByName('ROLE_ANONYMOUS'), $this->exercise->getResourceNode());
 
         $this->om->flush();
     }
 
+    /**
+     * A user who does not have access to the exercise MUST not have access to the papers list.
+     */
+    public function testUserCannotOpenExerciseCannotOpenPapers()
+    {
+        $paper = PaperGenerator::create($this->exercise, $this->bob);
+        $this->om->persist($paper);
+
+        // Removes permission
+        $this->rightsManager->editPerms(0, $this->roleManager->getRoleByName('ROLE_ANONYMOUS'), $this->exercise->getResourceNode());
+
+        $this->om->flush();
+
+        // Test the list route
+        $this->request('GET', "/api/exercises/{$this->exercise->getUuid()}/papers", $this->bob);
+        $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
+    }
+
+    /**
+     * A user who does not have access to the exercise MUST not have access to the paper detail.
+     */
+    public function testUserCannotOpenExerciseCannotOpenPaperDetail()
+    {
+        $paper = PaperGenerator::create($this->exercise, $this->bob);
+        $this->om->persist($paper);
+
+        // Removes permission
+        $this->rightsManager->editPerms(0, $this->roleManager->getRoleByName('ROLE_ANONYMOUS'), $this->exercise->getResourceNode());
+
+        $this->om->flush();
+
+        // Test the detail of one paper route
+        $this->request('GET', "/api/exercises/{$this->exercise->getUuid()}/papers/{$paper->getUuid()}", $this->bob);
+        $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
+    }
+
+    /**
+     * An anonymous user MUST NOT have access to papers.
+     */
+    public function testAnonymousPapers()
+    {
+        $this->request('GET', "/api/exercises/{$this->exercise->getUuid()}/papers");
+        $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
+    }
+
+    /**
+     * A "normal" user MUST have access only to its own papers and MUST NOT see papers of other users.
+     */
+    public function testUserPapers()
+    {
+        // creator of the resource is considered as administrator of the resource
+        $pa1 = PaperGenerator::create($this->exercise, $this->bob);
+
+        // check that only one paper will be returned even if another user paper exists
+        $pa2 = PaperGenerator::create($this->exercise, $this->john);
+
+        $this->om->persist($pa1);
+        $this->om->persist($pa2);
+        $this->om->flush();
+
+        $this->request('GET', "/api/exercises/{$this->exercise->getUuid()}/papers", $this->bob);
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+
+        $content = json_decode($this->client->getResponse()->getContent());
+        $this->assertEquals(1, count($content));
+
+        $this->assertEquals($pa1->getUuid(), $content->papers[0]->id);
+    }
+
+    /**
+     * An "admin" user MUST have access to the papers of all the users who have passed the test.
+     */
+    public function testAdminPapers()
+    {
+        $pa1 = PaperGenerator::create($this->exercise, $this->john);
+        $pa2 = PaperGenerator::create($this->exercise, $this->john);
+        $pa3 = PaperGenerator::create($this->exercise, $this->bob);
+        $pa4 = PaperGenerator::create($this->exercise, $this->bob);
+
+        $this->om->persist($pa1);
+        $this->om->persist($pa2);
+        $this->om->persist($pa3);
+        $this->om->persist($pa4);
+        $this->om->flush();
+
+        $this->request('GET', "/api/exercises/{$this->exercise->getUuid()}/papers", $this->john);
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+
+        $content = json_decode($this->client->getResponse()->getContent());
+        $this->assertEquals(4, count($content->papers));
+        $this->assertEquals($pa1->getUuid(), $content->papers[0]->id);
+        $this->assertEquals($pa2->getUuid(), $content->papers[1]->id);
+        $this->assertEquals($pa3->getUuid(), $content->papers[2]->id);
+        $this->assertEquals($pa4->getUuid(), $content->papers[3]->id);
+    }
+
+    /**
+     * An "anonymous" user MUST have access to the detail of its own papers.
+     */
+    public function testAnonymousPaper()
+    {
+        // Create a paper for the anonymous
+        $paper = PaperGenerator::create($this->exercise);
+        $this->om->persist($paper);
+        $this->om->flush();
+
+        // Request the created paper
+        $this->request('GET', "/api/exercises/{$this->exercise->getUuid()}/papers/{$paper->getUuid()}");
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+
+        // Validate the received content
+        $this->assertIsValidPaperDetail($paper, json_decode($this->client->getResponse()->getContent()));
+
+        $this->markTestIncomplete(
+            'As is, anonymous have access to all the other anonymous Papers.'
+        );
+    }
+
+    /**
+     * A "normal" user MUST have access to the detail of its own papers.
+     */
     public function testUserPaper()
     {
-        // create one paper
-        $pa1 = $this->paperManager->createPaper($this->ex1, $this->bob);
-
-        // create another one
-        $this->paperManager->createPaper($this->ex1, $this->bob);
-
+        // Create a paper for user Bob (normal user)
+        $paper = PaperGenerator::create($this->exercise, $this->bob);
+        $this->om->persist($paper);
         $this->om->flush();
 
-        $this->request('GET', "/exercise/api/papers/{$pa1->getId()}", $this->bob);
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $content = json_decode($this->client->getResponse()->getContent());
-        $this->assertEquals($pa1->getId(), $content->paper->id);
-        $this->assertEquals(1, count($content->paper));
-    }
-
-    public function testAnonymousSubmit()
-    {
-        $pa1 = $this->paperManager->createPaper($this->ex1, $this->john);
-        $this->om->flush();
-
-        $step = $this->ex1->getSteps()->get(0);
-
-        $this->request('PUT', "/exercise/api/papers/{$pa1->getId()}/steps/{$step->getId()}");
-        $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
-    }
-
-    public function testSubmitAnswerAfterPaperEnd()
-    {
-        $pa1 = $this->paperManager->createPaper($this->ex1, $this->john);
-        $date = new \DateTime();
-        $date->add(\DateInterval::createFromDateString('yesterday'));
-        $pa1->setEnd($date);
-        $this->om->flush();
-
-        $step = $this->ex1->getSteps()->get(0);
-
-        $this->request('PUT', "/exercise/api/papers/{$pa1->getId()}/steps/{$step->getId()}", $this->john);
-        $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
-    }
-
-    public function testSubmitAnswerByNotPaperUser()
-    {
-        $pa1 = $this->paperManager->createPaper($this->ex1, $this->john);
-        $this->om->flush();
-
-        $step = $this->ex1->getSteps()->get(0);
-
-        $this->request('PUT', "/exercise/api/papers/{$pa1->getId()}/steps/{$step->getId()}", $this->bob);
-        $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
-    }
-
-    public function testFinishPaperByNotPaperCreator()
-    {
-        $pa1 = $this->paperManager->createPaper($this->ex1, $this->john);
-        $this->om->flush();
-
-        $this->request('PUT', "/exercise/api/papers/{$pa1->getId()}/end", $this->bob);
-        $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
-    }
-
-    public function testFinishPaper()
-    {
-        $pa1 = $this->paperManager->createPaper($this->ex1, $this->john);
-        $this->om->flush();
-
-        // end the paper
-        $this->request('PUT', "/exercise/api/papers/{$pa1->getId()}/end", $this->john);
-
-        // Check if the Paper has been correctly updated
-        $this->assertFalse($pa1->getInterupt());
-        $this->assertTrue($pa1->getEnd() !== null);
-
+        // Request the created paper
+        $this->request('GET', "/api/exercises/{$this->exercise->getUuid()}/papers/{$paper->getUuid()}", $this->bob);
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
 
-        // Check the paper is correctly returned to User
-        $content = json_decode($this->client->getResponse()->getContent());
-        $this->assertInternalType('object', $content);
+        // Validate the received content
+        $this->assertIsValidPaperDetail($paper, json_decode($this->client->getResponse()->getContent()));
+    }
+
+    /**
+     * A "normal" user MUST NOT have access to paper detail of other users.
+     */
+    public function testNonUserPaper()
+    {
+        // Let me introduce you : James, the normal user who will try to access to bob's paper
+        $james = $this->persist->user('james');
+
+        // Create a paper for user Bob
+        $paper = PaperGenerator::create($this->exercise, $this->bob);
+        $this->om->persist($paper);
+        $this->om->flush();
+
+        // Request the created paper
+        $this->request('GET', "/api/exercises/{$this->exercise->getUuid()}/papers/{$paper->getUuid()}", $james);
+        $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
+    }
+
+    /**
+     * An "admin" user MUST have access to the detail of all user papers.
+     */
+    public function testAdminPaper()
+    {
+        // Create a paper for user Bob
+        $paper = PaperGenerator::create($this->exercise, $this->bob);
+        $this->om->persist($paper);
+        $this->om->flush();
+
+        // Let the admin John request the created paper
+        $this->request('GET', "/api/exercises/{$this->exercise->getUuid()}/papers/{$paper->getUuid()}", $this->john);
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+
+        // Validate the received content
+        $this->assertIsValidPaperDetail($paper, json_decode($this->client->getResponse()->getContent()));
+    }
+
+    /**
+     * A "normal" user MUST NOT be able to delete a paper.
+     */
+    public function testUserDeletePaper()
+    {
+        $paper = PaperGenerator::create($this->exercise, $this->bob);
+        $this->om->persist($paper);
+        $this->om->flush();
+
+        $this->request('DELETE', "/api/exercises/{$this->exercise->getUuid()}/papers/{$paper->getUuid()}", $this->bob);
+        $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
+    }
+
+    /**
+     * An "admin" user MUST be able to delete a paper.
+     */
+    public function testAdminDeletePaper()
+    {
+        $paper = PaperGenerator::create($this->exercise, $this->john);
+        $this->om->persist($paper);
+        $this->om->flush();
+
+        $this->request('DELETE', "/api/exercises/{$this->exercise->getUuid()}/papers/{$paper->getUuid()}", $this->john);
+        $this->assertEquals(204, $this->client->getResponse()->getStatusCode());
+        $this->assertTrue(empty($this->client->getResponse()->getContent()));
+
+        // Checks the papers have really been deleted
+        $papers = $this->om->getRepository('UJMExoBundle:Attempt\Paper')->findBy([
+            'exercise' => $this->exercise,
+        ]);
+
+        $this->assertCount(0, $papers);
+    }
+
+    /**
+     * The api MUST NOT allow to delete a paper from a published exercise.
+     */
+    public function testDeletePaperThrowErrorIfExercisePublished()
+    {
+        $paper = PaperGenerator::create($this->exercise, $this->john);
+        $this->om->persist($paper);
+
+        $this->exercise->setPublishedOnce(true);
+        $this->om->flush();
+
+        $this->request('DELETE', "/api/exercises/{$this->exercise->getUuid()}/papers/{$paper->getUuid()}", $this->john);
+
+        $this->assertEquals(422, $this->client->getResponse()->getStatusCode());
+    }
+
+    /**
+     * A "normal" user MUST NOT be able to delete the papers of an exercise.
+     */
+    public function testUserDeleteAllPapers()
+    {
+        $this->request('DELETE', "/api/exercises/{$this->exercise->getUuid()}/papers", $this->bob);
+        $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
+    }
+
+    /**
+     * An "admin" user MUST be able to delete all the papers of an exercise at once.
+     */
+    public function testAdminDeleteAllPapers()
+    {
+        $pa1 = PaperGenerator::create($this->exercise, $this->john);
+        $pa2 = PaperGenerator::create($this->exercise, $this->john);
+        $this->om->persist($pa1);
+        $this->om->persist($pa2);
+
+        $this->om->flush();
+
+        $this->request('DELETE', "/api/exercises/{$this->exercise->getUuid()}/papers", $this->john);
+        $this->assertEquals(204, $this->client->getResponse()->getStatusCode());
+        $this->assertTrue(empty($this->client->getResponse()->getContent()));
+
+        // Checks the papers have really been deleted
+        $papers = $this->om->getRepository('UJMExoBundle:Attempt\Paper')->findBy([
+            'exercise' => $this->exercise,
+        ]);
+
+        $this->assertCount(0, $papers);
+    }
+
+    /**
+     * The api MUST NOT allow to delete papers from a published exercise.
+     */
+    public function testDeleteAllPapersThrowErrorIfExercisePublished()
+    {
+        $this->exercise->setPublishedOnce(true);
+        $this->om->flush();
+
+        $this->request('DELETE', "/api/exercises/{$this->exercise->getUuid()}/papers", $this->john);
+        $this->assertEquals(422, $this->client->getResponse()->getStatusCode());
+    }
+
+    /**
+     * Checks the export of a paper has the correct format.
+     * The paper detail MUST contain the paper itself and the list of used questions.
+     *
+     * @param Paper $paper
+     * @param $content
+     */
+    private function assertIsValidPaperDetail(Paper $paper, $content)
+    {
+        $this->assertInstanceOf('\stdClass', $content);
+        $this->assertTrue(property_exists($content, 'paper'));
+        $this->assertTrue(property_exists($content, 'questions'));
+
+        $this->assertTrue(is_array($content->questions));
+        $this->assertInstanceOf('\stdClass', $content->paper);
+        $this->assertEquals($paper->getUuid(), $content->paper->id);
     }
 }

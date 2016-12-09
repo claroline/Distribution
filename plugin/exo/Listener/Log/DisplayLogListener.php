@@ -4,13 +4,15 @@ namespace UJM\ExoBundle\Listener\Log;
 
 use Claroline\CoreBundle\Event\Log\LogCreateDelegateViewEvent;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 /**
  * @DI\Service()
  */
-class DisplayLogListener extends ContainerAware
+class DisplayLogListener
 {
+    use ContainerAwareTrait;
+
     /**
      * @DI\Observe("create_log_details_resource-ujm_exercise-exercise_evaluated")
      *
@@ -19,7 +21,7 @@ class DisplayLogListener extends ContainerAware
     public function onCreateLogDetails(LogCreateDelegateViewEvent $event)
     {
         $content = $this->container->get('templating')->render(
-            'UJMExoBundle:Log:log_details.html.twig',
+            'UJMExoBundle:Log:show.html.twig',
             [
                 'log' => $event->getLog(),
             ]

@@ -3,7 +3,7 @@
 namespace UJM\ExoBundle\Serializer\Misc;
 
 use JMS\DiExtraBundle\Annotation as DI;
-use UJM\ExoBundle\Entity\WordResponse;
+use UJM\ExoBundle\Entity\Misc\Keyword;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
 
 /**
@@ -16,8 +16,8 @@ class KeywordSerializer implements SerializerInterface
     /**
      * Converts a Keyword into a JSON-encodable structure.
      *
-     * @param WordResponse $keyword
-     * @param array        $options
+     * @param Keyword $keyword
+     * @param array   $options
      *
      * @return \stdClass
      */
@@ -38,16 +38,16 @@ class KeywordSerializer implements SerializerInterface
     /**
      * Converts raw data into a Keyword entity.
      *
-     * @param \stdClass    $data
-     * @param WordResponse $keyword
-     * @param array        $options
+     * @param \stdClass $data
+     * @param Keyword   $keyword
+     * @param array     $options
      *
-     * @return WordResponse
+     * @return Keyword
      */
     public function deserialize($data, $keyword = null, array $options = [])
     {
         if (empty($keyword)) {
-            $keyword = new WordResponse();
+            $keyword = new Keyword();
         }
 
         $keyword->setText($data->text);
@@ -65,11 +65,11 @@ class KeywordSerializer implements SerializerInterface
      * Updates a collection of keywords entities from raw data.
      * The one which are not in `$keywordCollection` are removed from the entity collection.
      *
-     * @param \stdClass[]    $keywordCollection
-     * @param WordResponse[] $keywordEntities
-     * @param array          $options
+     * @param \stdClass[] $keywordCollection
+     * @param Keyword[]   $keywordEntities
+     * @param array       $options
      *
-     * @return WordResponse[] - the list of updated WordResponse entities (and without the one no longer in `$keywordCollection`)
+     * @return Keyword[] - the list of updated Keyword entities (and without the one no longer in `$keywordCollection`)
      */
     public function deserializeCollection(array $keywordCollection, array $keywordEntities, array $options = [])
     {

@@ -8,10 +8,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
- * @DI\Service("ujm.exo.question_bank_listener")
+ * @DI\Service("ujm_exo.listener.question_bank")
  */
 class QuestionBankListener
 {
+    /**
+     * @var ContainerInterface
+     */
     private $container;
 
     /**
@@ -34,7 +37,7 @@ class QuestionBankListener
     public function onDisplayDesktop(DisplayToolEvent $event)
     {
         $subRequest = $this->container->get('request')->duplicate([], null, [
-            '_controller' => 'UJMExoBundle:Question:index',
+            '_controller' => 'UJMExoBundle:Tool\QuestionBank:open',
         ]);
 
         $response = $this->container->get('http_kernel')->handle($subRequest, HttpKernelInterface::SUB_REQUEST);

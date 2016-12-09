@@ -4,6 +4,7 @@ namespace UJM\ExoBundle\Tests\Serializer;
 
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use UJM\ExoBundle\Entity\Exercise;
+use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Testing\Json\JsonDataTestCase;
 use UJM\ExoBundle\Library\Testing\Persister;
 use UJM\ExoBundle\Serializer\ExerciseSerializer;
@@ -94,14 +95,15 @@ class ExerciseSerializerTest extends JsonDataTestCase
 
     /**
      * The serializer MUST return a minimal representation of the Exercise if the option `minimal` is set.
-     * In this case `parameters` and `steps` MUST be excluded.
+     * In this case `description`, `parameters`, `steps` MUST be excluded.
      */
     public function testSerializeMinimalOption()
     {
-        $data = $this->serializer->serialize($this->exercise, ['minimal' => true]);
+        $data = $this->serializer->serialize($this->exercise, [Transfer::MINIMAL]);
 
         $this->assertFalse(property_exists($data, 'steps'));
         $this->assertFalse(property_exists($data, 'parameters'));
+        $this->assertFalse(property_exists($data, 'description'));
     }
 
     /**
@@ -117,9 +119,9 @@ class ExerciseSerializerTest extends JsonDataTestCase
         $this->assertEquals($exerciseData->id, $exercise->getUuid());
 
         // Checks some parameters
-        $this->assertTrue($exercise->getShuffle());
-        $this->assertEquals($exerciseData->parameters->pick, $exercise->getPickSteps());
-        $this->assertTrue($exercise->getKeepSteps());
+        $this->assertEquals($exerciseData->parameters->randomOrder, $exercise->getRandomOrder());
+        $this->assertEquals($exerciseData->parameters->randomPick, $exercise->getRandomPick());
+        $this->assertEquals($exerciseData->parameters->pick, $exercise->getPick());
 
         // Checks there is the correct number of steps
         $this->assertCount(count($exerciseData->steps), $exercise->getSteps());
@@ -135,9 +137,9 @@ class ExerciseSerializerTest extends JsonDataTestCase
         $updatedExercise = $this->serializer->deserialize($exerciseData, $this->exercise);
 
         // Checks some parameters
-        $this->assertTrue($this->exercise->getShuffle());
-        $this->assertEquals($exerciseData->parameters->pick, $this->exercise->getPickSteps());
-        $this->assertTrue($this->exercise->getKeepSteps());
+        $this->assertEquals($exerciseData->parameters->randomOrder, $updatedExercise->getRandomOrder());
+        $this->assertEquals($exerciseData->parameters->randomPick, $updatedExercise->getRandomPick());
+        $this->assertEquals($exerciseData->parameters->pick, $updatedExercise->getPick());
 
         // Checks there is the correct number of steps
         $this->assertCount(count($exerciseData->steps), $this->exercise->getSteps());

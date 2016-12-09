@@ -234,6 +234,16 @@ mark: Note
 mark_question: Noter cette question
 mark_bigest: Le score doit être inférieur ou égal au score maximum
 mark_bigest_other: Le score est supérieur au score maximun
+match_add_item: Ajouter un item
+match_penalty_label: Pénalité pour toute mauvaise association
+match_shuffle_labels_and_proposals: Ordre des propositions et des labels aléatoire
+match_edit_connection: Éditer la connection
+match_item_empty_data_error: Les données d'un élément ne peuvent être vides.
+match_no_valid_solution: Au moins une solution doit avoir un score supérieur à 0.
+match_no_solution: Il doit y avoir au moins une solution.
+match_score_not_valid: Chaque score doit être un chiffre valide.
+match_penalty_not_valid: La pénalité doit être un chiffre supérieur ou égal à 0.
+match_warning_penalty_and_negative_scores: L'utilisation conjointe de scores négatifs et d'une pénalité peuvent engendrer des résultats incohérents.
 matching: Association
 matching_creation: Création d'une question associative
 matching_edition: Edition d'une question associative
@@ -386,7 +396,7 @@ score_max_help: Laissez cette valeur à 0 si la notation est manuelle
 score_false_label: Résultat incorrect
 score_right_label: Résultat correct
 score_right_label_matching: Score de l'association
-search: Rechercher un document
+search: Rechercher
 search_question: Chercher des questions
 search_user_paper: Rechercher les copies de l'utilisateur
 see_shared_with: Question partagée avec des utilisateurs
@@ -423,7 +433,23 @@ stat_users: "[0, 1] %count% utilisateur|]1,Inf[ %count% utilisateurs"
 stat_have_responded: ont répondu
 sum_score_choice_at_least_one_correct_answer_error: Au moins une réponse doit avoir un score positif.
 sum_score_choice_no_correct_answer_error: La réponse correcte doit avoir un score positif.
-should_be_greater_or_equal_to_zero: Cette valeur devrait être supérieur ou égal à 0
+should_be_greater_or_equal_to_zero: Cette valeur devrait être supérieur ou égal à 0.
+set_penalty_label: Pénalité pour toute mauvaise association.
+set_shuffle_labels_and_proposals: Ordre des items aléatoire.
+set_add_item: Ajouter un item
+set_add_odd: Ajouter un intrus
+set_add_set: Ajouter un set
+set_penalty_not_valid: La pénalité doit être un chiffre supérieur ou égal à 0.
+set_item_empty_data_error: Les données d'un élément ne peuvent être vides.
+set_at_least_one_item: Il doit y avoir au moins un item.
+set_at_least_one_set: Il doit y avoir au moins un set.
+set_set_empty_data_error: Les données d'un set ne peuvent être vides.
+set_no_solution: Il doit y avoir au moins une solution.
+set_score_not_valid: Un score doit être un chiffre valide.
+set_no_valid_solution: Il doit y avoir au moins une solution avec un score supérieur à 0.
+set_odd_score_not_valid: Le score d'un intrus doit être inférieur ou égal à 0.
+set_odd_empty_data_error: Les données d'un intrus ne peuvent être vides.
+set_drop_item: Déposez un item ici
 
 # T
 temporary_mark: Note temporaire
@@ -455,20 +481,12 @@ weight_choice: Attribuer les points par réponse
 wrong: Fausse
 wrong_name: Le nom saisi est incorrect
 wrong_point: La valeur saisie est incorrecte
-
+words_empty_text_error: Un mot clé ne peut pas être vide.
+words_no_valid_solution: Au moins un mot clé doit avoir un score supérieur à 0.
+words_add_word: Ajouter un mot clé
+words_show_case_sensitive_option: Activer/désactiver la fonctionnalité "respect de la casse".
+words_feedback_info: Feedback si le mot clé est dans la réponse
+words_case_sensitive: La réponse doit respecter la casse du mot clé pour être valide
 # Y
 yes: Oui
 your_answer: Votre réponse
-
-# Data in the DB
-InteractionGraphic: Graphique
-InteractionHole: Texte à trous
-InteractionMatching: Association
-InteractionOpen: Ouverte
-InteractionQCM: QCM
-Multiple responses: Réponses multiples
-oneWord: Un mot
-To drag: Panier
-To bind: A lier
-To pair: Appariement
-Unique response: Réponse unique
