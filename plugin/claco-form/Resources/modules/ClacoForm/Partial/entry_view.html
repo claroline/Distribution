@@ -125,6 +125,7 @@
                 <div class="panel-title">
                     <a class="pointer-hand" ng-click="cfc.toggleCollapsed('comments')">
                         {{ 'comments'|trans:{}:'clacoform' }}
+                        <span class="badge">{{ cfc.comments.length }}</span>
                         <i class="fa" ng-class="cfc.collapsed['comments'] ? 'fa-chevron-circle-right' : 'fa-chevron-circle-down'"></i>
                     </a>
                 </div>
@@ -193,12 +194,21 @@
                                             >
                                                 <i class="fa fa-pencil"></i>
                                             </button>
+                                            <button class="btn btn-success btn-sm"
+                                                    data-toggle="tooltip"
+                                                    data-placement="top"
+                                                    title="{{ 'validate'|trans:{}:'clacoform' }}"
+                                                    ng-click="cfc.activateComment(comment)"
+                                                    ng-if="cfc.canManageComments() && (comment['status'] === 0)"
+                                            >
+                                                <i class="fa fa-check"></i>
+                                            </button>
                                             <button class="btn btn-default btn-sm"
                                                     data-toggle="tooltip"
                                                     data-placement="top"
                                                     title="{{ 'activate'|trans:{}:'clacoform' }}"
                                                     ng-click="cfc.activateComment(comment)"
-                                                    ng-if="cfc.canManageComments() && (comment['status'] !== 1)"
+                                                    ng-if="cfc.canManageComments() && (comment['status'] === 2)"
                                             >
                                                 <i class="fa fa-eye"></i>
                                             </button>
