@@ -234,6 +234,16 @@ mark: Note
 mark_question: Noter cette question
 mark_bigest: Le score doit être inférieur ou égal au score maximum
 mark_bigest_other: Le score est supérieur au score maximun
+match_add_item: Ajouter un item
+match_penalty_label: Pénalité pour toute mauvaise association
+match_shuffle_labels_and_proposals: Ordre des propositions et des labels aléatoire
+match_edit_connection: Éditer la connection
+match_item_empty_data_error: Les données d'un élément ne peuvent être vides.
+match_no_valid_solution: Au moins une solution doit avoir un score supérieur à 0.
+match_no_solution: Il doit y avoir au moins une solution.
+match_score_not_valid: Chaque score doit être un chiffre valide.
+match_penalty_not_valid: La pénalité doit être un chiffre supérieur ou égal à 0.
+match_warning_penalty_and_negative_scores: L'utilisation conjointe de scores négatifs et d'une pénalité peuvent engendrer des résultats incohérents.
 matching: Association
 matching_creation: Création d'une question associative
 matching_edition: Edition d'une question associative

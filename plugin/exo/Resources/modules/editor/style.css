@@ -174,7 +174,8 @@
   top: -5px;
   right: -5px;
   z-index: 1;
-  background-color: transparent;
+  background-color: white;
+  border-radius: 50%;
   color: #777;
   font-size: 18px;
 }
@@ -573,6 +574,100 @@ a[role=tab] {
 
 .quiz-editor .sets-builder-container .sets-col .set .set-item-drop-container.on-hover{
   background-color: #eee;
+}
+
+
+/* MATCH */
+
+.quiz-editor .match-question-container {
+  padding: 0;
+}
+
+.quiz-editor .match-items {
+  display: flex;
+  justify-content: space-around;
+}
+
+.quiz-editor .match-items ul {
+  padding: 0;
+  margin: 0;
+}
+
+.quiz-editor .match-items li {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.quiz-editor .match-items .item-col {
+  flex-grow: 0;
+}
+
+.quiz-editor .match-items .item-col .text-editor.minimal {
+  width: 160px;
+  max-width: 160px;
+  min-width: 160px;
+  height: 100px;
+  min-height: 100px;
+  max-height: 100px;
+}
+
+.quiz-editor .match-items .item-col .text-editor.minimal .form-control {
+  width: 100%;
+  max-width: 100%;
+  min-width: 100%;
+  height: 100%;
+  min-height: 100%;
+  max-height: 100%;
+  overflow: auto;
+}
+
+.quiz-editor .match-items .popover-container{
+  position: relative;
+  flex-grow: 6;
+}
+
+.quiz-editor .match-items .popover-container .popover {
+  max-width: 450px !important;
+  min-width: 250px !important;
+}
+
+.quiz-editor .match-items.popover-container .popover .popover-title{
+  display: block;
+}
+.quiz-editor .match-items .popover-container .popover .popover-title:after {
+  clear: both;
+  content: ".";
+  display: inline-block;
+  height: 0;
+  visibility: hidden;
+}
+
+.quiz-editor .match-items .item {
+  display: flex;
+  background-color: #eee;
+  padding: 0 10px 0 10px;
+  margin: 5px;
+}
+
+.quiz-editor .match-items .item-col .item .text-fields {
+  margin: 5px;
+}
+
+.quiz-editor .match-items .item .left-controls {
+  display: flex;
+}
+
+.quiz-editor .match-items .item .left-controls [role=button]{
+  margin-right: 8px;
+}
+
+.quiz-editor .match-items .item .right-controls {
+  display: flex;
+}
+
+.quiz-editor .match-items .item .right-controls [role=button]{
+  margin-left: 8px;
 }
 
 

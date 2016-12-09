@@ -120,18 +120,18 @@ const WordsItems = props =>
           />
         </li>
       )}
-      <div className="footer">
-        <button
-          id="add-word-button"
-          type="button"
-          className="btn btn-default"
-          onClick={() => props.onChange(actions.addSolution())}
-        >
-          <span className="fa fa-plus"/>
-          {tex('words_add_word')}
-        </button>
-      </div>
     </ul>
+    <div className="footer text-center">
+      <button
+        id="add-word-button"
+        type="button"
+        className="btn btn-default"
+        onClick={() => props.onChange(actions.addSolution())}
+      >
+        <span className="fa fa-plus"/>
+        {tex('words_add_word')}
+      </button>
+    </div>
   </div>
 
 WordsItems.propTypes = {
