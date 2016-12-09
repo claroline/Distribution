@@ -429,7 +429,23 @@ stat_users: "[0, 1] %count% user|]1,Inf[ %count% users"
 stat_have_responded: have responded
 sum_score_choice_at_least_one_correct_answer_error: At least one answer must have a positive score.
 sum_score_choice_no_correct_answer_error: The correct answer must have a positive score.
-should_be_greater_or_equal_to_zero: This value should be greater or equals to 0
+should_be_greater_or_equal_to_zero: This value should be greater or equals to 0.
+set_penalty_label: Penalty for any wrong association.
+set_shuffle_labels_and_proposals: Shuffle items.
+set_add_item: Add an item
+set_add_odd: Add an odd
+set_add_set: Add a set
+set_penalty_not_valid: The penalty must be a number greater or equal to 0.
+set_item_empty_data_error: Item data can not be empty.
+set_at_least_one_item: There must be at least one item.
+set_at_least_one_set: There must be at least one set.
+set_set_empty_data_error: Set data can not be empty.
+set_no_solution: There must be at least one solution.
+set_score_not_valid: Each score must be a valid number.
+set_no_valid_solution: At least one solution must have a score greater or equal to 0.
+set_odd_score_not_valid: Odd score must be inferior or equal to 0.
+set_odd_empty_data_error: odd data can not be empty.
+set_drop_item: Drop an item here
 
 # T
 temporary_mark: Temporary score
