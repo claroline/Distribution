@@ -2,10 +2,10 @@ import React from 'react'
 import freeze from 'deep-freeze'
 import merge from 'lodash/merge'
 import {shallow, mount} from 'enzyme'
-import {spyConsole, renew, ensure, mockTranslator} from './../test-utils'
-import {actions as actions} from './../actions'
+import {spyConsole, renew, ensure, mockTranslator} from './../../utils/test'
+import {lastId, lastIds} from './../../utils/utils'
+import {actions} from './../../quiz/editor/actions'
 import definition, {actions as subActions} from './match'
-import {lastId, lastIds} from './../util'
 
 describe('Match reducer', () => {
   const reduce = definition.reduce
@@ -346,7 +346,7 @@ describe('<Match />', () => {
         }
       }
     }
-    
+
     const form = mount(
       <Match
         item={item}
