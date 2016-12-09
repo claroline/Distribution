@@ -63,6 +63,32 @@
                 <div class="panel-title">
                     <h3 ng-class="cfc.entry['status'] === 1 ? '' : 'unpublished-entry-row'">
                         {{ cfc.entry['title'] }}
+                        <span class="pull-right">
+                            <button class="btn btn-default btn-sm"
+                                    data-toggle="tooltip"
+                                    data-placement="top"
+                                    title="{{ 'unpublish'|trans:{}:'platform' }}"
+                                    ng-click="cfc.changeEntryStatus()"
+                                    ng-if="cfc.entry['status'] === 1"
+                            >
+                                <i class="fa fa-eye-slash"></i>
+                            </button>
+                            <button class="btn btn-default btn-sm"
+                                    data-toggle="tooltip"
+                                    data-placement="top"
+                                    title="{{ 'publish'|trans:{}:'platform' }}"
+                                    ng-click="cfc.changeEntryStatus()"
+                                    ng-if="cfc.entry['status'] !== 1"
+                            >
+                                <i class="fa fa-eye"></i>
+                            </button>
+                            <a class="btn btn-default btn-sm" ui-sref="entry_edition({entryId: cfc.entryId})" ng-if="cfc.canEditEntry()">
+                                <i class="fa fa-pencil"></i>
+                            </a>
+                            <button class="btn btn-danger btn-sm" ng-click="cfc.deleteEntry()" ng-if="cfc.canManageEntry()">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </span>
                     </h3>
                 </div>
             </div>

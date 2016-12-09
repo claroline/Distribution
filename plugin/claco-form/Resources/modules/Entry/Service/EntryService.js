@@ -120,6 +120,10 @@ export default class EntryService {
     return this.canEdit || this.isManagerEntry(entryId) || (this.resourceDetails['edition_enabled'] && this.isMyEntry(entryId))
   }
 
+  getCanManageEntry (entryId) {
+    return this.canEdit || this.isManagerEntry(entryId)
+  }
+
   isMyEntry (entryId) {
     return this.myEntries.find(e => e['id'] === entryId) !== undefined
   }

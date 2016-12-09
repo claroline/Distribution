@@ -40,6 +40,8 @@ export default class EntryViewCtrl {
     this._addCommentCallback = this._addCommentCallback.bind(this)
     this._updateCommentCallback = this._updateCommentCallback.bind(this)
     this._removeCommentCallback = this._removeCommentCallback.bind(this)
+    this._updateEntryCallback = this._updateEntryCallback.bind(this)
+    this._removeEntryCallback = this._removeEntryCallback.bind(this)
     this.initialize()
   }
 
@@ -58,6 +60,17 @@ export default class EntryViewCtrl {
   _removeCommentCallback (data) {
     this.CommentService._removeCommentCallback(data)
     this.tableParams.reload()
+  }
+
+  _updateEntryCallback (data) {
+    this.EntryService._updateEntryCallback(data)
+    const e = JSON.parse(data)
+    this.entry['status'] = e['status']
+  }
+
+  _removeEntryCallback (data) {
+    this.EntryService._removeEntryCallback(data)
+    this.$state.go('entries_list')
   }
 
   initialize () {
@@ -169,5 +182,21 @@ export default class EntryViewCtrl {
 
   deleteComment (comment) {
     this.CommentService.deleteComment(comment, this._removeCommentCallback)
+  }
+
+  canEditEntry () {
+    return this.EntryService.getCanEditEntry(this.entryId)
+  }
+
+  canManageEntry () {
+    return this.EntryService.getCanManageEntry(this.entryId)
+  }
+
+  deleteEntry () {
+    this.EntryService.deleteEntry(this.entry, this._removeEntryCallback)
+  }
+
+  changeEntryStatus () {
+    this.EntryService.changeEntryStatus(this.entry, this._updateEntryCallback)
   }
 }
