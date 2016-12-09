@@ -1,7 +1,5 @@
 import {makeReducer} from './../../utils/reducers'
-
-// TODO : do not load from editor
-import {update} from './../../editor/util'
+import {update} from './../../utils/utils'
 
 import {
   PAGE_NEXT,
@@ -23,7 +21,7 @@ function changePage(paginationState, action = {}) {
 }
 
 function updatePageSize(paginationState, action = {}) {
-  // TODO : manage the case when the current page no longer exists  
+  // TODO : manage the case when the current page no longer exists
   return update(paginationState, {pageSize: {$set: action.pageSize}})
 }
 

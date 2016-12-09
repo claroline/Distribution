@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
 import { DropdownButton, MenuItem } from 'react-bootstrap'
-
 import ItemIcon from './../../items/common/item-icon.jsx'
-// TODO : do not load from editor.
-import {getDefinition} from './../../editor/item-types'
+import {getDefinition} from './../../items/item-types'
 
 const T = React.PropTypes
 

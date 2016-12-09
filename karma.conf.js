@@ -10,7 +10,7 @@ module.exports = config => {
         pattern: 'main/core/Resources/modules/core-js/index.js',
         watched: false
       },
-      '*/*/Resources/modules/**/*test.js'
+      '*/*/Resources/modules/**/*\.test.js'
     ],
     preprocessors: {
       './*/*/Resources/modules/**/[^.]+.js': ['coverage'],

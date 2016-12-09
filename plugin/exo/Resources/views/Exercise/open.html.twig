@@ -6,7 +6,6 @@
 
     {# Exercise styles #}
     {% stylesheets debug=false filter='less, cssmin' output='vendor/ujmexo/ujm-exo.css'
-        'packages/angular-dragula/dist/dragula.min.css'
         '@UJMExoBundle/Resources/less/main.less'
     %}
     <link rel="stylesheet" media="screen" href="{{ asset_url }}" />
@@ -86,7 +85,7 @@
       </symbol>
     </svg>
 
-    {# Initialize AngularJS application #}
+    <!-- {# Initialize AngularJS application #}
     <div data-ng-app="ExerciseApp" data-ng-cloak="">
         <exercise
             data-exercise="{{ exercise | json_encode | raw | escape }}"
@@ -94,7 +93,15 @@
             data-nb-user-papers="{{ nbUserPapers }}"
             data-edit-enabled="{{ editEnabled }}">
         </exercise>
+    </div> -->
+
+    <div
+      class="quiz-container"
+      data-quiz="{{ exercise | json_encode | raw | escape }}"
+      data-editable="{{ editEnabled }}"
+    >
     </div>
+
 {% endblock %}
 
 {% block javascripts %}
@@ -110,5 +117,5 @@
     <script src="{{ asset('packages/jsPlumb/dist/js/jsPlumb-2.1.3-min.js') }}"></script>
     <script src="{{ asset('packages/jquery-ui/jquery-ui.min.js') }}"></script>
 
-    <script src="{{ hotAsset('dist/claroline-distribution-plugin-exo-exercise.js') }}"></script>
+    <script src="{{ hotAsset('dist/claroline-distribution-plugin-exo-quiz.js') }}"></script>
 {% endblock %}

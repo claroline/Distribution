@@ -5,14 +5,14 @@ import { actions as paginationActions } from './../actions/pagination'
 import { countPages } from './../selectors/pagination'
 import VisibleQuestions from './../containers/visible-questions.jsx'
 import Pagination from './pagination/pagination.jsx'
-import PageHeader from './../../page/components/page-header.jsx'
-import PageActions from './../../page/components/page-actions.jsx'
+import PageHeader from './../../components/layout/page-header.jsx'
+import PageActions from './../../components/layout/page-actions.jsx'
 
 import { tex } from './../../utils/translate'
-import { MODAL_ADD_ITEM } from './../../editor/components/modals.jsx'
+import { MODAL_ADD_ITEM } from './../../quiz/editor/components/modals.jsx'
 
 // TODO : do not load from editor
-import { actions as editorActions } from './../../editor/actions'
+import { actions as editorActions } from './../../quiz/editor/actions'
 
 const T = React.PropTypes
 
@@ -65,7 +65,7 @@ class Bank extends Component {
 
         <VisibleQuestions />
 
-        <Pagination 
+        <Pagination
           current={this.props.pagination.current}
           pageSize={this.props.pagination.pageSize}
           pages={this.props.pages}

@@ -7,9 +7,7 @@ import {
 } from 'redux'
 import thunk from 'redux-thunk'
 import bankApp from './reducers/index'
-
-// TODO : don't load it from editor module
-import {listItemMimeTypes} from './../editor/item-types'
+import {listItemMimeTypes} from './../items/item-types'
 
 const middleware = [thunk]
 

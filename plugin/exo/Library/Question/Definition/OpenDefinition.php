@@ -97,6 +97,6 @@ class OpenDefinition extends AbstractDefinition
 
     public function getStatistics(AbstractQuestion $openQuestion, array $answers)
     {
-        return null;
+        return;
     }
 }
