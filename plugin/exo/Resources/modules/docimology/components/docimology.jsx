@@ -3,13 +3,13 @@ import { connect } from 'react-redux'
 
 import {actions as currentObjectActions} from './../actions/current-object'
 
-import PageHeader from './../../page/components/page-header.jsx'
-import PageActions from './../../page/components/page-actions.jsx'
+import PageHeader from './../../components/layout/page-header.jsx'
+import PageActions from './../../components/layout/page-actions.jsx'
 
 // TODO : use barrel instead
-import BarChart from './../../chart/bar/components/bar-chart.jsx'
-import PieChart from './../../chart/pie/components/pie-chart.jsx'
-import CircularGauge from './../../chart/gauge/components/circlular-gauge.jsx'
+import BarChart from './../../components/chart/bar/bar-chart.jsx'
+import PieChart from './../../components/chart/pie/pie-chart.jsx'
+import CircularGauge from './../../components/chart/gauge/circlular-gauge.jsx'
 
 import ObjectSelector from './object-selector.jsx'
 

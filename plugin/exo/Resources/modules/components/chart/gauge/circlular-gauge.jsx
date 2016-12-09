@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
-import Chart from './../../base/components/chart.jsx'
-import DataSeries from './../../pie/components/data-series.jsx'
+import Chart from './../base/chart.jsx'
+import DataSeries from './../pie/data-series.jsx'
 
 const T = React.PropTypes
 
