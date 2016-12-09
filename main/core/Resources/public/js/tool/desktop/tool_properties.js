@@ -10,12 +10,12 @@
 /* global $, Routing */
 
 (function() {
-  const type = $('#datas-box').data('type')
+  var type = $('#datas-box').data('type')
 
   $('#edit-tools-btn').on('click', function(e) {
     e.preventDefault()
-    let formData = new FormData(document.getElementById('desktop-tool-form'))
-    const url = $('#desktop-tool-form').attr('action')
+    var formData = new FormData(document.getElementById('desktop-tool-form'))
+    var url = $('#desktop-tool-form').attr('action')
 
     $('#tool-table tr').each(function(index) {
       if ($(this).attr('data-tool-id')) {
@@ -42,9 +42,9 @@
 
   $('#tools-table-body').on('sortupdate', function(event, ui) {
     if (this === ui.item.parents('#tools-table-body')[0]) {
-      const orderedToolId = $(ui.item).data('ordered-tool-id')
-      let nextOrderedToolId = -1
-      const nextElement = $(ui.item).next()
+      var orderedToolId = $(ui.item).data('ordered-tool-id')
+      var nextOrderedToolId = -1
+      var nextElement = $(ui.item).next()
 
       if (nextElement !== undefined && nextElement.hasClass('row-tool-config')) {
         nextOrderedToolId = nextElement.data('ordered-tool-id')
