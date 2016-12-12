@@ -6,7 +6,7 @@ use Claroline\CoreBundle\Persistence\ObjectManager;
 use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Manager\Attempt\PaperManager;
-use UJM\ExoBundle\Serializer\PaperSerializer;
+use UJM\ExoBundle\Serializer\Attempt\PaperSerializer;
 
 class PaperManagerTest extends \PHPUnit_Framework_TestCase
 {
@@ -20,7 +20,7 @@ class PaperManagerTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->om = $this->mock('Claroline\CoreBundle\Persistence\ObjectManager');
-        $this->serializer = $this->mock('UJM\ExoBundle\Serializer\PaperSerializer');
+        $this->serializer = $this->mock('UJM\ExoBundle\Serializer\Attempt\PaperSerializer');
 
         $this->manager = new PaperManager(
             $this->om,

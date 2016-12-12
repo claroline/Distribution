@@ -6,8 +6,8 @@ use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Manager\Attempt\AnswerManager;
-use UJM\ExoBundle\Serializer\Answer\AnswerSerializer;
-use UJM\ExoBundle\Validator\JsonSchema\Answer\AnswerValidator;
+use UJM\ExoBundle\Serializer\Attempt\AnswerSerializer;
+use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerValidator;
 
 class AnswerManagerTest extends TransactionalTestCase
 {
@@ -25,8 +25,8 @@ class AnswerManagerTest extends TransactionalTestCase
         parent::setUp();
 
         $this->om = $this->mock('Claroline\CoreBundle\Persistence\ObjectManager');
-        $this->validator = $this->mock('UJM\ExoBundle\Validator\JsonSchema\Answer\AnswerValidator');
-        $this->serializer = $this->mock('UJM\ExoBundle\Serializer\Answer\AnswerSerializer');
+        $this->validator = $this->mock('UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerValidator');
+        $this->serializer = $this->mock('UJM\ExoBundle\Serializer\Attempt\AnswerSerializer');
 
         $this->manager = new AnswerManager($this->om, $this->validator, $this->serializer);
     }

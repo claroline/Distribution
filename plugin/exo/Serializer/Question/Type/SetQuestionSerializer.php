@@ -3,15 +3,37 @@
 namespace UJM\ExoBundle\Serializer\Question\Type;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Entity\Misc\Label;
+use UJM\ExoBundle\Entity\Misc\Proposal;
 use UJM\ExoBundle\Entity\QuestionType\MatchQuestion;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
+use UJM\ExoBundle\Serializer\Content\ContentSerializer;
 
 /**
  * @DI\Service("ujm_exo.serializer.question_set")
  */
 class SetQuestionSerializer implements SerializerInterface
 {
+    /**
+     * @var ContentSerializer
+     */
+    private $contentSerializer;
+
+    /**
+     * SetQuestionSerializer constructor.
+     *
+     * @DI\InjectParams({
+     *      "contentSerializer" = @DI\Inject("ujm_exo.serializer.content")
+     * })
+     *
+     * @param ContentSerializer $contentSerializer
+     */
+    public function __construct(ContentSerializer $contentSerializer)
+    {
+        $this->contentSerializer = $contentSerializer;
+    }
+
     /**
      * Converts a Match question into a JSON-encodable structure.
      *
@@ -32,6 +54,23 @@ class SetQuestionSerializer implements SerializerInterface
         $questionData->score = new \stdClass();
         $questionData->score->type = 'sum';
 
+        $questionData->random = $setQuestion->getShuffle();
+        $questionData->penalty = $setQuestion->getPenalty();
+
+        $questionData->sets = array_map(function (Proposal $proposal) use ($options) {
+            $setData = $this->contentSerializer->serialize($proposal, $options);
+            $setData->id = (string) $proposal->getId();
+
+            return $setData;
+        }, $setQuestion->getProposals()->toArray());
+
+        $questionData->items = array_map(function (Label $label) use ($options) {
+            $itemData = $this->contentSerializer->serialize($label, $options);
+            $itemData->id = (string) $label->getId();
+
+            return $itemData;
+        }, $setQuestion->getLabels()->toArray());
+
         return $questionData;
     }
 
@@ -50,7 +89,13 @@ class SetQuestionSerializer implements SerializerInterface
             $setQuestion = new MatchQuestion();
         }
 
-        // TODO: Implement deserialize() method.
+        if (!empty($data->penalty) || 0 === $data->penalty) {
+            $setQuestion->setPenalty($data->penalty);
+        }
+
+        if (isset($data->shuffle)) {
+            $setQuestion->setShuffle(true);
+        }
 
         return $setQuestion;
     }

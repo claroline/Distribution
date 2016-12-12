@@ -264,6 +264,6 @@ class AttemptManager
 
         // TODO : this needs to be properly exported as it can also include a ResourceNode
         // We need to return an encoded Content
-        return $hint->getValue();
+        return $hint->getData();
     }
 }

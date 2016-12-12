@@ -1,18 +1,18 @@
 <?php
 
-namespace UJM\ExoBundle\Validator\JsonSchema\Answer\Type;
+namespace UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
 
 /**
- * @DI\Service("ujm_exo.validator.answer_pair")
+ * @DI\Service("ujm_exo.validator.answer_words")
  */
-class PairAnswerValidator extends JsonSchemaValidator
+class WordsAnswerValidator extends JsonSchemaValidator
 {
     public function getJsonSchemaUri()
     {
-        return 'answer-data/pair/schema.json';
+        return 'answer-data/words/schema.json';
     }
 
     /**
@@ -25,8 +25,6 @@ class PairAnswerValidator extends JsonSchemaValidator
      */
     public function validateAfterSchema($question, array $options = [])
     {
-        // TODO : implement method
-
         return [];
     }
 }

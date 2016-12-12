@@ -3,7 +3,7 @@
 namespace UJM\ExoBundle\Tests\Validator\JsonSchema;
 
 use UJM\ExoBundle\Library\Testing\Json\JsonSchemaTestCase;
-use UJM\ExoBundle\Validator\JsonSchema\ContentValidator;
+use UJM\ExoBundle\Validator\JsonSchema\Content\ContentValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Question\QuestionValidator;
 use UJM\ExoBundle\Validator\JsonSchema\StepValidator;
 
@@ -33,7 +33,7 @@ class StepValidatorTest extends JsonSchemaTestCase
             ->method('validateAfterSchema')
             ->willReturn([]);
 
-        $this->contentValidator = $this->getMock('UJM\ExoBundle\Validator\JsonSchema\ContentValidator', [], [], '', false);
+        $this->contentValidator = $this->getMock('UJM\ExoBundle\Validator\JsonSchema\Content\ContentValidator', [], [], '', false);
         $this->contentValidator->expects($this->any())
             ->method('validateAfterSchema')
             ->willReturn([]);

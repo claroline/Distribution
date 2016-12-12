@@ -1,10 +1,11 @@
 <?php
 
-namespace UJM\ExoBundle\Validator\JsonSchema\Answer\Type;
+namespace UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Misc\Choice;
 use UJM\ExoBundle\Entity\QuestionType\ChoiceQuestion;
+use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
 
 /**
@@ -20,18 +21,17 @@ class ChoiceAnswerValidator extends JsonSchemaValidator
     /**
      * Performs additional validations.
      *
-     * @param array          $answerData
-     * @param array          $options
-     * @param ChoiceQuestion $question
+     * @param array $answerData
+     * @param array $options
      *
      * @return array
      */
-    public function validateAfterSchema($answerData, array $options = [], ChoiceQuestion $question = null)
+    public function validateAfterSchema($answerData, array $options = [])
     {
-        $count = count($answerData);
-        if (0 === $count) {
-            // data CAN be empty (for example editing a multiple choice question and unchecking all choices)
-            return [];
+        /** @var ChoiceQuestion $question */
+        $question = !empty($options[Validation::QUESTION]) ? $options[Validation::QUESTION] : null;
+        if (empty($question)) {
+            throw new \LogicException('Answer validation : Cannot perform additional validation without question.');
         }
 
         $choiceIds = array_map(function (Choice $choice) {
@@ -48,7 +48,7 @@ class ChoiceAnswerValidator extends JsonSchemaValidator
             }
         }
 
-        if (!$question->isMultiple() && $count > 1) {
+        if (!$question->isMultiple() && count($answerData) > 1) {
             return ['This question does not allow multiple answers'];
         }
 

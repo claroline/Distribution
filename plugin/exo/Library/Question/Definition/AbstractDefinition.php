@@ -3,6 +3,7 @@
 namespace UJM\ExoBundle\Library\Question\Definition;
 
 use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
+use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
 use UJM\ExoBundle\Library\Validator\ValidatorInterface;
 
@@ -18,6 +19,13 @@ abstract class AbstractDefinition implements QuestionDefinitionInterface
      * @return ValidatorInterface
      */
     abstract protected function getQuestionValidator();
+
+    /**
+     * Gets the answer Validator instance.
+     *
+     * @return ValidatorInterface
+     */
+    abstract protected function getAnswerValidator();
 
     /**
      * Gets the question Serializer instance.
@@ -37,6 +45,22 @@ abstract class AbstractDefinition implements QuestionDefinitionInterface
     public function validateQuestion(\stdClass $question, array $options = [])
     {
         return $this->getQuestionValidator()->validate($question, $options);
+    }
+
+    /**
+     * Validates the answer data for a question.
+     *
+     * @param mixed            $answer
+     * @param AbstractQuestion $question
+     * @param array            $options
+     *
+     * @return array
+     */
+    public function validateAnswer($answer, AbstractQuestion $question, array $options = [])
+    {
+        $options[Validation::QUESTION] = $question;
+
+        return $this->getAnswerValidator()->validate($answer, $options);
     }
 
     /**
@@ -64,10 +88,6 @@ abstract class AbstractDefinition implements QuestionDefinitionInterface
     public function deserializeQuestion(\stdClass $questionData, AbstractQuestion $question = null, array $options = [])
     {
         return $this->getQuestionSerializer()->deserialize($questionData, $question, $options);
-    }
-
-    public function validateAnswer(\stdClass $question, $answer, array $options = [])
-    {
     }
 
     public function calculateScore(AbstractQuestion $question, $answer)

@@ -6,6 +6,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
 use UJM\ExoBundle\Library\Question\QuestionType;
 use UJM\ExoBundle\Serializer\Question\Type\OpenQuestionSerializer;
+use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\OpenAnswerValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Question\Type\OpenQuestionValidator;
 
 /**
@@ -22,6 +23,11 @@ class OpenDefinition extends AbstractDefinition
     private $validator;
 
     /**
+     * @var OpenAnswerValidator
+     */
+    private $answerValidator;
+
+    /**
      * @var OpenQuestionSerializer
      */
     private $serializer;
@@ -30,18 +36,22 @@ class OpenDefinition extends AbstractDefinition
      * OpenDefinition constructor.
      *
      * @param OpenQuestionValidator  $validator
+     * @param OpenAnswerValidator    $answerValidator
      * @param OpenQuestionSerializer $serializer
      *
      * @DI\InjectParams({
-     *     "validator"  = @DI\Inject("ujm_exo.validator.question_open"),
-     *     "serializer" = @DI\Inject("ujm_exo.serializer.question_open")
+     *     "validator"       = @DI\Inject("ujm_exo.validator.question_open"),
+     *     "answerValidator" = @DI\Inject("ujm_exo.validator.answer_open"),
+     *     "serializer"      = @DI\Inject("ujm_exo.serializer.question_open")
      * })
      */
     public function __construct(
         OpenQuestionValidator $validator,
+        OpenAnswerValidator $answerValidator,
         OpenQuestionSerializer $serializer)
     {
         $this->validator = $validator;
+        $this->answerValidator = $answerValidator;
         $this->serializer = $serializer;
     }
 
@@ -73,6 +83,16 @@ class OpenDefinition extends AbstractDefinition
     protected function getQuestionValidator()
     {
         return $this->validator;
+    }
+
+    /**
+     * Gets the open answer validator.
+     *
+     * @return OpenAnswerValidator
+     */
+    protected function getAnswerValidator()
+    {
+        return $this->answerValidator;
     }
 
     /**

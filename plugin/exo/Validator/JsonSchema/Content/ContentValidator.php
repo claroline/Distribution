@@ -1,6 +1,6 @@
 <?php
 
-namespace UJM\ExoBundle\Validator\JsonSchema;
+namespace UJM\ExoBundle\Validator\JsonSchema\Content;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;

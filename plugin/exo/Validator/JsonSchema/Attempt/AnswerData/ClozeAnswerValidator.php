@@ -1,9 +1,10 @@
 <?php
 
-namespace UJM\ExoBundle\Validator\JsonSchema\Answer\Type;
+namespace UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\QuestionType\ClozeQuestion;
+use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
 
 /**
@@ -19,14 +20,19 @@ class ClozeAnswerValidator extends JsonSchemaValidator
     /**
      * Performs additional validations.
      *
-     * @param array         $answerData
-     * @param array         $options
-     * @param ClozeQuestion $question
+     * @param array $answerData
+     * @param array $options
      *
      * @return array
      */
-    public function validateAfterSchema($answerData, array $options = [], ClozeQuestion $question = null)
+    public function validateAfterSchema($answerData, array $options = [])
     {
+        /** @var ClozeQuestion $question */
+        $question = !empty($options[Validation::QUESTION]) ? $options[Validation::QUESTION] : null;
+        if (empty($question)) {
+            throw new \LogicException('Answer validation : Cannot perform additional validation without question.');
+        }
+
         $holeIds = array_map(function (\stdClass $hole) {
             return $hole->id;
         }, $question->getHoles()->toArray());

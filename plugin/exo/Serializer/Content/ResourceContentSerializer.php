@@ -1,6 +1,6 @@
 <?php
 
-namespace UJM\ExoBundle\Serializer;
+namespace UJM\ExoBundle\Serializer\Content;
 
 use Claroline\CoreBundle\Entity\Resource\File;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
