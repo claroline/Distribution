@@ -218,18 +218,14 @@
                             </td>
                             <td class="text-center">
                                 {# no user limit #}
-                                {% if team.getMaxUsers() is empty %}
+                                {% if team.getMaxUsers() is empty
+                                    or (team.getMaxUsers() is not empty
+                                        and (
+                                            (nbUsers[team.getId()] is defined and (team.getMaxUsers() > nbUsers[team.getId()]))
+                                            or (nbUsers[team.getId()] is not defined and team.getMaxUsers() > 0)
+                                        )
+                                    ) %}
                                     {% set registerable = true %}
-                                {% else %}
-                                    {% if (nbUsers[team.getId()] is defined) %}
-                                        {% if (team.getMaxUsers() < nbUsers[team.getId()]) %}
-                                            {% set registerable = true %}
-                                        {% endif %}
-                                    {% else %}
-                                        {% if team.getMaxUsers() > 0 %}
-                                            {% set registerable = true %}
-                                        {% endif %}
-                                    {% endif %}
                                 {% endif %}
                                 {% if team.getSelfRegistration() and registerable is defined %}
                                     <span class="btn btn-success btn-sm register-btn"
