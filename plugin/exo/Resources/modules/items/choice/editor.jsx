@@ -6,7 +6,7 @@ import {SCORE_SUM, SCORE_FIXED} from './../../quiz/enums'
 import {Textarea} from './../../components/form/textarea.jsx'
 import {CheckGroup} from './../../components/form/check-group.jsx'
 import {FormGroup} from './../../components/form/form-group.jsx'
-import {actions} from './choice'
+import {actions} from './editor'
 
 class ChoiceItem extends Component {
   constructor(props) {

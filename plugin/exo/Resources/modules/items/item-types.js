@@ -2,18 +2,20 @@ import invariant from 'invariant'
 import difference from 'lodash/difference'
 import mapValues from 'lodash/mapValues'
 
-import choice from './choice/choice'
-import match from './match/match'
-import cloze from './cloze/cloze'
-import graphic from './graphic/graphic'
-import open from './open/open'
-import words from './words/words'
-import set from './set/set'
+import choice from './choice/index'
+import match from './match/index'
+import cloze from './cloze/index'
+import graphic from './graphic/index'
+import open from './open/index'
+import words from './words/index'
+import set from './set/index'
 
 const typeProperties = [
   'name',
   'type',
   'question',
+  'editor',
+  'player',
   'component',
   'reduce',
   'decorate',
@@ -34,8 +36,10 @@ export function registerItemType(definition) {
     definition.question :
     true
 
-  definition.decorate = getOptionalFunction(definition, 'decorate', item => item)
-  definition.validate = getOptionalFunction(definition, 'validate', () => ({}))
+  definition.editor.decorate = getOptionalFunction(definition.editor, 'decorate', item => item)
+  definition.editor.validate = getOptionalFunction(definition.editor, 'validate', () => ({}))
+  definition.player.decorate = getOptionalFunction(definition.player, 'decorate', item => item)
+  definition.player.validate = getOptionalFunction(definition.player, 'validate', () => ({}))
 
   registeredTypes[definition.type] = definition
 }
@@ -60,7 +64,8 @@ export function getDefinition(type) {
 }
 
 export function getDecorators() {
-  return mapValues(registeredTypes, type => type.decorate)
+  // return mapValues(registeredTypes, type => type.decorate)
+  return mapValues(registeredTypes, eType => eType.editor.decorate, pType => pType.player.decorate)
 }
 
 // testing purposes only
@@ -86,16 +91,36 @@ function assertValidItemType(definition) {
     makeError('mime type must be a string', definition)
   )
   invariant(
-    definition.component,
-    makeError('component is mandatory', definition)
+    definition.editor,
+    makeError('editor is mandatory', definition)
   )
   invariant(
-    definition.reduce,
-    makeError('reduce is mandatory', definition)
+    definition.editor.component,
+    makeError('editor component is mandatory', definition)
   )
   invariant(
-    typeof definition.reduce === 'function',
-    makeError('reduce must be a function', definition)
+    definition.editor.reduce,
+    makeError('editor reduce is mandatory', definition)
+  )
+  invariant(
+    typeof definition.editor.reduce === 'function',
+    makeError('editor reduce must be a function', definition)
+  )
+  invariant(
+    definition.player,
+    makeError('player is mandatory', definition)
+  )
+  invariant(
+    definition.player.component,
+    makeError('player component is mandatory', definition)
+  )
+  invariant(
+    definition.player.reduce,
+    makeError('player reduce is mandatory', definition)
+  )
+  invariant(
+    typeof definition.player.reduce === 'function',
+    makeError('player reduce must be a function', definition)
   )
 
   const extraProperties = difference(Object.keys(definition), typeProperties)

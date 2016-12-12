@@ -5,10 +5,11 @@ import {shallow} from 'enzyme'
 import {spyConsole, renew, ensure, mockTranslator} from './../../utils/test'
 import {lastId, lastIds} from './../../utils/utils'
 import {actions} from './../../quiz/editor/actions'
-import definition, {actions as subActions} from './set'
+import definition from './index'
+import {actions as subActions} from './editor'
 
 describe('Set reducer', () => {
-  const reduce = definition.reduce
+  const reduce = definition.editor.reduce
 
   it('augments and decorates base question on creation', () => {
     const item = {
@@ -292,7 +293,7 @@ describe('Set reducer', () => {
 
 describe('Set validator', () => {
   before(mockTranslator)
-  const validate = definition.validate
+  const validate = definition.editor.validate
 
   it('checks set penalty validity', () => {
     const item = makeFixture({
@@ -395,7 +396,7 @@ describe('Set validator', () => {
 })
 
 describe('<Set />', () => {
-  const Set = definition.component
+  const Set = definition.editor.component
 
   beforeEach(() => {
     spyConsole.watch()

@@ -1,7 +1,7 @@
 import cloneDeep from 'lodash/cloneDeep'
 import merge from 'lodash/merge'
 import set from 'lodash/set'
-import {Match as component} from './match.jsx'
+import {Match as component} from './editor.jsx'
 import {ITEM_CREATE} from './../../quiz/editor/actions'
 import {makeId, makeActionCreator} from './../../utils/utils'
 import {notBlank, number, chain} from './../../utils/validate'
@@ -229,8 +229,6 @@ function validate(item) {
 
 
 export default {
-  type: 'application/x.match+json',
-  name: 'match',
   component,
   reduce,
   validate

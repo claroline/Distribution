@@ -4,7 +4,7 @@ import classes from 'classnames'
 import get from 'lodash/get'
 import {tex, t} from './../../utils/translate'
 import {Textarea} from './../../components/form/textarea.jsx'
-import {actions} from './match.js'
+import {actions} from './editor'
 
 /* global jsPlumb */
 
@@ -358,7 +358,7 @@ class Match extends Component {
   }
 
   componentWillUnmount(){
-    // jsPlumb.detachEveryConnection()
+    jsPlumb.detachEveryConnection()
     // use reset instead of deleteEveryEndpoint because reset also remove event listeners
     jsPlumb.reset()
     this.jsPlumbInstance = null

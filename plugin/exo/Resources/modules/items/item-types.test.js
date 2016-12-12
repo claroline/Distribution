@@ -22,17 +22,61 @@ describe('Registering an item type', () => {
 
   it('throws if item mime type is absent or invalid', () => {
     assert.throws(() => {
-      registerItemType({name: 'foo'})
+      registerItemType({
+        name: 'foo',
+        player:{
+          component: () => 'player',
+          reduce: item => item
+        },
+        editor: {
+          component: () => 'editor',
+          reduce: item => item
+        }
+      })
     }, /mime type is mandatory/)
     assert.throws(() => {
-      registerItemType({name: 'foo', type: []})
+      registerItemType({
+        name: 'foo',
+        type: [],
+        player:{
+          component: () => 'player',
+          reduce: item => item
+        },
+        editor: {
+          component: () => 'editor',
+          reduce: item => item
+        }
+      })
     }, /mime type must be a string/i)
   })
 
-  it('throws if item component is absent', () => {
+  it('throws if item editor is absent', () => {
     assert.throws(() => {
-      registerItemType({name: 'foo', type: 'foo/bar'})
-    }, /component is mandatory/i)
+      registerItemType({
+        name: 'foo',
+        type: 'foo/bar',
+        player:{
+          component: () => 'player',
+          reduce: item => item
+        }
+      })
+    }, /editor is mandatory/i)
+  })
+
+  it('throws if item editor component is absent', () => {
+    assert.throws(() => {
+      registerItemType({
+        name: 'foo',
+        type: 'foo/bar',
+        player:{
+          component: () => 'player',
+          reduce: item => item
+        },
+        editor: {
+          reduce: item => item
+        }
+      })
+    }, /editor component is mandatory/i)
   })
 
   it('throws if item reducer is absent or invalid', () => {
@@ -40,15 +84,27 @@ describe('Registering an item type', () => {
       registerItemType({
         name: 'foo',
         type: 'foo/bar',
-        component: () => {}
+        player:{
+          component: () => 'player'
+        },
+        editor: {
+          component: () => 'editor',
+          reduce: item => item
+        }
       })
     }, /reduce is mandatory/i)
     assert.throws(() => {
       registerItemType({
         name: 'foo',
         type: 'foo/bar',
-        component: () => {},
-        reduce: 'bar'
+        player:{
+          component: () => 'player',
+          reduce: 'bar'
+        },
+        editor: {
+          component: () => 'editor',
+          reduce: item => item
+        }
       })
     }, /reduce must be a function/i)
 
@@ -57,9 +113,15 @@ describe('Registering an item type', () => {
         registerItemType({
           name: 'foo',
           type: 'foo/bar',
-          component: () => {},
-          reduce: () => {},
-          decorate: false
+          player:{
+            component: () => 'player',
+            reduce: 'bar',
+            decorate: 'not a function'
+          },
+          editor: {
+            component: () => 'editor',
+            reduce: item => item
+          }
         })
       }, /decorate must be a function/i)
     })
@@ -79,12 +141,17 @@ describe('Registering an item type', () => {
 
   it('registers valid types as expected', () => {
     registerItemType(validDefinitionFixture())
+
     assertEqual(listItemMimeTypes(), ['foo/bar'])
+
     const def = getDefinition('foo/bar')
+
     assertEqual(def.name, 'foo')
     assertEqual(def.type, 'foo/bar')
-    assertEqual(def.component(), 'component')
-    assertEqual(def.reduce('item'), 'item')
+    assertEqual(def.editor.component(), 'editor')
+    assertEqual(def.editor.reduce('item'), 'item')
+    assertEqual(def.player.component(), 'player')
+    assertEqual(def.player.reduce('item'), 'item')
   })
 
   it('throws if item type is already registered', () => {
@@ -101,12 +168,12 @@ describe('Registering an item type', () => {
 
   it('defaults decorators to identity functions', () => {
     registerItemType(validDefinitionFixture())
-    assertEqual(getDefinition('foo/bar').decorate('item'), 'item')
+    assertEqual(getDefinition('foo/bar').editor.decorate('item'), 'item')
   })
 
   it('defaults validators to noop functions', () => {
     registerItemType(validDefinitionFixture())
-    assertEqual(getDefinition('foo/bar').validate('item'), {})
+    assertEqual(getDefinition('foo/bar').editor.validate('item'), {})
   })
 
   it('throws if definition contains extra properties', () => {
@@ -130,10 +197,14 @@ describe('Getting a type definition', () => {
     registerItemType(validDefinitionFixture())
     const def = getDefinition('foo/bar')
     assertEqual(def.type, 'foo/bar')
-    assertEqual(def.component(), 'component')
-    assertEqual(def.reduce('item'), 'item')
-    assertEqual(def.decorate('item'), 'item')
-    assertEqual(def.validate('item'), {})
+    assertEqual(def.editor.component(), 'editor')
+    assertEqual(def.editor.reduce('item'), 'item')
+    assertEqual(def.editor.decorate('item'), 'item')
+    assertEqual(def.editor.validate('item'), {})
+    assertEqual(def.player.component(), 'player')
+    assertEqual(def.player.reduce('item'), 'item')
+    assertEqual(def.player.decorate('item'), 'item')
+    assertEqual(def.player.validate('item'), {})
   })
 })
 
@@ -152,7 +223,13 @@ function validDefinitionFixture() {
   return {
     name: 'foo',
     type: 'foo/bar',
-    component: () => 'component',
-    reduce: item => item
+    editor: {
+      component: () => 'editor',
+      reduce: item => item
+    },
+    player: {
+      component: () => 'player',
+      reduce: item => item
+    }
   }
 }

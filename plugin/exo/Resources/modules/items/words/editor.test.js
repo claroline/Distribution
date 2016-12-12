@@ -4,10 +4,11 @@ import merge from 'lodash/merge'
 import {shallow, mount} from 'enzyme'
 import {spyConsole, renew, ensure, mockTranslator} from './../../utils/test'
 import {actions} from './../../quiz/editor/actions'
-import definition, {actions as subActions} from './words'
+import definition from './index'
+import {actions as subActions} from './editor'
 
 describe('Words reducer', () => {
-  const reduce = definition.reduce
+  const reduce = definition.editor.reduce
 
   it('augments and decorates base question on creation', () => {
     const item = {
@@ -99,7 +100,7 @@ describe('Words reducer', () => {
 
 describe('Words validator', () => {
   before(mockTranslator)
-  const validate = definition.validate
+  const validate = definition.editor.validate
   it('checks solutions text are not empty', () => {
     const errors = validate({
       solutions: [
@@ -180,7 +181,7 @@ describe('Words validator', () => {
 })
 
 describe('<Words/>', () => {
-  const Words = definition.component
+  const Words = definition.editor.component
 
   beforeEach(() => {
     spyConsole.watch()

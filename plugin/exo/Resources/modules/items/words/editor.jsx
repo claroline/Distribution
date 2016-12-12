@@ -5,7 +5,7 @@ import find from 'lodash/find'
 import {t, tex} from './../../utils/translate'
 import {Textarea} from './../../components/form/textarea.jsx'
 import {CheckGroup} from './../../components/form/check-group.jsx'
-import {actions} from './words.js'
+import {actions} from './editor.js'
 
 
 class WordItem extends Component {

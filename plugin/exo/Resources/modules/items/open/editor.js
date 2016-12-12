@@ -1,10 +1,11 @@
-import {Open as component} from './open.jsx'
-import {ITEM_CREATE} from './../../quiz/editor/actions'
-import {setIfError, notBlank, number, gteZero, chain} from './../../utils/validate'
-import {makeActionCreator} from './../../utils/utils'
 import cloneDeep from 'lodash/cloneDeep'
 import merge from 'lodash/merge'
 import set from 'lodash/set'
+import {Open as component} from './editor.jsx'
+import {ITEM_CREATE} from './../../quiz/editor/actions'
+import {setIfError, notBlank, number, gteZero, chain} from './../../utils/validate'
+import {makeActionCreator} from './../../utils/utils'
+
 
 const UPDATE = 'UPDATE'
 
@@ -44,8 +45,6 @@ function validate(values) {
 }
 
 export default {
-  type: 'application/x.open+json',
-  name: 'open',
   component,
   reduce,
   validate

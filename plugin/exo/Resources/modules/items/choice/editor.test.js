@@ -6,10 +6,11 @@ import {spyConsole, renew, ensure, mockTranslator} from './../../utils/test'
 import {actions} from './../../quiz/editor/actions'
 import {SCORE_SUM, SCORE_FIXED} from './../../quiz/enums'
 import {lastId, lastIds} from './../../utils/utils'
-import definition, {actions as subActions} from './choice'
+import {actions as subActions} from './editor'
+import definition from './index'
 
 describe('Choice reducer', () => {
-  const reduce = definition.reduce
+  const reduce = definition.editor.reduce
 
   it('augments and decorates base question on creation', () => {
     const item = {
@@ -253,7 +254,7 @@ describe('Choice reducer', () => {
 })
 
 describe('Choice decorator', () => {
-  const decorate = definition.decorate
+  const decorate = definition.editor.decorate
 
   it('adds solution data and ui flags to choice items', () => {
     const item = freeze({
@@ -408,7 +409,7 @@ describe('Choice decorator', () => {
 describe('Choice validator', () => {
   before(mockTranslator)
 
-  const validate = definition.validate
+  const validate = definition.editor.validate
 
   it('checks answer data are not empty', () => {
     const errors = validate({
@@ -595,7 +596,7 @@ describe('Choice validator', () => {
 })
 
 describe('<Choice/>', () => {
-  const Choice = definition.component
+  const Choice = definition.editor.component
 
   beforeEach(() => {
     spyConsole.watch()

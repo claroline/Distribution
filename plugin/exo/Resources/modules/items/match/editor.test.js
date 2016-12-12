@@ -5,10 +5,11 @@ import {shallow, mount} from 'enzyme'
 import {spyConsole, renew, ensure, mockTranslator} from './../../utils/test'
 import {lastId, lastIds} from './../../utils/utils'
 import {actions} from './../../quiz/editor/actions'
-import definition, {actions as subActions} from './match'
+import {actions as subActions} from './editor'
+import definition from './index'
 
 describe('Match reducer', () => {
-  const reduce = definition.reduce
+  const reduce = definition.editor.reduce
 
   it('augments and decorates base question on creation', () => {
     const item = {
@@ -191,7 +192,7 @@ describe('Match reducer', () => {
 
 describe('Match validator', () => {
   before(mockTranslator)
-  const validate = definition.validate
+  const validate = definition.editor.validate
 
   it('checks match penalty validity', () => {
     const item = makeFixture({
@@ -292,7 +293,7 @@ describe('<Match />', () => {
     }
   }
 
-  const Match = definition.component
+  const Match = definition.editor.component
 
   beforeEach(() => {
     spyConsole.watch()

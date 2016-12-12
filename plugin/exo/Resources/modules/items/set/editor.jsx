@@ -4,7 +4,7 @@ import classes from 'classnames'
 import {tex, t} from './../../utils/translate'
 import {Textarea} from './../../components/form/textarea.jsx'
 import {makeDraggable, makeDroppable} from './../../utils/dragAndDrop'
-import {actions} from './set.js'
+import {actions} from './editor'
 
 let DropBox = props => {
   return props.connectDropTarget (

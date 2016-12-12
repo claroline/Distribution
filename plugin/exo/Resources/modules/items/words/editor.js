@@ -1,7 +1,7 @@
 import cloneDeep from 'lodash/cloneDeep'
 import merge from 'lodash/merge'
 import set from 'lodash/set'
-import {Words as component} from './words.jsx'
+import {Words as component} from './editor.jsx'
 import {ITEM_CREATE} from './../../quiz/editor/actions'
 import {notBlank, number, chain} from './../../utils/validate'
 import {makeActionCreator} from './../../utils/utils'
@@ -117,8 +117,6 @@ function validate(item) {
 }
 
 export default {
-  type: 'application/x.words+json',
-  name: 'words',
   component,
   reduce,
   validate

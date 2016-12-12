@@ -4,10 +4,11 @@ import merge from 'lodash/merge'
 import {shallow, mount} from 'enzyme'
 import {spyConsole, renew, ensure, mockTranslator} from './../../utils/test'
 import {actions} from './../../quiz/editor/actions'
-import definition, {actions as subActions} from './open'
+import {actions as subActions} from './editor'
+import definition from './index'
 
 describe('Open reducer', () => {
-  const reduce = definition.reduce
+  const reduce = definition.editor.reduce
 
   it('augments and decorates base question on creation', () => {
     const item = {
@@ -48,7 +49,7 @@ describe('Open reducer', () => {
 describe('Open validator', () => {
   before(mockTranslator)
 
-  const validate = definition.validate
+  const validate = definition.editor.validate
 
   it('checks maxScore is greater or equal to zero', () => {
     const errors = validate({
@@ -120,7 +121,7 @@ describe('Open validator', () => {
 })
 
 describe('<Open/>', () => {
-  const Open = definition.component
+  const Open = definition.editor.component
 
   beforeEach(() => {
     spyConsole.watch()

@@ -7,7 +7,7 @@ import {SCORE_FIXED} from './../../quiz/enums'
 import {makeActionCreator, makeId} from './../../utils/utils'
 import {tex} from './../../utils/translate'
 import {notBlank} from './../../utils/validate'
-import {Choice as component} from './choice.jsx'
+import {Choice as component} from './editor.jsx'
 
 const UPDATE_PROP = 'UPDATE_PROP'
 const UPDATE_CHOICE = 'UPDATE_CHOICE'
@@ -224,8 +224,6 @@ function setChoiceTicks(item) {
 }
 
 export default {
-  type: 'application/x.choice+json',
-  name: 'choice',
   component,
   reduce,
   decorate,

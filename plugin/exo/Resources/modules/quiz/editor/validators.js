@@ -32,7 +32,7 @@ function validateStep(step) {
 
 function validateItem(item) {
   const errors = validateBaseItem(item)
-  const subErrors = getDefinition(item.type).validate(item)
+  const subErrors = getDefinition(item.type).editor.validate(item)
 
   return Object.assign(errors, subErrors)
 }

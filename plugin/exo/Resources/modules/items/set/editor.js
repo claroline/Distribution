@@ -1,7 +1,7 @@
 import cloneDeep from 'lodash/cloneDeep'
 import merge from 'lodash/merge'
 import set from 'lodash/set'
-import {SetForm as component} from './set.jsx'
+import {SetForm as component} from './editor.jsx'
 import {ITEM_CREATE} from './../../quiz/editor/actions'
 import {makeId, makeActionCreator} from './../../utils/utils'
 import {notBlank, number, chain} from './../../utils/validate'
@@ -347,8 +347,6 @@ function validate(item) {
 
 
 export default {
-  type: 'application/x.set+json',
-  name: 'set',
   component,
   reduce,
   validate

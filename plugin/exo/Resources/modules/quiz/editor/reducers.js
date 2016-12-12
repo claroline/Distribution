@@ -126,6 +126,8 @@ function reduceSteps(steps = {}, action = {}) {
   return steps
 }
 
+// @TODO reducers are defined in editor or player... we should have both test methods?
+// below is for editor
 function reduceItems(items = {}, action = {}) {
   switch (action.type) {
     case ITEM_CREATE: {
@@ -138,7 +140,7 @@ function reduceItems(items = {}, action = {}) {
       })
       newItem = decorateItem(newItem)
       const def = getDefinition(action.itemType)
-      newItem = def.reduce(newItem, action)
+      newItem = def.editor.reduce(newItem, action)
       const errors = validate.item(newItem)
       newItem = Object.assign({}, newItem, {_errors: errors})
 
@@ -204,7 +206,7 @@ function reduceItems(items = {}, action = {}) {
       }
     case ITEM_DETAIL_UPDATE: {
       const def = getDefinition(items[action.id].type)
-      let updatedItem = def.reduce(items[action.id], action.subAction)
+      let updatedItem = def.editor.reduce(items[action.id], action.subAction)
       const errors = validate.item(updatedItem)
       updatedItem = update(updatedItem, {_errors: {$set: errors}})
       return update(items, {[action.id]: {$set: updatedItem}})
