@@ -2,13 +2,13 @@ import invariant from 'invariant'
 import difference from 'lodash/difference'
 import mapValues from 'lodash/mapValues'
 
-import choice from './choice/index'
-import match from './match/index'
-import cloze from './cloze/index'
-import graphic from './graphic/index'
-import open from './open/index'
-import words from './words/index'
-import set from './set/index'
+import choice from './choice'
+import match from './match'
+import cloze from './cloze'
+import graphic from './graphic'
+import open from './open'
+import words from './words'
+import set from './set'
 
 const typeProperties = [
   'name',
