@@ -11,6 +11,14 @@ export const quizTypes = [
   [QUIZ_FORMATIVE, 'formative']
 ]
 
+export const VIEW_PLAYER = 'player'
+export const VIEW_EDITOR = 'editor'
+
+export const viewModes = [
+  [VIEW_PLAYER, 'player'],
+  [VIEW_EDITOR, 'editor']
+]
+
 export const SHUFFLE_NEVER = 'never'
 export const SHUFFLE_ONCE = 'once'
 export const SHUFFLE_ALWAYS = 'always'
