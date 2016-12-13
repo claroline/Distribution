@@ -1028,12 +1028,6 @@ class ResourceManager
                         [[$node]]
                     );
 
-                    $this->dispatcher->dispatch(
-                        'log',
-                        'Log\LogResourceDelete',
-                        [$node]
-                    );
-
                     if ($node->getIcon() && $workspace) {
                         $this->iconManager->delete($node->getIcon(), $workspace);
                     }
@@ -1047,6 +1041,12 @@ class ResourceManager
                     $this->om->remove($resource);
                     $this->om->remove($node);
                 }
+
+                $this->dispatcher->dispatch(
+                    'log',
+                    'Log\LogResourceDelete',
+                    [$node]
+                );
             }
         }
 
