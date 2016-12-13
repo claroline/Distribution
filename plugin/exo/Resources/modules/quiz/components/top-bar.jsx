@@ -5,6 +5,7 @@ import NavItem from 'react-bootstrap/lib/NavItem'
 import NavDropdown from 'react-bootstrap/lib/NavDropdown'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
 import {t, tex} from './../../utils/translate'
+import {actions} from './../actions'
 
 export const TopBar = props =>
   <Navbar collapseOnSelect>
@@ -55,7 +56,7 @@ export const TopBar = props =>
       </Nav>
       <Nav pullRight>
         {!props.empty &&
-          <NavItem eventKey={5} href="#">
+          <NavItem eventKey={5} href="#" onClick={() => {actions.updateWiewMode('player')}}>
             <span className="fa fa-fw fa-play"></span>
             {tex('exercise_try')}
           </NavItem>

@@ -8,6 +8,8 @@ import {
 } from 'redux'
 import thunk from 'redux-thunk'
 import {reducers as editorReducers} from './editor/reducers'
+import {reducers as playerReducers} from './player/reducers'
+import {reducers as quizReducers} from './reducers'
 
 const middleware = [thunk]
 
@@ -19,10 +21,11 @@ if (process.env.NODE_ENV !== 'production') {
 const reducer = combineReducers({
   quiz: editorReducers.quiz,
   steps: editorReducers.steps,
-  items: editorReducers.items,
+  items: quizReducers.viewMode === 'editor' ? editorReducers.items : playerReducers.items,
   currentObject: editorReducers.currentObject,
   openPanels: editorReducers.openPanels,
-  modal: editorReducers.modal
+  modal: editorReducers.modal,
+  viewMode: quizReducers.viewMode
 })
 
 export function createStore(initialState) {

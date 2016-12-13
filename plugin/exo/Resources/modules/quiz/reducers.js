@@ -1,7 +1,7 @@
 
-import {update} from './../../utils/utils'
-import {VIEW_PLAYER} from './../enums'
-import {SWITCH_VIEW_MODE} from './actions'
+import {update} from './../utils/utils'
+import {VIEW_PLAYER, VIEW_EDITOR} from './enums'
+import {UPDATE_VIEW_MODE} from './actions'
 
 function initialViewMode() {
   return {
@@ -10,8 +10,9 @@ function initialViewMode() {
 }
 
 function reduceViewMode(viewMode = initialViewMode(), action = {}) {
+  console.log('reducer called')
   switch (action.type) {
-    case SWITCH_VIEW_MODE: {
+    case UPDATE_VIEW_MODE: {
       return update(viewMode, {$set: action.viewMode})
     }
   }
