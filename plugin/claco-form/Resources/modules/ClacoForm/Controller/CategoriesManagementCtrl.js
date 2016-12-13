@@ -40,7 +40,7 @@ export default class CategoriesManagementCtrl {
   }
 
   initialize () {
-    this.ClacoFormService.clearSuccessMessage()
+    this.ClacoFormService.clearMessages()
     this.categories.forEach(c => this.CategoryService.formatCategory(c))
   }
 

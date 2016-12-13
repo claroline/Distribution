@@ -24,7 +24,7 @@ export default class TemplateManagementCtrl {
   }
 
   initialize () {
-    this.ClacoFormService.clearSuccessMessage()
+    this.ClacoFormService.clearMessages()
     this.fields.forEach(f => {
       if (f['required']) {
         this.mandatory.push(f)

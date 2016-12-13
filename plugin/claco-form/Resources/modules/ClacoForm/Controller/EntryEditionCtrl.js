@@ -40,7 +40,7 @@ export default class EntryEditionCtrl {
   }
 
   initialize () {
-    this.ClacoFormService.clearSuccessMessage()
+    this.ClacoFormService.clearMessages()
     this.source = this.EntryService.getEntry(this.entryId)
 
     if (this.source === undefined) {

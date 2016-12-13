@@ -36,7 +36,7 @@ export default class GeneralConfigurationCtrl {
   }
 
   initialize () {
-    this.ClacoFormService.clearSuccessMessage()
+    this.ClacoFormService.clearMessages()
 
     if (this.config['random_start_date']) {
       this.config['random_start_date'] = new Date(this.config['random_start_date'])

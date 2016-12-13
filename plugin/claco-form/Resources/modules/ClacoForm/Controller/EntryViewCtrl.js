@@ -74,7 +74,7 @@ export default class EntryViewCtrl {
   }
 
   initialize () {
-    this.ClacoFormService.clearSuccessMessage()
+    this.ClacoFormService.clearMessages()
     this.entry = this.EntryService.getEntry(this.entryId)
     this.collapsed['keywords'] = !this.config['open_keywords']
     this.collapsed['categories'] = !this.config['open_categories']
@@ -192,11 +192,39 @@ export default class EntryViewCtrl {
     return this.EntryService.getCanManageEntry(this.entryId)
   }
 
+  canCreate () {
+    return this.ClacoFormService.getCanCreateEntry()
+  }
+
+  canSearch () {
+    return this.ClacoFormService.getCanSearchEntry()
+  }
+
   deleteEntry () {
     this.EntryService.deleteEntry(this.entry, this._removeEntryCallback)
   }
 
   changeEntryStatus () {
     this.EntryService.changeEntryStatus(this.entry, this._updateEntryCallback)
+  }
+
+  getRandomEntry () {
+    this.ClacoFormService.getRandomEntryId(this.ClacoFormService.getResourceId()).then(d => {
+      if (d) {
+        if ((typeof d === 'number') && (d > 0)) {
+          this.$state.go('entry_view', {entryId: d})
+        } else {
+          this.ClacoFormService.setErrorMessage(Translator.trans('no_available_random_entry', {}, 'clacoform'))
+        }
+      }
+    })
+  }
+
+  getErrorMessage () {
+    return this.ClacoFormService.getErrorMessage()
+  }
+
+  clearErrorMessage () {
+    this.ClacoFormService.clearErrorMessage()
   }
 }

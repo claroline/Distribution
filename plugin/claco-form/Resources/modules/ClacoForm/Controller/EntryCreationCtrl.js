@@ -33,7 +33,7 @@ export default class EntryCreationCtrl {
   }
 
   initialize () {
-    this.ClacoFormService.clearSuccessMessage()
+    this.ClacoFormService.clearMessages()
     const replacedfield = `
       <form-field field="[field['name'], field['fieldFacet']['translation_key'], {error: cfc.entryErrors[field['id']], noLabel: true}]"
                   ng-model="cfc.entry[field['id']]"

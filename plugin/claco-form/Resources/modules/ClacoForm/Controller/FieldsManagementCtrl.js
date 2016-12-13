@@ -50,7 +50,7 @@ export default class FieldsManagementCtrl {
   }
 
   initialize () {
-    this.ClacoFormService.clearSuccessMessage()
+    this.ClacoFormService.clearMessages()
   }
 
   canEdit () {

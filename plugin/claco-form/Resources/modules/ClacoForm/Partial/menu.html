@@ -53,6 +53,10 @@
         </h3>
     </div>
     <div class="panel-body">
+        <div class="alert alert-danger" ng-if="cfc.getErrorMessage()">
+            <i class="fa fa-times pointer-hand close" ng-click="cfc.clearErrorMessage()"></i>
+            {{ cfc.getErrorMessage() }}
+        </div>
         <div class="alert alert-success" ng-if="cfc.getSuccessMessage()">
             <i class="fa fa-times pointer-hand close" ng-click="cfc.clearSuccessMessage()"></i>
             {{ cfc.getSuccessMessage() }}
@@ -66,10 +70,10 @@
                 <i class="fa fa-search fa-5x"></i>
                 <h4>{{ 'find_entry'|trans:{}:'clacoform' }}</h4>
             </a>
-            <a class="btn btn-default" ui-sref="random_entry" ng-if="cfc.config['random_enabled']">
+            <button class="btn btn-default" ng-click="cfc.getRandomEntry()" ng-if="cfc.config['random_enabled']">
                 <i class="fa fa-random fa-5x"></i>
                 <h4>{{ 'random_entry'|trans:{}:'clacoform' }}</h4>
-            </a>
+            </button>
         </div>
     </div>
 </div>

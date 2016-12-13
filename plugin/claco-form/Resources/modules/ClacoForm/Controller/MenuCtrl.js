@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+/*global Translator*/
+
 export default class MenuCtrl {
   constructor ($state, ClacoFormService) {
     this.$state = $state
@@ -26,8 +28,16 @@ export default class MenuCtrl {
     return this.ClacoFormService.getSuccessMessage()
   }
 
+  getErrorMessage () {
+    return this.ClacoFormService.getErrorMessage()
+  }
+
   clearSuccessMessage () {
     this.ClacoFormService.clearSuccessMessage()
+  }
+
+  clearErrorMessage () {
+    this.ClacoFormService.clearErrorMessage()
   }
 
   canAdd () {
@@ -36,5 +46,17 @@ export default class MenuCtrl {
 
   canSearch () {
     return this.ClacoFormService.getCanSearchEntry()
+  }
+
+  getRandomEntry () {
+    this.ClacoFormService.getRandomEntryId(this.ClacoFormService.getResourceId()).then(d => {
+      if (d) {
+        if ((typeof d === 'number') && (d > 0)) {
+          this.$state.go('entry_view', {entryId: d})
+        } else {
+          this.ClacoFormService.setErrorMessage(Translator.trans('no_available_random_entry', {}, 'clacoform'))
+        }
+      }
+    })
   }
 }

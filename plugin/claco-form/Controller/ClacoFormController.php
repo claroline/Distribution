@@ -550,6 +550,25 @@ class ClacoFormController extends Controller
 
     /**
      * @EXT\Route(
+     *     "/claco/form/{clacoForm}/entry/random",
+     *     name="claro_claco_form_entry_random",
+     *     options = {"expose"=true}
+     * )
+     *
+     * Returns id of a random entry
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function entryRandomAction(ClacoForm $clacoForm)
+    {
+        $this->clacoFormManager->checkRight($clacoForm, 'OPEN');
+        $entryId = $this->clacoFormManager->getRandomEntryId($clacoForm);
+
+        return new JsonResponse($entryId, 200);
+    }
+
+    /**
+     * @EXT\Route(
      *     "/claco/form/{clacoForm}/entries/list",
      *     name="claro_claco_form_entries_list",
      *     options = {"expose"=true}

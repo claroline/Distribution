@@ -59,7 +59,7 @@ export default class EntriesManagementCtrl {
   }
 
   initialize () {
-    this.ClacoFormService.clearSuccessMessage()
+    this.ClacoFormService.clearMessages()
     this.initializeModes()
     this.initializeColumns()
   }

@@ -89,6 +89,7 @@ mandatory: Obligatoire
 menu: Menu
 metadata: Données confidentielles
 my_entries: Mes fiches
+no_available_random_entry: Aucune fiche aléatoire disponible
 no_category: Aucune catégorie
 no_comment: Aucun commentaire
 no_entry: Aucune fiche

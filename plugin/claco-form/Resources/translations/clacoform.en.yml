@@ -89,6 +89,7 @@ mandatory: Mandatory
 menu: Menu
 metadata: Confidential data
 my_entries: My entries
+no_available_random_entry: No available random entry
 no_category: No category
 no_comment: No comment
 no_entry: No entry

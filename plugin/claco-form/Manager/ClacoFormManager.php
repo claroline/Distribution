@@ -558,6 +558,37 @@ class ClacoFormManager
         return $canCreate;
     }
 
+    public function getRandomEntryId(ClacoForm $clacoForm)
+    {
+        $entryId = null;
+        $entries = $this->getRandomEntries($clacoForm);
+        $count = count($entries);
+
+        if ($count > 0) {
+            $randomIndex = rand(0, $count - 1);
+            $entryId = $entries[$randomIndex]->getId();
+        }
+
+        return $entryId;
+    }
+
+    public function getRandomEntries(ClacoForm $clacoForm)
+    {
+        $categoriesIds = $clacoForm->getRandomCategories();
+        $start = $clacoForm->getRandomStartDate();
+        $startDate = empty($start) ? null : new \DateTime($start);
+        $end = $clacoForm->getRandomEndDate();
+        $endDate = empty($end) ? null : new \DateTime($end);
+
+        if (!is_null($endDate)) {
+            $endDate->setTime(23, 59, 59);
+        }
+
+        return count($categoriesIds) > 0 ?
+            $this->getPublishedEntriesByCategoriesAndDates($clacoForm, $categoriesIds, $startDate, $endDate) :
+            $this->getPublishedEntriesByDates($clacoForm, $startDate, $endDate);
+    }
+
     public function createEntry(ClacoForm $clacoForm, array $entryData, $title, array $keywordsData = [], User $user = null)
     {
         $this->om->startFlushSuite();
@@ -1034,6 +1065,16 @@ class ClacoFormManager
     public function getEntriesByCategories(ClacoForm $clacoForm, array $categories)
     {
         return count($categories) > 0 ? $this->entryRepo->findEntriesByCategories($clacoForm, $categories) : [];
+    }
+
+    public function getPublishedEntriesByDates(ClacoForm $clacoForm, $startDate = null, $endDate = null)
+    {
+        return $this->entryRepo->findPublishedEntriesByDates($clacoForm, $startDate, $endDate);
+    }
+
+    public function getPublishedEntriesByCategoriesAndDates(ClacoForm $clacoForm, $categoriesIds = [], $startDate = null, $endDate = null)
+    {
+        return $this->entryRepo->findPublishedEntriesByCategoriesAndDates($clacoForm, $categoriesIds, $startDate, $endDate);
     }
 
     /***************************************

@@ -41,7 +41,7 @@ export default class KeywordsManagementCtrl {
   }
 
   initialize () {
-    this.ClacoFormService.clearSuccessMessage()
+    this.ClacoFormService.clearMessages()
   }
 
   canEdit () {

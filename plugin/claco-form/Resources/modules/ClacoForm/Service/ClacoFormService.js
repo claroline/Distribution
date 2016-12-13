@@ -25,6 +25,7 @@ export default class ClacoFormService {
     this.resourceNodeId = ClacoFormService._getGlobal('resourceNodeId')
     this.resourceNodeName = ClacoFormService._getGlobal('resourceNodeName')
     this.successMessage = null
+    this.errorMessage = null
   }
 
   getIsAnon () {
@@ -87,6 +88,23 @@ export default class ClacoFormService {
     this.successMessage = null
   }
 
+  getErrorMessage () {
+    return this.errorMessage
+  }
+
+  setErrorMessage (message) {
+    this.errorMessage = message
+  }
+
+  clearErrorMessage () {
+    this.errorMessage = null
+  }
+
+  clearMessages () {
+    this.clearSuccessMessage()
+    this.clearErrorMessage()
+  }
+
   saveConfiguration (resourceId, config) {
     const url = Routing.generate('claro_claco_form_configuration_edit', {clacoForm: resourceId})
 
@@ -109,6 +127,16 @@ export default class ClacoFormService {
         this.template = d['data']['template']
 
         return true
+      }
+    })
+  }
+
+  getRandomEntryId (resourceId) {
+    const url = Routing.generate('claro_claco_form_entry_random', {clacoForm: resourceId})
+
+    return this.$http.get(url).then(d => {
+      if (d['status'] === 200) {
+        return d['data']
       }
     })
   }

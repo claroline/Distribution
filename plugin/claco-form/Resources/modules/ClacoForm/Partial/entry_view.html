@@ -58,6 +58,41 @@
         </h3>
     </div>
     <div class="panel-body" ng-if="cfc.isAllowed()">
+        <div class="alert alert-danger" ng-if="cfc.getErrorMessage()">
+            <i class="fa fa-times pointer-hand close" ng-click="cfc.clearErrorMessage()"></i>
+            {{ cfc.getErrorMessage() }}
+        </div>
+        <div class="text-center" ng-if="cfc.config['menu_position'] === 'up' || cfc.config['menu_position'] === 'both'">
+            <a class="btn btn-default"
+                    ui-sref="entry_creation"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="{{ 'add_entry'|trans:{}:'clacoform' }}"
+                    ng-if="cfc.canCreate()"
+            >
+                <i class="fa fa-edit"></i>
+            </a>
+            <a class="btn btn-default"
+                    ui-sref="entries_list"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="{{ 'entries_list'|trans:{}:'clacoform' }}"
+                    ng-if="cfc.canSearch()"
+            >
+                <i class="fa fa-table"></i>
+            </a>
+            <button class="btn btn-default"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="{{ 'random_entry'|trans:{}:'clacoform' }}"
+                    ng-click="cfc.getRandomEntry()"
+                    ng-if="cfc.config['random_enabled']"
+            >
+                <i class="fa fa-random"></i>
+            </button>
+            <br>
+            <br>
+        </div>
         <div class="panel panel-default">
             <div class="panel-heading clearfix">
                 <div class="panel-title">
@@ -69,7 +104,7 @@
                                     data-placement="top"
                                     title="{{ 'unpublish'|trans:{}:'platform' }}"
                                     ng-click="cfc.changeEntryStatus()"
-                                    ng-if="cfc.entry['status'] === 1"
+                                    ng-if="cfc.canManageEntry() && cfc.entry['status'] === 1"
                             >
                                 <i class="fa fa-eye-slash"></i>
                             </button>
@@ -78,7 +113,7 @@
                                     data-placement="top"
                                     title="{{ 'publish'|trans:{}:'platform' }}"
                                     ng-click="cfc.changeEntryStatus()"
-                                    ng-if="cfc.entry['status'] !== 1"
+                                    ng-if="cfc.canManageEntry() && cfc.entry['status'] !== 1"
                             >
                                 <i class="fa fa-eye"></i>
                             </button>
@@ -283,6 +318,35 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="text-center" ng-if="cfc.config['menu_position'] === 'down' || cfc.config['menu_position'] === 'both'">
+            <a class="btn btn-default"
+                    ui-sref="entry_creation"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="{{ 'add_entry'|trans:{}:'clacoform' }}"
+                    ng-if="cfc.canCreate()"
+            >
+                <i class="fa fa-edit"></i>
+            </a>
+            <a class="btn btn-default"
+                    ui-sref="entries_list"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="{{ 'entries_list'|trans:{}:'clacoform' }}"
+                    ng-if="cfc.canSearch()"
+            >
+                <i class="fa fa-table"></i>
+            </a>
+            <button class="btn btn-default"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="{{ 'random_entry'|trans:{}:'clacoform' }}"
+                    ng-click="cfc.getRandomEntry()"
+                    ng-if="cfc.config['random_enabled']"
+            >
+                <i class="fa fa-random"></i>
+            </button>
         </div>
     </div>
     <div class="panel-body" ng-if="!cfc.isAllowed()">
