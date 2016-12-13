@@ -7,14 +7,15 @@
 //                                                                       //
 ///////////////////////////////////////////////////////////////////////////
 
-@import "../../../../../../../vendor/claroline/front-end-bundle/Resources/public/bootstrap/less/bootstrap";
+@import "./../../../../../../../vendor/claroline/front-end-bundle/Resources/public/bootstrap/less/bootstrap";
+@import "./layout/page.less";
 
 html, body {
     height: 100%;
 }
 
 body {
-    padding: (@navbar-height + 20px) 0 (@navbar-height + 10px) 0;
+    padding: (@navbar-height + (floor(@grid-gutter-width / 2))) 0;
 }
 
 table th {
