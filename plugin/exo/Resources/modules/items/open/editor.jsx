@@ -1,7 +1,7 @@
 import React, {PropTypes as T} from 'react'
 import get from 'lodash/get'
-import {tex} from './../../utils/translate'
 import {actions} from './editor'
+import {tex} from './../../utils/translate'
 import {FormGroup} from './../../components/form/form-group.jsx'
 
 export const Open = (props) =>

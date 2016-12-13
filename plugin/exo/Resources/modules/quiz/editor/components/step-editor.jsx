@@ -126,7 +126,7 @@ let ItemPanel = props =>
               }
             >
               {React.createElement(
-                getDefinition(props.item.type).component,
+                getDefinition(props.item.type).editor.component,
                 {
                   item: props.item,
                   onChange: subAction =>

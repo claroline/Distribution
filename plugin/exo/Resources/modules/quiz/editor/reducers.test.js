@@ -249,7 +249,9 @@ describe('Items reducer', () => {
 
   it('delegates to item type reducer on detail update', () => {
     registerFixtureType({
-      reduce: item => Object.assign({}, item, {reduced: true})
+      editor: {
+        reduce: item => Object.assign({}, item, {reduced: true})
+      }
     })
     const items = freeze({
       '1': {
@@ -271,8 +273,10 @@ describe('Items reducer', () => {
 
   it('calls item validator on detail update', () => {
     registerFixtureType({
-      validate: item => {
-        return item.foo !== 'bar' ? {foo: 'Should be bar'} : {}
+      editor: {        
+        validate: item => {
+          return item.foo !== 'bar' ? {foo: 'Should be bar'} : {}
+        }
       }
     })
     const items = freeze({

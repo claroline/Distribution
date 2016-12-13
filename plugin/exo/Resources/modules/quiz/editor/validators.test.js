@@ -77,8 +77,10 @@ describe('item validator', () => {
 
   it('delegates to item type validator', () => {
     registerFixtureType({
-      validate: item => {
-        return item.foo !== 'bar' ? {foo: 'Should be bar'} : {}
+      editor: {
+        validate: item => {
+          return item.foo !== 'bar' ? {foo: 'Should be bar'} : {}
+        }
       }
     })
     const item = {
@@ -94,8 +96,10 @@ describe('item validator', () => {
 
   it('merges base and type errors', () => {
     registerFixtureType({
-      validate: item => {
-        return item.foo !== 'bar' ? {foo: 'Should be bar'} : {}
+      editor: {        
+        validate: item => {
+          return item.foo !== 'bar' ? {foo: 'Should be bar'} : {}
+        }
       }
     })
     const item = {
@@ -126,8 +130,14 @@ function registerFixtureType(properties = {}) {
     {
       name: 'foo',
       type: 'foo/bar',
-      component: {},
-      reduce: item => item
+      editor: {
+        component: {},
+        reduce: item => item
+      },
+      player: {
+        component: {},
+        reduce: item => item
+      }
     },
     properties
   ))

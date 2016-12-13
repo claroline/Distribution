@@ -5,8 +5,6 @@ import {Open as component} from './player.jsx'
 import {ITEM_OPEN} from './../../quiz/player/actions'
 import {makeActionCreator} from './../../utils/utils'
 
-
-// action answerUpdate
 const UPDATE_ANSWER = 'UPDATE_ANSWER'
 
 export const actions = {
