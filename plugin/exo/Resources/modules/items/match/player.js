@@ -5,6 +5,6 @@ function reduce(match = {}) {
 }
 
 export default {
-  component: component,
-  reduce: reduce
+  component,
+  reduce
 }

@@ -5,6 +5,6 @@ function reduce(set = {}) {
 }
 
 export default {
-  component: component,
-  reduce: reduce
+  component,
+  reduce
 }

@@ -5,6 +5,6 @@ function reduce(choice = {}) {
 }
 
 export default {
-  component: component,
-  reduce: reduce
+  component,
+  reduce
 }

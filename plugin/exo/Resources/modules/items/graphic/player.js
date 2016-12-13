@@ -5,6 +5,6 @@ function reduce(graphic = {}) {
 }
 
 export default {
-  component: component,
-  reduce: reduce
+  component,
+  reduce
 }

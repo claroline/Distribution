@@ -5,6 +5,6 @@ function reduce(cloze = {}) {
 }
 
 export default {
-  component: component,
-  reduce: reduce
+  component,
+  reduce
 }

@@ -5,6 +5,6 @@ function reduce(words = {}) {
 }
 
 export default {
-  component: component,
-  reduce: reduce
+  component,
+  reduce
 }
