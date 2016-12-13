@@ -79,7 +79,7 @@ class FacetManager
     public function createFacet($name, $forceCreationForm = false, $isMain = false)
     {
         $this->om->startFlushSuite();
-        $count = $this->facetRepo->count($isMain);
+        $count = $this->facetRepo->countFacets($isMain);
         $facet = new Facet();
         $facet->setName($name);
         $facet->setIsMain($isMain);
