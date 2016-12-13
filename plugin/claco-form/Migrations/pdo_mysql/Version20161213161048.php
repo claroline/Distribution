@@ -8,9 +8,9 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution
  *
- * Generation date: 2016/12/02 11:31:54
+ * Generation date: 2016/12/13 04:10:50
  */
-class Version20161202113152 extends AbstractMigration
+class Version20161213161048 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -58,6 +58,19 @@ class Version20161202113152 extends AbstractMigration
                 INDEX IDX_C61CA20BBA364942 (entry_id), 
                 INDEX IDX_C61CA20B115D4552 (keyword_id), 
                 PRIMARY KEY(entry_id, keyword_id)
+            ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
+        ");
+        $this->addSql("
+            CREATE TABLE claro_clacoformbundle_field_choice_category (
+                id INT AUTO_INCREMENT NOT NULL, 
+                field_id INT NOT NULL, 
+                category_id INT NOT NULL, 
+                field_facet_choice_id INT DEFAULT NULL, 
+                field_value VARCHAR(255) NOT NULL, 
+                INDEX IDX_1F7C5EF7443707B0 (field_id), 
+                INDEX IDX_1F7C5EF712469DE2 (category_id), 
+                INDEX IDX_1F7C5EF7E07710C3 (field_facet_choice_id), 
+                PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
         ");
         $this->addSql("
@@ -176,6 +189,24 @@ class Version20161202113152 extends AbstractMigration
             ON DELETE CASCADE
         ");
         $this->addSql("
+            ALTER TABLE claro_clacoformbundle_field_choice_category 
+            ADD CONSTRAINT FK_1F7C5EF7443707B0 FOREIGN KEY (field_id) 
+            REFERENCES claro_clacoformbundle_field (id) 
+            ON DELETE CASCADE
+        ");
+        $this->addSql("
+            ALTER TABLE claro_clacoformbundle_field_choice_category 
+            ADD CONSTRAINT FK_1F7C5EF712469DE2 FOREIGN KEY (category_id) 
+            REFERENCES claro_clacoformbundle_category (id) 
+            ON DELETE CASCADE
+        ");
+        $this->addSql("
+            ALTER TABLE claro_clacoformbundle_field_choice_category 
+            ADD CONSTRAINT FK_1F7C5EF7E07710C3 FOREIGN KEY (field_facet_choice_id) 
+            REFERENCES claro_field_facet_choice (id) 
+            ON DELETE CASCADE
+        ");
+        $this->addSql("
             ALTER TABLE claro_clacoformbundle_claco_form 
             ADD CONSTRAINT FK_ACB82378B87FAB32 FOREIGN KEY (resourceNode_id) 
             REFERENCES claro_resource_node (id) 
@@ -272,6 +303,10 @@ class Version20161202113152 extends AbstractMigration
             DROP FOREIGN KEY FK_E2D499A8F7D9CC0C
         ");
         $this->addSql("
+            ALTER TABLE claro_clacoformbundle_field_choice_category 
+            DROP FOREIGN KEY FK_1F7C5EF7443707B0
+        ");
+        $this->addSql("
             ALTER TABLE claro_clacoformbundle_field_value 
             DROP FOREIGN KEY FK_B481BDB9443707B0
         ");
@@ -282,6 +317,10 @@ class Version20161202113152 extends AbstractMigration
         $this->addSql("
             ALTER TABLE claro_clacoformbundle_entry_category 
             DROP FOREIGN KEY FK_2009A6BE12469DE2
+        ");
+        $this->addSql("
+            ALTER TABLE claro_clacoformbundle_field_choice_category 
+            DROP FOREIGN KEY FK_1F7C5EF712469DE2
         ");
         $this->addSql("
             ALTER TABLE claro_clacoformbundle_category_manager 
@@ -298,6 +337,9 @@ class Version20161202113152 extends AbstractMigration
         ");
         $this->addSql("
             DROP TABLE claro_clacoformbundle_entry_keyword
+        ");
+        $this->addSql("
+            DROP TABLE claro_clacoformbundle_field_choice_category
         ");
         $this->addSql("
             DROP TABLE claro_clacoformbundle_claco_form
