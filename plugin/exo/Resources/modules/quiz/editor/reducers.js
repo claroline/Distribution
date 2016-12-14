@@ -126,9 +126,8 @@ function reduceSteps(steps = {}, action = {}) {
   return steps
 }
 
-// @TODO reducers are defined in editor or player... we should have both test methods?
-// below is for editor
 function reduceItems(items = {}, action = {}) {
+  console.log('reduce items from editor')
   switch (action.type) {
     case ITEM_CREATE: {
       let newItem = decorateItem({
