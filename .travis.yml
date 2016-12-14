@@ -30,7 +30,7 @@ mysql:
   encoding: utf8
 
 before_install:
-  - free -h
+  - free -m
 
   # prepare execution of chromium in js tests
   - export CHROME_BIN=chromium-browser
@@ -65,7 +65,7 @@ before_script:
   - composer self-update 1.2.1
 
 
-  - free -h
+  - free -m
 
   # fetch dependencies and build (currently this is done in prod mode)
   - export TRAVIS_REPO_SLUG REMOTE_HOST REMOTE_USER REMOTE_PASS CACHE_PATH
