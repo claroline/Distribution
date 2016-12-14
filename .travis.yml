@@ -32,6 +32,10 @@ mysql:
   encoding: utf8
 
 before_install:
+  # enables swap
+  - /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=1024
+  - /sbin/mkswap /var/swap.1
+  - /sbin/swapon /var/swap.1
   # prepare execution of chromium in js tests
   - export CHROME_BIN=chromium-browser
   - export DISPLAY=:99.0
