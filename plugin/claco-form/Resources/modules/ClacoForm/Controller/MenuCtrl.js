@@ -10,10 +10,12 @@
 /*global Translator*/
 
 export default class MenuCtrl {
-  constructor ($state, ClacoFormService) {
+  constructor ($state, ClacoFormService, EntryService) {
     this.$state = $state
     this.ClacoFormService = ClacoFormService
+    this.EntryService = EntryService
     this.config = ClacoFormService.getResourceDetails()
+    this.showNbEntries = this.config['display_nb_entries'] === 'all' || this.config['display_nb_entries'] === 'published'
   }
 
   canEdit () {
@@ -46,6 +48,14 @@ export default class MenuCtrl {
 
   canSearch () {
     return this.ClacoFormService.getCanSearchEntry()
+  }
+
+  getNbEntries () {
+    return this.EntryService.getNbEntries()
+  }
+
+  getNbPublishedEntries () {
+    return this.EntryService.getNbPublishedEntries()
   }
 
   getRandomEntry () {

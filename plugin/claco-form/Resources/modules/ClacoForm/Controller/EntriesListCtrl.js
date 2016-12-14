@@ -44,8 +44,8 @@ export default class EntriesManagementCtrl {
     this.initialize()
   }
 
-  _updateEntryCallback (data) {
-    this.EntryService._updateEntryCallback(data)
+  _updateEntryCallback (data, statusChanged = false, oldStatus = null) {
+    this.EntryService._updateEntryCallback(data, statusChanged, oldStatus)
     this.tableParams['entries'].reload()
     this.tableParams['myEntries'].reload()
     this.tableParams['managerEntries'].reload()

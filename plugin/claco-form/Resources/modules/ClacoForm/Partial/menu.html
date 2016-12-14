@@ -2,6 +2,15 @@
     <div class="panel-heading clearfix">
         <h3 class="panel-title">
             {{ cfc.getResourceNodeName() }}
+            <span class="badge" ng-if="cfc.showNbEntries">
+                {{ 'entries'|trans:{}:'clacoform' }} :
+                <span ng-if="cfc.config['display_nb_entries'] === 'all'">
+                    {{ cfc.getNbEntries() }}
+                </span>
+                <span ng-if="cfc.config['display_nb_entries'] === 'published'">
+                    {{ cfc.getNbPublishedEntries() }}
+                </span>
+            </span>
             <div class="btn-group pull-right" uib-dropdown ng-if="cfc.canEdit()">
                 <button class="btn btn-default btn-sm" uib-dropdown-toggle>
                     <i class="fa fa-cogs"></i>

@@ -23,12 +23,14 @@ export default class EntryService {
     this.entries = []
     this.myEntries = EntryService._getGlobal('myEntries')
     this.managerEntries = EntryService._getGlobal('managerEntries')
+    this.nbEntries = EntryService._getGlobal('nbEntries')
+    this.nbPublishedEntries = EntryService._getGlobal('nbPublishedEntries')
     this._updateEntryCallback = this._updateEntryCallback.bind(this)
     this._removeEntryCallback = this._removeEntryCallback.bind(this)
     this.initialize()
   }
 
-  _updateEntryCallback (data) {
+  _updateEntryCallback (data, statusChanged = false, oldStatus = null) {
     let entry = JSON.parse(data)
     this.formatEntry(entry)
     const entryIndex = this.entries.findIndex(e => e['id'] === entry['id'])
@@ -43,6 +45,13 @@ export default class EntryService {
     }
     if (managerEntryIndex > -1) {
       this.managerEntries[managerEntryIndex] = entry
+    }
+    if (statusChanged) {
+      if (entry['status'] === 1) {
+        ++this.nbPublishedEntries
+      } else if (oldStatus === 1) {
+        --this.nbPublishedEntries
+      }
     }
   }
 
@@ -60,6 +69,11 @@ export default class EntryService {
     }
     if (managerEntryIndex > -1) {
       this.managerEntries.splice(managerEntryIndex, 1)
+    }
+    --this.nbEntries
+
+    if (entry['status'] === 1) {
+      --this.nbPublishedEntries
     }
   }
 
@@ -105,6 +119,14 @@ export default class EntryService {
     })
   }
 
+  getNbEntries () {
+    return this.nbEntries
+  }
+
+  getNbPublishedEntries () {
+    return this.nbPublishedEntries
+  }
+
   getNbMyEntries () {
     return this.myEntries.length
   }
@@ -147,6 +169,11 @@ export default class EntryService {
         this.entries.push(entry)
         this.myEntries.push(entry)
         this.formatEntry(entry)
+        ++this.nbEntries
+
+        if (entry['status'] === 1) {
+          ++this.nbPublishedEntries
+        }
 
         return entry
       }
@@ -225,11 +252,12 @@ export default class EntryService {
   }
 
   changeEntryStatus (entry, callback = null) {
+    const oldStatus = entry['status']
     const url = Routing.generate('claro_claco_form_entry_status_change', {entry: entry['id']})
     const updateCallback = callback !== null ? callback : this._updateEntryCallback
     this.$http.put(url).then(d => {
       if (d['status'] === 200) {
-        updateCallback(d['data'])
+        updateCallback(d['data'], true, oldStatus)
       }
     })
   }

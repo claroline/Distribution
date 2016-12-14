@@ -76,6 +76,10 @@ class ClacoFormController extends Controller
         $fields = $clacoForm->getFields();
         $keywords = $clacoForm->getKeywords();
         $categories = $clacoForm->getCategories();
+        $allEntries = $this->clacoFormManager->getAllEntries($clacoForm);
+        $publishedEntries = $this->clacoFormManager->getPublishedEntries($clacoForm);
+        $nbEntries = count($allEntries);
+        $nbPublishedEntries = count($publishedEntries);
         $myEntries = $isAnon ? [] : $this->clacoFormManager->getEntriesByUser($clacoForm, $user);
         $myCategories = $isAnon ? [] : $this->clacoFormManager->getCategoriesByManager($clacoForm, $user);
         $isCategoryManager = count($myCategories) > 0;
@@ -117,6 +121,8 @@ class ClacoFormController extends Controller
             'categories' => $serializedCategories,
             'myEntries' => $serializedMyEntries,
             'managerEntries' => $serializedManagerEntries,
+            'nbEntries' => $nbEntries,
+            'nbPublishedEntries' => $nbPublishedEntries,
         ];
     }
 

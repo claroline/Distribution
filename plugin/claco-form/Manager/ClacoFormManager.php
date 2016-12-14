@@ -1047,6 +1047,11 @@ class ClacoFormManager
         return $this->entryRepo->findBy(['clacoForm' => $clacoForm, 'user' => $user]);
     }
 
+    public function getAllEntries(ClacoForm $clacoForm)
+    {
+        return $this->entryRepo->findBy(['clacoForm' => $clacoForm]);
+    }
+
     public function getPublishedEntries(ClacoForm $clacoForm)
     {
         return $this->entryRepo->findPublishedEntries($clacoForm);
