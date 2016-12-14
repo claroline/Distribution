@@ -336,7 +336,7 @@ class WorkspaceParametersController extends Controller
         if ($form->isValid()) {
             $user = $form->getData();
             $this->userManager->createUser($user);
-            if ($workspace->getRegistrationValidation() === true) {
+            if ($workspace->getRegistrationValidation()) {
                 $this->workspaceManager->addUserQueue($workspace, $user);
                 $flashBag = $request->getSession()->getFlashBag();
                 $translator = $this->get('translator');
