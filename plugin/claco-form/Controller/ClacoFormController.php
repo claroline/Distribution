@@ -73,7 +73,6 @@ class ClacoFormController extends Controller
         $canEdit = $this->clacoFormManager->hasRight($clacoForm, 'EDIT');
         $user = $this->tokenStorage->getToken()->getUser();
         $isAnon = $user === 'anon.';
-//        $fields = $clacoForm->getFields();
         $fields = $this->clacoFormManager->getFieldsByClacoForm($clacoForm);
         $keywords = $clacoForm->getKeywords();
         $categories = $clacoForm->getCategories();

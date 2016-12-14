@@ -11,6 +11,8 @@ import entryFormTemplate from './Partial/entry_form.html'
 import entryViewTemplate from './Partial/entry_view.html'
 
 export default function($stateProvider, $urlRouterProvider) {
+  const config = window['resourceDetails']
+
   $stateProvider
     .state ('menu', {
       url: '/menu',
@@ -72,6 +74,23 @@ export default function($stateProvider, $urlRouterProvider) {
       controller: 'EntryViewCtrl',
       controllerAs: 'cfc'
     })
+    .state ('entry_random', {
+      url: '/entries/random',
+      controller: 'EntryRandomCtrl',
+      controllerAs: 'cfc'
+    })
 
-  $urlRouterProvider.otherwise('/menu')
+  switch (config['default_home']) {
+    case 'random' :
+      $urlRouterProvider.otherwise('/entries/random')
+      break
+    case 'search' :
+      $urlRouterProvider.otherwise('/entries/list')
+      break
+    case 'add' :
+      $urlRouterProvider.otherwise('/entries/creation')
+      break
+    default :
+      $urlRouterProvider.otherwise('/menu')
+  }
 }

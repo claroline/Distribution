@@ -35,6 +35,7 @@ import EntriesListCtrl from './Controller/EntriesListCtrl'
 import EntryCreationCtrl from './Controller/EntryCreationCtrl'
 import EntryEditionCtrl from './Controller/EntryEditionCtrl'
 import EntryViewCtrl from './Controller/EntryViewCtrl'
+import EntryRandomCtrl from './Controller/EntryRandomCtrl'
 import ClacoFormService from './Service/ClacoFormService'
 
 angular.module('ClacoFormModule', [
@@ -65,6 +66,7 @@ angular.module('ClacoFormModule', [
 .controller('EntryCreationCtrl', ['$state', 'ClacoFormService', 'EntryService', 'FieldService', 'KeywordService', EntryCreationCtrl])
 .controller('EntryEditionCtrl', ['$state', '$stateParams', 'ClacoFormService', 'EntryService', 'FieldService', 'CategoryService', 'KeywordService', EntryEditionCtrl])
 .controller('EntryViewCtrl', ['$state', '$stateParams', 'NgTableParams', 'ClacoFormService', 'EntryService', 'FieldService', 'CategoryService', 'KeywordService', 'CommentService', EntryViewCtrl])
+.controller('EntryRandomCtrl', ['$state', 'ClacoFormService', EntryRandomCtrl])
 .config(Routing)
 .config([
   'cfpLoadingBarProvider',
