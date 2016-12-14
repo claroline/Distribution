@@ -7,9 +7,10 @@ import {
   createStore as baseCreate
 } from 'redux'
 import thunk from 'redux-thunk'
-import {reducers as editorReducers} from './editor/reducers'
-import {reducers as playerReducers} from './player/reducers'
+
 import {reducers as quizReducers} from './reducers'
+import {reducers as editorReducers} from './editor/reducers'
+//import {reducers as playerReducers} from './player/reducers'
 
 const middleware = [thunk]
 

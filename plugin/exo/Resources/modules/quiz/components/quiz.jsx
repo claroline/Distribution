@@ -20,7 +20,8 @@ let Quiz = props =>
 Quiz.propTypes = {
   title: T.string.isRequired,
   editable: T.bool.isRequired,
-  currentSection: T.string.isRequired
+  currentSection: T.string.isRequired,
+  updateViewMode: T.func.isRequired
 }
 
 function sectionComponent(section) {
@@ -44,6 +45,6 @@ function mapStateToProps(state) {
   }
 }
 
-Quiz = connect(mapStateToProps, actions.updateViewMode)(Quiz)
+Quiz = connect(mapStateToProps, actions)(Quiz)
 
 export {Quiz}

@@ -5,7 +5,7 @@ import NavItem from 'react-bootstrap/lib/NavItem'
 import NavDropdown from 'react-bootstrap/lib/NavDropdown'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
 import {t, tex} from './../../utils/translate'
-import {actions} from './../actions'
+import {VIEW_PLAYER} from './../enums'
 
 export const TopBar = props =>
   <Navbar collapseOnSelect>
@@ -57,8 +57,7 @@ export const TopBar = props =>
       <Nav pullRight>
         {!props.empty &&
           <NavItem eventKey={5} href="#" onClick={() => {
-            console.log('yope')
-            props.updateViewMode('player')
+            props.updateViewMode(VIEW_PLAYER)
           }}>
             <span className="fa fa-fw fa-play"></span>
             {tex('exercise_try')}
