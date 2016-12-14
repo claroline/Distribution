@@ -14,7 +14,7 @@ import {reducers as playerReducers} from './player/reducers'
 import {VIEW_PLAYER, VIEW_EDITOR} from './enums'
 import {VIEW_MODE_UPDATE} from './actions'
 
-const reducerForEditorMode = {
+const reducerForEditorMode = combineReducers({
   quiz: editorReducers.quiz,
   steps: editorReducers.steps,
   items: editorReducers.items,
@@ -22,9 +22,9 @@ const reducerForEditorMode = {
   openPanels: editorReducers.openPanels,
   modal: editorReducers.modal,
   viewMode: quizReducers.viewMode
-}
+})
 
-const reducerForPlayerMode = {
+const reducerForPlayerMode = combineReducers({
   quiz: editorReducers.quiz,
   steps: editorReducers.steps,
   items: playerReducers.items,
@@ -32,19 +32,19 @@ const reducerForPlayerMode = {
   openPanels: editorReducers.openPanels,
   modal: editorReducers.modal,
   viewMode: quizReducers.viewMode
-}
+})
 
 let finalStore
 
 const reducerSwitcher = () => next => action => {
   let reducer
-  if(action.type === VIEW_MODE_UPDATE){
+  if (action.type === VIEW_MODE_UPDATE) {
     switch(action.mode){
       case VIEW_PLAYER:
-        reducer = combineReducers(reducerForPlayerMode)
+        reducer = reducerForPlayerMode
         break
       case VIEW_EDITOR:
-        reducer = combineReducers(reducerForEditorMode)
+        reducer = reducerForEditorMode
         break
     }
   }
@@ -61,7 +61,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 export function createStore(initialState) {
-  finalStore =  baseCreate(combineReducers(reducerForEditorMode), initialState, compose(
+  finalStore =  baseCreate(reducerForEditorMode, initialState, compose(
     applyMiddleware(...middleware),
     window.devToolsExtension ? window.devToolsExtension() : f => f
   ))

@@ -22,7 +22,8 @@ describe('createStore', () => {
         type: null,
         props: {},
         fading: false
-      }
+      },
+      viewMode: 'editor'
     })
   })
 })

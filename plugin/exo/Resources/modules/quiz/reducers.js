@@ -1,7 +1,6 @@
 import {VIEW_EDITOR} from './enums'
 import {VIEW_MODE_UPDATE} from './actions'
 
-
 function initialViewMode() {
   return VIEW_EDITOR
 }

@@ -127,7 +127,6 @@ function reduceSteps(steps = {}, action = {}) {
 }
 
 function reduceItems(items = {}, action = {}) {
-  console.log('reduce items from editor')
   switch (action.type) {
     case ITEM_CREATE: {
       let newItem = decorateItem({

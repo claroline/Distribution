@@ -16,7 +16,6 @@ describe('Quiz', () => {
     const quiz = new Quiz(quizFixture())
     const element = document.createElement('div')
     quiz.render(element)
-
     // this is just a rough test to check main components have been rendered
     assert(element.querySelector('.quiz-editor'), 'a .quiz-editor element is present')
     assert(element.querySelector('.thumbnail-box'), 'a .thumbnail-box element is present')
