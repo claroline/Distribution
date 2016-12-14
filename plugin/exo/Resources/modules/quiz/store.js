@@ -21,7 +21,7 @@ if (process.env.NODE_ENV !== 'production') {
 const reducer = combineReducers({
   quiz: editorReducers.quiz,
   steps: editorReducers.steps,
-  items: quizReducers.viewMode === 'editor' ? editorReducers.items : playerReducers.items,
+  items: editorReducers.items,
   currentObject: editorReducers.currentObject,
   openPanels: editorReducers.openPanels,
   modal: editorReducers.modal,

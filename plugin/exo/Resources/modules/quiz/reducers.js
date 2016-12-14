@@ -4,16 +4,14 @@ import {VIEW_PLAYER, VIEW_EDITOR} from './enums'
 import {UPDATE_VIEW_MODE} from './actions'
 
 function initialViewMode() {
-  return {
-    viewMode: VIEW_PLAYER
-  }
+  return VIEW_EDITOR
 }
 
 function reduceViewMode(viewMode = initialViewMode(), action = {}) {
-  console.log('reducer called')
+  console.log('reduceViewMode called')
   switch (action.type) {
     case UPDATE_VIEW_MODE: {
-      return update(viewMode, {$set: action.viewMode})
+      return action.mode
     }
   }
   return viewMode

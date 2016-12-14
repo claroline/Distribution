@@ -6,6 +6,7 @@ import {getDefinition} from './../../items/item-types'
 import ITEM_OPEN from './actions'
 
 function reduceItems(items = {}, action = {}) {
+  console.log('player reduce items called')
   switch (action.type) {
     case ITEM_OPEN: {
       let newItem = decorateItem({
