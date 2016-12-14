@@ -79,6 +79,13 @@ class Entry
     protected $creationDate;
 
     /**
+     * @ORM\Column(name="edition_date", type="datetime", nullable=true)
+     * @Groups({"api_claco_form", "api_user_min"})
+     * @SerializedName("editionDate")
+     */
+    protected $editionDate = null;
+
+    /**
      * @ORM\Column(name="publication_date", type="datetime", nullable=true)
      * @Groups({"api_claco_form", "api_user_min"})
      * @SerializedName("publicationDate")
@@ -178,6 +185,16 @@ class Entry
     public function setCreationDate(\DateTime $creationDate)
     {
         $this->creationDate = $creationDate;
+    }
+
+    public function getEditionDate()
+    {
+        return $this->editionDate;
+    }
+
+    public function setEditionDate(\DateTime $editionDate = null)
+    {
+        $this->editionDate = $editionDate;
     }
 
     public function getPublicationDate()

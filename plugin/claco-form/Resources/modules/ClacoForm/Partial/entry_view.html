@@ -131,7 +131,7 @@
                 <div ng-bind-html="cfc.template|trust_html" ng-if="cfc.template">
                 </div>
                 <div ng-if="!cfc.template">
-                    <div ng-repeat="field in cfc.fields">
+                    <div ng-repeat="field in cfc.fields" ng-if="cfc.metadataAllowed || !field['isMetadata']">
                         <div class="row">
                             <label class="col-md-3">
                                 {{ field['name'] }}
@@ -151,6 +151,26 @@
                         </div>
                         <hr ng-if="!$last">
                     </div>
+                </div>
+                <div ng-if="cfc.metadataAllowed">
+                    <br>
+                    <span ng-if="cfc.entry['publicationDate']">
+                        {{ 'publication_date'|trans:{}:'clacoform' }} :
+                        {{ cfc.entry['publicationDate']|date:'dd/MM/yyyy' }}
+                        -
+                    </span>
+                    <span ng-if="cfc.entry['editionDate']">
+                        {{ 'edition_date'|trans:{}:'clacoform' }} :
+                        {{ cfc.entry['editionDate']|date:'dd/MM/yyyy' }}
+                        -
+                    </span>
+                    {{ 'author'|trans:{}:'platform' }} :
+                    <span ng-if="cfc.entry['user']">
+                        {{ cfc.entry['user']['firstName'] }} {{ cfc.entry['user']['lastName'] }}
+                    </span>
+                    <span ng-if="!cfc.entry['user']">
+                        {{ 'anonymous'|trans:{}:'platform' }}
+                    </span>
                 </div>
             </div>
 

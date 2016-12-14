@@ -38,6 +38,7 @@ display: Display
 edit_category: Edit category
 edit_field: Edit field
 edit_keyword: Edit keyword
+edition_date: Edition date
 entries: Entries
 entries_list: List of entries
 entries_list_search: List of entries (Search)
@@ -99,6 +100,7 @@ no_keyword: No keyword
 no_manager_entry: You are the manager of no entry
 no_own_entry: You haven't create an entry yet
 optional: Optional
+publication_date: Publication date
 random_entries: Random entries
 random_entry: Random entry
 random_mode: Random mode

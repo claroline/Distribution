@@ -25,6 +25,7 @@ class LogEntryEditEvent extends LogGenericEvent
         $details['title'] = $entry->getTitle();
         $details['status'] = $entry->getStatus();
         $details['creationDate'] = $entry->getCreationDate();
+        $details['editionDate'] = $entry->getEditionDate();
         $details['publicationDate'] = $entry->getPublicationDate();
         $user = $entry->getUser();
 

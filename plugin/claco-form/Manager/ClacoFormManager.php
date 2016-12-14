@@ -717,6 +717,7 @@ class ClacoFormManager
                 $entry->addKeyword($keyword);
             }
         }
+        $entry->setEditionDate(new \DateTime());
         $this->persistEntry($entry);
         $event = new LogEntryEditEvent($entry);
         $this->eventDispatcher->dispatch('log', $event);
@@ -757,6 +758,7 @@ class ClacoFormManager
         $details['title'] = $entry->getTitle();
         $details['status'] = $entry->getStatus();
         $details['creationDate'] = $entry->getCreationDate();
+        $details['editionDate'] = $entry->getEditionDate();
         $details['publicationDate'] = $entry->getPublicationDate();
         $user = $entry->getUser();
 
@@ -999,6 +1001,11 @@ class ClacoFormManager
     /*************************************
      * Access to FieldRepository methods *
      *************************************/
+
+    public function getFieldsByClacoForm(ClacoForm $clacoForm)
+    {
+        return $this->fieldRepo->findBy(['clacoForm' => $clacoForm], ['id' => 'ASC']);
+    }
 
     public function getFieldByNameExcludingId(ClacoForm $clacoForm, $name, $id)
     {

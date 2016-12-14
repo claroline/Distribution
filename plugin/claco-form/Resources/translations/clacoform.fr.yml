@@ -38,6 +38,7 @@ display: Affichage
 edit_category: Modifier la catégorie
 edit_field: Modifier le champ
 edit_keyword: Modifier le mot-clé
+edition_date: Date de modification
 entries: Fiches
 entries_list: Liste de fiches
 entries_list_search: Liste de fiches (Recherche)
@@ -99,6 +100,7 @@ no_keyword: Aucun mot-clé
 no_manager_entry: Vous n'êtes gestionnaire d'aucune fiche
 no_own_entry: Vous n'avez pas encore créé de fiche
 optional: Optionel
+publication_date: Date de publication
 random_entries: Fiches aléatoires
 random_entry: Fiche aléatoire
 random_mode: Mode aléatoire

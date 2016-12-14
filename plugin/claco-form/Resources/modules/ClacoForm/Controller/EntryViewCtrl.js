@@ -37,6 +37,7 @@ export default class EntryViewCtrl {
       {counts: [10, 20, 50, 100], dataset: this.comments}
     )
     this.commentsEditionForm = {}
+    this.metadataAllowed = ClacoFormService.getCanEdit() || this.config['display_metadata'] === 'all'
     this._addCommentCallback = this._addCommentCallback.bind(this)
     this._updateCommentCallback = this._updateCommentCallback.bind(this)
     this._removeCommentCallback = this._removeCommentCallback.bind(this)
@@ -107,7 +108,18 @@ export default class EntryViewCtrl {
   }
 
   initializeCategories () {
-    this.entry['categories'].forEach(c => this.categories.push(c))
+    this.entry['categories'].forEach(c => {
+      this.categories.push(c)
+
+      if (!this.metadataAllowed && this.config['display_metadata'] === 'manager') {
+        const managers = c['managers']
+        managers.forEach(m => {
+          if (m['id'] === this.userId) {
+            this.metadataAllowed = true
+          }
+        })
+      }
+    })
   }
 
   initializeKeywords () {
