@@ -37,8 +37,9 @@ const reducerForPlayerMode = combineReducers({
 let finalStore
 
 const reducerSwitcher = () => next => action => {
-  let reducer
+
   if (action.type === VIEW_MODE_UPDATE) {
+    let reducer
     switch(action.mode){
       case VIEW_PLAYER:
         reducer = reducerForPlayerMode
@@ -47,8 +48,9 @@ const reducerSwitcher = () => next => action => {
         reducer = reducerForEditorMode
         break
     }
+    finalStore.replaceReducer(reducer)
   }
-  finalStore.replaceReducer(reducer)
+
   let result = next(action)
   return result
 }
@@ -61,7 +63,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 export function createStore(initialState) {
-  finalStore =  baseCreate(reducerForEditorMode, initialState, compose(
+  finalStore = baseCreate(reducerForEditorMode, initialState, compose(
     applyMiddleware(...middleware),
     window.devToolsExtension ? window.devToolsExtension() : f => f
   ))
