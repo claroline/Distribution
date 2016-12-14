@@ -8,9 +8,9 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution.
  *
- * Generation date: 2016/12/08 08:42:04
+ * Generation date: 2016/12/14 02:01:12
  */
-class Version20161208084201 extends AbstractMigration
+class Version20161214140109 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -18,13 +18,12 @@ class Version20161208084201 extends AbstractMigration
             ALTER TABLE claro_field_facet_value CHANGE user_id user_id INT DEFAULT NULL, 
             CHANGE stringValue stringValue LONGTEXT DEFAULT NULL
         ');
-        $this->addSql("
+        $this->addSql('
             ALTER TABLE claro_field_facet 
             ADD resource_node INT DEFAULT NULL, 
-            ADD is_visible TINYINT(1) DEFAULT '1' NOT NULL, 
             CHANGE position position INT DEFAULT NULL, 
             CHANGE panelFacet_id panelFacet_id INT DEFAULT NULL
-        ");
+        ');
         $this->addSql('
             ALTER TABLE claro_field_facet 
             ADD CONSTRAINT FK_F6C21DB28A5F48FF FOREIGN KEY (resource_node) 
@@ -48,7 +47,6 @@ class Version20161208084201 extends AbstractMigration
         $this->addSql('
             ALTER TABLE claro_field_facet 
             DROP resource_node, 
-            DROP is_visible, 
             CHANGE position position INT NOT NULL, 
             CHANGE panelFacet_id panelFacet_id INT NOT NULL
         ');

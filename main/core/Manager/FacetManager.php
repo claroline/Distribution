@@ -149,13 +149,12 @@ class FacetManager
         $this->om->flush();
     }
 
-    public function createField($name, $isRequired, $type, $isVisible = true, ResourceNode $resourceNode = null)
+    public function createField($name, $isRequired, $type, ResourceNode $resourceNode = null)
     {
         $fieldFacet = new FieldFacet();
         $fieldFacet->setName($name);
         $fieldFacet->setType($type);
         $fieldFacet->setIsRequired($isRequired);
-        $fieldFacet->setIsVisible($isVisible);
         $fieldFacet->setResourceNode($resourceNode);
         $this->om->persist($fieldFacet);
         $this->om->flush();

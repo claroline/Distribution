@@ -312,7 +312,7 @@ class ClacoFormManager
         $field->setType($type);
         $field->setRequired($required);
         $field->setIsMetadata($isMetadata);
-        $fieldFacet = $this->facetManager->createField($name, $required, $type, true, $clacoForm->getResourceNode());
+        $fieldFacet = $this->facetManager->createField($name, $required, $type, $clacoForm->getResourceNode());
 
         if ($this->facetManager->isTypeWithChoices($type)) {
             foreach ($choices as $choice) {

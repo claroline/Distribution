@@ -126,13 +126,6 @@ class FieldFacet
     protected $isRequired = false;
 
     /**
-     * @ORM\Column(name="is_visible", type="boolean", options={"default" = 1})
-     * @Groups({"api_profile"})
-     * @Accessor(getter="isVisible")
-     */
-    protected $isVisible = true;
-
-    /**
      * @ORM\ManyToOne(
      *     targetEntity="Claroline\CoreBundle\Entity\Resource\ResourceNode",
      *     inversedBy="fields"
@@ -311,16 +304,6 @@ class FieldFacet
     public function setIsRequired($isRequired)
     {
         $this->isRequired = $isRequired;
-    }
-
-    public function isVisible()
-    {
-        return $this->isVisible;
-    }
-
-    public function setIsVisible($isVisible)
-    {
-        $this->$isVisible = $isVisible;
     }
 
     public function getPrettyName()
