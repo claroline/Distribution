@@ -133,8 +133,7 @@
         "innova/audio-recorder-bundle": "*",
         "innova/media-resource-bundle": "*",
         "ujm/exo-bundle": "*",
-        "icap/lesson-bundle": "*",
-        "formalibre/office-connect-bundle": "*"
+        "icap/lesson-bundle": "*"
     },
     "autoload": {
         "psr-4": {
@@ -189,7 +188,6 @@
             "Icap\\LessonBundle\\": "plugin/lesson",
             "Claroline\\FlashCardBundle\\": "plugin/flashcard",
             "Innova\\MediaResourceBundle\\": "plugin/media-resource",
-            "FormaLibre\\OfficeConnectBundle\\": "plugin/o365",
             "Claroline\\DashboardBundle\\": "plugin/dashboard"
         }
     },
@@ -244,7 +242,6 @@
             "UJM\\ExoBundle\\UJMExoBundle",
             "Icap\\LessonBundle\\IcapLessonBundle",
             "Claroline\\ChatBundle\\ClarolineChatBundle",
-            "FormaLibre\\OfficeConnectBundle\\FormaLibreOfficeConnectBundle",
             "Claroline\\DashboardBundle\\ClarolineDashboardBundle"
         ]
     }
