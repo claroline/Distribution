@@ -53,7 +53,6 @@
         "psr/log": "1.0.2",
         "sensio/distribution-bundle": "2.3.22",
         "sensio/framework-extra-bundle": "3.0.12",
-        "sensio/generator-bundle": "2.5.3",
         "stefk/jval": "dev-master",
         "stfalcon/tinymce-bundle": "0.3.8",
         "stof/doctrine-extensions-bundle": "1.1.0",
