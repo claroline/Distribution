@@ -58,7 +58,7 @@ export const TopBar = props =>
         {!props.empty &&
           <NavItem eventKey={5} href="#" onClick={() => {
             console.log('yope')
-            actions.updateViewMode('player')
+            props.updateViewMode('player')
           }}>
             <span className="fa fa-fw fa-play"></span>
             {tex('exercise_try')}
@@ -93,5 +93,6 @@ export const TopBar = props =>
 
 TopBar.propTypes = {
   empty: T.bool.isRequired,
-  published: T.bool.isRequired
+  published: T.bool.isRequired,
+  updateViewMode: T.func.isRequired
 }
