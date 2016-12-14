@@ -56,7 +56,10 @@ export const TopBar = props =>
       </Nav>
       <Nav pullRight>
         {!props.empty &&
-          <NavItem eventKey={5} href="#" onClick={() => {actions.updateWiewMode('player')}}>
+          <NavItem eventKey={5} href="#" onClick={() => {
+            console.log('yope')
+            actions.updateViewMode('player')
+          }}>
             <span className="fa fa-fw fa-play"></span>
             {tex('exercise_try')}
           </NavItem>

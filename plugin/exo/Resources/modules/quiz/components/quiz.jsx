@@ -4,6 +4,7 @@ import {TopBar} from './top-bar.jsx'
 import {Overview} from './../overview/overview.jsx'
 import {Editor} from './../editor/components/editor.jsx'
 import select from './../selectors'
+import {actions} from './../actions'
 
 let Quiz = props =>
   <div className="exercise-container">
@@ -43,6 +44,6 @@ function mapStateToProps(state) {
   }
 }
 
-Quiz = connect(mapStateToProps)(Quiz)
+Quiz = connect(mapStateToProps, actions.updateViewMode)(Quiz)
 
 export {Quiz}

@@ -5,7 +5,7 @@ export const UPDATE_VIEW_MODE = 'UPDATE_VIEW_MODE'
 
 export const actions = {}
 
-actions.updateWiewMode = makeActionCreator(UPDATE_VIEW_MODE, 'mode')
+actions.updateViewMode = makeActionCreator(UPDATE_VIEW_MODE, 'mode')
 /*actions.updateWiewMode = (mode) => {
   console.log('action called')
   invariant(mode, 'view mode is mandatory')
