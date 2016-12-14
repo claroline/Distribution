@@ -43,8 +43,18 @@ entries: Fiches
 entries_list: Liste de fiches
 entries_list_search: Liste de fiches (Recherche)
 entry_addition: Ajout d'une fiche
+entry_addition_in_category: Ajout d'une fiche dans la catégorie [%name%]
+entry_addition_in_category_msg: |
+  La fiche [%title%] a été ajoutée dans la catégorie [%category%].<br><br>
+  La fiche est disponible <a href="%url%">ici</a>.
 entry_addition_success_message: La fiche a été ajoutée avec succès.
 entry_edition: Modification d'une fiche
+entry_edition_in_category: Modification d'une fiche de la catégorie [%name%]
+entry_edition_in_category_msg: |
+  La fiche [%title%] de la catégorie [%category%] a été modifiée.<br><br>
+  La fiche est disponible <a href="%url%">ici</a>.
+entry_removal_from_category: Retrait d'une fiche de la catégorie [%name%]
+entry_removal_from_category_msg: La fiche [%title%] a été retirée de la catégorie [%category%].
 entry_title: Titre de la fiche
 entry_title_info: Texte qui sera utilisé comme titre pour la fiche.
 fields_management: Gestion des champs

@@ -43,8 +43,18 @@ entries: Entries
 entries_list: List of entries
 entries_list_search: List of entries (Search)
 entry_addition: Addition of an entry
+entry_addition_in_category: Addition of an entry in category [%name%]
+entry_addition_in_category_msg: |
+  Entry [%title%] has been added in category [%category%].<br><br>
+  The entry is available <a href="%url%">here</a>.
 entry_addition_success_message: The entry has been successfully created.
 entry_edition: Edition of an entry
+entry_edition_in_category: Edition of an entry of category [%name%]
+entry_edition_in_category_msg: |
+  Entry [%title%] from category [%category%] has been edited.<br><br>
+  The entry is available <a href="%url%">here</a>.
+entry_removal_from_category: Removal of an entry from category [%name%]
+entry_removal_from_category_msg: Entry [%title%] has been removed from category [%category%].
 entry_title: Entry title
 entry_title_info: Text that will be used as title for the entry.
 fields_management: Fields management

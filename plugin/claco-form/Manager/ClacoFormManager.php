@@ -45,11 +45,14 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Manager\FacetManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\MessageBundle\Manager\MessageManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @DI\Service("claroline.manager.claco_form_manager")
@@ -59,8 +62,11 @@ class ClacoFormManager
     private $authorization;
     private $eventDispatcher;
     private $facetManager;
+    private $messageManager;
     private $om;
+    private $router;
     private $tokenStorage;
+    private $translator;
 
     private $categoryRepo;
     private $commentRepo;
@@ -75,22 +81,31 @@ class ClacoFormManager
      *     "authorization"   = @DI\Inject("security.authorization_checker"),
      *     "eventDispatcher" = @DI\Inject("event_dispatcher"),
      *     "facetManager"    = @DI\Inject("claroline.manager.facet_manager"),
+     *     "messageManager"  = @DI\Inject("claroline.manager.message_manager"),
      *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
-     *     "tokenStorage"    = @DI\Inject("security.token_storage")
+     *     "router"          = @DI\Inject("router"),
+     *     "tokenStorage"    = @DI\Inject("security.token_storage"),
+     *     "translator"      = @DI\Inject("translator")
      * })
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
         EventDispatcherInterface $eventDispatcher,
         FacetManager $facetManager,
+        MessageManager $messageManager,
         ObjectManager $om,
-        TokenStorageInterface $tokenStorage
+        RouterInterface $router,
+        TokenStorageInterface $tokenStorage,
+        TranslatorInterface $translator
     ) {
         $this->authorization = $authorization;
         $this->eventDispatcher = $eventDispatcher;
         $this->facetManager = $facetManager;
+        $this->messageManager = $messageManager;
         $this->om = $om;
+        $this->router = $router;
         $this->tokenStorage = $tokenStorage;
+        $this->translator = $translator;
         $this->categoryRepo = $om->getRepository('ClarolineClacoFormBundle:Category');
         $this->commentRepo = $om->getRepository('ClarolineClacoFormBundle:Comment');
         $this->entryRepo = $om->getRepository('ClarolineClacoFormBundle:Entry');
@@ -600,6 +615,7 @@ class ClacoFormManager
         $entry->setTitle($title);
         $entry->setStatus($status);
         $entry->setCreationDate($now);
+        $categories = [];
 
         if ($status === Entry::PUBLISHED) {
             $entry->setPublicationDate($now);
@@ -635,6 +651,7 @@ class ClacoFormManager
         $event = new LogEntryCreateEvent($entry);
         $this->eventDispatcher->dispatch('log', $event);
         $this->om->endFlushSuite();
+        $this->notifyCategoriesManagers($entry, [], $categories);
 
         return $entry;
     }
@@ -644,6 +661,7 @@ class ClacoFormManager
         $this->om->startFlushSuite();
         $clacoForm = $entry->getClacoForm();
         $entry->setTitle($title);
+        $oldCategories = $entry->getCategories();
         $entry->emptyCategories();
         $entry->emptyKeywords();
         $toRemove = [];
@@ -721,6 +739,7 @@ class ClacoFormManager
         $this->persistEntry($entry);
         $event = new LogEntryEditEvent($entry);
         $this->eventDispatcher->dispatch('log', $event);
+        $this->notifyCategoriesManagers($entry, $oldCategories, $entry->getCategories());
         $this->om->endFlushSuite();
 
         return $entry;
@@ -804,6 +823,7 @@ class ClacoFormManager
             $this->om->remove($fieldValue->getFieldFacetValue());
             $this->om->remove($fieldValue);
         }
+        $this->notifyCategoriesManagers($entry, $categories);
         $this->om->remove($entry);
         $this->om->flush();
         $event = new LogEntryDeleteEvent($details);
@@ -827,8 +847,80 @@ class ClacoFormManager
         $this->persistEntry($entry);
         $event = new LogEntryStatusChangeEvent($entry);
         $this->eventDispatcher->dispatch('log', $event);
+        $categories = $entry->getCategories();
+        $this->notifyCategoriesManagers($entry, $categories, $categories);
 
         return $entry;
+    }
+
+    public function notifyCategoriesManagers(Entry $entry, array $oldCategories = [], array $currentCategories = [])
+    {
+        $removedCategories = [];
+        $editedCategories = [];
+        $addedCategories = [];
+        $clacoFormId = $entry->getClacoForm()->getId();
+        $url = $this->router->generate('claro_claco_form_open', ['clacoForm' => $clacoFormId], true).'#/entries/'.$entry->getId().'/view';
+
+        foreach ($oldCategories as $category) {
+            if (in_array($category, $currentCategories)) {
+                $editedCategories[$category->getId()] = $category;
+            } else {
+                $removedCategories[$category->getId()] = $category;
+            }
+        }
+        foreach ($currentCategories as $category) {
+            if (!in_array($category, $oldCategories)) {
+                $addedCategories[$category->getId()] = $category;
+            }
+        }
+        foreach ($removedCategories as $category) {
+            if ($category->getNotifyRemoval()) {
+                $managers = $category->getManagers();
+
+                if (count($managers) > 0) {
+                    $object = $this->translator->trans('entry_removal_from_category', ['%name%' => $category->getName()], 'clacoform');
+                    $content = $this->translator->trans(
+                        'entry_removal_from_category_msg',
+                        ['%title%' => $entry->getTitle(), '%category%' => $category->getName()],
+                        'clacoform'
+                    );
+                    $message = $this->messageManager->create($content, $object, $managers);
+                    $this->messageManager->send($message, true, false);
+                }
+            }
+        }
+        foreach ($editedCategories as $category) {
+            if ($category->getNotifyEdition()) {
+                $managers = $category->getManagers();
+
+                if (count($managers) > 0) {
+                    $object = $this->translator->trans('entry_edition_in_category', ['%name%' => $category->getName()], 'clacoform');
+                    $content = $this->translator->trans(
+                        'entry_edition_in_category_msg',
+                        ['%title%' => $entry->getTitle(), '%category%' => $category->getName(), '%url%' => $url],
+                        'clacoform'
+                    );
+                    $message = $this->messageManager->create($content, $object, $managers);
+                    $this->messageManager->send($message, true, false);
+                }
+            }
+        }
+        foreach ($addedCategories as $category) {
+            if ($category->getNotifyAddition()) {
+                $managers = $category->getManagers();
+
+                if (count($managers) > 0) {
+                    $object = $this->translator->trans('entry_addition_in_category', ['%name%' => $category->getName()], 'clacoform');
+                    $content = $this->translator->trans(
+                        'entry_addition_in_category_msg',
+                        ['%title%' => $entry->getTitle(), '%category%' => $category->getName(), '%url%' => $url],
+                        'clacoform'
+                    );
+                    $message = $this->messageManager->create($content, $object, $managers);
+                    $this->messageManager->send($message, true, false);
+                }
+            }
+        }
     }
 
     public function persistFieldValue(FieldValue $fieldValue)
