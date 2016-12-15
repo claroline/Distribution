@@ -19,6 +19,7 @@ import {
   ITEM_MOVE,
   ITEM_HINTS_UPDATE,
   ITEM_DETAIL_UPDATE,
+  ITEMS_IMPORT,
   MODAL_FADE,
   MODAL_HIDE,
   MODAL_SHOW,
@@ -33,7 +34,10 @@ import {
   QUIZ_UPDATE,
   HINT_ADD,
   HINT_CHANGE,
-  HINT_REMOVE
+  HINT_REMOVE,
+  QUESTION_PICKER_SHOW,
+  QUESTION_PICKER_HIDE,
+  QUESTION_PICKER_FADE
 } from './actions'
 
 function initialQuizState() {
@@ -122,6 +126,12 @@ function reduceSteps(steps = {}, action = {}) {
         }
       })
     }
+    case ITEMS_IMPORT: {
+      const ids = action.items.map(item => {
+        return item.id
+      })
+      return update(steps, {[action.stepId]: {items: {$push: ids}}})
+    }
   }
   return steps
 }
@@ -158,6 +168,18 @@ function reduceItems(items = {}, action = {}) {
         set({}, action.propertyPath, true)
       )
       return update(items, {[action.id]: {$set: updatedItem}})
+    }
+    case ITEMS_IMPORT: {
+      action.items.forEach(item => {
+        let newItem = decorateItem(item)
+        const def = getDefinition(item.type)
+        newItem = def.editor.reduce(newItem, action)
+        const errors = validate.item(newItem)
+        newItem = Object.assign({}, newItem, {_errors: errors})
+        items = update(items, {[item.id]: {$set: newItem}})
+      })
+
+      return items
     }
     case ITEM_HINTS_UPDATE:
       switch (action.updateType) {
@@ -281,11 +303,35 @@ function reduceModal(modalState = initialModalState, action) {
   return modalState
 }
 
+const initialPickerState = {
+  props: {
+    title: '',
+    handleSelect: () => {}
+  },
+  fading: true
+}
+
+function reduceQuestionPicker(pickerState = initialPickerState, action) {
+  switch (action.type) {
+    case QUESTION_PICKER_SHOW:
+      return {
+        props: action.props,
+        fading: false
+      }
+    case QUESTION_PICKER_FADE:
+      return update(pickerState, {fading: {$set: true}})
+    case QUESTION_PICKER_HIDE:
+      return pickerState
+  }
+  return pickerState
+}
+
 export const reducers = {
   quiz: reduceQuiz,
   steps: reduceSteps,
   items: reduceItems,
   currentObject: reduceCurrentObject,
   openPanels: reduceOpenPanels,
-  modal: reduceModal
+  modal: reduceModal,
+  questionPicker: reduceQuestionPicker
 }

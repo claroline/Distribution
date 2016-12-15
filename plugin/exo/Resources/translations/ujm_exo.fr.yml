@@ -7,6 +7,8 @@ add_label: Ajouter un label
 add_new_picture: Ajouter une nouvelle image
 add_proposal: Ajouter une proposition
 add_question: Ajouter une question
+add_question_from_existing: Importer une/des question(s)
+add_question_from_new: Créer une nouvelle question
 add_step: Ajouter une étape
 add_zone_answer: Ajouter une zone de réponse
 additional_info: Informations complémentaires
@@ -399,6 +401,7 @@ score_right_label_matching: Score de l'association
 search: Rechercher
 search_question: Chercher des questions
 search_user_paper: Rechercher les copies de l'utilisateur
+search_by_title_or_content: Rechercher sur le titre / contenu de la question 
 see_shared_with: Question partagée avec des utilisateurs
 select: Sélectionner
 select_type: selectionner le type de l'exercice

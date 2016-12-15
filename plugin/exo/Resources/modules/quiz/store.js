@@ -21,7 +21,8 @@ const reducerForEditorMode = combineReducers({
   currentObject: editorReducers.currentObject,
   openPanels: editorReducers.openPanels,
   modal: editorReducers.modal,
-  viewMode: quizReducers.viewMode
+  viewMode: quizReducers.viewMode,
+  questionPicker: editorReducers.questionPicker
 })
 
 const reducerForPlayerMode = combineReducers({

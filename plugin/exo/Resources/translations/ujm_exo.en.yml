@@ -7,6 +7,8 @@ add_label: Add a label
 add_new_picture: Add a new picture
 add_proposal: Add a proposal
 add_question: Add a question
+add_question_from_existing: Import one/many question(s)
+add_question_from_new: Create new question
 add_step: Add a step
 add_zone_answer: Add an answer zone
 additional_info: Additional information
@@ -405,6 +407,7 @@ score_right_label_matching: Score of the association
 search: Search
 search_question: Search questions
 search_user_paper: Search papers of a user
+search_by_title_or_content: Search by question title / content 
 see_shared_with: Question shared with users
 select: Select
 select_type: select the type of the exercise

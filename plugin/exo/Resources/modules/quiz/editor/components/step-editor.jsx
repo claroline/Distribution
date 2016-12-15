@@ -161,25 +161,46 @@ ItemPanel = makeSortable(ItemPanel, 'STEP_ITEM')
 
 const StepFooter = props =>
   <div className="step-footer">
-    <button
-      className="btn btn-primary"
-      onClick={() => props.showModal(MODAL_ADD_ITEM, {
-        title: tex('add_question'),
-        handleSelect: type => {
-          props.closeModal()
-          props.handleItemCreate(props.stepId, type)
-        }
-      })}
-    >
-      <span className="fa fa-plus"></span>
-      &nbsp;{tex('add_question')}
-    </button>
+      <div className="btn-group ">
+        <button
+          className="btn btn-primary btn-sm dropdown-toggle"
+          type="button"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+          >
+          <span className="fa fa-plus"></span>
+          &nbsp;{tex('add_question')}&nbsp;
+          <span className="caret"></span>
+        </button>
+        <ul className="dropdown-menu">
+          <li>
+            <a role="button" onClick={() => props.showModal(MODAL_ADD_ITEM, {
+              title: tex('add_question_from_new'),
+              handleSelect: type => {
+                props.closeModal()
+                props.handleItemCreate(props.stepId, type)
+              }
+            })}>{tex('add_question_from_new')}</a>
+          </li>
+          <li>
+            <a role="button" onClick={() => props.showQuestionPicker({
+              title: tex('add_question_from_existing'),
+              handleSelect: selected => {
+                props.handleItemsImport(props.stepId, selected)
+              }
+            })}>{tex('add_question_from_existing')}</a>
+          </li>
+        </ul>
+      </div>
   </div>
 
 StepFooter.propTypes = {
   stepId: T.string.isRequired,
   showModal: T.func.isRequired,
-  handleItemCreate: T.func.isRequired
+  handleItemCreate: T.func.isRequired,
+  handleItemsImport: T.func.isRequired,
+  showQuestionPicker: T.func.isRequired
 }
 
 export const StepEditor = props =>
@@ -226,8 +247,12 @@ export const StepEditor = props =>
     <StepFooter
       stepId={props.step.id}
       showModal={props.showModal}
+      showQuestionPicker={props.showQuestionPicker}
+      closeQuestionPicker={props.closeQuestionPicker}
       closeModal={props.closeModal}
       handleItemCreate={props.handleItemCreate}
+      handleItemsImport={props.handleItemsImport}
+      handleItemCreateFromExisting={props.handleItemsImport}
     />
   </div>
 
@@ -249,6 +274,9 @@ StepEditor.propTypes = {
   handleItemCreate: T.func.isRequired,
   handleItemUpdate: T.func.isRequired,
   handleItemHintsUpdate: T.func.isRequired,
+  handleItemsImport: T.func.isRequired,
   showModal: T.func.isRequired,
-  closeModal: T.func.isRequired
+  closeModal: T.func.isRequired,
+  showQuestionPicker: T.func.isRequired,
+  closeQuestionPicker: T.func.isRequired
 }

@@ -55,6 +55,17 @@ export function listItemMimeTypes() {
   return Object.keys(registeredTypes)
 }
 
+export function listItemNames() {
+  let list = []
+  for(const type in registeredTypes){
+    list.push({
+      type:type,
+      name:registeredTypes[type].name
+    })
+  }
+  return list
+}
+
 export function getDefinition(type) {
   if (!registeredTypes[type]) {
     throw new Error(`Unknown item type ${type}`)

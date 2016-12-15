@@ -5,6 +5,7 @@ import {ThumbnailBox} from './thumbnail-box.jsx'
 import {QuizEditor} from './quiz-editor.jsx'
 import {StepEditor} from './step-editor.jsx'
 import Modals from './modals.jsx'
+import {QuestionPicker} from './question-picker.jsx'
 import {actions} from './../actions'
 import {TYPE_QUIZ, TYPE_STEP} from './../../enums'
 import select from './../selectors'
@@ -23,6 +24,7 @@ let Editor = props =>
     />
     <div className="edit-zone">{selectSubEditor(props)}</div>
     {makeModal(props)}
+    {makeQuestionPicker(props)}
   </div>
 
 Editor.propTypes = {
@@ -58,8 +60,11 @@ function selectSubEditor(props) {
           handleItemUpdate={props.updateItem}
           handleItemHintsUpdate={props.updateItemHints}
           handleItemDetailUpdate={props.updateItemDetail}
+          handleItemsImport={props.importItems}
           showModal={props.showModal}
           closeModal={props.fadeModal}
+          showQuestionPicker={props.showQuestionPicker}
+          closeQuestionPicker={props.fadeQuestionPicker}
         />
       )
   }
@@ -83,8 +88,11 @@ selectSubEditor.propTypes = {
   updateItem: T.func.isRequired,
   updateItemHints: T.func.isRequired,
   updateItemDetail: T.func.isRequired,
+  importItems: T.func.isRequired,
   showModal: T.func.isRequired,
-  fadeModal: T.func.isRequired
+  fadeModal: T.func.isRequired,  
+  showQuestionPicker: T.func.isRequired,
+  fadeQuestionPicker: T.func.isRequired
 }
 
 function makeModal(props) {
@@ -112,6 +120,26 @@ makeModal.propTypes = {
   hideModal: T.func.isRequired
 }
 
+function makeQuestionPicker(props){
+  return (
+     <QuestionPicker
+       show={!props.questionPicker.fading}
+       fadeQuestionPicker={props.fadeQuestionPicker}
+       hideQuestionPicker={props.hideQuestionPicker}
+       {...props.questionPicker.props}
+     />
+   )
+}
+
+makeQuestionPicker.propTypes = {
+  questionPicker: T.shape({
+    fading: T.bool.isRequired,
+    props: T.object.isRequired
+  }),
+  fadeQuestionPicker: T.func.isRequired,
+  hideQuestionPicker: T.func.isRequired
+}
+
 function mapStateToProps(state) {
   return {
     thumbnails: select.thumbnails(state),
@@ -119,7 +147,8 @@ function mapStateToProps(state) {
     activeQuizPanel: select.quizOpenPanel(state),
     activeStepPanel: select.stepOpenPanel(state),
     quizProperties: select.quiz(state),
-    modal: select.modal(state)
+    modal: select.modal(state),
+    questionPicker: select.questionPicker(state)
   }
 }
 
