@@ -25,6 +25,8 @@ export default class EntryService {
     this.managerEntries = EntryService._getGlobal('managerEntries')
     this.nbEntries = EntryService._getGlobal('nbEntries')
     this.nbPublishedEntries = EntryService._getGlobal('nbPublishedEntries')
+    this.categoryFilter = ''
+    this.keywordFilter = ''
     this._updateEntryCallback = this._updateEntryCallback.bind(this)
     this._removeEntryCallback = this._removeEntryCallback.bind(this)
     this.initialize()
@@ -256,6 +258,22 @@ export default class EntryService {
         updateCallback(d['data'], true, oldStatus)
       }
     })
+  }
+
+  getCategoryFilter() {
+    return this.categoryFilter
+  }
+
+  setCategoryFilter(filter) {
+    this.categoryFilter = filter
+  }
+
+  getKeywordFilter() {
+    return this.keywordFilter
+  }
+
+  setKeywordFilter(filter) {
+    this.keywordFilter = filter
   }
 
   static _getGlobal(name) {

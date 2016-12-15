@@ -22,7 +22,7 @@ export default class EntriesManagementCtrl {
     this.managerEntries = EntryService.getManagerEntries()
     this.tableParams = {
       entries: new NgTableParams(
-        {count: 20},
+        {count: 20, filter: {categoriesString: EntryService.getCategoryFilter(), keywordsString: EntryService.getKeywordFilter()}},
         {counts: [10, 20, 50, 100], dataset: this.entries}
       ),
       myEntries: new NgTableParams(
@@ -60,6 +60,8 @@ export default class EntriesManagementCtrl {
 
   initialize() {
     this.ClacoFormService.clearMessages()
+    this.EntryService.setCategoryFilter('')
+    this.EntryService.setKeywordFilter('')
     this.initializeModes()
     this.initializeColumns()
   }

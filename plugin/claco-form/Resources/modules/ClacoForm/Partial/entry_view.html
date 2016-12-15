@@ -183,9 +183,12 @@
                 </div>
             </div>
             <div class="panel-body collapse" uib-collapse="cfc.collapsed['keywords']" ng-if="cfc.config['display_keywords']">
-                <span class="label label-success margin-right-sm" ng-repeat="keyword in cfc.keywords">
+                <button class="btn btn-default margin-right-sm"
+                        ng-click="cfc.filterKeyword(keyword)"
+                        ng-repeat="keyword in cfc.keywords"
+                >
                     {{ keyword }}
-                </span>
+                </button>
             </div>
 
             <div class="panel-heading" ng-if="cfc.config['display_categories']">
@@ -197,9 +200,12 @@
                 </div>
             </div>
             <div class="panel-body collapse" uib-collapse="cfc.collapsed['categories']" ng-if="cfc.config['display_categories']">
-                <span class="label label-success margin-right-sm" ng-repeat="category in cfc.categories">
+                <button class="btn btn-default margin-right-sm"
+                        ng-click="cfc.filterCategory(category['name'])"
+                        ng-repeat="category in cfc.categories"
+                >
                     {{ category['name'] }}
-                </span>
+                </button>
             </div>
 
             <div class="panel-heading" ng-if="cfc.isCommentsDisplayable()">

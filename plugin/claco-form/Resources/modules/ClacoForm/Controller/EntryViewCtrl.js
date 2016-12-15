@@ -257,4 +257,14 @@ export default class EntryViewCtrl {
   clearErrorMessage() {
     this.ClacoFormService.clearErrorMessage()
   }
+
+  filterCategory(categoryName) {
+    this.EntryService.setCategoryFilter(categoryName)
+    this.$state.go('entries_list')
+  }
+
+  filterKeyword(keyword) {
+    this.EntryService.setKeywordFilter(keyword)
+    this.$state.go('entries_list')
+  }
 }
