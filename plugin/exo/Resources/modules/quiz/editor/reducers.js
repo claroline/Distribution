@@ -4,6 +4,7 @@ import sanitize from './sanitizers'
 import validate from './validators'
 import {decorateItem} from './../decorators'
 import {getIndex, makeId, makeItemPanelKey, update} from './../../utils/utils'
+import {generateUrl} from './../../utils/routing'
 import {getDefinition} from './../../items/item-types'
 import {
   TYPE_QUIZ,
@@ -32,6 +33,7 @@ import {
   STEP_DELETE,
   STEP_UPDATE,
   QUIZ_UPDATE,
+  QUIZ_SAVE,
   HINT_ADD,
   HINT_CHANGE,
   HINT_REMOVE
@@ -62,6 +64,25 @@ function reduceQuiz(quiz = initialQuizState(), action = {}) {
         set({}, action.propertyPath, true)
       )
       return updatedQuiz
+    }
+    case QUIZ_SAVE: {
+      const url = generateUrl('exercise_update', {'id': quiz.id})
+      const params = {
+        method: 'PUT' ,
+        credentials: 'include',
+        body: JSON.stringify(quiz)
+      }
+
+      fetch(url, params)
+      .then(response => {
+        return response.json()
+      })
+      .then(jsonData =>  {
+        console.log(jsonData)
+        //this.setState({questions: jsonData.questions, total: jsonData.total})
+      })
+      return quiz
+
     }
     case STEP_CREATE:
       return update(quiz, {steps: {$push: [action.id]}})

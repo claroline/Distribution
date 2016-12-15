@@ -25,6 +25,7 @@ export const QUIZ_UPDATE = 'QUIZ_UPDATE'
 export const HINT_ADD = 'HINT_ADD'
 export const HINT_CHANGE = 'HINT_CHANGE'
 export const HINT_REMOVE = 'HINT_REMOVE'
+export const QUIZ_SAVE = 'QUIZ_SAVE'
 
 export const actions = {}
 
@@ -41,6 +42,7 @@ actions.selectQuizPanel = makeActionCreator(PANEL_QUIZ_SELECT, 'panelKey')
 actions.selectStepPanel = makeActionCreator(PANEL_STEP_SELECT, 'stepId', 'panelKey')
 actions.showModal = makeActionCreator(MODAL_SHOW, 'modalType', 'modalProps')
 actions.updateQuiz = makeActionCreator(QUIZ_UPDATE, 'propertyPath', 'value')
+actions.saveQuiz = makeActionCreator(QUIZ_SAVE)
 actions.updateItem = makeActionCreator(ITEM_UPDATE, 'id', 'propertyPath', 'value')
 actions.updateItemDetail = makeActionCreator(ITEM_DETAIL_UPDATE, 'id', 'subAction')
 actions.updateItemHints = makeActionCreator(ITEM_HINTS_UPDATE, 'itemId', 'updateType', 'payload')

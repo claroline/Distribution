@@ -5,7 +5,7 @@ import {Overview} from './../overview/overview.jsx'
 import {Editor} from './../editor/components/editor.jsx'
 import select from './../selectors'
 import {actions} from './../actions'
-
+import {actions as editorActions} from './../editor/actions'
 let Quiz = props =>
   <div className="exercise-container">
     <div className="panel-heading">
@@ -21,7 +21,8 @@ Quiz.propTypes = {
   title: T.string.isRequired,
   editable: T.bool.isRequired,
   currentSection: T.string.isRequired,
-  updateViewMode: T.func.isRequired
+  updateViewMode: T.func.isRequired,
+  saveQuiz: T.func.isRequired
 }
 
 function sectionComponent(section) {
@@ -45,6 +46,17 @@ function mapStateToProps(state) {
   }
 }
 
-Quiz = connect(mapStateToProps, actions)(Quiz)
+function mapDispatchToProps(dispatch) {
+  return {
+    updateViewMode() {
+      dispatch(actions.updateViewMode())
+    },
+    saveQuiz() {
+      dispatch(editorActions.saveQuiz())
+    }
+  }
+}
+
+Quiz = connect(mapStateToProps, mapDispatchToProps)(Quiz)
 
 export {Quiz}

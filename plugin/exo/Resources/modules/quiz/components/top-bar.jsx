@@ -86,6 +86,12 @@ export const TopBar = props =>
             {tex('export_csv_results')}
           </MenuItem>
         </NavDropdown>
+        <NavItem eventKey={7} href="#" onClick={() => {
+          props.saveQuiz()
+        }}>
+          <span className="fa fa-fw fa-save"></span>
+          {t('save')}
+        </NavItem>
       </Nav>
     </Navbar.Collapse>
   </Navbar>
@@ -93,5 +99,6 @@ export const TopBar = props =>
 TopBar.propTypes = {
   empty: T.bool.isRequired,
   published: T.bool.isRequired,
-  updateViewMode: T.func.isRequired
+  updateViewMode: T.func.isRequired,
+  saveQuiz: T.func.isRequired
 }
