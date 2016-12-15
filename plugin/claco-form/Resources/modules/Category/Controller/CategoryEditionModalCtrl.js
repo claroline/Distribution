@@ -37,12 +37,12 @@ export default class CategoryEditionModalCtrl {
     this.initialize()
   }
 
-  _userpickerCallback (data) {
+  _userpickerCallback(data) {
     this.managers = data === null ? [] : data
     this.refreshScope()
   }
 
-  initialize () {
+  initialize() {
     this.category['name'] = this.source['name']
     this.category['notifyAddition'] = this.source['details']['notify_addition']
     this.category['notifyEdition'] = this.source['details']['notify_edition']
@@ -54,7 +54,7 @@ export default class CategoryEditionModalCtrl {
     this.source['managers'].forEach(m => this.managers.push(m))
   }
 
-  submit () {
+  submit() {
     this.resetErrors()
 
     if (!this.category['name']) {
@@ -73,13 +73,13 @@ export default class CategoryEditionModalCtrl {
     }
   }
 
-  resetErrors () {
+  resetErrors() {
     for (const key in this.categoryErrors) {
       this.categoryErrors[key] = null
     }
   }
 
-  isValid () {
+  isValid() {
     let valid = true
 
     for (const key in this.categoryErrors) {
@@ -92,7 +92,7 @@ export default class CategoryEditionModalCtrl {
     return valid
   }
 
-  displayManagers () {
+  displayManagers() {
     let value = ''
     let index = 0
     const length = this.managers.length - 1
@@ -108,7 +108,7 @@ export default class CategoryEditionModalCtrl {
     return value
   }
 
-  getSelectedUsersIds () {
+  getSelectedUsersIds() {
     let selectedUsersIds = []
     this.managers.forEach(m => {
       selectedUsersIds.push(m['id'])
@@ -117,7 +117,7 @@ export default class CategoryEditionModalCtrl {
     return selectedUsersIds
   }
 
-  openUserPicker () {
+  openUserPicker() {
     let userPicker = new UserPicker()
     const options = {
       picker_name: 'managers-picker',
@@ -131,7 +131,7 @@ export default class CategoryEditionModalCtrl {
     userPicker.open()
   }
 
-  refreshScope () {
+  refreshScope() {
     this.$rootScope.$apply()
   }
 }

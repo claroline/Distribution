@@ -10,7 +10,7 @@
 /*global Translator*/
 
 export default class FieldsManagementCtrl {
-  constructor (NgTableParams, ClacoFormService, FieldService) {
+  constructor(NgTableParams, ClacoFormService, FieldService) {
     this.ClacoFormService = ClacoFormService
     this.FieldService = FieldService
     this.fields = FieldService.getFields()
@@ -34,38 +34,38 @@ export default class FieldsManagementCtrl {
     this.initialize()
   }
 
-  _addFieldCallback (data) {
+  _addFieldCallback(data) {
     this.FieldService._addFieldCallback(data)
     this.tableParams.reload()
   }
 
-  _updateFieldCallback (data) {
+  _updateFieldCallback(data) {
     this.FieldService._updateFieldCallback(data)
     this.tableParams.reload()
   }
 
-  _removeFieldCallback (data) {
+  _removeFieldCallback(data) {
     this.FieldService._removeFieldCallback(data)
     this.tableParams.reload()
   }
 
-  initialize () {
+  initialize() {
     this.ClacoFormService.clearMessages()
   }
 
-  canEdit () {
+  canEdit() {
     return this.ClacoFormService.getCanEdit()
   }
 
-  createField () {
+  createField() {
     this.FieldService.createField(this.ClacoFormService.getResourceId(), this._addFieldCallback)
   }
 
-  editField (field) {
+  editField(field) {
     this.FieldService.editField(field, this.ClacoFormService.getResourceId(), this._updateFieldCallback)
   }
 
-  deleteField (field) {
+  deleteField(field) {
     this.FieldService.deleteField(field, this._removeFieldCallback)
   }
 }

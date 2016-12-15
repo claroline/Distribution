@@ -8,7 +8,7 @@
  */
 
 export default class CategoriesManagementCtrl {
-  constructor (NgTableParams, ClacoFormService, CategoryService) {
+  constructor(NgTableParams, ClacoFormService, CategoryService) {
     this.ClacoFormService = ClacoFormService
     this.CategoryService = CategoryService
     this.categories = CategoryService.getCategories()
@@ -22,39 +22,39 @@ export default class CategoriesManagementCtrl {
     this.initialize()
   }
 
-  _addCategoryCallback (data) {
+  _addCategoryCallback(data) {
     this.CategoryService._addCategoryCallback(data)
     this.tableParams.reload()
   }
 
-  _updateCategoryCallback (data) {
+  _updateCategoryCallback(data) {
     this.CategoryService._updateCategoryCallback(data)
     this.tableParams.reload()
   }
 
-  _removeCategoryCallback (data) {
+  _removeCategoryCallback(data) {
     this.CategoryService._removeCategoryCallback(data)
     this.tableParams.reload()
   }
 
-  initialize () {
+  initialize() {
     this.ClacoFormService.clearMessages()
     this.categories.forEach(c => this.CategoryService.formatCategory(c))
   }
 
-  canEdit () {
+  canEdit() {
     return this.ClacoFormService.getCanEdit()
   }
 
-  createCategory () {
+  createCategory() {
     this.CategoryService.createCategory(this.ClacoFormService.getResourceId(), this.CategoryService.getWorkspaceId(), this._addCategoryCallback)
   }
 
-  editCategory (category) {
+  editCategory(category) {
     this.CategoryService.editCategory(category, this.CategoryService.getWorkspaceId(), this._updateCategoryCallback)
   }
 
-  deleteCategory (category) {
+  deleteCategory(category) {
     this.CategoryService.deleteCategory(category, this._removeCategoryCallback)
   }
 }

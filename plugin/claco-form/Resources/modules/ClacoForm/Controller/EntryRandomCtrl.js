@@ -10,13 +10,13 @@
 /*global Translator*/
 
 export default class EntryRandomCtrl {
-  constructor ($state, ClacoFormService) {
+  constructor($state, ClacoFormService) {
     this.$state = $state
     this.ClacoFormService = ClacoFormService
     this.initialize()
   }
 
-  initialize () {
+  initialize() {
     this.ClacoFormService.getRandomEntryId(this.ClacoFormService.getResourceId()).then(d => {
       if (d) {
         if ((typeof d === 'number') && (d > 0)) {

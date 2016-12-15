@@ -12,7 +12,7 @@
 import categoryFormTemplate from '../Partial/category_form_modal.html'
 
 export default class CategoryService {
-  constructor ($http, $uibModal, ClarolineAPIService) {
+  constructor($http, $uibModal, ClarolineAPIService) {
     this.$http = $http
     this.$uibModal = $uibModal
     this.ClarolineAPIService = ClarolineAPIService
@@ -25,13 +25,13 @@ export default class CategoryService {
     this._removeCategoryCallback = this._removeCategoryCallback.bind(this)
   }
 
-  _addCategoryCallback (data) {
+  _addCategoryCallback(data) {
     let category = JSON.parse(data)
     this.formatCategory(category)
     this.categories.push(category)
   }
 
-  _updateCategoryCallback (data) {
+  _updateCategoryCallback(data) {
     let category = JSON.parse(data)
     this.formatCategory(category)
     const index = this.categories.findIndex(c => c['id'] === category['id'])
@@ -41,7 +41,7 @@ export default class CategoryService {
     }
   }
 
-  _removeCategoryCallback (data) {
+  _removeCategoryCallback(data) {
     const category = JSON.parse(data)
     const index = this.categories.findIndex(c => c['id'] === category['id'])
 
@@ -50,19 +50,19 @@ export default class CategoryService {
     }
   }
 
-  getIsCategoryManager () {
+  getIsCategoryManager() {
     return this.isCategoryManager
   }
 
-  getWorkspaceId () {
+  getWorkspaceId() {
     return this.workspaceId
   }
 
-  getCategories () {
+  getCategories() {
     return this.categories
   }
 
-  formatCategory (category) {
+  formatCategory(category) {
     let managersName = ''
     let index = 0
     const length = category['managers'].length - 1
@@ -77,7 +77,7 @@ export default class CategoryService {
     category['managersName'] = managersName
   }
 
-  createCategory (resourceId, workspaceId, callback = null) {
+  createCategory(resourceId, workspaceId, callback = null) {
     const addCallback = callback !== null ? callback : this._addCategoryCallback
     this.$uibModal.open({
       template: categoryFormTemplate,
@@ -92,7 +92,7 @@ export default class CategoryService {
     })
   }
 
-  editCategory (category, workspaceId, callback = null) {
+  editCategory(category, workspaceId, callback = null) {
     const updateCallback = callback !== null ? callback : this._updateCategoryCallback
     this.$uibModal.open({
       template: categoryFormTemplate,
@@ -107,7 +107,7 @@ export default class CategoryService {
     })
   }
 
-  deleteCategory (category, callback = null) {
+  deleteCategory(category, callback = null) {
     const url = Routing.generate('claro_claco_form_category_delete', {category: category['id']})
     const deleteCallback = callback !== null ? callback : this._removeCategoryCallback
 
@@ -119,7 +119,7 @@ export default class CategoryService {
     )
   }
 
-  static _getGlobal (name) {
+  static _getGlobal(name) {
     if (typeof window[name] === 'undefined') {
       throw new Error(
         `Expected ${name} to be exposed in a window.${name} variable`

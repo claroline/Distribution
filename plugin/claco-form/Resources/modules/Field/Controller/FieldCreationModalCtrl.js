@@ -38,7 +38,7 @@ export default class FieldCreationModalCtrl {
     ++this.index
   }
 
-  submit () {
+  submit() {
     this.resetErrors()
 
     if (!this.field['name']) {
@@ -83,7 +83,7 @@ export default class FieldCreationModalCtrl {
     }
   }
 
-  resetErrors () {
+  resetErrors() {
     for (const key in this.fieldErrors) {
       this.fieldErrors[key] = null
     }
@@ -92,7 +92,7 @@ export default class FieldCreationModalCtrl {
     }
   }
 
-  isValid () {
+  isValid() {
     let valid = true
 
     for (const key in this.fieldErrors) {
@@ -108,7 +108,7 @@ export default class FieldCreationModalCtrl {
     return valid
   }
 
-  isChoicesValid () {
+  isChoicesValid() {
     let valid = true
 
     for (const key in this.choicesErrors) {
@@ -121,7 +121,7 @@ export default class FieldCreationModalCtrl {
     return valid
   }
 
-  hasChoices () {
+  hasChoices() {
     let hasChoice = false
 
     switch (this.type['value']) {
@@ -134,13 +134,13 @@ export default class FieldCreationModalCtrl {
     return hasChoice
   }
 
-  addChoice () {
+  addChoice() {
     this.choices.push({index: this.index, value: '', category: null, categoryEnabled: false})
     this.choicesErrors[this.index] = null
     ++this.index
   }
 
-  removeChoice (index) {
+  removeChoice(index) {
     const choiceIndex = this.choices.findIndex(c => c['index'] === index)
 
     if (choiceIndex > -1) {
@@ -149,7 +149,7 @@ export default class FieldCreationModalCtrl {
     }
   }
 
-  enableChoiceCategory (index) {
+  enableChoiceCategory(index) {
     const choiceIndex = this.choices.findIndex(c => c['index'] === index)
 
     if (choiceIndex > -1) {
@@ -157,7 +157,7 @@ export default class FieldCreationModalCtrl {
     }
   }
 
-  disableChoiceCategory (index) {
+  disableChoiceCategory(index) {
     const choiceIndex = this.choices.findIndex(c => c['index'] === index)
 
     if (choiceIndex > -1) {

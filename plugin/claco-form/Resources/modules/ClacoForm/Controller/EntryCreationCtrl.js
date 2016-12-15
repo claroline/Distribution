@@ -10,7 +10,7 @@
 /*global Translator*/
 
 export default class EntryCreationCtrl {
-  constructor ($state, ClacoFormService, EntryService, FieldService, KeywordService) {
+  constructor($state, ClacoFormService, EntryService, FieldService, KeywordService) {
     this.$state = $state
     this.ClacoFormService = ClacoFormService
     this.EntryService = EntryService
@@ -32,7 +32,7 @@ export default class EntryCreationCtrl {
     this.initialize()
   }
 
-  initialize () {
+  initialize() {
     this.ClacoFormService.clearMessages()
 
     if (this.template) {
@@ -76,32 +76,32 @@ export default class EntryCreationCtrl {
     this.initializeKeywords()
   }
 
-  initializeKeywords () {
+  initializeKeywords() {
     this.keywordsChoices = this.KeywordService.getKeywords()
   }
 
-  canEdit () {
+  canEdit() {
     return this.ClacoFormService.getCanEdit()
   }
 
-  isAllowed () {
+  isAllowed() {
     return this.ClacoFormService.getCanCreateEntry()
   }
 
-  canManageKeywords () {
+  canManageKeywords() {
     return this.isAllowed() && this.config['keywords_enabled']
   }
 
-  enableKeywordsSelect () {
+  enableKeywordsSelect() {
     this.showKeywordsSelect = true
   }
 
-  disableKeywordsSelect () {
+  disableKeywordsSelect() {
     this.showKeywordsSelect = false
     this.selectedKeyword = null
   }
 
-  addSelectedKeyword () {
+  addSelectedKeyword() {
     if (this.selectedKeyword) {
       if (this.config['new_keywords_enabled']) {
         const existingKeyword = this.keywords.find(k => k.toUpperCase() === this.selectedKeyword.toUpperCase())
@@ -121,7 +121,7 @@ export default class EntryCreationCtrl {
     this.selectedKeyword = null
   }
 
-  removeKeyword (keyword) {
+  removeKeyword(keyword) {
     const index = this.keywords.findIndex(k => k === keyword)
 
     if (index > -1) {
@@ -129,7 +129,7 @@ export default class EntryCreationCtrl {
     }
   }
 
-  submit () {
+  submit() {
     this.resetErrors()
 
     if (!this.entryTitle['value']) {
@@ -154,13 +154,13 @@ export default class EntryCreationCtrl {
     }
   }
 
-  resetErrors () {
+  resetErrors() {
     for (const key in this.entryErrors) {
       this.entryErrors[key] = null
     }
   }
 
-  isValid () {
+  isValid() {
     let valid = true
 
     for (const key in this.entryErrors) {
@@ -173,7 +173,7 @@ export default class EntryCreationCtrl {
     return valid
   }
 
-  cancel () {
+  cancel() {
     this.$state.go('menu')
   }
 }

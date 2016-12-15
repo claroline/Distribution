@@ -1,14 +1,14 @@
 import $ from 'jquery'
 
 export default class FieldController {
-  constructor () {
+  constructor() {
     this.name = this.field[0]
     this.options = this.field[2] || {}
     this.label = this.options.label !== undefined ? this.options.label : this.name
     this.translationDomain = this.options.translation_domain ? this.options.translation_domain: 'platform'
   }
 
-  getTinymceConfiguration () {
+  getTinymceConfiguration() {
     let tinymce = window.tinymce
     tinymce.claroline.init = tinymce.claroline.init || {}
     tinymce.claroline.plugins = tinymce.claroline.plugins || {}

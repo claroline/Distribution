@@ -10,7 +10,7 @@
 /*global Translator*/
 
 export default class MenuCtrl {
-  constructor ($state, ClacoFormService, EntryService) {
+  constructor($state, ClacoFormService, EntryService) {
     this.$state = $state
     this.ClacoFormService = ClacoFormService
     this.EntryService = EntryService
@@ -18,47 +18,47 @@ export default class MenuCtrl {
     this.showNbEntries = this.config['display_nb_entries'] === 'all' || this.config['display_nb_entries'] === 'published'
   }
 
-  canEdit () {
+  canEdit() {
     return this.ClacoFormService.getCanEdit()
   }
 
-  getResourceNodeName () {
+  getResourceNodeName() {
     return this.ClacoFormService.getResourceNodeName()
   }
 
-  getSuccessMessage () {
+  getSuccessMessage() {
     return this.ClacoFormService.getSuccessMessage()
   }
 
-  getErrorMessage () {
+  getErrorMessage() {
     return this.ClacoFormService.getErrorMessage()
   }
 
-  clearSuccessMessage () {
+  clearSuccessMessage() {
     this.ClacoFormService.clearSuccessMessage()
   }
 
-  clearErrorMessage () {
+  clearErrorMessage() {
     this.ClacoFormService.clearErrorMessage()
   }
 
-  canAdd () {
+  canAdd() {
     return this.ClacoFormService.getCanCreateEntry()
   }
 
-  canSearch () {
+  canSearch() {
     return this.ClacoFormService.getCanSearchEntry()
   }
 
-  getNbEntries () {
+  getNbEntries() {
     return this.EntryService.getNbEntries()
   }
 
-  getNbPublishedEntries () {
+  getNbPublishedEntries() {
     return this.EntryService.getNbPublishedEntries()
   }
 
-  getRandomEntry () {
+  getRandomEntry() {
     this.ClacoFormService.getRandomEntryId(this.ClacoFormService.getResourceId()).then(d => {
       if (d) {
         if ((typeof d === 'number') && (d > 0)) {

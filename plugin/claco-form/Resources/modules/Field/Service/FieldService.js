@@ -12,7 +12,7 @@
 import fieldFormTemplate from '../Partial/field_form_modal.html'
 
 export default class FieldService {
-  constructor ($http, $uibModal, ClarolineAPIService) {
+  constructor($http, $uibModal, ClarolineAPIService) {
     this.$http = $http
     this.$uibModal = $uibModal
     this.ClarolineAPIService = ClarolineAPIService
@@ -35,7 +35,7 @@ export default class FieldService {
       {label: 'Albania', value: 'AL'},
       {label: 'Algeria', value: 'DZ'},
       {label: 'American Samoa', value: 'AS'},
-      {label: 'AndorrA', value: 'AD'},
+      {label: 'Andorra', value: 'AD'},
       {label: 'Angola', value: 'AO'},
       {label: 'Anguilla', value: 'AI'},
       {label: 'Antarctica', value: 'AQ'},
@@ -280,13 +280,13 @@ export default class FieldService {
     this.initialize()
   }
 
-  _addFieldCallback (data) {
+  _addFieldCallback(data) {
     let field = JSON.parse(data)
     this.formatField(field)
     this.fields.push(field)
   }
 
-  _updateFieldCallback (data) {
+  _updateFieldCallback(data) {
     let field = JSON.parse(data)
     this.formatField(field)
     const index = this.fields.findIndex(f => f['id'] === field['id'])
@@ -296,7 +296,7 @@ export default class FieldService {
     }
   }
 
-  _removeFieldCallback (data) {
+  _removeFieldCallback(data) {
     const field = JSON.parse(data)
     const index = this.fields.findIndex(f => f['id'] === field['id'])
 
@@ -305,25 +305,25 @@ export default class FieldService {
     }
   }
 
-  initialize () {
+  initialize() {
     this.fields.forEach(f => this.formatField(f))
   }
 
-  getFields () {
+  getFields() {
     return this.fields
   }
 
-  getTypes () {
+  getTypes() {
     return this.types
   }
 
-  getCountryNameFromCode (code) {
+  getCountryNameFromCode(code) {
     const country = this.countries.find(c => c['value'] === code)
 
     return country ? country['label'] : '-'
   }
 
-  formatField (field) {
+  formatField(field) {
     const type = this.types.find(t => t['value'] === field['type'])
     field['typeName'] = type['name']
     const choices = field['fieldFacet']['field_facet_choices']
@@ -338,7 +338,7 @@ export default class FieldService {
     field['fieldFacet']['field_facet_choices'].forEach(ffc => ffc['value'] = ffc['label'])
   }
 
-  createField (resourceId, callback = null) {
+  createField(resourceId, callback = null) {
     const addCallback = callback !== null ? callback : this._addFieldCallback
     this.$uibModal.open({
       template: fieldFormTemplate,
@@ -352,7 +352,7 @@ export default class FieldService {
     })
   }
 
-  editField (field, resourceId, callback = null) {
+  editField(field, resourceId, callback = null) {
     const updateCallback = callback !== null ? callback : this._updateFieldCallback
     this.$uibModal.open({
       template: fieldFormTemplate,
@@ -367,7 +367,7 @@ export default class FieldService {
     })
   }
 
-  deleteField (field, callback = null) {
+  deleteField(field, callback = null) {
     const url = Routing.generate('claro_claco_form_field_delete', {field: field['id']})
     const deleteCallback = callback !== null ? callback : this._removeFieldCallback
 
@@ -379,7 +379,7 @@ export default class FieldService {
     )
   }
 
-  static _getGlobal (name) {
+  static _getGlobal(name) {
     if (typeof window[name] === 'undefined') {
       throw new Error(
         `Expected ${name} to be exposed in a window.${name} variable`

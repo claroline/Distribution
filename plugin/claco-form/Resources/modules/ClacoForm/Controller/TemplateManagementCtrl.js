@@ -8,7 +8,7 @@
  */
 
 export default class TemplateManagementCtrl {
-  constructor ($state, ClacoFormService, FieldService) {
+  constructor($state, ClacoFormService, FieldService) {
     this.$state = $state
     this.ClacoFormService = ClacoFormService
     this.FieldService = FieldService
@@ -23,7 +23,7 @@ export default class TemplateManagementCtrl {
     this.initialize()
   }
 
-  initialize () {
+  initialize() {
     this.ClacoFormService.clearMessages()
     this.fields.forEach(f => {
       if (f['required']) {
@@ -34,11 +34,11 @@ export default class TemplateManagementCtrl {
     })
   }
 
-  canEdit () {
+  canEdit() {
     return this.ClacoFormService.getCanEdit()
   }
 
-  submit () {
+  submit() {
     if (this.isValid()) {
       this.ClacoFormService.saveTemplate(this.resourceId, this.template).then(d => {
         if (d) {
@@ -48,7 +48,7 @@ export default class TemplateManagementCtrl {
     }
   }
 
-  isValid () {
+  isValid() {
     this.requiredErrors = []
     this.duplicatedErrors = []
 
@@ -84,7 +84,7 @@ export default class TemplateManagementCtrl {
     return this.requiredErrors.length === 0 && this.duplicatedErrors.length === 0
   }
 
-  removeAccent (str) {
+  removeAccent(str) {
     return this.ClacoFormService.removeAccent(str)
   }
 }

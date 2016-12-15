@@ -41,7 +41,7 @@ export default class FieldEditionModalCtrl {
     this.initializeChoices()
   }
 
-  initializeField () {
+  initializeField() {
     this.field['name'] = this.source['name']
     this.field['type'] = this.source['type']
     this.field['required'] = this.source['required']
@@ -50,7 +50,7 @@ export default class FieldEditionModalCtrl {
     this.type = selectedType
   }
 
-  initializeChoices () {
+  initializeChoices() {
     if (this.source['fieldFacet']['field_facet_choices'].length > 0) {
       this.source['fieldFacet']['field_facet_choices'].forEach(c => {
         const id = c['id']
@@ -83,7 +83,7 @@ export default class FieldEditionModalCtrl {
     }
   }
 
-  submit () {
+  submit() {
     this.resetErrors()
 
     if (!this.field['name']) {
@@ -152,7 +152,7 @@ export default class FieldEditionModalCtrl {
     }
   }
 
-  resetErrors () {
+  resetErrors() {
     for (const key in this.fieldErrors) {
       this.fieldErrors[key] = null
     }
@@ -164,7 +164,7 @@ export default class FieldEditionModalCtrl {
     }
   }
 
-  isValid () {
+  isValid() {
     let valid = true
 
     for (const key in this.fieldErrors) {
@@ -180,7 +180,7 @@ export default class FieldEditionModalCtrl {
     return valid
   }
 
-  isChoicesValid () {
+  isChoicesValid() {
     let valid = true
 
     for (const key in this.oldChoicesErrors) {
@@ -201,7 +201,7 @@ export default class FieldEditionModalCtrl {
     return valid
   }
 
-  hasChoices () {
+  hasChoices() {
     let hasChoice = false
 
     switch (this.type['value']) {
@@ -214,13 +214,13 @@ export default class FieldEditionModalCtrl {
     return hasChoice
   }
 
-  addChoice () {
+  addChoice() {
     this.choices.push({index: this.index, value: '', category: null, categoryEnabled: false})
     this.choicesErrors[this.index] = null
     ++this.index
   }
 
-  removeOldChoice (index) {
+  removeOldChoice(index) {
     const choiceIndex = this.oldChoices.findIndex(c => c['index'] === index)
 
     if (choiceIndex > -1) {
@@ -229,7 +229,7 @@ export default class FieldEditionModalCtrl {
     }
   }
 
-  removeChoice (index) {
+  removeChoice(index) {
     const choiceIndex = this.choices.findIndex(c => c['index'] === index)
 
     if (choiceIndex > -1) {
@@ -238,7 +238,7 @@ export default class FieldEditionModalCtrl {
     }
   }
 
-  enableOldChoiceCategory (index) {
+  enableOldChoiceCategory(index) {
     const choiceIndex = this.oldChoices.findIndex(c => c['index'] === index)
 
     if (choiceIndex > -1) {
@@ -246,7 +246,7 @@ export default class FieldEditionModalCtrl {
     }
   }
 
-  disableOldChoiceCategory (index) {
+  disableOldChoiceCategory(index) {
     const choiceIndex = this.oldChoices.findIndex(c => c['index'] === index)
 
     if (choiceIndex > -1) {
@@ -255,7 +255,7 @@ export default class FieldEditionModalCtrl {
     }
   }
 
-  enableChoiceCategory (index) {
+  enableChoiceCategory(index) {
     const choiceIndex = this.choices.findIndex(c => c['index'] === index)
 
     if (choiceIndex > -1) {
@@ -263,7 +263,7 @@ export default class FieldEditionModalCtrl {
     }
   }
 
-  disableChoiceCategory (index) {
+  disableChoiceCategory(index) {
     const choiceIndex = this.choices.findIndex(c => c['index'] === index)
 
     if (choiceIndex > -1) {

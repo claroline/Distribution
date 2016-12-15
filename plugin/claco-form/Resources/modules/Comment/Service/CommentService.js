@@ -11,7 +11,7 @@
 /*global Translator*/
 
 export default class CommentService {
-  constructor ($http, ClarolineAPIService) {
+  constructor($http, ClarolineAPIService) {
     this.$http = $http
     this.ClarolineAPIService = ClarolineAPIService
     this.canEdit = CommentService._getGlobal('canEdit')
@@ -19,12 +19,12 @@ export default class CommentService {
     this._addCommentCallback = this._addCommentCallback.bind(this)
   }
 
-  _addCommentCallback (data) {
+  _addCommentCallback(data) {
     const comment = JSON.parse(data)
     this.comments.unshift(comment)
   }
 
-  _updateCommentCallback (data) {
+  _updateCommentCallback(data) {
     const comment = JSON.parse(data)
     const index = this.comments.findIndex(c => c['id'] === comment['id'])
 
@@ -33,7 +33,7 @@ export default class CommentService {
     }
   }
 
-  _removeCommentCallback (data) {
+  _removeCommentCallback(data) {
     const comment = JSON.parse(data)
     const index = this.comments.findIndex(c => c['id'] === comment['id'])
 
@@ -42,7 +42,7 @@ export default class CommentService {
     }
   }
 
-  initializeComments (entryId) {
+  initializeComments(entryId) {
     const url = Routing.generate('claro_claco_form_entry_comments_retrieve', {entry: entryId})
     this.$http.get(url).then(d => {
       if (d['status'] === 200) {
@@ -53,11 +53,11 @@ export default class CommentService {
     })
   }
 
-  getComments () {
+  getComments() {
     return this.comments
   }
 
-  createComment (entryId, content, callback = null) {
+  createComment(entryId, content, callback = null) {
     const url = Routing.generate('claro_claco_form_entry_comment_create', {entry: entryId})
     const addCallback = callback !== null ? callback : this._addCommentCallback
     this.$http.post(url, {commentData: content}).then(d => {
@@ -67,7 +67,7 @@ export default class CommentService {
     })
   }
 
-  editComment (comment, callback = null) {
+  editComment(comment, callback = null) {
     const url = Routing.generate('claro_claco_form_entry_comment_edit', {comment: comment['id']})
     const updateCallback = callback !== null ? callback : this._updateCommentCallback
     this.$http.put(url, {commentData: comment['content']}).then(d => {
@@ -77,7 +77,7 @@ export default class CommentService {
     })
   }
 
-  deleteComment (comment, callback = null) {
+  deleteComment(comment, callback = null) {
     const url = Routing.generate('claro_claco_form_entry_comment_delete', {comment: comment['id']})
     const deleteCallback = callback !== null ? callback : this._removeCommentCallback
 
@@ -89,7 +89,7 @@ export default class CommentService {
     )
   }
 
-  activateComment (comment, callback = null) {
+  activateComment(comment, callback = null) {
     const url = Routing.generate('claro_claco_form_entry_comment_activate', {comment: comment['id']})
     const updateCallback = callback !== null ? callback : this._updateCommentCallback
     this.$http.put(url).then(d => {
@@ -99,7 +99,7 @@ export default class CommentService {
     })
   }
 
-  blockComment (comment, callback = null) {
+  blockComment(comment, callback = null) {
     const url = Routing.generate('claro_claco_form_entry_comment_block', {comment: comment['id']})
     const updateCallback = callback !== null ? callback : this._updateCommentCallback
     this.$http.put(url).then(d => {
@@ -109,7 +109,7 @@ export default class CommentService {
     })
   }
 
-  static _getGlobal (name) {
+  static _getGlobal(name) {
     if (typeof window[name] === 'undefined') {
       throw new Error(
         `Expected ${name} to be exposed in a window.${name} variable`

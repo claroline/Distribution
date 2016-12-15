@@ -8,7 +8,7 @@
  */
 
 export default class KeywordsManagementCtrl {
-  constructor (NgTableParams, ClacoFormService, KeywordService) {
+  constructor(NgTableParams, ClacoFormService, KeywordService) {
     this.ClacoFormService = ClacoFormService
     this.KeywordService = KeywordService
     this.keywords = KeywordService.getKeywords()
@@ -23,38 +23,38 @@ export default class KeywordsManagementCtrl {
     this.initialize()
   }
 
-  _addKeywordCallback (data) {
+  _addKeywordCallback(data) {
     this.KeywordService._addKeywordCallback(data)
     this.tableParams.reload()
   }
 
-  _updateKeywordCallback (data) {
+  _updateKeywordCallback(data) {
     this.KeywordService._updateKeywordCallback(data)
     this.tableParams.reload()
   }
 
-  _removeKeywordCallback (data) {
+  _removeKeywordCallback(data) {
     this.KeywordService._removeKeywordCallback(data)
     this.tableParams.reload()
   }
 
-  initialize () {
+  initialize() {
     this.ClacoFormService.clearMessages()
   }
 
-  canEdit () {
+  canEdit() {
     return this.ClacoFormService.getCanEdit()
   }
 
-  createKeyword () {
+  createKeyword() {
     this.KeywordService.createKeyword(this.ClacoFormService.getResourceId(), this._addKeywordCallback)
   }
 
-  editKeyword (keyword) {
+  editKeyword(keyword) {
     this.KeywordService.editKeyword(keyword, this.ClacoFormService.getResourceId(), this._updateKeywordCallback)
   }
 
-  deleteKeyword (keyword) {
+  deleteKeyword(keyword) {
     this.KeywordService.deleteKeyword(keyword, this._removeKeywordCallback)
   }
 }

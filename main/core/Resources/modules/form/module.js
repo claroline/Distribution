@@ -1,4 +1,4 @@
-import 'angular/angular.min'
+import angular from 'angular/index'
 import 'angular-ui-translation/angular-translation'
 import 'ng-file-upload'
 

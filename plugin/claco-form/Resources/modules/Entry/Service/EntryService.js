@@ -12,7 +12,7 @@
 //import fieldFormTemplate from '../Partial/field_form_modal.html'
 
 export default class EntryService {
-  constructor ($http, $uibModal, ClarolineAPIService, FieldService) {
+  constructor($http, $uibModal, ClarolineAPIService, FieldService) {
     this.$http = $http
     this.$uibModal = $uibModal
     this.ClarolineAPIService = ClarolineAPIService
@@ -30,7 +30,7 @@ export default class EntryService {
     this.initialize()
   }
 
-  _updateEntryCallback (data, statusChanged = false, oldStatus = null) {
+  _updateEntryCallback(data, statusChanged = false, oldStatus = null) {
     let entry = JSON.parse(data)
     this.formatEntry(entry)
     const entryIndex = this.entries.findIndex(e => e['id'] === entry['id'])
@@ -55,7 +55,7 @@ export default class EntryService {
     }
   }
 
-  _removeEntryCallback (data) {
+  _removeEntryCallback(data) {
     const entry = JSON.parse(data)
     const entryIndex = this.entries.findIndex(e => e['id'] === entry['id'])
     const myEntryIndex = this.myEntries.findIndex(e => e['id'] === entry['id'])
@@ -77,7 +77,7 @@ export default class EntryService {
     }
   }
 
-  initialize () {
+  initialize() {
     this.myEntries.forEach(e => this.formatEntry(e))
     this.managerEntries.forEach(e => this.formatEntry(e))
     const url = Routing.generate('claro_claco_form_entries_list', {clacoForm: this.resourceId})
@@ -90,23 +90,23 @@ export default class EntryService {
     })
   }
 
-  getEntries () {
+  getEntries() {
     return this.entries
   }
 
-  getMyEntries () {
+  getMyEntries() {
     return this.myEntries
   }
 
-  getManagerEntries () {
+  getManagerEntries() {
     return this.managerEntries
   }
 
-  getEntry (entryId) {
+  getEntry(entryId) {
     return this.entries.find(e => e['id'] === entryId)
   }
 
-  getEntryById (entryId) {
+  getEntryById(entryId) {
     const url = Routing.generate('claro_claco_form_entry_retrieve', {entry: entryId})
 
     return this.$http.get(url).then(d => {
@@ -119,48 +119,48 @@ export default class EntryService {
     })
   }
 
-  getNbEntries () {
+  getNbEntries() {
     return this.nbEntries
   }
 
-  getNbPublishedEntries () {
+  getNbPublishedEntries() {
     return this.nbPublishedEntries
   }
 
-  getNbMyEntries () {
+  getNbMyEntries() {
     return this.myEntries.length
   }
 
-  getCanOpenEntry (entryId) {
+  getCanOpenEntry(entryId) {
     return this.canEdit ||
       this.isManagerEntry(entryId) ||
       this.isMyEntry(entryId) ||
       (this.resourceDetails['search_enabled'] && (this.getEntryStatus(entryId) === 1))
   }
 
-  getCanEditEntry (entryId) {
+  getCanEditEntry(entryId) {
     return this.canEdit || this.isManagerEntry(entryId) || (this.resourceDetails['edition_enabled'] && this.isMyEntry(entryId))
   }
 
-  getCanManageEntry (entryId) {
+  getCanManageEntry(entryId) {
     return this.canEdit || this.isManagerEntry(entryId)
   }
 
-  isMyEntry (entryId) {
+  isMyEntry(entryId) {
     return this.myEntries.find(e => e['id'] === entryId) !== undefined
   }
 
-  isManagerEntry (entryId) {
+  isManagerEntry(entryId) {
     return this.managerEntries.find(e => e['id'] === entryId) !== undefined
   }
 
-  getEntryStatus (entryId) {
+  getEntryStatus(entryId) {
     const entry = this.entries.find(e => e['id'] === entryId)
 
     return entry ? entry['status'] : null
   }
 
-  createEntry (resourceId, entryData, entryTitle, keywordsData = []) {
+  createEntry(resourceId, entryData, entryTitle, keywordsData = []) {
     const url = Routing.generate('claro_claco_form_entry_create', {clacoForm: resourceId})
 
     return this.$http.post(url, {entryData: entryData, titleData: entryTitle, keywordsData: keywordsData}).then(d => {
@@ -180,7 +180,7 @@ export default class EntryService {
     })
   }
 
-  editEntry (entryId, entryData, entryTitle, categoriesData = [], keywordsData = [], callback = null) {
+  editEntry(entryId, entryData, entryTitle, categoriesData = [], keywordsData = [], callback = null) {
     const url = Routing.generate('claro_claco_form_entry_edit', {entry: entryId})
     const updateCallback = callback !== null ? callback : this._updateEntryCallback
 
@@ -193,7 +193,7 @@ export default class EntryService {
     })
   }
 
-  formatEntry (entry) {
+  formatEntry(entry) {
     const creationDate = new Date(entry['creationDate'])
     entry['creationDateString'] = `${creationDate.getDate()}/${creationDate.getMonth() + 1}/${creationDate.getFullYear()}`
 
@@ -235,7 +235,7 @@ export default class EntryService {
     })
   }
 
-  deleteEntry (entry, callback = null) {
+  deleteEntry(entry, callback = null) {
     const url = Routing.generate('claro_claco_form_entry_delete', {entry: entry['id']})
     const deleteCallback = callback !== null ? callback : this._removeEntryCallback
 
@@ -247,7 +247,7 @@ export default class EntryService {
     )
   }
 
-  changeEntryStatus (entry, callback = null) {
+  changeEntryStatus(entry, callback = null) {
     const oldStatus = entry['status']
     const url = Routing.generate('claro_claco_form_entry_status_change', {entry: entry['id']})
     const updateCallback = callback !== null ? callback : this._updateEntryCallback
@@ -258,7 +258,7 @@ export default class EntryService {
     })
   }
 
-  static _getGlobal (name) {
+  static _getGlobal(name) {
     if (typeof window[name] === 'undefined') {
       throw new Error(
         `Expected ${name} to be exposed in a window.${name} variable`

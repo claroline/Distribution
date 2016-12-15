@@ -10,7 +10,7 @@
 /*global Translator*/
 
 export default class EntryEditionCtrl {
-  constructor ($state, $stateParams, ClacoFormService, EntryService, FieldService, CategoryService, KeywordService) {
+  constructor($state, $stateParams, ClacoFormService, EntryService, FieldService, CategoryService, KeywordService) {
     this.$state = $state
     this.ClacoFormService = ClacoFormService
     this.EntryService = EntryService
@@ -39,7 +39,7 @@ export default class EntryEditionCtrl {
     this.initialize()
   }
 
-  initialize () {
+  initialize() {
     this.ClacoFormService.clearMessages()
     this.source = this.EntryService.getEntry(this.entryId)
 
@@ -53,7 +53,7 @@ export default class EntryEditionCtrl {
     this.initializeTemplate()
   }
 
-  initializeEntry () {
+  initializeEntry() {
     this.entryTitle['value'] = this.source['title']
     this.fields.forEach(f => {
       const id = f['id']
@@ -65,17 +65,17 @@ export default class EntryEditionCtrl {
     })
   }
 
-  initializeCategories () {
+  initializeCategories() {
     this.categoriesChoices = this.CategoryService.getCategories()
     this.source['categories'].forEach(c => this.categories.push(c))
   }
 
-  initializeKeywords () {
+  initializeKeywords() {
     this.keywordsChoices = this.KeywordService.getKeywords()
     this.source['keywords'].forEach(k => this.keywords.push(k['name']))
   }
 
-  initializeTemplate () {
+  initializeTemplate() {
     if (this.template) {
       const replacedTitleField = `
         <form-field field="['${this.entryTitle['label']}',
@@ -112,32 +112,32 @@ export default class EntryEditionCtrl {
     }
   }
 
-  canEdit () {
+  canEdit() {
     return this.ClacoFormService.getCanEdit()
   }
 
-  isAllowed () {
+  isAllowed() {
     return this.EntryService.getCanEditEntry(this.entryId)
   }
 
-  canManageCategories () {
+  canManageCategories() {
     return this.isAllowed() && this.canEdit()
   }
 
-  canManageKeywords () {
+  canManageKeywords() {
     return this.isAllowed() && this.config['keywords_enabled']
   }
 
-  enableCategoriesSelect () {
+  enableCategoriesSelect() {
     this.showCategoriesSelect = true
   }
 
-  disableCategoriesSelect () {
+  disableCategoriesSelect() {
     this.showCategoriesSelect = false
     this.selectedCategory = null
   }
 
-  addSelectedCategory () {
+  addSelectedCategory() {
     if (this.selectedCategory) {
       const existingCategory = this.categories.find(c => c['id'] === this.selectedCategory['id'])
 
@@ -149,7 +149,7 @@ export default class EntryEditionCtrl {
     this.selectedCategory = null
   }
 
-  removeCategory (category) {
+  removeCategory(category) {
     const index = this.categories.findIndex(c => c['id'] === category['id'])
 
     if (index > -1) {
@@ -157,16 +157,16 @@ export default class EntryEditionCtrl {
     }
   }
 
-  enableKeywordsSelect () {
+  enableKeywordsSelect() {
     this.showKeywordsSelect = true
   }
 
-  disableKeywordsSelect () {
+  disableKeywordsSelect() {
     this.showKeywordsSelect = false
     this.selectedKeyword = null
   }
 
-  addSelectedKeyword () {
+  addSelectedKeyword() {
     if (this.selectedKeyword) {
       if (this.config['new_keywords_enabled']) {
         const existingKeyword = this.keywords.find(k => k.toUpperCase() === this.selectedKeyword.toUpperCase())
@@ -186,7 +186,7 @@ export default class EntryEditionCtrl {
     this.selectedKeyword = null
   }
 
-  removeKeyword (keyword) {
+  removeKeyword(keyword) {
     const index = this.keywords.findIndex(k => k === keyword)
 
     if (index > -1) {
@@ -194,7 +194,7 @@ export default class EntryEditionCtrl {
     }
   }
 
-  submit () {
+  submit() {
     this.resetErrors()
 
     if (!this.entryTitle['value']) {
@@ -220,13 +220,13 @@ export default class EntryEditionCtrl {
     }
   }
 
-  resetErrors () {
+  resetErrors() {
     for (const key in this.entryErrors) {
       this.entryErrors[key] = null
     }
   }
 
-  isValid () {
+  isValid() {
     let valid = true
 
     for (const key in this.entryErrors) {
@@ -239,7 +239,7 @@ export default class EntryEditionCtrl {
     return valid
   }
 
-  cancel () {
+  cancel() {
     this.$state.go('entries_list')
   }
 }

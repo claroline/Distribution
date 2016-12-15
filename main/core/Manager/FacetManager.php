@@ -663,9 +663,9 @@ class FacetManager
         $withChoices = false;
 
         switch ($type) {
-            case FieldFacet::CHECKBOXES_TYPE :
-            case FieldFacet::RADIO_TYPE :
-            case FieldFacet::SELECT_TYPE :
+            case FieldFacet::CHECKBOXES_TYPE:
+            case FieldFacet::RADIO_TYPE:
+            case FieldFacet::SELECT_TYPE:
                 $withChoices = true;
         }
 

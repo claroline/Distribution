@@ -22,7 +22,7 @@ export default class KeywordCreationModalCtrl {
     this.keywordErrors = {name: null}
   }
 
-  submit () {
+  submit() {
     this.resetErrors()
 
     if (!this.keyword['name']) {
@@ -49,13 +49,13 @@ export default class KeywordCreationModalCtrl {
     }
   }
 
-  resetErrors () {
+  resetErrors() {
     for (const key in this.keywordErrors) {
       this.keywordErrors[key] = null
     }
   }
 
-  isValid () {
+  isValid() {
     let valid = true
 
     for (const key in this.keywordErrors) {

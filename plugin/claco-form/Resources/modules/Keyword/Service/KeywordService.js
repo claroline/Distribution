@@ -12,7 +12,7 @@
 import keywordFormTemplate from '../Partial/keyword_form_modal.html'
 
 export default class KeywordService {
-  constructor ($http, $uibModal, ClarolineAPIService) {
+  constructor($http, $uibModal, ClarolineAPIService) {
     this.$http = $http
     this.$uibModal = $uibModal
     this.ClarolineAPIService = ClarolineAPIService
@@ -23,12 +23,12 @@ export default class KeywordService {
     this._removeKeywordCallback = this._removeKeywordCallback.bind(this)
   }
 
-  _addKeywordCallback (data) {
+  _addKeywordCallback(data) {
     const keyword = JSON.parse(data)
     this.keywords.push(keyword)
   }
 
-  _updateKeywordCallback (data) {
+  _updateKeywordCallback(data) {
     const keyword = JSON.parse(data)
     const index = this.keywords.findIndex(k => k['id'] === keyword['id'])
 
@@ -37,7 +37,7 @@ export default class KeywordService {
     }
   }
 
-  _removeKeywordCallback (data) {
+  _removeKeywordCallback(data) {
     const keyword = JSON.parse(data)
     const index = this.keywords.findIndex(k => k['id'] === keyword['id'])
 
@@ -46,11 +46,11 @@ export default class KeywordService {
     }
   }
 
-  getKeywords () {
+  getKeywords() {
     return this.keywords
   }
 
-  createKeyword (resourceId, callback = null) {
+  createKeyword(resourceId, callback = null) {
     const addCallback = callback !== null ? callback : this._addKeywordCallback
     this.$uibModal.open({
       template: keywordFormTemplate,
@@ -64,7 +64,7 @@ export default class KeywordService {
     })
   }
 
-  editKeyword (keyword, resourceId, callback = null) {
+  editKeyword(keyword, resourceId, callback = null) {
     const updateCallback = callback !== null ? callback : this._updateKeywordCallback
     this.$uibModal.open({
       template: keywordFormTemplate,
@@ -79,7 +79,7 @@ export default class KeywordService {
     })
   }
 
-  deleteKeyword (keyword, callback = null) {
+  deleteKeyword(keyword, callback = null) {
     const url = Routing.generate('claro_claco_form_keyword_delete', {keyword: keyword['id']})
     const deleteCallback = callback !== null ? callback : this._removeKeywordCallback
 
@@ -91,7 +91,7 @@ export default class KeywordService {
     )
   }
 
-  static _getGlobal (name) {
+  static _getGlobal(name) {
     if (typeof window[name] === 'undefined') {
       throw new Error(
         `Expected ${name} to be exposed in a window.${name} variable`

@@ -10,7 +10,7 @@
 /*global Translator*/
 
 export default class GeneralConfigurationCtrl {
-  constructor ($state, ClacoFormService, CategoryService) {
+  constructor($state, ClacoFormService, CategoryService) {
     this.$state = $state
     this.ClacoFormService = ClacoFormService
     this.resourceId = ClacoFormService.getResourceId()
@@ -37,7 +37,7 @@ export default class GeneralConfigurationCtrl {
     this.initialize()
   }
 
-  initialize () {
+  initialize() {
     this.ClacoFormService.clearMessages()
 
     if (this.config['random_start_date']) {
@@ -60,11 +60,11 @@ export default class GeneralConfigurationCtrl {
     }
   }
 
-  canEdit () {
+  canEdit() {
     return this.ClacoFormService.getCanEdit()
   }
 
-  submit () {
+  submit() {
     this.resetErrors()
 
     if (this.config['max_entries'] === null || this.config['max_entries'] === undefined) {
@@ -88,13 +88,13 @@ export default class GeneralConfigurationCtrl {
     }
   }
 
-  resetErrors () {
+  resetErrors() {
     for (const key in this.configErrors) {
       this.configErrors[key] = null
     }
   }
 
-  isValid () {
+  isValid() {
     let valid = true
 
     for (const key in this.configErrors) {
@@ -107,7 +107,7 @@ export default class GeneralConfigurationCtrl {
     return valid
   }
 
-  openDatePicker (type) {
+  openDatePicker(type) {
     switch (type) {
       case 'randomStart':
         this.randomStartDate['open'] = true

@@ -10,7 +10,7 @@
 /*global Translator*/
 
 export default class EntriesManagementCtrl {
-  constructor (NgTableParams, ClacoFormService, EntryService, FieldService, CategoryService) {
+  constructor(NgTableParams, ClacoFormService, EntryService, FieldService, CategoryService) {
     this.ClacoFormService = ClacoFormService
     this.EntryService = EntryService
     this.FieldService = FieldService
@@ -44,27 +44,27 @@ export default class EntriesManagementCtrl {
     this.initialize()
   }
 
-  _updateEntryCallback (data, statusChanged = false, oldStatus = null) {
+  _updateEntryCallback(data, statusChanged = false, oldStatus = null) {
     this.EntryService._updateEntryCallback(data, statusChanged, oldStatus)
     this.tableParams['entries'].reload()
     this.tableParams['myEntries'].reload()
     this.tableParams['managerEntries'].reload()
   }
 
-  _removeEntryCallback (data) {
+  _removeEntryCallback(data) {
     this.EntryService._removeEntryCallback(data)
     this.tableParams['entries'].reload()
     this.tableParams['myEntries'].reload()
     this.tableParams['managerEntries'].reload()
   }
 
-  initialize () {
+  initialize() {
     this.ClacoFormService.clearMessages()
     this.initializeModes()
     this.initializeColumns()
   }
 
-  initializeModes () {
+  initializeModes() {
     if (this.ClacoFormService.getCanEdit() || this.config['search_enabled']) {
       this.modes.push('all_entries')
     }
@@ -79,7 +79,7 @@ export default class EntriesManagementCtrl {
     }
   }
 
-  initializeColumns () {
+  initializeColumns() {
     const displayMetadata = this.ClacoFormService.getCanEdit() ||
       this.config['display_metadata'] === 'all' ||
       ((this.config['display_metadata'] === 'manager') && this.CategoryService.getIsCategoryManager())
@@ -197,15 +197,15 @@ export default class EntriesManagementCtrl {
     }
   }
 
-  isAnon () {
+  isAnon() {
     return this.ClacoFormService.getIsAnon()
   }
 
-  canEdit () {
+  canEdit() {
     return this.ClacoFormService.getCanEdit()
   }
 
-  getStatusClass (status) {
+  getStatusClass(status) {
     let statusClass = ''
 
     if (status === 0) {
@@ -217,7 +217,7 @@ export default class EntriesManagementCtrl {
     return statusClass
   }
 
-  getDisplayedColumns (type) {
+  getDisplayedColumns(type) {
     let columns = []
 
     this.fieldsColumns[type].forEach(fc => {
@@ -233,7 +233,7 @@ export default class EntriesManagementCtrl {
     return columns
   }
 
-  isDefaultField (name) {
+  isDefaultField(name) {
     return name === 'title' ||
       name === 'userString' ||
       name === 'creationDateString' ||
@@ -241,7 +241,7 @@ export default class EntriesManagementCtrl {
       name === 'keywordsString'
   }
 
-  isCustomField (name) {
+  isCustomField(name) {
     return name !== 'alert' &&
       name !== 'actions' &&
       name !== 'title' &&
@@ -251,11 +251,11 @@ export default class EntriesManagementCtrl {
       name !== 'keywordsString'
   }
 
-  deleteEntry (entry) {
+  deleteEntry(entry) {
     this.EntryService.deleteEntry(entry, this._removeEntryCallback)
   }
 
-  changeEntryStatus (entry) {
+  changeEntryStatus(entry) {
     this.EntryService.changeEntryStatus(entry, this._updateEntryCallback)
   }
 }

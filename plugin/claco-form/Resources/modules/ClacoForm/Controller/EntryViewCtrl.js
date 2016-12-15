@@ -10,7 +10,7 @@
 /*global Translator*/
 
 export default class EntryViewCtrl {
-  constructor ($state, $stateParams, NgTableParams, ClacoFormService, EntryService, FieldService, CategoryService, KeywordService, CommentService) {
+  constructor($state, $stateParams, NgTableParams, ClacoFormService, EntryService, FieldService, CategoryService, KeywordService, CommentService) {
     this.$state = $state
     this.ClacoFormService = ClacoFormService
     this.EntryService = EntryService
@@ -47,35 +47,35 @@ export default class EntryViewCtrl {
     this.initialize()
   }
 
-  _addCommentCallback (data) {
+  _addCommentCallback(data) {
     this.CommentService._addCommentCallback(data)
     this.newCommentFormActive = false
     this.newComment = null
     this.tableParams.reload()
   }
 
-  _updateCommentCallback (data) {
+  _updateCommentCallback(data) {
     this.CommentService._updateCommentCallback(data)
     this.tableParams.reload()
   }
 
-  _removeCommentCallback (data) {
+  _removeCommentCallback(data) {
     this.CommentService._removeCommentCallback(data)
     this.tableParams.reload()
   }
 
-  _updateEntryCallback (data) {
+  _updateEntryCallback(data) {
     this.EntryService._updateEntryCallback(data)
     const e = JSON.parse(data)
     this.entry['status'] = e['status']
   }
 
-  _removeEntryCallback (data) {
+  _removeEntryCallback(data) {
     this.EntryService._removeEntryCallback(data)
     this.$state.go('entries_list')
   }
 
-  initialize () {
+  initialize() {
     this.ClacoFormService.clearMessages()
     this.entry = this.EntryService.getEntry(this.entryId)
     this.collapsed['keywords'] = !this.config['open_keywords']
@@ -97,7 +97,7 @@ export default class EntryViewCtrl {
     this.CommentService.initializeComments(this.entryId)
   }
 
-  initializeTemplate () {
+  initializeTemplate() {
     if (this.template) {
       this.template = this.template.replace('%clacoform_entry_title%', this.entry['title'])
       this.fields.forEach(f => {
@@ -125,7 +125,7 @@ export default class EntryViewCtrl {
     }
   }
 
-  initializeCategories () {
+  initializeCategories() {
     this.entry['categories'].forEach(c => {
       this.categories.push(c)
 
@@ -140,105 +140,105 @@ export default class EntryViewCtrl {
     })
   }
 
-  initializeKeywords () {
+  initializeKeywords() {
     this.entry['keywords'].forEach(k => this.keywords.push(k['name']))
   }
 
-  canEdit () {
+  canEdit() {
     return this.ClacoFormService.getCanEdit()
   }
 
-  isAllowed () {
+  isAllowed() {
     return this.EntryService.getCanOpenEntry(this.entryId)
   }
 
-  toggleCollapsed (type) {
+  toggleCollapsed(type) {
     this.collapsed[type] = !this.collapsed[type]
   }
 
-  isCommentsDisplayable () {
+  isCommentsDisplayable() {
     const isAnon = this.ClacoFormService.getIsAnon()
 
     return this.config['display_comments'] || (this.config['comments_enabled'] && (!isAnon || this.config['anonymous_comments_enabled']))
   }
 
-  isCommentsEnabled () {
+  isCommentsEnabled() {
     const isAnon = this.ClacoFormService.getIsAnon()
 
     return this.config['comments_enabled'] && (!isAnon || this.config['anonymous_comments_enabled'])
   }
 
-  canManageComments () {
+  canManageComments() {
     return this.canEdit() || this.EntryService.isManagerEntry(this.entryId)
   }
 
-  canEditComment (comment) {
+  canEditComment(comment) {
     return this.canManageComments() || (comment['user'] && comment['user']['id'] === this.userId)
   }
 
-  displayNewCommentForm () {
+  displayNewCommentForm() {
     this.newCommentFormActive = true
   }
 
-  hideNewCommentForm () {
+  hideNewCommentForm() {
     this.newCommentFormActive = false
     this.newComment = null
   }
 
-  createNewComment () {
+  createNewComment() {
     this.CommentService.createComment(this.entryId, this.newComment, this._addCommentCallback)
   }
 
-  activateCommentEdition (commentId) {
+  activateCommentEdition(commentId) {
     this.commentsEditionForm[commentId] = true
   }
 
-  closeCommentEditionForm (commentId) {
+  closeCommentEditionForm(commentId) {
     this.commentsEditionForm[commentId] = false
   }
 
-  editComment (comment) {
+  editComment(comment) {
     this.CommentService.editComment(comment, this._updateCommentCallback)
     this.commentsEditionForm[comment['id']] = false
   }
 
-  activateComment (comment) {
+  activateComment(comment) {
     this.CommentService.activateComment(comment, this._updateCommentCallback)
   }
 
-  blockComment (comment) {
+  blockComment(comment) {
     this.CommentService.blockComment(comment, this._updateCommentCallback)
   }
 
-  deleteComment (comment) {
+  deleteComment(comment) {
     this.CommentService.deleteComment(comment, this._removeCommentCallback)
   }
 
-  canEditEntry () {
+  canEditEntry() {
     return this.EntryService.getCanEditEntry(this.entryId)
   }
 
-  canManageEntry () {
+  canManageEntry() {
     return this.EntryService.getCanManageEntry(this.entryId)
   }
 
-  canCreate () {
+  canCreate() {
     return this.ClacoFormService.getCanCreateEntry()
   }
 
-  canSearch () {
+  canSearch() {
     return this.ClacoFormService.getCanSearchEntry()
   }
 
-  deleteEntry () {
+  deleteEntry() {
     this.EntryService.deleteEntry(this.entry, this._removeEntryCallback)
   }
 
-  changeEntryStatus () {
+  changeEntryStatus() {
     this.EntryService.changeEntryStatus(this.entry, this._updateEntryCallback)
   }
 
-  getRandomEntry () {
+  getRandomEntry() {
     this.ClacoFormService.getRandomEntryId(this.ClacoFormService.getResourceId()).then(d => {
       if (d) {
         if ((typeof d === 'number') && (d > 0)) {
@@ -250,11 +250,11 @@ export default class EntryViewCtrl {
     })
   }
 
-  getErrorMessage () {
+  getErrorMessage() {
     return this.ClacoFormService.getErrorMessage()
   }
 
-  clearErrorMessage () {
+  clearErrorMessage() {
     this.ClacoFormService.clearErrorMessage()
   }
 }

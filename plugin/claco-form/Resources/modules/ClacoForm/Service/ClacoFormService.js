@@ -12,7 +12,7 @@
 import $ from 'jquery'
 
 export default class ClacoFormService {
-  constructor ($http, $uibModal, EntryService) {
+  constructor($http, $uibModal, EntryService) {
     this.$http = $http
     this.$uibModal = $uibModal
     this.EntryService = EntryService
@@ -28,37 +28,37 @@ export default class ClacoFormService {
     this.errorMessage = null
   }
 
-  getIsAnon () {
+  getIsAnon() {
     return this.isAnon
   }
 
-  getUserId () {
+  getUserId() {
     return this.userId
   }
 
-  getCanEdit () {
+  getCanEdit() {
     return this.canEdit
   }
 
-  getCanCreateEntry () {
+  getCanCreateEntry() {
     return this.resourceDetails['creation_enabled'] &&
       !(this.isAnon && this.resourceDetails['max_entries'] > 0) &&
       !(this.resourceDetails['max_entries'] > 0 && this.EntryService.getNbMyEntries() >= this.resourceDetails['max_entries'])
   }
 
-  getCanSearchEntry () {
+  getCanSearchEntry() {
     return this.resourceDetails['search_enabled'] || this.canEdit || !this.isAnon
   }
 
-  getResourceId () {
+  getResourceId() {
     return this.resourceId
   }
 
-  getTemplate () {
+  getTemplate() {
     return this.template
   }
 
-  getResourceDetails () {
+  getResourceDetails() {
     let details = {}
 
     for (const key in this.resourceDetails) {
@@ -68,44 +68,44 @@ export default class ClacoFormService {
     return details
   }
 
-  getResourceNodeId () {
+  getResourceNodeId() {
     return this.resourceNodeId
   }
 
-  getResourceNodeName () {
+  getResourceNodeName() {
     return this.resourceNodeName
   }
 
-  getSuccessMessage () {
+  getSuccessMessage() {
     return this.successMessage
   }
 
-  setSuccessMessage (message) {
+  setSuccessMessage(message) {
     this.successMessage = message
   }
 
-  clearSuccessMessage () {
+  clearSuccessMessage() {
     this.successMessage = null
   }
 
-  getErrorMessage () {
+  getErrorMessage() {
     return this.errorMessage
   }
 
-  setErrorMessage (message) {
+  setErrorMessage(message) {
     this.errorMessage = message
   }
 
-  clearErrorMessage () {
+  clearErrorMessage() {
     this.errorMessage = null
   }
 
-  clearMessages () {
+  clearMessages() {
     this.clearSuccessMessage()
     this.clearErrorMessage()
   }
 
-  saveConfiguration (resourceId, config) {
+  saveConfiguration(resourceId, config) {
     const url = Routing.generate('claro_claco_form_configuration_edit', {clacoForm: resourceId})
 
     return this.$http.put(url, {configData: config}).then(d => {
@@ -118,7 +118,7 @@ export default class ClacoFormService {
     })
   }
 
-  saveTemplate (resourceId, template) {
+  saveTemplate(resourceId, template) {
     const url = Routing.generate('claro_claco_form_template_edit', {clacoForm: resourceId})
 
     return this.$http.put(url, {template: template}).then(d => {
@@ -131,7 +131,7 @@ export default class ClacoFormService {
     })
   }
 
-  getRandomEntryId (resourceId) {
+  getRandomEntryId(resourceId) {
     const url = Routing.generate('claro_claco_form_entry_random', {clacoForm: resourceId})
 
     return this.$http.get(url).then(d => {
@@ -141,7 +141,7 @@ export default class ClacoFormService {
     })
   }
 
-  getTinymceConfiguration () {
+  getTinymceConfiguration() {
     let tinymce = window.tinymce
     tinymce.claroline.init = tinymce.claroline.init || {}
     tinymce.claroline.plugins = tinymce.claroline.plugins || {}
@@ -176,7 +176,7 @@ export default class ClacoFormService {
     return config
   }
 
-  removeAccent (str) {
+  removeAccent(str) {
     let convertedStr = str
     convertedStr = convertedStr.replace('Ç', 'C')
     convertedStr = convertedStr.replace('ç', 'c')
@@ -235,7 +235,7 @@ export default class ClacoFormService {
     return convertedStr
   }
 
-  static _getGlobal (name) {
+  static _getGlobal(name) {
     if (typeof window[name] === 'undefined') {
       throw new Error(
         `Expected ${name} to be exposed in a window.${name} variable`

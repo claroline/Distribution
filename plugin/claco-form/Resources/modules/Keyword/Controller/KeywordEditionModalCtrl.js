@@ -24,11 +24,11 @@ export default class KeywordEditionModalCtrl {
     this.initialize()
   }
 
-  initialize () {
+  initialize() {
     this.keyword['name'] = this.source['name']
   }
 
-  submit () {
+  submit() {
     this.resetErrors()
 
     if (!this.keyword['name']) {
@@ -55,13 +55,13 @@ export default class KeywordEditionModalCtrl {
     }
   }
 
-  resetErrors () {
+  resetErrors() {
     for (const key in this.keywordErrors) {
       this.keywordErrors[key] = null
     }
   }
 
-  isValid () {
+  isValid() {
     let valid = true
 
     for (const key in this.keywordErrors) {
