@@ -34,10 +34,7 @@ import {
   QUIZ_UPDATE,
   HINT_ADD,
   HINT_CHANGE,
-  HINT_REMOVE,
-  QUESTION_PICKER_SHOW,
-  QUESTION_PICKER_HIDE,
-  QUESTION_PICKER_FADE
+  HINT_REMOVE
 } from './actions'
 
 function initialQuizState() {
@@ -303,35 +300,11 @@ function reduceModal(modalState = initialModalState, action) {
   return modalState
 }
 
-const initialPickerState = {
-  props: {
-    title: '',
-    handleSelect: () => {}
-  },
-  fading: true
-}
-
-function reduceQuestionPicker(pickerState = initialPickerState, action) {
-  switch (action.type) {
-    case QUESTION_PICKER_SHOW:
-      return {
-        props: action.props,
-        fading: false
-      }
-    case QUESTION_PICKER_FADE:
-      return update(pickerState, {fading: {$set: true}})
-    case QUESTION_PICKER_HIDE:
-      return pickerState
-  }
-  return pickerState
-}
-
 export const reducers = {
   quiz: reduceQuiz,
   steps: reduceSteps,
   items: reduceItems,
   currentObject: reduceCurrentObject,
   openPanels: reduceOpenPanels,
-  modal: reduceModal,
-  questionPicker: reduceQuestionPicker
+  modal: reduceModal
 }

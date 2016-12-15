@@ -8,7 +8,6 @@ const currentObject = state => state.currentObject
 const quizOpenPanel = state => state.openPanels[TYPE_QUIZ]
 const openStepPanels = state => state.openPanels[TYPE_STEP]
 const modal = state => state.modal
-const questionPicker = state => state.questionPicker
 
 const stepList = createSelector(
   quiz,
@@ -112,6 +111,5 @@ export default {
   quizOpenPanel,
   stepOpenPanel,
   modal,
-  nextObject,
-  questionPicker
+  nextObject
 }

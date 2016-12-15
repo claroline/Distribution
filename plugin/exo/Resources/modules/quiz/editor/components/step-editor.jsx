@@ -8,7 +8,7 @@ import {makeSortable, SORT_VERTICAL} from './../../../utils/sortable'
 import {getDefinition} from './../../../items/item-types'
 import {StepForm} from './step-form.jsx'
 import {ItemForm} from './item-form.jsx'
-import {MODAL_DELETE_CONFIRM, MODAL_ADD_ITEM} from './modals.jsx'
+import {MODAL_DELETE_CONFIRM, MODAL_ADD_ITEM, MODAL_IMPORT_ITEMS} from './modals.jsx'
 
 const ParametersHeader = props =>
   <div onClick={props.onClick} className="panel-title">
@@ -184,9 +184,10 @@ const StepFooter = props =>
             })}>{tex('add_question_from_new')}</a>
           </li>
           <li>
-            <a role="button" onClick={() => props.showQuestionPicker({
+            <a role="button" onClick={() => props.showModal(MODAL_IMPORT_ITEMS, {
               title: tex('add_question_from_existing'),
               handleSelect: selected => {
+                props.closeModal()
                 props.handleItemsImport(props.stepId, selected)
               }
             })}>{tex('add_question_from_existing')}</a>
@@ -199,8 +200,7 @@ StepFooter.propTypes = {
   stepId: T.string.isRequired,
   showModal: T.func.isRequired,
   handleItemCreate: T.func.isRequired,
-  handleItemsImport: T.func.isRequired,
-  showQuestionPicker: T.func.isRequired
+  handleItemsImport: T.func.isRequired
 }
 
 export const StepEditor = props =>
@@ -247,8 +247,6 @@ export const StepEditor = props =>
     <StepFooter
       stepId={props.step.id}
       showModal={props.showModal}
-      showQuestionPicker={props.showQuestionPicker}
-      closeQuestionPicker={props.closeQuestionPicker}
       closeModal={props.closeModal}
       handleItemCreate={props.handleItemCreate}
       handleItemsImport={props.handleItemsImport}
@@ -275,7 +273,5 @@ StepEditor.propTypes = {
   handleItemHintsUpdate: T.func.isRequired,
   handleItemsImport: T.func.isRequired,
   showModal: T.func.isRequired,
-  closeModal: T.func.isRequired,
-  showQuestionPicker: T.func.isRequired,
-  closeQuestionPicker: T.func.isRequired
+  closeModal: T.func.isRequired
 }

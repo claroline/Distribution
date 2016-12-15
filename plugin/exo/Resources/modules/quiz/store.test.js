@@ -23,13 +23,6 @@ describe('createStore', () => {
         props: {},
         fading: false
       },
-      questionPicker: {
-        props: {
-          title:'',
-          handleSelect: () => {}
-        },
-        fading: true
-      },
       viewMode: 'editor'
     })
   })
