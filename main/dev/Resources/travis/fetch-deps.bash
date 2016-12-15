@@ -38,7 +38,7 @@ BOWER_SUM=`cat bower.json $DIST/bower.json | md5sum | cut -c -32`
 #
 # $1 packager name (composer, bower, etc.)
 # $2 dependencies checksum
-# $3 update/install command
+# $3 update/install function
 # $4 dependencies directory
 fetch() {
     ARCHIVE="$1-$2.tar.gz"
@@ -55,7 +55,7 @@ fetch() {
         tar -xzf "$ARCHIVE"
     else
         echo "Failure ($STATUS), executing $1..."
-        eval $3
+        eval ${3}
 
         if [ -z ${REMOTE_HOST+x} ]
         then
@@ -78,7 +78,29 @@ fetch() {
     rm -f $ARCHIVE
 }
 
-fetch composer $COMPOSER_SUM "composer update --prefer-dist" vendor
+# Gets composer dependencies
+composerUpdate() {
+    composer update --prefer-dist
+}
+
+# Gets npm dependencies
+# Removes the shrinkwrap to allow a PR to update dependencies
+# After installation, a new shrinkwrap is generated
+npmInstall() {
+    # Remove npm shrinkwrap to force reinstall dependencies
+    rm -f "./npm-shrinkwrap.json"
+    # Install dependencies
+    npm install
+    # Generate updated shrinkwrap
+    npm shrinkwrap
+}
+
+# Gets bower dependencies
+bowerRun() {
+    npm run bower
+}
+
+fetch composer $COMPOSER_SUM "composerUpdate" vendor
 
 echo "Overriding distribution package with local build/repo..."
 rm -rf vendor/claroline/distribution
@@ -87,5 +109,5 @@ cp -r $DIST vendor/claroline/distribution
 echo "Building app/config/bundles.ini..."
 composer bundles
 
-fetch npm $NPM_SUM "npm install" node_modules
-fetch bower $BOWER_SUM "npm run bower" web/packages
+fetch npm $NPM_SUM "npmInstall" node_modules
+fetch bower $BOWER_SUM "bowerRun" web/packages
