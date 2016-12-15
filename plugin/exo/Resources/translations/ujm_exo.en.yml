@@ -22,9 +22,9 @@ allow_test_exit: Allow test exit
 all_question: All the questions
 all_step: All the steps
 already: This question is already shared with this user.
-already_answered: You have already answered this exercise.
+already_answered: You have already answered this quiz.
 already_exist: This name already exists.
-anonymous : Anonymous
+anonymous: Anonymize user papers
 answer_coched: No expected answer is checked.
 answer_zone: Answer zone
 answer_of: answer of
@@ -51,7 +51,7 @@ application/x.short+json: Open
 badge_obtained: Congratulations ! You are awarded the knowledge badge.
 badge_no_obtained: You have not awarded the knowledge badge yet.
 back: Back
-back_to_overview: Go back to the Exercise overview
+back_to_overview: Go back to the quiz overview
 back_to_the_list: Back to the list
 bank_of_questions: Bank of questions
 brief_search: Brief Search
@@ -61,7 +61,7 @@ calculation_measure_difficulty: It's calculated on the basis of the number of ap
 category: Category
 case_sensitive: Case sensitive
 cercle: Circle
-certificatif : Certification exercise
+certificatif : Certification quiz
 change: Change
 change_name: Change the name of the document
 change_order: Use drag and drop to change the order of the questions.
@@ -95,7 +95,7 @@ date: Date
 default : Default
 delete: Delete
 delete_of_my_bank: Remove from my bank
-delete_of_my_exercise: Remove from my exercise
+delete_of_my_exercise: Remove from my quiz
 delete_papers: Delete papers
 delete_item: Delete question
 delete_step: Delete step
@@ -121,19 +121,17 @@ end_date: End date
 entry: Entry
 error_no_step_found: An error occured while retrieving the current step.
 evaluative: Evaluative
-exercise: Exercise
-exercise_alert_break: The interruption of this exercise is not allowed. Your paper will be considered finished !
-exercise_definition: Exercise definition
-exercise_edit: Edit exercise
+exercise: Quiz
+exercise_alert_break: The interruption of this quiz is not allowed. Your paper will be considered finished !
+exercise_definition: Quiz definition
 exercise_finished_attempts: "[0, 1] You have finished %count% attempt|]1,Inf[  You have finished %count% attempts"
-exercice_linked_question: Questions linked to the exercise
-exercise_restart: Restart the exercise
-exercise_start: Start the exercise
+exercise_restart: Restart the quiz
+exercise_start: Start the quiz
 exercise_tries: "[0, 1] You have %count% try|]1,Inf[ You have %count% tries"
-exercise_try: Try the exercise
+exercise_try: Try the quiz
 exit: Exit
-exo_empty_user_can_edit: This exercise is empty. Please edit and publish it to fill it.
-exo_empty_user_read_only: This exercise is empty and has not been configured by its designer. Please come back later.
+exo_empty_user_can_edit: This quiz is empty. Please edit and publish it to fill it.
+exo_empty_user_read_only: This quiz is empty and has not been configured by its designer. Please come back later.
 expected_answer: Expected answer
 explain_coeff_dis0: The copies must have the same questions to calculate the discriminatory coefficient.
 explain_coeff_dis1: Analysis of the relevance of the questions, this correlation coefficient ranges from -1 to +1.
@@ -141,7 +139,7 @@ explain_coeff_dis2: The questions with a discriminatory coefficient between 0.35
 explain_coeff_dis3: Questions which have a negative index point a discrepancy: the best students fail these questions, the lowest pass these questions.
 explain_measure_difficulty: The measure of difficulty is equal to the percentage of success to the question.
 export_csv_results: Export results in .csv format
-export_qti_exercise : Export questions of exercise in QTI format
+export_qti_exercise : Export questions of the quiz in QTI format
 
 # F
 feedback: General feedback
@@ -186,7 +184,6 @@ hole: Cloze text
 hole_creation: Create cloze
 hole_edition: Edit cloze
 hole_selector: Submit a list
-home_exercise: Home exercise
 hide_additional_info: Hide additional information
 hide_interact_fields: Hide hints and feedback
 hide_metadata_fields: Hide metadata and instructions
@@ -195,7 +192,7 @@ hint_points: "[0,1] - %count% point|]1,Inf[ - %count% points"
 # I
 infiny: Indefinite
 info_duplicate_question: To duplicate a question, you must insert an integer number between 0 and 10.
-info_exercise_never_published: This exercise is not published yet. The administrators can add questions. Try the exercise and detele the papers. After the publishing, the students will answer the questions and the papers will can not be deleted.
+info_exercise_never_published: This quiz is not published yet. The administrators can add questions. Try the quiz and detele the papers. After the publishing, the students will answer the questions and the papers will can not be deleted.
 info_mark: The potential penalties have to be counted during your notation.
 info_measure_difficulty: This measure doesn't count students that haven't seen the question.
 instruction: Instruction
@@ -229,7 +226,7 @@ less_information: Less information
 list: List
 list_question: List of questions
 lock_attempt: Lock attempt
-lock_exercise: Lock the exercise
+lock_exercise: Lock the quiz
 long: Long
 
 # M
@@ -256,7 +253,7 @@ maximum_attempts: Maximum number of attempts
 maximum_tries: Maximum number of tries
 meaning_measure_difficulty: If the measure is high, the question is easy. If the measure is low on the contrary, the question is difficult.
 metadata_visible: Display information
-metadata_visible_help: If checked, a table with the information about the exercise will be displayed.
+metadata_visible_help: If checked, a table with the information about the quiz will be displayed.
 metadata: Parameters
 maximal_correction: Show solutions
 minimal_correction: Hide solutions
@@ -355,7 +352,7 @@ qcm_edition: EDit MCQ
 qcm_shuffle: Order of random selection
 qti_format_warning: You must import a .zip archive with an IMS_QTI file
 qti_import_title: No title attribute in the element assessmentItem
-qti_no_questions: Be careful: you need at least one question to export an exercise.
+qti_no_questions: Be careful: you need at least one question to export a quiz.
 qti_unsupported_format: Non-compliant QTI format or unsupported format
 qti_xml_not_found: XML schema not found
 question: Question
@@ -411,8 +408,8 @@ search_user_paper: Search papers of a user
 search_by_title_or_content: Search by question title / content 
 see_shared_with: Question shared with users
 select: Select
-select_type: select the type of the exercise
-selection: => Use drag and drop to answer,.
+select_type: select the type of the quiz
+selection: => Use drag and drop to answer.
 self: You can't share this question with yourself.
 shape: Shape
 share: Share
@@ -467,7 +464,7 @@ test_exit: Test output
 timer: Remaining time :
 title: Title
 type: Type
-type_exo : Type of exercise
+type_exo : Type of quiz
 type_qcm: QCM type
 type_question: Question type
 
@@ -477,8 +474,6 @@ upload: Upload
 uploading: Uploading
 user: User
 users: Users
-ujm_exo_exercise_name: Title
-ujm_exo_exercise_published: Publish resource
 
 # V
 validate: Validate

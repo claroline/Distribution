@@ -18,7 +18,7 @@ class ExerciseType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => 'UJM\ExoBundle\Entity\Exercise',
-            'translation_domain' => 'ujm_exo',
+            'translation_domain' => 'resource',
         ]);
     }
 

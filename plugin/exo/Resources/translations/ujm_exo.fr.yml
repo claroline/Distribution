@@ -18,13 +18,13 @@ alert_ending: Êtes-vous sûr(e) de vouloir terminer ? (Vous ne pourrez plus mod
 all: Tout
 all_types: Tous les types
 allow_to_edit: Autoriser l'édition
-allow_test_exit: Permettre d'interrompre l'exercice
+allow_test_exit: Permettre d'interrompre le questionnaire
 all_question: Toutes les questions
 all_step: Toutes les étapes
 already: Cette question est déjà partagée avec cet utilisateur
-already_answered: Vous avez déjà répondu à cet exercice
+already_answered: Vous avez déjà répondu à ce questionnaire
 already_exist: Ce nom existe déjà.
-anonymous : Anonyme
+anonymous: Rendre les résultats des utilisateurs anonymes
 answer_coched: Aucune réponse attendue n'est cochée
 answer_zone: Zone de réponse
 answer_of: réponse de
@@ -51,7 +51,7 @@ application/x.short+json: Ouverte
 badge_obtained: Félicitations ! Vous avez obtenu le badge de connaissances.
 badge_no_obtained: Vous n'avez pas encore obtenu le badge de connaissance.
 back: Retour
-back_to_overview: Retourner à la vue d'ensemble de l'exercice
+back_to_overview: Retourner à la vue d'ensemble du questionnaire
 back_to_the_list: Retour à la liste
 bank_of_questions: Banque de questions
 brief_search: Recherche rapide
@@ -93,7 +93,7 @@ date: Date
 default : Défaut
 delete: Supprimer
 delete_of_my_bank: Supprimer de ma banque
-delete_of_my_exercise: Supprimer de mon exercice
+delete_of_my_exercise: Supprimer de mon questionnaire
 delete_papers: Supprimer les copies
 delete_item: Supprimer la question
 delete_step: Supprimer l'étape
@@ -119,19 +119,17 @@ end_date: Date de fin
 entry: Entrer
 error_no_step_found: Une erreur est survenue lors de la récupération de l'étape courrante.
 evaluative: Certificatif
-exercise: Exercice
+exercise: Questionnaire
 exercise_alert_break: Interuption non autorisée. Votre copie sera considérée comme terminée !
 exercise_definition: Vue d'ensemble
-exercise_edit: Modification de l'exercice
 exercise_finished_attempts: "[0, 1] %count% réalisée à ce stade|]1,Inf[ %count% réalisées à ce stade."
-exercice_linked_question: Questions liées à l'exercice
-exercise_restart: Recommencer l'exercice
-exercise_start: Commencer l'exercice
+exercise_restart: Recommencer le questionnaire
+exercise_start: Commencer le questionnaire
 exercise_tries: "[0, 1] Vous avez droit à %count% essai|]1,Inf[ Vous avez droit à %count% essais"
-exercise_try: Tester l'exercice
+exercise_try: Tester le questionnaire
 exit: Quitter
-exo_empty_user_can_edit: Cet exercice est vide. Editez et publiez-le afin de le remplir.
-exo_empty_user_read_only: Cet exercice est vide et n'a pas encore été configuré par son concepteur. Veuillez revenir plus tard.
+exo_empty_user_can_edit: Ce questionnaire est vide. Editez et publiez-le afin de le remplir.
+exo_empty_user_read_only: Ce questionnaire est vide et n'a pas encore été configuré par son concepteur. Veuillez revenir plus tard.
 expected_answer: Réponse attendue
 explain_coeff_dis0: Les copies doivent comporter les mêmes questions pour pouvoir calculer le coéfficient de discrimination.
 explain_coeff_dis1: Analyse de la pertinence des questions, ce coéfficient de corrélation varie de -1 à + 1.
@@ -139,7 +137,7 @@ explain_coeff_dis2: Les questions dont le coéfficient de discrimination se situ
 explain_coeff_dis3: Les questions ayant un indice négatif signalent une incohérence: les meilleurs candidats échouent à ces questions tandis que les plus faibles réussissent.
 explain_measure_difficulty: L'indice de difficulté équivaut à un pourcentage de réussite à la question.
 export_csv_results: Export CSV des résultats
-export_qti_exercise : Exporter les questions de l'exercice au format QTI
+export_qti_exercise : Exporter les questions du questionnaire au format QTI
 
 # F
 false_response: Points pour la mauvaise réponse
@@ -185,7 +183,6 @@ hole: Texte à trous
 hole_creation: Création d'une question à trous
 hole_edition: Edition d'une question à trous
 hole_selector: Proposer une liste
-home_exercise: Accueil de l'exercice
 hide_additional_info: Masquer les informations supplémentaires
 hide_interact_fields: Cacher les indices et le commentaire final
 hide_metadata_fields: Cacher les métadonnées et consignes
@@ -194,7 +191,7 @@ hint_points: "[0,1] - %count% point|]1,Inf[ - %count% points"
 # I
 infiny: Infini
 info_duplicate_question: Pour dupliquer une question, vous devez insérer un nombre entier entre 0 et 10.
-info_exercise_never_published: Cet exercice n'est pas encore publié. Les gestionnaires pourront ajouter des questions, tester l'exercice et supprimer les copies. Après publication, les apprenants pourront passer l'exercice et les copies ne pourront plus être supprimées.
+info_exercise_never_published: Ce questionnaire n'est pas encore publié. Les gestionnaires pourront ajouter des questions, tester le questionnaire et supprimer les copies. Après publication, les apprenants pourront passer le questionnaire et les copies ne pourront plus être supprimées.
 info_mark: Les éventuelles pénalités sont à prendre en compte dans votre notation
 info_measure_difficulty: Cet indice ne prend pas en compte les étudiants n'ayant pas vu la question.
 instruction: Consigne pédagogique
@@ -228,7 +225,7 @@ less_information: Moins d'informations
 list: Liste
 list_question: Liste des questions
 lock_attempt: Verrouiller le test
-lock_exercise: Verrouiller l'exercice
+lock_exercise: Verrouiller le questionnaire
 long: Longue
 
 # M
@@ -255,7 +252,7 @@ maximum_attempts: Nombre de tentatives maximum
 maximum_tries: Nombre d'essais maximum
 meaning_measure_difficulty: Si l'indice est élevé, c'est que la question est facile. Inversement, si un indice est faible, la question est difficile.
 metadata_visible: Afficher les informations
-metadata_visible_help: Si coché, un tableau récapitulatif sera affiché sur la vue d'ensemble de l'exercice.
+metadata_visible_help: Si coché, un tableau récapitulatif sera affiché sur la vue d'ensemble du questionnaire.
 maximal_correction: Afficher les solutions
 minimal_correction: Cacher les solutions
 minimize: Réduire
@@ -349,7 +346,7 @@ qcm_edition: Edition d'une question QCM
 qcm_shuffle: Ordre des choix aléatoire
 qti_format_warning: Vous devez importer une archiver .zip contenant un fichier compatible IMS_QTI
 qti_import_title: Pas d'attribut "title" pour l'élément "assessmentItem"
-qti_no_questions: Attention, pour pouvoir exporter l'exercice, il faut qu'il y ait au moins une question dans votre exercice.
+qti_no_questions: Attention, pour pouvoir exporter le questionnaire, il faut qu'il y ait au moins une question.
 qti_unsupported_format: Format non compatible QTI ou non supporté
 qti_xml_not_found: Schéma XML non trouvé
 question: Question
@@ -405,7 +402,7 @@ search_user_paper: Rechercher les copies de l'utilisateur
 search_by_title_or_content: Rechercher sur le titre / contenu de la question 
 see_shared_with: Question partagée avec des utilisateurs
 select: Sélectionner
-select_type: selectionner le type de l'exercice
+select_type: selectionner le type de questionnaire
 selection: => Pour répondre, utilisez la technique du glisser/déposer.
 self: Vous ne pouvez pas partager une question avec vous-même.
 shape: Forme
@@ -461,7 +458,7 @@ test_exit: Sortie du test
 timer: Temps restant :
 title: Titre
 type: Type
-type_exo : Type de l'exercice
+type_exo : Type du questionnaire
 type_qcm: Type du QCM
 type_question: Type de la question
 
@@ -471,8 +468,6 @@ upload: Télécharger
 uploading: Chargement en cours
 user: Utilisateur
 users: Utilisateurs
-ujm_exo_exercise_name: Titre
-ujm_exo_exercise_published: Publier la ressource
 
 # V
 validate: Valider
