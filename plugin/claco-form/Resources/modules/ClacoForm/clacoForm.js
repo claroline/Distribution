@@ -67,6 +67,18 @@ angular.module('ClacoFormModule', [
 .controller('EntryEditionCtrl', ['$state', '$stateParams', 'ClacoFormService', 'EntryService', 'FieldService', 'CategoryService', 'KeywordService', EntryEditionCtrl])
 .controller('EntryViewCtrl', ['$state', '$stateParams', 'NgTableParams', 'ClacoFormService', 'EntryService', 'FieldService', 'CategoryService', 'KeywordService', 'CommentService', EntryViewCtrl])
 .controller('EntryRandomCtrl', ['$state', 'ClacoFormService', EntryRandomCtrl])
+.directive('template', function ($compile) {
+  return {
+    restrict: 'A',
+    replace: true,
+    link: function (scope, ele, attrs) {
+      scope.$watch(attrs.template, function(html) {
+        ele.html(html);
+        $compile(ele.contents())(scope);
+      });
+    }
+  };
+})
 .config(Routing)
 .config([
   'cfpLoadingBarProvider',

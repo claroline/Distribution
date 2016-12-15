@@ -176,6 +176,65 @@ export default class ClacoFormService {
     return config
   }
 
+  removeAccent (str) {
+    let convertedStr = str;
+    convertedStr = convertedStr.replace('Ç', 'C')
+    convertedStr = convertedStr.replace('ç', 'c')
+    convertedStr = convertedStr.replace('è', 'e')
+    convertedStr = convertedStr.replace('é', 'e')
+    convertedStr = convertedStr.replace('ê', 'e')
+    convertedStr = convertedStr.replace('ë', 'e')
+    convertedStr = convertedStr.replace('È', 'E')
+    convertedStr = convertedStr.replace('É', 'E')
+    convertedStr = convertedStr.replace('Ê', 'E')
+    convertedStr = convertedStr.replace('Ë', 'E')
+    convertedStr = convertedStr.replace('à', 'a')
+    convertedStr = convertedStr.replace('á', 'a')
+    convertedStr = convertedStr.replace('â', 'a')
+    convertedStr = convertedStr.replace('ã', 'a')
+    convertedStr = convertedStr.replace('ä', 'a')
+    convertedStr = convertedStr.replace('ä', 'a')
+    convertedStr = convertedStr.replace('@', 'A')
+    convertedStr = convertedStr.replace('À', 'A')
+    convertedStr = convertedStr.replace('Á', 'A')
+    convertedStr = convertedStr.replace('Â#', 'A')
+    convertedStr = convertedStr.replace('Ã', 'A')
+    convertedStr = convertedStr.replace('Ä', 'A')
+    convertedStr = convertedStr.replace('Å', 'A')
+    convertedStr = convertedStr.replace('ì', 'i')
+    convertedStr = convertedStr.replace('í', 'i')
+    convertedStr = convertedStr.replace('î', 'i')
+    convertedStr = convertedStr.replace('ï', 'i')
+    convertedStr = convertedStr.replace('Ì', 'I')
+    convertedStr = convertedStr.replace('Í', 'I')
+    convertedStr = convertedStr.replace('Î', 'I')
+    convertedStr = convertedStr.replace('Ï', 'I')
+    convertedStr = convertedStr.replace('ð', 'o')
+    convertedStr = convertedStr.replace('ò', 'o')
+    convertedStr = convertedStr.replace('ó', 'o')
+    convertedStr = convertedStr.replace('ô', 'o')
+    convertedStr = convertedStr.replace('õ', 'o')
+    convertedStr = convertedStr.replace('ö', 'o')
+    convertedStr = convertedStr.replace('Ò', 'O')
+    convertedStr = convertedStr.replace('Ó', 'O')
+    convertedStr = convertedStr.replace('Ô', 'O')
+    convertedStr = convertedStr.replace('Õ', 'O')
+    convertedStr = convertedStr.replace('Ö', 'O')
+    convertedStr = convertedStr.replace('ù', 'u')
+    convertedStr = convertedStr.replace('ú', 'u')
+    convertedStr = convertedStr.replace('û', 'u')
+    convertedStr = convertedStr.replace('ü', 'u')
+    convertedStr = convertedStr.replace('Ù', 'U')
+    convertedStr = convertedStr.replace('Ú', 'U')
+    convertedStr = convertedStr.replace('Û', 'U')
+    convertedStr = convertedStr.replace('Ü', 'U')
+    convertedStr = convertedStr.replace('ý', 'y')
+    convertedStr = convertedStr.replace('ÿ', 'y')
+    convertedStr = convertedStr.replace('Ý', 'Y')
+
+    return convertedStr
+  }
+
   static _getGlobal (name) {
     if (typeof window[name] === 'undefined') {
       throw new Error(

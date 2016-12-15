@@ -45,30 +45,12 @@ export default class EntryEditionCtrl {
 
     if (this.source === undefined) {
       this.cancel()
-      //this.EntryService.getEntryById(this.entryId).then(d => {
-      //  this.source = d
-      //  this.initializeEntry()
-      //  this.initializeCategories()
-      //  this.initializeKeywords()
-      //})
     } else {
       this.initializeEntry()
       this.initializeCategories()
       this.initializeKeywords()
     }
-    const replacedfield = `
-      <form-field field="[field['name'], field['fieldFacet']['translation_key'], {error: cfc.entryErrors[field['id']], noLabel: true}]"
-                  ng-model="cfc.entry[field['id']]"
-      >
-      </form-field>
-    `
-    this.fields.forEach(f => {
-      const name = f['name']
-
-      if (this.template) {
-        this.template = this.template.replace(`%${name}%`, replacedfield)
-      }
-    })
+    this.initializeTemplate()
   }
 
   initializeEntry () {
@@ -91,6 +73,43 @@ export default class EntryEditionCtrl {
   initializeKeywords () {
     this.keywordsChoices = this.KeywordService.getKeywords()
     this.source['keywords'].forEach(k => this.keywords.push(k['name']))
+  }
+
+  initializeTemplate () {
+    if (this.template) {
+      const replacedTitleField = `
+        <form-field field="['${this.entryTitle['label']}',
+                           'text',
+                           {error: cfc.entryErrors['entry_title'], noLabel: true}]"
+                    ng-model="cfc.entryTitle['value']"
+        >
+        </form-field>
+      `
+      this.template = this.template.replace(`%clacoform_entry_title%`, replacedTitleField)
+      this.fields.forEach(f => {
+        const id = f['id']
+        const name = f['name']
+
+        if (this.template) {
+          let choices = JSON.stringify(f['fieldFacet']['field_facet_choices'])
+          choices = choices.replace(/"/g, '\'')
+          const replacedField = `
+            <form-field field="['${name}',
+                               '${f['fieldFacet']['translation_key']}',
+                               {
+                                   values: ${choices},
+                                   choice_value: 'value',
+                                   error: cfc.entryErrors[${id}],
+                                   noLabel: true
+                               }]"
+                        ng-model="cfc.entry[${id}]"
+            >
+            </form-field>
+          `
+          this.template = this.template.replace(`%${this.ClacoFormService.removeAccent(name)}%`, replacedField)
+        }
+      })
+    }
   }
 
   canEdit () {

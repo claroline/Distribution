@@ -14,6 +14,7 @@ export default class EntryViewCtrl {
     this.$state = $state
     this.ClacoFormService = ClacoFormService
     this.EntryService = EntryService
+    this.FieldService = FieldService
     this.CategoryService = CategoryService
     this.KeywordService = KeywordService
     this.CommentService = CommentService
@@ -86,25 +87,42 @@ export default class EntryViewCtrl {
         this.entry = d
         this.initializeCategories()
         this.initializeKeywords()
+        this.initializeTemplate()
       })
     } else {
       this.initializeCategories()
       this.initializeKeywords()
+      this.initializeTemplate()
     }
     this.CommentService.initializeComments(this.entryId)
-    //const replacedfield = `
-    //  <form-field field="[field['name'], field['fieldFacet']['translation_key'], {error: cfc.entryErrors[field['id']], noLabel: true}]"
-    //              ng-model="cfc.entry[field['id']]"
-    //  >
-    //  </form-field>
-    //`
-    //this.fields.forEach(f => {
-    //  const name = f['name']
-    //
-    //  if (this.template) {
-    //    this.template = this.template.replace(`%${name}%`, replacedfield)
-    //  }
-    //})
+  }
+
+  initializeTemplate () {
+    if (this.template) {
+      this.template = this.template.replace(`%clacoform_entry_title%`, this.entry['title'])
+      this.fields.forEach(f => {
+        const name = f['name']
+        const id = f['id']
+        let replacedField = ''
+
+        if (this.metadataAllowed || !f['isMetadata']) {
+          switch (f['type']) {
+            case 6 :
+              replacedField = this.entry[id].join(', ')
+              break
+            case 7 :
+              replacedField = this.FieldService.getCountryNameFromCode(this.entry[id])
+              break
+            default :
+              replacedField = this.entry[id]
+          }
+        }
+        if (replacedField === undefined) {
+          replacedField = ''
+        }
+        this.template = this.template.replace(`%${this.ClacoFormService.removeAccent(name)}%`, replacedField)
+      })
+    }
   }
 
   initializeCategories () {

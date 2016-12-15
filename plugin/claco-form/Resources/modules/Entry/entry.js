@@ -13,8 +13,6 @@ import 'angular-bootstrap'
 import 'angular-ui-translation/angular-translation'
 
 import '#/main/core/services/module'
-//import EntryCreationModalCtrl from './Controller/EntryCreationModalCtrl'
-//import EntryEditionModalCtrl from './Controller/EntryEditionModalCtrl'
 import EntryService from './Service/EntryService'
 
 angular.module('EntryModule', [
@@ -24,5 +22,3 @@ angular.module('EntryModule', [
   'ClarolineAPI'
 ])
 .service('EntryService', EntryService)
-//.controller('EntryCreationModalCtrl', EntryCreationModalCtrl)
-//.controller('EntryEditionModalCtrl', EntryEditionModalCtrl)

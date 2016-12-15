@@ -128,7 +128,7 @@
                 </div>
             </div>
             <div class="panel-body">
-                <div ng-bind-html="cfc.template|trust_html" ng-if="cfc.template">
+                <div template="cfc.template" ng-if="cfc.template">
                 </div>
                 <div ng-if="!cfc.template">
                     <div ng-repeat="field in cfc.fields" ng-if="cfc.metadataAllowed || !field['isMetadata']">

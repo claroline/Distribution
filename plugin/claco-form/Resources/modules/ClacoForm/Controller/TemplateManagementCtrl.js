@@ -83,4 +83,8 @@ export default class TemplateManagementCtrl {
 
     return this.requiredErrors.length === 0 && this.duplicatedErrors.length === 0
   }
+
+  removeAccent (str) {
+    return this.ClacoFormService.removeAccent(str)
+  }
 }
