@@ -8,7 +8,7 @@ delete_selected_teams: Supprimer l'/les équipe(s) sélectionnée(s)
 delete_selected_teams_confirm_message: Êtes-vous sûr de vouloir supprimer l'/les équipe(s) sélectionnée(s) ?
 delete_team: Supprimer l'équipe
 delete_team_confirm_message: Êtes-vous sûr de vouloir supprimer cette équipe ?
-delete_team_directory: Supprimer le répertoire de léquipe
+delete_team_directory: Supprimer le répertoire de l'équipe
 delete_teams: Supprimer des équipes
 edit_team: Modifier l'équipe
 empty_action: Vider
