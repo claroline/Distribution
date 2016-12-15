@@ -227,7 +227,6 @@ class ExerciseListener
 
         // Set translations
         $event->addTranslationDomain('ujm_exo');
-        $event->addTranslationDomain('ujm_sequence');
 
         $event->stopPropagation();
     }
