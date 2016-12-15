@@ -41,7 +41,7 @@ class HintSerializerTest extends JsonDataTestCase
 
         $this->hint = new Hint();
         $this->hint->setPenalty(2);
-        $this->hint->setValue('hint text');
+        $this->hint->setData('hint text');
 
         $this->om->persist($this->hint);
         $this->om->flush();
@@ -132,6 +132,6 @@ class HintSerializerTest extends JsonDataTestCase
     private function compareHintAndData(Hint $hint, \stdClass $hintData)
     {
         $this->assertEquals($hintData->penalty, $hint->getPenalty());
-        $this->assertEquals($hintData->value, $hint->getValue());
+        $this->assertEquals($hintData->value, $hint->getData());
     }
 }

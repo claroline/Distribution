@@ -78,7 +78,7 @@ class Persister
      *
      * @return Question
      */
-    public function qcmQuestion($title, array $choices = [], $description = '')
+    public function choiceQuestion($title, array $choices = [], $description = '')
     {
         $question = new Question();
         $question->setUuid(uniqid($title));
@@ -149,6 +149,15 @@ class Persister
         return $proposal;
     }
 
+    /**
+     * Creates a match question.
+     *
+     * @param string $title
+     * @param array  $labels
+     * @param array  $proposals
+     *
+     * @return Question
+     */
     public function matchQuestion($title, $labels = [], $proposals = [])
     {
         $question = new Question();
@@ -323,7 +332,7 @@ class Persister
     public function hint(Question $question, $text, $penalty = 1)
     {
         $hint = new Hint();
-        $hint->setValue($text);
+        $hint->setData($text);
         $hint->setPenalty($penalty);
         $hint->setQuestion($question);
         $this->om->persist($hint);

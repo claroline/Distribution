@@ -61,29 +61,57 @@ class Updater080000
     {
         // Load answers
         $sth = $this->connection->prepare('
-            SELECT q.mime_type, a.*
+            SELECT q.mime_type, a.id AS answerId, a.response AS data
             FROM ujm_response AS a
             LEFT JOIN ujm_question AS q ON (a.question_id = q.id)
-            WHERE data IS NOT NULL 
-              AND data != ""
+            WHERE a.response IS NOT NULL 
+              AND a.response != ""
               AND q.mime_type != "application/x.open+json"
               AND q.mime_type != "application/x.words+json"
         ');
 
+        $sth->execute();
         $answers = $sth->fetchAll();
         foreach ($answers as $answer) {
-            $dataString = null;
+            $newData = null;
 
             // Calculate new data string (it's the json_encode of the data structure transferred in the API)
             switch ($answer['mime_type']) {
                 case 'application/x.choice+json':
                     $answerData = explode(';', $answer['data']);
+
+                    // Filter empty elements
+                    $newData = array_filter($answerData, function ($part) {
+                        return !empty($part);
+                    });
+
+                    break;
+
+                case 'application/x.match+json':
+                case 'application/x.set+json':
+                    if ('application/x.set+json' === $answer['mime_type']) {
+                        $propNames = ['setId', 'itemId'];
+                    } else {
+                        $propNames = ['firstId', 'secondId'];
+                    }
+
+                    // Get each association
+                    $answerData = explode(';', $answer['data']);
+
                     // Filter empty elements
                     $answerData = array_filter($answerData, function ($part) {
                         return !empty($part);
                     });
 
-                    $dataString = json_encode($answerData);
+                    $newData = array_map(function ($association) use ($propNames) {
+                        $associationData = explode(',', $association);
+
+                        $data = new \stdClass();
+                        $data->{$propNames[0]} = $associationData[0];
+                        $data->{$propNames[1]} = $associationData[1];
+
+                        return $data;
+                    }, $answerData);
 
                     break;
 
@@ -92,10 +120,14 @@ class Updater080000
             }
 
             // Update answer data
-            if (!empty($dataString)) {
+            if (!empty($newData)) {
                 $sth = $this->connection->prepare('
-                    UPDATE ujm_response SET data = :data WHERE id 
+                    UPDATE ujm_response SET response = :data WHERE id = :id 
                 ');
+                $sth->execute([
+                    'id' => $answer['answerId'],
+                    'data' => json_encode($newData),
+                ]);
             }
         }
     }

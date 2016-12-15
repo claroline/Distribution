@@ -8,7 +8,7 @@ export default class ItemIcon extends Component {
   render() {
     return (
       <svg className={`item-icon item-icon-${this.props.size}`}>
-        <use xlinkHref={`${asset('/Claroline/web/bundles/ujmexo/images/item-icons.svg')}#icon-${this.props.name}`} />
+        <use xlinkHref={`${asset('bundles/ujmexo/images/item-icons.svg')}#icon-${this.props.name}`} />
       </svg>
     )
   }

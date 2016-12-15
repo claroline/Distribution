@@ -1,6 +1,6 @@
 <?php
 
-namespace UJM\ExoBundle\Serializer\Answer;
+namespace UJM\ExoBundle\Serializer\Attempt;
 
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -65,7 +65,7 @@ class AnswerSerializer extends AbstractSerializer
             },
             'tries' => 'nbTries',
             'data' => function (Answer $answer) {
-                return json_decode($answer->getData());
+                return !empty($answer->getData()) ? json_decode($answer->getData()) : null;
             },
             'usedHints' => function (Answer $answer) {
                 return $this->serializeHints($answer);
@@ -108,7 +108,9 @@ class AnswerSerializer extends AbstractSerializer
 
         $this->mapObjectToEntity([
             'data' => function (Answer $answer, \stdClass $data) {
-                $answer->setData(json_encode($data->data));
+                if (!empty($data->data)) {
+                    $answer->setData(json_encode($data->data));
+                }
             },
         ], $data, $answer);
 

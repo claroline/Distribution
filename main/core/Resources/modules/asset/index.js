@@ -6,12 +6,12 @@
  * @returns {string}
  */
 export function asset(assetName) {
-  const element = document.getElementById('#baseAsset')
+  const element = document.getElementById('baseAsset')
 
   let basePath = ''
   if (element) {
-    basePath = element.html()
+    basePath = element.innerHTML
   }
 
-  return basePath + assetName
+  return basePath.trim() + assetName
 }

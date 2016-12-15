@@ -6,6 +6,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
 use UJM\ExoBundle\Library\Question\QuestionType;
 use UJM\ExoBundle\Serializer\Question\Type\ChoiceQuestionSerializer;
+use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\ChoiceAnswerValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Question\Type\ChoiceQuestionValidator;
 
 /**
@@ -22,6 +23,11 @@ class ChoiceDefinition extends AbstractDefinition
     private $validator;
 
     /**
+     * @var ChoiceAnswerValidator
+     */
+    private $answerValidator;
+
+    /**
      * @var ChoiceQuestionSerializer
      */
     private $serializer;
@@ -30,18 +36,22 @@ class ChoiceDefinition extends AbstractDefinition
      * ChoiceDefinition constructor.
      *
      * @param ChoiceQuestionValidator  $validator
+     * @param ChoiceAnswerValidator    $answerValidator
      * @param ChoiceQuestionSerializer $serializer
      *
      * @DI\InjectParams({
-     *     "validator"        = @DI\Inject("ujm_exo.validator.question_choice"),
-     *     "serializer"       = @DI\Inject("ujm_exo.serializer.question_choice")
+     *     "validator"       = @DI\Inject("ujm_exo.validator.question_choice"),
+     *     "answerValidator" = @DI\Inject("ujm_exo.validator.answer_choice"),
+     *     "serializer"      = @DI\Inject("ujm_exo.serializer.question_choice")
      * })
      */
     public function __construct(
         ChoiceQuestionValidator $validator,
+        ChoiceAnswerValidator $answerValidator,
         ChoiceQuestionSerializer $serializer)
     {
         $this->validator = $validator;
+        $this->answerValidator = $answerValidator;
         $this->serializer = $serializer;
     }
 
@@ -73,6 +83,16 @@ class ChoiceDefinition extends AbstractDefinition
     protected function getQuestionValidator()
     {
         return $this->validator;
+    }
+
+    /**
+     * Gets the choice answer validator.
+     *
+     * @return ChoiceAnswerValidator
+     */
+    protected function getAnswerValidator()
+    {
+        return $this->answerValidator;
     }
 
     /**

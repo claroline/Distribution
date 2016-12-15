@@ -7,7 +7,7 @@ use UJM\ExoBundle\Entity\Misc\Choice;
 use UJM\ExoBundle\Entity\QuestionType\ChoiceQuestion;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
-use UJM\ExoBundle\Serializer\ResourceContentSerializer;
+use UJM\ExoBundle\Serializer\Content\ContentSerializer;
 
 /**
  * @DI\Service("ujm_exo.serializer.question_choice")
@@ -15,22 +15,22 @@ use UJM\ExoBundle\Serializer\ResourceContentSerializer;
 class ChoiceQuestionSerializer implements SerializerInterface
 {
     /**
-     * @var ResourceContentSerializer
+     * @var ContentSerializer
      */
-    private $resourceContentSerializer;
+    private $contentSerializer;
 
     /**
      * ChoiceQuestionSerializer constructor.
      *
-     * @param ResourceContentSerializer $resourceContentSerializer
+     * @param ContentSerializer $contentSerializer
      *
      * @DI\InjectParams({
-     *     "resourceContentSerializer" = @DI\Inject("ujm_exo.serializer.resource_content")
+     *     "contentSerializer" = @DI\Inject("ujm_exo.serializer.content")
      * })
      */
-    public function __construct(ResourceContentSerializer $resourceContentSerializer)
+    public function __construct(ContentSerializer $contentSerializer)
     {
-        $this->resourceContentSerializer = $resourceContentSerializer;
+        $this->contentSerializer = $contentSerializer;
     }
 
     /**
@@ -111,17 +111,7 @@ class ChoiceQuestionSerializer implements SerializerInterface
     private function serializeChoices(ChoiceQuestion $choiceQuestion, array $options = [])
     {
         return array_map(function (Choice $choice) use ($options) {
-            $node = $choice->getResourceNode();
-            if (!empty($node)) {
-                $choiceData = $this->resourceContentSerializer->serialize($node, $options);
-            } else {
-                $choiceData = new \stdClass();
-                $choiceData->id = (string) $choice->getId();
-                $choiceData->type = 'text/html';
-                $choiceData->data = $choice->getData();
-            }
-
-            return $choiceData;
+            return $this->contentSerializer->serialize($choice, $options);
         }, $choiceQuestion->getChoices()->toArray());
     }
 
@@ -156,18 +146,8 @@ class ChoiceQuestionSerializer implements SerializerInterface
 
             $choice->setOrder($index);
 
-            // Set choice content
-            if ('text/html' === $choiceData->type || 'text/plain' === $choiceData->type) {
-                // HTML is directly stored in the choice entity
-                $choice->setData($choiceData->data);
-                $choice->setResourceNode(null);
-            } else {
-                // Other types require a ResourceNode
-                $node = $this->resourceContentSerializer->deserialize($choiceData);
-
-                $choice->setData('');
-                $choice->setResourceNode($node);
-            }
+            // Deserialize choice content
+            $choice = $this->contentSerializer->deserialize($choiceData, $choice);
 
             // Set choice score and feedback
             $choice->setScore(0);

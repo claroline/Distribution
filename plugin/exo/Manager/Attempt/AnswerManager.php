@@ -6,8 +6,8 @@ use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Library\Validator\ValidationException;
-use UJM\ExoBundle\Serializer\Answer\AnswerSerializer;
-use UJM\ExoBundle\Validator\JsonSchema\Answer\AnswerValidator;
+use UJM\ExoBundle\Serializer\Attempt\AnswerSerializer;
+use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerValidator;
 
 /**
  * AnswerManager manages answers made by users to questions.
@@ -35,8 +35,8 @@ class AnswerManager
      * AnswerManager constructor.
      *
      * @DI\InjectParams({
-     *     "om" = @DI\Inject("claroline.persistence.object_manager"),
-     *     "validator" = @DI\Inject("ujm_exo.validator.answer"),
+     *     "om"         = @DI\Inject("claroline.persistence.object_manager"),
+     *     "validator"  = @DI\Inject("ujm_exo.validator.answer"),
      *     "serializer" = @DI\Inject("ujm_exo.serializer.answer")
      * })
      *

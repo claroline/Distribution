@@ -1,13 +1,13 @@
 <?php
 
-namespace UJM\ExoBundle\Serializer;
+namespace UJM\ExoBundle\Serializer\Attempt;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\AbstractSerializer;
-use UJM\ExoBundle\Serializer\Answer\AnswerSerializer;
+use UJM\ExoBundle\Serializer\UserSerializer;
 
 /**
  * Serializer for paper data.
