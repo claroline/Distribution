@@ -363,7 +363,7 @@ filter_actions: 'Filtrer les actions'
 filters: Filtres
 find_workspaces: 'Tous les espaces d''activités publics'
 firstName: Vorname
-first_name: vorname
+first_name: Vorname
 footer: 'Pied de page'
 for_period: 'sur la période du :'
 forgot_password: 'Mot de passe oublié ?'
@@ -593,7 +593,7 @@ my_public_documents: 'Mes documents publics'
 my_resources: 'Mes ressources'
 my_workspace: 'Espace personnel'
 my_workspaces: 'Mes espaces d''activités'
-name: 'Name'
+name: Name
 name_required: 'Nom requis'
 new: Nouveau
 new_folder_in_current_ws: 'Nouveau répertoire dans l''espace d''activité courant'
@@ -656,7 +656,7 @@ parameters_save_error: 'Une erreur est survenue pendant la sauvegarde des param�
 parameters_save_success: 'Paramètres sauvegardés avec succès.'
 passed: Réussi
 passing_score: 'Score pour réussir'
-password: 'Passwort'
+password: Passwort
 password_mismatch: 'Les mots de passe ne correspondent pas.'
 password_ok: 'Votre mot de passe a été modifié. Vous pouvez maintenant vous connecter.'
 paste: Coller
