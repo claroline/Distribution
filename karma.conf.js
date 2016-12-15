@@ -10,6 +10,10 @@ module.exports = config => {
         pattern: 'main/core/Resources/modules/core-js/index.js',
         watched: false
       },
+      {
+        pattern: 'main/core/Resources/modules/fetch-shim/index.js',
+        watched: false
+      },
       '*/*/Resources/modules/**/*\.test.js'
     ],
     preprocessors: {
