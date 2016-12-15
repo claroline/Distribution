@@ -90,7 +90,7 @@ selectSubEditor.propTypes = {
   updateItemDetail: T.func.isRequired,
   importItems: T.func.isRequired,
   showModal: T.func.isRequired,
-  fadeModal: T.func.isRequired,  
+  fadeModal: T.func.isRequired,
   showQuestionPicker: T.func.isRequired,
   fadeQuestionPicker: T.func.isRequired
 }
@@ -122,13 +122,13 @@ makeModal.propTypes = {
 
 function makeQuestionPicker(props){
   return (
-     <QuestionPicker
-       show={!props.questionPicker.fading}
-       fadeQuestionPicker={props.fadeQuestionPicker}
-       hideQuestionPicker={props.hideQuestionPicker}
-       {...props.questionPicker.props}
-     />
-   )
+    <QuestionPicker
+      show={!props.questionPicker.fading}
+      fadeQuestionPicker={props.fadeQuestionPicker}
+      hideQuestionPicker={props.hideQuestionPicker}
+      {...props.questionPicker.props}
+    />
+  )
 }
 
 makeQuestionPicker.propTypes = {

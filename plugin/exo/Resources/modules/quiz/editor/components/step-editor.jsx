@@ -252,7 +252,6 @@ export const StepEditor = props =>
       closeModal={props.closeModal}
       handleItemCreate={props.handleItemCreate}
       handleItemsImport={props.handleItemsImport}
-      handleItemCreateFromExisting={props.handleItemsImport}
     />
   </div>
 
