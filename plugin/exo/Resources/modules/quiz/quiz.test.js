@@ -15,6 +15,9 @@ describe('Quiz', () => {
   it('takes raw quiz data and renders a full quiz', () => {
     const quiz = new Quiz(quizFixture())
     const element = document.createElement('div')
+    window.Routing = {
+      generate: () => {}
+    }
     quiz.render(element)
     // this is just a rough test to check main components have been rendered
     assert(element.querySelector('.quiz-editor'), 'a .quiz-editor element is present')
