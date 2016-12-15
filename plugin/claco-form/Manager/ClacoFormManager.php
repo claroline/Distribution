@@ -175,7 +175,6 @@ class ClacoFormManager
         $this->om->persist($newClacoForm);
 
         return $newClacoForm;
-
     }
 
     public function saveClacoFormConfig(ClacoForm $clacoForm, array $configData)
@@ -286,7 +285,7 @@ class ClacoFormManager
                 'id' => $manager->getId(),
                 'username' => $manager->getUsername(),
                 'firstName' => $manager->getFirstName(),
-                'lastName' => $manager->getLastName()
+                'lastName' => $manager->getLastName(),
             ];
         }
         $this->om->remove($category);
@@ -318,8 +317,7 @@ class ClacoFormManager
         $required = true,
         $isMetadata = false,
         array $choices = []
-    )
-    {
+    ) {
         $this->om->startFlushSuite();
         $field = new Field();
         $field->setClacoForm($clacoForm);
@@ -799,7 +797,7 @@ class ClacoFormManager
                 'name' => $fieldFacet->getName(),
                 'type' => $fieldFacet->getType(),
                 'typeName' => $fieldFacet->getInputType(),
-            ] ;
+            ];
         }
         $categories = $entry->getCategories();
         $details['categories'] = [];
@@ -835,12 +833,12 @@ class ClacoFormManager
         $status = $entry->getStatus();
 
         switch ($status) {
-            case Entry::PENDING :
+            case Entry::PENDING:
                 $entry->setPublicationDate(new \DateTime());
-            case Entry::UNPUBLISHED :
+            case Entry::UNPUBLISHED:
                 $entry->setStatus(Entry::PUBLISHED);
                 break;
-            case Entry::PUBLISHED :
+            case Entry::PUBLISHED:
                 $entry->setStatus(Entry::UNPUBLISHED);
                 break;
         }
@@ -1008,13 +1006,13 @@ class ClacoFormManager
         $comment->setCreationDate(new \DateTime());
 
         switch ($clacoForm->getModerateComments()) {
-            case 'all' :
+            case 'all':
                 $status = Comment::PENDING;
                 break;
-            case 'anonymous' :
+            case 'anonymous':
                 $status = is_null($user) ? Comment::PENDING : Comment::VALIDATED;
                 break;
-            default :
+            default:
                 $status = Comment::VALIDATED;
         }
         $comment->setStatus($status);
@@ -1327,7 +1325,6 @@ class ClacoFormManager
         if (!$this->hasEntryAccessRight($entry) ||
             !$clacoForm->isCommentsEnabled() ||
             (($user === 'anon.') && !$clacoForm->isAnonymousCommentsEnabled())) {
-
             throw new AccessDeniedException();
         }
     }

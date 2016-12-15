@@ -46,7 +46,7 @@ class LogEntryStatusChangeEvent extends LogGenericEvent
                 'name' => $fieldFacet->getName(),
                 'type' => $fieldFacet->getType(),
                 'typeName' => $fieldFacet->getInputType(),
-            ] ;
+            ];
         }
         $clacoForm = $entry->getClacoForm();
         $resourceNode = $clacoForm->getResourceNode();

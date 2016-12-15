@@ -71,13 +71,13 @@ angular.module('ClacoFormModule', [
   return {
     restrict: 'A',
     replace: true,
-    link: function (scope, ele, attrs) {
-      scope.$watch(attrs.template, function(html) {
-        ele.html(html);
-        $compile(ele.contents())(scope);
-      });
+    link: function (scope, element, attrs) {
+      scope.$watch(attrs.template, (tpl) => {
+        element.html(tpl)
+        $compile(element.contents())(scope)
+      })
     }
-  };
+  }
 })
 .config(Routing)
 .config([

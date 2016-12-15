@@ -222,19 +222,15 @@ export default class EntryService {
       const fieldLabel = `field_${fieldId}`
       entry[fieldId] = v['fieldFacetValue']['value']
 
-      switch (v['fieldFacetValue']['field_facet']['type']) {
-        case 3 :
-          const valueDate = new Date(v['fieldFacetValue']['value'])
-          entry[fieldLabel] = `${valueDate.getDate()}/${valueDate.getMonth() + 1}/${valueDate.getFullYear()}`
-          break
-        case 6 :
-          entry[fieldLabel] = v['fieldFacetValue']['value'].join(', ')
-          break
-        case 7 :
-          entry[fieldLabel] = this.FieldService.getCountryNameFromCode(v['fieldFacetValue']['value'])
-          break
-        default :
-          entry[fieldLabel] = v['fieldFacetValue']['value']
+      if (v['fieldFacetValue']['field_facet']['type'] === 3) {
+        const valueDate = new Date(v['fieldFacetValue']['value'])
+        entry[fieldLabel] = `${valueDate.getDate()}/${valueDate.getMonth() + 1}/${valueDate.getFullYear()}`
+      } else if (v['fieldFacetValue']['field_facet']['type'] === 6) {
+        entry[fieldLabel] = v['fieldFacetValue']['value'].join(', ')
+      } else if (v['fieldFacetValue']['field_facet']['type'] === 7) {
+        entry[fieldLabel] = this.FieldService.getCountryNameFromCode(v['fieldFacetValue']['value'])
+      } else {
+        entry[fieldLabel] = v['fieldFacetValue']['value']
       }
     })
   }

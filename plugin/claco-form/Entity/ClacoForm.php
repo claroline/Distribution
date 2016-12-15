@@ -32,7 +32,7 @@ class ClacoForm extends AbstractResource
      */
     protected $id;
 
-     /**
+    /**
      * @ORM\Column(type="text", nullable=true)
      * @Groups({"api_claco_form", "api_user_min"})
      * @SerializedName("template")

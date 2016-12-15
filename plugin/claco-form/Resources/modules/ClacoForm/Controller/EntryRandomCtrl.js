@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+/*global Translator*/
+
 export default class EntryRandomCtrl {
   constructor ($state, ClacoFormService) {
     this.$state = $state

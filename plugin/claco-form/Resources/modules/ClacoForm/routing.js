@@ -1,5 +1,3 @@
-/*global Translator*/
-
 import menuTemplate from './Partial/menu.html'
 import generalConfigurationTemplate from './Partial/general_configuration.html'
 import fieldsManagementTemplate from './Partial/fields_management.html'

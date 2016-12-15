@@ -37,7 +37,7 @@ class LogCategoryEditEvent extends LogGenericEvent
                 'id' => $manager->getId(),
                 'username' => $manager->getUsername(),
                 'firstName' => $manager->getFirstName(),
-                'lastName' => $manager->getLastName()
+                'lastName' => $manager->getLastName(),
             ];
         }
         parent::__construct(self::ACTION, $details, null, null, $resourceNode);

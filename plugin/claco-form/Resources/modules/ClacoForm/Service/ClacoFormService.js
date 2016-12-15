@@ -177,7 +177,7 @@ export default class ClacoFormService {
   }
 
   removeAccent (str) {
-    let convertedStr = str;
+    let convertedStr = str
     convertedStr = convertedStr.replace('Ç', 'C')
     convertedStr = convertedStr.replace('ç', 'c')
     convertedStr = convertedStr.replace('è', 'e')
@@ -197,7 +197,7 @@ export default class ClacoFormService {
     convertedStr = convertedStr.replace('@', 'A')
     convertedStr = convertedStr.replace('À', 'A')
     convertedStr = convertedStr.replace('Á', 'A')
-    convertedStr = convertedStr.replace('Â#', 'A')
+    convertedStr = convertedStr.replace('Â', 'A')
     convertedStr = convertedStr.replace('Ã', 'A')
     convertedStr = convertedStr.replace('Ä', 'A')
     convertedStr = convertedStr.replace('Å', 'A')

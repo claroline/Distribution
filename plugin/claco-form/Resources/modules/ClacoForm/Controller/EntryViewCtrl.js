@@ -99,7 +99,7 @@ export default class EntryViewCtrl {
 
   initializeTemplate () {
     if (this.template) {
-      this.template = this.template.replace(`%clacoform_entry_title%`, this.entry['title'])
+      this.template = this.template.replace('%clacoform_entry_title%', this.entry['title'])
       this.fields.forEach(f => {
         const name = f['name']
         const id = f['id']

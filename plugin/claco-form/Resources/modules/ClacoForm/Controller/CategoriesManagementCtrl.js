@@ -7,8 +7,6 @@
  * file that was distributed with this source code.
  */
 
-/*global Translator*/
-
 export default class CategoriesManagementCtrl {
   constructor (NgTableParams, ClacoFormService, CategoryService) {
     this.ClacoFormService = ClacoFormService

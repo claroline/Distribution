@@ -8,6 +8,7 @@
  */
 
 /*global Routing*/
+/*global Translator*/
 
 export default class CommentService {
   constructor ($http, ClarolineAPIService) {

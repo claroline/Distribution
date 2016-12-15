@@ -44,7 +44,7 @@ export default class EntryCreationCtrl {
         >
         </form-field>
       `
-      this.template = this.template.replace(`%clacoform_entry_title%`, replacedField)
+      this.template = this.template.replace('%clacoform_entry_title%', replacedField)
     }
     this.fields.forEach(f => {
       const id = f['id']

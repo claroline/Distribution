@@ -27,7 +27,7 @@ export default class FieldService {
       {value: 6, name: Translator.trans('checkboxes', {}, 'platform')},
       {value: 7, name: Translator.trans('country', {}, 'platform')},
       {value: 8, name: Translator.trans('email', {}, 'platform')},
-      {value: 9, name: Translator.trans('rich_text', {}, 'platform')},
+      {value: 9, name: Translator.trans('rich_text', {}, 'platform')}
     ]
     this.countries = [
       {label: 'Afghanistan', value: 'AF'},
@@ -83,7 +83,7 @@ export default class FieldService {
       {label: 'Congo, The Democratic Republic of the', value: 'CD'},
       {label: 'Cook Islands', value: 'CK'},
       {label: 'Costa Rica', value: 'CR'},
-      {label: "Cote D'Ivoire", value: 'CI'},
+      {label: 'Cote D\'Ivoire', value: 'CI'},
       {label: 'Croatia', value: 'HR'},
       {label: 'Cuba', value: 'CU'},
       {label: 'Cyprus', value: 'CY'},
@@ -145,11 +145,11 @@ export default class FieldService {
       {label: 'Kazakhstan', value: 'KZ'},
       {label: 'Kenya', value: 'KE'},
       {label: 'Kiribati', value: 'KI'},
-      {label: "Korea, Democratic People'S Republic of", value: 'KP'},
+      {label: 'Korea, Democratic People\'S Republic of', value: 'KP'},
       {label: 'Korea, Republic of', value: 'KR'},
       {label: 'Kuwait', value: 'KW'},
       {label: 'Kyrgyzstan', value: 'KG'},
-      {label: "Lao People'S Democratic Republic", value: 'LA'},
+      {label: 'Lao People\'S Democratic Republic', value: 'LA'},
       {label: 'Latvia', value: 'LV'},
       {label: 'Lebanon', value: 'LB'},
       {label: 'Lesotho', value: 'LS'},
