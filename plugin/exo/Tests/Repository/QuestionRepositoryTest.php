@@ -42,10 +42,10 @@ class QuestionRepositoryTest extends TransactionalTestCase
 
         // Creates some questions
         $this->questions = [
-            $this->persist->qcmQuestion('qcm1'),
-            $this->persist->qcmQuestion('qcm2'),
-            $this->persist->qcmQuestion('qcm3'),
-            $this->persist->qcmQuestion('qcm4'),
+            $this->persist->choiceQuestion('qcm1'),
+            $this->persist->choiceQuestion('qcm2'),
+            $this->persist->choiceQuestion('qcm3'),
+            $this->persist->choiceQuestion('qcm4'),
         ];
 
         $this->om->flush();

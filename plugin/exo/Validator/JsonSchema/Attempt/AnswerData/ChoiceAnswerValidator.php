@@ -28,6 +28,8 @@ class ChoiceAnswerValidator extends JsonSchemaValidator
      */
     public function validateAfterSchema($answerData, array $options = [])
     {
+        $errors = [];
+
         /** @var ChoiceQuestion $question */
         $question = !empty($options[Validation::QUESTION]) ? $options[Validation::QUESTION] : null;
         if (empty($question)) {
@@ -38,20 +40,22 @@ class ChoiceAnswerValidator extends JsonSchemaValidator
             return (string) $choice->getId();
         }, $question->getChoices()->toArray());
 
-        foreach ($answerData as $id) {
-            if (!is_string($id)) {
-                return ['Answer array must contain only string identifiers'];
-            }
-
+        foreach ($answerData as $index => $id) {
             if (!in_array($id, $choiceIds)) {
-                return ['Answer array identifiers must reference question choices'];
+                $errors[] = [
+                    'path' => "/[{$index}]",
+                    'message' => 'Answer array identifiers must reference question choices',
+                ];
             }
         }
 
         if (!$question->isMultiple() && count($answerData) > 1) {
-            return ['This question does not allow multiple answers'];
+            $errors[] = [
+                'path' => '',
+                'message' => 'This question does not allow multiple answers',
+            ];
         }
 
-        return [];
+        return $errors;
     }
 }

@@ -78,7 +78,7 @@ class Persister
      *
      * @return Question
      */
-    public function qcmQuestion($title, array $choices = [], $description = '')
+    public function choiceQuestion($title, array $choices = [], $description = '')
     {
         $question = new Question();
         $question->setUuid(uniqid($title));
