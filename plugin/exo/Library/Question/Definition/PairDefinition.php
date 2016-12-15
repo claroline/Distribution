@@ -6,6 +6,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
 use UJM\ExoBundle\Library\Question\QuestionType;
 use UJM\ExoBundle\Serializer\Question\Type\PairQuestionSerializer;
+use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\PairAnswerValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Question\Type\PairQuestionValidator;
 
 /**
@@ -22,6 +23,11 @@ class PairDefinition extends AbstractDefinition
     private $validator;
 
     /**
+     * @var PairAnswerValidator
+     */
+    private $answerValidator;
+
+    /**
      * @var PairQuestionSerializer
      */
     private $serializer;
@@ -30,18 +36,22 @@ class PairDefinition extends AbstractDefinition
      * PairDefinition constructor.
      *
      * @param PairQuestionValidator  $validator
+     * @param PairAnswerValidator    $answerValidator
      * @param PairQuestionSerializer $serializer
      *
      * @DI\InjectParams({
-     *     "validator"  = @DI\Inject("ujm_exo.validator.question_pair"),
-     *     "serializer" = @DI\Inject("ujm_exo.serializer.question_pair")
+     *     "validator"       = @DI\Inject("ujm_exo.validator.question_pair"),
+     *     "answerValidator" = @DI\Inject("ujm_exo.validator.answer_pair"),
+     *     "serializer"      = @DI\Inject("ujm_exo.serializer.question_pair")
      * })
      */
     public function __construct(
         PairQuestionValidator $validator,
+        PairAnswerValidator $answerValidator,
         PairQuestionSerializer $serializer)
     {
         $this->validator = $validator;
+        $this->answerValidator = $answerValidator;
         $this->serializer = $serializer;
     }
 
@@ -73,6 +83,16 @@ class PairDefinition extends AbstractDefinition
     protected function getQuestionValidator()
     {
         return $this->validator;
+    }
+
+    /**
+     * Gets the pair answer validator.
+     *
+     * @return PairAnswerValidator
+     */
+    protected function getAnswerValidator()
+    {
+        return $this->answerValidator;
     }
 
     /**

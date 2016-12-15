@@ -5,6 +5,7 @@ namespace UJM\ExoBundle\Validator\JsonSchema;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Library\Options\Recurrence;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
+use UJM\ExoBundle\Validator\JsonSchema\Content\ContentValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Question\QuestionValidator;
 
 /**

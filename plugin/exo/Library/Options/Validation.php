@@ -27,4 +27,11 @@ final class Validation
      * @var string
      */
     const VALIDATE_SCORE = 'validateScore';
+
+    /**
+     * The question used for validation.
+     * Used to validate answers against a specific question data.
+     * We need to find a better way to pass it to validator.
+     */
+    const QUESTION = 'question';
 }

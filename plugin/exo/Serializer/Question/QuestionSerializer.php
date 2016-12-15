@@ -16,7 +16,7 @@ use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Question\QuestionDefinitionsCollection;
 use UJM\ExoBundle\Library\Serializer\AbstractSerializer;
 use UJM\ExoBundle\Repository\QuestionRepository;
-use UJM\ExoBundle\Serializer\ResourceContentSerializer;
+use UJM\ExoBundle\Serializer\Content\ResourceContentSerializer;
 use UJM\ExoBundle\Serializer\UserSerializer;
 
 /**

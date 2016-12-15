@@ -1,18 +1,18 @@
 <?php
 
-namespace UJM\ExoBundle\Validator\JsonSchema\Answer\Type;
+namespace UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
 
 /**
- * @DI\Service("ujm_exo.validator.answer_set")
+ * @DI\Service("ujm_exo.validator.answer_open")
  */
-class SetAnswerValidator extends JsonSchemaValidator
+class OpenAnswerValidator extends JsonSchemaValidator
 {
     public function getJsonSchemaUri()
     {
-        return 'answer-data/set/schema.json';
+        return 'answer-data/open/schema.json';
     }
 
     /**
@@ -25,7 +25,7 @@ class SetAnswerValidator extends JsonSchemaValidator
      */
     public function validateAfterSchema($question, array $options = [])
     {
-        // TODO : implement method
+        // Checks the content type of the answer match the content type of the question
 
         return [];
     }

@@ -16,7 +16,7 @@ const PaginationLink = props =>
 PaginationLink.propTypes = {
   handleClick: T.func.isRequired,
   className: T.node,
-  children: T.oneOfType([T.object, T.array]).isRequired
+  children: T.node.isRequired
 }
 
 PaginationLink.defaultProps = {

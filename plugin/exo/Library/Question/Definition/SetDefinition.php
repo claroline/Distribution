@@ -6,6 +6,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
 use UJM\ExoBundle\Library\Question\QuestionType;
 use UJM\ExoBundle\Serializer\Question\Type\SetQuestionSerializer;
+use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\SetAnswerValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Question\Type\SetQuestionValidator;
 
 /**
@@ -22,6 +23,11 @@ class SetDefinition extends AbstractDefinition
     private $validator;
 
     /**
+     * @var SetAnswerValidator
+     */
+    private $answerValidator;
+
+    /**
      * @var SetQuestionSerializer
      */
     private $serializer;
@@ -30,18 +36,22 @@ class SetDefinition extends AbstractDefinition
      * SetDefinition constructor.
      *
      * @param SetQuestionValidator  $validator
+     * @param SetAnswerValidator    $answerValidator
      * @param SetQuestionSerializer $serializer
      *
      * @DI\InjectParams({
-     *     "validator"  = @DI\Inject("ujm_exo.validator.question_set"),
-     *     "serializer" = @DI\Inject("ujm_exo.serializer.question_set")
+     *     "validator"       = @DI\Inject("ujm_exo.validator.question_set"),
+     *     "answerValidator" = @DI\Inject("ujm_exo.validator.answer_set"),
+     *     "serializer"      = @DI\Inject("ujm_exo.serializer.question_set")
      * })
      */
     public function __construct(
         SetQuestionValidator $validator,
+        SetAnswerValidator $answerValidator,
         SetQuestionSerializer $serializer)
     {
         $this->validator = $validator;
+        $this->answerValidator = $answerValidator;
         $this->serializer = $serializer;
     }
 
@@ -73,6 +83,16 @@ class SetDefinition extends AbstractDefinition
     protected function getQuestionValidator()
     {
         return $this->validator;
+    }
+
+    /**
+     * Gets the set answer validator.
+     *
+     * @return SetAnswerValidator
+     */
+    protected function getAnswerValidator()
+    {
+        return $this->answerValidator;
     }
 
     /**

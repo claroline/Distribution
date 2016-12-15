@@ -5,8 +5,8 @@ const T = React.PropTypes
 export default class PageHeader extends Component {
   render() {
     return (
-      <div className="page-heading">
-        <h1 className="page-header">{this.props.title}</h1>
+      <div className="page-header">
+        <h1>{this.props.title}</h1>
 
         {this.props.children}
       </div>

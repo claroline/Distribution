@@ -63,13 +63,13 @@ interface QuestionDefinitionInterface
     /**
      * Validates question answer.
      *
-     * @param \stdClass $question
-     * @param mixed     $answer
-     * @param array     $options
+     * @param mixed            $answer
+     * @param AbstractQuestion $question
+     * @param array            $options
      *
      * @return array
      */
-    public function validateAnswer(\stdClass $question, $answer, array $options = []);
+    public function validateAnswer($answer, AbstractQuestion $question, array $options = []);
 
     /**
      * Corrects an answer submitted to a question.

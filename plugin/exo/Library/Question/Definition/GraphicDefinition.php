@@ -6,6 +6,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
 use UJM\ExoBundle\Library\Question\QuestionType;
 use UJM\ExoBundle\Serializer\Question\Type\GraphicQuestionSerializer;
+use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\GraphicAnswerValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Question\Type\GraphicQuestionValidator;
 
 /**
@@ -22,6 +23,11 @@ class GraphicDefinition extends AbstractDefinition
     private $validator;
 
     /**
+     * @var GraphicAnswerValidator
+     */
+    private $answerValidator;
+
+    /**
      * @var GraphicQuestionSerializer
      */
     private $serializer;
@@ -30,18 +36,22 @@ class GraphicDefinition extends AbstractDefinition
      * GraphicDefinition constructor.
      *
      * @param GraphicQuestionValidator  $validator
+     * @param GraphicAnswerValidator    $answerValidator
      * @param GraphicQuestionSerializer $serializer
      *
      * @DI\InjectParams({
-     *     "validator"  = @DI\Inject("ujm_exo.validator.question_graphic"),
-     *     "serializer" = @DI\Inject("ujm_exo.serializer.question_graphic")
+     *     "validator"       = @DI\Inject("ujm_exo.validator.question_graphic"),
+     *     "answerValidator" = @DI\Inject("ujm_exo.validator.answer_graphic"),
+     *     "serializer"      = @DI\Inject("ujm_exo.serializer.question_graphic")
      * })
      */
     public function __construct(
         GraphicQuestionValidator $validator,
+        GraphicAnswerValidator $answerValidator,
         GraphicQuestionSerializer $serializer)
     {
         $this->validator = $validator;
+        $this->answerValidator = $answerValidator;
         $this->serializer = $serializer;
     }
 
@@ -83,6 +93,16 @@ class GraphicDefinition extends AbstractDefinition
     protected function getQuestionSerializer()
     {
         return $this->serializer;
+    }
+
+    /**
+     * Gets the graphic answer validator.
+     *
+     * @return GraphicAnswerValidator
+     */
+    protected function getAnswerValidator()
+    {
+        return $this->answerValidator;
     }
 
     public function correctAnswer(AbstractQuestion $question, $answer)

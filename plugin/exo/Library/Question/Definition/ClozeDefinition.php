@@ -6,6 +6,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
 use UJM\ExoBundle\Library\Question\QuestionType;
 use UJM\ExoBundle\Serializer\Question\Type\ClozeQuestionSerializer;
+use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\ClozeAnswerValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Question\Type\ClozeQuestionValidator;
 
 /**
@@ -22,6 +23,11 @@ class ClozeDefinition extends AbstractDefinition
     private $validator;
 
     /**
+     * @var ClozeAnswerValidator
+     */
+    private $answerValidator;
+
+    /**
      * @var ClozeQuestionSerializer
      */
     private $serializer;
@@ -30,18 +36,22 @@ class ClozeDefinition extends AbstractDefinition
      * ClozeDefinition constructor.
      *
      * @param ClozeQuestionValidator  $validator
+     * @param ClozeAnswerValidator    $answerValidator
      * @param ClozeQuestionSerializer $serializer
      *
      * @DI\InjectParams({
-     *     "validator"        = @DI\Inject("ujm_exo.validator.question_cloze"),
-     *     "serializer"       = @DI\Inject("ujm_exo.serializer.question_cloze")
+     *     "validator"       = @DI\Inject("ujm_exo.validator.question_cloze"),
+     *     "answerValidator" = @DI\Inject("ujm_exo.validator.answer_cloze"),
+     *     "serializer"      = @DI\Inject("ujm_exo.serializer.question_cloze")
      * })
      */
     public function __construct(
         ClozeQuestionValidator $validator,
+        ClozeAnswerValidator $answerValidator,
         ClozeQuestionSerializer $serializer)
     {
         $this->validator = $validator;
+        $this->answerValidator = $answerValidator;
         $this->serializer = $serializer;
     }
 
@@ -73,6 +83,16 @@ class ClozeDefinition extends AbstractDefinition
     protected function getQuestionValidator()
     {
         return $this->validator;
+    }
+
+    /**
+     * Gets the cloze answer validator.
+     *
+     * @return ClozeAnswerValidator
+     */
+    protected function getAnswerValidator()
+    {
+        return $this->answerValidator;
     }
 
     /**

@@ -32,7 +32,7 @@ class HintSerializer implements SerializerInterface
         }
 
         if (in_array(Transfer::INCLUDE_SOLUTIONS, $options)) {
-            $hintData->value = $hint->getValue();
+            $hintData->value = $hint->getData();
         }
 
         return $hintData;
@@ -57,7 +57,7 @@ class HintSerializer implements SerializerInterface
             $hint->setPenalty($data->penalty);
         }
 
-        $hint->setValue($data->value);
+        $hint->setData($data->value);
 
         return $hint;
     }

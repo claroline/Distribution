@@ -17,7 +17,7 @@ use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Manager\Question\QuestionManager;
 use UJM\ExoBundle\Repository\PaperRepository;
-use UJM\ExoBundle\Serializer\PaperSerializer;
+use UJM\ExoBundle\Serializer\Attempt\PaperSerializer;
 
 /**
  * @DI\Service("ujm_exo.manager.paper")

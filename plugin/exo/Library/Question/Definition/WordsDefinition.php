@@ -6,6 +6,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
 use UJM\ExoBundle\Library\Question\QuestionType;
 use UJM\ExoBundle\Serializer\Question\Type\WordsQuestionSerializer;
+use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\WordsAnswerValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Question\Type\WordsQuestionValidator;
 
 /**
@@ -22,6 +23,11 @@ class WordsDefinition extends AbstractDefinition
     private $validator;
 
     /**
+     * @var WordsAnswerValidator
+     */
+    private $answerValidator;
+
+    /**
      * @var WordsQuestionSerializer
      */
     private $serializer;
@@ -30,18 +36,22 @@ class WordsDefinition extends AbstractDefinition
      * WordsDefinition constructor.
      *
      * @param WordsQuestionValidator  $validator
+     * @param WordsAnswerValidator    $answerValidator
      * @param WordsQuestionSerializer $serializer
      *
      * @DI\InjectParams({
-     *     "validator"  = @DI\Inject("ujm_exo.validator.question_words"),
-     *     "serializer" = @DI\Inject("ujm_exo.serializer.question_words")
+     *     "validator"       = @DI\Inject("ujm_exo.validator.question_words"),
+     *     "answerValidator" = @DI\Inject("ujm_exo.validator.answer_words"),
+     *     "serializer"      = @DI\Inject("ujm_exo.serializer.question_words")
      * })
      */
     public function __construct(
         WordsQuestionValidator $validator,
+        WordsAnswerValidator $answerValidator,
         WordsQuestionSerializer $serializer)
     {
         $this->validator = $validator;
+        $this->answerValidator = $answerValidator;
         $this->serializer = $serializer;
     }
 
@@ -73,6 +83,16 @@ class WordsDefinition extends AbstractDefinition
     protected function getQuestionValidator()
     {
         return $this->validator;
+    }
+
+    /**
+     * Gets the words answer validator.
+     *
+     * @return WordsAnswerValidator
+     */
+    protected function getAnswerValidator()
+    {
+        return $this->answerValidator;
     }
 
     /**

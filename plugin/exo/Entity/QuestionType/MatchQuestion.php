@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use UJM\ExoBundle\Entity\Misc\Label;
 use UJM\ExoBundle\Entity\Misc\Proposal;
+use UJM\ExoBundle\Library\Model\PenaltyTrait;
 use UJM\ExoBundle\Library\Model\ShuffleTrait;
 
 /**
@@ -18,6 +19,11 @@ class MatchQuestion extends AbstractQuestion
 {
     use ShuffleTrait;
 
+    /*
+     * The penalty to apply to each wrong association
+     */
+    use PenaltyTrait;
+
     /**
      * @ORM\OneToMany(
      *     targetEntity="UJM\ExoBundle\Entity\Misc\Label",
@@ -25,6 +31,7 @@ class MatchQuestion extends AbstractQuestion
      *     cascade={"all"},
      *     orphanRemoval=true
      * )
+     * @ORM\OrderBy({"order" = "ASC"})
      *
      * @var ArrayCollection
      */
@@ -37,6 +44,7 @@ class MatchQuestion extends AbstractQuestion
      *     cascade={"all"},
      *     orphanRemoval=true
      * )
+     * @ORM\OrderBy({"order" = "ASC"})
      *
      * @var ArrayCollection
      */

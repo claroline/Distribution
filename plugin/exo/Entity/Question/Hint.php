@@ -4,6 +4,7 @@ namespace UJM\ExoBundle\Entity\Question;
 
 use Doctrine\ORM\Mapping as ORM;
 use UJM\ExoBundle\Library\Model\ContentTrait;
+use UJM\ExoBundle\Library\Model\PenaltyTrait;
 
 /**
  * Hint.
@@ -22,10 +23,7 @@ class Hint
 
     use ContentTrait;
 
-    /**
-     * @ORM\Column(type="float")
-     */
-    private $penalty = 0;
+    use PenaltyTrait;
 
     /**
      * @ORM\ManyToOne(targetEntity="Question", inversedBy="hints")
@@ -38,38 +36,6 @@ class Hint
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * @param string $value
-     */
-    public function setValue($value)
-    {
-        $this->value = $value;
-    }
-
-    /**
-     * @return string
-     */
-    public function getValue()
-    {
-        return $this->value;
-    }
-
-    /**
-     * @param float $penalty
-     */
-    public function setPenalty($penalty)
-    {
-        $this->penalty = $penalty;
-    }
-
-    /**
-     * @return float
-     */
-    public function getPenalty()
-    {
-        return $this->penalty;
     }
 
     /**
