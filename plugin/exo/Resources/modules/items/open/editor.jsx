@@ -15,7 +15,7 @@ export const Open = (props) =>
         id={`item-${props.item.id}-maxScore`}
         type="number"
         min="0"
-        value={props.item.maxScore}
+        value={props.item.score.max}
         className="form-control"
         onChange={e => props.onChange(
           actions.update('maxScore', e.target.value)
@@ -44,8 +44,11 @@ export const Open = (props) =>
 Open.propTypes = {
   item: T.shape({
     id: T.string.isRequired,
-    maxScore: T.number.isRequired,
-    maxLength: T.number.isRequired
+    score: T.shape({
+      type: T.string.isRequired,
+      max: T.number.isRequired
+    }).isRequired,
+    maxLength: T.number
   }).isRequired,
   onChange: T.func.isRequired
 }
