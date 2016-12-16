@@ -29,82 +29,28 @@ export function normalize(rawQuiz) {
 }
 
 // unflattens flat quiz data
-export function denormalize(flatQuiz) {
-  // build items
-  // build steps with items
-  let steps = []
-  flatQuiz.steps.forEach(stepId => {
-    let step = {
-      id: stepId,
-      items: [] // flatQuiz onnly qives me step id
-    }
-    steps.push(step)
-  })
-  return {
-    id: flatQuiz.id,
-    title: flatQuiz.title,
-    meta: flatQuiz.meta,
-    parameters: flatQuiz.parameters,
-    steps: [
-      {
-        id: '1',
-        items: [
-          {
-            id: '3532D05C-CAE9-4ED2-9A55-6D7216C166EE',
-            content: 'Question ?',
-            type: 'application/x.choice+json',
-            score: {
-              type: 'sum'
-            },
-            choices: [
-              {
-                id: '1',
-                type: 'text/html',
-                data: 'test changement'
-              },
-              {
-                id: '2',
-                type: 'text/html',
-                data: 'http://domain.com/image-2.png'
-              },
-              {
-                id: '3',
-                type: 'text/html',
-                data: 'http://domain.com/image-3.png'
-              }
-            ],
-            random: true,
-            multiple: true,
-            solutions: [
-              {
-                id: '1',
-                score: 2
-              },
-              {
-                id: '2',
-                score: 1
-              },
-              {
-                id: '3',
-                score: 1
-              }
-            ]
-          },
-          {
-            id: '864FF1A6-68E3-411C-9C76-B341DE79ADCA',
-            content: 'Question ?',
-            type: 'application/x.open+json',
-            score: {
-              type: 'fixed',
-              success: 10,
-              failure: 0
-            },
-            contentType: 'text',
-            solutions: []
-          }
-        ]
-      }
-    ]
-  }
+export function denormalize(quiz, steps, items) {
 
+  let rawQuizSteps = []
+  quiz.steps.forEach(stepId => {
+    let step = Object.assign({}, steps[stepId])
+    let stepItems = []
+    step.items.forEach(itemId => {
+      let item = Object.assign({}, items[itemId])
+      // remove _touched && _errors keys
+      delete item['_touched']
+      delete item['_errors']
+      stepItems.push(item)
+    })
+    step.items = stepItems
+    rawQuizSteps.push(step)
+  })
+
+  return {
+    id: quiz.id,
+    title: quiz.title,
+    meta: quiz.meta !== undefined ? quiz.meta : {},
+    parameters: quiz.parameters,
+    steps: rawQuizSteps
+  }
 }

@@ -4,9 +4,8 @@ import sanitize from './sanitizers'
 import validate from './validators'
 import {decorateItem} from './../decorators'
 import {getIndex, makeId, makeItemPanelKey, update} from './../../utils/utils'
-import {generateUrl} from './../../utils/routing'
 import {getDefinition} from './../../items/item-types'
-import {denormalize} from './../normalizer'
+
 import {
   TYPE_QUIZ,
   TYPE_STEP,
@@ -65,28 +64,6 @@ function reduceQuiz(quiz = initialQuizState(), action = {}) {
         set({}, action.propertyPath, true)
       )
       return updatedQuiz
-    }
-    case QUIZ_SAVE: {
-      console.log(quiz)
-      const url = generateUrl('exercise_update', {'id': quiz.id})
-      // we only have references to steps how to retrieve them from here ?
-      const denormalized = denormalize(quiz)
-      const params = {
-        method: 'PUT' ,
-        credentials: 'include',
-        body: JSON.stringify(denormalized)
-      }
-
-      /*fetch(url, params)
-      .then(response => {
-        return response.json()
-      })
-      .then(jsonData =>  {
-        console.log(jsonData)
-        //this.setState({questions: jsonData.questions, total: jsonData.total})
-      })*/
-      return quiz
-
     }
     case STEP_CREATE:
       return update(quiz, {steps: {$push: [action.id]}})
