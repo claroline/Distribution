@@ -29,8 +29,8 @@ class Office365ResourceOwner extends GenericOAuth2ResourceOwner
         'email' => 'mail',
         'realname' => 'displayName',
         'nickname' => 'displayName',
-        'firstName' => 'givenName',
-        'lastName' => 'surname',
+        'firstname' => 'givenName',
+        'lastname' => 'surname',
     ];
 
     /**
@@ -61,7 +61,7 @@ class Office365ResourceOwner extends GenericOAuth2ResourceOwner
         // If domain is
         if (!empty($tenantDomain)) {
             $this->resource = 'https://graph.windows.net';
-            $this->infosUrl = "{$this->resource}/{$tenantDomain}".
+            $this->infosUrl = "{$this->resource}/{$tenantDomain}/me".
                 "?api-version={$this->getApiVersion($apiVersion)}";
         }
 
