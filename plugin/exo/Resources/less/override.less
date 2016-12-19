@@ -27,7 +27,7 @@ body {
     background: none;
     box-shadow: none;
     border-radius: 0;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     font-size: 12px; /* slightly smaller than the regular text */
 }
 
@@ -39,9 +39,12 @@ body {
     vertical-align: middle;
 }
 
+/* same padding as .btn */
+/* this breaks the display because it's also used by dropdown headers */
+/* if we want this override we need to apply it to headers too */
 .dropdown-menu > li > a {
-    padding-left: 12px; /* same as .btn */
-    padding-right: 12px; /* same as .btn */
+    /*padding-left: 12px;
+    padding-right: 12px;*/
 }
 
 // Gray btn-link for aesthetic purpose
