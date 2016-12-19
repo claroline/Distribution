@@ -19,8 +19,6 @@ export function normalize(rawAttempt) {
     return itemAcc
   }, {})
 
-  console.log(items)
-
   return {
     paper,
     answers,

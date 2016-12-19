@@ -145,7 +145,7 @@ class PaperSerializer extends AbstractSerializer
         if (isset($data->answers)) {
             $this->deserializeAnswers($paper, $data->answers, $options);
         }
-        
+
         return $paper;
     }
 

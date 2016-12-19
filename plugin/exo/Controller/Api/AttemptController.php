@@ -151,7 +151,7 @@ class AttemptController extends AbstractController
         $this->assertHasPaperAccess($paper, $user);
 
         $this->attemptManager->end($paper, true);
-        
+
         return new JsonResponse($this->paperManager->export($paper), 200);
     }
 

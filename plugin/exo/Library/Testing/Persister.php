@@ -119,6 +119,7 @@ class Persister
         $interactionOpen = new OpenQuestion();
         $interactionOpen->setQuestion($question);
         $interactionOpen->setScoreMaxLongResp(10);
+        $interactionOpen->setAnswerMaxLength(1000);
 
         $this->om->persist($interactionOpen);
         $this->om->persist($question);

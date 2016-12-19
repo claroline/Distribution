@@ -343,9 +343,9 @@ class PaperControllerTest extends TransactionalTestCase
     {
         $this->assertInstanceOf('\stdClass', $content);
         $this->assertTrue(property_exists($content, 'paper'));
-        $this->assertTrue(property_exists($content, 'questions'));
+        $this->assertTrue(property_exists($content, 'items'));
 
-        $this->assertTrue(is_array($content->questions));
+        $this->assertTrue(is_array($content->items));
         $this->assertInstanceOf('\stdClass', $content->paper);
         $this->assertEquals($paper->getUuid(), $content->paper->id);
     }

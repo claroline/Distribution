@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 
 const T = React.PropTypes
 
-export default class PlayerNav extends Component {
+export class PlayerNav extends Component {
   render() {
     return (
       <div className="player-nav">
@@ -21,7 +21,11 @@ export default class PlayerNav extends Component {
 }
 
 PlayerNav.propTypes = {
-/*  handleNextStep: T.func,
-  handlePreviousStep: t.func,
-  handleFinish*/
+  handleNextStep: T.func,
+  handlePreviousStep: T.func
+}
+
+PlayerNav.defaultProps = {
+  handleNextStep: () => true,
+  handlePreviousStep: () => true
 }

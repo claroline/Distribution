@@ -4,11 +4,12 @@ import Panel from 'react-bootstrap/lib/Panel'
 
 import {tex} from './../../../utils/translate'
 import {getDefinition} from './../../../items/item-types'
+import {select} from './../selectors'
 
 import {Player as ItemPlayer} from './../../../items/components/player.jsx'
-import PlayerNav from './nav-bar.jsx'
+import {PlayerNav} from './nav-bar.jsx'
 
-import {select} from './../selectors'
+const T = React.PropTypes
 
 class Player extends Component {
   render() {
@@ -53,12 +54,22 @@ class Player extends Component {
   }
 }
 
+Player.propTypes = {
+  current: T.shape({
+    number: T.number.isRequired
+  }).isRequired,
+  step: T.shape({
+    title: T.string,
+    description: T.string
+  }),
+  items: T.array.isRequired
+}
+
 function mapStateToProps(state) {
   return {
     current: state.currentStep,
     step: select.currentStep(state),
-    items: select.currentStepItems(state),
-    paper: state.paper
+    items: select.currentStepItems(state)
   }
 }
 

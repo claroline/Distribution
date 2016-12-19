@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 
 const T = React.PropTypes
 
-const Hints = props =>
+const Hints = () =>
   <div>
     This is the hint section
   </div>

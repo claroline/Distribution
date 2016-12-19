@@ -23,13 +23,13 @@ actions.playQuiz = (quizId) => {
     return fetch(generateUrl('exercise_attempt_start', {exerciseId: quizId}), {credentials: 'include', method: 'POST'})
       .then(response => response.json())
       .then(json => {
-          const normalized = normalize(json)
+        const normalized = normalize(json)
 
-          dispatch(actions.loadItems(normalized.items))
-          dispatch(actions.startAttempt(normalized.paper))
-          dispatch(actions.setAnswers(normalized.answers))
-          dispatch(actions.changeCurrentStep(normalized.paper.structure[0].id, 1, 1))
-          dispatch(quizActions.updateViewMode(VIEW_PLAYER))
+        dispatch(actions.loadItems(normalized.items))
+        dispatch(actions.startAttempt(normalized.paper))
+        dispatch(actions.setAnswers(normalized.answers))
+        dispatch(actions.changeCurrentStep(normalized.paper.structure[0].id, 1, 1))
+        dispatch(quizActions.updateViewMode(VIEW_PLAYER))
       })
 
     // TODO : catch any error in the network call.
