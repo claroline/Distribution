@@ -111,7 +111,11 @@ class ChoiceQuestionSerializer implements SerializerInterface
     private function serializeChoices(ChoiceQuestion $choiceQuestion, array $options = [])
     {
         return array_map(function (Choice $choice) use ($options) {
-            return $this->contentSerializer->serialize($choice, $options);
+            $choiceData = $this->contentSerializer->serialize($choice, $options);
+            // FIXME : the choice id overlaps the content ID.
+            $choiceData->id = (string) $choice->getId();
+
+            return $choiceData;
         }, $choiceQuestion->getChoices()->toArray());
     }
 
