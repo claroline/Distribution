@@ -75,7 +75,6 @@ export function getDefinition(type) {
 }
 
 export function getDecorators() {
-  // return mapValues(registeredTypes, type => type.decorate)
   return mapValues(registeredTypes, eType => eType.editor.decorate, pType => pType.player.decorate)
 }
 

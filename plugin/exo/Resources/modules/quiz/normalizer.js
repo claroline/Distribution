@@ -28,3 +28,34 @@ export function normalize(rawQuiz) {
     items
   }
 }
+
+// unflattens flat quiz data
+export function denormalize(quiz, steps, items) {
+
+  let rawQuizSteps = []
+  quiz.steps.forEach(stepId => {
+    let step = Object.assign({}, steps[stepId])
+    let stepItems = []
+    step.items.forEach(itemId => {
+      let item = Object.assign({}, items[itemId])
+
+      if(item['hints'].length === 0){
+        delete item['hints']
+      }
+      if(item['type'] === 'application/x.open+json' && (0 === item['maxLength'] || undefined === item['maxLength'])){
+        delete item['maxLength']
+      }
+      stepItems.push(item)
+    })
+    step.items = stepItems
+    rawQuizSteps.push(step)
+  })
+
+  return {
+    id: quiz.id,
+    title: quiz.title,
+    meta: quiz.meta,
+    parameters: quiz.parameters,
+    steps: rawQuizSteps
+  }
+}

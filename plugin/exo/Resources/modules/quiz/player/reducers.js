@@ -1,5 +1,12 @@
 import {makeReducer} from './../../utils/reducers'
-import {getDefinition} from './../../items/item-types'
+
+import {
+  ATTEMPT_START,
+  ATTEMPT_FINISH,
+  ANSWERS_SUBMIT
+} from './actions'
+
+function startAttempt() {
 
 import {
   ITEMS_LOAD,

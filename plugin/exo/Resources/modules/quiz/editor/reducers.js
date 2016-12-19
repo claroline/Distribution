@@ -5,6 +5,7 @@ import validate from './validators'
 import {decorateItem} from './../decorators'
 import {getIndex, makeId, makeItemPanelKey, update} from './../../utils/utils'
 import {getDefinition} from './../../items/item-types'
+
 import {
   TYPE_QUIZ,
   TYPE_STEP,

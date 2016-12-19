@@ -273,7 +273,7 @@ describe('Items reducer', () => {
 
   it('calls item validator on detail update', () => {
     registerFixtureType({
-      editor: {        
+      editor: {
         validate: item => {
           return item.foo !== 'bar' ? {foo: 'Should be bar'} : {}
         }

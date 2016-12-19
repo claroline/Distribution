@@ -11,3 +11,4 @@ actions.loadItems = makeActionCreator(ITEMS_LOAD, 'items')
 actions.startAttempt = makeActionCreator(ATTEMPT_START, 'quiz', 'user')
 actions.finishAttempt = makeActionCreator(ATTEMPT_FINISH, 'quiz', 'user')
 actions.submitAnswers = makeActionCreator(ANSWERS_SUBMIT, 'quiz', 'paper', 'user')
+

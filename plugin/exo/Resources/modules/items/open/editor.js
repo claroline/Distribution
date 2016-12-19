@@ -5,6 +5,7 @@ import {Open as component} from './editor.jsx'
 import {ITEM_CREATE} from './../../quiz/editor/actions'
 import {setIfError, notBlank, number, gteZero, chain} from './../../utils/validate'
 import {makeActionCreator} from './../../utils/utils'
+import {SCORE_MANUAL} from './../../quiz/enums'
 
 
 const UPDATE = 'UPDATE'
@@ -16,9 +17,14 @@ export const actions = {
 function reduce(item = {}, action) {
   switch (action.type) {
     case ITEM_CREATE: {
-      return Object.assign({}, item, {
-        maxScore: 0,
-        maxLength: 0
+      return Object.assign({}, item, {        
+        contentType: 'text',
+        score: {
+          type: SCORE_MANUAL,
+          max: 0
+        },
+        maxLength: 0,
+        solutions: []
       })
     }
 
@@ -28,7 +34,12 @@ function reduce(item = {}, action) {
         newItem._touched || {},
         set({}, action.property, true)
       )
-      newItem[action.property] = parseFloat(action.value)
+      const value = parseFloat(action.value)
+      if(action.property === 'maxScore'){
+        newItem.score.max = value
+      } else {
+        newItem[action.property] = value
+      }
       return newItem
     }
   }
@@ -36,10 +47,10 @@ function reduce(item = {}, action) {
 }
 
 
-function validate(values) {
+function validate(item) {
   const errors = {}
-  setIfError(errors, 'maxScore', chain(values.maxScore, [notBlank, number, gteZero]))
-  setIfError(errors, 'maxLength', chain(values.maxLength, [notBlank, number, gteZero]))
+  setIfError(errors, 'maxScore', chain(item.score.max, [notBlank, number, gteZero]))
+  setIfError(errors, 'maxLength', chain(item.maxLength, [notBlank, number, gteZero]))
 
   return errors
 }

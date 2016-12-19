@@ -19,10 +19,15 @@ describe('Open reducer', () => {
     const reduced = reduce(item, actions.createItem('1', 'application/x.open+json'))
     ensure.equal(reduced, {
       id: '1',
-      type: 'application/x.open+json',
+      type: 'application/x.open+json',      
+      contentType: 'text',
       content: 'Question?',
       maxLength: 0,
-      maxScore: 0
+      score:{
+        type: 'manual',
+        max: 0
+      },
+      solutions: []
     })
   })
 
@@ -37,7 +42,7 @@ describe('Open reducer', () => {
     const item = makeFixture()
     const reduced = reduce(item, subActions.update('maxScore', '10'))
     const expected = makeFixture({
-      maxScore: 10,
+      score: {max: 10},
       _touched: {
         maxScore: true
       }
@@ -53,7 +58,7 @@ describe('Open validator', () => {
 
   it('checks maxScore is greater or equal to zero', () => {
     const errors = validate({
-      maxScore: -1,
+      score:{max: -1},
       maxLength:0
     })
     ensure.equal(errors, {
@@ -63,7 +68,7 @@ describe('Open validator', () => {
 
   it('checks maxScore is not empty', () => {
     const errors = validate({
-      maxScore: '',
+      score:{max: ''},
       maxLength:0
     })
     ensure.equal(errors, {
@@ -73,7 +78,7 @@ describe('Open validator', () => {
 
   it('checks maxScore is a number', () => {
     const errors = validate({
-      maxScore: [],
+      score:{max: []},
       maxLength:0
     })
     ensure.equal(errors, {
@@ -83,7 +88,7 @@ describe('Open validator', () => {
 
   it('checks maxLength is greater or equal to zero', () => {
     const errors = validate({
-      maxScore: 0,
+      score:{max: 0},
       maxLength: -1
     })
     ensure.equal(errors, {
@@ -93,7 +98,7 @@ describe('Open validator', () => {
 
   it('checks maxLength is not empty', () => {
     const errors = validate({
-      maxScore: 0,
+      score:{max: 0},
       maxLength: null
     })
     ensure.equal(errors, {
@@ -103,7 +108,7 @@ describe('Open validator', () => {
 
   it('checks maxLength is a number', () => {
     const errors = validate({
-      maxScore: 0,
+      score:{max: 0},
       maxLength:[]
     })
     ensure.equal(errors, {
@@ -113,7 +118,7 @@ describe('Open validator', () => {
 
   it('returns no errors if item is valid', () => {
     const errors = validate({
-      maxScore: 0,
+      score:{max: 0},
       maxLength:0
     })
     ensure.equal(errors, {})
@@ -130,7 +135,7 @@ describe('<Open/>', () => {
   afterEach(spyConsole.restore)
 
   it('has required props', () => {
-    shallow(<Open item={{foo:'baz'}}/>)
+    shallow(<Open item={{foo:'baz', score:{}}}/>)
     ensure.missingProps('Open', ['onChange', 'item.id'])
   })
 
@@ -139,7 +144,7 @@ describe('<Open/>', () => {
       <Open
         item={{
           id: [],
-          maxScore: [],
+          score: [],
           maxLength: []
         }}
         onChange={false}
@@ -157,7 +162,10 @@ describe('<Open/>', () => {
           id: '1',
           content: 'Question?',
           maxLength: 255,
-          maxScore: 10
+          score: {
+            type: 'manual',
+            max: 10
+          }
         }}
         onChange={value => updatedValue = value}
       />
@@ -181,9 +189,14 @@ describe('<Open/>', () => {
 function makeFixture(props = {}, frozen = true) {
   const fixture = merge({
     id: '1',
+    contentType: 'text',
     type: 'application/x.open+json',
     content: 'Question?',
-    maxScore: 0,
+    score: {
+      type: 'manual',
+      max: 10
+    },
+    solutions: [],
     maxLength: 0
   }, props)
 

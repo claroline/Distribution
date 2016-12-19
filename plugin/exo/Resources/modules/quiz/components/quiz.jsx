@@ -6,6 +6,7 @@ import {Overview} from './../overview/overview.jsx'
 import Player from './../player/components/player.jsx'
 import {Editor} from './../editor/components/editor.jsx'
 import select from './../selectors'
+import {actions as editorActions} from './../editor/actions'
 import {actions} from './../actions'
 import {VIEW_OVERVIEW, VIEW_PLAYER, VIEW_EDITOR} from './../enums'
 
@@ -25,7 +26,8 @@ Quiz.propTypes = {
   title: T.string.isRequired,
   editable: T.bool.isRequired,
   viewMode: T.string.isRequired,
-  updateViewMode: T.func.isRequired
+  updateViewMode: T.func.isRequired,
+  saveQuiz: T.func.isRequired
 }
 
 function viewComponent(view) {
@@ -53,6 +55,17 @@ function mapStateToProps(state) {
   }
 }
 
-Quiz = connect(mapStateToProps, actions)(Quiz)
+function mapDispatchToProps(dispatch) {
+  return {
+    updateViewMode() {
+      dispatch(actions.updateViewMode())
+    },
+    saveQuiz() {
+      dispatch(editorActions.saveQuiz())
+    }
+  }
+}
+
+Quiz = connect(mapStateToProps, mapDispatchToProps)(Quiz)
 
 export {Quiz}
