@@ -3,17 +3,18 @@ import {makeReducer} from './../../utils/reducers'
 import {
   ATTEMPT_START,
   ATTEMPT_FINISH,
-  ANSWERS_SUBMIT}  from './actions'
+  ANSWERS_SUBMIT
+} from './actions'
 
-function startAttempt(attemptState, action) {
-
-}
-
-function finishAttempt(attemptState, action) {
+function startAttempt() {
 
 }
 
-function submitAnswers(attemptState, action) {
+function finishAttempt() {
+
+}
+
+function submitAnswers() {
 
 }
 

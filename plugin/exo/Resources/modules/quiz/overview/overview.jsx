@@ -206,7 +206,7 @@ Overview.propTypes = {
   }).isRequired,
   meta: T.shape({
     created: T.string.isRequired
-  })
+  }).isRequired
 }
 
 function mapStateToProps(state) {
