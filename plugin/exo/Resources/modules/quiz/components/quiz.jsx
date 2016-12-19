@@ -57,8 +57,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    updateViewMode() {
-      dispatch(actions.updateViewMode())
+    updateViewMode(mode) {
+      dispatch(actions.updateViewMode(mode))
     },
     saveQuiz() {
       dispatch(editorActions.saveQuiz())
