@@ -38,13 +38,6 @@ export function denormalize(quiz, steps, items) {
     let stepItems = []
     step.items.forEach(itemId => {
       let item = Object.assign({}, items[itemId])
-
-      if(item['hints'].length === 0){
-        delete item['hints']
-      }
-      if(item['type'] === 'application/x.open+json' && (0 === item['maxLength'] || undefined === item['maxLength'])){
-        delete item['maxLength']
-      }
       stepItems.push(item)
     })
     step.items = stepItems
