@@ -6,7 +6,11 @@ export default class PageHeader extends Component {
   render() {
     return (
       <div className="page-header">
-        <h1>{this.props.title}</h1>
+        <h1>
+          {this.props.title}
+          &nbsp;
+          {null !== this.props.subtitle && <small>{this.props.subtitle}</small>}
+        </h1>
 
         {this.props.children}
       </div>
@@ -16,5 +20,11 @@ export default class PageHeader extends Component {
 
 PageHeader.propTypes = {
   title: T.string.isRequired,
+  subtitle: T.string,
   children: T.node
+}
+
+PageHeader.defaultProps = {
+  subtitle: null,
+  children: []
 }

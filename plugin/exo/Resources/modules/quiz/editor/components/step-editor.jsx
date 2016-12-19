@@ -8,6 +8,7 @@ import {makeSortable, SORT_VERTICAL} from './../../../utils/sortable'
 import {getDefinition} from './../../../items/item-types'
 import {StepForm} from './step-form.jsx'
 import {ItemForm} from './item-form.jsx'
+import ItemIcon from './../../../items/common/item-icon.jsx'
 import {MODAL_DELETE_CONFIRM, MODAL_ADD_ITEM, MODAL_IMPORT_ITEMS} from './modals.jsx'
 
 const ParametersHeader = props =>
@@ -69,9 +70,7 @@ const ItemHeader = props =>
     )}
   >
     <span>
-      <svg className="icon-small">
-        <use xlinkHref={`#icon-${getDefinition(props.item.type).name}`}/>
-      </svg>
+      <ItemIcon name={getDefinition(props.item.type).name} />
       <span className="panel-title">
         {props.item.title || trans(getDefinition(props.item.type).name, {}, 'question_types')}
       </span>

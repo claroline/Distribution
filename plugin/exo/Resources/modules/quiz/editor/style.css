@@ -210,25 +210,6 @@
   cursor: move;
 }
 
-.icon-small {
-  width: 16px;
-  height: 16px;
-  margin-right: 12px;
-  margin-bottom: -1px; /* tmp fix */
-  stroke: #555;
-  fill: #555;
-}
-
-.icon-large {
-  width: 64px;
-  height: 64px;
-  padding: 10px;
-  border: solid 2px #777;
-  border-radius: 16px;
-  fill: #777;
-  stroke: #777;
-}
-
 .fa.disabled {
   color: #aaa;
   cursor: not-allowed;
