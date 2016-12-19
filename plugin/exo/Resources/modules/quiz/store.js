@@ -7,60 +7,13 @@ import {
   createStore as baseCreate
 } from 'redux'
 import thunk from 'redux-thunk'
-
+import identity from 'lodash/identity'
 import {reducers as quizReducers} from './reducers'
 import {reducers as editorReducers} from './editor/reducers'
 import {reducers as playerReducers} from './player/reducers'
-import {VIEW_OVERVIEW, VIEW_PLAYER, VIEW_EDITOR} from './enums'
-import {VIEW_MODE_UPDATE} from './actions'
 import {QUIZ_SAVE} from './editor/actions'
 import {generateUrl} from './../utils/routing'
 import {denormalize} from './normalizer'
-
-const reducerForEditorMode = combineReducers({
-  quiz: editorReducers.quiz,
-  steps: editorReducers.steps,
-  items: editorReducers.items,
-  currentObject: editorReducers.currentObject,
-  openPanels: editorReducers.openPanels,
-  modal: editorReducers.modal,
-  viewMode: quizReducers.viewMode
-})
-
-const reducerForPlayerMode = combineReducers({
-  quiz: editorReducers.quiz,
-  steps: editorReducers.steps,
-  items: editorReducers.items,
-  paper: playerReducers.paper,
-  answers: playerReducers.answers,
-  currentStep: playerReducers.currentStep,
-
-  currentObject: editorReducers.currentObject,
-  openPanels: editorReducers.openPanels,
-  modal: editorReducers.modal,
-  viewMode: quizReducers.viewMode
-})
-
-let finalStore
-
-const reducerSwitcher = () => next => action => {
-  if (action.type === VIEW_MODE_UPDATE) {
-    let reducer
-    switch(action.mode){
-      case VIEW_OVERVIEW:
-      case VIEW_PLAYER:
-        reducer = reducerForPlayerMode
-        break
-      case VIEW_EDITOR:
-        reducer = reducerForEditorMode
-        break
-    }
-    finalStore.replaceReducer(reducer)
-  }
-
-  return next(action)
-}
-
 
 const quizSave = store => next => action => {
   if (action.type === QUIZ_SAVE) {
@@ -84,17 +37,30 @@ const quizSave = store => next => action => {
   }
 }
 
-const middleware = [thunk, reducerSwitcher, quizSave]
+const middleware = [thunk, quizSave]
 
 if (process.env.NODE_ENV !== 'production') {
   const freeze = require('redux-freeze')
   middleware.push(freeze)
 }
 
-export function createStore(initialState) {
-  finalStore = baseCreate(reducerForEditorMode, initialState, compose(
+export function makeReducer(editable) {
+  return combineReducers({
+    viewMode: quizReducers.viewMode,
+    quiz: editable ? editorReducers.quiz : identity,
+    steps: editable ? editorReducers.steps : identity,
+    items: editable ? editorReducers.items : identity,
+    modal: editable ? editorReducers.modal : identity,
+    editor: editable ? editorReducers.editor : identity,
+    currentStep: playerReducers.currentStep,
+    paper: playerReducers.paper,
+    answers: playerReducers.answers
+  })
+}
+
+export function createStore(initialState, editable = true) {
+  return baseCreate(makeReducer(editable), initialState, compose(
     applyMiddleware(...middleware),
     window.devToolsExtension ? window.devToolsExtension() : f => f
   ))
-  return finalStore
 }

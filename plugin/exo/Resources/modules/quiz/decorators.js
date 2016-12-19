@@ -16,9 +16,11 @@ export function decorate(state, itemDecorators = {}) {
       const subDecorator = itemDecorators[item.type] || (item => item)
       return decorateItem(item, subDecorator)
     }),
-    currentObject: {
-      id: newState.quiz.id,
-      type: TYPE_QUIZ
+    editor: {
+      currentObject: {
+        id: newState.quiz.id,
+        type: TYPE_QUIZ
+      }
     }
   })
 }
