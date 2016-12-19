@@ -28,8 +28,8 @@ const reducerForPlayerMode = combineReducers({
   quiz: editorReducers.quiz,
   steps: editorReducers.steps,
   items: playerReducers.items,
+  attempt: playerReducers.attempt,
   currentObject: editorReducers.currentObject,
-  openPanels: editorReducers.openPanels,
   modal: editorReducers.modal,
   viewMode: quizReducers.viewMode
 })

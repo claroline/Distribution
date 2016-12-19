@@ -1,11 +1,25 @@
 import React, { Component } from 'react'
+import {connect} from 'react-redux'
 
-export default class Player extends Component {
+import StepPlayer from './step-player.jsx'
+import PlayerNav from './nav-bar.jsx'
+
+class Player extends Component {
   render() {
     return (
       <div className="quiz-player">
-        <h1>I AM YOUR PLAYER!</h1>
+        <StepPlayer items={[]} />
+        <PlayerNav />
       </div>
     )
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    items: state.items,
+    attempt: state.attempt
+  }
+}
+
+export default connect(mapStateToProps)(Player)
