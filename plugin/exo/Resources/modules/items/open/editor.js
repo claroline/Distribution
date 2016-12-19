@@ -5,6 +5,7 @@ import {Open as component} from './editor.jsx'
 import {ITEM_CREATE} from './../../quiz/editor/actions'
 import {setIfError, notBlank, number, gteZero, chain} from './../../utils/validate'
 import {makeActionCreator} from './../../utils/utils'
+import {SCORE_MANUAL} from './../../quiz/enums'
 
 
 const UPDATE = 'UPDATE'
@@ -18,7 +19,7 @@ function reduce(item = {}, action) {
     case ITEM_CREATE: {
       return Object.assign({}, item, {
         score: {
-          type: 'manual',
+          type: SCORE_MANUAL,
           max: 0
         },
         maxLength: 0
@@ -32,7 +33,7 @@ function reduce(item = {}, action) {
         set({}, action.property, true)
       )
       const value = parseFloat(action.value)
-      if(action.property === 'maxScore'){
+      if(action.property === 'score.max'){
         newItem.score.max = value
       } else {
         newItem[action.property] = value

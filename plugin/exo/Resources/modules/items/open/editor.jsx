@@ -18,7 +18,7 @@ export const Open = (props) =>
         value={props.item.score.max}
         className="form-control"
         onChange={e => props.onChange(
-          actions.update('maxScore', e.target.value)
+          actions.update('score.max', e.target.value)
         )}
       />
     </FormGroup>
@@ -32,7 +32,7 @@ export const Open = (props) =>
         id={`item-${props.item.id}-maxLength`}
         type="number"
         min="0"
-        value={props.item.maxLength}
+        value={props.item.maxLength ? props.item.maxLength:0}
         className="form-control"
         onChange={e => props.onChange(
           actions.update('maxLength', e.target.value)
