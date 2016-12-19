@@ -2,11 +2,25 @@ import React, { Component } from 'react'
 
 const T = React.PropTypes
 
+const Hints = props =>
+  <div>
+    This is the hint section
+  </div>
+
+Hints.propTypes = {
+  hints: T.array.isRequired
+}
+
 export default class Player extends Component {
   render() {
     return (
-      <div className="item-player panel panel-default">
-        this is an item player
+      <div className="item-player">
+        <p>{this.props.item.content}</p>
+
+        <hr/>
+        {this.props.children}
+        <hr/>
+        {this.props.item.hints && 0 !== this.props.item.hints.length && <Hints hints={this.props.item.hints} />}
       </div>
     )
   }
@@ -14,8 +28,8 @@ export default class Player extends Component {
 
 Player.propTypes = {
   item: T.shape({
-    title: T.string,
     content: T.string.isRequired,
     hints: T.array
-  }).isRequired
+  }).isRequired,
+  children: T.node.isRequired
 }

@@ -7,7 +7,7 @@ import MenuItem from 'react-bootstrap/lib/MenuItem'
 
 import {t, tex} from './../../utils/translate'
 import {generateUrl} from './../../utils/routing'
-import {VIEW_OVERVIEW, VIEW_PLAYER, VIEW_EDITOR} from './../enums'
+import {VIEW_OVERVIEW, VIEW_EDITOR} from './../enums'
 
 export const TopBar = props =>
   <Navbar collapseOnSelect>
@@ -63,7 +63,7 @@ export const TopBar = props =>
       <Nav pullRight>
         {!props.empty &&
           <NavItem eventKey={5} href="#" onClick={() => {
-            props.updateViewMode(VIEW_PLAYER)
+            props.playQuiz(props.id)
           }}>
             <span className="fa fa-fw fa-play"></span>
             {tex('exercise_try')}
@@ -107,5 +107,6 @@ TopBar.propTypes = {
   empty: T.bool.isRequired,
   published: T.bool.isRequired,
   updateViewMode: T.func.isRequired,
+  playQuiz: T.func.isRequired,
   saveQuiz: T.func.isRequired
 }

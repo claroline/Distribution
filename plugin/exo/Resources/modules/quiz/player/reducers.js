@@ -1,12 +1,5 @@
 import {makeReducer} from './../../utils/reducers'
-
-import {
-  ATTEMPT_START,
-  ATTEMPT_FINISH,
-  ANSWERS_SUBMIT
-} from './actions'
-
-function startAttempt() {
+import {getDefinition} from './../../items/item-types'
 
 import {
   ITEMS_LOAD,
@@ -15,13 +8,8 @@ import {
   ANSWERS_SUBMIT
 } from './actions'
 
-function startAttempt() {
-  return dispatch => {
-    dispatch(requestPosts(subreddit))
-    return fetch(`http://www.reddit.com/r/${subreddit}.json`)
-      .then(response => response.json())
-      .then(json => dispatch(receivePosts(subreddit, json)))
-  }
+function startAttempt(state, action) {
+  return action.attempt
 }
 
 function finishAttempt() {

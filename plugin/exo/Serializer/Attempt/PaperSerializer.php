@@ -80,7 +80,7 @@ class PaperSerializer extends AbstractSerializer
                 return $paper->getEnd() ? $paper->getEnd()->format('Y-m-d\TH:i:s') : null;
             },
             'structure' => function (Paper $paper) {
-                return $this->serializeStructure($paper);
+                return json_decode($paper->getStructure());
             },
         ], $paper, $paperData);
 
@@ -118,6 +118,34 @@ class PaperSerializer extends AbstractSerializer
             $paper = new Paper();
         }
 
+        if (!empty($data->id)) {
+            $paper->setUuid($data->id);
+        }
+
+        if (isset($data->number)) {
+            $paper->setNumber($data->number);
+        }
+
+        // Set paper dates
+        $paper->setStart(\DateTime::createFromFormat('Y-m-d\TH:i:s', $data->startDate));
+        if (isset($data->endDate)) {
+            $paper->setStart(\DateTime::createFromFormat('Y-m-d\TH:i:s', $data->endDate));
+        }
+
+        $paper->setStructure(json_encode($data->structure));
+
+        if (isset($data->finished)) {
+            $paper->setInterrupted(!$data->finished);
+        }
+
+        if (isset($data->score)) {
+            $paper->setScore($data->score);
+        }
+
+        if (isset($data->answers)) {
+            $this->deserializeAnswers($paper, $data->answers, $options);
+        }
+        
         return $paper;
     }
 
@@ -138,7 +166,11 @@ class PaperSerializer extends AbstractSerializer
         }, $answers);
     }
 
-    private function serializeStructure(Paper $paper)
+    private function deserializeAnswers(Paper $paper, array $answers, array $options = [])
     {
+        foreach ($answers as $answerData) {
+            $answer = $this->answerSerializer->deserialize($answerData, $paper->getAnswer($answerData->id), $options);
+            $paper->addAnswer($answer);
+        }
     }
 }

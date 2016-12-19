@@ -116,7 +116,7 @@ class PaperManager
 
         return [
             'paper' => $this->serializer->serialize($paper, $options),
-            'questions' => array_map(function (Question $question) use ($options) {
+            'items' => array_map(function (Question $question) use ($options) {
                 return $this->questionManager->export($question, $options);
             }, $this->getQuestions($paper)),
         ];
@@ -134,13 +134,17 @@ class PaperManager
      */
     public function getQuestions(Paper $paper)
     {
-        $ids = explode(';', substr($paper->getStructure(), 0, -1));
+        $structure = json_decode($paper->getStructure());
 
         $questions = [];
-        foreach ($ids as $id) {
-            $question = $this->om->getRepository('UJMExoBundle:Question\Question')->find($id);
-            if ($question) {
-                $questions[] = $question;
+        foreach ($structure as $step) {
+            foreach ($step->items as $itemId) {
+                $question = $this->om->getRepository('UJMExoBundle:Question\Question')->findOneBy([
+                    'uuid' => $itemId,
+                ]);
+                if (!empty($question)) {
+                    $questions[] = $question;
+                }
             }
         }
 

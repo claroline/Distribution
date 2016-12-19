@@ -67,7 +67,7 @@ class AttemptController extends AbstractController
      * Opens an exercise, creating a new paper or re-using an unfinished one.
      * Also check that max attempts are not reached if needed.
      *
-     * @EXT\Route("", name="exercise_attempt_new", requirements={"id"="\d+"})
+     * @EXT\Route("", name="exercise_attempt_start")
      * @EXT\Method("POST")
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
      *
@@ -151,8 +151,7 @@ class AttemptController extends AbstractController
         $this->assertHasPaperAccess($paper, $user);
 
         $this->attemptManager->end($paper, true);
-
-        // TODO : check the score availability
+        
         return new JsonResponse($this->paperManager->export($paper), 200);
     }
 
