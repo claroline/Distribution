@@ -1,6 +1,6 @@
 import React from 'react'
 import {shallow, mount} from 'enzyme'
-import {spyConsole, renew, ensure, mockTranslator} from './../../utils/test'
+import {spyConsole, renew, ensure, mockTranslator, mockRouting} from './../../utils/test'
 import {TopBar} from './top-bar.jsx'
 
 describe('<TopBar/>', () => {
@@ -8,6 +8,7 @@ describe('<TopBar/>', () => {
     spyConsole.watch()
     renew(TopBar, 'TopBar')
     mockTranslator()
+    mockRouting()
   })
   afterEach(spyConsole.restore)
 
@@ -30,7 +31,7 @@ describe('<TopBar/>', () => {
     )
     ensure.invalidProps(
       'TopBar',
-      ['empty', 'published', 'updateViewMode']
+      ['id', 'empty', 'published', 'updateViewMode']
     )
   })
 
