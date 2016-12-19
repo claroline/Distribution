@@ -15,13 +15,14 @@ describe('<TopBar/>', () => {
     shallow(<TopBar/>)
     ensure.missingProps(
       'TopBar',
-      ['empty', 'published', 'updateViewMode']
+      ['id', 'empty', 'published', 'updateViewMode']
     )
   })
 
   it('has typed props', () => {
     shallow(
       <TopBar
+        id={[]}
         empty={[]}
         published={{}}
         updateViewMode={[]}
@@ -36,6 +37,7 @@ describe('<TopBar/>', () => {
   it('renders a navbar', () => {
     const navbar = mount(
       <TopBar
+        id="123"
         empty={true}
         published={false}
         updateViewMode={() => {}}

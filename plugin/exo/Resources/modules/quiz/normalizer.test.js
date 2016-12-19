@@ -9,6 +9,7 @@ describe('Normalizer', () => {
       title: 'Quiz title',
       description: 'Quiz desc',
       parameters: {},
+      meta: {},
       steps: [
         {
           id: 'a',
@@ -42,6 +43,7 @@ describe('Normalizer', () => {
         title: 'Quiz title',
         description: 'Quiz desc',
         parameters: {},
+        meta: {},
         steps: ['a', 'b']
       },
       steps: {

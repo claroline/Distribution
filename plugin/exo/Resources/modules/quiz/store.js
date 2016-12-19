@@ -11,7 +11,7 @@ import thunk from 'redux-thunk'
 import {reducers as quizReducers} from './reducers'
 import {reducers as editorReducers} from './editor/reducers'
 import {reducers as playerReducers} from './player/reducers'
-import {VIEW_PLAYER, VIEW_EDITOR} from './enums'
+import {VIEW_OVERVIEW, VIEW_PLAYER, VIEW_EDITOR} from './enums'
 import {VIEW_MODE_UPDATE} from './actions'
 
 const reducerForEditorMode = combineReducers({
@@ -37,10 +37,10 @@ const reducerForPlayerMode = combineReducers({
 let finalStore
 
 const reducerSwitcher = () => next => action => {
-
   if (action.type === VIEW_MODE_UPDATE) {
     let reducer
     switch(action.mode){
+      case VIEW_OVERVIEW:
       case VIEW_PLAYER:
         reducer = reducerForPlayerMode
         break
@@ -51,8 +51,7 @@ const reducerSwitcher = () => next => action => {
     finalStore.replaceReducer(reducer)
   }
 
-  let result = next(action)
-  return result
+  return next(action)
 }
 
 const middleware = [thunk, reducerSwitcher]

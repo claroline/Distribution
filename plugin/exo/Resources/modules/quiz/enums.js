@@ -11,10 +11,12 @@ export const quizTypes = [
   [QUIZ_FORMATIVE, 'formative']
 ]
 
-export const VIEW_PLAYER = 'player'
-export const VIEW_EDITOR = 'editor'
+export const VIEW_OVERVIEW = 'overview'
+export const VIEW_PLAYER   = 'player'
+export const VIEW_EDITOR   = 'editor'
 
 export const viewModes = [
+  [VIEW_OVERVIEW, 'overview'],
   [VIEW_PLAYER, 'player'],
   [VIEW_EDITOR, 'editor']
 ]

@@ -4,8 +4,10 @@ import Nav from 'react-bootstrap/lib/Nav'
 import NavItem from 'react-bootstrap/lib/NavItem'
 import NavDropdown from 'react-bootstrap/lib/NavDropdown'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
+
 import {t, tex} from './../../utils/translate'
-import {VIEW_PLAYER} from './../enums'
+import {generateUrl} from './../../utils/routing'
+import {VIEW_OVERVIEW, VIEW_PLAYER, VIEW_EDITOR} from './../enums'
 
 export const TopBar = props =>
   <Navbar collapseOnSelect>
@@ -14,11 +16,15 @@ export const TopBar = props =>
     </Navbar.Header>
     <Navbar.Collapse>
       <Nav>
-        <NavItem eventKey={1} href="#">
+        <NavItem eventKey={1} href="#" onClick={() => {
+          props.updateViewMode(VIEW_OVERVIEW)
+        }}>
           <span className="fa fa-fw fa-info"></span>
           {tex('overview')}
         </NavItem>
-        <NavItem eventKey={2} href="#">
+        <NavItem eventKey={2} href="#" onClick={() => {
+          props.updateViewMode(VIEW_EDITOR)
+        }}>
           <span className="fa fa-fw fa-pencil"></span>
           {t('edit')}
         </NavItem>
@@ -77,7 +83,7 @@ export const TopBar = props =>
             <span className="fa fa-fw fa-list"></span>
             {tex('results_list')}
           </MenuItem>
-          <MenuItem eventKey={6.2}>
+          <MenuItem eventKey={6.2} href={generateUrl('ujm_exercise_docimology', {id: props.id})}>
             <span className="fa fa-fw fa-bar-chart"></span>
             {tex('docimology')}
           </MenuItem>
@@ -91,6 +97,7 @@ export const TopBar = props =>
   </Navbar>
 
 TopBar.propTypes = {
+  id: T.string.isRequired,
   empty: T.bool.isRequired,
   published: T.bool.isRequired,
   updateViewMode: T.func.isRequired
