@@ -25,6 +25,7 @@ class OpenQuestionSerializer implements SerializerInterface
         $questionData = new \stdClass();
 
         $questionData->contentType = 'text';
+        $questionData->maxLength = $openQuestion->getAnswerMaxLength();
         $questionData->score = new \stdClass();
         $questionData->score->type = 'manual';
         $questionData->score->max = $openQuestion->getScoreMaxLongResp();
@@ -52,6 +53,10 @@ class OpenQuestionSerializer implements SerializerInterface
         }
 
         $openQuestion->setScoreMaxLongResp($data->score->max);
+
+        if (isset($data->maxLength)) {
+            $openQuestion->setAnswerMaxLength($data->maxLength);
+        }
 
         return $openQuestion;
     }

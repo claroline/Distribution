@@ -34,6 +34,15 @@ class OpenQuestion extends AbstractQuestion
     private $scoreMaxLongResp;
 
     /**
+     * The max allowed length fot answers to this question.
+     *
+     * @ORM\Column(type="integer")
+     *
+     * @var int
+     */
+    private $maxAnswerLength = 0;
+
+    /**
      * OpenQuestion constructor.
      */
     public function __construct()
@@ -104,5 +113,21 @@ class OpenQuestion extends AbstractQuestion
     public function getScoreMaxLongResp()
     {
         return $this->scoreMaxLongResp;
+    }
+
+    /**
+     * @param int $maxLength
+     */
+    public function setAnswerMaxLength($maxLength)
+    {
+        $this->maxAnswerLength = $maxLength;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAnswerMaxLength()
+    {
+        return $this->maxAnswerLength;
     }
 }

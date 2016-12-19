@@ -2,7 +2,6 @@ import cloneDeep from 'lodash/cloneDeep'
 import merge from 'lodash/merge'
 import set from 'lodash/set'
 import {Open as component} from './player.jsx'
-import {ITEM_OPEN} from './../../quiz/player/actions'
 import {makeActionCreator} from './../../utils/utils'
 
 const UPDATE_ANSWER = 'UPDATE_ANSWER'
@@ -13,12 +12,6 @@ export const actions = {
 
 function reduce(item = {}, action) {
   switch (action.type) {
-    case ITEM_OPEN: {
-      return Object.assign({}, item, {
-        data:'',
-        maxLength: item.maxLength || 0
-      })
-    }
     case UPDATE_ANSWER: {
       const newItem = cloneDeep(item)
       newItem._touched = merge(
@@ -33,11 +26,16 @@ function reduce(item = {}, action) {
 }
 
 
-function validate(item) {
+function validate(item, answer) {
   const errors = {}
-  // @TODO check if answer length is inferior to maxLength (if setted)
-  if(item.maxLength > 0 && item.data.length > item.maxLength){
-    errors.item = 'too long'
+
+  switch (item.contentType) {
+    case 'text':
+    default:
+      if(item.maxLength > 0 && answer.length > item.maxLength){
+        errors.item = 'too long'
+      }
+      break
   }
 
   return errors

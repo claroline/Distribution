@@ -169,7 +169,7 @@ class PaperSerializer extends AbstractSerializer
     private function deserializeAnswers(Paper $paper, array $answers, array $options = [])
     {
         foreach ($answers as $answerData) {
-            $answer = $this->answerSerializer->deserialize($answerData, $paper->getAnswer($answerData->id), $options);
+            $answer = $this->answerSerializer->deserialize($answerData, $paper->getAnswer($answerData->questionId), $options);
             $paper->addAnswer($answer);
         }
     }

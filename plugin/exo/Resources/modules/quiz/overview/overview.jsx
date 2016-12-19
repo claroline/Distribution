@@ -128,7 +128,7 @@ const Layout = props =>
               <div
                 className="panel-body"
                 dangerouslySetInnerHTML={{ __html: props.description }}
-              />
+              ></div>
             </div>
           }
           {props.parameters.showMetadata &&

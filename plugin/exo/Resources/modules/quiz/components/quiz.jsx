@@ -1,6 +1,7 @@
 import React, {PropTypes as T} from 'react'
 import {connect} from 'react-redux'
 
+import PageHeader from './../../components/layout/page-header.jsx'
 import {TopBar} from './top-bar.jsx'
 import {Overview} from './../overview/overview.jsx'
 import Player from './../player/components/player.jsx'
@@ -12,10 +13,8 @@ import {actions} from './../actions'
 import {VIEW_OVERVIEW, VIEW_PLAYER, VIEW_EDITOR} from './../enums'
 
 let Quiz = props =>
-  <div className="exercise-container">
-    <div className="panel-heading">
-      <h3 className="panel-title">{props.title}</h3>
-    </div>
+  <div>
+    <PageHeader title={props.title} />
     {props.editable &&
       <TopBar {...props} />
     }
@@ -57,7 +56,7 @@ function mapStateToProps(state) {
   }
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
+function mapDispatchToProps(dispatch) {
   return {
     updateViewMode(mode) {
       dispatch(actions.updateViewMode(mode))

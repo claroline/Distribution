@@ -1,14 +1,52 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import {connect} from 'react-redux'
+import Panel from 'react-bootstrap/lib/Panel'
 
-import StepPlayer from './step-player.jsx'
+import {tex} from './../../../utils/translate'
+import {getDefinition} from './../../../items/item-types'
+
+import {Player as ItemPlayer} from './../../../items/components/player.jsx'
 import PlayerNav from './nav-bar.jsx'
+
+import {select} from './../selectors'
 
 class Player extends Component {
   render() {
     return (
       <div className="quiz-player">
-        <StepPlayer items={[]} />
+        <h2 className="step-title">
+          {tex('step')}&nbsp;{this.props.current.number}
+          {this.props.step.title && <small>{this.props.step.title}</small>}
+        </h2>
+
+        {this.props.step.description &&
+          <div className="exercise-description panel panel-default">
+            <div
+              className="panel-body"
+              dangerouslySetInnerHTML={{ __html: this.props.step.description }}
+            ></div>
+          </div>
+        }
+
+        {this.props.items.map((item) => (
+          <Panel
+            key={item.id}
+            header={item.title}
+            collapsible={true}
+            expanded={true}
+          >
+            <ItemPlayer item={item}>
+              {React.createElement(
+                getDefinition(item.type).player.component,
+                {
+                  item: item,
+                  onChange: () => true
+                }
+              )}
+            </ItemPlayer>
+          </Panel>
+        ))}
+
         <PlayerNav />
       </div>
     )
@@ -17,8 +55,10 @@ class Player extends Component {
 
 function mapStateToProps(state) {
   return {
-    items: state.items,
-    attempt: state.attempt
+    current: state.currentStep,
+    step: select.currentStep(state),
+    items: select.currentStepItems(state),
+    paper: state.paper
   }
 }
 

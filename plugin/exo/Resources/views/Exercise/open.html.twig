@@ -16,7 +16,7 @@
 {% block title %}{{ _resource.resourceNode.name }}{% endblock %}
 
 {# Content of the Page #}
-{% block section_content %}
+{% block section_panel %}
     <div
       class="quiz-container"
       data-quiz="{{ exercise | json_encode | raw | escape }}"

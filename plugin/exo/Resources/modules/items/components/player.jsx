@@ -11,7 +11,7 @@ Hints.propTypes = {
   hints: T.array.isRequired
 }
 
-export default class Player extends Component {
+export class Player extends Component {
   render() {
     return (
       <div className="item-player">

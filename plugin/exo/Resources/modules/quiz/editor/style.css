@@ -8,7 +8,7 @@
 
 .quiz-editor .edit-zone {
   flex: 1 100%;
-  padding: 14px;
+  padding-left: 14px;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -154,44 +154,6 @@
   margin-left: 20px;
   margin-right: 98px;
   text-align: center;
-}
-
-.quiz-editor .text-editor {
-  position: relative;
-  margin-bottom: 12px;
-}
-
-.quiz-editor .text-editor [role=textbox].form-control {
-  height: auto;
-}
-
-.quiz-editor .text-editor [role=textbox].form-control p:last-of-type {
-  margin-bottom: 0;
-}
-
-.quiz-editor .text-editor .toolbar-toggle {
-  position: absolute;
-  top: -5px;
-  right: -5px;
-  z-index: 1;
-  background-color: white;
-  border-radius: 50%;
-  color: #777;
-  font-size: 18px;
-}
-
-.quiz-editor .text-editor .mce-toolbar-grp {
-  max-height: 500px;
-  transition: max-height 0.6s ease-in;
-}
-
-.quiz-editor .text-editor.minimal .mce-toolbar-grp {
-  max-height: 0;
-  transition: none;
-}
-
-.quiz-editor .text-editor.minimal .mce-edit-area {
-  border: none;
 }
 
 .quiz-editor .error-text {

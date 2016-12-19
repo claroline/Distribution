@@ -3,27 +3,26 @@ import {actions} from './player'
 import {Textarea} from './../../components/form/textarea.jsx'
 
 export const Open = (props) =>
-<div>
-  <Textarea
-    id={`open-${props.item.id}-question`}
-    content={props.item.content}
-  />
-  <Textarea
-    id={`open-${props.item.id}-data`}
-    content={props.item.data}
-    onChange={(value) => props.onChange(
-      actions.updateAnswer(value)
-    )}
-  />
-</div>
-
+  <div>
+    <Textarea
+      id={`open-${props.item.id}-data`}
+      content={props.answer}
+      onChange={(value) => props.onChange(
+        actions.updateAnswer(value)
+      )}
+    />
+  </div>
 
 Open.propTypes = {
   item: T.shape({
     id: T.string.isRequired,
-    content: T.string.isRequired,
-    data: T.string,
+    contentType: T.string.isRequired,
     maxLength: T.number.isRequired
   }).isRequired,
+  answer: T.string,
   onChange: T.func.isRequired
+}
+
+Open.defaultProps = {
+  answer: ''
 }
