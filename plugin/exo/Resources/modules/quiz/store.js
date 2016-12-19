@@ -57,13 +57,11 @@ const reducerSwitcher = () => next => action => {
   return result
 }
 
+
 const quizSave = store => next => action => {
   if (action.type === QUIZ_SAVE) {
     const state = store.getState()
-    console.log('middleware save quiz')
-    //console.log(state)
     const denormalized = denormalize(state.quiz, state.steps, state.items)
-    console.log(JSON.stringify(denormalized))
     const url = generateUrl('exercise_update', {'id': state.quiz.id})
     const params = {
       method: 'PUT' ,
@@ -72,16 +70,16 @@ const quizSave = store => next => action => {
     }
     fetch(url, params)
      .then(response => {
-       return response.json()
-       // do something if errors but how to handle errors in middleware ?
+       if(!response.ok){
+         // do something with errors...
+         let result = next(action)
+         return result
+       }
      })
-     .then(jsonData =>  {
-       // do we need any data from saved exercise ?
-       console.log(jsonData)
-     })
+  } else {
+    let result = next(action)
+    return result
   }
-  let result = next(action)
-  return result
 }
 
 const middleware = [thunk, reducerSwitcher, quizSave]

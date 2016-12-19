@@ -19,13 +19,15 @@ describe('Open reducer', () => {
     const reduced = reduce(item, actions.createItem('1', 'application/x.open+json'))
     ensure.equal(reduced, {
       id: '1',
-      type: 'application/x.open+json',
+      type: 'application/x.open+json',      
+      contentType: 'text',
       content: 'Question?',
       maxLength: 0,
       score:{
         type: 'manual',
         max: 0
-      }
+      },
+      solutions: []
     })
   })
 
@@ -187,12 +189,14 @@ describe('<Open/>', () => {
 function makeFixture(props = {}, frozen = true) {
   const fixture = merge({
     id: '1',
+    contentType: 'text',
     type: 'application/x.open+json',
     content: 'Question?',
     score: {
       type: 'manual',
       max: 10
     },
+    solutions: [],
     maxLength: 0
   }, props)
 

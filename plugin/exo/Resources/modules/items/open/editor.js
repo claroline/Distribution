@@ -17,12 +17,14 @@ export const actions = {
 function reduce(item = {}, action) {
   switch (action.type) {
     case ITEM_CREATE: {
-      return Object.assign({}, item, {
+      return Object.assign({}, item, {        
+        contentType: 'text',
         score: {
           type: SCORE_MANUAL,
           max: 0
         },
-        maxLength: 0
+        maxLength: 0,
+        solutions: []
       })
     }
 
@@ -33,7 +35,7 @@ function reduce(item = {}, action) {
         set({}, action.property, true)
       )
       const value = parseFloat(action.value)
-      if(action.property === 'score.max'){
+      if(action.property === 'maxScore'){
         newItem.score.max = value
       } else {
         newItem[action.property] = value
