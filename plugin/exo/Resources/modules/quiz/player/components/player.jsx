@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { Component } from 'react'
 
-let Player = () =>
-  <div className="panel-body quiz-editor">
-    <h1>I AM YOUR PLAYER!</h1>
-  </div>
-
-export {Player}
+export default class Player extends Component {
+  render() {
+    return (
+      <div className="quiz-player">
+        <h1>I AM YOUR PLAYER!</h1>
+      </div>
+    )
+  }
+}

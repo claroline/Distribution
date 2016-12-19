@@ -1,12 +1,12 @@
+import {makeActionCreator} from './../../utils/actions'
 
-export const ITEM_OPEN = 'ITEM_OPEN'
+export const ATTEMPT_START = 'ATTEMPT_START'
+export const ATTEMPT_FINISH = 'ATTEMPT_FINISH'
+export const ANSWERS_SUBMIT = 'ANSWERS_SUBMIT'
 
 export const actions = {}
 
-actions.openItem = (id, type) => {
-  return {
-    type: ITEM_OPEN,
-    id: id,
-    itemType: type
-  }
-}
+actions.startAttempt = makeActionCreator(ATTEMPT_START, 'quiz', 'user')
+actions.finishAttempt = makeActionCreator(ATTEMPT_FINISH, 'quiz', 'user')
+actions.submitAnswers = makeActionCreator(ANSWERS_SUBMIT, 'quiz', 'paper', 'user')
+

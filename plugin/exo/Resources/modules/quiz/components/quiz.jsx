@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 
 import {TopBar} from './top-bar.jsx'
 import {Overview} from './../overview/overview.jsx'
-import {Player} from './../player/components/player.jsx'
+import Player from './../player/components/player.jsx'
 import {Editor} from './../editor/components/editor.jsx'
 import select from './../selectors'
 import {actions} from './../actions'
@@ -49,8 +49,7 @@ function mapStateToProps(state) {
     viewMode: state.viewMode,
     editable: select.editable(state),
     empty: select.empty(state),
-    published: select.published(state),
-    created: select.created(state)
+    published: select.published(state)
   }
 }
 

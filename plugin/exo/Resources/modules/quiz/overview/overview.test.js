@@ -27,7 +27,7 @@ describe('<Overview/>', () => {
         /* can't tests these ones because selectors are hard-coded */
         // 'empty',
         // 'editable',
-        // 'created',
+        'meta',
         'description',
         'parameters'
       ]
@@ -38,7 +38,8 @@ describe('<Overview/>', () => {
     const store = mockStore({
       quiz: {
         description: 456,
-        parameters: true
+        parameters: true,
+        meta: true
       }
     })
     shallow(<Overview store={store}/>)
@@ -48,7 +49,7 @@ describe('<Overview/>', () => {
         /* same than above */
         // 'empty',
         // 'editable',
-        // 'created',
+        'meta',
         'description',
         'parameters'
       ]
@@ -72,6 +73,10 @@ describe('<Overview/>', () => {
           correctionDate: '2015/05/12',
           anonymous: true,
           showScoreAt: SHOW_SCORE_AT_CORRECTION
+        },
+        meta: {
+          created: '2016-12-12',
+          published: true
         }
       }
     })
