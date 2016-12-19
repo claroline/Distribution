@@ -47,7 +47,7 @@ const Parameters = props =>
             <Parameter name="type">
               {tex(quizTypes.find(type => type[0] === props.parameters.type)[1])}
             </Parameter>
-            <Parameter name="creation_date">{props.created}</Parameter>
+            <Parameter name="creation_date">{props.meta.created}</Parameter>
             <Parameter name="number_steps_draw">
               {props.parameters.pick || tex('all_step')}
             </Parameter>
@@ -84,7 +84,6 @@ const Parameters = props =>
 Parameters.propTypes = {
   editable: T.bool.isRequired,
   additionalInfo: T.bool.isRequired,
-  created: T.string.isRequired,
   onAdditionalToggle: T.func.isRequired,
   parameters: T.shape({
     type: T.string.isRequired,
@@ -98,11 +97,14 @@ Parameters.propTypes = {
     correctionDate: T.string,
     anonymous: T.bool.isRequired,
     showScoreAt: T.string.isRequired
-  }).isRequired
+  }).isRequired,
+  meta: T.shape({
+    created: T.string.isRequired
+  })
 }
 
 const Layout = props =>
-  <div className="overview">
+  <div className="quiz-overview">
     <div className="panel-body">
       {props.empty &&
         <div className="row">
@@ -153,12 +155,14 @@ const Layout = props =>
 Layout.propTypes = {
   empty: T.bool.isRequired,
   editable: T.bool.isRequired,
-  created: T.string.isRequired,
   description: T.string.isRequired,
   onAdditionalToggle: T.func.isRequired,
   parameters: T.shape({
     showMetadata: T.bool.isRequired
-  }).isRequired
+  }).isRequired,
+  meta: T.shape({
+    created: T.string.isRequired
+  })
 }
 
 class Overview extends Component {
@@ -185,7 +189,6 @@ class Overview extends Component {
 Overview.propTypes = {
   empty: T.bool.isRequired,
   editable: T.bool.isRequired,
-  created: T.string.isRequired,
   description: T.string.isRequired,
   parameters: T.shape({
     showMetadata: T.bool.isRequired,
@@ -200,6 +203,9 @@ Overview.propTypes = {
     correctionDate: T.string,
     anonymous: T.bool.isRequired,
     showScoreAt: T.string.isRequired
+  }).isRequired,
+  meta: T.shape({
+    created: T.string.isRequired
   }).isRequired
 }
 
@@ -207,7 +213,7 @@ function mapStateToProps(state) {
   return {
     empty: select.empty(state),
     editable: select.editable(state),
-    created: select.created(state),
+    meta: select.meta(state),
     description: select.description(state),
     parameters: select.parameters(state)
   }

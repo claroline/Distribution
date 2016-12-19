@@ -1,32 +1,28 @@
+import {makeReducer} from './../../utils/reducers'
 
-import validate from './validators'
-import {decorateItem} from './../decorators'
-import {update} from './../../utils/utils'
-import {getDefinition} from './../../items/item-types'
-import ITEM_OPEN from './actions'
+import {
+  ATTEMPT_START,
+  ATTEMPT_FINISH,
+  ANSWERS_SUBMIT
+} from './actions'
 
-function reduceItems(items = {}, action = {}) {
-  switch (action.type) {
-    case ITEM_OPEN: {
-      let newItem = decorateItem({
-        id: action.id,
-        type: action.itemType,
-        content: '',
-        hints: [],
-        feedback: ''
-      })
-      newItem = decorateItem(newItem)
-      const def = getDefinition(action.itemType)
-      newItem = def.player.reduce(newItem, action)
-      const errors = validate.item(newItem)
-      newItem = Object.assign({}, newItem, {_errors: errors})
+function startAttempt() {
 
-      return update(items, {[action.id]: {$set: newItem}})
-    }
-  }
-  return items
+}
+
+function finishAttempt() {
+
+}
+
+function submitAnswers() {
+
 }
 
 export const reducers = {
-  items: reduceItems
+  items: () => [], // FIXME
+  attempt: makeReducer({}, {
+    [ATTEMPT_START]: startAttempt,
+    [ATTEMPT_FINISH]: finishAttempt,
+    [ANSWERS_SUBMIT]: submitAnswers
+  })
 }

@@ -1,21 +1,21 @@
 const empty = state => state.quiz.steps.length === 0
+const id = state => state.quiz.id
 const description = state => state.quiz.description
 const parameters = state => state.quiz.parameters
 const title = state => state.quiz.title
-const currentSection = () => 'editor'
+const meta = state => state.quiz.meta
+const published = state => state.quiz.meta.published
 
 // TODO: update when data is available
 const editable = () => true
-const created = () => '2015/12/03'
-const published = () => false
 
 export default {
+  id,
   empty,
   editable,
-  created,
   description,
+  meta,
   parameters,
   title,
-  currentSection,
   published
 }

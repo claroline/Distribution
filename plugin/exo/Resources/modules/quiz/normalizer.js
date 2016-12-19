@@ -20,6 +20,7 @@ export function normalize(rawQuiz) {
       id: rawQuiz.id,
       title: rawQuiz.title,
       description: rawQuiz.description,
+      meta: rawQuiz.meta,
       parameters: rawQuiz.parameters,
       steps: rawQuiz.steps.map(step => step.id)
     },
