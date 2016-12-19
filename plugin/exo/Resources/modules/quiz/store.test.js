@@ -23,7 +23,7 @@ describe('createStore', () => {
         props: {},
         fading: false
       },
-      viewMode: 'editor'
+      viewMode: 'overview'
     })
   })
 })

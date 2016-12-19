@@ -1,7 +1,7 @@
 import assert from 'assert'
 import freeze from 'deep-freeze'
 import {resetTypes} from './../items/item-types'
-import {spyConsole} from './../utils/test'
+import {spyConsole, mockRouting} from './../utils/test'
 import {Quiz} from './quiz'
 
 describe('Quiz', () => {
@@ -15,14 +15,11 @@ describe('Quiz', () => {
   it('takes raw quiz data and renders a full quiz', () => {
     const quiz = new Quiz(quizFixture())
     const element = document.createElement('div')
-    window.Routing = {
-      generate: () => {}
-    }
+
+    mockRouting()
     quiz.render(element)
     // this is just a rough test to check main components have been rendered
-    assert(element.querySelector('.quiz-editor'), 'a .quiz-editor element is present')
-    assert(element.querySelector('.thumbnail-box'), 'a .thumbnail-box element is present')
-    assert(element.querySelector('.edit-zone'), 'an .edit-zone element is present')
+    assert(element.querySelector('.quiz-overview'), 'a .quiz-overview element is present')
   })
 })
 
@@ -32,6 +29,10 @@ function quizFixture() {
     title: 'Quiz title',
     description: 'Quiz desc',
     parameters: {},
+    meta: {
+      created: '2016-12-12',
+      published: false
+    },
     steps: [
       {
         id: 'a',

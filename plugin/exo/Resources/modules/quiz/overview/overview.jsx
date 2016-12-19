@@ -104,7 +104,7 @@ Parameters.propTypes = {
 }
 
 const Layout = props =>
-  <div className="overview">
+  <div className="quiz-overview">
     <div className="panel-body">
       {props.empty &&
         <div className="row">
