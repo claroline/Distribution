@@ -72,13 +72,11 @@ const quizSave = store => next => action => {
      .then(response => {
        if(!response.ok){
          // do something with errors...
-         let result = next(action)
-         return result
        }
+       return next(action)
      })
   } else {
-    let result = next(action)
-    return result
+    return next(action)
   }
 }
 
