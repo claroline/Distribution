@@ -107,8 +107,6 @@ describe('Decorator', () => {
           id: 'x',
           type: 'foo/bar',
           title: '',
-          description: '',
-          instruction: '',
           info: '',
           hints: [
             {
@@ -130,8 +128,6 @@ describe('Decorator', () => {
         y: {
           id: 'y',
           title: '',
-          description: '',
-          instruction: '',
           info: '',
           hints: [],
           feedback: '',
@@ -146,8 +142,6 @@ describe('Decorator', () => {
           id: 'z',
           type: 'text/html',
           title: 'Item Z',
-          description: '',
-          instruction: '',
           info: '',
           hints: [],
           feedback: '',
@@ -158,9 +152,11 @@ describe('Decorator', () => {
           }
         }
       },
-      currentObject: {
-        id: state.quiz.id,
-        type: TYPE_QUIZ
+      editor: {
+        currentObject: {
+          id: state.quiz.id,
+          type: TYPE_QUIZ
+        }
       }
     })
   })
@@ -229,8 +225,6 @@ describe('Decorator', () => {
           id: 'x',
           type: 'application/foo.bar+json',
           title: '',
-          description: '',
-          instruction: '',
           info: '',
           hints: [],
           feedback: '',
@@ -242,9 +236,11 @@ describe('Decorator', () => {
           _foo: 'x-bar'
         }
       },
-      currentObject: {
-        id: state.quiz.id,
-        type: TYPE_QUIZ
+      editor: {
+        currentObject: {
+          id: state.quiz.id,
+          type: TYPE_QUIZ
+        }
       }
     })
   })

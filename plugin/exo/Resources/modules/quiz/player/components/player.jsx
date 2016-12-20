@@ -6,6 +6,10 @@ import {tex} from './../../../utils/translate'
 import {getDefinition} from './../../../items/item-types'
 import {select} from './../selectors'
 
+import {actions as playerActions} from './../actions'
+import {actions as quizActions} from './../../actions'
+import {VIEW_OVERVIEW} from './../../enums'
+
 import {Player as ItemPlayer} from './../../../items/components/player.jsx'
 import {PlayerNav} from './nav-bar.jsx'
 
@@ -15,9 +19,9 @@ class Player extends Component {
   render() {
     return (
       <div className="quiz-player">
-        <h2 className="step-title">
-          {tex('step')}&nbsp;{this.props.current.number}
-          {this.props.step.title && <small>{this.props.step.title}</small>}
+        <h2 className="h4 step-title">
+          {tex('step')}&nbsp;{this.props.number}
+          {this.props.step.title && <small>&nbsp;{this.props.step.title}</small>}
         </h2>
 
         {this.props.step.description &&
@@ -48,29 +52,54 @@ class Player extends Component {
           </Panel>
         ))}
 
-        <PlayerNav />
+        <PlayerNav
+          previous={this.props.previous}
+          next={this.props.next}
+          navigateTo={this.props.navigateTo}
+          finishAttempt={this.props.finishAttempt}
+        />
       </div>
     )
   }
 }
 
 Player.propTypes = {
-  current: T.shape({
-    number: T.number.isRequired
-  }).isRequired,
+  number: T.number.isRequired,
   step: T.shape({
     title: T.string,
     description: T.string
   }),
-  items: T.array.isRequired
+  items: T.array.isRequired,
+  next: T.string,
+  previous: T.string,
+  navigateTo: T.func.isRequired,
+  finishAttempt: T.func.isRequired
+}
+
+Player.defaultProps = {
+  next: null,
+  previous: null
 }
 
 function mapStateToProps(state) {
   return {
-    current: state.currentStep,
+    number: select.currentStepNumber(state),
     step: select.currentStep(state),
-    items: select.currentStepItems(state)
+    items: select.currentStepItems(state),
+    next: select.nextStep(state),
+    previous: select.previousStep(state)
   }
 }
 
-export default connect(mapStateToProps)(Player)
+function mapDispatchToProps(dispatch) {
+  return {
+    navigateTo(stepId) {
+      dispatch(playerActions.changeCurrentStep(stepId))
+    },
+    finishAttempt() {
+      dispatch(quizActions.updateViewMode(VIEW_OVERVIEW))
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Player)

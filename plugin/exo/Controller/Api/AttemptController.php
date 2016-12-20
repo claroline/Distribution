@@ -86,7 +86,7 @@ class AttemptController extends AbstractController
 
         $paper = $this->attemptManager->startOrContinue($exercise, $user);
 
-        return new JsonResponse($this->paperManager->exportWithQuestions($paper));
+        return new JsonResponse($this->paperManager->export($paper));
     }
 
     /**
@@ -127,7 +127,6 @@ class AttemptController extends AbstractController
         if (!empty($errors)) {
             return new JsonResponse($errors, 422);
         } else {
-            // TODO : return the solution for formative exercises
             return new JsonResponse(null, 204);
         }
     }

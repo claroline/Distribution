@@ -4,7 +4,6 @@ import {actions as quizActions} from './../actions'
 import {VIEW_PLAYER} from './../enums'
 import {normalize} from './normalizer'
 
-export const ITEMS_LOAD     = 'ITEMS_LOAD'
 export const ATTEMPT_START  = 'ATTEMPT_START'
 export const ATTEMPT_FINISH = 'ATTEMPT_FINISH'
 
@@ -16,8 +15,6 @@ export const CURRENT_STEP_CHANGE = 'CURRENT_STEP_CHANGE'
 
 export const actions = {}
 
-actions.loadItems = makeActionCreator(ITEMS_LOAD, 'items')
-
 actions.playQuiz = (quizId) => {
   return function (dispatch) {
     return fetch(generateUrl('exercise_attempt_start', {exerciseId: quizId}), {credentials: 'include', method: 'POST'})
@@ -25,10 +22,9 @@ actions.playQuiz = (quizId) => {
       .then(json => {
         const normalized = normalize(json)
 
-        dispatch(actions.loadItems(normalized.items))
         dispatch(actions.startAttempt(normalized.paper))
         dispatch(actions.setAnswers(normalized.answers))
-        dispatch(actions.changeCurrentStep(normalized.paper.structure[0].id, 1, 1))
+        dispatch(actions.changeCurrentStep(normalized.paper.structure[0].id))
         dispatch(quizActions.updateViewMode(VIEW_PLAYER))
       })
 
@@ -41,4 +37,4 @@ actions.finishAttempt = makeActionCreator(ATTEMPT_FINISH, 'quiz')
 actions.submitAnswers = makeActionCreator(ANSWERS_SUBMIT, 'quiz', 'paper')
 actions.updateAnswer = makeActionCreator(ANSWER_UPDATE, 'questionId', 'answerData')
 actions.setAnswers = makeActionCreator(ANSWERS_SET, 'answers')
-actions.changeCurrentStep = makeActionCreator(CURRENT_STEP_CHANGE, 'id', 'number', 'tries')
+actions.changeCurrentStep = makeActionCreator(CURRENT_STEP_CHANGE, 'id')

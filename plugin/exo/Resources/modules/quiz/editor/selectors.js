@@ -4,10 +4,13 @@ import {TYPE_QUIZ, TYPE_STEP} from './../enums'
 const quiz = state => state.quiz
 const steps = state => state.steps
 const items = state => state.items
-const currentObject = state => state.currentObject
-const quizOpenPanel = state => state.openPanels[TYPE_QUIZ]
-const openStepPanels = state => state.openPanels[TYPE_STEP]
 const modal = state => state.modal
+const editor = state => state.editor
+
+const currentObject = createSelector(editor, editor => editor.currentObject)
+const openPanels = createSelector(editor, editor => editor.openPanels)
+const quizOpenPanel = createSelector(openPanels, panels => panels[TYPE_QUIZ])
+const openStepPanels = createSelector(openPanels, panels => panels[TYPE_STEP])
 
 const stepList = createSelector(
   quiz,

@@ -8,11 +8,13 @@ const published = state => state.quiz.meta.published
 
 // TODO: update when data is available
 const editable = () => true
+const hasPapers = () => true
 
 export default {
   id,
   empty,
   editable,
+  hasPapers,
   description,
   meta,
   parameters,
