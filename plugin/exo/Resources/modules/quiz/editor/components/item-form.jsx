@@ -21,15 +21,15 @@ const Metadata = props =>
         className="form-control"
         onChange={e => props.onChange('title', e.target.value)}
       />
-    </FormGroup>    
+    </FormGroup>
     <FormGroup
-      controlId={`item-${props.item.id}-info`}
-      label={tex('additional_info')}
+      controlId={`item-${props.item.id}-description`}
+      label={t('description')}
     >
       <Textarea
-        id={`item-${props.item.id}-info`}
-        content={props.item.info || ''}
-        onChange={text => props.onChange('info', text)}
+        id={`item-${props.item.id}-description`}
+        content={props.item.description || ''}
+        onChange={text => props.onChange('description', text)}
       />
     </FormGroup>
   </fieldset>
@@ -38,7 +38,7 @@ Metadata.propTypes = {
   item: T.shape({
     id: T.string.isRequired,
     title: T.string.isRequired,
-    info: T.string.isRequired
+    description: T.string.isRequired
   }).isRequired,
   onChange: T.func.isRequired
 }
