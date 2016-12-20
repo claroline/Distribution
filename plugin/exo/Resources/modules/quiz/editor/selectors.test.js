@@ -8,7 +8,7 @@ describe('Thumbnails selector', () => {
     assertEqual(select.thumbnails(fixtureState1()), [
       {
         id: '1',
-        title: 'Exercice',
+        title: 'Éxercice',
         type: TYPE_QUIZ,
         active: false
       },
