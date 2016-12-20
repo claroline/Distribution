@@ -31,7 +31,8 @@ const step = {
   description: '',
   parameters: {
     maxAttempts: 0
-  }
+  },
+  items: []
 }
 
 const item = {
