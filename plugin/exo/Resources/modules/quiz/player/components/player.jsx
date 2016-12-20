@@ -69,7 +69,16 @@ Player.propTypes = {
     title: T.string,
     description: T.string
   }),
-  items: T.array.isRequired
+  items: T.array.isRequired,
+  next: T.string,
+  previous: T.string,
+  navigateTo: T.func.isRequired,
+  finishAttempt: T.func.isRequired
+}
+
+Player.defaultProps = {
+  next: null,
+  previous: null
 }
 
 function mapStateToProps(state) {
