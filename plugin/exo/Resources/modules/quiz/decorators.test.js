@@ -225,7 +225,7 @@ describe('Decorator', () => {
           id: 'x',
           type: 'application/foo.bar+json',
           title: '',
-          info: '',
+          description: '',
           hints: [],
           feedback: '',
           score: {
