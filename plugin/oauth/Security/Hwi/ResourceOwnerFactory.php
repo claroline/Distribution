@@ -82,6 +82,7 @@ class ResourceOwnerFactory
                 'scope' => 'emailaddress',
                 'options' => [
                     'force_login' => $config->isClientForceReauthenticate(),
+                    'include_email' => true,
                 ],
             ],
             'twitter',
