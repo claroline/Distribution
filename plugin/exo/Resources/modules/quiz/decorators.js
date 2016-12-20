@@ -13,7 +13,8 @@ export function decorate(state, itemDecorators = {}) {
   // create an empty step if none
   if (newState.quiz.steps.length === 0) {
     const defaultStep = {
-      id: makeId()
+      id: makeId(),
+      items:[]
     }
     newState.steps[defaultStep.id] = defaultStep
     newState.quiz.steps = [defaultStep.id]
