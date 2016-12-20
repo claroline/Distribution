@@ -86,6 +86,7 @@ Player.propTypes = {
   }),
   updateAnswer: T.func.isRequired,
   navigateTo: T.func.isRequired,
+  submit: T.func.isRequired,
   finish: T.func.isRequired
 }
 

@@ -22,7 +22,7 @@ describe('createStore', () => {
       },
       currentStep: null,
       paper: {},
-      answers: [],
+      answers: {},
       modal: {
         type: null,
         props: {},

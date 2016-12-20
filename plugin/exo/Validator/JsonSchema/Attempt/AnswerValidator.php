@@ -61,7 +61,7 @@ class AnswerValidator extends JsonSchemaValidator
 
         // Checks the question exists
         $question = $this->om->getRepository('UJMExoBundle:Question\Question')->findOneBy([
-            'uuid' => $answer->questionId
+            'uuid' => $answer->questionId,
         ]);
         if (empty($question)) {
             $errors[] = [
