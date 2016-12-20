@@ -36,8 +36,6 @@ const step = {
 
 const item = {
   title: '',
-  description: '',
-  instruction: '',
   info: '',
   hints: [],
   feedback: '',
