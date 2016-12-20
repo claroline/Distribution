@@ -87,8 +87,8 @@ class AttemptControllerTest extends TransactionalTestCase
 
         $content = json_decode($this->client->getResponse()->getContent());
         $this->assertInternalType('object', $content);
-        $this->assertTrue(property_exists($content, 'items'));
-        $this->assertTrue(property_exists($content, 'paper'));
+        $this->assertTrue(property_exists($content, 'id'));
+        $this->assertTrue(property_exists($content, 'structure'));
     }
 
     public function testContinueAttempt()
