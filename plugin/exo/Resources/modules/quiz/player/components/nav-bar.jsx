@@ -1,63 +1,62 @@
-import React, { Component } from 'react'
+import React from 'react'
 
 const T = React.PropTypes
 
-export class PlayerNav extends Component {
-  renderPreviousButton() {
-    return (
-      <button className="btn btn-default" onClick={() => this.props.navigateTo(this.props.previous)}>
-        <span className="fa fa-fw fa-chevron-left"></span>
-        Previous
-      </button>
-    )
-  }
+const PreviousButton = props =>
+  <button className="btn btn-previous btn-default" onClick={props.onClick}>
+    <span className="fa fa-fw fa-chevron-left"></span>
+    Previous
+  </button>
 
-  renderNextButton() {
-    return (
-      <button className="btn btn-default" onClick={() => this.props.navigateTo(this.props.next)}>
-        Next
-        <span className="fa fa-fw fa-chevron-right"></span>
-      </button>
-    )
-  }
-
-  renderSubmitButton() {
-    return (
-      <button className="btn btn-success" onClick={this.props.submitAnswers}>
-        <span className="fa fa-fw fa-check"></span>
-        Validate
-      </button>
-    )
-  }
-
-  renderFinishButton() {
-    return (
-      <button className="btn btn-primary" onClick={this.props.finishAttempt}>
-        <span className="fa fa-fw fa-sign-out"></span>
-        Finish
-      </button>
-    )
-  }
-
-  render() {
-    return (
-      <nav className="player-nav">
-        <div className="backward">
-          {this.props.previous &&
-            this.renderPreviousButton()
-          }
-        </div>
-
-        <div className="forward">
-          {this.props.next ?
-            this.renderNextButton() :
-            this.renderFinishButton()
-          }
-        </div>
-      </nav>
-    )
-  }
+PreviousButton.propTypes = {
+  onClick: T.func.isRequired
 }
+
+const NextButton = props =>
+  <button className="btn btn-next btn-default" onClick={props.onClick}>
+    Next
+    <span className="fa fa-fw fa-chevron-right"></span>
+  </button>
+
+NextButton.propTypes = {
+  onClick: T.func.isRequired
+}
+
+const SubmitButton = props =>
+  <button className="btn btn-submit btn-success" onClick={props.onClick}>
+    <span className="fa fa-fw fa-check"></span>
+    Validate
+  </button>
+
+SubmitButton.propTypes = {
+  onClick: T.func.isRequired
+}
+
+const FinishButton = props =>
+  <button className="btn btn-primary" onClick={props.onClick}>
+    <span className="fa fa-fw fa-sign-out"></span>
+    Finish
+  </button>
+
+FinishButton.propTypes = {
+  onClick: T.func.isRequired
+}
+
+const PlayerNav = props =>
+  <nav className="player-nav">
+    <div className="backward">
+      {props.previous &&
+      <PreviousButton onClick={() => props.navigateTo(props.previous)} />
+      }
+    </div>
+
+    <div className="forward">
+      {props.next ?
+        <NextButton onClick={() => props.navigateTo(props.next)} /> :
+        <FinishButton onClick={props.finishAttempt} />
+      }
+    </div>
+  </nav>
 
 PlayerNav.propTypes = {
   previous: T.string,
@@ -71,3 +70,5 @@ PlayerNav.defaultProps = {
   previous: null,
   next: null
 }
+
+export {PlayerNav}
