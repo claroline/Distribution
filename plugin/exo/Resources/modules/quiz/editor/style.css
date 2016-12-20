@@ -59,6 +59,9 @@
 .thumbnail-box .thumbnail a {
   color: #777;
   text-decoration: none;
+  /* required by text-overflow */
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .thumbnail-box .thumbnail.active {
@@ -82,6 +85,7 @@
   flex-direction: column;
   justify-content: center;
   outline: 0;
+  text-overflow: ellipsis;
 }
 
 .thumbnail-box .thumbnail:hover {

@@ -1,5 +1,7 @@
 import {createSelector} from 'reselect'
 import {TYPE_QUIZ, TYPE_STEP} from './../enums'
+import {t} from './../../utils/translate'
+import {makeThumbnailStepTitle} from './../../utils/utils'
 
 const quiz = state => state.quiz
 const steps = state => state.steps
@@ -21,7 +23,7 @@ const quizThumbnail = createSelector(
   (quiz, current) => {
     return {
       id: quiz.id,
-      title: 'Exercice',
+      title: t('Éxercice'),
       type: TYPE_QUIZ,
       active: quiz.id === current.id && current.type === TYPE_QUIZ
     }
@@ -34,7 +36,7 @@ const stepThumbnails = createSelector(
   (steps, current) => steps.map((step, index) => {
     return {
       id: step.id,
-      title: `Étape ${index + 1}`,
+      title: step.title || `${t('Étape')} ${index + 1}`,
       type: TYPE_STEP,
       active: step.id === current.id && current.type === TYPE_STEP
     }
