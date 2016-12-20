@@ -113,9 +113,11 @@ function fixtureState1() {
       }
     },
     items: {},
-    currentObject: {
-      id: 'b',
-      type: TYPE_STEP
+    editor: {
+      currentObject: {
+        id: 'b',
+        type: TYPE_STEP
+      }
     }
   })
 }
@@ -137,9 +139,11 @@ function fixtureState2() {
       }
     },
     items: {},
-    currentObject: {
-      id: '1',
-      type: TYPE_QUIZ
+    editor: {
+      currentObject: {
+        id: '1',
+        type: TYPE_QUIZ
+      }
     }
   })
 }
@@ -169,37 +173,43 @@ function fixtureState3() {
         type: 'text/html'
       }
     },
-    currentObject: {
-      id: 'b',
-      type: TYPE_STEP
+    editor: {
+      currentObject: {
+        id: 'b',
+        type: TYPE_STEP
+      }
     }
   })
 }
 
 function fixtureState4() {
   return freeze({
-    currentObject: {
-      id: 'a',
-      type: TYPE_QUIZ
-    },
-    openPanels: {
-      [TYPE_QUIZ]: 'foo',
-      [TYPE_STEP]: {}
+    editor: {
+      currentObject: {
+        id: 'a',
+        type: TYPE_QUIZ
+      },
+      openPanels: {
+        [TYPE_QUIZ]: 'foo',
+        [TYPE_STEP]: {}
+      }
     }
   })
 }
 
 function fixtureState5() {
   return freeze({
-    currentObject: {
-      id: 'b',
-      type: TYPE_STEP
-    },
-    openPanels: {
-      [TYPE_QUIZ]: false,
-      [TYPE_STEP]: {
-        'a': 'foo',
-        'b': 'bar'
+    editor: {
+      currentObject: {
+        id: 'b',
+        type: TYPE_STEP
+      },
+      openPanels: {
+        [TYPE_QUIZ]: false,
+        [TYPE_STEP]: {
+          'a': 'foo',
+          'b': 'bar'
+        }
       }
     }
   })
@@ -217,9 +227,11 @@ function fixtureState6() {
         items: []
       }
     },
-    currentObject: {
-      id: 'a',
-      type: TYPE_STEP
+    editor: {
+      currentObject: {
+        id: 'a',
+        type: TYPE_STEP
+      }
     }
   })
 }
@@ -241,9 +253,11 @@ function fixtureState7() {
       }
     },
     items: {},
-    currentObject: {
-      id: 'a',
-      type: TYPE_STEP
+    editor: {
+      currentObject: {
+        id: 'a',
+        type: TYPE_STEP
+      }
     }
   })
 }
@@ -265,9 +279,11 @@ function fixtureState8() {
       }
     },
     items: {},
-    currentObject: {
-      id: 'b',
-      type: TYPE_STEP
+    editor: {
+      currentObject: {
+        id: 'b',
+        type: TYPE_STEP
+      }
     }
   })
 }

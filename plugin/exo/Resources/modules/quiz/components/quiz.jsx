@@ -6,11 +6,17 @@ import {TopBar} from './top-bar.jsx'
 import {Overview} from './../overview/overview.jsx'
 import Player from './../player/components/player.jsx'
 import {Editor} from './../editor/components/editor.jsx'
+import {Papers} from './../papers/components/papers.jsx'
 import select from './../selectors'
 import {actions as editorActions} from './../editor/actions'
 import {actions as playerActions} from './../player/actions'
 import {actions} from './../actions'
-import {VIEW_OVERVIEW, VIEW_PLAYER, VIEW_EDITOR} from './../enums'
+import {
+  VIEW_OVERVIEW,
+  VIEW_PLAYER,
+  VIEW_EDITOR,
+  VIEW_PAPERS
+} from './../enums'
 
 let Quiz = props =>
   <div>
@@ -34,14 +40,17 @@ Quiz.propTypes = {
 function viewComponent(view) {
   switch (view) {
     case VIEW_EDITOR:
-      return <Editor />
+      return <Editor/>
 
     case VIEW_PLAYER:
-      return <Player />
+      return <Player/>
+
+    case VIEW_PAPERS:
+      return <Papers/>
 
     case VIEW_OVERVIEW:
     default:
-      return <Overview />
+      return <Overview/>
   }
 }
 
@@ -52,7 +61,8 @@ function mapStateToProps(state) {
     viewMode: state.viewMode,
     editable: select.editable(state),
     empty: select.empty(state),
-    published: select.published(state)
+    published: select.published(state),
+    hasPapers: select.hasPapers(state)
   }
 }
 

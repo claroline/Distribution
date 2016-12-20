@@ -1,3 +1,4 @@
+import {combineReducers} from 'redux'
 import merge from 'lodash/merge'
 import set from 'lodash/set'
 import sanitize from './sanitizers'
@@ -279,6 +280,11 @@ function reduceOpenPanels(panels = initialPanelState(), action = {}) {
   return panels
 }
 
+const reduceEditor = combineReducers({
+  currentObject: reduceCurrentObject,
+  openPanels: reduceOpenPanels
+})
+
 const initialModalState = {
   type: null,
   props: {},
@@ -307,5 +313,6 @@ export const reducers = {
   items: reduceItems,
   currentObject: reduceCurrentObject,
   openPanels: reduceOpenPanels,
+  editor: reduceEditor,
   modal: reduceModal
 }
