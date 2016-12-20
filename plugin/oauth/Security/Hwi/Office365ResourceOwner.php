@@ -28,7 +28,7 @@ class Office365ResourceOwner extends GenericOAuth2ResourceOwner
         'identifier' => 'id',
         'email' => 'mail',
         'realname' => 'displayName',
-        'nickname' => 'displayName',
+        'nickname' => 'userPrincipalName',
         'firstname' => 'givenName',
         'lastname' => 'surname',
     ];
@@ -58,8 +58,9 @@ class Office365ResourceOwner extends GenericOAuth2ResourceOwner
         // By default to microsoft graph, not AD graph
         $this->resource = 'https://graph.microsoft.com';
         $this->infosUrl = $this->resource.'/v1.0/me';
-        // If domain is
+        // If domain is set
         if (!empty($tenantDomain)) {
+            $this->paths['identifier'] = 'objectId';
             $this->resource = 'https://graph.windows.net';
             $this->infosUrl = "{$this->resource}/{$tenantDomain}/me".
                 "?api-version={$this->getApiVersion($apiVersion)}";

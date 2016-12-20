@@ -71,11 +71,9 @@ class OauthUserProvider implements OAuthAwareUserProviderInterface, UserProvider
      */
     public function loadUserByOAuthUserResponse(UserResponseInterface $response)
     {
-        $content = $response->getResponse();
         $resourceOwner = $response->getResourceOwner();
-        $contentId = !empty($content['id']) ? $content['id'] : $content['objectId'];
         try {
-            $user = $this->loadUserByServiceAndId($resourceOwner->getName(), $contentId);
+            $user = $this->loadUserByServiceAndId($resourceOwner->getName(), $response->getUsername());
             $this->saveResourceOwnerToken($resourceOwner, $response->getAccessToken());
 
             return $user;
@@ -110,7 +108,7 @@ class OauthUserProvider implements OAuthAwareUserProviderInterface, UserProvider
 
             $resourceOwnerArray = [
                 'name' => $resourceOwner->getName(),
-                'id' => $contentId,
+                'id' => $response->getUsername(),
             ];
             $this->session->set('icap.oauth.resource_owner', $resourceOwnerArray);
             $this->session->set('icap.oauth.resource_owner_token', $resourceOwner);
