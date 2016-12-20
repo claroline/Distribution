@@ -3,11 +3,21 @@ import cloneDeep from 'lodash/cloneDeep'
 import defaultsDeep from 'lodash/defaultsDeep'
 import defaults from './defaults'
 import {TYPE_QUIZ} from './enums'
+import {makeId} from './../utils/utils'
 
 // augment normalized quiz data with editor state attributes and default values
 // (can be passed an array of sub-decorators for each item mime type)
 export function decorate(state, itemDecorators = {}) {
   const newState = cloneDeep(state)
+
+  // create an empty step if none
+  if (newState.quiz.steps.length === 0) {
+    const defaultStep = {
+      id: makeId()
+    }
+    newState.steps[defaultStep.id] = defaultStep
+    newState.quiz.steps = [defaultStep.id]
+  }
 
   return Object.assign(newState, {
     quiz: defaultsDeep(newState.quiz, defaults.quiz),
