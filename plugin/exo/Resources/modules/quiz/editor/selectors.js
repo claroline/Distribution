@@ -1,7 +1,6 @@
 import {createSelector} from 'reselect'
 import {TYPE_QUIZ, TYPE_STEP} from './../enums'
 import {t} from './../../utils/translate'
-import {makeThumbnailStepTitle} from './../../utils/utils'
 
 const quiz = state => state.quiz
 const steps = state => state.steps
