@@ -7,9 +7,7 @@ export const Open = (props) =>
     <Textarea
       id={`open-${props.item.id}-data`}
       content={props.answer}
-      onChange={(value) => props.onChange(
-        actions.updateAnswer(value)
-      )}
+      onChange={(value) => props.onChange(value)}
     />
   </div>
 

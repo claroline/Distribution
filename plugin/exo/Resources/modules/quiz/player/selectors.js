@@ -1,5 +1,7 @@
 export const select = {}
 
+// TODO : use reselect to compose selectors
+
 /**
  * Gets the definition of the step that is currently played.
  *
@@ -8,6 +10,23 @@ export const select = {}
  * @return {object}
  */
 select.currentStep = (state) => state.steps[state.currentStep]
+
+select.paper = (state) => state.paper
+
+/**
+ * Gets an existing answer to a question.
+ *
+ * @param {object} state
+ */
+select.currentStepAnswers = (state) => {
+  const items = select.currentStepItems(state)
+
+  return items.reduce((answerAcc, answer) => {
+    answerAcc[answer.questionId] = Object.assign({}, answer)
+
+    return answerAcc
+  }, {})
+}
 
 /**
  * Retrieves the picked items for a step.

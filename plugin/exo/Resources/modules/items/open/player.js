@@ -25,7 +25,6 @@ function reduce(item = {}, action) {
   return item
 }
 
-
 function validate(item, answer) {
   const errors = {}
 

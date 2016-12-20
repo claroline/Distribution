@@ -51,9 +51,17 @@ const hint = {
   penalty: 0
 }
 
+const answer = {
+  tries: 1,
+  score: null,
+  usedHints: [],
+  data: null
+}
+
 export default {
   quiz,
   step,
   item,
-  hint
+  hint,
+  answer
 }

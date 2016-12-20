@@ -41,13 +41,11 @@ class Player extends Component {
             expanded={true}
           >
             <ItemPlayer item={item}>
-              {React.createElement(
-                getDefinition(item.type).player.component,
-                {
-                  item: item,
-                  onChange: () => true
-                }
-              )}
+              {React.createElement(getDefinition(item.type).player.component, {
+                item: item,
+                answer: this.props.answers[item.id] ? this.props.answers[item.id].data : null,
+                onChange: (answerData) => this.props.updateAnswer(item.id, answerData)
+              })}
             </ItemPlayer>
           </Panel>
         ))}
@@ -55,8 +53,9 @@ class Player extends Component {
         <PlayerNav
           previous={this.props.previous}
           next={this.props.next}
-          navigateTo={this.props.navigateTo}
-          finishAttempt={this.props.finishAttempt}
+          navigateTo={(stepId) => this.props.navigateTo(this.props.quizId, this.props.paperId, stepId, this.props.answers)}
+          finish={() => this.props.finish(this.props.quizId, this.props.paperId, this.props.answers)}
+          submit={() => this.props.submit(this.props.quizId, this.props.paperId, this.props.answers)}
         />
       </div>
     )
@@ -70,10 +69,16 @@ Player.propTypes = {
     description: T.string
   }),
   items: T.array.isRequired,
+  answers: T.object.isRequired,
+  paper: T.shape({
+    id: T.string.isRequired,
+    number: T.number.isRequired
+  }).isRequired,
   next: T.string,
   previous: T.string,
+  updateAnswer: T.func.isRequired,
   navigateTo: T.func.isRequired,
-  finishAttempt: T.func.isRequired
+  finish: T.func.isRequired
 }
 
 Player.defaultProps = {
@@ -86,6 +91,8 @@ function mapStateToProps(state) {
     number: select.currentStepNumber(state),
     step: select.currentStep(state),
     items: select.currentStepItems(state),
+    paper: select.paper(state),
+    answers: select.currentStepAnswers(state),
     next: select.nextStep(state),
     previous: select.previousStep(state)
   }
@@ -93,11 +100,24 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    navigateTo(stepId) {
-      dispatch(playerActions.changeCurrentStep(stepId))
+    updateAnswer(questionId, answerData) {
+      dispatch(playerActions.updateAnswer(questionId, answerData))
     },
-    finishAttempt() {
-      dispatch(quizActions.updateViewMode(VIEW_OVERVIEW))
+    navigateTo(quizId, paperId, stepId, currentStepAnswers) {
+      // Submit answers
+      dispatch(playerActions.submitQuiz(quizId, paperId, currentStepAnswers, (dispatch) => {
+        dispatch(playerActions.navigateTo(stepId))
+      }))
+    },
+    submit(quizId, paperId, answers) {
+      dispatch(playerActions.submitQuiz(quizId, paperId, answers))
+    },
+    finish(quizId, paperId, currentStepAnswers) {
+      // Submit answers
+      dispatch(playerActions.submitQuiz(quizId, paperId, currentStepAnswers, (dispatch) => {
+        // Close player
+        dispatch(quizActions.updateViewMode(VIEW_OVERVIEW))
+      }))
     }
   }
 }
