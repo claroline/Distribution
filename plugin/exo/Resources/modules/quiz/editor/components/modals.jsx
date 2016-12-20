@@ -4,6 +4,7 @@ import classes from 'classnames'
 import {listItemMimeTypes, getDefinition, listItemNames as listTypes} from './../../../items/item-types'
 import {t, tex, trans} from './../../../utils/translate'
 import {generateUrl} from './../../../utils/routing'
+import {Icon as ItemIcon} from './../../../items/components/icon.jsx'
 
 export const MODAL_ADD_ITEM = 'ADD_ITEM'
 export const MODAL_CONFIRM = 'CONFIRM'
@@ -86,9 +87,7 @@ const AddItemModal = props =>
             role="option"
             onClick={() => props.handleSelect(type)}
           >
-            <svg className="icon-large">
-              <use xlinkHref={`#icon-${getDefinition(type).name}`}/>
-            </svg>
+            <ItemIcon name={getDefinition(type).name} size="lg"/>
             <div className="modal-item-desc">
               <span className="modal-item-name">
                 {trans(getDefinition(type).name, {}, 'question_types')}
@@ -106,7 +105,6 @@ const AddItemModal = props =>
 AddItemModal.propTypes = {
   handleSelect: T.func.isRequired
 }
-
 
 class ImportItemsModal extends Component {
   constructor(props){

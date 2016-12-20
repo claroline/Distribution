@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { DropdownButton, MenuItem } from 'react-bootstrap'
-import ItemIcon from './../../items/common/item-icon.jsx'
+import {Icon as ItemIcon} from './../../items/components/icon.jsx'
 import {getDefinition} from './../../items/item-types'
 
 const T = React.PropTypes

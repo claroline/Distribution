@@ -8,7 +8,7 @@ import {makeSortable, SORT_VERTICAL} from './../../../utils/sortable'
 import {getDefinition} from './../../../items/item-types'
 import {StepForm} from './step-form.jsx'
 import {ItemForm} from './item-form.jsx'
-import ItemIcon from './../../../items/common/item-icon.jsx'
+import {Icon as ItemIcon} from './../../../items/components/icon.jsx'
 import {MODAL_DELETE_CONFIRM, MODAL_ADD_ITEM, MODAL_IMPORT_ITEMS} from './modals.jsx'
 
 const ParametersHeader = props =>
