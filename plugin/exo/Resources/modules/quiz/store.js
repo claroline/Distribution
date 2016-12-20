@@ -30,7 +30,7 @@ const reducerForEditorMode = combineReducers({
 const reducerForPlayerMode = combineReducers({
   quiz: editorReducers.quiz,
   steps: editorReducers.steps,
-  items: playerReducers.items,
+  items: editorReducers.items,
   paper: playerReducers.paper,
   answers: playerReducers.answers,
   currentStep: playerReducers.currentStep,

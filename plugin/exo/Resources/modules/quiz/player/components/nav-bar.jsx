@@ -4,7 +4,7 @@ const T = React.PropTypes
 
 const PreviousButton = props =>
   <button className="btn btn-previous btn-default" onClick={props.onClick}>
-    <span className="fa fa-fw fa-chevron-left"></span>
+    <span className="fa fa-fw fa-angle-double-left"></span>
     Previous
   </button>
 
@@ -15,7 +15,7 @@ PreviousButton.propTypes = {
 const NextButton = props =>
   <button className="btn btn-next btn-default" onClick={props.onClick}>
     Next
-    <span className="fa fa-fw fa-chevron-right"></span>
+    <span className="fa fa-fw fa-angle-double-right"></span>
   </button>
 
 NextButton.propTypes = {

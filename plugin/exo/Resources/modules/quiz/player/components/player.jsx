@@ -6,7 +6,10 @@ import {tex} from './../../../utils/translate'
 import {getDefinition} from './../../../items/item-types'
 import {select} from './../selectors'
 
-import {actions} from './../actions'
+import {actions as playerActions} from './../actions'
+import {actions as quizActions} from './../../actions'
+import {VIEW_OVERVIEW} from './../../enums'
+
 import {Player as ItemPlayer} from './../../../items/components/player.jsx'
 import {PlayerNav} from './nav-bar.jsx'
 
@@ -18,7 +21,7 @@ class Player extends Component {
       <div className="quiz-player">
         <h2 className="h4 step-title">
           {tex('step')}&nbsp;{this.props.number}
-          {this.props.step.title && <small>{this.props.step.title}</small>}
+          {this.props.step.title && <small>&nbsp;{this.props.step.title}</small>}
         </h2>
 
         {this.props.step.description &&
@@ -82,10 +85,10 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     navigateTo(stepId) {
-      dispatch(actions.changeCurrentStep(stepId))
+      dispatch(playerActions.changeCurrentStep(stepId))
     },
     finishAttempt() {
-
+      dispatch(quizActions.updateViewMode(VIEW_OVERVIEW))
     }
   }
 }

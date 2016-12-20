@@ -1,8 +1,6 @@
 import {makeReducer} from './../../utils/reducers'
-import {getDefinition} from './../../items/item-types'
 
 import {
-  ITEMS_LOAD,
   ATTEMPT_START,
   ATTEMPT_FINISH,
   ANSWERS_SET,
@@ -26,26 +24,11 @@ function setAnswers(state, action) {
   return action.answers
 }
 
-function loadItems(state, action) {
-  const items = {}
-  
-  for (let item in action.items) {
-    if (action.items.hasOwnProperty(item)) {
-      items[item] = getDefinition(action.items[item].type).player.decorate(action.items[item])
-    }
-  }
-
-  return items
-}
-
 function changeCurrentStep(state, action) {
   return action.id
 }
 
 export const reducers = {
-  items: makeReducer({}, {
-    [ITEMS_LOAD]: loadItems
-  }),
   paper: makeReducer({}, {
     [ATTEMPT_START]: startAttempt,
     [ATTEMPT_FINISH]: finishAttempt,
