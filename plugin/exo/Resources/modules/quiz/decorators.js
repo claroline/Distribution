@@ -10,8 +10,8 @@ import {makeId} from './../utils/utils'
 export function decorate(state, itemDecorators = {}) {
   const newState = cloneDeep(state)
 
-  // create en empty step if none
-  if(Object.keys(newState.quiz.steps).length === 0){
+  // create an empty step if none
+  if (newState.quiz.steps.length === 0) {
     const defaultStep = {
       id: makeId()
     }
