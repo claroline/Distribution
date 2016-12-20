@@ -152,9 +152,11 @@ describe('Decorator', () => {
           }
         }
       },
-      currentObject: {
-        id: state.quiz.id,
-        type: TYPE_QUIZ
+      editor: {
+        currentObject: {
+          id: state.quiz.id,
+          type: TYPE_QUIZ
+        }
       }
     })
   })
@@ -234,9 +236,11 @@ describe('Decorator', () => {
           _foo: 'x-bar'
         }
       },
-      currentObject: {
-        id: state.quiz.id,
-        type: TYPE_QUIZ
+      editor: {
+        currentObject: {
+          id: state.quiz.id,
+          type: TYPE_QUIZ
+        }
       }
     })
   })

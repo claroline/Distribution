@@ -19,7 +19,7 @@ select.currentStep = (state) => state.steps[state.currentStep]
 select.currentStepItems = (state) => {
   const stepStructure = state.paper.structure.find((step) => step.id === state.currentStep)
 
-  return stepStructure.items.map((itemId) => state.items[itemId])
+  return stepStructure.items.map(itemId => state.items[itemId])
 }
 
 /**

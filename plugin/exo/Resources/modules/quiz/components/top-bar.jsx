@@ -7,7 +7,11 @@ import MenuItem from 'react-bootstrap/lib/MenuItem'
 
 import {t, tex} from './../../utils/translate'
 import {generateUrl} from './../../utils/routing'
-import {VIEW_OVERVIEW, VIEW_EDITOR} from './../enums'
+import {
+  VIEW_OVERVIEW,
+  VIEW_EDITOR,
+  VIEW_PAPERS
+} from './../enums'
 
 export const TopBar = props =>
   <Navbar collapseOnSelect>
@@ -69,29 +73,33 @@ export const TopBar = props =>
             {tex('exercise_try')}
           </NavItem>
         }
-        <NavDropdown
-          id="results-menu"
-          eventKey={6}
-          title={
-            <span>
-              <span className="fa fa-fw fa-check-square-o"></span>
-              {tex('result')}
-            </span>
-          }
-        >
-          <MenuItem eventKey={6.1}>
-            <span className="fa fa-fw fa-list"></span>
-            {tex('results_list')}
-          </MenuItem>
-          <MenuItem eventKey={6.2} href={generateUrl('ujm_exercise_docimology', {id: props.id})}>
-            <span className="fa fa-fw fa-bar-chart"></span>
-            {tex('docimology')}
-          </MenuItem>
-          <MenuItem eventKey={6.3}>
-            <span className="fa fa-fw fa-table"></span>
-            {tex('export_csv_results')}
-          </MenuItem>
-        </NavDropdown>
+        {props.hasPapers &&
+          <NavDropdown
+            id="results-menu"
+            eventKey={6}
+            title={
+              <span>
+                <span className="fa fa-fw fa-check-square-o"></span>
+                {tex('result')}
+              </span>
+            }
+          >
+            <MenuItem eventKey={6.1} onClick={() => {
+              props.updateViewMode(VIEW_PAPERS)
+            }}>
+              <span className="fa fa-fw fa-list"></span>
+              {tex('results_list')}
+            </MenuItem>
+            <MenuItem eventKey={6.2} href={generateUrl('ujm_exercise_docimology', {id: props.id})}>
+              <span className="fa fa-fw fa-bar-chart"></span>
+              {tex('docimology')}
+            </MenuItem>
+            <MenuItem eventKey={6.3}>
+              <span className="fa fa-fw fa-table"></span>
+              {tex('export_csv_results')}
+            </MenuItem>
+          </NavDropdown>
+        }
         <NavItem eventKey={7} href="#" onClick={() => {
           props.saveQuiz()
         }}>
@@ -106,6 +114,7 @@ TopBar.propTypes = {
   id: T.string.isRequired,
   empty: T.bool.isRequired,
   published: T.bool.isRequired,
+  hasPapers: T.bool.isRequired,
   updateViewMode: T.func.isRequired,
   playQuiz: T.func.isRequired,
   saveQuiz: T.func.isRequired

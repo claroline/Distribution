@@ -13,11 +13,16 @@ describe('createStore', () => {
       quiz: {id: '1'},
       steps: {},
       items: {},
-      currentObject: {},
-      openPanels: {
-        quiz: false,
-        step: {}
+      editor: {
+        currentObject: {},
+        openPanels: {
+          quiz: false,
+          step: {}
+        }
       },
+      currentStep: null,
+      paper: {},
+      answers: [],
       modal: {
         type: null,
         props: {},

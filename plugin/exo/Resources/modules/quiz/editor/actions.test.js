@@ -39,9 +39,11 @@ describe('#deleteStepAndItems', () => {
         '1': {id: '1', items: ['a']},
         '2': {id: '2', items: ['b', 'c']}
       },
-      currentObject: {
-        id: '2',
-        type: TYPE_STEP
+      editor: {
+        currentObject: {
+          id: '2',
+          type: TYPE_STEP
+        }
       }
     })
     const expectedActions = [

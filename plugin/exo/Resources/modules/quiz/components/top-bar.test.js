@@ -16,7 +16,15 @@ describe('<TopBar/>', () => {
     shallow(<TopBar/>)
     ensure.missingProps(
       'TopBar',
-      ['id', 'empty', 'published', 'updateViewMode', 'saveQuiz', 'playQuiz']
+      [
+        'id',
+        'empty',
+        'published',
+        'updateViewMode',
+        'saveQuiz',
+        'playQuiz',
+        'hasPapers'
+      ]
     )
   })
 
@@ -43,6 +51,7 @@ describe('<TopBar/>', () => {
         id="123"
         empty={true}
         published={false}
+        hasPapers={false}
         updateViewMode={() => {}}
         saveQuiz={() => {}}
         playQuiz={() => {}}
