@@ -2,7 +2,6 @@
   "id": "1",
   "type": "application/x.graphic+json",
   "content": "Where is Charlie ?",
-  "description":"Find Charlie in the image below...",
   "image": {
     "id": "12",
     "meta": {

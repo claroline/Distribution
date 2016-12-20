@@ -2,7 +2,6 @@
   "id": "1",
   "type": "application/x.choice+json",
   "title": "Question ?",
-  "description": null,
   "content": "",
   "score": {
     "type": "sum"

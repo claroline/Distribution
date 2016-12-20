@@ -56,13 +56,6 @@ class Question
     private $content;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $description;
-
-    /**
      * @ORM\Column(type="text", nullable=true)
      *
      * @var string
@@ -102,14 +95,7 @@ class Question
      *
      * @var string
      */
-    private $supplementary;
-
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     *
-     * @var string
-     */
-    private $specification;
+    private $description;
 
     /**
      * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Question\Category")
@@ -256,22 +242,6 @@ class Question
     public function getContent()
     {
         return $this->content;
-    }
-
-    /**
-     * @param string $description
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
     }
 
     /**
@@ -462,35 +432,19 @@ class Question
     }
 
     /**
-     * @param string $supplementary
+     * @param string $description
      */
-    public function setSupplementary($supplementary)
+    public function setDescription($description)
     {
-        $this->supplementary = $supplementary;
+        $this->description = $description;
     }
 
     /**
      * @return string
      */
-    public function getSupplementary()
+    public function getDescription()
     {
-        return $this->supplementary;
-    }
-
-    /**
-     * @param string $specification
-     */
-    public function setSpecification($specification)
-    {
-        $this->specification = $specification;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSpecification()
-    {
-        return $this->specification;
+        return $this->description;
     }
 
     /**

@@ -128,8 +128,6 @@ class QuestionSerializer extends AbstractSerializer
         if (!$this->hasOption(Transfer::MINIMAL, $options)) {
             $this->mapEntityToObject([
                 'description' => 'description',
-                'info' => 'supplementary',
-                'instruction' => 'specification',
                 'hints' => function (Question $question) use ($options) {
                     return $this->serializeHints($question, $options);
                 },
@@ -187,8 +185,6 @@ class QuestionSerializer extends AbstractSerializer
             'content' => 'content',
             'title' => 'title',
             'description' => 'description',
-            'info' => 'supplementary',
-            'instruction' => 'specification',
             'hints' => function (Question $question, \stdClass $data) use ($options) {
                 return $this->deserializeHints($question, $data->hints, $options);
             },
