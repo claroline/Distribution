@@ -6,6 +6,7 @@ import {tex} from './../../../utils/translate'
 import {getDefinition} from './../../../items/item-types'
 import {select} from './../selectors'
 
+import {actions} from './../actions'
 import {Player as ItemPlayer} from './../../../items/components/player.jsx'
 import {PlayerNav} from './nav-bar.jsx'
 
@@ -15,8 +16,8 @@ class Player extends Component {
   render() {
     return (
       <div className="quiz-player">
-        <h2 className="step-title">
-          {tex('step')}&nbsp;{this.props.current.number}
+        <h2 className="h4 step-title">
+          {tex('step')}&nbsp;{this.props.number}
           {this.props.step.title && <small>{this.props.step.title}</small>}
         </h2>
 
@@ -48,16 +49,19 @@ class Player extends Component {
           </Panel>
         ))}
 
-        <PlayerNav />
+        <PlayerNav
+          previous={this.props.previous}
+          next={this.props.next}
+          navigateTo={this.props.navigateTo}
+          finishAttempt={this.props.finishAttempt}
+        />
       </div>
     )
   }
 }
 
 Player.propTypes = {
-  current: T.shape({
-    number: T.number.isRequired
-  }).isRequired,
+  number: T.number.isRequired,
   step: T.shape({
     title: T.string,
     description: T.string
@@ -67,10 +71,23 @@ Player.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    current: state.currentStep,
+    number: select.currentStepNumber(state),
     step: select.currentStep(state),
-    items: select.currentStepItems(state)
+    items: select.currentStepItems(state),
+    next: select.nextStep(state),
+    previous: select.previousStep(state)
   }
 }
 
-export default connect(mapStateToProps)(Player)
+function mapDispatchToProps(dispatch) {
+  return {
+    navigateTo(stepId) {
+      dispatch(actions.changeCurrentStep(stepId))
+    },
+    finishAttempt() {
+
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Player)

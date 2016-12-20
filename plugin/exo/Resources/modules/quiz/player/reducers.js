@@ -39,11 +39,7 @@ function loadItems(state, action) {
 }
 
 function changeCurrentStep(state, action) {
-  return {
-    id: action.id,
-    number: action.number ? action.number : 1,
-    tries: action.tries
-  }
+  return action.id
 }
 
 export const reducers = {
@@ -58,7 +54,7 @@ export const reducers = {
   answers: makeReducer([], {
     [ANSWERS_SET]: setAnswers
   }),
-  currentStep: makeReducer({}, {
+  currentStep: makeReducer(null, {
     [CURRENT_STEP_CHANGE]: changeCurrentStep
   })
 }
