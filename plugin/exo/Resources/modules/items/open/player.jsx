@@ -1,5 +1,4 @@
 import React, {PropTypes as T} from 'react'
-import {actions} from './player'
 import {Textarea} from './../../components/form/textarea.jsx'
 
 export const Open = (props) =>

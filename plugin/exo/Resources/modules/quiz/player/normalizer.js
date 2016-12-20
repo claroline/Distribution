@@ -1,8 +1,8 @@
 // flattens raw paper data
 export function normalize(rawPaper) {
-  let answers = []
+  let answers = {}
 
-  if (rawPaper.answers) {
+  if (rawPaper.answers && 0 !== rawPaper.answers.length) {
     answers = rawPaper.answers.reduce((answerAcc, answer) => {
       answerAcc[answer.questionId] = Object.assign({}, answer)
 

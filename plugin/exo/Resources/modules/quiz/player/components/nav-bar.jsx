@@ -59,8 +59,14 @@ const PlayerNav = props =>
   </nav>
 
 PlayerNav.propTypes = {
-  previous: T.string,
-  next: T.string,
+  next: T.shape({
+    id: T.string.isRequired,
+    items: T.arrayOf.arrayOf
+  }),
+  previous: T.shape({
+    id: T.string.isRequired,
+    items: T.arrayOf.arrayOf
+  }),
   navigateTo: T.func.isRequired,
   finish: T.func.isRequired,
   submit: T.func

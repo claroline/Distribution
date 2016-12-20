@@ -4,16 +4,14 @@ import {actions as quizActions} from './../actions'
 import {VIEW_PLAYER} from './../enums'
 import {normalize} from './normalizer'
 
-export const PAPER_SET           = 'PAPER_SET'
-
-export const ANSWERS_SET         = 'ANSWERS_SET'
-export const ANSWERS_INIT        = 'ANSWERS_INIT'
-export const ANSWER_ADD          = 'ANSWER_ADD'
-export const ANSWER_UPDATE       = 'ANSWER_UPDATE'
-
-export const CURRENT_STEP_CHANGE = 'CURRENT_STEP_CHANGE'
+export const ATTEMPT_START = 'ATTEMPT_START'
+export const STEP_OPEN     = 'STEP_OPEN'
+export const ANSWER_UPDATE = 'ANSWER_UPDATE'
 
 export const actions = {}
+
+// TODO : display loader on ajax call
+// TODO : catch any error in the network call.
 
 actions.playQuiz = (quizId) => {
   return function (dispatch) {
@@ -25,14 +23,12 @@ actions.playQuiz = (quizId) => {
       .then(json => {
         const normalized = normalize(json)
 
-        dispatch(actions.setPaper(normalized.paper))
-        dispatch(actions.setAnswers(normalized.answers))
-        
-        dispatch(actions.navigateTo(normalized.paper.structure[0].id))
+        dispatch(actions.startAttempt(normalized.paper, normalized.answers))
+
+        const firstStep = normalized.paper.structure[0]
+        dispatch(actions.openStep(firstStep.id, firstStep.items))
         dispatch(quizActions.updateViewMode(VIEW_PLAYER))
       })
-
-    // TODO : catch any error in the network call.
   }
 }
 
@@ -46,53 +42,37 @@ actions.submitQuiz = (quizId, paperId, answers, nextActions) => {
       }
     }
 
-    return fetch(generateUrl('exercise_attempt_submit', {exerciseId: quizId, id: paperId}), {
-        credentials: 'include',
-        method: 'PUT',
-        body: answerRequest
-      })
-      .then(response => response.json())
-      .then(() => {
-        if (nextActions) {
-          nextActions(dispatch)
-        }
-      })
+    if (0 !== answerRequest.length) {
+      return fetch(generateUrl('exercise_attempt_submit', {exerciseId: quizId, id: paperId}), {
+          credentials: 'include',
+          method: 'PUT',
+          body: JSON.stringify(answerRequest)
+        })
+        .then(() => {
+          if (nextActions) {
+            nextActions(dispatch)
+          }
+        })
 
-    // TODO : catch any error in the network call.
+      // TODO : catch any error in the network call.
+    } else {
+      nextActions(dispatch)
+    }
   }
 }
 
-actions.finishQuiz = (quizId, paperId) => {
+actions.finishQuiz = (quizId, paperId, nextActions) => {
   return function (dispatch) {
     return fetch(generateUrl('exercise_attempt_finish', {exerciseId: quizId, id: paperId}), {
-      credentials: 'include',
-      method: 'PUT'
-    })
-      .then(response => response.json())
-      .then(json => {
-        const normalized = normalize(json)
-
-        dispatch(actions.setPaper(normalized.paper))
-        dispatch(actions.setAnswers(normalized.answers))
+        credentials: 'include',
+        method: 'PUT'
       })
-
-    // TODO : catch any error in the network call.
+      .then(() => {
+        nextActions(dispatch)
+      })
   }
 }
 
-actions.navigateTo = (step) => {
-  return function (dispatch) {
-    // Change the current step
-    dispatch(actions.changeCurrentStep(step.id))
-
-    // Initialize answers
-    dispatch(actions.initAnswers(stepId))
-  }
-}
-
-actions.setPaper = makeActionCreator(PAPER_SET, 'paper')
-actions.addAnswer = makeActionCreator(ANSWER_ADD, 'questionId', 'answerData')
+actions.startAttempt = makeActionCreator(ATTEMPT_START, 'paper', 'answers')
 actions.updateAnswer = makeActionCreator(ANSWER_UPDATE, 'questionId', 'answerData')
-actions.initAnswers = makeActionCreator(ANSWERS_INIT, 'stepId')
-actions.setAnswers = makeActionCreator(ANSWERS_SET, 'answers')
-actions.changeCurrentStep = makeActionCreator(CURRENT_STEP_CHANGE, 'id')
+actions.openStep = makeActionCreator(STEP_OPEN, 'id', 'items')

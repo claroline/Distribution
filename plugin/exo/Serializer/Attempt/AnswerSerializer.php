@@ -63,7 +63,7 @@ class AnswerSerializer extends AbstractSerializer
             'questionId' => function (Answer $answer) {
                 return $answer->getQuestion()->getUuid();
             },
-            'tries' => 'nbTries',
+            'tries' => 'tries',
             'data' => function (Answer $answer) {
                 return !empty($answer->getData()) ? json_decode($answer->getData()) : null;
             },

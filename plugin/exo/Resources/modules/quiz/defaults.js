@@ -53,9 +53,8 @@ const hint = {
 
 const answer = {
   tries: 1,
-  score: null,
   usedHints: [],
-  data: null
+  data: undefined
 }
 
 export default {

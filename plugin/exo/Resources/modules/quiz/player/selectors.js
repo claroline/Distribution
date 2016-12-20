@@ -20,9 +20,9 @@ select.paper = (state) => state.paper
  */
 select.currentStepAnswers = (state) => {
   const items = select.currentStepItems(state)
-
-  return items.reduce((answerAcc, answer) => {
-    answerAcc[answer.questionId] = Object.assign({}, answer)
+  
+  return items.reduce((answerAcc, item) => {
+    answerAcc[item.id] = Object.assign({}, state.answers[item.id])
 
     return answerAcc
   }, {})
@@ -41,23 +41,6 @@ select.currentStepItems = (state) => {
   return stepStructure.items.map(itemId => state.items[itemId])
 }
 
-/**
- * Retrieves the next step to play (based on the paper structure).
- *
- * @param state
- */
-select.previousStep = (state) => {
-  let previous = null
-
-  const currentStep = state.paper.structure.find((step) => step.id === state.currentStep)
-  const order = state.paper.structure.indexOf(currentStep)
-  if (0 <= order - 1 && state.paper.structure[order - 1]) {
-    previous = state.paper.structure[order - 1].id
-  }
-
-  return previous
-}
-
 select.currentStepNumber = (state) => {
   const currentStep = state.paper.structure.find((step) => step.id === state.currentStep)
 
@@ -65,17 +48,34 @@ select.currentStepNumber = (state) => {
 }
 
 /**
+ * Retrieves the next step to play (based on the paper structure).
+ *
+ * @param state
+ */
+select.previous = (state) => {
+  let previous = null
+
+  const currentStep = state.paper.structure.find((step) => step.id === state.currentStep)
+  const order = state.paper.structure.indexOf(currentStep)
+  if (0 <= order - 1 && state.paper.structure[order - 1]) {
+    previous = state.paper.structure[order - 1]
+  }
+
+  return previous
+}
+
+/**
  * Retrieves the previous played step (based on the paper structure).
  *
  * @param state
  */
-select.nextStep = (state) => {
+select.next = (state) => {
   let next = null
 
   const currentStep = state.paper.structure.find((step) => step.id === state.currentStep)
   const order = state.paper.structure.indexOf(currentStep)
   if (state.paper.structure.length > order + 1 && state.paper.structure[order + 1]) {
-    next = state.paper.structure[order + 1].id
+    next = state.paper.structure[order + 1]
   }
 
   return next
