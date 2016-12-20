@@ -10,11 +10,14 @@ import {makeId} from './../utils/utils'
 export function decorate(state, itemDecorators = {}) {
   const newState = cloneDeep(state)
 
-  const defaultStep = {
-    id: makeId()
+  // create en empty step if none
+  if(Object.keys(newState.quiz.steps).length === 0){
+    const defaultStep = {
+      id: makeId()
+    }
+    newState.steps[defaultStep.id] = defaultStep
+    newState.quiz.steps = [defaultStep.id]
   }
-  newState.steps[defaultStep.id] = defaultStep
-  newState.quiz.steps = [defaultStep.id]
 
   return Object.assign(newState, {
     quiz: defaultsDeep(newState.quiz, defaults.quiz),
