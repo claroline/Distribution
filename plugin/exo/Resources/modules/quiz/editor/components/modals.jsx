@@ -134,10 +134,6 @@ class ImportItemsModal extends Component {
     this.setState({selected: actual})
   }
 
-  componentDidMount() {
-    this.getQuestions()
-  }
-
   getQuestions(){
     const url = generateUrl('question_list')
     const params = {
@@ -170,13 +166,16 @@ class ImportItemsModal extends Component {
   render(){
     return(
       <BaseModal {...this.props} className="import-items-modal">
-
         <Modal.Body>
           <div className="form-group">
-            <input id="searchText" placeholder={tex('search_by_title_or_content')} type="text" onChange={(e) => this.handleSearchTextChange(e.target.value)} className="form-control" />
+            <input
+              id="searchText"
+              placeholder={tex('search_by_title_or_content')}
+              type="text"
+              onChange={(e) => this.handleSearchTextChange(e.target.value)}
+              className="form-control" />
           </div>
-
-          { this.state.questions.length === 0 &&
+          { this.state.questions.length === 0 && null !== this.state.criterion && '' !== this.state.criterion &&
             <div className="text-center">
               <hr/>
               <h4>{t('no_search_results')}</h4>

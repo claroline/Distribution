@@ -1,4 +1,4 @@
-import React, {PropTypes as T} from 'react'
+import React, {Component, PropTypes as T} from 'react'
 import classes from 'classnames'
 import Panel from 'react-bootstrap/lib/Panel'
 import PanelGroup from 'react-bootstrap/lib/PanelGroup'
@@ -158,46 +158,74 @@ ItemPanel.propTypes = {
 
 ItemPanel = makeSortable(ItemPanel, 'STEP_ITEM')
 
-const StepFooter = props =>
-  <div className="step-footer">
-      <div className="btn-group ">
-        <button
-          className="btn btn-primary btn-sm dropdown-toggle"
-          type="button"
-          data-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
-          >
-          <span className="fa fa-plus"></span>
-          &nbsp;{tex('add_question')}&nbsp;
-          <span className="caret"></span>
-        </button>
-        <ul className="dropdown-menu">
-          <li>
-            <a role="button" onClick={() => props.showModal(MODAL_ADD_ITEM, {
-              title: tex('add_question_from_new'),
-              handleSelect: type => {
-                props.closeModal()
-                props.handleItemCreate(props.stepId, type)
-              }
-            })}>{tex('add_question_from_new')}</a>
-          </li>
-          <li>
-            <a role="button" onClick={() => props.showModal(MODAL_IMPORT_ITEMS, {
-              title: tex('add_question_from_existing'),
-              handleSelect: selected => {
-                props.closeModal()
-                props.handleItemsImport(props.stepId, selected)
-              }
-            })}>{tex('add_question_from_existing')}</a>
-          </li>
-        </ul>
+
+class StepFooter extends Component {
+
+  constructor(props){
+    super(props)
+    // this is required before componentDidMount. If not state is not defined...
+    this.state = {
+      currentLabel: tex('add_question_from_new'),
+      currentAction: MODAL_ADD_ITEM
+    }
+  }
+
+  handleBtnClick(action){
+    this.setState({currentLabel:action === MODAL_ADD_ITEM ? tex('add_question_from_new'):tex('add_question_from_existing'), currentAction: action})
+    if (action === MODAL_ADD_ITEM) {
+      this.props.showModal(MODAL_ADD_ITEM, {
+        title: tex('add_question_from_new'),
+        handleSelect: type => {
+          this.props.closeModal()
+          this.props.handleItemCreate(this.props.stepId, type)
+        }
+      })
+    } else if (action === MODAL_IMPORT_ITEMS) {
+      this.props.showModal(MODAL_IMPORT_ITEMS, {
+        title: tex('add_question_from_existing'),
+        handleSelect: selected => {
+          this.props.closeModal()
+          this.props.handleItemsImport(this.props.stepId, selected)
+        }
+      })
+    }
+  }
+
+  render(){
+    return (
+      <div className="step-footer">
+
+        <div className="btn-group">
+          <button type="button" onClick={() => this.handleBtnClick(this.state.currentAction)} className="btn btn-primary">{this.state.currentLabel}</button>
+          <button type="button" className="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span className="caret"></span>
+            <span className="sr-only">Toggle Dropdown</span>
+          </button>
+          <ul className="dropdown-menu">
+            { this.state.currentAction === MODAL_IMPORT_ITEMS ?
+              <li>
+                <a role="button" onClick={() => this.handleBtnClick(MODAL_ADD_ITEM)}>
+                  {tex('add_question_from_new')}
+                </a>
+              </li>
+              :
+              <li>
+                <a role="button" onClick={() => this.handleBtnClick(MODAL_IMPORT_ITEMS)}>
+                  {tex('add_question_from_existing')}
+                </a>
+              </li>
+            }
+          </ul>
+        </div>
       </div>
-  </div>
+    )
+  }
+}
 
 StepFooter.propTypes = {
   stepId: T.string.isRequired,
   showModal: T.func.isRequired,
+  closeModal: T.func.isRequired,
   handleItemCreate: T.func.isRequired,
   handleItemsImport: T.func.isRequired
 }
