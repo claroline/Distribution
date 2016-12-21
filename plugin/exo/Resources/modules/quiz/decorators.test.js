@@ -107,7 +107,7 @@ describe('Decorator', () => {
           id: 'x',
           type: 'foo/bar',
           title: '',
-          info: '',
+          description: '',
           hints: [
             {
               value: 'Foo',
@@ -128,7 +128,7 @@ describe('Decorator', () => {
         y: {
           id: 'y',
           title: '',
-          info: '',
+          description: '',
           hints: [],
           feedback: '',
           type: 'bar/quz',
@@ -142,7 +142,7 @@ describe('Decorator', () => {
           id: 'z',
           type: 'text/html',
           title: 'Item Z',
-          info: '',
+          description: '',
           hints: [],
           feedback: '',
           score: {
@@ -225,7 +225,7 @@ describe('Decorator', () => {
           id: 'x',
           type: 'application/foo.bar+json',
           title: '',
-          info: '',
+          description: '',
           hints: [],
           feedback: '',
           score: {
