@@ -134,10 +134,6 @@ class ImportItemsModal extends Component {
     this.setState({selected: actual})
   }
 
-  componentDidMount() {
-    this.getQuestions()
-  }
-
   getQuestions(){
     const url = generateUrl('question_list')
     const params = {
@@ -179,7 +175,7 @@ class ImportItemsModal extends Component {
           { this.state.questions.length === 0 &&
             <div className="text-center">
               <hr/>
-              <h4>{t('no_search_results')}</h4>
+              <h4>{tex('search_question_instructions')}</h4>
             </div>
           }
         </Modal.Body>
