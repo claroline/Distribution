@@ -11,10 +11,8 @@ const title = state => state.quiz.title
 const meta = state => state.quiz.meta
 const published = state => state.quiz.meta.published
 const viewMode = state => state.viewMode
-
-// TODO: update when data is available
-const editable = () => true
-const hasPapers = () => true
+const editable = state => state.quiz.meta.editable
+const hasPapers = state => state.quiz.meta.paperCount > 0
 
 export default {
   id,

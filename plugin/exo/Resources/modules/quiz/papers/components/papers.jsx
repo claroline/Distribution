@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const Results = () =>
+export const Papers = () =>
   <div>
-    RESULTS
+    Papers
   </div>

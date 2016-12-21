@@ -36,29 +36,30 @@ class ExerciseController extends Controller
         $this->assertHasPermission('OPEN', $exercise);
 
         $nbUserPapers = 0;
+
         if ($user instanceof User) {
             $nbUserPapers = $this->container->get('ujm_exo.manager.paper')->countUserFinishedPapers($exercise, $user);
         }
 
-        // TODO : no need to count the $nbPapers for regular Users as it's only for admin purpose (we maybe need to put the call in Angular ?)
+        // TODO : no need to count the $nbPapers for regular users as it's only for admins
         $nbPapers = $this->container->get('ujm_exo.manager.paper')->countExercisePapers($exercise);
-
         $isAdmin = $this->isAdmin($exercise);
+        $exerciseData = $this->get('ujm_exo.manager.exercise')->export(
+            $exercise,
+            $isAdmin ? [Transfer::INCLUDE_SOLUTIONS] : []
+        );
+
+        // TODO: the following data should be included directly by the manager/serializer
+        $exerciseData->meta->editable = $isAdmin;
+        $exerciseData->meta->paperCount = (int) $nbPapers;
+        $exerciseData->meta->userPaperCount = (int) $nbUserPapers;
 
         // Display the Summary of the Exercise
         return [
             // Used to build the Claroline Breadcrumbs
             'workspace' => $exercise->getResourceNode()->getWorkspace(),
             '_resource' => $exercise,
-
-            'nbUserPapers' => $nbUserPapers,
-            'nbPapers' => $nbPapers,
-
-            // Angular JS data
-            'exercise' => $this->get('ujm_exo.manager.exercise')->export(
-                $exercise,
-                $isAdmin ? [Transfer::INCLUDE_SOLUTIONS] : []
-            ),
+            'exercise' => $exerciseData,
             'editEnabled' => $isAdmin,
         ];
     }
