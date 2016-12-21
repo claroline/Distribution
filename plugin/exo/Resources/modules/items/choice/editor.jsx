@@ -2,9 +2,10 @@ import React, {Component, PropTypes as T} from 'react'
 import get from 'lodash/get'
 import classes from 'classnames'
 import {t, tex} from './../../utils/translate'
-import {SCORE_SUM, SCORE_FIXED} from './../../quiz/enums'
+import {SCORE_SUM, SCORE_FIXED, QCM_MULTIPLE, QCM_SINGLE} from './../../quiz/enums'
 import {Textarea} from './../../components/form/textarea.jsx'
 import {CheckGroup} from './../../components/form/check-group.jsx'
+import {Radios} from './../../components/form/radios.jsx'
 import {FormGroup} from './../../components/form/form-group.jsx'
 import {actions} from './editor'
 
@@ -16,7 +17,13 @@ class ChoiceItem extends Component {
 
   render() {
     return (
-      <div className="choice-item">
+      <div
+        className={classes(
+        'choice-item',
+         {'positive-score' : !this.props.fixedScore && this.props.score > 0},
+         {'negative-score' : !this.props.fixedScore && this.props.score <= 0}
+        )}
+      >
         <div className="choice-tick">
           <input
             disabled={!this.props.fixedScore}
@@ -155,12 +162,6 @@ ChoiceItems.propTypes = {
 export const Choice = props =>
   <fieldset>
     <CheckGroup
-      checkId={`item-${props.item.id}-multiple`}
-      checked={props.item.multiple}
-      label={tex('Multiple responses')}
-      onChange={checked => props.onChange(actions.updateProperty('multiple', checked))}
-    />
-    <CheckGroup
       checkId={`item-${props.item.id}-random`}
       checked={props.item.random}
       label={tex('qcm_shuffle')}
@@ -174,6 +175,21 @@ export const Choice = props =>
         actions.updateProperty('score.type', checked ? SCORE_FIXED : SCORE_SUM)
       )}
     />
+    <Radios
+      groupName="multiple"
+      options={[
+        {value: QCM_SINGLE, label: tex('qcm_single_answer')},
+        {value: QCM_MULTIPLE, label: tex('qcm_multiple_answers')}
+      ]}
+      checkedValue={props.item.multiple ? QCM_MULTIPLE : QCM_SINGLE}
+      inline={true}
+      onChange={
+        value => props.onChange(
+          actions.updateProperty('multiple', value === QCM_MULTIPLE)
+        )
+      }
+      >
+    </Radios>
     {props.item.score.type === SCORE_FIXED &&
       <div className="sub-fields">
         <FormGroup

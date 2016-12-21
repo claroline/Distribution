@@ -243,12 +243,12 @@ a[role=tab] {
   cursor: pointer;
 }
 
-.positive-score{
+.positive-score {
   background-color: #d4ffb0;
   border: 1px solid #d6e9c6;
 }
 
-.negative-score{
+.negative-score {
   background-color: #f9e2e2;
   border: 1px solid #ebccd1;
 }
@@ -267,6 +267,8 @@ a[role=tab] {
 
 .quiz-editor .choice-items .choice-item {
   display: flex;
+  padding: 5px;
+  margin-bottom: 5px;
 }
 
 .quiz-editor .choice-items .choice-tick {

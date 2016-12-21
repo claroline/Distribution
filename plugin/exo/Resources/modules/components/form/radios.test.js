@@ -68,4 +68,30 @@ describe('<Radios/>', () => {
     inputs.at(1).simulate('change', {target: {checked: true}})
     ensure.equal(updatedValue, 'bar')
   })
+
+  it('renders an inline group of radios when asked', () => {
+
+    const group = mount(
+      <Radios
+        groupName="NAME"
+        options={[
+          {
+            value: 'foo',
+            label: 'FOO'
+          },
+          {
+            value: 'bar',
+            label: 'BAR'
+          }
+        ]}
+        checkedValue="foo"
+        onChange={() => {}}
+        inline={true}
+      />
+    )
+
+    ensure.propTypesOk()
+    const containers = group.find('div.radio-inline')
+    ensure.equal(containers.length, 2, 'has 2 inline radios containers')
+  })
 })
