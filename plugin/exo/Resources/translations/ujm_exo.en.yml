@@ -152,7 +152,7 @@ final_mark: Final mark
 finish: Finish
 fixed_failure_above_success_error: This value should be lesser than the score in case of success.
 fixed_success_under_failure_error: This value should be greater than or equal to the score in case of failure.
-fixed_score: Fixed score
+fixed_score: Global score
 fixed_score_choice_at_least_one_correct_answer_error: At least one correct answer must be checked.
 fixed_score_choice_no_correct_answer_error: The correct answer must be checked.
 fixed_score_on_success: Result on success
@@ -349,7 +349,9 @@ publish: Publish
 qcm: MCQ
 qcm_creation: Create MCQ
 qcm_edition: EDit MCQ
+qcm_multiple_answers: Multiple answers
 qcm_shuffle: Order of random selection
+qcm_single_answer: Single answer
 qti_format_warning: You must import a .zip archive with an IMS_QTI file
 qti_import_title: No title attribute in the element assessmentItem
 qti_no_questions: Be careful: you need at least one question to export a quiz.
@@ -405,7 +407,7 @@ score_right_label_matching: Score of the association
 search: Search
 search_question: Search questions
 search_user_paper: Search papers of a user
-search_by_title_or_content: Search by question title / content 
+search_by_title_or_content: Search by question title / content
 see_shared_with: Question shared with users
 select: Select
 select_type: select the type of the quiz
