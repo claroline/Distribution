@@ -85,8 +85,10 @@ class TransferManager
 
         if (isset($data['tools'])) {
             $tools['tools'] = $data['tools'];
-            $toolsImporter->validate($tools);
+            $data['tools'] = $toolsImporter->validate($tools);
         }
+
+        return $data;
     }
 
     /**
@@ -106,15 +108,13 @@ class TransferManager
     public function populateWorkspace(
         Workspace $workspace,
         File $template,
+        array $data,
         Directory $root,
         array $entityRoles,
         $isValidated = false,
         $importRoles = true
     ) {
-        $data = $this->container->get('claroline.manager.workspace_manager')->getTemplateData($template);
         $this->om->startFlushSuite();
-        $data = $this->reorderData($data);
-        $this->setImporters($template, $workspace->getCreator());
         $this->setWorkspaceForImporter($workspace);
 
         if (!$isValidated) {
@@ -166,6 +166,7 @@ class TransferManager
         $isValidated = false
     ) {
         $data = $this->container->get('claroline.manager.workspace_manager')->getTemplateData($template, true);
+        $data = $this->reorderData($data);
 
         if ($workspace->getCode() === null) {
             $workspace->setCode($data['parameters']['code']);
@@ -181,7 +182,7 @@ class TransferManager
         $this->setImporters($template, $workspace->getCreator());
 
         if (!$isValidated) {
-            $this->validate($data, false);
+            $data = $this->validate($data, false);
             $isValidated = true;
         }
 
@@ -241,7 +242,7 @@ class TransferManager
         );
 
         $this->log('Populating the workspace...');
-        $this->populateWorkspace($workspace, $template, $root, $entityRoles, true, false);
+        $this->populateWorkspace($workspace, $template, $data, $root, $entityRoles, true, false);
         $this->container->get('claroline.manager.workspace_manager')->createWorkspace($workspace);
         $this->om->endFlushSuite();
 
