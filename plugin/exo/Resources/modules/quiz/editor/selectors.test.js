@@ -2,14 +2,14 @@ import freeze from 'deep-freeze'
 import {assertEqual} from './../../utils/test'
 import {TYPE_QUIZ, TYPE_STEP} from './../enums'
 import select from './selectors'
-import {tex} from './../../utils/translate'
+import {tex, t} from './../../utils/translate'
 
 describe('Thumbnails selector', () => {
   it('returns the quiz and step thumbs with an active flag set', () => {
     assertEqual(select.thumbnails(fixtureState1()), [
       {
         id: '1',
-        title: tex('exercise'),
+        title: t('parameters'),
         type: TYPE_QUIZ,
         active: false
       },
