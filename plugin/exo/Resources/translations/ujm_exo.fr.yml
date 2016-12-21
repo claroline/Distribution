@@ -151,7 +151,7 @@ final_mark: Note finale
 finish: Terminer
 fixed_failure_above_success_error: Cette valeur doit être inférieure à celle du résultat en cas de succès.
 fixed_success_under_failure_error: Cette valeur doit être supérieure ou égale à celle du résultat en cas d'échec.
-fixed_score: Résultat fixe
+fixed_score: Score global
 fixed_score_choice_at_least_one_correct_answer_error: Au moins une réponse correcte doit être cochée.
 fixed_score_choice_no_correct_answer_error: La réponse correcte doit être cochée.
 fixed_score_on_success: Points en cas de succès
@@ -343,7 +343,9 @@ publish: Publier
 qcm: QCM
 qcm_creation: Création d'une question QCM
 qcm_edition: Edition d'une question QCM
+qcm_multiple_answers: Réponses multiples
 qcm_shuffle: Ordre des choix aléatoire
+qcm_single_answer: Réponse unique
 qti_format_warning: Vous devez importer une archiver .zip contenant un fichier compatible IMS_QTI
 qti_import_title: Pas d'attribut "title" pour l'élément "assessmentItem"
 qti_no_questions: Attention, pour pouvoir exporter le questionnaire, il faut qu'il y ait au moins une question.
@@ -399,7 +401,7 @@ score_right_label_matching: Score de l'association
 search: Rechercher
 search_question: Chercher des questions
 search_user_paper: Rechercher les copies de l'utilisateur
-search_by_title_or_content: Rechercher sur le titre / contenu de la question 
+search_by_title_or_content: Rechercher sur le titre / contenu de la question
 see_shared_with: Question partagée avec des utilisateurs
 select: Sélectionner
 select_type: selectionner le type de questionnaire
