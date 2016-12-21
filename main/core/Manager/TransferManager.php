@@ -87,7 +87,8 @@ class TransferManager
 
         if (isset($data['tools'])) {
             $tools['tools'] = $data['tools'];
-            $data['tools'] = $toolsImporter->validate($tools)['tools'];
+            $dataTools = $toolsImporter->validate($tools);
+            $data['tools'] = $dataTools['tools'];
         }
 
         return $data;
