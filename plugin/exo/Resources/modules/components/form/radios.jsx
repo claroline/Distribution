@@ -1,9 +1,15 @@
 import React, {PropTypes as T} from 'react'
+import classes from 'classnames'
 
 export const Radios = props =>
   <fieldset>
     {props.options.map(option =>
-      <div className="radio" key={option.value}>
+      <div
+        className={classes(
+         props.inline ? 'radio-inline' : 'radio'
+        )}
+        key={option.value}
+      >
         <label>
           <input
             type="radio"
@@ -25,5 +31,6 @@ Radios.propTypes = {
     label: T.string.isRequired
   })).isRequired,
   checkedValue: T.string.isRequired,
+  inline: T.bool,
   onChange: T.func.isRequired
 }
