@@ -50,7 +50,8 @@ let Thumbnail = props => {
           className="step-title
           "href="#/alt-editor"
         >
-          {props.title}
+          {props.type === TYPE_STEP && props.title}
+          {props.type === TYPE_QUIZ && <span title={tex('Paramètres du questionnaire')} className="step-actions fa fa-cogs" />}
         </a>
         <span className="step-bottom"></span>
       </span>
