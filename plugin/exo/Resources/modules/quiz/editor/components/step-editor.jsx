@@ -170,10 +170,6 @@ class StepFooter extends Component {
     }
   }
 
-  componentDidMount(){
-    // @TODO get default dropdown action in local storage if any
-  }
-
   handleBtnClick(action){
     this.setState({currentLabel:action === MODAL_ADD_ITEM ? tex('add_question_from_new'):tex('add_question_from_existing'), currentAction: action})
     if (action === MODAL_ADD_ITEM) {

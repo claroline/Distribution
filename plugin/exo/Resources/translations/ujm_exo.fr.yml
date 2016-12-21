@@ -402,7 +402,6 @@ search: Rechercher
 search_question: Chercher des questions
 search_user_paper: Rechercher les copies de l'utilisateur
 search_by_title_or_content: Rechercher sur le titre / contenu de la question
-search_question_instructions: Entrer un critère dans la barre de recherche pour commencer
 see_shared_with: Question partagée avec des utilisateurs
 select: Sélectionner
 select_type: selectionner le type de questionnaire
