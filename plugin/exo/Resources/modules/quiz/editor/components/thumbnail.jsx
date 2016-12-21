@@ -46,11 +46,13 @@ let Thumbnail = props => {
       >
         {props.type === TYPE_QUIZ && <span className="step-actions"/>}
         {props.type === TYPE_STEP && <Actions {...props}/>}
+
         <a
-          className="step-title
-          "href="#/alt-editor"
+          className={classes('step-title', {'type-quiz': props.type === TYPE_QUIZ})}
+          href="#/alt-editor"
         >
-          {props.title}
+          {props.type === TYPE_STEP && props.title}
+          {props.type === TYPE_QUIZ && <span className="quiz-title">{props.title}</span>}
         </a>
         <span className="step-bottom"></span>
       </span>
