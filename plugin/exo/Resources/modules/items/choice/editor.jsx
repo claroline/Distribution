@@ -2,7 +2,7 @@ import React, {Component, PropTypes as T} from 'react'
 import get from 'lodash/get'
 import classes from 'classnames'
 import {t, tex} from './../../utils/translate'
-import {SCORE_SUM, SCORE_FIXED} from './../../quiz/enums'
+import {SCORE_SUM, SCORE_FIXED, QCM_MULTIPLE, QCM_SINGLE} from './../../quiz/enums'
 import {Textarea} from './../../components/form/textarea.jsx'
 import {CheckGroup} from './../../components/form/check-group.jsx'
 import {Radios} from './../../components/form/radios.jsx'
@@ -178,14 +178,14 @@ export const Choice = props =>
     <Radios
       groupName="multiple"
       options={[
-        {value:'false', label:tex('qcm_single_answer')},
-        {value:'true', label:tex('qcm_multiple_answers')}
+        {value: QCM_SINGLE, label: tex('qcm_single_answer')},
+        {value: QCM_MULTIPLE, label: tex('qcm_multiple_answers')}
       ]}
-      checkedValue={props.item.multiple.toString()}
+      checkedValue={props.item.multiple ? QCM_MULTIPLE : QCM_SINGLE}
       inline={true}
       onChange={
-        checked => props.onChange(
-          actions.updateProperty('multiple', checked)
+        value => props.onChange(
+          actions.updateProperty('multiple', value === QCM_MULTIPLE)
         )
       }
       >

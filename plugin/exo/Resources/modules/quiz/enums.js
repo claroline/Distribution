@@ -58,3 +58,6 @@ export const markModes = [
 export const SCORE_SUM = 'sum'
 export const SCORE_FIXED = 'fixed'
 export const SCORE_MANUAL = 'manual'
+
+export const QCM_MULTIPLE = 'multiple'
+export const QCM_SINGLE = 'single'
