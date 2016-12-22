@@ -20,20 +20,27 @@ import {
 
 let Quiz = props =>
   <div>
-    <PageHeader title={props.title} />
+    <PageHeader title={props.quiz.title} />
     {props.editable &&
-      <TopBar {...props} />
+      <TopBar
+        {...props}
+        id={props.quiz.id}
+        testQuiz={() => props.testQuiz(props.quiz, props.steps)}
+      />
     }
     {viewComponent(props.viewMode)}
   </div>
 
 Quiz.propTypes = {
-  id: T.string.isRequired,
-  title: T.string.isRequired,
+  quiz: T.shape({
+    id: T.string.isRequired,
+    title: T.string.isRequired,
+  }).isRequired,
+  steps: T.object.isRequired,
   editable: T.bool.isRequired,
   viewMode: T.string.isRequired,
   updateViewMode: T.func.isRequired,
-  playQuiz: T.func.isRequired,
+  testQuiz: T.func.isRequired,
   saveQuiz: T.func.isRequired
 }
 
@@ -56,8 +63,8 @@ function viewComponent(view) {
 
 function mapStateToProps(state) {
   return {
-    id: select.id(state),
-    title: select.title(state),
+    quiz: select.quiz(state),
+    steps: select.steps(state),
     viewMode: select.viewMode(state),
     editable: select.editable(state),
     empty: select.empty(state),
@@ -71,8 +78,8 @@ function mapDispatchToProps(dispatch) {
     updateViewMode(mode) {
       dispatch(actions.updateViewMode(mode))
     },
-    playQuiz(id) {
-      dispatch(playerActions.play(id))
+    testQuiz(quiz, steps) {
+      dispatch(playerActions.play(quiz, steps, null, true))
     },
     saveQuiz() {
       dispatch(editorActions.saveQuiz())

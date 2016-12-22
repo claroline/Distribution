@@ -7,7 +7,7 @@ import {
   createStore as baseCreate
 } from 'redux'
 import thunk from 'redux-thunk'
-import identity from 'lodash/identity'
+
 import {reducers as quizReducers} from './reducers'
 import {reducers as editorReducers} from './editor/reducers'
 import {reducers as playerReducers} from './player/reducers'
@@ -44,21 +44,25 @@ if (process.env.NODE_ENV !== 'production') {
   middleware.push(freeze)
 }
 
+const self = (state = null) => state
+
 export function makeReducer(editable) {
   return combineReducers({
+    noServer: self,
     viewMode: quizReducers.viewMode,
-    quiz: editable ? editorReducers.quiz : identity,
-    steps: editable ? editorReducers.steps : identity,
-    items: editable ? editorReducers.items : identity,
-    modal: editable ? editorReducers.modal : identity,
-    editor: editable ? editorReducers.editor : identity,
+    quiz: editable ? editorReducers.quiz : self,
+    steps: editable ? editorReducers.steps : self,
+    items: editable ? editorReducers.items : self,
+    modal: editable ? editorReducers.modal : self,
+    editor: editable ? editorReducers.editor : self,
+    testMode: playerReducers.testMode,
     currentStep: playerReducers.currentStep,
     paper: playerReducers.paper,
     answers: playerReducers.answers
   })
 }
 
-export function createStore(initialState, noServer = false, editable = true) {
+export function createStore(initialState, editable = true) {
   return baseCreate(makeReducer(editable), initialState, compose(
     applyMiddleware(...middleware),
     window.devToolsExtension ? window.devToolsExtension() : f => f

@@ -4,12 +4,17 @@ import {decorateAnswer} from './decorators'
 import * as moment from 'moment'
 
 import {
+  TEST_MODE_SET,
   ATTEMPT_START,
   ATTEMPT_FINISH,
   STEP_OPEN,
   ANSWER_UPDATE,
   ANSWERS_SUBMIT
 } from './actions'
+
+function setTestMode(state, action) {
+  return action.testMode
+}
 
 function initPaper(state, action) {
   return action.paper
@@ -26,10 +31,6 @@ function finishPaper(state, action) {
 
 function initAnswers(state, action) {
   return action.answers
-}
-
-function setTestMode(state, action) {
-  return action.testMode
 }
 
 function updateAnswer(state, action) {
@@ -69,6 +70,12 @@ function setCurrentStep(state, action) {
 }
 
 export const reducers = {
+  testMode: makeReducer(false, {
+    [TEST_MODE_SET]: setTestMode
+  }),
+  currentStep: makeReducer(null, {
+    [STEP_OPEN]: setCurrentStep
+  }),
   paper: makeReducer({}, {
     [ATTEMPT_START]: initPaper,
     [ATTEMPT_FINISH]: finishPaper
@@ -78,11 +85,5 @@ export const reducers = {
     [STEP_OPEN]: initCurrentStepAnswers,
     [ANSWER_UPDATE]: updateAnswer,
     [ANSWERS_SUBMIT]: submitAnswers
-  }),
-  currentStep: makeReducer(null, {
-    [STEP_OPEN]: setCurrentStep
-  }),
-  testMode: makeReducer(false, {
-    [ATTEMPT_START]: setTestMode
   })
 }

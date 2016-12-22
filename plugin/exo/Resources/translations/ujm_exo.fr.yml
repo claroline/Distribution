@@ -126,7 +126,7 @@ exercise_finished_attempts: "[0, 1] %count% réalisée à ce stade|]1,Inf[ %coun
 exercise_restart: Recommencer le questionnaire
 exercise_start: Commencer le questionnaire
 exercise_tries: "[0, 1] Vous avez droit à %count% essai|]1,Inf[ Vous avez droit à %count% essais"
-exercise_try: Tester le questionnaire
+exercise_try: Tester
 exit: Quitter
 exo_empty_user_can_edit: Ce questionnaire est vide. Editez et publiez-le afin de le remplir.
 exo_empty_user_read_only: Ce questionnaire est vide et n'a pas encore été configuré par son concepteur. Veuillez revenir plus tard.

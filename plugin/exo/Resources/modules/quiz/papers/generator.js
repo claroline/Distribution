@@ -1,6 +1,8 @@
 import collection from 'lodash/collection'
+
+import {makeId} from './../../utils/utils'
+
 import {
-  SHUFFLE_NEVER,
   SHUFFLE_ONCE,
   SHUFFLE_ALWAYS
 } from './../enums'
@@ -10,20 +12,20 @@ import {
  *
  * @param {object} quiz - the quiz definition
  * @param {object} steps - the list of quiz steps
- * @param {object} items - the list of quiz items
  * @param {object} previousPaper - the previous attempt of the user if any
  *
  * @returns {{number: number, anonymized: boolean, structure}}
  */
-export function generatePaper(quiz, steps, items, previousPaper = null) {
+export function generatePaper(quiz, steps, previousPaper = null) {
   return {
+    id: makeId(),
     number: previousPaper ? previousPaper.number + 1 : 1,
     anonymized: quiz.parameters.anonymizeAttempts,
-    structure: generateStructure(quiz, steps, items, previousPaper)
+    structure: generateStructure(quiz, steps, previousPaper)
   }
 }
 
-function generateStructure(quiz, steps, items, previousPaper = null) {
+function generateStructure(quiz, steps, previousPaper = null) {
   const parameters = quiz.parameters
 
   // The structure of the previous paper if any
@@ -45,7 +47,7 @@ function generateStructure(quiz, steps, items, previousPaper = null) {
   // Shuffles steps if needed
   if ( (!previousPaper && SHUFFLE_ONCE === parameters.randomOrder)
     || SHUFFLE_ALWAYS === parameters.randomOrder) {
-    pickedSteps = collection.shuffle(pickedSteps);
+    pickedSteps = collection.shuffle(pickedSteps)
   }
 
   // Pick questions for each steps and generate structure
@@ -56,7 +58,8 @@ function generateStructure(quiz, steps, items, previousPaper = null) {
     if (previousPaper && SHUFFLE_ONCE === step.parameters.randomPick) {
       // Get picked items from the last user paper
       // Retrieves the list of items of the current step
-      pickedItems = repickQuestions($pickedStep, $previousStructure);
+      const stepStructure = previousStructure.find((step) => step.id === stepId)
+      pickedItems = stepStructure.items.slice(0)
     } else {
       // Pick a new set of questions
       pickedItems = pick(step.items, step.parameters.pick)
@@ -65,13 +68,13 @@ function generateStructure(quiz, steps, items, previousPaper = null) {
     // Shuffles items if needed
     if ( (!previousPaper && SHUFFLE_ONCE === step.parameters.randomOrder)
       || SHUFFLE_ALWAYS === step.parameters.randomOrder) {
-      pickedItems = collection.shuffle(pickedItems);
+      pickedItems = collection.shuffle(pickedItems)
     }
 
     return {
       id: stepId,
       items: pickedItems
-    };
+    }
   })
 }
 
@@ -98,8 +101,8 @@ function pick(originalSet, count = 0) {
       return 0
     })
   } else {
-    picked = originalSet.splice(0);
+    picked = originalSet.slice(0)
   }
 
-  return picked;
+  return picked
 }

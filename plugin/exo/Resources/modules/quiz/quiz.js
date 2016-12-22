@@ -14,7 +14,10 @@ import './editor/style.css'
 export class Quiz {
   constructor(rawQuizData, noServer = false) {
     registerDefaultItemTypes()
-    this.store = createStore(decorate(normalize(rawQuizData), getDecorators()), noServer)
+
+    const quizData = decorate(normalize(rawQuizData), getDecorators())
+
+    this.store = createStore(Object.assign({noServer: noServer}, quizData))
     this.dndQuiz = DragDropContext(HTML5Backend)(QuizComponent)
   }
 

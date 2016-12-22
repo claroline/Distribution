@@ -1,6 +1,9 @@
 // TODO : use reselect
+// TODO : there is possible code refactoring with editor/selectors.js
 
 const empty = state => state.quiz.steps.length === 0
+const quiz = state => state.quiz
+const steps = state => state.steps
 const id = state => state.quiz.id
 const description = state => state.quiz.description
 const parameters = state => state.quiz.parameters
@@ -15,6 +18,8 @@ const hasPapers = () => true
 
 export default {
   id,
+  quiz,
+  steps,
   empty,
   editable,
   hasPapers,

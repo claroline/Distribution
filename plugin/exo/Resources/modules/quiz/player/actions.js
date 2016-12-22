@@ -9,6 +9,7 @@ export const ATTEMPT_FINISH = 'ATTEMPT_FINISH'
 export const STEP_OPEN      = 'STEP_OPEN'
 export const ANSWER_UPDATE  = 'ANSWER_UPDATE'
 export const ANSWERS_SUBMIT = 'ANSWERS_SUBMIT'
+export const TEST_MODE_SET  = 'TEST_MODE_SET'
 
 export const actions = {}
 
@@ -17,9 +18,9 @@ function shouldCallServer(state) {
   return !state.noServer && !state.testMode
 }
 
-function initPlayer(paper, answers, testMode) {
+function initPlayer(paper, answers = {}) {
   return (dispatch) => {
-    dispatch(actions.startAttempt(paper, answers, testMode))
+    dispatch(actions.startAttempt(paper, answers))
 
     const firstStep = paper.structure[0]
 
@@ -28,30 +29,32 @@ function initPlayer(paper, answers, testMode) {
   }
 }
 
-actions.startAttempt = makeActionCreator(ATTEMPT_START, 'paper', 'answers', 'testMode')
+actions.setTestMode = makeActionCreator(TEST_MODE_SET, 'testMode')
+actions.startAttempt = makeActionCreator(ATTEMPT_START, 'paper', 'answers')
 actions.finishAttempt = makeActionCreator(ATTEMPT_FINISH, 'paper')
 actions.openStep = makeActionCreator(STEP_OPEN, 'step')
 actions.updateAnswer = makeActionCreator(ANSWER_UPDATE, 'questionId', 'answerData')
 actions.submitAnswers = makeActionCreator(ANSWERS_SUBMIT, 'quizId', 'paperId', 'answers')
 
-actions.play = (quiz, testMode = false) => {
+actions.play = (quiz, steps, previousPaper = null, testMode = false) => {
   return (dispatch, getState) => {
+    dispatch(actions.setTestMode(testMode))
+    
     if (shouldCallServer(getState())) {
       // Request a paper from the API and open the player
       return dispatch((dispatch) => {
         api
           .startAttempt(quiz.id)
           .then((normalizedData) =>
-            dispatch(initPlayer(normalizedData.paper, normalizedData.answers, testMode)
+            dispatch(initPlayer(normalizedData.paper, normalizedData.answers)
           )
         )
       })
     } else {
       // Create a new local paper and open the player
-      // For test mode we never reuse an old paper for generation to avoid obsolete data
-      const paper = generatePaper(quiz, steps, items, !testMode ? previousPaper : null)
-
-      return dispatch(initPlayer(paper, {}, testMode))
+      return dispatch(
+        initPlayer(generatePaper(quiz, steps, previousPaper))
+      )
     }
   }
 }

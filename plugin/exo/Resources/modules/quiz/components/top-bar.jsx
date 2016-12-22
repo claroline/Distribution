@@ -67,9 +67,7 @@ export const TopBar = props =>
       </Nav>
       <Nav pullRight>
         {!props.empty && VIEW_PLAYER !== props.viewMode &&
-          <NavItem eventKey={5} href="#" onClick={() => {
-            props.playQuiz(props.id)
-          }}>
+          <NavItem eventKey={5} href="#" onClick={props.testQuiz}>
             <span className="fa fa-fw fa-play"></span>
             {tex('exercise_try')}
           </NavItem>
@@ -120,6 +118,6 @@ TopBar.propTypes = {
   hasPapers: T.bool.isRequired,
   viewMode: T.string.isRequired,
   updateViewMode: T.func.isRequired,
-  playQuiz: T.func.isRequired,
+  testQuiz: T.func.isRequired,
   saveQuiz: T.func.isRequired
 }

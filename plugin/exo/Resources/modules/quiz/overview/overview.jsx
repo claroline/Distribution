@@ -145,7 +145,7 @@ const Layout = props =>
             </a>
           }
           {!props.empty &&
-            <button-start data-paper-link="true"/>
+            <button-start data-paper-link="true" />
           }
         </div>
       </div>
