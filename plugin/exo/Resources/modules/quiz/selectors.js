@@ -1,3 +1,5 @@
+// TODO : use reselect
+
 const empty = state => state.quiz.steps.length === 0
 const id = state => state.quiz.id
 const description = state => state.quiz.description
@@ -5,6 +7,7 @@ const parameters = state => state.quiz.parameters
 const title = state => state.quiz.title
 const meta = state => state.quiz.meta
 const published = state => state.quiz.meta.published
+const viewMode = state => state.viewMode
 
 // TODO: update when data is available
 const editable = () => true
@@ -19,5 +22,6 @@ export default {
   meta,
   parameters,
   title,
-  published
+  published,
+  viewMode
 }

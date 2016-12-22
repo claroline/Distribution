@@ -1,78 +1,117 @@
-import {generateUrl} from './../../utils/routing'
 import {makeActionCreator} from './../../utils/actions'
 import {actions as quizActions} from './../actions'
-import {VIEW_PLAYER} from './../enums'
-import {normalize} from './normalizer'
+import {VIEW_PLAYER, VIEW_OVERVIEW} from './../enums'
+import {api} from './api'
+import {generatePaper} from './../papers/generator'
 
-export const ATTEMPT_START = 'ATTEMPT_START'
-export const STEP_OPEN     = 'STEP_OPEN'
-export const ANSWER_UPDATE = 'ANSWER_UPDATE'
+export const ATTEMPT_START  = 'ATTEMPT_START'
+export const ATTEMPT_FINISH = 'ATTEMPT_FINISH'
+export const STEP_OPEN      = 'STEP_OPEN'
+export const ANSWER_UPDATE  = 'ANSWER_UPDATE'
+export const ANSWERS_SUBMIT = 'ANSWERS_SUBMIT'
 
 export const actions = {}
 
-// TODO : display loader on ajax call
-// TODO : catch any error in the network call.
+function shouldCallServer(state) {
+  // TODO : use selector here
+  return !state.noServer && !state.testMode
+}
 
-actions.playQuiz = (quizId) => {
-  return function (dispatch) {
-    return fetch(generateUrl('exercise_attempt_start', {exerciseId: quizId}), {
-      credentials: 'include',
-      method: 'POST'
-    })
-    .then(response => response.json())
-    .then(json => {
-      const normalized = normalize(json)
+function initPlayer(paper, answers, testMode) {
+  return (dispatch) => {
+    dispatch(actions.startAttempt(paper, answers, testMode))
 
-      dispatch(actions.startAttempt(normalized.paper, normalized.answers))
+    const firstStep = paper.structure[0]
 
-      const firstStep = normalized.paper.structure[0]
-      dispatch(actions.openStep(firstStep.id, firstStep.items))
-      dispatch(quizActions.updateViewMode(VIEW_PLAYER))
-    })
+    dispatch(actions.openStep(firstStep))
+    dispatch(quizActions.updateViewMode(VIEW_PLAYER))
   }
 }
 
-actions.submitQuiz = (quizId, paperId, answers, nextActions) => {
-  return function (dispatch) {
-    const answerRequest = []
-    for (let answer in answers) {
-      if (answers.hasOwnProperty(answer) && answers[answer]._touched) {
-        // Answer has been modified => send it to the server
-        answerRequest.push(answers[answer])
-      }
-    }
-
-    if (0 !== answerRequest.length) {
-      return fetch(generateUrl('exercise_attempt_submit', {exerciseId: quizId, id: paperId}), {
-        credentials: 'include',
-        method: 'PUT',
-        body: JSON.stringify(answerRequest)
-      })
-      .then(() => {
-        if (nextActions) {
-          nextActions(dispatch)
-        }
-      })
-
-      // TODO : catch any error in the network call.
-    } else {
-      nextActions(dispatch)
-    }
-  }
-}
-
-actions.finishQuiz = (quizId, paperId, nextActions) => {
-  return function (dispatch) {
-    return fetch(generateUrl('exercise_attempt_finish', {exerciseId: quizId, id: paperId}), {
-      credentials: 'include',
-      method: 'PUT'
-    })
-    .then(() => {
-      nextActions(dispatch)
-    })
-  }
-}
-
-actions.startAttempt = makeActionCreator(ATTEMPT_START, 'paper', 'answers')
+actions.startAttempt = makeActionCreator(ATTEMPT_START, 'paper', 'answers', 'testMode')
+actions.finishAttempt = makeActionCreator(ATTEMPT_FINISH, 'paper')
+actions.openStep = makeActionCreator(STEP_OPEN, 'step')
 actions.updateAnswer = makeActionCreator(ANSWER_UPDATE, 'questionId', 'answerData')
-actions.openStep = makeActionCreator(STEP_OPEN, 'id', 'items')
+actions.submitAnswers = makeActionCreator(ANSWERS_SUBMIT, 'quizId', 'paperId', 'answers')
+
+actions.play = (quiz, testMode = false) => {
+  return (dispatch, getState) => {
+    if (shouldCallServer(getState())) {
+      // Request a paper from the API and open the player
+      return dispatch((dispatch) => {
+        api
+          .startAttempt(quiz.id)
+          .then((normalizedData) =>
+            dispatch(initPlayer(normalizedData.paper, normalizedData.answers, testMode)
+          )
+        )
+      })
+    } else {
+      // Create a new local paper and open the player
+      // For test mode we never reuse an old paper for generation to avoid obsolete data
+      const paper = generatePaper(quiz, steps, items, !testMode ? previousPaper : null)
+
+      return dispatch(initPlayer(paper, {}, testMode))
+    }
+  }
+}
+
+actions.submit = (quizId, paperId, answers = null) => {
+  return (dispatch, getState) => {
+    let answersPromise
+    if (answers && shouldCallServer(getState())) {
+      // Send answers to the API
+      answersPromise = api.submitAnswers(quizId, paperId, answers)
+    } else {
+      // Nothing to do
+      answersPromise = Promise.resolve()
+    }
+
+    return answersPromise.then(() =>
+      answers ? dispatch(actions.submitAnswers(quizId, paperId, answers)) : null
+    )
+  }
+}
+
+actions.finish = (quizId, paper, pendingAnswers = null) => {
+  return (dispatch, getState) => {
+    // First, submit answers for the current step
+    dispatch(actions.submit(quizId, paper.id, pendingAnswers)).then(() => {
+      let paperPromise
+      if (shouldCallServer(getState())) {
+        // Send finish request to API
+        paperPromise = api.finishAttempt(quizId, paper.id)
+      } else {
+        // Just resolve the current paper (the next actions will mark it as finished)
+        paperPromise = Promise.resolve({paper: paper})
+      }
+
+      return paperPromise.then((normalizedData) =>
+        // Finish the attempt and use quiz config to know what to do next
+        dispatch(actions.handleAttemptEnd(normalizedData.paper))
+      )
+    })
+  }
+}
+
+actions.navigateTo = (quizId, paperId, nextStep, pendingAnswers = null) => {
+  return (dispatch) => {
+    // Submit answers for the current step
+    dispatch(actions.submit(quizId, paperId, pendingAnswers)).then(() =>
+      // Open the requested step
+      dispatch(actions.openStep(nextStep))
+    )
+  }
+}
+
+actions.handleAttemptEnd = (paper) => {
+  return (dispatch) => {
+    // Finish the current attempt
+    dispatch(actions.finishAttempt(paper))
+
+    // We will decide here if we show the correction now or not and where we redirect the user
+
+    // Redirect to the quiz overview
+    dispatch(quizActions.updateViewMode(VIEW_OVERVIEW))
+  }
+}

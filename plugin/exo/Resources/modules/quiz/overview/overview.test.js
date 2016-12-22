@@ -71,7 +71,7 @@ describe('<Overview/>', () => {
           interruptible: true,
           showCorrectionAt: SHOW_CORRECTION_AT_DATE,
           correctionDate: '2015/05/12',
-          anonymous: true,
+          anonymizeAttempts: true,
           showScoreAt: SHOW_SCORE_AT_CORRECTION
         },
         meta: {

@@ -107,6 +107,7 @@ class AnswerSerializer extends AbstractSerializer
         }
 
         $this->mapObjectToEntity([
+            'tries' => 'tries',
             'data' => function (Answer $answer, \stdClass $data) {
                 if (!empty($data->data)) {
                     $answer->setData(json_encode($data->data));

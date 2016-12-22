@@ -21,6 +21,7 @@
       class="quiz-container"
       data-quiz="{{ exercise | json_encode | raw | escape }}"
       data-editable="{{ editEnabled }}"
+      data-no-server="false"
     >
     </div>
 {% endblock %}

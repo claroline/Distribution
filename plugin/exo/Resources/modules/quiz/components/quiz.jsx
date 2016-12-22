@@ -58,7 +58,7 @@ function mapStateToProps(state) {
   return {
     id: select.id(state),
     title: select.title(state),
-    viewMode: state.viewMode,
+    viewMode: select.viewMode(state),
     editable: select.editable(state),
     empty: select.empty(state),
     published: select.published(state),
@@ -72,7 +72,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(actions.updateViewMode(mode))
     },
     playQuiz(id) {
-      dispatch(playerActions.playQuiz(id))
+      dispatch(playerActions.play(id))
     },
     saveQuiz() {
       dispatch(editorActions.saveQuiz())

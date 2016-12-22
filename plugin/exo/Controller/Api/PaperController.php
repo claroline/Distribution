@@ -86,7 +86,7 @@ class PaperController extends AbstractController
      * @EXT\Route("/{id}", name="exercise_export_paper")
      * @EXT\Method("GET")
      * @EXT\ParamConverter("paper", class="UJMExoBundle:Attempt\Paper", options={"mapping": {"id": "uuid"}})
-     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * @param Exercise $exercise
      * @param Paper    $paper
@@ -94,11 +94,10 @@ class PaperController extends AbstractController
      *
      * @return JsonResponse
      */
-    public function getAction(Exercise $exercise, Paper $paper, User $user = null)
+    public function getAction(Exercise $exercise, Paper $paper, User $user)
     {
         $this->assertHasPermission('OPEN', $exercise);
 
-        // ATTENTION : As is, anonymous have access to all the other anonymous Papers !!!
         if (!$this->isAdmin($paper->getExercise()) && $paper->getUser() !== $user) {
             // Only administrator or the User attached can see a Paper
             throw new AccessDeniedException();

@@ -69,10 +69,10 @@ describe('<QuizEditor/>', () => {
     ensure.equal(updatedPath, 'title')
     ensure.equal(updatedValue, 'FOO')
 
-    const anonymous = form.find('input#quiz-anonymous')
-    ensure.equal(anonymous.length, 1, 'has anonymous checkbox')
-    anonymous.simulate('change', {target: {checked: true}})
-    ensure.equal(updatedPath, 'parameters.anonymous')
+    const anonymizeAttempts = form.find('input#quiz-anonymizeAttempts')
+    ensure.equal(anonymizeAttempts.length, 1, 'has anonymizeAttempts checkbox')
+    anonymizeAttempts.simulate('change', {target: {checked: true}})
+    ensure.equal(updatedPath, 'parameters.anonymizeAttempts')
     ensure.equal(updatedValue, true)
   })
 })
@@ -92,7 +92,7 @@ function fixture() {
       interruptible: true,
       showCorrectionAt: 'never',
       correctionDate: null,
-      anonymous: false,
+      anonymizeAttempts: false,
       showScoreAt: 'never',
       showStatistics: true,
       showFullCorrection: false

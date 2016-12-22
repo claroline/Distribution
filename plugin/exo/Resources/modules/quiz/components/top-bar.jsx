@@ -10,6 +10,7 @@ import {generateUrl} from './../../utils/routing'
 import {
   VIEW_OVERVIEW,
   VIEW_EDITOR,
+  VIEW_PLAYER,
   VIEW_PAPERS
 } from './../enums'
 
@@ -65,7 +66,7 @@ export const TopBar = props =>
         }
       </Nav>
       <Nav pullRight>
-        {!props.empty &&
+        {!props.empty && VIEW_PLAYER !== props.viewMode &&
           <NavItem eventKey={5} href="#" onClick={() => {
             props.playQuiz(props.id)
           }}>
@@ -100,12 +101,14 @@ export const TopBar = props =>
             </MenuItem>
           </NavDropdown>
         }
-        <NavItem eventKey={7} href="#" onClick={() => {
-          props.saveQuiz()
-        }}>
-          <span className="fa fa-fw fa-save"></span>
-          {t('save')}
-        </NavItem>
+        {VIEW_EDITOR === props.viewMode &&
+          <NavItem eventKey={7} href="#" onClick={() => {
+            props.saveQuiz()
+          }}>
+            <span className="fa fa-fw fa-save"></span>
+            {t('save')}
+          </NavItem>
+        }
       </Nav>
     </Navbar.Collapse>
   </Navbar>
@@ -115,6 +118,7 @@ TopBar.propTypes = {
   empty: T.bool.isRequired,
   published: T.bool.isRequired,
   hasPapers: T.bool.isRequired,
+  viewMode: T.string.isRequired,
   updateViewMode: T.func.isRequired,
   playQuiz: T.func.isRequired,
   saveQuiz: T.func.isRequired

@@ -76,7 +76,7 @@ describe('Decorator', () => {
           interruptible: false,
           showCorrectionAt: SHOW_CORRECTION_AT_VALIDATION,
           correctionDate: '',
-          anonymous: false,
+          anonymizeAttempts: false,
           showScoreAt: SHOW_SCORE_AT_CORRECTION,
           showStatistics: false,
           showFullCorrection: true
@@ -203,7 +203,7 @@ describe('Decorator', () => {
           interruptible: false,
           showCorrectionAt: SHOW_CORRECTION_AT_VALIDATION,
           correctionDate: '',
-          anonymous: false,
+          anonymizeAttempts: false,
           showScoreAt: SHOW_SCORE_AT_CORRECTION,
           showStatistics: false,
           showFullCorrection: true

@@ -8,8 +8,6 @@ import selectQuiz from './../../selectors'
 import {select} from './../selectors'
 
 import {actions as playerActions} from './../actions'
-import {actions as quizActions} from './../../actions'
-import {VIEW_OVERVIEW} from './../../enums'
 
 import {Player as ItemPlayer} from './../../../items/components/player.jsx'
 import {PlayerNav} from './nav-bar.jsx'
@@ -55,8 +53,8 @@ class Player extends Component {
           previous={this.props.previous}
           next={this.props.next}
           navigateTo={(step) => this.props.navigateTo(this.props.quizId, this.props.paper.id, step, this.props.answers)}
-          finish={() => this.props.finish(this.props.quizId, this.props.paper.id, this.props.answers)}
           submit={() => this.props.submit(this.props.quizId, this.props.paper.id, this.props.answers)}
+          finish={() => this.props.finish(this.props.quizId, this.props.paper, this.props.answers)}
         />
       </div>
     )
@@ -108,32 +106,4 @@ function mapStateToProps(state) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    updateAnswer(questionId, answerData) {
-      dispatch(playerActions.updateAnswer(questionId, answerData))
-    },
-    navigateTo(quizId, paperId, step, currentStepAnswers) {
-      // Submit answers
-      dispatch(playerActions.submitQuiz(quizId, paperId, currentStepAnswers, (dispatch) => {
-        // Go to the requested step
-        dispatch(playerActions.openStep(step.id, step.items))
-      }))
-    },
-    submit(quizId, paperId, answers) {
-      dispatch(playerActions.submitQuiz(quizId, paperId, answers))
-    },
-    finish(quizId, paperId, currentStepAnswers) {
-      // Submit answers
-      dispatch(playerActions.submitQuiz(quizId, paperId, currentStepAnswers, (dispatch) => {
-        // Mark paper as finished
-        dispatch(playerActions.finishQuiz(quizId, paperId, (dispatch) => {
-          // Close player
-          dispatch(quizActions.updateViewMode(VIEW_OVERVIEW))
-        }))
-      }))
-    }
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Player)
+export default connect(mapStateToProps, playerActions)(Player)

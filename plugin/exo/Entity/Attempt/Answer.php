@@ -45,7 +45,7 @@ class Answer
      *
      * @ORM\Column(name="nb_tries", type="integer")
      */
-    private $tries = 1;
+    private $tries = 0;
 
     /**
      * The answer data formatted in string for DB storage.

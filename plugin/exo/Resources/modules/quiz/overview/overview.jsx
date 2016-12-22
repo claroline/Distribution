@@ -58,7 +58,7 @@ const Parameters = props =>
               {tex(props.parameters.randomPick ? 'no' : 'yes')}
             </Parameter>
             <Parameter name="anonymous">
-              {tex(props.parameters.anonymous ? 'yes' : 'no')}
+              {tex(props.parameters.anonymizeAttempts ? 'yes' : 'no')}
             </Parameter>
             <Parameter name="test_exit">
               {tex(props.parameters.interruptible ? 'yes' : 'no')}
@@ -95,7 +95,7 @@ Parameters.propTypes = {
     interruptible: T.bool.isRequired,
     showCorrectionAt: T.string.isRequired,
     correctionDate: T.string,
-    anonymous: T.bool.isRequired,
+    anonymizeAttempts: T.bool.isRequired,
     showScoreAt: T.string.isRequired
   }).isRequired,
   meta: T.shape({
@@ -201,7 +201,7 @@ Overview.propTypes = {
     interruptible: T.bool.isRequired,
     showCorrectionAt: T.string.isRequired,
     correctionDate: T.string,
-    anonymous: T.bool.isRequired,
+    anonymizeAttempts: T.bool.isRequired,
     showScoreAt: T.string.isRequired
   }).isRequired,
   meta: T.shape({

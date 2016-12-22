@@ -238,10 +238,10 @@ const Correction = props =>
       </select>
     </FormGroup>
     <CheckGroup
-      checkId="quiz-anonymous"
-      checked={props.parameters.anonymous}
+      checkId="quiz-anonymizeAttempts"
+      checked={props.parameters.anonymizeAttempts}
       label={t('anonymous')}
-      onChange={checked => props.onChange('parameters.anonymous', checked)}
+      onChange={checked => props.onChange('parameters.anonymizeAttempts', checked)}
     />
     <CheckGroup
       checkId="quiz-showFullCorrection"
@@ -263,7 +263,7 @@ Correction.propTypes = {
     showScoreAt: T.string.isRequired,
     showFullCorrection: T.bool.isRequired,
     showStatistics: T.bool.isRequired,
-    anonymous: T.bool.isRequired,
+    anonymizeAttempts: T.bool.isRequired,
     correctionDate: T.string
   }).isRequired,
   onChange: T.func.isRequired
@@ -335,7 +335,7 @@ QuizEditor.propTypes = {
       interruptible: T.bool.isRequired,
       showCorrectionAt: T.string.isRequired,
       correctionDate: T.string,
-      anonymous: T.bool.isRequired,
+      anonymizeAttempts: T.bool.isRequired,
       showScoreAt: T.string.isRequired,
       showStatistics: T.bool.isRequired,
       showFullCorrection: T.bool.isRequired

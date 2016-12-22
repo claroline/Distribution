@@ -184,7 +184,6 @@ class AttemptManager
                     $answer = $this->answerManager->create($answerData);
                 } else {
                     $answer = $this->answerManager->update($existingAnswer, $answerData);
-                    $answer->setTries($answer->getTries() + 1);
                 }
             } catch (ValidationException $e) {
                 throw new ValidationException('Submitted answers are invalid', $e->getErrors());
@@ -194,6 +193,7 @@ class AttemptManager
             $score = $this->questionManager->calculateScore($answer->getQuestion(), $answer);
             $answer->setScore($score);
             $answer->setIp($clientIp);
+            $answer->setTries($answer->getTries() + 1);
 
             $paper->addAnswer($answer);
             $submitted[] = $answer;
