@@ -173,14 +173,7 @@ class PaperControllerTest extends TransactionalTestCase
 
         // Request the created paper
         $this->request('GET', "/api/exercises/{$this->exercise->getUuid()}/papers/{$paper->getUuid()}");
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-
-        // Validate the received content
-        $this->assertIsValidPaperDetail($paper, json_decode($this->client->getResponse()->getContent()));
-
-        $this->markTestIncomplete(
-            'As is, anonymous have access to all the other anonymous Papers.'
-        );
+        $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
     }
 
     /**
