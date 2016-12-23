@@ -34,7 +34,7 @@ let Quiz = props =>
 Quiz.propTypes = {
   quiz: T.shape({
     id: T.string.isRequired,
-    title: T.string.isRequired,
+    title: T.string.isRequired
   }).isRequired,
   steps: T.object.isRequired,
   editable: T.bool.isRequired,
