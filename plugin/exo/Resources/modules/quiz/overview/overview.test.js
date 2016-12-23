@@ -27,9 +27,8 @@ describe('<Overview/>', () => {
         /* can't tests these ones because selectors are hard-coded */
         // 'empty',
         // 'editable',
-        'meta',
-        'description',
-        'parameters'
+        'quiz',
+        'steps'
       ]
     )
   })
@@ -40,7 +39,8 @@ describe('<Overview/>', () => {
         description: 456,
         parameters: true,
         meta: true
-      }
+      },
+      steps: 123
     })
     shallow(<Overview store={store}/>)
     ensure.invalidProps(
@@ -49,9 +49,8 @@ describe('<Overview/>', () => {
         /* same than above */
         // 'empty',
         // 'editable',
-        'meta',
-        'description',
-        'parameters'
+        'quiz',
+        'steps'
       ]
     )
   })

@@ -9,6 +9,7 @@ import {
   quizTypes,
   SHOW_CORRECTION_AT_DATE
 } from './../enums'
+import {actions as playerActions} from './../player/actions'
 
 const Parameter = props =>
   <tr>
@@ -103,6 +104,16 @@ Parameters.propTypes = {
   })
 }
 
+const StartButton = props =>
+  <button type="button" className="btn btn-start btn-lg btn-primary btn-block" onClick={props.onClick}>
+    <span className="fa fa-fw fa-play"></span>
+    {tex('exercise_start')}
+  </button>
+
+StartButton.propTypes = {
+  onClick: T.func.isRequired
+}
+
 const Layout = props =>
   <div className="quiz-overview">
     <div className="panel-body">
@@ -145,7 +156,7 @@ const Layout = props =>
             </a>
           }
           {!props.empty &&
-            <button-start data-paper-link="true" />
+            <StartButton onClick={props.play} />
           }
         </div>
       </div>
@@ -162,7 +173,8 @@ Layout.propTypes = {
   }).isRequired,
   meta: T.shape({
     created: T.string.isRequired
-  })
+  }),
+  play: T.func.isRequired
 }
 
 class Overview extends Component {
@@ -176,11 +188,16 @@ class Overview extends Component {
   render() {
     return (
       <Layout
-        {...this.props}
+        empty={this.props.empty}
+        editable={this.props.editable}
+        description={this.props.quiz.description}
+        parameters={this.props.quiz.parameters}
+        meta={this.props.quiz.meta}
+        play={() => this.props.play(this.props.quiz, this.props.steps)}
         additionalInfo={this.state.additionalInfo}
         onAdditionalToggle={() => this.setState({
-          additionalInfo: !this.state.additionalInfo}
-        )}
+          additionalInfo: !this.state.additionalInfo
+        })}
       />
     )
   }
@@ -189,36 +206,48 @@ class Overview extends Component {
 Overview.propTypes = {
   empty: T.bool.isRequired,
   editable: T.bool.isRequired,
-  description: T.string.isRequired,
-  parameters: T.shape({
-    showMetadata: T.bool.isRequired,
-    type: T.string.isRequired,
-    randomOrder: T.string.isRequired,
-    randomPick: T.string.isRequired,
-    pick: T.number.isRequired,
-    duration: T.number.isRequired,
-    maxAttempts: T.number.isRequired,
-    interruptible: T.bool.isRequired,
-    showCorrectionAt: T.string.isRequired,
-    correctionDate: T.string,
-    anonymizeAttempts: T.bool.isRequired,
-    showScoreAt: T.string.isRequired
+  quiz: T.shape({
+    description: T.string.isRequired,
+    parameters: T.shape({
+      showMetadata: T.bool.isRequired,
+      type: T.string.isRequired,
+      randomOrder: T.string.isRequired,
+      randomPick: T.string.isRequired,
+      pick: T.number.isRequired,
+      duration: T.number.isRequired,
+      maxAttempts: T.number.isRequired,
+      interruptible: T.bool.isRequired,
+      showCorrectionAt: T.string.isRequired,
+      correctionDate: T.string,
+      anonymizeAttempts: T.bool.isRequired,
+      showScoreAt: T.string.isRequired
+    }).isRequired,
+    meta: T.shape({
+      created: T.string.isRequired
+    }).isRequired
   }).isRequired,
-  meta: T.shape({
-    created: T.string.isRequired
-  }).isRequired
+  steps: T.object.isRequired,
+  play: T.func.isRequired
 }
 
 function mapStateToProps(state) {
   return {
     empty: select.empty(state),
     editable: select.editable(state),
-    meta: select.meta(state),
-    description: select.description(state),
-    parameters: select.parameters(state)
+    quiz: select.quiz(state),
+    steps: select.steps(state)
   }
 }
 
-const ConnectedOverview = connect(mapStateToProps)(Overview)
+function mapDispatchToProps(dispatch) {
+  return {
+    play(quiz, steps) {
+      // TODO : optimisation - we may want to get a local paper if exists to avoid calling the server
+      dispatch(playerActions.play(quiz, steps))
+    }
+  }
+}
+
+const ConnectedOverview = connect(mapStateToProps, mapDispatchToProps)(Overview)
 
 export {ConnectedOverview as Overview}
