@@ -10,6 +10,7 @@ export const STEP_OPEN      = 'STEP_OPEN'
 export const ANSWER_UPDATE  = 'ANSWER_UPDATE'
 export const ANSWERS_SUBMIT = 'ANSWERS_SUBMIT'
 export const TEST_MODE_SET  = 'TEST_MODE_SET'
+export const HINT_USE       = 'HINT_USE'
 
 export const actions = {}
 
@@ -35,6 +36,7 @@ actions.finishAttempt = makeActionCreator(ATTEMPT_FINISH, 'paper')
 actions.openStep = makeActionCreator(STEP_OPEN, 'step')
 actions.updateAnswer = makeActionCreator(ANSWER_UPDATE, 'questionId', 'answerData')
 actions.submitAnswers = makeActionCreator(ANSWERS_SUBMIT, 'quizId', 'paperId', 'answers')
+actions.useHint = makeActionCreator(HINT_USE, 'questionId', 'hintId')
 
 actions.play = (quiz, steps, previousPaper = null, testMode = false) => {
   return (dispatch, getState) => {
@@ -116,5 +118,21 @@ actions.handleAttemptEnd = (paper) => {
 
     // Redirect to the quiz overview
     dispatch(quizActions.updateViewMode(VIEW_OVERVIEW))
+  }
+}
+
+actions.showHint = (hint) => {
+  return (dispatch, getState) => {
+    let hintPromise
+    if (shouldCallServer(getState())) {
+      hintPromise = api.showHint(hint.id)
+    } else {
+      hintPromise = Promise.resolve(hint)
+    }
+
+    return hintPromise.then((hint) =>
+      // Finish the attempt and use quiz config to know what to do next
+      dispatch(actions.useHint(hint.id))
+    )
   }
 }

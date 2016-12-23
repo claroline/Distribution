@@ -9,7 +9,8 @@ import {
   ATTEMPT_FINISH,
   STEP_OPEN,
   ANSWER_UPDATE,
-  ANSWERS_SUBMIT
+  ANSWERS_SUBMIT,
+  HINT_USE
 } from './actions'
 
 function setTestMode(state, action) {
@@ -69,6 +70,23 @@ function setCurrentStep(state, action) {
   return action.step.id
 }
 
+function useHint(state, action) {
+  let answer
+  if (!state[action.questionId]) {
+    answer = decorateAnswer({
+      usedHints: [action.hintId]
+    })
+  } else {
+    answer = update(state[action.questionId], {
+      ['usedHints']: {$push: [action.hintId]}
+    })
+  }
+
+  return update(state, {
+    [action.questionId]: {$set: answer}
+  })
+}
+
 export const reducers = {
   testMode: makeReducer(false, {
     [TEST_MODE_SET]: setTestMode
@@ -84,6 +102,7 @@ export const reducers = {
     [ATTEMPT_START]: initAnswers,
     [STEP_OPEN]: initCurrentStepAnswers,
     [ANSWER_UPDATE]: updateAnswer,
-    [ANSWERS_SUBMIT]: submitAnswers
+    [ANSWERS_SUBMIT]: submitAnswers,
+    [HINT_USE]: useHint
   })
 }

@@ -7,7 +7,7 @@ import {normalize} from './normalizer'
 export const api = {}
 
 api.startAttempt = (quizId) => {
-  return fetch(generateUrl('exercise_attempt_start', {exerciseId: quizId}), {
+  return fetch(generateUrl('exercise_attempt_start', {id: quizId}), {
     credentials: 'include',
     method: 'POST'
   })
@@ -42,4 +42,12 @@ api.finishAttempt = (quizId, paperId) => {
   })
   .then(response => response.json())
   .then(json => normalize(json))
+}
+
+api.showHint = (quizId, paperId, hintId) => {
+  return fetch(generateUrl('exercise_attempt_hint_show', {exerciseId: quizId, paperId: paperId, hintId: hintId}), {
+    credentials: 'include',
+    method: 'PUT'
+  })
+  .then(response => response.json())
 }

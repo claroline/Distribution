@@ -71,6 +71,34 @@ class ExerciseController extends AbstractController
     }
 
     /**
+     * Plays an exercise.
+     * 
+     * Opens an exercise, creating a new paper or re-using an unfinished one.
+     * Also check that max attempts are not reached if needed.
+     *
+     * @EXT\Route("", name="exercise_attempt_start")
+     * @EXT\Method("POST")
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
+     *
+     * @param Exercise $exercise
+     * @param User     $user
+     *
+     * @return JsonResponse
+     */
+    public function startAction(Exercise $exercise, User $user = null)
+    {
+        $this->assertHasPermission('OPEN', $exercise);
+
+        if (!$this->isAdmin($exercise) && !$this->attemptManager->canPass($exercise, $user)) {
+            throw new AccessDeniedException('max attempts reached');
+        }
+
+        $paper = $this->attemptManager->startOrContinue($exercise, $user);
+
+        return new JsonResponse($this->paperManager->export($paper));
+    }
+    
+    /**
      * Updates an Exercise.
      *
      * @EXT\Route("/{id}", name="exercise_update")
