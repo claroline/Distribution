@@ -87,7 +87,7 @@ class PlatformConfigurationHandler
         return $this->parameters['redirect_after_login_option'] === $option;
     }
 
-    public function addDefaultParameters(PlatformConfigurationParametersInterface $config)
+    public function addDefaultParameters(ParameterProviderInterface $config)
     {
         $this->parameters = array_merge($config->getDefaultParameters(), $this->parameters);
     }
@@ -121,7 +121,9 @@ class PlatformConfigurationHandler
 
     protected function saveParameters()
     {
-        file_put_contents($this->configFile, Yaml::dump($this->parameters));
+        ksort($this->parameters);
+        $parameters = Yaml::dump($this->parameters);
+        file_put_contents($this->configFile, $parameters);
     }
 
     protected function checkParameter($parameter)

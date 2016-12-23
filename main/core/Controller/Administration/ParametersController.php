@@ -193,7 +193,6 @@ class ParametersController extends Controller
                 try {
                     $platformConfig = $form->getData();
                     $portfolioOptions = $request->get('portfolioUrlOptions', 0);
-                    $platformConfig->setPortfolioUrlOptions($portfolioOptions);
 
                     if ($portfolioOptions === 0 || $portfolioOptions === '0') {
                         $platformConfig->setPortfolioUrl(null);

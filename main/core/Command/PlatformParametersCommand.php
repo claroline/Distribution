@@ -11,7 +11,7 @@
 
 namespace Claroline\CoreBundle\Command;
 
-use Claroline\CoreBundle\Library\Configuration\DefaultCorePlatformConfiguration;
+use Claroline\CoreBundle\Library\Configuration\PlatformDefault;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -22,7 +22,7 @@ class PlatformParametersCommand extends ContainerAwareCommand
     protected function configure()
     {
         //container isn't set yet so I use that one for the time being
-        $defaultConf = new DefaultCorePlatformConfiguration();
+        $defaultConf = new PlatformDefault();
         parent::configure();
 
         $this->setName('claroline:parameters:set')
@@ -41,7 +41,7 @@ class PlatformParametersCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         //same as above
-        $defaultConf = new DefaultCorePlatformConfiguration();
+        $defaultConf = new PlatformDefault();
         $handler = $this->getContainer()->get('claroline.config.platform_config_handler');
 
         foreach ($defaultConf->getDefaultParameters() as $param => $value) {

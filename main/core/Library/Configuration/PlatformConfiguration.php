@@ -46,16 +46,16 @@ class PlatformConfiguration
 
     public function __call($name, $parameters)
     {
-        if (strpos($name, 'get') !== false) {
+        if (strpos($name, 'get') === 0) {
             $property = lcfirst(str_replace('get', '', $name));
 
             if (property_exists($this, $property)) {
                 return $this->$property;
             } else {
-                throw new \RuntimeException("Property {$property} doesn't exist in the configuration file");
+                throw new \RuntimeException("Property {$property} doesn't exist in the configuration file.");
             }
         } else {
-            if (strpos($name, 'set') !== false) {
+            if (strpos($name, 'set') === 0) {
                 $property = lcfirst(str_replace('set', '', $name));
 
                 if (property_exists($this, $property)) {
@@ -63,7 +63,7 @@ class PlatformConfiguration
 
                     return;
                 } else {
-                    throw new \RuntimeException("Property {$property} doesn't exist in the configuration file");
+                    throw new \RuntimeException("Property {$property} doesn't exist in the configuration file.");
                 }
             }
         }
@@ -78,7 +78,7 @@ class PlatformConfiguration
         if (property_exists($this, $property)) {
             return $this->$property;
         } else {
-            throw new \RuntimeException("Property {$property} doesn't exist in the configuration file");
+            throw new \RuntimeException("Property {$property} doesn't exist in the configuration file.");
         }
     }
 }

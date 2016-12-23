@@ -11,7 +11,7 @@
 
 namespace Claroline\CoreBundle\Library\Configuration;
 
-interface PlatformConfigurationParametersInterface
+interface ParameterProviderInterface
 {
     public function getDefaultParameters();
 }

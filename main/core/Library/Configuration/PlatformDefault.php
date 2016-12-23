@@ -18,7 +18,7 @@ use JMS\DiExtraBundle\Annotation as DI;
  * @DI\Service()
  * @DI\Tag("claroline.configuration")
  */
-class DefaultCorePlatformConfiguration implements PlatformConfigurationParametersInterface
+class PlatformDefault implements ParameterProviderInterface
 {
     const REGISTRATION_MAIL_VALIDATION_NONE = 0;
     const REGISTRATION_MAIL_VALIDATION_PARTIAL = 1;
@@ -37,7 +37,7 @@ class DefaultCorePlatformConfiguration implements PlatformConfigurationParameter
         return [
             'name' => 'claroline',
             'name_active' => true,
-            'support_email' => null,
+            'support_email' => 'noreply@changeme.com',
             'footer' => null,
             'logo' => 'clarolineconnect.png',
             'allow_self_registration' => true,
@@ -88,7 +88,7 @@ class DefaultCorePlatformConfiguration implements PlatformConfigurationParameter
             'auto_logging_after_registration' => false,
             'registration_mail_validation' => self::REGISTRATION_MAIL_VALIDATION_PARTIAL,
             'resource_soft_delete' => false,
-            'show_help_button' => yes,
+            'show_help_button' => true,
             'help_url' => 'http://doc.claroline.com',
             'register_button_at_login' => false,
             'send_mail_at_workspace_registration' => true,

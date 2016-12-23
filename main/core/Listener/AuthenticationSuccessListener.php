@@ -14,7 +14,7 @@ namespace Claroline\CoreBundle\Listener;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Form\TermsOfServiceType;
-use Claroline\CoreBundle\Library\Configuration\DefaultCorePlatformConfiguration;
+use Claroline\CoreBundle\Library\Configuration\PlatformDefault;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Manager\TermsOfServiceManager;
 use Claroline\CoreBundle\Manager\UserManager;
@@ -129,20 +129,20 @@ class AuthenticationSuccessListener implements AuthenticationSuccessHandlerInter
             return new RedirectResponse($uri);
         }
 
-        if ($this->configurationHandler->isRedirectOption(DefaultCorePlatformConfiguration::$REDIRECT_OPTIONS['DESKTOP'])) {
+        if ($this->configurationHandler->isRedirectOption(PlatformDefault::$REDIRECT_OPTIONS['DESKTOP'])) {
             return new RedirectResponse($this->router->generate('claro_desktop_open'));
         } elseif (
-            $this->configurationHandler->isRedirectOption(DefaultCorePlatformConfiguration::$REDIRECT_OPTIONS['LAST'])
+            $this->configurationHandler->isRedirectOption(PlatformDefault::$REDIRECT_OPTIONS['LAST'])
             && $uri = $request->getSession()->get('redirect_route')
         ) {
             return new RedirectResponse($uri);
         } elseif (
-            $this->configurationHandler->isRedirectOption(DefaultCorePlatformConfiguration::$REDIRECT_OPTIONS['URL'])
+            $this->configurationHandler->isRedirectOption(PlatformDefault::$REDIRECT_OPTIONS['URL'])
             && null !== $url = $this->configurationHandler->getParameter('redirect_after_login_url')
         ) {
             return new RedirectResponse($url);
         } elseif (
-            $this->configurationHandler->isRedirectOption(DefaultCorePlatformConfiguration::$REDIRECT_OPTIONS['WORKSPACE_TAG'])
+            $this->configurationHandler->isRedirectOption(PlatformDefault::$REDIRECT_OPTIONS['WORKSPACE_TAG'])
             && null !== $defaultWorkspaceTag = $this->configurationHandler->getParameter('default_workspace_tag')
         ) {
             $event = $this->eventDispatcher->dispatch(
@@ -190,7 +190,7 @@ class AuthenticationSuccessListener implements AuthenticationSuccessHandlerInter
      */
     public function onKernelResponse(FilterResponseEvent $event)
     {
-        if ($this->configurationHandler->isRedirectOption(DefaultCorePlatformConfiguration::$REDIRECT_OPTIONS['LAST'])) {
+        if ($this->configurationHandler->isRedirectOption(PlatformDefault::$REDIRECT_OPTIONS['LAST'])) {
             $this->saveLastUri($event);
         }
     }

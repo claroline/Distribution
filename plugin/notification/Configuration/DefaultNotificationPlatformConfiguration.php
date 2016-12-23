@@ -11,14 +11,14 @@
 
 namespace Icap\NotificationBundle\Configuration;
 
-use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationParametersInterface;
+use Claroline\CoreBundle\Library\Configuration\ParameterProviderInterface;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service()
  * @DI\Tag("claroline.configuration")
  */
-class DefaultNotificationPlatformConfiguration implements PlatformConfigurationParametersInterface
+class DefaultNotificationPlatformConfiguration implements ParameterProviderInterface
 {
     public function getDefaultParameters()
     {
