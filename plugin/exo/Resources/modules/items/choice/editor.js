@@ -53,10 +53,12 @@ function reduce(item = {}, action) {
         choices: [
           {
             id: firstChoiceId,
+            type: 'text/html',
             data: ''
           },
           {
             id: secondChoiceId,
+            type: 'text/html',
             data: ''
           }
         ],
@@ -129,6 +131,7 @@ function reduce(item = {}, action) {
       const choiceId = makeId()
       newItem.choices.push({
         id: choiceId,
+        type: 'text/html',
         data: '',
         _feedback: '',
         _score: 0,

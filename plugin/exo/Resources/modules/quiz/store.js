@@ -19,7 +19,10 @@ const quizSave = store => next => action => {
   if (action.type === QUIZ_SAVE) {
     const state = store.getState()
     const denormalized = denormalize(state.quiz, state.steps, state.items)
-    const url = generateUrl('exercise_update', {'id': state.quiz.id})
+
+    console.log(denormalized)
+
+    const url = generateUrl('exercise_update', {id: state.quiz.id})
     const params = {
       method: 'PUT' ,
       credentials: 'include',
