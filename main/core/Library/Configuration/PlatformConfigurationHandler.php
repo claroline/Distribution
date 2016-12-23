@@ -35,6 +35,7 @@ class PlatformConfigurationHandler
     public function __construct($configFile, $lockedConfigFile)
     {
         $this->parameters = [];
+        $this->defaultConfigs = [];
         $this->configFile = $configFile;
         $this->parameters = $this->mergeParameters();
         $this->lockedParameters = $this->generateLockedParameters($lockedConfigFile);
@@ -89,7 +90,22 @@ class PlatformConfigurationHandler
 
     public function addDefaultParameters(ParameterProviderInterface $config)
     {
-        $this->parameters = array_merge($config->getDefaultParameters(), $this->parameters);
+        $newDefault = $config->getDefaultParameters();
+        $newDefaultClass = get_class($config);
+
+        //check if the parameter already exists to avoid overiding stuff by mistake
+        foreach ($this->defaultConfigs as $class => $defaultConfig) {
+            $duplicates = array_intersect_key($defaultConfig, $newDefault);
+
+            if (count($duplicates) > 0) {
+                throw new \RuntimeException(
+                    "The following duplicate key(s) were found in the {$newDefaultClass} configuration file: ".implode(', ', array_keys($duplicates))
+                );
+            }
+        }
+
+        $this->defaultConfigs[$newDefaultClass] = $newDefault;
+        $this->parameters = array_merge($newDefault, $this->parameters);
     }
 
     public function getPlatformConfig()
