@@ -322,6 +322,28 @@ paper: Passage
 paper_finished: Terminé
 paper_need_manual_correction: Cette copie nécessite une correction manuelle
 paper_list: Liste des copies
+paper_list_no_paper: Aucune copie trouvée.
+paper_search: Rechercher une copie
+paper_list_manual_correction_needed: Correction manuelle nécessaire
+paper_list_table_user: Utilisateur
+paper_list_table_paper_number: '#'
+paper_list_table_start_date: Date de début
+paper_list_table_end_date: Date de fin
+paper_list_table_action: Correction
+paper_list_table_action_not_available: Indisponible actuellement
+paper_list_table_score: Score
+paper_list_table_first_page_label: Première
+paper_list_table_last_page_label: Dernière
+paper_list_table_toggle_pagination: Paginer / Dépaginer les resultats
+paper_details_table_choice: Choix
+paper_details_table_expected_answer: Réponse attendue
+paper_details_table_your_answer: Votre réponse
+paper_details_table_comment: Commentaire
+paper_details_paper_score: Score global
+paper_details_question_score: Score de la question
+paper_details_correction_label: Correction
+paper_details_your_answers: Vos réponses
+paper_details_right_answers: Bonnes réponses
 paper_count: "{0} aucune copie|{1} %count% copie|]1,Inf[ %count% copies"
 metadata: Paramètres
 partially: Partiellement correcte

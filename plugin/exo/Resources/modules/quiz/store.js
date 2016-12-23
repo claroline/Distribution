@@ -62,7 +62,7 @@ export function makeReducer(editable) {
   })
 }
 
-export function createStore(initialState, editable = true) {
+export function createStore(initialState, editable = false) {
   return baseCreate(makeReducer(editable), initialState, compose(
     applyMiddleware(...middleware),
     window.devToolsExtension ? window.devToolsExtension() : f => f

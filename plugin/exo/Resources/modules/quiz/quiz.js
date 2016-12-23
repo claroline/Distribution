@@ -7,6 +7,7 @@ import {Quiz as QuizComponent} from './components/quiz.jsx'
 import {normalize} from './normalizer'
 import {decorate} from './decorators'
 import {createStore} from './store'
+import {makeRouter} from './router'
 import {registerDefaultItemTypes, getDecorators} from './../items/item-types'
 
 import './editor/style.css'
@@ -19,6 +20,7 @@ export class Quiz {
 
     this.store = createStore(Object.assign({noServer: noServer}, quizData))
     this.dndQuiz = DragDropContext(HTML5Backend)(QuizComponent)
+    makeRouter(this.store.dispatch.bind(this.store))
   }
 
   render(element) {
