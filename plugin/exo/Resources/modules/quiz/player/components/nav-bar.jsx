@@ -46,7 +46,7 @@ const PlayerNav = props =>
   <nav className="player-nav">
     <div className="backward">
       {props.previous &&
-      <PreviousButton onClick={() => props.navigateTo(props.previous)} />
+        <PreviousButton onClick={() => props.navigateTo(props.previous)} />
       }
     </div>
 
@@ -61,11 +61,11 @@ const PlayerNav = props =>
 PlayerNav.propTypes = {
   next: T.shape({
     id: T.string.isRequired,
-    items: T.arrayOf.arrayOf
+    items: T.arrayOf(T.string).isRequired
   }),
   previous: T.shape({
     id: T.string.isRequired,
-    items: T.arrayOf.arrayOf
+    items: T.arrayOf(T.string).isRequired
   }),
   navigateTo: T.func.isRequired,
   finish: T.func.isRequired,

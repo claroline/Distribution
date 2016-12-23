@@ -27,8 +27,8 @@ describe('<Overview/>', () => {
         /* can't tests these ones because selectors are hard-coded */
         // 'empty',
         // 'editable',
-        'quiz',
-        'steps'
+        'steps',
+        'quiz.parameters'
       ]
     )
   })
@@ -49,7 +49,7 @@ describe('<Overview/>', () => {
         /* same than above */
         // 'empty',
         // 'editable',
-        'quiz',
+        'quiz.description',
         'steps'
       ]
     )
@@ -77,7 +77,8 @@ describe('<Overview/>', () => {
           created: '2016-12-12',
           published: true
         }
-      }
+      },
+      steps: {}
     })
     const overview = mount(<Overview store={store}/>)
 

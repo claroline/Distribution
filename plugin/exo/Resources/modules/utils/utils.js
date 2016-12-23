@@ -49,7 +49,7 @@ export function lastIds(count) {
 
   const ids = []
 
-  for (let i = lastGeneratedIds.length - count + 1; i <= lastGeneratedIds.length; ++i) {
+  for (let i = lastGeneratedIds.length - count; i < lastGeneratedIds.length; ++i) {
     ids.push(lastGeneratedIds[i])
   }
 

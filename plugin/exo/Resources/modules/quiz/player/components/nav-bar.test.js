@@ -49,8 +49,6 @@ describe('<PlayerNav/>', () => {
   it('renders a navbar', () => {
     const navbar = mount(
       <PlayerNav
-        next={null}
-        previous={null}
         navigateTo={() => true}
         finish={() => true}
         submit={() => true}
@@ -59,22 +57,51 @@ describe('<PlayerNav/>', () => {
     ensure.propTypesOk()
     ensure.equal(navbar.find('.player-nav').length, 1)
 
+    // There is no previous step, so no previous btn
     ensure.equal(navbar.find('.btn-previous').length, 0)
+
+    // There is no next step, so no next btn
     ensure.equal(navbar.find('.btn-next').length, 0)
-    ensure.equal(navbar.find('.btn-next').length, 0)
+
+    // On the last step there is a finish btn
+    ensure.equal(navbar.find('.btn-finish').length, 1)
   })
 
   it('renders a previous btn if there is a previous step', () => {
+    const previousStep = {
+      id: '123',
+      items: []
+    }
+
     const navbar = mount(
       <PlayerNav
-          next={null}
-          previous={null}
-          navigateTo={() => true}
-          finish={() => true}
-          submit={() => true}
-        />
+        previous={previousStep}
+        navigateTo={() => true}
+        finish={() => true}
+        submit={() => true}
+      />
     )
     ensure.propTypesOk()
-    ensure.equal(navbar.find('btn-previous').length, 1)
+    ensure.equal(navbar.find('.btn-previous').length, 1)
+  })
+
+  it('renders a next btn if there is a next step', () => {
+    const nextStep = {
+      id: '123',
+      items: []
+    }
+
+    const navbar = mount(
+      <PlayerNav
+        next={nextStep}
+        navigateTo={() => true}
+        finish={() => true}
+        submit={() => true}
+      />
+    )
+    ensure.propTypesOk()
+    ensure.equal(navbar.find('.btn-next').length, 1)
+    // Finish btn is only shown if there is no next step
+    ensure.equal(navbar.find('.btn-finish').length, 0)
   })
 })

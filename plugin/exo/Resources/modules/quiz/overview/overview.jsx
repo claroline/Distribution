@@ -166,7 +166,7 @@ const Layout = props =>
 Layout.propTypes = {
   empty: T.bool.isRequired,
   editable: T.bool.isRequired,
-  description: T.string.isRequired,
+  description: T.string,
   onAdditionalToggle: T.func.isRequired,
   parameters: T.shape({
     showMetadata: T.bool.isRequired
@@ -175,6 +175,10 @@ Layout.propTypes = {
     created: T.string.isRequired
   }),
   play: T.func.isRequired
+}
+
+Layout.defaultProps = {
+  description: null
 }
 
 class Overview extends Component {
@@ -207,7 +211,7 @@ Overview.propTypes = {
   empty: T.bool.isRequired,
   editable: T.bool.isRequired,
   quiz: T.shape({
-    description: T.string.isRequired,
+    description: T.string,
     parameters: T.shape({
       showMetadata: T.bool.isRequired,
       type: T.string.isRequired,
