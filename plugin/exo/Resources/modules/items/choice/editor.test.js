@@ -29,6 +29,7 @@ describe('Choice reducer', () => {
       choices: [
         {
           id: ids[0],
+          type: 'text/html',
           data: '',
           _score: 1,
           _feedback: '',
@@ -37,6 +38,7 @@ describe('Choice reducer', () => {
         },
         {
           id: ids[1],
+          type: 'text/html',
           data: '',
           _score: 0,
           _feedback: '',
@@ -191,6 +193,7 @@ describe('Choice reducer', () => {
       choices: [{}, {}, {},
         {
           id: lastId(),
+          type: 'text/html',
           data: '',
           _feedback: '',
           _score: 0,
@@ -232,6 +235,7 @@ describe('Choice reducer', () => {
         {},
         {
           id: lastId(),
+          type: 'text/html',
           data: '',
           _feedback: '',
           _score: 0,
@@ -265,10 +269,12 @@ describe('Choice decorator', () => {
       choices: [
         {
           id: '2',
+          type: 'text/html',
           data: 'Foo'
         },
         {
           id: '3',
+          type: 'text/html',
           data: 'Bar'
         }
       ],
@@ -293,6 +299,7 @@ describe('Choice decorator', () => {
       choices: [
         {
           id: '2',
+          type: 'text/html',
           data: 'Foo',
           _score: 1,
           _feedback: 'Feed foo',
@@ -301,6 +308,7 @@ describe('Choice decorator', () => {
         },
         {
           id: '3',
+          type: 'text/html',
           data: 'Bar',
           _score: 0,
           _feedback: 'Feed bar',
@@ -329,14 +337,17 @@ describe('Choice decorator', () => {
       choices: [
         {
           id: '1',
+          type: 'text/html',
           data: 'Foo'
         },
         {
           id: '2',
+          type: 'text/html',
           data: 'Bar'
         },
         {
           id: '3',
+          type: 'text/html',
           data: 'Baz'
         }
       ],
@@ -370,14 +381,17 @@ describe('Choice decorator', () => {
       choices: [
         {
           id: '1',
+          type: 'text/html',
           data: 'Foo'
         },
         {
           id: '2',
+          type: 'text/html',
           data: 'Bar'
         },
         {
           id: '3',
+          type: 'text/html',
           data: 'Baz'
         }
       ],
@@ -633,6 +647,7 @@ describe('<Choice/>', () => {
           choices: [
             {
               id: '2',
+              type: 'text/html',
               data: 'Foo',
               _score: 1,
               _feedback: 'Feed foo',
@@ -641,6 +656,7 @@ describe('<Choice/>', () => {
             },
             {
               id: '3',
+              type: 'text/html',
               data: 'Bar',
               _score: 0,
               _feedback: 'Feed bar',
@@ -671,6 +687,7 @@ function makeFixture(props = {}, frozen = true) {
     choices: [
       {
         id: '1',
+        type: 'text/html',
         data: 'Foo',
         _score: 2,
         _feedback: 'Feedback foo',
@@ -679,6 +696,7 @@ function makeFixture(props = {}, frozen = true) {
       },
       {
         id: '2',
+        type: 'text/html',
         data: 'Bar',
         _score: 0,
         _feedback: 'Feedback bar',
@@ -687,6 +705,7 @@ function makeFixture(props = {}, frozen = true) {
       },
       {
         id: '3',
+        type: 'text/html',
         data: 'Baz',
         _score: 1.5,
         _feedback: 'Feedback baz',
