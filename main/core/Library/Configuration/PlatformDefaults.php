@@ -18,7 +18,7 @@ use JMS\DiExtraBundle\Annotation as DI;
  * @DI\Service()
  * @DI\Tag("claroline.configuration")
  */
-class PlatformDefault implements ParameterProviderInterface
+class PlatformDefaults implements ParameterProviderInterface
 {
     const REGISTRATION_MAIL_VALIDATION_NONE = 0;
     const REGISTRATION_MAIL_VALIDATION_PARTIAL = 1;

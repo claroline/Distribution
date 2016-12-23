@@ -12,7 +12,7 @@
 namespace Claroline\CoreBundle\Form\Administration;
 
 use Claroline\CoreBundle\Entity\Role;
-use Claroline\CoreBundle\Library\Configuration\PlatformDefault;
+use Claroline\CoreBundle\Library\Configuration\PlatformDefaults;
 use Claroline\CoreBundle\Validator\Constraints\DomainName;
 use Claroline\CoreBundle\Validator\Constraints\FileSize;
 use Doctrine\ORM\EntityRepository;
@@ -287,8 +287,8 @@ class GeneralType extends AbstractType
                     'disabled' => isset($this->lockedParams['registration_mail_validation']),
                     'label' => 'registration_mail_validation',
                     'choices' => [
-                        PlatformDefault::REGISTRATION_MAIL_VALIDATION_PARTIAL => 'send_mail_info',
-                        PlatformDefault::REGISTRATION_MAIL_VALIDATION_FULL => 'force_mail_validation',
+                        PlatformDefaults::REGISTRATION_MAIL_VALIDATION_PARTIAL => 'send_mail_info',
+                        PlatformDefaults::REGISTRATION_MAIL_VALIDATION_FULL => 'force_mail_validation',
                     ],
                 ]
             )
@@ -375,7 +375,7 @@ class GeneralType extends AbstractType
 
     private function buildRedirectOptions()
     {
-        $options = PlatformDefault::$REDIRECT_OPTIONS;
+        $options = PlatformDefaults::$REDIRECT_OPTIONS;
         $choices = [];
 
         foreach ($options as $option) {
