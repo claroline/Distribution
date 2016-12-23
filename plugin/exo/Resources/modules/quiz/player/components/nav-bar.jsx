@@ -33,7 +33,7 @@ SubmitButton.propTypes = {
 }
 
 const FinishButton = props =>
-  <button className="btn btn-primary" onClick={props.onClick}>
+  <button className="btn btn-finish btn-primary" onClick={props.onClick}>
     <span className="fa fa-fw fa-sign-out"></span>
     Finish
   </button>
@@ -69,7 +69,7 @@ PlayerNav.propTypes = {
   }),
   navigateTo: T.func.isRequired,
   finish: T.func.isRequired,
-  submit: T.func
+  submit: T.func.isRequired
 }
 
 PlayerNav.defaultProps = {

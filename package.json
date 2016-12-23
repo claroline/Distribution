@@ -26,7 +26,8 @@
     "reselect": "^2.5.3",
     "d3": "^4.4.0",
     "svg4everybody": "^2.1.2",
-    "whatwg-fetch": "^2.0.1"
+    "whatwg-fetch": "^2.0.1",
+    "uuid": "^3.0.1"
   },
   "files": [
     "package.json"

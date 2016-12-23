@@ -1,6 +1,7 @@
 import update from 'immutability-helper'
 import invariant from 'invariant'
 import React from 'react'
+import uuid from 'uuid'
 
 // re-export immutability-helper with a custom delete command
 update.extend('$delete', (property, object) => {
@@ -24,33 +25,18 @@ export function makeActionCreator(type, ...argNames) {
 }
 
 // counter for id generation
-let idCount = 0
+let lastGeneratedId = null
 
 // generate a temporary id string
 export function makeId() {
-  return `generated-id-${++idCount}`
+  lastGeneratedId = uuid()
+
+  return lastGeneratedId
 }
 
 // return the last generated id (mainly for test purposes)
 export function lastId() {
-  return `generated-id-${idCount}`
-}
-
-// test purpose only
-export function lastIds(count) {
-  if (count > idCount) {
-    throw new Error(
-      `Cannot access last ${count} ids, only ${idCount} were generated`
-    )
-  }
-
-  const ids = []
-
-  for (let i = idCount - count + 1; i <= idCount; ++i) {
-    ids.push(`generated-id-${i}`)
-  }
-
-  return ids
+  return lastGeneratedId
 }
 
 export function makeItemPanelKey(itemType, itemId) {
