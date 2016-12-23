@@ -44,17 +44,17 @@ if (process.env.NODE_ENV !== 'production') {
   middleware.push(freeze)
 }
 
-const self = (state = null) => state
+const returnSelf = (state = null) => state
 
 export function makeReducer(editable) {
   return combineReducers({
-    noServer: self,
+    noServer: returnSelf,
     viewMode: quizReducers.viewMode,
-    quiz: editable ? editorReducers.quiz : self,
-    steps: editable ? editorReducers.steps : self,
-    items: editable ? editorReducers.items : self,
-    modal: editable ? editorReducers.modal : self,
-    editor: editable ? editorReducers.editor : self,
+    quiz: editable ? editorReducers.quiz : returnSelf,
+    steps: editable ? editorReducers.steps : returnSelf,
+    items: editable ? editorReducers.items : returnSelf,
+    modal: editable ? editorReducers.modal : returnSelf,
+    editor: editable ? editorReducers.editor : returnSelf,
     testMode: playerReducers.testMode,
     currentStep: playerReducers.currentStep,
     paper: playerReducers.paper,

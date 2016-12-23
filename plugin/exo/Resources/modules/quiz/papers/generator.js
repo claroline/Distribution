@@ -1,4 +1,4 @@
-import collection from 'lodash/collection'
+import {shuffle, sampleSize} from 'lodash/collection'
 
 import {makeId} from './../../utils/utils'
 
@@ -47,7 +47,7 @@ function generateStructure(quiz, steps, previousPaper = null) {
   // Shuffles steps if needed
   if ( (!previousPaper && SHUFFLE_ONCE === parameters.randomOrder)
     || SHUFFLE_ALWAYS === parameters.randomOrder) {
-    pickedSteps = collection.shuffle(pickedSteps)
+    pickedSteps = shuffle(pickedSteps)
   }
 
   // Pick questions for each steps and generate structure
@@ -68,7 +68,7 @@ function generateStructure(quiz, steps, previousPaper = null) {
     // Shuffles items if needed
     if ( (!previousPaper && SHUFFLE_ONCE === step.parameters.randomOrder)
       || SHUFFLE_ALWAYS === step.parameters.randomOrder) {
-      pickedItems = collection.shuffle(pickedItems)
+      pickedItems = shuffle(pickedItems)
     }
 
     return {
@@ -91,7 +91,7 @@ function pick(originalSet, count = 0) {
   let picked
   if (0 !== count) {
     // Get a random subset of element
-    picked = collection.sampleSize(originalSet, count).sort((a, b) => {
+    picked = sampleSize(originalSet, count).sort((a, b) => {
       // We need to put the picked items in their original order
       if (originalSet.indexOf(a) < originalSet.indexOf(b)) {
         return -1
