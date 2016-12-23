@@ -25,18 +25,35 @@ export function makeActionCreator(type, ...argNames) {
 }
 
 // counter for id generation
-let lastGeneratedId = null
+let lastGeneratedIds = []
 
 // generate a temporary id string
 export function makeId() {
-  lastGeneratedId = uuid()
+  lastGeneratedIds.push(uuid())
 
-  return lastGeneratedId
+  return lastGeneratedIds[lastGeneratedIds.length - 1]
 }
 
 // return the last generated id (mainly for test purposes)
 export function lastId() {
-  return lastGeneratedId
+  return lastGeneratedIds[lastGeneratedIds.length - 1]
+}
+
+// test purpose only
+export function lastIds(count) {
+  if (count > lastGeneratedIds.length) {
+    throw new Error(
+      `Cannot access last ${count} ids, only ${lastGeneratedIds.length} were generated`
+    )
+  }
+
+  const ids = []
+
+  for (let i = lastGeneratedIds.length - count + 1; i <= lastGeneratedIds.length; ++i) {
+    ids.push(lastGeneratedIds[i])
+  }
+
+  return ids
 }
 
 export function makeItemPanelKey(itemType, itemId) {
