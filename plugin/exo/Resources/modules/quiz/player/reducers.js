@@ -1,7 +1,7 @@
 import {update} from './../../utils/utils'
 import {makeReducer} from './../../utils/reducers'
 import {decorateAnswer} from './decorators'
-import * as moment from 'moment'
+import moment from 'moment'
 
 import {
   TEST_MODE_SET,
