@@ -4,6 +4,7 @@ accept: Accept
 accessible_from: 'Accessible from'
 accessible_until: 'Accessible until'
 account_created: 'Account created.'
+account_created_awaiting_validation: 'Your account has been successfully created. However you will not be able to access the workspace unless an administrator validates your account.'
 account_duration_label: 'Account lifetime (days)'
 account_general_statistics: 'Account general statistics'
 action: Action
@@ -847,6 +848,7 @@ restore: Restore
 restore_messages_confirm_message: 'restored message(s)'
 results: Results
 results_for_search_on: 'Results for search on'
+rich_text: Rich text
 right: Right
 rights: Rights
 rights_management: 'Rights Management'
@@ -1338,3 +1340,4 @@ outdated_brower_message: It appears that you're using an unsupported web browser
 ie_support_message: Internet Explorer is supported from version 11.
 enable_opengraph: Enable opengraph
 temporary_directory: Temporary directory
+opening_date: Opening date
