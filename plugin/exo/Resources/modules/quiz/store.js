@@ -11,6 +11,7 @@ import thunk from 'redux-thunk'
 import {reducers as quizReducers} from './reducers'
 import {reducers as editorReducers} from './editor/reducers'
 import {reducers as playerReducers} from './player/reducers'
+import {reducePapers} from './papers/reducer'
 import {QUIZ_SAVE} from './editor/actions'
 import {generateUrl} from './../utils/routing'
 import {denormalize} from './normalizer'
@@ -58,11 +59,12 @@ export function makeReducer(editable) {
     testMode: playerReducers.testMode,
     currentStep: playerReducers.currentStep,
     paper: playerReducers.paper,
-    answers: playerReducers.answers
+    answers: playerReducers.answers,
+    papers: reducePapers
   })
 }
 
-export function createStore(initialState, editable = false) {
+export function createStore(initialState, editable = true) {
   return baseCreate(makeReducer(editable), initialState, compose(
     applyMiddleware(...middleware),
     window.devToolsExtension ? window.devToolsExtension() : f => f

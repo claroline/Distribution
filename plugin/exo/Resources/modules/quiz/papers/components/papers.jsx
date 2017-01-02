@@ -1,30 +1,37 @@
 import React, {PropTypes as T} from 'react'
 import {connect} from 'react-redux'
+import selectors from './../../selectors'
+import {selectors as paperSelectors} from './../selectors'
 import {tex} from './../../../utils/translate'
 
 export const PaperRow = props =>
   <tr>
     {props.admin &&
-      <td>{props.user}</td>
+      <td>{props.user.name}</td>
     }
     <td>{props.number}</td>
-    <td>{props.start}</td>
-    <td>{props.end || '-'}</td>
-    <td>{tex(props.interrupted ? 'yes' : 'no')}</td>
-    <td>{props.score}</td>
+    <td>{props.startDate}</td>
+    <td>{props.endDate || '-'}</td>
+    <td>{tex(props.finished ? 'yes' : 'no')}</td>
+    <td>{props.score || '-'}</td>
     <td>
-      <span className="fa fa-eye"></span>
+      <a href={`#papers/${props.id}`}>
+        <span className="fa fa-eye"></span>
+      </a>
     </td>
   </tr>
 
 PaperRow.propTypes = {
   admin: T.bool.isRequired,
-  user: T.string.isRequired,
+  id: T.string.isRequired,
+  user: T.shape({
+    name: T.string.isRequired
+  }).isRequired,
   number: T.number.isRequired,
-  start: T.string.isRequired,
-  end: T.string,
-  interrupted: T.bool.isRequired,
-  score: T.string.isRequired
+  startDate: T.string.isRequired,
+  endDate: T.string,
+  finished: T.bool.isRequired,
+  score: T.string
 }
 
 let Papers = props =>
@@ -43,7 +50,9 @@ let Papers = props =>
       </tr>
     </thead>
     <tbody>
-      {props.papers.map(paper => <PaperRow {...paper}/>)}
+      {props.papers.map((paper, idx) =>
+        <PaperRow key={idx} admin={props.admin} {...paper}/>
+      )}
     </tbody>
   </table>
 
@@ -52,10 +61,10 @@ Papers.propTypes = {
   papers: T.arrayOf(T.object).isRequired
 }
 
-function mapStateToProps() {
+function mapStateToProps(state) {
   return {
-    admin: true,
-    papers: []
+    admin: selectors.editable(state),
+    papers: paperSelectors.papers(state)
   }
 }
 

@@ -6,6 +6,7 @@ import NavDropdown from 'react-bootstrap/lib/NavDropdown'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
 import {t, tex} from './../../utils/translate'
 import {generateUrl} from './../../utils/routing'
+import {VIEW_EDITOR, VIEW_PLAYER} from './../enums'
 
 // can't make react-bootstrap's NavItem to work...
 const NavLink = props =>
