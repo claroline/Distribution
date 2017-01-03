@@ -25,7 +25,7 @@ export default class UserController {
     this.fields = []
     this.managedOrganizations = []
     this.$uibModal = $uibModal
-    const buttons = Configuration.getUsersAdministrationActions()
+    this.buttons = Configuration.getUsersAdministrationActions()
 
     const columns = [
       {
@@ -76,12 +76,12 @@ export default class UserController {
           `
 
           content += `
-            <button title='${switchTitle}' class='btn btn-default' ng-click='uc.switchPersonalWorkspace($row)'><i ng-class="$row.personal_workspace ? 'fa fa-ban': 'fa fa-book'"></i></button>
+            <button title='${switchTitle}' class='btn btn-default' ng-click='uc.switchPersonalWorkspace($row)'><i ng-class="$row.personal_workspace ? 'fa fa-trash-o': 'fa fa-street-view'"></i></button>
           `
 
-          buttons.forEach(button => {
+          this.buttons.forEach(button => {
             content += `
-                  <a title='${button.name}' href=${button.href} class='btn btn-default'><i class="${button.class}"></i></a>
+                  <a title='${button.name}' href=${button.url(scope.$row.id)} class='btn btn-default'><i class="${button.class}"></i></a>
               `
           })
 
