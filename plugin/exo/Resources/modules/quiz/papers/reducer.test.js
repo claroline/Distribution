@@ -1,7 +1,7 @@
 import freeze from 'deep-freeze'
 import {assertEqual} from './../../utils/test'
 import {reducePapers} from './reducer'
-import {PAPERS_INIT, PAPER_CURRENT, actions} from './actions'
+import {PAPERS_INIT, PAPER_CURRENT} from './actions'
 
 describe('Papers reducer', () => {
   it('returns an empty papers object by default', () => {
@@ -15,7 +15,7 @@ describe('Papers reducer', () => {
   })
 
   it('updates current paper id', () => {
-    const state = {current: '1', papers: {}}
+    const state = freeze({current: '1', papers: {}})
     const papers = reducePapers(state, {type: PAPER_CURRENT, id: '2'})
     assertEqual(papers, {current: '2', papers: {}})
   })
