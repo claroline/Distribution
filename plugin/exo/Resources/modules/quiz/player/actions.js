@@ -51,7 +51,7 @@ actions.play = (quiz, steps, previousPaper = null, testMode = false) => {
         api
           .startAttempt(quiz.id)
           .then((normalizedData) => {
-            dispatch(apiActions.receiveResponse())
+            /*dispatch(apiActions.receiveResponse())*/
             dispatch(initPlayer(normalizedData.paper, normalizedData.answers))
           })
       })
