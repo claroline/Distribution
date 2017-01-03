@@ -24,9 +24,7 @@ describe('<Overview/>', () => {
     ensure.missingProps(
       'Overview',
       [
-        /* can't tests these ones because selectors are hard-coded */
-        // 'empty',
-        // 'editable',
+        'editable',
         'steps',
         'quiz.parameters'
       ]
@@ -46,9 +44,6 @@ describe('<Overview/>', () => {
     ensure.invalidProps(
       'Overview',
       [
-        /* same than above */
-        // 'empty',
-        // 'editable',
         'quiz.description',
         'steps'
       ]
@@ -75,7 +70,8 @@ describe('<Overview/>', () => {
         },
         meta: {
           created: '2016-12-12',
-          published: true
+          published: true,
+          editable: true
         }
       },
       steps: {}
@@ -96,5 +92,10 @@ describe('<Overview/>', () => {
 function mockStore(state = {}) {
   const mock = configureMockStore()
 
-  return mock(merge({quiz: {steps: []}}, state))
+  return mock(merge({
+    quiz: {
+      meta: {},
+      steps: []
+    }
+  }, state))
 }

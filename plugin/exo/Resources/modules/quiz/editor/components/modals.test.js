@@ -40,25 +40,27 @@ describe('<AddItemModal/>', () => {
         name: 'foo',
         type: 'foo/bar',
         editor: {
-          component: {}, // doesn't matter here
+          component: {},
           reduce: () => {}
         },
         player: {
-          component: {}, // doesn't matter here
+          component: {},
           reduce: () => {}
-        }
+        },
+        paper: {}
       },
       {
         name: 'baz',
         type: 'baz/quz',
         editor: {
-          component: {}, // doesn't matter here
+          component: {},
           reduce: () => {}
         },
         player: {
-          component: {}, // doesn't matter here
+          component: {},
           reduce: () => {}
-        }  
+        },
+        paper: {}
       }
     ]
     types.forEach(registerItemType)

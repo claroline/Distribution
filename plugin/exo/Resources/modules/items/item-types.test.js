@@ -108,6 +108,23 @@ describe('Registering an item type', () => {
       })
     }, /reduce must be a function/i)
 
+    it('throws if item paper component is absent', () => {
+      assert.throws(() => {
+        registerItemType({
+          name: 'foo',
+          type: 'foo/bar',
+          player:{
+            component: () => 'player',
+            reduce: item => item
+          },
+          editor: {
+            component: () => 'editor',
+            reduce: item => item
+          }
+        })
+      }, /paper component is mandatory/i)
+    })
+
     it('throws if decorate is not a function', () => {
       assert.throws(() => {
         registerItemType({
@@ -230,6 +247,7 @@ function validDefinitionFixture() {
     player: {
       component: () => 'player',
       reduce: item => item
-    }
+    },
+    paper: () => 'paper'
   }
 }
