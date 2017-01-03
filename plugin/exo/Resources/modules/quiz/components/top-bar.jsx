@@ -4,15 +4,22 @@ import Nav from 'react-bootstrap/lib/Nav'
 import NavItem from 'react-bootstrap/lib/NavItem'
 import NavDropdown from 'react-bootstrap/lib/NavDropdown'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
-
 import {t, tex} from './../../utils/translate'
 import {generateUrl} from './../../utils/routing'
-import {
-  VIEW_OVERVIEW,
-  VIEW_EDITOR,
-  VIEW_PLAYER,
-  VIEW_PAPERS
-} from './../enums'
+import {VIEW_EDITOR, VIEW_PLAYER} from './../enums'
+
+// can't make react-bootstrap's NavItem to work...
+const NavLink = props =>
+  <li role="presentation">
+    <a href={props.href}>
+      {props.children}
+    </a>
+  </li>
+
+NavLink.propTypes = {
+  href: T.string.isRequired,
+  children: T.node.isRequired
+}
 
 export const TopBar = props =>
   <Navbar collapseOnSelect>
@@ -21,18 +28,14 @@ export const TopBar = props =>
     </Navbar.Header>
     <Navbar.Collapse>
       <Nav>
-        <NavItem eventKey={1} href="#" onClick={() => {
-          props.updateViewMode(VIEW_OVERVIEW)
-        }}>
+        <NavLink href="#overview">
           <span className="fa fa-fw fa-info"></span>
           {tex('overview')}
-        </NavItem>
-        <NavItem eventKey={2} href="#" onClick={() => {
-          props.updateViewMode(VIEW_EDITOR)
-        }}>
+        </NavLink>
+        <NavLink href="#editor">
           <span className="fa fa-fw fa-pencil"></span>
           {t('edit')}
-        </NavItem>
+        </NavLink>
         <NavDropdown
           id="questions-menu"
           eventKey={3}
@@ -83,9 +86,7 @@ export const TopBar = props =>
               </span>
             }
           >
-            <MenuItem eventKey={6.1} onClick={() => {
-              props.updateViewMode(VIEW_PAPERS)
-            }}>
+            <MenuItem href="#papers">
               <span className="fa fa-fw fa-list"></span>
               {tex('results_list')}
             </MenuItem>

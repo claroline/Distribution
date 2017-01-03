@@ -1,9 +1,11 @@
 import player from './player'
 import editor from './editor'
+import {SetPaper} from './paper.jsx'
 
 export default {
   type: 'application/x.set+json',
   name: 'set',
-  player: player,
-  editor: editor
+  paper: SetPaper,
+  player,
+  editor
 }

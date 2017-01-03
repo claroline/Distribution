@@ -475,7 +475,8 @@ function registerFixtureType(properties = {}) {
       editor: {
         component: () => 'editor',
         reduce: item => item
-      }
+      },
+      paper: () => 'paper'
     },
     properties
   ))

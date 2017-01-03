@@ -19,7 +19,8 @@ const typeProperties = [
   'component',
   'reduce',
   'decorate',
-  'validate'
+  'validate',
+  'paper'
 ]
 
 let registeredTypes = {}
@@ -131,6 +132,10 @@ function assertValidItemType(definition) {
   invariant(
     typeof definition.player.reduce === 'function',
     makeError('player reduce must be a function', definition)
+  )
+  invariant(
+    definition.paper,
+    makeError('paper component is mandatory', definition)
   )
 
   const extraProperties = difference(Object.keys(definition), typeProperties)

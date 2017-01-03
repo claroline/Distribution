@@ -96,7 +96,7 @@ describe('item validator', () => {
 
   it('merges base and type errors', () => {
     registerFixtureType({
-      editor: {        
+      editor: {
         validate: item => {
           return item.foo !== 'bar' ? {foo: 'Should be bar'} : {}
         }
@@ -137,7 +137,8 @@ function registerFixtureType(properties = {}) {
       player: {
         component: {},
         reduce: item => item
-      }
+      },
+      paper: {}
     },
     properties
   ))

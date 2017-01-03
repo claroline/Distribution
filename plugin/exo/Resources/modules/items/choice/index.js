@@ -1,9 +1,11 @@
 import player from './player'
 import editor from './editor'
+import {ChoicePaper} from './paper.jsx'
 
 export default {
   type: 'application/x.choice+json',
   name: 'choice',
-  player: player,
-  editor: editor
+  paper: ChoicePaper,
+  player,
+  editor
 }

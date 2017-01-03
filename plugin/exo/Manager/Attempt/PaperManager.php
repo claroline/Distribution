@@ -267,9 +267,8 @@ class PaperManager
         $questions = [];
         foreach ($papers as $paper) {
             $paperQuestions = $this->getQuestions($paper);
-
             $questions = array_merge($questions, $paperQuestions);
-            $questions = array_unique($questions); // Remove duplicated questions
+            $questions = array_unique($questions, SORT_REGULAR); // Remove duplicated questions
         }
 
         return [

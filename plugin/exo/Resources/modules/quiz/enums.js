@@ -15,12 +15,14 @@ export const VIEW_OVERVIEW = 'overview'
 export const VIEW_PLAYER = 'player'
 export const VIEW_EDITOR = 'editor'
 export const VIEW_PAPERS = 'papers'
+export const VIEW_PAPER = 'paper'
 
 export const viewModes = [
   [VIEW_OVERVIEW, 'overview'],
   [VIEW_PLAYER, 'player'],
   [VIEW_EDITOR, 'editor'],
-  [VIEW_PAPERS, 'papers']
+  [VIEW_PAPERS, 'papers'],
+  [VIEW_PAPER, 'paper']
 ]
 
 export const SHUFFLE_NEVER = 'never'

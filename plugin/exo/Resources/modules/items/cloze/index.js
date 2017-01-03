@@ -1,9 +1,11 @@
 import player from './player'
 import editor from './editor'
+import {ClozePaper} from './paper.jsx'
 
 export default {
   type: 'application/x.cloze+json',
   name: 'cloze',
-  player: player,
-  editor: editor
+  paper: ClozePaper,
+  player,
+  editor
 }

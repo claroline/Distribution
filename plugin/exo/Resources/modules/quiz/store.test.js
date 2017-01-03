@@ -32,7 +32,8 @@ describe('createStore', () => {
         props: {},
         fading: false
       },
-      viewMode: 'overview'
+      viewMode: 'overview',
+      papers: {}
     })
   })
 })

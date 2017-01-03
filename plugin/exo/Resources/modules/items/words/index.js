@@ -1,9 +1,11 @@
 import player from './player'
 import editor from './editor'
+import {WordPaper} from './paper.jsx'
 
 export default {
   type: 'application/x.words+json',
   name: 'words',
-  player: player,
-  editor: editor
+  paper: WordPaper,
+  player,
+  editor
 }
