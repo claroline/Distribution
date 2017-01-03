@@ -40,7 +40,7 @@ class Player extends Component {
             expanded={true}
           >
             <ItemPlayer item={item}>
-              {React.createElement(getDefinition(item.type).player.component, {
+              {React.createElement(getDefinition(item.type).player, {
                 item: item,
                 answer: this.props.answers[item.id] ? this.props.answers[item.id].data : undefined,
                 onChange: (answerData) => this.props.updateAnswer(item.id, answerData)

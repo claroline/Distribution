@@ -1,4 +1,4 @@
 import React from 'react'
 
-export const Match = () =>
+export const MatchPlayer = () =>
   <div>Match player</div>

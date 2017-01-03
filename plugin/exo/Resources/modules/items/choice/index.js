@@ -6,6 +6,6 @@ export default {
   type: 'application/x.choice+json',
   name: 'choice',
   paper: ChoicePaper,
-  player: {component: ChoicePlayer, reduce: (state) => state},
+  player: ChoicePlayer,
   editor
 }

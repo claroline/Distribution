@@ -16,8 +16,6 @@ const typeProperties = [
   'question',
   'editor',
   'player',
-  'component',
-  'reduce',
   'decorate',
   'validate',
   'paper'
@@ -119,19 +117,7 @@ function assertValidItemType(definition) {
   )
   invariant(
     definition.player,
-    makeError('player is mandatory', definition)
-  )
-  invariant(
-    definition.player.component,
     makeError('player component is mandatory', definition)
-  )
-  invariant(
-    definition.player.reduce,
-    makeError('player reduce is mandatory', definition)
-  )
-  invariant(
-    typeof definition.player.reduce === 'function',
-    makeError('player reduce must be a function', definition)
   )
   invariant(
     definition.paper,

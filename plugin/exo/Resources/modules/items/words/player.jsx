@@ -1,4 +1,4 @@
 import React from 'react'
 
-export const Words = () =>
+export const WordsPlayer = () =>
   <div>Words player</div>
