@@ -91,11 +91,11 @@ class ResourceNodeRepositoryTest extends RepositoryTestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      */
     public function testFindChildrenThrowsAnExceptionIfNoRolesAreGiven()
     {
-        $children = self::$repo->findChildren(
+        self::$repo->findChildren(
             self::get('dir_1')->getResourceNode(),
             [],
             self::get('jane')
@@ -174,7 +174,7 @@ class ResourceNodeRepositoryTest extends RepositoryTestCase
     }
 
     /**
-     * @expectedException Claroline\CoreBundle\Repository\Exception\UnknownFilterException
+     * @expectedException \Claroline\CoreBundle\Repository\Exception\UnknownFilterException
      */
     public function testFindByCriteriaThrowsAnExceptionOnUnknownFilter()
     {
@@ -243,7 +243,7 @@ class ResourceNodeRepositoryTest extends RepositoryTestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testFindWorkspaceInfoByIdsThrowsAnExceptionIfIdArrayIsEmpty()
     {
