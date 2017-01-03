@@ -31,7 +31,39 @@
 {% endjavascripts %}
 {% javascripts debug=false filter='twig_js, jsmin' vars=["locale"]
     "@ClarolineCoreBundle/Resources/views/Resource/breadcrumbs.html.twigjs"
-
+    "@ClarolineCoreBundle/Resources/views/Resource/actions.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Resource/filters.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Resource/listElement.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Resource/thumbnail.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Resource/results.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Resource/roles.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Resource/tabs.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Resource/treenode.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Resource/deleteConfirm.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Resource/publishConfirm.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Resource/unpublishConfirm.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Resource/userRightsRow.html.twig"
+    "@ClarolineCoreBundle/Resources/views/Modal/modal.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Modal/validationFooter.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Modal/errorFooter.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/ConfirmationMessage/confirmAddRole.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/ConfirmationMessage/removeGroupConfirm.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/ConfirmationMessage/removeUserConfirm.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/ConfirmationMessage/removeMessageConfirm.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/ConfirmationMessage/restoreMessageConfirm.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/ConfirmationMessage/resetPasswordConfirm.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/ConfirmationMessage/addUserConfirm.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Tool/workspace/roles/roleUserLabel.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Tool/workspace/roles/roleGroupLabel.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/ConfirmationMessage/removeWorkspacesConfirm.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/ConfirmationMessage/noRoleSelected.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Administration/Roles/renderRoleRow.html.twig"
+    "@ClarolineCoreBundle/Resources/views/Tool/workspace/parameters/model/modelRow.html.twig"
+    "@ClarolineCoreBundle/Resources/views/Tool/workspace/parameters/model/userRow.html.twig"
+    "@ClarolineCoreBundle/Resources/views/Tool/workspace/parameters/model/groupRow.html.twig"
+    "@ClarolineCoreBundle/Resources/views/Tool/workspace/parameters/model/resourceElement.html.twig"
+    "@ClarolineCoreBundle/Resources/views/Tool/workspace/parameters/model/tabElement.html.twig"
+    %}<script src="{{ asset_url }}"></script>
 {% endjavascripts %}
 
 {# TODO: remove this when custom js builds are available #}
