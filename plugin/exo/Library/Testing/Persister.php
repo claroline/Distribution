@@ -81,7 +81,7 @@ class Persister
     public function choiceQuestion($title, array $choices = [], $description = '')
     {
         $question = new Question();
-        $question->setUuid(uniqid($title));
+        $question->setUuid(uniqid('', true));
         $question->setMimeType(QuestionType::CHOICE);
         $question->setTitle($title);
         $question->setContent('Invite...');
@@ -111,7 +111,7 @@ class Persister
     public function openQuestion($title)
     {
         $question = new Question();
-        $question->setUuid(uniqid($title));
+        $question->setUuid(uniqid('', true));
         $question->setMimeType(QuestionType::OPEN);
         $question->setTitle($title);
         $question->setContent('Invite...');
@@ -162,7 +162,7 @@ class Persister
     public function matchQuestion($title, $labels = [], $proposals = [])
     {
         $question = new Question();
-        $question->setUuid(uniqid($title));
+        $question->setUuid(uniqid('', true));
         $question->setMimeType(QuestionType::MATCH);
         $question->setTitle($title);
         $question->setContent('Invite...');
@@ -197,7 +197,7 @@ class Persister
      public function exercise($title, array $questionData = [], User $user = null)
      {
          $exercise = new Exercise();
-         $exercise->setUuid(uniqid($title));
+         $exercise->setUuid(uniqid('', true));
          $exercise->setDescription('This is the description of my exercise');
          if ($user) {
              if (!isset($this->exoType)) {
@@ -286,7 +286,7 @@ class Persister
     public function category($name, User $user = null)
     {
         $category = new Category();
-        $category->setUuid(uniqid($name));
+        $category->setUuid(uniqid('', true));
         $category->setName($name);
 
         if (!empty($user)) {
@@ -335,7 +335,9 @@ class Persister
         $hint = new Hint();
         $hint->setData($text);
         $hint->setPenalty($penalty);
-        $hint->setQuestion($question);
+
+        $question->addHint($hint);
+
         $this->om->persist($hint);
 
         return $hint;
