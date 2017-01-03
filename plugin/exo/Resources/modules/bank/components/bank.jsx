@@ -58,7 +58,7 @@ class Bank extends Component {
     ]
 
     return (
-      <div>
+      <div className="page-container">
         <PageHeader title="Banque de questions">
           <PageActions actions={actions} />
         </PageHeader>

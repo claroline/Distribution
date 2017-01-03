@@ -75,7 +75,7 @@ class Docimology extends Component {
 
   render() {
     return (
-      <div>
+      <div className="page-container">
         <PageHeader title="Docimology">
           <PageActions
             actions={[{

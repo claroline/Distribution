@@ -2,6 +2,7 @@ import React, {PropTypes as T} from 'react'
 import {connect} from 'react-redux'
 
 import PageHeader from './../../components/layout/page-header.jsx'
+import {Loader} from './../../api/components/loader.jsx'
 import {TopBar} from './top-bar.jsx'
 import {Overview} from './../overview/overview.jsx'
 import Player from './../player/components/player.jsx'
@@ -21,7 +22,7 @@ import {
 } from './../enums'
 
 let Quiz = props =>
-  <div>
+  <div className="page-container">
     <PageHeader title={props.quiz.title} />
     {props.editable &&
       <TopBar
@@ -30,7 +31,10 @@ let Quiz = props =>
         testQuiz={() => props.testQuiz(props.quiz, props.steps)}
       />
     }
-    {viewComponent(props.viewMode)}
+
+    <div className="page-content">
+      {viewComponent(props.viewMode)}
+    </div>
   </div>
 
 Quiz.propTypes = {
