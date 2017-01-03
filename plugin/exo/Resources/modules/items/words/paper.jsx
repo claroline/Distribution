@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default () =>
+export const WordPaper = () =>
   <div>
     Words paper
   </div>

@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default () =>
+export const MatchPaper = () =>
   <div>
     Match paper
   </div>

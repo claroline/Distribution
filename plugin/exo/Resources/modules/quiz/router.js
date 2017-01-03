@@ -1,10 +1,9 @@
 import {Router, history} from 'backbone'
 import {actions} from './actions'
 import {actions as paperActions} from './papers/actions'
-import {VIEW_EDITOR, VIEW_OVERVIEW, VIEW_PAPERS} from './enums'
+import {VIEW_EDITOR, VIEW_OVERVIEW} from './enums'
 
 export function makeRouter(dispatch) {
-  const goTo = section => () => dispatch(actions.updateViewMode(section))
   const QuizRouter = Router.extend({
     routes: {
       'overview': () => dispatch(actions.updateViewMode(VIEW_OVERVIEW)),

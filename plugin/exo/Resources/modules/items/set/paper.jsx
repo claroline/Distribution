@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default () =>
+export const SetPaper = () =>
   <div>
     Set paper
   </div>

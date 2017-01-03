@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default () =>
+export const ClozePaper = () =>
   <div>
     Cloze paper
   </div>

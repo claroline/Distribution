@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default () =>
+export const ChoicePaper = () =>
   <div>
     Choice paper
   </div>

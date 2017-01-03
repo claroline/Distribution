@@ -1,6 +1,6 @@
 import React from 'react'
 import {shallow} from 'enzyme'
-import {spyConsole, renew, ensure, mockTranslator} from './../../utils/test'
+import {spyConsole, renew, ensure, mockTranslator} from './../../../utils/test'
 import {Papers} from './papers.jsx'
 
 describe('<Papers/>', () => {

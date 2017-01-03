@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default () =>
+export const GraphicPaper = () =>
   <div>
     Graphic paper
   </div>

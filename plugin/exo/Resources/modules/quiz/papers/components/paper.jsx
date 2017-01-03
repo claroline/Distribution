@@ -36,7 +36,7 @@ Paper.propTypes = {
         content: T.string.isRequired,
         type: T.string.isRequired
       })).isRequired
-    })).isRequired,
+    })).isRequired
   }).isRequired
 }
 
