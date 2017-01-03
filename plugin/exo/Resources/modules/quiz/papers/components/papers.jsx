@@ -15,7 +15,7 @@ export const PaperRow = props =>
     <td>{tex(props.finished ? 'yes' : 'no')}</td>
     <td>{props.score || '-'}</td>
     <td>
-      <a href={`#papers/${props.id}`}>
+      <a href={`#quiz/${props.quizId}/papers/${props.id}`}>
         <span className="fa fa-eye"></span>
       </a>
     </td>
@@ -23,6 +23,7 @@ export const PaperRow = props =>
 
 PaperRow.propTypes = {
   admin: T.bool.isRequired,
+  quizId: T.string.isRequired,
   id: T.string.isRequired,
   user: T.shape({
     name: T.string.isRequired
@@ -51,20 +52,27 @@ let Papers = props =>
     </thead>
     <tbody>
       {props.papers.map((paper, idx) =>
-        <PaperRow key={idx} admin={props.admin} {...paper}/>
+        <PaperRow
+          key={idx}
+          quizId={props.quizId}
+          admin={props.admin}
+          {...paper}
+        />
       )}
     </tbody>
   </table>
 
 Papers.propTypes = {
   admin: T.bool.isRequired,
+  quizId: T.string.isRequired,
   papers: T.arrayOf(T.object).isRequired
 }
 
 function mapStateToProps(state) {
   return {
     admin: selectors.editable(state),
-    papers: paperSelectors.papers(state)
+    papers: paperSelectors.papers(state),
+    quizId: paperSelectors.quizId(state)
   }
 }
 

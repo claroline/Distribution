@@ -15,17 +15,18 @@ export const actions = {}
 const initPapers = makeActionCreator(PAPERS_INIT, 'papers')
 const setCurrentPaper = makeActionCreator(PAPER_CURRENT, 'id')
 
-actions.displayPaper = id => {
-  invariant(id, 'Paper id is mandatory')
+actions.displayPaper = (quizId, paperId) => {
+  invariant(quizId, 'Quiz id is mandatory')
+  invariant(paperId, 'Paper id is mandatory')
   return (dispatch, getState) => {
     if (!selectors.papersFetched(getState())) {
-      fetchPapers(selectors.quizId(getState())).then(papers => {
+      fetchPapers(quizId).then(papers => {
         dispatch(initPapers(papers))
-        dispatch(setCurrentPaper(id))
+        dispatch(setCurrentPaper(paperId))
         dispatch(baseActions.updateViewMode(VIEW_PAPER))
       })
     } else {
-      dispatch(setCurrentPaper(id))
+      dispatch(setCurrentPaper(paperId))
       dispatch(baseActions.updateViewMode(VIEW_PAPER))
     }
   }

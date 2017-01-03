@@ -8,7 +8,9 @@ export function makeRouter(dispatch) {
     routes: {
       'overview': () => dispatch(actions.updateViewMode(VIEW_OVERVIEW)),
       'editor': () => dispatch(actions.updateViewMode(VIEW_EDITOR)),
-      'papers/:id': id => dispatch(paperActions.displayPaper(id)),
+      'quiz/:qid/papers/:pid': (quizId, paperId) => {
+        dispatch(paperActions.displayPaper(quizId, paperId))
+      },
       'papers': () => dispatch(paperActions.listPapers()),
       '.*': () => dispatch(actions.updateViewMode(VIEW_OVERVIEW))
     }
