@@ -21,6 +21,11 @@ import {
 let Quiz = props =>
   <div>
     <PageHeader title={props.quiz.title} />
+
+    {props.isLoading &&
+      <Loader />
+    }
+
     {props.editable &&
       <TopBar
         {...props}
@@ -32,6 +37,7 @@ let Quiz = props =>
   </div>
 
 Quiz.propTypes = {
+  isLoading: T.bool.isRequired,
   quiz: T.shape({
     id: T.string.isRequired,
     title: T.string.isRequired
@@ -63,6 +69,7 @@ function viewComponent(view) {
 
 function mapStateToProps(state) {
   return {
+    isLoading: select.isLoading(state),
     quiz: select.quiz(state),
     steps: select.steps(state),
     viewMode: select.viewMode(state),

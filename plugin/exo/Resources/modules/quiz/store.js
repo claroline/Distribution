@@ -8,6 +8,7 @@ import {
 } from 'redux'
 import thunk from 'redux-thunk'
 
+import {reducers as apiReducers} from './../api/reducers'
 import {reducers as quizReducers} from './reducers'
 import {reducers as editorReducers} from './editor/reducers'
 import {reducers as playerReducers} from './player/reducers'
@@ -49,12 +50,15 @@ const returnSelf = (state = null) => state
 export function makeReducer(editable) {
   return combineReducers({
     noServer: returnSelf,
+    currentRequests: apiReducers.currentRequests,
     viewMode: quizReducers.viewMode,
     quiz: editable ? editorReducers.quiz : returnSelf,
     steps: editable ? editorReducers.steps : returnSelf,
     items: editable ? editorReducers.items : returnSelf,
     modal: editable ? editorReducers.modal : returnSelf,
     editor: editable ? editorReducers.editor : returnSelf,
+
+    // TODO : combine in a sub object for cleaner store
     testMode: playerReducers.testMode,
     currentStep: playerReducers.currentStep,
     paper: playerReducers.paper,

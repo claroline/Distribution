@@ -13,6 +13,7 @@ describe('createStore', () => {
     assertEqual(store.getState(), {
       noServer: false,
       testMode: false,
+      currentRequests: {},
       quiz: {id: '1'},
       steps: {},
       items: {},
