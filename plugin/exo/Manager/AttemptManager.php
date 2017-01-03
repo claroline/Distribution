@@ -128,33 +128,36 @@ class AttemptManager
      * @param Exercise $exercise - the exercise to play
      * @param User     $user     - the user who wants to play the exercise
      *
-     * @return Paper
+     * @return Paper - a new paper or an unfinished one
      */
     public function startOrContinue(Exercise $exercise, User $user = null)
     {
-        $papers = [];
-        if (null !== $user) {
-            // If it's not an anonymous, load the previous unfinished papers
-            $papers = $this->paperRepository->findUnfinishedPapers($exercise, $user);
-        }
+        $paper = null; // The paper to use for the new attempt
 
-        if (empty($papers)) {
-            // Create a new paper for anonymous or if no unfinished
-            $paper = PaperGenerator::create($exercise, $user);
-        } else {
-            if (!$exercise->isInterruptible()) {
-                // User is not allowed to continue is previous paper => close the previous and open a new one
-                $this->end($papers[0], false);
-
-                $paper = PaperGenerator::create($exercise, $user, $papers[0]);
+        // If it's not an anonymous, load the previous unfinished papers
+        $unfinishedPapers = (null !== $user) ? $this->paperRepository->findUnfinishedPapers($exercise, $user) : [];
+        if (!empty($unfinishedPapers)) {
+            if ($exercise->isInterruptible()) {
+                // Continue a previous attempt
+                $paper = $unfinishedPapers[0];
             } else {
-                // User can continue his previous paper
-                $paper = $papers[0];
+                // Close the paper
+                $this->end($unfinishedPapers[0], false);
             }
         }
 
-        $this->om->persist($paper);
-        $this->om->flush();
+        // Start a new attempt is needed
+        if (empty($paper)) {
+            // Get the last paper for generation
+            $lastPaper = (null !== $user) ? $this->paperRepository->findLastPaper($exercise, $user) : null;
+
+            // Generate a new paper
+            $paper = PaperGenerator::create($exercise, $user, $lastPaper);
+
+            // Save the new paper
+            $this->om->persist($paper);
+            $this->om->flush();
+        }
 
         return $paper;
     }

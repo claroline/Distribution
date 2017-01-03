@@ -18,6 +18,8 @@ class Hint
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @var int
      */
     private $id;
 
@@ -27,6 +29,8 @@ class Hint
 
     /**
      * @ORM\ManyToOne(targetEntity="Question", inversedBy="hints")
+     *
+     * @var Question
      */
     private $question;
 
