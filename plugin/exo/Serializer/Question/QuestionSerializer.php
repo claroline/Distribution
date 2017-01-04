@@ -120,7 +120,7 @@ class QuestionSerializer extends AbstractSerializer
             'content' => 'content',
             'title' => 'title',
             'meta' => function (Question $question) use ($options) {
-                $this->serializeMetadata($question, $options);
+                return $this->serializeMetadata($question, $options);
             },
         ], $question, $questionData);
 
