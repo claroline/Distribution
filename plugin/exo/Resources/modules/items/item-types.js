@@ -16,8 +16,6 @@ const typeProperties = [
   'question',
   'editor',
   'player',
-  'component',
-  'reduce',
   'decorate',
   'validate',
   'paper'
@@ -39,8 +37,6 @@ export function registerItemType(definition) {
 
   definition.editor.decorate = getOptionalFunction(definition.editor, 'decorate', item => item)
   definition.editor.validate = getOptionalFunction(definition.editor, 'validate', () => ({}))
-  definition.player.decorate = getOptionalFunction(definition.player, 'decorate', item => item)
-  definition.player.validate = getOptionalFunction(definition.player, 'validate', () => ({}))
 
   registeredTypes[definition.type] = definition
 }
@@ -119,19 +115,7 @@ function assertValidItemType(definition) {
   )
   invariant(
     definition.player,
-    makeError('player is mandatory', definition)
-  )
-  invariant(
-    definition.player.component,
     makeError('player component is mandatory', definition)
-  )
-  invariant(
-    definition.player.reduce,
-    makeError('player reduce is mandatory', definition)
-  )
-  invariant(
-    typeof definition.player.reduce === 'function',
-    makeError('player reduce must be a function', definition)
   )
   invariant(
     definition.paper,

@@ -18,7 +18,7 @@ class PaperRepository extends EntityRepository
      * Mostly use to know the next paper number.
      *
      * @param Exercise $exercise
-     * @param User $user
+     * @param User     $user
      *
      * @return Paper
      */

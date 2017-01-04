@@ -1,11 +1,11 @@
-import player from './player'
 import editor from './editor'
 import {MatchPaper} from './paper.jsx'
+import {MatchPlayer} from './player.jsx'
 
 export default {
   type: 'application/x.match+json',
   name: 'match',
   paper: MatchPaper,
-  player,
+  player: MatchPlayer,
   editor
 }

@@ -1,4 +1,4 @@
 import React from 'react'
 
-export const Cloze = () =>
+export const ClozePlayer = () =>
   <div>Cloze player</div>

@@ -1,4 +1,4 @@
 import React from 'react'
 
-export const Set = () =>
+export const SetPlayer = () =>
   <div>Set player</div>

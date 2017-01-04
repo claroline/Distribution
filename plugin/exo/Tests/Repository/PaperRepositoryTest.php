@@ -65,7 +65,7 @@ class PaperRepositoryTest extends TransactionalTestCase
 
         $this->user = $this->persist->user('john');
         $this->exercise = $this->persist->exercise('Exercise 1', [
-            $question
+            $question,
         ], $this->user);
 
         $paper1 = PaperGenerator::create($this->exercise, $this->user);
@@ -95,7 +95,7 @@ class PaperRepositoryTest extends TransactionalTestCase
             $paper2,
             $paperFinished,
             $paperOtherUser,
-            $paperOtherExercise
+            $paperOtherExercise,
         ];
 
         $this->om->flush();

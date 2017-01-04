@@ -1,4 +1,4 @@
 import React from 'react'
 
-export const Graphic = () =>
+export const GraphicPlayer = () =>
   <div>Graphic player</div>

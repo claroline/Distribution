@@ -48,14 +48,6 @@ const Player = props =>
       </Panel>
     ))}
 
-    <PlayerNav
-      previous={props.previous}
-      next={props.next}
-      navigateTo={(step) => props.navigateTo(props.quizId, props.paper.id, step, props.answers)}
-      submit={() => props.submit(props.quizId, props.paper.id, props.answers)}
-      finish={() => props.finish(props.quizId, props.paper, props.answers)}
-    />
-  </div>
 
 Player.propTypes = {
   quizId: T.string.isRequired,

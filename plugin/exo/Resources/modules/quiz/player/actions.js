@@ -48,14 +48,6 @@ actions.play = (quiz, steps, previousPaper = null, testMode = false) => {
       return dispatch(
         apiActions.sendRequest(['exercise_attempt_start', {exerciseId: quiz.id}], {method: 'POST'})
       ).then(data => dispatch(initPlayer(data.paper, data.answers)))
-
-      /*return dispatch((dispatch) => {
-        api
-          .startAttempt(quiz.id)
-          .then((normalizedData) => {
-            dispatch(initPlayer(normalizedData.paper, normalizedData.answers))
-          })
-      })*/
     } else {
       // Create a new local paper and open the player
       return dispatch(
@@ -85,9 +77,6 @@ actions.submit = (quizId, paperId, answers = null) => {
           {body: JSON.stringify(answerRequest)}
         )
       )
-
-      answersPromise = api
-        .submitAnswers(quizId, paperId, answers)
     } else {
       // Nothing to do
       answersPromise = Promise.resolve()
@@ -106,10 +95,7 @@ actions.finish = (quizId, paper, pendingAnswers = null) => {
       let paperPromise
       if (shouldCallServer(getState())) {
         // Send finish request to API
-        dispatch(apiActions.sendRequest())
-        paperPromise = api
-          .finishAttempt(quizId, paper.id)
-          .then(() => dispatch(apiActions.receiveResponse()))
+        paperPromise = api.finishAttempt(quizId, paper.id)
       } else {
         // Just resolve the current paper (the next actions will mark it as finished)
         paperPromise = Promise.resolve({paper: paper})

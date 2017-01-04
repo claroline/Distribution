@@ -1,7 +1,7 @@
 import React, {PropTypes as T} from 'react'
 import {Textarea} from './../../components/form/textarea.jsx'
 
-export const Open = (props) =>
+export const OpenPlayer = (props) =>
   <div>
     <Textarea
       id={`open-${props.item.id}-data`}
@@ -10,7 +10,7 @@ export const Open = (props) =>
     />
   </div>
 
-Open.propTypes = {
+OpenPlayer.propTypes = {
   item: T.shape({
     id: T.string.isRequired,
     contentType: T.string.isRequired,
@@ -20,6 +20,6 @@ Open.propTypes = {
   onChange: T.func.isRequired
 }
 
-Open.defaultProps = {
+OpenPlayer.defaultProps = {
   answer: ''
 }
