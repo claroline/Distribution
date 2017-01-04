@@ -1,4 +1,5 @@
 import {makeActionCreator} from './../../utils/actions'
+import {actions as apiActions} from './../../api/actions'
 import {actions as quizActions} from './../actions'
 import {VIEW_PLAYER, VIEW_OVERVIEW} from './../enums'
 import {api} from './api'
@@ -43,12 +44,14 @@ actions.play = (quiz, steps, previousPaper = null, testMode = false) => {
     if (shouldCallServer(getState())) {
       // Request a paper from the API and open the player
       return dispatch((dispatch) => {
+        dispatch(apiActions.sendRequest())
+
         api
           .startAttempt(quiz.id)
-          .then((normalizedData) =>
-            dispatch(initPlayer(normalizedData.paper, normalizedData.answers)
-          )
-        )
+          .then((normalizedData) => {
+            /*dispatch(apiActions.receiveResponse())*/
+            dispatch(initPlayer(normalizedData.paper, normalizedData.answers))
+          })
       })
     } else {
       // Create a new local paper and open the player
@@ -64,7 +67,11 @@ actions.submit = (quizId, paperId, answers = null) => {
     let answersPromise
     if (answers && shouldCallServer(getState())) {
       // Send answers to the API
-      answersPromise = api.submitAnswers(quizId, paperId, answers)
+      dispatch(apiActions.sendRequest())
+
+      answersPromise = api
+        .submitAnswers(quizId, paperId, answers)
+        .then(() => dispatch(apiActions.receiveResponse()))
     } else {
       // Nothing to do
       answersPromise = Promise.resolve()
@@ -83,7 +90,10 @@ actions.finish = (quizId, paper, pendingAnswers = null) => {
       let paperPromise
       if (shouldCallServer(getState())) {
         // Send finish request to API
-        paperPromise = api.finishAttempt(quizId, paper.id)
+        dispatch(apiActions.sendRequest())
+        paperPromise = api
+          .finishAttempt(quizId, paper.id)
+          .then(() => dispatch(apiActions.receiveResponse()))
       } else {
         // Just resolve the current paper (the next actions will mark it as finished)
         paperPromise = Promise.resolve({paper: paper})

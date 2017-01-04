@@ -14,6 +14,30 @@ use UJM\ExoBundle\Entity\Question\Hint;
 class PaperRepository extends EntityRepository
 {
     /**
+     * Returns the last paper (finished or not) done by a User.
+     * Mostly use to know the next paper number.
+     *
+     * @param Exercise $exercise
+     * @param User     $user
+     *
+     * @return Paper
+     */
+    public function findLastPaper(Exercise $exercise, User $user)
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.user = :user')
+            ->andWhere('p.exercise = :exercise')
+            ->orderBy('p.number', 'DESC')
+            ->setMaxResults(1)
+            ->setParameters([
+                'user' => $user,
+                'exercise' => $exercise,
+            ])
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
      * Returns the unfinished papers of a user for a given exercise, if any.
      *
      * @param Exercise $exercise
@@ -45,7 +69,7 @@ class PaperRepository extends EntityRepository
      */
     public function findScore(Paper $paper)
     {
-        return $this->getEntityManager()
+        return (int) $this->getEntityManager()
             ->createQuery('
                 SELECT SUM(a.score) 
                 FROM UJM\ExoBundle\Entity\Attempt\Answer AS a
@@ -67,12 +91,12 @@ class PaperRepository extends EntityRepository
      */
     public function isFullyEvaluated(Paper $paper)
     {
-        return 0 === $this->getEntityManager()
+        return 0 === (int) $this->getEntityManager()
             ->createQuery('
                 SELECT COUNT(a) 
                 FROM UJM\ExoBundle\Entity\Attempt\Answer AS a
                 WHERE a.paper = :paper
-                  AND a.score IS NOT NULL
+                  AND a.score IS NULL
             ')
             ->setParameters([
                 'paper' => $paper,
@@ -89,7 +113,7 @@ class PaperRepository extends EntityRepository
      */
     public function countExercisePapers(Exercise $exercise)
     {
-        return $this->getEntityManager()
+        return (int) $this->getEntityManager()
             ->createQuery('
                 SELECT COUNT(p) 
                 FROM UJM\ExoBundle\Entity\Attempt\Paper AS p
@@ -111,7 +135,7 @@ class PaperRepository extends EntityRepository
      */
     public function countUserFinishedPapers(Exercise $exercise, User $user)
     {
-        return $this->getEntityManager()
+        return (int) $this->getEntityManager()
             ->createQuery('
                 SELECT COUNT(p) 
                 FROM UJM\ExoBundle\Entity\Attempt\Paper AS p
@@ -136,7 +160,7 @@ class PaperRepository extends EntityRepository
      */
     public function hasHint(Paper $paper, Hint $hint)
     {
-        return 0 < $this->createQueryBuilder('p')
+        return 0 < (int) $this->createQueryBuilder('p')
             ->select('COUNT(p)')
             ->join('p.exercise', 'e')
             ->join('e.steps', 's')
