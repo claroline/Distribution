@@ -14,10 +14,12 @@ SolutionScore.propTypes = {
   })
 }
 
-const Feedback = () => {
+const Feedback = (props) => {
+  if (!props.feedback) return <span/>
+
   const popoverClick = (
-    <Popover id="popover-trigger-click" title="feedback">
-      <strong>Holy guacamole!</strong> Check this info.
+    <Popover id="popover-trigger-click">
+      {props.feedback}
     </Popover>
   )
 
@@ -26,6 +28,10 @@ const Feedback = () => {
         <i className="fa fa-comments-o"></i>
     </OverlayTrigger>
   )
+}
+
+Feedback.propTypes = {
+  feedback: T.string
 }
 
 export class ChoicePaper extends Component
@@ -55,7 +61,7 @@ export class ChoicePaper extends Component
                 <label
                   htmlFor={solution.id}> {this.getChoiceById(solution.id).data}
                 </label>
-                <Feedback/>
+                <Feedback feedback={solution.feedback}/>
                 <SolutionScore solution={solution}/>
               </div>
             )}
@@ -70,13 +76,14 @@ export class ChoicePaper extends Component
                   checked={solution.score !== 0}
                   id={solution.id}
                   name={this.props.item.id}
+                  type={this.props.item.multiple ? 'checkbox': 'radio'}
                   disabled
                 />
                 <label
                   className="control-label"
                   htmlFor={solution.id}> {this.getChoiceById(solution.id).data}
                 </label>
-                <Feedback/>
+                <Feedback feedback={solution.feedback}/>
                 <SolutionScore solution={solution}/>
               </div>
             )}
