@@ -30,7 +30,7 @@ export class ChoicePlayer extends Component {
 
   render() {
     return (
-      <div className="container">
+      <div className="container .choice-items">
         {this.state.choices.map(choice =>
           <div
             key={choice.id}
