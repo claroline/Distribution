@@ -39,7 +39,7 @@ export class ChoicePlayer extends Component {
               'item',
               this.props.item.multiple ? 'checkbox': 'radio'
             )}
-            onClick={e => this.props.onChange(this.select(
+            onClick={() => this.props.onChange(this.select(
               this.props.item.multiple,
               choice.id,
               this.props.answer
