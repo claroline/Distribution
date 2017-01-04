@@ -30,6 +30,39 @@ function getUrl(target) {
   }
 }
 
+function handleSuccess(response, dispatch) {
+  if (204 !== response.status) {
+    return getResponseData(response)
+  } else {
+    // Empty response
+    return null
+  }
+}
+
+function handleError(response, dispatch) {
+  switch(response.status) {
+    // User needs to log in
+    case 401:
+      dispatch(alertActions.addAlert('warning', 'You need to be logged.'))
+      break
+
+    // User is not authorized
+    case 403:
+      dispatch(alertActions.addAlert('error', 'You are not authorized to do this.'))
+      break
+
+    // Validation error
+    case 422:
+      dispatch(alertActions.addAlert('error', 'Invalid data sent.'))
+      break
+
+    // All other errors
+    default:
+      dispatch(alertActions.addAlert('error', 'Server error.'))
+      break
+  }
+}
+
 /**
  * Extracts data from response object.
  *
@@ -41,7 +74,7 @@ function getResponseData(response) {
   let data = null
 
   if (response.body) {
-    const contentType = response.headers.get('content-type');
+    const contentType = response.headers.get('content-type')
     if (contentType && contentType.indexOf('application/json') !== -1) {
       // Decode JSON
       data = response.json()
@@ -69,36 +102,10 @@ export class Api {
       .then(response => {
         this.dispatch(apiActions.receiveResponse)
         if (response.ok) {
-          if (204 !== response.status) {
-            return getResponseData(response)
-          } else {
-            return null
-          }
+          return handleSuccess(response, this.dispatch)
         } else {
-          switch(response.status) {
-            // User needs to log in
-            case 401:
-              this.dispatch(alertActions.addAlert('warning', 'You need to be logged.'))
-              break
-
-            // User is not authorized
-            case 403:
-              this.dispatch(alertActions.addAlert('error', 'You are not authorized to do this.'))
-              break
-
-            // Validation error
-            case 422:
-              this.dispatch(alertActions.addAlert('error', 'Invalid data sent.'))
-              break
-
-            // All other errors
-            default:
-              this.dispatch(alertActions.addAlert('error', 'Server error.'))
-              break
-          }
+          return handleError(response, this.dispatch)
         }
-
-        return response.json()
       })
   }
 

@@ -3,6 +3,8 @@ import uuid from 'uuid'
 import {update} from './../utils/utils'
 import {makeReducer} from './../utils/reducers'
 
+// TODO : validate params
+
 import {
   ALERT_ADD,
   ALERT_REMOVE
