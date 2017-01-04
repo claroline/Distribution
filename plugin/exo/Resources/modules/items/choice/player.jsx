@@ -2,18 +2,26 @@ import React, {PropTypes as T} from 'react'
 import shuffle from 'lodash/shuffle'
 
 export const ChoicePlayer = props =>
-  <div>
-    {getChoices(props.item.choices, props.item.random).map(choice =>
-      <div key={choice.id}>
+  <div className="container">
+    {randomize(props.item.choices, props.item.random).map(choice =>
+      <div
+        key={choice.id}
+        className={props.item.multiple ? 'checkbox': 'radio'}
+      >
         <input
           checked={isChecked(choice.id, props.answer)}
           id={choice.id}
           name={props.item.id}
           type={props.item.multiple ? 'checkbox': 'radio'}
-          onChange={e => props.onChange(select(props.item.multiple, choice.id, props.answer, e.target.checked))}
+          onChange={e => props.onChange(
+            select(props.item.multiple, choice.id, props.answer, e.target.checked)
+          )}
         />
         <label
-          htmlFor={choice.id}>{choice.data}
+          className="control-label"
+          htmlFor={choice.id}
+        >
+          {choice.data}
         </label>
       </div>
     )}
@@ -37,6 +45,10 @@ ChoicePlayer.defaultProps = {
   answer: []
 }
 
+function randomize(choices, random) {
+  return random ? shuffle(choices) : choices
+}
+
 function isChecked(choiceId, answers) {
   return answers.indexOf(choiceId) > -1
 }
@@ -46,9 +58,7 @@ function select(multiple, choiceId, answers, isChecked) {
     return [choiceId]
   }
 
-  return isChecked ? [choiceId].concat(answers): answers.filter(answer => answer !== choiceId)
-}
-
-function getChoices(choices, random) {
-  return random ? shuffle(choices) : choices
+  return isChecked ?
+    [choiceId].concat(answers) :
+    answers.filter(answer => answer !== choiceId)
 }
