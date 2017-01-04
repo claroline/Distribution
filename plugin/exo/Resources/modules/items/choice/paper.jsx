@@ -110,6 +110,6 @@ ChoicePaper.propTypes = {
     solutions: T.arrayOf(T.object)
   }).isRequired,
   answer: T.shape({
-    data: T.string
+    data: T.array
   })
 }

@@ -1,9 +1,10 @@
 import React, {PropTypes as T} from 'react'
+import shuffle from 'lodash/shuffle'
 
 export const ChoicePlayer = props =>
-  <div className="container">
-    {props.item.choices.map(choice =>
-      <div key={choice.id} className={props.item.multiple ? 'checkbox': 'radio'}>
+  <div>
+    {getChoices(props.item.choices, props.item.random).map(choice =>
+      <div key={choice.id}>
         <input
           className={props.item.multiple ? 'checkbox': 'optradio'}
           checked={isChecked(choice.id, props.answer)}
@@ -48,4 +49,8 @@ function select(multiple, choiceId, answers, isChecked) {
   }
 
   return isChecked ? [choiceId].concat(answers): answers.filter(answer => answer !== choiceId)
+}
+
+function getChoices(choices, random) {
+  return random ? shuffle(choices) : choices
 }

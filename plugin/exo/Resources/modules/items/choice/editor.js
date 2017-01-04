@@ -29,7 +29,7 @@ function decorate(item) {
   const choicesWithSolutions = item.choices.map(
     choice => Object.assign({}, choice, {
       _score: solutionsById[choice.id].score,
-      _feedback: solutionsById[choice.id].feedback,
+      _feedback: solutionsById[choice.id].feedback || '',
       _checked: false,
       _deletable: item.solutions.length > 2
     })

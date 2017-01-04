@@ -116,49 +116,47 @@ StartButton.propTypes = {
 
 const Layout = props =>
   <div className="quiz-overview">
-    <div className="panel-body">
-      {props.empty &&
-        <div className="row">
-          <div className="col-md-8 col-md-offset-2">
-            <div className="alert alert-info text-center">
-              <span className="fa fa-fw fa-warning"></span>
-              <span>
-                {tex(props.editable ?
-                  'exo_empty_user_can_edit' :
-                  'exo_empty_user_read_only'
-                )}
-              </span>
-            </div>
-          </div>
-        </div>
-      }
+    {props.empty &&
       <div className="row">
         <div className="col-md-8 col-md-offset-2">
-          {props.description &&
-            <div className="exercise-description panel panel-default">
-              <div
-                className="panel-body"
-                dangerouslySetInnerHTML={{ __html: props.description }}
-              ></div>
-            </div>
-          }
-          {props.parameters.showMetadata &&
-            <Parameters {...props}/>
-          }
+          <div className="alert alert-info text-center">
+            <span className="fa fa-fw fa-warning"></span>
+            <span>
+              {tex(props.editable ?
+                'exo_empty_user_can_edit' :
+                'exo_empty_user_read_only'
+              )}
+            </span>
+          </div>
         </div>
       </div>
-      <div className="row">
-        <div className="col-md-8 col-md-offset-2 text-center">
-          {props.empty && props.editable &&
-            <a href="#/steps" role="button" className="btn btn-block btn-primary btn-lg">
-              <span className="fa fa-pencil"></span>
-              {tex('edit')}
-            </a>
-          }
-          {!props.empty &&
-            <StartButton onClick={props.play} />
-          }
-        </div>
+    }
+    <div className="row">
+      <div className="col-md-8 col-md-offset-2">
+        {props.description &&
+          <div className="exercise-description panel panel-default">
+            <div
+              className="panel-body"
+              dangerouslySetInnerHTML={{ __html: props.description }}
+            ></div>
+          </div>
+        }
+        {props.parameters.showMetadata &&
+          <Parameters {...props}/>
+        }
+      </div>
+    </div>
+    <div className="row">
+      <div className="col-md-8 col-md-offset-2 text-center">
+        {props.empty && props.editable &&
+          <a href="#/steps" role="button" className="btn btn-block btn-primary btn-lg">
+            <span className="fa fa-pencil"></span>
+            {tex('edit')}
+          </a>
+        }
+        {!props.empty &&
+          <StartButton onClick={props.play} />
+        }
       </div>
     </div>
   </div>
