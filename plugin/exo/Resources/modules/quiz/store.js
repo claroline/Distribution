@@ -52,6 +52,7 @@ export function makeReducer(editable) {
   return combineReducers({
     noServer: returnSelf,
     currentRequests: apiReducers.currentRequests,
+
     viewMode: quizReducers.viewMode,
     quiz: editable ? editorReducers.quiz : returnSelf,
     steps: editable ? editorReducers.steps : returnSelf,
@@ -64,6 +65,7 @@ export function makeReducer(editable) {
     currentStep: playerReducers.currentStep,
     paper: playerReducers.paper,
     answers: playerReducers.answers,
+
     papers: reducePapers
   })
 }

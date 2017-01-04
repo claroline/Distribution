@@ -4,9 +4,19 @@ import { generateUrl } from './../utils/routing'
 import { actions as apiActions } from './actions'
 import { actions as alertActions } from './../alert/actions'
 
-const baseRequest = {
+const defaultRequest = {
   method: 'GET',
   credentials: 'include'
+}
+
+class ApiError extends Error {
+  constructor(msg, status, detail = null) {
+    super(msg)
+    console.log('I am an api error')
+
+    this.status = status
+    this.detail = detail
+  }
 }
 
 /**
@@ -30,7 +40,29 @@ function getUrl(target) {
   }
 }
 
-function handleSuccess(response, dispatch) {
+function handleRequest(dispatch, target, request) {
+  const url = getUrl(target)
+  const finalRequest = Object.create({}, defaultRequest, request)
+
+  dispatch(apiActions.sendRequest)
+
+  return fetch(url, finalRequest)
+    .then(response => handleResponse(dispatch, response))
+    .then(response => handleResponseSuccess(response, this.dispatch))
+    .catch(error => handleResponseError(dispatch, error))
+}
+
+function handleResponse(dispatch, response) {
+  dispatch(apiActions.receiveResponse)
+
+  if (!response.ok) {
+    throw ApiError(response.statusText, response.status)
+  }
+
+  return response
+}
+
+function handleResponseSuccess(dispatch, response) {
   if (204 !== response.status) {
     return getResponseData(response)
   } else {
@@ -39,8 +71,9 @@ function handleSuccess(response, dispatch) {
   }
 }
 
-function handleError(response, dispatch) {
-  switch(response.status) {
+function handleResponseError(dispatch, error) {
+  dispatch(alertActions.addAlert('error', error.message))
+  /*switch(response.status) {
     // User needs to log in
     case 401:
       dispatch(alertActions.addAlert('warning', 'You need to be logged.'))
@@ -60,7 +93,7 @@ function handleError(response, dispatch) {
     default:
       dispatch(alertActions.addAlert('error', 'Server error.'))
       break
-  }
+  }*/
 }
 
 /**
@@ -93,20 +126,7 @@ export class Api {
   }
 
   request(target, request) {
-    const url = getUrl(target)
-    const finalRequest = Object.create({}, baseRequest, request)
-
-    this.dispatch(apiActions.sendRequest)
-
-    return fetch(url, finalRequest)
-      .then(response => {
-        this.dispatch(apiActions.receiveResponse)
-        if (response.ok) {
-          return handleSuccess(response, this.dispatch)
-        } else {
-          return handleError(response, this.dispatch)
-        }
-      })
+    return handleRequest(this.dispatch, target, request)
   }
 
   get(target, request = {}) {
