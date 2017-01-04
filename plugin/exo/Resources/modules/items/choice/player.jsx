@@ -1,10 +1,11 @@
 import React, {PropTypes as T} from 'react'
 
 export const ChoicePlayer = props =>
-  <div>
+  <div className="container">
     {props.item.choices.map(choice =>
-      <div key={choice.id}>
+      <div key={choice.id} className={props.item.multiple ? 'checkbox': 'radio'}>
         <input
+          className={props.item.multiple ? 'checkbox': 'optradio'}
           checked={isChecked(choice.id, props.answer)}
           id={choice.id}
           name={props.item.id}
@@ -12,6 +13,7 @@ export const ChoicePlayer = props =>
           onChange={e => props.onChange(select(props.item.multiple, choice.id, props.answer, e.target.checked))}
         />
         <label
+          className="control-label"
           htmlFor={choice.id}>{choice.data}
         </label>
       </div>

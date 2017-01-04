@@ -445,6 +445,7 @@ signing: Passation
 size: Taille
 start_again: Recommencer
 start_date: Date de début
+solution_score: %score% point|%score% points
 sort: Trier les documents
 summative : Sommatif
 step: Étape

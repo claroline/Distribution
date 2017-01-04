@@ -276,7 +276,7 @@ class PaperManager
                 return $this->export($paper);
             }, $papers),
             'questions' => array_map(function (Question $question) {
-                return $this->questionManager->export($question);
+                return $this->questionManager->export($question, [Transfer::INCLUDE_SOLUTIONS]);
             }, $questions),
         ];
     }

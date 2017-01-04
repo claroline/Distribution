@@ -18,7 +18,7 @@ let Paper = props =>
           <Panel key={item.id} header={item.content}>
             {React.createElement(
               getDefinition(item.type).paper,
-              {item}
+              {item, answer: getAnswer(item.id, props.paper.answers)}
             )}
           </Panel>
         )}
@@ -38,6 +38,10 @@ Paper.propTypes = {
       })).isRequired
     })).isRequired
   }).isRequired
+}
+
+function getAnswer(itemId, answers) {
+  return answers.find(answer => answer.questionId === itemId) || {}
 }
 
 function mapStateToProps(state) {
