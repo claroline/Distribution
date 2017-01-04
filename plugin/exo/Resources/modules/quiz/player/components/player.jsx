@@ -1,65 +1,55 @@
-import React, {Component} from 'react'
+import React, {PropTypes as T} from 'react'
 import {connect} from 'react-redux'
 import Panel from 'react-bootstrap/lib/Panel'
-
 import {tex} from './../../../utils/translate'
 import {getDefinition} from './../../../items/item-types'
 import selectQuiz from './../../selectors'
 import {select} from './../selectors'
-
 import {actions as playerActions} from './../actions'
-
-import {Player as ItemPlayer} from './../../../items/components/player.jsx'
+import {ItemPlayer} from './item-player.jsx'
 import {PlayerNav} from './nav-bar.jsx'
 
-const T = React.PropTypes
+export const Player = props =>
+  <div className="quiz-player">
+    <h2 className="h4 step-title">
+      {tex('step')}&nbsp;{props.number}
+      {props.step.title && <small>&nbsp;{props.step.title}</small>}
+    </h2>
 
-class Player extends Component {
-  render() {
-    return (
-      <div className="quiz-player">
-        <h2 className="h4 step-title">
-          {tex('step')}&nbsp;{this.props.number}
-          {this.props.step.title && <small>&nbsp;{this.props.step.title}</small>}
-        </h2>
-
-        {this.props.step.description &&
-          <div className="exercise-description panel panel-default">
-            <div
-              className="panel-body"
-              dangerouslySetInnerHTML={{ __html: this.props.step.description }}
-            ></div>
-          </div>
-        }
-
-        {this.props.items.map((item) => (
-          <Panel
-            key={item.id}
-            header={item.title}
-            collapsible={true}
-            expanded={true}
-          >
-            <ItemPlayer item={item}>
-              {React.createElement(getDefinition(item.type).player, {
-                item: item,
-                answer: this.props.answers[item.id] ? this.props.answers[item.id].data : undefined,
-                onChange: (answerData) => this.props.updateAnswer(item.id, answerData)
-              })}
-            </ItemPlayer>
-          </Panel>
-        ))}
-
-        <PlayerNav
-          previous={this.props.previous}
-          next={this.props.next}
-          navigateTo={(step) => this.props.navigateTo(this.props.quizId, this.props.paper.id, step, this.props.answers)}
-          submit={() => this.props.submit(this.props.quizId, this.props.paper.id, this.props.answers)}
-          finish={() => this.props.finish(this.props.quizId, this.props.paper, this.props.answers)}
-        />
+    {props.step.description &&
+      <div className="exercise-description panel panel-default">
+        <div
+          className="panel-body"
+          dangerouslySetInnerHTML={{ __html: props.step.description }}
+        ></div>
       </div>
-    )
-  }
-}
+    }
+
+    {props.items.map((item) => (
+      <Panel
+        key={item.id}
+        header={item.title}
+        collapsible={true}
+        expanded={true}
+      >
+        <ItemPlayer item={item}>
+          {React.createElement(getDefinition(item.type).player, {
+            item: item,
+            answer: props.answers[item.id] ? props.answers[item.id].data : undefined,
+            onChange: (answerData) => props.updateAnswer(item.id, answerData)
+          })}
+        </ItemPlayer>
+      </Panel>
+    ))}
+
+    <PlayerNav
+      previous={props.previous}
+      next={props.next}
+      navigateTo={(step) => props.navigateTo(props.quizId, props.paper.id, step, props.answers)}
+      submit={() => props.submit(props.quizId, props.paper.id, props.answers)}
+      finish={() => props.finish(props.quizId, props.paper, props.answers)}
+    />
+    </div>
 
 Player.propTypes = {
   quizId: T.string.isRequired,

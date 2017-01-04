@@ -10,7 +10,7 @@ describe('<ChoicePlayer/>', () => {
   })
   afterEach(spyConsole.restore)
 
-  it('renders a choice player and dispatches changes', () => {
+  it('renders a choice player and dispatches answers', () => {
     let answer = null
 
     const player = mount(
@@ -33,7 +33,7 @@ describe('<ChoicePlayer/>', () => {
     ensure.propTypesOk()
     ensure.equal(player.find('input[type="checkbox"]').length, 2, 'has checkboxes')
     const chk = player.find('input[type="checkbox"]#2')
-    chk.simulate('change', { target: {checked: true} })
+    chk.simulate('click')
     ensure.equal(answer, ['2'])
   })
 })

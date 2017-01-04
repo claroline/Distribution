@@ -10,7 +10,6 @@ import {Papers} from './../papers/components/papers.jsx'
 import {Paper} from './../papers/components/paper.jsx'
 import select from './../selectors'
 import {actions as editorActions} from './../editor/actions'
-import {actions as playerActions} from './../player/actions'
 import {actions} from './../actions'
 import {
   VIEW_OVERVIEW,
@@ -24,13 +23,8 @@ let Quiz = props =>
   <div className="page-container">
     <PageHeader title={props.quiz.title} />
     {props.editable &&
-      <TopBar
-        {...props}
-        id={props.quiz.id}
-        testQuiz={() => props.testQuiz(props.quiz, props.steps)}
-      />
+      <TopBar {...props} id={props.quiz.id}/>
     }
-
     <div className="page-content">
       {viewComponent(props.viewMode)}
     </div>
@@ -45,7 +39,6 @@ Quiz.propTypes = {
   editable: T.bool.isRequired,
   viewMode: T.string.isRequired,
   updateViewMode: T.func.isRequired,
-  testQuiz: T.func.isRequired,
   saveQuiz: T.func.isRequired
 }
 
@@ -81,9 +74,6 @@ function mapDispatchToProps(dispatch) {
   return {
     updateViewMode(mode) {
       dispatch(actions.updateViewMode(mode))
-    },
-    testQuiz(quiz, steps) {
-      dispatch(playerActions.play(quiz, steps, null, true))
     },
     saveQuiz() {
       dispatch(editorActions.saveQuiz())

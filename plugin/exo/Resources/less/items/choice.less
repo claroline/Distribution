@@ -1,0 +1,30 @@
+.choice-player {
+  border: solid 1px @table-border-color;
+  border-radius: @border-radius-base;
+
+  input[type="checkbox"],
+  input[type="radio"] {
+    margin-left: 12px;
+    position: static;
+    vertical-align: top;
+  }
+
+  .item {
+    border-bottom: solid 1px @table-border-color;
+    cursor: pointer;
+    margin: 0;
+    padding: @table-cell-padding;
+  }
+
+  .item:last-of-type {
+    border: none;
+  }
+
+  .item:nth-of-type(odd) {
+    background-color: @table-bg-accent;
+  }
+
+  .item:hover {
+    background-color: @table-bg-hover;
+  }
+}
