@@ -53,9 +53,8 @@ export class ChoicePaper extends Component
                   className={this.props.item.multiple ? 'checkbox': 'optradio'}
                   checked={this.isSolutionChecked(solution, this.props.answer.data)}
                   id={solution.id}
-                  name={this.props.item.id}
+                  name={`${this.props.item.id}-your-answer`}
                   type={this.props.item.multiple ? 'checkbox': 'radio'}
-                  readOnly
                   disabled
                 />
                 <label
@@ -75,7 +74,7 @@ export class ChoicePaper extends Component
                   className={this.props.item.multiple ? 'checkbox': 'optradio'}
                   checked={solution.score !== 0}
                   id={solution.id}
-                  name={this.props.item.id}
+                  name={`${this.props.item.id}-expected-answer`}
                   type={this.props.item.multiple ? 'checkbox': 'radio'}
                   disabled
                 />
@@ -98,7 +97,7 @@ export class ChoicePaper extends Component
   }
 
   isSolutionChecked(solution, answers) {
-    return answers.find(answer => answer === this.getChoiceById(solution.id).id)
+    return answers.indexOf(solution.id) > -1
   }
 
   handleSelect(key) {
