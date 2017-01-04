@@ -1,7 +1,7 @@
 import {makeActionCreator} from './../../utils/actions'
 import {actions as apiActions} from './../../api/actions'
 import {actions as quizActions} from './../actions'
-import {VIEW_PLAYER, VIEW_OVERVIEW} from './../enums'
+import {VIEW_PLAYER} from './../enums'
 import quizSelectors from './../selectors'
 import {navigate} from './../router'
 import {select as playerSelectors} from './selectors'

@@ -10,7 +10,6 @@ import {Papers} from './../papers/components/papers.jsx'
 import {Paper} from './../papers/components/paper.jsx'
 import select from './../selectors'
 import {actions as editorActions} from './../editor/actions'
-import {actions as playerActions} from './../player/actions'
 import {actions} from './../actions'
 import {
   VIEW_OVERVIEW,
