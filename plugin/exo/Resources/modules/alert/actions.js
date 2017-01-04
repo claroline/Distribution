@@ -7,3 +7,11 @@ export const actions = {}
 
 actions.addAlert = makeActionCreator(ALERT_ADD, 'type', 'text', 'dismissible')
 actions.remvoveAlert = makeActionCreator(ALERT_REMOVE, 'id')
+actions.addAlert = (alertType, text, dismissible = true) => {
+  return {
+    type: ALERT_ADD,
+    alertType,
+    text,
+    dismissible
+  }
+}

@@ -1,8 +1,12 @@
 import invariant from 'invariant'
 
+import { update } from './../utils/utils'
 import { generateUrl } from './../utils/routing'
-import { actions as apiActions } from './actions'
 import { actions as alertActions } from './../alert/actions'
+import {
+  REQUEST_SEND,
+  actions
+} from './actions'
 
 const defaultRequest = {
   method: 'GET',
@@ -40,20 +44,9 @@ function getUrl(target) {
   }
 }
 
-function handleRequest(dispatch, target, request) {
-  const url = getUrl(target)
-  const finalRequest = Object.create({}, defaultRequest, request)
-
-  dispatch(apiActions.sendRequest)
-
-  return fetch(url, finalRequest)
-    .then(response => handleResponse(dispatch, response))
-    .then(response => handleResponseSuccess(response, this.dispatch))
-    .catch(error => handleResponseError(dispatch, error))
-}
-
 function handleResponse(dispatch, response) {
-  dispatch(apiActions.receiveResponse)
+  console.log('handle raw response')
+  dispatch(actions.decrementRequests)
 
   if (!response.ok) {
     throw ApiError(response.statusText, response.status)
@@ -63,6 +56,7 @@ function handleResponse(dispatch, response) {
 }
 
 function handleResponseSuccess(dispatch, response) {
+  console.log('handle success')
   if (204 !== response.status) {
     return getResponseData(response)
   } else {
@@ -72,31 +66,32 @@ function handleResponseSuccess(dispatch, response) {
 }
 
 function handleResponseError(dispatch, error) {
+  console.log('handle errors')
   dispatch(alertActions.addAlert('error', error.message))
   /*switch(response.status) {
-    // User needs to log in
-    case 401:
-      dispatch(alertActions.addAlert('warning', 'You need to be logged.'))
-      break
+   // User needs to log in
+   case 401:
+   dispatch(alertActions.addAlert('warning', 'You need to be logged.'))
+   break
 
-    // User is not authorized
-    case 403:
-      dispatch(alertActions.addAlert('error', 'You are not authorized to do this.'))
-      break
+   // User is not authorized
+   case 403:
+   dispatch(alertActions.addAlert('error', 'You are not authorized to do this.'))
+   break
 
-    // Validation error
-    case 422:
-      dispatch(alertActions.addAlert('error', 'Invalid data sent.'))
-      break
+   // Validation error
+   case 422:
+   dispatch(alertActions.addAlert('error', 'Invalid data sent.'))
+   break
 
-    // All other errors
-    default:
-      dispatch(alertActions.addAlert('error', 'Server error.'))
-      break
-  }*/
+   // All other errors
+   default:
+   dispatch(alertActions.addAlert('error', 'Server error.'))
+   break
+   }*/
 
   // Reject the promise
-  return Promise.reject(error)
+  /*return Promise.reject(error)*/
 }
 
 /**
@@ -123,36 +118,25 @@ function getResponseData(response) {
   return data
 }
 
-export class Api {
-  constructor(dispatch) {
-    this.dispatch = dispatch
+const apiMiddleware = store => next => action => {
+  // Catch api actions
+  if (REQUEST_SEND === action.type) {
+    console.log('yeah i can catch things !!!!')
+
+    next(actions.incrementRequests())
+
+    const url = getUrl(action.target)
+    const finalRequest = update(defaultRequest, {
+      $merge: action.request
+    })
+
+    return fetch(url, finalRequest)
+      .then(response => handleResponse(next, response))
+      .then(response => handleResponseSuccess(next, response))
+      .catch(error => handleResponseError(next, error))
   }
 
-  request(target, request) {
-    return handleRequest(this.dispatch, target, request)
-  }
-
-  get(target, request = {}) {
-    request.method = 'GET'
-
-    return this.request(target, request)
-  }
-
-  post(target, request = {}) {
-    request.method = 'POST'
-
-    return this.request(target, request)
-  }
-
-  put(target, request = {}) {
-    request.method = 'PUT'
-
-    return this.request(target, request)
-  }
-
-  delete(target, request = {}) {
-    request.method = 'DELETE'
-
-    return this.request(target, request)
-  }
+  return next(action)
 }
+
+export {apiMiddleware}

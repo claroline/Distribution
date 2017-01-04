@@ -45,16 +45,17 @@ actions.play = (quiz, steps, previousPaper = null, testMode = false) => {
     
     if (shouldCallServer(getState())) {
       // Request a paper from the API and open the player
-      return dispatch((dispatch) => {
-        dispatch(apiActions.sendRequest())
+      return dispatch(
+        apiActions.sendRequest(['exercise_attempt_start', {exerciseId: quiz.id}], {method: 'POST'})
+      ).then(data => dispatch(initPlayer(data.paper, data.answers)))
 
+      /*return dispatch((dispatch) => {
         api
           .startAttempt(quiz.id)
           .then((normalizedData) => {
-            /*dispatch(apiActions.receiveResponse())*/
             dispatch(initPlayer(normalizedData.paper, normalizedData.answers))
           })
-      })
+      })*/
     } else {
       // Create a new local paper and open the player
       return dispatch(
@@ -69,11 +70,24 @@ actions.submit = (quizId, paperId, answers = null) => {
     let answersPromise
     if (answers && shouldCallServer(getState())) {
       // Send answers to the API
-      dispatch(apiActions.sendRequest())
+
+      const answerRequest = []
+      for (let answer in answers) {
+        if (answers.hasOwnProperty(answer) && answers[answer]._touched) {
+          // Answer has been modified => send it to the server
+          answerRequest.push(answers[answer])
+        }
+      }
+
+      dispatch(
+        apiActions.sendRequest(
+          ['exercise_attempt_submit', {exerciseId: quizId, id: paperId}],
+          {body: JSON.stringify(answerRequest)}
+        )
+      )
 
       answersPromise = api
         .submitAnswers(quizId, paperId, answers)
-        .then(() => dispatch(apiActions.receiveResponse()))
     } else {
       // Nothing to do
       answersPromise = Promise.resolve()

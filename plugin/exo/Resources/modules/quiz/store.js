@@ -8,6 +8,7 @@ import {
 } from 'redux'
 import thunk from 'redux-thunk'
 
+import {apiMiddleware} from './../api/middleware'
 import {reducers as apiReducers} from './../api/reducers'
 import {reducers as quizReducers} from './reducers'
 import {reducers as editorReducers} from './editor/reducers'
@@ -39,7 +40,7 @@ const quizSave = store => next => action => {
   }
 }
 
-const middleware = [thunk, quizSave]
+const middleware = [thunk, apiMiddleware, quizSave]
 
 if (process.env.NODE_ENV !== 'production') {
   const freeze = require('redux-freeze')

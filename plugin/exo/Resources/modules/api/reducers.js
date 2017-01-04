@@ -1,8 +1,8 @@
 import {makeReducer} from './../utils/reducers'
 
 import {
-  REQUEST_SEND,
-  RESPONSE_RECEIVE
+  REQUESTS_INCREMENT,
+  REQUESTS_DECREMENT
 } from './actions'
 
 function incrementRequests(state) {
@@ -15,7 +15,7 @@ function decrementRequests(state) {
 
 export const reducers = {
   currentRequests: makeReducer(0, {
-    [REQUEST_SEND]: incrementRequests,
-    [RESPONSE_RECEIVE]: decrementRequests
+    [REQUESTS_INCREMENT]: incrementRequests,
+    [REQUESTS_DECREMENT]: decrementRequests
   })
 }
