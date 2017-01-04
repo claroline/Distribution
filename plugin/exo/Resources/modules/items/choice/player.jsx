@@ -1,5 +1,6 @@
 import React, {Component, PropTypes as T} from 'react'
 import shuffle from 'lodash/shuffle'
+import classes from 'classnames'
 
 export class ChoicePlayer extends Component {
   constructor(props) {
@@ -18,39 +19,43 @@ export class ChoicePlayer extends Component {
     return answers.indexOf(choiceId) > -1
   }
 
-  select(multiple, choiceId, answers, isChecked) {
+  select(multiple, choiceId, answers) {
     if (!multiple) {
       return [choiceId]
     }
 
-    return isChecked ?
+    return answers.indexOf(choiceId) === -1 ?
       [choiceId].concat(answers) :
       answers.filter(answer => answer !== choiceId)
   }
 
   render() {
     return (
-      <div className="container .choice-items">
+      <div className="choice-player">
         {this.state.choices.map(choice =>
           <div
             key={choice.id}
-            className={this.props.item.multiple ? 'checkbox': 'radio'}
+            className={classes(
+              'item',
+              this.props.item.multiple ? 'checkbox': 'radio'
+            )}
+            onClick={e => this.props.onChange(this.select(
+              this.props.item.multiple,
+              choice.id,
+              this.props.answer
+            ))}
           >
             <input
               checked={this.isChecked(choice.id, this.props.answer)}
               id={choice.id}
               name={this.props.item.id}
               type={this.props.item.multiple ? 'checkbox': 'radio'}
-              onChange={e => this.props.onChange(this.select(
-                this.props.item.multiple,
-                choice.id,
-                this.props.answer,
-                e.target.checked
-              ))}
             />
-            <label className="control-label" htmlFor={choice.id}>
-              {choice.data}
-            </label>
+            <label
+              className="control-label"
+              htmlFor={choice.id}
+              dangerouslySetInnerHTML={{__html: choice.data}}
+            />
           </div>
         )}
       </div>
