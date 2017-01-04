@@ -47,6 +47,8 @@ export class ChoicePaper extends Component
       <Tabs activeKey={this.state.key} onSelect={this.handleSelect} id="controlled-tab-example">
         <Tab eventKey={1} title={tex('your_answer')}>
           <div className="container">
+            <h4>{this.props.item.title}</h4>
+            <div><i>{this.props.item.description}</i></div>
             {this.props.item.solutions.map(solution =>
               <div key={solution.id} className={this.props.item.multiple ? 'checkbox': 'radio'}>
                 <input
@@ -113,7 +115,9 @@ ChoicePaper.propTypes = {
       data: T.string.isRequired
     })).isRequired,
     multiple: T.bool.isRequired,
-    solutions: T.arrayOf(T.object)
+    solutions: T.arrayOf(T.object),
+    title: T.string,
+    description: T.string
   }).isRequired,
   answer: T.shape({
     data: T.array
