@@ -1,4 +1,3 @@
-import {update} from './../utils/utils'
 import {makeReducer} from './../utils/reducers'
 
 import {

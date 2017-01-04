@@ -2,6 +2,8 @@ import {makeActionCreator} from './../utils/actions'
 
 export const REQUEST_SEND     = 'REQUEST_SEND'
 export const RESPONSE_RECEIVE = 'RESPONSE_RECEIVE'
+export const RESPONSE_RECEIVE_FAILURE = 'RESPONSE_RECEIVE_FAILURE'
+export const RESPONSE_RECEIVE_SUCCESS = 'RESPONSE_RECEIVE_SUCCESS'
 
 export const actions = {}
 
