@@ -35,19 +35,25 @@ class ScoreManager
             case 'sum':
                 $score = 0;
                 // We get the score of all the answers given, right or wrong.
-                $use = array_merge($correctedAnswer->getExpected(), $correctedAnswer->getUnexpected());
-                foreach ($use as $el) {
+                foreach ($correctedAnswer->getExpected() as $el) {
+                    $score += $el->getScore();
+                }
+
+                foreach ($correctedAnswer->getUnexpected() as $el) {
                     $score += $el->getScore();
                 }
                 break;
 
             case 'manual':
-                $score = $scoreRule->max;
                 break;
 
             default:
                 throw new \LogicException("Unknown score type '{$scoreRule->type}'.");
                 break;
+        }
+
+        if (null !== $score) {
+            $score = $this->applyPenalties($score, $correctedAnswer);
         }
 
         return $score;

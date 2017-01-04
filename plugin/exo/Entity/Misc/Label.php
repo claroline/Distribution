@@ -4,6 +4,7 @@ namespace UJM\ExoBundle\Entity\Misc;
 
 use Doctrine\ORM\Mapping as ORM;
 use UJM\ExoBundle\Entity\QuestionType\MatchQuestion;
+use UJM\ExoBundle\Library\Attempt\AnswerPartInterface;
 use UJM\ExoBundle\Library\Model\ContentTrait;
 use UJM\ExoBundle\Library\Model\FeedbackTrait;
 use UJM\ExoBundle\Library\Model\OrderTrait;
@@ -15,7 +16,7 @@ use UJM\ExoBundle\Library\Model\ScoreTrait;
  * @ORM\Entity()
  * @ORM\Table(name="ujm_label")
  */
-class Label
+class Label implements AnswerPartInterface
 {
     /**
      * @var int

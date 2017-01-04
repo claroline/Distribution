@@ -5,6 +5,7 @@ namespace UJM\ExoBundle\Entity\Question;
 use Doctrine\ORM\Mapping as ORM;
 use UJM\ExoBundle\Library\Model\ContentTrait;
 use UJM\ExoBundle\Library\Model\PenaltyTrait;
+use UJM\ExoBundle\Library\Attempt\PenaltyItemInterface;
 
 /**
  * Hint.
@@ -12,7 +13,7 @@ use UJM\ExoBundle\Library\Model\PenaltyTrait;
  * @ORM\Entity()
  * @ORM\Table(name="ujm_hint")
  */
-class Hint
+class Hint implements PenaltyItemInterface
 {
     /**
      * @ORM\Column(type="integer")

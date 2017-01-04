@@ -122,6 +122,9 @@ class QuestionSerializer extends AbstractSerializer
             'meta' => function (Question $question) use ($options) {
                 $this->serializeMetadata($question, $options);
             },
+            'score' => function (Question $question) {
+                return json_decode($question->getScoreRule());
+            },
         ], $question, $questionData);
 
         // Adds full definition of the question
@@ -196,6 +199,9 @@ class QuestionSerializer extends AbstractSerializer
             },
             'meta' => function (Question $question, \stdClass $data) {
                 return $this->deserializeMetadata($question, $data->meta);
+            },
+            'score' => function (Question $question, \stdClass $data) {
+                $question->setScoreRule(json_encode($data->score));
             },
         ], $data, $question);
 

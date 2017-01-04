@@ -27,21 +27,6 @@ class ChoiceQuestion extends AbstractQuestion
     use ShuffleTrait;
 
     /**
-     * @ORM\Column(name="score_right_response", type="float", nullable=true)
-     */
-    private $scoreRightResponse;
-
-    /**
-     * @ORM\Column(name="score_false_response", type="float", nullable=true)
-     */
-    private $scoreFalseResponse;
-
-    /**
-     * @ORM\Column(name="weight_response", type="boolean")
-     */
-    private $weightResponse = false;
-
-    /**
      * @ORM\OneToMany(
      *     targetEntity="UJM\ExoBundle\Entity\Misc\Choice",
      *     mappedBy="interactionQCM",
@@ -78,54 +63,6 @@ class ChoiceQuestion extends AbstractQuestion
     public function setMultiple($multiple)
     {
         $this->multiple = $multiple;
-    }
-
-    /**
-     * @param float $scoreRightResponse
-     */
-    public function setScoreRightResponse($scoreRightResponse)
-    {
-        $this->scoreRightResponse = $scoreRightResponse;
-    }
-
-    /**
-     * @return float
-     */
-    public function getScoreRightResponse()
-    {
-        return $this->scoreRightResponse;
-    }
-
-    /**
-     * @param float $scoreFalseResponse
-     */
-    public function setScoreFalseResponse($scoreFalseResponse)
-    {
-        $this->scoreFalseResponse = $scoreFalseResponse;
-    }
-
-    /**
-     * @return float
-     */
-    public function getScoreFalseResponse()
-    {
-        return $this->scoreFalseResponse;
-    }
-
-    /**
-     * @param bool $weightResponse
-     */
-    public function setWeightResponse($weightResponse)
-    {
-        $this->weightResponse = $weightResponse;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getWeightResponse()
-    {
-        return $this->weightResponse;
     }
 
     /**

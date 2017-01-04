@@ -50,10 +50,6 @@ class SetQuestionSerializer implements SerializerInterface
             $questionData->solutions = $this->serializeSolutions($setQuestion);
         }
 
-        // Serializes score type
-        $questionData->score = new \stdClass();
-        $questionData->score->type = 'sum';
-
         $questionData->random = $setQuestion->getShuffle();
         $questionData->penalty = $setQuestion->getPenalty();
 

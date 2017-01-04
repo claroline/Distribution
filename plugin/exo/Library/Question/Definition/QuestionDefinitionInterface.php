@@ -3,6 +3,7 @@
 namespace UJM\ExoBundle\Library\Question\Definition;
 
 use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
+use UJM\ExoBundle\Library\Attempt\AnswerPartInterface;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 
 /**
@@ -88,7 +89,7 @@ interface QuestionDefinitionInterface
      *
      * @param AbstractQuestion $question
      *
-     * @return mixed
+     * @return AnswerPartInterface[]
      */
     public function expectAnswer(AbstractQuestion $question);
 
@@ -96,9 +97,9 @@ interface QuestionDefinitionInterface
      * Gets statistics on answers given to a question.
      *
      * @param AbstractQuestion $question
-     * @param array            $answers
+     * @param array            $answersData
      *
      * @return \stdClass
      */
-    public function getStatistics(AbstractQuestion $question, array $answers);
+    public function getStatistics(AbstractQuestion $question, array $answersData);
 }

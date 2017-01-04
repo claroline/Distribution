@@ -140,6 +140,13 @@ class Question
     private $resources;
 
     /**
+     * @ORM\Column(type="text")
+     *
+     * @var string
+     */
+    private $scoreRule;
+
+    /**
      * The linked interaction entity.
      * This is populated by Doctrine Lifecycle events.
      *
@@ -461,5 +468,25 @@ class Question
     public function setInteraction(AbstractQuestion $interaction)
     {
         $this->interaction = $interaction;
+    }
+
+    /**
+     * @return string
+     */
+    public function getScoreRule()
+    {
+        return $this->scoreRule;
+    }
+
+    /**
+     * @param string $scoreRule
+     *
+     * @return string
+     */
+    public function setScoreRule($scoreRule)
+    {
+        $this->scoreRule = $scoreRule;
+
+        return $this->scoreRule;
     }
 }

@@ -65,7 +65,7 @@ class Proposal
     /**
      * Get InteractionMatching.
      *
-     * @return Label
+     * @return ArrayCollection
      */
     public function getExpectedLabels()
     {
