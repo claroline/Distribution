@@ -1,64 +1,7 @@
-// Moves the app scroll bar to begin after the fixed header
-html {
-    overflow-y: hidden;
-    padding-top: 50px; // Height of the top bar, needs bootstrap var
-}
-
-// Clearer bg color
-body {
-    padding-top: 15px; // Height of the header has been moved to the html tag, only keep @grid-gutter-width / 2
-    padding-bottom: 0; // No need to have a padding here
-    overflow-y: auto; // Get the scroll bar
-    background-color: #EEEEEE;
-}
-
-// Max width of content for large screens
-#wrap {
-    max-width: 1250px;
-}
-
-#footer {
-    background-color: #F3F3F3; /* because the new background color is the old footer color */
-}
-
-// Simplifies default style of breadcrumbs to gain space
-.breadcrumb {
-    padding: 0;
-    background: none;
-    box-shadow: none;
-    border-radius: 0;
-    margin-bottom: 5px;
-    font-size: 12px; /* slightly smaller than the regular text */
-}
-
 // Fixes vertical align in tables
 .table > thead > tr > th,
 .table > thead > tr > td,
 .table > tbody > tr > th,
 .table > tbody > tr > td {
     vertical-align: middle;
-}
-
-/* same padding as .btn */
-/* this breaks the display because it's also used by dropdown headers */
-/* if we want this override we need to apply it to headers too */
-.dropdown-menu > li > a {
-    /*padding-left: 12px;
-    padding-right: 12px;*/
-}
-
-// Gray btn-link for aesthetic purpose
-.btn-link {
-    color: #777;
-    font-weight: 600;
-
-    &:hover,
-    &:focus {
-        text-decoration: none;
-        color: #333;
-    }
-}
-
-.panel {
-    box-shadow: none;
 }
