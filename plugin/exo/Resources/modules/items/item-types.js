@@ -37,8 +37,6 @@ export function registerItemType(definition) {
 
   definition.editor.decorate = getOptionalFunction(definition.editor, 'decorate', item => item)
   definition.editor.validate = getOptionalFunction(definition.editor, 'validate', () => ({}))
-  definition.player.decorate = getOptionalFunction(definition.player, 'decorate', item => item)
-  definition.player.validate = getOptionalFunction(definition.player, 'validate', () => ({}))
 
   registeredTypes[definition.type] = definition
 }
