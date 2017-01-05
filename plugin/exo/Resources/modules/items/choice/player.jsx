@@ -1,23 +1,67 @@
-import React, {PropTypes as T} from 'react'
+import React, {Component, PropTypes as T} from 'react'
 import shuffle from 'lodash/shuffle'
+import classes from 'classnames'
 
-export const ChoicePlayer = props =>
-  <div>
-    {getChoices(props.item.choices, props.item.random).map(choice =>
-      <div key={choice.id}>
-        <input
-          checked={isChecked(choice.id, props.answer)}
-          id={choice.id}
-          name={props.item.id}
-          type={props.item.multiple ? 'checkbox': 'radio'}
-          onChange={e => props.onChange(select(props.item.multiple, choice.id, props.answer, e.target.checked))}
-        />
-        <label
-          htmlFor={choice.id}>{choice.data}
-        </label>
+export class ChoicePlayer extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      choices: this.randomize(props.item.choices, props.item.random)
+    }
+    this.select = this.select.bind(this)
+  }
+
+  randomize(choices, random) {
+    return random ? shuffle(choices) : choices
+  }
+
+  isChecked(choiceId, answers) {
+    return answers.indexOf(choiceId) > -1
+  }
+
+  select(multiple, choiceId, answers) {
+    if (!multiple) {
+      return [choiceId]
+    }
+
+    return answers.indexOf(choiceId) === -1 ?
+      [choiceId].concat(answers) :
+      answers.filter(answer => answer !== choiceId)
+  }
+
+  render() {
+    return (
+      <div className="choice-player">
+        {this.state.choices.map(choice =>
+          <div
+            key={choice.id}
+            className={classes(
+              'item',
+              this.props.item.multiple ? 'checkbox': 'radio'
+            )}
+          >
+            <input
+              checked={this.isChecked(choice.id, this.props.answer)}
+              id={choice.id}
+              name={this.props.item.id}
+              type={this.props.item.multiple ? 'checkbox': 'radio'}
+              onChange={() => this.props.onChange(this.select(
+                this.props.item.multiple,
+                choice.id,
+                this.props.answer
+              ))}
+            />
+            <label
+              className="control-label"
+              htmlFor={choice.id}
+              dangerouslySetInnerHTML={{__html: choice.data}}
+            />
+          </div>
+        )}
       </div>
-    )}
-  </div>
+    )
+  }
+}
 
 ChoicePlayer.propTypes = {
   item: T.shape({
@@ -35,20 +79,4 @@ ChoicePlayer.propTypes = {
 
 ChoicePlayer.defaultProps = {
   answer: []
-}
-
-function isChecked(choiceId, answers) {
-  return answers.indexOf(choiceId) > -1
-}
-
-function select(multiple, choiceId, answers, isChecked) {
-  if (!multiple) {
-    return [choiceId]
-  }
-
-  return isChecked ? [choiceId].concat(answers): answers.filter(answer => answer !== choiceId)
-}
-
-function getChoices(choices, random) {
-  return random ? shuffle(choices) : choices
 }

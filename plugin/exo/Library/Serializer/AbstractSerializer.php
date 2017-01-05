@@ -81,10 +81,7 @@ abstract class AbstractSerializer implements SerializerInterface
                 $value = call_user_func($map, $entity);
             }
 
-            if (!empty($value) || false === $value || 0 === $value) {
-                // Do not export empty properties
-                $data->{$dataProperty} = $value;
-            }
+            $data->{$dataProperty} = $value;
         }
 
         return $data;

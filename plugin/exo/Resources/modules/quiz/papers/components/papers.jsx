@@ -31,7 +31,7 @@ PaperRow.propTypes = {
   startDate: T.string.isRequired,
   endDate: T.string,
   finished: T.bool.isRequired,
-  score: T.string
+  score: T.number
 }
 
 let Papers = props =>

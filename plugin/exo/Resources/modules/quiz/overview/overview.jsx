@@ -104,16 +104,6 @@ Parameters.propTypes = {
   })
 }
 
-const StartButton = props =>
-  <button type="button" className="btn btn-start btn-lg btn-primary btn-block" onClick={props.onClick}>
-    <span className="fa fa-fw fa-play"></span>
-    {tex('exercise_start')}
-  </button>
-
-StartButton.propTypes = {
-  onClick: T.func.isRequired
-}
-
 const Layout = props =>
   <div className="quiz-overview">
     {props.empty &&
@@ -155,7 +145,10 @@ const Layout = props =>
           </a>
         }
         {!props.empty &&
-          <StartButton onClick={props.play} />
+          <a href="#play" className="btn btn-start btn-lg btn-primary btn-block">
+            <span className="fa fa-fw fa-play"></span>
+            {tex('exercise_start')}
+          </a>
         }
       </div>
     </div>
@@ -171,8 +164,7 @@ Layout.propTypes = {
   }).isRequired,
   meta: T.shape({
     created: T.string.isRequired
-  }),
-  play: T.func.isRequired
+  })
 }
 
 Layout.defaultProps = {

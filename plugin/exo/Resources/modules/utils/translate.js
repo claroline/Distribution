@@ -10,6 +10,10 @@ export function t(message) {
   return trans(message, {}, 'platform')
 }
 
-export function tex(message) {
-  return trans(message, {}, 'ujm_exo')
+export function tex(message, placeholders = {}) {
+  return trans(message, placeholders, 'ujm_exo')
+}
+
+export function tcex(message, amount, placeholders = {}) {
+  return transChoice(message, amount, placeholders, 'ujm_exo')
 }

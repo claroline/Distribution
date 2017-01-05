@@ -13,6 +13,8 @@ select.currentStep = (state) => state.steps[state.currentStep]
 
 select.paper = (state) => state.paper
 
+select.offline = state => state.noServer || state.testMode
+
 /**
  * Gets an existing answer to a question.
  *
@@ -20,7 +22,7 @@ select.paper = (state) => state.paper
  */
 select.currentStepAnswers = (state) => {
   const items = select.currentStepItems(state)
-  
+
   return items.reduce((answerAcc, item) => {
     answerAcc[item.id] = Object.assign({}, state.answers[item.id])
 
