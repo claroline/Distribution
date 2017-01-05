@@ -69,7 +69,7 @@ class ExerciseController extends AbstractController
             $this->exerciseManager->export($exercise, [Transfer::INCLUDE_SOLUTIONS])
         );
     }
-    
+
     /**
      * Updates an Exercise.
      *
