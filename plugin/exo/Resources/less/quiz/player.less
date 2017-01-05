@@ -1,6 +1,24 @@
-.player-nav {
+
+
+/* PLAYER ROOT CONTAINER */
+.quiz-player {
+  padding: @panel-body-padding;
+  .step-title {
+    &:first-letter{
+        text-transform: uppercase;
+    }
+  }
+
+  .step-description {
+    &:first-letter{
+        text-transform: uppercase;
+    }
+  }
+
+  .player-nav {
     display: flex;
     justify-content: space-between;
+  }
 }
 
 .item-player .item-content,

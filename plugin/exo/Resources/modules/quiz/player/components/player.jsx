@@ -12,12 +12,15 @@ import {PlayerNav} from './nav-bar.jsx'
 export const Player = props =>
   <div className="quiz-player">
     <h2 className="h4 step-title">
-      {tex('step')}&nbsp;{props.number}
-      {props.step.title && <small>&nbsp;{props.step.title}</small>}
+      {props.step.title ?
+        <small>&nbsp;{props.step.title}</small>
+        :
+        <span>{tex('step')}&nbsp; {props.number}</span>
+      }
     </h2>
 
     {props.step.description &&
-      <div className="exercise-description panel panel-default">
+      <div className="step-description panel panel-default">
         <div
           className="panel-body"
           dangerouslySetInnerHTML={{ __html: props.step.description }}
