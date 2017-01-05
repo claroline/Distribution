@@ -95,7 +95,8 @@ function fixture() {
       anonymizeAttempts: false,
       showScoreAt: 'never',
       showStatistics: true,
-      showFullCorrection: false
+      showFullCorrection: false,
+      showFeedback: false
     }
   }
 }
