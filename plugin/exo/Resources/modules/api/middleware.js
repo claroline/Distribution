@@ -1,12 +1,13 @@
 import invariant from 'invariant'
+import isFunction from 'lodash/isFunction'
+import isString from 'lodash/isString'
 
 import { update } from './../utils/utils'
 import { generateUrl } from './../utils/routing'
 import { actions as alertActions } from './../alert/actions'
-import { actions as apiActions } from './actions'
 import {
   REQUEST_SEND,
-  actions
+  actions as apiActions
 } from './actions'
 
 const defaultRequest = {
@@ -14,41 +15,9 @@ const defaultRequest = {
   credentials: 'include'
 }
 
-class ApiError extends Error {
-  constructor(msg, status, detail = null) {
-    super(msg)
-    console.log('I am an api error')
-
-    this.status = status
-    this.detail = detail
-  }
-}
-
-/**
- * Get the URL of an api target.
- *
- * Target can be :
- *  - an URL string
- *  - a route array : 1st key contains the route name, the 2nd the params
- *
- * @param target
- *
- * @returns {string}
- */
-function getUrl(target) {
-  if (typeof target === 'string' || target instanceof String) {
-    return target
-  } else if (Array.isArray(target)) {
-    return generateUrl(target[0], target[1] ? target[1] : null)
-  } else {
-    invariant(target, 'API `target` must be either an URL string or an array defining the route config.')
-  }
-}
-
 function handleResponse(dispatch, response) {
-  console.log('handle raw response')
-
-  dispatch(actions.decrementRequests())
+  dispatch(apiActions.decrementRequests())
+  dispatch(apiActions.receiveResponse(response))
 
   if (!response.ok) {
     return Promise.reject(response)
@@ -57,45 +26,42 @@ function handleResponse(dispatch, response) {
   return response
 }
 
-function handleResponseSuccess(response) {
-  console.log('handle success')
-
+function handleResponseSuccess(data, successCallback) {
   return dispatch => {
-    const data = (204 !== response.status) ? getResponseData(response) : null
-    
-    dispatch(apiActions.receiveSuccessResponse(data))
+    if (typeof successCallback === 'function') {
+      dispatch(successCallback(data))
+    }
   }
 }
 
-function handleResponseError(error) {
-  console.log('handle errors')
-
+function handleResponseError(error, failureCallback) {
   return dispatch => {
-    dispatch(alertActions.addAlert('error', error.statusText))
-    dispatch(apiActions.receiveFailureResponse(error))
+    switch(error.status) {
+      // User needs to log in
+      case 401:
+        dispatch(alertActions.addAlert('warning', 'You need to be logged.'))
+        break
+
+      // User is not authorized
+      case 403:
+        dispatch(alertActions.addAlert('error', 'You are not authorized to do this.'))
+        break
+
+      // Validation error
+      case 422:
+        dispatch(alertActions.addAlert('error', 'Invalid data sent.'))
+        break
+
+      // All other errors
+      default:
+        dispatch(alertActions.addAlert('error', error.statusText))
+        break
+    }
+
+    if (typeof failureCallback === 'function') {
+      dispatch(failureCallback(error))
+    }
   }
-
-  /*switch(response.status) {
-   // User needs to log in
-   case 401:
-   dispatch(alertActions.addAlert('warning', 'You need to be logged.'))
-   break
-
-   // User is not authorized
-   case 403:
-   dispatch(alertActions.addAlert('error', 'You are not authorized to do this.'))
-   break
-
-   // Validation error
-   case 422:
-   dispatch(alertActions.addAlert('error', 'Invalid data sent.'))
-   break
-
-   // All other errors
-   default:
-   dispatch(alertActions.addAlert('error', 'Server error.'))
-   break
-   }*/
 }
 
 /**
@@ -122,27 +88,65 @@ function getResponseData(response) {
   return data
 }
 
-const apiMiddleware = store => next => action => {
-  // Catch api actions
-  if (REQUEST_SEND === action.type) {
-    console.log('yeah i can catch things !!!!')
+function getUrl(url, route) {
+  console.log(url)
+  console.log(route)
 
-    next(actions.incrementRequests())
+  invariant(url || route, 'a `url` or a `route` property is required')
 
-    const url = getUrl(action.target)
-    const finalRequest = update(defaultRequest, {
-      $merge: action.request
-    })
+  if (url) {
+    invariant(isString(url), '`url` should be a string')
 
-    return fetch(url, finalRequest)
-      .then(response => handleResponse(next, response))
-      .then(
-        response => next(handleResponseSuccess(response)),
-        error    => next(handleResponseError(error))
-      )
+    return url
+  } else {
+    invariant(Array.isArray(route), '`route` should be an array')
+
+    return generateUrl(route[0], route[1] ? route[1] : {})
+  }
+}
+
+function handleBefore(before) {
+  if (before) {
+    invariant(!isFunction(before), '`before` should be a function')
   }
 
-  return next(action)
+  return dispatch => {
+    dispatch(apiActions.incrementRequests())
+    if (before === 'function') {
+      dispatch(before())
+    }
+  }
+}
+
+function getRequest(request = {}) {
+  invariant(request instanceof Object, '`request` should be an object')
+
+  // Add default values to request
+  return update(defaultRequest, {
+    $merge: request
+  })
+}
+
+const apiMiddleware = store => next => action => {
+  const sendRequest = action[REQUEST_SEND]
+  if (typeof sendRequest === 'undefined') {
+    return next(action)
+  }
+
+  const { url, route, request, before, success, failure } = sendRequest
+
+  const finalUrl = getUrl(url, route)
+  const finalRequest = getRequest(request)
+
+  next(handleBefore(before))
+
+  return fetch(finalUrl, finalRequest)
+    .then(response => handleResponse(next, response))
+    .then(response => getResponseData(response))
+    .then(
+      data  => next(handleResponseSuccess(data, success)),
+      error => next(handleResponseError(error, failure))
+    )
 }
 
 export {apiMiddleware}

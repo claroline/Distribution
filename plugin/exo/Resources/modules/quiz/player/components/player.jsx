@@ -39,7 +39,7 @@ const Player = props =>
           item={item}
           showHint={props.showHint}
         >
-          {React.createElement(getDefinition(item.type).player.component, {
+          {React.createElement(getDefinition(item.type).player, {
             item: item,
             answer: props.answers[item.id] ? props.answers[item.id].data : undefined,
             onChange: (answerData) => props.updateAnswer(item.id, answerData)

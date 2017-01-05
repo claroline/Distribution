@@ -2,12 +2,8 @@
 export function normalize(rawPaper) {
   let answers = {}
 
-  if (rawPaper.answers && 0 !== rawPaper.answers.length) {
-    answers = rawPaper.answers.reduce((answerAcc, answer) => {
-      answerAcc[answer.questionId] = Object.assign({}, answer)
-
-      return answerAcc
-    }, {})
+  if (rawPaper.answers) {
+    answers = normalizeAnswers(rawPaper.answers)
   }
 
   const paper = Object.assign({}, rawPaper)
@@ -17,4 +13,22 @@ export function normalize(rawPaper) {
     paper,
     answers
   }
+}
+
+export function normalizeAnswers(rawAnswers = []) {
+  let answers = {}
+
+  if (0 !== rawAnswers.length) {
+    answers = rawAnswers.reduce((answerAcc, answer) => {
+      answerAcc[answer.questionId] = Object.assign({}, answer)
+
+      return answerAcc
+    }, {})
+  }
+
+  return answers
+}
+
+export function denormalizeAnswers(answers = {}) {
+  return Object.keys(answers).map(key => answers[key])
 }
