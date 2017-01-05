@@ -289,7 +289,9 @@ class QuestionSerializer extends AbstractSerializer
             }, $users);
 
             // Adds category
-            $metadata->category = $this->categorySerializer->serialize($question->getCategory(), $options);
+            if (!empty($question->getCategory())) {
+                $metadata->category = $this->categorySerializer->serialize($question->getCategory(), $options);
+            }
         }
 
         return $metadata;
