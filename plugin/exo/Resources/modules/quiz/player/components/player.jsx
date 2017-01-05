@@ -13,7 +13,7 @@ export const Player = props =>
   <div className="quiz-player">
     <h2 className="h4 step-title">
       {props.step.title ?
-        <small>&nbsp;{props.step.title}</small>
+        <span>&nbsp;{props.step.title}</span>
         :
         <span>{tex('step')}&nbsp; {props.number}</span>
       }

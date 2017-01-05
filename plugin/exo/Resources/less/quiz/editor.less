@@ -77,8 +77,13 @@
     -ms-user-select: none;
     user-select: none;
     padding: @panel-body-padding;
+    .panel-body {
+      & > * {
+        max-width: 620px;
+        margin: auto;
+      }
+    }
   }
-
   .panel-icon {
     width: 16px;
   }

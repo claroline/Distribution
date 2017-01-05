@@ -22,7 +22,7 @@ NavLink.propTypes = {
 }
 
 export const TopBar = props =>
-  <Navbar collapseOnSelect>
+  <Navbar collapseOnSelect fluid>
     <Navbar.Header>
       <Navbar.Toggle/>
     </Navbar.Header>
