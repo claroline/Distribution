@@ -8,8 +8,12 @@ use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Question\Question;
+use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 use UJM\ExoBundle\Library\Options\Validation;
+use UJM\ExoBundle\Library\Question\QuestionDefinitionsCollection;
 use UJM\ExoBundle\Library\Validator\ValidationException;
+use UJM\ExoBundle\Manager\Attempt\ScoreManager;
+use UJM\ExoBundle\Repository\AnswerRepository;
 use UJM\ExoBundle\Repository\QuestionRepository;
 use UJM\ExoBundle\Serializer\Question\QuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Question\QuestionValidator;
@@ -23,6 +27,11 @@ class QuestionManager
      * @var ObjectManager
      */
     private $om;
+
+    /**
+     * @var ScoreManager
+     */
+    private $scoreManager;
 
     /**
      * @var QuestionRepository
@@ -40,27 +49,46 @@ class QuestionManager
     private $serializer;
 
     /**
+     * @var AnswerRepository
+     */
+    private $answerRepository;
+
+    /**
+     * @var QuestionDefinitionsCollection
+     */
+    private $questionDefinitions;
+
+    /**
      * QuestionManager constructor.
      *
      * @DI\InjectParams({
-     *     "om"           = @DI\Inject("claroline.persistence.object_manager"),
-     *     "validator"    = @DI\Inject("ujm_exo.validator.question"),
-     *     "serializer"   = @DI\Inject("ujm_exo.serializer.question")
+     *     "om"                  = @DI\Inject("claroline.persistence.object_manager"),
+     *     "scoreManager"        = @DI\Inject("ujm_exo.manager.score"),
+     *     "validator"           = @DI\Inject("ujm_exo.validator.question"),
+     *     "serializer"          = @DI\Inject("ujm_exo.serializer.question"),
+     *     "questionDefinitions" = @DI\Inject("ujm_exo.collection.question_definitions")
      * })
      *
-     * @param ObjectManager      $om
-     * @param QuestionValidator  $validator
-     * @param QuestionSerializer $serializer
+     * @param ObjectManager                 $om
+     * @param ScoreManager                  $scoreManager
+     * @param QuestionValidator             $validator
+     * @param QuestionSerializer            $serializer
+     * @param QuestionDefinitionsCollection $questionDefinitions
      */
     public function __construct(
         ObjectManager $om,
+        ScoreManager $scoreManager,
         QuestionValidator $validator,
-        QuestionSerializer $serializer
+        QuestionSerializer $serializer,
+        QuestionDefinitionsCollection $questionDefinitions
     ) {
         $this->om = $om;
+        $this->scoreManager = $scoreManager;
         $this->repository = $this->om->getRepository('UJMExoBundle:Question\Question');
+        $this->answerRepository = $this->om->getRepository('UJMExoBundle:Attempt\Answer');
         $this->validator = $validator;
         $this->serializer = $serializer;
+        $this->questionDefinitions = $questionDefinitions;
     }
 
     /**
@@ -164,15 +192,25 @@ class QuestionManager
      * Calculates the score of an answer to a question.
      *
      * @param Question $question
-     * @param mixed    $answer
+     * @param Answer   $answer
      *
      * @return float
      */
-    public function calculateScore(Question $question, $answer)
+    public function calculateScore(Question $question, Answer $answer)
     {
-        // TODO : implement
+        // Let the question correct the answer
+        $definition = $this->questionDefinitions->get($question->getMimeType());
+        $corrected = $definition->correctAnswer($question->getInteraction(), json_decode($answer->getData()));
+        if (!$corrected instanceof CorrectedAnswer) {
+            $corrected = new CorrectedAnswer();
+        }
 
-        return 0;
+        // Add hints
+        foreach ($answer->getUsedHints() as $hint) {
+            $corrected->addPenalty($hint);
+        }
+
+        return $this->scoreManager->calculate(json_decode($question->getScoreRule()), $corrected);
     }
 
     /**
@@ -184,9 +222,11 @@ class QuestionManager
      */
     public function calculateTotal(Question $question)
     {
-        // TODO : implement
+        // Get the expected answer for the question
+        $definition = $this->questionDefinitions->get($question->getMimeType());
+        $expected = $definition->expectAnswer($question->getInteraction());
 
-        return 0;
+        return $this->scoreManager->calculateTotal(json_decode($question->getScoreRule()), $expected);
     }
 
     /**
@@ -202,28 +242,30 @@ class QuestionManager
         $questionStats = new \stdClass();
 
         // We load all the answers for the question (we need to get the entities as the response in DB are not processable as is)
-        $answers = $this->om->getRepository('UJMExoBundle:Attempt\Answer')->findByExerciseAndQuestion($exercise, $question);
+        $answers = $this->answerRepository->findByQuestion($question, $exercise);
 
-        // Number of Users that have seen the question in their exercise
+        // Number of Users that have seen the question
         $questionStats->seen = count($answers);
+
+        // Grab answer data to pass it decoded to the question type
+        // it doesn't need to know the whole Answer object
+        $answersData = [];
 
         // Number of Users that have responded to the question (no blank answer)
         $questionStats->answered = 0;
         if (!empty($answers)) {
             for ($i = 0; $i < $questionStats->seen; ++$i) {
-                /* @var Answer $answer */
-                $answer = $answer[$i];
+                $answer = $answers[$i];
                 if (!empty($answer->getData())) {
                     ++$questionStats->answered;
-                } else {
-                    // Remove element (to avoid processing in custom handlers)
-                    unset($answer);
+
+                    $answersData[] = json_decode($answer->getData());
                 }
             }
 
-            // Let the Handler of the question type parse and compile the data
-            $handler = $this->handlerCollector->getHandlerForInteractionType($question->getType());
-            $questionStats->solutions = $handler->generateStats($question, $answers);
+            // Let the handler of the question type parse and compile the data
+            $definition = $this->questionDefinitions->get($question->getMimeType());
+            $questionStats->solutions = $definition->getStatistics($question->getInteraction(), $answersData);
         }
 
         return $questionStats;

@@ -4,6 +4,7 @@ namespace UJM\ExoBundle\Entity\Misc;
 
 use Doctrine\ORM\Mapping as ORM;
 use UJM\ExoBundle\Entity\QuestionType\GraphicQuestion;
+use UJM\ExoBundle\Library\Attempt\AnswerPartInterface;
 use UJM\ExoBundle\Library\Model\FeedbackTrait;
 use UJM\ExoBundle\Library\Model\ScoreTrait;
 
@@ -13,7 +14,7 @@ use UJM\ExoBundle\Library\Model\ScoreTrait;
  * @ORM\Entity
  * @ORM\Table(name="ujm_coords")
  */
-class Area
+class Area implements AnswerPartInterface
 {
     /**
      * @var int

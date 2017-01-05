@@ -50,10 +50,6 @@ class MatchQuestionSerializer implements SerializerInterface
             $questionData->solutions = $this->serializeSolutions($matchQuestion);
         }
 
-        // Serializes score type
-        $questionData->score = new \stdClass();
-        $questionData->score->type = 'sum';
-
         $questionData->random = $matchQuestion->getShuffle();
         $questionData->penalty = $matchQuestion->getPenalty();
 

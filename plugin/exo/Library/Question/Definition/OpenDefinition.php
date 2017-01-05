@@ -105,18 +105,33 @@ class OpenDefinition extends AbstractDefinition
         return $this->serializer;
     }
 
+    /**
+     * Not implemented for open questions as it's not auto corrected.
+     *
+     * @param AbstractQuestion $question
+     * @param $answer
+     *
+     * @return bool
+     */
     public function correctAnswer(AbstractQuestion $question, $answer)
     {
-        // TODO: Implement correctAnswer() method.
+        return false;
     }
 
+    /**
+     * Not implemented for open questions as it's not auto corrected.
+     *
+     * @param AbstractQuestion $question
+     *
+     * @return array
+     */
     public function expectAnswer(AbstractQuestion $question)
     {
-        // TODO: Implement expectAnswer() method.
+        return [];
     }
 
     public function getStatistics(AbstractQuestion $openQuestion, array $answers)
     {
-        return;
+        return [];
     }
 }

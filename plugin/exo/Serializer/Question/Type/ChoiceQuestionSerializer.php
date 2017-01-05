@@ -51,16 +51,6 @@ class ChoiceQuestionSerializer implements SerializerInterface
         // Serializes choices
         $questionData->choices = $this->serializeChoices($choiceQuestion, $options);
 
-        // Serializes score type
-        $questionData->score = new \stdClass();
-        if (!$choiceQuestion->getWeightResponse()) {
-            $questionData->score->type = 'fixed';
-            $questionData->score->success = $choiceQuestion->getScoreRightResponse();
-            $questionData->score->failure = $choiceQuestion->getScoreFalseResponse();
-        } else {
-            $questionData->score->type = 'sum';
-        }
-
         if (in_array(Transfer::INCLUDE_SOLUTIONS, $options)) {
             $questionData->solutions = $this->serializeSolutions($choiceQuestion);
         }
@@ -85,14 +75,6 @@ class ChoiceQuestionSerializer implements SerializerInterface
 
         $choiceQuestion->setMultiple($data->multiple);
         $choiceQuestion->setShuffle($data->random);
-
-        if ('sum' === $data->score->type) {
-            $choiceQuestion->setWeightResponse(true);
-        } elseif ('fixed' === $data->score->type) {
-            $choiceQuestion->setWeightResponse(false);
-            $choiceQuestion->setScoreRightResponse($data->score->success);
-            $choiceQuestion->setScoreFalseResponse($data->score->failure);
-        }
 
         $this->deserializeChoices($choiceQuestion, $data->choices, $data->solutions);
 

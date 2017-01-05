@@ -86,11 +86,11 @@ class Persister
         $question->setTitle($title);
         $question->setContent('Invite...');
         $question->setDescription($description);
+        $question->setScoreRule('{"type": "sum"}');
 
         $interactionQcm = new ChoiceQuestion();
         $interactionQcm->setQuestion($question);
         $interactionQcm->setMultiple(true);
-        $interactionQcm->setWeightResponse(true);
 
         for ($i = 0, $max = count($choices); $i < $max; ++$i) {
             $choices[$i]->setOrder($i);
@@ -115,10 +115,10 @@ class Persister
         $question->setMimeType(QuestionType::OPEN);
         $question->setTitle($title);
         $question->setContent('Invite...');
+        $question->setScoreRule('{"type": "manual", "max": 10}');
 
         $interactionOpen = new OpenQuestion();
         $interactionOpen->setQuestion($question);
-        $interactionOpen->setScoreMaxLongResp(10);
         $interactionOpen->setAnswerMaxLength(1000);
 
         $this->om->persist($interactionOpen);
@@ -164,6 +164,7 @@ class Persister
         $question = new Question();
         $question->setUuid(uniqid('', true));
         $question->setMimeType(QuestionType::MATCH);
+        $question->setScoreRule('{"type": "sum"}');
         $question->setTitle($title);
         $question->setContent('Invite...');
 

@@ -89,9 +89,4 @@ abstract class AbstractDefinition implements QuestionDefinitionInterface
     {
         return $this->getQuestionSerializer()->deserialize($questionData, $question, $options);
     }
-
-    public function calculateScore(AbstractQuestion $question, $answer)
-    {
-        // TODO: Implement calculateScore() method.
-    }
 }

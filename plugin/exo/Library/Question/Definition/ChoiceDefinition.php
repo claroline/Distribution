@@ -3,7 +3,10 @@
 namespace UJM\ExoBundle\Library\Question\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Entity\Misc\Choice;
 use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
+use UJM\ExoBundle\Entity\QuestionType\ChoiceQuestion;
+use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 use UJM\ExoBundle\Library\Question\QuestionType;
 use UJM\ExoBundle\Serializer\Question\Type\ChoiceQuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\ChoiceAnswerValidator;
@@ -105,24 +108,51 @@ class ChoiceDefinition extends AbstractDefinition
         return $this->serializer;
     }
 
-    public function correctAnswer(AbstractQuestion $question, $answer)
+    /**
+     * @param ChoiceQuestion $question
+     * @param $answer
+     *
+     * @return CorrectedAnswer
+     */
+    public function correctAnswer(AbstractQuestion $question, $answer = [])
     {
-        // TODO: Implement correctAnswer() method.
+        $corrected = new CorrectedAnswer();
+
+        foreach ($question->getChoices() as $choice) {
+            if (is_array($answer) && in_array($choice->getId(), $answer)) {
+                // Choice has been selected by the user
+                if (0 < $choice->getScore()) {
+                    $corrected->addExpected($choice);
+                } else {
+                    $corrected->addUnexpected($choice);
+                }
+            } elseif (0 < $choice->getScore()) {
+                // The choice is not selected but it's part of the correct answer
+                $corrected->addMissing($choice);
+            }
+        }
+
+        return $corrected;
     }
 
+    /**
+     * @param ChoiceQuestion $question
+     *
+     * @return array
+     */
     public function expectAnswer(AbstractQuestion $question)
     {
-        // TODO: Implement expectAnswer() method.
+        return array_filter($question->getChoices()->toArray(), function (Choice $choice) {
+            return 0 < $choice->getScore();
+        });
     }
 
-    public function getStatistics(AbstractQuestion $choiceQuestion, array $answers)
+    public function getStatistics(AbstractQuestion $choiceQuestion, array $answersData)
     {
         $choices = [];
 
-        foreach ($answers as $answer) {
-            $decoded = $this->convertAnswerDetails($answer);
-
-            foreach ($decoded as $choiceId) {
+        foreach ($answersData as $answerData) {
+            foreach ($answerData as $choiceId) {
                 if (!isset($choices[$choiceId])) {
                     // First answer to have this solution
                     $choices[$choiceId] = new \stdClass();
@@ -134,6 +164,6 @@ class ChoiceDefinition extends AbstractDefinition
             }
         }
 
-        return $choices;
+        return array_values($choices);
     }
 }

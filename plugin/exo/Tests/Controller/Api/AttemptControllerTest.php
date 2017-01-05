@@ -283,8 +283,21 @@ class AttemptControllerTest extends TransactionalTestCase
 
     public function testHintNotRelatedToPaper()
     {
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        // Create an hint not linked to paper
+        $hint = $this->persist->hint($this->persist->openQuestion('question'), 'hint 2');
+
+        $pa1 = PaperGenerator::create($this->ex1, $this->john);
+
+        $this->om->persist($pa1);
+        $this->om->flush();
+
+        $this->request('GET', "/api/exercises/{$this->ex1->getUuid()}/attempts/{$pa1->getUuid()}/hints/{$hint->getId()}", $this->john);
+
+        $this->assertEquals(422, $this->client->getResponse()->getStatusCode());
+
+        // Checks we get errors
+        $content = json_decode($this->client->getResponse()->getContent(), true);
+        $this->assertTrue(is_array($content));
+        $this->assertTrue(count($content) > 0);
     }
 }
