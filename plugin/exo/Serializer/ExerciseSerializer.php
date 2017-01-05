@@ -167,7 +167,7 @@ class ExerciseSerializer implements SerializerInterface
         if ($exercise->getMaxAttempts()) {
             $parameters->maxAttempts = $exercise->getMaxAttempts();
         }
-        $parameters->showFeedback = $exercise->getAutoFeedback();
+        $parameters->showFeedback = $exercise->getShowFeedback();
         $parameters->duration = $exercise->getDuration();
         $parameters->anonymizeAttempts = $exercise->getAnonymizeAttempts();
         $parameters->interruptible = $exercise->isInterruptible();
@@ -240,7 +240,7 @@ class ExerciseSerializer implements SerializerInterface
         }
 
         if (isset($parameters->showFeedback)) {
-            $exercise->setAutoFeedback($parameters->showFeedback);
+            $exercise->setShowFeedback($parameters->showFeedback);
         }
 
         if (isset($parameters->duration)) {

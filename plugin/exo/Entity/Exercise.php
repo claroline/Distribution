@@ -133,7 +133,7 @@ class Exercise extends AbstractResource
     private $steps;
 
     /**
-     * Feedback content.
+     * Show feedback flag.
      *
      * @var string
      *
@@ -456,21 +456,21 @@ class Exercise extends AbstractResource
     }
 
     /**
-     * Sets auto feedback.
+     * Sets show feedback.
      *
      * @param bool $showFeedback
      */
-    public function setAutoFeedback($showFeedback)
+    public function setShowFeedback($showFeedback)
     {
         $this->showFeedback = $showFeedback;
     }
 
     /**
-     * Gets feedback.
+     * Gets show feedback.
      *
      * @return bool
      */
-    public function getAutoFeedback()
+    public function getShowFeedback()
     {
         return $this->showFeedback;
     }
