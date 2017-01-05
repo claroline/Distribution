@@ -7,6 +7,7 @@ import match from './match'
 import cloze from './cloze'
 import graphic from './graphic'
 import open from './open'
+import pair from './pair'
 import words from './words'
 import set from './set'
 
@@ -43,7 +44,7 @@ export function registerItemType(definition) {
 
 export function registerDefaultItemTypes() {
   if (!defaultRegistered) {
-    [choice, match, cloze, graphic, open, words, set].forEach(registerItemType)
+    [choice, match, cloze, graphic, open, pair, words, set].forEach(registerItemType)
     defaultRegistered = true
   }
 }
