@@ -114,12 +114,12 @@ class ChoiceDefinition extends AbstractDefinition
      *
      * @return CorrectedAnswer
      */
-    public function correctAnswer(AbstractQuestion $question, $answer)
+    public function correctAnswer(AbstractQuestion $question, $answer = [])
     {
         $corrected = new CorrectedAnswer();
 
         foreach ($question->getChoices() as $choice) {
-            if (in_array($choice->getId(), $answer)) {
+            if (is_array($answer) && in_array($choice->getId(), $answer)) {
                 // Choice has been selected by the user
                 if (0 < $choice->getScore()) {
                     $corrected->addExpected($choice);
