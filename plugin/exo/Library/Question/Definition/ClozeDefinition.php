@@ -3,7 +3,11 @@
 namespace UJM\ExoBundle\Library\Question\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Entity\Misc\Hole;
+use UJM\ExoBundle\Entity\Misc\Keyword;
 use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
+use UJM\ExoBundle\Entity\QuestionType\ClozeQuestion;
+use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 use UJM\ExoBundle\Library\Question\QuestionType;
 use UJM\ExoBundle\Serializer\Question\Type\ClozeQuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\ClozeAnswerValidator;
@@ -105,17 +109,50 @@ class ClozeDefinition extends AbstractDefinition
         return $this->serializer;
     }
 
+    /**
+     * @param ClozeQuestion $question
+     * @param $answer
+     *
+     * @return CorrectedAnswer
+     */
     public function correctAnswer(AbstractQuestion $question, $answer)
     {
-        // TODO: Implement correctAnswer() method.
+        $corrected = new CorrectedAnswer();
+
+        // TODO : implement
+
+        return $corrected;
     }
 
+    /**
+     * @param ClozeQuestion $question
+     *
+     * @return array
+     */
     public function expectAnswer(AbstractQuestion $question)
     {
-        // TODO: Implement expectAnswer() method.
+        $expected = [];
+        foreach ($question->getHoles() as $hole) {
+            $best = null;
+            foreach ($hole->getKeywords() as $keyword) {
+                if (empty($best) || $best->getScore() < $keyword->getScore()) {
+                    $best = $keyword;
+                }
+            }
+
+            $expected[] = $best;
+        }
+
+        return $expected;
     }
 
-    public function getStatistics(AbstractQuestion $clozeQuestion, array $answers)
+    /**
+     * @param ClozeQuestion $clozeQuestion
+     * @param array         $answersData
+     *
+     * @return array
+     */
+    public function getStatistics(AbstractQuestion $clozeQuestion, array $answersData)
     {
         // Create an array with holeId => holeObject for easy search
         $holesMap = [];
@@ -126,12 +163,8 @@ class ClozeDefinition extends AbstractDefinition
 
         $holes = [];
 
-        /** @var Answer $answer */
-        foreach ($answers as $answer) {
-            // Manually decode data to make it easier to process
-            $decoded = $this->convertAnswerDetails($answer);
-
-            foreach ($decoded as $holeAnswer) {
+        foreach ($answersData as $answerData) {
+            foreach ($answerData as $holeAnswer) {
                 if (!empty($holeAnswer->answerText)) {
                     if (!isset($holes[$holeAnswer->holeId])) {
                         $holes[$holeAnswer->holeId] = new \stdClass();

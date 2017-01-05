@@ -113,6 +113,8 @@ class MatchDefinition extends AbstractDefinition
     public function expectAnswer(AbstractQuestion $question)
     {
         // TODO: Implement expectAnswer() method.
+
+        return [];
     }
 
     public function getStatistics(AbstractQuestion $matchQuestion, array $answers)

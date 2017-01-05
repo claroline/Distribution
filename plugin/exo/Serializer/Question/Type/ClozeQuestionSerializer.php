@@ -37,8 +37,8 @@ class ClozeQuestionSerializer implements SerializerInterface
     /**
      * Converts a Cloze question into a JSON-encodable structure.
      *
-     * @param ChoiceQuestion $clozeQuestion
-     * @param array          $options
+     * @param ClozeQuestion $clozeQuestion
+     * @param array         $options
      *
      * @return \stdClass
      */
@@ -51,10 +51,6 @@ class ClozeQuestionSerializer implements SerializerInterface
         if (in_array(Transfer::INCLUDE_SOLUTIONS, $options)) {
             $questionData->solutions = $this->serializeSolutions($clozeQuestion);
         }
-
-        // Serializes score type
-        $questionData->score = new \stdClass();
-        $questionData->score->type = 'sum';
 
         return $questionData;
     }

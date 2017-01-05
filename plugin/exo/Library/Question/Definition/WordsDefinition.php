@@ -3,7 +3,10 @@
 namespace UJM\ExoBundle\Library\Question\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Entity\Misc\Keyword;
 use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
+use UJM\ExoBundle\Entity\QuestionType\OpenQuestion;
+use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 use UJM\ExoBundle\Library\Question\QuestionType;
 use UJM\ExoBundle\Serializer\Question\Type\WordsQuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\WordsAnswerValidator;
@@ -105,27 +108,56 @@ class WordsDefinition extends AbstractDefinition
         return $this->serializer;
     }
 
+    /**
+     * @param OpenQuestion $question
+     * @param string       $answer
+     *
+     * @return CorrectedAnswer
+     */
     public function correctAnswer(AbstractQuestion $question, $answer)
     {
-        // TODO: Implement correctAnswer() method.
+        $corrected = new CorrectedAnswer();
+        foreach ($question->getKeywords() as $keyword) {
+            if ($this->containKeyword($answer, $keyword)) {
+                if (0 < $keyword->getScore()) {
+                    $corrected->addExpected($keyword);
+                } else {
+                    $corrected->addUnexpected($keyword);
+                }
+            } elseif (0 < $keyword->getScore()) {
+                $corrected->addMissing($keyword);
+            }
+        }
+
+        return $corrected;
     }
 
+    /**
+     * @param OpenQuestion $question
+     *
+     * @return array
+     */
     public function expectAnswer(AbstractQuestion $question)
     {
-        // TODO: Implement expectAnswer() method.
+        return array_filter($question->getKeywords()->toArray(), function (Keyword $keyword) {
+            return 0 < $keyword->getScore();
+        });
     }
 
-    public function getStatistics(AbstractQuestion $wordsQuestion, array $answers)
+    /**
+     * @param OpenQuestion $wordsQuestion
+     * @param array        $answersData
+     *
+     * @return array
+     */
+    public function getStatistics(AbstractQuestion $wordsQuestion, array $answersData)
     {
         $keywords = [];
 
-        foreach ($answers as $answer) {
-            $decoded = $this->convertAnswerDetails($answer);
-
+        foreach ($answersData as $answerData) {
             /** @var Keyword $keyword */
             foreach ($wordsQuestion->getKeywords() as $keyword) {
-                $flags = $keyword->isCaseSensitive() ? 'i' : '';
-                if (1 === preg_match('/'.$keyword->getText().'/'.$flags, $decoded)) {
+                if ($this->containKeyword($answerData, $keyword)) {
                     if (!isset($keywords[$keyword->getId()])) {
                         // First answer to contain the keyword
                         $keywords[$keyword->getId()] = new \stdClass();
@@ -138,6 +170,18 @@ class WordsDefinition extends AbstractDefinition
             }
         }
 
-        return $keywords;
+        return array_values($keywords);
+    }
+
+    private function containKeyword($string, Keyword $keyword)
+    {
+        $found = false;
+
+        $flags = $keyword->isCaseSensitive() ? 'i' : '';
+        if (1 === preg_match('/'.$keyword->getText().'/'.$flags, $string)) {
+            $found = true;
+        }
+
+        return $found;
     }
 }

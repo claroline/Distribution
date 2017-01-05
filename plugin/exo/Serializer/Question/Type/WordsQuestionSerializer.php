@@ -49,10 +49,6 @@ class WordsQuestionSerializer implements SerializerInterface
             $questionData->solutions = $this->serializeSolutions($wordsQuestion);
         }
 
-        // Serializes score type
-        $questionData->score = new \stdClass();
-        $questionData->score->type = 'sum';
-
         return $questionData;
     }
 

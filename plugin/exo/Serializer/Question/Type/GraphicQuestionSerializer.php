@@ -32,10 +32,6 @@ class GraphicQuestionSerializer implements SerializerInterface
             $questionData->solutions = $this->serializeSolutions($graphicQuestion);
         }
 
-        // Serializes score type
-        $questionData->score = new \stdClass();
-        $questionData->score->type = 'sum';
-
         return $questionData;
     }
 

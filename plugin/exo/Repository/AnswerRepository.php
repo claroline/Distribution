@@ -13,20 +13,23 @@ use UJM\ExoBundle\Entity\Question\Question;
 class AnswerRepository extends EntityRepository
 {
     /**
-     * Returns all answers to a question inside an exercise.
+     * Returns all answers to a question.
+     * It can be limited to only one exercise.
      *
-     * @param Exercise $exercise
      * @param Question $question
+     * @param Exercise $exercise
      *
      * @return Answer[]
      */
-    public function findByExerciseAndQuestion(Exercise $exercise, Question $question)
+    public function findByQuestion(Question $question, Exercise $exercise = null)
     {
         return $this->createQueryBuilder('a')
             ->join('a.paper', 'p', 'WITH', 'p.exercise = :exercise')
             ->where('a.question = :question')
-            ->setParameter('exercise', $exercise)
-            ->setParameter('question', $question)
+            ->setParameters([
+                'exercise' => $exercise,
+                'question' => $question,
+            ])
             ->getQuery()
             ->getResult();
     }

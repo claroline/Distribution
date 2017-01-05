@@ -28,10 +28,6 @@ class PairQuestionSerializer implements SerializerInterface
             $questionData->solutions = $this->serializeSolutions($pairQuestion);
         }
 
-        // Serializes score type
-        $questionData->score = new \stdClass();
-        $questionData->score->type = 'sum';
-
         return $questionData;
     }
 
