@@ -41,7 +41,7 @@ Feedback.propTypes = {
 
 const WarningIcon = props => {
   if (props.answers.indexOf(props.solution.id) > -1) {
-    return props.solution.score !== 0 ?
+    return props.solution.score > 0 ?
        <span className="fa fa-check answer-warning-span" aria-hidden="true"></span> :
        <span className="fa fa-times answer-warning-span" aria-hidden="true"></span>
   }
@@ -87,7 +87,7 @@ export class ChoicePaper extends Component
 
   getAnswerClassForSolution(solution, answers) {
     return this.isSolutionChecked(solution, answers) ?
-      solution.score !== 0 ? 'bg-success text-success' : 'bg-danger text-danger' : ''
+      solution.score > 0 ? 'bg-success text-success' : 'bg-danger text-danger' : ''
   }
 
   render() {
@@ -145,7 +145,7 @@ export class ChoicePaper extends Component
                 <span className="answer-warning-span"></span>
                 <input
                   className={this.props.item.multiple ? 'checkbox': 'radio'}
-                  checked={solution.score !== 0}
+                  checked={solution.score > 0}
                   id={this.expectedId(solution.id)}
                   name={this.expectedId(this.props.item.id)}
                   type={this.props.item.multiple ? 'checkbox': 'radio'}
