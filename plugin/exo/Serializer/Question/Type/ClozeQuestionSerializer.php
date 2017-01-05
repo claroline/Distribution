@@ -38,7 +38,7 @@ class ClozeQuestionSerializer implements SerializerInterface
      * Converts a Cloze question into a JSON-encodable structure.
      *
      * @param ClozeQuestion $clozeQuestion
-     * @param array          $options
+     * @param array         $options
      *
      * @return \stdClass
      */

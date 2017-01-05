@@ -148,7 +148,7 @@ class ClozeDefinition extends AbstractDefinition
 
     /**
      * @param ClozeQuestion $clozeQuestion
-     * @param array $answersData
+     * @param array         $answersData
      *
      * @return array
      */

@@ -3,9 +3,9 @@
 namespace UJM\ExoBundle\Entity\Question;
 
 use Doctrine\ORM\Mapping as ORM;
+use UJM\ExoBundle\Library\Attempt\PenaltyItemInterface;
 use UJM\ExoBundle\Library\Model\ContentTrait;
 use UJM\ExoBundle\Library\Model\PenaltyTrait;
-use UJM\ExoBundle\Library\Attempt\PenaltyItemInterface;
 
 /**
  * Hint.

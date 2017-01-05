@@ -6,7 +6,7 @@ use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
 /**
- * Auto-generated migration based on mapping information: modify it with caution
+ * Auto-generated migration based on mapping information: modify it with caution.
  *
  * Generation date: 2017/01/04 06:21:47
  */
@@ -14,10 +14,10 @@ class Version20170104182145 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
-        $this->addSql("
+        $this->addSql('
             ALTER TABLE ujm_question 
             ADD scoreRule LONGTEXT NOT NULL
-        ");
+        ');
 
         // Move questions scores
         $this->addSql("
@@ -59,9 +59,9 @@ class Version20170104182145 extends AbstractMigration
 
     public function down(Schema $schema)
     {
-        $this->addSql("
+        $this->addSql('
             ALTER TABLE ujm_question 
             DROP scoreRule
-        ");
+        ');
     }
 }

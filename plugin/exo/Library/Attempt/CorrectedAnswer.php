@@ -38,9 +38,9 @@ class CorrectedAnswer
     /**
      * CorrectedAnswer constructor.
      *
-     * @param AnswerPartInterface[] $expected
-     * @param AnswerPartInterface[] $missing
-     * @param AnswerPartInterface[] $unexpected
+     * @param AnswerPartInterface[]  $expected
+     * @param AnswerPartInterface[]  $missing
+     * @param AnswerPartInterface[]  $unexpected
      * @param PenaltyItemInterface[] $penalties
      */
     public function __construct(

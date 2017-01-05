@@ -110,7 +110,7 @@ class WordsDefinition extends AbstractDefinition
 
     /**
      * @param OpenQuestion $question
-     * @param string $answer
+     * @param string       $answer
      *
      * @return CorrectedAnswer
      */
@@ -124,7 +124,7 @@ class WordsDefinition extends AbstractDefinition
                 } else {
                     $corrected->addUnexpected($keyword);
                 }
-            } else if (0 < $keyword->getScore()) {
+            } elseif (0 < $keyword->getScore()) {
                 $corrected->addMissing($keyword);
             }
         }
@@ -146,7 +146,7 @@ class WordsDefinition extends AbstractDefinition
 
     /**
      * @param OpenQuestion $wordsQuestion
-     * @param array $answersData
+     * @param array        $answersData
      *
      * @return array
      */

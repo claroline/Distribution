@@ -69,10 +69,10 @@ class QuestionManager
      *     "questionDefinitions" = @DI\Inject("ujm_exo.collection.question_definitions")
      * })
      *
-     * @param ObjectManager      $om
-     * @param ScoreManager       $scoreManager
-     * @param QuestionValidator  $validator
-     * @param QuestionSerializer $serializer
+     * @param ObjectManager                 $om
+     * @param ScoreManager                  $scoreManager
+     * @param QuestionValidator             $validator
+     * @param QuestionSerializer            $serializer
      * @param QuestionDefinitionsCollection $questionDefinitions
      */
     public function __construct(

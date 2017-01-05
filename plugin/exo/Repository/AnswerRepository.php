@@ -14,7 +14,7 @@ class AnswerRepository extends EntityRepository
 {
     /**
      * Returns all answers to a question.
-     * It can be limited to only one exercise
+     * It can be limited to only one exercise.
      *
      * @param Question $question
      * @param Exercise $exercise

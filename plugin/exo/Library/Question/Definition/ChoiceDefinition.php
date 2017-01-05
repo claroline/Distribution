@@ -126,7 +126,7 @@ class ChoiceDefinition extends AbstractDefinition
                 } else {
                     $corrected->addUnexpected($choice);
                 }
-            } else if (0 < $choice->getScore()) {
+            } elseif (0 < $choice->getScore()) {
                 // The choice is not selected but it's part of the correct answer
                 $corrected->addMissing($choice);
             }
