@@ -14,18 +14,18 @@ function addAlert(alerts, action) {
   const alert = {
     id: uuid(),
     text: action.text,
-    type: action.type,
+    type: action.alertType,
     dismissible: !!action.dismissible
   }
 
-  return update(alerts, {[alert.id]: {$set: alert}})
+  return update(alerts, {$push: [alert]})
 }
 
 function removeAlert(alerts, action) {
-  return update(alerts, {$delete: action.id})
+  return update(alerts, {$splice: [[alerts.find(action.id), 1]]})
 }
 
-export const reducers = makeReducer({}, {
+export const reducers = makeReducer([], {
   [ALERT_ADD]: addAlert,
   [ALERT_REMOVE]: removeAlert
 })

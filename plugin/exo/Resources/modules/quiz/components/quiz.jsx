@@ -2,6 +2,7 @@ import React, {PropTypes as T} from 'react'
 import {connect} from 'react-redux'
 
 import PageHeader from './../../components/layout/page-header.jsx'
+import {Alerts} from './../../alert/components/alerts.jsx'
 import {Loader} from './../../api/components/loader.jsx'
 import {TopBar} from './top-bar.jsx'
 import {Overview} from './../overview/overview.jsx'
@@ -26,6 +27,10 @@ let Quiz = props =>
 
     {props.isLoading &&
       <Loader />
+    }
+
+    {0 !== props.alerts.length &&
+      <Alerts alerts={props.alerts} />
     }
 
     {props.editable &&
@@ -68,6 +73,7 @@ function viewComponent(view) {
 function mapStateToProps(state) {
   return {
     isLoading: select.isLoading(state),
+    alerts: select.alerts(state),
     quiz: select.quiz(state),
     steps: select.steps(state),
     viewMode: select.viewMode(state),

@@ -22,3 +22,6 @@ actions.receiveResponse = makeActionCreator(RESPONSE_RECEIVE)
 
 actions.incrementRequests = makeActionCreator(REQUESTS_INCREMENT)
 actions.decrementRequests = makeActionCreator(REQUESTS_DECREMENT)
+
+actions.receiveSuccessResponse = makeActionCreator(RESPONSE_RECEIVE_SUCCESS, 'responseData')
+actions.receiveFailureResponse = makeActionCreator(RESPONSE_RECEIVE_FAILURE, 'error')

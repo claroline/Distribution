@@ -33,7 +33,7 @@ actions.play = (previousPaper = null, testMode = false) => {
     if (!playerSelectors.offline(getState())) {
       // Request a paper from the API and open the player
       return dispatch(
-        apiActions.sendRequest(['exercise_attempt_start', {exerciseId: quiz.id}], {method: 'POST'})
+        apiActions.sendRequest(['exercise_attempt_start', {exerciseId: quizSelectors.quiz(getState()).id}], {method: 'POST'})
       ).then(data => dispatch(initPlayer(data.paper, data.answers)))
     } else {
       // Create a new local paper and open the player

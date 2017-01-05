@@ -9,6 +9,7 @@ import {
 import thunk from 'redux-thunk'
 
 import {apiMiddleware} from './../api/middleware'
+import {reducers as alertReducers} from './../alert/reducers'
 import {reducers as apiReducers} from './../api/reducers'
 import {reducers as quizReducers} from './reducers'
 import {reducers as editorReducers} from './editor/reducers'
@@ -40,7 +41,7 @@ const quizSave = store => next => action => {
   }
 }
 
-const middleware = [thunk, apiMiddleware, quizSave]
+const middleware = [apiMiddleware, thunk, quizSave]
 
 if (process.env.NODE_ENV !== 'production') {
   const freeze = require('redux-freeze')
@@ -51,6 +52,7 @@ const returnSelf = (state = null) => state
 
 export function makeReducer(editable) {
   return combineReducers({
+    alerts: alertReducers,
     noServer: returnSelf,
     currentRequests: apiReducers.currentRequests,
 

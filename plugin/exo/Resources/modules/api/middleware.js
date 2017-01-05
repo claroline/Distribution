@@ -3,6 +3,7 @@ import invariant from 'invariant'
 import { update } from './../utils/utils'
 import { generateUrl } from './../utils/routing'
 import { actions as alertActions } from './../alert/actions'
+import { actions as apiActions } from './actions'
 import {
   REQUEST_SEND,
   actions
@@ -46,28 +47,34 @@ function getUrl(target) {
 
 function handleResponse(dispatch, response) {
   console.log('handle raw response')
-  dispatch(actions.decrementRequests)
+
+  dispatch(actions.decrementRequests())
 
   if (!response.ok) {
-    throw ApiError(response.statusText, response.status)
+    return Promise.reject(response)
   }
 
   return response
 }
 
-function handleResponseSuccess(dispatch, response) {
+function handleResponseSuccess(response) {
   console.log('handle success')
-  if (204 !== response.status) {
-    return getResponseData(response)
-  } else {
-    // Empty response
-    return null
+
+  return dispatch => {
+    const data = (204 !== response.status) ? getResponseData(response) : null
+    
+    dispatch(apiActions.receiveSuccessResponse(data))
   }
 }
 
-function handleResponseError(dispatch, error) {
+function handleResponseError(error) {
   console.log('handle errors')
-  dispatch(alertActions.addAlert('error', error.message))
+
+  return dispatch => {
+    dispatch(alertActions.addAlert('error', error.statusText))
+    dispatch(apiActions.receiveFailureResponse(error))
+  }
+
   /*switch(response.status) {
    // User needs to log in
    case 401:
@@ -89,9 +96,6 @@ function handleResponseError(dispatch, error) {
    dispatch(alertActions.addAlert('error', 'Server error.'))
    break
    }*/
-
-  // Reject the promise
-  /*return Promise.reject(error)*/
 }
 
 /**
@@ -132,8 +136,10 @@ const apiMiddleware = store => next => action => {
 
     return fetch(url, finalRequest)
       .then(response => handleResponse(next, response))
-      .then(response => handleResponseSuccess(next, response))
-      .catch(error => handleResponseError(next, error))
+      .then(
+        response => next(handleResponseSuccess(response)),
+        error    => next(handleResponseError(error))
+      )
   }
 
   return next(action)
