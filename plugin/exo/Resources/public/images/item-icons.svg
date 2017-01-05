@@ -55,17 +55,9 @@
             </g>
         </symbol>
 
-        <symbol id="icon-pair" viewBox="0 16 16">
-            <defs>
-                <marker id="a" orient="auto" overflow="visible">
-                    <path d="M1.154 0l-1.73 1v-2l1.73 1z" fill-rule="evenodd" stroke="#000" stroke-width=".2pt"/>
-                </marker>
-            </defs>
-            <g transform="translate(0 -16)" fill="none">
-                <rect stroke-dashoffset=".5" rx="0" ry="0" height="8" width="6" y="22.5" x="9.5"/>
-                <rect stroke-dasharray="0.99999995, 0.99999995" stroke-dashoffset=".5" rx="0" ry="0" height="8" width="6" y="22.5" x=".5"/>
-                <path marker-end="url(#a)" d="M2.19 19.326s5-4.5 11 0" stroke-linecap="round"/>
-            </g>
+        <symbol id="icon-pair" viewBox="0 32 32">
+            <defs><marker id="a" orient="auto" overflow="visible"><path d="M1.154 0l-1.73 1v-2l1.73 1z" fill-rule="evenodd" stroke="#000" stroke-width=".2pt"/></marker></defs><g transform="translate(0 -16)" fill="none">
+            <rect stroke-dashoffset=".5" rx="0" ry="0" height="8" width="6" y="22.5" x="9.5"/><rect stroke-dasharray="0.99999995, 0.99999995" stroke-dashoffset=".5" rx="0" ry="0" height="8" width="6" y="22.5" x=".5"/><path marker-end="url(#a)" d="M2.19 19.326s5-4.5 11 0" stroke-linecap="round"/></g>
         </symbol>
 
         <symbol id="icon-set" viewBox="0 0 16 16">
