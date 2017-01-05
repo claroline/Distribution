@@ -17,7 +17,7 @@ class QuestionProprietaryUpdateCommand extends ContainerAwareCommand
 {
     use BaseCommandTrait;
 
-    private $params = [
+    protected $params = [
         'new_owner' => 'The new owner username: ',
         'question_id' => 'The question id: ',
     ];

@@ -122,6 +122,9 @@ class QuestionSerializer extends AbstractSerializer
             'meta' => function (Question $question) use ($options) {
                 return $this->serializeMetadata($question, $options);
             },
+            'score' => function (Question $question) {
+                return json_decode($question->getScoreRule());
+            },
         ], $question, $questionData);
 
         // Adds full definition of the question
@@ -196,6 +199,10 @@ class QuestionSerializer extends AbstractSerializer
             },
             'meta' => function (Question $question, \stdClass $data) {
                 return $this->deserializeMetadata($question, $data->meta);
+            },
+            'score' => function (Question $question, \stdClass $data) {
+                $score = $this->sanitizeScore($data->score);
+                $question->setScoreRule(json_encode($score));
             },
         ], $data, $question);
 
@@ -282,7 +289,9 @@ class QuestionSerializer extends AbstractSerializer
             }, $users);
 
             // Adds category
-            $metadata->category = $this->categorySerializer->serialize($question->getCategory(), $options);
+            if (!empty($question->getCategory())) {
+                $metadata->category = $this->categorySerializer->serialize($question->getCategory(), $options);
+            }
         }
 
         return $metadata;
@@ -484,5 +493,31 @@ class QuestionSerializer extends AbstractSerializer
                 $question->removeResource($resourceToRemove);
             }
         }
+    }
+
+    /**
+     * The client may send dirty data, we need to clean them before storing it in DB.
+     *
+     * @param $score
+     *
+     * @return \stdClass
+     */
+    private function sanitizeScore($score)
+    {
+        $sanitized = new \stdClass();
+
+        $sanitized->type = $score->type;
+        switch ($score->type) {
+            case 'fixed':
+                $sanitized->success = $score->success;
+                $sanitized->failure = $score->failure;
+                break;
+
+            case 'manual':
+                $sanitized->max = $score->max;
+                break;
+        }
+
+        return $sanitized;
     }
 }

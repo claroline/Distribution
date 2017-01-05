@@ -15,16 +15,16 @@ import {PlayerNav} from './nav-bar.jsx'
 const Player = props =>
   <div className="quiz-player">
     <h2 className="h4 step-title">
-      {tex('step')}&nbsp;{props.number}
-      {props.step.title && <small>&nbsp;{props.step.title}</small>}
+      {props.step.title ?
+        <span>{props.step.title}</span>
+        :
+        <span>{tex('step')}&nbsp; {props.number}</span>
+      }
     </h2>
 
     {props.step.description &&
-      <div className="exercise-description panel panel-default">
-        <div
-          className="panel-body"
-          dangerouslySetInnerHTML={{ __html: props.step.description }}
-        ></div>
+      <div className="step-description" dangerouslySetInnerHTML={{ __html: props.step.description }}>
+
       </div>
     }
 

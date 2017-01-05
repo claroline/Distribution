@@ -50,7 +50,16 @@ Hints.propTypes = {
 
 const ItemPlayer = props =>
   <div className="item-player">
-    <p>{props.item.content}</p>
+    {props.item.title &&
+      <content className="item-title" dangerouslySetInnerHTML={{__html: props.item.title}} />
+    }
+    {props.item.description &&
+      <content>
+        <div className="item-description" dangerouslySetInnerHTML={{__html: props.item.description}}/>
+      </content>
+    }
+    <content className="item-content">
+    </content>
 
     <hr/>
     {props.children}
@@ -62,6 +71,8 @@ const ItemPlayer = props =>
 
 ItemPlayer.propTypes = {
   item: T.shape({
+    title: T.string.isRequired,
+    description: T.string.isRequired,
     content: T.string.isRequired,
     hints: T.array
   }).isRequired,

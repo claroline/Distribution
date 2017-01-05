@@ -27,13 +27,6 @@ class OpenQuestion extends AbstractQuestion
     private $keywords;
 
     /**
-     * @ORM\Column(type="float", nullable=true)
-     *
-     * @var float
-     */
-    private $scoreMaxLongResp;
-
-    /**
      * The max allowed length fot answers to this question.
      *
      * @ORM\Column(type="integer")
@@ -97,22 +90,6 @@ class OpenQuestion extends AbstractQuestion
         if ($this->keywords->contains($keyword)) {
             $this->keywords->removeElement($keyword);
         }
-    }
-
-    /**
-     * @param float $scoreMaxLongResp
-     */
-    public function setScoreMaxLongResp($scoreMaxLongResp)
-    {
-        $this->scoreMaxLongResp = $scoreMaxLongResp;
-    }
-
-    /**
-     * @return float
-     */
-    public function getScoreMaxLongResp()
-    {
-        return $this->scoreMaxLongResp;
     }
 
     /**

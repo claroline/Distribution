@@ -1,9 +1,37 @@
-.player-nav {
+
+
+/* PLAYER ROOT CONTAINER */
+.quiz-player {
+  padding: @panel-body-padding;
+  .step-title {
+  }
+
+  .step-description {
+    margin-bottom: 12px;
+    img {
+
+    }
+    video {
+
+    }
+    audio {
+      max-width: 150px;
+    }
+  }
+
+  .player-nav {
     display: flex;
     justify-content: space-between;
+  }
 }
 
 .item-player .item-content,
+.item-player .item-title,
+.item-player .item-description,
 .item-paper .item-content {
   margin-bottom: 12px;
+}
+
+.item-title {
+  font-size: 16px; 
 }

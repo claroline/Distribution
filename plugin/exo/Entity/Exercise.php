@@ -133,6 +133,15 @@ class Exercise extends AbstractResource
     private $steps;
 
     /**
+     * Show feedback flag.
+     *
+     * @var string
+     *
+     * @ORM\Column(name="show_feedback", type="boolean", nullable=false)
+     */
+    private $showFeedback = false;
+
+    /**
      * Exercise constructor.
      */
     public function __construct()
@@ -444,5 +453,25 @@ class Exercise extends AbstractResource
         }
 
         return $this;
+    }
+
+    /**
+     * Sets show feedback.
+     *
+     * @param bool $showFeedback
+     */
+    public function setShowFeedback($showFeedback)
+    {
+        $this->showFeedback = $showFeedback;
+    }
+
+    /**
+     * Gets show feedback.
+     *
+     * @return bool
+     */
+    public function getShowFeedback()
+    {
+        return $this->showFeedback;
     }
 }

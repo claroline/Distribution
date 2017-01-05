@@ -96,6 +96,10 @@ class QuestionRepositoryTest extends TransactionalTestCase
         ];
 
         $questions = $this->repo->findByUuids($questionUuids);
-        $this->assertEquals([$this->questions[0], $this->questions[1], $this->questions[2]], $questions);
+
+        $this->assertCount(3, $questions);
+        $this->assertContains($this->questions[0], $questions);
+        $this->assertContains($this->questions[1], $questions);
+        $this->assertContains($this->questions[2], $questions);
     }
 }
