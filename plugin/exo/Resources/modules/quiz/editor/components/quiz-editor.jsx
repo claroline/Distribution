@@ -180,13 +180,20 @@ const Signing = props =>
       label={tex('allow_test_exit')}
       onChange={checked => props.onChange('parameters.interruptible', checked)}
     />
+    <CheckGroup
+      checkId="quiz-show-feedback"
+      checked={props.parameters.showFeedback}
+      label={tex('show_feedback')}
+      onChange={checked => props.onChange('parameters.showFeedback', checked)}
+    />
 </fieldset>
 
 Signing.propTypes = {
   parameters: T.shape({
     duration: T.number.isRequired,
     maxAttempts: T.number.isRequired,
-    interruptible: T.bool.isRequired
+    interruptible: T.bool.isRequired,
+    showFeedback: T.bool.isRequired
   }).isRequired,
   onChange: T.func.isRequired
 }
