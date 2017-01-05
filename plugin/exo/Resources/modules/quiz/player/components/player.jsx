@@ -9,7 +9,7 @@ import {select} from './../selectors'
 
 import {actions as playerActions} from './../actions'
 
-import {Player as ItemPlayer} from './../../../items/components/player.jsx'
+import {ItemPlayer} from './item-player.jsx'
 import {PlayerNav} from './nav-bar.jsx'
 
 const Player = props =>
@@ -47,6 +47,15 @@ const Player = props =>
         </ItemPlayer>
       </Panel>
     ))}
+
+    <PlayerNav
+      previous={props.previous}
+      next={props.next}
+      navigateTo={(step) => props.navigateTo(props.quizId, props.paper.id, step, props.answers)}
+      submit={() => props.submit(props.quizId, props.paper.id, props.answers)}
+      finish={() => props.finish(props.quizId, props.paper, props.answers)}
+    />
+  </div>
 
 
 Player.propTypes = {
