@@ -13,6 +13,7 @@
   }
 
   .item {
+    display: flex;
     border-bottom: solid 1px @table-border-color;
     margin: 0;
     padding: @table-cell-padding;
@@ -21,13 +22,13 @@
   .item:last-of-type {
     border: none;
   }
+
+  .control-label {
+    flex-grow: 1;
+  }
 }
 
 .choice-player {
-  .item {
-    cursor: pointer;
-  }
-
   .item:hover {
     background-color: @table-bg-hover;
   }
@@ -41,15 +42,6 @@
   border-top: none;
   border-top-left-radius: 0;
   padding: 0;
-
-  .checkbox,
-  .radio {
-    display: flex;
-  }
-
-  .control-label {
-    flex-grow: 1;
-  }
 
   .item-feedback {
     width: 20px;

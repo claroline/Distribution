@@ -39,17 +39,17 @@ export class ChoicePlayer extends Component {
               'item',
               this.props.item.multiple ? 'checkbox': 'radio'
             )}
-            onClick={() => this.props.onChange(this.select(
-              this.props.item.multiple,
-              choice.id,
-              this.props.answer
-            ))}
           >
             <input
               checked={this.isChecked(choice.id, this.props.answer)}
               id={choice.id}
               name={this.props.item.id}
               type={this.props.item.multiple ? 'checkbox': 'radio'}
+              onChange={() => this.props.onChange(this.select(
+                this.props.item.multiple,
+                choice.id,
+                this.props.answer
+              ))}
             />
             <label
               className="control-label"

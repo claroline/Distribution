@@ -33,7 +33,7 @@ describe('<ChoicePlayer/>', () => {
     ensure.propTypesOk()
     ensure.equal(player.find('input[type="checkbox"]').length, 2, 'has checkboxes')
     const chk = player.find('input[type="checkbox"]#2')
-    chk.simulate('click')
+    chk.simulate('change', {target: {checked: true}})
     ensure.equal(answer, ['2'])
   })
 })
