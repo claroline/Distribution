@@ -26,17 +26,25 @@ function handleResponse(dispatch, response) {
   return response
 }
 
-function handleResponseSuccess(data, successCallback) {
+function handleResponseSuccess(data, success) {
+  if (success) {
+    invariant(!isFunction(success), '`success` should be a function')
+  }
+
   return dispatch => {
-    if (typeof successCallback === 'function') {
-      dispatch(successCallback(data))
+    if (success) {
+      return dispatch(success(data))
     }
   }
 }
 
-function handleResponseError(error, failureCallback) {
+function handleResponseError(error, failure) {
+  if (failure) {
+    invariant(!isFunction(failure), '`failure` should be a function')
+  }
+
   return dispatch => {
-    switch(error.status) {
+    switch (error.status) {
       // User needs to log in
       case 401:
         dispatch(alertActions.addAlert('warning', 'You need to be logged.'))
@@ -58,8 +66,8 @@ function handleResponseError(error, failureCallback) {
         break
     }
 
-    if (typeof failureCallback === 'function') {
-      dispatch(failureCallback(error))
+    if (failure) {
+      return dispatch(failure(error))
     }
   }
 }
@@ -85,13 +93,10 @@ function getResponseData(response) {
     }
   }
 
-  return data
+  return data // this is a promise
 }
 
 function getUrl(url, route) {
-  console.log(url)
-  console.log(route)
-
   invariant(url || route, 'a `url` or a `route` property is required')
 
   if (url) {
