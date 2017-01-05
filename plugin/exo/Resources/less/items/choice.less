@@ -1,6 +1,9 @@
-.choice-player {
+.choice-player,
+.choice-paper {
   border: solid 1px @table-border-color;
   border-radius: @border-radius-base;
+  margin: 0;
+  width: 100%;
 
   input[type="checkbox"],
   input[type="radio"] {
@@ -11,7 +14,6 @@
 
   .item {
     border-bottom: solid 1px @table-border-color;
-    cursor: pointer;
     margin: 0;
     padding: @table-cell-padding;
   }
@@ -19,12 +21,43 @@
   .item:last-of-type {
     border: none;
   }
+}
 
-  .item:nth-of-type(odd) {
-    background-color: @table-bg-accent;
+.choice-player {
+  .item {
+    cursor: pointer;
   }
 
   .item:hover {
     background-color: @table-bg-hover;
+  }
+
+  .item:nth-of-type(odd) {
+    background-color: @table-bg-accent;
+  }
+}
+
+.choice-paper {
+  border-top: none;
+  border-top-left-radius: 0;
+  padding: 0;
+
+  .checkbox,
+  .radio {
+    display: flex;
+  }
+
+  .control-label {
+    flex-grow: 1;
+  }
+
+  .item-feedback {
+    width: 20px;
+  }
+
+  .item-score {
+    margin-left: 12px;
+    width: 58px;
+    text-align: right;
   }
 }

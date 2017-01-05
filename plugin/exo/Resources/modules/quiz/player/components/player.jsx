@@ -28,7 +28,6 @@ export const Player = props =>
     {props.items.map((item) => (
       <Panel
         key={item.id}
-        header={item.title}
         collapsible={true}
         expanded={true}
       >

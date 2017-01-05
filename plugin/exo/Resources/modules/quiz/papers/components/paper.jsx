@@ -12,10 +12,13 @@ let Paper = props =>
     </h3>
     <hr/>
     {props.paper.steps.map((step, idx) =>
-      <div key={idx}>
+      <div key={idx} className="item-paper">
         <h4>{tex('step')}&nbsp;{idx + 1}</h4>
         {step.items.map(item =>
-          <Panel key={item.id} header={item.content}>
+          <Panel key={item.id}>
+            <header className="item-content">
+              <strong dangerouslySetInnerHTML={{__html: item.content}}/>
+            </header>
             {React.createElement(
               getDefinition(item.type).paper,
               {item, answer: getAnswer(item.id, props.paper.answers)}
