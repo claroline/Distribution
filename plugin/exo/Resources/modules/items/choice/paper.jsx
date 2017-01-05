@@ -29,7 +29,7 @@ const Feedback = props => {
 
   return(
     <OverlayTrigger trigger="click" placement="top" overlay={popoverClick}>
-      <i className="fa fa-comments-o"></i>
+      <i className="feedback-btn fa fa-comments-o"></i>
     </OverlayTrigger>
   )
 }
@@ -37,6 +37,24 @@ const Feedback = props => {
 Feedback.propTypes = {
   id: T.string.isRequired,
   feedback: T.string
+}
+
+const WarningIcon = props => {
+  if (props.answers.indexOf(props.solution.id) > -1) {
+    return props.solution.score !== 0 ?
+       <span className="fa fa-check answer-warning-span" aria-hidden="true"></span> :
+       <span className="fa fa-times answer-warning-span" aria-hidden="true"></span>
+  }
+
+  return <span className="answer-warning-span"></span>
+}
+
+WarningIcon.propTypes = {
+  answers: T.array,
+  solution: T.shape({
+    score: T.number,
+    id: T.string
+  })
 }
 
 export class ChoicePaper extends Component
@@ -67,6 +85,11 @@ export class ChoicePaper extends Component
     return `${id}-expected-answer`
   }
 
+  getAnswerClassForSolution(solution, answers) {
+    return this.isSolutionChecked(solution, answers) ?
+      solution.score !== 0 ? 'bg-success text-success' : 'bg-danger text-danger' : ''
+  }
+
   render() {
     return(
       <Tabs
@@ -83,8 +106,10 @@ export class ChoicePaper extends Component
                 key={this.answerId(solution.id)}
                 className={classes(
                   'item',
-                  this.props.item.multiple ? 'checkbox': 'radio'
+                  this.props.item.multiple ? 'checkbox': 'radio',
+                  this.getAnswerClassForSolution(solution, this.props.answer.data)
                 )}>
+                <WarningIcon solution={solution} answers={this.props.answer.data}/>
                 <input
                   className={this.props.item.multiple ? 'checkbox': 'radio'}
                   checked={this.isSolutionChecked(solution, this.props.answer.data)}
@@ -117,6 +142,7 @@ export class ChoicePaper extends Component
                   this.props.item.multiple ? 'checkbox': 'radio'
                 )}
               >
+                <span className="answer-warning-span"></span>
                 <input
                   className={this.props.item.multiple ? 'checkbox': 'radio'}
                   checked={solution.score !== 0}
