@@ -28,7 +28,8 @@ describe('<Paper/>', () => {
               {
                 items: ['456', '789']
               }
-            ]
+            ],
+            answers: []
           }
         ],
         questions: [

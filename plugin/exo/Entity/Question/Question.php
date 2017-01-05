@@ -324,7 +324,7 @@ class Question
      */
     public function getFeedback()
     {
-        return $this->feedback;
+        return $this->feedback ?: '';
     }
 
     /**
@@ -451,7 +451,7 @@ class Question
      */
     public function getDescription()
     {
-        return $this->description;
+        return $this->description ?: '';
     }
 
     /**

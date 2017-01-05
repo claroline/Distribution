@@ -14,7 +14,7 @@ const currentPaper = createSelector(
     const paper = papers.find(paper => paper.id === currentId)
     const denormalized = Object.assign({}, paper)
     denormalized.steps = paper.structure.map(step => ({
-      items: step.items.map(id => items.find(item => item.id === id)) 
+      items: step.items.map(id => items.find(item => item.id === id))
     }))
     return denormalized
   }

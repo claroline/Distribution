@@ -68,7 +68,6 @@ class ExerciseSerializerTest extends JsonDataTestCase
     public function testSerializedDataAreSchemaValid()
     {
         $data = $this->serializer->serialize($this->exercise);
-
         $this->assertCount(0, $this->validator->validate($data));
     }
 
