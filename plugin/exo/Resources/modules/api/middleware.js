@@ -28,7 +28,7 @@ function handleResponse(dispatch, response) {
 
 function handleResponseSuccess(data, success) {
   if (success) {
-    invariant(!isFunction(success), '`success` should be a function')
+    invariant(isFunction(success), '`success` should be a function')
   }
 
   return dispatch => {
@@ -40,7 +40,7 @@ function handleResponseSuccess(data, success) {
 
 function handleResponseError(error, failure) {
   if (failure) {
-    invariant(!isFunction(failure), '`failure` should be a function')
+    invariant(isFunction(failure), '`failure` should be a function')
   }
 
   return dispatch => {

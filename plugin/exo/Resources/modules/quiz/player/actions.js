@@ -5,7 +5,6 @@ import {VIEW_PLAYER} from './../enums'
 import quizSelectors from './../selectors'
 import {navigate} from './../router'
 import {select as playerSelectors} from './selectors'
-import {api} from './api'
 import {generatePaper} from './../papers/generator'
 import {normalize, denormalizeAnswers} from './normalizer'
 

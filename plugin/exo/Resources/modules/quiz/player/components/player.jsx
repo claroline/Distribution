@@ -23,9 +23,7 @@ const Player = props =>
     </h2>
 
     {props.step.description &&
-      <div className="step-description" dangerouslySetInnerHTML={{ __html: props.step.description }}>
-
-      </div>
+      <content className="step-description" dangerouslySetInnerHTML={{ __html: props.step.description }}></content>
     }
 
     {props.items.map((item) => (

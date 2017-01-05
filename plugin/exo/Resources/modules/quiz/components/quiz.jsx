@@ -43,6 +43,7 @@ let Quiz = props =>
 
 Quiz.propTypes = {
   isLoading: T.bool.isRequired,
+  alerts: T.array.isRequired,
   quiz: T.shape({
     id: T.string.isRequired,
     title: T.string.isRequired

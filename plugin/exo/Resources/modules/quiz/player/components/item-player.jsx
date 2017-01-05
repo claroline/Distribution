@@ -50,22 +50,17 @@ Hints.propTypes = {
 
 const ItemPlayer = props =>
   <div className="item-player">
-    {props.item.title &&
-      <content className="item-title" dangerouslySetInnerHTML={{__html: props.item.title}} />
-    }
     {props.item.description &&
-      <content>
-        <div className="item-description" dangerouslySetInnerHTML={{__html: props.item.description}}/>
-      </content>
+      <content className="item-description" dangerouslySetInnerHTML={{__html: props.item.description}}></content>
     }
-    <content className="item-content">
-    </content>
+    <content className="item-content"  dangerouslySetInnerHTML={{__html: props.item.content}}></content>
 
     <hr/>
     {props.children}
     <hr/>
+
     {props.item.hints && 0 !== props.item.hints.length &&
-    <Hints hints={props.item.hints} showHint={props.showHint} />
+      <Hints hints={props.item.hints} showHint={props.showHint} />
     }
   </div>
 

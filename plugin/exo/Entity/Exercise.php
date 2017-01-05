@@ -137,7 +137,7 @@ class Exercise extends AbstractResource
      *
      * @var string
      *
-     * @ORM\Column(name="show_feedback", type="boolean", nullable=false)
+     * @ORM\Column(name="show_feedback", type="boolean")
      */
     private $showFeedback = false;
 
