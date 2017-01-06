@@ -12,7 +12,7 @@ import select from './../selectors'
 const T = React.PropTypes
 
 let Editor = props =>
-  <div className="panel-body quiz-editor">
+  <div className="quiz-editor">
     <ThumbnailBox
       thumbnails={props.thumbnails}
       onThumbnailClick={props.selectObject}
