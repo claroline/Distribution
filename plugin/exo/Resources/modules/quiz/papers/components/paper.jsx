@@ -6,7 +6,7 @@ import {getDefinition} from './../../../items/item-types'
 import {selectors} from './../selectors'
 
 let Paper = props =>
-  <div>
+  <div className="paper">
     <h3>
       {tex('correction')}&nbsp;{props.paper.number}
     </h3>
