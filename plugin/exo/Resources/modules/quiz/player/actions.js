@@ -31,9 +31,7 @@ actions.fetchAttempt = quizId => ({
     route: ['exercise_attempt_start', {exerciseId: quizId}],
     request: {method: 'POST'},
     success: (data) => {
-      /*console.log(data)*/
       const normalized = normalize(data)
-
       return actions.initPlayer(normalized.paper, normalized.answers)
     },
     failure: () => () => navigate('overview') // double fat arrow is needed because navigate is not an action creator
@@ -106,7 +104,11 @@ actions.submit = (quizId, paperId, answers = null) => {
       if (!playerSelectors.offline(getState())) {
         return dispatch(actions.sendAnswers(quizId, paperId, updated))
       } else {
-        return dispatch(actions.submitAnswers(quizId, paperId, updated))
+        // This seems a little hacky but if we dispatch a regular action
+        // we don't have access to the promise interface provided by redux-thunk
+        // and we can not link next actions using `then` callback like when the server is called.
+        // Offline mode should be bundled in the api middleware to avoid this promise wrapping
+        return dispatch((dispatch) => Promise.resolve(dispatch(actions.submitAnswers(quizId, paperId, updated))))
       }
     }
   }
