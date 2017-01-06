@@ -8,7 +8,7 @@ const UsedHint = props =>
     {props.value}
   </div>
 
-UsedHint.propType = {
+UsedHint.propTypes = {
   value: T.string.isRequired
 }
 

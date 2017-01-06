@@ -132,7 +132,7 @@ function getRequest(request = {}) {
   })
 }
 
-const apiMiddleware = store => next => action => {
+const apiMiddleware = () => next => action => {
   const sendRequest = action[REQUEST_SEND]
   if (typeof sendRequest === 'undefined') {
     return next(action)
