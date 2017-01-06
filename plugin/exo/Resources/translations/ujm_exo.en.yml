@@ -442,7 +442,7 @@ shared_user: Share of questions
 shared_with: Shared with
 short: Short
 show: Show
-show_feedback: Show feedback
+show_feedback: Show step's feedbacks
 hide_metadata_fields: Hints and global feedback
 show_metadata_fields: Metadata and instructions
 show_instructions: Show instructions
