@@ -316,34 +316,11 @@ const reduceEditor = combineReducers({
   saved: reduceSavedState
 })
 
-const initialModalState = {
-  type: null,
-  props: {},
-  fading: false
-}
-
-function reduceModal(modalState = initialModalState, action) {
-  switch (action.type) {
-    case MODAL_SHOW:
-      return {
-        type: action.modalType,
-        props: action.modalProps,
-        fading: false
-      }
-    case MODAL_FADE:
-      return update(modalState, {fading: {$set: true}})
-    case MODAL_HIDE:
-      return initialModalState
-  }
-  return modalState
-}
-
 export const reducers = {
   quiz: reduceQuiz,
   steps: reduceSteps,
   items: reduceItems,
   currentObject: reduceCurrentObject,
   openPanels: reduceOpenPanels,
-  editor: reduceEditor,
-  modal: reduceModal
+  editor: reduceEditor
 }
