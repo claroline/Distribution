@@ -35,26 +35,28 @@ PaperRow.propTypes = {
 }
 
 let Papers = props =>
-  <table className="papers-list table table-striped table-hover">
-    <thead>
-      <tr>
-        {props.admin &&
-          <th>{tex('paper_list_table_user')}</th>
-        }
-        <th>{tex('paper_list_table_paper_number')}</th>
-        <th>{tex('paper_list_table_start_date')}</th>
-        <th>{tex('paper_list_table_end_date')}</th>
-        <th>{tex('paper_finished')}</th>
-        <th>{tex('paper_list_table_score')}</th>
-        <th>{tex('actions')}</th>
-      </tr>
-    </thead>
-    <tbody>
-      {props.papers.map((paper, idx) =>
-        <PaperRow key={idx} admin={props.admin} {...paper}/>
-      )}
-    </tbody>
-  </table>
+  <div className="papers-list">
+    <table className="table table-striped table-hover">
+      <thead>
+        <tr>
+          {props.admin &&
+            <th>{tex('paper_list_table_user')}</th>
+          }
+          <th>{tex('paper_list_table_paper_number')}</th>
+          <th>{tex('paper_list_table_start_date')}</th>
+          <th>{tex('paper_list_table_end_date')}</th>
+          <th>{tex('paper_finished')}</th>
+          <th>{tex('paper_list_table_score')}</th>
+          <th>{tex('actions')}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {props.papers.map((paper, idx) =>
+          <PaperRow key={idx} admin={props.admin} {...paper}/>
+        )}
+      </tbody>
+    </table>
+  </div>
 
 Papers.propTypes = {
   admin: T.bool.isRequired,
