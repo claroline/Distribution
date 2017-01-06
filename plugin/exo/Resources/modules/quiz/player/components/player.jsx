@@ -23,14 +23,12 @@ const Player = props =>
     </h2>
 
     {props.step.description &&
-      <content className="step-description" dangerouslySetInnerHTML={{ __html: props.step.description }}></content>
+      <div className="step-description" dangerouslySetInnerHTML={{ __html: props.step.description }}></div>
     }
 
     {props.items.map((item) => (
       <Panel
         key={item.id}
-        header={item.title}
-        collapsible={true}
         expanded={true}
       >
         <ItemPlayer
