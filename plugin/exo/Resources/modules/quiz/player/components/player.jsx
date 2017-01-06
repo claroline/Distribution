@@ -53,7 +53,7 @@ const Player = props => {
         next={props.next}
         navigateTo={(step) => props.navigateTo(props.quizId, props.paper.id, step, props.answers, displayFeedback, props.showFeedback)}
         submit={() => props.submit(props.quizId, props.paper.id, props.answers)}
-        finish={() => props.finish(props.quizId, props.paper, props.answers)}
+        finish={() => props.finish(props.quizId, props.paper, props.answers, props.showFeedback)}
         feedbackEnabled={props.feedbackEnabled}
         showFeedback={props.showFeedback}
       />

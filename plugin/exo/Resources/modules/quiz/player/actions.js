@@ -131,18 +131,27 @@ actions.navigateTo = (quizId, paperId, nextStep, pendingAnswers = null, displayF
   }
 }
 
-actions.finish = (quizId, paper, pendingAnswers = null) => {
-  return (dispatch, getState) =>
-    // First, submit answers for the current step
-    dispatch(actions.submit(quizId, paper.id, pendingAnswers)).then(() => {
-      if (!playerSelectors.offline(getState())) {
-        // Send finish request to API
-        return dispatch(actions.requestEnd(quizId, paper.id))
-      } else {
-        // Finish the attempt and use quiz config to know what to do next
-        return dispatch(actions.handleAttemptEnd(paper))
-      }
-    })
+actions.finish = (quizId, paper, pendingAnswers = null, showFeedback = false) => {
+  return (dispatch, getState) => {
+    if (!showFeedback) {
+      dispatch(actions.submit(quizId, paper.id, pendingAnswers)).then(() => {
+        actions.endQuizz(quizId, paper, dispatch, getState)
+      })
+    } else {
+      actions.endQuizz(quizId, paper, dispatch, getState)
+    }
+  }
+}
+
+actions.endQuizz = (quizId, paper, dispatch, getState) => {
+  //the current step was alreay done
+  if (!playerSelectors.offline(getState())) {
+    // Send finish request to API
+    return dispatch(actions.requestEnd(quizId, paper.id))
+  } else {
+    // Finish the attempt and use quiz config to know what to do next
+    return dispatch(actions.handleAttemptEnd(paper))
+  }
 }
 
 actions.handleAttemptEnd = (paper) => {
