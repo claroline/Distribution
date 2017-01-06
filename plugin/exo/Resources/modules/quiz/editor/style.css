@@ -49,9 +49,6 @@
   display: flex;
 }
 
-.quiz-editor .choice-items .right-controls [role=button]{
-  margin-left: 8px;
-}
 
 /* WORDS */
 
@@ -99,11 +96,6 @@
 .quiz-editor .words-items .right-controls {
   display: flex;
 }
-
-.quiz-editor .words-items .right-controls [role=button]{
-  margin-left: 8px;
-}
-
 
 /* SET */
 
