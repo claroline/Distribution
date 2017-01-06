@@ -7,8 +7,9 @@ import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
 import Nav from 'react-bootstrap/lib/Nav'
 import NavItem from 'react-bootstrap/lib/NavItem'
-import Popover from 'react-bootstrap/lib/Popover'
-import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
+import {Feedback} from './utils/feedback-btn.jsx'
+import {WarningIcon} from './utils/warning-icon.jsx'
+import {utils} from './utils/utils'
 
 const SolutionScore = props =>
   <span className="item-score">
@@ -35,45 +36,6 @@ ChoiceMetadata.propTypes = {
   description: T.string
 }
 
-const Feedback = props => {
-  if (!props.feedback) return <span className="item-feedback"/>
-
-  const popoverClick = (
-    <Popover id={props.id} className="item-feedback">
-      {props.feedback}
-    </Popover>
-  )
-
-  return(
-    <OverlayTrigger trigger="click" placement="top" overlay={popoverClick}>
-      <i className="feedback-btn fa fa-comments-o"></i>
-    </OverlayTrigger>
-  )
-}
-
-Feedback.propTypes = {
-  id: T.string.isRequired,
-  feedback: T.string
-}
-
-const WarningIcon = props => {
-  if (props.answers.indexOf(props.solution.id) > -1) {
-    return props.solution.score > 0 ?
-       <span className="fa fa-check answer-warning-span" aria-hidden="true"></span> :
-       <span className="fa fa-times answer-warning-span" aria-hidden="true"></span>
-  }
-
-  return <span className="answer-warning-span"></span>
-}
-
-WarningIcon.propTypes = {
-  answers: T.array,
-  solution: T.shape({
-    score: T.number,
-    id: T.string
-  })
-}
-
 export class ChoicePaper extends Component
 {
   constructor(props) {
@@ -82,29 +44,8 @@ export class ChoicePaper extends Component
     this.handleSelect = this.handleSelect.bind(this)
   }
 
-  getChoiceById(choiceId) {
-    return this.props.item.choices.find(choice => choice.id === choiceId)
-  }
-
-  isSolutionChecked(solution, answers) {
-    return answers ? answers.indexOf(solution.id) > -1 : false
-  }
-
   handleSelect(key) {
     this.setState({key})
-  }
-
-  answerId(id) {
-    return `${id}-your-answer`
-  }
-
-  expectedId(id) {
-    return `${id}-expected-answer`
-  }
-
-  getAnswerClassForSolution(solution, answers) {
-    return this.isSolutionChecked(solution, answers) ?
-      solution.score > 0 ? 'bg-success text-success' : 'bg-danger text-danger' : ''
   }
 
   render() {
@@ -128,25 +69,25 @@ export class ChoicePaper extends Component
                 <div className="container choice-paper">
                   {this.props.item.solutions.map(solution =>
                     <div
-                      key={this.answerId(solution.id)}
+                      key={utils.answerId(solution.id)}
                       className={classes(
                         'item',
                         this.props.item.multiple ? 'checkbox': 'radio',
-                        this.getAnswerClassForSolution(solution, this.props.answer.data)
+                        utils.getAnswerClassForSolution(solution, this.props.answer.data)
                       )}>
                       <WarningIcon solution={solution} answers={this.props.answer.data}/>
                       <input
                         className={this.props.item.multiple ? 'checkbox': 'radio'}
-                        checked={this.isSolutionChecked(solution, this.props.answer.data)}
-                        id={this.answerId(solution.id)}
-                        name={this.answerId(this.props.item.id)}
+                        checked={utils.isSolutionChecked(solution, this.props.answer.data)}
+                        id={utils.answerId(solution.id)}
+                        name={utils.answerId(this.props.item.id)}
                         type={this.props.item.multiple ? 'checkbox': 'radio'}
                         disabled
                       />
                       <label
                         className="control-label"
-                        htmlFor={this.answerId(solution.id)}
-                        dangerouslySetInnerHTML={{__html: this.getChoiceById(solution.id).data}}
+                        htmlFor={utils.answerId(solution.id)}
+                        dangerouslySetInnerHTML={{__html: utils.getChoiceById(this.props.item.choices, solution.id).data}}
                       />
                     <Feedback
                       id={`${solution.id}-feedback`}
@@ -162,7 +103,7 @@ export class ChoicePaper extends Component
                 <div className="container choice-paper">
                   {this.props.item.solutions.map(solution =>
                     <div
-                      key={this.expectedId(solution.id)}
+                      key={utils.expectedId(solution.id)}
                       className={classes(
                         'item',
                         this.props.item.multiple ? 'checkbox': 'radio'
@@ -172,15 +113,15 @@ export class ChoicePaper extends Component
                       <input
                         className={this.props.item.multiple ? 'checkbox': 'radio'}
                         checked={solution.score > 0}
-                        id={this.expectedId(solution.id)}
-                        name={this.expectedId(this.props.item.id)}
+                        id={utils.expectedId(solution.id)}
+                        name={utils.expectedId(this.props.item.id)}
                         type={this.props.item.multiple ? 'checkbox': 'radio'}
                         disabled
                       />
                       <label
                         className="control-label"
-                        htmlFor={this.expectedId(solution.id)}
-                        dangerouslySetInnerHTML={{__html: this.getChoiceById(solution.id).data}}
+                        htmlFor={utils.expectedId(solution.id)}
+                        dangerouslySetInnerHTML={{__html: utils.getChoiceById(this.props.item.choices, solution.id).data}}
                       />
                       <Feedback
                         id={`${solution.id}-feedback-expected`}

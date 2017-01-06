@@ -71,7 +71,7 @@ PlayerNav.propTypes = {
   finish: T.func.isRequired,
   submit: T.func.isRequired,
   feedbackEnabled: T.bool.isRequired,
-  showFeedback: T.bool.showFeedback
+  showFeedback: T.bool.isRequired
 }
 
 PlayerNav.defaultProps = {
