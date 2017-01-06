@@ -82,15 +82,13 @@ function handleResponseError(error, failure) {
 function getResponseData(response) {
   let data = null
 
-  if (response.body) {
-    const contentType = response.headers.get('content-type')
-    if (contentType && contentType.indexOf('application/json') !== -1) {
-      // Decode JSON
-      data = response.json()
-    } else {
-      // Return raw data (maybe someday we will need to also manage files)
-      data = response.text()
-    }
+  const contentType = response.headers.get('content-type')
+  if (contentType && contentType.indexOf('application/json') !== -1) {
+    // Decode JSON
+    data = response.json()
+  } else {
+    // Return raw data (maybe someday we will need to also manage files)
+    data = response.text()
   }
 
   return data // this is a promise
