@@ -13,8 +13,6 @@ import {ItemPlayer} from './item-player.jsx'
 import {PlayerNav} from './nav-bar.jsx'
 
 const Player = props => {
-  let displayFeedback = props.showFeedback ? !props.feedbackEnabled: false
-
   return(
     <div className="quiz-player">
       <h2 className="h4 step-title">
@@ -51,11 +49,13 @@ const Player = props => {
       <PlayerNav
         previous={props.previous}
         next={props.next}
-        navigateTo={(step) => props.navigateTo(props.quizId, props.paper.id, step, props.answers, displayFeedback, props.showFeedback)}
+        current={props.step}
+        showFeedback={props.showFeedback}
+        feedbackEnabled={props.feedbackEnabled}
+        navigateTo={(step) => props.navigateTo(props.quizId, props.paper.id, step, props.answers)}
+        openFeedback={(step) => props.openFeedback(props.quizId, props.paper.id, step, props.answers)}
         submit={() => props.submit(props.quizId, props.paper.id, props.answers)}
         finish={() => props.finish(props.quizId, props.paper, props.answers, props.showFeedback)}
-        feedbackEnabled={props.feedbackEnabled}
-        showFeedback={props.showFeedback}
       />
       </div>
     )
@@ -66,8 +66,10 @@ Player.propTypes = {
   number: T.number.isRequired,
   step: T.shape({
     title: T.string,
-    description: T.string
-  }),
+    description: T.string,
+    id: T.string.isRequired,
+    items: T.arrayOf(T.string).isRequired
+  }).isRequired,
   items: T.array.isRequired,
   answers: T.object.isRequired,
   paper: T.shape({
@@ -76,18 +78,19 @@ Player.propTypes = {
   }).isRequired,
   next: T.shape({
     id: T.string.isRequired,
-    items: T.arrayOf.arrayOf
+    items: T.arrayOf(T.string).isRequired
   }),
   previous: T.shape({
     id: T.string.isRequired,
-    items: T.arrayOf.arrayOf
+    items: T.arrayOf(T.string).isRequired
   }),
   updateAnswer: T.func.isRequired,
   navigateTo: T.func.isRequired,
-  submit: T.func.isRequired,
-  finish: T.func.isRequired,
+  openFeedback: T.func.isRequired,
   showFeedback: T.bool.isRequired,
   feedbackEnabled: T.bool.isRequired,
+  submit: T.func.isRequired,
+  finish: T.func.isRequired,
   showHint: T.func.isRequired
 }
 

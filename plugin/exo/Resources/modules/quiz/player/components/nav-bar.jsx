@@ -22,6 +22,16 @@ NextButton.propTypes = {
   onClick: T.func.isRequired
 }
 
+const ValidateButton = props =>
+  <button className="btn btn-next btn-default" onClick={props.onClick}>
+    Validate
+    <span className="fa fa-fw fa-angle-double-right"></span>
+  </button>
+
+ValidateButton.propTypes = {
+  onClick: T.func.isRequired
+}
+
 const SubmitButton = props =>
   <button className="btn btn-submit btn-success" onClick={props.onClick}>
     <span className="fa fa-fw fa-check"></span>
@@ -45,15 +55,21 @@ FinishButton.propTypes = {
 const PlayerNav = props =>
   <nav className="player-nav">
     <div className="backward">
-      {(props.previous || props.feedbackEnabled) &&
+      {(props.previous) &&
         <PreviousButton onClick={() => props.navigateTo(props.previous)} />
       }
     </div>
 
     <div className="forward">
-      {(props.next || (!props.feedbackEnabled && props.showFeedback)) ?
-        <NextButton onClick={() => props.navigateTo(props.next)} /> :
-        <FinishButton onClick={props.finish} />
+      {(props.next) ?
+        !props.feedbackEnabled ?
+          <ValidateButton  onClick={() => props.openFeedback(props.step)} /> :
+          <NextButton onClick={() => props.navigateTo(props.next)} />
+          :
+
+        !props.feedbackEnabled ?
+          <NextButton onClick={() => props.openFeedback(props.step)} /> :
+          <FinishButton onClick={props.finish}/>
       }
     </div>
   </nav>
@@ -67,11 +83,20 @@ PlayerNav.propTypes = {
     id: T.string.isRequired,
     items: T.arrayOf(T.string).isRequired
   }),
+  step: T.shape({
+    id: T.string.isRequired,
+    items: T.arrayOf(T.string).isRequired
+  }).isRequired,
+  current: T.shape({
+    id: T.string.isRequired,
+    items: T.arrayOf(T.string).isRequired
+  }),
   navigateTo: T.func.isRequired,
   finish: T.func.isRequired,
+  openFeedback: T.func.isRequired,
   submit: T.func.isRequired,
-  feedbackEnabled: T.bool.isRequired,
-  showFeedback: T.bool.isRequired
+  showFeedback: T.bool.isRequired,
+  feedbackEnabled: T.bool.isRequired
 }
 
 PlayerNav.defaultProps = {

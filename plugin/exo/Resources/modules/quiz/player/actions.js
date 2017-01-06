@@ -115,19 +115,17 @@ actions.submit = (quizId, paperId, answers = null) => {
   }
 }
 
-actions.navigateTo = (quizId, paperId, nextStep, pendingAnswers = null, displayFeedback = false, showFeedback = false) => {
+actions.navigateTo = (quizId, paperId, nextStep, pendingAnswers = null) => {
   return (dispatch) => {
-    if (!showFeedback) {
-      dispatch(actions.submit(quizId, paperId, pendingAnswers)).then(() =>
-        dispatch(actions.openStep(nextStep))
-      )
-    } else {
-      displayFeedback ?
-        dispatch(actions.submit(quizId, paperId, pendingAnswers)).then(() =>
-          dispatch(actions.stepFeedback())
-        ):
-        dispatch(actions.openStep(nextStep))
-    }
+    dispatch(actions.submit(quizId, paperId, pendingAnswers)).then(() =>
+      dispatch(actions.openStep(nextStep))
+    )
+  }
+}
+
+actions.openFeedback = () => {
+  return (dispatch) => {
+    dispatch(actions.stepFeedback())
   }
 }
 
