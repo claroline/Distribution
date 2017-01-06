@@ -66,15 +66,15 @@ class Association extends Component {
           />
           <a
             role="button"
-            title={tex('feedback')}
-            className="btn btn-link fa fa-comments-o"
-            onClick={() => this.setState({showFeedback: !this.state.showFeedback})}>
-          </a>
-          <a
-            role="button"
             title={t('delete')}
             className="btn btn-link fa fa-trash-o"
             onClick={() => this.props.onChange(actions.removeAssociation(this.props.association.setId, this.props.association.itemId))}>
+          </a>
+          <a
+            role="button"
+            title={tex('feedback')}
+            className="btn btn-link fa fa-comments-o"
+            onClick={() => this.setState({showFeedback: !this.state.showFeedback})}>
           </a>
         </div>
       </div>
