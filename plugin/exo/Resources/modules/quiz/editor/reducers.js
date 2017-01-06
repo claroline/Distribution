@@ -36,7 +36,8 @@ import {
   QUIZ_UPDATE,
   HINT_ADD,
   HINT_CHANGE,
-  HINT_REMOVE
+  HINT_REMOVE,
+  quizChangeActions
 } from './actions'
 
 function initialQuizState() {
@@ -280,9 +281,18 @@ function reduceOpenPanels(panels = initialPanelState(), action = {}) {
   return panels
 }
 
+function reduceSavedState(saved = true, action = {}) {
+  if (quizChangeActions.indexOf(action.type) > 0) {
+    return false
+  }
+
+  return saved
+}
+
 const reduceEditor = combineReducers({
   currentObject: reduceCurrentObject,
-  openPanels: reduceOpenPanels
+  openPanels: reduceOpenPanels,
+  saved: reduceSavedState
 })
 
 const initialModalState = {

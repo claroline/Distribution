@@ -27,6 +27,24 @@ export const HINT_CHANGE = 'HINT_CHANGE'
 export const HINT_REMOVE = 'HINT_REMOVE'
 export const QUIZ_SAVE = 'QUIZ_SAVE'
 
+export const quizChangeActions = [
+  ITEM_CREATE,
+  ITEM_DELETE,
+  ITEM_UPDATE,
+  ITEM_MOVE,
+  ITEM_HINTS_UPDATE,
+  ITEM_DETAIL_UPDATE,
+  ITEMS_IMPORT,
+  STEP_CREATE,
+  STEP_MOVE,
+  STEP_DELETE,
+  STEP_UPDATE,
+  QUIZ_UPDATE,
+  HINT_ADD,
+  HINT_CHANGE,
+  HINT_REMOVE
+]
+
 export const actions = {}
 
 actions.deleteStep = makeActionCreator(STEP_DELETE, 'id')
@@ -74,4 +92,24 @@ actions.deleteStepAndItems = id => {
     dispatch(actions.deleteItems(getState().steps[id].items.slice()))
     dispatch(actions.deleteStep(id))
   }
+}
+
+actions.save = () => {
+  return (dispatch, getState) => {
+    const state = store.getState()
+    const denormalized = denormalize(state.quiz, state.steps, state.items)
+    const url = generateUrl('exercise_update', {id: state.quiz.id})
+    const params = {
+      method: 'PUT' ,
+      credentials: 'include',
+      body: JSON.stringify(denormalized)
+    }
+    fetch(url, params)
+     .then(response => {
+       if(!response.ok){
+         // do something with errors...
+       }
+       return next(action)
+     })
+   }
 }
