@@ -71,18 +71,18 @@ class ChoiceItem extends Component {
             }
             <span
               role="button"
+              title={tex('choice_feedback_info')}
+              className="fa fa-comments-o"
+              onClick={() => this.setState({showFeedback: !this.state.showFeedback})}
+            />
+            <span
+              role="button"
               aria-disabled={!this.props.deletable}
               title={t('delete')}
               className={classes('fa', 'fa-trash-o', {disabled: !this.props.deletable})}
               onClick={() => this.props.deletable && this.props.onChange(
                 actions.removeChoice(this.props.id)
               )}
-            />
-            <span
-              role="button"
-              title={tex('choice_feedback_info')}
-              className="fa fa-comments-o"
-              onClick={() => this.setState({showFeedback: !this.state.showFeedback})}
             />
         </div>
       </div>
