@@ -9,11 +9,15 @@ export const select = {}
  *
  * @return {object}
  */
-select.currentStep = (state) => state.steps[state.currentStep]
+select.currentStep = (state) => state.steps[state.currentStep.id]
 
 select.paper = (state) => state.paper
 
 select.offline = state => state.noServer || state.testMode
+
+select.showFeedback = state => state.quiz.parameters.showFeedback
+
+select.feedbackEnabled = state => state.currentStep.feedbackEnabled
 
 /**
  * Gets an existing answer to a question.
@@ -38,13 +42,13 @@ select.currentStepAnswers = (state) => {
  * @returns {array}
  */
 select.currentStepItems = (state) => {
-  const stepStructure = state.paper.structure.find((step) => step.id === state.currentStep)
+  const stepStructure = state.paper.structure.find((step) => step.id === state.currentStep.id)
 
   return stepStructure.items.map(itemId => state.items[itemId])
 }
 
 select.currentStepNumber = (state) => {
-  const currentStep = state.paper.structure.find((step) => step.id === state.currentStep)
+  const currentStep = state.paper.structure.find((step) => step.id === state.currentStep.id)
 
   return state.paper.structure.indexOf(currentStep) + 1
 }
@@ -57,7 +61,7 @@ select.currentStepNumber = (state) => {
 select.previous = (state) => {
   let previous = null
 
-  const currentStep = state.paper.structure.find((step) => step.id === state.currentStep)
+  const currentStep = state.paper.structure.find((step) => step.id === state.currentStep.id)
   const order = state.paper.structure.indexOf(currentStep)
   if (0 <= order - 1 && state.paper.structure[order - 1]) {
     previous = state.paper.structure[order - 1]
@@ -74,7 +78,7 @@ select.previous = (state) => {
 select.next = (state) => {
   let next = null
 
-  const currentStep = state.paper.structure.find((step) => step.id === state.currentStep)
+  const currentStep = state.paper.structure.find((step) => step.id === state.currentStep.id)
   const order = state.paper.structure.indexOf(currentStep)
   if (state.paper.structure.length > order + 1 && state.paper.structure[order + 1]) {
     next = state.paper.structure[order + 1]

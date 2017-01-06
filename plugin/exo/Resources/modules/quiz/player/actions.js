@@ -14,7 +14,7 @@ export const STEP_OPEN      = 'STEP_OPEN'
 export const ANSWER_UPDATE  = 'ANSWER_UPDATE'
 export const ANSWERS_SUBMIT = 'ANSWERS_SUBMIT'
 export const TEST_MODE_SET  = 'TEST_MODE_SET'
-
+export const STEP_FEEDBACK  = 'STEP_FEEDBACK'
 export const actions = {}
 
 actions.setTestMode = makeActionCreator(TEST_MODE_SET, 'testMode')
@@ -23,6 +23,7 @@ actions.finishAttempt = makeActionCreator(ATTEMPT_FINISH, 'paper')
 actions.openStep = makeActionCreator(STEP_OPEN, 'step')
 actions.updateAnswer = makeActionCreator(ANSWER_UPDATE, 'questionId', 'answerData')
 actions.submitAnswers = makeActionCreator(ANSWERS_SUBMIT, 'quizId', 'paperId', 'answers')
+actions.stepFeedback = makeActionCreator(STEP_FEEDBACK)
 
 actions.play = (previousPaper = null, testMode = false) => {
   return (dispatch, getState) => {
@@ -96,12 +97,11 @@ actions.finish = (quizId, paper, pendingAnswers = null) => {
   }
 }
 
-actions.navigateTo = (quizId, paperId, nextStep, pendingAnswers = null) => {
+actions.navigateTo = (quizId, paperId, nextStep, pendingAnswers = null, showFeedback = false) => {
   return (dispatch) => {
     // Submit answers for the current step
     dispatch(actions.submit(quizId, paperId, pendingAnswers)).then(() =>
-      // Open the requested step
-      dispatch(actions.openStep(nextStep))
+      dispatch(showFeedback ? actions.stepFeedback() : actions.openStep(nextStep))
     )
   }
 }

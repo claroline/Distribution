@@ -9,7 +9,8 @@ import {
   ATTEMPT_FINISH,
   STEP_OPEN,
   ANSWER_UPDATE,
-  ANSWERS_SUBMIT
+  ANSWERS_SUBMIT,
+  STEP_FEEDBACK
 } from './actions'
 
 function setTestMode(state, action) {
@@ -58,7 +59,7 @@ function initCurrentStepAnswers(state, action) {
     if (!state[itemId]) {
       acc[itemId] = decorateAnswer({ questionId: itemId, _touched: true })
     }
-    
+
     return acc
   }, {})
 
@@ -66,7 +67,11 @@ function initCurrentStepAnswers(state, action) {
 }
 
 function setCurrentStep(state, action) {
-  return action.step.id
+  return { id: action.step.id, feedbackEnabled: false }
+}
+
+function setStepFeedback(state) {
+  return Object.assign({}, state, {feedbackEnabled: true})
 }
 
 export const reducers = {
@@ -74,7 +79,8 @@ export const reducers = {
     [TEST_MODE_SET]: setTestMode
   }),
   currentStep: makeReducer(null, {
-    [STEP_OPEN]: setCurrentStep
+    [STEP_OPEN]: setCurrentStep,
+    [STEP_FEEDBACK]: setStepFeedback
   }),
   paper: makeReducer({}, {
     [ATTEMPT_START]: initPaper,

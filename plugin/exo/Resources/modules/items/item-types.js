@@ -16,6 +16,7 @@ const typeProperties = [
   'question',
   'editor',
   'player',
+  'feedback',
   'decorate',
   'validate',
   'paper'

@@ -45,13 +45,13 @@ FinishButton.propTypes = {
 const PlayerNav = props =>
   <nav className="player-nav">
     <div className="backward">
-      {props.previous &&
+      {(props.previous || props.feedbackEnabled) &&
         <PreviousButton onClick={() => props.navigateTo(props.previous)} />
       }
     </div>
 
     <div className="forward">
-      {props.next ?
+      {(props.next || (!props.feedbackEnabled && props.showFeedback)) ?
         <NextButton onClick={() => props.navigateTo(props.next)} /> :
         <FinishButton onClick={props.finish} />
       }
@@ -69,7 +69,9 @@ PlayerNav.propTypes = {
   }),
   navigateTo: T.func.isRequired,
   finish: T.func.isRequired,
-  submit: T.func.isRequired
+  submit: T.func.isRequired,
+  feedbackEnabled: T.bool.isRequired,
+  showFeedback: T.bool.showFeedback
 }
 
 PlayerNav.defaultProps = {

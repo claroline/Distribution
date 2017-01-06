@@ -9,46 +9,53 @@ import {actions as playerActions} from './../actions'
 import {ItemPlayer} from './item-player.jsx'
 import {PlayerNav} from './nav-bar.jsx'
 
-export const Player = props =>
-  <div className="quiz-player">
-    <h2 className="h4 step-title">
-      {tex('step')}&nbsp;{props.number}
-      {props.step.title && <small>&nbsp;{props.step.title}</small>}
-    </h2>
+export const Player = props => {
+  let displayFeedback = props.showFeedback ? !props.feedbackEnabled: false
 
-    {props.step.description &&
-      <div className="exercise-description panel panel-default">
-        <div
-          className="panel-body"
-          dangerouslySetInnerHTML={{ __html: props.step.description }}
-        ></div>
+  return(
+    <div className="quiz-player">
+      <h2 className="h4 step-title">
+        {tex('step')}&nbsp;{props.number}
+        {props.step.title && <small>&nbsp;{props.step.title}</small>}
+      </h2>
+
+      {props.step.description &&
+        <div className="exercise-description panel panel-default">
+          <div
+            className="panel-body"
+            dangerouslySetInnerHTML={{ __html: props.step.description }}
+          ></div>
+        </div>
+      }
+
+      {props.items.map((item) => (
+        <Panel
+          key={item.id}
+          collapsible={true}
+          expanded={true}
+        >
+          <ItemPlayer item={item}>
+            {React.createElement(getDefinition(item.type)[props.feedbackEnabled ? 'feedback': 'player'], {
+              item: item,
+              answer: props.answers[item.id] ? props.answers[item.id].data : undefined,
+              onChange: (answerData) => props.updateAnswer(item.id, answerData)
+            })}
+          </ItemPlayer>
+        </Panel>
+      ))}
+
+      <PlayerNav
+        previous={props.previous}
+        next={props.next}
+        navigateTo={(step) => props.navigateTo(props.quizId, props.paper.id, step, props.answers, displayFeedback)}
+        submit={() => props.submit(props.quizId, props.paper.id, props.answers)}
+        finish={() => props.finish(props.quizId, props.paper, props.answers)}
+        feedbackEnabled={props.feedbackEnabled}
+        showFeedback={props.showFeedback}
+      />
       </div>
-    }
-
-    {props.items.map((item) => (
-      <Panel
-        key={item.id}
-        collapsible={true}
-        expanded={true}
-      >
-        <ItemPlayer item={item}>
-          {React.createElement(getDefinition(item.type).player, {
-            item: item,
-            answer: props.answers[item.id] ? props.answers[item.id].data : undefined,
-            onChange: (answerData) => props.updateAnswer(item.id, answerData)
-          })}
-        </ItemPlayer>
-      </Panel>
-    ))}
-
-    <PlayerNav
-      previous={props.previous}
-      next={props.next}
-      navigateTo={(step) => props.navigateTo(props.quizId, props.paper.id, step, props.answers)}
-      submit={() => props.submit(props.quizId, props.paper.id, props.answers)}
-      finish={() => props.finish(props.quizId, props.paper, props.answers)}
-    />
-    </div>
+    )
+}
 
 Player.propTypes = {
   quizId: T.string.isRequired,
@@ -74,7 +81,9 @@ Player.propTypes = {
   updateAnswer: T.func.isRequired,
   navigateTo: T.func.isRequired,
   submit: T.func.isRequired,
-  finish: T.func.isRequired
+  finish: T.func.isRequired,
+  showFeedback: T.bool.isRequired,
+  feedbackEnabled: T.bool.isRequired
 }
 
 Player.defaultProps = {
@@ -91,7 +100,9 @@ function mapStateToProps(state) {
     paper: select.paper(state),
     answers: select.currentStepAnswers(state),
     next: select.next(state),
-    previous: select.previous(state)
+    previous: select.previous(state),
+    showFeedback: select.showFeedback(state),
+    feedbackEnabled: select.feedbackEnabled(state)
   }
 }
 
