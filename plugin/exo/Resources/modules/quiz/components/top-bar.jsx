@@ -4,6 +4,7 @@ import Nav from 'react-bootstrap/lib/Nav'
 import NavItem from 'react-bootstrap/lib/NavItem'
 import NavDropdown from 'react-bootstrap/lib/NavDropdown'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
+import classes from 'classnames'
 import {t, tex} from './../../utils/translate'
 import {generateUrl} from './../../utils/routing'
 import {VIEW_EDITOR, VIEW_PLAYER} from './../enums'
@@ -19,6 +20,22 @@ const NavLink = props =>
 NavLink.propTypes = {
   href: T.string.isRequired,
   children: T.node.isRequired
+}
+
+const NavLinkButton = props =>
+  <li role="presentation">
+    <button
+      className="btn btn-link navbar-btn"
+      disabled={props.disabled}
+      onClick={props.onClick}
+    >
+      {props.children}
+    </button>
+  </li>
+
+NavLinkButton.propTypes = {
+  disabled: T.bool.isRequired,
+  onClick: T.func.isRequired
 }
 
 export const TopBar = props =>
@@ -82,12 +99,13 @@ export const TopBar = props =>
           </NavDropdown>
         }
         {VIEW_EDITOR === props.viewMode &&
-          <NavItem eventKey={7} href="#" onClick={() => {
-            props.saveQuiz()
-          }}>
+          <NavLinkButton
+            disabled={props.saved}
+            onClick={() => !props.saved && props.saveQuiz()}
+          >
             <span className="fa fa-fw fa-save"></span>
             {t('save')}
-          </NavItem>
+          </NavLinkButton>
         }
       </Nav>
     </Navbar.Collapse>
@@ -99,6 +117,6 @@ TopBar.propTypes = {
   published: T.bool.isRequired,
   hasPapers: T.bool.isRequired,
   viewMode: T.string.isRequired,
-  updateViewMode: T.func.isRequired,
-  saveQuiz: T.func.isRequired
+  saveQuiz: T.func.isRequired,
+  saved: T.bool.isRequired
 }

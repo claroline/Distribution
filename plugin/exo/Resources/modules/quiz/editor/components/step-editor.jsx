@@ -6,10 +6,12 @@ import {makeItemPanelKey, makeStepPropPanelKey} from './../../../utils/utils'
 import {t, tex, trans} from './../../../utils/translate'
 import {makeSortable, SORT_VERTICAL} from './../../../utils/sortable'
 import {getDefinition} from './../../../items/item-types'
+import {MODAL_DELETE_CONFIRM} from './../../../modal'
+import {MODAL_ADD_ITEM} from './../components/add-item-modal.jsx'
+import {MODAL_IMPORT_ITEMS} from './../components/import-items-modal.jsx'
+import {Icon as ItemIcon} from './../../../items/components/icon.jsx'
 import {StepForm} from './step-form.jsx'
 import {ItemForm} from './item-form.jsx'
-import {Icon as ItemIcon} from './../../../items/components/icon.jsx'
-import {MODAL_DELETE_CONFIRM, MODAL_ADD_ITEM, MODAL_IMPORT_ITEMS} from './modals.jsx'
 
 const ParametersHeader = props =>
   <div onClick={props.onClick} className="panel-title">

@@ -2,8 +2,8 @@ import React, {PropTypes as T} from 'react'
 import classes from 'classnames'
 import {t, tex} from './../../../utils/translate'
 import {makeSortable} from './../../../utils/sortable'
+import {MODAL_DELETE_CONFIRM} from './../../../modal'
 import {TYPE_STEP, TYPE_QUIZ} from './../../enums'
-import {MODAL_DELETE_CONFIRM} from './modals.jsx'
 
 const Actions = props =>
   <span className="step-actions">
@@ -49,7 +49,7 @@ let Thumbnail = props => {
 
         <a
           className={classes('step-title', {'type-quiz': props.type === TYPE_QUIZ})}
-          href="#/alt-editor"
+          href="#editor"
         >
           {props.type === TYPE_STEP && props.title}
           {props.type === TYPE_QUIZ && <span className="quiz-title">{props.title}</span>}

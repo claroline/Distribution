@@ -5,7 +5,6 @@ import {tex, t} from './../../utils/translate'
 const quiz = state => state.quiz
 const steps = state => state.steps
 const items = state => state.items
-const modal = state => state.modal
 const editor = state => state.editor
 
 const currentObject = createSelector(editor, editor => editor.currentObject)
@@ -114,6 +113,5 @@ export default {
   currentObjectDeep,
   quizOpenPanel,
   stepOpenPanel,
-  modal,
   nextObject
 }

@@ -34,6 +34,7 @@ import {
   STEP_DELETE,
   STEP_UPDATE,
   QUIZ_UPDATE,
+  QUIZ_SAVED,
   HINT_ADD,
   HINT_CHANGE,
   HINT_REMOVE,
@@ -284,6 +285,10 @@ function reduceOpenPanels(panels = initialPanelState(), action = {}) {
 function reduceSavedState(saved = true, action = {}) {
   if (quizChangeActions.indexOf(action.type) > 0) {
     return false
+  }
+
+  if (action.type === QUIZ_SAVED) {
+    return true
   }
 
   return saved

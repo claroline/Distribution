@@ -1,10 +1,8 @@
 import invariant from 'invariant'
 import isFunction from 'lodash/isFunction'
 import isString from 'lodash/isString'
-
-import { update } from './../utils/utils'
-import { generateUrl } from './../utils/routing'
-import { actions as alertActions } from './../alert/actions'
+import {update } from './../utils/utils'
+import {generateUrl } from './../utils/routing'
 import {
   REQUEST_SEND,
   actions as apiActions
@@ -44,32 +42,44 @@ function handleResponseError(error, failure) {
   }
 
   return dispatch => {
-    switch (error.status) {
-      // User needs to log in
-      case 401:
-        dispatch(alertActions.addAlert('warning', 'You need to be logged.'))
-        break
-
-      // User is not authorized
-      case 403:
-        dispatch(alertActions.addAlert('error', 'You are not authorized to do this.'))
-        break
-
-      // Validation error
-      case 422:
-        dispatch(alertActions.addAlert('error', 'Invalid data sent.'))
-        break
-
-      // All other errors
-      default:
-        dispatch(alertActions.addAlert('error', error.statusText))
-        break
-    }
+    dispatch({
+      type: 'MODAL_SHOW',
+      modalType: 'MODAL_MESSAGE',
+      modalProps: {message: 'FOO'}
+    })
 
     if (failure) {
       return dispatch(failure(error))
     }
   }
+  //
+  // return dispatch => {
+  //   switch (error.status) {
+  //     // User needs to log in
+  //     case 401:
+  //       dispatch(alertActions.addAlert('warning', 'You need to be logged.'))
+  //       break
+  //
+  //     // User is not authorized
+  //     case 403:
+  //       dispatch(alertActions.addAlert('error', 'You are not authorized to do this.'))
+  //       break
+  //
+  //     // Validation error
+  //     case 422:
+  //       dispatch(alertActions.addAlert('error', 'Invalid data sent.'))
+  //       break
+  //
+  //     // All other errors
+  //     default:
+  //       dispatch(alertActions.addAlert('error', error.statusText))
+  //       break
+  //   }
+  //
+  //   if (failure) {
+  //     return dispatch(failure(error))
+  //   }
+  // }
 }
 
 /**
