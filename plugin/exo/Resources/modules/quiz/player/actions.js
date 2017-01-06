@@ -115,12 +115,19 @@ actions.submit = (quizId, paperId, answers = null) => {
   }
 }
 
-actions.navigateTo = (quizId, paperId, nextStep, pendingAnswers = null, showFeedback = false) => {
+actions.navigateTo = (quizId, paperId, nextStep, pendingAnswers = null, displayFeedback = false, showFeedback = false) => {
   return (dispatch) => {
-    // Submit answers for the current step
-    dispatch(actions.submit(quizId, paperId, pendingAnswers)).then(() =>
-      dispatch(showFeedback ? actions.stepFeedback() : actions.openStep(nextStep))
-    )
+    if (!showFeedback) {
+      dispatch(actions.submit(quizId, paperId, pendingAnswers)).then(() =>
+        dispatch(actions.openStep(nextStep))
+      )
+    } else {
+      displayFeedback ?
+        dispatch(actions.submit(quizId, paperId, pendingAnswers)).then(() =>
+          dispatch(actions.stepFeedback())
+        ):
+        dispatch(actions.openStep(nextStep))
+    }
   }
 }
 
