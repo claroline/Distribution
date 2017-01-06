@@ -46,7 +46,7 @@ function handleResponseError(error, failure) {
       bsStyle: 'danger',
       message: [401, 403, 422].indexOf(error.status) > -1 ?
         tex(`request_error_desc_${error.status}`) :
-        tex(`request_error_desc_other`)
+        tex(`request_error_desc_default`)
     }))
 
     if (failure) {

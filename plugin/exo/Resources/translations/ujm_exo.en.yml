@@ -407,7 +407,7 @@ request_error: Request failure
 request_error_desc_401: You must be authenticated to perform this action.
 request_error_desc_403: You are not allowed to perform this action.
 request_error_desc_422: Submitted data has been rejected by the server. Please report this incident to the administrator of the platform.
-request_error_desc_other: An error occurred during the request execution. Please report this incident to the administrator of the platform.
+request_error_desc_default: An error occurred during the request execution. Please report this incident to the administrator of the platform.
 reset: Reset
 resize_zone: To re-size the picture, place your mouse on its bottom right corner, keep left mouse button down, and move your mouse.
 response: Answer
