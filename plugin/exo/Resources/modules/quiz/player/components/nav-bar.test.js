@@ -17,9 +17,13 @@ describe('<PlayerNav/>', () => {
     ensure.missingProps(
       'PlayerNav',
       [
+        'step',
         'navigateTo',
         'finish',
-        'submit'
+        'openFeedback',
+        'submit',
+        'showFeedback',
+        'feedbackEnabled'
       ]
     )
   })
