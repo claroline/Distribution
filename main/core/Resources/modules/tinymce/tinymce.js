@@ -62,7 +62,7 @@ tinymce.claroline.editorChange = function(editor) {
  */
 tinymce.claroline.paste = function(plugin, args) {
   if ($('#platform-configuration').attr('data-enable-opengraph') === '1') {
-    var link = $('<div>' + args.content + '</div>').text().trim // inside div because a bug of jquery
+    var link = $('<div>' + args.content + '</div>').text().trim() // inside div because a bug of jquery
 
     home.canGenerateContent(link, function(data) {
       tinymce.activeEditor.insertContent('<div>' + data + '</div>')
