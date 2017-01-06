@@ -84,23 +84,21 @@ function getUrl(url, route) {
     invariant(isString(url), '`url` should be a string')
 
     return url
-  } else {
-    invariant(Array.isArray(route), '`route` should be an array')
-
-    return generateUrl(route[0], route[1] ? route[1] : {})
   }
+
+  invariant(Array.isArray(route), '`route` should be an array')
+
+  return generateUrl(route[0], route[1] ? route[1] : {})
 }
 
 function handleBefore(before) {
-  if (before) {
-    invariant(!isFunction(before), '`before` should be a function')
-  }
-
   return dispatch => {
-    dispatch(actions.incrementRequests())
-    if (before === 'function') {
+    if (before) {
+      invariant(isFunction(before), '`before` should be a function')
       dispatch(before())
     }
+
+    dispatch(actions.incrementRequests())
   }
 }
 
@@ -113,12 +111,12 @@ function getRequest(request = {}) {
 
 const apiMiddleware = () => next => action => {
   const sendRequest = action[REQUEST_SEND]
+
   if (typeof sendRequest === 'undefined') {
     return next(action)
   }
 
-  const { url, route, request, before, success, failure } = sendRequest
-
+  const {url, route, request, before, success, failure} = sendRequest
   const finalUrl = getUrl(url, route)
   const finalRequest = getRequest(request)
 
@@ -128,7 +126,7 @@ const apiMiddleware = () => next => action => {
     .then(response => handleResponse(next, response))
     .then(response => getResponseData(response))
     .then(
-      data  => next(handleResponseSuccess(data, success)),
+      data => next(handleResponseSuccess(data, success)),
       error => next(handleResponseError(error, failure))
     )
 }

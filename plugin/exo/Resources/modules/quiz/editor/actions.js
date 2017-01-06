@@ -24,6 +24,7 @@ export const QUIZ_UPDATE = 'QUIZ_UPDATE'
 export const HINT_ADD = 'HINT_ADD'
 export const HINT_CHANGE = 'HINT_CHANGE'
 export const HINT_REMOVE = 'HINT_REMOVE'
+export const QUIZ_SAVING = 'QUIZ_SAVING'
 export const QUIZ_SAVED = 'QUIZ_SAVED'
 export const QUIZ_SAVE_ERROR = 'QUIZ_SAVE_ERROR'
 
@@ -62,6 +63,7 @@ actions.updateItemDetail = makeActionCreator(ITEM_DETAIL_UPDATE, 'id', 'subActio
 actions.updateItemHints = makeActionCreator(ITEM_HINTS_UPDATE, 'itemId', 'updateType', 'payload')
 actions.updateStep = makeActionCreator(STEP_UPDATE, 'id', 'newProperties')
 actions.importItems = makeActionCreator(ITEMS_IMPORT, 'stepId', 'items')
+actions.quizSaving = makeActionCreator(QUIZ_SAVING)
 actions.quizSaved = makeActionCreator(QUIZ_SAVED)
 actions.quizSaveError = makeActionCreator(QUIZ_SAVE_ERROR)
 
@@ -103,7 +105,9 @@ actions.save = () => {
           method: 'PUT' ,
           body: JSON.stringify(denormalized)
         },
-        success: () => actions.quizSaved()
+        before: () => actions.quizSaving(),
+        success: () => actions.quizSaved(),
+        failure: () => actions.quizSaveError()
       }
     })
   }

@@ -100,8 +100,8 @@ export const TopBar = props =>
         }
         {VIEW_EDITOR === props.viewMode &&
           <NavLinkButton
-            disabled={props.saved}
-            onClick={() => !props.saved && props.saveQuiz()}
+            disabled={!props.saveEnabled}
+            onClick={() => props.saveEnabled && props.saveQuiz()}
           >
             <span className="fa fa-fw fa-save"></span>
             {t('save')}
@@ -117,6 +117,6 @@ TopBar.propTypes = {
   published: T.bool.isRequired,
   hasPapers: T.bool.isRequired,
   viewMode: T.string.isRequired,
-  saveQuiz: T.func.isRequired,
-  saved: T.bool.isRequired
+  saveEnabled: T.bool.isRequired,
+  saveQuiz: T.func.isRequired
 }

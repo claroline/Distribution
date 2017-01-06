@@ -35,6 +35,8 @@ import {
   STEP_UPDATE,
   QUIZ_UPDATE,
   QUIZ_SAVED,
+  QUIZ_SAVING,
+  QUIZ_SAVE_ERROR,
   HINT_ADD,
   HINT_CHANGE,
   HINT_REMOVE,
@@ -282,6 +284,19 @@ function reduceOpenPanels(panels = initialPanelState(), action = {}) {
   return panels
 }
 
+function reduceSavingState(saving = false, action = {}) {
+  switch (action.type) {
+    case QUIZ_SAVING:
+      return true
+    case QUIZ_SAVED:
+      return false
+    case QUIZ_SAVE_ERROR:
+      return false
+  }
+
+  return saving
+}
+
 function reduceSavedState(saved = true, action = {}) {
   if (quizChangeActions.indexOf(action.type) > 0) {
     return false
@@ -297,6 +312,7 @@ function reduceSavedState(saved = true, action = {}) {
 const reduceEditor = combineReducers({
   currentObject: reduceCurrentObject,
   openPanels: reduceOpenPanels,
+  saving: reduceSavingState,
   saved: reduceSavedState
 })
 

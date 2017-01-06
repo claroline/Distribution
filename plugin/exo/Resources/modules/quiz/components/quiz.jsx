@@ -52,8 +52,8 @@ Quiz.propTypes = {
   editable: T.bool.isRequired,
   viewMode: T.string.isRequired,
   updateViewMode: T.func.isRequired,
+  saveEnabled: T.bool.isRequired,
   saveQuiz: T.func.isRequired,
-  saved: T.bool.isRequired,
   createModal: T.func.isRequired,
   showModal: T.func.isRequired,
   fadeModal: T.func.isRequired,
@@ -91,7 +91,7 @@ function mapStateToProps(state) {
     empty: select.empty(state),
     published: select.published(state),
     hasPapers: select.hasPapers(state),
-    saved: select.saved(state),
+    saveEnabled: select.saveEnabled(state),
     modal: select.modal(state)
   }
 }
