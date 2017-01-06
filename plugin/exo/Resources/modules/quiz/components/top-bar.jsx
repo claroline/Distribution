@@ -36,25 +36,6 @@ export const TopBar = props =>
           <span className="fa fa-fw fa-pencil"></span>
           {t('edit')}
         </NavLink>
-        <NavDropdown
-          id="questions-menu"
-          eventKey={3}
-          title={
-            <span>
-              <span className="fa fa-fw fa-question"></span>
-              {tex('questions')}
-            </span>
-          }
-        >
-          <MenuItem eventKey={3.1}>
-            <span className="fa fa-fw fa-download"></span>
-            {tex('import_questions')}
-          </MenuItem>
-          <MenuItem eventKey={3.2}>
-            <span className="fa fa-fw fa-save"></span>
-            {tex('export_qti_exercise')}
-          </MenuItem>
-        </NavDropdown>
         {!props.published &&
           <NavItem eventKey={4} href="#">
             <span className="fa fa-fw fa-share-square-o"></span>
