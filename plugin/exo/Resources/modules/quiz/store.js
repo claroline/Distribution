@@ -8,6 +8,9 @@ import {
 } from 'redux'
 import thunk from 'redux-thunk'
 
+import {apiMiddleware} from './../api/middleware'
+import {reducers as alertReducers} from './../alert/reducers'
+import {reducers as apiReducers} from './../api/reducers'
 import {reducers as quizReducers} from './reducers'
 import {reducers as editorReducers} from './editor/reducers'
 import {reducers as playerReducers} from './player/reducers'
@@ -38,7 +41,7 @@ const quizSave = store => next => action => {
   }
 }
 
-const middleware = [thunk, quizSave]
+const middleware = [apiMiddleware, thunk, quizSave]
 
 if (process.env.NODE_ENV !== 'production') {
   const freeze = require('redux-freeze')
@@ -49,17 +52,23 @@ const returnSelf = (state = null) => state
 
 export function makeReducer(editable) {
   return combineReducers({
+    alerts: alertReducers,
     noServer: returnSelf,
+    currentRequests: apiReducers.currentRequests,
+
     viewMode: quizReducers.viewMode,
     quiz: editable ? editorReducers.quiz : returnSelf,
     steps: editable ? editorReducers.steps : returnSelf,
     items: editable ? editorReducers.items : returnSelf,
     modal: editable ? editorReducers.modal : returnSelf,
     editor: editable ? editorReducers.editor : returnSelf,
+
+    // TODO : combine in a sub object for cleaner store
     testMode: playerReducers.testMode,
     currentStep: playerReducers.currentStep,
     paper: playerReducers.paper,
     answers: playerReducers.answers,
+
     papers: reducePapers
   })
 }

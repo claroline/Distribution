@@ -1,6 +1,8 @@
 // TODO : use reselect
 // TODO : there is possible code refactoring with editor/selectors.js
 
+const isLoading = state => state.currentRequests > 0
+const alerts = state => state.alerts
 const empty = state => state.quiz.steps.length === 0
 const quiz = state => state.quiz
 const steps = state => state.steps
@@ -26,5 +28,7 @@ export default {
   parameters,
   title,
   published,
-  viewMode
+  viewMode,
+  isLoading,
+  alerts
 }

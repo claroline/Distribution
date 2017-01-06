@@ -1,12 +1,12 @@
 import {makeActionCreator} from './../../utils/actions'
-import {actions as apiActions} from './../../api/actions'
+import {REQUEST_SEND} from './../../api/actions'
 import {actions as quizActions} from './../actions'
 import {VIEW_PLAYER} from './../enums'
 import quizSelectors from './../selectors'
 import {navigate} from './../router'
 import {select as playerSelectors} from './selectors'
-import {api} from './api'
 import {generatePaper} from './../papers/generator'
+import {normalize, denormalizeAnswers} from './normalizer'
 
 export const ATTEMPT_START  = 'ATTEMPT_START'
 export const ATTEMPT_FINISH = 'ATTEMPT_FINISH'
@@ -15,6 +15,8 @@ export const ANSWER_UPDATE  = 'ANSWER_UPDATE'
 export const ANSWERS_SUBMIT = 'ANSWERS_SUBMIT'
 export const TEST_MODE_SET  = 'TEST_MODE_SET'
 export const STEP_FEEDBACK  = 'STEP_FEEDBACK'
+export const HINT_USE       = 'HINT_USE'
+
 export const actions = {}
 
 actions.setTestMode = makeActionCreator(TEST_MODE_SET, 'testMode')
@@ -25,24 +27,65 @@ actions.updateAnswer = makeActionCreator(ANSWER_UPDATE, 'questionId', 'answerDat
 actions.submitAnswers = makeActionCreator(ANSWERS_SUBMIT, 'quizId', 'paperId', 'answers')
 actions.stepFeedback = makeActionCreator(STEP_FEEDBACK)
 
+actions.useHint = makeActionCreator(HINT_USE, 'questionId', 'hintId')
+
+actions.fetchAttempt = quizId => ({
+  [REQUEST_SEND]: {
+    route: ['exercise_attempt_start', {exerciseId: quizId}],
+    request: {method: 'POST'},
+    success: (data) => {
+      /*console.log(data)*/
+      const normalized = normalize(data)
+
+      return actions.initPlayer(normalized.paper, normalized.answers)
+    },
+    failure: () => () => navigate('overview') // double fat arrow is needed because navigate is not an action creator
+  }
+})
+
+actions.sendAnswers = (quizId, paperId, answers) =>({
+  [REQUEST_SEND]: {
+    route: ['exercise_attempt_submit', {exerciseId: quizId, id: paperId}],
+    request: {
+      method: 'PUT',
+      body: JSON.stringify(denormalizeAnswers(answers))
+    },
+    success: () => actions.submitAnswers(quizId, paperId, answers)
+  }
+})
+
+actions.requestHint = (quizId, paperId, hintId) => ({
+  [REQUEST_SEND]: {
+    route: ['exercise_attempt_hint_show', {exerciseId: quizId, paperId: paperId, hintId: hintId}],
+    success: (hint) => actions.useHint(hint.id)
+  }
+})
+
+actions.requestEnd = (quizId, paperId) => ({
+  [REQUEST_SEND]: {
+    route: ['exercise_attempt_finish', {exerciseId: quizId, id: paperId}],
+    request: {
+      method: 'PUT'
+    },
+    success: (data) => {
+      const normalized = normalize(data)
+
+      return actions.handleAttemptEnd(normalized.paper)
+    }
+  }
+})
+
 actions.play = (previousPaper = null, testMode = false) => {
   return (dispatch, getState) => {
     dispatch(actions.setTestMode(testMode))
 
     if (!playerSelectors.offline(getState())) {
       // Request a paper from the API and open the player
-      return dispatch((dispatch) => {
-        dispatch(apiActions.sendRequest())
-        api.startAttempt(quizSelectors.id(getState()))
-          .then((normalizedData) => {
-            /*dispatch(apiActions.receiveResponse())*/
-            dispatch(initPlayer(normalizedData.paper, normalizedData.answers))
-          })
-      })
+      return dispatch(actions.fetchAttempt(quizSelectors.quiz(getState()).id))
     } else {
       // Create a new local paper and open the player
       return dispatch(
-        initPlayer(generatePaper(
+        actions.initPlayer(generatePaper(
           quizSelectors.quiz(getState()),
           quizSelectors.steps(getState()),
           previousPaper
@@ -54,46 +97,21 @@ actions.play = (previousPaper = null, testMode = false) => {
 
 actions.submit = (quizId, paperId, answers = null) => {
   return (dispatch, getState) => {
-    let answersPromise
-    if (answers && !playerSelectors.offline(getState())) {
-      // Send answers to the API
-      dispatch(apiActions.sendRequest())
-
-      answersPromise = api
-        .submitAnswers(quizId, paperId, answers)
-        .then(() => dispatch(apiActions.receiveResponse()))
-    } else {
-      // Nothing to do
-      answersPromise = Promise.resolve()
-    }
-
-    return answersPromise.then(() =>
-      answers ? dispatch(actions.submitAnswers(quizId, paperId, answers)) : null
-    )
-  }
-}
-
-actions.finish = (quizId, paper, pendingAnswers = null) => {
-  return (dispatch, getState) => {
-    // First, submit answers for the current step
-    dispatch(actions.submit(quizId, paper.id, pendingAnswers)).then(() => {
-      let paperPromise
-      if (!playerSelectors.offline(getState())) {
-        // Send finish request to API
-        dispatch(apiActions.sendRequest())
-        paperPromise = api
-          .finishAttempt(quizId, paper.id)
-          .then(() => dispatch(apiActions.receiveResponse()))
-      } else {
-        // Just resolve the current paper (the next actions will mark it as finished)
-        paperPromise = Promise.resolve({paper: paper})
+    if (answers) {
+      const updated = {}
+      for (let answer in answers) {
+        if (answers.hasOwnProperty(answer) && answers[answer]._touched) {
+          // Answer has been modified => send it to the server
+          updated[answer] = answers[answer]
+        }
       }
 
-      return paperPromise.then((normalizedData) =>
-        // Finish the attempt and use quiz config to know what to do next
-        dispatch(actions.handleAttemptEnd(normalizedData.paper))
-      )
-    })
+      if (!playerSelectors.offline(getState())) {
+        return dispatch(actions.sendAnswers(quizId, paperId, updated))
+      } else {
+        return dispatch(actions.submitAnswers(quizId, paperId, updated))
+      }
+    }
   }
 }
 
@@ -104,6 +122,20 @@ actions.navigateTo = (quizId, paperId, nextStep, pendingAnswers = null, showFeed
       dispatch(showFeedback ? actions.stepFeedback() : actions.openStep(nextStep))
     )
   }
+}
+
+actions.finish = (quizId, paper, pendingAnswers = null) => {
+  return (dispatch, getState) =>
+    // First, submit answers for the current step
+    dispatch(actions.submit(quizId, paper.id, pendingAnswers)).then(() => {
+      if (!playerSelectors.offline(getState())) {
+        // Send finish request to API
+        return dispatch(actions.requestEnd(quizId, paper.id))
+      } else {
+        // Finish the attempt and use quiz config to know what to do next
+        return dispatch(actions.handleAttemptEnd(paper))
+      }
+    })
 }
 
 actions.handleAttemptEnd = (paper) => {
@@ -117,7 +149,7 @@ actions.handleAttemptEnd = (paper) => {
   }
 }
 
-function initPlayer(paper, answers = {}) {
+actions.initPlayer = (paper, answers = {}) => {
   return (dispatch) => {
     dispatch(actions.startAttempt(paper, answers))
 
@@ -125,5 +157,15 @@ function initPlayer(paper, answers = {}) {
 
     dispatch(actions.openStep(firstStep))
     dispatch(quizActions.updateViewMode(VIEW_PLAYER))
+  }
+}
+
+actions.showHint = (quizId, paperId, hint) => {
+  return (dispatch, getState) => {
+    if (playerSelectors.offline(getState())) {
+      return dispatch(actions.requestHint(quizId, paperId, hint.id))
+    } else {
+      return dispatch(actions.useHint(hint.id))
+    }
   }
 }

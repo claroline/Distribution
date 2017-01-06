@@ -2,9 +2,11 @@ import React, {PropTypes as T} from 'react'
 import {connect} from 'react-redux'
 
 import PageHeader from './../../components/layout/page-header.jsx'
+import {Alerts} from './../../alert/components/alerts.jsx'
+import {Loader} from './../../api/components/loader.jsx'
 import {TopBar} from './top-bar.jsx'
 import {Overview} from './../overview/overview.jsx'
-import Player from './../player/components/player.jsx'
+import {Player} from './../player/components/player.jsx'
 import {Editor} from './../editor/components/editor.jsx'
 import {Papers} from './../papers/components/papers.jsx'
 import {Paper} from './../papers/components/paper.jsx'
@@ -22,6 +24,15 @@ import {
 let Quiz = props =>
   <div className="page-container">
     <PageHeader title={props.quiz.title} />
+
+    {props.isLoading &&
+      <Loader />
+    }
+
+    {0 !== props.alerts.length &&
+      <Alerts alerts={props.alerts} />
+    }
+
     {props.editable &&
       <TopBar {...props} id={props.quiz.id}/>
     }
@@ -31,6 +42,8 @@ let Quiz = props =>
   </div>
 
 Quiz.propTypes = {
+  isLoading: T.bool.isRequired,
+  alerts: T.array.isRequired,
   quiz: T.shape({
     id: T.string.isRequired,
     title: T.string.isRequired
@@ -60,6 +73,8 @@ function viewComponent(view) {
 
 function mapStateToProps(state) {
   return {
+    isLoading: select.isLoading(state),
+    alerts: select.alerts(state),
     quiz: select.quiz(state),
     steps: select.steps(state),
     viewMode: select.viewMode(state),

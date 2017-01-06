@@ -175,6 +175,7 @@ group: Group
 # H
 hide_instructions: Hide instructions
 hint: Hint
+hint_show: Show hint
 hints: Hints
 histo_discrimination: Discriminatory coefficient
 histo_marks: Marks histogram
@@ -187,7 +188,7 @@ hole_selector: Submit a list
 hide_additional_info: Hide additional information
 hide_interact_fields: Hide hints and feedback
 hide_metadata_fields: Hide metadata and instructions
-hint_points: "[0,1] - %count% point|]1,Inf[ - %count% points"
+hint_penalty: "[0,1] - %count% point|]1,Inf[ - %count% points"
 
 # I
 infiny: Indefinite
