@@ -15,6 +15,7 @@ describe('<Papers/>', () => {
   it('renders a list of papers', () => {
     const store = configureMockStore()({
       quiz: {
+        id: 'ID',
         meta: {
           editable: true
         }
