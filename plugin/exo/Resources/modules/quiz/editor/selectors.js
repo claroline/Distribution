@@ -7,6 +7,7 @@ const steps = state => state.steps
 const items = state => state.items
 const editor = state => state.editor
 
+const saved = createSelector(editor, editor => editor.saved)
 const currentObject = createSelector(editor, editor => editor.currentObject)
 const openPanels = createSelector(editor, editor => editor.openPanels)
 const quizOpenPanel = createSelector(openPanels, panels => panels[TYPE_QUIZ])
@@ -113,5 +114,7 @@ export default {
   currentObjectDeep,
   quizOpenPanel,
   stepOpenPanel,
-  nextObject
+  nextObject,
+  editor,
+  saved
 }

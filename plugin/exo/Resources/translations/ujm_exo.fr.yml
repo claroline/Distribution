@@ -496,6 +496,7 @@ type_question: Type de la question
 
 # U
 unpublish: Dépublier
+unsaved_changes_warning: Certaines modifications du questionnaire n'ont pas été enregistrées. Si vous quittez cette page maintenant, ces modifications seront perdues.
 upload: Télécharger
 uploading: Chargement en cours
 user: Utilisateur

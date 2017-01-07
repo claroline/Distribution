@@ -8,6 +8,7 @@ import {normalize} from './normalizer'
 import {decorate} from './decorators'
 import {createStore} from './store'
 import {makeRouter} from './router'
+import {makeSaveGuard} from './editor/save-guard'
 import {registerDefaultItemTypes, getDecorators} from './../items/item-types'
 import {registerModalType} from './../modal'
 import {MODAL_ADD_ITEM, AddItemModal} from './editor/components/add-item-modal.jsx'
@@ -24,6 +25,7 @@ export class Quiz {
     this.store = createStore(Object.assign({noServer: noServer}, quizData))
     this.dndQuiz = DragDropContext(HTML5Backend)(QuizComponent)
     makeRouter(this.store.dispatch.bind(this.store))
+    makeSaveGuard(this.store.getState.bind(this.store))
   }
 
   render(element) {

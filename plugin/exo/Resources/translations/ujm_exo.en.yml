@@ -500,6 +500,7 @@ type_question: Question type
 
 # U
 unpublish: Unpublish
+unsaved_changes_warning: Some changes to the quiz have not been saved. If you leave this page now, they will be lost.
 upload: Upload
 uploading: Uploading
 user: User
