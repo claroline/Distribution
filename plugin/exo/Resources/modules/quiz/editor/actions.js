@@ -28,6 +28,8 @@ export const QUIZ_SAVING = 'QUIZ_SAVING'
 export const QUIZ_SAVED = 'QUIZ_SAVED'
 export const QUIZ_SAVE_ERROR = 'QUIZ_SAVE_ERROR'
 
+// the following action types lead to quiz data changes that need to be
+// properly saved (please maintain this list up-to-date)
 export const quizChangeActions = [
   ITEM_CREATE,
   ITEM_DELETE,
