@@ -16,6 +16,7 @@ export const STEP_OPEN      = 'STEP_OPEN'
 export const ANSWER_UPDATE  = 'ANSWER_UPDATE'
 export const ANSWERS_SUBMIT = 'ANSWERS_SUBMIT'
 export const TEST_MODE_SET  = 'TEST_MODE_SET'
+export const STEP_FEEDBACK  = 'STEP_FEEDBACK'
 export const HINT_USE       = 'HINT_USE'
 
 export const actions = {}
@@ -26,6 +27,8 @@ actions.finishAttempt = makeActionCreator(ATTEMPT_FINISH, 'paper')
 actions.openStep = makeActionCreator(STEP_OPEN, 'step')
 actions.updateAnswer = makeActionCreator(ANSWER_UPDATE, 'questionId', 'answerData')
 actions.submitAnswers = makeActionCreator(ANSWERS_SUBMIT, 'quizId', 'paperId', 'answers')
+actions.stepFeedback = makeActionCreator(STEP_FEEDBACK)
+
 actions.useHint = makeActionCreator(HINT_USE, 'questionId', 'hintId')
 
 actions.fetchAttempt = quizId => ({
@@ -124,28 +127,28 @@ actions.submit = (quizId, paperId, answers = {}) => {
   }
 }
 
-actions.navigateTo = (quizId, paperId, nextStep, pendingAnswers = {}) => {
+actions.navigateTo = (quizId, paperId, nextStep, pendingAnswers = {}, currentStepSend = true, openFeedback = false) => {
   return (dispatch) => {
-    // Submit answers for the current step
-    return dispatch(actions.submit(quizId, paperId, pendingAnswers)).then(() =>
-      // Open the requested step
-      dispatch(actions.openStep(nextStep))
-    )
+    if (currentStepSend) {
+      dispatch(actions.submit(quizId, paperId, pendingAnswers)).then(() =>
+        openFeedback ? dispatch(actions.stepFeedback()): dispatch(actions.openStep(nextStep))
+      )
+    } else {
+      openFeedback ? dispatch(actions.stepFeedback()): dispatch(actions.openStep(nextStep))
+    }
   }
 }
 
-actions.finish = (quizId, paper, pendingAnswers = {}) => {
-  return (dispatch, getState) =>
-    // First, submit answers for the current step
-    dispatch(actions.submit(quizId, paper.id, pendingAnswers)).then(() => {
-      if (!playerSelectors.offline(getState())) {
-        // Send finish request to API
-        return dispatch(actions.requestEnd(quizId, paper.id))
-      } else {
-        // Finish the attempt and use quiz config to know what to do next
-        return dispatch(actions.handleAttemptEnd(paper))
-      }
-    })
+actions.finish = (quizId, paper, pendingAnswers = {}, showFeedback = false) => {
+  return (dispatch, getState) => {
+    if (!showFeedback) {
+      dispatch(actions.submit(quizId, paper.id, pendingAnswers)).then(() => {
+        endQuiz(quizId, paper, dispatch, getState)
+      })
+    } else {
+      endQuiz(quizId, paper, dispatch, getState)
+    }
+  }
 }
 
 actions.handleAttemptEnd = (paper) => {
@@ -177,5 +180,16 @@ actions.showHint = (quizId, paperId, hint) => {
     } else {
       return dispatch(actions.useHint(hint.id))
     }
+  }
+}
+
+function endQuiz(quizId, paper, dispatch, getState) {
+  //the current step was alreay done
+  if (!playerSelectors.offline(getState())) {
+    // Send finish request to API
+    return dispatch(actions.requestEnd(quizId, paper.id))
+  } else {
+    // Finish the attempt and use quiz config to know what to do next
+    return dispatch(actions.handleAttemptEnd(paper))
   }
 }

@@ -17,9 +17,15 @@ describe('<PlayerNav/>', () => {
     ensure.missingProps(
       'PlayerNav',
       [
+        'step',
         'navigateTo',
+        'navigateToAndValidate',
         'finish',
-        'submit'
+        'openFeedbackAndValidate',
+        'submit',
+        'showFeedback',
+        'feedbackEnabled',
+        'currentStepSend'
       ]
     )
   })
@@ -52,6 +58,12 @@ describe('<PlayerNav/>', () => {
         navigateTo={() => true}
         finish={() => true}
         submit={() => true}
+        openFeedbackAndValidate={() => true}
+        navigateToAndValidate={() => true}
+        step={{id: '1',  items:[]}}
+        currentStepSend={true}
+        showFeedback={false}
+        feedbackEnabled={false}
       />
     )
     ensure.propTypesOk()
@@ -61,7 +73,7 @@ describe('<PlayerNav/>', () => {
     ensure.equal(navbar.find('.btn-previous').length, 0)
 
     // There is no next step, so no next btn
-    ensure.equal(navbar.find('.btn-next').length, 0)
+    ensure.equal(navbar.find('.btn-validate').length, 0)
 
     // On the last step there is a finish btn
     ensure.equal(navbar.find('.btn-finish').length, 1)
@@ -79,6 +91,12 @@ describe('<PlayerNav/>', () => {
         navigateTo={() => true}
         finish={() => true}
         submit={() => true}
+        openFeedbackAndValidate={() => true}
+        navigateToAndValidate={() => true}
+        step={{id: '1',  items:[]}}
+        currentStepSend={true}
+        showFeedback={true}
+        feedbackEnabled={true}
       />
     )
     ensure.propTypesOk()
@@ -97,6 +115,12 @@ describe('<PlayerNav/>', () => {
         navigateTo={() => true}
         finish={() => true}
         submit={() => true}
+        openFeedbackAndValidate={() => true}
+        navigateToAndValidate={() => true}
+        step={{id: '1',  items:[]}}
+        currentStepSend={true}
+        showFeedback={true}
+        feedbackEnabled={true}
       />
     )
     ensure.propTypesOk()
