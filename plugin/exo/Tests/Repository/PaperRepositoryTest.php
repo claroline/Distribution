@@ -118,7 +118,7 @@ class PaperRepositoryTest extends TransactionalTestCase
         $lastPaper = $this->repo->findLastPaper($this->exercise, $this->user);
 
         $this->assertInstanceOf('UJM\ExoBundle\Entity\Attempt\Paper', $lastPaper);
-        $this->assertEquals(3, $lastPaper->getNumber());
+        $this->assertEquals(4, $lastPaper->getNumber());
         $this->assertEquals($this->user, $lastPaper->getUser());
         $this->assertEquals($this->exercise, $lastPaper->getExercise());
     }
@@ -138,14 +138,14 @@ class PaperRepositoryTest extends TransactionalTestCase
         $papers = $this->repo->findUnfinishedPapers($this->exercise, $this->user);
 
         $this->assertTrue(is_array($papers));
-        $this->assertCount(2, $papers); // result = count($this->papers) - other exercises - other users - finished papers
+        $this->assertCount(3, $papers); // result = count($this->papers) - other exercises - other users - finished papers
         $this->assertInstanceOf('UJM\ExoBundle\Entity\Attempt\Paper', $papers[0]);
     }
 
     public function testCountExercisePapers()
     {
         $papersCount = $this->repo->countExercisePapers($this->exercise);
-        $this->assertEquals(4, $papersCount);
+        $this->assertEquals(5, $papersCount);
     }
 
     public function testCountUserFinishedPapers()

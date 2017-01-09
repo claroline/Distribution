@@ -115,7 +115,7 @@ class PaperGenerator
 
     private function pickSteps(Exercise $exercise, \stdClass $previousExercise = null)
     {
-        if (!empty($previousPaper) && Recurrence::ONCE === $exercise->getRandomPick()) {
+        if (!empty($previousExercise) && Recurrence::ONCE === $exercise->getRandomPick()) {
             // Just get the list of steps from the previous paper
             $steps = array_map(function (\stdClass $pickedStep) use ($exercise) {
                 return $exercise->getStep($pickedStep->id);
@@ -128,12 +128,15 @@ class PaperGenerator
             );
         }
 
-        $pickedSteps = array_map(function (Step $step) {
+        $pickedSteps = [];
+        foreach ($steps as $index => $step) {
             $pickedStep = $this->stepSerializer->serialize($step);
-            $pickedStep->items = $this->pickItems($step);
-
-            return $pickedStep;
-        }, $steps);
+            $pickedStep->items = $this->pickItems(
+                $step,
+                $previousExercise && $previousExercise->steps[$index] ? $previousExercise->steps[$index] : null
+            );
+            $pickedSteps[] = $pickedStep;
+        }
 
         // Shuffle steps according to config
         if ((empty($previousExercise) && Recurrence::ONCE === $exercise->getRandomOrder())
@@ -178,7 +181,7 @@ class PaperGenerator
 
         // Recalculate order of the items based on the configuration
         // if we don't want to keep the one from the previous paper
-        if ((empty($previousPaper) && Recurrence::ONCE === $step->getRandomOrder())
+        if ((empty($previousStep) && Recurrence::ONCE === $step->getRandomOrder())
             || Recurrence::ALWAYS === $step->getRandomOrder()) {
             shuffle($pickedItems);
         }

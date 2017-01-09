@@ -67,7 +67,7 @@ Player.propTypes = {
   step: T.shape({
     id: T.string.isRequired,
     title: T.string,
-    description: T.string,
+    description: T.string
   }).isRequired,
   items: T.array.isRequired,
   answers: T.object.isRequired,
