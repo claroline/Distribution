@@ -132,12 +132,12 @@ export class ChoicePaper extends Component
                       className={classes(
                         'item',
                         this.props.item.multiple ? 'checkbox': 'radio',
-                        this.getAnswerClassForSolution(solution, this.props.answer.data)
+                        this.getAnswerClassForSolution(solution, this.props.answer)
                       )}>
-                      <WarningIcon solution={solution} answers={this.props.answer.data}/>
+                      <WarningIcon solution={solution} answers={this.props.answer}/>
                       <input
                         className={this.props.item.multiple ? 'checkbox': 'radio'}
-                        checked={this.isSolutionChecked(solution, this.props.answer.data)}
+                        checked={this.isSolutionChecked(solution, this.props.answer)}
                         id={this.answerId(solution.id)}
                         name={this.answerId(this.props.item.id)}
                         type={this.props.item.multiple ? 'checkbox': 'radio'}
@@ -211,7 +211,9 @@ ChoicePaper.propTypes = {
     title: T.string,
     description: T.string
   }).isRequired,
-  answer: T.shape({
-    data: T.array
-  })
+  answer: T.array
+}
+
+ChoicePaper.defaultProps = {
+  answer: []
 }

@@ -94,7 +94,7 @@ actions.play = (previousPaper = null, testMode = false) => {
 
 actions.submit = (quizId, paperId, answers = {}) => {
   return (dispatch, getState) => {
-    if (isEmpty(answers)) {
+    if (!isEmpty(answers)) {
       const updated = {}
       for (let answer in answers) {
         if (answers.hasOwnProperty(answer) && answers[answer]._touched) {
@@ -103,15 +103,20 @@ actions.submit = (quizId, paperId, answers = {}) => {
         }
       }
 
-      if (!playerSelectors.offline(getState())) {
-        return dispatch(actions.sendAnswers(quizId, paperId, updated))
-      } else {
-        // This seems a little hacky but if we dispatch a regular action
-        // we don't have access to the promise interface provided by redux-thunk
-        // and we can not link next actions using `then` callback like when the server is called.
-        // Offline mode should be bundled in the api middleware to avoid this promise wrapping
-        return dispatch((dispatch) => Promise.resolve(dispatch(actions.submitAnswers(quizId, paperId, updated))))
+      if (!isEmpty(updated)) {
+        if (!playerSelectors.offline(getState())) {
+          return dispatch(actions.sendAnswers(quizId, paperId, updated))
+        } else {
+          // This seems a little hacky but if we dispatch a regular action
+          // we don't have access to the promise interface provided by redux-thunk
+          // and we can not link next actions using `then` callback like when the server is called.
+          // Offline mode should be bundled in the api middleware to avoid this promise wrapping
+          return dispatch((dispatch) => Promise.resolve(dispatch(actions.submitAnswers(quizId, paperId, updated))))
+        }
       }
+
+      // No update in answers
+      return Promise.resolve()
     }
 
     // Nothing to do, we just resolve a promise to let the action chain continue

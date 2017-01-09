@@ -13,9 +13,15 @@ const currentPaper = createSelector(
   }
 )
 
+const paperSteps = createSelector(
+  currentPaper,
+  (currentPaper) => currentPaper.structure.steps
+)
+
 export const selectors = {
   quizId,
   papers,
   papersFetched,
-  currentPaper
+  currentPaper,
+  paperSteps
 }

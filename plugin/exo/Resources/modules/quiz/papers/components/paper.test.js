@@ -24,24 +24,23 @@ describe('<Paper/>', () => {
           {
             id: '123',
             number: 1,
-            structure: [
-              {
-                items: ['456', '789']
+            structure: {
+              steps: {
+                items: [
+                  {
+                    id: '456',
+                    type: 'foo/bar',
+                    content: 'Foo?'
+                  },
+                  {
+                    id: '789',
+                    type: 'baz/quz',
+                    content: 'Bar?'
+                  }
+                ]
               }
-            ],
+            },
             answers: []
-          }
-        ],
-        questions: [
-          {
-            id: '456',
-            type: 'foo/bar',
-            content: 'Foo?'
-          },
-          {
-            id: '789',
-            type: 'baz/quz',
-            content: 'Bar?'
           }
         ],
         current: '123'
