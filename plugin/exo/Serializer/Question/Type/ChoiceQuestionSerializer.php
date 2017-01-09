@@ -49,7 +49,12 @@ class ChoiceQuestionSerializer implements SerializerInterface
         $questionData->multiple = $choiceQuestion->isMultiple();
 
         // Serializes choices
-        $questionData->choices = $this->serializeChoices($choiceQuestion, $options);
+        $choices = $this->serializeChoices($choiceQuestion, $options);
+        if ($choiceQuestion->getShuffle() && in_array(Transfer::SHUFFLE_ANSWERS, $options)) {
+            shuffle($choices);
+        }
+
+        $questionData->choices = $choices;
 
         if (in_array(Transfer::INCLUDE_SOLUTIONS, $options)) {
             $questionData->solutions = $this->serializeSolutions($choiceQuestion);

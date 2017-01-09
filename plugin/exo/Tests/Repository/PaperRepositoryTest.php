@@ -20,6 +20,11 @@ class PaperRepositoryTest extends TransactionalTestCase
     private $om;
 
     /**
+     * @var PaperGenerator
+     */
+    private $paperGenerator;
+
+    /**
      * @var Persister
      */
     private $persist;
@@ -68,27 +73,27 @@ class PaperRepositoryTest extends TransactionalTestCase
             $question,
         ], $this->user);
 
-        $paper1 = PaperGenerator::create($this->exercise, $this->user);
+        $paper1 = $this->paperGenerator->create($this->exercise, $this->user);
         $this->om->persist($paper1);
 
-        $paper2 = PaperGenerator::create($this->exercise, $this->user, $paper1);
+        $paper2 = $this->paperGenerator->create($this->exercise, $this->user, $paper1);
         $this->om->persist($paper2);
 
         // Create a finished paper
-        $paperFinished = PaperGenerator::create($this->exercise, $this->user, $paper2);
+        $paperFinished = $this->paperGenerator->create($this->exercise, $this->user, $paper2);
         $paperFinished->setEnd(new \DateTime());
         $this->om->persist($paperFinished);
 
         // Create an invalidated paper
-        $paperInvalidated = PaperGenerator::create($this->exercise, $this->user, $paperFinished);
+        $paperInvalidated = $this->paperGenerator->create($this->exercise, $this->user, $paperFinished);
         $paperInvalidated->setInvalidated(true);
         $this->om->persist($paperInvalidated);
 
         // Create data that will never be returned to check conditions
-        $paperOtherUser = PaperGenerator::create($this->exercise);
+        $paperOtherUser = $this->paperGenerator->create($this->exercise);
         $this->om->persist($paperOtherUser);
 
-        $paperOtherExercise = PaperGenerator::create(
+        $paperOtherExercise = $this->paperGenerator->create(
             $this->persist->exercise('Exercise 2', [], $this->user),
             $this->user
         );

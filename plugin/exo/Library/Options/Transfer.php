@@ -36,7 +36,7 @@ final class Transfer
     const INCLUDE_USER_SCORE = 'includeUserScore';
 
     /**
-     * Applies shuffle to the serialized data.
+     * Applies shuffle to the answers of a question.
      */
-    const SHUFFLE = 'shuffle';
+    const SHUFFLE_ANSWERS = 'shuffleAnswers';
 }

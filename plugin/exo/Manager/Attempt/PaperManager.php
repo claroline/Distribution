@@ -79,7 +79,6 @@ class PaperManager
 
     /**
      * Exports a user paper.
-     * NB: This method only returns the paper object, if you also need the list of questions, see `exportWithQuestions`.
      *
      * @param Paper $paper
      * @param array $options
@@ -95,31 +94,6 @@ class PaperManager
         }
 
         return $this->serializer->serialize($paper, $options);
-    }
-
-    /**
-     * Export a user paper and the list of questions used for the attempt.
-     * The question list is needed to display a paper to user or to play an attempt.
-     *
-     * @param Paper $paper
-     * @param array $options
-     *
-     * @return array
-     */
-    public function exportWithQuestions(Paper $paper, array $options = [])
-    {
-        // Adds solutions if available and the method options do not already request it
-        if (!in_array(Transfer::INCLUDE_SOLUTIONS, $options)
-            && $this->isSolutionAvailable($paper->getExercise(), $paper)) {
-            $options[] = Transfer::INCLUDE_SOLUTIONS;
-        }
-
-        return [
-            'paper' => $this->serializer->serialize($paper, $options),
-            'items' => array_map(function (Question $question) use ($options) {
-                return $this->questionManager->export($question, $options);
-            }, $this->getQuestions($paper)),
-        ];
     }
 
     /**

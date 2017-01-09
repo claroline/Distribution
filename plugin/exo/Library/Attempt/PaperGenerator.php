@@ -6,8 +6,8 @@ use Claroline\CoreBundle\Entity\User;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
+use UJM\ExoBundle\Entity\Question\Question;
 use UJM\ExoBundle\Entity\Step;
-use UJM\ExoBundle\Entity\StepQuestion;
 use UJM\ExoBundle\Library\Options\Recurrence;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Serializer\ExerciseSerializer;
@@ -81,8 +81,12 @@ class PaperGenerator
         $paperNum = (null === $previousPaper) ? 1 : $previousPaper->getNumber() + 1;
         $paper->setNumber($paperNum);
 
-        // Generate the structure of the new paper
-        $structure = static::generateStructure($exercise, $previousPaper);
+        // Generate the structure for the new paper
+        // Reuse a previous paper if exists and has not been invalidated
+        $structure = $this->generateStructure(
+            $exercise,
+            ($previousPaper && !$previousPaper->isInvalidated()) ? $previousPaper : null
+        );
         $paper->setStructure(json_encode($structure));
 
         return $paper;
@@ -99,145 +103,87 @@ class PaperGenerator
     private function generateStructure(Exercise $exercise, Paper $previousPaper = null)
     {
         // The structure of the previous paper if any
-        $previousStructure = [];
-        if (!empty($previousPaper)) {
-            $previousStructure = json_decode($previousPaper->getStructure());
-        }
-
-        // Generate the list of Steps for the Paper
-        if (!empty($previousPaper) && Recurrence::ONCE === $exercise->getRandomPick()) {
-            // Just get the list of steps from the previous paper
-            $pickedSteps = $previousStructure->steps;
-        } else {
-            // Pick a new set of steps
-            $pickedSteps = array_map(function (Step $pickedStep) {
-                return $this->stepSerializer->serialize($pickedStep);
-            }, static::pick(
-                $exercise->getSteps()->toArray(),
-                $exercise->getPick()
-            ));
-        }
-
-        // Recalculate order of the steps based on the configuration
-        // if we don't want to keep the one from the previous paper
-        if (empty($previousPaper) || Recurrence::ONCE !== $exercise->getRandomOrder()) {
-            if (Recurrence::NEVER === $exercise->getRandomOrder()) {
-                // Make sure the steps are in the original order
-                usort($pickedSteps, function (Step $a, Step $b) {
-                    if ($a->getOrder() === $b->getOrder()) {
-                        return 0;
-                    }
-
-                    return ($a->getOrder() < $b->getOrder()) ? -1 : 1;
-                });
-            } elseif (Recurrence::ALWAYS === $exercise->getRandomOrder()) {
-                // Shuffle steps
-                shuffle($pickedSteps);
-            }
-        }
+        $previousStructure = !empty($previousPaper) ? json_decode($previousPaper->getStructure()) : null;
 
         // Get JSON representation of the full exercise
         $structure = $this->exerciseSerializer->serialize($exercise);
-
         // Pick questions for each steps and generate structure
-        $structure->steps = array_map(function (Step $pickedStep) use ($previousPaper, $previousStructure) {
-            if (!empty($previousPaper) && Recurrence::ONCE === $pickedStep->getRandomPick()) {
-                // Order the step collection based on the configuration
-                // Reload question entities
-                $pickedQuestions = static::repickQuestions($pickedStep, $previousStructure);
-            } else {
-                // Pick a new set of questions
-                $pickedQuestions = static::pick(
-                    $pickedStep->getStepQuestions()->toArray(),
-                    $pickedStep->getPick()
-                );
-            }
-
-            // Recalculate order of the questions based on the configuration
-            // if we don't want to keep the one from the previous paper
-            if (empty($previousPaper) || Recurrence::ONCE !== $pickedStep->getRandomOrder()) {
-                if (Recurrence::NEVER === $pickedStep->getRandomOrder()) {
-                    // Make sure the questions are in the original order
-                    usort($pickedQuestions, function (StepQuestion $a, StepQuestion $b) {
-                        if ($a->getOrder() === $b->getOrder()) {
-                            return 0;
-                        }
-
-                        return ($a->getOrder() < $b->getOrder()) ? -1 : 1;
-                    });
-                } elseif (Recurrence::ALWAYS === $pickedStep->getRandomOrder()) {
-                    // Shuffle questions
-                    shuffle($pickedQuestions);
-                }
-            }
-
-            $stepData = $this->stepSerializer->serialize($pickedStep);
-            $stepData->items = array_map(function (StepQuestion $stepQuestion) {
-                return $this->questionSerializer->serialize($stepQuestion->getQuestion(), [
-                    Transfer::SHUFFLE,
-                    Transfer::INCLUDE_SOLUTIONS,
-                ]);
-            }, $pickedQuestions);
-
-            return $stepData;
-        }, $pickedSteps);
+        $structure->steps = $this->pickSteps($exercise, $previousStructure);
 
         return $structure;
     }
 
-    /**
-     * Gets a subset of steps in the exercise based on a previously generated paper structure.
-     *
-     * @param Exercise $exercise
-     * @param array    $previousSteps
-     *
-     * @return Step[]
-     */
-    private static function repickSteps(Exercise $exercise, array $previousSteps = [])
+    private function pickSteps(Exercise $exercise, \stdClass $previousExercise = null)
     {
-        $pickedSteps = [];
-        foreach ($previousSteps as $previousStep) {
-            // Checks that all steps still exist in the exercise
-            $stepEntity = $exercise->getStep($previousStep->id);
-            if (null !== $stepEntity) {
-                $pickedSteps[] = $stepEntity;
-            }
+        if (!empty($previousPaper) && Recurrence::ONCE === $exercise->getRandomPick()) {
+            // Just get the list of steps from the previous paper
+            $steps = array_map(function (\stdClass $pickedStep) use ($exercise) {
+                return $exercise->getStep($pickedStep->id);
+            }, $previousExercise->steps);
+        } else {
+            // Pick a new set of steps
+            $steps = static::pick(
+                $exercise->getSteps()->toArray(),
+                $exercise->getPick()
+            );
+        }
+
+        $pickedSteps = array_map(function (Step $step) {
+            $pickedStep = $this->stepSerializer->serialize($step);
+            $pickedStep->items = $this->pickItems($step);
+
+            return $pickedStep;
+        }, $steps);
+
+        // Shuffle steps according to config
+        if ((empty($previousExercise) && Recurrence::ONCE === $exercise->getRandomOrder())
+            || Recurrence::ALWAYS === $exercise->getRandomOrder()) {
+            shuffle($pickedSteps);
         }
 
         return $pickedSteps;
     }
 
     /**
-     * Gets a subset of questions in the step based on a previously generated paper structure.
+     * Pick items for a step according to the step configuration.
      *
-     * @param Step  $step
-     * @param array $previousStructure
+     * @param Step $step
+     * @param \stdClass|null $previousStep
      *
-     * @return StepQuestion[]
+     * @return Question[]
      */
-    private static function repickQuestions(Step $step, array $previousStructure = [])
+    private function pickItems(Step $step, \stdClass $previousStep = null)
     {
-        // Find the step in the previous structure and get the list of associated questions
-        $previousQuestions = [];
-        foreach ($previousStructure as $previousStep) {
-            if ($step->getUuid() === $previousStep->id) {
-                $previousQuestions = $previousStep->items;
-                break;
-            }
+        if (!empty($previousStep) && Recurrence::ONCE === $step->getRandomPick()) {
+            // Just get the list of question from previous step
+            // We get the entities to reapply shuffle (= redo serialization with shuffle option)
+            $items = array_map(function (\stdClass $pickedItem) use ($step) {
+                return $step->getQuestion($pickedItem->id);
+            }, $previousStep->items);
+        } else {
+            // Pick a new set of questions
+            $items = static::pick(
+                $step->getQuestions(),
+                $step->getPick()
+            );
         }
 
-        // Get StepQuestions entity and filter the one that no longer exist
-        $pickedQuestions = [];
-        foreach ($previousQuestions as $questionId) {
-            foreach ($step->getStepQuestions() as $stepQuestion) {
-                if ($stepQuestion->getQuestion()->getUuid() === $questionId) {
-                    $pickedQuestions[] = $stepQuestion;
-                    break;
-                }
-            }
+        // Serialize items
+        $pickedItems = array_map(function (Question $pickedItem) {
+            return $this->questionSerializer->serialize($pickedItem, [
+                Transfer::SHUFFLE_ANSWERS,
+                Transfer::INCLUDE_SOLUTIONS,
+            ]);
+        }, $items);
+
+        // Recalculate order of the items based on the configuration
+        // if we don't want to keep the one from the previous paper
+        if ((empty($previousPaper) && Recurrence::ONCE === $step->getRandomOrder())
+            || Recurrence::ALWAYS === $step->getRandomOrder()) {
+            shuffle($pickedItems);
         }
 
-        return $pickedQuestions;
+        return $pickedItems;
     }
 
     /**

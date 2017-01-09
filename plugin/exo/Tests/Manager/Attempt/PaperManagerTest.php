@@ -51,13 +51,6 @@ class PaperManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\stdClass', $data);
     }
 
-    public function testExportWithQuestions()
-    {
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
     private function mock($class)
     {
         return $this->getMockBuilder($class)

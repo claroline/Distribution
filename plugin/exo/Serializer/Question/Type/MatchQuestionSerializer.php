@@ -46,26 +46,34 @@ class MatchQuestionSerializer implements SerializerInterface
     {
         $questionData = new \stdClass();
 
-        if (in_array(Transfer::INCLUDE_SOLUTIONS, $options)) {
-            $questionData->solutions = $this->serializeSolutions($matchQuestion);
-        }
-
         $questionData->random = $matchQuestion->getShuffle();
         $questionData->penalty = $matchQuestion->getPenalty();
 
-        $questionData->firstSet = array_map(function (Proposal $proposal) use ($options) {
+        $firstSet = array_map(function (Proposal $proposal) use ($options) {
             $itemData = $this->contentSerializer->serialize($proposal, $options);
             $itemData->id = (string) $proposal->getId();
 
             return $itemData;
         }, $matchQuestion->getProposals()->toArray());
 
-        $questionData->secondSet = array_map(function (Label $label) use ($options) {
+        $secondSet = array_map(function (Label $label) use ($options) {
             $itemData = $this->contentSerializer->serialize($label, $options);
             $itemData->id = (string) $label->getId();
 
             return $itemData;
         }, $matchQuestion->getLabels()->toArray());
+
+        if ($matchQuestion->getShuffle() && in_array(Transfer::SHUFFLE_ANSWERS, $options)) {
+            shuffle($firstSet);
+            shuffle($secondSet);
+        }
+
+        $questionData->firstSet = $firstSet;
+        $questionData->secondSet = $secondSet;
+
+        if (in_array(Transfer::INCLUDE_SOLUTIONS, $options)) {
+            $questionData->solutions = $this->serializeSolutions($matchQuestion);
+        }
 
         return $questionData;
     }
@@ -93,10 +101,31 @@ class MatchQuestionSerializer implements SerializerInterface
             $matchQuestion->setShuffle(true);
         }
 
+        // TODO : deserialize answer items
+
         return $matchQuestion;
     }
 
-    private function serializeSolutions($questionType)
+    private function serializeSolutions(MatchQuestion $matchQuestion)
     {
+        $solutions = [];
+
+        foreach ($matchQuestion->getProposals() as $proposal) {
+            /** @var Label $label */
+            foreach ($proposal->getExpectedLabels() as $label) {
+                $solutionData = new \stdClass();
+                $solutionData->firstId = (string) $proposal->getId();
+                $solutionData->secondId = (string) $label->getId();
+                $solutionData->score = $label->getScore();
+
+                if ($label->getFeedback()) {
+                    $solutionData->feedback = $label->getFeedback();
+                }
+
+                $solutions[] = $solutionData;
+            }
+        }
+
+        return $solutions;
     }
 }

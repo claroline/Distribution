@@ -16,6 +16,8 @@ use UJM\ExoBundle\Manager\Attempt\PaperManager;
 
 /**
  * Tests the papers endpoints (list, read, delete, ...).
+ *
+ * @todo : do not use PaperGenerator. This is not needed to have functional papers here.
  */
 class PaperControllerTest extends TransactionalTestCase
 {
@@ -23,6 +25,8 @@ class PaperControllerTest extends TransactionalTestCase
 
     /** @var ObjectManager */
     private $om;
+    /** @var PaperGenerator */
+    private $paperGenerator;
     /** @var Persister */
     private $persist;
     /** @var PaperManager */
@@ -43,6 +47,7 @@ class PaperControllerTest extends TransactionalTestCase
         parent::setUp();
 
         $this->om = $this->client->getContainer()->get('claroline.persistence.object_manager');
+        $this->paperGenerator = $this->client->getContainer()->get('ujm_exo.generator.paper');
         $this->paperManager = $this->client->getContainer()->get('ujm_exo.manager.paper');
         $this->rightsManager = $this->client->getContainer()->get('claroline.manager.rights_manager');
         $this->roleManager = $this->client->getContainer()->get('claroline.manager.role_manager');
@@ -70,7 +75,7 @@ class PaperControllerTest extends TransactionalTestCase
      */
     public function testUserCannotOpenExerciseCannotOpenPapers()
     {
-        $paper = PaperGenerator::create($this->exercise, $this->bob);
+        $paper = $this->paperGenerator->create($this->exercise, $this->bob);
         $this->om->persist($paper);
 
         // Removes permission
@@ -88,7 +93,7 @@ class PaperControllerTest extends TransactionalTestCase
      */
     public function testUserCannotOpenExerciseCannotOpenPaperDetail()
     {
-        $paper = PaperGenerator::create($this->exercise, $this->bob);
+        $paper = $this->paperGenerator->create($this->exercise, $this->bob);
         $this->om->persist($paper);
 
         // Removes permission
@@ -116,10 +121,10 @@ class PaperControllerTest extends TransactionalTestCase
     public function testUserPapers()
     {
         // creator of the resource is considered as administrator of the resource
-        $pa1 = PaperGenerator::create($this->exercise, $this->bob);
+        $pa1 = $this->paperGenerator->create($this->exercise, $this->bob);
 
         // check that only one paper will be returned even if another user paper exists
-        $pa2 = PaperGenerator::create($this->exercise, $this->john);
+        $pa2 = $this->paperGenerator->create($this->exercise, $this->john);
 
         $this->om->persist($pa1);
         $this->om->persist($pa2);
@@ -139,10 +144,10 @@ class PaperControllerTest extends TransactionalTestCase
      */
     public function testAdminPapers()
     {
-        $pa1 = PaperGenerator::create($this->exercise, $this->john);
-        $pa2 = PaperGenerator::create($this->exercise, $this->john);
-        $pa3 = PaperGenerator::create($this->exercise, $this->bob);
-        $pa4 = PaperGenerator::create($this->exercise, $this->bob);
+        $pa1 = $this->paperGenerator->create($this->exercise, $this->john);
+        $pa2 = $this->paperGenerator->create($this->exercise, $this->john);
+        $pa3 = $this->paperGenerator->create($this->exercise, $this->bob);
+        $pa4 = $this->paperGenerator->create($this->exercise, $this->bob);
 
         $this->om->persist($pa1);
         $this->om->persist($pa2);
@@ -167,7 +172,7 @@ class PaperControllerTest extends TransactionalTestCase
     public function testAnonymousPaper()
     {
         // Create a paper for the anonymous
-        $paper = PaperGenerator::create($this->exercise);
+        $paper = $this->paperGenerator->create($this->exercise);
         $this->om->persist($paper);
         $this->om->flush();
 
@@ -182,7 +187,7 @@ class PaperControllerTest extends TransactionalTestCase
     public function testUserPaper()
     {
         // Create a paper for user Bob (normal user)
-        $paper = PaperGenerator::create($this->exercise, $this->bob);
+        $paper = $this->paperGenerator->create($this->exercise, $this->bob);
         $this->om->persist($paper);
         $this->om->flush();
 
@@ -203,7 +208,7 @@ class PaperControllerTest extends TransactionalTestCase
         $james = $this->persist->user('james');
 
         // Create a paper for user Bob
-        $paper = PaperGenerator::create($this->exercise, $this->bob);
+        $paper = $this->paperGenerator->create($this->exercise, $this->bob);
         $this->om->persist($paper);
         $this->om->flush();
 
@@ -218,7 +223,7 @@ class PaperControllerTest extends TransactionalTestCase
     public function testAdminPaper()
     {
         // Create a paper for user Bob
-        $paper = PaperGenerator::create($this->exercise, $this->bob);
+        $paper = $this->paperGenerator->create($this->exercise, $this->bob);
         $this->om->persist($paper);
         $this->om->flush();
 
@@ -235,7 +240,7 @@ class PaperControllerTest extends TransactionalTestCase
      */
     public function testUserDeletePaper()
     {
-        $paper = PaperGenerator::create($this->exercise, $this->bob);
+        $paper = $this->paperGenerator->create($this->exercise, $this->bob);
         $this->om->persist($paper);
         $this->om->flush();
 
@@ -248,7 +253,7 @@ class PaperControllerTest extends TransactionalTestCase
      */
     public function testAdminDeletePaper()
     {
-        $paper = PaperGenerator::create($this->exercise, $this->john);
+        $paper = $this->paperGenerator->create($this->exercise, $this->john);
         $this->om->persist($paper);
         $this->om->flush();
 
@@ -269,7 +274,7 @@ class PaperControllerTest extends TransactionalTestCase
      */
     public function testDeletePaperThrowErrorIfExercisePublished()
     {
-        $paper = PaperGenerator::create($this->exercise, $this->john);
+        $paper = $this->paperGenerator->create($this->exercise, $this->john);
         $this->om->persist($paper);
 
         $this->exercise->setPublishedOnce(true);
@@ -294,8 +299,8 @@ class PaperControllerTest extends TransactionalTestCase
      */
     public function testAdminDeleteAllPapers()
     {
-        $pa1 = PaperGenerator::create($this->exercise, $this->john);
-        $pa2 = PaperGenerator::create($this->exercise, $this->john);
+        $pa1 = $this->paperGenerator->create($this->exercise, $this->john);
+        $pa2 = $this->paperGenerator->create($this->exercise, $this->john);
         $this->om->persist($pa1);
         $this->om->persist($pa2);
 
