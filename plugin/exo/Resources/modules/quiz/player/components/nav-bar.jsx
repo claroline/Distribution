@@ -92,8 +92,8 @@ ForwardButton.propTypes = {
 
 const LastQuestionButton = props =>
   (props.showFeedback) ?
-    (props.currentStepSend) ?
-      (!props.feedbackEnabled) ?
+    (!props.feedbackEnabled) ?
+      (props.currentStepSend) ?
         <ValidateButton onClick={() => props.openFeedbackAndValidate(props.step)} /> :
         <NextButton onClick={() => props.openFeedbackAndValidate(props.step)} /> :
       <FinishButton onClick={props.finish}/> :
