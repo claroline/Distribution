@@ -65,10 +65,9 @@ Player.propTypes = {
   quizId: T.string.isRequired,
   number: T.number.isRequired,
   step: T.shape({
+    id: T.string.isRequired,
     title: T.string,
     description: T.string,
-    id: T.string.isRequired,
-    items: T.arrayOf(T.string).isRequired
   }).isRequired,
   items: T.array.isRequired,
   answers: T.object.isRequired,

@@ -2,8 +2,11 @@ import {createSelector} from 'reselect'
 
 const offline = (state) => state.noServer || state.testMode
 const paper = (state) => state.paper
-const currentStepId = (state) => state.currentStep
+const currentStepId = (state) => state.currentStep.id
 const answers = (state) => state.answers
+const quizMaxAttempts = (state) => state.quiz.parameters.maxAttempts
+const showFeedback = (state) => state.quiz.parameters.showFeedback
+const feedbackEnabled = state => state.currentStep.feedbackEnabled
 
 const steps = createSelector(
   paper,
@@ -71,11 +74,36 @@ const next = createSelector(
   (steps, currentStepOrder) => currentStepOrder + 1 < steps.length ? steps[currentStepOrder + 1] : null
 )
 
+const currentStepTries = createSelector(
+  answers,
+  currentStepItems,
+  (answers, currentStepItems) => {
+    let currentTries = 0
+
+    Object.keys(answers).forEach((questionId) => {
+      if (answers[questionId].tries > currentTries && currentStepItems.indexOf(questionId) > -1) {
+        currentTries = answers[questionId].tries
+      }
+    })
+
+    return currentTries
+  }
+)
+
+const currentStepSend = createSelector(
+  currentStepTries,
+  quizMaxAttempts,
+  (currentStepTries, quizMaxAttempts) => currentStepTries < quizMaxAttempts
+)
+
 export const select = {
   offline,
   paper,
   steps,
   answers,
+  quizMaxAttempts,
+  showFeedback,
+  feedbackEnabled,
   currentStepId,
   currentStep,
   currentStepOrder,
@@ -83,5 +111,7 @@ export const select = {
   currentStepItems,
   currentStepAnswers,
   previous,
-  next
+  next,
+  currentStepTries,
+  currentStepSend
 }
