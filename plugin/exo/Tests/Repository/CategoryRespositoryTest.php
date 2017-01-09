@@ -4,21 +4,14 @@ namespace UJM\ExoBundle\Tests\Repository;
 
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 
-class ExerciseRepositoryTest extends TransactionalTestCase
+class CategoryRespositoryTest extends TransactionalTestCase
 {
     protected function setUp()
     {
         parent::setUp();
     }
 
-    public function testFindScores()
-    {
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    public function testInvalidateUnfinishedPapers()
+    public function testCountQuestions()
     {
         $this->markTestIncomplete(
             'This test has not been implemented yet.'

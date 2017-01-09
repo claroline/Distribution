@@ -72,13 +72,6 @@ class ExerciseManagerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testUpdateInvalidatePapers()
-    {
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
     public function testCopy()
     {
         $this->markTestIncomplete(

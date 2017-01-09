@@ -9,7 +9,6 @@ use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Manager\Attempt\PaperManager;
-use UJM\ExoBundle\Repository\ExerciseRepository;
 use UJM\ExoBundle\Serializer\ExerciseSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\ExerciseValidator;
 
@@ -22,11 +21,6 @@ class ExerciseManager
      * @var ObjectManager
      */
     private $om;
-
-    /**
-     * @var ExerciseRepository
-     */
-    private $repository;
 
     /**
      * @var ExerciseValidator
@@ -65,7 +59,6 @@ class ExerciseManager
         PaperManager $paperManager)
     {
         $this->om = $om;
-        $this->repository = $this->om->getRepository('UJMExoBundle:Exercise');
         $this->validator = $validator;
         $this->serializer = $serializer;
         $this->paperManager = $paperManager;
@@ -109,9 +102,6 @@ class ExerciseManager
         // Save to DB
         $this->om->persist($exercise);
         $this->om->flush();
-
-        // Invalidate unfinished papers
-        $this->repository->invalidateUnfinishedPapers($exercise);
 
         return $exercise;
     }
