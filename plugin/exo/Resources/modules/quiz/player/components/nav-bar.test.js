@@ -56,6 +56,10 @@ describe('<PlayerNav/>', () => {
         navigateTo={() => true}
         finish={() => true}
         submit={() => true}
+        step={{id: '1',  items:[]}}
+        openFeedback={() => {}}
+        showFeedback={true}
+        feedbackEnabled={true}
       />
     )
     ensure.propTypesOk()
@@ -83,6 +87,10 @@ describe('<PlayerNav/>', () => {
         navigateTo={() => true}
         finish={() => true}
         submit={() => true}
+        step={{id: '1', items:[]}}
+        openFeedback={() => {}}
+        showFeedback={true}
+        feedbackEnabled={true}
       />
     )
     ensure.propTypesOk()
@@ -101,6 +109,10 @@ describe('<PlayerNav/>', () => {
         navigateTo={() => true}
         finish={() => true}
         submit={() => true}
+        step={{id: '1', items:[]}}
+        openFeedback={() => {}}
+        showFeedback={true}
+        feedbackEnabled={true}
       />
     )
     ensure.propTypesOk()
