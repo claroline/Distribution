@@ -79,6 +79,11 @@ class PaperRepositoryTest extends TransactionalTestCase
         $paperFinished->setEnd(new \DateTime());
         $this->om->persist($paperFinished);
 
+        // Create an invalidated paper
+        $paperInvalidated = PaperGenerator::create($this->exercise, $this->user, $paperFinished);
+        $paperInvalidated->setInvalidated(true);
+        $this->om->persist($paperInvalidated);
+
         // Create data that will never be returned to check conditions
         $paperOtherUser = PaperGenerator::create($this->exercise);
         $this->om->persist($paperOtherUser);
@@ -94,6 +99,7 @@ class PaperRepositoryTest extends TransactionalTestCase
             $paper1,
             $paper2,
             $paperFinished,
+            $paperInvalidated,
             $paperOtherUser,
             $paperOtherExercise,
         ];
