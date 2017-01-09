@@ -9,11 +9,17 @@ export const select = {}
  *
  * @return {object}
  */
-select.currentStep = (state) => state.steps[state.currentStep]
+select.currentStep = state => state.steps[state.currentStep.id]
 
-select.paper = (state) => state.paper
+select.paper = state => state.paper
 
 select.offline = state => state.noServer || state.testMode
+
+select.showFeedback = state => state.quiz.parameters.showFeedback
+
+select.feedbackEnabled = state => state.currentStep.feedbackEnabled
+
+select.quizMaxAttempts = state => state.quiz.parameters.maxAttempts
 
 /**
  * Gets an existing answer to a question.
@@ -38,15 +44,36 @@ select.currentStepAnswers = (state) => {
  * @returns {array}
  */
 select.currentStepItems = (state) => {
-  const stepStructure = state.paper.structure.find((step) => step.id === state.currentStep)
+  const stepStructure = state.paper.structure.find((step) => step.id === state.currentStep.id)
 
   return stepStructure.items.map(itemId => state.items[itemId])
 }
 
 select.currentStepNumber = (state) => {
-  const currentStep = state.paper.structure.find((step) => step.id === state.currentStep)
+  const currentStep = state.paper.structure.find((step) => step.id === state.currentStep.id)
 
   return state.paper.structure.indexOf(currentStep) + 1
+}
+
+select.currentStepTries = (state) => {
+  let currentTries = 0
+
+  Object.keys(state.answers).forEach((questionId) => {
+    if (state.answers[questionId].tries > currentTries && select.currentStep(state).items.indexOf(questionId) > -1) {
+      currentTries = state.answers[questionId].tries
+    }
+  })
+
+  return currentTries
+}
+
+select.currentStepSend = (state) => {
+  const tries = select.currentStepTries(state)
+  const max = select.quizMaxAttempts(state)
+
+  if (max === 0) return true
+
+  return tries < max
 }
 
 /**
@@ -57,7 +84,7 @@ select.currentStepNumber = (state) => {
 select.previous = (state) => {
   let previous = null
 
-  const currentStep = state.paper.structure.find((step) => step.id === state.currentStep)
+  const currentStep = state.paper.structure.find((step) => step.id === state.currentStep.id)
   const order = state.paper.structure.indexOf(currentStep)
   if (0 <= order - 1 && state.paper.structure[order - 1]) {
     previous = state.paper.structure[order - 1]
@@ -74,7 +101,7 @@ select.previous = (state) => {
 select.next = (state) => {
   let next = null
 
-  const currentStep = state.paper.structure.find((step) => step.id === state.currentStep)
+  const currentStep = state.paper.structure.find((step) => step.id === state.currentStep.id)
   const order = state.paper.structure.indexOf(currentStep)
   if (state.paper.structure.length > order + 1 && state.paper.structure[order + 1]) {
     next = state.paper.structure[order + 1]
