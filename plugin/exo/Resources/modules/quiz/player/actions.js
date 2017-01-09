@@ -158,7 +158,7 @@ actions.initPlayer = (paper, answers = {}) => {
   return (dispatch) => {
     dispatch(actions.startAttempt(paper, answers))
 
-    const firstStep = paper.structure[0]
+    const firstStep = paper.structure.steps[0]
 
     dispatch(actions.openStep(firstStep))
     dispatch(quizActions.updateViewMode(VIEW_PLAYER))

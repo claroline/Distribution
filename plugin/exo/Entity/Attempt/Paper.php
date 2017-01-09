@@ -74,7 +74,7 @@ class Paper
     private $anonymized = false;
 
     /**
-     * A paper is invalidated when the exercise definition has changed before the end of the attempt.
+     * A paper is invalidated when the exercise definition has changed.
      *
      * @var bool
      *

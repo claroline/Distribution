@@ -21,7 +21,7 @@ class ExerciseRepository extends EntityRepository
     {
     }
 
-    public function invalidateUnfinishedPapers(Exercise $exercise)
+    public function invalidatePapers(Exercise $exercise)
     {
         return $this->getEntityManager()
             ->createQuery('

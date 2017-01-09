@@ -111,7 +111,7 @@ class ExerciseManager
         $this->om->flush();
 
         // Invalidate unfinished papers
-        $this->repository->invalidateUnfinishedPapers($exercise);
+        $this->repository->invalidatePapers($exercise);
 
         return $exercise;
     }

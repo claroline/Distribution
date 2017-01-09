@@ -67,14 +67,8 @@ Player.propTypes = {
     id: T.string.isRequired,
     number: T.number.isRequired
   }).isRequired,
-  next: T.shape({
-    id: T.string.isRequired,
-    items: T.arrayOf.arrayOf
-  }),
-  previous: T.shape({
-    id: T.string.isRequired,
-    items: T.arrayOf.arrayOf
-  }),
+  next: T.object,
+  previous: T.object,
   updateAnswer: T.func.isRequired,
   navigateTo: T.func.isRequired,
   submit: T.func.isRequired,

@@ -1,84 +1,87 @@
-export const select = {}
+import {createSelector} from 'reselect'
 
-// TODO : use reselect to compose selectors
+const offline = (state) => state.noServer || state.testMode
+const paper = (state) => state.paper
+const currentStepId = (state) => state.currentStep
+const answers = (state) => state.answers
+
+const steps = createSelector(
+  paper,
+  (paper) => paper.structure.steps
+)
 
 /**
  * Gets the definition of the step that is currently played.
- *
- * @param {object} state
- *
- * @return {object}
  */
-select.currentStep = (state) => state.steps[state.currentStep]
-
-select.paper = (state) => state.paper
-
-select.offline = state => state.noServer || state.testMode
-
-/**
- * Gets an existing answer to a question.
- *
- * @param {object} state
- */
-select.currentStepAnswers = (state) => {
-  const items = select.currentStepItems(state)
-
-  return items.reduce((answerAcc, item) => {
-    answerAcc[item.id] = Object.assign({}, state.answers[item.id])
-
-    return answerAcc
-  }, {})
-}
+const currentStep = createSelector(
+  steps,
+  currentStepId,
+  (steps, currentStepId) => steps.find(step => step.id === currentStepId)
+)
 
 /**
  * Retrieves the picked items for a step.
- *
- * @param {object} state
- *
- * @returns {array}
  */
-select.currentStepItems = (state) => {
-  const stepStructure = state.paper.structure.find((step) => step.id === state.currentStep)
+const currentStepItems = createSelector(
+  currentStep,
+  (currentStep) => currentStep.items
+)
 
-  return stepStructure.items.map(itemId => state.items[itemId])
-}
+const currentStepOrder = createSelector(
+  steps,
+  currentStep,
+  (steps, currentStep) => steps.indexOf(currentStep)
+)
 
-select.currentStepNumber = (state) => {
-  const currentStep = state.paper.structure.find((step) => step.id === state.currentStep)
+const currentStepNumber = createSelector(
+  currentStepOrder,
+  (currentStepOrder) => currentStepOrder + 1
+)
 
-  return state.paper.structure.indexOf(currentStep) + 1
-}
+/**
+ * Gets an existing answer to a question.
+ */
+const currentStepAnswers = createSelector(
+  currentStepItems,
+  answers,
+  (currentStepItems, answers) => {
+    return currentStepItems.reduce((answerAcc, item) => {
+      answerAcc[item.id] = Object.assign({}, answers[item.id])
+
+      return answerAcc
+    }, {})
+  }
+)
 
 /**
  * Retrieves the next step to play (based on the paper structure).
- *
- * @param state
  */
-select.previous = (state) => {
-  let previous = null
-
-  const currentStep = state.paper.structure.find((step) => step.id === state.currentStep)
-  const order = state.paper.structure.indexOf(currentStep)
-  if (0 <= order - 1 && state.paper.structure[order - 1]) {
-    previous = state.paper.structure[order - 1]
-  }
-
-  return previous
-}
+const previous = createSelector(
+  steps,
+  currentStepOrder,
+  (steps, currentStepOrder) => currentStepOrder - 1 >= 0 ? steps[currentStepOrder - 1] : null
+)
 
 /**
  * Retrieves the previous played step (based on the paper structure).
- *
- * @param state
  */
-select.next = (state) => {
-  let next = null
+const next = createSelector(
+  steps,
+  currentStepOrder,
+  (steps, currentStepOrder) => currentStepOrder + 1 < steps.length ? steps[currentStepOrder + 1] : null
+)
 
-  const currentStep = state.paper.structure.find((step) => step.id === state.currentStep)
-  const order = state.paper.structure.indexOf(currentStep)
-  if (state.paper.structure.length > order + 1 && state.paper.structure[order + 1]) {
-    next = state.paper.structure[order + 1]
-  }
-
-  return next
+export const select = {
+  offline,
+  paper,
+  steps,
+  answers,
+  currentStepId,
+  currentStep,
+  currentStepOrder,
+  currentStepNumber,
+  currentStepItems,
+  currentStepAnswers,
+  previous,
+  next
 }

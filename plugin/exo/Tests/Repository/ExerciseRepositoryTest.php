@@ -18,7 +18,7 @@ class ExerciseRepositoryTest extends TransactionalTestCase
         );
     }
 
-    public function testInvalidateUnfinishedPapers()
+    public function testInvalidatePapers()
     {
         $this->markTestIncomplete(
             'This test has not been implemented yet.'

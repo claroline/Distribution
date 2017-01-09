@@ -26,7 +26,8 @@ class PaperManagerTest extends \PHPUnit_Framework_TestCase
             $this->om,
             $this->mock('Symfony\Component\EventDispatcher\EventDispatcherInterface'),
             $this->serializer,
-            $this->mock('UJM\ExoBundle\Manager\Question\QuestionManager')
+            $this->mock('UJM\ExoBundle\Manager\Question\QuestionManager'),
+            $this->mock('UJM\ExoBundle\Serializer\Question\QuestionSerializer')
         );
     }
 
