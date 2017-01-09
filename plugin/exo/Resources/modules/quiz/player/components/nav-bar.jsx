@@ -130,7 +130,7 @@ NotLastQuestionButton.propTypes = {
     items: T.arrayOf(T.string).isRequired
   }),
   openFeedbackAndValidate: T.func.isRequired,
-  navigateToAndValidate: T.func.navigateToAndValidate,
+  navigateToAndValidate: T.func.isRequired,
   showFeedback: T.bool.isRequired,
   feedbackEnabled: T.bool.isRequired,
   currentStepSend: T.bool.isRequired
