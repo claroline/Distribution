@@ -17,6 +17,8 @@ class PaperRepository extends EntityRepository
      * Returns the last paper (finished or not) done by a User.
      * Mostly use to know the next paper number.
      *
+     * NB. Do not not take into account invalidated papers
+     *
      * @param Exercise $exercise
      * @param User     $user
      *
@@ -27,6 +29,7 @@ class PaperRepository extends EntityRepository
         return $this->createQueryBuilder('p')
             ->where('p.user = :user')
             ->andWhere('p.exercise = :exercise')
+            ->andWhere('p.invalidated = false')
             ->orderBy('p.number', 'DESC')
             ->setMaxResults(1)
             ->setParameters([
@@ -51,6 +54,7 @@ class PaperRepository extends EntityRepository
             ->where('p.user = :user')
             ->andWhere('p.exercise = :exercise')
             ->andWhere('p.end IS NULL')
+            ->andWhere('p.invalidated = false')
             ->orderBy('p.start', 'DESC')
             ->setParameters([
                 'user' => $user,
