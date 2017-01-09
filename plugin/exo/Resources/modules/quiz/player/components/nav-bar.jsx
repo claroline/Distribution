@@ -54,9 +54,6 @@ FinishButton.propTypes = {
 
 const PlayerNav = props =>
   <nav className="player-nav">
-    {props.quizMaxAttempts}
-    {props.currentStepTries}
-
     <div className="backward">
       {(props.previous) &&
         <PreviousButton onClick={() => props.navigateTo(props.previous)} />
@@ -65,13 +62,22 @@ const PlayerNav = props =>
 
     <div className="forward">
       {(props.next) ?
-        !props.feedbackEnabled ?
-          <ValidateButton  onClick={() => props.openFeedback(props.step)} /> :
-          <NextButton onClick={() => props.navigateTo(props.next)} />
-          :
 
-        !props.feedbackEnabled ?
-          <NextButton onClick={() => props.openFeedback(props.step)} /> :
+        (props.currentStepSend) ?
+          (props.showFeedback) ?
+            (!props.feedbackEnabled) ?
+              <ValidateButton onClick={() => props.openFeedbackAndValidate(props.step)} /> :
+              <NextButton onClick={() => props.navigateToAndValidate(props.next)} /> :
+            <ValidateButton onClick={() => props.navigateToAndValidate(props.next)} /> :
+          <NextButton onClick={() => props.navigateToAndValidate(props.next)} /> :
+
+        //no next section
+        (props.showFeedback) ?
+          (props.currentStepSend) ?
+            (!props.feedbackEnabled) ?
+              <ValidateButton onClick={() => props.openFeedbackAndValidate(props.step)} /> :
+              <NextButton onClick={() => props.openFeedbackAndValidate(props.step)} /> :
+            <FinishButton onClick={props.finish}/> :
           <FinishButton onClick={props.finish}/>
       }
     </div>
@@ -90,18 +96,14 @@ PlayerNav.propTypes = {
     id: T.string.isRequired,
     items: T.arrayOf(T.string).isRequired
   }).isRequired,
-  current: T.shape({
-    id: T.string.isRequired,
-    items: T.arrayOf(T.string).isRequired
-  }),
+  navigateToAndValidate: T.func.isRequired,
   navigateTo: T.func.isRequired,
   finish: T.func.isRequired,
-  openFeedback: T.func.isRequired,
+  openFeedbackAndValidate: T.func.isRequired,
   submit: T.func.isRequired,
   showFeedback: T.bool.isRequired,
   feedbackEnabled: T.bool.isRequired,
-  currentStepTries: T.number.isRequired,
-  quizMaxAttempts: T.number.isRequired
+  currentStepSend: T.bool.isRequired
 }
 
 PlayerNav.defaultProps = {

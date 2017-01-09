@@ -56,16 +56,24 @@ select.currentStepNumber = (state) => {
 }
 
 select.currentStepTries = (state) => {
-  const items = select.currentStep(state)
   let currentTries = 0
 
   Object.keys(state.answers).forEach((questionId) => {
-    if (state.answers[questionId].tries > currentTries && Object.keys(items).indexOf(questionId) > -1) {
+    if (state.answers[questionId].tries > currentTries && select.currentStep(state).items.indexOf(questionId) > -1) {
       currentTries = state.answers[questionId].tries
     }
   })
 
   return currentTries
+}
+
+select.currentStepSend = (state) => {
+  const tries = select.currentStepTries(state)
+  const max = select.quizMaxAttempts(state)
+
+  if (max === 0) return true
+
+  return tries < max
 }
 
 /**

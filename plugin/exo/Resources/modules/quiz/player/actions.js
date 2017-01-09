@@ -97,7 +97,7 @@ actions.play = (previousPaper = null, testMode = false) => {
 
 actions.submit = (quizId, paperId, answers = {}) => {
   return (dispatch, getState) => {
-    if (isEmpty(answers)) {
+    if (!isEmpty(answers)) {
       const updated = {}
       for (let answer in answers) {
         if (answers.hasOwnProperty(answer) && answers[answer]._touched) {
@@ -122,17 +122,15 @@ actions.submit = (quizId, paperId, answers = {}) => {
   }
 }
 
-actions.navigateTo = (quizId, paperId, nextStep, pendingAnswers = {}) => {
+actions.navigateTo = (quizId, paperId, nextStep, pendingAnswers = {}, currentStepSend = true, openFeedback = false) => {
   return (dispatch) => {
-    dispatch(actions.submit(quizId, paperId, pendingAnswers)).then(() =>
-      dispatch(actions.openStep(nextStep))
-    )
-  }
-}
-
-actions.openFeedback = () => {
-  return (dispatch) => {
-    dispatch(actions.stepFeedback())
+    if (currentStepSend) {
+      dispatch(actions.submit(quizId, paperId, pendingAnswers)).then(() =>
+        openFeedback ? dispatch(actions.stepFeedback()): dispatch(actions.openStep(nextStep))
+      )
+    } else {
+      openFeedback ? dispatch(actions.stepFeedback()): dispatch(actions.openStep(nextStep))
+    }
   }
 }
 

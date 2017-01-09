@@ -49,15 +49,15 @@ const Player = props => {
       <PlayerNav
         previous={props.previous}
         next={props.next}
-        current={props.step}
+        step={props.step}
         showFeedback={props.showFeedback}
         feedbackEnabled={props.feedbackEnabled}
-        navigateTo={(step) => props.navigateTo(props.quizId, props.paper.id, step, props.answers)}
-        openFeedback={(step) => props.openFeedback(props.quizId, props.paper.id, step, props.answers)}
+        navigateTo={(step) => props.navigateTo(props.quizId, props.paper.id, step, props.answers, false)}
+        navigateToAndValidate={(step) => props.navigateTo(props.quizId, props.paper.id, step, props.answers, props.currentStepSend)}
+        openFeedbackAndValidate={(step) => props.navigateTo(props.quizId, props.paper.id, step, props.answers, props.currentStepSend, true)}
         submit={() => props.submit(props.quizId, props.paper.id, props.answers)}
         finish={() => props.finish(props.quizId, props.paper, props.answers, props.showFeedback)}
-        currentStepTries={props.currentStepTries}
-        quizMaxAttempts={props.quizMaxAttempts}
+        currentStepSend={props.currentStepSend}
       />
       </div>
     )
@@ -88,14 +88,12 @@ Player.propTypes = {
   }),
   updateAnswer: T.func.isRequired,
   navigateTo: T.func.isRequired,
-  openFeedback: T.func.isRequired,
   showFeedback: T.bool.isRequired,
   feedbackEnabled: T.bool.isRequired,
   submit: T.func.isRequired,
   finish: T.func.isRequired,
   showHint: T.func.isRequired,
-  currentStepTries: T.number.isRequired,
-  quizMaxAttempts: T.number.isRequired
+  currentStepSend: T.bool.isRequired
 }
 
 Player.defaultProps = {
@@ -115,8 +113,7 @@ function mapStateToProps(state) {
     previous: select.previous(state),
     showFeedback: select.showFeedback(state),
     feedbackEnabled: select.feedbackEnabled(state),
-    currentStepTries: select.currentStepTries(state),
-    quizMaxAttempts: select.quizMaxAttempts(state)
+    currentStepSend: select.currentStepSend(state)
   }
 }
 
