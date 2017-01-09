@@ -1,3 +1,5 @@
+import isEmpty from 'lodash/isEmpty'
+
 import {makeActionCreator} from './../../utils/actions'
 import {REQUEST_SEND} from './../../api/actions'
 import {actions as quizActions} from './../actions'
@@ -93,9 +95,9 @@ actions.play = (previousPaper = null, testMode = false) => {
   }
 }
 
-actions.submit = (quizId, paperId, answers = null) => {
+actions.submit = (quizId, paperId, answers = {}) => {
   return (dispatch, getState) => {
-    if (answers && answers !== []) {
+    if (isEmpty(answers)) {
       const updated = {}
       for (let answer in answers) {
         if (answers.hasOwnProperty(answer) && answers[answer]._touched) {
@@ -114,10 +116,13 @@ actions.submit = (quizId, paperId, answers = null) => {
         return dispatch((dispatch) => Promise.resolve(dispatch(actions.submitAnswers(quizId, paperId, updated))))
       }
     }
+
+    // Nothing to do, we just resolve a promise to let the action chain continue
+    return Promise.resolve()
   }
 }
 
-actions.navigateTo = (quizId, paperId, nextStep, pendingAnswers = null) => {
+actions.navigateTo = (quizId, paperId, nextStep, pendingAnswers = {}) => {
   return (dispatch) => {
     dispatch(actions.submit(quizId, paperId, pendingAnswers)).then(() =>
       dispatch(actions.openStep(nextStep))
@@ -131,7 +136,7 @@ actions.openFeedback = () => {
   }
 }
 
-actions.finish = (quizId, paper, pendingAnswers = null, showFeedback = false) => {
+actions.finish = (quizId, paper, pendingAnswers = {}, showFeedback = false) => {
   return (dispatch, getState) => {
     if (!showFeedback) {
       dispatch(actions.submit(quizId, paper.id, pendingAnswers)).then(() => {

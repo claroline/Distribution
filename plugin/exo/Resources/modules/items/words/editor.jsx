@@ -64,19 +64,19 @@ class WordItem extends Component {
               actions.updateSolution(this.props.index, 'score', e.target.value)
             )}
           />
-          <span
+          <a
             role="button"
             aria-disabled={!this.props.deletable}
             title={t('delete')}
-            className={classes('fa', 'fa-trash-o', {disabled: !this.props.deletable})}
+            className={classes('btn', 'btn-link', 'fa', 'fa-trash-o', {disabled: !this.props.deletable})}
             onClick={() => this.props.deletable && this.props.onChange(
               actions.removeSolution(this.props.index)
             )}
           />
-          <span
+          <a
             role="button"
             title={tex('words_feedback_info')}
-            className="fa fa-comments-o"
+            className="btn btn-link fa fa-comments-o"
             onClick={() => this.setState({showFeedback: !this.state.showFeedback})}
           />
         </div>

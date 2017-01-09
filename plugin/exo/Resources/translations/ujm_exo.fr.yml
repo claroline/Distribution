@@ -438,7 +438,7 @@ shared_user: Partage de question
 shared_with: Partager avec
 short: Courte
 show: Afficher
-show_feedback: Montrer les commentaires
+show_feedback: Afficher les feedbacks en fin d'étape
 show_instructions: Montrer les consignes
 show_additional_info: Afficher les informations supplémentaires
 show_interact_fields: Indices et commentaire final
