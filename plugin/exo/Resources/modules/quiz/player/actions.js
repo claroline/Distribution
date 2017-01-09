@@ -140,22 +140,11 @@ actions.finish = (quizId, paper, pendingAnswers = {}, showFeedback = false) => {
   return (dispatch, getState) => {
     if (!showFeedback) {
       dispatch(actions.submit(quizId, paper.id, pendingAnswers)).then(() => {
-        actions.endQuizz(quizId, paper, dispatch, getState)
+        endQuiz(quizId, paper, dispatch, getState)
       })
     } else {
-      actions.endQuizz(quizId, paper, dispatch, getState)
+      endQuiz(quizId, paper, dispatch, getState)
     }
-  }
-}
-
-actions.endQuizz = (quizId, paper, dispatch, getState) => {
-  //the current step was alreay done
-  if (!playerSelectors.offline(getState())) {
-    // Send finish request to API
-    return dispatch(actions.requestEnd(quizId, paper.id))
-  } else {
-    // Finish the attempt and use quiz config to know what to do next
-    return dispatch(actions.handleAttemptEnd(paper))
   }
 }
 
@@ -188,5 +177,16 @@ actions.showHint = (quizId, paperId, hint) => {
     } else {
       return dispatch(actions.useHint(hint.id))
     }
+  }
+}
+
+function endQuiz(quizId, paper, dispatch, getState) {
+  //the current step was alreay done
+  if (!playerSelectors.offline(getState())) {
+    // Send finish request to API
+    return dispatch(actions.requestEnd(quizId, paper.id))
+  } else {
+    // Finish the attempt and use quiz config to know what to do next
+    return dispatch(actions.handleAttemptEnd(paper))
   }
 }

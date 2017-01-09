@@ -54,6 +54,9 @@ FinishButton.propTypes = {
 
 const PlayerNav = props =>
   <nav className="player-nav">
+    {props.quizMaxAttempts}
+    {props.currentStepTries}
+
     <div className="backward">
       {(props.previous) &&
         <PreviousButton onClick={() => props.navigateTo(props.previous)} />
@@ -96,7 +99,9 @@ PlayerNav.propTypes = {
   openFeedback: T.func.isRequired,
   submit: T.func.isRequired,
   showFeedback: T.bool.isRequired,
-  feedbackEnabled: T.bool.isRequired
+  feedbackEnabled: T.bool.isRequired,
+  currentStepTries: T.number.isRequired,
+  quizMaxAttempts: T.number.isRequired
 }
 
 PlayerNav.defaultProps = {

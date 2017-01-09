@@ -9,15 +9,17 @@ export const select = {}
  *
  * @return {object}
  */
-select.currentStep = (state) => state.steps[state.currentStep.id]
+select.currentStep = state => state.steps[state.currentStep.id]
 
-select.paper = (state) => state.paper
+select.paper = state => state.paper
 
 select.offline = state => state.noServer || state.testMode
 
 select.showFeedback = state => state.quiz.parameters.showFeedback
 
 select.feedbackEnabled = state => state.currentStep.feedbackEnabled
+
+select.quizMaxAttempts = state => state.quiz.parameters.maxAttempts
 
 /**
  * Gets an existing answer to a question.
@@ -51,6 +53,19 @@ select.currentStepNumber = (state) => {
   const currentStep = state.paper.structure.find((step) => step.id === state.currentStep.id)
 
   return state.paper.structure.indexOf(currentStep) + 1
+}
+
+select.currentStepTries = (state) => {
+  const items = select.currentStep(state)
+  let currentTries = 0
+
+  Object.keys(state.answers).forEach((questionId) => {
+    if (state.answers[questionId].tries > currentTries && Object.keys(items).indexOf(questionId) > -1) {
+      currentTries = state.answers[questionId].tries
+    }
+  })
+
+  return currentTries
 }
 
 /**

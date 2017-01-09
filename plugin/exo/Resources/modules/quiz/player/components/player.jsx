@@ -24,7 +24,7 @@ const Player = props => {
       </h2>
 
       {props.step.description &&
-        <content className="step-description" dangerouslySetInnerHTML={{ __html: props.step.description }}></content>
+        <div className="step-description" dangerouslySetInnerHTML={{ __html: props.step.description }}></div>
       }
 
       {props.items.map((item) => (
@@ -56,6 +56,8 @@ const Player = props => {
         openFeedback={(step) => props.openFeedback(props.quizId, props.paper.id, step, props.answers)}
         submit={() => props.submit(props.quizId, props.paper.id, props.answers)}
         finish={() => props.finish(props.quizId, props.paper, props.answers, props.showFeedback)}
+        currentStepTries={props.currentStepTries}
+        quizMaxAttempts={props.quizMaxAttempts}
       />
       </div>
     )
@@ -91,7 +93,9 @@ Player.propTypes = {
   feedbackEnabled: T.bool.isRequired,
   submit: T.func.isRequired,
   finish: T.func.isRequired,
-  showHint: T.func.isRequired
+  showHint: T.func.isRequired,
+  currentStepTries: T.number.isRequired,
+  quizMaxAttempts: T.number.isRequired
 }
 
 Player.defaultProps = {
@@ -110,7 +114,9 @@ function mapStateToProps(state) {
     next: select.next(state),
     previous: select.previous(state),
     showFeedback: select.showFeedback(state),
-    feedbackEnabled: select.feedbackEnabled(state)
+    feedbackEnabled: select.feedbackEnabled(state),
+    currentStepTries: select.currentStepTries(state),
+    quizMaxAttempts: select.quizMaxAttempts(state)
   }
 }
 
