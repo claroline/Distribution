@@ -38,6 +38,29 @@ class PaperGenerator
     private $questionSerializer;
 
     /**
+     * PaperGenerator constructor.
+     *
+     * @DI\InjectParams({
+     *     "exerciseSerializer" = @DI\Inject("ujm_exo.serializer.exercise"),
+     *     "stepSerializer" = @DI\Inject("ujm_exo.serializer.step"),
+     *     "questionSerializer" = @DI\Inject("ujm_exo.serializer.question")
+     * })
+     *
+     * @param ExerciseSerializer $exerciseSerializer
+     * @param StepSerializer $stepSerializer
+     * @param QuestionSerializer $questionSerializer
+     */
+    public function __construct(
+        ExerciseSerializer $exerciseSerializer,
+        StepSerializer $stepSerializer,
+        QuestionSerializer $questionSerializer)
+    {
+        $this->exerciseSerializer = $exerciseSerializer;
+        $this->stepSerializer = $stepSerializer;
+        $this->questionSerializer = $questionSerializer;
+    }
+
+    /**
      * Creates a paper for a new attempt.
      *
      * @param Exercise $exercise      - the exercise tried
@@ -71,7 +94,7 @@ class PaperGenerator
      * @param Exercise $exercise
      * @param Paper    $previousPaper
      *
-     * @return array
+     * @return \stdClass
      */
     private function generateStructure(Exercise $exercise, Paper $previousPaper = null)
     {
@@ -83,14 +106,16 @@ class PaperGenerator
 
         // Generate the list of Steps for the Paper
         if (!empty($previousPaper) && Recurrence::ONCE === $exercise->getRandomPick()) {
-            // Get picked steps from the last user Paper
-            $pickedSteps = static::repickSteps($exercise, $previousStructure);
+            // Just get the list of steps from the previous paper
+            $pickedSteps = $previousStructure->steps;
         } else {
             // Pick a new set of steps
-            $pickedSteps = static::pick(
+            $pickedSteps = array_map(function (Step $pickedStep) {
+                return $this->stepSerializer->serialize($pickedStep);
+            }, static::pick(
                 $exercise->getSteps()->toArray(),
                 $exercise->getPick()
-            );
+            ));
         }
 
         // Recalculate order of the steps based on the configuration
@@ -111,8 +136,11 @@ class PaperGenerator
             }
         }
 
+        // Get JSON representation of the full exercise
+        $structure = $this->exerciseSerializer->serialize($exercise);
+
         // Pick questions for each steps and generate structure
-        $structure = array_map(function (Step $pickedStep) use ($previousPaper, $previousStructure) {
+        $structure->steps = array_map(function (Step $pickedStep) use ($previousPaper, $previousStructure) {
             if (!empty($previousPaper) && Recurrence::ONCE === $pickedStep->getRandomPick()) {
                 // Order the step collection based on the configuration
                 // Reload question entities
@@ -143,8 +171,7 @@ class PaperGenerator
                 }
             }
 
-            $stepData = new \stdClass();
-            $stepData->id = $pickedStep->getUuid();
+            $stepData = $this->stepSerializer->serialize($pickedStep);
             $stepData->items = array_map(function (StepQuestion $stepQuestion) {
                 return $this->questionSerializer->serialize($stepQuestion->getQuestion(), [
                     Transfer::SHUFFLE,
@@ -162,14 +189,14 @@ class PaperGenerator
      * Gets a subset of steps in the exercise based on a previously generated paper structure.
      *
      * @param Exercise $exercise
-     * @param array    $previousStructure
+     * @param array    $previousSteps
      *
      * @return Step[]
      */
-    private static function repickSteps(Exercise $exercise, array $previousStructure = [])
+    private static function repickSteps(Exercise $exercise, array $previousSteps = [])
     {
         $pickedSteps = [];
-        foreach ($previousStructure as $previousStep) {
+        foreach ($previousSteps as $previousStep) {
             // Checks that all steps still exist in the exercise
             $stepEntity = $exercise->getStep($previousStep->id);
             if (null !== $stepEntity) {
