@@ -94,7 +94,7 @@ actions.play = (previousPaper = null, testMode = false) => {
 
 actions.submit = (quizId, paperId, answers = {}) => {
   return (dispatch, getState) => {
-    if (isEmpty(answers)) {
+    if (!isEmpty(answers)) {
       const updated = {}
       for (let answer in answers) {
         if (answers.hasOwnProperty(answer) && answers[answer]._touched) {
