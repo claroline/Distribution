@@ -1,5 +1,4 @@
 import React, {PropTypes as T} from 'react'
-import invariant from 'invariant'
 import {connect} from 'react-redux'
 import {ThumbnailBox} from './thumbnail-box.jsx'
 import {QuizEditor} from './quiz-editor.jsx'

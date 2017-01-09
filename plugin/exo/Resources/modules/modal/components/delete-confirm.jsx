@@ -1,4 +1,4 @@
-import React, {Component, PropTypes as T} from 'react'
+import React from 'react'
 import {t} from './../../utils/translate'
 import {ConfirmModal} from './confirm.jsx'
 

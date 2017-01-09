@@ -4,7 +4,6 @@ import Nav from 'react-bootstrap/lib/Nav'
 import NavItem from 'react-bootstrap/lib/NavItem'
 import NavDropdown from 'react-bootstrap/lib/NavDropdown'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
-import classes from 'classnames'
 import {t, tex} from './../../utils/translate'
 import {generateUrl} from './../../utils/routing'
 import {VIEW_EDITOR, VIEW_PLAYER} from './../enums'
@@ -35,7 +34,8 @@ const NavLinkButton = props =>
 
 NavLinkButton.propTypes = {
   disabled: T.bool.isRequired,
-  onClick: T.func.isRequired
+  onClick: T.func.isRequired,
+  children: T.node.isRequired
 }
 
 export const TopBar = props =>

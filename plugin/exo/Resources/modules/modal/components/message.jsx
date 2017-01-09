@@ -1,4 +1,4 @@
-import React, {Component, PropTypes as T} from 'react'
+import React, {PropTypes as T} from 'react'
 import classes from 'classnames'
 import Alert from 'react-bootstrap/lib/Alert'
 import Modal from 'react-bootstrap/lib/Modal'
@@ -31,7 +31,8 @@ export const MessageModal = props =>
 
 MessageModal.propTypes = {
   bsStyle: T.oneOf(['info', 'warning', 'success', 'danger']).isRequired,
-  message: T.string.isRequired
+  message: T.string.isRequired,
+  fadeModal: T.func.isRequired
 }
 
 MessageModal.defaultProps = {

@@ -2,7 +2,7 @@ import React from 'react'
 import {shallow, mount} from 'enzyme'
 import {spyConsole, renew, ensure, mockTranslator} from './../../../utils/test'
 import {registerItemType, resetTypes} from './../../../items/item-types'
-import {MODAL_ADD_ITEM, AddItemModal} from './add-item-modal.jsx'
+import {AddItemModal} from './add-item-modal.jsx'
 
 describe('<AddItemModal/>', () => {
   beforeEach(() => {

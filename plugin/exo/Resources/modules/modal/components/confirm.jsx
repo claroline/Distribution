@@ -1,4 +1,4 @@
-import React, {Component, PropTypes as T} from 'react'
+import React, {PropTypes as T} from 'react'
 import Modal from 'react-bootstrap/lib/Modal'
 import classes from 'classnames'
 import {t} from './../../utils/translate'
