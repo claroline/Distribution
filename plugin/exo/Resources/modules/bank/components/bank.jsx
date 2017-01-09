@@ -1,18 +1,16 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-
-import { actions as paginationActions } from './../actions/pagination'
-import { countPages } from './../selectors/pagination'
+import React, {Component} from 'react'
+import {connect} from 'react-redux'
+import {actions as paginationActions} from './../actions/pagination'
+import {countPages} from './../selectors/pagination'
 import VisibleQuestions from './../containers/visible-questions.jsx'
 import Pagination from './pagination/pagination.jsx'
 import PageHeader from './../../components/layout/page-header.jsx'
 import PageActions from './../../components/layout/page-actions.jsx'
-
-import { tex } from './../../utils/translate'
-import { MODAL_ADD_ITEM } from './../../quiz/editor/components/modals.jsx'
+import {tex} from './../../utils/translate'
 
 // TODO : do not load from editor
-import { actions as editorActions } from './../../quiz/editor/actions'
+import {actions as editorActions} from './../../quiz/editor/actions'
+import {MODAL_ADD_ITEM} from './../../quiz/editor/components/add-item-modal.jsx'
 
 const T = React.PropTypes
 

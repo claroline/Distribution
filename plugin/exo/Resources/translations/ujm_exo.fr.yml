@@ -399,6 +399,11 @@ square: Carré
 remove_advanced_edition: Édition simple
 remove_question_confirm_message:  Êtes-vous sûr de vouloir supprimer cette question ?
 remove_step_confirm_message:  Êtes-vous sûr de vouloir supprimer cette étape ?
+request_error: Échec de la requête
+request_error_desc_401: Vous devez être connecté(e) pour effectuer cette action.
+request_error_desc_403: Vous n'êtes pas autorisé(e) à effectuer cette action.
+request_error_desc_422: Les données soumises ont été rejetées par le serveur. Veuillez signaler cette erreur à l'administrateur de votre plateforme.
+request_error_desc_default: Une erreur est survenue pendant l'exécution de la requête. Veuillez le signaler à l'administrateur de votre plateforme.
 reset: Réinitialiser
 resize_zone: Pour redimmensionner une image, placez votre souris sur son coin inférieur droit et, tout en maintenant le clic gauche, faites-la glisser
 response: Réponse
@@ -491,6 +496,7 @@ type_question: Type de la question
 
 # U
 unpublish: Dépublier
+unsaved_changes_warning: Certaines modifications du questionnaire n'ont pas été enregistrées. Si vous quittez cette page maintenant, ces modifications seront perdues.
 upload: Télécharger
 uploading: Chargement en cours
 user: Utilisateur

@@ -1,15 +1,11 @@
-import React from 'react'
-import invariant from 'invariant'
+import React, {PropTypes as T} from 'react'
 import {connect} from 'react-redux'
 import {ThumbnailBox} from './thumbnail-box.jsx'
 import {QuizEditor} from './quiz-editor.jsx'
 import {StepEditor} from './step-editor.jsx'
-import Modals from './modals.jsx'
 import {actions} from './../actions'
 import {TYPE_QUIZ, TYPE_STEP} from './../../enums'
 import select from './../selectors'
-
-const T = React.PropTypes
 
 let Editor = props =>
   <div className="quiz-editor">
@@ -21,8 +17,9 @@ let Editor = props =>
       onStepDeleteClick={props.deleteStepAndItems}
       showModal={props.showModal}
     />
-    <div className="edit-zone">{selectSubEditor(props)}</div>
-    {makeModal(props)}
+    <div className="edit-zone">
+      {selectSubEditor(props)}
+    </div>
   </div>
 
 Editor.propTypes = {
@@ -89,39 +86,13 @@ selectSubEditor.propTypes = {
   fadeModal: T.func.isRequired
 }
 
-function makeModal(props) {
-  if (props.modal.type) {
-    invariant(Modals[props.modal.type], `Unknown modal type "${props.modal.type}"`)
-    const Modal = Modals[props.modal.type]
-    return (
-      <Modal
-        show={!props.modal.fading}
-        fadeModal={props.fadeModal}
-        hideModal={props.hideModal}
-        {...props.modal.props}
-      />
-    )
-  }
-}
-
-makeModal.propTypes = {
-  modal: T.shape({
-    type: T.string.isRequired,
-    fading: T.bool.isRequired,
-    props: T.object.isRequired
-  }),
-  fadeModal: T.func.isRequired,
-  hideModal: T.func.isRequired
-}
-
 function mapStateToProps(state) {
   return {
     thumbnails: select.thumbnails(state),
     currentObject: select.currentObjectDeep(state),
     activeQuizPanel: select.quizOpenPanel(state),
     activeStepPanel: select.stepOpenPanel(state),
-    quizProperties: select.quiz(state),
-    modal: select.modal(state)
+    quizProperties: select.quiz(state)
   }
 }
 

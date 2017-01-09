@@ -2,9 +2,7 @@ import React from 'react'
 import {shallow, mount} from 'enzyme'
 import {spyConsole, renew, ensure, mockTranslator} from './../../../utils/test'
 import {registerItemType, resetTypes} from './../../../items/item-types'
-import modals, {MODAL_ADD_ITEM} from './modals.jsx'
-
-const AddItemModal = modals[MODAL_ADD_ITEM]
+import {AddItemModal} from './add-item-modal.jsx'
 
 describe('<AddItemModal/>', () => {
   beforeEach(() => {
