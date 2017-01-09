@@ -54,14 +54,15 @@ FinishButton.propTypes = {
 
 const ForwardButton = props =>
   (props.next) ?
-    (props.currentStepSend) ?
-      (props.showFeedback) ?
-        (!props.feedbackEnabled) ?
-          <ValidateButton onClick={() => props.openFeedbackAndValidate(props.step)} /> :
-          <NextButton onClick={() => props.navigateToAndValidate(props.next)} /> :
-        <ValidateButton onClick={() => props.navigateToAndValidate(props.next)} /> :
-      <NextButton onClick={() => props.navigateToAndValidate(props.next)} /> :
-
+    <NotLastQuestionButton
+      openFeedbackAndValidate={props.openFeedbackAndValidate}
+      navigateToAndValidate={props.navigateToAndValidate}
+      step={props.step}
+      next={props.next}
+      currentStepSend={props.currentStepSend}
+      feedbackEnabled={props.feedbackEnabled}
+      showFeedback={props.showFeedback}
+    />:
     //no next section
     <LastQuestionButton
       openFeedbackAndValidate={props.openFeedbackAndValidate}
@@ -69,6 +70,7 @@ const ForwardButton = props =>
       currentStepSend={props.currentStepSend}
       feedbackEnabled={props.feedbackEnabled}
       showFeedback={props.showFeedback}
+      step={props.step}
     />
 
 ForwardButton.propTypes = {
@@ -88,7 +90,7 @@ ForwardButton.propTypes = {
   currentStepSend: T.bool.isRequired
 }
 
-const LastQuestionButton = props => 
+const LastQuestionButton = props =>
   (props.showFeedback) ?
     (props.currentStepSend) ?
       (!props.feedbackEnabled) ?
@@ -104,6 +106,31 @@ LastQuestionButton.propTypes = {
   }).isRequired,
   finish: T.func.isRequired,
   openFeedbackAndValidate: T.func.isRequired,
+  showFeedback: T.bool.isRequired,
+  feedbackEnabled: T.bool.isRequired,
+  currentStepSend: T.bool.isRequired
+}
+
+const NotLastQuestionButton = props =>
+  (props.currentStepSend) ?
+    (props.showFeedback) ?
+      (!props.feedbackEnabled) ?
+        <ValidateButton onClick={() => props.openFeedbackAndValidate(props.step)} /> :
+        <NextButton onClick={() => props.navigateToAndValidate(props.next)} /> :
+      <ValidateButton onClick={() => props.navigateToAndValidate(props.next)} /> :
+    <NextButton onClick={() => props.navigateToAndValidate(props.next)} />
+
+NotLastQuestionButton.propTypes = {
+  step: T.shape({
+    id: T.string.isRequired,
+    items: T.arrayOf(T.string).isRequired
+  }).isRequired,
+  next: T.shape({
+    id: T.string.isRequired,
+    items: T.arrayOf(T.string).isRequired
+  }),
+  openFeedbackAndValidate: T.func.isRequired,
+  navigateToAndValidate: T.func.navigateToAndValidate,
   showFeedback: T.bool.isRequired,
   feedbackEnabled: T.bool.isRequired,
   currentStepSend: T.bool.isRequired
