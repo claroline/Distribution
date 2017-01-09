@@ -3,18 +3,40 @@
 namespace UJM\ExoBundle\Library\Attempt;
 
 use Claroline\CoreBundle\Entity\User;
+use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Step;
 use UJM\ExoBundle\Entity\StepQuestion;
 use UJM\ExoBundle\Library\Options\Recurrence;
+use UJM\ExoBundle\Library\Options\Transfer;
+use UJM\ExoBundle\Serializer\ExerciseSerializer;
+use UJM\ExoBundle\Serializer\Question\QuestionSerializer;
+use UJM\ExoBundle\Serializer\StepSerializer;
 
 /**
  * PaperGenerator creates new paper instances for attempts to exercises.
  * It takes into account the exercise and steps configuration to create the correct attempt structure.
+ *
+ * @DI\Service("ujm_exo.generator.paper")
  */
 class PaperGenerator
 {
+    /**
+     * @var ExerciseSerializer
+     */
+    private $exerciseSerializer;
+
+    /**
+     * @var StepSerializer
+     */
+    private $stepSerializer;
+
+    /**
+     * @var QuestionSerializer
+     */
+    private $questionSerializer;
+
     /**
      * Creates a paper for a new attempt.
      *
@@ -24,7 +46,7 @@ class PaperGenerator
      *
      * @return Paper
      */
-    public static function create(Exercise $exercise, User $user = null, Paper $previousPaper = null)
+    public function create(Exercise $exercise, User $user = null, Paper $previousPaper = null)
     {
         // Create the new Paper entity
         $paper = new Paper();
@@ -51,7 +73,7 @@ class PaperGenerator
      *
      * @return array
      */
-    private static function generateStructure(Exercise $exercise, Paper $previousPaper = null)
+    private function generateStructure(Exercise $exercise, Paper $previousPaper = null)
     {
         // The structure of the previous paper if any
         $previousStructure = [];
@@ -91,9 +113,6 @@ class PaperGenerator
 
         // Pick questions for each steps and generate structure
         $structure = array_map(function (Step $pickedStep) use ($previousPaper, $previousStructure) {
-            $stepData = new \stdClass();
-            $stepData->id = $pickedStep->getUuid();
-
             if (!empty($previousPaper) && Recurrence::ONCE === $pickedStep->getRandomPick()) {
                 // Order the step collection based on the configuration
                 // Reload question entities
@@ -124,9 +143,13 @@ class PaperGenerator
                 }
             }
 
-            // Grabs only questions UUIDs
+            $stepData = new \stdClass();
+            $stepData->id = $pickedStep->getUuid();
             $stepData->items = array_map(function (StepQuestion $stepQuestion) {
-                return $stepQuestion->getQuestion()->getUuid();
+                return $this->questionSerializer->serialize($stepQuestion->getQuestion(), [
+                    Transfer::SHUFFLE,
+                    Transfer::INCLUDE_SOLUTIONS,
+                ]);
             }, $pickedQuestions);
 
             return $stepData;
