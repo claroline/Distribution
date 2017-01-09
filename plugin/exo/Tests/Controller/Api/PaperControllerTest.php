@@ -17,7 +17,7 @@ use UJM\ExoBundle\Manager\Attempt\PaperManager;
 /**
  * Tests the papers endpoints (list, read, delete, ...).
  *
- * @todo : do not use PaperGenerator. This is not needed to have functional papers here.
+ * @todo : do not use PaperGenerator. This is not needed to have functional papers here
  */
 class PaperControllerTest extends TransactionalTestCase
 {

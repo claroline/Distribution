@@ -47,7 +47,7 @@ class PaperGenerator
      * })
      *
      * @param ExerciseSerializer $exerciseSerializer
-     * @param StepSerializer $stepSerializer
+     * @param StepSerializer     $stepSerializer
      * @param QuestionSerializer $questionSerializer
      */
     public function __construct(
@@ -147,7 +147,7 @@ class PaperGenerator
     /**
      * Pick items for a step according to the step configuration.
      *
-     * @param Step $step
+     * @param Step           $step
      * @param \stdClass|null $previousStep
      *
      * @return Question[]
