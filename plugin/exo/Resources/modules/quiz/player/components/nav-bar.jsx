@@ -23,7 +23,7 @@ NextButton.propTypes = {
 }
 
 const ValidateButton = props =>
-  <button className="btn btn-next btn-default" onClick={props.onClick}>
+  <button className="btn btn-next btn-validate btn-default" onClick={props.onClick}>
     Validate
     <span className="fa fa-fw fa-angle-double-right"></span>
   </button>
