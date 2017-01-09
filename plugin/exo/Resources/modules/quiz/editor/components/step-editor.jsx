@@ -12,6 +12,7 @@ import {MODAL_DELETE_CONFIRM} from './../../../modal'
 import {MODAL_ADD_ITEM} from './../components/add-item-modal.jsx'
 import {MODAL_IMPORT_ITEMS} from './../components/import-items-modal.jsx'
 import {Icon as ItemIcon} from './../../../items/components/icon.jsx'
+import {TooltipElement} from './../../../components/form/tooltip-element.jsx'
 import {StepForm} from './step-form.jsx'
 import {ItemForm} from './item-form.jsx'
 
@@ -93,6 +94,11 @@ const ItemHeader = props =>
       <span className="panel-title">
         {props.item.title || trans(getDefinition(props.item.type).name, {}, 'question_types')}
       </span>
+      {true &&
+        <TooltipElement id="foo" tip="FOO BAR" position="right">
+          <span className="warning-text fa fa-clock-o"/>
+        </TooltipElement>
+      }
     </span>
     <ItemActions
       itemId={props.item.id}
@@ -179,8 +185,7 @@ ItemPanel = makeSortable(ItemPanel, 'STEP_ITEM')
 
 
 class StepFooter extends Component {
-
-  constructor(props){
+  constructor(props) {
     super(props)
     // this is required before componentDidMount. If not state is not defined...
     this.state = {
@@ -189,7 +194,7 @@ class StepFooter extends Component {
     }
   }
 
-  handleBtnClick(action){
+  handleBtnClick(action) {
     this.setState({currentLabel:action === MODAL_ADD_ITEM ? tex('add_question_from_new'):tex('add_question_from_existing'), currentAction: action})
     if (action === MODAL_ADD_ITEM) {
       this.props.showModal(MODAL_ADD_ITEM, {
@@ -210,7 +215,7 @@ class StepFooter extends Component {
     }
   }
 
-  render(){
+  render() {
     return (
       <div className="step-footer">
 

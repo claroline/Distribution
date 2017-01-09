@@ -6,7 +6,7 @@ import Tooltip from 'react-bootstrap/lib/Tooltip'
 import {tex, t} from './../../utils/translate'
 import {Textarea} from './../../components/form/textarea.jsx'
 import {makeDraggable, makeDroppable} from './../../utils/dragAndDrop'
-import {TooltipButton} from './../../components/form/tooltiped-button.jsx'
+import {TooltipButton} from './../../components/form/tooltip-button.jsx'
 import {actions} from './editor'
 
 let DropBox = props => {
@@ -28,7 +28,7 @@ DropBox.propTypes = {
   object: T.object.isRequired
 }
 
-DropBox =  makeDroppable(DropBox, 'ITEM')
+DropBox = makeDroppable(DropBox, 'ITEM')
 
 class Association extends Component {
   constructor(props) {

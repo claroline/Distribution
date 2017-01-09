@@ -7,7 +7,7 @@ import {Textarea} from './../../components/form/textarea.jsx'
 import {CheckGroup} from './../../components/form/check-group.jsx'
 import {Radios} from './../../components/form/radios.jsx'
 import {FormGroup} from './../../components/form/form-group.jsx'
-import {TooltipButton} from './../../components/form/tooltiped-button.jsx'
+import {TooltipButton} from './../../components/form/tooltip-button.jsx'
 import {actions} from './editor'
 
 class ChoiceItem extends Component {
@@ -161,7 +161,7 @@ ChoiceItems.propTypes = {
 }
 
 export const Choice = props =>
-  <fieldset>
+  <fieldset className="choice-editor">
     <CheckGroup
       checkId={`item-${props.item.id}-random`}
       checked={props.item.random}

@@ -1,56 +1,5 @@
 /* TODO: Switch to less and use appropriate variables */
 
-/* CHOICES */
-
-.quiz-editor .choice-items {
-  padding: 0;
-}
-
-.quiz-editor .choice-items li {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-}
-
-.quiz-editor .choice-items .choice-item {
-  display: flex;
-  padding: 5px;
-  margin-bottom: 5px;
-}
-
-.quiz-editor .choice-items .choice-tick {
-  margin: 0 7px 0 0;
-}
-
-.quiz-editor .choice-items .text-editor {
-  margin-right: 12px;
-}
-
-.quiz-editor .choice-items .choice-score {
-  width: 60px;
-  margin-right: 8px;
-}
-
-.quiz-editor .choice-items .feedback-container {
-  padding-left: 20px;
-}
-
-.quiz-editor .choice-items .footer {
-  margin-left: 20px;
-  margin-right: 98px;
-  text-align: center;
-}
-
-.quiz-editor .choice-items .text-fields {
-  flex-grow: 1;
-}
-
-.quiz-editor .choice-items .right-controls {
-  display: flex;
-  align-items: flex-start;
-}
-
-
 /* WORDS */
 
 .quiz-editor .words-items {

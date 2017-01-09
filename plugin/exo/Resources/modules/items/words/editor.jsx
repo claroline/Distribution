@@ -5,9 +5,8 @@ import find from 'lodash/find'
 import {t, tex} from './../../utils/translate'
 import {Textarea} from './../../components/form/textarea.jsx'
 import {CheckGroup} from './../../components/form/check-group.jsx'
-import {TooltipButton} from './../../components/form/tooltiped-button.jsx'
+import {TooltipButton} from './../../components/form/tooltip-button.jsx'
 import {actions} from './editor.js'
-
 
 class WordItem extends Component {
   constructor(props) {
@@ -17,7 +16,13 @@ class WordItem extends Component {
 
   render() {
     return (
-      <div className={classes('word-item', {'positive-score': this.props.score > 0 } , {'negative-score': this.props.score <= 0 })}>
+      <div className={
+        classes(
+          'word-item',
+          {'positive-score': this.props.score > 0 },
+          {'negative-score': this.props.score <= 0 }
+        )
+      }>
         <div className="text-fields">
           <input
             type="text"
