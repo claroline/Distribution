@@ -1,122 +1,21 @@
 import React, {Component, PropTypes as T} from 'react'
 import Modal from 'react-bootstrap/lib/Modal'
-import classes from 'classnames'
-import {listItemMimeTypes, getDefinition, listItemNames as listTypes} from './../../../items/item-types'
+import {listItemNames} from './../../../items/item-types'
 import {t, tex, trans} from './../../../utils/translate'
 import {generateUrl} from './../../../utils/routing'
-import {Icon as ItemIcon} from './../../../items/components/icon.jsx'
+import {BaseModal} from './../../../modal/components/base.jsx'
 
-export const MODAL_ADD_ITEM = 'ADD_ITEM'
-export const MODAL_CONFIRM = 'CONFIRM'
-export const MODAL_DELETE_CONFIRM = 'DELETE_CONFIRM'
 export const MODAL_IMPORT_ITEMS = 'MODAL_IMPORT_ITEMS'
 
-const BaseModal = props =>
-  <Modal
-    show={props.show}
-    onHide={props.fadeModal}
-    onExited={props.hideModal}
-    dialogClassName={props.className}
-  >
-    <Modal.Header closeButton>
-      <Modal.Title>{props.title}</Modal.Title>
-    </Modal.Header>
-    {props.children}
-  </Modal>
-
-BaseModal.propTypes = {
-  fadeModal: T.func.isRequired,
-  hideModal: T.func.isRequired,
-  show: T.bool.isRequired,
-  title: T.string.isRequired,
-  className: T.string,
-  children: T.oneOfType([T.object, T.array]).isRequired
-}
-
-// required when testing proptypes on code instrumented by istanbul
-// @see https://github.com/facebook/jest/issues/1824#issuecomment-250478026
-BaseModal.displayName = 'BaseModal'
-
-const ConfirmModal = props =>
-  <BaseModal {...props}>
-    <Modal.Body>
-      {props.question}
-    </Modal.Body>
-    <Modal.Footer>
-      <button
-        className="btn btn-default"
-        onClick={props.fadeModal}
-      >
-        {t('cancel')}
-      </button>
-      <button
-        className={classes('btn', props.isDangerous ? 'btn-danger' : 'btn-primary')}
-        onClick={() => {
-          props.handleConfirm()
-          props.fadeModal()
-        }}
-      >
-        {props.confirmButtonText || t('Ok')}
-      </button>
-    </Modal.Footer>
-  </BaseModal>
-
-ConfirmModal.propTypes = {
-  confirmButtonText: T.string,
-  isDangerous: T.bool,
-  question: T.string.isRequired,
-  handleConfirm: T.func.isRequired,
-  fadeModal: T.func.isRequired
-}
-
-const DeleteConfirmModal = props =>
-  <ConfirmModal
-    confirmButtonText={t('delete')}
-    isDangerous={true}
-    {...props}
-  />
-
-const AddItemModal = props =>
-  <BaseModal {...props} className="add-item-modal">
-    <Modal.Body>
-      <div role="listbox">
-        {listItemMimeTypes().map(type =>
-          <div
-            key={type}
-            className="modal-item-entry"
-            role="option"
-            onClick={() => props.handleSelect(type)}
-          >
-            <ItemIcon name={getDefinition(type).name} size="lg"/>
-            <div className="modal-item-desc">
-              <span className="modal-item-name">
-                {trans(getDefinition(type).name, {}, 'question_types')}
-              </span>
-              <p>
-                {trans(`${getDefinition(type).name}_desc`, {}, 'question_types')}
-              </p>
-            </div>
-          </div>
-        )}
-      </div>
-    </Modal.Body>
-  </BaseModal>
-
-AddItemModal.propTypes = {
-  handleSelect: T.func.isRequired
-}
-
-class ImportItemsModal extends Component {
+export class ImportItemsModal extends Component {
   constructor(props){
     super(props)
-
-    const types = listTypes()
     this.state = {
       selected: [],
       criterion: null,
       questions: [],
       total: 0,
-      types: types
+      types: listItemNames()
     }
   }
 
@@ -210,11 +109,4 @@ class ImportItemsModal extends Component {
 ImportItemsModal.propTypes = {
   handleSelect: T.func.isRequired,
   fadeModal: T.func.isRequired
-}
-
-export default {
-  [MODAL_ADD_ITEM]: AddItemModal,
-  [MODAL_CONFIRM]: ConfirmModal,
-  [MODAL_DELETE_CONFIRM]: DeleteConfirmModal,
-  [MODAL_IMPORT_ITEMS]: ImportItemsModal
 }

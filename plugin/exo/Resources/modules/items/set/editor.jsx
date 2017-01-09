@@ -1,9 +1,12 @@
 import React, {Component, PropTypes as T} from 'react'
 import get from 'lodash/get'
 import classes from 'classnames'
+import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
+import Tooltip from 'react-bootstrap/lib/Tooltip'
 import {tex, t} from './../../utils/translate'
 import {Textarea} from './../../components/form/textarea.jsx'
 import {makeDraggable, makeDroppable} from './../../utils/dragAndDrop'
+import {TooltipButton} from './../../components/form/tooltiped-button.jsx'
 import {actions} from './editor'
 
 let DropBox = props => {
@@ -64,18 +67,20 @@ class Association extends Component {
               actions.updateAssociation(this.props.association.setId, this.props.association.itemId, 'score', e.target.value)
             )}
           />
-          <a
-            role="button"
-            title={t('delete')}
-            className="btn btn-link fa fa-trash-o"
-            onClick={() => this.props.onChange(actions.removeAssociation(this.props.association.setId, this.props.association.itemId))}>
-          </a>
-          <a
-            role="button"
+          <TooltipButton
+            id={`ass-${this.props.association.itemId}-${this.props.association.setId}-feedback-toggle`}
+            className="fa fa-comments-o"
             title={tex('feedback')}
-            className="btn btn-link fa fa-comments-o"
-            onClick={() => this.setState({showFeedback: !this.state.showFeedback})}>
-          </a>
+            onClick={() => this.setState({showFeedback: !this.state.showFeedback})}
+          />
+          <TooltipButton
+            id={`ass-${this.props.association.itemId}-${this.props.association.setId}-delete`}
+            className="fa fa-trash-o"
+            title={t('delete')}
+            onClick={() => this.props.onChange(
+              actions.removeAssociation(this.props.association.setId, this.props.association.itemId))
+            }
+          />
         </div>
       </div>
     )
@@ -108,23 +113,15 @@ class Set extends Component {
               />
             </div>
             <div className="right-controls">
-              <a
-                role="button"
+              <TooltipButton
+                id={`set-${this.props.set.id}-delete`}
+                className="fa fa-trash-o"
                 title={t('delete')}
-                className={
-                  classes(
-                    'btn',
-                    'btn-link',
-                    'fa',
-                    'fa-trash-o',
-                    {disabled: !this.props.set._deletable}
-                  )
-                }
+                enabled={this.props.set._deletable}
                 onClick={() => this.props.onChange(
-                  actions.removeSet(this.props.set.id)
-                )}
-                >
-              </a>
+                  actions.removeSet(this.props.set.id))
+                }
+              />
             </div>
           </div>
           <div className="set-body">
@@ -223,31 +220,33 @@ let Item = props => {
         />
       </div>
       <div className="right-controls">
-        <a
-          role="button"
+        <TooltipButton
+          id={`set-item-${props.item.id}-delete`}
+          className="fa fa-trash-o"
           title={t('delete')}
-          className={classes(
-            'btn',
-            'btn-link',
-            'fa',
-            'fa-trash-o',
-            {disabled: !props.item._deletable}
-          )}
+          enabled={props.item._deletable}
           onClick={() => actions.removeItem(props.item.id, false)}
         />
         {props.connectDragSource(
-          <a
-            role="button"
-            title={t('move')}
-            draggable="true"
-            className={classes(
-              'btn',
-              'btn-link',
-              'fa',
-              'fa-bars',
-              'drag-handle'
-            )}
-          />
+          <div>
+            <OverlayTrigger
+              placement="top"
+              overlay={
+                <Tooltip id={`set-item-${props.item.id}-drag`}>{t('move')}</Tooltip>
+              }>
+              <span
+                title={t('move')}
+                draggable="true"
+                className={classes(
+                  'btn',
+                  'btn-link',
+                  'fa',
+                  'fa-bars',
+                  'drag-handle'
+                )}
+              />
+            </OverlayTrigger>
+          </div>
         )}
       </div>
     </div>
@@ -343,18 +342,18 @@ class Odd extends Component {
               actions.updateItem(this.props.odd.id, 'score', e.target.value, true)
             )}
           />
-          <a
-            role="button"
+          <TooltipButton
+            id={`odd-${this.props.odd.id}-feedback-toggle`}
+            className="fa fa-comments-o"
             title={tex('feedback')}
-            className="btn btn-link fa fa-comments-o"
-            onClick={() => this.setState({showFeedback: !this.state.showFeedback})}>
-          </a>
-          <a
-            role="button"
+            onClick={() => this.setState({showFeedback: !this.state.showFeedback})}
+          />
+          <TooltipButton
+            id={`odd-${this.props.odd.id}-delete`}
+            className="fa fa-trash-o"
             title={t('delete')}
-            className="btn btn-link fa fa-trash-o"
-            onClick={() => this.props.onChange(actions.removeItem(this.props.odd.id, true))}>
-          </a>
+            onClick={() => this.props.onChange(actions.removeItem(this.props.odd.id, true))}
+          />
         </div>
       </div>
     )

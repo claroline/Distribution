@@ -1,6 +1,8 @@
 import invariant from 'invariant'
 import select from './selectors'
 import {makeActionCreator, makeId} from './../../utils/utils'
+import {REQUEST_SEND} from './../../api/actions'
+import {denormalize} from './../normalizer'
 
 export const ITEM_CREATE = 'ITEM_CREATE'
 export const ITEM_UPDATE = 'ITEM_UPDATE'
@@ -10,9 +12,6 @@ export const ITEM_HINTS_UPDATE = 'ITEM_HINTS_UPDATE'
 export const ITEM_DETAIL_UPDATE = 'ITEM_DETAIL_UPDATE'
 export const ITEMS_DELETE = 'ITEMS_DELETE'
 export const ITEMS_IMPORT = 'ITEMS_IMPORT'
-export const MODAL_FADE = 'MODAL_FADE'
-export const MODAL_HIDE = 'MODAL_HIDE'
-export const MODAL_SHOW = 'MODAL_SHOW'
 export const OBJECT_NEXT = 'OBJECT_NEXT'
 export const OBJECT_SELECT = 'OBJECT_SELECT'
 export const PANEL_QUIZ_SELECT = 'PANEL_QUIZ_SELECT'
@@ -25,29 +24,50 @@ export const QUIZ_UPDATE = 'QUIZ_UPDATE'
 export const HINT_ADD = 'HINT_ADD'
 export const HINT_CHANGE = 'HINT_CHANGE'
 export const HINT_REMOVE = 'HINT_REMOVE'
-export const QUIZ_SAVE = 'QUIZ_SAVE'
+export const QUIZ_SAVING = 'QUIZ_SAVING'
+export const QUIZ_SAVED = 'QUIZ_SAVED'
+export const QUIZ_SAVE_ERROR = 'QUIZ_SAVE_ERROR'
+
+// the following action types lead to quiz data changes that need to be
+// properly saved (please maintain this list up-to-date)
+export const quizChangeActions = [
+  ITEM_CREATE,
+  ITEM_DELETE,
+  ITEM_UPDATE,
+  ITEM_MOVE,
+  ITEM_HINTS_UPDATE,
+  ITEM_DETAIL_UPDATE,
+  ITEMS_IMPORT,
+  STEP_CREATE,
+  STEP_MOVE,
+  STEP_DELETE,
+  STEP_UPDATE,
+  QUIZ_UPDATE,
+  HINT_ADD,
+  HINT_CHANGE,
+  HINT_REMOVE
+]
 
 export const actions = {}
 
 actions.deleteStep = makeActionCreator(STEP_DELETE, 'id')
 actions.deleteItem = makeActionCreator(ITEM_DELETE, 'id', 'stepId')
 actions.deleteItems = makeActionCreator(ITEMS_DELETE, 'ids')
-actions.fadeModal = makeActionCreator(MODAL_FADE)
-actions.hideModal = makeActionCreator(MODAL_HIDE)
 actions.moveItem = makeActionCreator(ITEM_MOVE, 'id', 'swapId', 'stepId')
 actions.moveStep = makeActionCreator(STEP_MOVE, 'id', 'swapId')
 actions.nextObject = makeActionCreator(OBJECT_NEXT, 'object')
 actions.selectObject = makeActionCreator(OBJECT_SELECT, 'id', 'objectType')
 actions.selectQuizPanel = makeActionCreator(PANEL_QUIZ_SELECT, 'panelKey')
 actions.selectStepPanel = makeActionCreator(PANEL_STEP_SELECT, 'stepId', 'panelKey')
-actions.showModal = makeActionCreator(MODAL_SHOW, 'modalType', 'modalProps')
 actions.updateQuiz = makeActionCreator(QUIZ_UPDATE, 'propertyPath', 'value')
-actions.saveQuiz = makeActionCreator(QUIZ_SAVE)
 actions.updateItem = makeActionCreator(ITEM_UPDATE, 'id', 'propertyPath', 'value')
 actions.updateItemDetail = makeActionCreator(ITEM_DETAIL_UPDATE, 'id', 'subAction')
 actions.updateItemHints = makeActionCreator(ITEM_HINTS_UPDATE, 'itemId', 'updateType', 'payload')
 actions.updateStep = makeActionCreator(STEP_UPDATE, 'id', 'newProperties')
 actions.importItems = makeActionCreator(ITEMS_IMPORT, 'stepId', 'items')
+actions.quizSaving = makeActionCreator(QUIZ_SAVING)
+actions.quizSaved = makeActionCreator(QUIZ_SAVED)
+actions.quizSaveError = makeActionCreator(QUIZ_SAVE_ERROR)
 
 actions.createItem = (stepId, type) => {
   invariant(stepId, 'stepId is mandatory')
@@ -73,5 +93,24 @@ actions.deleteStepAndItems = id => {
     dispatch(actions.nextObject(select.nextObject(getState())))
     dispatch(actions.deleteItems(getState().steps[id].items.slice()))
     dispatch(actions.deleteStep(id))
+  }
+}
+
+actions.save = () => {
+  return (dispatch, getState) => {
+    const state = getState()
+    const denormalized = denormalize(state.quiz, state.steps, state.items)
+    dispatch({
+      [REQUEST_SEND]: {
+        route: ['exercise_update', {id: state.quiz.id}],
+        request: {
+          method: 'PUT' ,
+          body: JSON.stringify(denormalized)
+        },
+        before: () => actions.quizSaving(),
+        success: () => actions.quizSaved(),
+        failure: () => actions.quizSaveError()
+      }
+    })
   }
 }

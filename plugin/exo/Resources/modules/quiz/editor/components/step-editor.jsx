@@ -2,14 +2,18 @@ import React, {Component, PropTypes as T} from 'react'
 import classes from 'classnames'
 import Panel from 'react-bootstrap/lib/Panel'
 import PanelGroup from 'react-bootstrap/lib/PanelGroup'
+import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
+import Tooltip from 'react-bootstrap/lib/Tooltip'
 import {makeItemPanelKey, makeStepPropPanelKey} from './../../../utils/utils'
 import {t, tex, trans} from './../../../utils/translate'
 import {makeSortable, SORT_VERTICAL} from './../../../utils/sortable'
 import {getDefinition} from './../../../items/item-types'
+import {MODAL_DELETE_CONFIRM} from './../../../modal'
+import {MODAL_ADD_ITEM} from './../components/add-item-modal.jsx'
+import {MODAL_IMPORT_ITEMS} from './../components/import-items-modal.jsx'
+import {Icon as ItemIcon} from './../../../items/components/icon.jsx'
 import {StepForm} from './step-form.jsx'
 import {ItemForm} from './item-form.jsx'
-import {Icon as ItemIcon} from './../../../items/components/icon.jsx'
-import {MODAL_DELETE_CONFIRM, MODAL_ADD_ITEM, MODAL_IMPORT_ITEMS} from './modals.jsx'
 
 const ParametersHeader = props =>
   <div onClick={props.onClick} className="panel-title">
@@ -30,26 +34,41 @@ ParametersHeader.propTypes = {
 
 const ItemActions = props =>
   <span className="item-actions">
-    <span
-      role="button"
-      title={tex('delete_item')}
-      className="fa fa-trash-o"
-      onClick={e => {
-        e.stopPropagation()
-        props.showModal(MODAL_DELETE_CONFIRM, {
-          title: tex('delete_item'),
-          question: tex('remove_question_confirm_message'),
-          handleConfirm: () => props.handleItemDeleteClick(props.itemId, props.stepId)
-        })
-      }}
-    />
-    {props.connectDragSource(
+    <OverlayTrigger
+      placement="left"
+      overlay={
+        <Tooltip id={`item-panel-${props.itemId}-delete`}>{tex('delete_item')}</Tooltip>
+      }
+    >
       <span
         role="button"
-        title={tex('move_item')}
-        className="fa fa-bars drag-handle"
-        draggable="true"
+        className="fa fa-trash-o"
+        onClick={e => {
+          e.stopPropagation()
+          props.showModal(MODAL_DELETE_CONFIRM, {
+            title: tex('delete_item'),
+            question: tex('remove_question_confirm_message'),
+            handleConfirm: () => props.handleItemDeleteClick(props.itemId, props.stepId)
+          })
+        }}
       />
+    </OverlayTrigger>
+    {props.connectDragSource(
+      <span>
+        <OverlayTrigger
+          placement="left"
+          overlay={
+            <Tooltip id={`item-panel-${props.itemId}-toggle`}>{tex('move_item')}</Tooltip>
+          }
+        >
+          <span
+            role="button"
+            title={tex('move_item')}
+            className="fa fa-bars drag-handle"
+            draggable="true"
+          />
+        </OverlayTrigger>
+      </span>
     )}
   </span>
 

@@ -22,9 +22,6 @@ import {
   ITEM_HINTS_UPDATE,
   ITEM_DETAIL_UPDATE,
   ITEMS_IMPORT,
-  MODAL_FADE,
-  MODAL_HIDE,
-  MODAL_SHOW,
   OBJECT_NEXT,
   OBJECT_SELECT,
   PANEL_QUIZ_SELECT,
@@ -34,9 +31,13 @@ import {
   STEP_DELETE,
   STEP_UPDATE,
   QUIZ_UPDATE,
+  QUIZ_SAVED,
+  QUIZ_SAVING,
+  QUIZ_SAVE_ERROR,
   HINT_ADD,
   HINT_CHANGE,
-  HINT_REMOVE
+  HINT_REMOVE,
+  quizChangeActions
 } from './actions'
 
 function initialQuizState() {
@@ -280,32 +281,37 @@ function reduceOpenPanels(panels = initialPanelState(), action = {}) {
   return panels
 }
 
+function reduceSavingState(saving = false, action = {}) {
+  switch (action.type) {
+    case QUIZ_SAVING:
+      return true
+    case QUIZ_SAVED:
+      return false
+    case QUIZ_SAVE_ERROR:
+      return false
+  }
+
+  return saving
+}
+
+function reduceSavedState(saved = true, action = {}) {
+  if (quizChangeActions.indexOf(action.type) > 0) {
+    return false
+  }
+
+  if (action.type === QUIZ_SAVED) {
+    return true
+  }
+
+  return saved
+}
+
 const reduceEditor = combineReducers({
   currentObject: reduceCurrentObject,
-  openPanels: reduceOpenPanels
+  openPanels: reduceOpenPanels,
+  saving: reduceSavingState,
+  saved: reduceSavedState
 })
-
-const initialModalState = {
-  type: null,
-  props: {},
-  fading: false
-}
-
-function reduceModal(modalState = initialModalState, action) {
-  switch (action.type) {
-    case MODAL_SHOW:
-      return {
-        type: action.modalType,
-        props: action.modalProps,
-        fading: false
-      }
-    case MODAL_FADE:
-      return update(modalState, {fading: {$set: true}})
-    case MODAL_HIDE:
-      return initialModalState
-  }
-  return modalState
-}
 
 export const reducers = {
   quiz: reduceQuiz,
@@ -313,6 +319,5 @@ export const reducers = {
   items: reduceItems,
   currentObject: reduceCurrentObject,
   openPanels: reduceOpenPanels,
-  editor: reduceEditor,
-  modal: reduceModal
+  editor: reduceEditor
 }

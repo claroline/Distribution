@@ -47,6 +47,7 @@
 
 .quiz-editor .choice-items .right-controls {
   display: flex;
+  align-items: flex-start;
 }
 
 
@@ -95,6 +96,7 @@
 
 .quiz-editor .words-items .right-controls {
   display: flex;
+  align-items: flex-start;
 }
 
 /* SET */
@@ -156,6 +158,7 @@
 
 .quiz-editor .sets-builder-container .pool-col .right-controls {
   display: flex;
+  align-items: flex-start;
 }
 
 .quiz-editor .sets-builder-container .pool-col .right-controls .odd-score {
@@ -249,6 +252,7 @@
 
 .quiz-editor .sets-builder-container .sets-col .set .set-body .right-controls {
   display: flex;
+ align-items: flex-start;
 }
 .quiz-editor .sets-builder-container .sets-col .set .association-score {
   width: 60px;

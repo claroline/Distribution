@@ -1,14 +1,11 @@
 import invariant from 'invariant'
 import isFunction from 'lodash/isFunction'
 import isString from 'lodash/isString'
-
-import { update } from './../utils/utils'
-import { generateUrl } from './../utils/routing'
-import { actions as alertActions } from './../alert/actions'
-import {
-  REQUEST_SEND,
-  actions as apiActions
-} from './actions'
+import {tex} from './../utils/translate'
+import {generateUrl} from './../utils/routing'
+import {showModal} from './../modal/actions'
+import {MODAL_MESSAGE} from './../modal'
+import {REQUEST_SEND, actions} from './actions'
 
 const defaultRequest = {
   method: 'GET',
@@ -16,8 +13,8 @@ const defaultRequest = {
 }
 
 function handleResponse(dispatch, response) {
-  dispatch(apiActions.decrementRequests())
-  dispatch(apiActions.receiveResponse(response))
+  dispatch(actions.decrementRequests())
+  dispatch(actions.receiveResponse(response))
 
   if (!response.ok) {
     return Promise.reject(response)
@@ -44,27 +41,13 @@ function handleResponseError(error, failure) {
   }
 
   return dispatch => {
-    switch (error.status) {
-      // User needs to log in
-      case 401:
-        dispatch(alertActions.addAlert('warning', 'You need to be logged.'))
-        break
-
-      // User is not authorized
-      case 403:
-        dispatch(alertActions.addAlert('error', 'You are not authorized to do this.'))
-        break
-
-      // Validation error
-      case 422:
-        dispatch(alertActions.addAlert('error', 'Invalid data sent.'))
-        break
-
-      // All other errors
-      default:
-        dispatch(alertActions.addAlert('error', error.statusText))
-        break
-    }
+    dispatch(showModal(MODAL_MESSAGE, {
+      title: tex('request_error'),
+      bsStyle: 'danger',
+      message: [401, 403, 422].indexOf(error.status) > -1 ?
+        tex(`request_error_desc_${error.status}`) :
+        tex('request_error_desc_default')
+    }))
 
     if (failure) {
       return dispatch(failure(error))
@@ -101,23 +84,21 @@ function getUrl(url, route) {
     invariant(isString(url), '`url` should be a string')
 
     return url
-  } else {
-    invariant(Array.isArray(route), '`route` should be an array')
-
-    return generateUrl(route[0], route[1] ? route[1] : {})
   }
+
+  invariant(Array.isArray(route), '`route` should be an array')
+
+  return generateUrl(route[0], route[1] ? route[1] : {})
 }
 
 function handleBefore(before) {
-  if (before) {
-    invariant(!isFunction(before), '`before` should be a function')
-  }
-
   return dispatch => {
-    dispatch(apiActions.incrementRequests())
-    if (before === 'function') {
+    if (before) {
+      invariant(isFunction(before), '`before` should be a function')
       dispatch(before())
     }
+
+    dispatch(actions.incrementRequests())
   }
 }
 
@@ -125,19 +106,17 @@ function getRequest(request = {}) {
   invariant(request instanceof Object, '`request` should be an object')
 
   // Add default values to request
-  return update(defaultRequest, {
-    $merge: request
-  })
+  return Object.assign({}, defaultRequest, request)
 }
 
 const apiMiddleware = () => next => action => {
   const sendRequest = action[REQUEST_SEND]
+
   if (typeof sendRequest === 'undefined') {
     return next(action)
   }
 
-  const { url, route, request, before, success, failure } = sendRequest
-
+  const {url, route, request, before, success, failure} = sendRequest
   const finalUrl = getUrl(url, route)
   const finalRequest = getRequest(request)
 
@@ -147,7 +126,7 @@ const apiMiddleware = () => next => action => {
     .then(response => handleResponse(next, response))
     .then(response => getResponseData(response))
     .then(
-      data  => next(handleResponseSuccess(data, success)),
+      data => next(handleResponseSuccess(data, success)),
       error => next(handleResponseError(error, failure))
     )
 }

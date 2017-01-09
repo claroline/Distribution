@@ -1,9 +1,9 @@
 import React, {PropTypes as T} from 'react'
 import {connect} from 'react-redux'
-
 import PageHeader from './../../components/layout/page-header.jsx'
-import {Alerts} from './../../alert/components/alerts.jsx'
 import {Loader} from './../../api/components/loader.jsx'
+import {showModal, fadeModal} from './../../modal/actions'
+import {makeModal} from './../../modal'
 import {TopBar} from './top-bar.jsx'
 import {Overview} from './../overview/overview.jsx'
 import {Player} from './../player/components/player.jsx'
@@ -24,26 +24,26 @@ import {
 let Quiz = props =>
   <div className="page-container">
     <PageHeader title={props.quiz.title} />
-
     {props.isLoading &&
       <Loader />
     }
-
-    {0 !== props.alerts.length &&
-      <Alerts alerts={props.alerts} />
+    {props.modal.type &&
+      props.createModal(
+        props.modal.type,
+        props.modal.props,
+        props.modal.fading
+      )
     }
-
     {props.editable &&
       <TopBar {...props} id={props.quiz.id}/>
     }
     <div className="page-content">
-      {viewComponent(props.viewMode)}
+      {viewComponent(props.viewMode, props)}
     </div>
   </div>
 
 Quiz.propTypes = {
   isLoading: T.bool.isRequired,
-  alerts: T.array.isRequired,
   quiz: T.shape({
     id: T.string.isRequired,
     title: T.string.isRequired
@@ -52,22 +52,31 @@ Quiz.propTypes = {
   editable: T.bool.isRequired,
   viewMode: T.string.isRequired,
   updateViewMode: T.func.isRequired,
-  saveQuiz: T.func.isRequired
+  saveEnabled: T.bool.isRequired,
+  saveQuiz: T.func.isRequired,
+  createModal: T.func.isRequired,
+  showModal: T.func.isRequired,
+  fadeModal: T.func.isRequired,
+  modal: T.shape({
+    type: T.string,
+    fading: T.bool.isRequired,
+    props: T.object.isRequired
+  })
 }
 
-function viewComponent(view) {
+function viewComponent(view, props) {
   switch (view) {
     case VIEW_EDITOR:
-      return <Editor/>
+      return <Editor {...props}/>
     case VIEW_PLAYER:
-      return <Player/>
+      return <Player {...props}/>
     case VIEW_PAPERS:
-      return <Papers/>
+      return <Papers {...props}/>
     case VIEW_PAPER:
-      return <Paper/>
+      return <Paper {...props}/>
     case VIEW_OVERVIEW:
     default:
-      return <Overview/>
+      return <Overview {...props}/>
   }
 }
 
@@ -81,18 +90,19 @@ function mapStateToProps(state) {
     editable: select.editable(state),
     empty: select.empty(state),
     published: select.published(state),
-    hasPapers: select.hasPapers(state)
+    hasPapers: select.hasPapers(state),
+    saveEnabled: select.saveEnabled(state),
+    modal: select.modal(state)
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    updateViewMode(mode) {
-      dispatch(actions.updateViewMode(mode))
-    },
-    saveQuiz() {
-      dispatch(editorActions.saveQuiz())
-    }
+    updateViewMode: mode => dispatch(actions.updateViewMode(mode)),
+    saveQuiz: () => dispatch(editorActions.save()),
+    createModal: (type, props, fading) => makeModal(type, props, fading, dispatch),
+    showModal: (type, props) => dispatch(showModal(type, props)),
+    fadeModal: () => dispatch(fadeModal())
   }
 }
 

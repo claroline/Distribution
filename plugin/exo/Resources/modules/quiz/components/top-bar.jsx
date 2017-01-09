@@ -21,6 +21,23 @@ NavLink.propTypes = {
   children: T.node.isRequired
 }
 
+const NavLinkButton = props =>
+  <li role="presentation">
+    <button
+      className="btn btn-link navbar-btn"
+      disabled={props.disabled}
+      onClick={props.onClick}
+    >
+      {props.children}
+    </button>
+  </li>
+
+NavLinkButton.propTypes = {
+  disabled: T.bool.isRequired,
+  onClick: T.func.isRequired,
+  children: T.node.isRequired
+}
+
 export const TopBar = props =>
   <Navbar collapseOnSelect fluid>
     <Navbar.Header>
@@ -36,25 +53,6 @@ export const TopBar = props =>
           <span className="fa fa-fw fa-pencil"></span>
           {t('edit')}
         </NavLink>
-        <NavDropdown
-          id="questions-menu"
-          eventKey={3}
-          title={
-            <span>
-              <span className="fa fa-fw fa-question"></span>
-              {tex('questions')}
-            </span>
-          }
-        >
-          <MenuItem eventKey={3.1}>
-            <span className="fa fa-fw fa-download"></span>
-            {tex('import_questions')}
-          </MenuItem>
-          <MenuItem eventKey={3.2}>
-            <span className="fa fa-fw fa-save"></span>
-            {tex('export_qti_exercise')}
-          </MenuItem>
-        </NavDropdown>
         {!props.published &&
           <NavItem eventKey={4} href="#">
             <span className="fa fa-fw fa-share-square-o"></span>
@@ -101,12 +99,13 @@ export const TopBar = props =>
           </NavDropdown>
         }
         {VIEW_EDITOR === props.viewMode &&
-          <NavItem eventKey={7} href="#" onClick={() => {
-            props.saveQuiz()
-          }}>
+          <NavLinkButton
+            disabled={!props.saveEnabled}
+            onClick={() => props.saveEnabled && props.saveQuiz()}
+          >
             <span className="fa fa-fw fa-save"></span>
             {t('save')}
-          </NavItem>
+          </NavLinkButton>
         }
       </Nav>
     </Navbar.Collapse>
@@ -118,6 +117,6 @@ TopBar.propTypes = {
   published: T.bool.isRequired,
   hasPapers: T.bool.isRequired,
   viewMode: T.string.isRequired,
-  updateViewMode: T.func.isRequired,
+  saveEnabled: T.bool.isRequired,
   saveQuiz: T.func.isRequired
 }
