@@ -18,6 +18,7 @@ use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Manager\Question\QuestionManager;
 use UJM\ExoBundle\Repository\PaperRepository;
 use UJM\ExoBundle\Serializer\Attempt\PaperSerializer;
+use UJM\ExoBundle\Serializer\Question\QuestionSerializer;
 
 /**
  * @DI\Service("ujm_exo.manager.paper")
@@ -53,28 +54,32 @@ class PaperManager
      * PaperManager constructor.
      *
      * @DI\InjectParams({
-     *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
-     *     "eventDispatcher" = @DI\Inject("event_dispatcher"),
-     *     "serializer"      = @DI\Inject("ujm_exo.serializer.paper"),
-     *     "questionManager" = @DI\Inject("ujm_exo.manager.question")
+     *     "om"                 = @DI\Inject("claroline.persistence.object_manager"),
+     *     "eventDispatcher"    = @DI\Inject("event_dispatcher"),
+     *     "serializer"         = @DI\Inject("ujm_exo.serializer.paper"),
+     *     "questionManager"    = @DI\Inject("ujm_exo.manager.question"),
+     *     "questionSerializer" = @DI\Inject("ujm_exo.serializer.question")
      * })
      *
      * @param ObjectManager            $om
      * @param EventDispatcherInterface $eventDispatcher
      * @param PaperSerializer          $serializer
      * @param QuestionManager          $questionManager
+     * @param QuestionSerializer       $questionSerializer
      */
     public function __construct(
         ObjectManager $om,
         EventDispatcherInterface $eventDispatcher,
         PaperSerializer $serializer,
-        QuestionManager $questionManager)
+        QuestionManager $questionManager,
+        QuestionSerializer $questionSerializer)
     {
         $this->om = $om;
         $this->repository = $om->getRepository('UJMExoBundle:Attempt\Paper');
         $this->eventDispatcher = $eventDispatcher;
         $this->serializer = $serializer;
         $this->questionManager = $questionManager;
+        $this->questionSerializer = $questionSerializer;
     }
 
     /**
@@ -94,35 +99,6 @@ class PaperManager
         }
 
         return $this->serializer->serialize($paper, $options);
-    }
-
-    /**
-     * Gets the list of questions picked for the paper.
-     *
-     * The list may vary from one paper to another based on
-     * the exercise generation config (eg. random, pick subset of steps).
-     *
-     * @param Paper $paper
-     *
-     * @return Question[]
-     */
-    public function getQuestions(Paper $paper)
-    {
-        $structure = json_decode($paper->getStructure());
-
-        $questions = [];
-        foreach ($structure as $step) {
-            foreach ($step->items as $itemId) {
-                $question = $this->om->getRepository('UJMExoBundle:Question\Question')->findOneBy([
-                    'uuid' => $itemId,
-                ]);
-                if (!empty($question)) {
-                    $questions[] = $question;
-                }
-            }
-        }
-
-        return $questions;
     }
 
     /**
@@ -207,9 +183,12 @@ class PaperManager
     {
         $total = 0;
 
-        $questions = $this->getQuestions($paper);
-        foreach ($questions as $question) {
-            $total += $this->questionManager->calculateTotal($question);
+        $structure = json_decode($paper->getStructure());
+        foreach ($structure->steps as $step) {
+            foreach ($step->items as $item) {
+                $question = $this->questionSerializer->deserialize($item);
+                $total += $this->questionManager->calculateTotal($question);
+            }
         }
 
         return $total;
@@ -238,21 +217,9 @@ class PaperManager
             ]);
         }
 
-        $questions = [];
-        foreach ($papers as $paper) {
-            $paperQuestions = $this->getQuestions($paper);
-            $questions = array_merge($questions, $paperQuestions);
-            $questions = array_unique($questions, SORT_REGULAR); // Remove duplicated questions
-        }
-
-        return [
-            'papers' => array_map(function (Paper $paper) {
-                return $this->export($paper);
-            }, $papers),
-            'questions' => array_map(function (Question $question) {
-                return $this->questionManager->export($question, [Transfer::INCLUDE_SOLUTIONS]);
-            }, $questions),
-        ];
+        return array_map(function (Paper $paper) {
+            return $this->export($paper);
+        }, $papers);
     }
 
     /**

@@ -29,7 +29,6 @@ class ExerciseRepository extends EntityRepository
                 SET p.invalidated = :invalidated 
                 WHERE p.exercise = :exercise 
                   AND p.invalidated = false
-                  AND p.end IS NULL
             ')
             ->setParameters([
                 'exercise' => $exercise,

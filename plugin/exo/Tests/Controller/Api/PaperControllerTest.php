@@ -136,7 +136,7 @@ class PaperControllerTest extends TransactionalTestCase
         $content = json_decode($this->client->getResponse()->getContent());
         $this->assertEquals(1, count($content));
 
-        $this->assertEquals($pa1->getUuid(), $content->papers[0]->id);
+        $this->assertEquals($pa1->getUuid(), $content[0]->id);
     }
 
     /**
@@ -159,11 +159,11 @@ class PaperControllerTest extends TransactionalTestCase
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
 
         $content = json_decode($this->client->getResponse()->getContent());
-        $this->assertEquals(4, count($content->papers));
-        $this->assertEquals($pa1->getUuid(), $content->papers[0]->id);
-        $this->assertEquals($pa2->getUuid(), $content->papers[1]->id);
-        $this->assertEquals($pa3->getUuid(), $content->papers[2]->id);
-        $this->assertEquals($pa4->getUuid(), $content->papers[3]->id);
+        $this->assertEquals(4, count($content));
+        $this->assertEquals($pa1->getUuid(), $content[0]->id);
+        $this->assertEquals($pa2->getUuid(), $content[1]->id);
+        $this->assertEquals($pa3->getUuid(), $content[2]->id);
+        $this->assertEquals($pa4->getUuid(), $content[3]->id);
     }
 
     /**
@@ -340,11 +340,6 @@ class PaperControllerTest extends TransactionalTestCase
     private function assertIsValidPaperDetail(Paper $paper, $content)
     {
         $this->assertInstanceOf('\stdClass', $content);
-        $this->assertTrue(property_exists($content, 'paper'));
-        $this->assertTrue(property_exists($content, 'items'));
-
-        $this->assertTrue(is_array($content->items));
-        $this->assertInstanceOf('\stdClass', $content->paper);
-        $this->assertEquals($paper->getUuid(), $content->paper->id);
+        $this->assertEquals($paper->getUuid(), $content->id);
     }
 }

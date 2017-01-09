@@ -312,9 +312,9 @@ class QuestionSerializer extends AbstractSerializer
         // Sets the creator of the Question if not set
         $creator = $question->getCreator();
         if (empty($creator)) {
-            $currentUser = $this->tokenStorage->getToken()->getUser();
-            if ($currentUser instanceof User) {
-                $question->setCreator($currentUser);
+            $token = $this->tokenStorage->getToken();
+            if (!empty($token) && $token->getUser() instanceof User) {
+                $question->setCreator($token->getUser());
             }
         }
 
