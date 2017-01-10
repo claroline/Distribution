@@ -283,12 +283,16 @@ class UsersController extends Controller
      * @EXT\Method("POST")
      * @EXT\Template("ClarolineCoreBundle:Administration/Users:importForm.html.twig")
      *
+     * @param Request $request
+     *
      * @return Response
+     *
+     * @throws \Claroline\CoreBundle\Manager\Exception\AddRoleException
      */
-    public function importAction()
+    public function importAction(Request $request)
     {
         $form = $this->formFactory->create(new ImportUserType(true));
-        $form->handleRequest($this->request);
+        $form->handleRequest($request);
         $mode = $form->get('mode')->getData();
         $options = [];
 

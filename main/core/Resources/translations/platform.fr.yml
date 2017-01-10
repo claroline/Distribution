@@ -1066,6 +1066,7 @@ url_invalid: Le code n'est pas correct, n'essayez pas de changer l'adresse.
 use_stable_repo: 'Utiliser les dépôts stables'
 use_test_repo: 'Utiliser les dépôts de test'
 user: Utilisateur
+user_admin_code_already_used: 'Le code administratif %code% est déjà utilisé'
 user_accounts: Comptes utilisateur
 user_enable_mail_notification_label: 'Activer les notifications par courriel'
 user_creation: 'Création d''un utilisateur'

@@ -40,7 +40,6 @@ class UserRepository extends EntityRepository implements UserProviderInterface
     /**
      * @param PlatformConfigurationHandler $platformConfigHandler
      *
-     * @return PlatformConfigurationHandler
      * @DI\InjectParams({
      *      "platformConfigHandler" = @DI\Inject("claroline.config.platform_config_handler")
      * })

@@ -1058,6 +1058,7 @@ url_invalid: De code is niet correct, probeer niet het adres te veranderen.
 use_stable_repo: Gebruik de stabiele pakketten
 use_test_repo: Gebruik de testpakketten
 user: Gebruiker
+user_admin_code_already_used: De administratieve code %code% wordt al gebruikt.
 user_accounts: Rekeningen van de gebruikers
 user_enable_mail_notification_label: De notities per e-mail activeren
 user_creation: Een gebruiker maken
