@@ -88,6 +88,7 @@ actions.play = (previousPaper = null, testMode = false) => {
         actions.initPlayer(generatePaper(
           quizSelectors.quiz(getState()),
           quizSelectors.steps(getState()),
+          quizSelectors.items(getState()),
           previousPaper
         ))
       )
