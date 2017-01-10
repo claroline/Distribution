@@ -14,6 +14,9 @@ const UPDATE_CHOICE = 'UPDATE_CHOICE'
 const ADD_CHOICE = 'ADD_CHOICE'
 const REMOVE_CHOICE = 'REMOVE_CHOICE'
 
+export const QCM_MULTIPLE = 'multiple'
+export const QCM_SINGLE = 'single'
+
 export const actions = {
   updateProperty: makeActionCreator(UPDATE_PROP, 'property', 'value'),
   updateChoice: makeActionCreator(UPDATE_CHOICE, 'id', 'property', 'value'),

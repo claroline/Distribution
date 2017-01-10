@@ -6,7 +6,7 @@ import {Textarea} from './../../../components/form/textarea.jsx'
 
 export const StepForm = props => {
   return (
-    <form>
+    <fieldset>
       <FormGroup
         controlId={`step-${props.id}-title`}
         label={t('title')}
@@ -43,7 +43,7 @@ export const StepForm = props => {
           onChange={e => props.onChange({parameters: {maxAttempts: e.target.value}})}
         />
       </FormGroup>
-    </form>
+    </fieldset>
   )
 }
 
