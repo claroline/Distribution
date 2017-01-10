@@ -34,6 +34,7 @@ import {
   QUIZ_SAVED,
   QUIZ_SAVING,
   QUIZ_SAVE_ERROR,
+  QUIZ_VALIDATING,
   HINT_ADD,
   HINT_CHANGE,
   HINT_REMOVE,
@@ -281,6 +282,17 @@ function reduceOpenPanels(panels = initialPanelState(), action = {}) {
   return panels
 }
 
+function reduceValidatingState(validating = false, action = {}) {
+  switch (action.type) {
+    case QUIZ_VALIDATING:
+      return true
+    case QUIZ_SAVED:
+      return false
+  }
+
+  return validating
+}
+
 function reduceSavingState(saving = false, action = {}) {
   switch (action.type) {
     case QUIZ_SAVING:
@@ -309,6 +321,7 @@ function reduceSavedState(saved = true, action = {}) {
 const reduceEditor = combineReducers({
   currentObject: reduceCurrentObject,
   openPanels: reduceOpenPanels,
+  validating: reduceValidatingState,
   saving: reduceSavingState,
   saved: reduceSavedState
 })

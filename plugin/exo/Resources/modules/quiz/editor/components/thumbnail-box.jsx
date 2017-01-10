@@ -35,6 +35,8 @@ export class ThumbnailBox extends Component {
             title={item.title}
             type={item.type}
             active={item.active}
+            validating={this.props.validating}
+            hasErrors={item.hasErrors}
             onClick={this.props.onThumbnailClick}
             onDeleteClick={this.props.onStepDeleteClick}
             onSort={this.props.onThumbnailMove}
@@ -63,6 +65,7 @@ export class ThumbnailBox extends Component {
 
 ThumbnailBox.propTypes = {
   thumbnails: T.arrayOf(T.object).isRequired,
+  validating: T.bool.isRequired,
   onNewStepClick: T.func.isRequired,
   onStepDeleteClick: T.func.isRequired,
   onThumbnailClick: T.func.isRequired,

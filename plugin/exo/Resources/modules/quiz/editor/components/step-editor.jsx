@@ -345,7 +345,3 @@ StepEditor.propTypes = {
   showModal: T.func.isRequired,
   closeModal: T.func.isRequired
 }
-
-StepEditor.defaultProps = {
-  validating: false
-}
