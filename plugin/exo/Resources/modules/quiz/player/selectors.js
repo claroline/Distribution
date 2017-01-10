@@ -90,10 +90,15 @@ const currentStepTries = createSelector(
   }
 )
 
+const currentStepMaxAttempts = createSelector(
+  currentStep,
+  (currentStep) => currentStep.parameters.maxAttempts
+)
+
 const currentStepSend = createSelector(
   currentStepTries,
-  quizMaxAttempts,
-  (currentStepTries, quizMaxAttempts) => currentStepTries < quizMaxAttempts
+  currentStepMaxAttempts,
+  (currentStepTries, currentStepMaxAttempts) => currentStepTries < currentStepMaxAttempts || 0 === currentStepMaxAttempts
 )
 
 export const select = {
@@ -113,5 +118,6 @@ export const select = {
   previous,
   next,
   currentStepTries,
+  currentStepMaxAttempts,
   currentStepSend
 }

@@ -57,8 +57,8 @@ const Player = props => {
         finish={() => props.finish(props.quizId, props.paper, props.answers, props.showFeedback)}
         currentStepSend={props.currentStepSend}
       />
-      </div>
-    )
+    </div>
+  )
 }
 
 Player.propTypes = {

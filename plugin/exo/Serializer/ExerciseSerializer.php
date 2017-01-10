@@ -164,9 +164,7 @@ class ExerciseSerializer implements SerializerInterface
         $parameters->randomOrder = $exercise->getRandomOrder();
         $parameters->randomPick = $exercise->getRandomPick();
         $parameters->pick = $exercise->getPick();
-        if ($exercise->getMaxAttempts()) {
-            $parameters->maxAttempts = $exercise->getMaxAttempts();
-        }
+        $parameters->maxAttempts = $exercise->getMaxAttempts();
         $parameters->showFeedback = $exercise->getShowFeedback();
         $parameters->duration = $exercise->getDuration();
         $parameters->anonymizeAttempts = $exercise->getAnonymizeAttempts();
