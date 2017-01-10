@@ -89,6 +89,7 @@ class PlatformConfiguration
     private $loginTargetRoute;
     private $enableOpengraph;
     private $tmpDir;
+    private $isUserAdminCodeUnique;
     /**
      * @param mixed $sessionDbDataCol
      */
@@ -809,5 +810,25 @@ class PlatformConfiguration
     public function getTmpDir()
     {
         return $this->tmpDir;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsUserAdminCodeUnique()
+    {
+        return $this->isUserAdminCodeUnique;
+    }
+
+    /**
+     * @param mixed $isUserAdminCodeUnique
+     *
+     * @return $this
+     */
+    public function setIsUserAdminCodeUnique($isUserAdminCodeUnique)
+    {
+        $this->isUserAdminCodeUnique = $isUserAdminCodeUnique;
+
+        return $this;
     }
 }

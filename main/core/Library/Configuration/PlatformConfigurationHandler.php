@@ -99,6 +99,7 @@ class PlatformConfigurationHandler
         'enable_rich_text_file_import' => false,
         'login_target_route' => 'claro_security_login',
         'enable_opengraph' => true,
+        'is_user_admin_code_unique' => true,
     ];
     private $lockedParameters;
 
@@ -229,6 +230,7 @@ class PlatformConfigurationHandler
         $config->setLoginTargetRoute($this->parameters['login_target_route']);
         $config->setEnableOpengraph($this->parameters['enable_opengraph']);
         $config->setTmpDir($this->parameters['tmp_dir']);
+        $config->setIsUserAdminCodeUnique($this->parameters['is_user_admin_code_unique']);
 
         return $config;
     }

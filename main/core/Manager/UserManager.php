@@ -392,6 +392,10 @@ class UserManager
             $options['ignore-update'] = false;
         }
 
+        if (!isset($options['single-validate'])) {
+            $options['single-validate'] = false;
+        }
+
         $returnValues = [];
         $skipped = [];
         //keep these roles before the clear() will mess everything up. It's not what we want.
@@ -501,7 +505,11 @@ class UserManager
 
             if (!$userEntity) {
                 $userEntity = $this->userRepo->findOneByUsername($username);
-                if (!$userEntity && $code !== null) {
+                if (
+                    !$userEntity &&
+                    $code !== null &&
+                    $this->platformConfigHandler->getParameter('is_user_admin_code_unique')
+                ) {
                     //the code isn't required afaik
                     $userEntity = $this->userRepo->findOneByAdministrativeCode($code);
                 }
@@ -1282,6 +1290,10 @@ class UserManager
 
     public function getUserByUsernameOrMailOrCode($username, $mail, $code)
     {
+        if (!$this->platformConfigHandler->getParameter('is_user_admin_code_unique')) {
+            return $this->userRepo->findUserByUsernameOrEmail($username, $mail, true);
+        }
+
         return $this->userRepo->findUserByUsernameOrMailOrCode($username, $mail, $code);
     }
 

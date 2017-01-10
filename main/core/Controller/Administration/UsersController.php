@@ -290,10 +290,14 @@ class UsersController extends Controller
         $form = $this->formFactory->create(new ImportUserType(true));
         $form->handleRequest($this->request);
         $mode = $form->get('mode')->getData();
+        $options = [];
 
         if ($mode === 'update') {
             $form = $this->formFactory->create(new ImportUserType(true, 1));
             $form->handleRequest($this->request);
+            $options['ignore-update'] = false;
+        } else {
+            $options['ignore-update'] = true;
         }
 
         if ($form->isValid()) {
@@ -359,7 +363,8 @@ class UsersController extends Controller
                     $sendMail,
                     null,
                     $additionalRoles,
-                    $enableEmailNotification
+                    $enableEmailNotification,
+                    $options
                 );
 
                 foreach ($updatedNames as $name) {
@@ -378,7 +383,8 @@ class UsersController extends Controller
                 $sendMail,
                 null,
                 $additionalRoles,
-                $enableEmailNotification
+                $enableEmailNotification,
+                $options
             );
 
             foreach ($createdNames as $name) {
