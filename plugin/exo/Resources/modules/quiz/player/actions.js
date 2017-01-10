@@ -97,9 +97,7 @@ actions.play = (previousPaper = null, testMode = false) => {
 }
 
 actions.submit = (quizId, paperId, answers = {}) => {
-  console.log('copucou')
   return (dispatch, getState) => {
-    console.log(answers)
     if (!isEmpty(answers)) {
       const updated = {}
       for (let answer in answers) {
@@ -110,9 +108,7 @@ actions.submit = (quizId, paperId, answers = {}) => {
       }
 
       if (!isEmpty(updated)) {
-        console.log('not empty')
         if (!playerSelectors.offline(getState())) {
-          console.log('not offline')
           return dispatch(actions.sendAnswers(quizId, paperId, updated))
         } else {
           // This seems a little hacky but if we dispatch a regular action

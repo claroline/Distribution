@@ -146,7 +146,7 @@ const PlayerNav = props =>
 PlayerNav.propTypes = {
   next: T.object,
   previous: T.object,
-  step: T.object,
+  step: T.object.isRequired,
   navigateTo: T.func.isRequired,
   finish: T.func.isRequired,
   navigateToAndValidate: T.func.isRequired,

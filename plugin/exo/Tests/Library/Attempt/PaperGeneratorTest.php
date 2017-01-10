@@ -444,7 +444,7 @@ class PaperGeneratorTest extends TransactionalTestCase
             // This permits to avoid a false positive
             $newPaper = $this->generator->create($firstPaper->getExercise(), $firstPaper->getUser(), $firstPaper);
             $newStructure = json_decode($newPaper->getStructure());
-            if ($this->collectionsAreEquals($decodedStructure->steps[0]->items, $newStructure->steps[0]->items)) {
+            if (!$this->collectionsAreEquals($decodedStructure->steps[0]->items, $newStructure->steps[0]->items)) {
                 $changed = true;
                 break;
             }

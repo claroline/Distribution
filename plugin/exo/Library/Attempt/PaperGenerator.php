@@ -115,7 +115,7 @@ class PaperGenerator
 
     private function pickSteps(Exercise $exercise, \stdClass $previousExercise = null)
     {
-        if (!empty($previousExercise) && Recurrence::ONCE === $exercise->getRandomPick()) {
+        if (!empty($previousExercise) && Recurrence::ALWAYS !== $exercise->getRandomPick()) {
             // Just get the list of steps from the previous paper
             $steps = array_map(function (\stdClass $pickedStep) use ($exercise) {
                 return $exercise->getStep($pickedStep->id);
@@ -129,12 +129,19 @@ class PaperGenerator
         }
 
         $pickedSteps = [];
-        foreach ($steps as $index => $step) {
+        foreach ($steps as $step) {
+            $previousStructure = null;
+            if ($previousExercise) {
+                foreach ($previousExercise->steps as $stepStructure) {
+                    if ($stepStructure->id === $step->getUuid()) {
+                        $previousStructure = $stepStructure;
+                        break;
+                    }
+                }
+            }
+
             $pickedStep = $this->stepSerializer->serialize($step);
-            $pickedStep->items = $this->pickItems(
-                $step,
-                $previousExercise && $previousExercise->steps[$index] ? $previousExercise->steps[$index] : null
-            );
+            $pickedStep->items = $this->pickItems($step, $previousStructure);
             $pickedSteps[] = $pickedStep;
         }
 
@@ -157,7 +164,7 @@ class PaperGenerator
      */
     private function pickItems(Step $step, \stdClass $previousStep = null)
     {
-        if (!empty($previousStep) && Recurrence::ONCE === $step->getRandomPick()) {
+        if (!empty($previousStep) && Recurrence::ALWAYS !== $step->getRandomPick()) {
             // Just get the list of question from previous step
             // We get the entities to reapply shuffle (= redo serialization with shuffle option)
             $items = array_map(function (\stdClass $pickedItem) use ($step) {

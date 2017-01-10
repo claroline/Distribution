@@ -61,7 +61,7 @@ class Step
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="StepQuestion", mappedBy="step", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="StepQuestion", mappedBy="step", cascade={"all"}, orphanRemoval=true)
      * @ORM\OrderBy({"order" = "ASC"})
      */
     private $stepQuestions;
@@ -190,7 +190,7 @@ class Step
     /**
      * Gets a question by its uuid.
      *
-     * @param $uuid
+     * @param string $uuid
      *
      * @return Question|null
      */
@@ -214,11 +214,9 @@ class Step
      */
     public function getQuestions()
     {
-        $stepQuestions = $this->stepQuestions->toArray();
-
         return array_map(function (StepQuestion $stepQuestion) {
             return $stepQuestion->getQuestion();
-        }, $stepQuestions);
+        }, $this->stepQuestions->toArray());
     }
 
     /**
