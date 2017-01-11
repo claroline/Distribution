@@ -13,7 +13,7 @@ import {MODAL_DELETE_CONFIRM} from './../../../modal'
 import {MODAL_ADD_ITEM} from './../components/add-item-modal.jsx'
 import {MODAL_IMPORT_ITEMS} from './../components/import-items-modal.jsx'
 import {Icon as ItemIcon} from './../../../items/components/icon.jsx'
-import {TooltipElement} from './../../../components/form/tooltip-element.jsx'
+import {ValidationStatus} from './validation-status.jsx'
 import {StepForm} from './step-form.jsx'
 import {ItemForm} from './item-form.jsx'
 
@@ -100,19 +100,10 @@ const ItemHeader = props =>
         {props.item.title || trans(getDefinition(props.item.type).name, {}, 'question_types')}
       </span>
       {props.hasErrors &&
-        <TooltipElement
+        <ValidationStatus
           id={`${props.item.id}-panel-tip`}
-          position="right"
-          tip={tex(props.validating ?
-            'editor_validating_desc' :
-            'editor_not_validating_desc'
-          )}
-        >
-          <span className={props.validating ?
-            'error-text fa fa-warning' :
-            'warning-text fa fa-clock-o'
-          }/>
-        </TooltipElement>
+          validating={props.validating}
+        />
       }
     </span>
     <ItemActions
