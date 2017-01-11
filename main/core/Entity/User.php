@@ -45,6 +45,7 @@ use Symfony\Component\Validator\ExecutionContextInterface;
  * @DoctrineAssert\UniqueEntity("mail")
  * @Assert\Callback(methods={"isPublicUrlValid"})
  * @ClaroAssert\Username()
+ * @ClaroAssert\UserAdministrativeCode()
  */
 class User extends AbstractRoleSubject implements Serializable, AdvancedUserInterface, EquatableInterface, OrderableInterface
 {
@@ -153,7 +154,6 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
      * @ORM\Column(name="administrative_code", nullable=true)
      * @Groups({"api_user", "api_user_min"})
      * @SerializedName("administrativeCode")
-     * @ClaroAssert\UserAdministrativeCode()
      */
     protected $administrativeCode;
 

@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Validator\Constraints;
 
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -60,15 +61,17 @@ class UserAdministrativeCodeValidator extends ConstraintValidator
     /**
      * Checks if administration code is unique.
      *
-     * @param mixed      $code
+     * @param User       $user
      * @param Constraint $constraint
      */
-    public function validate($code, Constraint $constraint)
+    public function validate($user, Constraint $constraint)
     {
         if ($this->platformConfigHandler->getParameter('is_user_admin_code_unique')) {
-            $user = $this->om->getRepository('ClarolineCoreBundle:User')->findOneByAdministrativeCode($code);
-            if ($user) {
-                $this->context->addViolation(
+            $code = $user->getAdministrativeCode();
+            $tmpUser = $this->om->getRepository('ClarolineCoreBundle:User')->findOneByAdministrativeCode($code);
+            if ($tmpUser && $tmpUser->getUsername() !== $user->getUsername()) {
+                $this->context->addViolationAt(
+                    'administrativeCode',
                     $this->translator->trans($constraint->error, ['%code%' => $code], 'platform')
                 );
             }
