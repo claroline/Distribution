@@ -105,8 +105,7 @@ WordItem.propTypes = {
 
 const WordsItems = props =>
   <div>
-    { find(props.item.solutions, '_touched') &&
-      get(props.item, '_errors.solutions') &&
+    {get(props.item, '_errors.solutions') &&
       <div className="error-text">
         <span className="fa fa-warning"></span>
         {props.item._errors.solutions}

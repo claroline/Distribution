@@ -48,24 +48,24 @@ describe('Set reducer', () => {
     })
   })
   // ITEM base properties
-  it('updates random base propertie and marks it as touched', () => {
+  it('updates random base property', () => {
     const item = makeFixture()
     const reduced = reduce(item, subActions.updateProperty('random', true))
-    const expected = makeFixture({random: true, _touched: {random: true}})
+    const expected = makeFixture({random: true})
     ensure.equal(reduced, expected)
   })
 
-  it('updates penalty base propertie and marks it as touched', () => {
+  it('updates penalty base property', () => {
     const item = makeFixture()
     const reduced = reduce(item, subActions.updateProperty('penalty', 1))
-    const expected = makeFixture({penalty: 1, _touched: {penalty: true}})
+    const expected = makeFixture({penalty: 1})
     ensure.equal(reduced, expected)
   })
 
   it('sanitizes incoming data', () => {
     const item = makeFixture()
     const reduced = reduce(item, subActions.updateProperty('penalty', '1'))
-    const expected = makeFixture({penalty: 1, _touched: {penalty: true}})
+    const expected = makeFixture({penalty: 1})
     ensure.equal(reduced, expected)
   })
 
@@ -100,8 +100,7 @@ describe('Set reducer', () => {
           associations:[
             {_itemData: 'ABC'}
           ]
-        },
-        _itemsTouched: {data: true}
+        }
       }
     )
     ensure.equal(reduced, expected)
@@ -145,18 +144,12 @@ describe('Set reducer', () => {
     ensure.equal(reduced, expected)
   })
 
-  it('updates odd item data and mark odd as touched', () => {
+  it('updates odd item data', () => {
     const item = makeFixture()
     const reduced = reduce(item, subActions.updateItem('3', 'data', 'ABC', true))
-
-    const expected = makeFixture(
-      {
-        items: [
-          {}, {}, {data: 'ABC'}
-        ],
-        _oddTouched: {data: true}
-      }
-    )
+    const expected = makeFixture({
+      items: [{}, {}, {data: 'ABC'}]
+    })
     ensure.equal(reduced, expected)
   })
 
@@ -197,18 +190,12 @@ describe('Set reducer', () => {
     ensure.equal(reduced, expected)
   })
 
-  it('updates set data and mark set as touched', () => {
+  it('updates set data', () => {
     const item = makeFixture()
     const reduced = reduce(item, subActions.updateSet('1', 'data', 'ABC'))
-
-    const expected = makeFixture(
-      {
-        sets: [
-          {data: 'ABC'}, {}
-        ],
-        _setTouched: {data: true}
-      }
-    )
+    const expected = makeFixture({
+      sets: [{data: 'ABC'}, {}]
+    })
     ensure.equal(reduced, expected)
   })
 
@@ -233,7 +220,7 @@ describe('Set reducer', () => {
     ensure.equal(reduced, expected)
   })
 
-  it('updates solution association score and mark association as touched', () => {
+  it('updates solution association score', () => {
     const item = makeFixture()
     const reduced = reduce(item, subActions.updateAssociation('2', '1', 'score', 2))
     const expected = makeFixture({
@@ -241,13 +228,12 @@ describe('Set reducer', () => {
         associations: [
           {score: 2}
         ]
-      },
-      _associationTouched: {score: true}
+      }
     })
     ensure.equal(reduced, expected)
   })
 
-  it('updates solution association feedback and mark association as touched', () => {
+  it('updates solution association feedback', () => {
     const item = makeFixture()
     const reduced = reduce(item, subActions.updateAssociation('2', '1', 'feedback', 'FEEDBACK'))
     const expected = makeFixture({
@@ -255,14 +241,13 @@ describe('Set reducer', () => {
         associations: [
           {feedback: 'FEEDBACK'}
         ]
-      },
-      _associationTouched: {feedback: true}
+      }
     })
     ensure.equal(reduced, expected)
   })
 
   // SOLUTIONS.ODD
-  it('updates solution odd score and mark odd as touched', () => {
+  it('updates solution odd score', () => {
     const item = makeFixture()
     const reduced = reduce(item, subActions.updateItem('3', 'score', -5, true))
     const expected = makeFixture({
@@ -270,13 +255,12 @@ describe('Set reducer', () => {
         odd: [
           {score: -5}
         ]
-      },
-      _oddTouched: {score: true}
+      }
     })
     ensure.equal(reduced, expected)
   })
 
-  it('updates solution odd feedback and mark odd as touched', () => {
+  it('updates solution odd feedback', () => {
     const item = makeFixture()
     const reduced = reduce(item, subActions.updateItem('3', 'feedback', 'FEEDBACK', true))
     const expected = makeFixture({
@@ -284,8 +268,7 @@ describe('Set reducer', () => {
         odd: [
           {feedback: 'FEEDBACK'}
         ]
-      },
-      _oddTouched: {feedback: true}
+      }
     })
     ensure.equal(reduced, expected)
   })

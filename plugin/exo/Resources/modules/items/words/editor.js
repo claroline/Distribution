@@ -52,13 +52,7 @@ function reduce(item = {}, action) {
 
     case UPDATE_SOLUTION: {
       const newItem = cloneDeep(item)
-
-      // mark as touched
       const value = action.property === 'score' ? parseFloat(action.value) : action.value
-      newItem.solutions[action.index]._touched = merge(
-        newItem.solutions[action.index]._touched || {},
-        set({}, action.property, true)
-      )
       newItem.solutions[action.index][action.property] = value
 
       return newItem

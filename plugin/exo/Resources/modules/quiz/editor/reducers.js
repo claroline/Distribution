@@ -61,10 +61,7 @@ function reduceQuiz(quiz = initialQuizState(), action = {}) {
 
       const errors = validate.quiz(updatedQuiz)
       updatedQuiz._errors = errors
-      updatedQuiz._touched = merge(
-        updatedQuiz._touched || {},
-        set({}, action.propertyPath, true)
-      )
+
       return updatedQuiz
     }
     case STEP_CREATE:
@@ -164,10 +161,7 @@ function reduceItems(items = {}, action = {}) {
         set({}, action.propertyPath, action.value)
       )
       updatedItem._errors = validate.item(updatedItem)
-      updatedItem._touched = merge(
-        updatedItem._touched || {},
-        set({}, action.propertyPath, true)
-      )
+
       return update(items, {[action.id]: {$set: updatedItem}})
     }
     case ITEMS_IMPORT: {

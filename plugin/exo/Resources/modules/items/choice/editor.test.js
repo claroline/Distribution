@@ -61,22 +61,17 @@ describe('Choice reducer', () => {
     })
   })
 
-  it('updates base properties and marks them as touched', () => {
+  it('updates base properties', () => {
     const item = makeFixture()
     const reduced = reduce(item, subActions.updateProperty('random', true))
-    const expected = makeFixture({random: true, _touched: {random: true}})
+    const expected = makeFixture({random: true})
     ensure.equal(reduced, expected)
   })
 
   it('sanitizes incoming data', () => {
     const item = makeFixture()
     const reduced = reduce(item, subActions.updateProperty('score.success', '123'))
-    const expected = makeFixture({
-      score: {success: 123},
-      _touched: {
-        score: {success: true}
-      }
-    })
+    const expected = makeFixture({score: {success: 123}})
     ensure.equal(reduced, expected)
   })
 
@@ -102,8 +97,7 @@ describe('Choice reducer', () => {
     const reduced = reduce(item, subActions.updateProperty('multiple', true))
     const expected = makeFixture({
       multiple: true,
-      choices: [{}, {}, {_checked: true}],
-      _touched: {multiple: true}
+      choices: [{}, {}, {_checked: true}]
     })
     ensure.equal(reduced, expected)
   })
@@ -124,12 +118,7 @@ describe('Choice reducer', () => {
     const expected = makeFixture({
       choices: [{_score: 1}, {}, {_score: 0}],
       solutions: [{score: 1}, {}, {score: 0}],
-      score: {type: SCORE_FIXED},
-      _touched: {
-        score: {
-          type: true
-        }
-      }
+      score: {type: SCORE_FIXED}
     })
     ensure.equal(reduced, expected)
   })

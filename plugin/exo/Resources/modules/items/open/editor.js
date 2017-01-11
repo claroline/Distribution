@@ -7,7 +7,6 @@ import {setIfError, notBlank, number, gteZero, chain} from './../../utils/valida
 import {makeActionCreator} from './../../utils/utils'
 import {SCORE_MANUAL} from './../../quiz/enums'
 
-
 const UPDATE = 'UPDATE'
 
 export const actions = {
@@ -17,7 +16,7 @@ export const actions = {
 function reduce(item = {}, action) {
   switch (action.type) {
     case ITEM_CREATE: {
-      return Object.assign({}, item, {        
+      return Object.assign({}, item, {
         contentType: 'text',
         score: {
           type: SCORE_MANUAL,
@@ -30,12 +29,9 @@ function reduce(item = {}, action) {
 
     case UPDATE: {
       const newItem = cloneDeep(item)
-      newItem._touched = merge(
-        newItem._touched || {},
-        set({}, action.property, true)
-      )
       const value = parseFloat(action.value)
-      if(action.property === 'maxScore'){
+
+      if (action.property === 'maxScore') {
         newItem.score.max = value
       } else {
         newItem[action.property] = value

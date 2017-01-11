@@ -412,36 +412,31 @@ class SetForm extends Component {
   render() {
     return (
       <div className="set-question-container">
-        { get(this.props.item, '_touched') &&
-          get(this.props.item, '_errors.item') &&
+        {get(this.props.item, '_errors.item') &&
           <div className="error-text">
             <span className="fa fa-warning"></span>
             {this.props.item._errors.item}
           </div>
         }
-        { get(this.props.item, '_itemsTouched') &&
-          get(this.props.item, '_errors.items') &&
+        {get(this.props.item, '_errors.items') &&
           <div className="error-text">
             <span className="fa fa-warning"></span>
             {this.props.item._errors.items}
           </div>
         }
-        { get(this.props.item, '_setTouched') &&
-          get(this.props.item, '_errors.sets') &&
+        {get(this.props.item, '_errors.sets') &&
           <div className="error-text">
             <span className="fa fa-warning"></span>
             {this.props.item._errors.sets}
           </div>
         }
-        { get(this.props.item, '_associationTouched') &&
-          get(this.props.item, '_errors.solutions') &&
+        {get(this.props.item, '_errors.solutions') &&
           <div className="error-text">
             <span className="fa fa-warning"></span>
             {this.props.item._errors.solutions}
           </div>
         }
-        { get(this.props.item, '_oddTouched') &&
-          get(this.props.item, '_errors.odd') &&
+        {get(this.props.item, '_errors.odd') &&
           <div className="error-text">
             <span className="fa fa-warning"></span>
             {this.props.item._errors.odd}

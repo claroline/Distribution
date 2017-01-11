@@ -368,22 +368,19 @@ class Match extends Component {
   render() {
     return (
       <div id={`match-question-container-id-${this.props.item.id}`} className="match-question-container">
-        { get(this.props.item, '_touched') &&
-          get(this.props.item, '_errors.items') &&
+        {get(this.props.item, '_errors.items') &&
           <div className="error-text">
             <span className="fa fa-warning"></span>
             {this.props.item._errors.items}
           </div>
         }
-        { get(this.props.item, '_touched') &&
-          get(this.props.item, '_errors.solutions') &&
+        {get(this.props.item, '_errors.solutions') &&
           <div className="error-text">
             <span className="fa fa-warning"></span>
             {this.props.item._errors.solutions}
           </div>
         }
-        { get(this.props.item, '_touched') &&
-          get(this.props.item, '_errors.warning') &&
+        {get(this.props.item, '_errors.warning') &&
           <div className="error-text">
             <span className="fa fa-info"></span>
             {this.props.item._errors.warning}

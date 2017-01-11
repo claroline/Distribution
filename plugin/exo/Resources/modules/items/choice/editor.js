@@ -87,10 +87,6 @@ function reduce(item = {}, action) {
       }
 
       const newItem = cloneDeep(item)
-      newItem._touched = merge(
-        newItem._touched || {},
-        set({}, action.property, true)
-      )
       const property = set({}, action.property, value)
       setChoiceTicks(merge(newItem, property))
 
@@ -103,9 +99,6 @@ function reduce(item = {}, action) {
 
     case UPDATE_CHOICE: {
       const newItem = cloneDeep(item)
-
-      // mark as touched
-
       const choiceIndex = newItem.choices.findIndex(choice => choice.id === action.id)
       const value = action.property === 'score' ? parseFloat(action.value) : action.value
       const decoratedName = action.property === 'data' ? 'data' : `_${action.property}`
