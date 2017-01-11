@@ -5,3 +5,25 @@
 .word-danger {
   color: @brand-danger
 }
+
+.choice-paper {
+  border: solid 1px @table-border-color;
+  border-radius: @border-radius-base;
+  margin: 0;
+  width: 100%;
+
+  .item {
+    display: flex;
+    border-bottom: solid 1px @table-border-color;
+    margin: 0;
+    padding: @table-cell-padding;
+  }
+
+  .item:last-of-type {
+    border: none;
+  }
+
+  .word-label {
+    flex-grow: 1;
+  }
+}

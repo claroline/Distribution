@@ -1,22 +1,7 @@
 export const utils = {}
 
 utils.split = (text, solutions, highlight = true) => {
-  const matches = solutions.map(solution => solution.text)
-  const split = []
-
-  //first we find each occurence of a given word
-  matches.forEach(word => {
-    let regex = new RegExp('\\b' + word + '\\b', 'gi')
-    let position = text.search(regex)
-    if (position > -1) {
-      split.push({
-        word,
-        position,
-        score: solutions.find(el => el.text === word).score,
-        feedback: solutions.find(el => el.text === word).feedback
-      })
-    }
-  })
+  const split = utils.getTextElements(text, solutions).filter(el => el.found)
 
   //now we can reorder the array by position and split the text accordingly
   split.sort((a, b) =>  a.position - b.position)
@@ -50,11 +35,31 @@ utils.split = (text, solutions, highlight = true) => {
 
   //I want to rember the last element of the text so I add it aswell to the array
   split.push({
-    word: null,
+    word: '#endoftext#',
     position: null,
     text,
     score: null
   })
 
   return split
+}
+
+utils.getTextElements = (text, solutions) => {
+  const matches = solutions.map(solution => solution.text)
+  const data = []
+
+  //first we find each occurence of a given word
+  matches.forEach(word => {
+    let regex = new RegExp('\\b' + word + '\\b', 'gi')
+    let position = text.search(regex)
+    data.push({
+      word,
+      position,
+      score: solutions.find(el => el.text === word).score,
+      feedback: solutions.find(el => el.text === word).feedback,
+      found: position > -1
+    })
+  })
+
+  return data
 }
