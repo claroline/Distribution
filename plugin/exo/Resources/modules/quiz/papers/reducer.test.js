@@ -11,7 +11,7 @@ describe('Papers reducer', () => {
 
   it('sets papers on init', () => {
     const papers = reducePapers({}, {type: PAPERS_INIT, papers: 'PAPERS'})
-    assertEqual(papers, 'PAPERS')
+    assertEqual(papers.papers, 'PAPERS')
   })
 
   it('updates current paper id', () => {

@@ -406,7 +406,7 @@ class Exercise extends AbstractResource
      *
      * @param $uuid
      *
-     * @return mixed|null
+     * @return Step|null
      */
     public function getStep($uuid)
     {

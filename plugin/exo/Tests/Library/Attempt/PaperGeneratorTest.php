@@ -5,12 +5,15 @@ namespace UJM\ExoBundle\Tests\Library\Attempt;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Question\Question;
 use UJM\ExoBundle\Entity\Step;
 use UJM\ExoBundle\Library\Attempt\PaperGenerator;
 use UJM\ExoBundle\Library\Options\Recurrence;
+use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Testing\Persister;
+use UJM\ExoBundle\Validator\JsonSchema\ExerciseValidator;
 
 class PaperGeneratorTest extends TransactionalTestCase
 {
@@ -20,9 +23,19 @@ class PaperGeneratorTest extends TransactionalTestCase
     private $om;
 
     /**
+     * @var PaperGenerator
+     */
+    private $generator;
+
+    /**
      * @var Persister
      */
     private $persist;
+
+    /**
+     * @var ExerciseValidator
+     */
+    private $exerciseValidator;
 
     /**
      * @var Exercise
@@ -44,6 +57,9 @@ class PaperGeneratorTest extends TransactionalTestCase
         parent::setUp();
 
         $this->om = $this->client->getContainer()->get('claroline.persistence.object_manager');
+        $this->generator = $this->client->getContainer()->get('ujm_exo.generator.paper');
+        $this->exerciseValidator = $this->client->getContainer()->get('ujm_exo.validator.exercise');
+
         $this->persist = new Persister($this->om);
 
         // Initialize some base data for tests
@@ -81,7 +97,7 @@ class PaperGeneratorTest extends TransactionalTestCase
     public function testPaperPropertiesAreCorrectlySet()
     {
         // Generate new attempt for the user and the exercise
-        $newPaper = PaperGenerator::create($this->exercise, $this->user);
+        $newPaper = $this->generator->create($this->exercise, $this->user);
 
         $this->assertInstanceOf('UJM\ExoBundle\Entity\Attempt\Paper', $newPaper);
 
@@ -102,13 +118,13 @@ class PaperGeneratorTest extends TransactionalTestCase
      */
     public function testPaperNumberIncrement()
     {
-        $firstPaper = PaperGenerator::create($this->exercise, $this->user);
+        $firstPaper = $this->generator->create($this->exercise, $this->user);
         $this->assertEquals(1, $firstPaper->getNumber());
 
-        $secondPaper = PaperGenerator::create($this->exercise, $this->user, $firstPaper);
+        $secondPaper = $this->generator->create($this->exercise, $this->user, $firstPaper);
         $this->assertEquals(2, $secondPaper->getNumber());
 
-        $thirdPaper = PaperGenerator::create($this->exercise, $this->user, $secondPaper);
+        $thirdPaper = $this->generator->create($this->exercise, $this->user, $secondPaper);
         $this->assertEquals(3, $thirdPaper->getNumber());
     }
 
@@ -117,9 +133,16 @@ class PaperGeneratorTest extends TransactionalTestCase
      */
     public function testNoUserAllowed()
     {
-        $paper = PaperGenerator::create($this->exercise);
+        $paper = $this->generator->create($this->exercise);
 
         $this->assertTrue(empty($paper->getUser()));
+    }
+
+    public function testInvalidatedPreviousIsNotUsed()
+    {
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
     }
 
     /**
@@ -127,7 +150,7 @@ class PaperGeneratorTest extends TransactionalTestCase
      */
     public function testDefaultPickSteps()
     {
-        $newPaper = PaperGenerator::create($this->exercise, $this->user);
+        $newPaper = $this->generator->create($this->exercise, $this->user);
         $decodedStructure = json_decode($newPaper->getStructure());
 
         // Checks the generated structure for exercise
@@ -136,7 +159,7 @@ class PaperGeneratorTest extends TransactionalTestCase
         // Checks the order
         $pickedIds = array_map(function (\stdClass $pickedStep) {
             return $pickedStep->id;
-        }, $decodedStructure);
+        }, $decodedStructure->steps);
 
         $stepIds = array_map(function (Step $step) {
             return $step->getUuid();
@@ -150,19 +173,23 @@ class PaperGeneratorTest extends TransactionalTestCase
      */
     public function testDefaultPickQuestions()
     {
-        $newPaper = PaperGenerator::create($this->exercise, $this->user);
+        $newPaper = $this->generator->create($this->exercise, $this->user);
         $decodedStructure = json_decode($newPaper->getStructure());
 
         // Checks the generated structure for the step
         $step = $this->exercise->getSteps()->get(0);
-        $this->checkStepStructure($step, $decodedStructure[0]);
+        $this->checkStepStructure($step, $decodedStructure->steps[0]);
 
         // Checks the order
+        $pickedIds = array_map(function (\stdClass $item) {
+            return $item->id;
+        }, $decodedStructure->steps[0]->items);
+
         $questionIds = array_map(function (Question $question) {
             return $question->getUuid();
         }, $step->getQuestions());
 
-        $this->assertEquals($questionIds, $decodedStructure[0]->items);
+        $this->assertEquals($questionIds, $pickedIds);
     }
 
     public function testRandomPickSteps()
@@ -172,28 +199,14 @@ class PaperGeneratorTest extends TransactionalTestCase
         $this->exercise->setPick(2);
 
         // Generate new attempt for the user and the exercise
-        $paper = PaperGenerator::create($this->exercise, $this->user);
+        $paper = $this->generator->create($this->exercise, $this->user);
         $decodedStructure = json_decode($paper->getStructure());
 
         // Checks the generated structure for exercise
         $this->checkExerciseStructure($this->exercise, $decodedStructure);
 
-        // Checks the random part : the generator MUST NOT return the same set each time
-        $randomWork = false;
-        for ($i = 0; $i < 5; ++$i) {
-            // We loop 5 times because the generator can randomly generate many times the same set
-            // Particularly if the whole steps set is small
-            // This permits to avoid a false positive
-            $newPaper = PaperGenerator::create($this->exercise, $this->user);
-            $newStructure = json_decode($newPaper->getStructure());
-            if ($decodedStructure !== $newStructure) {
-                // The item list has changed so it works
-                $randomWork = true;
-                break;
-            }
-        }
-
-        $this->assertTrue($randomWork);
+        // Checks the random part : the generator MUST always return a new set
+        $this->assertTrue($this->checkStepsChange($paper));
     }
 
     public function testRandomPickQuestions()
@@ -204,28 +217,14 @@ class PaperGeneratorTest extends TransactionalTestCase
         $step->setPick(3);
 
         // Generate new attempt for the user and the exercise
-        $paper = PaperGenerator::create($this->exercise, $this->user);
+        $paper = $this->generator->create($this->exercise, $this->user);
         $decodedStructure = json_decode($paper->getStructure());
 
         // Checks the generated structure for step
-        $this->checkStepStructure($step, $decodedStructure[0]);
+        $this->checkStepStructure($step, $decodedStructure->steps[0]);
 
-        // Checks the random part : the generator MUST NOT return the same set each time
-        $randomWork = false;
-        for ($i = 0; $i < 5; ++$i) {
-            // We loop 5 times because the generator can randomly generate many times the same set
-            // Particularly if the whole questions set is small
-            // This permits to avoid a false positive
-            $newPaper = PaperGenerator::create($this->exercise, $this->user);
-            $newStructure = json_decode($newPaper->getStructure());
-            if ($decodedStructure[0]->items !== $newStructure[0]->items) {
-                // The item list has changed so it works
-                $randomWork = true;
-                break;
-            }
-        }
-
-        $this->assertTrue($randomWork);
+        // Checks the random part : the generator MUST always return a new set
+        $this->assertTrue($this->checkFirstStepItemsChange($paper));
     }
 
     public function testRandomOrderSteps()
@@ -234,58 +233,99 @@ class PaperGeneratorTest extends TransactionalTestCase
         $this->exercise->setRandomOrder(Recurrence::ALWAYS);
 
         // Generate new attempt for the user and the exercise
-        $paper = PaperGenerator::create($this->exercise, $this->user);
+        $paper = $this->generator->create($this->exercise, $this->user);
         $decodedStructure = json_decode($paper->getStructure());
 
         // Just check the random option do not break the whole structure
         $this->checkExerciseStructure($this->exercise, $decodedStructure);
 
-        // Generate more papers to see if the steps are randomized
-        $randomWork = false;
-        for ($i = 0; $i < 5; ++$i) {
-            // We loop 5 times because the generator can randomly generate many times the same order
-            // Particularly if the whole steps set is small
-            // This permits to avoid a false positive
-            $newPaper = PaperGenerator::create($this->exercise, $this->user);
-            $newStructure = json_decode($newPaper->getStructure());
-            if ($decodedStructure !== $newStructure) {
-                $randomWork = true;
-                break;
-            }
-        }
-
-        $this->assertTrue($randomWork);
+        // Checks the random part : the generator MUST always return a new order
+        $this->assertTrue($this->checkStepsChange($paper));
     }
 
     public function testRandomOrderQuestions()
     {
         // Set random picking for the step
         $step = $this->exercise->getSteps()->get(0);
-        $step->setRandomPick(Recurrence::ALWAYS);
-        $step->setPick(3);
+        $step->setRandomOrder(Recurrence::ALWAYS);
 
         // Generate new attempt for the user and the exercise
-        $paper = PaperGenerator::create($this->exercise, $this->user);
+        $paper = $this->generator->create($this->exercise, $this->user);
         $decodedStructure = json_decode($paper->getStructure());
 
         // Just check the random option do not break the whole structure
-        $this->checkStepStructure($step, $decodedStructure[0]);
+        $this->checkStepStructure($step, $decodedStructure->steps[0]);
 
-        // Generate more papers to see if the questions are randomized
-        $randomWork = false;
-        for ($i = 0; $i < 5; ++$i) {
-            // We loop 5 times because the generator can randomly generate many times the same order
-            // Particularly if the whole questions set is small
-            // This permits to avoid a false positive
-            $newPaper = PaperGenerator::create($this->exercise, $this->user);
-            $newStructure = json_decode($newPaper->getStructure());
-            if ($decodedStructure[0]->items !== $newStructure[0]->items) {
-                $randomWork = true;
-                break;
-            }
-        }
+        // Checks the random part : the generator MUST always return a new order
+        $this->assertTrue($this->checkFirstStepItemsChange($paper));
+    }
 
-        $this->assertTrue($randomWork);
+    public function testRandomPickStepsOnce()
+    {
+        // Set random order for the exercise
+        $this->exercise->setRandomPick(Recurrence::ONCE);
+        $this->exercise->setPick(2);
+
+        // Generate new attempt for the user and the exercise
+        $paper = $this->generator->create($this->exercise, $this->user);
+        $decodedStructure = json_decode($paper->getStructure());
+
+        // Just check the random option do not break the whole structure
+        $this->checkExerciseStructure($this->exercise, $decodedStructure);
+
+        // Checks the random part : the generator MUST always return the same set after the first attempt
+        $this->assertTrue(!$this->checkStepsChange($paper));
+    }
+
+    public function testRandomPickQuestionsOnce()
+    {
+        // Set random picking for the step
+        $step = $this->exercise->getSteps()->get(0);
+        $step->setRandomPick(Recurrence::ONCE);
+        $step->setPick(2);
+
+        // Generate new attempt for the user and the exercise
+        $paper = $this->generator->create($this->exercise, $this->user);
+        $decodedStructure = json_decode($paper->getStructure());
+
+        // Checks the generated structure for step
+        $this->checkStepStructure($step, $decodedStructure->steps[0]);
+
+        // Checks the random part : the generator MUST always return the same set after the first attempt
+        $this->assertTrue(!$this->checkFirstStepItemsChange($paper));
+    }
+
+    public function testRandomOrderStepsOnce()
+    {
+        // Set random order for the exercise
+        $this->exercise->setRandomOrder(Recurrence::ONCE);
+
+        // Generate new attempt for the user and the exercise
+        $paper = $this->generator->create($this->exercise, $this->user);
+        $decodedStructure = json_decode($paper->getStructure());
+
+        // Just check the random option do not break the whole structure
+        $this->checkExerciseStructure($this->exercise, $decodedStructure);
+
+        // Checks the random part : the generator MUST always return the same order after the first attempt
+        $this->assertTrue(!$this->checkStepsChange($paper));
+    }
+
+    public function testRandomOrderQuestionsOnce()
+    {
+        // Set random picking for the step
+        $step = $this->exercise->getSteps()->get(0);
+        $step->setRandomOrder(Recurrence::ONCE);
+
+        // Generate new attempt for the user and the exercise
+        $paper = $this->generator->create($this->exercise, $this->user);
+        $decodedStructure = json_decode($paper->getStructure());
+
+        // Just check the random option do not break the whole structure
+        $this->checkStepStructure($step, $decodedStructure->steps[0]);
+
+        // Checks the random part : the generator MUST always return the same order after the first attempt
+        $this->assertTrue(!$this->checkFirstStepItemsChange($paper));
     }
 
     /**
@@ -298,7 +338,7 @@ class PaperGeneratorTest extends TransactionalTestCase
         $this->exercise->setPick(6); // There is only 4 steps defined in the `setUp()` method
 
         // Generate new attempt for the user and the exercise
-        PaperGenerator::create($this->exercise, $this->user);
+        $this->generator->create($this->exercise, $this->user);
     }
 
     /**
@@ -312,38 +352,7 @@ class PaperGeneratorTest extends TransactionalTestCase
         $step->setPick(6); // There is only 1 question defined in the `setUp()` method
 
         // Generate new attempt for the user and the exercise
-        PaperGenerator::create($this->exercise, $this->user);
-    }
-
-    public function testDeletedStepIsNotPickedAgain()
-    {
-        // Set random picking for the exercise
-        $this->exercise->setRandomPick(Recurrence::ONCE);
-        $this->exercise->setPick(0); // Get all steps for easier test
-
-        // Generate new attempt for the user and the exercise
-        $firstPaper = PaperGenerator::create($this->exercise, $this->user);
-
-        // Delete a step from the exercise
-        $deletedStep = $this->exercise->getSteps()->get(0);
-        $this->exercise->removeStep($deletedStep);
-
-        // Creates a new attempt based on the structure of the first one
-        $secondPaper = PaperGenerator::create($this->exercise, $this->user, $firstPaper);
-
-        // Checks the deleted step does not appear in the new paper
-        $decodedStructure = json_decode($secondPaper->getStructure());
-        $pickedIds = array_map(function (\stdClass $step) {
-            return $step->id;
-        }, $decodedStructure);
-        $this->assertFalse(in_array($deletedStep->getUuid(), $pickedIds));
-    }
-
-    public function testDeletedQuestionIsNotPickedAgain()
-    {
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->generator->create($this->exercise, $this->user);
     }
 
     /**
@@ -355,12 +364,12 @@ class PaperGeneratorTest extends TransactionalTestCase
      */
     private function checkExerciseStructure(Exercise $exercise, $exerciseStructure)
     {
-        $this->assertTrue(is_array($exerciseStructure));
-        $this->assertTrue(!empty($exerciseStructure));
+        // Checks the structure of the paper is a valid exercise
+        $this->assertCount(0, $this->exerciseValidator->validate($exerciseStructure, [Validation::REQUIRE_SOLUTIONS]));
 
         // Check number of steps (the configured pick number or all the defined steps)
         $expectedCount = 0 !== $exercise->getPick() ? $exercise->getPick() : $exercise->getSteps()->count();
-        $this->assertCount($expectedCount, $exerciseStructure);
+        $this->assertCount($expectedCount, $exerciseStructure->steps);
     }
 
     /**
@@ -372,7 +381,6 @@ class PaperGeneratorTest extends TransactionalTestCase
      */
     private function checkStepStructure(Step $step, $stepStructure)
     {
-        $this->assertTrue(!empty($stepStructure));
         $this->assertInstanceOf('\stdClass', $stepStructure);
         $this->assertEquals($stepStructure->id, $step->getUuid());
         $this->assertTrue(is_array($stepStructure->items));
@@ -380,5 +388,68 @@ class PaperGeneratorTest extends TransactionalTestCase
         // Check number of questions (the configured pick number or all the defined questions)
         $expectedCount = 0 !== $step->getPick() ? $step->getPick() : $step->getStepQuestions()->count();
         $this->assertCount($expectedCount, $stepStructure->items);
+    }
+
+    /**
+     * Compares two collections of stdClass.
+     *
+     * @param \stdClass[] $first
+     * @param \stdClass[] $second
+     *
+     * @return bool
+     */
+    private function collectionsAreEquals(array $first, array $second)
+    {
+        $firstIds = array_map(function (\stdClass $item) {
+            return $item->id;
+        }, $first);
+
+        $secondIds = array_map(function (\stdClass $item) {
+            return $item->id;
+        }, $second);
+
+        return $firstIds === $secondIds;
+    }
+
+    private function checkStepsChange(Paper $firstPaper)
+    {
+        $decodedStructure = json_decode($firstPaper->getStructure());
+
+        // Generate more papers to see if we keep the same steps
+        $changed = false;
+        for ($i = 0; $i < 5; ++$i) {
+            // We loop 5 times because the generator can randomly generate many times the same set
+            // Particularly if the whole steps set is small
+            // This permits to avoid a false positive
+            $newPaper = $this->generator->create($firstPaper->getExercise(), $firstPaper->getUser(), $firstPaper);
+            $newStructure = json_decode($newPaper->getStructure());
+            if (!$this->collectionsAreEquals($decodedStructure->steps, $newStructure->steps)) {
+                $changed = true;
+                break;
+            }
+        }
+
+        return $changed;
+    }
+
+    private function checkFirstStepItemsChange(Paper $firstPaper)
+    {
+        $decodedStructure = json_decode($firstPaper->getStructure());
+
+        // Generate more papers to see if the questions are randomized
+        $changed = false;
+        for ($i = 0; $i < 5; ++$i) {
+            // We loop 5 times because the generator can randomly generate many times the same order
+            // Particularly if the whole questions set is small
+            // This permits to avoid a false positive
+            $newPaper = $this->generator->create($firstPaper->getExercise(), $firstPaper->getUser(), $firstPaper);
+            $newStructure = json_decode($newPaper->getStructure());
+            if (!$this->collectionsAreEquals($decodedStructure->steps[0]->items, $newStructure->steps[0]->items)) {
+                $changed = true;
+                break;
+            }
+        }
+
+        return $changed;
     }
 }

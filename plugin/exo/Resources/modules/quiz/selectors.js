@@ -6,6 +6,7 @@ const alerts = state => state.alerts
 const empty = state => state.quiz.steps.length === 0
 const quiz = state => state.quiz
 const steps = state => state.steps
+const items = state => state.items
 const id = state => state.quiz.id
 const description = state => state.quiz.description
 const parameters = state => state.quiz.parameters
@@ -22,6 +23,7 @@ export default {
   id,
   quiz,
   steps,
+  items,
   empty,
   editable,
   hasPapers,

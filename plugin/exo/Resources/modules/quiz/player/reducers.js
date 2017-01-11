@@ -56,9 +56,9 @@ function submitAnswers(state, action) {
 }
 
 function initCurrentStepAnswers(state, action) {
-  const newAnswers = action.step.items.reduce((acc, itemId) => {
-    if (!state[itemId]) {
-      acc[itemId] = decorateAnswer({ questionId: itemId, _touched: true })
+  const newAnswers = action.step.items.reduce((acc, item) => {
+    if (!state[item.id]) {
+      acc[item.id] = decorateAnswer({ questionId: item.id, _touched: true })
     }
 
     return acc

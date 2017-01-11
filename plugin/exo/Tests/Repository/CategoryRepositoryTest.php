@@ -4,7 +4,7 @@ namespace UJM\ExoBundle\Tests\Repository;
 
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 
-class CategoryRespositoryTest extends TransactionalTestCase
+class CategoryRepositoryTest extends TransactionalTestCase
 {
     protected function setUp()
     {

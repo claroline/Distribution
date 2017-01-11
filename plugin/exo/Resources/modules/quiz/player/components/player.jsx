@@ -30,8 +30,6 @@ const Player = props => {
       {props.items.map((item) => (
         <Panel
           key={item.id}
-          collapsible={true}
-          expanded={true}
         >
           <ItemPlayer
             item={item}
@@ -59,18 +57,17 @@ const Player = props => {
         finish={() => props.finish(props.quizId, props.paper, props.answers, props.showFeedback)}
         currentStepSend={props.currentStepSend}
       />
-      </div>
-    )
+    </div>
+  )
 }
 
 Player.propTypes = {
   quizId: T.string.isRequired,
   number: T.number.isRequired,
   step: T.shape({
-    title: T.string,
-    description: T.string,
     id: T.string.isRequired,
-    items: T.arrayOf(T.string).isRequired
+    title: T.string,
+    description: T.string
   }).isRequired,
   items: T.array.isRequired,
   answers: T.object.isRequired,
@@ -78,14 +75,8 @@ Player.propTypes = {
     id: T.string.isRequired,
     number: T.number.isRequired
   }).isRequired,
-  next: T.shape({
-    id: T.string.isRequired,
-    items: T.arrayOf(T.string).isRequired
-  }),
-  previous: T.shape({
-    id: T.string.isRequired,
-    items: T.arrayOf(T.string).isRequired
-  }),
+  next: T.object,
+  previous: T.object,
   updateAnswer: T.func.isRequired,
   navigateTo: T.func.isRequired,
   showFeedback: T.bool.isRequired,

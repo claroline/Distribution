@@ -74,14 +74,8 @@ const ForwardButton = props =>
     />
 
 ForwardButton.propTypes = {
-  next: T.shape({
-    id: T.string.isRequired,
-    items: T.arrayOf(T.string).isRequired
-  }),
-  step: T.shape({
-    id: T.string.isRequired,
-    items: T.arrayOf(T.string).isRequired
-  }).isRequired,
+  next: T.object,
+  step: T.object.isRequired,
   navigateToAndValidate: T.func.isRequired,
   finish: T.func.isRequired,
   openFeedbackAndValidate: T.func.isRequired,
@@ -100,10 +94,7 @@ const LastQuestionButton = props =>
     <FinishButton onClick={props.finish}/>
 
 LastQuestionButton.propTypes = {
-  step: T.shape({
-    id: T.string.isRequired,
-    items: T.arrayOf(T.string).isRequired
-  }).isRequired,
+  step: T.object.isRequired,
   finish: T.func.isRequired,
   openFeedbackAndValidate: T.func.isRequired,
   showFeedback: T.bool.isRequired,
@@ -121,14 +112,8 @@ const NotLastQuestionButton = props =>
     <NextButton onClick={() => props.navigateToAndValidate(props.next)} />
 
 NotLastQuestionButton.propTypes = {
-  step: T.shape({
-    id: T.string.isRequired,
-    items: T.arrayOf(T.string).isRequired
-  }).isRequired,
-  next: T.shape({
-    id: T.string.isRequired,
-    items: T.arrayOf(T.string).isRequired
-  }),
+  step: T.object.isRequired,
+  next: T.object,
   openFeedbackAndValidate: T.func.isRequired,
   navigateToAndValidate: T.func.isRequired,
   showFeedback: T.bool.isRequired,
@@ -159,21 +144,12 @@ const PlayerNav = props =>
   </nav>
 
 PlayerNav.propTypes = {
-  next: T.shape({
-    id: T.string.isRequired,
-    items: T.arrayOf(T.string).isRequired
-  }),
-  previous: T.shape({
-    id: T.string.isRequired,
-    items: T.arrayOf(T.string).isRequired
-  }),
-  step: T.shape({
-    id: T.string.isRequired,
-    items: T.arrayOf(T.string).isRequired
-  }).isRequired,
-  navigateToAndValidate: T.func.isRequired,
+  next: T.object,
+  previous: T.object,
+  step: T.object.isRequired,
   navigateTo: T.func.isRequired,
   finish: T.func.isRequired,
+  navigateToAndValidate: T.func.isRequired,
   openFeedbackAndValidate: T.func.isRequired,
   submit: T.func.isRequired,
   showFeedback: T.bool.isRequired,

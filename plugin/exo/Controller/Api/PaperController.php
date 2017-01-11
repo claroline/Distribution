@@ -103,7 +103,7 @@ class PaperController extends AbstractController
             throw new AccessDeniedException();
         }
 
-        return new JsonResponse($this->paperManager->exportWithQuestions($paper));
+        return new JsonResponse($this->paperManager->export($paper));
     }
 
     /**

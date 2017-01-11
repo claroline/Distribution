@@ -87,7 +87,7 @@ trait AttemptParametersTrait
      */
     public function getRandomPick()
     {
-        return $this->randomOrder;
+        return $this->randomPick;
     }
 
     /**

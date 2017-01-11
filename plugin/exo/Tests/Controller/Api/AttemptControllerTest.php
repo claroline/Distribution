@@ -23,6 +23,8 @@ class AttemptControllerTest extends TransactionalTestCase
 
     /** @var ObjectManager */
     private $om;
+    /** @var PaperGenerator */
+    private $paperGenerator;
     /** @var Persister */
     private $persist;
     /** @var AttemptManager */
@@ -47,6 +49,7 @@ class AttemptControllerTest extends TransactionalTestCase
         parent::setUp();
 
         $this->om = $this->client->getContainer()->get('claroline.persistence.object_manager');
+        $this->paperGenerator = $this->client->getContainer()->get('ujm_exo.generator.paper');
         $this->attemptManager = $this->client->getContainer()->get('ujm_exo.manager.attempt');
 
         $this->persist = new Persister($this->om);
@@ -109,7 +112,7 @@ class AttemptControllerTest extends TransactionalTestCase
         $this->om->persist($this->ex1);
 
         // first attempt for bob
-        $paper = PaperGenerator::create($this->ex1, $this->bob);
+        $paper = $this->paperGenerator->create($this->ex1, $this->bob);
         $this->om->persist($paper);
 
         $this->om->flush();
@@ -133,7 +136,7 @@ class AttemptControllerTest extends TransactionalTestCase
         $this->om->persist($this->ex1);
 
         // first attempt for bob
-        $paper = PaperGenerator::create($this->ex1, $this->john);
+        $paper = $this->paperGenerator->create($this->ex1, $this->john);
         $this->om->persist($paper);
         $this->om->flush();
 
@@ -150,7 +153,7 @@ class AttemptControllerTest extends TransactionalTestCase
 
     public function testAnonymousSubmit()
     {
-        $pa1 = PaperGenerator::create($this->ex1, $this->john);
+        $pa1 = $this->paperGenerator->create($this->ex1, $this->john);
         $this->om->persist($pa1);
         $this->om->flush();
 
@@ -160,7 +163,7 @@ class AttemptControllerTest extends TransactionalTestCase
 
     public function testSubmitAfterPaperEnd()
     {
-        $pa1 = PaperGenerator::create($this->ex1, $this->john);
+        $pa1 = $this->paperGenerator->create($this->ex1, $this->john);
         $date = new \DateTime();
         $date->add(\DateInterval::createFromDateString('yesterday'));
         $pa1->setEnd($date);
@@ -174,7 +177,7 @@ class AttemptControllerTest extends TransactionalTestCase
 
     public function testSubmitByNotPaperUser()
     {
-        $pa1 = PaperGenerator::create($this->ex1, $this->john);
+        $pa1 = $this->paperGenerator->create($this->ex1, $this->john);
         $this->om->persist($pa1);
         $this->om->flush();
 
@@ -206,7 +209,7 @@ class AttemptControllerTest extends TransactionalTestCase
 
     public function testFinishPaperByNotPaperUser()
     {
-        $pa1 = PaperGenerator::create($this->ex1, $this->john);
+        $pa1 = $this->paperGenerator->create($this->ex1, $this->john);
         $this->om->persist($pa1);
         $this->om->flush();
 
@@ -216,7 +219,7 @@ class AttemptControllerTest extends TransactionalTestCase
 
     public function testFinishPaper()
     {
-        $pa1 = PaperGenerator::create($this->ex1, $this->john);
+        $pa1 = $this->paperGenerator->create($this->ex1, $this->john);
         $this->om->persist($pa1);
         $this->om->flush();
 
@@ -236,7 +239,7 @@ class AttemptControllerTest extends TransactionalTestCase
 
     public function testHint()
     {
-        $pa1 = PaperGenerator::create($this->ex1, $this->john);
+        $pa1 = $this->paperGenerator->create($this->ex1, $this->john);
 
         $this->om->persist($pa1);
         $this->om->flush();
@@ -249,7 +252,7 @@ class AttemptControllerTest extends TransactionalTestCase
 
     public function testAnonymousHint()
     {
-        $pa1 = PaperGenerator::create($this->ex1, $this->john);
+        $pa1 = $this->paperGenerator->create($this->ex1, $this->john);
         $this->om->persist($pa1);
         $this->om->flush();
 
@@ -259,7 +262,7 @@ class AttemptControllerTest extends TransactionalTestCase
 
     public function testHintAfterPaperEnd()
     {
-        $pa1 = PaperGenerator::create($this->ex1, $this->john);
+        $pa1 = $this->paperGenerator->create($this->ex1, $this->john);
         $date = new \DateTime();
         $date->add(\DateInterval::createFromDateString('yesterday'));
         $pa1->setEnd($date);
@@ -273,7 +276,7 @@ class AttemptControllerTest extends TransactionalTestCase
 
     public function testHintByNotPaperUser()
     {
-        $pa1 = PaperGenerator::create($this->ex1, $this->john);
+        $pa1 = $this->paperGenerator->create($this->ex1, $this->john);
         $this->om->persist($pa1);
         $this->om->flush();
 
@@ -286,7 +289,7 @@ class AttemptControllerTest extends TransactionalTestCase
         // Create an hint not linked to paper
         $hint = $this->persist->hint($this->persist->openQuestion('question'), 'hint 2');
 
-        $pa1 = PaperGenerator::create($this->ex1, $this->john);
+        $pa1 = $this->paperGenerator->create($this->ex1, $this->john);
 
         $this->om->persist($pa1);
         $this->om->flush();

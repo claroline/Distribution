@@ -116,10 +116,7 @@ class StepSerializer implements SerializerInterface
         $parameters->randomPick = $step->getRandomPick();
         $parameters->pick = $step->getPick();
         $parameters->duration = $step->getDuration();
-
-        if ($step->getMaxAttempts()) {
-            $parameters->maxAttempts = $step->getMaxAttempts();
-        }
+        $parameters->maxAttempts = $step->getMaxAttempts();
 
         return $parameters;
     }

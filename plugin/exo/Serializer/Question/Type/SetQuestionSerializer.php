@@ -53,19 +53,27 @@ class SetQuestionSerializer implements SerializerInterface
         $questionData->random = $setQuestion->getShuffle();
         $questionData->penalty = $setQuestion->getPenalty();
 
-        $questionData->sets = array_map(function (Proposal $proposal) use ($options) {
+        $sets = array_map(function (Proposal $proposal) use ($options) {
             $setData = $this->contentSerializer->serialize($proposal, $options);
             $setData->id = (string) $proposal->getId();
 
             return $setData;
         }, $setQuestion->getProposals()->toArray());
 
-        $questionData->items = array_map(function (Label $label) use ($options) {
+        $items = array_map(function (Label $label) use ($options) {
             $itemData = $this->contentSerializer->serialize($label, $options);
             $itemData->id = (string) $label->getId();
 
             return $itemData;
         }, $setQuestion->getLabels()->toArray());
+
+        if ($setQuestion->getShuffle() && in_array(Transfer::SHUFFLE_ANSWERS, $options)) {
+            shuffle($sets);
+            shuffle($items);
+        }
+
+        $questionData->sets = $sets;
+        $questionData->items = $items;
 
         return $questionData;
     }
@@ -89,14 +97,54 @@ class SetQuestionSerializer implements SerializerInterface
             $setQuestion->setPenalty($data->penalty);
         }
 
-        if (isset($data->shuffle)) {
-            $setQuestion->setShuffle(true);
+        if (isset($data->random)) {
+            $setQuestion->setShuffle($data->random);
         }
+
+        // TODO : deserialize answer items
 
         return $setQuestion;
     }
 
-    private function serializeSolutions($questionType)
+    private function serializeSolutions(MatchQuestion $setQuestion)
     {
+        $solutions = new \stdClass();
+
+        // Serialize defined associations
+        $labelsInAssoc = [];
+        $solutions->associations = [];
+        foreach ($setQuestion->getProposals() as $proposal) {
+            /** @var Label $label */
+            foreach ($proposal->getExpectedLabels() as $label) {
+                $solutions->associations[] = $this->serializeItemSolution($label, $proposal);
+                $labelsInAssoc[] = $label->getId();
+            }
+        }
+
+        // Serialize odd
+        $solutions->odd = [];
+        foreach ($setQuestion->getLabels() as $label) {
+            $solutions->odd[] = $this->serializeItemSolution($label);
+        }
+
+        return $solutions;
+    }
+
+    private function serializeItemSolution(Label $label, Proposal $proposal = null)
+    {
+        $itemData = new \stdClass();
+        $itemData->itemId = (string) $label->getId();
+
+        if ($proposal) {
+            $itemData->setId = (string) $proposal->getId();
+        }
+
+        $itemData->score = $label->getScore();
+
+        if ($label->getFeedback()) {
+            $itemData->feedback = $label->getFeedback();
+        }
+
+        return $itemData;
     }
 }

@@ -61,7 +61,7 @@ export class WordsPaper extends Component
   }
 
   render() {
-    const textElements = utils.getTextElements(this.props.answer.data, this.props.item.solutions)
+    const textElements = utils.getTextElements(this.props.answer, this.props.item.solutions)
     textElements.pop()
     var halfLength = Math.ceil(textElements.length / 2)
     var leftSide = textElements.splice(0, halfLength)
@@ -85,7 +85,7 @@ export class WordsPaper extends Component
               <Tab.Pane eventKey="first">
                 <Metadata title={this.props.item.title} description={this.props.item.description}/>
                 <Highlight
-                  text={this.props.answer.data}
+                  text={this.props.answer}
                   solutions={this.props.item.solutions}
                   showScore={true}
                 />
@@ -118,5 +118,5 @@ WordsPaper.propTypes = {
     description: T.string.isRequired,
     solutions: T.arrayOf(T.object)
   }).isRequired,
-  answer: T.object
+  answer: T.string.isRequired
 }

@@ -61,7 +61,7 @@ class Step
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="StepQuestion", mappedBy="step", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="StepQuestion", mappedBy="step", cascade={"all"}, orphanRemoval=true)
      * @ORM\OrderBy({"order" = "ASC"})
      */
     private $stepQuestions;
@@ -188,17 +188,35 @@ class Step
     }
 
     /**
+     * Gets a question by its uuid.
+     *
+     * @param string $uuid
+     *
+     * @return Question|null
+     */
+    public function getQuestion($uuid)
+    {
+        $found = null;
+        foreach ($this->stepQuestions as $stepQuestion) {
+            if ($stepQuestion->getQuestion()->getUuid() === $uuid) {
+                $found = $stepQuestion->getQuestion();
+                break;
+            }
+        }
+
+        return $found;
+    }
+
+    /**
      * Shortcut to get the list of questions of the step.
      *
-     * @return array
+     * @return Question[]
      */
     public function getQuestions()
     {
-        $stepQuestions = $this->stepQuestions->toArray();
-
         return array_map(function (StepQuestion $stepQuestion) {
             return $stepQuestion->getQuestion();
-        }, $stepQuestions);
+        }, $this->stepQuestions->toArray());
     }
 
     /**

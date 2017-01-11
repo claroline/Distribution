@@ -29,6 +29,11 @@ class AttemptManager
     private $om;
 
     /**
+     * @var PaperGenerator
+     */
+    private $paperGenerator;
+
+    /**
      * @var PaperManager
      */
     private $paperManager;
@@ -53,23 +58,27 @@ class AttemptManager
      *
      * @DI\InjectParams({
      *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
+     *     "paperGenerator"  = @DI\Inject("ujm_exo.generator.paper"),
      *     "paperManager"    = @DI\Inject("ujm_exo.manager.paper"),
      *     "answerManager"   = @DI\Inject("ujm_exo.manager.answer"),
      *     "questionManager" = @DI\Inject("ujm_exo.manager.question")
      * })
      *
      * @param ObjectManager   $om
+     * @param PaperGenerator  $paperGenerator
      * @param PaperManager    $paperManager
      * @param AnswerManager   $answerManager
      * @param QuestionManager $questionManager
      */
     public function __construct(
         ObjectManager $om,
+        PaperGenerator $paperGenerator,
         PaperManager $paperManager,
         AnswerManager $answerManager,
         QuestionManager $questionManager)
     {
         $this->om = $om;
+        $this->paperGenerator = $paperGenerator;
         $this->paperManager = $paperManager;
         $this->paperRepository = $this->om->getRepository('UJMExoBundle:Attempt\Paper');
         $this->answerManager = $answerManager;
@@ -152,7 +161,7 @@ class AttemptManager
             $lastPaper = (null !== $user) ? $this->paperRepository->findLastPaper($exercise, $user) : null;
 
             // Generate a new paper
-            $paper = PaperGenerator::create($exercise, $user, $lastPaper);
+            $paper = $this->paperGenerator->create($exercise, $user, $lastPaper);
 
             // Save the new paper
             $this->om->persist($paper);

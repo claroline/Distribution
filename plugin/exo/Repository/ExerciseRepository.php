@@ -20,4 +20,19 @@ class ExerciseRepository extends EntityRepository
     public function findScores(Exercise $exercise)
     {
     }
+
+    public function invalidatePapers(Exercise $exercise)
+    {
+        return $this->getEntityManager()
+            ->createQuery('
+                UPDATE paper AS p 
+                SET p.invalidated = :invalidated 
+                WHERE p.exercise = :exercise 
+                  AND p.invalidated = false
+            ')
+            ->setParameters([
+                'exercise' => $exercise,
+                'invalidated' => true,
+            ]);
+    }
 }
