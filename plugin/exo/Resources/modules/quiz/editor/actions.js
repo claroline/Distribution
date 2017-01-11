@@ -108,8 +108,8 @@ actions.save = () => {
     if (!select.valid(state)) {
       dispatch(actions.quizValidating())
       dispatch(showModal(MODAL_MESSAGE, {
-        title: 'Échec de la sauvegarde', // todo : trad me
-        message: tex('editor_validating_desc'),
+        title: tex('editor_invalid_no_save'),
+        message: tex('editor_invalid_no_save_desc'),
         bsStyle: 'warning'
       }))
     } else {
