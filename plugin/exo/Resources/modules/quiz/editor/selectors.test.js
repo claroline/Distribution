@@ -99,6 +99,20 @@ describe('Next object selector', () => {
   })
 })
 
+describe('Valid selector', () => {
+  it('returns false in case of item errors', () => {
+    assertEqual(select.valid(fixtureState1()), false)
+  })
+
+  it('returns false in case of quiz errors', () => {
+    assertEqual(select.valid(fixtureState2()), false)
+  })
+
+  it('returns true if no errors', () => {
+    assertEqual(select.valid(fixtureState3()), true)
+  })
+})
+
 function fixtureState1() {
   return freeze({
     quiz: {
@@ -133,7 +147,8 @@ function fixtureState2() {
   return freeze({
     quiz: {
       id: '1',
-      steps: ['a', 'b']
+      steps: ['a', 'b'],
+      _errors: {bar: 'baz'}
     },
     steps: {
       'a': {

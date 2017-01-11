@@ -119,7 +119,7 @@ const valid = createSelector(
   items,
   (quiz, steps, items) => {
     const hasQuizError = !isEmpty(quiz._errors)
-    const hasStepError = !steps.find(step => {
+    const hasStepError = !!steps.find(step => {
       return !!step.items.find(id => !isEmpty(items[id]._errors))
     })
     return !hasQuizError && !hasStepError
