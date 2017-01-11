@@ -193,7 +193,7 @@ ItemForm.propTypes = {
     feedback: T.string.isRequired,
     _errors: T.object
   }).isRequired,
-  children: T.node.isRequired,
+  children: T.element.isRequired,
   validating: T.bool.isRequired,
   onChange: T.func.isRequired,
   onHintsChange: T.func.isRequired

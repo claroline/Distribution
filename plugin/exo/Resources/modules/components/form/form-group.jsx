@@ -23,7 +23,7 @@ export const FormGroup = ({controlId, label, help, error, children, warnOnly}) =
 FormGroup.propTypes = {
   controlId: T.string.isRequired,
   label: T.string.isRequired,
-  children: T.node.isRequired,
+  children: T.element.isRequired,
   warnOnly: T.bool.isRequired,
   help: T.string,
   error: T.string

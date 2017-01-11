@@ -51,7 +51,7 @@ describe('Words reducer', () => {
   it('updates solution text', () => {
     const item = makeFixture()
     const reduced = reduce(item, subActions.updateSolution(0, 'text', 'This is new'))
-    const expected = makeFixture({solutions: [{text: 'This is new'}])
+    const expected = makeFixture({solutions: [{text: 'This is new'}]})
     ensure.equal(reduced, expected)
   })
 

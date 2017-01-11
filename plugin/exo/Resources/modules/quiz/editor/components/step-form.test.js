@@ -56,7 +56,7 @@ describe('<StepForm/>', () => {
     )
 
     ensure.propTypesOk()
-    ensure.equal(form.find('form').length, 1, 'has form')
+    ensure.equal(form.find('fieldset').length, 1, 'has fieldset')
 
     const title = form.find('input#step-ID-title')
     ensure.equal(title.length, 1, 'has title input')

@@ -14,6 +14,7 @@ describe('<ItemForm/>', () => {
     shallow(<ItemForm item={{_errors: {}}}/>)
     ensure.missingProps('ItemForm', [
       'item.id',
+      'validating',
       'children',
       'onChange',
       'onHintsChange'
@@ -24,6 +25,7 @@ describe('<ItemForm/>', () => {
     shallow(
       <ItemForm
         item={{id: 123, _errors: {}}}
+        validating={[]}
         onChange="foo"
         onHintsChange="bar"
       >
@@ -32,6 +34,7 @@ describe('<ItemForm/>', () => {
     )
     ensure.invalidProps('ItemForm', [
       'item.id',
+      'validating',
       'children',
       'onChange',
       'onHintsChange'
@@ -54,6 +57,7 @@ describe('<ItemForm/>', () => {
           hints: [],
           feedback: 'FEEDBACK'
         }}
+        validating={false}
         onChange={(path, value) => {
           updatedPath = path
           updatedValue = value

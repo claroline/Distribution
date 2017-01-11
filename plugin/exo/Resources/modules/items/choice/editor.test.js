@@ -609,7 +609,7 @@ describe('<Choice/>', () => {
 
   it('has required props', () => {
     shallow(<Choice item={{score: {}}}/>)
-    ensure.missingProps('Choice', ['item.id', 'onChange'])
+    ensure.missingProps('Choice', ['item.id', 'validating', 'onChange'])
   })
 
   it('has typed props', () => {
@@ -619,10 +619,11 @@ describe('<Choice/>', () => {
           id: [],
           score: {}
         }}
+        validating={123}
         onChange={false}
       />
     )
-    ensure.invalidProps('Choice', ['item.id', 'onChange'])
+    ensure.invalidProps('Choice', ['item.id', 'validating', 'onChange'])
   })
 
   it('renders a list of choices', () => {
@@ -659,6 +660,7 @@ describe('<Choice/>', () => {
             failure: 0
           }
         }}
+        validating={false}
         onChange={() => {}}
       />
     )
