@@ -25,10 +25,10 @@ utils.split = (text, solutions, highlight = true) => {
   //now we highlight the text if required
   if (highlight) {
     split.forEach(el => {
-      let regex = new RegExp('(\\b' + el.word + '\\b)', 'gi')
-      let classname = el.score > 0 ? 'word-success': 'word-danger'
-      let iconname = el.score > 0 ? 'fa fa-check': 'fa fa-times'
-      let replacer = `<strong><span class='${classname}'>$1&nbsp<i class='${iconname}'></i></span></strong>`
+      const regex = new RegExp('(\\b' + el.word + '\\b)', 'gi')
+      const classname = el.score > 0 ? 'word-success': 'word-danger'
+      const iconname = el.score > 0 ? 'fa fa-check': 'fa fa-times'
+      const replacer = `<strong><span class='${classname}'>$1&nbsp<i class='${iconname}'></i></span></strong>`
       el.text = el.text.replace(regex, replacer)
     })
   }
@@ -50,8 +50,8 @@ utils.getTextElements = (text, solutions) => {
 
   //first we find each occurence of a given word
   matches.forEach(word => {
-    let regex = new RegExp('\\b' + word + '\\b', 'gi')
-    let position = text.search(regex)
+    const regex = new RegExp('\\b' + word + '\\b', 'gi')
+    const position = text.search(regex)
     data.push({
       word,
       position,

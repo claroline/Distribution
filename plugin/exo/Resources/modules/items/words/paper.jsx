@@ -12,21 +12,18 @@ import {Feedback} from '../components/feedback-btn.jsx'
 import {SolutionScore} from '../components/score.jsx'
 import classes from 'classnames'
 
-function getClassNameForSolution(solution) {
-  return solution.found ?
-    solution.score > 0 ? 'bg-success text-success' : 'bg-danger text-danger' :
-    ''
-}
-
 const AnswerTable = (props) => {
   return(
-    <div className="container choice-paper">
+    <div className="container word-paper">
       {props.answers.map(el =>
         <div
           key={el.word}
           className={classes(
             'item',
-            getClassNameForSolution(el)
+            {
+              'bg-success text-success': el.found && el.score > 0,
+              'bg-danger text-danger': el.found && el.score <= 0
+            }
         )}>
           <span className="word-label">{el.word}</span>
           <Feedback
