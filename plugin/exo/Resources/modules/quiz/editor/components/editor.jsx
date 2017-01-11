@@ -39,6 +39,7 @@ function selectSubEditor(props) {
       return (
         <QuizEditor
           quiz={props.quizProperties}
+          validating={props.validating}
           updateProperties={props.updateQuiz}
           activePanelKey={props.activeQuizPanel}
           handlePanelClick={props.selectQuizPanel}

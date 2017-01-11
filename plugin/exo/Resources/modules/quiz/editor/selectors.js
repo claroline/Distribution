@@ -30,7 +30,7 @@ const quizThumbnail = createSelector(
       title: t('parameters'),
       type: TYPE_QUIZ,
       active: quiz.id === current.id && current.type === TYPE_QUIZ,
-      hasErrors: false
+      hasErrors: !isEmpty(quiz._errors)
     }
   }
 )
@@ -114,11 +114,16 @@ const nextObject = createSelector(
 )
 
 const valid = createSelector(
+  quiz,
   stepList,
   items,
-  (steps, items) => !steps.find(step => {
-    return !!step.items.find(id => !isEmpty(items[id]._errors))
-  })
+  (quiz, steps, items) => {
+    const hasQuizError = !isEmpty(quiz._errors)
+    const hasStepError = !steps.find(step => {
+      return !!step.items.find(id => !isEmpty(items[id]._errors))
+    })
+    return !hasQuizError && !hasStepError
+  }
 )
 
 export default {

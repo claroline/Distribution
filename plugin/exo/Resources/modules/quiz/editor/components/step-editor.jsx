@@ -39,7 +39,9 @@ const ItemActions = props =>
     <OverlayTrigger
       placement="left"
       overlay={
-        <Tooltip id={`item-panel-${props.itemId}-delete`}>{tex('delete_item')}</Tooltip>
+        <Tooltip id={`item-panel-${props.itemId}-delete`}>
+          {tex('delete_item')}
+        </Tooltip>
       }
     >
       <span
@@ -60,7 +62,9 @@ const ItemActions = props =>
         <OverlayTrigger
           placement="left"
           overlay={
-            <Tooltip id={`item-panel-${props.itemId}-toggle`}>{tex('move_item')}</Tooltip>
+            <Tooltip id={`item-panel-${props.itemId}-toggle`}>
+              {tex('move_item')}
+            </Tooltip>
           }
         >
           <span
