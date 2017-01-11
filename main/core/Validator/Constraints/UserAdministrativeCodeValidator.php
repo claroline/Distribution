@@ -66,8 +66,8 @@ class UserAdministrativeCodeValidator extends ConstraintValidator
      */
     public function validate($user, Constraint $constraint)
     {
-        if ($this->platformConfigHandler->getParameter('is_user_admin_code_unique')) {
-            $code = $user->getAdministrativeCode();
+        $code = $user->getAdministrativeCode();
+        if (!empty($code) && $this->platformConfigHandler->getParameter('is_user_admin_code_unique')) {
             $tmpUser = $this->om->getRepository('ClarolineCoreBundle:User')->findOneByAdministrativeCode($code);
             if ($tmpUser && $tmpUser->getUsername() !== $user->getUsername()) {
                 $this->context->addViolationAt(

@@ -373,11 +373,19 @@ class UserManager
      * )
      *
      * @param array    $users
-     * @param string   $authentication an authentication source
-     * @param bool     $mail           do the users need to be mailed
-     * @param \Closure $logger         an anonymous function allowing to log actions
+     * @param bool     $sendMail
+     * @param \Closure $logger                 an anonymous function allowing to log actions
+     * @param array    $additionalRoles
+     * @param bool     $enableEmailNotifaction
+     * @param array    $options
      *
      * @return array
+     *
+     * @throws AddRoleException
+     * @throws \Claroline\CoreBundle\Persistence\NoFlushSuiteStartedException
+     *
+     * @internal param string $authentication an authentication source
+     * @internal param bool $mail do the users need to be mailed
      */
     public function importUsers(
         array $users,
@@ -396,8 +404,12 @@ class UserManager
             $options['single-validate'] = false;
         }
 
-        $returnValues = [];
+        // Return values
+        $created = [];
+        $updated = [];
         $skipped = [];
+        // Skipped users table
+        $skippedUsers = [];
         //keep these roles before the clear() will mess everything up. It's not what we want.
         $tmpRoles = $additionalRoles;
         $additionalRoles = [];
@@ -428,6 +440,7 @@ class UserManager
         foreach ($users as $user) {
             $firstName = $user[0];
             $lastName = $user[1];
+            $fullName = $firstName.' '.$lastName;
             $username = $user[2];
             $pwd = $user[3];
             $email = trim($user[4]);
@@ -488,7 +501,6 @@ class UserManager
                 $organizations = [];
             }
 
-            $group = $groupName ? $this->groupManager->getGroupByName($groupName) : null;
             if ($groupName) {
                 $group = $this->groupManager->getGroupByNameAndScheduledForInsert($groupName);
 
@@ -501,24 +513,13 @@ class UserManager
                 $group = null;
             }
 
-            $userEntity = $this->userRepo->findOneByMail($email);
-
-            if (!$userEntity) {
-                $userEntity = $this->userRepo->findOneByUsername($username);
-                if (
-                    !$userEntity &&
-                    $code !== null &&
-                    $this->platformConfigHandler->getParameter('is_user_admin_code_unique')
-                ) {
-                    //the code isn't required afaik
-                    $userEntity = $this->userRepo->findOneByAdministrativeCode($code);
-                }
-            }
+            $userEntity = $this->getUserByUsernameOrMailOrCode($username, $email, $code);
 
             if ($userEntity && $options['ignore-update']) {
                 if ($logger) {
                     $logger(" Skipping  {$userEntity->getUsername()}...");
                 }
+                $skipped[] = $fullName;
                 continue;
             }
 
@@ -547,7 +548,8 @@ class UserManager
             if ($options['single-validate']) {
                 $errors = $this->validator->validate($userEntity);
                 if (count($errors) > 0) {
-                    $skipped[$i] = $userEntity;
+                    $skippedUsers[$i] = $userEntity;
+                    $skipped[] = $fullName;
                     if ($isNew) {
                         --$countCreated;
                     } else {
@@ -580,7 +582,11 @@ class UserManager
             }
 
             $this->objectManager->persist($userEntity);
-            $returnValues[] = $firstName.' '.$lastName;
+            if ($isNew) {
+                $created[] = $fullName;
+            } else {
+                $updated[] = $fullName;
+            }
 
             if ($group) {
                 $this->groupManager->addUsersToGroup($group, [$userEntity]);
@@ -624,11 +630,15 @@ class UserManager
             $logger($countUpdated.' users updated.');
         }
 
-        foreach ($skipped as $key => $user) {
+        foreach ($skippedUsers as $key => $user) {
             $logger('The user '.$user.' was skipped at line '.$key.' because it failed the validation pass.');
         }
 
-        return $returnValues;
+        return [
+            'created' => $created,
+            'updated' => $updated,
+            'skipped' => $skipped,
+        ];
     }
 
     /**
@@ -1290,8 +1300,8 @@ class UserManager
 
     public function getUserByUsernameOrMailOrCode($username, $mail, $code)
     {
-        if (!$this->platformConfigHandler->getParameter('is_user_admin_code_unique')) {
-            return $this->userRepo->findUserByUsernameOrEmail($username, $mail, true);
+        if (empty($code) || !$this->platformConfigHandler->getParameter('is_user_admin_code_unique')) {
+            return $this->getUserByUsernameOrMail($username, $mail, true);
         }
 
         return $this->userRepo->findUserByUsernameOrMailOrCode($username, $mail, $code);
