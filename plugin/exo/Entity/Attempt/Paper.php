@@ -74,6 +74,15 @@ class Paper
     private $anonymized = false;
 
     /**
+     * A paper is invalidated when the exercise definition has changed.
+     *
+     * @var bool
+     *
+     * @ORM\Column(name="invalidated", type="boolean")
+     */
+    private $invalidated = false;
+
+    /**
      * The user who made the attempt.
      * If this is the attempt for an anonymous user, this property is `null`.
      *
@@ -298,6 +307,26 @@ class Paper
     public function isAnonymized()
     {
         return $this->anonymized;
+    }
+
+    /**
+     * Set invalidated.
+     *
+     * @param $invalidated
+     */
+    public function setInvalidated($invalidated)
+    {
+        $this->invalidated = $invalidated;
+    }
+
+    /**
+     * Is invalidated ?
+     *
+     * @return bool
+     */
+    public function isInvalidated()
+    {
+        return $this->invalidated;
     }
 
     /**

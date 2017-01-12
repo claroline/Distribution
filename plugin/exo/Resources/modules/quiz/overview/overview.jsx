@@ -235,9 +235,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    play(quiz, steps) {
+    play() {
       // TODO : optimisation - we may want to get a local paper if exists to avoid calling the server
-      dispatch(playerActions.play(quiz, steps))
+      dispatch(playerActions.play())
     }
   }
 }

@@ -34,4 +34,9 @@ final class Transfer
      * @var string
      */
     const INCLUDE_USER_SCORE = 'includeUserScore';
+
+    /**
+     * Applies shuffle to the answers of a question.
+     */
+    const SHUFFLE_ANSWERS = 'shuffleAnswers';
 }

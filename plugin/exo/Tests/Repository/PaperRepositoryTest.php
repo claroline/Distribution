@@ -20,6 +20,11 @@ class PaperRepositoryTest extends TransactionalTestCase
     private $om;
 
     /**
+     * @var PaperGenerator
+     */
+    private $paperGenerator;
+
+    /**
      * @var Persister
      */
     private $persist;
@@ -56,6 +61,7 @@ class PaperRepositoryTest extends TransactionalTestCase
         parent::setUp();
 
         $this->om = $this->client->getContainer()->get('claroline.persistence.object_manager');
+        $this->paperGenerator = $this->client->getContainer()->get('ujm_exo.generator.paper');
         $this->persist = new Persister($this->om);
         $this->repo = $this->om->getRepository('UJMExoBundle:Attempt\Paper');
 
@@ -68,22 +74,27 @@ class PaperRepositoryTest extends TransactionalTestCase
             $question,
         ], $this->user);
 
-        $paper1 = PaperGenerator::create($this->exercise, $this->user);
+        $paper1 = $this->paperGenerator->create($this->exercise, $this->user);
         $this->om->persist($paper1);
 
-        $paper2 = PaperGenerator::create($this->exercise, $this->user, $paper1);
+        $paper2 = $this->paperGenerator->create($this->exercise, $this->user, $paper1);
         $this->om->persist($paper2);
 
         // Create a finished paper
-        $paperFinished = PaperGenerator::create($this->exercise, $this->user, $paper2);
+        $paperFinished = $this->paperGenerator->create($this->exercise, $this->user, $paper2);
         $paperFinished->setEnd(new \DateTime());
         $this->om->persist($paperFinished);
 
+        // Create an invalidated paper
+        $paperInvalidated = $this->paperGenerator->create($this->exercise, $this->user, $paperFinished);
+        $paperInvalidated->setInvalidated(true);
+        $this->om->persist($paperInvalidated);
+
         // Create data that will never be returned to check conditions
-        $paperOtherUser = PaperGenerator::create($this->exercise);
+        $paperOtherUser = $this->paperGenerator->create($this->exercise);
         $this->om->persist($paperOtherUser);
 
-        $paperOtherExercise = PaperGenerator::create(
+        $paperOtherExercise = $this->paperGenerator->create(
             $this->persist->exercise('Exercise 2', [], $this->user),
             $this->user
         );
@@ -94,6 +105,7 @@ class PaperRepositoryTest extends TransactionalTestCase
             $paper1,
             $paper2,
             $paperFinished,
+            $paperInvalidated,
             $paperOtherUser,
             $paperOtherExercise,
         ];
@@ -106,7 +118,7 @@ class PaperRepositoryTest extends TransactionalTestCase
         $lastPaper = $this->repo->findLastPaper($this->exercise, $this->user);
 
         $this->assertInstanceOf('UJM\ExoBundle\Entity\Attempt\Paper', $lastPaper);
-        $this->assertEquals(3, $lastPaper->getNumber());
+        $this->assertEquals(4, $lastPaper->getNumber());
         $this->assertEquals($this->user, $lastPaper->getUser());
         $this->assertEquals($this->exercise, $lastPaper->getExercise());
     }
@@ -126,14 +138,14 @@ class PaperRepositoryTest extends TransactionalTestCase
         $papers = $this->repo->findUnfinishedPapers($this->exercise, $this->user);
 
         $this->assertTrue(is_array($papers));
-        $this->assertCount(2, $papers); // result = count($this->papers) - other exercises - other users - finished papers
+        $this->assertCount(3, $papers); // result = count($this->papers) - other exercises - other users - finished papers
         $this->assertInstanceOf('UJM\ExoBundle\Entity\Attempt\Paper', $papers[0]);
     }
 
     public function testCountExercisePapers()
     {
         $papersCount = $this->repo->countExercisePapers($this->exercise);
-        $this->assertEquals(4, $papersCount);
+        $this->assertEquals(5, $papersCount);
     }
 
     public function testCountUserFinishedPapers()
