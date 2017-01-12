@@ -48,8 +48,7 @@ class ClacoFormWidgetController extends Controller
         LocationManager $locationManager,
         Request $request,
         TranslatorInterface $translator
-    )
-    {
+    ) {
         $this->clacoFormManager = $clacoFormManager;
         $this->formFactory = $formFactory;
         $this->locationManager = $locationManager;
@@ -97,10 +96,10 @@ class ClacoFormWidgetController extends Controller
                         $value = $fieldValue->getFieldFacetValue()->getValue();
 
                         switch ($type) {
-                            case 3 :
+                            case 3:
                                 $value = !is_null($value) ? $value->format('d/m/Y') : $value;
                                 break;
-                            case 7 :
+                            case 7:
                                 $value = $this->locationManager->getCountryByCode($value);
                                 break;
                         }
