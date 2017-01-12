@@ -117,6 +117,10 @@ edit: Edit
 edit_category: Edit a category
 edit_question: Edit a question
 edit_step: Edit information
+editor_invalid_no_save: Invalid quiz
+editor_invalid_no_save_desc: This quiz cannot be saved due to missing or invalid data. Please solve these problems before saving.
+editor_validating_desc: Some errors or missing information prevent saving data.
+editor_not_validating_desc: "Work in progress: some information is missing or requires changes."
 end_date: End date
 entry: Entry
 error_no_step_found: An error occured while retrieving the current step.

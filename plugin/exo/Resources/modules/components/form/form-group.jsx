@@ -1,15 +1,16 @@
 import React, {PropTypes as T} from 'react'
 import classes from 'classnames'
+import {ErrorBlock} from './error-block.jsx'
 
-export const FormGroup = ({controlId, label, help, error, children}) =>
-  <div className={classes('form-group', {'has-error': error})}>
+export const FormGroup = ({controlId, label, help, error, children, warnOnly}) =>
+  <div className={classes('form-group', {
+    'has-error': error && !warnOnly,
+    'has-warning': error && warnOnly
+  })}>
     <label className="control-label" htmlFor={controlId}>{label}</label>
     {children}
     {error &&
-      <span id={`help-${controlId}`} className="help-block">
-        <span className="fa fa-warning"></span>
-        {error}
-      </span>
+      <ErrorBlock text={error} inGroup={true} warnOnly={warnOnly}/>
     }
     {help &&
       <span id={`help-${controlId}`} className="help-block">
@@ -22,7 +23,12 @@ export const FormGroup = ({controlId, label, help, error, children}) =>
 FormGroup.propTypes = {
   controlId: T.string.isRequired,
   label: T.string.isRequired,
-  children: T.object.isRequired,
+  children: T.element.isRequired,
+  warnOnly: T.bool.isRequired,
   help: T.string,
   error: T.string
+}
+
+FormGroup.defaultProps = {
+  warnOnly: false
 }

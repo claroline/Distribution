@@ -5,25 +5,28 @@ import select from './selectors'
 import {tex, t} from './../../utils/translate'
 
 describe('Thumbnails selector', () => {
-  it('returns the quiz and step thumbs with an active flag set', () => {
+  it('returns the quiz and step thumbs with active and errors set', () => {
     assertEqual(select.thumbnails(fixtureState1()), [
       {
         id: '1',
         title: t('parameters'),
         type: TYPE_QUIZ,
-        active: false
+        active: false,
+        hasErrors: false
       },
       {
         id: 'a',
         title: `${tex('step')} 1`,
         type: TYPE_STEP,
-        active: false
+        active: false,
+        hasErrors: true
       },
       {
         id: 'b',
         title: `${tex('step')} 2`,
         type: TYPE_STEP,
-        active: true
+        active: true,
+        hasErrors: false
       }
     ])
   })
@@ -96,6 +99,20 @@ describe('Next object selector', () => {
   })
 })
 
+describe('Valid selector', () => {
+  it('returns false in case of item errors', () => {
+    assertEqual(select.valid(fixtureState1()), false)
+  })
+
+  it('returns false in case of quiz errors', () => {
+    assertEqual(select.valid(fixtureState2()), false)
+  })
+
+  it('returns true if no errors', () => {
+    assertEqual(select.valid(fixtureState3()), true)
+  })
+})
+
 function fixtureState1() {
   return freeze({
     quiz: {
@@ -105,14 +122,18 @@ function fixtureState1() {
     steps: {
       'a': {
         id: 'a',
-        items: []
+        items: ['x']
       },
       'b': {
         id: 'b',
         items: []
       }
     },
-    items: {},
+    items: {
+      x: {
+        _errors: {foo: 'bar'}
+      }
+    },
     editor: {
       currentObject: {
         id: 'b',
@@ -126,7 +147,8 @@ function fixtureState2() {
   return freeze({
     quiz: {
       id: '1',
-      steps: ['a', 'b']
+      steps: ['a', 'b'],
+      _errors: {bar: 'baz'}
     },
     steps: {
       'a': {

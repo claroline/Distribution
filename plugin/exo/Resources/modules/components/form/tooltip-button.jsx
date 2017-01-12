@@ -3,24 +3,26 @@ import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 import Tooltip from 'react-bootstrap/lib/Tooltip'
 import classes from 'classnames'
 
+// TODO inherit from TooltipElement
+
 export const TooltipButton = props =>
-<OverlayTrigger
-  placement={props.position}
-  overlay={
-    <Tooltip id={props.id}>{props.title}</Tooltip>
-  }
->
-  <button
-    aria-disabled={!props.enabled}
-    className={classes('btn', 'btn-link', props.className, {disabled: !props.enabled})}
-    onClick={props.onClick}
+  <OverlayTrigger
+    placement={props.position}
+    overlay={
+      <Tooltip id={props.id}>{props.title}</Tooltip>
+    }
   >
-    {props.label}
-  </button>
-</OverlayTrigger>
+    <button
+      disabled={!props.enabled}
+      className={classes('btn', 'btn-link', props.className)}
+      onClick={props.onClick}
+    >
+      {props.label}
+    </button>
+  </OverlayTrigger>
 
 TooltipButton.defaultProps = {
-  position:'top',
+  position: 'top',
   enabled: true
 }
 

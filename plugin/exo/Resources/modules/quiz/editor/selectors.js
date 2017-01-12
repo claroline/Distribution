@@ -1,4 +1,5 @@
 import {createSelector} from 'reselect'
+import isEmpty from 'lodash/isEmpty'
 import {TYPE_QUIZ, TYPE_STEP} from './../enums'
 import {tex, t} from './../../utils/translate'
 
@@ -8,6 +9,7 @@ const items = state => state.items
 const editor = state => state.editor
 
 const saved = createSelector(editor, editor => editor.saved)
+const validating = createSelector(editor, editor => editor.validating)
 const currentObject = createSelector(editor, editor => editor.currentObject)
 const openPanels = createSelector(editor, editor => editor.openPanels)
 const quizOpenPanel = createSelector(openPanels, panels => panels[TYPE_QUIZ])
@@ -27,7 +29,8 @@ const quizThumbnail = createSelector(
       id: quiz.id,
       title: t('parameters'),
       type: TYPE_QUIZ,
-      active: quiz.id === current.id && current.type === TYPE_QUIZ
+      active: quiz.id === current.id && current.type === TYPE_QUIZ,
+      hasErrors: !isEmpty(quiz._errors)
     }
   }
 )
@@ -35,12 +38,14 @@ const quizThumbnail = createSelector(
 const stepThumbnails = createSelector(
   stepList,
   currentObject,
-  (steps, current) => steps.map((step, index) => {
+  items,
+  (steps, current, items) => steps.map((step, index) => {
     return {
       id: step.id,
       title: step.title || `${tex('step')} ${index + 1}`,
       type: TYPE_STEP,
-      active: step.id === current.id && current.type === TYPE_STEP
+      active: step.id === current.id && current.type === TYPE_STEP,
+      hasErrors: !!step.items.find(id => !isEmpty(items[id]._errors))
     }
   })
 )
@@ -108,6 +113,19 @@ const nextObject = createSelector(
   }
 )
 
+const valid = createSelector(
+  quiz,
+  stepList,
+  items,
+  (quiz, steps, items) => {
+    const hasQuizError = !isEmpty(quiz._errors)
+    const hasStepError = !!steps.find(step => {
+      return !!step.items.find(id => !isEmpty(items[id]._errors))
+    })
+    return !hasQuizError && !hasStepError
+  }
+)
+
 export default {
   quiz,
   thumbnails,
@@ -116,5 +134,7 @@ export default {
   stepOpenPanel,
   nextObject,
   editor,
+  valid,
+  validating,
   saved
 }

@@ -34,7 +34,7 @@ describe('Words reducer', () => {
     })
   })
 
-  it('updates base properties and marks them as touched', () => {
+  it('updates base properties', () => {
     const item = makeFixture()
     const reduced = reduce(item, subActions.updateProperty('_wordsCaseSensitive', true))
     const expected = makeFixture({_wordsCaseSensitive: true})
@@ -44,28 +44,28 @@ describe('Words reducer', () => {
   it('sanitizes incoming solution data', () => {
     const item = makeFixture()
     const reduced = reduce(item, subActions.updateSolution(0, 'score', '3'))
-    const expected = makeFixture({solutions: [{score: 3 , _touched:{score :true}}]})
+    const expected = makeFixture({solutions: [{score: 3}]})
     ensure.equal(reduced, expected)
   })
 
   it('updates solution text', () => {
     const item = makeFixture()
     const reduced = reduce(item, subActions.updateSolution(0, 'text', 'This is new'))
-    const expected = makeFixture({solutions: [{text: 'This is new' , _touched:{text :true}}]})
+    const expected = makeFixture({solutions: [{text: 'This is new'}]})
     ensure.equal(reduced, expected)
   })
 
   it('updates solution score', () => {
     const item = makeFixture()
     const reduced = reduce(item, subActions.updateSolution(0, 'score', 3))
-    const expected = makeFixture({solutions: [{score: 3 , _touched:{score :true}}, {}]})
+    const expected = makeFixture({solutions: [{score: 3}, {}]})
     ensure.equal(reduced, expected)
   })
 
   it('updates solution caseSensitive', () => {
     const item = makeFixture()
     const reduced = reduce(item, subActions.updateSolution(1, 'caseSensitive', true))
-    const expected = makeFixture({solutions: [{},{caseSensitive: true , _touched:{caseSensitive :true}}]})
+    const expected = makeFixture({solutions: [{}, {caseSensitive: true}]})
     ensure.equal(reduced, expected)
   })
 

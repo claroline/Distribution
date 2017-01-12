@@ -4,6 +4,7 @@ import {t, tex} from './../../../utils/translate'
 import {makeSortable} from './../../../utils/sortable'
 import {MODAL_DELETE_CONFIRM} from './../../../modal'
 import {TYPE_STEP, TYPE_QUIZ} from './../../enums'
+import {ValidationStatus} from './validation-status.jsx'
 
 const Actions = props =>
   <span className="step-actions">
@@ -54,7 +55,14 @@ let Thumbnail = props => {
           {props.type === TYPE_STEP && props.title}
           {props.type === TYPE_QUIZ && <span className="quiz-title">{props.title}</span>}
         </a>
-        <span className="step-bottom"></span>
+        <span className="step-bottom">
+          {props.hasErrors &&
+            <ValidationStatus
+              id={`${props.id}-thumb-tip`}
+              validating={props.validating}
+            />
+          }
+        </span>
       </span>
     )
   )
@@ -70,6 +78,8 @@ Thumbnail.propTypes = {
   onDeleteClick: T.func.isRequired,
   onSort: T.func.isRequired,
   sortDirection: T.string.isRequired,
+  validating: T.bool.isRequired,
+  hasErrors: T.bool.isRequired,
   showModal: T.func.isRequired,
   connectDragPreview: T.func.isRequired,
   connectDragSource: T.func.isRequired,

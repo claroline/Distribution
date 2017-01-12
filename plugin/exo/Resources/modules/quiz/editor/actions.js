@@ -2,6 +2,9 @@ import invariant from 'invariant'
 import select from './selectors'
 import {makeActionCreator, makeId} from './../../utils/utils'
 import {REQUEST_SEND} from './../../api/actions'
+import {showModal} from './../../modal/actions'
+import {tex} from './../../utils/translate'
+import {MODAL_MESSAGE} from './../../modal'
 import {denormalize} from './../normalizer'
 
 export const ITEM_CREATE = 'ITEM_CREATE'
@@ -25,6 +28,7 @@ export const HINT_ADD = 'HINT_ADD'
 export const HINT_CHANGE = 'HINT_CHANGE'
 export const HINT_REMOVE = 'HINT_REMOVE'
 export const QUIZ_SAVING = 'QUIZ_SAVING'
+export const QUIZ_VALIDATING = 'QUIZ_VALIDATING'
 export const QUIZ_SAVED = 'QUIZ_SAVED'
 export const QUIZ_SAVE_ERROR = 'QUIZ_SAVE_ERROR'
 
@@ -65,6 +69,7 @@ actions.updateItemDetail = makeActionCreator(ITEM_DETAIL_UPDATE, 'id', 'subActio
 actions.updateItemHints = makeActionCreator(ITEM_HINTS_UPDATE, 'itemId', 'updateType', 'payload')
 actions.updateStep = makeActionCreator(STEP_UPDATE, 'id', 'newProperties')
 actions.importItems = makeActionCreator(ITEMS_IMPORT, 'stepId', 'items')
+actions.quizValidating = makeActionCreator(QUIZ_VALIDATING)
 actions.quizSaving = makeActionCreator(QUIZ_SAVING)
 actions.quizSaved = makeActionCreator(QUIZ_SAVED)
 actions.quizSaveError = makeActionCreator(QUIZ_SAVE_ERROR)
@@ -99,18 +104,28 @@ actions.deleteStepAndItems = id => {
 actions.save = () => {
   return (dispatch, getState) => {
     const state = getState()
-    const denormalized = denormalize(state.quiz, state.steps, state.items)
-    dispatch({
-      [REQUEST_SEND]: {
-        route: ['exercise_update', {id: state.quiz.id}],
-        request: {
-          method: 'PUT' ,
-          body: JSON.stringify(denormalized)
-        },
-        before: () => actions.quizSaving(),
-        success: () => actions.quizSaved(),
-        failure: () => actions.quizSaveError()
-      }
-    })
+
+    if (!select.valid(state)) {
+      dispatch(actions.quizValidating())
+      dispatch(showModal(MODAL_MESSAGE, {
+        title: tex('editor_invalid_no_save'),
+        message: tex('editor_invalid_no_save_desc'),
+        bsStyle: 'warning'
+      }))
+    } else {
+      const denormalized = denormalize(state.quiz, state.steps, state.items)
+      dispatch({
+        [REQUEST_SEND]: {
+          route: ['exercise_update', {id: state.quiz.id}],
+          request: {
+            method: 'PUT' ,
+            body: JSON.stringify(denormalized)
+          },
+          before: () => actions.quizSaving(),
+          success: () => actions.quizSaved(),
+          failure: () => actions.quizSaveError()
+        }
+      })
+    }
   }
 }

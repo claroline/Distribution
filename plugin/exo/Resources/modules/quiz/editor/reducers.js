@@ -34,6 +34,7 @@ import {
   QUIZ_SAVED,
   QUIZ_SAVING,
   QUIZ_SAVE_ERROR,
+  QUIZ_VALIDATING,
   HINT_ADD,
   HINT_CHANGE,
   HINT_REMOVE,
@@ -60,10 +61,7 @@ function reduceQuiz(quiz = initialQuizState(), action = {}) {
 
       const errors = validate.quiz(updatedQuiz)
       updatedQuiz._errors = errors
-      updatedQuiz._touched = merge(
-        updatedQuiz._touched || {},
-        set({}, action.propertyPath, true)
-      )
+
       return updatedQuiz
     }
     case STEP_CREATE:
@@ -163,10 +161,7 @@ function reduceItems(items = {}, action = {}) {
         set({}, action.propertyPath, action.value)
       )
       updatedItem._errors = validate.item(updatedItem)
-      updatedItem._touched = merge(
-        updatedItem._touched || {},
-        set({}, action.propertyPath, true)
-      )
+
       return update(items, {[action.id]: {$set: updatedItem}})
     }
     case ITEMS_IMPORT: {
@@ -281,6 +276,16 @@ function reduceOpenPanels(panels = initialPanelState(), action = {}) {
   return panels
 }
 
+function reduceValidatingState(validating = false, action = {}) {
+  switch (action.type) {
+    case QUIZ_VALIDATING:
+      return true
+    case QUIZ_SAVED:
+      return false
+  }
+  return validating
+}
+
 function reduceSavingState(saving = false, action = {}) {
   switch (action.type) {
     case QUIZ_SAVING:
@@ -309,6 +314,7 @@ function reduceSavedState(saved = true, action = {}) {
 const reduceEditor = combineReducers({
   currentObject: reduceCurrentObject,
   openPanels: reduceOpenPanels,
+  validating: reduceValidatingState,
   saving: reduceSavingState,
   saved: reduceSavedState
 })

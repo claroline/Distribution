@@ -1,3 +1,60 @@
+.choice-editor {
+  .choice-items {
+    padding: 0;
+
+    li {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .choice-item {
+      display: flex;
+      padding: 5px;
+      margin-bottom: 5px;
+    }
+
+    .choice-tick {
+      margin: 0 7px 0 0;
+    }
+
+    .text-editor {
+      margin-right: 12px;
+    }
+
+    .choice-score {
+      width: 60px;
+      margin-right: 8px;
+    }
+
+    .feedback-container {
+      padding-left: 20px;
+    }
+
+    .footer {
+      margin-left: 20px;
+      margin-right: 98px;
+      text-align: center;
+    }
+
+    .text-fields {
+      flex-grow: 1;
+    }
+
+    .right-controls {
+      display: flex;
+      align-items: flex-start;
+
+      .btn-link {
+        color: #555;
+        padding-left: 8px;
+        padding-right: 0;
+        text-decoration: none;
+      }
+    }
+  }
+}
+
 .choice-player,
 .choice-paper {
   border: solid 1px @table-border-color;

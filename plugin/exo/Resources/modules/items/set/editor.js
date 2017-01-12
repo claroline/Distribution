@@ -1,6 +1,4 @@
 import cloneDeep from 'lodash/cloneDeep'
-import merge from 'lodash/merge'
-import set from 'lodash/set'
 import {SetForm as component} from './editor.jsx'
 import {ITEM_CREATE} from './../../quiz/editor/actions'
 import {makeId, makeActionCreator} from './../../utils/utils'
@@ -115,11 +113,6 @@ function reduce(item = {}, action) {
     case UPDATE_PROP: {
       const newItem = cloneDeep(item)
       const value = action.property === 'penalty' ? parseFloat(action.value) : Boolean(action.value)
-      // mark as touched
-      newItem._touched = merge(
-        newItem._touched || {},
-        set({}, action.property, true)
-      )
       newItem[action.property] = value
       return newItem
     }
@@ -157,12 +150,6 @@ function reduce(item = {}, action) {
       // if it's a normal item only data can be updated
       if(!action.isOdd){
         itemToUpdate[action.property] = value
-        // mark items as touched
-        newItem._itemsTouched = merge(
-          newItem._itemsTouched || {},
-          set({}, action.property, true)
-        )
-
         // update associations item data
         newItem.solutions.associations.map((ass) => {
           if(ass.itemId === action.id){
@@ -170,18 +157,12 @@ function reduce(item = {}, action) {
           }
         })
       } else {
-
         if (action.property === 'data') {
           itemToUpdate[action.property] = value
         } else {
           const oddSolution = newItem.solutions.odd.find(el => el.itemId = action.id)
           oddSolution[action.property] = value
         }
-        // mark odd as touched
-        newItem._oddTouched = merge(
-          newItem._oddTouched || {},
-          set({}, action.property, true)
-        )
       }
 
       return newItem
@@ -217,13 +198,11 @@ function reduce(item = {}, action) {
 
     case ADD_SET: {
       const newItem = cloneDeep(item)
-      const toAdd = {
+      newItem.sets.push({
         id: makeId(),
         type: 'text/html',
         data: ''
-      }
-
-      newItem.sets.push(toAdd)
+      })
       newItem.sets.forEach(set => set._deletable = newItem.sets.length > 1)
       return newItem
     }
@@ -232,11 +211,6 @@ function reduce(item = {}, action) {
       const newItem = cloneDeep(item)
       const toUpdate = newItem.sets.find(el => el.id === action.id)
       toUpdate[action.property] = action.value
-      // mark sets as touched
-      newItem._setTouched = merge(
-        newItem._setTouched || {},
-        set({}, action.property, true)
-      )
       return newItem
     }
 
@@ -282,10 +256,6 @@ function reduce(item = {}, action) {
       const value = action.property === 'score' ? parseFloat(action.value) : action.value
       const association = newItem.solutions.associations.find(el => el.setId === action.setId && el.itemId === action.itemId)
       association[action.property] = value
-      newItem._associationTouched = merge(
-        newItem._associationTouched || {},
-        set({}, action.property, true)
-      )
       return newItem
     }
 

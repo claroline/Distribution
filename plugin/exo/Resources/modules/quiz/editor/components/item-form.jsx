@@ -136,10 +136,8 @@ export class ItemForm extends Component {
         <FormGroup
           controlId={`item-${this.props.item.id}-content`}
           label={tex('question')}
-          error={
-            get(this.props.item, '_touched.content')
-            && get(this.props.item, '_errors.content')
-          }
+          warnOnly={!this.props.validating}
+          error={get(this.props.item, '_errors.content')}
         >
           <Textarea
             id={`item-${this.props.item.id}-content`}
@@ -195,7 +193,8 @@ ItemForm.propTypes = {
     feedback: T.string.isRequired,
     _errors: T.object
   }).isRequired,
-  children: T.oneOfType([T.object, T.array]).isRequired,
+  children: T.element.isRequired,
+  validating: T.bool.isRequired,
   onChange: T.func.isRequired,
   onHintsChange: T.func.isRequired
 }

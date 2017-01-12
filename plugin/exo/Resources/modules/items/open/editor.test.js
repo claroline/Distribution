@@ -19,7 +19,7 @@ describe('Open reducer', () => {
     const reduced = reduce(item, actions.createItem('1', 'application/x.open+json'))
     ensure.equal(reduced, {
       id: '1',
-      type: 'application/x.open+json',      
+      type: 'application/x.open+json',
       contentType: 'text',
       content: 'Question?',
       maxLength: 0,
@@ -31,22 +31,17 @@ describe('Open reducer', () => {
     })
   })
 
-  it('updates base properties and marks them as touched', () => {
+  it('updates base properties', () => {
     const item = makeFixture()
     const reduced = reduce(item, subActions.update('maxLength', 255))
-    const expected = makeFixture({maxLength: 255, _touched: {maxLength: true}})
+    const expected = makeFixture({maxLength: 255})
     ensure.equal(reduced, expected)
   })
 
   it('sanitizes incoming data', () => {
     const item = makeFixture()
     const reduced = reduce(item, subActions.update('maxScore', '10'))
-    const expected = makeFixture({
-      score: {max: 10},
-      _touched: {
-        maxScore: true
-      }
-    })
+    const expected = makeFixture({score: {max: 10}})
     ensure.equal(reduced, expected)
   })
 })

@@ -6,7 +6,7 @@ export const Feedback = props => {
   if (!props.feedback) return <span className="item-feedback"/>
 
   const popoverClick = (
-    <Popover id={props.id} className="item-feedback">
+    <Popover className="item-feedback" id={props.id}>
       {props.feedback}
     </Popover>
   )
@@ -19,6 +19,6 @@ export const Feedback = props => {
 }
 
 Feedback.propTypes = {
-  id: T.string.isRequired,
-  feedback: T.string
+  feedback: T.string,
+  id: T.string
 }

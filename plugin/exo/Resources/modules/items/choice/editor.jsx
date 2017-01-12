@@ -2,13 +2,14 @@ import React, {Component, PropTypes as T} from 'react'
 import get from 'lodash/get'
 import classes from 'classnames'
 import {t, tex} from './../../utils/translate'
-import {SCORE_SUM, SCORE_FIXED, QCM_MULTIPLE, QCM_SINGLE} from './../../quiz/enums'
+import {SCORE_SUM, SCORE_FIXED} from './../../quiz/enums'
+import {ErrorBlock} from './../../components/form/error-block.jsx'
 import {Textarea} from './../../components/form/textarea.jsx'
 import {CheckGroup} from './../../components/form/check-group.jsx'
 import {Radios} from './../../components/form/radios.jsx'
 import {FormGroup} from './../../components/form/form-group.jsx'
-import {TooltipButton} from './../../components/form/tooltiped-button.jsx'
-import {actions} from './editor'
+import {TooltipButton} from './../../components/form/tooltip-button.jsx'
+import {QCM_MULTIPLE, QCM_SINGLE, actions} from './editor'
 
 class ChoiceItem extends Component {
   constructor(props) {
@@ -59,32 +60,32 @@ class ChoiceItem extends Component {
           }
         </div>
         <div className="right-controls">
-            {!this.props.fixedScore &&
-              <input
-                title={tex('score')}
-                type="number"
-                className="form-control choice-score"
-                value={this.props.score}
-                onChange={e => this.props.onChange(
-                  actions.updateChoice(this.props.id, 'score', e.target.value)
-                )}
-              />
-            }
-            <TooltipButton
-              id={`choice-${this.props.id}-feedback-toggle`}
-              className="fa fa-comments-o"
-              title={tex('choice_feedback_info')}
-              onClick={() => this.setState({showFeedback: !this.state.showFeedback})}
-            />
-            <TooltipButton
-              id={`choice-${this.props.id}-delete`}
-              className="fa fa-trash-o"
-              enabled={this.props.deletable}
-              title={t('delete')}
-              onClick={() => this.props.deletable && this.props.onChange(
-                actions.removeChoice(this.props.id)
+          {!this.props.fixedScore &&
+            <input
+              title={tex('score')}
+              type="number"
+              className="form-control choice-score"
+              value={this.props.score}
+              onChange={e => this.props.onChange(
+                actions.updateChoice(this.props.id, 'score', e.target.value)
               )}
             />
+          }
+          <TooltipButton
+            id={`choice-${this.props.id}-feedback-toggle`}
+            className="fa fa-comments-o"
+            title={tex('choice_feedback_info')}
+            onClick={() => this.setState({showFeedback: !this.state.showFeedback})}
+          />
+          <TooltipButton
+            id={`choice-${this.props.id}-delete`}
+            className="fa fa-trash-o"
+            enabled={this.props.deletable}
+            title={t('delete')}
+            onClick={() => this.props.deletable && this.props.onChange(
+              actions.removeChoice(this.props.id)
+            )}
+          />
         </div>
       </div>
     )
@@ -105,12 +106,8 @@ ChoiceItem.propTypes = {
 
 const ChoiceItems = props =>
   <div>
-    {get(props.item, '_touched.choices') &&
-      get(props.item, '_errors.choices') &&
-      <div className="error-text">
-        <span className="fa fa-warning"></span>
-        {props.item._errors.choices}
-      </div>
+    {get(props.item, '_errors.choices') &&
+      <ErrorBlock text={props.item._errors.choices} warnOnly={!props.validating}/>
     }
     <ul className="choice-items">
       {props.item.choices.map(choice =>
@@ -157,11 +154,12 @@ ChoiceItems.propTypes = {
     })).isRequired,
     _errors: T.object
   }).isRequired,
+  validating: T.bool.isRequired,
   onChange: T.func.isRequired
 }
 
 export const Choice = props =>
-  <fieldset>
+  <fieldset className="choice-editor">
     <CheckGroup
       checkId={`item-${props.item.id}-random`}
       checked={props.item.random}
@@ -176,27 +174,13 @@ export const Choice = props =>
         actions.updateProperty('score.type', checked ? SCORE_FIXED : SCORE_SUM)
       )}
     />
-    <Radios
-      groupName="multiple"
-      options={[
-        {value: QCM_SINGLE, label: tex('qcm_single_answer')},
-        {value: QCM_MULTIPLE, label: tex('qcm_multiple_answers')}
-      ]}
-      checkedValue={props.item.multiple ? QCM_MULTIPLE : QCM_SINGLE}
-      inline={true}
-      onChange={
-        value => props.onChange(
-          actions.updateProperty('multiple', value === QCM_MULTIPLE)
-        )
-      }
-      >
-    </Radios>
     {props.item.score.type === SCORE_FIXED &&
       <div className="sub-fields">
         <FormGroup
           controlId={`item-${props.item.id}-fixedSuccess`}
           label={tex('fixed_score_on_success')}
           error={get(props.item, '_errors.score.success')}
+          warnOnly={!props.validating}
         >
           <input
             id={`item-${props.item.id}-fixedSuccess`}
@@ -213,6 +197,7 @@ export const Choice = props =>
           controlId={`item-${props.item.id}-fixedFailure`}
           label={tex('fixed_score_on_failure')}
           error={get(props.item, '_errors.score.failure')}
+          warnOnly={!props.validating}
         >
           <input
             id={`item-${props.item.id}-fixedFailure`}
@@ -226,6 +211,19 @@ export const Choice = props =>
         </FormGroup>
       </div>
     }
+    <Radios
+      groupName="multiple"
+      options={[
+        {value: QCM_SINGLE, label: tex('qcm_single_answer')},
+        {value: QCM_MULTIPLE, label: tex('qcm_multiple_answers')}
+      ]}
+      checkedValue={props.item.multiple ? QCM_MULTIPLE : QCM_SINGLE}
+      inline={true}
+      onChange={value => props.onChange(
+        actions.updateProperty('multiple', value === QCM_MULTIPLE)
+      )}
+    >
+    </Radios>
     <hr/>
     <ChoiceItems {...props}/>
   </fieldset>
@@ -242,5 +240,6 @@ Choice.propTypes = {
     }),
     choices: T.arrayOf(T.object).isRequired
   }).isRequired,
+  validating: T.bool.isRequired,
   onChange: T.func.isRequired
 }

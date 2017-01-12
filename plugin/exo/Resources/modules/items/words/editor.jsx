@@ -1,13 +1,11 @@
 import React, {Component, PropTypes as T} from 'react'
 import classes from 'classnames'
 import get from 'lodash/get'
-import find from 'lodash/find'
 import {t, tex} from './../../utils/translate'
 import {Textarea} from './../../components/form/textarea.jsx'
 import {CheckGroup} from './../../components/form/check-group.jsx'
-import {TooltipButton} from './../../components/form/tooltiped-button.jsx'
+import {TooltipButton} from './../../components/form/tooltip-button.jsx'
 import {actions} from './editor.js'
-
 
 class WordItem extends Component {
   constructor(props) {
@@ -17,7 +15,13 @@ class WordItem extends Component {
 
   render() {
     return (
-      <div className={classes('word-item', {'positive-score': this.props.score > 0 } , {'negative-score': this.props.score <= 0 })}>
+      <div className={
+        classes(
+          'word-item',
+          {'positive-score': this.props.score > 0 },
+          {'negative-score': this.props.score <= 0 }
+        )
+      }>
         <div className="text-fields">
           <input
             type="text"
@@ -100,8 +104,7 @@ WordItem.propTypes = {
 
 const WordsItems = props =>
   <div>
-    { find(props.item.solutions, '_touched') &&
-      get(props.item, '_errors.solutions') &&
+    {get(props.item, '_errors.solutions') &&
       <div className="error-text">
         <span className="fa fa-warning"></span>
         {props.item._errors.solutions}

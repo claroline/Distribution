@@ -1,5 +1,5 @@
 import React from 'react'
-import {shallow} from 'enzyme'
+import {shallow, mount} from 'enzyme'
 import {spyConsole, renew, ensure} from './../../utils/test'
 import {FormGroup} from './form-group.jsx'
 
@@ -12,17 +12,34 @@ describe('<FormGroup/>', () => {
 
   it('has required props', () => {
     shallow(<FormGroup/>)
-    ensure.missingProps('FormGroup', ['controlId', 'label', 'children'])
+    ensure.missingProps('FormGroup', [
+      'controlId',
+      'label',
+      'children'
+    ])
   })
 
   it('has typed props', () => {
-    shallow(<FormGroup controlId={true} label={123}>{[]}</FormGroup>)
-    ensure.invalidProps('FormGroup', ['controlId', 'label', 'children'])
+    shallow(
+      <FormGroup
+        controlId={true}
+        label={123}
+        warnOnly="456"
+      >
+        {[]}
+      </FormGroup>
+    )
+    ensure.invalidProps('FormGroup', [
+      'controlId',
+      'label',
+      'warnOnly',
+      'children'
+    ])
   })
 
   it('renders a label and a given field', () => {
     const group = shallow(
-      <FormGroup controlId="ID" label="LABEL">
+      <FormGroup controlId="ID" label="LABEL" warnOnly={false}>
         <input id="ID" name="NAME" type="text" value="VALUE"/>
       </FormGroup>
     )
@@ -43,7 +60,7 @@ describe('<FormGroup/>', () => {
 
   it('displays an help text if any', () => {
     const group = shallow(
-      <FormGroup controlId="ID" label="LABEL" help="HELP">
+      <FormGroup controlId="ID" label="LABEL" help="HELP" warnOnly={false}>
         <input id="ID" name="NAME" type="text" value="VALUE"/>
       </FormGroup>
     )
@@ -52,13 +69,12 @@ describe('<FormGroup/>', () => {
   })
 
   it('displays an error if any', () => {
-    const group = shallow(
-      <FormGroup controlId="ID" label="LABEL" error="ERROR">
+    const group = mount(
+      <FormGroup controlId="ID" label="LABEL" error="ERROR" warnOnly={false}>
         <input id="ID" name="NAME" type="text" value="VALUE"/>
       </FormGroup>
     )
     ensure.propTypesOk()
-    ensure.equal(group.hasClass('has-error'), true)
-    ensure.equal(group.find('span#help-ID.help-block').text(), 'ERROR')
+    ensure.equal(group.find('.help-block').text(), 'ERROR')
   })
 })

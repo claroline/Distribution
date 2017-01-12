@@ -20,6 +20,7 @@ describe('createStore', () => {
       editor: {
         saved: true,
         saving: false,
+        validating: false,
         currentObject: {},
         openPanels: {
           quiz: false,

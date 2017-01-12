@@ -25,7 +25,7 @@ describe('Quiz reducer', () => {
     assertEqual(quiz.steps.length, 0, 'Steps must be empty')
   })
 
-  it('updates properties and marks them as touched on change', () => {
+  it('updates properties', () => {
     const quiz = freeze({
       id: '1',
       parameters: {
@@ -40,11 +40,6 @@ describe('Quiz reducer', () => {
       parameters: {
         type: 'summative',
         showMetadata: true
-      },
-      _touched: {
-        parameters: {
-          type: true
-        }
       }
     })
   })
@@ -213,7 +208,7 @@ describe('Items reducer', () => {
     })
   })
 
-  it('updates base item properties and marks them as touched', () => {
+  it('updates base item properties', () => {
     registerFixtureType()
     const items = freeze({
       '1': {
@@ -227,8 +222,7 @@ describe('Items reducer', () => {
       id: '1',
       type: 'foo/bar',
       content: 'New question?',
-      _errors: {},
-      _touched: {content: true}
+      _errors: {}
     })
   })
 

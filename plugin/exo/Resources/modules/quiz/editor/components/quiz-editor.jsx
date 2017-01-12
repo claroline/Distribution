@@ -1,4 +1,5 @@
 import React, {PropTypes as T} from 'react'
+import isObject from 'lodash/isObject'
 import Panel from 'react-bootstrap/lib/Panel'
 import PanelGroup from 'react-bootstrap/lib/PanelGroup'
 import get from 'lodash/get'
@@ -9,6 +10,7 @@ import {CheckGroup} from './../../../components/form/check-group.jsx'
 import {Textarea} from './../../../components/form/textarea.jsx'
 import {Radios} from './../../../components/form/radios.jsx'
 import {Date} from './../../../components/form/date.jsx'
+import {ValidationStatus} from './validation-status.jsx'
 import {
   quizTypes,
   shuffleModes,
@@ -37,6 +39,7 @@ const Properties = props =>
     <FormGroup
       controlId="quiz-title"
       label={t('title')}
+      warnOnly={!props.validating}
       error={get(props, 'errors.title')}
     >
       <input
@@ -70,6 +73,7 @@ Properties.propTypes = {
     type: T.string.isRequired,
     showMetadata: T.bool.isRequired
   }).isRequired,
+  validating: T.bool.isRequired,
   onChange: T.func.isRequired
 }
 
@@ -110,6 +114,7 @@ const StepPicking = props =>
           controlId="quiz-pick"
           label={tex('number_steps_draw')}
           help={tex('number_steps_draw_help')}
+          warnOnly={!props.validating}
           error={get(props, 'errors.parameters.pick')}
         >
           <input
@@ -139,6 +144,7 @@ StepPicking.propTypes = {
     randomPick: T.string.isRequired,
     randomOrder: T.string.isRequired
   }).isRequired,
+  validating: T.bool.isRequired,
   onChange: T.func.isRequired
 }
 
@@ -148,6 +154,7 @@ const Signing = props =>
       controlId="quiz-duration"
       label={tex('duration')}
       help={tex('duration_help')}
+      warnOnly={!props.validating}
       error={get(props, 'errors.parameters.duration')}
     >
       <input
@@ -163,6 +170,7 @@ const Signing = props =>
       controlId="quiz-maxAttempts"
       label={tex('maximum_attempts')}
       help={tex('number_max_attempts_help')}
+      warnOnly={!props.validating}
       error={get(props, 'errors.parameters.maxAttempts')}
     >
       <input
@@ -195,6 +203,7 @@ Signing.propTypes = {
     interruptible: T.bool.isRequired,
     showFeedback: T.bool.isRequired
   }).isRequired,
+  validating: T.bool.isRequired,
   onChange: T.func.isRequired
 }
 
@@ -276,17 +285,23 @@ Correction.propTypes = {
   onChange: T.func.isRequired
 }
 
-function makePanel(Section, title, key, props) {
+function makePanel(Section, title, key, props, errorProps) {
   const caretIcon = key === props.activePanelKey ?
     'fa-caret-down' :
     'fa-caret-right'
 
   const Header =
     <div onClick={() => props.handlePanelClick(key)}>
-      <span>
+      <span className="panel-title">
         <span className={classes('panel-icon', 'fa', caretIcon)}/>
         &nbsp;{title}
       </span>
+      {hasPanelError(props, errorProps) &&
+        <ValidationStatus
+          id={`quiz-${key}-status-tip`}
+          validating={props.validating}
+        />
+      }
     </div>
 
   return (
@@ -297,6 +312,7 @@ function makePanel(Section, title, key, props) {
       <Section
         onChange={props.updateProperties}
         errors={props.quiz._errors}
+        validating={props.validating}
         {...props.quiz}
       />
     </Panel>
@@ -305,10 +321,23 @@ function makePanel(Section, title, key, props) {
 
 makePanel.propTypes = {
   activePanelKey: T.string.isRequired,
+  validating: T.bool.isRequired,
   handlePanelClick: T.func.isRequired,
   updateProperties: T.func.isRequired,
   quiz: T.object.isRequired,
   _errors: T.object
+}
+
+function hasPanelError(allProps, errorPropNames) {
+  if (!errorPropNames || !isObject(allProps.quiz._errors)) {
+    return false
+  }
+
+  const errorFields = Object.keys(allProps.quiz._errors)
+
+  return !!errorPropNames.find(name =>
+    !!errorFields.find(field => field === name)
+  )
 }
 
 export const QuizEditor = props => {
@@ -318,9 +347,9 @@ export const QuizEditor = props => {
         accordion
         activeKey={props.activePanelKey}
       >
-        {makePanel(Properties, t('properties'), 'properties', props)}
-        {makePanel(StepPicking, tex('step_picking'), 'step-picking', props)}
-        {makePanel(Signing, tex('signing'), 'signing', props)}
+        {makePanel(Properties, t('properties'), 'properties', props, ['title'])}
+        {makePanel(StepPicking, tex('step_picking'), 'step-picking', props, ['pick'])}
+        {makePanel(Signing, tex('signing'), 'signing', props, ['duration', 'maxAttempts'])}
         {makePanel(Correction, tex('correction'), 'correction', props)}
       </PanelGroup>
     </form>
@@ -348,6 +377,7 @@ QuizEditor.propTypes = {
       showFullCorrection: T.bool.isRequired
     }).isRequired
   }).isRequired,
+  validating: T.bool.isRequired,
   updateProperties: T.func.isRequired,
   activePanelKey: T.oneOfType([T.string, T.bool]).isRequired,
   handlePanelClick: T.func.isRequired

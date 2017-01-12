@@ -1,40 +1,16 @@
 import React, {Component, PropTypes as T} from 'react'
 import classes from 'classnames'
 import {tex} from '../../utils/translate'
-import {tcex} from '../../utils/translate'
 import Tab from 'react-bootstrap/lib/Tab'
 import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
 import Nav from 'react-bootstrap/lib/Nav'
 import NavItem from 'react-bootstrap/lib/NavItem'
-import {Feedback} from './utils/feedback-btn.jsx'
+import {Feedback} from '../components/feedback-btn.jsx'
+import {SolutionScore} from '../components/score.jsx'
 import {WarningIcon} from './utils/warning-icon.jsx'
 import {utils} from './utils/utils'
-
-const SolutionScore = props =>
-  <span className="item-score">
-    {tcex('solution_score', props.solution.score, {'score': props.solution.score})}
-  </span>
-
-SolutionScore.propTypes = {
-  solution: T.shape({
-    score: T.number
-  })
-}
-
-const ChoiceMetadata = props => {
-  return(
-    <div className="panel panel-body">
-      <h4>{props.title}</h4>
-      <i>{props.description}</i>
-    </div>
-  )
-}
-
-ChoiceMetadata.propTypes = {
-  title: T.string,
-  description: T.string
-}
+import {Metadata} from '../components/metadata.jsx'
 
 export class ChoicePaper extends Component
 {
@@ -65,7 +41,7 @@ export class ChoicePaper extends Component
           <Col sm={12}>
             <Tab.Content animation>
               <Tab.Pane eventKey="first">
-                <ChoiceMetadata title={this.props.item.title} description={this.props.item.description}/>
+                <Metadata title={this.props.item.title} description={this.props.item.description}/>
                 <div className="container choice-paper">
                   {this.props.item.solutions.map(solution =>
                     <div
@@ -73,8 +49,10 @@ export class ChoicePaper extends Component
                       className={classes(
                         'item',
                         this.props.item.multiple ? 'checkbox': 'radio',
+
                         utils.getAnswerClassForSolution(solution, this.props.answer)
-                      )}>
+                      )}
+                    >
                       <WarningIcon solution={solution} answers={this.props.answer}/>
                       <input
                         className={this.props.item.multiple ? 'checkbox': 'radio'}
@@ -89,17 +67,17 @@ export class ChoicePaper extends Component
                         htmlFor={utils.answerId(solution.id)}
                         dangerouslySetInnerHTML={{__html: utils.getChoiceById(this.props.item.choices, solution.id).data}}
                       />
-                    <Feedback
-                      id={`${solution.id}-feedback`}
-                      feedback={solution.feedback}
-                    />
-                      <SolutionScore solution={solution}/>
+                      <Feedback
+                        id={`${solution.id}-feedback`}
+                        feedback={solution.feedback}
+                      />
+                      <SolutionScore score={solution.score}/>
                     </div>
                   )}
                 </div>
               </Tab.Pane>
               <Tab.Pane eventKey="second">
-                <ChoiceMetadata title={this.props.item.title} description={this.props.item.description}/>
+                <Metadata title={this.props.item.title} description={this.props.item.description}/>
                 <div className="container choice-paper">
                   {this.props.item.solutions.map(solution =>
                     <div
@@ -127,7 +105,7 @@ export class ChoicePaper extends Component
                         id={`${solution.id}-feedback-expected`}
                         feedback={solution.feedback}
                       />
-                      <SolutionScore solution={solution}/>
+                      <SolutionScore score={solution.score}/>
                     </div>
                   )}
                 </div>

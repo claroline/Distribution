@@ -115,6 +115,10 @@ edit: Éditer
 edit_category: Éditer cette catégorie
 edit_question: Éditer une question
 edit_step: Éditer les informations
+editor_invalid_no_save: Questionnaire non valide
+editor_invalid_no_save_desc: Le questionnaire ne peut être sauvegardé car certaines informations sont manquantes ou non valides. Veuillez corriger les problèmes indiqués avant d'effectuer la sauvegarde.
+editor_validating_desc: Des erreurs ou des informations manquantes empêchent la sauvegarde des données.
+editor_not_validating_desc: "Travail en cours : certaines données sont manquantes ou nécessitent une correction."
 end_date: Date de fin
 entry: Entrer
 error_no_step_found: Une erreur est survenue lors de la récupération de l'étape courrante.
@@ -254,8 +258,8 @@ maximum_tries: Nombre d'essais maximum
 meaning_measure_difficulty: Si l'indice est élevé, c'est que la question est facile. Inversement, si un indice est faible, la question est difficile.
 metadata_visible: Afficher les informations
 metadata_visible_help: Si coché, un tableau récapitulatif sera affiché sur la vue d'ensemble du questionnaire.
-maximal_correction: Afficher les solutions
-minimal_correction: Cacher les solutions
+maximal_correction: Afficher la réponse attendue dans la correction
+minimal_correction: Cacher la réponse attendue dans la correction
 minimize: Réduire
 model: Modèle
 more_info: Plus d'informations

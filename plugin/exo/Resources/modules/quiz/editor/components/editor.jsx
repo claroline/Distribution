@@ -11,6 +11,7 @@ let Editor = props =>
   <div className="quiz-editor">
     <ThumbnailBox
       thumbnails={props.thumbnails}
+      validating={props.validating}
       onThumbnailClick={props.selectObject}
       onThumbnailMove={props.moveStep}
       onNewStepClick={props.createStep}
@@ -23,7 +24,8 @@ let Editor = props =>
   </div>
 
 Editor.propTypes = {
-  thumbnails: T.arrayOf(T.object).isRequired,
+  thumbnails: T.array.isRequired,
+  validating: T.bool.isRequired,
   selectObject: T.func.isRequired,
   moveStep: T.func.isRequired,
   createStep: T.func.isRequired,
@@ -37,6 +39,7 @@ function selectSubEditor(props) {
       return (
         <QuizEditor
           quiz={props.quizProperties}
+          validating={props.validating}
           updateProperties={props.updateQuiz}
           activePanelKey={props.activeQuizPanel}
           handlePanelClick={props.selectQuizPanel}
@@ -46,6 +49,7 @@ function selectSubEditor(props) {
       return (
         <StepEditor
           step={props.currentObject}
+          validating={props.validating}
           updateStep={props.updateStep}
           activePanelKey={props.activeStepPanel}
           handlePanelClick={props.selectStepPanel}
@@ -75,6 +79,7 @@ selectSubEditor.propTypes = {
   updateStep: T.string.isRequired,
   activeStepPanel: T.string.isRequired,
   selectStepPanel: T.func.isRequired,
+  validating: T.bool.isRequired,
   deleteItem: T.func.isRequired,
   moveItem: T.func.isRequired,
   createItem: T.func.isRequired,
@@ -92,7 +97,8 @@ function mapStateToProps(state) {
     currentObject: select.currentObjectDeep(state),
     activeQuizPanel: select.quizOpenPanel(state),
     activeStepPanel: select.stepOpenPanel(state),
-    quizProperties: select.quiz(state)
+    quizProperties: select.quiz(state),
+    validating: select.validating(state)
   }
 }
 

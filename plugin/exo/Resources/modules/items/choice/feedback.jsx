@@ -2,7 +2,7 @@ import classes from 'classnames'
 
 import React, {PropTypes as T} from 'react'
 import {utils} from './utils/utils'
-import {Feedback} from './utils/feedback-btn.jsx'
+import {Feedback} from '../components/feedback-btn.jsx'
 import {WarningIcon} from './utils/warning-icon.jsx'
 
 export const ChoiceFeedback = props => {

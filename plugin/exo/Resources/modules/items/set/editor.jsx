@@ -6,7 +6,7 @@ import Tooltip from 'react-bootstrap/lib/Tooltip'
 import {tex, t} from './../../utils/translate'
 import {Textarea} from './../../components/form/textarea.jsx'
 import {makeDraggable, makeDroppable} from './../../utils/dragAndDrop'
-import {TooltipButton} from './../../components/form/tooltiped-button.jsx'
+import {TooltipButton} from './../../components/form/tooltip-button.jsx'
 import {actions} from './editor'
 
 let DropBox = props => {
@@ -28,7 +28,7 @@ DropBox.propTypes = {
   object: T.object.isRequired
 }
 
-DropBox =  makeDroppable(DropBox, 'ITEM')
+DropBox = makeDroppable(DropBox, 'ITEM')
 
 class Association extends Component {
   constructor(props) {
@@ -412,36 +412,31 @@ class SetForm extends Component {
   render() {
     return (
       <div className="set-question-container">
-        { get(this.props.item, '_touched') &&
-          get(this.props.item, '_errors.item') &&
+        {get(this.props.item, '_errors.item') &&
           <div className="error-text">
             <span className="fa fa-warning"></span>
             {this.props.item._errors.item}
           </div>
         }
-        { get(this.props.item, '_itemsTouched') &&
-          get(this.props.item, '_errors.items') &&
+        {get(this.props.item, '_errors.items') &&
           <div className="error-text">
             <span className="fa fa-warning"></span>
             {this.props.item._errors.items}
           </div>
         }
-        { get(this.props.item, '_setTouched') &&
-          get(this.props.item, '_errors.sets') &&
+        {get(this.props.item, '_errors.sets') &&
           <div className="error-text">
             <span className="fa fa-warning"></span>
             {this.props.item._errors.sets}
           </div>
         }
-        { get(this.props.item, '_associationTouched') &&
-          get(this.props.item, '_errors.solutions') &&
+        {get(this.props.item, '_errors.solutions') &&
           <div className="error-text">
             <span className="fa fa-warning"></span>
             {this.props.item._errors.solutions}
           </div>
         }
-        { get(this.props.item, '_oddTouched') &&
-          get(this.props.item, '_errors.odd') &&
+        {get(this.props.item, '_errors.odd') &&
           <div className="error-text">
             <span className="fa fa-warning"></span>
             {this.props.item._errors.odd}

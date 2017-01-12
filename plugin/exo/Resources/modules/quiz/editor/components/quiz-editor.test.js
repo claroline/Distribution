@@ -17,6 +17,7 @@ describe('<QuizEditor/>', () => {
       'QuizEditor',
       [
         'quiz.title',
+        'validating',
         'updateProperties',
         'activePanelKey',
         'handlePanelClick'
@@ -28,6 +29,7 @@ describe('<QuizEditor/>', () => {
     shallow(
       <QuizEditor
         quiz="foo"
+        validating={[]}
         updateProperties={123}
         activePanelKey={[]}
         handlePanelClick="bar"
@@ -37,6 +39,7 @@ describe('<QuizEditor/>', () => {
       'QuizEditor',
       [
         'quiz',
+        'validating',
         'updateProperties',
         'activePanelKey',
         'handlePanelClick'
@@ -51,6 +54,7 @@ describe('<QuizEditor/>', () => {
     const form = mount(
       <QuizEditor
         quiz={fixture()}
+        validating={false}
         updateProperties={(path, value) => {
           updatedPath = path
           updatedValue = value

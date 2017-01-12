@@ -1,6 +1,4 @@
 import cloneDeep from 'lodash/cloneDeep'
-import merge from 'lodash/merge'
-import set from 'lodash/set'
 import {Words as component} from './editor.jsx'
 import {ITEM_CREATE} from './../../quiz/editor/actions'
 import {notBlank, number, chain} from './../../utils/validate'
@@ -52,13 +50,7 @@ function reduce(item = {}, action) {
 
     case UPDATE_SOLUTION: {
       const newItem = cloneDeep(item)
-
-      // mark as touched
       const value = action.property === 'score' ? parseFloat(action.value) : action.value
-      newItem.solutions[action.index]._touched = merge(
-        newItem.solutions[action.index]._touched || {},
-        set({}, action.property, true)
-      )
       newItem.solutions[action.index][action.property] = value
 
       return newItem
