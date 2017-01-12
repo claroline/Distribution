@@ -180,11 +180,13 @@
                                             <small>[{{ course.getCode() }}]</small>
                                         </td>
                                         <td>
-                                            <a href="{{ path('claro_workspace_open_tool', {'workspaceId': workspace.getId(), 'toolName': 'home'}) }}"
-                                               class="standard-link"
-                                            >
-                                                <i class="fa fa-book"></i>
-                                            </a>
+                                            {% if workspace is not empty %}
+                                                <a href="{{ path('claro_workspace_open_tool', {'workspaceId': workspace.getId(), 'toolName': 'home'}) }}"
+                                                   class="standard-link"
+                                                >
+                                                    <i class="fa fa-book"></i>
+                                                </a>
+                                            {% endif %}
                                         </td>
                                     </tr>
                                 {% endfor %}
