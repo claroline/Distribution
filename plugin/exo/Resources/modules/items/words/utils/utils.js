@@ -25,7 +25,9 @@ utils.split = (text, solutions, highlight = true) => {
   //now we highlight the text if required
   if (highlight) {
     split.forEach(el => {
-      const regex = new RegExp('(\\b' + el.word + '\\b)', 'gi')
+      let regexFlag = 'g'
+      if (!el.caseSensitive) regexFlag += 'i'
+      const regex = new RegExp('(\\b' + el.word + '\\b)', regexFlag)
       const classname = el.score > 0 ? 'word-success': 'word-danger'
       const iconname = el.score > 0 ? 'fa fa-check': 'fa fa-times'
       const replacer = `<strong><span class='${classname}'>$1&nbsp<i class='${iconname}'></i></span></strong>`
@@ -45,14 +47,18 @@ utils.split = (text, solutions, highlight = true) => {
 }
 
 utils.getTextElements = (text, solutions) => {
-  const matches = solutions.map(solution => solution.text)
   const data = []
 
   //first we find each occurence of a given word
-  matches.forEach(word => {
-    const regex = new RegExp('\\b' + word + '\\b', 'gi')
+  solutions.forEach(solution => {
+    const word = solution.text
+    let regexFlag = 'g'
+    if (!solution.caseSensitive) regexFlag += 'i'
+    const regex = new RegExp('\\b' + word + '\\b', regexFlag)
+    //console.log(regex)
     const position = text.search(regex)
     data.push({
+      caseSensitive: solution.caseSensitive,
       word,
       position,
       score: solutions.find(el => el.text === word).score,

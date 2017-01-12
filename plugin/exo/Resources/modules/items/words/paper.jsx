@@ -59,7 +59,6 @@ export class WordsPaper extends Component
 
   render() {
     const textElements = utils.getTextElements(this.props.answer, this.props.item.solutions)
-    textElements.pop()
     var halfLength = Math.ceil(textElements.length / 2)
     var leftSide = textElements.splice(0, halfLength)
     var rightSide = textElements
