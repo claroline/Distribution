@@ -1,6 +1,4 @@
 import cloneDeep from 'lodash/cloneDeep'
-import merge from 'lodash/merge'
-import set from 'lodash/set'
 import {SetForm as component} from './editor.jsx'
 import {ITEM_CREATE} from './../../quiz/editor/actions'
 import {makeId, makeActionCreator} from './../../utils/utils'

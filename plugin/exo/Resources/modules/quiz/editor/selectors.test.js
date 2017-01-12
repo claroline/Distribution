@@ -12,7 +12,7 @@ describe('Thumbnails selector', () => {
         title: t('parameters'),
         type: TYPE_QUIZ,
         active: false,
-        hasErrors: false,
+        hasErrors: false
       },
       {
         id: 'a',

@@ -14,7 +14,6 @@ export const TooltipButton = props =>
   >
     <button
       disabled={!props.enabled}
-      className="btn btn-link"
       className={classes('btn', 'btn-link', props.className)}
       onClick={props.onClick}
     >
@@ -23,7 +22,7 @@ export const TooltipButton = props =>
   </OverlayTrigger>
 
 TooltipButton.defaultProps = {
-  position:'top',
+  position: 'top',
   enabled: true
 }
 

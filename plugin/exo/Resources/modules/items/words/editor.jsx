@@ -1,7 +1,6 @@
 import React, {Component, PropTypes as T} from 'react'
 import classes from 'classnames'
 import get from 'lodash/get'
-import find from 'lodash/find'
 import {t, tex} from './../../utils/translate'
 import {Textarea} from './../../components/form/textarea.jsx'
 import {CheckGroup} from './../../components/form/check-group.jsx'

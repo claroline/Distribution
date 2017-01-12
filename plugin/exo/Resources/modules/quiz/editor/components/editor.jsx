@@ -79,6 +79,7 @@ selectSubEditor.propTypes = {
   updateStep: T.string.isRequired,
   activeStepPanel: T.string.isRequired,
   selectStepPanel: T.func.isRequired,
+  validating: T.bool.isRequired,
   deleteItem: T.func.isRequired,
   moveItem: T.func.isRequired,
   createItem: T.func.isRequired,

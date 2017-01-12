@@ -298,7 +298,7 @@ function makePanel(Section, title, key, props, errorProps) {
       </span>
       {hasPanelError(props, errorProps) &&
         <ValidationStatus
-          id={`${props.id}-quiz-status-tip`}
+          id={`quiz-${key}-status-tip`}
           validating={props.validating}
         />
       }
@@ -321,6 +321,7 @@ function makePanel(Section, title, key, props, errorProps) {
 
 makePanel.propTypes = {
   activePanelKey: T.string.isRequired,
+  validating: T.bool.isRequired,
   handlePanelClick: T.func.isRequired,
   updateProperties: T.func.isRequired,
   quiz: T.object.isRequired,

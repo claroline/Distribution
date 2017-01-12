@@ -1,6 +1,4 @@
 import cloneDeep from 'lodash/cloneDeep'
-import merge from 'lodash/merge'
-import set from 'lodash/set'
 import {Words as component} from './editor.jsx'
 import {ITEM_CREATE} from './../../quiz/editor/actions'
 import {notBlank, number, chain} from './../../utils/validate'
