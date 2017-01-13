@@ -28,7 +28,7 @@ class SecurityTokenType extends AbstractType
         $builder->add(
             'clientIp',
             'text',
-            array('label' => 'client_text')
+            array('label' => 'client_ip')
         );
         $builder->add(
             'token',
