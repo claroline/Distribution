@@ -308,10 +308,6 @@ class Match extends Component {
     })
   }
 
-  focus() {
-
-  }
-
   itemWillUnmount(isLeftSet, id, elemId){
     // remove item endpoint
     // https://jsplumbtoolkit.com/community/doc/miscellaneous-examples.html
@@ -332,7 +328,6 @@ class Match extends Component {
     const selector = '#' +  id
     const anchor = isLeftItem ? 'RightMiddle' : 'LeftMiddle'
 
-    // HERE timeout make the draw of endpoints not reliable
     window.setTimeout(() => {
       if (isLeftItem) {
         this.jsPlumbInstance.addEndpoint(this.jsPlumbInstance.getSelector(selector), {
@@ -350,10 +345,6 @@ class Match extends Component {
         })
       }
     }, 100)
-
-    window.setTimeout(() => {
-      this.jsPlumbInstance.repaintEverything()
-    }, 3000)
   }
 
   removeConnection(firstId, secondId){
