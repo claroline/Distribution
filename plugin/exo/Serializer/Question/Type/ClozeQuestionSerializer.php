@@ -139,6 +139,7 @@ class ClozeQuestionSerializer implements SerializerInterface
                 }
             }
 
+            $hole->setSize($holeData->size);
             if (!empty($holeData->choices)) {
                 $hole->setSelector(true);
             } else {
