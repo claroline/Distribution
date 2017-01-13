@@ -80,7 +80,7 @@ class Hole
     public function __construct()
     {
         $this->keywords = new ArrayCollection();
-        $this->uuid = Uuid::uuid4();
+        $this->uuid = Uuid::uuid4()->toString();
     }
 
     /**

@@ -114,7 +114,7 @@ class Paper
      */
     public function __construct()
     {
-        $this->uuid = Uuid::uuid4();
+        $this->uuid = Uuid::uuid4()->toString();
         $this->start = new \DateTime();
         $this->answers = new ArrayCollection();
     }

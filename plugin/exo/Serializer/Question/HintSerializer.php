@@ -51,6 +51,9 @@ class HintSerializer implements SerializerInterface
     {
         if (empty($hint)) {
             $hint = new Hint();
+            if (!empty($data->id)) {
+                $hint->setUuid($data->id);
+            }
         }
 
         if (!empty($data->penalty) || 0 === $data->penalty) {

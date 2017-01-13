@@ -71,7 +71,7 @@ class Step
      */
     public function __construct()
     {
-        $this->uuid = Uuid::uuid4();
+        $this->uuid = Uuid::uuid4()->toString();
         $this->stepQuestions = new ArrayCollection();
     }
 
