@@ -13,7 +13,7 @@ UsedHint.propTypes = {
 }
 
 const Hint = props =>
-  <button type="button" className="btn btn-default btn-block">
+  <button type="button" className="btn btn-default btn-block" onClick={props.showHint}>
     <span className="fa fa-fw fa-eye"></span>
     {tex('hint_show')}
 
@@ -65,12 +65,13 @@ const ItemPlayer = props =>
     <hr/>
 
     {props.item.hints && 0 !== props.item.hints.length &&
-      <Hints hints={props.item.hints} showHint={props.showHint} />
+      <Hints hints={props.item.hints} showHint={(hint) => props.showHint(props.item.id, hint)} />
     }
   </div>
 
 ItemPlayer.propTypes = {
   item: T.shape({
+    id: T.string.isRequired,
     title: T.string.isRequired,
     description: T.string.isRequired,
     content: T.string.isRequired,

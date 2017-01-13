@@ -189,6 +189,14 @@ class AttemptManager
         $this->om->startFlushSuite();
 
         foreach ($answers as $answerData) {
+            $question = $paper->getQuestion($answerData->questionId);
+            if (empty($question)) {
+                throw new ValidationException('Submitted answers are invalid', [[
+                    'path' => '/questionId',
+                    'message' => 'question is not part of the attempt',
+                ]]);
+            }
+
             $existingAnswer = $paper->getAnswer($answerData->questionId);
 
             try {
@@ -202,7 +210,7 @@ class AttemptManager
             }
 
             // Correct and mark answer
-            $score = $this->questionManager->calculateScore($answer->getQuestion(), $answer);
+            $score = $this->questionManager->calculateScore($question, $answer);
             $answer->setScore($score);
             $answer->setIp($clientIp);
             $answer->setTries($answer->getTries() + 1);
@@ -243,39 +251,51 @@ class AttemptManager
      * Flags an hint has used in the user paper and returns the hint content.
      *
      * @param Paper  $paper
-     * @param Hint   $hint
+     * @param string $questionId
+     * @param string $hintId
      * @param string $clientIp
      *
      * @return mixed
      */
-    public function useHint(Paper $paper, Hint $hint, $clientIp)
+    public function useHint(Paper $paper, $questionId, $hintId, $clientIp)
     {
-        if (!$this->paperRepository->hasHint($paper, $hint)) {
+        $question = $paper->getQuestion($questionId);
+        if (empty($question)) {
+            throw new \LogicException("Question {$questionId} and paper {$paper->getId()} are not related");
+        }
+
+        $hint = null;
+        foreach ($question->hints as $questionHint) {
+            if ($hintId === $questionHint->id) {
+                $hint = $questionHint;
+                break;
+            }
+        }
+
+        if (empty($hint)) {
             // Hint is not related to a question of the current attempt
-            throw new \LogicException("Hint {$hint->getId()} and paper {$paper->getId()} are not related");
+            throw new \LogicException("Hint {$hintId} and paper {$paper->getId()} are not related");
         }
 
         // Retrieve or create the answer for the question
-        $answer = $paper->getAnswer($hint->getQuestion()->getUuid());
+        $answer = $paper->getAnswer($question->id);
         if (empty($answer)) {
             $answer = new Answer();
             $answer->setTries(0); // Using an hint is not a try. This will be updated when user will submit his answer
-            $answer->setQuestion($hint->getQuestion());
+            $answer->setQuestionId($question->id);
             $answer->setIp($clientIp);
 
             // Link the new answer to the paper
             $paper->addAnswer($answer);
         }
 
-        $score = $this->questionManager->calculateScore($answer->getQuestion(), $answer);
-        $answer->addUsedHint($hint);
+        $score = $this->questionManager->calculateScore($question, $answer);
+        $answer->addUsedHint($hintId);
         $answer->setScore($score);
 
         $this->om->persist($answer);
         $this->om->flush();
 
-        // TODO : this needs to be properly exported as it can also include a ResourceNode
-        // We need to return an encoded Content
-        return $hint->getData();
+        return $hint;
     }
 }

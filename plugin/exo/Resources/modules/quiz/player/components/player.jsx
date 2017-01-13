@@ -33,7 +33,7 @@ const Player = props => {
         >
           <ItemPlayer
             item={item}
-            showHint={props.showHint}
+            showHint={(questionId, hint) => props.showHint(props.quizId, props.paper.id, questionId, hint)}
           >
             {React.createElement(getDefinition(item.type)[props.feedbackEnabled ? 'feedback': 'player'], {
               item: item,

@@ -15,6 +15,7 @@ use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Manager\Attempt\ScoreManager;
 use UJM\ExoBundle\Repository\AnswerRepository;
 use UJM\ExoBundle\Repository\QuestionRepository;
+use UJM\ExoBundle\Serializer\Question\HintSerializer;
 use UJM\ExoBundle\Serializer\Question\QuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Question\QuestionValidator;
 
@@ -59,6 +60,11 @@ class QuestionManager
     private $questionDefinitions;
 
     /**
+     * @var HintSerializer
+     */
+    private $hintSerializer;
+
+    /**
      * QuestionManager constructor.
      *
      * @DI\InjectParams({
@@ -66,7 +72,8 @@ class QuestionManager
      *     "scoreManager"        = @DI\Inject("ujm_exo.manager.score"),
      *     "validator"           = @DI\Inject("ujm_exo.validator.question"),
      *     "serializer"          = @DI\Inject("ujm_exo.serializer.question"),
-     *     "questionDefinitions" = @DI\Inject("ujm_exo.collection.question_definitions")
+     *     "questionDefinitions" = @DI\Inject("ujm_exo.collection.question_definitions"),
+     *     "hintSerializer"      = @DI\Inject("ujm_exo.serializer.hint")
      * })
      *
      * @param ObjectManager                 $om
@@ -74,13 +81,15 @@ class QuestionManager
      * @param QuestionValidator             $validator
      * @param QuestionSerializer            $serializer
      * @param QuestionDefinitionsCollection $questionDefinitions
+     * @param HintSerializer                $hintSerializer
      */
     public function __construct(
         ObjectManager $om,
         ScoreManager $scoreManager,
         QuestionValidator $validator,
         QuestionSerializer $serializer,
-        QuestionDefinitionsCollection $questionDefinitions
+        QuestionDefinitionsCollection $questionDefinitions,
+        HintSerializer $hintSerializer
     ) {
         $this->om = $om;
         $this->scoreManager = $scoreManager;
@@ -89,6 +98,7 @@ class QuestionManager
         $this->validator = $validator;
         $this->serializer = $serializer;
         $this->questionDefinitions = $questionDefinitions;
+        $this->hintSerializer = $hintSerializer;
     }
 
     /**
@@ -191,13 +201,16 @@ class QuestionManager
     /**
      * Calculates the score of an answer to a question.
      *
-     * @param Question $question
-     * @param Answer   $answer
+     * @param \stdClass $questionData
+     * @param Answer    $answer
      *
      * @return float
      */
-    public function calculateScore(Question $question, Answer $answer)
+    public function calculateScore(\stdClass $questionData, Answer $answer)
     {
+        // Get entities for score calculation
+        $question = $this->serializer->deserialize($questionData);
+
         // Let the question correct the answer
         $definition = $this->questionDefinitions->get($question->getMimeType());
         $corrected = $definition->correctAnswer($question->getInteraction(), json_decode($answer->getData()));
@@ -206,8 +219,18 @@ class QuestionManager
         }
 
         // Add hints
-        foreach ($answer->getUsedHints() as $hint) {
-            $corrected->addPenalty($hint);
+        foreach ($answer->getUsedHints() as $hintId) {
+            // Get hint definition from question data
+            $hint = null;
+            foreach ($questionData->hints as $questionHint) {
+                if ($hintId === $questionHint->id) {
+                    $hint = $questionHint;
+                    break;
+                }
+            }
+            $corrected->addPenalty(
+                $this->hintSerializer->deserialize($hint)
+            );
         }
 
         return $this->scoreManager->calculate(json_decode($question->getScoreRule()), $corrected);
@@ -216,12 +239,15 @@ class QuestionManager
     /**
      * Calculates the total score of a question.
      *
-     * @param Question $question
+     * @param \stdClass $questionData
      *
      * @return float
      */
-    public function calculateTotal(Question $question)
+    public function calculateTotal(\stdClass $questionData)
     {
+        // Get entities for score calculation
+        $question = $this->serializer->deserialize($questionData);
+
         // Get the expected answer for the question
         $definition = $this->questionDefinitions->get($question->getMimeType());
         $expected = $definition->expectAnswer($question->getInteraction());
