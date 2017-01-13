@@ -60,10 +60,10 @@ abstract class PluginBundle extends InstallableBundle implements PluginBundleInt
         $path = $this->getPath().$ds.'Resources'.$ds.'config'.$ds.'routing.yml';
 
         if (file_exists($path)) {
-            return array($path);
+            return [$path];
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -151,7 +151,7 @@ abstract class PluginBundle extends InstallableBundle implements PluginBundleInt
     }
 
     /**
-     * Returns true if the plugin has to be activated by default
+     * Returns true if the plugin has to be activated by default.
      *
      * @return bool
      */
