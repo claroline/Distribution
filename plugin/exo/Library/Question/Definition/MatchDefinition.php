@@ -4,8 +4,10 @@ namespace UJM\ExoBundle\Library\Question\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
+use UJM\ExoBundle\Entity\Misc\Label;
 use UJM\ExoBundle\Entity\Misc\Proposal;
 use UJM\ExoBundle\Library\Question\QuestionType;
+use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 use UJM\ExoBundle\Serializer\Question\Type\MatchQuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\MatchAnswerValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Question\Type\MatchQuestionValidator;
@@ -117,20 +119,25 @@ class MatchDefinition extends AbstractDefinition
         $corrected = new CorrectedAnswer();
 
         foreach ($question->getProposals() as $proposal) {
-            $expectedLabels = $proposal->getExpectedLabels();
-
-          /*
-          if (is_array($answer) && in_array($choice->getId(), $answer)) {
-              // Choice has been selected by the user
-              if (0 < $choice->getScore()) {
-                  $corrected->addExpected($choice);
-              } else {
-                  $corrected->addUnexpected($choice);
-              }
-          } elseif (0 < $choice->getScore()) {
-              // The choice is not selected but it's part of the correct answer
-              $corrected->addMissing($choice);
-          }*/
+            if (is_array($answer)) {
+                foreach ($answer as $association) {
+                    if ($association->firstId === $proposal->getUuid()) {
+                        $expectedLabels = $proposal->getExpectedLabels();
+                        foreach ($expectedLabels as $label) {
+                            if ($association->secondId === $label->getUuid()) {
+                                if (0 < $label->getScore()) {
+                                    $corrected->addExpected($label);
+                                } else {
+                                    $corrected->addUnexpected($label);
+                                }
+                            } elseif (0 < $label->getScore()) {
+                                // The choice is not selected but it's part of the correct answer
+                                $corrected->addMissing($label);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         return $corrected;
@@ -140,40 +147,20 @@ class MatchDefinition extends AbstractDefinition
     {
         $expected = [];
 
-        /*$expected = array_map(function (Proposal $proposal) use ($question) {
-
-
-            return $itemData;
-        }, $matchQuestion->getProposals()->toArray());*/
-
-        /*return array_filter($question->getChoices()->toArray(), function (Choice $choice) {
-            return 0 < $choice->getScore();
-        });*/
+        $expected = array_map(function (Proposal $proposal) {
+            // returns an array which is not valid
+            return array_filter($proposal->getExpectedLabels()->toArray(), function (Label $label) {
+                return 0 < $label->getScore();
+            });
+        }, $question->getProposals()->toArray());
 
         return $expected;
     }
 
-    public function getStatistics(AbstractQuestion $matchQuestion, array $answers)
+    public function getStatistics(AbstractQuestion $matchQuestion, array $answersData)
     {
         // TODO: Implement getStatistics() method.
-/*
-        $choices = [];
 
-        foreach ($answersData as $answerData) {
-            foreach ($answerData as $choiceId) {
-                if (!isset($choices[$choiceId])) {
-                    // First answer to have this solution
-                    $choices[$choiceId] = new \stdClass();
-                    $choices[$choiceId]->id = $choiceId;
-                    $choices[$choiceId]->count = 0;
-                }
-
-                ++$choices[$choiceId]->count;
-            }
-        }
-
-        return array_values($choices);
-*/
         return [];
     }
 }
