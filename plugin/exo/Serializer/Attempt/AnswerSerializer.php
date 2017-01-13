@@ -6,7 +6,6 @@ use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\Question\Hint;
-use UJM\ExoBundle\Entity\Question\Question;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\AbstractSerializer;
 use UJM\ExoBundle\Serializer\Question\HintSerializer;
@@ -81,7 +80,6 @@ class AnswerSerializer extends AbstractSerializer
 
         return $answerData;
     }
-
 
     /**
      * Converts raw data into a Answer entity.
