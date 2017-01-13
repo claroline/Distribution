@@ -25,7 +25,7 @@ class HintSerializer implements SerializerInterface
     public function serialize($hint, array $options = [])
     {
         $hintData = new \stdClass();
-        $hintData->id = (string) $hint->getId();
+        $hintData->id = $hint->getUuid();
 
         if (0 !== $hint->getPenalty()) {
             $hintData->penalty = $hint->getPenalty();

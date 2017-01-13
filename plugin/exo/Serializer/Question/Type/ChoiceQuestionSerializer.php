@@ -100,7 +100,7 @@ class ChoiceQuestionSerializer implements SerializerInterface
         return array_map(function (Choice $choice) use ($options) {
             $choiceData = $this->contentSerializer->serialize($choice, $options);
             // FIXME : the choice id overlaps the content ID.
-            $choiceData->id = (string) $choice->getId();
+            $choiceData->id = $choice->getUuid();
 
             return $choiceData;
         }, $choiceQuestion->getChoices()->toArray());
@@ -123,7 +123,7 @@ class ChoiceQuestionSerializer implements SerializerInterface
             // Searches for an existing choice entity.
             foreach ($choiceEntities as $entityIndex => $entityChoice) {
                 /** @var Choice $entityChoice */
-                if ((string) $entityChoice->getId() === $choiceData->id) {
+                if ($entityChoice->getUuid() === $choiceData->id) {
                     $choice = $entityChoice;
                     unset($choiceEntities[$entityIndex]);
                     break;
@@ -133,6 +133,9 @@ class ChoiceQuestionSerializer implements SerializerInterface
             if (null === $choice) {
                 // Create a new choice
                 $choice = new Choice();
+                if (!empty($choiceData->id)) {
+                    $choice->setUuid($choiceData->id);
+                }
             }
 
             $choice->setOrder($index);
@@ -177,7 +180,7 @@ class ChoiceQuestionSerializer implements SerializerInterface
     {
         return array_map(function (Choice $choice) {
             $solutionData = new \stdClass();
-            $solutionData->id = (string) $choice->getId();
+            $solutionData->id = $choice->getUuid();
             $solutionData->score = $choice->getScore();
 
             if ($choice->getFeedback()) {
