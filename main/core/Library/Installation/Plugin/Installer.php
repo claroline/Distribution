@@ -92,7 +92,7 @@ class Installer
         $pluginEntity = $this->recorder->register($plugin, $this->validator->getPluginConfiguration());
         $this->baseInstaller->install($plugin);
 
-        if (!$this->pluginManager->isReady($pluginEntity)) {
+        if (!$this->pluginManager->isReady($pluginEntity) || !$this->pluginManager->isActivatedByDefault($pluginEntity)) {
             $errors = $this->pluginManager->getMissingRequirements($pluginEntity);
 
             foreach ($errors['extensions'] as $extension) {
