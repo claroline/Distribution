@@ -242,7 +242,7 @@ mark_bigest_other: Le score est supérieur au score maximun
 match_add_item: Ajouter un item
 match_penalty_label: Pénalité pour toute mauvaise association
 match_shuffle_labels_and_proposals: Ordre des propositions et des labels aléatoire
-match_edit_connection: Éditer la connection
+match_edit_connection: Éditer l'association
 match_item_empty_data_error: Les données d'un élément ne peuvent être vides.
 match_no_valid_solution: Au moins une solution doit avoir un score supérieur à 0.
 match_no_solution: Il doit y avoir au moins une solution.

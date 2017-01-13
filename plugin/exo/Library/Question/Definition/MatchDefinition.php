@@ -4,6 +4,7 @@ namespace UJM\ExoBundle\Library\Question\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
+use UJM\ExoBundle\Entity\Misc\Proposal;
 use UJM\ExoBundle\Library\Question\QuestionType;
 use UJM\ExoBundle\Serializer\Question\Type\MatchQuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\MatchAnswerValidator;
@@ -105,22 +106,74 @@ class MatchDefinition extends AbstractDefinition
         return $this->serializer;
     }
 
+    /**
+     * @param MatchQuestion $question
+     * @param $answer
+     *
+     * @return CorrectedAnswer
+     */
     public function correctAnswer(AbstractQuestion $question, $answer)
     {
-        // TODO: Implement correctAnswer() method.
+        $corrected = new CorrectedAnswer();
+
+        foreach ($question->getProposals() as $proposal) {
+            $expectedLabels = $proposal->getExpectedLabels();
+
+          /*
+          if (is_array($answer) && in_array($choice->getId(), $answer)) {
+              // Choice has been selected by the user
+              if (0 < $choice->getScore()) {
+                  $corrected->addExpected($choice);
+              } else {
+                  $corrected->addUnexpected($choice);
+              }
+          } elseif (0 < $choice->getScore()) {
+              // The choice is not selected but it's part of the correct answer
+              $corrected->addMissing($choice);
+          }*/
+        }
+
+        return $corrected;
     }
 
     public function expectAnswer(AbstractQuestion $question)
     {
-        // TODO: Implement expectAnswer() method.
+        $expected = [];
 
-        return [];
+        /*$expected = array_map(function (Proposal $proposal) use ($question) {
+
+
+            return $itemData;
+        }, $matchQuestion->getProposals()->toArray());*/
+
+        /*return array_filter($question->getChoices()->toArray(), function (Choice $choice) {
+            return 0 < $choice->getScore();
+        });*/
+
+        return $expected;
     }
 
     public function getStatistics(AbstractQuestion $matchQuestion, array $answers)
     {
         // TODO: Implement getStatistics() method.
+/*
+        $choices = [];
 
+        foreach ($answersData as $answerData) {
+            foreach ($answerData as $choiceId) {
+                if (!isset($choices[$choiceId])) {
+                    // First answer to have this solution
+                    $choices[$choiceId] = new \stdClass();
+                    $choices[$choiceId]->id = $choiceId;
+                    $choices[$choiceId]->count = 0;
+                }
+
+                ++$choices[$choiceId]->count;
+            }
+        }
+
+        return array_values($choices);
+*/
         return [];
     }
 }
