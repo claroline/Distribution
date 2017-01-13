@@ -11,7 +11,7 @@ const ADD_HOLE = 'ADD_HOLE'
 
 export const actions = {
   updateText: makeActionCreator(UPDATE_TEXT, 'text'),
-  addHole: makeActionCreator(ADD_HOLE)
+  addHole: makeActionCreator(ADD_HOLE, 'word', 'cb')
 }
 
 export default {
@@ -52,38 +52,22 @@ function reduce(item = {}, action) {
         _score: 0
       }
 
-      //http://stackoverflow.com/questions/3997659/replace-selected-text-in-contenteditable-div
-      let selection = window.getSelection()
-
-      //here we should double check we're really selecting stuff inside the editor
-
-      //do something smart here
-
-      if (selection.rangeCount) {
-        let range = selection.getRangeAt(0)
-        let selected = selection.toString()
-        range.deleteContents()
-        range.insertNode(document.createTextNode(`[[${hole.id}]]`))
-        newItem.text = range.startContainer.parentNode.innerText
-
-        const solution = {
-          holeId: hole.id,
-          answers: [{
-            text: selected,
-            caseSensitive: false,
-            _feedback: '',
-            score: 1
-          }]
-        }
-
-        newItem.holes.push(hole)
-        newItem.solutions.push(solution)
-        newItem._text = utils.setEditorHtml(newItem.text, newItem.solutions)
-
-        return newItem
+      const solution = {
+        holeId: hole.id,
+        answers: [{
+          text: action.word,
+          caseSensitive: false,
+          _feedback: '',
+          score: 1
+        }]
       }
 
+      newItem.text = action.cb(`[[${hole.id}]]`)
+      newItem._text = utils.setEditorHtml(newItem.text, newItem.solutions)
+      newItem.holes.push(hole)
+      newItem.solutions.push(solution)
 
+      return newItem
     }
   }
 

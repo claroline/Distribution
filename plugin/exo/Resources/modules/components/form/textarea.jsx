@@ -9,6 +9,23 @@ class ContentEditable extends Component {
     this.emitChange = this.emitChange.bind(this)
   }
 
+  getSelection() {
+    //http://stackoverflow.com/questions/3997659/replace-selected-text-in-contenteditable-div
+    let selected = window.getSelection().toString()
+    this.props.onSelect(selected, this.updateText.bind(this))
+  }
+
+  updateText(text) {
+    if (text) {
+      let selection = window.getSelection()
+      let range = selection.getRangeAt(0)
+      range.deleteContents()
+      range.insertNode(document.createTextNode(`${text}`))
+
+      return range.startContainer.parentNode.innerText
+    }
+  }
+
   render() {
     return (
       <div
@@ -23,6 +40,7 @@ class ContentEditable extends Component {
         className="form-control"
         aria-multiline={true}
         style={{minHeight: `${this.props.minRows * 32}px`}}
+        onMouseUp={this.getSelection.bind(this)}
       />
     )
   }
@@ -61,6 +79,7 @@ ContentEditable.propTypes = {
   minRows: T.number.isRequired,
   content: T.string.isRequired,
   onChange: T.func.isRequired,
+  onSelect: T.func,
   title: T.string
 }
 
@@ -76,9 +95,13 @@ class Tinymce extends Component {
 
       if (editor) {
         this.editor = editor
+        this.editor.on('mouseup', () => {
+          this.getSelection()
+        })
         this.editor.on('change', e => {
           this.props.onChange(e.target.getContent())
         })
+
         clearInterval(interval)
       }
     }, 100)
@@ -90,6 +113,17 @@ class Tinymce extends Component {
 
   componentWillUnmount() {
     this.editor.destroy()
+  }
+
+  updateText(text) {
+    if (text) {
+      this.editor.selection.setContent(text)
+      return this.editor.getContent({format : 'raw'})
+    }
+  }
+
+  getSelection() {
+    this.props.onSelect(this.editor.selection.getContent(), this.updateText.bind(this))
   }
 
   render() {
@@ -108,6 +142,7 @@ Tinymce.propTypes = {
   id: T.string.isRequired,
   content: T.string.isRequired,
   onChange: T.func.isRequired,
+  onSelect: T.func,
   title: T.string
 }
 
@@ -125,6 +160,7 @@ export class Textarea extends Component {
         minRows={this.props.minRows}
         content={this.props.content}
         onChange={this.props.onChange}
+        onSelect={this.props.onSelect}
       />
     )
   }
@@ -136,6 +172,7 @@ export class Textarea extends Component {
         title={this.props.title}
         content={this.props.content}
         onChange={this.props.onChange}
+        onSelect={this.props.onSelect}
       />
     )
   }
@@ -167,7 +204,8 @@ Textarea.propTypes = {
   minRows: T.number,
   title: T.string,
   content: T.string.isRequired,
-  onChange: T.func.isRequired
+  onChange: T.func.isRequired,
+  onSelect: T.func
 }
 
 Textarea.defaultProps = {
