@@ -22,6 +22,7 @@ use Claroline\CoreBundle\Manager\MailManager;
 use Claroline\CoreBundle\Manager\UserManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -38,6 +39,8 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Authentication/login controller.
+ *
+ * @DI\Tag("security.secure_service")
  */
 class AuthenticationController
 {
@@ -362,6 +365,21 @@ class AuthenticationController
         return $format === 'json' ?
             new JsonResponse($content, $status) :
             new XmlResponse($content, $status);
+    }
+
+    /**
+     * @Route(
+     *     "/trigger-auth",
+     *     name="trigger_auth",
+     *     options={"expose"=true}
+     * )
+     * @Method("GET")
+     *
+     * @SEC\PreAuthorize("hasRole('ROLE_USER')")
+     */
+    public function triggerAuthenticationAction()
+    {
+        return new Response('AUTHENTICATED');
     }
 
     //not routed...
