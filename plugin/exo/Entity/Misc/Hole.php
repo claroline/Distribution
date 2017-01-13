@@ -32,7 +32,7 @@ class Hole
      *
      * @var int
      */
-    private $size;
+    private $size = 0;
 
     /**
      * @ORM\Column(type="boolean")
