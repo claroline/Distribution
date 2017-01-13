@@ -66,6 +66,9 @@ class InstallerTest extends MockeryTestCase
         $this->pm->shouldReceive('isReady')
             ->with($pluginEntity)
             ->andReturn(true);
+        $this->pm->shouldReceive('isActivatedByDefault')
+            ->with($pluginEntity)
+            ->andReturn(true);
 
         $this->installer->install($this->plugin);
     }
