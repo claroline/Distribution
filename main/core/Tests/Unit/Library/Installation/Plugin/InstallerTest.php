@@ -74,7 +74,7 @@ class InstallerTest extends MockeryTestCase
     }
 
     /**
-     * @expectedException LogicException
+     * @expectedException \LogicException
      */
     public function testInstallThrowsAnExceptionIfPluginIsAlreadyRegistered()
     {
@@ -101,7 +101,7 @@ class InstallerTest extends MockeryTestCase
     }
 
     /**
-     * @expectedException LogicException
+     * @expectedException \LogicException
      */
     public function testUninstallThrowsAnExceptionIfPluginIsNotRegistered()
     {
