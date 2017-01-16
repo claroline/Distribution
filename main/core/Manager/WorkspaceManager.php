@@ -959,7 +959,10 @@ class WorkspaceManager
             }
 
             $this->om->persist($workspace);
-            $logger('UOW: '.$this->om->getUnitOfWork()->size());
+
+            if ($logger) {
+                $logger('UOW: '.$this->om->getUnitOfWork()->size());
+            }
 
             if ($i % 100 === 0) {
                 $this->om->forceFlush();
@@ -969,7 +972,10 @@ class WorkspaceManager
             }
         }
 
-        $logger('Final flush...');
+        if ($logger) {
+            $logger('Final flush...');
+        }
+
         $this->om->endFlushSuite();
     }
 
