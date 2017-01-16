@@ -30,7 +30,11 @@ export default class PostController {
       'en': 'MM-dd-yyyy',
       'fr': 'dd/MM/yyyy'
     }
-    this.dateOptions = null
+    this.firstDayInWeek = {
+      'en': 1,
+      'fr': 2
+    }
+
     this.disableButtons = false
 
     this.init()
@@ -41,6 +45,11 @@ export default class PostController {
     // If post is displayed, always fetch its newest version from API if the router asks for it
     if (_$routeParams.get(this).loadPost && _$routeParams.get(this).slug !== undefined) {
       this.blog.setCurrentPostBySlug(_$routeParams.get(this).slug)
+    }
+    
+    // Create a new post on controller init with default publication date
+    this.blog.newPost = {
+      publication_date: new Date()
     }
   }
   
@@ -247,7 +256,7 @@ export default class PostController {
   _cancelModal() {
     _modalInstance.get(this).dismiss()
   }
-  
+
 }
 
 PostController.$inject = [

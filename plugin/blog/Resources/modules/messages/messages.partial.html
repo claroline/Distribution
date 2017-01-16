@@ -2,7 +2,8 @@
     <uib-alert
         data-ng-repeat="message in ctrl.messages"
         type="{{ message.type }}"
-        close="ctrl.closeMessage($index)">
-        {{message.msg | trust_html}}
+        close="ctrl.closeMessage($index)"
+        template-url="message_renderer.html">
+        <span data-ng-bind-html="message.msg | trust_html"></span>
     </uib-alert>
 </div>

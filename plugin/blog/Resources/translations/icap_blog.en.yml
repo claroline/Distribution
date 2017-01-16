@@ -13,6 +13,8 @@ blog_widget_tag_list_blog_form_tag_cloud: Tag cloud
 blog_widgt_list_form_blog: Blog to add
 calendar: Calendar
 classic: Classic
+clear: Clear
+close: Close
 comment_deletion_confirm_message: Are you sure you want to remove this comment ?
 comment_deletion_confirm_title: Removal of a comment
 comments: comment|comments
@@ -81,7 +83,7 @@ icap_blog_post_publish_success: Post published with success
 icap_blog_post_search_too_much_result: Your search criteria are considered irrelevant. Please use other keywords.
 icap_blog_post_unpublish_error: An error occured while unpublishing post
 icap_blog_post_unpublish_success: Post unpublished successfully
-info_bar: Info bar
+infobar: Info bar
 informations: Information
 limit_to: Limit display to the
 modified_at: Modified on
@@ -102,12 +104,12 @@ posts: Posts
 publish: Make it non visible
 publish: Make it visible
 read_more: View more
-rss_feed: RSS feed
+rss: RSS feed
 search_in_title_and_content: Search in titles, contents.
 search: Search
 see_comments: See the comments
 select: Select
-tag_cloud: Tag cloud
+tagcloud: Tag cloud
 tags_in_the_cloud: most used tags.
 to_comment: Comment
 valid_banner_modification: Validate updates

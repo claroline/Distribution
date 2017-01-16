@@ -32,6 +32,7 @@ import messagesController from './messages/messages.controller'
 import messagesTemplate from './messages/messages.partial.html'
 import optionsTemplate from './blog/options.partial.html'
 import postShortTemplate from './post/postShort.partial.html'
+import messageTemplate from './messages/messages.template.html'
 import './panels/panels.module'
 import './banner/banner.module'
 
@@ -55,7 +56,10 @@ angular
     'colorpicker.module'
   ])
   .value('blog.data', window.blogConfiguration)
-  
+
+  .run(['$templateCache', ($templateCache) => {
+    $templateCache.put('message_renderer.html', messageTemplate)
+  }])
   .run(['$anchorScroll', ($anchorScroll) => {
     $anchorScroll.yOffset = 60
   }])
@@ -77,6 +81,7 @@ angular
     })
   ])
   .filter('datetime', ['dateFilter', 'transFilter', (dateFilter, transFilter) => (text) => dateFilter(text, transFilter('angular_date_format', {}, 'icap_blog'))])
+  .filter('unescape', [() => text => decodeURI(text)])
 
   .controller('postController', postController)
   .controller('messagesController', messagesController)

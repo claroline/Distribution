@@ -1,8 +1,8 @@
 3D: Sphère 3D <span>(* Non compatible avec IE<9)</span>
 add_comment: Ajouter un commentaire :
-add_new_post: Ajout d''un article
+add_new_post: Ajout d'un article
 add_tag: Ajouter un tag
-advanced: Classique avec nombre d''articles
+advanced: Classique avec nombre d'articles
 angular_date_format: dd/MM/yyyy
 apply: Appliquer
 archives: Archives
@@ -13,6 +13,8 @@ blog_widget_tag_list_blog_form_tag_cloud: Nuage de tags
 blog_widgt_list_form_blog: Blog à ajouter
 calendar: Calendrier
 classic: Classique
+clear: Vider
+close: Fermer
 comment_deletion_confirm_message: Etes-vous sûr de vouloir supprimer ce commentaire ?
 comment_deletion_confirm_title: Suppression d'un commentaire
 comments: commentaire|commentaires
@@ -21,7 +23,7 @@ created_by: par
 created_on: le
 delete_filter: Supprimer le filtre
 edit_blog_infos: Modifer les informations du blog.
-edit_post: Édition de l''article "%postTitle%"
+edit_post: Édition de l'article "%postTitle%"
 expand_year: Développer cette année
 icap_blog_banner_form_banner_activate: Activer la bannière ?
 icap_blog_banner_form_banner_background_color: Couleur de l'arrière-plan
@@ -31,7 +33,7 @@ icap_blog_banner_form_banner_background_image_repeat: Répéter
 icap_blog_banner_form_banner_height: Hauteur
 icap_blog_banner_form_banner_reinit: Réinitialiser l'image d'arrière plan
 icap_blog_comment_access_denied: Vous n'êtes pas autorisé à modifier ce commentaire
-icap_blog_comment_add_error: Erreur lors de l''ajout du commentaire
+icap_blog_comment_add_error: Erreur lors de l'ajout du commentaire
 icap_blog_comment_add_success: Commentaire ajouté avec succès
 icap_blog_comment_delete_error: Erreur lors de a suppression du commentaire
 icap_blog_comment_delete_success: Commentaire supprimé avec succès
@@ -80,8 +82,7 @@ icap_blog_post_publish_success: Article publié avec succès
 icap_blog_post_search_too_much_result: Vos critères de recherche sont considérés comme non pertinents. Veuillez rentrer d'autres mots clés.
 icap_blog_post_unpublish_error: Erreur lors de la dépublication de l'article
 icap_blog_post_unpublish_success: Article dépublié avec succès
-info_bar: Barre d'informations
-infobar: Barre d''informations
+infobar: Barre d'informations
 informations: Informations
 limit_to: Limiter l'affichage aux
 modified_at: Modifié le
@@ -93,7 +94,7 @@ no_post: Aucun article.
 no_tags: Aucun tag
 Post: Article
 post_deletion_confirm_message: Etes-vous sûr de vouloir supprimer l'article <strong>%postName%</strong> ?
-post_deletion_confirm_title: Suppression d''un article
+post_deletion_confirm_title: Suppression d'un article
 post_filtered_by_author: Liste des articles filtrés par l'auteur <strong>%authorName%</strong>.
 post_filtered_by_date: Liste des articles filtrés sur la date <strong>%date%</strong>.
 post_filtered_by_search: Liste des articles filtrés par la recherche <strong>%searchTerms%</strong>.
@@ -102,12 +103,12 @@ posts: Articles
 publish: Rendre visible
 read_more: Voir plus
 redactor: Rédacteurs
-rss_feed: Flux RSS
+rss: Flux RSS
 search_in_title_and_content: Recherche dans les titres, contenus.
 search: Recherche
 see_comments: Voir les commentaires
 select: Choisir
-tag_cloud: Nuage de tags
+tagcloud: Nuage de tags
 tags_in_the_cloud: tags les plus utilisés
 to_comment: Commenter
 unpublish: Rendre non-visible

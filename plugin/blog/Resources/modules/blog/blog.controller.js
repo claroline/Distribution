@@ -129,7 +129,7 @@ export default class BlogController {
       )
       .finally(
         () => {
-          this.disableButtons = true
+          this.disableButtons = false
         }
       )
     

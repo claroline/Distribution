@@ -1,10 +1,10 @@
 <form class="well" id="icap_blog_post_form" novalidate>
 
     <legend>{{ 'add_new_post' | trans:{}:'icap_blog' }}</legend>
-    <p class="alert alert-warning" data-ng-if="!vm.blog.isGrantedEdit && vm.blog.options.auto_publish_post">
+    <p class="alert alert-warning" data-ng-if="!vm.blog.options.auto_publish_post">
         {{  'icap_blog_post_need_validation_before_publishing' | trans:{}:'icap_blog' }}
     </p>
-    <p class="alert alert-warning" data-ng-if="vm.blog.isGrantedEdit">
+    <p class="alert alert-warning" data-ng-if="c">
         {{  'icap_blog_post_need_publishing' | trans:{}:'icap_blog' }}
     </p>
 
@@ -36,9 +36,12 @@
                             uib-datepicker-popup="{{ vm.datepickerFormats[vm.locale] }}"
                             data-ng-model="vm.blog.newPost.publication_date"
                             is-open="vm.datepicker.opened"
-                            datepicker-options="vm.dateOptions"
                             ng-required="true"
-                            close-text="Fermer" />
+                            close-text="{{ 'close'|trans:{}:'icap_blog' }}"
+                            clear-text="{{ 'clear'|trans:{}:'icap_blog' }}"
+                            current-text="{{ 'today'|trans:{}:'platform' }}"
+                            show-weeks="false"
+                    starting-day="vm.firstDayInWeek[vm.locale]"/>
                     <span class="input-group-btn">
                         <button
                                 type="button"
