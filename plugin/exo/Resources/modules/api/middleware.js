@@ -58,7 +58,7 @@ function handleResponseError(error, failure, request, next) {
     }
   }
 
-  return doFail(dispatch)
+  return doFail
 }
 
 function showErrorModal(dispatch, status) {

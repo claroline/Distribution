@@ -2,7 +2,6 @@ import uuid from 'uuid'
 import {generateUrl} from '#/main/core/fos-js-router'
 
 const CLARO_AUTH_WINDOW = 'claro_auth_window'
-const CLARO_AUTHENTICATED_MSG = 'AUTHENTICATED'
 
 /**
  * Handles (re-)authentication in a separate window/tab. Returns a promise which
