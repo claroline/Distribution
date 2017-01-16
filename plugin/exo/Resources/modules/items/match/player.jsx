@@ -78,7 +78,7 @@ class MatchPlayer extends Component {
 
   constructor(props) {
     super(props)
-    
+
     this.jsPlumbInstance = jsPlumb.getInstance()
     initJsPlumb(this.jsPlumbInstance)
 
@@ -129,16 +129,21 @@ class MatchPlayer extends Component {
       return true
     })
 
-    // remove answer / connection
+    // remove jsPlumb connection
     this.jsPlumbInstance.bind('click', (connection) => {
+      // this will fire beforeDetach interceptor
+      this.jsPlumbInstance.detach(connection)
+    })
+
+    // remove answer
+    this.jsPlumbInstance.bind('beforeDetach', (connection) => {
       const firstId = connection.sourceId.replace('source_', '')
       const secondId = connection.targetId.replace('target_', '')
-      // remove connection
-      this.jsPlumbInstance.detach(connection)
       // remove answer
       this.props.onChange(
          this.props.answer.filter(answer => answer.firstId !== firstId || answer.secondId !== secondId)
       )
+      return true
     })
   }
 

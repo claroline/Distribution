@@ -148,10 +148,12 @@ class MatchDefinition extends AbstractDefinition
         $expected = [];
 
         $expected = array_map(function (Proposal $proposal) {
-            // returns an array which is not valid
-            return array_filter($proposal->getExpectedLabels()->toArray(), function (Label $label) {
+            $validLabels = array_filter($proposal->getExpectedLabels()->toArray(), function (Label $label) {
                 return 0 < $label->getScore();
             });
+            foreach ($validLabels as $label) {
+                return $label;
+            }
         }, $question->getProposals()->toArray());
 
         return $expected;
