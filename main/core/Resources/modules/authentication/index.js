@@ -23,24 +23,26 @@ export function authenticate() {
 
     let authenticated = false
 
+    // we must detect if the auth window was closed before authentication,
+    // but as no event is provided for that, we have to setup a timer and check
+    // regularly what's the window state
+    const closeCheck = setInterval(() => {
+      if (authWindow.closed && !authenticated) {
+        window.clearInterval(closeCheck)
+        reject(new Error('Authentication window closed before actual authentication'))
+      }
+    }, 100)
+
     // if the authentication succeeded, the auth window will dispatch a custom event
     // named after the hash id (checking the auth window url is an extra measure)
     window.addEventListener(authHash, () => {
       if (authWindow.location.href === authUrl) {
         authenticated = true
         authWindow.close()
+        window.clearInterval(closeCheck)
         resolve()
       }
     })
 
-    // we must detect if the auth window was closed before authentication,
-    // but as no event is provided for that, we have to setup a timer and check
-    // regularly what's the window state
-    const interval = setInterval(() => {
-      if (authWindow.closed && !authenticated) {
-        window.clearInterval(interval)
-        reject(new Error('Authentication window closed before actual authentication'))
-      }
-    }, 100)
   })
 }
