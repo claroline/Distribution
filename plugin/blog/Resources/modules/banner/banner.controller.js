@@ -20,7 +20,7 @@ export default class BannerController {
     this.repeatX = false
     this.repeatY = false
     this.position = '0-0'
-    this.backgroundImageUrl = `url('${this.blog.banner_dir}/${this.blog.options.banner_background_image}')`
+    this.backgroundImageUrl = null
 
     this.bannerPositions = [
       [{ text: 'top left', class : 'xtop yleft' }, { text: 'top center', class : 'xtop ycenter' }, { text: 'top right', class : 'xtop yright' }],
@@ -30,6 +30,7 @@ export default class BannerController {
     this.oldBannerOptions = {}
     this.fileToUpload = null
     this.removeBanner = false
+    this.base64Banner = null
 
     this.init()
 
@@ -44,6 +45,17 @@ export default class BannerController {
       backgroundPosition: this.blog.options.banner_background_image_position,
       backgroundRepeat: this.blog.options.banner_background_image_repeat
     }
+
+    _$scope.get(this).$watch(() => this.base64Banner, value => {
+      this.backgroundImageUrl = null
+      if (value !== null) {
+        // Temp banner is the preferred displayed banner
+        this.backgroundImageUrl = `url(${value})`
+      }
+      else if (this.blog.options.banner_background_image !== undefined) {
+        this.backgroundImageUrl = `url('${this.blog.banner_dir}/${this.blog.options.banner_background_image}')`
+      }
+    })
 
     _$scope.get(this).$watch(() => this.blog.options.banner_background_image_position, () => {
       for (let idxX = 0; idxX < this.bannerPositions; idxX++) {
@@ -82,7 +94,7 @@ export default class BannerController {
     return {
       'height': this.blog.options.banner_height,
       'background-color': this.blog.options.banner_background_color,
-      'background-image': `url('${this.blog.img_dir}${this.blog.options.banner_background_image}')`,
+      'background-image': this.backgroundImageUrl,
       'background-position': this.blog.options.banner_background_image_position,
       'background-repeat': this.blog.options.banner_background_image_repeat
     }
@@ -133,7 +145,7 @@ export default class BannerController {
 
     let reader = new FileReader()
     reader.onload = e => {
-      this.backgroundImageUrl = `url(${e.target.result})`
+      this.base64Banner = e.target.result
     }
     reader.readAsDataURL(file)
   }
@@ -145,7 +157,7 @@ export default class BannerController {
     this.blog.options.banner_background_image          = this.oldBannerOptions['backgroundImage']
     this.blog.options.banner_background_image_position = this.oldBannerOptions['backgroundPosition']
     this.blog.options.banner_background_image_repeat   = this.oldBannerOptions['backgroundRepeat']
-    this.backgroundImageUrl = `url('${this.blog.banner_dir}/${this.blog.options.banner_background_image}')`
+    this.base64Banner = null
 
     this.accordionIsOpen = false
 

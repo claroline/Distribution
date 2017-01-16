@@ -47,7 +47,7 @@
                         id="remove_banner_background_image">{{ 'icap_blog_banner_form_banner_reinit'|trans:{}:'icap_blog' }}</button>
                 </div>
 
-                <div class="row" data-ng-class="{'hidden': !bannerCtrl.blog.options.banner_background_image}">
+                <div class="row" data-ng-class="{'hidden': !bannerCtrl.blog.options.banner_background_image && !bannerCtrl.backgroundImageUrl}">
 
                     <div class="col-md-2">
                         {{ 'icap_blog_banner_form_banner_background_image_position'|trans:{}:'icap_blog' }}
