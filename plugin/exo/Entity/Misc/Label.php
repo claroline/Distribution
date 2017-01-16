@@ -49,6 +49,11 @@ class Label implements AnswerPartInterface
      */
     private $interactionMatching;
 
+    public function __construct()
+    {
+        $this->uuid = Uuid::uuid4()->toString();
+    }
+
     /**
      * Get id.
      *

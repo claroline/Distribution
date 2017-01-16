@@ -88,7 +88,7 @@ class ClozeQuestionSerializer implements SerializerInterface
     {
         return array_map(function (Hole $hole) {
             $holeData = new \stdClass();
-            $holeData->id = (string) $hole->getId();
+            $holeData->id = $hole->getUuid();
             $holeData->size = $hole->getSize();
 
             if ($hole->getSelector()) {
@@ -125,7 +125,7 @@ class ClozeQuestionSerializer implements SerializerInterface
             // Searches for an existing hole entity.
             foreach ($holeEntities as $entityIndex => $entityHole) {
                 /** @var Hole $entityHole */
-                if ((string) $entityHole->getId() === $holeData->id) {
+                if ($entityHole->getUuid() === $holeData->id) {
                     $hole = $entityHole;
                     unset($holeEntities[$entityIndex]);
                     break;
@@ -134,8 +134,12 @@ class ClozeQuestionSerializer implements SerializerInterface
 
             if (null === $hole) {
                 $hole = new Hole();
+                if (!empty($holeData->id)) {
+                    $hole->setUuid($holeData->id);
+                }
             }
 
+            $hole->setSize($holeData->size);
             if (!empty($holeData->choices)) {
                 $hole->setSelector(true);
             } else {
@@ -176,7 +180,7 @@ class ClozeQuestionSerializer implements SerializerInterface
     {
         return array_map(function (Hole $hole) {
             $solutionData = new \stdClass();
-            $solutionData->holeId = (string) $hole->getId();
+            $solutionData->holeId = $hole->getUuid();
 
             $solutionData->answers = array_map(function (Keyword $keyword) {
                 return $this->keywordSerializer->serialize($keyword);

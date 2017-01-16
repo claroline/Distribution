@@ -1,6 +1,6 @@
 <?php
 
-namespace UJM\ExoBundle\Tests\Serializer;
+namespace UJM\ExoBundle\Tests\Serializer\Question;
 
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use UJM\ExoBundle\Entity\Question\Hint;
@@ -40,6 +40,7 @@ class HintSerializerTest extends JsonDataTestCase
         $this->serializer = $this->client->getContainer()->get('ujm_exo.serializer.hint');
 
         $this->hint = new Hint();
+        $this->hint->setUuid(uniqid('', true));
         $this->hint->setPenalty(2);
         $this->hint->setData('hint text');
 
@@ -54,7 +55,9 @@ class HintSerializerTest extends JsonDataTestCase
     {
         $serialized = $this->serializer->serialize($this->hint);
 
-        $this->assertCount(0, $this->validator->validate($serialized));
+        $errors = $this->validator->validate($serialized);
+
+        $this->assertCount(0, $errors);
     }
 
     public function testSerializedDataWithSolutionsAreSchemaValid()

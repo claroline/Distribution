@@ -158,41 +158,34 @@ class AttemptController extends AbstractController
      * Returns the content of a question hint, and records the fact that it has
      * been consulted within the context of a given paper.
      *
-     * @EXT\Route("/{id}/hints/{hintId}", name="exercise_attempt_hint_show")
+     * @EXT\Route("/{id}/{questionId}/hints/{hintId}", name="exercise_attempt_hint_show")
      * @EXT\Method("GET")
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
      * @EXT\ParamConverter("paper", class="UJMExoBundle:Attempt\Paper", options={"mapping": {"id": "uuid"}})
-     * @EXT\ParamConverter("hint", class="UJMExoBundle:Question\Hint", options={"mapping": {"hintId": "id"}})
      *
      * @param Paper   $paper
-     * @param Hint    $hint
+     * @param string  $questionId
+     * @param string  $hintId
      * @param User    $user
      * @param Request $request
      *
      * @return JsonResponse
      */
-    public function useHintAction(Paper $paper, Hint $hint, User $user = null, Request $request)
+    public function useHintAction(Paper $paper, $questionId, $hintId, User $user = null, Request $request)
     {
         $this->assertHasPermission('OPEN', $paper->getExercise());
         $this->assertHasPaperAccess($paper, $user);
 
-        $hintContent = null;
-        $errors = [];
-
         try {
-            $hintContent = $this->attemptManager->useHint($paper, $hint, $request->getClientIp());
+            $hint = $this->attemptManager->useHint($paper, $questionId, $hintId, $request->getClientIp());
         } catch (\Exception $e) {
-            $errors[] = [
+            return new JsonResponse([[
                 'path' => '',
                 'message' => $e->getMessage(),
-            ];
+            ]], 422);
         }
 
-        if (empty($errors)) {
-            return new JsonResponse($hintContent, !empty($hintContent) ? 200 : 204);
-        } else {
-            return new JsonResponse($errors, 422);
-        }
+        return new JsonResponse($hint);
     }
 
     /**

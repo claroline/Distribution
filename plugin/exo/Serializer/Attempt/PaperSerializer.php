@@ -159,6 +159,17 @@ class PaperSerializer extends AbstractSerializer
      */
     private function serializeAnswers(Paper $paper, array $options = [])
     {
+        // We need to inject the hints available in the structure
+        $options['hints'] = [];
+        $decoded = json_decode($paper->getStructure());
+        foreach ($decoded->steps as $step) {
+            foreach ($step->items as $item) {
+                foreach ($item->hints as $hint) {
+                    $options['hints'][$hint->id] = $hint;
+                }
+            }
+        }
+
         $answers = $paper->getAnswers()->toArray();
 
         return array_map(function (Answer $answer) use ($options) {
