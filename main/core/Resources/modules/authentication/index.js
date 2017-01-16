@@ -43,6 +43,5 @@ export function authenticate() {
         resolve()
       }
     })
-
   })
 }
