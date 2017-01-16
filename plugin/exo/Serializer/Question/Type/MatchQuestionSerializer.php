@@ -51,14 +51,14 @@ class MatchQuestionSerializer implements SerializerInterface
 
         $firstSet = array_map(function (Proposal $proposal) use ($options) {
             $itemData = $this->contentSerializer->serialize($proposal, $options);
-            $itemData->id = (string) $proposal->getId();
+            $itemData->id = $proposal->getUuid();
 
             return $itemData;
         }, $matchQuestion->getProposals()->toArray());
 
         $secondSet = array_map(function (Label $label) use ($options) {
             $itemData = $this->contentSerializer->serialize($label, $options);
-            $itemData->id = (string) $label->getId();
+            $itemData->id = $label->getUuid();
 
             return $itemData;
         }, $matchQuestion->getLabels()->toArray());
@@ -76,6 +76,29 @@ class MatchQuestionSerializer implements SerializerInterface
         }
 
         return $questionData;
+    }
+
+    private function serializeSolutions(MatchQuestion $matchQuestion)
+    {
+        $solutions = [];
+
+        foreach ($matchQuestion->getProposals() as $proposal) {
+            /** @var Label $label */
+            foreach ($proposal->getExpectedLabels() as $label) {
+                $solutionData = new \stdClass();
+                $solutionData->firstId = $proposal->getUuid();
+                $solutionData->secondId = $label->getUuid();
+                $solutionData->score = $label->getScore();
+
+                if ($label->getFeedback()) {
+                    $solutionData->feedback = $label->getFeedback();
+                }
+
+                $solutions[] = $solutionData;
+            }
+        }
+
+        return $solutions;
     }
 
     /**
@@ -97,35 +120,152 @@ class MatchQuestionSerializer implements SerializerInterface
             $matchQuestion->setPenalty($data->penalty);
         }
 
-        if (isset($data->shuffle)) {
-            $matchQuestion->setShuffle(true);
+        if (isset($data->random)) {
+            $matchQuestion->setShuffle($data->random);
         }
 
-        // TODO : deserialize answer items
+        // deserialize firstSets, secondSets and solutions
+        // labels first since we gonna need them for proposals deserialisation
+        $this->deserializeLabels($matchQuestion, $data->secondSet, $data->solutions);
+        $this->deserializeProposals($matchQuestion, $data->firstSet, $data->solutions);
 
         return $matchQuestion;
     }
 
-    private function serializeSolutions(MatchQuestion $matchQuestion)
+    /**
+     * Deserializes Question labels.
+     *
+     * @param MatchQuestion $matchQuestion
+     * @param array         $secondSets    ie labels
+     * @param array         $solutions
+     */
+    private function deserializeLabels(MatchQuestion $matchQuestion, array $secondSets, array $solutions)
     {
-        $solutions = [];
+        $secondSetEntities = $matchQuestion->getLabels()->toArray();
 
-        foreach ($matchQuestion->getProposals() as $proposal) {
-            /** @var Label $label */
-            foreach ($proposal->getExpectedLabels() as $label) {
-                $solutionData = new \stdClass();
-                $solutionData->firstId = (string) $proposal->getId();
-                $solutionData->secondId = (string) $label->getId();
-                $solutionData->score = $label->getScore();
-
-                if ($label->getFeedback()) {
-                    $solutionData->feedback = $label->getFeedback();
+        foreach ($secondSets as $index => $secondSetData) {
+            $label = null;
+            // Searches for an existing Label entity.
+            foreach ($secondSetEntities as $entityIndex => $entityLabel) {
+                /** @var Label $entityLabel */
+                if ($entityLabel->getUuid() === $secondSetData->id) {
+                    $label = $entityLabel;
+                    unset($secondSetEntities[$entityIndex]);
+                    break;
                 }
-
-                $solutions[] = $solutionData;
             }
+
+            if (null === $label) {
+                // Create a new Label
+                $label = new Label();
+                $label->setUuid($secondSetData->id);
+            }
+
+            $label->setOrder($index);
+
+            // Deserialize firstSet content
+            $label = $this->contentSerializer->deserialize($secondSetData, $label);
+
+            // Set firstSet score and feedback
+            $label->setScore(0);
+            foreach ($solutions as $solution) {
+                if ($solution->secondId === $secondSetData->id) {
+                    $label->setScore($solution->score);
+                    if (isset($solution->feedback)) {
+                        $label->setFeedback($solution->feedback);
+                    }
+
+                    break;
+                }
+            }
+
+            $matchQuestion->addLabel($label);
         }
 
-        return $solutions;
+        // Remaining labels are no longer in the Question
+        foreach ($secondSetEntities as $labelToRemove) {
+            $matchQuestion->removeLabel($labelToRemove);
+        }
+    }
+
+    /**
+     * Deserializes Question proposals.
+     *
+     * @param MatchQuestion $matchQuestion
+     * @param array         $firstSets     ie proposals
+     * @param array         $solutions
+     */
+    private function deserializeProposals(MatchQuestion $matchQuestion, array $firstSets, array $solutions)
+    {
+        $firstSetEntities = $matchQuestion->getProposals()->toArray();
+
+        foreach ($firstSets as $index => $firstSetData) {
+            $proposal = null;
+
+            // Search for an existing Proposal entity.
+            foreach ($firstSetEntities as $entityIndex => $entityProposal) {
+                /* @var Label $entityProposal */
+                if ($entityProposal->getUuid() === $firstSetData->id) {
+                    $proposal = $entityProposal;
+
+                    unset($firstSetEntities[$entityIndex]);
+                    break;
+                }
+            }
+
+            if (null === $proposal) {
+                // Create a new Proposal
+                $proposal = new Proposal();
+                $proposal->setUuid($firstSetData->id);
+            }
+
+            $proposal->setOrder($index);
+
+            // Deserialize proposal content
+            $proposal = $this->contentSerializer->deserialize($firstSetData, $proposal);
+
+            // get existing expected labels
+            $expectedLabelsEntities = $proposal->getExpectedLabels()->toArray();
+
+            // handle current solutions Set proposal and expected label (join table)
+            foreach ($solutions as $solution) {
+                if ($solution->firstId === $firstSetData->id) {
+                    $expected = null;
+                    /* @var Label $expectedEntity */
+                    foreach ($expectedLabelsEntities as $index => $expectedEntity) {
+                        // only check for secondId since firstId is checked before
+                        if ($expectedEntity->getUuId() === $solution->secondId) {
+                            $expected = $expectedEntity;
+                            unset($expectedLabelsEntities[$index]);
+
+                            break;
+                        }
+                    }
+
+                    if (null === $expected) {
+                        // find label
+                        foreach ($matchQuestion->getLabels() as $label) {
+                            // compare with uuid
+                            if ($label->getUuid() === $solution->secondId) {
+                                $expected = $label;
+                                $proposal->addExpectedLabel($expected);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Remaining expected labels are no longer in the solutions
+            foreach ($expectedLabelsEntities as $expectedToRemove) {
+                $proposal->removeExpectedLabel($expectedToRemove);
+            }
+            $matchQuestion->addProposal($proposal);
+        }
+
+        // Remaining proposals are no longer in the Question
+        foreach ($firstSetEntities as $proposalToRemove) {
+            $matchQuestion->removeProposal($proposalToRemove);
+        }
     }
 }

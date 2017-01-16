@@ -4,6 +4,7 @@ namespace UJM\ExoBundle\Entity\Misc;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 use UJM\ExoBundle\Entity\QuestionType\MatchQuestion;
 use UJM\ExoBundle\Library\Model\ContentTrait;
 use UJM\ExoBundle\Library\Model\OrderTrait;
@@ -24,6 +25,13 @@ class Proposal
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column("uuid", type="string", length=36, unique=true)
+     */
+    private $uuid;
 
     use OrderTrait;
 
@@ -63,6 +71,26 @@ class Proposal
     }
 
     /**
+     * Gets UUID.
+     *
+     * @return string
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * Sets UUID.
+     *
+     * @param $uuid
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+    }
+
+    /**
      * Get InteractionMatching.
      *
      * @return ArrayCollection
@@ -91,7 +119,7 @@ class Proposal
      */
     public function removeExpectedLabel(Label $label)
     {
-        if (!$this->expectedLabels->contains($label)) {
+        if ($this->expectedLabels->contains($label)) {
             $this->expectedLabels->removeElement($label);
         }
     }

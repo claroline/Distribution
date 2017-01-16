@@ -89,6 +89,7 @@ class ExerciseController extends AbstractController
         $errors = [];
 
         $data = $this->decodeRequestData($request);
+
         if (null === $data) {
             $errors[] = [
                 'path' => '',

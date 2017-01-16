@@ -238,8 +238,8 @@ let Item = props => {
                 title={t('move')}
                 draggable="true"
                 className={classes(
+                  'tooltiped-button',
                   'btn',
-                  'btn-link',
                   'fa',
                   'fa-bars',
                   'drag-handle'

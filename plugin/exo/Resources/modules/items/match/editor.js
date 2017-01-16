@@ -230,6 +230,7 @@ function validate(item) {
 
 export default {
   component,
+  decorate,
   reduce,
   validate
 }

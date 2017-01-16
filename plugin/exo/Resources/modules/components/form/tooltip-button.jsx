@@ -13,8 +13,9 @@ export const TooltipButton = props =>
     }
   >
     <button
+      type="button"
       disabled={!props.enabled}
-      className={classes('btn', 'btn-link', props.className)}
+      className={classes('tooltiped-button', 'btn', props.className, {disabled: !props.enabled})}
       onClick={props.onClick}
     >
       {props.label}

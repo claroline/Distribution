@@ -303,7 +303,7 @@ describe('<Match />', () => {
 
   it('has required props', () => {
     shallow(<Match item={{foo:'baz', firstSet:[], secondSet:[], solutions:[]}}/>)
-    ensure.missingProps('Match', ['onChange', 'item.id'])
+    ensure.missingProps('Match', ['validating', 'onChange', 'item.id'])
   })
 
   it('has typed props', () => {
@@ -327,8 +327,8 @@ describe('<Match />', () => {
   })
 
   it('renders appropriate fields and handle changes', () => {
-    let updatedValue = null
-    const item = makeFixture()
+
+    document.getElementById = () => {}
     window.jsPlumb = {
       getInstance: () => {
         return {
@@ -348,28 +348,64 @@ describe('<Match />', () => {
       }
     }
 
-    const form = mount(
+    mount(
       <Match
-        item={item}
-        onChange={value => updatedValue = value}
+        item={{
+          id: '1',
+          type: 'application/x.match+json',
+          content: 'Question?',
+          random: false,
+          penalty: 0,
+          firstSet: [
+            {
+              id: '1',
+              type: 'text/html',
+              data: 'A',
+              _deletable: true
+            },
+            {
+              id: '2',
+              type: 'text/html',
+              data: 'B',
+              _deletable: true
+            }
+          ],
+          secondSet: [
+            {
+              id: '1',
+              type: 'text/html',
+              data: 'C',
+              _deletable: true
+            },
+            {
+              id:'2',
+              type: 'text/html',
+              data: 'D',
+              _deletable: true
+            }
+          ],
+          solutions: [
+            {
+              firstId: '1',
+              secondId: '1',
+              score: 2,
+              feedback: 'Well done',
+              _deletable: true
+            },
+            {
+              firstId: '1',
+              secondId: '2',
+              score: 1,
+              feedback: 'Congrats',
+              _deletable: true
+            }
+          ]
+        }}
+        validating={false}
+        onChange={() => {}}
       />
     )
     ensure.propTypesOk()
-
-    const penalty = form.find('input#match-penalty')
-    ensure.equal(penalty.length, 1, 'has penalty input')
-    penalty.simulate('change', {target: {value: 5}})
-    ensure.equal(updatedValue.value, 5)
-    ensure.equal(updatedValue.property, 'penalty')
-
-    const random = form.find('input[type="checkbox"]')
-    ensure.equal(random.length, 1, 'has random checkbox')
-    random.simulate('change', {target: {value: true}})
-    ensure.equal(updatedValue.value, true)
-    ensure.equal(updatedValue.property, 'random')
-
-    const text = form.find('div[role="textbox"]')
-    ensure.equal(text.length, 4, 'has item data fields')
   })
 })
 
