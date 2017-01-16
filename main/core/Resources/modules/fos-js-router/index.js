@@ -1,5 +1,5 @@
 /* global Routing */
 
-export function generateUrl(route, parameters = {}) {
-  return Routing.generate(route, parameters)
+export function generateUrl(route, parameters = {}, absolute = false) {
+  return Routing.generate(route, parameters, absolute)
 }

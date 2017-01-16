@@ -368,18 +368,23 @@ class AuthenticationController
     }
 
     /**
+     * Returns a page communicating a hash through a js custom event to its parent
+     * window. As the route is behind the firewall, this controller will act like
+     * an authentication trigger, returning the page with the hash event only if
+     * the authentication succeeded.
+     *
      * @Route(
-     *     "/trigger-auth",
+     *     "/trigger-auth/{hash}",
      *     name="trigger_auth",
      *     options={"expose"=true}
      * )
      * @Method("GET")
-     *
      * @SEC\PreAuthorize("hasRole('ROLE_USER')")
+     * @Template("ClarolineCoreBundle:Authentication:authenticated.html.twig")
      */
-    public function triggerAuthenticationAction()
+    public function triggerAuthenticationAction($hash)
     {
-        return new Response('AUTHENTICATED');
+        return ['hash' => $hash];
     }
 
     //not routed...
