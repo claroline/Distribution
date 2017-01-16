@@ -34,6 +34,7 @@ const Player = props => {
           <ItemPlayer
             item={item}
             showHint={(questionId, hint) => props.showHint(props.quizId, props.paper.id, questionId, hint)}
+            usedHints={props.answers[item.id] ? props.answers[item.id].usedHints : []}
           >
             {React.createElement(getDefinition(item.type)[props.feedbackEnabled ? 'feedback': 'player'], {
               item: item,
