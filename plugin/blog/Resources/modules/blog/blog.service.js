@@ -159,7 +159,7 @@ export default class BlogService {
   togglePostVisibility(post) {
     const url = _url.get(this)('icap_blog_api_put_blog_post_visibility', {
       'blog': this.id,
-      'post': post.id,
+      'post': post.id
     })
 
     let Post = _$resource.get(this)(url, null, {
@@ -182,7 +182,7 @@ export default class BlogService {
   toggleCommentVisibility(comment, post) {
     const url = _url.get(this)('icap_blog_api_put_blog_post_visibility', {
       'blog': this.id,
-      'post': post.id,
+      'post': post.id
     })
 
     let Comment = _$resource.get(this)(url, null, {
@@ -208,7 +208,7 @@ export default class BlogService {
     })
 
     let Tags = _$resource.get(this)(url)
-    let tags = Tags.query(
+    Tags.query(
       success => {
         this.tags = success
       }
@@ -224,12 +224,9 @@ export default class BlogService {
     let post = new Post(this.newPost)
 
     return post.$save(
-      success => {
+      () => {
         // Update tags
         this._fetchTags()
-      },
-      () => {
-        console.log('failure')
       }
     )
 
@@ -247,17 +244,13 @@ export default class BlogService {
     return postToDelete.$delete(
       () => {
         // The post to delete is the last of the page, fetch the previous one
-        if (this.posts.length = 1 && page > 2) {
+        if (this.posts.length === 1 && page > 2) {
           page--
         }
 
         this.getPosts(page)
       }
     )
-  }
-
-  search(terms, page = null) {
-    
   }
 
   setCurrentPost(post) {
@@ -273,7 +266,7 @@ export default class BlogService {
     })
 
     let Post = _$resource.get(this)(url)
-    let post = Post.get(
+    Post.get(
       success => {
         this.setCurrentPost(success)
 
@@ -329,10 +322,10 @@ export default class BlogService {
     })
 
     let post = new Post({
-      "title": this.currentPost.title,
-      "content": this.currentPost.content,
-      "publication_date": this.currentPostDate,
-      "tags": this.currentPost.tags
+      'title': this.currentPost.title,
+      'content': this.currentPost.content,
+      'publication_date': this.currentPostDate,
+      'tags': this.currentPost.tags
     })
 
     return post.$edit(
@@ -354,7 +347,7 @@ export default class BlogService {
     let Comment = _$resource.get(this)(url)
 
     let comment = new Comment({
-      "message": message
+      'message': message
     })
 
     return comment.$save(

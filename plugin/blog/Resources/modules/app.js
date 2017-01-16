@@ -200,7 +200,7 @@ angular
       .otherwise('/')
   }])
 
-angular.element(document).ready(function () {
+angular.element(document).ready(() => {
   angular.bootstrap(angular.element(document).find('body')[0], ['BlogModule'], {
     strictDi: true
   })

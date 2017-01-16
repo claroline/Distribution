@@ -1,3 +1,4 @@
+import angular from 'angular/index'
 import confirmDeletionTemplate from '../post/confirmDeletion.partial.html'
 
 let _url = new WeakMap()
@@ -44,7 +45,7 @@ export default class PostController {
   }
   
   getPostUrl(slug) {
-    return url = _url.get(this)('icap_blog_post_view', {
+    return _url.get(this)('icap_blog_post_view', {
       blogId: this.blog.id,
       postSlug: slug
     })
@@ -246,7 +247,7 @@ export default class PostController {
   _cancelModal() {
     _modalInstance.get(this).dismiss()
   }
-
+  
 }
 
 PostController.$inject = [
@@ -257,5 +258,5 @@ PostController.$inject = [
   'Messages',
   'transFilter',
   'blogModal',
-  '$scope',
+  '$scope'
 ]

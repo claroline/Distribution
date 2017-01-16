@@ -1,3 +1,5 @@
+import angular from 'angular/index'
+
 let _transFilter = new WeakMap()
 let _$location = new WeakMap()
 let _Messages = new WeakMap()
@@ -68,9 +70,6 @@ export default class BlogPanelController {
       today: this._t('today'),
       locale: window.Claroline.Home.locale
     }
-
-
-
   }
 
   getPanelUrl(nameTemplate) {

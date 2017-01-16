@@ -1,3 +1,5 @@
+import angular from 'angular/index'
+
 let _$location = new WeakMap()
 let _$anchorScroll = new WeakMap()
 let _Messages = new WeakMap()
@@ -65,7 +67,7 @@ export default class BlogController {
         case 'search':
           this.blog.getPostsBySearch(_$routeParams.get(this).terms, page)
             .then(
-              success => {
+              () => {
                 this._setMessage('info', 'post_filtered_by_search', {searchTerms: decodeURI(_$routeParams.get(this).terms)}, true, 'icap_blog', true)
               }
             )

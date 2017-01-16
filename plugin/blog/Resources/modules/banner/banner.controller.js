@@ -1,3 +1,5 @@
+import angular from 'angular/index'
+
 let _$scope = new WeakMap()
 let _Messages = new WeakMap()
 let _transFilter = new WeakMap()
@@ -88,7 +90,7 @@ export default class BannerController {
 
   setPosition(position) {
     this.position = position
-    let indexes = this.position.split("-")
+    let indexes = this.position.split('-')
     this.blog.options.banner_background_image_position = this.bannerPositions[indexes[0]][indexes[1]].text
   }
 
@@ -108,7 +110,7 @@ export default class BannerController {
 
   getSelectedClass(x, y) {
 
-    let indexes = this.position.split("-")
+    let indexes = this.position.split('-')
 
     return `${x}-${y}` === this.position
            || (this.repeatX && x.toString() === indexes[0])
@@ -129,11 +131,11 @@ export default class BannerController {
   preview(file) {
     this.fileToUpload = file
 
-    let reader = new FileReader();
+    let reader = new FileReader()
     reader.onload = e => {
       this.backgroundImageUrl = `url(${e.target.result})`
     }
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(file)
   }
 
   cancelBannerEdition() {
@@ -170,7 +172,7 @@ export default class BannerController {
       _$q.get(this).all([this.blog.uploadBanner(this.fileToUpload), this.blog.editOptions()])
 
         .then(
-          success => {
+          () => {
             this._setMessage('success', 'icap_blog_post_configure_banner_success')
             this.accordionIsOpen = false
             this.fileToUpload = null
