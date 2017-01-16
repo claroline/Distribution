@@ -371,7 +371,7 @@ class WorkspaceManager
      */
     public function getNbWorkspaces()
     {
-        return $this->workspaceRepo->count();
+        return $this->workspaceRepo->countWorkspaces();
     }
 
     /**
