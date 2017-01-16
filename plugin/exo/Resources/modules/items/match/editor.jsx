@@ -13,9 +13,8 @@ import {actions} from './editor'
 function getPopoverPosition(connectionClass, id){
   const containerRect =  document.getElementById('popover-place-holder-' + id).getBoundingClientRect()
   const connectionRect =  document.querySelectorAll('.' + connectionClass)[0].getBoundingClientRect()
-  // note that left popover position is not the arrow position but the left border of the popover
+  // only compute top position
   return {
-    left: 0 - connectionRect.width / 2 - 10, // 10 is the margin / padding bewteen item-col(s) and popover-container
     top:  connectionRect.top + connectionRect.height / 2 - containerRect.top
   }
 }
@@ -78,7 +77,6 @@ class MatchLinkPopover extends Component {
     return (
       <Popover
         id={`popover-${this.props.solution.firstId}-${this.props.solution.secondId}`}
-        positionLeft={this.props.popover.left}
         positionTop={this.props.popover.top}
         placement="bottom"
         title={
@@ -217,7 +215,6 @@ class Match extends Component {
     this.state = {
       popover: {
         visible: false,
-        left: 0,
         top: 0
       },
       jsPlumbConnection: null,
@@ -280,7 +277,6 @@ class Match extends Component {
       this.setState({
         popover: {
           visible: true,
-          left: positions.left,
           top: positions.top
         },
         jsPlumbConnection: connection,
@@ -304,17 +300,12 @@ class Match extends Component {
       this.setState({
         popover: {
           visible: true,
-          left: positions.left,
           top: positions.top
         },
         jsPlumbConnection: connection,
         current: solutionIndex
       })
     })
-  }
-
-  focus() {
-
   }
 
   itemWillUnmount(isLeftSet, id, elemId){
@@ -337,7 +328,6 @@ class Match extends Component {
     const selector = '#' +  id
     const anchor = isLeftItem ? 'RightMiddle' : 'LeftMiddle'
 
-    // HERE timeout make the draw of endpoints not reliable
     window.setTimeout(() => {
       if (isLeftItem) {
         this.jsPlumbInstance.addEndpoint(this.jsPlumbInstance.getSelector(selector), {
@@ -355,10 +345,6 @@ class Match extends Component {
         })
       }
     }, 100)
-
-    window.setTimeout(() => {
-      this.jsPlumbInstance.repaintEverything()
-    }, 3000)
   }
 
   removeConnection(firstId, secondId){
