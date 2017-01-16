@@ -4,7 +4,9 @@ namespace UJM\ExoBundle\Entity\Misc;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 use UJM\ExoBundle\Entity\QuestionType\ClozeQuestion;
+use UJM\ExoBundle\Library\Model\UuidTrait;
 
 /**
  * Hole.
@@ -24,6 +26,8 @@ class Hole
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+
+    use UuidTrait;
 
     /**
      * The display size of the hole input.
@@ -76,6 +80,7 @@ class Hole
     public function __construct()
     {
         $this->keywords = new ArrayCollection();
+        $this->uuid = Uuid::uuid4()->toString();
     }
 
     /**

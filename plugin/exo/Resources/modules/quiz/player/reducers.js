@@ -79,11 +79,11 @@ function useHint(state, action) {
   let answer
   if (!state[action.questionId]) {
     answer = decorateAnswer({
-      usedHints: [action.hintId]
+      usedHints: [action.hint]
     })
   } else {
     answer = update(state[action.questionId], {
-      ['usedHints']: {$push: [action.hintId]}
+      ['usedHints']: {$push: [action.hint]}
     })
   }
 

@@ -25,14 +25,14 @@ class ExerciseRepository extends EntityRepository
     {
         return $this->getEntityManager()
             ->createQuery('
-                UPDATE paper AS p 
-                SET p.invalidated = :invalidated 
+                UPDATE UJM\ExoBundle\Entity\Attempt\Paper AS p 
+                SET p.invalidated = true 
                 WHERE p.exercise = :exercise 
                   AND p.invalidated = false
             ')
             ->setParameters([
                 'exercise' => $exercise,
-                'invalidated' => true,
-            ]);
+            ])
+            ->execute();
     }
 }

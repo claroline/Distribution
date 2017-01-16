@@ -29,7 +29,7 @@ actions.updateAnswer = makeActionCreator(ANSWER_UPDATE, 'questionId', 'answerDat
 actions.submitAnswers = makeActionCreator(ANSWERS_SUBMIT, 'quizId', 'paperId', 'answers')
 actions.stepFeedback = makeActionCreator(STEP_FEEDBACK)
 
-actions.useHint = makeActionCreator(HINT_USE, 'questionId', 'hintId')
+actions.useHint = makeActionCreator(HINT_USE, 'questionId', 'hint')
 
 actions.fetchAttempt = quizId => ({
   [REQUEST_SEND]: {
@@ -54,10 +54,10 @@ actions.sendAnswers = (quizId, paperId, answers) =>({
   }
 })
 
-actions.requestHint = (quizId, paperId, hintId) => ({
+actions.requestHint = (quizId, paperId, questionId, hintId) => ({
   [REQUEST_SEND]: {
-    route: ['exercise_attempt_hint_show', {exerciseId: quizId, paperId: paperId, hintId: hintId}],
-    success: (hint) => actions.useHint(hint.id)
+    route: ['exercise_attempt_hint_show', {exerciseId: quizId, id: paperId, questionId: questionId, hintId: hintId}],
+    success: (hint) => actions.useHint(questionId, hint)
   }
 })
 
@@ -174,18 +174,18 @@ actions.initPlayer = (paper, answers = {}) => {
   }
 }
 
-actions.showHint = (quizId, paperId, hint) => {
+actions.showHint = (quizId, paperId, questionId, hint) => {
   return (dispatch, getState) => {
-    if (playerSelectors.offline(getState())) {
-      return dispatch(actions.requestHint(quizId, paperId, hint.id))
+    if (!playerSelectors.offline(getState())) {
+      return dispatch(actions.requestHint(quizId, paperId, questionId, hint.id))
     } else {
-      return dispatch(actions.useHint(hint.id))
+      return dispatch(actions.useHint(questionId, hint))
     }
   }
 }
 
 function endQuiz(quizId, paper, dispatch, getState) {
-  //the current step was alreay done
+  //the current step was already done
   if (!playerSelectors.offline(getState())) {
     // Send finish request to API
     return dispatch(actions.requestEnd(quizId, paper.id))

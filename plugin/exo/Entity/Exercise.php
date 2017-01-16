@@ -146,7 +146,7 @@ class Exercise extends AbstractResource
      */
     public function __construct()
     {
-        $this->uuid = Uuid::uuid4();
+        $this->uuid = Uuid::uuid4()->toString();
         $this->dateCorrection = new \DateTime();
         $this->steps = new ArrayCollection();
     }
@@ -179,6 +179,18 @@ class Exercise extends AbstractResource
     public function setUuid($uuid)
     {
         $this->uuid = $uuid;
+    }
+
+    public function getTitle()
+    {
+        return !empty($this->resourceNode) ? $this->resourceNode->getName() : null;
+    }
+
+    public function setTitle($title)
+    {
+        if (!empty($this->resourceNode)) {
+            $this->resourceNode->setName($title);
+        }
     }
 
     /**

@@ -57,6 +57,7 @@ class Proposal
      */
     public function __construct()
     {
+        $this->uuid = Uuid::uuid4()->toString();
         $this->expectedLabels = new ArrayCollection();
     }
 
