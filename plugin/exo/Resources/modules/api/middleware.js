@@ -1,6 +1,11 @@
 import invariant from 'invariant'
 import isFunction from 'lodash/isFunction'
 import isString from 'lodash/isString'
+import {
+  ERROR_AUTH_WINDOW_BLOCKED,
+  ERROR_AUTH_WINDOW_CLOSED,
+  authenticate
+} from '#/main/core/authentication'
 import {tex} from './../utils/translate'
 import {generateUrl} from './../utils/routing'
 import {showModal} from './../modal/actions'
@@ -35,24 +40,52 @@ function handleResponseSuccess(data, success) {
   }
 }
 
-function handleResponseError(error, failure) {
+function handleResponseError(error, failure, request, next) {
   if (failure) {
     invariant(isFunction(failure), '`failure` should be a function')
   }
 
-  return dispatch => {
-    dispatch(showModal(MODAL_MESSAGE, {
-      title: tex('request_error'),
-      bsStyle: 'danger',
-      message: [401, 403, 422].indexOf(error.status) > -1 ?
-        tex(`request_error_desc_${error.status}`) :
-        tex('request_error_desc_default')
-    }))
+  if (typeof error.status === 'undefined') {
+    // if error isn't related to http response, rethrow it
+    throw error
+  }
 
-    if (failure) {
-      return dispatch(failure(error))
+  return dispatch => {
+    if (error.status === 401) { // authentication needed
+      authenticate().then(
+        () => doFetch(request, next), // re-execute original request,
+        authError => {
+          dispatch(failure(authError))
+          switch (authError.message) {
+            case ERROR_AUTH_WINDOW_BLOCKED:
+              return showErrorModal(dispatch, tex('request_error_auth_blocked'))
+            case ERROR_AUTH_WINDOW_CLOSED:
+              return showHttpErrorModal(dispatch, 401)
+            default:
+              throw authError
+          }
+        }
+      )
+    } else {
+      dispatch(failure(error))
+      showHttpErrorModal(dispatch, error)
     }
   }
+}
+
+function showErrorModal(dispatch, message) {
+  dispatch(showModal(MODAL_MESSAGE, {
+    title: tex('request_error'),
+    bsStyle: 'danger',
+    message
+  }))
+}
+
+function showHttpErrorModal(dispatch, status) {
+  showErrorModal(dispatch, [401, 403, 422].indexOf(status) > -1 ?
+    tex(`request_error_desc_${status}`) :
+    tex('request_error_desc_default')
+  )
 }
 
 /**
@@ -109,14 +142,8 @@ function getRequest(request = {}) {
   return Object.assign({}, defaultRequest, request)
 }
 
-const apiMiddleware = () => next => action => {
-  const sendRequest = action[REQUEST_SEND]
-
-  if (typeof sendRequest === 'undefined') {
-    return next(action)
-  }
-
-  const {url, route, request, before, success, failure} = sendRequest
+function doFetch(requestParameters, next) {
+  const {url, route, request, before, success, failure} = requestParameters
   const finalUrl = getUrl(url, route)
   const finalRequest = getRequest(request)
 
@@ -127,8 +154,18 @@ const apiMiddleware = () => next => action => {
     .then(response => getResponseData(response))
     .then(
       data => next(handleResponseSuccess(data, success)),
-      error => next(handleResponseError(error, failure))
+      error => next(handleResponseError(error, failure, requestParameters, next))
     )
+}
+
+const apiMiddleware = () => next => action => {
+  const requestParameters = action[REQUEST_SEND]
+
+  if (typeof requestParameters === 'undefined') {
+    return next(action)
+  }
+
+  return doFetch(requestParameters, next)
 }
 
 export {apiMiddleware}
