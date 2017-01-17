@@ -41,15 +41,13 @@ export function authenticate() {
       }
     }, 100)
 
-    // if the authentication succeeded, the auth window will dispatch a custom event
-    // named after the hash id (checking the auth window url is an extra measure)
+    // if the authentication succeeded, the auth window will dispatch a custom
+    // event named after the hash id
     window.addEventListener(authHash, () => {
-      if (authWindow.location.href === authUrl) {
-        authenticated = true
-        authWindow.close()
-        window.clearInterval(closeCheck)
-        resolve()
-      }
+      authenticated = true
+      authWindow.close()
+      window.clearInterval(closeCheck)
+      resolve()
     })
   })
 }
