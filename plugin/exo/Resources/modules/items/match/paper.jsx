@@ -30,7 +30,6 @@ function initJsPlumb(jsPlumbInstance) {
     Anchors: ['RightMiddle', 'LeftMiddle'],
     ConnectionsDetachable: false,
     Connector: 'Straight',
-    DropOptions: {tolerance: 'touch'},
     HoverPaintStyle: {strokeStyle: '#FC0000'},
     LogEnabled: true,
     PaintStyle: {strokeStyle: '#777', lineWidth: 4}
@@ -109,13 +108,9 @@ class MatchItem extends Component{
     super(props)
   }
 
-  componentDidMount(){
-    this.props.onMount(this.props.type, this.props.type + '_' + this.props.item.id)
-  }
-
   render() {
     return (
-      <div className={classes('item', this.props.type)} id={this.props.type + '_' + this.props.item.id}>
+      <div className={classes('item', this.props.type)} id={`${this.props.selectedTab}_${this.props.type}_${this.props.item.id}`}>
         <div className="item-content" dangerouslySetInnerHTML={{__html: this.props.item.data}} />
       </div>
     )
@@ -125,7 +120,7 @@ class MatchItem extends Component{
 MatchItem.propTypes = {
   type: T.string.isRequired,
   item: T.object.isRequired,
-  onMount: T.func.isRequired
+  selectedTab: T.string.isRequired
 }
 
 export class MatchPaper extends Component
@@ -139,7 +134,7 @@ export class MatchPaper extends Component
     this.handleSelect = this.handleSelect.bind(this)
     this.jsPlumbInstance = jsPlumb.getInstance()
     initJsPlumb(this.jsPlumbInstance)
-
+    this.container = null
     this.firstContainer = null
     this.secondContainer = null
     this.handleWindowResize = this.handleWindowResize.bind(this)
@@ -147,14 +142,17 @@ export class MatchPaper extends Component
   }
 
   drawAnswers(){
-    // draw all student answers
-    if (this.state.key === 'first') {
-      for (const solution of this.props.item.solutions) {
+    for (const solution of this.props.item.solutions) {
+
+      if (this.state.key === 'first') {
+        // jsPlumb connect draw new endpoints
         const type = this.props.answer.findIndex(answer => answer.firstId === solution.firstId && answer.secondId === solution.secondId) > -1 ? 'green' : 'red'
+
         const connection = this.jsPlumbInstance.connect({
-          source: 'source_' + solution.firstId,
-          target: 'target_' + solution.secondId,
-          type: type
+          source: 'first_source_' + solution.firstId,
+          target: 'first_target_' + solution.secondId,
+          type: type,
+          deleteEndpointsOnDetach:true
         })
 
         const connectionClass = 'connection-' + solution.firstId + '-' + solution.secondId
@@ -163,14 +161,12 @@ export class MatchPaper extends Component
         connection.bind('mouseover', (conn) => {
           this.handleConnectionHover(conn)
         })
-      }
-    } else {
-      for (const answer of this.props.answer) {
-        const type = this.props.item.solutions.findIndex(solution => answer.firstId === solution.firstId && answer.secondId === solution.secondId) > -1 ? 'blue' : 'default'
+      } else {
         this.jsPlumbInstance.connect({
-          source: 'source_' + answer.firstId,
-          target: 'target_' + answer.secondId,
-          type: type
+          source: 'second_source_' + solution.firstId,
+          target: 'second_target_' + solution.secondId,
+          type: solution.score > 0 ? 'blue' : 'default',
+          deleteEndpointsOnDetach:false
         })
       }
     }
@@ -185,8 +181,8 @@ export class MatchPaper extends Component
     console.log('connection hover')
     console.log(connection)
 
-    const firstId = connection.sourceId.replace('source_', '')
-    const secondId = connection.targetId.replace('target_', '')
+    const firstId = connection.sourceId.replace(`${this.state.key}_source_`, '')
+    const secondId = connection.targetId.replace(`${this.state.key}_target_`, '')
     const connectionClass = 'connection-' + firstId + '-' + secondId
     const positions = getPopoverPosition(connectionClass, this.props.item.id)
 
@@ -208,22 +204,16 @@ export class MatchPaper extends Component
   // switch tab handler
   handleSelect(key) {
     this.setState({key})
-    this.jsPlumbInstance.detachEveryConnection()
-    const container = key === 'first' ? this.firstContainer : this.secondContainer
-    this.jsPlumbInstance.setContainer(container)
     window.setTimeout(() => {
-      //this.drawAnswers(this.props.answer, this.props.item.solutions, this.jsPlumbInstance, key)
       this.drawAnswers()
-    }, 200)
+    }, 100)
   }
 
   componentDidMount() {
-    this.jsPlumbInstance.setContainer(this.firstContainer)
+    this.jsPlumbInstance.setContainer(this.container)
     window.addEventListener('resize', this.handleWindowResize)
-
     // we have to wait for elements to be at there right place before drawing... so... timeout
     window.setTimeout(() => {
-      //this.drawAnswers(this.props.answer, this.props.item.solutions, this.jsPlumbInstance, 'first')
       this.drawAnswers()
     }, 200)
   }
@@ -235,34 +225,6 @@ export class MatchPaper extends Component
     jsPlumb.reset()
     this.jsPlumbInstance = null
     delete this.jsPlumbInstance
-  }
-
-  /**
-   * When adding a firstSet or secondSet item we need to add an jsPlumb endpoint to it
-   * In order to achieve that we need to wait for the new item to be mounted
-  */
-  itemDidMount(type, id){
-    const isLeftItem = type === 'source'
-    const selector = '#' +  id
-    const anchor = isLeftItem ? 'RightMiddle' : 'LeftMiddle'
-
-    window.setTimeout(() => {
-      if (isLeftItem) {
-        this.jsPlumbInstance.addEndpoint(this.jsPlumbInstance.getSelector(selector), {
-          anchor: anchor,
-          cssClass: 'endPoints',
-          isSource: true,
-          maxConnections: -1
-        })
-      } else {
-        this.jsPlumbInstance.addEndpoint(this.jsPlumbInstance.getSelector(selector), {
-          anchor: anchor,
-          cssClass: 'endPoints',
-          isTarget: true,
-          maxConnections: -1
-        })
-      }
-    }, 100)
   }
 
   render() {
@@ -280,104 +242,107 @@ export class MatchPaper extends Component
             </Nav>
           </Col>
           <Col sm={12}>
-            <Tab.Content animation>
-              <Tab.Pane eventKey="first">
-                <Metadata title={this.props.item.title} description={this.props.item.description}/>
-                <div id={`match-question-paper-${this.props.item.id}-first`} className="match-question-paper" ref={(el) => { this.firstContainer = el }}>
-                  <div className="jsplumb-row">
-                    <div className="item-col">
-                      <ul>
-                      {this.props.item.firstSet.map((item) =>
-                        <li key={'source_' + item.id}>
-                          <MatchItem
-                            onMount={(type, id) => this.itemDidMount(type, id)}
-                            item={item}
-                            type="source"
-                          />
-                        </li>
-                      )}
-                      </ul>
-                    </div>
-                    <div className="divide-col" id={`popover-container-${this.props.item.id}`}>
-                      { this.state.showPopover &&
-                          <MatchLinkPopover
-                            handlePopoverClose={() => this.closePopover()}
-                            top={this.state.top}
-                            solution={this.props.item.solutions[this.state.current]}
-                          />
-                        }
-                    </div>
-                    <div className="item-col">
-                      <ul>
-                      {this.props.item.secondSet.map((item) =>
-                        <li key={'target_' + item.id}>
-                          <MatchItem
-                            onMount={(type, id) => this.itemDidMount(type, id)}
-                            item={item}
-                            type="target"
-                          />
-                        </li>
-                      )}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </Tab.Pane>
-              <Tab.Pane eventKey="second">
-                <Metadata title={this.props.item.title} description={this.props.item.description}/>
-                <div id={`match-question-paper-${this.props.item.id}-second`} className="match-question-paper" ref={(el) => { this.secondContainer = el }}>
-                  <div className="jsplumb-row">
-                    <div className="item-col">
-                      <ul>
-                      {this.props.item.firstSet.map((item) =>
-                        <li key={'source_' + item.id}>
-                          <MatchItem
-                            onMount={(type, id) => this.itemDidMount(type, id)}
-                            item={item}
-                            type="source"
-                          />
-                        </li>
-                      )}
-                      </ul>
-                    </div>
-                    <div className="divide-col" />
-                    <div className="item-col">
-                      <ul>
-                      {this.props.item.secondSet.map((item) =>
-                        <li key={'target_' + item.id}>
-                          <MatchItem
-                            onMount={(type, id) => this.itemDidMount(type, id)}
-                            item={item}
-                            type="target"
-                          />
-                        </li>
-                      )}
-                      </ul>
-                    </div>
-                  </div>
-                  <div className="solution-row">
-                    {this.props.item.solutions.map((solution) =>
-                      <div
-                        key={`solution-${solution.firstId}-${solution.secondId}`}
-                        className={classes(
-                          'item',
-                          {'bg-info text-info' : solution.score > 0},
-                          {'bg-danger text-danger' :solution.score <= 0 }
+            <div ref={(el) => { this.container = el }} className="jsplumb-container" style={{position:'relative'}}>
+              <Tab.Content animation>
+                <Tab.Pane eventKey="first">
+                  <Metadata title={this.props.item.title} description={this.props.item.description}/>
+                  <div id={`match-question-paper-${this.props.item.id}-first`} ref={(el) => { this.firstContainer = el }} className="match-question-paper">
+                    <div className="jsplumb-row">
+                      <div className="item-col">
+                        <ul>
+                        {this.props.item.firstSet.map((item) =>
+                          <li key={'first_source_' + item.id}>
+                            <MatchItem
+                              item={item}
+                              type="source"
+                              selectedTab={this.state.key}
+                            />
+                          </li>
                         )}
-                      >
-                        <div className="item-content" dangerouslySetInnerHTML={{__html: utils.getSolutionData(solution.firstId, this.props.item.firstSet)}} />
-                        <div className="item-content" dangerouslySetInnerHTML={{__html: utils.getSolutionData(solution.secondId, this.props.item.secondSet)}} />
-                        <Feedback
-                          id={`answer-${solution.firstId}-${solution.secondId}-feedback`}
-                          feedback={solution.feedback}
-                        />
-                        <SolutionScore score={solution.score}/>
+                        </ul>
                       </div>
-                    )}
+                      <div className="divide-col" id={`popover-container-${this.props.item.id}`}>
+                        { this.state.showPopover &&
+                            <MatchLinkPopover
+                              handlePopoverClose={() => this.closePopover()}
+                              top={this.state.top}
+                              solution={this.props.item.solutions[this.state.current]}
+                            />
+                          }
+                      </div>
+                      <div className="item-col">
+                        <ul>
+                        {this.props.item.secondSet.map((item) =>
+                          <li key={'first_target_' + item.id}>
+                            <MatchItem
+                              item={item}
+                              type="target"
+                              selectedTab={this.state.key}
+                            />
+                          </li>
+                        )}
+                        </ul>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </Tab.Pane>
-            </Tab.Content>
+                </Tab.Pane>
+                <Tab.Pane eventKey="second">
+                  <Metadata title={this.props.item.title} description={this.props.item.description}/>
+                  <div id={`match-question-paper-${this.props.item.id}-second`} ref={(el) => { this.secondContainer = el }} className="match-question-paper">
+                    <div className="jsplumb-row">
+                      <div className="item-col">
+                        <ul>
+                        {this.props.item.firstSet.map((item) =>
+                          <li key={'second_source_' + item.id}>
+                            <MatchItem
+                              item={item}
+                              type="source"
+                              selectedTab={this.state.key}
+                            />
+                          </li>
+                        )}
+                        </ul>
+                      </div>
+                      <div className="divide-col" />
+                      <div className="item-col">
+                        <ul>
+                        {this.props.item.secondSet.map((item) =>
+                          <li key={'second_target_' + item.id}>
+                            <MatchItem
+                              item={item}
+                              type="target"
+                              selectedTab={this.state.key}
+                            />
+                          </li>
+                        )}
+                        </ul>
+                      </div>
+                    </div>
+                    <div className="solution-row">
+                      {this.props.item.solutions.map((solution) =>
+                        <div
+                          key={`solution-${solution.firstId}-${solution.secondId}`}
+                          className={classes(
+                            'item',
+                            {'bg-info text-info' : solution.score > 0},
+                            {'bg-danger text-danger' :solution.score <= 0 }
+                          )}
+                        >
+                          <div className="item-content" dangerouslySetInnerHTML={{__html: utils.getSolutionData(solution.firstId, this.props.item.firstSet)}} />
+                          <div className="item-content" dangerouslySetInnerHTML={{__html: utils.getSolutionData(solution.secondId, this.props.item.secondSet)}} />
+                          <Feedback
+                            id={`answer-${solution.firstId}-${solution.secondId}-feedback`}
+                            feedback={solution.feedback}
+                          />
+                          <SolutionScore score={solution.score}/>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </Tab.Pane>
+              </Tab.Content>
+            </div>
+
           </Col>
         </Row>
       </Tab.Container>

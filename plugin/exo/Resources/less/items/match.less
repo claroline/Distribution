@@ -157,6 +157,8 @@
   width: 100%;
 
   .jsplumb-row {
+    /* required by jsPlumb for proper drawing */
+    position: relative;
     display: flex;
     justify-content: space-around;
     margin: @panel-body-padding;
@@ -190,7 +192,7 @@
   .solution-row {
     margin : @panel-body-padding;
     border-top: 1px solid #ddd;
-    padding-top: @panel-body-padding;  
+    padding-top: @panel-body-padding;
     .item {
       display: flex;
       border-bottom: solid 1px #ddd;
