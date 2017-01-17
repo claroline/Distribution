@@ -24,6 +24,7 @@ created_on: le
 delete_filter: Supprimer le filtre
 edit_blog_infos: Modifer les informations du blog.
 edit_post: Édition de l'article "%postTitle%"
+error_404: La page demandée n'existe pas.
 expand_year: Développer cette année
 icap_blog_banner_form_banner_activate: Activer la bannière ?
 icap_blog_banner_form_banner_background_color: Couleur de l'arrière-plan

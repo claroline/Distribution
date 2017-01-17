@@ -25,6 +25,7 @@ delete_filter: Remove filter
 edit_blog_infos: Edit blog's information
 editor: Editors
 edit_post: Editing the post "%postTitle%"
+error_404: The requested page doesn't exist.
 expand_year: Expand this year
 icap_blog_banner_form_banner_activate: Activate the banner ?
 icap_blog_banner_form_banner_background_color: Background colour

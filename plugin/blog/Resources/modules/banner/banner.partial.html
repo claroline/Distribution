@@ -1,5 +1,6 @@
 <a title="{{ bannerCtrl.blog.name }}"
-   data-ng-if="bannerCtrl.blog.options.banner_activate || bannerCtrl.blog.isGrantedAdmin">
+   data-ng-if="bannerCtrl.blog.options.banner_activate || bannerCtrl.blog.isGrantedAdmin"
+    data-ng-click="bannerCtrl.goToHome()">
     <div
         id="blog_banner"
         class="col-md-12 well blog_banner"

@@ -45,6 +45,13 @@ export default class PostController {
     // If post is displayed, always fetch its newest version from API if the router asks for it
     if (_$routeParams.get(this).loadPost && _$routeParams.get(this).slug !== undefined) {
       this.blog.setCurrentPostBySlug(_$routeParams.get(this).slug)
+        .then(
+          () => {},
+          () => {
+            this._setMessage('danger', 'error_404', {}, false, 'icap_blog', true)
+            _$location.get(this).url('/')
+          }
+        )
     }
     
     // Create a new post on controller init with default publication date
@@ -62,6 +69,10 @@ export default class PostController {
 
   getTags($query) {
     return this.blog.tags.filter(element => element.text.includes($query))
+  }
+
+  filterByTag(tag) {
+    _$location.get(this).url(`/tag/${tag.slug}`)
   }
 
   openDatePicker() {
@@ -161,6 +172,7 @@ export default class PostController {
       .then(
         () => {
           this._setMessage('success', 'icap_blog_post_delete_success')
+          _$location.get(this).url('/')
         },
         () => {
           this._setMessage('danger', 'icap_blog_post_delete_error')
@@ -171,6 +183,8 @@ export default class PostController {
           this._cancelModal()
           // Re-enable buttons
           this.disableButtons = false
+
+
         }
       )
   }

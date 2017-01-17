@@ -265,11 +265,14 @@ export default class BlogService {
       'postId': slug
     })
 
-    let Post = _$resource.get(this)(url)
-    Post.get(
+    let Post = _$resource.get(this)(url, null, {
+      'get': { method: 'GET'}
+    })
+    let post = new Post()
+
+    return post.$get(
       success => {
         this.setCurrentPost(success)
-
       }
     )
   }

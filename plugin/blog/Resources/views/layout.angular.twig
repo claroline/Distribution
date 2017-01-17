@@ -6,7 +6,7 @@
 {% block content %}
     <blog-main>
         <h1 data-ng-cloak data-ng-if="main.blog.options.display_title">
-            <a href="{{ path('icap_blog_view', {'blogId': _resource.id}) }}" title="{{ _resource.resourceNode.name }}" class="blog_title">
+            <a class="blog_title" data-ng-click="main.goToHome()">
                 {% verbatim %}{{ main.blog.name }}{% endverbatim %}
             </a>
         </h1>
@@ -87,6 +87,7 @@
 {% block stylesheets %}
     {{ parent() }}
     <link rel='stylesheet' type='text/css' href='{{ asset('bundles/clarolinecore/css/common/jquery-ui-bootstrap/jquery-ui-1.9.2.custom.css') }}'/>
+    <link rel="stylesheet" type='text/css' href="{{ asset('packages/angular-loading-bar/build/loading-bar.min.css') }}" />
     <link rel='stylesheet' type='text/css' href='{{ asset(calendarPath ~ 'fullcalendar.min.css') }}'/>
     <link rel='stylesheet' type='text/css' href='{{ asset(calendarPath ~ 'fullcalendar.print.css') }}' media='print' />
 

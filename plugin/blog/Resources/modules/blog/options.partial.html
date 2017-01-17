@@ -74,13 +74,11 @@
         </label>
         <div class="col-md-2">
             <select
-                    id="icap_blog_options_form_post_per_page"
-                    name="icap_blog_options_form[post_per_page]"
-                    class="form-control"
-                    data-ng-model="vm.blog.optionsCopy.post_per_page">
-                <option value="5">5</option>
-                <option value="10">10</option>
-                <option value="20">20</option>
+                id="icap_blog_options_form_post_per_page"
+                name="icap_blog_options_form[post_per_page]"
+                class="form-control"
+                data-ng-model="vm.blog.optionsCopy.post_per_page"
+                data-ng-options="item for item in vm.postsPerPageValues">
             </select>
         </div>
     </div>
@@ -102,9 +100,8 @@
                 </label>
                 <label
                     class="radio-inline"
-                    for="icap_blog_options_form_tag_cloud_1"
-                    data-ng-bind-html="'3D' | trans:{}:'icap_blog'| trust_html">
-                    data-ng-transclude
+                    for="icap_blog_options_form_tag_cloud_1">
+                    <span data-ng-bind-html="'3D' | trans:{}:'icap_blog'| trust_html"></span>
                     <input
                             type="radio"
                             id="icap_blog_options_form_tag_cloud_1"

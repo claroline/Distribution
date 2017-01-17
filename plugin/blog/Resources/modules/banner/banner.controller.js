@@ -4,15 +4,17 @@ let _$scope = new WeakMap()
 let _Messages = new WeakMap()
 let _transFilter = new WeakMap()
 let _$q = new WeakMap()
+let _$location = new WeakMap()
 
 export default class BannerController {
 
-  constructor(blogService, $scope, Messages, transFilter, $q) {
+  constructor(blogService, $scope, Messages, transFilter, $q, $location) {
 
     _$scope.set(this, $scope)
     _Messages.set(this, Messages)
     _transFilter.set(this, transFilter)
     _$q.set(this, $q)
+    _$location.set(this, $location)
 
     // Variables exposed in view
     this.blog = blogService
@@ -21,6 +23,7 @@ export default class BannerController {
     this.repeatY = false
     this.position = '0-0'
     this.backgroundImageUrl = null
+    this.disableButtons = false
 
     this.bannerPositions = [
       [{ text: 'top left', class : 'xtop yleft' }, { text: 'top center', class : 'xtop ycenter' }, { text: 'top right', class : 'xtop yright' }],
@@ -88,6 +91,10 @@ export default class BannerController {
       }
     })
 
+  }
+
+  goToHome() {
+    _$location.get(this).url('/')
   }
 
   getBannerStyle() {
@@ -168,6 +175,8 @@ export default class BannerController {
     // Banner options are stored in blog options, a copy is used before saving through the API
     this.blog.optionsCopy = angular.copy(this.blog.options)
     
+    this.disableButtons = true
+    
     if (this.removeBanner) {
       this.blog.removeBanner()
         .then(
@@ -178,6 +187,11 @@ export default class BannerController {
           },
           () => {
             this._setMessage('danger', 'icap_blog_post_configure_banner_error')
+          }
+        )
+        .finally(
+          () => {
+            this.disableButtons = false
           }
         )
     } else {
@@ -191,6 +205,11 @@ export default class BannerController {
           },
           () => {
             this._setMessage('danger', 'icap_blog_post_configure_banner_error')
+          }
+        )
+        .finally(
+          () => {
+            this.disableButtons = false
           }
         )
     }
@@ -214,5 +233,6 @@ BannerController.$inject = [
   '$scope',
   'Messages',
   'transFilter',
-  '$q'
+  '$q',
+  '$location'
 ]

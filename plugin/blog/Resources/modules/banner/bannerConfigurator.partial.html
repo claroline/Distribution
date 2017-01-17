@@ -99,12 +99,14 @@
                 <button
                     type="submit"
                     class="btn btn-success btn-sm"
-                    data-ng-click="bannerCtrl.saveBannerEdition()">{{ 'valid_banner_modification'|trans:{}:'icap_blog' }}</button>
+                    data-ng-click="bannerCtrl.saveBannerEdition()"
+                    data-ng-disabled="bannerCtrl.disableButtons">{{ 'valid_banner_modification'|trans:{}:'icap_blog' }}</button>
                 <button
                     type="reset"
                     class="btn btn-default btn-sm"
                     id="btn_reset"
-                    data-ng-click="bannerCtrl.cancelBannerEdition()">{{ 'cancel'|trans:{}:'platform' }}</button>
+                    data-ng-click="bannerCtrl.cancelBannerEdition()"
+                    data-ng-disabled="bannerCtrl.disableButtons">{{ 'cancel'|trans:{}:'platform' }}</button>
             </div>
 
 

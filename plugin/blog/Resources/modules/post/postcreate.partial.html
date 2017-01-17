@@ -30,18 +30,19 @@
             <div class="col-md-3">
                 <div class="input-group date">
                     <input
-                            id="icap_blog_post_form_publicationDate"
-                            type="text"
-                            class="form-control"
-                            uib-datepicker-popup="{{ vm.datepickerFormats[vm.locale] }}"
-                            data-ng-model="vm.blog.newPost.publication_date"
-                            is-open="vm.datepicker.opened"
-                            ng-required="true"
-                            close-text="{{ 'close'|trans:{}:'icap_blog' }}"
-                            clear-text="{{ 'clear'|trans:{}:'icap_blog' }}"
-                            current-text="{{ 'today'|trans:{}:'platform' }}"
-                            show-weeks="false"
-                    starting-day="vm.firstDayInWeek[vm.locale]"/>
+                        id="icap_blog_post_form_publicationDate"
+                        type="text"
+                        class="form-control"
+                        uib-datepicker-popup="{{ vm.datepickerFormats[vm.locale] }}"
+                        data-ng-model="vm.blog.newPost.publication_date"
+                        is-open="vm.datepicker.opened"
+                        ng-required="true"
+                        close-text="{{ 'close'|trans:{}:'icap_blog' }}"
+                        clear-text="{{ 'clear'|trans:{}:'icap_blog' }}"
+                        current-text="{{ 'today'|trans:{}:'platform' }}"
+                        show-weeks="false"
+                        starting-day="vm.firstDayInWeek[vm.locale]"
+                        datepicker-template-url="datepicker_template.html"/>
                     <span class="input-group-btn">
                         <button
                                 type="button"

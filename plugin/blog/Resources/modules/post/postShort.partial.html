@@ -66,7 +66,7 @@
 
         <ul class="list-unstyled list-inline tags">
             <li><span class="fa fa-tags"></span></li>
-            <li data-ng-repeat="tag in post.tags"><a title="{{ tag.name }}">{{ tag.text }}</a></li>
+            <li data-ng-repeat="tag in post.tags"><a title="{{ tag.name }}" data-ng-click="postCtrl.filterByTag(tag)">{{ tag.text }}</a></li>
             <li data-ng-if="post.tags.length === 0">{{ 'no_tags'|trans:{}:'icap_blog' }}</li>
         </ul>
     </footer>

@@ -26,6 +26,9 @@ export default class BlogController {
     this.disableButtons = false
     this.postToDelete = null
     this.currentPage = 1
+    this.postsPerPageValues = [
+      5, 10, 20
+    ]
 
     this.init()
     

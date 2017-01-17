@@ -341,7 +341,7 @@ ul.tag-cloud {
 #icap_blog_options_form_tag_cloud {
   label{font-weight: normal;}
 
-  label span {color:#777;}
+  label>span>span {color:#777;}
 }
 
 form#icap_blog_post_form {
@@ -378,14 +378,15 @@ a:hover {
     cursor:pointer;
 }
 
-.angular-ui-tree-placeholder {
-    border: 2px dashed activecaption;
-    border-radius: 3px;
-}
-
+/* Item dragged in ui-tree */
 .angular-ui-tree-drag {
-    color: red !important;
+    position: absolute;
+    pointer-events: none;
     z-index: 999;
     opacity: .8;
+    top: -450px;
 
+    li {
+        list-style-type: none;
+    }
 }

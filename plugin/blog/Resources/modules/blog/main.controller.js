@@ -8,6 +8,10 @@ export default class MainController {
 
   }
 
+  goToHome() {
+    _$location.get(this).url('/')
+  }
+
   newPost() {
     _$location.get(this).url('/post/new')
   }

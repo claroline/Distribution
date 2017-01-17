@@ -33,6 +33,10 @@ import messagesTemplate from './messages/messages.partial.html'
 import optionsTemplate from './blog/options.partial.html'
 import postShortTemplate from './post/postShort.partial.html'
 import messageTemplate from './messages/messages.template.html'
+import datepickerTemplate from './post/datepicker.template.html'
+import datepickerDayTemplate from './post/datepicker.day.html'
+import datepickerMonthTemplate from './post/datepicker.month.html'
+import datepickerYearTemplate from './post/datepicker.year.html'
 import './panels/panels.module'
 import './banner/banner.module'
 
@@ -59,6 +63,10 @@ angular
 
   .run(['$templateCache', ($templateCache) => {
     $templateCache.put('message_renderer.html', messageTemplate)
+    $templateCache.put('datepicker_template.html', datepickerTemplate)
+    $templateCache.put('datepicker_day.html', datepickerDayTemplate)
+    $templateCache.put('datepicker_month.html', datepickerMonthTemplate)
+    $templateCache.put('datepicker_year.html', datepickerYearTemplate)
   }])
   .run(['$anchorScroll', ($anchorScroll) => {
     $anchorScroll.yOffset = 60
