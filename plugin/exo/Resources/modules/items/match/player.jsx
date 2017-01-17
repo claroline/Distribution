@@ -70,7 +70,6 @@ MatchItem.propTypes = {
   type: T.string.isRequired,
   item: T.object.isRequired,
   onMount: T.func.isRequired,
-  onUnmount: T.func.isRequired,
   onChange: T.func.isRequired
 }
 
@@ -194,7 +193,6 @@ class MatchPlayer extends Component {
                 <MatchItem
                   onChange={this.props.onChange}
                   onMount={(type, id) => this.itemDidMount(type, id)}
-                  onUnmount={(isLeftSet, id, elemId) => this.itemWillUnmount(isLeftSet, id, elemId)}
                   item={item}
                   type="source"
                 />
@@ -210,7 +208,6 @@ class MatchPlayer extends Component {
                 <MatchItem
                   onChange={this.props.onChange}
                   onMount={(type, id) => this.itemDidMount(type, id)}
-                  onUnmount={(isLeftSet, id, elemId) => this.itemWillUnmount(isLeftSet, id, elemId)}
                   item={item}
                   type="target"
                 />
