@@ -48,6 +48,7 @@
     "jquery": "2.2.4",
     "jquery-option-tree": "https://github.com/jongilbraith/jquery-option-tree.git#6b7137ec6e",
     "jquery-sortable": "0.9.13",
+    "jquery-tagcanvas": "2.9.0",
     "jquery-ui": "1.11.4",
     "jquery.cookie": "1.4.1",
     "lodash": "4.13.1",
