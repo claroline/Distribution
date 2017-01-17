@@ -11,7 +11,6 @@ import {Feedback} from '../components/feedback-btn.jsx'
 import {SolutionScore} from '../components/score.jsx'
 import {utils} from './utils/utils'
 import {Metadata} from '../components/metadata.jsx'
-import {TooltipButton} from './../../components/form/tooltip-button.jsx'
 
 /* global jsPlumb */
 
@@ -113,14 +112,6 @@ export class MatchPaper extends Component
     this.handleConnectionClick = this.handleConnectionClick.bind(this)
   }
 
-  closePopover(){
-    this.setState({
-      showPopover: false,
-      top: 0,
-      current: {}
-    })
-  }
-
   drawAnswers(){
     if (this.state.key === 'first') {
       for (const answer of this.props.answer) {
@@ -184,7 +175,6 @@ export class MatchPaper extends Component
     this.jsPlumbInstance.getConnections().forEach(conn => {
       this.jsPlumbInstance.detach(conn)
     })
-
 
     this.setState({key})
     window.setTimeout(() => {
@@ -306,8 +296,8 @@ export class MatchPaper extends Component
                           key={`solution-${solution.firstId}-${solution.secondId}`}
                           className={classes(
                             'item',
-                            {'bg-info text-info' : solution.score > 0},
-                            {'bg-danger text-danger' :solution.score <= 0 }
+                            {'text-info' : solution.score > 0},
+                            {'text-danger' :solution.score <= 0 }
                           )}
                         >
                           <div className="sets">

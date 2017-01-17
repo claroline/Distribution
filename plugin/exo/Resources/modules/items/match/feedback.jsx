@@ -45,25 +45,24 @@ function initJsPlumb(jsPlumbInstance) {
 }
 
 export const MatchLinkPopover = props =>
-      <Popover
-        id={`popover-${props.solution.firstId}-${props.solution.secondId}`}
-        positionTop={props.top}
-        placement="bottom">
-          <div className={classes(
-            'popover-content',
-            'fa',
-            {'fa-check text-success' : props.solution.score > 0},
-            {'fa-times text-danger' : props.solution.score <= 0 }
-          )}>
-            &nbsp;{props.solution.feedback}
-          </div>
-      </Popover>
+  <Popover
+    id={`popover-${props.solution.firstId}-${props.solution.secondId}`}
+    positionTop={props.top}
+    placement="bottom"
+    >
+      <div className={classes(
+        'fa',
+        {'fa-check text-success' : props.solution.score > 0},
+        {'fa-times text-danger' : props.solution.score <= 0 }
+      )}>
+      </div>
+      &nbsp;<label className="label popover-label">{props.solution.feedback}</label>
+  </Popover>
 
 
 MatchLinkPopover.propTypes = {
   top: T.number.isRequired,
-  solution: T.object.isRequired,
-  handlePopoverClose: T.func.isRequired
+  solution: T.object.isRequired
 }
 
 class MatchItem extends Component{
@@ -97,15 +96,12 @@ export class MatchFeedback extends Component
     initJsPlumb(this.jsPlumbInstance)
     this.container = null
     this.handleWindowResize = this.handleWindowResize.bind(this)
-    this.handleConnectionClick = this.handleConnectionHover.bind(this)
-    this.handleConnectionMouseOut = this.handleConnectionMouseOut.bind(this)
+    this.handleConnectionClick = this.handleConnectionClick.bind(this)
   }
 
   drawAnswers(){
-
     for (const answer of this.props.answer) {
       const type = this.props.item.solutions.findIndex(solution => answer.firstId === solution.firstId && answer.secondId === solution.secondId) > -1 ? 'green' : 'red'
-
       const connection = this.jsPlumbInstance.connect({
         source: 'source_' + answer.firstId,
         target: 'target_' + answer.secondId,
@@ -119,20 +115,7 @@ export class MatchFeedback extends Component
       connection.bind('click', (conn) => {
         this.handleConnectionClick(conn)
       })
-
-      connection.bind('mouseout', () => {
-        this.handleConnectionMouseOut()
-      })
     }
-
-  }
-
-  handleConnectionMouseOut() {
-    this.setState({
-      showPopover: false,
-      top: 0,
-      current: {}
-    })
   }
 
   handleConnectionClick(connection) {
@@ -144,18 +127,24 @@ export class MatchFeedback extends Component
 
     const solution = this.props.item.solutions.find(solution => solution.firstId === firstId && solution.secondId === secondId)
 
-    this.setState({
-      showPopover: true,
-      top: positions.top,
-      current: solution ? solution : {firstId: firstId, secondId: secondId, score: 0}
-    })
+    if(this.state.showPopover) {
+      this.setState({
+        showPopover: false,
+        top: 0,
+        current: {}
+      })
+    } else {
+      this.setState({
+        showPopover: true,
+        top: positions.top,
+        current: solution ? solution : {firstId: firstId, secondId: secondId, score: 0}
+      })
+    }
   }
 
   handleWindowResize() {
     this.jsPlumbInstance.repaintEverything()
   }
-
-
 
   componentDidMount() {
     this.jsPlumbInstance.setContainer(this.container)
@@ -177,44 +166,40 @@ export class MatchFeedback extends Component
 
   render() {
     return (
-        <div ref={(el) => { this.container = el }} id={`match-question-paper-${this.props.item.id}-first`} className="match-question-paper">
-          <div className="jsplumb-row">
-            <div className="item-col">
-              <ul>
-                {this.props.item.firstSet.map((item) =>
-                  <li key={'source_' + item.id}>
-                    <MatchItem
-                      item={item}
-                      type="source"
-                    />
-                  </li>
-                )}
-              </ul>
-            </div>
-            <div className="divide-col" id={`popover-container-${this.props.item.id}`}>
-              { this.state.showPopover &&
-                <MatchLinkPopover
-                  handlePopoverClose={() => this.closePopover()}
-                  top={this.state.top}
-                  solution={this.state.current}
+      <div ref={(el) => { this.container = el }} id={`match-question-paper-${this.props.item.id}-first`} className="match-question-feedback">
+        <div className="item-col">
+          <ul>
+            {this.props.item.firstSet.map((item) =>
+              <li key={'source_' + item.id}>
+                <MatchItem
+                  item={item}
+                  type="source"
                 />
-              }
-            </div>
-            <div className="item-col">
-              <ul>
-                {this.props.item.secondSet.map((item) =>
-                  <li key={'target_' + item.id}>
-                    <MatchItem
-                      item={item}
-                      type="target"
-                    />
-                  </li>
-                )}
-              </ul>
-          </div>
+              </li>
+            )}
+          </ul>
         </div>
-    </div>
-
+        <div className="divide-col" id={`popover-container-${this.props.item.id}`}>
+          { this.state.showPopover &&
+            <MatchLinkPopover
+              top={this.state.top}
+              solution={this.state.current}
+            />
+          }
+        </div>
+        <div className="item-col">
+          <ul>
+            {this.props.item.secondSet.map((item) =>
+              <li key={'target_' + item.id}>
+                <MatchItem
+                  item={item}
+                  type="target"
+                />
+              </li>
+            )}
+          </ul>
+        </div>
+      </div>
     )
   }
 }
