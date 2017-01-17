@@ -1,5 +1,6 @@
 /* MATCH QUESTION */
 
+
 /* jsPlumb Endpoints z-index */
 .jsplumb-endpoint,
 .endPoints{
@@ -149,6 +150,16 @@
 
 }
 
+
+/* PART OF PAPER BUT SINCE JSPLUMB DRAWS OUTSIDE NEED EXTRA DEFINITIONS */
+.jsplumb-container {
+  .jsplumb-connector {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
 /* MATCH PAPER */
 .match-question-paper {
   padding: 0;
@@ -158,6 +169,8 @@
   border-radius: 4px;
   margin: 0;
   width: 100%;
+
+
 
   .jsplumb-row {
     /* required by jsPlumb for proper drawing */
@@ -195,13 +208,13 @@
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
-        max-width: 450px !important;
-        min-width: 250px !important;
         min-height: 55px;
-        .popover-content{
-          width: 100%;
-          display: flex;
-          align-items: center;
+        min-width: 100%;
+        .popover-content {
+          text-align: center;
+          .popover-label {
+            color: black;
+          }
         }
       }
     }
@@ -217,10 +230,24 @@
       margin: 0;
       padding: 5px;
       align-items: center;
-      min-height: 40px;
-      .item-content {
+      min-height: 50px;
+      justify-content: space-between;
+      .sets{
         flex-grow: 1;
-        margin: 0;
+        display: flex;
+        align-items: center;
+        .item-content {
+          display: flex;
+          padding: 5px;
+          margin: 5px;
+          background-color: #ccc;
+          align-items: center;
+          min-height: 60px;
+        }
+      }
+
+      .feedback-btn {
+        margin: 5px;
       }
     }
   }

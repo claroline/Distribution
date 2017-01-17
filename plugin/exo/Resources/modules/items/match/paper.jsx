@@ -11,6 +11,7 @@ import {Feedback} from '../components/feedback-btn.jsx'
 import {SolutionScore} from '../components/score.jsx'
 import {utils} from './utils/utils'
 import {Metadata} from '../components/metadata.jsx'
+import {TooltipButton} from './../../components/form/tooltip-button.jsx'
 
 /* global jsPlumb */
 
@@ -58,22 +59,22 @@ export const MatchLinkPopover = props =>
       <Popover
         id={`popover-${props.solution.firstId}-${props.solution.secondId}`}
         positionTop={props.top}
-        placement="bottom">
+        placement="bottom"
+        >
           <div className={classes(
-            'popover-content',
             'fa',
             {'fa-check text-success' : props.solution.score > 0},
             {'fa-times text-danger' : props.solution.score <= 0 }
           )}>
-            &nbsp;{props.solution.feedback}
           </div>
+          &nbsp;<label className="label popover-label">{props.solution.feedback}</label>
+        &nbsp;<label className="label popover-label">{props.solution.score}</label>
       </Popover>
 
 
 MatchLinkPopover.propTypes = {
   top: T.number.isRequired,
-  solution: T.object.isRequired,
-  handlePopoverClose: T.func.isRequired
+  solution: T.object.isRequired
 }
 
 class MatchItem extends Component{
@@ -109,8 +110,15 @@ export class MatchPaper extends Component
     initJsPlumb(this.jsPlumbInstance)
     this.container = null
     this.handleWindowResize = this.handleWindowResize.bind(this)
-    this.handleConnectionHover = this.handleConnectionHover.bind(this)
-    this.handleConnectionMouseOut = this.handleConnectionMouseOut.bind(this)
+    this.handleConnectionClick = this.handleConnectionClick.bind(this)
+  }
+
+  closePopover(){
+    this.setState({
+      showPopover: false,
+      top: 0,
+      current: {}
+    })
   }
 
   drawAnswers(){
@@ -128,12 +136,8 @@ export class MatchPaper extends Component
         const connectionClass = 'connection-' + answer.firstId + '-' + answer.secondId
         connection.addClass(connectionClass)
 
-        connection.bind('mouseover', (conn) => {
-          this.handleConnectionHover(conn)
-        })
-
-        connection.bind('mouseout', () => {
-          this.handleConnectionMouseOut()
+        connection.bind('click', (conn) => {
+          this.handleConnectionClick(conn)
         })
       }
     } else {
@@ -148,28 +152,27 @@ export class MatchPaper extends Component
     }
   }
 
-  handleConnectionMouseOut() {
-    this.setState({
-      showPopover: false,
-      top: 0,
-      current: {}
-    })
-  }
-
-  handleConnectionHover(connection) {
-
+  handleConnectionClick(connection) {
     const firstId = connection.sourceId.replace(`${this.state.key}_source_`, '')
     const secondId = connection.targetId.replace(`${this.state.key}_target_`, '')
     const connectionClass = 'connection-' + firstId + '-' + secondId
     const positions = getPopoverPosition(connectionClass, this.props.item.id)
 
     const solution = this.props.item.solutions.find(solution => solution.firstId === firstId && solution.secondId === secondId)
+    if(this.state.showPopover) {
+      this.setState({
+        showPopover: false,
+        top: 0,
+        current: {}
+      })
+    } else {
+      this.setState({
+        showPopover: true,
+        top: positions.top,
+        current: solution ? solution : {firstId: firstId, secondId: secondId, score: 0}
+      })
+    }
 
-    this.setState({
-      showPopover: true,
-      top: positions.top,
-      current: solution ? solution : {firstId: firstId, secondId: secondId, score: 0}
-    })
   }
 
   handleWindowResize() {
@@ -244,7 +247,6 @@ export class MatchPaper extends Component
                       <div className="divide-col" id={`popover-container-${this.props.item.id}`}>
                         { this.state.showPopover &&
                             <MatchLinkPopover
-                              handlePopoverClose={() => this.closePopover()}
                               top={this.state.top}
                               solution={this.state.current}
                             />
@@ -308,8 +310,12 @@ export class MatchPaper extends Component
                             {'bg-danger text-danger' :solution.score <= 0 }
                           )}
                         >
-                          <div className="item-content" dangerouslySetInnerHTML={{__html: utils.getSolutionData(solution.firstId, this.props.item.firstSet)}} />
-                          <div className="item-content" dangerouslySetInnerHTML={{__html: utils.getSolutionData(solution.secondId, this.props.item.secondSet)}} />
+                          <div className="sets">
+                            <div className="item-content" dangerouslySetInnerHTML={{__html: utils.getSolutionData(solution.firstId, this.props.item.firstSet)}} />
+                            <span className="fa fa-chevron-left"></span>
+                            <span className="fa fa-chevron-right"></span>
+                            <div className="item-content" dangerouslySetInnerHTML={{__html: utils.getSolutionData(solution.secondId, this.props.item.secondSet)}} />
+                          </div>
                           <Feedback
                             id={`answer-${solution.firstId}-${solution.secondId}-feedback`}
                             feedback={solution.feedback}

@@ -97,7 +97,7 @@ export class MatchFeedback extends Component
     initJsPlumb(this.jsPlumbInstance)
     this.container = null
     this.handleWindowResize = this.handleWindowResize.bind(this)
-    this.handleConnectionHover = this.handleConnectionHover.bind(this)
+    this.handleConnectionClick = this.handleConnectionHover.bind(this)
     this.handleConnectionMouseOut = this.handleConnectionMouseOut.bind(this)
   }
 
@@ -116,8 +116,8 @@ export class MatchFeedback extends Component
       const connectionClass = 'connection-' + answer.firstId + '-' + answer.secondId
       connection.addClass(connectionClass)
 
-      connection.bind('mouseover', (conn) => {
-        this.handleConnectionHover(conn)
+      connection.bind('click', (conn) => {
+        this.handleConnectionClick(conn)
       })
 
       connection.bind('mouseout', () => {
@@ -135,7 +135,7 @@ export class MatchFeedback extends Component
     })
   }
 
-  handleConnectionHover(connection) {
+  handleConnectionClick(connection) {
 
     const firstId = connection.sourceId.replace('source_', '')
     const secondId = connection.targetId.replace('target_', '')

@@ -31,7 +31,7 @@ function initJsPlumb(jsPlumbInstance) {
     },
     'default': {
       paintStyle     : { strokeStyle: 'grey',    lineWidth: 5 },
-      hoverPaintStyle: { strokeStyle: 'orange', lineWidth: 6 }
+      hoverPaintStyle: { strokeStyle: 'grey', lineWidth: 6 }
     }
   })
 }
