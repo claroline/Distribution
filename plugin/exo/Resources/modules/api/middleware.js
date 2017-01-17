@@ -1,7 +1,11 @@
 import invariant from 'invariant'
 import isFunction from 'lodash/isFunction'
 import isString from 'lodash/isString'
-import {authenticate} from '#/main/core/authentication'
+import {
+  ERROR_AUTH_WINDOW_BLOCKED,
+  ERROR_AUTH_WINDOW_CLOSED,
+  authenticate
+} from '#/main/core/authentication'
 import {tex} from './../utils/translate'
 import {generateUrl} from './../utils/routing'
 import {showModal} from './../modal/actions'
@@ -41,34 +45,47 @@ function handleResponseError(error, failure, request, next) {
     invariant(isFunction(failure), '`failure` should be a function')
   }
 
-  const doFail = dispatch => {
-    if (failure) {
-      dispatch(failure(error))
-    }
-
-    showErrorModal(dispatch, error.status)
+  if (typeof error.status === 'undefined') {
+    // if error isn't related to http response, rethrow it
+    throw error
   }
 
-  if (error.status === 401) {
-    return dispatch => {
+  return dispatch => {
+    if (error.status === 401) { // authentication needed
       authenticate().then(
         () => doFetch(request, next), // re-execute original request,
-        () => doFail(dispatch) // user dismissed re-auth window, show 401
+        authError => {
+          dispatch(failure(authError))
+          switch (authError.message) {
+            case ERROR_AUTH_WINDOW_BLOCKED:
+              return showErrorModal(dispatch, tex('request_error_auth_blocked'))
+            case ERROR_AUTH_WINDOW_CLOSED:
+              return showHttpErrorModal(dispatch, 401)
+            default:
+              throw authError
+          }
+        }
       )
+    } else {
+      dispatch(failure(error))
+      showHttpErrorModal(dispatch, error)
     }
   }
-
-  return doFail
 }
 
-function showErrorModal(dispatch, status) {
+function showErrorModal(dispatch, message) {
   dispatch(showModal(MODAL_MESSAGE, {
     title: tex('request_error'),
     bsStyle: 'danger',
-    message: [401, 403, 422].indexOf(status) > -1 ?
-      tex(`request_error_desc_${status}`) :
-      tex('request_error_desc_default')
+    message
   }))
+}
+
+function showHttpErrorModal(dispatch, status) {
+  showErrorModal(dispatch, [401, 403, 422].indexOf(status) > -1 ?
+    tex(`request_error_desc_${status}`) :
+    tex('request_error_desc_default')
+  )
 }
 
 /**

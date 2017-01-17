@@ -1,12 +1,15 @@
 import uuid from 'uuid'
 import {generateUrl} from '#/main/core/fos-js-router'
 
-const CLARO_AUTH_WINDOW = 'claro_auth_window'
+const AUTH_WINDOW = 'claro_auth_window'
+
+export const ERROR_AUTH_WINDOW_CLOSED = 'Authentication window closed unexpectedly'
+export const ERROR_AUTH_WINDOW_BLOCKED = 'Authentication window blocked by browser'
 
 /**
  * Handles (re-)authentication in a separate window/tab. Returns a promise which
  * will be resolved on authentication success and rejected if the authentication
- * is closed before actual authentication took place.
+ * window is blocked or closed before actual authentication took place.
  */
 export function authenticate() {
   return new Promise((resolve, reject) => {
@@ -16,7 +19,12 @@ export function authenticate() {
     const authUrl = generateUrl('trigger_auth', {hash: authHash}, true)
 
     // open a dedicated (named) window for (re-)authentication
-    const authWindow = window.open(authUrl, CLARO_AUTH_WINDOW)
+    const authWindow = window.open(authUrl, AUTH_WINDOW)
+
+    if (!authWindow) {
+      // reference will be null if a popup blocker is active
+      return reject(new Error(ERROR_AUTH_WINDOW_BLOCKED))
+    }
 
     // the following should re-focus any pre-existing auth window (doesn't work great though...)
     authWindow.focus()
@@ -29,7 +37,7 @@ export function authenticate() {
     const closeCheck = setInterval(() => {
       if (authWindow.closed && !authenticated) {
         window.clearInterval(closeCheck)
-        reject(new Error('Authentication window closed before actual authentication'))
+        reject(new Error(ERROR_AUTH_WINDOW_CLOSED))
       }
     }, 100)
 
