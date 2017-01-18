@@ -12,7 +12,7 @@ export const actions = {
 function reduce(item = {}, action = {}) {
   switch (action.type) {
     case ITEM_CREATE: {
-      return Object.assign({}, item, {
+      return decorate(Object.assign({}, item, {
         image: {
           id: makeId(),
           type: '',
@@ -21,11 +21,8 @@ function reduce(item = {}, action = {}) {
           height: 0
         },
         pointers: 0,
-        solutions: [],
-        _editor: {
-          mode: MODE_RECT
-        }
-      })
+        solutions: []
+      }))
     }
     case SELECT_MODE: {
       return Object.assign({}, item, {
@@ -38,7 +35,16 @@ function reduce(item = {}, action = {}) {
   return item
 }
 
+function decorate(item) {
+  return Object.assign({}, item, {
+    _editor: {
+      mode: MODE_RECT
+    }
+  })
+}
+
 export default {
   component,
-  reduce
+  reduce,
+  decorate
 }
