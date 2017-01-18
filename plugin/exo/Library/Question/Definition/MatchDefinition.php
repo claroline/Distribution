@@ -3,11 +3,11 @@
 namespace UJM\ExoBundle\Library\Question\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
-use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
 use UJM\ExoBundle\Entity\Misc\Label;
 use UJM\ExoBundle\Entity\Misc\Proposal;
-use UJM\ExoBundle\Library\Question\QuestionType;
+use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
+use UJM\ExoBundle\Library\Question\QuestionType;
 use UJM\ExoBundle\Serializer\Question\Type\MatchQuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\MatchAnswerValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Question\Type\MatchQuestionValidator;
