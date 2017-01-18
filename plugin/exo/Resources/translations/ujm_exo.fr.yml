@@ -166,14 +166,11 @@ from: A partir du
 formative : Formatif
 
 # G
-graphic: Graphique
-graphic_area_shape_rect: Rectangle
-graphic_area_shape_circle: Cercle
-graphic_area_shape_poly: Polygone
-graphic_creation: Création d'une question graphique
-graphic_edition: Edition d'une question graphique
-graphic_help: Glisser les réticules sur l'image pour masquer votre réponse
-group: Groupe
+graphic_drop_or_pick: Faites glisser une image ici ou utiliser le bouton ci-dessus.
+graphic_pick_image: Choisir une image
+graphic_mode_rect: Zone de réponse rectangulaire
+graphic_mode_circle: Zone de réponse circulaire
+graphic_mode_select: Sélectionner une réponse
 
 # H
 hide_instructions: Masquer les consignes
