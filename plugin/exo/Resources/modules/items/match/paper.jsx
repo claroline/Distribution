@@ -167,6 +167,7 @@ export class MatchPaper extends Component
   }
 
   handleWindowResize() {
+    console.log('should reapint')
     this.jsPlumbInstance.repaintEverything()
   }
 
@@ -296,8 +297,7 @@ export class MatchPaper extends Component
                           key={`solution-${solution.firstId}-${solution.secondId}`}
                           className={classes(
                             'item',
-                            {'text-info' : solution.score > 0},
-                            {'text-danger' :solution.score <= 0 }
+                            {'bg-info text-info' : solution.score > 0}
                           )}
                         >
                           <div className="sets">

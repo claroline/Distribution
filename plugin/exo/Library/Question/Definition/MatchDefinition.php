@@ -3,6 +3,7 @@
 namespace UJM\ExoBundle\Library\Question\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Entity\Misc\Association;
 use UJM\ExoBundle\Entity\Misc\Label;
 use UJM\ExoBundle\Entity\Misc\Proposal;
 use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
@@ -118,24 +119,21 @@ class MatchDefinition extends AbstractDefinition
     {
         $corrected = new CorrectedAnswer();
 
-        foreach ($question->getProposals() as $proposal) {
+        foreach ($question->getAssociations() as $association) {
             if (is_array($answer)) {
-                foreach ($answer as $association) {
-                    if ($association->firstId === $proposal->getUuid()) {
-                        $expectedLabels = $proposal->getExpectedLabels();
-                        foreach ($expectedLabels as $label) {
-                            if ($association->secondId === $label->getUuid()) {
-                                if (0 < $label->getScore()) {
-                                    $corrected->addExpected($label);
-                                } else {
-                                    $corrected->addUnexpected($label);
-                                }
-                            } elseif (0 < $label->getScore()) {
-                                // The choice is not selected but it's part of the correct answer
-                                $corrected->addMissing($label);
-                            }
+                $found = false;
+                foreach ($answer as $givenAnswer) {
+                    if ($association->getProposal()->getUuid() === $givenAnswer->firstId && $association->getLabel()->getUuid() === $givenAnswer->secondId) {
+                        $found = true;
+                        if (0 < $association->getScore()) {
+                            $corrected->addExpected($association);
+                        } else {
+                            $corrected->addUnexpected($association);
                         }
                     }
+                }
+                if (!$found && 0 < $association->getScore()) {
+                    $corrected->addMissing($association);
                 }
             }
         }
@@ -147,14 +145,9 @@ class MatchDefinition extends AbstractDefinition
     {
         $expected = [];
 
-        $expected = array_map(function (Proposal $proposal) {
-            $validLabels = array_filter($proposal->getExpectedLabels()->toArray(), function (Label $label) {
-                return 0 < $label->getScore();
-            });
-            foreach ($validLabels as $label) {
-                return $label;
-            }
-        }, $question->getProposals()->toArray());
+        $expected = array_filter($question->getAssociations()->toArray(), function (Association $association) {
+            return 0 < $association->getScore();
+        });
 
         return $expected;
     }
