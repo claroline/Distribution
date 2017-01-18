@@ -1,6 +1,7 @@
 import React, {Component, PropTypes as T} from 'react'
 import classes from 'classnames'
 import {tex} from './../../utils/translate'
+import select from './utils/selection'
 
 // see https://github.com/lovasoa/react-contenteditable
 class ContentEditable extends Component {
@@ -10,20 +11,14 @@ class ContentEditable extends Component {
   }
 
   getSelection() {
-    //http://stackoverflow.com/questions/3997659/replace-selected-text-in-contenteditable-div
-    let selected = window.getSelection().toString()
-    this.props.onSelect(selected, this.updateText.bind(this))
-  }
-
-  updateText(text) {
-    if (text) {
-      let selection = window.getSelection()
-      let range = selection.getRangeAt(0)
-      range.deleteContents()
-      range.insertNode(document.createTextNode(`${text}`))
-
-      return range.startContainer.parentNode.innerText
-    }
+    let selected = select(this.el, window.getSelection())
+    this.props.onSelect(
+      selected.word,
+      selected.start,
+      selected.end,
+      selected.offsetX,
+      selected.offsetY
+    )
   }
 
   render() {
@@ -43,6 +38,12 @@ class ContentEditable extends Component {
         onMouseUp={this.getSelection.bind(this)}
       />
     )
+  }
+
+  componentDidMount() {
+    this.el.onclick = e => {
+      this.props.onClick(e.target)
+    }
   }
 
   shouldComponentUpdate(nextProps) {
@@ -80,6 +81,7 @@ ContentEditable.propTypes = {
   content: T.string.isRequired,
   onChange: T.func.isRequired,
   onSelect: T.func,
+  onClick: T.func,
   title: T.string
 }
 
@@ -100,6 +102,9 @@ class Tinymce extends Component {
         })
         this.editor.on('change', e => {
           this.props.onChange(e.target.getContent())
+        })
+        this.editor.on('click', e => {
+          this.props.onClick(e.target)
         })
 
         clearInterval(interval)
@@ -123,7 +128,15 @@ class Tinymce extends Component {
   }
 
   getSelection() {
-    this.props.onSelect(this.editor.selection.getContent(), this.updateText.bind(this))
+    let selected = select(this.editor.dom.getRoot(), this.editor.selection.getSel())
+
+    this.props.onSelect(
+      selected.word,
+      selected.start,
+      selected.end,
+      selected.offsetX,
+      selected.offsetY
+    )
   }
 
   render() {
@@ -143,6 +156,7 @@ Tinymce.propTypes = {
   content: T.string.isRequired,
   onChange: T.func.isRequired,
   onSelect: T.func,
+  onClick: T.func,
   title: T.string
 }
 
@@ -161,6 +175,7 @@ export class Textarea extends Component {
         content={this.props.content}
         onChange={this.props.onChange}
         onSelect={this.props.onSelect}
+        onClick={this.props.onClick}
       />
     )
   }
@@ -173,6 +188,7 @@ export class Textarea extends Component {
         content={this.props.content}
         onChange={this.props.onChange}
         onSelect={this.props.onSelect}
+        onClick={this.props.onClick}
       />
     )
   }
@@ -205,7 +221,8 @@ Textarea.propTypes = {
   title: T.string,
   content: T.string.isRequired,
   onChange: T.func.isRequired,
-  onSelect: T.func
+  onSelect: T.func,
+  onClick: T.func
 }
 
 Textarea.defaultProps = {

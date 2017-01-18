@@ -10,6 +10,7 @@ var translator = window.Translator
 var routing = window.Routing
 
 tinymce.DOM.loadCSS(home.asset + 'packages/claroline-tinymce-mention/css/autocomplete.css')
+//add font awesome here
 var codemirrorPath = home.asset + 'packages/tinymce-codemirror/plugins/codemirror/codemirror-4.8'
 
 /**
