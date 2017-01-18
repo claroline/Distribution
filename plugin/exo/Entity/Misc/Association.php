@@ -31,7 +31,7 @@ class Association implements AnswerPartInterface
      * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\QuestionType\MatchQuestion", inversedBy="associations")
      * @ORM\JoinColumn(name="match_question_id", referencedColumnName="id")
      */
-    private $interactionMatching;
+    private $question;
 
     /**
      * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Misc\Label")
@@ -60,23 +60,23 @@ class Association implements AnswerPartInterface
     }
 
     /**
-     * Get InteractionMatching.
+     * Get MatchQuestion.
      *
      * @return MatchQuestion
      */
-    public function getInteractionMatching()
+    public function getQuestion()
     {
-        return $this->interactionMatching;
+        return $this->question;
     }
 
     /**
-     * Set InteractionMatching.
+     * Set MatchQuestion.
      *
-     * @param MatchQuestion $interactionMatching
+     * @param MatchQuestion $question
      */
-    public function setInteractionMatching(MatchQuestion $interactionMatching)
+    public function setQuestion(MatchQuestion $question)
     {
-        $this->interactionMatching = $interactionMatching;
+        $this->question = $question;
     }
 
     /**
