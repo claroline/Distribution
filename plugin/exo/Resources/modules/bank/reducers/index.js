@@ -1,21 +1,21 @@
 import { combineReducers } from 'redux'
 
-import categoriesReducer      from './categories'
-import questionsReducer       from './questions'
-import currentQuestionReducer from './current-question'
-import selectReducer          from './select'
-import sortByReducer          from './sort-by'
-import paginationReducer      from './pagination'
-import searchReducer          from './search'
+import {reduceModal}       from './../../modal/reducer'
+import questionsReducer    from './questions'
+import selectReducer       from './select'
+import sortByReducer       from './sort-by'
+import paginationReducer   from './pagination'
+import searchReducer       from './search'
+import totalResultsReducer from './total-results'
 
 const bankApp = combineReducers({
-  categories: categoriesReducer,
+  modal: reduceModal,
   questions: questionsReducer,
-  selectedQuestions: selectReducer,
-  currentQuestion: currentQuestionReducer,
+  selected: selectReducer,
   sortBy: sortByReducer,
   pagination: paginationReducer,
-  search: searchReducer
+  search: searchReducer,
+  totalResults: totalResultsReducer
 })
 
 export default bankApp

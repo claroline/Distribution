@@ -9,6 +9,7 @@ use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Question\Question;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
+use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Question\QuestionDefinitionsCollection;
 use UJM\ExoBundle\Library\Validator\ValidationException;
@@ -104,20 +105,31 @@ class QuestionManager
     /**
      * Searches questions for a User.
      *
-     * @param User  $user
-     * @param array $filters
-     * @param int   $page
-     * @param int   $number
-     * @param array $orderBy
+     * @param User      $user
+     * @param \stdClass $filters
+     * @param int       $page
+     * @param int       $number
+     * @param array     $orderBy
      *
-     * @return array
+     * @return \stdClass
      */
-    public function search(User $user, array $filters = [], $page = 0, $number = -1, array $orderBy = [])
+    public function search(User $user, \stdClass $filters = null, $page = 0, $number = -1, array $orderBy = [])
     {
-        return [
-            'questions' => $this->repository->search($user, $filters, $page, $number, $orderBy),
-            'total' => 100,
-        ];
+        $results = $this->repository->search($user, $filters, $page, $number, $orderBy);
+
+        $searchResults = new \stdClass();
+        $searchResults->totalResults = count($results);
+        $searchResults->questions = array_map(function (Question $question) {
+            return $this->export($question, [Transfer::INCLUDE_ADMIN_META]);
+        }, $results);
+
+        $pagination = new \stdClass();
+        $pagination->current = $page;
+        $pagination->pageSize = $number;
+
+        $searchResults->pagination = $pagination;
+
+        return $searchResults;
     }
 
     /**

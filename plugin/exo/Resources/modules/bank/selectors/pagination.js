@@ -1,9 +1,14 @@
 import {createSelector} from 'reselect'
 
-const getTotalResults = (state) => state.pagination.totalResults
-const getPageSize     = (state) => state.pagination.pageSize
+const getTotalResults = (state) => state.totalResults
+const getPagination   = (state) => state.pagination
 
-export const countPages =  createSelector(
+const getPageSize = createSelector(
+  [getPagination],
+  (pagination) => pagination.pageSize
+)
+
+const countPages = createSelector(
   [getTotalResults, getPageSize],
   (totalResults, pageSize) => {
     const rest = totalResults % pageSize
@@ -12,3 +17,10 @@ export const countPages =  createSelector(
     return nbPages + (rest > 0 ? 1 : 0)
   }
 )
+
+export const select = {
+  getTotalResults,
+  getPagination,
+  getPageSize,
+  countPages
+}

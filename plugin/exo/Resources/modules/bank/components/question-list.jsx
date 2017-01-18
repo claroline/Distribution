@@ -67,7 +67,7 @@ export default class QuestionList extends Component {
               </a>
             </TableCell>
             <TableCell>
-              {question.meta.category}
+              {question.meta.category && question.meta.category.name ? question.meta.category.name : '-'}
             </TableCell>
             <TableCell align="right">
               <small className="text-muted">{question.meta.updated}</small>

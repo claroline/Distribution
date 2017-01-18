@@ -12,7 +12,7 @@ use UJM\ExoBundle\Entity\Question\Question;
  */
 class QuestionRepository extends EntityRepository
 {
-    public function search(User $user, array $filters = [], $page = 0, $number = -1, array $orderBy = [])
+    public function search(User $user, \stdClass $filters = null, $page = 0, $number = -1, array $orderBy = [])
     {
         $qb = $this->createQueryBuilder('q');
 
@@ -20,34 +20,34 @@ class QuestionRepository extends EntityRepository
         $qb->where('q.creator = :user');
         $qb->setParameter('user', $user);
 
-        if (empty($filters['self_only'])) {
+        if (empty($filters) || empty($filters->self_only)) {
             // Includes shared questions
         }
 
         // Type
-        if (!empty($filters['type'])) {
-            $qb->andWhere('q.mimeType = :type');
-            $qb->setParameter('type', $filters['type']);
+        if (!empty($filters) && !empty($filters->types)) {
+            $qb->andWhere('q.mimeType IN (":type")');
+            $qb->setParameter('type', implode('", "', $filters->types));
         }
 
         // Title / Content
-        if (!empty($filters['content'])) {
+        if (!empty($filters) && !empty($filters->title)) {
             // TODO : escape search string
-            $qb->andWhere('(q.content LIKE "%:text%" OR q.title LIKE "%:text%")');
-            $qb->setParameter('text', $filters['content']);
+            $qb->andWhere('(q.content LIKE :text OR q.title LIKE :text)');
+            $qb->setParameter('text', '%'.$filters->title.'%');
         }
 
         // Dates
         // TODO : add date filters
 
         // Category
-        if (!empty($filters['category'])) {
+        /*if (!empty($filters['category'])) {
             $qb->andWhere('q.category = :category');
-            $qb->setParameter('type', $filters['category']);
-        }
+            $qb->setParameter('category', $filters['category']);
+        }*/
 
         // Exercise
-        if (!empty($filters['exercise'])) {
+        /*if (!empty($filters['exercise'])) {
             $qb
                 ->join('q.stepQuestions', 'sq')
                 ->join('sq.step', 's')
@@ -55,17 +55,19 @@ class QuestionRepository extends EntityRepository
                 ->andWhere('e.uuid = :exerciseId');
 
             $qb->setParameter('exerciseId', $filters['exercise']);
-        }
+        }*/
 
         // Model
-        if (!empty($filters['model'])) {
+        if (!empty($filters) && !empty($filters->model_only)) {
             $qb->andWhere('q.model = true');
         }
 
         // TODO : order query
         // TODO : add pagination
 
-        return $qb->getQuery()->getResult();
+        return $qb
+            ->getQuery()
+            ->getResult();
     }
 
     public function findUsedBy(Question $question)
@@ -76,6 +78,8 @@ class QuestionRepository extends EntityRepository
 
     /**
      * Returns all the questions linked to a given exercise.
+     *
+     * @deprecated this is not used
      *
      * @param Exercise $exercise
      *

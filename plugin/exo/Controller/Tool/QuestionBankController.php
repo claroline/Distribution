@@ -44,13 +44,8 @@ class QuestionBankController
      */
     public function openAction(User $user)
     {
-        $search = $this->questionManager->search($user);
-
         return [
-            'questions' => array_map(function ($question) {
-                return $this->questionManager->export($question, [Transfer::MINIMAL, Transfer::INCLUDE_ADMIN_META]);
-            }, $search['questions']),
-            'total' => $search['total'],
+            'initialSearch' => $this->questionManager->search($user)
         ];
     }
 }

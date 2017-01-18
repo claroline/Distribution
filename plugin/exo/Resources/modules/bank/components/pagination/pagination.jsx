@@ -105,7 +105,7 @@ export default class Pagination extends Component {
     }
 
     return (
-      <nav className="pagination-container" aria-label="Page navigation">
+      <nav className="pagination-container page-nav" aria-label="Page navigation">
         <ResultsPerPage
           pageSize={this.props.pageSize}
           handlePageSizeUpdate={this.props.handlePageSizeUpdate}

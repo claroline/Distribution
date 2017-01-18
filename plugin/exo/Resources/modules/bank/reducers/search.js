@@ -1,27 +1,21 @@
 import {makeReducer} from './../../utils/reducers'
 
 import {
-  SEARCH_ADD_FILTER,
-  SEARCH_REMOVE_FILTER,
-  SEARCH_CLEAR
+  SEARCH_CHANGE_FILTERS,
+  SEARCH_CLEAR_FILTERS
 } from './../actions/search'
 
-function addSearchFilter() {
-
+function changeFilters(state, action) {
+  return action.filters
 }
 
-function removeSearchFilter() {
-
+function clearFilters() {
+  return {}
 }
 
-function clearFilter() {
-
-}
-
-const searchReducer = makeReducer([], {
-  [SEARCH_ADD_FILTER]: addSearchFilter,
-  [SEARCH_REMOVE_FILTER]: removeSearchFilter,
-  [SEARCH_CLEAR]: clearFilter
+const searchReducer = makeReducer({}, {
+  [SEARCH_CHANGE_FILTERS]: changeFilters,
+  [SEARCH_CLEAR_FILTERS]: clearFilters
 })
 
 export default searchReducer
