@@ -14,6 +14,7 @@ import {reducers as quizReducers} from './reducers'
 import {reducers as editorReducers} from './editor/reducers'
 import {reducers as playerReducers} from './player/reducers'
 import {reducePapers} from './papers/reducer'
+import {reduceCorrection} from './correction/reducer'
 
 const middleware = [apiMiddleware, thunk]
 
@@ -41,7 +42,11 @@ export function makeReducer(editable) {
     paper: playerReducers.paper,
     answers: playerReducers.answers,
 
-    papers: reducePapers
+    papers: reducePapers,
+
+    questions: identity,
+    openAnswers: identity,
+    currentQuestion: reduceCorrection
   })
 }
 

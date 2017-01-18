@@ -16,13 +16,17 @@ export const VIEW_PLAYER = 'player'
 export const VIEW_EDITOR = 'editor'
 export const VIEW_PAPERS = 'papers'
 export const VIEW_PAPER = 'paper'
+export const VIEW_CORRECTION_QUESTIONS = 'correction_questions'
+export const VIEW_CORRECTION_ANSWERS = 'correction_answers'
 
 export const viewModes = [
   [VIEW_OVERVIEW, 'overview'],
   [VIEW_PLAYER, 'player'],
   [VIEW_EDITOR, 'editor'],
   [VIEW_PAPERS, 'papers'],
-  [VIEW_PAPER, 'paper']
+  [VIEW_PAPER, 'paper'],
+  [VIEW_CORRECTION_QUESTIONS, 'correction_questions'],
+  [VIEW_CORRECTION_ANSWERS, 'correction_answers']
 ]
 
 export const SHUFFLE_NEVER = 'never'

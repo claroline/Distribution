@@ -10,6 +10,8 @@ import {Player} from './../player/components/player.jsx'
 import {Editor} from './../editor/components/editor.jsx'
 import {Papers} from './../papers/components/papers.jsx'
 import {Paper} from './../papers/components/paper.jsx'
+import {Questions} from './../correction/components/questions.jsx'
+import {Answers} from './../correction/components/answers.jsx'
 import select from './../selectors'
 import {actions as editorActions} from './../editor/actions'
 import {actions} from './../actions'
@@ -18,7 +20,9 @@ import {
   VIEW_PLAYER,
   VIEW_EDITOR,
   VIEW_PAPERS,
-  VIEW_PAPER
+  VIEW_PAPER,
+  VIEW_CORRECTION_QUESTIONS,
+  VIEW_CORRECTION_ANSWERS
 } from './../enums'
 
 let Quiz = props =>
@@ -74,6 +78,10 @@ function viewComponent(view, props) {
       return <Papers {...props}/>
     case VIEW_PAPER:
       return <Paper {...props}/>
+    case VIEW_CORRECTION_QUESTIONS:
+      return <Questions {...props}/>
+    case VIEW_CORRECTION_ANSWERS:
+      return <Answers {...props}/>
     case VIEW_OVERVIEW:
     default:
       return <Overview {...props}/>
