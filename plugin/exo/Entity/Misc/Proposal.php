@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use UJM\ExoBundle\Entity\QuestionType\MatchQuestion;
+use UJM\ExoBundle\Entity\Misc\MatchAssociation;
 use UJM\ExoBundle\Library\Model\ContentTrait;
 use UJM\ExoBundle\Library\Model\OrderTrait;
 
@@ -40,11 +41,9 @@ class Proposal
     /**
      * @var ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="UJM\ExoBundle\Entity\Misc\Label")
-     * @ORM\JoinColumn(name="label_id", referencedColumnName="id")
-     * @ORM\JoinTable(name="ujm_proposal_label")
+     * @ORM\ManyToMany(targetEntity="UJM\ExoBundle\Entity\Misc\MatchAssociation", mappedBy="proposals")
      */
-    private $expectedLabels;
+    private $associations;
 
     /**
      * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\QuestionType\MatchQuestion", inversedBy="proposals")
@@ -58,7 +57,7 @@ class Proposal
     public function __construct()
     {
         $this->uuid = Uuid::uuid4()->toString();
-        $this->expectedLabels = new ArrayCollection();
+        $this->associations = new ArrayCollection();
     }
 
     /**
@@ -92,36 +91,38 @@ class Proposal
     }
 
     /**
-     * Get InteractionMatching.
+     * Get associations.
      *
      * @return ArrayCollection
      */
-    public function getExpectedLabels()
+    public function getAssociations()
     {
-        return $this->expectedLabels;
+        return $this->associations;
     }
 
     /**
-     * Set Label.
+     * Add an association.
      *
-     * @param Label $label
+     * @param MatchAssociation $association
      */
-    public function addExpectedLabel(Label $label)
+    public function addAssociation(MatchAssociation $association)
     {
-        if (!$this->expectedLabels->contains($label)) {
-            $this->expectedLabels->add($label);
+        if (!$this->associations->contains($association)) {
+            $this->associations->add($association);
+            $association->addProposal($this);
         }
     }
 
     /**
-     * Remove Label.
+     * Remove an association.
      *
-     * @param Label $label
+     * @param MatchAssociation $association
      */
-    public function removeExpectedLabel(Label $label)
+    public function removeAssociation(MatchAssociation $association)
     {
-        if ($this->expectedLabels->contains($label)) {
-            $this->expectedLabels->removeElement($label);
+        if ($this->associations->contains($association)) {
+            $this->associations->removeElement($association);
+            $association->removeProposal($this);
         }
     }
 
