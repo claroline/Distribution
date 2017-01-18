@@ -54,11 +54,10 @@ class MatchQuestion extends AbstractQuestion
     /**
      * @ORM\OneToMany(
      *     targetEntity="UJM\ExoBundle\Entity\Misc\Association",
-     *     mappedBy="interactionMatching",
+     *     mappedBy="question",
      *     cascade={"all"},
      *     orphanRemoval=true
      * )
-     * @ORM\OrderBy({"order" = "ASC"})
      *
      * @var ArrayCollection
      */
@@ -93,7 +92,7 @@ class MatchQuestion extends AbstractQuestion
     {
         if (!$this->associations->contains($association)) {
             $this->associations->add($association);
-            $association->setInteractionMatching($this);
+            $association->setQuestion($this);
         }
     }
 
