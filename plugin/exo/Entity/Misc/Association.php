@@ -3,6 +3,8 @@
 namespace UJM\ExoBundle\Entity\Misc;
 
 use Doctrine\ORM\Mapping as ORM;
+use UJM\ExoBundle\Entity\Misc\Label;
+use UJM\ExoBundle\Entity\Misc\Proposal;
 use UJM\ExoBundle\Entity\QuestionType\MatchQuestion;
 use UJM\ExoBundle\Library\Attempt\AnswerPartInterface;
 use UJM\ExoBundle\Library\Model\FeedbackTrait;
@@ -25,23 +27,27 @@ class Association implements AnswerPartInterface
      */
     private $id;
 
-    use ScoreTrait;
-
-    use FeedbackTrait;
-
     /**
      * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\QuestionType\MatchQuestion", inversedBy="associations")
-     * @ORM\JoinColumn(name="interaction_matching_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="match_question_id", referencedColumnName="id")
      */
     private $interactionMatching;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Misc\Label")
+     * @ORM\JoinColumn(name="label_id", referencedColumnName="id")
+     */
+    private $label;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Misc\Proposal")
+     * @ORM\JoinColumn(name="proposal_id", referencedColumnName="id")
+     */
+    private $proposal;
 
-    public function __construct()
-    {
-        $this->proposals = new ArrayCollection();
-        $this->labels = new ArrayCollection();
-    }
+    use ScoreTrait;
+
+    use FeedbackTrait;
 
     /**
      * Get id.
@@ -74,74 +80,42 @@ class Association implements AnswerPartInterface
     }
 
     /**
-     * Add label.
+     * Set label.
      *
      * @param Label $label
      */
-    public function addLabel(Label $label)
+    public function setLabel(Label $label)
     {
-        if (!$this->labels->contains($label)) {
-            $this->labels->add($label);
-            $label->addAssociation($this);
-        }
+        $this->label = $label;
     }
 
     /**
-     * Remove label.
+     * Get label.
      *
-     * @param Label $label
+     * @return Label
      */
-    public function removeLabel(Label $label)
+    public function getLabel()
     {
-        if ($this->labels->contains($label)) {
-            $this->labels->removeElement($label);
-            $label->removeAssociation($this);
-        }
+        return $this->label;
     }
 
     /**
-     * Get labels.
-     *
-     * @return ArrayCollection
-     */
-    public function getLabels()
-    {
-        return $this->labels;
-    }
-
-    /**
-     * Add proposal.
+     * Set proposal.
      *
      * @param Proposal $proposal
      */
-    public function addProposal(Proposal $proposal)
+    public function setProposal(Proposal $proposal)
     {
-        if (!$this->proposals->contains($proposal)) {
-            $this->proposals->add($proposal);
-            $proposal->addAssociation($this);
-        }
+        $this->proposal = $proposal;
     }
 
     /**
-     * Remove proposal.
+     * Get proposal.
      *
-     * @param Proposal $proposal
+     * @return Proposal
      */
-    public function removeProposal(Proposal $proposal)
+    public function getProposal()
     {
-        if ($this->proposals->contains($proposal)) {
-            $this->proposals->removeElement($proposal);
-            $proposal->removeAssociation($this);
-        }
-    }
-
-    /**
-     * Get proposals.
-     *
-     * @return ArrayCollection
-     */
-    public function getProposals()
-    {
-        return $this->proposals;
+        return $this->proposal;
     }
 }

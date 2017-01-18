@@ -102,7 +102,7 @@ class MatchQuestion extends AbstractQuestion
      *
      * @param Association $association
      */
-    public function removeLabel(Association $association)
+    public function removeAssociation(Association $association)
     {
         if ($this->associations->contains($association)) {
             $this->associations->removeElement($association);
