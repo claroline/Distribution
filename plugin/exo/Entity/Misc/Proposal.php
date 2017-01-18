@@ -6,7 +6,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use UJM\ExoBundle\Entity\QuestionType\MatchQuestion;
-use UJM\ExoBundle\Entity\Misc\MatchAssociation;
 use UJM\ExoBundle\Library\Model\ContentTrait;
 use UJM\ExoBundle\Library\Model\OrderTrait;
 
@@ -39,13 +38,6 @@ class Proposal
     use ContentTrait;
 
     /**
-     * @var ArrayCollection
-     *
-     * @ORM\ManyToMany(targetEntity="UJM\ExoBundle\Entity\Misc\MatchAssociation", mappedBy="proposals")
-     */
-    private $associations;
-
-    /**
      * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\QuestionType\MatchQuestion", inversedBy="proposals")
      * @ORM\JoinColumn(name="interaction_matching_id", referencedColumnName="id")
      */
@@ -57,7 +49,6 @@ class Proposal
     public function __construct()
     {
         $this->uuid = Uuid::uuid4()->toString();
-        $this->associations = new ArrayCollection();
     }
 
     /**
@@ -88,42 +79,6 @@ class Proposal
     public function setUuid($uuid)
     {
         $this->uuid = $uuid;
-    }
-
-    /**
-     * Get associations.
-     *
-     * @return ArrayCollection
-     */
-    public function getAssociations()
-    {
-        return $this->associations;
-    }
-
-    /**
-     * Add an association.
-     *
-     * @param MatchAssociation $association
-     */
-    public function addAssociation(MatchAssociation $association)
-    {
-        if (!$this->associations->contains($association)) {
-            $this->associations->add($association);
-            $association->addProposal($this);
-        }
-    }
-
-    /**
-     * Remove an association.
-     *
-     * @param MatchAssociation $association
-     */
-    public function removeAssociation(MatchAssociation $association)
-    {
-        if ($this->associations->contains($association)) {
-            $this->associations->removeElement($association);
-            $association->removeProposal($this);
-        }
     }
 
     /**

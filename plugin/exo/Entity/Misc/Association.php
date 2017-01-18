@@ -3,12 +3,8 @@
 namespace UJM\ExoBundle\Entity\Misc;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 use UJM\ExoBundle\Entity\QuestionType\MatchQuestion;
-use UJM\ExoBundle\Entity\Misc\Label;
-use UJM\ExoBundle\Entity\Misc\Proposal;
 use UJM\ExoBundle\Library\Attempt\AnswerPartInterface;
-use UJM\ExoBundle\Library\Model\ContentTrait;
 use UJM\ExoBundle\Library\Model\FeedbackTrait;
 use UJM\ExoBundle\Library\Model\ScoreTrait;
 
@@ -16,9 +12,9 @@ use UJM\ExoBundle\Library\Model\ScoreTrait;
  * Label.
  *
  * @ORM\Entity()
- * @ORM\Table(name="ujm_proposal_label")
+ * @ORM\Table(name="ujm_association")
  */
-class MatchAssociation implements AnswerPartInterface
+class Association implements AnswerPartInterface
 {
     /**
      * @var int
@@ -34,16 +30,12 @@ class MatchAssociation implements AnswerPartInterface
     use FeedbackTrait;
 
     /**
-     * @ORM\ManyToMany(targetEntity="UJM\ExoBundle\Entity\Misc\Label", inversedBy="associations")
-     * @ORM\JoinColumn(name="label_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\QuestionType\MatchQuestion", inversedBy="associations")
+     * @ORM\JoinColumn(name="interaction_matching_id", referencedColumnName="id")
      */
-    private $labels;
+    private $interactionMatching;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="UJM\ExoBundle\Entity\Misc\Proposal", inversedBy="associations")
-     * @ORM\JoinColumn(name="proposal_id", referencedColumnName="id")
-     */
-    private $proposals;
+
 
     public function __construct()
     {
@@ -59,6 +51,26 @@ class MatchAssociation implements AnswerPartInterface
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Get InteractionMatching.
+     *
+     * @return MatchQuestion
+     */
+    public function getInteractionMatching()
+    {
+        return $this->interactionMatching;
+    }
+
+    /**
+     * Set InteractionMatching.
+     *
+     * @param MatchQuestion $interactionMatching
+     */
+    public function setInteractionMatching(MatchQuestion $interactionMatching)
+    {
+        $this->interactionMatching = $interactionMatching;
     }
 
     /**

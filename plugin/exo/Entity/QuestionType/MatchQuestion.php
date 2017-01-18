@@ -4,6 +4,7 @@ namespace UJM\ExoBundle\Entity\QuestionType;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use UJM\ExoBundle\Entity\Misc\Association;
 use UJM\ExoBundle\Entity\Misc\Label;
 use UJM\ExoBundle\Entity\Misc\Proposal;
 use UJM\ExoBundle\Library\Model\PenaltyTrait;
@@ -51,12 +52,61 @@ class MatchQuestion extends AbstractQuestion
     private $proposals;
 
     /**
+     * @ORM\OneToMany(
+     *     targetEntity="UJM\ExoBundle\Entity\Misc\Association",
+     *     mappedBy="interactionMatching",
+     *     cascade={"all"},
+     *     orphanRemoval=true
+     * )
+     * @ORM\OrderBy({"order" = "ASC"})
+     *
+     * @var ArrayCollection
+     */
+    private $associations;
+
+    /**
      * MatchQuestion constructor.
      */
     public function __construct()
     {
         $this->labels = new ArrayCollection();
         $this->proposals = new ArrayCollection();
+        $this->associations = new ArrayCollection();
+    }
+
+    /**
+     * Gets associations.
+     *
+     * @return ArrayCollection
+     */
+    public function getAssociations()
+    {
+        return $this->associations;
+    }
+
+    /**
+     * Adds an association.
+     *
+     * @param Association $association
+     */
+    public function addAssociation(Association $association)
+    {
+        if (!$this->associations->contains($association)) {
+            $this->associations->add($association);
+            $association->setInteractionMatching($this);
+        }
+    }
+
+    /**
+     * Removes an association.
+     *
+     * @param Association $association
+     */
+    public function removeLabel(Association $association)
+    {
+        if ($this->associations->contains($association)) {
+            $this->associations->removeElement($association);
+        }
     }
 
     /**
