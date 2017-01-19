@@ -223,7 +223,7 @@ class MatchQuestionSerializer implements SerializerInterface
     {
         $associationsEntities = $matchQuestion->getAssociations()->toArray();
 
-        foreach ($solutions as $index => $solution) {
+        foreach ($solutions as $solution) {
             $association = null;
 
             // Search for an existing Proposal entity.
