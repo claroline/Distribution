@@ -157,8 +157,8 @@ class ApiController extends BaseController
         $notRepeatableLogTimeInSeconds = $this->container->getParameter(
             'non_repeatable_log_time_in_seconds'
         );
-
-        if ($now >= ($session->get($sessionViewCounterKey, $now) + $notRepeatableLogTimeInSeconds)) {
+        
+        if ($now >= ($session->get($sessionViewCounterKey) + $notRepeatableLogTimeInSeconds)) {
             $em = $this->getDoctrine()->getManager();
             $post->increaseViewCounter();
             $session->set($sessionViewCounterKey, $now);
