@@ -109,16 +109,17 @@ export class MatchPaper extends Component
     initJsPlumb(this.jsPlumbInstance)
     this.container = null
     this.handleConnectionClick = this.handleConnectionClick.bind(this)
+    this.handleWindowResize = this.handleWindowResize.bind(this)
   }
 
   drawAnswers(){
     if (this.state.key === 'first') {
       for (const answer of this.props.answer) {
-        const type = this.props.item.solutions.findIndex(solution => answer.firstId === solution.firstId && answer.secondId === solution.secondId) > -1 ? 'green' : 'red'
+        const solution = this.props.item.solutions.find(solution => answer.firstId === solution.firstId && answer.secondId === solution.secondId)
         const connection = this.jsPlumbInstance.connect({
           source: 'first_source_' + answer.firstId,
           target: 'first_target_' + answer.secondId,
-          type: type,
+          type: solution && solution.score > 0 ? 'green' : 'red',
           deleteEndpointsOnDetach:true
         })
 
@@ -163,7 +164,17 @@ export class MatchPaper extends Component
         current: solution ? solution : {firstId: firstId, secondId: secondId, score: 0}
       })
     }
+  }
 
+  handleWindowResize() {
+    //this.jsPlumbInstance.repaintEverything()
+    // can not use repaintEverything here (in the second tab it does not work... oO)
+    // this method works... most of the time
+    this.jsPlumbInstance.getConnections().forEach(conn => {
+      this.jsPlumbInstance.detach(conn)
+    })
+
+    this.drawAnswers()
   }
 
   // switch tab handler

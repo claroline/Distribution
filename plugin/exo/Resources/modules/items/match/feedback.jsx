@@ -101,11 +101,11 @@ export class MatchFeedback extends Component
 
   drawAnswers(){
     for (const answer of this.props.answer) {
-      const type = this.props.item.solutions.findIndex(solution => answer.firstId === solution.firstId && answer.secondId === solution.secondId) > -1 ? 'green' : 'red'
+      const solution = this.props.item.solutions.find(solution => answer.firstId === solution.firstId && answer.secondId === solution.secondId)
       const connection = this.jsPlumbInstance.connect({
         source: 'source_' + answer.firstId,
         target: 'target_' + answer.secondId,
-        type: type,
+        type: solution && solution.score > 0 ? 'green' : 'red',
         deleteEndpointsOnDetach:true
       })
 
