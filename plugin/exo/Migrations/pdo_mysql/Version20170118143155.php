@@ -6,7 +6,7 @@ use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
 /**
- * Auto-generated migration based on mapping information: modify it with caution
+ * Auto-generated migration based on mapping information: modify it with caution.
  *
  * Generation date: 2017/01/18 02:31:57
  */
@@ -40,7 +40,7 @@ class Version20170118143155 extends AbstractMigration
             ADD CONSTRAINT FK_2DD0DD0F33B92F39 FOREIGN KEY (label_id)
             REFERENCES ujm_label (id)
         ');
-        
+
         $this->addSql('
             ALTER TABLE ujm_association
             ADD CONSTRAINT FK_2DD0DD0FF4792058 FOREIGN KEY (proposal_id)
