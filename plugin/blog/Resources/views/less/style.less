@@ -339,9 +339,16 @@ ul.tag-cloud {
 }
 
 #icap_blog_options_form_tag_cloud {
-  label{font-weight: normal;}
+  label{
+      font-weight: normal;
 
-  label>span>span {color:#777;}
+      &>span {
+        &>span {
+            color:#777;
+        }
+
+      }
+  }
 }
 
 form#icap_blog_post_form {
