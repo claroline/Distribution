@@ -56,7 +56,7 @@ export const MatchLinkPopover = props =>
         {'fa-times text-danger' : props.solution.score <= 0 }
       )}>
       </div>
-      &nbsp;<label className="label popover-label">{props.solution.feedback}</label>
+      &nbsp;<label className="label popover-label" dangerouslySetInnerHTML={{__html: props.solution.feedback}}/>
   </Popover>
 
 
