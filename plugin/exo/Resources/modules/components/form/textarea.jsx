@@ -4,7 +4,7 @@ import {tex} from './../../utils/translate'
 import select from './utils/selection'
 
 // see https://github.com/lovasoa/react-contenteditable
-class ContentEditable extends Component {
+export class ContentEditable extends Component {
   constructor() {
     super()
     this.emitChange = this.emitChange.bind(this)
@@ -85,7 +85,14 @@ ContentEditable.propTypes = {
   title: T.string
 }
 
-class Tinymce extends Component {
+ContentEditable.defaultProps = {
+  title: 'editable-content',
+  onClick: () => {},
+  onSelect: () => {},
+  minRows: 1
+}
+
+export class Tinymce extends Component {
   constructor(props) {
     super(props)
     this.editor = null
@@ -226,5 +233,7 @@ Textarea.propTypes = {
 }
 
 Textarea.defaultProps = {
-  minRows: 2
+  minRows: 2,
+  onClick: () => {},
+  onSelect: () => {}
 }

@@ -10,15 +10,20 @@ const OPEN_HOLE = 'OPEN_HOLE'
 const UPDATE_HOLE = 'UPDATE_HOLE'
 const ADD_ANSWER = 'ADD_ANSWER'
 const UPDATE_ANSWER = 'UPDATE_ANSWER'
-//const REMOVE_HOLE = 'REMOVE_HOLE'
+const SAVE_HOLE = 'SAVE_HOLE'
+const REMOVE_HOLE = 'REMOVE_HOLE'
+const REMOVE_ANSWER = 'REMOVE_ANSWER'
 
 export const actions = {
   updateText: makeActionCreator(UPDATE_TEXT, 'text'),
   addHole: makeActionCreator(ADD_HOLE, 'word', 'startOffset', 'endOffset', 'offsetX', 'offsetY'),
-  openHole: makeActionCreator(OPEN_HOLE, 'holeId'),
+  openHole: makeActionCreator(OPEN_HOLE, 'holeId', 'offsetX', 'offsetY'),
   updateHole: makeActionCreator(UPDATE_HOLE, 'holeId', 'parameter', 'value'),
   addAnswer: makeActionCreator(ADD_ANSWER, 'holeId'),
-  updateAnswer: makeActionCreator(UPDATE_ANSWER, 'holeId', 'parameter', 'oldText', 'case', 'value')
+  updateAnswer: makeActionCreator(UPDATE_ANSWER, 'holeId', 'parameter', 'oldText', 'case', 'value'),
+  saveHole: makeActionCreator(SAVE_HOLE),
+  removeHole: makeActionCreator(REMOVE_HOLE, 'holeId'),
+  removeAnswer: makeActionCreator(REMOVE_ANSWER, 'text', 'caseSensitive')
 }
 
 export default {
@@ -46,27 +51,32 @@ function reduce(item = {}, action) {
     }
     case UPDATE_TEXT: {
       const newItem = cloneDeep(item)
-      newItem.text = action.text
       newItem._text = action.text
+      newItem.text = utils.getTextWithPlacerHoldersFromHtml(newItem._text)
+
       return newItem
     }
     case OPEN_HOLE: {
       const newItem = cloneDeep(item)
+      const hole = getHoleFromId(newItem, action.holeId)
 
       newItem._popover = {
         offsetX: action.offsetX,
         offsetY: action.offsetY,
-        holeId: action.holeId
+        startOffset: action.startOffset,
+        endOffset: action.endOffset,
+        holeId: action.holeId,
+        hole: hole,
+        solution: getSolutionFromHole(newItem, hole)
       }
 
       return newItem
     }
     case UPDATE_ANSWER: {
       const newItem = cloneDeep(item)
-      const hole = getHoleFromId(newItem, action.holeId)
-      const answer = getAnswerFromHole(hole, action.oldText, action.case)
+      const answer = newItem._popover.solution.answers.find(answer => answer.text === action.oldText && answer.caseSensitive === action.case)
 
-      if (['text', 'caseSensitive', 'feedback', 'score'].indexOf(action.parameter)) {
+      if (['text', 'caseSensitive', 'feedback', 'score'].indexOf(action.parameter) > -1 && answer) {
         answer[action.parameter] = action.value
       } else {
         throw `${action.parameter} is not a valid answer attribute`
@@ -76,9 +86,8 @@ function reduce(item = {}, action) {
     }
     case ADD_ANSWER: {
       const newItem = cloneDeep(item)
-      const hole = getHoleFromId(newItem, action.holeId)
-      const solution = getHoleSolution(newItem, hole)
-      solution.answers.push({
+
+      newItem._popover.solution.answers.push({
         text: '',
         caseSensitive: false,
         feedback: '',
@@ -89,19 +98,42 @@ function reduce(item = {}, action) {
     }
     case UPDATE_HOLE: {
       const newItem = cloneDeep(item)
-      const hole = getHoleFromId(item, action.holeId)
 
-      if (['size', 'multiple'].indexOf(action.parameter)) {
-        hole[action.parameter] = action.value
+      if (['size', 'multiple'].indexOf(action.parameter) > -1) {
+        newItem._popover.hole[action.parameter] = action.value
       } else {
         throw `${action.parameter} is not a valid hole attribute`
       }
 
       return newItem
     }
+    case SAVE_HOLE: {
+      const newItem = cloneDeep(item)
+
+      //update holeId
+      const currentHole = newItem.holes.find(hole => hole.id === item._popover.hole.id)
+
+      if (currentHole) {
+        //update currentHole
+        // /currentHole
+      } else {
+        newItem.holes.push(item._popover.hole)
+        newItem.solutions.push(item._popover.solution)
+        newItem._text = utils.replaceBetween(
+          newItem._text,
+          newItem._popover.startOffset,
+          newItem._popover.endOffset,
+          utils.makeTinyHtml(item._popover.solution)
+        )
+
+        newItem.text = utils.getTextWithPlacerHoldersFromHtml(newItem._text)
+      }
+
+      delete newItem._popover
+
+      return newItem
+    }
     case ADD_HOLE: {
-      let text = item.text
-      const _text = item._text
       const newItem = cloneDeep(item)
 
       const hole = {
@@ -121,42 +153,50 @@ function reduce(item = {}, action) {
         }]
       }
 
-      newItem._text = utils.replaceBetween(
-        _text,
-        action.startOffset,
-        action.endOffset,
-        utils.makeTinyHtml(solution)
-      )
-
-      newItem.text = text
-      newItem.solutions.push(solution)
-      newItem.holes.push(hole)
-
       newItem._popover = {
         offsetX: action.offsetX,
         offsetY: action.offsetY,
-        holeId: action.holeId
+        startOffset: action.startOffset,
+        endOffset: action.endOffset,
+        holeId: action.holeId,
+        hole,
+        solution
       }
 
-      newItem._openedHole = hole
+      return newItem
+    }
+    case REMOVE_HOLE: {
+      //step1: remove from text
+      alert('remove')
+      //step2: remove hole from list
+      const newItem = cloneDeep(item)
+      const holes = newItem.holes
+      holes.splice(holes.findIndex(hole => hole.id === action.holeId), 1)
+
+      const regex = new RegExp(`(\\[\\[${action.holeId}\\]\\])`, 'gi')
+      newItem.text = newItem.text.replace(regex, '')
+
+      newItem._text = utils.setEditorHtml(newItem.text, newItem.solutions)
+
+      return newItem
+    }
+    case REMOVE_ANSWER: {
+      const newItem = cloneDeep(item)
+      const answers = newItem._popover.solution.answers
+      answers.splice(answers.findIndex(answer => answer.text === action.text && answer.caseSensitive === action.caseSensitive), 1)
 
       return newItem
     }
   }
-
-  return item
-}
-
-function getHoleSolution(item, hole) {
-  return item.solutions.find(solution => solution.holeId === hole.id)
 }
 
 function getHoleFromId(item, holeId) {
   return item.holes.find(hole => hole.id === holeId)
 }
 
-function getAnswerFromHole(hole, oldText, caseSensitive) {
-  return hole.answers.find(answer => answer.text === oldText && answer.caseSensitive === caseSensitive)
+function getSolutionFromHole(item, hole)
+{
+  return item.solutions.find(solution => solution.holeId === hole.id)
 }
 
 function validate() {

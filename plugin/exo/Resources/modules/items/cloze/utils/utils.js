@@ -1,3 +1,5 @@
+import $ from 'jquery'
+
 export const utils = {}
 
 utils.setEditorHtml = (text, solutions) => {
@@ -12,30 +14,43 @@ utils.setEditorHtml = (text, solutions) => {
 utils.makeTinyHtml = (solution) => {
   //if one solutions
   let input = `
-    <input
-      id=${solution.holeId}
-      type="text"
-    >
-    </input>
+    <span class="cloze-input" data-hole-id="${solution.holeId}">
+      <input
+        class="hole-input"
+        data-hole-id="${solution.holeId}"
+        type="text"
+      >
+      </input>
+      ${getEditButtons(solution)}
+    </span>
   `
-  //if many solutions
-
-  input += getEditButtons(solution)
-
   return input
+}
+
+utils.getTextWithPlacerHoldersFromHtml = (text) =>
+{
+  const tmp = document.createElement('div')
+  tmp.innerHTML = text
+
+  $(tmp).find('.cloze-input').each(function () {
+    let id = $(this).attr('data-hole-id')
+    $(this).replaceWith(`[[${id}]]`)
+  })
+
+  return $(tmp).html()
 }
 
 function getEditButtons(solution) {
   return `
     <button
       class="edit-hole-btn"
-      id="${solution.holeId}"
+      data-hole-id="${solution.holeId}"
     >
       edit
     </button>
     <button
       class="delete-hole-btn"
-      id="${solution.holeId}"
+      data-hole-id="${solution.holeId}"
     >
       delete
     </button>

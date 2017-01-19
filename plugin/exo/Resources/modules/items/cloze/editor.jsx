@@ -1,6 +1,6 @@
 import React, {Component, PropTypes as T} from 'react'
 import {t, tex} from './../../utils/translate'
-import {Textarea} from './../../components/form/textarea.jsx'
+import {ContentEditable, Textarea} from './../../components/form/textarea.jsx'
 import {FormGroup} from './../../components/form/form-group.jsx'
 import {actions} from './editor'
 import {TooltipButton} from './../../components/form/tooltip-button.jsx'
@@ -13,7 +13,12 @@ class HoleForm extends Component {
   }
 
   getHoleAnswers(hole) {
-    return this.props.item.solutions.filter(solution => solution.holeId === hole.id).map(solution => solution.answers)
+    //http://stackoverflow.com/questions/10865025/merge-flatten-an-array-of-arrays-in-javascript
+    //concat is here to flatten the array
+    return [].concat.apply(
+      [],
+      this.props.item.solutions.filter(solution => solution.holeId === hole.id).map(solution => solution.answers)
+    )
   }
 
   render() {
@@ -30,24 +35,27 @@ class HoleForm extends Component {
               controlId={`item-${this.props.hole.id}-fixedSuccess`}
               label={tex('size')}
             >
-            <input
-              id={`item-${this.props.hole.id}-size`}
-              type="number"
-              min="0"
-              value={this.props.hole.size}
-              className="input-sm form-control"
-              onChange={e => this.props.onChange(
-                actions.updateHole(this.props.hole.id, 'size', e.target.value)
-              )}
-            />
+              <input
+                id={`item-${this.props.hole.id}-size`}
+                type="number"
+                min="0"
+                value={this.props.hole.size}
+                className="input-sm form-control"
+                onChange={e => this.props.onChange(
+                  actions.updateHole(this.props.hole.id, 'size', e.target.value)
+                )}
+              />
             </FormGroup>
             <div className="right-controls">
               <input
-                id={`item-${this.props.hole.id}-multiple`}
                 type="checkbox"
                 checked={this.props.hole.multiple}
                 onChange={e => this.props.onChange(
-                  actions.updateHole(this.props.hole.id, 'multiple', e.target.value)
+                  actions.updateHole(
+                    this.props.hole.id,
+                    'multiple',
+                    e.target.checked
+                  )
                 )}
               />
             </div>
@@ -59,21 +67,22 @@ class HoleForm extends Component {
                   <td> Score </td>
                   <td></td>
                 </tr>
-                  {this.getHoleAnswers(this.props.hole).map(answer => {
+                  {this.props.solution.answers.map((answer, index) => {
                     return (
                       <tr key={Math.random()}>
                         <td>
-                          <input
+                          <ContentEditable
+                            id={`item-${index}-answer`}
                             className="form-control input-sm"
                             type="text"
-                            value={answer.text}
-                            onChange={e => this.props.onChange(
+                            content={answer.text}
+                            onChange={text => this.props.onChange(
                               actions.updateAnswer(
                                 this.props.hole.id,
                                 'text',
                                 answer.text,
                                 answer.caseSensitive,
-                                e.target.value
+                                text
                               )
                             )}
                           />
@@ -88,7 +97,7 @@ class HoleForm extends Component {
                                  'caseSensitive',
                                  answer.text,
                                  answer.caseSensitive,
-                                 e.target.value
+                                 e.target.checked
                                )
                              )}
                            />
@@ -98,15 +107,28 @@ class HoleForm extends Component {
                             className="form-control input-sm"
                             type="number"
                             value={answer.score}
+                            onChange={e => this.props.onChange(
+                              actions.updateAnswer(
+                                this.props.hole.id,
+                                'score',
+                                answer.text,
+                                answer.caseSensitive,
+                                e.target.checked
+                              )
+                            )}
                           />
                         </td>
                         <td>
-                           <TooltipButton
-                              id={`answer-${answer.text}-feedback-toggle`}
-                              className="fa fa-comments-o"
-                              title={tex('choice_feedback_info')}
-                              onClick={() => this.setState({showFeedback: !this.state.showFeedback})}
+                          {index > 0 &&
+                            <TooltipButton
+                              id={`answer-${index}-delete`}
+                              className="fa fa-trash-o"
+                              title={t('delete')}
+                              onClick={() => this.props.onChange(
+                                actions.removeAnswer(answer.text, answer.caseSensitive)
+                              )}
                             />
+                          }
                         </td>
                       </tr>
                     )}
@@ -117,16 +139,23 @@ class HoleForm extends Component {
             {this.state.showFeedback &&
               <div className="feedback-container">
                 <Textarea
-                  id={`choice-${this.props.id}-feedback`}
+                  id={`choice-${this.props.hole.id}-feedback`}
                   title={tex('feedback')}
                   onChange={text => this.props.onChange(
-                    actions.updateAnswer(this.props.id, 'feedback', text)
+                    actions.updateAnswer(this.props.hole.id, 'feedback', text)
                   )}
                 />
               </div>
             }
-            <button className="btn btn-primary"> Keyword </button>
-            <button className="btn btn-primary"> Save </button>
+            <button
+              className="btn btn-primary"
+              onClick={() => this.props.onChange(
+                actions.addAnswer(this.props.hole.id))}
+            >
+              Keyword
+            </button>
+            <button className="btn btn-primary" onClick={() =>
+                this.props.onChange(actions.saveHole())}> Save </button>
           </div>
         </Popover>
       )
@@ -134,9 +163,9 @@ class HoleForm extends Component {
 }
 
 HoleForm.propTypes = {
-  id: T.number.isRequired,
   item: T.object.isRequired,
   hole: T.object.isRequired,
+  solution: T.object.isRequired,
   onChange: T.func.isRequired,
   offsetX: T.number.isRequired,
   offsetY: T.number.isRequired
@@ -160,17 +189,22 @@ export class Cloze extends Component {
     this.offsetY = offsetY
   }
 
-  onOpenHole(el) {
-    const isHole = el.className === ('edit-hole-btn' || 'delete-hole-btn')
-
-    if (isHole) {
-      const holeId = el.id
-      this.props.onChange(actions.openHole(el.offsetLeft, el.offsetTop, holeId))
+  onHoleClick(el) {
+    if (el.className === 'edit-hole-btn') {
+      this.offsetX = el.getBoundingClientRect().right
+      this.offsetY = el.getBoundingClientRect().bottom
+      this.props.onChange(actions.openHole(
+        el.dataset.holeId,
+        this.startSelectOffset,
+        this.endSelectOffset,
+        this.offsetX,
+        this.offsetY
+      ))
+    } else {
+      if (el.className === 'delete-hole-btn') {
+        this.props.onChange(actions.removeHole(el.dataset.holeId))
+      }
     }
-  }
-
-  closePopover(){
-    //this is what we do here
   }
 
   addHole() {
@@ -185,7 +219,7 @@ export class Cloze extends Component {
             id={this.props.item.id}
             onChange={(value) => this.props.onChange(actions.updateText(value))}
             onSelect={this.onSelect.bind(this)}
-            onClick={this.onOpenHole.bind(this)}
+            onClick={this.onHoleClick.bind(this)}
             content={this.props.item._text}
           />
         </FormGroup>
@@ -196,7 +230,8 @@ export class Cloze extends Component {
               item={this.props.item}
               offsetX={this.props.item._popover.offsetX}
               offsetY={this.props.item._popover.offsetY}
-              hole={this.props.item._openedHole}
+              hole={this.props.item._popover.hole}
+              solution={this.props.item._popover.solution}
               onChange={this.props.onChange}
             />
           </div>
@@ -213,9 +248,10 @@ Cloze.propTypes = {
     _text: T.string.isRequired,
     _popover: T.shape({
       offsetX: T.number.isRequired,
-      offsetY: T.number.isRequired
-    }),
-    _openedHole: T.object
+      offsetY: T.number.isRequired,
+      hole: T.object,
+      solution: T.object
+    })
   }),
   onChange: T.func.isRequired
 }
