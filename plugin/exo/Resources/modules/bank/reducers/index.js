@@ -8,7 +8,7 @@ import paginationReducer   from './pagination'
 import searchReducer       from './search'
 import totalResultsReducer from './total-results'
 
-const bankApp = combineReducers({
+export const bankApp = combineReducers({
   modal: reduceModal,
   questions: questionsReducer,
   selected: selectReducer,
@@ -17,5 +17,3 @@ const bankApp = combineReducers({
   search: searchReducer,
   totalResults: totalResultsReducer
 })
-
-export default bankApp

@@ -107,27 +107,30 @@ class QuestionManager
      *
      * @param User      $user
      * @param \stdClass $filters
-     * @param int       $page
-     * @param int       $number
      * @param array     $orderBy
+     * @param int       $number  - the number of questions to return
+     * @param int       $page    - the offset at which we will start searching
      *
      * @return \stdClass
      */
-    public function search(User $user, \stdClass $filters = null, $page = 0, $number = -1, array $orderBy = [])
+    public function search(User $user, \stdClass $filters = null, array $orderBy = ['title' => 1], $number = -1, $page = 0)
     {
-        $results = $this->repository->search($user, $filters, $page, $number, $orderBy);
+        $results = $this->repository->search($user, $filters, $orderBy, $number, $page);
 
+        // Build search result object
         $searchResults = new \stdClass();
         $searchResults->totalResults = count($results);
         $searchResults->questions = array_map(function (Question $question) {
             return $this->export($question, [Transfer::INCLUDE_ADMIN_META]);
         }, $results);
 
-        $pagination = new \stdClass();
-        $pagination->current = $page;
-        $pagination->pageSize = $number;
+        // Add pagination
+        $searchResults->pagination = new \stdClass();
+        $searchResults->pagination->current = $page;
+        $searchResults->pagination->pageSize = $number;
 
-        $searchResults->pagination = $pagination;
+        // Add sorting
+        $searchResults->sortBy = new \stdClass();
 
         return $searchResults;
     }

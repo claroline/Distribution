@@ -9,7 +9,10 @@ import {MODAL_ADD_ITEM, AddItemModal} from './../quiz/editor/components/add-item
 import {MODAL_SEARCH, SearchModal} from './components/modal/search.jsx'
 import {Bank} from './components/bank.jsx'
 
+// Load question types
 registerDefaultItemTypes()
+
+// Register needed modals
 registerModalType(MODAL_SEARCH, SearchModal)
 registerModalType(MODAL_ADD_ITEM, AddItemModal)
 

@@ -9,10 +9,10 @@ import {actions as paginationActions} from './../actions/pagination'
 import {actions as searchActions} from './../actions/search'
 import {select as paginationSelect} from './../selectors/pagination'
 
-import VisibleQuestions from './../containers/visible-questions.jsx'
-import Pagination from './pagination/pagination.jsx'
 import PageHeader from './../../components/layout/page-header.jsx'
 import PageActions from './../../components/layout/page-actions.jsx'
+import VisibleQuestions from './../containers/visible-questions.jsx'
+import {Pagination} from './pagination/pagination.jsx'
 
 import {MODAL_SEARCH} from './modal/search.jsx'
 // TODO : do not load from editor
@@ -81,9 +81,8 @@ const Bank = (props) => {
 }
 
 Bank.propTypes = {
-  searchFilters: T.shape({
-
-  }),
+  totalResults: T.number.isRequired,
+  searchFilters: T.object.isRequired,
   modal: T.shape({
     type: T.string,
     fading: T.bool.isRequired,
@@ -127,7 +126,7 @@ function mapDispatchToProps(dispatch) {
     openAddModal() {
       dispatch(showModal(MODAL_ADD_ITEM, {
         title: tex('add_question_from_new'),
-        handleSelect: (type) => dispatch(fadeModal())
+        handleSelect: () => dispatch(fadeModal())
       }))
     },
     handlePagePrevious() {

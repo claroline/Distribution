@@ -11,6 +11,10 @@ const getPageSize = createSelector(
 const countPages = createSelector(
   [getTotalResults, getPageSize],
   (totalResults, pageSize) => {
+    if (-1 === pageSize) {
+      return 1
+    }
+
     const rest = totalResults % pageSize
     const nbPages = (totalResults - rest) / pageSize
 

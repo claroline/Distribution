@@ -12,7 +12,20 @@ use UJM\ExoBundle\Entity\Question\Question;
  */
 class QuestionRepository extends EntityRepository
 {
-    public function search(User $user, \stdClass $filters = null, $page = 0, $number = -1, array $orderBy = [])
+    /**
+     * Search questions.
+     *
+     * @todo add date filters
+     *
+     * @param User      $user
+     * @param \stdClass $filters
+     * @param array     $orderBy
+     * @param int       $number - the number of results to get
+     * @param int       $page - the page to start (db offset is found with $number * $page)
+     *
+     * @return array
+     */
+    public function search(User $user, \stdClass $filters = null, array $orderBy = [], $number = -1, $page = 0)
     {
         $qb = $this->createQueryBuilder('q');
 
@@ -26,36 +39,34 @@ class QuestionRepository extends EntityRepository
 
         // Type
         if (!empty($filters) && !empty($filters->types)) {
-            $qb->andWhere('q.mimeType IN (":type")');
-            $qb->setParameter('type', implode('", "', $filters->types));
+            $qb
+                ->andWhere('q.mimeType IN (:types)')
+                ->setParameter('types', $filters->types);
         }
 
         // Title / Content
         if (!empty($filters) && !empty($filters->title)) {
-            // TODO : escape search string
-            $qb->andWhere('(q.content LIKE :text OR q.title LIKE :text)');
-            $qb->setParameter('text', '%'.$filters->title.'%');
+            $qb
+                ->andWhere('(q.content LIKE :text OR q.title LIKE :text)')
+                ->setParameter('text', '%'.addcslashes($filters->title, "%_").'%');
         }
 
-        // Dates
-        // TODO : add date filters
+        // Categories
+        if (!empty($filters) && !empty($filters->categories)) {
+            $qb->andWhere('q.category IN (:categories)');
+            $qb->setParameter('categories', $filters->categories);
+        }
 
-        // Category
-        /*if (!empty($filters['category'])) {
-            $qb->andWhere('q.category = :category');
-            $qb->setParameter('category', $filters['category']);
-        }*/
-
-        // Exercise
-        /*if (!empty($filters['exercise'])) {
+        // Exercises
+        if (!empty($filters) && !empty($filters->exercises)) {
             $qb
                 ->join('q.stepQuestions', 'sq')
                 ->join('sq.step', 's')
                 ->join('s.exercise', 'e')
-                ->andWhere('e.uuid = :exerciseId');
+                ->andWhere('e.uuid IN (:exercises)');
 
-            $qb->setParameter('exerciseId', $filters['exercise']);
-        }*/
+            $qb->setParameter('exercises', $filters->exercises);
+        }
 
         // Model
         if (!empty($filters) && !empty($filters->model_only)) {
@@ -63,7 +74,16 @@ class QuestionRepository extends EntityRepository
         }
 
         // TODO : order query
-        // TODO : add pagination
+        if (!empty($orderBy)) {
+            /*$qb->orderBy('u.name', 'ASC');*/
+        }
+
+        if (-1 !== $number) {
+            // We don't want to load the full list
+            $qb
+                ->setFirstResult($page * $number)
+                ->setMaxResults($number);
+        }
 
         return $qb
             ->getQuery()

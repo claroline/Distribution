@@ -7,7 +7,7 @@ import {
 } from 'redux'
 import thunk from 'redux-thunk'
 import {apiMiddleware} from './../api/middleware'
-import bankApp from './reducers/index'
+import {bankApp} from './reducers/index'
 
 const middleware = [apiMiddleware, thunk]
 

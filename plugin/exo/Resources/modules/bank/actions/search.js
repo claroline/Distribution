@@ -5,7 +5,6 @@ import {fadeModal} from './../../modal/actions'
 import {actions as questionActions} from './questions'
 import {actions as totalResultsActions} from './total-results'
 
-
 export const SEARCH_CLEAR_FILTERS  = 'SEARCH_CLEAR_FILTERS'
 export const SEARCH_CHANGE_FILTERS = 'SEARCH_CHANGE_FILTERS'
 
@@ -34,6 +33,8 @@ actions.fetchQuestions = (filters, pagination = {}, sortBy = {}) => ({
   }
 })
 
+actions.changeFilters = makeActionCreator(SEARCH_CHANGE_FILTERS, 'filters')
+
 actions.search = (filters, pagination = {}, sortBy = {}) => {
   return (dispatch) => {
     // Close search modal
@@ -47,5 +48,15 @@ actions.search = (filters, pagination = {}, sortBy = {}) => {
   }
 }
 
-actions.clearFilters = makeActionCreator(SEARCH_CLEAR_FILTERS)
-actions.changeFilters = makeActionCreator(SEARCH_CHANGE_FILTERS, 'filters')
+actions.clearFilters = (pagination = {}, sortBy = {}) => {
+  return (dispatch) => {
+    // Close search modal
+    dispatch(fadeModal())
+
+    // Update filters
+    dispatch(actions.changeFilters({}))
+
+    // Fetch new questions list
+    return dispatch(actions.fetchQuestions({}, pagination, sortBy))
+  }
+}
