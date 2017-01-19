@@ -159,7 +159,7 @@ class Question
      */
     public function __construct()
     {
-        $this->uuid = Uuid::uuid4();
+        $this->uuid = Uuid::uuid4()->toString();
         $this->hints = new ArrayCollection();
         $this->objects = new ArrayCollection();
         $this->resources = new ArrayCollection();

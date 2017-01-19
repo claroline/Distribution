@@ -404,6 +404,7 @@ remove_advanced_edition: Édition simple
 remove_question_confirm_message:  Êtes-vous sûr de vouloir supprimer cette question ?
 remove_step_confirm_message:  Êtes-vous sûr de vouloir supprimer cette étape ?
 request_error: Échec de la requête
+request_error_auth_blocked: Vous devez être connecté(e) pour effectuer cette action mais votre navigateur bloque l'affichage de la fenêtre pop-up permettant de vous authentifier. Veuillez désactiver cette fonctionnalité pour ce site et essayer à nouveau.
 request_error_desc_401: Vous devez être connecté(e) pour effectuer cette action.
 request_error_desc_403: Vous n'êtes pas autorisé(e) à effectuer cette action.
 request_error_desc_422: Les données soumises ont été rejetées par le serveur. Veuillez signaler cette erreur à l'administrateur de votre plateforme.

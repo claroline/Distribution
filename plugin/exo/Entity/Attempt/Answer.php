@@ -2,9 +2,7 @@
 
 namespace UJM\ExoBundle\Entity\Attempt;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use UJM\ExoBundle\Entity\Question\Hint;
 use UJM\ExoBundle\Entity\Question\Question;
 
 /**
@@ -59,16 +57,11 @@ class Answer
     /**
      * The list of hints used to answer the question.
      *
-     * @var ArrayCollection
+     * @ORM\Column(name="used_hints", type="simple_array", nullable=true)
      *
-     * @ORM\ManyToMany(targetEntity="UJM\ExoBundle\Entity\Question\Hint")
-     * @ORM\JoinTable(
-     *     name="ujm_answer_hints",
-     *     joinColumns={@ORM\JoinColumn(name="answer_id", referencedColumnName="id")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="hint_id", referencedColumnName="id", unique=true)}
-     * )
+     * @var array
      */
-    private $usedHints;
+    private $usedHints = [];
 
     /**
      * @var Paper
@@ -79,22 +72,13 @@ class Answer
     private $paper;
 
     /**
-     * The question that is answered.
+     * The id of the question that is answered.
      *
      * @var Question
      *
-     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Question\Question")
-     * @ORM\JoinColumn(onDelete="SET NULL")
+     * @ORM\Column(name="question_id", type="string", length=36)
      */
-    private $question;
-
-    /**
-     * Answer constructor.
-     */
-    public function __construct()
-    {
-        $this->usedHints = new ArrayCollection();
-    }
+    private $questionId;
 
     /**
      * @return int
@@ -183,7 +167,7 @@ class Answer
     /**
      * Gets used hints.
      *
-     * @return ArrayCollection
+     * @return array
      */
     public function getUsedHints()
     {
@@ -193,24 +177,25 @@ class Answer
     /**
      * Adds an Hint.
      *
-     * @param Hint $hint
+     * @param string $hintId
      */
-    public function addUsedHint(Hint $hint)
+    public function addUsedHint($hintId)
     {
-        if (!$this->usedHints->contains($hint)) {
-            $this->usedHints->add($hint);
+        if (!in_array($hintId, $this->usedHints)) {
+            $this->usedHints[] = $hintId;
         }
     }
 
     /**
      * Removes an Hint.
      *
-     * @param Hint $hint
+     * @param string $hintId
      */
-    public function removeUsedHint(Hint $hint)
+    public function removeUsedHint($hintId)
     {
-        if ($this->usedHints->contains($hint)) {
-            $this->usedHints->removeElement($hint);
+        $pos = array_search($hintId, $this->usedHints);
+        if (false !== $pos) {
+            array_splice($this->usedHints, $pos, 1);
         }
     }
 
@@ -231,18 +216,18 @@ class Answer
     }
 
     /**
-     * @return Question
+     * @return string
      */
-    public function getQuestion()
+    public function getQuestionId()
     {
-        return $this->question;
+        return $this->questionId;
     }
 
     /**
-     * @param Question $question
+     * @param string $questionId
      */
-    public function setQuestion(Question $question)
+    public function setQuestionId($questionId)
     {
-        $this->question = $question;
+        $this->questionId = $questionId;
     }
 }

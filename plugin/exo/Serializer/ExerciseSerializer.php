@@ -59,11 +59,9 @@ class ExerciseSerializer implements SerializerInterface
      */
     public function serialize($exercise, array $options = [])
     {
-        $node = $exercise->getResourceNode();
-
         $exerciseData = new \stdClass();
         $exerciseData->id = $exercise->getUuid();
-        $exerciseData->title = $node->getName();
+        $exerciseData->title = $exercise->getTitle();
         $exerciseData->meta = $this->serializeMetadata($exercise, $options);
 
         if (!in_array(Transfer::MINIMAL, $options)) {
@@ -97,11 +95,7 @@ class ExerciseSerializer implements SerializerInterface
             $exercise->setUuid($data->id);
         }
 
-        // Update ResourceNode
-        $node = $exercise->getResourceNode();
-        if (!empty($node)) {
-            $node->setName($data->title);
-        }
+        $exercise->setTitle($data->title);
 
         if (isset($data->description)) {
             $exercise->setDescription($data->description);

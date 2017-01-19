@@ -38,11 +38,11 @@ class SetAnswerValidator extends JsonSchemaValidator
         $errors = [];
 
         $proposalIds = array_map(function (Proposal $proposal) {
-            return (string) $proposal->getId();
+            return $proposal->getUuid();
         }, $question->getProposals()->toArray());
 
         $labelIds = array_map(function (Label $label) {
-            return (string) $label->getId();
+            return $label->getUuid();
         }, $question->getLabels()->toArray());
 
         foreach ($answerData as $answer) {

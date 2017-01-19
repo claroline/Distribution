@@ -63,6 +63,7 @@ class Persister
     public function qcmChoice($text, $order, $score)
     {
         $choice = new Choice();
+        $choice->setUuid(uniqid('', true));
         $choice->setData($text);
         $choice->setOrder($order);
         $choice->setScore($score);
@@ -133,6 +134,7 @@ class Persister
         $label->setFeedback('feedback...');
         $label->setData($text);
         $label->setScore($score);
+        $label->setUuid(uniqid('', true));
         $this->om->persist($label);
 
         return $label;
@@ -142,6 +144,7 @@ class Persister
     {
         $proposal = new Proposal();
         $proposal->setData($text);
+        $proposal->setUuid(uniqid('', true));
         if ($label !== null) {
             $proposal->addExpectedLabel($label);
         }
@@ -335,6 +338,7 @@ class Persister
     {
         $hint = new Hint();
         $hint->setData($text);
+        $hint->setUuid(uniqid('', true));
         $hint->setPenalty($penalty);
 
         $question->addHint($hint);

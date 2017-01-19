@@ -3,12 +3,14 @@
 namespace UJM\ExoBundle\Entity\Misc;
 
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 use UJM\ExoBundle\Entity\QuestionType\ChoiceQuestion;
 use UJM\ExoBundle\Library\Attempt\AnswerPartInterface;
 use UJM\ExoBundle\Library\Model\ContentTrait;
 use UJM\ExoBundle\Library\Model\FeedbackTrait;
 use UJM\ExoBundle\Library\Model\OrderTrait;
 use UJM\ExoBundle\Library\Model\ScoreTrait;
+use UJM\ExoBundle\Library\Model\UuidTrait;
 
 /**
  * Choice.
@@ -26,6 +28,8 @@ class Choice implements AnswerPartInterface
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+
+    use UuidTrait;
 
     use OrderTrait;
 
@@ -49,6 +53,11 @@ class Choice implements AnswerPartInterface
      * @ORM\JoinColumn(name="interaction_qcm_id", referencedColumnName="id")
      */
     private $interactionQCM;
+
+    public function __construct()
+    {
+        $this->uuid = Uuid::uuid4()->toString();
+    }
 
     /**
      * @return int
