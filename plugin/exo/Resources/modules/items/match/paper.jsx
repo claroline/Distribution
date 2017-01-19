@@ -108,7 +108,6 @@ export class MatchPaper extends Component
     this.jsPlumbInstance = jsPlumb.getInstance()
     initJsPlumb(this.jsPlumbInstance)
     this.container = null
-    this.handleWindowResize = this.handleWindowResize.bind(this)
     this.handleConnectionClick = this.handleConnectionClick.bind(this)
   }
 
@@ -116,7 +115,6 @@ export class MatchPaper extends Component
     if (this.state.key === 'first') {
       for (const answer of this.props.answer) {
         const type = this.props.item.solutions.findIndex(solution => answer.firstId === solution.firstId && answer.secondId === solution.secondId) > -1 ? 'green' : 'red'
-
         const connection = this.jsPlumbInstance.connect({
           source: 'first_source_' + answer.firstId,
           target: 'first_target_' + answer.secondId,
@@ -133,12 +131,14 @@ export class MatchPaper extends Component
       }
     } else {
       for (const solution of this.props.item.solutions) {
-        this.jsPlumbInstance.connect({
-          source: 'second_source_' + solution.firstId,
-          target: 'second_target_' + solution.secondId,
-          type: solution.score > 0 ? 'blue' : 'default',
-          deleteEndpointsOnDetach:false
-        })
+        if (solution.score > 0) {
+          this.jsPlumbInstance.connect({
+            source: 'second_source_' + solution.firstId,
+            target: 'second_target_' + solution.secondId,
+            type: 'blue',
+            deleteEndpointsOnDetach:true
+          })
+        }
       }
     }
   }
@@ -166,11 +166,6 @@ export class MatchPaper extends Component
 
   }
 
-  handleWindowResize() {
-    console.log('should reapint')
-    this.jsPlumbInstance.repaintEverything()
-  }
-
   // switch tab handler
   handleSelect(key) {
     this.jsPlumbInstance.getConnections().forEach(conn => {
@@ -193,7 +188,6 @@ export class MatchPaper extends Component
   }
 
   componentWillUnmount(){
-    window.removeEventListener('resize', this.handleWindowResize)
     jsPlumb.detachEveryConnection()
     // use reset instead of deleteEveryEndpoint because reset also remove event listeners
     jsPlumb.reset()
@@ -216,7 +210,7 @@ export class MatchPaper extends Component
             </Nav>
           </Col>
           <Col sm={12}>
-            <div ref={(el) => { this.container = el }} className="jsplumb-container" style={{position:'relative'}}>
+            <div ref={(el) => { this.container = el }} id={`jsplumb-container-${this.props.item.id}`} className="jsplumb-container" style={{position:'relative'}}>
               <Tab.Content animation>
                 <Tab.Pane eventKey="first">
                   <Metadata title={this.props.item.title} description={this.props.item.description}/>
@@ -318,7 +312,6 @@ export class MatchPaper extends Component
                 </Tab.Pane>
               </Tab.Content>
             </div>
-
           </Col>
         </Row>
       </Tab.Container>
