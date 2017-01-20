@@ -123,8 +123,8 @@ export const TopBar = props =>
         <Nav pullRight>
           {VIEW_CORRECTION_ANSWERS === props.viewMode &&
             <NavLinkButton
-              disabled={true}
-              onClick={() => {}}
+              disabled={!props.saveCorrectionEnabled}
+              onClick={() => props.saveEnabled && props.saveQuiz()}
             >
               <span className="fa fa-fw fa-save"></span>
               {t('save')}
@@ -146,5 +146,6 @@ TopBar.propTypes = {
   hasPapers: T.bool.isRequired,
   viewMode: T.string.isRequired,
   saveEnabled: T.bool.isRequired,
-  saveQuiz: T.func.isRequired
+  saveQuiz: T.func.isRequired,
+  saveCorrectionEnabled: T.bool.isRequired
 }

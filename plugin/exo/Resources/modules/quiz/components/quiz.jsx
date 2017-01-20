@@ -13,6 +13,7 @@ import {Paper} from './../papers/components/paper.jsx'
 import {Questions} from './../correction/components/questions.jsx'
 import {Answers} from './../correction/components/answers.jsx'
 import select from './../selectors'
+import {selectors as correctionSelectors} from './../correction/selectors'
 import {actions as editorActions} from './../editor/actions'
 import {actions} from './../actions'
 import {
@@ -100,7 +101,8 @@ function mapStateToProps(state) {
     published: select.published(state),
     hasPapers: select.hasPapers(state),
     saveEnabled: select.saveEnabled(state),
-    modal: select.modal(state)
+    modal: select.modal(state),
+    saveCorrectionEnabled: correctionSelectors.hasCorrection(state)
   }
 }
 

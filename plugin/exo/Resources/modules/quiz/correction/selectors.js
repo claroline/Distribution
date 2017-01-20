@@ -11,7 +11,7 @@ const questions = createSelector(
     questionsList.forEach(q => {
       data.push({
         question: q,
-        answers: answersList.filter(a => (a.questionId === q.id) && (a.score === undefined || a.score === null))
+        answers: answersList.filter(a => a.questionId === q.id)
       })
     })
 
@@ -22,7 +22,7 @@ const answers = createSelector(
   answersList,
   currentQuestionId,
   (answersList, currentQuestionId) => {
-    return answersList.filter(a => (a.questionId === currentQuestionId) && (a.score === undefined || a.score === null))
+    return answersList.filter(a => a.questionId === currentQuestionId)
   }
 )
 const currentQuestion = createSelector(
@@ -32,9 +32,22 @@ const currentQuestion = createSelector(
     return questionsList.find(question => question.id === currentQuestionId)
   }
 )
+const hasCorrection = createSelector(
+  answersList,
+  (answersList) => {
+    let result = false
+    answersList.forEach(a => {
+      if (a.score !== undefined && a.score !== null && !isNaN(a.score)) {
+        result = true
+      }
+    })
+    return result
+  }
+)
 
 export const selectors = {
   questions,
   answers,
-  currentQuestion
+  currentQuestion,
+  hasCorrection
 }

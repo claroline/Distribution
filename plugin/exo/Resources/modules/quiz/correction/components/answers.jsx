@@ -1,15 +1,16 @@
 import React, {PropTypes as T} from 'react'
 import {connect} from 'react-redux'
+import {actions} from './../actions'
+import {selectors as correctionSelectors} from './../selectors'
+import {tex} from './../../../utils/translate'
 import Panel from 'react-bootstrap/lib/Panel'
 import Col from 'react-bootstrap/lib/Col'
 import InputGroup from 'react-bootstrap/lib/InputGroup'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import Button from 'react-bootstrap/lib/Button'
-import {selectors as correctionSelectors} from './../selectors'
-import {tex} from './../../../utils/translate'
 
 export const AnswerRow = props =>
-  <div>
+  <div className="row">
     <Col md={10}>
       <Panel key={props.id}>
         <div dangerouslySetInnerHTML={{__html: props.data}}></div>
@@ -17,8 +18,8 @@ export const AnswerRow = props =>
     </Col>
     <Col md={2}>
       <InputGroup>
-        <FormControl type="text" />
-        <InputGroup.Addon>/{props.score}</InputGroup.Addon>
+        <FormControl type="text" onChange={(e) => props.updateScore(props.id, e.target.value)}/>
+        <InputGroup.Addon>/{props.scoreMax}</InputGroup.Addon>
         <InputGroup.Button>
           <Button>
             <span className="fa fa-fw fa-comments-o"></span>
@@ -43,13 +44,14 @@ let Answers = props =>
   <div className="answers-list">
     <h4 dangerouslySetInnerHTML={{__html: props.question.content}}></h4>
     {props.answers.map((answer, idx) =>
-      <AnswerRow key={idx} score={props.question.score.max} {...answer}/>
+      <AnswerRow key={idx} scoreMax={props.question.score && props.question.score.max} updateScore={props.updateScore} {...answer}/>
     )}
   </div>
 
 Answers.propTypes = {
   question: T.object.isRequired,
-  answers: T.arrayOf(T.object).isRequired
+  answers: T.arrayOf(T.object).isRequired,
+  updateScore: T.func.isRequired
 }
 
 function mapStateToProps(state) {
@@ -59,6 +61,6 @@ function mapStateToProps(state) {
   }
 }
 
-const ConnectedAnswers = connect(mapStateToProps)(Answers)
+const ConnectedAnswers = connect(mapStateToProps, actions)(Answers)
 
 export {ConnectedAnswers as Answers}

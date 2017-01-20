@@ -19,7 +19,11 @@ QuestionRow.propTypes = {
   question: T.shape({
     id: T.string.isRequired,
     title: T.string.isRequired,
-    content: T.string.isRequired
+    content: T.string.isRequired,
+    score: T.shape({
+      type: T.string,
+      max: T.number
+    })
   }).isRequired,
   answers: T.arrayOf(T.object)
 }
