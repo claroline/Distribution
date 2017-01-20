@@ -319,5 +319,6 @@ function validate(item) {
 export default {
   component,
   reduce,
+  decorate,
   validate
 }

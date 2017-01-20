@@ -389,7 +389,7 @@ describe('<Set />', () => {
 
   it('has required props', () => {
     shallow(<Set item={{items:[], sets:[], solutions:{}}}/>)
-    ensure.missingProps('Set', ['onChange', 'item.id'])
+    ensure.missingProps('Set', ['validating', 'onChange', 'item.id'])
   })
 
   it('has typed props', () => {
@@ -406,6 +406,7 @@ describe('<Set />', () => {
             _errors: {}
           }
         }
+        validating={false}
         onChange={false}
       />
     )
