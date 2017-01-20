@@ -102,9 +102,34 @@ class SetQuestionSerializer implements SerializerInterface
         }
 
         // TODO : deserialize answer items
+        $solutions = $data->solutions;
+        
 
         return $setQuestion;
     }
+
+    /*private function serializeSolutions(MatchQuestion $matchQuestion)
+    {
+        $solutions = [];
+
+        foreach ($matchQuestion->getProposals() as $proposal) {
+
+            foreach ($proposal->getExpectedLabels() as $label) {
+                $solutionData = new \stdClass();
+                $solutionData->firstId = $proposal->getUuid();
+                $solutionData->secondId = $label->getUuid();
+                $solutionData->score = $label->getScore();
+
+                if ($label->getFeedback()) {
+                    $solutionData->feedback = $label->getFeedback();
+                }
+
+                $solutions[] = $solutionData;
+            }
+        }
+
+        return $solutions;
+    }*/
 
     private function serializeSolutions(MatchQuestion $setQuestion)
     {

@@ -172,6 +172,7 @@ function reduce(item = {}, action) {
       const newItem = cloneDeep(item)
       const itemIndex = newItem.items.findIndex(el => el.id === action.id)
       newItem.items.splice(itemIndex, 1)
+      console.log('delete?')
       if(action.isOdd){
         // remove item from solution odds
         newItem.solutions.odd.forEach((odd, index) => {
@@ -277,6 +278,13 @@ function validate(item) {
   } else if (item.items.filter(el => undefined === item.solutions.odd.find(odd => odd.itemId === el.id)).find(item => notBlank(item.data, true))) {
     // item data should not be empty
     errors.items = tex('set_item_empty_data_error')
+  }
+
+  // no item should be orphean (ie not used in any solution)
+  if (item.items.some(el => {
+    return item.solutions.associations.find(association => association.itemId === el.id) === undefined
+  })){
+    errors.items = tex('set_no_orphean_items')
   }
 
   // one set min

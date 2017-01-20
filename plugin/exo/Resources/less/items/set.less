@@ -75,7 +75,9 @@
             flex-wrap: nowrap;
             border: 1px solid #ccc;
             border-radius: 5px 5px 0 0;
-
+            width: 350px;
+            min-width: 350px;
+            max-width: 350px;
             .set-heading {
               background-color: #eee;
               display: flex;
@@ -117,12 +119,16 @@
                       justify-content: space-between;
                       .association-data {
                         display: flex;
-                        min-width: 100px;
+                        min-width: 208px;
+                        max-width: 208px;
                         min-height: 34px;
                         padding: 5px;
                         margin-right: 5px;
                         align-items: center;
                         background-color: #fff;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        overflow: hidden;
                       }
                       .right-controls {
                         display: flex;
@@ -133,19 +139,11 @@
                        }
                       }
                     }
-
-
-
                     .feedback-container {
                       margin-top: 12px;
                     }
-
-
                   }
-
-
                 }
-
               }
               .set-item-drop-container{
                 border: 1px dashed #bbb;

@@ -226,7 +226,9 @@ let Item = props => {
           className="fa fa-trash-o"
           title={t('delete')}
           enabled={props.item._deletable}
-          onClick={() => actions.removeItem(props.item.id, false)}
+          onClick={() => props.onChange(
+             actions.removeItem(props.item.id, false)
+          )}
         />
         {props.connectDragSource(
           <div>
