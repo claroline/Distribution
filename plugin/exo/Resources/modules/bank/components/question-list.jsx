@@ -18,7 +18,9 @@ import {
 export default class QuestionList extends Component {
   render() {
     return(
-      <Table>
+      <Table
+        isEmpty={0 === this.props.questions.length}
+      >
         <TableHeader>
           <TableHeaderCell align="center">
             <input type="checkbox" />
@@ -59,7 +61,6 @@ export default class QuestionList extends Component {
             <TableCell align="center">
               <input type="checkbox" />
             </TableCell>
-
             <TableTooltipCell
               align="center"
               id={question.id}

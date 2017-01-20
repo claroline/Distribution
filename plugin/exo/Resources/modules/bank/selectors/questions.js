@@ -61,8 +61,13 @@ export const getVisibleQuestions =  createSelector(
   [getQuestions, getPagination, getSortBy],
   (questions, pagination, sortBy) => {
     // Apply pagination
-    const offset = (pagination.current) * pagination.pageSize
-    let visibleQuestions = questions.slice(offset, offset + pagination.pageSize)
+    let visibleQuestions
+    if (-1 !== pagination.pageSize) {
+      const offset = (pagination.current) * pagination.pageSize
+      visibleQuestions = questions.slice(offset, offset + pagination.pageSize)
+    } else {
+      visibleQuestions = questions.slice(0)
+    }
 
     if (sortBy.property && sortMethods[sortBy.property]) {
       // Sort results

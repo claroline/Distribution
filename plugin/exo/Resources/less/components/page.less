@@ -36,10 +36,26 @@
     }
 
     .page-actions {
-        .btn-link:hover,
-        .btn-link:focus,
-        .btn-link.active {
-            text-decoration: none;
+        .btn-link {
+            color: @gray-light;
+
+            &:hover,
+            &:focus,
+            &.active {
+                text-decoration: none;
+            }
+            &:hover {
+                color: @gray;
+            }
+            &:focus,
+            &.active {
+                color: @gray-dark;
+            }
+        }
+
+        .label {
+            font-size: 10px;
+            padding: .2em .4em;
         }
     }
 

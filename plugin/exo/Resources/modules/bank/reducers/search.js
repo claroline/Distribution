@@ -1,3 +1,5 @@
+import isArray from 'lodash/isArray'
+
 import {makeReducer} from './../../utils/reducers'
 
 import {
@@ -6,7 +8,18 @@ import {
 } from './../actions/search'
 
 function changeFilters(state, action) {
-  return action.filters
+  let newFilters = {}
+
+  for (let filter in action.filters) {
+    if (action.filters.hasOwnProperty(filter)) {
+      let filterValue = action.filters[filter]
+      if (!!filterValue && (!isArray(filterValue) || 0 !== filterValue.length)) {
+        newFilters[filter] = action.filters[filter]
+      }
+    }
+  }
+  
+  return newFilters
 }
 
 function clearFilters() {

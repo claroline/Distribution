@@ -20,7 +20,7 @@ TableCell.defaultProps = {
 }
 
 const TableTooltipCell = props =>
-  <TableCell {...props} className="table-cell-tooltip">
+  <TableCell {...props}>
     <OverlayTrigger
       placement={props.placement}
       overlay={<Tooltip id={props.id}>{props.tooltip}</Tooltip>}
@@ -122,7 +122,7 @@ TableHeader.propTypes = {
 }
 
 const TableRow = props =>
-  <tr>
+  <tr {...props}>
     {props.children}
   </tr>
 

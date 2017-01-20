@@ -1,7 +1,11 @@
 import React, {PropTypes as T} from 'react'
 import {connect} from 'react-redux'
+import classes from 'classnames'
 
-import {tex} from './../../utils/translate'
+import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
+import Tooltip from 'react-bootstrap/lib/Tooltip'
+
+import {tex, transChoice} from './../../utils/translate'
 import {makeModal} from './../../modal'
 import {showModal, fadeModal} from './../../modal/actions'
 import {select} from './../selectors'
@@ -24,6 +28,14 @@ const Bank = (props) => {
       icon: 'fa fa-fw fa-search',
       label: tex('search'),
       handleAction: () => props.openSearchModal(props.searchFilters),
+      badge: (
+      <OverlayTrigger
+        placement="top"
+        overlay={<Tooltip id="activeFiltersCount">{transChoice('active_filters', props.activeFilters, {count: props.activeFilters}, 'ujm_exo')}</Tooltip>}
+      >
+        <small className={classes('label', 0 < props.activeFilters ? 'label-primary' : 'label-default')}>{props.activeFilters}</small>
+      </OverlayTrigger>
+      ),
       primary: true
     },
     { divider: true, primary: true },
@@ -83,6 +95,7 @@ const Bank = (props) => {
 Bank.propTypes = {
   totalResults: T.number.isRequired,
   searchFilters: T.object.isRequired,
+  activeFilters: T.number.isRequired,
   modal: T.shape({
     type: T.string,
     fading: T.bool.isRequired,
@@ -104,7 +117,8 @@ Bank.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    searchFilters: state.search,
+    searchFilters: select.filters(state),
+    activeFilters: select.countFilters(state),
     modal: select.modal(state),
     totalResults: paginationSelect.getTotalResults(state),
     pagination: paginationSelect.getPagination(state),
