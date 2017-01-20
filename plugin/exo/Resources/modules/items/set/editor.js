@@ -153,7 +153,7 @@ function reduce(item = {}, action) {
         // update associations item data
         newItem.solutions.associations.map((ass) => {
           if(ass.itemId === action.id){
-            ass._itemData = action.value.length > 15 ? action.value.substring(0, 12) + '...' : action.value
+            ass._itemData = action.value
           }
         })
       } else {
@@ -238,7 +238,7 @@ function reduce(item = {}, action) {
         setId: action.setId,
         score: 1,
         feedback: '',
-        _itemData: action.itemData.length > 15 ? action.itemData.substring(0, 12) + '...' : action.itemData
+        _itemData: action.itemData
       }
       newItem.solutions.associations.push(toAdd)
       return newItem
