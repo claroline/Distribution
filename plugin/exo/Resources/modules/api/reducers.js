@@ -1,4 +1,4 @@
-import {LoadingIndicator} from "#/main/core/loader/loading-indicator"
+import {LoadingIndicator} from '#/main/core/loader/loading-indicator'
 
 import {makeReducer} from './../utils/reducers'
 

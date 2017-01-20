@@ -5,7 +5,6 @@ namespace UJM\ExoBundle\Controller\Tool;
 use Claroline\CoreBundle\Entity\User;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Manager\Question\QuestionManager;
 
 /**
@@ -45,7 +44,7 @@ class QuestionBankController
     public function openAction(User $user)
     {
         return [
-            'initialSearch' => $this->questionManager->search($user)
+            'initialSearch' => $this->questionManager->search($user),
         ];
     }
 }

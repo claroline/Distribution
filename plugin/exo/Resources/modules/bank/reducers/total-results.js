@@ -1,5 +1,4 @@
 import {makeReducer} from './../../utils/reducers'
-import {update} from './../../utils/utils'
 
 import {
   TOTAL_RESULTS_CHANGE

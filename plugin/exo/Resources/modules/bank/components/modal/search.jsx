@@ -71,7 +71,7 @@ export class SearchModal extends Component {
                 id="search-creator"
                 type="text"
                 className="form-control"
-                onChange={e => true}
+                onChange={() => true}
               />
             </FormGroup>
           }
@@ -87,7 +87,7 @@ export class SearchModal extends Component {
                 multiple="true"
                 value={this.state.filters.types}
                 onChange={e => {
-                  const types = [];
+                  const types = []
                   for (let i = 0; i < e.target.options.length; i++) {
                     if (e.target.options[i].selected) {
                       types.push(e.target.options[i].value)

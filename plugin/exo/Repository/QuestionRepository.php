@@ -20,8 +20,8 @@ class QuestionRepository extends EntityRepository
      * @param User      $user
      * @param \stdClass $filters
      * @param array     $orderBy
-     * @param int       $number - the number of results to get
-     * @param int       $page - the page to start (db offset is found with $number * $page)
+     * @param int       $number  - the number of results to get
+     * @param int       $page    - the page to start (db offset is found with $number * $page)
      *
      * @return array
      */
@@ -48,7 +48,7 @@ class QuestionRepository extends EntityRepository
         if (!empty($filters) && !empty($filters->title)) {
             $qb
                 ->andWhere('(q.content LIKE :text OR q.title LIKE :text)')
-                ->setParameter('text', '%'.addcslashes($filters->title, "%_").'%');
+                ->setParameter('text', '%'.addcslashes($filters->title, '%_').'%');
         }
 
         // Categories

@@ -4,18 +4,6 @@ import {
   QUESTIONS_SET
 } from './../actions/questions'
 
-function requestQuestions() {
-
-}
-
-function createQuestion() {
-
-}
-
-function updateQuestion() {
-
-}
-
 function setQuestions(state, action) {
   return action.questions
 }
