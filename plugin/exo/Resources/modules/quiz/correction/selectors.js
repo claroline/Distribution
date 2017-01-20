@@ -34,10 +34,11 @@ const currentQuestion = createSelector(
 )
 const hasCorrection = createSelector(
   answersList,
-  (answersList) => {
+  currentQuestionId,
+  (answersList, currentQuestionId) => {
     let result = false
     answersList.forEach(a => {
-      if (a.score !== undefined && a.score !== null && !isNaN(a.score)) {
+      if (a.questionId === currentQuestionId && a.score !== undefined && a.score !== null && !isNaN(a.score)) {
         result = true
       }
     })

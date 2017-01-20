@@ -1,4 +1,4 @@
-import {QUESTION_CURRENT, SAVE_CORRECTION_ENABLE, SCORE_UPDATE} from './actions'
+import {QUESTION_CURRENT, SCORE_UPDATE, REMOVE_ANSWERS} from './actions'
 
 function testQuestions() {
   return [
@@ -124,20 +124,23 @@ function reduceCurrentQuestion(currentQuestionId = initialQuestionId(), action =
   return currentQuestionId
 }
 
-function reduceQuestions(questions = testQuestions(), action = {}) {
+function reduceQuestions(questions = testQuestions()) {
   return questions
 }
 
 function reduceAnswers(answers = testAnswers(), action = {}) {
   switch (action.type) {
     case SCORE_UPDATE: {
-      return answers.map((answer, index) => {
+      return answers.map((answer) => {
         if (answer.id === action.answerId) {
           return Object.assign({}, answer, {score: parseFloat(action.score)})
         } else {
           return answer
         }
       })
+    }
+    case REMOVE_ANSWERS: {
+      return answers.filter(answer => action.ids.indexOf(answer.id) === -1)
     }
   }
   return answers

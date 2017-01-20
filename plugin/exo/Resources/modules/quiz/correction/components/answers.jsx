@@ -2,7 +2,6 @@ import React, {PropTypes as T} from 'react'
 import {connect} from 'react-redux'
 import {actions} from './../actions'
 import {selectors as correctionSelectors} from './../selectors'
-import {tex} from './../../../utils/translate'
 import Panel from 'react-bootstrap/lib/Panel'
 import Col from 'react-bootstrap/lib/Col'
 import InputGroup from 'react-bootstrap/lib/InputGroup'
@@ -18,7 +17,11 @@ export const AnswerRow = props =>
     </Col>
     <Col md={2}>
       <InputGroup>
-        <FormControl type="text" onChange={(e) => props.updateScore(props.id, e.target.value)}/>
+        <FormControl key={props.id}
+                     type="text"
+                     value={props.score !== undefined && props.score !== null && !isNaN(props.score) ? props.score : ''}
+                     onChange={(e) => props.updateScore(props.id, e.target.value)}
+        />
         <InputGroup.Addon>/{props.scoreMax}</InputGroup.Addon>
         <InputGroup.Button>
           <Button>
@@ -28,7 +31,7 @@ export const AnswerRow = props =>
       </InputGroup>
     </Col>
     <Col md={12}>
-    <hr/>
+      <hr/>
     </Col>
   </div>
 
@@ -37,7 +40,9 @@ AnswerRow.propTypes = {
   questionId: T.string.isRequired,
   type: T.string.isRequired,
   data: T.string.isRequired,
-  score: T.number
+  score: T.number,
+  scoreMax: T.number,
+  updateScore: T.func.isRequired
 }
 
 let Answers = props =>

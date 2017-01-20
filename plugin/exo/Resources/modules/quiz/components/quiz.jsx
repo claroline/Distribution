@@ -15,6 +15,7 @@ import {Answers} from './../correction/components/answers.jsx'
 import select from './../selectors'
 import {selectors as correctionSelectors} from './../correction/selectors'
 import {actions as editorActions} from './../editor/actions'
+import {actions as correctionActions} from './../correction/actions'
 import {actions} from './../actions'
 import {
   VIEW_OVERVIEW,
@@ -102,6 +103,7 @@ function mapStateToProps(state) {
     hasPapers: select.hasPapers(state),
     saveEnabled: select.saveEnabled(state),
     modal: select.modal(state),
+    currentQuestionId: select.currentQuestion(state),
     saveCorrectionEnabled: correctionSelectors.hasCorrection(state)
   }
 }
@@ -112,7 +114,8 @@ function mapDispatchToProps(dispatch) {
     saveQuiz: () => dispatch(editorActions.save()),
     createModal: (type, props, fading) => makeModal(type, props, fading, dispatch),
     showModal: (type, props) => dispatch(showModal(type, props)),
-    fadeModal: () => dispatch(fadeModal())
+    fadeModal: () => dispatch(fadeModal()),
+    saveCorrection: questionId => dispatch(correctionActions.saveCorrection(questionId))
   }
 }
 
