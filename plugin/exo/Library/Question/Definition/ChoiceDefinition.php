@@ -119,7 +119,7 @@ class ChoiceDefinition extends AbstractDefinition
         $corrected = new CorrectedAnswer();
 
         foreach ($question->getChoices() as $choice) {
-            if (is_array($answer) && in_array($choice->getId(), $answer)) {
+            if (is_array($answer) && in_array($choice->getUuid(), $answer)) {
                 // Choice has been selected by the user
                 if (0 < $choice->getScore()) {
                     $corrected->addExpected($choice);

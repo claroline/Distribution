@@ -358,7 +358,7 @@ class QuestionSerializer extends AbstractSerializer
             // Searches for an existing hint entity.
             foreach ($hintEntities as $entityIndex => $entityHint) {
                 /** @var Hint $entityHint */
-                if ((string) $entityHint->getId() === $hintData->id) {
+                if ($entityHint->getUuid() === $hintData->id) {
                     $existingHint = $entityHint;
                     unset($hintEntities[$entityIndex]);
                     break;

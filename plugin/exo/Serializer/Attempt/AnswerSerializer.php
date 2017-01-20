@@ -6,7 +6,6 @@ use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\Question\Hint;
-use UJM\ExoBundle\Entity\Question\Question;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\AbstractSerializer;
 use UJM\ExoBundle\Serializer\Question\HintSerializer;
@@ -60,15 +59,15 @@ class AnswerSerializer extends AbstractSerializer
         $answerData = new \stdClass();
 
         $this->mapEntityToObject([
-            'questionId' => function (Answer $answer) {
-                return $answer->getQuestion()->getUuid();
-            },
+            'questionId' => 'questionId',
             'tries' => 'tries',
+            'usedHints' => function (Answer $answer) use ($options) {
+                return array_map(function ($hintId) use ($options) {
+                    return $options['hints'][$hintId];
+                }, $answer->getUsedHints());
+            },
             'data' => function (Answer $answer) {
                 return !empty($answer->getData()) ? json_decode($answer->getData()) : null;
-            },
-            'usedHints' => function (Answer $answer) {
-                return $this->serializeHints($answer);
             },
         ], $answer, $answerData);
 
@@ -97,17 +96,18 @@ class AnswerSerializer extends AbstractSerializer
             $answer = new Answer();
         }
 
-        if (empty($answer->getQuestion())) {
-            /** @var Question $question */
-            $question = $this->om->getRepository('UJMExoBundle:Question\Question')->findOneBy([
-                'uuid' => $data->questionId,
-            ]);
-
-            $answer->setQuestion($question);
-        }
+        $answer->setQuestionId($data->questionId);
 
         $this->mapObjectToEntity([
             'tries' => 'tries',
+            'questionId' => 'questionId',
+            'usedHints' => function (Answer $answer, \stdClass $data) {
+                if (!empty($data->usedHints)) {
+                    foreach ($data->usedHints as $usedHint) {
+                        $answer->addUsedHint($usedHint->id);
+                    }
+                }
+            },
             'data' => function (Answer $answer, \stdClass $data) {
                 if (!empty($data->data)) {
                     $answer->setData(json_encode($data->data));
@@ -116,12 +116,5 @@ class AnswerSerializer extends AbstractSerializer
         ], $data, $answer);
 
         return $answer;
-    }
-
-    private function serializeHints(Answer $answer)
-    {
-        return array_map(function (Hint $hint) {
-            return $this->hintSerializer->serialize($hint, [Transfer::INCLUDE_SOLUTIONS]);
-        }, $answer->getUsedHints()->toArray());
     }
 }

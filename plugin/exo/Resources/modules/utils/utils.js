@@ -90,7 +90,14 @@ export function extractTextFromHtml(html) {
   const wrapper = document.createElement('div')
   wrapper.innerHTML = html
 
-  return wrapper.textContent
+  return wrapper.textContent || isAllowedHtmlTag(wrapper.innerHTML)
+}
+
+export function isAllowedHtmlTag(html) {
+  const allowedTags = ['img', 'audio', 'iframe', 'video']
+  return allowedTags.some((tag) => {
+    return html.indexOf(tag) >= 0
+  })
 }
 
 export function makeInputPropType(valueType) {

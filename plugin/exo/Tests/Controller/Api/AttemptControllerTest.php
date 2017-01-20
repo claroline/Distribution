@@ -243,11 +243,17 @@ class AttemptControllerTest extends TransactionalTestCase
 
         $this->om->persist($pa1);
         $this->om->flush();
-
-        $this->request('GET', "/api/exercises/{$this->ex1->getUuid()}/attempts/{$pa1->getUuid()}/hints/{$this->hi1->getId()}", $this->john);
+        $this->request(
+            'GET',
+            "/api/exercises/{$this->ex1->getUuid()}/attempts/{$pa1->getUuid()}/{$this->hi1->getQuestion()->getUuid()}/hints/{$this->hi1->getUuid()}",
+            $this->john
+        );
 
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals('hi1', json_decode($this->client->getResponse()->getContent()));
+        $hintData = json_decode($this->client->getResponse()->getContent());
+
+        $this->assertInstanceOf('\stdClass', $hintData);
+        $this->assertEquals('hi1', $hintData->value);
     }
 
     public function testAnonymousHint()
@@ -256,7 +262,7 @@ class AttemptControllerTest extends TransactionalTestCase
         $this->om->persist($pa1);
         $this->om->flush();
 
-        $this->request('GET', "/api/exercises/{$this->ex1->getUuid()}/attempts/{$pa1->getUuid()}/hints/{$this->hi1->getId()}");
+        $this->request('GET', "/api/exercises/{$this->ex1->getUuid()}/attempts/{$pa1->getUuid()}/{$this->hi1->getQuestion()->getUuid()}/hints/{$this->hi1->getUuid()}");
         $this->assertEquals(401, $this->client->getResponse()->getStatusCode());
     }
 
@@ -270,7 +276,7 @@ class AttemptControllerTest extends TransactionalTestCase
         $this->om->persist($pa1);
         $this->om->flush();
 
-        $this->request('GET', "/api/exercises/{$this->ex1->getUuid()}/attempts/{$pa1->getUuid()}/hints/{$this->hi1->getId()}", $this->john);
+        $this->request('GET', "/api/exercises/{$this->ex1->getUuid()}/attempts/{$pa1->getUuid()}/{$this->hi1->getQuestion()->getUuid()}/hints/{$this->hi1->getUuid()}", $this->john);
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
     }
 
@@ -280,7 +286,7 @@ class AttemptControllerTest extends TransactionalTestCase
         $this->om->persist($pa1);
         $this->om->flush();
 
-        $this->request('GET', "/api/exercises/{$this->ex1->getUuid()}/attempts/{$pa1->getUuid()}/hints/{$this->hi1->getId()}", $this->bob);
+        $this->request('GET', "/api/exercises/{$this->ex1->getUuid()}/attempts/{$pa1->getUuid()}/{$this->hi1->getQuestion()->getUuid()}/hints/{$this->hi1->getUuid()}", $this->bob);
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
     }
 
@@ -294,7 +300,32 @@ class AttemptControllerTest extends TransactionalTestCase
         $this->om->persist($pa1);
         $this->om->flush();
 
-        $this->request('GET', "/api/exercises/{$this->ex1->getUuid()}/attempts/{$pa1->getUuid()}/hints/{$hint->getId()}", $this->john);
+        $this->request('GET', "/api/exercises/{$this->ex1->getUuid()}/attempts/{$pa1->getUuid()}/{$hint->getQuestion()->getUuid()}/hints/{$hint->getUuid()}", $this->john);
+
+        $this->assertEquals(422, $this->client->getResponse()->getStatusCode());
+
+        // Checks we get errors
+        $content = json_decode($this->client->getResponse()->getContent(), true);
+        $this->assertTrue(is_array($content));
+        $this->assertTrue(count($content) > 0);
+    }
+
+    public function testHintNotRelatedToQuestion()
+    {
+        // Add a new question in the exercise
+        $question = $this->persist->openQuestion('open');
+        $this->ex1->getSteps()->get(0)->addQuestion($question);
+
+        $pa1 = $this->paperGenerator->create($this->ex1, $this->john);
+        $this->om->persist($pa1);
+
+        $this->om->flush();
+
+        $this->request(
+            'GET',
+            "/api/exercises/{$this->ex1->getUuid()}/attempts/{$pa1->getUuid()}/{$question->getUuid()}/hints/{$this->hi1->getUuid()}",
+            $this->john
+        );
 
         $this->assertEquals(422, $this->client->getResponse()->getStatusCode());
 

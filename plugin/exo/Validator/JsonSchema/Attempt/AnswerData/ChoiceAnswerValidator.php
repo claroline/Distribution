@@ -37,7 +37,7 @@ class ChoiceAnswerValidator extends JsonSchemaValidator
         }
 
         $choiceIds = array_map(function (Choice $choice) {
-            return (string) $choice->getId();
+            return $choice->getUuid();
         }, $question->getChoices()->toArray());
 
         foreach ($answerData as $index => $id) {

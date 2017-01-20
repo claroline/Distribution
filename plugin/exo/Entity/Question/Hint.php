@@ -3,9 +3,11 @@
 namespace UJM\ExoBundle\Entity\Question;
 
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 use UJM\ExoBundle\Library\Attempt\PenaltyItemInterface;
 use UJM\ExoBundle\Library\Model\ContentTrait;
 use UJM\ExoBundle\Library\Model\PenaltyTrait;
+use UJM\ExoBundle\Library\Model\UuidTrait;
 
 /**
  * Hint.
@@ -24,6 +26,8 @@ class Hint implements PenaltyItemInterface
      */
     private $id;
 
+    use UuidTrait;
+
     use ContentTrait;
 
     use PenaltyTrait;
@@ -34,6 +38,11 @@ class Hint implements PenaltyItemInterface
      * @var Question
      */
     private $question;
+
+    public function __construct()
+    {
+        $this->uuid = Uuid::uuid4()->toString();
+    }
 
     /**
      * @return int

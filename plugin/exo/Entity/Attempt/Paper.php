@@ -114,7 +114,7 @@ class Paper
      */
     public function __construct()
     {
-        $this->uuid = Uuid::uuid4();
+        $this->uuid = Uuid::uuid4()->toString();
         $this->start = new \DateTime();
         $this->answers = new ArrayCollection();
     }
@@ -340,6 +340,30 @@ class Paper
     }
 
     /**
+     * Gets a question in the paper structure.
+     *
+     * @param $questionUuid
+     *
+     * @return \stdClass
+     */
+    public function getQuestion($questionUuid)
+    {
+        $question = null;
+
+        $decoded = json_decode($this->structure);
+        foreach ($decoded->steps as $step) {
+            foreach ($step->items as $item) {
+                if ($item->id === $questionUuid) {
+                    $question = $item;
+                    break 2;
+                }
+            }
+        }
+
+        return $question;
+    }
+
+    /**
      * Gets the answer to a question if any exist.
      *
      * @param string $questionUuid
@@ -350,7 +374,7 @@ class Paper
     {
         $found = null;
         foreach ($this->answers as $answer) {
-            if ($answer->getQuestion()->getUuid() === $questionUuid) {
+            if ($answer->getQuestionId() === $questionUuid) {
                 $found = $answer;
                 break;
             }
