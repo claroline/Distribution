@@ -7,10 +7,15 @@ export class ImageInput extends Component {
       <div>
         <input
           type="file"
+          accept="image/*"
           className="img-input"
           style={{display: 'none'}}
           ref={input => this.input = input}
-          onChange={() => this.props.onSelect(this.input.files[0])}
+          onChange={() => {
+            if (this.input.files[0]) {
+              this.props.onSelect(this.input.files[0])
+            }
+          }}
         />
         <button
           type="button"

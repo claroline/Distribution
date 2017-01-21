@@ -1,50 +1,67 @@
 import {ITEM_CREATE} from './../../quiz/editor/actions'
 import {makeId, makeActionCreator} from './../../utils/utils'
-import {MODE_RECT} from './enums'
+import {tex} from './../../utils/translate'
+import {MODE_RECT, MAX_IMG_SIZE} from './enums'
+import {SELECT_MODE, SELECT_IMAGE} from './actions'
 import {Graphic as component} from './editor.jsx'
-
-const SELECT_MODE = 'SELECT_MODE'
-
-export const actions = {
-  selectMode: makeActionCreator(SELECT_MODE, 'mode')
-}
 
 function reduce(item = {}, action = {}) {
   switch (action.type) {
-    case ITEM_CREATE: {
+    case ITEM_CREATE:
       return decorate(Object.assign({}, item, {
-        image: {
-          id: makeId(),
-          type: '',
-          url: '',
-          width: 0,
-          height: 0
-        },
-        pointers: 0,
-        solutions: []
+        image: blankImage()
       }))
-    }
-    case SELECT_MODE: {
+    case SELECT_MODE:
       return Object.assign({}, item, {
-        _editor: Object.assign({}, item._editor, {
-          mode: action.mode
-        })
+        _mode: action.mode
       })
-    }
+    case SELECT_IMAGE:
+      return Object.assign({}, item, {
+        image: Object.assign(
+          blankImage(),
+          {id: item.image.id},
+          action.image
+        )
+      })
   }
   return item
 }
 
+function blankImage() {
+  return {
+    id: makeId(),
+    type: '',
+    url: '',
+    width: 0,
+    height: 0
+  }
+}
+
 function decorate(item) {
   return Object.assign({}, item, {
-    _editor: {
-      mode: MODE_RECT
-    }
+    _mode: MODE_RECT
   })
+}
+
+function validate(item) {
+  if (item.image._type && item.image._type.indexOf('image') !== 0) {
+    return {image: tex('graphic_error_not_an_image')}
+  }
+
+  if (item.image._size && item.image._size > MAX_IMG_SIZE) {
+    return {image: tex('graphic_error_image_too_large')}
+  }
+
+  if (!item.image.url) {
+    return {image: tex('graphic_error_no_image', {count: MAX_IMG_SIZE})}
+  }
+
+  return {}
 }
 
 export default {
   component,
   reduce,
-  decorate
+  decorate,
+  validate
 }

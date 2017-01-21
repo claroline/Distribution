@@ -12,16 +12,20 @@
     min-height: 200px;
     margin-bottom: 12px;
     padding: 12px;
-    border: solid 1px #ddd;
+    border: dashed 1px #ddd;
+    border-radius: @border-radius-base;
   }
 
   .img-container {
     position: relative;
-  }
 
-  .img {
-    max-width: 100%;
-    border: solid 1px #999;
-    cursor: crosshair;
+    img {
+      max-width: 100%;
+      border: solid 1px #ddd;
+    }
+
+    img.point-mode {
+      cursor: crosshair;
+    }
   }
 }
