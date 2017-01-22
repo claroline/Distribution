@@ -39,7 +39,7 @@ function decorate(question) {
 
   // consider items that are not in solutions.odd
   const itemDeletable = question.items.filter(item => undefined === question.solutions.odd.find(el => el.itemId === item.id)).length > 1
-  const itemsWithDeletable = question.items.filter(item => undefined === question.solutions.odd.find(el => el.itemId === item.id)).map(
+  const itemsWithDeletable = question.items.map(
     item => Object.assign({}, item, {
       _deletable: itemDeletable
     })
@@ -66,18 +66,16 @@ function decorate(question) {
 }
 
 function getAssociationsWithItemData(item){
-
-  item.solutions.associations.forEach(
-    (association) => {
-      const questionItem = item.items.find(el => el.id === association.itemId)
-      const data = questionItem !== undefined ? questionItem.data : ''
-      Object.assign({}, association, {
-        _itemData: data
-      })
-    }
+  const withData = item.solutions.associations.map(
+      association => {
+        const questionItem = item.items.find(el => el.id === association.itemId)
+        const data = questionItem !== undefined ? questionItem.data : ''
+        association._itemData = data
+        return association
+      }
   )
 
-  return item.solutions.associations
+  return withData
 }
 
 function reduce(item = {}, action) {
@@ -172,7 +170,6 @@ function reduce(item = {}, action) {
       const newItem = cloneDeep(item)
       const itemIndex = newItem.items.findIndex(el => el.id === action.id)
       newItem.items.splice(itemIndex, 1)
-      console.log('delete?')
       if(action.isOdd){
         // remove item from solution odds
         newItem.solutions.odd.forEach((odd, index) => {
@@ -280,9 +277,10 @@ function validate(item) {
     errors.items = tex('set_item_empty_data_error')
   }
 
-  // no item should be orphean (ie not used in any solution)
+  // no item (that are not odd items) should be orphean (ie not used in any solution)
   if (item.items.some(el => {
-    return item.solutions.associations.find(association => association.itemId === el.id) === undefined
+    return item.solutions.associations.find(association => association.itemId === el.id) === undefined &&
+      item.solutions.odd.find(o => o.itemId === el.id) === undefined
   })){
     errors.items = tex('set_no_orphean_items')
   }
