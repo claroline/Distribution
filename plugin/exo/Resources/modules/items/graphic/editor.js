@@ -1,8 +1,14 @@
 import {ITEM_CREATE} from './../../quiz/editor/actions'
 import {makeId, makeActionCreator} from './../../utils/utils'
 import {tex} from './../../utils/translate'
-import {MODE_RECT, MAX_IMG_SIZE} from './enums'
-import {SELECT_MODE, SELECT_IMAGE} from './actions'
+import {
+  MODE_RECT,
+  MAX_IMG_SIZE,
+  SHAPE_RECT,
+  SHAPE_CIRCLE,
+  AREA_DEFAULT_SIZE
+} from './enums'
+import {SELECT_MODE, SELECT_IMAGE, CREATE_AREA} from './actions'
 import {Graphic as component} from './editor.jsx'
 
 function reduce(item = {}, action = {}) {
@@ -23,6 +29,37 @@ function reduce(item = {}, action = {}) {
           action.image
         )
       })
+    case CREATE_AREA: {
+      const halfSize = AREA_DEFAULT_SIZE / 2
+      const area = {
+        id: makeId(),
+        shape: item._mode === MODE_RECT ? SHAPE_RECT : SHAPE_CIRCLE,
+        color: 'blue',
+        score: 1,
+        feedback: ''
+      }
+
+      if (area.shape === SHAPE_CIRCLE) {
+        area.coords = [{x: action.x, y: action.y}]
+        area.radius = halfSize
+      } else {
+        area.coords = [
+          {
+            x: action.x - halfSize,
+            y: action.y - halfSize
+          },
+          {
+            x: action.x + halfSize,
+            y: action.y + halfSize
+          }
+        ]
+      }
+
+      return Object.assign({}, item, {
+        pointers: item.pointers + 1,
+        solutions: [...item.solutions, {area}]
+      })
+    }
   }
   return item
 }
@@ -39,6 +76,8 @@ function blankImage() {
 
 function decorate(item) {
   return Object.assign({}, item, {
+    pointers: 0,
+    solutions: [],
     _mode: MODE_RECT
   })
 }
@@ -54,6 +93,10 @@ function validate(item) {
 
   if (!item.image.url) {
     return {image: tex('graphic_error_no_image', {count: MAX_IMG_SIZE})}
+  }
+
+  if (item.solutions.length === 0) {
+    return {image: tex('graphic_error_no_solution')}
   }
 
   return {}

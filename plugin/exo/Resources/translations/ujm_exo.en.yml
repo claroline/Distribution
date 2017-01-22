@@ -170,6 +170,7 @@ formative : Formative
 graphic_drop_or_pick: Drop an image here or use the button above.
 graphic_error_image_too_large: Selected image is too big.
 graphic_error_no_image: You must select an image.
+graphic_error_no_solution: You must create at least one answer zone.
 graphic_error_not_an_image: Selected file is not an image.
 graphic_pick_image: Pick an image
 graphic_mode_rect: Rectangular answer zone

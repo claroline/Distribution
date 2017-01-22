@@ -16,9 +16,12 @@
     border-radius: @border-radius-base;
   }
 
-  .img-container {
+  .img-widget {
     position: relative;
+    overflow: hidden;
+  }
 
+  .img-container {
     img {
       max-width: 100%;
       border: solid 1px #ddd;
@@ -27,5 +30,11 @@
     img.point-mode {
       cursor: crosshair;
     }
+  }
+
+  .pointer {
+    display: inline-block;
+    position: absolute;
+    opacity: 0.5;
   }
 }

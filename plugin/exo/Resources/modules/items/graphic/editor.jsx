@@ -6,12 +6,14 @@ import {actions} from './actions'
 import {ErrorBlock} from './../../components/form/error-block.jsx'
 import {ImageInput} from './components/image-input.jsx'
 import {ModeSelector} from './components/mode-selector.jsx'
+import {AnswerArea} from './components/answer-area.jsx'
 
 export class Graphic extends Component {
   constructor(props) {
     super(props)
     this.onDropImage = this.onDropImage.bind(this)
     this.onSelectImage = this.onSelectImage.bind(this)
+    this.onClickImage = this.onClickImage.bind(this)
   }
 
   componentDidMount() {
@@ -27,10 +29,11 @@ export class Graphic extends Component {
     // a very long string if the image is large) could be too heavy, the img tag
     // is rendered outside the React pipeline and just attached to a leaf node
     // of the component.
-    const modeClass = this.props.item._mode !== MODE_SELECT ? 'point-mode' : ''
-    this.imgContainer.innerHTML = this.props.item.image.url ?
-      `<img src="${this.props.item.image.url}" class="${modeClass}"/>` :
-      tex('graphic_drop_or_pick')
+    if (this.props.item.image.url) {
+      this.createImage(this.props.item.image.url)
+    } else {
+      this.imgContainer.innerHTML = tex('graphic_drop_or_pick')
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -40,7 +43,11 @@ export class Graphic extends Component {
       img.className = this.props.item._mode !== MODE_SELECT ? 'point-mode' : ''
 
       if (prevProps.item.image.url !== this.props.item.image.url) {
-        img.src = this.props.item.image.url
+        if (!this.props.item.image.url) {
+          this.imgContainer.innerHTML = tex('graphic_drop_or_pick')
+        } else {
+          img.src = this.props.item.image.url
+        }
       }
     }
   }
@@ -74,10 +81,7 @@ export class Graphic extends Component {
 
     const reader = new window.FileReader()
     reader.onload = e => {
-      const img = document.createElement('img')
-      img.src = e.target.result
-      this.imgContainer.innerHTML = ''
-      this.imgContainer.appendChild(img)
+      const img = this.createImage(e.target.result)
       img.onload = () => {
         this.props.onChange(actions.selectImage({
           url: e.target.result,
@@ -89,6 +93,27 @@ export class Graphic extends Component {
       }
     }
     reader.readAsDataURL(file)
+  }
+
+  createImage(encodedString) {
+    const img = document.createElement('img')
+    img.src = encodedString
+    img.className = this.props.item._mode !== MODE_SELECT ? 'point-mode' : ''
+    img.addEventListener('click', this.onClickImage)
+    this.imgContainer.innerHTML = ''
+    this.imgContainer.appendChild(img)
+
+    return img
+  }
+
+  onClickImage(e) {
+    if (this.props.item._mode !== MODE_SELECT) {
+      const imgRect = e.target.getBoundingClientRect()
+      this.props.onChange(actions.createArea(
+        e.clientX - imgRect.left,
+        e.clientY - imgRect.top
+      ))
+    }
   }
 
   render() {
@@ -108,7 +133,12 @@ export class Graphic extends Component {
           />
         </div>
         <div className="img-dropzone" ref={el => this.dropzone = el}>
-          <div className="img-container" ref={el => this.imgContainer = el}/>
+          <div className="img-widget">
+            <div className="img-container" ref={el => this.imgContainer = el}/>
+            {this.props.item.solutions.map(solution =>
+              <AnswerArea key={solution.area.id} {...solution.area}/>
+            )}
+          </div>
         </div>
       </div>
     )
@@ -120,6 +150,11 @@ Graphic.propTypes = {
     image: T.shape({
       url: T.string.isRequired
     }).isRequired,
+    solutions: T.arrayOf(T.shape({
+      area: T.shape({
+        id: T.string.isRequired
+      }).isRequired,
+    })).isRequired,
     _mode: T.string.isRequired,
     _errors: T.object
   }).isRequired,
