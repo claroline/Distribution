@@ -61,7 +61,7 @@ class PaperRepository extends EntityRepository
     }
 
     /**
-     * Finds the score of a paper by adding the score of each answer.
+     * Finds the score of a paper by summing the score of each answer.
      *
      * @param Paper $paper
      *
@@ -123,6 +123,31 @@ class PaperRepository extends EntityRepository
                 'exercise' => $exercise,
             ])
             ->getSingleScalarResult();
+    }
+
+    /**
+     * Finds papers of an exercise that needs correction (aka papers that have answers with `null` score).
+     *
+     * @param Exercise $exercise
+     *
+     * @return Paper[]
+     */
+    public function findPapersToCorrect(Exercise $exercise)
+    {
+        return $this->getEntityManager()
+            ->createQuery('
+                SELECT p 
+                FROM UJM\ExoBundle\Entity\Attempt\Paper AS p
+                JOIN UJM\ExoBundle\Entity\Attempt\Answer AS a WITH (a.paper = p)
+                WHERE p.exercise = :exercise
+                  AND p.end IS NOT NULL
+                  AND a.score IS NULL
+                ORDER BY p.start DESC
+            ')
+            ->setParameters([
+                'exercise' => $exercise,
+            ])
+            ->getResult();
     }
 
     /**

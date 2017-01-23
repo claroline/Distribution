@@ -50,7 +50,7 @@ class ExerciseManager
      *     "om"           = @DI\Inject("claroline.persistence.object_manager"),
      *     "validator"    = @DI\Inject("ujm_exo.validator.exercise"),
      *     "serializer"   = @DI\Inject("ujm_exo.serializer.exercise"),
-     *     "paperManager"   = @DI\Inject("ujm_exo.manager.paper")
+     *     "paperManager" = @DI\Inject("ujm_exo.manager.paper")
      * })
      *
      * @param ObjectManager      $om
@@ -146,19 +146,19 @@ class ExerciseManager
         return $this->create($exerciseData);
     }
 
-        /**
-         * Checks if an Exercise can be deleted.
-         * The exercise needs to be unpublished or have no paper to be safely removed.
-         *
-         * @param Exercise $exercise
-         *
-         * @return bool
-         */
-        public function isDeletable(Exercise $exercise)
-        {
-            return !$exercise->getResourceNode()->isPublished()
+    /**
+     * Checks if an Exercise can be deleted.
+     * The exercise needs to be unpublished or have no paper to be safely removed.
+     *
+     * @param Exercise $exercise
+     *
+     * @return bool
+     */
+    public function isDeletable(Exercise $exercise)
+    {
+        return !$exercise->getResourceNode()->isPublished()
             || 0 === $this->paperManager->countExercisePapers($exercise);
-        }
+    }
 
     /**
      * Publishes an exercise.

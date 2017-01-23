@@ -55,6 +55,13 @@ class Paper
     private $structure;
 
     /**
+     * Used to store temp decoded structure to avoid decoding many times in the same life cycle.
+     *
+     * @var \stdClass
+     */
+    private $decodedStructure = null;
+
+    /**
      * @ORM\Column(name="interupt", type="boolean", nullable=true)
      */
     private $interrupted = true;
@@ -350,8 +357,11 @@ class Paper
     {
         $question = null;
 
-        $decoded = json_decode($this->structure);
-        foreach ($decoded->steps as $step) {
+        if (empty($this->decodedStructure)) {
+            $this->decodeStructure();
+        }
+
+        foreach ($this->decodedStructure->steps as $step) {
             foreach ($step->items as $item) {
                 if ($item->id === $questionUuid) {
                     $question = $item;
@@ -406,5 +416,10 @@ class Paper
         if ($this->answers->contains($answer)) {
             $this->answers->removeElement($answer);
         }
+    }
+
+    private function decodeStructure()
+    {
+        $this->decodedStructure = json_decode($this->structure);
     }
 }
