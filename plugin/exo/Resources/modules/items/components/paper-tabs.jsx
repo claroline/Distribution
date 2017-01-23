@@ -61,8 +61,11 @@ PaperTabs.propTypes = {
     id: T.string.isRequired,
     title: T.string.isRequired,
     description: T.string.isRequired,
-    solutions: T.arrayOf(T.object)
-  }).isRequired,
+    solutions: T.oneOfType([
+      T.arrayOf(T.object),
+      T.object
+    ]).isRequired
+  }),
   answer: T.any.isRequired,
   yours: T.object.isRequired,
   expected: T.object.isRequired

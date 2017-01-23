@@ -172,7 +172,6 @@
 /* PLAYER */
 .set-question-player {
   padding: 0;
-  position: relative;
   display: flex;
   justify-content: space-around;
   .items-col {
@@ -275,14 +274,14 @@
                 }
               }
             }
-            .set-item-drop-container{
+            .set-item-drop-container {
               border: 1px dashed #bbb;
               border-radius: 5px;
               width: 100%;
               height: auto;
               text-align: center;
               padding: 15px;
-              &.on-hover{
+              &.on-hover {
                 background-color: #eee;
               }
 
@@ -293,4 +292,91 @@
     }
   }
 
+}
+
+
+/* SET PAPER */
+
+.set-paper {
+  padding: 0;
+  display: flex;
+  justify-content: space-around;
+  .items-col,
+  .sets-col {
+    min-width: 300px;
+    max-width: 300px;
+    padding: 5px;
+    background-color: #f5f5f5;
+    border: 1px solid black;
+    ul {
+      padding: 0;
+      margin: 0;
+      li {
+        list-style: none;
+        background-color: #eee;
+        margin-bottom: 5px;
+        .item {
+          display: flex;
+          padding: 5px;
+          align-items: center;
+          justify-content: space-between;
+          .item-content {
+            margin: 0;
+          }
+          .right-controls {
+            display: flex;
+          }
+        }
+      }
+    }
+  }
+
+  .sets-col ul li .set {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 300px;
+    flex-shrink: 0;
+    flex-wrap: nowrap;
+    border: 1px solid #ccc;
+    border-radius: 5px 5px 0 0;
+    width: 100%;
+    .set-heading {
+      background-color: #eee;
+      display: flex;
+      padding: 5px;
+      border-bottom: 1px solid #eee;
+    }
+    .set-body {
+      padding: 5px;
+      background-color: white;
+      ul {
+        padding: 0;
+        margin: 0;
+        li {
+          margin-top: 10px;
+          margin-bottom: 10px;
+          list-style: none;
+          display: flex;
+          flex-direction: column;
+          .association {
+            display: flex;
+            padding: 5px;
+            align-items: center;
+            justify-content: space-between;
+            .association-data {
+              display: flex;
+              width:100%;
+              min-height: 34px;
+              padding: 5px;
+              margin-right: 5px;
+              align-items: center;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              overflow: hidden;
+            }
+          }
+        }
+      }
+    }
+  }
 }

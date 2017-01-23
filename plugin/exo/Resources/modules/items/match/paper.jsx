@@ -168,13 +168,6 @@ export class MatchPaper extends Component
 
   handleWindowResize() {
     this.jsPlumbInstance.repaintEverything()
-    // can not use repaintEverything here (in the second tab it does not work... oO)
-    // this method works... most of the time
-    /*this.jsPlumbInstance.getConnections().forEach(conn => {
-      this.jsPlumbInstance.detach(conn)
-    })
-
-    this.drawAnswers()*/
   }
 
   // switch tab handler

@@ -28,64 +28,42 @@ DropBox.propTypes = {
 
 DropBox = makeDroppable(DropBox, 'ITEM')
 
-class Association extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      showFeedback: false
-    }
-  }
-
-  render() {
-    return (
-      <div className="association">
-        <div className="first-row">
-          <div className="association-data" dangerouslySetInnerHTML={{__html: this.props.association._itemData}} />
-          <div className="right-controls">
-            <TooltipButton
-              id={`ass-${this.props.association.itemId}-${this.props.association.setId}-delete`}
-              className="fa fa-trash-o"
-              title={t('delete')}
-              onClick={() => this.props.handleItemRemove(this.props.association.setId, this.props.association.itemId)}
-            />
-          </div>
-        </div>
+const Association = props =>
+  <div className="association">
+    <div className="first-row">
+      <div className="association-data" dangerouslySetInnerHTML={{__html: props.association._itemData}} />
+      <div className="right-controls">
+        <TooltipButton
+          id={`ass-${props.association.itemId}-${props.association.setId}-delete`}
+          className="fa fa-trash-o"
+          title={t('delete')}
+          onClick={() => props.handleItemRemove(props.association.setId, props.association.itemId)}
+        />
       </div>
-    )
-  }
-}
+    </div>
+  </div>
 
 Association.propTypes = {
   association: T.object.isRequired,
   handleItemRemove: T.func.isRequired
 }
 
-class Set extends Component {
-
-  constructor(props) {
-    super(props)
-  }
-
-  render(){
-    return (
-        <div className="set">
-          <div className="set-heading">
-            <div className="set-heading-content" dangerouslySetInnerHTML={{__html: this.props.set.data}} />
-          </div>
-          <div className="set-body">
-            <ul>
-            { this.props.associations.map(ass =>
-              <li key={`${ass.itemId}-${ass.setId}`}>
-                <Association handleItemRemove={this.props.onAssociationItemRemove} association={ass}/>
-              </li>
-            )}
-            </ul>
-            <DropBox object={this.props.set} onDrop={this.props.onDrop} />
-          </div>
-        </div>
-    )
-  }
-}
+const Set = props =>
+  <div className="set">
+    <div className="set-heading">
+      <div className="set-heading-content" dangerouslySetInnerHTML={{__html: props.set.data}} />
+    </div>
+    <div className="set-body">
+      <ul>
+      { props.associations.map(ass =>
+        <li key={`${ass.itemId}-${ass.setId}`}>
+          <Association handleItemRemove={props.onAssociationItemRemove} association={ass}/>
+        </li>
+      )}
+      </ul>
+      <DropBox object={props.set} onDrop={props.onDrop} />
+    </div>
+  </div>
 
 Set.propTypes = {
   set: T.object.isRequired,

@@ -110,11 +110,11 @@ class SetDefinition extends AbstractDefinition
     public function correctAnswer(AbstractQuestion $question, $answer)
     {
         $corrected = new CorrectedAnswer();
-        foreach ($question->getAssociations() as $association) {
+        /*foreach ($question->getAssociations() as $association) {
             if (is_array($answer)) {
                 $found = false;
                 foreach ($answer as $givenAnswer) {
-                    if (null !== $association->getProposal() && $association->getProposal()->getUuid() === $givenAnswer->setId &&  $association->getLabel()->getUuid() === $givenAnswer->itemId) {
+                    if (null !== $association->getProposal() && $association->getProposal()->getUuid() === $givenAnswer->setId && $association->getLabel()->getUuid() === $givenAnswer->itemId) {
                         $found = true;
                         if (0 < $association->getScore()) {
                             $corrected->addExpected($association);
@@ -127,7 +127,7 @@ class SetDefinition extends AbstractDefinition
                     $corrected->addMissing($association);
                 }
             }
-        }
+        }*/
         return $corrected;
     }
 
@@ -135,12 +135,11 @@ class SetDefinition extends AbstractDefinition
     {
         $expected = [];
 
-        $expected = array_filter($question->getAssociations()->toArray(), function (Association $association) {
+        /*$expected = array_filter($question->getAssociations()->toArray(), function (Association $association) {
             return 0 < $association->getScore();
         });
-
+*/
         return $expected;
-        return [];
     }
 
     public function getStatistics(AbstractQuestion $setQuestion, array $answers)
