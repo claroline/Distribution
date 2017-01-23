@@ -104,15 +104,13 @@ class ExerciseController extends AbstractController
             }
         }
 
-        if (empty($errors)) {
-            // Exercise updated
-            return new JsonResponse(
-                $this->exerciseManager->export($exercise, [Transfer::INCLUDE_SOLUTIONS])
-            );
-        } else {
+        if (!empty($errors)) {
             // Invalid data received
             return new JsonResponse($errors, 422);
         }
+
+        // Exercise updated
+        return new JsonResponse(null, 204);
     }
 
     /**
