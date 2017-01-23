@@ -43,17 +43,28 @@ function reduce(item = {}, action = {}) {
           _clientWidth: action.width,
           _clientHeight: action.height
         }),
-        solutions: item.solutions.map(solution => Object.assign({}, solution, {
-          area: Object.assign({}, solution.area, {
-            coords: solution.area.coords.map(coords => Object.assign({}, coords, {
-              _clientX: toClient(coords.x),
-              _clientY: toClient(coords.y)
-            })),
-            _clientRadius: solution.area.shape === SHAPE_CIRCLE ?
-              toClient(solution.area.radius) :
-              solution.area._clientRadius
-          })
-        }))
+        solutions: item.solutions.map(solution => {
+          if (solution.area.shape === SHAPE_RECT) {
+            return Object.assign({}, solution, {
+              area: Object.assign({}, solution.area, {
+                coords: solution.area.coords.map(coords => Object.assign({}, coords, {
+                  _clientX: toClient(coords.x),
+                  _clientY: toClient(coords.y)
+                }))
+              })
+            })
+          } else {
+            return Object.assign({}, solution, {
+              area: Object.assign({}, solution.area, {
+                center: Object.assign({}, solution.area.center, {
+                  _clientX: toClient(solution.area.center.x),
+                  _clientY: toClient(solution.area.center.y)
+                }),
+                _clientRadius: toClient(solution.area.radius)
+              })
+            })
+          }
+        })
       })
     }
     case CREATE_AREA: {
@@ -68,18 +79,16 @@ function reduce(item = {}, action = {}) {
       const area = {
         id: makeId(),
         shape: item._mode === MODE_RECT ? SHAPE_RECT : SHAPE_CIRCLE,
-        color: 'blue',
-        score: 1,
-        feedback: ''
+        color: 'blue'
       }
 
       if (area.shape === SHAPE_CIRCLE) {
-        area.coords = [{
+        area.center = {
           x: absX,
           y: absY,
           _clientX: clientX,
           _clientY: clientY
-        }]
+        }
         area.radius = absHalfSize
         area._clientRadius = clientHalfSize
       } else {
@@ -101,7 +110,11 @@ function reduce(item = {}, action = {}) {
 
       return Object.assign({}, item, {
         pointers: item.pointers + 1,
-        solutions: [...item.solutions, {area}]
+        solutions: [...item.solutions, {
+          score: 1,
+          feedback: '',
+          area
+        }]
       })
     }
   }
@@ -112,12 +125,11 @@ function blankImage() {
   return {
     id: makeId(),
     type: '',
-    url: '',
+    data: '',
     width: 0,
     height: 0,
     _clientWidth: 0,
     _clientHeight: 0,
-    _type: '',
     _size: ''
   }
 }
@@ -131,7 +143,7 @@ function decorate(item) {
 }
 
 function validate(item) {
-  if (item.image._type && item.image._type.indexOf('image') !== 0) {
+  if (item.image.type && item.image.type.indexOf('image') !== 0) {
     return {image: tex('graphic_error_not_an_image')}
   }
 
@@ -139,7 +151,7 @@ function validate(item) {
     return {image: tex('graphic_error_image_too_large')}
   }
 
-  if (!item.image.url) {
+  if (!item.image.data) {
     return {image: tex('graphic_error_no_image', {count: MAX_IMG_SIZE})}
   }
 

@@ -103,10 +103,10 @@ describe('Graphic reducer', () => {
                 _clientY: 10 + (AREA_DEFAULT_SIZE / 2)
               }
             ],
-            color: 'blue',
-            score: 1,
-            feedback: ''
-          }
+            color: 'blue'
+          },
+          score: 1,
+          feedback: ''
         }
       ]
     }))
@@ -142,20 +142,18 @@ describe('Graphic reducer', () => {
           area: {
             id: lastId(),
             shape: SHAPE_CIRCLE,
-            coords: [
-              {
-                x: 100,
-                y: 80,
-                _clientX: 50,
-                _clientY: 40
-              }
-            ],
+            center: {
+              x: 100,
+              y: 80,
+              _clientX: 50,
+              _clientY: 40
+            },
             radius: (AREA_DEFAULT_SIZE / 2) * 2,
             _clientRadius: AREA_DEFAULT_SIZE / 2,
-            color: 'blue',
-            score: 1,
-            feedback: ''
-          }
+            color: 'blue'
+          },
+          score: 1,
+          feedback: ''
         }
       ],
       _mode: MODE_CIRCLE
@@ -174,7 +172,7 @@ describe('<Graphic/>', () => {
     const graphic = mount(
       <Graphic
         item={{
-          image: {url: ''},
+          image: {data: ''},
           solutions: [],
           _mode: MODE_CIRCLE
         }}
@@ -196,12 +194,11 @@ function itemFixture(props = {}) {
     image: {
       id: 'ID-IMG',
       type: '',
-      url: '',
+      data: '',
       width: 0,
       height: 0,
       _clientWidth: 0,
       _clientHeight: 0,
-      _type: "",
       _size: ""
     },
     pointers: 0,

@@ -8,56 +8,56 @@ namespace UJM\ExoBundle\Library\Question;
 final class QuestionType
 {
     /**
-     * The user have to choose one (or many) proposition(s) in a set.
+     * The user has to choose one (or many) proposition(s) in a set.
      *
      * @var string
      */
     const CHOICE = 'application/x.choice+json';
 
     /**
-     * The user have to fill hole(s) in a text.
+     * The user has to fill hole(s) in a text.
      *
      * @var string
      */
     const CLOZE = 'application/x.cloze+json';
 
     /**
-     * The user have to find element(s) on an image.
+     * The user has to find element(s) on an image.
      *
      * @var string
      */
     const GRAPHIC = 'application/x.graphic+json';
 
     /**
-     * The user have to associate elements together.
+     * The user has to associate elements together.
      *
      * @var string
      */
     const MATCH = 'application/x.match+json';
 
     /**
-     * The user have to associate one element to another.
+     * The user has to associate one element to another.
      *
      * @var string
      */
     const PAIR = 'application/x.pair+json';
 
     /**
-     * The user have to classify elements into categories.
+     * The user has to classify elements into categories.
      *
      * @var string
      */
     const SET = 'application/x.set+json';
 
     /**
-     * The user have to write his answer using predefined keywords.
+     * The user has to write his answer using predefined keywords.
      *
      * @var string
      */
     const WORDS = 'application/x.words+json';
 
     /**
-     * The user have to write his answer.
+     * The user has to write his answer.
      *
      * @var string
      */

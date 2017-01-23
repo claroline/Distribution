@@ -72,7 +72,7 @@ class GraphicQuestionSerializer implements SerializerInterface
         $imageMeta = new \stdClass();
         $imageMeta->title = $questionImg->getTitle();
 
-        $image->id = (string) $questionImg->getId();
+        $image->id = $questionImg->getId();
         $image->meta = $imageMeta;
         $image->url = $questionImg->getUrl();
         $image->width = $questionImg->getWidth();

@@ -1,12 +1,12 @@
 import React, {Component, PropTypes as T} from 'react'
 import get from 'lodash/get'
 import {tex} from './../../utils/translate'
-import {MODE_SELECT, MAX_IMG_SIZE} from './enums'
+import {MODE_SELECT, MAX_IMG_SIZE, SHAPE_RECT} from './enums'
 import {actions} from './actions'
 import {ErrorBlock} from './../../components/form/error-block.jsx'
 import {ImageInput} from './components/image-input.jsx'
 import {ModeSelector} from './components/mode-selector.jsx'
-import {AnswerArea} from './components/answer-area.jsx'
+import {CircleArea, RectArea} from './components/answer-areas.jsx'
 
 export class Graphic extends Component {
   constructor(props) {
@@ -27,12 +27,12 @@ export class Graphic extends Component {
 
   renderImageContainerContent() {
     // because we need to access various DOM-related APIs to deal with the image
-    // and because letting React compare the url/src attribute (which can be a
+    // and because letting React compare the data/src attribute (which can be a
     // a very long string if the image is large) could be too heavy, the img tag
     // is rendered outside the React pipeline and just attached to a leaf node
     // of the component.
-    if (this.props.item.image.url) {
-      this.createImage(this.props.item.image.url)
+    if (this.props.item.image.data) {
+      this.createImage(this.props.item.image.data)
     } else {
       this.imgContainer.innerHTML = tex('graphic_drop_or_pick')
     }
@@ -44,11 +44,11 @@ export class Graphic extends Component {
     if (img) {
       img.className = this.props.item._mode !== MODE_SELECT ? 'point-mode' : ''
 
-      if (prevProps.item.image.url !== this.props.item.image.url) {
-        if (!this.props.item.image.url) {
+      if (prevProps.item.image.data !== this.props.item.image.data) {
+        if (!this.props.item.image.data) {
           this.imgContainer.innerHTML = tex('graphic_drop_or_pick')
         } else {
-          img.src = this.props.item.image.url
+          img.src = this.props.item.image.data
         }
       }
     }
@@ -87,12 +87,12 @@ export class Graphic extends Component {
       const img = this.createImage(e.target.result)
       img.onload = () => {
         this.props.onChange(actions.selectImage({
-          url: e.target.result,
+          type: file.type,
+          data: e.target.result,
           width: img.naturalWidth,
           height: img.naturalHeight,
           _clientWidth: img.width,
           _clientHeight: img.height,
-          _type: file.type,
           _size: file.size
         }))
       }
@@ -149,16 +149,24 @@ export class Graphic extends Component {
           <div className="img-widget">
             <div className="img-container" ref={el => this.imgContainer = el}/>
             {this.props.item.solutions.map(solution =>
-              <AnswerArea
-                key={solution.area.id}
-                shape={solution.area.shape}
-                color={solution.area.color}
-                radius={solution.area._clientRadius}
-                coords={solution.area.coords.map(coords => ({
-                  x: coords._clientX,
-                  y: coords._clientY
-                }))}
-              />
+              solution.area.shape === SHAPE_RECT ?
+                <RectArea
+                  key={solution.area.id}
+                  color={solution.area.color}
+                  coords={solution.area.coords.map(coords => ({
+                    x: coords._clientX,
+                    y: coords._clientY
+                  }))}
+                /> :
+                <CircleArea
+                  key={solution.area.id}
+                  color={solution.area.color}
+                  radius={solution.area._clientRadius}
+                  center={{
+                    x: solution.area.center._clientX,
+                    y: solution.area.center._clientY
+                  }}
+                />
             )}
           </div>
         </div>
@@ -170,11 +178,13 @@ export class Graphic extends Component {
 Graphic.propTypes = {
   item: T.shape({
     image: T.shape({
-      url: T.string.isRequired
+      data: T.string.isRequired
     }).isRequired,
     solutions: T.arrayOf(T.shape({
       area: T.shape({
-        id: T.string.isRequired
+        id: T.string.isRequired,
+        shape: T.string.isRequired,
+        color: T.string.isRequired
       }).isRequired,
     })).isRequired,
     _mode: T.string.isRequired,
