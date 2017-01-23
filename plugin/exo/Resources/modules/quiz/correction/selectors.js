@@ -1,6 +1,8 @@
 import {createSelector} from 'reselect'
 
+const quizId = state => state.quiz.id
 const correction = state => state.correction
+const questionsFetched = state => !!state.correction.questions
 const questions = createSelector(
   correction,
   (correction) => {
@@ -31,18 +33,23 @@ const hasCorrection = createSelector(
   correction,
   (correction) => {
     let result = false
-    correction['answers'].forEach(a => {
-      if (a.questionId === correction['currentQuestionId'] && a.score !== undefined && a.score !== null && !isNaN(a.score)) {
-        result = true
-      }
-    })
+
+    if (correction['answers']) {
+      correction['answers'].forEach(a => {
+        if (a.questionId === correction['currentQuestionId'] && a.score !== undefined && a.score !== null && !isNaN(a.score)) {
+          result = true
+        }
+      })
+    }
     return result
   }
 )
 
 export const selectors = {
+  quizId,
   questions,
   answers,
   currentQuestion,
-  hasCorrection
+  hasCorrection,
+  questionsFetched
 }

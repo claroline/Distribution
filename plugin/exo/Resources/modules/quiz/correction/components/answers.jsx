@@ -12,11 +12,9 @@ import {TooltipButton} from './../../../components/form/tooltip-button.jsx'
 export const AnswerRow = props =>
   <div>
     <div className="row answer-row">
-      <div>
-        <Panel key={props.id}>
-          <div dangerouslySetInnerHTML={{__html: props.data}}></div>
-        </Panel>
-      </div>
+      <Panel className="answer-panel" key={props.id}>
+        <div dangerouslySetInnerHTML={{__html: props.data}}></div>
+      </Panel>
       <div className="right-controls">
         <InputGroup className="score-input">
           <FormControl key={props.id}
@@ -48,7 +46,6 @@ export const AnswerRow = props =>
 AnswerRow.propTypes = {
   id: T.string.isRequired,
   questionId: T.string.isRequired,
-  type: T.string.isRequired,
   data: T.string.isRequired,
   score: T.number,
   scoreMax: T.number,
