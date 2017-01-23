@@ -9,7 +9,7 @@ export const REMOVE_ANSWERS = 'REMOVE_ANSWERS'
 
 export const actions = {}
 
-const setCurrentQuestion = makeActionCreator(QUESTION_CURRENT, 'id')
+const setCurrentQuestionId = makeActionCreator(QUESTION_CURRENT, 'id')
 const updateScore = makeActionCreator(SCORE_UPDATE, 'answerId', 'score')
 const removeAnswers = makeActionCreator(REMOVE_ANSWERS, 'ids')
 
@@ -22,7 +22,7 @@ actions.displayQuestions = () => {
 actions.displayQuestionAnswers = id => {
   invariant(id, 'Question id is mandatory')
   return (dispatch) => {
-    dispatch(setCurrentQuestion(id))
+    dispatch(setCurrentQuestionId(id))
     dispatch(baseActions.updateViewMode(VIEW_CORRECTION_ANSWERS))
   }
 }
@@ -39,7 +39,7 @@ actions.saveCorrection = (questionId) => {
     let data = []
     let indexes = []
     const state = getState()
-    state.openAnswers.forEach(a => {
+    state.correction['answers'].forEach(a => {
       if (a.questionId === questionId && a.score !== undefined && a.score !== null && !isNaN(a.score)) {
         data.push({id: a.id, score: a.score})
         indexes.push(a.id)

@@ -1,17 +1,14 @@
 import {createSelector} from 'reselect'
 
-const currentQuestionId = state => state.currentQuestion
-const questionsList = state => state.questions
-const answersList = state => state.openAnswers
+const correction = state => state.correction
 const questions = createSelector(
-  questionsList,
-  answersList,
-  (questionsList, answersList) => {
+  correction,
+  (correction) => {
     let data = []
-    questionsList.forEach(q => {
+    correction['questions'].forEach(q => {
       data.push({
         question: q,
-        answers: answersList.filter(a => a.questionId === q.id)
+        answers: correction['answers'].filter(a => a.questionId === q.id)
       })
     })
 
@@ -19,26 +16,23 @@ const questions = createSelector(
   }
 )
 const answers = createSelector(
-  answersList,
-  currentQuestionId,
-  (answersList, currentQuestionId) => {
-    return answersList.filter(a => a.questionId === currentQuestionId)
+  correction,
+  (correction) => {
+    return correction['answers'].filter(a => a.questionId === correction['currentQuestionId'])
   }
 )
 const currentQuestion = createSelector(
-  questionsList,
-  currentQuestionId,
-  (questionsList, currentQuestionId) => {
-    return questionsList.find(question => question.id === currentQuestionId)
+  correction,
+  (correction) => {
+    return correction['questions'].find(question => question.id === correction['currentQuestionId'])
   }
 )
 const hasCorrection = createSelector(
-  answersList,
-  currentQuestionId,
-  (answersList, currentQuestionId) => {
+  correction,
+  (correction) => {
     let result = false
-    answersList.forEach(a => {
-      if (a.questionId === currentQuestionId && a.score !== undefined && a.score !== null && !isNaN(a.score)) {
+    correction['answers'].forEach(a => {
+      if (a.questionId === correction['currentQuestionId'] && a.score !== undefined && a.score !== null && !isNaN(a.score)) {
         result = true
       }
     })

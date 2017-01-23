@@ -103,7 +103,7 @@ function mapStateToProps(state) {
     hasPapers: select.hasPapers(state),
     saveEnabled: select.saveEnabled(state),
     modal: select.modal(state),
-    currentQuestionId: select.currentQuestion(state),
+    currentQuestionId: state.correction.currentQuestionId,
     saveCorrectionEnabled: correctionSelectors.hasCorrection(state)
   }
 }
