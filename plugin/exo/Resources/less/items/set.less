@@ -172,45 +172,32 @@
 /* PLAYER */
 .set-question-player {
   padding: 0;
-
-  .pool-col {
+  position: relative;
+  display: flex;
+  justify-content: space-around;
+  .items-col {
     min-width: 300px;
     max-width: 300px;
-
-    .item-list  {
-      ul {
-        padding: 0;
-        margin: 0;
-        li {
-          list-style: none;
+    padding: 5px;
+    background-color: #f5f5f5;
+    border: 1px solid black;
+    ul {
+      padding: 0;
+      margin: 0;
+      li {
+        list-style: none;
+        background-color: #eee;
+        margin-bottom: 5px;
+        .item {
           display: flex;
-          background-color: #eee;
-          margin-bottom: 15px;
-          .item {
+          padding: 5px;
+          align-items: center;
+          justify-content: space-between;
+          .item-content {
+            margin: 0;
+          }
+          .right-controls {
             display: flex;
-            padding: 5px;
-            flex-basis: 300px;
-            flex-shrink: 0;
-            flex-wrap: nowrap;
-            justify-content: space-between;
-            .text-fields {
-              flex-grow: 1;
-              .text-editor {
-                word-break: break-all;
-                min-width: 150px;
-              }
-              .feedback-container {
-                margin-left: 12px;
-              }
-            }
-            .right-controls {
-              display: flex;
-              align-items: flex-start;
-              .odd-score {
-                width: 60px;
-                margin-left: 8px;
-              }
-            }
           }
         }
       }
@@ -221,13 +208,16 @@
   .sets-col {
     min-width: 300px;
     max-width: 300px;
+    padding: 5px;
+    background-color: #f5f5f5;
+    border: 1px solid black;
     ul {
       padding: 0;
       margin: 0;
       li {
         list-style: none;
-        display: flex;
-        margin-bottom: 15px;
+        background-color: #eee;
+        margin-bottom: 5px;
 
         .set {
           display: flex;
@@ -237,9 +227,7 @@
           flex-wrap: nowrap;
           border: 1px solid #ccc;
           border-radius: 5px 5px 0 0;
-          width: 350px;
-          min-width: 350px;
-          max-width: 350px;
+          width: 100%;
           .set-heading {
             background-color: #eee;
             display: flex;
@@ -257,6 +245,7 @@
 
           .set-body {
             padding: 5px;
+            background-color: white;
             ul {
               padding: 0;
               margin: 0;

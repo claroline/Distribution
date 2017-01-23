@@ -108,11 +108,14 @@ class SetDefinition extends AbstractDefinition
     public function correctAnswer(AbstractQuestion $question, $answer)
     {
         // TODO: Implement correctAnswer() method.
+        $corrected = new CorrectedAnswer();
+        return $corrected;
     }
 
     public function expectAnswer(AbstractQuestion $question)
     {
         // TODO: Implement expectAnswer() method.
+        return [];
     }
 
     public function getStatistics(AbstractQuestion $setQuestion, array $answers)

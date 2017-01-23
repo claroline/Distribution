@@ -37,7 +37,6 @@ export const actions = {
 
 function decorate(question) {
 
-  // consider items that are not in solutions.odd
   const itemDeletable = question.items.filter(item => undefined === question.solutions.odd.find(el => el.itemId === item.id)).length > 1
   const itemsWithDeletable = question.items.map(
     item => Object.assign({}, item, {
@@ -51,7 +50,7 @@ function decorate(question) {
     })
   )
 
-  // solutions associations ? add solution item data
+  // add item data to solution
   const associationsWithItemData = getAssociationsWithItemData(question)
 
   let decorated = Object.assign({}, question, {
@@ -97,8 +96,7 @@ function reduce(item = {}, action) {
           {
             id: makeId(),
             type: 'text/html',
-            data: '',
-            _deletable: false
+            data: ''
           }
         ],
         solutions: {
@@ -228,7 +226,6 @@ function reduce(item = {}, action) {
       return newItem
     }
 
-
     case ADD_ASSOCIATION: {
       const newItem = cloneDeep(item)
       const toAdd = {
@@ -277,7 +274,7 @@ function validate(item) {
     errors.items = tex('set_item_empty_data_error')
   }
 
-  // no item (that are not odd items) should be orphean (ie not used in any solution)
+  // no item (that are not odd items) should be orphean (ie not used in any set)
   if (item.items.some(el => {
     return item.solutions.associations.find(association => association.itemId === el.id) === undefined &&
       item.solutions.odd.find(o => o.itemId === el.id) === undefined

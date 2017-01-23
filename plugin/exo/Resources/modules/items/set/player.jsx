@@ -3,10 +3,9 @@ import classes from 'classnames'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 import Tooltip from 'react-bootstrap/lib/Tooltip'
 import {tex, t} from './../../utils/translate'
-import {Textarea} from './../../components/form/textarea.jsx'
 import {makeDraggable, makeDroppable} from './../../utils/dragAndDrop'
 import {TooltipButton} from './../../components/form/tooltip-button.jsx'
-import {actions} from './editor'
+import shuffle from 'lodash/shuffle'
 
 let DropBox = props => {
   return props.connectDropTarget (
@@ -39,7 +38,7 @@ class Association extends Component {
 
   render() {
     return (
-      <div className={classes('association', {'positive-score' : this.props.association.score > 0}, {'negative-score': this.props.association.score < 1})}>
+      <div className="association">
         <div className="first-row">
           <div className="association-data" dangerouslySetInnerHTML={{__html: this.props.association._itemData}} />
           <div className="right-controls">
@@ -48,7 +47,7 @@ class Association extends Component {
               className="fa fa-trash-o"
               title={t('delete')}
               onClick={() => this.props.onChange(
-                actions.removeAssociation(this.props.association.setId, this.props.association.itemId))
+                this.props.handleItemRemove(this.props.association.setId, this.props.association.itemId))
               }
             />
           </div>
@@ -60,7 +59,8 @@ class Association extends Component {
 
 Association.propTypes = {
   onChange: T.func.isRequired,
-  association: T.object.isRequired
+  association: T.object.isRequired,
+  handleItemRemove: T.func.isRequired
 }
 
 class Set extends Component {
@@ -73,32 +73,13 @@ class Set extends Component {
     return (
         <div className="set">
           <div className="set-heading">
-            <div className="text-fields">
-              <Textarea
-                onChange={(value) => this.props.onChange(
-                  actions.updateSet(this.props.set.id, 'data', value)
-                )}
-                id={`${this.props.set.id}-data`}
-                content={this.props.set.data}
-              />
-            </div>
-            <div className="right-controls">
-              <TooltipButton
-                id={`set-${this.props.set.id}-delete`}
-                className="fa fa-trash-o"
-                title={t('delete')}
-                enabled={this.props.set._deletable}
-                onClick={() => this.props.onChange(
-                  actions.removeSet(this.props.set.id))
-                }
-              />
-            </div>
+            <div className="set-heading-content" dangerouslySetInnerHTML={{__html: this.props.set.data}} />
           </div>
           <div className="set-body">
             <ul>
             { this.props.associations.map(ass =>
               <li key={`${ass.itemId}-${ass.setId}`}>
-                <Association association={ass} onChange={this.props.onChange}/>
+                <Association handleItemRemove={this.props.onAssociationItemRemove} association={ass} onChange={this.props.onChange}/>
               </li>
             )}
             </ul>
@@ -113,79 +94,49 @@ Set.propTypes = {
   onChange: T.func.isRequired,
   set: T.object.isRequired,
   onDrop: T.func.isRequired,
-  associations: T.arrayOf(T.object).isRequired
+  associations: T.arrayOf(T.object).isRequired,
+  onAssociationItemRemove: T.func.isRequired
 }
 
-class SetList extends Component {
+const SetList = props =>
+  <ul>
+    {props.sets.map((set) =>
+      <li key={`set-id-${set.id}`}>
+        <Set
+          associations={
+            props.answers.filter(answer => answer.setId === set.id) || []
+          }
+          onDrop={
+            (source, target) => props.onAssociationItemDrop(source, target)
+          }
+          onAssociationItemRemove={props.onAssociationItemRemove}
+          onChange={props.onChange}
+          set={set}
+        />
+      </li>
+    )}
+  </ul>
 
-  constructor(props) {
-    super(props)
-  }
-
-  /**
-   * handle item drop
-   * @var {source} dropped item (item)
-   * @var {target} target item (set)
-   */
-  onItemDrop(source, target){
-    // @TODO add solution (check the item is not already inside before adding it)
-    if(undefined === this.props.solutions.associations.find(el => el.setId === target.object.id && el.itemId === source.item.id)){
-      this.props.onChange(actions.addAssociation(target.object.id, source.item.id, source.item.data))
-    }
-  }
-
-  render(){
-    return (
-      <div className="sets">
-        <ul>
-          {this.props.sets.map((set) =>
-            <li key={`set-id-${set.id}`}>
-              <Set
-                associations={
-                  this.props.solutions.associations.filter(association => association.setId === set.id) || []
-                }
-                onDrop={
-                  (source, target) => this.onItemDrop(source, target)
-                }
-                onChange={this.props.onChange}
-                set={set}
-              />
-            </li>
-          )}
-        </ul>
-      </div>
-    )
-  }
-}
 
 SetList.propTypes = {
   onChange: T.func.isRequired,
   sets: T.arrayOf(T.object).isRequired,
-  solutions: T.shape({
-    associations: T.arrayOf(T.object).isRequired,
-    odds: T.arrayOf(T.object)
-  }).isRequired
+  answers: T.arrayOf(T.object).isRequired,
+  onAssociationItemRemove: T.func.isRequired,
+  onAssociationItemDrop: T.func.isRequired
 }
 
 let Item = props => {
   return props.connectDragPreview (
     <div className="item">
-      <div className="text-fields">
-        <Textarea
-          onChange={(value) => props.onChange(
-            actions.updateItem(props.item.id, 'data', value, false)
-          )}
-          id={`${props.item.id}-data`}
-          content={props.item.data}
-        />
-      </div>
+      <div className="item-content" dangerouslySetInnerHTML={{__html: props.item.data}} />
       <div className="right-controls">
         {props.connectDragSource(
           <div>
             <OverlayTrigger
               placement="top"
               overlay={
-                <Tooltip id={`set-item-${props.item.id}-drag`}>{t('move')}</Tooltip>
+                <Tooltip id={`item-${props.item.id}-drag`}>{t('move')}</Tooltip>
               }>
               <span
                 title={t('move')}
@@ -216,7 +167,6 @@ Item.propTypes = {
 Item = makeDraggable(Item, 'ITEM')
 
 const ItemList = props =>
-  <div className="item-list">
     <ul>
       { props.items.map((item) =>
         <li key={item.id}>
@@ -224,35 +174,83 @@ const ItemList = props =>
         </li>
       )}
     </ul>
-  </div>
 
 
 ItemList.propTypes = {
   items:  T.arrayOf(T.object).isRequired,
   onChange: T.func.isRequired,
-  solutions: T.object.isRequired
+  answers: T.arrayOf(T.object).isRequired
 }
 
-const SetPlayer = props =>
-  <div className="set-question-player">
-      <div className="items-col">
-        <ItemList onChange={props.onChange} items={props.item.items} />
+class SetPlayer extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      items: this.randomize(props.item.items, props.item.random),
+      sets: this.randomize(props.item.sets, props.item.random)
+    }
+  }
+
+  randomize(items, random) {
+    return random ? shuffle(items) : items
+  }
+
+  handleAssociationItemRemove(setId, itemId) {
+    console.log('set item removed')
+  }
+
+
+    /**
+     * handle item drop
+     * @var {source} dropped item (item)
+     * @var {target} target item (set)
+     */
+  handleAssociationItemDrop(source, target) {
+    console.log('item droppped')
+    console.log('source', source)
+    console.log('target' , target)
+    if(undefined === this.props.answer.find(el => el.setId === target.object.id && el.itemId === source.item.id)){
+      // do something to add to solution
+      console.log('add to answer')
+      this.props.onChange(
+          [{itemId: source.item.id, setId: target.object.id}].concat(this.props.answer)
+       )
+    }
+  }
+
+  render() {
+    return (
+      <div className="set-question-player">
+          <div className="items-col">
+            <ItemList onChange={this.props.onChange} answers={this.props.answer} items={this.state.items} />
+          </div>
+          <div className="sets-col">
+            <SetList
+              onAssociationItemRemove={(setId, itemId) => this.handleAssociationItemRemove(setId, itemId)}
+              onAssociationItemDrop={(source, target) => this.handleAssociationItemDrop(source, target)}
+              onChange={this.props.onChange}
+              answers={this.props.answer}
+              sets={this.state.sets} />
+          </div>
       </div>
-      <div className="sets-col">
-        <SetList onChange={this.props.onChange} sets={props.item.sets} />
-      </div>
-  </div>
+    )
+  }
+}
 
 SetPlayer.propTypes = {
   item: T.shape({
     id: T.string.isRequired,
     random: T.bool.isRequired,
-    penalty: T.number.isRequired,
     sets: T.arrayOf(T.object).isRequired,
     items: T.arrayOf(T.object).isRequired
   }).isRequired,
-  answer: T.bool.isRequired,
+  answer: T.array.isRequired,
   onChange: T.func.isRequired
+}
+
+SetPlayer.defaultProps = {
+  answer: []
 }
 
 export {SetPlayer}

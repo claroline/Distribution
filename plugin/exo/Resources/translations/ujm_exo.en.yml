@@ -487,6 +487,7 @@ set_at_least_one_item: There must be at least one item.
 set_at_least_one_set: There must be at least one set.
 set_set_empty_data_error: Set data can not be empty.
 set_no_solution: There must be at least one solution.
+set_no_orphean_items: Each item should be used at least in one set.
 set_score_not_valid: Each score must be a valid number.
 set_no_valid_solution: At least one solution must have a score greater or equal to 0.
 set_odd_score_not_valid: Odd score must be inferior or equal to 0.

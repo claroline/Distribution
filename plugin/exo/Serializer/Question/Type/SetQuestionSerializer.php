@@ -75,7 +75,6 @@ class SetQuestionSerializer implements SerializerInterface
             $questionData->solutions = $this->serializeSolutions($setQuestion);
         }
 
-
         return $questionData;
     }
 
@@ -242,7 +241,7 @@ class SetQuestionSerializer implements SerializerInterface
                 if ($entityAssociation->getLabel()->getUuid() === $solution->itemId &&
                       (
                         ($entityAssociation->getProposal() &&  $entityAssociation->getProposal()->getUuid() === $solution->setId) ||
-                        (!$entityAssociation->getProposal() && !$solution->setId)
+                        (!$entityAssociation->getProposal() && !$solution->itemId)
                       )
                 ) {
                     $association = $entityAssociation;
@@ -275,7 +274,9 @@ class SetQuestionSerializer implements SerializerInterface
             }
 
             $association->setScore($solution->score);
-            $association->setFeedback($solution->feedback);
+            if (isset($solution->feedback)) {
+                $association->setFeedback($solution->feedback);
+            }
             $setQuestion->addAssociation($association);
         }
 

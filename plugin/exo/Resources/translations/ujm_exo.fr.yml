@@ -483,6 +483,7 @@ set_at_least_one_item: Il doit y avoir au moins un item.
 set_at_least_one_set: Il doit y avoir au moins un set.
 set_set_empty_data_error: Les données d'un set ne peuvent être vides.
 set_no_solution: Il doit y avoir au moins une solution.
+set_no_orphean_items: Chaque item doit être utilisé dans au moins un set.
 set_score_not_valid: Un score doit être un chiffre valide.
 set_no_valid_solution: Il doit y avoir au moins une solution avec un score supérieur à 0.
 set_odd_score_not_valid: Le score d'un intrus doit être inférieur ou égal à 0.

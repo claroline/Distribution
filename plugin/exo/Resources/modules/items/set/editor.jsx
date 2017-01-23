@@ -159,7 +159,7 @@ class SetList extends Component {
    * @var {target} target item (set)
    */
   onItemDrop(source, target){
-    // @TODO add solution (check the item is not already inside before adding it)
+    // add solution (check the item is not already inside before adding it)
     if(undefined === this.props.solutions.associations.find(el => el.setId === target.object.id && el.itemId === source.item.id)){
       this.props.onChange(actions.addAssociation(target.object.id, source.item.id, source.item.data))
     }
