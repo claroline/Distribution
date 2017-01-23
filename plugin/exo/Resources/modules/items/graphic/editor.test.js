@@ -48,14 +48,18 @@ describe('Graphic reducer', () => {
       type: 'image/jpeg',
       url: 'foo',
       width: 200,
-      height: 100
+      height: 100,
+      _clientWidth: 100,
+      _clientHeight: 50
     }))
     ensure.equal(reduced, itemFixture({
       image: {
         type: 'image/jpeg',
         url: 'foo',
         width: 200,
-        height: 100
+        height: 100,
+        _clientWidth: 100,
+        _clientHeight: 50
       }
     }))
   })
@@ -198,8 +202,7 @@ function itemFixture(props = {}) {
       width: 0,
       height: 0,
       _clientWidth: 0,
-      _clientHeight: 0,
-      _size: ""
+      _clientHeight: 0
     },
     pointers: 0,
     solutions: [],

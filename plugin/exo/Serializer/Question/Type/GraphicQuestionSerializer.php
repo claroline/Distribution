@@ -72,7 +72,14 @@ class GraphicQuestionSerializer implements SerializerInterface
 
         $image->id = $questionImg->getUuid();
         $image->type = $questionImg->getType();
-        $image->url = $questionImg->getUrl();
+
+        if (strpos($questionImg->getUrl(), './') === 0) {
+            // the way URLs were written previously isn't spec compliant
+            $image->url = substr($questionImg->getUrl(), 2);
+        } else {
+            $image->url = $questionImg->getUrl();
+        }
+
         $image->width = $questionImg->getWidth();
         $image->height = $questionImg->getHeight();
 
@@ -100,7 +107,7 @@ class GraphicQuestionSerializer implements SerializerInterface
             $imageBin = base64_decode($imageParts[1]);
             $file = "uploads/ujmexo/{$imageData->id}.{$typeParts[1]}";
             file_put_contents(__DIR__."/../../../../../../../../web/{$file}", $imageBin);
-            $image->setUrl("./{$file}");
+            $image->setUrl($file);
         }
 
         $graphicQuestion->setImage($image);
@@ -119,9 +126,7 @@ class GraphicQuestionSerializer implements SerializerInterface
             $solutionData = new \stdClass();
             $solutionData->area = $this->serializeArea($area);
             $solutionData->score = $area->getScore();
-            if ($area->getFeedback()) {
-                $solutionData->feedback = $area->getFeedback();
-            }
+            $solutionData->feedback = $area->getFeedback();
 
             return $solutionData;
         }, $graphicQuestion->getAreas()->toArray());
@@ -230,7 +235,10 @@ class GraphicQuestionSerializer implements SerializerInterface
 
         switch ($data->shape) {
             case 'circle':
-                $area->setValue("{$data->center->x},{$data->center->y}");
+                // legacy: the top left corner is stored, not the center
+                $x = $data->center->x - $data->radius;
+                $y = $data->center->y - $data->radius;
+                $area->setValue("{$x},{$y}");
                 $area->setSize($data->radius * 2);
                 break;
             case 'rect':

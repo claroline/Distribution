@@ -20,7 +20,9 @@ function reduce(item = {}, action = {}) {
   switch (action.type) {
     case ITEM_CREATE:
       return decorate(Object.assign({}, item, {
-        image: blankImage()
+        image: blankImage(),
+        pointers: 0,
+        solutions: []
       }))
     case SELECT_MODE:
       return Object.assign({}, item, {
@@ -72,7 +74,7 @@ function reduce(item = {}, action = {}) {
       const clientY = action.y
       const clientHalfSize = AREA_DEFAULT_SIZE / 2
       const sizeRatio = item.image.width / item.image._clientWidth
-      const toAbs = length => Math.floor(length * sizeRatio)
+      const toAbs = length => Math.round(length * sizeRatio)
       const absX = toAbs(clientX)
       const absY = toAbs(clientY)
       const absHalfSize = toAbs(clientHalfSize)
@@ -127,17 +129,39 @@ function blankImage() {
     type: '',
     data: '',
     width: 0,
-    height: 0,
-    _clientWidth: 0,
-    _clientHeight: 0,
-    _size: ''
+    height: 0
   }
 }
 
 function decorate(item) {
   return Object.assign({}, item, {
-    pointers: 0,
-    solutions: [],
+    image: Object.assign({}, item.image, {
+      _clientWidth: 0,
+      _clientHeight: 0,
+    }),
+    solutions: item.solutions.map(solution => {
+      if (solution.area.shape === SHAPE_RECT) {
+        return Object.assign({}, solution, {
+          area: Object.assign({}, solution.area, {
+            coords: solution.area.coords.map(coords => Object.assign({}, coords, {
+              // we don't know the real values until image has been loaded into the dom
+              _clientX: 0,
+              _clientY: 0
+            }))
+          })
+        })
+      } else {
+        return Object.assign({}, solution, {
+          area: Object.assign({}, solution.area, {
+            center: Object.assign({}, solution.area.center, {
+              _clientX: 0,
+              _clientY: 0
+            }),
+            _clientRadius: 0
+          })
+        })
+      }
+    }),
     _mode: MODE_RECT
   })
 }
@@ -151,7 +175,7 @@ function validate(item) {
     return {image: tex('graphic_error_image_too_large')}
   }
 
-  if (!item.image.data) {
+  if (!item.image.data && !item.image.url) {
     return {image: tex('graphic_error_no_image', {count: MAX_IMG_SIZE})}
   }
 

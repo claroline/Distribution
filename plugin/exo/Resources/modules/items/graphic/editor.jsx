@@ -33,7 +33,8 @@ export class Graphic extends Component {
     // is rendered outside the React pipeline and just attached to a leaf node
     // of the component.
     if (this.props.item.image.data || this.props.item.image.url) {
-      this.createImage(this.props.item.image.data, this.props.item.image.url)
+      const img = this.createImage(this.props.item.image.data, this.props.item.image.url)
+      img.onload = () => this.props.onChange(actions.resizeImage(img.width, img.height))
     } else {
       this.imgContainer.innerHTML = tex('graphic_drop_or_pick')
     }
