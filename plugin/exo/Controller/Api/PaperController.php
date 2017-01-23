@@ -13,7 +13,6 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Question\Question;
-use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Manager\Attempt\PaperManager;
 use UJM\ExoBundle\Repository\PaperRepository;
@@ -194,28 +193,6 @@ class PaperController extends AbstractController
             'Content-Type' => 'application/force-download',
             'Content-Disposition' => 'attachment; filename="export.csv"',
         ]);
-    }
-
-    /**
-     * Saves the score of a question that need manual correction.
-     *
-     * @EXT\Route("/{id}/questions/{questionId}/score/{score}", name="exercise_save_score")
-     * @EXT\Method("PUT")
-     * @EXT\ParamConverter("question", class="UJMExoBundle:Question\Question", options={"mapping": {"questionId": "id"}})
-     *
-     * @param Question $question
-     * @param Paper    $paper
-     * @param int      $score
-     *
-     * @return JsonResponse
-     */
-    public function saveScoreAction(Question $question, Paper $paper, $score)
-    {
-        $this->assertHasPermission('ADMINISTRATE', $paper->getExercise());
-
-        $this->paperManager->recordScore($question, $paper, $score);
-
-        return new JsonResponse($this->paperManager->export($paper, [Transfer::INCLUDE_SOLUTIONS]), 200);
     }
 
     /**

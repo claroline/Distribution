@@ -5,7 +5,6 @@ namespace UJM\ExoBundle\Serializer\Attempt;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Attempt\Answer;
-use UJM\ExoBundle\Entity\Question\Hint;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\AbstractSerializer;
 use UJM\ExoBundle\Serializer\Question\HintSerializer;
@@ -62,6 +61,7 @@ class AnswerSerializer extends AbstractSerializer
         die;
 
         $this->mapEntityToObject([
+            'id' => 'uuid',
             'questionId' => 'questionId',
             'tries' => 'tries',
             'usedHints' => function (Answer $answer) use ($options) {
@@ -78,6 +78,7 @@ class AnswerSerializer extends AbstractSerializer
         if ($this->hasOption(Transfer::INCLUDE_USER_SCORE, $options)) {
             $this->mapEntityToObject([
                 'score' => 'score',
+                'feedback' => 'feedback',
             ], $answer, $answerData);
         }
 
@@ -97,13 +98,19 @@ class AnswerSerializer extends AbstractSerializer
     {
         if (empty($answer)) {
             $answer = new Answer();
+
+            if (!empty($data->id)) {
+                $answer->setUuid($data->id);
+            }
         }
 
         $answer->setQuestionId($data->questionId);
 
         $this->mapObjectToEntity([
-            'tries' => 'tries',
             'questionId' => 'questionId',
+            'tries' => 'tries',
+            'score' => 'score',
+            'feedback' => 'feedback',
             'usedHints' => function (Answer $answer, \stdClass $data) {
                 if (!empty($data->usedHints)) {
                     foreach ($data->usedHints as $usedHint) {

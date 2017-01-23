@@ -6,7 +6,6 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Question\Question;
@@ -89,34 +88,6 @@ class PaperManager
         }
 
         return $this->serializer->serialize($paper, $options);
-    }
-
-    /**
-     * @deprecated this needs to be moved in the attempt manager or elsewhere
-     *
-     * @param Question $question
-     * @param Paper    $paper
-     * @param int      $score
-     */
-    public function recordScore(Question $question, Paper $paper, $score)
-    {
-        /** @var Answer $response */
-        $response = $this->om->getRepository('UJMExoBundle:Attempt\Answer')
-            ->findOneBy(['paper' => $paper, 'question' => $question]);
-
-        $response->setScore($score);
-
-        // TODO : Apply penalties to the score
-
-        $scorePaper = $paper->getScore();
-        $scoreExercise = $scorePaper + $response->getScore();
-        $paper->setScore($scoreExercise);
-
-        $this->om->persist($paper);
-        $this->om->persist($response);
-        $this->om->flush();
-
-        $this->checkPaperEvaluated($paper);
     }
 
     /**

@@ -5,6 +5,7 @@ namespace UJM\ExoBundle\Tests\Repository;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Question\Hint;
@@ -156,16 +157,31 @@ class PaperRepositoryTest extends TransactionalTestCase
 
     public function testIsFullyEvaluated()
     {
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        // Add a corrected answer to the paper (aka answer with score) to check the query conditions
+        $answer = new Answer();
+        $answer->setIp('127.0.0.1');
+        $answer->setScore(5);
+        $answer->setData('some answer data');
+        $answer->setQuestionId('does-not-need-a-real-one');
+        $this->papers[0]->addAnswer($answer);
+
+        $this->om->flush();
+
+        $this->assertTrue($this->repo->isFullyEvaluated($this->papers[0]));
     }
 
     public function testIsNotFullyEvaluated()
     {
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        // Add a non corrected answer to the paper (aka answer with no score)
+        $answer = new Answer();
+        $answer->setIp('127.0.0.1');
+        $answer->setData('some answer data');
+        $answer->setQuestionId('does-not-need-a-real-one');
+        $this->papers[0]->addAnswer($answer);
+
+        $this->om->flush();
+
+        $this->assertFalse($this->repo->isFullyEvaluated($this->papers[0]));
     }
 
     public function testFindScore()
@@ -173,6 +189,27 @@ class PaperRepositoryTest extends TransactionalTestCase
         $this->markTestIncomplete(
             'This test has not been implemented yet.'
         );
+    }
+
+    public function testFindPapersToCorrect()
+    {
+        // Add a non corrected answer to the paper (aka answer with no score)
+        $answer = new Answer();
+        $answer->setIp('127.0.0.1');
+        $answer->setData('some answer data');
+        $answer->setQuestionId('does-not-need-a-real-one');
+        $this->papers[0]->addAnswer($answer);
+
+        // Mark the paper has finished
+        $this->papers[0]->setEnd(new \DateTime());
+
+        $this->om->flush();
+
+        $papers = $this->repo->findPapersToCorrect($this->exercise);
+
+        $this->assertTrue(is_array($papers));
+        $this->assertCount(1, $papers);
+        $this->assertInstanceOf('UJM\ExoBundle\Entity\Attempt\Paper', $papers[0]);
     }
 
     public function testHasHint()
