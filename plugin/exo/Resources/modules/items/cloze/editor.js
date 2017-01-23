@@ -3,6 +3,7 @@ import {makeActionCreator, makeId} from './../../utils/utils'
 import cloneDeep from 'lodash/cloneDeep'
 import {ITEM_CREATE} from './../../quiz/editor/actions'
 import {utils} from './utils/utils'
+import flatten from 'lodash/flatten'
 
 const UPDATE_TEXT = 'UPDATE_TEXT'
 const ADD_HOLE = 'ADD_HOLE'
@@ -59,6 +60,7 @@ function reduce(item = {}, action) {
     case OPEN_HOLE: {
       const newItem = cloneDeep(item)
       const hole = getHoleFromId(newItem, action.holeId)
+      hole._multiple = hole.choices.length > 1
 
       newItem._popover = {
         offsetX: action.offsetX,
@@ -91,7 +93,8 @@ function reduce(item = {}, action) {
         text: '',
         caseSensitive: false,
         feedback: '',
-        score: 1
+        score: 1,
+        _multiple: false
       })
 
       return newItem
@@ -99,7 +102,7 @@ function reduce(item = {}, action) {
     case UPDATE_HOLE: {
       const newItem = cloneDeep(item)
 
-      if (['size', 'multiple'].indexOf(action.parameter) > -1) {
+      if (['size', '_multiple'].indexOf(action.parameter) > -1) {
         newItem._popover.hole[action.parameter] = action.value
       } else {
         throw `${action.parameter} is not a valid hole attribute`
@@ -111,13 +114,19 @@ function reduce(item = {}, action) {
       const newItem = cloneDeep(item)
 
       //update holeId
-      const currentHole = newItem.holes.find(hole => hole.id === item._popover.hole.id)
+      const holeIdx = newItem.holes.findIndex(hole => hole.id === item._popover.hole.id)
+      const holeSolutions = newItem.solutions.filter(solution => solution.holeId === newItem.holes[holeIdx].id)
+      const choices = newItem._popover.hole._multiple ?
+        flatten(holeSolutions.map(solution => solution.answers.map(answer => answer.text))): []
 
-      if (currentHole) {
-        //update currentHole
-        // /currentHole
+      if (holeIdx > -1) {
+        newItem.holes[holeIdx] = newItem._popover.hole
+        const solutionIdx = newItem.solutions.findIndex(solution => solution.holeIid === item._popover.solution.holeId)
+        newItem.solutions[solutionIdx] = newItem._popover.solution
+        newItem.holes[holeIdx].choices = choices
       } else {
         newItem.holes.push(item._popover.hole)
+        newItem.holes[newItem.holes.length - 1].choices = choices
         newItem.solutions.push(item._popover.solution)
         newItem._text = utils.replaceBetween(
           newItem._text,
@@ -140,7 +149,9 @@ function reduce(item = {}, action) {
         'id': makeId(),
         feedback: '',
         size: 25,
-        _score: 0
+        _score: 0,
+        placeholder: '',
+        choices: []
       }
 
       const solution = {

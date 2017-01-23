@@ -72,3 +72,52 @@ utils.getGuidLength = () => {
 utils.replaceBetween = (text, start, end, what) => {
   return text.substring(0, start) + what + text.substring(end)
 }
+
+//splitting stuff and whatever
+utils.split = (text, holes, solutions) => {
+  const split = utils.getTextElements(text, holes, solutions)
+  //now we can split the text accordingly
+  //This is a big mess of wtf computations but I swear it gives the correct result !
+  let currentPosition = 0
+  let prevPos = 0
+
+  split.forEach(el => {
+    //we keep track of each text element
+    el.text = text.substr(0, el.position - currentPosition)
+    //now we trim the text
+    text = text.substr(el.position + utils.getGuidLength() + 4 - currentPosition)
+    currentPosition += (el.position + utils.getGuidLength() + 4 - prevPos)
+    prevPos = el.position
+  })
+
+  //I want to rember the last element of the text so I add it aswell to the array
+  split.push({
+    word: '#endoftext#',
+    position: null,
+    text,
+    score: null,
+    holeId: null
+  })
+
+  return split
+}
+
+utils.getTextElements = (text, holes) => {
+  const data = []
+
+  //first we find each occurence of a given word
+  holes.forEach((hole) => {
+    const regex = new RegExp(`(\\[\\[${hole.id}\\]\\])`, 'g')
+    const position = text.search(regex)
+    data.push({
+      choices: hole.choices,
+      position,
+      multiple: false,
+      holeId: hole.id
+      //score: solutions.find(el => el.text === word).score,
+      //feedback: solutions.find(el => el.text === word).feedback
+    })
+  })
+
+  return data
+}

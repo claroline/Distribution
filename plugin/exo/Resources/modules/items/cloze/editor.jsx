@@ -49,11 +49,11 @@ class HoleForm extends Component {
             <div className="right-controls">
               <input
                 type="checkbox"
-                checked={this.props.hole.multiple}
+                checked={this.props.hole._multiple}
                 onChange={e => this.props.onChange(
                   actions.updateHole(
                     this.props.hole.id,
-                    'multiple',
+                    '_multiple',
                     e.target.checked
                   )
                 )}
