@@ -1,4 +1,4 @@
-import React, {PropTypes as T} from 'react'
+import React, {Component, PropTypes as T} from 'react'
 import {connect} from 'react-redux'
 import {actions} from './../actions'
 import {selectors as correctionSelectors} from './../selectors'
@@ -9,39 +9,52 @@ import FormControl from 'react-bootstrap/lib/FormControl'
 import {Textarea} from './../../../components/form/textarea.jsx'
 import {TooltipButton} from './../../../components/form/tooltip-button.jsx'
 
-export const AnswerRow = props =>
-  <div>
-    <div className="row answer-row">
-      <Panel className="answer-panel" key={props.id}>
-        <div dangerouslySetInnerHTML={{__html: props.data}}></div>
-      </Panel>
-      <div className="right-controls">
-        <InputGroup className="score-input">
-          <FormControl key={props.id}
-                       type="text"
-                       value={props.score !== undefined && props.score !== null && !isNaN(props.score) ? props.score : ''}
-                       onChange={(e) => props.updateScore(props.id, e.target.value)}
-          />
-          <InputGroup.Addon>/{props.scoreMax}</InputGroup.Addon>
-        </InputGroup>
-        <TooltipButton id={`feedback-${props.id}-toggle`}
-                       className="fa fa-comments-o"
-                       title={tex('feedback')}
-        />
+class AnswerRow extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {showFeedback: false}
+  }
+
+  render() {
+    return (
+      <div>
+        <div className="row answer-row">
+          <Panel className="answer-panel" key={this.props.id}>
+            <div dangerouslySetInnerHTML={{__html: this.props.data}}></div>
+          </Panel>
+          <div className="right-controls">
+            <InputGroup className="score-input">
+              <FormControl key={this.props.id}
+                           type="text"
+                           value={this.props.score !== undefined && this.props.score !== null && !isNaN(this.props.score) ? this.props.score : ''}
+                           onChange={(e) => this.props.updateScore(this.props.id, e.target.value)}
+              />
+              <InputGroup.Addon>/{this.props.scoreMax}</InputGroup.Addon>
+            </InputGroup>
+            <TooltipButton id={`feedback-${this.props.id}-toggle`}
+                           className="fa fa-comments-o"
+                           title={tex('feedback')}
+                           onClick={() => this.setState({showFeedback: !this.state.showFeedback})}
+            />
+          </div>
+        </div>
+        {this.state.showFeedback &&
+          <div className="row feedback-row">
+            <Textarea
+              id={`feedback-${this.props.id}-data`}
+              title={tex('response')}
+              content={this.props.feedback ? `${this.props.feedback}` : ''}
+              onChange={(text) => this.props.updateFeedback(this.props.id, text)}
+            />
+          </div>
+        }
+        <div className="row">
+          <hr/>
+        </div>
       </div>
-    </div>
-    <div className="row feedback-row">
-      <Textarea
-        id={`feedback-${props.id}-data`}
-        title={tex('response')}
-        content={props.feedback ? `${props.feedback}` : ''}
-        onChange={(text) => props.updateFeedback(props.id, text)}
-      />
-    </div>
-    <div className="row">
-      <hr/>
-    </div>
-  </div>
+    )
+  }
+}
 
 AnswerRow.propTypes = {
   id: T.string.isRequired,
