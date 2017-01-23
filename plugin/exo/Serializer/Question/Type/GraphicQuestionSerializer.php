@@ -3,6 +3,7 @@
 namespace UJM\ExoBundle\Serializer\Question\Type;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Entity\Content\Image;
 use UJM\ExoBundle\Entity\Misc\Area;
 use UJM\ExoBundle\Entity\QuestionType\GraphicQuestion;
 use UJM\ExoBundle\Library\Options\Transfer;
@@ -69,11 +70,8 @@ class GraphicQuestionSerializer implements SerializerInterface
 
         $image = new \stdClass();
 
-        $imageMeta = new \stdClass();
-        $imageMeta->title = $questionImg->getTitle();
-
-        $image->id = $questionImg->getId();
-        $image->meta = $imageMeta;
+        $image->id = $questionImg->getUuid();
+        $image->type = $questionImg->getType();
         $image->url = $questionImg->getUrl();
         $image->width = $questionImg->getWidth();
         $image->height = $questionImg->getHeight();
@@ -85,10 +83,27 @@ class GraphicQuestionSerializer implements SerializerInterface
      * Deserializes the Question image.
      *
      * @param GraphicQuestion $graphicQuestion
-     * @param \stdClass       $image
+     * @param \stdClass       $imageData
      */
-    private function deserializeImage(GraphicQuestion $graphicQuestion, \stdClass $image)
+    private function deserializeImage(GraphicQuestion $graphicQuestion, \stdClass $imageData)
     {
+        $typeParts = explode('/', $imageData->type);
+        $image = $graphicQuestion->getImage() ?: new Image();
+        $image->setUuid($imageData->id);
+        $image->setType($imageData->type);
+        $image->setTitle($imageData->id);
+        $image->setWidth($imageData->width);
+        $image->setHeight($imageData->height);
+
+        if (isset($imageData->data)) {
+            $imageParts = explode(',', $imageData->data);
+            $imageBin = base64_decode($imageParts[1]);
+            $file = "uploads/ujmexo/{$imageData->id}.{$typeParts[1]}";
+            file_put_contents(__DIR__."/../../../../../../../../web/{$file}", $imageBin);
+            $image->setUrl("./{$file}");
+        }
+
+        $graphicQuestion->setImage($image);
     }
 
     /**
@@ -128,7 +143,7 @@ class GraphicQuestionSerializer implements SerializerInterface
             // Searches for an existing area entity.
             foreach ($areaEntities as $entityIndex => $entityArea) {
                 /** @var Area $entityArea */
-                if ((string) $entityArea->getId() === $solutionData->area->id) {
+                if ($entityArea->getUuid() === $solutionData->area->id) {
                     $area = $entityArea;
                     unset($areaEntities[$entityIndex]);
                     break;
@@ -138,6 +153,9 @@ class GraphicQuestionSerializer implements SerializerInterface
             if (null === $area) {
                 $area = new Area();
             }
+
+            $area->setScore($solutionData->score);
+            $area->setFeedback($solutionData->feedback);
 
             // Deserializes area definition
             $this->deserializeArea($area, $solutionData->area);
@@ -162,7 +180,7 @@ class GraphicQuestionSerializer implements SerializerInterface
     {
         $areaData = new \stdClass();
 
-        $areaData->id = (string) $area->getId();
+        $areaData->id = $area->getUuid();
         $areaData->color = $area->getColor();
 
         $position = explode(',', $area->getValue());
@@ -179,7 +197,6 @@ class GraphicQuestionSerializer implements SerializerInterface
                 $areaData->center = $center;
 
                 break;
-            case 'rect':
             case 'square':
                 $areaData->shape = 'rect';
                 $areaData->coords = [
@@ -188,7 +205,12 @@ class GraphicQuestionSerializer implements SerializerInterface
                     // bottom-right coords
                     $this->serializeCoords([$position[0] + $area->getSize(), $position[1] + $area->getSize()]),
                 ];
-
+            case 'rect':
+                $areaData->shape = 'rect';
+                $areaData->coords = [
+                    $this->serializeCoords(array_slice($position, 0, 2)),
+                    $this->serializeCoords(array_slice($position, 2, 2))
+                ];
                 break;
         }
 
@@ -208,9 +230,17 @@ class GraphicQuestionSerializer implements SerializerInterface
 
         switch ($data->shape) {
             case 'circle':
+                $area->setValue("{$data->center->x},{$data->center->y}");
+                $area->setSize($data->radius * 2);
                 break;
-            case 'square':
             case 'rect':
+                $area->setValue(sprintf('%s,%s,%s,%s',
+                    $data->coords[0]->x,
+                    $data->coords[0]->y,
+                    $data->coords[1]->x,
+                    $data->coords[1]->y
+                ));
+                $area->setSize($data->coords[1]->x - $data->coords[0]->x);
                 break;
         }
     }

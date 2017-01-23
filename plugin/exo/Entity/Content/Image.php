@@ -3,6 +3,7 @@
 namespace UJM\ExoBundle\Entity\Content;
 
 use Doctrine\ORM\Mapping as ORM;
+use UJM\ExoBundle\Library\Model\UuidTrait;
 
 /**
  * Image.
@@ -12,6 +13,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Image
 {
+    use UuidTrait;
+
     /**
      * @var int
      *

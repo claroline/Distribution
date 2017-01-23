@@ -1,6 +1,6 @@
 import React  from 'react'
 
-import {asset} from '#/main/core/asset/index'
+import {asset} from '#/main/core/asset'
 
 const T = React.PropTypes
 

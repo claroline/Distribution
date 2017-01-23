@@ -1,5 +1,6 @@
 import React, {Component, PropTypes as T} from 'react'
 import get from 'lodash/get'
+import {asset} from '#/main/core/asset'
 import {tex} from './../../utils/translate'
 import {MODE_SELECT, MAX_IMG_SIZE, SHAPE_RECT} from './enums'
 import {actions} from './actions'
@@ -31,8 +32,8 @@ export class Graphic extends Component {
     // a very long string if the image is large) could be too heavy, the img tag
     // is rendered outside the React pipeline and just attached to a leaf node
     // of the component.
-    if (this.props.item.image.data) {
-      this.createImage(this.props.item.image.data)
+    if (this.props.item.image.data || this.props.item.image.url) {
+      this.createImage(this.props.item.image.data, this.props.item.image.url)
     } else {
       this.imgContainer.innerHTML = tex('graphic_drop_or_pick')
     }
@@ -100,9 +101,9 @@ export class Graphic extends Component {
     reader.readAsDataURL(file)
   }
 
-  createImage(encodedString) {
+  createImage(encodedString, url) {
     const img = document.createElement('img')
-    img.src = encodedString
+    img.src = encodedString || asset(url)
     img.className = this.props.item._mode !== MODE_SELECT ? 'point-mode' : ''
     img.addEventListener('click', this.onClickImage)
     this.imgContainer.innerHTML = ''
@@ -177,9 +178,14 @@ export class Graphic extends Component {
 
 Graphic.propTypes = {
   item: T.shape({
-    image: T.shape({
-      data: T.string.isRequired
-    }).isRequired,
+    image: T.oneOfType([
+      T.shape({
+        data: T.string.isRequired
+      }),
+      T.shape({
+        url: T.string.isRequired
+      })
+    ]).isRequired,
     solutions: T.arrayOf(T.shape({
       area: T.shape({
         id: T.string.isRequired,
