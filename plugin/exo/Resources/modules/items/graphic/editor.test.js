@@ -60,24 +60,28 @@ describe('Graphic reducer', () => {
     }))
   })
 
-  it('creates rectangular areas', () => {
+  it('creates rectangular areas (scaled)', () => {
     const item = itemFixture({
       image: {
         id: 'ID',
         type: 'image/png',
         url: 'foo',
         width: 200,
-        height: 200
+        height: 200,
+        _clientWidth: 100, // "real" image is twice as big
+        _clientHeight: 100
       }
     })
-    const reduced = editor.reduce(item, subActions.createArea(80, 90))
+    const reduced = editor.reduce(item, subActions.createArea(30, 10))
     ensure.equal(reduced, itemFixture({
       image: {
         id: 'ID',
         type: 'image/png',
         url: 'foo',
         width: 200,
-        height: 200
+        height: 200,
+        _clientWidth: 100,
+        _clientHeight: 100
       },
       pointers: 1,
       solutions: [
@@ -87,12 +91,16 @@ describe('Graphic reducer', () => {
             shape: SHAPE_RECT,
             coords: [
               {
-                x: 80 - (AREA_DEFAULT_SIZE / 2),
-                y: 90 - (AREA_DEFAULT_SIZE / 2)
+                x: 60 - (AREA_DEFAULT_SIZE / 2) * 2,
+                y: 20 - (AREA_DEFAULT_SIZE / 2) * 2,
+                _clientX: 30 - (AREA_DEFAULT_SIZE / 2),
+                _clientY: 10 - (AREA_DEFAULT_SIZE / 2)
               },
               {
-                x: 80 + (AREA_DEFAULT_SIZE / 2),
-                y: 90 + (AREA_DEFAULT_SIZE / 2)
+                x: 60 + (AREA_DEFAULT_SIZE / 2) * 2,
+                y: 20 + (AREA_DEFAULT_SIZE / 2) * 2,
+                _clientX: 30 + (AREA_DEFAULT_SIZE / 2),
+                _clientY: 10 + (AREA_DEFAULT_SIZE / 2)
               }
             ],
             color: 'blue',
@@ -104,25 +112,29 @@ describe('Graphic reducer', () => {
     }))
   })
 
-  it('creates circular areas', () => {
+  it('creates circular areas (scaled)', () => {
     const item = itemFixture({
       image: {
         id: 'ID',
         type: 'image/png',
         url: 'foo',
         width: 200,
-        height: 200
+        height: 200,
+        _clientWidth: 100,
+        _clientHeight: 100
       },
       _mode: MODE_CIRCLE
     })
-    const reduced = editor.reduce(item, subActions.createArea(80, 90))
+    const reduced = editor.reduce(item, subActions.createArea(50, 40))
     ensure.equal(reduced, itemFixture({
       image: {
         id: 'ID',
         type: 'image/png',
         url: 'foo',
         width: 200,
-        height: 200
+        height: 200,
+        _clientWidth: 100, // "real" image is twice as big
+        _clientHeight: 100
       },
       pointers: 1,
       solutions: [
@@ -130,8 +142,16 @@ describe('Graphic reducer', () => {
           area: {
             id: lastId(),
             shape: SHAPE_CIRCLE,
-            coords: [{x: 80, y: 90}],
-            radius: AREA_DEFAULT_SIZE / 2,
+            coords: [
+              {
+                x: 100,
+                y: 80,
+                _clientX: 50,
+                _clientY: 40
+              }
+            ],
+            radius: (AREA_DEFAULT_SIZE / 2) * 2,
+            _clientRadius: AREA_DEFAULT_SIZE / 2,
             color: 'blue',
             score: 1,
             feedback: ''
@@ -178,7 +198,11 @@ function itemFixture(props = {}) {
       type: '',
       url: '',
       width: 0,
-      height: 0
+      height: 0,
+      _clientWidth: 0,
+      _clientHeight: 0,
+      _type: "",
+      _size: ""
     },
     pointers: 0,
     solutions: [],

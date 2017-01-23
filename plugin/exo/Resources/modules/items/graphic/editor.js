@@ -8,7 +8,12 @@ import {
   SHAPE_CIRCLE,
   AREA_DEFAULT_SIZE
 } from './enums'
-import {SELECT_MODE, SELECT_IMAGE, CREATE_AREA} from './actions'
+import {
+  SELECT_MODE,
+  SELECT_IMAGE,
+  RESIZE_IMAGE,
+  CREATE_AREA
+} from './actions'
 import {Graphic as component} from './editor.jsx'
 
 function reduce(item = {}, action = {}) {
@@ -29,8 +34,37 @@ function reduce(item = {}, action = {}) {
           action.image
         )
       })
+    case RESIZE_IMAGE: {
+      const sizeRatio = item.image.width / action.width
+      const toClient = length => Math.round(length / sizeRatio)
+
+      return Object.assign({}, item, {
+        image: Object.assign({}, item.image, {
+          _clientWidth: action.width,
+          _clientHeight: action.height
+        }),
+        solutions: item.solutions.map(solution => Object.assign({}, solution, {
+          area: Object.assign({}, solution.area, {
+            coords: solution.area.coords.map(coords => Object.assign({}, coords, {
+              _clientX: toClient(coords.x),
+              _clientY: toClient(coords.y)
+            })),
+            _clientRadius: solution.area.shape === SHAPE_CIRCLE ?
+              toClient(solution.area.radius) :
+              solution.area._clientRadius
+          })
+        }))
+      })
+    }
     case CREATE_AREA: {
-      const halfSize = AREA_DEFAULT_SIZE / 2
+      const clientX = action.x
+      const clientY = action.y
+      const clientHalfSize = AREA_DEFAULT_SIZE / 2
+      const sizeRatio = item.image.width / item.image._clientWidth
+      const toAbs = length => Math.floor(length * sizeRatio)
+      const absX = toAbs(clientX)
+      const absY = toAbs(clientY)
+      const absHalfSize = toAbs(clientHalfSize)
       const area = {
         id: makeId(),
         shape: item._mode === MODE_RECT ? SHAPE_RECT : SHAPE_CIRCLE,
@@ -40,17 +74,27 @@ function reduce(item = {}, action = {}) {
       }
 
       if (area.shape === SHAPE_CIRCLE) {
-        area.coords = [{x: action.x, y: action.y}]
-        area.radius = halfSize
+        area.coords = [{
+          x: absX,
+          y: absY,
+          _clientX: clientX,
+          _clientY: clientY
+        }]
+        area.radius = absHalfSize
+        area._clientRadius = clientHalfSize
       } else {
         area.coords = [
           {
-            x: action.x - halfSize,
-            y: action.y - halfSize
+            x: absX - absHalfSize,
+            y: absY - absHalfSize,
+            _clientX: clientX - clientHalfSize,
+            _clientY: clientY - clientHalfSize
           },
           {
-            x: action.x + halfSize,
-            y: action.y + halfSize
+            x: absX + absHalfSize,
+            y: absY + absHalfSize,
+            _clientX: clientX + clientHalfSize,
+            _clientY: clientY + clientHalfSize
           }
         ]
       }
@@ -70,7 +114,11 @@ function blankImage() {
     type: '',
     url: '',
     width: 0,
-    height: 0
+    height: 0,
+    _clientWidth: 0,
+    _clientHeight: 0,
+    _type: '',
+    _size: ''
   }
 }
 

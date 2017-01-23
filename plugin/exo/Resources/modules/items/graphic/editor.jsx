@@ -14,6 +14,7 @@ export class Graphic extends Component {
     this.onDropImage = this.onDropImage.bind(this)
     this.onSelectImage = this.onSelectImage.bind(this)
     this.onClickImage = this.onClickImage.bind(this)
+    this.onResize = this.onResize.bind(this)
   }
 
   componentDidMount() {
@@ -21,6 +22,7 @@ export class Graphic extends Component {
     this.dropzone.addEventListener('dragenter', this.stopEvent)
     this.dropzone.addEventListener('dragover', this.stopEvent)
     this.dropzone.addEventListener('drop', this.onDropImage)
+    window.addEventListener('resize', this.onResize)
   }
 
   renderImageContainerContent() {
@@ -56,6 +58,7 @@ export class Graphic extends Component {
     this.dropzone.removeEventListener('dragenter', this.stopEvent)
     this.dropzone.removeEventListener('dragover', this.stopEvent)
     this.dropzone.removeEventListener('drop', this.onDropImage)
+    window.removeEventListener('resize', this.onResize)
   }
 
   stopEvent(e) {
@@ -87,6 +90,8 @@ export class Graphic extends Component {
           url: e.target.result,
           width: img.naturalWidth,
           height: img.naturalHeight,
+          _clientWidth: img.width,
+          _clientHeight: img.height,
           _type: file.type,
           _size: file.size
         }))
@@ -116,6 +121,14 @@ export class Graphic extends Component {
     }
   }
 
+  onResize(e) {
+    const img = this.imgContainer.querySelector('img')
+
+    if (img) {
+      this.props.onChange(actions.resizeImage(img.width, img.height))
+    }
+  }
+
   render() {
     return (
       <div className="graphic-editor">
@@ -136,7 +149,16 @@ export class Graphic extends Component {
           <div className="img-widget">
             <div className="img-container" ref={el => this.imgContainer = el}/>
             {this.props.item.solutions.map(solution =>
-              <AnswerArea key={solution.area.id} {...solution.area}/>
+              <AnswerArea
+                key={solution.area.id}
+                shape={solution.area.shape}
+                color={solution.area.color}
+                radius={solution.area._clientRadius}
+                coords={solution.area.coords.map(coords => ({
+                  x: coords._clientX,
+                  y: coords._clientY
+                }))}
+              />
             )}
           </div>
         </div>
