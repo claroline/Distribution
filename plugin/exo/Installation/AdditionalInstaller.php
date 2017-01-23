@@ -53,7 +53,13 @@ class AdditionalInstaller extends BaseInstaller
         }
 
         if (version_compare($currentVersion, '8.0.0', '<')) {
-            $updater = new Updater080000($this->container->get('doctrine.dbal.default_connection'));
+            $updater = new Updater080000(
+                $this->container->get('doctrine.dbal.default_connection'),
+                $this->container->get('claroline.persistence.object_manager'),
+                $this->container->get('ujm_exo.serializer.exercise'),
+                $this->container->get('ujm_exo.serializer.step'),
+                $this->container->get('ujm_exo.serializer.question')
+            );
             $updater->setLogger($this->logger);
             $updater->postUpdate();
         }
