@@ -5,12 +5,14 @@ import {VIEW_CORRECTION_QUESTIONS, VIEW_CORRECTION_ANSWERS} from './../enums'
 
 export const QUESTION_CURRENT = 'QUESTION_CURRENT'
 export const SCORE_UPDATE = 'SCORE_UPDATE'
+export const FEEDBACK_UPDATE = 'FEEDBACK_UPDATE'
 export const REMOVE_ANSWERS = 'REMOVE_ANSWERS'
 
 export const actions = {}
 
 const setCurrentQuestionId = makeActionCreator(QUESTION_CURRENT, 'id')
 const updateScore = makeActionCreator(SCORE_UPDATE, 'answerId', 'score')
+const updateFeedback = makeActionCreator(FEEDBACK_UPDATE, 'answerId', 'feedback')
 const removeAnswers = makeActionCreator(REMOVE_ANSWERS, 'ids')
 
 actions.displayQuestions = () => {
@@ -31,6 +33,13 @@ actions.updateScore = (answerId, score) => {
   invariant(answerId, 'Answer id is mandatory')
   return (dispatch) => {
     dispatch(updateScore(answerId, score))
+  }
+}
+
+actions.updateFeedback = (answerId, feedback) => {
+  invariant(answerId, 'Answer id is mandatory')
+  return (dispatch) => {
+    dispatch(updateFeedback(answerId, feedback))
   }
 }
 

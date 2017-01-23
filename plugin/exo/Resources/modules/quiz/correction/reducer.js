@@ -1,4 +1,4 @@
-import {QUESTION_CURRENT, SCORE_UPDATE, REMOVE_ANSWERS} from './actions'
+import {QUESTION_CURRENT, SCORE_UPDATE, FEEDBACK_UPDATE, REMOVE_ANSWERS} from './actions'
 
 function testCorrection() {
   return {
@@ -11,7 +11,7 @@ function testCorrection() {
         contentType: 'text',
         score: {
           type: 'manual',
-          max: 12
+          max: 100
         }
       },
       {
@@ -73,6 +73,7 @@ function testCorrection() {
         id: '3',
         questionId: '1',
         score: null,
+        feedback: null,
         type: 'text/html',
         data: `
           <p>Vivamus interdum nisl id nulla viverra pharetra. Donec quis aliquet risus. Aenean suscipit placerat tempus. Curabitur nunc orci,
@@ -88,6 +89,7 @@ function testCorrection() {
         id: '4',
         questionId: '2',
         score: null,
+        feedback: null,
         type: 'text/html',
         data: `
           <p>Fusce sed feugiat sapien. Suspendisse dictum imperdiet mi, sit amet aliquet leo eleifend id. Quisque eu turpis tempus, feugiat nibh eget, dignissim neque.
@@ -101,6 +103,7 @@ function testCorrection() {
       {
         id: '9',
         questionId: '2',
+        feedback: null,
         type: 'text/html',
         data: `
           <p>Oui</p>
@@ -118,7 +121,7 @@ export const reduceCorrection = (state = testCorrection(), action = {}) => {
         currentQuestionId: action.id
       })
     case SCORE_UPDATE:
-      const answers = state['answers'].map((answer) => {
+      const scoreAnswers = state['answers'].map((answer) => {
         if (answer.id === action.answerId) {
           return Object.assign({}, answer, {score: parseFloat(action.score)})
         } else {
@@ -126,7 +129,18 @@ export const reduceCorrection = (state = testCorrection(), action = {}) => {
         }
       })
       return Object.assign({}, state, {
-        answers: answers
+        answers: scoreAnswers
+      })
+    case FEEDBACK_UPDATE:
+      const feedbackAnswers = state['answers'].map((answer) => {
+        if (answer.id === action.answerId) {
+          return Object.assign({}, answer, {feedback: action.feedback})
+        } else {
+          return answer
+        }
+      })
+      return Object.assign({}, state, {
+        answers: feedbackAnswers
       })
     case REMOVE_ANSWERS:
       return Object.assign({}, state, {

@@ -2,37 +2,47 @@ import React, {PropTypes as T} from 'react'
 import {connect} from 'react-redux'
 import {actions} from './../actions'
 import {selectors as correctionSelectors} from './../selectors'
+import {tex} from './../../../utils/translate'
 import Panel from 'react-bootstrap/lib/Panel'
-import Col from 'react-bootstrap/lib/Col'
 import InputGroup from 'react-bootstrap/lib/InputGroup'
 import FormControl from 'react-bootstrap/lib/FormControl'
-import Button from 'react-bootstrap/lib/Button'
+import {Textarea} from './../../../components/form/textarea.jsx'
+import {TooltipButton} from './../../../components/form/tooltip-button.jsx'
 
 export const AnswerRow = props =>
-  <div className="row">
-    <Col md={10}>
-      <Panel key={props.id}>
-        <div dangerouslySetInnerHTML={{__html: props.data}}></div>
-      </Panel>
-    </Col>
-    <Col md={2}>
-      <InputGroup>
-        <FormControl key={props.id}
-                     type="text"
-                     value={props.score !== undefined && props.score !== null && !isNaN(props.score) ? props.score : ''}
-                     onChange={(e) => props.updateScore(props.id, e.target.value)}
+  <div>
+    <div className="row answer-row">
+      <div>
+        <Panel key={props.id}>
+          <div dangerouslySetInnerHTML={{__html: props.data}}></div>
+        </Panel>
+      </div>
+      <div className="right-controls">
+        <InputGroup className="score-input">
+          <FormControl key={props.id}
+                       type="text"
+                       value={props.score !== undefined && props.score !== null && !isNaN(props.score) ? props.score : ''}
+                       onChange={(e) => props.updateScore(props.id, e.target.value)}
+          />
+          <InputGroup.Addon>/{props.scoreMax}</InputGroup.Addon>
+        </InputGroup>
+        <TooltipButton id={`feedback-${props.id}-toggle`}
+                       className="fa fa-comments-o"
+                       title={tex('feedback')}
         />
-        <InputGroup.Addon>/{props.scoreMax}</InputGroup.Addon>
-        <InputGroup.Button>
-          <Button>
-            <span className="fa fa-fw fa-comments-o"></span>
-          </Button>
-        </InputGroup.Button>
-      </InputGroup>
-    </Col>
-    <Col md={12}>
+      </div>
+    </div>
+    <div className="row feedback-row">
+      <Textarea
+        id={`feedback-${props.id}-data`}
+        title={tex('response')}
+        content={props.feedback ? `${props.feedback}` : ''}
+        onChange={(text) => props.updateFeedback(props.id, text)}
+      />
+    </div>
+    <div className="row">
       <hr/>
-    </Col>
+    </div>
   </div>
 
 AnswerRow.propTypes = {
@@ -42,21 +52,29 @@ AnswerRow.propTypes = {
   data: T.string.isRequired,
   score: T.number,
   scoreMax: T.number,
-  updateScore: T.func.isRequired
+  feedback: T.string,
+  updateScore: T.func.isRequired,
+  updateFeedback: T.func.isRequired
 }
 
 let Answers = props =>
   <div className="answers-list">
     <h4 dangerouslySetInnerHTML={{__html: props.question.content}}></h4>
     {props.answers.map((answer, idx) =>
-      <AnswerRow key={idx} scoreMax={props.question.score && props.question.score.max} updateScore={props.updateScore} {...answer}/>
+      <AnswerRow key={idx}
+                 scoreMax={props.question.score && props.question.score.max}
+                 updateScore={props.updateScore}
+                 updateFeedback={props.updateFeedback}
+                 {...answer}
+      />
     )}
   </div>
 
 Answers.propTypes = {
   question: T.object.isRequired,
   answers: T.arrayOf(T.object).isRequired,
-  updateScore: T.func.isRequired
+  updateScore: T.func.isRequired,
+  updateFeedback: T.func.isRequired
 }
 
 function mapStateToProps(state) {
