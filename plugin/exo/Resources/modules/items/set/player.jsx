@@ -46,9 +46,7 @@ class Association extends Component {
               id={`ass-${this.props.association.itemId}-${this.props.association.setId}-delete`}
               className="fa fa-trash-o"
               title={t('delete')}
-              onClick={() => this.props.onChange(
-                this.props.handleItemRemove(this.props.association.setId, this.props.association.itemId))
-              }
+              onClick={() => this.props.handleItemRemove(this.props.association.setId, this.props.association.itemId)}
             />
           </div>
         </div>
@@ -58,7 +56,6 @@ class Association extends Component {
 }
 
 Association.propTypes = {
-  onChange: T.func.isRequired,
   association: T.object.isRequired,
   handleItemRemove: T.func.isRequired
 }
@@ -79,7 +76,7 @@ class Set extends Component {
             <ul>
             { this.props.associations.map(ass =>
               <li key={`${ass.itemId}-${ass.setId}`}>
-                <Association handleItemRemove={this.props.onAssociationItemRemove} association={ass} onChange={this.props.onChange}/>
+                <Association handleItemRemove={this.props.onAssociationItemRemove} association={ass}/>
               </li>
             )}
             </ul>
@@ -91,7 +88,6 @@ class Set extends Component {
 }
 
 Set.propTypes = {
-  onChange: T.func.isRequired,
   set: T.object.isRequired,
   onDrop: T.func.isRequired,
   associations: T.arrayOf(T.object).isRequired,
@@ -103,14 +99,9 @@ const SetList = props =>
     {props.sets.map((set) =>
       <li key={`set-id-${set.id}`}>
         <Set
-          associations={
-            props.answers.filter(answer => answer.setId === set.id) || []
-          }
-          onDrop={
-            (source, target) => props.onAssociationItemDrop(source, target)
-          }
+          associations={props.answers.filter(answer => answer.setId === set.id) || []}
+          onDrop={props.onAssociationItemDrop}
           onAssociationItemRemove={props.onAssociationItemRemove}
-          onChange={props.onChange}
           set={set}
         />
       </li>
@@ -119,7 +110,6 @@ const SetList = props =>
 
 
 SetList.propTypes = {
-  onChange: T.func.isRequired,
   sets: T.arrayOf(T.object).isRequired,
   answers: T.arrayOf(T.object).isRequired,
   onAssociationItemRemove: T.func.isRequired,
@@ -139,7 +129,6 @@ let Item = props => {
                 <Tooltip id={`item-${props.item.id}-drag`}>{t('move')}</Tooltip>
               }>
               <span
-                title={t('move')}
                 draggable="true"
                 className={classes(
                   'tooltiped-button',
@@ -158,7 +147,6 @@ let Item = props => {
 }
 
 Item.propTypes = {
-  onChange: T.func.isRequired,
   connectDragSource: T.func.isRequired,
   connectDragPreview: T.func.isRequired,
   item: T.object.isRequired
@@ -170,16 +158,14 @@ const ItemList = props =>
     <ul>
       { props.items.map((item) =>
         <li key={item.id}>
-          <Item onChange={props.onChange} item={item}/>
+          <Item item={item}/>
         </li>
       )}
     </ul>
 
 
 ItemList.propTypes = {
-  items:  T.arrayOf(T.object).isRequired,
-  onChange: T.func.isRequired,
-  answers: T.arrayOf(T.object).isRequired
+  items:  T.arrayOf(T.object).isRequired
 }
 
 class SetPlayer extends Component {
@@ -197,7 +183,9 @@ class SetPlayer extends Component {
   }
 
   handleAssociationItemRemove(setId, itemId) {
-    console.log('set item removed')
+    this.props.onChange(
+       this.props.answer.filter(answer => answer.setId !== setId || answer.itemId !== itemId)
+    )
   }
 
 
@@ -207,14 +195,11 @@ class SetPlayer extends Component {
      * @var {target} target item (set)
      */
   handleAssociationItemDrop(source, target) {
-    console.log('item droppped')
-    console.log('source', source)
-    console.log('target' , target)
+
     if(undefined === this.props.answer.find(el => el.setId === target.object.id && el.itemId === source.item.id)){
       // do something to add to solution
-      console.log('add to answer')
       this.props.onChange(
-          [{itemId: source.item.id, setId: target.object.id}].concat(this.props.answer)
+          [{itemId: source.item.id, setId: target.object.id, _itemData: source.item.data}].concat(this.props.answer)
        )
     }
   }
@@ -223,13 +208,12 @@ class SetPlayer extends Component {
     return (
       <div className="set-question-player">
           <div className="items-col">
-            <ItemList onChange={this.props.onChange} answers={this.props.answer} items={this.state.items} />
+            <ItemList items={this.state.items} />
           </div>
           <div className="sets-col">
             <SetList
               onAssociationItemRemove={(setId, itemId) => this.handleAssociationItemRemove(setId, itemId)}
               onAssociationItemDrop={(source, target) => this.handleAssociationItemDrop(source, target)}
-              onChange={this.props.onChange}
               answers={this.props.answer}
               sets={this.state.sets} />
           </div>

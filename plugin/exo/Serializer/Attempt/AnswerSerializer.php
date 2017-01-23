@@ -58,6 +58,9 @@ class AnswerSerializer extends AbstractSerializer
     {
         $answerData = new \stdClass();
 
+        print_r($answer);
+        die;
+
         $this->mapEntityToObject([
             'questionId' => 'questionId',
             'tries' => 'tries',

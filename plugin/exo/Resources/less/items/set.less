@@ -233,14 +233,6 @@
             display: flex;
             padding: 5px;
             border-bottom: 1px solid #eee;
-
-            .text-fields {
-              flex-grow: 1;
-              .text-editor {
-                word-break: break-all;
-                min-width: 150px;
-              }
-            }
           }
 
           .set-body {
@@ -263,15 +255,14 @@
                     display: flex;
                     width: 100%;
                     justify-content: space-between;
+                    align-items: center;
                     .association-data {
                       display: flex;
-                      min-width: 208px;
-                      max-width: 208px;
+                      width:100%;
                       min-height: 34px;
                       padding: 5px;
                       margin-right: 5px;
                       align-items: center;
-                      background-color: #fff;
                       text-overflow: ellipsis;
                       white-space: nowrap;
                       overflow: hidden;
@@ -279,14 +270,7 @@
                     .right-controls {
                       display: flex;
                       align-items: flex-start;
-                     .association-score {
-                       width: 60px;
-                       margin-right: 8px;
-                     }
                     }
-                  }
-                  .feedback-container {
-                    margin-top: 12px;
                   }
                 }
               }

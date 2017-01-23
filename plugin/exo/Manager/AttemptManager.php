@@ -199,6 +199,8 @@ class AttemptManager
 
             $existingAnswer = $paper->getAnswer($answerData->questionId);
 
+
+
             try {
                 if (empty($existingAnswer)) {
                     $answer = $this->answerManager->create($answerData);
