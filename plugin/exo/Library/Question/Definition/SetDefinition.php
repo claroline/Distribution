@@ -128,6 +128,7 @@ class SetDefinition extends AbstractDefinition
                 }
             }
         }
+
         return $corrected;
     }
 
@@ -138,7 +139,7 @@ class SetDefinition extends AbstractDefinition
         $expected = array_filter($question->getAssociations()->toArray(), function (Association $association) {
             return 0 < $association->getScore();
         });
-        
+
         return $expected;
     }
 
