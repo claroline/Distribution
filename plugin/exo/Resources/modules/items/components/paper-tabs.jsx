@@ -1,10 +1,11 @@
+
 import React, {Component, PropTypes as T} from 'react'
 import Tab from 'react-bootstrap/lib/Tab'
 import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
 import Nav from 'react-bootstrap/lib/Nav'
 import NavItem from 'react-bootstrap/lib/NavItem'
-import {tex} from './../../utils/translate'
+import {tex} from '../../utils/translate'
 import {Metadata} from './metadata.jsx'
 
 export class PaperTabs extends Component
