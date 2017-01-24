@@ -62,7 +62,7 @@ class AnswerRow extends Component {
 AnswerRow.propTypes = {
   id: T.string.isRequired,
   questionId: T.string.isRequired,
-  data: T.string.isRequired,
+  data: T.string,
   score: T.string,
   scoreMax: T.number.isRequired,
   feedback: T.string,
