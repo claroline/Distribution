@@ -12,17 +12,22 @@ import {CircleArea, RectArea} from './components/answer-areas.jsx'
 export class Graphic extends Component {
   constructor(props) {
     super(props)
-    this.onDropImage = this.onDropImage.bind(this)
+    this.draggingArea = false
+    this.draggedArea = null
+    this.onDragOver = this.onDragOver.bind(this)
+    this.onDrop = this.onDrop.bind(this)
     this.onSelectImage = this.onSelectImage.bind(this)
     this.onClickImage = this.onClickImage.bind(this)
+    this.onStartDragArea = this.onStartDragArea.bind(this)
+    this.onEndDragArea = this.onEndDragArea.bind(this)
     this.onResize = this.onResize.bind(this)
   }
 
   componentDidMount() {
     this.renderImageContainerContent()
     this.dropzone.addEventListener('dragenter', this.stopEvent)
-    this.dropzone.addEventListener('dragover', this.stopEvent)
-    this.dropzone.addEventListener('drop', this.onDropImage)
+    this.dropzone.addEventListener('dragover', this.onDragOver)
+    this.dropzone.addEventListener('drop', this.onDrop)
     window.addEventListener('resize', this.onResize)
   }
 
@@ -58,8 +63,8 @@ export class Graphic extends Component {
 
   componentWillUnmount() {
     this.dropzone.removeEventListener('dragenter', this.stopEvent)
-    this.dropzone.removeEventListener('dragover', this.stopEvent)
-    this.dropzone.removeEventListener('drop', this.onDropImage)
+    this.dropzone.removeEventListener('dragover', this.onDragOver)
+    this.dropzone.removeEventListener('drop', this.onDrop)
     window.removeEventListener('resize', this.onResize)
   }
 
@@ -68,10 +73,46 @@ export class Graphic extends Component {
     e.preventDefault()
   }
 
-  onDropImage(e) {
+  onDragOver(e) {
+    if (this.draggingArea) {
+      this.draggedArea.style.visibility = 'hidden'
+    }
+
     this.stopEvent(e)
+  }
+
+  onStartDragArea(e, areaId) {
+    this.draggingArea = true
+    this.draggedArea = e.target
+    e.dataTransfer.setData('text/plain', `area:${areaId}`)
+  }
+
+  onEndDragArea() {
+    this.draggingArea = false
+    this.draggedArea.style.visibility = 'visible'
+    this.draggedArea = null
+  }
+
+  onDrop(e) {
+    this.stopEvent(e)
+
+    // image drop
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       this.onSelectImage(e.dataTransfer.files[0])
+    }
+
+    const text = e.dataTransfer.getData('text')
+
+    // answer area drop
+    if (text && text.indexOf('area:') === 0) {
+      const areaId = text.slice(5)
+      const img = this.imgContainer.querySelector('img')
+      const imgRect = img.getBoundingClientRect()
+      this.props.onChange(actions.moveArea(
+        areaId,
+        e.clientX - imgRect.left,
+        e.clientY - imgRect.top
+      ))
     }
   }
 
@@ -154,7 +195,12 @@ export class Graphic extends Component {
               solution.area.shape === SHAPE_RECT ?
                 <RectArea
                   key={solution.area.id}
+                  id={solution.area.id}
                   color={solution.area.color}
+                  selected={solution._selected}
+                  onSelect={id => this.props.onChange(actions.selectArea(id))}
+                  onDragStart={e => this.onStartDragArea(e, solution.area.id)}
+                  onDragEnd={this.onEndDragArea}
                   coords={solution.area.coords.map(coords => ({
                     x: coords._clientX,
                     y: coords._clientY
@@ -162,7 +208,12 @@ export class Graphic extends Component {
                 /> :
                 <CircleArea
                   key={solution.area.id}
+                  id={solution.area.id}
                   color={solution.area.color}
+                  selected={solution._selected}
+                  onSelect={id => this.props.onChange(actions.selectArea(id))}
+                  onDragStart={e => this.onStartDragArea(e, solution.area.id)}
+                  onDragEnd={this.onEndDragArea}
                   radius={solution.area._clientRadius}
                   center={{
                     x: solution.area.center._clientX,

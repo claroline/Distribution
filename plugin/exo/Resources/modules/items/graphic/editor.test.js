@@ -9,6 +9,7 @@ import {actions as subActions} from './actions'
 import {
   MODE_RECT,
   MODE_CIRCLE,
+  MODE_SELECT,
   SHAPE_RECT,
   SHAPE_CIRCLE,
   AREA_DEFAULT_SIZE
@@ -110,9 +111,11 @@ describe('Graphic reducer', () => {
             color: 'blue'
           },
           score: 1,
-          feedback: ''
+          feedback: '',
+          _selected: true
         }
-      ]
+      ],
+      _mode: MODE_SELECT
     }))
   })
 
@@ -157,10 +160,196 @@ describe('Graphic reducer', () => {
             color: 'blue'
           },
           score: 1,
-          feedback: ''
+          feedback: '',
+          _selected: true
         }
       ],
-      _mode: MODE_CIRCLE
+      _mode: MODE_SELECT
+    }))
+  })
+
+  it('selects existing areas and switches to select mode', () => {
+    const item = itemFixture({
+      solutions: [
+        {
+          area: {
+            id: 'ID1',
+            shape: SHAPE_RECT
+          },
+          _selected: false
+        },
+        {
+          area: {
+            id: 'ID2',
+            shape: SHAPE_CIRCLE
+          },
+          _selected: false
+        }
+      ]
+    })
+    const reduced = editor.reduce(item, subActions.selectArea('ID2'))
+    ensure.equal(reduced, itemFixture({
+      solutions: [
+        {
+          area: {
+            id: 'ID1',
+            shape: SHAPE_RECT
+          },
+          _selected: false
+        },
+        {
+          area: {
+            id: 'ID2',
+            shape: SHAPE_CIRCLE
+          },
+          _selected: true
+        }
+      ],
+      _mode: MODE_SELECT
+    }))
+  })
+
+  it('moves circular areas (scaled)', () => {
+    const item = itemFixture({
+      image: {
+        width: 200,
+        height: 200,
+        _clientWidth: 100,
+        _clientHeight: 100
+      },
+      solutions: [
+        {
+          area: {
+            id: 'ID1',
+            shape: SHAPE_CIRCLE,
+            center: {
+              x: 100,
+              y: 100,
+              _clientX: 50,
+              _clientY: 50
+            },
+            radius: 20,
+            _clientRadius: 10
+          },
+          _selected: true
+        },
+        {
+          area: {
+            id: 'ID2',
+            shape: SHAPE_CIRCLE
+          }
+        }
+      ]
+    })
+    const reduced = editor.reduce(item, subActions.moveArea('ID1', 20, 30))
+    ensure.equal(reduced, itemFixture({
+      image: {
+        width: 200,
+        height: 200,
+        _clientWidth: 100,
+        _clientHeight: 100
+      },
+      solutions: [
+        {
+          area: {
+            id: 'ID1',
+            shape: SHAPE_CIRCLE,
+            center: {
+              x: 40,
+              y: 60,
+              _clientX: 20,
+              _clientY: 30
+            },
+            radius: 20,
+            _clientRadius: 10
+          },
+          _selected: true
+        },
+        {
+          area: {
+            id: 'ID2',
+            shape: SHAPE_CIRCLE
+          }
+        }
+      ]
+    }))
+  })
+
+  it('moves rectangular areas (scaled)', () => {
+    const item = itemFixture({
+      image: {
+        width: 200,
+        height: 200,
+        _clientWidth: 100,
+        _clientHeight: 100
+      },
+      solutions: [
+        {
+          area: {
+            id: 'ID1',
+            shape: SHAPE_RECT,
+            coords: [
+              {
+                x: 50,
+                y: 50,
+                _clientX: 25,
+                _clientY: 25
+              },
+              {
+                x: 150,
+                y: 150,
+                _clientX: 75,
+                _clientY: 75
+              }
+            ]
+          },
+          _selected: true
+        },
+        {
+          area: {
+            id: 'ID2',
+            shape: SHAPE_CIRCLE
+          }
+        }
+      ]
+    })
+    const reduced = editor.reduce(item, subActions.moveArea('ID1', 40, 30))
+    ensure.equal(reduced, itemFixture({
+      image: {
+        width: 200,
+        height: 200,
+        _clientWidth: 100,
+        _clientHeight: 100
+      },
+      solutions: [
+        {
+          area: {
+            id: 'ID1',
+            shape: SHAPE_RECT,
+            coords: [
+              {
+                x: 80,
+                y: 60,
+                _clientX: 40,
+                _clientY: 30
+              },
+              {
+                x: 180,
+                y: 160,
+                _clientX: 90,
+                _clientY: 80
+              }
+            ]
+          },
+          _selected: true
+        },
+        {
+          area: {
+            id: 'ID2',
+            shape: SHAPE_CIRCLE
+          }
+        }
+      ]
     }))
   })
 })

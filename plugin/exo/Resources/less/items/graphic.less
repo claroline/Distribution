@@ -35,6 +35,16 @@
   .area {
     display: inline-block;
     position: absolute;
-    opacity: 0.5;
+  }
+
+  .area.selected {
+    z-index: 100;
+    cursor: grab;
+    cursor: -webkit-grab;
+  }
+
+  .area-handle {
+    position: absolute;
+    border: dashed 2px #fff;
   }
 }
