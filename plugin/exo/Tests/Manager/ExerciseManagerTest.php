@@ -5,6 +5,7 @@ namespace UJM\ExoBundle\Tests\Manager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
+use UJM\ExoBundle\Entity\Question\Question;
 use UJM\ExoBundle\Library\Attempt\PaperGenerator;
 use UJM\ExoBundle\Library\Testing\Json\JsonDataTestCase;
 use UJM\ExoBundle\Library\Testing\Persister;
@@ -32,7 +33,10 @@ class ExerciseManagerTest extends JsonDataTestCase
         $this->manager = $this->client->getContainer()->get('ujm_exo.manager.exercise');
         $this->paperGenerator = $this->client->getContainer()->get('ujm_exo.generator.paper');
 
-        $this->exercise = $this->persist->exercise('my exercise', [], $this->persist->user('bob'));
+        $this->exercise = $this->persist->exercise('my exercise', [
+            [$this->persist->openQuestion('Open question.')],
+            [$this->persist->openQuestion('Open question.')],
+        ], $this->persist->user('bob'));
         $this->om->flush();
     }
 
@@ -95,9 +99,31 @@ class ExerciseManagerTest extends JsonDataTestCase
 
     public function testCopy()
     {
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $copy = $this->manager->copy($this->exercise);
+
+        // Checks the copy has its own ids
+        $this->assertNotEquals($this->exercise->getId(), $copy->getId());
+
+        // Checks there is one more exercise in the DB
+        $exercises = $this->om->getRepository('UJMExoBundle:Exercise')->findAll();
+        $this->assertCount(2, $exercises);
+
+        // Check the copy contains the correct amount of steps
+        $this->assertCount($this->exercise->getSteps()->count(), $copy->getSteps());
+
+        // Checks steps have been duplicated (and not just referenced)
+        $firstStepOri = $this->exercise->getSteps()->get(0);
+        $firstStepCopy = $copy->getSteps()->get(0);
+
+        $this->assertNotEquals($firstStepOri->getId(), $firstStepCopy->getId());
+
+        // Checks questions have been reused
+        /** @var Question $questionOri */
+        $questionOri = $firstStepOri->getStepQuestions()->get(0)->getQuestion();
+        /** @var Question $questionCopy */
+        $questionCopy = $firstStepCopy->getStepQuestions()->get(0)->getQuestion();
+
+        $this->assertEquals($questionOri->getId(), $questionCopy->getId());
     }
 
     /**

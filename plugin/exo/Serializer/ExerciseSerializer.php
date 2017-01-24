@@ -89,10 +89,9 @@ class ExerciseSerializer implements SerializerInterface
     {
         if (empty($exercise)) {
             $exercise = new Exercise();
-        }
-
-        if (!empty($data->id)) {
-            $exercise->setUuid($data->id);
+            if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
+                $exercise->setUuid($data->id);
+            }
         }
 
         $exercise->setTitle($data->title);

@@ -194,14 +194,6 @@ class ExerciseListener
             $exerciseExport->description = $this->exportHtmlContent($event, $exerciseExport->description);
         }
 
-        if (!empty($exerciseExport->instruction)) {
-            $exerciseExport->instruction = $this->exportHtmlContent($event, $exerciseExport->instruction);
-        }
-
-        if (!empty($exerciseExport->info)) {
-            $exerciseExport->info = $this->exportHtmlContent($event, $exerciseExport->info);
-        }
-
         if ($exerciseExport->steps) {
             foreach ($exerciseExport->steps as $step) {
                 $this->exportStep($event, $step);
@@ -227,6 +219,7 @@ class ExerciseListener
 
         // Set translations
         $event->addTranslationDomain('ujm_exo');
+        $event->addTranslationDomain('question_types');
 
         $event->stopPropagation();
     }
@@ -239,11 +232,8 @@ class ExerciseListener
 
         if ($step['items']) {
             foreach ($step['items'] as $item) {
-                $item->title = $this->exportHtmlContent($event, $item->title);
+                $item->content = $this->exportHtmlContent($event, $item->content);
                 $item->description = $this->exportHtmlContent($event, $item->description);
-                $item->invite = $this->exportHtmlContent($event, $item->invite);
-                $item->supplementary = $this->exportHtmlContent($event, $item->supplementary);
-                $item->specification = $this->exportHtmlContent($event, $item->specification);
 
                 // Export graphic question image
                 if ('application/x.graphic+json' === $item->type) {

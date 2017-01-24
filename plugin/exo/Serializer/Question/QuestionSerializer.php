@@ -178,7 +178,8 @@ class QuestionSerializer extends AbstractSerializer
             }
         }
 
-        if (!empty($data->id)) {
+        // Force client ID if needed
+        if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
             $question->setUuid($data->id);
         }
 

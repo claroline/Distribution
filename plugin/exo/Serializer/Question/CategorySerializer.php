@@ -92,7 +92,8 @@ class CategorySerializer extends AbstractSerializer
             }
         }
 
-        if (!empty($data->id)) {
+        // Force client ID if needed
+        if (!$this->hasOption(Transfer::USE_SERVER_IDS, $options)) {
             $category->setUuid($data->id);
         }
 

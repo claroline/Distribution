@@ -6,6 +6,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Step;
 use UJM\ExoBundle\Entity\StepQuestion;
 use UJM\ExoBundle\Library\Options\Recurrence;
+use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
 use UJM\ExoBundle\Serializer\Question\QuestionSerializer;
 
@@ -77,7 +78,8 @@ class StepSerializer implements SerializerInterface
             $step = new Step();
         }
 
-        if (!empty($data->id)) {
+        // Force client ID if needed
+        if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
             $step->setUuid($data->id);
         }
 
@@ -176,8 +178,6 @@ class StepSerializer implements SerializerInterface
      * @param Step  $step
      * @param array $items
      * @param array $options
-     *
-     * @return array
      */
     public function deserializeItems(Step $step, array $items = [], array $options = [])
     {
