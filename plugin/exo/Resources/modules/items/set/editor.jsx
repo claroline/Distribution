@@ -83,7 +83,6 @@ class Association extends Component {
             />
           </div>
         }
-
       </div>
     )
   }

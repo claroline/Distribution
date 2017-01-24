@@ -170,10 +170,11 @@ function reduce(item = {}, action) {
       newItem.items.splice(itemIndex, 1)
       if(action.isOdd){
         // remove item from solution odds
-        newItem.solutions.odd.forEach((odd, index) => {
+        const odd = cloneDeep(newItem.solutions.odd)
+        odd.forEach((odd) => {
           if(odd.itemId === action.id){
-            // remove
-            newItem.solutions.odd.splice(index, 1)
+            const idx = newItem.solutions.odd.findIndex(el => el.itemId === action.id)
+            newItem.solutions.odd.splice(idx, 1)
           }
         })
       } else {
@@ -181,10 +182,11 @@ function reduce(item = {}, action) {
         const itemDeletable = newItem.items.filter(item => undefined === newItem.solutions.odd.find(el => el.itemId === item.id)).length > 1
         newItem.items.filter(item => undefined === newItem.solutions.odd.find(el => el.itemId === item.id)).forEach(el => el._deletable = itemDeletable)
         // remove item from solution associations
-        newItem.solutions.associations.forEach((ass, index) => {
+        const associations = cloneDeep(newItem.solutions.associations)
+        associations.forEach((ass) => {
           if(ass.itemId === action.id){
-            // remove
-            newItem.solutions.associations.splice(index, 1)
+            const idx = newItem.solutions.associations.findIndex(el => el.itemId === action.id)
+            newItem.solutions.associations.splice(idx, 1)
           }
         })
       }

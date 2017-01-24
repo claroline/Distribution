@@ -141,7 +141,7 @@ class SetQuestionSerializer implements SerializerInterface
      * Deserializes Question labels.
      *
      * @param MatchQuestion $setQuestion
-     * @param array         $items ie labels
+     * @param array         $items       ie labels
      */
     private function deserializeLabels(MatchQuestion $setQuestion, array $items)
     {
@@ -182,7 +182,7 @@ class SetQuestionSerializer implements SerializerInterface
      * Deserializes Question proposals.
      *
      * @param MatchQuestion $setQuestion
-     * @param array         $sets ie proposals
+     * @param array         $sets        ie proposals
      */
     private function deserializeProposals(MatchQuestion $setQuestion, array $sets)
     {
@@ -240,7 +240,7 @@ class SetQuestionSerializer implements SerializerInterface
                 // retieves oddAssociations and fullAssociation
                 if ($entityAssociation->getLabel()->getUuid() === $solution->itemId &&
                       (
-                        ($entityAssociation->getProposal() &&  $entityAssociation->getProposal()->getUuid() === $solution->setId) ||
+                        ($entityAssociation->getProposal() && $entityAssociation->getProposal()->getUuid() === $solution->setId) ||
                         (!$entityAssociation->getProposal() && !$solution->itemId)
                       )
                 ) {
