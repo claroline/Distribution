@@ -15,5 +15,7 @@ export function tex(message, placeholders = {}) {
 }
 
 export function tcex(message, amount, placeholders = {}) {
-  return transChoice(message, amount, placeholders, 'ujm_exo')
+  const trans = transChoice(message, amount, placeholders, 'ujm_exo')
+
+  return trans
 }

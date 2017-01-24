@@ -457,7 +457,7 @@ signing: Passation
 size: Taille
 start_again: Recommencer
 start_date: Date de début
-solution_score: %score% point|%score% points
+solution_score: "{-1, 0, 1} %score% point|[2,+Inf[ %score% points|]-Inf, -2] %score% points"
 sort: Trier les documents
 summative : Sommatif
 step: Étape

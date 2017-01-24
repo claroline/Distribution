@@ -460,7 +460,7 @@ signing: Signing
 size: Size
 start_again: Resume
 start_date: Start date
-solution_score: %score% point|%score% points
+solution_score: "{0} %score% point|{1} %score% point|[2,Inf] %score% points"
 sort: Sort documents
 summative : Summative
 show_additional_info: Display additional information

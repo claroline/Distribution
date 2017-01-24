@@ -7,7 +7,8 @@ export const Feedback = props => {
 
   const popoverClick = (
     <Popover className="item-feedback" id={props.id}>
-      {props.feedback}
+      <div className="feedback-content" dangerouslySetInnerHTML={{__html: props.feedback}}>
+      </div>
     </Popover>
   )
 
@@ -20,5 +21,5 @@ export const Feedback = props => {
 
 Feedback.propTypes = {
   feedback: T.string,
-  id: T.string
+  id: T.any
 }
