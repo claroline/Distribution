@@ -30,7 +30,7 @@ export class ClozePlayer extends Component {
             <span key={key}>
               {(el.choices) ?
                 <span>
-                  {this.props.text}
+                  {el.text}
                     <select
                       defaultValue='Please Choose...'
                       onChange={(e) => this.props.onChange(this.onAnswer(
@@ -66,7 +66,6 @@ ClozePlayer.propTypes = {
     solutions: T.array.isRequired,
     text: T.string.isRequired
   }).isRequired,
-  text: T.string.isRequired,
   answer: T.array,
   onChange: T.func.isRequired
 }

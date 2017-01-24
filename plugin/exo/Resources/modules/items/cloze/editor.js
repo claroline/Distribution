@@ -14,6 +14,7 @@ const UPDATE_ANSWER = 'UPDATE_ANSWER'
 const SAVE_HOLE = 'SAVE_HOLE'
 const REMOVE_HOLE = 'REMOVE_HOLE'
 const REMOVE_ANSWER = 'REMOVE_ANSWER'
+const CLOSE_POPOVER = 'CLOSE_POPOVER'
 
 export const actions = {
   updateText: makeActionCreator(UPDATE_TEXT, 'text'),
@@ -24,7 +25,8 @@ export const actions = {
   updateAnswer: makeActionCreator(UPDATE_ANSWER, 'holeId', 'parameter', 'oldText', 'case', 'value'),
   saveHole: makeActionCreator(SAVE_HOLE),
   removeHole: makeActionCreator(REMOVE_HOLE, 'holeId'),
-  removeAnswer: makeActionCreator(REMOVE_ANSWER, 'text', 'caseSensitive')
+  removeAnswer: makeActionCreator(REMOVE_ANSWER, 'text', 'caseSensitive'),
+  closePopover: makeActionCreator(CLOSE_POPOVER)
 }
 
 export default {
@@ -60,7 +62,7 @@ function reduce(item = {}, action) {
     case OPEN_HOLE: {
       const newItem = cloneDeep(item)
       const hole = getHoleFromId(newItem, action.holeId)
-      hole._multiple = hole.choices.length > 1
+      hole._multiple = hole.choices ? true: false
 
       newItem._popover = {
         offsetX: action.offsetX,
@@ -121,21 +123,27 @@ function reduce(item = {}, action) {
 
       if (holeIdx > -1) {
         newItem.holes[holeIdx] = newItem._popover.hole
-        const solutionIdx = newItem.solutions.findIndex(solution => solution.holeIid === item._popover.solution.holeId)
+        const solutionIdx = newItem.solutions.findIndex(solution => solution.holeId === item._popover.solution.holeId)
         newItem.solutions[solutionIdx] = newItem._popover.solution
         newItem.holes[holeIdx].choices = choices
       } else {
-        newItem.holes.push(item._popover.hole)
+        newItem.holes.push(newItem._popover.hole)
         newItem.holes[newItem.holes.length - 1].choices = choices
-        newItem.solutions.push(item._popover.solution)
+        newItem.solutions.push(newItem._popover.solution)
         newItem._text = utils.replaceBetween(
           newItem._text,
           newItem._popover.startOffset,
           newItem._popover.endOffset,
-          utils.makeTinyHtml(item._popover.solution)
+          utils.makeTinyHtml(newItem._popover.solution)
         )
+        //choices can't be empty tho so...
 
         newItem.text = utils.getTextWithPlacerHoldersFromHtml(newItem._text)
+      }
+
+      const currentHole = holeIdx === -1 ? newItem.holes[newItem.holes.length - 1]: newItem.holes[holeIdx]
+      if (currentHole.choices.length === 0) {
+        delete currentHole.choices
       }
 
       delete newItem._popover
@@ -177,9 +185,6 @@ function reduce(item = {}, action) {
       return newItem
     }
     case REMOVE_HOLE: {
-      //step1: remove from text
-      alert('remove')
-      //step2: remove hole from list
       const newItem = cloneDeep(item)
       const holes = newItem.holes
       holes.splice(holes.findIndex(hole => hole.id === action.holeId), 1)
@@ -195,6 +200,12 @@ function reduce(item = {}, action) {
       const newItem = cloneDeep(item)
       const answers = newItem._popover.solution.answers
       answers.splice(answers.findIndex(answer => answer.text === action.text && answer.caseSensitive === action.caseSensitive), 1)
+
+      return newItem
+    }
+    case CLOSE_POPOVER: {
+      const newItem = cloneDeep(item)
+      delete newItem._popover
 
       return newItem
     }

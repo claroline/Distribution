@@ -42,18 +42,15 @@ utils.getTextWithPlacerHoldersFromHtml = (text) =>
 
 function getEditButtons(solution) {
   return `
-    <button
-      class="edit-hole-btn"
+    <i style="cursor: pointer"
+      class="fa fa-pencil edit-hole-btn"
+      data-hole-id="${solution.holeId}"
+    ></i>
+    <i style="cursor: pointer"
+      class="fa fa-trash delete-hole-btn"
       data-hole-id="${solution.holeId}"
     >
-      edit
-    </button>
-    <button
-      class="delete-hole-btn"
-      data-hole-id="${solution.holeId}"
-    >
-      delete
-    </button>
+    </i>
   `
 }
 

@@ -15,10 +15,10 @@ class ChoiceItem extends Component {
   render() {
     return (
       <div>
-        <div className="text-fields">
+        <div className="row">
           <ContentEditable
             id={`item-${this.props.id}-answer`}
-            className="form-control input-sm"
+            className="form-control input-sm col-xs-3"
             type="text"
             content={this.props.answer.text}
             onChange={text => this.props.onChange(
@@ -74,7 +74,7 @@ class ChoiceItem extends Component {
                 'score',
                 this.props.answer.text,
                 this.props.answer.caseSensitive,
-                e.target.checked
+                parseInt(e.target.value)
               )
             )}
           />
@@ -125,6 +125,7 @@ class HoleForm extends Component {
   constructor() {
     super()
     this.state = {showFeedback: false}
+
   }
 
   getHoleAnswers(hole) {
@@ -134,6 +135,10 @@ class HoleForm extends Component {
       [],
       this.props.item.solutions.filter(solution => solution.holeId === hole.id).map(solution => solution.answers)
     )
+  }
+
+  closePopover() {
+    this.props.onChange(actions.closePopover())
   }
 
   render() {
@@ -146,33 +151,37 @@ class HoleForm extends Component {
           positionTop={this.props.offsetY - 210}
         >
           <div>
-            <FormGroup
-              controlId={`item-${this.props.hole.id}-fixedSuccess`}
-              label={tex('size')}
-            >
+            <div className="row"><div className="pull-right close-popover" onClick={this.closePopover.bind(this)}>x</div></div>
+            <div className="row">
+              <div className="col-xs-3">
+                {tex('size')}
+              </div>
               <input
                 id={`item-${this.props.hole.id}-size`}
                 type="number"
                 min="0"
                 value={this.props.hole.size}
-                className="input-sm form-control"
+                className="col-xs-2 form-control hole-size"
                 onChange={e => this.props.onChange(
                   actions.updateHole(this.props.hole.id, 'size', e.target.value)
                 )}
               />
-            </FormGroup>
-            <div className="right-controls">
-              <input
-                type="checkbox"
-                checked={this.props.hole._multiple}
-                onChange={e => this.props.onChange(
-                  actions.updateHole(
-                    this.props.hole.id,
-                    '_multiple',
-                    e.target.checked
-                  )
-                )}
-              />
+              <div className="col-xs-3">
+                <input
+                  type="checkbox"
+                  checked={this.props.hole._multiple}
+                  onChange={e => this.props.onChange(
+                    actions.updateHole(
+                      this.props.hole.id,
+                      '_multiple',
+                      e.target.checked
+                    )
+                  )}
+                />
+              </div>
+              <div className="col-xs-3">
+                {tex('submit_a_list')}
+              </div>
             </div>
 
             {this.props.solution.answers.map((answer, index) => {
@@ -202,10 +211,11 @@ class HoleForm extends Component {
               </div>
             }
             <button
-              className="btn btn-primary"
+              className="btn btn-default"
               onClick={() => this.props.onChange(
                 actions.addAnswer(this.props.hole.id))}
             >
+              <i className="fa fa-plus"/>
               Keyword
             </button>
             <button className="btn btn-primary" onClick={() =>
@@ -244,7 +254,7 @@ export class Cloze extends Component {
   }
 
   onHoleClick(el) {
-    if (el.className === 'edit-hole-btn') {
+    if (el.className === 'fa fa-pencil edit-hole-btn') {
       this.offsetX = el.getBoundingClientRect().right
       this.offsetY = el.getBoundingClientRect().bottom
       this.props.onChange(actions.openHole(
@@ -255,7 +265,7 @@ export class Cloze extends Component {
         this.offsetY
       ))
     } else {
-      if (el.className === 'delete-hole-btn') {
+      if (el.className === 'fa fa-trash delete-hole-btn') {
         this.props.onChange(actions.removeHole(el.dataset.holeId))
       }
     }
@@ -277,7 +287,12 @@ export class Cloze extends Component {
             content={this.props.item._text}
           />
         </FormGroup>
-        <button type="button" onClick={() => this.props.onChange(this.addHole())}> Create Cloze </button>
+        <button
+          type="button"
+          className="btn btn-default"
+          onClick={() => this.props.onChange(this.addHole())}><i className="fa fa-plus"/>
+            Create Cloze
+        </button>
         {this.props.item._popover &&
           <div>
             <HoleForm
