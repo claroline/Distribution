@@ -4,6 +4,10 @@ import {actions as baseActions} from './../actions'
 import {VIEW_CORRECTION_QUESTIONS, VIEW_CORRECTION_ANSWERS} from './../enums'
 import {fetchCorrection} from './api'
 import {selectors} from './selectors'
+import {REQUEST_SEND} from './../../api/actions'
+import {showModal} from './../../modal/actions'
+import {MODAL_MESSAGE} from './../../modal'
+import {tex} from './../../utils/translate'
 
 export const CORRECTION_INIT = 'CORRECTION_INIT'
 export const QUESTION_CURRENT = 'QUESTION_CURRENT'
@@ -17,7 +21,7 @@ const initCorrection = makeActionCreator(CORRECTION_INIT, 'correction')
 const setCurrentQuestionId = makeActionCreator(QUESTION_CURRENT, 'id')
 const updateScore = makeActionCreator(SCORE_UPDATE, 'answerId', 'score')
 const updateFeedback = makeActionCreator(FEEDBACK_UPDATE, 'answerId', 'feedback')
-const removeAnswers = makeActionCreator(REMOVE_ANSWERS, 'ids')
+const removeAnswers = makeActionCreator(REMOVE_ANSWERS, 'questionId')
 
 actions.displayQuestions = () => {
   return (dispatch, getState) => {
@@ -64,15 +68,25 @@ actions.updateFeedback = (answerId, feedback) => {
 
 actions.saveCorrection = (questionId) => {
   return (dispatch, getState) => {
-    let data = []
-    let indexes = []
     const state = getState()
-    state.correction['answers'].forEach(a => {
-      if (a.questionId === questionId && a.score !== undefined && a.score !== null && !isNaN(a.score)) {
-        data.push({id: a.id, score: a.score})
-        indexes.push(a.id)
+    const question = state.correction.questions.find(q => q.id === questionId)
+    const answers = state.correction.answers.filter(a =>
+      a.questionId === questionId && a.score !== undefined && a.score !== null && !isNaN(a.score) && a.score <= question.score.max
+    )
+    dispatch({
+      [REQUEST_SEND]: {
+        route: ['exercise_correction_save', {exerciseId: selectors.quizId(state), questionId: questionId + 7}],
+        request: {
+          method: 'PUT' ,
+          body: JSON.stringify(answers)
+        },
+        success: () => dispatch(removeAnswers(questionId)),
+        failure: () => dispatch(showModal(MODAL_MESSAGE, {
+          title: tex('correction_invalid_no_save'),
+          message: tex('correction_invalid_no_save_desc'),
+          bsStyle: 'danger'
+        }))
       }
     })
-    dispatch(removeAnswers(indexes))
   }
 }

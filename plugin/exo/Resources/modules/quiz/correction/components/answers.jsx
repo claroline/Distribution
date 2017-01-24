@@ -4,6 +4,7 @@ import {actions} from './../actions'
 import {selectors as correctionSelectors} from './../selectors'
 import {tex} from './../../../utils/translate'
 import Panel from 'react-bootstrap/lib/Panel'
+import FormGroup from 'react-bootstrap/lib/FormGroup'
 import InputGroup from 'react-bootstrap/lib/InputGroup'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import {Textarea} from './../../../components/form/textarea.jsx'
@@ -23,14 +24,16 @@ class AnswerRow extends Component {
             <div dangerouslySetInnerHTML={{__html: this.props.data}}></div>
           </Panel>
           <div className="right-controls">
-            <InputGroup className="score-input">
-              <FormControl key={this.props.id}
-                           type="text"
-                           value={this.props.score !== undefined && this.props.score !== null && !isNaN(this.props.score) ? this.props.score : ''}
-                           onChange={(e) => this.props.updateScore(this.props.id, e.target.value)}
-              />
-              <InputGroup.Addon>/{this.props.scoreMax}</InputGroup.Addon>
-            </InputGroup>
+            <FormGroup validationState={this.props.score > this.props.scoreMax ? 'error' : null}>
+              <InputGroup className="score-input">
+                <FormControl key={this.props.id}
+                             type="text"
+                             value={this.props.score !== undefined && this.props.score !== null && !isNaN(this.props.score) ? this.props.score : ''}
+                             onChange={(e) => this.props.updateScore(this.props.id, e.target.value)}
+                />
+                <InputGroup.Addon>/{this.props.scoreMax}</InputGroup.Addon>
+              </InputGroup>
+            </FormGroup>
             <TooltipButton id={`feedback-${this.props.id}-toggle`}
                            className="fa fa-comments-o"
                            title={tex('feedback')}

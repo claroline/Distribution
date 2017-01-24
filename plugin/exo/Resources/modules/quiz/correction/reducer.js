@@ -13,7 +13,7 @@ export const reduceCorrection = (state = {}, action = {}) => {
         currentQuestionId: action.id
       })
     case SCORE_UPDATE:
-      const scoreAnswers = state['answers'].map((answer) => {
+      const scoreAnswers = state.answers.map((answer) => {
         if (answer.id === action.answerId) {
           return Object.assign({}, answer, {score: parseFloat(action.score)})
         } else {
@@ -24,7 +24,7 @@ export const reduceCorrection = (state = {}, action = {}) => {
         answers: scoreAnswers
       })
     case FEEDBACK_UPDATE:
-      const feedbackAnswers = state['answers'].map((answer) => {
+      const feedbackAnswers = state.answers.map((answer) => {
         if (answer.id === action.answerId) {
           return Object.assign({}, answer, {feedback: action.feedback})
         } else {
@@ -35,8 +35,11 @@ export const reduceCorrection = (state = {}, action = {}) => {
         answers: feedbackAnswers
       })
     case REMOVE_ANSWERS:
+      const question = state.questions.find(q => q.id === action.questionId)
       return Object.assign({}, state, {
-        answers: state['answers'].filter(answer => action.ids.indexOf(answer.id) === -1)
+        answers: state.answers.filter(a =>
+          a.questionId !== action.questionId || a.score > question.score.max || isNaN(a.score) || a.score === null || a.score === undefined
+        )
       })
   }
 

@@ -130,6 +130,12 @@ export const TopBar = props =>
               {t('save')}
             </NavLinkButton>
           }
+          {VIEW_CORRECTION_ANSWERS === props.viewMode &&
+            <NavLink href="#correction/questions">
+              <span className="fa fa-fw fa-list"></span>
+              {tex('back_to_the_questions_list')}
+            </NavLink>
+          }
           <NavLink href="#overview">
             <span className="fa fa-fw fa-sign-out"></span>
             {tex('back_to_the_quiz')}
