@@ -2,10 +2,14 @@ import React, {PropTypes as T} from 'react'
 
 export const Metadata = props => {
   return(
-    <div className="panel panel-body">
-      <h4>{props.title}</h4>
-      <i>{props.description}</i>
-    </div>
+      <div className="question-metadata">
+        {props.title !== '' &&
+          <h4>{props.title} </h4>
+        }
+        {props.description !== '' &&
+          <i>{props.description} </i>
+        }
+      </div>
   )
 }
 

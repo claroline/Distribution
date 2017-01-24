@@ -1,6 +1,13 @@
 export const utils = {}
 
 utils.split = (text, solutions, highlight = true) => {
+  if (!text) return [{
+    word: '#endoftext#',
+    position: null,
+    text,
+    score: null
+  }]
+
   const split = utils.getTextElements(text, solutions).filter(el => el.found)
 
   //now we can reorder the array by position and split the text accordingly
@@ -47,6 +54,9 @@ utils.split = (text, solutions, highlight = true) => {
 }
 
 utils.getTextElements = (text, solutions) => {
+  if (!text) {
+    return []
+  }
   const data = []
 
   //first we find each occurence of a given word
