@@ -49,7 +49,7 @@ class ClozeQuestionSerializer implements SerializerInterface
         $questionData->text = $clozeQuestion->getText();
         $questionData->holes = $this->serializeHoles($clozeQuestion);
         if (in_array(Transfer::INCLUDE_SOLUTIONS, $options)) {
-            $questionData->solutions = $this->serializeSolutions($clozeQuestion);
+            $questionData->solutions = $this->serializeSolutions($clozeQuestion, $options);
         }
 
         return $questionData;
@@ -132,11 +132,13 @@ class ClozeQuestionSerializer implements SerializerInterface
                 }
             }
 
-            if (null === $hole) {
+            if (empty($hole)) {
                 $hole = new Hole();
-                if (!empty($holeData->id)) {
-                    $hole->setUuid($holeData->id);
-                }
+            }
+
+            // Force client ID if needed
+            if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
+                $hole->setUuid($holeData->id);
             }
 
             $hole->setSize($holeData->size);
@@ -176,14 +178,14 @@ class ClozeQuestionSerializer implements SerializerInterface
         $hole->setKeywords($updatedKeywords);
     }
 
-    private function serializeSolutions(ClozeQuestion $clozeQuestion)
+    private function serializeSolutions(ClozeQuestion $clozeQuestion, array $options = [])
     {
-        return array_map(function (Hole $hole) {
+        return array_map(function (Hole $hole) use ($options) {
             $solutionData = new \stdClass();
             $solutionData->holeId = $hole->getUuid();
 
-            $solutionData->answers = array_map(function (Keyword $keyword) {
-                return $this->keywordSerializer->serialize($keyword);
+            $solutionData->answers = array_map(function (Keyword $keyword) use ($options) {
+                return $this->keywordSerializer->serialize($keyword, $options);
             }, $hole->getKeywords()->toArray());
 
             return $solutionData;

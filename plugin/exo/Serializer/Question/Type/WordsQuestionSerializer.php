@@ -46,7 +46,7 @@ class WordsQuestionSerializer implements SerializerInterface
         $questionData = new \stdClass();
 
         if (in_array(Transfer::INCLUDE_SOLUTIONS, $options)) {
-            $questionData->solutions = $this->serializeSolutions($wordsQuestion);
+            $questionData->solutions = $this->serializeSolutions($wordsQuestion, $options);
         }
 
         return $questionData;
@@ -72,10 +72,10 @@ class WordsQuestionSerializer implements SerializerInterface
         return $wordsQuestion;
     }
 
-    private function serializeSolutions(OpenQuestion $wordsQuestion)
+    private function serializeSolutions(OpenQuestion $wordsQuestion, array $options = [])
     {
-        return array_map(function (Keyword $keyword) {
-            return $this->keywordSerializer->serialize($keyword);
+        return array_map(function (Keyword $keyword) use ($options) {
+            return $this->keywordSerializer->serialize($keyword, $options);
         }, $wordsQuestion->getKeywords()->toArray());
     }
 

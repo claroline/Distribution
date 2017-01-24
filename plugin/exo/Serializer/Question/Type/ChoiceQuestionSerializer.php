@@ -81,7 +81,7 @@ class ChoiceQuestionSerializer implements SerializerInterface
         $choiceQuestion->setMultiple($data->multiple);
         $choiceQuestion->setShuffle($data->random);
 
-        $this->deserializeChoices($choiceQuestion, $data->choices, $data->solutions);
+        $this->deserializeChoices($choiceQuestion, $data->choices, $data->solutions, $options);
 
         return $choiceQuestion;
     }
@@ -112,8 +112,9 @@ class ChoiceQuestionSerializer implements SerializerInterface
      * @param ChoiceQuestion $choiceQuestion
      * @param array          $choices
      * @param array          $solutions
+     * @param array          $options
      */
-    private function deserializeChoices(ChoiceQuestion $choiceQuestion, array $choices, array $solutions)
+    private function deserializeChoices(ChoiceQuestion $choiceQuestion, array $choices, array $solutions, array $options = [])
     {
         $choiceEntities = $choiceQuestion->getChoices()->toArray();
 
@@ -130,18 +131,20 @@ class ChoiceQuestionSerializer implements SerializerInterface
                 }
             }
 
-            if (null === $choice) {
+            if (empty($choice)) {
                 // Create a new choice
                 $choice = new Choice();
-                if (!empty($choiceData->id)) {
-                    $choice->setUuid($choiceData->id);
-                }
+            }
+
+            // Force client ID if needed
+            if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
+                $choice->setUuid($choiceData->id);
             }
 
             $choice->setOrder($index);
 
             // Deserialize choice content
-            $choice = $this->contentSerializer->deserialize($choiceData, $choice);
+            $choice = $this->contentSerializer->deserialize($choiceData, $choice, $options);
 
             // Set choice score and feedback
             $choice->setScore(0);
