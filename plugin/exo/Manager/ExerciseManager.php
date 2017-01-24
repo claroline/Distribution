@@ -138,12 +138,20 @@ class ExerciseManager
      */
     public function copy(Exercise $exercise)
     {
+        // Serialize quiz entities
         $exerciseData = $this->serializer->serialize($exercise, [Transfer::INCLUDE_SOLUTIONS]);
 
-        // Remove UUID to force the generation of a new one
-        $exerciseData->id = '';
+        // NB 1. We don't validate data because it comes from the DB and it's always valid
+        // Populate new entities with original data
+        // NB 2. We use server generated ids for entity creation because the client ones are already in the DB
+        // and we need some fresh ones to avoid duplicates
+        $newExercise = $this->serializer->deserialize($exerciseData, null, [Transfer::USE_SERVER_IDS]);
 
-        return $this->create($exerciseData);
+        // Save copy to db
+        $this->om->persist($newExercise);
+        $this->om->flush();
+
+        return $newExercise;
     }
 
     /**

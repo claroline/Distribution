@@ -95,10 +95,11 @@ class AnswerSerializer extends AbstractSerializer
     {
         if (empty($answer)) {
             $answer = new Answer();
+        }
 
-            if (!empty($data->id)) {
-                $answer->setUuid($data->id);
-            }
+        // Force client ID if needed
+        if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
+            $answer->setUuid($data->id);
         }
 
         $answer->setQuestionId($data->questionId);

@@ -118,7 +118,8 @@ class PaperSerializer extends AbstractSerializer
             $paper = new Paper();
         }
 
-        if (!empty($data->id)) {
+        // Force client ID if needed
+        if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
             $paper->setUuid($data->id);
         }
 
