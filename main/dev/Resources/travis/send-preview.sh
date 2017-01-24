@@ -15,16 +15,8 @@ PREVIEW="pr-$TRAVIS_PULL_REQUEST-`date +%s`.tar.gz"
 
 mysqldump --opt --no-create-db claroline_test -uroot --password="" > claroline.sql
 rm -rf app/cache/* app/logs/* web/bundles
-
-# test
-rm -rf vendor node_modules web/packages web/dist
-
 tar --exclude=".git" -czf $PREVIEW *
 
 export SSHPASS=$REMOTE_PASS
 
-du -h $PREVIEW
-
 sshpass -e scp -q -o stricthostkeychecking=no $PREVIEW $REMOTE_USER@$REMOTE_HOST:$PREVIEW_PATH/$PREVIEW
-
-echo "$?"
