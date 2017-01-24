@@ -3,7 +3,9 @@
 namespace UJM\ExoBundle\Library\Question\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Entity\Misc\Association;
 use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
+use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 use UJM\ExoBundle\Library\Question\QuestionType;
 use UJM\ExoBundle\Serializer\Question\Type\MatchQuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\MatchAnswerValidator;
@@ -105,19 +107,50 @@ class MatchDefinition extends AbstractDefinition
         return $this->serializer;
     }
 
+    /**
+     * @param MatchQuestion $question
+     * @param $answer
+     *
+     * @return CorrectedAnswer
+     */
     public function correctAnswer(AbstractQuestion $question, $answer)
     {
-        // TODO: Implement correctAnswer() method.
+        $corrected = new CorrectedAnswer();
+
+        foreach ($question->getAssociations() as $association) {
+            if (is_array($answer)) {
+                $found = false;
+                foreach ($answer as $givenAnswer) {
+                    if ($association->getProposal()->getUuid() === $givenAnswer->firstId && $association->getLabel()->getUuid() === $givenAnswer->secondId) {
+                        $found = true;
+                        if (0 < $association->getScore()) {
+                            $corrected->addExpected($association);
+                        } else {
+                            $corrected->addUnexpected($association);
+                        }
+                    }
+                }
+                if (!$found && 0 < $association->getScore()) {
+                    $corrected->addMissing($association);
+                }
+            }
+        }
+
+        return $corrected;
     }
 
     public function expectAnswer(AbstractQuestion $question)
     {
-        // TODO: Implement expectAnswer() method.
+        $expected = [];
 
-        return [];
+        $expected = array_filter($question->getAssociations()->toArray(), function (Association $association) {
+            return 0 < $association->getScore();
+        });
+
+        return $expected;
     }
 
-    public function getStatistics(AbstractQuestion $matchQuestion, array $answers)
+    public function getStatistics(AbstractQuestion $matchQuestion, array $answersData)
     {
         // TODO: Implement getStatistics() method.
 

@@ -3,7 +3,9 @@
 namespace UJM\ExoBundle\Entity\Attempt;
 
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 use UJM\ExoBundle\Entity\Question\Question;
+use UJM\ExoBundle\Library\Model\UuidTrait;
 
 /**
  * An answer represents a user answer to a question.
@@ -22,6 +24,8 @@ class Answer
      */
     private $id;
 
+    use UuidTrait;
+
     /**
      * @var string
      *
@@ -37,6 +41,15 @@ class Answer
      * @ORM\Column(name="mark", type="float", nullable=true)
      */
     private $score;
+
+    /**
+     * A custom feedback sets by a creator.
+     *
+     * @var string
+     *
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $feedback;
 
     /**
      * @var int
@@ -80,6 +93,11 @@ class Answer
      */
     private $questionId;
 
+    public function __construct()
+    {
+        $this->uuid = Uuid::uuid4()->toString();
+    }
+
     /**
      * @return int
      */
@@ -122,6 +140,26 @@ class Answer
     public function getScore()
     {
         return $this->score;
+    }
+
+    /**
+     * Sets feedback.
+     *
+     * @param $feedback
+     */
+    public function setFeedback($feedback)
+    {
+        $this->feedback = $feedback;
+    }
+
+    /**
+     * Gets feedback.
+     *
+     * @return string
+     */
+    public function getFeedback()
+    {
+        return $this->feedback;
     }
 
     /**
