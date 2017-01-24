@@ -45,8 +45,7 @@ export const WordsPaper = (props) => {
 
   return (
     <PaperTabs
-      item={props.item}
-      answer={props.answer}
+      id={props.item.id}
       yours={
         <Highlight
           text={props.answer}
@@ -55,7 +54,7 @@ export const WordsPaper = (props) => {
         />
       }
       expected={
-        <div>
+        <div className="row">
           <div className="col-md-6">
             <AnswerTable solutions={leftSide}/>
           </div>
