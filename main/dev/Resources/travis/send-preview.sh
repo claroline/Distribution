@@ -19,3 +19,4 @@ tar --exclude=".git" -czf $PREVIEW *
 
 export SSHPASS=$REMOTE_PASS
 sshpass -e scp -q -o stricthostkeychecking=no $PREVIEW $REMOTE_USER@$REMOTE_HOST:$PREVIEW_PATH/$PREVIEW
+echo $?
