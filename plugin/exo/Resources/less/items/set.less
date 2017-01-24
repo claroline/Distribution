@@ -315,20 +315,33 @@
         list-style: none;
         background-color: #eee;
         margin-bottom: 5px;
-        .item {
-          display: flex;
-          padding: 5px;
-          align-items: center;
-          justify-content: space-between;
-          .item-content {
-            margin: 0;
-          }
-          .right-controls {
-            display: flex;
-          }
-        }
       }
     }
+  }
+
+  .items-col ul li .item {
+
+      display: flex;
+      padding: 5px;
+      align-items: center;
+      justify-content: space-between;
+      .item-content {
+        display: flex;
+        max-width: 170px;
+        min-height: 34px;
+        padding: 5px;
+        margin-right: 5px;
+        align-items: center;
+      }
+
+      .feedback-btn {
+
+      }
+
+      .item-score {
+
+      }
+
   }
 
   .sets-col ul li .set {
@@ -357,15 +370,15 @@
           margin-bottom: 10px;
           list-style: none;
           display: flex;
-          flex-direction: column;
           .association {
             display: flex;
             padding: 5px;
             align-items: center;
             justify-content: space-between;
+            width: 100%;
             .association-data {
               display: flex;
-              width:100%;
+              max-width: 170px;
               min-height: 34px;
               padding: 5px;
               margin-right: 5px;
@@ -373,6 +386,12 @@
               text-overflow: ellipsis;
               white-space: nowrap;
               overflow: hidden;
+            }
+            .feedback-btn {
+
+            }
+            .item-score {
+
             }
           }
         }
