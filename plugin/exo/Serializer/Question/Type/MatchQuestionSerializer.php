@@ -122,8 +122,8 @@ class MatchQuestionSerializer implements SerializerInterface
             $matchQuestion->setShuffle($data->random);
         }
 
-        $this->deserializeLabels($matchQuestion, $data->secondSet);
-        $this->deserializeProposals($matchQuestion, $data->firstSet);
+        $this->deserializeLabels($matchQuestion, $data->secondSet, $options);
+        $this->deserializeProposals($matchQuestion, $data->firstSet, $options);
         $this->deserializeSolutions($matchQuestion, $data->solutions);
 
         return $matchQuestion;
@@ -134,8 +134,9 @@ class MatchQuestionSerializer implements SerializerInterface
      *
      * @param MatchQuestion $matchQuestion
      * @param array         $secondSets    ie labels
+     * @param array         $options
      */
-    private function deserializeLabels(MatchQuestion $matchQuestion, array $secondSets)
+    private function deserializeLabels(MatchQuestion $matchQuestion, array $secondSets, array $options = [])
     {
         $secondSetEntities = $matchQuestion->getLabels()->toArray();
 
@@ -151,16 +152,20 @@ class MatchQuestionSerializer implements SerializerInterface
                 }
             }
 
-            if (null === $label) {
+            if (empty($label)) {
                 // Create a new Label
                 $label = new Label();
+            }
+
+            // Force client ID if needed
+            if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
                 $label->setUuid($secondSetData->id);
             }
 
             $label->setOrder($index);
 
             // Deserialize firstSet content
-            $label = $this->contentSerializer->deserialize($secondSetData, $label);
+            $label = $this->contentSerializer->deserialize($secondSetData, $label, $options);
             $matchQuestion->addLabel($label);
         }
 
@@ -175,8 +180,9 @@ class MatchQuestionSerializer implements SerializerInterface
      *
      * @param MatchQuestion $matchQuestion
      * @param array         $firstSets     ie proposals
+     * @param array         $options
      */
-    private function deserializeProposals(MatchQuestion $matchQuestion, array $firstSets)
+    private function deserializeProposals(MatchQuestion $matchQuestion, array $firstSets, array $options = [])
     {
         $firstSetEntities = $matchQuestion->getProposals()->toArray();
 
@@ -194,16 +200,19 @@ class MatchQuestionSerializer implements SerializerInterface
                 }
             }
 
-            if (null === $proposal) {
+            if (empty($proposal)) {
                 // Create a new Proposal
                 $proposal = new Proposal();
+            }
+
+            if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
                 $proposal->setUuid($firstSetData->id);
             }
 
             $proposal->setOrder($index);
 
             // Deserialize proposal content
-            $proposal = $this->contentSerializer->deserialize($firstSetData, $proposal);
+            $proposal = $this->contentSerializer->deserialize($firstSetData, $proposal, $options);
             $matchQuestion->addProposal($proposal);
         }
 
