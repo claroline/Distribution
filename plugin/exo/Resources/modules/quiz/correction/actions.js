@@ -71,7 +71,7 @@ actions.saveCorrection = (questionId) => {
     const state = getState()
     const question = state.correction.questions.find(q => q.id === questionId)
     const validAnswers = state.correction.answers.filter(a =>
-      a.questionId === questionId && a.score !== undefined && a.score !== null && !isNaN(a.score) && a.score <= question.score.max
+      a.questionId === questionId && a.score !== undefined && a.score !== null && !isNaN(a.score) && a.score.trim() !== '' && a.score <= question.score.max
     )
     const answers = validAnswers.map(a => {
       return Object.assign({}, a, {score: parseFloat(a.score)})

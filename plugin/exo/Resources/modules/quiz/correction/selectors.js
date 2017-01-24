@@ -41,6 +41,7 @@ const hasCorrection = createSelector(
           a.score !== undefined &&
           a.score !== null &&
           !isNaN(a.score) &&
+          a.score.trim() !== '' &&
           a.score <= currentQuestion.score.max) {
 
           result = true

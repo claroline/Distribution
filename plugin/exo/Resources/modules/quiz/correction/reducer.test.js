@@ -51,15 +51,18 @@ describe('Correction reducer', () => {
         {id: 'a7', questionId: 'q1', score: '10e'},
         {id: 'a8', questionId: 'q1', score: '--2'},
         {id: 'a9', questionId: 'q1', score: '+'},
-        {id: 'a10', questionId: 'q1', score: '16'},
-        {id: 'a11', questionId: 'q1', score: '16', feedback: 'feedback'},
-        {id: 'a12', questionId: 'q1', score: '14.56'},
-        {id: 'a13', questionId: 'q1', score: '-7.7'},
-        {id: 'a14', questionId: 'q1', score: '0'},
-        {id: 'a15', questionId: 'q1', score: '0.'},
-        {id: 'a16', questionId: 'q1', score: '.123'},
-        {id: 'a17', questionId: 'q1', score: '-.123'},
-        {id: 'a18', questionId: 'q1', score: '+2'}
+        {id: 'a10', questionId: 'q1', score: ''},
+        {id: 'a11', questionId: 'q1', score: '   '},
+        {id: 'ok1', questionId: 'q1', score: '16'},
+        {id: 'ok2', questionId: 'q1', score: '16', feedback: 'feedback'},
+        {id: 'ok3', questionId: 'q1', score: '14.56'},
+        {id: 'ok4', questionId: 'q1', score: '-7.7'},
+        {id: 'ok5', questionId: 'q1', score: '0'},
+        {id: 'ok6', questionId: 'q1', score: '0.'},
+        {id: 'ok7', questionId: 'q1', score: '.123'},
+        {id: 'ok8', questionId: 'q1', score: '-.123'},
+        {id: 'ok9', questionId: 'q1', score: '+2'},
+        {id: 'ok10', questionId: 'q1', score: '   8   '}
       ]
     })
     const correction = reduceCorrection(state, {type: REMOVE_ANSWERS, questionId: 'q1'})
@@ -80,7 +83,9 @@ describe('Correction reducer', () => {
           {id: 'a6', questionId: 'q1', score: null},
           {id: 'a7', questionId: 'q1', score: '10e'},
           {id: 'a8', questionId: 'q1', score: '--2'},
-          {id: 'a9', questionId: 'q1', score: '+'}
+          {id: 'a9', questionId: 'q1', score: '+'},
+          {id: 'a10', questionId: 'q1', score: ''},
+          {id: 'a11', questionId: 'q1', score: '   '}
         ]
       }
     )

@@ -41,7 +41,7 @@ export const reduceCorrection = (state = {}, action = {}) => {
       question = state.questions.find(q => q.id === action.questionId)
       return Object.assign({}, state, {
         answers: state.answers.filter(a =>
-          a.questionId !== action.questionId || a.score > question.score.max || isNaN(a.score) || a.score === null || a.score === undefined
+          a.questionId !== action.questionId || a.score === undefined || a.score === null || isNaN(a.score) || a.score.trim() === '' || a.score > question.score.max
         )
       })
   }
