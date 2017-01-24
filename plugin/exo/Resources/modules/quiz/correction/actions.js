@@ -70,12 +70,15 @@ actions.saveCorrection = (questionId) => {
   return (dispatch, getState) => {
     const state = getState()
     const question = state.correction.questions.find(q => q.id === questionId)
-    const answers = state.correction.answers.filter(a =>
+    const validAnswers = state.correction.answers.filter(a =>
       a.questionId === questionId && a.score !== undefined && a.score !== null && !isNaN(a.score) && a.score <= question.score.max
     )
+    const answers = validAnswers.map(a => {
+      return Object.assign({}, a, {score: parseFloat(a.score)})
+    })
     dispatch({
       [REQUEST_SEND]: {
-        route: ['exercise_correction_save', {exerciseId: selectors.quizId(state), questionId: questionId + 7}],
+        route: ['exercise_correction_save', {exerciseId: selectors.quizId(state), questionId: questionId}],
         request: {
           method: 'PUT' ,
           body: JSON.stringify(answers)

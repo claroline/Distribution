@@ -24,11 +24,11 @@ class AnswerRow extends Component {
             <div dangerouslySetInnerHTML={{__html: this.props.data}}></div>
           </Panel>
           <div className="right-controls">
-            <FormGroup validationState={this.props.score > this.props.scoreMax ? 'error' : null}>
+            <FormGroup validationState={this.props.score && (isNaN(this.props.score) || this.props.score > this.props.scoreMax) ? 'error' : null}>
               <InputGroup className="score-input">
                 <FormControl key={this.props.id}
                              type="text"
-                             value={this.props.score !== undefined && this.props.score !== null && !isNaN(this.props.score) ? this.props.score : ''}
+                             value={this.props.score !== undefined && this.props.score !== null ? this.props.score : ''}
                              onChange={(e) => this.props.updateScore(this.props.id, e.target.value)}
                 />
                 <InputGroup.Addon>/{this.props.scoreMax}</InputGroup.Addon>
@@ -63,8 +63,8 @@ AnswerRow.propTypes = {
   id: T.string.isRequired,
   questionId: T.string.isRequired,
   data: T.string.isRequired,
-  score: T.number,
-  scoreMax: T.number,
+  score: T.string,
+  scoreMax: T.number.isRequired,
   feedback: T.string,
   updateScore: T.func.isRequired,
   updateFeedback: T.func.isRequired

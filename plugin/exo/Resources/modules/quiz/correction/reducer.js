@@ -15,7 +15,7 @@ export const reduceCorrection = (state = {}, action = {}) => {
     case SCORE_UPDATE:
       const scoreAnswers = state.answers.map((answer) => {
         if (answer.id === action.answerId) {
-          return Object.assign({}, answer, {score: parseFloat(action.score)})
+          return Object.assign({}, answer, {score: action.score})
         } else {
           return answer
         }
