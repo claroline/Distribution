@@ -162,6 +162,9 @@ class SetQuestionSerializer implements SerializerInterface
             if (null === $label) {
                 // Create a new Label
                 $label = new Label();
+            }
+
+            if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
                 $label->setUuid($itemData->id);
             }
 
@@ -205,6 +208,9 @@ class SetQuestionSerializer implements SerializerInterface
             if (null === $proposal) {
                 // Create a new Proposal
                 $proposal = new Proposal();
+            }
+
+            if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
                 $proposal->setUuid($setData->id);
             }
 
