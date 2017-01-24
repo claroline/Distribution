@@ -18,12 +18,12 @@ export const QuestionRow = props =>
 QuestionRow.propTypes = {
   question: T.shape({
     id: T.string.isRequired,
-    title: T.string.isRequired,
+    title: T.string,
     content: T.string.isRequired,
     score: T.shape({
       type: T.string,
       max: T.number
-    })
+    }).isRequired
   }).isRequired,
   answers: T.arrayOf(T.object)
 }
