@@ -23,7 +23,7 @@ class AnswerRow extends Component {
           <Panel className="answer-panel" key={this.props.id}>
             <div dangerouslySetInnerHTML={{__html: this.props.data}}></div>
           </Panel>
-          <div className="right-controls">
+          <div className="score-controls">
             <FormGroup validationState={this.props.score && (isNaN(this.props.score) || this.props.score > this.props.scoreMax) ? 'error' : null}>
               <InputGroup className="score-input">
                 <FormControl key={this.props.id}
