@@ -130,8 +130,8 @@ class SetQuestionSerializer implements SerializerInterface
         }
 
         // deserialize proposals labels and solutions
-        $this->deserializeLabels($setQuestion, $data->items);
-        $this->deserializeProposals($setQuestion, $data->sets);
+        $this->deserializeLabels($setQuestion, $data->items, $options);
+        $this->deserializeProposals($setQuestion, $data->sets, $options);
         $this->deserializeSolutions($setQuestion, array_merge($data->solutions->associations, $data->solutions->odd));
 
         return $setQuestion;
@@ -142,8 +142,9 @@ class SetQuestionSerializer implements SerializerInterface
      *
      * @param MatchQuestion $setQuestion
      * @param array         $items       ie labels
+     * @param array         $options
      */
-    private function deserializeLabels(MatchQuestion $setQuestion, array $items)
+    private function deserializeLabels(MatchQuestion $setQuestion, array $items, array $options = [])
     {
         $labelsEntities = $setQuestion->getLabels()->toArray();
 
@@ -186,8 +187,9 @@ class SetQuestionSerializer implements SerializerInterface
      *
      * @param MatchQuestion $setQuestion
      * @param array         $sets        ie proposals
+     * @param array         $options
      */
-    private function deserializeProposals(MatchQuestion $setQuestion, array $sets)
+    private function deserializeProposals(MatchQuestion $setQuestion, array $sets, array $options = [])
     {
         $proposalsEntities = $setQuestion->getProposals()->toArray();
 
