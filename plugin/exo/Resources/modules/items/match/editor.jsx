@@ -46,7 +46,7 @@ function initJsPlumb(jsPlumbInstance) {
     },
     'default': {
       paintStyle     : { strokeStyle: 'grey',    lineWidth: 5 },
-      hoverPaintStyle: { strokeStyle: 'orange', lineWidth: 6 }
+      hoverPaintStyle: { strokeStyle: 'orange', lineWidth: 6, cursor: 'pointer'}
     }
   })
 }
@@ -418,7 +418,7 @@ class Match extends Component {
           <ErrorBlock text={this.props.item._errors.solutions} warnOnly={!this.props.validating}/>
         }
         {get(this.props.item, '_errors.warning') &&
-          <ErrorBlock text={this.props.item._errors.warning} warnOnly={true}/>
+          <ErrorBlock text={this.props.item._errors.warning} warnOnly={!this.props.validating}/>
         }
         <div className="form-group">
           <label htmlFor="match-penalty">{tex('match_penalty_label')}</label>

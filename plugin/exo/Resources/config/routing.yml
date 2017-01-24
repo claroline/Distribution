@@ -42,6 +42,12 @@ ujm_api_attempt:
     type: annotation
     prefix: /api
 
+# Exposes actions for manual correction of questions
+ujm_api_correction:
+    resource: "@UJMExoBundle/Controller/Api/CorrectionController.php"
+    type: annotation
+    prefix: /api
+
 # Exposes actions to share and manage shared questions
 ujm_api_share:
     resource: "@UJMExoBundle/Controller/Api/Question/ShareController.php"

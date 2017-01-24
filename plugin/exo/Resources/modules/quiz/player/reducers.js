@@ -1,4 +1,4 @@
-import {update} from './../../utils/utils'
+import {update, makeId} from './../../utils/utils'
 import {makeReducer} from './../../utils/reducers'
 import {decorateAnswer} from './decorators'
 import moment from 'moment'
@@ -58,7 +58,11 @@ function submitAnswers(state, action) {
 function initCurrentStepAnswers(state, action) {
   const newAnswers = action.step.items.reduce((acc, item) => {
     if (!state[item.id]) {
-      acc[item.id] = decorateAnswer({ questionId: item.id, _touched: true })
+      acc[item.id] = decorateAnswer({
+        id: makeId(),
+        questionId: item.id,
+        _touched: true
+      })
     }
 
     return acc
@@ -79,6 +83,8 @@ function useHint(state, action) {
   let answer
   if (!state[action.questionId]) {
     answer = decorateAnswer({
+      id: makeId(),
+      questionId: action.questionId,
       usedHints: [action.hint]
     })
   } else {
