@@ -64,9 +64,9 @@ ClozePlayer.propTypes = {
     id: T.string.isRequired,
     holes: T.array.isRequired,
     solutions: T.array.isRequired,
-    text: T.text.isRequired
+    text: T.string.isRequired
   }).isRequired,
-  text: T.text.isRequired,
+  text: T.string.isRequired,
   answer: T.array,
   onChange: T.func.isRequired
 }

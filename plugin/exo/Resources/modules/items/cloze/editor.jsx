@@ -6,6 +6,121 @@ import {actions} from './editor'
 import {TooltipButton} from './../../components/form/tooltip-button.jsx'
 import Popover from 'react-bootstrap/lib/Popover'
 
+class ChoiceItem extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {showFeedback: false}
+  }
+
+  render() {
+    return (
+      <div>
+        <div className="text-fields">
+          <ContentEditable
+            id={`item-${this.props.id}-answer`}
+            className="form-control input-sm"
+            type="text"
+            content={this.props.answer.text}
+            onChange={text => this.props.onChange(
+              actions.updateAnswer(
+                this.props.hole.id,
+                'text',
+                this.props.answer.text,
+                this.props.answer.caseSensitive,
+                text
+              )
+            )}
+          />
+          <input
+             type="checkbox"
+             checked={this.props.answer.caseSensitive}
+             onChange={e => this.props.onChange(
+               actions.updateAnswer(
+                 this.props.hole.id,
+                 'caseSensitive',
+                 this.props.answer.text,
+                 this.props.answer.caseSensitive,
+                 e.target.checked
+               )
+             )}
+           />
+          {this.state.showFeedback &&
+            <div className="feedback-container">
+              <Textarea
+                id={`choice-${this.props.id}-feedback`}
+                title={tex('feedback')}
+                content={this.props.answer.feedback}
+                onChange={text => this.props.onChange(
+                  actions.updateAnswer(
+                    this.props.hole.id,
+                    'feedback',
+                    this.props.answer.text,
+                    this.props.answer.caseSensitive,
+                    text
+                  )
+                )}
+              />
+            </div>
+          }
+        </div>
+        <div className="right-controls">
+          <input
+            className="form-control choice-form"
+            type="number"
+            value={this.props.answer.score}
+            onChange={e => this.props.onChange(
+              actions.updateAnswer(
+                this.props.hole.id,
+                'score',
+                this.props.answer.text,
+                this.props.answer.caseSensitive,
+                e.target.checked
+              )
+            )}
+          />
+          <TooltipButton
+            id={`choice-${this.props.id}-feedback-toggle`}
+            className="fa fa-comments-o"
+            title={tex('choice_feedback_info')}
+            onClick={() => this.setState({showFeedback: !this.state.showFeedback})}
+          />
+          <TooltipButton
+            id={`answer-${this.props.id}-delete`}
+            className="fa fa-trash-o"
+            title={t('delete')}
+            onClick={() => this.props.onChange(
+              actions.removeAnswer(this.props.answer.text, this.props.answer.caseSensitive)
+            )}
+          />
+        </div>
+      </div>
+    )
+  }
+}
+
+ChoiceItem.defaultProps = {
+  answer: {
+    feedback: ''
+  }
+}
+
+ChoiceItem.propTypes = {
+  answer: T.shape({
+    score: T.number,
+    feedback: T.string,
+    text: T.string,
+    caseSensitive: T.bool
+  }).isRequired,
+  hole: T.shape({
+    id: T.string.isRequired
+  }).isRequired,
+  id: T.number.isRequired,
+  deletable: T.bool.isRequired,
+  onChange: T.func.isRequired,
+  offsetX: T.number.isRequired,
+  offsetY: T.number.isRequired
+}
+
 class HoleForm extends Component {
   constructor() {
     super()
@@ -59,83 +174,22 @@ class HoleForm extends Component {
                 )}
               />
             </div>
-            <table>
-              <tbody>
-                <tr>
-                  <td> Word </td>
-                  <td></td>
-                  <td> Score </td>
-                  <td></td>
-                </tr>
-                  {this.props.solution.answers.map((answer, index) => {
-                    return (
-                      <tr key={Math.random()}>
-                        <td>
-                          <ContentEditable
-                            id={`item-${index}-answer`}
-                            className="form-control input-sm"
-                            type="text"
-                            content={answer.text}
-                            onChange={text => this.props.onChange(
-                              actions.updateAnswer(
-                                this.props.hole.id,
-                                'text',
-                                answer.text,
-                                answer.caseSensitive,
-                                text
-                              )
-                            )}
-                          />
-                        </td>
-                        <td>
-                          <input
-                             type="checkbox"
-                             checked={answer.caseSensitive}
-                             onChange={e => this.props.onChange(
-                               actions.updateAnswer(
-                                 this.props.hole.id,
-                                 'caseSensitive',
-                                 answer.text,
-                                 answer.caseSensitive,
-                                 e.target.checked
-                               )
-                             )}
-                           />
-                        </td>
-                        <td>
-                          <input
-                            className="form-control input-sm"
-                            type="number"
-                            value={answer.score}
-                            onChange={e => this.props.onChange(
-                              actions.updateAnswer(
-                                this.props.hole.id,
-                                'score',
-                                answer.text,
-                                answer.caseSensitive,
-                                e.target.checked
-                              )
-                            )}
-                          />
-                        </td>
-                        <td>
-                          {index > 0 &&
-                            <TooltipButton
-                              id={`answer-${index}-delete`}
-                              className="fa fa-trash-o"
-                              title={t('delete')}
-                              onClick={() => this.props.onChange(
-                                actions.removeAnswer(answer.text, answer.caseSensitive)
-                              )}
-                            />
-                          }
-                        </td>
-                      </tr>
-                    )}
-                  )
-                }
-              </tbody>
-            </table>
+
+            {this.props.solution.answers.map((answer, index) => {
+              return (<ChoiceItem
+                key={index}
+                id={index}
+                score={answer.score}
+                feedback={answer.feedback}
+                deletable={index > 0}
+                onChange={this.props.onChange}
+                hole={this.props.hole}
+                answer={answer}
+                offsetX={this.props.offsetX}
+                offsetY={this.props.offsetY}
+              />)
+            })}
+
             {this.state.showFeedback &&
               <div className="feedback-container">
                 <Textarea
