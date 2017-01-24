@@ -19,8 +19,6 @@ tar --exclude=".git" -czf $PREVIEW *
 
 export SSHPASS=$REMOTE_PASS
 
-echo "file size to send"
-
 du -h $PREVIEW
 
 sshpass -e scp -q -o stricthostkeychecking=no $PREVIEW $REMOTE_USER@$REMOTE_HOST:$PREVIEW_PATH/$PREVIEW
