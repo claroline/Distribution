@@ -7,6 +7,7 @@
     {# Exercise styles #}
     {% stylesheets debug=false filter='less, cssmin' output='vendor/ujmexo/bank.css'
         '@UJMExoBundle/Resources/less/main.less'
+        '@UJMExoBundle/Resources/less/bank/main.less'
     %}
     <link rel="stylesheet" media="screen" href="{{ asset_url }}" />
     {% endstylesheets %}
@@ -33,7 +34,7 @@
 
 {# Content of the Page #}
 {% block section_panel %}
-    <div id="questions-bank"></div>
+    <div id="questions-bank" data-initial="{{ initialSearch | json_encode | raw | escape }}"></div>
 {% endblock %}
 
 {% block javascripts %}
@@ -42,6 +43,7 @@
 
     {# Translations #}
     <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'ujm_exo' }) }}"></script>
+    <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'question_types' }) }}"></script>
 
     <script src="{{ hotAsset('dist/claroline-distribution-plugin-exo-bank.js') }}"></script>
 {% endblock %}

@@ -37,9 +37,8 @@ export const actions = {
 
 function decorate(question) {
 
-  // consider items that are not in solutions.odd
   const itemDeletable = question.items.filter(item => undefined === question.solutions.odd.find(el => el.itemId === item.id)).length > 1
-  const itemsWithDeletable = question.items.filter(item => undefined === question.solutions.odd.find(el => el.itemId === item.id)).map(
+  const itemsWithDeletable = question.items.map(
     item => Object.assign({}, item, {
       _deletable: itemDeletable
     })
@@ -51,7 +50,7 @@ function decorate(question) {
     })
   )
 
-  // solutions associations ? add solution item data
+  // add item data to solution
   const associationsWithItemData = getAssociationsWithItemData(question)
 
   let decorated = Object.assign({}, question, {
@@ -66,18 +65,16 @@ function decorate(question) {
 }
 
 function getAssociationsWithItemData(item){
-
-  item.solutions.associations.forEach(
-    (association) => {
-      const questionItem = item.items.find(el => el.id === association.itemId)
-      const data = questionItem !== undefined ? questionItem.data : ''
-      Object.assign({}, association, {
-        _itemData: data
-      })
-    }
+  const withData = item.solutions.associations.map(
+      association => {
+        const questionItem = item.items.find(el => el.id === association.itemId)
+        const data = questionItem !== undefined ? questionItem.data : ''
+        association._itemData = data
+        return association
+      }
   )
 
-  return item.solutions.associations
+  return withData
 }
 
 function reduce(item = {}, action) {
@@ -99,8 +96,7 @@ function reduce(item = {}, action) {
           {
             id: makeId(),
             type: 'text/html',
-            data: '',
-            _deletable: false
+            data: ''
           }
         ],
         solutions: {
@@ -153,7 +149,7 @@ function reduce(item = {}, action) {
         // update associations item data
         newItem.solutions.associations.map((ass) => {
           if(ass.itemId === action.id){
-            ass._itemData = action.value.length > 15 ? action.value.substring(0, 12) + '...' : action.value
+            ass._itemData = action.value
           }
         })
       } else {
@@ -174,10 +170,11 @@ function reduce(item = {}, action) {
       newItem.items.splice(itemIndex, 1)
       if(action.isOdd){
         // remove item from solution odds
-        newItem.solutions.odd.forEach((odd, index) => {
+        const odd = cloneDeep(newItem.solutions.odd)
+        odd.forEach((odd) => {
           if(odd.itemId === action.id){
-            // remove
-            newItem.solutions.odd.splice(index, 1)
+            const idx = newItem.solutions.odd.findIndex(el => el.itemId === action.id)
+            newItem.solutions.odd.splice(idx, 1)
           }
         })
       } else {
@@ -185,10 +182,11 @@ function reduce(item = {}, action) {
         const itemDeletable = newItem.items.filter(item => undefined === newItem.solutions.odd.find(el => el.itemId === item.id)).length > 1
         newItem.items.filter(item => undefined === newItem.solutions.odd.find(el => el.itemId === item.id)).forEach(el => el._deletable = itemDeletable)
         // remove item from solution associations
-        newItem.solutions.associations.forEach((ass, index) => {
+        const associations = cloneDeep(newItem.solutions.associations)
+        associations.forEach((ass) => {
           if(ass.itemId === action.id){
-            // remove
-            newItem.solutions.associations.splice(index, 1)
+            const idx = newItem.solutions.associations.findIndex(el => el.itemId === action.id)
+            newItem.solutions.associations.splice(idx, 1)
           }
         })
       }
@@ -230,7 +228,6 @@ function reduce(item = {}, action) {
       return newItem
     }
 
-
     case ADD_ASSOCIATION: {
       const newItem = cloneDeep(item)
       const toAdd = {
@@ -238,7 +235,7 @@ function reduce(item = {}, action) {
         setId: action.setId,
         score: 1,
         feedback: '',
-        _itemData: action.itemData.length > 15 ? action.itemData.substring(0, 12) + '...' : action.itemData
+        _itemData: action.itemData
       }
       newItem.solutions.associations.push(toAdd)
       return newItem
@@ -277,6 +274,14 @@ function validate(item) {
   } else if (item.items.filter(el => undefined === item.solutions.odd.find(odd => odd.itemId === el.id)).find(item => notBlank(item.data, true))) {
     // item data should not be empty
     errors.items = tex('set_item_empty_data_error')
+  }
+
+  // no item (that are not odd items) should be orphean (ie not used in any set)
+  if (item.items.some(el => {
+    return item.solutions.associations.find(association => association.itemId === el.id) === undefined &&
+      item.solutions.odd.find(o => o.itemId === el.id) === undefined
+  })){
+    errors.items = tex('set_no_orphean_items')
   }
 
   // one set min
@@ -319,5 +324,6 @@ function validate(item) {
 export default {
   component,
   reduce,
+  decorate,
   validate
 }

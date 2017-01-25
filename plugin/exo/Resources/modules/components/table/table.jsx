@@ -1,7 +1,8 @@
-import React from 'react'
+import React, {PropTypes as T} from 'react'
 import classes from 'classnames'
 
-const T = React.PropTypes
+import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
+import Tooltip from 'react-bootstrap/lib/Tooltip'
 
 const TableCell = props =>
   <td className={`text-${props.align}`}>
@@ -15,6 +16,29 @@ TableCell.propTypes = {
 
 TableCell.defaultProps = {
   align: 'left',
+  children: null
+}
+
+const TableTooltipCell = props =>
+  <TableCell {...props}>
+    <OverlayTrigger
+      placement={props.placement}
+      overlay={<Tooltip id={props.id}>{props.tooltip}</Tooltip>}
+    >
+      <span>
+        {props.children}
+      </span>
+    </OverlayTrigger>
+  </TableCell>
+
+TableTooltipCell.propTypes = {
+  id: T.node.isRequired,
+  placement: T.string,
+  tooltip: T.string.isRequired,
+  children: T.node
+}
+
+TableTooltipCell.defaultProps = {
   children: null
 }
 
@@ -98,7 +122,7 @@ TableHeader.propTypes = {
 }
 
 const TableRow = props =>
-  <tr>
+  <tr {...props}>
     {props.children}
   </tr>
 
@@ -120,6 +144,7 @@ export {
   Table,
   TableRow,
   TableCell,
+  TableTooltipCell,
   TableHeader,
   TableHeaderCell,
   TableSortingCell

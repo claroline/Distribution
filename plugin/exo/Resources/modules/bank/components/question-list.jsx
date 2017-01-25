@@ -1,23 +1,26 @@
-import React, { Component } from 'react'
+import React, { Component, PropTypes as T } from 'react'
 import { DropdownButton, MenuItem } from 'react-bootstrap'
-import {Icon as ItemIcon} from './../../items/components/icon.jsx'
+
+import {trans} from './../../utils/translate'
 import {getDefinition} from './../../items/item-types'
+import {Icon as ItemIcon} from './../../items/components/icon.jsx'
 
 import {
   Table,
   TableRow,
   TableCell,
+  TableTooltipCell,
   TableHeader,
   TableHeaderCell,
   TableSortingCell
-} from './table/table.jsx'
-
-const T = React.PropTypes
+} from './../../components/table/table.jsx'
 
 export default class QuestionList extends Component {
   render() {
     return(
-      <Table>
+      <Table
+        isEmpty={0 === this.props.questions.length}
+      >
         <TableHeader>
           <TableHeaderCell align="center">
             <input type="checkbox" />
@@ -58,16 +61,20 @@ export default class QuestionList extends Component {
             <TableCell align="center">
               <input type="checkbox" />
             </TableCell>
-            <TableCell align="center">
+            <TableTooltipCell
+              align="center"
+              id={question.id}
+              tooltip={trans(getDefinition(question.type).name, {}, 'question_types')}
+            >
               <ItemIcon name={getDefinition(question.type).name} />
-            </TableCell>
+            </TableTooltipCell>
             <TableCell>
               <a href="">
                 {question.title || question.content}
               </a>
             </TableCell>
             <TableCell>
-              {question.meta.category}
+              {question.meta.category && question.meta.category.name ? question.meta.category.name : '-'}
             </TableCell>
             <TableCell align="right">
               <small className="text-muted">{question.meta.updated}</small>
@@ -82,7 +89,7 @@ export default class QuestionList extends Component {
               </a>
 
               <DropdownButton
-                id="dropdown-other-actions"
+                id={`dropdown-other-actions-${question.id}`}
                 title={<span className="fa fa-fw fa-ellipsis-v"></span>}
                 bsStyle="link"
                 noCaret={true}
