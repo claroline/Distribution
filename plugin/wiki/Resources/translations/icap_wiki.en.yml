@@ -32,7 +32,7 @@ icap_wiki_edit_section_type_activeContribution_title: Title
 icap_wiki_edit_section_type_brother: Do you want this section to be at the same level as the one selected?
 icap_wiki_edit_section_type_position: Position
 icap_wiki_edit_section_type_visible: Visible
-icap_wiki_options_save_error: Error during updated of wiki options
+icap_wiki_options_save_error: 'Error while updating wiki options'
 icap_wiki_options_save_success: Wiki options were updated successfully
 icap_wiki_options_type_mode: Wiki mode
 icap_wiki_section_add_error: Error while creating section

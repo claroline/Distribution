@@ -24,15 +24,14 @@ edit_description: 'Beschrijving bewerken'
 edit: 'Bewerken'
 error_401: 'U bent niet toegelaten deze operatie uit te voeren.'
 error_404: 'Deze sectie bestaat niet.'
-error_500: The server encoutered an error. Please try again in a moment.
-history: 'Geschiedenis'
-icap_wiki_delete_section_type_children: Also remove its subsections
+error_500: 'De server ontmoet een fout. Probeer het opnieuw.'
+icap_wiki_delete_section_type_children: 'Verwijder ook de subsecties.'
 icap_wiki_edit_section_type_activeContribution_text: 'Tekst'
 icap_wiki_edit_section_type_activeContribution_title: 'Titel'
 icap_wiki_edit_section_type_brother: Do you want this section to be at the same level as the one selected?
-icap_wiki_edit_section_type_position: Position
+icap_wiki_edit_section_type_position: 'Positie'
 icap_wiki_edit_section_type_visible: 'Zichtbaar'
-icap_wiki_options_save_error: Error during updated of wiki options
+icap_wiki_options_save_error: Error during updating of wiki options
 icap_wiki_options_save_success: 'De Wiki opties zijn met succes bijgewerkt.'
 icap_wiki_options_type_mode: Wiki mode
 icap_wiki_section_add_error: Error while creating section
@@ -50,26 +49,26 @@ icap_wiki_section_type_activeContribution_title: Title
 icap_wiki_section_update_error: Error while updating section
 icap_wiki_section_update_success: Section was updated successfully
 icap_wiki_set_active_contribution_error: Error while publishing revision.
-icap_wiki_type_name: Name
-items_per_page: Items per page:
+icap_wiki_type_name: 'Naam'
+items_per_page: 'Items per pagina:'
 moderate_message: Every one can contribute. However, only the administrator and the moderator are allowed to publish.
 moderate_mode_warning: <div><strong>The wiki runs in moderate mode.</strong></div> <div>The changes will only be available after administrator's approval. A complete history of a section's revisions can be found in the "history" page.</div>
-moderate: Moderate
-move_section: Move section
+moderate: 'Matigen'
+move_section: 'Sectie verplaatsen'
 new_section: 'Nieuwe sectie'
-no_deleted_sections: There is no removed section
-normal_message: Every one can contribute to the wiki. Any contribution is directly published.
+no_deleted_sections: 'Er is geen verwijderde sectie.'
+normal_message: 'Iedereen mag een bijdrage leveren aan de wiki. Elke bijdrage wordt direct gepubliceerd.'
 normal: 'Normaal'
-note_well: <strong>Opmerking</strong>: Note that in a normal and moderate functioning, every authenticated person can take part in the wiki.
-options: Opties
-read_only_message: Only the administrator and the moderator are allowed to contribute to the wiki.
-read_only: Read only
+note_well: '<strong>Opmerking</strong>: Houd er rekening mee dat in een normale en matige werking, iedere geverifieerde persoon kan deelnemen aan de wiki.'
+options: 'Opties'
+read_only_message: 'Alleen de beheerder en de moderator zijn toegestaan om bij te dragen aan de wiki.'
+read_only: 'Alleen lezen'
 remove_confirmation: 'Do you really want to permanently remove "%sectionTitle%" section?'
-remove_section: Remove section
-restore_section: Restore section
-revision_comparison: Revision comparison
+remove_section: 'Sectie verwijderen'
+restore_section: 'Sectie herstellen'
+revision_comparison: 'Herzieningen vergelijken'
 revision_history: 'Geschiedenis van de herzieningen'
 save: 'Opslaan'
-set_active_contribution: Publish this revision
-waiting_for_moderation: Waiting for moderation
+set_active_contribution: 'Publiceer deze herziening'
+waiting_for_moderation: 'Wacht op goedkeuring'
 wiki_contents: 'Inhoud'
