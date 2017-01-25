@@ -10,15 +10,21 @@ import {Player} from './../player/components/player.jsx'
 import {Editor} from './../editor/components/editor.jsx'
 import {Papers} from './../papers/components/papers.jsx'
 import {Paper} from './../papers/components/paper.jsx'
+import {Questions} from './../correction/components/questions.jsx'
+import {Answers} from './../correction/components/answers.jsx'
 import select from './../selectors'
+import {selectors as correctionSelectors} from './../correction/selectors'
 import {actions as editorActions} from './../editor/actions'
+import {actions as correctionActions} from './../correction/actions'
 import {actions} from './../actions'
 import {
   VIEW_OVERVIEW,
   VIEW_PLAYER,
   VIEW_EDITOR,
   VIEW_PAPERS,
-  VIEW_PAPER
+  VIEW_PAPER,
+  VIEW_CORRECTION_QUESTIONS,
+  VIEW_CORRECTION_ANSWERS
 } from './../enums'
 
 let Quiz = props =>
@@ -74,6 +80,10 @@ function viewComponent(view, props) {
       return <Papers {...props}/>
     case VIEW_PAPER:
       return <Paper {...props}/>
+    case VIEW_CORRECTION_QUESTIONS:
+      return <Questions {...props}/>
+    case VIEW_CORRECTION_ANSWERS:
+      return <Answers {...props}/>
     case VIEW_OVERVIEW:
     default:
       return <Overview {...props}/>
@@ -92,7 +102,9 @@ function mapStateToProps(state) {
     published: select.published(state),
     hasPapers: select.hasPapers(state),
     saveEnabled: select.saveEnabled(state),
-    modal: select.modal(state)
+    modal: select.modal(state),
+    currentQuestionId: state.correction.currentQuestionId,
+    saveCorrectionEnabled: correctionSelectors.hasCorrection(state)
   }
 }
 
@@ -102,7 +114,8 @@ function mapDispatchToProps(dispatch) {
     saveQuiz: () => dispatch(editorActions.save()),
     createModal: (type, props, fading) => makeModal(type, props, fading, dispatch),
     showModal: (type, props) => dispatch(showModal(type, props)),
-    fadeModal: () => dispatch(fadeModal())
+    fadeModal: () => dispatch(fadeModal()),
+    saveCorrection: questionId => dispatch(correctionActions.saveCorrection(questionId))
   }
 }
 
