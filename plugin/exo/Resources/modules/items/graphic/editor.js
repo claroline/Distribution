@@ -15,7 +15,8 @@ import {
   RESIZE_IMAGE,
   CREATE_AREA,
   SELECT_AREA,
-  MOVE_AREA
+  MOVE_AREA,
+  DELETE_AREA
 } from './actions'
 import {Graphic as component} from './editor.jsx'
 
@@ -37,7 +38,8 @@ function reduce(item = {}, action = {}) {
           blankImage(),
           {id: item.image.id},
           action.image
-        )
+        ),
+        solutions: []
       })
     case RESIZE_IMAGE: {
       const sizeRatio = item.image.width / action.width
@@ -165,6 +167,12 @@ function reduce(item = {}, action = {}) {
           }
           return solution
         })
+      })
+    case DELETE_AREA:
+      return Object.assign({}, item, {
+        solutions: item.solutions.filter(
+          solution => solution.area.id !== action.id
+        )
       })
   }
   return item

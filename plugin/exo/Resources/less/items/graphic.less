@@ -36,16 +36,52 @@
     display: inline-block;
     position: absolute;
     border: solid 2px transparent;
+
+    .area, .sizer, [role="button"] {
+      position: absolute;
+    }
+
+    .sizer {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background-color: transparent;
+      border-radius: 3px;
+    }
+
+    [role="button"] {
+      visibility: hidden;
+    }
   }
 
   .area-handle.selected {
     z-index: 100;
-    cursor: grab;
-    cursor: -webkit-grab;
+    cursor: move;
     border: dashed 2px #fff;
-  }
 
-  .area {
-    position: absolute;
+    .sizer {
+      background-color: blue;
+    }
+
+    .n, .s {
+      cursor: ns-resize;
+    }
+
+    .e, .w {
+      cursor: ew-resize;
+    }
+
+    .nw, .se {
+      cursor: nwse-resize;
+    }
+
+    .ne, sw {
+      cursor: nesw-resize;
+    }
+
+    [role="button"] {
+      visibility: visible;
+      color: blue;
+    }
   }
 }

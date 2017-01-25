@@ -159,6 +159,7 @@ export class Graphic extends Component {
                       shape={solution.area.shape}
                       selected={solution._selected}
                       onSelect={id => this.props.onChange(actions.selectArea(id))}
+                      onDelete={id => this.props.onChange(actions.deleteArea(id))}
                       geometry={
                         solution.area.shape === SHAPE_RECT ?
                           {

@@ -7,6 +7,7 @@ export const RESIZE_IMAGE = 'RESIZE_IMAGE'
 export const CREATE_AREA = 'CREATE_AREA'
 export const SELECT_AREA = 'SELECT_AREA'
 export const MOVE_AREA = 'MOVE_AREA'
+export const DELETE_AREA = 'DELETE_AREA'
 
 export const actions = {}
 
@@ -16,3 +17,4 @@ actions.resizeImage = makeActionCreator(RESIZE_IMAGE, 'width', 'height')
 actions.createArea = makeActionCreator(CREATE_AREA, 'x', 'y')
 actions.selectArea = makeActionCreator(SELECT_AREA, 'id')
 actions.moveArea = makeActionCreator(MOVE_AREA, 'id', 'x', 'y')
+actions.deleteArea = makeActionCreator(DELETE_AREA, 'id')
