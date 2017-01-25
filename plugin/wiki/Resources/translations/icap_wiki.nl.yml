@@ -28,31 +28,31 @@ error_500: 'De server ontmoet een fout. Probeer het opnieuw.'
 icap_wiki_delete_section_type_children: 'Verwijder ook de subsecties.'
 icap_wiki_edit_section_type_activeContribution_text: 'Tekst'
 icap_wiki_edit_section_type_activeContribution_title: 'Titel'
-icap_wiki_edit_section_type_brother: Do you want this section to be at the same level as the one selected?
+icap_wiki_edit_section_type_brother: 'Wilt u dit gedeelte op hetzelfde niveau plaatsen als degene die geselecteerd is?'
 icap_wiki_edit_section_type_position: 'Positie'
 icap_wiki_edit_section_type_visible: 'Zichtbaar'
-icap_wiki_options_save_error: Error during updating of wiki options
+icap_wiki_options_save_error: 'Er is een fout opgetreden tijdens het bijwerken van de opties van de wiki.'
 icap_wiki_options_save_success: 'De Wiki opties zijn met succes bijgewerkt.'
-icap_wiki_options_type_mode: Wiki mode
-icap_wiki_section_add_error: Error while creating section
-icap_wiki_section_add_success: Section was created successfully
-icap_wiki_section_delete_error: Error while removing section
-icap_wiki_section_delete_success: Section was removed successfully
-icap_wiki_section_move_error: Error while moving section
-icap_wiki_section_move_success: Section was moved successfully
-icap_wiki_section_remove_error: Error while removing section permanently
-icap_wiki_section_remove_success: Section was removed permanently
-icap_wiki_section_restore_error: Error while restoring section
-icap_wiki_section_restore_success: Section was restored successfully
-icap_wiki_section_type_activeContribution_text: Text
-icap_wiki_section_type_activeContribution_title: Title
-icap_wiki_section_update_error: Error while updating section
-icap_wiki_section_update_success: Section was updated successfully
-icap_wiki_set_active_contribution_error: Error while publishing revision.
+icap_wiki_options_type_mode: 'Wiki mode'
+icap_wiki_section_add_error: 'Fout tijdens het maken van de sectie'
+icap_wiki_section_add_success: 'De sectie is met succes gemaakt.'
+icap_wiki_section_delete_error: 'Fout tijdens het verwijderen van de sectie'
+icap_wiki_section_delete_success: 'De sectie is met succes verwijderd.'
+icap_wiki_section_move_error: 'Fout tijdens het verplaatsen van de sectie'
+icap_wiki_section_move_success: 'De sectie is met succes verplaatst.'
+icap_wiki_section_remove_error: 'Fout tijdens het definitief verwijderen van de sectie'
+icap_wiki_section_remove_success: 'De sectie is definitief verwijderd.'
+icap_wiki_section_restore_error: 'Fout tijdens het herstellen van de sectie'
+icap_wiki_section_restore_success: 'De sectie is met succes hersteld.'
+icap_wiki_section_type_activeContribution_text: 'Tekst'
+icap_wiki_section_type_activeContribution_title: 'Titel'
+icap_wiki_section_update_error: 'Fout tijdens het bijwerken van de sectie'
+icap_wiki_section_update_success: 'De sectie is met succes bijgewerkt.'
+icap_wiki_set_active_contribution_error: 'Fout tijdens het publiceren van de herziening'
 icap_wiki_type_name: 'Naam'
 items_per_page: 'Items per pagina:'
-moderate_message: Every one can contribute. However, only the administrator and the moderator are allowed to publish.
-moderate_mode_warning: <div><strong>The wiki runs in moderate mode.</strong></div> <div>The changes will only be available after administrator's approval. A complete history of a section's revisions can be found in the "history" page.</div>
+moderate_message: 'Iedereen mag bijdragen. Nochtans mogen alleen de beheerder and de moderator publioceren.'
+moderate_mode_warning: '<div><strong>De Wiki wordt uitgevoerd in de moderator mode.</strong></div> <div>De wijzigingen zullen alleen beschikbaar zijn na het goedkeuren van de beheerder. Een complete geschiedenis van de herzieningen van een sectie kunnen worden gevonden in de "Geschiedenis" pagina.</div>'
 moderate: 'Matigen'
 move_section: 'Sectie verplaatsen'
 new_section: 'Nieuwe sectie'
@@ -63,7 +63,7 @@ note_well: '<strong>Opmerking</strong>: Houd er rekening mee dat in een normale 
 options: 'Opties'
 read_only_message: 'Alleen de beheerder en de moderator zijn toegestaan om bij te dragen aan de wiki.'
 read_only: 'Alleen lezen'
-remove_confirmation: 'Do you really want to permanently remove "%sectionTitle%" section?'
+remove_confirmation: 'Bent u er zeker van dat u de sectie "%sectionTitle%" definitief wenst te verwijderen?'
 remove_section: 'Sectie verwijderen'
 restore_section: 'Sectie herstellen'
 revision_comparison: 'Herzieningen vergelijken'
