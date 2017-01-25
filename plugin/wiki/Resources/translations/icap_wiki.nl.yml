@@ -1,22 +1,22 @@
 active_contribution: Current revision
-add_new_subsection: Add section here
-added: Added
+add_new_subsection: 'Voeg hier een sectie toe'
+added: 'Toegevoegd'
 angular_date_format: 'MM/dd/yyyy ''at'' h:mma'
 back_to_history: Back to history
-back_to_wiki: Back to wiki
-back: Back
+back_to_wiki: 'Terug naar de wiki'
+back: 'Terug'
 cancel: Cancel
 changed: Changed (style)
 compare_versions: Compare selected revisions
-confirm: Confirm
+confirm: 'Bevestigen'
 contribution: Contribution
-create_new_section: Create new section
-create_section: Create section
-create: Create
+create_new_section: 'Een nieuwe sectie maken
+create_section: 'Een sectie maken'
+create: 'Maken'
 date_format: 'm/d/Y ''at'' H:i'
 delete_confirmation: 'Do you really want to delete "%sectionTitle%" section?'
 delete_section: Delete section
-delete: Delete
+delete: 'Verwijderen'
 deleted_sections: Removed sections
 deleted: Removed
 edit_section: Edit section
@@ -27,13 +27,13 @@ error_404: 'This section doesn''t exist.'
 error_500: The server encoutered an error. Please try again in a moment.
 history: History
 icap_wiki_delete_section_type_children: Also remove its subsections
-icap_wiki_edit_section_type_activeContribution_text: Text
-icap_wiki_edit_section_type_activeContribution_title: Title
+icap_wiki_edit_section_type_activeContribution_text: 'Tekst'
+icap_wiki_edit_section_type_activeContribution_title: 'Titel'
 icap_wiki_edit_section_type_brother: Do you want this section to be at the same level as the one selected?
 icap_wiki_edit_section_type_position: Position
-icap_wiki_edit_section_type_visible: Visible
+icap_wiki_edit_section_type_visible: 'Zichtbaar'
 icap_wiki_options_save_error: Error during updated of wiki options
-icap_wiki_options_save_success: Wiki options were updated successfully
+icap_wiki_options_save_success: 'De Wiki opties zijn met succes bijgewerkt.'
 icap_wiki_options_type_mode: Wiki mode
 icap_wiki_section_add_error: Error while creating section
 icap_wiki_section_add_success: Section was created successfully
@@ -56,12 +56,12 @@ moderate_message: Every one can contribute. However, only the administrator and 
 moderate_mode_warning: <div><strong>The wiki runs in moderate mode.</strong></div> <div>The changes will only be available after administrator's approval. A complete history of a section's revisions can be found in the "history" page.</div>
 moderate: Moderate
 move_section: Move section
-new_section: New section
+new_section: 'Nieuwe sectie'
 no_deleted_sections: There is no removed section
 normal_message: Every one can contribute to the wiki. Any contribution is directly published.
-normal: Normal
-note_well: <strong>Remark</strong>: Note that in a normal and moderate functioning, every authenticated person can take part in the wiki.
-options: Options
+normal: 'Normaal'
+note_well: <strong>Opmerking</strong>: Note that in a normal and moderate functioning, every authenticated person can take part in the wiki.
+options: Opties
 read_only_message: Only the administrator and the moderator are allowed to contribute to the wiki.
 read_only: Read only
 remove_confirmation: 'Do you really want to permanently remove "%sectionTitle%" section?'
@@ -72,4 +72,4 @@ revision_history: Revision history
 save: Save
 set_active_contribution: Publish this revision
 waiting_for_moderation: Waiting for moderation
-wiki_contents: Contents
+wiki_contents: 'Inhoud'
