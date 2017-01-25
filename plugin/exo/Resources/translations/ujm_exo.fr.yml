@@ -1,12 +1,13 @@
 # A
 actions: Actions
+active_filters: "{0} Il n'y a aucun filtre actif|{1} Il y a 1 filtre actif|]1,Inf[ Il y a %count% filtres actifs"
 add: Ajouter
 add_choice: Ajouter un choix
 add_hint: Ajouter un indice
 add_label: Ajouter un label
 add_new_picture: Ajouter une nouvelle image
 add_proposal: Ajouter une proposition
-add_question: Ajouter une question
+add_question: Créer
 add_question_from_existing: Importer une/des question(s)
 add_question_from_new: Créer une nouvelle question
 add_step: Ajouter une étape
@@ -151,10 +152,14 @@ export_qti_exercise : Exporter les questions du questionnaire au format QTI
 false_response: Points pour la mauvaise réponse
 feedback: Commentaire
 feedback_answer_check: Commentaire si la réponse est selectionnée (facultatif)
-find_by: Trouver par
-find_in: Trouver dans
-find_question_advance: Recherche avancée
-find_what: Ce que vous cherchez
+filter_by_title: Titre ou contenu
+filter_by_model_only: Uniquement les modèles
+filter_by_type: Type
+filter_by_self_only: Uniquement mes questions
+filter_by_creator: Créateur
+filters_less: Afficher moins de filtres
+filters_more: Afficher plus de filtres
+filters_reset: Supprimer tous les filtres
 final_mark: Note finale
 finish: Terminer
 fixed_failure_above_success_error: Cette valeur doit être inférieure à celle du résultat en cas de succès.
@@ -387,6 +392,7 @@ qti_unsupported_format: Format non compatible QTI ou non supporté
 qti_xml_not_found: Schéma XML non trouvé
 question: Question
 questions: Questions
+questions_bank: Banque de questions
 question_creation: Création d'une question
 question_description: Description de la question (facultatif)
 question_model: Définir comme modèle

@@ -1,12 +1,13 @@
 # A
 actions: Actions
+active_filters: "{0} There is no active filter|{1} There is 1 active filter|]1,Inf[ There are %count% active filters"
 add: Add
 add_choice: Add a choice
 add_hint: Add an hint
 add_label: Add a label
 add_new_picture: Add a new picture
 add_proposal: Add a proposal
-add_question: Add a question
+add_question: Create
 add_question_from_existing: Import one/many question(s)
 add_question_from_new: Create new question
 add_step: Add a step
@@ -52,7 +53,6 @@ badge_obtained: Congratulations ! You are awarded the knowledge badge.
 badge_no_obtained: You have not awarded the knowledge badge yet.
 back: Back
 back_to_overview: Go back to the quiz overview
-back_to_the_list: Back to the list
 back_to_the_questions_list: Back to the list of questions
 back_to_the_quiz: Back to the quiz
 bank_of_questions: Bank of questions
@@ -152,10 +152,14 @@ export_qti_exercise : Export questions of the quiz in QTI format
 # F
 feedback: General feedback
 feedback_answer_check: Feedback if this answer is checked (optional)
-find_by: Find by
-find_in: Find in
-find_question_advance: question advanced
-find_what: What you're looking for
+filter_by_title: Title or content
+filter_by_model_only: Only models
+filter_by_type: Type
+filter_by_self_only: Only my questions
+filter_by_creator: Créator
+filters_less: Display less filters
+filters_more: Display more filters
+filters_reset: Reset all filters
 final_mark: Final mark
 finish: Finish
 fixed_failure_above_success_error: This value should be lesser than the score in case of success.
@@ -391,6 +395,7 @@ qti_unsupported_format: Non-compliant QTI format or unsupported format
 qti_xml_not_found: XML schema not found
 question: Question
 questions: Questions
+questions_bank: Bank of questions
 question_creation: Question creation
 question_description: Description of the question (optional)
 question_model: Set as a model

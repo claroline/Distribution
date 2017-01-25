@@ -1,3 +1,5 @@
+import {LoadingIndicator} from '#/main/core/loader/loading-indicator'
+
 import {makeReducer} from './../utils/reducers'
 
 import {
@@ -6,11 +8,20 @@ import {
 } from './actions'
 
 function incrementRequests(state) {
+  if (0 === state) {
+    LoadingIndicator.show()
+  }
+
   return state + 1
 }
 
 function decrementRequests(state) {
-  return state - 1
+  const count = state - 1
+  if (0 === count) {
+    LoadingIndicator.hide()
+  }
+
+  return count
 }
 
 export const reducers = {

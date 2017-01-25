@@ -7,7 +7,7 @@ export const ITEM_DESELECT_ALL = 'ITEM_DESELECT_ALL'
 
 export const actions = {}
 
-actions.select = makeActionCreator(ITEM_DESELECT_ALL, 'items')
+actions.select = makeActionCreator(ITEMS_SELECT, 'items')
 actions.selectItem = makeActionCreator(ITEM_SELECT, 'itemId')
 actions.deselectItem = makeActionCreator(ITEM_DESELECT, 'itemId')
-actions.deselectAll = makeActionCreator(ITEMS_SELECT)
+actions.deselectAll = makeActionCreator(ITEM_DESELECT_ALL)
