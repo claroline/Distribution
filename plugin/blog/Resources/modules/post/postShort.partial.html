@@ -42,7 +42,9 @@
                         data-ng-if="post.author.picture"
                         data-ng-src="{{ vm.blog.img_dir + post.author.picture }}"
                         alt="{{ post.author.firstName + ' ' + post.author.lastName }}" class="img-rounded user_picture">
-                &nbsp;<small><a rel="author" title="{{ post.author.firstName + ' ' + post.author.lastName }}">{{ post.author.firstName }} {{ post.author.lastName }}</a></small>
+                &nbsp;<small><a rel="author"
+                                title="{{ post.author.firstName + ' ' + post.author.lastName }}"
+                                data-ng-click="panelsCtrl.filterByAuthor(post.author)">{{ post.author.firstName }} {{ post.author.lastName }}</a></small>
             </li>
 
             <li data-ng-if="post.publication_date"><span class="fa fa-calendar"></span> <small><time>{{ post.publication_date | datetime }}</time></small></li>
@@ -58,10 +60,10 @@
 
     <footer>
         <p class="pull-right">
-            <a data-ng-if="vm.blog.options.authorize_comment && post.count_comments + post.count_unpublished_comments > 0" data-ng-click="vm.displayPost(post, true)" name="comments" title="{{ 'see_comments'|trans:{}:'icap_blog' }}">
-                <i class="fa fa-comments"></i> {{ post.count_comments + post.count_unpublished_comments }} {{ 'comments'|transChoice:post.count_comments + post.count_unpublished_comments:{}:'icap_blog' }}
+            <a data-ng-if="vm.blog.options.authorize_comment && post.count_comments > 0" data-ng-click="vm.displayPost(post, true)" name="comments" title="{{ 'see_comments'|trans:{}:'icap_blog' }}">
+                <i class="fa fa-comments"></i> {{ post.count_comments }} {{ 'comments'|transChoice:post.count_comments:{}:'icap_blog' }}
             </a>
-            <span data-ng-if="post.count_comments + post.count_unpublished_comments === 0"><i class="fa fa-comments"></i> {{ post.count_comments + post.count_unpublished_comments }} {{ 'comments'|transChoice:post.count_comments + post.count_unpublished_comments:{}:'icap_blog' }}</span>
+            <span data-ng-if="vm.blog.options.authorize_comment && post.count_comments === 0"><i class="fa fa-comments"></i> {{ post.count_comments }} {{ 'comments'|transChoice:post.count_comments:{}:'icap_blog' }}</span>
         </p>
 
         <ul class="list-unstyled list-inline tags">

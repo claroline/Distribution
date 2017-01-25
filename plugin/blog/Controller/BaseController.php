@@ -266,7 +266,7 @@ class BaseController extends FOSRestController
      */
     protected function dispatchCommentCreateEvent(Post $post, Comment $comment)
     {
-        $event = new LogCommentCreateEvent($post, $comment);
+        $event = new LogCommentCreateEvent($post, $comment, $this->get('translator'));
 
         return $this->dispatch($event);
     }
@@ -293,7 +293,7 @@ class BaseController extends FOSRestController
      */
     protected function dispatchCommentUpdateEvent(Post $post, Comment $comment, $changeSet)
     {
-        $event = new LogCommentUpdateEvent($post, $comment, $changeSet);
+        $event = new LogCommentUpdateEvent($post, $comment, $changeSet, $this->get('translator'));
 
         return $this->dispatch($event);
     }
@@ -306,7 +306,7 @@ class BaseController extends FOSRestController
      */
     protected function dispatchCommentPublishEvent(Post $post, Comment $comment)
     {
-        $event = new LogCommentPublishEvent($post, $comment);
+        $event = new LogCommentPublishEvent($post, $comment, $this->get('translator'));
 
         return $this->dispatch($event);
     }

@@ -119,6 +119,7 @@
             name: "{{ _resource.resourceNode.name }}",
             user: {{ user | default('null') }},
             rssUrl: "{{ path('icap_blog_rss', {'blogId': blog.id}) }}",
+            loginUrl: "{{ path('claro_security_login') }}",
             eventsPath: "{{ path('icap_blog_calendar_datas', {'blogId': _resource.id}) }}",
             img_dir: "{{ asset('uploads/pictures/') }}",
             banner_dir: "{{ asset(get_blog_upload_dir()) }}",

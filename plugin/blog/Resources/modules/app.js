@@ -17,6 +17,9 @@ import 'fullcalendar/dist/lang/fr'
 import 'fullcalendar/dist/lang/en-gb'
 import 'angular-ui-tree'
 import 'angular-bootstrap-colorpicker'
+import 'angular-i18n/angular-locale_en.js'
+import 'angular-i18n/angular-locale_fr.js'
+import 'angular-inview'
 
 import tinyMceConfig from './tinymce/tinymce.config'
 import blogService from './blog/blog.service'
@@ -57,7 +60,8 @@ angular
     'ui.tinymce',
     'ngTagsInput',
     'ui.tree',
-    'colorpicker.module'
+    'colorpicker.module',
+    'angular-inview'
   ])
   .value('blog.data', window.blogConfiguration)
 
@@ -175,7 +179,12 @@ angular
       .when('/:slug/edit', {
         template: postEditTemplate,
         controller: postController,
-        controllerAs: 'vm'
+        controllerAs: 'vm',
+        resolve: { // This route can benefit from a complete load of data
+          func: ['$route', ($route) => {
+            $route.current.params.loadPost = true
+          }]
+        }
       })
       .when('/tag/:slug', {
         template: blogTemplate,

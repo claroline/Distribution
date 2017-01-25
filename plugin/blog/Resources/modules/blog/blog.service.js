@@ -49,6 +49,8 @@ export default class BlogService {
   get eventsPath() { return _blogData.get(this).eventsPath }
   get img_dir() { return _blogData.get(this).img_dir  }
   get banner_dir() { return _blogData.get(this).banner_dir  }
+  get user() { return _blogData.get(this).user }
+  get loginUrl() { return _blogData.get(this).loginUrl }
 
   init() {
     //this.getPosts();
@@ -180,9 +182,10 @@ export default class BlogService {
   }
 
   toggleCommentVisibility(comment, post) {
-    const url = _url.get(this)('icap_blog_api_put_blog_post_visibility', {
+    const url = _url.get(this)('icap_blog_api_put_blog_post_comment_visibility', {
       'blog': this.id,
-      'post': post.id
+      'post': post.id,
+      'comment': comment.id
     })
 
     let Comment = _$resource.get(this)(url, null, {
@@ -376,6 +379,7 @@ export default class BlogService {
     return updatedComment.$edit(
       success => {
         comment.message = success.message
+        comment.update_date = success.update_date
       }
     )
 

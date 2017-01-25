@@ -17,13 +17,14 @@ clear: Clear
 close: Close
 comment_deletion_confirm_message: Are you sure you want to remove this comment ?
 comment_deletion_confirm_title: Removal of a comment
+comment_sort_asc: Order comments (oldest first)
+comment_sort_desc: Order comments (newest first)
 comments: comment|comments
 configure_blog: Configuration of the blog
 created_by: by
 created_on: on
 delete_filter: Remove filter
 edit_blog_infos: Edit blog's information
-editor: Editors
 edit_post: Editing the post "%postTitle%"
 error_404: The requested page doesn't exist.
 expand_year: Expand this year
@@ -105,6 +106,8 @@ posts: Posts
 publish: Make it non visible
 publish: Make it visible
 read_more: View more
+redactor: Rédacteurs
+required_field: This field is mandatory.
 rss: RSS feed
 search_in_title_and_content: Search in titles, contents.
 search: Search

@@ -1,4 +1,4 @@
-<form class="well" id="icap_blog_post_form">
+<form class="well" id="icap_blog_post_form" name="editForm">
 
     <legend>{{ 'edit_post' | trans:{'postTitle': vm.blog.fixedTitle}:'icap_blog' }}</legend>
 
@@ -6,7 +6,18 @@
         <div class="form-group">
             <label class="control-label col-md-3 required" for="icap_blog_post_form_title">{{ 'icap_blog_post_form_title' | trans:{}:'icap_blog' }}</label>
             <div class="col-md-12">
-                <input type="text" id="icap_blog_post_form_title" data-ng-model="vm.blog.currentPost.title" required="required" class="form-control">
+                <input
+                    type="text"
+                    id="icap_blog_post_form_title"
+                    data-ng-model="vm.blog.currentPost.title"
+                    required
+                    class="form-control"
+                    name="postTitle"
+                    data-ng-class="{'error': editForm.postTitle.$dirty && editForm.postTitle.$invalid}"
+                    data-uib-tooltip="{{'required_field' | trans:{}:'icap_blog'}}"
+                    data-tooltip-class="errorTooltip"
+                    data-tooltip-trigger="none"
+                    data-tooltip-is-open="editForm.postTitle.$dirty && editForm.postTitle.$invalid">
             </div>
         </div>
     </div>
@@ -16,13 +27,16 @@
             <label class="control-label col-md-3" for="icap_blog_post_form_publicationDate">{{ 'icap_blog_post_form_publicationDate' | trans:{}:'icap_blog' }}</label>
 
             <div class="col-md-3">
-                <div class="input-group date">
+                <div
+                    class="input-group date"
+                    data-ng-class="{'error': editForm.postPubDate.$dirty && editForm.postPubDate.$invalid}">
                     <input
                         id="icap_blog_post_form_publicationDate"
                         type="text"
                         class="form-control"
                         uib-datepicker-popup="{{ vm.datepickerFormats[vm.locale] }}"
                         data-ng-model="vm.blog.newPost.publication_date"
+                        name="postPubDate"
                         is-open="vm.datepicker.opened"
                         ng-required="true"
                         close-text="{{ 'close'|trans:{}:'icap_blog' }}"
@@ -30,12 +44,17 @@
                         current-text="{{ 'today'|trans:{}:'platform' }}"
                         show-weeks="false"
                         starting-day="vm.firstDayInWeek[vm.locale]"
-                        datepicker-template-url="datepicker_template.html"/>
+                        datepicker-template-url="datepicker_template.html"
+                        datepicker-options="vm.datePickerOptions"
+                        data-uib-tooltip="{{'required_field' | trans:{}:'icap_blog'}}"
+                        data-tooltip-class="errorTooltip"
+                        data-tooltip-trigger="none"
+                        data-tooltip-is-open="editForm.postPubDate.$dirty && editForm.postPubDate.$invalid"/>
                     <span class="input-group-btn">
                         <button
                             type="button"
                             class="btn btn-default"
-                            ng-click="vm.openDatePicker()"><i class="fa fa-calendar"></i></button>
+                            data-ng-click="vm.openDatePicker()"><i class="fa fa-calendar"></i></button>
                     </span>
                 </div>
             </div>
@@ -45,8 +64,19 @@
     <div class="row">
         <div class="form-group">
             <label class="control-label col-md-3 required" for="icap_blog_post_form_content">{{ 'icap_blog_post_form_content' | trans:{}:'icap_blog' }}</label>
-            <div class="col-md-12">
-                <textarea id="icap_blog_post_form_content" data-ui-tinymce="vm.tinymceOptions" data-ng-model="vm.blog.currentPost.content"></textarea>
+            <div
+                class="col-md-12"
+                data-ng-class="{'error': editForm.postContent.$dirty && editForm.postContent.$invalid}"
+                data-uib-tooltip="{{'required_field' | trans:{}:'icap_blog'}}"
+                data-tooltip-class="errorTooltip"
+                data-tooltip-trigger="none"
+                data-tooltip-is-open="editForm.postContent.$dirty && editForm.postContent.$invalid">
+                <textarea
+                    id="icap_blog_post_form_content"
+                    data-ui-tinymce="vm.tinymceOptions"
+                    data-ng-model="vm.blog.currentPost.content"
+                    required
+                    name="postContent"></textarea>
             </div>
         </div>
     </div>
@@ -64,9 +94,10 @@
 
     <div class="form-actions">
         <button
-            data-ng-disabled="vm.disableButtons"
             data-ng-click="vm.updatePost()"
-            type="submit" class="btn btn-primary">{{ 'edit' | trans:{}:'platform' }}</button>
+            type="submit"
+            class="btn btn-primary"
+            data-ng-disabled="vm.disableButtons || !editForm.$valid">{{ 'edit' | trans:{}:'platform' }}</button>
         <button
             data-ng-disabled="vm.disableButtons"
             data-ng-click="vm.cancelEdit()" class="btn btn-danger">{{ 'cancel' | trans:{}:'platform' }}</button>

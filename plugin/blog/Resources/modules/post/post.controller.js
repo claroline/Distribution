@@ -12,7 +12,7 @@ let _$scope = new WeakMap()
 
 export default class PostController {
 
-  constructor(blogService, url, $routeParams, $location, Messages, transFilter, modal, $scope) {
+  constructor(blogService, url, $routeParams, $location, Messages, transFilter, modal, $scope, tinyMceConfig) {
 
     _url.set(this, url)
     _$routeParams.set(this, $routeParams)
@@ -24,6 +24,7 @@ export default class PostController {
     _$scope.set(this, $scope)
 
     this.blog = blogService
+    this.tinymceOptions = tinyMceConfig
     this.datepicker = {opened: false}
     this.locale = document.documentElement.lang
     this.datepickerFormats = {
@@ -31,11 +32,15 @@ export default class PostController {
       'fr': 'dd/MM/yyyy'
     }
     this.firstDayInWeek = {
-      'en': 1,
-      'fr': 2
+      'en': 0,
+      'fr': 1
+    }
+    this.datePickerOptions = {
+      'starting-day': this.firstDayInWeek[this.locale]
     }
 
     this.disableButtons = false
+    this.newCommentMessage = ''
 
     this.init()
 
@@ -46,7 +51,9 @@ export default class PostController {
     if (_$routeParams.get(this).loadPost && _$routeParams.get(this).slug !== undefined) {
       this.blog.setCurrentPostBySlug(_$routeParams.get(this).slug)
         .then(
-          () => {},
+          () => {
+            
+          },
           () => {
             this._setMessage('danger', 'error_404', {}, false, 'icap_blog', true)
             _$location.get(this).url('/')
@@ -65,6 +72,10 @@ export default class PostController {
       blogId: this.blog.id,
       postSlug: slug
     })
+  }
+
+  getAuthenticationUrl() {
+    return _url.get(this)('')
   }
 
   getTags($query) {
@@ -116,6 +127,33 @@ export default class PostController {
         }
       )
   }
+
+  toggleCommentVisibility(comment, post) {
+    comment.is_request_pending = true
+    this.blog.toggleCommentVisibility(comment, post)
+      .then(
+        () => {
+          comment.is_published ?
+            this._setMessage('success', 'icap_blog_comment_publish_success')
+          : this._setMessage('success', 'icap_blog_comment_unpublish_success')
+          
+        },
+        () => {
+          comment.is_published ?
+            this._setMessage('danger', 'icap_blog_comment_publish_error')
+          : this._setMessage('danger', 'icap_blog_comment_unpublish_error')
+        }
+      )
+      .finally(
+        () => {
+          comment.is_request_pending = false
+        }
+      )
+  }
+
+  countComments(post) {
+    return post.comments.filter(elem => elem.is_published).length
+  }
   
   createPost() {
     //Disable buttons
@@ -123,8 +161,12 @@ export default class PostController {
     this.blog.createPost()
       .then(
         success => {
-          _$location.get(this).url('/' + success.slug)
           this._setMessage('success', 'icap_blog_post_add_success', {}, false, 'icap_blog', true)
+
+          if (!this.blog.options.auto_publish_post && !this.blog.isGrantedAdmin) {
+            this._setMessage('success', 'icap_blog_post_need_validation_before_publishing', {}, false, 'icap_blog', true)
+          }
+          _$location.get(this).url('/' + success.slug)
         },
         () => {
           this._setMessage('danger', 'icap_blog_post_add_error')
@@ -145,6 +187,9 @@ export default class PostController {
       .then(
         () => {
           this._setMessage('success', 'icap_blog_post_edit_success', {}, false, 'icap_blog', true)
+          if (!this.blog.options.auto_publish_post && !this.blog.isGrantedAdmin) {
+            this._setMessage('success', 'icap_blog_post_need_validation_before_publishing', {}, false, 'icap_blog', true)
+          }
           _$location.get(this).url('/' + this.blog.currentPost.slug)
         },
         () => {
@@ -183,36 +228,22 @@ export default class PostController {
           this._cancelModal()
           // Re-enable buttons
           this.disableButtons = false
-
-
         }
       )
   }
 
-  toggleCommentVisibility(comment, post) {
-    comment.is_request_pending = true
-    this.blog.toggleCommentVisibility(comment, post)
-      .then(
-        () => {
-          this._setMessage('success', 'icap_blog_comment_publish_success')
-        },
-        () => {
-          this._setMessage('danger', 'icap_blog_comment_publish_error')
-        }
-      )
-      .finally(
-        () => {
-          comment.is_request_pending = false
-        }
-      )
-  }
-  
-  addComment(post, message) {
+  addComment(post, message, form) {
     this.disableButtons = true
     this.blog.addComment(post, message)
       .then(
         () => {
           this._setMessage('success', 'icap_blog_comment_add_success')
+
+          if (!this.blog.options.auto_publish_comment && !this.blog.isGrantedAdmin) {
+            this._setMessage('success', 'icap_blog_post_comment_need_validation_before_publishing')
+          }
+          this.newCommentMessage = ''
+          form.$setPristine()
         },
         () => {
           this._setMessage('danger', 'icap_blog_comment_add_error')
@@ -281,5 +312,6 @@ PostController.$inject = [
   'Messages',
   'transFilter',
   'blogModal',
-  '$scope'
+  '$scope',
+  'tinyMceConfig'
 ]

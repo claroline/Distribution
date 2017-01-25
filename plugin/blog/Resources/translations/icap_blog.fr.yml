@@ -17,6 +17,8 @@ clear: Vider
 close: Fermer
 comment_deletion_confirm_message: Etes-vous sûr de vouloir supprimer ce commentaire ?
 comment_deletion_confirm_title: Suppression d'un commentaire
+comment_sort_asc: Trier les commentaires (le plus ancien en premier)
+comment_sort_desc: Trier les commentaires (le plus récent en premier)
 comments: commentaire|commentaires
 configure_blog: Options du blog
 created_by: par
@@ -93,7 +95,6 @@ no_authors: Aucun rédacteur
 no_blog_selected: Aucun blog sélectionné
 no_post: Aucun article.
 no_tags: Aucun tag
-Post: Article
 post_deletion_confirm_message: Etes-vous sûr de vouloir supprimer l'article <strong>%postName%</strong> ?
 post_deletion_confirm_title: Suppression d'un article
 post_filtered_by_author: Liste des articles filtrés par l'auteur <strong>%authorName%</strong>.
@@ -104,6 +105,7 @@ posts: Articles
 publish: Rendre visible
 read_more: Voir plus
 redactor: Rédacteurs
+required_field: Ce champ est requis.
 rss: Flux RSS
 search_in_title_and_content: Recherche dans les titres, contenus.
 search: Recherche
