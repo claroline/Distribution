@@ -1,24 +1,24 @@
-active_contribution: Current revision
+active_contribution: 'Huidige herziening'
 add_new_subsection: 'Voeg hier een sectie toe'
 added: 'Toegevoegd'
 angular_date_format: 'MM/dd/yyyy ''at'' h:mma'
-back_to_history: Back to history
+back_to_history: 'Terug naar geschiedenis'
 back_to_wiki: 'Terug naar de wiki'
 back: 'Terug'
-cancel: Cancel
-changed: Changed (style)
-compare_versions: Compare selected revisions
+cancel: 'Annuleren'
+changed: 'Veranderde (stijl)'
+compare_versions: 'Vergelijk geselecteerde herzieningen'
 confirm: 'Bevestigen'
-contribution: Contribution
-create_new_section: 'Een nieuwe sectie maken
+contribution: 'Bijdrage'
+create_new_section: 'Een nieuwe sectie maken'
 create_section: 'Een sectie maken'
 create: 'Maken'
 date_format: 'm/d/Y ''at'' H:i'
 delete_confirmation: 'Do you really want to delete "%sectionTitle%" section?'
-delete_section: Delete section
+delete_section: 'Een sectie verwijderen'
 delete: 'Verwijderen'
-deleted_sections: Removed sections
-deleted: Removed
+deleted_sections: 'Verwijderde secties'
+deleted: 'Verwijderd'
 edit_section: Edit section
 edit_description: Edit description
 edit: Edit
@@ -68,8 +68,8 @@ remove_confirmation: 'Do you really want to permanently remove "%sectionTitle%" 
 remove_section: Remove section
 restore_section: Restore section
 revision_comparison: Revision comparison
-revision_history: Revision history
-save: Save
+revision_history: 'Geschiedenis van de herzieningen'
+save: 'Opslaan'
 set_active_contribution: Publish this revision
 waiting_for_moderation: Waiting for moderation
 wiki_contents: 'Inhoud'
