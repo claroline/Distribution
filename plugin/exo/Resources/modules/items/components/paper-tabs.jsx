@@ -5,19 +5,20 @@ import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
 import Nav from 'react-bootstrap/lib/Nav'
 import NavItem from 'react-bootstrap/lib/NavItem'
-import {tex} from '../../utils/translate'
+import {tex} from './../../utils/translate'
 import {Metadata} from './metadata.jsx'
 
 export class PaperTabs extends Component
 {
   constructor(props) {
     super(props)
-    this.state = {key: 1}
     this.handleSelect = this.handleSelect.bind(this)
   }
 
   handleSelect(key) {
-    this.setState({key})
+    if(this.props.onTabChange) {
+      this.props.onTabChange(key)
+    }
   }
 
   render() {
@@ -28,10 +29,10 @@ export class PaperTabs extends Component
           <Row className="clearfix">
             <Col sm={12}>
               <Nav bsStyle="tabs">
-                <NavItem eventKey="first">
+                <NavItem eventKey="first" onSelect={() => this.handleSelect('first')}>
                   <span className="fa fa-user"></span> {tex('your_answer')}
                 </NavItem>
-                <NavItem eventKey="second">
+                <NavItem eventKey="second" onSelect={() => this.handleSelect('second')}>
                   <span className="fa fa-check"></span> {tex('expected_answer')}
                 </NavItem>
               </Nav>
@@ -69,5 +70,6 @@ PaperTabs.propTypes = {
   }),
   answer: T.any.isRequired,
   yours: T.object.isRequired,
-  expected: T.object.isRequired
+  expected: T.object.isRequired,
+  onTabChange: T.func
 }
