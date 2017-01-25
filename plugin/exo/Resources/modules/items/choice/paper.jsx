@@ -11,6 +11,7 @@ export const ChoicePaper = props => {
     <PaperTabs
       item={props.item}
       answer={props.answer}
+      score={props.answerObject.score ? props.answerObject.score : ''}
       yours={
         <div className="container choice-paper">
           {props.item.solutions.map(solution =>

@@ -4,6 +4,7 @@ import Panel from 'react-bootstrap/lib/Panel'
 import {tex} from './../../../utils/translate'
 import {getDefinition} from './../../../items/item-types'
 import {selectors} from './../selectors'
+import {ScoreBox} from './../../../items/components/score-box.jsx'
 
 let Paper = props =>
   <div className="paper">
@@ -18,10 +19,17 @@ let Paper = props =>
           <Panel key={item.id}>
             <header className="item-content">
               <strong dangerouslySetInnerHTML={{__html: item.content}}/>
+              {getAnswerScore(item.id, props.paper.answers) !== undefined && getAnswerScore(item.id, props.paper.answers) !== null &&
+                <span className="pull-right">
+                  <h4>
+                    <ScoreBox score={getAnswerScore(item.id, props.paper.answers)} scoreMax={getItemScoreMax(item)}/>
+                  </h4>
+                </span>
+              }
             </header>
             {React.createElement(
               getDefinition(item.type).paper,
-              {item, answer: getAnswer(item.id, props.paper.answers)}
+              {item, answer: getAnswer(item.id, props.paper.answers), answerObject: getAnswerObject(item.id, props.paper.answers)}
             )}
           </Panel>
         )}
@@ -47,6 +55,20 @@ function getAnswer(itemId, answers) {
   const answer = answers.find(answer => answer.questionId === itemId)
 
   return answer && answer.data ? answer.data : undefined
+}
+
+function getAnswerObject(itemId, answers) {
+  return answers.find(answer => answer.questionId === itemId)
+}
+
+function getAnswerScore(itemId, answers) {
+  const answer = answers.find(answer => answer.questionId === itemId)
+
+  return answer.score
+}
+
+function getItemScoreMax(item) {
+  return item && item.score && item.score.max ? item.score.max : undefined
 }
 
 function mapStateToProps(state) {

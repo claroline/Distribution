@@ -1,4 +1,3 @@
-
 import React, {Component, PropTypes as T} from 'react'
 import Tab from 'react-bootstrap/lib/Tab'
 import Row from 'react-bootstrap/lib/Row'
@@ -32,9 +31,11 @@ export class PaperTabs extends Component
                 <NavItem eventKey="first" onSelect={() => this.handleSelect('first')}>
                   <span className="fa fa-user"></span> {tex('your_answer')}
                 </NavItem>
-                <NavItem eventKey="second" onSelect={() => this.handleSelect('second')}>
-                  <span className="fa fa-check"></span> {tex('expected_answer')}
-                </NavItem>
+                {!this.props.hideExpected &&
+                  <NavItem eventKey="second" onSelect={() => this.handleSelect('second')}>
+                    <span className="fa fa-check"></span> {tex('expected_answer')}
+                  </NavItem>
+                }
               </Nav>
             </Col>
             <Col sm={12}>
@@ -44,11 +45,13 @@ export class PaperTabs extends Component
                     {this.props.yours}
                   </div>
                 </Tab.Pane>
-                <Tab.Pane eventKey="second">
-                  <div className="panel panel-body">
-                    {this.props.expected}
-                  </div>
-                </Tab.Pane>
+                {!this.props.hideExpected &&
+                  <Tab.Pane eventKey="second">
+                    <div className="panel panel-body">
+                      {this.props.expected}
+                    </div>
+                  </Tab.Pane>
+                }
               </Tab.Content>
             </Col>
           </Row>
@@ -70,6 +73,7 @@ PaperTabs.propTypes = {
   }),
   answer: T.any.isRequired,
   yours: T.object.isRequired,
-  expected: T.object.isRequired,
-  onTabChange: T.func
+  expected: T.object,
+  onTabChange: T.func,
+  hideExpected: T.bool
 }
