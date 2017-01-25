@@ -66,11 +66,11 @@ class AnswerSerializer extends AbstractSerializer
                     return $options['hints'][$hintId];
                 }, $answer->getUsedHints());
             },
-            'data' => function (Answer $answer) {
-                return !empty($answer->getData()) ? json_decode($answer->getData()) : null;
-            },
         ], $answer, $answerData);
 
+        if (!empty($answer->getData())) {
+            $answerData->data = json_decode($answer->getData());
+        }
         // Adds user score
         if ($this->hasOption(Transfer::INCLUDE_USER_SCORE, $options)) {
             $this->mapEntityToObject([

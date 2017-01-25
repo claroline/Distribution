@@ -142,7 +142,7 @@ class PaperRepository extends EntityRepository
                 WHERE p.exercise = :exercise
                   AND p.end IS NOT NULL
                   AND a.score IS NULL
-                ORDER BY p.start DESC
+                ORDER BY p.start ASC
             ')
             ->setParameters([
                 'exercise' => $exercise,

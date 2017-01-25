@@ -53,6 +53,8 @@ badge_no_obtained: Vous n'avez pas encore obtenu le badge de connaissance.
 back: Retour
 back_to_overview: Retourner à la vue d'ensemble du questionnaire
 back_to_the_list: Retour à la liste
+back_to_the_questions_list: Retour à la liste des questions
+back_to_the_quiz: Retour au questionnaire
 bank_of_questions: Banque de questions
 brief_search: Recherche rapide
 
@@ -79,6 +81,8 @@ contain_search: Dont la question contient
 correct: Correcte
 correction: Correction
 correction_date: Date de la correction
+correction_invalid_no_save: Correction non valide
+correction_invalid_no_save_desc: La correction a échouée.
 correspondence: correspondance
 correspondence_empty: Vous n'avez réalisé aucune correspondance !
 correspondence_error: Vous ne pouvez pas associer une même proposition avec plusieurs labels !
@@ -235,6 +239,8 @@ long: Longue
 
 # M
 manage_img: Gérer mes documents
+manual_correction: Correction manuelle
+manual_correction_of_open_questions: Correction manuelle des questions ouvertes
 mark: Note
 mark_question: Noter cette question
 mark_bigest: Le score doit être inférieur ou égal au score maximum
@@ -302,6 +308,7 @@ n_question: Question n°
 number_max_attempts_help: Entrez 0 pour un nombre d'essais illimité
 number_proposal: Numéro de la proposition
 number_of_papers: Nombre de copies
+number_of_papers_to_correct: Nombre de copies à corriger
 number_questions_draw: Nombre de questions à tirer
 number_questions_draw_help: Entrez 0 pour tirer toutes les questions
 number_steps_draw: Nombre d'étapes à tirer
@@ -384,6 +391,7 @@ question_creation: Création d'une question
 question_description: Description de la question (facultatif)
 question_model: Définir comme modèle
 question_title: Titre de la question (facultatif)
+question_title_short: Titre de la question
 question_shared_with: Cette question est partagée avec les utilisateurs suivants
 question_need_manual_correction: Cette question nécessite une correction manuelle
 question_open_keywords_info: Votre réponse doit contenir les mots clés suivant pour obtenir les points
@@ -494,6 +502,7 @@ temporary_mark: Note temporaire
 test_exit: Sortie du test
 timer: Temps restant :
 title: Titre
+to_correct: Corriger
 type: Type
 type_exo : Type du questionnaire
 type_qcm: Type du QCM
