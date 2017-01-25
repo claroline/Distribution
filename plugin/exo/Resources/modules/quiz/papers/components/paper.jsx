@@ -64,7 +64,7 @@ function getAnswerObject(itemId, answers) {
 function getAnswerScore(itemId, answers) {
   const answer = answers.find(answer => answer.questionId === itemId)
 
-  return answer.score
+  return answer ? answer.score : undefined
 }
 
 function getItemScoreMax(item) {
