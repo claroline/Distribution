@@ -19,13 +19,13 @@ delete_section: 'Een sectie verwijderen'
 delete: 'Verwijderen'
 deleted_sections: 'Verwijderde secties'
 deleted: 'Verwijderd'
-edit_section: Edit section
-edit_description: Edit description
-edit: Edit
-error_401: You are not authorized to perform this operation.
-error_404: 'This section doesn''t exist.'
+edit_section: 'Sectie bewerken'
+edit_description: 'Beschrijving bewerken'
+edit: 'Bewerken'
+error_401: 'U bent niet toegelaten deze operatie uit te voeren.'
+error_404: 'Deze sectie bestaat niet.'
 error_500: The server encoutered an error. Please try again in a moment.
-history: History
+history: 'Geschiedenis'
 icap_wiki_delete_section_type_children: Also remove its subsections
 icap_wiki_edit_section_type_activeContribution_text: 'Tekst'
 icap_wiki_edit_section_type_activeContribution_title: 'Titel'
