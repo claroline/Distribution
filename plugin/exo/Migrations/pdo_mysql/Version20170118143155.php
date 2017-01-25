@@ -53,7 +53,7 @@ class Version20170118143155 extends AbstractMigration
                   p.interaction_matching_id AS match_question_id,
                   l.id AS label_id,
                   p.id AS proposal_id,
-                  l.score,
+                  IFNULL(l.score, 0),
                   l.feedback
               FROM ujm_proposal AS p
               LEFT JOIN ujm_proposal_label AS pa ON (p.id = pa.proposal_id AND pa.proposal_id IS NOT NULL)

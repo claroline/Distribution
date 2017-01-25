@@ -16,7 +16,7 @@ use UJM\ExoBundle\Serializer\ExerciseSerializer;
 use UJM\ExoBundle\Serializer\Question\QuestionSerializer;
 use UJM\ExoBundle\Serializer\StepSerializer;
 
-class Updater080000
+class Updater090000
 {
     use LoggableTrait;
 
