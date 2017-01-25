@@ -27,41 +27,41 @@ error_404: 'La section demandée n''existe pas.'
 error_500: 'Le serveur a rencontré une erreur. Veuillez réessayer dans un moment.'
 history: 'Historique'
 icap_wiki_delete_section_type_children: 'Supprimer également les sous-sections'
-icap_wiki_edit_section_type_activeContribution_text: Texte
-icap_wiki_edit_section_type_activeContribution_title: Titre
+icap_wiki_edit_section_type_activeContribution_text: 'Texte'
+icap_wiki_edit_section_type_activeContribution_title: 'Titre'
 icap_wiki_edit_section_type_brother: 'Voulez-vous que cette section soit au même niveau que celle selectionnée?'
-icap_wiki_edit_section_type_position: Positionnement
-icap_wiki_edit_section_type_visible: Visible
-icap_wiki_options_save_error: Erreur durant la modification des options du wiki
-icap_wiki_options_save_success: Les options du wiki ont été modifiées avec succès
-icap_wiki_options_type_mode: Fonctionnement du Wiki
-icap_wiki_section_add_error: Erreur durant la création de la section
-icap_wiki_section_add_success: La section a été créée avec succès
-icap_wiki_section_delete_error: Erreur durant la suppression de la section
-icap_wiki_section_delete_success: La section a été supprimée avec succès
-icap_wiki_section_move_error: Erreur durant le déplacement de la section
-icap_wiki_section_move_success: La section a été déplacée avec succès
-icap_wiki_section_remove_error: Erreur durant la suppression définitive de la section
-icap_wiki_section_remove_success: La section a été supprimée définitivement
-icap_wiki_section_restore_error: Erreur durant la restauration de la section
-icap_wiki_section_restore_success: La section a été restaurée avec succès
-icap_wiki_section_type_activeContribution_text: Texte
-icap_wiki_section_type_activeContribution_title: Titre
-icap_wiki_section_update_error: Erreur durant la modification de la section
-icap_wiki_section_update_success: La section a été modifiée avec succès
-icap_wiki_set_active_contribution_error: La version n'a pas pu être publiée en tant que contribution active
-icap_wiki_type_name: Nom
+icap_wiki_edit_section_type_position: 'Positionnement'
+icap_wiki_edit_section_type_visible: 'Visible'
+icap_wiki_options_save_error: 'Erreur durant la modification des options du wiki'
+icap_wiki_options_save_success: 'Les options du wiki ont été modifiées avec succès'
+icap_wiki_options_type_mode: 'Fonctionnement du Wiki'
+icap_wiki_section_add_error: 'Erreur durant la création de la section'
+icap_wiki_section_add_success: 'La section a été créée avec succès'
+icap_wiki_section_delete_error: 'Erreur durant la suppression de la section'
+icap_wiki_section_delete_success: 'La section a été supprimée avec succès'
+icap_wiki_section_move_error: 'Erreur durant le déplacement de la section'
+icap_wiki_section_move_success: 'La section a été déplacée avec succès'
+icap_wiki_section_remove_error: 'Erreur durant la suppression définitive de la section'
+icap_wiki_section_remove_success: 'La section a été supprimée définitivement'
+icap_wiki_section_restore_error: 'Erreur durant la restauration de la section'
+icap_wiki_section_restore_success: 'La section a été restaurée avec succès'
+icap_wiki_section_type_activeContribution_text: 'Texte'
+icap_wiki_section_type_activeContribution_title: 'Titre'
+icap_wiki_section_update_error: 'Erreur durant la modification de la section'
+icap_wiki_section_update_success: 'La section a été modifiée avec succès'
+icap_wiki_set_active_contribution_error: 'La version n''a pas pu être publiée en tant que contribution active.'
+icap_wiki_type_name: 'Nom'
 items_per_page: 'Affichage par :'
 moderate_message: 'Les nouvelles contributions ne sont pas publiées automatiquement et attendent validation d''un administrateur du wiki.'
-moderate_mode_warning: '<div><strong>Ce Wiki est en mode modéré.</strong></div>' '<div>Toutes les modifications seront disponibles après leur autorisation par un administrateur. L''historique complet d''une section est disponible dans la page Historique.</div>'
-moderate: Modéré
-move_section: Déplacer la section
-new_section: Nouvelle section
-no_deleted_sections: Aucune section supprimée
-normal_message: Tous les utilisateurs peuvent contribuer au wiki. Toutes les contributions sont publiées automatiquement.
-normal: Normal
+moderate_mode_warning: <div><strong>Ce Wiki est en mode modéré.</strong></div> <div>Toutes les modifications seront disponibles après leur autorisation par un administrateur. L''historique complet d'une section est disponible dans la page Historique.</div>
+moderate: 'Modéré'
+move_section: 'Déplacer la section'
+new_section: 'Nouvelle section'
+no_deleted_sections: 'Aucune section supprimée'
+normal_message: 'Tous les utilisateurs peuvent contribuer au wiki. Toutes les contributions sont publiées automatiquement.'
+normal: 'Normal'
 note_well: <strong>NB</strong>: Notez que dans un fonctionnement normal et modéré, toutes les personnes authentifiées sur la plateforme ont la possibilité de participer au wiki.
-options: Options
+options: 'Options'
 read_only_message: 'Le wiki est verrouillé: les utilisateurs ne peuvent plus créer de contributions (à part l''administrateur). Cela vous permet de figer votre wiki afin de le transformer en Foire Aux Questions -FAQ-.'
 read_only: 'Consultation'
 remove_confirmation: 'Êtes-vous sûr de vouloir supprimer définitivement la section %sectionTitle%?'
