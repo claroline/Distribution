@@ -8,22 +8,6 @@
     margin-bottom: @line-height-computed;
     box-shadow: 0 1px 1px rgba(0,0,0,.05); // there is no var for this one
 
-    > .navbar {
-        border-radius: 0;
-        border-left: none;
-        border-right: none;
-        margin-bottom: 0;
-
-        button.btn-link {
-          text-decoration: none;
-        }
-
-        button.btn-link:active,
-        button.btn-link:hover:not(:active) {
-          outline: none;
-        }
-    }
-
     .page-header {
         background-color: @panel-default-heading-bg;
         padding: @panel-heading-padding;
@@ -41,8 +25,37 @@
             color: inherit;
         }
 
-        > a, .dropdown .dropdown-toggle {
-            color: inherit;
+        .divider {
+            content: " ";
+            display: inline-block;
+            width: 1px;
+            background: @panel-default-border;
+            height: 20px; // use a var
+            vertical-align: middle;
+        }
+    }
+
+    .page-actions {
+        .btn-link {
+            color: @gray-light;
+
+            &:hover,
+            &:focus,
+            &.active {
+                text-decoration: none;
+            }
+            &:hover {
+                color: @gray;
+            }
+            &:focus,
+            &.active {
+                color: @gray-dark;
+            }
+        }
+
+        .label {
+            font-size: 10px;
+            padding: .2em .4em;
         }
     }
 
@@ -50,7 +63,40 @@
         padding: 0;
     }
 
+    /* give it a panel footer style for now */
+    .page-nav {
+        background-color: @panel-footer-bg;
+        padding: @panel-footer-padding;
+        border-top: 1px solid @panel-inner-border;
+    }
+
+    /* fake panel behavior */
     .panel {
         box-shadow: none;
+    }
+
+    > .navbar {
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+        margin-bottom: 0;
+
+        button.btn-link {
+            text-decoration: none;
+        }
+
+        button.btn-link:active,
+        button.btn-link:hover:not(:active) {
+            outline: none;
+        }
+    }
+
+    > .table {
+        border: none !important;
+        margin-bottom: 0;
+
+        + .page-nav {
+            border-top: none;
+        }
     }
 }

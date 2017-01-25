@@ -23,7 +23,9 @@ describe('<TopBar/>', () => {
         'viewMode',
         'saveEnabled',
         'saveQuiz',
-        'hasPapers'
+        'hasPapers',
+        'saveCorrectionEnabled',
+        'saveCorrection'
       ]
     )
   })
@@ -37,11 +39,13 @@ describe('<TopBar/>', () => {
         viewMode={[]}
         saveEnabled="123"
         saveQuiz={[]}
+        saveCorrectionEnabled={() => {}}
+        saveCorrection="456"
       />
     )
     ensure.invalidProps(
       'TopBar',
-      ['id', 'empty', 'published', 'viewMode', 'saveEnabled', 'saveQuiz']
+      ['id', 'empty', 'published', 'viewMode', 'saveEnabled', 'saveQuiz', 'saveCorrectionEnabled', 'saveCorrection']
     )
   })
 
@@ -55,6 +59,8 @@ describe('<TopBar/>', () => {
         viewMode="editor"
         saveEnabled={true}
         saveQuiz={() => {}}
+        saveCorrectionEnabled={false}
+        saveCorrection={() => {}}
       />
     )
     ensure.propTypesOk()

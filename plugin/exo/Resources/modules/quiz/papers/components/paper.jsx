@@ -4,21 +4,28 @@ import Panel from 'react-bootstrap/lib/Panel'
 import {tex} from './../../../utils/translate'
 import {getDefinition} from './../../../items/item-types'
 import {selectors} from './../selectors'
+import {Metadata as ItemMetadata} from './../../../items/components/metadata.jsx'
 
 let Paper = props =>
   <div className="paper">
-    <h3>
+    <h2 className="paper-title">
       {tex('correction')}&nbsp;{props.paper.number}
-    </h3>
-    <hr/>
+    </h2>
+
     {props.steps.map((step, idx) =>
       <div key={idx} className="item-paper">
-        <h4>{tex('step')}&nbsp;{idx + 1}</h4>
+        <h3 className="step-title">
+          {step.title ? step.title : tex('step') + ' ' + (idx + 1)}
+        </h3>
+
         {step.items.map(item =>
           <Panel key={item.id}>
-            <header className="item-content">
-              <strong dangerouslySetInnerHTML={{__html: item.content}}/>
-            </header>
+            {item.title &&
+              <h4 className="item-title">{item.title}</h4>
+            }
+
+            <ItemMetadata item={item} />
+
             {React.createElement(
               getDefinition(item.type).paper,
               {item, answer: getAnswer(item.id, props.paper.answers)}

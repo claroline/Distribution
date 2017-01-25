@@ -40,27 +40,24 @@ class QuestionController extends AbstractController
     }
 
     /**
-     * Lists all the Questions of the current User
-     * (its owns and the ones that are shared with him).
+     * Searches for questions.
      *
-     * @EXT\Route("", name="question_list")
-     * @EXT\Method("GET")
+     * @EXT\Route("/search", name="question_search")
+     * @EXT\Method("POST")
      * @EXT\ParamConverter("user", converter="current_user")
      *
-     * @param User $user
+     * @param User    $user
+     * @param Request $request
      *
      * @return JsonResponse
      */
-    public function listAction(User $user)
+    public function searchAction(User $user, Request $request)
     {
-        $search = $this->questionManager->search($user);
+        $searchParams = $this->decodeRequestData($request);
 
-        return new JsonResponse([
-            'questions' => array_map(function (Question $question) {
-                return $this->questionManager->export($question, [Transfer::INCLUDE_ADMIN_META]);
-            }, $search['questions']),
-            'total' => $search['total'],
-        ]);
+        return new JsonResponse(
+            $this->questionManager->search($user, $searchParams->filters)
+        );
     }
 
     /**

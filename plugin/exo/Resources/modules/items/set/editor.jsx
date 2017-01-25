@@ -5,6 +5,7 @@ import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 import Tooltip from 'react-bootstrap/lib/Tooltip'
 import {tex, t} from './../../utils/translate'
 import {Textarea} from './../../components/form/textarea.jsx'
+import {ErrorBlock} from './../../components/form/error-block.jsx'
 import {makeDraggable, makeDroppable} from './../../utils/dragAndDrop'
 import {TooltipButton} from './../../components/form/tooltip-button.jsx'
 import {actions} from './editor'
@@ -41,47 +42,47 @@ class Association extends Component {
   render(){
     return (
       <div className={classes('association', {'positive-score' : this.props.association.score > 0}, {'negative-score': this.props.association.score < 1})}>
-        <div className="text-fields">
-          <div className="association-data">
-            {this.props.association._itemData}
+        <div className="first-row">
+          <div className="association-data" dangerouslySetInnerHTML={{__html: this.props.association._itemData}} />
+
+          <div className="right-controls">
+            <input
+              title={tex('score')}
+              type="number"
+              className="form-control association-score"
+              value={this.props.association.score}
+              onChange={e => this.props.onChange(
+                actions.updateAssociation(this.props.association.setId, this.props.association.itemId, 'score', e.target.value)
+              )}
+            />
+            <TooltipButton
+              id={`ass-${this.props.association.itemId}-${this.props.association.setId}-feedback-toggle`}
+              className="fa fa-comments-o"
+              title={tex('feedback')}
+              onClick={() => this.setState({showFeedback: !this.state.showFeedback})}
+            />
+            <TooltipButton
+              id={`ass-${this.props.association.itemId}-${this.props.association.setId}-delete`}
+              className="fa fa-trash-o"
+              title={t('delete')}
+              onClick={() => this.props.onChange(
+                actions.removeAssociation(this.props.association.setId, this.props.association.itemId))
+              }
+            />
           </div>
-          {this.state.showFeedback &&
-            <div className="feedback-container">
-              <Textarea
-                onChange={(value) => this.props.onChange(
-                  actions.updateAssociation(this.props.association.setId, this.props.association.itemId, 'feedback', value)
-                )}
-                id={`${this.props.association.itemId}-${this.props.association.setId}-feedback`}
-                content={this.props.association.feedback}
-              />
-            </div>
-          }
+
         </div>
-        <div className="right-controls">
-          <input
-            title={tex('score')}
-            type="number"
-            className="form-control association-score"
-            value={this.props.association.score}
-            onChange={e => this.props.onChange(
-              actions.updateAssociation(this.props.association.setId, this.props.association.itemId, 'score', e.target.value)
-            )}
-          />
-          <TooltipButton
-            id={`ass-${this.props.association.itemId}-${this.props.association.setId}-feedback-toggle`}
-            className="fa fa-comments-o"
-            title={tex('feedback')}
-            onClick={() => this.setState({showFeedback: !this.state.showFeedback})}
-          />
-          <TooltipButton
-            id={`ass-${this.props.association.itemId}-${this.props.association.setId}-delete`}
-            className="fa fa-trash-o"
-            title={t('delete')}
-            onClick={() => this.props.onChange(
-              actions.removeAssociation(this.props.association.setId, this.props.association.itemId))
-            }
-          />
-        </div>
+        {this.state.showFeedback &&
+          <div className="feedback-container">
+            <Textarea
+              onChange={(value) => this.props.onChange(
+                actions.updateAssociation(this.props.association.setId, this.props.association.itemId, 'feedback', value)
+              )}
+              id={`${this.props.association.itemId}-${this.props.association.setId}-feedback`}
+              content={this.props.association.feedback}
+            />
+          </div>
+        }
       </div>
     )
   }
@@ -91,7 +92,6 @@ Association.propTypes = {
   onChange: T.func.isRequired,
   association: T.object.isRequired
 }
-
 
 class Set extends Component {
 
@@ -158,7 +158,7 @@ class SetList extends Component {
    * @var {target} target item (set)
    */
   onItemDrop(source, target){
-    // @TODO add solution (check the item is not already inside before adding it)
+    // add solution (check the item is not already inside before adding it)
     if(undefined === this.props.solutions.associations.find(el => el.setId === target.object.id && el.itemId === source.item.id)){
       this.props.onChange(actions.addAssociation(target.object.id, source.item.id, source.item.data))
     }
@@ -225,7 +225,9 @@ let Item = props => {
           className="fa fa-trash-o"
           title={t('delete')}
           enabled={props.item._deletable}
-          onClick={() => actions.removeItem(props.item.id, false)}
+          onClick={() => props.onChange(
+             actions.removeItem(props.item.id, false)
+          )}
         />
         {props.connectDragSource(
           <div>
@@ -374,7 +376,7 @@ class OddList extends Component {
 
   render(){
     return (
-      <div className="odd">
+      <div className="odd-list">
         <ul>
           { this.props.odd.filter(item => undefined !== this.props.solutions.odd.find(el => el.itemId === item.id)).map((oddItem) =>
             <li key={oddItem.id}>
@@ -411,36 +413,21 @@ class SetForm extends Component {
 
   render() {
     return (
-      <div className="set-question-container">
+      <div className="set-question-editor">
         {get(this.props.item, '_errors.item') &&
-          <div className="error-text">
-            <span className="fa fa-warning"></span>
-            {this.props.item._errors.item}
-          </div>
+          <ErrorBlock text={this.props.item._errors.item} warnOnly={!this.props.validating}/>
         }
         {get(this.props.item, '_errors.items') &&
-          <div className="error-text">
-            <span className="fa fa-warning"></span>
-            {this.props.item._errors.items}
-          </div>
+          <ErrorBlock text={this.props.item._errors.items} warnOnly={!this.props.validating}/>
         }
         {get(this.props.item, '_errors.sets') &&
-          <div className="error-text">
-            <span className="fa fa-warning"></span>
-            {this.props.item._errors.sets}
-          </div>
+          <ErrorBlock text={this.props.item._errors.sets} warnOnly={!this.props.validating}/>
         }
         {get(this.props.item, '_errors.solutions') &&
-          <div className="error-text">
-            <span className="fa fa-warning"></span>
-            {this.props.item._errors.solutions}
-          </div>
+          <ErrorBlock text={this.props.item._errors.solutions} warnOnly={!this.props.validating}/>
         }
         {get(this.props.item, '_errors.odd') &&
-          <div className="error-text">
-            <span className="fa fa-warning"></span>
-            {this.props.item._errors.odd}
-          </div>
+          <ErrorBlock text={this.props.item._errors.odd} warnOnly={!this.props.validating}/>
         }
         <div className="form-group">
           <label htmlFor="set-penalty">{tex('set_penalty_label')}</label>
@@ -496,6 +483,7 @@ SetForm.propTypes = {
     }).isRequired,
     _errors: T.object
   }).isRequired,
+  validating: T.bool.isRequired,
   onChange: T.func.isRequired
 }
 

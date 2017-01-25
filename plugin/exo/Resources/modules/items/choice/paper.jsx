@@ -9,10 +9,9 @@ import {PaperTabs} from '../components/paper-tabs.jsx'
 export const ChoicePaper = props => {
   return (
     <PaperTabs
-      item={props.item}
-      answer={props.answer}
+      id={props.item.id}
       yours={
-        <div className="container choice-paper">
+        <div className="choice-paper">
           {props.item.solutions.map(solution =>
             <div
               key={utils.answerId(solution.id)}
@@ -46,7 +45,7 @@ export const ChoicePaper = props => {
         </div>
       }
       expected={
-        <div className="container choice-paper">
+        <div className="choice-paper">
           {props.item.solutions.map(solution =>
             <div
               key={utils.expectedId(solution.id)}
