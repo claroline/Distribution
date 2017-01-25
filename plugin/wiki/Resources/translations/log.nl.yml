@@ -53,4 +53,4 @@ log.wiki.delete_section: 'heeft de sectie %section% van de wiki %wiki% verwijder
 log.wiki.remove_section: 'heeft de sectie %section% van de wiki %wiki% definitief verwijderd.'
 log.wiki.restore_section: 'heeft de sectie %section% van de wiki %wiki% hersteld.'
 log.wiki.create_contribution: 'heeft bijgedraagd tot de sectie %contribution% in de wiki %wiki%.'
-log.wiki.configure: 'heeft "%wiki%" ingesteld.'
+log.wiki.configure: 'heeft %wiki% ingesteld.'

@@ -43,14 +43,14 @@ moderate: Moderate
 read_only: Read only
 moved_up_section: section %section% has been moved up
 moved_down_section: section %section% has been moved down
-moved_from_section_to_section: %section% has been moved from "%oldParent%" section to "%newParent%" section
-moved_from_section_to_wiki: %section% has been moved from "%oldParent%" section to wiki"s root
+moved_from_section_to_section: '%section% has been moved from %oldParent% section to %newParent% section'
+moved_from_section_to_wiki: '%section% has been moved from %oldParent% section to wiki''s root'
 moved_from_wiki_to_section: '%section% has been moved from wiki''s root to "%newParent%" section'
 log.wiki.move_section: has moved section %section% of wiki %wiki%
 log.wiki.update_section: has updated section %section% in wiki %wiki%
 log.wiki.create_section: has created section %section% in wiki %wiki%
 log.wiki.delete_section: has deleted section %section% from wiki %wiki%
 log.wiki.remove_section: has permanently removed section %section% from wiki %wiki%
-log.wiki.restore_section: has restored section %section% to wiki %wiki%
-log.wiki.create_contribution: has contributed to %contribution% section in wiki %wiki%
-log.wiki.configure: has changed wiki %wiki% options
+log.wiki.restore_section: 'has restored section %section% to wiki %wiki%'
+log.wiki.create_contribution: 'has contributed to %contribution% section in wiki %wiki%'
+log.wiki.configure: 'has changed wiki %wiki% options'
