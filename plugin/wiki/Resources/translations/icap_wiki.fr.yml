@@ -14,7 +14,7 @@ create_new_section: Créer une section
 create_section: Création de section
 create: Créer
 date_format: d/m/Y à H:i
-delete_confirmation: Êtes-vous sûr de vouloir supprimer la section "%sectionTitle%" ?
+delete_confirmation: 'Êtes-vous sûr de vouloir supprimer la section "%sectionTitle%" ?'
 delete_section: Supprimer la section
 delete: Supprimer
 deleted_sections: Sections supprimées
@@ -22,8 +22,8 @@ deleted: Supprimé
 edit_section: Modifier la section
 edit_description: Modifier la description
 edit: Modifier
-error_401: Vous n'avez pas les droits nécessaires pour mener à bien l'opération demandée.
-error_404: La section demandée n'existe pas.
+error_401: 'Vous n''avez pas les droits nécessaires pour mener à bien l''opération demandée.'
+error_404: 'La section demandée n''existe pas.'
 error_500: Le serveur a rencontré une erreur. Veuillez réessayer dans un moment.
 history: Historique
 icap_wiki_delete_section_type_children: Supprimer également les sous-sections
@@ -49,11 +49,11 @@ icap_wiki_section_type_activeContribution_text: Texte
 icap_wiki_section_type_activeContribution_title: Titre
 icap_wiki_section_update_error: Erreur durant la modification de la section
 icap_wiki_section_update_success: La section a été modifiée avec succès
-icap_wiki_set_active_contribution_error: La version n'a pas pu être publiée en tant que contribution active
+icap_wiki_set_active_contribution_error: 'La version n''a pas pu être publiée en tant que contribution active.'
 icap_wiki_type_name: Nom
 items_per_page: Affichage par :
-moderate_message: Les nouvelles contributions ne sont pas publiées automatiquement et attendent validation d'un administrateur du wiki.
-moderate_mode_warning: <div><strong>Ce Wiki est en mode modéré</strong></div> <div>Toutes les modifications seront disponibles après leur autorisation par un administrateur. L'historique complet d'une section est disponible dans la page 'historique'.</div>
+moderate_message: 'Les nouvelles contributions ne sont pas publiées automatiquement et attendent validation d''n administrateur du wiki.'
+moderate_mode_warning: '<div><strong>Ce Wiki est en mode modéré</strong>.</div><div>Toutes les modifications seront disponibles après leur autorisation par un administrateur. L''historique complet d''une section est disponible dans la page "Historique"'.</div>
 moderate: Modéré
 move_section: Déplacer la section
 new_section: Nouvelle section
@@ -62,9 +62,9 @@ normal_message: Tous les utilisateurs peuvent contribuer au wiki. Toutes les con
 normal: Normal
 note_well: <strong>NB</strong>: Notez que dans un fonctionnement normal et modéré, toutes personnes authentifiées sur la plateforme ont la possibilité de participer au wiki.
 options: Options
-read_only_message: Le wiki est verrouillé: les utilisateurs ne peuvent plus créer de contributions (à part l'administrateur). Cela vous permet de figer votre wiki afin de le transformer en Foire Aux Questions -FAQ-.
+read_only_message: 'Le wiki est verrouillé: les utilisateurs ne peuvent plus créer de contributions (à part l''administrateur). Cela vous permet de figer votre wiki afin de le transformer en Foire Aux Questions -FAQ-.'
 read_only: Consultation
-remove_confirmation: Êtes-vous sûr de vouloir supprimer définitivement la section "%sectionTitle%" ?
+remove_confirmation: 'Êtes-vous sûr de vouloir supprimer définitivement la section "%sectionTitle%"?'
 remove_section: Supprimer définitivement
 restore_section: Restaurer la section
 revision_comparison: Comparaison des versions
