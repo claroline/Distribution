@@ -93,6 +93,11 @@ class Updater090000
             ]);
         }
 
+        $this->log('Enable feedback for formative Exercises...');
+        $this->connection
+            ->prepare('UPDATE ujm_exercise SET show_feedback = true WHERE `type` = "formative"')
+            ->execute();
+
         $this->log('done !');
     }
 
@@ -110,11 +115,28 @@ class Updater090000
     {
         $this->log('Update answers data...');
 
+        // Answer parts
+        $choiceSth = $this->connection->prepare('SELECT id, uuid FROM ujm_choice');
+        $choiceSth->execute();
+        $choices = $choiceSth->fetchAll();
+
+        $labelSth = $this->connection->prepare('SELECT id, uuid FROM ujm_label');
+        $labelSth->execute();
+        $labels = $labelSth->fetchAll();
+
+        $proposalSth = $this->connection->prepare('SELECT id, uuid FROM ujm_proposal');
+        $proposalSth->execute();
+        $proposals = $proposalSth->fetchAll();
+
+        $holeSth = $this->connection->prepare('SELECT id, uuid FROM ujm_hole');
+        $holeSth->execute();
+        $holes = $holeSth->fetchAll();
+
         // Load answers
         $sth = $this->connection->prepare('
             SELECT q.mime_type, a.id AS answerId, a.response AS data
             FROM ujm_response AS a
-            LEFT JOIN ujm_question AS q ON (a.question_id = q.id)
+            LEFT JOIN ujm_question AS q ON (a.question_id = q.uuid)
             WHERE a.response IS NOT NULL 
               AND a.response != ""
               AND q.mime_type != "application/x.open+json"
@@ -131,17 +153,19 @@ class Updater090000
                 case 'application/x.choice+json':
                     $answerData = explode(';', $answer['data']);
 
-                    // Filter empty elements
-                    $newData = array_filter($answerData, function ($part) {
+                    // Filter empty elements and convert ids into uuids
+                    $newData = array_map(function ($choice) use ($choices) {
+                        return $this->getAnswerPartUuid($choice, $choices);
+                    }, array_filter($answerData, function ($part) {
                         return !empty($part);
-                    });
+                    }));
 
                     break;
 
                 case 'application/x.match+json':
                 case 'application/x.set+json':
                     if ('application/x.set+json' === $answer['mime_type']) {
-                        $propNames = ['setId', 'itemId'];
+                        $propNames = ['itemId', 'setId'];
                     } else {
                         $propNames = ['firstId', 'secondId'];
                     }
@@ -154,16 +178,39 @@ class Updater090000
                         return !empty($part);
                     });
 
-                    $newData = array_map(function ($association) use ($propNames) {
+                    $newData = array_map(function ($association) use ($propNames, $labels, $proposals) {
                         $associationData = explode(',', $association);
 
                         $data = new \stdClass();
-                        $data->{$propNames[0]} = $associationData[0];
-                        $data->{$propNames[1]} = $associationData[1];
+
+                        // Convert ids into uuids
+                        $data->{$propNames[0]} = $this->getAnswerPartUuid($associationData[0], $proposals);
+                        $data->{$propNames[1]} = $this->getAnswerPartUuid($associationData[1], $labels);
 
                         return $data;
                     }, $answerData);
 
+                    break;
+
+                case 'application/x.cloze+json':
+                    // Replace hole ids by uuids
+                    $answerData = json_decode($answer['data'], true);
+
+                    $newData = [];
+                    foreach ($answerData as $holeId => $answerText) {
+                        if (!empty($answerText)) {
+                            $hole = new \stdClass();
+                            $hole->holeId = $this->getAnswerPartUuid($holeId, $holes);
+                            $hole->answerText = $answerText;
+
+                            $newData[] = $hole;
+                        }
+                    }
+
+                    break;
+
+                case 'application/x.graphic':
+                    // TODO : replace areas ids by uuids
                     break;
 
                 default:
@@ -173,7 +220,7 @@ class Updater090000
             // Update answer data
             if (!empty($newData)) {
                 $sth = $this->connection->prepare('
-                    UPDATE ujm_response SET response = :data WHERE id = :id 
+                    UPDATE ujm_response SET `response` = :data WHERE id = :id 
                 ');
                 $sth->execute([
                     'id' => $answer['answerId'],
@@ -181,6 +228,21 @@ class Updater090000
                 ]);
             }
         }
+
+        $this->log('done !');
+    }
+
+    private function getAnswerPartUuid($id, $parts)
+    {
+        $uuid = null;
+        foreach ($parts as $part) {
+            if ($part['id'] === $id) {
+                $uuid = $part['uuid'];
+                break;
+            }
+        }
+
+        return $uuid;
     }
 
     /**

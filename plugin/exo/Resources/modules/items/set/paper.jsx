@@ -9,8 +9,7 @@ import {WarningIcon} from './utils/warning-icon.jsx'
 export const SetPaper = props => {
   return (
     <PaperTabs
-      item={props.item}
-      answer={props.answer}
+      id={props.item.id}
       yours={
         <div className="set-paper">
           <div className="items-col">

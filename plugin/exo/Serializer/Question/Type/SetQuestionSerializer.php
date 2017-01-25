@@ -141,7 +141,7 @@ class SetQuestionSerializer implements SerializerInterface
      * Deserializes Question labels.
      *
      * @param MatchQuestion $setQuestion
-     * @param array         $sets       ie labels
+     * @param array         $sets        ie labels
      * @param array         $options
      */
     private function deserializeLabels(MatchQuestion $setQuestion, array $sets, array $options = [])
@@ -186,7 +186,7 @@ class SetQuestionSerializer implements SerializerInterface
      * Deserializes Question proposals.
      *
      * @param MatchQuestion $setQuestion
-     * @param array         $items        ie proposals
+     * @param array         $items       ie proposals
      * @param array         $options
      */
     private function deserializeProposals(MatchQuestion $setQuestion, array $items, array $options = [])
