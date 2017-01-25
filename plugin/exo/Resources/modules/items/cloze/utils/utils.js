@@ -12,18 +12,34 @@ utils.setEditorHtml = (text, solutions) => {
 }
 
 utils.makeTinyHtml = (solution) => {
+  let input = ''
+  if (solution.answers.length === 1) {
   //if one solutions
-  let input = `
-    <span class="cloze-input" data-hole-id="${solution.holeId}">
-      <input
-        class="hole-input"
-        data-hole-id="${solution.holeId}"
-        type="text"
-      >
-      </input>
-      ${getEditButtons(solution)}
-    </span>
-  `
+    input = `
+      <span class="cloze-input" data-hole-id="${solution.holeId}">
+        <input
+          class="hole-input form-control inline-select"
+          data-hole-id="${solution.holeId}"
+          type="text"
+        >
+        </input>
+        ${getEditButtons(solution)}
+      </span>
+    `
+  } else {
+    input = `
+      <span class="cloze-input" data-hole-id="${solution.holeId}">
+        <select
+          class="hole-input form-control inline-select"
+          data-hole-id="${solution.holeId}"
+          type="text"
+        >
+          <option> Please choose </option>
+        </select>
+        ${getEditButtons(solution)}
+      </span>
+    `
+  }
   return input
 }
 
