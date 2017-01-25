@@ -15,8 +15,8 @@ const UPDATE_SOLUTION = 'UPDATE_SOLUTION'
 
 export const actions = {
   updateProperty: makeActionCreator(UPDATE_PROP, 'property', 'value'),
-  addItem:  makeActionCreator(ADD_ITEM, 'isRightItem', 'isOdd'),
-  removeItem:  makeActionCreator(REMOVE_ITEM, 'id', 'isRightItem', 'isOdd'),
+  addItem:  makeActionCreator(ADD_ITEM, 'isOdd'),
+  removeItem:  makeActionCreator(REMOVE_ITEM, 'id', 'isOdd'),
   updateItem:  makeActionCreator(UPDATE_ITEM, 'id', 'property', 'value', 'isOdd'),
   addSolution: makeActionCreator(ADD_SOLUTION, 'leftId', 'rightId', 'data'),
   removeSolution: makeActionCreator(REMOVE_SOLUTION, 'leftId', 'rightId'),
@@ -65,17 +65,41 @@ function reduce(pair = {}, action) {
             data: ''
           }
         ],
-        solutions: []
+        solutions: [
+          {
+            itemIds: [],
+            score: 1,
+            feedback: ''
+          }
+        ]
       }))
     }
 
     case UPDATE_PROP: {
       const newItem = cloneDeep(pair)
+      const value = action.property === 'penalty' ? parseFloat(action.value) : Boolean(action.value)
+      newItem[action.property] = value
       return newItem
     }
 
     case ADD_ITEM: {
       const newItem = cloneDeep(pair)
+      const id = makeId()
+      newItem.items.push({
+        id: id,
+        type: 'text/html',
+        data: ''
+      })
+
+      if(action.isOdd) {
+        const oddSolutionToAdd = {
+          itemIds: [id],
+          score: 0,
+          feedback: ''
+        }
+        newItem.solutions.push(oddSolutionToAdd)
+      }
+
       return newItem
     }
 

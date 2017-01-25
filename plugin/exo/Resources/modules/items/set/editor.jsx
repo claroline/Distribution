@@ -448,7 +448,7 @@ class SetForm extends Component {
               type="checkbox"
               checked={this.props.item.random}
               onChange={e => this.props.onChange(
-                actions.updateProperty('random', e.target.value)
+                actions.updateProperty('random', e.target.checked)
               )}
             />
           {tex('set_shuffle_labels_and_proposals')}
