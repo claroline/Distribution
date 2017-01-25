@@ -8,13 +8,15 @@ import {Metadata as ItemMetadata} from './../../../items/components/metadata.jsx
 
 let Paper = props =>
   <div className="paper">
-    <h2>
+    <h2 className="paper-title">
       {tex('correction')}&nbsp;{props.paper.number}
     </h2>
-    <hr/>
+
     {props.steps.map((step, idx) =>
       <div key={idx} className="item-paper">
-        <h3 className="step-title">{tex('step')}&nbsp;{idx + 1}</h3>
+        <h3 className="step-title">
+          {step.title ? step.title : tex('step') + ' ' + (idx + 1)}
+        </h3>
 
         {step.items.map(item =>
           <Panel key={item.id}>
