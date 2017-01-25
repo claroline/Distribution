@@ -30,10 +30,12 @@ export const ChoiceFeedback = props => {
           htmlFor={utils.answerId(solution.id)}
           dangerouslySetInnerHTML={{__html: utils.getChoiceById(props.item.choices, solution.id).data}}
         />
-      <Feedback
-        id={`${solution.id}-feedback`}
-        feedback={solution.feedback}
-      />
+        {utils.isSolutionChecked(solution, props.answer) &&
+          <Feedback
+            id={`${solution.id}-feedback`}
+            feedback={solution.feedback}
+          />
+        }
       </div>
     )}
   </div>
