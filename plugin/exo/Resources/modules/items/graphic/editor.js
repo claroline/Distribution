@@ -17,7 +17,8 @@ import {
   SELECT_AREA,
   MOVE_AREA,
   DELETE_AREA,
-  TOGGLE_POPOVER
+  TOGGLE_POPOVER,
+  SET_AREA_COLOR
 } from './actions'
 import {Graphic as component} from './editor.jsx'
 
@@ -192,6 +193,19 @@ function reduce(item = {}, action = {}) {
           left: action.left,
           top: action.top
         }
+      })
+    case SET_AREA_COLOR:
+      return Object.assign({}, item, {
+        solutions: item.solutions.map(solution => {
+          if (solution._selected) {
+            return Object.assign({}, solution, {
+              area: Object.assign({}, solution.area, {
+                color: action.color
+              })
+            })
+          }
+          return solution
+        })
       })
   }
   return item

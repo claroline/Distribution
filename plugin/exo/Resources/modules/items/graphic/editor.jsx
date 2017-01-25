@@ -9,6 +9,7 @@ import {MODE_SELECT, MAX_IMG_SIZE, SHAPE_RECT} from './enums'
 import {actions} from './actions'
 import {FileDropZone} from './../../components/form/file-drop-zone.jsx'
 import {ErrorBlock} from './../../components/form/error-block.jsx'
+import {ColorPicker} from './../../components/form/color-picker.jsx'
 import {ImageInput} from './components/image-input.jsx'
 import {ModeSelector} from './components/mode-selector.jsx'
 import {AnswerArea} from './components/answer-area.jsx'
@@ -153,7 +154,12 @@ export class Graphic extends Component {
             positionLeft={this.props.item._popover.left}
             positionTop={this.props.item._popover.top}
           >
-            Color&nbsp;/&nbsp;Score&nbsp;/&nbsp;Feedack
+            Color
+            <ColorPicker
+              color={'#00f'}
+              onPick={color => this.props.onChange(actions.setAreaColor(color))}
+            />
+            Score&nbsp;/&nbsp;Feedback
           </Popover>
         }
 
