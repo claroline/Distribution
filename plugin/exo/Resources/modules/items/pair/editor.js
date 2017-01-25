@@ -26,25 +26,21 @@ export const actions = {
 
 function decorate(pair) {
 
-  // consider items that are not in solutions.odd
-  const itemDeletable = question.items.filter(item => undefined === question.solutions.odd.find(el => el.itemId === item.id)).length > 1
-  const itemsWithDeletable = question.items.filter(item => undefined === question.solutions.odd.find(el => el.itemId === item.id)).map(
+  // at least 2 "real" items (ie not odds)
+  const itemDeletable = pair.items.filter(
+    item => undefined === pair.solutions.find(
+      solution => solution.itemIds.length === 1 && solution.itemIds[0] === item.id
+    )
+  ).length > 1
+
+  const itemsWithDeletable = pair.items.map(
     item => Object.assign({}, item, {
       _deletable: itemDeletable
     })
   )
 
-  const setsWithDeletable = question.sets.map(
-    item => Object.assign({}, item, {
-      _deletable: question.sets.length > 1
-    })
-  )
-  let decorated = Object.assign({}, question, {
-    items: itemsWithDeletable,
-    sets: setsWithDeletable,
-    solutions: Object.assign({}, question.solutions, {
-      associations: associationsWithItemData
-    })
+  let decorated = Object.assign({}, pair, {
+    items: itemsWithDeletable
   })
 
   return decorated
@@ -57,14 +53,12 @@ function reduce(pair = {}, action) {
       return decorate(Object.assign({}, pair, {
         random: false,
         penalty: 0,
-        left: [
+        items: [
           {
             id: makeId(),
             type: 'text/html',
             data: ''
-          }
-        ],
-        right: [
+          },
           {
             id: makeId(),
             type: 'text/html',
