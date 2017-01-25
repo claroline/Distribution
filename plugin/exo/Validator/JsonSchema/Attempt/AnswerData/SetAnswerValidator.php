@@ -56,7 +56,7 @@ class SetAnswerValidator extends JsonSchemaValidator
             if (!in_array($answer->setId, $labelIds)) {
                 $errors[] = [
                     'path' => '/setId',
-                    'message' => 'Answer `setId` must reference an item from `set`',
+                    'message' => 'Answer `setId` must reference an item from `sets`',
                 ];
             }
         }

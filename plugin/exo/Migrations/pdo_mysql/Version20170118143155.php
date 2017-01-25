@@ -75,7 +75,7 @@ class Version20170118143155 extends AbstractMigration
                   NULL
               FROM ujm_proposal AS p
               JOIN ujm_interaction_matching AS m ON (p.interaction_matching_id = m.id)
-              JOIN ujm_question AS q ON (m.question_id = )
+              JOIN ujm_question AS q ON (m.question_id = q.id)
               LEFT JOIN ujm_proposal_label AS pa ON (p.id = pa.proposal_id)
               WHERE pa.proposal_id IS NULL
                 AND q.mime_type = "application/x.set+json"
