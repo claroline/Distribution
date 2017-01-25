@@ -1,9 +1,13 @@
 import {DragSource, DropTarget} from 'react-dnd'
 
 // see https://gaearon.github.io/react-dnd/examples-sortable-simple.html
-export function makeDraggable(component, type) {
+export function makeDraggable(component, type, itemFactory) {
   const source = {
     beginDrag(props) {
+      if (itemFactory) {
+        return itemFactory(props)
+      }
+
       return {
         item: props.item
       }
@@ -24,7 +28,8 @@ function collectDrag(connect, monitor) {
 export function makeDroppable(component, type) {
   const target = {
     drop(props, monitor) {
-      props.onDrop(monitor.getItem(), props)
+      const offset = monitor.getDifferenceFromInitialOffset()
+      props.onDrop(monitor.getItem(), props, offset)
     }
   }
   component = DropTarget(type, target, collectDrop)(component)

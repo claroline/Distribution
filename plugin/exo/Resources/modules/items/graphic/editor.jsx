@@ -2,36 +2,34 @@ import React, {Component, PropTypes as T} from 'react'
 import get from 'lodash/get'
 import {asset} from '#/main/core/asset'
 import {tex} from './../../utils/translate'
+import {makeDroppable} from './../../utils/dragAndDrop'
 import {MODE_SELECT, MAX_IMG_SIZE, SHAPE_RECT} from './enums'
 import {actions} from './actions'
+import {FileDropZone} from './../../components/form/file-drop-zone.jsx'
 import {ErrorBlock} from './../../components/form/error-block.jsx'
 import {ImageInput} from './components/image-input.jsx'
 import {ModeSelector} from './components/mode-selector.jsx'
-import {CircleArea, RectArea} from './components/answer-areas.jsx'
+import {AnswerArea} from './components/answer-area.jsx'
+
+let AnswerDropZone = props => props.connectDropTarget(props.children)
+
+AnswerDropZone.propTypes = {
+  connectDropTarget: T.func.isRequired,
+  children: T.element.isRequired
+}
+
+AnswerDropZone = makeDroppable(AnswerDropZone, 'AnswerArea')
 
 export class Graphic extends Component {
   constructor(props) {
     super(props)
-    this.draggingArea = false
-    this.draggedArea = null
-    this.onDragOver = this.onDragOver.bind(this)
-    this.onDrop = this.onDrop.bind(this)
+    this.onDropImage = this.onDropImage.bind(this)
     this.onSelectImage = this.onSelectImage.bind(this)
     this.onClickImage = this.onClickImage.bind(this)
-    this.onStartDragArea = this.onStartDragArea.bind(this)
-    this.onEndDragArea = this.onEndDragArea.bind(this)
     this.onResize = this.onResize.bind(this)
   }
 
   componentDidMount() {
-    this.renderImageContainerContent()
-    this.dropzone.addEventListener('dragenter', this.stopEvent)
-    this.dropzone.addEventListener('dragover', this.onDragOver)
-    this.dropzone.addEventListener('drop', this.onDrop)
-    window.addEventListener('resize', this.onResize)
-  }
-
-  renderImageContainerContent() {
     // because we need to access various DOM-related APIs to deal with the image
     // and because letting React compare the data/src attribute (which can be a
     // a very long string if the image is large) could be too heavy, the img tag
@@ -43,6 +41,8 @@ export class Graphic extends Component {
     } else {
       this.imgContainer.innerHTML = tex('graphic_drop_or_pick')
     }
+
+    window.addEventListener('resize', this.onResize)
   }
 
   componentDidUpdate(prevProps) {
@@ -62,57 +62,12 @@ export class Graphic extends Component {
   }
 
   componentWillUnmount() {
-    this.dropzone.removeEventListener('dragenter', this.stopEvent)
-    this.dropzone.removeEventListener('dragover', this.onDragOver)
-    this.dropzone.removeEventListener('drop', this.onDrop)
     window.removeEventListener('resize', this.onResize)
   }
 
-  stopEvent(e) {
-    e.stopPropagation()
-    e.preventDefault()
-  }
-
-  onDragOver(e) {
-    if (this.draggingArea) {
-      this.draggedArea.style.visibility = 'hidden'
-    }
-
-    this.stopEvent(e)
-  }
-
-  onStartDragArea(e, areaId) {
-    this.draggingArea = true
-    this.draggedArea = e.target
-    e.dataTransfer.setData('text/plain', `area:${areaId}`)
-  }
-
-  onEndDragArea() {
-    this.draggingArea = false
-    this.draggedArea.style.visibility = 'visible'
-    this.draggedArea = null
-  }
-
-  onDrop(e) {
-    this.stopEvent(e)
-
-    // image drop
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      this.onSelectImage(e.dataTransfer.files[0])
-    }
-
-    const text = e.dataTransfer.getData('text')
-
-    // answer area drop
-    if (text && text.indexOf('area:') === 0) {
-      const areaId = text.slice(5)
-      const img = this.imgContainer.querySelector('img')
-      const imgRect = img.getBoundingClientRect()
-      this.props.onChange(actions.moveArea(
-        areaId,
-        e.clientX - imgRect.left,
-        e.clientY - imgRect.top
-      ))
+  onDropImage(files) {
+    if (files && files.length > 0) {
+      this.onSelectImage(files[0])
     }
   }
 
@@ -188,41 +143,45 @@ export class Graphic extends Component {
             onChange={mode => this.props.onChange(actions.selectMode(mode))}
           />
         </div>
-        <div className="img-dropzone" ref={el => this.dropzone = el}>
-          <div className="img-widget">
-            <div className="img-container" ref={el => this.imgContainer = el}/>
-            {this.props.item.solutions.map(solution =>
-              solution.area.shape === SHAPE_RECT ?
-                <RectArea
-                  key={solution.area.id}
-                  id={solution.area.id}
-                  color={solution.area.color}
-                  selected={solution._selected}
-                  onSelect={id => this.props.onChange(actions.selectArea(id))}
-                  onDragStart={e => this.onStartDragArea(e, solution.area.id)}
-                  onDragEnd={this.onEndDragArea}
-                  coords={solution.area.coords.map(coords => ({
-                    x: coords._clientX,
-                    y: coords._clientY
-                  }))}
-                /> :
-                <CircleArea
-                  key={solution.area.id}
-                  id={solution.area.id}
-                  color={solution.area.color}
-                  selected={solution._selected}
-                  onSelect={id => this.props.onChange(actions.selectArea(id))}
-                  onDragStart={e => this.onStartDragArea(e, solution.area.id)}
-                  onDragEnd={this.onEndDragArea}
-                  radius={solution.area._clientRadius}
-                  center={{
-                    x: solution.area.center._clientX,
-                    y: solution.area.center._clientY
-                  }}
-                />
-            )}
+        <FileDropZone onDrop={this.onDropImage}>
+          <div className="img-dropzone">
+            <div className="img-widget">
+              <AnswerDropZone onDrop={(area, props, offset) =>
+                this.props.onChange(actions.moveArea(area.id, offset.x, offset.y))
+              }>
+                <div>
+                  <div className="img-container" ref={el => this.imgContainer = el}/>
+                  {this.props.item.solutions.map(solution =>
+                    <AnswerArea
+                      key={solution.area.id}
+                      id={solution.area.id}
+                      color={solution.area.color}
+                      shape={solution.area.shape}
+                      selected={solution._selected}
+                      onSelect={id => this.props.onChange(actions.selectArea(id))}
+                      geometry={
+                        solution.area.shape === SHAPE_RECT ?
+                          {
+                            coords: solution.area.coords.map(coords => ({
+                              x: coords._clientX,
+                              y: coords._clientY
+                            }))
+                          } :
+                          {
+                            radius: solution.area._clientRadius,
+                            center: {
+                              x: solution.area.center._clientX,
+                              y: solution.area.center._clientY
+                            }
+                          }
+                      }
+                    />
+                  )}
+                </div>
+              </AnswerDropZone>
+            </div>
           </div>
-        </div>
+        </FileDropZone>
       </div>
     )
   }
