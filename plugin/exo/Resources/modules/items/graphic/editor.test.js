@@ -1,5 +1,5 @@
 import React from 'react'
-import {mount} from 'enzyme'
+import {shallow} from 'enzyme'
 import freeze from 'deep-freeze'
 import merge from 'lodash/merge'
 import {spyConsole, renew, ensure} from './../../utils/test'
@@ -255,10 +255,10 @@ describe('Graphic reducer', () => {
             id: 'ID1',
             shape: SHAPE_CIRCLE,
             center: {
-              x: 40,
-              y: 60,
-              _clientX: 20,
-              _clientY: 30
+              x: 140,
+              y: 160,
+              _clientX: 70,
+              _clientY: 80
             },
             radius: 20,
             _clientRadius: 10
@@ -313,7 +313,7 @@ describe('Graphic reducer', () => {
         }
       ]
     })
-    const reduced = editor.reduce(item, subActions.moveArea('ID1', 40, 30))
+    const reduced = editor.reduce(item, subActions.moveArea('ID1', -15, 5))
     ensure.equal(reduced, itemFixture({
       image: {
         width: 200,
@@ -328,15 +328,15 @@ describe('Graphic reducer', () => {
             shape: SHAPE_RECT,
             coords: [
               {
-                x: 80,
+                x: 20,
                 y: 60,
-                _clientX: 40,
+                _clientX: 10,
                 _clientY: 30
               },
               {
-                x: 180,
+                x: 120,
                 y: 160,
-                _clientX: 90,
+                _clientX: 60,
                 _clientY: 80
               }
             ]
@@ -362,7 +362,7 @@ describe('<Graphic/>', () => {
   afterEach(spyConsole.restore)
 
   it('renders an empty image zone by default', () => {
-    const graphic = mount(
+    const graphic = shallow(
       <Graphic
         item={{
           image: {data: ''},
