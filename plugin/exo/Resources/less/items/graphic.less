@@ -50,6 +50,9 @@
     }
 
     [role="button"] {
+      color: #555;
+      background-color: #fff;
+      padding: 1px;
       visibility: hidden;
     }
   }
@@ -81,7 +84,10 @@
 
     [role="button"] {
       visibility: visible;
-      color: blue;
     }
+  }
+
+  .area-handle.selected.undraggable {
+    cursor: not-allowed;
   }
 }

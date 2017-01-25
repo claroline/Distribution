@@ -1,4 +1,6 @@
 import React, {Component, PropTypes as T} from 'react'
+import Popover from 'react-bootstrap/lib/Popover'
+import Overlay from 'react-bootstrap/lib/Overlay'
 import get from 'lodash/get'
 import {asset} from '#/main/core/asset'
 import {tex} from './../../utils/translate'
@@ -143,6 +145,18 @@ export class Graphic extends Component {
             onChange={mode => this.props.onChange(actions.selectMode(mode))}
           />
         </div>
+
+        {this.props.item._popover.open &&
+          <Popover
+            id="area-popover"
+            placement="top"
+            positionLeft={this.props.item._popover.left}
+            positionTop={this.props.item._popover.top}
+          >
+            Color&nbsp;/&nbsp;Score&nbsp;/&nbsp;Feedack
+          </Popover>
+        }
+
         <FileDropZone onDrop={this.onDropImage}>
           <div className="img-dropzone">
             <div className="img-widget">
@@ -157,9 +171,18 @@ export class Graphic extends Component {
                       id={solution.area.id}
                       color={solution.area.color}
                       shape={solution.area.shape}
-                      selected={solution._selected}
+                      selected={this.props.item._mode === MODE_SELECT && solution._selected}
                       onSelect={id => this.props.onChange(actions.selectArea(id))}
                       onDelete={id => this.props.onChange(actions.deleteArea(id))}
+                      canDrag={!this.props.item._popover.open
+                        || this.props.item._popover.areaId !== solution.area.id}
+                      togglePopover={(areaId, left, top) => {
+                        const hasPopover = this.props.item._popover.open
+                          && this.props.item._popover.areaId === solution.area.id
+                        this.props.onChange(
+                          actions.togglePopover(areaId, left, top, !hasPopover)
+                        )
+                      }}
                       geometry={
                         solution.area.shape === SHAPE_RECT ?
                           {
@@ -206,7 +229,12 @@ Graphic.propTypes = {
       }).isRequired,
     })).isRequired,
     _mode: T.string.isRequired,
-    _errors: T.object
+    _errors: T.object,
+    _popover: T.shape({
+      open: T.bool.isRequired,
+      top: T.number.isRequired,
+      left: T.number.isRequired
+    }).isRequired,
   }).isRequired,
   validating: T.bool.isRequired,
   onChange: T.func.isRequired

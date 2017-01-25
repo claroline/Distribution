@@ -16,7 +16,8 @@ import {
   CREATE_AREA,
   SELECT_AREA,
   MOVE_AREA,
-  DELETE_AREA
+  DELETE_AREA,
+  TOGGLE_POPOVER
 } from './actions'
 import {Graphic as component} from './editor.jsx'
 
@@ -30,7 +31,8 @@ function reduce(item = {}, action = {}) {
       }))
     case SELECT_MODE:
       return Object.assign({}, item, {
-        _mode: action.mode
+        _mode: action.mode,
+        _popover: Object.assign({}, item._popover, {open: false})
       })
     case SELECT_IMAGE:
       return Object.assign({}, item, {
@@ -39,7 +41,8 @@ function reduce(item = {}, action = {}) {
           {id: item.image.id},
           action.image
         ),
-        solutions: []
+        solutions: [],
+        _popover: Object.assign({}, item._popover, {open: false})
       })
     case RESIZE_IMAGE: {
       const sizeRatio = item.image.width / action.width
@@ -71,7 +74,8 @@ function reduce(item = {}, action = {}) {
               })
             })
           }
-        })
+        }),
+        _popover: Object.assign({}, item._popover, {open: false})
       })
     }
     case CREATE_AREA: {
@@ -126,7 +130,8 @@ function reduce(item = {}, action = {}) {
             area
           }
         ],
-        _mode: MODE_SELECT
+        _mode: MODE_SELECT,
+        _popover: Object.assign({}, item._popover, {open: false})
       })
     }
     case SELECT_AREA:
@@ -134,7 +139,10 @@ function reduce(item = {}, action = {}) {
         solutions: item.solutions.map(solution => Object.assign({}, solution, {
           _selected: solution.area.id === action.id
         })),
-        _mode: MODE_SELECT
+        _mode: MODE_SELECT,
+        _popover: Object.assign({}, item._popover, {
+          open: item._popover.open && item._popover.areaId === action.id
+        })
       })
     case MOVE_AREA:
       return Object.assign({}, item, {
@@ -166,13 +174,24 @@ function reduce(item = {}, action = {}) {
             }
           }
           return solution
-        })
+        }),
+        _popover: Object.assign({}, item._popover, {open: false})
       })
     case DELETE_AREA:
       return Object.assign({}, item, {
         solutions: item.solutions.filter(
           solution => solution.area.id !== action.id
-        )
+        ),
+        _popover: Object.assign({}, item._popover, {open: false})
+      })
+    case TOGGLE_POPOVER:
+      return Object.assign({}, item, {
+        _popover: {
+          areaId: action.areaId,
+          open: action.open,
+          left: action.left,
+          top: action.top
+        }
       })
   }
   return item
@@ -224,7 +243,13 @@ function decorate(item) {
         })
       }
     }),
-    _mode: MODE_RECT
+    _mode: MODE_RECT,
+    _popover: {
+      areaId: '',
+      open: false,
+      top: 0,
+      left: 0
+    }
   })
 }
 

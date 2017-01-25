@@ -27,6 +27,8 @@ describe('<AnswerArea/>', () => {
         selected={true}
         isDragging={false}
         onSelect={() => {}}
+        onDelete={() => {}}
+        togglePopover={() => {}}
         connectDragSource={el => el}
       />
     )
@@ -48,6 +50,8 @@ describe('<AnswerArea/>', () => {
         selected={true}
         isDragging={false}
         onSelect={() => {}}
+        onDelete={() => {}}
+        togglePopover={() => {}}
         connectDragSource={el => el}
       />
     )

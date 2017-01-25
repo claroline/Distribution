@@ -352,6 +352,58 @@ describe('Graphic reducer', () => {
       ]
     }))
   })
+
+  it('deletes areas', () => {
+    const item = itemFixture({
+      solutions: [
+        {
+          area: {
+            id: 'ID1',
+            shape: SHAPE_RECT
+          }
+        },
+        {
+          area: {
+            id: 'ID2',
+            shape: SHAPE_CIRCLE
+          }
+        }
+      ]
+    })
+    const reduced = editor.reduce(item, subActions.deleteArea('ID2'))
+    ensure.equal(reduced, itemFixture({
+      solutions: [
+        {
+          area: {
+            id: 'ID1',
+            shape: SHAPE_RECT
+          }
+        }
+      ]
+    }))
+  })
+
+  it('toggles area popover', () => {
+    const item = itemFixture({
+      _popover: {
+        areaId: 'ID1',
+        open: false,
+        top: 40,
+        left: 50
+      }
+    })
+    const reduced = editor.reduce(item,
+      subActions.togglePopover('ID2', 70, 10, true)
+    )
+    ensure.equal(reduced, itemFixture({
+      _popover: {
+        areaId: 'ID2',
+        open: true,
+        top: 10,
+        left: 70
+      }
+    }))
+  })
 })
 
 describe('<Graphic/>', () => {
@@ -364,11 +416,7 @@ describe('<Graphic/>', () => {
   it('renders an empty image zone by default', () => {
     const graphic = shallow(
       <Graphic
-        item={{
-          image: {data: ''},
-          solutions: [],
-          _mode: MODE_CIRCLE
-        }}
+        item={itemFixture()}
         validating={false}
         onChange={() => {}}
       />
@@ -395,6 +443,12 @@ function itemFixture(props = {}) {
     },
     pointers: 0,
     solutions: [],
-    _mode: MODE_RECT
+    _mode: MODE_RECT,
+    _popover: {
+      areaId: '',
+      open: false,
+      left: 0,
+      top: 0
+    }
   }, props))
 }

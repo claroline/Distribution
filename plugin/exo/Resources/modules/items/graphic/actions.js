@@ -8,6 +8,7 @@ export const CREATE_AREA = 'CREATE_AREA'
 export const SELECT_AREA = 'SELECT_AREA'
 export const MOVE_AREA = 'MOVE_AREA'
 export const DELETE_AREA = 'DELETE_AREA'
+export const TOGGLE_POPOVER = 'TOGGLE_POPOVER'
 
 export const actions = {}
 
@@ -18,3 +19,4 @@ actions.createArea = makeActionCreator(CREATE_AREA, 'x', 'y')
 actions.selectArea = makeActionCreator(SELECT_AREA, 'id')
 actions.moveArea = makeActionCreator(MOVE_AREA, 'id', 'x', 'y')
 actions.deleteArea = makeActionCreator(DELETE_AREA, 'id')
+actions.togglePopover = makeActionCreator(TOGGLE_POPOVER, 'areaId', 'left', 'top', 'open')
