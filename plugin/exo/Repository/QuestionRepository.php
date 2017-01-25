@@ -16,6 +16,8 @@ class QuestionRepository extends EntityRepository
      * Search questions.
      *
      * @todo add date filters
+     * @todo add user filters
+     * @todo order query
      *
      * @param User      $user
      * @param \stdClass $filters
@@ -73,11 +75,6 @@ class QuestionRepository extends EntityRepository
             $qb->andWhere('q.model = true');
         }
 
-        // TODO : order query
-        if (!empty($orderBy)) {
-            /*$qb->orderBy('u.name', 'ASC');*/
-        }
-
         if (-1 !== $number) {
             // We don't want to load the full list
             $qb
@@ -92,7 +89,6 @@ class QuestionRepository extends EntityRepository
 
     public function findUsedBy(Question $question)
     {
-        /*$this->createQueryBuilder()*/
         return [];
     }
 
