@@ -462,6 +462,7 @@ start_again: Resume
 start_date: Start date
 solution_score: "{0} %score% point|{1} %score% point|[2,Inf] %score% points"
 sort: Sort documents
+submit_a_list: Submit a list
 summative : Summative
 show_additional_info: Display additional information
 step: Step

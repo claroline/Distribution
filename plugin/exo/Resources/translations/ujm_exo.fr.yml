@@ -469,6 +469,7 @@ step_need_manual_correction: Cette étape nécessite une correction manuelle
 step_picking: Tirage des étapes
 stat_users: "[0, 1] %count% utilisateur|]1,Inf[ %count% utilisateurs"
 stat_have_responded: ont répondu
+submit_a_list: Soumettre une liste
 sum_score_choice_at_least_one_correct_answer_error: Au moins une réponse doit avoir un score positif.
 sum_score_choice_no_correct_answer_error: La réponse correcte doit avoir un score positif.
 should_be_greater_or_equal_to_zero: Cette valeur devrait être supérieur ou égal à 0.

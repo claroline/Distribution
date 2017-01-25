@@ -69,7 +69,6 @@ function reduce(item = {}, action) {
         offsetY: action.offsetY,
         startOffset: action.startOffset,
         endOffset: action.endOffset,
-        holeId: action.holeId,
         hole: hole,
         solution: getSolutionFromHole(newItem, hole)
       }
@@ -117,7 +116,7 @@ function reduce(item = {}, action) {
 
       //update holeId
       const holeIdx = newItem.holes.findIndex(hole => hole.id === item._popover.hole.id)
-      const holeSolutions = newItem.solutions.filter(solution => solution.holeId === newItem.holes[holeIdx].id)
+      const holeSolutions = newItem.solutions.filter(solution => solution.holeId === item._popover.hole.id)
       const choices = newItem._popover.hole._multiple ?
         flatten(holeSolutions.map(solution => solution.answers.map(answer => answer.text))): []
 

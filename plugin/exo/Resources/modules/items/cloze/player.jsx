@@ -32,22 +32,28 @@ export class ClozePlayer extends Component {
                 <span>
                   {el.text}
                     <select
-                      defaultValue='Please Choose...'
+                      defaultValue=''
+                      className="form-control inline-select"
                       onChange={(e) => this.props.onChange(this.onAnswer(
                       el.holeId,
                       e.target.value
                     ))}>
+                      <option value=''>Select...</option>
                       {el.choices.map((choice, idx) => <option value={choice} key={idx}>{ choice }</option>)}
                     </select>
                 </span> :
                 (el.holeId) ?
-                    <span>
-                      {el.text}
-                      <input type="text" onChange={(e) => this.props.onChange(this.onAnswer(
+                  <span>
+                    {el.text}
+                    <input
+                      className="form-control inline-select"
+                      type="text"
+                      onChange={(e) => this.props.onChange(this.onAnswer(
                         el.holeId,
                         e.target.value
-                      ))}/>
-                    </span> :
+                      ))
+                    }/>
+                  </span> :
                   <span>{el.text}</span>
               }
             </span>

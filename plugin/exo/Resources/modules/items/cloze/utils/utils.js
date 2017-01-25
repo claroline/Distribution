@@ -77,15 +77,22 @@ utils.split = (text, holes, solutions) => {
   //This is a big mess of wtf computations but I swear it gives the correct result !
   let currentPosition = 0
   let prevPos = 0
+  let prevWordLength = 0
 
   split.forEach(el => {
-    //we keep track of each text element
+    //////////////////////////
     el.text = text.substr(0, el.position - currentPosition)
     //now we trim the text
-    text = text.substr(el.position + utils.getGuidLength() + 4 - currentPosition)
-    currentPosition += (el.position + utils.getGuidLength() + 4 - prevPos)
+    text = text.substr(el.position + utils.getGuidLength() + 4  - currentPosition)
+    currentPosition += (el.position + utils.getGuidLength() + 4  - prevPos - prevWordLength)
     prevPos = el.position
+    prevWordLength = utils.getGuidLength() + 4
   })
+
+  /*
+  //we keep track of each text element
+
+  */
 
   //I want to rember the last element of the text so I add it aswell to the array
   split.push({
@@ -117,4 +124,25 @@ utils.getTextElements = (text, holes) => {
   })
 
   return data
+}
+
+utils.getSolutionForAnswer = (solution, answer) => {
+  let answerText = ''
+
+  if (typeof answer === 'string') {
+    answerText = answer
+  } else {
+    //yeah ...
+    answerText = answer.text ? answer.text: answer.textAnswer
+  }
+
+  if (!answerText) return null
+
+  let foundSolution = solution.answers.find(solAnswer => solAnswer.text.toLowerCase() === answerText.toLowerCase())
+
+  if (!foundSolution) return null
+
+  foundSolution = foundSolution.caseSensitive ? foundSolution.text === answer.text ? foundSolution: null: foundSolution
+
+  return foundSolution
 }

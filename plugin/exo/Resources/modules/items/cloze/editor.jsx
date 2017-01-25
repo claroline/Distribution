@@ -16,44 +16,17 @@ class ChoiceItem extends Component {
     return (
       <div>
         <div className="row">
-          <ContentEditable
-            id={`item-${this.props.id}-answer`}
-            className="form-control input-sm col-xs-3"
-            type="text"
-            content={this.props.answer.text}
-            onChange={text => this.props.onChange(
-              actions.updateAnswer(
-                this.props.hole.id,
-                'text',
-                this.props.answer.text,
-                this.props.answer.caseSensitive,
-                text
-              )
-            )}
-          />
-          <input
-             type="checkbox"
-             checked={this.props.answer.caseSensitive}
-             onChange={e => this.props.onChange(
-               actions.updateAnswer(
-                 this.props.hole.id,
-                 'caseSensitive',
-                 this.props.answer.text,
-                 this.props.answer.caseSensitive,
-                 e.target.checked
-               )
-             )}
-           />
-          {this.state.showFeedback &&
-            <div className="feedback-container">
-              <Textarea
-                id={`choice-${this.props.id}-feedback`}
-                title={tex('feedback')}
-                content={this.props.answer.feedback}
+          <div className="hole-form-row">
+            <div className="col-xs-4">
+              <ContentEditable
+                id={`item-${this.props.id}-answer`}
+                className="form-control input-sm"
+                type="text"
+                content={this.props.answer.text}
                 onChange={text => this.props.onChange(
                   actions.updateAnswer(
                     this.props.hole.id,
-                    'feedback',
+                    'text',
                     this.props.answer.text,
                     this.props.answer.caseSensitive,
                     text
@@ -61,38 +34,73 @@ class ChoiceItem extends Component {
                 )}
               />
             </div>
-          }
+            <div className="col-xs-1">
+              <input
+                 type="checkbox"
+                 checked={this.props.answer.caseSensitive}
+                 onChange={e => this.props.onChange(
+                   actions.updateAnswer(
+                     this.props.hole.id,
+                     'caseSensitive',
+                     this.props.answer.text,
+                     this.props.answer.caseSensitive,
+                     e.target.checked
+                   )
+                 )}
+               />
+          </div>
+          <div className="col-xs-4">
+            <input
+              className="form-control choice-form"
+              type="number"
+              value={this.props.answer.score}
+              onChange={e => this.props.onChange(
+                actions.updateAnswer(
+                  this.props.hole.id,
+                  'score',
+                  this.props.answer.text,
+                  this.props.answer.caseSensitive,
+                  parseInt(e.target.value)
+                )
+              )}
+            />
+          </div>
+          <div className="col-xs-3">
+            <TooltipButton
+              id={`choice-${this.props.id}-feedback-toggle`}
+              className="fa fa-comments-o"
+              title={tex('choice_feedback_info')}
+              onClick={() => this.setState({showFeedback: !this.state.showFeedback})}
+            />
+            <TooltipButton
+              id={`answer-${this.props.id}-delete`}
+              className="fa fa-trash-o"
+              title={t('delete')}
+              onClick={() => this.props.onChange(
+                actions.removeAnswer(this.props.answer.text, this.props.answer.caseSensitive)
+              )}
+            />
+          </div>
         </div>
-        <div className="right-controls">
-          <input
-            className="form-control choice-form"
-            type="number"
-            value={this.props.answer.score}
-            onChange={e => this.props.onChange(
+      </div>
+      {this.state.showFeedback &&
+        <div className="feedback-container">
+          <Textarea
+            id={`choice-${this.props.id}-feedback`}
+            title={tex('feedback')}
+            content={this.props.answer.feedback}
+            onChange={text => this.props.onChange(
               actions.updateAnswer(
                 this.props.hole.id,
-                'score',
+                'feedback',
                 this.props.answer.text,
                 this.props.answer.caseSensitive,
-                parseInt(e.target.value)
+                text
               )
             )}
           />
-          <TooltipButton
-            id={`choice-${this.props.id}-feedback-toggle`}
-            className="fa fa-comments-o"
-            title={tex('choice_feedback_info')}
-            onClick={() => this.setState({showFeedback: !this.state.showFeedback})}
-          />
-          <TooltipButton
-            id={`answer-${this.props.id}-delete`}
-            className="fa fa-trash-o"
-            title={t('delete')}
-            onClick={() => this.props.onChange(
-              actions.removeAnswer(this.props.answer.text, this.props.answer.caseSensitive)
-            )}
-          />
         </div>
+        }
       </div>
     )
   }
@@ -143,47 +151,53 @@ class HoleForm extends Component {
 
   render() {
     return (
-        <Popover
-          className="hole-form"
-          id={this.props.hole.id}
-          placement="right"
-          positionLeft={this.props.offsetX}
-          positionTop={this.props.offsetY - 210}
-        >
-          <div>
-            <div className="row"><div className="pull-right close-popover" onClick={this.closePopover.bind(this)}>x</div></div>
+      <Popover
+        bsClass="hole-form-content"
+        id={this.props.hole.id}
+        placement="right"
+        positionLeft={this.props.offsetX}
+        positionTop={this.props.offsetY - 210}
+      >
+        <div className="panel-default">
+          <div className="panel-body pull-right close-popover hole-form-row" onClick={this.closePopover.bind(this)}><b>x</b></div>
+          <div className="panel-body">
             <div className="row">
-              <div className="col-xs-3">
-                {tex('size')}
-              </div>
-              <input
-                id={`item-${this.props.hole.id}-size`}
-                type="number"
-                min="0"
-                value={this.props.hole.size}
-                className="col-xs-2 form-control hole-size"
-                onChange={e => this.props.onChange(
-                  actions.updateHole(this.props.hole.id, 'size', e.target.value)
-                )}
-              />
-              <div className="col-xs-3">
+              <div className="hole-form-row">
+                <div className="col-xs-2">
+                  {tex('size')}
+                </div>
                 <input
-                  type="checkbox"
-                  checked={this.props.hole._multiple}
+                  id={`item-${this.props.hole.id}-size`}
+                  type="number"
+                  min="0"
+                  value={this.props.hole.size}
+                  className="col-xs-2 form-control hole-size"
                   onChange={e => this.props.onChange(
-                    actions.updateHole(
-                      this.props.hole.id,
-                      '_multiple',
-                      e.target.checked
-                    )
+                    actions.updateHole(this.props.hole.id, 'size', e.target.value)
                   )}
                 />
-              </div>
-              <div className="col-xs-3">
-                {tex('submit_a_list')}
+                <div className="col-xs-1">
+                  <input
+                    type="checkbox"
+                    checked={this.props.hole._multiple}
+                    onChange={e => this.props.onChange(
+                      actions.updateHole(
+                        this.props.hole.id,
+                        '_multiple',
+                        e.target.checked
+                      )
+                    )}
+                  />
+                </div>
+                <div className="col-xs-6">
+                  {tex('submit_a_list')}
+                </div>
               </div>
             </div>
-
+            <div className="hole-form-row">
+              <div className="col-xs-5"><b>{tex('word')}</b></div>
+              <div className="col-xs-7"><b>{tex('score')}</b></div>
+            </div>
             {this.props.solution.answers.map((answer, index) => {
               return (<ChoiceItem
                 key={index}
@@ -200,7 +214,7 @@ class HoleForm extends Component {
             })}
 
             {this.state.showFeedback &&
-              <div className="feedback-container">
+              <div className="feedback-container hole-form-row">
                 <Textarea
                   id={`choice-${this.props.hole.id}-feedback`}
                   title={tex('feedback')}
@@ -210,19 +224,24 @@ class HoleForm extends Component {
                 />
               </div>
             }
-            <button
-              className="btn btn-default"
-              onClick={() => this.props.onChange(
-                actions.addAnswer(this.props.hole.id))}
-            >
-              <i className="fa fa-plus"/>
-              Keyword
-            </button>
-            <button className="btn btn-primary" onClick={() =>
-                this.props.onChange(actions.saveHole())}> Save </button>
+            <div className="hole-form-row">
+              <button
+                className="btn btn-default"
+                onClick={() => this.props.onChange(
+                  actions.addAnswer(this.props.hole.id))}
+              >
+                <i className="fa fa-plus"/>
+                {tex('keyword')}
+              </button>
+              {'\u00a0'}
+              <button className="btn btn-primary" onClick={() =>this.props.onChange(actions.saveHole())}>
+                {tex('save')}
+              </button>
+            </div>
           </div>
-        </Popover>
-      )
+        </div>
+      </Popover>
+    )
   }
 }
 
@@ -291,7 +310,7 @@ export class Cloze extends Component {
           type="button"
           className="btn btn-default"
           onClick={() => this.props.onChange(this.addHole())}><i className="fa fa-plus"/>
-            Create Cloze
+          {tex('create_cloze')}
         </button>
         {this.props.item._popover &&
           <div>
