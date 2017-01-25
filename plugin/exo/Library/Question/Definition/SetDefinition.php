@@ -114,7 +114,7 @@ class SetDefinition extends AbstractDefinition
             if (is_array($answer)) {
                 $found = false;
                 foreach ($answer as $givenAnswer) {
-                    if (null !== $association->getProposal() && $association->getProposal()->getUuid() === $givenAnswer->setId && $association->getLabel()->getUuid() === $givenAnswer->itemId) {
+                    if (null !== $association->getLabel() && $association->getLabel()->getUuid() === $givenAnswer->setId && $association->getProposal()->getUuid() === $givenAnswer->itemId) {
                         $found = true;
                         if (0 < $association->getScore()) {
                             $corrected->addExpected($association);

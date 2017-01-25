@@ -1,4 +1,6 @@
 import React, {PropTypes as T} from 'react'
+
+import {tex} from '../../utils/translate'
 import {Highlight} from './utils/highlight.jsx'
 import {Feedback} from '../components/feedback-btn.jsx'
 import {SolutionScore} from '../components/score.jsx'
@@ -39,23 +41,24 @@ AnswerTable.propTypes = {
 
 export const WordsPaper = (props) => {
   const solutions = props.item.solutions.slice(0)
-  var halfLength = Math.ceil(solutions.length / 2)
-  var leftSide = solutions.splice(0, halfLength)
-  var rightSide = solutions
+  const halfLength = Math.ceil(solutions.length / 2)
+  const leftSide = solutions.splice(0, halfLength)
+  const rightSide = solutions
 
   return (
     <PaperTabs
-      item={props.item}
-      answer={props.answer}
+      id={props.item.id}
       yours={
-        <Highlight
-          text={props.answer}
-          solutions={props.item.solutions}
-          showScore={true}
-        />
+        props.answer && 0 !== props.answer.length ?
+          <Highlight
+            text={props.answer}
+            solutions={props.item.solutions}
+            showScore={true}
+          /> :
+          <div className="no-answer">{tex('no_answer')}</div>
       }
       expected={
-        <div>
+        <div className="row">
           <div className="col-md-6">
             <AnswerTable solutions={leftSide}/>
           </div>
