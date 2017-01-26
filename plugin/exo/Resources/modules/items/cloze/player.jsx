@@ -1,6 +1,7 @@
 import React, {Component, PropTypes as T} from 'react'
 import {utils} from './utils/utils'
 import cloneDeep from 'lodash/cloneDeep'
+import {tex} from './../../utils/translate'
 
 export class ClozePlayer extends Component {
   constructor(props) {
@@ -38,7 +39,7 @@ export class ClozePlayer extends Component {
                       el.holeId,
                       e.target.value
                     ))}>
-                      <option value=''>Select...</option>
+                      <option value=''>{tex('please_choose')}</option>
                       {el.choices.map((choice, idx) => <option value={choice} key={idx}>{ choice }</option>)}
                     </select>
                 </span> :

@@ -251,7 +251,7 @@ function validate(item) {
 
   if (!_errors.text) {
     if (item.holes.length === 0) {
-      _errors.text = tex('cloze_must_contains_holes_error')
+      _errors.text = tex('cloze_must_contains_clozes_error')
     }
   }
 

@@ -1,4 +1,5 @@
 import $ from 'jquery'
+import {tex} from './../../../utils/translate'
 
 export const utils = {}
 
@@ -34,7 +35,7 @@ utils.makeTinyHtml = (solution) => {
           data-hole-id="${solution.holeId}"
           type="text"
         >
-          <option> Please choose </option>
+          <option> ${tex('please_choose')} </option>
         </select>
         ${getEditButtons(solution)}
       </span>

@@ -74,6 +74,12 @@ choice_feedback_info: Commentaire si la réponse est selectionnée
 choose_image : Choisir une image
 choose_category : Choisir une catégorie
 choose_type: Choisir un type
+cloze_empty_word_error: Le mot ne peut pas être vide
+cloze_empty_score_error: Le score ne peut pas être vide
+cloze_multiple_answers_required: Plusieurs réponses sont requises
+cloze_empty_size_error: La taille ne peut pas être vide
+cloze_empty_text_error: Veuillez remplir le texte
+cloze_must_contains_clozes_error: Le texte doit contenir des trous
 color: Couleur
 comment: Feedback
 compose: Répondre
@@ -88,6 +94,7 @@ correspondence: correspondance
 correspondence_empty: Vous n'avez réalisé aucune correspondance !
 correspondence_error: Vous ne pouvez pas associer une même proposition avec plusieurs labels !
 create: Créer
+create_cloze: Créer un trou
 create_a_new_category: Créer une nouvelle catégorie
 create_a_new_entry: Créer une nouvelle question
 creation_date: Date de création
@@ -377,7 +384,7 @@ print_paper: Imprimer la copie
 proposal: Proposition
 position_force: Forcer cette position
 publish: Publier
-
+please_choose: Veuillez choisir...
 # Q
 qcm: QCM
 qcm_creation: Création d'une question QCM

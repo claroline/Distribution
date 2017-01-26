@@ -216,7 +216,7 @@ class HoleForm extends Component {
               }
             </div>
             <div className="hole-form-row">
-              <div className="col-xs-5"><b>{tex('word')}</b></div>
+              <div className="col-xs-5"><b>{tex('key_word')}</b></div>
               <div className="col-xs-7"><b>{tex('score')}</b></div>
             </div>
             {this.props.solution.answers.map((answer, index) => {
@@ -255,7 +255,7 @@ class HoleForm extends Component {
                 type="button"
               >
                 <i className="fa fa-plus"/>
-                {tex('keyword')}
+                {tex('key_word')}
               </button>
               {'\u00a0'}
               <button
