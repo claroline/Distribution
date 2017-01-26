@@ -97,7 +97,6 @@ utils.split = (text, holes, solutions) => {
   let prevWordLength = 0
 
   split.forEach(el => {
-    //////////////////////////
     el.text = text.substr(0, el.position - currentPosition)
     //now we trim the text
     text = text.substr(el.position + utils.getGuidLength() + 4  - currentPosition)
@@ -105,11 +104,6 @@ utils.split = (text, holes, solutions) => {
     prevPos = el.position
     prevWordLength = utils.getGuidLength() + 4
   })
-
-  /*
-  //we keep track of each text element
-
-  */
 
   //I want to rember the last element of the text so I add it aswell to the array
   split.push({
@@ -126,7 +120,6 @@ utils.split = (text, holes, solutions) => {
 utils.getTextElements = (text, holes) => {
   const data = []
 
-  //first we find each occurence of a given word
   holes.forEach((hole) => {
     const regex = new RegExp(`(\\[\\[${hole.id}\\]\\])`, 'g')
     const position = text.search(regex)
@@ -134,9 +127,8 @@ utils.getTextElements = (text, holes) => {
       choices: hole.choices,
       position,
       multiple: false,
-      holeId: hole.id
-      //score: solutions.find(el => el.text === word).score,
-      //feedback: solutions.find(el => el.text === word).feedback
+      holeId: hole.id,
+      size: hole.size
     })
   })
 
@@ -148,7 +140,6 @@ utils.getSolutionForAnswer = (solution, answer) => {
   if (typeof answer === 'string') {
     answerText = answer
   } else {
-    //yeah ...
     answerText = answer.text ? answer.text: answer.answerText
   }
 

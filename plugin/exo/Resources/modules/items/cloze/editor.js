@@ -158,7 +158,7 @@ function reduce(item = {}, action) {
       const hole = {
         'id': makeId(),
         feedback: '',
-        size: 25,
+        size: 10,
         _score: 0,
         placeholder: '',
         choices: []

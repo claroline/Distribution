@@ -49,6 +49,7 @@ export class ClozePlayer extends Component {
                     <input
                       className="form-control inline-select"
                       type="text"
+                      size={el.size}
                       onChange={(e) => this.props.onChange(this.onAnswer(
                         el.holeId,
                         e.target.value
