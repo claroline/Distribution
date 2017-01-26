@@ -27,5 +27,11 @@ export const OpenPaper = props => {
   )
 }
 OpenPaper.propTypes = {
+  item: T.shape({
+    id: T.string.isRequired,
+    title: T.string,
+    description: T.string
+  }).isRequired,
+  answer: T.string,
   answerObject: T.object
 }
