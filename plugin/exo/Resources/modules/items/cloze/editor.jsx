@@ -19,14 +19,6 @@ class ChoiceItem extends Component {
     return (
       <div>
         <div className='row'>
-          <div className="hole-word-error-block">
-            {get(this.props, `_errors.answers.${this.props.id - 1}.text`) &&
-              <ErrorBlock text={this.props._errors.answers[this.props.id - 1].text} warnOnly={!this.props.validating}/>
-            }
-            {get(this.props, `_errors.answers.${this.props.id - 1}.score`) &&
-              <ErrorBlock text={this.props._errors.answers[this.props.id - 1].score} warnOnly={!this.props.validating}/>
-            }
-          </div>
           <div className='hole-form-row'>
             <div className="col-xs-4">
               <ContentEditable
@@ -92,6 +84,14 @@ class ChoiceItem extends Component {
               )}
             />
           </div>
+        </div>
+        <div className="col-xs-12">
+          {get(this.props, `_errors.answers.${this.props.id}.text`) &&
+            <ErrorBlock text={this.props._errors.answers[this.props.id].text} warnOnly={!this.props.validating}/>
+          }
+          {get(this.props, `_errors.answers.${this.props.id}.score`) &&
+            <ErrorBlock text={this.props._errors.answers[this.props.id].score} warnOnly={!this.props.validating}/>
+          }
         </div>
       </div>
       {this.state.showFeedback &&
