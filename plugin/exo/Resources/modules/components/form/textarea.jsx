@@ -36,7 +36,7 @@ export class ContentEditable extends Component {
         className="form-control"
         aria-multiline={true}
         style={{minHeight: `${this.props.minRows * 32}px`}}
-        onMouseUp={this.getSelection.bind(this)}
+        onMouseUp={this.getSelection}
       />
     )
   }
