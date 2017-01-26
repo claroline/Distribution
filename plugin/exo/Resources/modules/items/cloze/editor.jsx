@@ -305,7 +305,7 @@ export class Cloze extends Component {
   }
 
   onHoleClick(el) {
-    if (el.className === 'fa fa-pencil edit-hole-btn') {
+    if (el.classList.contains('edit-hole-btn')) {
       this.offsetX = el.getBoundingClientRect().right
       this.offsetY = el.getBoundingClientRect().bottom
       this.props.onChange(actions.openHole(
@@ -316,7 +316,7 @@ export class Cloze extends Component {
         this.offsetY
       ))
     } else {
-      if (el.className === 'fa fa-trash delete-hole-btn') {
+      if (el.classList.contains('delete-hole-btn')) {
         this.props.onChange(actions.removeHole(el.dataset.holeId))
       }
     }

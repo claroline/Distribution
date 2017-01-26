@@ -56,11 +56,10 @@ function reduce(item = {}, action) {
       })
     }
     case UPDATE_TEXT: {
-      const newItem = cloneDeep(item)
-      newItem._text = action.text
-      newItem.text = utils.getTextWithPlacerHoldersFromHtml(newItem._text)
-
-      return newItem
+      return Object.assign({}, item, {
+        text: utils.getTextWithPlacerHoldersFromHtml(action.text),
+        _text: action.text
+      })
     }
     case OPEN_HOLE: {
       const newItem = cloneDeep(item)

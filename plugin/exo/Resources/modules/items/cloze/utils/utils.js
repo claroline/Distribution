@@ -1,4 +1,3 @@
-import $ from 'jquery'
 import {tex} from './../../../utils/translate'
 
 export const utils = {}
@@ -48,13 +47,12 @@ utils.getTextWithPlacerHoldersFromHtml = (text) =>
 {
   const tmp = document.createElement('div')
   tmp.innerHTML = text
-
-  $(tmp).find('.cloze-input').each(function () {
-    let id = $(this).attr('data-hole-id')
-    $(this).replaceWith(`[[${id}]]`)
+  tmp.querySelectorAll('.cloze-input').forEach(input => {
+    const placeholder = document.createTextNode(`[[${input.dataset.holeId}]]`)
+    tmp.replaceChild(placeholder, input)
   })
 
-  return $(tmp).html()
+  return tmp.innerHTML
 }
 
 function getEditButtons(solution) {
