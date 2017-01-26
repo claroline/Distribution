@@ -163,13 +163,14 @@ class HoleForm extends Component {
   }
 
   render() {
+    //the placement seems pretty random but it's more or less the center of the screen
     return (
       <Popover
         bsClass="hole-form-content"
         id={this.props.hole.id}
         placement="right"
-        positionLeft={this.props.offsetX}
-        positionTop={this.props.offsetY - 210}
+        positionLeft={ window.outerWidth / 2 + window.screenX - 350}
+        positionTop={ window.outerHeight / 2 + window.screenY - 300}
       >
         <div className="panel-default">
           <div className="panel-body pull-right close-popover hole-form-row" onClick={this.closePopover.bind(this)}><b>x</b></div>

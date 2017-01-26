@@ -78,7 +78,7 @@ class SelectAnswer extends Component
           'score-danger': !this.isSolutionValid() && !this.props.displayTrueAnswer,
           'score-info': this.props.displayTrueAnswer
         })}>
-          <WarningIcon solution={this.props.solution} answer={this.state.selectedAnswer}/>
+          <WarningIcon solution={this.props.solution} answer={this.state.selectedAnswer}/>{'\u00a0'}
           {(this.props.showScore || this.isSolutionValid()) && this.state.selectedAnswer && this.state.selectedAnswer.feedback &&
             <Feedback feedback={this.state.selectedAnswer.feedback} id={this.props.solution.holeId}/>
           }
@@ -136,7 +136,7 @@ class TextAnswer extends Component
           'score-danger': !this.isSolutionValid() && !this.props.displayTrueAnswer,
           'score-info': this.props.displayTrueAnswer
         })}>
-          <WarningIcon solution={this.props.solution} answer={this.props.solution.answers[0]}/>
+          <WarningIcon solution={this.props.solution} answer={this.props.solution.answers[0]}/>{'\u00a0'}
           {(this.props.showScore || this.isSolutionValid()) && this.props.solution.feedback &&
             <Feedback feedback={this.props.solution.feedback} id={this.props.solution.holeId}/>
           }
