@@ -20,6 +20,9 @@ export default class BlogPanelController {
 
     this.uiCalendarConfig = {
       editable: false,
+      eventClick: (event) => {
+        _$location.get(this).url(`/archives/${event.angularParams}`)
+      },
       buttonText: {
         today: this._t('today')
       },
@@ -82,6 +85,11 @@ export default class BlogPanelController {
 
   filterByAuthor(author) {
     _$location.get(this).url(`/author/${author.id}`)
+  }
+
+  filterByCalendar(event) {
+    console.log(_$location.get(this))
+    _$location.get(this).url(`/archives/${event.angular-params}`)
   }
 
   editInfo() {

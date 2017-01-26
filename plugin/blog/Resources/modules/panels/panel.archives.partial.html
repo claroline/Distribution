@@ -31,7 +31,7 @@
                     data-ng-repeat="month in data"
                     ui-tree-node>
                     <a
-                        data-ng-click="panelsCtrl.goToArchives(data.urlParameters)">
+                        data-ng-click="panelsCtrl.goToArchives(month.urlParameters)">
                         {{ month.month }} ({{ month.count }})
                     </a>
                 </li>

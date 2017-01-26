@@ -88,6 +88,21 @@ export default class BlogController {
           break
         
         case 'date':
+          if (_$routeParams.get(this).day) {
+            this.blog.getPostsByDay(_$routeParams.get(this).year, _$routeParams.get(this).month, _$routeParams.get(this).day, page)
+              .then(
+                success => {
+                  this._setMessage('info', 'post_filtered_by_day', {'date': `${_$routeParams.get(this).day}/${_$routeParams.get(this).month}/${_$routeParams.get(this).year}`}, true)
+                }
+              )
+          } else {
+            this.blog.getPostsByMonth(_$routeParams.get(this).year, _$routeParams.get(this).month, page)
+              .then(
+                success => {
+                  this._setMessage('info', 'post_filtered_by_month', {'date': `${_$routeParams.get(this).month}/${_$routeParams.get(this).year}`}, true)
+                }
+              )
+          }
           break
           
         default:

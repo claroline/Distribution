@@ -245,41 +245,44 @@ class ApiController extends BaseController
     }
 
     /**
-     * Get multiple posts for a given publication date.
+     * Get multiple posts for a given publication day.
      *
-     * @Get(
-     *      "/api/blogs/{blog}/dates/{year}/{month}/{day}",
-     *      requirements={ "blog" = "\d+", "year" = "\d{4}", "month" = "\d{2}", "day" = "\d{2}" },
-     * )
+     * @Route(requirements={ "blog" = "\d+", "day" = "\d{2}-\d{2}-\d{4}" })
      *
      * @QueryParam(name="page", requirements="\d+", allowBlank=true, default="1")
+     * 
+     * @View(serializerGroups={ "blog_list", "api_user_min" })
      */
-    public function getBlogDatePostsAction(Blog $blog, $year, $month, $day, ParamFetcher $paramFetcher)
+    public function getBlogDaysPostsAction(Blog $blog, $day, ParamFetcher $paramFetcher)
     {
         $this->checkAccess('OPEN', $blog);
 
-        $response = new JsonResponse();
+        return $this->getPostsByDate($blog, $day, $paramFetcher);
+    }
 
-        //Construct the date object
-        $date = implode('-', array_filter([$day, $month, $year]));
+    /**
+     * Get multiple posts for a given publication month.
+     *
+     * @Route(requirements={ "blog" = "\d+", "month" = "\d{2}-\d{4}" })
+     *
+     * @QueryParam(name="page", requirements="\d+", allowBlank=true, default="1")
+     *
+     * @View(serializerGroups={ "blog_list", "api_user_min" })
+     */
+    public function getBlogMonthsPostsAction(Blog $blog, $month, ParamFetcher $paramFetcher)
+    {
+        $this->checkAccess('OPEN', $blog);
+        return $this->getPostsByDate($blog, $month, $paramFetcher);
+    }
 
-        $results = $this->get('icap.blog.manager.post')->getPostsByDatePaged(
+    private function getPostsByDate(Blog $blog, $date, ParamFetcher $paramFetcher)
+    {
+        return $this->get('icap.blog.manager.post')->getPostsByDatePaged(
             $blog,
             $date,
             !$this->isUserGranted('EDIT', $blog),
             $paramFetcher->get('page')
         );
-
-        $response->setData($results);
-
-        $response;
-
-        $view = new View($results);
-        $context = new SerializationContext();
-        $context->setGroups(['blog_list', 'api_user_min']);
-        $view->setSerializationContext($context);
-
-        return $this->viewHandler->handle($view);
     }
 
     /**

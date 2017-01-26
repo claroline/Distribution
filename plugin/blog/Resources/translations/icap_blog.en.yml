@@ -98,7 +98,8 @@ no_tags: No tag
 post_deletion_confirm_message: Are you sure you want to remove the post <strong>%postName%</strong> ?
 post_deletion_confirm_title: Removal of a post
 post_filtered_by_author: Post list filtered by author <strong>%authorName%</strong>
-post_filtered_by_date: Post list filtered by date <strong>%date%</strong>
+post_filtered_by_day: Post list filtered by day <strong>%date%</strong>
+post_filtered_by_monthe: Post list filtered by month <strong>%date%</strong>
 post_filtered_by_search: Post list filtered by search <strong>%searchTerms%</strong>
 post_filtered_by_tag: Post list filtered by tag <strong>%tagName%</strong>
 Post: Post

@@ -98,7 +98,8 @@ no_tags: Aucun tag
 post_deletion_confirm_message: Etes-vous sûr de vouloir supprimer l'article <strong>%postName%</strong> ?
 post_deletion_confirm_title: Suppression d'un article
 post_filtered_by_author: Liste des articles filtrés par l'auteur <strong>%authorName%</strong>.
-post_filtered_by_date: Liste des articles filtrés sur la date <strong>%date%</strong>.
+post_filtered_by_day: Liste des articles filtrés sur le jour : <strong>%date%</strong>.
+post_filtered_by_month: Liste des articles filtrés sur le mois : <strong>%date%</strong>.
 post_filtered_by_search: Liste des articles filtrés par la recherche <strong>%searchTerms%</strong>.
 post_filtered_by_tag: Liste des articles filtrés par le tag <strong>%tagName%</strong>.
 posts: Articles

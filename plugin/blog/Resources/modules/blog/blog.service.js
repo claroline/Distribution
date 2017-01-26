@@ -127,6 +127,42 @@ export default class BlogService {
     return posts.$promise
   }
 
+  getPostsByDay(year, month, day, page = null) {
+    const url = _url.get(this)('icap_blog_api_get_blog_days_posts', {
+      'blog': this.id,
+      'day': `${day}-${month}-${year}`,
+      'page': page
+    })
+
+    let Posts = _$resource.get(this)(url)
+    let posts = Posts.get(
+      success => {
+        this.posts = success.posts
+        this.totalItems = success.total
+      }
+    )
+
+    return posts.$promise
+  }
+
+  getPostsByMonth(year, month, page = null) {
+    const url = _url.get(this)('icap_blog_api_get_blog_months_posts', {
+      'blog': this.id,
+      'month': `${month}-${year}`,
+      'page': page
+    })
+
+    let Posts = _$resource.get(this)(url)
+    let posts = Posts.get(
+      success => {
+        this.posts = success.posts
+        this.totalItems = success.total
+      }
+    )
+
+    return posts.$promise
+  }
+
   uploadBanner(file) {
     if (file === null) {
       return _$q.get(this).resolve()
