@@ -5,6 +5,9 @@ import {FormGroup} from './../../components/form/form-group.jsx'
 import {actions} from './editor'
 import {TooltipButton} from './../../components/form/tooltip-button.jsx'
 import Popover from 'react-bootstrap/lib/Popover'
+import {ErrorBlock} from './../../components/form/error-block.jsx'
+import get from 'lodash/get'
+import isEmpty from 'lodash/isEmpty'
 
 class ChoiceItem extends Component {
   constructor(props) {
@@ -16,6 +19,14 @@ class ChoiceItem extends Component {
     return (
       <div>
         <div className="row">
+          <div className="hole-word-error-block">
+            {get(this.props, `_errors.answers.${this.props.id - 1}.text`) &&
+              <ErrorBlock text={this.props._errors.answers[this.props.id - 1].text} warnOnly={!this.props.validating}/>
+            }
+            {get(this.props, `_errors.answers.${this.props.id - 1}.score`) &&
+              <ErrorBlock text={this.props._errors.answers[this.props.id - 1].score} warnOnly={!this.props.validating}/>
+            }
+          </div>
           <div className="hole-form-row">
             <div className="col-xs-4">
               <ContentEditable
@@ -126,7 +137,9 @@ ChoiceItem.propTypes = {
   deletable: T.bool.isRequired,
   onChange: T.func.isRequired,
   offsetX: T.number.isRequired,
-  offsetY: T.number.isRequired
+  offsetY: T.number.isRequired,
+  validating: T.bool.isRequired,
+  _errors: T.object
 }
 
 class HoleForm extends Component {
@@ -194,6 +207,14 @@ class HoleForm extends Component {
                 </div>
               </div>
             </div>
+            <div>
+              {get(this.props, '_errors.size') &&
+                <ErrorBlock text={this.props._errors.size} warnOnly={!this.props.validating}/>
+              }
+              {get(this.props, '_errors.multiple') &&
+                <ErrorBlock text={this.props._errors.multiple} warnOnly={!this.props.validating}/>
+              }
+            </div>
             <div className="hole-form-row">
               <div className="col-xs-5"><b>{tex('word')}</b></div>
               <div className="col-xs-7"><b>{tex('score')}</b></div>
@@ -210,6 +231,8 @@ class HoleForm extends Component {
                 answer={answer}
                 offsetX={this.props.offsetX}
                 offsetY={this.props.offsetY}
+                validating={this.props.validating}
+                _errors={this.props._errors}
               />)
             })}
 
@@ -229,12 +252,18 @@ class HoleForm extends Component {
                 className="btn btn-default"
                 onClick={() => this.props.onChange(
                   actions.addAnswer(this.props.hole.id))}
+                type="button"
               >
                 <i className="fa fa-plus"/>
                 {tex('keyword')}
               </button>
               {'\u00a0'}
-              <button className="btn btn-primary" onClick={() =>this.props.onChange(actions.saveHole())}>
+              <button
+                className="btn btn-primary"
+                onClick={() =>this.props.onChange(actions.saveHole())}
+                type="button"
+                disabled={!isEmpty(this.props._errors)}
+              >
                 {tex('save')}
               </button>
             </div>
@@ -251,7 +280,9 @@ HoleForm.propTypes = {
   solution: T.object.isRequired,
   onChange: T.func.isRequired,
   offsetX: T.number.isRequired,
-  offsetY: T.number.isRequired
+  offsetY: T.number.isRequired,
+  validating: T.bool.isRequired,
+  _errors: T.object
 }
 
 export class Cloze extends Component {
@@ -321,6 +352,8 @@ export class Cloze extends Component {
               hole={this.props.item._popover.hole}
               solution={this.props.item._popover.solution}
               onChange={this.props.onChange}
+              validating={this.props.validating}
+              _errors={this.props.item._errors}
             />
           </div>
         }
@@ -334,6 +367,7 @@ Cloze.propTypes = {
     id: T.string.isRequired,
     text: T.string.isRequired,
     _text: T.string.isRequired,
+    _errors: T.object,
     _popover: T.shape({
       offsetX: T.number.isRequired,
       offsetY: T.number.isRequired,
@@ -341,5 +375,6 @@ Cloze.propTypes = {
       solution: T.object
     })
   }),
-  onChange: T.func.isRequired
+  onChange: T.func.isRequired,
+  validating: T.bool.isRequired
 }

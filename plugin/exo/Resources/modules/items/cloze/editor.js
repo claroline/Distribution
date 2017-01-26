@@ -4,6 +4,9 @@ import cloneDeep from 'lodash/cloneDeep'
 import {ITEM_CREATE} from './../../quiz/editor/actions'
 import {utils} from './utils/utils'
 import flatten from 'lodash/flatten'
+import {notBlank} from './../../utils/validate'
+import set from 'lodash/set'
+import {tex} from './../../utils/translate'
 
 const UPDATE_TEXT = 'UPDATE_TEXT'
 const ADD_HOLE = 'ADD_HOLE'
@@ -176,7 +179,6 @@ function reduce(item = {}, action) {
         offsetY: action.offsetY,
         startOffset: action.startOffset,
         endOffset: action.endOffset,
-        holeId: action.holeId,
         hole,
         solution
       }
@@ -220,6 +222,30 @@ function getSolutionFromHole(item, hole)
   return item.solutions.find(solution => solution.holeId === hole.id)
 }
 
-function validate() {
-  return []
+function validate(item) {
+  if (!item._popover) {
+    return {}
+  }
+
+  const _errors = {}
+
+  item._popover.solution.answers.forEach((answer, key) => {
+    if (notBlank(answer.text, true)) {
+      set(_errors, `answers.${key}.text`, tex('empty_word_error'))
+    }
+
+    if (notBlank(answer.score, true)) {
+      set(_errors, `answers.${key}.score`, tex('empty_score_error'))
+    }
+  })
+
+  if (item._popover.hole._multiple && item._popover.solution.answers.length < 2) {
+    set(_errors, 'multiple', 'multiple_answers_required')
+  }
+
+  if (notBlank(item._popover.hole.size, true)) {
+    set(_errors, 'size', tex('empty_size_error'))
+  }
+
+  return _errors
 }
