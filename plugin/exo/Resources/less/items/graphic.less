@@ -33,18 +33,11 @@
   }
 
   .area-handle {
-    display: inline-block;
-    position: absolute;
-    border: solid 2px transparent;
-
-    .area, .sizer, [role="button"] {
-      position: absolute;
+    .area-frame {
+      border: dashed transparent;
     }
 
     .sizer {
-      display: inline-block;
-      width: 6px;
-      height: 6px;
       background-color: transparent;
       border-radius: 3px;
     }
@@ -52,6 +45,8 @@
     [role="button"] {
       color: #555;
       background-color: #fff;
+      border: solid 1px #aaa;
+      border-radius: 2px;
       padding: 1px;
       visibility: hidden;
     }
@@ -60,7 +55,10 @@
   .area-handle.selected {
     z-index: 100;
     cursor: move;
-    border: dashed 2px #fff;
+
+    .area-frame {
+      border-color: #fff;
+    }
 
     .sizer {
       background-color: blue;
@@ -78,7 +76,7 @@
       cursor: nwse-resize;
     }
 
-    .ne, sw {
+    .ne, .sw {
       cursor: nesw-resize;
     }
 
@@ -87,7 +85,49 @@
     }
   }
 
-  .area-handle.selected.undraggable {
+  .area-handle.selected.undraggable,
+  .area-handle.selected.undraggable .sizer {
     cursor: not-allowed;
+  }
+
+  .area-popover {
+    max-width: none;
+    width: 280px;
+
+    .base-controls {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-right: 6px;
+    }
+
+    .base-controls > * {
+      display: flex;
+      align-items: baseline;
+
+      label {
+        margin-right: 8px;
+      }
+    }
+
+    .score-input {
+      width: 52px;
+      padding-left: 6px;
+      padding-right: 6px;
+    }
+
+    .feedback-container {
+      margin: 12px auto -10px;
+    }
+
+    .close-tip-btn {
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+  }
+
+  .area-popover.has-feedback .arrow {
+    display: none;
   }
 }

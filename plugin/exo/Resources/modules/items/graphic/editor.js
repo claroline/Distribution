@@ -18,7 +18,8 @@ import {
   MOVE_AREA,
   DELETE_AREA,
   TOGGLE_POPOVER,
-  SET_AREA_COLOR
+  SET_AREA_COLOR,
+  SET_SOLUTION_PROPERTY
 } from './actions'
 import {Graphic as component} from './editor.jsx'
 
@@ -89,7 +90,7 @@ function reduce(item = {}, action = {}) {
       const area = {
         id: makeId(),
         shape: item._mode === MODE_RECT ? SHAPE_RECT : SHAPE_CIRCLE,
-        color: 'blue'
+        color: item._currentColor
       }
 
       if (area.shape === SHAPE_CIRCLE) {
@@ -197,11 +198,23 @@ function reduce(item = {}, action = {}) {
     case SET_AREA_COLOR:
       return Object.assign({}, item, {
         solutions: item.solutions.map(solution => {
-          if (solution._selected) {
+          if (solution.area.id === action.id) {
             return Object.assign({}, solution, {
               area: Object.assign({}, solution.area, {
                 color: action.color
               })
+            })
+          }
+          return solution
+        }),
+        _currentColor: action.color
+      })
+    case SET_SOLUTION_PROPERTY:
+      return Object.assign({}, item, {
+        solutions: item.solutions.map(solution => {
+          if (solution.area.id === action.id) {
+            return Object.assign({}, solution, {
+              [action.property]: action.value
             })
           }
           return solution
@@ -258,6 +271,7 @@ function decorate(item) {
       }
     }),
     _mode: MODE_RECT,
+    _currentColor: '#00f',
     _popover: {
       areaId: '',
       open: false,

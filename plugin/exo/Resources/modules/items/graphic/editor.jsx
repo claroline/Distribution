@@ -1,6 +1,4 @@
 import React, {Component, PropTypes as T} from 'react'
-import Popover from 'react-bootstrap/lib/Popover'
-import Overlay from 'react-bootstrap/lib/Overlay'
 import get from 'lodash/get'
 import {asset} from '#/main/core/asset'
 import {tex} from './../../utils/translate'
@@ -9,9 +7,9 @@ import {MODE_SELECT, MAX_IMG_SIZE, SHAPE_RECT} from './enums'
 import {actions} from './actions'
 import {FileDropZone} from './../../components/form/file-drop-zone.jsx'
 import {ErrorBlock} from './../../components/form/error-block.jsx'
-import {ColorPicker} from './../../components/form/color-picker.jsx'
 import {ImageInput} from './components/image-input.jsx'
 import {ModeSelector} from './components/mode-selector.jsx'
+import {AreaPopover} from './components/area-popover.jsx'
 import {AnswerArea} from './components/answer-area.jsx'
 
 let AnswerDropZone = props => props.connectDropTarget(props.children)
@@ -130,6 +128,12 @@ export class Graphic extends Component {
     }
   }
 
+  getCurrentArea() {
+    return this.props.item.solutions.find(
+      solution => solution.area.id === this.props.item._popover.areaId
+    )
+  }
+
   render() {
     return (
       <div className="graphic-editor">
@@ -146,23 +150,27 @@ export class Graphic extends Component {
             onChange={mode => this.props.onChange(actions.selectMode(mode))}
           />
         </div>
-
         {this.props.item._popover.open &&
-          <Popover
-            id="area-popover"
-            placement="top"
-            positionLeft={this.props.item._popover.left}
-            positionTop={this.props.item._popover.top}
-          >
-            Color
-            <ColorPicker
-              color={'#00f'}
-              onPick={color => this.props.onChange(actions.setAreaColor(color))}
-            />
-            Score&nbsp;/&nbsp;Feedback
-          </Popover>
+          <AreaPopover
+            left={this.props.item._popover.left}
+            top={this.props.item._popover.top}
+            score={this.getCurrentArea().score}
+            feedback={this.getCurrentArea().feedback}
+            color={this.getCurrentArea().area.color}
+            onPickColor={color => this.props.onChange(
+              actions.setAreaColor(this.props.item._popover.areaId, color)
+            )}
+            onChangeScore={score => this.props.onChange(
+              actions.setSolutionProperty(this.props.item._popover.areaId, 'score', score)
+            )}
+            onChangeFeedback={feedback => this.props.onChange(
+              actions.setSolutionProperty(this.props.item._popover.areaId, 'feedback', feedback)
+            )}
+            onClose={() => this.props.onChange(
+              actions.togglePopover(this.props.item._popover.areaId, 0, 0, false)
+            )}
+          />
         }
-
         <FileDropZone onDrop={this.onDropImage}>
           <div className="img-dropzone">
             <div className="img-widget">
@@ -236,6 +244,7 @@ Graphic.propTypes = {
     })).isRequired,
     _mode: T.string.isRequired,
     _errors: T.object,
+    _currentColor: T.string.isRequired,
     _popover: T.shape({
       open: T.bool.isRequired,
       top: T.number.isRequired,

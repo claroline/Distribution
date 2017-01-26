@@ -10,6 +10,7 @@ export const MOVE_AREA = 'MOVE_AREA'
 export const DELETE_AREA = 'DELETE_AREA'
 export const TOGGLE_POPOVER = 'TOGGLE_POPOVER'
 export const SET_AREA_COLOR = 'SET_AREA_COLOR'
+export const SET_SOLUTION_PROPERTY = 'SET_SOLUTION_PROPERTY'
 
 export const actions = {}
 
@@ -21,4 +22,5 @@ actions.selectArea = makeActionCreator(SELECT_AREA, 'id')
 actions.moveArea = makeActionCreator(MOVE_AREA, 'id', 'x', 'y')
 actions.deleteArea = makeActionCreator(DELETE_AREA, 'id')
 actions.togglePopover = makeActionCreator(TOGGLE_POPOVER, 'areaId', 'left', 'top', 'open')
-actions.setAreaColor = makeActionCreator(SET_AREA_COLOR, 'color')
+actions.setAreaColor = makeActionCreator(SET_AREA_COLOR, 'id', 'color')
+actions.setSolutionProperty = makeActionCreator(SET_SOLUTION_PROPERTY, 'id', 'property', 'value')

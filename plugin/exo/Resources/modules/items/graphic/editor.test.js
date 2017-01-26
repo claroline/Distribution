@@ -108,7 +108,7 @@ describe('Graphic reducer', () => {
                 _clientY: 10 + (AREA_DEFAULT_SIZE / 2)
               }
             ],
-            color: 'blue'
+            color: '#00f'
           },
           score: 1,
           feedback: '',
@@ -157,7 +157,7 @@ describe('Graphic reducer', () => {
             },
             radius: (AREA_DEFAULT_SIZE / 2) * 2,
             _clientRadius: AREA_DEFAULT_SIZE / 2,
-            color: 'blue'
+            color: '#00f'
           },
           score: 1,
           feedback: '',
@@ -404,6 +404,75 @@ describe('Graphic reducer', () => {
       }
     }))
   })
+
+  it('sets area color and current color', () => {
+    const item = itemFixture({
+      solutions: [
+        {
+          area: {
+            id: 'ID1',
+            shape: SHAPE_RECT,
+            color: 'blue'
+          }
+        },
+        {
+          area: {
+            id: 'ID2',
+            shape: SHAPE_CIRCLE,
+            color: 'red'
+          }
+        }
+      ]
+    })
+    const reduced = editor.reduce(item, subActions.setAreaColor('ID2', 'yellow'))
+    ensure.equal(reduced, itemFixture({
+      solutions: [
+        {
+          area: {
+            id: 'ID1',
+            shape: SHAPE_RECT,
+            color: 'blue'
+          }
+        },
+        {
+          area: {
+            id: 'ID2',
+            shape: SHAPE_CIRCLE,
+            color: 'yellow'
+          }
+        }
+      ],
+      _currentColor: 'yellow'
+    }))
+  })
+
+  it('sets solution properties', () => {
+    const item = itemFixture({
+      solutions: [
+        {
+          area: {
+            id: 'ID1',
+            shape: SHAPE_RECT
+          }
+        }
+      ]
+    })
+    const reduced = editor.reduce(
+      item,
+      subActions.setSolutionProperty('ID1', 'foo', 'bar')
+    )
+    ensure.equal(reduced, itemFixture({
+      solutions: [
+        {
+          area: {
+            id: 'ID1',
+            shape: SHAPE_RECT
+          },
+          foo: 'bar'
+        }
+      ]
+    }))
+  })
 })
 
 describe('<Graphic/>', () => {
@@ -449,6 +518,7 @@ function itemFixture(props = {}) {
       open: false,
       left: 0,
       top: 0
-    }
+    },
+    _currentColor: '#00f'
   }, props))
 }
