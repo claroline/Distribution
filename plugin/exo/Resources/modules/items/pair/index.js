@@ -2,7 +2,7 @@ import editor from './editor'
 import {PairPaper} from './paper.jsx'
 import {PairPlayer} from './player.jsx'
 
-function expectAnswer(item) {
+function expectAnswer() {
   return []
 }
 

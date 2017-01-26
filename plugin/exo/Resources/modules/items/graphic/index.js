@@ -3,7 +3,7 @@ import {GraphicPaper} from './paper.jsx'
 import {GraphicPlayer} from './player.jsx'
 import {GraphicFeedback} from './feedback.jsx'
 
-function expectAnswer(item) {
+function expectAnswer() {
   return []
 }
 

@@ -78,6 +78,8 @@ function getItemScoreMax(item) {
   let scoreMax
 
   if (item && item.score) {
+    let expectedAnswers = []
+
     switch (item.score.type) {
       case 'manual':
         scoreMax = item.score.max
@@ -86,7 +88,7 @@ function getItemScoreMax(item) {
         scoreMax = item.score.success
         break
       case 'sum':
-        const expectedAnswers = getDefinition(item.type).expectAnswer(item)
+        expectedAnswers = getDefinition(item.type).expectAnswer(item)
 
         if (expectedAnswers.length > 0) {
           scoreMax = 0
