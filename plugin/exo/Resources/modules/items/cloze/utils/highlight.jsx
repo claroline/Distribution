@@ -75,7 +75,7 @@ class SelectAnswer extends Component
         </select>
         <span className={classes({
           'score-success': this.isSolutionValid() && !this.props.displayTrueAnswer,
-          'score-danger': !this.isSolutionValid() && !this.props.displayTrueAnswer,
+          'score-error': !this.isSolutionValid() && !this.props.displayTrueAnswer,
           'score-info': this.props.displayTrueAnswer
         })}>
           <WarningIcon solution={this.props.solution} answer={this.state.selectedAnswer}/>{'\u00a0'}

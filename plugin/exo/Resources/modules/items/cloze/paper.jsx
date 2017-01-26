@@ -7,6 +7,7 @@ export const ClozePaper = (props) => {
     <PaperTabs
       item={props.item}
       answer={props.answer}
+      id={props.item.id}
       yours={
         <Highlight
           item={props.item}
