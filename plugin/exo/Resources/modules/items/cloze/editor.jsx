@@ -18,7 +18,7 @@ class ChoiceItem extends Component {
   render() {
     return (
       <div>
-        <div className="row">
+        <div className='row'>
           <div className="hole-word-error-block">
             {get(this.props, `_errors.answers.${this.props.id - 1}.text`) &&
               <ErrorBlock text={this.props._errors.answers[this.props.id - 1].text} warnOnly={!this.props.validating}/>
@@ -27,7 +27,7 @@ class ChoiceItem extends Component {
               <ErrorBlock text={this.props._errors.answers[this.props.id - 1].score} warnOnly={!this.props.validating}/>
             }
           </div>
-          <div className="hole-form-row">
+          <div className='hole-form-row'>
             <div className="col-xs-4">
               <ContentEditable
                 id={`item-${this.props.id}-answer`}
@@ -95,7 +95,7 @@ class ChoiceItem extends Component {
         </div>
       </div>
       {this.state.showFeedback &&
-        <div className="feedback-container">
+        <div className="feedback-container hole-form-row">
           <Textarea
             id={`choice-${this.props.id}-feedback`}
             title={tex('feedback')}

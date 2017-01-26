@@ -231,7 +231,7 @@ function validate(item) {
         set(_errors, `answers.${key}.text`, tex('cloze_empty_word_error'))
       }
 
-      if (notBlank(answer.score, true)) {
+      if (notBlank(answer.score, true) && answer.score !== 0) {
         set(_errors, `answers.${key}.score`, tex('cloze_empty_score_error'))
       }
     })
