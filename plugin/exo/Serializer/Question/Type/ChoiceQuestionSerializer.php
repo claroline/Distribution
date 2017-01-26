@@ -79,7 +79,10 @@ class ChoiceQuestionSerializer implements SerializerInterface
         }
 
         $choiceQuestion->setMultiple($data->multiple);
-        $choiceQuestion->setShuffle($data->random);
+
+        if (isset($data->random)) {
+            $choiceQuestion->setShuffle($data->random);
+        }
 
         $this->deserializeChoices($choiceQuestion, $data->choices, $data->solutions, $options);
 

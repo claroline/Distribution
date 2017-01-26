@@ -3,6 +3,8 @@
 namespace UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Entity\QuestionType\PairQuestion;
+use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
 
 /**
@@ -18,15 +20,32 @@ class PairAnswerValidator extends JsonSchemaValidator
     /**
      * Performs additional validations.
      *
-     * @param \stdClass $question
-     * @param array     $options
+     * @param array $answerData
+     * @param array $options
      *
      * @return array
      */
-    public function validateAfterSchema($question, array $options = [])
+    public function validateAfterSchema($answerData, array $options = [])
     {
-        // TODO : implement method
+        $errors = [];
 
-        return [];
+        /** @var PairQuestion $question */
+        $question = !empty($options[Validation::QUESTION]) ? $options[Validation::QUESTION] : null;
+        if (empty($question)) {
+            throw new \LogicException('Answer validation : Cannot perform additional validation without question.');
+        }
+
+        foreach ($answerData as $rowIndex => $answerRow) {
+            foreach ($answerRow as $itemIndex => $answerItem) {
+                if (empty($question->getItem($answerItem))) {
+                    $errors[] = [
+                        'path' => "/[{$rowIndex}]/[{$itemIndex}]",
+                        'message' => 'answers must reference a question item',
+                    ];
+                }
+            }
+        }
+
+        return $errors;
     }
 }
