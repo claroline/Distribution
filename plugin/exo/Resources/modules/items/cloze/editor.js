@@ -223,28 +223,36 @@ function getSolutionFromHole(item, hole)
 }
 
 function validate(item) {
-  if (!item._popover) {
-    return {}
-  }
-
   const _errors = {}
 
-  item._popover.solution.answers.forEach((answer, key) => {
-    if (notBlank(answer.text, true)) {
-      set(_errors, `answers.${key}.text`, tex('empty_word_error'))
+  if (item._popover) {
+    item._popover.solution.answers.forEach((answer, key) => {
+      if (notBlank(answer.text, true)) {
+        set(_errors, `answers.${key}.text`, tex('cloze_empty_word_error'))
+      }
+
+      if (notBlank(answer.score, true)) {
+        set(_errors, `answers.${key}.score`, tex('cloze_empty_score_error'))
+      }
+    })
+
+    if (item._popover.hole._multiple && item._popover.solution.answers.length < 2) {
+      set(_errors, 'answers.multiple', tex('cloze_multiple_answers_required'))
     }
 
-    if (notBlank(answer.score, true)) {
-      set(_errors, `answers.${key}.score`, tex('empty_score_error'))
+    if (notBlank(item._popover.hole.size, true)) {
+      set(_errors, 'answers.size', tex('cloze_empty_size_error'))
     }
-  })
-
-  if (item._popover.hole._multiple && item._popover.solution.answers.length < 2) {
-    set(_errors, 'multiple', 'multiple_answers_required')
   }
 
-  if (notBlank(item._popover.hole.size, true)) {
-    set(_errors, 'size', tex('empty_size_error'))
+  if (notBlank(item.text, true)) {
+    _errors.text = tex('cloze_empty_text_error')
+  }
+
+  if (!_errors.text) {
+    if (item.holes.length === 0) {
+      _errors.text = tex('cloze_must_contains_holes_error')
+    }
   }
 
   return _errors

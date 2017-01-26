@@ -208,11 +208,11 @@ class HoleForm extends Component {
               </div>
             </div>
             <div>
-              {get(this.props, '_errors.size') &&
-                <ErrorBlock text={this.props._errors.size} warnOnly={!this.props.validating}/>
+              {get(this.props, '_errors.answers.size') &&
+                <ErrorBlock text={this.props._errors.answers.size} warnOnly={!this.props.validating}/>
               }
-              {get(this.props, '_errors.multiple') &&
-                <ErrorBlock text={this.props._errors.multiple} warnOnly={!this.props.validating}/>
+              {get(this.props, '_errors.answers.multiple') &&
+                <ErrorBlock text={this.props._errors.answers.multiple} warnOnly={!this.props.validating}/>
               }
             </div>
             <div className="hole-form-row">
@@ -262,7 +262,7 @@ class HoleForm extends Component {
                 className="btn btn-primary"
                 onClick={() =>this.props.onChange(actions.saveHole())}
                 type="button"
-                disabled={!isEmpty(this.props._errors)}
+                disabled={!isEmpty(this.props._errors.answers)}
               >
                 {tex('save')}
               </button>
@@ -328,7 +328,12 @@ export class Cloze extends Component {
   render() {
     return(
       <div>
-        <FormGroup controlId="cloze-text" label={t('text')}>
+        <FormGroup
+          controlId="cloze-text"
+          label={t('text')}
+          warnOnly={!this.props.validating}
+          error={get(this.props.item, '_errors.text')}
+        >
           <Textarea
             id={this.props.item.id}
             onChange={(value) => this.props.onChange(actions.updateText(value))}
