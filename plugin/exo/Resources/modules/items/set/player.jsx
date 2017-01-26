@@ -149,15 +149,6 @@ ItemList.propTypes = {
 class SetPlayer extends Component {
   constructor(props) {
     super(props)
-
-    this.state = {
-      items: this.randomize(props.item.items, props.item.random),
-      sets: this.randomize(props.item.sets, props.item.random)
-    }
-  }
-
-  randomize(items, random) {
-    return random ? shuffle(items) : items
   }
 
   handleAssociationItemRemove(setId, itemId) {
@@ -165,7 +156,6 @@ class SetPlayer extends Component {
        this.props.answer.filter(answer => answer.setId !== setId || answer.itemId !== itemId)
     )
   }
-
 
     /**
      * handle item drop
@@ -186,14 +176,14 @@ class SetPlayer extends Component {
     return (
       <div className="set-question-player">
           <div className="items-col">
-            <ItemList items={this.state.items} />
+            <ItemList items={this.props.item.items} />
           </div>
           <div className="sets-col">
             <SetList
               onAssociationItemRemove={(setId, itemId) => this.handleAssociationItemRemove(setId, itemId)}
               onAssociationItemDrop={(source, target) => this.handleAssociationItemDrop(source, target)}
               answers={this.props.answer}
-              sets={this.state.sets} />
+              sets={this.props.item.sets} />
           </div>
       </div>
     )

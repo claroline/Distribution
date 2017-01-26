@@ -3,36 +3,33 @@ import {ITEM_CREATE} from './../../quiz/editor/actions'
 import {makeId, makeActionCreator} from './../../utils/utils'
 import {notBlank, number, chain} from './../../utils/validate'
 import {tex} from './../../utils/translate'
+import {utils} from './utils/utils'
 import {PairForm as component} from './editor.jsx'
 
 const UPDATE_PROP = 'UPDATE_PROP'
 const ADD_ITEM = 'ADD_ITEM'
 const REMOVE_ITEM = 'REMOVE_ITEM'
 const UPDATE_ITEM = 'UPDATE_ITEM'
-const ADD_SOLUTION = 'ADD_SOLUTION'
-const REMOVE_SOLUTION = 'REMOVE_SOLUTION'
-const UPDATE_SOLUTION = 'UPDATE_SOLUTION'
+const ADD_PAIR = 'ADD_PAIR'
+const REMOVE_PAIR = 'REMOVE_PAIR'
+const UPDATE_PAIR = 'UPDATE_PAIR'
+const UPDATE_PAIR_ITEM = 'UPDATE_PAIR_ITEM'
 
 export const actions = {
   updateProperty: makeActionCreator(UPDATE_PROP, 'property', 'value'),
   addItem:  makeActionCreator(ADD_ITEM, 'isOdd'),
   removeItem:  makeActionCreator(REMOVE_ITEM, 'id', 'isOdd'),
   updateItem:  makeActionCreator(UPDATE_ITEM, 'id', 'property', 'value', 'isOdd'),
-  addSolution: makeActionCreator(ADD_SOLUTION, 'leftId', 'rightId', 'data'),
-  removeSolution: makeActionCreator(REMOVE_SOLUTION, 'leftId', 'rightId'),
-  updateSolution: makeActionCreator(UPDATE_SOLUTION, 'leftId', 'rightId', 'property', 'value')
+  addPair: makeActionCreator(ADD_PAIR),
+  removePair: makeActionCreator(REMOVE_PAIR, 'leftId', 'rightId'),
+  updatePair: makeActionCreator(UPDATE_PAIR, 'leftId', 'rightId', 'property', 'value'),
+  updatePairItem: makeActionCreator(UPDATE_PAIR_ITEM, 'pairData', 'itemData')
 }
-
 
 function decorate(pair) {
 
   // at least 2 "real" items (ie not odds)
-  const itemDeletable = pair.items.filter(
-    item => undefined === pair.solutions.find(
-      solution => solution.itemIds.length === 1 && solution.itemIds[0] === item.id
-    )
-  ).length > 1
-
+  const itemDeletable = utils.getRealItemlist(pair.items, pair.solutions).length > 2
   const itemsWithDeletable = pair.items.map(
     item => Object.assign({}, item, {
       _deletable: itemDeletable
@@ -67,9 +64,12 @@ function reduce(pair = {}, action) {
         ],
         solutions: [
           {
-            itemIds: [],
+            itemIds: [-1, -1],
             score: 1,
-            feedback: ''
+            feedback: '',
+            ordered: false,
+            _data: '',
+            _odd: false
           }
         ]
       }))
@@ -95,36 +95,112 @@ function reduce(pair = {}, action) {
         const oddSolutionToAdd = {
           itemIds: [id],
           score: 0,
-          feedback: ''
+          feedback: '',
+          _odd: true
         }
         newItem.solutions.push(oddSolutionToAdd)
       }
+
+      const itemDeletable = utils.getRealItemlist(newItem.items, newItem.solutions).length > 2
+      newItem.items.forEach(el => el._deletable = itemDeletable)
 
       return newItem
     }
 
     case UPDATE_ITEM: {
       const newItem = cloneDeep(pair)
+
+      const value = action.property === 'score' ? parseFloat(action.value) : action.value
+      const itemToUpdate = newItem.items.find(el => el.id === action.id)
+      // if it's a real item only data can be updated
+      if(!action.isOdd){
+        itemToUpdate[action.property] = value
+        // update pair item data
+        newItem.solutions.map((solution) => {
+          const solutionItemIdIndex = solution.itemIds.findIndex(id => id === action.id)
+          if(-1 < solutionItemIdIndex){
+            solution.itemIds[solutionItemIdIndex]._data = action.value
+          }
+        })
+      } else {
+        if (action.property === 'data') {
+          itemToUpdate[action.property] = value
+        } else {
+          const oddSolution = newItem.solutions.find(el => el.itemIds[0] === action.id)
+          oddSolution[action.property] = value
+        }
+      }
+
       return newItem
     }
 
     case REMOVE_ITEM: {
+
       const newItem = cloneDeep(pair)
+      const itemIndex = newItem.items.findIndex(el => el.id === action.id)
+      newItem.items.splice(itemIndex, 1)
+      if(action.isOdd){
+        // remove item from solution odds
+        const oddList = utils.getOddlist(newItem.items, newItem.solutions)
+        oddList.forEach((odd) => {
+          if(odd.itemIds[0] === action.id){
+            const idx = newItem.solutions.findIndex(el => el.itemIds[0] === action.id)
+            newItem.solutions.splice(idx, 1)
+          }
+        })
+      } else {
+        // handle deletable state
+        const itemDeletable = utils.getRealItemlist(newItem.items, newItem.solutions).length > 2
+        newItem.items.forEach(el => el._deletable = itemDeletable)
+        // remove item from solution associations
+        const solutions = cloneDeep(newItem.solutions)
+        solutions.forEach((solution) => {
+          const solutionItemIdIndex = solution.itemIds.findIndex(id => id === action.id)
+          if(-1 < solutionItemIdIndex){
+            const solutionItem = newItem.solutions.find(el => el.itemIds[solutionItemIdIndex] === action.id)
+            solutionItem.itemIds.splice(solutionItemIdIndex, 1)
+          }
+        })
+      }
+
       return newItem
     }
 
-    case ADD_SOLUTION: {
+    case ADD_PAIR: {
       const newItem = cloneDeep(pair)
+      newItem.solutions.push({
+        itemIds: [-1, -1],
+        score: 1,
+        feedback: '',
+        ordered: false,
+        _odd: false,
+        _data: ''
+      })
       return newItem
     }
 
-    case REMOVE_SOLUTION: {
+    case REMOVE_PAIR: {
       const newItem = cloneDeep(pair)
+      //action.leftId action.rightId
       return newItem
     }
 
-    case UPDATE_SOLUTION: {
+    case UPDATE_PAIR_ITEM: {
       const newItem = cloneDeep(pair)
+      // pairData = pair data + position of item dropped (0 / 1) + index (index of real solution)
+      // itemData = dropped item data
+      const realSolutionList = utils.getRealSolutionList(newItem.solutions)
+      const existingSolution = realSolutionList[action.pairData.index]
+
+      existingSolution.itemIds[action.pairData.position] = action.itemData.id
+      existingSolution._data = action.itemData.data
+
+      return newItem
+    }
+
+    case UPDATE_PAIR: {
+      const newItem = cloneDeep(pair)
+      //action.leftId action.rightId
       return newItem
     }
 
