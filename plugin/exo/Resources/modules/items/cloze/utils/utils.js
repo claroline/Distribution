@@ -145,13 +145,13 @@ utils.getTextElements = (text, holes) => {
 
 utils.getSolutionForAnswer = (solution, answer) => {
   let answerText = ''
-
   if (typeof answer === 'string') {
     answerText = answer
   } else {
     //yeah ...
-    answerText = answer.text ? answer.text: answer.textAnswer
+    answerText = answer.text ? answer.text: answer.answerText
   }
+
 
   if (!answerText) return null
 

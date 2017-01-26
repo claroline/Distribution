@@ -106,12 +106,9 @@ SelectAnswer.defaultProps = {
 
 class TextAnswer extends Component
 {
-  isSolutionValid() {
-    return utils.getSolutionForAnswer(this.props.solution, this.props.answer) ? true: false
-  }
-
   constructor(props) {
     super(props)
+    this.isSolutionValid = utils.getSolutionForAnswer(this.props.solution, this.props.answer) ? true: false
   }
 
   render() {
@@ -121,8 +118,8 @@ class TextAnswer extends Component
           className={
               classes({
                 'select-info': this.props.displayTrueAnswer,
-                'select-success': this.isSolutionValid() && !this.props.displayTrueAnswer,
-                'select-error': !this.isSolutionValid() && !this.props.displayTrueAnswer,
+                'select-success': this.isSolutionValid && !this.props.displayTrueAnswer,
+                'select-error': !this.isSolutionValid && !this.props.displayTrueAnswer,
                 'form-control': true,
                 'inline-select': true
               })
@@ -132,16 +129,16 @@ class TextAnswer extends Component
           value={this.props.displayTrueAnswer ? this.props.solution.answers[0].text: this.props.answer.answerText}
         />
         <span className={classes({
-          'score-success': this.isSolutionValid() && !this.props.displayTrueAnswer,
-          'score-danger': !this.isSolutionValid() && !this.props.displayTrueAnswer,
+          'score-success': this.isSolutionValid && !this.props.displayTrueAnswer,
+          'score-error': !this.isSolutionValid && !this.props.displayTrueAnswer,
           'score-info': this.props.displayTrueAnswer
         })}>
-          <WarningIcon solution={this.props.solution} answer={this.props.solution.answers[0]}/>{'\u00a0'}
-          {(this.props.showScore || this.isSolutionValid()) && this.props.solution.feedback &&
+          <WarningIcon solution={this.props.solution} answer={this.props.displayTrueAnswer ? this.props.solution.answers[0].text: this.props.answer.answerText}/>{'\u00a0'}
+          {(this.props.showScore || this.isSolutionValid) && this.props.solution.feedback &&
             <Feedback feedback={this.props.solution.feedback} id={this.props.solution.holeId}/>
           }
           {this.props.showScore &&
-            <SolutionScore score={this.isSolutionValid() || this.props.displayTrueAnswer ? this.props.solution.answers[0].score: 0}/>
+            <SolutionScore score={this.isSolutionValid || this.props.displayTrueAnswer ? this.props.solution.answers[0].score: 0}/>
           }
         </span>
       </span>

@@ -10,7 +10,7 @@ export const WarningIcon = props => {
 }
 
 WarningIcon.propTypes = {
-  answer: T.object,
+  answer: T.any,
   solution: T.shape({
     score: T.number,
     id: T.string
