@@ -6,6 +6,7 @@ import {utils} from './utils/utils'
 import flatten from 'lodash/flatten'
 import {notBlank} from './../../utils/validate'
 import set from 'lodash/set'
+import invariant from 'invariant'
 import {tex} from './../../utils/translate'
 
 const UPDATE_TEXT = 'UPDATE_TEXT'
@@ -25,11 +26,24 @@ export const actions = {
   openHole: makeActionCreator(OPEN_HOLE, 'holeId', 'offsetX', 'offsetY'),
   updateHole: makeActionCreator(UPDATE_HOLE, 'holeId', 'parameter', 'value'),
   addAnswer: makeActionCreator(ADD_ANSWER, 'holeId'),
-  updateAnswer: makeActionCreator(UPDATE_ANSWER, 'holeId', 'parameter', 'oldText', 'case', 'value'),
   saveHole: makeActionCreator(SAVE_HOLE),
   removeHole: makeActionCreator(REMOVE_HOLE, 'holeId'),
   removeAnswer: makeActionCreator(REMOVE_ANSWER, 'text', 'caseSensitive'),
-  closePopover: makeActionCreator(CLOSE_POPOVER)
+  closePopover: makeActionCreator(CLOSE_POPOVER),
+  updateAnswer: (holeId, parameter, oldText, caseSensitive, value) => {
+    invariant(
+      ['text', 'caseSensitive', 'feedback', 'score'].indexOf(parameter) > -1,
+      'answer attribute is not valid'
+    )
+    invariant(holeId !== undefined, 'holeId is required')
+    invariant(oldText !== undefined, 'oldText is required')
+    invariant(caseSensitive !== undefined, 'caseSensitive is required')
+
+    return {
+      type: UPDATE_ANSWER,
+      holeId, parameter, oldText, caseSensitive, value
+    }
+  }
 }
 
 export default {
@@ -79,13 +93,8 @@ function reduce(item = {}, action) {
     }
     case UPDATE_ANSWER: {
       const newItem = cloneDeep(item)
-      const answer = newItem._popover.solution.answers.find(answer => answer.text === action.oldText && answer.caseSensitive === action.case)
-
-      if (['text', 'caseSensitive', 'feedback', 'score'].indexOf(action.parameter) > -1 && answer) {
-        answer[action.parameter] = action.value
-      } else {
-        throw `${action.parameter} is not a valid answer attribute`
-      }
+      const answer = newItem._popover.solution.answers.find(answer => answer.text === action.oldText && answer.caseSensitive === action.caseSensitive)
+      answer[action.parameter] = action.value
 
       return newItem
     }

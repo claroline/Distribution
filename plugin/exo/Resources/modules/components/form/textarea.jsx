@@ -8,7 +8,7 @@ export class ContentEditable extends Component {
   constructor() {
     super()
     this.emitChange = this.emitChange.bind(this)
-    //this.getSelection.bind(this)
+    this.getSelection = this.getSelection.bind(this)
   }
 
   getSelection() {
