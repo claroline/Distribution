@@ -86,11 +86,13 @@ function getItemScoreMax(item) {
         scoreMax = item.score.success
         break
       case 'sum':
-        if (item.solutions) {
+        const expectedAnswers = getDefinition(item.type).expectAnswer(item)
+
+        if (expectedAnswers.length > 0) {
           scoreMax = 0
-          item.solutions.forEach(s => {
-            if (s.score && s.score > 0) {
-              scoreMax += s.score
+          expectedAnswers.forEach(ca => {
+            if (ca.score && ca.score > 0) {
+              scoreMax += ca.score
             }
           })
         }
