@@ -199,7 +199,7 @@ hole_edition: Edit cloze
 hole_selector: Submit a list
 hide_additional_info: Hide additional information
 hide_interact_fields: Hide hints and feedback
-hide_metadata_fields: Hide metadata and instructions
+hide_metadata_fields: Hide title and other fields
 hint_penalty: "[0,1] - %count% point|]1,Inf[ - %count% points"
 
 # I
@@ -467,7 +467,7 @@ short: Short
 show: Show
 show_feedback: Show step's feedbacks
 show_interact_fields: Hints and global feedback
-show_metadata_fields: Metadata and instructions
+show_metadata_fields: Title and other fields
 show_instructions: Show instructions
 signing: Signing
 size: Size

@@ -199,7 +199,7 @@ hole_edition: Edition d'une question à trous
 hole_selector: Proposer une liste
 hide_additional_info: Masquer les informations supplémentaires
 hide_interact_fields: Cacher les indices et le commentaire final
-hide_metadata_fields: Cacher les métadonnées et consignes
+hide_metadata_fields: Cacher le titre et les autres champs
 hint_penalty: "[0,1] - %count% point|]1,Inf[ - %count% points"
 
 # I
@@ -466,7 +466,7 @@ show_feedback: Afficher les feedbacks en fin d'étape
 show_instructions: Montrer les consignes
 show_additional_info: Afficher les informations supplémentaires
 show_interact_fields: Indices et commentaire final
-show_metadata_fields: Métadonnées et consignes
+show_metadata_fields: Titre et autres champs
 signing: Passation
 size: Taille
 start_again: Recommencer
