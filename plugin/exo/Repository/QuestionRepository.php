@@ -12,7 +12,22 @@ use UJM\ExoBundle\Entity\Question\Question;
  */
 class QuestionRepository extends EntityRepository
 {
-    public function search(User $user, array $filters = [], $page = 0, $number = -1, array $orderBy = [])
+    /**
+     * Search questions.
+     *
+     * @todo add date filters
+     * @todo add user filters
+     * @todo order query
+     *
+     * @param User      $user
+     * @param \stdClass $filters
+     * @param array     $orderBy
+     * @param int       $number  - the number of results to get
+     * @param int       $page    - the page to start (db offset is found with $number * $page)
+     *
+     * @return array
+     */
+    public function search(User $user, \stdClass $filters = null, array $orderBy = [], $number = -1, $page = 0)
     {
         $qb = $this->createQueryBuilder('q');
 
@@ -20,62 +35,67 @@ class QuestionRepository extends EntityRepository
         $qb->where('q.creator = :user');
         $qb->setParameter('user', $user);
 
-        if (empty($filters['self_only'])) {
+        if (empty($filters) || empty($filters->self_only)) {
             // Includes shared questions
         }
 
         // Type
-        if (!empty($filters['type'])) {
-            $qb->andWhere('q.mimeType = :type');
-            $qb->setParameter('type', $filters['type']);
+        if (!empty($filters) && !empty($filters->types)) {
+            $qb
+                ->andWhere('q.mimeType IN (:types)')
+                ->setParameter('types', $filters->types);
         }
 
         // Title / Content
-        if (!empty($filters['content'])) {
-            // TODO : escape search string
-            $qb->andWhere('(q.content LIKE "%:text%" OR q.title LIKE "%:text%")');
-            $qb->setParameter('text', $filters['content']);
+        if (!empty($filters) && !empty($filters->title)) {
+            $qb
+                ->andWhere('(q.content LIKE :text OR q.title LIKE :text)')
+                ->setParameter('text', '%'.addcslashes($filters->title, '%_').'%');
         }
 
-        // Dates
-        // TODO : add date filters
-
-        // Category
-        if (!empty($filters['category'])) {
-            $qb->andWhere('q.category = :category');
-            $qb->setParameter('type', $filters['category']);
+        // Categories
+        if (!empty($filters) && !empty($filters->categories)) {
+            $qb->andWhere('q.category IN (:categories)');
+            $qb->setParameter('categories', $filters->categories);
         }
 
-        // Exercise
-        if (!empty($filters['exercise'])) {
+        // Exercises
+        if (!empty($filters) && !empty($filters->exercises)) {
             $qb
                 ->join('q.stepQuestions', 'sq')
                 ->join('sq.step', 's')
                 ->join('s.exercise', 'e')
-                ->andWhere('e.uuid = :exerciseId');
+                ->andWhere('e.uuid IN (:exercises)');
 
-            $qb->setParameter('exerciseId', $filters['exercise']);
+            $qb->setParameter('exercises', $filters->exercises);
         }
 
         // Model
-        if (!empty($filters['model'])) {
+        if (!empty($filters) && !empty($filters->model_only)) {
             $qb->andWhere('q.model = true');
         }
 
-        // TODO : order query
-        // TODO : add pagination
+        if (-1 !== $number) {
+            // We don't want to load the full list
+            $qb
+                ->setFirstResult($page * $number)
+                ->setMaxResults($number);
+        }
 
-        return $qb->getQuery()->getResult();
+        return $qb
+            ->getQuery()
+            ->getResult();
     }
 
     public function findUsedBy(Question $question)
     {
-        /*$this->createQueryBuilder()*/
         return [];
     }
 
     /**
      * Returns all the questions linked to a given exercise.
+     *
+     * @deprecated this is not used
      *
      * @param Exercise $exercise
      *

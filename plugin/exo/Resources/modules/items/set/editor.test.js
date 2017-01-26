@@ -207,6 +207,7 @@ describe('Set reducer', () => {
       solutions: {
         associations: [
           {},
+          {},
           {
             setId: '1',
             itemId: '1',
@@ -332,10 +333,11 @@ describe('Set validator', () => {
 
   it('checks that at least one solutions association exists', () => {
     const item = makeFixture({}, false)
-    item.solutions.associations.splice(0, 1)
+    item.solutions.associations.splice(0, 2)
     const errors = validate(item)
     ensure.equal(errors, {
-      solutions: 'set_no_solution'
+      solutions: 'set_no_solution',
+      items: 'set_no_orphean_items'
     })
   })
 
@@ -360,7 +362,8 @@ describe('Set validator', () => {
       {
         solutions:{
           associations: [
-            {score: -2}
+            {score: -2},
+            {score: -1}
           ]
         }
       }
@@ -389,7 +392,7 @@ describe('<Set />', () => {
 
   it('has required props', () => {
     shallow(<Set item={{items:[], sets:[], solutions:{}}}/>)
-    ensure.missingProps('Set', ['onChange', 'item.id'])
+    ensure.missingProps('Set', ['validating', 'onChange', 'item.id'])
   })
 
   it('has typed props', () => {
@@ -406,6 +409,7 @@ describe('<Set />', () => {
             _errors: {}
           }
         }
+        validating={false}
         onChange={false}
       />
     )
@@ -462,6 +466,13 @@ function makeFixture(props = {}, frozen = true) {
           score: 3,
           feedback: '',
           _itemData: 'C'
+        },
+        {
+          itemId: '2',
+          setId: '1',
+          score: 1,
+          feedback: '',
+          _itemData: 'X'
         }
       ],
       odd: [

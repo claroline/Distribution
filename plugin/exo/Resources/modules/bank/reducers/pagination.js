@@ -27,7 +27,6 @@ function updatePageSize(paginationState, action = {}) {
 
 const paginationReducer = makeReducer({
   current: 0,
-  totalResults: 0,
   pageSize: 10
 }, {
   [PAGE_NEXT]: nextPage,

@@ -19,7 +19,7 @@ export default class PageHeader extends Component {
 }
 
 PageHeader.propTypes = {
-  title: T.string.isRequired,
+  title: T.node.isRequired,
   subtitle: T.string,
   children: T.node
 }

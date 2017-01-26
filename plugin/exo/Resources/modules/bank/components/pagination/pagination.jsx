@@ -1,7 +1,6 @@
-import React, { Component } from 'react'
-import ResultsPerPage from './results-per-page.jsx'
+import React, { PropTypes as T } from 'react'
 
-const T = React.PropTypes
+import { ResultsPerPage } from './results-per-page.jsx'
 
 const PaginationLink = props =>
   <li className={props.className}>
@@ -44,7 +43,6 @@ PageLink.defaultProps = {
   current: false
 }
 
-// TODO : find a way to add the `aria-label`
 const PreviousLink = props =>
   <PaginationLink
     className={props.disabled ? 'disabled' : ''}
@@ -56,6 +54,7 @@ const PreviousLink = props =>
     }}
   >
     <span aria-hidden="true">&laquo;</span>
+    <span className="sr-only">Previous</span>
   </PaginationLink>
 
 PreviousLink.propTypes = {
@@ -67,7 +66,6 @@ PreviousLink.defaultProps = {
   disabled: false
 }
 
-// TODO : find a way to add the `aria-label`
 const NextLink = props =>
   <PaginationLink
     className={props.disabled ? 'disabled' : ''}
@@ -79,6 +77,7 @@ const NextLink = props =>
     }}
   >
     <span aria-hidden="true">&raquo;</span>
+    <span className="sr-only">Next</span>
   </PaginationLink>
 
 NextLink.propTypes = {
@@ -90,43 +89,43 @@ NextLink.defaultProps = {
   disabled: false
 }
 
-export default class Pagination extends Component {
-  render() {
-    const PageLinks = []
-    for (let i = 0; i < this.props.pages; i++) {
-      PageLinks.push(
-        <PageLink
-          key={i}
-          page={i}
-          current={i === this.props.current}
-          handlePageChange={this.props.handlePageChange}
-        />
-      )
-    }
+export const Pagination = props => {
+  const PageLinks = []
+  for (let i = 0; i < props.pages; i++) {
+    PageLinks.push(
+      <PageLink
+        key={i}
+        page={i}
+        current={i === props.current}
+        handlePageChange={props.handlePageChange}
+      />
+    )
+  }
 
-    return (
-      <nav className="pagination-container" aria-label="Page navigation">
-        <ResultsPerPage
-          pageSize={this.props.pageSize}
-          handlePageSizeUpdate={this.props.handlePageSizeUpdate}
-        />
+  return (
+    <nav className="pagination-container page-nav" aria-label="Page navigation">
+      <ResultsPerPage
+        pageSize={props.pageSize}
+        handlePageSizeUpdate={props.handlePageSizeUpdate}
+      />
 
+      {1 !== props.pages &&
         <ul className="pagination">
           <PreviousLink
-            disabled={0 === this.props.current}
-            handlePagePrevious={this.props.handlePagePrevious}
+            disabled={0 === props.current}
+            handlePagePrevious={props.handlePagePrevious}
           />
 
           {PageLinks}
 
           <NextLink
-            disabled={this.props.pages - 1 === this.props.current}
-            handlePageNext={this.props.handlePageNext}
+            disabled={props.pages - 1 === props.current}
+            handlePageNext={props.handlePageNext}
           />
         </ul>
-      </nav>
-    )
-  }
+      }
+    </nav>
+  )
 }
 
 Pagination.propTypes = {

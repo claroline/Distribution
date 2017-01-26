@@ -1,33 +1,15 @@
 import {makeReducer} from './../../utils/reducers'
 
 import {
-  QUESTION_REQUEST,
-  QUESTION_CREATE,
-  QUESTION_UPDATE,
-  QUESTION_DELETE
+  QUESTIONS_SET
 } from './../actions/questions'
 
-function requestQuestions() {
-
-}
-
-function createQuestion() {
-
-}
-
-function updateQuestion() {
-
-}
-
-function deleteQuestion() {
-
+function setQuestions(state, action) {
+  return action.questions
 }
 
 const questionsReducer = makeReducer([], {
-  [QUESTION_REQUEST]: requestQuestions,
-  [QUESTION_CREATE]: createQuestion,
-  [QUESTION_UPDATE]: updateQuestion,
-  [QUESTION_DELETE]: deleteQuestion
+  [QUESTIONS_SET]: setQuestions
 })
 
 export default questionsReducer
