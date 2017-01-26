@@ -5,14 +5,12 @@ import {Feedback} from '../components/feedback-btn.jsx'
 export const OpenPaper = props => {
   return (
     <PaperTabs
-      item={props.item}
-      answer={props.answer}
+      id={props.item.id}
       hideExpected={true}
-      score={props.answerObject.score ? props.answerObject.score : ''}
       yours={
-        <div>
-          {props.answerObject.feedback &&
-            <div className="row">
+        <div className="open-paper">
+          {props.answerObject && props.answerObject.feedback &&
+            <div className="row open-paper-feedback">
               <span className="pull-right">
                 <Feedback
                   id={props.answerObject.id}
@@ -21,10 +19,13 @@ export const OpenPaper = props => {
               </span>
             </div>
           }
-          <div className="row" dangerouslySetInnerHTML={{__html: props.answer}}>
+          <div className="open-paper-data" dangerouslySetInnerHTML={{__html: props.answer}}>
           </div>
         </div>
       }
     />
   )
+}
+OpenPaper.propTypes = {
+  answerObject: T.object
 }
