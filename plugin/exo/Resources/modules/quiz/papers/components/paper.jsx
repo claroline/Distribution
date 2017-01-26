@@ -75,7 +75,29 @@ function getAnswerScore(itemId, answers) {
 }
 
 function getItemScoreMax(item) {
-  return item && item.score && item.score.max ? item.score.max : undefined
+  let scoreMax
+
+  if (item && item.score) {
+    switch (item.score.type) {
+      case 'manual':
+        scoreMax = item.score.max
+        break
+      case 'fixed':
+        scoreMax = item.score.success
+        break
+      case 'sum':
+        if (item.solutions) {
+          scoreMax = 0
+          item.solutions.forEach(s => {
+            if (s.score && s.score > 0) {
+              scoreMax += s.score
+            }
+          })
+        }
+        break
+    }
+  }
+  return scoreMax
 }
 
 function mapStateToProps(state) {
