@@ -25,7 +25,7 @@ export function decorate(state, itemDecorators = {}, applyOnItems = true) {
     steps: mapValues(newState.steps, step => defaultsDeep(step, defaults.step)),
     items: mapValues(newState.items, item => {
       const subDecorator = itemDecorators[item.type] || (item => item)
-      return decorateItem(item, subDecorator, applyOnItems)
+      return applyOnItems ? decorateItem(item, subDecorator) : item
     }),
     editor: {
       currentObject: {
@@ -36,10 +36,7 @@ export function decorate(state, itemDecorators = {}, applyOnItems = true) {
   })
 }
 
-export function decorateItem(item, subDecorator = item => item, apply = true) {
-  if (!apply) {
-    return item
-  }
+export function decorateItem(item, subDecorator = item => item) {
   let decorated = defaultsDeep(item, defaults.item)
 
   decorated.hints = decorated.hints.map(hint =>
