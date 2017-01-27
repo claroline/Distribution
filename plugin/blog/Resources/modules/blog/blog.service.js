@@ -24,9 +24,6 @@ export default class BlogService {
     this.newPost = null
     this.currentPostDate = null
     this.tempInfo = this.info
-
-    this.init()
-
   }
 
   get id() { return _blogData.get(this).id }
@@ -35,12 +32,14 @@ export default class BlogService {
   get panels() { return _blogData.get(this).panels }
   set panels(panels) { return _blogData.get(this).panels = panels }
   get archives() { return _blogData.get(this).archives }
+  set archives(archives) { _blogData.get(this).archives = archives }
   get info() { return _blogData.get(this).info }
   set info(info) { _blogData.get(this).info = info }
   get isGrantedAdmin() { return _blogData.get(this).isGrantedAdmin }
   get isGrantedEdit() { return _blogData.get(this).isGrantedEdit }
   get isGrantedPost() { return _blogData.get(this).isGrantedPost }
   get authors() { return _blogData.get(this).authors }
+  set authors(authors) { _blogData.get(this).authors = authors }
   get rssUrl() { return _blogData.get(this).rssUrl }
   get options() { return _blogData.get(this).options }
   set options(options) { _blogData.get(this).options = options }
@@ -51,10 +50,6 @@ export default class BlogService {
   get banner_dir() { return _blogData.get(this).banner_dir  }
   get user() { return _blogData.get(this).user }
   get loginUrl() { return _blogData.get(this).loginUrl }
-
-  init() {
-    //this.getPosts();
-  }
 
   getPosts(page = null) {
     const url = _url.get(this)('icap_blog_api_get_blog_post', {
@@ -240,6 +235,30 @@ export default class BlogService {
       }
     )
   }
+  
+  _updateGeneralInfo() {
+    // Authors
+    this._fetchAuthors()
+    
+    // Tags
+    this._fetchTags()
+    
+    // Archives
+    this._fetchArchives()
+  }
+
+  _fetchAuthors() {
+    const url = _url.get(this)('icap_blog_api_get_blog_authors', {
+      'blog': this.id
+    })
+
+    let Authors = _$resource.get(this)(url)
+    Authors.query(
+      success => {
+        this.authors = success
+      }
+    )
+  }
 
   _fetchTags() {
     const url = _url.get(this)('icap_blog_api_get_blog_tags', {
@@ -250,6 +269,19 @@ export default class BlogService {
     Tags.query(
       success => {
         this.tags = success
+      }
+    )
+  }
+
+  _fetchArchives() {
+    const url = _url.get(this)('icap_blog_api_get_blog_archives', {
+      'blog': this.id
+    })
+
+    let Archives = _$resource.get(this)(url)
+    Archives.query(
+      success => {
+        this.archives = success
       }
     )
   }
@@ -264,8 +296,7 @@ export default class BlogService {
 
     return post.$save(
       () => {
-        // Update tags
-        this._fetchTags()
+        this._updateGeneralInfo()        
       }
     )
 

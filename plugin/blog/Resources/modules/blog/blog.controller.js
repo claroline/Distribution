@@ -184,8 +184,6 @@ export default class BlogController {
         this.disableButtons = false
       })
   }
-
-  
   
   cancelInfo() {
     _$location.get(this).url('/')

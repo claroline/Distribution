@@ -66,7 +66,8 @@
             &nbsp;
             <button data-ng-click="postCtrl.commentsDesc = !postCtrl.commentsDesc"
                     data-uib-tooltip="{{ postCtrl.commentsDesc ? 'comment_sort_asc' : 'comment_sort_desc' | trans:{}:'icap_blog' }}"
-                    data-tooltip-placement="top-right">
+                    data-tooltip-placement="top-right"
+                    data-ng-if="postCtrl.blog.currentPost.comments.length > 1">
                 <span class="fa"
                       data-ng-class="postCtrl.commentsDesc ? 'fa-arrow-circle-o-down' : 'fa-arrow-circle-o-up'">
                 </span>

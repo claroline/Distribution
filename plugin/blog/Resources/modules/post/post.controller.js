@@ -61,9 +61,10 @@ export default class PostController {
         )
     }
     
-    // Create a new post on controller init with default publication date
+    // Create a new post on controller init with default publication date, and empty tag array
     this.blog.newPost = {
-      publication_date: new Date()
+      publication_date: new Date(),
+      tags: []
     }
   }
   

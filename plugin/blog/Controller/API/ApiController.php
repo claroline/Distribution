@@ -120,6 +120,30 @@ class ApiController extends BaseController
     }
 
     /**
+     * Get all authors for a given blog.
+     *
+     * @Route(requirements={ "blog" = "\d+" })
+     */
+    public function getBlogAuthorsAction(Blog $blog)
+    {
+        $this->checkAccess('OPEN', $blog);
+
+        return $this->get('icap.blog.post_repository')->findAuthorsByBlog($blog);
+    }
+
+    /**
+     * Get all archives for a given blog.
+     *
+     * @Route(requirements={ "blog" = "\d+" })
+     */
+    public function getBlogArchivesAction(Blog $blog)
+    {
+        $this->checkAccess('OPEN', $blog);
+
+        return $this->getArchiveDatas($blog);
+    }
+
+    /**
      * Get a post by id or slug.
      *
      * @Route(requirements={ "blog" = "\d+", "postId" = ".+" })
@@ -272,16 +296,6 @@ class ApiController extends BaseController
         $this->checkAccess('OPEN', $blog);
 
         return $this->getPostsByDate($blog, $month, $paramFetcher);
-    }
-
-    private function getPostsByDate(Blog $blog, $date, ParamFetcher $paramFetcher)
-    {
-        return $this->get('icap.blog.manager.post')->getPostsByDatePaged(
-            $blog,
-            $date,
-            !$this->isUserGranted('EDIT', $blog),
-            $paramFetcher->get('page')
-        );
     }
 
     /**
@@ -816,5 +830,22 @@ class ApiController extends BaseController
         }
 
         return $archiveDatas;
+    }
+
+    /**
+     * @param Blog $blog
+     * @param $date
+     * @param ParamFetcher $paramFetcher
+     *
+     * @return mixed
+     */
+    private function getPostsByDate(Blog $blog, $date, ParamFetcher $paramFetcher)
+    {
+        return $this->get('icap.blog.manager.post')->getPostsByDatePaged(
+            $blog,
+            $date,
+            !$this->isUserGranted('EDIT', $blog),
+            $paramFetcher->get('page')
+        );
     }
 }
