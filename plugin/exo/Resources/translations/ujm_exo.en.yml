@@ -175,14 +175,16 @@ from: From
 formative : Formative
 
 # G
-graphic: Graphic
-graphic_area_shape_rect: Rectangle
-graphic_area_shape_circle: Circle
-graphic_area_shape_poly: Polygon
-graphic_creation: Graphic creation
-graphic_edition: Graphic edition
-graphic_help: Drag the cross on the picture to mark your answer
-group: Group
+graphic_drop_or_pick: Drop an image here or use the button above.
+graphic_error_image_too_large: Selected image is too big.
+graphic_error_no_image: You must select an image.
+graphic_error_no_solution: You must create at least one answer zone.
+graphic_error_not_an_image: Selected file is not an image.
+graphic_feedback_info: Feedback if the user clicks inside this area
+graphic_pick_image: Pick an image
+graphic_mode_rect: Rectangular answer zone
+graphic_mode_circle: Circular answer zone
+graphic_mode_select: Select an answer zone
 
 # H
 hide_instructions: Hide instructions

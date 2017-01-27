@@ -1,0 +1,133 @@
+.graphic-editor {
+  .top-controls {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .img-dropzone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    margin-bottom: 12px;
+    padding: 12px;
+    border: dashed 1px #ddd;
+    border-radius: @border-radius-base;
+  }
+
+  .img-widget {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .img-container {
+    img {
+      max-width: 100%;
+      border: solid 1px #ddd;
+    }
+
+    img.point-mode {
+      cursor: crosshair;
+    }
+  }
+
+  .area-handle {
+    .area-frame {
+      border: dashed transparent;
+    }
+
+    .resizer {
+      background-color: transparent;
+      border-radius: 3px;
+    }
+
+    [role="button"] {
+      color: #555;
+      background-color: #fff;
+      border: solid 1px #aaa;
+      border-radius: 2px;
+      padding: 1px;
+      visibility: hidden;
+    }
+  }
+
+  .area-handle.selected {
+    z-index: 100;
+    cursor: move;
+
+    .area-frame {
+      border-color: #fff;
+    }
+
+    .resizer {
+      background-color: blue;
+    }
+
+    .n, .s {
+      cursor: ns-resize;
+    }
+
+    .e, .w {
+      cursor: ew-resize;
+    }
+
+    .nw, .se {
+      cursor: nwse-resize;
+    }
+
+    .ne, .sw {
+      cursor: nesw-resize;
+    }
+
+    [role="button"] {
+      visibility: visible;
+    }
+  }
+
+  .area-handle.selected.undraggable,
+  .area-handle.selected.undraggable .resizer {
+    cursor: not-allowed;
+  }
+
+  .area-popover {
+    max-width: none;
+    width: 280px;
+
+    .base-controls {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-right: 6px;
+    }
+
+    .base-controls > * {
+      display: flex;
+      align-items: baseline;
+
+      label {
+        margin-right: 8px;
+      }
+    }
+
+    .score-input {
+      width: 52px;
+      padding-left: 6px;
+      padding-right: 6px;
+    }
+
+    .feedback-container {
+      margin: 12px auto -10px;
+    }
+
+    .close-tip-btn {
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+  }
+
+  .area-popover.has-feedback .arrow {
+    display: none;
+  }
+}
