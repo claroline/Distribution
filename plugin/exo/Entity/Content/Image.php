@@ -3,6 +3,8 @@
 namespace UJM\ExoBundle\Entity\Content;
 
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
+use UJM\ExoBundle\Library\Model\UuidTrait;
 
 /**
  * Image.
@@ -12,6 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Image
 {
+    use UuidTrait;
+
     /**
      * @var int
      *
@@ -55,6 +59,14 @@ class Image
      * @ORM\Column(type="integer")
      */
     private $height;
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        $this->uuid = Uuid::uuid4()->toString();
+    }
 
     /**
      * Get id.

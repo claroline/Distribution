@@ -10,7 +10,6 @@ import NavItem from 'react-bootstrap/lib/NavItem'
 import {Feedback} from '../components/feedback-btn.jsx'
 import {SolutionScore} from '../components/score.jsx'
 import {utils} from './utils/utils'
-import {Metadata} from '../components/metadata.jsx'
 
 /* global jsPlumb */
 
@@ -55,20 +54,20 @@ function initJsPlumb(jsPlumbInstance) {
 }
 
 export const MatchLinkPopover = props =>
-      <Popover
-        id={`popover-${props.solution.firstId}-${props.solution.secondId}`}
-        positionTop={props.top}
-        placement="bottom"
-        >
-          <div className={classes(
-            'fa',
-            {'fa-check text-success' : props.solution.score > 0},
-            {'fa-times text-danger' : props.solution.score <= 0 }
-          )}>
-          </div>
-          &nbsp;<label className="label popover-label" dangerouslySetInnerHTML={{__html: props.solution.feedback}}/>
-        &nbsp;<label className="label popover-label">{props.solution.score}</label>
-      </Popover>
+  <Popover
+    id={`popover-${props.solution.firstId}-${props.solution.secondId}`}
+    positionTop={props.top}
+    placement="bottom"
+    >
+      <div className={classes(
+        'fa',
+        {'fa-check text-success' : props.solution.score > 0},
+        {'fa-times text-danger' : props.solution.score <= 0 }
+      )}>
+      </div>
+      &nbsp;<label className="label popover-label" dangerouslySetInnerHTML={{__html: props.solution.feedback}}/>
+    &nbsp;<label className="label popover-label">{props.solution.score}</label>
+  </Popover>
 
 
 MatchLinkPopover.propTypes = {
@@ -217,7 +216,6 @@ export class MatchPaper extends Component
             <div ref={(el) => { this.container = el }} id={`jsplumb-container-${this.props.item.id}`} className="jsplumb-container" style={{position:'relative'}}>
               <Tab.Content animation>
                 <Tab.Pane eventKey="first">
-                  <Metadata title={this.props.item.title} description={this.props.item.description}/>
                   <div id={`match-question-paper-${this.props.item.id}-first`} className="match-question-paper">
                     <div className="jsplumb-row">
                       <div className="item-col">
@@ -258,7 +256,6 @@ export class MatchPaper extends Component
                   </div>
                 </Tab.Pane>
                 <Tab.Pane eventKey="second">
-                  <Metadata title={this.props.item.title} description={this.props.item.description}/>
                   <div id={`match-question-paper-${this.props.item.id}-second`} className="match-question-paper">
                     <div className="jsplumb-row">
                       <div className="item-col">

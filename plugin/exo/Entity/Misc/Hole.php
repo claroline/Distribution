@@ -178,11 +178,18 @@ class Hole
      */
     public function setKeywords(array $keywords)
     {
-        $this->keywords = new ArrayCollection(array_map(function (Keyword $keyword) {
-            $keyword->setHole($this);
+        // Removes old keywords
+        $oldKeywords = array_filter($this->keywords->toArray(), function (Keyword $keyword) use ($keywords) {
+            return !in_array($keyword, $keywords);
+        });
+        array_walk($oldKeywords, function (Keyword $keyword) {
+            $this->removeKeyword($keyword);
+        });
 
-            return $keyword;
-        }, $keywords));
+        // Adds new ones
+        array_walk($keywords, function (Keyword $keyword) {
+            $this->addKeyword($keyword);
+        });
     }
 
     /**

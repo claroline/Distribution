@@ -14,7 +14,7 @@ add_step: Add a step
 add_zone_answer: Add an answer zone
 additional_info: Additional information
 advanced_edition: Advanced edition
-after_the_last_attempt: After the last attempt
+after_the_last_attempt: After the last attempt of the step
 alert_ending: Are you sure you want to finish ? (You won't be allowed to modify your answers anymore.)
 all: All
 all_types: All types
@@ -175,14 +175,16 @@ from: From
 formative : Formative
 
 # G
-graphic: Graphic
-graphic_area_shape_rect: Rectangle
-graphic_area_shape_circle: Circle
-graphic_area_shape_poly: Polygon
-graphic_creation: Graphic creation
-graphic_edition: Graphic edition
-graphic_help: Drag the cross on the picture to mark your answer
-group: Group
+graphic_drop_or_pick: Drop an image here or use the button above.
+graphic_error_image_too_large: Selected image is too big.
+graphic_error_no_image: You must select an image.
+graphic_error_no_solution: You must create at least one answer zone.
+graphic_error_not_an_image: Selected file is not an image.
+graphic_feedback_info: Feedback if the user clicks inside this area
+graphic_pick_image: Pick an image
+graphic_mode_rect: Rectangular answer zone
+graphic_mode_circle: Circular answer zone
+graphic_mode_select: Select an answer zone
 
 # H
 hide_instructions: Hide instructions
@@ -199,7 +201,7 @@ hole_edition: Edit cloze
 hole_selector: Submit a list
 hide_additional_info: Hide additional information
 hide_interact_fields: Hide hints and feedback
-hide_metadata_fields: Hide metadata and instructions
+hide_metadata_fields: Hide title and other fields
 hint_penalty: "[0,1] - %count% point|]1,Inf[ - %count% points"
 
 # I
@@ -291,7 +293,7 @@ never: Never
 new_name: New name of the document
 next: Next
 no: No
-no_answer: No answer
+no_answer: No answer.
 no_answer_zone: There is no answer zone
 no_finish: Not finished
 no_pic_found: No document found
@@ -467,7 +469,7 @@ short: Short
 show: Show
 show_feedback: Show step's feedbacks
 show_interact_fields: Hints and global feedback
-show_metadata_fields: Metadata and instructions
+show_metadata_fields: Title and other fields
 show_instructions: Show instructions
 signing: Signing
 size: Size
