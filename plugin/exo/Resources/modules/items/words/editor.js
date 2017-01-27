@@ -18,16 +18,25 @@ export const actions = {
 }
 
 function decorate(item) {
+  const decoratedSolutions = item.solutions.map(
+    solution => {
+      solution = Object.assign({}, solution, {
+        _deletable: item.solutions.length > 1
+      })
 
-  const solutionsWithDeletable = item.solutions.map(
-    solution => Object.assign({}, solution, {
-      _deletable: item.solutions.length > 1
-    })
+      if (!solution.feedback) {
+        solution = Object.assign({}, solution, {
+          feedback: ''
+        })
+      }
+
+      return solution
+    }
   )
 
   let decorated = Object.assign({}, item, {
     _wordsCaseSensitive: false,
-    solutions: solutionsWithDeletable
+    solutions: decoratedSolutions
   })
 
   return decorated
@@ -111,5 +120,6 @@ function validate(item) {
 export default {
   component,
   reduce,
-  validate
+  validate,
+  decorate
 }
