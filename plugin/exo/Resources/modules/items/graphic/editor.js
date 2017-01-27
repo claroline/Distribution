@@ -331,7 +331,7 @@ function decorate(item) {
       }
     }),
     _mode: MODE_RECT,
-    _currentColor: '#00f',
+    _currentColor: '#0693e3',
     _popover: {
       areaId: '',
       open: false,
