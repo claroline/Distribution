@@ -163,7 +163,7 @@ class GridRow implements AnswerPartInterface
      */
     public function removeItem(GridItem $item)
     {
-        foreach ($this->rowItems as $index => $rowItem) {
+        foreach ($this->rowItems as $rowItem) {
             if ($rowItem->getItem()->getUuid() === $item->getUuid()) {
                 $this->rowItems->removeElement($rowItem);
                 break;

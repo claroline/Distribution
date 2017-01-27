@@ -133,7 +133,7 @@ class PairQuestionSerializer implements SerializerInterface
     {
         $itemEntities = $pairQuestion->getItems()->toArray();
 
-        foreach ($items as $index => $itemData) {
+        foreach ($items as $itemData) {
             $item = null;
 
             // Searches for an existing choice entity.
