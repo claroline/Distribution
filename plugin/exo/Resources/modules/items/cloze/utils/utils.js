@@ -32,7 +32,7 @@ utils.makeTinyHtml = (solution) => {
     input = `
       <span class="cloze-input" data-hole-id="${solution.holeId}">
         <select
-          *style="width: auto; margin: 10px; display: inline;"
+          style="width: auto; margin: 10px; display: inline;"
           class="hole-input form-control"
           data-hole-id="${solution.holeId}"
           type="text"
@@ -56,10 +56,16 @@ utils.getTextWithPlacerHoldersFromHtml = (text) =>
     $(this).replaceWith(`[[${id}]]`)
   })
 
+  //we remove the last tag because it's added automatically
+  const regex = new RegExp('(<\/[^<>]*>$)', 'gi')
+  tmp.innerHTML = tmp.innerHTML.replace(regex, '')
+
   return $(tmp).html()
+
 /*
   const tmp = document.createElement('div')
   tmp.innerHTML = text
+
   tmp.querySelectorAll('.cloze-input').forEach(input => {
     const placeholder = document.createTextNode(`[[${input.dataset.holeId}]]`)
     tmp.replaceChild(placeholder, input)
@@ -134,13 +140,15 @@ utils.getTextElements = (text, holes) => {
   holes.forEach((hole) => {
     const regex = new RegExp(`(\\[\\[${hole.id}\\]\\])`, 'g')
     const position = text.search(regex)
-    data.push({
-      choices: hole.choices,
-      position,
-      multiple: false,
-      holeId: hole.id,
-      size: hole.size
-    })
+    if (position > -1) {
+      data.push({
+        choices: hole.choices,
+        position,
+        multiple: false,
+        holeId: hole.id,
+        size: hole.size
+      })
+    }
   })
 
   return data

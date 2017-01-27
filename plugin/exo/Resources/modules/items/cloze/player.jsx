@@ -7,6 +7,7 @@ export class ClozePlayer extends Component {
   constructor(props) {
     super(props)
     this.onAnswer = this.onAnswer.bind(this)
+    this.elements = utils.split(this.props.item.text, this.props.item.holes, this.props.item.solutions)
   }
 
   onAnswer(holeId, text) {
@@ -21,48 +22,49 @@ export class ClozePlayer extends Component {
     return answers
   }
 
-  render() {
-    const elements = utils.split(this.props.item.text, this.props.item.holes, this.props.item.solutions)
+  getHtml() {
+    return this.elements.map((el, key) => {
+      return el.choices ?
+        `
+        ${el.text}
+        <select
+          id=${'answer'+key}
+          defaultValue=''
+          class="form-control inline-select"
+        >
+          <option value=''>${tex('please_choose')}</option>
+          ${el.choices.map((choice, idx) => `<option value=${choice} key=${idx}>${ choice }</option>`)}
+        </select>
+        </span>
+      `:
+      el.holeId ?
+       `
+         ${el.text}
+         <input
+           id=${'answer'+key}
+           class="form-control inline-select"
+           type="text"
+           size=${el.size}
+         />
+     `:
+      el.text
+    }).reduce((a, b) => a += b)
+  }
 
-    return (
-      <div>
-        {elements.map((el, key) => {
-          return (
-            <span key={key}>
-              {(el.choices) ?
-                <span>
-                  {el.text}
-                    <select
-                      defaultValue=''
-                      className="form-control inline-select"
-                      onChange={(e) => this.props.onChange(this.onAnswer(
-                      el.holeId,
-                      e.target.value
-                    ))}>
-                      <option value=''>{tex('please_choose')}</option>
-                      {el.choices.map((choice, idx) => <option value={choice} key={idx}>{ choice }</option>)}
-                    </select>
-                </span> :
-                (el.holeId) ?
-                  <span>
-                    <span dangerouslySetInnerHTML={{__html: el.text}}/>
-                    <input
-                      className="form-control inline-select"
-                      type="text"
-                      size={el.size}
-                      onChange={(e) => this.props.onChange(this.onAnswer(
-                        el.holeId,
-                        e.target.value
-                      ))
-                    }/>
-                  </span> :
-                  <span dangerouslySetInnerHTML={{__html: el.text}}/>
-              }
-            </span>
-          )
-        })}
-      </div>
-    )
+  render() {
+    return <div dangerouslySetInnerHTML={{__html: this.getHtml()}} />
+  }
+
+  componentDidMount() {
+    this.elements.forEach((el, key) => {
+      let htmlElement = document.getElementById('answer' + key)
+      if (htmlElement) {
+        htmlElement.addEventListener(
+          'change',
+          e => this.props.onChange(this.onAnswer(el.holeId, e.target.value))
+        )
+      }
+    })
   }
 }
 
