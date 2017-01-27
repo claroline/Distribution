@@ -242,7 +242,7 @@ export default class BlogService {
     
     // Tags
     this._fetchTags()
-    
+
     // Archives
     this._fetchArchives()
   }
@@ -319,6 +319,8 @@ export default class BlogService {
         }
 
         this.getPosts(page)
+
+        this._updateGeneralInfo()
       }
     )
   }
@@ -405,8 +407,7 @@ export default class BlogService {
       success => {
         this.setCurrentPost(success)
 
-        // Update tags
-        this._fetchTags()
+        this._updateGeneralInfo()
       }
     )
   }
