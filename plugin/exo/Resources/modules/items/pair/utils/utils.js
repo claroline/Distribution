@@ -6,7 +6,7 @@ export const utils = {}
  */
 utils.getOddlist = (items, solutions) => {
   return items.filter(item => undefined !== solutions.find(
-    solution => solution._odd && solution.itemIds[0] === item.id
+    solution => solution.itemIds.length === 1 && solution.itemIds[0] === item.id
   ))
 }
 
@@ -16,7 +16,7 @@ utils.getOddlist = (items, solutions) => {
 utils.getRealItemlist = (items, solutions) => {
   if(utils.getOddlist(items, solutions).length > 0) {
     return items.filter(item => undefined === solutions.find(
-      solution => solution._odd && solution.itemIds[0] === item.id
+      solution => solution.itemIds.length === 1 && solution.itemIds[0] === item.id
     ))
   }
   return items
@@ -26,22 +26,21 @@ utils.getRealItemlist = (items, solutions) => {
  * get solutions minus odd
  */
 utils.getRealSolutionList = (solutions) => {
-  return solutions.filter(solution => !solution._odd)
+  return solutions.filter(solution => solution.itemIds.length === 2)
 }
 
 utils.getOddSolution = (oddItem, solutions) => {
-  return solutions.find(solution => solution._odd && solution.itemIds[0] === oddItem.id)
+  return solutions.find(solution => solution.itemIds.length === 1 && solution.itemIds[0] === oddItem.id)
 }
 
 utils.getPairItemData = (itemId, items) => {
+  console.log('getPairItemData')
   const item = items.find(item => item.id === itemId)
   return undefined !== item ?  item.data : ''
 }
 
 utils.canAddSolution = (solutions, pairToUpdate, item) => {
-  let test= []
-  test[1] = 'blah'
-  console.log(test)
+
   console.log('pairToUpdate', pairToUpdate)
   console.log('item', item)
   // pair has no items
@@ -55,7 +54,7 @@ utils.canAddSolution = (solutions, pairToUpdate, item) => {
     const indexToCheck = pairToUpdate.position === 0 ? 1 : 0
     const firstCheck = solutionToUpdate.itemIds[indexToCheck] !== item.id
     // - other pairs exist and in one of them items are the same and in the same place
-    const fullPairs = solutions.filter(solution => !solution._odd && solution.itemIds.length === 2)
+    const fullPairs = solutions.filter(solution => solution.itemIds.length === 2)
     const secondCheck = fullPairs.some(pair => {
       return pair.itemIds[pairToUpdate.position] === item.id && pair.itemIds[indexToCheck] === solutionToUpdate.itemIds[indexToCheck]
     })

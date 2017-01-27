@@ -13,7 +13,7 @@ const UPDATE_ITEM = 'UPDATE_ITEM'
 const ADD_PAIR = 'ADD_PAIR'
 const REMOVE_PAIR = 'REMOVE_PAIR'
 const UPDATE_PAIR = 'UPDATE_PAIR'
-const UPDATE_PAIR_ITEM = 'UPDATE_PAIR_ITEM'
+const DROP_PAIR_ITEM = 'DROP_PAIR_ITEM'
 
 export const actions = {
   updateProperty: makeActionCreator(UPDATE_PROP, 'property', 'value'),
@@ -22,8 +22,8 @@ export const actions = {
   updateItem:  makeActionCreator(UPDATE_ITEM, 'id', 'property', 'value', 'isOdd'),
   addPair: makeActionCreator(ADD_PAIR),
   removePair: makeActionCreator(REMOVE_PAIR, 'leftId', 'rightId'),
-  updatePair: makeActionCreator(UPDATE_PAIR, 'leftId', 'rightId', 'property', 'value'),
-  updatePairItem: makeActionCreator(UPDATE_PAIR_ITEM, 'pairData', 'itemData')
+  updatePair: makeActionCreator(UPDATE_PAIR, 'index', 'property', 'value'),
+  dropPairItem: makeActionCreator(DROP_PAIR_ITEM, 'pairData', 'itemData')
 }
 
 function decorate(pair) {
@@ -68,8 +68,7 @@ function reduce(pair = {}, action) {
             score: 1,
             feedback: '',
             ordered: false,
-            _data: '',
-            _odd: false
+            _deletable: false
           }
         ]
       }))
@@ -95,8 +94,7 @@ function reduce(pair = {}, action) {
         const oddSolutionToAdd = {
           itemIds: [id],
           score: 0,
-          feedback: '',
-          _odd: true
+          feedback: ''
         }
         newItem.solutions.push(oddSolutionToAdd)
       }
@@ -119,7 +117,7 @@ function reduce(pair = {}, action) {
         newItem.solutions.map((solution) => {
           const solutionItemIdIndex = solution.itemIds.findIndex(id => id === action.id)
           if(-1 < solutionItemIdIndex){
-            solution.itemIds[solutionItemIdIndex]._data = action.value
+            solution._data = action.value
           }
         })
       } else {
@@ -172,38 +170,43 @@ function reduce(pair = {}, action) {
         itemIds: [-1, -1],
         score: 1,
         feedback: '',
-        ordered: false,
-        _odd: false,
-        _data: ''
+        ordered: false
+      })
+
+      const realSolutions = utils.getRealSolutionList(newItem.solutions)
+      realSolutions.forEach(solution => {
+        solution._deletable = realSolutions.length > 1
       })
       return newItem
     }
 
     case REMOVE_PAIR: {
       const newItem = cloneDeep(pair)
-      //action.leftId action.rightId
-      return newItem
-    }
-
-    case UPDATE_PAIR_ITEM: {
-      const newItem = cloneDeep(pair)
-      // pairData = pair data + position of item dropped (0 / 1) + index (index of real solution)
-      // itemData = dropped item data
-      const realSolutionList = utils.getRealSolutionList(newItem.solutions)
-      const existingSolution = realSolutionList[action.pairData.index]
-
-      existingSolution.itemIds[action.pairData.position] = action.itemData.id
-      existingSolution._data = action.itemData.data
-
+      const idxToRemove = newItem.solutions.findIndex(solution => solution.itemIds[0] === action.leftId && solution.itemIds[1] === action.rightId)
+      newItem.solutions.splice(idxToRemove, 1)
       return newItem
     }
 
     case UPDATE_PAIR: {
       const newItem = cloneDeep(pair)
-      //action.leftId action.rightId
+      // 'index', 'property', 'value'
+      // can update score feedback and coordinates
+      const value = action.property === 'score' ? parseFloat(action.value) : action.value
+      const solutionToUpdate = utils.getRealSolutionList(newItem.solutions)[action.index] //newItem.solutions.find(solution => solution.itemIds[0] === action.leftId && solution.itemIds[1] === action.rightId)
+      solutionToUpdate[action.property] = value
       return newItem
     }
 
+    case DROP_PAIR_ITEM: {
+      const newItem = cloneDeep(pair)
+      // pairData = pair data + position of item dropped (0 / 1) + index (index of real solution)
+      // itemData = dropped item data
+      const realSolutionList = utils.getRealSolutionList(newItem.solutions)
+      const existingSolution = realSolutionList[action.pairData.index]
+      existingSolution.itemIds[action.pairData.position] = action.itemData.id
+
+      return newItem
+    }
   }
   return pair
 }

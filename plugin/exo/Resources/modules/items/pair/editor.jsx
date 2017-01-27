@@ -43,9 +43,14 @@ class Pair extends Component {
 
   render() {
     return (
-      <div className="pair">
-        <label>{`${tex('pair_pair')} ${this.props.index + 1}`}</label>
-        <hr/>
+      <div className={classes(
+          'pair',
+          {'negative-score' : this.props.pair.score < 1},
+          {'positive-score' : this.props.pair.score > 0}
+        )}>
+        <div className="pair-label-container">
+          <label>{`${tex('pair_pair')} ${this.props.index + 1}`}</label>
+        </div>
         <div className="first-row">
           {this.props.pair.itemIds[0] === -1 ?
             <DropBox object={{pair:this.props.pair, position:0, index:this.props.index}} onDrop={this.props.onDrop} />
@@ -86,7 +91,7 @@ class Pair extends Component {
               className="form-control association-score"
               value={this.props.pair.score}
               onChange={e => this.props.onChange(
-                actions.updateAssociation(this.props.pair.itemIds[0], this.props.pair.itemIds[1], 'score', e.target.value)
+                actions.updatePair(this.props.index, 'score', e.target.value)
               )}
             />
             <TooltipButton
@@ -98,9 +103,10 @@ class Pair extends Component {
             <TooltipButton
               id={`ass-${this.props.pair.itemIds[0]}-${this.props.pair.itemIds[1]}-delete`}
               className="fa fa-trash-o"
+              enabled={this.props.pair._deletable}
               title={t('delete')}
               onClick={() => this.props.onChange(
-                actions.removeAssociation(this.props.pair.itemIds[0], this.props.pair.itemIds[1]))
+                actions.removePair(this.props.pair.itemIds[0], this.props.pair.itemIds[1]))
               }
             />
           </div>
@@ -109,7 +115,7 @@ class Pair extends Component {
           <div className="feedback-container">
             <Textarea
               onChange={(value) => this.props.onChange(
-                actions.updateAssociation(this.props.pair.itemIds[0], this.props.pair.itemIds[1], 'feedback', value)
+                actions.updatePair(this.props.index, 'feedback', value)
               )}
               id={`${this.props.pair.itemIds[0]}-${this.props.pair.itemIds[1]}-feedback`}
               content={'this.props.association.feedback'}
@@ -142,7 +148,6 @@ Pair.propTypes = {
   items: T.arrayOf(T.object).isRequired
 }
 
-
 class PairList extends Component {
 
   constructor(props) {
@@ -161,7 +166,7 @@ class PairList extends Component {
     // target.object is the pair and the position where the item has been dropped  (0 / 1) and the solution index
     // source.item is the object that has been dropped
     if(utils.canAddSolution(this.props.solutions, target.object, source.item)) {
-      this.props.onChange(actions.updatePairItem(target.object, source.item))
+      this.props.onChange(actions.dropPairItem(target.object, source.item))
     }
   }
 
