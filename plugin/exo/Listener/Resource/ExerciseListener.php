@@ -81,7 +81,9 @@ class ExerciseListener
             $em = $this->container->get('doctrine.orm.entity_manager');
 
             $exercise = $form->getData();
-            $event->setPublished((bool) $form->get('published')->getData());
+            $published = (bool) $form->get('published')->getData();
+            $exercise->setPublishedOnce($published);
+            $event->setPublished($published);
 
             $em->persist($exercise);
 
