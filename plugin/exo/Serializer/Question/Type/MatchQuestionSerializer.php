@@ -266,7 +266,10 @@ class MatchQuestionSerializer implements SerializerInterface
             }
 
             $association->setScore($solution->score);
-            $association->setFeedback($solution->feedback);
+
+            if (isset($solution->feedback)) {
+                $association->setFeedback($solution->feedback);
+            }
             $matchQuestion->addAssociation($association);
         }
 

@@ -14,7 +14,7 @@ add_step: Add a step
 add_zone_answer: Add an answer zone
 additional_info: Additional information
 advanced_edition: Advanced edition
-after_the_last_attempt: After the last attempt
+after_the_last_attempt: After the last attempt of the step
 alert_ending: Are you sure you want to finish ? (You won't be allowed to modify your answers anymore.)
 all: All
 all_types: All types
