@@ -129,9 +129,13 @@ class Updater090000
         $proposalSth->execute();
         $proposals = $proposalSth->fetchAll();
 
-        $holeSth = $this->connection->prepare('SELECT id, uuid FROM ujm_hole');
+        $holeSth = $this->connection->prepare('SELECT id, uuid, selector FROM ujm_hole');
         $holeSth->execute();
         $holes = $holeSth->fetchAll();
+
+        $keywordSth = $this->connection->prepare('SELECT id, `response` FROM ujm_word_response');
+        $keywordSth->execute();
+        $keywords = $keywordSth->fetchAll();
 
         // Load answers
         $sth = $this->connection->prepare('
@@ -221,9 +225,17 @@ class Updater090000
                     $newData = [];
                     foreach ($answerData as $holeId => $answerText) {
                         if (!empty($answerText)) {
+                            $answeredHole = $this->getAnswerPart($holeId, $holes);
                             $hole = new \stdClass();
-                            $hole->holeId = $this->getAnswerPartUuid($holeId, $holes);
-                            $hole->answerText = $answerText;
+                            $hole->holeId = $answeredHole['uuid'];
+
+                            if (!$answeredHole['selector']) {
+                                $hole->answerText = $answerText;
+                            } else {
+                                // replace keyword id by its value
+                                $keyword = $this->getAnswerPart($answerText, $keywords);
+                                $hole->answerText = $keyword['response'];
+                            }
 
                             $newData[] = $hole;
                         }
@@ -269,17 +281,27 @@ class Updater090000
         $this->log('done !');
     }
 
-    private function getAnswerPartUuid($id, $parts)
+    private function getAnswerPart($id, array $parts)
     {
-        $uuid = null;
+        $found = null;
         foreach ($parts as $part) {
             if ($part['id'] === $id) {
-                $uuid = $part['uuid'];
+                $found = $part['uuid'];
                 break;
             }
         }
 
-        return $uuid;
+        return $found;
+    }
+
+    private function getAnswerPartUuid($id, array $parts)
+    {
+        $part = $this->getAnswerPart($id, $parts);
+        if (!empty($part)) {
+            return $part['uuid'];
+        }
+
+        return null;
     }
 
     private function cleanOldPairQuestions()
