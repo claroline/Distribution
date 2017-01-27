@@ -1,19 +1,20 @@
 # A
 actions: Actions
+active_filters: "{0} There is no active filter|{1} There is 1 active filter|]1,Inf[ There are %count% active filters"
 add: Add
 add_choice: Add a choice
 add_hint: Add an hint
 add_label: Add a label
 add_new_picture: Add a new picture
 add_proposal: Add a proposal
-add_question: Add a question
+add_question: Create
 add_question_from_existing: Import one/many question(s)
 add_question_from_new: Create new question
 add_step: Add a step
 add_zone_answer: Add an answer zone
 additional_info: Additional information
 advanced_edition: Advanced edition
-after_the_last_attempt: After the last attempt
+after_the_last_attempt: After the last attempt of the step
 alert_ending: Are you sure you want to finish ? (You won't be allowed to modify your answers anymore.)
 all: All
 all_types: All types
@@ -52,7 +53,8 @@ badge_obtained: Congratulations ! You are awarded the knowledge badge.
 badge_no_obtained: You have not awarded the knowledge badge yet.
 back: Back
 back_to_overview: Go back to the quiz overview
-back_to_the_list: Back to the list
+back_to_the_questions_list: Back to the list of questions
+back_to_the_quiz: Back to the quiz
 bank_of_questions: Bank of questions
 brief_search: Brief Search
 
@@ -81,6 +83,8 @@ contain_search: Whose question contains
 correct: Correct
 correction: Correction
 correction_date: Correction date
+correction_invalid_no_save: Invalid correction
+correction_invalid_no_save_desc: The correction has failed.
 correspondence: correspondence
 correspondence_empty: You have no correspondence !
 correspondence_error: You can't associate the same proposal with several labels !
@@ -148,10 +152,14 @@ export_qti_exercise : Export questions of the quiz in QTI format
 # F
 feedback: General feedback
 feedback_answer_check: Feedback if this answer is checked (optional)
-find_by: Find by
-find_in: Find in
-find_question_advance: question advanced
-find_what: What you're looking for
+filter_by_title: Title or content
+filter_by_model_only: Only models
+filter_by_type: Type
+filter_by_self_only: Only my questions
+filter_by_creator: Créator
+filters_less: Display less filters
+filters_more: Display more filters
+filters_reset: Reset all filters
 final_mark: Final mark
 finish: Finish
 fixed_failure_above_success_error: This value should be lesser than the score in case of success.
@@ -193,7 +201,7 @@ hole_edition: Edit cloze
 hole_selector: Submit a list
 hide_additional_info: Hide additional information
 hide_interact_fields: Hide hints and feedback
-hide_metadata_fields: Hide metadata and instructions
+hide_metadata_fields: Hide title and other fields
 hint_penalty: "[0,1] - %count% point|]1,Inf[ - %count% points"
 
 # I
@@ -238,6 +246,8 @@ long: Long
 
 # M
 manage_img: Manage my documents
+manual_correction: Manual correction
+manual_correction_of_open_questions: Manual correction of open questions
 mark: Score
 mark_question: Give a score to this question
 mark_bigest: The score must be smaller than or equal to the maximum score
@@ -245,7 +255,7 @@ mark_bigest_other: The score is larger than the maximum score
 match_add_item: Add item
 match_penalty_label: Penality for any wrong association
 match_shuffle_labels_and_proposals: Shuffle proposal and label order
-match_edit_connection: Edit connection
+match_edit_connection: Edit association
 match_item_empty_data_error: Item data can not be empty.
 match_no_valid_solution: At least one solution must have a score greater or equal to 0.
 match_score_not_valid: Each score must be a valid number.
@@ -283,7 +293,7 @@ never: Never
 new_name: New name of the document
 next: Next
 no: No
-no_answer: No answer
+no_answer: No answer.
 no_answer_zone: There is no answer zone
 no_finish: Not finished
 no_pic_found: No document found
@@ -306,6 +316,7 @@ n_question: Question #
 number_max_attempts_help: Type 0 for unlimited attempts
 number_proposal: Number of the proposal
 number_of_papers: Number of papers
+number_of_papers_to_correct: Number of papers to correct
 number_questions_draw: Number of questions to draw (0 for all)
 number_questions_draw_help: Type 0 to draw all the questions
 number_steps_draw: Number of steps to draw
@@ -386,10 +397,12 @@ qti_unsupported_format: Non-compliant QTI format or unsupported format
 qti_xml_not_found: XML schema not found
 question: Question
 questions: Questions
+questions_bank: Bank of questions
 question_creation: Question creation
 question_description: Description of the question (optional)
 question_model: Set as a model
 question_title: Question title (optional)
+question_title_short: Question title
 question_shared_with: This question is shared with the users mentioned below
 question_need_manual_correction: This question needs a manual correction
 question_open_keywords_info: Your answer needs to contain the following keywords to be correct
@@ -456,13 +469,13 @@ short: Short
 show: Show
 show_feedback: Show step's feedbacks
 show_interact_fields: Hints and global feedback
-show_metadata_fields: Metadata and instructions
+show_metadata_fields: Title and other fields
 show_instructions: Show instructions
 signing: Signing
 size: Size
 start_again: Resume
 start_date: Start date
-solution_score: %score% point|%score% points
+solution_score: "{0} %score% point|{1} %score% point|[2,Inf] %score% points"
 sort: Sort documents
 summative : Summative
 show_additional_info: Display additional information
@@ -489,6 +502,7 @@ set_at_least_one_item: There must be at least one item.
 set_at_least_one_set: There must be at least one set.
 set_set_empty_data_error: Set data can not be empty.
 set_no_solution: There must be at least one solution.
+set_no_orphean_items: Each item should be used at least in one set.
 set_score_not_valid: Each score must be a valid number.
 set_no_valid_solution: At least one solution must have a score greater or equal to 0.
 set_odd_score_not_valid: Odd score must be inferior or equal to 0.
@@ -500,6 +514,7 @@ temporary_mark: Temporary score
 test_exit: Test output
 timer: Remaining time :
 title: Title
+to_correct: Correct
 type: Type
 type_exo : Type of quiz
 type_qcm: QCM type

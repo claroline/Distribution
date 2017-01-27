@@ -112,6 +112,7 @@ class Persister
     public function openQuestion($title)
     {
         $question = new Question();
+        $question->setScoreRule(json_encode(['type' => 'manual', 'max' => 10]));
         $question->setUuid(uniqid('', true));
         $question->setMimeType(QuestionType::OPEN);
         $question->setTitle($title);

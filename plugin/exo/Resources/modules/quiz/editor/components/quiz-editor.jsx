@@ -256,7 +256,7 @@ const Correction = props =>
     <CheckGroup
       checkId="quiz-anonymizeAttempts"
       checked={props.parameters.anonymizeAttempts}
-      label={t('anonymous')}
+      label={tex('anonymous')}
       onChange={checked => props.onChange('parameters.anonymizeAttempts', checked)}
     />
     <CheckGroup

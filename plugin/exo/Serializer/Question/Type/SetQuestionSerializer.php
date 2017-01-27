@@ -3,6 +3,7 @@
 namespace UJM\ExoBundle\Serializer\Question\Type;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Entity\Misc\Association;
 use UJM\ExoBundle\Entity\Misc\Label;
 use UJM\ExoBundle\Entity\Misc\Proposal;
 use UJM\ExoBundle\Entity\QuestionType\MatchQuestion;
@@ -35,7 +36,7 @@ class SetQuestionSerializer implements SerializerInterface
     }
 
     /**
-     * Converts a Match question into a JSON-encodable structure.
+     * Converts a Set question into a JSON-encodable structure.
      *
      * @param MatchQuestion $setQuestion
      * @param array         $options
@@ -45,24 +46,19 @@ class SetQuestionSerializer implements SerializerInterface
     public function serialize($setQuestion, array $options = [])
     {
         $questionData = new \stdClass();
-
-        if (in_array(Transfer::INCLUDE_SOLUTIONS, $options)) {
-            $questionData->solutions = $this->serializeSolutions($setQuestion);
-        }
-
         $questionData->random = $setQuestion->getShuffle();
         $questionData->penalty = $setQuestion->getPenalty();
 
         $sets = array_map(function (Proposal $proposal) use ($options) {
             $setData = $this->contentSerializer->serialize($proposal, $options);
-            $setData->id = (string) $proposal->getId();
+            $setData->id = $proposal->getUuid();
 
             return $setData;
         }, $setQuestion->getProposals()->toArray());
 
         $items = array_map(function (Label $label) use ($options) {
             $itemData = $this->contentSerializer->serialize($label, $options);
-            $itemData->id = (string) $label->getId();
+            $itemData->id = $label->getUuid();
 
             return $itemData;
         }, $setQuestion->getLabels()->toArray());
@@ -75,7 +71,39 @@ class SetQuestionSerializer implements SerializerInterface
         $questionData->sets = $sets;
         $questionData->items = $items;
 
+        if (in_array(Transfer::INCLUDE_SOLUTIONS, $options)) {
+            $questionData->solutions = $this->serializeSolutions($setQuestion);
+        }
+
         return $questionData;
+    }
+
+    private function serializeSolutions(MatchQuestion $setQuestion)
+    {
+        $solutions = new \stdClass();
+        $solutions->associations = [];
+        $solutions->odd = [];
+
+        foreach ($setQuestion->getAssociations() as $association) {
+            $solutionData = new \stdClass();
+            $solutionData->itemId = $association->getLabel()->getUuid();
+            $isOdd = false;
+            if ($association->getProposal()) {
+                $solutionData->setId = $association->getProposal()->getUuid();
+            } else {
+                $isOdd = true;
+            }
+
+            $solutionData->score = $association->getScore();
+
+            if ($association->getFeedback()) {
+                $solutionData->feedback = $association->getFeedback();
+            }
+
+            $isOdd ? $solutions->odd[] = $solutionData : $solutions->associations[] = $solutionData;
+        }
+
+        return $solutions;
     }
 
     /**
@@ -101,50 +129,168 @@ class SetQuestionSerializer implements SerializerInterface
             $setQuestion->setShuffle($data->random);
         }
 
-        // TODO : deserialize answer items
+        // deserialize proposals labels and solutions
+        $this->deserializeLabels($setQuestion, $data->items, $options);
+        $this->deserializeProposals($setQuestion, $data->sets, $options);
+        $this->deserializeSolutions($setQuestion, array_merge($data->solutions->associations, $data->solutions->odd));
 
         return $setQuestion;
     }
 
-    private function serializeSolutions(MatchQuestion $setQuestion)
+    /**
+     * Deserializes Question labels.
+     *
+     * @param MatchQuestion $setQuestion
+     * @param array         $items       ie labels
+     * @param array         $options
+     */
+    private function deserializeLabels(MatchQuestion $setQuestion, array $items, array $options = [])
     {
-        $solutions = new \stdClass();
+        $labelsEntities = $setQuestion->getLabels()->toArray();
 
-        // Serialize defined associations
-        $labelsInAssoc = [];
-        $solutions->associations = [];
-        foreach ($setQuestion->getProposals() as $proposal) {
-            /** @var Label $label */
-            foreach ($proposal->getExpectedLabels() as $label) {
-                $solutions->associations[] = $this->serializeItemSolution($label, $proposal);
-                $labelsInAssoc[] = $label->getId();
+        foreach ($items as $index => $itemData) {
+            $label = null;
+            // Searches for an existing Label entity.
+            foreach ($labelsEntities as $entityIndex => $entityLabel) {
+                /** @var Label $entityLabel */
+                if ($entityLabel->getUuid() === $itemData->id) {
+                    $label = $entityLabel;
+                    unset($labelsEntities[$entityIndex]);
+                    break;
+                }
             }
+
+            if (null === $label) {
+                // Create a new Label
+                $label = new Label();
+            }
+
+            if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
+                $label->setUuid($itemData->id);
+            }
+
+            $label->setOrder($index);
+
+            // Deserialize firstSet content
+            $label = $this->contentSerializer->deserialize($itemData, $label);
+            $setQuestion->addLabel($label);
         }
 
-        // Serialize odd
-        $solutions->odd = [];
-        foreach ($setQuestion->getLabels() as $label) {
-            $solutions->odd[] = $this->serializeItemSolution($label);
+        // Remaining labels are no longer in the Question
+        foreach ($labelsEntities as $labelToRemove) {
+            $setQuestion->removeLabel($labelToRemove);
         }
-
-        return $solutions;
     }
 
-    private function serializeItemSolution(Label $label, Proposal $proposal = null)
+    /**
+     * Deserializes Question proposals.
+     *
+     * @param MatchQuestion $setQuestion
+     * @param array         $sets        ie proposals
+     * @param array         $options
+     */
+    private function deserializeProposals(MatchQuestion $setQuestion, array $sets, array $options = [])
     {
-        $itemData = new \stdClass();
-        $itemData->itemId = (string) $label->getId();
+        $proposalsEntities = $setQuestion->getProposals()->toArray();
 
-        if ($proposal) {
-            $itemData->setId = (string) $proposal->getId();
+        foreach ($sets as $index => $setData) {
+            $proposal = null;
+
+            // Search for an existing Proposal entity.
+            foreach ($proposalsEntities as $entityIndex => $entityProposal) {
+                /* @var Proposal $entityProposal */
+                if ($entityProposal->getUuid() === $setData->id) {
+                    $proposal = $entityProposal;
+
+                    unset($proposalsEntities[$entityIndex]);
+                    break;
+                }
+            }
+
+            if (null === $proposal) {
+                // Create a new Proposal
+                $proposal = new Proposal();
+            }
+
+            if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
+                $proposal->setUuid($setData->id);
+            }
+
+            $proposal->setOrder($index);
+
+            // Deserialize proposal content
+            $proposal = $this->contentSerializer->deserialize($setData, $proposal);
+            $setQuestion->addProposal($proposal);
         }
 
-        $itemData->score = $label->getScore();
+        // Remaining proposals are no longer in the Question
+        foreach ($proposalsEntities as $proposalToRemove) {
+            $setQuestion->removeProposal($proposalToRemove);
+        }
+    }
 
-        if ($label->getFeedback()) {
-            $itemData->feedback = $label->getFeedback();
+    /**
+     * Deserializes Question solutions.
+     *
+     * @param MatchQuestion $setQuestion
+     * @param array         $solutionsAndOdd
+     */
+    private function deserializeSolutions(MatchQuestion $setQuestion, array $solutionsAndOdd)
+    {
+        $associationsEntities = $setQuestion->getAssociations()->toArray();
+
+        foreach ($solutionsAndOdd as $solution) {
+            $association = null;
+
+            // Search for an existing Proposal entity.
+            foreach ($associationsEntities as $entityIndex => $entityAssociation) {
+                /* @var Association $entityAssociation */
+                // retieves oddAssociations and fullAssociation
+                if ($entityAssociation->getLabel()->getUuid() === $solution->itemId &&
+                      (
+                        ($entityAssociation->getProposal() && $entityAssociation->getProposal()->getUuid() === $solution->setId) ||
+                        (!$entityAssociation->getProposal() && !$solution->itemId)
+                      )
+                ) {
+                    $association = $entityAssociation;
+
+                    unset($associationsEntities[$entityIndex]);
+                    break;
+                }
+            }
+
+            if (null === $association) {
+                // Create a new Association
+                $association = new Association();
+                // add association label
+                foreach ($setQuestion->getLabels() as $label) {
+                    if ($label->getUuid() === $solution->itemId) {
+                        $association->setLabel($label);
+                        break;
+                    }
+                }
+
+                // add association proposal if any
+                if (isset($solution->setId)) {
+                    foreach ($setQuestion->getProposals() as $proposal) {
+                        if ($proposal->getUuid() === $solution->setId) {
+                            $association->setProposal($proposal);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            $association->setScore($solution->score);
+            if (isset($solution->feedback)) {
+                $association->setFeedback($solution->feedback);
+            }
+            $setQuestion->addAssociation($association);
         }
 
-        return $itemData;
+        // Remaining associations are no longer in the Question
+        foreach ($associationsEntities as $associationToRemove) {
+            $setQuestion->removeAssociation($associationToRemove);
+        }
     }
 }

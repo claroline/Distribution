@@ -3,6 +3,7 @@
 namespace UJM\ExoBundle\Serializer\Question\Type;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Entity\Misc\Association;
 use UJM\ExoBundle\Entity\Misc\Label;
 use UJM\ExoBundle\Entity\Misc\Proposal;
 use UJM\ExoBundle\Entity\QuestionType\MatchQuestion;
@@ -82,20 +83,17 @@ class MatchQuestionSerializer implements SerializerInterface
     {
         $solutions = [];
 
-        foreach ($matchQuestion->getProposals() as $proposal) {
-            /** @var Label $label */
-            foreach ($proposal->getExpectedLabels() as $label) {
-                $solutionData = new \stdClass();
-                $solutionData->firstId = $proposal->getUuid();
-                $solutionData->secondId = $label->getUuid();
-                $solutionData->score = $label->getScore();
+        foreach ($matchQuestion->getAssociations() as $association) {
+            $solutionData = new \stdClass();
+            $solutionData->firstId = $association->getProposal()->getUuid();
+            $solutionData->secondId = $association->getLabel()->getUuid();
+            $solutionData->score = $association->getScore();
 
-                if ($label->getFeedback()) {
-                    $solutionData->feedback = $label->getFeedback();
-                }
-
-                $solutions[] = $solutionData;
+            if ($association->getFeedback()) {
+                $solutionData->feedback = $association->getFeedback();
             }
+
+            $solutions[] = $solutionData;
         }
 
         return $solutions;
@@ -124,10 +122,9 @@ class MatchQuestionSerializer implements SerializerInterface
             $matchQuestion->setShuffle($data->random);
         }
 
-        // deserialize firstSets, secondSets and solutions
-        // labels first since we gonna need them for proposals deserialisation
-        $this->deserializeLabels($matchQuestion, $data->secondSet, $data->solutions);
-        $this->deserializeProposals($matchQuestion, $data->firstSet, $data->solutions);
+        $this->deserializeLabels($matchQuestion, $data->secondSet, $options);
+        $this->deserializeProposals($matchQuestion, $data->firstSet, $options);
+        $this->deserializeSolutions($matchQuestion, $data->solutions);
 
         return $matchQuestion;
     }
@@ -137,9 +134,9 @@ class MatchQuestionSerializer implements SerializerInterface
      *
      * @param MatchQuestion $matchQuestion
      * @param array         $secondSets    ie labels
-     * @param array         $solutions
+     * @param array         $options
      */
-    private function deserializeLabels(MatchQuestion $matchQuestion, array $secondSets, array $solutions)
+    private function deserializeLabels(MatchQuestion $matchQuestion, array $secondSets, array $options = [])
     {
         $secondSetEntities = $matchQuestion->getLabels()->toArray();
 
@@ -155,30 +152,20 @@ class MatchQuestionSerializer implements SerializerInterface
                 }
             }
 
-            if (null === $label) {
+            if (empty($label)) {
                 // Create a new Label
                 $label = new Label();
+            }
+
+            // Force client ID if needed
+            if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
                 $label->setUuid($secondSetData->id);
             }
 
             $label->setOrder($index);
 
             // Deserialize firstSet content
-            $label = $this->contentSerializer->deserialize($secondSetData, $label);
-
-            // Set firstSet score and feedback
-            $label->setScore(0);
-            foreach ($solutions as $solution) {
-                if ($solution->secondId === $secondSetData->id) {
-                    $label->setScore($solution->score);
-                    if (isset($solution->feedback)) {
-                        $label->setFeedback($solution->feedback);
-                    }
-
-                    break;
-                }
-            }
-
+            $label = $this->contentSerializer->deserialize($secondSetData, $label, $options);
             $matchQuestion->addLabel($label);
         }
 
@@ -193,9 +180,9 @@ class MatchQuestionSerializer implements SerializerInterface
      *
      * @param MatchQuestion $matchQuestion
      * @param array         $firstSets     ie proposals
-     * @param array         $solutions
+     * @param array         $options
      */
-    private function deserializeProposals(MatchQuestion $matchQuestion, array $firstSets, array $solutions)
+    private function deserializeProposals(MatchQuestion $matchQuestion, array $firstSets, array $options = [])
     {
         $firstSetEntities = $matchQuestion->getProposals()->toArray();
 
@@ -213,59 +200,82 @@ class MatchQuestionSerializer implements SerializerInterface
                 }
             }
 
-            if (null === $proposal) {
+            if (empty($proposal)) {
                 // Create a new Proposal
                 $proposal = new Proposal();
+            }
+
+            if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
                 $proposal->setUuid($firstSetData->id);
             }
 
             $proposal->setOrder($index);
 
             // Deserialize proposal content
-            $proposal = $this->contentSerializer->deserialize($firstSetData, $proposal);
-
-            // get existing expected labels
-            $expectedLabelsEntities = $proposal->getExpectedLabels()->toArray();
-
-            // handle current solutions Set proposal and expected label (join table)
-            foreach ($solutions as $solution) {
-                if ($solution->firstId === $firstSetData->id) {
-                    $expected = null;
-                    /* @var Label $expectedEntity */
-                    foreach ($expectedLabelsEntities as $index => $expectedEntity) {
-                        // only check for secondId since firstId is checked before
-                        if ($expectedEntity->getUuId() === $solution->secondId) {
-                            $expected = $expectedEntity;
-                            unset($expectedLabelsEntities[$index]);
-
-                            break;
-                        }
-                    }
-
-                    if (null === $expected) {
-                        // find label
-                        foreach ($matchQuestion->getLabels() as $label) {
-                            // compare with uuid
-                            if ($label->getUuid() === $solution->secondId) {
-                                $expected = $label;
-                                $proposal->addExpectedLabel($expected);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Remaining expected labels are no longer in the solutions
-            foreach ($expectedLabelsEntities as $expectedToRemove) {
-                $proposal->removeExpectedLabel($expectedToRemove);
-            }
+            $proposal = $this->contentSerializer->deserialize($firstSetData, $proposal, $options);
             $matchQuestion->addProposal($proposal);
         }
 
         // Remaining proposals are no longer in the Question
         foreach ($firstSetEntities as $proposalToRemove) {
             $matchQuestion->removeProposal($proposalToRemove);
+        }
+    }
+
+    /**
+     * Deserializes Question solutions.
+     *
+     * @param MatchQuestion $matchQuestion
+     * @param array         $solutions
+     */
+    private function deserializeSolutions(MatchQuestion $matchQuestion, array $solutions)
+    {
+        $associationsEntities = $matchQuestion->getAssociations()->toArray();
+
+        foreach ($solutions as $solution) {
+            $association = null;
+
+            // Search for an existing Proposal entity.
+            foreach ($associationsEntities as $entityIndex => $entityAssociation) {
+                /* @var Association $entityAssociation */
+                if ($entityAssociation->getProposal()->getUuid() === $solution->firstId && $entityAssociation->getLabel()->getUuid() === $solution->secondId) {
+                    $association = $entityAssociation;
+
+                    unset($associationsEntities[$entityIndex]);
+                    break;
+                }
+            }
+
+            if (null === $association) {
+                // Create a new Association
+                $association = new Association();
+                // add association label
+                foreach ($matchQuestion->getLabels() as $label) {
+                    if ($label->getUuid() === $solution->secondId) {
+                        $association->setLabel($label);
+                        break;
+                    }
+                }
+                // add association proposal
+                foreach ($matchQuestion->getProposals() as $proposal) {
+                    if ($proposal->getUuid() === $solution->firstId) {
+                        $association->setProposal($proposal);
+                        break;
+                    }
+                }
+            }
+
+            $association->setScore($solution->score);
+
+            if (isset($solution->feedback)) {
+                $association->setFeedback($solution->feedback);
+            }
+            $matchQuestion->addAssociation($association);
+        }
+
+        // Remaining associations are no longer in the Question
+        foreach ($associationsEntities as $associationToRemove) {
+            $matchQuestion->removeAssociation($associationToRemove);
         }
     }
 }

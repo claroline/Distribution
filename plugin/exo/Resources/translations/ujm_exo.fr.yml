@@ -1,19 +1,20 @@
 # A
 actions: Actions
+active_filters: "{0} Il n'y a aucun filtre actif|{1} Il y a 1 filtre actif|]1,Inf[ Il y a %count% filtres actifs"
 add: Ajouter
 add_choice: Ajouter un choix
 add_hint: Ajouter un indice
 add_label: Ajouter un label
 add_new_picture: Ajouter une nouvelle image
 add_proposal: Ajouter une proposition
-add_question: Ajouter une question
+add_question: Créer
 add_question_from_existing: Importer une/des question(s)
 add_question_from_new: Créer une nouvelle question
 add_step: Ajouter une étape
 add_zone_answer: Ajouter une zone de réponse
 additional_info: Informations complémentaires
 advanced_edition: Edition avancée
-after_the_last_attempt: Après le dernier essai
+after_the_last_attempt: Après le dernier essai de l'étape
 alert_ending: Êtes-vous sûr(e) de vouloir terminer ? (Vous ne pourrez plus modifier vos réponses.)
 all: Tout
 all_types: Tous les types
@@ -53,6 +54,8 @@ badge_no_obtained: Vous n'avez pas encore obtenu le badge de connaissance.
 back: Retour
 back_to_overview: Retourner à la vue d'ensemble du questionnaire
 back_to_the_list: Retour à la liste
+back_to_the_questions_list: Retour à la liste des questions
+back_to_the_quiz: Retour au questionnaire
 bank_of_questions: Banque de questions
 brief_search: Recherche rapide
 
@@ -79,6 +82,8 @@ contain_search: Dont la question contient
 correct: Correcte
 correction: Correction
 correction_date: Date de la correction
+correction_invalid_no_save: Correction non valide
+correction_invalid_no_save_desc: La correction a échouée.
 correspondence: correspondance
 correspondence_empty: Vous n'avez réalisé aucune correspondance !
 correspondence_error: Vous ne pouvez pas associer une même proposition avec plusieurs labels !
@@ -147,10 +152,14 @@ export_qti_exercise : Exporter les questions du questionnaire au format QTI
 false_response: Points pour la mauvaise réponse
 feedback: Commentaire
 feedback_answer_check: Commentaire si la réponse est selectionnée (facultatif)
-find_by: Trouver par
-find_in: Trouver dans
-find_question_advance: Recherche avancée
-find_what: Ce que vous cherchez
+filter_by_title: Titre ou contenu
+filter_by_model_only: Uniquement les modèles
+filter_by_type: Type
+filter_by_self_only: Uniquement mes questions
+filter_by_creator: Créateur
+filters_less: Afficher moins de filtres
+filters_more: Afficher plus de filtres
+filters_reset: Supprimer tous les filtres
 final_mark: Note finale
 finish: Terminer
 fixed_failure_above_success_error: Cette valeur doit être inférieure à celle du résultat en cas de succès.
@@ -192,7 +201,7 @@ hole_edition: Edition d'une question à trous
 hole_selector: Proposer une liste
 hide_additional_info: Masquer les informations supplémentaires
 hide_interact_fields: Cacher les indices et le commentaire final
-hide_metadata_fields: Cacher les métadonnées et consignes
+hide_metadata_fields: Cacher le titre et les autres champs
 hint_penalty: "[0,1] - %count% point|]1,Inf[ - %count% points"
 
 # I
@@ -237,6 +246,8 @@ long: Longue
 
 # M
 manage_img: Gérer mes documents
+manual_correction: Correction manuelle
+manual_correction_of_open_questions: Correction manuelle des questions ouvertes
 mark: Note
 mark_question: Noter cette question
 mark_bigest: Le score doit être inférieur ou égal au score maximum
@@ -244,7 +255,7 @@ mark_bigest_other: Le score est supérieur au score maximun
 match_add_item: Ajouter un item
 match_penalty_label: Pénalité pour toute mauvaise association
 match_shuffle_labels_and_proposals: Ordre des propositions et des labels aléatoire
-match_edit_connection: Éditer la connection
+match_edit_connection: Éditer l'association
 match_item_empty_data_error: Les données d'un élément ne peuvent être vides.
 match_no_valid_solution: Au moins une solution doit avoir un score supérieur à 0.
 match_no_solution: Il doit y avoir au moins une solution.
@@ -281,7 +292,7 @@ never: Jamais
 new_name: Nouveau nom du document
 next: Suivant
 no: Non
-no_answer: Pas de réponse
+no_answer: Pas de réponse.
 no_answer_zone: Vous n'avez mis aucune zone de réponse
 no_pic_found: Pas de document trouvé
 no_finish: Non terminé
@@ -304,6 +315,7 @@ n_question: Question n°
 number_max_attempts_help: Entrez 0 pour un nombre d'essais illimité
 number_proposal: Numéro de la proposition
 number_of_papers: Nombre de copies
+number_of_papers_to_correct: Nombre de copies à corriger
 number_questions_draw: Nombre de questions à tirer
 number_questions_draw_help: Entrez 0 pour tirer toutes les questions
 number_steps_draw: Nombre d'étapes à tirer
@@ -382,10 +394,12 @@ qti_unsupported_format: Format non compatible QTI ou non supporté
 qti_xml_not_found: Schéma XML non trouvé
 question: Question
 questions: Questions
+questions_bank: Banque de questions
 question_creation: Création d'une question
 question_description: Description de la question (facultatif)
 question_model: Définir comme modèle
 question_title: Titre de la question (facultatif)
+question_title_short: Titre de la question
 question_shared_with: Cette question est partagée avec les utilisateurs suivants
 question_need_manual_correction: Cette question nécessite une correction manuelle
 question_open_keywords_info: Votre réponse doit contenir les mots clés suivant pour obtenir les points
@@ -454,12 +468,12 @@ show_feedback: Afficher les feedbacks en fin d'étape
 show_instructions: Montrer les consignes
 show_additional_info: Afficher les informations supplémentaires
 show_interact_fields: Indices et commentaire final
-show_metadata_fields: Métadonnées et consignes
+show_metadata_fields: Titre et autres champs
 signing: Passation
 size: Taille
 start_again: Recommencer
 start_date: Date de début
-solution_score: %score% point|%score% points
+solution_score: "{-1, 0, 1} %score% point|[2,+Inf[ %score% points|]-Inf, -2] %score% points"
 sort: Trier les documents
 summative : Sommatif
 step: Étape
@@ -485,6 +499,7 @@ set_at_least_one_item: Il doit y avoir au moins un item.
 set_at_least_one_set: Il doit y avoir au moins un set.
 set_set_empty_data_error: Les données d'un set ne peuvent être vides.
 set_no_solution: Il doit y avoir au moins une solution.
+set_no_orphean_items: Chaque item doit être utilisé dans au moins un set.
 set_score_not_valid: Un score doit être un chiffre valide.
 set_no_valid_solution: Il doit y avoir au moins une solution avec un score supérieur à 0.
 set_odd_score_not_valid: Le score d'un intrus doit être inférieur ou égal à 0.
@@ -496,6 +511,7 @@ temporary_mark: Note temporaire
 test_exit: Sortie du test
 timer: Temps restant :
 title: Titre
+to_correct: Corriger
 type: Type
 type_exo : Type du questionnaire
 type_qcm: Type du QCM

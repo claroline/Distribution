@@ -36,7 +36,8 @@ describe('createStore', () => {
         fading: false
       },
       viewMode: 'overview',
-      papers: {}
+      papers: {},
+      correction: {}
     })
   })
 })

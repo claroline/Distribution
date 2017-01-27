@@ -5,7 +5,6 @@ namespace UJM\ExoBundle\Serializer\Attempt;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Attempt\Answer;
-use UJM\ExoBundle\Entity\Question\Hint;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\AbstractSerializer;
 use UJM\ExoBundle\Serializer\Question\HintSerializer;
@@ -59,6 +58,7 @@ class AnswerSerializer extends AbstractSerializer
         $answerData = new \stdClass();
 
         $this->mapEntityToObject([
+            'id' => 'uuid',
             'questionId' => 'questionId',
             'tries' => 'tries',
             'usedHints' => function (Answer $answer) use ($options) {
@@ -66,15 +66,16 @@ class AnswerSerializer extends AbstractSerializer
                     return $options['hints'][$hintId];
                 }, $answer->getUsedHints());
             },
-            'data' => function (Answer $answer) {
-                return !empty($answer->getData()) ? json_decode($answer->getData()) : null;
-            },
         ], $answer, $answerData);
 
+        if (!empty($answer->getData())) {
+            $answerData->data = json_decode($answer->getData());
+        }
         // Adds user score
         if ($this->hasOption(Transfer::INCLUDE_USER_SCORE, $options)) {
             $this->mapEntityToObject([
                 'score' => 'score',
+                'feedback' => 'feedback',
             ], $answer, $answerData);
         }
 
@@ -96,11 +97,18 @@ class AnswerSerializer extends AbstractSerializer
             $answer = new Answer();
         }
 
+        // Force client ID if needed
+        if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
+            $answer->setUuid($data->id);
+        }
+
         $answer->setQuestionId($data->questionId);
 
         $this->mapObjectToEntity([
-            'tries' => 'tries',
             'questionId' => 'questionId',
+            'tries' => 'tries',
+            'score' => 'score',
+            'feedback' => 'feedback',
             'usedHints' => function (Answer $answer, \stdClass $data) {
                 if (!empty($data->usedHints)) {
                     foreach ($data->usedHints as $usedHint) {

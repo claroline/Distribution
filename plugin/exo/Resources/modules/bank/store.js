@@ -6,17 +6,15 @@ import {
   createStore as baseCreate
 } from 'redux'
 import thunk from 'redux-thunk'
-import bankApp from './reducers/index'
-import {listItemMimeTypes} from './../items/item-types'
+import {apiMiddleware} from './../api/middleware'
+import {bankApp} from './reducers/index'
 
-const middleware = [thunk]
+const middleware = [apiMiddleware, thunk]
 
 if (process.env.NODE_ENV !== 'production') {
   const freeze = require('redux-freeze')
   middleware.push(freeze)
 }
-
-bankApp.itemTypes = () => listItemMimeTypes()
 
 export function createStore(initialState) {
   return baseCreate(

@@ -73,12 +73,13 @@ class AnswerManager
      *
      * @param Answer    $answer
      * @param \stdClass $answerData
+     * @param bool      $noFlush
      *
      * @return Answer
      *
      * @throws ValidationException
      */
-    public function update(Answer $answer, \stdClass $answerData)
+    public function update(Answer $answer, \stdClass $answerData, $noFlush = false)
     {
         $errors = $this->validator->validate($answerData);
         if (count($errors) > 0) {
@@ -90,7 +91,10 @@ class AnswerManager
 
         // Save to DB
         $this->om->persist($answer);
-        $this->om->flush();
+
+        if (!$noFlush) {
+            $this->om->flush();
+        }
 
         return $answer;
     }

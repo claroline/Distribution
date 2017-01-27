@@ -50,7 +50,7 @@ class ExerciseManager
      *     "om"           = @DI\Inject("claroline.persistence.object_manager"),
      *     "validator"    = @DI\Inject("ujm_exo.validator.exercise"),
      *     "serializer"   = @DI\Inject("ujm_exo.serializer.exercise"),
-     *     "paperManager"   = @DI\Inject("ujm_exo.manager.paper")
+     *     "paperManager" = @DI\Inject("ujm_exo.manager.paper")
      * })
      *
      * @param ObjectManager      $om
@@ -138,27 +138,35 @@ class ExerciseManager
      */
     public function copy(Exercise $exercise)
     {
+        // Serialize quiz entities
         $exerciseData = $this->serializer->serialize($exercise, [Transfer::INCLUDE_SOLUTIONS]);
 
-        // Remove UUID to force the generation of a new one
-        $exerciseData->id = '';
+        // NB 1. We don't validate data because it comes from the DB and it's always valid
+        // Populate new entities with original data
+        // NB 2. We use server generated ids for entity creation because the client ones are already in the DB
+        // and we need some fresh ones to avoid duplicates
+        $newExercise = $this->serializer->deserialize($exerciseData, null, [Transfer::USE_SERVER_IDS]);
 
-        return $this->create($exerciseData);
+        // Save copy to db
+        $this->om->persist($newExercise);
+        $this->om->flush();
+
+        return $newExercise;
     }
 
-        /**
-         * Checks if an Exercise can be deleted.
-         * The exercise needs to be unpublished or have no paper to be safely removed.
-         *
-         * @param Exercise $exercise
-         *
-         * @return bool
-         */
-        public function isDeletable(Exercise $exercise)
-        {
-            return !$exercise->getResourceNode()->isPublished()
+    /**
+     * Checks if an Exercise can be deleted.
+     * The exercise needs to be unpublished or have no paper to be safely removed.
+     *
+     * @param Exercise $exercise
+     *
+     * @return bool
+     */
+    public function isDeletable(Exercise $exercise)
+    {
+        return !$exercise->getResourceNode()->isPublished()
             || 0 === $this->paperManager->countExercisePapers($exercise);
-        }
+    }
 
     /**
      * Publishes an exercise.

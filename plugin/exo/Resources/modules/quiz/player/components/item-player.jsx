@@ -1,5 +1,7 @@
 import React, {PropTypes as T} from 'react'
 
+import {Metadata as ItemMetadata} from './../../../items/components/metadata.jsx'
+
 import {tex, transChoice} from './../../../utils/translate'
 
 const UsedHint = props =>
@@ -81,18 +83,12 @@ Hints.propTypes = {
 const ItemPlayer = props =>
   <div className="item-player">
     {props.item.title &&
-      <h3 className="h4 item-title">
-        {props.item.title}
-      </h3>
+      <h3 className="item-title">{props.item.title}</h3>
     }
-    {props.item.description &&
-      <div className="item-description" dangerouslySetInnerHTML={{__html: props.item.description}}></div>
-    }
-    <div className="item-content"  dangerouslySetInnerHTML={{__html: props.item.content}}></div>
 
-    <hr/>
+    <ItemMetadata item={props.item} />
+
     {props.children}
-    <hr/>
 
     {props.item.hints && 0 !== props.item.hints.length &&
       <Hints
@@ -106,7 +102,7 @@ const ItemPlayer = props =>
 ItemPlayer.propTypes = {
   item: T.shape({
     id: T.string.isRequired,
-    title: T.string.isRequired,
+    title: T.string,
     description: T.string.isRequired,
     content: T.string.isRequired,
     hints: T.array

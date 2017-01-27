@@ -3,11 +3,10 @@
   padding: @panel-body-padding;
   max-width: @quiz-container-width;
   margin: 0 auto;
-  .step-title {
-  }
 
   .step-description {
-    margin-bottom:  @line-height-computed;
+    margin-bottom: @line-height-computed;
+    word-break: break-all;
   }
 
   .player-nav {
@@ -16,13 +15,14 @@
   }
 }
 
-.item-player .item-content,
-.item-player .item-title,
-.item-player .item-description,
-.item-paper .item-content {
-  margin-bottom: 12px;
-}
 
-.item-title {
-  font-size: 16px;
+
+.tooltiped-button {
+  &.btn {
+    border: 0 none;
+    background: none;
+    padding: 5px;
+    outline: none;
+    box-shadow: none;
+  }
 }

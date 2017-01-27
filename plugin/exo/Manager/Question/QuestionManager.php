@@ -9,6 +9,7 @@ use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Question\Question;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
+use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Question\QuestionDefinitionsCollection;
 use UJM\ExoBundle\Library\Validator\ValidationException;
@@ -104,20 +105,34 @@ class QuestionManager
     /**
      * Searches questions for a User.
      *
-     * @param User  $user
-     * @param array $filters
-     * @param int   $page
-     * @param int   $number
-     * @param array $orderBy
+     * @param User      $user
+     * @param \stdClass $filters
+     * @param array     $orderBy
+     * @param int       $number  - the number of questions to return
+     * @param int       $page    - the offset at which we will start searching
      *
-     * @return array
+     * @return \stdClass
      */
-    public function search(User $user, array $filters = [], $page = 0, $number = -1, array $orderBy = [])
+    public function search(User $user, \stdClass $filters = null, array $orderBy = ['title' => 1], $number = -1, $page = 0)
     {
-        return [
-            'questions' => $this->repository->search($user, $filters, $page, $number, $orderBy),
-            'total' => 100,
-        ];
+        $results = $this->repository->search($user, $filters, $orderBy, $number, $page);
+
+        // Build search result object
+        $searchResults = new \stdClass();
+        $searchResults->totalResults = count($results);
+        $searchResults->questions = array_map(function (Question $question) {
+            return $this->export($question, [Transfer::INCLUDE_ADMIN_META]);
+        }, $results);
+
+        // Add pagination
+        $searchResults->pagination = new \stdClass();
+        $searchResults->pagination->current = $page;
+        $searchResults->pagination->pageSize = $number;
+
+        // Add sorting
+        $searchResults->sortBy = new \stdClass();
+
+        return $searchResults;
     }
 
     /**

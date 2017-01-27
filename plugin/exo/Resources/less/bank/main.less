@@ -1,0 +1,59 @@
+// Bootstrap variables
+@import "./../../../../../../../../web/packages/bootstrap/less/mixins.less";
+@import "./../../../../../../../../web/packages/bootstrap/less/variables.less";
+
+.pagination-container {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+}
+
+.pagination {
+    margin: 0;
+    padding: 0;
+}
+
+.empty-list {
+    padding: @panel-body-padding;
+    text-align: center;
+    font-style: italic;
+}
+
+#questions-bank tbody {
+    background-color: #FFF;
+    border: 1px solid #ddd;
+}
+
+#questions-bank .table .selected-rows {
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+}
+
+#questions-bank .table > thead > tr > th {
+    position: relative;
+}
+
+#questions-bank .table > thead > tr > th {
+    border-bottom-width: 1px;
+}
+
+.btn-link-danger {
+    color: #d9534f;
+
+    &:hover,
+    &:focus {
+        color: #c9302c;
+    }
+}
+
+.sorting-cell {
+    padding-right: 16px !important;
+    cursor: pointer;
+}
+
+.sorting-cell .fa {
+    line-height: 1.42857;
+    position: absolute;
+    right: 8px;
+}

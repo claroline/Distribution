@@ -2,14 +2,22 @@ import React, {PropTypes as T} from 'react'
 
 export const Metadata = props => {
   return(
-    <div className="panel panel-body">
-      <h4>{props.title}</h4>
-      <i>{props.description}</i>
-    </div>
+      <div className="item-metadata">
+        {props.item.content &&
+          <div className="item-content" dangerouslySetInnerHTML={{__html: props.item.content}}></div>
+        }
+
+        {props.item.description &&
+          <div className="item-description" dangerouslySetInnerHTML={{__html: props.item.description}}></div>
+        }
+      </div>
   )
 }
 
 Metadata.propTypes = {
-  title: T.string,
-  description: T.string
+  item: T.shape({
+    title: T.string,
+    content: T.string.isRequired,
+    description: T.string
+  }).isRequired
 }

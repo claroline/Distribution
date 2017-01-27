@@ -2,7 +2,6 @@
 
 namespace UJM\ExoBundle\Entity\Misc;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use UJM\ExoBundle\Entity\QuestionType\MatchQuestion;
@@ -38,15 +37,6 @@ class Proposal
     use ContentTrait;
 
     /**
-     * @var ArrayCollection
-     *
-     * @ORM\ManyToMany(targetEntity="UJM\ExoBundle\Entity\Misc\Label")
-     * @ORM\JoinColumn(name="label_id", referencedColumnName="id")
-     * @ORM\JoinTable(name="ujm_proposal_label")
-     */
-    private $expectedLabels;
-
-    /**
      * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\QuestionType\MatchQuestion", inversedBy="proposals")
      * @ORM\JoinColumn(name="interaction_matching_id", referencedColumnName="id")
      */
@@ -58,7 +48,6 @@ class Proposal
     public function __construct()
     {
         $this->uuid = Uuid::uuid4()->toString();
-        $this->expectedLabels = new ArrayCollection();
     }
 
     /**
@@ -89,40 +78,6 @@ class Proposal
     public function setUuid($uuid)
     {
         $this->uuid = $uuid;
-    }
-
-    /**
-     * Get InteractionMatching.
-     *
-     * @return ArrayCollection
-     */
-    public function getExpectedLabels()
-    {
-        return $this->expectedLabels;
-    }
-
-    /**
-     * Set Label.
-     *
-     * @param Label $label
-     */
-    public function addExpectedLabel(Label $label)
-    {
-        if (!$this->expectedLabels->contains($label)) {
-            $this->expectedLabels->add($label);
-        }
-    }
-
-    /**
-     * Remove Label.
-     *
-     * @param Label $label
-     */
-    public function removeExpectedLabel(Label $label)
-    {
-        if ($this->expectedLabels->contains($label)) {
-            $this->expectedLabels->removeElement($label);
-        }
     }
 
     /**
