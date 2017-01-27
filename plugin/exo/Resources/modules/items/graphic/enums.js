@@ -8,3 +8,6 @@ export const AREA_DEFAULT_SIZE = 60
 
 export const SHAPE_RECT = 'rect'
 export const SHAPE_CIRCLE = 'circle'
+
+export const TYPE_ANSWER_AREA = 'answerArea'
+export const TYPE_AREA_RESIZER = 'areaResizer'

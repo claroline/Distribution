@@ -3,16 +3,16 @@ import ReactDOM from 'react-dom'
 import classes from 'classnames'
 import tinycolor from 'tinycolor2'
 import Popover from 'react-bootstrap/lib/Popover'
-import Overlay from 'react-bootstrap/lib/Overlay'
 import {makeDraggable} from './../../../utils/dragAndDrop'
-import {SHAPE_RECT, SHAPE_CIRCLE} from './../enums'
+import {SHAPE_RECT, SHAPE_CIRCLE, TYPE_ANSWER_AREA} from './../enums'
+import {AreaResizer, AreaResizerDraggable} from './area-resizer.jsx'
 
 const FRAME_GUTTER = 2
 const AREA_GUTTER = 8
 const BORDER_WIDTH = 2
-const SIZER_SIZE = 6
+const RESIZER_SIZE = 6
 
-let AnswerArea = props => {
+export const AnswerArea = props => {
   if (props.isDragging) {
     return null
   }
@@ -25,10 +25,25 @@ let AnswerArea = props => {
   const height = isRect ? def.coords[1].y - def.coords[0].y : def.radius * 2
   const frameWidth = width + (AREA_GUTTER * 2)
   const frameHeight = height + (AREA_GUTTER * 2)
+  const innerFrameWidth = frameWidth - BORDER_WIDTH * 2
+  const innerFrameHeight = frameHeight - BORDER_WIDTH * 2
   const handleWidth = width + (FRAME_GUTTER + AREA_GUTTER) * 2
   const handleHeight = height + (FRAME_GUTTER + AREA_GUTTER) * 2
   const borderRadius = isRect ? 0 : def.radius
-  const halfSizer = SIZER_SIZE / 2
+  const halfSizer = RESIZER_SIZE / 2
+  const border = BORDER_WIDTH
+
+  const makeResizer = makeResizerFactory(props.resizable, props.id, RESIZER_SIZE)
+  const resizers = [
+    [-halfSizer - border, -halfSizer - border, 'nw'],
+    [-halfSizer - border, innerFrameWidth / 2 - halfSizer, 'n'],
+    [-halfSizer - border, innerFrameWidth + border - halfSizer, 'ne'],
+    [innerFrameHeight / 2 - halfSizer, innerFrameWidth + border - halfSizer, 'e'],
+    [innerFrameHeight + border - halfSizer, innerFrameWidth + border - halfSizer, 'se'],
+    [innerFrameHeight + border - halfSizer, innerFrameWidth / 2 - halfSizer, 's'],
+    [innerFrameHeight + border - halfSizer, - halfSizer - border, 'sw'],
+    [innerFrameHeight / 2 - halfSizer, - halfSizer - border, 'w']
+  ]
 
   return props.connectDragSource(
     <span
@@ -54,7 +69,6 @@ let AnswerArea = props => {
           borderWidth: BORDER_WIDTH
         })}
       >
-
         <span className="area"
           style={common({
             left: AREA_GUTTER - BORDER_WIDTH,
@@ -67,38 +81,7 @@ let AnswerArea = props => {
           })}
         />
 
-        <span
-          className="sizer nw"
-          style={sizer({top: -halfSizer, left: -halfSizer})}
-        />
-        <span
-          className="sizer n"
-          style={sizer({top: -halfSizer, left: frameWidth / 2 - halfSizer})}
-        />
-        <span
-          className="sizer ne"
-          style={sizer({top: -halfSizer, right: -halfSizer})}
-        />
-        <span
-          className="sizer e"
-          style={sizer({top: frameHeight / 2 - halfSizer, right: -halfSizer})}
-        />
-        <span
-          className="sizer se"
-          style={sizer({bottom: -halfSizer, right: -halfSizer})}
-        />
-        <span
-          className="sizer s"
-          style={sizer({bottom: -halfSizer, left: frameWidth / 2 - halfSizer})}
-        />
-        <span
-          className="sizer sw"
-          style={sizer({bottom: -halfSizer, left: -halfSizer})}
-        />
-        <span
-          className="sizer w"
-          style={sizer({top: frameHeight / 2 - halfSizer, left: -halfSizer})}
-        />
+        {resizers.map(makeResizer)}
 
         <span
           className="fa fa-pencil"
@@ -108,7 +91,7 @@ let AnswerArea = props => {
             const rect = e.target.getBoundingClientRect()
             props.togglePopover(
               props.id,
-              rect.left + window.pageXOffset - 189, // rough estimate of offset
+              rect.left + window.pageXOffset - 189, // works with fixed size popover
               rect.top + window.pageYOffset - 179
             )
           }}
@@ -130,10 +113,12 @@ AnswerArea.propTypes = {
   color: T.string.isRequired,
   selected: T.bool.isRequired,
   onSelect: T.func.isRequired,
+  canDrag: T.bool.isRequired,
   isDragging: T.bool.isRequired,
   connectDragSource: T.func.isRequired,
   togglePopover: T.func.isRequired,
   onDelete: T.func.isRequired,
+  resizable: T.bool.isRequired,
   geometry: T.oneOfType([
     T.shape({
       coords: T.arrayOf(T.shape({
@@ -151,13 +136,18 @@ AnswerArea.propTypes = {
   ]).isRequired
 }
 
-AnswerArea = makeDraggable(
-  AnswerArea,
-  'AnswerArea',
-  props => ({id: props.id})
-)
+AnswerArea.defaultProps = {
+  resizable: true
+}
 
-export {AnswerArea}
+export const AnswerAreaDraggable = makeDraggable(
+  AnswerArea,
+  TYPE_ANSWER_AREA,
+  props => ({
+    type: TYPE_ANSWER_AREA,
+    id: props.id
+  })
+)
 
 function common(rules) {
   return Object.assign(rules, {
@@ -166,9 +156,18 @@ function common(rules) {
   })
 }
 
-function sizer(rules) {
-  return Object.assign(common(rules), {
-    width: SIZER_SIZE,
-    height: SIZER_SIZE
-  })
+function makeResizerFactory(resizable, areaId, size) {
+  return (geometry, index) =>
+    React.createElement(
+      resizable ? AreaResizerDraggable : AreaResizer,
+      Object.assign(geometry, {
+        areaId,
+        size,
+        connectDragSource: el => el,
+        key: `${areaId}-${index}`,
+        top: geometry[0],
+        left: geometry[1],
+        position: geometry[2]
+      })
+    )
 }

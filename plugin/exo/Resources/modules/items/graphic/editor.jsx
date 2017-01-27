@@ -3,14 +3,21 @@ import get from 'lodash/get'
 import {asset} from '#/main/core/asset'
 import {tex} from './../../utils/translate'
 import {makeDroppable} from './../../utils/dragAndDrop'
-import {MODE_SELECT, MAX_IMG_SIZE, SHAPE_RECT} from './enums'
-import {actions} from './actions'
 import {FileDropZone} from './../../components/form/file-drop-zone.jsx'
 import {ErrorBlock} from './../../components/form/error-block.jsx'
 import {ImageInput} from './components/image-input.jsx'
 import {ModeSelector} from './components/mode-selector.jsx'
 import {AreaPopover} from './components/area-popover.jsx'
-import {AnswerArea} from './components/answer-area.jsx'
+import {ResizeDragLayer} from './components/resize-drag-layer.jsx'
+import {AnswerAreaDraggable} from './components/answer-area.jsx'
+import {actions} from './actions'
+import {
+  MODE_SELECT,
+  MAX_IMG_SIZE,
+  SHAPE_RECT,
+  TYPE_ANSWER_AREA,
+  TYPE_AREA_RESIZER
+} from './enums'
 
 let AnswerDropZone = props => props.connectDropTarget(props.children)
 
@@ -19,7 +26,10 @@ AnswerDropZone.propTypes = {
   children: T.element.isRequired
 }
 
-AnswerDropZone = makeDroppable(AnswerDropZone, 'AnswerArea')
+AnswerDropZone = makeDroppable(AnswerDropZone, [
+  TYPE_ANSWER_AREA,
+  TYPE_AREA_RESIZER
+])
 
 export class Graphic extends Component {
   constructor(props) {
@@ -134,6 +144,24 @@ export class Graphic extends Component {
     )
   }
 
+  getClientArea(area) {
+    return Object.assign({}, area, area.shape === SHAPE_RECT ?
+      {
+        coords: area.coords.map(coords => ({
+          x: coords._clientX,
+          y: coords._clientY
+        }))
+      } :
+      {
+        radius: area._clientRadius,
+        center: {
+          x: area.center._clientX,
+          y: area.center._clientY
+        }
+      }
+    )
+  }
+
   render() {
     return (
       <div className="graphic-editor">
@@ -174,13 +202,23 @@ export class Graphic extends Component {
         <FileDropZone onDrop={this.onDropImage}>
           <div className="img-dropzone">
             <div className="img-widget">
-              <AnswerDropZone onDrop={(area, props, offset) =>
-                this.props.onChange(actions.moveArea(area.id, offset.x, offset.y))
-              }>
+              <AnswerDropZone onDrop={(item, props, offset) => {
+                if (item.type === TYPE_AREA_RESIZER) {
+                  console.log('dropping resizer')
+                } else {
+                  this.props.onChange(actions.moveArea(item.id, offset.x, offset.y))
+                }
+              }}>
                 <div>
                   <div className="img-container" ref={el => this.imgContainer = el}/>
+                  <ResizeDragLayer
+                    canDrag={!this.props.item._popover.open}
+                    areas={this.props.item.solutions.map(
+                      solution => this.getClientArea(solution.area)
+                    )}
+                  />
                   {this.props.item.solutions.map(solution =>
-                    <AnswerArea
+                    <AnswerAreaDraggable
                       key={solution.area.id}
                       id={solution.area.id}
                       color={solution.area.color}
@@ -197,22 +235,7 @@ export class Graphic extends Component {
                           actions.togglePopover(areaId, left, top, !hasPopover)
                         )
                       }}
-                      geometry={
-                        solution.area.shape === SHAPE_RECT ?
-                          {
-                            coords: solution.area.coords.map(coords => ({
-                              x: coords._clientX,
-                              y: coords._clientY
-                            }))
-                          } :
-                          {
-                            radius: solution.area._clientRadius,
-                            center: {
-                              x: solution.area.center._clientX,
-                              y: solution.area.center._clientY
-                            }
-                          }
-                      }
+                      geometry={this.getClientArea(solution.area)}
                     />
                   )}
                 </div>
