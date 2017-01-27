@@ -33,7 +33,8 @@ describe('Graphic reducer', () => {
     ensure.equal(reduced, itemFixture({
       image: {
         id: lastId()
-      }
+      },
+      _currentColor: '#0693e3'
     }))
   })
 
@@ -617,6 +618,49 @@ describe('Graphic reducer', () => {
           _selected: true
         }
       ]
+    }))
+  })
+
+  it('it blurs selected areas and closes popovers on outside clicks', () => {
+    const item = itemFixture({
+      solutions: [
+        {
+          area: {
+            id: 'ID1'
+          }
+        },
+        {
+          area: {
+            id: 'ID2'
+          },
+          _selected: true
+        }
+      ],
+      _popover: {
+        areaId: '2',
+        open: true
+      }
+    })
+    const reduced = editor.reduce(item, subActions.blurAreas())
+    ensure.equal(reduced, itemFixture({
+      solutions: [
+        {
+          area: {
+            id: 'ID1'
+          },
+          _selected: false
+        },
+        {
+          area: {
+            id: 'ID2'
+          },
+          _selected: false
+        }
+      ],
+      _popover: {
+        areaId: '2',
+        open: false
+      }
     }))
   })
 })

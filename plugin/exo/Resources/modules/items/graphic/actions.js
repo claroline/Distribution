@@ -12,6 +12,7 @@ export const RESIZE_AREA = 'RESIZE_AREA'
 export const TOGGLE_POPOVER = 'TOGGLE_POPOVER'
 export const SET_AREA_COLOR = 'SET_AREA_COLOR'
 export const SET_SOLUTION_PROPERTY = 'SET_SOLUTION_PROPERTY'
+export const BLUR_AREAS = 'BLUR_AREAS'
 
 export const actions = {}
 
@@ -26,3 +27,4 @@ actions.resizeArea = makeActionCreator(RESIZE_AREA, 'id', 'position', 'x', 'y')
 actions.togglePopover = makeActionCreator(TOGGLE_POPOVER, 'areaId', 'left', 'top', 'open')
 actions.setAreaColor = makeActionCreator(SET_AREA_COLOR, 'id', 'color')
 actions.setSolutionProperty = makeActionCreator(SET_SOLUTION_PROPERTY, 'id', 'property', 'value')
+actions.blurAreas = makeActionCreator(BLUR_AREAS)

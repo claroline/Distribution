@@ -21,7 +21,8 @@ import {
   TOGGLE_POPOVER,
   SET_AREA_COLOR,
   SET_SOLUTION_PROPERTY,
-  RESIZE_AREA
+  RESIZE_AREA,
+  BLUR_AREAS
 } from './actions'
 import {Graphic as component} from './editor.jsx'
 
@@ -260,6 +261,13 @@ function reduce(item = {}, action = {}) {
           }
           return solution
         })
+      })
+    case BLUR_AREAS:
+      return Object.assign({}, item, {
+        solutions: item.solutions.map(
+          solution => Object.assign({}, solution, {_selected: false})
+        ),
+        _popover: Object.assign({}, item._popover, {open: false})
       })
   }
   return item

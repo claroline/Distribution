@@ -54,6 +54,10 @@ export class Graphic extends Component {
     }
 
     window.addEventListener('resize', this.onResize)
+
+    this.imgContainer.addEventListener('click', e => {
+      this.props.onChange(actions.blurAreas())
+    })
   }
 
   componentDidUpdate(prevProps) {
