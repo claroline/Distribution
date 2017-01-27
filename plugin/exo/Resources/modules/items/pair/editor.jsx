@@ -43,95 +43,110 @@ class Pair extends Component {
 
   render() {
     return (
-      <div className={classes(
-          'pair',
-          {'negative-score' : this.props.pair.score < 1},
-          {'positive-score' : this.props.pair.score > 0}
-        )}>
+      <div className="pair">
         <div className="pair-label-container">
           <label>{`${tex('pair_pair')} ${this.props.index + 1}`}</label>
         </div>
-        <div className="first-row">
-          {this.props.pair.itemIds[0] === -1 ?
-            <DropBox object={{pair:this.props.pair, position:0, index:this.props.index}} onDrop={this.props.onDrop} />
-            :
-            <div className="pair-item">
-              <div className="pair-data" dangerouslySetInnerHTML={{__html: utils.getPairItemData(this.props.pair.itemIds[0], this.props.items)}} />
-              {this.props.showPins &&
-                <TooltipButton
-                  id={`pair-${this.props.index}-${this.props.pair.itemIds[0]}-pin-me`}
-                  className="fa fa-thumb-tack"
-                  title={tex('pair_pin_this_item')}
-                  onClick={() => this.setState({showFeedback: !this.state.showFeedback})}
+        <div className={classes(
+            'pair-body',
+            {'negative-score' : this.props.pair.score < 1},
+            {'positive-score' : this.props.pair.score > 0}
+          )}>
+          <div className="first-row">
+            {this.props.pair.itemIds[0] === -1 ?
+              <DropBox object={{pair:this.props.pair, position:0, index:this.props.index}} onDrop={this.props.onDrop} />
+              :
+              <div className="pair-item">
+                <div className="pair-data" dangerouslySetInnerHTML={{__html: utils.getPairItemData(this.props.pair.itemIds[0], this.props.items)}} />
+                {this.props.showPins &&
+                  <TooltipButton
+                    id={`pair-${this.props.index}-${this.props.pair.itemIds[0]}-pin-me`}
+                    title={tex('pair_pin_this_item')}
+                    onClick={() => this.props.onChange(
+                      actions.addItemCoordinates(this.props.pair.itemIds[0], this.props.pair.itemIds[1], [0, this.props.index])
+                    )}
+                    className={classes(
+                      'fa fa-thumb-tack',
+                      {'btn-disabled': !utils.pairItemHasCoords(this.props.pair.itemIds[0], this.props.items, this.props.index)}
+                    )}
                   />
-              }
-            </div>
-          }
+                }
+              </div>
+            }
 
-          {this.props.pair.itemIds[1] === -1 ?
-            <DropBox object={{pair:this.props.pair, position:1, index:this.props.index}} onDrop={this.props.onDrop} />
-            :
-            <div className="pair-item">
-              <div className="pair-data" dangerouslySetInnerHTML={{__html: utils.getPairItemData(this.props.pair.itemIds[1], this.props.items)}} />
+            {this.props.pair.itemIds[1] === -1 ?
+              <DropBox object={{pair:this.props.pair, position:1, index:this.props.index}} onDrop={this.props.onDrop} />
+              :
+              <div className="pair-item">
+                <div className="pair-data" dangerouslySetInnerHTML={{__html: utils.getPairItemData(this.props.pair.itemIds[1], this.props.items)}} />
 
-              {this.props.showPins &&
-                <TooltipButton
-                  id={`pair-${this.props.index}-${this.props.pair.itemIds[1]}-pin-me`}
-                  className="fa fa-thumb-tack"
-                  title={tex('pair_pin_this_item')}
-                  onClick={() => this.setState({showFeedback: !this.state.showFeedback})}
+                {this.props.showPins &&
+                  <TooltipButton
+                    id={`pair-${this.props.index}-${this.props.pair.itemIds[1]}-pin-me`}
+                    title={tex('pair_pin_this_item')}
+                    onClick={() => this.props.onChange(
+                      actions.addItemCoordinates(this.props.pair.itemIds[1], this.props.pair.itemIds[0], [1, this.props.index])
+                    )}
+                    className={classes(
+                      'fa fa-thumb-tack',
+                      {'btn-disabled': !utils.pairItemHasCoords(this.props.pair.itemIds[1], this.props.items, this.props.index)}
+                    )}
                   />
-              }
-            </div>
-          }
-          <div className="right-controls">
-            <input
-              title={tex('score')}
-              type="number"
-              className="form-control association-score"
-              value={this.props.pair.score}
-              onChange={e => this.props.onChange(
-                actions.updatePair(this.props.index, 'score', e.target.value)
-              )}
-            />
-            <TooltipButton
-              id={`ass-${this.props.pair.itemIds[0]}-${this.props.pair.itemIds[1]}-feedback-toggle`}
-              className="fa fa-comments-o"
-              title={tex('feedback_answer_check')}
-              onClick={() => this.setState({showFeedback: !this.state.showFeedback})}
-            />
-            <TooltipButton
-              id={`ass-${this.props.pair.itemIds[0]}-${this.props.pair.itemIds[1]}-delete`}
-              className="fa fa-trash-o"
-              enabled={this.props.pair._deletable}
-              title={t('delete')}
-              onClick={() => this.props.onChange(
-                actions.removePair(this.props.pair.itemIds[0], this.props.pair.itemIds[1]))
-              }
-            />
-          </div>
-        </div>
-        {this.state.showFeedback &&
-          <div className="feedback-container">
-            <Textarea
-              onChange={(value) => this.props.onChange(
-                actions.updatePair(this.props.index, 'feedback', value)
-              )}
-              id={`${this.props.pair.itemIds[0]}-${this.props.pair.itemIds[1]}-feedback`}
-              content={'this.props.association.feedback'}
-            />
-          </div>
-        }
-        <div className="pair-option">
-          <div className="checkbox">
-            <label>
+                }
+              </div>
+            }
+            <div className="right-controls">
               <input
-                type="checkbox"
-                checked={this.props.pair.ordered}
-                onChange={() => {}}
+                title={tex('score')}
+                type="number"
+                className="form-control association-score"
+                value={this.props.pair.score}
+                onChange={e => this.props.onChange(
+                  actions.updatePair(this.props.index, 'score', e.target.value)
+                )}
               />
-            {tex('pair_is_ordered')}
-            </label>
+              <TooltipButton
+                id={`ass-${this.props.pair.itemIds[0]}-${this.props.pair.itemIds[1]}-feedback-toggle`}
+                className="fa fa-comments-o"
+                title={tex('feedback_answer_check')}
+                onClick={() => this.setState({showFeedback: !this.state.showFeedback})}
+              />
+              <TooltipButton
+                id={`ass-${this.props.pair.itemIds[0]}-${this.props.pair.itemIds[1]}-delete`}
+                className="fa fa-trash-o"
+                enabled={this.props.pair._deletable}
+                title={t('delete')}
+                onClick={() => this.props.onChange(
+                  actions.removePair(this.props.pair.itemIds[0], this.props.pair.itemIds[1]))
+                }
+              />
+            </div>
+          </div>
+          {this.state.showFeedback &&
+            <div className="feedback-container">
+              <Textarea
+                onChange={(value) => this.props.onChange(
+                  actions.updatePair(this.props.index, 'feedback', value)
+                )}
+                id={`${this.props.pair.itemIds[0]}-${this.props.pair.itemIds[1]}-feedback`}
+                content={this.props.pair.feedback}
+              />
+            </div>
+          }
+          <div className="pair-option">
+            <div className="checkbox">
+              <label>
+                <input
+                  type="checkbox"
+                  disabled={this.props.showPins || utils.pairItemHasCoords(this.props.pair.itemIds[1], this.props.items, this.props.index) ||  utils.pairItemHasCoords(this.props.pair.itemIds[0], this.props.items, this.props.index)}
+                  checked={this.props.pair.ordered || utils.pairItemHasCoords(this.props.pair.itemIds[1], this.props.items, this.props.index) ||  utils.pairItemHasCoords(this.props.pair.itemIds[0], this.props.items, this.props.index)}
+                  onChange={(e) => this.props.onChange(
+                    actions.updatePair(this.props.index, 'ordered', e.target.checked)
+                  )}
+                />
+              {tex('pair_is_ordered')}
+              </label>
+            </div>
           </div>
         </div>
       </div>
@@ -466,6 +481,7 @@ PairForm.propTypes = {
     penalty: T.number.isRequired,
     items: T.arrayOf(T.object).isRequired,
     solutions: T.arrayOf(T.object).isRequired,
+    rows: T.number.isRequired,
     _errors: T.object
   }).isRequired,
   validating: T.bool.isRequired,

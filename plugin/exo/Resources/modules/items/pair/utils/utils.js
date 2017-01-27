@@ -1,6 +1,5 @@
 export const utils = {}
 
-
 /**
  * returns odd list (ie items minus real items)
  */
@@ -34,41 +33,36 @@ utils.getOddSolution = (oddItem, solutions) => {
 }
 
 utils.getPairItemData = (itemId, items) => {
-  console.log('getPairItemData')
-  const item = items.find(item => item.id === itemId)
-  return undefined !== item ?  item.data : ''
+  if (itemId === -1) {
+    return ''
+  }
+  const found = items.find(item => item.id === itemId)
+  return found.data || ''
+}
+
+utils.pairItemHasCoords = (itemId, items, index) => {
+  if (itemId === -1) {
+    return ''
+  }
+  const found = items.find(item => item.id === itemId)
+  return  undefined !== found.coordinates && found.coordinates[1] === index
 }
 
 utils.canAddSolution = (solutions, pairToUpdate, item) => {
+  const realSolutionList = utils.getRealSolutionList(solutions)
+  // second pair item
+  const brotherIndexToCheck = pairToUpdate.position === 0 ? 1 : 0
+  const solutionToUpdate = realSolutionList[pairToUpdate.index]
 
-  console.log('pairToUpdate', pairToUpdate)
-  console.log('item', item)
-  // pair has no items
-  if(pairToUpdate.pair.itemIds.length === 0) {
-    return true
+  // only one solution (default one) no ore only one item in it
+  if (realSolutionList.length === 1 && (pairToUpdate.pair.itemIds[0] === -1 || pairToUpdate.pair.itemIds[1] === -1)) {
+    // can not add the same item two times in the same pair
+    return solutionToUpdate.itemIds[brotherIndexToCheck] === -1 || solutionToUpdate.itemIds[brotherIndexToCheck] !== item.id
   }
-  // if already one item in the pair
-  if(pairToUpdate.pair.itemIds.length === 1) {
-    // - can not add the same item two times in the same pair
-    const solutionToUpdate = utils.getRealSolutionList(solutions)[pairToUpdate.index]
-    const indexToCheck = pairToUpdate.position === 0 ? 1 : 0
-    const firstCheck = solutionToUpdate.itemIds[indexToCheck] !== item.id
-    // - other pairs exist and in one of them items are the same and in the same place
-    const fullPairs = solutions.filter(solution => solution.itemIds.length === 2)
-    const secondCheck = fullPairs.some(pair => {
-      return pair.itemIds[pairToUpdate.position] === item.id && pair.itemIds[indexToCheck] === solutionToUpdate.itemIds[indexToCheck]
-    })
 
-    /*
-    if (item.items.some(el => {
-      return item.solutions.associations.find(association => association.itemId === el.id) === undefined &&
-        item.solutions.odd.find(o => o.itemId === el.id) === undefined
-    })){
-      errors.items = tex('set_no_orphean_items')
-    }
-    */
-
-    return firstCheck && secondCheck
-  }
-  return true
+  // @TODO other cases : more than one solution current pair is ordered or not find a way to avoid duplicates
+  // can not add the same item two times in the current pair
+  const firstCheck = solutionToUpdate.itemIds[brotherIndexToCheck] === -1 || solutionToUpdate.itemIds[brotherIndexToCheck] !== item.id
+  const secondCheck = true
+  return firstCheck && secondCheck
 }

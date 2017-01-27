@@ -59,69 +59,74 @@
             border: 1px solid #ccc;
             border-radius: 5px 5px 0 0;
             width: 100%;
-            padding: 5px;
             background-color: #f5f5f5;
 
             .pair-label-container {
-              margin-bottom: @panel-body-padding;
-              border-bottom: 1px solid #eee;
+              margin: 5px;
             }
 
-            .first-row {
-              display: flex;
-              width: 100%;
-              justify-content: space-between;
-              align-items: center;
-              .pair-item-drop-container {
-                border: 1px dashed #bbb;
-                border-radius: 5px;
+            .pair-body {
+              padding: 5px;
+              .first-row {
+                display: flex;
                 width: 100%;
-                min-height: 34px;
-                text-align: center;
-                margin-right: 5px;
-                background-color: white;
-                &.on-hover{
-                  background-color: #eee;
-                }
-              }
-
-              .pair-item {
-                display: flex;
+                justify-content: space-between;
                 align-items: center;
-                min-height: 34px;
-                margin-right: 5px;
-                .pair-data {
-                  display: flex;
-                  padding: 5px;
-                  margin-right: 5px;
-                  min-width: 100px;
-                  max-width: 100px;
-                  align-items: center;
-                  background-color: #fff;
-                  text-overflow: ellipsis;
-                  white-space: nowrap;
-                  overflow: hidden;
+                .pair-item-drop-container {
+                  border: 1px dashed #bbb;
+                  border-radius: 5px;
+                  width: 100%;
                   min-height: 34px;
+                  text-align: center;
+                  margin-right: 5px;
+                  background-color: white;
+                  &.on-hover{
+                    background-color: #eee;
+                  }
                 }
+
+                .pair-item {
+                  display: flex;
+                  align-items: center;
+                  min-height: 34px;
+                  margin-right: 5px;
+                  .pair-data {
+                    display: flex;
+                    padding: 5px;
+                    margin-right: 5px;
+                    min-width: 100px;
+                    max-width: 100px;
+                    align-items: center;
+                    background-color: #fff;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    min-height: 34px;
+                  }
+
+                  .btn-disabled {
+                    color: #aaa;
+                  }
+                }
+
+                .right-controls {
+                  display: flex;
+                  align-items: flex-start;
+                 .association-score {
+                   width: 60px;
+                   margin-right: 8px;
+                 }
+                }
+
               }
 
-              .right-controls {
-                display: flex;
-                align-items: flex-start;
-               .association-score {
-                 width: 60px;
-                 margin-right: 8px;
-               }
+              .feedback-container {
+                margin-top: 12px;
               }
 
-            }
-
-            .feedback-container {
-              margin-top: 12px;
-            }
-
-            .pair-option {
-              margin-top: 12px;
+              .pair-option {
+                margin-top: 12px;
+              }
             }
           }
         }

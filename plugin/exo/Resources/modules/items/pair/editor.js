@@ -10,6 +10,7 @@ const UPDATE_PROP = 'UPDATE_PROP'
 const ADD_ITEM = 'ADD_ITEM'
 const REMOVE_ITEM = 'REMOVE_ITEM'
 const UPDATE_ITEM = 'UPDATE_ITEM'
+const ADD_ITEM_COORDINATES = 'ADD_ITEM_COORDINATES'
 const ADD_PAIR = 'ADD_PAIR'
 const REMOVE_PAIR = 'REMOVE_PAIR'
 const UPDATE_PAIR = 'UPDATE_PAIR'
@@ -23,7 +24,8 @@ export const actions = {
   addPair: makeActionCreator(ADD_PAIR),
   removePair: makeActionCreator(REMOVE_PAIR, 'leftId', 'rightId'),
   updatePair: makeActionCreator(UPDATE_PAIR, 'index', 'property', 'value'),
-  dropPairItem: makeActionCreator(DROP_PAIR_ITEM, 'pairData', 'itemData')
+  dropPairItem: makeActionCreator(DROP_PAIR_ITEM, 'pairData', 'itemData'),
+  addItemCoordinates: makeActionCreator(ADD_ITEM_COORDINATES, 'itemId', 'brotherId', 'coords')
 }
 
 function decorate(pair) {
@@ -70,7 +72,8 @@ function reduce(pair = {}, action) {
             ordered: false,
             _deletable: false
           }
-        ]
+        ],
+        rows: 0
       }))
     }
 
@@ -110,16 +113,18 @@ function reduce(pair = {}, action) {
 
       const value = action.property === 'score' ? parseFloat(action.value) : action.value
       const itemToUpdate = newItem.items.find(el => el.id === action.id)
-      // if it's a real item only data can be updated
+
       if(!action.isOdd){
         itemToUpdate[action.property] = value
-        // update pair item data
-        newItem.solutions.map((solution) => {
-          const solutionItemIdIndex = solution.itemIds.findIndex(id => id === action.id)
-          if(-1 < solutionItemIdIndex){
-            solution._data = action.value
-          }
-        })
+        // update pair item data if needed
+        if (action.property === 'data') {
+          newItem.solutions.map((solution) => {
+            const solutionItemIdIndex = solution.itemIds.findIndex(id => id === action.id)
+            if(-1 < solutionItemIdIndex){
+              solution._data = action.value
+            }
+          })
+        }
       } else {
         if (action.property === 'data') {
           itemToUpdate[action.property] = value
@@ -164,6 +169,24 @@ function reduce(pair = {}, action) {
       return newItem
     }
 
+    case ADD_ITEM_COORDINATES: {
+      const newItem = cloneDeep(pair)
+
+      const itemToUpdate = newItem.items.find(el => el.id === action.itemId)
+      if(itemToUpdate['coordinates']) {
+        delete itemToUpdate.coordinates
+      } else {
+        itemToUpdate['coordinates'] = action.coords
+        // remove coordinates from brother object
+        if (action.brotherId !== -1) {
+          const brotherItem = newItem.items.find(el => el.id === action.brotherId)
+          delete brotherItem.coordinates
+        }
+      }
+
+      return newItem
+    }
+
     case ADD_PAIR: {
       const newItem = cloneDeep(pair)
       newItem.solutions.push({
@@ -184,15 +207,19 @@ function reduce(pair = {}, action) {
       const newItem = cloneDeep(pair)
       const idxToRemove = newItem.solutions.findIndex(solution => solution.itemIds[0] === action.leftId && solution.itemIds[1] === action.rightId)
       newItem.solutions.splice(idxToRemove, 1)
+      const realSolutions = utils.getRealSolutionList(newItem.solutions)
+      realSolutions.forEach(solution => {
+        solution._deletable = realSolutions.length > 1
+      })
       return newItem
     }
 
     case UPDATE_PAIR: {
       const newItem = cloneDeep(pair)
       // 'index', 'property', 'value'
-      // can update score feedback and coordinates
-      const value = action.property === 'score' ? parseFloat(action.value) : action.value
-      const solutionToUpdate = utils.getRealSolutionList(newItem.solutions)[action.index] //newItem.solutions.find(solution => solution.itemIds[0] === action.leftId && solution.itemIds[1] === action.rightId)
+      // can update score feedback and ordered
+      const value = action.property === 'score' ? parseFloat(action.value) : action.property === 'ordered' ? Boolean(action.value) : action.value
+      const solutionToUpdate = utils.getRealSolutionList(newItem.solutions)[action.index]
       solutionToUpdate[action.property] = value
       return newItem
     }
@@ -214,6 +241,34 @@ function reduce(pair = {}, action) {
 function validate(pair) {
   const errors = {}
 
+  // penalty should be greater or equal to 0
+  if (chain(pair.penalty, [notBlank, number])) {
+    errors.item = tex('penalty_not_valid')
+  }
+
+  // no blank items / odds
+  if (pair.items.find(item => notBlank(item.data, true))) {
+    // item / odd data should not be empty
+    errors.items = tex('item_empty_data_error')
+  }
+
+  // solutions and odd
+  if (pair.solutions.length > 0) {
+    // odd score not empty and valid number
+    if (undefined !== pair.solutions.find(solution => solution.itemIds.length === 1 && chain(solution.score, [notBlank, number]) && solution.score > 0)) {
+      errors.odd = tex('odd_score_not_valid')
+    }
+
+    // no pair with no score
+    if (undefined !== pair.solutions.find(solution => solution.itemIds.length === 2 && chain(solution.score, [notBlank, number]))) {
+      errors.solutions = tex('solution_score_not_valid')
+    }
+
+    // no pair with only one item...
+    if (undefined !== pair.solutions.find(solution => solution.itemIds.length === 2 && solution.itemIds.indexOf(-1) !== -1)) {
+      errors.solutions = tex('solution_pair_should_have_two_items')
+    }
+  }
   return errors
 }
 
