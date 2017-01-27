@@ -21,7 +21,7 @@ export class Quiz {
     registerDefaultItemTypes()
     registerModalType(MODAL_ADD_ITEM, AddItemModal)
     registerModalType(MODAL_IMPORT_ITEMS, ImportItemsModal)
-    const quizData = decorate(normalize(rawQuizData), getDecorators())
+    const quizData = decorate(normalize(rawQuizData), getDecorators(), rawQuizData.meta.editable)
     this.store = createStore(Object.assign({noServer: noServer}, quizData))
     this.dndQuiz = DragDropContext(HTML5Backend)(QuizComponent)
     makeRouter(this.store.dispatch.bind(this.store))
