@@ -1,5 +1,5 @@
 import {ITEM_CREATE} from './../../quiz/editor/actions'
-import {makeId, makeActionCreator} from './../../utils/utils'
+import {makeId} from './../../utils/utils'
 import {tex} from './../../utils/translate'
 import {resizeArea} from './resize'
 import {
@@ -311,7 +311,7 @@ function decorate(item) {
   return Object.assign({}, item, {
     image: Object.assign({}, item.image, {
       _clientWidth: 0,
-      _clientHeight: 0,
+      _clientHeight: 0
     }),
     solutions: item.solutions.map(solution => {
       if (solution.area.shape === SHAPE_RECT) {

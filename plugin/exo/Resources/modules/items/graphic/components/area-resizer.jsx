@@ -22,7 +22,7 @@ export const AreaResizer = props => {
         top: props.top,
         left: props.left,
         width: props.size,
-        height: props.size,
+        height: props.size
       }}
     />
   )

@@ -1,4 +1,4 @@
-import React, {Component, PropTypes as T} from 'react'
+import React, {PropTypes as T} from 'react'
 import classes from 'classnames'
 import {tex} from './../../../utils/translate'
 import {TooltipElement} from './../../../components/form/tooltip-element.jsx'
@@ -20,7 +20,8 @@ ModeButton.propTypes = {
   mode: T.string.isRequired,
   tip: T.string.isRequired,
   active: T.bool.isRequired,
-  onClick: T.func.isRequired
+  onClick: T.func.isRequired,
+  children: T.any.isRequired
 }
 
 export const ModeSelector = props =>

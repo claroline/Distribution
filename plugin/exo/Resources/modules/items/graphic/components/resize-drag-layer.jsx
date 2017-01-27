@@ -68,6 +68,6 @@ function collect(monitor) {
   }
 }
 
-ResizeDragLayer = DragLayer(collect)(ResizeDragLayer)
+const ResizeDragLayerDecorated = DragLayer(collect)(ResizeDragLayer)
 
-export {ResizeDragLayer}
+export {ResizeDragLayerDecorated as ResizeDragLayer}

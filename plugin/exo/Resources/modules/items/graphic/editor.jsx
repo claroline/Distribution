@@ -55,7 +55,7 @@ export class Graphic extends Component {
 
     window.addEventListener('resize', this.onResize)
 
-    this.imgContainer.addEventListener('click', e => {
+    this.imgContainer.addEventListener('click', () => {
       this.props.onChange(actions.blurAreas())
     })
   }
@@ -134,7 +134,7 @@ export class Graphic extends Component {
     }
   }
 
-  onResize(e) {
+  onResize() {
     const img = this.imgContainer.querySelector('img')
 
     if (img) {
@@ -269,16 +269,17 @@ Graphic.propTypes = {
         id: T.string.isRequired,
         shape: T.string.isRequired,
         color: T.string.isRequired
-      }).isRequired,
+      }).isRequired
     })).isRequired,
     _mode: T.string.isRequired,
     _errors: T.object,
     _currentColor: T.string.isRequired,
     _popover: T.shape({
+      areaId: T.string.isRequired,
       open: T.bool.isRequired,
       top: T.number.isRequired,
       left: T.number.isRequired
-    }).isRequired,
+    }).isRequired
   }).isRequired,
   validating: T.bool.isRequired,
   onChange: T.func.isRequired

@@ -11,7 +11,7 @@ export function makeDraggable(component, type, itemFactory = null) {
         item: props.item
       }
     },
-    canDrag(props, monitor) {
+    canDrag(props) {
       if (typeof props.canDrag !== 'undefined') {
         return props.canDrag
       }

@@ -15,7 +15,7 @@ describe('<AnswerArea/>', () => {
   afterEach(spyConsole.restore)
 
   it('renders a circular area', () => {
-    const area = shallow(
+    shallow(
       <AnswerArea
         id="ID"
         color="yellow"
@@ -37,7 +37,7 @@ describe('<AnswerArea/>', () => {
   })
 
   it('renders a rectangular area', () => {
-    const area = shallow(
+    shallow(
       <AnswerArea
         id="ID"
         color="blue"

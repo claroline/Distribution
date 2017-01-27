@@ -1,8 +1,6 @@
 import React, {Component, PropTypes as T} from 'react'
-import ReactDOM from 'react-dom'
 import classes from 'classnames'
 import tinycolor from 'tinycolor2'
-import Popover from 'react-bootstrap/lib/Popover'
 import {makeDraggable} from './../../../utils/dragAndDrop'
 import {AreaResizer, AreaResizerDraggable} from './area-resizer.jsx'
 import {
@@ -178,8 +176,8 @@ function common(rules) {
 }
 
 function makeResizerFactory(resizable, areaId, size, el) {
-  return (geometry, index) =>
-    React.createElement(
+  return (geometry, index) => {
+    const Resizer = React.createElement(
       resizable ? AreaResizerDraggable : AreaResizer,
       Object.assign(geometry, {
         areaId,
@@ -192,4 +190,6 @@ function makeResizerFactory(resizable, areaId, size, el) {
         position: geometry[2]
       })
     )
+    return Resizer
+  }
 }

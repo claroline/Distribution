@@ -109,15 +109,3 @@ function overrideRect(area, leftTop = {}, rightBottom = {}) {
     ]
   })
 }
-
-function squareToCircle(square) {
-  const radius = (square.coords[1].x - square.coords[0].x) / 2
-
-  return {
-    center: {
-      x: square.coords[0].x + radius,
-      y: square.coords[0].y + radius
-    },
-    radius
-  }
-}

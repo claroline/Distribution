@@ -1,4 +1,3 @@
-import invariant from 'invariant'
 import {makeActionCreator} from './../../utils/utils'
 
 export const SELECT_MODE = 'SELECT_MODE'
