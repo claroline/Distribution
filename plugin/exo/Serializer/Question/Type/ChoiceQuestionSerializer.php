@@ -99,7 +99,7 @@ class ChoiceQuestionSerializer implements SerializerInterface
     {
         return array_map(function (Choice $choice) use ($options) {
             $choiceData = $this->contentSerializer->serialize($choice, $options);
-            // FIXME : the choice id overlaps the content ID.
+            // TODO : finish content management. For now the choice id overlaps the content ID.
             $choiceData->id = $choice->getUuid();
 
             return $choiceData;
