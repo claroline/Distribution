@@ -3,7 +3,7 @@
 namespace UJM\ExoBundle\Library\Attempt;
 
 /**
- * Generic class used to apply penalty to a user answer
+ * Generic class used to apply penalty to a user answer.
  */
 class GenericPenalty implements PenaltyItemInterface
 {

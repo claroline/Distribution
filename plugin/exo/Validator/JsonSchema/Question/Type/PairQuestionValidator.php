@@ -55,7 +55,7 @@ class PairQuestionValidator extends JsonSchemaValidator
                 if (in_array($item->coordinates, $usedCoords)) {
                     $errors[] = [
                         'path' => "/items[{$index}]",
-                        'message' => "two items cannot be pinned at the same coordinates.",
+                        'message' => 'two items cannot be pinned at the same coordinates.',
                     ];
                     break;
                 }
@@ -64,7 +64,7 @@ class PairQuestionValidator extends JsonSchemaValidator
                 if ($question->rows <= $item->coordinates[1]) {
                     $errors[] = [
                         'path' => "/items[{$index}]",
-                        'message' => "pinned items must be in the grid.",
+                        'message' => 'pinned items must be in the grid.',
                     ];
                     break;
                 }
@@ -77,8 +77,8 @@ class PairQuestionValidator extends JsonSchemaValidator
             // no shuffle if no item pinned
             if (empty($usedCoords) && $question->random) {
                 $errors[] = [
-                    'path' => "/random",
-                    'message' => "you must pin at least one item to use random.",
+                    'path' => '/random',
+                    'message' => 'you must pin at least one item to use random.',
                 ];
             }
 
@@ -88,7 +88,7 @@ class PairQuestionValidator extends JsonSchemaValidator
                     if (!in_array($item, $itemIds)) {
                         $errors[] = [
                             'path' => "solutions[{$indexSolution}]/itemIds[{$index}]",
-                            'message' => "solution itemIds must reference question items.",
+                            'message' => 'solution itemIds must reference question items.',
                         ];
                     }
                 }

@@ -111,7 +111,7 @@ class SetDefinition extends AbstractDefinition
 
     /**
      * @param MatchQuestion $question
-     * @param array $answer
+     * @param array         $answer
      *
      * @return CorrectedAnswer
      */
@@ -156,6 +156,7 @@ class SetDefinition extends AbstractDefinition
 
     /**
      * @param MatchQuestion $question
+     *
      * @return array
      */
     public function expectAnswer(AbstractQuestion $question)

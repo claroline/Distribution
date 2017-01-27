@@ -115,7 +115,6 @@ class GridRow implements AnswerPartInterface
      * Get an item by its uuid.
      *
      * @param $uuid
-     * @return null
      */
     public function getItem($uuid)
     {
@@ -141,7 +140,7 @@ class GridRow implements AnswerPartInterface
      * Add item.
      *
      * @param GridItem $item
-     * @param int $order
+     * @param int      $order
      */
     public function addItem(GridItem $item, $order = null)
     {

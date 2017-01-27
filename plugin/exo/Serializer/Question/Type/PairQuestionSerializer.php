@@ -39,7 +39,7 @@ class PairQuestionSerializer implements SerializerInterface
      * Converts a Match question into a JSON-encodable structure.
      *
      * @param PairQuestion $pairQuestion
-     * @param array         $options
+     * @param array        $options
      *
      * @return \stdClass
      */
@@ -103,9 +103,9 @@ class PairQuestionSerializer implements SerializerInterface
     /**
      * Converts raw data into a Set question entity.
      *
-     * @param \stdClass     $data
+     * @param \stdClass    $data
      * @param PairQuestion $pairQuestion
-     * @param array         $options
+     * @param array        $options
      *
      * @return PairQuestion
      */

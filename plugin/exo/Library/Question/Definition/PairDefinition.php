@@ -111,7 +111,7 @@ class PairDefinition extends AbstractDefinition
 
     /**
      * @param PairQuestion $question
-     * @param array $answer
+     * @param array        $answer
      *
      * @return CorrectedAnswer
      */
