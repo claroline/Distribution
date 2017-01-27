@@ -1,4 +1,3 @@
-
 import React, {Component, PropTypes as T} from 'react'
 import Tab from 'react-bootstrap/lib/Tab'
 import Nav from 'react-bootstrap/lib/Nav'
@@ -26,18 +25,22 @@ export class PaperTabs extends Component
             <NavItem eventKey="first" onSelect={() => this.handleSelect('first')}>
               <span className="fa fa-user"></span> {tex('your_answer')}
             </NavItem>
-            <NavItem eventKey="second" onSelect={() => this.handleSelect('second')}>
-              <span className="fa fa-check"></span> {tex('expected_answer')}
-            </NavItem>
+            {!this.props.hideExpected &&
+              <NavItem eventKey="second" onSelect={() => this.handleSelect('second')}>
+                <span className="fa fa-check"></span> {tex('expected_answer')}
+              </NavItem>
+            }
           </Nav>
 
           <Tab.Content animation>
             <Tab.Pane eventKey="first">
               {this.props.yours}
             </Tab.Pane>
-            <Tab.Pane eventKey="second">
-              {this.props.expected}
-            </Tab.Pane>
+            {!this.props.hideExpected &&
+              <Tab.Pane eventKey="second">
+                {this.props.expected}
+              </Tab.Pane>
+            }
           </Tab.Content>
         </div>
       </Tab.Container>
@@ -48,6 +51,7 @@ export class PaperTabs extends Component
 PaperTabs.propTypes = {
   id: T.string.isRequired,
   yours: T.object.isRequired,
-  expected: T.object.isRequired,
-  onTabChange: T.func
+  expected: T.object,
+  onTabChange: T.func,
+  hideExpected: T.bool
 }
