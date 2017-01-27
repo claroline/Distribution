@@ -155,7 +155,7 @@ class ApiController extends BaseController
         $notRepeatableLogTimeInSeconds = $this->container->getParameter(
             'non_repeatable_log_time_in_seconds'
         );
-        
+
         if ($now >= ($session->get($sessionViewCounterKey) + $notRepeatableLogTimeInSeconds)) {
             $em = $this->getDoctrine()->getManager();
             $post->increaseViewCounter();
@@ -248,7 +248,7 @@ class ApiController extends BaseController
      * @Route(requirements={ "blog" = "\d+", "day" = "\d{2}-\d{2}-\d{4}" })
      *
      * @QueryParam(name="page", requirements="\d+", allowBlank=true, default="1")
-     * 
+     *
      * @View(serializerGroups={ "blog_list", "api_user_min" })
      */
     public function getBlogDaysPostsAction(Blog $blog, $day, ParamFetcher $paramFetcher)
@@ -270,6 +270,7 @@ class ApiController extends BaseController
     public function getBlogMonthsPostsAction(Blog $blog, $month, ParamFetcher $paramFetcher)
     {
         $this->checkAccess('OPEN', $blog);
+
         return $this->getPostsByDate($blog, $month, $paramFetcher);
     }
 

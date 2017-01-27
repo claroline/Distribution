@@ -203,18 +203,13 @@ class BlogController extends BaseController
 
         foreach ($posts as $post) {
             $publicationDate = $post->getPublicationDate()->format('Y-m-d');
-            $publicationDateForSort = $post->getPublicationDate()->format('Y-m-d');
 
             if (!isset($calendarDatasTemp[$publicationDate])) {
                 $calendarDatasTemp[$publicationDate] = [
                     'id' => '12',
                     'start' => $publicationDate,
                     'title' => '1',
-                    /*'url' => $this->generateUrl(
-                        'icap_blog_view_filter',
-                        ['blogId' => $blog->getId(), 'filter' => $publicationDateForSort]
-                    ),*/
-                    'angularParams' => $post->getPublicationDate()->format('Y/m/d')
+                    'angularParams' => $post->getPublicationDate()->format('Y/m/d'),
                 ];
             } else {
                 $title = intval($calendarDatasTemp[$publicationDate]['title']);

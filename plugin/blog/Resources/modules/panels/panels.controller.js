@@ -88,8 +88,11 @@ export default class BlogPanelController {
   }
 
   filterByCalendar(event) {
-    console.log(_$location.get(this))
-    _$location.get(this).url(`/archives/${event.angular-params}`)
+    _$location.get(this).url(`/archives/${event.angularParams}`)
+  }
+
+  filterByArchives(params) {
+    _$location.get(this).url('/archives/' + params)
   }
 
   editInfo() {
@@ -101,9 +104,7 @@ export default class BlogPanelController {
     _$location.get(this).url('/search/' + encodeURI(this.searchTerms))
   }
 
-  goToArchives(params) {
-    _$location.get(this).url('/archives/' + params)
-  }
+  
 
   toggle(element) {
     element.toggle()
