@@ -46,6 +46,7 @@ class PairQuestion extends AbstractQuestion
      *     cascade={"all"},
      *     orphanRemoval=true
      * )
+     *
      * @var ArrayCollection
      */
     private $rows;

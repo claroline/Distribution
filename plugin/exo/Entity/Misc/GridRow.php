@@ -102,7 +102,7 @@ class GridRow implements AnswerPartInterface
     /**
      * Get items.
      *
-     * @return ArrayCollection
+     * @return GridItem[]
      */
     public function getItems()
     {
@@ -115,6 +115,8 @@ class GridRow implements AnswerPartInterface
      * Get an item by its uuid.
      *
      * @param $uuid
+     *
+     * @return GridItem|null
      */
     public function getItem($uuid)
     {

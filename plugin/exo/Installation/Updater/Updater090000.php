@@ -72,6 +72,7 @@ class Updater090000
     {
         $this->updateExerciseTypes();
         $this->updateAnswerData();
+        $this->cleanOldPairQuestions();
         $this->updatePapers();
     }
 
@@ -192,6 +193,27 @@ class Updater090000
 
                     break;
 
+                case 'application/x.pair+json':
+                    // Get each pair
+                    $answerData = explode(';', $answer['data']);
+
+                    // Filter empty elements
+                    $answerData = array_filter($answerData, function ($part) {
+                        return !empty($part);
+                    });
+
+                    $newData = array_map(function ($pair) use ($labels, $proposals) {
+                        $pairData = explode(',', $pair);
+
+                        // Convert ids into uuids
+                        return [
+                            $this->getAnswerPartUuid($pairData[0], $proposals),
+                            $this->getAnswerPartUuid($pairData[1], $labels),
+                        ];
+                    }, $answerData);
+
+                    break;
+
                 case 'application/x.cloze+json':
                     // Replace hole ids by uuids
                     $answerData = json_decode($answer['data'], true);
@@ -210,7 +232,22 @@ class Updater090000
                     break;
 
                 case 'application/x.graphic':
-                    // TODO : replace areas ids by uuids
+                    // Get each area
+                    $answerData = explode(';', $answer['data']);
+
+                    // Filter empty elements
+                    $answerData = array_filter($answerData, function ($part) {
+                        return !empty($part);
+                    });
+
+                    $newData = array_map(function ($coords) {
+                        $coordsData = explode(',', $coords);
+
+                        return [
+                            $coordsData[0],
+                            $coordsData[1],
+                        ];
+                    }, $answerData);
                     break;
 
                 default:
@@ -243,6 +280,63 @@ class Updater090000
         }
 
         return $uuid;
+    }
+
+    private function cleanOldPairQuestions()
+    {
+        $this->log('Removes old pair questions data...');
+
+        // Delete old questions
+        $sth = $this->connection->prepare('
+            SET FOREIGN_KEY_CHECKS = false;
+            
+            DELETE m FROM ujm_interaction_matching AS m
+            JOIN ujm_question AS q ON (m.question_id = q.id)
+            WHERE q.mime_type = "application/x.pair+json";
+            
+            SET FOREIGN_KEY_CHECKS = true;
+        ');
+        $sth->execute();
+
+        // Delete old labels
+        $sth = $this->connection->prepare('
+            SET FOREIGN_KEY_CHECKS = false;
+            
+            DELETE l FROM ujm_label AS l
+            LEFT JOIN ujm_interaction_matching AS m ON (l.interaction_matching_id = m.id)
+            WHERE m.id IS NULL;
+            
+            SET FOREIGN_KEY_CHECKS = true;
+        ');
+        $sth->execute();
+
+        // Delete old proposals
+        $sth = $this->connection->prepare('
+            SET FOREIGN_KEY_CHECKS = false;
+            
+            DELETE l FROM ujm_proposal AS p
+            LEFT JOIN ujm_interaction_matching AS m ON (p.interaction_matching_id = m.id)
+            WHERE m.id IS NULL;
+            
+            SET FOREIGN_KEY_CHECKS = true;
+        ');
+        $sth->execute();
+
+        // Delete old labels/proposals association
+        $sth = $this->connection->prepare('
+            SET FOREIGN_KEY_CHECKS = false;
+            
+            DELETE l FROM ujm_proposal_label AS pl
+            LEFT JOIN ujm_proposal AS p ON (pl.proposal_id = p.id)
+            LEFT JOIN ujm_label AS l ON (pl.label_id = l.id)
+            WHERE p.id IS NULL 
+               OR l.id IS NULL;
+                
+            SET FOREIGN_KEY_CHECKS = true;
+        ');
+        $sth->execute();
+
+        $this->log('done !');
     }
 
     /**

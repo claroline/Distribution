@@ -275,7 +275,7 @@ class PairQuestionSerializer implements SerializerInterface
                 $solution->ordered = $row->isOrdered();
                 $solution->itemIds = array_map(function (GridItem $item) {
                     return $item->getUuid();
-                }, $row->getItems()->toArray());
+                }, $row->getItems());
 
                 $solution->score = $row->getScore();
                 if ($row->getFeedback()) {
