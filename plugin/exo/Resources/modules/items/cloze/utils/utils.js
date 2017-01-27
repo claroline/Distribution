@@ -1,4 +1,5 @@
 import {tex} from './../../../utils/translate'
+import $ from 'jquery'
 
 export const utils = {}
 
@@ -18,7 +19,8 @@ utils.makeTinyHtml = (solution) => {
     input = `
       <span class="cloze-input" data-hole-id="${solution.holeId}">
         <input
-          class="hole-input form-control inline-select"
+          style="width: auto; margin: 10px; display: inline;"
+          class="hole-input form-control"
           data-hole-id="${solution.holeId}"
           type="text"
         >
@@ -30,7 +32,8 @@ utils.makeTinyHtml = (solution) => {
     input = `
       <span class="cloze-input" data-hole-id="${solution.holeId}">
         <select
-          class="hole-input form-control inline-select"
+          *style="width: auto; margin: 10px; display: inline;"
+          class="hole-input form-control"
           data-hole-id="${solution.holeId}"
           type="text"
         >
@@ -47,12 +50,22 @@ utils.getTextWithPlacerHoldersFromHtml = (text) =>
 {
   const tmp = document.createElement('div')
   tmp.innerHTML = text
+
+  $(tmp).find('.cloze-input').each(function () {
+    let id = $(this).attr('data-hole-id')
+    $(this).replaceWith(`[[${id}]]`)
+  })
+
+  return $(tmp).html()
+/*
+  const tmp = document.createElement('div')
+  tmp.innerHTML = text
   tmp.querySelectorAll('.cloze-input').forEach(input => {
     const placeholder = document.createTextNode(`[[${input.dataset.holeId}]]`)
     tmp.replaceChild(placeholder, input)
   })
 
-  return tmp.innerHTML
+  return tmp.innerHTML*/
 }
 
 function getEditButtons(solution) {
@@ -60,11 +73,11 @@ function getEditButtons(solution) {
     <i style="cursor: pointer"
       class="fa fa-pencil edit-hole-btn"
       data-hole-id="${solution.holeId}"
-    ></i>
+    > &nbsp; </i>
     <i style="cursor: pointer"
       class="fa fa-trash delete-hole-btn"
       data-hole-id="${solution.holeId}"
-    >
+    > &nbsp;
     </i>
   `
 }
