@@ -214,7 +214,7 @@ class GraphicQuestionSerializer implements SerializerInterface
                 $areaData->shape = 'rect';
                 $areaData->coords = [
                     $this->serializeCoords(array_slice($position, 0, 2)),
-                    $this->serializeCoords(array_slice($position, 2, 2))
+                    $this->serializeCoords(array_slice($position, 2, 2)),
                 ];
                 break;
         }

@@ -6,7 +6,7 @@ use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
 /**
- * Auto-generated migration based on mapping information: modify it with caution
+ * Auto-generated migration based on mapping information: modify it with caution.
  *
  * Generation date: 2017/01/23 05:00:21
  */
@@ -14,29 +14,29 @@ class Version20170123050000 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
-        $this->addSql("
+        $this->addSql('
             ALTER TABLE ujm_exercise CHANGE show_feedback show_feedback TINYINT(1) NOT NULL
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE ujm_picture 
             ADD uuid VARCHAR(36) NOT NULL
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             CREATE UNIQUE INDEX UNIQ_88AACC8AD17F50A6 ON ujm_picture (uuid)
-        ");
+        ');
     }
 
     public function down(Schema $schema)
     {
-        $this->addSql("
+        $this->addSql('
             ALTER TABLE ujm_exercise CHANGE show_feedback show_feedback TINYINT(1) DEFAULT NULL
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             DROP INDEX UNIQ_88AACC8AD17F50A6 ON ujm_picture
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE ujm_picture 
             DROP uuid
-        ");
+        ');
     }
 }
