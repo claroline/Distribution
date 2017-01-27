@@ -883,7 +883,6 @@ class WorkspaceManager
         $i = 0;
         $workspaceModelManager = $this->container->get('claroline.manager.workspace_model_manager');
         $this->om->startFlushSuite();
-        
         foreach ($workspaces as $workspace) {
             ++$i;
             $endDate = null;
