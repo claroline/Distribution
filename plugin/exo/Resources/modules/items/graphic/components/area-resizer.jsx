@@ -1,9 +1,18 @@
 import React, {PropTypes as T} from 'react'
 import classes from 'classnames'
 import {makeDraggable} from './../../../utils/dragAndDrop'
-import {TYPE_AREA_RESIZER} from './../enums'
+import {TYPE_AREA_RESIZER, DIRECTIONS} from './../enums'
 
 export const AreaResizer = props => {
+  if (props.isDragging && props.areaEl) {
+    props.areaEl.style.opacity = 0
+    return null
+  }
+
+  if (props.areaEl) {
+    props.areaEl.style.opacity = 1
+  }
+
   return props.connectDragSource(
     <span
       className={classes('resizer', props.position)}
@@ -24,10 +33,10 @@ AreaResizer.propTypes = {
   top: T.number.isRequired,
   left: T.number.isRequired,
   size: T.number.isRequired,
-  position: T.oneOf([
-    'n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw'
-  ]).isRequired,
-  connectDragSource: T.func.isRequired
+  position: T.oneOf(DIRECTIONS).isRequired,
+  isDragging: T.bool,
+  connectDragSource: T.func.isRequired,
+  areaEl: T.object
 }
 
 export const AreaResizerDraggable = makeDraggable(

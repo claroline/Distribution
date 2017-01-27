@@ -12,7 +12,9 @@ import {
   MODE_SELECT,
   SHAPE_RECT,
   SHAPE_CIRCLE,
-  AREA_DEFAULT_SIZE
+  AREA_DEFAULT_SIZE,
+  DIR_SW,
+  DIR_N
 } from './enums'
 import editor from './editor'
 import {Graphic} from './editor.jsx'
@@ -469,6 +471,150 @@ describe('Graphic reducer', () => {
             shape: SHAPE_RECT
           },
           foo: 'bar'
+        }
+      ]
+    }))
+  })
+
+  it('resizes rectangular areas (scale)', () => {
+    const item = itemFixture({
+      image: {
+        width: 200,
+        height: 200,
+        _clientWidth: 100,
+        _clientHeight: 100
+      },
+      solutions: [
+        {
+          area: {
+            id: 'ID1',
+            shape: SHAPE_RECT,
+            coords: [
+              {
+                x: 50,
+                y: 50,
+                _clientX: 25,
+                _clientY: 25
+              },
+              {
+                x: 150,
+                y: 150,
+                _clientX: 75,
+                _clientY: 75
+              }
+            ]
+          },
+          _selected: true
+        },
+        {
+          area: {
+            id: 'ID2',
+            shape: SHAPE_CIRCLE
+          }
+        }
+      ]
+    })
+    const reduced = editor.reduce(item, subActions.resizeArea('ID1', DIR_SW, -15, 5))
+    ensure.equal(reduced, itemFixture({
+      image: {
+        width: 200,
+        height: 200,
+        _clientWidth: 100,
+        _clientHeight: 100
+      },
+      solutions: [
+        {
+          area: {
+            id: 'ID1',
+            shape: SHAPE_RECT,
+            coords: [
+              {
+                x: 20,
+                y: 50,
+                _clientX: 10,
+                _clientY: 25
+              },
+              {
+                x: 150,
+                y: 160,
+                _clientX: 75,
+                _clientY: 80
+              }
+            ]
+          },
+          _selected: true
+        },
+        {
+          area: {
+            id: 'ID2',
+            shape: SHAPE_CIRCLE
+          }
+        }
+      ]
+    }))
+  })
+
+  it('resizes circular areas (scale)', () => {
+    const item = itemFixture({
+      image: {
+        width: 200,
+        height: 200,
+        _clientWidth: 400,
+        _clientHeight: 400
+      },
+      solutions: [
+        {
+          area: {
+            id: 'ID1',
+            shape: SHAPE_RECT
+          }
+        },
+        {
+          area: {
+            id: 'ID2',
+            shape: SHAPE_CIRCLE,
+            center: {
+              x: 15,
+              y: 90,
+              _clientX: 30,
+              _clientY: 180
+            },
+            radius: 25,
+            _clientRadius: 50
+          },
+          _selected: true
+        }
+      ]
+    })
+    const reduced = editor.reduce(item, subActions.resizeArea('ID2', DIR_N, 20, 40))
+    ensure.equal(reduced, itemFixture({
+      image: {
+        width: 200,
+        height: 200,
+        _clientWidth: 400,
+        _clientHeight: 400
+      },
+      solutions: [
+        {
+          area: {
+            id: 'ID1',
+            shape: SHAPE_RECT
+          }
+        },
+        {
+          area: {
+            id: 'ID2',
+            shape: SHAPE_CIRCLE,
+            center: {
+              x: 15,
+              y: 90,
+              _clientX: 30,
+              _clientY: 180
+            },
+            radius: 5,
+            _clientRadius: 10
+          },
+          _selected: true
         }
       ]
     }))

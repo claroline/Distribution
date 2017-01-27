@@ -204,7 +204,9 @@ export class Graphic extends Component {
             <div className="img-widget">
               <AnswerDropZone onDrop={(item, props, offset) => {
                 if (item.type === TYPE_AREA_RESIZER) {
-                  console.log('dropping resizer')
+                  this.props.onChange(
+                    actions.resizeArea(item.areaId, item.position, offset.x, offset.y)
+                  )
                 } else {
                   this.props.onChange(actions.moveArea(item.id, offset.x, offset.y))
                 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import {shallow} from 'enzyme'
 import {spyConsole, renew, ensure} from './../../../utils/test'
-import {AnswerArea as BaseArea} from './answer-area.jsx'
+import {AnswerAreaDraggable as BaseArea} from './answer-area.jsx'
 import {SHAPE_CIRCLE, SHAPE_RECT} from './../enums'
 
 // see https://react-dnd.github.io/react-dnd/docs-testing.html
@@ -25,6 +25,7 @@ describe('<AnswerArea/>', () => {
           radius: 20
         }}
         selected={true}
+        canDrag={true}
         isDragging={false}
         onSelect={() => {}}
         onDelete={() => {}}
@@ -48,6 +49,7 @@ describe('<AnswerArea/>', () => {
           ]
         }}
         selected={true}
+        canDrag={true}
         isDragging={false}
         onSelect={() => {}}
         onDelete={() => {}}

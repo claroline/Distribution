@@ -1,25 +1,12 @@
 import React, {Component, PropTypes as T} from 'react'
 import {DragLayer} from 'react-dnd'
-import {TYPE_AREA_RESIZER, SHAPE_RECT} from './../enums'
+import {TYPE_AREA_RESIZER} from './../enums'
+import {resizeArea} from './../resize'
 import {AnswerArea} from './answer-area.jsx'
 
 // this class doesn't hold any state but the drag layer decorator
 // requires it to be a "full" component, not a stateless function
 class ResizeDragLayer extends Component {
-  computeNewGeometry(area, resizerPosition, offset) {
-    if (area.shape === SHAPE_RECT) {
-      switch (resizerPosition) {
-        case 's':
-          return {
-            coords: [
-              area.coords[0],
-              Object.assign({}, area.coords[1], {y: area.coords[1].y + offset.y})
-            ]
-          }
-      }
-    }
-  }
-
   render() {
     if (
       !this.props.canDrag ||
@@ -37,10 +24,11 @@ class ResizeDragLayer extends Component {
         id="area-drag-preview"
         color={area.color}
         shape={area.shape}
-        geometry={this.computeNewGeometry(
+        geometry={resizeArea(
           area,
           this.props.item.position,
-          this.props.currentOffset
+          this.props.currentOffset.x,
+          this.props.currentOffset.y
         )}
         selected={true}
         resizable={false}

@@ -1,6 +1,7 @@
 import {ITEM_CREATE} from './../../quiz/editor/actions'
 import {makeId, makeActionCreator} from './../../utils/utils'
 import {tex} from './../../utils/translate'
+import {resizeArea} from './resize'
 import {
   MODE_RECT,
   MODE_SELECT,
@@ -19,7 +20,8 @@ import {
   DELETE_AREA,
   TOGGLE_POPOVER,
   SET_AREA_COLOR,
-  SET_SOLUTION_PROPERTY
+  SET_SOLUTION_PROPERTY,
+  RESIZE_AREA
 } from './actions'
 import {Graphic as component} from './editor.jsx'
 
@@ -220,6 +222,45 @@ function reduce(item = {}, action = {}) {
           return solution
         })
       })
+    case RESIZE_AREA:
+      return Object.assign({}, item, {
+        solutions: item.solutions.map(solution => {
+          if (solution.area.id === action.id) {
+            const area = resizeArea(
+              getClientArea(solution.area),
+              action.position,
+              action.x,
+              action.y
+            )
+            if (solution.area.shape === SHAPE_CIRCLE) {
+              return Object.assign({}, solution, {
+                area: Object.assign({}, solution.area, {
+                  center: {
+                    x: toAbs(area.center.x, item.image),
+                    y: toAbs(area.center.y, item.image),
+                    _clientX: area.center.x,
+                    _clientY: area.center.y
+                  },
+                  radius: toAbs(area.radius, item.image),
+                  _clientRadius: area.radius
+                })
+              })
+            } else {
+              return Object.assign({}, solution, {
+                area: Object.assign({}, solution.area, {
+                  coords: solution.area.coords.map((coords, index) => ({
+                    x: toAbs(area.coords[index].x, item.image),
+                    y: toAbs(area.coords[index].y, item.image),
+                    _clientX: area.coords[index].x,
+                    _clientY: area.coords[index].y
+                  }))
+                })
+              })
+            }
+          }
+          return solution
+        })
+      })
   }
   return item
 }
@@ -237,6 +278,25 @@ function blankImage() {
     width: 0,
     height: 0
   }
+}
+
+function getClientArea(area) {
+  return area.shape === SHAPE_RECT ?
+    {
+      shape: area.shape,
+      coords: area.coords.map(coords => ({
+        x: coords._clientX,
+        y: coords._clientY
+      }))
+    } :
+    {
+      shape: area.shape,
+      radius: area._clientRadius,
+      center: {
+        x: area.center._clientX,
+        y: area.center._clientY
+      }
+    }
 }
 
 function decorate(item) {

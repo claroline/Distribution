@@ -11,3 +11,23 @@ export const SHAPE_CIRCLE = 'circle'
 
 export const TYPE_ANSWER_AREA = 'answerArea'
 export const TYPE_AREA_RESIZER = 'areaResizer'
+
+export const DIR_N = 'n'
+export const DIR_NE = 'ne'
+export const DIR_E = 'e'
+export const DIR_SE = 'se'
+export const DIR_S = 's'
+export const DIR_SW = 'sw'
+export const DIR_W = 'w'
+export const DIR_NW = 'nw'
+
+export const DIRECTIONS = [
+  DIR_N,
+  DIR_NE,
+  DIR_E,
+  DIR_SE,
+  DIR_S,
+  DIR_SW,
+  DIR_W,
+  DIR_NW
+]
