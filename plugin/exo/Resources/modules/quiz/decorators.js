@@ -7,7 +7,7 @@ import {makeId} from './../utils/utils'
 
 // augment normalized quiz data with editor state attributes and default values
 // (can be passed an array of sub-decorators for each item mime type)
-export function decorate(state, itemDecorators = {}) {
+export function decorate(state, itemDecorators = {}, applyOnItems = true) {
   const newState = cloneDeep(state)
 
   // create an empty step if none
@@ -25,7 +25,7 @@ export function decorate(state, itemDecorators = {}) {
     steps: mapValues(newState.steps, step => defaultsDeep(step, defaults.step)),
     items: mapValues(newState.items, item => {
       const subDecorator = itemDecorators[item.type] || (item => item)
-      return decorateItem(item, subDecorator)
+      return decorateItem(item, subDecorator, applyOnItems)
     }),
     editor: {
       currentObject: {
@@ -36,7 +36,10 @@ export function decorate(state, itemDecorators = {}) {
   })
 }
 
-export function decorateItem(item, subDecorator = item => item) {
+export function decorateItem(item, subDecorator = item => item, apply = true) {
+  if (!apply) {
+    return item
+  }
   let decorated = defaultsDeep(item, defaults.item)
 
   decorated.hints = decorated.hints.map(hint =>
