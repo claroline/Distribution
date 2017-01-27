@@ -24,7 +24,7 @@
     "angular-toArrayFilter": "1.0.1",
     "angular-touch": "1.5.6",
     "angular-ui-resource-picker": "1.0.0",
-    "angular-ui-calendar": "https://github.com/dtisch/ui-calendar.git#a9cab2a509dbccf34d59705ec53bb7affe3f9798",
+    "angular-ui-calendar": "https://github.com/iCAPLyon1/ui-calendar.git#7b4d604d8beb07e3a4a174dc52fcd9dafa594d09",
     "angular-ui-router": "0.2.18",
     "angular-ui-select": "0.18.0",
     "angular-ui-tinymce": "0.0.14",
