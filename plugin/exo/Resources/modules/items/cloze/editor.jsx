@@ -136,8 +136,6 @@ ChoiceItem.propTypes = {
   id: T.number.isRequired,
   deletable: T.bool.isRequired,
   onChange: T.func.isRequired,
-  offsetX: T.number.isRequired,
-  offsetY: T.number.isRequired,
   validating: T.bool.isRequired,
   _errors: T.object
 }
@@ -146,6 +144,9 @@ class HoleForm extends Component {
   constructor() {
     super()
     this.state = {showFeedback: false}
+
+    this.offsetTop = window.scrollY + window.innerHeight / 2 - (420/2)
+    this.offsetLeft = window.scrollX + window.innerWidth / 2 - (420/2)
 
   }
 
@@ -163,14 +164,15 @@ class HoleForm extends Component {
   }
 
   render() {
-    //the placement seems pretty random but it's more or less the center of the screen
+
+
     return (
       <Popover
         bsClass="hole-form-content"
         id={this.props.hole.id}
         placement="right"
-        positionLeft={ window.outerWidth / 2 + window.screenX - 350}
-        positionTop={ window.outerHeight / 2 + window.screenY - 300}
+        positionLeft={this.offsetLeft}
+        positionTop={this.offsetTop}
       >
         <div className="panel-default">
           <div className="panel-body pull-right close-popover hole-form-row" onClick={this.closePopover.bind(this)}><b>x</b></div>
@@ -230,8 +232,6 @@ class HoleForm extends Component {
                 onChange={this.props.onChange}
                 hole={this.props.hole}
                 answer={answer}
-                offsetX={this.props.offsetX}
-                offsetY={this.props.offsetY}
                 validating={this.props.validating}
                 _errors={this.props._errors}
               />)
@@ -280,8 +280,6 @@ HoleForm.propTypes = {
   hole: T.object.isRequired,
   solution: T.object.isRequired,
   onChange: T.func.isRequired,
-  offsetX: T.number.isRequired,
-  offsetY: T.number.isRequired,
   validating: T.bool.isRequired,
   _errors: T.object
 }
@@ -336,7 +334,7 @@ export class Cloze extends Component {
           error={get(this.props.item, '_errors.text')}
         >
           <Textarea
-            id={this.props.item.id}
+            id='cloze-item-text'
             onChange={(value) => this.props.onChange(actions.updateText(value))}
             onSelect={this.onSelect.bind(this)}
             onClick={this.onHoleClick.bind(this)}
@@ -353,8 +351,6 @@ export class Cloze extends Component {
           <div>
             <HoleForm
               item={this.props.item}
-              offsetX={this.props.item._popover.offsetX}
-              offsetY={this.props.item._popover.offsetY}
               hole={this.props.item._popover.hole}
               solution={this.props.item._popover.solution}
               onChange={this.props.onChange}

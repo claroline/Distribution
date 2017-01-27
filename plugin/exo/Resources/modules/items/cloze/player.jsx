@@ -45,7 +45,7 @@ export class ClozePlayer extends Component {
                 </span> :
                 (el.holeId) ?
                   <span>
-                    {el.text}
+                    <span dangerouslySetInnerHTML={{__html: el.text}}/>
                     <input
                       className="form-control inline-select"
                       type="text"
@@ -56,7 +56,7 @@ export class ClozePlayer extends Component {
                       ))
                     }/>
                   </span> :
-                  <span>{el.text}</span>
+                  <span dangerouslySetInnerHTML={{__html: el.text}}/>
               }
             </span>
           )
