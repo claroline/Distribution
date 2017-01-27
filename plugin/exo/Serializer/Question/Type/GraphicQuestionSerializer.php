@@ -51,8 +51,8 @@ class GraphicQuestionSerializer implements SerializerInterface
             $graphicQuestion = new GraphicQuestion();
         }
 
-        $this->deserializeImage($graphicQuestion, $data->image);
-        $this->deserializeAreas($graphicQuestion, $data->solutions);
+        $this->deserializeImage($graphicQuestion, $data->image, $options);
+        $this->deserializeAreas($graphicQuestion, $data->solutions, $options);
 
         return $graphicQuestion;
     }
@@ -91,12 +91,17 @@ class GraphicQuestionSerializer implements SerializerInterface
      *
      * @param GraphicQuestion $graphicQuestion
      * @param \stdClass       $imageData
+     * @param array           $options
      */
-    private function deserializeImage(GraphicQuestion $graphicQuestion, \stdClass $imageData)
+    private function deserializeImage(GraphicQuestion $graphicQuestion, \stdClass $imageData, array $options)
     {
         $typeParts = explode('/', $imageData->type);
         $image = $graphicQuestion->getImage() ?: new Image();
-        $image->setUuid($imageData->id);
+
+        if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
+            $image->setUuid($imageData->id);
+        }
+
         $image->setType($imageData->type);
         $image->setTitle($imageData->id);
         $image->setWidth($imageData->width);
@@ -137,8 +142,9 @@ class GraphicQuestionSerializer implements SerializerInterface
      *
      * @param GraphicQuestion $graphicQuestion
      * @param array           $solutions
+     * @param array           $options
      */
-    private function deserializeAreas(GraphicQuestion $graphicQuestion, array $solutions)
+    private function deserializeAreas(GraphicQuestion $graphicQuestion, array $solutions, array $options)
     {
         $areaEntities = $graphicQuestion->getAreas()->toArray();
 
@@ -157,6 +163,10 @@ class GraphicQuestionSerializer implements SerializerInterface
 
             if (null === $area) {
                 $area = new Area();
+
+                if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
+                    $area->setUuid($solutionData->id);
+                }
             }
 
             $area->setScore($solutionData->score);
