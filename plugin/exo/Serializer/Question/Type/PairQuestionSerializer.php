@@ -49,7 +49,11 @@ class PairQuestionSerializer implements SerializerInterface
 
         $questionData->random = $pairQuestion->getShuffle();
         $questionData->penalty = $pairQuestion->getPenalty();
-        $questionData->rows = $pairQuestion->getRows()->count();
+
+        // The grid only contains expected answers
+        $questionData->rows = $pairQuestion->getRows()->filter(function (GridRow $row) {
+            return 0 < $row->getScore();
+        })->count();
 
         $items = $this->serializeItems($pairQuestion, $options);
         if (in_array(Transfer::SHUFFLE_ANSWERS, $options)) {
