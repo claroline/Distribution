@@ -1,203 +1,188 @@
 import React, {Component, PropTypes as T} from 'react'
 import {utils} from './utils'
-import {Feedback} from '../../components/feedback-btn.jsx'
-import {SolutionScore} from '../../components/score.jsx'
-import classes from 'classnames'
-import {WarningIcon} from './warning-icon.jsx'
+import {tcex} from '../../../utils/translate'
+//import 'bootstrap'
 
-class SelectAnswer extends Component
-{
+function getWarningIcon(solution, answer) {
+  solution = utils.getSolutionForAnswer(solution, answer)
+
+  return solution && solution.score > 0 ?
+     '<span class="fa fa-check answer-warning-span" aria-hidden="true"></span>' :
+     '<span class="fa fa-times answer-warning-span" aria-hidden="true"></span>'
+}
+
+function getSolutionScore(score) {
+  const scoreTranslation = tcex('solution_score', score, {'score': score})
+
+  return `<span class="item-score"> ${scoreTranslation} </span>`
+}
+
+function getFeedback(feedback) {
+  return `<i
+    role="button"
+    class="feedback-btn fa fa-comments-o"
+    data-content="${feedback}"
+    data-toggle="popover"
+    title="feedback">
+  </i>`
+}
+
+function getSelectClasses(displayTrueAnswer, isSolutionValid) {
+  const inputClasses = ['form-control', 'inline-select']
+  if (displayTrueAnswer) inputClasses.push('select-info')
+  if (isSolutionValid && !displayTrueAnswer) inputClasses.push('select-success')
+  if (!isSolutionValid && !displayTrueAnswer) inputClasses.push('select-error')
+
+  return inputClasses.reduce((a, b) => a += ' ' + b)
+}
+
+function getSpanClasses(displayTrueAnswer, isSolutionValid) {
+  const classes = []
+  if (isSolutionValid && !displayTrueAnswer) classes.push('score-success')
+  if (!isSolutionValid && !displayTrueAnswer) classes.push('score-error')
+  if (displayTrueAnswer) classes.push('score-info')
+
+  return classes.reduce((a, b) => a += ' ' + b)
+}
+
+export class Highlight extends Component {
   constructor(props) {
     super(props)
-    this.diffUserAnswer = null
+    this.updateHoleInfo = this.updateHoleInfo.bind(this)
+    this.elements = utils.split(props.item.text, props.item.holes, props.item.solutions)
+  }
 
-    if (this.props.displayTrueAnswer) {
-      //expected answer
-      this.state = {
-        selectedAnswer: this.props.solution.answers[0]
-      }
-    } else {
-      const selectedAnswer = this.props.solution.answers.find(answer => answer.text === this.props.answer.answerText)
+  render() {
+    return (<div dangerouslySetInnerHTML={{__html: this.getHtml()}}/>)
+  }
 
-      if (!selectedAnswer) {
-        this.diffUserAnswer = {
-          text: this.props.answer.answerText,
-          feedback: '',
-          score: 0
-        }
+  getTextInput(answer, showScore, displayTrueAnswer, solution) {
+    if (!answer) return ''
+    if (!answer.answerText) answer.answerText = ''
+    const isSolutionValid = utils.getSolutionForAnswer(solution, answer) ? true: false
+    const classes = getSelectClasses(displayTrueAnswer, isSolutionValid)
+
+    const html = `<input
+      class="${classes}"
+      type='text'
+      disabled
+      value=${displayTrueAnswer ? solution.answers[0].text: answer.answerText}
+    />
+    <span class="${getSpanClasses(displayTrueAnswer, isSolutionValid)}">
+      ${getWarningIcon(solution, displayTrueAnswer ? solution.answers[0].text: answer.answerText)}
+      ${(showScore || isSolutionValid) && solution.feedback &&
+        `${getFeedback(solution.feedback)}`
       }
 
-      this.state = {
-        selectedAnswer: {
-          text: this.props.answer.answerText,
-          score: selectedAnswer ? selectedAnswer.score: 0
-        },
-        includedAnswer: selectedAnswer ? true: false
+      ${showScore &&
+        `${getSolutionScore(isSolutionValid || displayTrueAnswer ? solution.answers[0].score: 0)}`
       }
+    </span>
+    `
+
+    return html
+  }
+
+  getSelectInput(answer, showScore, displayTrueAnswer, solution, holeId) {
+    if (!answer) return ''
+    if (!answer.answerText) answer.answerText = ''
+    let selectedAnswer = utils.getSolutionForAnswer(solution, answer)
+    let diffUserAnswer = false
+
+    if (!selectedAnswer) {
+      selectedAnswer = {
+        text: answer.answerText,
+        feedback: '',
+        score: 0
+      }
+      diffUserAnswer = true
     }
-  }
 
-  change(event) {
-    this.setState({selectedAnswer: this.props.solution.answers.find(answer => answer.text === event.target.value)})
-  }
+    const tmp = utils.getSolutionForAnswer(solution, selectedAnswer)
+    const isSolutionValid = tmp && tmp.score > 0
+    const classes = getSelectClasses(displayTrueAnswer, isSolutionValid)
 
-  isSolutionValid() {
-    return utils.getSolutionForAnswer(this.props.solution, this.state.selectedAnswer) ? true: false
-  }
-
-  render() {
-    return(
-      <span>
-        <select className={
-            classes({
-              'select-info': this.props.displayTrueAnswer,
-              'select-success': this.isSolutionValid() && !this.props.displayTrueAnswer,
-              'select-error': !this.isSolutionValid() && !this.props.displayTrueAnswer,
-              'form-control': true,
-              'inline-select': true
-            })
-          }
-           disabled={!this.props.displayTrueAnswer}
-           onChange={this.change.bind(this)}
-          >
-          {this.diffUserAnswer &&
-            <option> {this.diffUserAnswer.text} </option>
-          }
-          {!this.diffUserAnswer && !this.props.showScore &&
-            <option> {this.state.selectedAnswer.text} </option>
-          }
-
-          {this.props.showScore &&
-            this.props.solution.answers.map((answer, key) => {
-              return (<option key={key}> {answer.text} </option>)
-            })
-          }
-        </select>
-        <span className={classes({
-          'score-success': this.isSolutionValid() && !this.props.displayTrueAnswer,
-          'score-error': !this.isSolutionValid() && !this.props.displayTrueAnswer,
-          'score-info': this.props.displayTrueAnswer
-        })}>
-          <WarningIcon solution={this.props.solution} answer={this.state.selectedAnswer}/>{'\u00a0'}
-          {(this.props.showScore || this.isSolutionValid()) && this.state.selectedAnswer && this.state.selectedAnswer.feedback &&
-            <Feedback feedback={this.state.selectedAnswer.feedback} id={this.props.solution.holeId}/>
-          }
-          {this.props.showScore &&
-            <SolutionScore score={this.state.selectedAnswer && this.state.selectedAnswer.score ? this.state.selectedAnswer.score: 0}/>
-          }
-        </span>
-      </span>
-    )
-  }
-}
-
-SelectAnswer.propTypes = {
-  answer: T.object.isRequired,
-  showScore: T.bool.isRequired,
-  displayTrueAnswer: T.bool.isRequired,
-  solution: T.object.isRequired
-}
-
-SelectAnswer.defaultProps = {
-  answer: {
-    answerText: ''
-  }
-}
-
-class TextAnswer extends Component
-{
-  constructor(props) {
-    super(props)
-    this.isSolutionValid = utils.getSolutionForAnswer(this.props.solution, this.props.answer) ? true: false
-  }
-
-  render() {
-    return(
-      <span>
-        <input
-          className={
-              classes({
-                'select-info': this.props.displayTrueAnswer,
-                'select-success': this.isSolutionValid && !this.props.displayTrueAnswer,
-                'select-error': !this.isSolutionValid && !this.props.displayTrueAnswer,
-                'form-control': true,
-                'inline-select': true
-              })
-            }
-          type='text'
-          disabled
-          value={this.props.displayTrueAnswer ? this.props.solution.answers[0].text: this.props.answer.answerText}
-        />
-        <span className={classes({
-          'score-success': this.isSolutionValid && !this.props.displayTrueAnswer,
-          'score-error': !this.isSolutionValid && !this.props.displayTrueAnswer,
-          'score-info': this.props.displayTrueAnswer
-        })}>
-          <WarningIcon solution={this.props.solution} answer={this.props.displayTrueAnswer ? this.props.solution.answers[0].text: this.props.answer.answerText}/>{'\u00a0'}
-          {(this.props.showScore || this.isSolutionValid) && this.props.solution.feedback &&
-            <Feedback feedback={this.props.solution.feedback} id={this.props.solution.holeId}/>
-          }
-          {this.props.showScore &&
-            <SolutionScore score={this.isSolutionValid || this.props.displayTrueAnswer ? this.props.solution.answers[0].score: 0}/>
-          }
-        </span>
-      </span>
-    )
-  }
-}
-
-TextAnswer.propTypes = {
-  answer: T.object.isRequired,
-  showScore: T.bool.isRequired,
-  displayTrueAnswer: T.bool.isRequired,
-  solution: T.object.isRequired
-}
-
-TextAnswer.defaultProps = {
-  answer: {
-    answerText: ''
-  }
-}
-
-export const Highlight = props => {
-  const elements = utils.split(props.item.text, props.item.holes, props.item.solutions)
-  return (
-    <div>
-      {elements.map((el, key) => {
-        const solution = props.item.solutions.find(solution => solution.holeId === el.holeId)
-        if (!solution) {
-          return (<span key={key}></span>)
+    return `
+      <select
+        id='select-${holeId}'
+        class='${classes}'
+        ${!displayTrueAnswer &&
+          'disabled'
         }
-        return (
-          <span key={key}>
-            {(solution.answers.length > 1) ?
-              <span>
-                {el.text}
-                <SelectAnswer
-                  answer={props.answer.find(ans => ans.holeId === el.holeId)}
-                  showScore={props.showScore}
-                  showFeedback={props.showFeedback}
-                  displayTrueAnswer={props.displayTrueAnswer}
-                  solution={solution}
-                />
-              </span> :
-              (el.holeId) ?
-                <span>
-                  {el.text}
-                  <TextAnswer
-                    answer={props.answer.find(ans => ans.holeId === el.holeId)}
-                    showScore={props.showScore}
-                    displayTrueAnswer={props.displayTrueAnswer}
-                    solution={solution}
-                  />
-                </span> :
-                <span>{el.text}</span>
-            }
-          </span>
+      >
+
+      ${diffUserAnswer && !displayTrueAnswer &&
+        `<option> ${selectedAnswer.text} </option>`
+      }
+
+      ${!diffUserAnswer && !showScore &&
+        '<option> display selected </option>'
+      }
+
+      ${showScore &&
+        solution.answers.map(answer => `<option> ${answer.text} </option>`)
+      }
+
+    </select>
+    <span id="span-answer-${holeId}" class="${getSpanClasses(displayTrueAnswer, isSolutionValid)}">
+      ${getWarningIcon(solution, selectedAnswer.text)}
+
+      ${(showScore || isSolutionValid) && selectedAnswer.feedback &&
+        getFeedback(solution.feedback)
+      }
+
+      ${showScore &&
+        getSolutionScore(selectedAnswer.score)
+      }
+    </span>
+    `
+  }
+
+  componentDidMount() {
+    this.elements.forEach(el => {
+      let htmlElement = document.getElementById('select-' + el.holeId)
+      if (htmlElement) {
+        htmlElement.addEventListener(
+          'change',
+          e => this.updateHoleInfo(el.holeId, e.target.value)
         )
-      })}
-    </div>
-  )
+      }
+    })
+  }
+
+  updateHoleInfo(holeId, answer) {
+    alert(holeId + answer)
+  }
+
+  getHtml() {
+    return this.elements.map(el => {
+      const solution = this.props.item.solutions.find(solution => solution.holeId === el.holeId)
+      if (!solution) return ''
+
+      return solution.answers.length > 1 ?
+        `
+        ${el.text}
+        ${this.getSelectInput(
+          this.props.answer.find(ans => ans.holeId === el.holeId),
+          this.props.showScore,
+          this.props.displayTrueAnswer,
+          solution,
+          el.holeId
+        )}
+      `:
+      el.holeId ?
+       `
+         ${el.text}
+         ${this.getTextInput(
+           this.props.answer.find(ans => ans.holeId === el.holeId),
+           this.props.showScore,
+           this.props.displayTrueAnswer,
+           solution
+         )}
+     `:
+      el.text
+    }).reduce((a, b) => a += b)
+  }
 }
 
 Highlight.propTypes = {

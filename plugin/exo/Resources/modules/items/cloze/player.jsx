@@ -35,7 +35,6 @@ export class ClozePlayer extends Component {
           <option value=''>${tex('please_choose')}</option>
           ${el.choices.map((choice, idx) => `<option value=${choice} key=${idx}>${ choice }</option>`)}
         </select>
-        </span>
       `:
       el.holeId ?
        `

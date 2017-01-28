@@ -17,14 +17,12 @@ export const ClozePaper = (props) => {
         />
       }
       expected={
-        <div>
-          <Highlight
-            item={props.item}
-            answer={props.answer}
-            showScore={true}
-            displayTrueAnswer={true}
-          />
-        </div>
+        <Highlight
+          item={props.item}
+          answer={props.answer}
+          showScore={true}
+          displayTrueAnswer={true}
+        />
       }
     />
   )
