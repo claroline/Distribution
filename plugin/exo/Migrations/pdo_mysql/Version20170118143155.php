@@ -47,17 +47,38 @@ class Version20170118143155 extends AbstractMigration
             REFERENCES ujm_proposal (id)
         ');
 
+        // Create association
         $this->addSql('
           INSERT INTO ujm_association (match_question_id, label_id, proposal_id, score, feedback) (
               SELECT
                   p.interaction_matching_id AS match_question_id,
                   l.id AS label_id,
                   p.id AS proposal_id,
-                  l.score,
+                  IFNULL(l.score, 0),
                   l.feedback
               FROM ujm_proposal AS p
-              LEFT JOIN ujm_proposal_label AS pa ON (p.id = pa.proposal_id AND pa.proposal_id IS NOT NULL)
-              LEFT JOIN ujm_label AS l ON (pa.label_id = l.id AND l.id IS NOT NULL)
+              JOIN ujm_proposal_label AS pa ON (p.id = pa.proposal_id)
+              JOIN ujm_label AS l ON (pa.label_id = l.id)
+              WHERE pa.proposal_id IS NOT NULL
+                AND l.id IS NOT NULL
+          )
+        ');
+
+        // Create odd for sets
+        $this->addSql('
+          INSERT INTO ujm_association (match_question_id, label_id, proposal_id, score, feedback) (
+              SELECT
+                  p.interaction_matching_id AS match_question_id,
+                  NULL,
+                  p.id AS proposal_id,
+                  0,
+                  NULL
+              FROM ujm_proposal AS p
+              JOIN ujm_interaction_matching AS m ON (p.interaction_matching_id = m.id)
+              JOIN ujm_question AS q ON (m.question_id = q.id)
+              LEFT JOIN ujm_proposal_label AS pa ON (p.id = pa.proposal_id)
+              WHERE pa.proposal_id IS NULL
+                AND q.mime_type = "application/x.set+json"
           )
         ');
 

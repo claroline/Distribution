@@ -15,6 +15,7 @@
     "moment": "^2.15.1",
     "react": "^15.4.0",
     "react-bootstrap": "^0.30.3",
+    "react-color": "^2.11.1",
     "react-datepicker": "^0.29.0",
     "react-dnd": "^2.1.4",
     "react-dnd-html5-backend": "^2.1.2",
@@ -24,6 +25,7 @@
     "redux-thunk": "^2.1.0",
     "reselect": "^2.5.3",
     "svg4everybody": "^2.1.2",
+    "tinycolor2": "^1.4.1",
     "uuid": "^3.0.1",
     "whatwg-fetch": "^2.0.1"
   },

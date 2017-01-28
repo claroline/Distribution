@@ -2,12 +2,10 @@
 
 namespace UJM\ExoBundle\Serializer\Attempt;
 
-use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\AbstractSerializer;
-use UJM\ExoBundle\Serializer\Question\HintSerializer;
 
 /**
  * Serializer for answer data.
@@ -16,35 +14,6 @@ use UJM\ExoBundle\Serializer\Question\HintSerializer;
  */
 class AnswerSerializer extends AbstractSerializer
 {
-    /**
-     * @var ObjectManager
-     */
-    private $om;
-
-    /**
-     * @var HintSerializer
-     */
-    private $hintSerializer;
-
-    /**
-     * AnswerSerializer constructor.
-     *
-     * @DI\InjectParams({
-     *     "om" = @DI\Inject("claroline.persistence.object_manager"),
-     *     "hintSerializer" = @DI\Inject("ujm_exo.serializer.hint")
-     * })
-     *
-     * @param ObjectManager  $om
-     * @param HintSerializer $hintSerializer
-     */
-    public function __construct(
-        ObjectManager $om,
-        HintSerializer $hintSerializer)
-    {
-        $this->om = $om;
-        $this->hintSerializer = $hintSerializer;
-    }
-
     /**
      * Converts an Answer into a JSON-encodable structure.
      *

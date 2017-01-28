@@ -8,7 +8,6 @@ use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
-use UJM\ExoBundle\Entity\Question\Hint;
 use UJM\ExoBundle\Library\Attempt\PaperGenerator;
 use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Manager\Attempt\AnswerManager;
@@ -209,11 +208,12 @@ class AttemptManager
                 throw new ValidationException('Submitted answers are invalid', $e->getErrors());
             }
 
-            // Correct and mark answer
-            $score = $this->questionManager->calculateScore($question, $answer);
-            $answer->setScore($score);
             $answer->setIp($clientIp);
             $answer->setTries($answer->getTries() + 1);
+
+            // Calculate new answer score
+            $score = $this->questionManager->calculateScore($question, $answer);
+            $answer->setScore($score);
 
             $paper->addAnswer($answer);
             $submitted[] = $answer;
@@ -289,8 +289,10 @@ class AttemptManager
             $paper->addAnswer($answer);
         }
 
-        $score = $this->questionManager->calculateScore($question, $answer);
         $answer->addUsedHint($hintId);
+
+        // Calculate new answer score
+        $score = $this->questionManager->calculateScore($question, $answer);
         $answer->setScore($score);
 
         $this->om->persist($answer);

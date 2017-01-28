@@ -58,7 +58,7 @@ SetFeedback.propTypes = {
     title: T.string,
     description: T.string,
     sets: T.arrayOf(T.object).isRequired,
-    items: T.bool.isRequired,
+    items: T.array.isRequired,
     solutions: T.object
   }).isRequired,
   answer: T.array

@@ -18,7 +18,10 @@ class GraphicQuestion extends AbstractQuestion
     /**
      * The image of the question.
      *
-     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Content\Image")
+     * @ORM\ManyToOne(
+     *     targetEntity="UJM\ExoBundle\Entity\Content\Image",
+     *     cascade={"persist"}
+     * )
      *
      * @var Image
      */
@@ -27,7 +30,12 @@ class GraphicQuestion extends AbstractQuestion
     /**
      * @todo remove the mapped by and add a join table
      *
-     * @ORM\OneToMany(targetEntity="UJM\ExoBundle\Entity\Misc\Area", mappedBy="interactionGraphic", cascade={"all"}, orphanRemoval=true)
+     * @ORM\OneToMany(
+     *     targetEntity="UJM\ExoBundle\Entity\Misc\Area",
+     *     mappedBy="interactionGraphic",
+     *     cascade={"all"},
+     *     orphanRemoval=true
+     * )
      */
     private $areas;
 

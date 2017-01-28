@@ -71,7 +71,7 @@ class CorrectionController extends AbstractController
     }
 
     /**
-     * Lists all answers to a question that need to be corrected.
+     * Saves score & feedback for a bulk of answers.
      *
      * @EXT\Route("/{questionId}", name="exercise_correction_save")
      * @EXT\Method("PUT")
