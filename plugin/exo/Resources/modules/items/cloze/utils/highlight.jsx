@@ -72,7 +72,7 @@ export class Highlight extends Component {
     />
     <span class="${getSpanClasses(displayTrueAnswer, isSolutionValid)}">
       ${getWarningIcon(solution, displayTrueAnswer ? solution.answers[0].text: answer.answerText)}
-      ${(showScore || isSolutionValid) && solution.feedback &&
+      ${(showScore || isSolutionValid) &&
         `${getFeedback(solution.feedback)}`
       }
 
