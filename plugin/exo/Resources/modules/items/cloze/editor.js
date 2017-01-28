@@ -70,10 +70,31 @@ function reduce(item = {}, action) {
       })
     }
     case UPDATE_TEXT: {
-      return Object.assign({}, item, {
+      item = Object.assign({}, item, {
         text: utils.getTextWithPlacerHoldersFromHtml(action.text),
         _text: action.text
       })
+
+      const holesToRemove = []
+      //we need to check if every hole is mapped to a placeholder
+      //if there is not placeholder, then remove the hole
+      item.holes.forEach(hole => {
+        if (item.text.indexOf(`[[${hole.id}]]`) < 0) {
+          holesToRemove.push(hole.id)
+        }
+      })
+
+      if (holesToRemove) {
+        const holes = cloneDeep(item.holes)
+        const solutions = cloneDeep(item.solutions)
+        holesToRemove.forEach(toRemove => {
+          holes.splice(holes.findIndex(hole => hole.id === toRemove), 1)
+          solutions.splice(solutions.findIndex(solution => solution.holeId === toRemove), 1)
+        })
+        item = Object.assign({}, item, {holes, solutions})
+      }
+
+      return item
     }
     case OPEN_HOLE: {
       const newItem = cloneDeep(item)
@@ -196,11 +217,11 @@ function reduce(item = {}, action) {
     case REMOVE_HOLE: {
       const newItem = cloneDeep(item)
       const holes = newItem.holes
+      const solutions = newItem.solutions
       holes.splice(holes.findIndex(hole => hole.id === action.holeId), 1)
-
+      solutions.splice(solutions.findIndex(solution => solution.holeId === action.holeId), 1)
       const regex = new RegExp(`(\\[\\[${action.holeId}\\]\\])`, 'gi')
       newItem.text = newItem.text.replace(regex, '')
-
       newItem._text = utils.setEditorHtml(newItem.text, newItem.solutions)
 
       return newItem

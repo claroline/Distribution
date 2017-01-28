@@ -23,6 +23,7 @@ function getFeedback(feedback) {
     class="feedback-btn fa fa-comments-o"
     data-content="${feedback}"
     data-toggle="popover"
+    data-html="true" 
     title="feedback">
   </i>`
 }
