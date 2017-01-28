@@ -111,7 +111,7 @@ class ClozeDefinition extends AbstractDefinition
 
     /**
      * @param ClozeQuestion $question
-     * @param $answer
+     * @param array         $answer
      *
      * @return CorrectedAnswer
      */
@@ -119,7 +119,20 @@ class ClozeDefinition extends AbstractDefinition
     {
         $corrected = new CorrectedAnswer();
 
-        // TODO : implement
+        foreach ($answer as $holeAnswer) {
+            $hole = $question->getHole($holeAnswer->holeId);
+            $keyword = $hole->getKeyword($holeAnswer->answerText);
+            if (!empty($keyword)) {
+                if (0 < $keyword->getScore()) {
+                    $corrected->addExpected($keyword);
+                } else {
+                    $corrected->addUnexpected($keyword);
+                }
+            } else {
+                // Retrieve the best answer for the hole
+                $corrected->addMissing($this->findHoleExpectedAnswer($hole));
+            }
+        }
 
         return $corrected;
     }
@@ -131,19 +144,9 @@ class ClozeDefinition extends AbstractDefinition
      */
     public function expectAnswer(AbstractQuestion $question)
     {
-        $expected = [];
-        foreach ($question->getHoles() as $hole) {
-            $best = null;
-            foreach ($hole->getKeywords() as $keyword) {
-                if (empty($best) || $best->getScore() < $keyword->getScore()) {
-                    $best = $keyword;
-                }
-            }
-
-            $expected[] = $best;
-        }
-
-        return $expected;
+        return array_map(function (Hole $hole) {
+            return $this->findHoleExpectedAnswer($hole);
+        }, $question->getHoles()->toArray());
     }
 
     /**
@@ -158,7 +161,7 @@ class ClozeDefinition extends AbstractDefinition
         $holesMap = [];
         /** @var Hole $hole */
         foreach ($clozeQuestion->getHoles() as $hole) {
-            $holesMap[$hole->getId()] = $hole;
+            $holesMap[$hole->getUuid()] = $hole;
         }
 
         $holes = [];
@@ -178,37 +181,43 @@ class ClozeDefinition extends AbstractDefinition
                     // Increment the hole answers count
                     ++$holes[$holeAnswer->holeId]->answered;
 
-                    /** @var Keyword $keyword */
-                    foreach ($holesMap[$holeAnswer->holeId]->getKeywords() as $keyword) {
-                        // Check if the response match the current keyword
-                        if ($holesMap[$holeAnswer->holeId]->getSelector()) {
-                            // It's the ID of the keyword which is stored
-                            $found = $keyword->getId() === (int) $holeAnswer->answerText;
-                        } else {
-                            if ($keyword->isCaseSensitive()) {
-                                $found = strtolower($keyword->getText()) === strtolower($holeAnswer->answerText);
-                            } else {
-                                $found = $keyword->getText() === $holeAnswer->answerText;
-                            }
+                    $keyword = $holesMap[$holeAnswer->holeId]->getKeyword($holeAnswer->answerText);
+                    if ($keyword) {
+                        if (!isset($holes[$holeAnswer->holeId]->keywords[$keyword->getId()])) {
+                            // Initialize the Hole keyword counter if it's the first time we find it
+                            $holes[$holeAnswer->holeId]->keywords[$keyword->getId()] = new \stdClass();
+                            // caseSensitive & text is the primary key for api transfers
+                            $holes[$holeAnswer->holeId]->keywords[$keyword->getId()]->caseSensitive = $keyword->isCaseSensitive();
+                            $holes[$holeAnswer->holeId]->keywords[$keyword->getId()]->text = $keyword->getText();
+                            $holes[$holeAnswer->holeId]->keywords[$keyword->getId()]->count = 0;
                         }
 
-                        if ($found) {
-                            if (!isset($holes[$holeAnswer->holeId]->keywords[$keyword->getId()])) {
-                                // Initialize the Hole keyword counter if it's the first time we find it
-                                $holes[$holeAnswer->holeId]->keywords[$keyword->getId()] = new \stdClass();
-                                $holes[$holeAnswer->holeId]->keywords[$keyword->getId()]->id = $keyword->getId();
-                                $holes[$holeAnswer->holeId]->keywords[$keyword->getId()]->count = 0;
-                            }
+                        ++$holes[$holeAnswer->holeId]->keywords[$keyword->getId()]->count;
 
-                            ++$holes[$holeAnswer->holeId]->keywords[$keyword->getId()]->count;
-
-                            break;
-                        }
+                        break;
                     }
                 }
             }
         }
 
-        return $holes;
+        return array_values($holes);
+    }
+
+    /**
+     * @param Hole $hole
+     *
+     * @return Keyword|null
+     */
+    private function findHoleExpectedAnswer(Hole $hole)
+    {
+        $best = null;
+        foreach ($hole->getKeywords() as $keyword) {
+            /** @var Keyword $keyword */
+            if (empty($best) || $best->getScore() < $keyword->getScore()) {
+                $best = $keyword;
+            }
+        }
+
+        return $best;
     }
 }
