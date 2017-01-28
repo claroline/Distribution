@@ -165,7 +165,7 @@ class GraphicQuestionSerializer implements SerializerInterface
                 $area = new Area();
 
                 if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
-                    $area->setUuid($solutionData->id);
+                    $area->setUuid($solutionData->area->id);
                 }
             }
 
@@ -212,6 +212,8 @@ class GraphicQuestionSerializer implements SerializerInterface
                 $areaData->center = $center;
 
                 break;
+            // For retro-compatibility purpose.
+            // It doesn't exist anymore in the schema and is handled as rect
             case 'square':
                 $areaData->shape = 'rect';
                 $areaData->coords = [
@@ -220,6 +222,7 @@ class GraphicQuestionSerializer implements SerializerInterface
                     // bottom-right coords
                     $this->serializeCoords([$position[0] + $area->getSize(), $position[1] + $area->getSize()]),
                 ];
+                break;
             case 'rect':
                 $areaData->shape = 'rect';
                 $areaData->coords = [
