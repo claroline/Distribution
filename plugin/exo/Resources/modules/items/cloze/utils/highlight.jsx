@@ -18,12 +18,13 @@ function getSolutionScore(score) {
 }
 
 function getFeedback(feedback) {
+  if (!feedback) return ''
   return `<i
     role="button"
     class="feedback-btn fa fa-comments-o"
     data-content="${feedback}"
     data-toggle="popover"
-    data-html="true" 
+    data-html="true"
     title="feedback">
   </i>`
 }
@@ -109,7 +110,7 @@ export class Highlight extends Component {
 
     return `
       <select
-        id='select-${holeId}'
+        id='select-${holeId}-${displayTrueAnswer}'
         class='${classes}'
         ${!displayTrueAnswer &&
           'disabled'
@@ -125,10 +126,10 @@ export class Highlight extends Component {
       }
 
     </select>
-    <span id="span-answer-${holeId}" class="${getSpanClasses(displayTrueAnswer, isSolutionValid)}">
+    <span id="span-answer-${holeId}-${displayTrueAnswer}" class="${getSpanClasses(displayTrueAnswer, isSolutionValid)}">
       ${getWarningIcon(solution, selectedAnswer.text)}
 
-      ${(showScore || isSolutionValid) && selectedAnswer.feedback &&
+      ${(showScore || isSolutionValid) &&
         getFeedback(selectedAnswer.feedback)
       }
 
@@ -141,7 +142,7 @@ export class Highlight extends Component {
 
   componentDidMount() {
     this.elements.forEach(el => {
-      let htmlElement = document.getElementById('select-' + el.holeId)
+      let htmlElement = document.getElementById('select-' + el.holeId + '-true')
       if (htmlElement) {
         htmlElement.addEventListener(
           'change',
@@ -151,8 +152,25 @@ export class Highlight extends Component {
     })
   }
 
+  //only fired when displaying expected answers
   updateHoleInfo(holeId, answer) {
-    alert(holeId + answer)
+    //get answer by holeId and name
+    const solution = this.props.item.solutions.find(solution => solution.holeId === holeId)
+    answer = solution.answers.find(el => el.text === answer)
+
+    let span = `
+      <span id="span-answer-${holeId}-true" class="${getSpanClasses(true, true)}">
+        ${getWarningIcon(solution, answer.text)}
+        ${getFeedback(answer.feedback)}
+        ${getSolutionScore(answer.score)}
+      </span>
+    `
+
+    var div = document.createElement('div')
+    div.innerHTML = span
+    span = div.firstChild.nextSibling
+    const toReplace = document.getElementById(`span-answer-${holeId}-true`)
+    toReplace.replaceWith(span)
   }
 
   getHtml() {
