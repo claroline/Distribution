@@ -5,7 +5,6 @@ import Tooltip from 'react-bootstrap/lib/Tooltip'
 import {tex, t} from './../../utils/translate'
 import {makeDraggable, makeDroppable} from './../../utils/dragAndDrop'
 import {TooltipButton} from './../../components/form/tooltip-button.jsx'
-import shuffle from 'lodash/shuffle'
 
 let DropBox = props => {
   return props.connectDropTarget (
