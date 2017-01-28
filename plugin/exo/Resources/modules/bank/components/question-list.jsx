@@ -1,7 +1,7 @@
 import React, { Component, PropTypes as T } from 'react'
 import { DropdownButton, MenuItem } from 'react-bootstrap'
 
-import {trans} from './../../utils/translate'
+import {tex, trans} from './../../utils/translate'
 import {getDefinition} from './../../items/item-types'
 import {Icon as ItemIcon} from './../../items/components/icon.jsx'
 
@@ -82,10 +82,10 @@ export default class QuestionList extends Component {
             <TableCell>
               <small className="text-muted">Axel Penin</small>
             </TableCell>
-            <TableCell align="right">
+            <TableCell align="right" className="table-actions">
               <a role="button" href="" className="btn btn-link btn-sm">
                 <span className="fa fa-fw fa-pencil" />&nbsp;
-                Edit
+                {tex('question_edit')}
               </a>
 
               <DropdownButton
@@ -100,20 +100,20 @@ export default class QuestionList extends Component {
 
                 <MenuItem>
                   <span className="fa fa-fw fa-copy" />&nbsp;
-                  Duplicate
+                  {tex('question_duplicate')}
                 </MenuItem>
                 <MenuItem>
                   <span className="fa fa-fw fa-share" />&nbsp;
-                  Share
+                  {tex('question_share')}
                 </MenuItem>
                 <MenuItem>
                   <span className="fa fa-fw fa-upload" />&nbsp;
-                  Export
+                  {tex('question_export')}
                 </MenuItem>
                 <MenuItem divider />
-                <MenuItem className="btn-link-danger">
+                <MenuItem className="link-danger">
                   <span className="fa fa-fw fa-trash-o" />&nbsp;
-                  Delete
+                  {tex('question_delete')}
                 </MenuItem>
               </DropdownButton>
             </TableCell>

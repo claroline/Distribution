@@ -396,12 +396,18 @@ qti_xml_not_found: Schéma XML non trouvé
 question: Question
 questions: Questions
 questions_bank: Banque de questions
-question_creation: Création d'une question
-question_description: Description de la question (facultatif)
-question_model: Définir comme modèle
-question_title: Titre de la question (facultatif)
-question_title_short: Titre de la question
-question_shared_with: Cette question est partagée avec les utilisateurs suivants
+
+question_edit: Modifier
+question_delete: Supprimer
+question_duplicate: Dupliquer
+question_export: Exporter
+question_share: Partager
+
+questions_delete: Supprimer les questions sélectionnées
+questions_duplicate: Dupliquer les questions sélectionnées
+questions_export: Exporter les questions sélectionnées
+questions_share: Partager les questions sélectionnées
+
 question_need_manual_correction: Cette question nécessite une correction manuelle
 question_open_keywords_info: Votre réponse doit contenir les mots clés suivant pour obtenir les points
 question_graphic_set_pointers: Cliquez sur l'image pour placer un pointeur

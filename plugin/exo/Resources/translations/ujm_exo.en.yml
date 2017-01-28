@@ -399,12 +399,18 @@ qti_xml_not_found: XML schema not found
 question: Question
 questions: Questions
 questions_bank: Bank of questions
-question_creation: Question creation
-question_description: Description of the question (optional)
-question_model: Set as a model
-question_title: Question title (optional)
-question_title_short: Question title
-question_shared_with: This question is shared with the users mentioned below
+
+question_edit: Edit
+question_delete: Delete
+question_duplicate: Duplicate
+question_export: Export
+question_share: Share
+
+questions_delete: Delete selected questions
+questions_duplicate: Duplicate selected questions
+questions_export: Export selected questions
+questions_share: Share selected questions
+
 question_need_manual_correction: This question needs a manual correction
 question_open_keywords_info: Your answer needs to contain the following keywords to be correct
 question_graphic_set_pointers: Click on the picture to place a pointer
