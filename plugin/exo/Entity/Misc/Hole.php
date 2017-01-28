@@ -172,6 +172,28 @@ class Hole
     }
 
     /**
+     * Get a keyword by text.
+     *
+     * @param string $text
+     *
+     * @return Keyword
+     */
+    public function getKeyword($text)
+    {
+        $found = null;
+        foreach ($this->keywords as $keyword) {
+            /** @var Keyword $keyword */
+            if (($keyword->isCaseSensitive() && $keyword->getText() === $text)
+                || strtolower($keyword->getText()) === strtolower($text)) {
+                $found = $keyword;
+                break;
+            }
+        }
+
+        return $found;
+    }
+
+    /**
      * Sets keywords collection.
      *
      * @param array $keywords
