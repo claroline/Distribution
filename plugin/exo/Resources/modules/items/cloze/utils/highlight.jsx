@@ -98,6 +98,10 @@ export class Highlight extends Component {
       diffUserAnswer = true
     }
 
+    if (displayTrueAnswer) {
+      if (selectedAnswer.score <= 0) selectedAnswer = solution.answers.filter(answer => answer.score > 0)[0]
+    }
+
     const tmp = utils.getSolutionForAnswer(solution, selectedAnswer)
     const isSolutionValid = tmp && tmp.score > 0
     const classes = getSelectClasses(displayTrueAnswer, isSolutionValid)
@@ -112,15 +116,11 @@ export class Highlight extends Component {
       >
 
       ${diffUserAnswer && !displayTrueAnswer &&
-        `<option> ${selectedAnswer.text} </option>`
-      }
-
-      ${!diffUserAnswer && !showScore &&
-        '<option> display selected </option>'
+        `<option selected> ${selectedAnswer.text} </option>`
       }
 
       ${showScore &&
-        solution.answers.map(answer => `<option> ${answer.text} </option>`)
+        solution.answers.filter(answer => displayTrueAnswer ? answer.score > 0: true).map(answer => `<option ${answer.text === selectedAnswer.text && 'selected'}> ${answer.text} </option>`)
       }
 
     </select>
@@ -128,7 +128,7 @@ export class Highlight extends Component {
       ${getWarningIcon(solution, selectedAnswer.text)}
 
       ${(showScore || isSolutionValid) && selectedAnswer.feedback &&
-        getFeedback(solution.feedback)
+        getFeedback(selectedAnswer.feedback)
       }
 
       ${showScore &&
