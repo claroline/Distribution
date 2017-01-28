@@ -26,7 +26,7 @@ class Version20170105150732 extends AbstractMigration
         ');
         $this->addSql('
             ALTER TABLE ujm_exercise 
-            ADD show_feedback TINYINT(1) DEFAULT 0
+            ADD show_feedback TINYINT(1) NOT NULL DEFAULT 0
         ');
     }
 

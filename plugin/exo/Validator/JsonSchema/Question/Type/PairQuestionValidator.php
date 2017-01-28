@@ -38,19 +38,63 @@ class PairQuestionValidator extends JsonSchemaValidator
     /**
      * Validates the solution of the question.
      *
-     * Checks :
-     *  - The solution `leftId` must match the `left` IDs.
-     *  - The solution `rightId` must match the `right` IDs.
-     *  - The `left` elements are only linked to one `right` in the solutions
-     *  - If only 1 `left`, at least 2 `right` are required.
-     *  - If only 1 `right`, at least 2 `left` are required.
-     *
      * @param \stdClass $question
      *
      * @return array
      */
     protected function validateSolutions(\stdClass $question)
     {
-        return [];
+        $errors = [];
+
+        $itemIds = [];
+        // there is not 2 items at the same coords
+        $usedCoords = [];
+        foreach ($question->items as $index => $item) {
+            $itemIds[] = $item->id;
+            if (!empty($item->coordinates)) {
+                if (in_array($item->coordinates, $usedCoords)) {
+                    $errors[] = [
+                        'path' => "/items[{$index}]",
+                        'message' => 'two items cannot be pinned at the same coordinates.',
+                    ];
+                    break;
+                }
+
+                // max Y coordinate < rows
+                if ($question->rows <= $item->coordinates[1]) {
+                    $errors[] = [
+                        'path' => "/items[{$index}]",
+                        'message' => 'pinned items must be in the grid.',
+                    ];
+                    break;
+                }
+
+                $usedCoords[] = $item->coordinates;
+            }
+        }
+
+        if (empty($errors)) {
+            // no shuffle if no item pinned
+            if (empty($usedCoords) && $question->random) {
+                $errors[] = [
+                    'path' => '/random',
+                    'message' => 'you must pin at least one item to use random.',
+                ];
+            }
+
+            // solutions references
+            foreach ($question->solutions as $indexSolution => $solution) {
+                foreach ($solution->items as $index => $item) {
+                    if (!in_array($item, $itemIds)) {
+                        $errors[] = [
+                            'path' => "solutions[{$indexSolution}]/itemIds[{$index}]",
+                            'message' => 'solution itemIds must reference question items.',
+                        ];
+                    }
+                }
+            }
+        }
+
+        return $errors;
     }
 }

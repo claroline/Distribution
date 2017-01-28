@@ -7,6 +7,8 @@ import {
   SHUFFLE_ALWAYS
 } from './../enums'
 
+// TODO : apply shuffle on answer items
+
 /**
  * Generate a new paper for a quiz.
  *

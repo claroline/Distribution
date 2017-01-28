@@ -10,8 +10,6 @@ export const SetPaper = props => {
   return (
     <PaperTabs
       id={props.item.id}
-      item={props.item}
-      answer={props.answer}
       yours={
         <div className="set-paper">
           <div className="items-col">

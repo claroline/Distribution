@@ -124,17 +124,19 @@ class ExerciseSerializer implements SerializerInterface
         $metadata = new \stdClass();
 
         $node = $exercise->getResourceNode();
+        if (!empty($node)) {
+            $creator = $node->getCreator();
+            if (!empty($creator)) {
+                $metadata->authors = [
+                    $this->userSerializer->serialize($creator, $options),
+                ];
+            }
 
-        $creator = $node->getCreator();
-        if (!empty($creator)) {
-            $metadata->authors = [
-                $this->userSerializer->serialize($creator, $options),
-            ];
+            $metadata->created = $node->getCreationDate()->format('Y-m-d\TH:i:s');
+            $metadata->updated = $node->getModificationDate()->format('Y-m-d\TH:i:s');
         }
 
-        $metadata->created = $node->getCreationDate()->format('Y-m-d\TH:i:s');
-        $metadata->updated = $node->getModificationDate()->format('Y-m-d\TH:i:s');
-        $metadata->published = $node->isPublished();
+        $metadata->published = !empty($node) ? $node->isPublished() : $exercise->wasPublishedOnce();
         $metadata->publishedOnce = $exercise->wasPublishedOnce();
 
         return $metadata;

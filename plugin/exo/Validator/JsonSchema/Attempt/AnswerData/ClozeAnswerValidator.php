@@ -37,26 +37,16 @@ class ClozeAnswerValidator extends JsonSchemaValidator
             return $hole->id;
         }, $question->getHoles()->toArray());
 
+        $errors = [];
         foreach ($answerData as $answer) {
-            if ($answer || $answer !== null) {
-                if (empty($answer['holeId'])) {
-                    return ['Answer `holeId` cannot be empty'];
-                }
-
-                if (!is_string($answer['holeId'])) {
-                    return ['Answer `holeId` must contain only strings , '.gettype($answer['holeId']).' given.'];
-                }
-
-                if (!in_array($answer['holeId'], $holeIds)) {
-                    return ['Answer array identifiers must reference question holes'];
-                }
-
-                if (!empty($answer['answerText']) && !is_string($answer['answerText'])) {
-                    return ['Answer `answerText` must contain only strings , '.gettype($answer['holeId']).' given.'];
-                }
+            if (!in_array($answer->holeId, $holeIds)) {
+                $errors[] = [
+                    'path' => '/holeId',
+                    'message' => 'Answer `holeId` must reference an item from `holes`',
+                ];
             }
         }
 
-        return [];
+        return $errors;
     }
 }

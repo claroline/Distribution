@@ -7,7 +7,7 @@ use UJM\ExoBundle\Installation\Updater\Updater060000;
 use UJM\ExoBundle\Installation\Updater\Updater060001;
 use UJM\ExoBundle\Installation\Updater\Updater060200;
 use UJM\ExoBundle\Installation\Updater\Updater070000;
-use UJM\ExoBundle\Installation\Updater\Updater080000;
+use UJM\ExoBundle\Installation\Updater\Updater090000;
 
 class AdditionalInstaller extends BaseInstaller
 {
@@ -52,8 +52,14 @@ class AdditionalInstaller extends BaseInstaller
             $updater->postUpdate();
         }
 
-        if (version_compare($currentVersion, '8.0.0', '<')) {
-            $updater = new Updater080000($this->container->get('doctrine.dbal.default_connection'));
+        if (version_compare($currentVersion, '9.0.0', '<')) {
+            $updater = new Updater090000(
+                $this->container->get('doctrine.dbal.default_connection'),
+                $this->container->get('claroline.persistence.object_manager'),
+                $this->container->get('ujm_exo.serializer.exercise'),
+                $this->container->get('ujm_exo.serializer.step'),
+                $this->container->get('ujm_exo.serializer.question')
+            );
             $updater->setLogger($this->logger);
             $updater->postUpdate();
         }

@@ -49,14 +49,14 @@ class SetQuestionSerializer implements SerializerInterface
         $questionData->random = $setQuestion->getShuffle();
         $questionData->penalty = $setQuestion->getPenalty();
 
-        $sets = array_map(function (Proposal $proposal) use ($options) {
+        $items = array_map(function (Proposal $proposal) use ($options) {
             $setData = $this->contentSerializer->serialize($proposal, $options);
             $setData->id = $proposal->getUuid();
 
             return $setData;
         }, $setQuestion->getProposals()->toArray());
 
-        $items = array_map(function (Label $label) use ($options) {
+        $sets = array_map(function (Label $label) use ($options) {
             $itemData = $this->contentSerializer->serialize($label, $options);
             $itemData->id = $label->getUuid();
 
@@ -86,10 +86,10 @@ class SetQuestionSerializer implements SerializerInterface
 
         foreach ($setQuestion->getAssociations() as $association) {
             $solutionData = new \stdClass();
-            $solutionData->itemId = $association->getLabel()->getUuid();
+            $solutionData->itemId = $association->getProposal()->getUuid();
             $isOdd = false;
-            if ($association->getProposal()) {
-                $solutionData->setId = $association->getProposal()->getUuid();
+            if ($association->getLabel()) {
+                $solutionData->setId = $association->getLabel()->getUuid();
             } else {
                 $isOdd = true;
             }
@@ -130,8 +130,8 @@ class SetQuestionSerializer implements SerializerInterface
         }
 
         // deserialize proposals labels and solutions
-        $this->deserializeLabels($setQuestion, $data->items, $options);
-        $this->deserializeProposals($setQuestion, $data->sets, $options);
+        $this->deserializeLabels($setQuestion, $data->sets, $options);
+        $this->deserializeProposals($setQuestion, $data->items, $options);
         $this->deserializeSolutions($setQuestion, array_merge($data->solutions->associations, $data->solutions->odd));
 
         return $setQuestion;
@@ -141,19 +141,19 @@ class SetQuestionSerializer implements SerializerInterface
      * Deserializes Question labels.
      *
      * @param MatchQuestion $setQuestion
-     * @param array         $items       ie labels
+     * @param array         $sets        ie labels
      * @param array         $options
      */
-    private function deserializeLabels(MatchQuestion $setQuestion, array $items, array $options = [])
+    private function deserializeLabels(MatchQuestion $setQuestion, array $sets, array $options = [])
     {
         $labelsEntities = $setQuestion->getLabels()->toArray();
 
-        foreach ($items as $index => $itemData) {
+        foreach ($sets as $index => $setData) {
             $label = null;
             // Searches for an existing Label entity.
             foreach ($labelsEntities as $entityIndex => $entityLabel) {
                 /** @var Label $entityLabel */
-                if ($entityLabel->getUuid() === $itemData->id) {
+                if ($entityLabel->getUuid() === $setData->id) {
                     $label = $entityLabel;
                     unset($labelsEntities[$entityIndex]);
                     break;
@@ -166,13 +166,13 @@ class SetQuestionSerializer implements SerializerInterface
             }
 
             if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
-                $label->setUuid($itemData->id);
+                $label->setUuid($setData->id);
             }
 
             $label->setOrder($index);
 
             // Deserialize firstSet content
-            $label = $this->contentSerializer->deserialize($itemData, $label);
+            $label = $this->contentSerializer->deserialize($setData, $label);
             $setQuestion->addLabel($label);
         }
 
@@ -186,20 +186,20 @@ class SetQuestionSerializer implements SerializerInterface
      * Deserializes Question proposals.
      *
      * @param MatchQuestion $setQuestion
-     * @param array         $sets        ie proposals
+     * @param array         $items       ie proposals
      * @param array         $options
      */
-    private function deserializeProposals(MatchQuestion $setQuestion, array $sets, array $options = [])
+    private function deserializeProposals(MatchQuestion $setQuestion, array $items, array $options = [])
     {
         $proposalsEntities = $setQuestion->getProposals()->toArray();
 
-        foreach ($sets as $index => $setData) {
+        foreach ($items as $index => $itemData) {
             $proposal = null;
 
             // Search for an existing Proposal entity.
             foreach ($proposalsEntities as $entityIndex => $entityProposal) {
                 /* @var Proposal $entityProposal */
-                if ($entityProposal->getUuid() === $setData->id) {
+                if ($entityProposal->getUuid() === $itemData->id) {
                     $proposal = $entityProposal;
 
                     unset($proposalsEntities[$entityIndex]);
@@ -213,13 +213,13 @@ class SetQuestionSerializer implements SerializerInterface
             }
 
             if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
-                $proposal->setUuid($setData->id);
+                $proposal->setUuid($itemData->id);
             }
 
             $proposal->setOrder($index);
 
             // Deserialize proposal content
-            $proposal = $this->contentSerializer->deserialize($setData, $proposal);
+            $proposal = $this->contentSerializer->deserialize($itemData, $proposal);
             $setQuestion->addProposal($proposal);
         }
 
@@ -246,10 +246,10 @@ class SetQuestionSerializer implements SerializerInterface
             foreach ($associationsEntities as $entityIndex => $entityAssociation) {
                 /* @var Association $entityAssociation */
                 // retieves oddAssociations and fullAssociation
-                if ($entityAssociation->getLabel()->getUuid() === $solution->itemId &&
+                if ($entityAssociation->getProposal()->getUuid() === $solution->itemId &&
                       (
-                        ($entityAssociation->getProposal() && $entityAssociation->getProposal()->getUuid() === $solution->setId) ||
-                        (!$entityAssociation->getProposal() && !$solution->itemId)
+                        ($entityAssociation->getLabel() && $entityAssociation->getLabel()->getUuid() === $solution->setId) ||
+                        (!$entityAssociation->getLabel() && !isset($solution->setId))
                       )
                 ) {
                     $association = $entityAssociation;
@@ -263,18 +263,18 @@ class SetQuestionSerializer implements SerializerInterface
                 // Create a new Association
                 $association = new Association();
                 // add association label
-                foreach ($setQuestion->getLabels() as $label) {
-                    if ($label->getUuid() === $solution->itemId) {
-                        $association->setLabel($label);
+                foreach ($setQuestion->getProposals() as $proposal) {
+                    if ($proposal->getUuid() === $solution->itemId) {
+                        $association->setProposal($proposal);
                         break;
                     }
                 }
 
                 // add association proposal if any
                 if (isset($solution->setId)) {
-                    foreach ($setQuestion->getProposals() as $proposal) {
-                        if ($proposal->getUuid() === $solution->setId) {
-                            $association->setProposal($proposal);
+                    foreach ($setQuestion->getLabels() as $label) {
+                        if ($label->getUuid() === $solution->setId) {
+                            $association->setLabel($label);
                             break;
                         }
                     }

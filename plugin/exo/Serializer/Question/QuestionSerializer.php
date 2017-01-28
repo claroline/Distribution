@@ -264,8 +264,13 @@ class QuestionSerializer extends AbstractSerializer
             ];
         }
 
-        $metadata->created = $question->getDateCreate()->format('Y-m-d\TH:i:s');
-        $metadata->updated = $question->getDateModify()->format('Y-m-d\TH:i:s');
+        if ($question->getDateCreate()) {
+            $metadata->created = $question->getDateCreate()->format('Y-m-d\TH:i:s');
+        }
+
+        if ($question->getDateModify()) {
+            $metadata->updated = $question->getDateModify()->format('Y-m-d\TH:i:s');
+        }
 
         if ($this->hasOption(Transfer::INCLUDE_ADMIN_META, $options)) {
             $metadata->model = $question->isModel();

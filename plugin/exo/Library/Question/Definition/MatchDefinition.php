@@ -5,7 +5,9 @@ namespace UJM\ExoBundle\Library\Question\Definition;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Misc\Association;
 use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
+use UJM\ExoBundle\Entity\QuestionType\MatchQuestion;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
+use UJM\ExoBundle\Library\Attempt\GenericPenalty;
 use UJM\ExoBundle\Library\Question\QuestionType;
 use UJM\ExoBundle\Serializer\Question\Type\MatchQuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\MatchAnswerValidator;
@@ -117,10 +119,10 @@ class MatchDefinition extends AbstractDefinition
     {
         $corrected = new CorrectedAnswer();
 
-        foreach ($question->getAssociations() as $association) {
-            if (is_array($answer)) {
+        if (is_array($answer)) {
+            foreach ($question->getAssociations() as $association) {
                 $found = false;
-                foreach ($answer as $givenAnswer) {
+                foreach ($answer as $index => $givenAnswer) {
                     if ($association->getProposal()->getUuid() === $givenAnswer->firstId && $association->getLabel()->getUuid() === $givenAnswer->secondId) {
                         $found = true;
                         if (0 < $association->getScore()) {
@@ -128,26 +130,37 @@ class MatchDefinition extends AbstractDefinition
                         } else {
                             $corrected->addUnexpected($association);
                         }
+
+                        unset($answer[$index]);
                     }
                 }
+
                 if (!$found && 0 < $association->getScore()) {
                     $corrected->addMissing($association);
                 }
+            }
+
+            if (!empty($answer) && $question->getPenalty()) {
+                // there are association not defined in the exercise
+                $corrected->addPenalty(
+                    new GenericPenalty(count($answer) * $question->getPenalty())
+                );
             }
         }
 
         return $corrected;
     }
 
+    /**
+     * @param MatchQuestion $question
+     *
+     * @return array
+     */
     public function expectAnswer(AbstractQuestion $question)
     {
-        $expected = [];
-
-        $expected = array_filter($question->getAssociations()->toArray(), function (Association $association) {
+        return array_filter($question->getAssociations()->toArray(), function (Association $association) {
             return 0 < $association->getScore();
         });
-
-        return $expected;
     }
 
     public function getStatistics(AbstractQuestion $matchQuestion, array $answersData)

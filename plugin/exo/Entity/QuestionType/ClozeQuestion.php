@@ -76,6 +76,26 @@ class ClozeQuestion extends AbstractQuestion
     }
 
     /**
+     * Retrieves a hole by its uuid.
+     *
+     * @param $uuid
+     *
+     * @return Hole
+     */
+    public function getHole($uuid)
+    {
+        $found = null;
+        foreach ($this->holes as $hole) {
+            if ($hole->getUuid() === $uuid) {
+                $found = $hole;
+                break;
+            }
+        }
+
+        return $found;
+    }
+
+    /**
      * Adds a hole.
      *
      * @param Hole $hole

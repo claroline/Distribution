@@ -208,11 +208,12 @@ class AttemptManager
                 throw new ValidationException('Submitted answers are invalid', $e->getErrors());
             }
 
-            // Correct and mark answer
-            $score = $this->questionManager->calculateScore($question, $answer);
-            $answer->setScore($score);
             $answer->setIp($clientIp);
             $answer->setTries($answer->getTries() + 1);
+
+            // Calculate new answer score
+            $score = $this->questionManager->calculateScore($question, $answer);
+            $answer->setScore($score);
 
             $paper->addAnswer($answer);
             $submitted[] = $answer;
@@ -288,8 +289,10 @@ class AttemptManager
             $paper->addAnswer($answer);
         }
 
-        $score = $this->questionManager->calculateScore($question, $answer);
         $answer->addUsedHint($hintId);
+
+        // Calculate new answer score
+        $score = $this->questionManager->calculateScore($question, $answer);
         $answer->setScore($score);
 
         $this->om->persist($answer);
