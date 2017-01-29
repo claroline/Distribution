@@ -204,7 +204,7 @@ hole_selector: Proposer une liste
 hide_additional_info: Masquer les informations supplémentaires
 hide_interact_fields: Cacher les indices et le commentaire final
 hide_metadata_fields: Cacher le titre et les autres champs
-hint_penalty: "[0,1] - %count% point|]1,Inf[ - %count% points"
+hint_penalty: "[0,1] -%count% point|]1,Inf[ -%count% points"
 
 # I
 infiny: Infini

@@ -204,7 +204,7 @@ hole_selector: Submit a list
 hide_additional_info: Hide additional information
 hide_interact_fields: Hide hints and feedback
 hide_metadata_fields: Hide title and other fields
-hint_penalty: "[0,1] - %count% point|]1,Inf[ - %count% points"
+hint_penalty: "[0,1] -%count% point|]1,Inf[ -%count% points"
 
 # I
 infiny: Indefinite
