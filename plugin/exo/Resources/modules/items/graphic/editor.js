@@ -366,6 +366,10 @@ function validate(item) {
     return {image: tex('graphic_error_no_solution')}
   }
 
+  if (!item.solutions.find(solution => solution.score > 0)) {
+    return {image: tex('graphic_error_no_positive_solution')}
+  }
+
   return {}
 }
 
