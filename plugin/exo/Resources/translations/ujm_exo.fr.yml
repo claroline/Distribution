@@ -185,6 +185,7 @@ graphic_pick_image: Choisir une image
 graphic_mode_rect: Zone de réponse rectangulaire
 graphic_mode_circle: Zone de réponse circulaire
 graphic_mode_select: Sélectionner une réponse
+graphic_pointers_left: 'Nombre de pointeurs disponibles : '
 
 # H
 hide_instructions: Masquer les consignes
@@ -518,6 +519,7 @@ type_qcm: Type du QCM
 type_question: Type de la question
 
 # U
+undo: Annuler
 unpublish: Dépublier
 unsaved_changes_warning: Certaines modifications du questionnaire n'ont pas été enregistrées. Si vous quittez cette page maintenant, ces modifications seront perdues.
 upload: Télécharger
