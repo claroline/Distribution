@@ -39,7 +39,7 @@ export class GraphicPlayer extends Component {
   onClickImage(e) {
     if (this.state.pointersLeft > 0) {
       const factor = this.props.item.image.width / this.img.width
-      const imgRect = e.target.getBoundingClientRect()
+      const imgRect = this.img.getBoundingClientRect()
       const clientX = e.clientX - imgRect.left
       const clientY = e.clientY - imgRect.top
       const absX = Math.round(clientX * factor)
@@ -48,8 +48,8 @@ export class GraphicPlayer extends Component {
       const newCoords = {
         x: absX,
         y: absY,
-        _clientX: e.clientX - imgRect.left,
-        _clientY: e.clientY - imgRect.top
+        _clientX: clientX,
+        _clientY: clientY
       }
 
       this.setState({
@@ -86,30 +86,29 @@ export class GraphicPlayer extends Component {
             </button>
           }
         </div>
-        <div
-          className="img-container"
-          style={{
+        <div className="img-container">
+          <div style={{
             position: 'relative',
             cursor: this.state.pointersLeft ? 'crosshair' : 'auto',
             userSelect: 'none'
-          }}
-        >
-          <img
-            ref={el => this.img = el}
-            className="main-img"
-            src={this.props.item.image.data || asset(this.props.item.image.url)}
-            draggable={false}
-            onDragStart={e => e.stopPropagation()}
-            onClick={this.onClickImage}
-          />
-          {this.state.pointerCoords.map((coords, idx) =>
-            <Pointer
-              key={idx}
-              x={coords._clientX}
-              y={coords._clientY}
-              type={POINTER_PLACED}
+          }}>
+            <img
+              ref={el => this.img = el}
+              className="main-img"
+              src={this.props.item.image.data || asset(this.props.item.image.url)}
+              draggable={false}
+              onDragStart={e => e.stopPropagation()}
+              onClick={this.onClickImage}
             />
-          )}
+            {this.state.pointerCoords.map((coords, idx) =>
+              <Pointer
+                key={idx}
+                x={coords._clientX}
+                y={coords._clientY}
+                type={POINTER_PLACED}
+              />
+            )}
+          </div>
         </div>
       </div>
     )
