@@ -132,6 +132,17 @@
   }
 }
 
+.pointable-img {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    max-width: 100%;
+    border: solid 1px #ddd;
+  }
+}
+
 .graphic-player {
   .top-controls {
     display: flex;
@@ -139,17 +150,6 @@
     justify-content: space-between;
     margin: 10px auto;
     min-height: 34px;
-  }
-
-  .img-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    img.main-img {
-      max-width: 100%;
-      border: solid 1px #ddd;
-    }
   }
 }
 
@@ -175,5 +175,13 @@
 
   &.placed .segment {
     border-color: #0693e3;
+  }
+
+  &.correct .segment {
+    border-color: green;
+  }
+
+  &.wrong .segment {
+    border-color: red;
   }
 }
