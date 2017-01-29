@@ -87,11 +87,6 @@ class QuestionRepository extends EntityRepository
             ->getResult();
     }
 
-    public function findUsedBy(Question $question)
-    {
-        return [];
-    }
-
     /**
      * Returns all the questions linked to a given exercise.
      *
