@@ -111,7 +111,11 @@ export default class QuestionList extends Component {
                   {tex('question_export')}
                 </MenuItem>
                 <MenuItem divider />
-                <MenuItem className="link-danger">
+
+                <MenuItem
+                  className="link-danger"
+                  onClick={() => this.props.onDelete(question)}
+                >
                   <span className="fa fa-fw fa-trash-o" />&nbsp;
                   {tex('question_delete')}
                 </MenuItem>
@@ -128,5 +132,6 @@ export default class QuestionList extends Component {
 QuestionList.propTypes = {
   questions: T.array.isRequired,
   sortBy: T.object.isRequired,
-  onSort: T.func.isRequired
+  onSort: T.func.isRequired,
+  onDelete: T.func.isRequired
 }

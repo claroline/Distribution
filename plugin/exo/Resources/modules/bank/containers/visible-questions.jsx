@@ -1,8 +1,11 @@
 import { connect } from 'react-redux'
 
+import {tex} from './../../utils/translate'
 import QuestionList from './../components/question-list.jsx'
 import {getVisibleQuestions} from './../selectors/questions'
 import {actions as sortActions} from './../actions/sort-by'
+import {showModal} from './../../modal/actions'
+import {MODAL_DELETE_CONFIRM} from './../../modal'
 
 const mapStateToProps = (state) => {
   return {
@@ -27,6 +30,14 @@ const mapDispatchToProps = (dispatch) => {
      */
     onSelectAll: () => {
 
+    },
+
+    onDelete: (item) => {
+        dispatch(showModal(MODAL_DELETE_CONFIRM, {
+          title: tex('delete_item'),
+          question: tex('remove_question_confirm_message'),
+          handleConfirm: () => true
+        }))
     }
   }
 }
