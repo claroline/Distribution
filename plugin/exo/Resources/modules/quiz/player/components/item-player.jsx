@@ -6,11 +6,13 @@ import {tex, transChoice} from './../../../utils/translate'
 
 const UsedHint = props =>
   <div className="well well-sm used-hint">
-    <span className="fa fa-fw fa-eye fa-lightbulb-o"/>
-    {props.value}
+    <span className="fa fa-lightbulb-o"/>
+    <span className="hint-text">
+      &nbsp;{props.value}
+    </span>
 
     {props.penalty > 0 &&
-      <small className="text-danger">
+      <small className="text-danger hint-penalty-info">
         &nbsp;(
           {transChoice('hint_penalty', props.penalty, {count: props.penalty}, 'ujm_exo')}
         )
@@ -24,11 +26,16 @@ UsedHint.propTypes = {
 }
 
 const Hint = props =>
-  <button type="button" className="btn btn-default btn-block" onClick={props.showHint}>
+  <button
+    type="button"
+    className="btn btn-default btn-block hint-btn"
+    onClick={props.showHint}
+  >
+    <span className="fa fa-eye"/>
     &nbsp;{tex('hint')}&nbsp;{props.number}
 
     {props.penalty > 0 &&
-      <small className="text-danger">
+      <small className="text-danger hint-penalty-info">
         &nbsp;(
           {transChoice('hint_penalty', props.penalty, {count: props.penalty}, 'ujm_exo')}
         )
