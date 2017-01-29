@@ -126,6 +126,7 @@ export class Graphic extends Component {
 
   onClickImage(e) {
     if (this.props.item._mode !== MODE_SELECT) {
+      e.stopPropagation()
       const imgRect = e.target.getBoundingClientRect()
       this.props.onChange(actions.createArea(
         e.clientX - imgRect.left,

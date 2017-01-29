@@ -185,6 +185,7 @@ graphic_pick_image: Pick an image
 graphic_mode_rect: Rectangular answer zone
 graphic_mode_circle: Circular answer zone
 graphic_mode_select: Select an answer zone
+graphic_pointers_left: 'Available pointers: '
 
 # H
 hide_instructions: Hide instructions
@@ -521,6 +522,7 @@ type_qcm: QCM type
 type_question: Question type
 
 # U
+undo: Undo
 unpublish: Unpublish
 unsaved_changes_warning: Some changes to the quiz have not been saved. If you leave this page now, they will be lost.
 upload: Upload

@@ -131,3 +131,49 @@
     display: none;
   }
 }
+
+.graphic-player {
+  .top-controls {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin: 10px auto;
+    min-height: 34px;
+  }
+
+  .img-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img.main-img {
+      max-width: 100%;
+      border: solid 1px #ddd;
+    }
+  }
+}
+
+.pointer {
+  .segment {
+    background-color: black;
+    border: solid 2px;
+    border-radius: 2px;
+
+    &.n {
+      border-bottom: none;
+    }
+    &.e {
+      border-left: none;
+    }
+    &.s {
+      border-top: none;
+    }
+    &.w {
+      border-right: none;
+    }
+  }
+
+  &.placed .segment {
+    border-color: blue;
+  }
+}
