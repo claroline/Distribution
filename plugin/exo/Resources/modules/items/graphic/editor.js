@@ -47,6 +47,7 @@ function reduce(item = {}, action = {}) {
           action.image
         ),
         solutions: [],
+        pointers: 0,
         _popover: Object.assign({}, item._popover, {open: false})
       })
     case RESIZE_IMAGE: {
