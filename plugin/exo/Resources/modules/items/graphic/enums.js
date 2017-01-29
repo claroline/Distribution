@@ -31,3 +31,7 @@ export const DIRECTIONS = [
   DIR_W,
   DIR_NW
 ]
+
+export const POINTER_PLACED = 'placed'
+export const POINTER_CORRECT = 'correct'
+export const POINTER_WRONG = 'wrong'

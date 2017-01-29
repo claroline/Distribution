@@ -52,9 +52,32 @@ class Version20161128104517 extends AbstractMigration
             ALTER TABLE ujm_step 
             ADD random_order VARCHAR(255) NOT NULL, 
             ADD random_pick VARCHAR(255) NOT NULL, 
-            DROP keepSameQuestion, 
-            DROP shuffle, 
             CHANGE nbquestion pick INT NOT NULL
+        ');
+        // Migrate data
+        $this->addSql("
+            UPDATE ujm_step SET random_pick='never' WHERE pick = 0
+        ");
+        $this->addSql("
+            UPDATE ujm_step SET random_pick='once' WHERE pick > 0 AND keepSameQuestion = 1
+        ");
+        $this->addSql("
+            UPDATE ujm_step SET random_pick='always' WHERE pick > 0 AND (keepSameQuestion=0 OR keepSameQuestion IS NULL)
+        ");
+        $this->addSql("
+            UPDATE ujm_step SET random_order='never' WHERE shuffle = 0
+        ");
+        $this->addSql("
+            UPDATE ujm_step SET random_order='once' WHERE shuffle = 1 AND keepSameQuestion = 1
+        ");
+        $this->addSql("
+            UPDATE ujm_step SET random_order='always' WHERE shuffle = 1 AND (keepSameQuestion=0 OR keepSameQuestion IS NULL) 
+        ");
+        // Drop old columns
+        $this->addSql('
+            ALTER TABLE ujm_step 
+            DROP shuffle, 
+            DROP keepSameQuestion
         ');
     }
 
