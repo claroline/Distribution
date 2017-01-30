@@ -73,11 +73,19 @@ choice_feedback_info: Feedback if this answer is checked
 choose_image : Choose an image
 choose_category : Choose a category
 choose_type: Choose type
+cloze_empty_word_error: The word can't be empty
+cloze_empty_score_error: The score can't be empty
+cloze_multiple_answers_required: Multiple answers required
+cloze_empty_size_error: The size can't be empty
+cloze_empty_text_error: Please fill the text
+cloze_must_contains_clozes_error: The text must contains clozes
+cloze_holes_errors: There are some errors in the clozes
 color: Colour
 comment: Comment
 compose: Answer
 consult_hint: Consulting the hints gives you a penalty of X points. Do you want to go on ?
 contain_search: Whose question contains
+create_cloze: Create cloze
 # Preceding line to be checked in context !!! #
 
 correct: Correct
@@ -397,6 +405,8 @@ proposal: Proposal
 position_force: Forced position
 publish: Publish
 
+please_choose: Please choose...
+
 # Q
 qcm: MCQ
 qcm_creation: Create MCQ
@@ -491,6 +501,7 @@ start_again: Resume
 start_date: Start date
 solution_score: "{0} %score% point|{1} %score% point|[2,Inf] %score% points"
 sort: Sort documents
+submit_a_list: Submit a list
 summative : Summative
 show_additional_info: Display additional information
 step: Step

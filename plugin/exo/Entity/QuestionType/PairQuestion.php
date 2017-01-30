@@ -182,9 +182,9 @@ class PairQuestion extends AbstractQuestion
     public function getOddItem($uuid)
     {
         $found = null;
-        foreach ($this->oddItems as $oddItems) {
-            if ($oddItems->getUuid() === $uuid) {
-                $found = $oddItems;
+        foreach ($this->oddItems as $oddItem) {
+            if ($oddItem->getItem()->getUuid() === $uuid) {
+                $found = $oddItem;
                 break;
             }
         }

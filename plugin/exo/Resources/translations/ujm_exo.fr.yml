@@ -74,6 +74,13 @@ choice_feedback_info: Commentaire si la réponse est selectionnée
 choose_image : Choisir une image
 choose_category : Choisir une catégorie
 choose_type: Choisir un type
+cloze_empty_word_error: Le mot ne peut pas être vide
+cloze_empty_score_error: Le score ne peut pas être vide
+cloze_multiple_answers_required: Plusieurs réponses sont requises
+cloze_empty_size_error: La taille ne peut pas être vide
+cloze_empty_text_error: Veuillez remplir le texte
+cloze_must_contains_clozes_error: Le texte doit contenir des trous
+cloze_holes_errors: Certains trous contiennent toujours des erreurs
 color: Couleur
 comment: Feedback
 compose: Répondre
@@ -88,6 +95,7 @@ correspondence: correspondance
 correspondence_empty: Vous n'avez réalisé aucune correspondance !
 correspondence_error: Vous ne pouvez pas associer une même proposition avec plusieurs labels !
 create: Créer
+create_cloze: Créer un trou
 create_a_new_category: Créer une nouvelle catégorie
 create_a_new_entry: Créer une nouvelle question
 creation_date: Date de création
@@ -393,7 +401,7 @@ print_paper: Imprimer la copie
 proposal: Proposition
 position_force: Forcer cette position
 publish: Publier
-
+please_choose: Veuillez choisir...
 # Q
 qcm: QCM
 qcm_creation: Création d'une question QCM
@@ -500,6 +508,7 @@ step_need_manual_correction: Cette étape nécessite une correction manuelle
 step_picking: Tirage des étapes
 stat_users: "[0, 1] %count% utilisateur|]1,Inf[ %count% utilisateurs"
 stat_have_responded: ont répondu
+submit_a_list: Soumettre une liste
 sum_score_choice_at_least_one_correct_answer_error: Au moins une réponse doit avoir un score positif.
 sum_score_choice_no_correct_answer_error: La réponse correcte doit avoir un score positif.
 should_be_greater_or_equal_to_zero: Cette valeur devrait être supérieur ou égal à 0.
