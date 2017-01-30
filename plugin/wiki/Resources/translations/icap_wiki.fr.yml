@@ -3,6 +3,7 @@ add_new_subsection: Ajouter une section ici
 added: Ajouté
 angular_date_format: dd/MM/yyyy à HH:mm
 back_to_history: Retour à l'historique
+back_to_top: Retour en haut de page
 back_to_wiki: Retour au wiki
 back: Retour
 cancel: Annuler

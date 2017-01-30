@@ -5,9 +5,11 @@
 {% block title %}{{ _resource.resourceNode.name }}{% endblock %}
 
 {% block breadcrumb %}
-<div data-wiki-breadcrumbs>
-    {{ parent() }}
-</div>
+    <a name="top"></a>
+
+    <div data-wiki-breadcrumbs>
+        {{ parent() }}
+    </div>
 {% endblock %}
 
 {% block resourceBreadcrumb %}

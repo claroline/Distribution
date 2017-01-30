@@ -32,6 +32,11 @@ export default class WikiController {
     this.disableModalButtons = false
     this.isFormOpen = false
   }
+  
+  backToTop() {
+    _$location.get(this).hash('top')
+    _$anchorScroll.get(this)()
+  }
 
   getFontSize(level) {
     return level < 8 ? 21 - level + 'px' : '14px'

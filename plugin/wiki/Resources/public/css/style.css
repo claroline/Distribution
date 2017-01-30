@@ -209,3 +209,8 @@ div.wiki-sections ol#wiki-sections-list ol.wiki-sections-list-elem>li.with-numbe
         margin-left: 55px;
     }
 }
+
+/* Back to top button */
+button.history-section.link-style.back-to-top {
+    font-size: 125%;
+}
