@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Library\Utilities;
 
-use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("claroline.utilities.thumbnail_creator")
@@ -161,16 +161,24 @@ class ThumbnailCreator
         imagedestroy($dstImg);
     }
 
-    public function shortcutThumbnail($srcImg, Workspace $workspace = null)
-    {
+    public function shortcutThumbnail(
+        $srcImg,
+        Workspace $workspace = null,
+        $stampPath = null,
+        $targetDirPath = null,
+        $filename = null
+    ) {
         if (!$this->isGdLoaded) {
             throw new UnloadedExtensionException('The GD extension is missing \n');
         }
 
         $ds = DIRECTORY_SEPARATOR;
-        $stampPath = "{$this->webDir}{$ds}bundles{$ds}"
-            ."clarolinecore{$ds}images{$ds}resources{$ds}icons{$ds}shortcut-black.png";
-        $extension = (pathinfo($srcImg, PATHINFO_EXTENSION) == 'jpg') ? 'jpeg' : pathinfo($srcImg, PATHINFO_EXTENSION);
+        if (is_null($stampPath)) {
+            $stampPath = $this->getDefaultStampRelativeUrl();
+        }
+        $stampPath = "{$this->webDir}{$ds}".$stampPath;
+        // Test image extension
+        $extension = (pathinfo($srcImg, PATHINFO_EXTENSION) === 'jpg') ? 'jpeg' : pathinfo($srcImg, PATHINFO_EXTENSION);
         if (function_exists($funcname = "imagecreatefrom{$extension}")) {
             $im = $funcname($srcImg);
         } else {
@@ -178,19 +186,40 @@ class ThumbnailCreator
             $exception->setExtension($extension);
             throw $exception;
         }
-        $stamp = imagecreatefrompng($stampPath);
+        // Test stamp extension
+        $stampExtension = (pathinfo($stampPath, PATHINFO_EXTENSION) === 'jpg') ?
+            'jpeg' :
+            pathinfo($stampPath, PATHINFO_EXTENSION);
+        if (function_exists($stampFuncname = "imagecreatefrom{$stampExtension}")) {
+            $stamp = $stampFuncname($stampPath);
+        } else {
+            $exception = new ExtensionNotSupportedException();
+            $exception->setExtension($stampExtension);
+            throw $exception;
+        }
         imagesavealpha($im, true);
         imagecopy($im, $stamp, 0, imagesy($im) - imagesy($stamp), 0, 0, imagesx($stamp), imagesy($stamp));
-        $name = "{$this->ut->generateGuid()}.{$extension}";
+        if (is_null($filename)) {
+            $filename = "{$this->ut->generateGuid()}.{$extension}";
+        }
 
-        if (!is_null($workspace)) {
-            $dir = $this->thumbnailDir.$ds.$workspace->getCode().$ds.$name;
+        if (!empty($targetDirPath)) {
+            $dir = $targetDirPath.$ds.$filename;
+        } elseif (!is_null($workspace)) {
+            $dir = $this->thumbnailDir.$ds.$workspace->getCode().$ds.$filename;
         } else {
-            $dir = $this->thumbnailDir.$ds.$name;
+            $dir = $this->thumbnailDir.$ds.$filename;
         }
         imagepng($im, $dir);
         imagedestroy($im);
 
         return $dir;
+    }
+
+    public function getDefaultStampRelativeUrl()
+    {
+        $ds = DIRECTORY_SEPARATOR;
+
+        return "bundles{$ds}clarolinecore{$ds}images{$ds}resources{$ds}icons{$ds}shortcut-black.png";
     }
 }
