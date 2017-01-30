@@ -82,7 +82,7 @@ class QuestionListener
     {
         $interaction = $question->getInteraction();
         if (null !== $interaction) {
-            $event->getEntityManager()->persist($interaction);
+            $event->getEntityManager()->remove($interaction);
         }
     }
 }

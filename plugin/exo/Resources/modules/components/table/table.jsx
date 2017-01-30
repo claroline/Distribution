@@ -92,35 +92,7 @@ TableSortingCell.defaultProps = {
 
 const TableHeader = props =>
   <thead>
-    <tr>
-      {props.children}
-    </tr>
-    <tr className="selected-rows active">
-      <td className="text-center">
-        <span className="fa fa-check-square"></span>
-      </td>
-      <td colSpan={props.children.length - 2}>
-        <b>10</b> questions selected (<a href="">select all <b>153</b> questions</a>)
-      </td>
-      <td className="table-actions text-right">
-        <a role="button" href="" className="btn btn-sm btn-link">
-          <span className="fa fa-fw fa-copy" />
-          <span className="sr-only">{tex('questions_duplicate')}</span>
-        </a>
-        <button role="button" className="btn btn-sm btn-link">
-          <span className="fa fa-fw fa-share" />
-          <span className="sr-only">{tex('questions_share')}</span>
-        </button>
-        <button role="button" className="btn btn-sm btn-link">
-          <span className="fa fa-fw fa-upload" />
-          <span className="sr-only">{tex('questions_export')}</span>
-        </button>
-        <button role="button" className="btn btn-sm btn-link btn-link-danger">
-          <span className="fa fa-fw fa-trash-o" />
-          <span className="sr-only">{tex('questions_delete')}</span>
-        </button>
-      </td>
-    </tr>
+    {props.children}
   </thead>
 
 TableHeader.propTypes = {

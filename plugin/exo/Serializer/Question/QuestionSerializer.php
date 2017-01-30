@@ -16,7 +16,6 @@ use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Question\QuestionDefinitionsCollection;
 use UJM\ExoBundle\Library\Serializer\AbstractSerializer;
 use UJM\ExoBundle\Repository\ExerciseRepository;
-use UJM\ExoBundle\Repository\QuestionRepository;
 use UJM\ExoBundle\Serializer\Content\ResourceContentSerializer;
 use UJM\ExoBundle\Serializer\UserSerializer;
 
@@ -318,7 +317,7 @@ class QuestionSerializer extends AbstractSerializer
 
         // Sets the creator of the Question if not set
         $creator = $question->getCreator();
-        if (empty($creator)) {
+        if (empty($creator) || !($creator instanceof User)) {
             $token = $this->tokenStorage->getToken();
             if (!empty($token) && $token->getUser() instanceof User) {
                 $question->setCreator($token->getUser());

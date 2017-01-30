@@ -191,25 +191,18 @@ class QuestionManager
     }
 
     /**
-     * Deletes a Question.
-     * It's only possible if the Question is not used in an Exercise.
+     * Deletes a list of Questions.
      *
-     * @param Question $question
-     *
-     * @throws ValidationException
+     * @param array $questions - the uuids of questions to delete
      */
-    public function delete(Question $question)
+    public function delete(array $questions)
     {
-        $exercises = $this->repository->findUsedBy($question);
-        if (count($exercises) > 0) {
-            // Question is used, we can't delete it
-            throw new ValidationException('Question can not be deleted', [
-                'path' => '',
-                'message' => "Question {$question->getUuid()} is linked to exercises.",
-            ]);
+        // Reload the list of questions to delete
+        $toDelete = $this->repository->findByUuids($questions);
+        foreach ($toDelete as $question) {
+            $this->om->remove($question);
         }
 
-        $this->om->remove($question);
         $this->om->flush();
     }
 
