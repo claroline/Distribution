@@ -174,6 +174,7 @@ export class Highlight extends Component {
     span = div.firstChild.nextSibling
     const toReplace = document.getElementById(`span-answer-${holeId}-true`)
     toReplace.replaceWith(span)
+    $('[data-toggle="popover"]').popover()
   }
 
   getHtml() {
