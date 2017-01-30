@@ -177,12 +177,7 @@ function reduce(item = {}, action) {
       newItem._popover = true
       newItem._holeId = hole.id
       newItem._text = action.cb(utils.makeTinyHtml(solution))
-
-      //choices can't be empty tho so...
       newItem.text = utils.getTextWithPlacerHoldersFromHtml(newItem._text)
-      //update the text now
-
-      //console.log('NEW HOLE')
 
       return newItem
     }

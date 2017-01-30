@@ -7,6 +7,7 @@ import {TooltipButton} from './../../components/form/tooltip-button.jsx'
 import Popover from 'react-bootstrap/lib/Popover'
 import {ErrorBlock} from './../../components/form/error-block.jsx'
 import get from 'lodash/get'
+import classes from 'classnames'
 
 class ChoiceItem extends Component {
   constructor(props) {
@@ -16,7 +17,12 @@ class ChoiceItem extends Component {
 
   render() {
     return (
-      <div className="choice-item-cloze">
+      <div className={classes(
+          'choice-item-cloze',
+          {'positive-score': this.props.answer.score > 0},
+          {'negative-score': this.props.answer.score <= 0}
+        )
+      }>
         <div className='row'>
           <div className='hole-form-row'>
             <div className="col-xs-4">
