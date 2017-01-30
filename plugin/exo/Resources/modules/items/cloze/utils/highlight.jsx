@@ -1,7 +1,7 @@
 import React, {Component, PropTypes as T} from 'react'
 import {utils} from './utils'
 import {tcex} from '../../../utils/translate'
-//import 'bootstrap'
+import $ from 'jquery'
 
 function getWarningIcon(solution, answer) {
   solution = utils.getSolutionForAnswer(solution, answer)
@@ -19,11 +19,13 @@ function getSolutionScore(score) {
 
 function getFeedback(feedback) {
   if (!feedback) return ''
-  return `<i
+  return `
+  <i
     role="button"
     class="feedback-btn fa fa-comments-o"
     data-content="${feedback}"
     data-toggle="popover"
+    data-trigger="click"
     data-html="true"
     title="feedback">
   </i>`
@@ -150,6 +152,7 @@ export class Highlight extends Component {
         )
       }
     })
+    $('[data-toggle="popover"]').popover()
   }
 
   //only fired when displaying expected answers

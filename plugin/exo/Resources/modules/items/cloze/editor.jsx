@@ -288,31 +288,20 @@ export class Cloze extends Component {
   constructor(props) {
     super(props)
     this.selection = null
-    this.startSelectOffset = null
-    this.endSelectOffset = null
-    this.offsetX = null
-    this.offsetY = null
+    this.word = null
+    this.fnTextUpdate = () => {}
+    this.state = { allowCloze: true }
+    this.changeEditorMode = this.changeEditorMode.bind(this)
   }
 
-  onSelect(selection, startOffset, endOffset, offsetX, offsetY) {
-    this.selection = selection
-    this.startSelectOffset = startOffset
-    this.endSelectOffset = endOffset
-    this.offsetX = offsetX
-    this.offsetY = offsetY
+  onSelect(word, cb) {
+    this.word = word
+    this.fnTextUpdate = cb
   }
 
   onHoleClick(el) {
     if (el.classList.contains('edit-hole-btn')) {
-      this.offsetX = el.getBoundingClientRect().right
-      this.offsetY = el.getBoundingClientRect().bottom
-      this.props.onChange(actions.openHole(
-        el.dataset.holeId,
-        this.startSelectOffset,
-        this.endSelectOffset,
-        this.offsetX,
-        this.offsetY
-      ))
+      this.props.onChange(actions.openHole(el.dataset.holeId))
     } else {
       if (el.classList.contains('delete-hole-btn')) {
         this.props.onChange(actions.removeHole(el.dataset.holeId))
@@ -320,8 +309,12 @@ export class Cloze extends Component {
     }
   }
 
+  changeEditorMode(editorState) {
+    this.setState({ allowCloze: editorState.minimal})
+  }
+
   addHole() {
-    return actions.addHole(this.selection, this.startSelectOffset, this.endSelectOffset, this.offsetX, this.offsetY)
+    return actions.addHole(this.word, this.fnTextUpdate.bind(this), this.selection)
   }
 
   render() {
@@ -339,11 +332,13 @@ export class Cloze extends Component {
             onSelect={this.onSelect.bind(this)}
             onClick={this.onHoleClick.bind(this)}
             content={this.props.item._text}
+            onChangeMode={this.changeEditorMode}
           />
         </FormGroup>
         <button
           type="button"
           className="btn btn-default"
+          disabled={!this.state.allowCloze}
           onClick={() => this.props.onChange(this.addHole())}><i className="fa fa-plus"/>
           {tex('create_cloze')}
         </button>
@@ -371,8 +366,6 @@ Cloze.propTypes = {
     _text: T.string.isRequired,
     _errors: T.object,
     _popover: T.shape({
-      offsetX: T.number.isRequired,
-      offsetY: T.number.isRequired,
       hole: T.object,
       solution: T.object
     })

@@ -22,8 +22,8 @@ const CLOSE_POPOVER = 'CLOSE_POPOVER'
 
 export const actions = {
   updateText: makeActionCreator(UPDATE_TEXT, 'text'),
-  addHole: makeActionCreator(ADD_HOLE, 'word', 'startOffset', 'endOffset', 'offsetX', 'offsetY'),
-  openHole: makeActionCreator(OPEN_HOLE, 'holeId', 'offsetX', 'offsetY'),
+  addHole: makeActionCreator(ADD_HOLE, 'word', 'cb'),
+  openHole: makeActionCreator(OPEN_HOLE, 'holeId'),
   updateHole: makeActionCreator(UPDATE_HOLE, 'holeId', 'parameter', 'value'),
   addAnswer: makeActionCreator(ADD_ANSWER, 'holeId'),
   saveHole: makeActionCreator(SAVE_HOLE),
@@ -161,10 +161,7 @@ function reduce(item = {}, action) {
         newItem.holes.push(newItem._popover.hole)
         newItem.holes[newItem.holes.length - 1].choices = choices
         newItem.solutions.push(newItem._popover.solution)
-        newItem._text = utils.replaceBetween(
-          newItem._text,
-          newItem._popover.startOffset,
-          newItem._popover.endOffset,
+        newItem._text = newItem._popover._cb(
           utils.makeTinyHtml(newItem._popover.solution)
         )
         //choices can't be empty tho so...
@@ -204,10 +201,7 @@ function reduce(item = {}, action) {
       }
 
       newItem._popover = {
-        offsetX: action.offsetX,
-        offsetY: action.offsetY,
-        startOffset: action.startOffset,
-        endOffset: action.endOffset,
+        _cb: action.cb,
         hole,
         solution
       }

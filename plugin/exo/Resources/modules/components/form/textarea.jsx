@@ -1,7 +1,6 @@
 import React, {Component, PropTypes as T} from 'react'
 import classes from 'classnames'
 import {tex} from './../../utils/translate'
-import select from './utils/selection'
 
 // see https://github.com/lovasoa/react-contenteditable
 export class ContentEditable extends Component {
@@ -9,17 +8,38 @@ export class ContentEditable extends Component {
     super()
     this.emitChange = this.emitChange.bind(this)
     this.getSelection = this.getSelection.bind(this)
+    this.state = {}
   }
 
   getSelection() {
-    let selected = select(this.el, window.getSelection())
-    this.props.onSelect(
-      selected.word,
-      selected.start,
-      selected.end,
-      selected.offsetX,
-      selected.offsetY
-    )
+    //http://stackoverflow.com/questions/3997659/replace-selected-text-in-contenteditable-div
+    const rng = window.getSelection().getRangeAt(0).cloneRange()
+    this.setState({
+      rng: rng,
+      startOffset: rng.startOffset,
+      endOffset: rng.endOffset,
+      startContainer: rng.startContainer,
+      endContainer: rng.endContainer,
+      collapsed: rng.collapsed,
+      commonAncestorContainer: rng.commonAncestorContainer
+
+    })
+    let selected = window.getSelection().toString()
+    this.props.onSelect(selected, this.updateText.bind(this))
+  }
+
+  updateText(text) {
+    if (text) {
+      const range = new Range()
+      range.setStart(this.state.startContainer, this.state.startOffset)
+      range.setEnd(this.state.endContainer, this.state.endOffset)
+      range.deleteContents()
+      const el = document.createElement('span')
+      el.innerHTML = text
+      range.insertNode(el)
+
+      return this.el.innerHTML
+    }
   }
 
   render() {
@@ -128,23 +148,24 @@ export class Tinymce extends Component {
     this.editor.destroy()
   }
 
-  updateText(text) {
-    if (text) {
-      this.editor.selection.setContent(text)
-      return this.editor.getContent({format : 'raw'})
-    }
+  updateText() {
+    //nope
   }
 
   getSelection() {
-    let selected = select(this.editor.dom.getRoot(), this.editor.selection.getSel())
+    const rng = this.editor.selection.getRng()
 
-    this.props.onSelect(
-      selected.word,
-      selected.start,
-      selected.end,
-      selected.offsetX,
-      selected.offsetY
-    )
+    this.setState({
+      rng: this.editor.selection.getRng().cloneRange(),
+      startOffset: rng.startOffset,
+      endOffset: rng.endOffset,
+      startContainer: rng.startContainer,
+      endContainer: rng.endContainer,
+      collapsed: rng.collapsed,
+      commonAncestorContainer: rng.commonAncestorContainer
+
+    })
+    this.props.onSelect(this.editor.selection.getContent(), this.updateText.bind(this))
   }
 
   render() {
@@ -212,7 +233,10 @@ export class Textarea extends Component {
             'fa',
             this.state.minimal ? 'fa-plus-circle' : 'fa-minus-circle'
           )}
-          onClick={() => this.setState({minimal: !this.state.minimal})}
+          onClick={() => {
+            this.setState({minimal: !this.state.minimal})
+            this.props.onChangeMode({minimal: !this.state.minimal})
+          }}
         />
         {this.state.minimal ?
           this.makeMinimalEditor() :
@@ -230,11 +254,13 @@ Textarea.propTypes = {
   content: T.string.isRequired,
   onChange: T.func.isRequired,
   onSelect: T.func,
-  onClick: T.func
+  onClick: T.func,
+  onChangeMode: T.func
 }
 
 Textarea.defaultProps = {
   minRows: 2,
   onClick: () => {},
-  onSelect: () => {}
+  onSelect: () => {},
+  onChangeMode: () => {}
 }
