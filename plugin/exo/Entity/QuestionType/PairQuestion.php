@@ -28,7 +28,7 @@ class PairQuestion extends AbstractQuestion
     /**
      * List of available items for the question.
      *
-     * @ORM\ManyToMany(targetEntity="UJM\ExoBundle\Entity\Misc\GridItem")
+     * @ORM\ManyToMany(targetEntity="UJM\ExoBundle\Entity\Misc\GridItem", cascade={"all"})
      * @ORM\JoinTable(
      *     name="ujm_question_pair_items",
      *     joinColumns={@ORM\JoinColumn(name="question_id", referencedColumnName="id")},
@@ -182,9 +182,9 @@ class PairQuestion extends AbstractQuestion
     public function getOddItem($uuid)
     {
         $found = null;
-        foreach ($this->oddItems as $oddItems) {
-            if ($oddItems->getUuid() === $uuid) {
-                $found = $oddItems;
+        foreach ($this->oddItems as $oddItem) {
+            if ($oddItem->getItem()->getUuid() === $uuid) {
+                $found = $oddItem;
                 break;
             }
         }

@@ -73,7 +73,7 @@ function reduce(pair = {}, action) {
             _deletable: false
           }
         ],
-        rows: 0
+        rows: 1
       }))
     }
 
@@ -196,6 +196,8 @@ function reduce(pair = {}, action) {
         ordered: false
       })
 
+      newItem.rows = newItem.solutions.filter(solution => solution.score > 0).length
+
       const realSolutions = utils.getRealSolutionList(newItem.solutions)
       realSolutions.forEach(solution => {
         solution._deletable = realSolutions.length > 1
@@ -207,6 +209,7 @@ function reduce(pair = {}, action) {
       const newItem = cloneDeep(pair)
       const idxToRemove = newItem.solutions.findIndex(solution => solution.itemIds[0] === action.leftId && solution.itemIds[1] === action.rightId)
       newItem.solutions.splice(idxToRemove, 1)
+      newItem.rows = newItem.solutions.filter(solution => solution.score > 0).length
       const realSolutions = utils.getRealSolutionList(newItem.solutions)
       realSolutions.forEach(solution => {
         solution._deletable = realSolutions.length > 1

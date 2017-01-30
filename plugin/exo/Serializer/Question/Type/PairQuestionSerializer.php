@@ -105,7 +105,7 @@ class PairQuestionSerializer implements SerializerInterface
     }
 
     /**
-     * Converts raw data into a Set question entity.
+     * Converts raw data into a Pair question entity.
      *
      * @param \stdClass    $data
      * @param PairQuestion $pairQuestion
@@ -151,13 +151,18 @@ class PairQuestionSerializer implements SerializerInterface
             }
 
             if (empty($item)) {
-                // Create a new choice
+                // Create a new item
                 $item = new GridItem();
             }
 
             // Force client ID if needed
             if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
                 $item->setUuid($itemData->id);
+            }
+
+            if (isset($itemData->coordinates)) {
+                $item->setCoordsX($itemData->coordinates[0]);
+                $item->setCoordsY($itemData->coordinates[1]);
             }
 
             // Deserialize choice content
@@ -292,7 +297,7 @@ class PairQuestionSerializer implements SerializerInterface
             array_map(function (GridOdd $odd) {
                 $solution = new \stdClass();
 
-                $solution->itemIds = [$odd->getItem()];
+                $solution->itemIds = [$odd->getItem()->getUuid()];
                 $solution->score = $odd->getScore();
                 if ($odd->getFeedback()) {
                     $solution->feedback = $odd->getFeedback();

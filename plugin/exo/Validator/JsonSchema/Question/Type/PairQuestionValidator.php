@@ -84,7 +84,7 @@ class PairQuestionValidator extends JsonSchemaValidator
 
             // solutions references
             foreach ($question->solutions as $indexSolution => $solution) {
-                foreach ($solution->items as $index => $item) {
+                foreach ($solution->itemIds as $index => $item) {
                     if (!in_array($item, $itemIds)) {
                         $errors[] = [
                             'path' => "solutions[{$indexSolution}]/itemIds[{$index}]",

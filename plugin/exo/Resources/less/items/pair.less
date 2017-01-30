@@ -112,10 +112,10 @@
                 .right-controls {
                   display: flex;
                   align-items: flex-start;
-                 .association-score {
-                   width: 60px;
-                   margin-right: 8px;
-                 }
+                  .association-score {
+                    width: 60px;
+                    margin-right: 8px;
+                  }
                 }
 
               }
@@ -135,6 +135,103 @@
 
     .footer {
       margin-top: 15px;
+    }
+  }
+}
+
+/* PLAYER */
+.pair-question-player {
+  padding: 0;
+  display: flex;
+  justify-content: space-around;
+  .items-col {
+    min-width: 200px;
+    max-width: 200px;
+    padding: 5px;
+    background-color: #f5f5f5;
+    height: 100%;
+    ul {
+      padding: 0;
+      margin: 0;
+      li {
+        list-style: none;
+        background-color: #eee;
+        margin-bottom: 5px;
+        .item {
+          display: flex;
+          padding: 5px;
+          align-items: center;
+          justify-content: space-between;
+          .item-content {
+            margin: 0;
+          }
+          .right-controls {
+            display: flex;
+          }
+        }
+      }
+    }
+  }
+
+  .pair-rows-col {
+    ul {
+      padding: 0;
+      margin: 0;
+      li {
+        list-style: none;
+        background-color: #eee;
+        margin-bottom: 15px;
+
+        .pair-row {
+          min-width: 400px;
+          max-width: 400px;
+          padding: 15px;
+          background-color: #f5f5f5;
+
+          display: flex;
+          justify-content: space-around;
+          border: 1px solid #ccc;
+          border-radius: 5px 5px 0 0;
+          width: 100%;
+
+          .pair-item-drop-container {
+            background-color: #ffffff;
+            display: inline;
+            border: 1px dashed #bbb;
+            border-radius: 5px;
+            width: 100%;
+            height: auto;
+            text-align: center;
+            padding: 5px;
+            margin-left: 5px;
+            margin-right: 5px;
+            &.on-hover {
+              background-color: #eee;
+            }
+          }
+
+          .pair-element {
+            background-color: #eee;
+            display: flex;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+            padding: 5px;
+            margin-left: 5px;
+            margin-right: 5px;
+            align-items: center;
+            justify-content: space-between;
+
+            .pair-element-data {
+              margin: 0 auto;
+            }
+
+            .right-controls {
+              display: flex;
+            }
+          }
+        }
+      }
     }
   }
 }

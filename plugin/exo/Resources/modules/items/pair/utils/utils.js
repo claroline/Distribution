@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 export const utils = {}
 
 /**
@@ -65,4 +67,58 @@ utils.canAddSolution = (solutions, pairToUpdate, item) => {
   const firstCheck = solutionToUpdate.itemIds[brotherIndexToCheck] === -1 || solutionToUpdate.itemIds[brotherIndexToCheck] !== item.id
   const secondCheck = true
   return firstCheck && secondCheck
+}
+
+utils.pairItemsWithDisplayOption = (items) => {
+  return items.filter(i => !i.coordinates).map(i => Object.assign({}, i, {display: true, removable: true}))
+}
+
+utils.switchItemDisplay = (items, id, display) => {
+  return items.map(item => item.id === id ? Object.assign({}, item, {display: display}) : item)
+}
+
+utils.generateAnswerPairItems = (items, rows) => {
+  let data = []
+  _.times(rows, i => data[i] = [-1, -1])
+  items.forEach(item => {
+    if (item.coordinates) {
+      data[item.coordinates[0]][item.coordinates[1]] = Object.assign({}, item, {removable: false})
+    }
+  })
+
+  return data
+}
+
+utils.addAnswerItem = (answerItems, item, x, y) => {
+  let data = []
+  for (let i = 0; i < answerItems.length; ++i) {
+    if (i === x) {
+      let pair = answerItems[i]
+      pair[y] = item
+      data.push(pair)
+    } else {
+      data.push(answerItems[i])
+    }
+  }
+  return data
+}
+
+utils.removeAnswerItem = (answerItems, itemId) => {
+  return answerItems.map(row => row.map(item => ((item === -1) || (item.id !== itemId)) ? item : -1))
+}
+
+utils.generateAnswer = (answerItems) => {
+  let answer = []
+  answerItems.forEach(row => {
+    let answerRow = []
+    row.forEach(item => {
+      if (item !== -1) {
+        answerRow.push(item.id)
+      }
+    })
+    if (answerRow.length > 0) {
+      answer.push(answerRow)
+    }
+  })
+  return answer
 }
