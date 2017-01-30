@@ -15,7 +15,6 @@ import {
   TableSortingCell
 } from './../../components/table/table.jsx'
 
-
 const SelectedRow = props =>
     <tr className="selected-rows active">
       <td className="text-center">
