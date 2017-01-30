@@ -130,6 +130,11 @@ class IconManager
         return $this->searchIcon($node->getMimeType());
     }
 
+    public function listResourceIcons()
+    {
+        return $this->repo->findBaseIcons();
+    }
+
     /**
      * Return the icon of a specified mimeType.
      * The most specific icon for the mime type will be returned.
