@@ -11,7 +11,7 @@ describe('<ModeSelector/>', () => {
   })
   afterEach(spyConsole.restore)
 
-  it('renders three buttons and dispatches mode changes', () => {
+  it('renders two buttons and dispatches mode changes', () => {
     let mode = MODE_CIRCLE
 
     const group = mount(
@@ -22,7 +22,7 @@ describe('<ModeSelector/>', () => {
     )
 
     ensure.propTypesOk()
-    ensure.equal(group.children().length, 3)
+    ensure.equal(group.children().length, 2)
 
     const rectButton = group.childAt(0)
     rectButton.simulate('click')

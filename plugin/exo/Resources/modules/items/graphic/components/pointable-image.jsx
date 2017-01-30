@@ -57,6 +57,7 @@ export class PointableImage extends Component {
               x={this.absToRel(pointer.absX)}
               y={this.absToRel(pointer.absY)}
               type={pointer.type}
+              feedback={pointer.feedback}
             />
           )}
         </div>
@@ -73,7 +74,8 @@ PointableImage.propTypes = {
   pointers: T.arrayOf(T.shape({
     absX: T.number.isRequired,
     absY: T.number.isRequired,
-    type: T.string.isRequired
+    type: T.string.isRequired,
+    feedback: T.string
   })).isRequired
 }
 

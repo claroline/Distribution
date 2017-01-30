@@ -1,7 +1,7 @@
 import {SHAPE_RECT} from './enums'
 
-export function isCorrect(pointer, solutions) {
-  return !!solutions.find(solution => {
+export function findArea(pointer, solutions) {
+  return solutions.find(solution => {
     if (solution.area.shape === SHAPE_RECT)  {
       return (
         (pointer.x >= solution.area.coords[0].x) &&
