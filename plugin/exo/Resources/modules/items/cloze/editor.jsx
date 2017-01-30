@@ -7,7 +7,6 @@ import {TooltipButton} from './../../components/form/tooltip-button.jsx'
 import Popover from 'react-bootstrap/lib/Popover'
 import {ErrorBlock} from './../../components/form/error-block.jsx'
 import get from 'lodash/get'
-import isEmpty from 'lodash/isEmpty'
 
 class ChoiceItem extends Component {
   constructor(props) {
@@ -86,11 +85,11 @@ class ChoiceItem extends Component {
           </div>
         </div>
         <div className="col-xs-12">
-          {get(this.props, `_errors.answers.${this.props.id}.text`) &&
-            <ErrorBlock text={this.props._errors.answers[this.props.id].text} warnOnly={!this.props.validating}/>
+          {get(this.props, `_errors.answers.answer.${this.props.id}.text`) &&
+            <ErrorBlock text={this.props._errors.answers.answer[this.props.id].text} warnOnly={!this.props.validating}/>
           }
-          {get(this.props, `_errors.answers.${this.props.id}.score`) &&
-            <ErrorBlock text={this.props._errors.answers[this.props.id].score} warnOnly={!this.props.validating}/>
+          {get(this.props, `_errors.answers.answer.${this.props.id}.score`) &&
+            <ErrorBlock text={this.props._errors.answers.answer[this.props.id].score} warnOnly={!this.props.validating}/>
           }
         </div>
       </div>
@@ -141,13 +140,14 @@ ChoiceItem.propTypes = {
 }
 
 class HoleForm extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {showFeedback: false}
 
     this.offsetTop = window.scrollY + window.innerHeight / 2 - (420/2)
     this.offsetLeft = window.scrollX + window.innerWidth / 2 - (420/2)
 
+    //this.hole = this.props.item.holes.find(hole => hole.id === this.props.item._holeId)
   }
 
   getHoleAnswers(hole) {
@@ -159,17 +159,19 @@ class HoleForm extends Component {
     )
   }
 
+  getHole() {
+    return this.props.item.holes.find(hole => hole.id === this.props.item._holeId)
+  }
+
   closePopover() {
     this.props.onChange(actions.closePopover())
   }
 
   render() {
-
-
     return (
       <Popover
         bsClass="hole-form-content"
-        id={this.props.hole.id}
+        id={this.getHole().id}
         placement="right"
         positionLeft={this.offsetLeft}
         positionTop={this.offsetTop}
@@ -183,22 +185,22 @@ class HoleForm extends Component {
                   {tex('size')}
                 </div>
                 <input
-                  id={`item-${this.props.hole.id}-size`}
+                  id={`item-${this.getHole().id}-size`}
                   type="number"
                   min="0"
-                  value={this.props.hole.size}
+                  value={this.getHole().size}
                   className="col-xs-2 form-control hole-size"
                   onChange={e => this.props.onChange(
-                    actions.updateHole(this.props.hole.id, 'size', e.target.value)
+                    actions.updateHole(this.getHole().id, 'size', parseInt(e.target.value))
                   )}
                 />
                 <div className="col-xs-1">
                   <input
                     type="checkbox"
-                    checked={this.props.hole._multiple}
+                    checked={this.getHole()._multiple}
                     onChange={e => this.props.onChange(
                       actions.updateHole(
-                        this.props.hole.id,
+                        this.getHole().id,
                         '_multiple',
                         e.target.checked
                       )
@@ -222,7 +224,7 @@ class HoleForm extends Component {
               <div className="col-xs-5"><b>{tex('key_word')}</b></div>
               <div className="col-xs-7"><b>{tex('score')}</b></div>
             </div>
-            {this.props.solution.answers.map((answer, index) => {
+            {this.props.item.solutions.find(solution => solution.holeId === this.getHole().id).answers.map((answer, index) => {
               return (<ChoiceItem
                 key={index}
                 id={index}
@@ -230,7 +232,7 @@ class HoleForm extends Component {
                 feedback={answer.feedback}
                 deletable={index > 0}
                 onChange={this.props.onChange}
-                hole={this.props.hole}
+                hole={this.getHole()}
                 answer={answer}
                 validating={this.props.validating}
                 _errors={this.props._errors}
@@ -240,10 +242,10 @@ class HoleForm extends Component {
             {this.state.showFeedback &&
               <div className="feedback-container hole-form-row">
                 <Textarea
-                  id={`choice-${this.props.hole.id}-feedback`}
+                  id={`choice-${this.getHole().id}-feedback`}
                   title={tex('feedback')}
                   onChange={text => this.props.onChange(
-                    actions.updateAnswer(this.props.hole.id, 'feedback', text)
+                    actions.updateAnswer(this.getHole().id, 'feedback', text)
                   )}
                 />
               </div>
@@ -252,20 +254,11 @@ class HoleForm extends Component {
               <button
                 className="btn btn-default"
                 onClick={() => this.props.onChange(
-                  actions.addAnswer(this.props.hole.id))}
+                  actions.addAnswer(this.getHole().id))}
                 type="button"
               >
                 <i className="fa fa-plus"/>
                 {tex('key_word')}
-              </button>
-              {'\u00a0'}
-              <button
-                className="btn btn-primary"
-                onClick={() =>this.props.onChange(actions.saveHole())}
-                type="button"
-                disabled={!isEmpty(this.props._errors.answers)}
-              >
-                {tex('save')}
               </button>
             </div>
           </div>
@@ -276,9 +269,11 @@ class HoleForm extends Component {
 }
 
 HoleForm.propTypes = {
-  item: T.object.isRequired,
-  hole: T.object.isRequired,
-  solution: T.object.isRequired,
+  item: T.shape({
+    _holeId: T.string.isRequired,
+    holes: T.array.isRequired,
+    solutions: T.array.isRequired
+  }),
   onChange: T.func.isRequired,
   validating: T.bool.isRequired,
   _errors: T.object
@@ -346,8 +341,6 @@ export class Cloze extends Component {
           <div>
             <HoleForm
               item={this.props.item}
-              hole={this.props.item._popover.hole}
-              solution={this.props.item._popover.solution}
               onChange={this.props.onChange}
               validating={this.props.validating}
               _errors={this.props.item._errors}
@@ -365,10 +358,7 @@ Cloze.propTypes = {
     text: T.string.isRequired,
     _text: T.string.isRequired,
     _errors: T.object,
-    _popover: T.shape({
-      hole: T.object,
-      solution: T.object
-    })
+    _popover: T.bool
   }),
   onChange: T.func.isRequired,
   validating: T.bool.isRequired

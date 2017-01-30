@@ -3,10 +3,11 @@ import {makeActionCreator, makeId} from './../../utils/utils'
 import cloneDeep from 'lodash/cloneDeep'
 import {ITEM_CREATE} from './../../quiz/editor/actions'
 import {utils} from './utils/utils'
-import flatten from 'lodash/flatten'
 import {notBlank} from './../../utils/validate'
 import set from 'lodash/set'
+import get from 'lodash/get'
 import invariant from 'invariant'
+import flatten from 'lodash/flatten'
 import {tex} from './../../utils/translate'
 
 const UPDATE_TEXT = 'UPDATE_TEXT'
@@ -101,80 +102,51 @@ function reduce(item = {}, action) {
       const hole = getHoleFromId(newItem, action.holeId)
       hole._multiple = hole.choices ? true: false
 
-      newItem._popover = {
-        offsetX: action.offsetX,
-        offsetY: action.offsetY,
-        startOffset: action.startOffset,
-        endOffset: action.endOffset,
-        hole: hole,
-        solution: getSolutionFromHole(newItem, hole)
-      }
+      newItem._popover = true
+      newItem._holeId = action.holeId
 
       return newItem
     }
     case UPDATE_ANSWER: {
       const newItem = cloneDeep(item)
-      const answer = newItem._popover.solution.answers.find(answer => answer.text === action.oldText && answer.caseSensitive === action.caseSensitive)
+      const hole = getHoleFromId(newItem, newItem._holeId)
+      const solution = getSolutionFromHole(newItem, hole)
+      const answer = solution.answers.find(
+        answer => answer.text === action.oldText && answer.caseSensitive === action.caseSensitive
+      )
+
       answer[action.parameter] = action.value
 
       return newItem
     }
     case ADD_ANSWER: {
       const newItem = cloneDeep(item)
+      const hole = getHoleFromId(newItem, newItem._holeId)
+      const solution = getSolutionFromHole(newItem, hole)
 
-      newItem._popover.solution.answers.push({
+      solution.answers.push({
         text: '',
         caseSensitive: false,
         feedback: '',
-        score: 1,
-        _multiple: false
+        score: 1
       })
 
       return newItem
     }
     case UPDATE_HOLE: {
       const newItem = cloneDeep(item)
+      const hole = getHoleFromId(newItem, newItem._holeId)
 
       if (['size', '_multiple'].indexOf(action.parameter) > -1) {
-        newItem._popover.hole[action.parameter] = action.value
+        hole[action.parameter] = action.value
       } else {
         throw `${action.parameter} is not a valid hole attribute`
       }
 
-      return newItem
-    }
-    case SAVE_HOLE: {
-      const newItem = cloneDeep(item)
+      const choices = hole._multiple ?
+         flatten(newItem.solutions.map(solution => solution.answers.map(answer => answer.text))): []
 
-      //update holeId
-      const holeIdx = newItem.holes.findIndex(hole => hole.id === item._popover.hole.id)
-      const holeSolutions = newItem.solutions.filter(solution => solution.holeId === item._popover.hole.id)
-      const choices = newItem._popover.hole._multiple ?
-        flatten(holeSolutions.map(solution => solution.answers.map(answer => answer.text))): []
-
-      if (holeIdx > -1) {
-        newItem.holes[holeIdx] = newItem._popover.hole
-        const solutionIdx = newItem.solutions.findIndex(solution => solution.holeId === item._popover.solution.holeId)
-        newItem.solutions[solutionIdx] = newItem._popover.solution
-        newItem.holes[holeIdx].choices = choices
-      } else {
-        newItem.holes.push(newItem._popover.hole)
-        newItem.holes[newItem.holes.length - 1].choices = choices
-        newItem.solutions.push(newItem._popover.solution)
-        newItem._text = newItem._popover._cb(
-          utils.makeTinyHtml(newItem._popover.solution)
-        )
-        //choices can't be empty tho so...
-
-        newItem.text = utils.getTextWithPlacerHoldersFromHtml(newItem._text)
-      }
-
-      const currentHole = holeIdx === -1 ? newItem.holes[newItem.holes.length - 1]: newItem.holes[holeIdx]
-      if (currentHole.choices.length === 0) {
-        delete currentHole.choices
-      }
-
-      delete newItem._popover
+      if (choices.length > 0) hole.choices = choices
 
       return newItem
     }
@@ -182,7 +154,7 @@ function reduce(item = {}, action) {
       const newItem = cloneDeep(item)
 
       const hole = {
-        'id': makeId(),
+        id: makeId(),
         feedback: '',
         size: 10,
         _score: 0,
@@ -200,11 +172,15 @@ function reduce(item = {}, action) {
         }]
       }
 
-      newItem._popover = {
-        _cb: action.cb,
-        hole,
-        solution
-      }
+      newItem.holes.push(hole)
+      newItem.solutions.push(solution)
+      newItem._popover = true
+      newItem._holeId = hole.id
+      newItem._text = action.cb(utils.makeTinyHtml(solution))
+
+      //choices can't be empty tho so...
+      newItem.text = utils.getTextWithPlacerHoldersFromHtml(newItem._text)
+      //update the text now
 
       return newItem
     }
@@ -222,14 +198,16 @@ function reduce(item = {}, action) {
     }
     case REMOVE_ANSWER: {
       const newItem = cloneDeep(item)
-      const answers = newItem._popover.solution.answers
+      const hole = getHoleFromId(newItem, item._holeId)
+      const solution = getSolutionFromHole(newItem, hole)
+      const answers = solution.answers
       answers.splice(answers.findIndex(answer => answer.text === action.text && answer.caseSensitive === action.caseSensitive), 1)
 
       return newItem
     }
     case CLOSE_POPOVER: {
       const newItem = cloneDeep(item)
-      delete newItem._popover
+      newItem._popover = false
 
       return newItem
     }
@@ -247,23 +225,25 @@ function getSolutionFromHole(item, hole)
 
 function validate(item) {
   const _errors = {}
+  const hole = getHoleFromId(item, item._holeId)
 
-  if (item._popover) {
-    item._popover.solution.answers.forEach((answer, key) => {
+  if (item._popover && hole) {
+    const solution = getSolutionFromHole(item, hole)
+    solution.answers.forEach((answer, key) => {
       if (notBlank(answer.text, true)) {
-        set(_errors, `answers.${key}.text`, tex('cloze_empty_word_error'))
+        set(_errors, `answers.answer.${key}.text`, tex('cloze_empty_word_error'))
       }
 
       if (notBlank(answer.score, true) && answer.score !== 0) {
-        set(_errors, `answers.${key}.score`, tex('cloze_empty_score_error'))
+        set(_errors, `answers.answer.${key}.score`, tex('cloze_empty_score_error'))
       }
     })
 
-    if (item._popover.hole._multiple && item._popover.solution.answers.length < 2) {
+    if (hole._multiple && solution.answers.length < 2) {
       set(_errors, 'answers.multiple', tex('cloze_multiple_answers_required'))
     }
 
-    if (notBlank(item._popover.hole.size, true)) {
+    if (notBlank(hole.size, true)) {
       set(_errors, 'answers.size', tex('cloze_empty_size_error'))
     }
   }
@@ -275,6 +255,13 @@ function validate(item) {
   if (!_errors.text) {
     if (item.holes.length === 0) {
       _errors.text = tex('cloze_must_contains_clozes_error')
+    }
+  }
+
+  if (!_errors.text) {
+    const answerErrors = get('_errors.answers.answer')
+    if (answerErrors && answerErrors.length > 0) {
+      _errors.text = tex('cloze_holes_errors')
     }
   }
 
