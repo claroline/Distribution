@@ -61,17 +61,6 @@ utils.getTextWithPlacerHoldersFromHtml = (text) =>
   tmp.innerHTML = tmp.innerHTML.replace(regex, '')
 
   return $(tmp).html()
-
-/*
-  const tmp = document.createElement('div')
-  tmp.innerHTML = text
-
-  tmp.querySelectorAll('.cloze-input').forEach(input => {
-    const placeholder = document.createTextNode(`[[${input.dataset.holeId}]]`)
-    tmp.replaceChild(placeholder, input)
-  })
-
-  return tmp.innerHTML*/
 }
 
 function getEditButtons(solution) {
