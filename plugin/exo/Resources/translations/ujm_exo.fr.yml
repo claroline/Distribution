@@ -131,6 +131,7 @@ editor_invalid_no_save: Questionnaire non valide
 editor_invalid_no_save_desc: Le questionnaire ne peut être sauvegardé car certaines informations sont manquantes ou non valides. Veuillez corriger les problèmes indiqués avant d'effectuer la sauvegarde.
 editor_validating_desc: Des erreurs ou des informations manquantes empêchent la sauvegarde des données.
 editor_not_validating_desc: "Travail en cours : certaines données sont manquantes ou nécessitent une correction."
+editor_penalty_label: Pénalité pour toute mauvaise réponse non définie.
 end_date: Date de fin
 entry: Entrer
 error_no_step_found: Une erreur est survenue lors de la récupération de l'étape courrante.
@@ -159,6 +160,7 @@ export_qti_exercise : Exporter les questions du questionnaire au format QTI
 false_response: Points pour la mauvaise réponse
 feedback: Commentaire
 feedback_answer_check: Commentaire si la réponse est selectionnée (facultatif)
+feedback_association_created: Commentaire si cette association est créée
 filter_by_title: Titre ou contenu
 filter_by_model_only: Uniquement les modèles
 filter_by_type: Type
@@ -185,6 +187,7 @@ formative : Formatif
 graphic_drop_or_pick: Faites glisser une image ici ou utiliser le bouton ci-dessus.
 graphic_error_image_too_large: Cette image est trop volumineuse.
 graphic_error_no_image: Vous devez sélectionner une image.
+graphic_error_no_positive_solution: Au moins une zone de réponse doit avoir un score positif.
 graphic_error_no_solution: Vous devez créer au moins une zone de réponse.
 graphic_error_not_an_image: Le fichier sélectionné n'est pas une image.
 graphic_feedback_info: Commentaire si l'utilisateur clique dans cette zone
@@ -210,7 +213,7 @@ hole_selector: Proposer une liste
 hide_additional_info: Masquer les informations supplémentaires
 hide_interact_fields: Cacher les indices et le commentaire final
 hide_metadata_fields: Cacher le titre et les autres champs
-hint_penalty: "[0,1] - %count% point|]1,Inf[ - %count% points"
+hint_penalty: "[0,1] -%count% point|]1,Inf[ -%count% points"
 
 # I
 infiny: Infini
@@ -234,6 +237,7 @@ instruction_add_hole : Pour créer un trou, sélectionnez le texte à trouer dan
 instruction_matching: Pour définir vos correspondances, choisissez dans la colonne "Correspondance" le numéro d'une ou plusieurs propositions à associer.
 in_valid_mark: Note invalide
 item_points: "[0,1] %count% point|]1,Inf[ %count% points"
+item_empty_data_error: Un élément doit avoir des données.
 
 # K
 keep_same_step: Conserver les mêmes étapes pour un même utilisateur
@@ -343,8 +347,16 @@ open_edition: Edition d'une question ouverte
 orders: Consignes
 orthography: Autoriser les fautes d'orthographe
 overview: Vue d'ensemble
+odd_score_not_valid: Le score d'un intrus doit être négatif.
 
 # P
+pair_is_ordered: La paire est ordonnée.
+pair_pin_this_item: Épingler cet élément
+pair_pair: Paire
+pair_shuffle_pairs: Ordre des paires aléatoire.
+pair_allow_pin_function: Activer / désactiver la fonctionnalité épingler un item.
+pair_solution_at_least_two_items: Une paire doit avoir deux éléments.
+pair_add_pair: Ajouter une paire
 paper: Passage
 paper_finished: Terminé
 paper_need_manual_correction: Cette copie nécessite une correction manuelle
@@ -375,6 +387,7 @@ paper_count: "{0} aucune copie|{1} %count% copie|]1,Inf[ %count% copies"
 metadata: Paramètres
 partially: Partiellement correcte
 penalty: Pénalité
+penalty_not_valid: La champ pénalité doit être un chiffre.
 percentage: Pourcentage
 picture_name: Nom de l'image
 points: Points
@@ -482,6 +495,7 @@ size: Taille
 start_again: Recommencer
 start_date: Date de début
 solution_score: "{-1, 0, 1} %score% point|[2,+Inf[ %score% points|]-Inf, -2] %score% points"
+solution_score_not_valid: Le score d'une solution doit être un chiffre valide.
 sort: Trier les documents
 summative : Sommatif
 step: Étape
@@ -497,7 +511,6 @@ submit_a_list: Soumettre une liste
 sum_score_choice_at_least_one_correct_answer_error: Au moins une réponse doit avoir un score positif.
 sum_score_choice_no_correct_answer_error: La réponse correcte doit avoir un score positif.
 should_be_greater_or_equal_to_zero: Cette valeur devrait être supérieur ou égal à 0.
-set_penalty_label: Pénalité pour toute mauvaise association.
 set_shuffle_labels_and_proposals: Ordre des items aléatoire.
 set_add_item: Ajouter un item
 set_add_odd: Ajouter un intrus

@@ -266,7 +266,7 @@ function validate(pair) {
 
     // no pair with only one item...
     if (undefined !== pair.solutions.find(solution => solution.itemIds.length === 2 && solution.itemIds.indexOf(-1) !== -1)) {
-      errors.solutions = tex('solution_pair_should_have_two_items')
+      errors.solutions = tex('pair_solution_at_least_two_items')
     }
   }
   return errors

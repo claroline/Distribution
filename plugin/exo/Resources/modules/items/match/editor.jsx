@@ -115,7 +115,7 @@ class MatchLinkPopover extends Component {
              <TooltipButton
                id={`solution-${this.props.solution.firstId}-${this.props.solution.secondId}-feedback-toggle`}
                className="fa fa-comments-o"
-               title={tex('feedback')}
+               title={tex('feedback_association_created')}
                onClick={() => this.setState({showFeedback: !this.state.showFeedback})}
              />
           </div>
@@ -123,7 +123,6 @@ class MatchLinkPopover extends Component {
             <div className="feedback-container">
               <Textarea
                 id={`solution-${this.props.solution.firstId}-${this.props.solution.secondId}-feedback`}
-                title={tex('feedback')}
                 content={this.props.solution.feedback ? this.props.solution.feedback : ''}
                 onChange={feedback => this.props.onChange(
                   actions.updateSolution(this.props.solution.firstId, this.props.solution.secondId, 'feedback', feedback)
@@ -421,7 +420,7 @@ class Match extends Component {
           <ErrorBlock text={this.props.item._errors.warning} warnOnly={!this.props.validating}/>
         }
         <div className="form-group">
-          <label htmlFor="match-penalty">{tex('match_penalty_label')}</label>
+          <label htmlFor="match-penalty">{tex('editor_penalty_label')}</label>
           <input
             id="match-penalty"
             className="form-control"
