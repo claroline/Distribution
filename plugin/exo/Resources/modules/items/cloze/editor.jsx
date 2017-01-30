@@ -16,7 +16,7 @@ class ChoiceItem extends Component {
 
   render() {
     return (
-      <div>
+      <div className="choice-item-cloze">
         <div className='row'>
           <div className='hole-form-row'>
             <div className="col-xs-4">
@@ -167,6 +167,11 @@ class HoleForm extends Component {
     this.props.onChange(actions.closePopover())
   }
 
+  removeAndClose() {
+    this.props.onChange(actions.removeHole(this.getHole().id))
+    this.closePopover()
+  }
+
   render() {
     return (
       <Popover
@@ -177,7 +182,13 @@ class HoleForm extends Component {
         positionTop={this.offsetTop}
       >
         <div className="panel-default">
-          <div className="panel-body pull-right close-popover hole-form-row" onClick={this.closePopover.bind(this)}><b>x</b></div>
+          <div className="panel-body pull-right close-popover hole-form-row">
+            <i onClick={this.removeAndClose.bind(this)} className="fa fa-trash-o"></i>
+            {'\u00a0'}
+            {!this.props._errors.answers &&
+              <b onClick={this.closePopover.bind(this)}>x</b>
+            }
+          </div>
           <div className="panel-body">
             <div className="row">
               <div className="hole-form-row">

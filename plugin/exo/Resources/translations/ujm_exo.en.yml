@@ -78,7 +78,8 @@ cloze_empty_score_error: The score can't be empty
 cloze_multiple_answers_required: Multiple answers required
 cloze_empty_size_error: The size can't be empty
 cloze_empty_text_error: Please fill the text
-cloze_must_contains_clozes_error: The text must contains clozez
+cloze_must_contains_clozes_error: The text must contains clozes
+cloze_holes_errors: There are some errors in the clozes
 color: Colour
 comment: Comment
 compose: Answer

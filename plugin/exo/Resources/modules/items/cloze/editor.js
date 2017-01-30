@@ -227,9 +227,8 @@ function getSolutionFromHole(item, hole)
 
 function validate(item) {
   const _errors = {}
-  const hole = getHoleFromId(item, item._holeId)
 
-  if (item._popover && hole) {
+  item.holes.forEach(hole => {
     const solution = getSolutionFromHole(item, hole)
     solution.answers.forEach((answer, key) => {
       if (notBlank(answer.text, true)) {
@@ -248,24 +247,24 @@ function validate(item) {
     if (notBlank(hole.size, true)) {
       set(_errors, 'answers.size', tex('cloze_empty_size_error'))
     }
-  }
 
-  if (notBlank(item.text, true)) {
-    _errors.text = tex('cloze_empty_text_error')
-  }
-
-  if (!_errors.text) {
-    if (item.holes.length === 0) {
-      _errors.text = tex('cloze_must_contains_clozes_error')
+    if (notBlank(item.text, true)) {
+      _errors.text = tex('cloze_empty_text_error')
     }
-  }
 
-  if (!_errors.text) {
-    const answerErrors = get('_errors.answers.answer')
-    if (answerErrors && answerErrors.length > 0) {
-      _errors.text = tex('cloze_holes_errors')
+    if (!_errors.text) {
+      if (item.holes.length === 0) {
+        _errors.text = tex('cloze_must_contains_clozes_error')
+      }
     }
-  }
+
+    if (!_errors.text) {
+      const answerErrors = get(_errors, 'answers.answer')
+      if (answerErrors && answerErrors.length > 0) {
+        _errors.text = tex('cloze_holes_errors')
+      }
+    }
+  })
 
   return _errors
 }

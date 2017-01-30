@@ -80,6 +80,7 @@ cloze_multiple_answers_required: Plusieurs réponses sont requises
 cloze_empty_size_error: La taille ne peut pas être vide
 cloze_empty_text_error: Veuillez remplir le texte
 cloze_must_contains_clozes_error: Le texte doit contenir des trous
+cloze_holes_errors: Certains trous contiennent toujours des erreurs
 color: Couleur
 comment: Feedback
 compose: Répondre

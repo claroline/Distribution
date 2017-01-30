@@ -27,7 +27,7 @@ function getFeedback(feedback) {
     data-toggle="popover"
     data-trigger="click"
     data-html="true"
-    title="feedback">
+  >
   </i>`
 }
 
