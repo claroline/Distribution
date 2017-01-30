@@ -21,6 +21,10 @@ class Version20170123050000 extends AbstractMigration
             ALTER TABLE ujm_picture 
             ADD uuid VARCHAR(36) NOT NULL
         ');
+        // The new column needs to be filled to be able to add the UNIQUE constraint
+        $this->addSql('
+            UPDATE ujm_picture SET uuid = (SELECT UUID())
+        ');
         $this->addSql('
             CREATE UNIQUE INDEX UNIQ_88AACC8AD17F50A6 ON ujm_picture (uuid)
         ');
