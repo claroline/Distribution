@@ -215,12 +215,12 @@
     </div>
 </div>
 
-<ul >
+<ol class="wiki-sections-list-elem">
     <li
         data-section
         data-ng-repeat="section in section.__children"
         data-ng-if="!section.isStale"
         data-ng-include="'section_renderer.html'"
-        data-ng-class="{'invisible-wiki-section': !section.visible}">
+        data-ng-class="{'invisible-wiki-section': !section.visible, 'with-numbers': vm.wiki.displaySectionNumbers}">
     </li>
-</ul>
+</ol>

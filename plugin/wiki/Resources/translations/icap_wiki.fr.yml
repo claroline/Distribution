@@ -19,6 +19,8 @@ delete_section: Supprimer la section
 delete: Supprimer
 deleted_sections: Sections supprimées
 deleted: Supprimé
+display_section_numbers: Afficher la numérotation des sections
+display_section_numbers_message: La numérotation automatique apparaît dans le corps du wiki, avant le titre de chaque section.
 edit_section: Modifier la section
 edit_description: Modifier la description
 edit: Modifier
@@ -34,6 +36,7 @@ icap_wiki_edit_section_type_position: Positionnement
 icap_wiki_edit_section_type_visible: Visible
 icap_wiki_options_save_error: Erreur durant la modification des options du wiki
 icap_wiki_options_save_success: Les options du wiki ont été modifiées avec succès
+icap_wiki_options_type_display: Affichage du Wiki
 icap_wiki_options_type_mode: Fonctionnement du Wiki
 icap_wiki_section_add_error: Erreur durant la création de la section
 icap_wiki_section_add_success: La section a été créée avec succès

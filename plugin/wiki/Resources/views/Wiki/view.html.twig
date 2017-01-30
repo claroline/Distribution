@@ -34,6 +34,7 @@
             id: {{ _resource.id }},
             title: "{{ _resource.resourceNode.name }}",
             mode: {{ _resource.mode }},
+            displaySectionNumbers: {{ _resource.displaySectionNumbers ? 'true' : 'false' }},
             isLoggedIn: {{ user is not empty ? 'true' : 'false' }},
             isAdmin: {{ isAdmin ? 'true' : 'false' }},
             isPDFExportActive: {{ config.getParameter('is_pdf_export_active') == true ? 'true' : 'false' }},

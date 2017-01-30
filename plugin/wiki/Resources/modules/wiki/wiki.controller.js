@@ -201,7 +201,7 @@ export default class WikiController {
   }
 
   cancelEditOptions() {
-    this.wiki.revertMode()
+    this.wiki.revertOptions()
     _$location.get(this).url('/')
   }
 
