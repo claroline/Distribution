@@ -150,7 +150,7 @@ class ClozeQuestionSerializer implements SerializerInterface
 
             foreach ($solutions as $solution) {
                 if ($solution->holeId === $holeData->id) {
-                    $this->deserializeHoleKeywords($hole, $holeData->answers, $options);
+                    $this->deserializeHoleKeywords($hole, $solution->answers, $options);
 
                     break;
                 }

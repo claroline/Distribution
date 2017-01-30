@@ -1,12 +1,25 @@
 import React, {Component, PropTypes as T} from 'react'
 import classes from 'classnames'
 import {tex} from './../../utils/translate'
+import select from './utils/selection'
 
 // see https://github.com/lovasoa/react-contenteditable
-class ContentEditable extends Component {
+export class ContentEditable extends Component {
   constructor() {
     super()
     this.emitChange = this.emitChange.bind(this)
+    this.getSelection = this.getSelection.bind(this)
+  }
+
+  getSelection() {
+    let selected = select(this.el, window.getSelection())
+    this.props.onSelect(
+      selected.word,
+      selected.start,
+      selected.end,
+      selected.offsetX,
+      selected.offsetY
+    )
   }
 
   render() {
@@ -23,8 +36,15 @@ class ContentEditable extends Component {
         className="form-control"
         aria-multiline={true}
         style={{minHeight: `${this.props.minRows * 32}px`}}
+        onMouseUp={this.getSelection}
       />
     )
+  }
+
+  componentDidMount() {
+    this.el.onclick = e => {
+      this.props.onClick(e.target)
+    }
   }
 
   shouldComponentUpdate(nextProps) {
@@ -61,10 +81,19 @@ ContentEditable.propTypes = {
   minRows: T.number.isRequired,
   content: T.string.isRequired,
   onChange: T.func.isRequired,
+  onSelect: T.func,
+  onClick: T.func,
   title: T.string
 }
 
-class Tinymce extends Component {
+ContentEditable.defaultProps = {
+  title: 'editable-content',
+  onClick: () => {},
+  onSelect: () => {},
+  minRows: 1
+}
+
+export class Tinymce extends Component {
   constructor(props) {
     super(props)
     this.editor = null
@@ -76,9 +105,16 @@ class Tinymce extends Component {
 
       if (editor) {
         this.editor = editor
+        this.editor.on('mouseup', () => {
+          this.getSelection()
+        })
         this.editor.on('change', e => {
           this.props.onChange(e.target.getContent())
         })
+        this.editor.on('click', e => {
+          this.props.onClick(e.target)
+        })
+
         clearInterval(interval)
       }
     }, 100)
@@ -90,6 +126,25 @@ class Tinymce extends Component {
 
   componentWillUnmount() {
     this.editor.destroy()
+  }
+
+  updateText(text) {
+    if (text) {
+      this.editor.selection.setContent(text)
+      return this.editor.getContent({format : 'raw'})
+    }
+  }
+
+  getSelection() {
+    let selected = select(this.editor.dom.getRoot(), this.editor.selection.getSel())
+
+    this.props.onSelect(
+      selected.word,
+      selected.start,
+      selected.end,
+      selected.offsetX,
+      selected.offsetY
+    )
   }
 
   render() {
@@ -108,6 +163,8 @@ Tinymce.propTypes = {
   id: T.string.isRequired,
   content: T.string.isRequired,
   onChange: T.func.isRequired,
+  onSelect: T.func,
+  onClick: T.func,
   title: T.string
 }
 
@@ -125,6 +182,8 @@ export class Textarea extends Component {
         minRows={this.props.minRows}
         content={this.props.content}
         onChange={this.props.onChange}
+        onSelect={this.props.onSelect}
+        onClick={this.props.onClick}
       />
     )
   }
@@ -136,6 +195,8 @@ export class Textarea extends Component {
         title={this.props.title}
         content={this.props.content}
         onChange={this.props.onChange}
+        onSelect={this.props.onSelect}
+        onClick={this.props.onClick}
       />
     )
   }
@@ -167,9 +228,13 @@ Textarea.propTypes = {
   minRows: T.number,
   title: T.string,
   content: T.string.isRequired,
-  onChange: T.func.isRequired
+  onChange: T.func.isRequired,
+  onSelect: T.func,
+  onClick: T.func
 }
 
 Textarea.defaultProps = {
-  minRows: 2
+  minRows: 2,
+  onClick: () => {},
+  onSelect: () => {}
 }
