@@ -337,7 +337,7 @@ export class Cloze extends Component {
           onClick={() => this.props.onChange(this.addHole())}><i className="fa fa-plus"/>
           {tex('create_cloze')}
         </button>
-        {this.props.item._popover &&
+        {(this.props.item._popover && this.props.item._holeId) &&
           <div>
             <HoleForm
               item={this.props.item}
@@ -358,7 +358,8 @@ Cloze.propTypes = {
     text: T.string.isRequired,
     _text: T.string.isRequired,
     _errors: T.object,
-    _popover: T.bool
+    _popover: T.bool,
+    _holeId: T.string
   }),
   onChange: T.func.isRequired,
   validating: T.bool.isRequired

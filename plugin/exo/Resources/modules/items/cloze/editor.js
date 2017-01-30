@@ -182,6 +182,8 @@ function reduce(item = {}, action) {
       newItem.text = utils.getTextWithPlacerHoldersFromHtml(newItem._text)
       //update the text now
 
+      //console.log('NEW HOLE')
+
       return newItem
     }
     case REMOVE_HOLE: {
