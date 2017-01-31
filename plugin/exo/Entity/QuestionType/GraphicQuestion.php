@@ -15,6 +15,9 @@ use UJM\ExoBundle\Entity\Misc\Area;
  */
 class GraphicQuestion extends AbstractQuestion
 {
+    const SHAPE_RECT = 'rect';
+    const SHAPE_CIRCLE = 'circle';
+
     /**
      * The image of the question.
      *

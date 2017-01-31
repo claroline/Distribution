@@ -3,8 +3,8 @@ import {GraphicPaper} from './paper.jsx'
 import {GraphicPlayer} from './player.jsx'
 import {GraphicFeedback} from './feedback.jsx'
 
-function expectAnswer() {
-  return []
+function expectAnswer(item) {
+  return item.solutions.filter(solution => solution.score > 0)
 }
 
 export default {
@@ -12,7 +12,7 @@ export default {
   name: 'graphic',
   paper: GraphicPaper,
   player: GraphicPlayer,
-  feedback: GraphicFeedback,  
+  feedback: GraphicFeedback,
   editor,
   expectAnswer
 }

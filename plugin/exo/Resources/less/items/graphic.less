@@ -154,6 +154,8 @@
 }
 
 .pointer {
+  z-index: 1;
+
   .segment {
     background-color: black;
     border: solid 2px;
@@ -173,17 +175,131 @@
     }
   }
 
+  .pointer-status-icon {
+    position: absolute;
+    left: -22px;
+    top: -22px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    border: solid 2px;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.7);
+  }
+
   &.placed .segment {
     border-color: #0693e3;
   }
 
-  &.correct .segment {
-    border-color: green;
-    box-shadow: 0 0 12px green;
+  &.correct {
+    .segment {
+      border-color: green;
+      box-shadow: 0 0 12px green;
+    }
+
+    .pointer-status-icon {
+      color: green;
+    }
   }
 
-  &.wrong .segment {
-    border-color: red;
-    box-shadow: 0 0 12px red;
+  &.wrong {
+    .segment {
+      border-color: red;
+      box-shadow: 0 0 12px red;
+    }
+
+    .pointer-status-icon {
+      color: red;
+
+      &:before {
+        margin-left: 1px;
+        margin-bottom: 2px;
+      }
+    }
+  }
+
+  .pointer-feedback-btn {
+    position: absolute;
+    top: -16px;
+    right: -16px;
+    color: #555;
+    background-color: #fff;
+    border: solid 1px #aaa;
+    border-radius: 2px;
+    padding: 1px;
+  }
+}
+
+.feedback-popover {
+  min-width: 110px;
+}
+
+.graphic-paper {
+  .title {
+    font-size: 16px;
+    font-weight: bold;
+    padding-left: 6px;
+  }
+
+  .answers-table {
+    width: 60%;
+    margin: auto;
+  }
+
+  .answer-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px;
+    border: solid 1px @table-border-color;
+    border-top: none;
+
+    .info-block {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+
+      > * {
+        margin: auto 12px;
+      }
+
+      .score {
+        width: 56px;
+        text-align: right;
+      }
+    }
+
+    .area-status-icon {
+      font-size: 20px;
+
+      &.fa-times {
+        margin-left: 14px;
+      }
+    }
+  }
+
+  .answer-row:first-of-type {
+    border: solid 1px @table-border-color;
+    border-top-left-radius: @border-radius-base;
+    border-top-right-radius: @border-radius-base;
+  }
+
+  .answer-row:last-of-type {
+    border-bottom-left-radius: @border-radius-base;
+    border-bottom-right-radius: @border-radius-base;
+  }
+
+  .area-number {
+    display: block;
+    width: 24px;
+    height: 24px;
+    border: solid 1px #555;
+    border-radius: 12px;
+    background: #fff;
+    text-align: center;
+    font-weight: bold;
   }
 }

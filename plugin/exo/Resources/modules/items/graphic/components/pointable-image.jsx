@@ -1,5 +1,7 @@
 import React, {Component, PropTypes as T} from 'react'
+import tinycolor from 'tinycolor2'
 import {Pointer} from './pointer.jsx'
+import {SHAPE_RECT} from './../enums'
 
 export class PointableImage extends Component {
   constructor(props) {
@@ -12,7 +14,7 @@ export class PointableImage extends Component {
     window.addEventListener('resize', this.onResize)
     // forces re-render based on computed relative coords of pointers
     // (possible only when img ref is available)
-    this.onResize()
+    this.img.onload = () => this.onResize()
   }
 
   componentWillUnmount() {
@@ -57,7 +59,36 @@ export class PointableImage extends Component {
               x={this.absToRel(pointer.absX)}
               y={this.absToRel(pointer.absY)}
               type={pointer.type}
+              feedback={pointer.feedback}
             />
+          )}
+          {this.props.areas.map(area =>
+            <div
+              key={area.id}
+              style={{
+                position: 'absolute',
+                top: this.absToRel(area.top),
+                left: this.absToRel(area.left),
+                width: this.absToRel(area.width),
+                height: this.absToRel(area.height),
+                border: `solid 2px ${area.color}`,
+                borderRadius: this.absToRel(area.borderRadius),
+                backgroundColor: tinycolor(area.color).setAlpha(0.5).toRgbString()
+              }}
+            >
+              {area.number &&
+                <div
+                  className="area-number"
+                  style={{
+                    position: 'absolute',
+                    top: area.shape === SHAPE_RECT ? '-12px' : '-2px',
+                    left: area.shape === SHAPE_RECT ? '-12px' : '-2px'
+                  }}
+                >
+                  {area.number}
+                </div>
+              }
+            </div>
           )}
         </div>
       </div>
@@ -73,10 +104,22 @@ PointableImage.propTypes = {
   pointers: T.arrayOf(T.shape({
     absX: T.number.isRequired,
     absY: T.number.isRequired,
-    type: T.string.isRequired
-  })).isRequired
+    type: T.string.isRequired,
+    feedback: T.string
+  })).isRequired,
+  areas: T.arrayOf(T.shape({
+    id: T.string.isRequired,
+    top: T.number.isRequired,
+    left: T.number.isRequired,
+    width: T.number.isRequired,
+    height: T.number.isRequired,
+    borderRadius: T.number.isRequired,
+    color: T.string.isRequired,
+    number: T.number
+  }))
 }
 
 PointableImage.defaultProps = {
-  onRef: () => {}
+  onRef: () => {},
+  areas: []
 }
