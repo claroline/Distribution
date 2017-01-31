@@ -1,11 +1,10 @@
-import React from 'react'
-
-const T = React.PropTypes
+import React, {PropTypes as T} from 'react'
+import {t, tex} from './../../../utils/translate'
 
 const PreviousButton = props =>
   <button className="btn btn-previous btn-default" onClick={props.onClick}>
     <span className="fa fa-fw fa-angle-double-left"></span>
-    Previous
+    {t('previous')}
   </button>
 
 PreviousButton.propTypes = {
@@ -14,7 +13,7 @@ PreviousButton.propTypes = {
 
 const NextButton = props =>
   <button className="btn btn-next btn-default" onClick={props.onClick}>
-    Next
+    {t('next')}
     <span className="fa fa-fw fa-angle-double-right"></span>
   </button>
 
@@ -24,7 +23,7 @@ NextButton.propTypes = {
 
 const ValidateButton = props =>
   <button className="btn btn-next btn-validate btn-default" onClick={props.onClick}>
-    Validate
+    {t('validate')}
     <span className="fa fa-fw fa-angle-double-right"></span>
   </button>
 
@@ -35,7 +34,7 @@ ValidateButton.propTypes = {
 const SubmitButton = props =>
   <button className="btn btn-submit btn-success" onClick={props.onClick}>
     <span className="fa fa-fw fa-check"></span>
-    Validate
+    {t('validate')}
   </button>
 
 SubmitButton.propTypes = {
@@ -45,7 +44,7 @@ SubmitButton.propTypes = {
 const FinishButton = props =>
   <button className="btn btn-finish btn-primary" onClick={props.onClick}>
     <span className="fa fa-fw fa-sign-out"></span>
-    Finish
+    {tex('finish')}
   </button>
 
 FinishButton.propTypes = {
