@@ -1,6 +1,7 @@
 import React, {Component, PropTypes as T} from 'react'
 import classes from 'classnames'
 import Popover from 'react-bootstrap/lib/Popover'
+import {tex} from '../../utils/translate'
 
 /* global jsPlumb */
 
@@ -167,6 +168,9 @@ export class MatchFeedback extends Component
   render() {
     return (
       <div ref={(el) => { this.container = el }} id={`match-question-paper-${this.props.item.id}-first`} className="match-question-feedback">
+        <span className="help-block">
+          <span className="fa fa-info-circle"></span>{tex('match_player_click_link_help')}
+        </span>
         <div className="item-col">
           <ul>
             {this.props.item.firstSet.map((item) =>

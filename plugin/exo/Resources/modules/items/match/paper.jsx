@@ -201,8 +201,7 @@ export class MatchPaper extends Component
   render() {
     return (
       <Tab.Container id={`match-${this.props.item.id}-paper`} defaultActiveKey="first">
-        <Row className="clearfix">
-          <Col sm={12}>
+        <div>
             <Nav bsStyle="tabs">
               <NavItem eventKey="first" onSelect={() => this.handleSelect('first')}>
                   <span className="fa fa-user"></span> {tex('your_answer')}
@@ -211,11 +210,12 @@ export class MatchPaper extends Component
                 <span className="fa fa-check"></span> {tex('expected_answer')}
               </NavItem>
             </Nav>
-          </Col>
-          <Col sm={12}>
             <div ref={(el) => { this.container = el }} id={`jsplumb-container-${this.props.item.id}`} className="jsplumb-container" style={{position:'relative'}}>
               <Tab.Content animation>
                 <Tab.Pane eventKey="first">
+                  <span className="help-block">
+                    <span className="fa fa-info-circle">&nbsp;</span>{tex('match_player_click_link_help')}
+                  </span>
                   <div id={`match-question-paper-${this.props.item.id}-first`} className="match-question-paper">
                     <div className="jsplumb-row">
                       <div className="item-col">
@@ -313,8 +313,7 @@ export class MatchPaper extends Component
                 </Tab.Pane>
               </Tab.Content>
             </div>
-          </Col>
-        </Row>
+          </div>
       </Tab.Container>
     )
   }

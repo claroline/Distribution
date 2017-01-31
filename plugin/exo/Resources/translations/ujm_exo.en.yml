@@ -266,6 +266,8 @@ mark_bigest: The score must be smaller than or equal to the maximum score
 mark_bigest_other: The score is larger than the maximum score
 match_add_item: Add item
 match_penalty_label: Penality for any wrong association
+match_editor_click_link_help: Click the link to edit association parameters.
+match_player_click_link_help: Click the link to get more informations.
 match_shuffle_labels_and_proposals: Shuffle proposal and label order
 match_edit_connection: Edit association
 match_item_empty_data_error: Item data can not be empty.
