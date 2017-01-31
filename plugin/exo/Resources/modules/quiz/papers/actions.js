@@ -5,6 +5,7 @@ import {VIEW_PAPERS, VIEW_PAPER} from './../enums'
 import {fetchPapers} from './api'
 import {selectors} from './selectors'
 
+export const PAPER_ADD = 'PAPER_ADD'
 export const PAPERS_LIST = 'PAPERS_LIST'
 export const PAPERS_INIT = 'PAPERS_INIT'
 export const PAPER_DISPLAY = 'PAPER_DISPLAY'
@@ -13,7 +14,8 @@ export const PAPER_CURRENT = 'PAPER_DISPLAY'
 export const actions = {}
 
 const initPapers = makeActionCreator(PAPERS_INIT, 'papers')
-const setCurrentPaper = makeActionCreator(PAPER_CURRENT, 'id')
+actions.setCurrentPaper = makeActionCreator(PAPER_CURRENT, 'id')
+actions.addPaper = makeActionCreator(PAPER_ADD, 'paper')
 
 actions.displayPaper = id => {
   invariant(id, 'Paper id is mandatory')
@@ -21,11 +23,11 @@ actions.displayPaper = id => {
     if (!selectors.papersFetched(getState())) {
       fetchPapers(selectors.quizId(getState())).then(papers => {
         dispatch(initPapers(papers))
-        dispatch(setCurrentPaper(id))
+        dispatch(actions.setCurrentPaper(id))
         dispatch(baseActions.updateViewMode(VIEW_PAPER))
       })
     } else {
-      dispatch(setCurrentPaper(id))
+      dispatch(actions.setCurrentPaper(id))
       dispatch(baseActions.updateViewMode(VIEW_PAPER))
     }
   }
