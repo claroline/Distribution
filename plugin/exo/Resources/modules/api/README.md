@@ -25,11 +25,11 @@ actions.fetchAttempt = quizId => ({
   [REQUEST_SEND]: {
     route: ['exercise_attempt_start', {exerciseId: quizId}],
     request: {method: 'POST'},
-    success: (data) => {
+    success: (data, dispatch) => {
       const normalized = normalize(data)
-      return actions.initPlayer(normalized.paper, normalized.answers)
+      return dispatch(actions.initPlayer(normalized.paper, normalized.answers))
     },
-    failure: () => () => navigate('overview') // double fat arrow is needed because navigate is not an action creator
+    failure: () => navigate('overview')
   }
 })
 ```
@@ -39,10 +39,12 @@ Action parameters:
  The first param is the route name, the second it's an arguments object.
 - `url (string)`: the url to call. If provided, it's used in priority, if not, the middleware will fallback to the `route` param.
 - `request (object|Request)`: a custom request to send. See (Fetch)[https://developer.mozilla.org/en-US/docs/Web/API/GlobalFetch/fetch] for more detail..
-- `before (func)`: an action to dispatch before sending the request.
-- `success (func)`: an action to dispatch when the AJAX request is processed without errors. The received data are passed as func argument.
-- `failure (func)`: an action to dispatch if something goes wrong. The error is passed as func argument.
-
+- `before (func)`:  a callback to execute before sending the request
+                    (called with dispatch function)
+- `success (func)`: a callback to execute AJAX request is processed without errors
+                    (called with response data and dispatch function)
+- `failure (func)`: a callback to execute if something goes wrong
+                    (called with error object and dispatch function)
 Action only requires a `route` or `url` parameter. All other ones are optional.
 If not set in the `request`, the middleware will make `GET` requests by default.
 

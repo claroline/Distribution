@@ -35,11 +35,11 @@ actions.fetchAttempt = quizId => ({
   [REQUEST_SEND]: {
     route: ['exercise_attempt_start', {exerciseId: quizId}],
     request: {method: 'POST'},
-    success: (data) => {
+    success: (data, dispatch) => {
       const normalized = normalize(data)
-      return actions.initPlayer(normalized.paper, normalized.answers)
+      dispatch(actions.initPlayer(normalized.paper, normalized.answers))
     },
-    failure: () => () => navigate('overview') // double fat arrow is needed because navigate is not an action creator
+    failure: () => navigate('overview')
   }
 })
 
@@ -50,14 +50,15 @@ actions.sendAnswers = (quizId, paperId, answers) =>({
       method: 'PUT',
       body: JSON.stringify(denormalizeAnswers(answers))
     },
-    success: () => actions.submitAnswers(quizId, paperId, answers)
+    success: (data, dispatch) =>
+      dispatch(actions.submitAnswers(quizId, paperId, answers))
   }
 })
 
 actions.requestHint = (quizId, paperId, questionId, hintId) => ({
   [REQUEST_SEND]: {
     route: ['exercise_attempt_hint_show', {exerciseId: quizId, id: paperId, questionId: questionId, hintId: hintId}],
-    success: (hint) => actions.useHint(questionId, hint)
+    success: (hint, dispatch) => dispatch(actions.useHint(questionId, hint))
   }
 })
 
@@ -67,10 +68,9 @@ actions.requestEnd = (quizId, paperId) => ({
     request: {
       method: 'PUT'
     },
-    success: (data) => {
+    success: (data, dispatch) => {
       const normalized = normalize(data)
-
-      return actions.handleAttemptEnd(normalized.paper)
+      dispatch(actions.handleAttemptEnd(normalized.paper))
     }
   }
 })
