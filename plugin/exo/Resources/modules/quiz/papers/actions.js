@@ -9,11 +9,13 @@ export const PAPERS_LIST = 'PAPERS_LIST'
 export const PAPERS_INIT = 'PAPERS_INIT'
 export const PAPER_DISPLAY = 'PAPER_DISPLAY'
 export const PAPER_CURRENT = 'PAPER_DISPLAY'
+export const PAPER_UPDATE = 'PAPER_UPDATE'
 
 export const actions = {}
 
 const initPapers = makeActionCreator(PAPERS_INIT, 'papers')
 const setCurrentPaper = makeActionCreator(PAPER_CURRENT, 'id')
+const updatePaper = makeActionCreator(PAPER_UPDATE, 'paper')
 
 actions.displayPaper = id => {
   invariant(id, 'Paper id is mandatory')
@@ -40,6 +42,20 @@ actions.listPapers = () => {
       })
     } else {
       dispatch(baseActions.updateViewMode(VIEW_PAPERS))
+    }
+  }
+}
+
+actions.updatePaper = (paper) => {
+  return (dispatch, getState) => {
+    const state = getState()
+    if (state.papers.papers) {
+      console.log(paper)
+      dispatch(updatePaper(paper))
+    } else {
+      fetchPapers(selectors.quizId(getState())).then(papers => {
+        dispatch(initPapers(papers))
+      })
     }
   }
 }

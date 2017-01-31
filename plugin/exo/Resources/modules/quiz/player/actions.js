@@ -3,6 +3,7 @@ import isEmpty from 'lodash/isEmpty'
 import {makeActionCreator} from './../../utils/actions'
 import {REQUEST_SEND} from './../../api/actions'
 import {actions as quizActions} from './../actions'
+import {actions as papersActions} from './../papers/actions'
 import {VIEW_PLAYER} from './../enums'
 import quizSelectors from './../selectors'
 import {navigate} from './../router'
@@ -71,7 +72,7 @@ actions.requestEnd = (quizId, paperId) => ({
     },
     success: (data, dispatch) => {
       const normalized = normalize(data)
-      dispatch(actions.handleAttemptEnd(normalized.paper))
+      dispatch(actions.handleAttemptEnd(normalized.paper, normalized.answers))
     }
   }
 })
@@ -157,6 +158,7 @@ actions.handleAttemptEnd = (paper) => {
   return (dispatch, getState) => {
     // Finish the current attempt
     dispatch(actions.finishAttempt(paper))
+    dispatch(papersActions.updatePaper(paper))
     // We will decide here if we show the correction now or not and where we redirect the user
     switch (playerSelectors.showCorrectionAt(getState())) {
       case 'validation': {
