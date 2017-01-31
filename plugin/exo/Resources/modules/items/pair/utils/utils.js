@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import {times} from 'lodash/times'
 
 export const utils = {}
 
@@ -79,7 +79,7 @@ utils.switchItemDisplay = (items, id, display) => {
 
 utils.generateAnswerPairItems = (items, rows) => {
   let data = []
-  _.times(rows, i => data[i] = [-1, -1])
+  times(rows, i => data[i] = [-1, -1])
   items.forEach(item => {
     if (item.coordinates) {
       data[item.coordinates[0]][item.coordinates[1]] = Object.assign({}, item, {removable: false})

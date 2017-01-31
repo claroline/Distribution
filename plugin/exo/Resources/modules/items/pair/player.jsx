@@ -6,7 +6,7 @@ import {tex, t} from './../../utils/translate'
 import {utils} from './utils/utils'
 import {makeDraggable, makeDroppable} from './../../utils/dragAndDrop'
 import shuffle from 'lodash/shuffle'
-import _ from 'lodash'
+import {times} from 'lodash/times'
 import {TooltipButton} from './../../components/form/tooltip-button.jsx'
 
 let DropBox = props => {
@@ -71,7 +71,7 @@ PairRow.propTypes = {
 
 const PairRowList = props =>
   <ul>
-    {_.times(props.rows, i =>
+    {times(props.rows, i =>
       <li key={i}>
         <PairRow key={i} rowId={i} row={props.answerItems[i]} onDrop={props.onItemDrop} onRemove={props.onItemRemove}/>
       </li>
