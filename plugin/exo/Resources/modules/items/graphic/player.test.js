@@ -2,19 +2,19 @@ import React from 'react'
 import {mount} from 'enzyme'
 import {spyConsole, renew, ensure} from './../../utils/test'
 import {SHAPE_RECT, SHAPE_CIRCLE} from './enums'
-import {isCorrect} from './player'
+import {findArea} from './player'
 import {GraphicPlayer} from './player.jsx'
 
 describe('Graphic player', () => {
-  describe('isCorrect', () => {
+  describe('findArea', () => {
     it('detects points inside rectangles', () => {
-      ensure.equal(isCorrect({x: 100, y: 300}, solutionsFixture()), true)
-      ensure.equal(isCorrect({x: 100, y: -300}, solutionsFixture()), false)
+      ensure.equal(findArea({x: 100, y: 300}, solutionsFixture()), solutionsFixture()[0])
+      ensure.equal(findArea({x: 100, y: -300}, solutionsFixture()), undefined)
     })
 
     it('detects points inside circles', () => {
-      ensure.equal(isCorrect({x: 900, y: 1150}, solutionsFixture()), true)
-      ensure.equal(isCorrect({x: 200, y: 1000}, solutionsFixture()), false)
+      ensure.equal(findArea({x: 900, y: 1150}, solutionsFixture()), solutionsFixture()[1])
+      ensure.equal(findArea({x: 200, y: 1000}, solutionsFixture()), undefined)
     })
   })
 })

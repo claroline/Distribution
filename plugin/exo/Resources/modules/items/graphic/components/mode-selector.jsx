@@ -44,15 +44,6 @@ export const ModeSelector = props =>
     >
       <span className="fa fa-circle-o"/>
     </ModeButton>
-    <ModeButton
-      id="select-mode-btn"
-      mode={MODE_SELECT}
-      tip={tex('graphic_mode_select')}
-      active={props.currentMode === MODE_SELECT}
-      onClick={props.onChange}
-    >
-      <span className="fa fa-mouse-pointer"/>
-    </ModeButton>
   </div>
 
 ModeSelector.propTypes = {

@@ -8,7 +8,7 @@ export class GraphicPlayer extends Component {
   constructor(props) {
     super(props)
     this.onClickImage = this.onClickImage.bind(this)
-    this.onUndo = this.onUndo.bind(this)
+    this.onUndo = this.onUndo.bind(props.item)
     this.state = {
       pointers: [],
       pointersLeft: props.item.pointers

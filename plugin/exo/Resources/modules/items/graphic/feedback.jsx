@@ -2,19 +2,21 @@ import React, {PropTypes as T} from 'react'
 import {asset} from '#/main/core/asset'
 import {POINTER_CORRECT, POINTER_WRONG} from './enums'
 import {PointableImage} from './components/pointable-image.jsx'
-import {isCorrect} from './player'
+import {findArea} from './player'
 
 export const GraphicFeedback = props =>
   <PointableImage
     src={props.item.image.data || asset(props.item.image.url)}
     absWidth={props.item.image.width}
-    pointers={props.answer.map(coords => ({
-      absX: coords.x,
-      absY: coords.y,
-      type: isCorrect(coords, props.item.solutions) ?
-        POINTER_CORRECT :
-        POINTER_WRONG
-    }))}
+    pointers={props.answer.map(coords => {
+      const area = findArea(coords, props.item.solutions)
+      return {
+        absX: coords.x,
+        absY: coords.y,
+        type: (area && (area.score > 0)) ? POINTER_CORRECT : POINTER_WRONG,
+        feedback: area && area.feedback
+      }
+    })}
   />
 
 GraphicFeedback.propTypes = {

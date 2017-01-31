@@ -574,6 +574,7 @@ words_case_sensitive: La réponse doit respecter la casse du mot clé pour être
 # Y
 yes: Oui
 your_answer: Votre réponse
+your_answers: Vos réponses
 
 # Data in the DB
 InteractionGraphic: Graphique
