@@ -477,16 +477,16 @@ class Updater090000
         $sth->execute();
         $questions = $sth->fetchAll();
         foreach ($questions as $question) {
-            // selects
-            $regex = '\<select\s*id=\s*[\'|"]+([0-9]+)[\'|"]+\s*class=\s*[\'|"]+blank[\'|"]+.*[^<\/\s*select\s*>]*<\/select>\g';
-            $matches = [];
-            if (preg_match_all($regex, $matches)) {
-            
-            }
-            
-            
-            // Inputs
-            // <input\s*id=\s*['|"]+([0-9]+)['|"]+\s*class=\s*['|"]+blank['|"]+\s*[^\/+>]*\/>
+            // Replace selects
+            $text = $this->replaceHoles(
+                $question['htmlWithoutValue'],
+                '/<select\s*id=\s*[\'|"]+([0-9]+)[\'|"]+\s*class=\s*[\'|"]+blank[\'|"]+.*[^<\/\s*select\s*>]*<\/select>/'
+            );
+            // Replace inputs
+            $text = $this->replaceHoles(
+                $text,
+                '/<input\s*id=\s*[\'|"]+([0-9]+)[\'|"]+\s*class=\s*[\'|"]+blank[\'|"]+\s*[^\/+>]*\/>/'
+            );
 
             $sth = $this->connection->prepare('
                 UPDATE ujm_interaction_hole 
@@ -498,6 +498,18 @@ class Updater090000
                 'id' => $question['question_id'],
             ]);
         }
+    }
+
+    private function replaceHoles($text, $searchExpr)
+    {
+        $matches = [];
+        if (preg_match_all($searchExpr, $text, $matches)) {
+            foreach ($matches[0] as $inputIndex => $inputMatch) {
+                $text = str_replace($inputMatch, '[[' . $matches[1][$inputIndex] . ']]', $text);
+            }
+        }
+
+        return $text;
     }
 
     /**
