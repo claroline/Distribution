@@ -30,7 +30,6 @@ tinymce.claroline.plugins = tinymce.claroline.plugins || {}
  * this is usefull when change manually something in the editor.
  *
  * @param editor A TinyMCE editor object.
- *
  */
 tinymce.claroline.editorChange = function (editor) {
   setTimeout(function () {
@@ -222,6 +221,7 @@ var themeCSS = homeTheme.innerText || homeTheme.textContent
 tinymce.claroline.configuration = {
   'paste_data_images': true,
   'relative_urls': false,
+  'remove_script_host': false,
   'theme': 'modern',
   'language': home.locale.trim(),
   'browser_spellcheck': true,
