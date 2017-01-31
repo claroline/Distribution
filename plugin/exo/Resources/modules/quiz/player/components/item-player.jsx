@@ -6,10 +6,8 @@ import {tex, transChoice} from './../../../utils/translate'
 
 const UsedHint = props =>
   <div className="well well-sm used-hint">
-    <span className="fa fa-lightbulb-o"/>
-    <span className="hint-text">
-      &nbsp;{props.value}
-    </span>
+    <span className="fa fa-lightbulb-o"></span>
+    <span className="hint-text" dangerouslySetInnerHTML={{__html: props.value}}></span>
 
     {props.penalty > 0 &&
       <small className="text-danger hint-penalty-info">

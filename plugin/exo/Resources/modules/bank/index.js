@@ -21,8 +21,11 @@ registerModalType(MODAL_SHARE, ShareModal)
 // Get initial data
 const container = document.getElementById('questions-bank')
 const initialData = JSON.parse(container.dataset['initial'])
+const currentUser = JSON.parse(container.dataset['user'])
 
-const store = createStore(initialData)
+const store = createStore(Object.assign({}, initialData, {
+  currentUser
+}))
 
 ReactDOM.render(
   React.createElement(

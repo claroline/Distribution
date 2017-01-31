@@ -102,6 +102,23 @@ class QuestionManager
         $this->hintSerializer = $hintSerializer;
     }
 
+    public function canEdit(Question $question, User $user)
+    {
+        $shared = $this->om->getRepository('UJMExoBundle:Question\Shared')
+            ->findOneBy([
+                'question' => $question,
+                'user' => $user,
+            ]);
+
+        if ($question->getCreator()->getId() === $user->getId()
+            || ($shared && $shared->hasAdminRights())) {
+            // User has admin rights so he can delete question
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Searches questions for a User.
      *
@@ -194,13 +211,17 @@ class QuestionManager
      * Deletes a list of Questions.
      *
      * @param array $questions - the uuids of questions to delete
+     * @param User $user
      */
-    public function delete(array $questions)
+    public function delete(array $questions, User $user)
     {
         // Reload the list of questions to delete
         $toDelete = $this->repository->findByUuids($questions);
         foreach ($toDelete as $question) {
-            $this->om->remove($question);
+            if ($this->canEdit($question, $user)) {
+                // User has admin rights so he can delete question
+                $this->om->remove($question);
+            }
         }
 
         $this->om->flush();

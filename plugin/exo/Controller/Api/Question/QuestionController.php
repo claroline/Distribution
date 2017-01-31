@@ -61,24 +61,6 @@ class QuestionController extends AbstractController
     }
 
     /**
-     * Gets detail information about a Question.
-     *
-     * @EXT\Route("/{id}", name="question_get")
-     * @EXT\Method("GET")
-     * @EXT\ParamConverter("question", class="UJMExoBundle:Question\Question", options={"mapping": {"id": "uuid"}})
-     *
-     * @param Question $question
-     *
-     * @return JsonResponse
-     */
-    public function getAction(Question $question)
-    {
-        return new JsonResponse(
-            $this->questionManager->export($question, [Transfer::INCLUDE_SOLUTIONS, Transfer::INCLUDE_ADMIN_META])
-        );
-    }
-
-    /**
      * Creates a new Question.
      *
      * @EXT\Route("", name="question_create")
@@ -168,12 +150,14 @@ class QuestionController extends AbstractController
      *
      * @EXT\Route("", name="questions_delete")
      * @EXT\Method("DELETE")
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * @param Request $request
+     * @param User    $user
      *
      * @return JsonResponse
      */
-    public function deleteAction(Request $request)
+    public function deleteAction(Request $request, User $user)
     {
         $errors = [];
 
@@ -186,7 +170,7 @@ class QuestionController extends AbstractController
             ];
         } else {
             try {
-                $this->questionManager->delete($data);
+                $this->questionManager->delete($data, $user);
             } catch (ValidationException $e) {
                 $errors = $e->getErrors();
             }

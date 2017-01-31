@@ -91,7 +91,7 @@ class Shared
     }
 
     /**
-     * Do uset have admin rights?
+     * Does user have admin rights?
      *
      * @return bool
      */

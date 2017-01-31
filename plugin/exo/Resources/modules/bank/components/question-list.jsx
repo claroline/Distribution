@@ -19,8 +19,10 @@ const SelectedRow = props =>
     <td className="text-center">
       <span className="fa fa-check-square"></span>
     </td>
-    <td colSpan={5}>
-      {transChoice('questions_selected', props.selected.length, {count: props.selected.length})}
+    <td
+      colSpan={5}
+      dangerouslySetInnerHTML={{ __html: transChoice('questions_selected', props.selected.length, {count: props.selected.length})}}
+    >
     </td>
     <td className="table-actions text-right">
       <button
@@ -120,9 +122,7 @@ const QuestionRow = props =>
       <ItemIcon name={getDefinition(props.question.type).name} />
     </TableTooltipCell>
     <TableCell>
-      <a href="">
-        {props.question.title || props.question.content}
-      </a>
+      {props.question.title || props.question.content}
     </TableCell>
     <TableCell>
       {props.question.meta.category && props.question.meta.category.name ? props.question.meta.category.name : '-'}
