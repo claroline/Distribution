@@ -81,6 +81,8 @@ cloze_empty_size_error: La taille ne peut pas être vide
 cloze_empty_text_error: Veuillez remplir le texte
 cloze_must_contains_clozes_error: Le texte doit contenir des trous
 cloze_holes_errors: Certains trous contiennent toujours des erreurs
+cloze_duplicate_answers: Les réponses ne peuvent pas être dédoublées
+cloze_solutions_requires_positive_answer: Au moins une réponse doit avoir un score positif
 color: Couleur
 comment: Feedback
 compose: Répondre
@@ -355,6 +357,7 @@ odd_score_not_valid: Le score d'un intrus doit être négatif.
 pair_is_ordered: La paire est ordonnée.
 pair_pin_this_item: Épingler cet élément
 pair_pair: Paire
+pair_random_needs_pin_item: Au moins un élément doit être épinglé pour pouvoir utiliser la propriété random.
 pair_shuffle_pairs: Ordre des paires aléatoire.
 pair_allow_pin_function: Activer / désactiver la fonctionnalité épingler un item.
 pair_solution_at_least_two_items: Une paire doit avoir deux éléments.

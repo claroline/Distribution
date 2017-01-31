@@ -80,6 +80,8 @@ cloze_empty_size_error: The size can't be empty
 cloze_empty_text_error: Please fill the text
 cloze_must_contains_clozes_error: The text must contains clozes
 cloze_holes_errors: There are some errors in the clozes
+cloze_duplicate_answers: Answers can't be duplicated
+cloze_solutions_requires_positive_answer: At least one answer must have a positive score
 color: Colour
 comment: Comment
 compose: Answer
@@ -356,6 +358,7 @@ odd_score_not_valid: Odd score must be negative.
 pair_is_ordered: Pair is ordered.
 pair_pin_this_item: Pin this item
 pair_pair: Pair
+pair_random_needs_pin_item: You must pin at least one item to use random.
 pair_shuffle_pairs: Shuffle pair order.
 pair_allow_pin_function: Enable / disable pin functionality.
 pair_solution_at_least_two_items: A pair must have two items.

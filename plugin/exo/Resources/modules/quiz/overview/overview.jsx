@@ -137,6 +137,8 @@ const Layout = props =>
       </a>
     }
     {!props.empty &&
+      (props.parameters.maxAttempts === 0
+        || props.meta.userPaperCount < props.parameters.maxAttempts) &&
       <a href="#play" className="btn btn-start btn-lg btn-primary btn-block">
         <span className="fa fa-fw fa-play"></span>
         {tex('exercise_start')}
@@ -151,10 +153,12 @@ Layout.propTypes = {
   description: T.string,
   onAdditionalToggle: T.func.isRequired,
   parameters: T.shape({
-    showMetadata: T.bool.isRequired
+    showMetadata: T.bool.isRequired,
+    maxAttempts: T.number.isRequired
   }).isRequired,
   meta: T.shape({
-    created: T.string.isRequired
+    created: T.string.isRequired,
+    userPaperCount: T.number.isRequired
   })
 }
 
@@ -208,7 +212,8 @@ Overview.propTypes = {
       showScoreAt: T.string.isRequired
     }).isRequired,
     meta: T.shape({
-      created: T.string.isRequired
+      created: T.string.isRequired,
+      userPaperCount: T.number.isRequired
     }).isRequired
   }).isRequired,
   steps: T.object.isRequired,

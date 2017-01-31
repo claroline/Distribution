@@ -224,6 +224,8 @@ function validate(item) {
 
   item.holes.forEach(hole => {
     const solution = getSolutionFromHole(item, hole)
+    let hasPositiveValue = false
+
     solution.answers.forEach((answer, key) => {
       if (notBlank(answer.text, true)) {
         set(_errors, `answers.answer.${key}.text`, tex('cloze_empty_word_error'))
@@ -232,7 +234,17 @@ function validate(item) {
       if (notBlank(answer.score, true) && answer.score !== 0) {
         set(_errors, `answers.answer.${key}.score`, tex('cloze_empty_score_error'))
       }
+
+      if (answer.score > 0) hasPositiveValue = true
     })
+
+    if (hasDuplicates(solution.answers)) {
+      set(_errors, 'answers.duplicate', tex('cloze_duplicate_answers'))
+    }
+
+    if (!hasPositiveValue) {
+      set(_errors, 'answers.value', tex('solutions_requires_positive_answer'))
+    }
 
     if (hole._multiple && solution.answers.length < 2) {
       set(_errors, 'answers.multiple', tex('cloze_multiple_answers_required'))
@@ -261,4 +273,19 @@ function validate(item) {
   }
 
   return _errors
+}
+
+function hasDuplicates(answers) {
+  let hasDuplicates = false
+  answers.forEach(answer => {
+    let count = 0
+    answers.forEach(check => {
+      if (answer.text === check.text && answer.caseSensitive === check.caseSensitive) {
+        count++
+      }
+    })
+    if (count > 1) hasDuplicates = true
+  })
+
+  return hasDuplicates
 }

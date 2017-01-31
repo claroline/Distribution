@@ -121,7 +121,7 @@ class QuestionManager
         $searchResults = new \stdClass();
         $searchResults->totalResults = count($results);
         $searchResults->questions = array_map(function (Question $question) {
-            return $this->export($question, [Transfer::INCLUDE_ADMIN_META]);
+            return $this->export($question, [Transfer::INCLUDE_ADMIN_META, Transfer::INCLUDE_SOLUTIONS]);
         }, $results);
 
         // Add pagination
@@ -191,18 +191,25 @@ class QuestionManager
     }
 
     /**
-     * Deletes a list of Questions.
+     * Deletes a Question.
+     * It's only possible if the Question is not used in an Exercise.
      *
-     * @param array $questions - the uuids of questions to delete
+     * @param Question $question
+     *
+     * @throws ValidationException
      */
-    public function delete(array $questions)
+    public function delete(Question $question)
     {
-        // Reload the list of questions to delete
-        $toDelete = $this->repository->findByUuids($questions);
-        foreach ($toDelete as $question) {
-            $this->om->remove($question);
+        $exercises = $this->repository->findUsedBy($question);
+        if (count($exercises) > 0) {
+            // Question is used, we can't delete it
+            throw new ValidationException('Question can not be deleted', [
+                'path' => '',
+                'message' => "Question {$question->getUuid()} is linked to exercises.",
+            ]);
         }
 
+        $this->om->remove($question);
         $this->om->flush();
     }
 
