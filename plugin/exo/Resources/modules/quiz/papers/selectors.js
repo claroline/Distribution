@@ -2,7 +2,7 @@ import {createSelector} from 'reselect'
 
 const quizId = state => state.quiz.id
 const papers = state => state.papers.papers
-const papersFetched = state => !!state.papers.papers
+const papersFetched = state => state.papers.isFetched
 const currentPaperId = state => state.papers.current
 
 const currentPaper = createSelector(

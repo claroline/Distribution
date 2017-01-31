@@ -146,14 +146,8 @@ utils.removeAnswerItem = (answerItems, itemId) => {
 utils.generateAnswer = (answerItems) => {
   let answer = []
   answerItems.forEach(row => {
-    let answerRow = []
-    row.forEach(item => {
-      if (item !== -1) {
-        answerRow.push(item.id)
-      }
-    })
-    if (answerRow.length > 0) {
-      answer.push(answerRow)
+    if (row[0] !== -1 && row[1] !== -1) {
+      answer.push([row[0].id, row[1].id])
     }
   })
   return answer
