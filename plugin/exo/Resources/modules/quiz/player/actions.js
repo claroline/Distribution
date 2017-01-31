@@ -158,11 +158,11 @@ actions.handleAttemptEnd = (paper) => {
   return (dispatch, getState) => {
     // Finish the current attempt
     dispatch(actions.finishAttempt(paper))
-    // We will decide here if we show the correction now or not and where we redirect the use
+    dispatch(paperAction.addPaper(buildPaper(paper, playerSelectors.answers(getState()))))
+    // We will decide here if we show the correction now or not and where we redirect the user
 
     switch (playerSelectors.showCorrectionAt(getState())) {
       case 'validation': {
-        dispatch(paperAction.addPaper(buildPaper(paper, playerSelectors.answers(getState()))))
         dispatch(paperAction.setCurrentPaper(paper.id))
         navigate('papers/' + paper.id)
         break
@@ -173,7 +173,6 @@ actions.handleAttemptEnd = (paper) => {
         const showPaper = today.diff(correctionDate, 'days') >= 0
 
         if (showPaper) {
-          dispatch(paperAction.addPaper(buildPaper(paper, playerSelectors.answers(getState()))))
           dispatch(paperAction.setCurrentPaper(paper.id))
           navigate('papers/' + paper.id)
         } else {
