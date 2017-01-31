@@ -32,3 +32,7 @@ export function normalizeAnswers(rawAnswers = []) {
 export function denormalizeAnswers(answers = {}) {
   return Object.keys(answers).map(key => answers[key])
 }
+
+export function denormalize(paper, answers) {
+  return Object.assign({}, paper, {answers: denormalizeAnswers(answers)})
+}

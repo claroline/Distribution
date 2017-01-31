@@ -1,8 +1,9 @@
-import {PAPERS_INIT, PAPER_CURRENT, PAPER_UPDATE} from './actions'
 import {ATTEMPT_FINISH} from './../player/actions'
 import {fetchPapers} from './api'
+import {PAPERS_INIT, PAPER_CURRENT, PAPER_ADD, PAPER_FETCHED} from './actions'
+import {update} from '../../utils/utils'
 
-export const reducePapers = (state = {}, action = {}) => {
+export const reducePapers = (state = {papers: [], isFetched: false}, action = {}) => {
   switch (action.type) {
     case PAPERS_INIT:
       return Object.assign({}, state, {
@@ -12,24 +13,21 @@ export const reducePapers = (state = {}, action = {}) => {
       return Object.assign({}, state, {
         current: action.id
       })
-    case PAPER_UPDATE:
-      if (state.papers) {
-        let found = false
-        let papers = state.papers.map(p => {
-          if (p.id === action.paper.id) {
-            found = true
-            return action.paper
-          } else {
-            return p
-          }
-        })
-        if (!found) {
-          papers.push(action.paper)
-        }
+    case PAPER_ADD:
+      const index = state.papers.findIndex(p => p.id === action.paper.id)
+      if (index === -1) {
         return Object.assign({}, state, {
-          papers: papers
+          papers: update(state.papers, {$push: [action.paper]})
+        })
+      } else {
+        return Object.assign({}, state, {
+          papers: update(state.papers, {[index]:{$set: action.paper}})
         })
       }
+    case PAPER_FETCHED:
+      return Object.assign({}, state, {
+        isFetched: true
+      })
   }
 
   return state
