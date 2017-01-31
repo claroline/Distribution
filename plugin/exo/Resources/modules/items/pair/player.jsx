@@ -6,7 +6,7 @@ import {tex, t} from './../../utils/translate'
 import {utils} from './utils/utils'
 import {makeDraggable, makeDroppable} from './../../utils/dragAndDrop'
 import shuffle from 'lodash/shuffle'
-import {times} from 'lodash/times'
+import times from 'lodash/times'
 import {TooltipButton} from './../../components/form/tooltip-button.jsx'
 
 let DropBox = props => {

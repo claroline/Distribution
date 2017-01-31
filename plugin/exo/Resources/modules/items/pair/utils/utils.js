@@ -1,4 +1,4 @@
-import {times} from 'lodash/times'
+import times from 'lodash/times'
 
 export const utils = {}
 
