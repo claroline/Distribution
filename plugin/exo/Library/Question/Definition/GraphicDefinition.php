@@ -3,7 +3,10 @@
 namespace UJM\ExoBundle\Library\Question\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Entity\Misc\Area;
 use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
+use UJM\ExoBundle\Entity\QuestionType\GraphicQuestion;
+use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 use UJM\ExoBundle\Library\Question\QuestionType;
 use UJM\ExoBundle\Serializer\Question\Type\GraphicQuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\GraphicAnswerValidator;
@@ -107,14 +110,30 @@ class GraphicDefinition extends AbstractDefinition
 
     public function correctAnswer(AbstractQuestion $question, $answer)
     {
-        // TODO: Implement correctAnswer() method.
+        $corrected = new CorrectedAnswer();
+
+        foreach ($question->getAreas() as $area) {
+            foreach ($answer as $coords) {
+                if ($this->isPointInArea($area, $coords->x, $coords->y)) {
+                    if ($area->getScore() > 0) {
+                        $corrected->addExpected($area);
+                    } else {
+                        $corrected->addUnexpected($area);
+                    }
+                } elseif ($area->getScore() > 0) {
+                    $corrected->addMissing($area);
+                }
+            }
+        }
+
+        return $corrected;
     }
 
     public function expectAnswer(AbstractQuestion $question)
     {
-        // TODO: Implement expectAnswer() method.
-
-        return [];
+        return array_filter($question->getAreas()->toArray(), function (Area $area) {
+            return 0 < $area->getScore();
+        });
     }
 
     public function getStatistics(AbstractQuestion $graphicQuestion, array $answers)
@@ -146,5 +165,44 @@ class GraphicDefinition extends AbstractDefinition
         }
 
         return $areas;
+    }
+
+    private function isPointInArea(Area $area, $x, $y)
+    {
+        $coords = explode(',', $area->getValue());
+
+        if (count($coords) === 2) {
+            if ($area->getShape() !== GraphicQuestion::SHAPE_CIRCLE) {
+                // must be old "square" shape
+                $coords[] = $coords[0] + $area->getSize();
+                $coords[] = $coords[1] + $area->getSize();
+
+                return $this->isPointInRect($coords, $x, $y);
+            } else {
+                // must be circle
+                $r = $area->getSize() / 2;
+                $cx = $coords[0] + $r;
+                $cy = $coords[1] + $r;
+
+                // coordinates relative to the circle center
+                $x = abs($cx - $x);
+                $y = abs($cy - $y);
+
+                // inside the circle if distance to center <= radius
+                return $x * $x + $y * $y <= $r * $r;
+            }
+        }
+
+        // must be rect
+        return $this->isPointInRect($coords, $x, $y);
+    }
+
+    private function isPointInRect($coords, $x, $y)
+    {
+        return
+            $x >= $coords[0] &&
+            $x <= $coords[2] &&
+            $y >= $coords[1] &&
+            $y <= $coords[3];
     }
 }
