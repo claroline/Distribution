@@ -47,6 +47,7 @@ export function denormalize(quiz, steps, items) {
   return {
     id: quiz.id,
     title: quiz.title,
+    description: quiz.description,
     meta: quiz.meta,
     parameters: quiz.parameters,
     steps: rawQuizSteps
