@@ -9,6 +9,7 @@ import {navigate} from './../router'
 import {select as playerSelectors} from './selectors'
 import {generatePaper} from './../papers/generator'
 import {normalize, denormalizeAnswers} from './normalizer'
+import moment from 'moment'
 
 export const ATTEMPT_START  = 'ATTEMPT_START'
 export const ATTEMPT_FINISH = 'ATTEMPT_FINISH'
@@ -153,11 +154,24 @@ actions.finish = (quizId, paper, pendingAnswers = {}, showFeedback = false) => {
 }
 
 actions.handleAttemptEnd = (paper) => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     // Finish the current attempt
     dispatch(actions.finishAttempt(paper))
-
     // We will decide here if we show the correction now or not and where we redirect the user
+    switch (playerSelectors.showCorrectionAt(getState())) {
+      case 'validation': {
+        navigate('papers/' + paper.id)
+        break
+      }
+      case 'date': {
+        const correctionDate = moment(playerSelectors.correctionDate(getState()))
+        const today = moment()
+        const showPaper = today.diff(correctionDate, 'days') >= 0
+
+        navigate(showPaper ? 'papers/' + paper.id: 'overview')
+        break
+      }
+    }
 
     navigate('overview')
   }

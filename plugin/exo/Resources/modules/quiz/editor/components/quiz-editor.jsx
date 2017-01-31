@@ -11,6 +11,8 @@ import {Textarea} from './../../../components/form/textarea.jsx'
 import {Radios} from './../../../components/form/radios.jsx'
 import {Date} from './../../../components/form/date.jsx'
 import {ValidationStatus} from './validation-status.jsx'
+import {formatDate} from './../../../utils/date'
+
 import {
   quizTypes,
   shuffleModes,
@@ -234,7 +236,7 @@ const Correction = props =>
             id="quiz-correctionDate"
             name="quiz-correctionDate"
             value={props.parameters.correctionDate || ''}
-            onChange={date => props.onChange('parameters.correctionDate', date)}
+            onChange={date => props.onChange('parameters.correctionDate', formatDate(date))}
           />
         </FormGroup>
       </div>
