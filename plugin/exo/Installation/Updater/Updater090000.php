@@ -490,12 +490,13 @@ class Updater090000
 
             $sth = $this->connection->prepare('
                 UPDATE ujm_interaction_hole 
-                SET htmlWithoutValue = :text
+                SET htmlWithoutValue = :text, originalText = :originalText
                 WHERE question_id = :id
             ');
             $sth->execute([
-                'text' => $text,
                 'id' => $question['question_id'],
+                'text' => $text,
+                'originalText' => $question['htmlWithoutValue'],
             ]);
         }
     }
