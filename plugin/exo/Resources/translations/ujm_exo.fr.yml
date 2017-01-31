@@ -97,10 +97,9 @@ create_hole : Créer un trou
 date: Date
 default : Défaut
 delete: Supprimer
-delete_of_my_bank: Supprimer de ma banque
-delete_of_my_exercise: Supprimer de mon questionnaire
 delete_papers: Supprimer les copies
 delete_item: Supprimer la question
+delete_items: "{1} Supprimer la question|[2,Inf[ Supprimer %count% questions"
 delete_step: Supprimer l'étape
 description: Description
 display_all_list: Afficher la liste complète
@@ -402,6 +401,7 @@ question_delete: Supprimer
 question_duplicate: Dupliquer
 question_export: Exporter
 question_share: Partager
+question_show_quizzes: Voir dans les questionnaires
 
 questions_delete: Supprimer les questions sélectionnées
 questions_duplicate: Dupliquer les questions sélectionnées
@@ -465,11 +465,10 @@ selection: => Pour répondre, utilisez la technique du glisser/déposer.
 self: Vous ne pouvez pas partager une question avec vous-même.
 shape: Forme
 share: Partager
-shared_by: Partagée par
-shared_questions: Questions qui ont été partagées avec moi
-shared_user: Partage de question
-shared_with: Partager avec
-short: Courte
+share_admin_rights: Partager les droits d'édition et de suppression
+share_with: Avec
+share_items: "{1} Partager la question|[2,Inf[ Partager %count% questions"
+shared_with: Partagée avec
 show: Afficher
 show_feedback: Afficher les feedbacks en fin d'étape
 show_instructions: Montrer les consignes

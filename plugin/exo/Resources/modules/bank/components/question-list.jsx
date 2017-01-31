@@ -1,6 +1,6 @@
 import React, { Component, PropTypes as T } from 'react'
 import { DropdownButton, MenuItem } from 'react-bootstrap'
-
+import classes from 'classnames'
 import {tex, trans} from './../../utils/translate'
 import {getDefinition} from './../../items/item-types'
 import {Icon as ItemIcon} from './../../items/components/icon.jsx'
@@ -177,6 +177,22 @@ const QuestionRow = props =>
         >
           <span className="fa fa-fw fa-share" />&nbsp;
           {tex('question_share')}
+          <span
+            className={classes(
+              'label',
+              0 < props.question.meta.sharedWith.length ? 'label-primary' : 'label-default')
+            }>{props.question.meta.sharedWith.length}</span>
+        </MenuItem>
+        <MenuItem
+          onClick={() => props.onShare([props.question.id])}
+        >
+          <span className="fa fa-fw fa-question" />&nbsp;
+          {tex('question_show_quizzes')}
+          <span
+            className={classes(
+                'label',
+                0 < props.question.meta.usedBy.length ? 'label-primary' : 'label-default')
+            }>{props.question.meta.usedBy.length}</span>
         </MenuItem>
         <MenuItem>
           <span className="fa fa-fw fa-upload" />&nbsp;
@@ -202,7 +218,9 @@ QuestionRow.propTypes = {
     meta: T.shape({
       authors: T.arrayOf(T.shape({
         name: T.isRequired
-      }))
+      })),
+      sharedWith: T.array.isRequired,
+      usedBy: T.array.isRequired
     }).isRequired
   }).isRequired,
   isSelected: T.bool,

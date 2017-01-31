@@ -8,7 +8,6 @@ import sortByReducer       from './sort-by'
 import paginationReducer   from './pagination'
 import searchReducer       from './search'
 import totalResultsReducer from './total-results'
-import usersReducer        from './users'
 
 export const bankApp = combineReducers({
   modal: reduceModal,
@@ -19,7 +18,4 @@ export const bankApp = combineReducers({
   pagination: paginationReducer,
   search: searchReducer,
   totalResults: totalResultsReducer,
-  // Users for the share modal typeahead
-  // don't know if it's the correct pattern for this
-  users: usersReducer
 })

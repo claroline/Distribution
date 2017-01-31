@@ -10,7 +10,7 @@ export const actions = {}
 
 actions.setQuestions = makeActionCreator(QUESTIONS_SET, 'questions')
 actions.removeQuestions = makeActionCreator(QUESTIONS_REMOVE, 'questions')
-//actions.shareQuestions = makeActionCreator()
+actions.share = makeActionCreator(QUESTIONS_SHARE, 'questions', 'users', 'adminRights')
 
 actions.shareQuestions = (questions, users, adminRights) => ({
   [REQUEST_SEND]: {
@@ -18,12 +18,12 @@ actions.shareQuestions = (questions, users, adminRights) => ({
     request: {
       method: 'POST',
       body: JSON.stringify({
+        adminRights,
         questions,
-        users,
-        adminRights
+        users: users.map(user => user.id)
       })
     },
-    success: () => true
+    success: () => actions.share(questions, users, adminRights)
   }
 })
 

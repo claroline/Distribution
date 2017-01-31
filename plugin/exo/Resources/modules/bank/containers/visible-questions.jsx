@@ -1,12 +1,12 @@
 import { connect } from 'react-redux'
 
-import {tex} from './../../utils/translate'
+import {tex, transChoice} from './../../utils/translate'
 import QuestionList from './../components/question-list.jsx'
 import {getVisibleQuestions} from './../selectors/questions'
 import {actions as sortActions} from './../actions/sort-by'
 import {actions as questionsActions} from './../actions/questions'
 import {actions as selectActions} from './../actions/select'
-import {showModal} from './../../modal/actions'
+import {showModal, fadeModal} from './../../modal/actions'
 import {MODAL_DELETE_CONFIRM} from './../../modal'
 import {MODAL_SHARE} from './../components/modal/share.jsx'
 import {select} from './../selectors'
@@ -44,15 +44,17 @@ const mapDispatchToProps = (dispatch) => {
 
     onShare: (items) => {
       dispatch(showModal(MODAL_SHARE, {
-        title: tex('share_item'),
-        handleShare: (users, adminRights) =>
+        title: transChoice('share_items', items.length, {count: items.length}, 'ujm_exo'),
+        handleShare: (users, adminRights) => {
+          dispatch(fadeModal())
           dispatch(questionsActions.shareQuestions(items, users, adminRights))
+        }
       }))
     },
 
     onDelete: (items) => {
       dispatch(showModal(MODAL_DELETE_CONFIRM, {
-        title: tex('delete_item'),
+        title: transChoice('delete_items', items.length, {count: items.length}, 'ujm_exo'),
         question: tex('remove_question_confirm_message'),
         handleConfirm: () => dispatch(questionsActions.deleteQuestions(items))
       }))

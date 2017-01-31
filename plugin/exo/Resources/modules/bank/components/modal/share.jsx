@@ -1,46 +1,38 @@
 import React, {Component, PropTypes as T} from 'react'
 import Modal from 'react-bootstrap/lib/Modal'
+import classes from 'classnames'
 
 import {generateUrl} from './../../../utils/routing'
 import {update} from './../../../utils/utils'
 import {t, tex} from './../../../utils/translate'
 import {FormGroup} from './../../../components/form/form-group.jsx'
 import {BaseModal} from './../../../modal/components/base.jsx'
+import {UserTypeahead} from './../../../users/components/typeahead.jsx'
 
 export const MODAL_SHARE = 'MODAL_SHARE'
 
-const UsersSelected = props =>
+const SelectedUsers = props =>
   <ul className="list-group">
     {props.users.map((user) =>
-      <li onClick={() => props.deselect(user)}>
+      <li key={`selected-${user.id}`} className="list-group-item">
         {user.name}
+        <button
+          type="button"
+          className="btn btn-link btn-sm"
+          onClick={() => props.deselect(user)}
+        >
+          <span className="fa fa-fw fa-times"></span>
+        </button>
       </li>
     )}
   </ul>
 
-UsersSelected.propTypes = {
+SelectedUsers.propTypes = {
   users: T.arrayOf(T.shape({
     id: T.string.isRequired,
     name: T.string.isRequired
   })).isRequired,
   deselect: T.func.isRequired
-}
-
-const UsersList = props =>
-  <ul>
-    {props.users.map((user) =>
-      <li onClick={() => props.select(user)}>
-        {user.name}
-      </li>
-    )}
-  </ul>
-
-UsersList.propTypes = {
-  users: T.arrayOf(T.shape({
-    id: T.string.isRequired,
-    name: T.string.isRequired
-  })).isRequired,
-  select: T.func.isRequired
 }
 
 export class ShareModal extends Component {
@@ -49,27 +41,19 @@ export class ShareModal extends Component {
 
     this.state = {
       adminRights: false,
-      users: [],
-      search: []
+      users: []
     }
   }
 
-  getUsers(search) {
-    fetch(generateUrl('questions_share_users', {search: search}), {
-      method: 'GET' ,
-      credentials: 'include'
-    })
-      .then(response => response.json())
-      .then(users => this.setState({search: users}))
-  }
-
   selectUser(user) {
-    this.setState(update(this.state, {users: {$push: [user]}}))
+    this.setState(update(this.state, {
+      users: {$push: [user]}
+    }))
   }
 
   deselectUser(user) {
     this.setState(update(this.state, {
-      users: {$splice: [[this.state.indexOf(user), 1]]}
+      users: {$splice: [[this.state.users.indexOf(user), 1]]}
     }))
   }
 
@@ -84,7 +68,9 @@ export class ShareModal extends Component {
                 type="checkbox"
                 name="share-admin-rights"
                 checked={this.state.adminRights}
-                onChange={() => this.setState('adminRights', !this.state.adminRights)}
+                onChange={() => this.setState({
+                  adminRights: !this.state.adminRights
+                })}
               />
               {tex('share_admin_rights')}
             </label>
@@ -94,30 +80,17 @@ export class ShareModal extends Component {
             controlId="share-users"
             label={tex('share_with')}
           >
-            <div className="dropdown">
-              <input
-                id="share-users"
-                type="text"
-                className="form-control"
-                onChange={e => e.target.value && 2 < e.target.value.length ?
-                  this.getUsers(e.target.value) : true
-                }
-              />
-              {0 < this.state.search.length &&
-                <UsersList
-                  users={this.state.search}
-                  select={this.selectUser.bind(this)}
-                />
-              }
-
-              {0 < this.state.users.length &&
-                <UsersSelected
-                  users={this.state.users}
-                  deselect={this.deselectUser.bind(this)}
-                />
-              }
-            </div>
+            <UserTypeahead
+              handleSelect={this.selectUser.bind(this)}
+            />
           </FormGroup>
+
+          {0 < this.state.users.length &&
+            <SelectedUsers
+              users={this.state.users}
+              deselect={this.deselectUser.bind(this)}
+            />
+          }
         </Modal.Body>
 
         <Modal.Footer>
@@ -126,6 +99,7 @@ export class ShareModal extends Component {
           </button>
           <button
             className="btn btn-primary"
+            disabled={0 === this.state.users.length}
             onClick={() => this.props.handleShare(this.state.users, this.state.adminRights)}
           >
             {tex('share')}
@@ -137,7 +111,5 @@ export class ShareModal extends Component {
 }
 
 ShareModal.propTypes = {
-  handleShare: T.func.isRequired,
-  searchUsers: T.func.isRequired,
-  clearUsers: T.func.isRequired,
+  handleShare: T.func.isRequired
 }
