@@ -4,6 +4,7 @@
  * Date: 22/08/13
  * Time: 09:30.
  */
+
 namespace Icap\DropzoneBundle\Controller;
 
 use Claroline\CoreBundle\Entity\User;
@@ -560,6 +561,62 @@ class DropController extends DropzoneBaseController
                 return $this->redirect(
                     $this->generateUrl(
                         'icap_dropzone_drops_awaiting_paginated',
+                        [
+                            'resourceId' => $dropzone->getId(),
+                            'page' => $pager->getNbPages(),
+                        ]
+                    )
+                );
+            } else {
+                throw new NotFoundHttpException();
+            }
+        }
+
+        return $this->addDropsStats($dropzone, [
+            'workspace' => $dropzone->getResourceNode()->getWorkspace(),
+            '_resource' => $dropzone,
+            'dropzone' => $dropzone,
+            'unterminated_drops' => $countUnterminatedDrops,
+            'pager' => $pager,
+        ]);
+    }
+
+    /**
+     * @Route(
+     *      "/{resourceId}/drops/unfinished",
+     *      name="icap_dropzone_drops_unfinisehd",
+     *      requirements={"resourceId" = "\d+"},
+     *      defaults={"page" = 1}
+     * )
+     * @Route(
+     *      "/{resourceId}/drops/unfinished/{page}",
+     *      name="icap_dropzone_drops_unfinished_paginated",
+     *      requirements={"resourceId" = "\d+", "page" = "\d+"},
+     *      defaults={"page" = 1}
+     * )
+     * @ParamConverter("dropzone", class="IcapDropzoneBundle:Dropzone", options={"id" = "resourceId"})
+     * @Template()
+     */
+    public function dropsUnfinishedAction($dropzone, $page)
+    {
+        $this->get('icap.manager.dropzone_voter')->isAllowToOpen($dropzone);
+        $this->get('icap.manager.dropzone_voter')->isAllowToEdit($dropzone);
+
+        $dropRepo = $this->getDoctrine()->getManager()->getRepository('IcapDropzoneBundle:Drop');
+        $dropsQuery = $dropRepo->getUnfinishedDropsQuery($dropzone);
+
+        $countUnterminatedDrops = $dropRepo->countUnterminatedDropsByDropzone($dropzone->getId());
+
+        $adapter = new DoctrineORMAdapter($dropsQuery);
+        $pager = new Pagerfanta($adapter);
+        $pager->setMaxPerPage(DropzoneBaseController::DROP_PER_PAGE);
+        try {
+            $pager->setCurrentPage($page);
+        } catch (NotValidCurrentPageException $e) {
+            if ($page > 0) {
+                return $this->redirect(
+                    $this->generateUrl(
+                        'icap_dropzone_drops_unfinished_paginated',
                         [
                             'resourceId' => $dropzone->getId(),
                             'page' => $pager->getNbPages(),

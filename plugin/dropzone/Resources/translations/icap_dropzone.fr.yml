@@ -97,6 +97,7 @@ Copies being evaluated: Copies en cours d'évaluation
 Sort by user: Tri par utilisateur
 Established on: Copie rendue le :
 Last correction: Dernière correction le :
+last update: Dernière modification le :
 Documents: Documents :
 Grade: Note :
 Sort by date: Tri par date
@@ -302,6 +303,7 @@ This copy has been unlocked by admin.(it did not received the expected number of
 No copy waiting for correction: Aucune copie en attente de correction
 Notify on drop: Nofifier les administrateurs de l'évaluation quand quelqu'un dépose une copie.
 Notifications: Notifications
+unfinisehd copies: Copies non terminées
 unterminated drops: copie(s) non terminée(s)
 Notify on drop: Notifier les administrateurs lorsqu'une copie est déposée.
 drop_info: Chaque document ajouté est sauvegardé automatiquement. Cependant, pensez à cliquer sur "Terminer" en bas à droite une fois que vous avez fini. Si vous ne le faites pas, votre copie sera considérée comme non-rendue.
