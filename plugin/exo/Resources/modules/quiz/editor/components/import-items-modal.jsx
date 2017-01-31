@@ -1,13 +1,32 @@
 import React, {Component, PropTypes as T} from 'react'
 import Modal from 'react-bootstrap/lib/Modal'
-import {listItemNames} from './../../../items/item-types'
+import {connect} from 'react-redux'
+import {listItemNames, getDefinition} from './../../../items/item-types'
+import {Icon} from './../../../items/components/icon.jsx'
 import {t, tex, trans} from './../../../utils/translate'
-import {generateUrl} from './../../../utils/routing'
 import {BaseModal} from './../../../modal/components/base.jsx'
+import {REQUEST_SEND} from './../../../api/actions'
+
 
 export const MODAL_IMPORT_ITEMS = 'MODAL_IMPORT_ITEMS'
+const actions = {}
 
-export class ImportItemsModal extends Component {
+actions.getQuestions = (filter, onSuccess) => {
+  return (dispatch) => {
+    dispatch({
+      [REQUEST_SEND]: {
+        route: ['question_search'],
+        request: {
+          method: 'POST' ,
+          body: JSON.stringify(filter)
+        },
+        success: (response) => onSuccess(response)
+      }
+    })
+  }
+}
+
+class ImportItems extends Component {
   constructor(props){
     super(props)
     this.state = {
@@ -16,6 +35,8 @@ export class ImportItemsModal extends Component {
       total: 0,
       types: listItemNames()
     }
+
+    this.onQuestionsRetrieved = this.onQuestionsRetrieved.bind(this)
   }
 
   handleSearchTextChange(value){
@@ -36,23 +57,14 @@ export class ImportItemsModal extends Component {
     this.setState({selected: actual})
   }
 
-  getQuestions(value){
-    const url = generateUrl('question_search')
-    const params = {
-      method: 'POST' ,
-      credentials: 'include',
-      body: JSON.stringify({
-        filters:{title: value}
-      })
-    }
+  onQuestionsRetrieved(response) {
+    this.setState({questions: response.questions, total: response.total})
+  }
 
-    fetch(url, params)
-    .then(response => {
-      return response.json()
-    })
-    .then(jsonData =>  {
-      this.setState({questions: jsonData.questions, total: jsonData.total})
-    })
+  getQuestions(value){
+    this.props.getQuestions({
+      filters:{title: value}
+    }, this.onQuestionsRetrieved)
   }
 
   handleClick(){
@@ -95,6 +107,9 @@ export class ImportItemsModal extends Component {
                   <td>
                     <input name="question" type="checkbox" onClick={() => this.handleQuestionSelection(item)} />
                   </td>
+                  <td>
+                    <Icon name={getDefinition(item.type).name} />
+                  </td>
                   <td>{item.title ? item.title : item.content }</td>
                 </tr>
               )}
@@ -114,7 +129,17 @@ export class ImportItemsModal extends Component {
   }
 }
 
-ImportItemsModal.propTypes = {
+ImportItems.propTypes = {
   handleSelect: T.func.isRequired,
-  fadeModal: T.func.isRequired
+  fadeModal: T.func.isRequired,
+  getQuestions: T.func,
+  questionRetrieved: T.func
 }
+
+function mapDispatchToProps(dispatch) {
+  return {
+    getQuestions: (filter, onSuccess) => dispatch(actions.getQuestions(filter, onSuccess))
+  }
+}
+
+export const ImportItemsModal = connect(undefined, mapDispatchToProps)(ImportItems)

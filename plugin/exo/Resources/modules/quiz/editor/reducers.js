@@ -168,12 +168,11 @@ function reduceItems(items = {}, action = {}) {
       action.items.forEach(item => {
         let newItem = decorateItem(item)
         const def = getDefinition(item.type)
-        newItem = def.editor.reduce(newItem, action)
+        newItem = def.editor.decorate(newItem)
         const errors = validate.item(newItem)
         newItem = Object.assign({}, newItem, {_errors: errors})
         items = update(items, {[item.id]: {$set: newItem}})
       })
-
       return items
     }
     case ITEM_HINTS_UPDATE:
