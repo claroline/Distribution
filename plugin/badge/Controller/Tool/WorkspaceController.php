@@ -551,18 +551,7 @@ class WorkspaceController extends Controller
         $translator = $this->get('translator');
         $userBadgeRepo = $this->entityManager->getRepository('IcapBadgeBundle:UserBadge');
 
-        $users = $this->getDoctrine()->getRepository('ClarolineCoreBundle:User')
-            ->createQueryBuilder('u')
-            ->select('u')
-            ->join('u.roles', 'r')
-            ->andWhere('u.isRemoved = false')
-            ->leftJoin('r.workspace', 'w')
-            ->andWhere('r.workspace = :workspace')
-            ->setParameter('workspace', $workspace)
-            ->orderBy('u.lastName')
-            ->addOrderBy('u.firstName')
-            ->getQuery()
-            ->getResult();
+        $users = $this->getDoctrine()->getRepository('ClarolineCoreBundle:User')->findByWorkspaceWithUsersFromGroup($workspace, true);
 
         $badges = $this->badgeManager->getWorkspaceBadgesOrderedByName($workspace, $locale);
 

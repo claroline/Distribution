@@ -58,7 +58,7 @@ class Association extends Component {
             <TooltipButton
               id={`ass-${this.props.association.itemId}-${this.props.association.setId}-feedback-toggle`}
               className="fa fa-comments-o"
-              title={tex('feedback')}
+              title={tex('feedback_association_created')}
               onClick={() => this.setState({showFeedback: !this.state.showFeedback})}
             />
             <TooltipButton
@@ -430,7 +430,7 @@ class SetForm extends Component {
           <ErrorBlock text={this.props.item._errors.odd} warnOnly={!this.props.validating}/>
         }
         <div className="form-group">
-          <label htmlFor="set-penalty">{tex('set_penalty_label')}</label>
+          <label htmlFor="set-penalty">{tex('editor_penalty_label')}</label>
           <input
             id="set-penalty"
             className="form-control"

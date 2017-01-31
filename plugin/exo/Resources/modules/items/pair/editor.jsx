@@ -108,7 +108,7 @@ class Pair extends Component {
               <TooltipButton
                 id={`ass-${this.props.pair.itemIds[0]}-${this.props.pair.itemIds[1]}-feedback-toggle`}
                 className="fa fa-comments-o"
-                title={tex('feedback_answer_check')}
+                title={tex('feedback_association_created')}
                 onClick={() => this.setState({showFeedback: !this.state.showFeedback})}
               />
               <TooltipButton
@@ -168,7 +168,7 @@ class PairList extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      pinIsAllowed: false
+      pinIsAllowed: props.items.filter(item => item.hasOwnProperty('coordinates')).length > 0
     }
   }
 
@@ -435,7 +435,7 @@ const PairForm = (props) => {
         <ErrorBlock text={props.item._errors.odd} warnOnly={!props.validating}/>
       }
       <div className="form-group">
-        <label htmlFor="pair-penalty">{tex('pair_penalty_label')}</label>
+        <label htmlFor="pair-penalty">{tex('editor_penalty_label')}</label>
         <input
           id="pair-penalty"
           className="form-control"

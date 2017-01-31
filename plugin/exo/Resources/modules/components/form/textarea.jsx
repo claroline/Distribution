@@ -3,10 +3,43 @@ import classes from 'classnames'
 import {tex} from './../../utils/translate'
 
 // see https://github.com/lovasoa/react-contenteditable
-class ContentEditable extends Component {
+export class ContentEditable extends Component {
   constructor() {
     super()
     this.emitChange = this.emitChange.bind(this)
+    this.getSelection = this.getSelection.bind(this)
+    this.state = {}
+  }
+
+  getSelection() {
+    //http://stackoverflow.com/questions/3997659/replace-selected-text-in-contenteditable-div
+    const rng = window.getSelection().getRangeAt(0).cloneRange()
+    this.setState({
+      rng: rng,
+      startOffset: rng.startOffset,
+      endOffset: rng.endOffset,
+      startContainer: rng.startContainer,
+      endContainer: rng.endContainer,
+      collapsed: rng.collapsed,
+      commonAncestorContainer: rng.commonAncestorContainer
+
+    })
+    let selected = window.getSelection().toString()
+    this.props.onSelect(selected, this.updateText.bind(this))
+  }
+
+  updateText(text) {
+    if (text) {
+      const range = new Range()
+      range.setStart(this.state.startContainer, this.state.startOffset)
+      range.setEnd(this.state.endContainer, this.state.endOffset)
+      range.deleteContents()
+      const el = document.createElement('span')
+      el.innerHTML = text
+      range.insertNode(el)
+
+      return this.el.innerHTML
+    }
   }
 
   render() {
@@ -23,8 +56,15 @@ class ContentEditable extends Component {
         className="form-control"
         aria-multiline={true}
         style={{minHeight: `${this.props.minRows * 32}px`}}
+        onMouseUp={this.getSelection}
       />
     )
+  }
+
+  componentDidMount() {
+    this.el.onclick = e => {
+      this.props.onClick(e.target)
+    }
   }
 
   shouldComponentUpdate(nextProps) {
@@ -61,10 +101,19 @@ ContentEditable.propTypes = {
   minRows: T.number.isRequired,
   content: T.string.isRequired,
   onChange: T.func.isRequired,
+  onSelect: T.func,
+  onClick: T.func,
   title: T.string
 }
 
-class Tinymce extends Component {
+ContentEditable.defaultProps = {
+  title: 'editable-content',
+  onClick: () => {},
+  onSelect: () => {},
+  minRows: 1
+}
+
+export class Tinymce extends Component {
   constructor(props) {
     super(props)
     this.editor = null
@@ -76,9 +125,16 @@ class Tinymce extends Component {
 
       if (editor) {
         this.editor = editor
+        this.editor.on('mouseup', () => {
+          this.getSelection()
+        })
         this.editor.on('change', e => {
           this.props.onChange(e.target.getContent())
         })
+        this.editor.on('click', e => {
+          this.props.onClick(e.target)
+        })
+
         clearInterval(interval)
       }
     }, 100)
@@ -90,6 +146,26 @@ class Tinymce extends Component {
 
   componentWillUnmount() {
     this.editor.destroy()
+  }
+
+  updateText() {
+    //nope
+  }
+
+  getSelection() {
+    const rng = this.editor.selection.getRng()
+
+    this.setState({
+      rng: this.editor.selection.getRng().cloneRange(),
+      startOffset: rng.startOffset,
+      endOffset: rng.endOffset,
+      startContainer: rng.startContainer,
+      endContainer: rng.endContainer,
+      collapsed: rng.collapsed,
+      commonAncestorContainer: rng.commonAncestorContainer
+
+    })
+    this.props.onSelect(this.editor.selection.getContent(), this.updateText.bind(this))
   }
 
   render() {
@@ -108,6 +184,8 @@ Tinymce.propTypes = {
   id: T.string.isRequired,
   content: T.string.isRequired,
   onChange: T.func.isRequired,
+  onSelect: T.func,
+  onClick: T.func,
   title: T.string
 }
 
@@ -125,6 +203,8 @@ export class Textarea extends Component {
         minRows={this.props.minRows}
         content={this.props.content}
         onChange={this.props.onChange}
+        onSelect={this.props.onSelect}
+        onClick={this.props.onClick}
       />
     )
   }
@@ -136,6 +216,8 @@ export class Textarea extends Component {
         title={this.props.title}
         content={this.props.content}
         onChange={this.props.onChange}
+        onSelect={this.props.onSelect}
+        onClick={this.props.onClick}
       />
     )
   }
@@ -151,7 +233,10 @@ export class Textarea extends Component {
             'fa',
             this.state.minimal ? 'fa-plus-circle' : 'fa-minus-circle'
           )}
-          onClick={() => this.setState({minimal: !this.state.minimal})}
+          onClick={() => {
+            this.setState({minimal: !this.state.minimal})
+            this.props.onChangeMode({minimal: !this.state.minimal})
+          }}
         />
         {this.state.minimal ?
           this.makeMinimalEditor() :
@@ -167,9 +252,15 @@ Textarea.propTypes = {
   minRows: T.number,
   title: T.string,
   content: T.string.isRequired,
-  onChange: T.func.isRequired
+  onChange: T.func.isRequired,
+  onSelect: T.func,
+  onClick: T.func,
+  onChangeMode: T.func
 }
 
 Textarea.defaultProps = {
-  minRows: 2
+  minRows: 2,
+  onClick: () => {},
+  onSelect: () => {},
+  onChangeMode: () => {}
 }

@@ -261,7 +261,7 @@ class QuestionManager
     public function calculateTotal(\stdClass $questionData)
     {
         // Get entities for score calculation
-        $question = $this->serializer->deserialize($questionData);
+        $question = $this->serializer->deserialize($questionData, new Question());
 
         // Get the expected answer for the question
         $definition = $this->questionDefinitions->get($question->getMimeType());
