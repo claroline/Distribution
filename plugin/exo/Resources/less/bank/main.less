@@ -19,31 +19,47 @@
     font-style: italic;
 }
 
-#questions-bank tbody {
-    background-color: #FFF;
-    border: 1px solid #ddd;
+#questions-bank {
+    .table {
+        > thead > tr > th {
+            position: relative;
+            border-bottom-width: 1px;
+        }
+    }
+
+    .selected-rows > td {
+        border-top: 1px solid @table-border-color;
+    }
+
+    .table-actions {
+        .btn {
+            color: @gray-light;
+
+            &:hover,
+            &.hover {
+                color: @gray;
+            }
+            &:focus,
+            &.focus,
+            &.active {
+                color: @gray-dark;
+            }
+        }
+    }
 }
 
-#questions-bank .table .selected-rows {
-    border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
-    border-top: 1px solid #ddd;
-}
-
-#questions-bank .table > thead > tr > th {
-    position: relative;
-}
-
-#questions-bank .table > thead > tr > th {
-    border-bottom-width: 1px;
-}
-
-.btn-link-danger {
-    color: #d9534f;
+.dropdown-menu > .link-danger > a,
+.link-danger {
+    color: @brand-danger;
 
     &:hover,
-    &:focus {
-        color: #c9302c;
+    &.hover {
+        color: darken(@brand-danger, 10%);
+    }
+    &:focus,
+    &.focus,
+    &.active {
+        color: darken(@brand-danger, 20%);
     }
 }
 

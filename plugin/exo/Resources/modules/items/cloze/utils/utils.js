@@ -140,7 +140,7 @@ utils.getTextElements = (text, holes) => {
     }
   })
 
-  return data
+  return data.sort((a, b) => a.position - b.position)
 }
 
 utils.getSolutionForAnswer = (solution, answer) => {

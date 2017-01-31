@@ -15,7 +15,7 @@ use UJM\ExoBundle\Entity\Question\Shared;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Question\QuestionDefinitionsCollection;
 use UJM\ExoBundle\Library\Serializer\AbstractSerializer;
-use UJM\ExoBundle\Repository\QuestionRepository;
+use UJM\ExoBundle\Repository\ExerciseRepository;
 use UJM\ExoBundle\Serializer\Content\ResourceContentSerializer;
 use UJM\ExoBundle\Serializer\UserSerializer;
 
@@ -275,11 +275,11 @@ class QuestionSerializer extends AbstractSerializer
         if ($this->hasOption(Transfer::INCLUDE_ADMIN_META, $options)) {
             $metadata->model = $question->isModel();
 
-            /** @var QuestionRepository $questionRepo */
-            $questionRepo = $this->om->getRepository('UJMExoBundle:Question\Question');
+            /** @var ExerciseRepository $exerciseRepo */
+            $exerciseRepo = $this->om->getRepository('UJMExoBundle:Exercise');
 
             // Gets exercises that use this question
-            $exercises = $questionRepo->findUsedBy($question);
+            $exercises = $exerciseRepo->findByQuestion($question);
             $metadata->usedBy = array_map(function (Exercise $exercise) {
                 return $exercise->getUuid();
             }, $exercises);
@@ -317,7 +317,7 @@ class QuestionSerializer extends AbstractSerializer
 
         // Sets the creator of the Question if not set
         $creator = $question->getCreator();
-        if (empty($creator)) {
+        if (empty($creator) || !($creator instanceof User)) {
             $token = $this->tokenStorage->getToken();
             if (!empty($token) && $token->getUser() instanceof User) {
                 $question->setCreator($token->getUser());

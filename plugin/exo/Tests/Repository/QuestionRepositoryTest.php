@@ -59,16 +59,6 @@ class QuestionRepositoryTest extends TransactionalTestCase
     }
 
     /**
-     * The repository MUST return the list of exercise using the question.
-     */
-    public function testFindUsedBy()
-    {
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
      * The repository MUST return the list of questions used by an exercise.
      */
     public function testFindByExercise()

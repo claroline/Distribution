@@ -1,34 +1,23 @@
 import {makeReducer} from './../../utils/reducers'
+import {update} from './../../utils/utils'
 
 import {
-  ITEMS_SELECT,
-  ITEM_SELECT,
-  ITEM_DESELECT,
-  ITEM_DESELECT_ALL
+  SELECT_TOGGLE
 } from './../actions/select'
 
-function selectItems() {
-
+function toggleSelect(state, actions) {
+  const itemPos = state.indexOf(actions.itemId)
+  if (-1 === itemPos) {
+    // Item not selected
+    return update(state, {$push: [actions.itemId]})
+  } else {
+    // Item selected
+    return update(state, {$splice: [[itemPos, 1]]})
+  }
 }
-
-function selectItem() {
-
-}
-
-function deselectItem() {
-
-}
-
-function deselectAll() {
-  return []
-}
-
 
 const selectReducer = makeReducer([], {
-  [ITEMS_SELECT]: selectItems,
-  [ITEM_SELECT]: selectItem,
-  [ITEM_DESELECT]: deselectItem,
-  [ITEM_DESELECT_ALL]: deselectAll
+  [SELECT_TOGGLE]: toggleSelect
 })
 
 export default selectReducer

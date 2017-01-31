@@ -44,3 +44,7 @@ GraphicFeedback.propTypes = {
     y: T.number.isRequired
   })).isRequired
 }
+
+GraphicFeedback.defaultProps = {
+  answer: []
+}

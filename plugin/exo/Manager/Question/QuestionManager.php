@@ -121,7 +121,7 @@ class QuestionManager
         $searchResults = new \stdClass();
         $searchResults->totalResults = count($results);
         $searchResults->questions = array_map(function (Question $question) {
-            return $this->export($question, [Transfer::INCLUDE_ADMIN_META]);
+            return $this->export($question, [Transfer::INCLUDE_ADMIN_META, Transfer::INCLUDE_SOLUTIONS]);
         }, $results);
 
         // Add pagination

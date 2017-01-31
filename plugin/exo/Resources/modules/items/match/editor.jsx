@@ -445,6 +445,10 @@ class Match extends Component {
           </label>
         </div>
         <hr/>
+        <span className="help-block">
+          <span className="fa fa-info-circle"></span>{tex('match_editor_click_link_help')}
+        </span>
+        <hr/>
         <div className="match-items" onClick={(event) => this.handlePopoverFocusOut(event)}>
           <div className="item-col">
             <ul>

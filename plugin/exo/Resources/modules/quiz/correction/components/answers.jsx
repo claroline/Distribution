@@ -73,14 +73,19 @@ AnswerRow.propTypes = {
 let Answers = props =>
   <div className="answers-list">
     <h4 dangerouslySetInnerHTML={{__html: props.question.content}}></h4>
-    {props.answers.map((answer, idx) =>
-      <AnswerRow key={idx}
-                 scoreMax={props.question.score && props.question.score.max}
-                 updateScore={props.updateScore}
-                 updateFeedback={props.updateFeedback}
-                 {...answer}
-      />
-    )}
+    {props.answers.length > 0 ?
+      props.answers.map((answer, idx) =>
+        <AnswerRow key={idx}
+                   scoreMax={props.question.score && props.question.score.max}
+                   updateScore={props.updateScore}
+                   updateFeedback={props.updateFeedback}
+                   {...answer}
+        />
+      ) :
+      <div className="alert alert-warning">
+        {tex('no_answer_to_correct')}
+      </div>
+    }
   </div>
 
 Answers.propTypes = {

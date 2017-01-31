@@ -112,17 +112,21 @@ class GraphicDefinition extends AbstractDefinition
     {
         $corrected = new CorrectedAnswer();
 
-        foreach ($question->getAreas() as $area) {
-            foreach ($answer as $coords) {
-                if ($this->isPointInArea($area, $coords->x, $coords->y)) {
-                    if ($area->getScore() > 0) {
-                        $corrected->addExpected($area);
-                    } else {
-                        $corrected->addUnexpected($area);
+        foreach ($question->getAreas()->toArray() as $area) {
+            if (is_array($answer)) {
+                foreach ($answer as $coords) {
+                    if ($this->isPointInArea($area, $coords->x, $coords->y)) {
+                        if ($area->getScore() > 0) {
+                            $corrected->addExpected($area);
+                        } else {
+                            $corrected->addUnexpected($area);
+                        }
+                    } elseif ($area->getScore() > 0) {
+                        $corrected->addMissing($area);
                     }
-                } elseif ($area->getScore() > 0) {
-                    $corrected->addMissing($area);
                 }
+            } elseif ($area->getScore() > 0) {
+                $corrected->addMissing($area);
             }
         }
 

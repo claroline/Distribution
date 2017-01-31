@@ -21,14 +21,11 @@ actions.fetchQuestions = (filters, pagination = {}, sortBy = {}) => ({
         sortBy
       })
     },
-    success: (searchResults) => {
-      return (dispatch) => {
-        // Update total results
-        dispatch(totalResultsActions.changeTotalResults(searchResults.totalResults))
-
-        // Update questions list
-        dispatch(questionActions.setQuestions(searchResults.questions))
-      }
+    success: (searchResults, dispatch) => {
+      // Update total results
+      dispatch(totalResultsActions.changeTotalResults(searchResults.totalResults))
+      // Update questions list
+      dispatch(questionActions.setQuestions(searchResults.questions))
     }
   }
 })

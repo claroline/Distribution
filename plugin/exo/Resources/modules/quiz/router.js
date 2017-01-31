@@ -18,6 +18,7 @@ export function makeRouter(dispatch) {
       'correction/questions/:id': id => dispatch(correctionActions.displayQuestionAnswers(id)),
       'test': () => dispatch(playerActions.play(null, true)),
       'play': () => dispatch(playerActions.play(null, false)),
+      '': () => dispatch(actions.updateViewMode(VIEW_OVERVIEW, false)),
       '.*': () => dispatch(actions.updateViewMode(VIEW_OVERVIEW))
     }
   })
@@ -25,10 +26,10 @@ export function makeRouter(dispatch) {
   history.start()
 }
 
-export function navigate(fragment) {
+export function navigate(fragment, trigger = true) {
   if (!router) {
     throw new Error('Router has not been initialized')
   }
 
-  return router.navigate(fragment, {trigger: true})
+  return router.navigate(fragment, {trigger})
 }

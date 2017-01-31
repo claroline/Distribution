@@ -108,10 +108,9 @@ create_hole : Create cloze
 date: Date
 default : Default
 delete: Delete
-delete_of_my_bank: Remove from my bank
-delete_of_my_exercise: Remove from my quiz
 delete_papers: Delete papers
 delete_item: Delete question
+delete_items: "{1} Delete question|[2,Inf[ Delete %count% questions"
 delete_step: Delete step
 description: Description
 display_all_list: Display the whole list
@@ -269,6 +268,8 @@ mark_bigest: The score must be smaller than or equal to the maximum score
 mark_bigest_other: The score is larger than the maximum score
 match_add_item: Add item
 match_penalty_label: Penality for any wrong association
+match_editor_click_link_help: Click the link to edit association parameters.
+match_player_click_link_help: Click the link to get more informations.
 match_shuffle_labels_and_proposals: Shuffle proposal and label order
 match_edit_connection: Edit association
 match_item_empty_data_error: Item data can not be empty.
@@ -309,6 +310,7 @@ new_name: New name of the document
 next: Next
 no: No
 no_answer: No answer.
+no_answer_to_correct: No answer to this question to correct for the moment.
 no_answer_zone: There is no answer zone
 no_finish: Not finished
 no_pic_found: No document found
@@ -320,6 +322,7 @@ no_hint_info: There are no hints yet.
 no_paper_found: No paper found
 no_question: You don't ask for anything
 no_question_found: No question found
+no_question_to_correct: No open question to correct for the moment.
 no_rights: Your aren't the owner of this question and it's not shared with you.
 not_allowed_modify_paper: You can't change your answers anymore!
 no_thing_import: No question is checked for the import.
@@ -357,6 +360,7 @@ odd_score_not_valid: Odd score must be negative.
 pair_is_ordered: Pair is ordered.
 pair_pin_this_item: Pin this item
 pair_pair: Pair
+pair_random_needs_pin_item: You must pin at least one item to use random.
 pair_shuffle_pairs: Shuffle pair order.
 pair_allow_pin_function: Enable / disable pin functionality.
 pair_solution_at_least_two_items: A pair must have two items.
@@ -424,12 +428,19 @@ qti_xml_not_found: XML schema not found
 question: Question
 questions: Questions
 questions_bank: Bank of questions
-question_creation: Question creation
-question_description: Description of the question (optional)
-question_model: Set as a model
-question_title: Question title (optional)
-question_title_short: Question title
-question_shared_with: This question is shared with the users mentioned below
+
+question_edit: Edit
+question_delete: Delete
+question_duplicate: Duplicate
+question_export: Export
+question_share: Share
+question_show_quizzes: Show in quizzes
+
+questions_delete: Delete selected questions
+questions_duplicate: Duplicate selected questions
+questions_export: Export selected questions
+questions_share: Share selected questions
+
 question_need_manual_correction: This question needs a manual correction
 question_open_keywords_info: Your answer needs to contain the following keywords to be correct
 question_graphic_set_pointers: Click on the picture to place a pointer
@@ -487,11 +498,10 @@ selection: => Use drag and drop to answer.
 self: You can't share this question with yourself.
 shape: Shape
 share: Share
-shared_by: Shared by
-shared_questions: Questions that are shared with me
-shared_user: Share of questions
+share_admin_rights: Share edit and delete rights
+share_with: With
+share_items: "{1} Share question|[2,Inf[ Share %count% questions"
 shared_with: Shared with
-short: Short
 show: Show
 show_feedback: Show step's feedbacks
 show_interact_fields: Hints and global feedback
@@ -577,4 +587,8 @@ words_case_sensitive: The answer must respect the keyword case to be valid
 # Y
 yes: Yes
 your_answer: Your answer
+
+last_modified: Last modification
+creator: Authors
+questions_selected: "{1} <b>1</b> question selected|[2,Inf[ <b>%count%</b> questions selected"
 your_answers: Your answers
