@@ -30,19 +30,14 @@ export const AnswerTable = props =>
           })}/>
         }
         </span>
-        <span
-          className="info-block"
-          style={{
-            justifyContent: area.feedback ? 'space-between' : 'flex-end'
-          }}
-        >
+        <span className="info-block">
           {area.feedback &&
             <HoverFeedback
               id={`${area.id}-popover`}
               feedback={area.feedback}
             />
           }
-          <span className={classes({
+          <span className={classes('score', {
             'text-success': props.highlightScore && area.score > 0,
             'text-danger': props.highlightScore && area.score <= 0
           })}>

@@ -260,16 +260,23 @@
     .info-block {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      width: 78px;
+      justify-content: flex-start;
+
+      > * {
+        margin: auto 12px;
+      }
+
+      .score {
+        width: 56px;
+        text-align: right;
+      }
     }
 
     .area-status-icon {
       font-size: 20px;
 
       &.fa-times {
-        margin-left: 2px;
-        margin-right: 3px;
+        margin-left: 14px;
       }
     }
   }
