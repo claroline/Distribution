@@ -11,8 +11,9 @@ import {Textarea} from './../../../components/form/textarea.jsx'
 import {Radios} from './../../../components/form/radios.jsx'
 import {Date} from './../../../components/form/date.jsx'
 import {ValidationStatus} from './validation-status.jsx'
+import {formatDate} from './../../../utils/date'
+
 import {
-  quizTypes,
   shuffleModes,
   correctionModes,
   markModes,
@@ -24,6 +25,7 @@ import {
 
 const Properties = props =>
   <fieldset>
+    {/* TODO: enable this when feature is available
     <FormGroup controlId="quiz-type" label={t('type')}>
       <select
         id="quiz-type"
@@ -36,6 +38,7 @@ const Properties = props =>
         )}
       </select>
     </FormGroup>
+    */}
     <FormGroup
       controlId="quiz-title"
       label={t('title')}
@@ -150,6 +153,7 @@ StepPicking.propTypes = {
 
 const Signing = props =>
   <fieldset>
+    {/* TODO: enable this when feature is back
     <FormGroup
       controlId="quiz-duration"
       label={tex('duration')}
@@ -166,6 +170,7 @@ const Signing = props =>
         onChange={e => props.onChange('parameters.duration', e.target.value)}
       />
     </FormGroup>
+    */}
     <FormGroup
       controlId="quiz-maxAttempts"
       label={tex('maximum_attempts')}
@@ -187,12 +192,6 @@ const Signing = props =>
       checked={props.parameters.interruptible}
       label={tex('allow_test_exit')}
       onChange={checked => props.onChange('parameters.interruptible', checked)}
-    />
-    <CheckGroup
-      checkId="quiz-show-feedback"
-      checked={props.parameters.showFeedback}
-      label={tex('show_feedback')}
-      onChange={checked => props.onChange('parameters.showFeedback', checked)}
     />
 </fieldset>
 
@@ -234,7 +233,7 @@ const Correction = props =>
             id="quiz-correctionDate"
             name="quiz-correctionDate"
             value={props.parameters.correctionDate || ''}
-            onChange={date => props.onChange('parameters.correctionDate', date)}
+            onChange={date => props.onChange('parameters.correctionDate', formatDate(date))}
           />
         </FormGroup>
       </div>
@@ -253,6 +252,12 @@ const Correction = props =>
         )}
       </select>
     </FormGroup>
+    <CheckGroup
+      checkId="quiz-show-feedback"
+      checked={props.parameters.showFeedback}
+      label={tex('show_feedback')}
+      onChange={checked => props.onChange('parameters.showFeedback', checked)}
+    />
     <CheckGroup
       checkId="quiz-anonymizeAttempts"
       checked={props.parameters.anonymizeAttempts}
@@ -279,6 +284,7 @@ Correction.propTypes = {
     showScoreAt: T.string.isRequired,
     showFullCorrection: T.bool.isRequired,
     showStatistics: T.bool.isRequired,
+    showFeedback: T.bool.isRequired,
     anonymizeAttempts: T.bool.isRequired,
     correctionDate: T.string
   }).isRequired,
@@ -306,6 +312,7 @@ function makePanel(Section, title, key, props, errorProps) {
 
   return (
     <Panel
+      className="editor-panel-title"
       eventKey={key}
       header={Header}
     >
@@ -374,7 +381,8 @@ QuizEditor.propTypes = {
       anonymizeAttempts: T.bool.isRequired,
       showScoreAt: T.string.isRequired,
       showStatistics: T.bool.isRequired,
-      showFullCorrection: T.bool.isRequired
+      showFullCorrection: T.bool.isRequired,
+      showFeedback: T.bool.isRequired
     }).isRequired
   }).isRequired,
   validating: T.bool.isRequired,

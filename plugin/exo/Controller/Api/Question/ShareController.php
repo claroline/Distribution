@@ -2,12 +2,17 @@
 
 namespace UJM\ExoBundle\Controller\Api\Question;
 
+use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Repository\UserRepository;
+use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use UJM\ExoBundle\Controller\Api\AbstractController;
 use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Manager\Question\ShareManager;
+use UJM\ExoBundle\Serializer\UserSerializer;
 
 /**
  * Question Controller exposes REST API.
@@ -17,6 +22,16 @@ use UJM\ExoBundle\Manager\Question\ShareManager;
 class ShareController extends AbstractController
 {
     /**
+     * @var UserRepository
+     */
+    private $userRepository;
+
+    /**
+     * @var UserSerializer
+     */
+    private $userSerializer;
+
+    /**
      * @var ShareManager
      */
     private $shareManager;
@@ -24,17 +39,30 @@ class ShareController extends AbstractController
     /**
      * ShareController constructor.
      *
-     * @param ShareManager $shareManager
+     * @DI\InjectParams({
+     *     "om"             = @DI\Inject("claroline.persistence.object_manager"),
+     *     "userSerializer" = @DI\Inject("ujm_exo.serializer.user"),
+     *     "shareManager"   = @DI\Inject("ujm_exo.manager.share")
+     * })
+     *
+     * @param ObjectManager  $om
+     * @param UserSerializer $userSerializer
+     * @param ShareManager   $shareManager
      */
-    public function __construct(ShareManager $shareManager)
+    public function __construct(
+        ObjectManager $om,
+        UserSerializer $userSerializer,
+        ShareManager $shareManager)
     {
+        $this->userRepository = $om->getRepository('ClarolineCoreBundle:User');
+        $this->userSerializer = $userSerializer;
         $this->shareManager = $shareManager;
     }
 
     /**
      * Shares a list of questions to users.
      *
-     * @EXT\Route("", name="question_share")
+     * @EXT\Route("", name="questions_share")
      * @EXT\Method("POST")
      *
      * @param Request $request
@@ -88,12 +116,24 @@ class ShareController extends AbstractController
      */
     public function deleteAction(Request $request)
     {
-        $errors = [];
+    }
 
-        if (!empty($errors)) {
-            return new JsonResponse($errors, 422);
-        } else {
-            return new JsonResponse(null, 204);
-        }
+    /**
+     * Searches users by username, first or last name.
+     *
+     * @EXT\Route("/{search}", name="questions_share_users")
+     * @EXT\Method("GET")
+     *
+     * @param string $search
+     *
+     * @return JsonResponse
+     */
+    public function searchUsers($search)
+    {
+        $users = $this->userRepository->findByName($search);
+
+        return new JsonResponse(array_map(function (User $user) {
+            return $this->userSerializer->serialize($user);
+        }, $users));
     }
 }

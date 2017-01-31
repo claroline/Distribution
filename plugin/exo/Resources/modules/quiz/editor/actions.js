@@ -121,9 +121,9 @@ actions.save = () => {
             method: 'PUT' ,
             body: JSON.stringify(denormalized)
           },
-          before: () => actions.quizSaving(),
-          success: () => actions.quizSaved(),
-          failure: () => actions.quizSaveError()
+          before: () => dispatch(actions.quizSaving()),
+          success: () => dispatch(actions.quizSaved()),
+          failure: () => dispatch(actions.quizSaveError())
         }
       })
     }

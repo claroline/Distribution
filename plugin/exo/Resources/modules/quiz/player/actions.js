@@ -8,7 +8,9 @@ import quizSelectors from './../selectors'
 import {navigate} from './../router'
 import {select as playerSelectors} from './selectors'
 import {generatePaper} from './../papers/generator'
-import {normalize, denormalizeAnswers} from './normalizer'
+import {normalize, denormalizeAnswers, denormalize} from './normalizer'
+import moment from 'moment'
+import {actions as paperAction} from '../papers/actions'
 
 export const ATTEMPT_START  = 'ATTEMPT_START'
 export const ATTEMPT_FINISH = 'ATTEMPT_FINISH'
@@ -35,11 +37,11 @@ actions.fetchAttempt = quizId => ({
   [REQUEST_SEND]: {
     route: ['exercise_attempt_start', {exerciseId: quizId}],
     request: {method: 'POST'},
-    success: (data) => {
+    success: (data, dispatch) => {
       const normalized = normalize(data)
-      return actions.initPlayer(normalized.paper, normalized.answers)
+      dispatch(actions.initPlayer(normalized.paper, normalized.answers))
     },
-    failure: () => () => navigate('overview') // double fat arrow is needed because navigate is not an action creator
+    failure: () => navigate('overview')
   }
 })
 
@@ -50,14 +52,15 @@ actions.sendAnswers = (quizId, paperId, answers) =>({
       method: 'PUT',
       body: JSON.stringify(denormalizeAnswers(answers))
     },
-    success: () => actions.submitAnswers(quizId, paperId, answers)
+    success: (data, dispatch) =>
+      dispatch(actions.submitAnswers(quizId, paperId, answers))
   }
 })
 
 actions.requestHint = (quizId, paperId, questionId, hintId) => ({
   [REQUEST_SEND]: {
     route: ['exercise_attempt_hint_show', {exerciseId: quizId, id: paperId, questionId: questionId, hintId: hintId}],
-    success: (hint) => actions.useHint(questionId, hint)
+    success: (hint, dispatch) => dispatch(actions.useHint(questionId, hint))
   }
 })
 
@@ -67,10 +70,9 @@ actions.requestEnd = (quizId, paperId) => ({
     request: {
       method: 'PUT'
     },
-    success: (data) => {
+    success: (data, dispatch) => {
       const normalized = normalize(data)
-
-      return actions.handleAttemptEnd(normalized.paper)
+      dispatch(actions.handleAttemptEnd(normalized.paper))
     }
   }
 })
@@ -153,13 +155,35 @@ actions.finish = (quizId, paper, pendingAnswers = {}, showFeedback = false) => {
 }
 
 actions.handleAttemptEnd = (paper) => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     // Finish the current attempt
     dispatch(actions.finishAttempt(paper))
+    // We will decide here if we show the correction now or not and where we redirect the use
 
-    // We will decide here if we show the correction now or not and where we redirect the user
+    switch (playerSelectors.showCorrectionAt(getState())) {
+      case 'validation': {
+        dispatch(paperAction.addPaper(buildPaper(paper, playerSelectors.answers(getState()))))
+        dispatch(paperAction.setCurrentPaper(paper.id))
+        navigate('papers/' + paper.id)
+        break
+      }
+      case 'date': {
+        const correctionDate = moment(playerSelectors.correctionDate(getState()))
+        const today = moment()
+        const showPaper = today.diff(correctionDate, 'days') >= 0
 
-    navigate('overview')
+        if (showPaper) {
+          dispatch(paperAction.addPaper(buildPaper(paper, playerSelectors.answers(getState()))))
+          dispatch(paperAction.setCurrentPaper(paper.id))
+          navigate('papers/' + paper.id)
+        } else {
+          navigate('overview')
+        }
+
+        break
+      }
+      default: navigate('overview')
+    }
   }
 }
 
@@ -193,4 +217,8 @@ function endQuiz(quizId, paper, dispatch, getState) {
     // Finish the attempt and use quiz config to know what to do next
     return dispatch(actions.handleAttemptEnd(paper))
   }
+}
+
+function buildPaper(paper, answers) {
+  return denormalize(paper, answers)
 }

@@ -18,7 +18,7 @@ import {StepForm} from './step-form.jsx'
 import {ItemForm} from './item-form.jsx'
 
 const ParametersHeader = props =>
-  <div onClick={props.onClick} className="panel-title">
+  <div onClick={props.onClick} className="panel-title editor-panel-title">
     <span className={
       classes(
         'panel-icon',
