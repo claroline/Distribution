@@ -5,14 +5,18 @@ import {Metadata as ItemMetadata} from './../../../items/components/metadata.jsx
 import {tex, transChoice} from './../../../utils/translate'
 
 const UsedHint = props =>
-  <div className="well well-sm">
-    <span className="fa fa-fw fa-eye fa-lightbulb-o"></span>
-    {props.value}
+  <div className="well well-sm used-hint">
+    <span className="fa fa-lightbulb-o"/>
+    <span className="hint-text">
+      &nbsp;{props.value}
+    </span>
 
-    {props.penalty &&
-    <small className="text-danger">
-      {transChoice('hint_penalty', props.penalty, {count: props.penalty}, 'ujm_exo')}
-    </small>
+    {props.penalty > 0 &&
+      <small className="text-danger hint-penalty-info">
+        &nbsp;(
+          {transChoice('hint_penalty', props.penalty, {count: props.penalty}, 'ujm_exo')}
+        )
+      </small>
     }
   </div>
 
@@ -22,19 +26,26 @@ UsedHint.propTypes = {
 }
 
 const Hint = props =>
-  <button type="button" className="btn btn-default btn-block" onClick={props.showHint}>
-    <span className="fa fa-fw fa-eye"></span>
-    {tex('hint_show')}
+  <button
+    type="button"
+    className="btn btn-default btn-block hint-btn"
+    onClick={props.showHint}
+  >
+    <span className="fa fa-eye"/>
+    &nbsp;{tex('hint')}&nbsp;{props.number}
 
-    {props.penalty &&
-    <small className="text-danger">
-      {transChoice('hint_penalty', props.penalty, {count: props.penalty}, 'ujm_exo')}
-    </small>
+    {props.penalty > 0 &&
+      <small className="text-danger hint-penalty-info">
+        &nbsp;(
+          {transChoice('hint_penalty', props.penalty, {count: props.penalty}, 'ujm_exo')}
+        )
+      </small>
     }
   </button>
 
 Hint.propTypes = {
   penalty: T.number,
+  number: T.number.isRequired,
   showHint: T.func.isRequired
 }
 
@@ -53,6 +64,7 @@ const Hints = props => {
       return (
         <Hint
           key={index}
+          number={index + 1}
           penalty={hint.penalty}
           showHint={() => props.showHint(hint)}
         />

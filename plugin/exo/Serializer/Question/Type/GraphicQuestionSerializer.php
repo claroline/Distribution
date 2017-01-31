@@ -3,6 +3,7 @@
 namespace UJM\ExoBundle\Serializer\Question\Type;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Filesystem\Filesystem;
 use UJM\ExoBundle\Entity\Content\Image;
 use UJM\ExoBundle\Entity\Misc\Area;
 use UJM\ExoBundle\Entity\QuestionType\GraphicQuestion;
@@ -110,9 +111,16 @@ class GraphicQuestionSerializer implements SerializerInterface
         if (isset($imageData->data)) {
             $imageParts = explode(',', $imageData->data);
             $imageBin = base64_decode($imageParts[1]);
-            $file = "uploads/ujmexo/{$imageData->id}.{$typeParts[1]}";
-            file_put_contents(__DIR__."/../../../../../../../../web/{$file}", $imageBin);
-            $image->setUrl($file);
+            $imageDir = __DIR__.'/../../../../../../../../web/uploads/ujmexo';
+            $imageName = "{$imageData->id}.{$typeParts[1]}";
+            $fs = new Filesystem();
+
+            if (!$fs->exists($imageDir)) {
+                $fs->mkdir($imageDir);
+            }
+
+            $fs->dumpFile("{$imageDir}/{$imageName}", $imageBin);
+            $image->setUrl("uploads/ujmexo/{$imageName}");
         }
 
         $graphicQuestion->setImage($image);
