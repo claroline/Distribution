@@ -66,13 +66,10 @@ class ExerciseRepositoryTest extends TransactionalTestCase
      */
     public function testFindByQuestion()
     {
-        /*$exercises = $this->repo->findByQuestion($this->questions[0]);
+        $exercises = $this->repo->findByQuestion($this->questions[0]);
 
         $this->assertTrue(is_array($exercises));
-        $this->assertCount(1, $exercises);*/
-        $this->markTestIncomplete(
-            'This test breaks the travis build ?'
-        );
+        $this->assertCount(1, $exercises);
     }
 
     public function testInvalidatePapers()
