@@ -2,8 +2,6 @@ import React, {Component, PropTypes as T} from 'react'
 import classes from 'classnames'
 
 import {generateUrl} from './../../utils/routing'
-import {update} from './../../utils/utils'
-import {t, tex} from './../../utils/translate'
 
 const UsersList = props =>
   <ul className="dropdown-menu">

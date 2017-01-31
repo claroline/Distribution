@@ -17,5 +17,5 @@ export const bankApp = combineReducers({
   sortBy: sortByReducer,
   pagination: paginationReducer,
   search: searchReducer,
-  totalResults: totalResultsReducer,
+  totalResults: totalResultsReducer
 })

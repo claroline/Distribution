@@ -15,7 +15,7 @@ const mapStateToProps = (state) => {
   return {
     questions: getVisibleQuestions(state),
     selected: select.selected(state),
-    sortBy: state.sortBy,
+    sortBy: state.sortBy
   }
 }
 
@@ -45,6 +45,7 @@ const mapDispatchToProps = (dispatch) => {
     onShare: (items) => {
       dispatch(showModal(MODAL_SHARE, {
         title: transChoice('share_items', items.length, {count: items.length}, 'ujm_exo'),
+        fadeModal: fadeModal,
         handleShare: (users, adminRights) => {
           dispatch(fadeModal())
           dispatch(questionsActions.shareQuestions(items, users, adminRights))

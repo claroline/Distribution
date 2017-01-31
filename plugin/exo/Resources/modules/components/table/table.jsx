@@ -1,7 +1,6 @@
 import React, {PropTypes as T} from 'react'
 import classes from 'classnames'
 
-import {tex} from './../../utils/translate'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 import Tooltip from 'react-bootstrap/lib/Tooltip'
 

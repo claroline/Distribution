@@ -1,8 +1,6 @@
 import React, {Component, PropTypes as T} from 'react'
 import Modal from 'react-bootstrap/lib/Modal'
-import classes from 'classnames'
 
-import {generateUrl} from './../../../utils/routing'
 import {update} from './../../../utils/utils'
 import {t, tex} from './../../../utils/translate'
 import {FormGroup} from './../../../components/form/form-group.jsx'
@@ -111,5 +109,6 @@ export class ShareModal extends Component {
 }
 
 ShareModal.propTypes = {
+  fadeModal: T.func.isRequired,
   handleShare: T.func.isRequired
 }

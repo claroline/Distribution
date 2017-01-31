@@ -128,7 +128,9 @@ const QuestionRow = props =>
       {props.question.meta.category && props.question.meta.category.name ? props.question.meta.category.name : '-'}
     </TableCell>
     <TableCell align="right">
-      <small className="text-muted">{props.question.meta.updated}</small>
+      {props.question.meta.updated ?
+          <small className="text-muted">{props.question.meta.updated}</small> : '-'
+      }
     </TableCell>
     <TableCell>
       {props.question.meta.authors ?
@@ -167,10 +169,16 @@ const QuestionRow = props =>
   </TableRow>
 
 QuestionRow.propTypes = {
+  id: T.string.isRequired,
+  type: T.string.isRequired,
   question: T.shape({
     title: T.string,
     content: T.string.isRequired,
     meta: T.shape({
+      updated: T.string,
+      category: T.shape({
+        name: T.string
+      }),
       authors: T.arrayOf(T.shape({
         name: T.isRequired
       })),

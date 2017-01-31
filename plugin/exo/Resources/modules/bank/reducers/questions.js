@@ -12,7 +12,7 @@ function setQuestions(state, action) {
 }
 
 function removeQuestions(state, action) {
-  let newState = state;
+  let newState = state
   action.questions.map((questionId, index) => {
     newState = update(newState, {$splice: [[index, 1]]})
   })
@@ -21,7 +21,7 @@ function removeQuestions(state, action) {
 }
 
 function shareQuestions(state, action) {
-  let newState = state;
+  let newState = state
 
   action.questions.map((questionId, questionIndex) => {
     const question = state.find(question => questionId === question.id)
@@ -32,7 +32,7 @@ function shareQuestions(state, action) {
       }
 
       // Check if the question is already shared with the user
-      let alreadyShared = false;
+      let alreadyShared = false
       for (let i = 0; i < question.meta.sharedWith.length;i++) {
         let shared = question.meta.sharedWith[i]
         if (shared.user.id === user.id) {
