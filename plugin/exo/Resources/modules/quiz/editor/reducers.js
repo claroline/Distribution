@@ -6,13 +6,14 @@ import validate from './validators'
 import {decorateItem} from './../decorators'
 import {getIndex, makeId, makeItemPanelKey, update} from './../../utils/utils'
 import {getDefinition} from './../../items/item-types'
-
+import {VIEW_MODE_UPDATE, OPEN_FIRST_STEP} from './../actions'
 import {
   TYPE_QUIZ,
   TYPE_STEP,
   SHUFFLE_NEVER,
   SHUFFLE_ONCE,
-  SHUFFLE_ALWAYS
+  SHUFFLE_ALWAYS,
+  VIEW_EDITOR
 } from './../enums'
 import {
   ITEM_CREATE,
@@ -168,12 +169,11 @@ function reduceItems(items = {}, action = {}) {
       action.items.forEach(item => {
         let newItem = decorateItem(item)
         const def = getDefinition(item.type)
-        newItem = def.editor.reduce(newItem, action)
+        newItem = def.editor.decorate(newItem)
         const errors = validate.item(newItem)
         newItem = Object.assign({}, newItem, {_errors: errors})
         items = update(items, {[item.id]: {$set: newItem}})
       })
-
       return items
     }
     case ITEM_HINTS_UPDATE:
@@ -247,6 +247,11 @@ function reduceCurrentObject(object = {}, action = {}) {
         id: action.object.id,
         type: action.object.type
       }
+    case OPEN_FIRST_STEP:
+      return {
+        id: action.stepId,
+        type: TYPE_STEP
+      }
   }
   return object
 }
@@ -311,12 +316,21 @@ function reduceSavedState(saved = true, action = {}) {
   return saved
 }
 
+function reduceOpenedState(opened = false, action = {}) {
+  if (action.type === VIEW_MODE_UPDATE && action.mode === VIEW_EDITOR) {
+    return true
+  }
+
+  return opened
+}
+
 const reduceEditor = combineReducers({
   currentObject: reduceCurrentObject,
   openPanels: reduceOpenPanels,
   validating: reduceValidatingState,
   saving: reduceSavingState,
-  saved: reduceSavedState
+  saved: reduceSavedState,
+  opened: reduceOpenedState
 })
 
 export const reducers = {

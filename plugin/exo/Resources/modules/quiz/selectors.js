@@ -18,6 +18,10 @@ const editable = state => state.quiz.meta.editable
 const hasPapers = state => state.quiz.meta.paperCount > 0
 const saveEnabled = state => !state.editor.saved && !state.editor.saving
 const modal = state => state.modal
+const editorOpened = state => state.editor.opened
+const noItems = state =>
+  Object.keys(state.quiz.steps).length === 1 && Object.keys(state.items).length === 0
+const firstStepId = state => state.quiz.steps[0]
 
 export default {
   id,
@@ -36,5 +40,8 @@ export default {
   isLoading,
   alerts,
   saveEnabled,
-  modal
+  modal,
+  editorOpened,
+  noItems,
+  firstStepId
 }
