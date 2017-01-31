@@ -32,7 +32,6 @@ tinymce.claroline.plugins = tinymce.claroline.plugins || {}
  * this is usefull when change manually something in the editor.
  *
  * @param editor A TinyMCE editor object.
- *
  */
 tinymce.claroline.editorChange = function (editor) {
   setTimeout(function () {
