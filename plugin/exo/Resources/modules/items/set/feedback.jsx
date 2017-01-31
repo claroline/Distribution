@@ -38,6 +38,12 @@ export const SetFeedback = props =>
                       <div className="association bg-danger text-danger">
                         <WarningIcon valid={false}/>
                         <div className="association-data" dangerouslySetInnerHTML={{__html: utils.getSolutionItemData(answer.itemId, props.item.items)}} />
+                        {utils.getAnswerOddFeedback(answer, props.item.solutions.odd) !== '' &&
+                          <Feedback
+                            id={`ass-${answer.itemId}-${answer.setId}-feedback`}
+                            feedback={utils.getAnswerOddFeedback(answer, props.item.solutions.odd)}
+                          />
+                        }
                       </div>
                     }
                   </li>

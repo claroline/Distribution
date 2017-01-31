@@ -3,6 +3,7 @@ import size from 'lodash/size'
 
 const modal = state => state.modal
 const filters = state => state.search
+const selected = state => state.selected
 
 const countFilters = createSelector(
   [filters],
@@ -12,5 +13,6 @@ const countFilters = createSelector(
 export const select = {
   modal,
   filters,
+  selected,
   countFilters
 }

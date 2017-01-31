@@ -6,6 +6,7 @@ use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
+use UJM\ExoBundle\Entity\Question\Question;
 use UJM\ExoBundle\Library\Testing\Persister;
 use UJM\ExoBundle\Repository\ExerciseRepository;
 
@@ -17,6 +18,8 @@ class ExerciseRepositoryTest extends TransactionalTestCase
     private $persist;
     /** @var ExerciseRepository */
     private $repo;
+    /** @var Question[] */
+    private $questions;
     /** @var Exercise[] */
     private $exercises = [];
 
@@ -38,8 +41,14 @@ class ExerciseRepositoryTest extends TransactionalTestCase
         $paper2 = $paperGenerator->create($exerciseWithPapers);
         $this->om->persist($paper2);
 
+        $this->questions = [
+            $this->persist->openQuestion('Open question'),
+        ];
+        $exerciseWithQuestions = $this->persist->exercise('Exercise 2', $this->questions, $this->persist->user('bob'));
+
         $this->exercises = [
             $exerciseWithPapers,
+            $exerciseWithQuestions,
         ];
 
         $this->om->flush();
@@ -50,6 +59,17 @@ class ExerciseRepositoryTest extends TransactionalTestCase
         $this->markTestIncomplete(
             'This test has not been implemented yet.'
         );
+    }
+
+    /**
+     * The repository MUST return the list of exercises using the question.
+     */
+    public function testFindByQuestion()
+    {
+        $exercises = $this->repo->findByQuestion($this->questions[0]);
+
+        $this->assertTrue(is_array($exercises));
+        $this->assertCount(1, $exercises);
     }
 
     public function testInvalidatePapers()

@@ -35,3 +35,13 @@ utils.getAnswerSolutionScore = (answer, solutions) => {
   const solution = utils.getAnswerSolution(answer, solutions)
   return undefined !== solution ? solution.score : ''
 }
+
+utils.getAnswerOddFeedback = (answer, odd) => {
+  const solution = odd.find(odd => odd.itemId === answer.itemId)
+  return undefined !== solution ? solution.feedback : ''
+}
+
+utils.getAnswerOddScore = (answer, odd) => {
+  const solution = odd.find(odd => odd.itemId === answer.itemId)
+  return undefined !== solution ? solution.score : ''
+}
