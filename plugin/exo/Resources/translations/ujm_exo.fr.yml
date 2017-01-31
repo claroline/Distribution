@@ -568,3 +568,4 @@ Unique response: Réponse unique
 
 last_modified: Dernière modification
 creator: Auteurs
+questions_selected: "{1} <b>1</b> question sélectionnée|[2,Inf[ <b>%count%</b> questions sélectionnées"

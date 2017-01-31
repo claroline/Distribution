@@ -1,6 +1,6 @@
 import React, { Component, PropTypes as T } from 'react'
 import { DropdownButton, MenuItem } from 'react-bootstrap'
-import {tex, trans} from './../../utils/translate'
+import {tex, trans, transChoice} from './../../utils/translate'
 import {getDefinition} from './../../items/item-types'
 import {Icon as ItemIcon} from './../../items/components/icon.jsx'
 
@@ -20,7 +20,7 @@ const SelectedRow = props =>
       <span className="fa fa-check-square"></span>
     </td>
     <td colSpan={5}>
-      <b>{props.selected.length}</b> questions selected (<a href="">select all <b>153</b> questions</a>)
+      {transChoice('questions_selected', props.selected.length, {count: props.selected.length})}
     </td>
     <td className="table-actions text-right">
       <button
