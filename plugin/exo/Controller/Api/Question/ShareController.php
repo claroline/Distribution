@@ -67,7 +67,7 @@ class ShareController extends AbstractController
      * @EXT\ParamConverter("user", converter="current_user")
      *
      * @param Request $request
-     * @param User $user
+     * @param User    $user
      *
      * @return JsonResponse
      */

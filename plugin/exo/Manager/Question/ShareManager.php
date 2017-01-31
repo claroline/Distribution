@@ -48,7 +48,7 @@ class ShareManager
      * Shares a list of question to users.
      *
      * @param \stdClass $shareRequest - an object containing the questions and users to link
-     * @param User $user
+     * @param User      $user
      *
      * @throws ValidationException
      */

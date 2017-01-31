@@ -35,7 +35,7 @@ class QuestionBankController
      * })
      *
      * @param QuestionManager $questionManager
-     * @param UserSerializer $userSerializer
+     * @param UserSerializer  $userSerializer
      */
     public function __construct(
         QuestionManager $questionManager,

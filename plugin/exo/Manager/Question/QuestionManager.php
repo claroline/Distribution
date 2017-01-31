@@ -212,7 +212,7 @@ class QuestionManager
      * It's only possible if the Question is not used in an Exercise.
      *
      * @param array $questions - the uuids of questions to delete
-     * @param User $user
+     * @param User  $user
      */
     public function delete(array $questions, User $user)
     {
