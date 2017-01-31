@@ -102,6 +102,23 @@ class QuestionManager
         $this->hintSerializer = $hintSerializer;
     }
 
+    public function canEdit(Question $question, User $user)
+    {
+        $shared = $this->om->getRepository('UJMExoBundle:Question\Shared')
+            ->findOneBy([
+                'question' => $question,
+                'user' => $user,
+            ]);
+
+        if ($question->getCreator()->getId() === $user->getId()
+            || ($shared && $shared->hasAdminRights())) {
+            // User has admin rights so he can delete question
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Searches questions for a User.
      *
@@ -194,19 +211,18 @@ class QuestionManager
      * Deletes a Question.
      * It's only possible if the Question is not used in an Exercise.
      *
-     * @param Question $question
-     *
-     * @throws ValidationException
+     * @param array $questions - the uuids of questions to delete
+     * @param User  $user
      */
-    public function delete(Question $question)
+    public function delete(array $questions, User $user)
     {
-        $exercises = $this->repository->findUsedBy($question);
-        if (count($exercises) > 0) {
-            // Question is used, we can't delete it
-            throw new ValidationException('Question can not be deleted', [
-                'path' => '',
-                'message' => "Question {$question->getUuid()} is linked to exercises.",
-            ]);
+        // Reload the list of questions to delete
+        $toDelete = $this->repository->findByUuids($questions);
+        foreach ($toDelete as $question) {
+            if ($this->canEdit($question, $user)) {
+                // User has admin rights so he can delete question
+                $this->om->remove($question);
+            }
         }
 
         $this->om->remove($question);

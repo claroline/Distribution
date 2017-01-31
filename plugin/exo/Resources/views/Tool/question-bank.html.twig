@@ -34,7 +34,11 @@
 
 {# Content of the Page #}
 {% block section_panel %}
-    <div id="questions-bank" data-initial="{{ initialSearch | json_encode | raw | escape }}"></div>
+    <div
+        id="questions-bank"
+        data-initial="{{ initialSearch | json_encode | raw | escape }}"
+        data-user="{{ currentUser | json_encode | raw | escape }}"
+    ></div>
 {% endblock %}
 
 {% block javascripts %}

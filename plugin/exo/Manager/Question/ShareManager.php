@@ -21,27 +21,38 @@ class ShareManager
     private $om;
 
     /**
+     * @var QuestionManager
+     */
+    private $questionManager;
+
+    /**
      * ShareManager constructor.
      *
      * @DI\InjectParams({
-     *     "om" = @DI\Inject("claroline.persistence.object_manager")
+     *     "om" = @DI\Inject("claroline.persistence.object_manager"),
+     *     "questionManager" = @DI\Inject("ujm_exo.manager.question")
      * })
      *
-     * @param ObjectManager $om
+     * @param ObjectManager   $om
+     * @param QuestionManager $questionManager
      */
-    public function __construct(ObjectManager $om)
+    public function __construct(
+        ObjectManager $om,
+        QuestionManager $questionManager)
     {
         $this->om = $om;
+        $this->questionManager = $questionManager;
     }
 
     /**
      * Shares a list of question to users.
      *
      * @param \stdClass $shareRequest - an object containing the questions and users to link
+     * @param User      $user
      *
      * @throws ValidationException
      */
-    public function share(\stdClass $shareRequest)
+    public function share(\stdClass $shareRequest, User $user)
     {
         $errors = $this->validateShareRequest($shareRequest);
         if (count($errors) > 0) {
@@ -62,18 +73,22 @@ class ShareManager
 
         // Share each question with each user
         foreach ($questions as $question) {
-            $sharedWith = $this->om->getRepository('UJMExoBundle:Question\Shared')->findBy(['question' => $question]);
-            foreach ($users as $user) {
-                $shared = $this->getSharedForUser($user, $sharedWith);
-                if (empty($shared)) {
-                    $shared = new Shared();
-                    $shared->setQuestion($question);
-                    $shared->setUser($user);
+            if ($this->questionManager->canEdit($question, $user)) {
+                $sharedWith = $this->om
+                    ->getRepository('UJMExoBundle:Question\Shared')
+                    ->findBy(['question' => $question]);
+
+                foreach ($users as $user) {
+                    $shared = $this->getSharedForUser($user, $sharedWith);
+                    if (empty($shared)) {
+                        $shared = new Shared();
+                        $shared->setQuestion($question);
+                        $shared->setUser($user);
+                    }
+
+                    $shared->setAdminRights($adminRights);
+                    $this->om->persist($shared);
                 }
-
-                $shared->setAdminRights($adminRights);
-
-                $this->om->persist($shared);
             }
         }
 

@@ -4,7 +4,7 @@ import {REQUEST_SEND} from './../../api/actions'
 
 export const QUESTIONS_SHARE = 'QUESTIONS_SHARE'
 export const QUESTIONS_SET = 'QUESTIONS_SET'
-export const QUESTIONS_REMOVE = 'QUESTIONS_DELETE'
+export const QUESTIONS_REMOVE = 'QUESTIONS_REMOVE'
 
 export const actions = {}
 

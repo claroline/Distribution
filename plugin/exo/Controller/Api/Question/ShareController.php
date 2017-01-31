@@ -64,12 +64,14 @@ class ShareController extends AbstractController
      *
      * @EXT\Route("", name="questions_share")
      * @EXT\Method("POST")
+     * @EXT\ParamConverter("user", converter="current_user")
      *
      * @param Request $request
+     * @param User    $user
      *
      * @return JsonResponse
      */
-    public function shareAction(Request $request)
+    public function shareAction(Request $request, User $user)
     {
         $errors = [];
 
@@ -81,7 +83,7 @@ class ShareController extends AbstractController
             ];
         } else {
             try {
-                $this->shareManager->share($data);
+                $this->shareManager->share($data, $user);
             } catch (ValidationException $e) {
                 $errors = $e->getErrors();
             }

@@ -61,24 +61,6 @@ class QuestionController extends AbstractController
     }
 
     /**
-     * Gets detail information about a Question.
-     *
-     * @EXT\Route("/{id}", name="question_get")
-     * @EXT\Method("GET")
-     * @EXT\ParamConverter("question", class="UJMExoBundle:Question\Question", options={"mapping": {"id": "uuid"}})
-     *
-     * @param Question $question
-     *
-     * @return JsonResponse
-     */
-    public function getAction(Question $question)
-    {
-        return new JsonResponse(
-            $this->questionManager->export($question, [Transfer::INCLUDE_SOLUTIONS, Transfer::INCLUDE_ADMIN_META])
-        );
-    }
-
-    /**
      * Creates a new Question.
      *
      * @EXT\Route("", name="question_create")
@@ -168,18 +150,30 @@ class QuestionController extends AbstractController
      *
      * @EXT\Route("/{id}", name="question_delete")
      * @EXT\Method("DELETE")
-     * @EXT\ParamConverter("question", class="UJMExoBundle:Question\Question", options={"mapping": {"id": "uuid"}})
+     * @EXT\ParamConverter("user", converter="current_user")
      *
-     * @param Question $question
+     * @param Request $request
+     * @param User    $user
      *
      * @return JsonResponse
      */
-    public function deleteAction(Question $question)
+    public function deleteAction(Request $request, User $user)
     {
-        try {
-            $this->questionManager->delete($question);
-        } catch (ValidationException $e) {
-            return new JsonResponse($e->getErrors(), 422);
+        $errors = [];
+
+        $data = $this->decodeRequestData($request);
+        if (empty($data) || !is_array($data)) {
+            // Invalid or empty JSON data received
+            $errors[] = [
+                'path' => '',
+                'message' => 'Invalid JSON data',
+            ];
+        } else {
+            try {
+                $this->questionManager->delete($data, $user);
+            } catch (ValidationException $e) {
+                $errors = $e->getErrors();
+            }
         }
 
         return new JsonResponse(null, 204);

@@ -16,6 +16,12 @@ class Shared
      *
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\User")
+     * @ORM\JoinColumn(
+     *     name="user_id",
+     *     referencedColumnName="id",
+     *     nullable=false,
+     *     onDelete="CASCADE"
+     * )
      *
      * @var User
      */
@@ -26,6 +32,12 @@ class Shared
      *
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Question\Question")
+     * @ORM\JoinColumn(
+     *     name="question_id",
+     *     referencedColumnName="id",
+     *     nullable=false,
+     *     onDelete="CASCADE"
+     * )
      *
      * @var Question
      */
@@ -91,7 +103,7 @@ class Shared
     }
 
     /**
-     * Do uset have admin rights?
+     * Does user have admin rights?
      *
      * @return bool
      */
