@@ -556,3 +556,6 @@ words_case_sensitive: The answer must respect the keyword case to be valid
 # Y
 yes: Yes
 your_answer: Your answer
+
+last_modified: Last modification
+creator: Authors

@@ -175,6 +175,8 @@ class QuestionController extends AbstractController
      */
     public function deleteAction(Request $request)
     {
+        $errors = [];
+
         $data = $this->decodeRequestData($request);
         if (empty($data) || !is_array($data)) {
             // Invalid or empty JSON data received

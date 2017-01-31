@@ -1,6 +1,5 @@
 import React, { Component, PropTypes as T } from 'react'
 import { DropdownButton, MenuItem } from 'react-bootstrap'
-import classes from 'classnames'
 import {tex, trans} from './../../utils/translate'
 import {getDefinition} from './../../items/item-types'
 import {Icon as ItemIcon} from './../../items/components/icon.jsx'
@@ -27,24 +26,10 @@ const SelectedRow = props =>
       <button
         role="button"
         className="btn btn-sm btn-link"
-      >
-        <span className="fa fa-fw fa-copy" />
-        <span className="sr-only">{tex('questions_duplicate')}</span>
-      </button>
-      <button
-        role="button"
-        className="btn btn-sm btn-link"
         onClick={() => props.onShare(props.selected)}
       >
         <span className="fa fa-fw fa-share" />
         <span className="sr-only">{tex('questions_share')}</span>
-      </button>
-      <button
-        role="button"
-        className="btn btn-sm btn-link"
-      >
-        <span className="fa fa-fw fa-upload" />
-        <span className="sr-only">{tex('questions_export')}</span>
       </button>
       <button
         role="button"
@@ -73,31 +58,31 @@ const QuestionTableHeader = props =>
         direction={'type' === props.sortBy.property ? props.sortBy.direction : 0}
         onSort={() => props.onSort('type')}
       >
-        Type
+        {tex('type')}
       </TableSortingCell>
       <TableSortingCell
         direction={'content' === props.sortBy.property ? props.sortBy.direction : 0}
         onSort={() => props.onSort('content')}
       >
-        Question
+        {tex('question')}
       </TableSortingCell>
       <TableSortingCell
         direction={'category' === props.sortBy.property ? props.sortBy.direction : 0}
         onSort={() => props.onSort('category')}
       >
-        Category
+        {tex('category')}
       </TableSortingCell>
       <TableSortingCell
         direction={'updated' === props.sortBy.property ? props.sortBy.direction : 0}
         onSort={() => props.onSort('updated')}
       >
-        Last modified
+        {tex('last_modified')}
       </TableSortingCell>
       <TableSortingCell
         direction={'author' === props.sortBy.property ? props.sortBy.direction : 0}
         onSort={() => props.onSort('author')}
       >
-        Creator
+        {tex('creator')}
       </TableSortingCell>
       <TableHeaderCell align="right">&nbsp;</TableHeaderCell>
     </tr>
@@ -153,11 +138,6 @@ const QuestionRow = props =>
       }
     </TableCell>
     <TableCell align="right" className="table-actions">
-      <a role="button" href="" className="btn btn-link btn-sm">
-        <span className="fa fa-fw fa-pencil" />&nbsp;
-        {tex('question_edit')}
-      </a>
-
       <DropdownButton
         id={`dropdown-other-actions-${props.question.id}`}
         title={<span className="fa fa-fw fa-ellipsis-v"></span>}
@@ -166,37 +146,12 @@ const QuestionRow = props =>
         pullRight={true}
         className="btn-sm"
       >
-        <MenuItem header>More actions</MenuItem>
-
-        <MenuItem>
-          <span className="fa fa-fw fa-copy" />&nbsp;
-          {tex('question_duplicate')}
-        </MenuItem>
+        <MenuItem header>Actions</MenuItem>
         <MenuItem
           onClick={() => props.onShare([props.question.id])}
         >
           <span className="fa fa-fw fa-share" />&nbsp;
           {tex('question_share')}
-          <span
-            className={classes(
-              'label',
-              0 < props.question.meta.sharedWith.length ? 'label-primary' : 'label-default')
-            }>{props.question.meta.sharedWith.length}</span>
-        </MenuItem>
-        <MenuItem
-          onClick={() => props.onShare([props.question.id])}
-        >
-          <span className="fa fa-fw fa-question" />&nbsp;
-          {tex('question_show_quizzes')}
-          <span
-            className={classes(
-                'label',
-                0 < props.question.meta.usedBy.length ? 'label-primary' : 'label-default')
-            }>{props.question.meta.usedBy.length}</span>
-        </MenuItem>
-        <MenuItem>
-          <span className="fa fa-fw fa-upload" />&nbsp;
-          {tex('question_export')}
         </MenuItem>
         <MenuItem divider />
 
