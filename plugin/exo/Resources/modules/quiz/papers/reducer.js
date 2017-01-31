@@ -1,9 +1,8 @@
-import {ATTEMPT_FINISH} from './../player/actions'
-import {fetchPapers} from './api'
 import {PAPERS_INIT, PAPER_CURRENT, PAPER_ADD, PAPER_FETCHED} from './actions'
 import {update} from '../../utils/utils'
 
 export const reducePapers = (state = {papers: [], isFetched: false}, action = {}) => {
+  let index
   switch (action.type) {
     case PAPERS_INIT:
       return Object.assign({}, state, {
@@ -14,7 +13,7 @@ export const reducePapers = (state = {papers: [], isFetched: false}, action = {}
         current: action.id
       })
     case PAPER_ADD:
-      const index = state.papers.findIndex(p => p.id === action.paper.id)
+      index = state.papers.findIndex(p => p.id === action.paper.id)
       if (index === -1) {
         return Object.assign({}, state, {
           papers: update(state.papers, {$push: [action.paper]})
