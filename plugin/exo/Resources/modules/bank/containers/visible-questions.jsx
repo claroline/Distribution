@@ -8,13 +8,14 @@ import {actions as questionsActions} from './../actions/questions'
 import {actions as selectActions} from './../actions/select'
 import {showModal} from './../../modal/actions'
 import {MODAL_DELETE_CONFIRM} from './../../modal'
+import {MODAL_SHARE} from './../components/modal/share.jsx'
 import {select} from './../selectors'
 
 const mapStateToProps = (state) => {
   return {
     questions: getVisibleQuestions(state),
     selected: select.selected(state),
-    sortBy: state.sortBy
+    sortBy: state.sortBy,
   }
 }
 
@@ -29,19 +30,31 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(sortActions.updateSortBy(property))
     },
 
+    toggleSelectPage: () => {
+
+    },
+
     toggleSelectAll: () => {
 
     },
 
     toggleSelect: (item) => {
-      dispatch(selectActions.toggleSelect(item.id));
+      dispatch(selectActions.toggleSelect(item.id))
     },
 
-    onDelete: (item) => {
+    onShare: (items) => {
+      dispatch(showModal(MODAL_SHARE, {
+        title: tex('share_item'),
+        handleShare: (users, adminRights) =>
+          dispatch(questionsActions.shareQuestions(items, users, adminRights))
+      }))
+    },
+
+    onDelete: (items) => {
       dispatch(showModal(MODAL_DELETE_CONFIRM, {
         title: tex('delete_item'),
         question: tex('remove_question_confirm_message'),
-        handleConfirm: () => dispatch(questionsActions.deleteQuestions([item.id]))
+        handleConfirm: () => dispatch(questionsActions.deleteQuestions(items))
       }))
     }
   }

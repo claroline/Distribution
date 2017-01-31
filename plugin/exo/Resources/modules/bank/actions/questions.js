@@ -12,14 +12,18 @@ actions.setQuestions = makeActionCreator(QUESTIONS_SET, 'questions')
 actions.removeQuestions = makeActionCreator(QUESTIONS_REMOVE, 'questions')
 //actions.shareQuestions = makeActionCreator()
 
-actions.shareQuestions = (questions, users, ) => ({
+actions.shareQuestions = (questions, users, adminRights) => ({
   [REQUEST_SEND]: {
-    route: ['questions_delete'],
+    route: ['questions_share'],
     request: {
-      method: 'DELETE',
-      body: JSON.stringify(questions)
+      method: 'POST',
+      body: JSON.stringify({
+        questions,
+        users,
+        adminRights
+      })
     },
-    success: () => actions.removeQuestions(questions)
+    success: () => true
   }
 })
 

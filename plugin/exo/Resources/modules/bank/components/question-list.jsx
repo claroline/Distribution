@@ -16,35 +16,51 @@ import {
 } from './../../components/table/table.jsx'
 
 const SelectedRow = props =>
-    <tr className="selected-rows active">
-      <td className="text-center">
-        <span className="fa fa-check-square"></span>
-      </td>
-      <td colSpan={5}>
-        <b>10</b> questions selected (<a href="">select all <b>153</b> questions</a>)
-      </td>
-      <td className="table-actions text-right">
-        <a role="button" href="" className="btn btn-sm btn-link">
-          <span className="fa fa-fw fa-copy" />
-          <span className="sr-only">{tex('questions_duplicate')}</span>
-        </a>
-        <button role="button" className="btn btn-sm btn-link">
-          <span className="fa fa-fw fa-share" />
-          <span className="sr-only">{tex('questions_share')}</span>
-        </button>
-        <button role="button" className="btn btn-sm btn-link">
-          <span className="fa fa-fw fa-upload" />
-          <span className="sr-only">{tex('questions_export')}</span>
-        </button>
-        <button role="button" className="btn btn-sm btn-link btn-link-danger">
-          <span className="fa fa-fw fa-trash-o" />
-          <span className="sr-only">{tex('questions_delete')}</span>
-        </button>
-      </td>
-    </tr>
+  <tr className="selected-rows active">
+    <td className="text-center">
+      <span className="fa fa-check-square"></span>
+    </td>
+    <td colSpan={5}>
+      <b>{props.selected.length}</b> questions selected (<a href="">select all <b>153</b> questions</a>)
+    </td>
+    <td className="table-actions text-right">
+      <button
+        role="button"
+        className="btn btn-sm btn-link"
+      >
+        <span className="fa fa-fw fa-copy" />
+        <span className="sr-only">{tex('questions_duplicate')}</span>
+      </button>
+      <button
+        role="button"
+        className="btn btn-sm btn-link"
+        onClick={() => props.onShare(props.selected)}
+      >
+        <span className="fa fa-fw fa-share" />
+        <span className="sr-only">{tex('questions_share')}</span>
+      </button>
+      <button
+        role="button"
+        className="btn btn-sm btn-link"
+      >
+        <span className="fa fa-fw fa-upload" />
+        <span className="sr-only">{tex('questions_export')}</span>
+      </button>
+      <button
+        role="button"
+        className="btn btn-sm btn-link btn-link-danger"
+        onClick={() => props.onDelete(props.selected)}
+      >
+        <span className="fa fa-fw fa-trash-o" />
+        <span className="sr-only">{tex('questions_delete')}</span>
+      </button>
+    </td>
+  </tr>
 
 SelectedRow.propTypes = {
-
+  selected: T.arrayOf(T.string).isRequired,
+  onDelete: T.func.isRequired,
+  onShare: T.func.isRequired
 }
 
 const QuestionTableHeader = props =>
@@ -85,7 +101,13 @@ const QuestionTableHeader = props =>
       </TableSortingCell>
       <TableHeaderCell align="right">&nbsp;</TableHeaderCell>
     </tr>
-    <SelectedRow />
+    {0 < props.selected.length &&
+      <SelectedRow
+        selected={props.selected}
+        onDelete={props.onDelete}
+        onShare={props.onShare}
+      />
+    }
   </TableHeader>
 
 QuestionTableHeader.propTypes = {
@@ -95,7 +117,9 @@ QuestionTableHeader.propTypes = {
     direction: T.number
   }),
   toggleSelectAll: T.func.isRequired,
-  onSort: T.func.isRequired
+  onSort: T.func.isRequired,
+  onShare: T.func.isRequired,
+  onDelete: T.func.isRequired
 }
 
 const QuestionRow = props =>
@@ -122,7 +146,11 @@ const QuestionRow = props =>
       <small className="text-muted">{props.question.meta.updated}</small>
     </TableCell>
     <TableCell>
-      <small className="text-muted">Axel Penin</small>
+      {props.question.meta.authors ?
+        <small className="text-muted">
+          {props.question.meta.authors[0].name}
+        </small> : '-'
+      }
     </TableCell>
     <TableCell align="right" className="table-actions">
       <a role="button" href="" className="btn btn-link btn-sm">
@@ -144,7 +172,9 @@ const QuestionRow = props =>
           <span className="fa fa-fw fa-copy" />&nbsp;
           {tex('question_duplicate')}
         </MenuItem>
-        <MenuItem>
+        <MenuItem
+          onClick={() => props.onShare([props.question.id])}
+        >
           <span className="fa fa-fw fa-share" />&nbsp;
           {tex('question_share')}
         </MenuItem>
@@ -156,7 +186,7 @@ const QuestionRow = props =>
 
         <MenuItem
           className="link-danger"
-          onClick={() => props.onDelete(props.question)}
+          onClick={() => props.onDelete([props.question.id])}
         >
           <span className="fa fa-fw fa-trash-o" />&nbsp;
           {tex('question_delete')}
@@ -169,9 +199,14 @@ QuestionRow.propTypes = {
   question: T.shape({
     title: T.string,
     content: T.string.isRequired,
-    meta: T.object.isRequired
+    meta: T.shape({
+      authors: T.arrayOf(T.shape({
+        name: T.isRequired
+      }))
+    }).isRequired
   }).isRequired,
   isSelected: T.bool,
+  onShare: T.func.isRequired,
   onDelete: T.func.isRequired
 }
 
@@ -190,6 +225,8 @@ export default class QuestionList extends Component {
           toggleSelectAll={this.props.toggleSelectAll}
           sortBy={this.props.sortBy}
           onSort={this.props.onSort}
+          onShare={(items) => this.props.onShare(items)}
+          onDelete={this.props.onDelete}
         />
 
         <tbody>
@@ -198,6 +235,7 @@ export default class QuestionList extends Component {
             key={question.id}
             question={question}
             isSelected={-1 !== this.props.selected.indexOf(question.id)}
+            onShare={(items) => this.props.onShare(items)}
             onDelete={this.props.onDelete}
             toggleSelect={this.props.toggleSelect}
           />
@@ -214,6 +252,8 @@ QuestionList.propTypes = {
   sortBy: T.object.isRequired,
   onSort: T.func.isRequired,
   onDelete: T.func.isRequired,
+  onShare: T.func.isRequired,
   toggleSelect: T.func.isRequired,
+  toggleSelectPage: T.func.isRequired,
   toggleSelectAll: T.func.isRequired
 }

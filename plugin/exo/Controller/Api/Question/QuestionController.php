@@ -164,7 +164,7 @@ class QuestionController extends AbstractController
     }
 
     /**
-     * Deletes a Question.
+     * Deletes a list of Questions.
      *
      * @EXT\Route("", name="questions_delete")
      * @EXT\Method("DELETE")
