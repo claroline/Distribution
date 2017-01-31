@@ -6,6 +6,7 @@ import validate from './validators'
 import {decorateItem} from './../decorators'
 import {getIndex, makeId, makeItemPanelKey, update} from './../../utils/utils'
 import {getDefinition} from './../../items/item-types'
+import {ATTEMPT_FINISH} from './../player/actions'
 import {VIEW_MODE_UPDATE, OPEN_FIRST_STEP} from './../actions'
 import {
   TYPE_QUIZ,
@@ -79,8 +80,14 @@ function reduceQuiz(quiz = initialQuizState(), action = {}) {
         }
       })
     }
-  }
+    case ATTEMPT_FINISH:
+      return update(quiz, {
+        meta: {
+          userPaperCount: {$set: quiz.meta.userPaperCount + 1}
+        }
+      })
 
+  }
   return quiz
 }
 
