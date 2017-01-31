@@ -4,6 +4,7 @@ namespace UJM\ExoBundle\Repository;
 
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Question\Question;
 
@@ -31,12 +32,20 @@ class QuestionRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('q');
 
-        // Get questions created by the User
-        $qb->where('q.creator = :user');
-        $qb->setParameter('user', $user);
-
         if (empty($filters) || empty($filters->self_only)) {
             // Includes shared questions
+            if (!empty($filters) && !empty($filters->creators)) {
+                // Search by creators
+            } else {
+                // Get all questions of the current user
+                $qb->leftJoin('UJM\ExoBundle\Entity\Question\Shared', 's', Join::WITH, 'q = s.question');
+                $qb->where('(q.creator = :user OR s.user = :user)');
+                $qb->setParameter('user', $user);
+            }
+        } else {
+            // Only Get questions created by the User
+            $qb->where('q.creator = :user');
+            $qb->setParameter('user', $user);
         }
 
         // Type
@@ -85,11 +94,6 @@ class QuestionRepository extends EntityRepository
         return $qb
             ->getQuery()
             ->getResult();
-    }
-
-    public function findUsedBy(Question $question)
-    {
-        return [];
     }
 
     /**
