@@ -164,38 +164,24 @@ class QuestionController extends AbstractController
     }
 
     /**
-     * Deletes a list of Questions.
+     * Deletes a Question.
      *
-     * @EXT\Route("", name="questions_delete")
+     * @EXT\Route("/{id}", name="question_delete")
      * @EXT\Method("DELETE")
+     * @EXT\ParamConverter("question", class="UJMExoBundle:Question\Question", options={"mapping": {"id": "uuid"}})
      *
-     * @param Request $request
+     * @param Question $question
      *
      * @return JsonResponse
      */
-    public function deleteAction(Request $request)
+    public function deleteAction(Question $question)
     {
-        $errors = [];
-
-        $data = $this->decodeRequestData($request);
-        if (empty($data) || !is_array($data)) {
-            // Invalid or empty JSON data received
-            $errors[] = [
-                'path' => '',
-                'message' => 'Invalid JSON data',
-            ];
-        } else {
-            try {
-                $this->questionManager->delete($data);
-            } catch (ValidationException $e) {
-                $errors = $e->getErrors();
-            }
+        try {
+            $this->questionManager->delete($question);
+        } catch (ValidationException $e) {
+            return new JsonResponse($e->getErrors(), 422);
         }
 
-        if (empty($errors)) {
-            return new JsonResponse(null, 204);
-        } else {
-            return new JsonResponse($errors, 422);
-        }
+        return new JsonResponse(null, 204);
     }
 }

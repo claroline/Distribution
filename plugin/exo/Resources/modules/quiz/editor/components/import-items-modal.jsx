@@ -12,7 +12,6 @@ export class ImportItemsModal extends Component {
     super(props)
     this.state = {
       selected: [],
-      criterion: null,
       questions: [],
       total: 0,
       types: listItemNames()
@@ -20,9 +19,15 @@ export class ImportItemsModal extends Component {
   }
 
   handleSearchTextChange(value){
-    this.setState({criterion: value})
-    // refresh results
-    this.getQuestions()
+    if (value !== '') {
+      this.getQuestions(value)
+    } else {
+      this.setState({
+        selected: [],
+        questions: [],
+        total: 0
+      })
+    }
   }
 
   handleQuestionSelection(question){
@@ -31,11 +36,14 @@ export class ImportItemsModal extends Component {
     this.setState({selected: actual})
   }
 
-  getQuestions(){
-    const url = generateUrl('question_list')
+  getQuestions(value){
+    const url = generateUrl('question_search')
     const params = {
-      method: 'GET' ,
-      credentials: 'include'
+      method: 'POST' ,
+      credentials: 'include',
+      body: JSON.stringify({
+        filters:{title: value}
+      })
     }
 
     fetch(url, params)
