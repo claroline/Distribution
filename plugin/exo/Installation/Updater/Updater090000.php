@@ -74,6 +74,7 @@ class Updater090000
         $this->updateAnswerData();
         $this->cleanOldPairQuestions();
         $this->updatePapers();
+        $this->updateClozeQuestions();
     }
 
     private function updateExerciseTypes()
@@ -464,6 +465,39 @@ class Updater090000
         }
 
         $paper->setStructure(json_encode($quizDef));
+    }
+
+    private function updateClozeQuestions()
+    {
+        // Get cloze questions
+        $sth = $this->connection->prepare(
+            'SELECT * FROM ujm_interaction_hole'
+        );
+
+        $sth->execute();
+        $questions = $sth->fetchAll();
+        foreach ($questions as $question) {
+            // selects
+            $regex = '\<select\s*id=\s*[\'|"]+([0-9]+)[\'|"]+\s*class=\s*[\'|"]+blank[\'|"]+.*[^<\/\s*select\s*>]*<\/select>\g';
+            $matches = [];
+            if (preg_match_all($regex, $matches)) {
+            
+            }
+            
+            
+            // Inputs
+            // <input\s*id=\s*['|"]+([0-9]+)['|"]+\s*class=\s*['|"]+blank['|"]+\s*[^\/+>]*\/>
+
+            $sth = $this->connection->prepare('
+                UPDATE ujm_interaction_hole 
+                SET htmlWithoutValue = :text
+                WHERE question_id = :id
+            ');
+            $sth->execute([
+                'text' => $text,
+                'id' => $question['question_id'],
+            ]);
+        }
     }
 
     /**
