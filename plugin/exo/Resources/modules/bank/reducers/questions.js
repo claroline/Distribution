@@ -13,8 +13,11 @@ function setQuestions(state, action) {
 
 function removeQuestions(state, action) {
   let newState = state
-  action.questions.map((questionId, index) => {
-    newState = update(newState, {$splice: [[index, 1]]})
+  action.questions.map((questionId) => {
+    const pos = newState.findIndex(questionId)
+    if (-1 !== pos) {
+      newState = update(newState, {$splice: [[pos, 1]]})
+    }
   })
 
   return newState
