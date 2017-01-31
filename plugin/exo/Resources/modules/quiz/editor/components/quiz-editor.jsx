@@ -310,6 +310,7 @@ function makePanel(Section, title, key, props, errorProps) {
 
   return (
     <Panel
+      className="editor-panel-title"
       eventKey={key}
       header={Header}
     >
