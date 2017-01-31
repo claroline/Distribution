@@ -5,11 +5,12 @@ import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 import Tooltip from 'react-bootstrap/lib/Tooltip'
 
 const TableCell = props =>
-  <td className={`text-${props.align}`}>
+  <td className={classes(`text-${props.align}`, props.className)}>
     {props.children}
   </td>
 
 TableCell.propTypes = {
+  className: T.string,
   align: T.oneOf(['left', 'center', 'right']),
   children: T.node
 }
@@ -90,31 +91,7 @@ TableSortingCell.defaultProps = {
 
 const TableHeader = props =>
   <thead>
-    <tr>
-      {props.children}
-    </tr>
-    <tr className="selected-rows active">
-      <td className="text-center">
-        <span className="fa fa-check-square"></span>
-      </td>
-      <td colSpan={props.children.length - 2}>
-        <b>10</b> questions selected (<a href="">select all <b>153</b> questions</a>)
-      </td>
-      <td className="text-right">
-        <a role="button" href="" className="btn btn-sm btn-link">
-          <span className="fa fa-fw fa-copy" />
-        </a>
-        <button role="button" className="btn btn-sm btn-link">
-          <span className="fa fa-fw fa-share" />
-        </button>
-        <button role="button" className="btn btn-sm btn-link">
-          <span className="fa fa-fw fa-upload" />
-        </button>
-        <button role="button" className="btn btn-sm btn-link btn-link-danger">
-          <span className="fa fa-fw fa-trash-o" />
-        </button>
-      </td>
-    </tr>
+    {props.children}
   </thead>
 
 TableHeader.propTypes = {

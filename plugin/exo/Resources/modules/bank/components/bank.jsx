@@ -37,19 +37,6 @@ const Bank = (props) => {
       </OverlayTrigger>
       ),
       primary: true
-    },
-    { divider: true, primary: true },
-    {
-      icon: 'fa fa-fw fa-plus',
-      label: tex('add_question'),
-      handleAction: props.openAddModal,
-      primary: true
-    },
-    {
-      icon: 'fa fa-fw fa-download',
-      label: tex('import'),
-      handleAction: () => true,
-      primary: true
     }
   ]
 

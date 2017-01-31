@@ -106,10 +106,9 @@ create_hole : Create cloze
 date: Date
 default : Default
 delete: Delete
-delete_of_my_bank: Remove from my bank
-delete_of_my_exercise: Remove from my quiz
 delete_papers: Delete papers
 delete_item: Delete question
+delete_items: "{1} Delete question|[2,Inf[ Delete %count% questions"
 delete_step: Delete step
 description: Description
 display_all_list: Display the whole list
@@ -424,12 +423,19 @@ qti_xml_not_found: XML schema not found
 question: Question
 questions: Questions
 questions_bank: Bank of questions
-question_creation: Question creation
-question_description: Description of the question (optional)
-question_model: Set as a model
-question_title: Question title (optional)
-question_title_short: Question title
-question_shared_with: This question is shared with the users mentioned below
+
+question_edit: Edit
+question_delete: Delete
+question_duplicate: Duplicate
+question_export: Export
+question_share: Share
+question_show_quizzes: Show in quizzes
+
+questions_delete: Delete selected questions
+questions_duplicate: Duplicate selected questions
+questions_export: Export selected questions
+questions_share: Share selected questions
+
 question_need_manual_correction: This question needs a manual correction
 question_open_keywords_info: Your answer needs to contain the following keywords to be correct
 question_graphic_set_pointers: Click on the picture to place a pointer
@@ -487,11 +493,10 @@ selection: => Use drag and drop to answer.
 self: You can't share this question with yourself.
 shape: Shape
 share: Share
-shared_by: Shared by
-shared_questions: Questions that are shared with me
-shared_user: Share of questions
+share_admin_rights: Share edit and delete rights
+share_with: With
+share_items: "{1} Share question|[2,Inf[ Share %count% questions"
 shared_with: Shared with
-short: Short
 show: Show
 show_feedback: Show step's feedbacks
 show_interact_fields: Hints and global feedback
@@ -577,4 +582,8 @@ words_case_sensitive: The answer must respect the keyword case to be valid
 # Y
 yes: Yes
 your_answer: Your answer
+
+last_modified: Last modification
+creator: Authors
+questions_selected: "{1} <b>1</b> question selected|[2,Inf[ <b>%count%</b> questions selected"
 your_answers: Your answers
