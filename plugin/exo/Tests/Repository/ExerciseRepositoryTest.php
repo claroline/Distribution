@@ -42,7 +42,7 @@ class ExerciseRepositoryTest extends TransactionalTestCase
         $this->om->persist($paper2);
 
         $this->questions = [
-            $this->persist->openQuestion('Open question')
+            $this->persist->openQuestion('Open question'),
         ];
         $exerciseWithQuestions = $this->persist->exercise('Exercise 2', $this->questions, $this->persist->user('bob'));
 

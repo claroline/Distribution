@@ -169,9 +169,9 @@ const QuestionRow = props =>
   </TableRow>
 
 QuestionRow.propTypes = {
-  id: T.string.isRequired,
-  type: T.string.isRequired,
   question: T.shape({
+    id: T.string.isRequired,
+    type: T.string.isRequired,
     title: T.string,
     content: T.string.isRequired,
     meta: T.shape({
