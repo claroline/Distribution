@@ -477,6 +477,7 @@ class Updater090000
         $sth->execute();
         $questions = $sth->fetchAll();
         foreach ($questions as $question) {
+<<<<<<< HEAD
             // Replace selects
             $text = $this->replaceHoles(
                 $question['htmlWithoutValue'],
@@ -487,6 +488,18 @@ class Updater090000
                 $text,
                 '/<input\s*id=\s*[\'|"]+([0-9]+)[\'|"]+\s*class=\s*[\'|"]+blank[\'|"]+\s*[^\/+>]*\/>/'
             );
+=======
+            // selects
+            $regex = '\<select\s*id=\s*[\'|"]+([0-9]+)[\'|"]+\s*class=\s*[\'|"]+blank[\'|"]+.*[^<\/\s*select\s*>]*<\/select>\g';
+            $matches = [];
+            if (preg_match_all($regex, $matches)) {
+            
+            }
+            
+            
+            // Inputs
+            // <input\s*id=\s*['|"]+([0-9]+)['|"]+\s*class=\s*['|"]+blank['|"]+\s*[^\/+>]*\/>
+>>>>>>> 4725e9fad0f8af7eac28c536490f023224d0e53c
 
             $sth = $this->connection->prepare('
                 UPDATE ujm_interaction_hole 
@@ -500,6 +513,7 @@ class Updater090000
         }
     }
 
+<<<<<<< HEAD
     private function replaceHoles($text, $searchExpr)
     {
         $matches = [];
@@ -512,6 +526,8 @@ class Updater090000
         return $text;
     }
 
+=======
+>>>>>>> 4725e9fad0f8af7eac28c536490f023224d0e53c
     /**
      * Retrieves a question, serializes it and moves it in the decoded list (for later use)
      * before returning the serialized version of the found question.
