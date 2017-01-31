@@ -80,6 +80,8 @@ cloze_empty_size_error: The size can't be empty
 cloze_empty_text_error: Please fill the text
 cloze_must_contains_clozes_error: The text must contains clozes
 cloze_holes_errors: There are some errors in the clozes
+cloze_duplicate_answers: Answers can't be duplicated
+cloze_solutions_requires_positive_answer: At least one answer must have a positive score
 color: Colour
 comment: Comment
 compose: Answer

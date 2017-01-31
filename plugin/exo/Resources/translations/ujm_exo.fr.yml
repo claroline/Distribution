@@ -81,6 +81,8 @@ cloze_empty_size_error: La taille ne peut pas être vide
 cloze_empty_text_error: Veuillez remplir le texte
 cloze_must_contains_clozes_error: Le texte doit contenir des trous
 cloze_holes_errors: Certains trous contiennent toujours des erreurs
+cloze_duplicate_answers: Les réponses ne peuvent pas être dédoublées
+cloze_solutions_requires_positive_answer: Au moins une réponse doit avoir un score positif
 color: Couleur
 comment: Feedback
 compose: Répondre

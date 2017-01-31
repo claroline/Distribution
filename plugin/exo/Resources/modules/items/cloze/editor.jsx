@@ -236,6 +236,12 @@ class HoleForm extends Component {
               {get(this.props, '_errors.answers.multiple') &&
                 <ErrorBlock text={this.props._errors.answers.multiple} warnOnly={!this.props.validating}/>
               }
+              {get(this.props, '_errors.answers.duplicate') &&
+                <ErrorBlock text={this.props._errors.answers.duplicate} warnOnly={!this.props.validating}/>
+              }
+              {get(this.props, '_errors.answers.value') &&
+                <ErrorBlock text={this.props._errors.answers.value} warnOnly={!this.props.validating}/>
+              }
             </div>
             <div className="hole-form-row">
               <div className="col-xs-5"><b>{tex('key_word')}</b></div>
