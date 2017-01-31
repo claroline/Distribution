@@ -154,6 +154,8 @@
 }
 
 .pointer {
+  z-index: 1;
+
   .segment {
     background-color: black;
     border: solid 2px;
@@ -233,4 +235,64 @@
 
 .feedback-popover {
   min-width: 110px;
+}
+
+.graphic-paper {
+  .title {
+    font-size: 16px;
+    font-weight: bold;
+    padding-left: 6px;
+  }
+
+  .answers-table {
+    width: 60%;
+    margin: auto;
+  }
+
+  .answer-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px;
+    border: solid 1px @table-border-color;
+    border-top: none;
+
+    .info-block {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 78px;
+    }
+
+    .area-status-icon {
+      font-size: 20px;
+
+      &.fa-times {
+        margin-left: 2px;
+        margin-right: 3px;
+      }
+    }
+  }
+
+  .answer-row:first-of-type {
+    border: solid 1px @table-border-color;
+    border-top-left-radius: @border-radius-base;
+    border-top-right-radius: @border-radius-base;
+  }
+
+  .answer-row:last-of-type {
+    border-bottom-left-radius: @border-radius-base;
+    border-bottom-right-radius: @border-radius-base;
+  }
+
+  .area-number {
+    display: block;
+    width: 24px;
+    height: 24px;
+    border: solid 1px #555;
+    border-radius: 12px;
+    background: #fff;
+    text-align: center;
+    font-weight: bold;
+  }
 }
