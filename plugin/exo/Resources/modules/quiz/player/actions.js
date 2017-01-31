@@ -171,9 +171,8 @@ actions.handleAttemptEnd = (paper) => {
         navigate(showPaper ? 'papers/' + paper.id: 'overview')
         break
       }
+      default: navigate('overview')
     }
-
-    navigate('overview')
   }
 }
 
