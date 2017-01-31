@@ -73,11 +73,19 @@ choice_feedback_info: Feedback if this answer is checked
 choose_image : Choose an image
 choose_category : Choose a category
 choose_type: Choose type
+cloze_empty_word_error: The word can't be empty
+cloze_empty_score_error: The score can't be empty
+cloze_multiple_answers_required: Multiple answers required
+cloze_empty_size_error: The size can't be empty
+cloze_empty_text_error: Please fill the text
+cloze_must_contains_clozes_error: The text must contains clozes
+cloze_holes_errors: There are some errors in the clozes
 color: Colour
 comment: Comment
 compose: Answer
 consult_hint: Consulting the hints gives you a penalty of X points. Do you want to go on ?
 contain_search: Whose question contains
+create_cloze: Create cloze
 # Preceding line to be checked in context !!! #
 
 correct: Correct
@@ -124,6 +132,7 @@ editor_invalid_no_save: Invalid quiz
 editor_invalid_no_save_desc: This quiz cannot be saved due to missing or invalid data. Please solve these problems before saving.
 editor_validating_desc: Some errors or missing information prevent saving data.
 editor_not_validating_desc: "Work in progress: some information is missing or requires changes."
+editor_penalty_label: Penalty for every non defined wrong answer.
 end_date: End date
 entry: Entry
 error_no_step_found: An error occured while retrieving the current step.
@@ -151,6 +160,7 @@ export_qti_exercise : Export questions of the quiz in QTI format
 # F
 feedback: General feedback
 feedback_answer_check: Feedback if this answer is checked (optional)
+feedback_association_created: Feedback if this association is created
 filter_by_title: Title or content
 filter_by_model_only: Only models
 filter_by_type: Type
@@ -177,6 +187,7 @@ formative : Formative
 graphic_drop_or_pick: Drop an image here or use the button above.
 graphic_error_image_too_large: Selected image is too big.
 graphic_error_no_image: You must select an image.
+graphic_error_no_positive_solution: At least one answer zone must have a positive score.
 graphic_error_no_solution: You must create at least one answer zone.
 graphic_error_not_an_image: Selected file is not an image.
 graphic_feedback_info: Feedback if the user clicks inside this area
@@ -202,7 +213,7 @@ hole_selector: Submit a list
 hide_additional_info: Hide additional information
 hide_interact_fields: Hide hints and feedback
 hide_metadata_fields: Hide title and other fields
-hint_penalty: "[0,1] - %count% point|]1,Inf[ - %count% points"
+hint_penalty: "[0,1] -%count% point|]1,Inf[ -%count% points"
 
 # I
 infiny: Indefinite
@@ -226,6 +237,7 @@ instruction_add_hole : To add a blank, you must select the text in the editor "C
 instruction_matching: To set your correspondence, choose the number of one or more proposals to associate in the column entitled "Correspondence".
 in_valid_mark: Invalid score
 item_points: "[0,1] %count% point|]1,Inf[ %count% points"
+item_empty_data_error: An item must have data.
 
 # K
 keep_same_step: Keep the same steps for a same user
@@ -336,8 +348,16 @@ open_maximum_length_help: Leave this value to 0 if there is no maximum length fo
 orders: Instructions
 orthography: Allow misspellings
 overview: Overview
+odd_score_not_valid: Odd score must be negative.
 
 # P
+pair_is_ordered: Pair is ordered.
+pair_pin_this_item: Pin this item
+pair_pair: Pair
+pair_shuffle_pairs: Shuffle pair order.
+pair_allow_pin_function: Enable / disable pin functionality.
+pair_solution_at_least_two_items: A pair must have two items.
+pair_add_pair: Add pair
 paper: Paper
 paper_finished: Finished
 paper_legend: Papers which need manual correction
@@ -366,6 +386,7 @@ paper_count: "{0} no paper|{1} %count% paper|]1,Inf[ %count% papers"
 paper_need_manual_correction: This paper needs a manual correction
 partially: Partially correct
 penalty: Penalty
+penalty_not_valid: Penalty field must be a number.
 percentage: Percentage
 pic_manage: Manage my documents
 points: Points
@@ -382,6 +403,8 @@ print_paper: Print paper
 proposal: Proposal
 position_force: Forced position
 publish: Publish
+
+please_choose: Please choose...
 
 # Q
 qcm: MCQ
@@ -483,6 +506,7 @@ start_again: Resume
 start_date: Start date
 solution_score: "{0} %score% point|{1} %score% point|[2,Inf] %score% points"
 sort: Sort documents
+submit_a_list: Submit a list
 summative : Summative
 show_additional_info: Display additional information
 step: Step
@@ -497,7 +521,6 @@ stat_have_responded: have responded
 sum_score_choice_at_least_one_correct_answer_error: At least one answer must have a positive score.
 sum_score_choice_no_correct_answer_error: The correct answer must have a positive score.
 should_be_greater_or_equal_to_zero: This value should be greater or equals to 0.
-set_penalty_label: Penalty for any wrong association.
 set_shuffle_labels_and_proposals: Shuffle items.
 set_add_item: Add an item
 set_add_odd: Add an odd
@@ -514,6 +537,7 @@ set_no_valid_solution: At least one solution must have a score greater or equal 
 set_odd_score_not_valid: Odd score must be inferior or equal to 0.
 set_odd_empty_data_error: odd data can not be empty.
 set_drop_item: Drop an item here
+solution_score_not_valid: A score must be a valid number.
 
 # T
 temporary_mark: Temporary score

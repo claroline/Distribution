@@ -113,7 +113,7 @@ class GridItem
      */
     public function getCoords()
     {
-        return ($this->coordsX || $this->coordsY) ?
+        return (is_int($this->coordsX) || is_int($this->coordsY)) ?
             [$this->coordsX, $this->coordsY] : null;
     }
 }

@@ -46,8 +46,20 @@ describe('Graphic reducer', () => {
     }))
   })
 
-  it('updates the image on selection', () => {
-    const item = itemFixture()
+  it('updates the image on selection and removes previous pointers', () => {
+    const item = itemFixture({
+      solutions: [
+        {
+          area: {
+            shape: SHAPE_CIRCLE,
+            center: {x: 120, y: 150},
+            radius: 40
+          },
+          score: 12
+        }
+      ],
+      pointers: 1
+    })
     const reduced = editor.reduce(item, subActions.selectImage({
       type: 'image/jpeg',
       url: 'foo',
@@ -64,7 +76,9 @@ describe('Graphic reducer', () => {
         height: 100,
         _clientWidth: 100,
         _clientHeight: 50
-      }
+      },
+      solutions: [],
+      pointers: 0
     }))
   })
 

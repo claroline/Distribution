@@ -1,5 +1,7 @@
 # ExoBundle
 
+A bundle that permits to create questions and organize it into quizzes.
+
 ## Supported question types
 
 The supported question types are referenced in `UJM\ExoBundle\Library\Question\QuestionType`.
