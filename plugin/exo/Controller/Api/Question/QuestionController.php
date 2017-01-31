@@ -146,9 +146,9 @@ class QuestionController extends AbstractController
     }
 
     /**
-     * Deletes a list of Questions.
+     * Deletes a Question.
      *
-     * @EXT\Route("", name="questions_delete")
+     * @EXT\Route("/{id}", name="question_delete")
      * @EXT\Method("DELETE")
      * @EXT\ParamConverter("user", converter="current_user")
      *
@@ -176,10 +176,6 @@ class QuestionController extends AbstractController
             }
         }
 
-        if (empty($errors)) {
-            return new JsonResponse(null, 204);
-        } else {
-            return new JsonResponse($errors, 422);
-        }
+        return new JsonResponse(null, 204);
     }
 }

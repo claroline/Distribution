@@ -143,14 +143,8 @@ function reduce(pair = {}, action) {
       const itemIndex = newItem.items.findIndex(el => el.id === action.id)
       newItem.items.splice(itemIndex, 1)
       if(action.isOdd){
-        // remove item from solution odds
-        const oddList = utils.getOddlist(newItem.items, newItem.solutions)
-        oddList.forEach((odd) => {
-          if(odd.itemIds[0] === action.id){
-            const idx = newItem.solutions.findIndex(el => el.itemIds[0] === action.id)
-            newItem.solutions.splice(idx, 1)
-          }
-        })
+        const idx = newItem.solutions.findIndex(el => el.itemIds.length === 1 && el.itemIds[0] === action.id)
+        newItem.solutions.splice(idx, 1)
       } else {
         // handle deletable state
         const itemDeletable = utils.getRealItemlist(newItem.items, newItem.solutions).length > 2
@@ -247,6 +241,11 @@ function validate(pair) {
   // penalty should be greater or equal to 0
   if (chain(pair.penalty, [notBlank, number])) {
     errors.item = tex('penalty_not_valid')
+  }
+
+  // random can not be used if no pinned item
+  if (pair.random && pair.items.filter(item => item.hasOwnProperty('coordinates') && item.coordinates.length === 2).length === 0) {
+    errors.item = tex('pair_random_needs_pin_item')
   }
 
   // no blank items / odds

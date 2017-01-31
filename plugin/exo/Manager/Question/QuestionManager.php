@@ -138,7 +138,7 @@ class QuestionManager
         $searchResults = new \stdClass();
         $searchResults->totalResults = count($results);
         $searchResults->questions = array_map(function (Question $question) {
-            return $this->export($question, [Transfer::INCLUDE_ADMIN_META]);
+            return $this->export($question, [Transfer::INCLUDE_ADMIN_META, Transfer::INCLUDE_SOLUTIONS]);
         }, $results);
 
         // Add pagination
@@ -208,7 +208,8 @@ class QuestionManager
     }
 
     /**
-     * Deletes a list of Questions.
+     * Deletes a Question.
+     * It's only possible if the Question is not used in an Exercise.
      *
      * @param array $questions - the uuids of questions to delete
      * @param User $user
@@ -224,6 +225,7 @@ class QuestionManager
             }
         }
 
+        $this->om->remove($question);
         $this->om->flush();
     }
 

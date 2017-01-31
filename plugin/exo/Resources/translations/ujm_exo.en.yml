@@ -356,6 +356,7 @@ odd_score_not_valid: Odd score must be negative.
 pair_is_ordered: Pair is ordered.
 pair_pin_this_item: Pin this item
 pair_pair: Pair
+pair_random_needs_pin_item: You must pin at least one item to use random.
 pair_shuffle_pairs: Shuffle pair order.
 pair_allow_pin_function: Enable / disable pin functionality.
 pair_solution_at_least_two_items: A pair must have two items.

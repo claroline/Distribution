@@ -355,6 +355,7 @@ odd_score_not_valid: Le score d'un intrus doit être négatif.
 pair_is_ordered: La paire est ordonnée.
 pair_pin_this_item: Épingler cet élément
 pair_pair: Paire
+pair_random_needs_pin_item: Au moins un élément doit être épinglé pour pouvoir utiliser la propriété random.
 pair_shuffle_pairs: Ordre des paires aléatoire.
 pair_allow_pin_function: Activer / désactiver la fonctionnalité épingler un item.
 pair_solution_at_least_two_items: Une paire doit avoir deux éléments.

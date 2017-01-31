@@ -8,8 +8,9 @@ import quizSelectors from './../selectors'
 import {navigate} from './../router'
 import {select as playerSelectors} from './selectors'
 import {generatePaper} from './../papers/generator'
-import {normalize, denormalizeAnswers} from './normalizer'
+import {normalize, denormalizeAnswers, denormalize} from './normalizer'
 import moment from 'moment'
+import {actions as paperAction} from '../papers/actions'
 
 export const ATTEMPT_START  = 'ATTEMPT_START'
 export const ATTEMPT_FINISH = 'ATTEMPT_FINISH'
@@ -157,9 +158,12 @@ actions.handleAttemptEnd = (paper) => {
   return (dispatch, getState) => {
     // Finish the current attempt
     dispatch(actions.finishAttempt(paper))
-    // We will decide here if we show the correction now or not and where we redirect the user
+    // We will decide here if we show the correction now or not and where we redirect the use
+
     switch (playerSelectors.showCorrectionAt(getState())) {
       case 'validation': {
+        dispatch(paperAction.addPaper(buildPaper(paper, playerSelectors.answers(getState()))))
+        dispatch(paperAction.setCurrentPaper(paper.id))
         navigate('papers/' + paper.id)
         break
       }
@@ -168,12 +172,18 @@ actions.handleAttemptEnd = (paper) => {
         const today = moment()
         const showPaper = today.diff(correctionDate, 'days') >= 0
 
-        navigate(showPaper ? 'papers/' + paper.id: 'overview')
+        if (showPaper) {
+          dispatch(paperAction.addPaper(buildPaper(paper, playerSelectors.answers(getState()))))
+          dispatch(paperAction.setCurrentPaper(paper.id))
+          navigate('papers/' + paper.id)
+        } else {
+          navigate('overview')
+        }
+
         break
       }
+      default: navigate('overview')
     }
-
-    navigate('overview')
   }
 }
 
@@ -207,4 +217,8 @@ function endQuiz(quizId, paper, dispatch, getState) {
     // Finish the attempt and use quiz config to know what to do next
     return dispatch(actions.handleAttemptEnd(paper))
   }
+}
+
+function buildPaper(paper, answers) {
+  return denormalize(paper, answers)
 }
