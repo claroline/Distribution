@@ -167,10 +167,11 @@ export class MatchFeedback extends Component
 
   render() {
     return (
-      <div ref={(el) => { this.container = el }} id={`match-question-paper-${this.props.item.id}-first`} className="match-question-feedback">
+      <div>
         <span className="help-block">
-          <span className="fa fa-info-circle"></span>{tex('match_player_click_link_help')}
-        </span>
+          <span className="fa fa-info-circle">&nbsp;</span>{tex('match_player_click_link_help')}
+        </span>      
+        <div ref={(el) => { this.container = el }} id={`match-question-paper-${this.props.item.id}-first`} className="match-question-feedback">
         <div className="item-col">
           <ul>
             {this.props.item.firstSet.map((item) =>
@@ -203,6 +204,7 @@ export class MatchFeedback extends Component
             )}
           </ul>
         </div>
+      </div>
       </div>
     )
   }

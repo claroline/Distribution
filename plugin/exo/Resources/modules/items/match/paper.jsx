@@ -256,6 +256,9 @@ export class MatchPaper extends Component
                   </div>
                 </Tab.Pane>
                 <Tab.Pane eventKey="second">
+                  <span className="help-block" style={{visibility:'hidden'}} >
+                    <span className="fa fa-info-circle">&nbsp;</span>{tex('match_player_click_link_help')}
+                  </span>
                   <div id={`match-question-paper-${this.props.item.id}-second`} className="match-question-paper">
                     <div className="jsplumb-row">
                       <div className="item-col">
