@@ -506,7 +506,7 @@ class Updater090000
         $matches = [];
         if (preg_match_all($searchExpr, $text, $matches)) {
             foreach ($matches[0] as $inputIndex => $inputMatch) {
-                $text = str_replace($inputMatch, '[[' . $matches[1][$inputIndex] . ']]', $text);
+                $text = str_replace($inputMatch, '[['.$matches[1][$inputIndex].']]', $text);
             }
         }
 
