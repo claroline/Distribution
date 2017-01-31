@@ -29,23 +29,29 @@ QuestionRow.propTypes = {
 }
 
 let Questions = props =>
-  <div className="questions-list">
-    <table className="table table-striped table-hover">
-      <thead>
-        <tr>
-          <th>{tex('question_title_short')}</th>
-          <th>{tex('question')}</th>
-          <th>{tex('number_of_papers_to_correct')}</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {props.questions.map((question, idx) =>
-          <QuestionRow key={idx} {...question}/>
-        )}
-      </tbody>
-    </table>
-  </div>
+  props.questions.length > 0 ?
+    <div className="questions-list">
+      <table className="table table-striped table-hover">
+        <thead>
+          <tr>
+            <th>{tex('question_title_short')}</th>
+            <th>{tex('question')}</th>
+            <th>{tex('number_of_papers_to_correct')}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {props.questions.map((question, idx) =>
+            <QuestionRow key={idx} {...question}/>
+          )}
+        </tbody>
+      </table>
+    </div> :
+    <div className="questions-list">
+      <div className="alert alert-warning">
+        {tex('no_question_to_correct')}
+      </div>
+    </div>
 
 Questions.propTypes = {
   questions: T.arrayOf(T.object).isRequired

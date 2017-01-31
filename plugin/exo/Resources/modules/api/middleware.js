@@ -35,7 +35,7 @@ function handleResponseSuccess(data, success) {
 
   return dispatch => {
     if (success) {
-      return dispatch(success(data))
+      return success(data, dispatch)
     }
   }
 }
@@ -43,6 +43,8 @@ function handleResponseSuccess(data, success) {
 function handleResponseError(error, failure, request, next) {
   if (failure) {
     invariant(isFunction(failure), '`failure` should be a function')
+  } else {
+    failure = () => {}
   }
 
   if (typeof error.status === 'undefined') {
@@ -55,7 +57,7 @@ function handleResponseError(error, failure, request, next) {
       authenticate().then(
         () => doFetch(request, next), // re-execute original request,
         authError => {
-          dispatch(failure(authError))
+          failure(authError, dispatch)
           switch (authError.message) {
             case ERROR_AUTH_WINDOW_BLOCKED:
               return showErrorModal(dispatch, tex('request_error_auth_blocked'))
@@ -67,7 +69,7 @@ function handleResponseError(error, failure, request, next) {
         }
       )
     } else {
-      dispatch(failure(error))
+      failure(error, dispatch)
       showHttpErrorModal(dispatch, error)
     }
   }
@@ -128,7 +130,7 @@ function handleBefore(before) {
   return dispatch => {
     if (before) {
       invariant(isFunction(before), '`before` should be a function')
-      dispatch(before())
+      before(dispatch)
     }
 
     dispatch(actions.incrementRequests())

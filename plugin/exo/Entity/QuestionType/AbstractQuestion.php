@@ -20,7 +20,7 @@ abstract class AbstractQuestion
     protected $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="UJM\ExoBundle\Entity\Question\Question", cascade={"all"})
+     * @ORM\OneToOne(targetEntity="UJM\ExoBundle\Entity\Question\Question")
      *
      * @var Question
      */

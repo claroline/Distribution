@@ -305,6 +305,7 @@ new_name: Nouveau nom du document
 next: Suivant
 no: Non
 no_answer: Pas de réponse.
+no_answer_to_correct: Il n'y a aucune réponse à cette question à corriger actuellement.
 no_answer_zone: Vous n'avez mis aucune zone de réponse
 no_pic_found: Pas de document trouvé
 no_finish: Non terminé
@@ -315,6 +316,7 @@ none: Aucune
 no_paper_found: Aucune copie
 no_question: Vous ne posez aucune question
 no_question_found: Pas de question trouvée
+no_question_to_correct: Il n'y a aucune question ouverte à corriger actuellement.
 no_rights: Vous n'êtes pas propriétaire de cette question et elle n'est pas partagée avec vous
 not_allowed_modify_paper: Vous ne pouvez plus modifier vos réponses !
 no_thing_import: Aucune question à importer n'est cochée

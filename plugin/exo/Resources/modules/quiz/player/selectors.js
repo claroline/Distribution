@@ -7,6 +7,8 @@ const answers = (state) => state.answers
 const quizMaxAttempts = (state) => state.quiz.parameters.maxAttempts
 const showFeedback = (state) => state.quiz.parameters.showFeedback
 const feedbackEnabled = state => state.currentStep.feedbackEnabled
+const showCorrectionAt = state => state.quiz.parameters.showCorrectionAt
+const correctionDate = state => state.quiz.parameters.correctionDate
 
 const steps = createSelector(
   paper,
@@ -119,5 +121,7 @@ export const select = {
   next,
   currentStepTries,
   currentStepMaxAttempts,
-  currentStepSend
+  currentStepSend,
+  showCorrectionAt,
+  correctionDate
 }

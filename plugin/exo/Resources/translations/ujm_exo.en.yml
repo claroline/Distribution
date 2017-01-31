@@ -306,6 +306,7 @@ new_name: New name of the document
 next: Next
 no: No
 no_answer: No answer.
+no_answer_to_correct: No answer to this question to correct for the moment.
 no_answer_zone: There is no answer zone
 no_finish: Not finished
 no_pic_found: No document found
@@ -317,6 +318,7 @@ no_hint_info: There are no hints yet.
 no_paper_found: No paper found
 no_question: You don't ask for anything
 no_question_found: No question found
+no_question_to_correct: No open question to correct for the moment.
 no_rights: Your aren't the owner of this question and it's not shared with you.
 not_allowed_modify_paper: You can't change your answers anymore!
 no_thing_import: No question is checked for the import.

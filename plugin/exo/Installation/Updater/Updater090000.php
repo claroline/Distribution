@@ -74,6 +74,7 @@ class Updater090000
         $this->updateAnswerData();
         $this->cleanOldPairQuestions();
         $this->updatePapers();
+        $this->updateClozeQuestions();
     }
 
     private function updateExerciseTypes()
@@ -464,6 +465,52 @@ class Updater090000
         }
 
         $paper->setStructure(json_encode($quizDef));
+    }
+
+    private function updateClozeQuestions()
+    {
+        // Get cloze questions
+        $sth = $this->connection->prepare(
+            'SELECT * FROM ujm_interaction_hole'
+        );
+
+        $sth->execute();
+        $questions = $sth->fetchAll();
+        foreach ($questions as $question) {
+            // Replace selects
+            $text = $this->replaceHoles(
+                $question['htmlWithoutValue'],
+                '/<select\s*id=\s*[\'|"]+([0-9]+)[\'|"]+\s*class=\s*[\'|"]+blank[\'|"]+.*[^<\/\s*select\s*>]*<\/select>/'
+            );
+            // Replace inputs
+            $text = $this->replaceHoles(
+                $text,
+                '/<input\s*id=\s*[\'|"]+([0-9]+)[\'|"]+\s*class=\s*[\'|"]+blank[\'|"]+\s*[^\/+>]*\/>/'
+            );
+
+            $sth = $this->connection->prepare('
+                UPDATE ujm_interaction_hole 
+                SET htmlWithoutValue = :text, originalText = :originalText
+                WHERE question_id = :id
+            ');
+            $sth->execute([
+                'id' => $question['question_id'],
+                'text' => $text,
+                'originalText' => $question['htmlWithoutValue'],
+            ]);
+        }
+    }
+
+    private function replaceHoles($text, $searchExpr)
+    {
+        $matches = [];
+        if (preg_match_all($searchExpr, $text, $matches)) {
+            foreach ($matches[0] as $inputIndex => $inputMatch) {
+                $text = str_replace($inputMatch, '[['.$matches[1][$inputIndex].']]', $text);
+            }
+        }
+
+        return $text;
     }
 
     /**

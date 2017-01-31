@@ -15,6 +15,10 @@ class Version20170123160000 extends AbstractMigration
             SET a.question_id = q.uuid
             WHERE q.id IS NOT NULL
         ');
+
+        $this->addSql('
+            ALTER TABLE ujm_interaction_hole ADD originalText TEXT DEFAULT NULL;
+        ');
     }
 
     public function down(Schema $schema)
