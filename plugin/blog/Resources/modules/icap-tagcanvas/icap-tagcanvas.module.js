@@ -8,7 +8,7 @@ angular
     return {
       restrict: 'A',
       link: (scope, elem) => {
-        $(document).ready(function() {
+        $(document).ready(function () {
           $(elem).tagcanvas({
             textColour : '#428BCA',
             outlineThickness : 1,
