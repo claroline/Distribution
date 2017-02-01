@@ -49,7 +49,7 @@ services:
     networks:
       - db
     volumes:
-      - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./.docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
       - mysql:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
