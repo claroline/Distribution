@@ -363,7 +363,7 @@ no unfinished copies: No unfinished copies.
 closing text: This copy is unfinished, you can close it manually.
 close copy confirmation text: Do you really want to finish this copy?
 reminder sent: Reminder has been sent.
-reminder message: you have not validated your copy drop for the evaluation "%dropzonename%". Drop date: %dropdate%.
+reminder message: Your dropped a copy for the evaluation "%dropzonename%". on the %dropdate%. Your drop needs your final validation before it can be evaluated.
 reminder object: Unfinished copy
 copy closed: Copy has been finished.
 date_format_php: m/d/Y at h:ia
