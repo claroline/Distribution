@@ -62,7 +62,7 @@
                 </a>
             </li>
             <li class="hometab-element {% block drops_unfinished_active %}{% endblock %}">
-                <a href="{% block drops_unfinished_link %}{{ path('icap_dropzone_drops_unfinisehd', {'resourceId': dropzone.id}) }} {% endblock %}">
+                <a href="{% block drops_unfinished_link %}{{ path('icap_dropzone_drops_unfinished', {'resourceId': dropzone.id}) }} {% endblock %}">
                     {{ 'unfinished copies'|trans({}, 'icap_dropzone') }} <span
                             class="badge">{{ unterminated_drops }}</span>
                 </a>

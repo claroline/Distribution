@@ -8,6 +8,7 @@
 namespace Icap\DropzoneBundle\Controller;
 
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Icap\DropzoneBundle\Entity\Correction;
 use Icap\DropzoneBundle\Entity\Drop;
@@ -19,6 +20,7 @@ use Icap\DropzoneBundle\Event\Log\LogDropStartEvent;
 use Icap\DropzoneBundle\Form\CorrectionReportType;
 use Icap\DropzoneBundle\Form\DocumentType;
 use Icap\DropzoneBundle\Form\DropType;
+use JMS\DiExtraBundle\Annotation as DI;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Exception\NotValidCurrentPageException;
 use Pagerfanta\Pagerfanta;
@@ -28,10 +30,28 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class DropController extends DropzoneBaseController
 {
+    private $eventDispatcher;
+    private $tokenStorage;
+
+    /**
+     * Constructor.
+     *
+     * @DI\InjectParams({
+     *     "eventDispatcher" = @DI\Inject("claroline.event.event_dispatcher"),
+     *     "tokenStorage"    = @DI\Inject("security.token_storage")
+     * })
+     */
+    public function __construct(StrictDispatcher $eventDispatcher, TokenStorageInterface $tokenStorage)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+        $this->tokenStorage = $tokenStorage;
+    }
+
     /**
      * @Route(
      *      "/{resourceId}/drop",
@@ -584,7 +604,7 @@ class DropController extends DropzoneBaseController
     /**
      * @Route(
      *      "/{resourceId}/drops/unfinished",
-     *      name="icap_dropzone_drops_unfinisehd",
+     *      name="icap_dropzone_drops_unfinished",
      *      requirements={"resourceId" = "\d+"},
      *      defaults={"page" = 1}
      * )
@@ -1022,6 +1042,90 @@ class DropController extends DropzoneBaseController
         return $this->redirect(
             $this->generateUrl(
                 'icap_dropzone_drops_awaiting',
+                [
+                    'resourceId' => $dropzone->getId(),
+                ]
+            )
+        );
+    }
+
+    /**
+     * @Route(
+     *      "/{resourceId}/close/{dropId}",
+     *      name="icap_dropzone_close_drop",
+     *      requirements={"resourceId" = "\d+", "dropId" = "\d+"}
+     * )
+     * @ParamConverter("dropzone", class="IcapDropzoneBundle:Dropzone", options={"id" = "resourceId"})
+     * @ParamConverter("drop", class="IcapDropzoneBundle:Drop", options={"id" = "dropId"})
+     */
+    public function closeDropAction(Request $request, $dropzone, Drop $drop)
+    {
+        if ($request->isXmlHttpRequest()) {
+            return $this->render('IcapDropzoneBundle:Drop:dropsCloseModal.html.twig', [
+                'workspace' => $dropzone->getResourceNode()->getWorkspace(),
+                '_resource' => $dropzone,
+                'dropzone' => $dropzone,
+                'drop' => $drop,
+            ]);
+        }
+
+        $this->get('icap.manager.dropzone_voter')->isAllowToOpen($dropzone);
+        $this->get('icap.manager.dropzone_voter')->isAllowToEdit($dropzone);
+        $em = $this->getDoctrine()->getManager();
+        $drop->setFinished(true);
+        $em->flush();
+
+        $request->getSession()->getFlashBag()->add(
+            'success',
+            $this->get('translator')->trans('copy closed', [], 'icap_dropzone')
+        );
+
+        return $this->redirect(
+            $this->generateUrl(
+                'icap_dropzone_drops_unfinished',
+                [
+                    'resourceId' => $dropzone->getId(),
+                ]
+            )
+        );
+    }
+
+    /**
+     * @Route(
+     *      "/{resourceId}/remind/{dropId}/user/{userId}",
+     *      name="icap_dropzone_remind_drop",
+     *      requirements={"resourceId" = "\d+", "dropId" = "\d+", "userId" = "\d+"}
+     * )
+     * @ParamConverter("dropzone", class="IcapDropzoneBundle:Dropzone", options={"id" = "resourceId"})
+     * @ParamConverter("drop", class="IcapDropzoneBundle:Drop", options={"id" = "dropId"})
+     * @ParamConverter("user", class="ClarolineCoreBundle:User", options={"id" = "userId"})
+     */
+    public function sendReminderAction(Request $request, $dropzone, $drop, $user)
+    {
+        $this->eventDispatcher->dispatch(
+            'claroline_message_sending_to_users',
+            'SendMessage',
+            [
+                $this->tokenStorage->getToken()->getUser(),
+                $this->get('translator')->trans('reminder message', [
+                    '%dropzonename%' => $dropzone->getName(),
+                    '%dropdate%' => $drop->getDropDate()->format($this->get('translator')->trans('date_format_php', [], 'icap_dropzone')),
+                ], 'icap_dropzone'),
+                $this->get('translator')->trans('reminder object', [], 'icap_dropzone'),
+                null,
+                [$user],
+                true,
+            ]
+        );
+
+        $request->getSession()->getFlashBag()->add(
+            'success',
+            $this->get('translator')->trans('reminder sent', [], 'icap_dropzone')
+        );
+
+        return $this->redirect(
+            $this->generateUrl(
+                'icap_dropzone_drops_unfinished',
                 [
                     'resourceId' => $dropzone->getId(),
                 ]

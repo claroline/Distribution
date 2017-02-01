@@ -3,6 +3,7 @@
         <thead>
         <th>{{ 'last update'|trans({}, 'icap_dropzone') }}</th>
         <th>{{ 'Made by'|trans({},'icap_dropzone') }}</th>
+        <th>{{ 'tools'|trans({},'icap_dropzone') }}</th>
         </thead>
         <tbody>
         {% for drop in pager.currentPageResults %}
@@ -23,6 +24,12 @@
                 </td>
                 <td>
                     {{ drop.user.firstName|capitalize }} {{ drop.user.lastName|upper }}
+                </td>
+                <td>
+                    <a href="{{ path('icap_dropzone_remind_drop', {'resourceId': dropzone.id, 'dropId': drop.id, 'userId':  drop.user.id}) }}"
+                       class="btn btn-default btn-xs">{{ 'send reminder'|trans({}, 'icap_dropzone') }}</a>
+                    <a href="{{ path('icap_dropzone_close_drop', {'resourceId': dropzone.id, 'dropId': drop.id}) }}"
+                       class="btn btn-danger btn-xs launch-modal">{{ 'close copy'|trans({}, 'icap_dropzone') }}</a>
                 </td>
             </tr>
         {% endfor %}
