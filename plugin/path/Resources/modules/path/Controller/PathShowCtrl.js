@@ -3,7 +3,6 @@
  */
 
 import angular from 'angular/index'
-import '@sergiovilar/jquery-pjax/jquery.pjax'
 
 import PathBaseCtrl from './PathBaseCtrl'
 

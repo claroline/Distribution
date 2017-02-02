@@ -52,7 +52,6 @@ angular
     'authorization',
     '$sce',
     'UserProgressionService',
-    'url',
     StepShowCtrl
   ])
   .controller('StepEditCtrl', [
