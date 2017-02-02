@@ -48,11 +48,8 @@
                 <div class="step-description" data-ng-if="stepShowCtrl.authorization.granted && stepShowCtrl.step.description" data-ng-bind-html="stepShowCtrl.step.description"></div>
 
                 <!-- Primary resources of the Step -->
-                <resources-primary-show
-                        data-ng-if="stepShowCtrl.authorization.granted && stepShowCtrl.step.primaryResource && 0 !== stepShowCtrl.step.primaryResource.length"
-                        data-resources="stepShowCtrl.step.primaryResource"
-                        data-height="stepShowCtrl.step.activityHeight">
-                </resources-primary-show>
+
+                <div class="resource-container"></div>
             </div>
 
             <div class="panel-footer">

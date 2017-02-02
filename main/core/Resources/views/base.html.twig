@@ -30,27 +30,35 @@
                 {% endif %}
             {% endblock %}
         {% endspaceless %}</title>
-        {% block stylesheets %}{% endblock %}
+
+        <div class="stylesheets">
+            {% block stylesheets %}{% endblock %}
+        </div>
 
         {% block favicon %}
             <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
         {% endblock %}
 
-        {% block javascripts_header %}
-        {% endblock %}
+        <div class="javascript-header">
+        {% block javascripts_header %}{% endblock %}
+        </div>
     </head>
     <body id="claroline-base-layout-body">
         {% if not app.session.get('hide_browser_warning') %}
-            <div class="alert alert-danger outdated-browser-warning" style="text-align='center';">
-                <a id="close-browser-warning" class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a>
-                <div align="center"> <i class="fa fa-warning"></i>
-                    {{ 'outdated_brower_message'|trans({}, 'platform') }}
-                    (<a href="http://browsehappy.com" target="_blank">http://browsehappy.com</a>).
-                    {{ 'ie_support_message'|trans({}, 'platform')}}
-                </div>
+        <div class="alert alert-danger outdated-browser-warning" style="text-align='center';">
+            <a id="close-browser-warning" class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a>
+            <div align="center"> <i class="fa fa-warning"></i>
+                {{ 'outdated_brower_message'|trans({}, 'platform') }}
+                (<a href="http://browsehappy.com" target="_blank">http://browsehappy.com</a>).
+                {{ 'ie_support_message'|trans({}, 'platform')}}
             </div>
+        </div>
         {% endif %}
+
         {% block layout %}{% endblock %}
+
+        <div class="javascript-footer">
         {% block javascripts %}{% endblock %}
+        </div>
     </body>
 </html>

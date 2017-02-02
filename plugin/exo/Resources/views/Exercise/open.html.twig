@@ -17,16 +17,20 @@
 
 {# Content of the Page #}
 {% block section_panel %}
-    <div
-      class="quiz-container"
-      data-quiz="{{ exercise | json_encode | raw | escape }}"
-    >
+    <div class="resource-container">
+        <div
+            class="quiz-container"
+            data-quiz="{{ exercise | json_encode | raw | escape }}"
+        >
+        </div>
     </div>
 {% endblock %}
 
 {% block javascripts %}
     {# Claroline JS #}
     {{ parent() }}
+
+    <script>alert('WHAT THE FUCK ?????');</script>
 
     {# Translations #}
     <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'ujm_exo' }) }}"></script>
