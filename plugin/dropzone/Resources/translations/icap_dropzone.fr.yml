@@ -359,7 +359,7 @@ no unfinished copies: Aucune copie non terminée.
 closing text: Cette copie n'est pas terminée, vous pouvez la clôturer manuellement.
 close copy confirmation text: Êtes-vous sûr de vouloir clôturer la copie ?
 reminder sent: Le rappel a été envoyé.
-reminder message: Vous avez déposé une copie pour l'évaluation "%dropzonename%" le %dropdate%. Vous devez encore valider ce dépôt pour que votre copie puisse être évaluée.
+reminder message: Vous avez déposé une copie pour l'évaluation "%dropzonename%" le %dropdate%. Vous devez encore valider ce dépôt sur la <a href="%confirmation_url%">page de confirmation</a> pour que votre copie puisse être évaluée.
 reminder object: Copie non terminée
 copy closed: La copie a été cloturée.
 date_format_php: d/m/Y à H:i

@@ -1108,8 +1108,14 @@ class DropController extends DropzoneBaseController
             [
                 $this->tokenStorage->getToken()->getUser(),
                 $this->get('translator')->trans('reminder message', [
-                    '%dropzonename%' => $dropzone->getName(),
+                    '%dropzonename%' => $dropzone->getResourceNode()->getName(),
                     '%dropdate%' => $drop->getDropDate()->format($this->get('translator')->trans('date_format_php', [], 'icap_dropzone')),
+                    '%confirmation_url%' => $this->generateUrl(
+                        'icap_dropzone_drop',
+                        [
+                            'resourceId' => $dropzone->getId(),
+                        ]
+                    ),
                 ], 'icap_dropzone'),
                 $this->get('translator')->trans('reminder object', [], 'icap_dropzone'),
                 null,
