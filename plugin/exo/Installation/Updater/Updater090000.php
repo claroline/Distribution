@@ -495,7 +495,7 @@ class Updater090000
             // Replace inputs
             $text = $this->replaceHoles(
                 $text,
-                '/<input\s*id=\s*[\'|"]+([0-9]+)[\'|"]+\s*class=\s*[\'|"]+blank[\'|"]+\s*[^\/+>]*\/>/',
+                '/<input\s*id=\s*[\'|"]+([0-9]+)[\'|"]+\s*class=\s*[\'|"]+blank[\'|"]+\s*[^\/+>]*[>|\/>]/',
                 $holes
             );
 
