@@ -495,7 +495,7 @@ class Updater090000
             // Replace inputs
             $text = $this->replaceHoles(
                 $text,
-                '/<input\s*id=\s*[\'|"]+([0-9]+)[\'|"]+\s*class=\s*[\'|"]+blank[\'|"]+\s*[^\/+>]*[>|\/>]/',
+                '/<input\s*id=\s*[\'|"]+([0-9]+)[\'|"]+\s*class=\s*[\'|"]+blank[\'|"]+\s*[^\/+>]*\/>/',
                 $holes
             );
 
@@ -517,9 +517,12 @@ class Updater090000
         $matches = [];
         if (preg_match_all($searchExpr, $text, $matches)) {
             foreach ($matches[0] as $inputIndex => $inputMatch) {
-                $holeUuid = $this->getAnswerPartUuid($matches[1][$inputIndex], $holes);
-                if ($holeUuid) {
-                    $text = str_replace($inputMatch, '[['.$holeUuid.']]', $text);
+                $position = $matches[1][$inputIndex];
+                foreach ($holes as $hole) {
+                    if ($hole['position'] === $position) {
+                        $text = str_replace($inputMatch, '[['.$hole['uuid'].']]', $text);
+                        break;
+                    }
                 }
             }
         }
