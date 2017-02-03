@@ -517,7 +517,13 @@ class Updater090000
         $matches = [];
         if (preg_match_all($searchExpr, $text, $matches)) {
             foreach ($matches[0] as $inputIndex => $inputMatch) {
-                $text = str_replace($inputMatch, '[['.$holes[$inputIndex]['uuid'].']]', $text);
+                $position = $matches[1][$inputIndex];
+                foreach ($holes as $hole) {
+                    if ($hole['position'] === $position) {
+                        $text = str_replace($inputMatch, '[['.$hole['uuid'].']]', $text);
+                        break;
+                    }
+                }
             }
         }
 
@@ -538,7 +544,7 @@ class Updater090000
     {
         if (empty($decodedQuestions[$questionId])) {
             foreach ($questions as $index => $question) {
-                if ($question->getId() === (int) $questionId) {
+                if ($question->getId() === (int) $questionId && !empty($question->getMimeType())) {
                     $decodedQuestions[$questionId] = $this->questionSerializer->serialize($question, [Transfer::INCLUDE_SOLUTIONS]);
                     unset($questions[$index]);
                     break;
