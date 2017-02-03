@@ -486,7 +486,6 @@ class Updater090000
             ]);
             $holes = $holeSth->fetchAll();
 
-            // Replace selects
             $text = $this->replaceHoles(
                 $question['htmlWithoutValue'],
                 '/<select\s*id=\s*[\'|"]+([0-9]+)[\'|"]+\s*class=\s*[\'|"]+blank[\'|"]+.*[^<\/\s*select\s*>]*<\/select>/',
@@ -499,13 +498,15 @@ class Updater090000
                 $holes
             );
 
+            // Replace selects
+
             $sth = $this->connection->prepare('
                 UPDATE ujm_interaction_hole 
                 SET htmlWithoutValue = :text, originalText = :originalText
                 WHERE question_id = :id
             ');
             $sth->execute([
-                'id' => $question['id'],
+                'id' => $question['question_id'],
                 'text' => $text,
                 'originalText' => $question['htmlWithoutValue'],
             ]);
@@ -519,7 +520,7 @@ class Updater090000
             foreach ($matches[0] as $inputIndex => $inputMatch) {
                 $position = $matches[1][$inputIndex];
                 foreach ($holes as $hole) {
-                    if ($hole['position'] === $position) {
+                    if ((int) $hole['position'] === (int) $position) {
                         $text = str_replace($inputMatch, '[['.$hole['uuid'].']]', $text);
                         break;
                     }
