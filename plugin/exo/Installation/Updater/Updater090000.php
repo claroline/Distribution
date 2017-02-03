@@ -224,17 +224,17 @@ class Updater090000
                     $answerData = json_decode($answer['data'], true);
 
                     $newData = [];
-                    foreach ($answerData as $holeId => $answerText) {
+                    foreach ($answerData as $answerText) {
                         if (!empty($answerText)) {
-                            $answeredHole = $this->getAnswerPart($holeId, $holes);
+                            $answeredHole = $this->getAnswerPart($answerText['holeId'], $holes);
                             $hole = new \stdClass();
                             $hole->holeId = $answeredHole['uuid'];
 
                             if (!$answeredHole['selector']) {
-                                $hole->answerText = $answerText;
+                                $hole->answerText = $answerText['answerText'];
                             } else {
                                 // replace keyword id by its value
-                                $keyword = $this->getAnswerPart($answerText, $keywords);
+                                $keyword = $this->getAnswerPart($answerText['answerText'], $keywords);
                                 $hole->answerText = $keyword['response'];
                             }
 
