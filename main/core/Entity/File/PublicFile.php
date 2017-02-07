@@ -29,7 +29,7 @@ class PublicFile
     protected $id;
 
     /**
-     * @ORM\Column(name="file_size", type="integer")
+     * @ORM\Column(name="file_size", type="integer", nullable=true)
      */
     protected $size;
 
