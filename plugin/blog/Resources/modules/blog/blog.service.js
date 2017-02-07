@@ -6,9 +6,9 @@ let _uibDateParser = new WeakMap()
 let _$q = new WeakMap()
 
 export default class BlogService {
-
+  
   constructor(blogData, url, $resource, Upload, uibDateParser, $q) {
-
+    
     _blogData.set(this, blogData)
     _url.set(this, url)
     _$resource.set(this, $resource)
@@ -17,6 +17,7 @@ export default class BlogService {
     _$q.set(this, $q)
 
     this.posts = []
+    this.info = ''
 
     this.totalItems = null
     this.fixedTitle = null
@@ -33,8 +34,6 @@ export default class BlogService {
   set panels(panels) { return _blogData.get(this).panels = panels }
   get archives() { return _blogData.get(this).archives }
   set archives(archives) { _blogData.get(this).archives = archives }
-  get info() { return _blogData.get(this).info }
-  set info(info) { _blogData.get(this).info = info }
   get isGrantedAdmin() { return _blogData.get(this).isGrantedAdmin }
   get isGrantedEdit() { return _blogData.get(this).isGrantedEdit }
   get isGrantedPost() { return _blogData.get(this).isGrantedPost }
@@ -45,11 +44,24 @@ export default class BlogService {
   set options(options) { _blogData.get(this).options = options }
   get tags() { return _blogData.get(this).tags }
   set tags(tags) { return _blogData.get(this).tags = tags }
-  get eventSources() { return _blogData.get(this).eventSources }
+  get eventsPath() { return _blogData.get(this).eventsPath }
   get img_dir() { return _blogData.get(this).img_dir  }
   get banner_dir() { return _blogData.get(this).banner_dir  }
   get user() { return _blogData.get(this).user }
   get loginUrl() { return _blogData.get(this).loginUrl }
+
+  getInfo() {
+    const url = _url.get(this)('icap_blog_api_get_blog', {
+      'blog': this.id
+    })
+
+    let Info = _$resource.get(this)(url)
+    Info.get(
+      success => {
+        this.info = success.info
+      }
+    )
+  }
 
   getPosts(page = null) {
     const url = _url.get(this)('icap_blog_api_get_blog_post', {
@@ -64,7 +76,7 @@ export default class BlogService {
         this.totalItems = success.total
       }
     )
-
+    
     return posts.$promise
   }
 
@@ -118,7 +130,7 @@ export default class BlogService {
         this.totalItems = success.total
       }
     )
-
+    
     return posts.$promise
   }
 
@@ -166,12 +178,12 @@ export default class BlogService {
     const url = _url.get(this)('icap_blog_api_post_blog_banner', {
       'blog': this.id
     })
-
+        
     return _Upload.get(this).upload({
       url: url,
       data: { file: file}
     })
-
+    
   }
 
   removeBanner() {
@@ -235,11 +247,11 @@ export default class BlogService {
       }
     )
   }
-
+  
   _updateGeneralInfo() {
     // Authors
     this._fetchAuthors()
-
+    
     // Tags
     this._fetchTags()
 
@@ -285,7 +297,7 @@ export default class BlogService {
       }
     )
   }
-
+  
   createPost() {
     const url = _url.get(this)('icap_blog_api_post_blog_post', {
       'blog': this.id
@@ -296,12 +308,12 @@ export default class BlogService {
 
     return post.$save(
       () => {
-        this._updateGeneralInfo()
+        this._updateGeneralInfo()        
       }
     )
 
   }
-
+  
   deletePost(post, page) {
 
     const url = _url.get(this)('icap_blog_api_delete_blog_post', {
@@ -367,7 +379,7 @@ export default class BlogService {
       }
     )
   }
-
+  
   editInfo(info) {
     const url = _url.get(this)('icap_blog_api_put_blog', {
       'blog': this.id
@@ -437,7 +449,7 @@ export default class BlogService {
       'post': post.id,
       'comment': comment.id
     })
-
+    
     let Comment = _$resource.get(this)(url, null, {
       'edit': { method: 'PUT' }
     })

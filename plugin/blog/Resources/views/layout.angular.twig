@@ -16,51 +16,51 @@
 
         <div class="row button_block">
             {% if is_granted('IS_AUTHENTICATED_FULLY') or is_granted('ADMINISTRATE', _resource) or is_granted('POST', _resource) or is_granted('ROLE_ADMIN') or config.getParameter('is_pdf_export_active') == true %}
-                <div class="col-md-12">
-                    <button
-                            data-ng-if="main.blog.isGrantedAdmin || main.blog.isGrantedPost"
-                            class="btn btn-default"
-                            data-ng-click="main.newPost()">
-                        <span class="fa fa-plus"></span> {{ 'new_post'|trans({}, 'icap_blog') }}
-                    </button>
+            <div class="col-md-12">
+                <button
+                    data-ng-if="main.blog.isGrantedAdmin || main.blog.isGrantedPost"
+                    class="btn btn-default"
+                    data-ng-click="main.newPost()">
+                    <span class="fa fa-plus"></span> {{ 'new_post'|trans({}, 'icap_blog') }}
+                </button>
 
-                    <button
-                            data-ng-click="main.displayOptions()"
-                            data-ng-if="main.blog.isGrantedAdmin"
-                            class="btn btn-default">
-                        <i class="fa fa-wrench"></i> {{ 'options'|trans({}, 'platform') }}
-                    </button>
+                <button
+                    data-ng-click="main.displayOptions()"
+                    data-ng-if="main.blog.isGrantedAdmin"
+                    class="btn btn-default">
+                    <i class="fa fa-wrench"></i> {{ 'options'|trans({}, 'platform') }}
+                </button>
 
-                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                        {{ render(controller('IcapNotificationBundle:FollowerResource:renderForm', {'resourceId': _resource.resourceNode.id, 'resourceClass': _resource.resourceNode.class})) }}
-                    {% endif %}
-                    {% if config.getParameter('is_pdf_export_active') == true %}
-                        <a href="{{ path('icap_blog_view_pdf', {'blogId':_resource.id}) }}" target="_blank" class="btn btn-default"><i class="fa fa-file-pdf-o text-danger"></i> {{ 'pdf_export'|trans({}, 'platform') }}</a>
-                    {% endif %}
-                    {% if is_granted('ROLE_ADMIN') %}
-                        <div class="btn-group">
-                            <button class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="fa fa-eye"></span>{{ 'show_as'|trans({}, 'platform') }} <span class="caret"></span></button>
-                            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                                {% if has_role_access_to_workspace('ROLE_ANONYMOUS', _resource.resourceNode.workspace.id) %}
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    {{ render(controller('IcapNotificationBundle:FollowerResource:renderForm', {'resourceId': _resource.resourceNode.id, 'resourceClass': _resource.resourceNode.class})) }}
+                {% endif %}
+                {% if config.getParameter('is_pdf_export_active') == true %}
+                    <a href="{{ path('icap_blog_view_pdf', {'blogId':_resource.id}) }}" target="_blank" class="btn btn-default"><i class="fa fa-file-pdf-o text-danger"></i> {{ 'pdf_export'|trans({}, 'platform') }}</a>
+                {% endif %}
+                {% if is_granted('ROLE_ADMIN') %}
+                    <div class="btn-group">
+                        <button class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="fa fa-eye"></span>{{ 'show_as'|trans({}, 'platform') }} <span class="caret"></span></button>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                            {% if has_role_access_to_workspace('ROLE_ANONYMOUS', _resource.resourceNode.workspace.id) %}
+                                <li>
+                                    <a href="?view_as=ROLE_ANONYMOUS_{{ _resource.resourceNode.workspace.id }}">
+                                        {{ 'anonymous'|trans({}, 'platform') }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% for role in _resource.resourceNode.workspace.roles %}
+                                {% if has_role_access_to_workspace(role.getName(), _resource.resourceNode.workspace.id) %}
                                     <li>
-                                        <a href="?view_as=ROLE_ANONYMOUS_{{ _resource.resourceNode.workspace.id }}">
-                                            {{ 'anonymous'|trans({}, 'platform') }}
+                                        <a href="{{ path('icap_blog_view', {'blogId': _resource.id}) }}?view_as={{ role.getName() }}">
+                                            {{ role.getTranslationKey()|trans({}, 'platform') }}
                                         </a>
                                     </li>
                                 {% endif %}
-                                {% for role in _resource.resourceNode.workspace.roles %}
-                                    {% if has_role_access_to_workspace(role.getName(), _resource.resourceNode.workspace.id) %}
-                                        <li>
-                                            <a href="{{ path('icap_blog_view', {'blogId': _resource.id}) }}?view_as={{ role.getName() }}">
-                                                {{ role.getTranslationKey()|trans({}, 'platform') }}
-                                            </a>
-                                        </li>
-                                    {% endif %}
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    {% endif %}
-                </div>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
             {% endif %}
         </div>
 
@@ -72,10 +72,10 @@
 
             <aside class="col-lg-4" data-blog-panels>
                 <div
-                        data-ng-repeat="panel in panelsCtrl.blog.panels"
-                        data-ng-include="panelsCtrl.getPanelUrl(panel.nameTemplate)"
-                        class="panel panel-default archives_panel"
-                        data-ng-class="{'hidden': !panel.visibility}"></div>
+                    data-ng-repeat="panel in panelsCtrl.blog.panels"
+                    data-ng-include="panelsCtrl.getPanelUrl(panel.nameTemplate)"
+                    class="panel panel-default archives_panel"
+                    data-ng-class="{'hidden': !panel.visibility}"></div>
             </aside>
         </div>
 
@@ -120,14 +120,13 @@
             user: {{ user | default('null') }},
             rssUrl: "{{ path('icap_blog_rss', {'blogId': blog.id}) }}",
             loginUrl: "{{ path('claro_security_login') }}",
-            eventSources: [{url: '{{ path('icap_blog_calendar_datas', {'blogId': _resource.id}) }}'}],
+            eventsPath: "{{ path('icap_blog_calendar_datas', {'blogId': _resource.id}) }}",
             img_dir: "{{ asset('uploads/pictures/') }}",
             banner_dir: "{{ asset(get_blog_upload_dir()) }}",
             bannerImgStyle: "{% if null == get_blog_banner(_resource) %}none{% else %}url('{{ asset(get_blog_banner_web_path(_resource)) }}'){% endif %}",
             options: {{ options | raw }},
             panels: {{ orderPanels | json_encode() | raw }},
             archives: {{ archiveData | json_encode() | raw }},
-            info: '{{ _resource.infos | raw }}',
             authors: {{ blog_authors(_resource) | json_encode() | raw }},
             tags: {{ blog_tags(blog) | json_encode() | raw }},
             isGrantedAdmin: {{ is_granted('ADMINISTRATE', _resource) ? 'true':'false' }},
