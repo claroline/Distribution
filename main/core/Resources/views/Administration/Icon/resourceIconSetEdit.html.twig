@@ -50,70 +50,7 @@
                 </div>
             </div>
         </form>
-        <div class="row callout no-padding">
-            <h3 class="col-md-12">{{ 'resources'|trans({}, 'platform') }}</h3>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                {% for iconName in iconNamesForTypes.setIcons.resourceIcons %}
-                    <div class="col-md-3 icon-set-item-thumbnail">
-                        <div class="icon-set-item-img">
-                            <img src="{{ asset(iconName.relativeUrl) }}">
-                        </div>
-                        <div class="icon-set-item-types">
-                            <strong>{{ iconName.name|trans({}, 'resource') }}</strong>
-                        </div>
-                        <div class="icon-set-item-name">
-                            <strong>{{ 'filename'|trans({}, 'platform') }}:</strong>
-                            {{ iconName.name }}<span class="text-muted">.*</span>
-                        </div>
-                    </div>
-                {% endfor %}
-                {% for iconName in iconNamesForTypes.defaultIcons.resourceIcons %}
-                    <div class="col-md-3 icon-set-item-thumbnail icon-set-item-default">
-                        <div class="icon-set-item-img">
-                            <img src="{{ asset(iconName.relativeUrl) }}">
-                        </div>
-                        <div class="icon-set-item-types">
-                            <strong>{{ iconName.name|trans({}, 'resource') }}</strong>
-                        </div>
-                        <div class="icon-set-item-name">
-                            <strong>{{ 'filename'|trans({}, 'platform') }}:</strong>
-                            {{ iconName.name }}<span class="text-muted">.*</span>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="row callout no-padding">
-            <h3 class="col-md-12">{{ 'files'|trans({}, 'platform') }}</h3>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                {% for iconName in iconNamesForTypes.setIcons.fileIcons %}
-                    <div class="col-md-3 icon-set-item-thumbnail">
-                        <div class="icon-set-item-img">
-                            <img src="{{ asset(iconName.relativeUrl) }}">
-                        </div>
-                        <div class="icon-set-item-name">
-                            <strong>{{ 'filename'|trans({}, 'platform') }}:</strong>
-                            {{ iconName.name }}<span class="text-muted">.*</span>
-                        </div>
-                    </div>
-                {% endfor %}
-                {% for iconName in iconNamesForTypes.defaultIcons.fileIcons %}
-                    <div class="col-md-3 icon-set-item-thumbnail icon-set-item-default">
-                        <div class="icon-set-item-img">
-                            <img src="{{ asset(iconName.relativeUrl) }}">
-                        </div>
-                        <div class="icon-set-item-name">
-                            <strong>{{ 'filename'|trans({}, 'platform') }}:</strong>
-                            {{ iconName.name }}<span class="text-muted">.*</span>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
+        <resource-icon-item-list></resource-icon-item-list>
     </div>
 {% endblock %}
 
@@ -132,4 +69,9 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script type="text/javascript">
+        window.iconSet = {{ iconSet|json_serialize(['Default'])|raw }};
+        window.iconItemsByTypes = {{ iconNamesForTypes|json_serialize(['Default'])|raw }};
+    </script>
+    <script type="text/javascript" src="{{ hotAsset('dist/claroline-distribution-main-core-resource-icon-item-list.js') }}"></script>
 {% endblock%}

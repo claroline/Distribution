@@ -14,28 +14,33 @@
 namespace Claroline\CoreBundle\Repository\Icon;
 
 use Claroline\CoreBundle\Entity\Icon\IconSet;
-use Claroline\CoreBundle\Entity\Icon\IconSetTypeEnum;
 use Claroline\CoreBundle\Entity\Resource\ResourceIcon;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 
 class IconItemRepository extends EntityRepository
 {
-    public function findIconsForDefaultResourceIconSet($excludeMimeTypes = null, $includeMimeTypes = null)
-    {
-        $qb = $this->createQueryBuilder('icon')
-            ->select('icon')
-            ->join('icon.iconSet', 'st')
-            ->andWhere('st.default = :isDefault')
-            ->andWhere('st.cname = :defaultCName')
-            ->andWhere('st.type = :resourceType')
-            ->setParameter('isDefault', true)
-            ->setParameter('defaultCName', 'claroline')
-            ->setParameter('resourceType', IconSetTypeEnum::RESOURCE_ICON_SET);
+    public function findIconsForResourceIconSetByMimeTypes(
+        IconSet $iconSet = null,
+        $excludeMimeTypes = null,
+        $includeMimeTypes = null,
+        $includeShortcuts = true
+    ) {
+        $qb = $this->createQueryBuilder('icon')->select('icon');
+        if (is_null($iconSet)) {
+            $this->addDefaultResourceIconSetToQueryBuilder($qb);
+        } else {
+            $qb->andWhere('icon.iconSet = :iconSet')
+                ->setParameter('iconSet', $iconSet);
+        }
 
         if (!empty($excludeMimeTypes)) {
             $qb->andWhere($qb->expr()->notIn('icon.mimeType', $excludeMimeTypes));
         } elseif (!empty($includeMimeTypes)) {
-            $qb->andWhere($qb->expr()->in('icon.mimeType', $excludeMimeTypes));
+            $qb->andWhere($qb->expr()->in('icon.mimeType', $includeMimeTypes));
+        }
+        if (!$includeShortcuts) {
+            $qb->andWhere('icon.isShortcut = :shortcut')->setParameter('shortcut', false);
         }
 
         return $qb->getQuery()->getResult();
@@ -51,14 +56,29 @@ class IconItemRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    public function updateResourceIconsByIconSetIcons(IconSet $iconSet)
+    public function updateResourceIconsByIconSetIcons(IconSet $iconSet = null, $mimeTypes = null)
     {
-        return $this->getEntityManager()->getConnection()->executeUpdate(
-            'UPDATE claro_resource_icon ri, claro_icon_item ii
+        $nativeQuery = 'UPDATE claro_resource_icon ri, claro_icon_item ii
               SET ri.relative_url = ii.relative_url
               WHERE ri.id = ii.resource_icon_id
-              AND ii.icon_set_id = :id',
-            ['id' => $iconSet->getId()]
+              AND ii.icon_set_id = :id';
+        $params = [];
+        if (is_null($iconSet)) {
+            $params['id'] = 1;
+        } else {
+            $params['id'] = $iconSet->getId();
+        }
+
+        if (!empty($mimeTypes)) {
+            $nativeQuery .= '
+                AND ii.mime_type IN (:mimeTypes)
+            ';
+            $params['mimeTypes'] = $mimeTypes;
+        }
+
+        return $this->getEntityManager()->getConnection()->executeUpdate(
+            $nativeQuery,
+            $params
         );
     }
 
@@ -72,7 +92,17 @@ class IconItemRepository extends EntityRepository
             ->setParameter('icon', $icon)
             ->setParameter('mimeType', $icon->getMimeType())
             ->setParameter('isShortcut', $icon->isShortcut());
+        $qb->andWhere($qb->expr()->isNotNull('icon.resourceIcon'));
 
         return $qb->getQuery()->getResult();
+    }
+
+    private function addDefaultResourceIconSetToQueryBuilder(QueryBuilder $qb)
+    {
+        $qb->join('icon.iconSet', 'st')
+            ->andWhere('st.default = :isDefault')
+            ->andWhere('st.cname = :defaultCname')
+            ->setParameter('isDefault', true)
+            ->setParameter('defaultCname', 'claroline');
     }
 }

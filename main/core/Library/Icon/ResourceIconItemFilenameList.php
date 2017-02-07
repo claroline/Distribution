@@ -14,8 +14,9 @@
 namespace Claroline\CoreBundle\Library\Icon;
 
 use Claroline\CoreBundle\Entity\Icon\IconItem;
+use JMS\Serializer\Annotation as JMS;
 
-class IconItemsByTypeList
+class ResourceIconItemFilenameList
 {
     /**
      * Icons refering to resource types.
@@ -35,6 +36,7 @@ class IconItemsByTypeList
      * Icons all icons regardless their reference to resource of files.
      *
      * @var array
+     * @JMS\Groups({"details"})
      */
     private $allIcons = [];
 
@@ -42,16 +44,21 @@ class IconItemsByTypeList
      * Array of all mimeTypes present in the list.
      *
      * @var array
+     * @JMS\Groups({"details"})
      */
     private $mimeTypes = [];
 
     /**
      * Array of all shortcut icons in the list by original mimeType.
+     *
+     * @JMS\Groups({"details"})
      */
     private $shortcuts = [];
 
     /**
      * Array of all icons in the list by original mimeType.
+     *
+     * @JMS\Groups({"details"})
      */
     private $icons = [];
 
@@ -83,7 +90,7 @@ class IconItemsByTypeList
             if (strpos($mimeType, 'custom/') !== false) {
                 // For every resoruce, give option for a different icon
                 $filename = str_replace('custom/', '', $mimeType);
-                $this->resourceIcons[$filename] = $this->allIcons[$filename] = new IconItemForList(
+                $this->resourceIcons[$filename] = $this->allIcons[$filename] = new ResourceIconItemFilename(
                     $filename,
                     $icon->getRelativeUrl(),
                     [$mimeType]
@@ -94,7 +101,7 @@ class IconItemsByTypeList
                 if (array_key_exists($filename, $this->fileIcons)) {
                     $this->fileIcons[$filename]->addMimeType($mimeType);
                 } else {
-                    $this->fileIcons[$filename] = $this->allIcons[$filename] = new IconItemForList(
+                    $this->fileIcons[$filename] = $this->allIcons[$filename] = new ResourceIconItemFilename(
                         $filename,
                         $icon->getRelativeUrl(),
                         [$mimeType]
@@ -144,26 +151,49 @@ class IconItemsByTypeList
         return $this->shortcuts;
     }
 
+    /**
+     * @return bool
+     */
     public function isEmpty()
     {
         return empty($this->allIcons);
     }
 
+    /**
+     * @param $key
+     *
+     * @return bool
+     */
     public function isInList($key)
     {
         return array_key_exists($key, $this->allIcons);
     }
 
+    /**
+     * @param $key
+     *
+     * @return bool
+     */
     public function isInResourceIcons($key)
     {
         return array_key_exists($key, $this->resourceIcons);
     }
 
+    /**
+     * @param $key
+     *
+     * @return bool
+     */
     public function isInFileIcons($key)
     {
         return array_key_exists($key, $this->fileIcons);
     }
 
+    /**
+     * @param $key
+     *
+     * @return ResourceIconItemFilename | null
+     */
     public function getItemByKey($key)
     {
         if ($this->isInList($key)) {
@@ -195,6 +225,9 @@ class IconItemsByTypeList
 
     public function prependShortcutIcon(IconItem $icon)
     {
-        array_unshift($this->resourceIcons, $icon);
+        array_unshift(
+            $this->resourceIcons,
+            new ResourceIconItemFilename($icon->getName(), $icon->getRelativeUrl(), ['shortcut'])
+        );
     }
 }

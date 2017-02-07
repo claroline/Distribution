@@ -1,3 +1,4 @@
+<div uib-alert class="alert col-md-12" data-ng-repeat="alert in vm.alerts" data-type="{{alert.type}}" data-close="vm.closeAlert($index)">{{alert.msg | trans:{}:'platform'}}</div>
 <div class="col-md-6" ng-repeat="iconSet in vm.iconSets">
     <div class="alert alert-success">
         <a data-ng-if="!iconSet.default" href="{{ 'claro_admin_resource_icon_set_edit'|path:{ 'id': iconSet.id } }}">

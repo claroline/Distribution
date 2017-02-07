@@ -61,11 +61,11 @@
                             <img src="{{ asset(iconName.relativeUrl) }}">
                         </div>
                         <div class="icon-set-item-types">
-                            <strong>{{ iconName.name|trans({}, 'resource') }}</strong>
+                            <strong>{{ iconName.filename|trans({}, 'resource') }}</strong>
                         </div>
                         <div class="icon-set-item-name">
                             <strong>{{ 'filename'|trans({}, 'platform') }}:</strong>
-                            {{ iconName.name }}<span class="text-muted">.*</span>
+                            {{ iconName.filename }}<span class="text-muted">.*</span>
                         </div>
                     </div>
                 {% endfor %}
@@ -83,7 +83,7 @@
                         </div>
                         <div class="icon-set-item-name">
                             <strong>{{ 'filename'|trans({}, 'platform') }}:</strong>
-                            {{ iconName.name }}<span class="text-muted">.*</span>
+                            {{ iconName.filename }}<span class="text-muted">.*</span>
                         </div>
                     </div>
                 {% endfor %}

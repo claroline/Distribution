@@ -1,6 +1,6 @@
 import _ from 'lodash'
 
-export default class IconSetService {
+export default class ResourceIconSetService {
   constructor(iconSets, $http, $q, $filter) {
     this._http = $http
     this._q = $q
@@ -17,7 +17,10 @@ export default class IconSetService {
       () => {
         _.remove(this.iconSets, st => st.id == iconSet.id)
         return this._resolve(this.iconSets)
-      }, () => {}
+      },
+      data => {
+        return this._reject(data)
+      }
     )
   }
 
@@ -48,4 +51,4 @@ export default class IconSetService {
     return this._q.resolve(data)
   }
 }
-IconSetService.$inject = ['iconSets', '$http', '$q', '$filter']
+ResourceIconSetService.$inject = ['iconSets', '$http', '$q', '$filter']
