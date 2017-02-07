@@ -145,7 +145,7 @@ class FileUtilities
     {
         if (is_null($name)) {
             $next = 'AAAAAAAAAAAAAAAAAAAA';
-        } else if (strtoupper($name) === 'ZZZZZZZZZZZZZZZZZZZZ') {
+        } elseif (strtoupper($name) === 'ZZZZZZZZZZZZZZZZZZZZ') {
             $next = $name;
         } else {
             $next = ++$name;
