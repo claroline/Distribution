@@ -26,15 +26,15 @@ class CreatePublicFilesData implements RequiredFixture
     public function load(ObjectManager $manager)
     {
         $fileSystem = $this->container->get('filesystem');
-        $fileDir = $this->container->getParameter('claroline.param.files_directory');
+        $filesDir = $this->container->getParameter('claroline.param.files_directory');
         $webDir = $this->container->getParameter('claroline.param.web_dir');
         $ds = DIRECTORY_SEPARATOR;
 
-        if (!$fileSystem->exists($fileDir.$ds.'public')) {
-            $fileSystem->mkdir($fileDir.$ds.'public');
+        if (!$fileSystem->exists($filesDir.$ds.'public')) {
+            $fileSystem->mkdir($filesDir.$ds.'public');
         }
         if (!$fileSystem->exists($webDir.$ds.'public')) {
-            $fileSystem->symlink($fileDir.$ds.'public', $webDir.$ds.'public');
+            $fileSystem->symlink($filesDir.$ds.'public', $webDir.$ds.'public');
         }
     }
 }

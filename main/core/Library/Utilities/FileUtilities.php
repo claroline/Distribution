@@ -28,15 +28,15 @@ class FileUtilities
     const MAX_FILES = 1000;
 
     private $claroUtils;
+    private $filesDir;
     private $fileSystem;
     private $om;
-    private $publicFilesDir;
     private $tokenStorage;
 
     /**
      * @DI\InjectParams({
      *     "claroUtils"    = @DI\Inject("claroline.utilities.misc"),
-     *     "publicFileDir" = @DI\Inject("%claroline.param.public_files_directory%"),
+     *     "filesDir"      = @DI\Inject("%claroline.param.files_directory%"),
      *     "fileSystem"    = @DI\Inject("filesystem"),
      *     "om"            = @DI\Inject("claroline.persistence.object_manager"),
      *     "tokenStorage"  = @DI\Inject("security.token_storage")
@@ -44,15 +44,15 @@ class FileUtilities
      */
     public function __construct(
         ClaroUtilities $claroUtils,
-        $publicFileDir,
+        $filesDir,
         Filesystem $fileSystem,
         ObjectManager $om,
         TokenStorageInterface $tokenStorage
     ) {
         $this->claroUtils = $claroUtils;
+        $this->filesDir = $filesDir;
         $this->fileSystem = $fileSystem;
         $this->om = $om;
-        $this->publicFilesDir = $publicFileDir;
         $this->tokenStorage = $tokenStorage;
     }
 
@@ -64,7 +64,7 @@ class FileUtilities
         $size = filesize($tmpFile);
         $mimeType = $tmpFile->getMimeType();
         $extension = pathinfo($fileName, PATHINFO_EXTENSION);
-        $hashName = $directoryName.DIRECTORY_SEPARATOR.$this->claroUtils->generateGuid().'.'.$extension;
+        $hashName = 'public'.DIRECTORY_SEPARATOR.$directoryName.DIRECTORY_SEPARATOR.$this->claroUtils->generateGuid().'.'.$extension;
 
         $this->om->startFlushSuite();
         $publicFile = new PublicFile();
@@ -78,7 +78,7 @@ class FileUtilities
         if ($user !== 'anon.') {
             $publicFile->setCreator($user);
         }
-        $tmpFile->move($this->publicFilesDir.DIRECTORY_SEPARATOR, $hashName);
+        $tmpFile->move($this->filesDir.DIRECTORY_SEPARATOR, $hashName);
         $this->om->persist($publicFile);
         $this->createFileUse($publicFile, $objectClass, $objectGuid, $objectName);
         $this->om->endFlushSuite();
@@ -105,7 +105,7 @@ class FileUtilities
 
     public function deletePublicFile(PublicFile $publicFile)
     {
-        $uploadedFile = $this->publicFilesDir.DIRECTORY_SEPARATOR.$publicFile->getHashName();
+        $uploadedFile = $this->filesDir.DIRECTORY_SEPARATOR.$publicFile->getHashName();
         $this->om->remove($publicFile);
         $this->om->flush();
         @unlink($uploadedFile);
@@ -114,7 +114,7 @@ class FileUtilities
     public function getActiveDirectoryName()
     {
         $finder = new Finder();
-        $finder->directories()->in($this->publicFilesDir)->name('/^[a-zA-Z]{20}$/');
+        $finder->directories()->in($this->filesDir.DIRECTORY_SEPARATOR.'public')->name('/^[a-zA-Z]{20}$/');
         $finder->sortByName();
 
         if ($finder->count() === 0) {
@@ -150,7 +150,7 @@ class FileUtilities
         } else {
             $next = ++$name;
         }
-        $newDir = $this->publicFilesDir.DIRECTORY_SEPARATOR.$next;
+        $newDir = $this->filesDir.DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR.$next;
 
         if (!$this->fileSystem->exists($newDir)) {
             $this->fileSystem->mkdir($newDir);

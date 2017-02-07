@@ -16,14 +16,14 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class Updater090001 extends Updater
 {
     private $container;
-    private $fileDir;
+    private $filesDir;
     private $fileSystem;
     private $webDir;
 
     public function __construct(ContainerInterface $container, $logger)
     {
         $this->container = $container;
-        $this->fileDir = $container->getParameter('claroline.param.files_directory');
+        $this->filesDir = $container->getParameter('claroline.param.files_directory');
         $this->fileSystem = $container->get('filesystem');
         $this->logger = $logger;
         $this->webDir = $container->getParameter('claroline.param.web_dir');
@@ -38,13 +38,13 @@ class Updater090001 extends Updater
     {
         $ds = DIRECTORY_SEPARATOR;
 
-        if (!$this->fileSystem->exists($this->fileDir.$ds.'public')) {
+        if (!$this->fileSystem->exists($this->filesDir.$ds.'public')) {
             $this->log('Creating public directory in files directory...');
-            $this->fileSystem->mkdir($this->fileDir.$ds.'public');
+            $this->fileSystem->mkdir($this->filesDir.$ds.'public');
         }
         if (!$this->fileSystem->exists($this->webDir.$ds.'public')) {
             $this->log('Creating symlink to public directory of files directory in web directory...');
-            $this->fileSystem->symlink($this->fileDir.$ds.'public', $this->webDir.$ds.'public');
+            $this->fileSystem->symlink($this->filesDir.$ds.'public', $this->webDir.$ds.'public');
         }
     }
 }
