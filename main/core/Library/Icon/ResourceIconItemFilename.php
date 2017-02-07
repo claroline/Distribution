@@ -12,9 +12,9 @@
 
 namespace Claroline\CoreBundle\Library\Icon;
 
-class IconItemForList
+class ResourceIconItemFilename
 {
-    private $name;
+    private $filename;
 
     private $relativeUrl;
 
@@ -22,7 +22,7 @@ class IconItemForList
 
     public function __construct($name, $relativeUrl, array $mimeTypes)
     {
-        $this->name = $name;
+        $this->filename = $name;
         $this->relativeUrl = $relativeUrl;
         $this->mimeTypes = $mimeTypes;
     }
@@ -30,9 +30,9 @@ class IconItemForList
     /**
      * @return mixed
      */
-    public function getName()
+    public function getFilename()
     {
-        return $this->name;
+        return $this->filename;
     }
 
     /**

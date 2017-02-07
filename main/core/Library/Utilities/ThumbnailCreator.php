@@ -12,6 +12,8 @@
 namespace Claroline\CoreBundle\Library\Utilities;
 
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use JangoBrick\SVG\Nodes\Image\SVGImg;
+use JangoBrick\SVG\SVGImage;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -24,6 +26,7 @@ class ThumbnailCreator
     private $isGdLoaded;
     private $isFfmpegLoaded;
     private $ut;
+    private $fs;
 
     /**
      * @DI\InjectParams({
@@ -40,6 +43,7 @@ class ThumbnailCreator
         $this->isGdLoaded = extension_loaded('gd');
         $this->isFfmpegLoaded = extension_loaded('ffmpeg');
         $this->ut = $ut;
+        $this->fs = new FileSystem();
     }
 
     /**
@@ -164,43 +168,52 @@ class ThumbnailCreator
     public function shortcutThumbnail(
         $srcImg,
         Workspace $workspace = null,
-        $stampPath = null,
+        $stampImg = null,
         $targetDirPath = null,
-        $filename = null
-    ) {
+        $filename = null // Just the filename, no extension
+)
+    {
         if (!$this->isGdLoaded) {
             throw new UnloadedExtensionException('The GD extension is missing \n');
         }
 
         $ds = DIRECTORY_SEPARATOR;
-        if (is_null($stampPath)) {
-            $stampPath = $this->getDefaultStampRelativeUrl();
+        if (is_null($stampImg)) {
+            $stampImg = "{$this->webDir}{$ds}".$this->getDefaultStampRelativeUrl();
         }
-        $stampPath = "{$this->webDir}{$ds}".$stampPath;
         // Test image extension
         $extension = (pathinfo($srcImg, PATHINFO_EXTENSION) === 'jpg') ? 'jpeg' : pathinfo($srcImg, PATHINFO_EXTENSION);
-        if (function_exists($funcname = "imagecreatefrom{$extension}")) {
+        if ($extension === 'svg') {
+            $im = SVGImage::fromFile($srcImg);
+        } elseif (function_exists($funcname = "imagecreatefrom{$extension}")) {
             $im = $funcname($srcImg);
+            imagesavealpha($im, true);
         } else {
             $exception = new ExtensionNotSupportedException();
             $exception->setExtension($extension);
             throw $exception;
         }
         // Test stamp extension
-        $stampExtension = (pathinfo($stampPath, PATHINFO_EXTENSION) === 'jpg') ?
+        $stampExtension = (pathinfo($stampImg, PATHINFO_EXTENSION) === 'jpg') ?
             'jpeg' :
-            pathinfo($stampPath, PATHINFO_EXTENSION);
-        if (function_exists($stampFuncname = "imagecreatefrom{$stampExtension}")) {
-            $stamp = $stampFuncname($stampPath);
+            pathinfo($stampImg, PATHINFO_EXTENSION);
+        if ($stampExtension === 'svg') {
+            $stamp = SVGImage::fromFile($stampImg);
+            // Turn stamp to png if image is not SVG
+            if ($extension !== 'svg') {
+                $stamp = $stamp->toRasterImage(imagesx($im), imagesy($im));
+            }
+        } elseif (function_exists($stampFuncname = "imagecreatefrom{$stampExtension}")) {
+            $stamp = $stampFuncname($stampImg);
         } else {
             $exception = new ExtensionNotSupportedException();
             $exception->setExtension($stampExtension);
             throw $exception;
         }
-        imagesavealpha($im, true);
-        imagecopy($im, $stamp, 0, imagesy($im) - imagesy($stamp), 0, 0, imagesx($stamp), imagesy($stamp));
         if (is_null($filename)) {
             $filename = "{$this->ut->generateGuid()}.{$extension}";
+        } else {
+            $filename .= ".{$extension}";
         }
 
         if (!empty($targetDirPath)) {
@@ -210,8 +223,35 @@ class ThumbnailCreator
         } else {
             $dir = $this->thumbnailDir.$ds.$filename;
         }
-        imagepng($im, $dir);
-        imagedestroy($im);
+
+        if ($extension === 'svg') {
+            if ($stampExtension === 'svg') {
+                // Add all elements of $stamp to $im
+                $stampDocument = $stamp->getDocument();
+                $imDocument = $im->getDocument();
+                $stampDocument->setHeight($imDocument->getHeight());
+                $stampDocument->setWidth($imDocument->getWidth());
+                $shortcut = new SVGImage($imDocument->getWidth(), $imDocument->getHeight());
+                $shortcut->getDocument()->addChild($imDocument);
+                $shortcut->getDocument()->addChild($stampDocument);
+                $im = $shortcut;
+            } else {
+                $im->getDocument()->addChild(new SVGImg(
+                    'data:'.mime_content_type($stampImg).';base64,'.base64_encode(file_get_contents($stampImg)),
+                    0,
+                    $im->getDocument()->getHeight() - imagesy($stamp),
+                    imagesx($stamp),
+                    imagesy($stamp)
+                ));
+            }
+            $this->fs->dumpFile($dir, $im);
+        } else {
+            imagecopy($im, $stamp, 0, imagesy($im) - imagesy($stamp), 0, 0, imagesx($stamp), imagesy($stamp));
+            $funcname = "image{$extension}";
+            $funcname($im, $dir);
+            imagedestroy($im);
+            imagedestroy($stamp);
+        }
 
         return $dir;
     }

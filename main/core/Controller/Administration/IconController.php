@@ -100,7 +100,7 @@ class IconController extends Controller
         $iconSet = $this->iconSetManager->getIconSetById($id);
         $form = $this->createForm(new IconSetType(), $iconSet);
         $iconNamesForTypes = $this->iconSetManager->getIconSetIconsByType($iconSet);
-        $shortcutIcon = $this->iconSetManager->getResourceIconSetStampIcon();
+        $shortcutIcon = $this->iconSetManager->getResourceIconSetStampIcon($iconSet);
         $iconNamesForTypes->prependShortcutIcon($shortcutIcon, empty($iconSet->getResourceStampIcon()));
 
         return [
@@ -155,12 +155,41 @@ class IconController extends Controller
     }
 
     /**
+     * @EXT\Route("/set/resource/upload/{id}/{filename}",
+     *     options={"expose"=true},
+     *     requirements={"id" = "\d+"},
+     *     name="claro_admin_resource_icon_set_upload_new_icon"
+     * )
+     * @EXT\Method({"POST"})
+     *
+     * @param Request $request
+     * @param $id
+     * @param $filename
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function resourceIconSetUploadNewIcon(Request $request, $id, $filename)
+    {
+        $iconSet = $this->iconSetManager->getIconSetById($id);
+        $relativeUrl = null;
+        $newIconFile = $request->files->get('file');
+        if ($iconSet !== null && $newIconFile !== null) {
+            $relativeUrl = $this->iconSetManager
+                ->uploadNewResourceIconSetIconByFilename($iconSet, $newIconFile, $filename);
+        }
+
+        return new JsonResponse(['deleted' => true, 'relative_url' => $relativeUrl]);
+    }
+
+    /**
      * @EXT\Route("/set/delete/{id}",
      *     options={"expose"=true},
      *     requirements={"id" = "\d+"},
      *     name="claro_admin_icon_set_delete"
      * )
-     * @EXT\Method({"GET", "DELETE"})
+     * @EXT\Method({"DELETE"})
+     *
+     * @param $id
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -172,5 +201,29 @@ class IconController extends Controller
         }
 
         return new JsonResponse(['deleted' => true]);
+    }
+
+    /**
+     * @EXT\Route("/set/resource/delete/icon/{id}/{filename}",
+     *     options={"expose"=true},
+     *     requirements={"id" = "\d+"},
+     *     name="claro_admin_resource_icon_set_item_delete"
+     * )
+     * @EXT\Method({"DELETE"})
+     *
+     * @param $id
+     * @param $filename
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function resourceIconSetDeleteIconAction($id, $filename)
+    {
+        $iconSet = $this->iconSetManager->getIconSetById($id);
+        $relativeUrl = null;
+        if ($iconSet !== null) {
+            $relativeUrl = $this->iconSetManager->deleteResourceIconSetIconByFilename($iconSet, $filename);
+        }
+
+        return new JsonResponse(['deleted' => true, 'relative_url' => $relativeUrl]);
     }
 }

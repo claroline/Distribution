@@ -15,26 +15,26 @@ namespace Claroline\CoreBundle\Library\Icon;
 
 use Claroline\CoreBundle\Entity\Icon\IconItem;
 
-class IconSetIconsList
+class ResourceIconSetIconItemList
 {
     /**
      * Icons defined in set.
      *
-     * @var IconItemsByTypeList
+     * @var ResourceIconItemFilenameList
      */
     private $setIcons;
 
     /**
      * Default icons (not defined in set).
      *
-     * @var IconItemsByTypeList
+     * @var ResourceIconItemFilenameList
      */
     private $defaultIcons;
 
     public function __construct($setIcons = null, $defaultIcons = null)
     {
-        $this->setIcons = new IconItemsByTypeList($setIcons);
-        $this->defaultIcons = new IconItemsByTypeList($defaultIcons);
+        $this->setIcons = new ResourceIconItemFilenameList($setIcons);
+        $this->defaultIcons = new ResourceIconItemFilenameList($defaultIcons);
     }
 
     public function addSetIcons(array $icons)
@@ -58,7 +58,7 @@ class IconSetIconsList
     }
 
     /**
-     * @return IconItemsByTypeList
+     * @return ResourceIconItemFilenameList
      */
     public function getSetIcons()
     {
@@ -66,7 +66,7 @@ class IconSetIconsList
     }
 
     /**
-     * @return IconItemsByTypeList
+     * @return ResourceIconItemFilenameList
      */
     public function getDefaultIcons()
     {
