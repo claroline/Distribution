@@ -64,6 +64,13 @@ final class QuestionType
     const OPEN = 'application/x.open+json';
 
     /**
+     * The user has to write his answer using predefined keywords in a grid.
+     *
+     * @var string
+     */
+    const GRID = 'application/x.grids+json';
+
+    /**
      * Get the list of managed question types.
      *
      * @return array
@@ -79,6 +86,7 @@ final class QuestionType
             static::SET,
             static::WORDS,
             static::OPEN,
+            static::GRID
         ];
     }
 
