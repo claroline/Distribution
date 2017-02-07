@@ -13,7 +13,7 @@ namespace Claroline\CoreBundle\Library\Installation\Updater;
 use Claroline\InstallationBundle\Updater\Updater;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class Updater090001 extends Updater
+class Updater090100 extends Updater
 {
     private $container;
     private $filesDir;

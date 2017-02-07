@@ -248,8 +248,8 @@ class AdditionalInstaller extends BaseInstaller
                 $updater = new Updater\Updater080000($this->container, $this->logger);
                 $updater->setLogger($this->logger);
                 $updater->postUpdate();
-            case version_compare($currentVersion, '9.0.1', '<'):
-                $updater = new Updater\Updater090001($this->container, $this->logger);
+            case version_compare($currentVersion, '9.1.0', '<'):
+                $updater = new Updater\Updater090100($this->container, $this->logger);
                 $updater->setLogger($this->logger);
                 $updater->postUpdate();
         }
