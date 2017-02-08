@@ -1,6 +1,6 @@
 <?php
 
-namespace UJM\ExoBundle\Entity\QuestionType;
+namespace UJM\ExoBundle\Entity\ItemType;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +12,7 @@ use UJM\ExoBundle\Entity\Misc\Hole;
  * @ORM\Entity
  * @ORM\Table(name="ujm_interaction_hole")
  */
-class ClozeQuestion extends AbstractQuestion
+class ClozeQuestion extends AbstractItem
 {
     /**
      * The HTML text with empty holes.

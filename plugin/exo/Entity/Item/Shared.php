@@ -1,6 +1,6 @@
 <?php
 
-namespace UJM\ExoBundle\Entity\Question;
+namespace UJM\ExoBundle\Entity\Item;
 
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
@@ -31,7 +31,7 @@ class Shared
      * The shared question.
      *
      * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Question\Question")
+     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Item\Item")
      * @ORM\JoinColumn(
      *     name="question_id",
      *     referencedColumnName="id",
@@ -39,7 +39,7 @@ class Shared
      *     onDelete="CASCADE"
      * )
      *
-     * @var Question
+     * @var Item
      */
     private $question;
 
@@ -75,9 +75,9 @@ class Shared
     /**
      * Sets question.
      *
-     * @param Question $question
+     * @param Item $question
      */
-    public function setQuestion(Question $question)
+    public function setQuestion(Item $question)
     {
         $this->question = $question;
     }
@@ -85,7 +85,7 @@ class Shared
     /**
      * Gets question.
      *
-     * @return Question
+     * @return Item
      */
     public function getQuestion()
     {

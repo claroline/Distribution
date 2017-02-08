@@ -1,6 +1,6 @@
 <?php
 
-namespace UJM\ExoBundle\Entity\Question;
+namespace UJM\ExoBundle\Entity\Item;
 
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;

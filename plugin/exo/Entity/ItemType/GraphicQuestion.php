@@ -1,6 +1,6 @@
 <?php
 
-namespace UJM\ExoBundle\Entity\QuestionType;
+namespace UJM\ExoBundle\Entity\ItemType;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -13,7 +13,7 @@ use UJM\ExoBundle\Entity\Misc\Area;
  * @ORM\Entity
  * @ORM\Table(name="ujm_interaction_graphic")
  */
-class GraphicQuestion extends AbstractQuestion
+class GraphicQuestion extends AbstractItem
 {
     const SHAPE_RECT = 'rect';
     const SHAPE_CIRCLE = 'circle';

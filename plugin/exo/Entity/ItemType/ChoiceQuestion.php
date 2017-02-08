@@ -1,6 +1,6 @@
 <?php
 
-namespace UJM\ExoBundle\Entity\QuestionType;
+namespace UJM\ExoBundle\Entity\ItemType;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -13,7 +13,7 @@ use UJM\ExoBundle\Library\Model\ShuffleTrait;
  * @ORM\Entity
  * @ORM\Table(name="ujm_interaction_qcm")
  */
-class ChoiceQuestion extends AbstractQuestion
+class ChoiceQuestion extends AbstractItem
 {
     /**
      * Is it a multiple or a unique choice question ?

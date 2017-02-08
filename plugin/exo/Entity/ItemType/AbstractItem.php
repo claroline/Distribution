@@ -1,14 +1,14 @@
 <?php
 
-namespace UJM\ExoBundle\Entity\QuestionType;
+namespace UJM\ExoBundle\Entity\ItemType;
 
 use Doctrine\ORM\Mapping as ORM;
-use UJM\ExoBundle\Entity\Question\Question;
+use UJM\ExoBundle\Entity\Item\Item;
 
 /**
  * @ORM\MappedSuperclass
  */
-abstract class AbstractQuestion
+abstract class AbstractItem
 {
     /**
      * @ORM\Id
@@ -20,9 +20,9 @@ abstract class AbstractQuestion
     protected $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="UJM\ExoBundle\Entity\Question\Question")
+     * @ORM\OneToOne(targetEntity="UJM\ExoBundle\Entity\Item\Item")
      *
-     * @var Question
+     * @var Item
      */
     protected $question;
 
@@ -35,9 +35,9 @@ abstract class AbstractQuestion
     }
 
     /**
-     * @param Question $question
+     * @param Item $question
      */
-    final public function setQuestion(Question $question)
+    final public function setQuestion(Item $question)
     {
         $this->question = $question;
 
@@ -45,7 +45,7 @@ abstract class AbstractQuestion
     }
 
     /**
-     * @return Question
+     * @return Item
      */
     public function getQuestion()
     {

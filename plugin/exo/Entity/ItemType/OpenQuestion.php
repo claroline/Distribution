@@ -1,6 +1,6 @@
 <?php
 
-namespace UJM\ExoBundle\Entity\QuestionType;
+namespace UJM\ExoBundle\Entity\ItemType;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +12,7 @@ use UJM\ExoBundle\Entity\Misc\Keyword;
  * @ORM\Entity
  * @ORM\Table(name="ujm_interaction_open")
  */
-class OpenQuestion extends AbstractQuestion
+class OpenQuestion extends AbstractItem
 {
     /**
      * @ORM\OneToMany(

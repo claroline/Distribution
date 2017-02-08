@@ -3,17 +3,17 @@
 namespace UJM\ExoBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use UJM\ExoBundle\Entity\Question\Question;
+use UJM\ExoBundle\Entity\Item\Item;
 use UJM\ExoBundle\Library\Model\OrderTrait;
 
 /**
- * A stepQuestion represents the link between a question and an exercise step.
+ * A stepItem represents the link between a question and an exercise step.
  * It also stores the position of the question in the step.
  *
  * @ORM\Entity()
  * @ORM\Table(name="ujm_step_question")
  */
-class StepQuestion
+class StepItem
 {
     /*
      * Keep the order of the question in the step.
@@ -35,10 +35,10 @@ class StepQuestion
      * The linked question.
      *
      * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Question\Question", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Item\Item", cascade={"persist"})
      * @ORM\JoinColumn(onDelete="CASCADE")
      *
-     * @var Question
+     * @var Item
      */
     private $question;
 
@@ -65,19 +65,19 @@ class StepQuestion
     }
 
     /**
-     * Set Question.
+     * Set Item.
      *
-     * @param Question $question
+     * @param Item $question
      */
-    public function setQuestion(Question $question)
+    public function setQuestion(Item $question)
     {
         $this->question = $question;
     }
 
     /**
-     * Get Question.
+     * Get Item.
      *
-     * @return Question
+     * @return Item
      */
     public function getQuestion()
     {

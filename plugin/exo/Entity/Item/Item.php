@@ -1,20 +1,20 @@
 <?php
 
-namespace UJM\ExoBundle\Entity\Question;
+namespace UJM\ExoBundle\Entity\Item;
 
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
-use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
+use UJM\ExoBundle\Entity\ItemType\AbstractItem;
 
 /**
- * @ORM\Entity(repositoryClass="UJM\ExoBundle\Repository\QuestionRepository")
+ * @ORM\Entity(repositoryClass="UJM\ExoBundle\Repository\ItemRepository")
  * @ORM\Table(name="ujm_question")
- * @ORM\EntityListeners({"UJM\ExoBundle\Listener\Entity\QuestionListener"})
+ * @ORM\EntityListeners({"UJM\ExoBundle\Listener\Entity\ItemListener"})
  * @ORM\HasLifecycleCallbacks()
  */
-class Question
+class Item
 {
     /**
      * @ORM\Column(type="integer")
@@ -33,7 +33,7 @@ class Question
     private $uuid;
 
     /**
-     * The mime type of the Question type.
+     * The mime type of the Item type.
      *
      * @ORM\Column("mime_type", type="string")
      *
@@ -98,7 +98,7 @@ class Question
     private $description;
 
     /**
-     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Question\Category")
+     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Item\Category")
      *
      * @var Category
      */
@@ -122,7 +122,7 @@ class Question
     private $hints;
 
     /**
-     * @ORM\OneToMany(targetEntity="QuestionObject", mappedBy="question", cascade={"remove", "persist"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="ItemObject", mappedBy="question", cascade={"remove", "persist"}, orphanRemoval=true)
      * @ORM\OrderBy({"order"="ASC"})
      *
      * @var ArrayCollection
@@ -132,7 +132,7 @@ class Question
     /**
      * A list of additional Resources that can help to answer the question.
      *
-     * @ORM\OneToMany(targetEntity="QuestionResource", mappedBy="question", cascade={"remove", "persist"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="ItemResource", mappedBy="question", cascade={"remove", "persist"}, orphanRemoval=true)
      * @ORM\OrderBy({"order"="ASC"})
      *
      * @var ArrayCollection
@@ -150,12 +150,12 @@ class Question
      * The linked interaction entity.
      * This is populated by Doctrine Lifecycle events.
      *
-     * @var AbstractQuestion
+     * @var AbstractItem
      */
     private $interaction = null;
 
     /**
-     * Question constructor.
+     * Item constructor.
      */
     public function __construct()
     {
@@ -260,9 +260,9 @@ class Question
     }
 
     /**
-     * @param QuestionObject $object
+     * @param ItemObject $object
      */
-    public function addObject(QuestionObject $object)
+    public function addObject(ItemObject $object)
     {
         if (!$this->objects->contains($object)) {
             $this->objects->add($object);
@@ -271,9 +271,9 @@ class Question
     }
 
     /**
-     * @param QuestionObject $object
+     * @param ItemObject $object
      */
-    public function removeObject(QuestionObject $object)
+    public function removeObject(ItemObject $object)
     {
         if ($this->objects->contains($object)) {
             $this->objects->removeElement($object);
@@ -290,9 +290,9 @@ class Question
     }
 
     /**
-     * @param QuestionResource $resource
+     * @param ItemResource $resource
      */
-    public function addResource(QuestionResource $resource)
+    public function addResource(ItemResource $resource)
     {
         if (!$this->resources->contains($resource)) {
             $this->resources->add($resource);
@@ -301,9 +301,9 @@ class Question
     }
 
     /**
-     * @param QuestionResource $resource
+     * @param ItemResource $resource
      */
-    public function removeResource(QuestionResource $resource)
+    public function removeResource(ItemResource $resource)
     {
         if ($this->resources->contains($resource)) {
             $this->resources->removeElement($resource);
@@ -455,7 +455,7 @@ class Question
     }
 
     /**
-     * @return AbstractQuestion
+     * @return AbstractItem
      */
     public function getInteraction()
     {
@@ -463,9 +463,9 @@ class Question
     }
 
     /**
-     * @param AbstractQuestion $interaction
+     * @param AbstractItem $interaction
      */
-    public function setInteraction(AbstractQuestion $interaction)
+    public function setInteraction(AbstractItem $interaction)
     {
         $this->interaction = $interaction;
     }

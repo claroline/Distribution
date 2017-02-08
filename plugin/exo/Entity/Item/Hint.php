@@ -1,6 +1,6 @@
 <?php
 
-namespace UJM\ExoBundle\Entity\Question;
+namespace UJM\ExoBundle\Entity\Item;
 
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
@@ -33,9 +33,9 @@ class Hint implements PenaltyItemInterface
     use PenaltyTrait;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Question", inversedBy="hints")
+     * @ORM\ManyToOne(targetEntity="Item", inversedBy="hints")
      *
-     * @var Question
+     * @var Item
      */
     private $question;
 
@@ -53,15 +53,15 @@ class Hint implements PenaltyItemInterface
     }
 
     /**
-     * @param Question $question
+     * @param Item $question
      */
-    public function setQuestion(Question $question)
+    public function setQuestion(Item $question)
     {
         $this->question = $question;
     }
 
     /**
-     * @return Question
+     * @return Item
      */
     public function getQuestion()
     {

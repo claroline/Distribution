@@ -1,17 +1,17 @@
 <?php
 
-namespace UJM\ExoBundle\Entity\Question;
+namespace UJM\ExoBundle\Entity\Item;
 
 use Doctrine\ORM\Mapping as ORM;
 use UJM\ExoBundle\Entity\Content\OrderedResource;
 
 /**
- * A Resource on which the Question is referred.
+ * A Resource on which the Item is referred.
  *
  * @ORM\Entity()
  * @ORM\Table(name="ujm_object_question")
  */
-class QuestionObject extends OrderedResource
+class ItemObject extends OrderedResource
 {
     /**
      * @var int
@@ -23,11 +23,11 @@ class QuestionObject extends OrderedResource
     private $id;
 
     /**
-     * Owning Question.
+     * Owning Item.
      *
-     * @var Question
+     * @var Item
      *
-     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Question\Question", inversedBy="objects")
+     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Item\Item", inversedBy="objects")
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $question;
@@ -45,9 +45,9 @@ class QuestionObject extends OrderedResource
     /**
      * Set question.
      *
-     * @param Question $question
+     * @param Item $question
      */
-    public function setQuestion(Question $question = null)
+    public function setQuestion(Item $question = null)
     {
         $this->question = $question;
     }
@@ -55,7 +55,7 @@ class QuestionObject extends OrderedResource
     /**
      * Get question.
      *
-     * @return Question
+     * @return Item
      */
     public function getQuestion()
     {
