@@ -16,17 +16,17 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class Updater090100 extends Updater
 {
     private $container;
-    private $filesDir;
+    private $dataWebDir;
     private $fileSystem;
-    private $webDir;
+    private $publicFilesDir;
 
     public function __construct(ContainerInterface $container, $logger)
     {
         $this->container = $container;
-        $this->filesDir = $container->getParameter('claroline.param.files_directory');
+        $this->dataWebDir = $container->getParameter('claroline.param.data_web_dir');
         $this->fileSystem = $container->get('filesystem');
         $this->logger = $logger;
-        $this->webDir = $container->getParameter('claroline.param.web_dir');
+        $this->publicFilesDir = $container->getParameter('claroline.param.public_files_directory');
     }
 
     public function postUpdate()
@@ -36,15 +36,13 @@ class Updater090100 extends Updater
 
     private function createPublicDirectory()
     {
-        $ds = DIRECTORY_SEPARATOR;
-
-        if (!$this->fileSystem->exists($this->filesDir.$ds.'public')) {
+        if (!$this->fileSystem->exists($this->publicFilesDir)) {
             $this->log('Creating public directory in files directory...');
-            $this->fileSystem->mkdir($this->filesDir.$ds.'public');
+            $this->fileSystem->mkdir($this->publicFilesDir);
         }
-        if (!$this->fileSystem->exists($this->webDir.$ds.'public')) {
+        if (!$this->fileSystem->exists($this->dataWebDir)) {
             $this->log('Creating symlink to public directory of files directory in web directory...');
-            $this->fileSystem->symlink($this->filesDir.$ds.'public', $this->webDir.$ds.'public');
+            $this->fileSystem->symlink($this->publicFilesDir, $this->dataWebDir);
         }
     }
 }

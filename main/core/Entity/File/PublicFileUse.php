@@ -36,9 +36,9 @@ class PublicFileUse
     protected $publicFile;
 
     /**
-     * @ORM\Column(name="object_guid")
+     * @ORM\Column(name="object_uuid")
      */
-    protected $objectGuid;
+    protected $objectUuid;
 
     /**
      * @ORM\Column(name="object_class")
@@ -70,14 +70,14 @@ class PublicFileUse
         $this->publicFile = $publicFile;
     }
 
-    public function getObjectGuid()
+    public function getObjectUuid()
     {
-        return $this->objectGuid;
+        return $this->objectUuid;
     }
 
-    public function setObjectGuid($objectGuid)
+    public function setObjectUuid($objectUuid)
     {
-        $this->objectGuid = $objectGuid;
+        $this->objectUuid = $objectUuid;
     }
 
     public function getObjectClass()

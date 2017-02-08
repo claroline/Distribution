@@ -8,9 +8,9 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution.
  *
- * Generation date: 2017/02/07 04:19:26
+ * Generation date: 2017/02/08 11:04:31
  */
-class Version20170207161925 extends AbstractMigration
+class Version20170208110429 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -18,7 +18,7 @@ class Version20170207161925 extends AbstractMigration
             CREATE TABLE claro_public_file_use (
                 id INT AUTO_INCREMENT NOT NULL, 
                 public_file_id INT DEFAULT NULL, 
-                object_guid VARCHAR(255) NOT NULL, 
+                object_uuid VARCHAR(255) NOT NULL, 
                 object_class VARCHAR(255) NOT NULL, 
                 object_name VARCHAR(255) DEFAULT NULL, 
                 INDEX IDX_6F128157C81526DE (public_file_id), 

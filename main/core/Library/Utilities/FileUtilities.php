@@ -31,15 +31,17 @@ class FileUtilities
     private $filesDir;
     private $fileSystem;
     private $om;
+    private $publicFilesDir;
     private $tokenStorage;
 
     /**
      * @DI\InjectParams({
-     *     "claroUtils"    = @DI\Inject("claroline.utilities.misc"),
-     *     "filesDir"      = @DI\Inject("%claroline.param.files_directory%"),
-     *     "fileSystem"    = @DI\Inject("filesystem"),
-     *     "om"            = @DI\Inject("claroline.persistence.object_manager"),
-     *     "tokenStorage"  = @DI\Inject("security.token_storage")
+     *     "claroUtils"     = @DI\Inject("claroline.utilities.misc"),
+     *     "filesDir"       = @DI\Inject("%claroline.param.files_directory%"),
+     *     "fileSystem"     = @DI\Inject("filesystem"),
+     *     "om"             = @DI\Inject("claroline.persistence.object_manager"),
+     *     "publicFilesDir" = @DI\Inject("%claroline.param.public_files_directory%"),
+     *     "tokenStorage"   = @DI\Inject("security.token_storage")
      * })
      */
     public function __construct(
@@ -47,16 +49,18 @@ class FileUtilities
         $filesDir,
         Filesystem $fileSystem,
         ObjectManager $om,
+        $publicFilesDir,
         TokenStorageInterface $tokenStorage
     ) {
         $this->claroUtils = $claroUtils;
         $this->filesDir = $filesDir;
         $this->fileSystem = $fileSystem;
         $this->om = $om;
+        $this->publicFilesDir = $publicFilesDir;
         $this->tokenStorage = $tokenStorage;
     }
 
-    public function createFile(File $tmpFile, $objectClass = null, $objectGuid = null, $objectName = null)
+    public function createFile(File $tmpFile, $objectClass = null, $objectUuid = null, $objectName = null)
     {
         $user = $this->tokenStorage->getToken()->getUser();
         $fileName = $tmpFile->getFilename();
@@ -64,7 +68,7 @@ class FileUtilities
         $size = filesize($tmpFile);
         $mimeType = $tmpFile->getMimeType();
         $extension = pathinfo($fileName, PATHINFO_EXTENSION);
-        $hashName = 'public'.DIRECTORY_SEPARATOR.$directoryName.DIRECTORY_SEPARATOR.$this->claroUtils->generateGuid().'.'.$extension;
+        $hashName = 'data'.DIRECTORY_SEPARATOR.$directoryName.DIRECTORY_SEPARATOR.$this->claroUtils->generateGuid().'.'.$extension;
 
         $this->om->startFlushSuite();
         $publicFile = new PublicFile();
@@ -80,25 +84,24 @@ class FileUtilities
         }
         $tmpFile->move($this->filesDir.DIRECTORY_SEPARATOR, $hashName);
         $this->om->persist($publicFile);
-        $this->createFileUse($publicFile, $objectClass, $objectGuid, $objectName);
+
+        if (!is_null($objectClass) && !is_null($objectUuid)) {
+            $this->createFileUse($publicFile, $objectClass, $objectUuid, $objectName);
+        }
         $this->om->endFlushSuite();
 
         return $publicFile;
     }
 
-    public function createFileUse(PublicFile $publicFile, $class = null, $guid = null, $name = null)
+    public function createFileUse(PublicFile $publicFile, $class, $uuid, $name = null)
     {
-        $publicFileUse = null;
-
-        if (!is_null($class) && !is_null($guid)) {
-            $publicFileUse = new PublicFileUse();
-            $publicFileUse->setPublicFile($publicFile);
-            $publicFileUse->setObjectClass($class);
-            $publicFileUse->setObjectGuid($guid);
-            $publicFileUse->setObjectName($name);
-            $this->om->persist($publicFileUse);
-            $this->om->flush();
-        }
+        $publicFileUse = new PublicFileUse();
+        $publicFileUse->setPublicFile($publicFile);
+        $publicFileUse->setObjectClass($class);
+        $publicFileUse->setObjectUuid($uuid);
+        $publicFileUse->setObjectName($name);
+        $this->om->persist($publicFileUse);
+        $this->om->flush();
 
         return $publicFileUse;
     }
@@ -108,13 +111,16 @@ class FileUtilities
         $uploadedFile = $this->filesDir.DIRECTORY_SEPARATOR.$publicFile->getHashName();
         $this->om->remove($publicFile);
         $this->om->flush();
-        @unlink($uploadedFile);
+
+        if ($this->fileSystem->exists($uploadedFile)) {
+            $this->fileSystem->remove($uploadedFile);
+        }
     }
 
     public function getActiveDirectoryName()
     {
         $finder = new Finder();
-        $finder->directories()->in($this->filesDir.DIRECTORY_SEPARATOR.'public')->name('/^[a-zA-Z]{20}$/');
+        $finder->directories()->in($this->publicFilesDir)->name('/^[a-zA-Z]{20}$/');
         $finder->sortByName();
 
         if ($finder->count() === 0) {
@@ -144,13 +150,13 @@ class FileUtilities
     private function generateNextDirectoryName($name = null)
     {
         if (is_null($name)) {
-            $next = 'AAAAAAAAAAAAAAAAAAAA';
-        } elseif (strtoupper($name) === 'ZZZZZZZZZZZZZZZZZZZZ') {
+            $next = 'aaaaaaaaaaaaaaaaaaaa';
+        } elseif (strtolower($name) === 'zzzzzzzzzzzzzzzzzzzz') {
             $next = $name;
         } else {
             $next = ++$name;
         }
-        $newDir = $this->filesDir.DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR.$next;
+        $newDir = $this->publicFilesDir.DIRECTORY_SEPARATOR.$next;
 
         if (!$this->fileSystem->exists($newDir)) {
             $this->fileSystem->mkdir($newDir);
