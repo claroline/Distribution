@@ -244,7 +244,7 @@
   "date_range.apply": "Toepassen",
   "date_range.clear": "Uitwissen",
   "date_range.custom_range": "Gepersonnaliseerde blok",
-  "date_range.first_day": 1,
+  "date_range.first_day": "1",
   "date_range.format": "d/m/Y",
   "date_range.format.with_hours": "d/m/Y H:i:s",
   "date_range.from": "Van",
