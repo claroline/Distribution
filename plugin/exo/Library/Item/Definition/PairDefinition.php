@@ -1,23 +1,23 @@
 <?php
 
-namespace UJM\ExoBundle\Library\Question\Definition;
+namespace UJM\ExoBundle\Library\Item\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Misc\GridRow;
-use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
-use UJM\ExoBundle\Entity\QuestionType\PairQuestion;
+use UJM\ExoBundle\Entity\ItemType\AbstractItem;
+use UJM\ExoBundle\Entity\ItemType\PairQuestion;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 use UJM\ExoBundle\Library\Attempt\GenericPenalty;
-use UJM\ExoBundle\Library\Question\QuestionType;
-use UJM\ExoBundle\Serializer\Question\Type\PairQuestionSerializer;
+use UJM\ExoBundle\Library\Item\ItemType;
+use UJM\ExoBundle\Serializer\Item\Type\PairQuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\PairAnswerValidator;
-use UJM\ExoBundle\Validator\JsonSchema\Question\Type\PairQuestionValidator;
+use UJM\ExoBundle\Validator\JsonSchema\Item\Type\PairQuestionValidator;
 
 /**
  * Pair question definition.
  *
  * @DI\Service("ujm_exo.definition.question_pair")
- * @DI\Tag("ujm_exo.definition.question")
+ * @DI\Tag("ujm_exo.definition.item")
  */
 class PairDefinition extends AbstractDefinition
 {
@@ -66,7 +66,7 @@ class PairDefinition extends AbstractDefinition
      */
     public static function getMimeType()
     {
-        return QuestionType::PAIR;
+        return ItemType::PAIR;
     }
 
     /**
@@ -76,7 +76,7 @@ class PairDefinition extends AbstractDefinition
      */
     public static function getEntityClass()
     {
-        return '\UJM\ExoBundle\Entity\QuestionType\PairQuestion';
+        return '\UJM\ExoBundle\Entity\ItemType\PairQuestion';
     }
 
     /**
@@ -115,7 +115,7 @@ class PairDefinition extends AbstractDefinition
      *
      * @return CorrectedAnswer
      */
-    public function correctAnswer(AbstractQuestion $question, $answer)
+    public function correctAnswer(AbstractItem $question, $answer)
     {
         $corrected = new CorrectedAnswer();
         $rows = $question->getRows()->toArray();
@@ -170,14 +170,14 @@ class PairDefinition extends AbstractDefinition
      *
      * @return array
      */
-    public function expectAnswer(AbstractQuestion $question)
+    public function expectAnswer(AbstractItem $question)
     {
         return array_filter($question->getRows()->toArray(), function (GridRow $row) {
             return 0 < $row->getScore();
         });
     }
 
-    public function getStatistics(AbstractQuestion $pairQuestion, array $answers)
+    public function getStatistics(AbstractItem $pairQuestion, array $answers)
     {
         // TODO: Implement getStatistics() method.
 

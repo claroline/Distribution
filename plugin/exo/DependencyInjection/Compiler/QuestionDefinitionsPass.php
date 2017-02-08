@@ -10,15 +10,15 @@ class QuestionDefinitionsPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        if (!$container->has('ujm_exo.collection.question_definitions')) {
+        if (!$container->has('ujm_exo.collection.item_definitions')) {
             return;
         }
 
         // Get the serializer collector
-        $definition = $container->findDefinition('ujm_exo.collection.question_definitions');
+        $definition = $container->findDefinition('ujm_exo.collection.item_definitions');
 
         // Get all defined question serializers
-        $taggedServices = $container->findTaggedServiceIds('ujm_exo.definition.question');
+        $taggedServices = $container->findTaggedServiceIds('ujm_exo.definition.item');
 
         $serviceIds = array_keys($taggedServices);
         foreach ($serviceIds as $id) {

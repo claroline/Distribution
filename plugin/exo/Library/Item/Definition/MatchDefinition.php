@@ -1,23 +1,23 @@
 <?php
 
-namespace UJM\ExoBundle\Library\Question\Definition;
+namespace UJM\ExoBundle\Library\Item\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Misc\Association;
-use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
-use UJM\ExoBundle\Entity\QuestionType\MatchQuestion;
+use UJM\ExoBundle\Entity\ItemType\AbstractItem;
+use UJM\ExoBundle\Entity\ItemType\MatchQuestion;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 use UJM\ExoBundle\Library\Attempt\GenericPenalty;
-use UJM\ExoBundle\Library\Question\QuestionType;
-use UJM\ExoBundle\Serializer\Question\Type\MatchQuestionSerializer;
+use UJM\ExoBundle\Library\Item\ItemType;
+use UJM\ExoBundle\Serializer\Item\Type\MatchQuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\MatchAnswerValidator;
-use UJM\ExoBundle\Validator\JsonSchema\Question\Type\MatchQuestionValidator;
+use UJM\ExoBundle\Validator\JsonSchema\Item\Type\MatchQuestionValidator;
 
 /**
  * Match question definition.
  *
  * @DI\Service("ujm_exo.definition.question_match")
- * @DI\Tag("ujm_exo.definition.question")
+ * @DI\Tag("ujm_exo.definition.item")
  */
 class MatchDefinition extends AbstractDefinition
 {
@@ -66,7 +66,7 @@ class MatchDefinition extends AbstractDefinition
      */
     public static function getMimeType()
     {
-        return QuestionType::MATCH;
+        return ItemType::MATCH;
     }
 
     /**
@@ -76,7 +76,7 @@ class MatchDefinition extends AbstractDefinition
      */
     public static function getEntityClass()
     {
-        return '\UJM\ExoBundle\Entity\QuestionType\MatchQuestion';
+        return '\UJM\ExoBundle\Entity\ItemType\MatchQuestion';
     }
 
     /**
@@ -115,7 +115,7 @@ class MatchDefinition extends AbstractDefinition
      *
      * @return CorrectedAnswer
      */
-    public function correctAnswer(AbstractQuestion $question, $answer)
+    public function correctAnswer(AbstractItem $question, $answer)
     {
         $corrected = new CorrectedAnswer();
 
@@ -156,14 +156,14 @@ class MatchDefinition extends AbstractDefinition
      *
      * @return array
      */
-    public function expectAnswer(AbstractQuestion $question)
+    public function expectAnswer(AbstractItem $question)
     {
         return array_filter($question->getAssociations()->toArray(), function (Association $association) {
             return 0 < $association->getScore();
         });
     }
 
-    public function getStatistics(AbstractQuestion $matchQuestion, array $answersData)
+    public function getStatistics(AbstractItem $matchQuestion, array $answersData)
     {
         // TODO: Implement getStatistics() method.
 

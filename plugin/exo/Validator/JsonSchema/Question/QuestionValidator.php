@@ -35,7 +35,7 @@ class QuestionValidator extends JsonSchemaValidator
      * @param HintValidator                 $hintValidator
      *
      * @DI\InjectParams({
-     *     "questionDefinitions" = @DI\Inject("ujm_exo.collection.question_definitions"),
+     *     "questionDefinitions" = @DI\Inject("ujm_exo.collection.item_definitions"),
      *     "categoryValidator"   = @DI\Inject("ujm_exo.validator.category"),
      *     "hintValidator"       = @DI\Inject("ujm_exo.validator.hint")
      * })

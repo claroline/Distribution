@@ -1,8 +1,8 @@
 <?php
 
-namespace UJM\ExoBundle\Library\Question\Definition;
+namespace UJM\ExoBundle\Library\Item\Definition;
 
-use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
+use UJM\ExoBundle\Entity\ItemType\AbstractItem;
 use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
 use UJM\ExoBundle\Library\Validator\ValidatorInterface;
@@ -11,7 +11,7 @@ use UJM\ExoBundle\Library\Validator\ValidatorInterface;
  * Base class for question definitions.
  * Permits to use separate classes to handle Serialization and Validation.
  */
-abstract class AbstractDefinition implements QuestionDefinitionInterface
+abstract class AbstractDefinition implements ItemDefinitionInterface
 {
     /**
      * Gets the question Validator instance.
@@ -50,13 +50,13 @@ abstract class AbstractDefinition implements QuestionDefinitionInterface
     /**
      * Validates the answer data for a question.
      *
-     * @param mixed            $answer
-     * @param AbstractQuestion $question
-     * @param array            $options
+     * @param mixed        $answer
+     * @param AbstractItem $question
+     * @param array        $options
      *
      * @return array
      */
-    public function validateAnswer($answer, AbstractQuestion $question, array $options = [])
+    public function validateAnswer($answer, AbstractItem $question, array $options = [])
     {
         $options[Validation::QUESTION] = $question;
 
@@ -66,12 +66,12 @@ abstract class AbstractDefinition implements QuestionDefinitionInterface
     /**
      * Serializes a question entity.
      *
-     * @param AbstractQuestion $question
-     * @param array            $options
+     * @param AbstractItem $question
+     * @param array        $options
      *
      * @return \stdClass
      */
-    public function serializeQuestion(AbstractQuestion $question, array $options = [])
+    public function serializeQuestion(AbstractItem $question, array $options = [])
     {
         return $this->getQuestionSerializer()->serialize($question, $options);
     }
@@ -79,13 +79,13 @@ abstract class AbstractDefinition implements QuestionDefinitionInterface
     /**
      * Deserializes question data.
      *
-     * @param \stdClass        $questionData
-     * @param AbstractQuestion $question
-     * @param array            $options
+     * @param \stdClass    $questionData
+     * @param AbstractItem $question
+     * @param array        $options
      *
-     * @return AbstractQuestion
+     * @return AbstractItem
      */
-    public function deserializeQuestion(\stdClass $questionData, AbstractQuestion $question = null, array $options = [])
+    public function deserializeQuestion(\stdClass $questionData, AbstractItem $question = null, array $options = [])
     {
         return $this->getQuestionSerializer()->deserialize($questionData, $question, $options);
     }

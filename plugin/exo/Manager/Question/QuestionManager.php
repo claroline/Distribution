@@ -73,7 +73,7 @@ class QuestionManager
      *     "scoreManager"        = @DI\Inject("ujm_exo.manager.score"),
      *     "validator"           = @DI\Inject("ujm_exo.validator.question"),
      *     "serializer"          = @DI\Inject("ujm_exo.serializer.question"),
-     *     "questionDefinitions" = @DI\Inject("ujm_exo.collection.question_definitions"),
+     *     "questionDefinitions" = @DI\Inject("ujm_exo.collection.item_definitions"),
      *     "hintSerializer"      = @DI\Inject("ujm_exo.serializer.hint")
      * })
      *

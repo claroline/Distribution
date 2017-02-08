@@ -32,7 +32,7 @@ class QuestionListener
      */
     public function __construct(ContainerInterface $container)
     {
-        $this->questionDefinitions = $container->get('ujm_exo.collection.question_definitions');
+        $this->questionDefinitions = $container->get('ujm_exo.collection.item_definitions');
     }
 
     /**

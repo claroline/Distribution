@@ -1,40 +1,40 @@
 <?php
 
-namespace UJM\ExoBundle\Library\Question;
+namespace UJM\ExoBundle\Library\Item;
 
 use JMS\DiExtraBundle\Annotation as DI;
-use UJM\ExoBundle\Library\Question\Definition\Exception\UnregisterableDefinitionException;
-use UJM\ExoBundle\Library\Question\Definition\Exception\UnregisteredDefinitionException;
-use UJM\ExoBundle\Library\Question\Definition\QuestionDefinitionInterface;
+use UJM\ExoBundle\Library\Item\Definition\Exception\UnregisterableDefinitionException;
+use UJM\ExoBundle\Library\Item\Definition\Exception\UnregisteredDefinitionException;
+use UJM\ExoBundle\Library\Item\Definition\ItemDefinitionInterface;
 
 /**
- * Collects definition class for each Question type defined.
+ * Collects definition class for each Item type defined.
  *
- * @DI\Service("ujm_exo.collection.question_definitions")
+ * @DI\Service("ujm_exo.collection.item_definitions")
  */
-class QuestionDefinitionsCollection
+class ItemDefinitionsCollection
 {
     /**
-     * The list of registered question definitions.
+     * The list of registered item definitions.
      *
-     * @var QuestionDefinitionInterface[]
+     * @var ItemDefinitionInterface[]
      */
     private $definitions = [];
 
     /**
-     * Adds a question definition to the collection.
+     * Adds a item definition to the collection.
      *
-     * @param QuestionDefinitionInterface $definition
+     * @param ItemDefinitionInterface $definition
      *
      * @throws UnregisterableDefinitionException
      */
-    public function addDefinition(QuestionDefinitionInterface $definition)
+    public function addDefinition(ItemDefinitionInterface $definition)
     {
         if (!is_string($definition->getMimeType())) {
             throw UnregisterableDefinitionException::notAStringMimeType($definition);
         }
 
-        if (!in_array($definition->getMimeType(), QuestionType::getList())) {
+        if (!in_array($definition->getMimeType(), ItemType::getList())) {
             throw UnregisterableDefinitionException::unsupportedMimeType($definition);
         }
 
@@ -52,7 +52,7 @@ class QuestionDefinitionsCollection
      *
      * @throws UnregisteredDefinitionException
      *
-     * @return QuestionDefinitionInterface
+     * @return ItemDefinitionInterface
      */
     public function get($type)
     {
@@ -79,7 +79,7 @@ class QuestionDefinitionsCollection
     }
 
     /**
-     * Gets the list of supported question mime-types.
+     * Gets the list of supported item mime-types.
      *
      * @return array
      */

@@ -1,19 +1,19 @@
 <?php
 
-namespace UJM\ExoBundle\Library\Question\Definition;
+namespace UJM\ExoBundle\Library\Item\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
-use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
-use UJM\ExoBundle\Library\Question\QuestionType;
-use UJM\ExoBundle\Serializer\Question\Type\OpenQuestionSerializer;
+use UJM\ExoBundle\Entity\ItemType\AbstractItem;
+use UJM\ExoBundle\Library\Item\ItemType;
+use UJM\ExoBundle\Serializer\Item\Type\OpenQuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\OpenAnswerValidator;
-use UJM\ExoBundle\Validator\JsonSchema\Question\Type\OpenQuestionValidator;
+use UJM\ExoBundle\Validator\JsonSchema\Item\Type\OpenQuestionValidator;
 
 /**
  * Open question definition.
  *
  * @DI\Service("ujm_exo.definition.question_open")
- * @DI\Tag("ujm_exo.definition.question")
+ * @DI\Tag("ujm_exo.definition.item")
  */
 class OpenDefinition extends AbstractDefinition
 {
@@ -62,7 +62,7 @@ class OpenDefinition extends AbstractDefinition
      */
     public static function getMimeType()
     {
-        return QuestionType::OPEN;
+        return ItemType::OPEN;
     }
 
     /**
@@ -72,7 +72,7 @@ class OpenDefinition extends AbstractDefinition
      */
     public static function getEntityClass()
     {
-        return '\UJM\ExoBundle\Entity\QuestionType\OpenQuestion';
+        return '\UJM\ExoBundle\Entity\ItemType\OpenQuestion';
     }
 
     /**
@@ -108,12 +108,12 @@ class OpenDefinition extends AbstractDefinition
     /**
      * Not implemented for open questions as it's not auto corrected.
      *
-     * @param AbstractQuestion $question
+     * @param AbstractItem $question
      * @param $answer
      *
      * @return bool
      */
-    public function correctAnswer(AbstractQuestion $question, $answer)
+    public function correctAnswer(AbstractItem $question, $answer)
     {
         return false;
     }
@@ -121,16 +121,16 @@ class OpenDefinition extends AbstractDefinition
     /**
      * Not implemented for open questions as it's not auto corrected.
      *
-     * @param AbstractQuestion $question
+     * @param AbstractItem $question
      *
      * @return array
      */
-    public function expectAnswer(AbstractQuestion $question)
+    public function expectAnswer(AbstractItem $question)
     {
         return [];
     }
 
-    public function getStatistics(AbstractQuestion $openQuestion, array $answers)
+    public function getStatistics(AbstractItem $openQuestion, array $answers)
     {
         return [];
     }

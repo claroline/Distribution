@@ -75,7 +75,7 @@ class QuestionSerializer extends AbstractSerializer
      * @DI\InjectParams({
      *     "om"                        = @DI\Inject("claroline.persistence.object_manager"),
      *     "tokenStorage"              = @DI\Inject("security.token_storage"),
-     *     "questionDefinitions"       = @DI\Inject("ujm_exo.collection.question_definitions"),
+     *     "questionDefinitions"       = @DI\Inject("ujm_exo.collection.item_definitions"),
      *     "userSerializer"            = @DI\Inject("ujm_exo.serializer.user"),
      *     "categorySerializer"        = @DI\Inject("ujm_exo.serializer.category"),
      *     "hintSerializer"            = @DI\Inject("ujm_exo.serializer.hint"),

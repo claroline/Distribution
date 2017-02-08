@@ -1,11 +1,11 @@
 <?php
 
-namespace UJM\ExoBundle\Library\Question;
+namespace UJM\ExoBundle\Library\Item;
 
 /**
- * References the types of Question managed by the bundle.
+ * References the types of Item managed by the bundle.
  */
-final class QuestionType
+final class ItemType
 {
     /**
      * The user has to choose one (or many) proposition(s) in a set.
@@ -64,7 +64,7 @@ final class QuestionType
     const OPEN = 'application/x.open+json';
 
     /**
-     * Get the list of managed question types.
+     * Get the list of managed item types.
      *
      * @return array
      */

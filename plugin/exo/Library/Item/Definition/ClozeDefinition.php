@@ -1,23 +1,23 @@
 <?php
 
-namespace UJM\ExoBundle\Library\Question\Definition;
+namespace UJM\ExoBundle\Library\Item\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Misc\Hole;
 use UJM\ExoBundle\Entity\Misc\Keyword;
-use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
-use UJM\ExoBundle\Entity\QuestionType\ClozeQuestion;
+use UJM\ExoBundle\Entity\ItemType\AbstractItem;
+use UJM\ExoBundle\Entity\ItemType\ClozeQuestion;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
-use UJM\ExoBundle\Library\Question\QuestionType;
-use UJM\ExoBundle\Serializer\Question\Type\ClozeQuestionSerializer;
+use UJM\ExoBundle\Library\Item\ItemType;
+use UJM\ExoBundle\Serializer\Item\Type\ClozeQuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\ClozeAnswerValidator;
-use UJM\ExoBundle\Validator\JsonSchema\Question\Type\ClozeQuestionValidator;
+use UJM\ExoBundle\Validator\JsonSchema\Item\Type\ClozeQuestionValidator;
 
 /**
  * Cloze question definition.
  *
  * @DI\Service("ujm_exo.definition.question_cloze")
- * @DI\Tag("ujm_exo.definition.question")
+ * @DI\Tag("ujm_exo.definition.item")
  */
 class ClozeDefinition extends AbstractDefinition
 {
@@ -66,7 +66,7 @@ class ClozeDefinition extends AbstractDefinition
      */
     public static function getMimeType()
     {
-        return QuestionType::CLOZE;
+        return ItemType::CLOZE;
     }
 
     /**
@@ -76,7 +76,7 @@ class ClozeDefinition extends AbstractDefinition
      */
     public static function getEntityClass()
     {
-        return '\UJM\ExoBundle\Entity\QuestionType\ClozeQuestion';
+        return '\UJM\ExoBundle\Entity\ItemType\ClozeQuestion';
     }
 
     /**
@@ -115,7 +115,7 @@ class ClozeDefinition extends AbstractDefinition
      *
      * @return CorrectedAnswer
      */
-    public function correctAnswer(AbstractQuestion $question, $answer)
+    public function correctAnswer(AbstractItem $question, $answer)
     {
         $corrected = new CorrectedAnswer();
 
@@ -150,7 +150,7 @@ class ClozeDefinition extends AbstractDefinition
      *
      * @return array
      */
-    public function expectAnswer(AbstractQuestion $question)
+    public function expectAnswer(AbstractItem $question)
     {
         return array_map(function (Hole $hole) {
             return $this->findHoleExpectedAnswer($hole);
@@ -163,7 +163,7 @@ class ClozeDefinition extends AbstractDefinition
      *
      * @return array
      */
-    public function getStatistics(AbstractQuestion $clozeQuestion, array $answersData)
+    public function getStatistics(AbstractItem $clozeQuestion, array $answersData)
     {
         // Create an array with holeId => holeObject for easy search
         $holesMap = [];

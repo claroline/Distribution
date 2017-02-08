@@ -31,7 +31,7 @@ class AnswerValidator extends JsonSchemaValidator
      *
      * @DI\InjectParams({
      *     "om"                  = @DI\Inject("claroline.persistence.object_manager"),
-     *     "questionDefinitions" = @DI\Inject("ujm_exo.collection.question_definitions")
+     *     "questionDefinitions" = @DI\Inject("ujm_exo.collection.item_definitions")
      * })
      */
     public function __construct(

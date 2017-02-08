@@ -1,22 +1,22 @@
 <?php
 
-namespace UJM\ExoBundle\Library\Question\Definition;
+namespace UJM\ExoBundle\Library\Item\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Misc\Area;
-use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
-use UJM\ExoBundle\Entity\QuestionType\GraphicQuestion;
+use UJM\ExoBundle\Entity\ItemType\AbstractItem;
+use UJM\ExoBundle\Entity\ItemType\GraphicQuestion;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
-use UJM\ExoBundle\Library\Question\QuestionType;
-use UJM\ExoBundle\Serializer\Question\Type\GraphicQuestionSerializer;
+use UJM\ExoBundle\Library\Item\ItemType;
+use UJM\ExoBundle\Serializer\Item\Type\GraphicQuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\GraphicAnswerValidator;
-use UJM\ExoBundle\Validator\JsonSchema\Question\Type\GraphicQuestionValidator;
+use UJM\ExoBundle\Validator\JsonSchema\Item\Type\GraphicQuestionValidator;
 
 /**
  * Graphic question definition.
  *
  * @DI\Service("ujm_exo.definition.question_graphic")
- * @DI\Tag("ujm_exo.definition.question")
+ * @DI\Tag("ujm_exo.definition.item")
  */
 class GraphicDefinition extends AbstractDefinition
 {
@@ -65,7 +65,7 @@ class GraphicDefinition extends AbstractDefinition
      */
     public static function getMimeType()
     {
-        return QuestionType::GRAPHIC;
+        return ItemType::GRAPHIC;
     }
 
     /**
@@ -75,7 +75,7 @@ class GraphicDefinition extends AbstractDefinition
      */
     public static function getEntityClass()
     {
-        return '\UJM\ExoBundle\Entity\QuestionType\GraphicQuestion';
+        return '\UJM\ExoBundle\Entity\ItemType\GraphicQuestion';
     }
 
     /**
@@ -108,7 +108,7 @@ class GraphicDefinition extends AbstractDefinition
         return $this->answerValidator;
     }
 
-    public function correctAnswer(AbstractQuestion $question, $answer)
+    public function correctAnswer(AbstractItem $question, $answer)
     {
         $corrected = new CorrectedAnswer();
 
@@ -133,14 +133,14 @@ class GraphicDefinition extends AbstractDefinition
         return $corrected;
     }
 
-    public function expectAnswer(AbstractQuestion $question)
+    public function expectAnswer(AbstractItem $question)
     {
         return array_filter($question->getAreas()->toArray(), function (Area $area) {
             return 0 < $area->getScore();
         });
     }
 
-    public function getStatistics(AbstractQuestion $graphicQuestion, array $answers)
+    public function getStatistics(AbstractItem $graphicQuestion, array $answers)
     {
         $areasMap = [];
         foreach ($graphicQuestion->getAreas() as $area) {

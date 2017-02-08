@@ -1,6 +1,6 @@
 <?php
 
-namespace UJM\ExoBundle\Library\Question\Definition\Exception;
+namespace UJM\ExoBundle\Library\Item\Definition\Exception;
 
 class UnregisteredDefinitionException extends \Exception
 {

@@ -1,22 +1,22 @@
 <?php
 
-namespace UJM\ExoBundle\Library\Question\Definition;
+namespace UJM\ExoBundle\Library\Item\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Misc\Choice;
-use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
-use UJM\ExoBundle\Entity\QuestionType\ChoiceQuestion;
+use UJM\ExoBundle\Entity\ItemType\AbstractItem;
+use UJM\ExoBundle\Entity\ItemType\ChoiceQuestion;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
-use UJM\ExoBundle\Library\Question\QuestionType;
-use UJM\ExoBundle\Serializer\Question\Type\ChoiceQuestionSerializer;
+use UJM\ExoBundle\Library\Item\ItemType;
+use UJM\ExoBundle\Serializer\Item\Type\ChoiceQuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\ChoiceAnswerValidator;
-use UJM\ExoBundle\Validator\JsonSchema\Question\Type\ChoiceQuestionValidator;
+use UJM\ExoBundle\Validator\JsonSchema\Item\Type\ChoiceQuestionValidator;
 
 /**
  * Choice question definition.
  *
  * @DI\Service("ujm_exo.definition.question_choice")
- * @DI\Tag("ujm_exo.definition.question")
+ * @DI\Tag("ujm_exo.definition.item")
  */
 class ChoiceDefinition extends AbstractDefinition
 {
@@ -65,7 +65,7 @@ class ChoiceDefinition extends AbstractDefinition
      */
     public static function getMimeType()
     {
-        return QuestionType::CHOICE;
+        return ItemType::CHOICE;
     }
 
     /**
@@ -75,7 +75,7 @@ class ChoiceDefinition extends AbstractDefinition
      */
     public static function getEntityClass()
     {
-        return '\UJM\ExoBundle\Entity\QuestionType\ChoiceQuestion';
+        return '\UJM\ExoBundle\Entity\ItemType\ChoiceQuestion';
     }
 
     /**
@@ -114,7 +114,7 @@ class ChoiceDefinition extends AbstractDefinition
      *
      * @return CorrectedAnswer
      */
-    public function correctAnswer(AbstractQuestion $question, $answer = [])
+    public function correctAnswer(AbstractItem $question, $answer = [])
     {
         $corrected = new CorrectedAnswer();
 
@@ -140,14 +140,14 @@ class ChoiceDefinition extends AbstractDefinition
      *
      * @return array
      */
-    public function expectAnswer(AbstractQuestion $question)
+    public function expectAnswer(AbstractItem $question)
     {
         return array_filter($question->getChoices()->toArray(), function (Choice $choice) {
             return 0 < $choice->getScore();
         });
     }
 
-    public function getStatistics(AbstractQuestion $choiceQuestion, array $answersData)
+    public function getStatistics(AbstractItem $choiceQuestion, array $answersData)
     {
         $choices = [];
 

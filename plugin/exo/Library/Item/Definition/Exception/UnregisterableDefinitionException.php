@@ -1,8 +1,8 @@
 <?php
 
-namespace UJM\ExoBundle\Library\Question\Definition\Exception;
+namespace UJM\ExoBundle\Library\Item\Definition\Exception;
 
-use UJM\ExoBundle\Library\Question\Definition\QuestionDefinitionInterface;
+use UJM\ExoBundle\Library\Item\Definition\ItemDefinitionInterface;
 
 /**
  * Exception thrown when a JSON question handler cannot be registered
@@ -14,22 +14,22 @@ class UnregisterableDefinitionException extends \Exception
     const NOT_A_STRING_MIME = 2;
     const UNSUPPORTED_MIME = 3;
 
-    public static function notAStringMimeType(QuestionDefinitionInterface $handler)
+    public static function notAStringMimeType(ItemDefinitionInterface $handler)
     {
         return self::notAString($handler, 'MIME type', self::NOT_A_STRING_MIME);
     }
 
-    public static function unsupportedMimeType(QuestionDefinitionInterface $handler)
+    public static function unsupportedMimeType(ItemDefinitionInterface $handler)
     {
         return self::unsupported($handler, 'MIME type', self::UNSUPPORTED_MIME);
     }
 
-    public static function duplicateMimeType(QuestionDefinitionInterface $handler)
+    public static function duplicateMimeType(ItemDefinitionInterface $handler)
     {
         return self::duplicate($handler, 'MIME type', $handler->getMimeType(), self::DUPLICATE_MIME);
     }
 
-    private static function notAString(QuestionDefinitionInterface $handler, $type, $error)
+    private static function notAString(ItemDefinitionInterface $handler, $type, $error)
     {
         return new self(
             sprintf(
@@ -41,7 +41,7 @@ class UnregisterableDefinitionException extends \Exception
         );
     }
 
-    private static function unsupported(QuestionDefinitionInterface $handler, $type, $error)
+    private static function unsupported(ItemDefinitionInterface $handler, $type, $error)
     {
         return new self(
             sprintf(
@@ -53,7 +53,7 @@ class UnregisterableDefinitionException extends \Exception
         );
     }
 
-    private static function duplicate(QuestionDefinitionInterface $handler, $type, $value, $error)
+    private static function duplicate(ItemDefinitionInterface $handler, $type, $value, $error)
     {
         return new self(
             sprintf(
