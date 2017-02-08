@@ -19,8 +19,8 @@
     "resource_copy_warning": "An error occured while copying resource <%resourceName%>",
     "resource_name_form_name": "Resource name",
     "resource_shortcut": "Shortcut",
+    "resource_type": "Resource type",
     "text": "Text",
     "update_file": "Update file",
-    "write": "Write",
-    "resource_type": "Resource type"
+    "write": "Write"
 }

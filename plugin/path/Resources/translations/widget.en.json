@@ -1,10 +1,10 @@
 {
-    "no_path_widget_message": "No path found",
+    "draft": "Not published",
     "innova_path_widget": "Paths",
-    "path_author": "Author",
     "innova_path_widget_config_status": "Status",
     "innova_path_widget_config_tags": "Displayed tags",
-    "draft": "Not published",
-    "published": "Published",
-    "modified": "Published with pending changes"
+    "modified": "Published with pending changes",
+    "no_path_widget_message": "No path found",
+    "path_author": "Author",
+    "published": "Published"
 }

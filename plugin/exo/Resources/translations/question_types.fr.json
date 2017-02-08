@@ -11,8 +11,8 @@
     "open_desc": "Répondre à une question par un texte libre pouvant contenir des ressources (texte, image, son, vidéo, etc.). La question ouverte nécessite une correction manuelle.",
     "pair": "Appariement",
     "pair_desc": "Mettre des objets (texte, image, son, vidéo, etc.) par paires.",
-    "words": "Mots clés",
-    "words_desc": "Rédiger une réponse avec un ou plusieurs mots clés attendus.",
     "set": "Classement",
-    "set_desc": "Déplacer des éléments (texte, image, son, vidéo, etc.) dans des ensembles."
+    "set_desc": "Déplacer des éléments (texte, image, son, vidéo, etc.) dans des ensembles.",
+    "words": "Mots clés",
+    "words_desc": "Rédiger une réponse avec un ou plusieurs mots clés attendus."
 }

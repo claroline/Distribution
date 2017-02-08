@@ -9,6 +9,7 @@
     "learning_profil": "Leerprofiel",
     "logs": "Logs",
     "my_contacts": "Mijn contactpersonen",
+    "organization_management": "De organisaties beheren",
     "parameters": "Instellingen",
     "platform_analytics": "Statistieken van het platform",
     "platform_logs": "Toezicht van het platform",
@@ -20,6 +21,5 @@
     "user_management": "De gebruikers beheren",
     "users": "Gebruikers",
     "widgets_management": "De widgets beheren",
-    "workspace_management": "De werkruimten beheren",
-    "organization_management": "De organisaties beheren"
+    "workspace_management": "De werkruimten beheren"
 }

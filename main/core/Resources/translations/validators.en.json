@@ -5,8 +5,10 @@
     "The code {{ code }} is already assigned to another workspace.": "The code {{ code }} is already assigned to another workspace.",
     "The name {{ name }} is already in use.": "The name {{ name }} is already used.",
     "The user or group {{ name }} does not exist.": "User or group [{{ name }}] does not exist.",
-    "google_meta_tag_error": "The field must be a meta tag. Example: <meta name=\"google-site-verification\" content=\"XXX\" \/>",
+    "email_not_valid": "This email address is not valid.",
+    "google_meta_tag_error": "The field must be a meta tag. Example: <meta name=\"google-site-verification\" content=\"XXX\" />",
     "invalid_date_range": "The end date may not precede the start date",
+    "invalid_domain_name": "This domain name is invalid",
     "invalid_size_message": "This storage unit is invalid (B, KB, MB, GB)",
     "name_required": "Name required.",
     "need_at_least_one_translation": "At least one complete translation must be defined.",
@@ -20,7 +22,5 @@
     "valid_end_hour_required": "A valid end hour is required.",
     "valid_start_date_required": "A valid start date is required.",
     "valid_start_hour_required": "A valid start hour is required.",
-    "value_not_blank": "This value can not be blank.",
-    "email_not_valid": "This email address is not valid.",
-    "invalid_domain_name": "This domain name is invalid"
+    "value_not_blank": "This value can not be blank."
 }

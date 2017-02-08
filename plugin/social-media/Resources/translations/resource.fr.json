@@ -1,8 +1,8 @@
 {
-    "like_action": "J'aime",
-    "share_action": "Partager",
     "comment_action": "Laisser un commentaire",
+    "icap_socialmedia": "Réseaux sociaux",
+    "like_action": "J'aime",
     "note_action": "Laisser un pense-bête",
-    "socialmedia_wall": "Mur utilisateur",
-    "icap_socialmedia": "Réseaux sociaux"
+    "share_action": "Partager",
+    "socialmedia_wall": "Mur utilisateur"
 }

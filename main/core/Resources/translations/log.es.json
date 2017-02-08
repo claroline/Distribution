@@ -1,7 +1,10 @@
 {
     "Show actions for": "Mostrar acciones de",
+    "actions_per_day_chart": "actions_per_day_chart",
     "all": "Todos",
+    "download_csv_list": "download_csv_list",
     "for user": "Para el usuario",
+    "global_tracking": "global_tracking",
     "group": "grupo",
     "log_add_user": "Agregar usuario",
     "log_change_right": "Cambiar los derechos",
@@ -175,10 +178,7 @@
     "resource": "Recurso",
     "role": "Rol",
     "user": "Usuario",
-    "workspace": "Espacio de trabajo",
-    "global_tracking": "global_tracking",
-    "user_tracking": "user_tracking",
     "user_list": "user_list",
-    "actions_per_day_chart": "actions_per_day_chart",
-    "download_csv_list": "download_csv_list"
+    "user_tracking": "user_tracking",
+    "workspace": "Espacio de trabajo"
 }

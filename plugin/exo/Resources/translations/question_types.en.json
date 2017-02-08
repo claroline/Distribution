@@ -11,8 +11,8 @@
     "open_desc": "Répondre à une question par un texte libre pouvant contenir des ressources (eg. text, image, audio, video). The open question requires a manual correction.",
     "pair": "Pairing",
     "pair_desc": "Put items (eg. text, image, audio, video) in pairs.",
-    "words": "Keywords",
-    "words_desc": "Write an answer with one or many expected keywords.",
     "set": "Classifying",
-    "set_desc": "Move items (eg. text, image, audio, video) inside sets."
+    "set_desc": "Move items (eg. text, image, audio, video) inside sets.",
+    "words": "Keywords",
+    "words_desc": "Write an answer with one or many expected keywords."
 }

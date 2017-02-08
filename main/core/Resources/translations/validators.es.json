@@ -5,7 +5,7 @@
     "The code {{ code }} is already assigned to another workspace.": "El código {{ code }} ya está asignado a otro espacio de trabajo.",
     "The name {{ name }} is already in use.": "El nombre {{ name }} ya está en uso.",
     "The user or group {{ name }} does not exist.": "El usuario o grupo [{{ name }}] no existe.",
-    "google_meta_tag_error": "Se debe definir una meta etiqueta, ejemplo: <meta name=\"google-site-verification\" content=\"XXX\" \/>",
+    "google_meta_tag_error": "Se debe definir una meta etiqueta, ejemplo: <meta name=\"google-site-verification\" content=\"XXX\" />",
     "invalid_date_range": "La fecha de finalización no puede preceder a la fecha de inicio.",
     "invalid_size_message": "invalid_size_message",
     "name_required": "El Nombre es obligatorio.",

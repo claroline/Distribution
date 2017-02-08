@@ -9,6 +9,7 @@
     "learning_profil": "Learning profile",
     "logs": "Logs",
     "my_contacts": "My contacts",
+    "organization_management": "Organization management",
     "parameters": "Settings",
     "platform_analytics": "Platform analytics",
     "platform_logs": "Platform logs",
@@ -20,6 +21,5 @@
     "user_management": "Users management",
     "users": "Users",
     "widgets_management": "Widgets management",
-    "workspace_management": "Workspaces management",
-    "organization_management": "Organization management"
+    "workspace_management": "Workspaces management"
 }

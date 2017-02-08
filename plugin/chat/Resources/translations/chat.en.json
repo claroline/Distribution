@@ -37,6 +37,9 @@
     "host": "Host",
     "ice_servers": "ICE servers",
     "init_room": "Initialize Chat room",
+    "invalid_authentication": "An error happened during the connection. Please check the \"admin\" and \"password\" parameters.",
+    "invalid_bosh": "Bosh server connection failed. Tested %url%",
+    "invalid_host": "An error happened during the connection (%error%). Please use a valid host.",
     "invalid_room_type": "Invalid room type",
     "kick": "Kick",
     "kicked_msg": "You have been kicked from the Chat room.",
@@ -52,13 +55,10 @@
     "port": "Port",
     "search_chat_users_infos": "A search has to be performed in order to display users with a chat account.",
     "select_users_for_chat_account_generation": "Select users for Chat account generation",
+    "ssl": "SSL",
     "status": "Status",
     "text_only": "Text only",
     "type": "Type",
     "uninitialized": "Not initialized",
-    "visitor": "Visitor",
-    "invalid_host": "An error happened during the connection (%error%). Please use a valid host.",
-    "invalid_bosh": "Bosh server connection failed. Tested %url%",
-    "invalid_authentication": "An error happened during the connection. Please check the \"admin\" and \"password\" parameters.",
-    "ssl": "SSL"
+    "visitor": "Visitor"
 }

@@ -1,10 +1,10 @@
 {
-    "blog_list": "Liste des blogs",
-    "blog": "Blog",
-    "tag_list": "Liste des tags d'un blog",
-    "display_for_list": "Apparence de la liste des blogs",
-    "display_block": "En bloc",
-    "display_inline": "En ligne",
+    "addblog": "Ajouter un blog",
     "articles": "art.",
-    "addblog": "Ajouter un blog"
+    "blog": "Blog",
+    "blog_list": "Liste des blogs",
+    "display_block": "En bloc",
+    "display_for_list": "Apparence de la liste des blogs",
+    "display_inline": "En ligne",
+    "tag_list": "Liste des tags d'un blog"
 }
