@@ -1,4 +1,4 @@
-import angular from 'angular/index'
+import angular from 'angular'
 
 import bannerCtrl from './banner.controller'
 import bannerRenderer from './banner.partial.html'

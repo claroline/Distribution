@@ -112,5 +112,5 @@
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('bundles/clarolinecore/js/tool/desktop/tool_properties.js') }}" type="text/javascript"></script>
+    <script> load({{ chunks('claroline-distribution-main-core-tool-desktop-tool-properties')|raw }}) </script>
 {% endblock %}

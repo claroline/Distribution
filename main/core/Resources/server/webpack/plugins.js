@@ -4,6 +4,10 @@ const FailPlugin = require('webpack-fail-plugin')
 const CircularDependencyPlugin = require('circular-dependency-plugin')
 const paths = require('./paths')
 const ConfigurationPlugin = require('./build/configuration/plugin')
+const entries = require('./entries')
+const CommonLibPlugin = require('./build/libraries/plugin')
+const ExtractExternalsPlugin = require('./build/externals/plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 /**
  * Allows webpack to discover entry files of modules stored in the bower
@@ -55,16 +59,21 @@ const configShortcut = () => {
   })
 }
 
-
 /**
  * Builds a independent bundle for frequently requested modules (might require
  * minChunks adjustments).
  */
-const commonsChunk = () => {
-  return new webpack.optimize.CommonsChunkPlugin({
-    name: 'commons',
-    minChunks: 5
-  })
+const commonsChunk = (commons) => {
+    return new CommonLibPlugin(commons)
+}
+
+/**
+ * Copy the tinymce lang pack
+ */
+const copyTinymceLangs = () => {
+    return new CopyWebpackPlugin([
+        { from: paths.bower() + '/tinymce-i18n/langs', to: paths.output() + '/tinymce/langs' }
+    ])
 }
 
 /**
@@ -119,28 +128,20 @@ const exitWithErrorCode = () => {
   return FailPlugin
 }
 
-/**
- * Bundles entries in separate DLLs to improve build performance.
- */
-const dlls = () => {
-  return new webpack.DllPlugin({
-    path: `${paths.output()}/[name].manifest.json`,
-    name: '[name]_[hash]'
-  })
-}
-
-/**
- * Includes references to generated DLLs
- */
-const dllReferences = manifests => {
-  return manifests.map(manifest => new webpack.DllReferencePlugin({
-    context: '.',
-    manifest
-  }))
-}
-
 const clarolineConfiguration = () => {
   return new ConfigurationPlugin()
+}
+
+const occurrenceOrder = () => {
+    return new webpack.optimize.OccurrenceOrderPlugin(true)
+}
+
+const namedModule = () => {
+    return new webpack.NamedModulesPlugin()
+}
+
+const extractExternals = () => {
+    return new ExtractExternalsPlugin()
 }
 
 /**
@@ -188,8 +189,10 @@ module.exports = {
   exitWithErrorCode,
   noCircularDependencies,
   rethrowCompilationErrors,
-  dllReferences,
-  dlls,
   configShortcut,
-  clarolineConfiguration
+  clarolineConfiguration,
+  occurrenceOrder,
+  namedModule,
+  extractExternals,
+  copyTinymceLangs
 }

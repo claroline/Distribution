@@ -1,4 +1,4 @@
-import angular from 'angular/index'
+import angular from 'angular'
 
 let _$location = new WeakMap()
 let _$anchorScroll = new WeakMap()
@@ -31,9 +31,9 @@ export default class BlogController {
     ]
 
     this.init()
-    
+
   }
-  
+
   init() {
     // Store a copy of the options and panel disposition
     this.blog.optionsCopy = angular.copy(this.blog.options)
@@ -77,7 +77,7 @@ export default class BlogController {
 
           this.blog.search(this.searchTerms)
           break
-        
+
         case 'author':
           this.blog.getPostsByAuthor(_$routeParams.get(this).authorId, page)
             .then(
@@ -86,7 +86,7 @@ export default class BlogController {
               }
             )
           break
-        
+
         case 'date':
           if (_$routeParams.get(this).day) {
             this.blog.getPostsByDay(_$routeParams.get(this).year, _$routeParams.get(this).month, _$routeParams.get(this).day, page)
@@ -104,7 +104,7 @@ export default class BlogController {
               )
           }
           break
-          
+
         default:
           break
       }
@@ -124,7 +124,7 @@ export default class BlogController {
     delete this.blog.panelsCopy
     _$location.get(this).url('/')
   }
-  
+
   saveConfigure() {
     // Convert panel tree to a string representing the widget bar configuration
 
@@ -133,7 +133,7 @@ export default class BlogController {
       listWidgetBlog += element.id.toString() + element.visibility.toString()
     })
     this.blog.optionsCopy.list_widget_blog = listWidgetBlog
-    
+
     this.disableButtons = true
     this.blog.editOptions()
       .then(
@@ -150,7 +150,7 @@ export default class BlogController {
           this.disableButtons = false
         }
       )
-    
+
   }
 
   displayPost(post, goToComments) {
@@ -162,13 +162,13 @@ export default class BlogController {
   togglePanel(panel) {
     panel.visibility = + !panel.visibility // cast to integer (with + operator) and toggle at the same time
   }
-  
-  
+
+
 
   editInfo() {
     // Disable button
     this.disableButtons = true
-    
+
     this.blog.editInfo(this.blog.tempInfo)
       .then(
         () => {
@@ -184,7 +184,7 @@ export default class BlogController {
         this.disableButtons = false
       })
   }
-  
+
   cancelInfo() {
     _$location.get(this).url('/')
   }

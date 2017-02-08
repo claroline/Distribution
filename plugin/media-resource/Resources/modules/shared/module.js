@@ -2,7 +2,7 @@
  * Shared module
  * Share services and data
  */
-import angular from 'angular/index'
+import angular from 'angular'
 import 'angular-sanitize'
 import '#/main/core/fos-js-router/module'
 import SecondsToHmsFilter from './Filters/SecondsToHmsFilter'

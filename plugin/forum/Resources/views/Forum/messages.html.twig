@@ -171,90 +171,9 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        (function () {
-            $('#max-select').on('change', function () {
-                window.location.href = Routing.generate(
-                    'claro_forum_messages',
-                    {'subject': {{ subject.getId()}}, 'max': $(this).val()}
-                );
-            });
-        })();
+        window.canPost = "{{ canPost }}"
+        window.isModerator = "{{ isModerator }}"
+        window.subjectId = {{ subject.getId() }}
     </script>
-
-    {% if canPost %}
-        <script>
-            (function () {
-                'use strict';
-                $('body').on('click', '#submit-message', function () {
-                    var content = $('textarea.claroline-tiny-mce').val();
-                    var token = $('#forum_message_form__token').val();
-
-                    if (content != undefined && content != '') {
-                        tinymce.claroline.disableBeforeUnload = true;
-                        var home = window.Claroline.Home;
-                        var modal = window.Claroline.Modal;
-                        $.post(home.path + 'forum/create/message/{{ subject.getId() }}',
-                            {
-                                'forum_message_form[_token]': token,
-                                'forum_message_form[content]': content
-                            }
-                        )
-                        .done(
-                            function () {
-                                window.location.reload();
-                            }
-                        )
-                        .error(
-                            function () {
-                                modal.error();
-                            }
-                        );
-                    }
-                });
-            })();
-        </script>
-    {% endif %}
-
-    {% if isModerator %}
-        <script>
-            function createValidationBox() {
-                var html = Twig.render(
-                    ModalWindow,
-                    {'footer': Twig.render(ValidationFooter), 'isHidden': true, 'modalId': 'confirm-modal', 'body': Twig.render(removeMessageConfirm, {'nbItems': 1})}
-                );
-                $('body').append(html);
-            }
-
-            createValidationBox();
-            var tmpRoute = '';
-            var tmpEl = undefined;
-
-            $('body').on('click', '#delete-message', function(event) {
-                event.preventDefault();
-                $('#confirm-modal').modal('show');
-                tmpRoute = event.currentTarget.href;
-                tmpEl = event.currentTarget;
-            });
-
-            $('body').on('click', '#modal-valid-button', function(event) {
-                $('#confirm-modal').modal('hide');
-                $.ajax({
-                    url: tmpRoute,
-                    success: function () {
-                        $(tmpEl)[0].parentElement.parentElement.parentElement.remove();
-                    }
-                });
-            });
-        </script>
-    {% endif %}
-
-    {% if canPost %}
-        <script>
-            (function () {
-                $('body').on('click', '#fast-reply-btn', function() {
-                    $('.fast-reply').show();
-                });
-            })();
-        </script>
-    {% endif %}
+    <script> load({{ chunks('claroline-distribution-plugin-forum-messages')|raw }}) </script>
 {% endblock %}

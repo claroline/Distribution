@@ -1,0 +1,22 @@
+{
+  "webpack": {
+    "entry": {
+      "common": "components/common",
+      "modal": "components/modal",
+      "edit-criteria": "dropzone/edit.criteria",
+      "edit-common": "dropzone/edit.common",
+      "recall-instruction": "dropzone/recall.instruction",
+      "correction-admin-revalidate-modal": "correction/admin.revalidate.modal",
+      "correction-comment": "correction/comment",
+      "correction-instructions": "correction/instructions",
+      "correction-criteria": "correction/criteria",
+      "document-inline": "document/inline",
+      "doucment-form-resource": "document/form.resource",
+      "drop-examiners-by-name": "drop/examiners.by.name",
+      "drop": "drop/drop",
+      "drop-download-between-dates-modal": "drop/download.between.dates.modal",
+      "drop-peer-review-helper": "drop/peer.review.helper",
+      "drop-examiners-by-name": "drop/examiners.by.name"
+    }
+  }
+}

@@ -2,7 +2,7 @@
  * Resources primary edit controller
  */
 
-import angular from 'angular/index'
+import angular from 'angular'
 
 import ResourcesPrimaryBaseCtrl from './ResourcesPrimaryBaseCtrl'
 

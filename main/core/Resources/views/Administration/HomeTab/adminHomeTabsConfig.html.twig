@@ -34,9 +34,8 @@
     </div>
 
     <div id="admin-home-content"  class="panel-body">
-        <div ng-app="AdminHomeTabsConfigModule">
-            <div ui-view>
-            </div>
+        <div id="admin-home-tabs-module">
+            <div ui-view></div>
         </div>
     </div>
 {% endblock %}
@@ -51,12 +50,13 @@
     %}
         <link rel="stylesheet" href="{{ asset_url }}" screen="media"/>
     {% endstylesheets %}
-    <link rel='stylesheet' type='text/css' href='{{ asset('packages/angular-bootstrap-colorpicker/css/colorpicker.min.css')}}'>
-    <link rel='stylesheet' type='text/css' href='{{ asset('packages/angular-gridster/dist/angular-gridster.min.css')}}'>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ hotAsset('dist/claroline-distribution-main-core-admin-home-tabs-config.js') }}"></script>
-    <script src="{{ asset('packages/angular-gridster/dist/angular-gridster.min.js') }}"></script>
+    <script>
+        load({{ chunks('claroline-distribution-main-core-admin-home-tabs-config')|raw }}, function() {
+            angular.bootstrap('#admin-home-tabs-module', ['AdminHomeTabsConfigModule']);
+        })
+    </script>
 {% endblock %}

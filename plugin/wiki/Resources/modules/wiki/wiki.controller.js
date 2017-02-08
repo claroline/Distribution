@@ -1,4 +1,4 @@
-import angular from 'angular/index'
+import angular from 'angular'
 import confirmDeletionTemplate from './confirmDeletion.partial.html'
 import confirmHardDeletionTemplate from './confirmHardDeletion.partial.html'
 

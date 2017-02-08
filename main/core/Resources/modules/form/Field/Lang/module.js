@@ -1,6 +1,6 @@
-import 'angular/angular.min'
+import angular from 'angular'
 
-import translation from 'angular-ui-translation/angular-translation'
+import 'angular-ui-translation'
 import LangDirective from './LangDirective'
 
 angular.module('FieldLang', ['ui.translation']).directive('formLang', () => new LangDirective)

@@ -83,7 +83,7 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript" src="{{ asset('bundles/hevincicompetency/js/objectiveUsers.js') }}"></script>
+    <script> load({{ chunks('claroline-distribution-plugin-competency-objective-users')|raw }}) </script>
     <script type="text/javascript">
         HeVinci.initUserObjectiveUtils('users');
     </script>

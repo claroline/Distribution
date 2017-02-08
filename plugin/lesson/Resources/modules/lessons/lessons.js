@@ -1,8 +1,9 @@
-import angular from 'angular/index'
+import angular from 'angular'
+import _ from 'lodash'
 import {} from 'angular-bootstrap'
 import {} from 'angular-route'
 import {} from 'angular-ui-tinymce'
-import {} from "angular-ui-tree"
+import {} from 'angular-ui-tree'
 import {} from 'angular-loading-bar'
 import {} from 'angular-animate'
 
@@ -31,11 +32,17 @@ import treeService from './tree/tree.service'
 
 import alertsTemplate from './alerts.partial.html'
 
-angular.element(document).ready(function () {
+/* global Translator */
+
+angular.element(document).ready(function() {
   angular.bootstrap(angular.element(document).find('body')[0], ['LessonModule'], {
     strictDi: true
-  });
+  })
 })
+
+const bootstrapCSS = _.find(_.pluck(document.styleSheets, 'href'), function(link){return link && link.indexOf('themes/') !== -1})
+const styleSheets = window.tinymceStylesheets
+styleSheets.push(bootstrapCSS)
 
 angular
   .module('LessonModule', [
@@ -43,14 +50,18 @@ angular
     'ngRoute',
     'ui.tinymce',
     'ui.tree',
-    'angular-loading-bar',
+    'angular-loading-bar'
   ])
-
-  .service('tinyMceConfig', tinyMceConfig)
-
+  .value('lesson.data', {
+    isGranted: window.isGranted,
+    lessonId: window.lessonId,
+    root: window.root,
+    defaultChapter: window.defaultChapter,
+    tinymceStylesheets: styleSheets
+  })
+  .value('tinyMceConfig', tinyMceConfig)
   .service('restService', restService)
   .factory('restInterceptor', ['$location', 'Alerts', ($location, Alerts) => new restInterceptor($location, Alerts)])
-
   .factory('lessonModal', [
     '$uibModal',
     $modal => ({
@@ -88,7 +99,7 @@ angular
     restrict: 'A',
     require: 'form',
     link: ($scope, element, attrs, controller) => {
-      $scope.$on('$locationChangeStart', (event, next, current) => {
+      $scope.$on('$locationChangeStart', (event) => {
         if (controller.$dirty && !controller.$submitted) {
           if(!window.confirm(Translator.trans('unsaved_changes', 'icap_lesson'))) {
             event.preventDefault()
@@ -99,16 +110,16 @@ angular
   }))
   .directive('giveFocus', ['$timeout', ($timeout) => ({
     restrict: 'A',
-    link: ($scope, element, attrs, controller) => {
+    link: ($scope, element) => {
       $timeout(function() {
-        element[0].focus();
-      });
+        element[0].focus()
+      })
     }
   })])
 
   .filter('trans', () => (string, domain = 'icap_lesson') => Translator.trans(string, domain))
   .filter('trustedHtml', ['$sce', $sce => text => $sce.trustAsHtml(text)])
-  .filter('prettyJSON', () => json => JSON.stringify(json, null, " "))
+  .filter('prettyJSON', () => json => JSON.stringify(json, null, ' '))
 
   .config([
     '$routeProvider',

@@ -1,0 +1,12 @@
+{
+  "webpack": {
+    "entry": {
+      "activity": "_old/activity",
+      "competency": "_old/competency",
+      "objective": "_old/objective",
+      "objective-groups": "_old/objectiveGroups",
+      "objective-users": "_old/objectiveUsers",
+      "tree": "_old/tree"
+    }
+  }
+}

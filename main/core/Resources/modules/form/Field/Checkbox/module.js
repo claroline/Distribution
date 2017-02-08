@@ -1,6 +1,6 @@
-import 'angular/angular.min'
+import angular from 'angular'
 
-import translation from 'angular-ui-translation/angular-translation'
+import 'angular-ui-translation'
 import CheckboxDirective from './CheckboxDirective'
 
 angular.module('FieldCheckbox', ['ui.translation']).directive('formCheckbox', () => new CheckboxDirective)

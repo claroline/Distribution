@@ -8,7 +8,7 @@
  */
 
 /*global Routing*/
-import angular from 'angular/index'
+import angular from 'angular'
 import $ from 'jquery'
 
 export default class AdminHomeTabsConfigCtrl {
@@ -33,7 +33,7 @@ export default class AdminHomeTabsConfigCtrl {
     this.HomeTabService.loadAdminHomeTabs(this.tabId)
   }
 
-  initializeDragAndDrop () {
+  initializeDragAndDrop() {
     angular.element('#admin-home-tabs-list').sortable({
       items: '.home-tab',
       cursor: 'move'

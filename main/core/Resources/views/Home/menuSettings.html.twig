@@ -156,7 +156,7 @@
 {% block javascripts %}
     {{ parent() }}
         {% if is_granted('ROLE_HOME_MANAGER') %}
-            <script type="text/javascript" src="{{ asset('bundles/clarolinecore/js/home/content.js') }}"></script>
-            <script type="text/javascript" src="{{ asset('bundles/clarolinecore/js/home/menuSettings.js') }}"></script>
+            <script> load({{ chunks('claroline-distribution-main-core-content')|raw }}) </script>
+            <script> load({{ chunks('claroline-distribution-main-core-menu-settings')|raw }}) </script>
         {% endif %}
 {% endblock %}

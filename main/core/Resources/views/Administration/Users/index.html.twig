@@ -5,7 +5,7 @@
 
 {% block section_content %}
     <div>{{ macros.flashBox() }}</div>
-    <div id="users-panel" class="panel panel-default" ng-app="UsersManager">
+    <div id="users-panel" class="panel panel-default">
         <div class="panel panel-body" ui-view>
         </div>
     </div>
@@ -13,13 +13,14 @@
 {% endblock %}
 {% block stylesheets %}
     {{ parent() }}
-
     <link rel="stylesheet" href="{{ asset('vendor/angular-ui.css')}}"> </link>
-    {# we should be able to remove the following line if it's included in angular-ui.css #}
-    <link rel="stylesheet" href="{{ asset('bundles/clarolinecore/css/common/select.css') }}"></link>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ hotAsset('dist/claroline-distribution-main-core-user-management.js') }}"></script>
+    <script>
+        load({{ chunks('claroline-distribution-main-core-user-management')|raw }}, function() {
+            angular.bootstrap('#users-panel', ['UsersManager']);
+        })
+    </script>
 {% endblock %}

@@ -2,7 +2,7 @@
  * Path module
  */
 
-import angular from 'angular/index'
+import angular from 'angular'
 import 'angular-ui-tinymce/src/tinymce'
 
 import '#/main/core/fos-js-router/module'

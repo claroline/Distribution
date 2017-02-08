@@ -2,7 +2,7 @@
  * Base controller for Summary
  */
 
-import angular from 'angular/index'
+import angular from 'angular'
 
 export default class SummaryBaseCtrl {
   constructor(SummaryService, PathService) {

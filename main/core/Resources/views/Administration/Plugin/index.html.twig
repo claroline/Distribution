@@ -23,7 +23,7 @@
 }}
 {% endblock %}
 {% block section_content %}
-    <div id="plugin-panel" class="panel panel-default" ng-app="PluginManager">
+    <div id="plugin-panel" class="panel panel-default">
         <div class="panel panel-body">
             <plugin-manager></plugin-manager>
         </div>
@@ -35,5 +35,9 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ hotAsset('dist/claroline-distribution-main-core-plugin-management.js') }}"></script>
+    <script>
+        load({{ chunks('claroline-distribution-main-core-plugin-management')|raw }}, function() {
+            angular.bootstrap('#plugin-panel', ['PluginManager']);
+        })
+    </script>
 {% endblock %}

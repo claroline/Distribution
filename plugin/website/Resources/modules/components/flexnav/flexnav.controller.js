@@ -1,7 +1,7 @@
 /**
  * Created by panos on 3/24/16.
  */
-import angular from 'angular/index'
+import angular from 'angular'
 
 let _$window = new WeakMap()
 let _utils = new WeakMap()

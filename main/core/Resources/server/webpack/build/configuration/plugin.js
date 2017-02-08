@@ -10,8 +10,8 @@ ConfigurationPlugin.prototype.apply = function(compiler) {
   var generated = false
   compiler.plugin('compile', function(compilation) {
     if (!generated) {
-      console.log('\nGenerating claroline configuration file...')
-      str = `module.exports = {${getConfigurations()}}`
+      //console.log('\nGenerating claroline configuration file...')
+      str = `module.exports = window.BundlesConfiguration = {${getConfigurations()}}`
       fs.writeFileSync(paths.root() + '/web/dist/plugins-config.js', str)
       generated = true
     }
@@ -42,8 +42,8 @@ function getMetaEntries(targetDir) {
     configFile = configFile.replace(/\\/g, '/')
 
     if (fs.existsSync(configFile)) {
-      var plugin = require(configFile)
-      validator.validate(plugin)
+     // var plugin = require(configFile)
+     // validator.validate(plugin)
       var mod = bundle.split('/').pop()
       requirements.push(`    ${mod}: require('${configFile}')`)
     }

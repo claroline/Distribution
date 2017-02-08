@@ -281,37 +281,9 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src='{{ asset('bundles/clarolinecore/js/table.js') }}' type="text/javascript"></script>
     <script>
-        parameters = {};
-        parameters.route = {};
-        parameters.route.action = {};
-        parameters.route.normal = {"route": "claro_workspace_registered_user_list", "parameters": {'workspace': {{  workspace.getId() }}, 'order': '{{ order }}' }};
-        parameters.route.search = {"route": "claro_workspace_registered_user_list_search", "parameters": {'workspace': {{  workspace.getId() }}, 'order': '{{ order }}' }};
-        Claroline.Table.initialize(parameters);
-
-        $('.popover-block').popover();
-        $('.remove-role-button').on('click', function (event) {
-            var target = $(event.currentTarget);
-            var route = target.attr('href');
-            $.ajax({
-                url: route,
-                type: 'DELETE',
-                success: function() {
-                    if (target.parents('td').first().find('span').length === 1) {
-                        target.parents('tr').first().remove();
-                    } else {
-                        target.parent().remove();
-                    }
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    window.Claroline.Modal.hide();
-                    window.Claroline.Modal.simpleContainer(
-                        Translator.trans('error', {}, 'platform'),
-                        jqXHR.responseJSON.message
-                    );
-                }
-            });
-        });
+        window.workspaceId = {{  workspace.getId() }}
+        window.order = '{{ order }}'
     </script>
+    <script> load({{ chunks('claroline-distribution-main-core-tool-workspace-users')|raw }}) </script>
 {% endblock %}

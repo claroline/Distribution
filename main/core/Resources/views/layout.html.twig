@@ -1,4 +1,5 @@
 {% extends 'ClarolineCoreBundle::base.html.twig' %}
+{% import 'ClarolineCoreBundle:Layout:javascripts.macros.html.twig' as jsmacros %}
 {% import 'ClarolineCoreBundle::macros.html.twig' as macros %}
 
 {% block meta %}
@@ -22,7 +23,13 @@
 
 {% block javascripts_header %}
     {{ parent() }}
+    
+    {# Loads fosJsRouter js files #}
+    {{ jsmacros.getFosRouterJs() }}
+
     <script type="text/javascript" src='{{ asset('packages/jquery/dist/jquery.min.js') }}'></script>
+    {# Loads all necessary twigjs files #}
+    {{ jsmacros.getTwigJs() }}
 {% endblock %}
 
 {% block favicon %}
@@ -57,16 +64,7 @@
     <div id="homeAsset" class="hide">{{ homeAsset }}</div>
     <div id="baseAsset" class="hide">{{ asset('') }}</div>
     <div id="homeTheme" class="hide">{{ macros.getTheme(config)|trim }}</div>
-    <div id="homeLocale" class="hide">{% spaceless %}
-            {% if asset_exists("bundles/stfalcontinymce/vendor/tinymce/langs/" ~ app.request.locale ~ ".js") %}
-                {{ app.request.locale }}
-            {% elseif asset_exists("bundles/stfalcontinymce/vendor/tinymce/langs/" ~ app.request.locale ~ "_" ~ app.request.locale | upper ~ ".js") %}
-                {{ app.request.locale ~ '_' ~ app.request.locale | upper }}
-            {% else %}
-                en
-            {% endif %}
-        {% endspaceless %}
-    </div>
+    <div id="homeLocale" class="hide">{{ app.request.locale | mapTinymceLocale() }}</div>
     <div id="wrap">
         <div class="please-wait">
             <h4><span class="label label-warning"> {{ 'please_wait'|trans({}, 'platform') }} </span></h4>
@@ -165,7 +163,7 @@
     </div>
     {% block footer %}
         {% render(controller('ClarolineCoreBundle:Layout:footer')) %}
-    {% endblock%}
+    {% endblock %}
 {% endblock %}
 
 {% block javascripts %}

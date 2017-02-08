@@ -1,11 +1,11 @@
 /**
  * Created by panos on 4/5/16.
  */
-import angular from 'angular/index'
+import angular from 'angular'
 
 let _app = new WeakMap()
 export default class Register {
-  constructor (appName, deps) {
+  constructor(appName, deps) {
     deps = deps || []
     let module
     try {
@@ -16,7 +16,7 @@ export default class Register {
     _app.set(this, module)
   }
 
-  config (constructorFn) {
+  config(constructorFn) {
     constructorFn = this._normalizeConstructor(constructorFn)
     let factoryArray = this._createFactoryArray(constructorFn)
 
@@ -25,19 +25,19 @@ export default class Register {
     return this
   }
 
-  constant (name, obj) {
+  constant(name, obj) {
     _app.get(this).constant(name, obj)
 
     return this
   }
 
-  controller (name, constructorFn) {
+  controller(name, constructorFn) {
     _app.get(this).controller(name, constructorFn)
 
     return this
   }
 
-  directive (name, constructorFn) {
+  directive(name, constructorFn) {
     constructorFn = this._normalizeConstructor(constructorFn)
 
     if (!constructorFn.prototype.compile) {
@@ -67,7 +67,7 @@ export default class Register {
     return this
   }
 
-  factory (name, constructorFn) {
+  factory(name, constructorFn) {
     constructorFn = this._normalizeConstructor(constructorFn)
     let factoryArray = this._createFactoryArray(constructorFn)
     _app.get(this).factory(name, factoryArray)
@@ -75,7 +75,7 @@ export default class Register {
     return this
   }
 
-  filter (name, constructorFn) {
+  filter(name, constructorFn) {
     constructorFn = this._normalizeConstructor(constructorFn)
     let factoryArray = this._createFactoryArray(constructorFn)
     _app.get(this).filter(name, factoryArray)
@@ -83,13 +83,13 @@ export default class Register {
     return this
   }
 
-  provider (name, constructorFn) {
+  provider(name, constructorFn) {
     _app.get(this).provider(name, constructorFn)
 
     return this
   }
 
-  run (constructorFn) {
+  run(constructorFn) {
     constructorFn = this._normalizeConstructor(constructorFn)
     let factoryArray = this._createFactoryArray(constructorFn)
 
@@ -98,13 +98,13 @@ export default class Register {
     return this
   }
 
-  service (name, constructorFn) {
+  service(name, constructorFn) {
     _app.get(this).service(name, constructorFn)
 
     return this
   }
 
-  value (name, object) {
+  value(name, object) {
     _app.get(this).value(name, object)
 
     return this
@@ -118,7 +118,7 @@ export default class Register {
    * @returns {*}
    * @private
    */
-  _normalizeConstructor (input) {
+  _normalizeConstructor(input) {
     let constructorFn
     if (input.constructor == Array) {
       let injected = input.slice(0, input.length - 1)
@@ -166,9 +166,9 @@ export default class Register {
    * @returns {Function}
    * @private
    */
-  _cloneFunction (original) {
+  _cloneFunction(original) {
     return function() {
-      return original.apply(this, arguments);
+      return original.apply(this, arguments)
     }
   }
 
@@ -179,7 +179,7 @@ export default class Register {
    * @param callback
    * @private
    */
-  _override (object, method, callback) {
+  _override(object, method, callback) {
     object[method] = callback(object[method])
   }
 }

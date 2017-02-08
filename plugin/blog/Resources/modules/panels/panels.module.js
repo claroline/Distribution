@@ -1,4 +1,4 @@
-import angular from 'angular/index'
+import angular from 'angular'
 import '../icap-tagcanvas/icap-tagcanvas.module'
 
 import blogPanelCtrl from './panels.controller'

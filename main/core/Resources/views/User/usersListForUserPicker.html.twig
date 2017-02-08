@@ -84,7 +84,7 @@
             )
         }}
     {% else %}
-        {{ 
+        {{
             path(
                 'claro_searched_users_list_for_user_picker',
                 {
@@ -103,7 +103,7 @@
                     'showPlatformRoles': showPlatformRoles,
                     'attachName': attachName
                 }
-            ) 
+            )
         }}
     {% endif %}
 {% endmacro %}
@@ -111,7 +111,7 @@
 {% from _self import renderPager %}
 {% from _self import sortUrl %}
 {% from "ClarolineCoreBundle::macros.html.twig" import maxResultsSelectBox %}
-        
+
 {% if search != '' %}
     <div class="alert alert-info">
         {{ 'results_for_search_on'|trans({}, 'platform') }} :
@@ -157,7 +157,7 @@
                         <input type="checkbox" id="picker-all-users-chk">
                     {% endif %}
                 </th>
-                
+
                 {% if showId == '1' %}
                     <th>
                         <a href="{{ sortUrl(search, max, 'id', order, mode, showAllUsers, showId, showPicture, showUsername, showMail, showCode, showGroups, showPlatformRoles, attachName)|trim }}">
@@ -165,7 +165,7 @@
                         </a>
                     </th>
                 {% endif %}
-                
+
                 {% if showPicture == '1' %}
                     <th>
                         <a href="{{ sortUrl(search, max, 'picture', order, mode, showAllUsers, showId, showPicture, showUsername, showMail, showCode, showGroups, showPlatformRoles, attachName)|trim }}">
@@ -173,7 +173,7 @@
                         </a>
                     </th>
                 {% endif %}
-                    
+
                 {% if attachName == '1' %}
                     <th>
                         <a href="{{ sortUrl(search, max, 'lastName', order, mode, showAllUsers, showId, showPicture, showUsername, showMail, showCode, showGroups, showPlatformRoles, attachName)|trim }}">
@@ -192,7 +192,7 @@
                         </a>
                     </th>
                 {% endif %}
-                
+
                 {% if showUsername == '1' %}
                     <th>
                         <a href="{{ sortUrl(search, max, 'username', order, mode, showAllUsers, showId, showPicture, showUsername, showMail, showCode, showGroups, showPlatformRoles, attachName)|trim }}">
@@ -200,7 +200,7 @@
                         </a>
                     </th>
                 {% endif %}
-                
+
                 {% if showMail == '1' %}
                     <th>
                         <a href="{{ sortUrl(search, max, 'mail', order, mode, showAllUsers, showId, showPicture, showUsername, showMail, showCode, showGroups, showPlatformRoles, attachName)|trim }}">
@@ -208,7 +208,7 @@
                         </a>
                     </th>
                 {% endif %}
-                
+
                 {% if showCode == '1' %}
                     <th>
                         <a href="{{ sortUrl(search, max, 'administrativeCode', order, mode, showAllUsers, showId, showPicture, showUsername, showMail, showCode, showGroups, showPlatformRoles, attachName)|trim }}">
@@ -216,13 +216,13 @@
                         </a>
                     </th>
                 {% endif %}
-                
+
                 {% if showGroups == '1' %}
                     <th>
                         {{ 'groups'|trans({}, 'platform') }}
                     </th>
                 {% endif %}
-                
+
                 {% if showPlatformRoles == '1' or shownWorkspaceIds|length > 0 %}
                     <th>
                         {{ 'roles'|trans({}, 'platform') }}
@@ -261,7 +261,7 @@
                             >
                         {% endif %}
                     </td>
-                
+
                     {% if showId == 1 %}
                         <td>
                             <span class="picker-user-select pointer-hand"
@@ -271,7 +271,7 @@
                             </span>
                         </td>
                     {% endif %}
-                
+
                     {% if showPicture == 1 %}
                         <td class="text-center">
                             <span class="picker-user-select pointer-hand"
@@ -292,7 +292,7 @@
                             </span>
                         </td>
                     {% endif %}
-                    
+
                     {% if attachName == '1' %}
                         <td>
                             <span class="picker-user-select pointer-hand"
@@ -317,7 +317,7 @@
                             </span>
                         </td>
                     {% endif %}
-                
+
                     {% if showUsername == 1 %}
                         <td>
                             <span class="picker-user-select pointer-hand"
@@ -327,7 +327,7 @@
                             </span>
                         </td>
                     {% endif %}
-                
+
                     {% if showMail == 1 %}
                         <td>
                             <span class="picker-user-select pointer-hand"
@@ -374,7 +374,7 @@
                             >
                                 {% set roles = user.getEntityRoles() %}
                                 {% set multiWorkspace = shownWorkspaceIds|length > 1 %}
-                                
+
                                 {% for role in roles %}
                                     {% if role.getType() == 1 and showPlatformRoles == '1' %}
                                         <span class="label label-success margin-right-sm">
@@ -383,7 +383,7 @@
                                     {% elseif role.getType() == 2 and shownWorkspaceIds|length > 0 %}
                                         {% set workspace = role.getWorkspace() %}
                                         {% set workspaceId = workspace.getId() %}
-                                
+
                                         {% if workspaceId in shownWorkspaceIds %}
                                             <span class="label label-success margin-right-sm">
                                                 {{ role.getTranslationKey()|trans({}, 'platform') }}
@@ -413,5 +413,5 @@
      data-page="{{ page }}"
      data-max="{{ max }}"
      data-ordered-by="{{ orderedBy }}"
-     data-order="{{ order }}"
+     data-order="{{ order }}">
 </div>

@@ -7,14 +7,15 @@
  * file that was distributed with this source code.
  */
 
-import angular from 'angular/index'
+import angular from 'angular'
 
 import 'angular-ui-router'
 import 'angular-bootstrap'
 import 'angular-animate'
-import 'angular-ui-translation/angular-translation'
+import 'angular-ui-translation'
 import 'angular-breadcrumb'
 import 'angular-loading-bar'
+import 'ng-table'
 
 import '#/main/core/fos-js-router/module'
 import '../Cursus/cursus'
@@ -74,7 +75,7 @@ angular.module('CursusManagementModule', [
 .config(Routing)
 .config([
   'cfpLoadingBarProvider',
-  function configureLoadingBar (cfpLoadingBarProvider) {
+  function configureLoadingBar(cfpLoadingBarProvider) {
     // Configure loader
     cfpLoadingBarProvider.latencyThreshold = 200
     cfpLoadingBarProvider.includeBar = true

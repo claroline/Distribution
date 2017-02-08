@@ -1,0 +1,18 @@
+{
+  "webpack": {
+    "entry": {
+      "admin-support-archives": "_old/adminSupportArchives",
+      "admin-support-level": "_old/adminSupportLevel",
+      "admin-support-my-tickets": "_old/adminSupportMyTickets",
+      "admin-support-new": "_old/adminSupportNew",
+      "admin-support-status-management": "_old/adminSupportStatusManagement",
+      "admin-support-type-management": "_old/adminSupportTypeManagement",
+      "admin-ticket-management-info": "_old/adminTicketManagementInfo",
+      "admin-ticket-open-comments": "_old/adminTicketOpenComments",
+      "admin-ticket-open-interventions": "_old/adminTicketOpenInterventions",
+      "support-index": "_old/supportIndex",
+      "ticket-open": "_old/ticketOpen",
+      "admin-support-contacts-management": "_js/AdminSupport/adminSupportContactsManagement"
+    }
+  }
+}

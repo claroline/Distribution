@@ -8,7 +8,7 @@
  */
 
 /*global Routing*/
-import angular from 'angular/index'
+import angular from 'angular'
 import $ from 'jquery'
 
 export default class DesktopHomeMainCtrl {
@@ -49,7 +49,7 @@ export default class DesktopHomeMainCtrl {
     })
   }
 
-  initializeDragAndDrop () {
+  initializeDragAndDrop() {
     angular.element('#desktop-home-tabs-list').sortable({
       items: '.movable-home-tab',
       cursor: 'move'
@@ -153,7 +153,7 @@ export default class DesktopHomeMainCtrl {
     }
   }
 
-  static _getGlobal (name) {
+  static _getGlobal(name) {
     if (typeof window[name] === 'undefined') {
       throw new Error(
         `Expected ${name} to be exposed in a window.${name} variable`

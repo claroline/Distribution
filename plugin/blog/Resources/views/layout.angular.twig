@@ -88,8 +88,6 @@
     {{ parent() }}
     <link rel='stylesheet' type='text/css' href='{{ asset('bundles/clarolinecore/css/common/jquery-ui-bootstrap/jquery-ui-1.9.2.custom.css') }}'/>
     <link rel="stylesheet" type='text/css' href="{{ asset('packages/angular-loading-bar/build/loading-bar.min.css') }}" />
-    <link rel='stylesheet' type='text/css' href='{{ asset(calendarPath ~ 'fullcalendar.min.css') }}'/>
-    <link rel='stylesheet' type='text/css' href='{{ asset(calendarPath ~ 'fullcalendar.print.css') }}' media='print' />
 
     {% stylesheets debug=false filter='less'  output='css/icapblog/style.css'
     "@IcapBlogBundle/Resources/views/less/style.less"
@@ -136,13 +134,14 @@
 
         }
     </script>
-
-
     <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'agenda' }) }}?locales=fr,en"></script>
     <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'icap_blog' }) }}?locales=fr,en"></script>
-
-    <script type="text/javascript" src="{{ hotAsset('dist/claroline-distribution-plugin-blog-app.js') }}" ></script>
-
+    <script> load({{ chunks('claroline-distribution-plugin-blog-app')|raw }}, function() {
+      angular.bootstrap(angular.element(document).find('body')[0], ['BlogModule'], {
+        strictDi: true
+      })
+    })
+    </script>
 
     {% block icap_blog_javascripts %}
     {% endblock icap_blog_javascripts %}

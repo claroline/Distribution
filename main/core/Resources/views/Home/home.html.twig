@@ -79,9 +79,9 @@
 {% block javascripts %}
     {{ parent() }}
         <script type="text/javascript" src="{{ asset('packages/fluidvids/dist/fluidvids.min.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('bundles/clarolinecore/js/home/height.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('bundles/clarolinecore/js/home/readmore.js') }}"></script>
+        <script> load({{ chunks('claroline-distribution-main-core-height')|raw }}) </script>
+        <script> load({{ chunks('claroline-distribution-main-core-readmore')|raw }}) </script>
         {% if is_granted('ROLE_HOME_MANAGER') %}
-            <script type="text/javascript" src="{{ asset('bundles/clarolinecore/js/home/content.js') }}"></script>
+            <script> load({{ chunks('claroline-distribution-main-core-content')|raw }}) </script>
         {% endif %}
 {% endblock %}

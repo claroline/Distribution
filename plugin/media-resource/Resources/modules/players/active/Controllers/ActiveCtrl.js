@@ -1,7 +1,4 @@
-import WaveSurfer from 'wavesurfer.js/dist/wavesurfer'
-import 'wavesurfer.js/dist/plugin/wavesurfer.minimap.min'
-import 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min'
-import 'wavesurfer.js/dist/plugin/wavesurfer.regions.min'
+import WaveSurfer from 'wavesurfer'
 
 
 class ActiveCtrl {
@@ -31,11 +28,11 @@ class ActiveCtrl {
   initWavesurfer() {
     const progressDiv = document.querySelector('#progress-bar')
     const progressBar = progressDiv.querySelector('.progress-bar')
-    const showProgress = function (percent) {
+    const showProgress = function(percent) {
       progressDiv.style.display = 'block'
       progressBar.style.width = percent + '%'
     }
-    const hideProgress = function () {
+    const hideProgress = function() {
       progressDiv.style.display = 'none'
     }
     this.wavesurfer.on('loading', showProgress)
@@ -56,7 +53,7 @@ class ActiveCtrl {
     })
     this.wavesurfer.load(this.audioData)
 
-    this.wavesurfer.on('ready', function () {
+    this.wavesurfer.on('ready', function() {
       const timeline = Object.create(WaveSurfer.Timeline)
       timeline.init({
         wavesurfer: this.wavesurfer,
@@ -65,7 +62,7 @@ class ActiveCtrl {
 
     }.bind(this))
 
-    this.wavesurfer.on('seek', function () {
+    this.wavesurfer.on('seek', function() {
       const current = this.regionsService.getRegionFromTime(this.wavesurfer.getCurrentTime(), this.resource.regions)
       if (current && this.currentRegion && current.uuid != this.currentRegion.uuid) {
         // update current region
@@ -73,7 +70,7 @@ class ActiveCtrl {
       }
     }.bind(this))
 
-    this.wavesurfer.on('audioprocess', function () {
+    this.wavesurfer.on('audioprocess', function() {
       const current = this.regionsService.getRegionFromTime(this.wavesurfer.getCurrentTime(), this.resource.regions)
       if (current && this.currentRegion && current.uuid != this.currentRegion.uuid) {
         // update current region

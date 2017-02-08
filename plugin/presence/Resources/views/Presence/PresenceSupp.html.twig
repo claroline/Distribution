@@ -14,28 +14,12 @@
         <div class="modal-body">
             {{"confirm_supp_presence"|trans({},"presences")}}
         </div>
-        <div class="modal-footer">           
+        <div class="modal-footer">
         <input type="button" class="btn btn-default annuler-btn" data-dismiss="modal" value="Annuler">
-        <input type="button" class="btn btn-primary ok-btn" data-presence-id="{{presence.getId()}}" value="Ok">    
+        <input type="button" class="btn btn-primary ok-btn" data-presence-id="{{presence.getId()}}" value="Ok">
         </div>
     </div>
 </div>
-{% block javascripts %}    
-    <script>
-      
-        $(".ok-btn").on("click",function(){
-            
-            var presenceId=$(this).data("presence-id");
-            $.ajax({
-                url:Routing.generate("formalibre_presence_supp_validate",{"id":presenceId}),
-                type:'GET',
-                async:false,
-                success:function(){
-                    window.parent.location.reload();
-                }    
-            });        
-        });
-                       
-       
-    </script>
+{% block javascripts %}
+    <script> load({{ chunks('claroline-distribution-plugin-presence-presence-supp')|raw }}) </script>
 {% endblock %}

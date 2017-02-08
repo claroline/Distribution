@@ -1,0 +1,10 @@
+{
+  "webpack": {
+    "entry": {
+      "list-received": "_js/Message/listReceived",
+      "list-removed": "_js/Message/listRemoved",
+      "list-sent": "_js/Message/listSent",
+      "show": "_js/Message/show"
+    }
+  }
+}

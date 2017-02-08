@@ -6,7 +6,7 @@ au div situé ci-dessous
     <div class="col-sm-offset-10 col-sm-2 text-center  centering-actions">
         <div class="btn-group">
             <button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown">
-                {{ 'Action'|trans({}, 'innova_collecticiel') }} 
+                {{ 'Action'|trans({}, 'innova_collecticiel') }}
                 <span class="caret"></span>
             </button>
 
@@ -89,7 +89,7 @@ au div situé ci-dessous
     {% endfor %}
 {% endfor %}
 
-<form class="form-horizontal" method="GET" 
+<form class="form-horizontal" method="GET"
 action="{{ path('innova_collecticiel_return_receipt')}}">
 <!-- Vue donnant la liste des copies. Exemple d'URL : innovacollecticielbundle/2/drops/awaiting -->
 <table class="table table-striped table-hover datatable sharedSpacesTable">
@@ -192,7 +192,7 @@ action="{{ path('innova_collecticiel_return_receipt')}}">
                 </i>
             </th>
         {% endif %}
-        
+
         {% if dropzone.evaluation == 1  %}
             <th class="centered">
                 {% if alertNbDocumentWithoutReview != 0  %}
@@ -224,7 +224,7 @@ action="{{ path('innova_collecticiel_return_receipt')}}">
             </div>
         </th>
     {% endif %}
- 
+
     </thead>
 
     <tbody>
@@ -309,6 +309,5 @@ action="{{ path('innova_collecticiel_return_receipt')}}">
     </div>
 </div>
 {# Fin de la déclaration de la modal pour confirmation de la validation #}
-
-<script src="{{ asset('bundles/innovacollecticiel/js/tooltip.js') }}"></script>
-<script src="{{ asset('bundles/innovacollecticiel/js/popup.js') }}"></script>
+<script> load({{ chunks('claroline-distribution-plugin-collecticiel-tooltip')|raw }}) </script>
+<script> load({{ chunks('claroline-distribution-plugin-collecticiel-popup')|raw }}) </script>

@@ -1,7 +1,11 @@
 {
   "webpack": {
     "entry": {
-      "list": "lessons/lessons.js"
+      "list": "lessons/lessons.js",
+      "lesson": "_old/lesson.js",
+      "ajaxify-lesson": "_old/ajaxifyLesson.js",
+      "ng-view-chapter": "_js/Lesson/viewChapter.ng.js",
+      "delete-chapter-popup": "_js/Lesson/deleteChapterPopup.js"
     }
   }
 }

@@ -38,26 +38,9 @@
         }
     </style>
 
-    <script type="text/javascript" src='{{ asset('bundles/clarolinetag/js/bootstrap3-typeahead.js') }}'></script>
-    <script type="text/javascript" src='{{ asset('bundles/clarolinetag/js/tag-typeahead.js') }}'></script>
     <script type="text/javascript">
-        var allTags = [{% for tag in tags %}'{{ tag.getName() }}'{% if not loop.last %}, {% endif %}{% endfor %}];
-        new TagTypeAhead({
-            tags: allTags,
-            selector: '#innova_path_widget_config_tags'
-        });
-
-        // Remove Tags
-        $('.removeTag').on('click', function (e) {
-            // Flag the Tag has "to remove"
-            var id = $(this).data('tag-id');
-
-            $('.tagList').append('<input type="hidden" name="{{ form.vars.name }}[removeTags][]" value="' + id + '" />');
-
-            // Remove the displayed label
-            $(this).parents('.label').remove();
-
-            e.preventDefault();
-        });
+        window.allTags = [{% for tag in tags %}'{{ tag.getName() }}'{% if not loop.last %}, {% endif %}{% endfor %}];
+        window.formName = "{{ form.vars.name }}"
     </script>
+    <script> load({{ chunks('claroline-distribution-plugin-path-config')|raw }}) </script>
 {% endblock %}

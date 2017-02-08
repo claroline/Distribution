@@ -109,5 +109,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src='{{ asset('bundles/clarolinemessage/js/message/show.js') }}' type="text/javascript"></script>
+    <script> load({{ chunks('claroline-distribution-plugin-message-show')|raw }}) </script>
 {% endblock %}

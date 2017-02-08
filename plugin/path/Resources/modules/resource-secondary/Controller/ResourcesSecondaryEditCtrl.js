@@ -2,7 +2,7 @@
  * Resources secondary controller
  */
 
-import angular from 'angular/index'
+import angular from 'angular'
 
 import ResourcesSecondaryBaseCtrl from './ResourcesSecondaryBaseCtrl'
 

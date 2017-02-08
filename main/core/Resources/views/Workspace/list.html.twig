@@ -89,7 +89,7 @@
             </a>
         {% endif %}
         <hr/>
-        
+
         {% if search != '' %}
             <div class="alert alert-info">
                 {{ 'results_for_search_on'|trans({}, 'platform') }} :
@@ -118,7 +118,7 @@
                 {{ 'no_workspace'|trans({}, 'platform') }}
             </div>
         {% else %}
-        
+
             {% if nonPersonalWs|length > 0 %}
                 <div class="panel panel-default" id="accordion-all-non-personal">
                     <div class="panel-heading">
@@ -162,6 +162,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('bundles/clarolinecore/js/workspace/workspace_list.js') }}" type="text/javascript">
-    </script>
+    <script> load({{ chunks('claroline-distribution-main-core-workspace-list')|raw }}) </script>
 {% endblock %}

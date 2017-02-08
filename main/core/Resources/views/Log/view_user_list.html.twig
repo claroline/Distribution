@@ -25,23 +25,7 @@
     .jqplot-title{display:none;}
     .jqplot-xaxis{margin-top:5px !important;}
 </style>
-
-<link rel="stylesheet" href="{{ asset('bundles/clarolinecore/css/common/jqplot/jquery.jqplot.css') }}" type="text/css" />
-
-{% include 'ClarolineCoreBundle:Layout:jqplot_script.html.twig' %}
-{% javascripts debug=false filter='jsmin' output='js/corebundle/jqplot.view-user-list.min.js'
-'bundles/clarolinecore/js/jqplot/jqplot.colors.js'
-'packages/jqPlot/src/plugins/jqplot.highlighter.js'
-'packages/jqPlot/src/plugins/jqplot.barRenderer.js'
-'packages/jqPlot/src/plugins/jqplot.cursor.js'
-'packages/jqPlot/src/plugins/jqplot.canvasTextRenderer.js'
-'packages/jqPlot/src/plugins/jqplot.dateAxisRenderer.js'
-'packages/jqPlot/src/plugins/jqplot.canvasAxisTickRenderer.js'
-'packages/jqPlot/src/plugins/jqplot.canvasAxisLabelRenderer.js'
-%}
-<script src="{{ asset_url }}"></script>
-{% endjavascripts %}
-
+<script> load({{ chunks('claroline-distribution-main-core-jqplot')|raw }}) </script>
 {% set newNameOrder = 'ASC' %}
 {% set newActionsOrder = 'DESC' %}
 {% if orderBy == 'name' %}
@@ -69,10 +53,10 @@
             </div>
             <div class="col-md-6 log_list_item" style="padding: 0 50px 0 0;">
                 <div id="{{ log['id'] }}-user-bar-chart" style="height: 50px;"></div>
-                <script type="text/javascript">
-                    $(document).ready(function(){
-                        drawUserBarChart({{ log['stats']|json_encode|raw }}, "{{ log['id'] }}-user-bar-chart", {{ log['maxValue'] }});
-                    });
+                <script>
+                    load({{ chunks('claroline-distribution-main-core-log-user-list')|raw }}, function(){
+                        window.drawUserBarChart({{ log['stats']|json_encode|raw }}, "{{ log['id'] }}-user-bar-chart", {{ log['maxValue'] }});
+                    })
                 </script>
             </div>
             <div class="col-md-3 log_list_item">
@@ -82,74 +66,3 @@
 
     {% endfor %}
 </div>
-
-<script type="text/javascript">
-    var bg_color = "transparent";
-    if (navigator.userAgent.match(/msie/i) && navigator.userAgent.match(/8/)) bg_color = "#fff";
-    function drawUserBarChart(chartData, containerId, maxValue) {
-        if (chartData.length>0) {
-            var barWidth = Math.max(Math.floor($("#"+containerId).width()/chartData.length) - 3, 3);
-            var actionsPlot = $.jqplot(
-                    containerId,
-                    [chartData],
-                    {
-                        title: {show: false},
-                        grid: {
-                            drawGridlines: false,
-                            drawBorder: false,
-                            shadow: false,
-                            background: bg_color
-                        },
-                        axesDefaults: {
-                            labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
-                            tickRenderer: $.jqplot.CanvasAxisTickRenderer,
-                            tickOptions: {
-                                showGridline: false,
-                                show: true,
-                                showMark: false,
-                                fontSize: '10px'
-                            }
-                        },
-                        axes: {
-                            xaxis: {
-                                renderer: $.jqplot.DateAxisRenderer,
-                                tickOptions: {
-                                    formatString:'{{ 'jqplot_date_output_format'|trans({}, 'platform') }}'
-                                },
-                                numberTicks: 2,
-                                max: chartData[chartData.length-1][0]
-                            },
-                            yaxis: {
-                                min: 0,
-                                max: maxValue,
-                                numberTicks: 1
-                            }
-                        },
-                        highlighter: {
-                            show: true,
-                            showMarker:false,
-                            tooltipOffset:5,
-                            tooltipLocation:'n',
-                            tooltipAxes:'xy',
-                            formatString:'%s <br/> %d',
-                            tooltipFadeSpeed:'fast'
-                        },
-                        cursor: {
-                            show: false
-                        },
-                        seriesDefaults: {
-                            renderer: $.jqplot.BarRenderer,
-                            shadow:false,
-                            useNegativeColors: false,
-                            rendererOptions:{
-                                highlightMouseOver: true,
-                                highlightMouseDown: true,
-                                barWidth: barWidth,
-                                barMargin: 3
-                            }
-                        }
-                    }
-            );
-        }
-    };
-</script>

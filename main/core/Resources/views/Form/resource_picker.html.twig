@@ -30,13 +30,8 @@
         {% endif %}
 
         <script type="text/javascript">
-            (function($) {
-                "use strict";
-
-                $(function() {
-                    window.Claroline.ResourcePicker.initialize("{{ id }}");
-                });
-            })(jQuery);
+            window.resourceId = "{{ id }}"
         </script>
+        <script> load({{ chunks('claroline-distribution-main-core-form-resource-picker')|raw }}) </script>
     {% endspaceless %}
 {% endblock %}

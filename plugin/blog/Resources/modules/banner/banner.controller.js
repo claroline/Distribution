@@ -1,4 +1,4 @@
-import angular from 'angular/index'
+import angular from 'angular'
 
 let _$scope = new WeakMap()
 let _Messages = new WeakMap()
@@ -174,9 +174,9 @@ export default class BannerController {
 
     // Banner options are stored in blog options, a copy is used before saving through the API
     this.blog.optionsCopy = angular.copy(this.blog.options)
-    
+
     this.disableButtons = true
-    
+
     if (this.removeBanner) {
       this.blog.removeBanner()
         .then(
@@ -213,8 +213,8 @@ export default class BannerController {
           }
         )
     }
-    
-    
+
+
   }
 
   _setMessage(type, msg, params = {}, filter = false, realm = 'icap_blog', keep = false) {

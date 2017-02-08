@@ -1,4 +1,4 @@
-import * as pdf from 'pdfjs-dist/build/pdf.combined'
+import * as pdf from 'pdf'
 
 export default class PdfController {
   constructor($http, $scope, url) {

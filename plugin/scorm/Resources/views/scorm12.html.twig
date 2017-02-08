@@ -1,19 +1,19 @@
 {% macro renderMenu(scos, trackings, isAnon) %}
     <ul>
     {% for sco in scos %}
-        
+
         {% if sco.getIsBlock() %}
             {% set scoChildren = sco.getScoChildren() %}
             <li><b>{{ sco.getTitle() }}</b></li>
-            
+
             {% if scoChildren is not null %}
                 {{ _self.renderMenu(scoChildren, trackings, isAnon) }}
             {% endif %}
-                
+
         {% else %}
             {% set scoId = sco.getId() %}
             {% set scoTitle = sco.getTitle() %}
-            
+
             {% if isAnon %}
                 <li>
                     <a href="{{ path('claro_render_scorm_12_sco', {'scoId': scoId}) }}" class="sco-menu-link">
@@ -147,5 +147,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('bundles/clarolinescorm/js/scorm12.js') }}"></script>
+    <script> load({{ chunks('claroline-distribution-plugin-scorm-scorm-12')|raw }}) </script>
 {% endblock %}

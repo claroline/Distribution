@@ -1,6 +1,7 @@
 /*global Routing*/
 /*global Translator*/
 import $ from 'jquery'
+import modal from '#/main/core/_old/modal'
 
 const userId = parseInt($('#user-sessions-datas-box').data('user-id'))
 let sourceId
@@ -30,7 +31,7 @@ function initializeSelect (type)
 $('#user-sessions-managament-body').on('click', '.delete-session-user-btn', function () {
   const sessionUserId = $(this).data('session-user-id')
 
-  window.Claroline.Modal.confirmRequest(
+  modal.confirmRequest(
     Routing.generate('api_delete_session_user', {'sessionUser': sessionUserId}),
     removeSessionRow,
     sessionUserId,
@@ -42,7 +43,7 @@ $('#user-sessions-managament-body').on('click', '.delete-session-user-btn', func
 $('#user-sessions-managament-body').on('click', '.delete-session-event-user-btn', function () {
   const sessionEventUserId = $(this).data('session-event-user-id')
 
-  window.Claroline.Modal.confirmRequest(
+  modal.confirmRequest(
     Routing.generate('claro_cursus_session_event_unregister_user', {'sessionEventUser': sessionEventUserId}),
     removeSessionEventRow,
     sessionEventUserId,

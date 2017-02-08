@@ -1,5 +1,6 @@
-import observe from './observe'
 import $ from 'jquery'
+import 'videojs'
+import observe from './observe'
 
 /* global videojs */
 

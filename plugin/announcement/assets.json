@@ -1,0 +1,9 @@
+{
+  "webpack": {
+    "entry": {
+      "announcement-list": "announcementsList",
+      "announcement-widget": "announcementsWidget",
+      "create-form": "createForm"
+    }
+  }
+}

@@ -2,7 +2,7 @@
  * Primary resources module
  */
 
-import angular from 'angular/index'
+import angular from 'angular'
 import 'angular-ui-resource-picker/angular-resource-picker'
 
 import '#/main/core/fos-js-router/module'

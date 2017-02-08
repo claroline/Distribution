@@ -1,4 +1,4 @@
-import angular from 'angular/index'
+import angular from 'angular'
 import 'angular-ui-translation/angular-translation'
 import 'angular-bootstrap'
 import 'angular-ui-calendar'
@@ -12,9 +12,6 @@ import 'ng-tags-input/ng-tags-input.min.css'
 import '#/main/core/fos-js-router/module'
 import '#/main/core/modal/module'
 import '#/main/core/html-truster/module'
-import 'fullcalendar/dist/fullcalendar'
-import 'fullcalendar/dist/locale/fr'
-import 'fullcalendar/dist/locale/en-gb'
 import 'angular-ui-tree'
 import 'angular-bootstrap-colorpicker'
 import 'angular-i18n/angular-locale_en.js'
@@ -78,7 +75,7 @@ angular
 
   .service('tinyMceConfig', tinyMceConfig)
   .service('blogService', blogService)
-  
+
   .factory('Messages', () => ([]))
   .factory('blogModal', [
     '$uibModal',
@@ -103,7 +100,7 @@ angular
     controllerAs: 'main',
     controller: mainController
   }))
-  
+
   .directive('blogMessages', () => ({
     restrict: 'E',
     controllerAs: 'ctrl',
@@ -221,9 +218,3 @@ angular
       })
       .otherwise('/')
   }])
-
-angular.element(document).ready(() => {
-  angular.bootstrap(angular.element(document).find('body')[0], ['BlogModule'], {
-    strictDi: true
-  })
-})

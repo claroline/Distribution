@@ -2,7 +2,7 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src='{{ asset('bundles/clarolineannouncement/js/create_form.js') }}' type="text/javascript"></script>
+    <script> load({{ chunks('claroline-distribution-plugin-announcement-create-form')|raw }}) </script>
 {% endblock %}
 
 {% if type == 'create' %}

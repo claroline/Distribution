@@ -50,14 +50,6 @@
        data-confirm-message="{{ 'badge_delete_confirm_message'|trans({'%badgeName%': badge.name}) }}"
        data-confirm-ok="{{ 'delete'|trans({}, 'platform') }}" data-confirm-cancel="{{ 'cancel'|trans({}, 'platform') }}"
        data-confirm-style="danger"><span class="fa fa-trash-o"></span> {{ 'delete'|trans({}, 'platform') }}</a>
-
-    <!--
-    <ul class="nav nav-tabs">
-        <li class="active"><a href="#view" data-toggle="tab">{{ 'view'|trans({}, 'platform') }}</a></li>
-        test
-        <li><a href="#edit" data-toggle="tab">{{ 'edit'|trans({}, 'platform') }}</a></li>
-    </ul>
-    -->
     <div class="tab-content view_badge">
         <div class="tab-pane active view" id="view">
             <div class="row">
@@ -105,9 +97,6 @@
                 {% if 0 < pager.currentPageResults|length %}
                     <h3>
                         {{ 'badge_awarded_to'|trans }} :
-                        <!--<a href="{{ path('icap_badge_admin_badges_award', {'slug': badge.slug}) }}" id="awardUser"
-                           role="button" class="btn btn-default pull-right" data-toggle="tooltip" data-placement="left"
-                           title="{{ 'award_badge'|trans }}"><span class="fa fa-plus-circle"></span></a>-->
                     </h3>
                     {% import _self as awardButtons %}
                     {{ awardButtons.awardButtons(badge.slug) }}
@@ -321,23 +310,9 @@
     </div>
 {% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('bundles/frontend/select2/select2.css') }}" screen="media"/>
-{% endblock %}
-
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript" src="{{ asset('bundles/zenstruckform/js/helper.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('bundles/frontend/select2/select2.min.js') }}"></script>
-    {% if 'en' != app.request.locale %}
-        <script type="text/javascript"
-                src="{{ asset('bundles/frontend/select2/select2_locale_' ~ app.request.locale ~ '.js') }}"></script>
-    {% endif %}
-    <script type="text/javascript"
-            src="{{ asset('bundles/frontend/jquery-option-tree/jquery.optionTree.js') }}"></script>
-    <script type="text/javascript"
-            src='{{ asset('bundles/frontend/confirm-bootstrap/confirm-bootstrap.js') }}'></script>
-    <script type="text/javascript" src='{{ asset('bundles/icapbadge/js/edit.js') }}'></script>
-    <script type="text/javascript" src='{{ asset('bundles/icapbadge/js/rules.js') }}'></script>
+    <script> load({{ chunks('claroline-distribution-plugin-badge-edit')|raw }}) </script>
+    <script> load({{ chunks('claroline-distribution-plugin-badge-rules')|raw }}) </script>
 {% endblock %}

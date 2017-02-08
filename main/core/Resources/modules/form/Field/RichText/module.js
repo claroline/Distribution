@@ -1,4 +1,4 @@
-import angular from 'angular/index'
+import angular from 'angular'
 import RichTextDirective from './RichTextDirective'
 
 angular.module('FieldRichText', ['ui.translation', 'HelpBlock'])

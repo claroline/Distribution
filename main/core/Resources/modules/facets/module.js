@@ -1,8 +1,8 @@
-import 'angular/angular.min'
+import angular from 'angular'
 
-import bootstrap from 'angular-bootstrap'
-import translation from 'angular-ui-translation/angular-translation'
-import dragula from 'angular-dragula/dist/angular-dragula'
+import 'angular-bootstrap'
+import 'angular-ui-translation'
+import dragula from 'angular-dragula'
 
 import Interceptors from '../interceptorsDefault'
 import FacetManagementDirective from './Directive/FacetManagementDirective'

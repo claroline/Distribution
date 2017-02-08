@@ -107,22 +107,7 @@
                 </td>
                 <td>
                     <div class="btn-group correction-tools">
-                        {#
-                        <a href="{{ path('icap_dropzone_drops_detail_correction', {'resourceId': dropzone.id, 'correctionId': correction.id, 'state': viewState_var}) }}" class="btn btn-default btn-xs" >
-                            {{ 'See correction'|trans({},'icap_dropzone')}}
-                        </a>
-                        #}
-
                         {% if byUserMod == 0 %}
-
-                            {% if dropzone.peerReview %}
-                                {# <a href="{{ path('icap_dropzone_recalculate_score',
-                                 {'resourceId': dropzone.id, 'correctionId': correction.id}) }}"
-                                    class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left"
-                                    data-container="body"
-                                    title="{{ 'recalculate_helper'|trans({},'icap_dropzone') }}">
-                                     {{ 'Recalculate the score'|trans({}, 'icap_dropzone') }}</a>#}
-                            {% endif %}
                             {% if correction.finished %}
                                 {% if correction.valid %}
                                     {% set path_invalidate_link = 'icap_dropzone_drops_detail_correction_validation' %}
@@ -179,31 +164,4 @@
 <div style="display:none">
 
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-
-        /**
-         Allow to use tooltip in disable button inside a button group
-         creating a div in absolute pos
-         **/
-        $('input:disabled, button:disabled, a.disabled').after(function (e) {
-            d = $("<div >");
-            i = $(this);
-            var offset = i.offset();
-            var left_pos = offset.left - $(this).parent().offset().left; // due  to table and groupButton
-            d.css({
-                height: i.outerHeight(),
-                width: i.outerWidth(),
-                position: "absolute",
-                left: left_pos
-            });
-            d.attr("title", i.attr("title"));
-            d.attr('data-container', 'body'); // specific to group Buttons.
-            d.tooltip();
-            return d;
-        });
-
-
-    });
-
-</script>
+<script> load({{ chunks('claroline-distribution-plugin-dropzone-common')|raw }}) </script>

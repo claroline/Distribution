@@ -5,13 +5,13 @@
             {% set tagId = tag.getId() %}
             {% set tagName = tag.getName() %}
             {% set linkedWorkspace = tag.getWorkspace() %}
-            
+
             {% if linkedWorkspace is null %}
                 {% set linkedWorkspaceId = 0 %}
             {% else %}
                 {% set linkedWorkspaceId = linkedWorkspace.getId() %}
             {% endif %}
-            
+
             <li class="hierarchy-tag-parent tag-parent-{{ tagId }}"
                 workspace-tag-id="{{ tagId }}"
             >
@@ -278,9 +278,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script
-        src="{{ asset('bundles/clarolinecore/js/workspace/organizeAdminWorkspaceTag.js') }}"
-        type="text/javascript"
-    >
-    </script>
+    <script> load({{ chunks('claroline-distribution-main-core-workspace-organize-admin-tag')|raw }}) </script>
 {% endblock %}

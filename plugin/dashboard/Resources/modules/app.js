@@ -1,9 +1,9 @@
-import angular from 'angular/index'
+import angular from 'angular'
 
 import 'angular-route'
 import 'angular-loading-bar'
 import 'angular-strap'
-import 'angular-ui-translation/angular-translation'
+import 'angular-ui-translation'
 import '#/main/core/fos-js-router/module'
 import '#/main/core/workspace/module'
 import '#/main/core/authentication/module'

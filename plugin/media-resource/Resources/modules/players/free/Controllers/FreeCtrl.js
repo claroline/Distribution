@@ -1,7 +1,4 @@
-import WaveSurfer from 'wavesurfer.js/dist/wavesurfer'
-import 'wavesurfer.js/dist/plugin/wavesurfer.minimap.min'
-import 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min'
-import 'wavesurfer.js/dist/plugin/wavesurfer.regions.min'
+import WaveSurfer from 'wavesurfer'
 import $ from 'jquery'
 
 class FreeCtrl {
@@ -35,11 +32,11 @@ class FreeCtrl {
   initWavesurfer() {
     const progressDiv = document.querySelector('#progress-bar')
     const progressBar = progressDiv.querySelector('.progress-bar')
-    const showProgress = function (percent) {
+    const showProgress = function(percent) {
       progressDiv.style.display = 'block'
       progressBar.style.width = percent + '%'
     }
-    const hideProgress = function () {
+    const hideProgress = function() {
       progressDiv.style.display = 'none'
     }
     this.wavesurfer.on('loading', showProgress)
@@ -57,7 +54,7 @@ class FreeCtrl {
 
     this.audioPlayer.src = this.audioData
 
-    this.wavesurfer.on('ready', function () {
+    this.wavesurfer.on('ready', function() {
       const timeline = Object.create(WaveSurfer.Timeline)
       timeline.init({
         wavesurfer: this.wavesurfer,
@@ -73,7 +70,7 @@ class FreeCtrl {
 
     }.bind(this))
 
-    this.wavesurfer.on('seek', function () {
+    this.wavesurfer.on('seek', function() {
 
       const current = this.regionsService.getRegionFromTime(this.wavesurfer.getCurrentTime(), this.resource.regions)
       if (current !== undefined && this.currentRegion && current.uuid !== this.currentRegion.uuid) {
@@ -110,11 +107,11 @@ class FreeCtrl {
 
     }.bind(this))
 
-    this.wavesurfer.on('audioprocess', function () {
+    this.wavesurfer.on('audioprocess', function() {
       const current = this.regionsService.getRegionFromTime(this.wavesurfer.getCurrentTime(), this.resource.regions)
       if (current !== undefined && this.currentRegion && current.uuid != this.currentRegion.uuid) {
         // update current region
-        this.$scope.$apply(function () {
+        this.$scope.$apply(function() {
           this.currentRegion = current
         }.bind(this))
       }
@@ -209,7 +206,7 @@ class FreeCtrl {
     } else {
       $('#btn-play').prop('disabled', true)
       region.play()
-      this.wavesurfer.on('pause', function () {
+      this.wavesurfer.on('pause', function() {
         if (options.loop) {
           region.play()
           this.playing = true
@@ -250,7 +247,7 @@ class FreeCtrl {
       this.audioPlayer.play()
       this.playing = true
         // at the end of the region stop every audio readers
-      this.wavesurfer.once('pause', function () {
+      this.wavesurfer.once('pause', function() {
         this.playing = false
         this.audioPlayer.pause()
         const progress = region.start / this.wavesurfer.getDuration()
@@ -289,7 +286,7 @@ class FreeCtrl {
     let voices = window.speechSynthesis.getVoices()
     if (voices.length === 0) {
       // chrome hack...
-      window.setTimeout(function () {
+      window.setTimeout(function() {
         voices = window.speechSynthesis.getVoices()
         this.continueToSay(utterance, voices, this.resource.options.lang, callback)
       }.bind(this), 200)
@@ -308,7 +305,7 @@ class FreeCtrl {
       }
     }
     window.speechSynthesis.speak(utterance)
-    utterance.onend = function () {
+    utterance.onend = function() {
       return callback()
     }
   }
@@ -321,7 +318,7 @@ class FreeCtrl {
     }
     if (index >= 0) {
       $('#btn-play').prop('disabled', true)
-      this.sayIt(toSay, function () {
+      this.sayIt(toSay, function() {
         index = index - 1
         this.handleUtterancePlayback(index, textArray)
       }.bind(this))

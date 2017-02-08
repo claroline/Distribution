@@ -11,7 +11,7 @@
 {% block title %}{{ pdf.getResourceNode().getName() ~ ' - ' ~ parent() | striptags | raw }}{% endblock %}
 
 {% block section_panel %}
-    <div data-ng-app="PdfViewer" data-ng-cloak="">
+    <div id="pdf-viewer-module" data-ng-cloak="">
         <pdf-viewer
                 data-id="{{ pdf.resourceNode.id }}"
                 data-name="'{{ pdf.resourceNode.name|ng_escape }}'"
@@ -23,6 +23,9 @@
 
 {% block javascripts %}
     {{ parent() }}
-
-    <script src="{{ hotAsset('dist/claroline-distribution-plugin-pdf-player-pdf-viewer.js') }}" ></script>
+    <script>
+        load({{ chunks('claroline-distribution-plugin-pdf-player-pdf-viewer')|raw }}, function() {
+            angular.bootstrap('#pdf-viewer-module', ['PdfViewer']);
+        })
+    </script>
 {% endblock %}

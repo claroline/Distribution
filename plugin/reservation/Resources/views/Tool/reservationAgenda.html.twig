@@ -2,21 +2,13 @@
 
 {% extends calendarExtends %}
 
-{% set calendarPath = 'packages/fullcalendar/dist/' %}
-
 {% block title %}
     {{ parent() ~ ' - ' ~ "formalibre_reservation_agenda" | trans({}, "tools") | striptags | raw }}
 {% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel='stylesheet' type='text/css' href='{{ asset(calendarPath ~ 'fullcalendar.min.css') }}'/>
-    <link rel='stylesheet' type='text/css' href='{{ asset(calendarPath ~ 'fullcalendar.print.css') }}' media='print' />
-    <link 
-        rel='stylesheet' 
-        type='text/css' 
-        href="{{ asset('packages/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css') }}"
-    />
+    <link rel="stylesheet" href="{{ asset('packages/fullcalendar/dist/fullcalendar.print.css') }}" media="print"/>
     <style>
         .resources-filter > a, .resources-filter > div {
             text-indent: 20px;
@@ -73,10 +65,5 @@
     %}<script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
     <script type="text/javascript" src="{{ url('bazinga_jstranslation_js', { 'domain': 'reservation' }) }}"></script>
-    <script type="text/javascript" src="{{ asset('packages/moment/min/moment-with-locales.min.js') }}"></script>
-    <script type='text/javascript' src='{{ asset(calendarPath ~ 'fullcalendar.min.js') }}' ></script>
-    <script type='text/javascript' src='{{ asset('bundles/formalibrereservation/js/calendar.js') }}'></script>
-    <script type="text/javascript" src="{{ asset('packages/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('packages/jquery-ui/ui/minified/draggable.min.js') }}"> </script>
-    <script type="text/javascript" src="{{ asset('packages/jquery-ui/ui/minified/resizable.min.js') }}"> </script>
+    <script> load({{ chunks('claroline-distribution-plugin-reservation-calendar')|raw }}) </script>
 {% endblock javascripts %}

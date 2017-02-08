@@ -1,0 +1,25 @@
+{
+  "webpack": {
+    "entry": {
+      "modal-submit": "_old/modalSubmit",
+      "edit-criteria": "_old/Dropzone/editCriteria",
+      "edit-appreciation-form": "_old/editAppreciationForm",
+      "edit-notation-form": "_old/editNotationForm",
+      "popup": "_old/popup",
+      "tooltip": "_old/tooltip",
+      "correction-admin-revalidate-correction-modal": "_js/Correction/Admin/revalidateCorrectionModal",
+      "correction-listing-correction-listing": "_js/Correction/Listing/correctionListing",
+      "correction-correct-add-more-comments": "_js/Correction/correctAddMoreComments",
+      "correction-correct-comment": "_js/Correction/correctComment",
+      "correction-correct-criteria": "_js/Correction/correctCriteria",
+      "correction-correction-instruction": "_js/Correction/correctionInstructions",
+      "document-document-form-resource": "_js/Document/documentForm_resource.js",
+      "document-document-form-text": "_js/Document/documentForm_text.js",
+      "document-document-inline": "_js/Document/documentInline.js",
+      "drop-drop": "_js/Drop/drop",
+      "drop-peer-review-helper": "_js/Drop/peerReviewHelper",
+      "dropzone-recall-instruction": "_js/Dropzone/recallInstruction",
+      "dropzone-recall-instruction-notation": "_js/Dropzone/recallInstructionNotation"
+    }
+  }
+}

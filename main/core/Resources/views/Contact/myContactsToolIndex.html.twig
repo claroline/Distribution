@@ -878,8 +878,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src='{{ asset('bundles/clarolinecore/js/contact/myContactsToolIndex.js') }}'
-            type="text/javascript"
-    >
-    </script>
+    <script> load({{ chunks('claroline-distribution-main-core-my-contacts')|raw }}) </script>
 {% endblock %}

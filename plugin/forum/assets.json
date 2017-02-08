@@ -1,0 +1,11 @@
+{
+  "webpack": {
+    "entry": {
+      "search-results": "_js/searchResults",
+      "index": "_js/index",
+      "messages": "_js/Forum/messages",
+      "subjects": "_js/Forum/subjects",
+      "quote-message-form": "_js/Forum/quoteMessageForm"
+    }
+  }
+}

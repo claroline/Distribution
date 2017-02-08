@@ -3,6 +3,9 @@
     "entry": {
       "registration": "Registration/module",
       "management": "Management/management",
+      "course-registration-widget": "_js/Widget/coursesRegistrationWidget",
+      "my-courses-widget": "_js/Widget/myCoursesWidget",
+      "my-courses-widget-configure-form": "_js/Widget/myCoursesWidgetConfigureForm",
       "user-management": "User/userManagement",
       "user-registration-management": "User/userRegistrationManagement",
       "group-management": "Group/groupManagement",

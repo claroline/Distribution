@@ -1,0 +1,16 @@
+{
+  "webpack": {
+    "entry": {
+      "tool-index": "_js/Presence/toolIndex",
+      "presence-supp": "_js/Presence/presenceSupp",
+      "presence-releve": "_js/Presence/presenceReleve",
+      "presence-modif": "_js/Presence/presenceModif",
+      "archives": "_js/Presence/archives",
+      "admin-horaire": "_js/AdminPresence/adminHoraire",
+      "admin-modifier-horaire": "_js/AdminPresence/adminModifierHoraire",
+      "admin-tool-index": "_js/AdminPresence/adminToolIndex",
+      "admin-school-year-modif": "_js/AdminPresence/SchoolYearModif",
+      "admin-school-status-modif": "_js/AdminPresence/StatusModif"
+    }
+  }
+}

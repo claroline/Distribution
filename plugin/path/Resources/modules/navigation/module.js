@@ -3,7 +3,7 @@
  * Manages the breadcrumb of the Path
  */
 
-import angular from 'angular/index'
+import angular from 'angular'
 
 import PathNavigationCtrl from './Controller/PathNavigationCtrl'
 import PathNavigationDirective from './Directive/PathNavigationDirective'

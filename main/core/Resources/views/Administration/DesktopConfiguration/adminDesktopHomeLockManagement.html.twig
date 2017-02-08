@@ -40,7 +40,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    
+
                     {% for role in roles %}
                         {% set roleId = role.getId() %}
                         <tr>
@@ -48,13 +48,13 @@
                                 {{ role.getTranslationKey()|trans({}, 'platform') }}
                             </td>
                             <td class="text-center">
-                                
+
                                 {% if options[roleId]['home_lock'] is defined %}
                                     {% set isHomeLocked = options[roleId]['home_lock'] %}
                                 {% else %}
                                     {% set isHomeLocked = false %}
                                 {% endif %}
-                                
+
                                 {% if isHomeLocked %}
                                     <i class="fa fa-lock unlock-home-btn pointer-hand"
                                        data-role-id="{{ roleId }}"
@@ -80,8 +80,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('bundles/clarolinecore/js/administration/adminDesktopHomeLockManagement.js') }}"
-            type="text/javascript"
-    >
-    </script>
+    <script> load({{ chunks('claroline-distribution-main-core-admin-desktop-configure-home-lock-management')|raw }}) </script>
 {% endblock %}

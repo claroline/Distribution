@@ -64,5 +64,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript" src="{{ asset('bundles/clarolinecore/js/administration/mail.js') }}"></script>
-{% endblock%}
+    <script> load({{ chunks('claroline-distribution-main-core-activity-main')|raw }}) </script>
+{% endblock %}

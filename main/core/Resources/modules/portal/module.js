@@ -1,4 +1,4 @@
-import angular from 'angular/index'
+import angular from 'angular'
 import {} from 'angular-route'
 import {} from 'angular-animate'
 import {} from 'angular-loading-bar'
@@ -23,7 +23,7 @@ let portalApp = new register(
     'ui.fos-js-router',
     'ui.html-truster',
     'ui.translation'
-  ]);
+  ])
 
 portalApp
   .config(router)
@@ -38,6 +38,8 @@ portalApp
   }])
 
 //Bootstrap angular in body
-angular.element(document).ready(function () {
-  angular.bootstrap(document.getElementsByTagName('body')[ 0 ], [ 'portalApp' ]);
+angular.element(document).ready(function() {
+  angular.bootstrap(document.getElementsByTagName('body')[ 0 ], [ 'portalApp' ])
 })
+
+angular.module('portalApp').constant('portal.types', window.types)

@@ -1,7 +1,7 @@
 let _restService = new WeakMap()
 
 export default class TreeService {
-  
+
   constructor(restService) {
     _restService.set(this, restService)
     this.data = {}

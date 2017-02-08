@@ -62,7 +62,6 @@ same message when authentication has failed (no precise validation errors).
                     <p>
                         <a href ="{{ path('claro_security_forgot_password')}}" tabindex="4" title="{{ 'forgot_password'|trans({}, 'platform') }}">{{ 'forgot_password'|trans({}, 'platform') }}</a>
                     </p>
-
                     <button type="submit" class="btn btn-success btn-block" tabindex="3">{{ 'login'|trans({}, 'platform') }}</button>
 
                     {% if selfRegistrationAllowed and showRegisterButton %}
@@ -78,17 +77,6 @@ same message when authentication has failed (no precise validation errors).
                 </div>
             {% endif %}
         </div>
-
     </div>
-
-    <script type="text/javascript">
-        $( document ).ready(function() {
-            $('.claro-oauth').click(function(event) {
-                event.preventDefault();
-                var form = $('#login-form');
-                form.attr('action', $(event.target).attr('href'));
-                form.submit();
-            });
-        });
-    </script>
+    <script> load({{ chunks('claroline-distribution-main-core-authentication-login')|raw }}) </script>
 {% endblock %}

@@ -27,14 +27,6 @@ action="{{ path('innova_collecticiel_document', {'resourceId': dropzone.id, 'doc
                 {{ form_rest(form.document) }}
             </div>
         </div>
-
-        <script type='text/javascript'>
-            $('document').ready(function () {
-                /*$('input[type=file]').bootstrapFileInput();
-                 $('.file-inputs').bootstrapFileInput();
-                 */
-            })
-        </script>
     {% endblock %}
     {{ form_errors(form) }}
     {{ form_end(form) }}

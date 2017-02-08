@@ -80,6 +80,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('bundles/clarolinecore/js/administration/pwsToolConfig.js') }}" type="text/javascript">
-    </script>
+    <script> load({{ chunks('claroline-distribution-main-core-admin-pws-tool-config')|raw }}) </script>
 {% endblock %}

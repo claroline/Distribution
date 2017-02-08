@@ -1,8 +1,8 @@
-import 'angular/angular.min'
+import angular from 'angular'
 
-import bootstrap from 'angular-bootstrap'
-import translation from 'angular-ui-translation/angular-translation'
-import bazinga from '../fos-js-router/module'
+import 'angular-bootstrap'
+import 'angular-ui-translation'
+import '../fos-js-router/module'
 
 import PluginController from './Controller/PluginController'
 import WarningController from './Controller/WarningController'
@@ -13,7 +13,7 @@ angular.module('PluginManager', [
   'ui.fos-js-router',
   'ui.bootstrap',
   'ui.bootstrap.tpls',
-  'ui.translation',
+  'ui.translation'
 ])
   .controller('PluginController', ['$http', '$uibModal', PluginController])
   .controller('WarningController', WarningController)

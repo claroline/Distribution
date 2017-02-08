@@ -1,0 +1,8 @@
+{
+  "webpack": {
+    "entry": {
+        "admin-tags-management": "_old/adminTagsManagement",
+        "tags-management": "_old/tagsManagement"
+    }
+  }
+}

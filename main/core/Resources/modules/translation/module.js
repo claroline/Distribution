@@ -4,7 +4,7 @@
  * Expose WillDurand JS translator as an angular service
  */
 
-import angular from 'angular/index'
+import angular from 'angular'
 
 angular
   .module('translation', [])

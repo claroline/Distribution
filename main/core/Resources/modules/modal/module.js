@@ -1,14 +1,13 @@
-import 'angular/angular.min'
-
-import bootstrap from 'angular-bootstrap'
+import angular from 'angular'
+import 'angular-bootstrap'
 
 import ConfirmModalDirective from './Directive/ConfirmModalDirective'
 
 angular
     .module('ui.modal', [
-        'ui.bootstrap'
+      'ui.bootstrap'
     ])
     .directive('confirmModal', [
-        '$uibModal',
-        () => new ConfirmModalDirective
+      '$uibModal',
+      () => new ConfirmModalDirective
     ])

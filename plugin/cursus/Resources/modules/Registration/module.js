@@ -7,14 +7,14 @@
  * file that was distributed with this source code.
  */
 
-import angular from 'angular/index'
+import angular from 'angular'
 
 import 'angular-ui-router'
-import 'angular-data-table/release/dataTable.helpers.min'
+import 'angular-data-table'
 import 'angular-bootstrap'
-import 'angular-ui-translation/angular-translation'
+import 'angular-ui-translation'
 
-import Routing from './routing.js' 
+import Routing from './routing.js'
 import CursusDescriptionModalCtrl from './Cursus/Controller/CursusDescriptionModalCtrl'
 import CursusGroupUnregistrationModalCtrl from './Cursus/Controller/CursusGroupUnregistrationModalCtrl'
 import CursusGroupsListRegistrationModalCtrl from './Cursus/Controller/CursusGroupsListRegistrationModalCtrl'

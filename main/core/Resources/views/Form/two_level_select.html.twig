@@ -6,47 +6,10 @@
             {{ block('hidden_widget') }}
         </div>
         <script type="text/javascript">
-            $(document).ready(function () {
-                var choices = {{form.vars['choices']|json_encode()|raw}};
-                var choicesTree = {};
-                var preselectedValuePath = buildChoicesTree(choices, choicesTree, [], "{{form.vars['data']}}");
-                if (preselectedValuePath == null) {
-                    preselectedValuePath = [choices[0]['label']];
-                }
-                var inputName = $("{{"#"~form.vars['id']}}").attr('name');
-                var choicesTreeOptions = {
-                    preselect:{},
-                    choose:''
-                };
-                choicesTreeOptions.preselect[inputName] = preselectedValuePath;
-                $("{{"#"~form.vars['id']}}").optionTree(choicesTree, choicesTreeOptions);
-            });
-            function buildChoicesTree(choices, choicesTree, pathToNode, preselectedValue)
-            {
-                var preselectedValuePath = null;
-                for (var key in choices) {
-                    var label = choices[key].label;
-                    label = label.substring(label.indexOf(":") + 1);
-                    if (!choices[key].choices) {
-                        choicesTree[label] = choices[key].value;
-                        if (preselectedValue == choices[key].data) {
-                            preselectedValuePath = pathToNode.slice();
-                            preselectedValuePath.push(label);
-                        }
-                    } else {
-                        choicesTree[label] = {};
-                        var newPathToNode = pathToNode.slice();
-                        newPathToNode.push(key);
-                        var tempPreselectedPath = buildChoicesTree(choices[key].choices, choicesTree[label], newPathToNode, preselectedValue);
-                        if (tempPreselectedPath != null) {
-                            preselectedValuePath = tempPreselectedPath;
-                        }
-                    }
-                }
-
-                return preselectedValuePath;
-            }
+            window.choices = {{ form.vars['choices']|json_encode()|raw }}
+            window.data = "{{ form.vars['data'] }}"
+            window.formId = "{{ form.vars['id'] }}"
         </script>
-        <script src="{{ asset('packages/jquery-option-tree/jquery.optionTree.js') }}"></script>
+        <script> load({{ chunks('claroline-distribution-main-core-form-two-level-select')|raw }}) </script>
     {% endspaceless %}
 {% endblock %}

@@ -10,7 +10,7 @@
 
 {% block section_content %}
     <div class="panel-heading">{{ _resource.getResourceNode().getName() }}</div>
-    <div data-results data-ng-app="ResultModule"></div>
+    <div data-results id="result-module"></div>
 {% endblock %}
 
 {% block javascripts %}
@@ -23,5 +23,9 @@
         window.workspaceUsers = {{ users|json_encode|raw }}
         window.isReadOnly = {{ canEdit ? 'false' : 'true' }}
     </script>
-    <script src="{{ hotAsset('dist/claroline-distribution-plugin-result-list.js') }}"></script>
+    <script>
+        load({{ chunks('claroline-distribution-plugin-result-list')|raw }}, function() {
+            angular.bootstrap('#result-module', ['ResultModule']);
+        })
+    </script>
 {% endblock %}

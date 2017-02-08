@@ -1,4 +1,4 @@
-import angular from 'angular/index'
+import angular from 'angular'
 import $ from 'jquery'
 import 'jquery-tagcanvas/jquery.tagcanvas.min.js'
 

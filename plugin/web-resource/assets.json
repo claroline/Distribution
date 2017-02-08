@@ -1,0 +1,8 @@
+{
+  "webpack": {
+    "entry": {
+      "javascript": "_js/Layout/javascripts",
+      "javascript-headers":  "_js/Layout/javascripts_header"
+    }
+  }
+}

@@ -2,7 +2,7 @@
  * Step module
  */
 
-import angular from 'angular/index'
+import angular from 'angular'
 import 'angular-ui-resource-picker/angular-resource-picker'
 import 'angular-ui-tinymce/src/tinymce'
 

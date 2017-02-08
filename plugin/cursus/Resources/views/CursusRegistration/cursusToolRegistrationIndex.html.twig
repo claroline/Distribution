@@ -21,17 +21,10 @@
 {% endblock %}
 
 {% block section_content %}
-    <div id="cursus-registration-panel" ng-app="CursusRegistrationModule">
+    <div id="cursus-registration-panel">
         <div class="panel panel-default" ui-view>
         </div>
     </div>
-{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet"  href="{{ asset('bundles/frontend/angular-ui-tree/dist/angular-ui-tree.min.css') }}" />
-    <link rel="stylesheet"  href="{{ asset('bundles/frontend/angular-data-table/release/dataTable.css') }}" />
-    <link rel="stylesheet"  href="{{ asset('bundles/frontend/angular-data-table/release/material.css') }}" />
 {% endblock %}
 
 {% block javascripts %}
@@ -41,5 +34,9 @@
     'js/translations/tools/*.js'
     %}<script src="{{ asset_url }}"></script>
 {% endjavascripts %}
-    <script type="text/javascript" src="{{ hotAsset('dist/claroline-distribution-plugin-cursus-registration.js') }}"></script>
+    <script>
+        load({{ chunks('claroline-distribution-plugin-cursus-registration')|raw }}, function() {
+            angular.bootstrap('#cursus-registration-panel', ['CursusRegistrationModule']);
+        })
+    </script>
 {% endblock %}

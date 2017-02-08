@@ -70,9 +70,7 @@
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
     <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'competency' }) }}"></script>
-    <script type="text/javascript" src="{{ asset('bundles/hevincicompetency/js/flasher.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('bundles/hevincicompetency/js/objectiveUtils.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('bundles/hevincicompetency/js/objectiveUsers.js') }}"></script>
+    <script> load({{ chunks('claroline-distribution-plugin-competency-objective-users')|raw }}) </script>
     <script type="text/javascript">
         HeVinci.initUserObjectiveUtils('myObjectives');
     </script>

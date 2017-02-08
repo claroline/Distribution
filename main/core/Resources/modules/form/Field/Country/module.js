@@ -1,6 +1,6 @@
-import 'angular/angular.min'
+import angular from 'angular'
 
-import translation from 'angular-ui-translation/angular-translation'
+import 'angular-ui-translation'
 import CountryDirective from './CountryDirective'
 
 angular.module('FieldCountry', ['ui.translation']).directive('formCountry', () => new CountryDirective)

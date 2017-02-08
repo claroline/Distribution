@@ -95,43 +95,11 @@
 
 {% block javascripts %}
     {{ parent() }}
-    {{ tinymce_init() }}
-    <script>
-        tinymce.claroline.configuration.toolbar1 = 'bold italic strikethrough | alignleft aligncenter alignright alignjustify | ';
-        $(document).on('ready', function () {
-            $('#icap_dropzone_correct_comment_form_goBack').val(0);
-            $('.back-button').on('click', function (event) {
-                event.preventDefault();
-                $('#icap_dropzone_correct_comment_form_goBack').val(1);
-                $('#correct-form button[type="submit"]').trigger('click');
-            });
-
-            {% if dropzone.forceCommentInCorrection  == true and not admin %}
-            $('#correct-form').submit(function (e) {
-                if ($('#icap_dropzone_correct_comment_form_comment').val() == '') {
-                    e.preventDefault();
-                    setRequireStyle();
-                    tinymce.get('icap_dropzone_correct_comment_form_comment').on('keyup', function (e) {
-                        if (tinymce.get('icap_dropzone_correct_comment_form_comment').getContent() != '') {
-                            removeRequiredStyle();
-                        }
-                    });
-                }
-            });
-            {% endif %}
-        });
-
-        function removeRequiredStyle() {
-            $('#comment_part_div').removeClass('required');
-            $('.required_text').hide();
-        }
-
-        function setRequireStyle() {
-            $('#comment_part_div').addClass('required');
-            $('.required_text').show();
-        }
+    <script type="text/javascript">
+        window.dropzone = {};
+        window.dropzone.showCommentInCorrection = {{ (dropzone.forceCommentInCorrection  == true and not admin) ? 'true' : 'false' }};
     </script>
-
+    <script> load({{ chunks('claroline-distribution-plugin-dropzone-correction-comment')|raw }}) </script>
 {% endblock %}
 
 {% block stylesheets %}

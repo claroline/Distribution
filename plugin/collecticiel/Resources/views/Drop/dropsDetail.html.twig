@@ -135,6 +135,6 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('bundles/innovacollecticiel/js/popup.js') }}"></script>
-    <script src="{{ asset('bundles/innovacollecticiel/js/tooltip.js') }}"></script>
+    <script> load({{ chunks('claroline-distribution-plugin-collecticiel-popup')|raw }}) </script>
+    <script> load({{ chunks('claroline-distribution-plugin-collecticiel-tooltip')|raw }}) </script>
 {% endblock %}

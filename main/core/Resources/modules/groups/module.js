@@ -1,4 +1,4 @@
-import 'angular/angular.min'
+import angular from 'angular'
 
 import GroupController from './Controller/GroupController'
 import EditGroupModalController from './Controller/EditGroupModalController'
@@ -7,7 +7,7 @@ import ImportMembersModalController from './Controller/ImportMembersModalControl
 import UserListController from './Controller/UserListController'
 import GroupAPIService from './Service/GroupAPIService'
 import Routing from './routing.js'
-import ClarolineAPIService from '../services/module'
+import '../services/module'
 
 angular.module('GroupsManager', ['ClarolineSearch', 'data-table', 'ui.router', 'ncy-angular-breadcrumb'])
     .controller('GroupController', ['$http', 'ClarolineSearchService', 'ClarolineAPIService', '$uibModal', GroupController])
@@ -16,4 +16,4 @@ angular.module('GroupsManager', ['ClarolineSearch', 'data-table', 'ui.router', '
     .controller('ImportMembersModalController', ImportMembersModalController)
     .controller('UserListController', ['$http', 'ClarolineSearchService', '$stateParams', 'GroupAPIService', 'ClarolineAPIService', '$uibModal', UserListController])
     .service('GroupAPIService', GroupAPIService)
-    .config(Routing);
+    .config(Routing)

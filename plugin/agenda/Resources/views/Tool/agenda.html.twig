@@ -6,8 +6,6 @@
 
 {% extends calendarExtends %}
 
-{% set calendarPath = 'bundles/frontend/fullcalendar/dist/' %}
-
 {% block title %}
     {% if workspace is defined %}
         {{ parent() ~ ' - ' ~ "agenda" | trans({}, "tools") | striptags | raw }}
@@ -18,9 +16,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel='stylesheet' type='text/css' href='{{ asset(calendarPath ~ 'fullcalendar.min.css') }}'/>
-    <link rel='stylesheet' type='text/css' href='{{ asset(calendarPath ~ 'fullcalendar.print.css') }}' media='print' />
-    <link rel='stylesheet' type='text/css' href='{{ asset('bundles/frontend/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css') }}'>
+    <link rel="stylesheet" href="{{ asset('packages/fullcalendar/dist/fullcalendar.print.css') }}" media="print"/>
     <style>
         .fc-day-grid-event > .fc-content {
             white-space: nowrap;
@@ -182,21 +178,13 @@
      'js/translations/agenda/*.js'
        %}<script src="{{ asset_url }}"></script>
     {% endjavascripts %}
-    <script type="text/javascript" src="{{ asset('bundles/frontend/moment/min/moment-with-locales.min.js') }}"></script>
-    <script type='text/javascript' src='{{ asset(calendarPath ~ 'fullcalendar.min.js') }}' ></script>
-    <script type='text/javascript' src='{{ asset('bundles/clarolineagenda/js/calendar.js') }}'></script>
-    <script type='text/javascript'>
+    <script>
+        window.editableWorkspaces = '{{ editableWorkspaces|json_encode|raw }}'
         {% if workspace is not defined %}
-            $(function () {
-                Claroline.Calendar.initialize('desktop', "undefined", '{{ editableWorkspaces|json_encode|raw }}');
-            });
+            window.workspaceId = "undefined"
         {% else %}
-            $(function () {
-                Claroline.Calendar.initialize('workspace', {{ workspace.getId() }}, '{{ editableWorkspaces|json_encode|raw }}');
-            });
+            window.workspaceId = {{ workspace.getId() }}
         {% endif %}
     </script>
-    <script type="text/javascript" src="{{ asset('bundles/frontend/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('bundles/frontend/jquery-ui/ui/minified/draggable.min.js') }}"> </script>
-    <script type="text/javascript" src="{{ asset('bundles/frontend/jquery-ui/ui/minified/resizable.min.js') }}"> </script>
+    <script> load({{ chunks('claroline-distribution-plugin-agenda-tool-agenda')|raw }}) </script>
 {% endblock javascripts %}

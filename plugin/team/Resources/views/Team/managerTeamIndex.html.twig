@@ -281,12 +281,6 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript"
-            src="{{ url('bazinga_jstranslation_js', { 'domain': 'team' }) }}"
-    >
-    </script>
-    <script src='{{ asset('bundles/clarolineteam/js/managerTeamIndex.js') }}'
-            type="text/javascript"
-    >
-    </script>
+    <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'team' }) }}"></script>
+    <script> load({{ chunks('claroline-distribution-plugin-team-manager-team-index')|raw }}) </script>
 {% endblock %}

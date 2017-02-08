@@ -14,7 +14,7 @@
         </div>
         <div class='modal-body' id="user-picker-body">
             <div class="panel-group" role="tablist" aria-multiselectable="true">
-                
+
                 {% if showFilters == 1 %}
                     <div class="panel panel-default">
                         <div class="panel-heading">
@@ -50,7 +50,7 @@
                                             <option value="group">
                                                 {{ 'group'|trans({}, 'platform') }}
                                             </option>
-                                            
+
                                             {% if isAdmin %}
                                                 <option value="role">
                                                     {{ 'role'|trans({}, 'platform') }}
@@ -115,7 +115,7 @@
                 </div>
             </div>
             <br>
-                
+
             <div id="user-picker-users-list">
                 {{ render(
                     controller(
@@ -140,11 +140,11 @@
                             'forcedWorkspaceIds': forcedWorkspacesIds,
                             'shownWorkspaceIds': shownWorkspacesIds
                         }
-                    )) 
+                    ))
                 }}
             </div>
         </div>
-            
+
         <div class="modal-footer">
             <button type="button"
                     id="user-picker-close-modal-btn"
@@ -161,5 +161,5 @@
 </div>
 
 <div id="user-picker-main-datas-box"
-     data-selected-users-names="{% for u in selectedUsers %}{{ u.getFirstName() }} {{ u.getLastName() }}{% if showUsername == 1 %} ({{ u.getUsername() }}){% endif %}{% if not loop.last %};;;{% endif %}{% endfor %}"
+     data-selected-users-names="{% for u in selectedUsers %}{{ u.getFirstName() }} {{ u.getLastName() }}{% if showUsername == 1 %} ({{ u.getUsername() }}){% endif %}{% if not loop.last %};;;{% endif %}{% endfor %}">
 </div>

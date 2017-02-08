@@ -2,7 +2,7 @@
  * History Factory
  */
 
-import angular from 'angular/index'
+import angular from 'angular'
 
 export default class HistoryService {
   constructor() {

@@ -66,8 +66,7 @@
     {{ parent() }}
     {# translations #}
     <script type='text/javascript' src="{{ url('bazinga_jstranslation_js', {'domain':'path_wizards'}) }}"></script>
-
-    <script type='text/javascript' src="{{ asset('bundles/innovapath/js/manageLock.js') }}"></script>
+    <script> load({{ chunks('claroline-distribution-plugin-path-manage-lock')|raw }}) </script>
 {% endblock %}
 
 {% block stylesheets %}

@@ -116,19 +116,13 @@
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript" src="{{ url('bazinga_jstranslation_js', { 'domain_name': 'ldap' }) }}"></script>
-    <script type="text/javascript" src="{{ asset('bundles/clarolineldap/js/ldap.js') }}"></script>
+    <script> load({{ chunks('claroline-distribution-plugin-ldap-ldap')|raw }}) </script>
     {% if groups is defined and not groups is empty %}
         <script>
-            (function () {
-                'use strict';
-
-                var ldap = window.Claroline.LDAP;
-
-                ldap.setAttribute('entries', {{ groupsJSON | raw }});
-                {% if server.groupName is defined and not server.groupName is empty %}ldap.setAttribute('groupName', '{{ server.groupName }}');{% endif %}
-                {% if server.groupCode is defined and not server.groupCode is empty %}ldap.setAttribute('groupCode', '{{ server.groupCode }}');{% endif %}
-                ldap.showPreview();
-            }());
+            window.entries = {{ groupsJSON | raw }});
+            {% if server.groupName is defined and not server.groupName is empty %}window.groupName = '{{ server.groupName }}'){% endif %}
+            {% if server.groupCode is defined and not server.groupCode is empty %}window.groupCode = '{{ server.groupCode }}'){% endif %}
         </script>
+        <script> load({{ chunks('claroline-distribution-plugin-ldap-groups')|raw }}) </script>
     {% endif %}
 {% endblock %}

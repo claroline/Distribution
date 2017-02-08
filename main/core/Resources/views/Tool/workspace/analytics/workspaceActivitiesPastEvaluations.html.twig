@@ -95,9 +95,7 @@
     </table>
 </div>
 {% endif %}
-    
+
 {% block javascripts %}
-    <script>
-        $('.display-comment').popover();
-    </script>
+    <script> load({{ chunks('claroline-distribution-main-core-tool-workspace-analytics-workspace-activities-past-evaluations')|raw }}) </script>
 {% endblock %}

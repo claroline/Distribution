@@ -5,7 +5,7 @@
 {% set interventions = ticket.getInterventions() %}
 
 {% block title %}
-    {{ 
+    {{
         parent() ~
         ' - ' ~
         ticket.getTitle()
@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block breadcrumb %}
-    
+
     {% if ticket.getLevel() == -1 %}
         {{
             macros.breadcrumbs([
@@ -76,10 +76,10 @@
         </h3>
     </div>
     <div class="panel-body">
-        
+
         {% render(controller('FormaLibreSupportBundle:AdminSupport:adminTicketManagementInfo', {'ticket': ticket.getId()})) %}
         <br>
-        
+
         <ul class="nav nav-tabs">
             <li role="presentation">
                 <a href="{{ path('formalibre_admin_ticket_open', {'ticket': ticket.getId()}) }}">
@@ -100,14 +100,14 @@
             </li>
         </ul>
         <br>
-        <br>    
+        <br>
         <div id="interventions-box">
             <b>{{ 'total_time'|trans({}, 'support') }} :</b>
             {{ totalTime }}
             {{ 'minute_short'|trans({}, 'support') }}
             <br>
             <br>
-            
+
             {% if interventions|length > 0 %}
                 <div class="table-responsive">
                     <table class="table">
@@ -126,7 +126,7 @@
                             </th>
                             <th></th>
                         </tr>
-                        
+
                         {% for intervention in interventions %}
                             {% set interventionId = intervention.getId() %}
                             {% set endDate = intervention.getEndDate() %}
@@ -135,18 +135,18 @@
                             {% set status = intervention.getStatus() %}
                             {% set externalComment = intervention.getExternalComment() %}
                             {% set internalComment = intervention.getInternalComment() %}
-                            
+
                             <tr id="row-intervention-{{ interventionId }}">
                                 <td class="text-center">
                                     {{ intervention.getStartDate()|intl_date_format }}
                                     <i class="fa fa-long-arrow-right"></i>
-                                    
+
                                     {% if endDate is empty %}
                                         ...
                                     {% else %}
                                         {{ endDate|intl_date_format }}
                                     {% endif %}
-                                    
+
                                     {% if duration is not empty %}
                                         <br>
                                         <i class="fa fa-clock-o"></i>
@@ -161,7 +161,7 @@
                                     {% if status is not empty %}
                                         <span class="label label-success"
                                               data-toggle="tooltip"
-                                              data-container="body" 
+                                              data-container="body"
                                               data-placement="left"
                                               title="{{ status.getName()|trans({}, 'support') }}"
                                         >
@@ -174,12 +174,12 @@
                                         <b>{{ 'client_message'|trans({}, 'support') }}</b>
                                         <br>
                                         {{ externalComment|raw }}
-                                        
+
                                         {% if externalComment is not empty %}
                                             <hr>
                                         {% endif %}
                                     {% endif %}
-                                    
+
                                     {% if internalComment is not empty %}
                                         <b>{{ 'internal_message'|trans({}, 'support') }}</b>
                                         <br>
@@ -218,12 +218,6 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript"
-            src="{{ url('bazinga_jstranslation_js', { 'domain': 'support' }) }}"
-    >
-    </script>
-    <script src='{{ asset('bundles/formalibresupport/js/adminTicketOpenInterventions.js') }}'
-            type="text/javascript"
-    >
-    </script>
+    <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'support' }) }}"></script>
+    <script> load({{ chunks('claroline-distribution-plugin-support-admin-ticket-open-interventions')|raw }}) </script>
 {% endblock %}

@@ -1,7 +1,13 @@
 {
   "webpack": {
     "entry": {
-      "results": "Results/results"
+      "results": "Results/results",
+      "scorm12": "_old/scorm12",
+      "scorm2004": "_old/scorm2004",
+      "scorm-12-api": "_old/scorm_12_api",
+      "scorm-2004-api": "_old/scorm_2004_api",
+      "scorm-12-menu-sco": "_js/scorm12MenuSco",
+      "scorm-2004-menu-sco": "_js/scorm2004MenuSco"
     }
   }
 }

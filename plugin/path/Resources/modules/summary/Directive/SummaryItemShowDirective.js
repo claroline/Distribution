@@ -1,4 +1,4 @@
-import angular from 'angular/index'
+import angular from 'angular'
 
 import template from './../Partial/show-item.html'
 

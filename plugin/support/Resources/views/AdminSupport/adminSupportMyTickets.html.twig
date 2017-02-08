@@ -25,7 +25,7 @@
         {% set newOrder = 'ASC' %}
     {% endif %}
 
-    {{ 
+    {{
         path(
             'formalibre_admin_support_my_tickets',
             {
@@ -45,9 +45,9 @@
 {% extends 'FormaLibreSupportBundle:AdminSupport:adminSupportMenu.html.twig' %}
 
 {% block adminSupport %}
-    
+
     {% if tickets|length > 0 %}
-    
+
         {% if tickets.getNbPages() > 1 %}
             {{ renderPager(tickets, type.getId(), search, orderedBy, order, max) }}
         {% endif %}
@@ -126,7 +126,7 @@
                                       {% set lastComment = comments|last %}
                                       {% set lastCommenter = lastComment.getUser() %}
                                       data-toggle="tooltip"
-                                      data-container="body" 
+                                      data-container="body"
                                       data-placement="left"
                                       data-html="true"
                                       title="{{ lastCommenter.getFirstName() }} {{ lastCommenter.getLastName() }} :<br>{{ lastComment.getContent()|raw }}"
@@ -144,7 +144,7 @@
                                     <br>
                                     <span class="label label-success"
                                           data-toggle="tooltip"
-                                          data-container="body" 
+                                          data-container="body"
                                           data-placement="left"
                                           title="{{ ticketStatus.getName()|trans({}, 'support') }}"
                                     >
@@ -155,7 +155,7 @@
                                 <span class="view-interventions-btn pointer-hand"
                                       data-ticket-id="{{ ticketId }}"
                                       data-toggle="tooltip"
-                                      data-container="body" 
+                                      data-container="body"
                                       data-placement="left"
                                       data-html="true"
                                       {% if lastIntervention.getEndDate() is empty %}
@@ -186,7 +186,7 @@
         {% if tickets.getNbPages() > 1 %}
             {{ renderPager(tickets, type.getId(), search, orderedBy, order, max) }}
         {% endif %}
-    
+
     {% else %}
         <div class="alert alert-info">
             {{ 'no_ticket'|trans({}, 'support') }}
@@ -196,12 +196,6 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript"
-            src="{{ url('bazinga_jstranslation_js', { 'domain': 'support' }) }}"
-    >
-    </script>
-    <script src='{{ asset('bundles/formalibresupport/js/adminSupportMyTickets.js') }}'
-            type="text/javascript"
-    >
-    </script>
+    <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'support' }) }}"></script>
+    <script> load({{ chunks('claroline-distribution-plugin-support-admin-support-my-tickets')|raw }}) </script>
 {% endblock %}

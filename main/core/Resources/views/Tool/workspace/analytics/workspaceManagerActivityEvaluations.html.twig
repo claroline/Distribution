@@ -30,7 +30,7 @@
         </a>
         <br>
         <br>
-        
+
         <div class="well">
             <h3>{{ activity.getTitle() }}</h3>
             <br>
@@ -39,7 +39,7 @@
             </p>
             {{ activity.getDescription()|raw }}
         </div>
-        
+
         {% if users|length > 0 %}
             <br>
             <div class="col-md-12">
@@ -62,7 +62,7 @@
             <br>
             <br>
         {% endif %}
-        
+
         <div class="table-responsive">
             <table class="table">
                 <tr>
@@ -99,7 +99,7 @@
                     </th>
                     <th class="text-center">{{ 'comment'|trans({}, 'platform') }}</th>
                 </tr>
-                
+
                 {% if users|length > 0 %}
                     {% for user in users %}
                         {% if evaluations[user.getId()] is defined %}
@@ -114,7 +114,7 @@
                                 {% endif %}
                             </td>
                             <td>{{ user.getFirstName() ~ ' ' ~ user.getLastName() }}</td>
-                        
+
                             {% if evaluation is defined %}
                                 <td class="text-center">
                                     {% if evaluation.getStatus() is not empty %}
@@ -211,7 +211,7 @@
                     </tr>
                 {% endif %}
             </table>
-            
+
             {% if users.getNbPages() > 1 %}
                 {{ renderPager(users, page, activity) }}
             {% endif %}
@@ -275,10 +275,9 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('bundles/clarolinecore/js/tool/workspace/analytics/workspaceManagerActivityEvaluations.js') }}">
-    </script>
+    <script> load({{ chunks('claroline-distribution-main-core-tool-workspace-analytics-manager-activities-evaluation')|raw }}) </script>
 {% endblock %}
-    
+
 {% block stylesheets %}
     {{ parent() }}
     <style type="text/css">

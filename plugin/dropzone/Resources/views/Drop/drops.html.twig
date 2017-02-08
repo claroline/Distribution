@@ -82,5 +82,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('bundles/icapdropzone/js/popup.js') }}"></script>
+    <script> load({{ chunks('claroline-distribution-plugin-dropzone-common')|raw }}) </script>
 {% endblock %}

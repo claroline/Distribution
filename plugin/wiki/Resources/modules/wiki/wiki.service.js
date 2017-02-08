@@ -1,4 +1,4 @@
-import angular from 'angular/index'
+import angular from 'angular'
 
 let _wiki = new WeakMap()
 let _$resource = new WeakMap()
@@ -115,7 +115,7 @@ export default class WikiService {
       'referenceSectionId': updatedSection.referenceSectionId,
       'isBrother': updatedSection.isBrother
     })
-    
+
     let Contribution = _$resource.get(this)(url)
     let contribution = new Contribution(newContrib)
     contribution.contributor = this.activeUserId
@@ -180,7 +180,7 @@ export default class WikiService {
       'section': sect.id,
       'visible': !sect.visible
     })
-    
+
     let Section = _$resource.get(this)(url, null,
       {
         'update': { method: 'PUT'}

@@ -5,7 +5,7 @@
 {% set interventions = ticket.getInterventions() %}
 
 {% block title %}
-    {{ 
+    {{
         parent() ~
         ' - ' ~
         ticket.getTitle()
@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block breadcrumb %}
-    
+
     {% if ticket.getLevel() == -1 %}
         {{
             macros.breadcrumbs([
@@ -76,10 +76,10 @@
         </h3>
     </div>
     <div class="panel-body">
-        
+
         {% render(controller('FormaLibreSupportBundle:AdminSupport:adminTicketManagementInfo', {'ticket': ticket.getId()})) %}
         <br>
-        
+
         <ul class="nav nav-tabs">
             <li role="presentation">
                 <a href="{{ path('formalibre_admin_ticket_open', {'ticket': ticket.getId()}) }}">
@@ -197,20 +197,14 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript"
-            src="{{ url('bazinga_jstranslation_js', { 'domain': 'support' }) }}"
-    >
-    </script>
-    <script src='{{ asset('bundles/formalibresupport/js/adminTicketOpenComments.js') }}'
-            type="text/javascript"
-    >
-    </script>
+    <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'support' }) }}"></script>
+    <script> load({{ chunks('claroline-distribution-plugin-support-admin-ticket-open-comments')|raw }}) </script>
 {% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel='stylesheet' 
-          type='text/css' 
+    <link rel='stylesheet'
+          type='text/css'
           href='{{ asset('bundles/formalibresupport/css/comments.css')}}'
     >
 {% endblock %}

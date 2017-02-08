@@ -4,7 +4,7 @@
 /**
  * Created by ptsavdar on 15/03/16.
  */
-import angular from 'angular/index'
+import angular from 'angular'
 
 import {} from 'angular-animate'
 import MainController from './main.controller'

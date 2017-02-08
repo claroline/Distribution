@@ -1,5 +1,5 @@
 import confirmDeletionTemplate from './confirmDeletion.partial.html'
-import angular from 'angular/index'
+import angular from 'angular'
 
 let _$rootScope = new WeakMap()
 let _$scope = new WeakMap()
@@ -12,7 +12,7 @@ let _restService = new WeakMap()
 
 export default class ChapterController {
 
-  constructor ($rootScope,
+  constructor($rootScope,
     $scope,
     lessonData,
     modal,
@@ -54,7 +54,7 @@ export default class ChapterController {
     this.init()
   }
 
-  init () {
+  init() {
     // Intialize the chapter only if there is one in the lesson
     if (this.lessonData.defaultChapter) {
       // If a LESSON is displayed, there's no chapter slug in the route (route: '/')
@@ -87,40 +87,40 @@ export default class ChapterController {
   }
 
 
-  newChapter (slug) {
+  newChapter(slug) {
     _$location.get(this).url('/' + slug + '/new')
   }
 
-  updateChapter (slug) {
+  updateChapter(slug) {
     _$location.get(this).url('/' + slug + '/edit')
   }
 
-  moveChapter (slug) {
+  moveChapter(slug) {
     _$location.get(this).url('/' + slug + '/move')
   }
 
-  duplicateChapter (slug) {
+  duplicateChapter(slug) {
     _$location.get(this).url('/' + slug + '/duplicate')
   }
 
-  getPreviousChapterUrl () {
+  getPreviousChapterUrl() {
     return this.chapter.current.previous
       ? '#/' + this.chapter.current.previous
       : null
   }
 
-  getNextChapterUrl () {
+  getNextChapterUrl() {
     return this.chapter.current.next
       ? '#/' + this.chapter.current.next
       : null
   }
 
-  createFirstChapter () {
+  createFirstChapter() {
     this.lessonData.createNew = true
     _$location.get(this).url('/new')
   }
 
-  createChapter (form) {
+  createChapter(form) {
     if (form.$valid) {
       // Disable submit button while XHR
       this.buttonSubmit.disabled = true
@@ -154,7 +154,7 @@ export default class ChapterController {
     }
   }
 
-  editChapter (form) {
+  editChapter(form) {
     if (form.$valid) {
       // Disable submit button
       this.buttonSubmit.disabled = true
@@ -182,7 +182,7 @@ export default class ChapterController {
     }
   }
 
-  copyChapter (form) {
+  copyChapter(form) {
     if (form.$valid) {
       // Disable submit button
       this.buttonSubmit.disabled = true
@@ -214,12 +214,12 @@ export default class ChapterController {
     }
   }
 
-  confirmDeleteChapter () {
+  confirmDeleteChapter() {
     // this._deletedChapter = this.chapter.current
     this._modal(confirmDeletionTemplate)
   }
 
-  deleteChapter (form) {
+  deleteChapter(form) {
     // Disable submit button
     this.buttonSubmit.disabled = true
 
@@ -247,7 +247,7 @@ export default class ChapterController {
     )
   }
 
-  goToAnchor (anchor) {
+  goToAnchor(anchor) {
     let $location = _$location.get(this)
     let $anchorScroll = _$anchorScroll.get(this)
     if ($location.hash() !== anchor) {
@@ -257,7 +257,7 @@ export default class ChapterController {
     }
   }
 
-  _moveChapter (form) {
+  _moveChapter(form) {
     // Disable submit button
     this.buttonSubmit.disabled = true
 
@@ -292,7 +292,7 @@ export default class ChapterController {
     )
   }
 
-  _getChapterList (lesson) {
+  _getChapterList(lesson) {
     return _restService.get(this).getChapterList(lesson).then(
       response => {
         // Find the root chapter and adjust its title
@@ -308,7 +308,7 @@ export default class ChapterController {
     )
   }
 
-  _getDefaultChapter (lesson) {
+  _getDefaultChapter(lesson) {
     return _restService.get(this).getDefaultChapter(lesson).then(
       response => {
         if ('defaultChapter' in response) {
@@ -322,7 +322,7 @@ export default class ChapterController {
     )
   }
 
-  cancelForm (slug) {
+  cancelForm(slug) {
     let url = !angular.isDefined(slug)
       ? '/'
       : '/' + slug
@@ -331,7 +331,7 @@ export default class ChapterController {
     _$location.get(this).url(url)
   }
 
-  cancelModal (form) {
+  cancelModal(form) {
     if (form) {
       this._resetForm(form)
     }
@@ -339,7 +339,7 @@ export default class ChapterController {
     _modalInstance.get(this).dismiss()
   }
 
-  _modal (template) {
+  _modal(template) {
     _modalInstance.set(this, _modalFactory.get(this).open(template, _$scope.get(this)))
   }
 }

@@ -2,7 +2,7 @@
  * Path edit controller
  */
 
-import angular from 'angular/index'
+import angular from 'angular'
 
 import PathBaseCtrl from './PathBaseCtrl'
 

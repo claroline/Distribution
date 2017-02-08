@@ -16,7 +16,7 @@
             <i class="fa fa-caret-down"></i>
         </span>
         <ul id="sessions-{{ type }}-{{ course.getId() }}" class="collapse in">
-            
+
             {% for groupSession in groupSessions %}
                 {% set session = groupSession.getSession() %}
                 <li id="session-row-{{ groupSession.getId() }}">
@@ -64,9 +64,9 @@
         >
             <i class="fa fa-sign-in"></i>
             {{ 'registration'|trans({}, 'platform') }}
-        </a>    
+        </a>
         <hr>
-        
+
         {% if learnerSessions|length > 0 %}
 
             {% for learnerSession in learnerSessions %}
@@ -88,5 +88,5 @@
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript" src="{{ url('bazinga_jstranslation_js', { 'domain': 'cursus' }) }}"></script>
-    <script src="{{ hotAsset('dist/claroline-distribution-plugin-cursus-group-management.js') }}"></script>
+    <script> load({{ chunks('claroline-distribution-plugin-cursus-group-management')|raw }}) </script>
 {% endblock %}

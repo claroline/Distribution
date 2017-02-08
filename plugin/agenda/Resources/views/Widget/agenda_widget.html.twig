@@ -5,11 +5,5 @@
 {% endfor %}
 
 {% block javascripts %}
-    <script>
-        $(document).ready(function (){
-            $('.info-of-event').popover({
-                html: true
-            });
-        });
-    </script>
+    <script> load({{ chunks('claroline-distribution-plugin-agenda-agenda-widget')|raw }}) </script>
 {% endblock javascripts %}

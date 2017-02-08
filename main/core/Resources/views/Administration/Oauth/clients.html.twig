@@ -116,6 +116,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-
-    <script type="text/javascript" src="{{ asset('bundles/clarolinecore/js/administration/clients.js') }}"></script>
+    <script> load({{ chunks('claroline-distribution-main-core-admin-desktop-configure-home-lock-management')|raw }}) </script>
 {% endblock %}

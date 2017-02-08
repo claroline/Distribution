@@ -24,6 +24,8 @@ class WebpackExtension extends \Twig_Extension
     private $environment;
     private $rootDir;
     private $assetCache;
+    private $container;
+    private $externalCache;
 
     /**
      * @DI\InjectParams({
@@ -36,8 +38,11 @@ class WebpackExtension extends \Twig_Extension
      * @param string         $environment
      * @param string         $rootDir
      */
-    public function __construct(AssetExtension $extension, $environment, $rootDir)
-    {
+    public function __construct(
+        AssetExtension $extension,
+        $environment,
+        $rootDir
+    ) {
         $this->assetExtension = $extension;
         $this->environment = $environment;
         $this->rootDir = $rootDir;
@@ -47,6 +52,7 @@ class WebpackExtension extends \Twig_Extension
     {
         return [
             'hotAsset' => new \Twig_Function_Method($this, 'hotAsset'),
+            'chunks' => new \Twig_Function_Method($this, 'chunks'),
         ];
     }
 
@@ -66,7 +72,7 @@ class WebpackExtension extends \Twig_Extension
      *
      * @throws \Exception
      */
-    public function hotAsset($path, $assetUrl = false)
+    public function hotAsset($path)
     {
         $assets = $this->getWebpackAssets();
         $assetName = pathinfo($path, PATHINFO_FILENAME);
@@ -79,13 +85,59 @@ class WebpackExtension extends \Twig_Extension
             );
         }
 
+        return $this->getAssetUrl($assetName);
+    }
+
+    private function getAssetUrl($assetName)
+    {
+        $assets = $this->getWebpackAssets();
+
         $asset = 'dist/'.$assets[$assetName]['js'];
 
-        if ($this->environment === 'dev' && !$assetUrl) {
+        if ($this->environment === 'dev') {
             return "http://localhost:8080/{$asset}";
         }
 
         return $this->assetExtension->getAssetUrl($asset);
+    }
+
+    public function chunks($path)
+    {
+        $vendors = $this->getVendors($path);
+        $vendors = array_map(function ($el) {
+            return $this->getAssetUrl($el);
+        }, $vendors);
+
+        $vendors[] = $this->getAssetUrl($path);
+
+        return json_encode(array_values($vendors));
+    }
+
+    public function getVendors($name)
+    {
+        $toImport = [];
+        $externals = $this->getExternals();
+
+        if (in_array($name, array_keys($externals))) {
+            $libs = $externals[$name];
+
+            foreach ($libs as $lib) {
+                $toImport[] = $lib;
+                $toImport = array_unique(array_merge($this->getVendors($lib), $toImport));
+            }
+        }
+
+        return $toImport;
+    }
+
+    public function getExternals()
+    {
+        if (!$this->externalCache) {
+            $externalFile = "{$this->rootDir}/../webpack-externals.json";
+            $this->externalCache = json_decode(file_get_contents($externalFile), true);
+        }
+
+        return $this->externalCache;
     }
 
     private function getWebpackAssets()
@@ -93,8 +145,9 @@ class WebpackExtension extends \Twig_Extension
         if (!$this->assetCache) {
             $assetFile = "{$this->rootDir}/../webpack-assets.json";
             $dllFile = "{$this->rootDir}/../webpack-dlls.json";
+            $vendorsFile = "{$this->rootDir}/../webpack-vendors.json";
 
-            if (!file_exists($assetFile) || !file_exists($dllFile)) {
+            if (!file_exists($assetFile) || !file_exists($dllFile) || !file_exists($vendorsFile)) {
                 throw new \Exception(sprintf(
                     'Cannot find webpack generated assets file(s). Make sure you '
                     .'have ran webpack with assets-webpack-plugin enabled'
@@ -103,7 +156,8 @@ class WebpackExtension extends \Twig_Extension
 
             $dlls = json_decode(file_get_contents($dllFile), true);
             $assets = json_decode(file_get_contents($assetFile), true);
-            $this->assetCache = array_merge_recursive($dlls, $assets);
+            $vendors = json_decode(file_get_contents($vendorsFile), true);
+            $this->assetCache = array_merge_recursive($dlls, $assets, $vendors);
         }
 
         return $this->assetCache;

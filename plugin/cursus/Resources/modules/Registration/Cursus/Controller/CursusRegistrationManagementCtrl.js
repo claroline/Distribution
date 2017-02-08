@@ -9,7 +9,8 @@
 
 /*global Routing*/
 /*global Translator*/
-/*global UserPicker*/
+
+import UserPicker from '#/main/core/_old/user/userPicker'
 import sessionsTemplate from '../Partial/cursus_registration_sessions_modal.html'
 import groupsListRegistrationTemplate from '../Partial/cursus_groups_list_registration_modal.html'
 import groupUnregistrationTemplate from '../Partial/cursus_group_unregistration_modal.html'

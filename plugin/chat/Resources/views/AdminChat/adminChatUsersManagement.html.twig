@@ -204,8 +204,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('packages/strophejs/strophe.min.js') }}"></script>
-    <script src="{{ asset('packages/strophejs-plugins/register/strophe.register.js') }}"></script>
-    <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'chat' }) }}"></script>
-    <script src='{{ asset('bundles/clarolinechat/js/adminChatUsersManagement.js') }}'></script>
+    <script> load({{ chunks('claroline-distribution-plugin-chat-admin-chat-users-management')|raw }}) </script>
 {% endblock %}

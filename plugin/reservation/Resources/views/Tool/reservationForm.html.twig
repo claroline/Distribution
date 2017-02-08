@@ -14,7 +14,7 @@
                 <div class="col-md-offset-3">
                     <div>
                         <span class="bold">{{ 'agenda.form.description'|trans({}, 'reservation') }}: </span>
-                        <span id="reservation_form_resource_description">
+                        <span id="resrvation_form_resource_description">
                             {% if reservation is not null and reservation.getResource() is not null %}
                                 {% if reservation.getResource().getDescription is not empty %}
                                     {{ reservation.getResource().getDescription() }}

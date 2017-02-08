@@ -43,138 +43,14 @@
     {% endif %}
 </div>
 
-{% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('bundles/clarolinecore/css/common/jqplot/jquery.jqplot.css') }}" type="text/css" />
-{% endblock %}
-
 {% block javascripts %}
-    <script type="text/javascript" src='{{ asset('bundles/icapbadge/js/list.js') }}'></script>
+    <script> load({{ chunks('claroline-distribution-plugin-badge-list')|raw }}) </script>
     {% if parameters.badges_per_user is defined and parameters.badges_per_user is not empty and parameters.totalBadges > 0 %}
-        <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="{{ asset('bundles/frontend/jqPlot/src/excanvas.min.js') }}"></script><![endif]-->
-        <script type="text/javascript" src="{{ asset('bundles/frontend/jqPlot/src/jquery.jqplot.js') }}"></script>
-        {% javascripts debug=false filter='jsmin' output='js/icapbadge/jqplot.plugins.min.js'
-        'bundles/frontend/jqPlot/src/plugins/jqplot.pieRenderer.js'
-        'bundles/frontend/jqPlot/src/plugins/jqplot.donutRenderer.js'
-        'bundles/frontend/jqPlot/src/plugins/jqplot.barRenderer.js'
-        'bundles/frontend/jqPlot/src/plugins/jqplot.categoryAxisRenderer.js'
-        'bundles/frontend/jqPlot/src/plugins/jqplot.canvasAxisLabelRenderer.js'
-        'bundles/frontend/jqPlot/src/plugins/jqplot.canvasTextRenderer.js'
-        'bundles/frontend/jqPlot/src/plugins/jqplot.pointLabels.js'
-        %}
-        <script type="text/javascript" src="{{ asset_url }}"></script>
-        {% endjavascripts %}
-
-
-        <script type="text/javascript">
-            var jqplotInitialized = false;
-            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-                $target = $(e.target).attr("href");
-                if ($target == "#stats" && !jqplotInitialized) {
-
-                    var s1 = [['{{ 'awarded_badges'|trans({}, 'icap_badge') }}',{{ parameters.totalBadgeAwarded }}], ['{{ 'availables_badges'|trans({}, 'icap_badge') }}',{{ parameters.totalBadgeNotAwarded }}]];
-
-                    var plot = $.jqplot('globalAttrib', [s1], {
-                        grid: {
-                            drawBorder: false,
-                            background: 'white',
-                            shadow: false
-                        },
-                        seriesDefaults: {
-                            // make this a donut chart.
-                            renderer:$.jqplot.DonutRenderer,
-                            rendererOptions:{
-                                shadow: false,
-                                sliceMargin: 3,
-                                startAngle: 90,
-                                color:'white',
-                                showDataLabels: true,
-                                dataLabels: 'value',
-                                padding: 5,
-                                animation:{show:!$.jqplot.use_excanvas}
-                            }
-                        },
-                        legend: { show:true, location: 'e' }
-                    });
-
-                    $.jqplot.config.enablePlugins = true;
-                    var badges_per_user = {{ parameters.badges_per_user|json_encode|raw }};
-                    var dataLength = badges_per_user.length;
-                    var maxNbBadge = parseInt(badges_per_user[dataLength-1][0]);
-                    var barchartWidth = $("#badgesPerUsers").width()-50;
-
-                    plot1 = $.jqplot('badgesPerUsers', [badges_per_user], {
-                        axesDefaults: {
-                            labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
-                            min: 0,
-                            tickOptions: {
-                                formatString: '%d'
-                            }
-                        },
-                        animate: !$.jqplot.use_excanvas,
-                        grid: {
-                            drawBorder: false,
-                            background: 'white',
-                            shadow: false
-                        },
-                        seriesDefaults:{
-                            shadow: false,
-                            renderer:$.jqplot.BarRenderer,
-                            pointLabels: { show: true },
-                            rendererOptions: {
-                                barWidth: Math.floor(barchartWidth/(maxNbBadge+10)),
-                                animation:{show:!$.jqplot.use_excanvas}
-                            }
-                        },
-                        axes: {
-                            xaxis: {
-                                label: "{{ 'badges_number'|trans({}, "icap_badge") }}",
-                                renderer: $.jqplot.LinearAxisRenderer,
-                                tickInterval: 1,
-                                numberTicks: maxNbBadge+2
-                            },
-                            yaxis: {
-                                label: "{{ 'user_number'|trans({}, "icap_badge") }}",
-                                forceTickAt0: true
-                            }
-                        },
-                        highlighter: { show: false }
-                    });
-
-                    $('#badgesPerUsers').bind('jqplotDataClick',
-                            function (ev, seriesIndex, pointIndex, data) {
-                                $('#info1').html('series: '+seriesIndex+', point: '+pointIndex+', data: '+data);
-                            }
-                    );
-
-                    //On recupere le nom du badge attribué, ainsi que son nombre
-                    var plot2 = $.jqplot('repartitionBadges', [[ {% for awardedBadge in parameters.mostAwardedBadges %} ["{{ awardedBadge.userBadge.badge.name }}",{{ awardedBadge.awardedNumber }}],{% endfor %} ]], {
-                        grid: {
-                            drawBorder: false,
-                            background: 'white',
-                            shadow: false
-                        },
-                        animate: !$.jqplot.use_excanvas,
-                        seriesDefaults:{
-                            shadow: false,
-                            renderer:$.jqplot.PieRenderer,
-                            rendererOptions: {
-                                showDataLabels: true,
-                                dataLabels: 'value',
-                                padding:5
-                            },
-                            trendline:{
-                                show: true
-                            }
-                        },
-                        legend:{
-                            show: true
-                        }
-                    });
-
-                    jqplotInitialized = true;
-                }
-            });
-        </script>
-
-    {% endif %}
+         <script type="text/javascript">
+             window.s1 = [['{{ 'awarded_badges'|trans({}, 'icap_badge') }}',{{ parameters.totalBadgeAwarded }}], ['{{ 'availables_badges'|trans({}, 'icap_badge') }}',{{ parameters.totalBadgeNotAwarded }}]];
+             window.badges_per_user = {{ parameters.badges_per_user|json_encode|raw }};
+             window.mostAwarded =  [[ {% for awardedBadge in parameters.mostAwardedBadges %} ["{{ awardedBadge.userBadge.badge.name }}",{{ awardedBadge.awardedNumber }}],{% endfor %} ]]
+         </script>
+         <script> load({{ chunks('claroline-distribution-plugin-badge-template-list')|raw }}) </script>
+     {% endif %}
 {% endblock %}

@@ -1,6 +1,6 @@
-import angular from 'angular/index'
+import angular from 'angular'
 import 'angular-loading-bar'
-import 'angular-ui-translation/angular-translation'
+import 'angular-ui-translation'
 import '#/main/core/fos-js-router/module'
 import '../shared/module'
 import '../modals/module'

@@ -2,7 +2,9 @@
   "webpack": {
     "entry": {
       "editor": "editor",
-      "player": "player"
+      "player": "player",
+      "manage-lock": "_js/manageLock",
+      "config": "_js/Widget/config"
     }
   }
 }

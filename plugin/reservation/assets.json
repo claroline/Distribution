@@ -1,0 +1,8 @@
+{
+  "webpack": {
+    "entry": {
+        "admin": "_old/admin",
+        "calendar": "_old/calendar"
+    }
+  }
+}

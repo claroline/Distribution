@@ -1,7 +1,7 @@
-<div id="modal-resource-tag-form" 
-     class="modal-dialog" 
-     role="dialog" 
-     aria-labelledby="modalLabel" 
+<div id="modal-resource-tag-form"
+     class="modal-dialog"
+     role="dialog"
+     aria-labelledby="modalLabel"
      aria-hidden="true"
 >
     <div class="modal-content">
@@ -39,7 +39,7 @@
                       action="{{ path('claro_tag_resource_tag', {'resourceNode': resourceNode.getId()}) }}"
                       method="POST"
                       novalidate="novalidate"
-                > 
+                >
                     {% form_theme form 'ClarolineCoreBundle::form_theme_no_label.html.twig' %}
                     {{ form_widget(form) }}
                      <div><small class='text-muted'>{{ 'tag_resource_help'|trans({}, 'tag') }}</small></div>
@@ -61,24 +61,9 @@
 </div>
 
 {% block javascripts %}
-    <script src='{{ asset('bundles/clarolinetag/js/bootstrap3-typeahead.js') }}'
-            type="text/javascript"
-    >
-    </script>
-    <script src='{{ asset('bundles/clarolinetag/js/tag-typeahead.js') }}'
-            type="text/javascript"
-    >
-    </script>
-    <script type="text/javascript"
-            src="{{ url('bazinga_jstranslation_js', { 'domain': 'tag' }) }}"
-    >
-    </script>
-    <script src='{{ asset('bundles/clarolinetag/js/tagsManagement.js') }}'
-            type="text/javascript"
-    >
-    </script>
+    <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'tag' }) }}"></script>
     <script type="text/javascript">
-        var allTags = [{% for tag in tags %}'{{ tag.getName() }}'{% if not loop.last %}, {% endif %}{% endfor %}];
-        new TagTypeAhead({'tags': allTags});
+        window.allTags = [{% for tag in tags %}'{{ tag.getName() }}'{% if not loop.last %}, {% endif %}{% endfor %}]
     </script>
+    <script> load({{ chunks('claroline-distribution-plugin-tag-tags-management')|raw }}) </script>
 {% endblock %}

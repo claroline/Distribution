@@ -1,0 +1,10 @@
+{
+  "webpack": {
+    "entry": {
+      "calendar": ["calendar"],
+      "task-widget": "_js/Widget/task_widget",
+      "agenda-widget": "_js/Widget/agenda_widget",
+      "tool-agenda": "_js/Tool/agenda"
+    }
+  }
+}

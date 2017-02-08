@@ -22,23 +22,7 @@
     </div>
 {% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('bundles/frontend/select2/select2.css') }}" screen="media" />
-{% endblock %}
-
 {% block javascripts %}
 {{ parent() }}
-<script type="text/javascript" src="{{ asset('bundles/zenstruckform/js/helper.js') }}"></script>
-<script type="text/javascript" src="{{ asset('bundles/frontend/select2/select2.min.js') }}"></script>
-{% if 'en' != app.request.locale %}
-<script type="text/javascript" src="{{ asset('bundles/frontend/select2/select2_locale_' ~ app.request.locale ~ '.js') }}"></script>
-{% endif %}
-<script type="text/javascript">
-    (function () {
-        "use strict";
-        ZenstruckFormHelper.initSelect2Helper();
-    }());
-</script>
+<script> load({{ chunks('claroline-distribution-plugin-badge-form-claim')|raw }}) </script>
 {% endblock %}
-

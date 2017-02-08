@@ -1,5 +1,5 @@
-import angular from 'angular/index'
-import 'angular-ui-translation/angular-translation'
+import angular from 'angular'
+import 'angular-ui-translation'
 
 import '#/main/core/fos-js-router/module'
 import ViewPdfDirective from './Directive/ViewPdfDirective'

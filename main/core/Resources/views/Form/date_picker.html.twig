@@ -18,9 +18,9 @@
         <input type="text" class="input-sm form-control" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
         {% endif %}
         <script type="text/javascript">
-            $(document).ready(function() {
-                $("#{{ form.vars['id'] }}").datepicker({{ options|json_encode()|raw }});
-            });
+            window.options = {{ options|json_encode()|raw }}
+            window.formId = '{{ form.vars['id'] }}'
         </script>
+        <script> load({{ chunks('claroline-distribution-main-core-form-date-picker')|raw }}) </script>
     {% endspaceless %}
 {% endblock %}

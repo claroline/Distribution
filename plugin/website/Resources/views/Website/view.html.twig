@@ -85,12 +85,12 @@
 
 {% block javascripts %}
     {% if app.environment == 'prod' %}
-        <script src="{{ hotAsset('dist/commons.js') }}"></script>
+        <script> load({{ chunks('commons')|raw }}) </script>
     {% endif %}
     {% if options.menuOrientation == 'horizontal' %}
-        <script src="{{ hotAsset('dist/claroline-distribution-plugin-website-view-app-horizontal.js') }}"></script>
+        <script> load({{ chunks('claroline-distribution-plugin-website-view-app-horizontal')|raw }}) </script>
     {% else %}
-        <script src="{{ hotAsset('dist/claroline-distribution-plugin-website-view-app-vertical.js') }}"></script>
+        <script> load({{ chunks('claroline-distribution-plugin-website-view-app-vertical')|raw }}) </script>
     {% endif %}
     <script>
         (function() {

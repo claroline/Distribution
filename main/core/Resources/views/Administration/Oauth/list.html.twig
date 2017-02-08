@@ -157,6 +157,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-
-    <script type="text/javascript" src="{{ asset('bundles/clarolinecore/js/administration/oauth.js') }}"></script>
+    <script> load({{ chunks('claroline-distribution-main-core-admin-oauth')|raw }}) </script>
 {% endblock %}

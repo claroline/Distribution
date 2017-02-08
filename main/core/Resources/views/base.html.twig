@@ -36,6 +36,19 @@
             <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
         {% endblock %}
 
+        <script type="text/javascript" src="{{ asset('packages/loadjs/dist/loadjs.min.js') }}"></script>
+        <script type="text/javascript">
+            function load(dependencies, cb) {
+                var module = 'module' + Math.random()
+                loadjs(dependencies, module, {
+                    async: false,
+                    success: function() {
+                        if (cb) cb()
+                    }
+                })
+            }
+        </script>
+
         {% block javascripts_header %}
         {% endblock %}
     </head>

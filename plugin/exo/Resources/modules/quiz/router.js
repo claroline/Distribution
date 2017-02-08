@@ -1,4 +1,4 @@
-import {Router, history} from 'backbone'
+import Backbone from 'backbone'
 import {actions} from './actions'
 import {actions as paperActions} from './papers/actions'
 import {actions as playerActions} from './player/actions'
@@ -8,7 +8,7 @@ import {VIEW_EDITOR, VIEW_OVERVIEW} from './enums'
 let router = null
 
 export function makeRouter(dispatch) {
-  const QuizRouter = Router.extend({
+  const QuizRouter = Backbone.Router.extend({
     routes: {
       'overview': () => dispatch(actions.updateViewMode(VIEW_OVERVIEW)),
       'editor': () => dispatch(actions.updateViewMode(VIEW_EDITOR)),
@@ -23,7 +23,7 @@ export function makeRouter(dispatch) {
     }
   })
   router = new QuizRouter()
-  history.start()
+  Backbone.history.start()
 }
 
 export function navigate(fragment, trigger = true) {

@@ -1,5 +1,5 @@
 {% if pager.hasNextPage %}
-    <div class="list-group-item list-load-previous"><a class="jscroll-comment-list-previous" type="button" href="{{ path("icap_socialmedia_commentlist", {"resourceId":resourceId, "page":pager.nextPage}) }}"><i class="fa fa-comments-o"></i> {{ "load_previous_comments"|trans({}, 'icap_socialmedia') }}</a></div>
+    <div class="list-group-item list-load-next"><a class="jscroll-comment-list-next" type="button" href="{{ path("icap_socialmedia_commentlist", {"resourceId":resourceId, "page":pager.nextPage}) }}"><i class="fa fa-comments-o"></i> {{ "load_previous_comments"|trans({}, 'icap_socialmedia') }}</a></div>
 {% endif %}
 {% for comment in pager.currentPageResults|reverse %}
     <div id="socialmedia-comment-item-{{ comment.id }}" class="list-group-item">

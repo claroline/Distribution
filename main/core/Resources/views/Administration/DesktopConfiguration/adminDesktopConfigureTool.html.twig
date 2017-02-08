@@ -76,7 +76,7 @@
                                     >
                                     </i>
                                 {% endif %}
-                                
+
                                 {% if orderedTool.isLocked() %}
                                     <i class="fa fa-lock lock-btn pointer-hand"
                                        data-ordered-tool-id="{{ orderedTool.getId() }}"
@@ -104,8 +104,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('bundles/clarolinecore/js/administration/adminDesktopConfigureTool.js') }}"
-            type="text/javascript"
-    >
-    </script>
+    <script> load({{ chunks('claroline-distribution-main-core-admin-desktop-configure-tools')|raw }}) </script>
 {% endblock %}

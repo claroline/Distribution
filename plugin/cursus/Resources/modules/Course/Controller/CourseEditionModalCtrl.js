@@ -9,7 +9,8 @@
 
 /*global Routing*/
 /*global Translator*/
-/*global UserPicker*/
+
+import UserPicker from '#/main/core/_old/user/userPicker'
 
 export default class CourseEditionModalCtrl {
   constructor($rootScope, $http, $uibModalInstance, FormBuilderService, CourseService, title, course, callback) {

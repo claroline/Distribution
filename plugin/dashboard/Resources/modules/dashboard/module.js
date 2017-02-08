@@ -1,5 +1,5 @@
 
-import angular from 'angular/index'
+import angular from 'angular'
 import DashboardCtrl from './Controllers/DashboardCtrl'
 import DetailsDirective from './Directives/DetailsDirective'
 

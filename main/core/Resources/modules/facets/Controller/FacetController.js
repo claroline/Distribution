@@ -1,9 +1,9 @@
+import angular from 'angular'
 import FormFacet from '../Form/Facet'
 import FormField from '../Form/Field'
 import FormPanel from '../Form/Panel'
 import FormPanelRole from '../Form/PanelRole'
 import FormProfilePreference from '../Form/ProfilePreference'
-import angular from 'angular/index'
 import facetFormTpl from '../Partial/facet_form.html'
 import facetRolesFormTpl from '../Partial/facet_roles_form.html'
 import panelFormTpl from '../Partial/panel_form.html'
@@ -14,7 +14,7 @@ import panelRolesTpl from '../Partial/panel_roles_form.html'
 /* global Translator */
 
 export default class FacetController {
-  constructor ($http, $uibModal, FormBuilderService, ClarolineAPIService, dragulaService, $scope) {
+  constructor($http, $uibModal, FormBuilderService, ClarolineAPIService, dragulaService, $scope) {
     this.$http = $http
     this.$uibModal = $uibModal
     this.FormBuilderService = FormBuilderService
@@ -49,14 +49,14 @@ export default class FacetController {
     this.formProfilePreference = FormProfilePreference
 
     dragulaService.options($scope, 'facet-bag', {
-      moves: function (el, container, handle) {
+      moves: function(el, container, handle) {
         return handle.className === 'handle'
       }
     })
 
     dragulaService.options($scope, 'panel-bag', {
       // allow nested drag... https://github.com/bevacqua/dragula/issues/31
-      moves: function (el, container, target) {
+      moves: function(el, container, target) {
         return !target.classList.contains('list-group-item')
       }
     })
@@ -65,11 +65,11 @@ export default class FacetController {
     $scope.$on('field-bag.drop', this.onFieldBagDrop.bind(this))
   }
 
-  closeAlert (index) {
+  closeAlert(index) {
     this.alerts.splice(index, 1)
   }
 
-  onPanelBagDrop (el, target, source) {
+  onPanelBagDrop(el, target, source) {
     // this is dirty but I can't retrieve the facet list otherwise
     const facetId = parseInt(source.attr('data-facet-id'))
     let container = null
@@ -95,7 +95,7 @@ export default class FacetController {
     }
   }
 
-  onFieldBagDrop (el, target) {
+  onFieldBagDrop(el, target) {
     let container = null
     const panelId = parseInt(target.attr('data-panel-id'))
 
@@ -124,7 +124,7 @@ export default class FacetController {
     }
   }
 
-  onAddFacetFormRequest () {
+  onAddFacetFormRequest() {
     const modalInstance = this.$uibModal.open({
       template: facetFormTpl,
       controller: 'ModalController',
@@ -157,7 +157,7 @@ export default class FacetController {
     })
   }
 
-  onEditFacetFormRequest (facet) {
+  onEditFacetFormRequest(facet) {
     // for error handling
 
     const modalInstance = this.$uibModal.open({
@@ -195,12 +195,12 @@ export default class FacetController {
     })
   }
 
-  onDeleteFacet (facet) {
+  onDeleteFacet(facet) {
     const url = Routing.generate('api_delete_facet', {facet: facet.id})
 
     this.ClarolineAPIService.confirm(
       {url, method: 'DELETE'},
-      function () {
+      function() {
         this.ClarolineAPIService.removeElements([facet], this.facets)
         this.alerts.push({
           type: 'success',
@@ -212,7 +212,7 @@ export default class FacetController {
     )
   }
 
-  onSetFacetRoles (facet) {
+  onSetFacetRoles(facet) {
     const modalInstance = this.$uibModal.open({
       template: facetRolesFormTpl,
       controller: 'FacetRolesController',
@@ -242,7 +242,7 @@ export default class FacetController {
     })
   }
 
-  onAddPanelFormRequest (facet) {
+  onAddPanelFormRequest(facet) {
     const modalInstance = this.$uibModal.open({
       template: panelFormTpl,
       controller: 'ModalController',
@@ -276,7 +276,7 @@ export default class FacetController {
     })
   }
 
-  onEditPanelFormRequest (panel) {
+  onEditPanelFormRequest(panel) {
     // for error handling
     this.formPanel.model = panel
 
@@ -311,12 +311,12 @@ export default class FacetController {
     })
   }
 
-  onDeletePanel (panel) {
+  onDeletePanel(panel) {
     const url = Routing.generate('api_delete_panel_facet', {panel: panel.id})
 
     this.ClarolineAPIService.confirm(
       {url, method: 'DELETE'},
-      function () {
+      function() {
         this.facets.forEach(facet => {
           facet.panels.forEach(() => {
             let idx = facet.panels.indexOf(panel)
@@ -334,7 +334,7 @@ export default class FacetController {
     })
   }
 
-  onAddFieldFormRequest (panel) {
+  onAddFieldFormRequest(panel) {
     const modalInstance = this.$uibModal.open({
       template: fieldFormTpl,
       controller: 'FieldModalController',
@@ -368,7 +368,7 @@ export default class FacetController {
     })
   }
 
-  onEditFieldFormRequest (field) {
+  onEditFieldFormRequest(field) {
     this.formField.model = field
 
     const modalInstance = this.$uibModal.open({
@@ -402,12 +402,12 @@ export default class FacetController {
     })
   }
 
-  onDeleteField (field) {
+  onDeleteField(field) {
     const url = Routing.generate('api_delete_field_facet', {field: field.id})
 
     this.ClarolineAPIService.confirm(
       {url, method: 'DELETE'},
-      function () {
+      function() {
         this.facets.forEach(facet => {
           facet.panels.forEach(panel => {
             panel.fields.forEach(() => {
@@ -426,7 +426,7 @@ export default class FacetController {
     })
   }
 
-  onSetPanelRoles (panel) {
+  onSetPanelRoles(panel) {
     const modalInstance = this.$uibModal.open({
       template: panelRolesTpl,
       controller: 'PanelRolesController',
@@ -454,7 +454,7 @@ export default class FacetController {
     })
   }
 
-  onSubmitProfilePreferences () {
+  onSubmitProfilePreferences() {
     this.FormBuilderService.submit(Routing.generate('api_put_profile_preferences'), {'preferences': this.profilePreferences}, 'PUT').then(
       () => {
         this.alerts.push({
@@ -466,11 +466,11 @@ export default class FacetController {
     )
   }
 
-  translate (msg) {
+  translate(msg) {
     return Translator.trans(msg, {}, 'platform')
   }
 
-  onFacetDown (facet) {
+  onFacetDown(facet) {
     const length = facet.is_main ? this.mainFacets.length : this.tabFacets.length
     if (facet.position < length - 1) {
       this.$http.put(Routing.generate('api_move_facet_down', {'facet': facet.id})).then(d => {
@@ -484,7 +484,7 @@ export default class FacetController {
     }
   }
 
-  onFacetUp (facet) {
+  onFacetUp(facet) {
     if (facet.position > 0) {
       this.$http.put(Routing.generate('api_move_facet_up', {'facet': facet.id})).then(d => {
         facet = d.data

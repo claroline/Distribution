@@ -2,7 +2,7 @@
  * Clipboard module
  */
 
-import angular from 'angular/index'
+import angular from 'angular'
 
 import ClipboardService from './Service/ClipboardService'
 

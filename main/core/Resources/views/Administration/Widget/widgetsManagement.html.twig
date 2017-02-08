@@ -1,10 +1,10 @@
 {% extends "ClarolineCoreBundle:Administration:layout.html.twig" %}
 
 {% block title %}
-    {{ 
+    {{
         parent() ~
         ' - ' ~
-        'widgets_management' | trans({}, 'tools') | striptags | raw 
+        'widgets_management' | trans({}, 'tools') | striptags | raw
     }}
 {% endblock %}
 
@@ -50,7 +50,7 @@
                         {{ 'widget_creation_roles'|trans({}, 'platform') }}
                     </th>
                 </tr>
-                
+
                 {% for widget in widgets %}
                     <tr>
                         <td>
@@ -59,7 +59,7 @@
                             </a>
                         </td>
                         <td class="text-center">
-                            
+
                             {% if widget.isDisplayableInDesktop() and widget.isDisplayableInWorkspace() %}
                                 {{ 'desktop'|trans({}, 'platform') }}
                                 +
@@ -79,9 +79,9 @@
                             {{ widget.getDefaultHeight() }}
                         </td>
                         <td class="text-center">
-                            
+
                             {% if widget.isDisplayableInDesktop() %}
-                                
+
                                 {% for role in widget.getRoles() %}
                                     <span class="label label-success margin-right-sm margin-bottom-sm">
                                         {{ role.getTranslationKey()|trans({}, 'platform') }}
@@ -100,6 +100,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('bundles/clarolinecore/js/administration/widgetsManagement.js') }}" type="text/javascript">
-    </script>
+    <script> load({{ chunks('claroline-distribution-main-core-admin-widgets-management')|raw }}) </script>
 {% endblock %}

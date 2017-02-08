@@ -1,4 +1,6 @@
-import angular from 'angular/index'
+import angular from 'angular'
+import home from '#/main/core/_old/home/home'
+import 'moment'
 
 let _transFilter = new WeakMap()
 let _$location = new WeakMap()
@@ -71,7 +73,7 @@ export default class BlogPanelController {
         this._t('day.sat')
       ],
       today: this._t('today'),
-      locale: window.Claroline.Home.locale
+      locale: home.locale
     }
   }
 
@@ -103,8 +105,6 @@ export default class BlogPanelController {
   search() {
     _$location.get(this).url('/search/' + encodeURI(this.searchTerms))
   }
-
-  
 
   toggle(element) {
     element.toggle()

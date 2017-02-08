@@ -9,7 +9,7 @@
  *
  */
 
-import angular from 'angular/index'
+import angular from 'angular'
 import {} from 'angular-bootstrap'
 import {} from 'angular-route'
 import '#/main/core/services/module'

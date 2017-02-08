@@ -11,6 +11,7 @@
 
 {% block javascripts_header %}
     {{ parent() }}
+    <!-- this should be eventually removed -->
     <script type="text/javascript" src='{{ asset('packages/jquery/dist/jquery.min.js') }}'></script>
 {% endblock %}
 
@@ -120,21 +121,5 @@
         '../vendor/jms/twig-js/twig.js'
         %}<script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
-    <script>
-        $('.exception-action-btn').on('click', function () {
-            var url = $(this).data('url');
-            var displayMode = $(this).data('display-mode');
-
-            if (displayMode === 'modal_form') {
-                window.Claroline.Modal.displayForm(
-                    url,
-                    function () {},
-                    function() {}
-                );
-
-            } else {
-                window.location = url;
-            }
-        });
-    </script>
+    <script> load({{ chunks('claroline-distribution-main-core-exception-layout')|raw }}) </script>
 {% endblock %}

@@ -1,3 +1,10 @@
+import clarolineTinymce from 'claroline/tinymce'
+
+const config = clarolineTinymce.getConfiguration()
+
+export default config
+
+/*
 let _tinymce = new WeakMap()
 let _lessonData = new WeakMap()
 
@@ -70,3 +77,4 @@ export default class tinyMceConfig {
 tinyMceConfig.$inject = [
   'lesson.data'
 ]
+*/

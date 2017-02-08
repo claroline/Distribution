@@ -140,8 +140,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script
-        src='{{ asset('bundles/clarolinecore/js/workspace/listWorkspaceByUser.js') }}'
-        type="text/javascript">
-    </script>
+    <script> load({{ chunks('claroline-distribution-main-core-workspace-list-by-user')|raw }}) </script>
 {% endblock %}

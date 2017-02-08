@@ -16,10 +16,10 @@
 /* global getUserMediaWithConstraints */
 /* global Strophe */
 
-import angular from 'angular/index'
+import angular from 'angular'
 
 export default class RTCService {
-  constructor ($http, $sce, $log, ChatRoomService, UserService) {
+  constructor($http, $sce, $log, ChatRoomService, UserService) {
     this.$http = $http
     this.$sce = $sce
     this.$log = $log
@@ -70,15 +70,15 @@ export default class RTCService {
     setInterval(this._updateMainStream, 1000)
   }
 
-  getVideoConfig () {
+  getVideoConfig() {
     return this.getConfig()
   }
 
-  getConfig () {
+  getConfig() {
     return this.config
   }
 
-  switchVideo () {
+  switchVideo() {
     if (this.config['myVideoEnabled']) {
       this.config['myVideoTracks'].forEach(t => {
         t.enabled = false
@@ -96,7 +96,7 @@ export default class RTCService {
     this.config['sourceStreams'][this.chatRoomConfig['myUsername']] = trustedStreamURL
   }
 
-  switchAudio () {
+  switchAudio() {
     if (this.config['myAudioEnabled']) {
       this.config['myAudioTracks'].forEach(t => {
         t.enabled = false
@@ -117,7 +117,7 @@ export default class RTCService {
     this.sendMicroStatus()
   }
 
-  requestUserMicroSwitch (username) {
+  requestUserMicroSwitch(username) {
     this.xmppConfig['connection'].send(
       $msg({
         to: this.chatRoomConfig['room'],
@@ -128,7 +128,7 @@ export default class RTCService {
     )
   }
 
-  requestUserMicroStatus (username) {
+  requestUserMicroStatus(username) {
     this.xmppConfig['connection'].send(
       $msg({
         to: this.chatRoomConfig['room'],
@@ -139,7 +139,7 @@ export default class RTCService {
     )
   }
 
-  sendMicroStatus () {
+  sendMicroStatus() {
     this.xmppConfig['connection'].send(
       $msg({
         to: this.chatRoomConfig['room'],
@@ -155,7 +155,7 @@ export default class RTCService {
     )
   }
 
-  sendSpeakingNotification () {
+  sendSpeakingNotification() {
     this.xmppConfig['connection'].send(
       $msg({
         to: this.chatRoomConfig['room'],
@@ -172,7 +172,7 @@ export default class RTCService {
     )
   }
 
-  stopMedia () {
+  stopMedia() {
     this.config['myAudioTracks'].forEach(t => {
       t.stop()
     })
@@ -181,7 +181,7 @@ export default class RTCService {
     })
   }
 
-  selectSourceStream (username) {
+  selectSourceStream(username) {
     this.$log.log(username)
     if (this.config['selectedUser'] === username) {
       this.config['selectedUser'] = null
@@ -192,7 +192,7 @@ export default class RTCService {
     this.config['mainStreamUsername'] = username
   }
 
-  initiateCalls () {
+  initiateCalls() {
     this.$log.log('Initiating calls...')
     this.config['users'].forEach(u => {
       if (u['username'] !== this.chatRoomConfig['myUsername']) {
@@ -214,7 +214,7 @@ export default class RTCService {
     })
   }
 
-  initiateHark () {
+  initiateHark() {
     if (typeof hark === 'function') {
       const options = { interval: 400 }
       const speechEvents = hark(this.config['localStream'], options)
@@ -237,11 +237,11 @@ export default class RTCService {
     }
   }
 
-  addSid (sid, username) {
+  addSid(sid, username) {
     this.config['sids'][sid] = username
   }
 
-  closeAllConnections () {
+  closeAllConnections() {
     for (let sid in this.config['sids']) {
       this.$log.log('Try to close ' + sid)
       this.$log.log(this.xmppConfig['connection'].jingle.sessions[sid])
@@ -252,7 +252,7 @@ export default class RTCService {
     }
   }
 
-  _updateMainStream () {
+  _updateMainStream() {
     this.$log.log('_updateMainStream')
     if (this.config['selectedUser'] !== null) {
       if (this.config['mainStreamUsername'] !== this.config['selectedUser']) {
@@ -269,7 +269,7 @@ export default class RTCService {
     }
   }
 
-  _startMedias () {
+  _startMedias() {
     this.$log.log('REQUEST MEDIAS')
     // for getUserMediaWithConstraints()
     RTC = this.RTC = setupRTC()
@@ -315,7 +315,7 @@ export default class RTCService {
     }
   }
 
-  _stopUserStream (username) {
+  _stopUserStream(username) {
     this.$log.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
     for (let sid in this.config['sids']) {
       if (this.config['sids'][sid] === username) {
@@ -327,7 +327,7 @@ export default class RTCService {
     this.$log.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
   }
 
-  _manageManagementMessage (type, username, name, value) {
+  _manageManagementMessage(type, username, name, value) {
     if (type === 'video-micro-status') {
       if (username !== this.chatRoomConfig['myUsername']) {
         this.config['usersMicroStatus'][username] = (value == 'true')
@@ -350,7 +350,7 @@ export default class RTCService {
     }
   }
 
-  _onMediaReady (event, stream) {
+  _onMediaReady(event, stream) {
     this.$log.log('Media ready')
     this.config['localStream'] = stream
     this.xmppConfig['connection'].jingle.localStream = stream
@@ -369,11 +369,11 @@ export default class RTCService {
     this.ChatRoomService.refreshScope()
   }
 
-  _onMediaFailure () {
+  _onMediaFailure() {
     this.$log.log('Media failure')
   }
 
-  _onCallIncoming (event, sid) {
+  _onCallIncoming(event, sid) {
     this.$log.log(`Incoming call : ${sid}`)
     const sess = this.xmppConfig['connection'].jingle.sessions[sid]
     const initiator = Strophe.getResourceFromJid(sess['initiator'])
@@ -382,20 +382,20 @@ export default class RTCService {
     sess.accept()
   }
 
-  _onCallTerminated () {
+  _onCallTerminated() {
     this.$log.log('Call terminated')
   }
 
-  _onRemoteStreamAdded (event, data, sid) {
+  _onRemoteStreamAdded(event, data, sid) {
     this.$log.log(`Remote stream for session ${sid} added.`)
     this._waitForRemoteStream(sid)
   }
 
-  _onRemoteStreamRemoved (event, data, sid) {
+  _onRemoteStreamRemoved(event, data, sid) {
     this.$log.log(`Remote stream for session ${sid} removed.`)
   }
 
-  _onIceConnectionStateChanged (event, sid, sess) {
+  _onIceConnectionStateChanged(event, sid, sess) {
     this.$log.log('_onIceConnectionStateChanged')
     this.$log.log('ice state for', sid, sess.peerconnection.iceConnectionState)
     this.$log.log('sig state for', sid, sess.peerconnection.signalingState)
@@ -410,11 +410,11 @@ export default class RTCService {
     }
   }
 
-  _noStunCandidates () {
+  _noStunCandidates() {
     this.$log.error('webrtc did not encounter stun candidates, NAT traversal will not work')
   }
 
-  _waitForRemoteStream (sid) {
+  _waitForRemoteStream(sid) {
     this.$log.log('*********** Waiting for remote stream... *******************')
     const sess = this.xmppConfig['connection'].jingle.sessions[sid]
     const tracks = sess.remoteStream.getTracks()

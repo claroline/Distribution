@@ -1,0 +1,77 @@
+{% macro getTwigJs() %}
+    {% javascripts debug=false  output='vendor/jms/twig-js/twig.js'
+    '../vendor/jms/twig-js/twig.js'
+    %}<script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    {% javascripts debug=false filter='twig_js, jsmin' vars=["locale"]
+    "@ClarolineCoreBundle/Resources/views/Resource/breadcrumbs.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Resource/actions.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Resource/filters.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Resource/listElement.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Resource/thumbnail.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Resource/results.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Resource/roles.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Resource/tabs.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Resource/treenode.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Resource/deleteConfirm.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Resource/publishConfirm.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Resource/unpublishConfirm.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Resource/userRightsRow.html.twig"
+    "@ClarolineCoreBundle/Resources/views/Modal/modal.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Modal/validationFooter.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Modal/errorFooter.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/ConfirmationMessage/confirmAddRole.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/ConfirmationMessage/removeGroupConfirm.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/ConfirmationMessage/removeUserConfirm.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/ConfirmationMessage/removeMessageConfirm.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/ConfirmationMessage/restoreMessageConfirm.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/ConfirmationMessage/resetPasswordConfirm.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/ConfirmationMessage/addUserConfirm.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Tool/workspace/roles/roleUserLabel.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Tool/workspace/roles/roleGroupLabel.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/ConfirmationMessage/removeWorkspacesConfirm.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/ConfirmationMessage/noRoleSelected.html.twigjs"
+    "@ClarolineCoreBundle/Resources/views/Administration/Roles/renderRoleRow.html.twig"
+    "@ClarolineCoreBundle/Resources/views/Tool/workspace/parameters/model/modelRow.html.twig"
+    "@ClarolineCoreBundle/Resources/views/Tool/workspace/parameters/model/userRow.html.twig"
+    "@ClarolineCoreBundle/Resources/views/Tool/workspace/parameters/model/groupRow.html.twig"
+    "@ClarolineCoreBundle/Resources/views/Tool/workspace/parameters/model/resourceElement.html.twig"
+    "@ClarolineCoreBundle/Resources/views/Tool/workspace/parameters/model/tabElement.html.twig"
+    %}<script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endmacro %}
+
+{% macro getBootstrapJs() %}
+    {% javascripts debug=false filter='jsmin' output='vendor/twitter/bootstrap/js/bootstrap.js'
+    'packages/bootstrap/js/transition.js'
+    'packages/bootstrap/js/alert.js'
+    'packages/bootstrap/js/button.js'
+    'packages/bootstrap/js/carousel.js'
+    'packages/bootstrap/js/collapse.js'
+    'packages/bootstrap/js/dropdown.js'
+    'packages/bootstrap/js/modal.js'
+    'packages/bootstrap/js/scrollspy.js'
+    'packages/bootstrap/js/tab.js'
+    'packages/bootstrap/js/tooltip.js'
+    'packages/bootstrap/js/popover.js'
+    'packages/bootstrap/js/affix.js'
+    %}<script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endmacro %}
+
+{% macro getTranslatorJs() %}
+    {% javascripts debug=false
+    'bundles/bazingajstranslation/js/translator.min.js'
+    'js/translations/resource/*.js'
+    'js/translations/home/*.js'
+    'js/translations/platform/*.js'
+    'js/translations/error/*.js'
+    'js/translations/validators/*.js'
+    %}<script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endmacro %}
+
+{% macro getFosRouterJs() %}
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+{% endmacro %}

@@ -33,26 +33,5 @@
         </div>
     </form>
     <link rel='stylesheet' type='text/css' href='{{ asset('bundles/icapsocialmedia/css/like.css')}}'>
-    <script type="text/javascript">
-        $.getScript("{{ asset('bundles/icapsocialmedia/js/jquery.jscroll.min.js') }}", initializeJscroll);
-        function initializeJscroll()
-        {
-            $('.jscroll-like-list').jscroll({
-                loadingHtml: '<div class="list-group-item list-group-item-loading"><i class="fa fa-spinner fa-pulse"></i></div>',
-                padding: 20,
-                nextSelector: 'a.jscroll-like-list-next',
-                contentSelector: 'div',
-                autoTrigger: false,
-                callback: removeParentClass
-            });
-        }
-        function removeParentClass()
-        {
-            $('div.jscroll-like-list').find('.jscroll-added').each(function(){
-                    var contents = $(this).contents();
-                    $(this).replaceWith(contents);
-                }
-            );
-        }
-    </script>
+    <script> load({{ chunks('claroline-distribution-plugin-social-media-like')|raw }}) </script>
 </div>

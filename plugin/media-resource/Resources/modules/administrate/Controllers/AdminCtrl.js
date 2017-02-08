@@ -1,7 +1,4 @@
-import WaveSurfer from 'wavesurfer.js/dist/wavesurfer'
-import 'wavesurfer.js/dist/plugin/wavesurfer.minimap.min'
-import 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min'
-import 'wavesurfer.js/dist/plugin/wavesurfer.regions.min'
+import WaveSurfer from 'wavesurfer'
 import $ from 'jquery'
 
 class AdminCtrl {
@@ -42,11 +39,11 @@ class AdminCtrl {
   initWavesurfer() {
     const progressDiv = document.querySelector('#progress-bar')
     const progressBar = progressDiv.querySelector('.progress-bar')
-    const showProgress = function (percent) {
+    const showProgress = function(percent) {
       progressDiv.style.display = 'block'
       progressBar.style.width = percent + '%'
     }
-    const hideProgress = function () {
+    const hideProgress = function() {
       progressDiv.style.display = 'none'
     }
     this.wavesurfer.on('loading', showProgress)
@@ -67,7 +64,7 @@ class AdminCtrl {
     })
     this.wavesurfer.load(this.audioData)
 
-    this.wavesurfer.on('ready', function () {
+    this.wavesurfer.on('ready', function() {
       const timeline = Object.create(WaveSurfer.Timeline)
       timeline.init({
         wavesurfer: this.wavesurfer,
@@ -78,7 +75,7 @@ class AdminCtrl {
       this.highligthRegionRow(this.currentRegion)
     }.bind(this))
 
-    this.wavesurfer.on('seek', function () {
+    this.wavesurfer.on('seek', function() {
       const current = this.regionsService.getRegionFromTime(this.wavesurfer.getCurrentTime(), this.resource.regions)
       if (current && this.currentRegion && current.uuid != this.currentRegion.uuid) {
         // update current region
@@ -88,7 +85,7 @@ class AdminCtrl {
       }
     }.bind(this))
 
-    this.wavesurfer.on('audioprocess', function () {
+    this.wavesurfer.on('audioprocess', function() {
       const current = this.regionsService.getRegionFromTime(this.wavesurfer.getCurrentTime(), this.resource.regions)
       if (current && this.currentRegion && current.uuid != this.currentRegion.uuid) {
         // update current region
@@ -102,7 +99,7 @@ class AdminCtrl {
   initRegionsAndMarkers() {
     if (this.resource.regions.length === 0) {
       let region = this.regionsService.create(0, this.wavesurfer.getDuration())
-      this.$scope.$apply(function () {
+      this.$scope.$apply(function() {
         this.resource.regions.push(region)
         this.currentRegion = region
       }.bind(this))
@@ -154,7 +151,7 @@ class AdminCtrl {
 
     let dragData
       // set the drag data when handler is clicked
-    dragHandler.addEventListener('mousedown', function (event) {
+    dragHandler.addEventListener('mousedown', function(event) {
       var time = this.getTimeFromPosition($(event.target).closest('.divide-marker').position().left)
       dragData = this.setDragData(time, marker)
       this.$window.addEventListener('mousemove', moveMarker)
@@ -197,7 +194,7 @@ class AdminCtrl {
     let dropMarker = function dropMarker() {
       this.$window.removeEventListener('mousemove', moveMarker)
       this.$window.removeEventListener('mouseup', dropMarker)
-      this.$scope.$apply(function () {
+      this.$scope.$apply(function() {
         dragData.prevRegion.end = Number(dragData.marker.dataset.time)
         dragData.nextRegion.start = Number(dragData.marker.dataset.time)
       })
@@ -269,7 +266,7 @@ class AdminCtrl {
   // and we should avoid to use $scope.$apply
   highligthRegionRow(region) {
     let row = this.getRegionRow(region)
-    $('.active-row').each(function () {
+    $('.active-row').each(function() {
       $(this).removeClass('active-row')
     })
     $(row).closest('.region').addClass('active-row')
@@ -277,7 +274,7 @@ class AdminCtrl {
 
   getRegionRow(region) {
     var row
-    $('.region').each(function () {
+    $('.region').each(function() {
       var temp = $(this)
       if ($(this).attr('data-uuid') === region.uuid) {
         row = temp
@@ -310,7 +307,7 @@ class AdminCtrl {
     }
 
     // remove marker from DOM
-    $('.marker-drag-handler').each(function () {
+    $('.marker-drag-handler').each(function() {
       const $marker = $(this).closest('.divide-marker')
       const time = Number($marker.attr('data-time'))
       if (region.start > 0 && time === region.start) {
@@ -371,7 +368,7 @@ class AdminCtrl {
     if (!this.playing) {
       wRegion.play()
       this.playing = true
-      this.wavesurfer.once('pause', function () {
+      this.wavesurfer.once('pause', function() {
         this.playing = false
       }.bind(this))
     } else {
@@ -399,7 +396,7 @@ class AdminCtrl {
     this.currentRegion = region
     this.highlightWaveform()
       // need to wait for the row to be added in the dom
-    window.setTimeout(function () {
+    window.setTimeout(function() {
       this.highligthRegionRow(this.currentRegion)
     }.bind(this), 100)
   }
@@ -461,7 +458,7 @@ class AdminCtrl {
   }
 
   initContentEditable() {
-    $('body').on('focus', '[contenteditable]', function (event) {
+    $('body').on('focus', '[contenteditable]', function(event) {
       const $input = $(event.target)
       $input.data('before', $input.html())
       // when focused skip to the start of the region on the waveform
@@ -469,7 +466,7 @@ class AdminCtrl {
       this.goTo(start)
       return $input
     }.bind(this))
-    .on('blur keypress keyup paste input', '[contenteditable]', function (e) {
+    .on('blur keypress keyup paste input', '[contenteditable]', function(e) {
       const $input = $(this)
       // do not allow user to add a line when pressing enter key
       if (e.type === 'keypress' && e.which === 13) {
@@ -504,7 +501,7 @@ class AdminCtrl {
         a.download = this.resource.name + '.zip'
         document.body.appendChild(a)
         a.click()
-        setTimeout(function () {
+        setTimeout(function() {
           document.body.removeChild(a)
           window.URL.revokeObjectURL(url)
         }, 100)
@@ -524,7 +521,7 @@ class AdminCtrl {
   save() {
     // need to update every region note to add html class and tags
     let my = this
-    $('.region').each(function () {
+    $('.region').each(function() {
       let note = $(this).find('[contenteditable]').html()
       let uuid = $(this).attr('data-uuid')
       let region = my.regionsService.getRegionByUuid(uuid, my.resource.regions)

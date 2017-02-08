@@ -29,7 +29,7 @@
 
 {% block section_content %}
     {# Initialize AngularJS application #}
-    <div class="dashboard-app-container" data-ng-app="DashboardApp" data-ng-cloak="">
+    <div class="dashboard-app-container" id="dashboard-module" data-ng-cloak="">
         <div class="dashboard-app-views" ng-view>
 
         </div>
@@ -43,5 +43,9 @@
     <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'tools' }) }}"></script>
     <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'platform' }) }}"></script>
     {# app #}
-    <script src="{{ hotAsset('dist/claroline-distribution-plugin-dashboard-app.js') }}"></script>
+    <script>
+        load({{ chunks('claroline-distribution-plugin-dashboard-app')|raw }}, function() {
+            angular.bootstrap('#dashboard-module', ['DashboardApp']);
+        })
+    </script>
 {% endblock %}

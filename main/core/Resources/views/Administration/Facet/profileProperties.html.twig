@@ -61,5 +61,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript" src="{{ asset('bundles/clarolinecore/js/administration/profileProperties.js') }}"></script>
+    <script> load({{ chunks('claroline-distribution-main-core-admin-profile-properties')|raw }}) </script>
 {% endblock %}

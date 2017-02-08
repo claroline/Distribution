@@ -247,9 +247,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script
-        src="{{ asset('bundles/clarolinecore/js/workspace/manageWorkspaceTag.js') }}"
-        type="text/javascript"
-    >
-    </script>
+    <script> load({{ chunks('claroline-distribution-main-core-workspace-manage-tag')|raw }}) </script>
 {% endblock %}

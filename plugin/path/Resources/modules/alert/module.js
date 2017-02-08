@@ -2,7 +2,7 @@
  * Alert module
  */
 
-import angular from 'angular/index'
+import angular from 'angular'
 
 import AlertService from './Service/AlertService'
 import AlertBoxDirective from './Directive/AlertBoxDirective'

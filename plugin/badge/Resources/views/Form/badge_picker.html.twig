@@ -74,72 +74,12 @@
             {% endif %}
         </div>
 
-        <script type="text/javascript" src="{{ asset('bundles/icapbadge/js/badge_picker.js') }}"></script>
         <script type="text/javascript">
-            $(function(){
-                var assetPath = "{{ asset('') }}";
-                $("#badgepicker_{{ id }}").click(function() {
-                {% if multiple %}
-                    var value = [];
-                    $(".badge-form-collection-element input[type=hidden]").each(function(index, element) {
-                        value.push($(this).val());
-                    });
-                    var badgePrototypeField = $("#{{ id }}").attr('data-prototype');
-                    var badgeFormCollection = $(".badge-form-collection");
-
-                    var callback = function (nodes) {
-                        $(".badge-form-collection-element").remove();
-
-                        nodes.each(function(index, element) {
-                            var newBadge = $(badgePrototypeField.replace(/__name__/g, index));
-                            badgeFormCollection.append(newBadge);
-                            $("input", newBadge).val(element.id);
-                        });
-                    };
-                {% else %}
-                    var hiddenInputField    = $("#{{ id }}");
-                    var badgeSelectionField = $(".badge_selection_field");
-                    var callback = function (nodes) {
-                        if (0 < nodes.length) {
-                            var selectedBadge = nodes[0];
-                            hiddenInputField.val(selectedBadge.id);
-                            $(".badge_text", badgeSelectionField)
-                                .html(selectedBadge.text)
-                                .removeClass('hide');
-                            $(".badge_image", badgeSelectionField)
-                                .attr('src', assetPath + selectedBadge.icon)
-                                .attr('alt', selectedBadge.text)
-                                .removeClass('hide');
-                            $(".no_badge_selected").addClass('hide');
-                            $(".badge_selection_field").removeClass('hide');
-                        }
-                        else {
-                            hiddenInputField.val(null);
-                            $(".badge_text", badgeSelectionField)
-                                .html("")
-                                .addClass('hide');
-                            $(".badge_image", badgeSelectionField)
-                                .attr('src', "")
-                                .attr('alt', "");
-                            $(".no_badge_selected").removeClass('hide');
-                            $(".badge_selection_field").addClass('hide');
-                        }
-
-                    };
-                    var value = hiddenInputField.val();
-                {% endif %}
-                    var url = "{{ path('icap_badge_badge_picker') }}";
-                    var badgePickerSettings = {
-                        mode: "{{ mode }}",
-                        multiple: {{ multiple|default('false') }},
-                        value: value,
-                        workspace: {{ workspace|default('null') }},
-                        blacklist: {{ blacklist|json_encode }}
-                    };
-                    window.Claroline.BadgePicker.configureBadgePicker(url, badgePickerSettings, callback);
-                    window.Claroline.BadgePicker.openBadgePicker();
-                });
-            });
+            window.id = '{{ id }}'
+            window.multiple = {{ multiple|default('false') }}
+            window.mode = '{{ mode }}'
+            window.blacklist = {{ blacklist|json_encode }}
         </script>
+        <script> load({{ chunks('claroline-distribution-plugin-badge-form-badge-picker')|raw }}) </script>
     {% endspaceless %}
 {% endblock %}

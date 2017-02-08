@@ -10,7 +10,7 @@
 
 {% block chat_content %}
     {% block section_panel %}
-        <div id="claco-form-app" ng-cloak="" ng-app="ClacoFormModule">
+        <div id="claco-form-app" ng-cloak="">
             <div ui-view></div>
         </div>
     {% endblock %}
@@ -18,9 +18,6 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('packages/angular-loading-bar/build/loading-bar.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('packages/ng-table/dist/ng-table.css') }}" />
-    <link rel='stylesheet' href='{{ asset('packages/angular-bootstrap-colorpicker/css/colorpicker.min.css')}}'>
     <link rel="stylesheet" href="{{ asset('bundles/clarolineclacoform/css/clacoform.css') }}" />
 {% endblock %}
 
@@ -48,7 +45,9 @@
         window.nbEntries = {{ nbEntries }}
         window.nbPublishedEntries = {{ nbPublishedEntries }}
     </script>
-    <script type='text/javascript' src="{{ asset('packages/angular/angular.min.js') }}"></script>
-    <script type='text/javascript' src="{{ asset('packages/ng-table/dist/ng-table.js') }}"></script>
-    <script src="{{ hotAsset('dist/claroline-distribution-plugin-claco-form-resource.js') }}"></script>
+    <script>
+        load({{ chunks('claroline-distribution-plugin-claco-form-resource')|raw }},  function() {
+            angular.bootstrap('#claco-form-app', ['ClacoFormModule']);
+        })
+    </script>
 {% endblock %}

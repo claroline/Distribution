@@ -22,17 +22,20 @@
                 ])
             }}
         </div>
-        <facet-management ng-app="FacetManager"></facet-management>
+        <facet-management id="facet-manager"></facet-management>
     </div>
 
 {% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel='stylesheet' type='text/css' href="{{ asset('packages/angular-dragula/dist/dragula.min.css') }}"/>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ hotAsset('dist/claroline-distribution-main-core-facet-management.js') }}"></script>
+    <script>
+        load({{ chunks('claroline-distribution-main-core-facet-management')|raw }}, function() {
+            angular.bootstrap('#facet-manager', ['FacetManager']);
+        })
+    </script>
 {% endblock %}

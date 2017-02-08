@@ -1,7 +1,9 @@
 {
   "webpack": {
     "entry": {
-      "room": "chatRoom/chatRoom"
+      "room": "chatRoom/chatRoom",
+      "user-chat": "_old/userChat",
+      "admin-chat-users-management": "_old/adminChatUsersManagement"
     }
   }
 }

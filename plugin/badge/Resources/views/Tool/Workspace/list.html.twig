@@ -28,10 +28,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript" src='{{ asset('bundles/frontend/confirm-bootstrap/confirm-bootstrap.js') }}'></script>
-    <script type="text/javascript">
-        $(function(){
-            $('.confirm').confirmModal();
-        });
-    </script>
+    <script> load({{ chunks('claroline-distribution-plugin-badge-admin-list')|raw }}) </script>
 {% endblock %}

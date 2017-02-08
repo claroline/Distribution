@@ -2,7 +2,7 @@
  * Resource module
  */
 
-import angular from 'angular/index'
+import angular from 'angular'
 
 import '#/main/core/asset/module'
 import '#/main/core/fos-js-router/module'

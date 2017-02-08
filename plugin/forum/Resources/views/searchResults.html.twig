@@ -119,20 +119,8 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src='{{ asset('bundles/clarolinecore/js/table.js') }}' type="text/javascript"></script>
     <script>
-        parameters = {};
-        parameters.route = {};
-        parameters.route.action = {};
-        parameters.route.search = {"route": "claro_forum_search", "parameters": {'forum': {{ _resource.getId() }} }};
-        Claroline.Table.initialize(parameters);
-
-        function highLight(element, text) {
-            element.innerHTML = element.innerHTML.replace(new RegExp("(" +text+ ")", "ig"), '<span style="background-color: #FFFF00">$1</span>');
-        }
-
-        $('.message-content').each(function(){
-            highLight($(this).get(0), "{{ search }}");
-        });
+        window.forumId = {{ _resource.getId() }}
     </script>
+    <script> load({{ chunks('claroline-distribution-plugin-forum-search-results')|raw }}) </script>
 {% endblock %}

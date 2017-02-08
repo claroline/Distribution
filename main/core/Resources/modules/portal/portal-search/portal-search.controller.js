@@ -1,7 +1,7 @@
 /**
  * Created by panos on 5/30/16.
  */
-import angular from 'angular/index'
+import angular from 'angular'
 
 export default class PortalSearch {
   constructor() {

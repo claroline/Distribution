@@ -90,7 +90,7 @@
             </tr>
         </table>
     </div>
-    
+
     {% if pastEvals|length > 0 %}
         <hr>
         <h4>{{ 'attempts' | trans({}, 'platform') }}</h4>
@@ -120,7 +120,7 @@
                     </th>
                     <th class="center-text">{{ 'comment'|trans({}, 'platform') }}</th>
                 </tr>
-                
+
                 {% for eval in pastEvals %}
                     <tr>
                         <td class="center-text">{{ eval.getDate()|intl_date_format }}</td>
@@ -166,11 +166,11 @@
             </table>
         </div>
     {% endif %}
-    
+
 </div>
 
 {% block javascripts %}
     <script>
-        $('.display-comment').popover();
+        load({{ chunks('claroline-distribution-main-core-display-activity-evaluation')|raw }})
     </script>
 {% endblock %}

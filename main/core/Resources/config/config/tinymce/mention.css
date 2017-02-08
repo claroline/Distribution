@@ -1,0 +1,18 @@
+.rte-autocomplete > li.loading {
+    display: table-cell;
+    background: none;
+    height: 16px;
+    width: auto;
+    -webkit-animation: fa-spin 2s infinite linear;
+    -moz-animation: fa-spin 2s infinite linear;
+    -o-animation: fa-spin 2s infinite linear;
+    animation: fa-spin 2s infinite linear;
+}
+
+.rte-autocomplete > li.loading:before {
+    font-family: 'FontAwesome';
+    content: "\f110";
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}

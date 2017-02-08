@@ -127,31 +127,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('bundles/icapdropzone/js/popup.js') }}"></script>
-    <script>
-        $(document).on('ready', function () {
-            $('#icap_dropzone_correct_criteria_page_form_goBack').val(0);
-            $('.back-button').on('click', function(event) {
-                event.preventDefault();
-                $('#icap_dropzone_correct_criteria_page_form_goBack').val(1);
-                $('#correct-form button[type="submit"]').trigger('click');
-            });
-
-            $('.column-container-div input[type="radio"]').on('click', function () {
-                var name = $(this).attr('name');
-                var value = $(this).val();
-
-                var test = '.criterion-grade[data-criterion="'+name+'"]';
-                $(test).html(value);
-            });
-
-            var calculateTotalGrade = function () {
-                var totalGrade = 20;
-
-                $('.correctionGrade').html(totalGrade);
-            };
-
-            calculateTotalGrade();
-        });
-    </script>
+    <script> load({{ chunks('claroline-distribution-plugin-dropzone-correction-criteria')|raw }}) </script>
 {% endblock %}

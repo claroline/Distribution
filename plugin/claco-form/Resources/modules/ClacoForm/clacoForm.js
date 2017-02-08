@@ -6,14 +6,15 @@
  * file that was distributed with this source code.
  */
 
-import angular from 'angular/index'
+import angular from 'angular'
 
 import 'angular-ui-router'
 import 'angular-bootstrap'
 import 'angular-animate'
-import 'angular-ui-translation/angular-translation'
+import 'angular-ui-translation'
 import 'angular-loading-bar'
 import 'angular-ui-tinymce'
+import 'ng-table'
 
 import '#/main/core/fos-js-router/module'
 import '#/main/core/form/module'

@@ -32,8 +32,7 @@
 {% include 'ClarolineCoreBundle:Layout:javascripts_headers.html.twig' %}
 {% include 'ClarolineCoreBundle:Layout:javascripts.html.twig' %}
 
-<script src="{{ asset('packages/strophejs/strophe.min.js') }}"></script>
-<script src="{{ asset('bundles/clarolinechat/js/userChat.js') }}"></script>
+<script> load({{ chunks('claroline-distribution-plugin-chat-user-chat')|raw }}) </script>
 
 <style type="text/css">
     body {

@@ -2,7 +2,7 @@
  * Utils module
  */
 
-import angular from 'angular/index'
+import angular from 'angular'
 
 import tinymceConfig from './Service/TinymceConfigService'
 import IdentifierService from './Service/IdentifierService'

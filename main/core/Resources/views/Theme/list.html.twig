@@ -72,5 +72,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript" src="{{ asset('bundles/clarolinecore/js/theme/theme.js') }}"></script>
+    <script> load({{ chunks('claroline-distribution-main-core-theme')|raw }}) </script>
 {% endblock %}

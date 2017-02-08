@@ -85,14 +85,6 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script
-        src='{{ asset('bundles/clarolinecore/js/administration/registrationManagement.js') }}'
-        type="text/javascript"
-    >
-    </script>
-    <script
-        src="{{ asset('bundles/clarolinecore/js/workspace/workspace_list_registration.js') }}"
-        type="text/javascript"
-    >
-    </script>
+    <script> load({{ chunks('claroline-distribution-main-core-admin-registration-management')|raw }}) </script>
+    <script> load({{ chunks('claroline-distribution-main-core-workspace-list-registration')|raw }}) </script>
 {% endblock %}

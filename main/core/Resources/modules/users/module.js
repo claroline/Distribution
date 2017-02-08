@@ -1,8 +1,8 @@
-import angular from 'angular/index'
+import angular from 'angular'
 
-import 'angular-data-table/release/dataTable.helpers.min'
+import 'angular-data-table'
 import 'angular-bootstrap'
-import 'angular-ui-translation/angular-translation'
+import 'angular-ui-translation'
 import 'angular-ui-router'
 import 'angular-breadcrumb'
 

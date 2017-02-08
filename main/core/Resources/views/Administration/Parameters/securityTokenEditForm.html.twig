@@ -57,9 +57,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script
-        src="{{ asset('bundles/clarolinecore/js/administration/securityTokenForm.js') }}"
-        type="text/javascript"
-    >
-    </script>
+    <script> load({{ chunks('claroline-distribution-main-core-admin-security-token-form')|raw }}) </script>
 {% endblock %}

@@ -2,7 +2,7 @@
  * Path app
  */
 
-import angular from 'angular/index'
+import angular from 'angular'
 
 export default class PathApp {
   // Resolve functions (it's the same between Editor and Player as we navigate in the same way in the 2 apps)

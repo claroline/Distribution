@@ -86,41 +86,10 @@
     </form>
 {% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet"
-          href="{{ asset('packages/jquery-ui/themes/base/jquery-ui.min.css') }}"
-          type="text/css"
-    />
-{% endblock %}
-
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript">
-        (function($) {
-            "use strict";
-
-            $(function() {
-                var portfolioUrlRadio = $(".portfolio_url input[type=radio]");
-                var portfolioUrlField = $(".portfolio_url_field input");
-
-                portfolioUrlField.on('keyup', function (event) {
-                    if ('' !== $(this).val()) {
-                        portfolioUrlRadio.prop("checked", true);
-                    }
-                });
-            });
-        })(jQuery);
+        window.tagsList = [{% for tag in tags %}"{{ tag|raw }}"{% if not loop.last %}, {% endif %}{% endfor %}];
     </script>
-    <script type="text/javascript"
-            src="{{ asset('packages/jquery-ui/jquery-ui.min.js') }}"
-    >
-    </script>
-    <script type="text/javascript">
-        var tagsList = [{% for tag in tags %}"{{ tag|raw }}"{% if not loop.last %}, {% endif %}{% endfor %}];
-
-        $('#platform_parameters_form_defaultWorkspaceTag').autocomplete({
-            source: tagsList
-        });
-    </script>
+    <script> load({{ chunks('claroline-distribution-main-core-administration-parameters-general-form')|raw }}) </script>>
 {% endblock %}

@@ -13,26 +13,4 @@
     <span><em>{{ 'widget_no_favourite'|trans({}, 'widget') }}</em></span>
 {% endfor %}
 
-<script>
-    (function () {
-        $('.delete-favourite-resource').click(function () {
-            var star = $(this);
-            var resourceNode = star.parent();
-            var resourceNodeId = resourceNode.data('resourceNodeId');
-            var routing = window.Routing.generate('hevinci_delete_favourite', {'node': resourceNodeId});
-
-            $.ajax({
-                url: routing,
-                type: 'GET',
-                complete: function () {
-                    resourceNode.slideUp('fast', function () {
-                        if ((resourceNode.parent().children().length)-1 == 1) {
-                            resourceNode.parent().prepend("<span><em>{{ 'widget_no_favourite'|trans({}, 'widget') }}</em></span>");
-                        }
-                        resourceNode.remove();
-                    });
-                }
-            });
-        });
-    }) ();
-</script>
+<script> load({{ chunks('claroline-distribution-plugin-favourite-favourite')|raw }}) </script>

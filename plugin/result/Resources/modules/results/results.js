@@ -1,6 +1,6 @@
 /*global Translator*/
 
-import angular from 'angular/index'
+import angular from 'angular'
 import {} from 'angular-bootstrap'
 import {} from 'ng-file-upload'
 import listTemplate from './list.component.html'

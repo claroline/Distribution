@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block section_content %}
-    <div id="desktop-home-panel" data-ng-app="DesktopHomeModule">
+    <div id="desktop-home-panel">
         <div class="panel-body" data-ui-view="">
         </div>
     </div>
@@ -18,9 +18,6 @@
     %}
     <link rel="stylesheet" type="text/css" href="{{ asset_url }}" />
     {% endstylesheets %}
-
-    <link rel="stylesheet" type="text/css" href="{{ asset('packages/angular-bootstrap-colorpicker/css/colorpicker.min.css')}}" />
-    <link rel="stylesheet" type="text/css" href="{{ asset('packages/angular-gridster/dist/angular-gridster.min.css')}}" />
 {% endblock %}
 
 {% block javascripts %}
@@ -28,6 +25,9 @@
     <script>
         window.tabId = {{ tabId }}
     </script>
-    <script src="{{ hotAsset('dist/claroline-distribution-main-core-desktop-home.js') }}"></script>
-    <script src="{{ asset('packages/angular-gridster/dist/angular-gridster.min.js') }}"></script>
+    <script>
+        load({{ chunks('claroline-distribution-main-core-desktop-home')|raw }},  function() {
+            angular.bootstrap('#desktop-home-panel', ['DesktopHomeModule']);
+        })
+    </script>
 {% endblock %}

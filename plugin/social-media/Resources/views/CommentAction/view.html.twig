@@ -71,41 +71,8 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript" src="{{ asset('bundles/icapsocialmedia/js/jquery.jscroll.min.js') }}"></script>
     <script type="text/javascript">
-        function initializeJscroll()
-        {
-            $('.jscroll-comment-list').jscroll({
-                loadingHtml: '<div class="text-center list-group-item-loading"><i class="fa fa-spinner fa-pulse"></i></div>',
-                padding: 20,
-                nextSelector: 'a.jscroll-comment-list-previous',
-                contentSelector: 'div',
-                autoTrigger: false,
-                callback: removeParentClass
-            });
-        }
-        function removeParentClass()
-        {
-            $('div.jscroll-comment-list').find('.jscroll-added').each(function(){
-                $(this).parent().prepend($(this));
-                var contents = $(this).contents();
-                $(this).replaceWith(contents);
-            });
-        }
-        $(document).ready(function(){
-            initializeJscroll();
-            var deleteUrl = "{{ path("icap_socialmedia_comment_delete", {"id":"000"}) }}";
-            $('.remove-sociamedia-comment-item').on("click", function(){
-                var itemId = $(this).attr("data-item-id");
-                $.ajax({
-                    url: deleteUrl.replace("000", itemId),
-                    method: "DELETE"
-                }).done(function(){
-                    $("#socialmedia-comment-item-"+itemId).remove();
-                }).fail(function(){
-                    alert("{{ "error_deleting"|trans({}, "icap_socialmedia") }}");
-                });
-            });
-        });
+        window.commentDeleteUrl = "{{ path("icap_socialmedia_comment_delete", {"id":"000"}) }}"
     </script>
+    <script> load({{ chunks('claroline-distribution-plugin-social-media-comment')|raw }}) </script>
 {% endblock %}

@@ -419,15 +419,13 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('bundles/innovacollecticiel/js/popup.js') }}"></script>
-    {{ tinymce_init() }}
+    <script> load({{ chunks('claroline-distribution-plugin-collecticiel-popup')|raw }}) </script>
     <script>
-        var totalColumn = {{ dropzone.totalCriteriaColumn }};
-        var comment =
+        var window.totalColumn = {{ dropzone.totalCriteriaColumn }};
+        var window.comment =
         {{ dropzone.allowCommentInCorrection ? 1 : 0 }}
-        var nbCorrection = {{nbCorrection}};
-        var nbResults = {{ pager.nbResults }};
+        var window.nbCorrection = {{nbCorrection}};
+        var window.nbResults = {{ pager.nbResults }};
     </script>
-    <script src="{{ asset('bundles/innovacollecticiel/js/Dropzone/editCriteria.js') }}"></script>
-
+    <script> load({{ chunks('claroline-distribution-plugin-collecticiel-edit-criteria')|raw }}) </script>
 {% endblock %}

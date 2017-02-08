@@ -2,11 +2,11 @@
  * Path editor app
  */
 
-import angular from 'angular/index'
+import angular from 'angular'
 import 'angular-route'
 import 'angular-sanitize'
 import 'angular-bootstrap'
-import 'angular-ui-translation/angular-translation'
+import 'angular-ui-translation'
 import 'angular-loading-bar'
 
 import './authorization/module'

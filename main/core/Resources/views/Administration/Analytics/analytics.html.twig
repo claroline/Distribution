@@ -22,7 +22,6 @@
         div.jqplot-pie-series.jqplot-data-label {font-size: 10px;}
         table tr.odd td {background-color: #F9F9F9 }
     </style>
-    <link rel="stylesheet" href="{{ asset('bundles/clarolinecore/css/common/jqplot/jquery.jqplot.css') }}" type="text/css" />
 {% endblock %}
 
 {% block breadcrumb %}
@@ -144,150 +143,15 @@
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
-
-    {% include 'ClarolineCoreBundle:Layout:jqplot_script.html.twig' %}
-    {% javascripts debug=false filter='jsmin' output='js/corebundle/jqplot.analytics.min.js'
-    'bundles/clarolinecore/js/jqplot/jqplot.colors.js'
-    'packages/jqPlot/src/plugins/jqplot.highlighter.js'
-    'packages/jqPlot/src/plugins/jqplot.pieRenderer.js'
-    'packages/jqPlot/src/plugins/jqplot.canvasTextRenderer.js'
-    'packages/jqPlot/src/plugins/jqplot.dateAxisRenderer.js'
-    'packages/jqPlot/src/plugins/jqplot.barRenderer.js'
-    'packages/jqPlot/src/plugins/jqplot.canvasAxisTickRenderer.js'
-    'packages/jqPlot/src/plugins/jqplot.canvasAxisLabelRenderer.js'
-    %}
-    <script src="{{ asset_url }}"></script>
-    {% endjavascripts %}
+    <script> load({{ chunks('claroline-distribution-main-core-jqplot')|raw }}) </script>
     <script type="text/javascript">
-        var chartData = {{ barChartData|json_encode|raw }};
-        var userPieChartData = [];
+        window.chartData = {{ barChartData|json_encode|raw }};
+        window.userPieChartData = [];
         {% for key, value in usersCount|reverse %}
             {% if(key != 'user_accounts') %}
-                userPieChartData.push(["{{key|trans({}, 'platform')}}",{{value}}]);
+                window.userPieChartData.push(["{{key|trans({}, 'platform')}}",{{value}}]);
             {% endif %}
         {% endfor %}
-        var bg_color = "transparent";
-
-        $(document).ready(function(){
-            if (chartData.length>0) {
-                var actionsPlot = $.jqplot(
-                    'activity-bar-chart',
-                    [chartData],
-                    {
-                        title: {show: false},
-                        grid: {
-                            drawBorder: false,
-                            borderWidth: 1.0,
-                            shadow: false,
-                            background: bg_color
-                        },
-                        axesDefaults: {
-                            labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
-                            tickRenderer: $.jqplot.CanvasAxisTickRenderer
-                        },
-                        axes: {
-                            xaxis: {
-                                renderer: $.jqplot.DateAxisRenderer,
-                                pad:1.2,
-                                tickOptions: {
-                                    formatString:'%d %b',
-                                    showGridline: false,
-                                    showMark: true,
-                                    angle: 0,
-                                    fontSize: '11px'
-                                },
-                                numberTicks:7
-                            },
-                            yaxis: {
-                                min:0,
-                                showTickMarks: true,
-                                numberTicks: 7,
-                                tickOptions: {
-                                    fontSize: '11px'
-                                }
-                            }
-                        },
-                        highlighter: {
-                            show: true,
-                            showMarker:false,
-                            sizeAdjust: 0,
-                            tooltipOffset:10,
-                            tooltipLocation:'n',
-                            tooltipAxes:'xy',
-                            formatString:'%s <br/> %d',
-                            tooltipFadeSpeed:'fast'
-                        },
-                        cursor: {
-                            show: false,
-                            zoom: false,
-                            style:"pointer"
-                        },
-                        seriesDefaults: {
-                            showMarker:false,
-                            renderer:$.jqplot.BarRenderer,
-                            showLabel:false,
-                            pointLabels: { show: false },
-                            rendererOptions:{
-                                barPadding: 0,
-                                barMargin: 10,
-                                barDirection: 'vertical',
-                                barWidth: 20
-                            },
-                            shadow:false
-                        }
-                    }
-                );
-            }
-
-            if (userPieChartData.length>0) {
-                var usersPlot = $.jqplot(
-                        'users-pie-chart',
-                        [userPieChartData],
-                        {
-                            title: {show: false},
-                            grid: {
-                                drawBorder: false,
-                                shadow: false,
-                                background: bg_color,
-                                useNegativeColors: false
-                            },
-                            highlighter: {
-                                show: false
-                            },
-                            cursor: {
-                                show: false,
-                                zoom: false,
-                                showTooltip: false
-                            },
-                            seriesDefaults: {
-                                showMarker:true,
-                                renderer:$.jqplot.PieRenderer,
-                                rendererOptions:{
-                                    showDataLabels: true,
-                                    dataLabelThreshold: 2,
-                                    dataLabels: 'percent',
-                                    sliceMargin:0.3,
-                                    dataLabelFormatString: '%.1f%%',
-                                    highlightMouseOver:false
-                                },
-                                shadow:false
-                            },
-                            legend:{
-                                location: 'e',
-                                border:'none',
-                                renderer: $.jqplot.CavasTextRenderer,
-                                show:true,
-                                showMarker:true,
-                                rendererOptions:{
-                                    numberRows:7
-                                },
-                                backgroundColor:bg_color,
-                                placement:'outsideGrid'
-                            }
-                        }
-                );
-            }
-        });
     </script>
-
+    <script> load({{ chunks('claroline-distribution-main-core-administration-analytics-analytics')|raw }}) </script>
 {% endblock %}

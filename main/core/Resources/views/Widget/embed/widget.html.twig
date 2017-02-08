@@ -16,11 +16,6 @@
     </style>
 {% endblock %}
 
-{% block javascripts_header %}
-    {{ parent() }}
-    <script type="text/javascript" src='{{ asset('packages/jquery/dist/jquery.min.js') }}'></script>
-{% endblock %}
-
 {% block layout %}
     {% if widget is not null%}
     <div class="panel panel-default">

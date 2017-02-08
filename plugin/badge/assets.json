@@ -1,0 +1,20 @@
+{
+  "webpack": {
+    "entry": {
+      "add": "_old/add",
+      "badge-picker": "_old/badge_picker",
+      "edit": "_old/edit",
+      "list": "_old/list",
+      "profile": "_old/profile",
+      "rules": "_old/rules",
+      "admin-list": "_js/Administration/list",
+      "admin-recalculate-modal": "_js/Administration/recalculate.modal",
+      "admin-unaward-modal": "_js/Administration/unaward.modal",
+      "badge-badge-picker": "_js/Badge/badgePicker",
+      "form-badge-picker": "_js/Form/badge_picker",
+      "profile-claim": "_js/Profile/claim",
+      "widget-badge-usage": "_js/Widget/badge_usage",
+      "badage-template-list": "_js/Template/list"
+    }
+  }
+}

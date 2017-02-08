@@ -8,7 +8,7 @@
  */
 
 /*global Routing*/
-import angular from 'angular/index'
+import angular from 'angular'
 
 export default class DesktopWidgetInstanceEditionModalCtrl {
   constructor($http, $sce, $uibModal, $uibModalInstance, $httpParamSerializer, ClarolineAPIService, WidgetService, widgetInstanceId, widgetDisplayId, configurable, contentConfig) {

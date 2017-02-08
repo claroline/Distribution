@@ -1,7 +1,7 @@
 {% extends "InnovaPathBundle:Wizard:layout.html.twig" %}
 
 {% block path_wizard %}
-    <div data-ng-cloak="" data-ng-app="PathPlayerApp" class="path-player">
+    <div id="path-player-app" data-ng-cloak="" class="path-player">
         {# Path Player (convert Path Entity into a JSON object to make it understandable by AngularJS) #}
         <path-show
                 data-path="{{ _resource | json_encode }}"
@@ -14,5 +14,9 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ hotAsset('dist/claroline-distribution-plugin-path-player.js') }}"></script>
+    <script>
+        load({{ chunks('claroline-distribution-plugin-path-player')|raw }}, function() {
+            angular.bootstrap('#path-player-app', ['PathPlayerApp']);
+        })
+    </script>
 {% endblock %}

@@ -290,7 +290,7 @@ class PathListener
         $event->addAsset('claroline-distribution-plugin-path-player.js', $webpack->hotAsset('dist/claroline-distribution-plugin-path-player.js', true));
         $event->addAsset('claroline-home.js', 'bundles/clarolinecore/js/home/home.js');
         $event->addAsset('claroline-common.js', 'bundles/clarolinecore/js/common.js');
-        $event->addAsset('claroline-tinymce.js', $webpack->hotAsset('dist/claroline-distribution-main-core-tinymce.js', true));
+        $event->addAsset('claroline-tinymce.js', $webpack->hotAsset('dist/claroline-distribution-main-core-tinymce-main.js', true));
 
         $event->addAsset('wizards.js', 'vendor/innovapath/wizards.js');
         $event->addAsset('wizards.css', 'vendor/innovapath/wizards.css');

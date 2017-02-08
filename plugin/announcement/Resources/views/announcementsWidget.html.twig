@@ -11,24 +11,7 @@
 
 {% block javascripts %}
     <script>
-      (function () {
-        const widgetInstanceId = {{ widgetInstance.getId() }}
-        const widgetElement = $(`#announcement-widget-${widgetInstanceId}`)
-        const listElement = $(`#announcements-list-${widgetInstanceId}`)
-
-        widgetElement.on('click', '.pagination > ul > li > a', function (event) {
-          event.preventDefault()
-          const element = event.currentTarget
-          const url = $(element).attr('href')
-
-          $.ajax({
-            url: url,
-            type: 'GET',
-            success: function (datas) {
-              listElement.html(datas)
-            }
-          })
-        })
-      })();
+        window.widgetInstanceId = {{ widgetInstance.getId() }};
     </script>
+    <script> load({{ chunks('claroline-distribution-plugin-announcement-announcement-widget')|raw }}) </script>
 {% endblock %}

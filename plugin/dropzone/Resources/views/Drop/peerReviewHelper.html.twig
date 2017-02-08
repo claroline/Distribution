@@ -28,18 +28,6 @@
                 background-color: #fff;
             }
         </style>
-
-        <script>
-            $(document).on('ready', function () {
-                $('#peerReview-helper-accordion').on('hide.bs.collapse', function () {
-                    $('#accordion .fa-angle-down').show();
-                    $('#accordion .fa-angle-right').hide();
-                });
-                $('#peerReview-helper-accordion').on('show.bs.collapse', function () {
-                    $('#accordion .fa-angle-right').show();
-                    $('#accordion .fa-angle-down').hide();
-                });
-            });
-        </script>
+        <script> load({{ chunks('claroline-distribution-plugin-dropzone-drop-peer-review-helper')|raw }}) </script>
     </div>
 {% endif %}

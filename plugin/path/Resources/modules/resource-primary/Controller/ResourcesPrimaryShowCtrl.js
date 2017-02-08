@@ -2,7 +2,7 @@
  * Resources primary show controller
  */
 
-import angular from 'angular/index'
+import angular from 'angular'
 
 import ResourcesPrimaryBaseCtrl from './ResourcesPrimaryBaseCtrl'
 

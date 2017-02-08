@@ -18,7 +18,7 @@
         </h3>
     </div>
     <div class="panel-body">
-        <div id="scorm-results-panel" data-ng-app="ScormResultsModule" data-scorm-results>
+        <div id="scorm-results-panel" data-scorm-results>
     </div>
 {% endblock %}
 
@@ -32,10 +32,13 @@
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript" src="{{ url('bazinga_jstranslation_js', { 'domain': 'scorm' }) }}"></script>
-    <script type='text/javascript' src='{{ asset('packages/angular/angular.min.js') }}'></script>
     <script type='text/javascript' src='{{ asset('packages/angular-loading-bar/build/loading-bar.min.js') }}'></script>
     <script type='text/javascript' src='{{ asset('packages/ng-table/dist/ng-table.js') }}'></script>
-    <script type="text/javascript" src="{{ hotAsset('dist/claroline-distribution-plugin-scorm-results.js') }}"></script>
+    <script>
+        load({{ chunks('claroline-distribution-plugin-scorm-results')|raw }}, function() {
+            angular.bootstrap('#scorm-results-panel', ['ScormResultsModule']);
+        })
+    </script>
     <script>
         window.resourceNodeId = {{ resourceNode.getId() }}
         window.type = '{{ type }}'

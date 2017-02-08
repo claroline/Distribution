@@ -22,18 +22,5 @@
             background-color: #fff;
         }
     </style>
-
-    <script>
-        $(document).on('ready', function() {
-            $('#recall-instruction').on('hide.bs.collapse', function () {
-                $('#accordion .fa-angle-down').show();
-                $('#accordion .fa-angle-right').hide();
-            });
-            $('#recall-instruction').on('show.bs.collapse', function () {
-                $('#accordion .fa-angle-right').show();
-                $('#accordion .fa-angle-down').hide();
-            });
-        });
-    </script>
+    <script> load({{ chunks('claroline-distribution-plugin-collecticiel-dropzone-recall-instruction')|raw }}) </script>
 </div>
-

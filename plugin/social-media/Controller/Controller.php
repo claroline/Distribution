@@ -5,10 +5,9 @@
  * (c) Claroline Consortium <consortium@claroline.net>
  *
  * Author: Panagiotis TSAVDARIS
- * 
+ *
  * Date: 4/22/15
  */
-
 namespace Icap\SocialmediaBundle\Controller;
 
 use Icap\SocialmediaBundle\Entity\CommentAction;
@@ -23,7 +22,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
 
 class Controller extends BaseController
 {
-    const MAX_PER_PAGE = 10;
+    const MAX_PER_PAGE = 2;
     /**
      * @return \Icap\SocialmediaBundle\Manager\LikeActionManager
      */

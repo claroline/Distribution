@@ -4,7 +4,7 @@
 {% block title %}{{ parent() ~ ' - ' ~ 'organizations' | trans({}, 'platform') | striptags | raw }}{% endblock %}
 
 {% block content %}
-    <div id="organization-panel" class="panel panel-default" ng-app="OrganizationManager">
+    <div id="organization-panel" class="panel panel-default">
         <div ncy-breadcrumb></div>
         <div class="panel-body" ui-view></div>
     </div>
@@ -12,10 +12,14 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet"  href="{{ asset('vendor/angular-ui.css') }}" />
+    <link rel="stylesheet" href="{{ asset('vendor/angular/angular-ui.css')}}"> </link>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ hotAsset('dist/claroline-distribution-main-core-organization-management.js') }}"></script>
+    <script>
+        load({{ chunks('claroline-distribution-main-core-organization-management')|raw }}, function() {
+            angular.bootstrap('#organization-panel', ['OrganizationManager']);
+        })
+    </script>
 {% endblock %}

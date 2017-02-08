@@ -2,7 +2,7 @@
  * Form module
  */
 
-import angular from 'angular/index'
+import angular from 'angular'
 
 import DurationFieldDirective from './Directive/DurationFieldDirective'
 import FieldValidationDirective from './Directive/FieldValidationDirective'

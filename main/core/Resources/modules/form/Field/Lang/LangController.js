@@ -1,8 +1,8 @@
 import langs from './iso.js'
-import angular from 'angular/index'
+import angular from 'angular'
 
 export default class LangController {
-  constructor () {
+  constructor() {
     this.langField = angular.copy(this.field)
     this.langField[1] = 'select'
     this.langField[2] = this.langField[2] || {}
@@ -11,7 +11,7 @@ export default class LangController {
     this.langField[2].choice_value = 'value'
   }
 
-  getOptions () {
+  getOptions() {
     const values = []
 
     Object.keys(langs).forEach(key => {

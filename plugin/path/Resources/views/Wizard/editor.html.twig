@@ -10,19 +10,21 @@
 {% endblock %}
 
 {% block path_wizard %}
-    <div data-ng-cloak="" data-ng-app="PathEditorApp" class="path-editor">
+    <div data-ng-cloak="" id="path-editor-module" class="path-editor">
         {# Path Form (we not directly alter the entity, but work with a JSON structure which stores info before publishing) #}
         <path-edit
                 data-path="{{ _resource.structure | raw | escape }}"
                 data-modified="{{ _resource.modified }}"
                 data-published="{{ _resource.published }}">
         </path-edit>
-
-        {{ tinymce_init() }}
     </div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ hotAsset('dist/claroline-distribution-plugin-path-editor.js') }}"></script>
+    <script>
+        load({{ chunks('claroline-distribution-plugin-path-editor')|raw }}, function() {
+            angular.bootstrap('#path-editor-module', ['PathEditorApp']);
+        })
+    </script>
 {% endblock %}

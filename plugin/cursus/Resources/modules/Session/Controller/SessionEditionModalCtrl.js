@@ -1,15 +1,7 @@
-/*
- * This file is part of the Claroline Connect package.
- *
- * (c) Claroline Consortium <consortium@claroline.net>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 /*global Routing*/
 /*global Translator*/
-/*global UserPicker*/
+
+import UserPicker from '#/main/core/_old/user/userPicker'
 
 export default class SessionEditionModalCtrl {
   constructor($rootScope, $http, $uibModalInstance, CursusService, CourseService, title, session, callback) {

@@ -101,8 +101,6 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript" src="{{ url('bazinga_jstranslation_js', { 'domain': 'survey' }) }}">
-    </script>
-    <script type="text/javascript" src='{{ asset('bundles/clarolinesurvey/js/surveyAnswersManagement.js') }}'>
-    </script>
+    <script type="text/javascript" src="{{ url('bazinga_jstranslation_js', { 'domain': 'survey' }) }}"></script>
+    <script> load({{ chunks('claroline-distribution-plugin-survey-survey-answers-management')|raw }}) </script>
 {% endblock %}

@@ -1,6 +1,6 @@
 /* link module */
 
-import angular from 'angular/index'
+import angular from 'angular'
 
 angular
   .module('anchor', [])
@@ -11,7 +11,7 @@ angular
         tAttrs['ngClick'] = '!('+tAttrs['aDisabled']+') && ('+tAttrs['ngClick']+')'
 
         //return a link function
-        return function (scope, iElement, iAttrs) {
+        return function(scope, iElement, iAttrs) {
 
           //Toggle "disabled" to class when aDisabled becomes true
           scope.$watch(iAttrs['aDisabled'], function(newValue) {

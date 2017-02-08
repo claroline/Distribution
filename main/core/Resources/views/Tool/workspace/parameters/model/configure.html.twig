@@ -110,5 +110,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src='{{ asset('bundles/clarolinecore/js/tool/workspace/model/configure.js') }}' type="text/javascript"></script>
+    <script> load({{ chunks('claroline-distribution-main-core-tool-workspace-model-configure')|raw }}) </script>
 {% endblock %}

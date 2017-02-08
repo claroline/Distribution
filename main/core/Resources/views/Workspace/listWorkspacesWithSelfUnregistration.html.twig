@@ -111,8 +111,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script
-        src='{{ asset('bundles/clarolinecore/js/workspace/self_unregistration.js') }}'
-        type="text/javascript">
-    </script>
+    <script> load({{ chunks('claroline-distribution-main-core-workspace-self-unregistration')|raw }}) </script>
 {% endblock %}

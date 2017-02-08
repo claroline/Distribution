@@ -1,5 +1,5 @@
 <div id="latest-intervention-info">
-    
+
     {% if withCredits %}
         <b>{{ 'nb_available_support_credits'|trans({}, 'support') }} :</b>
         {{ nbCredits }}
@@ -8,7 +8,7 @@
         {{ totalCredits }}
         <br>
     {% endif %}
-    
+
     {% if lastIntervention is not empty %}
         {% set lastStatus = lastIntervention.getStatus() %}
         {% set lastStartDate = lastIntervention.getStartDate() %}
@@ -19,7 +19,7 @@
         {% set lastInternalComment = lastIntervention.getInternalComment() %}
 
         {% if lastStatus is not empty %}
-            
+
             {% if lastStartDate is not empty %}
                 {{ lastStartDate|intl_date_format }}
             {% else %}
@@ -31,7 +31,7 @@
             {% else %}
                 ...
             {% endif %}
-            
+
             {% if lastDuration is not empty %}
                 ({{ lastDuration }} {{ 'minute_short'|trans({}, 'support') }})
             {% endif %}
@@ -42,25 +42,25 @@
             <br>
             {{ lastIntervenant.getFirstName() }}
             {{ lastIntervenant.getLastName() }}
-            
+
             {% if lastExternalComment is not empty or lastInternalComment is not empty%}
                 <div class="well well-sm">
-                    
+
                     {% if lastExternalComment is not empty %}
                         <b>{{ 'client_message'|trans({}, 'support') }}</b>
                         <br>
                         {{ lastExternalComment|raw }}
-                        
+
                         {% if lastInternalComment is not empty %}
                             <hr>
-                        {% endif %} 
-                    {% endif %} 
-                        
+                        {% endif %}
+                    {% endif %}
+
                     {% if lastInternalComment is not empty %}
                         <b>{{ 'internal_message'|trans({}, 'support') }}</b>
                         <br>
                         {{ lastInternalComment|raw }}
-                    {% endif %} 
+                    {% endif %}
                 </div>
             {% endif %}
         {% endif %}
@@ -94,7 +94,7 @@
             </table>
         </div>
     {% endif %}
-    
+
     <br>
     {% if hasOngoingIntervention %}
         {% set ongoingStartDate = ongoingIntervention.getStartDate() %}
@@ -123,7 +123,7 @@
     {% endif %}
     <hr>
 </div>
-    
+
 <div id="latest-intervention-datas-box"
      data-ticket-id="{{ ticket.getId() }}"
      data-ongoing-start="{{ lastStartDate|date('U') }}"
@@ -135,8 +135,5 @@
 </div>
 
 {% block javascripts %}
-    <script src='{{ asset('bundles/formalibresupport/js/adminTicketManagementInfo.js') }}'
-            type="text/javascript"
-    >
-    </script>
+    <script> load({{ chunks('claroline-distribution-plugin-support-admin-ticket-management-info')|raw }}) </script>
 {% endblock %}

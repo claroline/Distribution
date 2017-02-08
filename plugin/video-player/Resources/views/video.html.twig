@@ -26,7 +26,7 @@
                 <i class="fa fa-download"></i> {{ 'download'|trans({}, 'platform') }}
             </a>
         {% endif %}
-        <span><video-tracks ng-app="TrackButton"></video-tracks></span>
+        <span><video-tracks id="video-track-module"></video-tracks></span>
     </div>
 {% endblock %}
 
@@ -37,5 +37,9 @@
         window.nodeId = {{ video.getResourceNode().getId() }}
         window.tracks = {{ tracks|json_serialize('api_resource')|raw }}
     </script>
-    <script src="{{ hotAsset('dist/claroline-distribution-plugin-video-player-track-management.js') | raw }}"></script>
+    <script>
+        load({{ chunks('claroline-distribution-plugin-video-player-track-management')|raw }}, function() {
+            angular.bootstrap('#video-track-module', ['TrackButton']);
+        })
+    </script>
 {% endblock %}

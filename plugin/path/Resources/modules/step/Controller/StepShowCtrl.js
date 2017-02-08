@@ -2,7 +2,7 @@
  * Step show controller
  */
 
-import angular from 'angular/index'
+import angular from 'angular'
 
 import StepBaseCtrl from './StepBaseCtrl'
 

@@ -1,4 +1,4 @@
-import angular from 'angular/index'
+import angular from 'angular'
 import confirmDeletionTemplate from '../post/confirmDeletion.partial.html'
 
 let _url = new WeakMap()
@@ -52,7 +52,7 @@ export default class PostController {
       this.blog.setCurrentPostBySlug(_$routeParams.get(this).slug)
         .then(
           () => {
-            
+
           },
           () => {
             this._setMessage('danger', 'error_404', {}, false, 'icap_blog', true)
@@ -60,14 +60,14 @@ export default class PostController {
           }
         )
     }
-    
+
     // Create a new post on controller init with default publication date, and empty tag array
     this.blog.newPost = {
       publication_date: new Date(),
       tags: []
     }
   }
-  
+
   getPostUrl(slug) {
     return _url.get(this)('icap_blog_post_view', {
       blogId: this.blog.id,
@@ -94,7 +94,7 @@ export default class PostController {
   cancelEdit() {
     _$location.get(this).url('/')
   }
-  
+
   cancelCreate() {
     _$location.get(this).url('/')
   }
@@ -137,7 +137,7 @@ export default class PostController {
           comment.is_published ?
             this._setMessage('success', 'icap_blog_comment_publish_success')
           : this._setMessage('success', 'icap_blog_comment_unpublish_success')
-          
+
         },
         () => {
           comment.is_published ?
@@ -155,7 +155,7 @@ export default class PostController {
   countComments(post) {
     return post.comments.filter(elem => elem.is_published).length
   }
-  
+
   createPost() {
     //Disable buttons
     this.disableButtons = true
@@ -180,7 +180,7 @@ export default class PostController {
         }
       )
   }
-  
+
   updatePost() {
     // Disable buttons
     this.disableButtons = true

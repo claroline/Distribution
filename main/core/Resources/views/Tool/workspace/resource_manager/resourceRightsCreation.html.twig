@@ -29,5 +29,5 @@
 {% endblock %}
 {% block javascripts %}
    {{ parent() }}
-    <script src="{{ asset('bundles/clarolinecore/js/tool/workspace/resource_rights_creation_form.js') }}" type="text/javascript"></script>
+    <script> load({{ chunks('claroline-distribution-main-core-tool-workspace-resource-rights-creation-form')|raw }}) </script>
 {% endblock %}

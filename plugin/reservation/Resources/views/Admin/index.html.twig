@@ -2,7 +2,6 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('packages/mjolnic-bootstrap-colorpicker/dist/css/bootstrap-colorpicker.min.css') }}">
     <style>
         .roles-list {
             max-height: 200px;
@@ -62,7 +61,6 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('packages/mjolnic-bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js') }}"></script>
     <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'reservation' }) }}"></script>
-    <script src="{{ asset('bundles/formalibrereservation/js/admin.js') }}"></script>
+    <script> load({{ chunks('claroline-distribution-plugin-reservation-admin')|raw }}) </script>
 {% endblock %}

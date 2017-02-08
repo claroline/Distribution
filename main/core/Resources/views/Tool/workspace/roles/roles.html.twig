@@ -65,5 +65,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('bundles/clarolinecore/js/tool/workspace/roles.js') }}" type="text/javascript"></script>
+    <script> load({{ chunks('claroline-distribution-main-core-tool-workspace-roles')|raw }}) </script>
 {% endblock %}

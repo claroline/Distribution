@@ -1,5 +1,5 @@
-import angular from 'angular/index'
-import 'angular-ui-translation/angular-translation'
+import angular from 'angular'
+import 'angular-ui-translation'
 import 'ng-file-upload'
 
 import './Field/Checkbox/module'

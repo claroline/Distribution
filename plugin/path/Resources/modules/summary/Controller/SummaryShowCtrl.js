@@ -2,7 +2,7 @@
  * Path summary show
  */
 
-import angular from 'angular/index'
+import angular from 'angular'
 
 import SummaryBaseCtrl from './SummaryBaseCtrl'
 

@@ -54,11 +54,13 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
+        window.unavailableRoles = []
         //disable unavailable checkboxes
         {% for role in unavailableRoles %}
-            $('#profile_form_platformRoles_' + {{ role.getId() }}).attr('disabled', true);
+            window.unavailableRole.push({{ role.getId() }})
         {% endfor %}
     </script>
+    <script> load({{ chunks('claroline-distribution-main-core-profile-edit-profile')|raw }}) </script>
 {% endblock %}
 
 {% block stylesheets %}

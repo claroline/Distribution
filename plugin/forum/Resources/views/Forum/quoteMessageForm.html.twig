@@ -26,8 +26,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script>
-        window.tinymce.activeEditor.selection.select(tinyMCE.activeEditor.getBody(), true);
-        window.tinymce.activeEditor.selection.collapse(false);
-    </script>
+    <script> load({{ chunks('claroline-distribution-plugin-forum-quote-message-form')|raw }}) </script>
 {% endblock %}

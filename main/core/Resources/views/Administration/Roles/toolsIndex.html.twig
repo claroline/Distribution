@@ -67,5 +67,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src='{{ asset('bundles/clarolinecore/js/administration/admin_tools_roles.js') }}' type="text/javascript"></script>
+    <script> load({{ chunks('claroline-distribution-main-core-admin-tool-roles')|raw }}) </script>
 {% endblock %}

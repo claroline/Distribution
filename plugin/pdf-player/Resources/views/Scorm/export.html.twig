@@ -3,10 +3,10 @@
 {% block content %}
     <div data-ng-app="PdfViewer">
         <pdf-viewer
-                data-id="{{ _resource.resourceNode.id }}"
-                data-name="'{{ _resource.resourceNode.name }}'"
-                data-url="'{{ '../files/file_' ~ _resource.resourceNode.id }}'"
-                data-download="false">
+            data-id="{{ _resource.resourceNode.id }}"
+            data-name="'{{ _resource.resourceNode.name }}'"
+            data-url="'{{ '../files/file_' ~ _resource.resourceNode.id }}'"
+            data-download="false">
         </pdf-viewer>
     </div>
 {% endblock %}

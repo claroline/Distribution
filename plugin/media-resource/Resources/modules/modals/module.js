@@ -1,4 +1,4 @@
-import angular from 'angular/index'
+import angular from 'angular'
 import 'angular-bootstrap'
 import '#/main/core/html-truster/module'
 import HelpModalService from './Services/HelpModalService'

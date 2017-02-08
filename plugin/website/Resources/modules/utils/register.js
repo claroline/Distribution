@@ -1,7 +1,7 @@
 /**
  * Created by panos on 4/5/16.
  */
-import angular from 'angular/index'
+import angular from 'angular'
 
 let _app = new WeakMap()
 export default class Register {

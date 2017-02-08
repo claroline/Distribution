@@ -27,7 +27,7 @@
         </h3>
     </div>
 
-    <div id="workspace-home-panel" ng-app="WorkspaceHomeModule">
+    <div id="workspace-home-panel">
         <div class="panel-body" ui-view>
         </div>
     </div>
@@ -43,8 +43,6 @@
     %}
         <link rel="stylesheet" href="{{ asset_url }}" screen="media"/>
     {% endstylesheets %}
-    <link rel='stylesheet' type='text/css' href='{{ asset('packages/angular-bootstrap-colorpicker/css/colorpicker.min.css')}}'>
-    <link rel='stylesheet' type='text/css' href='{{ asset('packages/angular-gridster/dist/angular-gridster.min.css')}}'>
 {% endblock %}
 
 {% block javascripts %}
@@ -54,6 +52,9 @@
         window.canEdit = {{ canEdit ? 'true' : 'false' }}
         window.tabId = {{ tabId }}
     </script>
-    <script src="{{ hotAsset('dist/claroline-distribution-main-core-workspace-home.js') }}"></script>
-    <script src="{{ asset('packages/angular-gridster/dist/angular-gridster.min.js') }}"></script>
+    <script>
+        load({{ chunks('claroline-distribution-main-core-workspace-home')|raw }}, function() {
+            angular.bootstrap('#workspace-home-panel', ['WorkspaceHomeModule']);
+        })
+    </script>
 {% endblock %}

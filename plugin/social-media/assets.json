@@ -1,0 +1,10 @@
+{
+  "webpack": {
+    "entry": {
+      "wall": "wall/app",
+      "like":  "like/app",
+      "comment": "comment/app",
+      "note": "note/app"
+    }
+  }
+}

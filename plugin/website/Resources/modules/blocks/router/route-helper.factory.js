@@ -1,7 +1,7 @@
 /**
  * Created by ptsavdar on 15/03/16.
  */
-import angular from 'angular/index'
+import angular from 'angular'
 
 let _$route = new WeakMap()
 let _routeHelperConfig = new WeakMap()

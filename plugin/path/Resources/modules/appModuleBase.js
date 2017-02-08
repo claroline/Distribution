@@ -2,7 +2,7 @@
  * Base module for Path component
  */
 
-import angular from 'angular/index'
+import angular from 'angular'
 import 'angular-loading-bar'
 
 angular

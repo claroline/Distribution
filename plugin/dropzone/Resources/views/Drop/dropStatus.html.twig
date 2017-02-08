@@ -1,9 +1,4 @@
 {% if dropzoneProgress is defined %}
-
-    {#{{ dump(dropzoneProgress)}}
-    {{dump( dropzoneProgress.states)}}
-    {{ dump(dropzoneProgress.currentState) }}#}
-
     <h5>{{ 'Dropzone progress'|trans({},'icap_dropzone') }}</h5>
     <div class="progress " style="text-align: center;">
         <div class="progress-bar " role="progressbar" aria-valuenow="{{ dropzoneProgress.currentState }}"

@@ -1,0 +1,11 @@
+{
+  "webpack": {
+    "entry": {
+      "manager-menu": "managerMenu",
+      "manager-team-index": "managerTeamIndex",
+      "team-create-form": "teamCreateForm",
+      "user-menu": "userMenu",
+      "user-team-index": "userTeamIndex"
+    }
+  }
+}

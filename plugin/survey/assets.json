@@ -1,0 +1,13 @@
+{
+  "webpack": {
+    "entry": {
+        "models-management": "_old/modelsManagement",
+        "question-form": "_old/questionForm",
+        "quetions-management": "_old/questionsManagement",
+        "show-multiple-choice-question-results": "_old/showMultipleChoiceQuestionResults",
+        "survey-answers-management": "_old/surveyAnswersManagement",
+        "survey-management": "_old/surveyManagement",
+        "survey-results-show": "_old/surveyResultsShow"
+    }
+  }
+}

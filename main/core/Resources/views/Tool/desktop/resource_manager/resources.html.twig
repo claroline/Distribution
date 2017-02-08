@@ -21,19 +21,18 @@
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript">
-        $(function() {
-            Claroline.ResourceManager.createFullManager({
-                "parentElement": $('div.section-content .panel'),
-                "breadcrumbElement": $('ul.breadcrumb'),
-                "isWorkspace": false,
-                "webPath": "{{ getAssetPath() }}",
-                "language": "{{ app.request.locale }}",
-                "zoom": "{{ resourceZoom }}",
-                "displayMode": "{{ displayMode }}",
-                "pickerDirectoryId": "{{ app.session.get('pickerDirectoryId', '0') }}",
-                "preFetchedDirectory": {{ render(controller('ClarolineCoreBundle:Resource:openDirectory'))|raw }},
-                "resourceTypes": {
-                    {% for resourceType in resourceTypes %}
+        window.managerConfig = {
+            "parentElement": $('div.section-content .panel'),
+            "breadcrumbElement": $('ul.breadcrumb'),
+            "isWorkspace": false,
+            "webPath": "{{ getAssetPath() }}",
+            "language": "{{ app.request.locale }}",
+            "zoom": "{{ resourceZoom }}",
+            "displayMode": "{{ displayMode }}",
+            "pickerDirectoryId": "{{ app.session.get('pickerDirectoryId', '0') }}",
+            "preFetchedDirectory": {{ render(controller('ClarolineCoreBundle:Resource:openDirectory'))|raw }},
+            "resourceTypes": {
+                {% for resourceType in resourceTypes %}
                     "{{ resourceType.getName() }}": {
                         "name": "{{ resourceType.getName()|trans({}, 'resource') }}",
                         "actions": {
@@ -63,15 +62,12 @@
                                 {% endif %}
                             {% endfor %}
                         }
-                    } {% if loop.last != true %}, {% endif %}
-                    {% endfor %}
-                }
-            });
-        });
+                    } {% if loop.last != true %},{% endif %}
+                {% endfor %}
+            }
+        }
     </script>
-    <script type="text/javascript">
-        var FileAPI = { debug: false, pingUrl: false }
-    </script>
+    <script> load({{ chunks('claroline-distribution-main-core-tool-desktop-resource-manager-resource')|raw }}) </script>
     <script type="text/javascript" src='{{ asset('packages/fileapi/dist/FileAPI.html5.min.js') }}'></script>
-    <script type="text/javascript" src='{{ asset('bundles/clarolinecore/js/resource/dragndrop.js') }}'></script>
+    <script> load({{ chunks('claroline-distribution-main-core-resource-dnd')|raw }}) </script>
 {% endblock %}

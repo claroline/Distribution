@@ -2,7 +2,7 @@
  * Criterion module
  */
 
-import angular from 'angular/index'
+import angular from 'angular'
 
 import '#/main/core/fos-js-router/module'
 import '#/main/core/translation/module'

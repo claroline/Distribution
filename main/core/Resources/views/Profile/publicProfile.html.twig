@@ -38,25 +38,22 @@
             </h3>
         </div>
         <div class="panel-body">
-            <user-profile ng-app="UserProfile"></user-profile>
+            <user-profile id="user-profile-module"></user-profile>
         </div>
     </div>
 {% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('packages/ng-table/dist/ng-table.css') }}" />
-{% endblock %}
-
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('packages/angular/angular.min.js') }}"></script>
-    <script src="{{ asset('packages/ng-table/dist/ng-table.js') }}"></script>
     <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'cursus' }) }}"></script>
     <script>
         window.userId = {{ user.id }};
         window.disabled = true;
         window.canEdit = {{ canEdit ? 'true': 'false' }};
     </script>
-    <script src="{{ hotAsset('dist/claroline-distribution-main-core-private-profile.js')}}"></script>
+    <script>
+        load({{ chunks('claroline-distribution-main-core-private-profile')|raw }}, function() {
+            angular.bootstrap('#user-profile-module', ['UserProfile']);
+        })
+    </script>
 {% endblock %}
