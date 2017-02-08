@@ -1,6 +1,6 @@
 <?php
 
-namespace UJM\ExoBundle\Controller\Api\Question;
+namespace UJM\ExoBundle\Controller\Api\Item;
 
 use Claroline\CoreBundle\Entity\User;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -9,9 +9,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use UJM\ExoBundle\Controller\Api\AbstractController;
-use UJM\ExoBundle\Entity\Question\Category;
+use UJM\ExoBundle\Entity\Item\Category;
 use UJM\ExoBundle\Library\Validator\ValidationException;
-use UJM\ExoBundle\Manager\Question\CategoryManager;
+use UJM\ExoBundle\Manager\Item\CategoryManager;
 
 /**
  * Category API Controller exposes REST API.
@@ -104,7 +104,7 @@ class CategoryController extends AbstractController
      * @EXT\Route("/{id}", name="question_category_update")
      * @EXT\Method("PUT")
      * @EXT\ParamConverter("user", converter="current_user")
-     * @EXT\ParamConverter("category", class="UJMExoBundle:Question\Category", options={"mapping": {"id": "uuid"}})
+     * @EXT\ParamConverter("category", class="UJMExoBundle:Item\Category", options={"mapping": {"id": "uuid"}})
      *
      * @param User     $user
      * @param Category $category
@@ -148,7 +148,7 @@ class CategoryController extends AbstractController
      * @EXT\Route("/{id}", name="question_category_delete")
      * @EXT\Method("DELETE")
      * @EXT\ParamConverter("user", converter="current_user")
-     * @EXT\ParamConverter("category", class="UJMExoBundle:Question\Category", options={"mapping": {"id": "uuid"}})
+     * @EXT\ParamConverter("category", class="UJMExoBundle:Item\Category", options={"mapping": {"id": "uuid"}})
      *
      * @param User     $user
      * @param Category $category

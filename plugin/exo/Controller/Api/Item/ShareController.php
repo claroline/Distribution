@@ -1,6 +1,6 @@
 <?php
 
-namespace UJM\ExoBundle\Controller\Api\Question;
+namespace UJM\ExoBundle\Controller\Api\Item;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Persistence\ObjectManager;
@@ -11,11 +11,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use UJM\ExoBundle\Controller\Api\AbstractController;
 use UJM\ExoBundle\Library\Validator\ValidationException;
-use UJM\ExoBundle\Manager\Question\ShareManager;
+use UJM\ExoBundle\Manager\Item\ShareManager;
 use UJM\ExoBundle\Serializer\UserSerializer;
 
 /**
- * Question Controller exposes REST API.
+ * Share Controller exposes REST API.
  *
  * @EXT\Route("/questions/share", options={"expose"=true})
  */

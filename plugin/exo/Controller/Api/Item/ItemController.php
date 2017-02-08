@@ -1,6 +1,6 @@
 <?php
 
-namespace UJM\ExoBundle\Controller\Api\Question;
+namespace UJM\ExoBundle\Controller\Api\Item;
 
 use Claroline\CoreBundle\Entity\User;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -8,35 +8,35 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use UJM\ExoBundle\Controller\Api\AbstractController;
-use UJM\ExoBundle\Entity\Question\Question;
+use UJM\ExoBundle\Entity\Item\Item;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Validator\ValidationException;
-use UJM\ExoBundle\Manager\Question\QuestionManager;
+use UJM\ExoBundle\Manager\Item\ItemManager;
 
 /**
- * Question Controller exposes REST API.
+ * Item Controller exposes REST API.
  *
  * @EXT\Route("/questions", options={"expose"=true})
  */
-class QuestionController extends AbstractController
+class ItemController extends AbstractController
 {
     /**
-     * @var QuestionManager
+     * @var ItemManager
      */
-    private $questionManager;
+    private $itemManager;
 
     /**
-     * QuestionController constructor.
+     * ItemController constructor.
      *
      * @DI\InjectParams({
-     *     "questionManager" = @DI\Inject("ujm_exo.manager.question")
+     *     "itemManager" = @DI\Inject("ujm_exo.manager.item")
      * })
      *
-     * @param QuestionManager $questionManager
+     * @param ItemManager $itemManager
      */
-    public function __construct(QuestionManager $questionManager)
+    public function __construct(ItemManager $itemManager)
     {
-        $this->questionManager = $questionManager;
+        $this->itemManager = $itemManager;
     }
 
     /**
@@ -56,12 +56,12 @@ class QuestionController extends AbstractController
         $searchParams = $this->decodeRequestData($request);
 
         return new JsonResponse(
-            $this->questionManager->search($user, $searchParams->filters)
+            $this->itemManager->search($user, $searchParams->filters)
         );
     }
 
     /**
-     * Creates a new Question.
+     * Creates a new Item.
      *
      * @EXT\Route("", name="question_create")
      * @EXT\Method("POST")
@@ -85,16 +85,16 @@ class QuestionController extends AbstractController
         } else {
             // Try to update question with data
             try {
-                $question = $this->questionManager->create($data);
+                $question = $this->itemManager->create($data);
             } catch (ValidationException $e) {
                 $errors = $e->getErrors();
             }
         }
 
         if (empty($errors)) {
-            // Question updated
+            // Item updated
             return new JsonResponse(
-                $this->questionManager->export($question, [Transfer::INCLUDE_SOLUTIONS, Transfer::INCLUDE_ADMIN_META])
+                $this->itemManager->export($question, [Transfer::INCLUDE_SOLUTIONS, Transfer::INCLUDE_ADMIN_META])
             );
         } else {
             // Invalid data received
@@ -103,18 +103,18 @@ class QuestionController extends AbstractController
     }
 
     /**
-     * Updates a Question.
+     * Updates a Item.
      *
      * @EXT\Route("/{id}", name="question_update")
      * @EXT\Method("PUT")
-     * @EXT\ParamConverter("question", class="UJMExoBundle:Question\Question", options={"mapping": {"id": "uuid"}})
+     * @EXT\ParamConverter("question", class="UJMExoBundle:Item\Item", options={"mapping": {"id": "uuid"}})
      *
-     * @param Question $question
+     * @param Item $question
      * @param Request  $request
      *
      * @return JsonResponse
      */
-    public function updateAction(Question $question, Request $request)
+    public function updateAction(Item $question, Request $request)
     {
         $errors = [];
 
@@ -128,16 +128,16 @@ class QuestionController extends AbstractController
         } else {
             // Try to update question with data
             try {
-                $question = $this->questionManager->update($question, $data);
+                $question = $this->itemManager->update($question, $data);
             } catch (ValidationException $e) {
                 $errors = $e->getErrors();
             }
         }
 
         if (empty($errors)) {
-            // Question updated
+            // Item updated
             return new JsonResponse(
-                $this->questionManager->export($question, [Transfer::INCLUDE_SOLUTIONS, Transfer::INCLUDE_ADMIN_META])
+                $this->itemManager->export($question, [Transfer::INCLUDE_SOLUTIONS, Transfer::INCLUDE_ADMIN_META])
             );
         } else {
             // Invalid data received
@@ -146,7 +146,7 @@ class QuestionController extends AbstractController
     }
 
     /**
-     * Deletes a Question.
+     * Deletes a Item.
      *
      * @EXT\Route("/{id}", name="question_delete")
      * @EXT\Method("DELETE")
@@ -170,7 +170,7 @@ class QuestionController extends AbstractController
             ];
         } else {
             try {
-                $this->questionManager->delete($data, $user);
+                $this->itemManager->delete($data, $user);
             } catch (ValidationException $e) {
                 $errors = $e->getErrors();
             }
