@@ -10,6 +10,7 @@ use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
@@ -97,8 +98,6 @@ class ImgFormatListener
                 $text = $this->replaceLink($text, $match[0], $match[1]);
             }
         }
-
-        $event->setText($text);
     }
 
     /**
@@ -167,7 +166,7 @@ class ImgFormatListener
         $width = $imgdata[1];
         $height = $imgdata[2];
         $style = $imgdata[3];
-        $url = $this->router->generate('claro_resource_download')."?ids={$node->getId()}";
+        $url = $this->router->generate('claro_file_get_media', ['node' => $node->getId()], UrlGeneratorInterface::ABSOLUTE_URL);
         $img = '<img ';
 
         if ($width !== '') {
