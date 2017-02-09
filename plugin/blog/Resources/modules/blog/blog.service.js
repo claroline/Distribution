@@ -291,7 +291,7 @@ export default class BlogService {
     })
 
     let Archives = _$resource.get(this)(url)
-    Archives.query(
+    Archives.get(
       success => {
         this.archives = success
       }
