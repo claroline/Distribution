@@ -47,6 +47,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -1345,27 +1346,72 @@ class WorkspaceController extends Controller
     public function importAction()
     {
         $importType = new ImportWorkspaceType();
-        $form = $this->container->get('form.factory')->create($importType,  new Workspace());
+        $form = $this->container->get('form.factory')->create($importType, new Workspace());
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
-            $file = $form->get('workspace')->getData();
-            $template = new File($file);
-            $workspace = $form->getData();
-            $workspace->setCreator($this->tokenStorage->getToken()->getUser());
-            $this->workspaceManager->create($workspace, $template);
-        } else {
-            return new Response(
-                $this->templating->render(
-                    'ClarolineCoreBundle:Workspace:importForm.html.twig',
-                    ['form' => $form->createView()]
-                )
-            );
+            $urlImport = false;
+            if ($form->get('workspace')->getData()) {
+                $file = $form->get('workspace')->getData();
+                $template = new File($file);
+            } elseif ($form->get('fileUrl')->getData() && filter_var($form->get('fileUrl')->getData(), FILTER_VALIDATE_URL)) {
+                $urlImport = true;
+                $url = $form->get('fileUrl')->getData();
+                $template = $this->importFromUrl($url);
+                if (!$template) {
+                    $msg = $this->translator->trans(
+                        'invalid_host',
+                        ['%url%' => $url],
+                        'platform'
+                    );
+                    $flashBag = $this->session->getFlashBag();
+                    $flashBag->add('error', $msg);
+                }
+            }
+
+            if ($template) {
+                $workspace = $form->getData();
+                $workspace->setCreator($this->tokenStorage->getToken()->getUser());
+                $this->workspaceManager->create($workspace, $template);
+                //delete manually created tmp if url import
+                if ($urlImport) {
+                    $fs = new FileSystem();
+                    $fs->remove($template);
+                }
+                $route = $this->router->generate('claro_workspace_by_user');
+                return new RedirectResponse($route);
+            }
         }
 
-        $route = $this->router->generate('claro_workspace_by_user');
+        return new Response(
+            $this->templating->render(
+                'ClarolineCoreBundle:Workspace:importForm.html.twig',
+                ['form' => $form->createView()]
+            )
+        );
+    }
 
-        return new RedirectResponse($route);
+    private function importFromUrl($url)
+    {
+        $filepath = $this->container->get('claroline.config.platform_config_handler')->getParameter('tmp_dir').DIRECTORY_SEPARATOR.uniqid();
+        $file = fopen ($filepath, 'w+');
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_FILE, $file); 
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 15);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 900);
+        curl_exec($ch);
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $template = null;
+        if (!curl_errno($ch)) { 
+            if ($httpcode === "200") {
+               $template = new File($filepath);
+            }
+        }
+        curl_close($ch);
+        fclose($file);
+        return $template;
     }
 
     /**

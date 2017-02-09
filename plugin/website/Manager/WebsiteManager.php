@@ -17,6 +17,7 @@ use Claroline\CoreBundle\Persistence\ObjectManager;
 use Icap\WebsiteBundle\Entity\Website;
 use Icap\WebsiteBundle\Entity\WebsiteOptions;
 use Icap\WebsiteBundle\Entity\WebsitePage;
+use Icap\WebsiteBundle\Entity\WebsitePageTypeEnum;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Routing\Router;
 
@@ -122,7 +123,7 @@ class WebsiteManager
      *
      * @return Website
      */
-    public function importWebsite(array $data, $rootPath, $test = false)
+    public function importWebsite(array $data, $rootPath, array $resourcesCreated = [], $test = false)
     {
         $website = new Website($test);
         if (isset($data['data'])) {
@@ -135,6 +136,27 @@ class WebsiteManager
             foreach ($websiteData['pages'] as $websitePage) {
                 $entityWebsitePage = new WebsitePage();
                 $entityWebsitePage->setWebsite($website);
+
+                //resource link case, need no map manifest IDs to matching resource
+                if ($websitePage['type'] == WebsitePageTypeEnum::RESOURCE_PAGE) {
+                    $resource_node = null;
+                    //full workspace import, external resource ID, search matching resource amongst other imported resources
+                    if(isset($resourcesCreated) && isset($websitePage['resource_node_id']) && isset($resourcesCreated[$websitePage['resource_node_id']])) {
+                        //resource_node_id is the UID of the resource
+                        if(isset($resourcesCreated[$websitePage['resource_node_id']])){
+                            $resource_node = $resourcesCreated[$websitePage['resource_node_id']]->getResourceNode();
+                        }
+                    //standalone website import, ID references existing entity
+                    }elseif(isset($websitePage['resource_node_id'])){
+                        $resource_node = $this->om->getRepository('ClarolineCoreBundle:Resource\ResourceNode')
+                            ->findOneBy(['id' => $websitePage['resource_node_id']]);
+                    }
+                    if($resource_node !== null) {
+                        $websitePage['resource_node'] = $resource_node;
+                        //$websitePage['resource_node_type'] = $resource_node->getResourceType()->getName();
+                    }
+                }
+
                 $entityWebsitePage->importFromArray($websitePage, $rootPath);
                 if ($websitePage['is_root']) {
                     $website->setRoot($entityWebsitePage);
@@ -151,8 +173,10 @@ class WebsiteManager
 
                 $websitePagesMap[$websitePage['id']] = $entityWebsitePage;
             }
-            $this->om->flush();
-            $websiteOptions->importFromArray(
+            //flush, otherwise we dont have the website ID needed for building uploadPath for banner
+            $this->om->forceFlush();
+            
+            $website->getOptions()->importFromArray(
                 $this->webDir,
                 $websiteData['options'],
                 $rootPath

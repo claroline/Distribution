@@ -15,6 +15,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Claroline\CoreBundle\Validator\Constraints\FileUpload;
 
 class ImportWorkspaceType extends AbstractType
 {
@@ -33,7 +34,12 @@ class ImportWorkspaceType extends AbstractType
         $builder->add(
             'workspace',
             'file',
-            array('label' => 'file', 'constraints' => array(new NotBlank()), 'mapped' => false)
+            array('label' => 'file', 'mapped' => false, 'required' => false, 'constraints' => array(new FileUpload()))
+        );
+        $builder->add(
+            'fileUrl',
+            'url',
+            array('label' => 'URL', 'mapped' => false, 'required' => false)
         );
         $builder->add(
             'description',

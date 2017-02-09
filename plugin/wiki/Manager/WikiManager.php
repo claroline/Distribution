@@ -112,15 +112,15 @@ class WikiManager
         $wiki = new Wiki();
         if (isset($data['data'])) {
             $wikiData = $data['data'];
-
             $wiki->setMode($wikiData['options']['mode']);
+            $wiki->setDisplaySectionNumbers($wikiData['options']['display_section_numbers']);
             $sectionsMap = array();
             foreach ($wikiData['sections'] as $section) {
                 $entitySection = new Section();
                 $entitySection->setWiki($wiki);
                 $entitySection->setDeleted($section['deleted']);
-                $entitySection->setDeletionDate($section['deletion_date']);
-                $entitySection->setCreationDate($section['creation_date']);
+                $entitySection->setDeletionDate(($section['deletion_date'] !== null) ? new \DateTime('@'.$section['deletion_date']) : null);
+                $entitySection->setCreationDate(($section['creation_date'] !== null) ? new \DateTime('@'.$section['creation_date']) : null);
                 $author = null;
                 if ($section['author'] !== null) {
                     $author = $this->userRepository->findOneByUsername($section['author']);
@@ -144,7 +144,7 @@ class WikiManager
                     $entityContribution = new Contribution();
                     $entityContribution->setSection($entitySection);
                     $entityContribution->setTitle($contributionData['title']);
-                    $entityContribution->setCreationDate($contributionData['creation_date']);
+                    $entityContribution->setCreationDate(($contributionData['creation_date'] !== null) ? new \DateTime('@'.$contributionData['creation_date']) : null);
                     $contributor = null;
                     if ($contributionData['contributor'] !== null) {
                         $contributor = $this->userRepository->findOneByUsername($contributionData['contributor']);
@@ -232,6 +232,7 @@ class WikiManager
         $data = array(
             'options' => array(
                 'mode' => $object->getMode(),
+                'display_section_numbers' => $object->getDisplaySectionNumbers(),
             ),
             'sections' => $sectionsArray,
         );

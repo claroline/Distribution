@@ -1136,9 +1136,17 @@ class WebsiteOptions
         return $optionsArray;
     }
 
+    public function createUploadFolder($uploadFolderPath)
+    {
+        if (!file_exists($uploadFolderPath)) {
+            mkdir($uploadFolderPath, 0777, true);
+        }
+    }
+
     public function importFromArray($webDir, array $optionsArray, $rootPath = null)
     {
         $uploadedDir = $webDir.DIRECTORY_SEPARATOR.$this->getUploadDir();
+        $this->createUploadFolder($uploadedDir);
         $this->copyrightEnabled = $optionsArray['copyright_enabled'];
         $this->copyrightText = $optionsArray['copyright_text'];
         $this->analyticsProvider = $optionsArray['analytics_provider'];
