@@ -1,4 +1,4 @@
-<article data-ng-class="{'unpublished': !post.is_published}">
+<article data-ng-class="{'unpublished': !post.is_published}" data-ng-if="post.is_published || vm.blog.isGrantedAdmin">
 
     <header>
         <h1><a data-ng-click="vm.displayPost(post)" title="">{{ post.title }}</a></h1>
