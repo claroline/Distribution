@@ -6,12 +6,12 @@ use Claroline\CoreBundle\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use UJM\ExoBundle\Entity\Exercise;
-use UJM\ExoBundle\Entity\Question\Question;
+use UJM\ExoBundle\Entity\Item\Item;
 
 /**
- * QuestionRepository.
+ * ItemRepository.
  */
-class QuestionRepository extends EntityRepository
+class ItemRepository extends EntityRepository
 {
     /**
      * Search questions.
@@ -38,7 +38,7 @@ class QuestionRepository extends EntityRepository
                 // Search by creators
             } else {
                 // Get all questions of the current user
-                $qb->leftJoin('UJM\ExoBundle\Entity\Question\Shared', 's', Join::WITH, 'q = s.question');
+                $qb->leftJoin('UJM\ExoBundle\Entity\Item\Shared', 's', Join::WITH, 'q = s.question');
                 $qb->where('(q.creator = :user OR s.user = :user)');
                 $qb->setParameter('user', $user);
             }
@@ -103,15 +103,15 @@ class QuestionRepository extends EntityRepository
      *
      * @param Exercise $exercise
      *
-     * @return Question[]
+     * @return Item[]
      */
     public function findByExercise(Exercise $exercise)
     {
         return $this->getEntityManager()
             ->createQuery('
                 SELECT q
-                FROM UJM\ExoBundle\Entity\Question\Question AS q
-                JOIN UJM\ExoBundle\Entity\StepQuestion AS sq WITH sq.question = q 
+                FROM UJM\ExoBundle\Entity\Item\Item AS q
+                JOIN UJM\ExoBundle\Entity\StepItem AS sq WITH sq.question = q
                 JOIN UJM\ExoBundle\Entity\Step AS s WITH sq.step = s AND s.exercise = :exercise
             ')
             ->setParameter('exercise', $exercise)
@@ -123,7 +123,7 @@ class QuestionRepository extends EntityRepository
      *
      * @param array $uuids
      *
-     * @return Question[]
+     * @return Item[]
      */
     public function findByUuids(array $uuids)
     {
