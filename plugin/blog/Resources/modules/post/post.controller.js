@@ -63,9 +63,8 @@ export default class PostController {
         )
     }
     
-    // Create a new post on controller init with default publication date, and empty tag array
+    // Create a new post on controller init with empty tag array
     this.blog.newPost = {
-      publication_date: new Date(),
       tags: []
     }
   }
@@ -306,6 +305,10 @@ export default class PostController {
 
   _cancelModal() {
     _modalInstance.get(this).dismiss()
+  }
+
+  isPublishable(post) {
+    return  new Date(post.publication_date) <= new Date()
   }
 
 }

@@ -285,7 +285,7 @@ class Post extends Statusable
      *
      * @return Post
      */
-    public function setPublicationDate(\DateTime $publicationDate)
+    public function setPublicationDate(\DateTime $publicationDate = null)
     {
         $this->publicationDate = $publicationDate;
 

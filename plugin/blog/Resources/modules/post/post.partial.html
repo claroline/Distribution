@@ -10,7 +10,7 @@
                 data-ng-if="postCtrl.blog.isGrantedEdit || postCtrl.blog.isGrantedPost && postCtrl.blog.currentPost.author.id == postCtrl.blog.user">
 
             <button
-                    data-ng-if="postCtrl.blog.isGrantedEdit"
+                    data-ng-if="postCtrl.blog.isGrantedEdit && postCtrl.blog.currentPost.publication_date && postCtrl.isPublishable(postCtrl.blog.currentPost)"
                     class="btn btn-default btn-xs"
                     data-ng-click="postCtrl.togglePostVisibility(postCtrl.blog.currentPost)"
                     data-ng-disabled="postCtrl.blog.currentPost.is_request_pending">
@@ -48,7 +48,7 @@
                                 data-ng-click="panelsCtrl.filterByAuthor(postCtrl.blog.currentPost.author)">{{ postCtrl.blog.currentPost.author.firstName }} {{ postCtrl.blog.currentPost.author.lastName }}</a></small>
             </li>
 
-            <li data-ng-if="postCtrl.blog.currentPost.publication_date"><span class="fa fa-calendar"></span> <small><time>{{ postCtrl.blog.currentPost.publication_date | datetime }}</time></small></li>
+            <li data-ng-if="postCtrl.blog.currentPost.publication_date != null"><span class="fa fa-calendar"></span> <small><time>{{ postCtrl.blog.currentPost.publication_date | datetime }}</time></small></li>
 
             <li data-ng-if="postCtrl.blog.options.display_post_view_counter && postCtrl.blog.currentPost.view_counter > 0">
                 <span class="fa fa-eye"></span> <small>{{ 'view'|transChoice:postCtrl.blog.currentPost.view_counter:{'viewCounter': postCtrl.blog.currentPost.view_counter}:'icap_blog' }}</small>

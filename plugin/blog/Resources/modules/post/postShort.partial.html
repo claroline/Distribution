@@ -8,7 +8,7 @@
                 data-ng-if="vm.blog.isGrantedEdit || vm.blog.isGrantedPost && post.author.id == vm.blog.user">
 
             <button
-                    data-ng-if="vm.blog.isGrantedEdit"
+                    data-ng-if="vm.blog.isGrantedEdit && post.publication_date && postCtrl.isPublishable(post)"
                     class="btn btn-default btn-xs"
                     data-ng-click="postCtrl.togglePostVisibility(post)"
                     data-ng-disabled="post.is_request_pending">
