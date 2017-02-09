@@ -8,6 +8,7 @@ use UJM\ExoBundle\Entity\Misc\CellChoice;
 use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
 use UJM\ExoBundle\Entity\QuestionType\GridQuestion;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
+use UJM\ExoBundle\Library\Attempt\GenericPenalty;
 use UJM\ExoBundle\Library\Attempt\GenericScore;
 use UJM\ExoBundle\Library\Options\GridSumMode;
 use UJM\ExoBundle\Library\Question\QuestionType;
@@ -129,13 +130,10 @@ class GridDefinition extends AbstractDefinition
                 return $this->getCorrectAnswerForFixOrSumCellsMode($question, $answer);
               break;
               case GridSumMode::SUM_COLUMN:
-                // TODO : do not forget that some column will not have a score !!!
-                return new CorrectedAnswer();
+                return $this->getCorrectAnswerForColSumMode($question, $answer);
               break;
               case GridSumMode::SUM_ROWS:
-                // TODO : do not forget that some rows will not have a score !!!
-                // if in the row no cells with choices -> no score
-                return new CorrectedAnswer();
+                return $this->getCorrectAnswerForRowSumMode($question, $answer);
               break;
             }
         }
@@ -218,6 +216,8 @@ class GridDefinition extends AbstractDefinition
                     if ($all) {
                         $scoreToApply = $rowCells[0]->getChoices()[0]->getScore();
                         $corrected->addExpected(new GenericScore($scoreToApply));
+                    } else {
+                        $corrected->addUnexpected(new GenericPenalty($question->getPenalty()));
                     }
                 }
             }
@@ -268,6 +268,8 @@ class GridDefinition extends AbstractDefinition
                     if ($all) {
                         $scoreToApply = $rowCells[0]->getChoices()[0]->getScore();
                         $corrected->addExpected(new GenericScore($scoreToApply));
+                    } else {
+                        $corrected->addUnexpected(new GenericPenalty($question->getPenalty()));
                     }
                 }
             }
