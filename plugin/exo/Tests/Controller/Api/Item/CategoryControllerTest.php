@@ -1,12 +1,12 @@
 <?php
 
-namespace UJM\ExoBundle\Tests\Controller\Api\Question;
+namespace UJM\ExoBundle\Tests\Controller\Api\Item;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Testing\RequestTrait;
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Claroline\CoreBundle\Persistence\ObjectManager;
-use UJM\ExoBundle\Entity\Question\Category;
+use UJM\ExoBundle\Entity\Item\Category;
 use UJM\ExoBundle\Library\Testing\Persister;
 
 class CategoryControllerTest extends TransactionalTestCase
@@ -105,7 +105,7 @@ class CategoryControllerTest extends TransactionalTestCase
 
         // Checks that John has one more category
         // John has 2 categories : the one created in the `setUp` + this one
-        $categories = $this->om->getRepository('UJMExoBundle:Question\Category')->findBy([
+        $categories = $this->om->getRepository('UJMExoBundle:Item\Category')->findBy([
             'user' => $this->john,
         ]);
         $this->assertCount(2, $categories);

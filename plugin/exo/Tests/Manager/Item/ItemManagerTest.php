@@ -1,14 +1,14 @@
 <?php
 
-namespace UJM\ExoBundle\Tests\Manager\Question;
+namespace UJM\ExoBundle\Tests\Manager\Item;
 
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
-use UJM\ExoBundle\Manager\Question\QuestionManager;
+use UJM\ExoBundle\Manager\Item\ItemManager;
 
-class QuestionManagerTest extends TransactionalTestCase
+class ItemManagerTest extends TransactionalTestCase
 {
     /**
-     * @var QuestionManager
+     * @var ItemManager
      */
     private $manager;
 

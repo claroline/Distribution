@@ -1,11 +1,11 @@
 <?php
 
-namespace UJM\ExoBundle\Tests\Validator\JsonSchema\Question\Type;
+namespace UJM\ExoBundle\Tests\Validator\JsonSchema\Item\Type;
 
 use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Testing\Json\JsonSchemaTestCase;
 use UJM\ExoBundle\Validator\JsonSchema\Misc\KeywordValidator;
-use UJM\ExoBundle\Validator\JsonSchema\Question\Type\ClozeQuestionValidator;
+use UJM\ExoBundle\Validator\JsonSchema\Item\Type\ClozeQuestionValidator;
 
 class ClozeQuestionValidatorTest extends JsonSchemaTestCase
 {

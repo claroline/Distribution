@@ -4,11 +4,11 @@ namespace UJM\ExoBundle\Tests\Repository;
 
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Claroline\CoreBundle\Persistence\ObjectManager;
-use UJM\ExoBundle\Entity\Question\Question;
+use UJM\ExoBundle\Entity\Item\Item;
 use UJM\ExoBundle\Library\Testing\Persister;
-use UJM\ExoBundle\Repository\QuestionRepository;
+use UJM\ExoBundle\Repository\ItemRepository;
 
-class QuestionRepositoryTest extends TransactionalTestCase
+class ItemRepositoryTest extends TransactionalTestCase
 {
     /**
      * @var ObjectManager
@@ -21,14 +21,14 @@ class QuestionRepositoryTest extends TransactionalTestCase
     private $persist;
 
     /**
-     * @var QuestionRepository
+     * @var ItemRepository
      */
     private $repo;
 
     /**
      * A list of questions that can be used in all tests.
      *
-     * @var Question[]
+     * @var Item[]
      */
     private $questions = [];
 
@@ -38,7 +38,7 @@ class QuestionRepositoryTest extends TransactionalTestCase
 
         $this->om = $this->client->getContainer()->get('claroline.persistence.object_manager');
         $this->persist = new Persister($this->om);
-        $this->repo = $this->om->getRepository('UJMExoBundle:Question\Question');
+        $this->repo = $this->om->getRepository('UJMExoBundle:Item\Item');
 
         // Creates some questions
         $this->questions = [

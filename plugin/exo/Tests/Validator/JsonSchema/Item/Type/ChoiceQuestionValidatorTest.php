@@ -1,10 +1,10 @@
 <?php
 
-namespace UJM\ExoBundle\Tests\Validator\JsonSchema\Question\Type;
+namespace UJM\ExoBundle\Tests\Validator\JsonSchema\Item\Type;
 
 use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Testing\Json\JsonSchemaTestCase;
-use UJM\ExoBundle\Validator\JsonSchema\Question\Type\ChoiceQuestionValidator;
+use UJM\ExoBundle\Validator\JsonSchema\Item\Type\ChoiceQuestionValidator;
 
 class ChoiceQuestionValidatorTest extends JsonSchemaTestCase
 {

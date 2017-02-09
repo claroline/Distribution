@@ -1,20 +1,20 @@
 <?php
 
-namespace UJM\ExoBundle\Tests\Serializer\Question;
+namespace UJM\ExoBundle\Tests\Serializer\Item;
 
 use UJM\ExoBundle\Library\Testing\Json\JsonDataTestCase;
-use UJM\ExoBundle\Serializer\Question\QuestionSerializer;
-use UJM\ExoBundle\Validator\JsonSchema\Question\QuestionValidator;
+use UJM\ExoBundle\Serializer\Item\ItemSerializer;
+use UJM\ExoBundle\Validator\JsonSchema\Item\ItemValidator;
 
-class QuestionSerializerTest extends JsonDataTestCase
+class ItemSerializerTest extends JsonDataTestCase
 {
     /**
-     * @var QuestionValidator
+     * @var ItemValidator
      */
     private $validator;
 
     /**
-     * @var QuestionSerializer
+     * @var ItemSerializer
      */
     private $serializer;
 

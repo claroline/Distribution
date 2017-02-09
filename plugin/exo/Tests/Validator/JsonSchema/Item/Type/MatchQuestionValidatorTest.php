@@ -1,15 +1,15 @@
 <?php
 
-namespace UJM\ExoBundle\Tests\Validator\JsonSchema\Question\Type;
+namespace UJM\ExoBundle\Tests\Validator\JsonSchema\Item\Type;
 
 use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Testing\Json\JsonSchemaTestCase;
-use UJM\ExoBundle\Validator\JsonSchema\Question\Type\GraphicQuestionValidator;
+use UJM\ExoBundle\Validator\JsonSchema\Item\Type\MatchQuestionValidator;
 
-class GraphicQuestionValidatorTest extends JsonSchemaTestCase
+class MatchQuestionValidatorTest extends JsonSchemaTestCase
 {
     /**
-     * @var GraphicQuestionValidator
+     * @var MatchQuestionValidator
      */
     private $validator;
 
@@ -18,7 +18,7 @@ class GraphicQuestionValidatorTest extends JsonSchemaTestCase
         parent::setUp();
 
         $this->validator = $this->injectJsonSchemaMock(
-            new GraphicQuestionValidator()
+            new MatchQuestionValidator()
         );
     }
 
@@ -27,7 +27,7 @@ class GraphicQuestionValidatorTest extends JsonSchemaTestCase
      */
     public function testNoSolutionWithPositiveScoreThrowsError()
     {
-        $questionData = $this->loadTestData('question/graphic/invalid/no-solution-with-positive-score.json');
+        $questionData = $this->loadTestData('question/match/invalid/no-solution-with-positive-score.json');
 
         $errors = $this->validator->validate($questionData, [Validation::REQUIRE_SOLUTIONS]);
 
@@ -36,5 +36,15 @@ class GraphicQuestionValidatorTest extends JsonSchemaTestCase
             'path' => '/solutions',
             'message' => 'There is no solution with a positive score',
         ], $errors));
+    }
+
+    /**
+     * The validator MUST return errors if the solution ids do not match label/proposal ids.
+     */
+    public function testIncoherentIdsInSolutionThrowErrors()
+    {
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
     }
 }
