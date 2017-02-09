@@ -1,29 +1,29 @@
 <?php
 
-namespace UJM\ExoBundle\Manager\Question;
+namespace UJM\ExoBundle\Manager\Item;
 
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\Common\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\Exercise;
-use UJM\ExoBundle\Entity\Question\Question;
+use UJM\ExoBundle\Entity\Item\Item;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Options\Validation;
-use UJM\ExoBundle\Library\Question\QuestionDefinitionsCollection;
+use UJM\ExoBundle\Library\Item\ItemDefinitionsCollection;
 use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Manager\Attempt\ScoreManager;
 use UJM\ExoBundle\Repository\AnswerRepository;
-use UJM\ExoBundle\Repository\QuestionRepository;
-use UJM\ExoBundle\Serializer\Question\HintSerializer;
-use UJM\ExoBundle\Serializer\Question\QuestionSerializer;
-use UJM\ExoBundle\Validator\JsonSchema\Question\QuestionValidator;
+use UJM\ExoBundle\Repository\ItemRepository;
+use UJM\ExoBundle\Serializer\Item\HintSerializer;
+use UJM\ExoBundle\Serializer\Item\ItemSerializer;
+use UJM\ExoBundle\Validator\JsonSchema\Item\ItemValidator;
 
 /**
- * @DI\Service("ujm_exo.manager.question")
+ * @DI\Service("ujm_exo.manager.item")
  */
-class QuestionManager
+class ItemManager
 {
     /**
      * @var ObjectManager
@@ -36,17 +36,17 @@ class QuestionManager
     private $scoreManager;
 
     /**
-     * @var QuestionRepository
+     * @var ItemRepository
      */
     private $repository;
 
     /**
-     * @var QuestionValidator
+     * @var ItemValidator
      */
     private $validator;
 
     /**
-     * @var QuestionSerializer
+     * @var ItemSerializer
      */
     private $serializer;
 
@@ -56,9 +56,9 @@ class QuestionManager
     private $answerRepository;
 
     /**
-     * @var QuestionDefinitionsCollection
+     * @var ItemDefinitionsCollection
      */
-    private $questionDefinitions;
+    private $itemDefinitions;
 
     /**
      * @var HintSerializer
@@ -66,45 +66,45 @@ class QuestionManager
     private $hintSerializer;
 
     /**
-     * QuestionManager constructor.
+     * ItemManager constructor.
      *
      * @DI\InjectParams({
-     *     "om"                  = @DI\Inject("claroline.persistence.object_manager"),
-     *     "scoreManager"        = @DI\Inject("ujm_exo.manager.score"),
-     *     "validator"           = @DI\Inject("ujm_exo.validator.question"),
-     *     "serializer"          = @DI\Inject("ujm_exo.serializer.question"),
-     *     "questionDefinitions" = @DI\Inject("ujm_exo.collection.item_definitions"),
-     *     "hintSerializer"      = @DI\Inject("ujm_exo.serializer.hint")
+     *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
+     *     "scoreManager"    = @DI\Inject("ujm_exo.manager.score"),
+     *     "validator"       = @DI\Inject("ujm_exo.validator.item"),
+     *     "serializer"      = @DI\Inject("ujm_exo.serializer.item"),
+     *     "itemDefinitions" = @DI\Inject("ujm_exo.collection.item_definitions"),
+     *     "hintSerializer"  = @DI\Inject("ujm_exo.serializer.hint")
      * })
      *
-     * @param ObjectManager                 $om
-     * @param ScoreManager                  $scoreManager
-     * @param QuestionValidator             $validator
-     * @param QuestionSerializer            $serializer
-     * @param QuestionDefinitionsCollection $questionDefinitions
-     * @param HintSerializer                $hintSerializer
+     * @param ObjectManager             $om
+     * @param ScoreManager              $scoreManager
+     * @param ItemValidator             $validator
+     * @param ItemSerializer            $serializer
+     * @param ItemDefinitionsCollection $itemDefinitions
+     * @param HintSerializer            $hintSerializer
      */
     public function __construct(
         ObjectManager $om,
         ScoreManager $scoreManager,
-        QuestionValidator $validator,
-        QuestionSerializer $serializer,
-        QuestionDefinitionsCollection $questionDefinitions,
+        ItemValidator $validator,
+        ItemSerializer $serializer,
+        ItemDefinitionsCollection $itemDefinitions,
         HintSerializer $hintSerializer
     ) {
         $this->om = $om;
         $this->scoreManager = $scoreManager;
-        $this->repository = $this->om->getRepository('UJMExoBundle:Question\Question');
+        $this->repository = $this->om->getRepository('UJMExoBundle:Item\Item');
         $this->answerRepository = $this->om->getRepository('UJMExoBundle:Attempt\Answer');
         $this->validator = $validator;
         $this->serializer = $serializer;
-        $this->questionDefinitions = $questionDefinitions;
+        $this->itemDefinitions = $itemDefinitions;
         $this->hintSerializer = $hintSerializer;
     }
 
-    public function canEdit(Question $question, User $user)
+    public function canEdit(Item $question, User $user)
     {
-        $shared = $this->om->getRepository('UJMExoBundle:Question\Shared')
+        $shared = $this->om->getRepository('UJMExoBundle:Item\Shared')
             ->findOneBy([
                 'question' => $question,
                 'user' => $user,
@@ -137,7 +137,7 @@ class QuestionManager
         // Build search result object
         $searchResults = new \stdClass();
         $searchResults->totalResults = count($results);
-        $searchResults->questions = array_map(function (Question $question) {
+        $searchResults->questions = array_map(function (Item $question) {
             return $this->export($question, [Transfer::INCLUDE_ADMIN_META, Transfer::INCLUDE_SOLUTIONS]);
         }, $results);
 
@@ -153,30 +153,30 @@ class QuestionManager
     }
 
     /**
-     * Validates and creates a new Question from raw data.
+     * Validates and creates a new Item from raw data.
      *
      * @param \stdClass $data
      *
-     * @return Question
+     * @return Item
      *
      * @throws ValidationException
      */
     public function create(\stdClass $data)
     {
-        return $this->update(new Question(), $data);
+        return $this->update(new Item(), $data);
     }
 
     /**
-     * Validates and updates a Question entity with raw data.
+     * Validates and updates a Item entity with raw data.
      *
-     * @param Question  $question
+     * @param Item  $question
      * @param \stdClass $data
      *
-     * @return Question
+     * @return Item
      *
      * @throws ValidationException
      */
-    public function update(Question $question, \stdClass $data)
+    public function update(Item $question, \stdClass $data)
     {
         // Validate received data
         $errors = $this->validator->validate($data, [Validation::REQUIRE_SOLUTIONS]);
@@ -184,7 +184,7 @@ class QuestionManager
             throw new ValidationException('Question is not valid', $errors);
         }
 
-        // Update Question with new data
+        // Update Item with new data
         $this->serializer->deserialize($data, $question);
 
         // Save to DB
@@ -197,19 +197,19 @@ class QuestionManager
     /**
      * Exports a question.
      *
-     * @param Question $question
-     * @param array    $options
+     * @param Item  $question
+     * @param array $options
      *
      * @return \stdClass
      */
-    public function export(Question $question, array $options = [])
+    public function export(Item $question, array $options = [])
     {
         return $this->serializer->serialize($question, $options);
     }
 
     /**
-     * Deletes a Question.
-     * It's only possible if the Question is not used in an Exercise.
+     * Deletes a Item.
+     * It's only possible if the Item is not used in an Exercise.
      *
      * @param array $questions - the uuids of questions to delete
      * @param User  $user
@@ -243,7 +243,7 @@ class QuestionManager
         $question = $this->serializer->deserialize($questionData);
 
         // Let the question correct the answer
-        $definition = $this->questionDefinitions->get($question->getMimeType());
+        $definition = $this->itemDefinitions->get($question->getMimeType());
         $corrected = $definition->correctAnswer($question->getInteraction(), json_decode($answer->getData()));
         if (!$corrected instanceof CorrectedAnswer) {
             $corrected = new CorrectedAnswer();
@@ -277,10 +277,10 @@ class QuestionManager
     public function calculateTotal(\stdClass $questionData)
     {
         // Get entities for score calculation
-        $question = $this->serializer->deserialize($questionData, new Question());
+        $question = $this->serializer->deserialize($questionData, new Item());
 
         // Get the expected answer for the question
-        $definition = $this->questionDefinitions->get($question->getMimeType());
+        $definition = $this->itemDefinitions->get($question->getMimeType());
         $expected = $definition->expectAnswer($question->getInteraction());
 
         return $this->scoreManager->calculateTotal(json_decode($question->getScoreRule()), $expected);
@@ -289,12 +289,12 @@ class QuestionManager
     /**
      * Get question statistics inside an Exercise.
      *
-     * @param Question $question
+     * @param Item $question
      * @param Exercise $exercise
      *
      * @return \stdClass
      */
-    public function getStatistics(Question $question, Exercise $exercise = null)
+    public function getStatistics(Item $question, Exercise $exercise = null)
     {
         $questionStats = new \stdClass();
 
@@ -321,7 +321,7 @@ class QuestionManager
             }
 
             // Let the handler of the question type parse and compile the data
-            $definition = $this->questionDefinitions->get($question->getMimeType());
+            $definition = $this->itemDefinitions->get($question->getMimeType());
             $questionStats->solutions = $definition->getStatistics($question->getInteraction(), $answersData);
         }
 

@@ -16,7 +16,7 @@ class QuestionManagerTest extends TransactionalTestCase
     {
         parent::setUp();
 
-        $this->manager = $this->client->getContainer()->get('ujm_exo.manager.question');
+        $this->manager = $this->client->getContainer()->get('ujm_exo.manager.item');
     }
 
     public function testExport()

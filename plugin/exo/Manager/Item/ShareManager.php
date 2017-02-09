@@ -1,14 +1,14 @@
 <?php
 
-namespace UJM\ExoBundle\Manager\Question;
+namespace UJM\ExoBundle\Manager\Item;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Repository\UserRepository;
 use JMS\DiExtraBundle\Annotation as DI;
-use UJM\ExoBundle\Entity\Question\Shared;
+use UJM\ExoBundle\Entity\Item\Shared;
 use UJM\ExoBundle\Library\Validator\ValidationException;
-use UJM\ExoBundle\Repository\QuestionRepository;
+use UJM\ExoBundle\Repository\ItemRepository;
 
 /**
  * @DI\Service("ujm_exo.manager.share")
@@ -21,27 +21,27 @@ class ShareManager
     private $om;
 
     /**
-     * @var QuestionManager
+     * @var ItemManager
      */
-    private $questionManager;
+    private $itemManager;
 
     /**
      * ShareManager constructor.
      *
      * @DI\InjectParams({
      *     "om" = @DI\Inject("claroline.persistence.object_manager"),
-     *     "questionManager" = @DI\Inject("ujm_exo.manager.question")
+     *     "itemManager" = @DI\Inject("ujm_exo.manager.item")
      * })
      *
-     * @param ObjectManager   $om
-     * @param QuestionManager $questionManager
+     * @param ObjectManager $om
+     * @param ItemManager   $itemManager
      */
     public function __construct(
         ObjectManager $om,
-        QuestionManager $questionManager)
+        ItemManager $itemManager)
     {
         $this->om = $om;
-        $this->questionManager = $questionManager;
+        $this->itemManager = $itemManager;
     }
 
     /**
@@ -61,8 +61,8 @@ class ShareManager
 
         $adminRights = isset($shareRequest->adminRights) && $shareRequest->adminRights;
 
-        /** @var QuestionRepository $questionRepo */
-        $questionRepo = $this->om->getRepository('UJMExoBundle:Question\Question');
+        /** @var ItemRepository $questionRepo */
+        $questionRepo = $this->om->getRepository('UJMExoBundle:Item\Item');
         // Loaded questions (we load it to be sure it exist)
         $questions = $questionRepo->findByUuids($shareRequest->questions);
 
@@ -73,9 +73,9 @@ class ShareManager
 
         // Share each question with each user
         foreach ($questions as $question) {
-            if ($this->questionManager->canEdit($question, $user)) {
+            if ($this->itemManager->canEdit($question, $user)) {
                 $sharedWith = $this->om
-                    ->getRepository('UJMExoBundle:Question\Shared')
+                    ->getRepository('UJMExoBundle:Item\Shared')
                     ->findBy(['question' => $question]);
 
                 foreach ($users as $user) {

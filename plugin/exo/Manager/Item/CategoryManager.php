@@ -1,19 +1,19 @@
 <?php
 
-namespace UJM\ExoBundle\Manager\Question;
+namespace UJM\ExoBundle\Manager\Item;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use UJM\ExoBundle\Entity\Question\Category;
+use UJM\ExoBundle\Entity\Item\Category;
 use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Repository\CategoryRepository;
-use UJM\ExoBundle\Serializer\Question\CategorySerializer;
-use UJM\ExoBundle\Validator\JsonSchema\Question\CategoryValidator;
+use UJM\ExoBundle\Serializer\Item\CategorySerializer;
+use UJM\ExoBundle\Validator\JsonSchema\Item\CategoryValidator;
 
 /**
- * Manages question categories.
+ * Manages item categories.
  *
  * @DI\Service("ujm_exo.manager.category")
  */
@@ -58,7 +58,7 @@ class CategoryManager
         CategorySerializer $serializer)
     {
         $this->om = $om;
-        $this->repository = $this->om->getRepository('UJMExoBundle:Question\Category');
+        $this->repository = $this->om->getRepository('UJMExoBundle:Item\Category');
         $this->validator = $validator;
         $this->serializer = $serializer;
     }
