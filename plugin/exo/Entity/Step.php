@@ -214,7 +214,7 @@ class Step
      */
     public function getQuestions()
     {
-        return array_map(function (StepQuestion $stepQuestion) {
+        return array_map(function (StepItem $stepQuestion) {
             return $stepQuestion->getQuestion();
         }, $this->stepQuestions->toArray());
     }
