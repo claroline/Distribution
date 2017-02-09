@@ -13,8 +13,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
- * @DI\Service()
- * @DI\Tag("claroline.importer.rich_text_parser")
+ * @DI\Service("claroline.importer.rich_text_image_parser")
  */
 class ImgFormatListener
 {
@@ -67,9 +66,12 @@ class ImgFormatListener
         $_files = $event->getFiles();
 
         //first regex
-        $regex = '#'.$baseUrl.'/file/resource/media/([^\'"]+)#';
-
+        $regex = '#"/file/resource/media/([^\'"]+)#';
+        //var_dump($baseUrl);
+        //var_dump($regex);
         preg_match_all($regex, $text, $matches, PREG_SET_ORDER);
+        //var_dump($matches);
+        //var_dump($matches);
 
         if (count($matches) > 0) {
             foreach ($matches as $match) {
@@ -188,11 +190,6 @@ class ImgFormatListener
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
-        $taggedServices = $this->container->findTaggedServiceIds('claroline.importer.rich_text_parser');
-
-        foreach ($taggedServices as $service) {
-            $service->setLogger($logger);
-        }
     }
 
     public function getLogger()

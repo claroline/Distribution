@@ -525,11 +525,7 @@ class TransferManager
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
-        $taggedServices = $this->container->findTaggedServiceIds('claroline.importer.rich_text_parser');
-
-        foreach ($taggedServices as $service) {
-            $service->setLogger($logger);
-        }
+        $imageParser = $this->container->get('claroline.importer.rich_text_image_parser')->setLogger($logger);
     }
 
     public function getLogger()
