@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Library\Transfert;
 
+use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\StrictDispatcher;
@@ -28,6 +29,8 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class RichTextFormatter
 {
+    use LoggableTrait;
+
     //placeholder = [[uid=123]]
     const REGEX_PLACEHOLDER = '#\[\[uid=([^\]]+)\]\]#';
 
@@ -109,6 +112,7 @@ class RichTextFormatter
             }
         }
 
+        $this->log('dispatch');
         $event = $this->eventDispatcher->dispatch(
             'rich_text_format_event_import',
             'RichTextFormat',

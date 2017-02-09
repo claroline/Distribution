@@ -9,10 +9,12 @@ use Claroline\CoreBundle\Manager\MaskManager;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
  * @DI\Service()
+ * @DI\Tag("claroline.importer.rich_text_parser")
  */
 class ImgFormatListener
 {
@@ -50,8 +52,9 @@ class ImgFormatListener
     /**
      * @DI\Observe("rich_text_format_event_export")
      *
+     * This is pretty much the same as the RichTextFormatter one
+     *
      * @param RichTextFormatEvent $event
-     *                                   This is pretty much the same as the RichTextFormatter one
      */
     public function export(RichTextFormatEvent $event)
     {
@@ -180,5 +183,20 @@ class ImgFormatListener
         $img .= "src='{$url}' alt='{$node->getName()}'>";
 
         return $img;
+    }
+
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+        $taggedServices = $this->container->findTaggedServiceIds('claroline.importer.rich_text_parser');
+
+        foreach ($taggedServices as $service) {
+            $service->setLogger($logger);
+        }
+    }
+
+    public function getLogger()
+    {
+        return $this->logger;
     }
 }
