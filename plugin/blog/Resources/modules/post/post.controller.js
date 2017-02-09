@@ -10,10 +10,11 @@ let _modalInstance = new WeakMap()
 let _modalFactory = new WeakMap()
 let _$scope = new WeakMap()
 let _$rootScope = new WeakMap()
+let _$anchorScroll = new WeakMap()
 
 export default class PostController {
 
-  constructor(blogService, url, $routeParams, $location, Messages, transFilter, modal, $scope, tinyMceConfig, $rootScope) {
+  constructor(blogService, url, $routeParams, $location, Messages, transFilter, modal, $scope, tinyMceConfig, $rootScope, $anchorScroll) {
 
     _url.set(this, url)
     _$routeParams.set(this, $routeParams)
@@ -24,6 +25,7 @@ export default class PostController {
     _modalFactory.set(this, modal)
     _$scope.set(this, $scope)
     _$rootScope.set(this, $rootScope)
+    _$anchorScroll.set(this, $anchorScroll)
 
     this.blog = blogService
     this.tinymceOptions = tinyMceConfig
@@ -170,6 +172,9 @@ export default class PostController {
             this._setMessage('success', 'icap_blog_post_need_validation_before_publishing', {}, false, 'icap_blog', true)
           }
           _$location.get(this).url('/' + success.slug)
+          _$location.get(this).hash('top')
+          _$anchorScroll.get(this)()
+
           _$rootScope.get(this).$emit('post_created')
         },
         () => {
@@ -195,6 +200,9 @@ export default class PostController {
             this._setMessage('success', 'icap_blog_post_need_validation_before_publishing', {}, false, 'icap_blog', true)
           }
           _$location.get(this).url('/' + this.blog.currentPost.slug)
+
+          _$location.get(this).hash('top')
+          _$anchorScroll.get(this)()
         },
         () => {
           this._setMessage('danger', 'icap_blog_post_edit_error')
@@ -323,5 +331,6 @@ PostController.$inject = [
   'blogModal',
   '$scope',
   'tinyMceConfig',
-  '$rootScope'
+  '$rootScope',
+  '$anchorScroll'
 ]

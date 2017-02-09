@@ -150,7 +150,7 @@ class ApiController extends BaseController
      *
      * @Route(requirements={ "blog" = "\d+", "postId" = ".+" })
      *
-     * @View(serializerGroups={ "blog_list", "api_user_min" })
+     * @View(serializerGroups={ "blog_post", "api_user_min" })
      */
     public function getBlogPostAction(Request $request, Blog $blog, $postId)
     {

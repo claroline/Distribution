@@ -57,6 +57,7 @@
     </header>
 
     <div class="content" data-ng-bind-html="post.content | trust_html"></div>
+    <div class="content" data-ng-if="post.isAbstract"><a data-ng-click="vm.displayPost(post)" class="read_more">{{ 'read_more' | trans:{}:'icap_blog' }} <span class="fa fa-long-arrow-right"></span></a></div>
 
     <footer>
         <p class="pull-right">
