@@ -1,12 +1,12 @@
 <?php
 
-namespace UJM\ExoBundle\Serializer\Question;
+namespace UJM\ExoBundle\Serializer\Item;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use UJM\ExoBundle\Entity\Question\Category;
+use UJM\ExoBundle\Entity\Item\Category;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\AbstractSerializer;
 
@@ -81,13 +81,13 @@ class CategorySerializer extends AbstractSerializer
         if (empty($category)) {
             // Loads the Category from DB if already exist
             if (!empty($data->id)) {
-                $category = $this->om->getRepository('UJMExoBundle:Question\Category')->findOneBy([
+                $category = $this->om->getRepository('UJMExoBundle:Item\Category')->findOneBy([
                     'uuid' => $data->id,
                 ]);
             }
 
             if (empty($category)) {
-                // Question not exist
+                // Item not exist
                 $category = new Category();
             }
         }

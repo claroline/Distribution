@@ -1,9 +1,9 @@
 <?php
 
-namespace UJM\ExoBundle\Serializer\Question;
+namespace UJM\ExoBundle\Serializer\Item;
 
 use JMS\DiExtraBundle\Annotation as DI;
-use UJM\ExoBundle\Entity\Question\Hint;
+use UJM\ExoBundle\Entity\Item\Hint;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
 

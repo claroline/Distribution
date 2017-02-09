@@ -1,30 +1,30 @@
 <?php
 
-namespace UJM\ExoBundle\Serializer\Question;
+namespace UJM\ExoBundle\Serializer\Item;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use UJM\ExoBundle\Entity\Exercise;
-use UJM\ExoBundle\Entity\Question\Hint;
-use UJM\ExoBundle\Entity\Question\Question;
-use UJM\ExoBundle\Entity\Question\QuestionObject;
-use UJM\ExoBundle\Entity\Question\QuestionResource;
-use UJM\ExoBundle\Entity\Question\Shared;
+use UJM\ExoBundle\Entity\Item\Hint;
+use UJM\ExoBundle\Entity\Item\Item;
+use UJM\ExoBundle\Entity\Item\ItemObject;
+use UJM\ExoBundle\Entity\Item\ItemResource;
+use UJM\ExoBundle\Entity\Item\Shared;
 use UJM\ExoBundle\Library\Options\Transfer;
-use UJM\ExoBundle\Library\Question\QuestionDefinitionsCollection;
+use UJM\ExoBundle\Library\Item\ItemDefinitionsCollection;
 use UJM\ExoBundle\Library\Serializer\AbstractSerializer;
 use UJM\ExoBundle\Repository\ExerciseRepository;
 use UJM\ExoBundle\Serializer\Content\ResourceContentSerializer;
 use UJM\ExoBundle\Serializer\UserSerializer;
 
 /**
- * Serializer for question data.
+ * Serializer for item data.
  *
- * @DI\Service("ujm_exo.serializer.question")
+ * @DI\Service("ujm_exo.serializer.item")
  */
-class QuestionSerializer extends AbstractSerializer
+class ItemSerializer extends AbstractSerializer
 {
     /**
      * @var ObjectManager
@@ -37,9 +37,9 @@ class QuestionSerializer extends AbstractSerializer
     private $tokenStorage;
 
     /**
-     * @var QuestionDefinitionsCollection
+     * @var ItemDefinitionsCollection
      */
-    private $questionDefinitions;
+    private $itemDefinitions;
 
     /**
      * @var UserSerializer
@@ -62,20 +62,20 @@ class QuestionSerializer extends AbstractSerializer
     private $resourceContentSerializer;
 
     /**
-     * QuestionSerializer constructor.
+     * ItemSerializer constructor.
      *
-     * @param ObjectManager                 $om
-     * @param TokenStorageInterface         $tokenStorage
-     * @param QuestionDefinitionsCollection $questionDefinitions
-     * @param UserSerializer                $userSerializer
-     * @param CategorySerializer            $categorySerializer
-     * @param HintSerializer                $hintSerializer
-     * @param ResourceContentSerializer     $resourceContentSerializer
+     * @param ObjectManager             $om
+     * @param TokenStorageInterface     $tokenStorage
+     * @param ItemDefinitionsCollection $itemDefinitions
+     * @param UserSerializer            $userSerializer
+     * @param CategorySerializer        $categorySerializer
+     * @param HintSerializer            $hintSerializer
+     * @param ResourceContentSerializer $resourceContentSerializer
      *
      * @DI\InjectParams({
      *     "om"                        = @DI\Inject("claroline.persistence.object_manager"),
      *     "tokenStorage"              = @DI\Inject("security.token_storage"),
-     *     "questionDefinitions"       = @DI\Inject("ujm_exo.collection.item_definitions"),
+     *     "itemDefinitions"           = @DI\Inject("ujm_exo.collection.item_definitions"),
      *     "userSerializer"            = @DI\Inject("ujm_exo.serializer.user"),
      *     "categorySerializer"        = @DI\Inject("ujm_exo.serializer.category"),
      *     "hintSerializer"            = @DI\Inject("ujm_exo.serializer.hint"),
@@ -85,7 +85,7 @@ class QuestionSerializer extends AbstractSerializer
     public function __construct(
         ObjectManager $om,
         TokenStorageInterface $tokenStorage,
-        QuestionDefinitionsCollection $questionDefinitions,
+        ItemDefinitionsCollection $itemDefinitions,
         UserSerializer $userSerializer,
         CategorySerializer $categorySerializer,
         HintSerializer $hintSerializer,
@@ -93,7 +93,7 @@ class QuestionSerializer extends AbstractSerializer
     {
         $this->om = $om;
         $this->tokenStorage = $tokenStorage;
-        $this->questionDefinitions = $questionDefinitions;
+        $this->itemDefinitions = $itemDefinitions;
         $this->userSerializer = $userSerializer;
         $this->categorySerializer = $categorySerializer;
         $this->hintSerializer = $hintSerializer;
@@ -101,16 +101,16 @@ class QuestionSerializer extends AbstractSerializer
     }
 
     /**
-     * Converts a Question into a JSON-encodable structure.
+     * Converts a Item into a JSON-encodable structure.
      *
-     * @param Question $question
-     * @param array    $options
+     * @param Item  $question
+     * @param array $options
      *
      * @return \stdClass
      */
     public function serialize($question, array $options = [])
     {
-        // Serialize specific data for the question type
+        // Serialize specific data for the item type
         $questionData = $this->serializeQuestionType($question, $options);
 
         // Adds minimal information
@@ -119,30 +119,30 @@ class QuestionSerializer extends AbstractSerializer
             'type' => 'mimeType',
             'content' => 'content',
             'title' => 'title',
-            'meta' => function (Question $question) use ($options) {
+            'meta' => function (Item $question) use ($options) {
                 return $this->serializeMetadata($question, $options);
             },
-            'score' => function (Question $question) {
+            'score' => function (Item $question) {
                 return json_decode($question->getScoreRule());
             },
         ], $question, $questionData);
 
-        // Adds full definition of the question
+        // Adds full definition of the item
         if (!$this->hasOption(Transfer::MINIMAL, $options)) {
             $this->mapEntityToObject([
                 'description' => 'description',
-                'hints' => function (Question $question) use ($options) {
+                'hints' => function (Item $question) use ($options) {
                     return $this->serializeHints($question, $options);
                 },
-                'objects' => function (Question $question) {
+                'objects' => function (Item $question) {
                     return $this->serializeObjects($question);
                 },
-                'resources' => function (Question $question) {
+                'resources' => function (Item $question) {
                     return $this->serializeResources($question);
                 },
             ], $question, $questionData);
 
-            // Adds question feedback
+            // Adds item feedback
             if (!$this->hasOption(Transfer::INCLUDE_SOLUTIONS, $options)) {
                 $this->mapEntityToObject([
                     'feedback' => 'feedback',
@@ -154,27 +154,27 @@ class QuestionSerializer extends AbstractSerializer
     }
 
     /**
-     * Converts raw data into a Question entity.
+     * Converts raw data into a Item entity.
      *
      * @param \stdClass $data
-     * @param Question  $question
+     * @param Item      $question
      * @param array     $options
      *
-     * @return Question
+     * @return Item
      */
     public function deserialize($data, $question = null, array $options = [])
     {
         if (empty($question)) {
-            // Loads the Question from DB if already exist
+            // Loads the Item from DB if already exist
             if (!empty($data->id)) {
-                $question = $this->om->getRepository('UJMExoBundle:Question\Question')->findOneBy([
+                $question = $this->om->getRepository('UJMExoBundle:Item\Item')->findOneBy([
                     'uuid' => $data->id,
                 ]);
             }
 
             if (empty($question)) {
-                // Question not exist
-                $question = new Question();
+                // Item not exist
+                $question = new Item();
             }
         }
 
@@ -189,19 +189,19 @@ class QuestionSerializer extends AbstractSerializer
             'content' => 'content',
             'title' => 'title',
             'description' => 'description',
-            'hints' => function (Question $question, \stdClass $data) use ($options) {
+            'hints' => function (Item $question, \stdClass $data) use ($options) {
                 return $this->deserializeHints($question, $data->hints, $options);
             },
-            'objects' => function (Question $question, \stdClass $data) use ($options) {
+            'objects' => function (Item $question, \stdClass $data) use ($options) {
                 return $this->deserializeObjects($question, $data->objects, $options);
             },
-            'resources' => function (Question $question, \stdClass $data) use ($options) {
+            'resources' => function (Item $question, \stdClass $data) use ($options) {
                 return $this->deserializeResources($question, $data->resources, $options);
             },
-            'meta' => function (Question $question, \stdClass $data) {
+            'meta' => function (Item $question, \stdClass $data) {
                 return $this->deserializeMetadata($question, $data->meta);
             },
-            'score' => function (Question $question, \stdClass $data) {
+            'score' => function (Item $question, \stdClass $data) {
                 $score = $this->sanitizeScore($data->score);
                 $question->setScoreRule(json_encode($score));
             },
@@ -213,47 +213,47 @@ class QuestionSerializer extends AbstractSerializer
     }
 
     /**
-     * Serializes Question data specific to its type.
+     * Serializes Item data specific to its type.
      * Forwards the serialization to the correct handler.
      *
-     * @param Question $question
-     * @param array    $options
+     * @param Item  $question
+     * @param array $options
      *
      * @return \stdClass
      */
-    private function serializeQuestionType(Question $question, array $options = [])
+    private function serializeQuestionType(Item $question, array $options = [])
     {
-        $definition = $this->questionDefinitions->get($question->getMimeType());
+        $definition = $this->itemDefinitions->get($question->getMimeType());
 
         return $definition->serializeQuestion($question->getInteraction(), $options);
     }
 
     /**
-     * Deserializes Question data specific to its type.
+     * Deserializes Item data specific to its type.
      * Forwards the serialization to the correct handler.
      *
-     * @param Question  $question
+     * @param Item      $question
      * @param \stdClass $data
      * @param array     $options
      */
-    private function deserializeQuestionType(Question $question, \stdClass $data, array $options = [])
+    private function deserializeQuestionType(Item $question, \stdClass $data, array $options = [])
     {
-        $definition = $this->questionDefinitions->get($question->getMimeType());
+        $definition = $this->itemDefinitions->get($question->getMimeType());
 
-        // Deserialize question type data
+        // Deserialize item type data
         $type = $definition->deserializeQuestion($data, $question->getInteraction(), $options);
         $type->setQuestion($question);
     }
 
     /**
-     * Serializes Question metadata.
+     * Serializes Item metadata.
      *
-     * @param Question $question
-     * @param array    $options
+     * @param Item  $question
+     * @param array $options
      *
      * @return \stdClass
      */
-    private function serializeMetadata(Question $question, array $options = [])
+    private function serializeMetadata(Item $question, array $options = [])
     {
         $metadata = new \stdClass();
 
@@ -278,14 +278,14 @@ class QuestionSerializer extends AbstractSerializer
             /** @var ExerciseRepository $exerciseRepo */
             $exerciseRepo = $this->om->getRepository('UJMExoBundle:Exercise');
 
-            // Gets exercises that use this question
+            // Gets exercises that use this item
             $exercises = $exerciseRepo->findByQuestion($question);
             $metadata->usedBy = array_map(function (Exercise $exercise) {
                 return $exercise->getUuid();
             }, $exercises);
 
-            // Gets users who have access to this question
-            $users = $this->om->getRepository('UJMExoBundle:Question\Shared')->findBy(['question' => $question]);
+            // Gets users who have access to this item
+            $users = $this->om->getRepository('UJMExoBundle:Item\Shared')->findBy(['question' => $question]);
             $metadata->sharedWith = array_map(function (Shared $sharedQuestion) use ($options) {
                 $shared = new \stdClass();
                 $shared->adminRights = $sharedQuestion->hasAdminRights();
@@ -304,18 +304,18 @@ class QuestionSerializer extends AbstractSerializer
     }
 
     /**
-     * Deserializes Question metadata.
+     * Deserializes Item metadata.
      *
-     * @param Question  $question
+     * @param Item      $question
      * @param \stdClass $metadata
      */
-    public function deserializeMetadata(Question $question, \stdClass $metadata)
+    public function deserializeMetadata(Item $question, \stdClass $metadata)
     {
         if (isset($metadata->model)) {
             $question->setModel($metadata->model);
         }
 
-        // Sets the creator of the Question if not set
+        // Sets the creator of the Item if not set
         $creator = $question->getCreator();
         if (empty($creator) || !($creator instanceof User)) {
             $token = $this->tokenStorage->getToken();
@@ -331,15 +331,15 @@ class QuestionSerializer extends AbstractSerializer
     }
 
     /**
-     * Serializes Question hints.
+     * Serializes Item hints.
      * Forwards the hint serialization to HintSerializer.
      *
-     * @param Question $question
-     * @param array    $options
+     * @param Item  $question
+     * @param array $options
      *
      * @return array
      */
-    private function serializeHints(Question $question, array $options = [])
+    private function serializeHints(Item $question, array $options = [])
     {
         return array_map(function (Hint $hint) use ($options) {
             return $this->hintSerializer->serialize($hint, $options);
@@ -347,14 +347,14 @@ class QuestionSerializer extends AbstractSerializer
     }
 
     /**
-     * Deserializes Question hints.
+     * Deserializes Item hints.
      * Forwards the hint deserialization to HintSerializer.
      *
-     * @param Question $question
-     * @param array    $hints
-     * @param array    $options
+     * @param Item  $question
+     * @param array $hints
+     * @param array $options
      */
-    private function deserializeHints(Question $question, array $hints = [], array $options = [])
+    private function deserializeHints(Item $question, array $hints = [], array $options = [])
     {
         $hintEntities = $question->getHints()->toArray();
 
@@ -388,29 +388,29 @@ class QuestionSerializer extends AbstractSerializer
     }
 
     /**
-     * Serializes Question objects.
+     * Serializes Item objects.
      * Forwards the object serialization to ResourceContentSerializer.
      *
-     * @param Question $question
-     * @param array    $options
+     * @param Item  $question
+     * @param array $options
      *
      * @return array
      */
-    private function serializeObjects(Question $question, array $options = [])
+    private function serializeObjects(Item $question, array $options = [])
     {
-        return array_map(function (QuestionObject $object) use ($options) {
+        return array_map(function (ItemObject $object) use ($options) {
             return $this->resourceContentSerializer->serialize($object->getResourceNode(), $options);
         }, $question->getObjects()->toArray());
     }
 
     /**
-     * Deserializes Question objects.
+     * Deserializes Item objects.
      *
-     * @param Question $question
-     * @param array    $objects
-     * @param array    $options
+     * @param Item  $question
+     * @param array $objects
+     * @param array $options
      */
-    private function deserializeObjects(Question $question, array $objects = [], array $options = [])
+    private function deserializeObjects(Item $question, array $objects = [], array $options = [])
     {
         $objectEntities = $question->getObjects()->toArray();
 
@@ -419,7 +419,7 @@ class QuestionSerializer extends AbstractSerializer
 
             // Searches for an existing object entity.
             foreach ($objectEntities as $entityIndex => $entityObject) {
-                /** @var QuestionObject $entityObject */
+                /** @var ItemObject $entityObject */
                 if ((string) $entityObject->getId() === $objectData->id) {
                     $existingObject = $entityObject;
                     unset($objectEntities[$entityIndex]);
@@ -427,7 +427,7 @@ class QuestionSerializer extends AbstractSerializer
                 }
             }
 
-            // Link object to question
+            // Link object to item
             if (empty($existingObject)) {
                 $node = $this->resourceContentSerializer->deserialize($objectData, $existingObject, $options);
                 if ($node) {
@@ -436,7 +436,7 @@ class QuestionSerializer extends AbstractSerializer
             }
         }
 
-        // Remaining objects are no longer in the Question
+        // Remaining objects are no longer in the Item
         if (0 < count($objectEntities)) {
             foreach ($objectEntities as $objectToRemove) {
                 $question->removeObject($objectToRemove);
@@ -445,29 +445,29 @@ class QuestionSerializer extends AbstractSerializer
     }
 
     /**
-     * Serializes Question resources.
+     * Serializes Item resources.
      * Forwards the resource serialization to ResourceContentSerializer.
      *
-     * @param Question $question
-     * @param array    $options
+     * @param Item  $question
+     * @param array $options
      *
      * @return array
      */
-    private function serializeResources(Question $question, array $options = [])
+    private function serializeResources(Item $question, array $options = [])
     {
-        return array_map(function (QuestionResource $resource) use ($options) {
+        return array_map(function (ItemResource $resource) use ($options) {
             return $this->resourceContentSerializer->serialize($resource->getResourceNode(), $options);
         }, $question->getResources()->toArray());
     }
 
     /**
-     * Deserializes Question resources.
+     * Deserializes Item resources.
      *
-     * @param Question $question
-     * @param array    $resources
-     * @param array    $options
+     * @param Item  $question
+     * @param array $resources
+     * @param array $options
      */
-    private function deserializeResources(Question $question, array $resources = [], array $options = [])
+    private function deserializeResources(Item $question, array $resources = [], array $options = [])
     {
         $resourceEntities = $question->getResources()->toArray();
 
@@ -476,7 +476,7 @@ class QuestionSerializer extends AbstractSerializer
 
             // Searches for an existing resource entity.
             foreach ($resourceEntities as $entityIndex => $entityResource) {
-                /** @var QuestionResource $entityResource */
+                /** @var ItemResource $entityResource */
                 if ((string) $entityResource->getId() === $resourceData->id) {
                     $existingResource = $entityResource;
                     unset($resourceEntities[$entityIndex]);
@@ -484,7 +484,7 @@ class QuestionSerializer extends AbstractSerializer
                 }
             }
 
-            // Link resource to question
+            // Link resource to item
             if (empty($existingResource)) {
                 $node = $this->resourceContentSerializer->deserialize($resourceData, $existingResource, $options);
                 if ($node) {
@@ -493,7 +493,7 @@ class QuestionSerializer extends AbstractSerializer
             }
         }
 
-        // Remaining resources are no longer in the Question
+        // Remaining resources are no longer in the Item
         if (0 < count($resourceEntities)) {
             foreach ($resourceEntities as $resourceToRemove) {
                 $question->removeResource($resourceToRemove);

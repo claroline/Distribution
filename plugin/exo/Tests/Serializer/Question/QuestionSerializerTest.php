@@ -23,8 +23,8 @@ class QuestionSerializerTest extends JsonDataTestCase
         parent::setUp();
 
         // We trust validator service as it is fully tested
-        $this->validator = $this->client->getContainer()->get('ujm_exo.validator.question');
-        $this->serializer = $this->client->getContainer()->get('ujm_exo.serializer.question');
+        $this->validator = $this->client->getContainer()->get('ujm_exo.validator.item');
+        $this->serializer = $this->client->getContainer()->get('ujm_exo.serializer.item');
     }
 
     public function testSerializedDataAreSchemaValid()

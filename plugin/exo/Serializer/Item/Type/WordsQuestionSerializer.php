@@ -1,10 +1,10 @@
 <?php
 
-namespace UJM\ExoBundle\Serializer\Question\Type;
+namespace UJM\ExoBundle\Serializer\Item\Type;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Misc\Keyword;
-use UJM\ExoBundle\Entity\QuestionType\OpenQuestion;
+use UJM\ExoBundle\Entity\ItemType\OpenQuestion;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
 use UJM\ExoBundle\Serializer\Misc\KeywordSerializer;
