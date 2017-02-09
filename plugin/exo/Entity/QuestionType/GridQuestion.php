@@ -57,16 +57,16 @@ class GridQuestion extends AbstractQuestion
      *
      * @var integer
      */
-    private $cols;
+    private $columns;
 
     /**
-     * Grid border thickness
+     * Grid border width
      *
      * @ORM\Column(type="integer")
      *
      * @var string
      */
-    private $borderThickness = 1;
+    private $borderWidth = 1;
 
     /**
      * Grid border color
@@ -79,7 +79,7 @@ class GridQuestion extends AbstractQuestion
 
 
     /**
-     * PairQuestion constructor.
+     * GridQuestion constructor.
      */
     public function __construct()
     {
@@ -176,37 +176,37 @@ class GridQuestion extends AbstractQuestion
 
     /**
      * Number of cols for the grid
-     * @param number $cols
+     * @param number $columns
      */
-    public function setCols($cols)
+    public function setColumns($columns)
     {
-        $this->cols = $cols;
+        $this->columns = $columns;
     }
 
     /**
      * Number of cols for the grid
      * @return number
      */
-    public function getCols()
+    public function getColumns()
     {
-        return $this->cols;
+        return $this->columns;
     }
 
     /**
      * Grid border width
-     * @param number $thickness
+     * @param number $width
      */
-    public function setBorderThickness($thickness)
+    public function setBorderWidth($width)
     {
-        $this->borderThickness = $thickness;
+        $this->$borderWidth = $width;
     }
 
     /**
      * @return number
      */
-    public function getBorderThickness()
+    public function getBorderWidth()
     {
-        return $this->borderThickness;
+        return $this->$borderWidth;
     }
 
     /**
@@ -232,6 +232,6 @@ class GridQuestion extends AbstractQuestion
      */
     public function getGridStyle()
     {
-        return ['thickness' => $this->borderThickness, 'color' => $this->borderColor];
+        return ['width' => $this->borderWidth, 'color' => $this->borderColor];
     }
 }

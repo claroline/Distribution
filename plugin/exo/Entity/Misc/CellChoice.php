@@ -3,7 +3,8 @@
 namespace UJM\ExoBundle\Entity\Misc;
 
 use Doctrine\ORM\Mapping as ORM;
-use UJM\ExoBundle\Entity\QuestionType\OpenQuestion;
+use Ramsey\Uuid\Uuid;
+use UJM\ExoBundle\Entity\Misc\Cell;
 use UJM\ExoBundle\Library\Attempt\AnswerPartInterface;
 use UJM\ExoBundle\Library\Model\FeedbackTrait;
 use UJM\ExoBundle\Library\Model\ScoreTrait;
@@ -45,12 +46,20 @@ class CellChoice implements AnswerPartInterface
 
     /**
      *
-     * @var OpenQuestion
+     * @var Cell
      *
      * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Misc\Cell", inversedBy="choices")
      * @ORM\JoinColumn(name="cell_id", referencedColumnName="id")
      */
     private $cell;
+
+    /**
+     * CellChoice constructor.
+     */
+    public function __construct()
+    {
+        $this->uuid = Uuid::uuid4()->toString();
+    }
 
     /**
      * Get id.
@@ -83,7 +92,7 @@ class CellChoice implements AnswerPartInterface
     }
 
     /**
-     * Is the keyword case sensitive ?
+     * Is the Cell choice case sensitive ?
      *
      * @return bool
      */
@@ -103,42 +112,20 @@ class CellChoice implements AnswerPartInterface
     }
 
     /**
-     * @deprecated this entity do not need to know open question as they also can be linked to holes
      *
-     * @return OpenQuestion
+     * @return Cell
      */
-    public function getInteractionOpen()
+    public function getCell()
     {
-        return $this->interactionopen;
+        return $this->cell;
     }
 
     /**
-     * @deprecated this entity do not need to know open question as they also can be linked to holes
      *
-     * @param OpenQuestion $interactionOpen
+     * @param Cell $cell
      */
-    public function setInteractionOpen(OpenQuestion $interactionOpen)
+    public function setCell(Cell $cell)
     {
-        $this->interactionopen = $interactionOpen;
-    }
-
-    /**
-     * @deprecated this entity do not need to know holes as they also can be linked to open questions
-     *
-     * @return Hole
-     */
-    public function getHole()
-    {
-        return $this->hole;
-    }
-
-    /**
-     * @deprecated this entity do not need to know holes as they also can be linked to open questions
-     *
-     * @param Hole $hole
-     */
-    public function setHole(Hole $hole)
-    {
-        $this->hole = $hole;
+        $this->cell = $cell;
     }
 }

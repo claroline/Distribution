@@ -5,6 +5,7 @@ namespace UJM\ExoBundle\Entity\Misc;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
+use UJM\ExoBundle\Entity\QuestionType\GridQuestion;
 use UJM\ExoBundle\Library\Model\ContentTrait;
 use UJM\ExoBundle\Library\Model\UuidTrait;
 
@@ -29,7 +30,14 @@ class Cell
 
     use UuidTrait;
 
-    use ContentTrait;
+    /**
+     * Data associated to the cell
+     *
+     * @ORM\Column(type="text", nullable=true)
+     *
+     * @var string
+     */
+    private $data = null;
 
     /**
      * X coordinate of the item in the grid.
@@ -79,17 +87,16 @@ class Cell
      *
      * @var ArrayCollection
      */
-    private $choices;
+    private $choices = null;
 
     /**
-     * Many cells have One Product.
      * @ManyToOne(targetEntity="UJM\ExoBundle\Entity\GridQuestion", inversedBy="cells")
      * @JoinColumn(name="question_id", referencedColumnName="id")
      */
     private $question;
 
     /**
-     * GridItem constructor.
+     * Cell constructor.
      */
     public function __construct()
     {
@@ -105,6 +112,40 @@ class Cell
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param GridQuestion $question
+     */
+    public function setQuestion(GridQuestion $question)
+    {
+        $this->question = $question;
+    }
+
+    /**
+     * @return GridQuestion
+     */
+    public function getQuestion()
+    {
+        return $this->question;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+     *
+     * @param string $data
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
     }
 
     /**
@@ -156,5 +197,98 @@ class Cell
     {
         return (is_int($this->coordsX) || is_int($this->coordsY)) ?
             [$this->coordsX, $this->coordsY] : null;
+    }
+
+    /**
+     * Cell background color
+     * @param string $color
+     */
+    public function setBackground($color)
+    {
+        $this->background = $color;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBackground()
+    {
+        return $this->background;
+    }
+
+    /**
+     * Cell font color
+     * @param string $color
+     */
+    public function setColor($color)
+    {
+        $this->color = $color;
+    }
+
+    /**
+     * @return string
+     */
+    public function getColor()
+    {
+        return $this->color;
+    }
+
+    /**
+     * Get styles for the cell
+     * @return array
+     */
+    public function getCellStyle()
+    {
+        return ['background' => $this->background, 'color' => $this->color];
+    }
+
+    /**
+     * @param CellChoice $choice
+     */
+    public function addChoice(CellChoice $choice)
+    {
+        if (!$this->choices->contains($choice)) {
+            $this->choices->add($choice);
+        }
+    }
+
+    /**
+     * @param CellChoice $choice
+     */
+    public function removeChoice(CellChoice $choice)
+    {
+        if ($this->choices->contains($choice)) {
+            $this->choices->removeElement($choice);
+        }
+    }
+
+    /**
+     * Get a cell choice by text.
+     *
+     * @param string $text
+     *
+     * @return Cell|null
+     */
+    public function getChoice($text)
+    {
+        $found = null;
+        foreach ($this->choices as $choice) {
+            /** @var CellChoice $choice */
+          if (($choice->isCaseSensitive() && $choice->getText() === $text)
+              || strtolower($choice->getText()) === strtolower($text)) {
+              $found = $choice;
+              break;
+          }
+        }
+
+        return $found;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getChoices()
+    {
+        return $this->choices;
     }
 }
