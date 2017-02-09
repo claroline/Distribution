@@ -1,29 +1,21 @@
 <?php
 
-namespace UJM\ExoBundle\Validator\JsonSchema\Question\Type;
+namespace UJM\ExoBundle\Validator\JsonSchema\Item\Type;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
 
 /**
- * @DI\Service("ujm_exo.validator.question_choice")
+ * @DI\Service("ujm_exo.validator.question_graphic")
  */
-class ChoiceQuestionValidator extends JsonSchemaValidator
+class GraphicQuestionValidator extends JsonSchemaValidator
 {
     public function getJsonSchemaUri()
     {
-        return 'question/choice/schema.json';
+        return 'question/graphic/schema.json';
     }
 
-    /**
-     * Performs additional validations.
-     *
-     * @param mixed $question
-     * @param array $options
-     *
-     * @return array
-     */
     public function validateAfterSchema($question, array $options = [])
     {
         $errors = [];
@@ -36,10 +28,7 @@ class ChoiceQuestionValidator extends JsonSchemaValidator
     }
 
     /**
-     * Validates the solution of the question.
-     *
      * Checks :
-     *  - The solutions IDs are consistent with choices IDs
      *  - There is at least one solution with a positive score.
      *
      * @param \stdClass $question
@@ -50,20 +39,8 @@ class ChoiceQuestionValidator extends JsonSchemaValidator
     {
         $errors = [];
 
-        // check solution IDs are consistent with choice IDs
-        $choiceIds = array_map(function (\stdClass $choice) {
-            return $choice->id;
-        }, $question->choices);
-
         $maxScore = -1;
-        foreach ($question->solutions as $index => $solution) {
-            if (!in_array($solution->id, $choiceIds)) {
-                $errors[] = [
-                    'path' => "/solutions[{$index}]",
-                    'message' => "id {$solution->id} doesn't match any choice id",
-                ];
-            }
-
+        foreach ($question->solutions as $solution) {
             if ($solution->score > $maxScore) {
                 $maxScore = $solution->score;
             }

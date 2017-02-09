@@ -1,21 +1,21 @@
 <?php
 
-namespace UJM\ExoBundle\Validator\JsonSchema\Question;
+namespace UJM\ExoBundle\Validator\JsonSchema\Item;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Library\Options\Validation;
-use UJM\ExoBundle\Library\Question\QuestionDefinitionsCollection;
+use UJM\ExoBundle\Library\Item\ItemDefinitionsCollection;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
 
 /**
- * @DI\Service("ujm_exo.validator.question")
+ * @DI\Service("ujm_exo.validator.item")
  */
-class QuestionValidator extends JsonSchemaValidator
+class ItemValidator extends JsonSchemaValidator
 {
     /**
-     * @var QuestionDefinitionsCollection
+     * @var ItemDefinitionsCollection
      */
-    private $questionDefinitions;
+    private $itemDefinitions;
 
     /**
      * @var CategoryValidator
@@ -28,24 +28,24 @@ class QuestionValidator extends JsonSchemaValidator
     private $hintValidator;
 
     /**
-     * QuestionValidator constructor.
+     * ItemValidator constructor.
      *
-     * @param QuestionDefinitionsCollection $questionDefinitions
-     * @param CategoryValidator             $categoryValidator
-     * @param HintValidator                 $hintValidator
+     * @param ItemDefinitionsCollection $itemDefinitions
+     * @param CategoryValidator         $categoryValidator
+     * @param HintValidator             $hintValidator
      *
      * @DI\InjectParams({
-     *     "questionDefinitions" = @DI\Inject("ujm_exo.collection.item_definitions"),
-     *     "categoryValidator"   = @DI\Inject("ujm_exo.validator.category"),
-     *     "hintValidator"       = @DI\Inject("ujm_exo.validator.hint")
+     *     "itemDefinitions"   = @DI\Inject("ujm_exo.collection.item_definitions"),
+     *     "categoryValidator" = @DI\Inject("ujm_exo.validator.category"),
+     *     "hintValidator"     = @DI\Inject("ujm_exo.validator.hint")
      * })
      */
     public function __construct(
-        QuestionDefinitionsCollection $questionDefinitions,
+        ItemDefinitionsCollection $itemDefinitions,
         CategoryValidator $categoryValidator,
         HintValidator $hintValidator)
     {
-        $this->questionDefinitions = $questionDefinitions;
+        $this->itemDefinitions = $itemDefinitions;
         $this->categoryValidator = $categoryValidator;
         $this->hintValidator = $hintValidator;
     }
@@ -92,7 +92,7 @@ class QuestionValidator extends JsonSchemaValidator
             ];
         }
 
-        if (!$this->questionDefinitions->has($question->type)) {
+        if (!$this->itemDefinitions->has($question->type)) {
             $errors[] = [
                 'path' => '/type',
                 'message' => 'Unknown question type "'.$question->type.'"',
@@ -114,7 +114,7 @@ class QuestionValidator extends JsonSchemaValidator
         // Validates specific data of the question type
         if (empty($errors)) {
             // Forward to the correct definition
-            $definition = $this->questionDefinitions->get($question->type);
+            $definition = $this->itemDefinitions->get($question->type);
 
             $errors = array_merge(
                 $errors,
