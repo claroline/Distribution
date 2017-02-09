@@ -9,10 +9,11 @@ let _transFilter = new WeakMap()
 let _modalInstance = new WeakMap()
 let _modalFactory = new WeakMap()
 let _$scope = new WeakMap()
+let _$rootScope = new WeakMap()
 
 export default class PostController {
 
-  constructor(blogService, url, $routeParams, $location, Messages, transFilter, modal, $scope, tinyMceConfig) {
+  constructor(blogService, url, $routeParams, $location, Messages, transFilter, modal, $scope, tinyMceConfig, $rootScope) {
 
     _url.set(this, url)
     _$routeParams.set(this, $routeParams)
@@ -22,6 +23,7 @@ export default class PostController {
     _modalInstance.set(this, null)
     _modalFactory.set(this, modal)
     _$scope.set(this, $scope)
+    _$rootScope.set(this, $rootScope)
 
     this.blog = blogService
     this.tinymceOptions = tinyMceConfig
@@ -113,6 +115,7 @@ export default class PostController {
         } else {
           this._setMessage('success', 'icap_blog_post_unpublish_success')
         }
+        _$rootScope.get(this).$emit('post_visibility_toggled')
       },
       () => {
         if (post.is_published) {
@@ -168,6 +171,7 @@ export default class PostController {
             this._setMessage('success', 'icap_blog_post_need_validation_before_publishing', {}, false, 'icap_blog', true)
           }
           _$location.get(this).url('/' + success.slug)
+          _$rootScope.get(this).$emit('post_created')
         },
         () => {
           this._setMessage('danger', 'icap_blog_post_add_error')
@@ -219,6 +223,7 @@ export default class PostController {
         () => {
           this._setMessage('success', 'icap_blog_post_delete_success')
           _$location.get(this).url('/')
+          _$rootScope.get(this).$emit('post_deleted')
         },
         () => {
           this._setMessage('danger', 'icap_blog_post_delete_error')
@@ -314,5 +319,6 @@ PostController.$inject = [
   'transFilter',
   'blogModal',
   '$scope',
-  'tinyMceConfig'
+  'tinyMceConfig',
+  '$rootScope'
 ]
