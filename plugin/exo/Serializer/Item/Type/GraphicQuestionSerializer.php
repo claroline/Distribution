@@ -5,8 +5,8 @@ namespace UJM\ExoBundle\Serializer\Item\Type;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Filesystem\Filesystem;
 use UJM\ExoBundle\Entity\Content\Image;
-use UJM\ExoBundle\Entity\Misc\Area;
 use UJM\ExoBundle\Entity\ItemType\GraphicQuestion;
+use UJM\ExoBundle\Entity\Misc\Area;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
 

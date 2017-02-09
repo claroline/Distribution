@@ -9,9 +9,9 @@ use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Item\Item;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
+use UJM\ExoBundle\Library\Item\ItemDefinitionsCollection;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Options\Validation;
-use UJM\ExoBundle\Library\Item\ItemDefinitionsCollection;
 use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Manager\Attempt\ScoreManager;
 use UJM\ExoBundle\Repository\AnswerRepository;
@@ -169,7 +169,7 @@ class ItemManager
     /**
      * Validates and updates a Item entity with raw data.
      *
-     * @param Item  $question
+     * @param Item      $question
      * @param \stdClass $data
      *
      * @return Item
@@ -289,7 +289,7 @@ class ItemManager
     /**
      * Get question statistics inside an Exercise.
      *
-     * @param Item $question
+     * @param Item     $question
      * @param Exercise $exercise
      *
      * @return \stdClass

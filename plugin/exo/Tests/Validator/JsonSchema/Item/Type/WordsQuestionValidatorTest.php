@@ -4,8 +4,8 @@ namespace UJM\ExoBundle\Tests\Validator\JsonSchema\Item\Type;
 
 use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Testing\Json\JsonSchemaTestCase;
-use UJM\ExoBundle\Validator\JsonSchema\Misc\KeywordValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Item\Type\WordsQuestionValidator;
+use UJM\ExoBundle\Validator\JsonSchema\Misc\KeywordValidator;
 
 class WordsQuestionValidatorTest extends JsonSchemaTestCase
 {

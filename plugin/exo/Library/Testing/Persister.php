@@ -10,15 +10,15 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use UJM\ExoBundle\Entity\Exercise;
-use UJM\ExoBundle\Entity\Misc\Choice;
-use UJM\ExoBundle\Entity\Misc\Label;
-use UJM\ExoBundle\Entity\Misc\Proposal;
 use UJM\ExoBundle\Entity\Item\Category;
 use UJM\ExoBundle\Entity\Item\Hint;
 use UJM\ExoBundle\Entity\Item\Item;
 use UJM\ExoBundle\Entity\ItemType\ChoiceQuestion;
 use UJM\ExoBundle\Entity\ItemType\MatchQuestion;
 use UJM\ExoBundle\Entity\ItemType\OpenQuestion;
+use UJM\ExoBundle\Entity\Misc\Choice;
+use UJM\ExoBundle\Entity\Misc\Label;
+use UJM\ExoBundle\Entity\Misc\Proposal;
 use UJM\ExoBundle\Entity\Step;
 use UJM\ExoBundle\Library\Item\ItemType;
 

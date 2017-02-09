@@ -109,8 +109,8 @@ class ItemController extends AbstractController
      * @EXT\Method("PUT")
      * @EXT\ParamConverter("question", class="UJMExoBundle:Item\Item", options={"mapping": {"id": "uuid"}})
      *
-     * @param Item $question
-     * @param Request  $request
+     * @param Item    $question
+     * @param Request $request
      *
      * @return JsonResponse
      */

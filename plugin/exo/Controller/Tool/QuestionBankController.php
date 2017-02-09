@@ -34,8 +34,8 @@ class QuestionBankController
      *     "userSerializer"  = @DI\Inject("ujm_exo.serializer.user")
      * })
      *
-     * @param ItemManager $itemManager
-     * @param UserSerializer  $userSerializer
+     * @param ItemManager    $itemManager
+     * @param UserSerializer $userSerializer
      */
     public function __construct(ItemManager $itemManager, UserSerializer $userSerializer)
     {

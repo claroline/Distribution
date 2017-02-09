@@ -2,8 +2,8 @@
 
 namespace UJM\ExoBundle\Tests\Validator\JsonSchema\Item;
 
-use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Item\ItemDefinitionsCollection;
+use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Testing\Json\JsonSchemaTestCase;
 use UJM\ExoBundle\Validator\JsonSchema\Item\CategoryValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Item\HintValidator;
