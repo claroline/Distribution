@@ -525,7 +525,6 @@ class TransferManager
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
-        $imageParser = $this->container->get('claroline.importer.rich_text_image_parser')->setLogger($logger);
     }
 
     public function getLogger()

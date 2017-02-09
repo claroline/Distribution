@@ -13,7 +13,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
- * @DI\Service("claroline.importer.rich_text_image_parser")
+ * @DI\Service()
  */
 class ImgFormatListener
 {
@@ -57,9 +57,6 @@ class ImgFormatListener
      */
     public function export(RichTextFormatEvent $event)
     {
-        //urls to be matched...
-        //'/file/resource/media/([^']+)#'
-        //'/resource/open/([^/]+)/([^']+)'
         $text = $event->getText();
         $baseUrl = $this->router->getContext()->getBaseUrl();
         $_data = $event->getData();
@@ -67,11 +64,8 @@ class ImgFormatListener
 
         //first regex
         $regex = '#"/file/resource/media/([^\'"]+)#';
-        //var_dump($baseUrl);
-        //var_dump($regex);
+
         preg_match_all($regex, $text, $matches, PREG_SET_ORDER);
-        //var_dump($matches);
-        //var_dump($matches);
 
         if (count($matches) > 0) {
             foreach ($matches as $match) {
@@ -92,7 +86,11 @@ class ImgFormatListener
                             'name' => 'ROLE_USER',
                             'rights' => $this->maskManager->decodeMask(7, $this->resourceManager->getResourceTypeByName('file')),
                         ]]];
-                        $_data['data']['items'][] = $el;
+
+                        //check if the element isn't already set
+                        if (!$this->formatter->getItemFromUid($el['item']['uid'], $_data)) {
+                            $_data['data']['items'][] = $el;
+                        }
                     }
                 }
 
@@ -169,7 +167,7 @@ class ImgFormatListener
         $width = $imgdata[1];
         $height = $imgdata[2];
         $style = $imgdata[3];
-        $url = $this->router->generate('claro_file_get_media', ['node' => $node->getId()]);
+        $url = $this->router->generate('claro_resource_download')."?ids={$node->getId()}";
         $img = '<img ';
 
         if ($width !== '') {

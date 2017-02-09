@@ -837,9 +837,8 @@ class ResourceManagerImporter extends Importer implements ConfigurationInterface
         $resource = $this->resourceManager->getResourceFromNode($resourceNode);
 
         if ($resource) {
-            // We are not processing an orphan Node so we can run the export of the Resource
             $importer = $this->getImporterByName($resourceNode->getResourceType()->getName());
-            if ($importer && $workspace) {
+            if ($importer) {
                 $importer->setExtendedData($_data);
                 $data = $importer->export(
                     $workspace,

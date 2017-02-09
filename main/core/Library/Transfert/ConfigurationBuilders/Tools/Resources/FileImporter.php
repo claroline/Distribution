@@ -114,15 +114,16 @@ class FileImporter extends Importer implements ConfigurationInterface, RichTextI
     {
         $hash = $object->getHashName();
         $uid = uniqid().'.'.pathinfo($hash, PATHINFO_EXTENSION);
-        $_files[$uid] = $this->container
-            ->getParameter('claroline.param.files_directory').DIRECTORY_SEPARATOR.$hash;
+        $hash = $this->container->getParameter('claroline.param.files_directory').DIRECTORY_SEPARATOR.$hash;
+
+        $_files[$uid] = $hash;
         $data = [];
 
         if (file_exists($_files[$uid])) {
             $data = [['file' => [
-                'path' => $uid,
-                'mime_type' => $object->getResourceNode()->getMimeType(),
-            ]]];
+              'path' => $uid,
+              'mime_type' => $object->getResourceNode()->getMimeType(),
+          ]]];
         }
 
         return $data;

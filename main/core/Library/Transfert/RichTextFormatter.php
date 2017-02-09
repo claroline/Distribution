@@ -112,7 +112,6 @@ class RichTextFormatter
             }
         }
 
-        $this->log('dispatch');
         $event = $this->eventDispatcher->dispatch(
             'rich_text_format_event_import',
             'RichTextFormat',
@@ -187,7 +186,10 @@ class RichTextFormatter
                             'name' => 'ROLE_USER',
                             'rights' => $this->maskManager->decodeMask(7, $this->resourceManager->getResourceTypeByName('file')),
                         ]]];
-                        $_data['data']['items'][] = $el;
+
+                        if (!$this->getItemFromUid($el['item']['uid'], $_data)) {
+                            $_data['data']['items'][] = $el;
+                        }
                     }
                 }
 
