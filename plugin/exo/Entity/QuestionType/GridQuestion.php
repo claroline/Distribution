@@ -26,7 +26,7 @@ class GridQuestion extends AbstractQuestion
     /**
      * List of available cells for the question.
      *
-     * @ORM\OneToMany(targetEntity="UJM\ExoBundle\Entity\Misc\Cell", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="UJM\ExoBundle\Entity\Misc\Cell", mappedBy="question", cascade={"all"})
      *
      * @var ArrayCollection
      */

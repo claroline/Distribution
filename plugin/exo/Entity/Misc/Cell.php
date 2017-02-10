@@ -5,6 +5,7 @@ namespace UJM\ExoBundle\Entity\Misc;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
+use UJM\ExoBundle\Entity\Misc\CellChoice;
 use UJM\ExoBundle\Entity\QuestionType\GridQuestion;
 use UJM\ExoBundle\Library\Model\ContentTrait;
 use UJM\ExoBundle\Library\Model\UuidTrait;
@@ -90,8 +91,8 @@ class Cell
     private $choices = null;
 
     /**
-     * @ManyToOne(targetEntity="UJM\ExoBundle\Entity\GridQuestion", inversedBy="cells")
-     * @JoinColumn(name="question_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\QuestionType\GridQuestion", inversedBy="cells")
+     * @ORM\JoinColumn(name="question_id", referencedColumnName="id")
      */
     private $question;
 

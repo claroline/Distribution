@@ -1,0 +1,74 @@
+.grid-editor {
+
+  .table-options {
+    background: #eee;
+    padding: 5px;
+    margin-bottom: @panel-body-padding;
+  }
+
+  .table-options > * {
+    padding: 0 5px;
+  }
+
+  .form-inline .control-label {
+    padding: 0 5px;
+  }
+
+  .grid-body {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+
+    .grid-table {
+      border-collapse: collapse;
+      border-spacing: 0;
+      width: 100%;
+    }
+
+    .grid-table > td {
+      display: table-cell;
+    }
+/*
+    .grid-table td:first-child {
+      padding: 8px;
+    }
+*/
+    .grid-table td:last-child {
+      text-align: center;
+    }
+/*
+    .grid-table tr:first-child {
+      padding: 8px;
+    }
+*/
+    .grid-table tr:last-child {
+      text-align: center;
+    }
+
+    .small-input {
+      max-width: 60px;
+      width: 60px;
+      margin: 0 auto;
+    }
+  }
+
+  .grid-cell {
+      position: relative;
+    .cell-header {
+      background: #eee;
+      padding: 5px;
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 5px;
+      border-bottom: 1px solid #aaa;
+    }
+
+    .cell-header > * {
+      padding: 0 5px;
+    }
+
+    .cell-body {
+      padding: 5px;
+    }
+  }
+}
