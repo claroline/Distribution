@@ -1694,7 +1694,6 @@ class UserManager
                     $this->log('Add default organization for user '.$user->getUsername());
                     $user->addOrganization($default);
                     $this->objectManager->persist($user);
-                    $detach[] = $user;
 
                     if ($i % 250 === 0) {
                         $this->log("Flushing... [UOW = {$this->objectManager->getUnitOfWork()->size()}]");

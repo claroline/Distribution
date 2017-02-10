@@ -59,7 +59,6 @@ class ImgFormatListener
     public function export(RichTextFormatEvent $event)
     {
         $text = $event->getText();
-        $baseUrl = $this->router->getContext()->getBaseUrl();
         $_data = $event->getData();
         $_files = $event->getFiles();
 
