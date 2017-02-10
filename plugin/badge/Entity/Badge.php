@@ -735,7 +735,6 @@ class Badge extends Rulable
     protected function dealWithAtLeastOneTranslation(ObjectManager $objectManager)
     {
         $translations = $this->getTranslations();
-        $hasEmptyTranslation = 0;
         /** @var \Icap\BadgeBundle\Entity\BadgeTranslation[] $emptyTranslations */
         $emptyTranslations = [];
         /** @var \Icap\BadgeBundle\Entity\BadgeTranslation[] $nonEmptyTranslations */
