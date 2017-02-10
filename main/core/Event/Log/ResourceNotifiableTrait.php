@@ -13,7 +13,7 @@ namespace Claroline\CoreBundle\Event\Log;
 
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 
-trait ResourceNotifiableTrait extends LogGenericEvent
+trait ResourceNotifiableTrait
 {
     use ResourceNotifiableTrait;
 
@@ -24,16 +24,21 @@ trait ResourceNotifiableTrait extends LogGenericEvent
      */
     public function isAllowedToNotify()
     {
-        return $this->showNotification($this->node, $this->node->isPublished)
+        if (!$this->node->isPublished()) {
+            return false;
+        }
+
+        return $this->showNotification($this->node, $this->node->isPublished());
     }
 
-    private function showNotification(ResourceNode $node, $published) {
+    private function showNotification(ResourceNode $node, $published)
+    {
         $parent = $node->getParent();
 
         if ($parent && $published) {
-            $published = $this->isParentsPublished($parent, $published)
+            $published = $this->showNotification($parent, $published);
         }
 
-        return $parent->isPublished();
+        return $parent ? $parent->isPublished() : true;
     }
 }
