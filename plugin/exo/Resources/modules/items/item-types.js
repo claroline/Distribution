@@ -10,6 +10,7 @@ import open from './open'
 import pair from './pair'
 import words from './words'
 import set from './set'
+import textContent from './text-content'
 
 const typeProperties = [
   'name',
@@ -21,10 +22,13 @@ const typeProperties = [
   'decorate',
   'validate',
   'paper',
-  'expectAnswer'
+  'expectAnswer',
+  'icon',
+  'smallIcon'
 ]
 
 let registeredTypes = {}
+let registeredContentTypes = {}
 let defaultRegistered = false
 
 export function registerItemType(definition) {
@@ -44,15 +48,37 @@ export function registerItemType(definition) {
   registeredTypes[definition.type] = definition
 }
 
+export function registerContentItemType(definition) {
+  assertValidItemType(definition)
+
+  if (registeredContentTypes[definition.type]) {
+    throw new Error(`${definition.type} is already registered`)
+  }
+
+  definition.question = typeof definition.question !== 'undefined' ?
+    definition.question :
+    true
+
+  //definition.editor.decorate = getOptionalFunction(definition.editor, 'decorate', item => item)
+  //definition.editor.validate = getOptionalFunction(definition.editor, 'validate', () => ({}))
+
+  registeredContentTypes[definition.type] = definition
+}
+
 export function registerDefaultItemTypes() {
   if (!defaultRegistered) {
-    [choice, match, cloze, graphic, open, pair, words, set].forEach(registerItemType)
+    [choice, match, cloze, graphic, open, pair, words, set].forEach(registerItemType);
+    [textContent].forEach(registerContentItemType)
     defaultRegistered = true
   }
 }
 
 export function listItemMimeTypes() {
   return Object.keys(registeredTypes)
+}
+
+export function listContentItemMimeTypes() {
+  return Object.keys(registeredContentTypes)
 }
 
 export function listItemNames() {
@@ -72,6 +98,14 @@ export function getDefinition(type) {
   }
 
   return registeredTypes[type]
+}
+
+export function getContentDefinition(type) {
+  if (!registeredContentTypes[type]) {
+    throw new Error(`Unknown content type ${type}`)
+  }
+
+  return registeredContentTypes[type]
 }
 
 export function getDecorators() {
@@ -120,10 +154,10 @@ function assertValidItemType(definition) {
     definition.player,
     makeError('player component is mandatory', definition)
   )
-  invariant(
-    definition.paper,
-    makeError('paper component is mandatory', definition)
-  )
+  //invariant(
+  //  definition.paper,
+  //  makeError('paper component is mandatory', definition)
+  //)
 
   const extraProperties = difference(Object.keys(definition), typeProperties)
 

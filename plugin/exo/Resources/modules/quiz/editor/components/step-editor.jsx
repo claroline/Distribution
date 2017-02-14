@@ -8,14 +8,16 @@ import Tooltip from 'react-bootstrap/lib/Tooltip'
 import {makeItemPanelKey, makeStepPropPanelKey} from './../../../utils/utils'
 import {t, tex, trans} from './../../../utils/translate'
 import {makeSortable, SORT_VERTICAL} from './../../../utils/sortable'
-import {getDefinition} from './../../../items/item-types'
+import {getDefinition, getContentDefinition} from './../../../items/item-types'
 import {MODAL_DELETE_CONFIRM} from './../../../modal'
 import {MODAL_ADD_ITEM} from './../components/add-item-modal.jsx'
 import {MODAL_IMPORT_ITEMS} from './../components/import-items-modal.jsx'
+import {MODAL_ADD_CONTENT} from './../components/add-content-modal.jsx'
 import {Icon as ItemIcon} from './../../../items/components/icon.jsx'
 import {ValidationStatus} from './validation-status.jsx'
 import {StepForm} from './step-form.jsx'
 import {ItemForm} from './item-form.jsx'
+import {ContentItemForm} from './content-item-form.jsx'
 
 const ParametersHeader = props =>
   <div onClick={props.onClick} className="panel-title editor-panel-title">
@@ -95,9 +97,12 @@ const ItemHeader = props =>
     )}
   >
     <span>
-      <ItemIcon name={getDefinition(props.item.type).name} />
+      {props.isContent ?
+        <span className="fa fa-file-text-o"></span> :
+        <ItemIcon name={getDefinition(props.item.type).name}/>
+      }
       <span className="panel-title">
-        {props.item.title || trans(getDefinition(props.item.type).name, {}, 'question_types')}
+        {props.item.title || props.isContent ? trans(getContentDefinition(props.item.type).name, {}, 'question_types') : trans(getDefinition(props.item.type).name, {}, 'question_types')}
       </span>
       {props.hasErrors &&
         <ValidationStatus
@@ -123,7 +128,8 @@ ItemHeader.propTypes = {
   showModal: T.func.isRequired,
   hasErrors: T.bool.isRequired,
   validating: T.bool.isRequired,
-  connectDragSource: T.func.isRequired
+  connectDragSource: T.func.isRequired,
+  isContent: T.bool.isRequired
 }
 
 let ItemPanel = props =>
@@ -144,12 +150,30 @@ let ItemPanel = props =>
               connectDragSource={props.connectDragSource}
               hasErrors={!isEmpty(props.item._errors)}
               validating={props.validating}
+              isContent={props.isContent}
             />
           }
           collapsible={true}
           expanded={props.expanded}
         >
-          {props.expanded &&
+          {props.expanded && (props.isContent ?
+            <ContentItemForm
+              item={props.item}
+              validating={props.validating}
+              onChange={(propertyPath, value) =>
+                props.handleContentItemUpdate(props.item.id, propertyPath, value)
+              }
+            >
+              {React.createElement(
+                getContentDefinition(props.item.type).editor.component,
+                {
+                  item: props.item,
+                  validating: props.validating,
+                  onChange: subAction =>
+                    props.handleContentItemDetailUpdate(props.item.id, subAction)
+                }
+              )}
+            </ContentItemForm> :
             <ItemForm
               item={props.item}
               validating={props.validating}
@@ -170,8 +194,7 @@ let ItemPanel = props =>
                 }
               )}
             </ItemForm>
-
-          }
+          )}
         </Panel>
       </div>
   ))
@@ -186,12 +209,15 @@ ItemPanel.propTypes = {
   handleItemDeleteClick: T.func.isRequired,
   handleItemUpdate: T.func.isRequired,
   handleItemDetailUpdate: T.func.isRequired,
+  handleContentItemUpdate: T.func.isRequired,
+  handleContentItemDetailUpdate: T.func.isRequired,
   showModal: T.func.isRequired,
   connectDragSource: T.func.isRequired,
   isDragging: T.bool.isRequired,
   onSort: T.func.isRequired,
   sortDirection: T.string.isRequired,
-  validating: T.bool.isRequired
+  validating: T.bool.isRequired,
+  isContent: T.bool.isRequired
 }
 
 ItemPanel = makeSortable(ItemPanel, 'STEP_ITEM')
@@ -207,7 +233,14 @@ class StepFooter extends Component {
   }
 
   handleBtnClick(action) {
-    this.setState({currentLabel:action === MODAL_ADD_ITEM ? tex('add_question_from_new'):tex('add_question_from_existing'), currentAction: action})
+    this.setState({
+      currentLabel:action === MODAL_ADD_ITEM ?
+        tex('add_question_from_new') :
+        action === MODAL_IMPORT_ITEMS ?
+          tex('add_question_from_existing') :
+          tex('add_content'),
+      currentAction: action
+    })
     if (action === MODAL_ADD_ITEM) {
       this.props.showModal(MODAL_ADD_ITEM, {
         title: tex('add_question_from_new'),
@@ -224,6 +257,14 @@ class StepFooter extends Component {
           this.props.handleItemsImport(this.props.stepId, selected)
         }
       })
+    } else if (action === MODAL_ADD_CONTENT) {
+      this.props.showModal(MODAL_ADD_CONTENT, {
+        title: tex('add_content'),
+        handleSelect: selected => {
+          this.props.closeModal()
+          this.props.handleContentItemCreate(this.props.stepId, selected)
+        }
+      })
     }
   }
 
@@ -237,21 +278,47 @@ class StepFooter extends Component {
             <span className="caret"></span>
             <span className="sr-only">Toggle Dropdown</span>
           </button>
-          <ul className="dropdown-menu">
-            { this.state.currentAction === MODAL_IMPORT_ITEMS ?
+          { this.state.currentAction === MODAL_IMPORT_ITEMS ?
+            <ul className="dropdown-menu">
               <li>
                 <a role="button" onClick={() => this.handleBtnClick(MODAL_ADD_ITEM)}>
                   {tex('add_question_from_new')}
                 </a>
               </li>
-              :
               <li>
-                <a role="button" onClick={() => this.handleBtnClick(MODAL_IMPORT_ITEMS)}>
-                  {tex('add_question_from_existing')}
+                <a role="button" onClick={() => this.handleBtnClick(MODAL_ADD_CONTENT)}>
+                  {tex('add_content')}
                 </a>
               </li>
-            }
-          </ul>
+            </ul>
+            :
+            this.state.currentAction === MODAL_ADD_ITEM ?
+              <ul className="dropdown-menu">
+                <li>
+                  <a role="button" onClick={() => this.handleBtnClick(MODAL_IMPORT_ITEMS)}>
+                    {tex('add_question_from_existing')}
+                  </a>
+                </li>
+                <li>
+                  <a role="button" onClick={() => this.handleBtnClick(MODAL_ADD_CONTENT)}>
+                    {tex('add_content')}
+                  </a>
+                </li>
+              </ul>
+              :
+              <ul className="dropdown-menu">
+                <li>
+                  <a role="button" onClick={() => this.handleBtnClick(MODAL_ADD_ITEM)}>
+                    {tex('add_question_from_new')}
+                  </a>
+                </li>
+                <li>
+                  <a role="button" onClick={() => this.handleBtnClick(MODAL_IMPORT_ITEMS)}>
+                    {tex('add_question_from_existing')}
+                  </a>
+                </li>
+              </ul>
+          }
         </div>
       </div>
     )
@@ -263,7 +330,8 @@ StepFooter.propTypes = {
   showModal: T.func.isRequired,
   closeModal: T.func.isRequired,
   handleItemCreate: T.func.isRequired,
-  handleItemsImport: T.func.isRequired
+  handleItemsImport: T.func.isRequired,
+  handleContentItemCreate: T.func.isRequired
 }
 
 export const StepEditor = props =>
@@ -303,7 +371,10 @@ export const StepEditor = props =>
           handleItemUpdate={props.handleItemUpdate}
           handleItemHintsUpdate={props.handleItemHintsUpdate}
           handleItemDetailUpdate={props.handleItemDetailUpdate}
+          handleContentItemUpdate={props.handleContentItemUpdate}
+          handleContentItemDetailUpdate={props.handleContentItemDetailUpdate}
           showModal={props.showModal}
+          isContent={item.type === 'application/x.text-content+json'}
           {...props}
         />
       )}
@@ -314,6 +385,7 @@ export const StepEditor = props =>
       closeModal={props.closeModal}
       handleItemCreate={props.handleItemCreate}
       handleItemsImport={props.handleItemsImport}
+      handleContentItemCreate={props.handleContentItemCreate}
     />
   </div>
 
@@ -337,6 +409,7 @@ StepEditor.propTypes = {
   handleItemUpdate: T.func.isRequired,
   handleItemHintsUpdate: T.func.isRequired,
   handleItemsImport: T.func.isRequired,
+  handleContentItemCreate: T.func.isRequired,
   showModal: T.func.isRequired,
   closeModal: T.func.isRequired
 }

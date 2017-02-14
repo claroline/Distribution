@@ -13,6 +13,7 @@ import {registerDefaultItemTypes, getDecorators} from './../items/item-types'
 import {registerModalType} from './../modal'
 import {MODAL_ADD_ITEM, AddItemModal} from './editor/components/add-item-modal.jsx'
 import {MODAL_IMPORT_ITEMS, ImportItemsModal} from './editor/components/import-items-modal.jsx'
+import {MODAL_ADD_CONTENT, AddContentModal} from './editor/components/add-content-modal.jsx'
 
 import './editor/style.css'
 
@@ -21,6 +22,7 @@ export class Quiz {
     registerDefaultItemTypes()
     registerModalType(MODAL_ADD_ITEM, AddItemModal)
     registerModalType(MODAL_IMPORT_ITEMS, ImportItemsModal)
+    registerModalType(MODAL_ADD_CONTENT, AddContentModal)
     const quizData = decorate(normalize(rawQuizData), getDecorators(), rawQuizData.meta.editable)
     this.store = createStore(Object.assign({noServer: noServer}, quizData))
     this.dndQuiz = DragDropContext(HTML5Backend)(QuizComponent)
