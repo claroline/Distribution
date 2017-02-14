@@ -1,13 +1,19 @@
 export const utils = {
 
   getCellsByCol(colIndex, cells) {
-    return cells.filter(cell => cell.coordinates[0] === colIndex)
+    return cells.filter(cell => parseFloat(cell.coordinates[0]) === parseFloat(colIndex))
+  },
+  getCellsByColGreaterThan(rowIndex, cells) {
+    return cells.filter(cell => parseFloat(cell.coordinates[0]) > parseFloat(rowIndex))
   },
   getCellsByRow(rowIndex, cells) {
-    return cells.filter(cell => cell.coordinates[1] === rowIndex)
+    return cells.filter(cell => parseFloat(cell.coordinates[1]) === parseFloat(rowIndex))
+  },
+  getCellsByRowGreaterThan(rowIndex, cells) {
+    return cells.filter(cell => parseFloat(cell.coordinates[1]) > parseFloat(rowIndex))
   },
   getCellByCoordinates(x, y, cells) {
-    return cells.find(cell => cell.coordinates[0] === x && cell.coordinates[1] === y)
+    return cells.find(cell => parseFloat(cell.coordinates[0]) === parseFloat(x) && parseFloat(cell.coordinates[1]) === parseFloat(y))
   },
   getColScore(colIndex, cells, solutions) {
     // in col score mode each item of the col MUST have the same score
@@ -38,5 +44,37 @@ export const utils = {
   atLeastOneSolutionInRow(rowIndex, cells, solutions) {
     // in col score mode each item of the col MUST have the same score
     return undefined !== cells.find(cell => cell.coordinates[1] === rowIndex && undefined !== solutions.find(solution => solution.cellId === cell.id))
+  },
+  getSolutionByCellId(cellId, solutions) {
+    return solutions.find(solution => solution.cellId === cellId)
+  },
+  isValidSolution(solution) {
+    return solution !== undefined && solution.answers !== undefined && solution.answers.filter(answer => answer.text !== '' && answer.score > 0).length > 0
+  },
+  hasDuplicates(solution) {
+    let hasDuplicates = false
+    if(solution !== undefined && solution.answers !== undefined) {
+      solution.answers.forEach(answer => {
+        let count = 0
+        solution.answers.forEach(check => {
+          if (answer.text === check.text && answer.caseSensitive === check.caseSensitive) {
+            count++
+          }
+        })
+        if (count > 1) hasDuplicates = true
+      })
+    }
+    return hasDuplicates
+  },
+  getBestAnswer(answers) {
+
+    let best = null
+    answers.forEach(answer => {
+      if(best === null || best.score < answer.score) {
+        best = answer
+      }
+    })
+
+    return best === null ? '' : best.text
   }
 }

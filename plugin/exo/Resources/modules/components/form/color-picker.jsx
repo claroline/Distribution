@@ -1,5 +1,6 @@
 import React, {Component, PropTypes as T} from 'react'
 import {TwitterPicker} from 'react-color'
+import classes from 'classnames'
 
 export class ColorPicker extends Component {
   constructor(props) {
@@ -10,15 +11,21 @@ export class ColorPicker extends Component {
   }
 
   render() {
+    let style = this.props.forFontColor ? {
+      position: 'relative',
+      color: this.props.color
+    } : {
+      position: 'relative',
+      backgroundColor: this.props.color
+    }
+
     return (
       <span className="color-picker" id={this.props.id}>
         <span
+          className={classes({'fa fa-font': this.props.forFontColor})}
           role="button"
-          style={{
-            position: 'relative',
-            backgroundColor: this.props.color
-          }}
-          onClick={() => this.setState({open: !this.state.open})}
+          style={style}
+          onClick={() => !this.state.open && this.setState({open: !this.state.open})}
         >
           {this.state.open &&
             <span style={{
@@ -41,8 +48,13 @@ export class ColorPicker extends Component {
   }
 }
 
+ColorPicker.defaultProps = {
+  forFontColor: false
+}
+
 ColorPicker.propTypes = {
   color: T.string.isRequired,
   onPick: T.func.isRequired,
-  id: T.string
+  id: T.string,
+  forFontColor: T.bool
 }

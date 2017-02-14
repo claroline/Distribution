@@ -1,4 +1,5 @@
 import cloneDeep from 'lodash/cloneDeep'
+import set from 'lodash/set'
 import {ITEM_CREATE} from './../../quiz/editor/actions'
 import {SCORE_SUM, SCORE_FIXED} from './../../quiz/enums'
 import {makeActionCreator, makeId} from './../../utils/utils'
@@ -12,6 +13,10 @@ const DELETE_COLUMN = 'DELETE_COLUMN'
 const DELETE_ROW = 'DELETE_ROW'
 const UPDATE_COLUMN_SCORE = 'UPDATE_COLUMN_SCORE'
 const UPDATE_ROW_SCORE = 'UPDATE_ROW_SCORE'
+const UPDATE_CELL_STYLE = 'UPDATE_CELL_STYLE'
+const UPDATE_CELL_DATA = 'UPDATE_CELL_DATA'
+const ADD_OR_UPDATE_SOLUTION = 'ADD_OR_UPDATE_SOLUTION'
+const DELETE_SOLUTION = 'DELETE_SOLUTION'
 
 export const SUM_CELL = 'cell'
 export const SUM_COL = 'col'
@@ -22,7 +27,11 @@ export const actions = {
   deleteColumn: makeActionCreator(DELETE_COLUMN, 'index'),
   deleteRow: makeActionCreator(DELETE_ROW, 'index'),
   updateColumnScore: makeActionCreator(UPDATE_COLUMN_SCORE, 'index', 'score'),
-  updateRowScore: makeActionCreator(UPDATE_ROW_SCORE, 'index', 'score')
+  updateRowScore: makeActionCreator(UPDATE_ROW_SCORE, 'index', 'score'),
+  updateCellData: makeActionCreator(UPDATE_CELL_DATA, 'id', 'value'),
+  updateCellStyle: makeActionCreator(UPDATE_CELL_STYLE, 'id', 'property', 'value'),
+  addOrUpdateSolution: makeActionCreator(ADD_OR_UPDATE_SOLUTION, 'data'),
+  deleteSolution: makeActionCreator(DELETE_SOLUTION, 'id')
 }
 
 function decorate(item) {
@@ -57,10 +66,10 @@ function reduce(grid = {}, action) {
           break
         }
         case 'rows': {
-          const newRowIndex = action.value - 1
           if (action.value < grid.rows) {
-            return deleteRow(newRowIndex, newItem)
+            return deleteRow(action.value, newItem, false)
           } else {
+            const newRowIndex = action.value - 1
             newItem[action.property] = parseFloat(action.value)
             // add default cell content to each created cell
             for (let i = 0; i < grid.cols; i++) {
@@ -70,15 +79,16 @@ function reduce(grid = {}, action) {
           break
         }
         case 'cols': {
-          const newColIndex = action.value - 1
           if (action.value < grid.cols) {
-            // delete every col cells and corresponding solutions
-            return deleteCol(newColIndex, newItem)
+            // delete every col cells and corresponding solutions (action.value is already decremented)
+            // say I have 3 col and I press minus action.value = 2 which is the index I want to remove (last one)
+            return deleteCol(action.value, newItem, false)
           } else {
             newItem[action.property] = parseFloat(action.value)
+            const colIndex = action.value - 1
             // add default cell content to each created cell
             for (let i = 0; i < grid.rows; i++) {
-              newItem.cells.push(makeDefaultCell(newColIndex, i))
+              newItem.cells.push(makeDefaultCell(colIndex, i))
             }
           }
           break
@@ -124,11 +134,11 @@ function reduce(grid = {}, action) {
     }
     case DELETE_COLUMN: {
       const newItem = cloneDeep(grid)
-      return deleteCol(action.index, newItem)
+      return deleteCol(action.index, newItem, true)
     }
     case DELETE_ROW: {
       const newItem = cloneDeep(grid)
-      return deleteRow(action.index, newItem)
+      return deleteRow(action.index, newItem, true)
     }
     case UPDATE_COLUMN_SCORE: {
       const newItem = cloneDeep(grid)
@@ -146,12 +156,60 @@ function reduce(grid = {}, action) {
       })
       return newItem
     }
+    case UPDATE_CELL_STYLE: {
+      const newItem = cloneDeep(grid)
+      // action property = color / background
+      const cellToUpdate = newItem.cells.find(cell => cell.id === action.id)
+      cellToUpdate[action.property] = action.value
+      return newItem
+    }
+    case UPDATE_CELL_DATA: {
+      const newItem = cloneDeep(grid)
+      // action property = color / background
+      const cellToUpdate = newItem.cells.find(cell => cell.id === action.id)
+      cellToUpdate.data = action.value
+      return newItem
+    }
+    case ADD_OR_UPDATE_SOLUTION: {
+      const newItem = cloneDeep(grid)
+      const solution = newItem.solutions.find(solution => solution.cellId === action.data.solution.cellId)
+      if(undefined !== solution) {
+        // update
+        solution.answers = action.data.solution.answers
+      } else {
+        // new
+        newItem.solutions.push({
+          cellId: action.data.solution.cellId,
+          answers: action.data.solution.answers
+        })
+      }
+      const cell = newItem.cells.find(cell => cell.id === action.data.solution.cellId)
+      // ensure cell data is empty
+      cell.data = ''
+      cell.choices = []
+      if(action.data.isList) {
+        // fill cell choices
+        action.data.solution.answers.forEach(answer => {
+          cell.choices.push(answer.text)
+        })
+      }
+
+      return newItem
+    }
+    case DELETE_SOLUTION: {
+      const newItem = cloneDeep(grid)
+      const cell = newItem.cells.find(cell => cell.id === action.id)
+      cell.choices= []
+      const solutionIndex = newItem.solutions.findIndex(solution => solution.cellId === action.id)
+      newItem.solutions.splice(solutionIndex, 1)
+      return newItem
+    }
   }
   return grid
 }
 
-function deleteRow(rowIndex, grid){
-  const cellsToDelete = utils.getCellsByRow(rowIndex.index, grid.cells)
+function deleteRow(rowIndex, grid, updateCoords){
+  const cellsToDelete = utils.getCellsByRow(rowIndex, grid.cells)
   cellsToDelete.forEach(cell => {
     const cellIndex = grid.cells.findIndex(toRemove => toRemove.id === cell.id)
     grid.cells.splice(cellIndex, 1)
@@ -161,14 +219,20 @@ function deleteRow(rowIndex, grid){
       grid.solutions.splice(solutionIndex, 1)
     }
   })
-  // update y coordinates for all remaining cells
-  grid.cells.forEach(cell => --cell.coordinates[1])
+  // update y coordinates for all remaining cells if we are deleting a specific row
+  // if last row was deleted nothing to do
+  if (updateCoords) {
+    // get cells that have a row index greater than the one we are deleting
+    let cellsToUpdate = utils.getCellsByRowGreaterThan(rowIndex, grid.cells)
+    cellsToUpdate.forEach(cell => --cell.coordinates[1])
+  }
+
   --grid.rows
   return grid
 }
 
-function deleteCol(colIndex, grid){
-  const cellsToDelete = utils.getCellsByCol(colIndex.index, grid.cells)
+function deleteCol(colIndex, grid, updateCoords){
+  const cellsToDelete = utils.getCellsByCol(colIndex, grid.cells)
   cellsToDelete.forEach(cell => {
     const cellIndex = grid.cells.findIndex(toRemove => toRemove.id === cell.id)
     grid.cells.splice(cellIndex, 1)
@@ -178,17 +242,83 @@ function deleteCol(colIndex, grid){
       grid.solutions.splice(solutionIndex, 1)
     }
   })
-  // update x coordinates for all remaining cells
-  grid.cells.forEach(cell => --cell.coordinates[0])
+  // update x coordinates for all remaining cells if we are deleting a specific col
+  if (updateCoords) {
+    // get cells that have a col index greater than the one we are deleting
+    let cellsToUpdate = utils.getCellsByColGreaterThan(colIndex, grid.cells)
+    cellsToUpdate.forEach(cell => --cell.coordinates[0])
+  }
   --grid.cols
   return grid
 }
 
-function validate(item) {
-  const errors = {}
+function validate(grid) {
+  const _errors = {}
+
+  grid.cells.forEach(cell => {
+    const solution = grid.solutions.find(solution => solution.cellId === cell.id)
+    let hasPositiveValue = false
+    if(undefined !== solution) {
+
+      solution.answers.forEach((answer) => {
+        if (notBlank(answer.text)) {
+          set(_errors, 'answers.text', tex('grid_empty_word_error'))
+        }
+
+        if (answer.score > 0) hasPositiveValue = true
+      })
+
+      if (hasDuplicates(solution.answers)) {
+        set(_errors, 'answers.duplicate', tex('grid_duplicate_answers'))
+      }
+
+      if (!hasPositiveValue) {
+        set(_errors, 'answers.value', tex('solutions_requires_positive_answer'))
+      }
+    } else if (notBlank(cell.data)) {
+      // call that is not a solution but do not has any data
+      _errors.cell = tex('grid_cell_empty_data')
+    }
+
+  })
+
+  // _errors.score.success / _errors.score.failure
+
+  // no solution
 
 
-  return errors
+  //console.log('solutions', grid.solutions)
+
+  // answers at least one answer with a positive score
+  /*if(undefined === grid.solutions.find(solution => solution.answers.filter(answer => answer.score > 0).length > 1)) {
+    _errors.answers = {
+      score: tex('grid_solution_no_valid_score')
+    }
+  } else if (undefined !== grid.solutions.find(solution => undefined !== solution.answers.find(answer => answer.text === ''))) {
+    console.log('found')
+    _errors.answers = {
+      text: tex('grid_solution_answer_empty_text')
+    }
+  }*/
+
+
+  return _errors
+}
+
+
+function hasDuplicates(answers) {
+  let hasDuplicates = false
+  answers.forEach(answer => {
+    let count = 0
+    answers.forEach(check => {
+      if (answer.text === check.text && answer.caseSensitive === check.caseSensitive) {
+        count++
+      }
+    })
+    if (count > 1) hasDuplicates = true
+  })
+
+  return hasDuplicates
 }
 
 function makeDefaultCell(x, y) {
@@ -202,12 +332,8 @@ function makeDefaultCell(x, y) {
   }
 }
 
-
-
-
 export default {
   component,
   reduce,
-  decorate,
   validate
 }

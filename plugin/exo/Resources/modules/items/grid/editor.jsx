@@ -1,5 +1,7 @@
 import React, {Component, PropTypes as T} from 'react'
 import get from 'lodash/get'
+import cloneDeep from 'lodash/cloneDeep'
+import classes from 'classnames'
 import Popover from 'react-bootstrap/lib/Popover'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 import {tex} from './../../utils/translate'
@@ -8,23 +10,254 @@ import {Radios} from './../../components/form/radios.jsx'
 import {SUM_CELL, SUM_COL, SUM_ROW, actions} from './editor'
 import {SCORE_SUM, SCORE_FIXED} from './../../quiz/enums'
 import {FormGroup} from './../../components/form/form-group.jsx'
+import {Textarea} from './../../components/form/textarea.jsx'
 import {TooltipButton} from './../../components/form/tooltip-button.jsx'
 import {ColorPicker} from './../../components/form/color-picker.jsx'
-import {Textarea} from './../../components/form/textarea.jsx'
 import {utils} from './utils/utils'
 
+class Keyword extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      showFeedback: false
+    }
+  }
+
+  render() {
+    return (
+      <div  className={classes(
+          'keyword',
+          {'positive-score': this.props.keyword.score > 0 },
+          {'negative-score': this.props.keyword.score <= 0 }
+        )}>
+        <div className="row">
+          <div className="col-xs-5">
+            <input
+              id
+              type="text"
+              className="form-control keyword-text"
+              value={this.props.keyword.text}
+              onChange={e => this.props.update(this.props.index, 'text', e.target.value)}/>
+          </div>
+          <div className="col-xs-1">
+            <input
+              className="case-sensitive"
+              type="checkbox"
+              checked={this.props.keyword.caseSensitive}
+              onChange={e => this.props.update(this.props.index, 'caseSensitive', e.target.checked)}/>
+          </div>
+          <div className="col-xs-3">
+            <input
+              type="number"
+              className="form-control score"
+              value={this.props.keyword.score}
+              onChange={e => this.props.update(this.props.index, 'score', e.target.value)}/>
+          </div>
+          <div className="col-xs-3">
+            <TooltipButton
+              id={`grid-${this.props.index}-feedback-toggle`}
+              className="fa fa-comments-o"
+              title={tex('grid_feedback_info')}
+              onClick={() => this.setState({showFeedback: !this.state.showFeedback})}
+            />
+            <TooltipButton
+              id={`keyword-${this.props.index}-delete`}
+              className="fa fa-trash-o"
+              enabled={this.props.deletable}
+              title={tex('delete')}
+              onClick={() => this.props.remove(this.props.index)}
+            />
+          </div>
+        </div>
+        {this.state.showFeedback &&
+          <div className="feedback-container">
+            <Textarea
+              id={`keyword-${this.props.index}-feedback`}
+              title={tex('feedback')}
+              content={this.props.keyword.feedback}
+              onChange={value => this.props.update(this.props.index, 'feedback', value)}
+            />
+          </div>
+        }
+      </div>
+    )
+  }
+}
+
+Keyword.propTypes = {
+  keyword: T.object.isRequired,
+  update: T.func.isRequired,
+  index: T.number.isRequired,
+  deletable: T.bool.isRequired,
+  remove: T.func.isRequired
+}
+
+class PopoverBody extends Component {
+  constructor(props) {
+    super(props)
+
+    const solution =  Object.assign(
+      {},
+      {cellId: props.solution ? props.solution.cellId : props.cell.id},
+      {answers: props.solution ? props.solution.answers : [
+        {
+          text: '',
+          score: 1,
+          caseSensitive: false,
+          feedback: ''
+        }
+      ]}
+    )
+
+    this.updateKeyword = this.updateKeyword.bind(this)
+    this.addAnswer = this.addAnswer.bind(this)
+    this.removeAnswer = this.removeAnswer.bind(this)
+    this.switchListMode = this.switchListMode.bind(this)
+
+    this.state = {
+      solution: solution,
+      isList : this.props.cell.choices.length > 0
+    }
+  }
+  // update store with state solution
+  componentDidMount() {
+    this.props.onUpdate(this.state)
+  }
+
+  updateKeyword(index, property, value) {
+    let updated = cloneDeep(this.state.solution)
+    switch(property) {
+      case 'caseSensitive': {
+        updated.answers[index].caseSensitive = Boolean(value)
+        break
+      }
+      case 'score': {
+        updated.answers[index].score = parseFloat(value)
+        break
+      }
+      case 'text': {
+        updated.answers[index].text = value
+        break
+      }
+      case 'feedback': {
+        updated.answers[index].feedback = value
+        break
+      }
+    }
+
+    this.setState({solution:updated}, () => {
+      this.props.onUpdate(this.state)
+    })
+  }
+
+  switchListMode(value) {
+    this.setState({isList:value}, () => {
+      this.props.onUpdate(this.state)
+    })
+  }
+
+  addAnswer() {
+    const solution = cloneDeep(this.state.solution)
+    solution.answers.push({
+      text: '',
+      score: 1,
+      caseSensitive: false,
+      feedback: ''
+    })
+    this.setState({solution:solution})
+  }
+
+  removeAnswer(index) {
+    const solution =  cloneDeep(this.state.solution)
+    solution.answers.splice(index, 1)
+    this.setState({solution:solution})
+  }
+
+  render() {
+    return (
+      <div className="popover-body">
+        {get(this.props, '_errors.answers.text') &&
+          <ErrorBlock text={this.props._errors.answers.text} warnOnly={!this.props.validating}/>
+        }
+        {get(this.props, '_errors.answers.duplicate') &&
+          <ErrorBlock text={this.props._errors.answers.duplicate} warnOnly={!this.props.validating}/>
+        }
+        {get(this.props, '_errors.answers.value') &&
+          <ErrorBlock text={this.props._errors.answers.value} warnOnly={!this.props.validating}/>
+        }
+        <div className="checkbox">
+          <label>
+            <input
+              type="checkbox"
+              disabled={this.state.solution.answers.length <= 1}
+              checked={this.state.isList}
+              onChange={e => this.switchListMode(e.target.checked)}
+            />
+            {tex('grid_keyword_is_list')}
+          </label>
+        </div>
+        <div className="row">
+          <label className="col-xs-5">{tex('grid_keyword')}</label>
+          <label className="col-xs-1"></label>
+          <label className="col-xs-6">{tex('grid_keyword_score')}</label>
+        </div>
+        <div className="keywords">
+
+          { this.state.solution.answers.map((keyword, index) =>
+            <Keyword
+              deletable={this.state.solution.answers.length > 1}
+              key={`keyword-${this.props.cell.id}-${index}`}
+              keyword={keyword}
+              index={index}
+              update={this.updateKeyword}
+              remove={this.removeAnswer} />
+          )}
+        </div>
+        <button
+          className="btn btn-default"
+          onClick={this.addAnswer}>
+          <span className="fa fa-plus"></span>&nbsp;{tex('grid_add_keyword')}
+        </button>
+      </div>
+    )
+  }
+}
+
+PopoverBody.propTypes = {
+  cell: T.object.isRequired,
+  solution: T.object,
+  onUpdate: T.func.isRequired,
+  _errors: T.object,
+  validating: T.bool.isRequired
+}
 
 class GridCell extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      isAnswerCell: false,
       showPopover: false,
       target: null
     }
+
+    this.updateSolution = this.updateSolution.bind(this)
+    this.hidePopover = this.hidePopover.bind(this)
+  }
+
+  // callback used in popover body component
+  updateSolution(data) {
+    // add / update solution
+    this.props.onChange(
+      actions.addOrUpdateSolution(data)
+    )
+  }
+
+  hidePopover() {
+    this.refs.overlay.hide()
+    this.props.onPopoverHide()
   }
 
   render() {
+    const currentSolution = utils.getSolutionByCellId(this.props.cell.id, this.props.solutions)
     return (
       <div className="grid-cell">
         <div className="cell-header">
@@ -32,16 +265,50 @@ class GridCell extends Component {
             id={`cell-${this.props.cell.id}-delete-solution`}
             className="fa fa-trash"
             title={tex('delete')}
-            position="top"
-            enabled={this.state.isAnswerCell}
-            onClick={() => {}}
+            position="bottom"
+            enabled={currentSolution !== undefined}
+            onClick={() => this.props.onChange(
+              actions.deleteSolution(this.props.cell.id)
+            )}
           />
           <OverlayTrigger
-            rootClose
-            placement="top"
+            rootClose={false}
+            placement="bottom"
+            ref="overlay"
+            onEntered={this.props.onPopoverShow}
             overlay={
-              <Popover id="popover-contained" title="Popover Top">
-                <strong>Holy guacamole!</strong> Check this info.
+              <Popover
+                className="grid-editor-popover"
+                id={`cell-${this.props.cell.id}-solution-popover`}
+                title={
+                  <div>
+                    {tex('grid_cell_solution')}
+                    <div className="pull-right">
+                      <TooltipButton
+                        id={`cell-${this.props.cell.id}-solution-popover-delete`}
+                        title={'delete'}
+                        enabled={utils.isValidSolution(currentSolution)}
+                        className="btn-sm fa fa-trash"
+                        onClick={() => this.props.onChange(
+                          actions.deleteSolution(this.props.cell.id)
+                        )}
+                      />
+                      <TooltipButton
+                        id={`cell-${this.props.cell.id}-solution-popover-close`}
+                        title={'close'}
+                        enabled={utils.isValidSolution(currentSolution) && !utils.hasDuplicates(currentSolution)}
+                        className="btn-sm fa fa-close"
+                        onClick={() => this.hidePopover()}
+                      />
+                    </div>
+                  </div>
+                }>
+                  <PopoverBody
+                    onUpdate={this.updateSolution}
+                    cell={this.props.cell}
+                    solution={currentSolution}
+                    _errors={this.props._errors}
+                    validating={this.props.validating}/>
               </Popover>
             }
             trigger={'click'}
@@ -50,6 +317,7 @@ class GridCell extends Component {
               id={`cell-${this.props.cell.id}-edit-solution`}
               title={tex('grid_create_or_edit_solution')}
               className="fa fa-pencil"
+              enabled={this.props.popoverEnabled}
               onClick={(e) =>
                 this.setState({target: e.target, showPopover: !this.state.showPopover})
               }
@@ -57,30 +325,52 @@ class GridCell extends Component {
           </OverlayTrigger>
           <ColorPicker
             color={this.props.cell.color}
+            forFontColor={true}
             onPick={color => this.props.onChange(
-                actions.updateCellStyle('color', this.props.cell.id, color.hex)
+                actions.updateCellStyle(this.props.cell.id, 'color', color.hex)
             )}
           />
           <ColorPicker
           color={this.props.cell.background}
             onPick={color => this.props.onChange(
-                actions.updateProperty('background', this.props.cell.id, color.hex)
+                actions.updateCellStyle(this.props.cell.id, 'background', color.hex)
             )}
           />
         </div>
-        <div className="cell-body">
-          {!this.isAnswerCell &&
-            <Textarea
-              onChange={() => {}}
+        <div className="cell-body" style={{backgroundColor:this.props.cell.background}}>
+          {currentSolution === undefined &&
+            <textarea
+              className="form-control"
+              onChange={(e) => this.props.onChange(
+                actions.updateCellData(this.props.cell.id, e.target.value)
+              )}
               id={`${this.props.cell.id}-data`}
-              content={this.props.cell.data}
+              value={this.props.cell.data}
+              style={{color:this.props.cell.color}}
             />
           }
-          {this.isAnswerCell && this.props.cell.choices.length > 0 &&
-            <div>render a dropdown</div>
+          {currentSolution !== undefined && this.props.cell.choices.length > 0 &&
+            <div className="dropdown">
+              <button className="btn btn-default dropdown-toggle" type="button" id={`choice-drop-down-${this.props.cell.id}`} data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                {tex('grid_choice_select_empty')}&nbsp;
+                <span className="caret"></span>
+              </button>
+              <ul className="dropdown-menu" aria-labelledby={`choice-drop-down-${this.props.cell.id}`}>
+                {this.props.cell.choices.map((choice, index) =>
+                  <li key={`choice-${index}`}><a style={{color:this.props.cell.color}} href="#">{choice}</a></li>
+                )}
+              </ul>
+            </div>
           }
-          {this.isAnswerCell && this.props.cell.choices.length === 0 &&
-            <div>render an input text</div>
+          {currentSolution !== undefined && this.props.cell.choices.length === 0 &&
+            <input
+              type="text"
+              className="form-control"
+              id={`${this.props.cell.id}-data`}
+              value=""
+              placeholder={utils.getBestAnswer(currentSolution.answers)}
+              style={{color:this.props.cell.color}}
+            />
           }
         </div>
       </div>
@@ -91,13 +381,33 @@ class GridCell extends Component {
 GridCell.propTypes = {
   cell: T.object.isRequired,
   solutions: T.arrayOf(T.object).isRequired,
-  onChange: T.func.isRequired
+  onChange: T.func.isRequired,
+  onPopoverHide: T.func.isRequired,
+  onPopoverShow: T.func.isRequired,
+  popoverEnabled: T.bool.isRequired,
+  _errors: T.object,
+  validating: T.bool.isRequired
 }
 
 class Grid extends Component {
 
   constructor(props) {
     super(props)
+    this.state = {
+      isEditingCell: false
+    }
+    this.onPopoverShow = this.onPopoverShow.bind(this)
+    this.onPopoverHide = this.onPopoverHide.bind(this)
+  }
+
+  // only one popover can be opened at once ie disable every "pencil" icons
+  onPopoverShow() {
+    this.setState({isEditingCell: true})
+  }
+
+  // only one popover can be opened at once ie enable every "pencil" icons
+  onPopoverHide() {
+    this.setState({isEditingCell: false})
   }
 
   render() {
@@ -108,8 +418,8 @@ class Grid extends Component {
 
     return (
       <div className="grid-editor">
-        {get(this.props.item, '_errors.item') &&
-          <ErrorBlock text={this.props.item._errors.item} warnOnly={!this.props.validating}/>
+        {get(this.props.item, '_errors.cell') &&
+          <ErrorBlock text={this.props.item._errors.cell} warnOnly={!this.props.validating}/>
         }
         {this.props.item.score.type === SCORE_SUM &&
           <div className="form-group">
@@ -257,7 +567,7 @@ class Grid extends Component {
                       <input
                         type="number"
                         min="0"
-                        disabled={utils.atLeastOneSolutionInCol(i, this.props.item.cells, this.props.item.solutions)}
+                        disabled={!utils.atLeastOneSolutionInCol(i, this.props.item.cells, this.props.item.solutions)}
                         value={utils.getColScore(i, this.props.item.cells, this.props.item.solutions)}
                         className="form-control small-input"
                         onChange={e => this.props.onChange(
@@ -290,6 +600,11 @@ class Grid extends Component {
                         cell={utils.getCellByCoordinates(j, i, this.props.item.cells)}
                         solutions={this.props.item.solutions}
                         onChange={this.props.onChange}
+                        onPopoverHide={this.onPopoverHide}
+                        onPopoverShow={this.onPopoverShow}
+                        popoverEnabled={!this.state.isEditingCell}
+                        _errors={this.props.item._errors}
+                        validating={this.props.validating}
                       />
                     </td>
                   )}
