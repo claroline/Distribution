@@ -19,17 +19,13 @@ export const utils = {
     // in col score mode each item of the col MUST have the same score
     const oneCellOfTheCol = cells.find(cell => cell.coordinates[0] === colIndex && undefined !== solutions.find(solution => solution.cellId === cell.id))
     let cellSolutionScore = 0
-    console.log('solutions', solutions)
-    console.log('oneCellOfTheCol', oneCellOfTheCol)
     if (undefined !== oneCellOfTheCol) {
       solutions.forEach(solution => {
         if (undefined !== solution.answers && solution.answers.length > 0 && solution.cellId === oneCellOfTheCol.id && solution.answers[0].score > cellSolutionScore) {
-          console.log('solution found', solution)
           cellSolutionScore = solution.answers[0].score
         }
       })
     }
-    console.log('cellSolutionScore', cellSolutionScore)
     return cellSolutionScore
   },
   getRowScore(rowIndex, cells, solutions) {

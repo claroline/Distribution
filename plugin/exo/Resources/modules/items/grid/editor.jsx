@@ -47,11 +47,14 @@ class Keyword extends Component {
               onChange={e => this.props.update(this.props.index, 'caseSensitive', e.target.checked)}/>
           </div>
           <div className="col-xs-3">
-            <input
-              type="number"
-              className="form-control score"
-              value={this.props.keyword.score}
-              onChange={e => this.props.update(this.props.index, 'score', e.target.value)}/>
+            { this.props.score === SCORE_SUM && this.props.sumMode === SUM_CELL &&
+              <input
+                type="number"
+                className="form-control score"
+                value={this.props.keyword.score}
+                onChange={e => this.props.update(this.props.index, 'score', e.target.value)}/>
+            }
+
           </div>
           <div className="col-xs-3">
             <TooltipButton
@@ -89,7 +92,9 @@ Keyword.propTypes = {
   update: T.func.isRequired,
   index: T.number.isRequired,
   deletable: T.bool.isRequired,
-  remove: T.func.isRequired
+  remove: T.func.isRequired,
+  score: T.object,
+  sumMode: T.string
 }
 
 class PopoverBody extends Component {
@@ -177,13 +182,13 @@ class PopoverBody extends Component {
     return (
       <div className="popover-body">
         {get(this.props, '_errors.answers.text') &&
-          <ErrorBlock text={this.props._errors.answers.text} warnOnly={!this.props.validating}/>
+          <ErrorBlock text={this.props.errors.answers.text} warnOnly={!this.props.validating}/>
         }
         {get(this.props, '_errors.answers.duplicate') &&
-          <ErrorBlock text={this.props._errors.answers.duplicate} warnOnly={!this.props.validating}/>
+          <ErrorBlock text={this.props.errors.answers.duplicate} warnOnly={!this.props.validating}/>
         }
         {get(this.props, '_errors.answers.value') &&
-          <ErrorBlock text={this.props._errors.answers.value} warnOnly={!this.props.validating}/>
+          <ErrorBlock text={this.props.errors.answers.value} warnOnly={!this.props.validating}/>
         }
         <div className="checkbox">
           <label>
@@ -210,7 +215,9 @@ class PopoverBody extends Component {
               keyword={keyword}
               index={index}
               update={this.updateKeyword}
-              remove={this.removeAnswer} />
+              remove={this.removeAnswer}
+              score={this.props.score}
+              sumMode={this.props.sumMode}/>
           )}
         </div>
         <button
@@ -227,8 +234,10 @@ PopoverBody.propTypes = {
   cell: T.object.isRequired,
   solution: T.object,
   onUpdate: T.func.isRequired,
-  _errors: T.object,
-  validating: T.bool.isRequired
+  validating: T.bool.isRequired,
+  errors: T.object,
+  score: T.object,
+  sumMode: T.string
 }
 
 class GridCell extends Component {
@@ -307,8 +316,10 @@ class GridCell extends Component {
                     onUpdate={this.updateSolution}
                     cell={this.props.cell}
                     solution={currentSolution}
-                    _errors={this.props._errors}
-                    validating={this.props.validating}/>
+                    errors={this.props.errors}
+                    validating={this.props.validating}
+                    score={this.props.score}
+                    sumMode={this.props.sumMode}/>
               </Popover>
             }
             trigger={'click'}
@@ -385,7 +396,9 @@ GridCell.propTypes = {
   onPopoverHide: T.func.isRequired,
   onPopoverShow: T.func.isRequired,
   popoverEnabled: T.bool.isRequired,
-  _errors: T.object,
+  score: T.object,
+  sumMode: T.string,
+  errors: T.object,
   validating: T.bool.isRequired
 }
 
@@ -599,11 +612,13 @@ class Grid extends Component {
                       <GridCell
                         cell={utils.getCellByCoordinates(j, i, this.props.item.cells)}
                         solutions={this.props.item.solutions}
+                        score={this.props.item.score}
+                        sumMode={this.props.item.sumMode}
                         onChange={this.props.onChange}
                         onPopoverHide={this.onPopoverHide}
                         onPopoverShow={this.onPopoverShow}
                         popoverEnabled={!this.state.isEditingCell}
-                        _errors={this.props.item._errors}
+                        errors={this.props.item._errors}
                         validating={this.props.validating}
                       />
                     </td>
