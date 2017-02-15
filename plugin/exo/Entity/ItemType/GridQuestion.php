@@ -1,6 +1,6 @@
 <?php
 
-namespace UJM\ExoBundle\Entity\QuestionType;
+namespace UJM\ExoBundle\Entity\ItemType;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,7 +14,7 @@ use UJM\ExoBundle\Library\Model\ShuffleTrait;
  * @ORM\Entity
  * @ORM\Table(name="ujm_question_grid")
  */
-class GridQuestion extends AbstractQuestion
+class GridQuestion extends AbstractItem
 {
     use ShuffleTrait;
 

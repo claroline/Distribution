@@ -1,11 +1,11 @@
 <?php
 
-namespace UJM\ExoBundle\Serializer\Question\Type;
+namespace UJM\ExoBundle\Serializer\Item\Type;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Misc\Cell;
 use UJM\ExoBundle\Entity\Misc\CellChoice;
-use UJM\ExoBundle\Entity\QuestionType\GridQuestion;
+use UJM\ExoBundle\Entity\ItemType\GridQuestion;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
 use UJM\ExoBundle\Serializer\Misc\KeywordSerializer;
@@ -139,7 +139,7 @@ class GridQuestionSerializer implements SerializerInterface
         $gridQuestion->setBorderColor($data->border->color);
         // Deserialize cells and solutions
         $this->deserializeCells($gridQuestion, $data->cells, $options);
-        
+
         return $gridQuestion;
     }
 

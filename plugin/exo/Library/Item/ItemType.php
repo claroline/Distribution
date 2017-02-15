@@ -68,7 +68,7 @@ final class ItemType
      *
      * @var string
      */
-    const GRID = 'application/x.grids+json';
+    const GRID = 'application/x.grid+json';
 
     /**
      * Get the list of managed item types.

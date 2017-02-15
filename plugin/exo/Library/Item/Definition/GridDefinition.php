@@ -1,26 +1,26 @@
 <?php
 
-namespace UJM\ExoBundle\Library\Question\Definition;
+namespace UJM\ExoBundle\Library\Item\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Misc\Cell;
 use UJM\ExoBundle\Entity\Misc\CellChoice;
-use UJM\ExoBundle\Entity\QuestionType\AbstractQuestion;
-use UJM\ExoBundle\Entity\QuestionType\GridQuestion;
+use UJM\ExoBundle\Entity\ItemType\AbstractItem;
+use UJM\ExoBundle\Entity\ItemType\GridQuestion;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 use UJM\ExoBundle\Library\Attempt\GenericPenalty;
 use UJM\ExoBundle\Library\Attempt\GenericScore;
 use UJM\ExoBundle\Library\Options\GridSumMode;
-use UJM\ExoBundle\Library\Question\QuestionType;
-use UJM\ExoBundle\Serializer\Question\Type\GridQuestionSerializer;
+use UJM\ExoBundle\Library\Item\ItemType;
+use UJM\ExoBundle\Serializer\Item\Type\GridQuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\GridAnswerValidator;
-use UJM\ExoBundle\Validator\JsonSchema\Question\Type\GridQuestionValidator;
+use UJM\ExoBundle\Validator\JsonSchema\Item\Type\GridQuestionValidator;
 
 /**
  * Grid question definition.
  *
  * @DI\Service("ujm_exo.definition.question_grid")
- * @DI\Tag("ujm_exo.definition.question")
+ * @DI\Tag("ujm_exo.definition.item")
  */
 class GridDefinition extends AbstractDefinition
 {
@@ -69,7 +69,7 @@ class GridDefinition extends AbstractDefinition
      */
     public static function getMimeType()
     {
-        return QuestionType::GRID;
+        return ItemType::GRID;
     }
 
     /**
@@ -79,7 +79,7 @@ class GridDefinition extends AbstractDefinition
      */
     public static function getEntityClass()
     {
-        return '\UJM\ExoBundle\Entity\QuestionType\GridQuestion';
+        return '\UJM\ExoBundle\Entity\ItemType\GridQuestion';
     }
 
     /**
@@ -118,7 +118,7 @@ class GridDefinition extends AbstractDefinition
      *
      * @return CorrectedAnswer
      */
-    public function correctAnswer(AbstractQuestion $question, $answer)
+    public function correctAnswer(AbstractItem $question, $answer)
     {
         $scoreRule = json_decode($question->getScoreRule());
         if ($scoreRule['type'] === 'fixed') {
@@ -145,7 +145,7 @@ class GridDefinition extends AbstractDefinition
      *
      * @return CorrectedAnswer
      */
-    private function getCorrectAnswerForFixOrSumCellsMode(AbstractQuestion $question, $answer)
+    private function getCorrectAnswerForFixOrSumCellsMode(AbstractItem $question, $answer)
     {
         $corrected = new CorrectedAnswer();
         if (!is_null($answer)) {
@@ -182,7 +182,7 @@ class GridDefinition extends AbstractDefinition
      *
      * @return CorrectedAnswer
      */
-    private function getCorrectAnswerForRowSumMode(AbstractQuestion $question, $answer)
+    private function getCorrectAnswerForRowSumMode(AbstractItem $question, $answer)
     {
         $corrected = new CorrectedAnswer();
         if (!is_null($answer)) {
@@ -234,7 +234,7 @@ class GridDefinition extends AbstractDefinition
      *
      * @return CorrectedAnswer
      */
-    private function getCorrectAnswerForColumnSumMode(AbstractQuestion $question, $answer)
+    private function getCorrectAnswerForColumnSumMode(AbstractItem $question, $answer)
     {
         $corrected = new CorrectedAnswer();
         if (!is_null($answer)) {
@@ -283,7 +283,7 @@ class GridDefinition extends AbstractDefinition
      *
      * @return array
      */
-    public function expectAnswer(AbstractQuestion $question)
+    public function expectAnswer(AbstractItem $question)
     {
         return array_map(function (Cell $cell) {
             // expected answer if there is at least one choice in the cell
@@ -295,7 +295,7 @@ class GridDefinition extends AbstractDefinition
         return [];
     }
 
-    public function getStatistics(AbstractQuestion $pairQuestion, array $answers)
+    public function getStatistics(AbstractItem $pairQuestion, array $answers)
     {
         // TODO: Implement getStatistics() method.
 
