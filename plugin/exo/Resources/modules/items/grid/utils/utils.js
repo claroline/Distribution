@@ -1,3 +1,7 @@
+
+import {SUM_CELL} from './../editor'
+import {SCORE_SUM, SCORE_FIXED} from './../../../quiz/enums'
+
 export const utils = {
 
   getCellsByCol(colIndex, cells) {
@@ -21,7 +25,7 @@ export const utils = {
     let cellSolutionScore = 0
     if (undefined !== oneCellOfTheCol) {
       solutions.forEach(solution => {
-        if (undefined !== solution.answers && solution.answers.length > 0 && solution.cellId === oneCellOfTheCol.id && solution.answers[0].score > cellSolutionScore) {
+        if (undefined !== solution.answers && solution.answers.length > 0 && solution.cellId === oneCellOfTheCol.id && solution.answers[0].score >= cellSolutionScore) {
           cellSolutionScore = solution.answers[0].score
         }
       })
@@ -32,11 +36,13 @@ export const utils = {
     // in row score mode each item of the row MUST have the same score
     const oneCellOfTheRow = cells.find(cell => cell.coordinates[1] === rowIndex && undefined !== solutions.find(solution => solution.cellId === cell.id))
     let cellSolutionScore = 0
-    solutions.forEach(solution => {
-      if (undefined !== solution.answers && solution.answers.length > 0 && solution.cellId === oneCellOfTheRow.id && solution.answers[0].score > cellSolutionScore) {
-        cellSolutionScore = solution.answers[0].score
-      }
-    })
+    if (undefined !== oneCellOfTheRow) {
+      solutions.forEach(solution => {
+        if (undefined !== solution.answers && solution.answers.length > 0 && solution.cellId === oneCellOfTheRow.id && solution.answers[0].score > cellSolutionScore) {
+          cellSolutionScore = solution.answers[0].score
+        }
+      })
+    }
     return cellSolutionScore
   },
   atLeastOneSolutionInCol(colIndex, cells, solutions) {
@@ -78,5 +84,12 @@ export const utils = {
     })
 
     return best === null ? '' : best.text
+  },
+  getKeywordPositiveNegativeClass(typeScore, sumMode, keyword) {
+    if(typeScore === SCORE_SUM && sumMode === SUM_CELL) {
+      return keyword.score > 0 ? 'positive-score' : 'negative-score'
+    } else if (typeScore === SCORE_FIXED || (typeScore === SCORE_SUM && sumMode !== SUM_CELL)) {
+      return keyword.awaited ? 'positive-score' : 'negative-score'
+    }
   }
 }

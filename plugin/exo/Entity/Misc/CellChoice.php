@@ -52,6 +52,12 @@ class CellChoice implements AnswerPartInterface
     private $cell;
 
     /**
+     * @var bool
+     * @ORM\Column(name="awaited", type="boolean", nullable=true)
+     */
+    private $awaited;
+
+    /**
      * CellChoice constructor.
      */
     public function __construct()
@@ -107,6 +113,28 @@ class CellChoice implements AnswerPartInterface
     public function setCaseSensitive($caseSensitive)
     {
         $this->caseSensitive = $caseSensitive;
+    }
+
+    /**
+     * Is the cell choice the awaited one ?
+     * Usefull only in SumMode row / col and Global score
+     *
+     * @return bool
+     */
+    public function isAwaited()
+    {
+        return $this->awaited;
+    }
+
+    /**
+     * Set awaited
+     * Usefull only in SumMode row / col and Global score
+     *
+     * @return bool
+     */
+    public function setAwaited($awaited)
+    {
+        $this->awaited = $awaited;
     }
 
     /**

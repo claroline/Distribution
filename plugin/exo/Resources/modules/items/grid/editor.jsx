@@ -27,35 +27,67 @@ class Keyword extends Component {
     return (
       <div  className={classes(
           'keyword',
-          {'positive-score': this.props.keyword.score > 0 },
-          {'negative-score': this.props.keyword.score <= 0 }
+          utils.getKeywordPositiveNegativeClass(this.props.score.type, this.props.sumMode, this.props.keyword)
         )}>
         <div className="row">
-          <div className="col-xs-5">
-            <input
-              id
-              type="text"
-              className="form-control keyword-text"
-              value={this.props.keyword.text}
-              onChange={e => this.props.update(this.props.index, 'text', e.target.value)}/>
-          </div>
-          <div className="col-xs-1">
-            <input
-              className="case-sensitive"
-              type="checkbox"
-              checked={this.props.keyword.caseSensitive}
-              onChange={e => this.props.update(this.props.index, 'caseSensitive', e.target.checked)}/>
-          </div>
-          <div className="col-xs-3">
-            { this.props.score === SCORE_SUM && this.props.sumMode === SUM_CELL &&
-              <input
-                type="number"
-                className="form-control score"
-                value={this.props.keyword.score}
-                onChange={e => this.props.update(this.props.index, 'score', e.target.value)}/>
-            }
-
-          </div>
+          { this.props.score.type === SCORE_SUM && this.props.sumMode === SUM_CELL &&
+            <span>
+              <div className="col-xs-5">
+                <input
+                  id
+                  type="text"
+                  className="form-control keyword-text"
+                  value={this.props.keyword.text}
+                  onChange={e => this.props.update(this.props.index, 'text', e.target.value)}
+                />
+              </div>
+              <div className="col-xs-1">
+                <input
+                  className="case-sensitive"
+                  type="checkbox"
+                  checked={this.props.keyword.caseSensitive}
+                  onChange={e => this.props.update(this.props.index, 'caseSensitive', e.target.checked)}
+                />
+              </div>
+              <div className="col-xs-3">
+                <input
+                  type="number"
+                  className="form-control score"
+                  value={this.props.keyword.score}
+                  onChange={e => this.props.update(this.props.index, 'score', e.target.value)}
+                />
+              </div>
+            </span>
+          }
+          { this.props.score.type === SCORE_FIXED || (this.props.score.type === SCORE_SUM && this.props.sumMode !== SUM_CELL) &&
+            <span>
+              <div className="col-xs-3">
+                <input
+                  className="awaited"
+                  type="checkbox"
+                  checked={this.props.keyword.awaited}
+                  onChange={e => this.props.update(this.props.index, 'awaited', e.target.checked)}
+                />
+              </div>
+              <div className="col-xs-5">
+                <input
+                  id
+                  type="text"
+                  className="form-control keyword-text"
+                  value={this.props.keyword.text}
+                  onChange={e => this.props.update(this.props.index, 'text', e.target.value)}
+                />
+              </div>
+              <div className="col-xs-1">
+                <input
+                  className="case-sensitive"
+                  type="checkbox"
+                  checked={this.props.keyword.caseSensitive}
+                  onChange={e => this.props.update(this.props.index, 'caseSensitive', e.target.checked)}
+                />
+              </div>
+            </span>
+          }
           <div className="col-xs-3">
             <TooltipButton
               id={`grid-${this.props.index}-feedback-toggle`}
@@ -109,7 +141,8 @@ class PopoverBody extends Component {
           text: '',
           score: 1,
           caseSensitive: false,
-          feedback: ''
+          feedback: '',
+          awaited: false
         }
       ]}
     )
@@ -134,6 +167,10 @@ class PopoverBody extends Component {
     switch(property) {
       case 'caseSensitive': {
         updated.answers[index].caseSensitive = Boolean(value)
+        break
+      }
+      case 'awaited': {
+        updated.answers[index].awaited = Boolean(value)
         break
       }
       case 'score': {
@@ -167,7 +204,8 @@ class PopoverBody extends Component {
       text: '',
       score: 1,
       caseSensitive: false,
-      feedback: ''
+      feedback: '',
+      awaited: false
     })
     this.setState({solution:solution})
   }
@@ -181,13 +219,13 @@ class PopoverBody extends Component {
   render() {
     return (
       <div className="popover-body">
-        {get(this.props, '_errors.answers.text') &&
+        {get(this.props, 'errors.answers.text') &&
           <ErrorBlock text={this.props.errors.answers.text} warnOnly={!this.props.validating}/>
         }
-        {get(this.props, '_errors.answers.duplicate') &&
+        {get(this.props, 'errors.answers.duplicate') &&
           <ErrorBlock text={this.props.errors.answers.duplicate} warnOnly={!this.props.validating}/>
         }
-        {get(this.props, '_errors.answers.value') &&
+        {get(this.props, 'errors.answers.value') &&
           <ErrorBlock text={this.props.errors.answers.value} warnOnly={!this.props.validating}/>
         }
         <div className="checkbox">
@@ -202,9 +240,20 @@ class PopoverBody extends Component {
           </label>
         </div>
         <div className="row">
-          <label className="col-xs-5">{tex('grid_keyword')}</label>
-          <label className="col-xs-1"></label>
-          <label className="col-xs-6">{tex('grid_keyword_score')}</label>
+          { this.props.score.type === SCORE_SUM && this.props.sumMode === SUM_CELL &&
+            <span>
+              <label className="col-xs-5">{tex('grid_keyword')}</label>
+              <label className="col-xs-1"></label>
+              <label className="col-xs-6">{tex('grid_keyword_score')}</label>
+            </span>
+          }
+          { this.props.score.type === SCORE_FIXED || (this.props.score.type === SCORE_SUM && this.props.sumMode !== SUM_CELL) &&
+            <span>
+              <label className="col-xs-3"></label>
+              <label className="col-xs-5">{tex('grid_keyword')}</label>
+              <label className="col-xs-4"></label>
+            </span>
+          }
         </div>
         <div className="keywords">
 
@@ -275,7 +324,7 @@ class GridCell extends Component {
             className="fa fa-trash"
             title={tex('delete')}
             position="bottom"
-            enabled={currentSolution !== undefined}
+            enabled={undefined !== currentSolution && !this.state.showPopover}
             onClick={() => this.props.onChange(
               actions.deleteSolution(this.props.cell.id)
             )}
@@ -291,12 +340,11 @@ class GridCell extends Component {
                 id={`cell-${this.props.cell.id}-solution-popover`}
                 title={
                   <div>
-                    {tex('grid_cell_solution')}
                     <div className="pull-right">
                       <TooltipButton
                         id={`cell-${this.props.cell.id}-solution-popover-delete`}
                         title={'delete'}
-                        enabled={utils.isValidSolution(currentSolution)}
+                        enabled={utils.isValidSolution(currentSolution) && !utils.hasDuplicates(currentSolution)}
                         className="btn-sm fa fa-trash"
                         onClick={() => this.props.onChange(
                           actions.deleteSolution(this.props.cell.id)
@@ -434,9 +482,12 @@ class Grid extends Component {
         {get(this.props.item, '_errors.cell') &&
           <ErrorBlock text={this.props.item._errors.cell} warnOnly={!this.props.validating}/>
         }
+        {get(this.props.item, '_errors.solutions') &&
+          <ErrorBlock text={this.props.item._errors.solutions} warnOnly={!this.props.validating}/>
+        }
         {this.props.item.score.type === SCORE_SUM &&
           <div className="form-group">
-            <label htmlFor="grid-penalty">{tex('editor_penalty_label')}</label>
+            <label htmlFor="grid-penalty">{tex('grid_editor_penalty_label')}</label>
             <input
               id="grid-penalty"
               className="form-control"

@@ -9,7 +9,7 @@ use UJM\ExoBundle\Library\Model\PenaltyTrait;
 use UJM\ExoBundle\Library\Model\ShuffleTrait;
 
 /**
- * A pair question.
+ * A grid question.
  *
  * @ORM\Entity
  * @ORM\Table(name="ujm_question_grid")

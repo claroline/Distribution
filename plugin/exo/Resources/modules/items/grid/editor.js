@@ -34,15 +34,11 @@ export const actions = {
   deleteSolution: makeActionCreator(DELETE_SOLUTION, 'id')
 }
 
-function decorate(item) {
-
-  return item
-}
 
 function reduce(grid = {}, action) {
   switch (action.type) {
     case ITEM_CREATE: {
-      return decorate(Object.assign({}, grid, {
+      return Object.assign({}, grid, {
         random: false,
         penalty: 0,
         sumMode: SUM_CELL,
@@ -56,7 +52,7 @@ function reduce(grid = {}, action) {
           width: 1
         },
         solutions: []
-      }))
+      })
     }
     case UPDATE_PROP: {
       const newItem = cloneDeep(grid)
@@ -80,8 +76,6 @@ function reduce(grid = {}, action) {
         }
         case 'cols': {
           if (action.value < grid.cols) {
-            // delete every col cells and corresponding solutions (action.value is already decremented)
-            // say I have 3 col and I press minus action.value = 2 which is the index I want to remove (last one)
             return deleteCol(action.value, newItem, false)
           } else {
             newItem[action.property] = parseFloat(action.value)
@@ -95,7 +89,6 @@ function reduce(grid = {}, action) {
         }
         case 'sumMode': {
           if (action.value === SCORE_FIXED) {
-            // @TODO set score from every solutions to 0 ? to score.success ?
             newItem.score.type = SCORE_FIXED
             // can not apply penalty in this case
             newItem.penalty = 0
@@ -105,6 +98,7 @@ function reduce(grid = {}, action) {
             // set default values for success and failure
             newItem.score.success = 1
             newItem.score.failure = 0
+            // if action.value === SUM_CELL then all answers should hav awaited = false
           }
           break
         }
@@ -129,7 +123,6 @@ function reduce(grid = {}, action) {
           break
         }
       }
-
       return newItem
     }
     case DELETE_COLUMN: {
@@ -142,17 +135,23 @@ function reduce(grid = {}, action) {
     }
     case UPDATE_COLUMN_SCORE: {
       const newItem = cloneDeep(grid)
-      const cellsToUpdate = utils.getCellsByCol(action.index, grid.cells)
-      cellsToUpdate.forEach(cell => {
-        cell.score = parseFloat(action.score)
+      const cellsInRow = utils.getCellsByCol(action.index, newItem.cells)
+      cellsInRow.forEach(cell => {
+        const solutionToUpdate = newItem.solutions.find(solution => solution.cellId === cell.id)
+        if (undefined !== solutionToUpdate && undefined !== solutionToUpdate.answers && solutionToUpdate.answers.length > 0) {
+          solutionToUpdate.answers.forEach(answer => answer.score = parseFloat(action.score))
+        }
       })
       return newItem
     }
     case UPDATE_ROW_SCORE: {
       const newItem = cloneDeep(grid)
-      const cellsToUpdate = utils.getCellsByRow(action.index, grid.cells)
-      cellsToUpdate.forEach(cell => {
-        cell.score = parseFloat(action.score)
+      const cellsInRow = utils.getCellsByRow(action.index, newItem.cells)
+      cellsInRow.forEach(cell => {
+        const solutionToUpdate = newItem.solutions.find(solution => solution.cellId === cell.id)
+        if (undefined !== solutionToUpdate && undefined !== solutionToUpdate.answers && solutionToUpdate.answers.length > 0) {
+          solutionToUpdate.answers.forEach(answer => answer.score = parseFloat(action.score))
+        }
       })
       return newItem
     }
@@ -278,12 +277,11 @@ function validate(grid) {
       // call that is not a solution but do not has any data
       _errors.cell = tex('grid_cell_empty_data')
     }
-
   })
 
   // no solution at all
   if (grid.solutions.length === 0) {
-    _errors.solution = tex('grid_at_least_one_solution')
+    _errors.solutions = tex('grid_at_least_one_solution')
   }
 
   return _errors

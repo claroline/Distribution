@@ -89,7 +89,7 @@ class Cell
     private $choices = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\QuestionType\GridQuestion", inversedBy="cells")
+     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\ItemType\GridQuestion", inversedBy="cells")
      * @ORM\JoinColumn(name="question_id", referencedColumnName="id")
      */
     private $question;
