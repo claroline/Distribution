@@ -117,7 +117,7 @@ class CellChoice implements AnswerPartInterface
 
     /**
      * Is the cell choice the awaited one ?
-     * Usefull only in SumMode row / col and Global score
+     * Usefull only in SumMode row / col and Global score.
      *
      * @return bool
      */
@@ -128,7 +128,7 @@ class CellChoice implements AnswerPartInterface
 
     /**
      * Set awaited
-     * Usefull only in SumMode row / col and Global score
+     * Usefull only in SumMode row / col and Global score.
      *
      * @return bool
      */
