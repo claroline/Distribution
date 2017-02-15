@@ -5,7 +5,7 @@ namespace UJM\ExoBundle\Entity\Misc;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
-use UJM\ExoBundle\Entity\QuestionType\GridQuestion;
+use UJM\ExoBundle\Entity\ItemType\GridQuestion;
 use UJM\ExoBundle\Library\Model\UuidTrait;
 
 /**

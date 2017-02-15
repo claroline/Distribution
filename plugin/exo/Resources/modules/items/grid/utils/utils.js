@@ -17,22 +17,28 @@ export const utils = {
   },
   getColScore(colIndex, cells, solutions) {
     // in col score mode each item of the col MUST have the same score
-    const oneCellOfTheCol = cells.find(cell => cell.coordinates[0] === colIndex)
+    const oneCellOfTheCol = cells.find(cell => cell.coordinates[0] === colIndex && undefined !== solutions.find(solution => solution.cellId === cell.id))
     let cellSolutionScore = 0
-    solutions.forEach(solution => {
-      if (undefined !== solutions.answers && solutions.answers.length > 0 && solution.cellId === oneCellOfTheCol.id && solutions.answers[0].score > cellSolutionScore) {
-        cellSolutionScore = solutions.answers[0].score
-      }
-    })
+    console.log('solutions', solutions)
+    console.log('oneCellOfTheCol', oneCellOfTheCol)
+    if (undefined !== oneCellOfTheCol) {
+      solutions.forEach(solution => {
+        if (undefined !== solution.answers && solution.answers.length > 0 && solution.cellId === oneCellOfTheCol.id && solution.answers[0].score > cellSolutionScore) {
+          console.log('solution found', solution)
+          cellSolutionScore = solution.answers[0].score
+        }
+      })
+    }
+    console.log('cellSolutionScore', cellSolutionScore)
     return cellSolutionScore
   },
   getRowScore(rowIndex, cells, solutions) {
     // in row score mode each item of the row MUST have the same score
-    const oneCellOfTheRow = cells.find(cell => cell.coordinates[1] === rowIndex)
+    const oneCellOfTheRow = cells.find(cell => cell.coordinates[1] === rowIndex && undefined !== solutions.find(solution => solution.cellId === cell.id))
     let cellSolutionScore = 0
     solutions.forEach(solution => {
-      if (undefined !== solutions.answers && solutions.answers.length > 0 && solution.cellId === oneCellOfTheRow.id && solutions.answers[0].score > cellSolutionScore) {
-        cellSolutionScore = solutions.answers[0].score
+      if (undefined !== solution.answers && solution.answers.length > 0 && solution.cellId === oneCellOfTheRow.id && solution.answers[0].score > cellSolutionScore) {
+        cellSolutionScore = solution.answers[0].score
       }
     })
     return cellSolutionScore
