@@ -4,7 +4,6 @@ namespace UJM\ExoBundle\Entity\Misc;
 
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
-use UJM\ExoBundle\Entity\Misc\Cell;
 use UJM\ExoBundle\Library\Attempt\AnswerPartInterface;
 use UJM\ExoBundle\Library\Model\FeedbackTrait;
 use UJM\ExoBundle\Library\Model\ScoreTrait;
@@ -45,7 +44,6 @@ class CellChoice implements AnswerPartInterface
     private $caseSensitive;
 
     /**
-     *
      * @var Cell
      *
      * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Misc\Cell", inversedBy="choices")
@@ -112,7 +110,6 @@ class CellChoice implements AnswerPartInterface
     }
 
     /**
-     *
      * @return Cell
      */
     public function getCell()
@@ -121,7 +118,6 @@ class CellChoice implements AnswerPartInterface
     }
 
     /**
-     *
      * @param Cell $cell
      */
     public function setCell(Cell $cell)

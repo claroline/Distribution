@@ -15,7 +15,6 @@ use UJM\ExoBundle\Serializer\Misc\KeywordSerializer;
  */
 class GridQuestionSerializer implements SerializerInterface
 {
-
     /**
      * @var KeywordSerializer
      */
@@ -64,7 +63,7 @@ class GridQuestionSerializer implements SerializerInterface
 
     /**
      * @param GridQuestion $gridQuestion
-     * @param array         $options
+     * @param array        $options
      *
      * @return array
      */
@@ -83,13 +82,14 @@ class GridQuestionSerializer implements SerializerInterface
                     return $choice->getText();
                 }, $cell->getChoices()->toArray());
             }
+
             return $cellData;
         }, $gridQuestion->getCells()->toArray());
     }
 
     /**
      * @param GridQuestion $gridQuestion
-     * @param array         $options
+     * @param array        $options
      *
      * @return array
      */
@@ -103,11 +103,11 @@ class GridQuestionSerializer implements SerializerInterface
                 $solutionData->answers = array_map(function (CellChoice $choice) use ($options) {
                     return $this->keywordSerializer->serialize($choice, $options);
                 }, $cell->getOptions()->toArray());
+
                 return $solutionData;
             }
         }, $gridQuestion->getCells()->toArray());
     }
-
 
     /**
      * Converts raw data into a Grid question entity.
@@ -146,10 +146,10 @@ class GridQuestionSerializer implements SerializerInterface
     /**
      * Deserializes Question cells.
      *
-     * @param GridQuestion  $gridQuestion
-     * @param array         $cells
-     * @param array         $solutions
-     * @param array         $options
+     * @param GridQuestion $gridQuestion
+     * @param array        $cells
+     * @param array        $solutions
+     * @param array        $options
      */
     private function deserializeCells(GridQuestion $gridQuestion, array $cells, array $solutions, array $options = [])
     {
@@ -160,7 +160,7 @@ class GridQuestionSerializer implements SerializerInterface
 
             // Searches for an existing cell entity.
             foreach ($cellEntities as $entityIndex => $entityCell) {
-                /** @var Hole $entityHole */
+                /* @var Hole $entityHole */
                 if ($entityCell->getUuid() === $cellData->id) {
                     $cell = $entityCell;
                     unset($cellEntities[$entityIndex]);

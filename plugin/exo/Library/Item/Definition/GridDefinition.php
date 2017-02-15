@@ -176,7 +176,8 @@ class GridDefinition extends AbstractDefinition
     }
 
     /**
-     * Score compution is the only purpose of those methods
+     * Score compution is the only purpose of those methods.
+     *
      * @param GridQuestion $question
      * @param array        $answer
      *
@@ -187,7 +188,7 @@ class GridDefinition extends AbstractDefinition
         $corrected = new CorrectedAnswer();
         if (!is_null($answer)) {
             // correct answers per row
-            for ($i = 0 ; $i < $question->getRows(); $i++) {
+            for ($i = 0; $i < $question->getRows(); ++$i) {
 
                 // get cells where there is at least 1 awaited answers for the current row (none possible)
                 $rowCellsUuids = array_map(function (Cell $cell) {
@@ -226,9 +227,9 @@ class GridDefinition extends AbstractDefinition
         return $corrected;
     }
 
-
     /**
-     * Score compution is the only purpose of those methods
+     * Score compution is the only purpose of those methods.
+     *
      * @param GridQuestion $question
      * @param array        $answer
      *
@@ -239,7 +240,7 @@ class GridDefinition extends AbstractDefinition
         $corrected = new CorrectedAnswer();
         if (!is_null($answer)) {
             // correct answers per row
-            for ($i = 0 ; $i < $question->getColumns(); $i++) {
+            for ($i = 0; $i < $question->getColumns(); ++$i) {
 
                 // get cells where there is at least 1 awaited answers for the current column (none possible)
                 $colCellsUuids = array_map(function (Cell $cell) {

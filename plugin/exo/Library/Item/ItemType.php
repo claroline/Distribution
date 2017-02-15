@@ -86,7 +86,7 @@ final class ItemType
             static::SET,
             static::WORDS,
             static::OPEN,
-            static::GRID
+            static::GRID,
         ];
     }
 

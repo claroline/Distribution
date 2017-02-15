@@ -13,7 +13,6 @@ use UJM\ExoBundle\Validator\JsonSchema\Misc\KeywordValidator;
  */
 class GridQuestionValidator extends JsonSchemaValidator
 {
-
     /**
      * @var KeywordValidator
      */
@@ -98,7 +97,7 @@ class GridQuestionValidator extends JsonSchemaValidator
                 if (0 < count($divergent)) {
                     $errors = array_merge($errors, [
                       'path' => "/solutions[{$index}]",
-                      'message' => "While in row/column sum mod, all solutions must be identical"
+                      'message' => 'While in row/column sum mod, all solutions must be identical',
                     ]);
                 }
             }

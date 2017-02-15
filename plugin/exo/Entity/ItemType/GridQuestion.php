@@ -33,7 +33,7 @@ class GridQuestion extends AbstractItem
     private $cells;
 
     /**
-     * Sum sub mode ["cell", "row", "col"]
+     * Sum sub mode ["cell", "row", "col"].
      *
      * @ORM\Column(type="string")
      *
@@ -42,25 +42,25 @@ class GridQuestion extends AbstractItem
     private $sumMode;
 
     /**
-     * Number of rows to draw
+     * Number of rows to draw.
      *
      * @ORM\Column(type="integer")
      *
-     * @var integer
+     * @var int
      */
     private $rows;
 
     /**
-     * Number of columns to draw
+     * Number of columns to draw.
      *
      * @ORM\Column(type="integer")
      *
-     * @var integer
+     * @var int
      */
     private $columns;
 
     /**
-     * Grid border width
+     * Grid border width.
      *
      * @ORM\Column(type="integer")
      *
@@ -69,14 +69,13 @@ class GridQuestion extends AbstractItem
     private $borderWidth = 1;
 
     /**
-     * Grid border color
+     * Grid border color.
      *
      * @ORM\Column(type="string")
      *
      * @var string
      */
-    private $borderColor = "#eee";
-
+    private $borderColor = '#eee';
 
     /**
      * GridQuestion constructor.
@@ -157,7 +156,8 @@ class GridQuestion extends AbstractItem
     }
 
     /**
-     * Number of rows for the grid
+     * Number of rows for the grid.
+     *
      * @param number $rows
      */
     public function setRows($rows)
@@ -166,7 +166,8 @@ class GridQuestion extends AbstractItem
     }
 
     /**
-     * Number of rows for the grid
+     * Number of rows for the grid.
+     *
      * @return number
      */
     public function getRows()
@@ -175,7 +176,8 @@ class GridQuestion extends AbstractItem
     }
 
     /**
-     * Number of cols for the grid
+     * Number of cols for the grid.
+     *
      * @param number $columns
      */
     public function setColumns($columns)
@@ -184,7 +186,8 @@ class GridQuestion extends AbstractItem
     }
 
     /**
-     * Number of cols for the grid
+     * Number of cols for the grid.
+     *
      * @return number
      */
     public function getColumns()
@@ -193,7 +196,8 @@ class GridQuestion extends AbstractItem
     }
 
     /**
-     * Grid border width
+     * Grid border width.
+     *
      * @param number $width
      */
     public function setBorderWidth($width)
@@ -210,7 +214,8 @@ class GridQuestion extends AbstractItem
     }
 
     /**
-     * Grid border color
+     * Grid border color.
+     *
      * @param string $color
      */
     public function setBorderColor($color)
@@ -227,7 +232,8 @@ class GridQuestion extends AbstractItem
     }
 
     /**
-     * Get styles for the grid
+     * Get styles for the grid.
+     *
      * @return array
      */
     public function getGridStyle()

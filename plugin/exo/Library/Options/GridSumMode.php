@@ -4,7 +4,6 @@ namespace UJM\ExoBundle\Library\Options;
 
 /**
  * Defines grid question sum sub modes available.
- *
  */
 final class GridSumMode
 {
@@ -33,7 +32,7 @@ final class GridSumMode
         return [
             static::SUM_CELL,
             static::SUM_COLUMN,
-            static::SUM_ROW
+            static::SUM_ROW,
         ];
     }
 }

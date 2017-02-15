@@ -5,9 +5,7 @@ namespace UJM\ExoBundle\Entity\Misc;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
-use UJM\ExoBundle\Entity\Misc\CellChoice;
 use UJM\ExoBundle\Entity\QuestionType\GridQuestion;
-use UJM\ExoBundle\Library\Model\ContentTrait;
 use UJM\ExoBundle\Library\Model\UuidTrait;
 
 /**
@@ -32,7 +30,7 @@ class Cell
     use UuidTrait;
 
     /**
-     * Data associated to the cell
+     * Data associated to the cell.
      *
      * @ORM\Column(type="text", nullable=true)
      *
@@ -59,22 +57,22 @@ class Cell
     private $coordsY = null;
 
     /**
-     * Font color in the cell
+     * Font color in the cell.
      *
      * @ORM\Column(type="string", nullable=false)
      *
      * @var string
      */
-    private $color = "#000";
+    private $color = '#000';
 
     /**
-     * Cell background color
+     * Cell background color.
      *
      * @ORM\Column(type="string", nullable=false)
      *
      * @var string
      */
-    private $background = "#fff";
+    private $background = '#fff';
 
     /**
      * The list of texts attached to the cell.
@@ -132,7 +130,6 @@ class Cell
     }
 
     /**
-     *
      * @return string
      */
     public function getData()
@@ -141,7 +138,6 @@ class Cell
     }
 
     /**
-     *
      * @param string $data
      */
     public function setData($data)
@@ -201,7 +197,8 @@ class Cell
     }
 
     /**
-     * Cell background color
+     * Cell background color.
+     *
      * @param string $color
      */
     public function setBackground($color)
@@ -218,7 +215,8 @@ class Cell
     }
 
     /**
-     * Cell font color
+     * Cell font color.
+     *
      * @param string $color
      */
     public function setColor($color)
@@ -235,7 +233,8 @@ class Cell
     }
 
     /**
-     * Get styles for the cell
+     * Get styles for the cell.
+     *
      * @return array
      */
     public function getCellStyle()
