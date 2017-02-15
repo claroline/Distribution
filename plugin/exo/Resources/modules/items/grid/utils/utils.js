@@ -20,7 +20,7 @@ export const utils = {
     const oneCellOfTheCol = cells.find(cell => cell.coordinates[0] === colIndex)
     let cellSolutionScore = 0
     solutions.forEach(solution => {
-      if (solution.cellId === oneCellOfTheCol.id && solutions.answers[0].score > cellSolutionScore) {
+      if (undefined !== solutions.answers && solutions.answers.length > 0 && solution.cellId === oneCellOfTheCol.id && solutions.answers[0].score > cellSolutionScore) {
         cellSolutionScore = solutions.answers[0].score
       }
     })
@@ -31,7 +31,7 @@ export const utils = {
     const oneCellOfTheRow = cells.find(cell => cell.coordinates[1] === rowIndex)
     let cellSolutionScore = 0
     solutions.forEach(solution => {
-      if (solution.cellId === oneCellOfTheRow.id && solutions.answers[0].score > cellSolutionScore) {
+      if (undefined !== solutions.answers && solutions.answers.length > 0 && solution.cellId === oneCellOfTheRow.id && solutions.answers[0].score > cellSolutionScore) {
         cellSolutionScore = solutions.answers[0].score
       }
     })

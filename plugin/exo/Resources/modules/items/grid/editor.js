@@ -281,25 +281,10 @@ function validate(grid) {
 
   })
 
-  // _errors.score.success / _errors.score.failure
-
-  // no solution
-
-
-  //console.log('solutions', grid.solutions)
-
-  // answers at least one answer with a positive score
-  /*if(undefined === grid.solutions.find(solution => solution.answers.filter(answer => answer.score > 0).length > 1)) {
-    _errors.answers = {
-      score: tex('grid_solution_no_valid_score')
-    }
-  } else if (undefined !== grid.solutions.find(solution => undefined !== solution.answers.find(answer => answer.text === ''))) {
-    console.log('found')
-    _errors.answers = {
-      text: tex('grid_solution_answer_empty_text')
-    }
-  }*/
-
+  // no solution at all
+  if (grid.solutions.length === 0) {
+    _errors.solution = tex('grid_at_least_one_solution')
+  }
 
   return _errors
 }
