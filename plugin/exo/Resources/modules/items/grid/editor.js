@@ -219,8 +219,7 @@ function deleteRow(rowIndex, grid, updateCoords){
       grid.solutions.splice(solutionIndex, 1)
     }
   })
-  // update y coordinates for all remaining cells if we are deleting a specific row
-  // if last row was deleted nothing to do
+  // update y coordinates if we are deleting a specific row
   if (updateCoords) {
     // get cells that have a row index greater than the one we are deleting
     let cellsToUpdate = utils.getCellsByRowGreaterThan(rowIndex, grid.cells)
@@ -242,7 +241,7 @@ function deleteCol(colIndex, grid, updateCoords){
       grid.solutions.splice(solutionIndex, 1)
     }
   })
-  // update x coordinates for all remaining cells if we are deleting a specific col
+  // update x coordinates if we are deleting a specific col
   if (updateCoords) {
     // get cells that have a col index greater than the one we are deleting
     let cellsToUpdate = utils.getCellsByColGreaterThan(colIndex, grid.cells)

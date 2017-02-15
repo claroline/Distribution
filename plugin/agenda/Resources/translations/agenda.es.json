@@ -1,10 +1,10 @@
 {
     "add_event": "agregar un evento",
-    "cancel": "Anular",
+    "cancel": "Cancelar",
     "close": "Cerrar",
     "confirm": "Confirmar la modificación?",
     "date_agenda_display_format": "MM-DD-YYYY",
-    "date_agenda_display_format_for_form": "MM-dd-yyyy",
+    "date_agenda_display_format_for_form": "dd-MM-yyyy",
     "date_invalid": "Ha ocurrido un error. Por favor, compruebe que su evento no termina antes de que empiece",
     "day.fri": "Vi",
     "day.friday": "Viernes",
@@ -22,7 +22,7 @@
     "day.wednesday": "Miércoles",
     "day_": "Día",
     "end": "Fin",
-    "end_date": "Fecha de finalización",
+    "end_date": "Fecha de  finalización",
     "error": "Se ha producido un error inesperado, por favor intente de nuevo",
     "export": "Exportar eventos",
     "form.all_day": "todo el dia",
@@ -95,5 +95,7 @@
     "update": "Modificar",
     "update_event": "Actualizar un evento",
     "week": "semana",
-    "workspace": "Espacio de trabajo"
+    "workspace": "Espacio de trabajo",
+    "type": "Tipo",
+    "at": "en"
 }
