@@ -3,8 +3,8 @@
 namespace UJM\ExoBundle\Validator\JsonSchema\Item\Type;
 
 use JMS\DiExtraBundle\Annotation as DI;
-use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Options\GridSumMode;
+use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Misc\KeywordValidator;
 

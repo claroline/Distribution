@@ -3,15 +3,15 @@
 namespace UJM\ExoBundle\Library\Item\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
-use UJM\ExoBundle\Entity\Misc\Cell;
-use UJM\ExoBundle\Entity\Misc\CellChoice;
 use UJM\ExoBundle\Entity\ItemType\AbstractItem;
 use UJM\ExoBundle\Entity\ItemType\GridQuestion;
+use UJM\ExoBundle\Entity\Misc\Cell;
+use UJM\ExoBundle\Entity\Misc\CellChoice;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 use UJM\ExoBundle\Library\Attempt\GenericPenalty;
 use UJM\ExoBundle\Library\Attempt\GenericScore;
-use UJM\ExoBundle\Library\Options\GridSumMode;
 use UJM\ExoBundle\Library\Item\ItemType;
+use UJM\ExoBundle\Library\Options\GridSumMode;
 use UJM\ExoBundle\Serializer\Item\Type\GridQuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\GridAnswerValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Item\Type\GridQuestionValidator;
