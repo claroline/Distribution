@@ -198,7 +198,7 @@ class GridQuestionSerializer implements SerializerInterface
       }
     }
 
-    private function deserializeCellChoices(Cell $cell, array $answers, array $solutions)
+    private function deserializeCellChoices(Cell $cell, array $answers, array $options)
     {
         $updatedChoices = $this->keywordSerializer->deserializeCollection($answers, $cell->getOptions()->toArray(), $options);
         $cell->setOptions($updatedChoices);

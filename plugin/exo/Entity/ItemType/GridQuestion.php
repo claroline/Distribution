@@ -202,7 +202,7 @@ class GridQuestion extends AbstractItem
      */
     public function setBorderWidth($width)
     {
-        $this->$borderWidth = $width;
+        $this->borderWidth = $width;
     }
 
     /**
@@ -210,7 +210,7 @@ class GridQuestion extends AbstractItem
      */
     public function getBorderWidth()
     {
-        return $this->$borderWidth;
+        return $this->borderWidth;
     }
 
     /**

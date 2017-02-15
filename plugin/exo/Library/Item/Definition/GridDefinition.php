@@ -130,7 +130,7 @@ class GridDefinition extends AbstractDefinition
                 return $this->getCorrectAnswerForFixOrSumCellsMode($question, $answer);
               break;
               case GridSumMode::SUM_COLUMN:
-                return $this->getCorrectAnswerForColSumMode($question, $answer);
+                return $this->getCorrectAnswerForColumnSumMode($question, $answer);
               break;
               case GridSumMode::SUM_ROWS:
                 return $this->getCorrectAnswerForRowSumMode($question, $answer);
@@ -215,7 +215,8 @@ class GridDefinition extends AbstractDefinition
                     }
 
                     if ($all) {
-                        $scoreToApply = $rowCells[0]->getChoices()[0]->getScore();
+                        $cell = $question->getCell($rowCellsUuids[0]);
+                        $scoreToApply = $cell->getChoices()[0]->getScore();
                         $corrected->addExpected(new GenericScore($scoreToApply));
                     } else {
                         $corrected->addUnexpected(new GenericPenalty($question->getPenalty()));
@@ -267,7 +268,8 @@ class GridDefinition extends AbstractDefinition
                     }
 
                     if ($all) {
-                        $scoreToApply = $rowCells[0]->getChoices()[0]->getScore();
+                        $cell = $question->getCell($colCellsUuids[0]);
+                        $scoreToApply = $cell->getChoices()[0]->getScore();
                         $corrected->addExpected(new GenericScore($scoreToApply));
                     } else {
                         $corrected->addUnexpected(new GenericPenalty($question->getPenalty()));
