@@ -63,6 +63,11 @@ final class ItemType
      */
     const OPEN = 'application/x.open+json';
 
+    const TEXT_CONTENT = 'application/x.text-content+json';
+    const IMAGE_CONTENT = 'application/x.image-content+json';
+    const AUDIO_CONTENT = 'application/x.audio-content+json';
+    const VIDEO_CONTENT = 'application/x.video-content+json';
+
     /**
      * Get the list of managed item types.
      *
@@ -79,6 +84,10 @@ final class ItemType
             static::SET,
             static::WORDS,
             static::OPEN,
+            static::TEXT_CONTENT,
+            static::IMAGE_CONTENT,
+            static::AUDIO_CONTENT,
+            static::VIDEO_CONTENT,
         ];
     }
 

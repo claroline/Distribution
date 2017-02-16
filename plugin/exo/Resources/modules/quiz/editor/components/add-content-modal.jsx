@@ -3,7 +3,6 @@ import Modal from 'react-bootstrap/lib/Modal'
 import classes from 'classnames'
 import {trans} from './../../../utils/translate'
 import {listContentItemMimeTypes, getContentDefinition} from './../../../items/item-types'
-import {Icon as ItemIcon} from './../../../items/components/icon.jsx'
 import {BaseModal} from './../../../modal/components/base.jsx'
 
 export const MODAL_ADD_CONTENT = 'MODAL_ADD_CONTENT'
@@ -41,9 +40,11 @@ class AddContentModal extends Component {
                 onClick={() => this.props.handleSelect(type)}
               >
                 <span className="item-icon item-icon-lg">
-                  <span className="fa fa-file-text-o"></span>
+                  <span className={classes('fa', 'fa-' + getContentDefinition(type).icon)}></span>
                 </span>
-                {trans(getContentDefinition(type).name, {}, 'question_types')}
+                <span className="content-item-desc">
+                  {trans(getContentDefinition(type).name, {}, 'question_types')}
+                </span>
               </div>
             )}
           </div>

@@ -8,7 +8,7 @@ import Tooltip from 'react-bootstrap/lib/Tooltip'
 import {makeItemPanelKey, makeStepPropPanelKey} from './../../../utils/utils'
 import {t, tex, trans} from './../../../utils/translate'
 import {makeSortable, SORT_VERTICAL} from './../../../utils/sortable'
-import {getDefinition, getContentDefinition} from './../../../items/item-types'
+import {getDefinition, getContentDefinition, isContentType} from './../../../items/item-types'
 import {MODAL_DELETE_CONFIRM} from './../../../modal'
 import {MODAL_ADD_ITEM} from './../components/add-item-modal.jsx'
 import {MODAL_IMPORT_ITEMS} from './../components/import-items-modal.jsx'
@@ -97,12 +97,15 @@ const ItemHeader = props =>
     )}
   >
     <span>
-      {props.isContent ?
-        <span className="fa fa-file-text-o"></span> :
+      {isContentType(props.item.type) ?
+        <span className={classes('item-icon', 'item-icon-sm', 'fa', 'fa' + getContentDefinition(props.item.type).smallIcon)}></span> :
         <ItemIcon name={getDefinition(props.item.type).name}/>
       }
       <span className="panel-title">
-        {props.item.title || props.isContent ? trans(getContentDefinition(props.item.type).name, {}, 'question_types') : trans(getDefinition(props.item.type).name, {}, 'question_types')}
+        {props.item.title || isContentType(props.item.type) ?
+          trans(getContentDefinition(props.item.type).name, {}, 'question_types') :
+          trans(getDefinition(props.item.type).name, {}, 'question_types')
+        }
       </span>
       {props.hasErrors &&
         <ValidationStatus
@@ -128,8 +131,7 @@ ItemHeader.propTypes = {
   showModal: T.func.isRequired,
   hasErrors: T.bool.isRequired,
   validating: T.bool.isRequired,
-  connectDragSource: T.func.isRequired,
-  isContent: T.bool.isRequired
+  connectDragSource: T.func.isRequired
 }
 
 let ItemPanel = props =>
@@ -150,13 +152,12 @@ let ItemPanel = props =>
               connectDragSource={props.connectDragSource}
               hasErrors={!isEmpty(props.item._errors)}
               validating={props.validating}
-              isContent={props.isContent}
             />
           }
           collapsible={true}
           expanded={props.expanded}
         >
-          {props.expanded && (props.isContent ?
+          {props.expanded && (isContentType(props.item.type) ?
             <ContentItemForm
               item={props.item}
               validating={props.validating}
@@ -216,8 +217,7 @@ ItemPanel.propTypes = {
   isDragging: T.bool.isRequired,
   onSort: T.func.isRequired,
   sortDirection: T.string.isRequired,
-  validating: T.bool.isRequired,
-  isContent: T.bool.isRequired
+  validating: T.bool.isRequired
 }
 
 ItemPanel = makeSortable(ItemPanel, 'STEP_ITEM')
@@ -374,7 +374,6 @@ export const StepEditor = props =>
           handleContentItemUpdate={props.handleContentItemUpdate}
           handleContentItemDetailUpdate={props.handleContentItemDetailUpdate}
           showModal={props.showModal}
-          isContent={item.type === 'application/x.text-content+json'}
           {...props}
         />
       )}

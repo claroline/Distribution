@@ -1,22 +1,12 @@
-import React, {Component, PropTypes as T} from 'react'
-import Tooltip from 'react-bootstrap/lib/Tooltip'
-import {tex, t} from './../../utils/translate'
+import React, {PropTypes as T} from 'react'
 
-class TextContentPlayer extends Component {
-  constructor(props) {
-    super(props)
-  }
-
-  render() {
-    return (
-      <div className="pair-question-player">
-        Text contentPlayer
-      </div>
-    )
-  }
-}
+export const TextContentPlayer = (props) =>
+  <div dangerouslySetInnerHTML={{ __html: props.item.text }}>
+  </div>
 
 TextContentPlayer.propTypes = {
+  item: T.shape({
+    id: T.string.isRequired,
+    text: T.string.isRequired
+  }).isRequired
 }
-
-export {TextContentPlayer}

@@ -3,13 +3,14 @@ import {connect} from 'react-redux'
 import Panel from 'react-bootstrap/lib/Panel'
 
 import {tex} from './../../../utils/translate'
-import {getDefinition} from './../../../items/item-types'
+import {getDefinition, getContentDefinition, isContentType} from './../../../items/item-types'
 import selectQuiz from './../../selectors'
 import {select} from './../selectors'
 
 import {actions as playerActions} from './../actions'
 
 import {ItemPlayer} from './item-player.jsx'
+import {ContentItemPlayer} from './content-item-player.jsx'
 import {PlayerNav} from './nav-bar.jsx'
 
 const Player = props => {
@@ -27,17 +28,30 @@ const Player = props => {
         <Panel
           key={item.id}
         >
-          <ItemPlayer
-            item={item}
-            showHint={(questionId, hint) => props.showHint(props.quizId, props.paper.id, questionId, hint)}
-            usedHints={props.answers[item.id] ? props.answers[item.id].usedHints : []}
-          >
-            {React.createElement(getDefinition(item.type)[props.feedbackEnabled ? 'feedback': 'player'], {
-              item: item,
-              answer: props.answers[item.id] && props.answers[item.id].data ? props.answers[item.id].data : undefined,
-              onChange: (answerData) => props.updateAnswer(item.id, answerData)
-            })}
-          </ItemPlayer>
+          {isContentType(item.type) ?
+            <ContentItemPlayer
+              item={item}
+              showHint={(questionId, hint) => props.showHint(props.quizId, props.paper.id, questionId, hint)}
+              usedHints={props.answers[item.id] ? props.answers[item.id].usedHints : []}
+            >
+              {React.createElement(getContentDefinition(item.type)[props.feedbackEnabled ? 'feedback': 'player'], {
+                item: item,
+                answer: props.answers[item.id] && props.answers[item.id].data ? props.answers[item.id].data : undefined,
+                onChange: (answerData) => props.updateAnswer(item.id, answerData)
+              })}
+            </ContentItemPlayer> :
+            <ItemPlayer
+              item={item}
+              showHint={(questionId, hint) => props.showHint(props.quizId, props.paper.id, questionId, hint)}
+              usedHints={props.answers[item.id] ? props.answers[item.id].usedHints : []}
+            >
+              {React.createElement(getDefinition(item.type)[props.feedbackEnabled ? 'feedback': 'player'], {
+                item: item,
+                answer: props.answers[item.id] && props.answers[item.id].data ? props.answers[item.id].data : undefined,
+                onChange: (answerData) => props.updateAnswer(item.id, answerData)
+              })}
+            </ItemPlayer>
+          }
         </Panel>
       ))}
 

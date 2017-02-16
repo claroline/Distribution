@@ -59,9 +59,6 @@ export function registerContentItemType(definition) {
     definition.question :
     true
 
-  //definition.editor.decorate = getOptionalFunction(definition.editor, 'decorate', item => item)
-  //definition.editor.validate = getOptionalFunction(definition.editor, 'validate', () => ({}))
-
   registeredContentTypes[definition.type] = definition
 }
 
@@ -117,6 +114,17 @@ export function resetTypes() {
   registeredTypes = {}
 }
 
+export function isContentType(type) {
+  switch (type) {
+    case 'application/x.text-content+json':
+    case 'application/x.image-content+json':
+    case 'application/x.audio-content+json':
+    case 'application/x.video-content+json':
+      return true
+  }
+  return false
+}
+
 function assertValidItemType(definition) {
   invariant(
     definition.name,
@@ -154,10 +162,21 @@ function assertValidItemType(definition) {
     definition.player,
     makeError('player component is mandatory', definition)
   )
-  //invariant(
-  //  definition.paper,
-  //  makeError('paper component is mandatory', definition)
-  //)
+  if (isContentType(definition.type)) {
+    invariant(
+      definition.icon,
+      makeError('icon component is mandatory', definition)
+    )
+    invariant(
+      definition.smallIcon,
+      makeError('smallIcon component is mandatory', definition)
+    )
+  } else {
+    invariant(
+      definition.paper,
+      makeError('paper component is mandatory', definition)
+    )
+  }
 
   const extraProperties = difference(Object.keys(definition), typeProperties)
 

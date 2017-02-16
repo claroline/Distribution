@@ -5,20 +5,29 @@
     padding: 0;
   }
 
-  .modal-content-list{
+  .modal-content-list {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
-    //justify-content: flex-start;
     border-bottom: solid 1px #e5e5e5;
     padding: 5px;
+
     .modal-content-entry {
       display: flex;
       flex-direction: row;
       align-items: center;
-      //justify-content: center;
       min-height: 90px;
       padding: 18px;
+
+      .item-icon {
+        font-size: xx-large;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .content-item-desc {
+        padding-left: 15px;
+      }
     }
 
     .modal-content-entry:hover, .modal-content-entry.selected {
