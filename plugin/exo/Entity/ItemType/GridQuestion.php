@@ -120,6 +120,7 @@ class GridQuestion extends AbstractItem
     public function addCell(Cell $cell)
     {
         if (!$this->cells->contains($cell)) {
+            $cell->SetQuestion($this);
             $this->cells->add($cell);
         }
     }

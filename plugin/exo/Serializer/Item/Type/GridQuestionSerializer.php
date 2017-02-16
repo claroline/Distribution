@@ -176,7 +176,6 @@ class GridQuestionSerializer implements SerializerInterface
                 $cell = new Cell();
                 $cell->setCoordsX($cellData->coordinates[0]);
                 $cell->setCoordsY($cellData->coordinates[1]);
-                $cell->setQuestion($gridQuestion);
             }
 
             // Force client ID if needed

@@ -284,7 +284,6 @@ class Cell
 
         // Adds new ones
         array_walk($choices, function (CellChoice $choice) {
-            $choice->setCell($this);
             $this->addChoice($choice);
         });
     }
@@ -295,6 +294,7 @@ class Cell
     public function addChoice(CellChoice $choice)
     {
         if (!$this->choices->contains($choice)) {
+            $choice->setCell($this);
             $this->choices->add($choice);
         }
     }
