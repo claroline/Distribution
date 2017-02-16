@@ -268,6 +268,28 @@ class Cell
     }
 
     /**
+     * Sets choices collection.
+     *
+     * @param array $choices
+     */
+    public function setChoices(array $choices)
+    {
+        // Removes old choices
+        $oldChoices = array_filter($this->choices->toArray(), function (CellChoice $choice) use ($choices) {
+            return !in_array($choice, $choices);
+        });
+        array_walk($oldChoices, function (CellChoice $choice) {
+            $this->removeChoice($choice);
+        });
+
+        // Adds new ones
+        array_walk($choices, function (CellChoice $choice) {
+            $choice->setCell($this);
+            $this->addChoice($choice);
+        });
+    }
+
+    /**
      * @param CellChoice $choice
      */
     public function addChoice(CellChoice $choice)

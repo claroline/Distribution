@@ -15,7 +15,6 @@ use UJM\ExoBundle\Library\Model\PenaltyTrait;
  */
 class GridQuestion extends AbstractItem
 {
-
     /*
      * The penalty to apply to each wrong answer
      */
