@@ -59,7 +59,7 @@ class Keyword extends Component {
               </div>
             </span>
           }
-          { this.props.score.type === SCORE_FIXED || (this.props.score.type === SCORE_SUM && this.props.sumMode !== SUM_CELL) &&
+          { (this.props.score.type === SCORE_FIXED || (this.props.score.type === SCORE_SUM && this.props.sumMode !== SUM_CELL)) &&
             <span>
               <div className="col-xs-3">
                 <input
@@ -138,7 +138,7 @@ class PopoverBody extends Component {
       {cellId: props.solution ? props.solution.cellId : props.cell.id},
       {answers: props.solution ? props.solution.answers : [
         {
-          text: '',
+          text: props.cell.data,
           score: 1,
           caseSensitive: false,
           feedback: '',
@@ -247,7 +247,7 @@ class PopoverBody extends Component {
               <label className="col-xs-6">{tex('grid_keyword_score')}</label>
             </span>
           }
-          { this.props.score.type === SCORE_FIXED || (this.props.score.type === SCORE_SUM && this.props.sumMode !== SUM_CELL) &&
+          { (this.props.score.type === SCORE_FIXED || (this.props.score.type === SCORE_SUM && this.props.sumMode !== SUM_CELL)) &&
             <span>
               <label className="col-xs-3"></label>
               <label className="col-xs-5">{tex('grid_keyword')}</label>
@@ -347,7 +347,8 @@ class GridCell extends Component {
                         enabled={utils.isValidSolution(currentSolution) && !utils.hasDuplicates(currentSolution)}
                         className="btn-sm fa fa-trash"
                         onClick={() => this.props.onChange(
-                          actions.deleteSolution(this.props.cell.id)
+                          actions.deleteSolution(this.props.cell.id),
+                          this.hidePopover()
                         )}
                       />
                       <TooltipButton
@@ -382,19 +383,23 @@ class GridCell extends Component {
               }
             />
           </OverlayTrigger>
-          <ColorPicker
-            color={this.props.cell.color}
-            forFontColor={true}
-            onPick={color => this.props.onChange(
-                actions.updateCellStyle(this.props.cell.id, 'color', color.hex)
-            )}
-          />
-          <ColorPicker
-          color={this.props.cell.background}
-            onPick={color => this.props.onChange(
-                actions.updateCellStyle(this.props.cell.id, 'background', color.hex)
-            )}
-          />
+          <div className="picker-container">
+            <ColorPicker
+              color={this.props.cell.color}
+              forFontColor={true}
+              onPick={color => this.props.onChange(
+                  actions.updateCellStyle(this.props.cell.id, 'color', color.hex)
+              )}
+            />
+          </div>
+          <div className="picker-container">
+            <ColorPicker
+              color={this.props.cell.background}
+              onPick={color => this.props.onChange(
+                  actions.updateCellStyle(this.props.cell.id, 'background', color.hex)
+              )}
+            />
+          </div>
         </div>
         <div className="cell-body" style={{backgroundColor:this.props.cell.background}}>
           {currentSolution === undefined &&
@@ -479,40 +484,9 @@ class Grid extends Component {
 
     return (
       <div className="grid-editor">
-        {get(this.props.item, '_errors.cell') &&
-          <ErrorBlock text={this.props.item._errors.cell} warnOnly={!this.props.validating}/>
-        }
         {get(this.props.item, '_errors.solutions') &&
           <ErrorBlock text={this.props.item._errors.solutions} warnOnly={!this.props.validating}/>
         }
-        {this.props.item.score.type === SCORE_SUM &&
-          <div className="form-group">
-            <label htmlFor="grid-penalty">{tex('grid_editor_penalty_label')}</label>
-            <input
-              id="grid-penalty"
-              className="form-control"
-              value={this.props.item.penalty}
-              type="number"
-              min="0"
-              onChange={e => this.props.onChange(
-                 actions.updateProperty('penalty', e.target.value)
-              )}
-            />
-          </div>
-        }
-        <div className="checkbox">
-          <label>
-            <input
-              type="checkbox"
-              checked={this.props.item.random}
-              onChange={e => this.props.onChange(
-                actions.updateProperty('random', e.target.checked)
-              )}
-            />
-          {tex('grid_shuffle_cells')}
-          </label>
-        </div>
-        <hr/>
         <div className="form-group">
           <label htmlFor="grid-score-mode">{tex('grid_score_mode_label')}</label>
           <Radios
@@ -530,6 +504,21 @@ class Grid extends Component {
             )}
             inline={false}
           />
+          {this.props.item.score.type === SCORE_SUM &&
+            <div className="form-group">
+              <label htmlFor="grid-penalty">{tex('grid_editor_penalty_label')}</label>
+              <input
+                id="grid-penalty"
+                className="form-control"
+                value={this.props.item.penalty}
+                type="number"
+                min="0"
+                onChange={e => this.props.onChange(
+                   actions.updateProperty('penalty', e.target.value)
+                )}
+              />
+            </div>
+          }
           {this.props.item.score.type === SCORE_FIXED &&
               <div className="sub-fields">
                 <FormGroup
@@ -569,7 +558,7 @@ class Grid extends Component {
             }
         </div>
         <hr/>
-        <div className="form-inline text-center table-options">
+        <div className="form-inline table-options">
           <FormGroup
             controlId={`table-${this.props.item.id}-rows`}
             label={tex('grid_table_rows')}>
@@ -579,7 +568,7 @@ class Grid extends Component {
               min="1"
               max="12"
               value={this.props.item.rows}
-              className="form-control"
+              className="form-control small-input"
               onChange={e => this.props.onChange(
                 actions.updateProperty('rows', e.target.value)
               )}
@@ -594,7 +583,7 @@ class Grid extends Component {
               min="1"
               max="12"
               value={this.props.item.cols}
-              className="form-control"
+              className="form-control small-input"
               onChange={e => this.props.onChange(
                 actions.updateProperty('cols', e.target.value)
               )}
@@ -607,19 +596,22 @@ class Grid extends Component {
               id={`table-${this.props.item.id}-border-width`}
               type="number"
               min="0"
-              max="3"
+              max="6"
               value={this.props.item.border.width}
-              className="form-control"
+              className="form-control small-input"
               onChange={e => this.props.onChange(
                 actions.updateProperty('borderWidth', e.target.value)
               )}
             />
           </FormGroup>
-          <ColorPicker color={this.props.item.border.color}
-            onPick={color => this.props.onChange(
-                actions.updateProperty('borderColor', color.hex)
-            )}
-          />
+          <div className="form-group picker-container">
+            <ColorPicker
+              color={this.props.item.border.color}
+              onPick={color => this.props.onChange(
+                  actions.updateProperty('borderColor', color.hex)
+              )}
+            />
+          </div>
         </div>
         <div className="grid-body">
           <table className="grid-table">
@@ -645,7 +637,7 @@ class Grid extends Component {
               {[...Array(this.props.item.rows)].map((x, i) =>
                 <tr key={`grid-row-${i}`}>
                   { this.props.item.score.type === SCORE_SUM && this.props.item.sumMode === SUM_ROW &&
-                    <td key={`grid-row-score-col-${i}`} style={{padding: '8px'}}>
+                    <td key={`grid-row-score-col-${i}`} style={{padding: '8px', verticalAlign: 'middle'}}>
                       <input
                         type="number"
                         min="0"
@@ -719,7 +711,6 @@ Grid.propTypes = {
   item: T.shape({
     id: T.string.isRequired,
     penalty: T.number.isRequired,
-    random: T.bool.isRequired,
     sumMode: T.string,
     score: T.shape({
       type: T.string.isRequired,

@@ -84,23 +84,6 @@ class GridQuestionValidator extends JsonSchemaValidator
               $errors,
               $this->keywordValidator->validateCollection($solution->answers, [Validation::NO_SCHEMA, Validation::VALIDATE_SCORE])
             );
-
-            // check that every answer have the same score and feedback if needed
-            if ($question->sumMode === GridSumMode::SUM_COLUMN || $question->sumMode === GridSumMode::SUM_ROW) {
-                $refScore = $solution->answers[0]->score;
-                $refFeedback = $solution->answers[0]->feedback;
-
-                $divergent = array_filter(function ($answer) {
-                    return $answer->score !== $refScore || $answer->feedback !== $refFeedback;
-                }, $solution->answers);
-
-                if (0 < count($divergent)) {
-                    $errors = array_merge($errors, [
-                      'path' => "/solutions[{$index}]",
-                      'message' => 'While in row/column sum mod, all solutions must be identical',
-                    ]);
-                }
-            }
         }
 
         return $errors;

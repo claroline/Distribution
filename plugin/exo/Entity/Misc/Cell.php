@@ -95,6 +95,13 @@ class Cell
     private $question;
 
     /**
+     * @ORM\Column(type="boolean")
+     *
+     * @var bool
+     */
+    private $selector = false;
+
+    /**
      * Cell constructor.
      */
     public function __construct()
@@ -143,6 +150,24 @@ class Cell
     public function setData($data)
     {
         $this->data = $data;
+    }
+
+    /**
+     * Set selector.
+     *
+     * @param bool $selector
+     */
+    public function setSelector($selector)
+    {
+        $this->selector = $selector;
+    }
+
+    /**
+     * Get selector.
+     */
+    public function isSelector()
+    {
+        return $this->selector;
     }
 
     /**

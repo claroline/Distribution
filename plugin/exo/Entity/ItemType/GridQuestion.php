@@ -6,7 +6,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use UJM\ExoBundle\Entity\Misc\Cell;
 use UJM\ExoBundle\Library\Model\PenaltyTrait;
-use UJM\ExoBundle\Library\Model\ShuffleTrait;
 
 /**
  * A grid question.
@@ -16,7 +15,6 @@ use UJM\ExoBundle\Library\Model\ShuffleTrait;
  */
 class GridQuestion extends AbstractItem
 {
-    use ShuffleTrait;
 
     /*
      * The penalty to apply to each wrong answer

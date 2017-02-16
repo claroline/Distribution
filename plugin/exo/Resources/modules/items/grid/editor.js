@@ -92,13 +92,45 @@ function reduce(grid = {}, action) {
             newItem.score.type = SCORE_FIXED
             // can not apply penalty in this case
             newItem.penalty = 0
+            // set awaited answers
+            newItem.solutions.forEach(solution => {
+              solution.answers.forEach(answer => {
+                if (answer.score > 0) {
+                  answer.awaited = true
+                } else {
+                  answer.awaited = false
+                }
+              })
+            })
           } else {
             newItem.score.type = SCORE_SUM
             newItem[action.property] = action.value
             // set default values for success and failure
             newItem.score.success = 1
             newItem.score.failure = 0
-            // if action.value === SUM_CELL then all answers should hav awaited = false
+            // if SUM_CELL update every solution answers
+            if (action.value === SUM_CELL) {
+              newItem.solutions.forEach(solution => {
+                solution.answers.forEach(answer => {
+                  if (answer.awaited) {
+                    answer.score = 1
+                  } else {
+                    answer.score = 0
+                  }
+                })
+              })
+            } else {
+              // set awaited answers
+              newItem.solutions.forEach(solution => {
+                solution.answers.forEach(answer => {
+                  if (answer.score > 0) {
+                    answer.awaited = true
+                  } else {
+                    answer.awaited = false
+                  }
+                })
+              })
+            }
           }
           break
         }
@@ -273,9 +305,6 @@ function validate(grid) {
       if (!hasPositiveValue) {
         set(_errors, 'answers.value', tex('solutions_requires_positive_answer'))
       }
-    } else if (notBlank(cell.data)) {
-      // call that is not a solution but do not has any data
-      _errors.cell = tex('grid_cell_empty_data')
     }
   })
 

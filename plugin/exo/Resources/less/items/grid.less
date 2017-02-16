@@ -1,13 +1,19 @@
 .grid-editor {
 
+  .small-input {
+    max-width: 60px;
+    width: 60px;
+    margin: 0 auto;
+  }
+
+  .picker-container {
+    margin-left: 5px;
+  }
+
   .table-options {
     background: #eee;
     padding: 5px;
     margin-bottom: @panel-body-padding;
-  }
-
-  .table-options > * {
-    padding: 0 5px;
   }
 
   .form-inline .control-label {
@@ -25,41 +31,32 @@
       width: 100%;
     }
 
-    .grid-table > td {
+    .grid-table td {
       display: table-cell;
+      vertical-align: top;
     }
 
     .grid-table td:last-child {
       text-align: center;
+      vertical-align: middle;
     }
 
     .grid-table tr:last-child {
       text-align: center;
     }
-
-    .small-input {
-      max-width: 60px;
-      width: 60px;
-      margin: 0 auto;
-    }
   }
 
   .grid-cell {
-    height: 100%;
     width: 100%;
-    display: inline-block;
     .cell-header {
       background: #eee;
       padding: 5px;
       display: flex;
       justify-content: flex-end;
       border-bottom: 1px solid #aaa;
+      align-items: center;
     }
-
-    .cell-header > * {
-      padding: 0 5px;
-    }
-
+    
     .cell-body {
       padding: 5px;
       text-align: center;
@@ -69,8 +66,6 @@
       left: 50%;
       transform: translateX(-50%);
     }
-
-
   }
 
   textarea {
