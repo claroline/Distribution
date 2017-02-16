@@ -245,7 +245,7 @@ function deleteRow(rowIndex, grid, updateCoords){
     const cellIndex = grid.cells.findIndex(toRemove => toRemove.id === cell.id)
     grid.cells.splice(cellIndex, 1)
     // also remove associated solution if any
-    const solutionIndex = grid.solutions.findIndex(solution => solution.cellId = cell.id)
+    const solutionIndex = grid.solutions.findIndex(solution => solution.cellId === cell.id)
     if (-1 !== solutionIndex) {
       grid.solutions.splice(solutionIndex, 1)
     }
@@ -267,7 +267,7 @@ function deleteCol(colIndex, grid, updateCoords){
     const cellIndex = grid.cells.findIndex(toRemove => toRemove.id === cell.id)
     grid.cells.splice(cellIndex, 1)
     // also remove associated solution if any
-    const solutionIndex = grid.solutions.findIndex(solution => solution.cellId = cell.id)
+    const solutionIndex = grid.solutions.findIndex(solution => solution.cellId === cell.id)
     if (-1 !== solutionIndex) {
       grid.solutions.splice(solutionIndex, 1)
     }

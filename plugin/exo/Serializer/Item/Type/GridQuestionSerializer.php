@@ -164,7 +164,7 @@ class GridQuestionSerializer implements SerializerInterface
 
             // Searches for an existing cell entity.
             foreach ($cellEntities as $entityIndex => $entityCell) {
-                /* @var Hole $entityHole */
+                /* @var Cell $entityCell */
                 if ($entityCell->getUuid() === $cellData->id) {
                     $cell = $entityCell;
                     unset($cellEntities[$entityIndex]);

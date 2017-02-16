@@ -17,7 +17,7 @@ class CellChoiceSerializer implements SerializerInterface
      * Converts a CellChoice into a JSON-encodable structure.
      *
      * @param CellChoice $choice
-     * @param array   $options
+     * @param array      $options
      *
      * @return \stdClass
      */
@@ -39,9 +39,9 @@ class CellChoiceSerializer implements SerializerInterface
     /**
      * Converts raw data into a Keyword entity.
      *
-     * @param \stdClass $data
-     * @param CellChoice   $choice
-     * @param array     $options
+     * @param \stdClass  $data
+     * @param CellChoice $choice
+     * @param array      $options
      *
      * @return CellChoice
      */
@@ -67,9 +67,9 @@ class CellChoiceSerializer implements SerializerInterface
      * Updates a collection of cel choices entities from raw data.
      * The one which are not in `$cellChoiceCollection` are removed from the entity collection.
      *
-     * @param \stdClass[] $cellChoiceCollection
-     * @param CellChoice[]   $cellChoiceEntities
-     * @param array       $options
+     * @param \stdClass[]  $cellChoiceCollection
+     * @param CellChoice[] $cellChoiceEntities
+     * @param array        $options
      *
      * @return Keyword[] - the list of updated Keyword entities (and without the one no longer in `$keywordCollection`)
      */
