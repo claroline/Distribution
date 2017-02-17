@@ -7,5 +7,5 @@ export const GridPaper = () =>
 
 GridPaper.propTypes = {
   item: T.object.isRequired,
-  answer: T.object.isRequired
+  answer: T.array.isRequired
 }

@@ -17,8 +17,7 @@ class GridCell extends Component {
     if(undefined === answer){
       answers.push({cellId:this.props.cell.id, text: value})
     } else { // update
-      value !== '' ? answer.text = value :
-      answers.filter(answer => answer.cellId === this.props.cell.id)
+      answer.text = value
     }
     return answers
   }
@@ -28,13 +27,10 @@ class GridCell extends Component {
     return undefined === answer ? '' : answer.text
   }
 
-
   render() {
-
     return (
       <div className="grid-cell">
-
-        <div className="cell-body" style={{backgroundColor:this.props.cell.background}}>
+        <div className="cell-body">
           {this.props.cell.data &&
             <div>{this.props.cell.data}</div>
           }
@@ -93,12 +89,12 @@ class GridPlayer extends Component {
     super(props)
   }
 
+  getCellBackroundColor(x, y) {
+    const cell = utils.getCellByCoordinates(x, y, this.props.item.cells)
+    return undefined === cell ? '#fff' : cell.background
+  }
+
   render() {
-
-    const borderStyle = {
-      border: `${this.props.item.border.width}px solid ${this.props.item.border.color}`
-    }
-
     return (
       <div className="grid-player">
         <div className="grid-body">
@@ -109,7 +105,13 @@ class GridPlayer extends Component {
                 <tr key={`grid-row-${i}`}>
 
                   {[...Array(this.props.item.cols)].map((x, j) =>
-                    <td key={`grid-row-${i}-col-${j}`} style={borderStyle}>
+                    <td key={`grid-row-${i}-col-${j}`}
+                      style={
+                        {
+                          border: `${this.props.item.border.width}px solid ${this.props.item.border.color}`,
+                          backgroundColor:this.getCellBackroundColor(j, i)
+                        }
+                      }>
                       <GridCell
                         answers={this.props.answer}
                         onChange={this.props.onChange}

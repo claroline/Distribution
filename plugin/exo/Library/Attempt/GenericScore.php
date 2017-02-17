@@ -5,7 +5,7 @@ namespace UJM\ExoBundle\Library\Attempt;
 /**
  * Generic class used to apply score to a user answer.
  */
-class GenericScore implements ScoreItemInterface
+class GenericScore implements AnswerPartInterface
 {
     /**
      * @var float
