@@ -11,6 +11,9 @@ import pair from './pair'
 import words from './words'
 import set from './set'
 import textContent from './text-content'
+import imageContent from './image-content'
+import audioContent from './audio-content'
+import videoContent from './video-content'
 
 const typeProperties = [
   'name',
@@ -24,7 +27,8 @@ const typeProperties = [
   'paper',
   'expectAnswer',
   'icon',
-  'smallIcon'
+  'altIcon',
+  'browseFiles'
 ]
 
 let registeredTypes = {}
@@ -65,7 +69,7 @@ export function registerContentItemType(definition) {
 export function registerDefaultItemTypes() {
   if (!defaultRegistered) {
     [choice, match, cloze, graphic, open, pair, words, set].forEach(registerItemType);
-    [textContent].forEach(registerContentItemType)
+    [textContent, imageContent, audioContent, videoContent].forEach(registerContentItemType)
     defaultRegistered = true
   }
 }
@@ -168,8 +172,8 @@ function assertValidItemType(definition) {
       makeError('icon component is mandatory', definition)
     )
     invariant(
-      definition.smallIcon,
-      makeError('smallIcon component is mandatory', definition)
+      definition.altIcon,
+      makeError('altIcon component is mandatory', definition)
     )
   } else {
     invariant(

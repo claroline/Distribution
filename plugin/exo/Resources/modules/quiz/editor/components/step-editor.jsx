@@ -98,7 +98,7 @@ const ItemHeader = props =>
   >
     <span>
       {isContentType(props.item.type) ?
-        <span className={classes('item-icon', 'item-icon-sm', 'fa', 'fa' + getContentDefinition(props.item.type).smallIcon)}></span> :
+        <span className={classes('item-icon', 'item-icon-sm', getContentDefinition(props.item.type).altIcon)}></span> :
         <ItemIcon name={getDefinition(props.item.type).name}/>
       }
       <span className="panel-title">

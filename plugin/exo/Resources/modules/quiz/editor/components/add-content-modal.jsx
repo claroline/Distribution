@@ -38,9 +38,17 @@ class AddContentModal extends Component {
                 role="option"
                 onMouseOver={() => this.handleItemMouseOver(type)}
                 onClick={() => this.props.handleSelect(type)}
+                //onClick={() => this.input.click()}
               >
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="img-input"
+                  style={{display: 'none'}}
+                  ref={input => this.input = input}
+                />
                 <span className="item-icon item-icon-lg">
-                  <span className={classes('fa', 'fa-' + getContentDefinition(type).icon)}></span>
+                  <span className={classes(getContentDefinition(type).icon)}></span>
                 </span>
                 <span className="content-item-desc">
                   {trans(getContentDefinition(type).name, {}, 'question_types')}
