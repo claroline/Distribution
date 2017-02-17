@@ -46,7 +46,7 @@ function reduce(grid = {}, action) {
           makeDefaultCell(0,0),
           makeDefaultCell(0,1),
           makeDefaultCell(1,0),
-          makeDefaultCell(1,1),
+          makeDefaultCell(1,1)
         ],
         rows: 2,
         cols: 2,
@@ -297,7 +297,7 @@ function validate(grid) {
         if (notBlank(answer.text)) {
           set(_errors, 'answers.text', tex('grid_empty_word_error'))
         }
-        
+
         if (grid.score.type === SCORE_SUM && grid.sumMode === SUM_CELL && answer.score > 0) {
           hasPositiveValue = true
         } else if (answer.expected) {
@@ -319,8 +319,6 @@ function validate(grid) {
   if (grid.solutions.length === 0) {
     _errors.solutions = tex('grid_at_least_one_solution')
   }
-
-  console.log(_errors)
 
   return _errors
 }

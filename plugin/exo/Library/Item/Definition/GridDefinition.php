@@ -113,9 +113,10 @@ class GridDefinition extends AbstractDefinition
     }
 
     /**
+     * Used to compute the answer(s) score.
+     *
      * @param GridQuestion $question
      * @param array        $answer
-     * Used to compute the answer(s) score
      *
      * @return CorrectedAnswer
      */
@@ -154,7 +155,7 @@ class GridDefinition extends AbstractDefinition
                 $cell = $question->getCell($gridAnswer->cellId);
                 $choice = $cell->getChoice($gridAnswer->text);
                 if (!empty($choice)) {
-                    if (0 < $choice->isExpected()) {
+                    if ($choice->isExpected()) {
                         $corrected->addExpected($choice);
                     } else {
                         $corrected->addUnexpected($choice);
@@ -213,8 +214,6 @@ class GridDefinition extends AbstractDefinition
     }
 
     /**
-     * Score compution is the only purpose of those methods.
-     *
      * @param GridQuestion $question
      * @param array        $answer
      *
@@ -227,24 +226,24 @@ class GridDefinition extends AbstractDefinition
             // correct answers per row
             for ($i = 0; $i < $question->getRows(); ++$i) {
 
-                // get cells where there is at least 1 awaited answers for the current row (none possible)
+                // get cells where there is at least 1 expected answer for the current row (none possible)
                 $rowCellsUuids = array_map(function (Cell $cell) {
-                    // only fill array with awaited answer cells uuid
+                    // only fill array with cells that own at least one expected answer
                     if ($cell->getCoordsY === $i && 0 < $cell->getChoices()) {
                         return $cell->getUuid();
                     }
                 }, $question->getCells());
 
-                // if any answer are needed in this row
+                // if any answer is needed in this row
                 if (!empty($rowCellsUuids)) {
-                    // score will be applied only if all awaited answers are valid
+                    // score will be applied only if all expected answers are there and valid
                     $all = true;
                     foreach ($answer as $cellAnswer) {
                         if (in_array($cellAnswer->cellId, $rowCellsUuids)) {
                             $cell = $question->getCell($cellAnswer->cellId);
                             $choice = $cell->getChoice($cellAnswer->text);
                             // wrong or empty anwser -> score will not be applied
-                            if (empty($choice)) {
+                            if (empty($choice) || (!empty($choice) && !$choice->isExpected())) {
                                 $all = false;
                                 break;
                             }
@@ -266,8 +265,6 @@ class GridDefinition extends AbstractDefinition
     }
 
     /**
-     * Score compution is the only purpose of those methods.
-     *
      * @param GridQuestion $question
      * @param array        $answer
      *
@@ -280,7 +277,7 @@ class GridDefinition extends AbstractDefinition
             // correct answers per row
             for ($i = 0; $i < $question->getColumns(); ++$i) {
 
-                // get cells where there is at least 1 awaited answers for the current column (none possible)
+                // get cells where there is at least 1 expected answers for the current column (none possible)
                 $colCellsUuids = array_map(function (Cell $cell) {
                     // only fill array with awaited answer cells uuid
                     if ($cell->getCoordsX === $i && 0 < $cell->getChoices()) {
@@ -290,14 +287,15 @@ class GridDefinition extends AbstractDefinition
 
                 // if any answer are needed in this row
                 if (!empty($colCellsUuids)) {
-                    // score will be applied only if all awaited answers are valid
+                    // score will be applied only if all expected answers are valid
                     $all = true;
                     foreach ($answer as $cellAnswer) {
                         if (in_array($cellAnswer->cellId, $colCellsUuids)) {
                             $cell = $question->getCell($cellAnswer->cellId);
                             $choice = $cell->getChoice($cellAnswer->text);
                             // wrong or empty anwser -> score will not be applied
-                            if (empty($choice)) {
+                            // wrong or empty anwser -> score will not be applied
+                            if (empty($choice) || (!empty($choice) && !$choice->isExpected())) {
                                 $all = false;
                                 break;
                             }
@@ -319,8 +317,9 @@ class GridDefinition extends AbstractDefinition
     }
 
     /**
+     * Used to compute the question total score.
+     *
      * @param GridQuestion $question
-     * Used to compute the question total score
      *
      * @return array
      */
