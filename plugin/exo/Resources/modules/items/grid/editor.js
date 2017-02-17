@@ -43,10 +43,13 @@ function reduce(grid = {}, action) {
         penalty: 0,
         sumMode: SUM_CELL,
         cells: [
-          makeDefaultCell(0,0)
+          makeDefaultCell(0,0),
+          makeDefaultCell(0,1),
+          makeDefaultCell(1,0),
+          makeDefaultCell(1,1),
         ],
-        rows: 1,
-        cols: 1,
+        rows: 2,
+        cols: 2,
         border: {
           color: '#000',
           width: 1
@@ -92,13 +95,13 @@ function reduce(grid = {}, action) {
             newItem.score.type = SCORE_FIXED
             // can not apply penalty in this case
             newItem.penalty = 0
-            // set awaited answers
+            // set expected answers
             newItem.solutions.forEach(solution => {
               solution.answers.forEach(answer => {
                 if (answer.score > 0) {
-                  answer.awaited = true
+                  answer.expected = true
                 } else {
-                  answer.awaited = false
+                  answer.expected = false
                 }
               })
             })
@@ -112,7 +115,7 @@ function reduce(grid = {}, action) {
             if (action.value === SUM_CELL) {
               newItem.solutions.forEach(solution => {
                 solution.answers.forEach(answer => {
-                  if (answer.awaited) {
+                  if (answer.expected) {
                     answer.score = 1
                   } else {
                     answer.score = 0
@@ -120,13 +123,13 @@ function reduce(grid = {}, action) {
                 })
               })
             } else {
-              // set awaited answers
+              // set expected answers
               newItem.solutions.forEach(solution => {
                 solution.answers.forEach(answer => {
                   if (answer.score > 0) {
-                    answer.awaited = true
+                    answer.expected = true
                   } else {
-                    answer.awaited = false
+                    answer.expected = false
                   }
                 })
               })
@@ -294,8 +297,12 @@ function validate(grid) {
         if (notBlank(answer.text)) {
           set(_errors, 'answers.text', tex('grid_empty_word_error'))
         }
-
-        if (answer.score > 0) hasPositiveValue = true
+        
+        if (grid.score.type === SCORE_SUM && grid.sumMode === SUM_CELL && answer.score > 0) {
+          hasPositiveValue = true
+        } else if (answer.expected) {
+          hasPositiveValue = true
+        }
       })
 
       if (hasDuplicates(solution.answers)) {
@@ -312,6 +319,8 @@ function validate(grid) {
   if (grid.solutions.length === 0) {
     _errors.solutions = tex('grid_at_least_one_solution')
   }
+
+  console.log(_errors)
 
   return _errors
 }

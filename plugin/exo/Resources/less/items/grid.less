@@ -56,7 +56,7 @@
       border-bottom: 1px solid #aaa;
       align-items: center;
     }
-    
+
     .cell-body {
       padding: 5px;
       text-align: center;
@@ -146,4 +146,31 @@
     }
   }
 
+}
+
+.grid-player {
+
+  .grid-body {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+
+    .grid-table {
+      border-collapse: collapse;
+      border-spacing: 0;
+      width: 100%;
+    }
+
+    .grid-table td {
+      display: table-cell;
+      vertical-align: middle;
+    }
+  }
+
+  .grid-cell {
+    width: 100%;
+    .cell-body {
+      padding: 5px;
+    }
+  }
 }

@@ -53,9 +53,9 @@ class CellChoice implements AnswerPartInterface
 
     /**
      * @var bool
-     * @ORM\Column(name="awaited", type="boolean", nullable=true)
+     * @ORM\Column(name="expected", type="boolean", nullable=true)
      */
-    private $awaited;
+    private $expected;
 
     /**
      * CellChoice constructor.
@@ -116,25 +116,25 @@ class CellChoice implements AnswerPartInterface
     }
 
     /**
-     * Is the cell choice the awaited one ?
+     * Is the cell choice expected ?
      * Usefull only in SumMode row / col and Global score.
      *
      * @return bool
      */
-    public function isAwaited()
+    public function isExpected()
     {
-        return $this->awaited;
+        return $this->expected;
     }
 
     /**
-     * Set awaited
+     * Set expected
      * Usefull only in SumMode row / col and Global score.
      *
-     * @return bool
+     * @param bool $expected
      */
-    public function setAwaited($awaited)
+    public function setExpected($expected)
     {
-        $this->awaited = $awaited;
+        $this->expected = $expected;
     }
 
     /**

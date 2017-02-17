@@ -89,7 +89,7 @@ export const utils = {
     if(typeScore === SCORE_SUM && sumMode === SUM_CELL) {
       return keyword.score > 0 ? 'positive-score' : 'negative-score'
     } else if (typeScore === SCORE_FIXED || (typeScore === SCORE_SUM && sumMode !== SUM_CELL)) {
-      return keyword.awaited ? 'positive-score' : 'negative-score'
+      return keyword.expected ? 'positive-score' : 'negative-score'
     }
   }
 }

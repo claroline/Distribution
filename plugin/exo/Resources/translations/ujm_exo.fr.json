@@ -214,6 +214,8 @@
     "grid_empty_word_error": "Le texte ne doit pas être vide",
     "grid_duplicate_answers": "Textes dupliqués",
     "grid_at_least_one_solution": "Au moins une solution valide doit exister.",
+    "grid_solutions_requires_positive_answer": "Au moins une réponse valide (attendue ou score positif)",
+    "grid_expected_keyword": "Mot clé attendu",
     "hide_additional_info": "Masquer les informations supplémentaires",
     "hide_instructions": "Masquer les consignes",
     "hide_interact_fields": "Cacher les indices et le commentaire final",

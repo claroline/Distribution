@@ -115,19 +115,20 @@ class GridDefinition extends AbstractDefinition
     /**
      * @param GridQuestion $question
      * @param array        $answer
+     * Used to compute the answer(s) score
      *
      * @return CorrectedAnswer
      */
     public function correctAnswer(AbstractItem $question, $answer)
     {
-        $scoreRule = json_decode($question->getScoreRule());
-        if ($scoreRule['type'] === 'fixed') {
-            return $this->getCorrectAnswerForFixOrSumCellsMode($question, $answer);
+        $scoreRule = json_decode($question->getQuestion()->getScoreRule());
+        if ($scoreRule->type === 'fixed') {
+            return $this->getCorrectAnswerForFixMode($question, $answer);
         } else {
             // 3 sum submode
             switch ($question->getSumMode()) {
               case GridSumMode::SUM_CELL:
-                return $this->getCorrectAnswerForFixOrSumCellsMode($question, $answer);
+                return $this->getCorrectAnswerForSumCellsMode($question, $answer);
               break;
               case GridSumMode::SUM_COLUMN:
                 return $this->getCorrectAnswerForColumnSumMode($question, $answer);
@@ -145,7 +146,43 @@ class GridDefinition extends AbstractDefinition
      *
      * @return CorrectedAnswer
      */
-    private function getCorrectAnswerForFixOrSumCellsMode(AbstractItem $question, $answer)
+    private function getCorrectAnswerForFixMode(AbstractItem $question, $answer)
+    {
+        $corrected = new CorrectedAnswer();
+        if (!is_null($answer)) {
+            foreach ($answer as $gridAnswer) {
+                $cell = $question->getCell($gridAnswer->cellId);
+                $choice = $cell->getChoice($gridAnswer->text);
+                if (!empty($choice)) {
+                    if (0 < $choice->isExpected()) {
+                        $corrected->addExpected($choice);
+                    } else {
+                        $corrected->addUnexpected($choice);
+                    }
+                } else {
+                    // Retrieve the best answer for the cell
+                  $corrected->addMissing($this->findCellExpectedAnswer($cell));
+                }
+            }
+        } else {
+            $cells = $question->getCells();
+            foreach ($cells as $cell) {
+                if (0 < count($cell->getChoices())) {
+                    $corrected->addMissing($this->findCellExpectedAnswer($cell));
+                }
+            }
+        }
+
+        return $corrected;
+    }
+
+    /**
+     * @param GridQuestion $question
+     * @param array        $answer
+     *
+     * @return CorrectedAnswer
+     */
+    private function getCorrectAnswerForSumCellsMode(AbstractItem $question, $answer)
     {
         $corrected = new CorrectedAnswer();
         if (!is_null($answer)) {
@@ -283,19 +320,20 @@ class GridDefinition extends AbstractDefinition
 
     /**
      * @param GridQuestion $question
+     * Used to compute the question total score
      *
      * @return array
      */
     public function expectAnswer(AbstractItem $question)
     {
-        return array_map(function (Cell $cell) {
-            // expected answer if there is at least one choice in the cell
-            if (0 < count($cell->getChoices)) {
-                return $this->findCellExpectedAnswer($cell);
+        $expected = [];
+        foreach ($question->getCells()->toArray() as $cell) {
+            if (0 < count($cell->getChoices())) {
+                $expected[] = $this->findCellExpectedAnswer($cell);
             }
-        }, $question->getCells()->toArray());
+        }
 
-        return [];
+        return $expected;
     }
 
     public function getStatistics(AbstractItem $pairQuestion, array $answers)

@@ -12,6 +12,7 @@ import {SCORE_SUM, SCORE_FIXED} from './../../quiz/enums'
 import {FormGroup} from './../../components/form/form-group.jsx'
 import {Textarea} from './../../components/form/textarea.jsx'
 import {TooltipButton} from './../../components/form/tooltip-button.jsx'
+import {TooltipElement} from './../../components/form/tooltip-element.jsx'
 import {ColorPicker} from './../../components/form/color-picker.jsx'
 import {utils} from './utils/utils'
 
@@ -34,7 +35,6 @@ class Keyword extends Component {
             <span>
               <div className="col-xs-5">
                 <input
-                  id
                   type="text"
                   className="form-control keyword-text"
                   value={this.props.keyword.text}
@@ -42,12 +42,16 @@ class Keyword extends Component {
                 />
               </div>
               <div className="col-xs-1">
-                <input
-                  className="case-sensitive"
-                  type="checkbox"
-                  checked={this.props.keyword.caseSensitive}
-                  onChange={e => this.props.update(this.props.index, 'caseSensitive', e.target.checked)}
-                />
+                <TooltipElement
+                  id={`tooltip-${this.props.index}-keyword-case-sensitive`}
+                  tip={tex('case_sensitive')}>
+                  <input
+                    className="case-sensitive"
+                    type="checkbox"
+                    checked={this.props.keyword.caseSensitive}
+                    onChange={e => this.props.update(this.props.index, 'caseSensitive', e.target.checked)}
+                  />
+                </TooltipElement>
               </div>
               <div className="col-xs-3">
                 <input
@@ -62,12 +66,16 @@ class Keyword extends Component {
           { (this.props.score.type === SCORE_FIXED || (this.props.score.type === SCORE_SUM && this.props.sumMode !== SUM_CELL)) &&
             <span>
               <div className="col-xs-3">
-                <input
-                  className="awaited"
-                  type="checkbox"
-                  checked={this.props.keyword.awaited}
-                  onChange={e => this.props.update(this.props.index, 'awaited', e.target.checked)}
-                />
+                <TooltipElement
+                  id={`tooltip-${this.props.index}-keyword-expected`}
+                  tip={tex('grid_expected_keyword')}>
+                  <input
+                    className="expected"
+                    type="checkbox"
+                    checked={this.props.keyword.expected}
+                    onChange={e => this.props.update(this.props.index, 'expected', e.target.checked)}
+                  />
+                </TooltipElement>
               </div>
               <div className="col-xs-5">
                 <input
@@ -79,12 +87,16 @@ class Keyword extends Component {
                 />
               </div>
               <div className="col-xs-1">
-                <input
-                  className="case-sensitive"
-                  type="checkbox"
-                  checked={this.props.keyword.caseSensitive}
-                  onChange={e => this.props.update(this.props.index, 'caseSensitive', e.target.checked)}
-                />
+                <TooltipElement
+                  id={`tooltip-${this.props.index}-keyword-case-sensitive`}
+                  tip={tex('case_sensitive')}>
+                  <input
+                    className="case-sensitive"
+                    type="checkbox"
+                    checked={this.props.keyword.caseSensitive}
+                    onChange={e => this.props.update(this.props.index, 'caseSensitive', e.target.checked)}
+                  />
+                </TooltipElement>
               </div>
             </span>
           }
@@ -142,7 +154,7 @@ class PopoverBody extends Component {
           score: 1,
           caseSensitive: false,
           feedback: '',
-          awaited: false
+          expected: false
         }
       ]}
     )
@@ -169,8 +181,8 @@ class PopoverBody extends Component {
         updated.answers[index].caseSensitive = Boolean(value)
         break
       }
-      case 'awaited': {
-        updated.answers[index].awaited = Boolean(value)
+      case 'expected': {
+        updated.answers[index].expected = Boolean(value)
         break
       }
       case 'score': {
@@ -205,7 +217,7 @@ class PopoverBody extends Component {
       score: 1,
       caseSensitive: false,
       feedback: '',
-      awaited: false
+      expected: false
     })
     this.setState({solution:solution})
   }
@@ -324,9 +336,10 @@ class GridCell extends Component {
             className="fa fa-trash"
             title={tex('delete')}
             position="bottom"
-            enabled={undefined !== currentSolution && !this.state.showPopover}
+            enabled={undefined !== currentSolution}
             onClick={() => this.props.onChange(
-              actions.deleteSolution(this.props.cell.id)
+              actions.deleteSolution(this.props.cell.id),
+              this.hidePopover()
             )}
           />
           <OverlayTrigger

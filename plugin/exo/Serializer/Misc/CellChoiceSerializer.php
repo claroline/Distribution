@@ -27,7 +27,7 @@ class CellChoiceSerializer implements SerializerInterface
         $choiceData->text = $choice->getText();
         $choiceData->caseSensitive = $choice->isCaseSensitive();
         $choiceData->score = $choice->getScore();
-        $choiceData->awaited = $choice->isAwaited();
+        $choiceData->expected = $choice->isExpected();
 
         if ($choice->getFeedback()) {
             $choiceData->feedback = $choice->getFeedback();
@@ -54,7 +54,7 @@ class CellChoiceSerializer implements SerializerInterface
         $choice->setText($data->text);
         $choice->setCaseSensitive($data->caseSensitive);
         $choice->setScore($data->score);
-        $choice->setAwaited($data->awaited);
+        $choice->setExpected($data->expected);
 
         if (isset($data->feedback)) {
             $choice->setFeedback($data->feedback);
