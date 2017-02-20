@@ -14,15 +14,17 @@ class AddContentModal extends Component {
 
     this.state = {
       contentMimeTypes: contentMimeTypes,
-      currentType: null
+      currentType: contentMimeTypes[0],
+      currentName: trans(getContentDefinition(contentMimeTypes[0]).name, {}, 'question_types'),
+      input: {}
     }
   }
 
   handleItemMouseOver(type) {
     const name = trans(getContentDefinition(type).name, {}, 'question_types')
-    const desc = trans(`${getContentDefinition(type).name}_desc`, {}, 'question_types')
     this.setState({
-      currentType: type
+      currentType: type,
+      currentName: name
     })
   }
 
@@ -37,24 +39,35 @@ class AddContentModal extends Component {
                 className={classes('modal-content-entry', {'selected': this.state.currentType === type})}
                 role="option"
                 onMouseOver={() => this.handleItemMouseOver(type)}
-                onClick={() => this.props.handleSelect(type)}
-                //onClick={() => this.input.click()}
+                onClick={() => getContentDefinition(type).browseFiles ?
+                  this.state.input[getContentDefinition(type).browseFiles].click() :
+                  this.props.handleSelect(type)
+                }
               >
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="img-input"
-                  style={{display: 'none'}}
-                  ref={input => this.input = input}
-                />
+                {getContentDefinition(type).browseFiles &&
+                  <input
+                    type="file"
+                    accept={getContentDefinition(type).browseFiles + '/*'}
+                    style={{display: 'none'}}
+                    ref={input => this.state.input[getContentDefinition(type).browseFiles] = input}
+                    onChange={() => {
+                      if (this.state.input[getContentDefinition(type).browseFiles].files[0]) {
+                        const item = this.props.handleSelect(type)
+                        getContentDefinition(type).onFileSelect(item, this.state.input[getContentDefinition(type).browseFiles].files[0])
+                      }
+                    }}
+                  />
+                }
                 <span className="item-icon item-icon-lg">
                   <span className={classes(getContentDefinition(type).icon)}></span>
                 </span>
-                <span className="content-item-desc">
-                  {trans(getContentDefinition(type).name, {}, 'question_types')}
-                </span>
               </div>
             )}
+          </div>
+          <div className="modal-item-desc">
+            <span className="modal-item-name">
+              {this.state.currentName}
+            </span>
           </div>
         </Modal.Body>
       </BaseModal>

@@ -1,8 +1,15 @@
 import cloneDeep from 'lodash/cloneDeep'
-import {CONTENT_ITEM_CREATE, UPDATE_PROP} from './../../quiz/editor/actions'
-import {makeId} from './../../utils/utils'
-import {trans} from './../../utils/translate'
+import {CONTENT_ITEM_CREATE} from './../../quiz/editor/actions'
+import {makeActionCreator, makeId} from './../../utils/utils'
+import {tex, trans} from './../../utils/translate'
 import {TextContent as component} from './editor.jsx'
+import {notBlank, setIfError} from './../../utils/validate'
+
+const UPDATE_TEXT = 'UPDATE_TEXT'
+
+export const actions = {
+  updateText: makeActionCreator(UPDATE_TEXT, 'text')
+}
 
 function reduce(item = {}, action = {}) {
   switch (action.type) {
@@ -13,17 +20,19 @@ function reduce(item = {}, action = {}) {
         solutions: 'none',
         score: {type: 'none'}
       })
-    case UPDATE_PROP:
+    case UPDATE_TEXT:
       const newItem = cloneDeep(item)
-      newItem[action.property] = action.value
+      newItem['text'] = action.text
       return newItem
   }
   return item
 }
 
 function validate(item) {
+  const errors = {}
+  setIfError(errors, 'text', notBlank(item.text, true))
 
-  return {}
+  return errors
 }
 
 export default {

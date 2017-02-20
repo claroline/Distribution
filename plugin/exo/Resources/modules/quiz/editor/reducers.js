@@ -255,6 +255,7 @@ function reduceItems(items = {}, action = {}) {
       return update(items, {[action.id]: {$set: newItem}})
     }
     case CONTENT_ITEM_UPDATE: {
+      console.log('gogogo')
       let updatedItem = merge(
         {},
         items[action.id],
@@ -269,6 +270,7 @@ function reduceItems(items = {}, action = {}) {
       let updatedItem = def.editor.reduce(items[action.id], action.subAction)
       const errors = validate.contentItem(updatedItem)
       updatedItem = update(updatedItem, {_errors: {$set: errors}})
+
       return update(items, {[action.id]: {$set: updatedItem}})
     }
   }

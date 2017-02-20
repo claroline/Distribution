@@ -1,5 +1,6 @@
 import editor from './editor'
 import {AudioContentPlayer} from './player.jsx'
+import {utils} from './utils/utils'
 
 export default {
   type: 'application/x.audio-content+json',
@@ -8,5 +9,6 @@ export default {
   altIcon: 'fa fa-volume-down',
   player: AudioContentPlayer,
   browseFiles: 'audio',
+  onFileSelect: (file) => {utils.onFileSelect(file)},
   editor
 }

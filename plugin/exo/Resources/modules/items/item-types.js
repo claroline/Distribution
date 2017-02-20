@@ -28,7 +28,8 @@ const typeProperties = [
   'expectAnswer',
   'icon',
   'altIcon',
-  'browseFiles'
+  'browseFiles',
+  'onFileSelect'
 ]
 
 let registeredTypes = {}

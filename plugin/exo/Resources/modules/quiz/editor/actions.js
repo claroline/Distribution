@@ -145,6 +145,7 @@ actions.createContentItem = (stepId, type) => {
     type: CONTENT_ITEM_CREATE,
     id: makeId(),
     stepId,
-    contentType: type
+    contentType: type,
+    file: {}
   }
 }

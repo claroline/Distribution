@@ -1,9 +1,7 @@
-import React, {Component, PropTypes as T} from 'react'
-import get from 'lodash/get'
-import {t, tex} from './../../../utils/translate'
+import React, {PropTypes as T} from 'react'
+import {t} from './../../../utils/translate'
 import {FormGroup} from './../../../components/form/form-group.jsx'
 import {Textarea} from './../../../components/form/textarea.jsx'
-import {SubSection} from './../../../components/form/sub-section.jsx'
 
 export const ContentItemForm = props =>
   <form>
@@ -36,12 +34,8 @@ export const ContentItemForm = props =>
 ContentItemForm.propTypes = {
   item: T.shape({
     id: T.string.isRequired,
-    content: T.string.isRequired,
-    hints: T.arrayOf(T.object).isRequired,
-    feedback: T.string.isRequired,
     _errors: T.object
   }).isRequired,
   children: T.element.isRequired,
-  validating: T.bool.isRequired,
   onChange: T.func.isRequired
 }

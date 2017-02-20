@@ -260,9 +260,9 @@ class StepFooter extends Component {
     } else if (action === MODAL_ADD_CONTENT) {
       this.props.showModal(MODAL_ADD_CONTENT, {
         title: tex('add_content'),
-        handleSelect: selected => {
+        handleSelect: (selected) => {
           this.props.closeModal()
-          this.props.handleContentItemCreate(this.props.stepId, selected)
+          return this.props.handleContentItemCreate(this.props.stepId, selected)
         }
       })
     }
