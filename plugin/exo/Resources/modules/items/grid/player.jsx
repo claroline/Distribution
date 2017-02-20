@@ -31,7 +31,7 @@ class GridCell extends Component {
     return (
       <div className="grid-cell">
         <div className="cell-body">
-          {this.props.cell.data &&
+          {!this.props.cell.input &&
             <div>{this.props.cell.data}</div>
           }
           {this.props.cell.choices.length > 0 &&
@@ -59,7 +59,7 @@ class GridCell extends Component {
               </ul>
             </div>
           }
-          {!this.props.cell.data && this.props.cell.choices.length === 0 &&
+          {this.props.cell.input && this.props.cell.choices.length === 0 &&
             <input
               type="text"
               className="form-control"
@@ -137,7 +137,8 @@ GridPlayer.propTypes = {
       coordinates: T.arrayOf(T.number).isRequired,
       background: T.string.isRequired,
       color: T.string.isRequired,
-      choices: T.arrayOf(T.string)
+      choices: T.arrayOf(T.string),
+      input: T.bool.isRequired
     })).isRequired,
     rows: T.number.isRequired,
     cols: T.number.isRequired,

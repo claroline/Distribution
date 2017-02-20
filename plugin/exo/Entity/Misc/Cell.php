@@ -102,6 +102,13 @@ class Cell
     private $selector = false;
 
     /**
+     * @ORM\Column(type="boolean")
+     *
+     * @var bool
+     */
+    private $input = false;
+
+    /**
      * Cell constructor.
      */
     public function __construct()
@@ -168,6 +175,24 @@ class Cell
     public function isSelector()
     {
         return $this->selector;
+    }
+
+    /**
+     * Get input.
+     */
+    public function isInput()
+    {
+        return $this->input;
+    }
+
+    /**
+     * Set input.
+     *
+     * @param bool $input
+     */
+    public function setInput($input)
+    {
+        $this->input = $input;
     }
 
     /**

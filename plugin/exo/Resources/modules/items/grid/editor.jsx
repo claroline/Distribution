@@ -736,7 +736,8 @@ Grid.propTypes = {
       coordinates: T.arrayOf(T.number).isRequired,
       background: T.string.isRequired,
       color: T.string.isRequired,
-      choices: T.arrayOf(T.string)
+      choices: T.arrayOf(T.string),
+      input: T.bool.isRequired
     })).isRequired,
     rows: T.number.isRequired,
     cols: T.number.isRequired,

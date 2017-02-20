@@ -73,6 +73,7 @@ class GridQuestionSerializer implements SerializerInterface
             $cellData->background = $cell->getBackground();
             $cellData->color = $cell->getColor();
             $cellData->coordinates = $cell->getCoords();
+            $cellData->input = $cell->isInput();
             // add a list of choice if needed
             if ($cell->isSelector()) {
                 // We want to render a list of choices
@@ -186,6 +187,7 @@ class GridQuestionSerializer implements SerializerInterface
             $cell->setColor($cellData->color);
             $cell->setBackground($cellData->background);
             $cell->setData($cellData->data);
+            $cell->setInput($cellData->input);
 
             if (!empty($cellData->choices)) {
                 $cell->setSelector(true);

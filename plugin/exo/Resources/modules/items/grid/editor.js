@@ -221,6 +221,7 @@ function reduce(grid = {}, action) {
       // ensure cell data is empty
       cell.data = ''
       cell.choices = []
+      cell.input = true
       if(action.data.isList) {
         // fill cell choices
         action.data.solution.answers.forEach(answer => {
@@ -233,7 +234,8 @@ function reduce(grid = {}, action) {
     case DELETE_SOLUTION: {
       const newItem = cloneDeep(grid)
       const cell = newItem.cells.find(cell => cell.id === action.id)
-      cell.choices= []
+      cell.choices = []
+      cell.input = false
       const solutionIndex = newItem.solutions.findIndex(solution => solution.cellId === action.id)
       newItem.solutions.splice(solutionIndex, 1)
       return newItem
@@ -346,7 +348,8 @@ function makeDefaultCell(x, y) {
     coordinates: [x, y],
     background: '#fff',
     color: '#000',
-    choices: []
+    choices: [],
+    input: false
   }
 }
 
