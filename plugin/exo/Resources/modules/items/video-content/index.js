@@ -9,6 +9,6 @@ export default {
   altIcon: 'fa fa-video-camera',
   player: VideoContentPlayer,
   browseFiles: 'video',
-  onFileSelect: (file) => {utils.onFileSelect(file)},
+  onFileSelect: (item, file) => {return utils.onFileSelect(item, file)},
   editor
 }

@@ -53,7 +53,16 @@ class AddContentModal extends Component {
                     onChange={() => {
                       if (this.state.input[getContentDefinition(type).browseFiles].files[0]) {
                         const item = this.props.handleSelect(type)
-                        getContentDefinition(type).onFileSelect(item, this.state.input[getContentDefinition(type).browseFiles].files[0])
+
+                        const reader = new window.FileReader()
+                        reader.onload = e => {
+                          const file = getContentDefinition(type).onFileSelect(
+                            this.state.input[getContentDefinition(type).browseFiles].files[0],
+                            e.target.result
+                          )
+                          this.props.handleFileUpdate(item.id, file)
+                        }
+                        reader.readAsDataURL(this.state.input[getContentDefinition(type).browseFiles].files[0])
                       }
                     }}
                   />
@@ -76,7 +85,8 @@ class AddContentModal extends Component {
 }
 
 AddContentModal.propTypes = {
-  handleSelect: T.func.isRequired
+  handleSelect: T.func.isRequired,
+  handleFileUpdate: T.func
 }
 
 export {AddContentModal}

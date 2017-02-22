@@ -32,13 +32,13 @@ class TextContentItemSerializer implements SerializerInterface
     }
 
     /**
-     * Converts raw data into an text content item entity.
+     * Converts raw data into a text content item entity.
      *
      * @param \stdClass       $data
      * @param TextContentItem $textContentItem
      * @param array           $options
      *
-     * @return OpenQuestion
+     * @return TextContentItem
      */
     public function deserialize($data, $textContentItem = null, array $options = [])
     {

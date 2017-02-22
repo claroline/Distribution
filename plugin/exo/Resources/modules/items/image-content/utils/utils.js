@@ -1,20 +1,20 @@
-export const utils = {}
-import {actions as editorActions} from './../../../quiz/editor/actions'
+import {makeId} from './../../../utils/utils'
 
-utils.onFileSelect = (item, file) => {
-  let img
-  const reader = new window.FileReader()
-  reader.onload = e => {
-    img = document.createElement('img')
-    img.src = e.target.result
-    img.onload = () => {
-      editorActions.updateContentItem(
-        item.id,
-        'file',
-        'test'
-      )
-      console.log('done')
-    }
+export const utils = {}
+
+utils.onFileSelect = (file, data) => {
+  const img = document.createElement('img')
+  img.src = data
+
+  return {
+    id: makeId(),
+    type: file.type,
+    data: data,
+    name: file.name,
+    width: img.naturalWidth,
+    height: img.naturalHeight,
+    _clientWidth: img.width,
+    _clientHeight: img.height,
+    _size: file.size
   }
-  reader.readAsDataURL(file)
 }

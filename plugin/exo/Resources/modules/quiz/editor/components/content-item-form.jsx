@@ -34,6 +34,8 @@ export const ContentItemForm = props =>
 ContentItemForm.propTypes = {
   item: T.shape({
     id: T.string.isRequired,
+    title: T.string.isRequired,
+    description: T.string.isRequired,
     _errors: T.object
   }).isRequired,
   children: T.element.isRequired,

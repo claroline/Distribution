@@ -263,6 +263,9 @@ class StepFooter extends Component {
         handleSelect: (selected) => {
           this.props.closeModal()
           return this.props.handleContentItemCreate(this.props.stepId, selected)
+        },
+        handleFileUpdate: (id, file) => {
+          return this.props.handleContentItemUpdate(id, 'file', file)
         }
       })
     }
@@ -331,7 +334,8 @@ StepFooter.propTypes = {
   closeModal: T.func.isRequired,
   handleItemCreate: T.func.isRequired,
   handleItemsImport: T.func.isRequired,
-  handleContentItemCreate: T.func.isRequired
+  handleContentItemCreate: T.func.isRequired,
+  handleContentItemUpdate: T.func
 }
 
 export const StepEditor = props =>
@@ -385,6 +389,7 @@ export const StepEditor = props =>
       handleItemCreate={props.handleItemCreate}
       handleItemsImport={props.handleItemsImport}
       handleContentItemCreate={props.handleContentItemCreate}
+      handleContentItemUpdate={props.handleContentItemUpdate}
     />
   </div>
 
@@ -409,6 +414,7 @@ StepEditor.propTypes = {
   handleItemHintsUpdate: T.func.isRequired,
   handleItemsImport: T.func.isRequired,
   handleContentItemCreate: T.func.isRequired,
+  handleContentItemUpdate: T.func,
   showModal: T.func.isRequired,
   closeModal: T.func.isRequired
 }

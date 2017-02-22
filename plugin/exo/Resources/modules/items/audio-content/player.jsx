@@ -1,12 +1,25 @@
 import React, {PropTypes as T} from 'react'
+import {asset} from '#/main/core/asset'
 
 export const AudioContentPlayer = (props) =>
-  <div>
-    Audio content
+  <div className="audio-item-content">
+    <audio>
+      <source src={props.item.file.data || asset(props.item.file.url)} type={props.item.file.type} />
+    </audio>
   </div>
 
 AudioContentPlayer.propTypes = {
   item: T.shape({
-    id: T.string.isRequired
+    id: T.string.isRequired,
+    file: T.oneOfType([
+      T.shape({
+        data: T.string.isRequired,
+        type: T.string.isRequired
+      }),
+      T.shape({
+        url: T.string.isRequired,
+        type: T.string.isRequired
+      })
+    ]).isRequired,
   }).isRequired
 }

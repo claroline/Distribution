@@ -239,14 +239,14 @@ function reduceItems(items = {}, action = {}) {
       return update(items, {[action.id]: {$set: updatedItem}})
     }
     case CONTENT_ITEM_CREATE: {
-      let newItem = {
+      let newItem = decorateItem({
         id: action.id,
         type: action.contentType,
         content: '',
         hints: [],
         feedback: ''
-      }
-      //newItem = decorateItem(newItem)
+      })
+      newItem = decorateItem(newItem)
       const def = getContentDefinition(action.contentType)
       newItem = def.editor.reduce(newItem, action)
       const errors = validate.contentItem(newItem)
@@ -255,7 +255,6 @@ function reduceItems(items = {}, action = {}) {
       return update(items, {[action.id]: {$set: newItem}})
     }
     case CONTENT_ITEM_UPDATE: {
-      console.log('gogogo')
       let updatedItem = merge(
         {},
         items[action.id],

@@ -1,5 +1,4 @@
 import {CONTENT_ITEM_CREATE} from './../../quiz/editor/actions'
-import {makeActionCreator} from './../../utils/utils'
 import {trans} from './../../utils/translate'
 import {ImageContent as component} from './editor.jsx'
 
