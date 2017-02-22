@@ -1,1 +1,4 @@
-{}
+{
+    "add_resource": "Agregar recurso",
+    "form.description": "Descripción"
+}

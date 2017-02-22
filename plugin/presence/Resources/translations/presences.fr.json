@@ -47,7 +47,7 @@
     "periode_relevee": "Période de relevé",
     "pour_groupe": "Pour le groupe",
     "prenom": "Prénom",
-    "prof_appel": "Responsable de l'appel'",
+    "prof_appel": "Responsable de l'appel",
     "releve": "Relevé",
     "releve_pres": "Relever les présences",
     "roles": "Rôles",
@@ -61,7 +61,7 @@
     "tes_presences": "Vos présences",
     "tranche": "Tranche N°",
     "tranche_du": "tranche horaire du ",
-    "tromb": "Trombinoscope",
+    "tromb": "",
     "valider": "Valider",
     "valider_presences": "Valider les présences"
 }
