@@ -60,7 +60,7 @@ class FileUtilities
         $this->tokenStorage = $tokenStorage;
     }
 
-    public function createFile(File $tmpFile, $objectClass = null, $objectUuid = null, $objectName = null)
+    public function createFile(File $tmpFile, $objectClass = null, $objectUuid = null, $objectName = null, $sourceType = null)
     {
         $user = $this->tokenStorage->getToken()->getUser();
         $fileName = $tmpFile->getFilename();
@@ -68,7 +68,7 @@ class FileUtilities
         $size = filesize($tmpFile);
         $mimeType = $tmpFile->getMimeType();
         $extension = pathinfo($fileName, PATHINFO_EXTENSION);
-        $hashName = 'data'.DIRECTORY_SEPARATOR.$directoryName.DIRECTORY_SEPARATOR.$this->claroUtils->generateGuid().'.'.$extension;
+        $url = 'data'.DIRECTORY_SEPARATOR.$directoryName.DIRECTORY_SEPARATOR.$this->claroUtils->generateGuid().'.'.$extension;
 
         $this->om->startFlushSuite();
         $publicFile = new PublicFile();
@@ -77,12 +77,52 @@ class FileUtilities
         $publicFile->setSize($size);
         $publicFile->setMimeType($mimeType);
         $publicFile->setCreationDate(new \DateTime());
-        $publicFile->setHashName($hashName);
+        $publicFile->setUrl($url);
+        $publicFile->setSourceType($sourceType);
 
         if ($user !== 'anon.') {
             $publicFile->setCreator($user);
         }
-        $tmpFile->move($this->filesDir.DIRECTORY_SEPARATOR, $hashName);
+        $tmpFile->move($this->filesDir.DIRECTORY_SEPARATOR, $url);
+        $this->om->persist($publicFile);
+
+        if (!is_null($objectClass) && !is_null($objectUuid)) {
+            $this->createFileUse($publicFile, $objectClass, $objectUuid, $objectName);
+        }
+        $this->om->endFlushSuite();
+
+        return $publicFile;
+    }
+
+    public function createFileFromData(
+        $data,
+        $mimeType,
+        $fileName,
+        $extension,
+        $size = 0,
+        $objectClass = null,
+        $objectUuid = null,
+        $objectName = null,
+        $sourceType = null
+    ) {
+        $user = $this->tokenStorage->getToken()->getUser();
+        $directoryName = $this->getActiveDirectoryName();
+        $url = 'data'.DIRECTORY_SEPARATOR.$directoryName.DIRECTORY_SEPARATOR.$this->claroUtils->generateGuid().'.'.$extension;
+
+        $this->om->startFlushSuite();
+        $publicFile = new PublicFile();
+        $publicFile->setDirectoryName($directoryName);
+        $publicFile->setFilename($fileName);
+        $publicFile->setSize($size);
+        $publicFile->setMimeType($mimeType);
+        $publicFile->setCreationDate(new \DateTime());
+        $publicFile->setUrl($url);
+        $publicFile->setSourceType($sourceType);
+
+        if ($user !== 'anon.') {
+            $publicFile->setCreator($user);
+        }
+        $this->fileSystem->dumpFile($this->filesDir.DIRECTORY_SEPARATOR.$url, $data);
         $this->om->persist($publicFile);
 
         if (!is_null($objectClass) && !is_null($objectUuid)) {
@@ -108,7 +148,7 @@ class FileUtilities
 
     public function deletePublicFile(PublicFile $publicFile)
     {
-        $uploadedFile = $this->filesDir.DIRECTORY_SEPARATOR.$publicFile->getHashName();
+        $uploadedFile = $this->filesDir.DIRECTORY_SEPARATOR.$publicFile->getUrl();
         $this->om->remove($publicFile);
         $this->om->flush();
 
