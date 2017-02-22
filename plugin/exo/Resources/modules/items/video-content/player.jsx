@@ -3,8 +3,8 @@ import {asset} from '#/main/core/asset'
 
 export const VideoContentPlayer = (props) =>
   <div className="video-item-content">
-    <video controls>
-      <source src={props.item.file.data || asset(props.item.file.url)} type={props.item.file.type} />
+    <video className="video-js vjs-big-play-centered vjs-default-skin vjs-16-9" controls>
+      <source src={asset(props.item.file.url)} type={props.item.file.type} />
     </video>
   </div>
 

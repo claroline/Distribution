@@ -44,4 +44,9 @@ class AudioContentItem extends AbstractItem
     {
         $this->audio = $audio;
     }
+
+    public function isContentItem()
+    {
+        return true;
+    }
 }

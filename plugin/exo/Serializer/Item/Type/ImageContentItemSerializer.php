@@ -99,37 +99,41 @@ class ImageContentItemSerializer implements SerializerInterface
      */
     private function deserializeImage(ImageContentItem $item, \stdClass $imageData, array $options)
     {
-        $typeParts = explode('/', $imageData->type);
-        $image = $item->getImage() ?: new Image();
+        $image = $item->getImage();
 
-        if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
-            $image->setUuid($imageData->id);
+        if (empty($image)) {
+            $image = new Image();
+            $typeParts = explode('/', $imageData->type);
+
+            if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
+                $image->setUuid($imageData->id);
+            }
+            $image->setType($imageData->type);
+            $image->setTitle($imageData->id);
+            $image->setWidth($imageData->width);
+            $image->setHeight($imageData->height);
+
+            if (isset($imageData->data)) {
+                $objectClass = get_class($image);
+                $objectUuid = $image->getUuid();
+                $objectName = $image->getTitle();
+                $imageParts = explode(',', $imageData->data);
+                $imageBin = base64_decode($imageParts[1]);
+
+                $file = $this->fileUtils->createFileFromData(
+                    $imageBin,
+                    $imageData->type,
+                    $imageData->name,
+                    $typeParts[1],
+                    $imageData->_size,
+                    $objectClass,
+                    $objectUuid,
+                    $objectName,
+                    $objectClass
+                );
+                $image->setUrl($file->getUrl());
+            }
+            $item->setImage($image);
         }
-        $image->setType($imageData->type);
-        $image->setTitle($imageData->id);
-        $image->setWidth($imageData->width);
-        $image->setHeight($imageData->height);
-
-        if (isset($imageData->data)) {
-            $objectClass = get_class($image);
-            $objectUuid = $image->getUuid();
-            $objectName = $image->getTitle();
-            $imageParts = explode(',', $imageData->data);
-            $imageBin = base64_decode($imageParts[1]);
-
-            $file = $this->fileUtils->createFileFromData(
-                $imageBin,
-                $imageData->type,
-                $imageData->name,
-                $typeParts[1],
-                $imageData->_size,
-                $objectClass,
-                $objectUuid,
-                $objectName,
-                $objectClass
-            );
-            $image->setUrl($file->getUrl());
-        }
-        $item->setImage($image);
     }
 }

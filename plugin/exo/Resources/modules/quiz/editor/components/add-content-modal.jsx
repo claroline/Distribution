@@ -52,17 +52,17 @@ class AddContentModal extends Component {
                     ref={input => this.state.input[getContentDefinition(type).browseFiles] = input}
                     onChange={() => {
                       if (this.state.input[getContentDefinition(type).browseFiles].files[0]) {
+                        const uploadedFile = this.state.input[getContentDefinition(type).browseFiles].files[0]
                         const item = this.props.handleSelect(type)
-
                         const reader = new window.FileReader()
                         reader.onload = e => {
-                          const file = getContentDefinition(type).onFileSelect(
-                            this.state.input[getContentDefinition(type).browseFiles].files[0],
+                          const fileData = getContentDefinition(type).onFileSelect(
+                            uploadedFile,
                             e.target.result
                           )
-                          this.props.handleFileUpdate(item.id, file)
+                          this.props.handleFileUpdate(item.id, fileData)
                         }
-                        reader.readAsDataURL(this.state.input[getContentDefinition(type).browseFiles].files[0])
+                        reader.readAsDataURL(uploadedFile)
                       }
                     }}
                   />

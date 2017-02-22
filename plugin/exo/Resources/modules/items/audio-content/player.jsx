@@ -3,8 +3,8 @@ import {asset} from '#/main/core/asset'
 
 export const AudioContentPlayer = (props) =>
   <div className="audio-item-content">
-    <audio>
-      <source src={props.item.file.data || asset(props.item.file.url)} type={props.item.file.type} />
+    <audio controls>
+      <source src={asset(props.item.file.url)} type={props.item.file.type} />
     </audio>
   </div>
 

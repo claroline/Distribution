@@ -38,4 +38,9 @@ class TextContentItem extends AbstractItem
     {
         $this->text = $text;
     }
+
+    public function isContentItem()
+    {
+        return true;
+    }
 }

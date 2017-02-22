@@ -44,4 +44,9 @@ class ImageContentItem extends AbstractItem
     {
         $this->image = $image;
     }
+
+    public function isContentItem()
+    {
+        return true;
+    }
 }

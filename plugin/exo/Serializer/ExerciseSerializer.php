@@ -3,6 +3,7 @@
 namespace UJM\ExoBundle\Serializer;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Step;
 use UJM\ExoBundle\Library\Mode\CorrectionMode;
@@ -12,6 +13,7 @@ use UJM\ExoBundle\Library\Options\ShowCorrectionAt;
 use UJM\ExoBundle\Library\Options\ShowScoreAt;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
+use UJM\ExoBundle\Manager\Item\ItemManager;
 
 /**
  * Serializer for exercise data.
@@ -31,22 +33,40 @@ class ExerciseSerializer implements SerializerInterface
     private $stepSerializer;
 
     /**
+     * @var ItemManager
+     */
+    private $itemManager;
+
+    /**
+     * @var TokenStorageInterface
+     */
+    private $tokenStorage;
+
+    /**
      * ExerciseSerializer constructor.
      *
-     * @param StepSerializer $stepSerializer
-     * @param UserSerializer $userSerializer
+     * @param StepSerializer        $stepSerializer
+     * @param UserSerializer        $userSerializer
+     * @param ItemManager           $itemManager
+     * @param TokenStorageInterface $tokenStorage
      *
      * @DI\InjectParams({
      *     "userSerializer" = @DI\Inject("ujm_exo.serializer.user"),
-     *     "stepSerializer" = @DI\Inject("ujm_exo.serializer.step")
+     *     "stepSerializer" = @DI\Inject("ujm_exo.serializer.step"),
+     *     "itemManager"    = @DI\Inject("ujm_exo.manager.item"),
+     *     "tokenStorage"   = @DI\Inject("security.token_storage")
      * })
      */
     public function __construct(
         UserSerializer $userSerializer,
-        StepSerializer $stepSerializer)
+        StepSerializer $stepSerializer,
+        ItemManager $itemManager,
+        TokenStorageInterface $tokenStorage)
     {
         $this->userSerializer = $userSerializer;
         $this->stepSerializer = $stepSerializer;
+        $this->itemManager = $itemManager;
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
@@ -358,6 +378,23 @@ class ExerciseSerializer implements SerializerInterface
         if (0 < count($stepEntities)) {
             foreach ($stepEntities as $stepToRemove) {
                 $exercise->removeStep($stepToRemove);
+                $stepQuestions = $stepToRemove->getStepQuestions()->toArray();
+                $itemsToDelete = [];
+
+                foreach ($stepQuestions as $stepQuestionToRemove) {
+                    $step->removeStepQuestion($stepQuestionToRemove);
+
+                    if ($stepQuestionToRemove->getQuestion()->getInteraction()->isContentItem()) {
+                        $itemsToDelete[] = $stepQuestionToRemove->getQuestion()->getUuid();
+                    }
+                }
+                if (count($itemsToDelete) > 0) {
+                    $user = $this->tokenStorage->getToken()->getUser();
+
+                    if ($user !== 'anon.') {
+                        $this->itemManager->delete($itemsToDelete, $user);
+                    }
+                }
             }
         }
     }

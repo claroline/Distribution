@@ -44,4 +44,9 @@ class VideoContentItem extends AbstractItem
     {
         $this->video = $video;
     }
+
+    public function isContentItem()
+    {
+        return true;
+    }
 }

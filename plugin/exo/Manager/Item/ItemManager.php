@@ -110,7 +110,7 @@ class ItemManager
                 'user' => $user,
             ]);
 
-        if ($question->getCreator()->getId() === $user->getId()
+        if (($question->getCreator() && ($question->getCreator()->getId() === $user->getId()))
             || ($shared && $shared->hasAdminRights())) {
             // User has admin rights so he can delete question
             return true;

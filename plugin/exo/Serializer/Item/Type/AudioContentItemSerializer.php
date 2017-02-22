@@ -92,40 +92,44 @@ class AudioContentItemSerializer implements SerializerInterface
      * Deserializes the audio of the Audio content item.
      *
      * @param AudioContentItem $item
-     * @param \stdClass        $imageData
+     * @param \stdClass        $audioData
      * @param array            $options
      */
     private function deserializeAudio(AudioContentItem $item, \stdClass $audioData, array $options)
     {
-        $typeParts = explode('/', $audioData->type);
-        $audio = $item->getAudio() ?: new Audio();
+        $audio = $item->getAudio();
 
-        if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
-            $audio->setUuid($audioData->id);
+        if (empty($audio)) {
+            $audio = new Audio();
+            $typeParts = explode('/', $audioData->type);
+
+            if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
+                $audio->setUuid($audioData->id);
+            }
+            $audio->setType($audioData->type);
+            $audio->setTitle($audioData->id);
+
+            if (isset($audioData->data)) {
+                $objectClass = get_class($audio);
+                $objectUuid = $audio->getUuid();
+                $objectName = $audio->getTitle();
+                $audioParts = explode(',', $audioData->data);
+                $audioBin = base64_decode($audioParts[1]);
+
+                $file = $this->fileUtils->createFileFromData(
+                    $audioBin,
+                    $audioData->type,
+                    $audioData->name,
+                    $typeParts[1],
+                    $audioData->_size,
+                    $objectClass,
+                    $objectUuid,
+                    $objectName,
+                    $objectClass
+                );
+                $audio->setUrl($file->getUrl());
+            }
+            $item->setAudio($audio);
         }
-        $audio->setType($audioData->type);
-        $audio->setTitle($audioData->id);
-
-        if (isset($audioData->data)) {
-            $objectClass = get_class($audio);
-            $objectUuid = $audio->getUuid();
-            $objectName = $audio->getTitle();
-            $audioParts = explode(',', $audioData->data);
-            $audioBin = base64_decode($audioParts[1]);
-
-            $file = $this->fileUtils->createFileFromData(
-                $audioBin,
-                $audioData->type,
-                $audioData->name,
-                $typeParts[1],
-                $audioData->_size,
-                $objectClass,
-                $objectUuid,
-                $objectName,
-                $objectClass
-            );
-            $audio->setUrl($file->getUrl());
-        }
-        $item->setAudio($audio);
     }
 }
