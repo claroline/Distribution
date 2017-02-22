@@ -1,4 +1,5 @@
 import React, {Component, PropTypes as T} from 'react'
+import classes from 'classnames'
 import {Feedback} from './../components/feedback-btn.jsx'
 import {SolutionScore} from './../components/score.jsx'
 import {PaperTabs} from './../components/paper-tabs.jsx'
@@ -178,7 +179,11 @@ class YourGridCell extends Component {
     return (
       <div className="grid-cell">
         {this.props.cell.input &&
-          <div className="cell-header">
+          <div className={classes(
+              'cell-header',
+              {'text-success': this.props.isValid},
+              {'text-danger': !this.props.isValid}
+            )}>
             <WarningIcon valid={this.props.isValid}/>
             <div className="additional-infos">
               <Feedback
@@ -255,7 +260,7 @@ class GridPaper extends Component {
     }
   }
 
-  getColumnScore(colIndex) {
+  getColumnScore(colIndex, forExpected) {
     // find score for the col
     const answerCellsForCol = this.props.item.cells.filter(cell => cell.coordinates[0] === colIndex && cell.input)
     // if this method is called there is at least one expected answer in the col
@@ -264,14 +269,16 @@ class GridPaper extends Component {
     const cellSolution = this.props.item.solutions.find(solution => solution.cellId === oneAnswerCellOfTheCol.id)
     cellSolutionScore = cellSolution.answers[0].score
 
+    if (forExpected) {
+      return cellSolutionScore
+    }
+
     const colAnswers = this.props.answer.filter(a => undefined !== answerCellsForCol.find(cell => cell.id === a.cellId))
     // if penalty is set to 0 and one wrong answer then my score for the col is 0
     if(this.props.item.penalty === 0) {
-      let allGood = true
-      colAnswers.every(a => {
+      const allGood = colAnswers.every(a => {
         const solution = this.props.item.solutions.find(solution => solution.cellId === a.cellId)
         if (undefined === solution.answers.find(answer => answer.expected && answer.text === a.text)) {
-          allGood = false
           return false
         }
       })
@@ -284,13 +291,15 @@ class GridPaper extends Component {
         if (undefined === solution.answers.find(answer => answer.expected && answer.text === a.text)) {
           answerScore -= this.props.item.penalty
           return false
+        } else {
+          return true
         }
       })
       return answerScore
     }
   }
 
-  getRowScore(rowIndex) {
+  getRowScore(rowIndex, forExpected) {
     // find score for the row
     const answerCellsForRow = this.props.item.cells.filter(cell => cell.coordinates[1] === rowIndex && cell.input)
     // if this method is called there is at least one expected answer in the row
@@ -299,15 +308,19 @@ class GridPaper extends Component {
     const cellSolution = this.props.item.solutions.find(solution => solution.cellId === oneAnswerCellOfTheRow.id)
     cellSolutionScore = cellSolution.answers[0].score
 
+    if (forExpected) {
+      return cellSolutionScore
+    }
+
     const rowAnswers = this.props.answer.filter(a => undefined !== answerCellsForRow.find(cell => cell.id === a.cellId))
     // if penalty is set to 0 and one wrong answer then my score for the col is 0
     if(this.props.item.penalty === 0) {
-      let allGood = true
-      rowAnswers.every(a => {
+      const allGood = rowAnswers.every(a => {
         const solution = this.props.item.solutions.find(solution => solution.cellId === a.cellId)
         if (undefined === solution.answers.find(answer => answer.expected && answer.text === a.text)) {
-          allGood = false
           return false
+        } else {
+          return true
         }
       })
       return allGood ? cellSolutionScore : 0
@@ -319,6 +332,8 @@ class GridPaper extends Component {
         if (undefined === solution.answers.find(answer => answer.expected && answer.text === a.text)) {
           answerScore -= this.props.item.penalty
           return false
+        } else {
+          return true
         }
       })
       return answerScore
@@ -328,35 +343,43 @@ class GridPaper extends Component {
   noErrorInCol(colIndex) {
     // find answer cells for the col (if this method is called there is at least one expected answer in the col)
     const answerCellsForCol = this.props.item.cells.filter(cell => cell.coordinates[0] === colIndex && cell.input)
-    // find answers for the row
+    // find answers for the col
     const colAnswers = this.props.answer.filter(a => undefined !== answerCellsForCol.find(cell => cell.id === a.cellId))
-    return colAnswers.every(a => {
+    const hasError = colAnswers.every(a => {
       const solution = this.props.item.solutions.find(solution => solution.cellId === a.cellId)
-      if (undefined === solution.answers.find(answer => answer.expected && answer.text === a.text)) {
+      if (undefined === solution.answers.find(answer => answer.expected && answer.caseSensitive ? answer.text === a.text : answer.text.toLowerCase() === a.text.toLowerCase())) {
         return false
+      } else {
+        return true
       }
     })
+
+    return hasError
   }
 
   noErrorInRow(rowIndex) {
-    // find score for the row
+    // find answer cells for the row (if this method is called there is at least one expected answer in the row)
     const answerCellsForRow = this.props.item.cells.filter(cell => cell.coordinates[1] === rowIndex && cell.input)
+    // find answers for the row
     const rowAnswers = this.props.answer.filter(a => undefined !== answerCellsForRow.find(cell => cell.id === a.cellId))
-    return rowAnswers.every(a => {
+    const hasError = rowAnswers.every(a => {
       const solution = this.props.item.solutions.find(solution => solution.cellId === a.cellId)
-      if (undefined === solution.answers.find(answer => answer.expected && answer.text === a.text)) {
+      if (undefined === solution.answers.find(answer => answer.expected && answer.caseSensitive ? answer.text === a.text : answer.text.toLowerCase() === a.text.toLowerCase())) {
         return false
+      } else {
+        return true
       }
     })
+    return hasError
   }
 
   noErrorInGrid() {
-    let noError = true
-    this.props.answer.every(a => {
+    const noError = this.props.answer.every(a => {
       const solution = this.props.item.solutions.find(solution => solution.cellId === a.cellId)
       if (undefined === solution.answers.find(answer => answer.expected && answer.text === a.text)) {
-        noError = false
         return false
+      } else {
+        return true
       }
     })
     return noError
@@ -378,9 +401,10 @@ class GridPaper extends Component {
       if (!utils.atLeastOneSolutionInRow(cell.coordinates[1], this.props.item.cells, this.props.item.solutions)) {
         return cell.background
       } else if (this.noErrorInRow(cell.coordinates[1])) {
-        // else if one or more error in row
+        // else if no error in row
         return successStyle
       } else {
+        // else at least one error in row
         return errorStyle
       }
     } else {
@@ -417,8 +441,13 @@ class GridPaper extends Component {
                       <tr>
                         {[...Array(this.props.item.cols)].map((x, i) =>
                           <td key={`grid-col-score-col-${i}`} style={{padding: '8px'}}>
-                            { utils.atLeastOneSolutionInCol(i, this.props.item.cells, this.props.item.solutions)} &&
-                              <SolutionScore score={utils.getColumnScore(i)}/>
+                            { utils.atLeastOneSolutionInCol(i, this.props.item.cells, this.props.item.solutions) &&
+                              <span className={classes(
+                                {'text-success': this.getColumnScore(i, false) > 0},
+                                {'text-danger': this.getColumnScore(i, false) < 1}
+                              )}>
+                                <SolutionScore score={this.getColumnScore(i, false)}/>
+                              </span>
                             }
                           </td>
                         )}
@@ -428,8 +457,13 @@ class GridPaper extends Component {
                       <tr key={`grid-row-${i}`}>
                         { this.props.item.score.type === SCORE_SUM && this.props.item.sumMode === SUM_ROW &&
                           <td key={`grid-row-score-col-${i}`} style={{padding: '8px', verticalAlign: 'middle'}}>
-                            { utils.atLeastOneSolutionInRow(i, this.props.item.cells, this.props.item.solutions)} &&
-                              <SolutionScore score={utils.getRowScore(i)}/>
+                            { utils.atLeastOneSolutionInRow(i, this.props.item.cells, this.props.item.solutions) &&
+                              <span className={classes(
+                                {'text-success': this.getRowScore(i, false) > 0},
+                                {'text-danger': this.getRowScore(i, false) < 1}
+                              )}>
+                                <SolutionScore score={this.getRowScore(i, false)}/>
+                              </span>
                             }
                           </td>
                         }
@@ -480,8 +514,8 @@ class GridPaper extends Component {
                       <tr>
                         {[...Array(this.props.item.cols)].map((x, i) =>
                           <td key={`grid-col-score-col-${i}`} style={{padding: '8px'}}>
-                            { utils.atLeastOneSolutionInCol(i, this.props.item.cells, this.props.item.solutions)} &&
-                              <SolutionScore score={utils.getColumnScore(i)}/>
+                            { utils.atLeastOneSolutionInCol(i, this.props.item.cells, this.props.item.solutions) &&
+                              <SolutionScore score={this.getColumnScore(i, true)}/>
                             }
                           </td>
                         )}
@@ -491,8 +525,8 @@ class GridPaper extends Component {
                       <tr key={`grid-row-${i}`}>
                         { this.props.item.score.type === SCORE_SUM && this.props.item.sumMode === SUM_ROW &&
                           <td key={`grid-row-score-col-${i}`} style={{padding: '8px', verticalAlign: 'middle'}}>
-                            { utils.atLeastOneSolutionInRow(i, this.props.item.cells, this.props.item.solutions)} &&
-                              <SolutionScore score={utils.getRowScore(i)}/>
+                            { utils.atLeastOneSolutionInRow(i, this.props.item.cells, this.props.item.solutions) &&
+                              <SolutionScore score={this.getRowScore(i, true)}/>
                             }
                           </td>
                         }
