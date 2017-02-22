@@ -8,7 +8,6 @@ use UJM\ExoBundle\Entity\ItemType\GridQuestion;
 use UJM\ExoBundle\Entity\Misc\Cell;
 use UJM\ExoBundle\Entity\Misc\CellChoice;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
-use UJM\ExoBundle\Library\Attempt\GenericPenalty;
 use UJM\ExoBundle\Library\Attempt\GenericScore;
 use UJM\ExoBundle\Library\Item\ItemType;
 use UJM\ExoBundle\Library\Options\GridSumMode;
@@ -317,7 +316,7 @@ class GridDefinition extends AbstractDefinition
     }
 
     /**
-     * Used to compute the question total score. Only for sum score type
+     * Used to compute the question total score. Only for sum score type.
      *
      * @param GridQuestion $question
      *
