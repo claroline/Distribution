@@ -1,5 +1,4 @@
 import React, {Component, PropTypes as T} from 'react'
-import classes from 'classnames'
 import {Feedback} from './../components/feedback-btn.jsx'
 import {SolutionScore} from './../components/score.jsx'
 import {PaperTabs} from './../components/paper-tabs.jsx'
@@ -158,6 +157,9 @@ class YourGridCell extends Component {
   getSolutionFeedback(){
     const solution = this.props.solutions.find(solution => solution.cellId === this.props.cell.id)
     const givenAnswer = this.props.answers.find(answer => answer.cellId === this.props.cell.id)
+    if (undefined === givenAnswer) {
+      return ''
+    }
     const solutionAnswer = solution.answers.find(answer => answer.text === givenAnswer.text)
     return undefined !== solutionAnswer ? solutionAnswer.feedback : ''
   }
@@ -165,6 +167,9 @@ class YourGridCell extends Component {
   getSolutionScore(){
     const solution = this.props.solutions.find(solution => solution.cellId === this.props.cell.id)
     const givenAnswer = this.props.answers.find(answer => answer.cellId === this.props.cell.id)
+    if (undefined === givenAnswer) {
+      return this.props.penalty
+    }
     const solutionAnswer = solution.answers.find(answer => answer.text === givenAnswer.text)
     return undefined !== solutionAnswer ? solutionAnswer.score : 0
   }
@@ -219,7 +224,8 @@ YourGridCell.propTypes = {
   answers: T.array.isRequired,
   solutions: T.array.isRequired,
   isValid: T.bool.isRequired,
-  showScore: T.bool.isRequired
+  showScore: T.bool.isRequired,
+  penalty: T.number.isRequired
 }
 
 class GridPaper extends Component {
@@ -451,7 +457,8 @@ class GridPaper extends Component {
                                     answers={this.props.answer}
                                     solutions={this.props.item.solutions}
                                     showScore={this.props.item.sumMode === SUM_CELL}
-                                    cell={cell}/>
+                                    cell={cell}
+                                    penalty={this.props.item.penalty}/>
                                 </td>
                             )
                           }
