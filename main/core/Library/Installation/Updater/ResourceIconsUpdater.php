@@ -43,17 +43,21 @@ class ResourceIconsUpdater extends Updater
         foreach ($resourceImages as $resourceImage) {
             $mimeType = $resourceImage[1];
             $rimg = $this->repo->findOneBy(['mimeType' => $mimeType, 'isShortcut' => false]);
-
+            $relativeUrl = $coreIconWebDirRelativePath.$resourceImage[0];
             if ($rimg === null) {
                 $this->log('Adding mime type for '.$mimeType.'.');
                 $rimg = new ResourceIcon();
                 $rimg->setMimeType($mimeType);
                 $rimg->setShortcut(false);
+                $rimg->setRelativeUrl($relativeUrl);
+                $this->om->persist($rimg);
                 $this->container->get('claroline.manager.icon_manager')->createShortcutIcon($rimg);
             }
-
-            $rimg->setRelativeUrl($coreIconWebDirRelativePath.$resourceImage[0]);
-            $this->om->persist($rimg);
+            // Also add/update the resource type icon to default resource icon set
+            $this->iconSetManager->addOrUpdateIconItemToDefaultResourceIconSet(
+                $rimg,
+                $relativeUrl
+            );
         }
 
         $this->om->endFlushSuite();

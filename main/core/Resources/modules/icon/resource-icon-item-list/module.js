@@ -30,6 +30,6 @@ resourceIconItemListApp
   .value('iconItemsByTypes', window.iconItemsByTypes)
 
 //Bootstrap angular in body
-angular.element(document).ready(function() {
+angular.element(document).ready(function () {
   angular.bootstrap(document.getElementsByTagName('body')[ 0 ], [ 'resourceIconItemListApp' ])
 })

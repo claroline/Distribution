@@ -276,13 +276,11 @@ class DatabaseWriter
     {
         $resourceType = $this->em->getRepository('ClarolineCoreBundle:Resource\ResourceType')
             ->findOneByName($resourceConfiguration['name']);
-        $isExistResourceType = true;
 
         if (null === $resourceType) {
             $resourceType = new ResourceType();
             $resourceType->setName($resourceConfiguration['name']);
             $resourceType->setPlugin($plugin);
-            $isExistResourceType = false;
         }
 
         $resourceType->setExportable($resourceConfiguration['is_exportable']);
