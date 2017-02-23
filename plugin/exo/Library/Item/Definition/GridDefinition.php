@@ -122,6 +122,7 @@ class GridDefinition extends AbstractDefinition
     public function correctAnswer(AbstractItem $question, $answer)
     {
         $scoreRule = json_decode($question->getQuestion()->getScoreRule());
+
         if ($scoreRule->type === 'fixed') {
             return $this->getCorrectAnswerForFixMode($question, $answer);
         } else {
@@ -203,7 +204,7 @@ class GridDefinition extends AbstractDefinition
         } else {
             $cells = $question->getCells();
             foreach ($cells as $cell) {
-                if (0 < count($cell->getChoices())) {
+                if ($cell->isInput()) {
                     $corrected->addMissing($this->findCellExpectedAnswer($cell));
                 }
             }
@@ -221,14 +222,14 @@ class GridDefinition extends AbstractDefinition
     private function getCorrectAnswerForRowSumMode(AbstractItem $question, $answer)
     {
         $corrected = new CorrectedAnswer();
+
         if (!is_null($answer)) {
             // correct answers per row
             for ($i = 0; $i < $question->getRows(); ++$i) {
-
                 // get cells where there is at least 1 expected answer for the current row (none possible)
                 $rowCellsUuids = [];
                 foreach ($question->getCells() as $cell) {
-                    if ($cell->getCoordsY() === $i && 0 < count($cell->getChoices())) {
+                    if ($cell->getCoordsY() === $i && $cell->isInput()) {
                         $rowCellsUuids[] = $cell->getUuid();
                     }
                 }
@@ -237,10 +238,15 @@ class GridDefinition extends AbstractDefinition
                 if (!empty($rowCellsUuids)) {
                     // score will be applied only if all expected answers are there and valid
                     $all = true;
-                    foreach ($answer as $cellAnswer) {
-                        if (in_array($cellAnswer->cellId, $rowCellsUuids)) {
-                            $cell = $question->getCell($cellAnswer->cellId);
-                            $choice = $cell->getChoice($cellAnswer->text);
+                    foreach ($rowCellsUuids as $expectedCellUuid) {
+                        // if $expectedCellUuid found in answers
+                        $key = array_search($expectedCellUuid, array_column($answer, 'cellId'));
+                        if (!$key) {
+                            $all = false;
+                            break;
+                        } else {
+                            $cell = $question->getCell($answer[$key]->cellId);
+                            $choice = $cell->getChoice($answer[$key]->text);
                             // wrong or empty anwser -> score will not be applied
                             if (empty($choice) || (!empty($choice) && !$choice->isExpected())) {
                                 $all = false;
@@ -248,7 +254,6 @@ class GridDefinition extends AbstractDefinition
                             }
                         }
                     }
-
                     if ($all) {
                         $cell = $question->getCell($rowCellsUuids[0]);
                         $scoreToApply = $cell->getChoices()[0]->getScore();
@@ -259,7 +264,6 @@ class GridDefinition extends AbstractDefinition
                 }
             }
         }
-
         return $corrected;
     }
 
@@ -279,20 +283,24 @@ class GridDefinition extends AbstractDefinition
                 // get cells where there is at least 1 expected answers for the current column (none possible)
                 $colCellsUuids = [];
                 foreach ($question->getCells() as $cell) {
-                    if ($cell->getCoordsX() === $i && 0 < count($cell->getChoices())) {
+                    if ($cell->getCoordsX() === $i && $cell->isInput()) {
                         $colCellsUuids[] = $cell->getUuid();
                     }
                 }
 
-                // if any answer are needed in this row
+                // if any answer is needed in this column
                 if (!empty($colCellsUuids)) {
-                    // score will be applied only if all expected answers are valid
+                    // score will be applied only if all expected answers are there and valid
                     $all = true;
-                    foreach ($answer as $cellAnswer) {
-                        if (in_array($cellAnswer->cellId, $colCellsUuids)) {
-                            $cell = $question->getCell($cellAnswer->cellId);
-                            $choice = $cell->getChoice($cellAnswer->text);
-                            // wrong or empty anwser -> score will not be applied
+                    foreach ($colCellsUuids as $expectedCellUuid) {
+                        // if $expectedCellUuid found in answers
+                        $key = array_search($expectedCellUuid, array_column($answer, 'cellId'));
+                        if (!$key) {
+                            $all = false;
+                            break;
+                        } else {
+                            $cell = $question->getCell($answer[$key]->cellId);
+                            $choice = $cell->getChoice($answer[$key]->text);
                             // wrong or empty anwser -> score will not be applied
                             if (empty($choice) || (!empty($choice) && !$choice->isExpected())) {
                                 $all = false;
@@ -300,7 +308,6 @@ class GridDefinition extends AbstractDefinition
                             }
                         }
                     }
-
                     if ($all) {
                         $cell = $question->getCell($colCellsUuids[0]);
                         $scoreToApply = $cell->getChoices()[0]->getScore();
@@ -308,6 +315,13 @@ class GridDefinition extends AbstractDefinition
                     } else {
                         $corrected->addUnexpected(new GenericScore($question->getPenalty()));
                     }
+                }
+            }
+        } else {
+            $cells = $question->getCells();
+            foreach ($cells as $cell) {
+                if ($cell->isInput()) {
+                    $corrected->addMissing($this->findCellExpectedAnswer($cell));
                 }
             }
         }

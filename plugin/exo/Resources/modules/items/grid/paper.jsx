@@ -269,11 +269,15 @@ class GridPaper extends Component {
     const cellSolution = this.props.item.solutions.find(solution => solution.cellId === oneAnswerCellOfTheCol.id)
     cellSolutionScore = cellSolution.answers[0].score
 
+    // for exepcted answer tab we do not need to go further
     if (forExpected) {
       return cellSolutionScore
     }
 
     const colAnswers = this.props.answer.filter(a => undefined !== answerCellsForCol.find(cell => cell.id === a.cellId))
+    if (0 === colAnswers.length) {
+      return this.props.item.penalty > 0 ? cellSolutionScore - this.props.item.penalty : 0
+    }
     // if penalty is set to 0 and one wrong answer then my score for the col is 0
     if(this.props.item.penalty === 0) {
       const allGood = colAnswers.every(a => {
@@ -308,11 +312,15 @@ class GridPaper extends Component {
     const cellSolution = this.props.item.solutions.find(solution => solution.cellId === oneAnswerCellOfTheRow.id)
     cellSolutionScore = cellSolution.answers[0].score
 
+    // for exepcted answer tab we do not need to go further
     if (forExpected) {
       return cellSolutionScore
     }
 
     const rowAnswers = this.props.answer.filter(a => undefined !== answerCellsForRow.find(cell => cell.id === a.cellId))
+    if (0 === rowAnswers.length) {
+      return this.props.item.penalty > 0 ? cellSolutionScore - this.props.item.penalty : 0
+    }
     // if penalty is set to 0 and one wrong answer then my score for the col is 0
     if(this.props.item.penalty === 0) {
       const allGood = rowAnswers.every(a => {
@@ -345,6 +353,9 @@ class GridPaper extends Component {
     const answerCellsForCol = this.props.item.cells.filter(cell => cell.coordinates[0] === colIndex && cell.input)
     // find answers for the col
     const colAnswers = this.props.answer.filter(a => undefined !== answerCellsForCol.find(cell => cell.id === a.cellId))
+    if (0 === colAnswers.length) {
+      return false
+    }
     const hasError = colAnswers.every(a => {
       const solution = this.props.item.solutions.find(solution => solution.cellId === a.cellId)
       if (undefined === solution.answers.find(answer => answer.expected && answer.caseSensitive ? answer.text === a.text : answer.text.toLowerCase() === a.text.toLowerCase())) {
@@ -362,6 +373,9 @@ class GridPaper extends Component {
     const answerCellsForRow = this.props.item.cells.filter(cell => cell.coordinates[1] === rowIndex && cell.input)
     // find answers for the row
     const rowAnswers = this.props.answer.filter(a => undefined !== answerCellsForRow.find(cell => cell.id === a.cellId))
+    if (0 === rowAnswers.length) {
+      return false
+    }
     const hasError = rowAnswers.every(a => {
       const solution = this.props.item.solutions.find(solution => solution.cellId === a.cellId)
       if (undefined === solution.answers.find(answer => answer.expected && answer.caseSensitive ? answer.text === a.text : answer.text.toLowerCase() === a.text.toLowerCase())) {
@@ -515,7 +529,9 @@ class GridPaper extends Component {
                         {[...Array(this.props.item.cols)].map((x, i) =>
                           <td key={`grid-col-score-col-${i}`} style={{padding: '8px'}}>
                             { utils.atLeastOneSolutionInCol(i, this.props.item.cells, this.props.item.solutions) &&
-                              <SolutionScore score={this.getColumnScore(i, true)}/>
+                              <span className="text-info">
+                                <SolutionScore score={this.getColumnScore(i, true)}/>
+                              </span>
                             }
                           </td>
                         )}
@@ -526,7 +542,9 @@ class GridPaper extends Component {
                         { this.props.item.score.type === SCORE_SUM && this.props.item.sumMode === SUM_ROW &&
                           <td key={`grid-row-score-col-${i}`} style={{padding: '8px', verticalAlign: 'middle'}}>
                             { utils.atLeastOneSolutionInRow(i, this.props.item.cells, this.props.item.solutions) &&
-                              <SolutionScore score={this.getRowScore(i, true)}/>
+                              <span className="text-info">
+                                <SolutionScore score={this.getRowScore(i, true)}/>
+                              </span>
                             }
                           </td>
                         }
