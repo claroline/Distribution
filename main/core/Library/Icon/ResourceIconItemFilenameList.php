@@ -49,13 +49,6 @@ class ResourceIconItemFilenameList
     private $mimeTypes = [];
 
     /**
-     * Array of all shortcut icons in the list by original mimeType.
-     *
-     * @JMS\Groups({"details"})
-     */
-    private $shortcuts = [];
-
-    /**
      * Array of all icons in the list by original mimeType.
      *
      * @JMS\Groups({"details"})
@@ -79,35 +72,32 @@ class ResourceIconItemFilenameList
     public function addIcon(IconItem $icon)
     {
         $mimeType = $icon->getMimeType();
-        if ($icon->getIsShortcut()) {
-            //Check if icon is shortcut, if so put it in shortcuts array
-            $this->shortcuts[$mimeType] = $icon;
+        //Otherwise put it in resourceIcons or fileIcons array and also in allIcons array
+        $this->mimeTypes[] = $mimeType;
+        $this->icons[$mimeType] = $icon;
+        // Check if is resource icon
+        if (strpos($mimeType, 'custom/') !== false) {
+            // For every resoruce, give option for a different icon
+            $filename = str_replace('custom/', '', $mimeType);
+            $this->resourceIcons[$filename] = $this->allIcons[$filename] = new ResourceIconItemFilename(
+                $filename,
+                $icon->getRelativeUrl(),
+                [$mimeType]
+            );
+
+            return;
+        }
+
+        // For all filetypes represented by the same icon, give only one option
+        $filename = pathinfo($icon->getRelativeUrl(), PATHINFO_FILENAME);
+        if (array_key_exists($filename, $this->fileIcons)) {
+            $this->fileIcons[$filename]->addMimeType($mimeType);
         } else {
-            //Otherwise put it in resourceIcons or fileIcons array and also in allIcons array
-            $this->mimeTypes[] = $mimeType;
-            $this->icons[$mimeType] = $icon;
-            // Check if is resource icon
-            if (strpos($mimeType, 'custom/') !== false) {
-                // For every resoruce, give option for a different icon
-                $filename = str_replace('custom/', '', $mimeType);
-                $this->resourceIcons[$filename] = $this->allIcons[$filename] = new ResourceIconItemFilename(
-                    $filename,
-                    $icon->getRelativeUrl(),
-                    [$mimeType]
-                );
-            } else {
-                // For all filetypes represented by the same icon, give only one option
-                $filename = pathinfo($icon->getRelativeUrl(), PATHINFO_FILENAME);
-                if (array_key_exists($filename, $this->fileIcons)) {
-                    $this->fileIcons[$filename]->addMimeType($mimeType);
-                } else {
-                    $this->fileIcons[$filename] = $this->allIcons[$filename] = new ResourceIconItemFilename(
-                        $filename,
-                        $icon->getRelativeUrl(),
-                        [$mimeType]
-                    );
-                }
-            }
+            $this->fileIcons[$filename] = $this->allIcons[$filename] = new ResourceIconItemFilename(
+                $filename,
+                $icon->getRelativeUrl(),
+                [$mimeType]
+            );
         }
     }
 
@@ -141,14 +131,6 @@ class ResourceIconItemFilenameList
     public function getMimeTypes()
     {
         return $this->mimeTypes;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getShortcuts()
-    {
-        return $this->shortcuts;
     }
 
     /**
@@ -201,16 +183,6 @@ class ResourceIconItemFilenameList
         }
 
         return null;
-    }
-
-    /**
-     * @param $mimeType
-     *
-     * @return IconItem | null
-     */
-    public function getShortcutByMimeType($mimeType)
-    {
-        return array_key_exists($mimeType, $this->shortcuts) ? $this->shortcuts[$mimeType] : null;
     }
 
     /**

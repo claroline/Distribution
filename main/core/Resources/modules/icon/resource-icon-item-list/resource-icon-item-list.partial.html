@@ -9,12 +9,12 @@
                 <div class="icon-set-item-img">
                     <img data-ng-src="{{ icon.relative_url|asset }}">
                 </div>
-                <div class="icon-set-item-buttons">
+                <div data-ng-if="vm.iconSet" class="icon-set-item-buttons">
                     <a class="btn btn-xs" data-ng-class="{'btn-primary':icon.default, 'btn-default': !icon.default}" ngf-select="vm.updateIcon(icon, $file)" accept="image/*">
                         <i class="fa fa-upload"></i>
                     </a>
                     <a class="btn btn-xs btn-danger" data-ng-if="!icon.default" data-confirm-modal="{{'remove_icon_set_icon_confirm_message'|trans:{}:'platform'}}" data-confirm-modal-action="vm.removeIcon(icon)">
-                        <i class="fa fa-trash"></i>
+                        <i class="fa fa-remove"></i>
                     </a>
                 </div>
                 <div class="icon-set-item-types">
@@ -36,12 +36,12 @@
                 <div class="icon-set-item-img">
                     <img data-ng-src="{{ icon.relative_url|asset }}">
                 </div>
-                <div class="icon-set-item-buttons">
+                <div data-ng-if="vm.iconSet" class="icon-set-item-buttons">
                     <a class="btn btn-xs" data-ng-class="{'btn-primary':icon.default, 'btn-default': !icon.default}" ngf-select="vm.updateIcon(icon, $file)" accept="image/*">
                         <i class="fa fa-upload"></i>
                     </a>
                     <a class="btn btn-xs btn-danger" data-ng-if="!icon.default" data-confirm-modal="{{'remove_icon_set_icon_confirm_message'|trans:{}:'platform'}}" data-confirm-modal-action="vm.removeIcon(icon)">
-                        <i class="fa fa-trash"></i>
+                        <i class="fa fa-remove"></i>
                     </a>
                 </div>
                 <div class="icon-set-item-name">

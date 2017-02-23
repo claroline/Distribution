@@ -35,6 +35,12 @@ export default class ResourceIconItemListController {
     }, () => {
       this.icons = []
     })
+
+    this._iconItemService.getIconSet().then(iconSet => {
+      this.iconSet = iconSet
+    }, () => {
+      this.iconSet = null
+    })
   }
 }
 ResourceIconItemListController.$inject = ['resourceIconItemService']

@@ -5,6 +5,7 @@ import {} from 'ng-file-upload'
 import {} from 'angular-ui-translation/angular-translation'
 import {} from '../../fos-js-router/module'
 import {} from '../../asset/module'
+import {} from '../../html-truster/module'
 import register from '../../register/register'
 import resourceIconItemList from './resource-icon-item-list.directive'
 import resourceIconItemService from './resource-icon-item-list.service'
@@ -15,6 +16,7 @@ let resourceIconItemListApp =  new register(
     'angular-loading-bar',
     'ngFileUpload',
     'ui.modal',
+    'ui.html-truster',
     'ui.asset',
     'ui.bootstrap',
     'ui.fos-js-router',

@@ -131,10 +131,10 @@ class IconController extends Controller
             $iconSet->setType(IconSetTypeEnum::RESOURCE_ICON_SET);
             if ($isNew) {
                 $this->iconSetManager->createNewResourceIconSet($iconSet, $iconNamesForTypes);
-                $this->addFlash('success', 'icon_set_created_successfully');
+                $this->addFlash('success', 'icon_set_create_success');
             } else {
                 $this->iconSetManager->updateResourceIconSet($iconSet, $iconNamesForTypes);
-                $this->addFlash('success', 'icon_set_updated_successfully');
+                $this->addFlash('success', 'icon_set_update_success');
             }
 
             return $this->redirectToRoute('claro_admin_resource_icon_set_list');
@@ -178,7 +178,7 @@ class IconController extends Controller
                 ->uploadNewResourceIconSetIconByFilename($iconSet, $newIconFile, $filename);
         }
 
-        return new JsonResponse(['deleted' => true, 'relative_url' => $relativeUrl]);
+        return new JsonResponse(['updated' => true, 'relative_url' => $relativeUrl]);
     }
 
     /**

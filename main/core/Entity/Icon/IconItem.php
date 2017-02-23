@@ -61,11 +61,6 @@ class IconItem
     private $relativeUrl;
 
     /**
-     * @ORM\Column(name="is_shortcut", type="boolean")
-     */
-    protected $isShortcut = false;
-
-    /**
      * @var IconSet
      * @ORM\ManyToOne(targetEntity="IconSet", inversedBy="icons", fetch="LAZY")
      * @ORM\JoinColumn(name="icon_set_id", referencedColumnName="id", onDelete="CASCADE")
@@ -212,26 +207,6 @@ class IconItem
     public function setRelativeUrl($relativeUrl)
     {
         $this->relativeUrl = $relativeUrl;
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getIsShortcut()
-    {
-        return $this->isShortcut;
-    }
-
-    /**
-     * @param mixed $isShortcut
-     *
-     * @return $this
-     */
-    public function setIsShortcut($isShortcut)
-    {
-        $this->isShortcut = $isShortcut;
 
         return $this;
     }
