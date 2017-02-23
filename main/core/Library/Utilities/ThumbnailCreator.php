@@ -178,38 +178,14 @@ class ThumbnailCreator
         }
 
         $ds = DIRECTORY_SEPARATOR;
-        if (is_null($stampImg)) {
+        if (is_null($stampImg) || !$this->fs->exists($stampImg)) {
             $stampImg = "{$this->webDir}{$ds}".$this->getDefaultStampRelativeUrl();
         }
-        // Test image extension
-        $extension = (pathinfo($srcImg, PATHINFO_EXTENSION) === 'jpg') ? 'jpeg' : pathinfo($srcImg, PATHINFO_EXTENSION);
-        if ($extension === 'svg') {
-            $im = SVGImage::fromFile($srcImg);
-        } elseif (function_exists($funcname = "imagecreatefrom{$extension}")) {
-            $im = $funcname($srcImg);
-            imagesavealpha($im, true);
-        } else {
-            $exception = new ExtensionNotSupportedException();
-            $exception->setExtension($extension);
-            throw $exception;
-        }
-        // Test stamp extension
-        $stampExtension = (pathinfo($stampImg, PATHINFO_EXTENSION) === 'jpg') ?
-            'jpeg' :
-            pathinfo($stampImg, PATHINFO_EXTENSION);
-        if ($stampExtension === 'svg') {
-            $stamp = SVGImage::fromFile($stampImg);
-            // Turn stamp to png if image is not SVG
-            if ($extension !== 'svg') {
-                $stamp = $stamp->toRasterImage(imagesx($im), imagesy($im));
-            }
-        } elseif (function_exists($stampFuncname = "imagecreatefrom{$stampExtension}")) {
-            $stamp = $stampFuncname($stampImg);
-        } else {
-            $exception = new ExtensionNotSupportedException();
-            $exception->setExtension($stampExtension);
-            throw $exception;
-        }
+        // Get image and its extension
+        list($im, $extension) = $this->getImageAndExtensionFromUrl($srcImg);
+        // Get stamp and its extension
+        list($stamp, $stampExtension) = $this->getImageAndExtensionFromUrl($stampImg);
+
         if (is_null($filename)) {
             $filename = "{$this->ut->generateGuid()}.{$extension}";
         } else {
@@ -246,6 +222,9 @@ class ThumbnailCreator
             }
             $this->fs->dumpFile($dir, $im);
         } else {
+            if ($stampExtension === 'svg') {
+                $stamp = $stamp->toRasterImage(imagesx($im), imagesy($im));
+            }
             imagecopy($im, $stamp, 0, imagesy($im) - imagesy($stamp), 0, 0, imagesx($stamp), imagesy($stamp));
             $funcname = "image{$extension}";
             $funcname($im, $dir);
@@ -261,5 +240,29 @@ class ThumbnailCreator
         $ds = DIRECTORY_SEPARATOR;
 
         return "bundles{$ds}clarolinecore{$ds}images{$ds}resources{$ds}icons{$ds}shortcut-black.png";
+    }
+
+    private function getImageAndExtensionFromUrl($url)
+    {
+        $imageType = exif_imagetype($url);
+        $imageContent = file_get_contents($url);
+        // Check if imagetype is false or if image is svg
+        if (!$imageType) {
+            $extension = pathinfo($url, PATHINFO_EXTENSION);
+            if ($extension === 'svg' || (preg_match('/^<\?xml/', $imageContent) && strpos($imageContent, '<svg') !== false)) {
+                $image = SVGImage::fromFile($url);
+
+                return [$image, 'svg'];
+            }
+            $exception = new ExtensionNotSupportedException();
+            $exception->setExtension($extension);
+
+            throw $exception;
+        }
+        // Let php find about extension as sometimes files has no extension or have a fake extension
+        $extension = str_replace('.', '', image_type_to_extension($imageType));
+        $image = imagecreatefromstring($imageContent);
+
+        return [$image, $extension];
     }
 }

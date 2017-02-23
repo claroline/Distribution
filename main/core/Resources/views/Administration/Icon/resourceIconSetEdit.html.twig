@@ -39,6 +39,7 @@
             <div class="col-md-12">
                 <div class="text-info fa fa-info-circle fa-lg"></div>
                 <div>{{ 'resource_icon_set_info_text'|trans({}, 'platform')|raw }}</div>
+                <div style="margin-top: 10px;"><abbr title="" class="text-info" uib-tooltip-html="{{ '\"' ~ ('resource_icon_set_illustrator_options'|trans({}, 'platform')) ~ '\"'  }}|trust_html"><i class="fa fa-lightbulb-o fa-lg"></i> {{ 'resource_icon_set_illustrator_help'|trans({}, 'platform')  }}</abbr></div>
             </div>
         </div>
         <form role="form" class="form-horizontal" action="{{path('claro_admin_resource_icon_set_update', {'id' : iconSet.id})}}" method="post" {{ form_enctype(form) }} id="form_settings" enctype='multipart/form-data'>
@@ -57,6 +58,7 @@
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('packages/bootstrap-additions/dist/modules/callout.min.css') }}" screen="media"/>
+    <link rel="stylesheet" href="{{ asset('packages/angular-loading-bar/build/loading-bar.min.css') }}" screen="media"/>
     {% stylesheets
     debug=false
     filter='less, cssmin'

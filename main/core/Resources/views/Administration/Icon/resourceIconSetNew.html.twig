@@ -39,6 +39,7 @@
             <div class="col-md-12">
                 <div class="text-info fa fa-info-circle fa-lg"></div>
                 <div>{{ 'resource_icon_set_info_text'|trans({}, 'platform')|raw }}</div>
+                <div style="margin-top: 10px;"><abbr title="" class="text-info" uib-tooltip-html="{{ '\"' ~ ('resource_icon_set_illustrator_options'|trans({}, 'platform')) ~ '\"'  }}|trust_html"><i class="fa fa-lightbulb-o fa-lg"></i> {{ 'resource_icon_set_illustrator_help'|trans({}, 'platform')  }}</abbr></div>
             </div>
         </div>
         <form role="form" class="form-horizontal" action="{{path('claro_admin_resource_icon_set_create')}}" method="post" {{ form_enctype(form) }} id="form_settings" enctype='multipart/form-data'>
@@ -50,51 +51,14 @@
                 </div>
             </div>
         </form>
-        <div class="row callout no-padding">
-            <h3 class="col-md-12">{{ 'resources'|trans({}, 'platform') }}</h3>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                {% for iconName in iconNamesForTypes.resourceIcons %}
-                    <div class="col-md-3 icon-set-item-thumbnail">
-                        <div class="icon-set-item-img">
-                            <img src="{{ asset(iconName.relativeUrl) }}">
-                        </div>
-                        <div class="icon-set-item-types">
-                            <strong>{{ iconName.filename|trans({}, 'resource') }}</strong>
-                        </div>
-                        <div class="icon-set-item-name">
-                            <strong>{{ 'filename'|trans({}, 'platform') }}:</strong>
-                            {{ iconName.filename }}<span class="text-muted">.*</span>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="row callout no-padding">
-            <h3 class="col-md-12">{{ 'files'|trans({}, 'platform') }}</h3>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                {% for iconName in iconNamesForTypes.fileIcons %}
-                    <div class="col-md-3 icon-set-item-thumbnail">
-                        <div class="icon-set-item-img">
-                            <img src="{{ asset(iconName.relativeUrl) }}">
-                        </div>
-                        <div class="icon-set-item-name">
-                            <strong>{{ 'filename'|trans({}, 'platform') }}:</strong>
-                            {{ iconName.filename }}<span class="text-muted">.*</span>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
+        <resource-icon-item-list></resource-icon-item-list>
     </div>
 {% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('packages/bootstrap-additions/dist/modules/callout.min.css') }}" screen="media"/>
+    <link rel="stylesheet" href="{{ asset('packages/angular-loading-bar/build/loading-bar.min.css') }}" screen="media"/>
     {% stylesheets
     debug=false
     filter='less, cssmin'
@@ -107,4 +71,9 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script type="text/javascript">
+        window.iconSet = null;
+        window.iconItemsByTypes = {{ iconNamesForTypes|json_serialize(['Default'])|raw }};
+    </script>
+    <script type="text/javascript" src="{{ hotAsset('dist/claroline-distribution-main-core-resource-icon-item-list.js') }}"></script>
 {% endblock%}

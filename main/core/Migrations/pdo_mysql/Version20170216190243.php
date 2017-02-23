@@ -8,9 +8,9 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution.
  *
- * Generation date: 2017/01/16 07:02:50
+ * Generation date: 2017/02/16 19:02:50
  */
-class Version20170116190243 extends AbstractMigration
+class Version20170216190243 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -37,7 +37,6 @@ class Version20170116190243 extends AbstractMigration
                 class VARCHAR(255) DEFAULT NULL, 
                 mime_type VARCHAR(255) DEFAULT NULL,
                 relative_url VARCHAR(255) NOT NULL,
-                is_shortcut TINYINT(1) NOT NULL,
                 resource_icon_id INT DEFAULT NULL,
                 INDEX IDX_D727F16B91930DA (resource_icon_id),
                 INDEX IDX_D727F16B48D16F3B (icon_set_id), 
@@ -61,14 +60,9 @@ class Version20170116190243 extends AbstractMigration
             VALUES (1, 'Claroline', 'claroline', TRUE, TRUE, 'resource_icon_set')
         ");
         $this->addSql("
-            INSERT INTO claro_icon_item (`icon_set_id`, `mime_type`, `relative_url`, `is_shortcut`, `resource_icon_id`)
-            SELECT 1, `mimeType`, `relative_url`, `is_shortcut`, `id` FROM claro_resource_icon WHERE
+            INSERT INTO claro_icon_item (`icon_set_id`, `mime_type`, `relative_url`, `resource_icon_id`)
+            SELECT 1, `mimeType`, `relative_url`, `id` FROM claro_resource_icon WHERE
             mimeType <> 'custom' AND mimeType IS NOT NULL AND is_shortcut = FALSE
-        ");
-        $this->addSql("
-            INSERT INTO claro_icon_item (`icon_set_id`, `mime_type`, `relative_url`, `is_shortcut`, `resource_icon_id`)
-            SELECT 1, `mimeType`, `relative_url`, `is_shortcut`, `id` FROM claro_resource_icon WHERE
-            id IN (SELECT shortcut_id FROM claro_resource_icon WHERE mimeType <> 'custom' AND mimeType IS NOT NULL AND is_shortcut = FALSE)
         ");
     }
 

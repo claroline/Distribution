@@ -387,9 +387,9 @@ class DatabaseWriter
 
         $resourceIcon->setShortcut(false);
         $this->em->persist($resourceIcon);
-        $shortcutIcon = $this->im->createShortcutIcon($resourceIcon);
+        $this->im->createShortcutIcon($resourceIcon);
         // Also add the new resource type icon to default resource icon set
-        $this->iconSetManager->addOrUpdateIconItemToDefaultResourceIconSet($resourceIcon, $shortcutIcon);
+        $this->iconSetManager->addOrUpdateIconItemToDefaultResourceIconSet($resourceIcon);
     }
 
     /**
@@ -402,26 +402,33 @@ class DatabaseWriter
         $resourceIcon = $this->em
             ->getRepository('ClarolineCoreBundle:Resource\ResourceIcon')
             ->findOneByMimeType('custom/'.$resourceType->getName());
-
+        $isNew = false;
         if (null === $resourceIcon) {
             $resourceIcon = new ResourceIcon();
             $resourceIcon->setMimeType('custom/'.$resourceType->getName());
+            $isNew = true;
         }
 
         if (isset($resource['icon'])) {
-            $resourceIcon->setRelativeUrl("bundles/{$pluginBundle->getAssetsFolder()}/images/icons/{$resource['icon']}");
+            $newRelativeUrl = "bundles/{$pluginBundle->getAssetsFolder()}/images/icons/{$resource['icon']}";
         } else {
             $defaultIcon = $this->em
                 ->getRepository('ClarolineCoreBundle:Resource\ResourceIcon')
                 ->findOneByMimeType('custom/default');
-            $resourceIcon->setRelativeUrl($defaultIcon->getRelativeUrl());
+            $newRelativeUrl = $defaultIcon->getRelativeUrl();
         }
-
-        $resourceIcon->setShortcut(false);
-        $this->em->persist($resourceIcon);
-        $shortcutIcon = $this->im->createShortcutIcon($resourceIcon);
+        // If icon is new, create it and persist it to db
+        if ($isNew) {
+            $resourceIcon->setRelativeUrl($newRelativeUrl);
+            $resourceIcon->setShortcut(false);
+            $this->em->persist($resourceIcon);
+            $this->im->createShortcutIcon($resourceIcon);
+        }
         // Also add/update the resource type icon to default resource icon set
-        $this->iconSetManager->addOrUpdateIconItemToDefaultResourceIconSet($resourceIcon, $shortcutIcon);
+        $this->iconSetManager->addOrUpdateIconItemToDefaultResourceIconSet(
+            $resourceIcon,
+            $newRelativeUrl
+        );
     }
 
     /**

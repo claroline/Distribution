@@ -23,8 +23,7 @@ class IconItemRepository extends EntityRepository
     public function findIconsForResourceIconSetByMimeTypes(
         IconSet $iconSet = null,
         $excludeMimeTypes = null,
-        $includeMimeTypes = null,
-        $includeShortcuts = true
+        $includeMimeTypes = null
     ) {
         $qb = $this->createQueryBuilder('icon')->select('icon');
         if (is_null($iconSet)) {
@@ -38,9 +37,6 @@ class IconItemRepository extends EntityRepository
             $qb->andWhere($qb->expr()->notIn('icon.mimeType', $excludeMimeTypes));
         } elseif (!empty($includeMimeTypes)) {
             $qb->andWhere($qb->expr()->in('icon.mimeType', $includeMimeTypes));
-        }
-        if (!$includeShortcuts) {
-            $qb->andWhere('icon.isShortcut = :shortcut')->setParameter('shortcut', false);
         }
 
         return $qb->getQuery()->getResult();
@@ -70,10 +66,12 @@ class IconItemRepository extends EntityRepository
         }
 
         if (!empty($mimeTypes)) {
+            $qb = $this->createQueryBuilder('i');
+            $expr = $qb->expr()->in('i.mimeType', $mimeTypes);
+
             $nativeQuery .= '
-                AND ii.mime_type IN (:mimeTypes)
+                AND ii.mime_type IN ('.implode(', ', $expr->getArguments()).')
             ';
-            $params['mimeTypes'] = $mimeTypes;
         }
 
         return $this->getEntityManager()->getConnection()->executeUpdate(
@@ -88,10 +86,8 @@ class IconItemRepository extends EntityRepository
             ->update()
             ->set('icon.resourceIcon', ':icon')
             ->where('icon.mimeType = :mimeType')
-            ->andWhere('icon.isShortcut = :isShortcut')
             ->setParameter('icon', $icon)
-            ->setParameter('mimeType', $icon->getMimeType())
-            ->setParameter('isShortcut', $icon->isShortcut());
+            ->setParameter('mimeType', $icon->getMimeType());
         $qb->andWhere($qb->expr()->isNotNull('icon.resourceIcon'));
 
         return $qb->getQuery()->getResult();

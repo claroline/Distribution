@@ -60,6 +60,14 @@ export default class ResourceIconItemService {
 
   _initializeIcons(iconItemsByType)
   {
+    // In case of new set
+    if (this.iconSet === null || _.isUndefined(iconItemsByType.set_icons) || _.isUndefined(iconItemsByType.default_icons)) {
+      let resourceIcons = _.map(_.cloneDeep(iconItemsByType.resource_icons), icon => _.extend(icon, {default: false}))
+      let fileIcons = _.map(_.cloneDeep(iconItemsByType.file_icons), icon => _.extend(icon, {default: false}))
+
+      return {'resources': resourceIcons, 'files': fileIcons}
+    }
+    // In case of existing set
     let resourceIcons = _.map(_.cloneDeep(iconItemsByType.set_icons.resource_icons), icon => _.extend(icon, {default: false}))
       .concat(_.map(_.cloneDeep(iconItemsByType.default_icons.resource_icons), icon => _.extend(icon, {default:true})))
     let fileIcons = _.map(_.cloneDeep(iconItemsByType.set_icons.file_icons), icon => _.extend(icon, {default: false}))

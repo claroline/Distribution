@@ -42,6 +42,8 @@ class IconSetManager
     private $iconItemRepo;
     /** @var string */
     private $iconSetsDir;
+    /** @var string */
+    private $webDir;
     /** @var FileSystem */
     private $fs;
     /** @var ThumbnailCreator */
@@ -69,7 +71,8 @@ class IconSetManager
         $this->om = $om;
         $this->iconSetRepo = $om->getRepository('ClarolineCoreBundle:Icon\IconSet');
         $this->iconItemRepo = $om->getRepository('ClarolineCoreBundle:Icon\IconItem');
-        $this->iconSetsDir = $rootDir.'/../web/icon_sets';
+        $this->webDir = $rootDir.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'web';
+        $this->iconSetsDir = $this->webDir.DIRECTORY_SEPARATOR.'icon_sets';
         $this->createIconSetsDirIfNotExists();
     }
 
@@ -228,34 +231,26 @@ class IconSetManager
 
     /**
      * @param ResourceIcon $icon
-     * @param ResourceIcon $shortcutIcon
+     * @param null         $newRelativeUrl
      */
-    public function addOrUpdateIconItemToDefaultResourceIconSet(ResourceIcon $icon, ResourceIcon $shortcutIcon)
+    public function addOrUpdateIconItemToDefaultResourceIconSet(ResourceIcon $icon, $newRelativeUrl = null)
     {
         $resourceIconSet = $this->getDefaultResourceIconSet();
         $existingIcons = $this->getIconItemsByIconSetAndMimeType($resourceIconSet, $icon->getMimeType());
+        $newRelativeUrl = empty($newRelativeUrl) ? $icon->getRelativeUrl() : $newRelativeUrl;
         if (empty($existingIcons) || count($existingIcons) < 1) {
-            $this->createIconItemWithShortcutForResourceIconSet(
+            $this->createIconItemForResourceIconSet(
                 $resourceIconSet,
-                $icon->getRelativeUrl(),
-                $shortcutIcon->getRelativeUrl(),
-                $icon,
-                $shortcutIcon
+                $newRelativeUrl,
+                $icon
             );
         } else {
             foreach ($existingIcons as $existingIcon) {
-                if ($existingIcon->getIsShortcut()) {
-                    $existingIcon->setRelativeUrl($shortcutIcon->getRelativeUrl());
-                    $existingIcon->setResourceIcon($shortcutIcon);
-                } else {
-                    $existingIcon->setRelativeUrl($icon->getRelativeUrl());
-                    $existingIcon->setResourceIcon($icon);
-                }
-                $this->om->persist($existingIcon);
+                $existingIcon->setResourceIcon($icon);
+                $this->updateIconItemForResourceIconSet($resourceIconSet, $newRelativeUrl, $existingIcon);
             }
             // Update resource icons for all other existing icon sets
             $this->iconItemRepo->updateResourceIconForAllSets($icon);
-            $this->iconItemRepo->updateResourceIconForAllSets($shortcutIcon);
         }
     }
 
@@ -297,6 +292,8 @@ class IconSetManager
         }
         // Then update with new set icons
         $this->iconItemRepo->updateResourceIconsByIconSetIcons($newActiveSet);
+        // Regenerate shortcut icon for all resource icons in database
+        $this->regenerateShortcutForAllResourceIcons($newActiveSet->getResourceStampIcon());
         $activeSet->setActive(false);
         $newActiveSet->setActive(true);
         $this->om->persist($activeSet);
@@ -325,17 +322,21 @@ class IconSetManager
         if ($iconSet->isDefault()) {
             throw new BadRequestHttpException('error_cannot_delete_default_icon_set_icon');
         }
-        $iconSetDir = $this->iconSetsDir.DIRECTORY_SEPARATOR.$iconSet->getCname();
-        $iconNamesForTypes = $this->getResourceIconSetIconNamesForMimeTypes($iconSet->getId());
         // On shortcut stamp remove, then delete it from icon set and regenerate shortcut thumbnails for all the
         // icons on the set using default icon
         if ($filename === 'shortcut') {
             $this->fs->remove($this->getAbsolutePathForResourceIcon($iconSet->getResourceStampIcon()));
             $iconSet->setResourceStampIcon(null);
-            $this->regenerateShortcutForIcons($iconNamesForTypes, $iconSetDir, null);
+            // If icon set is active, regenerate shortcut for all resource icons
+            if ($iconSet->isActive()) {
+                $this->regenerateShortcutForAllResourceIcons(null);
+            }
+            $this->om->persist($iconSet);
+            $this->om->flush();
 
             return $this->thumbnailCreator->getDefaultStampRelativeUrl();
         }
+        $iconNamesForTypes = $this->getResourceIconSetIconNamesForMimeTypes($iconSet->getId());
         // For all the rest icons, remove them from set and restore defaults if iconset is active
         $newIconRelativeUrl = null;
         $iconItemFilename = $iconNamesForTypes->getItemByKey($filename);
@@ -350,28 +351,23 @@ class IconSetManager
         //Delete icons from icon set in database
         foreach ($mimeTypes as $mimeType) {
             $icon = $iconNamesForTypes->getIconByMimeType($mimeType);
-            $shortcutIcon = $iconNamesForTypes->getShortcutByMimeType($mimeType);
             $this->om->remove($icon);
-            $this->om->remove($shortcutIcon);
         }
-        $this->om->flush();
         //If iconset is active icon set, restore resource icons to default values
         if ($iconSet->isActive()) {
             // Restore default icons for these mimetypes
             $this->iconItemRepo->updateResourceIconsByIconSetIcons(null, $mimeTypes);
+            $this->regenerateShortcutForResourceIconsByMimeTypes($mimeTypes, $iconSet->getResourceStampIcon());
         }
+        $this->om->flush();
         // Remove both icon and shortcut icon from icon set folder
-        $this->fs->remove([
-            $this->getAbsolutePathForResourceIcon($iconItemFilename->getRelativeUrl()),
-            $this->getAbsolutePathForResourceIcon(
-                $this->getShortcutIconPathFromIconItemPath($iconItemFilename->getRelativeUrl())
-            ),
-        ]);
+        $this->fs->remove($this->getAbsolutePathForResourceIcon($iconItemFilename->getRelativeUrl()));
         // Default icon relative path
-        $defaultIcon = $this->iconItemRepo
-            ->findIconsForResourceIconSetByMimeTypes(null, null, [$mimeTypes[0]], false)[0];
-        if (!empty($defaultIcon)) {
-            $newIconRelativeUrl = $defaultIcon->getRelativeUrl();
+        $defaultIcons = $this->iconItemRepo
+            ->findIconsForResourceIconSetByMimeTypes(null, null, [$mimeTypes[0]], false);
+
+        if (!empty($defaultIcons)) {
+            $newIconRelativeUrl = $defaultIcons[0]->getRelativeUrl();
         }
 
         return $newIconRelativeUrl;
@@ -396,18 +392,14 @@ class IconSetManager
             $relativeStampIcon = $this->getRelativePathForResourceIcon($newIconPath);
             $iconSet->setResourceStampIcon($relativeStampIcon);
             $this->om->persist($iconSet);
-            $this->regenerateShortcutForIcons($iconItemFilenameList, $iconSetDir, $relativeStampIcon);
+            // If icon set is active, regenerate shortcut for all resource icons
+            if ($iconSet->isActive()) {
+                $this->regenerateShortcutForAllResourceIcons($relativeStampIcon);
+            }
             $this->om->flush();
 
             return $relativeStampIcon;
         }
-        $newShortcutIconPath = $this->thumbnailCreator->shortcutThumbnail(
-            $newIconPath,
-            null,
-            $this->getAbsolutePathForResourceIcon($iconSet->getResourceStampIcon()),
-            $iconSetDir,
-            $this->getShortcutIconFilenameFromIconItemFilename($newIconFilename)
-        );
         // Test if icon already exists in set
         $iconItemFilename = $iconItemFilenameList->getItemByKey($filename);
         $alreadyInSet = true;
@@ -423,24 +415,18 @@ class IconSetManager
         foreach ($iconItemFilename->getMimeTypes() as $type) {
             // If icon don't exist, create it, otherwise update it's url in case of extension change
             $icon = $iconItemFilenameList->getIconByMimeType($type);
-            $shortcutIcon = $iconItemFilenameList->getShortcutByMimeType($type);
             if (!$alreadyInSet) {
                 $resourceIcon = $icon->getResourceIcon();
-                $shortcutResourceIcon = $shortcutIcon->getResourceIcon();
-                $this->createIconItemWithShortcutForResourceIconSet(
+                $this->createIconItemForResourceIconSet(
                     $iconSet,
                     $this->getRelativePathForResourceIcon($newIconPath),
-                    $this->getRelativePathForResourceIcon($newShortcutIconPath),
-                    $resourceIcon,
-                    $shortcutResourceIcon
+                    $resourceIcon
                 );
             } else {
-                $this->updateIconItemWithShortcutForResourceIconSet(
+                $this->updateIconItemForResourceIconSet(
                     $iconSet,
                     $this->getRelativePathForResourceIcon($newIconPath),
-                    $this->getRelativePathForResourceIcon($newShortcutIconPath),
-                    $icon,
-                    $shortcutIcon
+                    $icon
                 );
             }
         }
@@ -492,8 +478,10 @@ class IconSetManager
      *
      * @return array
      */
-    private function extractResourceIconSetZipAndReturnNewIconItems(IconSet $iconSet, ResourceIconSetIconItemList $iconSetIconItemList)
-    {
+    private function extractResourceIconSetZipAndReturnNewIconItems(
+        IconSet $iconSet,
+        ResourceIconSetIconItemList $iconSetIconItemList
+    ) {
         $ds = DIRECTORY_SEPARATOR;
         $zipFile = $iconSet->getIconsZipfile();
         $cname = $iconSet->getCname();
@@ -506,12 +494,8 @@ class IconSetManager
                 if (!empty($resourceStamp)) {
                     $iconSet->setResourceStampIcon($resourceStamp);
                     $this->om->persist($iconSet);
-                    if (!$iconSetIconItemList->getSetIcons()->isEmpty()) {
-                        $this->regenerateShortcutForIcons(
-                            $iconSetIconItemList->getSetIcons(),
-                            $iconSetDir,
-                            $resourceStamp
-                        );
+                    if ($iconSet->isActive()) {
+                        $this->regenerateShortcutForAllResourceIcons($resourceStamp);
                     }
                 }
                 //List filenames and extract all files without subfolders
@@ -529,36 +513,22 @@ class IconSetManager
                         $iconPath = $iconSetDir.$ds.$fileinfo['basename'];
                         $this->fs->remove($iconSetDir.DIRECTORY_SEPARATOR.$fileinfo['basename']);
                         $zipArchive->extractTo($iconSetDir, [$file]);
-                        $shortcutIconName = $this->getShortcutIconFilenameFromIconItemFilename($fileinfo['basename']);
-                        $shortcutIconPath = $this->thumbnailCreator->shortcutThumbnail(
-                            $iconPath,
-                            null,
-                            $this->getAbsolutePathForResourceIcon($iconSet->getResourceStampIcon()),
-                            $iconSetDir,
-                            $shortcutIconName
-                        );
 
                         foreach ($iconNameTypes->getMimeTypes() as $type) {
                             // If icon don't exist, create it, otherwise update it's url in case of extension change
                             $icon = $iconItemFilenameList->getIconByMimeType($type);
-                            $shortcutIcon = $iconItemFilenameList->getShortcutByMimeType($type);
                             if (!$alreadyInSet) {
                                 $resourceIcon = $icon->getResourceIcon();
-                                $shortcutResourceIcon = $shortcutIcon->getResourceIcon();
-                                $this->createIconItemWithShortcutForResourceIconSet(
+                                $this->createIconItemForResourceIconSet(
                                     $iconSet,
                                     $this->getRelativePathForResourceIcon($iconPath),
-                                    $this->getRelativePathForResourceIcon($shortcutIconPath),
-                                    $resourceIcon,
-                                    $shortcutResourceIcon
+                                    $resourceIcon
                                 );
                             } else {
-                                $this->updateIconItemWithShortcutForResourceIconSet(
+                                $this->updateIconItemForResourceIconSet(
                                     $iconSet,
                                     $this->getRelativePathForResourceIcon($iconPath),
-                                    $this->getRelativePathForResourceIcon($shortcutIconPath),
-                                    $icon,
-                                    $shortcutIcon
+                                    $icon
                                 );
                             }
                         }
@@ -579,8 +549,9 @@ class IconSetManager
         if (empty($absolutePath)) {
             return null;
         }
+        $pathInfo = pathinfo($absolutePath);
 
-        return str_replace($this->iconSetsDir, 'icon_sets', $absolutePath);
+        return $this->fs->makePathRelative($pathInfo['dirname'], $this->webDir).$pathInfo['basename'];
     }
 
     private function getAbsolutePathForResourceIcon($relativePath)
@@ -589,40 +560,20 @@ class IconSetManager
             return null;
         }
 
-        return str_replace('icon_sets', $this->iconSetsDir, $relativePath);
-    }
-
-    private function getShortcutIconPathFromIconItemPath($iconItemPath)
-    {
-        $fileinfo = pathinfo($iconItemPath);
-        $ds = DIRECTORY_SEPARATOR;
-        $dirPath = !empty($fileinfo['dirname']) ? $fileinfo['dirname'].$ds : '';
-
-        return $dirPath.$fileinfo['filename'].'_shortcut_icon.'.$fileinfo['extension'];
-    }
-
-    private function getShortcutIconFilenameFromIconItemFilename($iconItemFilename)
-    {
-        $fileinfo = pathinfo($iconItemFilename);
-
-        return $fileinfo['filename'].'_shortcut_icon';
+        return $this->webDir.DIRECTORY_SEPARATOR.$relativePath;
     }
 
     /**
      * @param IconSet $iconSet
      * @param $iconPath
-     * @param $shortcutIconPath
      * @param ResourceIcon $icon
-     * @param ResourceIcon $shortcutIcon
      *
      * @return array
      */
-    private function createIconItemWithShortcutForResourceIconSet(
+    private function createIconItemForResourceIconSet(
         IconSet $iconSet,
         $iconPath,
-        $shortcutIconPath,
-        ResourceIcon $icon,
-        ResourceIcon $shortcutIcon
+        ResourceIcon $icon
     ) {
         $iconItem = new IconItem(
             $iconSet,
@@ -633,50 +584,32 @@ class IconSetManager
             false,
             $icon
         );
-        $shortcutIconItem = new IconItem(
-            $iconSet,
-            $shortcutIconPath,
-            null,
-            $shortcutIcon->getMimeType(),
-            null,
-            true,
-            $shortcutIcon
-        );
+
         $this->om->persist($iconItem);
-        $this->om->persist($shortcutIconItem);
         if ($iconSet->isActive() && !$iconSet->isDefault()) {
             $icon->setRelativeUrl($iconPath);
-            $shortcutIcon->setRelativeUrl($shortcutIconPath);
             $this->om->persist($icon);
-            $this->om->persist($shortcutIcon);
+            $this->regenerateShortcutForResourceIcon($icon, $iconSet->getResourceStampIcon());
         }
     }
 
     /**
      * @param IconSet $iconSet
      * @param $iconPath
-     * @param $shortcutIconPath
      * @param IconItem $icon
-     * @param IconItem $shortcutIcon
      */
-    private function updateIconItemWithShortcutForResourceIconSet(
+    private function updateIconItemForResourceIconSet(
         IconSet $iconSet,
         $iconPath,
-        $shortcutIconPath,
-        IconItem $icon,
-        IconItem $shortcutIcon
+        IconItem $icon
     ) {
         $icon->setRelativeUrl($iconPath);
-        $shortcutIcon->setRelativeUrl($shortcutIconPath);
         $this->om->persist($icon);
-        $this->om->persist($shortcutIcon);
         if ($iconSet->isActive()) {
             $resourceIcon = $icon->getResourceIcon();
-            $resourceShortcutIcon = $shortcutIcon->getResourceIcon();
             $resourceIcon->setRelativeUrl($iconPath);
-            $resourceShortcutIcon->setRelativeUrl($shortcutIconPath);
             $this->om->persist($resourceIcon);
-            $this->om->persist($resourceShortcutIcon);
+            $this->regenerateShortcutForResourceIcon($resourceIcon, $iconSet->getResourceStampIcon());
         }
     }
 
@@ -696,19 +629,58 @@ class IconSetManager
         return null;
     }
 
-    private function regenerateShortcutForIcons(ResourceIconItemFilenameList $icons, $iconSetDir, $resourceStampIcon)
+    /**
+     * @param $stampRelativePath
+     */
+    private function regenerateShortcutForAllResourceIcons($stampRelativePath)
     {
-        foreach ($icons->getAllIcons() as $listIcon) {
-            $iconPath = $listIcon->getRelativeUrl();
-            $fileinfo = pathinfo($iconPath);
-            $shortcutIconName = $this->getShortcutIconFilenameFromIconItemFilename($fileinfo['basename']);
-            $this->thumbnailCreator->shortcutThumbnail(
-                $iconSetDir.DIRECTORY_SEPARATOR.$fileinfo['basename'],
+        $resourceIconRepo = $this->om->getRepository('ClarolineCoreBundle:Resource\ResourceIcon');
+        $icons = $resourceIconRepo->findBy(['isShortcut' => false]);
+        $this->regenerateShortcutForResourceIcons($icons, $stampRelativePath);
+    }
+
+    /**
+     * @param $mimeTypes
+     * @param $stampRelativePath
+     */
+    private function regenerateShortcutForResourceIconsByMimeTypes($mimeTypes, $stampRelativePath)
+    {
+        $resourceIconRepo = $this->om->getRepository('ClarolineCoreBundle:Resource\ResourceIcon');
+        $icons = $resourceIconRepo->findByMimeTypes($mimeTypes, false);
+        $this->regenerateShortcutForResourceIcons($icons, $stampRelativePath);
+    }
+
+    /**
+     * @param $icons
+     * @param $stampRelativePath
+     */
+    private function regenerateShortcutForResourceIcons($icons, $stampRelativePath)
+    {
+        foreach ($icons as $icon) {
+            $this->regenerateShortcutForResourceIcon($icon, $stampRelativePath);
+        }
+    }
+
+    /**
+     * @param ResourceIcon $icon
+     * @param $stampRelativePath
+     *
+     * @throws \Claroline\CoreBundle\Library\Utilities\ExtensionNotSupportedException
+     * @throws \Claroline\CoreBundle\Library\Utilities\UnloadedExtensionException
+     */
+    private function regenerateShortcutForResourceIcon(ResourceIcon $icon, $stampRelativePath)
+    {
+        $shortcutIcon = $icon->getShortcutIcon();
+        $iconAbsoluteUrl = $this->getAbsolutePathForResourceIcon($icon->getRelativeUrl());
+        if (!empty($shortcutIcon) && $this->fs->exists($iconAbsoluteUrl)) {
+            $shortcutFile = $this->thumbnailCreator->shortcutThumbnail(
+                $iconAbsoluteUrl,
                 null,
-                $this->getAbsolutePathForResourceIcon($resourceStampIcon),
-                $iconSetDir,
-                $shortcutIconName
+                $this->getAbsolutePathForResourceIcon($stampRelativePath)
             );
+            $this->fs->remove($this->webDir.$shortcutIcon->getRelativeUrl());
+            $shortcutIcon->setRelativeUrl($this->getRelativePathForResourceIcon($shortcutFile));
+            $this->om->persist($shortcutIcon);
         }
     }
 }

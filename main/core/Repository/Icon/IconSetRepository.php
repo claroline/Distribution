@@ -13,8 +13,20 @@
 
 namespace Claroline\CoreBundle\Repository\Icon;
 
+use Claroline\CoreBundle\Entity\Icon\IconSetTypeEnum;
 use Doctrine\ORM\EntityRepository;
 
 class IconSetRepository extends EntityRepository
 {
+    public function findActiveRepositoryResourceStampIcon()
+    {
+        $qb = $this->createQueryBuilder('iconset')
+            ->select('iconset.resourceStampIcon AS stampIcon')
+            ->where('iconset.active = :active')
+            ->andWhere('iconset.type = :type')
+            ->setParameter('active', true)
+            ->setParameter('type', IconSetTypeEnum::RESOURCE_ICON_SET);
+
+        return $qb->getQuery()->getSingleScalarResult()['stampIcon'];
+    }
 }
