@@ -94,9 +94,9 @@ class GridFeedback extends Component {
       const solution = this.props.item.solutions.find(solution => solution.cellId === cell.id)
       // also depends on score or expected depending on score mode
       if(this.props.item.score.type === SCORE_SUM && this.props.item.sumMode === SUM_CELL) {
-        return undefined !== solution.answers.find(answer => answer.text === text && answer.score > 0)
+        return undefined !== solution.answers.find(answer => answer.caseSensitive ? answer.text === text : answer.text.toLowerCase() === text.toLowerCase() && answer.score > 0)
       } else {
-        return undefined !== solution.answers.find(answer => answer.text === text && answer.expected)
+        return undefined !== solution.answers.find(answer => answer.caseSensitive ? answer.text === text : answer.text.toLowerCase() === text.toLowerCase() && answer.expected)
       }
     }
   }
@@ -109,7 +109,7 @@ class GridFeedback extends Component {
     const colAnswers = this.props.answer.filter(a => undefined !== answerCellsForCol.find(cell => cell.id === a.cellId))
     return colAnswers.every(a => {
       const solution = this.props.item.solutions.find(solution => solution.cellId === a.cellId)
-      if (undefined === solution.answers.find(answer => answer.expected && answer.text === a.text)) {
+      if (undefined === solution.answers.find(answer => answer.expected && answer.caseSensitive ? answer.text === a.text : answer.text.toLowerCase() === a.text.toLowerCase())) {
         return false
       }
     })
@@ -121,7 +121,7 @@ class GridFeedback extends Component {
     const rowAnswers = this.props.answer.filter(a => undefined !== answerCellsForRow.find(cell => cell.id === a.cellId))
     return rowAnswers.every(a => {
       const solution = this.props.item.solutions.find(solution => solution.cellId === a.cellId)
-      if (undefined === solution.answers.find(answer => answer.expected && answer.text === a.text)) {
+      if (undefined === solution.answers.find(answer => answer.expected && answer.caseSensitive ? answer.text === a.text : answer.text.toLowerCase() === a.text.toLowerCase())) {
         return false
       }
     })
@@ -131,7 +131,7 @@ class GridFeedback extends Component {
     let noError = true
     this.props.answer.every(a => {
       const solution = this.props.item.solutions.find(solution => solution.cellId === a.cellId)
-      if (undefined === solution.answers.find(answer => answer.expected && answer.text === a.text)) {
+      if (undefined === solution.answers.find(answer => answer.expected && answer.caseSensitive ? answer.text === a.text : answer.text.toLowerCase() === a.text.toLowerCase())) {
         noError = false
         return false
       }

@@ -253,9 +253,9 @@ class GridPaper extends Component {
       const solution = this.props.item.solutions.find(solution => solution.cellId === cell.id)
       // also depends on score or expected depending on score mode
       if(this.props.item.score.type === SCORE_SUM && this.props.item.sumMode === SUM_CELL) {
-        return undefined !== solution.answers.find(answer => answer.text === text && answer.score > 0)
+        return undefined !== solution.answers.find(answer => answer.caseSensitive ? answer.text === text : answer.text.toLowerCase() === text.toLowerCase() && answer.score > 0)
       } else {
-        return undefined !== solution.answers.find(answer => answer.text === text && answer.expected)
+        return undefined !== solution.answers.find(answer => answer.caseSensitive ? answer.text === text : answer.text.toLowerCase() === text.toLowerCase() && answer.expected)
       }
     }
   }
@@ -282,7 +282,7 @@ class GridPaper extends Component {
     if(this.props.item.penalty === 0) {
       const allGood = colAnswers.every(a => {
         const solution = this.props.item.solutions.find(solution => solution.cellId === a.cellId)
-        if (undefined === solution.answers.find(answer => answer.expected && answer.text === a.text)) {
+        if (undefined === solution.answers.find(answer => answer.expected && answer.caseSensitive ? answer.text === a.text : answer.text.toLowerCase() === a.text.toLowerCase())) {
           return false
         }
       })
@@ -292,7 +292,7 @@ class GridPaper extends Component {
       let answerScore = cellSolutionScore
       colAnswers.every(a => {
         const solution = this.props.item.solutions.find(solution => solution.cellId === a.cellId)
-        if (undefined === solution.answers.find(answer => answer.expected && answer.text === a.text)) {
+        if (undefined === solution.answers.find(answer => answer.expected && answer.caseSensitive ? answer.text === a.text : answer.text.toLowerCase() === a.text.toLowerCase())) {
           answerScore -= this.props.item.penalty
           return false
         } else {
@@ -325,7 +325,7 @@ class GridPaper extends Component {
     if(this.props.item.penalty === 0) {
       const allGood = rowAnswers.every(a => {
         const solution = this.props.item.solutions.find(solution => solution.cellId === a.cellId)
-        if (undefined === solution.answers.find(answer => answer.expected && answer.text === a.text)) {
+        if (undefined === solution.answers.find(answer => answer.expected && answer.caseSensitive ? answer.text === a.text : answer.text.toLowerCase() === a.text.toLowerCase())) {
           return false
         } else {
           return true
@@ -337,7 +337,7 @@ class GridPaper extends Component {
       let answerScore = cellSolutionScore
       rowAnswers.every(a => {
         const solution = this.props.item.solutions.find(solution => solution.cellId === a.cellId)
-        if (undefined === solution.answers.find(answer => answer.expected && answer.text === a.text)) {
+        if (undefined === solution.answers.find(answer => answer.expected && answer.caseSensitive ? answer.text === a.text : answer.text.toLowerCase() === a.text.toLowerCase())) {
           answerScore -= this.props.item.penalty
           return false
         } else {
@@ -390,7 +390,7 @@ class GridPaper extends Component {
   noErrorInGrid() {
     const noError = this.props.answer.every(a => {
       const solution = this.props.item.solutions.find(solution => solution.cellId === a.cellId)
-      if (undefined === solution.answers.find(answer => answer.expected && answer.text === a.text)) {
+      if (undefined === solution.answers.find(answer => answer.expected && answer.caseSensitive ? answer.text === a.text : answer.text.toLowerCase() === a.text.toLowerCase())) {
         return false
       } else {
         return true
