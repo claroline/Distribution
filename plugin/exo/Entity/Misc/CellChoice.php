@@ -9,7 +9,7 @@ use UJM\ExoBundle\Library\Model\FeedbackTrait;
 use UJM\ExoBundle\Library\Model\ScoreTrait;
 
 /**
- * Keyword.
+ * CellChoice.
  *
  * @ORM\Entity()
  * @ORM\Table(name="ujm_cell_choice")

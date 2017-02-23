@@ -10,7 +10,6 @@ use UJM\ExoBundle\Entity\Misc\CellChoice;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 use UJM\ExoBundle\Library\Attempt\GenericScore;
 use UJM\ExoBundle\Library\Item\ItemType;
-use UJM\ExoBundle\Library\Options\GridSumMode;
 use UJM\ExoBundle\Serializer\Item\Type\GridQuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\GridAnswerValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Item\Type\GridQuestionValidator;
@@ -128,13 +127,13 @@ class GridDefinition extends AbstractDefinition
         } else {
             // 3 sum submode
             switch ($question->getSumMode()) {
-              case GridSumMode::SUM_CELL:
+              case GridQuestion::SUM_CELL:
                 return $this->getCorrectAnswerForSumCellsMode($question, $answer);
               break;
-              case GridSumMode::SUM_COLUMN:
+              case GridQuestion::SUM_COLUMN:
                 return $this->getCorrectAnswerForColumnSumMode($question, $answer);
               break;
-              case GridSumMode::SUM_ROW:
+              case GridQuestion::SUM_ROW:
                 return $this->getCorrectAnswerForRowSumMode($question, $answer);
               break;
             }
@@ -341,14 +340,14 @@ class GridDefinition extends AbstractDefinition
     {
         $expected = [];
         switch ($question->getSumMode()) {
-          case GridSumMode::SUM_CELL:
+          case GridQuestion::SUM_CELL:
             foreach ($question->getCells()->toArray() as $cell) {
                 if (0 < count($cell->getChoices())) {
                     $expected[] = $this->findCellExpectedAnswer($cell);
                 }
             }
           break;
-          case GridSumMode::SUM_COLUMN:
+          case GridQuestion::SUM_COLUMN:
             for ($i = 0; $i < $question->getColumns(); ++$i) {
                 // get cells where there is at least 1 expected answers for the current column (none possible)
                 foreach ($question->getCells() as $cell) {
@@ -362,7 +361,7 @@ class GridDefinition extends AbstractDefinition
                 }
             }
           break;
-          case GridSumMode::SUM_ROW:
+          case GridQuestion::SUM_ROW:
             for ($i = 0; $i < $question->getRows(); ++$i) {
                 // get cells where there is at least 1 expected answers for the current row (none possible)
                 foreach ($question->getCells() as $cell) {

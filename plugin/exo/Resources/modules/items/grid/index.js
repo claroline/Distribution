@@ -34,7 +34,7 @@ function expectAnswer(item) {
         [...Array(item.rows)].forEach((x, index) => {
           // find cells that expect an answer for the row... None possible
           const answerCellsForRow = item.cells.filter(cell => cell.coordinates[1] === index && cell.input)
-          if (undefined !== answerCellsForRow) {
+          if (0 < answerCellsForRow.length) {
             // pick the first one since all solutions for the row will have the same score
             const oneAnswerCellOfTheRow = answerCellsForRow[0]
             // get corresponding solution
@@ -49,7 +49,7 @@ function expectAnswer(item) {
         [...Array(item.cols)].forEach((x, index) => {
           // find cells that expect an answer for the col... None possible
           const answerCellsForCol = item.cells.filter(cell => cell.coordinates[0] === index && cell.input)
-          if (undefined !== answerCellsForCol) {
+          if (0 < answerCellsForCol.length) {
             // pick the first one since all solutions for the col will have the same score
             const oneAnswerCellOfTheCol = answerCellsForCol[0]
             // get corresponding solution

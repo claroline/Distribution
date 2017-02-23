@@ -21,6 +21,21 @@ class GridQuestion extends AbstractItem
     use PenaltyTrait;
 
     /**
+     * @var string
+     */
+    const SUM_CELL = 'cell';
+
+    /**
+     * @var string
+     */
+    const SUM_COLUMN = 'col';
+
+    /**
+     * @var string
+     */
+    const SUM_ROW = 'row';
+
+    /**
      * List of available cells for the question.
      *
      * @ORM\OneToMany(targetEntity="UJM\ExoBundle\Entity\Misc\Cell", mappedBy="question", cascade={"all"}, orphanRemoval=true)
