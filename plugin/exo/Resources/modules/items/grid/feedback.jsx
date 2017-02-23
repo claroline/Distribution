@@ -2,8 +2,8 @@ import React, {Component, PropTypes as T} from 'react'
 import {Feedback} from './../components/feedback-btn.jsx'
 import {utils} from './utils/utils'
 import {WarningIcon} from './utils/warning-icon.jsx'
-import {SUM_CELL, SUM_ROW} from './editor'
-import {SCORE_SUM, SCORE_FIXED} from './../../quiz/enums'
+import {SUM_CELL} from './editor'
+import {SCORE_SUM} from './../../quiz/enums'
 
 class YourGridCell extends Component {
   constructor(props) {
@@ -142,34 +142,10 @@ class GridFeedback extends Component {
   getYourAnswerCellColors(cell, valid) {
     const errorStyle = {backgroundColor: '#f9e2e2', color: '#b94a48'}
     const successStyle = {backgroundColor: '#d4ffb0', color: '#468847'}
-    if (this.props.item.score.type === SCORE_FIXED) {
-      return this.noErrorInGrid() ? successStyle : errorStyle
-    } else if (this.props.item.sumMode === SUM_CELL) {
-      if(cell.input) {
-        return valid ? successStyle : errorStyle
-      } else {
-        return {backgroundColor: cell.background}
-      }
-    } else if (this.props.item.sumMode === SUM_ROW) {
-      // if no expected answer in the row then background set for the cell
-      if (!utils.atLeastOneSolutionInRow(cell.coordinates[1], this.props.item.cells, this.props.item.solutions)) {
-        return cell.background
-      } else if (this.noErrorInRow(cell.coordinates[1])) {
-        // else if one or more error in row
-        return successStyle
-      } else {
-        return errorStyle
-      }
+    if(cell.input) {
+      return valid ? successStyle : errorStyle
     } else {
-      // if no expected answer in the col then background set for the cell
-      if (!utils.atLeastOneSolutionInCol(cell.coordinates[0], this.props.item.cells, this.props.item.solutions)) {
-        return cell.background
-      } else if (this.noErrorInCol(cell.coordinates[0])) {
-        // else if one or more error in row
-        return successStyle
-      } else {
-        return errorStyle
-      }
+      return {backgroundColor: cell.background}
     }
   }
 

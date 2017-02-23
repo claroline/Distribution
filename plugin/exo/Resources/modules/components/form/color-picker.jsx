@@ -18,20 +18,23 @@ export class ColorPicker extends Component {
     }
 
     return (
-      <span className="color-picker" style={{position:'relative'}} id={this.props.id}>
-        <span
-          className={classes({'fa fa-font': this.props.forFontColor})}
+      <span className="color-picker" id={this.props.id}>
+        <button
+          className={classes(
+            {'fa fa-font font': this.props.forFontColor},
+            {'bg-colored': !this.props.forFontColor}
+          )}
           role="button"
+          type="button"
           style={style}
           onClick={() => this.setState({open: !this.state.open})}
         >
-        </span>
+        </button>
         {this.state.open &&
-          <span style={{
-            position: 'absolute',
-            left: '-14px',
-            top: '30px'
-          }}>
+          <span className={classes(
+            {'font-picker-container': this.props.forFontColor},
+            {'bg-colored-picker-container': !this.props.forFontColor}
+          )}>
             <TwitterPicker
               color={this.props.color}
               colors={this.props.colors}

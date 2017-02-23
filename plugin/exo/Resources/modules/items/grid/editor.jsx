@@ -154,7 +154,7 @@ class PopoverBody extends Component {
           score: 1,
           caseSensitive: false,
           feedback: '',
-          expected: false
+          expected: true
         }
       ]}
     )
