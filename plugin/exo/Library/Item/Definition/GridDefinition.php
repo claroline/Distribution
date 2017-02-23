@@ -264,7 +264,7 @@ class GridDefinition extends AbstractDefinition
                 }
             }
         }
-        
+
         return $corrected;
     }
 
