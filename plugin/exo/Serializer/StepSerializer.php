@@ -3,7 +3,6 @@
 namespace UJM\ExoBundle\Serializer;
 
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use UJM\ExoBundle\Entity\Step;
 use UJM\ExoBundle\Entity\StepItem;
 use UJM\ExoBundle\Library\Options\Recurrence;
@@ -30,28 +29,20 @@ class StepSerializer implements SerializerInterface
     private $itemManager;
 
     /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage;
-
-    /**
      * StepSerializer constructor.
      *
-     * @param ItemSerializer        $itemSerializer
-     * @param ItemManager           $itemManager
-     * @param TokenStorageInterface $tokenStorage
+     * @param ItemSerializer $itemSerializer
+     * @param ItemManager    $itemManagere
      *
      * @DI\InjectParams({
      *     "itemSerializer" = @DI\Inject("ujm_exo.serializer.item"),
-     *     "itemManager"    = @DI\Inject("ujm_exo.manager.item"),
-     *     "tokenStorage"   = @DI\Inject("security.token_storage")
+     *     "itemManager"    = @DI\Inject("ujm_exo.manager.item")
      * })
      */
-    public function __construct(ItemSerializer $itemSerializer, ItemManager $itemManager, TokenStorageInterface $tokenStorage)
+    public function __construct(ItemSerializer $itemSerializer, ItemManager $itemManager)
     {
         $this->itemSerializer = $itemSerializer;
         $this->itemManager = $itemManager;
-        $this->tokenStorage = $tokenStorage;
     }
 
     /**
@@ -232,19 +223,14 @@ class StepSerializer implements SerializerInterface
             $itemsToDelete = [];
 
             foreach ($stepQuestions as $stepQuestionToRemove) {
-                $step->removeStepQuestion($stepQuestionToRemove);
-
                 if ($stepQuestionToRemove->getQuestion()->getInteraction()->isContentItem()) {
                     $itemsToDelete[] = $stepQuestionToRemove->getQuestion()->getUuid();
                 }
+                $step->removeStepQuestion($stepQuestionToRemove);
             }
-            if (count($itemsToDelete) > 0) {
-                $user = $this->tokenStorage->getToken()->getUser();
-
-                if ($user !== 'anon.') {
-                    $this->itemManager->delete($itemsToDelete, $user);
-                }
-            }
+//            if (count($itemsToDelete) > 0) {
+//                $this->itemManager->forcedDelete($itemsToDelete);
+//            }
         }
     }
 }

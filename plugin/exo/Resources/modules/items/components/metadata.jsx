@@ -17,7 +17,7 @@ export const Metadata = props => {
 Metadata.propTypes = {
   item: T.shape({
     title: T.string,
-    content: T.string.isRequired,
+    content: T.string,
     description: T.string
   }).isRequired,
   isContentItem: T.bool

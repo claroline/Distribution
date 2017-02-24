@@ -18,6 +18,7 @@ use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Form\TinyMceUploadModalType;
 use Claroline\CoreBundle\Form\UpdateFileType;
 use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
+use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use Claroline\CoreBundle\Library\Utilities\MimeTypeGuesser;
 use Claroline\CoreBundle\Manager\FileManager;
 use Claroline\CoreBundle\Manager\ResourceManager;
@@ -52,6 +53,7 @@ class FileController extends Controller
     private $tokenStorage;
     private $translator;
     private $ut;
+    private $fileUtils;
 
     /**
      * Constructor.
@@ -69,7 +71,8 @@ class FileController extends Controller
      *     "session"         = @DI\Inject("session"),
      *     "tokenStorage"    = @DI\Inject("security.token_storage"),
      *     "translator"      = @DI\Inject("translator"),
-     *     "ut"              = @DI\Inject("claroline.utilities.misc")
+     *     "ut"              = @DI\Inject("claroline.utilities.misc"),
+     *     "fileUtils"       = @DI\Inject("claroline.utilities.file")
      * })
      */
     public function __construct(
@@ -85,7 +88,8 @@ class FileController extends Controller
         SessionInterface $session,
         TokenStorageInterface $tokenStorage,
         TranslatorInterface $translator,
-        ClaroUtilities $ut
+        ClaroUtilities $ut,
+        FileUtilities $fileUtils
     ) {
         $this->authorization = $authorization;
         $this->fileDir = $fileDir;
@@ -100,6 +104,7 @@ class FileController extends Controller
         $this->tokenStorage = $tokenStorage;
         $this->translator = $translator;
         $this->ut = $ut;
+        $this->fileUtils = $fileUtils;
     }
 
     /**
@@ -334,6 +339,42 @@ class FileController extends Controller
             'file' => $file,
             '_resource' => $file,
         );
+    }
+
+    /**
+     * Saves a file.
+     *
+     * @EXT\Route(
+     *     "/public/file/upload",
+     *     name="upload_public_file",
+     *     options = {"expose" = true}
+     * )
+     * @EXT\Method("POST")
+     *
+     * @return JsonResponse
+     */
+    public function fileSaveAction()
+    {
+        $url = null;
+        $fileName = $this->request->get('fileName');
+        $objectClass = $this->request->get('objectClass');
+        $objectUuid = $this->request->get('objectUuid');
+        $objectName = $this->request->get('objectName');
+        $sourceType = $this->request->get('sourceType');
+
+        if ($this->request->files->get('file')) {
+            $publicFile = $this->fileUtils->createFile(
+                $this->request->files->get('file'),
+                $fileName,
+                $objectClass,
+                $objectUuid,
+                $objectName,
+                $sourceType
+            );
+            $url = $publicFile->getUrl();
+        }
+
+        return new JsonResponse($url, 200);
     }
 
     /**

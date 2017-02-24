@@ -138,7 +138,29 @@ actions.save = () => {
   }
 }
 
-actions.createContentItem = (stepId, type) => {
+actions.saveContentItemFile = (stepId, file, type) => {
+  return (dispatch) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('fileName', file.name);
+    formData.append('sourceType', type);
+
+    dispatch({
+      [REQUEST_SEND]: {
+        route: ['upload_public_file'],
+        request: {
+          method: 'POST',
+          body: formData
+        },
+        success: (url) => {
+          dispatch(actions.createContentItem(stepId, file.type, url))
+        }
+      }
+    })
+  }
+}
+
+actions.createContentItem = (stepId, type, data = '') => {
   invariant(stepId, 'stepId is mandatory')
   invariant(type, 'type is mandatory')
   return {
@@ -146,6 +168,6 @@ actions.createContentItem = (stepId, type) => {
     id: makeId(),
     stepId,
     contentType: type,
-    file: {}
+    data: data
   }
 }

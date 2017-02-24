@@ -3,7 +3,8 @@ import {connect} from 'react-redux'
 import Panel from 'react-bootstrap/lib/Panel'
 
 import {tex} from './../../../utils/translate'
-import {getDefinition, getContentDefinition, isContentType} from './../../../items/item-types'
+import {getDefinition, isQuestionType} from './../../../items/item-types'
+import {getContentDefinition} from './../../../contents/content-types'
 import selectQuiz from './../../selectors'
 import {select} from './../selectors'
 
@@ -28,18 +29,7 @@ const Player = props => {
         <Panel
           key={item.id}
         >
-          {isContentType(item.type) ?
-            <ContentItemPlayer
-              item={item}
-              showHint={(questionId, hint) => props.showHint(props.quizId, props.paper.id, questionId, hint)}
-              usedHints={props.answers[item.id] ? props.answers[item.id].usedHints : []}
-            >
-              {React.createElement(getContentDefinition(item.type)[props.feedbackEnabled ? 'feedback': 'player'], {
-                item: item,
-                answer: props.answers[item.id] && props.answers[item.id].data ? props.answers[item.id].data : undefined,
-                onChange: (answerData) => props.updateAnswer(item.id, answerData)
-              })}
-            </ContentItemPlayer> :
+          {isQuestionType(item.type) ?
             <ItemPlayer
               item={item}
               showHint={(questionId, hint) => props.showHint(props.quizId, props.paper.id, questionId, hint)}
@@ -50,7 +40,10 @@ const Player = props => {
                 answer: props.answers[item.id] && props.answers[item.id].data ? props.answers[item.id].data : undefined,
                 onChange: (answerData) => props.updateAnswer(item.id, answerData)
               })}
-            </ItemPlayer>
+            </ItemPlayer> :
+            <ContentItemPlayer item={item}>
+              {React.createElement(getContentDefinition(item.type)['player'], {item: item})}
+            </ContentItemPlayer>
           }
         </Panel>
       ))}

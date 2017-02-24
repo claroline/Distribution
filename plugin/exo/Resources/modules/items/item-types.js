@@ -10,10 +10,6 @@ import open from './open'
 import pair from './pair'
 import words from './words'
 import set from './set'
-import textContent from './text-content'
-import imageContent from './image-content'
-import audioContent from './audio-content'
-import videoContent from './video-content'
 
 const typeProperties = [
   'name',
@@ -25,15 +21,10 @@ const typeProperties = [
   'decorate',
   'validate',
   'paper',
-  'expectAnswer',
-  'icon',
-  'altIcon',
-  'browseFiles',
-  'onFileSelect'
+  'expectAnswer'
 ]
 
 let registeredTypes = {}
-let registeredContentTypes = {}
 let defaultRegistered = false
 
 export function registerItemType(definition) {
@@ -53,34 +44,15 @@ export function registerItemType(definition) {
   registeredTypes[definition.type] = definition
 }
 
-export function registerContentItemType(definition) {
-  assertValidItemType(definition)
-
-  if (registeredContentTypes[definition.type]) {
-    throw new Error(`${definition.type} is already registered`)
-  }
-
-  definition.question = typeof definition.question !== 'undefined' ?
-    definition.question :
-    true
-
-  registeredContentTypes[definition.type] = definition
-}
-
 export function registerDefaultItemTypes() {
   if (!defaultRegistered) {
-    [choice, match, cloze, graphic, open, pair, words, set].forEach(registerItemType);
-    [textContent, imageContent, audioContent, videoContent].forEach(registerContentItemType)
+    [choice, match, cloze, graphic, open, pair, words, set].forEach(registerItemType)
     defaultRegistered = true
   }
 }
 
 export function listItemMimeTypes() {
   return Object.keys(registeredTypes)
-}
-
-export function listContentItemMimeTypes() {
-  return Object.keys(registeredContentTypes)
 }
 
 export function listItemNames() {
@@ -102,14 +74,6 @@ export function getDefinition(type) {
   return registeredTypes[type]
 }
 
-export function getContentDefinition(type) {
-  if (!registeredContentTypes[type]) {
-    throw new Error(`Unknown content type ${type}`)
-  }
-
-  return registeredContentTypes[type]
-}
-
 export function getDecorators() {
   return mapValues(registeredTypes, eType => eType.editor.decorate, pType => pType.player.decorate)
 }
@@ -119,15 +83,10 @@ export function resetTypes() {
   registeredTypes = {}
 }
 
-export function isContentType(type) {
-  switch (type) {
-    case 'application/x.text-content+json':
-    case 'application/x.image-content+json':
-    case 'application/x.audio-content+json':
-    case 'application/x.video-content+json':
-      return true
-  }
-  return false
+export function isQuestionType(type) {
+  const matches = type.match(/^application\/x\.[^/]+\+json$/)
+
+  return matches !== null
 }
 
 function assertValidItemType(definition) {
@@ -167,21 +126,10 @@ function assertValidItemType(definition) {
     definition.player,
     makeError('player component is mandatory', definition)
   )
-  if (isContentType(definition.type)) {
-    invariant(
-      definition.icon,
-      makeError('icon component is mandatory', definition)
-    )
-    invariant(
-      definition.altIcon,
-      makeError('altIcon component is mandatory', definition)
-    )
-  } else {
-    invariant(
-      definition.paper,
-      makeError('paper component is mandatory', definition)
-    )
-  }
+  invariant(
+    definition.paper,
+    makeError('paper component is mandatory', definition)
+  )
 
   const extraProperties = difference(Object.keys(definition), typeProperties)
 

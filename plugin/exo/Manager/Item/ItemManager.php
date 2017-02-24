@@ -230,6 +230,21 @@ class ItemManager
     }
 
     /**
+     * Deletes an array of Item without rights check
+     *
+     * @param array $questions - the uuids of questions to delete
+     */
+    public function forcedDelete(array $questions)
+    {
+        // Reload the list of questions to delete
+        $toDelete = $this->repository->findByUuids($questions);
+        foreach ($toDelete as $question) {
+            $this->om->remove($question);
+        }
+        $this->om->flush();
+    }
+
+    /**
      * Calculates the score of an answer to a question.
      *
      * @param \stdClass $questionData

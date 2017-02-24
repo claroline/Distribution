@@ -5,7 +5,8 @@ import sanitize from './sanitizers'
 import validate from './validators'
 import {decorateItem} from './../decorators'
 import {getIndex, makeId, makeItemPanelKey, update} from './../../utils/utils'
-import {getDefinition, getContentDefinition} from './../../items/item-types'
+import {getDefinition} from './../../items/item-types'
+import {getContentDefinition} from './../../contents/content-types'
 import {ATTEMPT_FINISH} from './../player/actions'
 import {VIEW_MODE_UPDATE, OPEN_FIRST_STEP} from './../actions'
 import {
@@ -239,16 +240,13 @@ function reduceItems(items = {}, action = {}) {
       return update(items, {[action.id]: {$set: updatedItem}})
     }
     case CONTENT_ITEM_CREATE: {
-      let newItem = decorateItem({
+      let newItem = {
         id: action.id,
         type: action.contentType,
-        content: '',
-        hints: [],
-        feedback: ''
-      })
-      newItem = decorateItem(newItem)
-      const def = getContentDefinition(action.contentType)
-      newItem = def.editor.reduce(newItem, action)
+        data: action.data,
+        title: '',
+        description: ''
+      }
       const errors = validate.contentItem(newItem)
       newItem = Object.assign({}, newItem, {_errors: errors})
 

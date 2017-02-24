@@ -8,7 +8,8 @@ import Tooltip from 'react-bootstrap/lib/Tooltip'
 import {makeItemPanelKey, makeStepPropPanelKey} from './../../../utils/utils'
 import {t, tex, trans} from './../../../utils/translate'
 import {makeSortable, SORT_VERTICAL} from './../../../utils/sortable'
-import {getDefinition, getContentDefinition, isContentType} from './../../../items/item-types'
+import {getDefinition, isQuestionType} from './../../../items/item-types'
+import {getContentDefinition} from './../../../contents/content-types'
 import {MODAL_DELETE_CONFIRM} from './../../../modal'
 import {MODAL_ADD_ITEM} from './../components/add-item-modal.jsx'
 import {MODAL_IMPORT_ITEMS} from './../components/import-items-modal.jsx'
@@ -97,15 +98,38 @@ const ItemHeader = props =>
     )}
   >
     <span>
-      {isContentType(props.item.type) ?
-        <span className={classes('item-icon', 'item-icon-sm', getContentDefinition(props.item.type).altIcon)}></span> :
-        <ItemIcon name={getDefinition(props.item.type).name}/>
-      }
+      <ItemIcon name={getDefinition(props.item.type).name}/>
       <span className="panel-title">
-        {props.item.title || isContentType(props.item.type) ?
-          trans(getContentDefinition(props.item.type).name, {}, 'question_types') :
-          trans(getDefinition(props.item.type).name, {}, 'question_types')
-        }
+        {props.item.title || trans(getDefinition(props.item.type).name, {}, 'question_types')}
+      </span>
+      {props.hasErrors &&
+        <ValidationStatus
+          id={`${props.item.id}-panel-tip`}
+          validating={props.validating}
+        />
+      }
+    </span>
+    <ItemActions
+      itemId={props.item.id}
+      stepId={props.stepId}
+      handleItemDeleteClick={props.handleItemDeleteClick}
+      showModal={props.showModal}
+      connectDragSource={props.connectDragSource}
+    />
+  </div>
+
+const ContentHeader = props =>
+  <div
+    className="item-header"
+    onClick={() => props.handlePanelClick(
+      props.stepId,
+      makeItemPanelKey(props.item.type, props.item.id)
+    )}
+  >
+    <span>
+      <span className={classes('item-icon', 'item-icon-sm', getContentDefinition(props.item.type).altIcon)}></span>
+      <span className="panel-title">
+        {props.item.title || trans(getContentDefinition(props.item.type).type, {}, 'question_types')}
       </span>
       {props.hasErrors &&
         <ValidationStatus
@@ -124,6 +148,17 @@ const ItemHeader = props =>
   </div>
 
 ItemHeader.propTypes = {
+  item: T.object.isRequired,
+  stepId: T.string.isRequired,
+  handlePanelClick: T.func.isRequired,
+  handleItemDeleteClick: T.func.isRequired,
+  showModal: T.func.isRequired,
+  hasErrors: T.bool.isRequired,
+  validating: T.bool.isRequired,
+  connectDragSource: T.func.isRequired
+}
+
+ContentHeader.propTypes = {
   item: T.object.isRequired,
   stepId: T.string.isRequired,
   handlePanelClick: T.func.isRequired,
@@ -157,24 +192,7 @@ let ItemPanel = props =>
           collapsible={true}
           expanded={props.expanded}
         >
-          {props.expanded && (isContentType(props.item.type) ?
-            <ContentItemForm
-              item={props.item}
-              validating={props.validating}
-              onChange={(propertyPath, value) =>
-                props.handleContentItemUpdate(props.item.id, propertyPath, value)
-              }
-            >
-              {React.createElement(
-                getContentDefinition(props.item.type).editor.component,
-                {
-                  item: props.item,
-                  validating: props.validating,
-                  onChange: subAction =>
-                    props.handleContentItemDetailUpdate(props.item.id, subAction)
-                }
-              )}
-            </ContentItemForm> :
+          {props.expanded &&
             <ItemForm
               item={props.item}
               validating={props.validating}
@@ -195,12 +213,76 @@ let ItemPanel = props =>
                 }
               )}
             </ItemForm>
-          )}
+          }
+        </Panel>
+      </div>
+  ))
+
+let ContentPanel = props =>
+  props.connectDragPreview(
+    props.connectDropTarget(
+      <div
+        className="panel"
+        style={{opacity: props.isDragging ? 0 : 1}}
+      >
+        <Panel
+          header={
+            <ContentHeader
+              item={props.item}
+              stepId={props.stepId}
+              handlePanelClick={props.handlePanelClick}
+              handleItemDeleteClick={props.handleItemDeleteClick}
+              showModal={props.showModal}
+              connectDragSource={props.connectDragSource}
+              hasErrors={!isEmpty(props.item._errors)}
+              validating={props.validating}
+            />
+          }
+          collapsible={true}
+          expanded={props.expanded}
+        >
+          {props.expanded &&
+            <ContentItemForm
+              item={props.item}
+              validating={props.validating}
+              onChange={(propertyPath, value) =>
+                props.handleContentItemUpdate(props.item.id, propertyPath, value)
+              }
+            >
+              {React.createElement(
+                getContentDefinition(props.item.type).editor.component,
+                {
+                  item: props.item,
+                  validating: props.validating,
+                  onChange: subAction =>
+                    props.handleContentItemDetailUpdate(props.item.id, subAction)
+                }
+              )}
+            </ContentItemForm>
+          }
         </Panel>
       </div>
   ))
 
 ItemPanel.propTypes = {
+  id: T.string.isRequired,
+  stepId: T.string.isRequired,
+  index: T.number.isRequired,
+  item: T.object.isRequired,
+  expanded: T.bool.isRequired,
+  handlePanelClick: T.func.isRequired,
+  handleItemDeleteClick: T.func.isRequired,
+  handleItemUpdate: T.func.isRequired,
+  handleItemDetailUpdate: T.func.isRequired,
+  showModal: T.func.isRequired,
+  connectDragSource: T.func.isRequired,
+  isDragging: T.bool.isRequired,
+  onSort: T.func.isRequired,
+  sortDirection: T.string.isRequired,
+  validating: T.bool.isRequired
+}
+
+ContentPanel.propTypes = {
   id: T.string.isRequired,
   stepId: T.string.isRequired,
   index: T.number.isRequired,
@@ -221,6 +303,7 @@ ItemPanel.propTypes = {
 }
 
 ItemPanel = makeSortable(ItemPanel, 'STEP_ITEM')
+ContentPanel = makeSortable(ContentPanel, 'STEP_ITEM')
 
 class StepFooter extends Component {
   constructor(props) {
@@ -264,8 +347,9 @@ class StepFooter extends Component {
           this.props.closeModal()
           return this.props.handleContentItemCreate(this.props.stepId, selected)
         },
-        handleFileUpdate: (id, file) => {
-          return this.props.handleContentItemUpdate(id, 'file', file)
+        handleFileUpload: (file, type, itemId) => {
+          this.props.handleFileUpload(this.props.stepId, file, type)
+          return this.props.closeModal()
         }
       })
     }
@@ -358,7 +442,7 @@ export const StepEditor = props =>
           {...props.step}
         />
       </Panel>
-      {props.step.items.map((item, index) =>
+      {props.step.items.map((item, index) => isQuestionType(item.type) ?
         <ItemPanel
           id={item.id}
           index={index}
@@ -375,6 +459,21 @@ export const StepEditor = props =>
           handleItemUpdate={props.handleItemUpdate}
           handleItemHintsUpdate={props.handleItemHintsUpdate}
           handleItemDetailUpdate={props.handleItemDetailUpdate}
+          showModal={props.showModal}
+          {...props}
+        /> :
+        <ContentPanel
+          id={item.id}
+          index={index}
+          item={item}
+          stepId={props.step.id}
+          key={item.type + item.id}
+          eventKey={makeItemPanelKey(item.type, item.id)}
+          onSort={(id, swapId) => props.handleItemMove(id, swapId, props.step.id)}
+          sortDirection={SORT_VERTICAL}
+          validating={props.validating}
+          handlePanelClick={props.handlePanelClick}
+          handleItemDeleteClick={props.handleItemDeleteClick}
           handleContentItemUpdate={props.handleContentItemUpdate}
           handleContentItemDetailUpdate={props.handleContentItemDetailUpdate}
           showModal={props.showModal}
@@ -390,6 +489,7 @@ export const StepEditor = props =>
       handleItemsImport={props.handleItemsImport}
       handleContentItemCreate={props.handleContentItemCreate}
       handleContentItemUpdate={props.handleContentItemUpdate}
+      handleFileUpload={props.handleFileUpload}
     />
   </div>
 
@@ -415,6 +515,7 @@ StepEditor.propTypes = {
   handleItemsImport: T.func.isRequired,
   handleContentItemCreate: T.func.isRequired,
   handleContentItemUpdate: T.func,
+  handleFileUpload: T.func,
   showModal: T.func.isRequired,
   closeModal: T.func.isRequired
 }
