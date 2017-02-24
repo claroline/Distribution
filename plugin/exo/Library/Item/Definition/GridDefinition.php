@@ -309,7 +309,7 @@ class GridDefinition extends AbstractDefinition
                         } else {
                             $cell = $question->getCell($expectedCellUuid);
                             $currentAnswer = reset($givenAnwser);
-                            $choice = $cell->getChoice($answer[$key]->text);
+                            $choice = $cell->getChoice($currentAnswer->text);
                             // wrong or empty anwser -> score will not be applied
                             if (empty($choice) || (!empty($choice) && !$choice->isExpected())) {
                                 $all = false;
