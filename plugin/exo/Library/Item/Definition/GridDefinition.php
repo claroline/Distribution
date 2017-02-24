@@ -8,6 +8,7 @@ use UJM\ExoBundle\Entity\ItemType\GridQuestion;
 use UJM\ExoBundle\Entity\Misc\Cell;
 use UJM\ExoBundle\Entity\Misc\CellChoice;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
+use UJM\ExoBundle\Library\Attempt\GenericPenalty;
 use UJM\ExoBundle\Library\Attempt\GenericScore;
 use UJM\ExoBundle\Library\Item\ItemType;
 use UJM\ExoBundle\Serializer\Item\Type\GridQuestionSerializer;
@@ -237,15 +238,20 @@ class GridDefinition extends AbstractDefinition
                 if (!empty($rowCellsUuids)) {
                     // score will be applied only if all expected answers are there and valid
                     $all = true;
+
                     foreach ($rowCellsUuids as $expectedCellUuid) {
                         // if $expectedCellUuid found in answers
-                        $key = array_search($expectedCellUuid, array_column($answer, 'cellId'));
-                        if (!$key) {
+                        $givenAnwser = array_filter($answer, function ($given) use ($expectedCellUuid) {
+                            return $given->cellId === $expectedCellUuid;
+                        });
+                        if (empty($givenAnwser)) {
                             $all = false;
                             break;
                         } else {
-                            $cell = $question->getCell($answer[$key]->cellId);
-                            $choice = $cell->getChoice($answer[$key]->text);
+                            // check answer
+                            $cell = $question->getCell($expectedCellUuid);
+                            $currentAnswer = reset($givenAnwser);
+                            $choice = $cell->getChoice($currentAnswer->text);
                             // wrong or empty anwser -> score will not be applied
                             if (empty($choice) || (!empty($choice) && !$choice->isExpected())) {
                                 $all = false;
@@ -253,12 +259,12 @@ class GridDefinition extends AbstractDefinition
                             }
                         }
                     }
+
                     if ($all) {
-                        $cell = $question->getCell($rowCellsUuids[0]);
-                        $scoreToApply = $cell->getChoices()[0]->getScore();
+                        $scoreToApply = $choice->getScore();
                         $corrected->addExpected(new GenericScore($scoreToApply));
                     } else {
-                        $corrected->addUnexpected(new GenericScore($question->getPenalty()));
+                        $corrected->addPenalty(new GenericPenalty($question->getPenalty()));
                     }
                 }
             }
@@ -294,12 +300,15 @@ class GridDefinition extends AbstractDefinition
                     $all = true;
                     foreach ($colCellsUuids as $expectedCellUuid) {
                         // if $expectedCellUuid found in answers
-                        $key = array_search($expectedCellUuid, array_column($answer, 'cellId'));
-                        if (!$key) {
+                        $givenAnwser = array_filter($answer, function ($given) use ($expectedCellUuid) {
+                            return $given->cellId === $expectedCellUuid;
+                        });
+                        if (empty($givenAnwser)) {
                             $all = false;
                             break;
                         } else {
-                            $cell = $question->getCell($answer[$key]->cellId);
+                            $cell = $question->getCell($expectedCellUuid);
+                            $currentAnswer = reset($givenAnwser);
                             $choice = $cell->getChoice($answer[$key]->text);
                             // wrong or empty anwser -> score will not be applied
                             if (empty($choice) || (!empty($choice) && !$choice->isExpected())) {
@@ -308,12 +317,12 @@ class GridDefinition extends AbstractDefinition
                             }
                         }
                     }
+
                     if ($all) {
-                        $cell = $question->getCell($colCellsUuids[0]);
-                        $scoreToApply = $cell->getChoices()[0]->getScore();
+                        $scoreToApply = $choice->getScore();
                         $corrected->addExpected(new GenericScore($scoreToApply));
                     } else {
-                        $corrected->addUnexpected(new GenericScore($question->getPenalty()));
+                        $corrected->addPenalty(new GenericPenalty($question->getPenalty()));
                     }
                 }
             }
