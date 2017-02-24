@@ -8,6 +8,5 @@ export default {
   altIcon: 'fa fa-volume-down',
   player: AudioContentPlayer,
   browseFiles: 'audio',
-  onFileSelect: (item, file) => {return utils.onFileSelect(item, file)},
   editor
 }

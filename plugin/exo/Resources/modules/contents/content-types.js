@@ -16,8 +16,7 @@ const typeProperties = [
   'validate',
   'icon',
   'altIcon',
-  'browseFiles',
-  'onFileSelect'
+  'browseFiles'
 ]
 
 let registeredContentTypes = {}
