@@ -12,7 +12,7 @@
 namespace Claroline\CoreBundle\Library\Utilities;
 
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use JangoBrick\SVG\Nodes\Image\SVGImg;
+use JangoBrick\SVG\Nodes\Embedded\SVGImageElement;
 use JangoBrick\SVG\SVGImage;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -212,7 +212,7 @@ class ThumbnailCreator
                 $shortcut->getDocument()->addChild($stampDocument);
                 $im = $shortcut;
             } else {
-                $im->getDocument()->addChild(new SVGImg(
+                $im->getDocument()->addChild(new SVGImageElement(
                     'data:'.mime_content_type($stampImg).';base64,'.base64_encode(file_get_contents($stampImg)),
                     0,
                     $im->getDocument()->getHeight() - imagesy($stamp),

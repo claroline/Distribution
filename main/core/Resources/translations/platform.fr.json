@@ -533,6 +533,7 @@
     "icon_set_create_success": "Le jeu a été créé avec succès.",
     "icon_set_delete_error": "Le jeu n'a pas été supprimé.",
     "icon_set_delete_success": "Le jeu a été supprimé avec succès.",
+    "icon_set_dir_not_writable": "Vous n'avez pas le droit d'écrire dans le dossier des jeux d'icônes",
     "icon_set_icon_delete_error": "L'icône n'a pas été supprimée.",
     "icon_set_icon_delete_success": "L'icône a été supprimé avec succès.",
     "icon_set_icon_update_error": "L'icône n'a pas été mise à jour.",

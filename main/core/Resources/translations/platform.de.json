@@ -443,6 +443,7 @@
     "icon_set_create_success": "",
     "icon_set_delete_error": "",
     "icon_set_delete_success": "",
+    "icon_set_dir_not_writable": "",
     "icon_set_icon_delete_error": "",
     "icon_set_icon_delete_success": "",
     "icon_set_icon_update_error": "",

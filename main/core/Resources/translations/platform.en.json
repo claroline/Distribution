@@ -526,6 +526,7 @@
     "icon_set_create_success": "Icon pack created successfully.",
     "icon_set_delete_error": "Icon pack could not be deleted.",
     "icon_set_delete_success": "Icon pack deleted successfully.",
+    "icon_set_dir_not_writable": "Icon pack folder has no write access",
     "icon_set_icon_delete_error": "Icon could not be deleted.",
     "icon_set_icon_delete_success": "Icon deleted successfully.",
     "icon_set_icon_update_error": "Icon could not be updated.",
