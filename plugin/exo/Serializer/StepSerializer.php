@@ -220,12 +220,12 @@ class StepSerializer implements SerializerInterface
 
         // Remaining items are no longer in the Step
         if (0 < count($stepQuestions)) {
-            $itemsToDelete = [];
+//            $itemsToDelete = [];
 
             foreach ($stepQuestions as $stepQuestionToRemove) {
-                if ($stepQuestionToRemove->getQuestion()->getInteraction()->isContentItem()) {
-                    $itemsToDelete[] = $stepQuestionToRemove->getQuestion()->getUuid();
-                }
+//                if ($stepQuestionToRemove->getQuestion()->getInteraction()->isContentItem()) {
+//                    $itemsToDelete[] = $stepQuestionToRemove->getQuestion()->getUuid();
+//                }
                 $step->removeStepQuestion($stepQuestionToRemove);
             }
 //            if (count($itemsToDelete) > 0) {

@@ -138,12 +138,12 @@ actions.save = () => {
   }
 }
 
-actions.saveContentItemFile = (stepId, file, type) => {
+actions.saveContentItemFile = (stepId, file) => {
   return (dispatch) => {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('fileName', file.name);
-    formData.append('sourceType', type);
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('fileName', file.name)
+    formData.append('sourceType', 'exo_content_item')
 
     dispatch({
       [REQUEST_SEND]: {

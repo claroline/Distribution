@@ -17,7 +17,7 @@ ContentItemPlayer.propTypes = {
   item: T.shape({
     id: T.string.isRequired,
     title: T.string,
-    description: T.string,
+    description: T.string
   }).isRequired,
   children: T.node.isRequired
 }

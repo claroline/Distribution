@@ -1,6 +1,5 @@
 import editor from './editor'
 import {AudioContentPlayer} from './player.jsx'
-import {utils} from './utils/utils'
 
 export default {
   type: 'audio',

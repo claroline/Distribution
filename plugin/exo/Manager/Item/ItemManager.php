@@ -230,7 +230,7 @@ class ItemManager
     }
 
     /**
-     * Deletes an array of Item without rights check
+     * Deletes an array of Item without rights check.
      *
      * @param array $questions - the uuids of questions to delete
      */

@@ -124,7 +124,7 @@ class ItemDefinitionsCollection
     {
         $type = $mimeType;
 
-        if (1 !== preg_match('#^application\/x\.[^/]+\+json$#', $mimeType) && 1 === preg_match('#^[^/]+\/[^/]+$#', $mimeType))  {
+        if (1 !== preg_match('#^application\/x\.[^/]+\+json$#', $mimeType) && 1 === preg_match('#^[^/]+\/[^/]+$#', $mimeType)) {
             $type = 'content';
         }
 

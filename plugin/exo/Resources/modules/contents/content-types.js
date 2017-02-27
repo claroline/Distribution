@@ -1,6 +1,5 @@
 import invariant from 'invariant'
 import difference from 'lodash/difference'
-import mapValues from 'lodash/mapValues'
 
 import textContent from './text-content'
 import imageContent from './image-content'

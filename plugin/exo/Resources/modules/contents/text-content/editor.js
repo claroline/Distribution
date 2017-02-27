@@ -1,6 +1,5 @@
 import cloneDeep from 'lodash/cloneDeep'
-import {makeActionCreator, makeId} from './../../utils/utils'
-import {tex, trans} from './../../utils/translate'
+import {makeActionCreator} from './../../utils/utils'
 import {TextContent as component} from './editor.jsx'
 import {notBlank, setIfError} from './../../utils/validate'
 
@@ -11,9 +10,11 @@ export const actions = {
 }
 
 function reduce(item = {}, action = {}) {
+  let newItem
+
   switch (action.type) {
     case UPDATE_ITEM_CONTENT_TEXT:
-      const newItem = cloneDeep(item)
+      newItem = cloneDeep(item)
       newItem['data'] = action.data
       return newItem
   }

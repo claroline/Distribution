@@ -1,4 +1,4 @@
-import React, {Component, PropTypes as T} from 'react'
+import React, {PropTypes as T} from 'react'
 import get from 'lodash/get'
 import {trans} from './../../utils/translate'
 import {FormGroup} from './../../components/form/form-group.jsx'

@@ -18,7 +18,7 @@ class ContentItem extends AbstractItem
     private $data;
 
     /**
-     * Gets data
+     * Gets data.
      *
      * @return string
      */
@@ -28,7 +28,7 @@ class ContentItem extends AbstractItem
     }
 
     /**
-     * Sets data
+     * Sets data.
      *
      * @param string $data
      */

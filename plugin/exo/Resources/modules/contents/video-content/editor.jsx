@@ -4,7 +4,7 @@ import videojs from 'video.js'
 
 class VideoPlayer extends Component {
   componentDidMount() {
-    this.player = videojs(this.videoNode, this.props);
+    this.player = videojs(this.videoNode, this.props)
   }
 
   componentWillUnmount() {
@@ -22,6 +22,15 @@ class VideoPlayer extends Component {
       </video>
     )
   }
+}
+
+VideoPlayer.propTypes = {
+  item: T.shape({
+    id: T.string.isRequired,
+    type: T.string.isRequired,
+    data: T.string,
+    url: T.string
+  }).isRequired
 }
 
 export const VideoContent = (props) =>
