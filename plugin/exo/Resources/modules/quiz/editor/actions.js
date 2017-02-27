@@ -138,7 +138,7 @@ actions.save = () => {
   }
 }
 
-actions.saveContentItemFile = (stepId, file) => {
+actions.saveContentItemFile = (itemId, file) => {
   return (dispatch) => {
     const formData = new FormData()
     formData.append('file', file)
@@ -153,7 +153,7 @@ actions.saveContentItemFile = (stepId, file) => {
           body: formData
         },
         success: (url) => {
-          dispatch(actions.createContentItem(stepId, file.type, url))
+          dispatch(actions.updateContentItem(itemId, 'data', url))
         }
       }
     })

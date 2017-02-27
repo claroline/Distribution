@@ -22,7 +22,9 @@ export class ContentInput extends Component {
             ref={input => this.input = input}
             onChange={() => {
               if (this.input.files[0]) {
-                this.props.handleFileUpload(this.input.files[0])
+                const file = this.input.files[0]
+                const item = this.props.handleSelect(file.type)
+                this.props.handleFileUpload(item.id, file)
               }
             }}
           />

@@ -347,8 +347,8 @@ class StepFooter extends Component {
           this.props.closeModal()
           return this.props.handleContentItemCreate(this.props.stepId, selected)
         },
-        handleFileUpload: (file) => {
-          this.props.handleFileUpload(this.props.stepId, file)
+        handleFileUpload: (itemId, file) => {
+          this.props.handleFileUpload(itemId, file)
           return this.props.closeModal()
         }
       })

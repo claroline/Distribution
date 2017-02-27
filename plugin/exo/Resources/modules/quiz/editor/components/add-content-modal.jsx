@@ -39,7 +39,7 @@ class AddContentModal extends Component {
                             selected={this.state.currentType === type}
                             handleSelect={type => this.props.handleSelect(type)}
                             handleItemMouseOver={type => this.handleItemMouseOver(type)}
-                            handleFileUpload={file => this.props.handleFileUpload(file)}
+                            handleFileUpload={(itemId, file) => this.props.handleFileUpload(itemId, file)}
               />
             )}
           </div>
