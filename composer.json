@@ -76,12 +76,6 @@
         "ocramius/proxy-manager": "1.0.2",
         "ramsey/uuid": "~3.5"
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/ptsavdar/php-svg"
-        }
-    ],
     "replace": {
         "claroline/distribution-bundle": "*",
         "claroline/core-bundle": "*",
