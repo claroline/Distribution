@@ -362,13 +362,8 @@
     "failed": "Fallido",
     "fast_answer": "Respuesta rápida",
     "fb_client_id": "Id de la aplicación",
-<<<<<<< HEAD
     "fb_client_secret": "Secret de la aplicación",
     "file": "Archivo",
-=======
-    "fb_client_secret": "secret de la aplicación",
-    "file": "Archivos",
->>>>>>> dc242643d510eca7aa9ce8ece162910ffae512cf
     "filename": "Nombre del archivo",
     "files": "Archivos",
     "filter": "Filtro",
@@ -451,10 +446,7 @@
     "home_tabs_configuration": "Configuración de las pestañas",
     "host": "",
     "icon": "Icono de la plataforma",
-<<<<<<< HEAD
     "id": "ID",
-=======
->>>>>>> dc242643d510eca7aa9ce8ece162910ffae512cf
     "icon_set_create_success": "",
     "icon_set_delete_error": "",
     "icon_set_delete_success": "",
@@ -464,10 +456,6 @@
     "icon_set_icon_update_error": "",
     "icon_set_icon_update_success": "",
     "icon_set_update_success": "",
-<<<<<<< HEAD
-=======
-    "id": "Id",
->>>>>>> dc242643d510eca7aa9ce8ece162910ffae512cf
     "id_col": "Datos de la columna de la base de datos",
     "identical_group_name": "",
     "identical_role_name": "",
