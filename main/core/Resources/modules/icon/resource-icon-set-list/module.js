@@ -25,6 +25,6 @@ resourceIconSetListApp
   .value('iconSets', window.iconSets)
 
 //Bootstrap angular in body
-angular.element(document).ready(function() {
+angular.element(document).ready(function () {
   angular.bootstrap(document.getElementsByTagName('body')[ 0 ], [ 'resourceIconSetListApp' ])
 })
