@@ -369,17 +369,10 @@ class ExerciseSerializer implements SerializerInterface
             foreach ($stepEntities as $stepToRemove) {
                 $exercise->removeStep($stepToRemove);
                 $stepQuestions = $stepToRemove->getStepQuestions()->toArray();
-//                $itemsToDelete = [];
 
                 foreach ($stepQuestions as $stepQuestionToRemove) {
-//                    if ($stepQuestionToRemove->getQuestion()->getInteraction()->isContentItem()) {
-//                        $itemsToDelete[] = $stepQuestionToRemove->getQuestion()->getUuid();
-//                    }
                     $step->removeStepQuestion($stepQuestionToRemove);
                 }
-//                if (count($itemsToDelete) > 0) {
-//                    $this->itemManager->forcedDelete($itemsToDelete);
-//                }
             }
         }
     }

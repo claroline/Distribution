@@ -47,21 +47,14 @@ export function listContentTypes() {
 }
 
 export function getContentDefinition(type) {
-  if (type.startsWith('text')) {
-    return registeredContentTypes['text']
-  } else if (type.startsWith('image')) {
-    return registeredContentTypes['image']
-  } else if (type.startsWith('audio')) {
-    return registeredContentTypes['audio']
-  } else if (type.startsWith('video')) {
-    return registeredContentTypes['video']
+  const pattern = /^([^/]+)(\/[^/]+)?$/
+  const matches = type.match(pattern)
+
+  if (matches && matches[1]) {
+    return registeredContentTypes[matches[1]]
   } else {
     throw new Error(`Unknown content type ${type}`)
   }
-
-  //if (!registeredContentTypes[type]) {
-  //}
-
 }
 
 

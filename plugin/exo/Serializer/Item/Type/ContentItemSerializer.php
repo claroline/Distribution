@@ -23,7 +23,7 @@ class ContentItemSerializer implements SerializerInterface
     {
         $itemData = new \stdClass();
 
-        if ($contentItem->getQuestion()->getMimeType() === 'text/plain') {
+        if (1 === preg_match('#^text\/[^/]+$#', $contentItem->getQuestion()->getMimeType())) {
             $itemData->data = $contentItem->getData();
         } else {
             $itemData->url = $contentItem->getData();
