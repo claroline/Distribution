@@ -124,16 +124,9 @@ class AuthenticationSuccessListener implements AuthenticationSuccessHandlerInter
     public function onAuthenticationSuccess(Request $request, TokenInterface $token)
     {
         $user = $this->tokenStorage->getToken()->getUser();
-        // Verify that security route is not default route.
-        $securityUri = $request->getSession()->get('_security.main.target_path');
-        $securityRoute = $securityUri ?
-            $this->router->match(
-                preg_replace("/(app_dev.php\/|app_dev.php\/)/i", '', parse_url($securityUri, PHP_URL_PATH))
-            )['_route'] :
-            null;
-        // If default route then check other conditions.
-        if ($securityRoute && $securityRoute !== 'claro_desktop_open') {
-            return new RedirectResponse($securityUri);
+
+        if ($uri = $request->getSession()->get('_security.main.target_path')) {
+            return new RedirectResponse($uri);
         }
 
         if ($this->configurationHandler->isRedirectOption(PlatformDefaults::$REDIRECT_OPTIONS['DESKTOP'])) {
