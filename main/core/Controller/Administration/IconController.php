@@ -21,6 +21,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @DI\Tag("security.secure_service")
@@ -34,17 +35,25 @@ class IconController extends Controller
     private $iconSetManager;
 
     /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    /**
      * ResourceIconController constructor.
      *
      * @DI\InjectParams({
-     *     "iconSetManager" = @DI\Inject("claroline.manager.icon_set_manager")
+     *     "iconSetManager" = @DI\Inject("claroline.manager.icon_set_manager"),
+     *     "translator" = @DI\Inject("translator")
      * })
      *
-     * @param IconSetManager $iconSetManager
+     * @param IconSetManager      $iconSetManager
+     * @param TranslatorInterface $translator
      */
-    public function __construct(IconSetManager $iconSetManager)
+    public function __construct(IconSetManager $iconSetManager, TranslatorInterface $translator)
     {
         $this->iconSetManager = $iconSetManager;
+        $this->translator = $translator;
     }
 
     /**
@@ -131,10 +140,10 @@ class IconController extends Controller
             $iconSet->setType(IconSetTypeEnum::RESOURCE_ICON_SET);
             if ($isNew) {
                 $this->iconSetManager->createNewResourceIconSet($iconSet, $iconNamesForTypes);
-                $this->addFlash('success', 'icon_set_create_success');
+                $this->addFlash('success', $this->translator->trans('icon_set_create_success', [], 'platform'));
             } else {
                 $this->iconSetManager->updateResourceIconSet($iconSet, $iconNamesForTypes);
-                $this->addFlash('success', 'icon_set_update_success');
+                $this->addFlash('success', $this->translator->trans('icon_set_update_success', [], 'platform'));
             }
 
             return $this->redirectToRoute('claro_admin_resource_icon_set_list');

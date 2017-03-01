@@ -17,6 +17,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class ResourceIconsUpdater extends Updater
 {
     private $container;
+    private $om;
+    private $repo;
+    private $iconManager;
+    private $iconSetManager;
 
     public function __construct(ContainerInterface $container)
     {
@@ -24,6 +28,7 @@ class ResourceIconsUpdater extends Updater
         $this->om = $this->container->get('claroline.persistence.object_manager');
         $this->repo = $this->om->getRepository('Claroline\CoreBundle\Entity\Resource\ResourceIcon');
         $this->iconManager = $this->container->get('claroline.manager.icon_manager');
+        $this->iconSetManager = $this->container->get('claroline.manager.icon_set_manager');
     }
 
     public function postUpdate()

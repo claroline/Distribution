@@ -32,8 +32,6 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  */
 class IconSetManager
 {
-    /** @var string */
-    private $rootDir;
     /** @var ObjectManager */
     private $om;
     /** @var IconSetRepository */
@@ -43,6 +41,8 @@ class IconSetManager
     /** @var string */
     private $iconSetsDir;
     /** @var string */
+    private $iconSetsWebDir;
+    /** @var string */
     private $webDir;
     /** @var FileSystem */
     private $fs;
@@ -51,29 +51,34 @@ class IconSetManager
 
     /**
      * @DI\InjectParams({
-     *     "rootDir"            = @DI\Inject("%kernel.root_dir%"),
+     *     "webDir"             = @DI\Inject("%claroline.param.web_dir%"),
+     *     "iconSetsWebDir"     = @DI\Inject("%claroline.param.icon_sets_web_dir%"),
+     *     "iconSetsDir"        = @DI\Inject("%claroline.param.icon_sets_directory%"),
      *     "om"                 = @DI\Inject("claroline.persistence.object_manager"),
      *     "thumbnailCreator"   = @DI\Inject("claroline.utilities.thumbnail_creator")
      * })
      *
-     * @param $rootDir
+     * @param $webDir
+     * @param $iconSetsWebDir
+     * @param $iconSetsDir
      * @param ObjectManager    $om
      * @param ThumbnailCreator $thumbnailCreator
      */
     public function __construct(
-        $rootDir,
+        $webDir,
+        $iconSetsWebDir,
+        $iconSetsDir,
         ObjectManager $om,
         ThumbnailCreator $thumbnailCreator
     ) {
         $this->fs = new FileSystem();
-        $this->rootDir = $rootDir;
         $this->thumbnailCreator = $thumbnailCreator;
         $this->om = $om;
         $this->iconSetRepo = $om->getRepository('ClarolineCoreBundle:Icon\IconSet');
         $this->iconItemRepo = $om->getRepository('ClarolineCoreBundle:Icon\IconItem');
-        $this->webDir = $rootDir.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'web';
-        $this->iconSetsDir = $this->webDir.DIRECTORY_SEPARATOR.'icon_sets';
-        $this->createIconSetsDirIfNotExists();
+        $this->webDir = $webDir;
+        $this->iconSetsWebDir = $iconSetsWebDir;
+        $this->iconSetsDir = $iconSetsDir;
     }
 
     /**
@@ -378,7 +383,7 @@ class IconSetManager
         if ($iconSet->isDefault()) {
             throw new BadRequestHttpException('error_cannot_update_default_icon_set_icon');
         }
-        $iconSetDir = $this->iconSetsDir.DIRECTORY_SEPARATOR.$iconSet->getCname();
+        $iconSetDir = $this->iconSetsWebDir.DIRECTORY_SEPARATOR.$iconSet->getCname();
         // Upload file and create shortcut
         $newIconFilename = $filename.'.'.$newFile->getClientOriginalExtension();
         $newFile->move(
@@ -440,13 +445,6 @@ class IconSetManager
         $this->iconItemRepo->deleteAllByMimeType($mimeType);
     }
 
-    private function createIconSetsDirIfNotExists()
-    {
-        if (!$this->fs->exists($this->iconSetsDir)) {
-            $this->fs->mkdir($this->iconSetsDir, 0775);
-        }
-    }
-
     /**
      * @param $cname
      */
@@ -485,7 +483,7 @@ class IconSetManager
         $ds = DIRECTORY_SEPARATOR;
         $zipFile = $iconSet->getIconsZipfile();
         $cname = $iconSet->getCname();
-        $iconSetDir = $this->iconSetsDir.$ds.$cname;
+        $iconSetDir = $this->iconSetsWebDir.$ds.$cname;
         if (!empty($zipFile)) {
             $zipArchive = new \ZipArchive();
             if ($zipArchive->open($zipFile) === true) {
