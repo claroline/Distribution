@@ -79,12 +79,13 @@ class RichTextFormatter
 
     private function extractFormatOptions($placeholder)
     {
-        $output = array();
+        $output = [];
         //split on comma, ignoring potential commas in quoted text
         foreach (preg_split("#(?!\B['\"][^\"']*),(?![^\"']*['\"]\B)#", $placeholder) as $pair) {
             list($key, $val) = explode('=', trim($pair), 2);
             $output[$key] = trim($val, "'\"");
         }
+
         return $output;
     }
 
@@ -104,21 +105,20 @@ class RichTextFormatter
         preg_match_all(self::REGEX_PLACEHOLDER, $text, $matches, PREG_SET_ORDER);
 
         foreach ($matches as $match) {
-
             $options = $this->extractFormatOptions($match[1]);
-            $uid = (int) $options["uid"];
+            $uid = (int) $options['uid'];
             //optionnal parameters
             $option_text = null;
-            if(isset($options["text"])){
-                $option_text = $options["text"];
+            if (isset($options['text'])) {
+                $option_text = $options['text'];
             }
             $option_style = null;
-            if(isset($options["style"])){
-                $option_style = $options["style"];
+            if (isset($options['style'])) {
+                $option_style = $options['style'];
             }
             $option_embed = true;
-            if(isset($options["embed"])){
-                $option_embed = (boolean) $options["embed"];
+            if (isset($options['embed'])) {
+                $option_embed = (bool) $options['embed'];
             }
 
             //meh, fix the following lines late
@@ -274,8 +274,8 @@ class RichTextFormatter
             if (strpos('_'.$node->getMimeType(), 'image') > 0 || strpos('_'.$node->getMimeType(), 'video') > 0 || strpos('_'.$node->getMimeType(), 'audio') > 0) {
                 $embed_option = ',embed=0';
             }
-            
-            $tag = "[[uid=".$node->getId().$text_option.$embed_option.$css_style_option."]]";
+
+            $tag = '[[uid='.$node->getId().$text_option.$embed_option.$css_style_option.']]';
             $txt = str_replace($matchReplaced[0], $tag, $txt);
         } else {
             //match embeded media
@@ -288,10 +288,10 @@ class RichTextFormatter
                 //css style option
                 $css_style_option = '';
                 $css_style = $this->extractCssStyle($matchReplaced[0]);
-                if(isset($css_style)){
+                if (isset($css_style)) {
                     $css_style_option = ",style='".addslashes($css_style)."'";
                 }
-                $tag = "[[uid=".$node->getId().$css_style_option."]]";
+                $tag = '[[uid='.$node->getId().$css_style_option.']]';
                 $txt = str_replace($matchReplaced[0], $tag, $txt);
             }
         }
@@ -299,7 +299,8 @@ class RichTextFormatter
         return $txt;
     }
 
-    private function extractCssStyle($txt){
+    private function extractCssStyle($txt)
+    {
         preg_match(
             "#style=[\"\']([^\"\']+)[\"\']#i",
             $txt,
@@ -308,6 +309,7 @@ class RichTextFormatter
         if (count($match) > 0) {
             return $match[1];
         }
+
         return null;
     }
 
@@ -366,7 +368,7 @@ class RichTextFormatter
         if (isset($this->resourceManagerData['data']['items'])) {
             foreach ($this->resourceManagerData['data']['items'] as $item) {
                 //without cast, comparaison would fail in some instances (uid is either int or string, depending)
-                if ((string)($item['item']['uid']) === (string)$uid) {
+                if ((string) ($item['item']['uid']) === (string) $uid) {
                     return $item['item'];
                 }
             }
@@ -378,7 +380,7 @@ class RichTextFormatter
         if (isset($resManagerData['data']['items'])) {
             foreach ($resManagerData['data']['items'] as $item) {
                 //without cast, comparaison would fail in some instances (uid is either int or string, depending)
-                if ((string)($item['item']['uid']) === (string)$uid) {
+                if ((string) ($item['item']['uid']) === (string) $uid) {
                     return $item['item'];
                 }
             }
@@ -394,7 +396,7 @@ class RichTextFormatter
         if (isset($this->resourceManagerData['data']['directories'])) {
             foreach ($this->resourceManagerData['data']['directories'] as $item) {
                 //without cast, comparaison would fail in some instances (uid is either int or string, depending)
-                if ((string)($item['directory']['uid']) === (string)$uid) {
+                if ((string) ($item['directory']['uid']) === (string) $uid) {
                     return $item['directory'];
                 }
             }
@@ -406,7 +408,7 @@ class RichTextFormatter
         if (isset($resManagerData['data']['directories'])) {
             foreach ($resManagerData['data']['directories'] as $item) {
                 //without cast, comparaison would fail in some instances (uid is either int or string, depending)
-                if ((string)($item['directory']['uid']) === (string)$uid) {
+                if ((string) ($item['directory']['uid']) === (string) $uid) {
                     return $item['directory'];
                 }
             }
@@ -432,16 +434,15 @@ class RichTextFormatter
      */
     public function generateDisplayedUrlForTinyMce(ResourceNode $node, $text = null, $embed = true, $style = null)
     {
-
         if (strpos('_'.$node->getMimeType(), 'image') > 0) {
-            $cssStyle = $style ? $style : "max-width:100%;";
+            $cssStyle = $style ? $style : 'max-width:100%;';
             $url = $this->router->generate(
                 'claro_file_get_media',
                 ['node' => $node->getId()],
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
 
-            if($embed){
+            if ($embed) {
                 return "<img style='".$cssStyle."' src='".$url."' alt='".$node->getName()."'>";
             }
         }
@@ -452,8 +453,8 @@ class RichTextFormatter
                 ['node' => $node->getId()],
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
-            if($embed){
-               return "<source type='".$node->getMimeType()."' src='".$url."'></source>";
+            if ($embed) {
+                return "<source type='".$node->getMimeType()."' src='".$url."'></source>";
             }
         }
 
@@ -467,7 +468,8 @@ class RichTextFormatter
         );
         //hyperlink text, fallback to node name if none
         $link_text = isset($text) ? stripslashes($text) : $node->getName();
-        $cssStyle = isset($style) ? "style='".stripslashes($style)."'" : "";
+        $cssStyle = isset($style) ? "style='".stripslashes($style)."'" : '';
+
         return "<a {$cssStyle} href='{$url}'>{$link_text}</a>";
     }
 

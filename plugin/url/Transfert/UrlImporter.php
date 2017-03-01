@@ -11,15 +11,12 @@
 
 namespace HeVinci\UrlBundle\Transfert;
 
-use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Transfert\Importer;
+use HeVinci\UrlBundle\Entity\Url;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Processor;
-use Claroline\CoreBundle\Persistence\ObjectManager;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use HeVinci\UrlBundle\Entity\Url;
 
 /**
  * @DI\Service("claroline.importer.url_importer")
@@ -84,14 +81,15 @@ class UrlImporter extends Importer implements ConfigurationInterface
             $url->setUrl($data['data']['url']);
             $this->urlManager->setUrl($url);
             $this->om->persist($url);
+
             return $url;
         }
-
     }
 
     public function export($workspace, array &$files, $object)
     {
         $data = ['url' => $object->getUrl()];
+
         return $data;
     }
 }

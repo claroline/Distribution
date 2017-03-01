@@ -168,7 +168,7 @@ class BlogManager
         $this->objectManager->persist($blog);
         //flush, otherwise we dont have the website ID needed for building uploadPath for banner
         $this->objectManager->forceFlush();
-       
+
         //Copy banner bg image to web folder
         if ($optionsData['banner_background_image'] !== null && !filter_var($optionsData['banner_background_image'], FILTER_VALIDATE_URL)) {
             $this->createUploadFolder(DIRECTORY_SEPARATOR.$this->uploadDir);

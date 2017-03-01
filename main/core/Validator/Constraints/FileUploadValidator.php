@@ -11,9 +11,9 @@
 
 namespace Claroline\CoreBundle\Validator\Constraints;
 
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Validator("fileupload_validator")
@@ -23,7 +23,7 @@ class FileUploadValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         $url = $this->context->getRoot()->get('fileUrl')->getData();
-        if(!isset($value) && !isset($url)){
+        if (!isset($value) && !isset($url)) {
             $this->context->addViolation($constraint->message);
         }
     }
