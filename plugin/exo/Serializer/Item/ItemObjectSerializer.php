@@ -17,8 +17,8 @@ class ItemObjectSerializer implements SerializerInterface
     /**
      * Converts a ItemObject into a JSON-encodable structure.
      *
-     * @param ItemObject  $itemObject
-     * @param array       $options
+     * @param ItemObject $itemObject
+     * @param array      $options
      *
      * @return \stdClass
      */

@@ -3,7 +3,6 @@ import classes from 'classnames'
 import {makeSortable} from './../../../utils/sortable'
 import {tex, t} from './../../../utils/translate'
 import {MODAL_DELETE_CONFIRM} from './../../../modal'
-import {OBJECT_ADD} from './../actions'
 import {MODAL_ADD_CONTENT} from './../components/add-content-modal.jsx'
 import {actions, OBJECT_MOVE, OBJECT_REMOVE} from './../actions.js'
 import {connect} from 'react-redux'
@@ -45,6 +44,13 @@ const Actions = props =>
   </span>
 
 Actions.propTypes = {
+  object: T.shape({
+    id: T.string.isRequired,
+    type: T.string.isRequired,
+    url: T.string,
+    data: T.string,
+    title: T.string
+  }).isRequired,
   showModal: T.func.isRequired,
   connectDragSource: T.func.isRequired,
   updateItemObjects: T.func.isRequired
@@ -125,7 +131,7 @@ class ObjectsEditor extends Component {
             onSort={(source, destination) => {
               this.props.updateItemObjects(this.props.item.id, OBJECT_MOVE, {id: source, swapId: destination})
             }}
-            onClick={(id, type) => {console.log(`Display ${id} of type ${type}`)}}
+            onClick={() => {}}
           />
         )}
         <button
@@ -166,13 +172,14 @@ ObjectsEditor.propTypes = {
     }))
   }).isRequired,
   showModal: T.func.isRequired,
-  closeModal: T.func.isRequired
+  closeModal: T.func.isRequired,
+  createItemObject: T.func.isRequired,
+  updateItemObjects: T.func.isRequired,
+  saveItemObjectFile: T.func.isRequired
 }
 
 function mapStateToProps() {
   return {}
 }
 
-ObjectsEditor = connect(mapStateToProps, actions)(ObjectsEditor)
-
-export {ObjectsEditor}
+export default connect(mapStateToProps, actions)(ObjectsEditor)

@@ -311,7 +311,7 @@ function reduceItems(items = {}, action = {}) {
               }
             }
           })
-        case OBJECT_MOVE:
+        case OBJECT_MOVE: {
           const index = items[action.itemId].objects.findIndex(o => o.id === action.data.id)
           const swapIndex = items[action.itemId].objects.findIndex(o => o.id === action.data.swapId)
           const object = items[action.itemId].objects[index]
@@ -324,6 +324,7 @@ function reduceItems(items = {}, action = {}) {
               }
             }
           })
+        }
         default:
           return items
       }

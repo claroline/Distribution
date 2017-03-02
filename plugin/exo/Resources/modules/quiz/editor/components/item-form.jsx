@@ -5,7 +5,7 @@ import {HINT_ADD, HINT_CHANGE, HINT_REMOVE} from './../actions'
 import {FormGroup} from './../../../components/form/form-group.jsx'
 import {Textarea} from './../../../components/form/textarea.jsx'
 import {SubSection} from './../../../components/form/sub-section.jsx'
-import {ObjectsEditor} from './item-objects-editor.jsx'
+import ObjectsEditor from './item-objects-editor.jsx'
 
 // TODO: add categories, objects, resources, define-as-model
 
