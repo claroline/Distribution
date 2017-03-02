@@ -83,7 +83,7 @@ class WebsiteManagerTest extends TransactionalTestCase
         $files = null;
         $data = $this->websiteManager->exportWebsite($this->user->getPersonalWorkspace(), $files, $this->website);
         $this->assertEquals(4, count($data['pages']), 'Test Website export');
-        $this->websiteManager->importWebsite(['data' => $data], null, null, true);
+        $this->websiteManager->importWebsite(['data' => $data], null, [], true);
         $this->assertEquals(2, count($websiteRepo->findAll()), 'Test if Website was imported correctly');
         $this->assertEquals(8, count($pageRepo->findAll()), 'Test if all Website pages were imported correctly');
     }
