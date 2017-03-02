@@ -13,7 +13,7 @@ use UJM\ExoBundle\Library\Model\PenaltyTrait;
  * @ORM\Entity
  * @ORM\Table(name="ujm_question_ordering")
  */
-class Ordering extends AbstractItem
+class OrderingQuestion extends AbstractItem
 {
     use PenaltyTrait;
 

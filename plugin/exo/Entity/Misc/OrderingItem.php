@@ -4,7 +4,7 @@ namespace UJM\ExoBundle\Entity\Misc;
 
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
-use UJM\ExoBundle\Entity\ItemType\Ordering;
+use UJM\ExoBundle\Entity\ItemType\OrderingQuestion;
 use UJM\ExoBundle\Library\Model\ContentTrait;
 use UJM\ExoBundle\Library\Model\UuidTrait;
 use UJM\ExoBundle\Library\Model\OrderTrait;
@@ -19,6 +19,14 @@ use UJM\ExoBundle\Library\Model\FeedbackTrait;
  */
 class OrderingItem
 {
+    use UuidTrait;
+
+    use ContentTrait;
+
+    use ScoreTrait;
+
+    use FeedbackTrait;
+
     /**
      * Unique identifier of the item.
      *
@@ -30,18 +38,15 @@ class OrderingItem
      */
     private $id;
 
-    use UuidTrait;
-
-    use ContentTrait;
-
-    use OrderTrait;
-
-    use ScoreTrait;
-
-    use FeedbackTrait;
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     *
+     * @var int
+     */
+    private $position;
 
     /**
-     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\ItemType\Ordering", inversedBy="items")
+     * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\ItemType\OrderingQuestion", inversedBy="items")
      * @ORM\JoinColumn(name="ujm_question_ordering_id", referencedColumnName="id")
      */
     private $question;
@@ -64,12 +69,42 @@ class OrderingItem
         return $this->id;
     }
 
+    /**
+     * Get position.
+     *
+     * @return int
+     */
+    public function getPosition()
+    {
+        return $this->position;
+    }
+
+    /**
+     * Set position.
+     *
+     * @param int $position
+     */
+    public function setPosition($position)
+    {
+        $this->position = $position;
+    }
+
+    /**
+     * Get question.
+     *
+     * @return Ordering
+     */
     public function getQuestion()
     {
         return $this->question;
     }
 
-    public function setQuestion(Ordering $question)
+    /**
+     * Set question.
+     *
+     * @param OrderingQuestion $question
+     */
+    public function setQuestion(OrderingQuestion $question)
     {
         $this->question = $question;
     }

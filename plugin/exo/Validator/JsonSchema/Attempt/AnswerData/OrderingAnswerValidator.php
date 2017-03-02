@@ -3,7 +3,7 @@
 namespace UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData;
 
 use JMS\DiExtraBundle\Annotation as DI;
-use UJM\ExoBundle\Entity\ItemType\Ordering;
+use UJM\ExoBundle\Entity\ItemType\OrderingQuestion;
 use UJM\ExoBundle\Entity\Misc\OrderingItem;
 use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
@@ -30,7 +30,7 @@ class OrderingAnswerValidator extends JsonSchemaValidator
     {
         $errors = [];
 
-        /** @var Ordering $question */
+        /** @var OrderingQuestion $question */
         $question = !empty($options[Validation::QUESTION]) ? $options[Validation::QUESTION] : null;
         if (empty($question)) {
             throw new \LogicException('Answer validation : Cannot perform additional validation without question.');

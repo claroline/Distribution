@@ -3,7 +3,7 @@
 namespace UJM\ExoBundle\Serializer\Item\Type;
 
 use JMS\DiExtraBundle\Annotation as DI;
-use UJM\ExoBundle\Entity\ItemType\Ordering;
+use UJM\ExoBundle\Entity\ItemType\OrderingQuestion;
 use UJM\ExoBundle\Entity\Misc\OrderingItem;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
@@ -60,12 +60,12 @@ class OrderingQuestionSerializer implements SerializerInterface
     /**
      * Serializes the question items.
      *
-     * @param Ordering       $question
+     * @param OrderingQuestion       $question
      * @param array          $options
      *
      * @return array
      */
-    private function serializeItems(Ordering $question, array $options = [])
+    private function serializeItems(OrderingQuestion $question, array $options = [])
     {
         return array_map(function (OrderingItem $item) use ($options) {
             $itemData = $this->contentSerializer->serialize($item, $options);
@@ -82,7 +82,7 @@ class OrderingQuestionSerializer implements SerializerInterface
      *
      * @return array
      */
-    private function serializeSolutions(Ordering $question)
+    private function serializeSolutions(OrderingQuestion $question)
     {
         return array_map(function (OrderingItem $item) {
             $solutionData = new \stdClass();
@@ -93,12 +93,12 @@ class OrderingQuestionSerializer implements SerializerInterface
                 $solutionData->feedback = $item->getFeedback();
             }
 
-            if ($item->getOrder()) {
-                $solutionData->order = $item->getOrder();
+            if ($item->getPosition()) {
+                $solutionData->order = $item->getPosition();
             }
 
             return $solutionData;
-        }, $choiceQuestion->getChoices()->toArray());
+        }, $question->getItems()->toArray());
     }
 
     /**
@@ -113,7 +113,11 @@ class OrderingQuestionSerializer implements SerializerInterface
     public function deserialize($data, $question = null, array $options = [])
     {
         if (empty($question)) {
-            $question = new Ordering();
+            $question = new OrderingQuestion();
+        }
+
+        if (!empty($data->penalty) || 0 === $data->penalty) {
+            $question->setPenalty($data->penalty);
         }
 
         $this->deserializeItems($question, $data->items, $data->solutions, $options);
@@ -122,18 +126,18 @@ class OrderingQuestionSerializer implements SerializerInterface
     }
 
     /**
-     * Deserializes Question choices.
+     * Deserializes Question items.
      *
-     * @param ChoiceQuestion $choiceQuestion
-     * @param array          $choices
+     * @param OrderingQuestion $question
+     * @param array          $items
      * @param array          $solutions
      * @param array          $options
      */
-    private function deserializeItems(Ordering $question, array $items, array $solutions, array $options = [])
+    private function deserializeItems(OrderingQuestion $question, array $items, array $solutions, array $options = [])
     {
         $itemEntities = $question->getItems()->toArray();
 
-        foreach ($items as $index => $itemData) {
+        foreach ($items as $itemData) {
             $item = null;
 
             // Searches for an existing item entity.
@@ -167,8 +171,8 @@ class OrderingQuestionSerializer implements SerializerInterface
                         $item->setFeedback($solution->feedback);
                     }
 
-                    if (isset($solution->order)) {
-                        $item->setOrder($index);
+                    if (isset($solution->position)) {
+                        $item->setPosition($solution->position);
                     }
                     break;
                 }
