@@ -90,7 +90,7 @@ class IconSet
 
     /**
      * @Assert\File(
-     *     mimeTypes = {"application/zip", "application/octet-stream"}
+     *     mimeTypes = {"application/zip"}
      * )
      */
     private $iconsZipfile;

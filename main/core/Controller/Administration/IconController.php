@@ -150,12 +150,12 @@ class IconController extends Controller
         }
 
         if ($isNew) {
-            return $this->render('ClarolineCoreBundle:Administration/Icon/resourceIconSetNew.html.twig', [
+            return $this->render('ClarolineCoreBundle:Administration:Icon/resourceIconSetNew.html.twig', [
                 'form' => $form->createView(),
-                'iconNamesForTypes' => $iconNamesForTypes['default'],
+                'iconNamesForTypes' => $iconNamesForTypes->getDefaultIcons(),
             ]);
         } else {
-            return $this->render('ClarolineCoreBundle:Administration/Icon/resourceIconSetEdit.html.twig', [
+            return $this->render('ClarolineCoreBundle:Administration:Icon/resourceIconSetEdit.html.twig', [
                 'form' => $form->createView(),
                 'iconNamesForTypes' => $iconNamesForTypes,
                 'iconSet' => $iconSet,
