@@ -1,0 +1,87 @@
+.quiz-editor {
+  .item-object-thumbnail-box {
+    display: flex;
+    align-items: center;
+    overflow: auto;
+    padding: 4px;
+    text-align: center;
+    flex-wrap: wrap;
+
+    button {
+      margin-left: 4px;
+    }
+
+    .item-object-thumbnail {
+      border: solid 1px @table-border-color;
+      border-radius: 4px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      width: 195px;
+      height: 100px;
+      margin: 4px;
+      color: #777;
+      padding: 8px;
+
+      .item-object-thumbnail-content {
+        display: flex;
+        align-items: center;
+        .item-object-thumbnail-icon {
+          font-size: 40px;
+          padding-right: 8px;
+        }
+        .item-object-thumbnail-title {
+          display: flex;
+          align-items: center;
+          height: 60px;
+          overflow: hidden;
+          text-align: left;
+        }
+      }
+
+      .object-actions {
+        height: 33%;
+        display: flex;
+        justify-content: flex-end;
+        visibility: hidden;
+        .action-button {
+          padding-left: 8px;
+          font-size: 18px;
+        }
+      }
+      .step-title {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        outline: 0;
+        text-overflow: ellipsis;
+      }
+      .new-step {
+        flex: none;
+        margin: 10px;
+        font-weight: bold;
+      }
+
+      a {
+        color: #777;
+        text-decoration: none;
+        /* required by text-overflow */
+        white-space: nowrap;
+        overflow: hidden;
+      }
+      &.active {
+        border-color: #337ab7;
+        .object-actions {
+          visibility: visible;
+        }
+      }
+      &:hover {
+        border-color: #337ab7;
+        cursor: pointer;
+        .object-actions {
+          visibility: visible;
+        }
+      }
+    }
+  }
+}
