@@ -32,10 +32,10 @@ class BlogImporter extends Importer implements ConfigurationInterface, RichTextI
      * })
      */
     public function __construct(
-        BlogManager $blogManager, 
+        BlogManager $blogManager,
         ObjectManager $om,
-        ContainerInterface $container)
-    {
+        ContainerInterface $container
+    ) {
         $this->blogManager = $blogManager;
         $this->om = $om;
         $this->container = $container;
@@ -172,7 +172,7 @@ class BlogImporter extends Importer implements ConfigurationInterface, RichTextI
                 $this->om->persist($entity);
             }
         }
-       
+
         //this could be bad, but the corebundle can use a transaction and force flush itself anyway
         $this->om->flush();
     }
