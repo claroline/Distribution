@@ -169,6 +169,7 @@ class LocaleManager
             'en' => 'English',
             'nl' => 'Nederlands',
             'es' => 'Español',
+            'it' => 'Italiano',
         ];
     }
 
