@@ -48,7 +48,12 @@ class OrderingQuestionSerializer implements SerializerInterface
         $questionData->mode = $question->getMode();
         $questionData->direction = $question->getDirection();
         // Serializes items
-        $questionData->items = $this->serializeItems($question, $options);
+        $items = $this->serializeItems($question, $options);
+        // shuffle items only in player
+        if (in_array(Transfer::SHUFFLE_ANSWERS, $options)) {
+            shuffle($items);
+        }
+        $questionData->items = $items;
 
         if (in_array(Transfer::INCLUDE_SOLUTIONS, $options)) {
             $questionData->solutions = $this->serializeSolutions($question);

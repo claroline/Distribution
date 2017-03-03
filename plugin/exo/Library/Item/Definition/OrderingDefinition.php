@@ -75,7 +75,7 @@ class OrderingDefinition extends AbstractDefinition
      */
     public static function getEntityClass()
     {
-        return '\UJM\ExoBundle\Entity\ItemType\Ordering';
+        return '\UJM\ExoBundle\Entity\ItemType\OrderingQuestion';
     }
 
     /**
@@ -118,6 +118,17 @@ class OrderingDefinition extends AbstractDefinition
     {
         $corrected = new CorrectedAnswer();
 
+        if (is_array($answer)) {
+            foreach ($answer as $givenAnswser) {
+                $item = $question->getItem($givenAnswser->itemId);
+                if (isset($item->position) && $item->position === $givenAnswser->position) {
+                    $corrected->addExpected($item);
+                } else {
+                    $corrected->addUnexpected($item);
+                }
+            }
+        }
+
         return $corrected;
     }
 
@@ -128,7 +139,9 @@ class OrderingDefinition extends AbstractDefinition
      */
     public function expectAnswer(AbstractItem $question)
     {
-        return [];
+        return array_filter($question->getItems()->toArray(), function (OredringItem $item) {
+            return !empty($item->getPosition());
+        });
     }
 
     public function getStatistics(AbstractItem $question, array $answersData)
