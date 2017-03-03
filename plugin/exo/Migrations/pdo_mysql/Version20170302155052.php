@@ -8,14 +8,14 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution.
  *
- * Generation date: 2017/02/28 04:59:03
+ * Generation date: 2017/03/02 03:50:53
  */
-class Version20170228165901 extends AbstractMigration
+class Version20170302155052 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
         $this->addSql('
-            ALTER TABLE ujm_object_question 
+            ALTER TABLE ujm_object_question
             DROP FOREIGN KEY FK_F91814BFB87FAB32
         ');
         $this->addSql('
@@ -26,7 +26,6 @@ class Version20170228165901 extends AbstractMigration
             ADD uuid VARCHAR(36) NOT NULL, 
             ADD mime_type VARCHAR(255) NOT NULL, 
             ADD object_data LONGTEXT NOT NULL, 
-            ADD title VARCHAR(255) DEFAULT NULL, 
             DROP resourceNode_id
         ');
         $this->addSql('
@@ -54,8 +53,7 @@ class Version20170228165901 extends AbstractMigration
             ADD resourceNode_id INT DEFAULT NULL, 
             DROP uuid, 
             DROP mime_type, 
-            DROP object_data, 
-            DROP title
+            DROP object_data
         ');
         $this->addSql('
             ALTER TABLE ujm_object_question 

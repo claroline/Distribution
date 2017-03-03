@@ -212,13 +212,6 @@ actions.saveItemObjectFile = (itemId, objectId, file) => {
           body: formData
         },
         success: (url) => {
-          const pattern = /^(.+)\.[^\.]+$/
-          const fileName = file.name
-          const matches = fileName.match(pattern)
-
-          if (matches && matches[1]) {
-            dispatch(actions.updateItemObjects(itemId, 'OBJECT_CHANGE', {id: objectId, property: 'title', value: matches[1]}))
-          }
           dispatch(actions.updateItemObjects(itemId, 'OBJECT_CHANGE', {id: objectId, property: 'data', value: url}))
         }
       }

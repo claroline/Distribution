@@ -40,6 +40,7 @@ const Metadata = props =>
       <ObjectsEditor
         showModal={props.showModal}
         closeModal={props.closeModal}
+        validating={props.validating}
         item={props.item}
       />
     </FormGroup>
@@ -53,7 +54,8 @@ Metadata.propTypes = {
   }).isRequired,
   showModal: T.func.isRequired,
   closeModal: T.func.isRequired,
-  onChange: T.func.isRequired
+  onChange: T.func.isRequired,
+  validating: T.bool.isRequired
 }
 
 const Hint = props =>
@@ -169,6 +171,7 @@ export class ItemForm extends Component {
             showModal={this.props.showModal}
             closeModal={this.props.closeModal}
             onChange={this.props.onChange}
+            validating={this.props.validating}
           />
         </SubSection>
         <hr/>

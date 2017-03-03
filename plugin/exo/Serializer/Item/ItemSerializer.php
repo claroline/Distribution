@@ -480,6 +480,7 @@ class ItemSerializer extends AbstractSerializer
         if (0 < count($objectEntities)) {
             foreach ($objectEntities as $objectToRemove) {
                 $question->removeObject($objectToRemove);
+                $this->om->remove($objectToRemove);
             }
         }
     }

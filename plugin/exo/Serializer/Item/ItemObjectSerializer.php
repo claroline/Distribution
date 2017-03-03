@@ -33,9 +33,6 @@ class ItemObjectSerializer implements SerializerInterface
         } else {
             $itemObjectData->url = $itemObject->getData();
         }
-        if ($itemObject->getTitle()) {
-            $itemObjectData->title = $itemObject->getTitle();
-        }
 
         return $itemObjectData;
     }
@@ -62,9 +59,6 @@ class ItemObjectSerializer implements SerializerInterface
         }
         if (isset($data->data)) {
             $itemObject->setData($data->data);
-        }
-        if (isset($data->title) && !empty($data->title)) {
-            $itemObject->setTitle($data->title);
         }
 
         return $itemObject;

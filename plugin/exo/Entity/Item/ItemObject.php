@@ -57,13 +57,6 @@ class ItemObject
     private $data;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
-     *
-     * @var string
-     */
-    private $title;
-
-    /**
      * ItemObject constructor.
      */
     public function __construct()
@@ -159,21 +152,5 @@ class ItemObject
     public function setData($data)
     {
         $this->data = $data;
-    }
-
-    /**
-     * @param string $title
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTitle()
-    {
-        return $this->title;
     }
 }

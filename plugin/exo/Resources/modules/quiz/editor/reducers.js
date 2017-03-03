@@ -160,6 +160,7 @@ function reduceItems(items = {}, action = {}) {
         id: action.id,
         type: action.itemType,
         content: '',
+        objects: [],
         hints: [],
         feedback: ''
       })
@@ -277,26 +278,35 @@ function reduceItems(items = {}, action = {}) {
     }
     case ITEM_OBJECTS_UPDATE:
       switch (action.updateType) {
-        case OBJECT_ADD:
-          return update(items, {
-            [action.itemId]: {
-              objects: {
-                $push: [{
-                  id: action.id,
-                  data: '',
-                  type: action.data.mimeType
-                }]
-              }
-            }
-          })
-        case OBJECT_CHANGE: {
-          const objects = items[action.itemId].objects
-          const index = objects.findIndex(object => object.id === action.data.id)
+        case OBJECT_ADD: {
+          let newObject = {
+            id: action.id,
+            data: '',
+            type: action.data.mimeType
+          }
+          const errors = validate.contentItem(newObject)
+          newObject = Object.assign({}, newObject, {_errors: errors})
 
           return update(items, {
             [action.itemId]: {
               objects: {
-                [index]: {$set: Object.assign({}, objects[index], set({}, action.data.property, action.data.value))}
+                $push: [newObject]
+              }
+            }
+          })
+        }
+        case OBJECT_CHANGE: {
+          const objects = items[action.itemId].objects
+          const index = objects.findIndex(object => object.id === action.data.id)
+          let updatedObject = objects[index]
+          updatedObject = update(updatedObject, {[action.data.property]: {$set: action.data.value}})
+          const errors = validate.contentItem(updatedObject)
+          updatedObject = update(updatedObject, {_errors: {$set: errors}})
+
+          return update(items, {
+            [action.itemId]: {
+              objects: {
+                [index]: {$set: updatedObject}
               }
             }
           })

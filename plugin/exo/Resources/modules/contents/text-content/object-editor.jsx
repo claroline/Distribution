@@ -5,26 +5,29 @@ import {FormGroup} from './../../components/form/form-group.jsx'
 import {Textarea} from './../../components/form/textarea.jsx'
 import {actions} from './editor'
 
-export const TextContent = (props) =>
+export const TextObjectEditor = (props) =>
   <fieldset>
     <FormGroup
-      controlId={`item-${props.item.id}-data`}
-      label={trans('text', {}, 'question_types')}
+      controlId={`object-${props.object.id}-data`}
+      label=''
       warnOnly={!props.validating}
-      error={get(props.item, '_errors.data')}
+      error={get(props.object, '_errors.data')}
     >
       <Textarea
-        id={`item-${props.item.id}-text`}
-        content={props.item.data || ''}
-        onChange={data => props.onChange(actions.updateItemContentText(data))}
+        id={`object-${props.object.id}-data`}
+        content={props.object.data || ''}
+        onChange={data => props.onChange(data)}
       />
     </FormGroup>
   </fieldset>
 
-TextContent.propTypes = {
-  item: T.shape({
+TextObjectEditor.propTypes = {
+  object: T.shape({
     id: T.string.isRequired,
-    data: T.string.isRequired,
+    type: T.string.isRequired,
+    url: T.string,
+    data: T.string,
+    title: T.string,
     _errors: T.object
   }).isRequired,
   validating: T.bool.isRequired,
